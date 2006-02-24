@@ -93,7 +93,6 @@ function xmlnow(what4){
 
 
 // mySQL - variables
-$db = new DB;
 $dbhost=$db->dbhost;
 $dbuser=$db->dbuser;
 $dbpass=$db->dbpassword;
@@ -114,7 +113,7 @@ else $filetype = "sql";
 //dbpassword sur le serveur dbdefault
 function xmlbackup($dbdefault,$dbhost,$dbuser,$dbpassword)
 {
-global $cfg_install;
+global $cfg_install,$db;
 //on inclue le fichier contenant la classe XML.
 require('genxml.php');
 
@@ -125,7 +124,6 @@ require('genxml.php');
 //on parcoure la DB et on liste tous les noms des tables dans $table
 //on incremente $query[] de "select * from $table"  pour chaque occurence de $table
 
-$db = new DB;
 $result = $db->list_tables();
 $i = 0;
 	while ($line = $db->fetch_array($result))
@@ -288,8 +286,7 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 // En plus, au niveau du dump on considère qu'on est bon
 //set_magic_quotes_runtime(0);
 
-global $TPSCOUR,$offset,$cpt;
-$db=new DB;
+global $db,$TPSCOUR,$offset,$cpt;
 
 if ($db->error)
 {

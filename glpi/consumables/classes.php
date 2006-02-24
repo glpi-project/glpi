@@ -67,7 +67,7 @@ class ConsumableType {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_consumables_type WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -84,8 +84,8 @@ class ConsumableType {
 	}
 	
 	function getEmpty () {
-	global $cfg_features;
-	$db = new DB;
+	global $db,$cfg_features;
+	
 	$fields = $db->list_fields("glpi_consumables_type");
 	$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -98,7 +98,7 @@ class ConsumableType {
 	}
 
 	function countConsumables() {
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '".$this->fields["ID"]."')";
 		if ($result = $db->query($query)) {
 			$number = $db->numrows($result);
@@ -108,7 +108,7 @@ class ConsumableType {
 		}
 	}
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_consumables_type SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -119,7 +119,7 @@ class ConsumableType {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_consumables_type SET ";
@@ -136,7 +136,7 @@ class ConsumableType {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_consumables_type (";
@@ -168,7 +168,7 @@ class ConsumableType {
 
 	function deleteFromDB($ID,$force=0) {
 
-		$db = new DB;
+		global $db;
 		$this->getFromDB($ID);		
 		if ($force==1/*||$this->countCartridges()==0*/){
 			$query = "DELETE from glpi_consumables_type WHERE ID = '$ID'";
@@ -204,7 +204,7 @@ class Consumable {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_consumables WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 		if ($db->numrows($result)==1){
@@ -222,7 +222,7 @@ class Consumable {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_consumables SET ";
@@ -240,7 +240,7 @@ class Consumable {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_consumables (";
@@ -274,7 +274,7 @@ class Consumable {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_consumables WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {

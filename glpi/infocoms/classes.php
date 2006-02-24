@@ -43,7 +43,7 @@ class InfoCom {
 	
 	function getfromDB ($device_type,$ID) {
 
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='$device_type')";
 		
 		if ($result = $db->query($query)) {
@@ -62,7 +62,7 @@ class InfoCom {
 
 	function getfromDBbyID ($ID) {
 
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_infocoms WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -80,7 +80,7 @@ class InfoCom {
 	}
 	
 	function getEmpty () {
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_infocoms");
 	$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -90,7 +90,7 @@ class InfoCom {
 	}
 
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_infocoms SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -101,7 +101,7 @@ class InfoCom {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_infocoms SET ";
@@ -119,7 +119,7 @@ class InfoCom {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_infocoms (";
@@ -151,7 +151,7 @@ class InfoCom {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 		$query = "DELETE from glpi_infocoms WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
 				return true;

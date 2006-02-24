@@ -43,7 +43,7 @@ class Device {
 	}
 	
 	function getFromDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM ".$this->table." WHERE ID = '$ID' LIMIT 0,1";
 		//echo $query;
 		if ($result = $db->query($query)) {
@@ -61,7 +61,7 @@ class Device {
 	
 	function getEmpty () {
 		//make an empty database object
-		$db = new DB;
+		global $db;
 		$fields = $db->list_fields($this->table);
 		$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -73,7 +73,7 @@ class Device {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE ".$this->table." SET ";
@@ -90,7 +90,7 @@ class Device {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 		$i=0;
 		// Build query
 		$query = "INSERT INTO ".$this->table." (";
@@ -123,7 +123,7 @@ class Device {
 	
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 		$query = "DELETE from ".$this->table." WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -143,7 +143,7 @@ class Device {
 	
 	
 	function computer_link($compID,$device_type,$specificity='') {
-		$db = new DB;
+		global $db;
 		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers,specificity) values ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
 		if($db->query($query)) {
 			return $db->insert_id();

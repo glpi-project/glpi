@@ -113,9 +113,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 function showReservationItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start){
 	// Lists Reservation Items
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
-
-		$db = new DB;
+	GLOBAL $db,$cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
 	// Build query
 	if($field=="all") {
@@ -605,12 +603,11 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 }
 
 function printReservation($target,$ID,$date){
+	global $db;
 if (!empty($ID))
 	printReservationItem($target,$ID,$date);
 else  {
 
-	$db=new DB();
-	
 	$debut=$date." 00:00:00";
 	$fin=$date." 23:59:59";
 
@@ -639,11 +636,9 @@ else  {
 
 
 function printReservationItem($target,$ID,$date){
-		global $lang, $HTMLRel;
+		global $db,$lang, $HTMLRel;
 
 		$id_user=$_SESSION["glpiID"];
-
-		$db = new DB;
 
 		$m=new ReservationItem;
 		$m->getfromDB($ID);
@@ -761,11 +756,10 @@ function addReservation($input,$target,$ok=true){
 
 
 function printReservationItems($target){
-global $lang,$HTMLRel;
+global $db,$lang,$HTMLRel;
 
 $ri=new ReservationItem;
 
-$db=new DB;
 
 $query="select ID from glpi_reservation_item ORDER BY device_type";
 
@@ -907,10 +901,9 @@ global $lang,$cfg_features;
 
 
 function printDeviceReservations($target,$type,$ID){
-	global $lang,$cfg_install;
+	global $db,$lang,$cfg_install;
 	$resaID=0;
-	$db=new DB;
-
+	
 	if ($resaID=isReservable($type,$ID)){
 		echo "<div align='center'>";
 
@@ -965,7 +958,7 @@ function printDeviceReservations($target,$type,$ID){
 
 function isReservable($type,$ID){
 
-	$db=new DB;
+	global $db;
 	$query="SELECT ID FROM glpi_reservation_item WHERE device_type='$type' AND id_device='$ID'";
 	$result=$db->query($query);
 	if ($db->numrows($result)==0){

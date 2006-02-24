@@ -36,5 +36,5 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/ocsng/functions.php");
 include ($phproot . "/glpi/ocsng/DB_ocs.php");
-
+$dbocs = new DBocs();
 ?>

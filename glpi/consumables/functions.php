@@ -347,9 +347,9 @@ function showConsumableAdd($ID) {
 **/
 function showConsumables ($tID,$show_old=0) {
 
-	GLOBAL $cfg_layout, $cfg_install,$lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install,$lang,$HTMLRel;
 	
-	$db = new DB;
+	
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
 
@@ -510,7 +510,7 @@ function deleteConsumable($ID) {
 **/
 function outConsumable($ID) {
 
-	$db = new DB;
+	global $db;
 	$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."' WHERE ID='$ID'";
 
 	if ($result = $db->query($query)) {
@@ -521,7 +521,7 @@ function outConsumable($ID) {
 }
 
 function restoreConsumable($ID){
-	$db = new DB;
+	global $db;
 	$query = "UPDATE glpi_consumables SET date_out = NULL WHERE ID='$ID'";
 
 	if ($result = $db->query($query)) {
@@ -546,9 +546,9 @@ function restoreConsumable($ID){
 **/
 function countConsumables($tID,$alarm,$nohtml=0) {
 	
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $db,$cfg_layout, $lang;
 	
-	$db = new DB;
+	
 	$out="";
 	// Get total
 	$total = getConsumablesNumber($tID);
@@ -583,7 +583,7 @@ function countConsumables($tID,$alarm,$nohtml=0) {
 *
 **/
 function getConsumablesNumber($tID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID')";
 	$result = $db->query($query);
 	return $db->numrows($result);
@@ -600,7 +600,7 @@ function getConsumablesNumber($tID){
 *
 **/
 function getOldConsumablesNumber($tID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID'  AND date_out IS NOT NULL)";
 	$result = $db->query($query);
 	return $db->numrows($result);
@@ -616,7 +616,7 @@ function getOldConsumablesNumber($tID){
 *
 **/
 function getUnusedConsumablesNumber($tID){
-	$db=new DB;
+	global $db;
 	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID'  AND date_out IS NULL)";
 	$result = $db->query($query);
 	return $db->numrows($result);
@@ -634,7 +634,7 @@ function getUnusedConsumablesNumber($tID){
 *
 **/
 function isNewConsumable($cID){
-$db=new DB;
+global $db;
 $query = "SELECT ID FROM glpi_consumables WHERE ( ID= '$cID' AND date_out IS NULL)";
 $result = $db->query($query);
 return ($db->numrows($result)==1);
@@ -651,7 +651,7 @@ return ($db->numrows($result)==1);
 *
 **/
 function isOldConsumable($cID){
-$db=new DB;
+global $db;
 $query = "SELECT ID FROM glpi_consumables WHERE ( ID= '$cID' AND date_out IS NOT NULL)";
 $result = $db->query($query);
 return ($db->numrows($result)==1);

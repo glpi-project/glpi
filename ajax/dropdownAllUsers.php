@@ -41,7 +41,6 @@
 
 	checkAuthentication("post-only");
 // Make a select box with all glpi users
-	$db = new DB;
 	
 	if (isset($_POST['value']))
 		$where =" AND  (ID <> '".$_POST['value']."' ";

@@ -124,7 +124,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
-	GLOBAL $cfg_layout, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_layout, $lang, $HTMLRel;
 
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
@@ -148,7 +148,6 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	} else {$value="";$loc="";}
 
 	if($name == "netpoint") {
-		$db=new DB;
 		$query = "select * from glpi_dropdown_netpoint where ID = '". $ID ."'";
 		$result = $db->query($query);
 		$value=$loc=$comments="";
@@ -285,7 +284,7 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 	echo "</table></form></div>";
 }
 function moveTreeUnder($table,$to_move,$where){
-	$db=new DB();
+	global $db;
 	if ($where!=$to_move){
 		// Is the $where location under the to move ???
 		$impossible_move=false;
@@ -311,10 +310,9 @@ function moveTreeUnder($table,$to_move,$where){
 }
 
 function updateDropdown($input) {
-	global $dropdowntree_tables;
+	global $db,$dropdowntree_tables;
 	
-	$db = new DB;
-	
+		
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "update ".$input["tablename"]." SET name = '".$input["value"]."', location = '".$input["value2"]."', comments='".$input["comments"]."' where ID = '".$input["ID"]."'";
 		
@@ -334,10 +332,9 @@ function updateDropdown($input) {
 
 
 function addDropdown($input) {
-	global $dropdowntree_tables;
+	global $db,$dropdowntree_tables;
 	
 	if (!empty($input["value"])){
-	$db = new DB;
 
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "INSERT INTO ".$input["tablename"]." (name,location,comments) VALUES ('".$input["value"]."', '".$input["value2"]."', '".$input["comments"]."')";
@@ -375,7 +372,7 @@ function addDropdown($input) {
 
 function deleteDropdown($input) {
 
-	$db = new DB;
+	global $db;
 	$send = array();
 	$send["tablename"] = $input["tablename"];
 	$send["oldID"] = $input["ID"];
@@ -385,7 +382,7 @@ function deleteDropdown($input) {
 
 //replace all entries for a dropdown in each items
 function replaceDropDropDown($input) {
-	$db = new DB;
+	global $db;
 	$name = getDropdownNameFromTable($input["tablename"]);
 	switch($name) {
 	case "cartridge_type":
@@ -565,10 +562,10 @@ function replaceDropDropDown($input) {
 }
 
 function showDeleteConfirmForm($target,$table, $ID) {
-	global $lang;
+	global $db,$lang;
 	
 	if ($table=="glpi_dropdown_locations"){
-		$db=new DB();
+		
 		$query = "Select count(*) as cpt FROM $table where parentID = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  {
@@ -644,7 +641,7 @@ function getDropdownNameFromTableForStats($table) {
 //check if the dropdown $ID is used into item tables
 function dropdownUsed($table, $ID) {
 
-	$db = new DB;
+	global $db;
 	$name = getDropdownNameFromTable($table);
 
 	$var1 = true;
@@ -902,10 +899,9 @@ function dropdownUsed($table, $ID) {
 
 function listTemplates($type,$target) {
 
-	GLOBAL $cfg_layout, $lang;
+	GLOBAL $db,$cfg_layout, $lang;
 
-	$db = new DB;
-	
+		
 	switch ($type){
 	case COMPUTER_TYPE :
 		$title=$lang["Menu"][0];
@@ -1000,9 +996,9 @@ GLOBAL  $lang,$HTMLRel;
 
 function showFormConfigGen($target){
 	
-	GLOBAL  $lang,$HTMLRel,$cfg_install;
+	GLOBAL  $db,$lang,$HTMLRel,$cfg_install;
 	
-	$db = new DB;
+	
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
 	
@@ -1078,9 +1074,8 @@ function showFormConfigGen($target){
 
 function showFormConfigDisplay($target){
 	
-	GLOBAL  $lang,$HTMLRel,$cfg_install;
+	GLOBAL $db, $lang,$HTMLRel,$cfg_install;
 	
-	$db = new DB;
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
 	
@@ -1273,9 +1268,8 @@ return $out;
 
 function showFormExtSources($target) {
 
-	GLOBAL  $lang,$HTMLRel;
+	GLOBAL  $db,$lang,$HTMLRel;
 	
-	$db = new DB;
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
 	
@@ -1387,8 +1381,8 @@ function titleMailing(){
 
 function showFormMailing($target) {
 	
-	global $lang;
-		$db = new DB;
+	global $db,$lang;
+
 		$query = "select * from glpi_config where ID = 1";
 		$result = $db->query($query);
 		echo "<form action=\"$target\" method=\"post\">";
@@ -1495,8 +1489,7 @@ function showFormMailing($target) {
 
 function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users,$post_only_followup,$ocs_mode,$debug) {
 	
-	$db = new DB;
-	
+	global $db;	
 		$query = "update glpi_config set root_doc = '". $root_doc ."', ";
 		$query.= "event_loglevel = '". $event_loglevel ."', default_language = '". $default_language ."',";
 		$query.= "expire_events = '". $expire_events ."', permit_helpdesk='". $permit_helpdesk ."',";
@@ -1512,7 +1505,7 @@ function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpd
 
 function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max,$ajax_autocompletion,$dateformat,$view_id,$nextprev_item,$dp_limit) {
 	
-	$db = new DB;
+	global $db;
 	
 		$query = "update glpi_config SET ";
 		$query.= " num_of_events = '". $num_of_events ."',";
@@ -1531,7 +1524,7 @@ function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$pri
 
 function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition,$ldap_login,$field_name,$field_email,$field_location,$field_phone,$field_realname,$ldap_port,$ldap_use_tls) {
 	
-	$db = new DB;
+	global $db;
 	//TODO : test the remote LDAP connection
 		$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
 		$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
@@ -1543,7 +1536,7 @@ function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condit
 		$db->query($query);
 }
 function updateIMAP($imap_auth_server,$imap_host) {
-	$db = new DB;
+	global $db;
 	//TODO : test the remote IMAP connection
 		$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
 		$query.= "imap_host = '". $imap_host ."' where ID = '1'";
@@ -1551,7 +1544,7 @@ function updateIMAP($imap_auth_server,$imap_host) {
 }
 
 function updateCAS($cas_host,$cas_port,$cas_uri) {
-	$db = new DB;
+	global $db;
 	//TODO : test the remote IMAP connection
 		$query = "update glpi_config set cas_host = '". $cas_host ."', ";
 		$query.= "cas_uri = '". $cas_uri."',";
@@ -1561,7 +1554,7 @@ function updateCAS($cas_host,$cas_port,$cas_uri) {
 
 function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib,$mailing_resa_admin,$mailing_resa_all_admin,$mailing_resa_user,$url,$url_in_mail,$mailing_attrib_attrib,$mailing_update_admin,$mailing_update_all_admin,$mailing_update_all_normal,$mailing_update_attrib,$mailing_update_user) {
 
-	$db = new DB;
+	global $db;
 	$query = "update glpi_config set mailing = '". $mailing ."', ";
 	$query .= "admin_email = '". $admin_email ."', ";
 	$query .= "mailing_signature = '". $mailing_signature ."', ";
@@ -1598,7 +1591,7 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 }
 
 function checkNewVersionAvailable($auto=1){
-	global $lang,$cfg_install,$cfg_features;
+	global $db,$lang,$cfg_install,$cfg_features;
 
 	$do_check=1;
 	
@@ -1635,7 +1628,6 @@ function checkNewVersionAvailable($auto=1){
 				
 				// Auto store new relase
 				if ($auto){
-					$db=new DB;
 					$query="UPDATE glpi_config SET founded_new_version='".$latest_version."' WHERE ID='1'";
 					$db->query($query);
 					}
@@ -1645,7 +1637,6 @@ function checkNewVersionAvailable($auto=1){
 				
 				// Update last check
 				if ($auto){
-					$db=new DB;
 					$query="UPDATE glpi_config SET last_update_check='".date("Y-m-d")."' WHERE ID='1'";
 					$db->query($query);
 					}
@@ -1667,9 +1658,8 @@ function checkNewVersionAvailable($auto=1){
 **/
 function ocsUpdateDBConfig($input, $id) {
 	
-	global $phproot;
+	global $db,$phproot;
 	if(!empty($input["ocs_db_user"]) && !empty($input["ocs_db_host"])) {
-		$db = new DB;
 
 		if(empty($input["ocs_db_passwd"])) $input["ocs_db_passwd"] = "";
 
@@ -1696,8 +1686,7 @@ function ocsUpdateDBConfig($input, $id) {
 **/
 function ocsUpdateConfig($input, $id) {
 	
-	global $phproot;
-	$db = new DB;
+	global $db,$phproot;
 
 	$checksum=0;
 
@@ -1734,8 +1723,7 @@ function ocsUpdateConfig($input, $id) {
 function ocsFormDBConfig($target, $id) {
 
 
-	GLOBAL  $lang;
-	$db = new DB;
+	GLOBAL  $db,$dbocs,$lang;
 	$query = "select * from glpi_ocs_config where ID = '".$id."'";
 	$result = $db->query($query);
 	$data=$db->fetch_array($result);
@@ -1752,8 +1740,6 @@ function ocsFormDBConfig($target, $id) {
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_ocs\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 	echo "</form>";
 
-	$dbocs=new DBocs();
-	
 	echo "<div align='center'>";
 	if (!$dbocs->error){
 		echo $lang["ocsng"][18]."<br>";
@@ -1763,14 +1749,13 @@ function ocsFormDBConfig($target, $id) {
 		} else echo $lang["ocsng"][20]."</div>";
 	} else echo $lang["ocsng"][21]."</div>";
 	
-	
 }
 
 function ocsFormConfig($target, $id) {
 
 
-	GLOBAL  $lang;
-	$db = new DB;
+	GLOBAL  $db,$lang;
+
 	$query = "select * from glpi_ocs_config where ID = '".$id."'";
 	$result = $db->query($query);
 	$data=$db->fetch_array($result);

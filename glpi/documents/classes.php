@@ -43,7 +43,7 @@ class Document {
 	
 	function getfromDB ($ID) {
 
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_docs WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -61,7 +61,7 @@ class Document {
 	}
 	
 	function getEmpty () {
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_docs");
 	$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -72,7 +72,7 @@ class Document {
 	}
 
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_docs SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -83,7 +83,7 @@ class Document {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_docs SET ";
@@ -100,7 +100,7 @@ class Document {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_docs (";
@@ -132,16 +132,15 @@ class Document {
 
 	function isUsed($ID){
 	return true;
-	$db = new DB;		
+	global $db;
 	$query="SELECT * from glpi_doc_device where FK_doc = '$ID'";
 	$result = $db->query($query);
 	return ($db->numrows($result)>0);
 	}
 	
 	function deleteFromDB($ID,$force=0) {
-	global $cfg_install,$phproot,$lang;
+	global $db,$cfg_install,$phproot,$lang;
 	
-		$db = new DB;
 		$this->getFromDB($ID);	
 		if ($force==1||!$this->isUsed($ID)){
 			$query = "DELETE from glpi_docs WHERE ID = '$ID'";

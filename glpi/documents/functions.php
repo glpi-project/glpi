@@ -413,9 +413,9 @@ function restoreDocument($input) {
 
 
 function showDeviceDocument($instID,$search='') {
-	GLOBAL $cfg_layout,$cfg_install, $lang;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang;
 
-    $db = new DB;
+    
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
 
 	$result = $db->query($query);
@@ -458,9 +458,9 @@ function showDeviceDocument($instID,$search='') {
 }
 
 function addDeviceDocument($conID,$type,$ID,$template=0){
-
+global $db;
 if ($conID>0&&$ID>0&&$type>0){
-	$db = new DB;
+	
 	$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type ,is_template) VALUES ('$conID','$ID','$type','$template');";
 	$result = $db->query($query);
 }
@@ -468,7 +468,7 @@ if ($conID>0&&$ID>0&&$type>0){
 
 function deleteDeviceDocument($ID){
 
-$db = new DB;
+global $db;
 $query="DELETE FROM glpi_doc_device WHERE ID= '$ID';";
 $result = $db->query($query);
 }
@@ -477,9 +477,9 @@ $result = $db->query($query);
 // $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel;
 
-    $db = new DB;
+    
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
 	
 
@@ -554,7 +554,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 }
 
 function getDocumentLink($filename){
-global $HTMLRel,$cfg_install;	
+global $db,$HTMLRel,$cfg_install;	
 	if (empty($filename))
 		return "&nbsp;";
 	$out="";
@@ -564,7 +564,7 @@ global $HTMLRel,$cfg_install;
 	else $fileout=$filename;
 	if (strlen($fileout)>20) $fileout=substr($fileout,0,20)."...";
 	if (count($splitter)==2){
-		$db=new DB;
+		
 		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){

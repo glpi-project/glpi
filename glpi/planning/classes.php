@@ -43,7 +43,7 @@ class PlanningTracking{
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_tracking_planning WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
@@ -62,7 +62,7 @@ class PlanningTracking{
 
 	function getEmpty () {
 	//make an empty database object
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_tracking_planning");
 	$columns = $db->num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
@@ -73,7 +73,7 @@ class PlanningTracking{
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_tracking_planning SET ";
@@ -90,7 +90,7 @@ class PlanningTracking{
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_tracking_planning (";
@@ -121,7 +121,7 @@ class PlanningTracking{
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_tracking_planning WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
@@ -132,7 +132,7 @@ class PlanningTracking{
 	}
 	
 	function is_alreadyplanned(){
-		$db = new DB;
+		global $db;
 		if (!isset($this->fields["id_assign"])||empty($this->fields["id_assign"]))
 		return true;
 		

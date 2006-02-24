@@ -40,7 +40,6 @@ checkAuthentication("normal");
 
 
 
-$db = new DB;
 $query2="SELECT glpi_dropdown_locations.name as stage
 FROM glpi_dropdown_locations
 WHERE glpi_dropdown_locations.id=".$_POST["location"]."";

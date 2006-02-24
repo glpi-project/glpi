@@ -91,12 +91,11 @@ class Mailing
 	*/
 	function get_users_to_send_mail()
 	{
-		GLOBAL $cfg_mailing;
+		GLOBAL $db,$cfg_mailing;
 		
 		$emails=array();
 		$nb=0;
-		$db = new DB;
-		
+				
 		if (isset($cfg_mailing[$this->type]["admin"])&&$cfg_mailing[$this->type]["admin"]&&$this->is_valid_email($cfg_mailing["admin_email"])&&!in_array($cfg_mailing["admin_email"],$emails))
 		{
 			$emails[$nb]=$cfg_mailing["admin_email"];
@@ -360,11 +359,10 @@ class MailingResa{
 	*/
 	function get_users_to_send_mail()
 	{
-		GLOBAL $cfg_mailing;
+		GLOBAL $db,$cfg_mailing;
 		
 		$emails=array();
 		$nb=0;
-		$db = new DB;
 		
 		if ($cfg_mailing["resa"]["admin"]&&$this->is_valid_email($cfg_mailing["admin_email"])&&!in_array($cfg_mailing["admin_email"],$emails))
 		{

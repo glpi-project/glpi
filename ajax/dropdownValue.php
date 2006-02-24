@@ -42,7 +42,6 @@
 	checkAuthentication("post-only");
 
 	// Make a select box with preselected values
-	$db = new DB;
 
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
 

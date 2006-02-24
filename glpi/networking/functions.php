@@ -304,7 +304,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 
 function addNetdevice($input) {
 	// Add Netdevice, nasty hack until we get PHP4-array-functions
-	$db=new DB;
+	global $db;
 	$netdev = new Netdevice;
 
 	// dump the status
@@ -447,10 +447,9 @@ function restoreNetdevice($input) {
 
 function showPorts ($device,$device_type,$withtemplate='') {
 	
-	GLOBAL $cfg_layout,$cfg_install, $lang,$HTMLRel,$LINK_ID_TABLE;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang,$HTMLRel,$LINK_ID_TABLE;
 	
-	$db = new DB;
-	
+		
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
 	$query = "SELECT location from ".$device_real_table_name." where ID = ".$device."";
@@ -515,8 +514,8 @@ function showPorts ($device,$device_type,$withtemplate='') {
 }
 
 function showPortVLAN($ID,$withtemplate,$referer=''){
-global $HTMLRel,$lang;
-$db=new DB;
+global $db,$HTMLRel,$lang;
+
 
 echo "<table cellpadding='0' cellspacing='0'>";
 /*if ($withtemplate!=2){
@@ -540,7 +539,7 @@ echo "</table>";
 }
 
 function assignVlan($port,$vlan){
-$db=new DB;
+global $db;
 $query="INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('$port','$vlan')";
 $db->query($query);
 
@@ -553,7 +552,7 @@ if ($np->getContact($port)){
 }
 
 function unassignVlan($ID){
-$db=new DB;
+global $db;
 $query="DELETE FROM glpi_networking_vlan WHERE ID='$ID'";
 $db->query($query);
 }
@@ -781,9 +780,8 @@ function deleteNetport($input) {
 
 function showPortsAdd($ID,$devtype) {
 	
-	GLOBAL $cfg_layout, $cfg_install, $lang,$LINK_ID_TABLE;
-	$db = new DB;
-
+	GLOBAL $db,$cfg_layout, $cfg_install, $lang,$LINK_ID_TABLE;
+	
 	$device_real_table_name = $LINK_ID_TABLE[$devtype];
 
 	$query = "SELECT location from ".$device_real_table_name." where ID = ".$ID."";
@@ -860,9 +858,8 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
 function makeConnector($sport,$dport) {
 
-	GLOBAL $cfg_layout, $cfg_install, $lang;
+	GLOBAL $db,$cfg_layout, $cfg_install, $lang;
 	
-	$db = new DB;
 	// Get netpoint for $sport and $dport
 	$ps=new Netport;
 	$ps->getFromDB($sport);
@@ -951,7 +948,7 @@ function makeConnector($sport,$dport) {
 
 function removeConnector($ID) {
 
-	GLOBAL $cfg_layout, $cfg_install;
+	GLOBAL $db,$cfg_layout, $cfg_install;
 	
 	// Update to blank networking item
 	$nw=new Netwire;
@@ -971,7 +968,6 @@ function removeConnector($ID) {
 		$npnet=$ID;
 		$npdev=$ID2;
 		}
-	$db = new DB;
 	if ($npnet!=-1&&$npdev!=-1){
 		// Unset MAC and IP fron networking device
 		$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='' WHERE ID='$npnet'";	

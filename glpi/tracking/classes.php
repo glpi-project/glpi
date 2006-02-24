@@ -49,10 +49,12 @@ class Job {
 
 	function getfromDB ($ID,$purecontent) {
 
+		global $db;
+
 		$this->ID = $ID;
 
 		// Make new database object and fill variables
-		$db = new DB;
+		
 		$query = "SELECT * FROM glpi_tracking WHERE (ID = $ID)";
 
 		if ($result = $db->query($query)) 
@@ -81,7 +83,7 @@ class Job {
 	}
 
 	function numberOfFollowups($with_private=1){
-		$db=new DB();
+		global $db;
 		$RESTRICT="";
 		if ($with_private!=1) $RESTRICT = " AND private='0'";
 		// Set number of followups
@@ -93,7 +95,7 @@ class Job {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_tracking SET ";
@@ -109,7 +111,7 @@ class Job {
 
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_tracking (";
@@ -141,7 +143,7 @@ class Job {
 	function updateRealtime() {
 		// update Status of Job
 		
-		$db = new DB;
+		global $db;
 		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '".$this->ID."'";
 		if ($result = $db->query($query)) {
 				$query2="UPDATE glpi_tracking SET realtime='".$db->result($result,0,0)."' WHERE ID='".$this->ID."'";
@@ -155,8 +157,8 @@ class Job {
 
 	function textFollowups() {
 		// get the last followup for this job and give its contents as
-		GLOBAL $lang;
-		$db=new DB();
+		GLOBAL $db,$lang;
+		
 		if (isset($this->ID)){
 		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->ID."' AND private = '0' ORDER by date DESC";
 		$result=$db->query($query);
@@ -191,9 +193,9 @@ class Job {
 	}
 	
 	function textDescription(){
-		GLOBAL $lang;
+		GLOBAL $db,$lang;
 		
-		$db=new DB;
+		
 		$m= new CommonItem;
 		$name=$lang["help"][30];
 		$contact="";
@@ -234,8 +236,9 @@ class Job {
 	}
 	
 	function deleteInDB ($ID) {
+		global $db;
 		if ($ID!=""){
-			$db=new DB;
+			
 			$query2="delete from glpi_tracking where ID = '$ID'";
 			$query1="delete from glpi_followups where tracking = '$ID'";
 
@@ -268,11 +271,12 @@ class Followup {
 	var $updates	= array();
 
 	function getfromDB ($ID) {
+		global $db;
 
 		$this->ID = $ID;
 
 		// Make new database object and fill variables
-		$db = new DB;
+		
 		$query = "SELECT * FROM glpi_followups WHERE (ID = $ID)";
 
 		if ($result = $db->query($query)) 
@@ -290,12 +294,13 @@ class Followup {
 
 
 	function putInDB () {	
+		global $db;
 		// prepare variables
 
 		$this->fields["date"] = date("Y-m-d H:i:s");
 	
 		// dump into database
-		$db = new DB;
+		
 		$query = "INSERT INTO glpi_followups VALUES (NULL, ".$this->fields["tracking"].", '".$this->fields["date"]."','".$this->fields["author"]."', '".$this->contents."')";
 
 		if ($result = $db->query($query)) {
@@ -308,7 +313,7 @@ class Followup {
 
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_followups (";
@@ -347,7 +352,7 @@ class Followup {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 				
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_followups SET ";
@@ -373,8 +378,8 @@ class Followup {
 	}	
 	
 	function deleteInDB ($ID) {
+		global $db;
 		if ($ID!=""){
-			$db=new DB;
 			$query="delete from glpi_followups where ID = '$ID'";
 			$db->query($query);
 			$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '$ID'";

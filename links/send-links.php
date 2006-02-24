@@ -45,7 +45,6 @@ include ($phproot . "/glpi/includes_consumables.php");
 checkAuthentication("normal");
 
 if (isset($_GET["lID"])){
-	$db=new DB;
 	$query="SELECT glpi_links.ID as ID, glpi_links.name as name,glpi_links.data as data from glpi_links WHERE glpi_links.ID='".$_GET["lID"]."'";
 
 	$result=$db->query($query);

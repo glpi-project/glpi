@@ -109,9 +109,9 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$state){
 	// Lists Reservation Items
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_install, $cfg_layout, $cfg_features, $lang, $HTMLRel;
 
-		$db = new DB;
+		
 
 	// Build query
 	if($field=="all") {
@@ -245,6 +245,8 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 }
 
 function updateState($device_type,$id_device, $state,$template=0){
+global $db;
+
 $si=new StateItem;
 
 $where="";
@@ -252,7 +254,6 @@ if ($template==1)
 $where= " AND is_template='1'";
 
 $si->getFromDB($device_type,$id_device);
-$db=new DB;
 
 	if ($state!=$si->fields["state"])
 	if ($si->fields["state"]!=-1){
@@ -282,8 +283,7 @@ $db=new DB;
 }
 
 function showStateSummary($target){
-global $lang;
-$db=new DB;
+global $db,$lang;
 
 $query = "select glpi_dropdown_state.name as state, glpi_dropdown_state.ID as id_state, glpi_state_item.device_type as d_type, count(*) as cmp from glpi_state_item ";
 $query.= " LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID = glpi_state_item.state) ";

@@ -41,9 +41,8 @@ class ReservationItem{
 	var $updates	= array();
 	var $obj = NULL;	
 	function getfromDB ($ID) {
-
+		global $db;
 		// Make new database object and fill variables
-		$db = new DB;
 		$query = "SELECT * FROM glpi_reservation_item WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
@@ -179,7 +178,7 @@ class ReservationItem{
 	
 	function getEmpty () {
 		//make an empty database object
-		$db = new DB;
+		global $db;
 		$fields = $db->list_fields("glpi_reservation_item");
 		$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -190,7 +189,7 @@ class ReservationItem{
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_reservation_item SET ";
@@ -207,7 +206,7 @@ class ReservationItem{
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_reservation_item (";
@@ -238,7 +237,7 @@ class ReservationItem{
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_reservation_item WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
@@ -259,7 +258,7 @@ class ReservationResa{
 function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_reservation_resa WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
@@ -277,7 +276,7 @@ function getfromDB ($ID) {
 
 function getEmpty () {
 	//make an empty database object
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_reservation_resa");
 	$columns = $db->num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
@@ -288,7 +287,7 @@ function getEmpty () {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_reservation_resa SET ";
@@ -305,7 +304,7 @@ function getEmpty () {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_reservation_resa (";
@@ -336,7 +335,7 @@ function getEmpty () {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_reservation_resa WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {
@@ -347,7 +346,7 @@ function getEmpty () {
 	}
 	
 	function is_reserved(){
-		$db = new DB;
+		global $db;
 		if (!isset($this->fields["id_item"])||empty($this->fields["id_item"]))
 		return true;
 		

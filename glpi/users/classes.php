@@ -60,7 +60,7 @@ class User {
 }
 	
 	function getFromDB($name) {
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
 		if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=1) return false;
@@ -84,7 +84,7 @@ class User {
 	}
 
 	function getFromDBbyID($ID) {
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_users WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=1) return false;
@@ -103,7 +103,7 @@ class User {
 	
 	function getEmpty () {
 	//make an empty database object
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_users");
 	$columns = $db->num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
@@ -116,7 +116,7 @@ class User {
 	//
 	function getFromLDAP($host,$port,$basedn,$adm,$pass,$fields,$name)
 	{
-		global $cfg_login;
+		global $db,$cfg_login;
 		// we prevent some delay..
 		if (empty($host)) {
 			return false;
@@ -167,7 +167,7 @@ class User {
 			
 			// Is location get from LDAP ?
 			if (!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
-				$db=new DB;
+				
 				$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
 				$result=$db->query($query);
 				if ($db->numrows($result)==0){
@@ -187,6 +187,7 @@ class User {
 	//
 	function getFromLDAP_active_directory($host,$port,$basedn,$adm,$pass,$fields,$name)
 	{
+		global $db;
 		// we prevent some delay..
 		if (empty($host)) {
 			unset($user->fields["password"]);
@@ -248,7 +249,7 @@ class User {
 
 				// Is location get from LDAP ?
 				if (!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
-					$db=new DB;
+					
 					$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
 					$result=$db->query($query);
 					if ($db->numrows($result)==0){
@@ -291,7 +292,7 @@ class User {
 	
 	function addToDB($ext_auth=0) {
 		
-		$db = new DB;
+		global $db;
 
 		
 		// Build query
@@ -345,7 +346,7 @@ class User {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_users SET ";
 			$query .= $updates[$i];
@@ -367,8 +368,9 @@ class User {
 	}
 	
 	function blankPassword () {
+		global $db;
 		if (!empty($this->fields["name"])){
-		$db = new DB;
+		
 		$query  = "UPDATE glpi_users SET password='' , password_md5='' WHERE name='".$this->fields["name"]."'";	
 		$db->query($query);
 		}
@@ -376,7 +378,7 @@ class User {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_users WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {

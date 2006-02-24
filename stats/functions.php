@@ -49,7 +49,7 @@ function is_dropdown_stat($postfromselect) {
 //it contains the distinct users witch have any intervention assigned to.
 function getNbIntervTech($date1,$date2)
 {
-	$db = new DB;
+	global $db;
 	$query = "SELECT distinct glpi_tracking.assign as assign, glpi_users.name as name, glpi_users.realname as realname";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_tracking.assign) ";
@@ -75,7 +75,7 @@ function getNbIntervTech($date1,$date2)
 //it contains the distinct users witch have any intervention assigned to.
 function getNbIntervEnterprise($date1,$date2)
 {
-	$db = new DB;
+	global $db;
 	$query = "SELECT distinct glpi_tracking.assign_ent as assign_ent, glpi_enterprises.name as name";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_enterprises  ON (glpi_enterprises.ID=glpi_tracking.assign_ent) ";
@@ -102,7 +102,7 @@ function getNbIntervEnterprise($date1,$date2)
 //it contains the distinct location where there is/was an intervention
 function getNbIntervDropdown($dropdown)
 {
-	$db = new DB;
+	global $db;
 	$query = "SELECT * from ". $dropdown ." order by name";
 	
 	$result = $db->query($query);
@@ -123,7 +123,7 @@ function getNbIntervDropdown($dropdown)
 //it contains the distinct authors of interventions.
 function getNbIntervAuthor($date1,$date2)
 {	
-	$db = new DB;
+	global $db;
 	$query = "SELECT DISTINCT glpi_tracking.author as ID, glpi_users.name as name, glpi_users.realname as realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)";
 	$query.= " WHERE '1'='1' ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
@@ -147,7 +147,7 @@ function getNbIntervAuthor($date1,$date2)
 //it contains the distinct priority of interventions.
 function getNbIntervPriority()
 {	
-	$db = new DB;
+	global $db;
 	$query = "SELECT DISTINCT priority FROM glpi_tracking order by priority";
 	$result = $db->query($query);
 
@@ -169,7 +169,7 @@ function getNbIntervPriority()
 //it contains the distinct category of interventions.
 function getNbIntervCategory()
 {	
-	$db = new DB;
+	global $db;
 	$query = "SELECT id as ID, name as category FROM glpi_dropdown_tracking_category order by name";
 	$result = $db->query($query);
 
@@ -196,8 +196,9 @@ function getNbIntervCategory()
 //common usage in query  "where $chps = '$value'";
 function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
+	global $db;
 	$dropdowns = array ("location", "type", "os","model");
-	$db = new DB;
+	
 	if($quoi == 1) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
 		if(!empty($chps) && (!empty($value) || $value==0)) {
@@ -247,7 +248,7 @@ function getNbInter($quoi, $chps, $value, $date1 = '', $date2 = '')
 //common usage in query  "where $chps = '$value'";
 function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 {
-	$db = new DB;
+	global $db;
 	$dropdowns = array ("location", "type", "os","model");
 	if($quoi == 1) {
 		$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
@@ -304,8 +305,9 @@ function getNbResol($quoi, $chps, $value, $date1 = '', $date2= '')
 //common usage in query  "where $chps = '$value'";
 function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
+	global $db;
 	$dropdowns = array ("location", "type", "os","model");
-	$db = new DB;
+	
 	if($quoi == 1) {
 	if(!empty($chps) && (!empty($value) || $value==0)) {
 			if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
@@ -370,7 +372,7 @@ function getResolAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 //common usage in query  "where $chps = '$value'";
 function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
-	$db = new DB;
+	global $db;
 	$dropdowns = array ("location", "type", "os","model");
 	if($quoi == 1) {
 			
@@ -436,7 +438,7 @@ function getRealAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 //common usage in query  "where $chps = '$value'";
 function getRealTotal($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
-	$db = new DB;
+	global $db;
 	$dropdowns = array ("location", "type", "os","model");
 	if($quoi == 1) {
 			
@@ -531,7 +533,7 @@ function toTimeStr($sec)
 //$quoi == 3 it return the number for current mounth
 function getResolMax($quoi)
 {
-	$db = new DB;
+	global $db;
 	if($quoi == 1) {
 		$query = "select MAX(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')";	
 	}
@@ -553,7 +555,7 @@ function getResolMax($quoi)
 //$quoi == 3 it return the number for current mounth
 function getRealResolMax($quoi)
 {
-	$db = new DB;
+	global $db;
 	if($quoi == 1) {
 		$query = "select MAX(glpi_tracking.realtime) as total from glpi_tracking where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')";	
 	}
@@ -576,7 +578,7 @@ function getRealResolMax($quoi)
 //$quoi == 3 it return the number for current mounth
 function getFirstActionMin($quoi)
 {
-	$db = new DB;
+	global $db;
 	if($quoi == 1) {
 		$query = "select MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00'";	
 	}
@@ -605,7 +607,7 @@ function getFirstActionMin($quoi)
 //common usage in query  "where $chps = '$value'";
 function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 {
-	$db = new DB;
+	global $db;
 	$dropdowns = array ("location", "type", "os","model");
 	if($quoi == 1) {
 			
@@ -668,7 +670,7 @@ function getFirstActionAvg($quoi, $chps, $value, $date1 = '', $date2 = '')
 }
 
 function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value2=""){
-	$db=new DB();
+	global $db;
 
 if (empty($end)) $end=date("Y-m-d");
 $end.=" 23:59:59";
@@ -838,9 +840,8 @@ return $entrees;
 // $type = "month" or "year"
 function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 
-	global $HTMLRel,$lang;
+	global $db,$HTMLRel,$lang;
 	
-		$db =new DB();
 		$total="";
 		if ($showtotal==1) $total=array_sum($entrees);
 		

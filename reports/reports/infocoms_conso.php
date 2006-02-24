@@ -80,9 +80,7 @@ $valeurgraphtot=array();
 
 
 function display_infocoms_report($device_type,$begin,$end){
-	global $valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$lang,$cfg_install;
-
-	$db=new DB;
+	global $db,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$lang,$cfg_install;
 
 	$query="SELECT * FROM glpi_infocoms WHERE device_type='".$device_type."'";
 

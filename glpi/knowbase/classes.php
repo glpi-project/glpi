@@ -43,7 +43,7 @@ class kbitem{
 function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_kbitems WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			$data = $db->fetch_array($result);
@@ -59,7 +59,7 @@ function getfromDB ($ID) {
 
 function getEmpty () {
 	//make an empty database object
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_kbitems");
 	$columns = $db->num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
@@ -70,7 +70,7 @@ function getEmpty () {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_kbitems SET ";
@@ -89,7 +89,7 @@ function getEmpty () {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_kbitems (";
@@ -120,7 +120,7 @@ function getEmpty () {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_kbitems WHERE ID = '$ID'";
 		if ($result = $db->query($query)) {

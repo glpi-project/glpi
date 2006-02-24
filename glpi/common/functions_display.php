@@ -603,9 +603,7 @@ echo "<div id='footer'><div align='right'>";
 */
 function printHelpDesk ($name,$from_helpdesk) {
 
-	GLOBAL $cfg_layout,$cfg_install,$lang,$cfg_features;
-
-	$db = new DB;
+	GLOBAL $db,$cfg_layout,$cfg_install,$lang,$cfg_features;
 
 	$query = "SELECT email,realname,name FROM glpi_users WHERE (name = '$name')";
 	$result=$db->query($query);

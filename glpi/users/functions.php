@@ -354,10 +354,8 @@ function deleteUser($input) {
 function showFormAssign($target)
 {
 
-	GLOBAL $cfg_layout,$cfg_install, $lang, $IRMName;
+	GLOBAL $db,$cfg_layout,$cfg_install, $lang, $IRMName;
 	
-	$db = new DB;
-
 	$query = "SELECT name FROM glpi_users where name <> 'Helpdesk' and name <> '".$_SESSION["glpiname"]."' ORDER BY type DESC";
 	
 	if ($result = $db->query($query)) {
@@ -394,7 +392,7 @@ echo "</table></div>";}
 }
 function updateSort($input) {
 
-	$db = new DB;
+	global $db;
 
 	$query = "UPDATE glpi_users SET tracking_order = '".$input["tracking_order"]."' WHERE (ID = '".$_SESSION["glpiID"]."')";
 	if ($result=$db->query($query)) {
@@ -433,7 +431,7 @@ function showLangSelect($target) {
 
 function updateLanguage($input) {
 	
-	$db = new DB;
+	global $db;
 	$query = "UPDATE glpi_users SET language = '".$input["language"]."' WHERE (ID = '".$_SESSION["glpiID"]."')";
 	if ($result=$db->query($query)) {
 		$_SESSION["glpilanguage"] = $input["language"];

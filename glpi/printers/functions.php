@@ -385,7 +385,7 @@ function updatePrinter($input,$dohistory=1) {
 
 function addPrinter($input) {
 	// Add Printer, nasty hack until we get PHP4-array-functions
-	$db=new DB;
+	global $db;
 	$printer = new Printer;
 	
 	// dump status

@@ -101,7 +101,6 @@ if(isset($_POST["send"]))
 	echo " </tr>";
 	
 
-	$db = new DB;
 	$query = "select name,ID,contact, serial, otherserial from glpi_computers where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $db->query($query);
 	while($ligne = $db->fetch_array($result))

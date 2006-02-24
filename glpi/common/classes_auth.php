@@ -67,7 +67,7 @@ class Identification
 	*
 	*/
 	function userExists($name){
-		$db = new DB;
+		global $db;
 
 		$query = "SELECT * from glpi_users WHERE name='$name'";
 		$result=$db->query($query);
@@ -415,7 +415,7 @@ global $cfg_login;
 	//with an eventual error message
 	function connection_db($name,$password)
 	{
-
+		global $db;
 		// sanity check... we prevent empty passwords...
 		//
 		if ( empty($password) )
@@ -424,7 +424,7 @@ global $cfg_login;
 			return false;
 		}
 		
-		$db = new DB;
+		
 		$query = "SELECT password, password_md5 from glpi_users where (name = '".$name."')";
 		$result = $db->query($query);
 		if (!$result){

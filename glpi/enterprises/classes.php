@@ -43,7 +43,7 @@ class Enterprise {
 	
 	function getfromDB ($ID) {
 
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_enterprises WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -60,7 +60,7 @@ class Enterprise {
 	}
 	
 	function getEmpty () {
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_enterprises");
 	$columns = $db->num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
@@ -71,7 +71,7 @@ class Enterprise {
 	}
 
 	function countContacts() {
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_contact_enterprise WHERE (FK_enterprise = '".$this->fields["ID"]."')";
 		if ($result = $db->query($query)) {
 			$number = $db->numrows($result);
@@ -82,7 +82,7 @@ class Enterprise {
 	}
 	function isUsed() {
 		return true;
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_contact_enterprise WHERE (FK_enterprise = '".$this->fields["ID"]."')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)>0) return true;
@@ -108,7 +108,7 @@ class Enterprise {
 	}
 
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_enterprises SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -119,7 +119,7 @@ class Enterprise {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_enterprises SET ";
@@ -136,7 +136,7 @@ class Enterprise {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_enterprises (";
@@ -168,7 +168,7 @@ class Enterprise {
 
 	function deleteFromDB($ID,$force=0) {
 
-		$db = new DB;
+		global $db;
 
 		$this->getFromDB($ID);		
 		if ($force==1||!$this->isUsed()){

@@ -288,7 +288,7 @@ function getAmortTypeName($value){
 
 function dropdownInfocoms($name){
 
-	$db=new DB;
+	global $db;
 	$query="SELECT glpi_infocoms.buy_date as buy_date, glpi_infocoms.ID as ID, glpi_enterprises.name as name ";
 	$query.= " from glpi_infocoms LEFT JOIN glpi_enterprises ON glpi_infocoms.FK_enterprise = glpi_enterprises.ID ";
 	$query.= " WHERE glpi_infocoms.deleted = 'N' order by glpi_infocoms.buy_date DESC";
@@ -617,11 +617,12 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 function showTco($item_type,$item,$value,$date_achat=""){
 	// Affiche le TCO ou le TCO mensuel pour un matériel 
 	//		
+			global $db;
 			$totalcost=0;
 		
 			$query="SELECT * FROM glpi_tracking WHERE (status = 'old_done') and (device_type = '$item_type' and computer = '$item')";
 	
-			$db = new DB;
+			
 			$result = $db->query($query);
 	
 			$i = 0;
@@ -686,8 +687,8 @@ return " OR glpi_infocoms.num_immo LIKE '%".$contains."%' OR glpi_infocoms.num_c
 }
 
 function showDisplayInfocomLink($device_type,$device_id,$update=0){
-global $HTMLRel,$lang;
-$db=new DB;
+global $db,$HTMLRel,$lang;
+
 $query="SELECT COUNT(ID) FROM glpi_infocoms WHERE FK_device='$device_id' AND device_type='$device_type'";
 $add="add";
 $text=$lang["buttons"][8];

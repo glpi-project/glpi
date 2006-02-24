@@ -44,8 +44,6 @@ include ($phproot . "/glpi/includes_software.php");
 checkAuthentication("normal");
 commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
-$db = new DB;
-
 # Title
 
 echo "<div align='center'><big><b>GLPI ".$lang["Menu"][6]."</b></big><br><br>";

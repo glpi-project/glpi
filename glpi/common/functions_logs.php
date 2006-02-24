@@ -46,9 +46,8 @@
 **/
 function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',$device_internal_action='0') {
 
-		
+		global $db;
 
-		$db = new DB;
 		$date_mod=date("Y-m-d H:i:s");
 				
 		if(!empty($changes)){
@@ -125,13 +124,11 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 **/
 function showHistory($device_type,$id_device){
 
-	global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot,$lang;	
+	global $db,$SEARCH_OPTION, $LINK_ID_TABLE,$phproot,$lang;	
 
 	// n�essaire pour avoir les $search_option
 	include_once ($phproot . "/glpi/includes_search.php");
 
-	$db = new DB;
-	
 	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."' ORDER BY  ID DESC;";
 
 	//echo $query;
@@ -229,9 +226,8 @@ function showHistory($device_type,$id_device){
 function logEvent ($item, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 
-	GLOBAL $cfg_features, $lang;
+	GLOBAL $db,$cfg_features, $lang;
 	if ($level <= $cfg_features["event_loglevel"]) { 
-		$db = new DB;	
 		 $query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', NOW(), '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 
 		$result = $db->query($query);    
@@ -300,12 +296,9 @@ return array($logItemtype,$logService);
 function showAddEvents($target,$order,$sort,$user="") {
 	// Show events from $result in table form
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 
 	list($logItemtype,$logService)=logArray();
-
-	// new database object
-	$db = new DB;
 
 	// define default sorting
 	
@@ -418,12 +411,10 @@ function showAddEvents($target,$order,$sort,$user="") {
 function showEvents($target,$order,$sort,$start=0) {
 	// Show events from $result in table form
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 
 	 list($logItemtype,$logService)=logArray();
 	
-	// new database object
-	$db = new DB;
 
 	// define default sorting
 	

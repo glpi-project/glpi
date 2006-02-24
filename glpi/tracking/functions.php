@@ -132,7 +132,7 @@ function getTrackingPrefs ($ID) {
 	// Returns users preference settings for job tracking
 	// Currently only supports sort order
 
-	$db = new DB;
+	global $db;
 	$query = "SELECT tracking_order FROM glpi_users WHERE (ID = '$ID')";
 	$result = $db->query($query);
 	if ($result&&$db->numrows($result)==1)
@@ -157,7 +157,7 @@ function showCentralJobList($target,$start,$status="process") {
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 		
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
@@ -176,7 +176,6 @@ function showCentralJobList($target,$start,$status="process") {
 
 	$lim_query = " LIMIT ".$start.",".$cfg_features["list_limit"]."";	
 
-	$db = new DB;
 	$result = $db->query($query);
 	$numrows = $db->numrows($result);
 
@@ -217,13 +216,13 @@ function showCentralJobList($target,$start,$status="process") {
 function showCentralJobCount(){
 // show a tab with count of jobs in the central and give link	
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang, $HTMLRel;
 		
 	
 	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking GROUP BY status";
 	
 
-	$db = new DB;
+	
 	$result = $db->query($query);
 	
 	
@@ -266,7 +265,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 	// affiche toutes les vielles intervention pour un $item donn� 
 
 
-	GLOBAL $cfg_layout, $cfg_install, $lang,$HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install, $lang,$HTMLRel;
 		
 	// Form to delete old item
 	if (isAdmin($_SESSION["glpitype"])){
@@ -282,7 +281,6 @@ $where = "(status = 'old_done' OR status = 'old_notdone')";
 $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".$prefs["order"]."";
 	
 
-	$db = new DB;
 	$result = $db->query($query);
 
 	$i = 0;
@@ -342,14 +340,14 @@ function showJobListForItem($username,$item_type,$item) {
 	// $item is required
 	//affiche toutes les vielles intervention pour un $item donn� 
 
-	GLOBAL $cfg_layout, $cfg_install, $lang;
+	GLOBAL $db,$cfg_layout, $cfg_install, $lang;
 		
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 	
 $where = "(status = 'new' OR status= 'assign' OR status='plan')";	
 $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".$prefs["order"]."";
 
-	$db = new DB;
+	
 	$result = $db->query($query);
 
 	$i = 0;
@@ -1021,13 +1019,13 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	GLOBAL $cfg_layout, $cfg_install, $cfg_features, $lang,$cfg_devices_tables,$HTMLRel;
+	GLOBAL $db,$cfg_layout, $cfg_install, $cfg_features, $lang,$cfg_devices_tables,$HTMLRel;
 		
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	
-	$db=new DB;
+	
 	// Reduce computer list
 	if ($computers_search){
 	// Build query
@@ -1239,10 +1237,10 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 function showFollowupsShort($ID) {
 	// Print Followups for a job
 
-	GLOBAL $cfg_install, $cfg_layout, $cfg_features, $lang;
+	GLOBAL $db,$cfg_install, $cfg_layout, $cfg_features, $lang;
 
 	// Get Number of Followups
-	$db=new DB;
+	
 	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' ORDER BY date DESC";
 	$result=$db->query($query);
 	
@@ -1663,9 +1661,9 @@ function deleteFollowup($input) {
 
 
 function showJobDetails ($ID){
-	global $cfg_install,$cfg_features,$lang,$HTMLRel;
+	global $db,$cfg_install,$cfg_features,$lang,$HTMLRel;
 	$job=new Job();
-	$db=new DB();
+	
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	
 	if ($job->getfromDB($ID,1)) {
@@ -1943,8 +1941,8 @@ echo "</div>";
 }
 
 function showFollowupsSummary($tID){
-	global $lang,$cfg_install,$HTMLRel;
-	$db=new DB();
+	global $db,$lang,$cfg_install,$HTMLRel;
+	
 
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	// Display existing Followups
@@ -2043,8 +2041,8 @@ function showFollowupsSummary($tID){
 
 // Formulaire d'ajout de followup
 function showAddFollowupForm($tID){
-	global $lang,$cfg_install,$HTMLRel;
-	$db=new DB();
+	global $db,$lang,$cfg_install,$HTMLRel;
+	
 
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	if ($isadmin){
@@ -2156,8 +2154,8 @@ function showAddFollowupForm($tID){
 
 // Formulaire d'ajout de followup
 function showUpdateFollowupForm($ID){
-	global $lang,$cfg_install,$HTMLRel;
-	$db=new DB();
+	global $db,$lang,$cfg_install,$HTMLRel;
+	
 
 	$isadmin=isAdmin($_SESSION['glpitype']);
 

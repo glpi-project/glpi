@@ -396,6 +396,7 @@ function convDateTime($time) {
 * @return nothing
 */
 function sendFile($file,$filename){
+	global $db;
 
         // Test sécurité
 	if (ereg("\.\.",$file)){
@@ -408,7 +409,6 @@ function sendFile($file,$filename){
 	echo "Error file $file does not exist";
 	return;
 	} else {
-		$db = new DB;
 		$splitter=split("/",$file);
 		$filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
 		$query="SELECT mime from glpi_docs WHERE filename LIKE '$filedb'";
@@ -532,7 +532,7 @@ return $p[0].":".$p[1];
 */
 function optimize_tables (){
 	
-$db = new DB;
+	global $db;
 $result=$db->list_tables();
 	while ($line = $db->fetch_array($result))
    	{

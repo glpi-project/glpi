@@ -42,7 +42,6 @@
 	checkAuthentication("post-only");
 
 	// Make a select box
-	$db = new DB;
 
 
 if (isset($LINK_ID_TABLE[$_POST["idtable"]])){

@@ -47,7 +47,7 @@ class Software {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_software WHERE (ID = '$ID')";
 		
 		if ($result = $db->query($query)) {
@@ -65,7 +65,7 @@ class Software {
 	}
 	
 function getEmpty () {
-	$db = new DB;
+	global $db;
 	$fields = $db->list_fields("glpi_software");
 	$columns = $db->num_fields($fields);
 	for ($i = 0; $i < $columns; $i++) {
@@ -76,7 +76,7 @@ function getEmpty () {
 }
 
 	function countInstallations() {
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_inst_software WHERE (sID = ".$this->fields["ID"].")";
 		if ($result = $db->query($query)) {
 			$number = $db->numrows($result);
@@ -88,7 +88,7 @@ function getEmpty () {
 	
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_software SET ";
@@ -104,7 +104,7 @@ function getEmpty () {
 	}
 	
 	function restoreInDB($ID) {
-		$db = new DB;
+		global $db;
 		$query = "UPDATE glpi_software SET deleted='N' WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			return true;
@@ -115,7 +115,7 @@ function getEmpty () {
 
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_software (";
@@ -146,7 +146,7 @@ function getEmpty () {
 	}
 	function isUsed($ID){
 	return true;
-	$db = new DB;		
+	global $db;
 	
 	$query="SELECT * from glpi_tracking where computer = '$ID' AND device_type='".SOFTWARE_TYPE."'";
 	$result = $db->query($query);
@@ -156,7 +156,7 @@ function getEmpty () {
 
 	function deleteFromDB($ID,$force=0) {
 
-		$db = new DB;
+		global $db;
 		
 		if ($force==1||(getInstalledLicence($ID)==0&&!$this->isUsed($ID))){
 			$query = "DELETE from glpi_software WHERE ID = '$ID'";
@@ -212,7 +212,7 @@ class License {
 	function getfromDB ($ID) {
 
 		// Make new database object and fill variables
-		$db = new DB;
+		global $db;
 		$query = "SELECT * FROM glpi_licenses WHERE (ID = '$ID')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
@@ -231,7 +231,7 @@ class License {
 
 	function updateInDB($updates)  {
 
-		$db = new DB;
+		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE glpi_licenses SET ";
@@ -253,7 +253,7 @@ class License {
 	
 	function addToDB() {
 		
-		$db = new DB;
+		global $db;
 
 		// Build query
 		$query = "INSERT INTO glpi_licenses (";
@@ -286,7 +286,7 @@ class License {
 
 	function deleteFromDB($ID) {
 
-		$db = new DB;
+		global $db;
 
 		$query = "DELETE from glpi_licenses WHERE ID = '$ID'";
 		

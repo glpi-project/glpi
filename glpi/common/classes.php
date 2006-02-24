@@ -78,6 +78,7 @@ class DBmysql {
 	function query($query) {
 		global $cfg_debug,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
 		
+		
 		if ($cfg_debug["active"]) {
 			if ($cfg_debug["sql"]){		
 				$SQL_TOTAL_REQUEST++;
@@ -90,7 +91,11 @@ class DBmysql {
 			}
 		}
 
-		$res=mysql_query($query);
+		$res=mysql_query($query,$this->dbh);
+		if (!$res) {
+			$this->DBmysql();
+			$res=mysql_query($query,$this->dbh);
+		}
 
 		if ($cfg_debug["active"]) {
 			if ($cfg_debug["profile"]&&$cfg_debug["sql"]){		
@@ -165,7 +170,7 @@ class DBmysql {
 	* @return item ID
 	*/
 	function insert_id() {
- 		return mysql_insert_id();
+ 		return mysql_insert_id($this->dbh);
  	}
 	/**
 	* Give number of fields of a Mysql result
@@ -190,25 +195,25 @@ class DBmysql {
 		return mysql_field_flags($result,$field);
 	}
 	function list_tables() {
-		return mysql_list_tables($this->dbdefault);
+		return mysql_list_tables($this->dbdefault,$this->dbh);
 	}
 	function table_name($result,$nb) {
 		return mysql_tablename($result,$nb);
 	}
 	function list_fields($table) {
-		return mysql_list_fields($this->dbdefault,$table);
+		return mysql_list_fields($this->dbdefault,$table,$this->dbh);
 	}
 	function affected_rows() {
 		return mysql_affected_rows($this->dbh);
 	}
 	function errno()
 	{
-		return mysql_errno();
+		return mysql_errno($this->dbh);
 	}
 
 	function error()
 	{
-		return mysql_error();
+		return mysql_error($this->dbh);
 	}
 	function close()
 	{

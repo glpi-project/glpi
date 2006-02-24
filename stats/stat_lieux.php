@@ -120,7 +120,7 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 		//for each location displays
 		for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_features["list_limit"]);$i++){
 			$query="SELECT count(*) FROM glpi_computers WHERE $champ='".$type[$i]["ID"]."'";
-			$db=new DB;
+
 			if ($result=$db->query($query))
 				$count=$db->result($result,0,0);
 			else $count=0; 

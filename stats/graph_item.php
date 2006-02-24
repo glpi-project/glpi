@@ -179,7 +179,6 @@ case "device":
 	$next=getNextItem($device_table,$_GET["ID"]);
 	$prev=getPreviousItem($device_table,$_GET["ID"]);
 	
-	$db=new DB();
 	$query = "select  designation from ".$device_table." WHERE ID='".$_GET['ID']."'";
 	$result=$db->query($query);
 	

@@ -333,7 +333,7 @@ function updatePeripheral($input,$dohistory=1) {
 
 function addPeripheral($input) {
 	// Add Peripheral, nasty hack until we get PHP4-array-functions
-	$db=new DB;
+	global $db;
 	$mon = new Peripheral;
 
 	$oldID=$input["ID"];
