@@ -1517,8 +1517,6 @@ function updateTracking($input){
 		$mail_send++;
 	}
 
-	$job->updateRealtime();		
-	
 	// Clean content to mail
 	$job->fields["contents"]=stripslashes($job->fields["contents"]);
 
@@ -1587,7 +1585,7 @@ function addFollowup($input,$type="followup"){
 	$close=0;
 	unset($input["add"]);
 
-	if ($isadmin){
+	if ($isadmin&&$type!="update"){
 		if (isset($input['plan'])){
 		$plan=$input['plan'];
 		unset($input['plan']);
@@ -1615,7 +1613,7 @@ function addFollowup($input,$type="followup"){
 	$job=new Job;
 	$job->getFromDB($input["tracking"],0);
 
-	if ($isadmin){
+	if ($isadmin&&$type!="update"){
 		if (isset($plan)){
 			$plan['id_followup']=$newID;
 			$plan['id_tracking']=$input['tracking'];
