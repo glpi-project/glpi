@@ -125,7 +125,7 @@ if (!isset($_SESSION["glpisearchcount2"][$type])) $_SESSION["glpisearchcount2"][
 *
 **/
 function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link="",$distinct="Y",$link2="",$contains2="",$field2="",$type2=""){
-	global $lang,$HTMLRel,$SEARCH_OPTION,$cfg_glpi,$LINK_ID_TABLE,$deleted_tables;
+	global $lang,$HTMLRel,$SEARCH_OPTION,$cfg_glpi,$LINK_ID_TABLE;
 	$options=$SEARCH_OPTION[$type];
 
 
@@ -315,7 +315,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	// Display deleted selection
 	echo "<td>";
 //	echo "<table>";
-	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
+	if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["deleted_tables"])){
 		//echo "<tr><td>";
 		echo "<select name='deleted'>";
 		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">".$lang["choice"][1]."</option>";
@@ -372,7 +372,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 *
 **/
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
-	global $db,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_glpi,$deleted_tables,$template_tables,$lang,$cfg_glpi;
+	global $db,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_glpi,$lang;
 
 	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor");
@@ -459,13 +459,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// default string
 	$WHERE = " WHERE ";
 	// Add deleted if item have it
-	if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
+	if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["deleted_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
 	}
 	// Remove template items
-	if (in_array($LINK_ID_TABLE[$type],$template_tables)){
+	if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["template_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".is_template='0' ";
@@ -686,12 +686,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$query_num="SELECT count(ID) FROM ".$LINK_ID_TABLE[$type];
 	
 		$first=true;
-		if (in_array($LINK_ID_TABLE[$type],$deleted_tables)){
+		if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["deleted_tables"])){
 			$LINK= " AND " ;
 			if ($first) {$LINK=" WHERE ";$first=false;}
 			$query_num.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
 		}
-		if (in_array($LINK_ID_TABLE[$type],$template_tables)){
+		if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["template_tables"])){
 			$LINK= " AND " ;
 			if ($first) {$LINK=" WHERE ";$first=false;}
 			$query_num.= $LINK.$LINK_ID_TABLE[$type].".is_template='0' ";

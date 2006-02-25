@@ -185,15 +185,15 @@ if ($table=="glpi_enterprises")
 function dropdownNoValue($table,$myname,$value) {
 	// Make a select box without parameters value
 
-	global $db,$deleted_tables,$template_tables,$dropdowntree_tables;
+	global $db,$cfg_glpi;
 
 	$where="";
-	if (in_array($table,$deleted_tables))
+	if (in_array($table,$cfg_glpi["deleted_tables"]))
 		$where="WHERE deleted='N'";
-	if (in_array($table,$template_tables))
+	if (in_array($table,$cfg_glpi["template_tables"]))
 		$where.="AND is_template='0'";
 		
-	if (in_array($table,$dropdowntree_tables))
+	if (in_array($table,$cfg_glpi["dropdowntree_tables"]))
 		$query = "SELECT ID FROM $table $where ORDER BY completename";
 	else $query = "SELECT ID FROM $table $where ORDER BY name";
 	$result = $db->query($query);
@@ -384,9 +384,9 @@ function dropdownUsersID($myname,$value) {
 * @return string the value of the dropdown or &nbsp; if not exists
 */
 function getDropdownName($table,$id,$withcomments=0) {
-	global $db,$cfg_glpi,$dropdowntree_tables;
+	global $db,$cfg_glpi;
 	
-	if (in_array($table,$dropdowntree_tables)){
+	if (in_array($table,$cfg_glpi["dropdowntree_tables"])){
 		return getTreeValueCompleteName($table,$id,$withcomments);
 
 	} else	{
