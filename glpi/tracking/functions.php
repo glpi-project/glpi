@@ -692,8 +692,8 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		$input=array();
 		$input["name"]=$lang["tracking"][24]." $tID";
 		
-		$docID=addDocument($input);
-		addDeviceDocument($docID,TRACKING_TYPE,$tID);
+		if ($docID=addDocument($input,1))
+			addDeviceDocument($docID,TRACKING_TYPE,$tID);
 		}
 		
 		
@@ -1383,8 +1383,9 @@ function updateTracking($input){
 	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input2=array();
 		$input2["name"]=$lang["tracking"][24]." ".$input["ID"];
-		$docID=addDocument($input2);
-		addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
+		if ($docID=addDocument($input2,1)){
+			addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
+			}
 	}
 		
 	// Old values for add followup in change
@@ -1910,7 +1911,7 @@ function showJobDetails ($ID){
 					echo "<tr><td>";
 					$con->getFromDB($data["FK_doc"]);
 					echo getDocumentLink($con->fields["filename"]);
-					echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&amp;ID=".$data["ID"]."'></td><td><img src='".$HTMLRel."pics/delete.png'></a>";
+					echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
 					echo "</td></tr>";
 					//$i++;
 				}
