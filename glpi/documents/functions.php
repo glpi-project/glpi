@@ -367,7 +367,7 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 return "";
 }
 
-function addDocument($input) {
+function addDocument($input,$only_if_upload_succeed=0) {
 
 	$con = new Document;
 
@@ -393,7 +393,9 @@ function addDocument($input) {
 			$con->fields[$key] = $input[$key];
 		}
 	}
-	return $con->addToDB();
+	if (!$only_if_upload_succeed||!empty($input['filename']))
+		return $con->addToDB();
+	else return false;
 }
 
 
