@@ -1372,6 +1372,8 @@ $lang["title"][38]="Historique";
 $lang["title"][39]="OCS Inventory NG";
 $lang["title"][40]="Notes personnelles et publiques";
 $lang["title"][41]="Téléphone";
+$lang["title"][42]="Modification Massive";
+
 
 $lang["toolbar"][1]="Gras";
 $lang["toolbar"][2]="Italique";
