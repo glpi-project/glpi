@@ -79,11 +79,12 @@ echo "<option value=\"glpi_dropdown_model\" ".($_POST["dropdown"]=="glpi_dropdow
 
 echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$lang["computers"][9]."</option>";
 echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$lang["common"][15]."</option>";
-echo "<option value=\"".MOBOARD_DEVICE."\" ".($_POST["dropdown"]==MOBOARD_DEVICE?"selected":"").">".$lang["devices"][5]."</option>";
-echo "<option value=\"".PROCESSOR_DEVICE."\" ".($_POST["dropdown"]==PROCESSOR_DEVICE?"selected":"").">".$lang["setup"][7]."</option>";
-echo "<option value=\"".GFX_DEVICE."\" ".($_POST["dropdown"]==GFX_DEVICE?"selected":"").">".$lang["devices"][2]."</option>";
-echo "<option value=\"".HDD_DEVICE."\" ".($_POST["dropdown"]==HDD_DEVICE?"selected":"").">".$lang["computers"][36]."</option>";
+
+
+for ($i=MOBOARD_DEVICE;$i<=POWER_DEVICE;$i++)
+	echo "<option value=\"$i\" ".($_POST["dropdown"]==$i?"selected":"").">".getDeviceTypeLabel($i)."</option>";
 echo "</select></td>";
+
 
 echo "<td align='right'>";
 echo $lang["search"][8]." :</td><td>";
@@ -201,44 +202,44 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			//select ID of tracking using this computer id
 			//nbintervresolv
 			$query3 = "select ID from glpi_tracking where device_type = '".COMPUTER_TYPE."' and $compsearch";
-			if(!empty($_POST["date1"]) && $date1!="") $query3.= " and glpi_tracking.date >= '". $date1 ."' ";
-			if(!empty($_POST["date2"]) && $date2!="") $query3.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+			if(!empty($_POST["date1"])) $query3.= " and glpi_tracking.date >= '". $_POST["date1"] ."' ";
+			if(!empty($_POST["date2"])) $query3.= " and glpi_tracking.date <= adddate( '". $_POST["date2"] ."' , INTERVAL 1 DAY ) ";
 			
 			$result3 = $db->query($query3);
 			$nbinterv=$db->numrows($result3);
 			
 			//nbinterv
-			$query4 = $query3." AND status = 'old'";
-			if(!empty($_POST["date1"]) && $date1!="") $query4.= " and glpi_tracking.date >= '". $date1 ."' ";
-			if(!empty($_POST["date2"]) && $date2!="") $query4.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+			$query4 = $query3." AND ( status = 'old_done' OR status = 'old_not_done' )";
+			if(!empty($_POST["date1"])) $query4.= " and glpi_tracking.date >= '". $_POST["date1"] ."' ";
+			if(!empty($_POST["date2"])) $query4.= " and glpi_tracking.date <= adddate( '". $_POST["date2"] ."' , INTERVAL 1 DAY ) ";
 			$result4 = $db->query($query4);
 			$nbintervresolv=$db->numrows($result4);
 			
 			//resolvavg
-			$query5 = "SELECT AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where device_type = '".COMPUTER_TYPE."' and $compsearch AND status = 'old' AND glpi_tracking.closedate != '0000-00-00'";
-			if(!empty($_POST["date1"]) && $date1!="") $query5.= " and glpi_tracking.date >= '". $date1 ."' ";
-			if(!empty($_POST["date2"]) && $date2!="") $query5.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+			$query5 = "SELECT AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking where device_type = '".COMPUTER_TYPE."' and $compsearch AND ( status = 'old_done' OR status = 'old_not_done' ) AND glpi_tracking.closedate != '0000-00-00'";
+			if(!empty($_POST["date1"])) $query5.= " and glpi_tracking.date >= '". $_POST["date1"] ."' ";
+			if(!empty($_POST["date2"])) $query5.= " and glpi_tracking.date <= adddate( '". $_POST["date2"] ."' , INTERVAL 1 DAY ) ";
 			$result5 = $db->query($query5);
 			$resolvavg=$db->result($result5,0,"total");;
 			
 			//realavg
-			$query6 = "SELECT AVG(glpi_tracking.realtime) as total from glpi_tracking where device_type = '".COMPUTER_TYPE."' and $compsearch and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' AND glpi_tracking.realtime > 0";
-			if(!empty($_POST["date1"]) && $date1!="") $query6.= " and glpi_tracking.date >= '". $date1 ."' ";
-			if(!empty($_POST["date2"]) && $date2!="") $query6.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+			$query6 = "SELECT AVG(glpi_tracking.realtime) as total from glpi_tracking where device_type = '".COMPUTER_TYPE."' and $compsearch AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_not_done' ) and glpi_tracking.closedate != '0000-00-00' AND glpi_tracking.realtime > 0";
+			if(!empty($_POST["date1"])) $query6.= " and glpi_tracking.date >= '".$_POST["date1"]."' ";
+			if(!empty($_POST["date2"])) $query6.= " and glpi_tracking.date <= adddate( '". $_POST["date2"] ."' , INTERVAL 1 DAY ) ";
 			$result6 = $db->query($query6);
 			$realavg=$db->result($result6,0,"total");
 			
 			//realtotal
-			$query7 = "select SUM(glpi_tracking.realtime) as total from glpi_tracking where device_type = '".COMPUTER_TYPE."' and $compsearch and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' AND glpi_tracking.realtime > 0";
-			if(!empty($_POST["date1"]) && $date1!="") $query7.= " and glpi_tracking.date >= '". $date1 ."' ";
-			if(!empty($_POST["date2"]) && $date2!="") $query7.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+			$query7 = "select SUM(glpi_tracking.realtime) as total from glpi_tracking where device_type = '".COMPUTER_TYPE."' and $compsearch AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_not_done' ) and glpi_tracking.closedate != '0000-00-00' AND glpi_tracking.realtime > 0";
+			if(!empty($_POST["date1"])) $query7.= " and glpi_tracking.date >= '". $_POST["date1"] ."' ";
+			if(!empty($_POST["date2"])) $query7.= " and glpi_tracking.date <= adddate( '". $_POST["date2"] ."' , INTERVAL 1 DAY ) ";
 			$result7 = $db->query($query7);
 			$realtotal=$db->result($result7,0,"total");;
 			
 			//realfirst 
-			$query8 = "select glpi_tracking.ID,  MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where device_type = '".COMPUTER_TYPE."' and $compsearch and glpi_tracking.status = 'old' and glpi_tracking.closedate != '0000-00-00' AND glpi_tracking.realtime > 0 ";
-			if(!empty($_POST["date1"]) && $date1!="") $query8.= " and glpi_tracking.date >= '". $date1 ."' ";
-			if(!empty($_POST["date2"]) && $date2!="") $query8.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+			$query8 = "select glpi_tracking.ID,  MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where device_type = '".COMPUTER_TYPE."' and $compsearch AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_not_done' ) and glpi_tracking.closedate != '0000-00-00' AND glpi_tracking.realtime > 0 ";
+			if(!empty($_POST["date1"])) $query8.= " and glpi_tracking.date >= '". $_POST["date1"] ."' ";
+			if(!empty($_POST["date2"])) $query8.= " and glpi_tracking.date <= adddate( '". $_POST["date2"] ."' , INTERVAL 1 DAY ) ";
 			$query8 .= "group by glpi_tracking.id";
 			$result8 = $db->query($query8);
 			$realfirst=0;
