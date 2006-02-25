@@ -41,6 +41,9 @@ include ($phproot . "/glpi/common/functions_db.php");
 include ($phproot . "/glpi/config/based_config.php");
 include ($cfg_glpi["config_dir"] . "/config_db.php");
 
+// Init debug variable
+$cfg_glpi["debug"]=0;
+
 $db=new DB();
 
 // ITEMS TYPE

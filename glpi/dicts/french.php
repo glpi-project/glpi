@@ -1399,6 +1399,8 @@ $lang["tracking"][31]="En cours (attribués)";
 $lang["tracking"][32]="En cours (planifiés)";
 $lang["tracking"][33]="En attente";
 
+$lang["update"][88]="Votre version de la base de données n'est pas compatible avec la version du code installé. Une mise à jour est nécessaire.";
+$lang["update"][89]="Vous essayez d'utiliser GLPI avec une version de la base de données prévue pour une version supérieure. Veuillez installer la version correspondante à votre base de données.";
 $lang["update"][90]="Erreur durant la mise  à jour de la base de données";
 $lang["update"][91]="Attention !  ";
 $lang["update"][92]="Vous allez mettre  à jour votre base de données GLPI ayant pour nom :";
