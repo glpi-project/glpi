@@ -293,7 +293,10 @@ if ((!isset($cfg_glpi["version"])||trim($cfg_glpi["version"])!=GLPI_VERSION)&&!i
 		echo "</td></tr>";
 		echo "</table></form>";
 	} else if (trim($cfg_glpi["version"])>GLPI_VERSION){
+		echo "<table class='tab_cadre_fixe'><tr><th>";
 		echo $lang["update"][89];
+		echo "</th></tr>";
+		echo "</table>";
 	}
 		echo "</div>";
 		nullFooter();
