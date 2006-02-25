@@ -51,6 +51,8 @@ include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_links.php");
 include ($phproot . "/glpi/includes_ocsng.php");
 include ($phproot . "/glpi/includes_phones.php");
+include ($phproot . "/glpi/includes_consumables.php");
+include ($phproot . "/glpi/includes_cartridges.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
