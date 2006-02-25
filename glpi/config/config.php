@@ -142,7 +142,11 @@ define("MAX_OCS_CHECKSUM","131071");
 
 //DEVICE ARRAY.
 $cfg_glpi["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
-//$cfg_glpi["devices_tables"] = array("moboard","processor","ram","hdd","iface","gfxcard","sndcard");
+$cfg_glpi["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones");
+
+$cfg_glpi["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones");
+
+$cfg_glpi["dropdowntree_tables"]=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
 
 $LINK_ID_TABLE=array(
 		COMPUTER_TYPE=> "glpi_computers",
@@ -219,13 +223,6 @@ class baseFunctions {
 	var $financial	= true;
 
 }
-
-$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones");
-
-$template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones");
-
-$dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
-
 
 //Options g�� dynamiquement, ne pas toucher cette partie.
 //Options from DB, do not touch this part.

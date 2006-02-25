@@ -371,7 +371,7 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
 * @return the next ID, -1 if not exist
 */
 function getNextItem($table,$ID){
-global $db,$deleted_tables,$template_tables,$cfg_glpi;
+global $db,$cfg_glpi;
 
 $nextprev_item=$cfg_glpi["nextprev_item"];
 if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
@@ -386,9 +386,9 @@ if ($nextprev_item!="ID"){
 
 $query = "select ID from $table where ".$nextprev_item." > '$search' ";
 
-if (in_array($table,$deleted_tables))
+if (in_array($table,$cfg_glpi["deleted_tables"]))
 	$query.="AND deleted='N'";
-if (in_array($table,$template_tables))
+if (in_array($table,$cfg_glpi["template_tables"]))
 	$query.="AND is_template='0'";	
 		
 $query.=" order by ".$nextprev_item." ASC";
@@ -408,7 +408,7 @@ else return -1;
 * @return the previous ID, -1 if not exist
 */
 function getPreviousItem($table,$ID){
-global $db,$deleted_tables,$template_tables,$cfg_glpi;
+global $db,$cfg_glpi;
 
 $nextprev_item=$cfg_glpi["nextprev_item"];
 if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
@@ -422,9 +422,9 @@ if ($nextprev_item!="ID"){
 
 $query = "select ID from $table where ".$nextprev_item." < '$search' ";
 
-if (in_array($table,$deleted_tables))
+if (in_array($table,$cfg_glpi["deleted_tables"]))
 	$query.="AND deleted='N'";
-if (in_array($table,$template_tables))
+if (in_array($table,$cfg_glpi["template_tables"]))
 	$query.="AND is_template='0'";	
 		
 $query.=" order by ".$nextprev_item." DESC";

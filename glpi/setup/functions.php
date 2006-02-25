@@ -310,7 +310,7 @@ function moveTreeUnder($table,$to_move,$where){
 }
 
 function updateDropdown($input) {
-	global $db,$dropdowntree_tables;
+	global $db,$cfg_glpi;
 	
 		
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
@@ -322,7 +322,7 @@ function updateDropdown($input) {
 	}
 	
 	if ($result=$db->query($query)) {
-		if (in_array($input["tablename"],$dropdowntree_tables))
+		if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"]))
 			regenerateTreeCompleteNameUnderID($input["tablename"],$input["ID"]);
 		return true;
 	} else {
@@ -332,14 +332,14 @@ function updateDropdown($input) {
 
 
 function addDropdown($input) {
-	global $db,$dropdowntree_tables;
+	global $db,$cfg_glpi;
 	
 	if (!empty($input["value"])){
 
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "INSERT INTO ".$input["tablename"]." (name,location,comments) VALUES ('".$input["value"]."', '".$input["value2"]."', '".$input["comments"]."')";
 	}
-	else if (in_array($input["tablename"],$dropdowntree_tables)){
+	else if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"])){
 		if ($input['type']=="first"){
 		    $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename) VALUES ('".$input["value"]."', '0','')";		
 		} else {
@@ -361,7 +361,7 @@ function addDropdown($input) {
 
 	if ($result=$db->query($query)) {
 
-		if (in_array($input["tablename"],$dropdowntree_tables))
+		if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"]))
 			regenerateTreeCompleteNameUnderID($input["tablename"],$db->insert_id());		
 		return true;
 	} else {

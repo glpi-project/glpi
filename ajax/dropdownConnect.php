@@ -46,9 +46,9 @@
 		$table=$LINK_ID_TABLE[$_POST["idtable"]];
 
 		$where="";		
-		if (in_array($table,$deleted_tables))
+		if (in_array($table,$cfg_glpi["deleted_tables"]))
 			$where.=" AND $table.deleted='N' ";
-		if (in_array($table,$template_tables))
+		if (in_array($table,$cfg_glpi["template_tables"]))
 			$where.=" AND $table.is_template='0' ";		
 			
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])

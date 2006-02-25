@@ -110,13 +110,13 @@
 	}
  else {
 		$where="WHERE '1'='1' ";
-		if (in_array($_POST['table'],$deleted_tables))
+		if (in_array($_POST['table'],$cfg_glpi["deleted_tables"]))
 			$where.=" AND deleted='N' ";
-		if (in_array($_POST['table'],$template_tables))
+		if (in_array($_POST['table'],$cfg_glpi["template_tables"]))
 			$where.=" AND is_template='0' ";		
 			
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-		if (in_array($_POST['table'],$dropdowntree_tables))
+		if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"]))
 		$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
 		else if ($_POST['table']=="glpi_users")
 			$where.=" AND (name LIKE '%".$_POST['searchText']."%'  OR realname LIKE '%".$_POST['searchText']."%')";
@@ -126,7 +126,7 @@
 		$LIMIT="LIMIT 0,$NBMAX";
 		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 						
-		if (in_array($_POST['table'],$dropdowntree_tables))
+		if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"]))
 			$query = "SELECT ID, completename as name FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
 		else $query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
 		$result = $db->query($query);
