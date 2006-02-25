@@ -54,7 +54,7 @@ commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
 if ($max_time>5) {$defaulttimeout=$max_time-2;$defaultrowlimit=5;}
-else {$defaulttimeout=1;$defaultrowlimit=2;}
+else {$defaulttimeout=max(1,$max_time-2);$defaultrowlimit=2;}
 
 
 
@@ -68,7 +68,7 @@ function dump(what3){
 }
 function restore(what) {
    if (confirm("<?php echo $lang["backup"][16];?> " + what +  "?")) {
-         window.location = "index.php?file=" + what;
+         window.location = "index.php?file=" + what +"&donotcheckversion=1";
    }
 }
 
@@ -550,8 +550,8 @@ displayProgressBar(400,$percent);
 if ($offset!=-1){
 if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
 {
-    echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt\">ici</a>";
-    echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">ici</a>";
+    echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
 	glpi_flush();
 	exit;
 }

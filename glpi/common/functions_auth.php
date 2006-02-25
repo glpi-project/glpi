@@ -232,8 +232,6 @@ function checkAuthentication($authtype) {
 	} else {
 		header("Vary: User-Agent");
 
-		loadLanguage();
-
 		switch ($authtype) {
 			case "super-admin";
 				if (!isSuperAdmin($type)) 

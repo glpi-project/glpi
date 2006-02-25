@@ -37,6 +37,10 @@
 include ("_relpos.php");
 include ($phproot . '/glpi/config/based_config.php');
 
+// Current version of GLPI
+define("GLPI_VERSION","0.65");
+
+
 if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
 	nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
 	echo "<div align='center'>";
@@ -50,7 +54,6 @@ else
 {
 
 require_once ($cfg_glpi["config_dir"] . "/config_db.php");
-
 
 
 // *************************** Statics config options **********************
@@ -276,7 +279,26 @@ if(!empty($cfg_glpi["ldap_host"])){
 
 }
 
-
+if ((!isset($cfg_glpi["version"])||trim($cfg_glpi["version"])!=GLPI_VERSION)&&!isset($_GET["donotcheckversion"])){
+		loadLanguage();
+		nullHeader();
+		echo "<div align='center'>";
+	if (!isset($cfg_glpi["version"])||trim($cfg_glpi["version"])<GLPI_VERSION){
+		echo "<form method='post' action='".$cfg_glpi["root_doc"]."/update.php'>";
+		echo "<table class='tab_cadre_fixe'><tr><th>";
+		echo $lang["update"][88];
+		echo "</th></tr>";
+		echo "<tr class='tab_bg_1'><td align='center'>";
+		echo "<input type='submit' name='from_update' value='".$lang["install"][4]."' class='submit'>";
+		echo "</td></tr>";
+		echo "</table></form>";
+	} else if (trim($cfg_glpi["version"])>GLPI_VERSION){
+		echo $lang["update"][89];
+	}
+		echo "</div>";
+		nullFooter();
+		exit();
+} 
 
 }
 ?>
