@@ -199,7 +199,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		foreach ($options as $key => $val) {
 			echo "<option value=\"".$key."\""; 
 			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-			echo ">". substr($val["name"],0,20) ."</option>\n";
+			echo ">". substr($val["name"],0,30) ."</option>\n";
 		}
 
     	echo "<option value='all' ";
@@ -1047,6 +1047,7 @@ if ($meta) {
 
 switch ($table.".".$field){
 case "glpi_enterprises.name" :
+case "glpi_enterprises_infocoms.name" :
 	return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$addtable.".website AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_3, ";
 	break;
 case "glpi_users.name" :
@@ -1148,7 +1149,7 @@ case "glpi_contracts.end_date" :
 			return " NOW() ".$regs[1]." ADDDATE(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH), INTERVAL ".$regs[2]." MONTH) ";	
 		}
 		else {
-			return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) LIKE '%".$val."%'";		
+			return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
 		}
 
 	
@@ -1175,6 +1176,34 @@ case "glpi_infocoms.use_date":
 			return " ($table.$field $SEARCH ".$ADD." ) ";
 		}
 	break;
+case "glpi_infocoms.value":
+case "glpi_infocoms.warranty_value":
+	$interval=100;
+	$ADD="";
+	if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
+	if ($nott)
+		return " ($table.$field < $val-$interval OR $table.$field > $val+$interval ".$ADD." ) ";
+	else  return " (($table.$field >= $val-$interval AND $table.$field <= $val+$interval) ".$ADD." ) ";
+	break;
+case "glpi_infocoms.amort_time":
+case "glpi_infocoms.warranty_duration":
+	$ADD="";
+	if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
+	if ($nott)
+		return " ($table.$field <> $val ".$ADD." ) ";
+	else  return " ($table.$field = $val  ".$ADD." ) ";
+	break;
+case "glpi_infocoms.amort_type":
+	$ADD="";
+	if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
+	if (eregi($val,getAmortTypeName(1))) $val=1;
+	else if (eregi($val,getAmortTypeName(2))) $val=2;
+	else $val=0;
+	if ($nott)
+		return " ($table.$field <> $val ".$ADD." ) ";
+	else  return " ($table.$field = $val  ".$ADD." ) ";
+	break;
+	
 
 
 default:
@@ -1337,6 +1366,7 @@ switch ($field){
 			$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
 		return $out;
 		break;	
+	case "glpi_enterprises_infocoms.name" :
 	case "glpi_enterprises.name.brut" :
 		$type=ENTERPRISE_TYPE;
 		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
@@ -1465,6 +1495,16 @@ switch ($field){
 	case "glpi_infocoms.use_date":
 		return convDate($data["ITEM_$num"]);
 		break;
+	case "glpi_infocoms.amort_time":
+		return $data["ITEM_$num"]." ".$lang["financial"][9];
+		break;
+	case "glpi_infocoms.warranty_duration":
+		return $data["ITEM_$num"]." ".$lang["financial"][57];
+		break;
+	case "glpi_infocoms.amort_type":
+		return getAmortTypeName($data["ITEM_$num"]);
+		break;
+
 	default:
 		return $data["ITEM_$num"];
 		break;
@@ -1596,6 +1636,14 @@ switch ($new_table){
 		break;
 	case "glpi_enterprises":
 		return " LEFT JOIN $new_table $AS ON ($rt.FK_glpi_enterprise = $nt.ID) ";
+		break;
+	case "glpi_enterprises_infocoms":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms");
+		return $out." LEFT JOIN glpi_enterprises AS glpi_enterprises_infocoms ON (glpi_infocoms.FK_enterprise = $nt.ID) ";
+		break;
+	case "glpi_dropdown_budget":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms");
+		return $out." LEFT JOIN $new_table $AS ON (glpi_infocoms.budget = $nt.ID) ";
 		break;
 	case "glpi_infocoms":
 		return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";

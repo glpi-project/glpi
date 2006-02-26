@@ -57,7 +57,7 @@ checkAuthentication("admin");
 				echo "<option value='0' selected>------</option>";
 				foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val){
 					if ($key>1){ // No ID
-						if (!empty($val["linkfield"])||$val["table"]=="glpi_dropdown_state")
+						if (!empty($val["linkfield"])||$val["table"]=="glpi_dropdown_state"||$val["table"]=="glpi_infocoms"||$val["table"]=="glpi_enterprises_infocoms"||$val["table"]=="glpi_dropdown_budget")
 							echo "<option value='$key'>".$val["name"]."</option>";
 					}
 				}

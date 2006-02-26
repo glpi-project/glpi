@@ -28,11 +28,8 @@
  ------------------------------------------------------------------------
 */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
-// Original Author of file: Mustapha Saddalah et Bazile Lebeau
+// Original Author of file: 
 // Purpose of file:
 // ----------------------------------------------------------------------
  

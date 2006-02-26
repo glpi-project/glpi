@@ -84,60 +84,69 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			}
 		break;
 		case "update":
-			$input[$_POST["field"]]=$_POST[$_POST["field"]];
-			foreach ($_POST["item"] as $key => $val)
-			if ($val==1){
-				$input["ID"]=$key;
-				switch($_POST["device_type"]){
-					case COMPUTER_TYPE:
-						updateComputer($input);
-						break;
-					case NETWORKING_TYPE:
-						updateNetdevice($input);
-						break;
-					case PRINTER_TYPE:
-						updatePrinter($input);
-						break;
-					case MONITOR_TYPE:
-						updateMonitor($input);
-						break;
-					case PERIPHERAL_TYPE:
-						updatePeripheral($input);
-						break;
-					case SOFTWARE_TYPE:
-						updateSoftware($input);
-						break;
-					case CONTACT_TYPE:
-						updateContact($input);
-						break;
-					case ENTERPRISE_TYPE:
-						updateEnterprise($input);
-						break;
-					case CONTRACT_TYPE:
-						updateContract($input);
-						break;
-					case CARTRIDGE_TYPE:
-						updateCartridgeType($input);
-						break;
-					case TYPEDOC_TYPE:
-						updateTypeDoc($input);
-						break;
-					case DOCUMENT_TYPE:
-						updateDocument($input);
-						break;
-					case USER_TYPE:
-						updateUser($input);
-						break;
-					case CONSUMABLE_TYPE:
-						updateConsumableType($input);
-						break;
-					case LINK_TYPE:
-						updateLink($input);
-						break;
-					case PHONE_TYPE:
-						updatePhone($input);
-						break;
-					
+			// Infocoms case
+			if (($_POST["id_field"]>=25&&$_POST["id_field"]<=28)||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)||($_POST["id_field"]>=50&&$_POST["id_field"]<=58)){
+				foreach ($_POST["item"] as $key => $val)
+				if ($val==1){
+					$_POST["FK_device"]=$key;
+					print_r($_POST);
+					updateInfocom($_POST);
+				}
+			} else {
+				$input[$_POST["field"]]=$_POST[$_POST["field"]];
+				foreach ($_POST["item"] as $key => $val)
+				if ($val==1){
+					$input["ID"]=$key;
+					switch($_POST["device_type"]){
+						case COMPUTER_TYPE:
+							updateComputer($input);
+							break;
+						case NETWORKING_TYPE:
+							updateNetdevice($input);
+							break;
+						case PRINTER_TYPE:
+							updatePrinter($input);
+							break;
+						case MONITOR_TYPE:
+							updateMonitor($input);
+							break;
+						case PERIPHERAL_TYPE:
+							updatePeripheral($input);
+							break;
+						case SOFTWARE_TYPE:
+							updateSoftware($input);
+							break;
+						case CONTACT_TYPE:
+							updateContact($input);
+							break;
+						case ENTERPRISE_TYPE:
+							updateEnterprise($input);
+							break;
+						case CONTRACT_TYPE:
+							updateContract($input);
+							break;
+						case CARTRIDGE_TYPE:
+							updateCartridgeType($input);
+							break;
+						case TYPEDOC_TYPE:
+							updateTypeDoc($input);
+							break;
+						case DOCUMENT_TYPE:
+							updateDocument($input);
+							break;
+						case USER_TYPE:
+							updateUser($input);
+							break;
+						case CONSUMABLE_TYPE:
+							updateConsumableType($input);
+							break;
+						case LINK_TYPE:
+							updateLink($input);
+							break;
+						case PHONE_TYPE:
+							updatePhone($input);
+							break;
+					}
 				}
 			}
 		break;

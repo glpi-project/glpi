@@ -54,7 +54,7 @@ if ($_POST["type"]>0){
 	{
 			echo "<option value=\"".$key."\" title=\"".$val["name"]."\""; 
 			if($key == $_POST["field"]) echo "selected";
-			echo ">". substr($val["name"],0,15) ."</option>\n";
+			echo ">". substr($val["name"],0,20) ."</option>\n";
 	}
 	echo "</select>&nbsp;";
 }

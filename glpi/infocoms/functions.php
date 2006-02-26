@@ -209,7 +209,16 @@ function updateInfocom($input) {
 	// Update Software in the database
 
 	$ic = new Infocom;
-	$ic->getFromDBbyID($input["ID"]);
+	if (isset($input["ID"])){
+		$ic->getFromDBbyID($input["ID"]);
+	} else {
+		if (!$ic->getFromDB($input["device_type"],$input["FK_device"])){
+			$input2["FK_device"]=$input["FK_device"];
+			$input2["device_type"]=$input["device_type"];
+			addInfocom($input2);
+			$ic->getFromDB($input["device_type"],$input["FK_device"]);
+		}
+	}
 
 	// Fill the update-array with changes
 	$x=0;
@@ -220,6 +229,7 @@ function updateInfocom($input) {
 			$x++;
 		}
 	}
+
 	if(!empty($updates)) {
 	
 		$ic->updateInDB($updates);

@@ -29,7 +29,7 @@
 */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Mustapha Saddalah et Bazile Lebeau
+// Original Author of file: 
 // Purpose of file:
 // ----------------------------------------------------------------------
  
