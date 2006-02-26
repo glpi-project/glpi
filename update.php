@@ -3064,7 +3064,7 @@ if(FieldExists("glpi_tracking","status")) {
 	}
 }
 
-if(FieldExists("glpi_tracking_planning","id_assign")) {
+if(!isIndex("glpi_tracking_planning","id_assign")) {
 	$query="ALTER TABLE `glpi_tracking_planning` ADD INDEX ( `id_assign` ) ;";
 	$db->query($query) or die("0.65 add index for id_assign in tracking_planning".$lang["update"][90].$db->error());
 }
@@ -3419,14 +3419,17 @@ if(FieldExists("glpi_contracts","comments")) {
 
 $device=array("case","control","drive","gfxcard","hdd","iface","moboard","pci","power","processor","ram","sndcard");
 
-foreach ($device as $dev)
+foreach ($device as $dev){
 if(FieldExists("glpi_device_$dev","comment")) {	
 	$query="ALTER TABLE `glpi_device_$dev` CHANGE `designation` `designation` VARCHAR( 255 ) NULL ,
 		CHANGE `comment` `comment` TEXT NULL ,
-		CHANGE `specif_default` `specif_default` VARCHAR( 250 ) NULL,
-		ADD INDEX ( `designation` ); ";
+		CHANGE `specif_default` `specif_default` VARCHAR( 250 ) NULL ";
 	$db->query($query) or die("0.65 alter various fields in device_$dev ".$lang["update"][90].$db->error());
-
+}
+if(!isIndex("glpi_device_$dev","designation")) {	
+	$query="ALTER TABLE `glpi_device_$dev` ADD INDEX ( `designation` ); ";
+	$db->query($query) or die("0.65 alter various fields in device_$dev ".$lang["update"][90].$db->error());
+}
 }
 
 if(FieldExists("glpi_docs","comment")) {	
@@ -3725,12 +3728,12 @@ if(!TableExists("glpi_ocs_config")) {
   `import_device_ports` int(2) NOT NULL default '0',
   `import_device_modems` int(2) NOT NULL default '0',
   `import_ip` int(2) NOT NULL default '0',
-
+  `default_state` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM";
 
 	$db->query($query) or die("0.65 MODE OCS creation ocs_config ".$lang["update"][90].$db->error());
-	$query = "INSERT INTO `glpi_ocs_config` VALUES (1, 'ocs', 'ocs', 'localhost', 'ocsweb', 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
+	$query = "INSERT INTO `glpi_ocs_config` VALUES (1, 'ocs', 'ocs', 'localhost', 'ocsweb', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
 	$db->query($query) or die("0.65 MODE OCS add default config ".$lang["update"][90].$db->error());
 
 }
