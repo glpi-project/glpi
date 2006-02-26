@@ -1105,7 +1105,7 @@ default:
 *
 **/
 function addWhere ($nott,$type,$table,$field,$val,$meta=0){
-global $LINK_ID_TABLE;
+global $LINK_ID_TABLE,$lang;
 
 $NOT="";
 if ($nott) $NOT=" NOT";
@@ -1203,8 +1203,16 @@ case "glpi_infocoms.amort_type":
 		return " ($table.$field <> $val ".$ADD." ) ";
 	else  return " ($table.$field = $val  ".$ADD." ) ";
 	break;
-	
+case "glpi_users.active":
+	$ADD="";
+	if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
 
+	if (eregi($val,$lang["choice"][1])) $val=1;
+	else $val=0;
+	if ($nott)
+		return " ($table.$field <> $val ".$ADD." ) ";
+	else  return " ($table.$field = $val  ".$ADD." ) ";
+	break;
 
 default:
 	$ADD="";	
@@ -1248,6 +1256,10 @@ switch ($field){
 		return $out;
 	
 		break;
+	case "glpi_users.active" :
+			return $lang["choice"][$data["ITEM_$num"]];
+		break;
+
 	case "glpi_users.name" :
 		// print realname or login name
 		if (!empty($data["ITEM_".$num."_2"]))
