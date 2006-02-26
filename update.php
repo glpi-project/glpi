@@ -3931,8 +3931,10 @@ $result=$db->list_tables();
 while ($line = $db->fetch_array($result))
 if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0])){
 	if ($line[0]!="glpi_type_docs"){
-		$query="ALTER TABLE `".$line[0]."` ADD `comments` TEXT NULL ";
-		$db->query($query) or die("0.65 add comments field in ".$line[0]." ".$lang["update"][90].$db->error());
+		if(!FieldExists($line[0],"comments")) {
+			$query="ALTER TABLE `".$line[0]."` ADD `comments` TEXT NULL ";
+			$db->query($query) or die("0.65 add comments field in ".$line[0]." ".$lang["update"][90].$db->error());
+			}
 	}
 }
 
