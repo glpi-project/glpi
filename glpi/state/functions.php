@@ -244,7 +244,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 	
 }
 
-function updateState($device_type,$id_device, $state,$template=0){
+function updateState($device_type,$id_device, $state,$template=0,$dohistory=1){
 global $db;
 
 $si=new StateItem;
@@ -266,9 +266,10 @@ $si->getFromDB($device_type,$id_device);
 		}else{ $db->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device' $where;");
 		
 		}
-
-		$changes=array(31,addslashes(getDropdownName("glpi_dropdown_state",$si->fields["state"])), addslashes(getDropdownName( "glpi_dropdown_state",$state)));
-		historyLog ($id_device,$device_type,$changes);
+		if ($dohistory){
+			$changes=array(31,addslashes(getDropdownName("glpi_dropdown_state",$si->fields["state"])), addslashes(getDropdownName( "glpi_dropdown_state",$state)));
+			historyLog ($id_device,$device_type,$changes);
+		}
 	
 	} else {
 		if ($state!=0){

@@ -1713,7 +1713,7 @@ function ocsUpdateConfig($input, $id) {
 	if ($input["import_monitor"]) $checksum|= pow(2,MONITORS_FL);
 	if ($input["import_periph"]) $checksum|= pow(2,INPUTS_FL);
 		
-	$query = "update glpi_ocs_config set import_periph = '".$input["import_periph"]."'  ,import_monitor = '".$input["import_monitor"]."',import_software =  '".$input["import_software"]."', import_printer = '".$input["import_printer"]."',`import_general_os` = '".$input["import_general_os"]."',`import_general_serial` = '".$input["import_general_serial"]."',`import_general_model` = '".$input["import_general_model"]."',`import_general_enterprise` = '".$input["import_general_enterprise"]."',`import_general_type` = '".$input["import_general_type"]."',`import_general_domain` = '".$input["import_general_domain"]."',`import_general_contact` = '".$input["import_general_contact"]."',`import_general_comments` = '".$input["import_general_comments"]."',`import_device_processor` = '".$input["import_device_processor"]."',`import_device_memory` = '".$input["import_device_memory"]."',`import_device_hdd` = '".$input["import_device_hdd"]."',`import_device_iface` = '".$input["import_device_iface"]."',`import_device_gfxcard` = '".$input["import_device_gfxcard"]."',`import_device_sound` = '".$input["import_device_sound"]."',`import_device_drives` = '".$input["import_device_drives"]."',`import_device_modems` = '".$input["import_device_modems"]."',`import_device_ports` = '".$input["import_device_ports"]."',`import_ip` = '".$input["import_ip"]."',`checksum` = '".$checksum."'  where ID = '".$id."'";
+	$query = "update glpi_ocs_config set default_state = '".$input["default_state"]."'  , import_periph = '".$input["import_periph"]."'  ,import_monitor = '".$input["import_monitor"]."',import_software =  '".$input["import_software"]."', import_printer = '".$input["import_printer"]."',`import_general_os` = '".$input["import_general_os"]."',`import_general_serial` = '".$input["import_general_serial"]."',`import_general_model` = '".$input["import_general_model"]."',`import_general_enterprise` = '".$input["import_general_enterprise"]."',`import_general_type` = '".$input["import_general_type"]."',`import_general_domain` = '".$input["import_general_domain"]."',`import_general_contact` = '".$input["import_general_contact"]."',`import_general_comments` = '".$input["import_general_comments"]."',`import_device_processor` = '".$input["import_device_processor"]."',`import_device_memory` = '".$input["import_device_memory"]."',`import_device_hdd` = '".$input["import_device_hdd"]."',`import_device_iface` = '".$input["import_device_iface"]."',`import_device_gfxcard` = '".$input["import_device_gfxcard"]."',`import_device_sound` = '".$input["import_device_sound"]."',`import_device_drives` = '".$input["import_device_drives"]."',`import_device_modems` = '".$input["import_device_modems"]."',`import_device_ports` = '".$input["import_device_ports"]."',`import_ip` = '".$input["import_ip"]."',`checksum` = '".$checksum."'  where ID = '".$id."'";
 
 	$db->query($query);
 }
@@ -1764,6 +1764,11 @@ function ocsFormConfig($target, $id) {
 	echo "<input type='hidden' name='update_ocs_config' value='1'>";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["ocsconfig"][5]."</th></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][16]." </td><td>";
+	dropdownValue("glpi_dropdown_state","default_state",$data["default_state"]);
+	echo "</td></tr>";
+
 	$periph=$data["import_periph"];
 	$monitor=$data["import_monitor"];
 	$printer=$data["import_printer"];

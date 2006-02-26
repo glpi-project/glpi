@@ -96,9 +96,9 @@ if ($dbocs->numrows($result_ocs)>0){
 		if ($start>0)
 		array_splice($hardware,0,$start);
 		
-		echo "<form method='post' action='".$_SERVER["PHP_SELF"]."'>";
+		echo "<form method='post' name='ocsng_form' id='ocsng_form' action='".$_SERVER["PHP_SELF"]."'>";
 		if ($tolinked==0)
-			echo "<a href='".$_SERVER["PHP_SELF"]."?check=all&amp;start=$start'>".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
+			echo "<a href='".$_SERVER["PHP_SELF"]."?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
 
 		
 		echo "<table class='tab_cadre'>";
@@ -215,6 +215,12 @@ function ocsImportComputer($DEVICEID){
 		$comp->fields["name"] = $line["NAME"];
 		$comp->fields["ocs_import"] = 1;
 		$glpi_id=$comp->addToDB();
+		if ($glpi_id){
+			$cfg_ocs=getOcsConf(1);
+			if ($cfg_ocs["default_state"]){
+				updateState(COMPUTER_TYPE,$glpi_id,$cfg_ocs["default_state"],0,0);
+			}
+		}
 
 		if ($idlink = ocs_link($line['DEVICEID'], $glpi_id)){
 			ocsUpdateComputer($idlink,0);
@@ -592,9 +598,9 @@ if ($dbocs->numrows($result_ocs)>0){
 		if ($start>0)
 		array_splice($already_linked,0,$start);
 
-		echo "<form method='post' action='".$_SERVER["PHP_SELF"]."'>";
+		echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$_SERVER["PHP_SELF"]."'>";
 		
-		echo "<a href='".$_SERVER["PHP_SELF"]."?check=all'>".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none'>".$lang["buttons"][19]."</a>";
+		echo "<a href='".$_SERVER["PHP_SELF"]."?check=all' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th>".$lang["ocsng"][11]."</th><th>".$lang["ocsng"][13]."</th><th>".$lang["ocsng"][14]."</th><th>&nbsp;</th></tr>";
 		
@@ -1067,6 +1073,11 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 							$m=new Monitor;
 							$m->fields=$mon;
 							$id_monitor=$m->addToDB();
+							if ($id_monitor){
+								if ($cfg_ocs["default_state"]){
+									updateState(MONITOR_TYPE,$id_monitor,$cfg_ocs["default_state"],0,0);
+								}
+							}
 						}
 					} else if($cfg_ocs["import_monitor"] == 2) {
 						//COnfig says : manage monitors as single units
@@ -1094,10 +1105,21 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 								$m->fields=$mon;
 								$id_monitor=$m->addToDB();
 								$found_already_monitor=false;
+								if ($id_monitor){
+									if ($cfg_ocs["default_state"]){
+										updateState(MONITOR_TYPE,$id_monitor,$cfg_ocs["default_state"],0,0);
+									}
+								}
 							}
 						} else {
 							$m->fields=$mon;
 							$id_monitor=$m->addToDB();
+							if ($id_monitor){
+								if ($cfg_ocs["default_state"]){
+									updateState(MONITOR_TYPE,$id_monitor,$cfg_ocs["default_state"],0,0);
+								}
+							}
+
 						}
 					}	
 					if ($id_monitor){
@@ -1144,6 +1166,11 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 							$p=new Printer;
 							$p->fields=$print;
 							$id_printer=$p->addToDB();
+							if ($id_printer){
+								if ($cfg_ocs["default_state"]){
+									updateState(PRINTER_TYPE,$id_printer,$cfg_ocs["default_state"],0,0);
+								}
+							}
 						}
 					} else if($cfg_ocs["import_printer"] == 2) {
 						//COnfig says : manage printers as single units
@@ -1152,6 +1179,11 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						$p=new Printer;
 						$p->fields=$print;
 						$id_printer=$p->addToDB();
+						if ($id_printer){
+							if ($cfg_ocs["default_state"]){
+								updateState(PRINTER_TYPE,$id_printer,$cfg_ocs["default_state"],0,0);
+							}
+						}
 					}	
 					if ($id_printer){
 						$connID=Connect("",$id_printer,$glpi_id,PRINTER_TYPE);
@@ -1198,6 +1230,11 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 							$p=new Peripheral;
 							$p->fields=$periph;
 							$id_periph=$p->addToDB();
+							if ($id_periph){
+								if ($cfg_ocs["default_state"]){
+									updateState(PERIPHERAL_TYPE,$id_periph,$cfg_ocs["default_state"],0,0);
+								}
+							}
 						}
 					} else if($cfg_ocs["import_periph"] == 2) {
 						//COnfig says : manage peripherals as single units
@@ -1206,6 +1243,11 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						$p=new Peripheral;
 						$p->fields=$periph;
 						$id_periph=$p->addToDB();
+						if ($id_periph){
+							if ($cfg_ocs["default_state"]){
+								updateState(PERIPHERAL_TYPE,$id_periph,$cfg_ocs["default_state"],0,0);
+							}
+						}
 					}	
 					if ($id_periph){
 						$connID=Connect("",$id_periph,$glpi_id,PERIPHERAL_TYPE);

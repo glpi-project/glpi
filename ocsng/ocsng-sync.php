@@ -46,6 +46,7 @@ include ($phproot."/glpi/includes_printers.php");
 include ($phproot."/glpi/includes_software.php");
 include ($phproot."/glpi/includes_tracking.php");
 include ($phproot."/glpi/includes_phones.php");
+include ($phproot."/glpi/includes_state.php");
 
 checkAuthentication("admin");
 
