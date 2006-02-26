@@ -266,7 +266,7 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 				ocsResetLicenses($glpi_id);
 			if($cfg_ocs["import_periph"]) 
 				ocsResetPeriphs($glpi_id);
-			if($cfg_ocs["import_monitor"]) 
+			if($cfg_ocs["import_monitor"]==1) // Only reset monitor as global in unit management try to link monitor with existing
 				ocsResetMonitors($glpi_id);
 			if($cfg_ocs["import_printer"]) 
 				ocsResetPrinters($glpi_id);
@@ -333,6 +333,7 @@ function ocsUpdateComputer($ID,$dohistory){
 				// Get import monitors
 				$import_monitor=importArrayFromDB($line["import_monitor"]);
 				ocsUpdatePeripherals(MONITOR_TYPE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_monitor,$dohistory);
+			
 			}
 
 			if ($mixed_checksum&pow(2,PRINTERS_FL)){
@@ -395,7 +396,6 @@ function getOcsConf($id) {
 function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1) {
  	global $dbocs,$lang;
 	$query = "select * from hardware WHERE DEVICEID='".$ocs_id."'";
-//	echo $query;
 	$result = $dbocs->query($query) or die($dbocs->error());
 	if ($dbocs->numrows($result)==1) {
 		$line=$dbocs->fetch_assoc($result);
@@ -444,7 +444,6 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1) {
 	global $dbocs;
 	$query = "select * from bios WHERE DEVICEID='".$ocs_id."'";
-//	echo $query;
 	$result = $dbocs->query($query) or die($dbocs->error().$query);
 	if ($dbocs->numrows($result)==1) {
 		$line=$dbocs->fetch_assoc($result);
@@ -1034,6 +1033,7 @@ function ocsAddDevice($device_type,$dev_array) {
 function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_periph,$dohistory){
 	global $db,$dbocs;
 	$do_clean=false;
+	$connID=0;
 	switch ($device_type){
 		case MONITOR_TYPE:
 		if ($cfg_ocs["import_monitor"]){
@@ -1045,7 +1045,6 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 			if($dbocs->numrows($result) > 0) 
 			while($line = $dbocs->fetch_array($result)) {
 				$line=addslashes_deep($line);
-				
 				$mon["name"] = $line["CAPTION"];
 				if (!in_array($mon["name"],$import_periph)){
 					$mon["FK_glpi_enterprise"] = ocsImportEnterprise($line["MANUFACTURER"]);
@@ -1053,7 +1052,6 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 					$mon["serial"] = $line["SERIAL"];
 					$mon["date_mod"] = date("Y-m-d H:i:s");
 					$id_monitor=0;
-
 					if($cfg_ocs["import_monitor"] == 1) {
 						//Config says : manage monitors as global
 						//check if monitors already exists in GLPI
@@ -1075,11 +1073,36 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						//Import all monitors as non global.
 						$mon["is_global"]=0;
 						$m=new Monitor;
-						$m->fields=$mon;
-						$id_monitor=$m->addToDB();
+						$found_already_monitor=false;
+						// First import - Is there already a monitor ?
+						if (count($import_periph)==0){
+							$query_search="SELECT end1 FROM glpi_connect_wire WHERE end2='$glpi_id' AND type='".MONITOR_TYPE."'";
+							$result_search=$db->query($query_search);
+							if ($db->numrows($result_search)==1){
+								$id_monitor=$db->result($result_search,0,0);
+								$found_already_monitor=true;
+								}
+						}
+						
+						if ($found_already_monitor&&$id_monitor){
+							$m->getFromDB($id_monitor);
+							if (!$m->fields["is_global"]){
+								$mon["ID"]=$id_monitor;
+								unset($mon["comments"]);
+								updateMonitor($mon);
+							} else {
+								$m->fields=$mon;
+								$id_monitor=$m->addToDB();
+								$found_already_monitor=false;
+							}
+						} else {
+							$m->fields=$mon;
+							$id_monitor=$m->addToDB();
+						}
 					}	
 					if ($id_monitor){
-						$connID=Connect("",$id_monitor,$glpi_id,MONITOR_TYPE);
+						if (!$found_already_monitor)
+							$connID=Connect("",$id_monitor,$glpi_id,MONITOR_TYPE);
 						addToOcsArray($glpi_id,array($connID=>$mon["name"]),"import_monitor");
 					}
 				} else {
@@ -1196,7 +1219,6 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 		}
 		break;
 	}
-	
 	
 	// Disconnect Unexisting Items not found in OCS
 	if ($do_clean&&count($import_periph)){
