@@ -821,6 +821,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 function showCalendarForm($form,$element,$value='',$withtemplate=''){
 		global $HTMLRel,$lang;
 		$rand=mt_rand();
+		if (empty($value)) $value=date("Y-m-d");
 		echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='10' value=\"".convDate($value)."\">";
 		echo "<input id='data$rand' type='hidden' name='$element' size='10' value=\"".$value."\">";
 		

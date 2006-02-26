@@ -50,8 +50,36 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 	echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
 		autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
-	} else { // dropdown case
-		dropdown($search["table"],$search["linkfield"]);
+	} else { 
+		include ($phproot."/glpi/includes_financial.php");
+		if ($search["table"]=="glpi_infocoms"){ // infocoms case
+			switch ($search["field"]){
+				case "buy_date" :
+				case "use_date" :
+					showCalendarForm("massiveaction_form",$search["field"]);
+					echo "&nbsp;&nbsp;";
+					break;
+				case "amort_type" :
+					dropdownAmortType("amort_type");
+					break;
+				case "amort_time" :
+					dropdownDuration("amort_time");
+					break;
+				case "warranty_duration" :
+					dropdownContractTime("warranty_duration");
+					echo " ".$lang["financial"][57]."&nbsp;&nbsp;";
+					break;
+				default :
+					autocompletionTextField($search["field"],$search["table"],$search["field"]);
+					break;
+			}
+		} else if ($search["table"]=="glpi_enterprises_infocoms"){ // Infocoms enterprises
+			dropdownValue("glpi_enterprises","FK_enterprise");
+		} else if ($search["table"]=="glpi_dropdown_budget"){ // Infocoms budget
+			dropdownValue("glpi_dropdown_budget","budget");
+		} else {// dropdown case
+			dropdown($search["table"],$search["linkfield"]);
+		}
 	}
 	echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 }
