@@ -3085,7 +3085,7 @@ if(!FieldExists("glpi_followups","realtime")) {
 	$db->query($query) or die("0.65 add realtime in followups".$lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_config","mailing_attrib_attrib")) {
-	$query="ALTER TABLE `glpi_config` ADD `mailing_attrib_attrib` tinyint(4) DEFAULT '1' AFTER `mailing_finish_user` ;";
+	$query="ALTER TABLE `glpi_config` ADD `mailing_attrib_attrib` tinyint(4) NOT NULL DEFAULT '1' AFTER `mailing_finish_user` ;";
 	$db->query($query) or die("0.65 add mailing_attrib_attrib in config".$lang["update"][90].$db->error());
 }
 
@@ -3534,22 +3534,25 @@ if(FieldExists("glpi_config","cut")) {
 		CHANGE `ldap_rootdn` `ldap_rootdn` VARCHAR( 200 ) NULL ,
 		CHANGE `ldap_pass` `ldap_pass` VARCHAR( 200 ) NULL ,
 		CHANGE `admin_email` `admin_email` VARCHAR( 200 ) NULL ,
-		CHANGE `mailing_signature` `mailing_signature` VARCHAR( 200 ) DEFAULT '--' ,
-		CHANGE `mailing_new_admin` `mailing_new_admin` tinyint(4) DEFAULT '1' ,
-		CHANGE `mailing_followup_admin` `mailing_followup_admin` tinyint(4) DEFAULT '1' ,
-		CHANGE `mailing_finish_admin` `mailing_finish_admin` tinyint(4) DEFAULT '1' ,
-		CHANGE `mailing_new_all_admin` `mailing_new_all_admin` tinyint(4) DEFAULT '0' ,
-		CHANGE `mailing_followup_all_admin` `mailing_followup_all_admin` tinyint(4) DEFAULT '0' ,
-		CHANGE `mailing_finish_all_admin` `mailing_finish_all_admin` tinyint(4) DEFAULT '0' ,
-		CHANGE `mailing_new_all_normal` `mailing_new_all_normal` tinyint(4) DEFAULT '0' ,
-		CHANGE `mailing_followup_all_normal` `mailing_followup_all_normal` tinyint(4) DEFAULT '0' ,
-		CHANGE `mailing_finish_all_normal` `mailing_finish_all_normal` tinyint(4) DEFAULT '0' ,
-		CHANGE `mailing_new_attrib` `mailing_new_attrib` tinyint(4) DEFAULT '1' ,
-		CHANGE `mailing_followup_attrib` `mailing_followup_attrib` tinyint(4) DEFAULT '1' ,
-		CHANGE `mailing_finish_attrib` `mailing_finish_attrib` tinyint(4) DEFAULT '1' ,
-		CHANGE `mailing_new_user` `mailing_new_user` tinyint(4) DEFAULT '1' ,
-		CHANGE `mailing_followup_user` `mailing_followup_user` tinyint(4) DEFAULT '1' ,
-		CHANGE `mailing_finish_user` `mailing_finish_user` tinyint(4) DEFAULT '1' ,
+		CHANGE `mailing_signature` `mailing_signature` VARCHAR( 200 ) NOT NULL DEFAULT '--' ,
+		CHANGE `mailing_new_admin` `mailing_new_admin` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_followup_admin` `mailing_followup_admin` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_finish_admin` `mailing_finish_admin` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_new_all_admin` `mailing_new_all_admin` tinyint(4) NOT NULL DEFAULT '0' ,
+		CHANGE `mailing_followup_all_admin` `mailing_followup_all_admin` tinyint(4) NOT NULL DEFAULT '0' ,
+		CHANGE `mailing_finish_all_admin` `mailing_finish_all_admin` tinyint(4) NOT NULL DEFAULT '0' ,
+		CHANGE `mailing_new_all_normal` `mailing_new_all_normal` tinyint(4) NOT NULL DEFAULT '0' ,
+		CHANGE `mailing_followup_all_normal` `mailing_followup_all_normal` tinyint(4) NOT NULL DEFAULT '0' ,
+		CHANGE `mailing_finish_all_normal` `mailing_finish_all_normal` tinyint(4) NOT NULL DEFAULT '0' ,
+		CHANGE `mailing_new_attrib` `mailing_new_attrib` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_followup_attrib` `mailing_followup_attrib` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_finish_attrib` `mailing_finish_attrib` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_new_user` `mailing_new_user` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_followup_user` `mailing_followup_user` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_finish_user` `mailing_finish_user` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_resa_all_admin` `mailing_resa_all_admin` tinyint(4) NOT NULL DEFAULT '0' ,
+		CHANGE `mailing_resa_user` `mailing_resa_user` tinyint(4) NOT NULL DEFAULT '1' ,
+		CHANGE `mailing_resa_admin` `mailing_resa_admin` tinyint(4) NOT NULL DEFAULT '1' ,
 		CHANGE `ldap_field_name` `ldap_field_name` VARCHAR( 200 ) NULL ,
 		CHANGE `ldap_field_email` `ldap_field_email` VARCHAR( 200 ) NULL ,
 		CHANGE `ldap_field_location` `ldap_field_location` VARCHAR( 200 ) NULL ,
@@ -3629,23 +3632,23 @@ if(FieldExists("glpi_tracking","assign_type")) {
 }
 
 if(!FieldExists("glpi_config","mailing_update_admin")) {
-	$query="ALTER TABLE `glpi_config` ADD `mailing_update_admin` tinyint(4) DEFAULT '1' AFTER `mailing_new_admin` ;";
+	$query="ALTER TABLE `glpi_config` ADD `mailing_update_admin` tinyint(4) NOT NULL DEFAULT '1' AFTER `mailing_new_admin` ;";
 	$db->query($query) or die("0.65 add mailing_update_admin in config".$lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_config","mailing_update_all_admin")) {
-	$query="ALTER TABLE `glpi_config` ADD `mailing_update_all_admin` tinyint(4) DEFAULT '0' AFTER `mailing_new_all_admin` ;";
+	$query="ALTER TABLE `glpi_config` ADD `mailing_update_all_admin` tinyint(4) NOT NULL DEFAULT '0' AFTER `mailing_new_all_admin` ;";
 	$db->query($query) or die("0.65 add mailing_update_all_admin in config".$lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_config","mailing_update_all_normal")) {
-	$query="ALTER TABLE `glpi_config` ADD `mailing_update_all_normal` tinyint(4) DEFAULT '0' AFTER `mailing_new_all_normal` ;";
+	$query="ALTER TABLE `glpi_config` ADD `mailing_update_all_normal` tinyint(4) NOT NULL DEFAULT '0' AFTER `mailing_new_all_normal` ;";
 	$db->query($query) or die("0.65 add mailing_update_all_normal in config".$lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_config","mailing_update_attrib")) {
-	$query="ALTER TABLE `glpi_config` ADD `mailing_update_attrib` tinyint(4) DEFAULT '1' AFTER `mailing_new_attrib` ;";
+	$query="ALTER TABLE `glpi_config` ADD `mailing_update_attrib` tinyint(4) NOT NULL DEFAULT '1' AFTER `mailing_new_attrib` ;";
 	$db->query($query) or die("0.65 add mailing_update_attrib in config".$lang["update"][90].$db->error());
 }
 if(!FieldExists("glpi_config","mailing_update_user")) {
-	$query="ALTER TABLE `glpi_config` ADD `mailing_update_user` tinyint(4) DEFAULT '1' AFTER `mailing_new_user` ;";
+	$query="ALTER TABLE `glpi_config` ADD `mailing_update_user` tinyint(4) NOT NULL DEFAULT '1' AFTER `mailing_new_user` ;";
 	$db->query($query) or die("0.65 add mailing_update_user in config".$lang["update"][90].$db->error());
 }
 
@@ -3731,11 +3734,12 @@ if(!TableExists("glpi_ocs_config")) {
   `import_device_modems` int(2) NOT NULL default '0',
   `import_ip` int(2) NOT NULL default '0',
   `default_state` int(11) NOT NULL default '0',
+  `tag_limit` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM";
 
 	$db->query($query) or die("0.65 MODE OCS creation ocs_config ".$lang["update"][90].$db->error());
-	$query = "INSERT INTO `glpi_ocs_config` VALUES (1, 'ocs', 'ocs', 'localhost', 'ocsweb', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);";
+	$query = "INSERT INTO `glpi_ocs_config` VALUES (1, 'ocs', 'ocs', 'localhost', 'ocsweb', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');";
 	$db->query($query) or die("0.65 MODE OCS add default config ".$lang["update"][90].$db->error());
 
 }

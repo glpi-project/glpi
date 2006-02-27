@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-02-26 23:19
+#GLPI Dump database on 2006-02-27 18:04
 
 ### Dump table glpi_cartridges
 
@@ -138,31 +138,31 @@ CREATE TABLE `glpi_config` (
     `ldap_rootdn` varchar(200),
     `ldap_pass` varchar(200),
     `admin_email` varchar(200),
-    `mailing_resa_all_admin` varchar(200) DEFAULT '0' NOT NULL,
-    `mailing_resa_user` varchar(200) DEFAULT '1' NOT NULL,
-    `mailing_resa_admin` varchar(200) DEFAULT '1' NOT NULL,
-    `mailing_signature` varchar(200) DEFAULT '--',
-    `mailing_new_admin` tinyint(4) DEFAULT '1',
-    `mailing_update_admin` tinyint(4) DEFAULT '1',
-    `mailing_followup_admin` tinyint(4) DEFAULT '1',
-    `mailing_finish_admin` tinyint(4) DEFAULT '1',
-    `mailing_new_all_admin` tinyint(4) DEFAULT '0',
-    `mailing_update_all_admin` tinyint(4) DEFAULT '0',
-    `mailing_followup_all_admin` tinyint(4) DEFAULT '0',
-    `mailing_finish_all_admin` tinyint(4) DEFAULT '0',
-    `mailing_new_all_normal` tinyint(4) DEFAULT '0',
-    `mailing_update_all_normal` tinyint(4) DEFAULT '0',
-    `mailing_followup_all_normal` tinyint(4) DEFAULT '0',
-    `mailing_finish_all_normal` tinyint(4) DEFAULT '0',
-    `mailing_new_attrib` tinyint(4) DEFAULT '1',
-    `mailing_update_attrib` tinyint(4) DEFAULT '1',
-    `mailing_followup_attrib` tinyint(4) DEFAULT '1',
-    `mailing_finish_attrib` tinyint(4) DEFAULT '1',
-    `mailing_new_user` tinyint(4) DEFAULT '1',
-    `mailing_update_user` tinyint(4) DEFAULT '1',
-    `mailing_followup_user` tinyint(4) DEFAULT '1',
-    `mailing_finish_user` tinyint(4) DEFAULT '1',
-    `mailing_attrib_attrib` tinyint(4) DEFAULT '1',
+    `mailing_resa_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_resa_user` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_resa_admin` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_signature` varchar(200) DEFAULT '--' NOT NULL,
+    `mailing_new_admin` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_update_admin` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_followup_admin` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_finish_admin` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_new_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_update_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_followup_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_finish_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_new_all_normal` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_update_all_normal` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_followup_all_normal` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_finish_all_normal` tinyint(4) DEFAULT '0' NOT NULL,
+    `mailing_new_attrib` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_update_attrib` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_followup_attrib` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_finish_attrib` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_new_user` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_update_user` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_followup_user` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_finish_user` tinyint(4) DEFAULT '1' NOT NULL,
+    `mailing_attrib_attrib` tinyint(4) DEFAULT '1' NOT NULL,
     `ldap_field_name` varchar(200),
     `ldap_field_email` varchar(200),
     `ldap_field_location` varchar(200),
@@ -192,7 +192,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2006-02-26' NOT NULL,
+    `last_update_check` date DEFAULT '2006-02-27' NOT NULL,
     `founded_new_version` varchar(10),
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -210,7 +210,7 @@ CREATE TABLE `glpi_config` (
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','0','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/backups/index.php?dump=1&duree=8&rowlimit=5&offsetrow=-1&offsettable=-1&cpt=278&fichier=/home/dombre/httpd/glpi-test/backups/dump/2006-02-26-23-11.sql','0','','0','2006-02-26','','100','*','0','50','1','1','0','name','0','50','1','1','0');
+INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.65','GLPI powered by indepnet','/glpi','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','uid','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','french','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/backups/index.php?dump=1&duree=58&rowlimit=5&offsetrow=-1&offsettable=-1&cpt=278&fichier=/home/dombre/httpd/glpi-test/backups/dump/2006-02-27-18-01.sql','0','','0','2006-02-27','','100','*','0','50','1','1','0','name','0','50','1','0','0');
 
 ### Dump table glpi_connect_wire
 
@@ -1129,7 +1129,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-26 23:15:24','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-02-27 18:04:33','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1430,10 +1430,11 @@ CREATE TABLE `glpi_ocs_config` (
     `import_device_modems` int(2) DEFAULT '0' NOT NULL,
     `import_ip` int(2) DEFAULT '0' NOT NULL,
     `default_state` int(11) DEFAULT '0' NOT NULL,
+    `tag_limit` varchar(255) NOT NULL,
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_ocs_config VALUES ('1','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
+INSERT INTO glpi_ocs_config VALUES ('1','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','');
 
 ### Dump table glpi_ocs_link
 

@@ -36,7 +36,19 @@
 function ocsShowNewComputer($check,$start,$tolinked=0){
 global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
 
-$query_ocs = "select * from hardware order by LASTDATE";
+$cfg_ocs=getOcsConf(1);
+
+$WHERE="";
+if (!empty($cfg_ocs["tag_limit"])){
+	$splitter=explode("$",$cfg_ocs["tag_limit"]);
+	if (count($splitter)){
+		$WHERE="WHERE TAG='".$splitter[0]."' ";
+		for ($i=1;$i<count($splitter);$i++)
+			$WHERE.=" OR TAG='".$splitter[$i]."' ";
+	}
+}
+
+$query_ocs = "select hardware.*, accountinfo.TAG AS TAG from hardware INNER JOIN accountinfo ON (hardware.DEVICEID = accountinfo.DEVICEID) $WHERE order by hardware.NAME";
 $result_ocs = $dbocs->query($query_ocs) or die($dbocs->error());
 
 // Existing OCS - GLPI link
@@ -55,6 +67,7 @@ if ($dbocs->numrows($result_ocs)>0){
 		$data=addslashes_deep($data);
 		$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
 		$hardware[$data["DEVICEID"]]["name"]=$data["NAME"];
+		$hardware[$data["DEVICEID"]]["TAG"]=$data["TAG"];
 	}
 	// Get all links between glpi and OCS
 	$already_linked=array();
@@ -102,15 +115,15 @@ if ($dbocs->numrows($result_ocs)>0){
 
 		
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th>".$lang["ocsng"][5]."</th><th>".$lang["common"][27]."</th><th>&nbsp;</th></tr>";
+		echo "<tr><th>".$lang["ocsng"][5]."</th><th>".$lang["common"][27]."</th><th>TAG</th><th>&nbsp;</th></tr>";
 		
-		echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
+		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 		echo "<input type='submit' name='import_ok' value='".$lang["buttons"][37]."'>";
 		echo "</td></tr>";
 
 		
 		foreach ($hardware as $ID => $tab){
-			echo "<tr class='tab_bg_2'><td>".$tab["name"]."</td><td>".$tab["date"]."</td><td>";
+			echo "<tr class='tab_bg_2'><td>".$tab["name"]."</td><td>".$tab["date"]."</td><td>".$tab["TAG"]."</td><td>";
 			
 			if ($tolinked==0)
 			echo "<input type='checkbox' name='toimport[$ID]' ".($check=="all"?"checked":"").">";
@@ -123,7 +136,7 @@ if ($dbocs->numrows($result_ocs)>0){
 			echo "</td></tr>";
 		
 		}
-		echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
+		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 		echo "<input type='submit' name='import_ok' value='".$lang["buttons"][37]."'>";
 		echo "</td></tr>";
 		echo "</table>";
@@ -301,10 +314,10 @@ function ocsUpdateComputer($ID,$dohistory){
 	
 
 		$mixed_checksum=intval($ocs_checksum) &  intval($cfg_ocs["checksum"]);
-//		echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
-//		echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
-//		echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
-
+		//echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
+		//echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
+		//echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
+		
 		// Is an update to do ?
 		if ($mixed_checksum){
 
@@ -1333,7 +1346,6 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 			$name= $data2["NAME"];
 			$version = $data2["VERSION"];
 			$publisher = $data2["PUBLISHER"];
-			
 			// Import Software
 			if (!in_array($name,$already_imported)){ // Manage multiple software with the same name = only one install
 				$already_imported[]=$name;
