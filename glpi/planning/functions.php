@@ -410,7 +410,6 @@ while ($data=$db->fetch_array($result)){
 	
 	$remind=new Reminder();
 	
-	$i=0;
 	if ($db->numrows($result2)>0)
 	while ($data=$db->fetch_array($result2)){
 		$remind->getFromDB($data["ID"]);
@@ -613,7 +612,7 @@ function addPlanningTracking($input,$target,$nomail=0){
    $resa->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":".$input["begin_min"].":00";
    $resa->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
 
-	if (!empty($target)){
+//	if (!empty($target)){
 		if (!$resa->test_valid_date()){
 			$resa->displayError("date",$input["id_followup"],$target);
 			return false;
@@ -623,11 +622,11 @@ function addPlanningTracking($input,$target,$nomail=0){
 			$resa->displayError("is_res",$input["id_followup"],$target);
 			return false;
 		}
-	} else if ($resa->is_alreadyplanned()||!$resa->test_valid_date()) {
+/*	} else if ($resa->is_alreadyplanned()||!$resa->test_valid_date()) {
 		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["job"][36];
 		return false;
 	}
-
+*/
 	// Auto update Status
 	$job=new Job();
 	$job->getFromDB($input["id_tracking"],0);

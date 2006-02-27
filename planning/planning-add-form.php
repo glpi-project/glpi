@@ -52,10 +52,13 @@ checkAuthentication("admin");
 if (isset($_POST["add_planning"])){
 
 checkAuthentication("normal");
-if (addPlanningTracking($_POST,$_SERVER["REQUEST_URI"])){
+if (addPlanningTracking($_POST,"")){
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["id_tracking"]);
 } 
+	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	glpi_header($_POST["referer"]);
+
 } else if (isset($_POST["edit_planning"])){
 	
 	list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);

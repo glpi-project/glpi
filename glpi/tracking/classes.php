@@ -217,7 +217,8 @@ class Job {
 			$assign=$lang["mailing"][105];
 		$message.= $lang["mailing"][8]." ".$assign."\n";
 		$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."\n";
-		$message.= $lang["mailing"][28]." ".$contact."\n";
+		if ($this->fields["device_type"]!=SOFTWARE_TYPE)
+			$message.= $lang["mailing"][28]." ".$contact."\n";
 		if ($this->fields["emailupdates"]=="yes"){
 		        $message.=$lang["mailing"][103]." ".$lang["choice"][1]."\n";
 	        } else {
