@@ -2117,7 +2117,7 @@ function showAddFollowupForm($tID){
 		echo "<td>";
 
 		echo "<div id='plan'  onClick='showPlan()'>\n";
-		echo "<span style='font-weight: bold;text-decoration: none; color : #009966;'>".$lang["job"][34]."</span>";
+		echo "<span style='font-weight: bold;text-decoration: none; color : #009966; cursor:pointer;'>".$lang["job"][34]."</span>";
 		echo "</div>\n";	
 
 		echo "<div id='viewplan'>\n";
@@ -2180,7 +2180,7 @@ function showUpdateFollowupForm($ID){
 			echo "<table width='100%'>";
 			echo "<tr class='tab_bg_2'><td width='50%'>";
 			echo "<table width='100%' bgcolor='#FFFFFF'>";
-			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["common"][27].":<br><strong>".convDateTime($data["date"])."</strong></td>";
+			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["common"][27].":<br>".convDateTime($data["date"])."</td>";
 			echo "<td width='90%'>";
 			
 			if ($isadmin){

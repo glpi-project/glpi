@@ -149,7 +149,7 @@ function showReminderForm ($target,$ID) {
 			echo "<span style='font-weight: bold;text-decoration: none; color : #009966; cursor:pointer;'>".$lang["reminder"][12]."</span>";
 		}else{
 			echo "<div id='plan'  onClick='showPlan()'>\n";
-			echo "<span style='font-weight: bold;text-decoration: none; color : #009966;'>".convDateTime($remind->fields["begin"])."->".convDateTime($remind->fields["end"])."</span>";
+			echo "<span style='font-weight: bold;text-decoration: none; color : #009966;cursor:pointer;'>".convDateTime($remind->fields["begin"])."->".convDateTime($remind->fields["end"])."</span>";
 		}	
 		
 		echo "</div>\n";

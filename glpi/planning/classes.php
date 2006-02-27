@@ -159,20 +159,20 @@ class PlanningTracking{
 	function displayError($type,$ID,$target){
 		global $HTMLRel,$lang;
 		
-		echo "<br><div align='center'>";
+		//echo "<br><div align='center'>";
 		switch ($type){
 			case "date":
-			 echo $lang["planning"][1];
+			 $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["planning"][1]."<br>";
 			break;
 			case "is_res":
-			 echo $lang["planning"][0];
+			 $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["planning"][0]."<br>";
 			break;
 			default :
-				echo "Erreur Inconnue";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].="Erreur Inconnue<br>";
 			break;
 		}
-		echo "<br><a href='".$target."?job=$ID'>".$lang["buttons"][13]."</a>";
-		echo "</div>";
+		//echo "<br><a href='".$target."?job=$ID'>".$lang["buttons"][13]."</a>";
+		//echo "</div>";
 		}
 
 }
