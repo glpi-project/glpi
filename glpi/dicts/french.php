@@ -864,6 +864,7 @@ $lang["ocsconfig"][13]="Import unique : tout est importé tel quel";
 $lang["ocsconfig"][14]="Import global : tout est importé mais le matériel est géré de manière globale (sans doublons)";
 $lang["ocsconfig"][15]="Pas d'import : GLPI n'importera pas ces éléments";
 $lang["ocsconfig"][16]="Etat par défaut";
+$lang["ocsconfig"][17]="Limiter l'importation aux tags suivants (séparateur $, rien pour tous)";
 $lang["ocsconfig"][19]="OS";
 $lang["ocsconfig"][24]="Domaine";
 $lang["ocsconfig"][27]="Informations générales Ordinateurs";
