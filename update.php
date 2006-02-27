@@ -3183,35 +3183,37 @@ if(FieldExists("glpi_infocoms","comments")) {
 
 $new_model=array("monitors","networking","peripherals","printers");
 
-foreach ($new_model as $model)
-if(!TableExists("glpi_dropdown_model_$model")) {
-	// model=type pour faciliter la gestion en post mise �jour : ya plus qu'a deleter les elements non voulu
-	// cela conviendra a tout le monde en fonction de l'utilisation du champ type
+foreach ($new_model as $model){
+	if(!TableExists("glpi_dropdown_model_$model")) {
+		// model=type pour faciliter la gestion en post mise �jour : ya plus qu'a deleter les elements non voulu
+		// cela conviendra a tout le monde en fonction de l'utilisation du champ type
 
-	$query = "CREATE TABLE `glpi_dropdown_model_$model` (
-  	`ID` int(11) NOT NULL auto_increment,
-  	`name` varchar(255) NOT NULL default '',
-  	PRIMARY KEY  (`ID`)
-	) TYPE=MyISAM;";
+		$query = "CREATE TABLE `glpi_dropdown_model_$model` (
+  			`ID` int(11) NOT NULL auto_increment,
+  		`name` varchar(255) NOT NULL default '',
+  		PRIMARY KEY  (`ID`)
+		) TYPE=MyISAM;";
 
-	$db->query($query) or die("0.6 add table glpi_dropdown_model_$model ".$lang["update"][90].$db->error());
+		$db->query($query) or die("0.6 add table glpi_dropdown_model_$model ".$lang["update"][90].$db->error());
 
-	// copie type dans model
-	$query="SELECT * FROM glpi_type_$model";
-	$result=$db->query($query);	
-	if ($db->numrows($result)>0)
-	while ($data=$db->fetch_array($result)){
-		$query="INSERT INTO `glpi_dropdown_model_$model` (`ID`,`name`) VALUES ('".$data['ID']."','".addslashes($data['name'])."');";
-		$db->query($query) or die("0.6 insert value in glpi_dropdown_model_$model ".$lang["update"][90].$db->error());		
+		// copie type dans model
+		$query="SELECT * FROM glpi_type_$model";
+		$result=$db->query($query);	
+		if ($db->numrows($result)>0)
+		while ($data=$db->fetch_array($result)){
+			$query="INSERT INTO `glpi_dropdown_model_$model` (`ID`,`name`) VALUES ('".$data['ID']."','".addslashes($data['name'])."');";
+			$db->query($query) or die("0.6 insert value in glpi_dropdown_model_$model ".$lang["update"][90].$db->error());		
+		}
+		mysql_free_result($result);
 	}
-	mysql_free_result($result);
+	
+	if (!FieldExists("glpi_$model","model")){
+		$query="ALTER TABLE `glpi_$model` ADD `model` INT(11) DEFAULT NULL AFTER `type` ;";
+		$db->query($query) or die("0.6 add model in $model".$lang["update"][90].$db->error());
 
-	$query="ALTER TABLE `glpi_$model` ADD `model` INT(11) DEFAULT NULL AFTER `type` ;";
-	$db->query($query) or die("0.6 add model in $model".$lang["update"][90].$db->error());
-
-	$query="UPDATE `glpi_$model` SET `model` = `type` ";
-	$db->query($query) or die("0.6 add model in $model".$lang["update"][90].$db->error());
-	 
+		$query="UPDATE `glpi_$model` SET `model` = `type` ";
+		$db->query($query) or die("0.6 add model in $model".$lang["update"][90].$db->error());
+	 }
 }
 
 // Update pour les cartouches compatibles : type -> model
