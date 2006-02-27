@@ -1725,7 +1725,7 @@ function showJobDetails ($ID){
 		echo $lang["tracking"][20].":</td><td>";
 		if ($isadmin)
 			dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
-		else getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
+		else echo getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
 		echo "</td></tr>";
 
 		echo "</table></td>";
