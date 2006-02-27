@@ -1597,9 +1597,10 @@ function addFollowup($input,$type="followup"){
 	
 		if ($input["hour"]>0||$input["minute"]>0)
 		$input["realtime"]=$input["hour"]+$input["minute"]/60;
-		unset($input["minute"]);
-		unset($input["hour"]);
 	}
+
+	unset($input["minute"]);
+	unset($input["hour"]);
 
 	$input["date"] = date("Y-m-d H:i:s");
 	foreach ($input as $key => $val) {
@@ -1607,7 +1608,6 @@ function addFollowup($input,$type="followup"){
 			$fup->fields[$key] = $input[$key];
 		}
 	}
-
 	$newID=$fup->addToDB();	
 
 	$job=new Job;
