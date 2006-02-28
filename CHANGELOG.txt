@@ -1,5 +1,123 @@
 Changelog Complet : http://mantis.indepnet.org/changelog_page.php
 
+*** GLPI  0.65 ***
+
+- 0000407: [Module Gestion] Cosummables assigned to?
+- 0000477: [Général] Système de pense-bête et d'évenements programmés
+- 0000469: [Autre] gérer les problématiques d'importation de backup de versions antérieures sur une version supérieure
+- 0000485: [Module Gestion] Bug calcul date fin garantie
+- 0000027: [Module Inventaire] Système de modif massive
+- 0000368: [Général] Intégration du plugin OCS dans GLPI et mise en place d'un GLPI mode OCS
+- 0000467: [Général] Autoriser un affichage : grand écran
+- 0000446: [Module Assistance] Un champ cout dans les interventions
+- 0000436: [Module Gestion] Modifs sur module gestion
+- 0000474: [Module Inventaire] Système d'historisation des changements sur les éléments inventoriés
+- 0000037: [Module Inventaire] ajouter un champs "commentaire" pour les licences
+- 0000478: [Général] Support TLS pour connection LDAP
+- 0000430: [Module Gestion] Ajouter la possiblité d'uploader de gros fichiers via ftp pour les documents
+- 0000308: [Module Gestion] de nouveaux statuts pour plus de souplesse
+- 0000468: [Module Inventaire] Lister les élements inventoriés en fonction de l'age
+- 0000399: [Autre] Refonte système ajax de connection de ports reseaux
+- 0000408: [Configuration] Correction Bug : problème de conservation des logs
+- 0000410: [Général] Association de document avec un contrat
+- 0000215: [Module Assistance] Ajout d'un log et d'un mail lors de la plannification d'une intervention
+- 0000396: [Module Inventaire] Correction bug sur déconnexion de periphérique
+- 0000414: [Importation] Augmentation de la capacité du champ version dans la table glpi_software
+- 0000427: [Module Inventaire] Correction sur listbox d'ajout de contrat : Affichage par numéro de contrat.
+- 0000418: [Autre] Correction sur helpdesk.html (qui ne renvoyait pas les variables en utf8)
+- 0000397: [Module Gestion] Amélioration de la Modification du nombre de licence d'un logiciel
+- 0000116: [Autre] Amélioration de la modification des Dates de renouvellement pour les licences
+- 0000437: [Configuration] Amélioration de la récupération des infos LDAP
+- 0000438: [Module Inventaire] Refonte des moteurs de recherche : recherche multicritère + méta-recherche
+- 0000439: [Module Inventaire] Affichage du nom du gabarit utilisé dans l'info-form du matériel
+- 0000440: [Configuration] Amélioration liens protocolés : Formulaire de génération en direct de fichier de configuration (type RDP...)
+- 0000442: [Module Assistance] Planning : Ajout vue par Mois + bouton "précédent" "suivant"
+- 0000441: [Module Inventaire] Ajout d'un Onglet "Notes" pour tous les éléments de l'inventaire.
+- 0000454: [Module Outils] Utilisateur de type normal : Accès aux documents de la base de connaissance
+- 0000451: [Général] Utilisateurs : Possibilité de désactivation de compte
+- 0000336: [Module Outils] Module réservation - Augmentation de la taille du champ commentaire
+- 0000453: [Module Assistance] Ajout du nom du contact dans les emails de suivi d'un ticket
+- 0000417: [Général] Amélioration de la compatibilité avec Mysql 5
+- 0000416: [Module Outils] Envoi d'un mail à l'annulation d'une reservation
+- 0000473: [Module Inventaire] Moniteur ajout d'un champs DVI à coté des connectiques SUB-D et BNC
+- 0000470: [Autre] Utilisateur de type Post-only peut poster des suivis sur un ticket qu'il a ouvert
+- 0000475: [Module Assistance] Decouplage mailing : modification ticket ET ajout followup
+- 0000452: [Module Assistance] Attribuer un ticket en interne ET en externe
+- 0000405: [Module Gestion] Differents icons if commercial infos is inserted or not
+- 0000464: [Module Statistiques / Rapports] Bug affichage module reservation en post-only
+- 0000449: [Module Statistiques / Rapports] Statistiques par priorité
+- 0000443: [Général] Bouton reset dans les formulaires de recherche.
+- 0000395: [Module Inventaire] Ajout champ mise à jour auto dans les computers
+- 0000431: [Module Assistance] Refonte de l'ergonomie du système de suivi
+- 0000263: [Module Inventaire] Modèles pour tous les éléments de l'inventaire
+- 0000433: [Général] Nouveau menus déroulants
+- 0000350: [Module Gestion] Pb fonction sendfile avec IE
+- 0000432: [Module Assistance] Tracking : ajout d'icone pour l'affichage du statut des tickets
+- 0000429: [Général] Configurabilité de l'affichage des ID GLPI
+- 0000428: [Général] Onglets suivant précédent configurable : ID ou NOM
+- 0000411: [Général] internationalisation des logs
+- 0000409: [Module Gestion] Problème gestion commerciale licences
+- 0000404: [Général] autocompletition of descriptive field...
+- 0000406: [Module Configuration] Places and LDAP...
+- 0000394: [Module Configuration] Pouvoir ajouter les utilisateurs d'une authentification externe + ajout automatique des utilisateurs au login ou non.
+- 0000393: [Module Configuration] Backquoter les noms des tables et des champs dans les dumps SQL
+- 0000374: [Module Assistance] Compléter le helpdesk central
+- 0000390: [Module Outils] Différentier les items de la FAQ publique et non publique dans l'arborescence
+- 0000391: [Module Assistance] Boite de modification de suivi
+- 0000327: [Module Assistance] suivi par email
+- 0000279: [Module Assistance] Gestion des plannings
+- 0000388: [Général] Fichier joint / helpdesk.php
+- 0000232: [Autre] modification de données d'un incident
+- 0000357: [Module Assistance] Ajout d'une pièce jointe
+- 0000328: [Module Assistance] Tâches planifiées
+- 0000384: [Autre] Rapport des etats
+- 0000387: [Configuration] Ajouter système de check de mise à jour
+- 0000383: [Général] Moteur de recherche sans souvenir (ex voir les elements purgés)
+- 0000382: [Installation / Mise à Jour] warning mémory limit
+- 0000381: [Général] Boite de recherche ajax fonction du nombre d'element a afficher
+- 0000379: [Module Assistance] Délai de connection des utilisateurs locaux avec une authentification externe
+- 0000378: [Module Assistance] Authentification externe : IMAP/POP avec domaine dans le login
+- 0000380: [Autre] Bug connection users locaux avec caractères non standard
+- 0000377: [Module Inventaire] Recherche sur adresse mac fonctionne 1 fois sur deux.
+- 0000261: [Module Gestion] Proposer la location des logiciels
+- 0000269: [Module Inventaire] Ajout automatique de licence à acheter, si installation de logiciel sans licence.
+- 0000295: [Module Inventaire] Impossible de rechercher une quantité de RAM ou la taille de disque dur
+- 0000376: [Général] Ajout texte libre au login
+- 0000373: [Module Assistance] L'ajout d'un suivi d'intervention ne crée pas l'entrée correcte dans les logs.
+- 0000049: [Module Inventaire] Connection réseau avec Peripherique bidirectionnel
+- 0000369: [Module Inventaire] Ajax sur toutes les connexions à faire
+- 0000371: [Module Assistance] Problème slashes dans mails
+- 0000025: [Module Assistance] Interventions et entreprises
+- 0000271: [Module Assistance] Voir toutes les interventions attribuées à tel utilisateur
+- 0000370: [Général] Ajouter la gestion des deleted pour contacts, users
+- 0000265: [Module Assistance] permettre de soummettre une demande sans renseigner le numéro de matériel dans chaque type d'intervention
+- 0000001: [Général] Impossible de mettre un apostrophe dans les mots de passe (baaz)
+- 0000358: [Général] Nouveau système de recherche
+- 0000286: [Module Configuration] Pb de connexion ldap avec DN d'utilisateur qui n'utilise pas le champ ldap uid
+- 0000304: [Configuration] Ajout d'un lien http dans les EMails
+- 0000317: [Module Inventaire] Résultat erronée d'une recherche
+- 0000322: [Général] recherche domaine et reseau
+- 0000311: [Module Inventaire] Ajout d'un filtre sur "l'état" au niveau de la recherche d'ordinateurs ou autre matériel
+- 0000316: [Module Gestion] Affichage numéro d'inventaire
+- 0000360: [Module Assistance] Afficher la référence de l'intervention au début du sujet des mail de suivi
+- 0000361: [Général] Disparition de la colonne "Etat"
+- 0000359: [Autre] Les dropdowns AJAX renvoient une erreur de login.
+- 0000354: [Autre] vision fichier XML ...
+- 0000351: [Général] Mauvais gestion de l'affichage "Pas d'xx trouvé" sur les info form
+- 0000303: [Module Gestion] Typage data amort_type non cohérent dans DB
+- 0000325: [Général] Limite de taille de fichier internationaliser
+- 0000318: [Module Statistiques / Rapports] Champ modele absent des rapports
+- 0000337: [Module Outils] Liens externes pour les switchs
+- 0000330: [Module Configuration] Modification des informations utilisateurs non prises en compte
+- 0000352: [Module Assistance] Le changement d'utilisateur n'est pas pris en compte pour l'envoi des mails de suivi d'intervention
+- 0000002: [Installation / Mise à Jour] Probleme des caracteres spéciaux dans le champs de connection mysql.
+- 0000349: [Module Inventaire] lors de la saisie d'un logiciel, la liste déroulante se trouve dans la colonne "expiration" et non dans la colonne "nom".
+- 0000332: [Module Inventaire] Suppression et purge ordinateur non prise en compte dans les états
+- 0000307: [Autre] champs mailto dans le nom du rapporteur
+- 0000319: [Module Inventaire] Impossible de déconnecter une imprimante depuis l'onglet connexion d'un ordinateur
+- 0000314: [Général] Problème identification externe et caractères UTF8
+- 0000313: [Module Gestion] Problème sur les coûts de contrat
+
 *** GLPI  0.6 ***
 
 - 0000202: [Package] Release GLPI 0.6 
