@@ -49,8 +49,8 @@ function titleConsumable(){
          GLOBAL  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></td><td><a  class='icon_consol' href=\"consumables-info-form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
-	echo "<td><a class='icon_consol' href='".$HTMLRel."consumables/index.php?synthese=yes'>".$lang["state"][11]."</a></td>";
+         echo "<a href='index.php'><img src=\"".$HTMLRel."pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></a></td><td><a  class='icon_consol' href=\"consumables-info-form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
+	echo "<td><a class='icon_consol' href='index.php?synthese=yes'>".$lang["state"][11]."</a></td>";
          echo "</tr></table></div>";
 }
 
