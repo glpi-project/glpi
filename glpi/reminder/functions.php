@@ -41,7 +41,7 @@ function titleReminder(){
          GLOBAL  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/xxxxxxx.png\" alt='".$lang["reminder"][0]."' title='".$lang["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."reminder/reminder-info-form.php\"><b>".$lang["buttons"][8]."</b></a>";
+         echo "<img src=\"".$HTMLRel."pics/reminder.png\" alt='".$lang["reminder"][0]."' title='".$lang["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."reminder/reminder-info-form.php\"><b>".$lang["buttons"][8]."</b></a>";
          echo "</td></tr></table></div>";
 }
 
