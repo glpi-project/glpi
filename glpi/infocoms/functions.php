@@ -64,7 +64,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "<form name='form_ic' method='post' action=\"$target\">";
 		
 		echo "<div align='center'>";
-		echo "<table class='tab_cadre'>";
+		echo "<table class='tab_cadre".(!ereg("infocoms-show",$_SERVER["PHP_SELF"])?"_fixe":"")."'>";
 
 		echo "<tr><th colspan='4'><b>".$lang["financial"][3]."</b></th></tr>";
 
