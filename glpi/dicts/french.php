@@ -236,6 +236,7 @@ $lang["connect"][21]="Mise à jour automatique de l'adresse MAC qui n'était pas
 $lang["connect"][22]="Attention !! Les adresses MAC des deux matériels ne correspondent pas.";
 
 $lang["consumables"][0]="Consommable";
+$lang["consumables"][1]="En stock";
 $lang["consumables"][2]="Référence";
 $lang["consumables"][6]="Ajouter Type de Consommable...";
 $lang["consumables"][7]="Pas de consommable trouvé";

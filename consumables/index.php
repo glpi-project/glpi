@@ -45,15 +45,20 @@ commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
 titleConsumable();
 
 
-include ($phproot . "/glpi/includes_search.php");
+if (isset($_GET["synthese"])){
+showConsumableSummary($_SERVER["PHP_SELF"]);
 
-manageGetValuesInSearch(CONSUMABLE_TYPE);
+} else {
 
-searchForm(CONSUMABLE_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+	include ($phproot . "/glpi/includes_search.php");
 
-showList(CONSUMABLE_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+	manageGetValuesInSearch(CONSUMABLE_TYPE);
 
+	searchForm(CONSUMABLE_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-commonFooter();
+	showList(CONSUMABLE_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+
+}
+	commonFooter();
 
 ?>
