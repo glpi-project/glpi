@@ -64,7 +64,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "<form name='form_ic' method='post' action=\"$target\">";
 		
 		echo "<div align='center'>";
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<table class='tab_cadre'>";
 
 		echo "<tr><th colspan='4'><b>".$lang["financial"][3]."</b></th></tr>";
 
@@ -708,7 +708,7 @@ if ($db->result($result,0,0)>0) {
 	$text=$lang["buttons"][23];
 }
 
-echo "<span onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\"><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
+echo "<span onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
 }
 
 ?>
