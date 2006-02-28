@@ -292,7 +292,6 @@ $query .= " WHERE glpi_state_item.is_template='0' GROUP BY glpi_state_item.devic
 
 $state_type=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 
-$db->query($query);
 	if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
 		if ($numrows>0){

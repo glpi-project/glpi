@@ -49,8 +49,9 @@ function titleConsumable(){
          GLOBAL  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></td><td><a  class='icon_consol' href=\"consumables-info-form.php\"><b>".$lang["consumables"][6]."</b></a>";
-         echo "</td></tr></table></div>";
+         echo "<img src=\"".$HTMLRel."pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></td><td><a  class='icon_consol' href=\"consumables-info-form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
+	echo "<td><a class='icon_consol' href='".$HTMLRel."consumables/index.php?synthese=yes'>".$lang["state"][11]."</a></td>";
+         echo "</tr></table></div>";
 }
 
 function showConsumableOnglets($target,$withtemplate,$actif){
@@ -691,6 +692,93 @@ function getConsumableStatus($cID){
 global $lang;
 if (isNewConsumable($cID)) return $lang["consumables"][20];
 else if (isOldConsumable($cID)) return $lang["consumables"][22];
+}
+
+
+function showConsumableSummary($target){
+global $db,$lang;
+
+	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type, id_user FROM glpi_consumables WHERE date_out IS NOT NULL GROUP BY FK_glpi_consumables_type,id_user";
+	$used=array();
+
+	if ($result=$db->query($query)){
+		if ($db->numrows($result))
+		while ($data=$db->fetch_array($result))
+			$used[$data["id_user"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
+	}
+
+	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type FROM glpi_consumables WHERE date_out IS NULL GROUP BY FK_glpi_consumables_type";
+	$new=array();
+
+	if ($result=$db->query($query)){
+		if ($db->numrows($result))
+		while ($data=$db->fetch_array($result))
+			$new[$data["FK_glpi_consumables_type"]]=$data["COUNT"];
+	}
+
+	$types=array();
+	$query="SELECT * from glpi_consumables_type";
+	if ($result=$db->query($query)){
+		if ($db->numrows($result))
+		while ($data=$db->fetch_array($result))
+			$types[$data["ID"]]=$data["name"];
+	}
+	sort($types);
+	$total=array();
+	if (count($types)>0){
+
+		// Produce headline
+		echo "<div align='center'><table  class='tab_cadrehov'><tr>";
+
+		// Type			
+		echo "<th>";;
+		echo $lang["setup"][57]."</th>";
+
+		foreach ($types as $key => $type){
+			echo "<th>$type</th>";
+			$total[$key]=0;
+		}
+		echo "<th>".$lang["state"][10]."</th>";
+		echo "</tr>";
+	
+		// new
+		echo "<tr class='tab_bg_2'><td><strong>".$lang["consumables"][1]."</strong></td>";
+		$tot=0;
+		foreach ($types as $id_type => $type){
+			if (!isset($new[$id_type])) $new[$id_type]=0;
+			echo "<td align='center'>".$new[$id_type]."</td>";
+			$total[$id_type]+=$new[$id_type];
+			$tot+=$new[$id_type];
+		}
+		echo "<td align='center'>".$tot."</td>";
+		echo "</tr>";
+
+		foreach ($used as $id_user => $val){
+			echo "<tr class='tab_bg_2'><td>".getUserName($id_user)."</td>";
+			$tot=0;
+			foreach ($types as $id_type => $type){
+				if (!isset($val[$id_type])) $val[$id_type]=0;
+				echo "<td align='center'>".$val[$id_type]."</td>";
+				$total[$id_type]+=$val[$id_type];
+				$tot+=$val[$id_type];
+			}
+			echo "<td align='center'>".$tot."</td>";
+			echo "</tr>";
+		}
+		echo "<tr class='tab_bg_1'><td><strong>".$lang["state"][10]."</strong></td>";
+		$tot=0;
+		foreach ($types as $id_type => $type){
+			$tot+=$total[$id_type];
+			echo "<td align='center'>".$total[$id_type]."</td>";
+		}
+		echo "<td align='center'>".$tot."</td>";
+		echo "</tr>";
+		echo "</table></div>";
+
+	} else {
+			echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
+	}
+
 }
 
 ?>
