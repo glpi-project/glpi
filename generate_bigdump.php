@@ -699,7 +699,7 @@ for ($i=0;$i<$max['type_of_consumables'];$i++){
 	// Ajout consommable en stock
 	for ($j=0;$j<mt_rand(0,$max['consumables_stock']);$j++){
 		$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
-		$query="INSERT INTO glpi_consumables VALUES('','$consID','$date',NULL)";
+		$query="INSERT INTO glpi_consumables VALUES('','$consID','$date',NULL,0)";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$ID=$db->insert_id();
 	
@@ -710,7 +710,7 @@ for ($i=0;$i<$max['type_of_consumables'];$i++){
 	// Ajout consommable donné
 	for ($j=0;$j<mt_rand(0,$max['consumables_given']);$j++){
 		$date=mt_rand(1995,2005)."-".mt_rand(1,12)."-".mt_rand(1,28);
-		$query="INSERT INTO glpi_consumables VALUES('','$consID','$date',NOW())";
+		$query="INSERT INTO glpi_consumables VALUES('','$consID','$date',NOW(),'".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$ID=$db->insert_id();
 	

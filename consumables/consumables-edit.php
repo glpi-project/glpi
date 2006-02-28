@@ -67,14 +67,17 @@ else if (isset($tab["delete"]))
 	checkAuthentication("admin");
 	deleteConsumable($tab["ID"]);
 	logEvent(0, "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["out"]))
-{
-	checkAuthentication("admin");
-	outConsumable($tab["ID"]);
-	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." take out a consummable.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+else if (isset($tab["give"]))
+{	checkAuthentication("admin");
+
+	if (isset($tab["out"]))
+	foreach ($tab["out"] as $key => $val)
+		outConsumable($key,$tab["id_user"]);
+
+	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." user ".$tab["id_user"]." take out a consummable.");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["restore"]))
 {

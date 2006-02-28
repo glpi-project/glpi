@@ -358,29 +358,37 @@ function showConsumables ($tID,$show_old=0) {
 			$total=$db->result($result, 0, "COUNT");
 			$unused=getUnusedConsumablesNumber($tID);
 			$old=getOldConsumablesNumber($tID);
-
+			if (!$show_old){
+				echo "<form method='post' action='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php'>";
+				//echo "<input type='hidden' name='tID' value='$tID'>";
+			}
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			if ($show_old==0){
-				echo "<tr><th colspan='6'>";
+				echo "<tr><th colspan='7'>";
 				echo $total;
-				echo "&nbsp;".$lang["consumables"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["consumables"][13]."&nbsp;-&nbsp;$old&nbsp;".$lang["consumables"][15]."</th>";
-				echo "<th colspan='1'>";
-				echo "&nbsp;</th></tr>";
+				echo "&nbsp;".$lang["consumables"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["consumables"][13]."&nbsp;-&nbsp;$old&nbsp;".$lang["consumables"][15]."</th></tr>";
 			}
 			else { // Old
-				echo "<tr><th colspan='6'>";
+				echo "<tr><th colspan='8'>";
 				echo $lang["consumables"][35];
-				echo "</th>";
-				echo "<th colspan='2'>";
-				echo "&nbsp;</th></tr>";
+				echo "</th></tr>";
 				
 			}
 			$i=0;
-			echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["consumables"][23]."</th><th>".$lang["consumables"][24]."</th><th>".$lang["consumables"][26]."</th>";
+			echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["consumables"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["consumables"][26]."</th>";
+
+
+			if ($show_old)
+				echo "<th>".$lang["setup"][57]."</th>";
 
 			echo "<th>".$lang["financial"][3]."</th>";
 			
-				echo "<th>&nbsp;</th>";
+				if (!$show_old){
+				echo "<th>";
+				dropdownAllUsers("id_user",0);
+				echo "<input type='submit' name='give' value='".$lang["consumables"][32]."'>";
+				echo "</th>";
+				} else {echo "<th>&nbsp;</th>";}
 				echo "<th>&nbsp;</th></tr>";
 			} else {
 
@@ -390,15 +398,19 @@ function showConsumables ($tID,$show_old=0) {
 		}
 	}
 
+$where="";
+$leftjoin="";
+$addselect="";
 if ($show_old==0){ // NEW
-$where= " AND date_out IS NULL";
+$where= " AND date_out IS NULL ORDER BY date_in";
 } else { //OLD
-$where= " AND date_out IS NOT NULL";
+$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in";
+$leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.id_user) ";
+$addselect= ", glpi_users.realname AS REALNAME, glpi_users.name AS USERNAME ";
 }
 
-$query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID') $where ORDER BY date_out ASC, date_in";
+$query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where ";
 
-	$pages=array();
 	if ($result = $db->query($query)) {			
 	$number=$db->numrows($result);
 	while ($data=$db->fetch_array($result)) {
@@ -415,6 +427,13 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 		echo $date_out;		
 		echo "</td>";
 
+		if ($show_old){
+			echo "<td align='center'>";
+			if (!empty($data["REALNAME"])) echo $data["REALNAME"];
+			else echo $data["USERNAME"];
+			echo "</td>";
+		}
+
 		echo "<td align='center'>";
 		showDisplayInfocomLink(CONSUMABLE_ITEM_TYPE,$data["ID"],1);
 		echo "</td>";
@@ -422,7 +441,7 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 				
 		if ($show_old==0){
 			echo "<td align='center'>";
-			echo "<a href='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?out=out&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][32]."</a>";
+			echo "<input type='checkbox' name='out[".$data["ID"]."]'>";
 			echo "</td>";
 		}
 
@@ -440,7 +459,8 @@ $query = "SELECT * FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID
 	}	
 	}	
 echo "</table></div>\n\n";
-	
+if (!$show_old)
+	echo "</form>";
 }
 
 /**
@@ -508,10 +528,10 @@ function deleteConsumable($ID) {
 *@return boolean
 *
 **/
-function outConsumable($ID) {
+function outConsumable($ID,$id_user=0) {
 
 	global $db;
-	$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."' WHERE ID='$ID'";
+	$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."', id_user='$id_user' WHERE ID='$ID'";
 
 	if ($result = $db->query($query)) {
 		return true;

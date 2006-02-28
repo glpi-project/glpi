@@ -3946,6 +3946,11 @@ if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0])){
 			}
 	}
 }
+if(!FieldExists("glpi_consumables","id_user")) {
+	$query="ALTER TABLE `glpi_consumables` ADD `id_user` INT NOT NULL DEFAULT '0';";
+	$db->query($query) or die("0.65 add id_user field in consumables ".$lang["update"][90].$db->error());
+}
+
 
 
 } // fin 0.65
