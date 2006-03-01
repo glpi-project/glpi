@@ -4088,7 +4088,7 @@ elseif(empty($_POST["ajout_su"])) {
 		echo "<h3> ";
 		echo $lang["update"][95] ."</h3>";
         }
-	echo "<div class='bas'></div></div></div></body></html>";
+	
 }
 elseif(!empty($_POST["ajout_su"])) {
 	if(!empty($_POST["pass_su1"]) && !empty($_POST["login_su"]) && $_POST["pass_su1"] == $_POST["pass_su2"]) {
@@ -4136,6 +4136,6 @@ elseif(!empty($_POST["ajout_su"])) {
 	}
 }
 
-
+echo "<div class='bas'></div></div></div></body></html>";
 
 ?>
