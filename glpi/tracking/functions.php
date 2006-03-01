@@ -269,7 +269,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 		
 	// Form to delete old item
 	if (isAdmin($_SESSION["glpitype"])){
-		echo "<form method='post' action=\"".$_SERVER["PHP_SELF"]."?ID=$item\">";
+		echo "<form method='post' action=\"".$_SERVER["PHP_SELF"]."?ID=$item\" name='oldTrackingForm' id='oldTrackingForm'>";
 		echo "<input type='hidden' name='ID' value='$item'>";
 		}
 
@@ -307,10 +307,10 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 		if (isAdmin($_SESSION["glpitype"])){
 		echo "<br><div align='center'>";
 		
-		echo "<table class ='delete-old-job' cellpadding='5' width='90%'>";
-		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt='' ></td><td><a href='".$_SERVER["PHP_SELF"]."?select=all&amp;ID=$item'>".$lang["buttons"][18]."</a></td>";
+		echo "<table class ='delete-old-job' cellpadding='5' width='950'>";
+		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt='' ></td><td><a  onclick= \"if ( markAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all&amp;ID=$item'>".$lang["buttons"][18]."</a></td>";
 			
-		echo "<td>/</td><td><a href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
+		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
 		echo "</td><td>";
 		echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
 		echo "<td width='75%'>&nbsp;</td></table></div>";
