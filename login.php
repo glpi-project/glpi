@@ -153,15 +153,15 @@ $identificat->err=$lang["login"][8];
 	   	//echo "AD";
    		$found_dn=false;
 	   	$auth_succeded=0;
-	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
+	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],$_POST['login_name'],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
    		//echo $found_dn."---";
 	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_glpi["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
+		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_glpi["ldap_host"],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);
 				$update_list = array();
-				if ($identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_login["ldap"]["fields"],utf8_decode($_POST['login_name']),$cfg_glpi["ldap_condition"])) {
+				if ($identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_login["ldap"]["fields"],$_POST['login_name'],$cfg_glpi["ldap_condition"])) {
 				$update_list = array_keys($cfg_login["ldap"]["fields"]);
 				}
 			}
