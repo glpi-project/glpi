@@ -331,22 +331,21 @@ function showEnterpriseContact($instID) {
 	echo "<th>".$lang["financial"][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
-	while ($i < $number) {
-		$ID=$db->result($result, $i, "ID");
-		$website=$db->result($result, $i, "glpi_enterprises.website");
+	while ($data= $db->fetch_array($result)) {
+		$ID=$data["ID"];
+		$website=$data["website"];
 		if (!empty($website)){
-			$website=$db->result($result, $i, "website");
+			$website=$data["website"];
 			if (!ereg("https*://",$website)) $website="http://".$website;
-			$website="<a target=_blank href='$website'>".$db->result($result, $i, "website")."</a>";
+			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 		}
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>".getDropdownName("glpi_enterprises",$db->result($result, $i, "entID"))."</td>";
-	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
-	echo "<td align='center'  width='100'>".$db->result($result, $i, "phone")."</td>";
-	echo "<td align='center'  width='100'>".$db->result($result, $i, "fax")."</td>";
+	echo "<td align='center'><a href='".$HTMLRel."/enterprises/enterprises-info-form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
+	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
+	echo "<td align='center'  width='100'>".$data["phone"]."</td>";
+	echo "<td align='center'  width='100'>".$data["fax"]."</td>";
 	echo "<td align='center'>".$website."</td>";
 	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
-	$i++;
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
