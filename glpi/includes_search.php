@@ -1615,7 +1615,7 @@ USER_TYPE => array(
 				),
 			8 => array(	"table" => "glpi_users", 
 					"field" => "active",
-					"linkfield"=>"",
+					"linkfield"=>"active",
 					"name" => $lang["setup"][400],
 				),
 		),
