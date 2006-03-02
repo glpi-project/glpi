@@ -698,7 +698,7 @@ else if (isOldConsumable($cID)) return $lang["consumables"][22];
 function showConsumableSummary($target){
 global $db,$lang;
 
-	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type, id_user FROM glpi_consumables WHERE date_out IS NOT NULL GROUP BY FK_glpi_consumables_type,id_user";
+	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type, id_user FROM glpi_consumables WHERE date_out IS NOT NULL GROUP BY id_user,FK_glpi_consumables_type";
 	$used=array();
 
 	if ($result=$db->query($query)){
@@ -706,7 +706,7 @@ global $db,$lang;
 		while ($data=$db->fetch_array($result))
 			$used[$data["id_user"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
 	}
-
+	
 	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type FROM glpi_consumables WHERE date_out IS NULL GROUP BY FK_glpi_consumables_type";
 	$new=array();
 
@@ -723,7 +723,7 @@ global $db,$lang;
 		while ($data=$db->fetch_array($result))
 			$types[$data["ID"]]=$data["name"];
 	}
-	sort($types);
+	asort($types);
 	$total=array();
 	if (count($types)>0){
 
