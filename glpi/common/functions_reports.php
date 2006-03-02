@@ -276,7 +276,7 @@ switch($item_type)
 		case 'glpi_phones' :
 		
 		echo " <b><strong>".$lang["reports"][64]."</strong></b>";
-		echo "<table width='100%' class='tab_cadre'>";
+		echo "<table  class='tab_cadre_report'>";
 		echo "<tr> ";
 		echo "<th><div align='center'><b>".$lang["common"][16]."</b></div></th>";
 		echo "<th><div align='center'><b>".$lang["common"][28]."</b></div></th>";
