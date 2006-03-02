@@ -687,6 +687,9 @@ $lang["log"][40]="connexion de l'IP";
 $lang["log"][41]="echec de connexion";
 $lang["log"][42]="Réservation";
 $lang["log"][43]="téléphone";
+$lang["log"][44]="Intitulé";
+
+
 
 $lang["log"][50]="Inventaire";
 $lang["log"][51]="Suivi";
