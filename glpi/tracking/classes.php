@@ -49,7 +49,7 @@ class Job {
 
 	function getfromDB ($ID,$purecontent) {
 
-		global $db;
+		global $db,$lang;
 
 		$this->ID = $ID;
 
@@ -71,7 +71,8 @@ class Job {
 				$this->computername=$m->getName();
 			}
 			if ($this->computername==""){
-				$this->computername = "N/A";
+				if ($this->fields["device_type"]==0) $this->computername = $lang["help"][30];
+				else $this->computername = "N/A";
 				$this->computerfound=0;				
 			} else 	$this->computerfound=1;	
 
