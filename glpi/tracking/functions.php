@@ -72,7 +72,7 @@ function showTrackingOnglets($target){
 				echo "<li class='invisible'>&nbsp;</li>";
 				
 				// admin yes  
-				if (isAdmin($_SESSION['glpitype'])){
+				if (isAdmin($_SESSION['glpitype'])||$cfg_glpi["post_only_followup"]){
 				
 				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></li>";
 				}
@@ -1377,7 +1377,6 @@ function updateTracking($input){
 		}
 	else if ($input["type"]!=0)
 		$input["device_type"]=0;
-
 	$updates=array();
 	// add Document if exists
 	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
@@ -1387,7 +1386,6 @@ function updateTracking($input){
 			addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 			}
 	}
-		
 	// Old values for add followup in change
 	$old_assign_name=getAssignName($job->fields["assign"],USER_TYPE);
 	$old_assign_ent_name=getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE);
@@ -1407,6 +1405,7 @@ function updateTracking($input){
 			$x++;
 		}
 	}
+
 	if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0))&&$job->fields["status"]=="new"){
 		$updates[]="status";
 		$job->fields["status"]="assign";
@@ -1431,6 +1430,10 @@ function updateTracking($input){
 		}
 	}
 
+	if (!isAdmin($_SESSION['glpitype'])&&can_assign_job($_SESSION["glpiname"])){
+		$updates=array_intersect($updates,array("assign","assign_ent"));
+	}
+	
 	// Update Job
 	if(count($updates)>0)
 		$job->updateInDB($updates);
@@ -1747,7 +1750,7 @@ function showJobDetails ($ID){
 		echo "<tr><td align='right'>";
 		echo $lang["job"][5].":</td><td>&nbsp;</td></tr>";
 		
-		if ($isadmin&&can_assign_job($_SESSION["glpiname"])){
+		if ($isadmin||can_assign_job($_SESSION["glpiname"])){
 			echo "<tr><td align='right'>";
 			echo $lang["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"]);
@@ -1923,7 +1926,7 @@ function showJobDetails ($ID){
 
 			echo "</td></tr>";
 		// Troisi�e Ligne
-		if ($isadmin){
+		if ($isadmin||can_assign_job($_SESSION["glpiname"])){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}
