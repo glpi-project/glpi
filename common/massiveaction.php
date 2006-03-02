@@ -89,7 +89,6 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 				foreach ($_POST["item"] as $key => $val)
 				if ($val==1){
 					$_POST["FK_device"]=$key;
-					print_r($_POST);
 					updateInfocom($_POST);
 				}
 			} else {
