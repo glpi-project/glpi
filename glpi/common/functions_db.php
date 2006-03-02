@@ -119,10 +119,11 @@ function getTreeValueCompleteName($table,$ID,$withcomments=0)
 	global $db;
 	$query = "select * from $table where (ID = $ID)";
 	$name="";
+	$comments="";
 	if ($result=$db->query($query)){
 		if ($db->numrows($result)==1){
 			$name=$db->result($result,0,"completename");
-			$comments=$db->result($result,0,"completename");
+			$comments=$db->result($result,0,"comments");
 		}
 		
 	}
