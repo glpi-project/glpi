@@ -49,7 +49,10 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 
 	echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
-		autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
+		if ($search["table"].".".$search["linkfield"]=="glpi_users.active"){
+			dropdownYesNoInt("active",1);
+		} else 
+			autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
 	} else { 
 		include ($phproot."/glpi/includes_financial.php");
 		if ($search["table"]=="glpi_infocoms"){ // infocoms case

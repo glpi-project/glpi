@@ -646,6 +646,24 @@ function dropdownYesNo($name,$value){
 	echo "</select>\n";	
 }	
 
+
+/**
+* Make a select box for a boolean choice (Yes/No)
+*
+*
+*
+* @param $name select name
+* @param $value preselected value.
+* @return nothing (print out an HTML select box)
+*/
+function dropdownYesNoInt($name,$value){
+	global $lang;
+	echo "<select name='$name'>\n";
+	echo "<option value='0' ".(!$value?" selected ":"").">".$lang["choice"][0]."</option>\n";
+	echo "<option value='1' ".($value?" selected ":"").">".$lang["choice"][1]."</option>\n";
+	echo "</select>\n";	
+}	
+
 /**
 * Make a select box for Tracking device type
 *
