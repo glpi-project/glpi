@@ -125,8 +125,8 @@ $identificat->err=$lang["login"][8];
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);
 				$update_list = array();
-				if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_login["ldap"]["fields"],utf8_decode($_POST['login_name']))) {
-					$update_list = array_keys($cfg_login["ldap"]["fields"]);
+				if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']))) {
+					$update_list = array_keys($cfg_glpi['ldap_fields']);
 				}
 			}
 	   	}
@@ -140,8 +140,8 @@ $identificat->err=$lang["login"][8];
 			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDB($_POST['login_name']);
 			$update_list = array();
-			if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$cfg_glpi["ldap_basedn"],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_login["ldap"]["fields"],utf8_decode($_POST['login_name']))) {
-				$update_list = array_keys($cfg_login["ldap"]["fields"]);
+			if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$cfg_glpi["ldap_basedn"],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']))) {
+				$update_list = array_keys($cfg_glpi['ldap_fields']);
 			}
 		}
 	}
@@ -161,8 +161,8 @@ $identificat->err=$lang["login"][8];
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDB($_POST['login_name']);
 				$update_list = array();
-				if ($identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_login["ldap"]["fields"],$_POST['login_name'],$cfg_glpi["ldap_condition"])) {
-				$update_list = array_keys($cfg_login["ldap"]["fields"]);
+				if ($identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$_POST['login_name'],$cfg_glpi["ldap_condition"])) {
+				$update_list = array_keys($cfg_glpi['ldap_fields']);
 				}
 			}
    		}
