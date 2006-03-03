@@ -69,7 +69,8 @@ class Job {
 			$m= new CommonItem;
 			if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
 				$this->computername=$m->getName();
-			}
+			} else $this->computername='';
+			
 			if ($this->computername==""){
 				if ($this->fields["device_type"]==0) $this->computername = $lang["help"][30];
 				else $this->computername = "N/A";
