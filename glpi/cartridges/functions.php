@@ -360,7 +360,7 @@ function showCartridges ($tID,$show_old=0) {
 			$used=getUsedCartridgesNumber($tID);
 			$old=getOldCartridgesNumber($tID);
 
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe>";
+			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			if ($show_old==0){
 				echo "<tr><th colspan='7'>";
 				echo $total;
