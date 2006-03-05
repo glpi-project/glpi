@@ -65,7 +65,7 @@ checkAuthentication("normal");
 	
 	searchFormKnowbase($_SERVER["PHP_SELF"],$contains);
 	echo "&nbsp;";
-	showKbCategoriesall();
+	showKbCategoriesall($contains);
 
 
 commonFooter();

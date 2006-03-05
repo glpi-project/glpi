@@ -335,7 +335,7 @@ function updateKbItem($input) {
 * 
 * @return nothing (display all kb catégories)
 **/
-function showKbCategoriesall()
+function showKbCategoriesall($contains='')
 {
 
 	global $lang;	
@@ -344,7 +344,7 @@ function showKbCategoriesall()
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
 	echo "<tr><th align='center' >".$lang["knowbase"][0]."</th></tr><tr><td align='left' class='tab_bg_3'>";	
 	
-	showKbCategories();
+	showKbCategories(0,$contains);
 	
 	echo "</td></tr></table></div>";
 }
@@ -360,17 +360,16 @@ function showKbCategoriesall()
 * @return nothing (display kb catégories in a list)
 **/
 
-function showKbCategories($parentID=0)
+function showKbCategories($parentID=0,$contains='')
 {
 	// show kb catégories
 	// ok
 	
 	global $db,$lang,$HTMLRel;
-	
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
 		
-	if ($parentID==0) showKbItemAll($parentID);
+	if ($parentID==0) showKbItemAll($parentID,$contains);
 	
 	/// Show category
 	if ($result=$db->query($query)){
@@ -380,9 +379,7 @@ function showKbCategories($parentID=0)
 			while ($row=$db->fetch_array($result)){
 	
 	
-			$name = $row["name"];
 			$ID = $row["ID"];
-
 			echo "<li><b>";
 			if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 			if ($_SESSION["kb_show"][$ID]=='Y')
@@ -390,10 +387,14 @@ function showKbCategories($parentID=0)
 			else 
 			echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif' alt='up'></a>";
 			
-			echo " $name</b>\n";
+			echo " ".$row["name"]."</b>\n";
+			if (!empty($row["comments"])){
+				echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$ID'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$ID'),'block')\">";
+				echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
+			}
 			if ($_SESSION["kb_show"][$ID]=='Y'){
-	  	  	showKbItemAll($ID);
-			showKbCategories($ID);
+	  	  		showKbItemAll($ID,$contains);
+				showKbCategories($ID,$contains);
 			}
 			}
 		echo "</ul>\n";
@@ -413,13 +414,16 @@ function showKbCategories($parentID=0)
 * 
 * @return nothing (display kb items in a list)
 **/
-function showKbItemAll($parentID)
+function showKbItemAll($parentID,$contains='')
 {
 	// show kb item in each categories
 	//ok 
 	global $db;	
 
-	$query = "select * from glpi_kbitems where (categoryID = $parentID) order by question asc";
+	$WHERE="";
+	if (strlen($contains)) $WHERE=" AND (question LIKE '%$contains%' OR answer LIKE '%$contains%') ";
+
+	$query = "select * from glpi_kbitems where (categoryID = $parentID) $WHERE order by question asc";
 	
 	
 	if ($result=$db->query($query)){
@@ -661,7 +665,7 @@ function faqShowCategoriesall($target,$contains)
 	echo "<tr><th align='center' >".$lang["knowbase"][1]."</th></tr><tr><td  align='left'>";	
 	
 	
-	faqShowCategories();
+	faqShowCategories(0,$contains);
 	
 	echo "</td></tr></table></div>";
 }
@@ -675,16 +679,16 @@ function faqShowCategoriesall($target,$contains)
 * 
 * @return 
 **/
-function faqShowCategories($parentID=0)
+function faqShowCategories($parentID=0,$contains='')
 {
-	global $db,$HTMLRel;
+	global $db,$HTMLRel,$lang;
 		
 	$catNumbers = getFAQCategories();
 	
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
 	
-	if ($parentID==0) faqShowItems($parentID);
+	if ($parentID==0) faqShowItems($parentID,$contains);
 
 	if ($result=$db->query($query)){
 			
@@ -693,12 +697,8 @@ function faqShowCategories($parentID=0)
 		
 			 
 			while ($row=$db->fetch_array($result)){
-			
-			
-			
-				$name = $row["name"];
-				$ID = $row["ID"];
 
+				$ID = $row["ID"];
 				
 				if(in_array($ID, $catNumbers))
 				{
@@ -710,11 +710,17 @@ function faqShowCategories($parentID=0)
 					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
 				else 
 					echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
+				
+				echo " ".$row["name"]."</b>\n";
 
-				echo "$name</b>\n";
+				if (!empty($row["comments"])){
+					echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$ID'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$ID'),'block')\">";
+					echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
+				}
+
 				if ($_SESSION["kb_show"][$ID]=='Y'){
-	  				faqShowItems($ID);
-					faqShowCategories($ID);
+	  				faqShowItems($ID,$contains);
+					faqShowCategories($ID,$contains);
 				}
 				echo "</ul>\n";
 				}
@@ -734,12 +740,16 @@ function faqShowCategories($parentID=0)
 * 
 * @return 
 **/
-function faqShowItems($parentID)
+function faqShowItems($parentID,$contains)
 {
 	global $db;
 	// ok	
 
-	$query = "select * from glpi_kbitems where (categoryID = $parentID) and (faq = 'yes') order by question asc";
+	$WHERE="";
+	if (strlen($contains)) $WHERE=" AND (question LIKE '%$contains%' OR answer LIKE '%$contains%') ";
+
+	
+	$query = "select * from glpi_kbitems where (categoryID = $parentID) and (faq = 'yes') $WHERE order by question asc";
 
 	
 	if ($result=$db->query($query)){
