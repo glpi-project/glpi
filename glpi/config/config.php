@@ -69,11 +69,11 @@ $cfg_glpi["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","english.h
 				"english"=>array("English","english.php","english.html","hd-english.html"),
 				"castellano"=>array("Español (castellano)","castellano.php","castellano.html","hd-castellano.html"),
 				"french"=>array("Français","french.php","french.html","hd-french.html"),
+				"hungarian"=>array("Hungarian","hungarian.php","english.html","hd-english.html"),
 				"italian"=>array("Italiano","italian.php","english.html","hd-italian.html"),
 				"polish"=>array("Polish","polish.php","english.html","hd-english.html"),
 				"portugese"=>array("Português (brasileiro)","portugese.php","english.html","hd-english.html"),
 				"rumaninian"=>array("Rumanian","rumanian.php","english.html","hd-english.html"),
-				"hungarian"=>array("Hungarian","hungarian.php","english.html","hd-english.html"),
 				);
 
 // ITEMS TYPE
