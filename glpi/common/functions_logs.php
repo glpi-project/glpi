@@ -499,7 +499,7 @@ function showEvents($target,$order,$sort,$start=0) {
 		
 		echo "<tr class='tab_bg_2'>";
 		
-		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><b>"; 
+		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td align='center'><b>"; 
 
 		//echo "<td>$itemtype:</td><td align='center'><b>";
 		if ($item=="-1" || $item=="0") {
