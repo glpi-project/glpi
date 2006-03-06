@@ -53,7 +53,8 @@ commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
-if ($max_time>5) {$defaulttimeout=$max_time-2;$defaultrowlimit=5;}
+if ($max_time==0) {$defaulttimeout=60;$defaultrowlimit=5;}
+else if ($max_time>5) {$defaulttimeout=$max_time-2;$defaultrowlimit=5;}
 else {$defaulttimeout=max(1,$max_time-2);$defaultrowlimit=2;}
 
 
