@@ -341,7 +341,7 @@ function addDropdown($input) {
 	}
 	else if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"])){
 		if ($input['type']=="first"){
-		    $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename) VALUES ('".$input["value"]."', '0','')";		
+		    $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '0','','".$input["comments"]."')";		
 		} else {
 			$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
 			$result=$db->query($query);
