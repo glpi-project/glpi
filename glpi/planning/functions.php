@@ -455,7 +455,7 @@ foreach ($interv as $key => $val){
 
 		if(isset($val["id_tracking"])){  // show tracking
 
-			echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'><img src='$HTMLRel/pics/rdv_interv.png' alt=''>&nbsp;";
+			echo "<img src='$HTMLRel/pics/rdv_interv.png' alt=''>&nbsp;";
 			
 			
 			echo "<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
@@ -476,7 +476,7 @@ foreach ($interv as $key => $val){
 					$author="<br>".$lang["planning"][9]." : ".getUserName($val["author"]);
 					$img="rdv_public.png";
 				} 
-			echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
+			echo "<img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
 			echo "<a href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
 			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["title"];
 			echo $author;
