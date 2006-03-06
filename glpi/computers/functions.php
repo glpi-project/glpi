@@ -554,7 +554,7 @@ function addComputer($input) {
 	// ADD Devices
 	$comp->getFromDB($oldID,1);
 	foreach($comp->devices as $key => $val) {
-			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"]);
+			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
 		}
 	
 	// ADD Infocoms
