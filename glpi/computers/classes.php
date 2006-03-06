@@ -291,6 +291,9 @@ class Computer {
 				$query = "DELETE FROM glpi_computer_device WHERE (FK_computers = '$ID')";
 				$result = $db->query($query);
 
+				$query = "DELETE FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
+				$result = $db->query($query);
+
 				return true;
 			} else {
 				return false;
