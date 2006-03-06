@@ -400,6 +400,8 @@ while ($data=$db->fetch_array($result)){
 	else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 	$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_glpi["cut"]);
 	$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
+	$interv[$data["begin"]."$$".$i]["status"]=$job->fields["status"];
+	$interv[$data["begin"]."$$".$i]["priority"]=$job->fields["priority"];
 	$i++;
 }
 
@@ -463,10 +465,10 @@ foreach ($interv as $key => $val){
 				echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
 			} 
 			echo "</a>";
-			echo "<a  href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$val["id_followup"]."&amp;ID=".$val["ID"]."'><img src='$HTMLRel/pics/edit.png' alt='edit'></a>";
+			echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 			echo "<br>";
-			echo $val["content"];
-			echo "";
+			echo "<strong>".$lang["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+			echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"];
 		}else{  // show Reminder
 			
 				if ($val["type"]=="public"){
@@ -497,6 +499,8 @@ foreach ($interv as $key => $val){
 			echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
 			echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
 			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
+			echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+
 				if ($who==0){
 					echo "<br>";
 					echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
@@ -504,7 +508,8 @@ foreach ($interv as $key => $val){
 			echo "</a>";
 			echo "</div>";
 			
-			echo "<div class='over_link' id='content_".$val["ID"].$rand."'>".$val["content"]."</div>";
+			echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][0].":</strong> ".getStatusName($val["status"])."<br>";
+			echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"]."</div>";
 		}else{ // show reminder
 			if ($val["type"]=="public"){
 					$author="<br>Par ".getUserName($val["author"]);
@@ -541,9 +546,11 @@ foreach ($interv as $key => $val){
 			echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
 		} 
 		echo "</a>";
+		echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 		echo "</div>";
 		
-		echo "<div class='over_link' id='content_".$val["ID"].$rand."'>".$val["content"]."</div>";
+		echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][0].":</strong> ".getStatusName($val["status"])."<br>";
+		echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"]."</div>";
 
 		}else{ // show reminder
 			if ($val["type"]=="public"){
