@@ -1004,8 +1004,8 @@ font-size: 13px;
 
 <h3><a name="outilsa"></a>a) R&eacute;servations</h3>
 
-    <p>Cette section sert &agrave; voir le mat&eacute;riel r&eacute;servable et &agrave; 
-      faire vos r&eacute;servations.</p>
+    <p>Cette section affiche le mat&eacute;riel r&eacute;servable et permet
+      d'effectuer des r&eacute;servations.</p>
 
 <p>Vous pouvez ajouter des commentaires au mat&eacute;riel r&eacute;servable. Pour se faire, cliquez sur le bouton "modifier le commentaire".</p>
 
@@ -1023,15 +1023,15 @@ font-size: 13px;
 
 <h3><a name="outilsb"></a>b) Base de connaissances</h3>
 
-<p>La base de connaissances sert &agrave; mettre en place un syst&egrave;me de Foire Aux Questions qui a deux objectifs principaux. 
+<p>La base de connaissances répond deux &agrave;  objectifs principaux :
 
 Le premier est de centraliser des connaissances internes aux diff&eacute;rents techniciens. 
 
-Le second est de mettre &agrave; disposition des utilisateurs des informations leur permettant de r&eacute;soudre seuls leurs probl&egrave;mes.</p>    <p>Pour dissocier ces deux objectifs, la notion de FAQ publique est disponible. 
-      Ainsi seuls les &eacute;l&eacute;ments de la FAQ publique seront visibles 
+Le second est de mettre &agrave; disposition des utilisateurs des informations (FAQ publique) leur permettant de r&eacute;soudre seuls des probl&egrave;mes simples.</p>    
+<p>Seuls les &eacute;l&eacute;ments de la FAQ publique seront visibles 
       par les utilisateurs. Les &eacute;l&eacute;ments non d&eacute;finis comme 
       faisant partie de la FAQ publique seront visibles uniquement au sein de 
-      la console centrale.</p>
+      la console centrale par les techniciens.</p>
 
     <p>Vous pouvez cr&eacute;er des cat&eacute;gories et sous-cat&eacute;gories 
       afin d'indexer vos connaissances (param&eacute;trable dans le menu Administration 
@@ -1110,37 +1110,37 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 
     <ul>
       <li>Le rapport par d&eacute;faut : 
-        <p>Ce rapport liste le nombre de mat&eacute;riel et logiciels pr&eacute;sents 
+        <p>Mat&eacute;riel et logiciels pr&eacute;sents 
           dans le parc. </p>
       </li>
       <li>Mat&eacute;riel sous contrat de maintenance : 
-        <p>Ce rapport indique le nombre de mat&eacute;riel sous contrat de maintenance 
+        <p>Mat&eacute;riel sous contrat de maintenance 
           aupr&egrave;s d'un tiers. Il est possible d'obtenir un &eacute;tat d&eacute;taill&eacute; 
           par type de mat&eacute;riel et par date d'achat. La s&eacute;lection 
           multiple est autoris&eacute;e.</p>
       </li>
       <li>Rapport par ann&eacute;e : 
-        <p>Ce rapport liste le mat&eacute;riel sur une ou plusieurs ann&eacute;es. 
+        <p>Mat&eacute;riel sur une ou plusieurs ann&eacute;es. 
           La s&eacute;lection multiple est autoris&eacute;e.</p>
       </li>
       <li>Rapport r&eacute;seau : 
-        <p>Ce rapport vous permet d'avoir la liste d'informations de votre r&eacute;seau 
+        <p>Informations sur le r&eacute;seau 
           selon les lieux, les switchs ou une prise r&eacute;seau.</p>
       </li>
       <li>Rapport Informations Commerciales : 
-        <p>Ce rapport vous permet d'avoir un r&eacute;capitulatif des informations 
+        <p>Rr&eacute;capitulatif des informations 
           commerciales pour les ordinateurs, les imprimantes, les mat&eacute;riels 
           r&eacute;seaux, les moniteurs et les p&eacute;riph&eacute;riques.</p>
       </li>
       <li>Rapport Informations Commerciales autres : 
-        <p>Ce rapport vous permet d'avoir un r&eacute;capitulatif des informations 
+        <p>R&eacute;capitulatif des informations 
           commerciales pour les cartouches, les licences et les consommables.</p>
       </li>
       
     </ul>
 
     <h3><a name="ocsng"></a>d) OCSNG</h3>
-    <p>Cette section du menu Outils ne s'afficher que si le mode OCSNG a &eacute;t&eacute; 
+    <p>Cette section du menu Outils ne s'affiche que si le mode OCSNG est 
       activ&eacute; dans la configuration g&eacute;n&eacute;rale de GLPI (Administration 
       - Configuration - Configuration g&eacute;n&eacute;rale - Activer le mode 
       OCSNG)</p>
@@ -1173,37 +1173,34 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
     <p>Vous pouvez aussi d&eacute;sactiver des utilisateurs si besoin.<br />
       <br />
       Au niveau des droits : vous avez le choix entre 4 types de droits :<br />
-      - Super-Admin : il a acc&egrave;s &agrave; toute la console centrale de 
-      GLPI et peut tout param&eacute;trer.<br />
-      - Admin : il a acc&egrave;s &agrave; toute la console centrale de GLPI et 
-      peut modifier tous les &eacute;l&eacute;ments<br />
-      mais ne peut rien param&eacute;trer dans la configuration.<br />
-      - Normal : il a acc&egrave;s &agrave; toute la console centrale de GLPI 
+      - Super-Admin : Acc&egrave;s &agrave; toute la console centrale de 
+      GLPI et au  param&eacute;trage de l'application.<br />
+      - Admin : Acc&egrave;s &agrave; toute la console centrale de GLPI et 
+     à la  modification tous les &eacute;l&eacute;ments<br />
+     Except&acute; la configuration.<br />
+      - Normal : Acc&egrave;s &agrave; toute la console centrale de GLPI 
       uniquement en lecture seule.<br />
-      - Post-only : il peut uniquement acc&eacute;der &agrave; la partie Helpdesk 
+      - Post-only : Acc&eacute;  &agrave; la partie Helpdesk 
       de GLPI (Nouveau ticket / Suivi des tickets / R&eacute;servation et FAQ 
       publique.<br />
       <br />
-      Vous pouvez donner le droit ou pas &agrave; un utilisateur d'attribuer des 
+      Vous pouvez accorder le droit  &agrave; un utilisateur d'attribuer des 
       tickets.</p>
     <h3><a name="adminb"></a>b) Configuration de GLPI</h3>
 
 
 
-<a name="adminb1"></a><h4>i) Intitul&eacute;s</h4>    <p>Vous pouvez dans cette zone modifier enti&egrave;rement les donn&eacute;es 
-      pr&eacute;sentes dans les listes de s&eacute;lection propos&eacute;es comme 
-      par exemple pour les lieux et les microprocesseurs.</p>
+<a name="adminb1"></a><h4>i) Intitul&eacute;s</h4>    <p>Vous pouvez définir dans cette zone   les donn&eacute;es 
+      affich&ecute; dans les listes de s&eacute;lection d&eacute;roulantes</p>
 
-    <p>Une fois s&eacute;lectionn&eacute;e la liste que vous voulez modifier vous 
+    <p>Une fois s&eacute;lectionn&eacute;e la liste que vous voulez modifier, vous 
       pouvez ajouter des &eacute;l&eacute;ments, les modifier et les supprimer.</p>
-    <p>Pour modifier un intitul&eacute;, s&eacute;lectionnez-le dans la liste 
+    <p>S&eacute;lectionnez un intitul&eacute; dans la liste 
       d&eacute;roulante et utilisez la fl&egrave;che <img src="../pics/puce.gif" width="12" height="12" alt="fl&egrave;che" style="vertical-align: middle;" /> 
-      pour modifier soit son nom soit le commentaire associ&eacute;. </p>
+      pour modifier  son nom ou le commentaire associ&eacute;. </p>
     <p>Le commentaire que vous avez entr&eacute; sera visible depuis la plupart 
-      des formulaires de glpi. Il vous suffit juste de faire passer la souris 
-      sur l'ic&ocirc;ne <img src="../pics/aide.png" width="12" height="12" alt="Aide" style="vertical-align: middle;" /> 
-      associ&eacute; &agrave; la liste d&eacute;roulante dans le formulaire et 
-      le commentaire s'affichera.<br />
+      des formulaires de glpi. Il vous suffit juste de survoler l'ic&ocirc;ne <img src="../pics/aide.png" width="12" height="12" alt="Aide" style="vertical-align: middle;" /> 
+      associ&eacute; &agrave; la liste d&eacute;roulante pour le faire apparaitre<br />
       <br />
       <img src="../pics/warning.png" width="20" height="20" alt="Attention" style="vertical-align: middle;" /> 
       <span style="color: #990000;font-weight: bold">ATTENTION :</span> Si vous supprimez des &eacute;l&eacute;ments utilis&eacute;s 
@@ -1216,7 +1213,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 
 
 
-<p>Vous pouvez dans cette zone modifier enti&egrave;rement les p&eacute;riph&eacute;riques internes que vous pouvez ajouter &agrave; vos ordinateurs.</p>
+<p>Vous pouvez dans cette zone modifier enti&egrave;rement les p&eacute;riph&eacute;riques internes que vous ajoutez &agrave; vos ordinateurs.</p>
 
     <p><a name="adminb3" id="adminb3"></a></p>
 
@@ -1234,7 +1231,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 
       - Le nom du fichier pour l'ic&ocirc;ne du document d&eacute;sir&eacute;. 
 
-      Placer les fichiers d'ic&ocirc;nes dans le r&eacute;pertoire pics/icones 
+      Placez les fichiers d'ic&ocirc;nes dans le r&eacute;pertoire pics/icones 
 
       sous l'arborescence de GLPI.<br />
 
@@ -1252,9 +1249,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 
     <h4>iv) Liens externes protocol&eacute;s</h4>
 
-    <p>Dans cette section vous pouvez d&eacute;finir des liens divers qui vont 
-      pouvoir s'adapter aux &eacute;l&eacute;ments auxquels ils vont &ecirc;tre 
-      li&eacute;s.</p>
+    <p>Dans cette section vous pouvez d&eacute;finir des liens vers des applications externes  adapt&eacute;s aux &eacute;l&eacute;ments de l'inventaire.</p>
 
     <p>Vous pouvez utiliser des tags particuliers pour qu'ils soient remplac&eacute;s 
       par les valeurs de l'&eacute;l&eacute;ment : Les Tags valides sont : [ID], 
@@ -1288,7 +1283,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 
     <h4>v) Mode OCSNG</h4>
     <p>C'est dans cette section que vous allez configurer le mode OCSNG.</p>
-    <p>Elle regroupe les informations de connection &agrave; la base OCSNG, les 
+    <p>Elle regroupe les informations de connexion &agrave; la base OCSNG, les 
       options d'importation et les champs des informations g&eacute;n&eacute;rales 
       et des p&eacute;riph&eacute;riques internes que vous souhaiter importer 
       / synchroniser.</p>
@@ -1347,8 +1342,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
       la d&eacute;sactiver.</p>
     <p>- Permettre aux utilisateurs post-only d'ajouter des suivis : permet aux 
       utilisateurs de type post-only d'ajouter des suivis aux tickets.</p>
-    <p>- Utiliser GLPI en Mode Normal / Debug / Traduction : Le mode debug vous 
-      permet de visualiser les bugs dans glpi. Le mode traduction vous permet 
+    <p>- Utiliser GLPI en Mode Normal / Debug / Traduction : Le mode normal correspond à une utilisation classique de GLPI. Le mode debug s'adresse aux développeurs et aux testeurs et le mode traduction concerne les traducteurs et permet 
       de visualiser toutes les entr&eacute;es du dictionnaire.</p>
 
     <p><a name="adminb7" id="adminb7"></a></p>
@@ -1365,8 +1359,8 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
       de log &agrave; afficher sur la page d'accueil de la console centrale. (0 
       = aucun)<br />
       <br />
-      - Montrer les nouveaux tickets au login : montrer les nouveaux tickets non 
-      attribu&eacute;s sur la page d'accueil de la console centrale.<br />
+      - Montrer les nouveaux tickets au login : montrer les nouveaux tickets "non 
+      attribu&eacute;s" sur la page d'accueil de la console centrale.<br />
       <br />
       - Nombre d'&eacute;l&eacute;ments &agrave; afficher par page: valable pour 
       toutes les listes d'&eacute;l&eacute;ments affich&eacute;es - suivis, ordinateurs...<br />
@@ -1452,9 +1446,9 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 
       signature ajout&eacute;e &agrave; chaque email.<br />
 
-      Vous voulez ajouter un lien vers le ticket dans les emails envoy&eacute;s 
+      Vous pouvez ajouter un lien vers le ticket dans les emails envoy&eacute;s 
 
-      en sp&eacute;cifiant l'Url de la base qui est utilis&eacute;.<br />
+      en sp&eacute;cifiant l'Url de la base qui sera utilis&eacute;.<br />
 
       <br />
       - Les autres options vous permettent de limiter les emails envoy&eacute;s. 
@@ -1489,13 +1483,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 
     <p>Afin de pouvoir utiliser ces modes d'authentification, vous devez au pr&eacute;alable 
 
-      activer les extensions correspondantes dans votre configuration de php :<br />
-
-      Dans php.ini, enlevez le point-virgule devant extension=php_imap.dll ou 
-
-      extension=php_ldap.dll ou extension=php_domxml.dll / extension=php_curl.dll 
-
-      et relancez votre serveur web.</p>
+      activer les extensions correspondantes dans votre configuration de PHP.</p>
 
     <p>La premi&egrave;re solution est d'utiliser un serveur de mail :<br />
 
@@ -1523,7 +1511,7 @@ Pour afficher du code, utilisez le marqueur CODE. Le texte affich&eacute; en tan
 
 - Le deuxi&egrave;me param&egrave;tre d&eacute;finit le domaine de mail utilis&eacute; qui va servir &agrave; remplir automatiquement les adresses mails des nouveaux utilisateurs. 
 
-Si l'utilisateur s'appelle <i>toto</i>, sont adresse mail sera alors toto@domaine_mail. 
+Si l'utilisateur s'appelle <i>toto</i>, son adresse mail sera alors toto@domaine_mail. 
 
 </p>
 
@@ -1556,9 +1544,9 @@ Si l'utilisateur s'appelle <i>toto</i>, sont adresse mail sera alors toto@domain
 
 <h3><a name="admind"></a>d) Donn&eacute;es (Sauvegarde/Restauration)</h3>
 
-<p>Cette zone vous permet de cr&eacute;er des sauvegardes de la base de donn&eacute;es ("Sauvegarde SQL").</p>
+<p>Cette zone vous permet de r&eacute;aliser des sauvegardes de la base de donn&eacute;es ("Sauvegarde SQL").</p>
 
-<p>Vous pouvez &eacute;galement supprimer les fichiers de sauvegarde, les restaurer ou t&eacute;l&eacute;charger les fichiers SQL.</p>    <p>Vous pouvez aussi g&eacute;n&eacute;rer une sauvegarde au format XML de la 
+<p>Vous pouvez &eacute;galement supprimer les fichiers de sauvegarde, les restaurer ou t&eacute;l&eacute;charger les fichiers.</p>    <p>Vous pouvez aussi g&eacute;n&eacute;rer une sauvegarde au format XML de la 
 
       base de donn&eacute;es. ("Sauvegarde XML").</p>
 
