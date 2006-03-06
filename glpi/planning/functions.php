@@ -239,16 +239,17 @@ if ($type!="month"){
 	$hour_end=$tmp[0];
 	for ($hour=$hour_begin;$hour<=$hour_end;$hour++){
 		echo "<tr>";
-	
+		$add="";
+		if ($hour<10)	$add="0";
 		switch ($type){
 		case "week":
 			for ($i=1;$i<=7;$i++){
-			displayplanning($who,date("Y-m-d",strtotime($when)+mktime(0,0,0,0,$i,0)-mktime(0,0,0,0,$dayofweek,0))." $hour:00:00",$type);
+			displayplanning($who,date("Y-m-d",strtotime($when)+mktime(0,0,0,0,$i,0)-mktime(0,0,0,0,$dayofweek,0))." $add$hour:00:00",$type);
 			}
 		
 			break;
 		case "day":
-			displayplanning($who,$when." $hour:00:00",$type);
+			displayplanning($who,$when." $add$hour:00:00",$type);
 			break;
 		}
 	echo "</tr>\n";
@@ -357,7 +358,7 @@ else {
 }
 
 
-$fin=mktime($hour[0]+$more_hour,$hour[1],$hour[2],$day[1],$day[2]+$more_day,$day[0]);
+$fin=date("Y-m-d H:i:s",mktime($hour[0]+$more_hour,$hour[1],$hour[2],$day[1],$day[2]+$more_day,$day[0]));
 
 $author="";  // variable pour l'affichage de l'auteur ou non
 $img="rdv_private.png"; // variable par defaut pour l'affichage de l'icone du reminder
@@ -391,11 +392,14 @@ while ($data=$db->fetch_array($result)){
 	$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
 	$interv[$data["begin"]."$$".$i]["id_assign"]=$data["id_assign"];
 	$interv[$data["begin"]."$$".$i]["ID"]=$data["ID"];
-	$interv[$data["begin"]."$$".$i]["begin"]=max($debut,$data["begin"]);
-	$interv[$data["begin"]."$$".$i]["end"]=min($fin,$data["end"]);
+	if (strcmp($debut,$data["begin"])>0)
+		$interv[$data["begin"]."$$".$i]["begin"]=$debut;
+	else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+	if (strcmp($fin,$data["end"])<0)
+		$interv[$data["begin"]."$$".$i]["end"]=$fin;
+	else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 	$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_glpi["cut"]);
 	$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
-
 	$i++;
 }
 
@@ -414,10 +418,14 @@ while ($data=$db->fetch_array($result)){
 	while ($data=$db->fetch_array($result2)){
 		$remind->getFromDB($data["ID"]);
 		
-		
 		$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
-		$interv[$data["begin"]."$$".$i]["begin"]=max($debut,$data["begin"]);
-		$interv[$data["begin"]."$$".$i]["end"]=min(date("Y-m-d H:i:s",$fin),$data["end"]);
+		if (strcmp($debut,$data["begin"])>0)
+	                $interv[$data["begin"]."$$".$i]["begin"]=$debut;
+	        else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+	        if (strcmp($fin,$data["end"])<0)
+	                $interv[$data["begin"]."$$".$i]["end"]=$fin;
+	        else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+		
 		$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_glpi["cut"]);
 		$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_glpi["cut"]);
 		$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
@@ -429,7 +437,6 @@ while ($data=$db->fetch_array($result)){
 	
 	
 	ksort($interv);
-
 
 
 //print_r($interv);
