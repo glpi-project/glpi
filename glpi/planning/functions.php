@@ -850,7 +850,7 @@ function ShowPlanningCentral($who){
 			echo "</td>";
 			if(isset($val["id_tracking"])){
 				echo "<td>".$val["device"]."<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-				echo ": ".resume_text($val["content"],125);
+				echo ": ".resume_text($val["content"],125)."</a>";
 			}else{
 				echo "<td><a href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
 				echo "</a>: ".resume_text($val["text"],125);
