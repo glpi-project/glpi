@@ -510,7 +510,7 @@ foreach ($interv as $key => $val){
 			echo "</a>";
 			echo "</div>";
 			
-			echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][0].":</strong> ".getStatusName($val["status"])."<br>";
+			echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
 			echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"]."</div>";
 		}else{ // show reminder
 			if ($val["type"]=="public"){
@@ -552,7 +552,7 @@ foreach ($interv as $key => $val){
 		echo "</a>";
 		echo "</div>";
 		
-		echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][0].":</strong> ".getStatusName($val["status"])."<br>";
+		echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
 		echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"]."</div>";
 
 		}else{ // show reminder
