@@ -460,12 +460,13 @@ foreach ($interv as $key => $val){
 			
 			echo "<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
 			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
+			echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+
 			if ($who==0){
 				echo "<br>";
 				echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
 			} 
 			echo "</a>";
-			echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 			echo "<br>";
 			echo "<strong>".$lang["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
 			echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"];
@@ -498,8 +499,9 @@ foreach ($interv as $key => $val){
 			$rand=mt_rand();
 			echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
 			echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
+			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
 			echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+			echo "<br>".$val["device"];
 
 				if ($who==0){
 					echo "<br>";
@@ -540,13 +542,14 @@ foreach ($interv as $key => $val){
 		$rand=mt_rand();
 		echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
 		echo "<a onmouseout=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$val["ID"].$rand."'),'block')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
-		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["device"];
+		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
+		echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+		echo "<br>".$val["device"];
 		if ($who==0){
 			echo "<br>";
 			echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
 		} 
 		echo "</a>";
-		echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 		echo "</div>";
 		
 		echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][0].":</strong> ".getStatusName($val["status"])."<br>";
