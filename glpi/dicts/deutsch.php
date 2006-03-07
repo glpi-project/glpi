@@ -934,7 +934,7 @@ $lang["printers"][34]="Verwaltung der Geräte";
 $lang["printers"][35]="Art der Verwaltung"; 
 
 $lang["reminder"][0]="Öffentliche Notizen"; 
-$lang["reminder"][1]="Öffentliche Notizen"; 
+$lang["reminder"][1]="Allgemeine Anmerkungen"; 
 $lang["reminder"][2]="Persönlicher Termin"; 
 $lang["reminder"][3]="Öffentlicher Termin"; 
 $lang["reminder"][4]="Persönliche Notiz"; 
