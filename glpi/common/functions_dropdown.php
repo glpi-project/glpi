@@ -820,7 +820,8 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnectPortDeviceType.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnectPortDeviceType.php',{asynchronous:true, evalScripts:true, \n";	
+	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');Element.hide('not_connected_display$ID');},\n";

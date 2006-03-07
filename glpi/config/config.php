@@ -62,18 +62,18 @@ require_once ($cfg_glpi["config_dir"] . "/config_db.php");
 
 // dicts
 // dictionnaires
+// Name - lang file - central help file - helpdesk help file - calendar dico
 
-
-$cfg_glpi["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","english.html","hd-english.html"),
-				"dutch"=>array("Dutch","dutch.php","english.html","hd-english.html"),
-				"english"=>array("English","english.php","english.html","hd-english.html"),
-				"castellano"=>array("Español (castellano)","castellano.php","castellano.html","hd-castellano.html"),
-				"french"=>array("Français","french.php","french.html","hd-french.html"),
-				"hungarian"=>array("Hungarian","hungarian.php","english.html","hd-english.html"),
-				"italian"=>array("Italiano","italian.php","english.html","hd-italian.html"),
-				"polish"=>array("Polish","polish.php","english.html","hd-english.html"),
-				"portugese"=>array("Português (brasileiro)","portugese.php","english.html","hd-english.html"),
-				"rumaninian"=>array("Rumanian","rumanian.php","english.html","hd-english.html"),
+$cfg_glpi["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","english.html","hd-english.html","de"),
+				"dutch"=>array("Dutch","dutch.php","english.html","hd-english.html","nl"),
+				"english"=>array("English","english.php","english.html","hd-english.html","en"),
+				"castellano"=>array("Español (castellano)","castellano.php","castellano.html","hd-castellano.html","es"),
+				"french"=>array("Français","french.php","french.html","hd-french.html","fr"),
+				"hungarian"=>array("Hungarian","hungarian.php","english.html","hd-english.html","hu"),
+				"italian"=>array("Italiano","italian.php","english.html","hd-italian.html","it"),
+				"polish"=>array("Polish","polish.php","english.html","hd-english.html","pl"),
+				"portugese"=>array("Português (brasileiro)","portugese.php","english.html","hd-english.html","br"),
+				"rumaninian"=>array("Rumanian","rumanian.php","english.html","hd-english.html","ro"),
 				);
 
 // ITEMS TYPE

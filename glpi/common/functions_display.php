@@ -124,6 +124,13 @@ function commonHeader($title,$url)
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."scriptaculous/scriptaculous.js'></script>";
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+
+	// Calendar scripts 
+	echo "<style type=\"text/css\">@import url(".$HTMLRel."calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar-setup.js\"></script>";
+
 	// End of Head
 	echo "</head>\n";
 	// Body 
@@ -819,17 +826,39 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 * @return nothing
 */
 function showCalendarForm($form,$element,$value='',$withtemplate=''){
-		global $HTMLRel,$lang;
+		global $HTMLRel,$lang,$cfg_glpi;
 		$rand=mt_rand();
 		if (empty($value)) $value=date("Y-m-d");
 		echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='10' value=\"".convDate($value)."\">";
 		echo "<input id='data$rand' type='hidden' name='$element' size='10' value=\"".$value."\">";
 		
 		if ($withtemplate!=2){
-			echo "&nbsp;<img src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'
-			onclick=\"window.open('".$HTMLRel."mycalendar.php?form=$form&amp;elem=$element&amp;value=$value','".$lang["buttons"][15]."','width=300,height=300')\" >";
-		//echo convDate("0000-00-00");
+			echo "&nbsp;<img id='button$rand' src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'>";
+		
 			echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.getElementById('data$rand').value='0000-00-00';document.getElementById('show$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
+			
+			echo "<script type='text/javascript'>";
+			echo "Calendar.setup(";
+			echo "{";
+			echo "inputField : 'data$rand',"; // ID of the input field
+			echo "ifFormat : '%Y-%m-%d',"; // the date format
+			echo "button : 'button$rand'"; // ID of the button
+			echo "});";
+			echo "</script>";
+
+			echo "<script type='text/javascript' >\n";
+			echo "   new Form.Element.Observer('data$rand', 1, \n";
+			echo "      function(element, value) {\n";
+			if (!$cfg_glpi["dateformat"]){
+				echo "document.getElementById('show$rand').value=value;";
+			} else {
+				echo "var d=Date.parseDate(value,'%Y-%m-%d');";
+				echo "document.getElementById('show$rand').value=d.print('%d-%m-%Y');";
+			}
+			echo "})\n";
+			echo "</script>\n";
+
+
 		}
 }
 

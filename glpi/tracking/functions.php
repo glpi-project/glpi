@@ -1837,7 +1837,7 @@ function showJobDetails ($ID){
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
 			echo "Element.hide('desc$rand');";
-			echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_glpi["root_doc"]."/ajax/textarea.php' , {evalScripts:true, method: 'post',parameters: 'rows=6&cols=60&name=contents&data=".urlencode($job->fields["contents"])."'});";
+			echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_glpi["root_doc"]."/ajax/textarea.php' , {asynchronous:true, evalScripts:true, method: 'post',parameters: 'rows=6&cols=60&name=contents&data=".urlencode($job->fields["contents"])."'});";
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='desc$rand' class='div_tracking' onClick='showDesc$rand()'>\n";
@@ -1963,12 +1963,12 @@ function showFollowupsSummary($tID){
 		echo "<script type='text/javascript' >\n";
 		echo "function showAddFollowup(){\n";
 		echo "Element.hide('viewfollowup');";
-		echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/addfollowup.php' , {evalScripts:true, method: 'get',parameters: 'tID=$tID'});";
+		echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$tID'});";
 		echo "};";
 
 		echo "function showPlan(){\n";
 		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {evalScripts:true, method: 'get',parameters: 'form=followups'});";
+		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups'});";
 		echo "}";
 		echo "</script>\n";
 
@@ -2001,7 +2001,7 @@ function showFollowupsSummary($tID){
 			echo "<script type='text/javascript' >\n";
 			echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
 //			echo "Element.hide('viewfollowup');";
-			echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/viewfollowup.php' , {evalScripts:true, method: 'get',parameters: 'ID=".$data["ID"]."'});";
+			echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/viewfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'ID=".$data["ID"]."'});";
 			echo "};";
 			
 			echo "</script>\n";
