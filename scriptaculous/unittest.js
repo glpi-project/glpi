@@ -2,7 +2,25 @@
 //           (c) 2005 Jon Tirsen (http://www.tirsen.com)
 //           (c) 2005 Michael Schuerig (http://www.schuerig.de/michael/)
 //
-// See scriptaculous.js for full license.
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 // experimental, Firefox-only
 Event.simulateMouse = function(element, eventName) {
@@ -64,24 +82,7 @@ var Test = {}
 Test.Unit = {};
 
 // security exception workaround
-Test.Unit.inspect = function(obj) {
-  var info = [];
-
-  if(typeof obj=="string" || 
-     typeof obj=="number") {
-    return obj;
-  } else {
-    for(property in obj)
-      if(typeof obj[property]!="function")
-        info.push(property + ' => ' + 
-          (typeof obj[property] == "string" ?
-            '"' + obj[property] + '"' :
-            obj[property]));
-  }
-
-  return ("'" + obj + "' #" + typeof obj + 
-    ": {" + info.join(", ") + "}");
-}
+Test.Unit.inspect = Object.inspect;
 
 Test.Unit.Logger = Class.create();
 Test.Unit.Logger.prototype = {
@@ -277,6 +278,14 @@ Test.Unit.Assertions.prototype = {
     try { (expected == actual) ? this.pass() :
       this.fail(message + ': expected "' + Test.Unit.inspect(expected) + 
         '", actual "' + Test.Unit.inspect(actual) + '"'); }
+    catch(e) { this.error(e); }
+  },
+  assertEnumEqual: function(expected, actual) {
+    var message = arguments[2] || "assertEnumEqual";
+    try { $A(expected).length == $A(actual).length && 
+      expected.zip(actual).all(function(pair) { return pair[0] == pair[1] }) ?
+        this.pass() : this.fail(message + ': expected ' + Test.Unit.inspect(expected) + 
+          ', actual ' + Test.Unit.inspect(actual)); }
     catch(e) { this.error(e); }
   },
   assertNotEqual: function(expected, actual) {

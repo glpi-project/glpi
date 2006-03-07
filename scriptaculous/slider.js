@@ -200,10 +200,10 @@ Control.Slider.prototype = {
   setSpan: function(span, range) {
     if(this.isVertical()) {
       span.style.top = this.translateToPx(range.start);
-      span.style.height = this.translateToPx(range.end - range.start);
+      span.style.height = this.translateToPx(range.end - range.start + this.range.start);
     } else {
       span.style.left = this.translateToPx(range.start);
-      span.style.width = this.translateToPx(range.end - range.start);
+      span.style.width = this.translateToPx(range.end - range.start + this.range.start);
     }
   },
   updateStyles: function() {
