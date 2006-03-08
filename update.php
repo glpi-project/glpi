@@ -3699,7 +3699,7 @@ if(!TableExists("glpi_ocs_link")) {
   KEY `glpi_id` (`glpi_id`),
   KEY `auto_update` (`auto_update`),
   KEY `last_update` (`last_update`)
-) TYPE=MyISAM";
+) ENGINE=MyISAM";
 	$db->query($query) or die("0.65 MODE OCS creation ocs_link ".$lang["update"][90].$db->error());
 }
 
