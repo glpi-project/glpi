@@ -1591,7 +1591,7 @@ function addFollowup($input,$type="followup"){
 	$close=0;
 	unset($input["add"]);
 
-	if ($isadmin&&$type!="update"){
+	if ($isadmin&&$type!="update"&&$type!="finish"){
 		if (isset($input['plan'])){
 		$plan=$input['plan'];
 		unset($input['plan']);
