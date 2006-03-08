@@ -37,7 +37,7 @@ Calendar._SDN = new Array
 ("Dim",
  "Lun",
  "Mar",
- "Mar",
+ "Mer",
  "Jeu",
  "Ven",
  "Sam",
