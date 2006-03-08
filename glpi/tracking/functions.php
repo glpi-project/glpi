@@ -512,10 +512,15 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 			
 		}
 		else {
-			$fifth_col.="<strong>$job->computername";
+			$m= new CommonItem;
+			if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
+			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
+				$deleted=1;
+			$sixth_col.=$m->getType();
+			$sixth_col.="<br><strong>$job->computername";
 			if ($cfg_glpi["view_ID"])
-				$fifth_col.="(".$job->fields["computer"].")";
-			$fifth_col.="</strong>";
+				$sixth_col.="(".$job->fields["computer"].")";
+			$sixth_col.="</strong>";
 		}
 		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$deleted,$align);
 
