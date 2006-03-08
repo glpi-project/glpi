@@ -136,7 +136,7 @@ function showReminderForm ($target,$ID) {
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {method: 'get',parameters: 'form=remind".(($ID&&$remind->fields["rv"])?"&begin_date=".$remind->fields["begin"]."&end_date=".$remind->fields["end"]."":"")."'});";
+		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$remind->fields["rv"])?"&begin_date=".$remind->fields["begin"]."&end_date=".$remind->fields["end"]."":"")."'});";
 		echo "}";
 		echo "</script>\n";
 		
