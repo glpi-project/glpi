@@ -240,7 +240,7 @@ if ($type!="month"){
 	for ($hour=$hour_begin;$hour<=$hour_end;$hour++){
 		echo "<tr>";
 		$add="";
-		if ($hour<10)	$add="0";
+		if ($hour<10&&strlen($hour)==1)	$add="0";
 		switch ($type){
 		case "week":
 			for ($i=1;$i<=7;$i++){
