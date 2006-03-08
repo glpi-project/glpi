@@ -410,7 +410,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 	$isadmin=isAdmin($_SESSION['glpitype']);
-	$ispostonly=strcmp($_SESSION["glpitype"],"post-only");
+	$ispostonly=(strcmp($_SESSION["glpitype"],"post-only")==0);
 	$align="align='center'";
 	$align_desc="align='left'";
 	if ($followups) { 
@@ -467,7 +467,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 
 		// Fourth Column
 	
-		if ($ispostonly)
+		if (!$ispostonly)
 		$fourth_col="<strong>".$job->getAuthorName(1)."</strong>";
 		else
 		$fourth_col="<strong>".$job->getAuthorName()."</strong>";
@@ -476,14 +476,14 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 
 		// Fifth column
 		$fifth_col="";
-		if ($ispostonly)
+		if (!$ispostonly)
 			$fifth_col.=getAssignName($job->fields["assign"],USER_TYPE,1);
 		else
 			$fifth_col.="<strong>".getAssignName($job->fields["assign"],USER_TYPE)."</strong>";
 		
 		if ($job->fields["assign_ent"]>0){
 			$fifth_col.="<br>";
-			if ($ispostonly)
+			if (!$ispostonly)
 				$fifth_col.=getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
 			else
 				$fifth_col.="<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
@@ -495,7 +495,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		// Sixth Colum
 		$sixth_col="";
 		$deleted=0;
-		if ($ispostonly){
+		if (!$ispostonly){
 			
 			$m= new CommonItem;
 			if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
@@ -546,7 +546,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		$nineth_column="";
 		// Job Controls
 		
-		if ($ispostonly)
+		if (!$ispostonly)
 		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		else
 		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")";
@@ -572,7 +572,7 @@ function showJobVeryShort($ID) {
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 
-	$ispostonly=strcmp($_SESSION["glpitype"],"post-only");
+	$ispostonly=(strcmp($_SESSION["glpitype"],"post-only")==0);
 	
 	if ($job->getfromDB($ID,0))
 	{
@@ -593,14 +593,14 @@ function showJobVeryShort($ID) {
 	
 		echo "<td align='center'>";
 
-		if ($ispostonly)
+		if (!$ispostonly)
 		echo "<strong>".$job->getAuthorName(1)."</strong>";
 		else
 		echo "<strong>".$job->getAuthorName()."</strong>";
 
 		echo "</td>";
 
-		if ($ispostonly){
+		if (!$ispostonly){
 			echo "<td align='center' ";
 			$m= new CommonItem;
 			$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
@@ -625,7 +625,7 @@ function showJobVeryShort($ID) {
 		// Job Controls
 		echo "<td width='40' align='center'>";
 		
-		if ($ispostonly)
+		if (!$ispostonly)
 		echo "<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
 		echo "<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
