@@ -812,8 +812,8 @@ function showReservationCommentForm($target,$ID){
 	echo "<input type='submit' name='updatecomment' value=\"".$lang["buttons"][14]."\" class='submit'>";
 	echo "</td></tr>\n";
 	
-	echo "</table></div>";
-	echo "</form>";
+	echo "</table>";
+	echo "</form></div>";
 	return true;
 	} else return false;
 }
