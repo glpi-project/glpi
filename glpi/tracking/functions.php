@@ -1516,7 +1516,10 @@ function updateTracking($input){
 		$newinput["author"]=$_SESSION['glpiID'];
 		$newinput["private"]=$newinput["hour"]=$newinput["minute"]=0;
 		$newinput["tracking"]=$job->fields["ID"];
-		addFollowup($newinput,"update");
+		$mailtype="update";
+		if (in_array("status",$updates)&&ereg("old_",$input["status"]))
+			$mailtype="finish";
+		addFollowup($newinput,$mailtype);
 		$mail_send++;
 	}
 
@@ -1616,7 +1619,7 @@ function addFollowup($input,$type="followup"){
 	$job=new Job;
 	$job->getFromDB($input["tracking"],0);
 
-	if ($isadmin&&$type!="update"){
+	if ($isadmin&&$type!="update"&&$type!="finish"){
 		if (isset($plan)){
 			$plan['id_followup']=$newID;
 			$plan['id_tracking']=$input['tracking'];
@@ -1627,7 +1630,7 @@ function addFollowup($input,$type="followup"){
 		}
 
 
-		if ($close&&$type!="update"){
+		if ($close&&$type!="update"&&$type!="finish"){
 			$updates[]="status";
 			$updates[]="closedate";
 			$job->fields["status"]="old_done";
