@@ -43,6 +43,7 @@ include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_reservation.php");
+include ($phproot . "/glpi/includes_phones.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

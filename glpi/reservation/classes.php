@@ -108,6 +108,9 @@ class ReservationItem{
 			case SOFTWARE_TYPE : 
 				return $lang["software"][10];
 				break;
+			case PHONE_TYPE : 
+				return $lang["phones"][4];
+				break;
 			
 			}
 	
@@ -127,51 +130,50 @@ class ReservationItem{
 	function getLink(){
 	
 		global $cfg_glpi;
-	
+		$out="";	
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
-				return "<a href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
-				if ($cfg_glpi["view_ID"]) echo " (".$this->fields["id_device"].")";
-				echo "</a>";
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
+				$out.= "</a>";
 				break;
 			case PHONE_TYPE : 
-				if (isset($this->obj->fields["type"])&&$this->obj->fields["type"]!=0)
-					return getDropdownName("glpi_type_phones",$this->obj->fields["type"]);
-				else	return $lang["phones"][4];
-				return $lang["phones"][4];
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/phones/phones-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
+				$out.= "</a>";
 				break;				
 			case NETWORKING_TYPE :
-				return "<a href=\"".$cfg_glpi["root_doc"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
-				if ($cfg_glpi["view_ID"]) echo " (".$this->fields["id_device"].")";
-				echo "</a>";
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
+				$out.= "</a>";
 				break;
 			case PRINTER_TYPE :
-				return "<a href=\"".$cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
-				if ($cfg_glpi["view_ID"]) echo " (".$this->fields["id_device"].")";
-				echo "</a>";
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
+				$out.= "</a>";
 				break;
 			case MONITOR_TYPE : 
-				return "<a href=\"".$cfg_glpi["root_doc"]."/monitors/monitors-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
-				if ($cfg_glpi["view_ID"]) echo " (".$this->fields["id_device"].")";
-				echo "</a>";
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/monitors/monitors-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
+				$out.= "</a>";
 				break;
 			case PERIPHERAL_TYPE : 
-				return "<a href=\"".$cfg_glpi["root_doc"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
-				if ($cfg_glpi["view_ID"]) echo " (".$this->fields["id_device"].")";
-				echo "</a>";
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
+				$out.= "</a>";
 				break;	
 			case SOFTWARE_TYPE : 
-				return "<a href=\"".$cfg_glpi["root_doc"]."/software/software-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
-				if ($cfg_glpi["view_ID"]) echo " (".$this->fields["id_device"].")";
-				echo "</a>";
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/software/software-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
+				$out.= "</a>";
 				break;								
 			case PHONE_TYPE : 
-				return "<a href=\"".$cfg_glpi["root_doc"]."/phones/phones-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
-				if ($cfg_glpi["view_ID"]) echo " (".$this->fields["id_device"].")";
-				echo "</a>";
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/phones/phones-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
+				$out.= "</a>";
 				break;	
 			}
-
+	return $out;
 	
 	}
 	
