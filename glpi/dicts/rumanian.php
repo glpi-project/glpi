@@ -934,7 +934,7 @@ $lang["printers"][33]="Global management";
 $lang["printers"][34]="Unit management"; 
 $lang["printers"][35]="Management Type"; 
 
-$lang["reminder"][0]="Public notes"; 
+$lang["reminder"][0]="Personal notes"; 
 $lang["reminder"][1]="Public notes"; 
 $lang["reminder"][2]="Personal appointment"; 
 $lang["reminder"][3]="Public appointment"; 
