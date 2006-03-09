@@ -90,9 +90,14 @@ function showTrackingOnglets($target){
 			// Postonly could post followup in helpdesk area	
 			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
 
-			echo "<li class='invisible'>&nbsp;</li>";
-
-			echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
+			$job=new Job();
+			$job->getFromDB($ID);
+			
+			if (!ereg("old_",$job->fields["status"])){
+				echo "<li class='invisible'>&nbsp;</li>";
+			
+				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
+			}
 		}
 
 		}
