@@ -334,6 +334,12 @@ function helpHeader($title,$url,$name) {
 	
         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' >";
+
+	// Calendar scripts 
+	echo "<style type=\"text/css\">@import url(".$HTMLRel."calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar-setup.js\"></script>";
 	
 	// End of Head
 	echo "</head>\n";
