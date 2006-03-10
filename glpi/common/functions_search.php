@@ -710,7 +710,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$db->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-	//echo $QUERY."<br>\n";
+	echo $QUERY."<br>\n";
 	
 	// Set display type for export if define
 	$output_type=0;
@@ -960,23 +960,23 @@ if (!ereg("$NAME$num",$GROUPBY)) {
 		case "glpi_device_ram.specif_default" :
 			$larg=100;
 			if (empty($NOT))
-				$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+				$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
 			else 
-				$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
+				$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 		break;
 		case "glpi_device_processor.specif_default" :
 			$larg=100;
 			if (empty($NOT))
-				$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+				$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
 			else 
-				$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
+				$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 		break;
 		case "glpi_device_hdd.specif_default" :
 			$larg=1000;
 			if (empty($NOT))
-				$GROUPBY.=" ( $NAME$num < ".($val+$larg)." AND $NAME$num > ".($val-$larg)." ) ";
+				$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
 			else 
-				$GROUPBY.=" ( $NAME$num > ".($val+$larg)." OR $NAME$num < ".($val-$larg)." ) ";
+				$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 		break;
 		default :
 			if ($val!="NULL")
@@ -1182,16 +1182,16 @@ case "glpi_infocoms.warranty_value":
 	$ADD="";
 	if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
 	if ($nott)
-		return " ($table.$field < $val-$interval OR $table.$field > $val+$interval ".$ADD." ) ";
-	else  return " (($table.$field >= $val-$interval AND $table.$field <= $val+$interval) ".$ADD." ) ";
+		return " ($table.$field < ".intval($val)."-$interval OR $table.$field > ".intval($val)."+$interval ".$ADD." ) ";
+	else  return " (($table.$field >= ".intval($val)."-$interval AND $table.$field <= ".intval($val)."+$interval) ".$ADD." ) ";
 	break;
 case "glpi_infocoms.amort_time":
 case "glpi_infocoms.warranty_duration":
 	$ADD="";
 	if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
 	if ($nott)
-		return " ($table.$field <> $val ".$ADD." ) ";
-	else  return " ($table.$field = $val  ".$ADD." ) ";
+		return " ($table.$field <> ".intval($val)." ".$ADD." ) ";
+	else  return " ($table.$field = ".intval($val)."  ".$ADD." ) ";
 	break;
 case "glpi_infocoms.amort_type":
 	$ADD="";
