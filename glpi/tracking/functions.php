@@ -1565,7 +1565,8 @@ function updateFollowup($input){
 	$fup->getFromDB($input["ID"]);
 
 	$input["realtime"]=$input["hour"]+$input["minute"]/60;
-	// Fill the update-array with changes
+	$input["author"]=$_SESSION["glpiID"];
+
 
 	$x=0;
 	$updates=array();
@@ -1600,6 +1601,8 @@ function addFollowup($input,$type="followup"){
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	$close=0;
 	unset($input["add"]);
+	
+	$input["author"]=$_SESSION["glpiID"];
 
 	if ($isadmin&&$type!="update"&&$type!="finish"){
 		if (isset($input['plan'])){
@@ -1633,7 +1636,6 @@ function addFollowup($input,$type="followup"){
 		if (isset($plan)){
 			$plan['id_followup']=$newID;
 			$plan['id_tracking']=$input['tracking'];
-			$plan['id_assign']=$input['author'];
 			if (!addPlanningTracking($plan,"",1)){
 				return false;
 			}
@@ -1948,6 +1950,12 @@ echo "</table>";
 echo "<input type='hidden' name='ID' value='$ID'>";
 echo "</form>";
 echo "</div>";
+		echo "<script type='text/javascript' >\n";
+		echo "function showPlan(){\n";
+		echo "Element.hide('plan');";
+		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&author=".$job->fields["assign"]."'});";
+		echo "}";
+		echo "</script>\n";
 
 	showFollowupsSummary($ID);
 	}
@@ -1978,12 +1986,7 @@ function showFollowupsSummary($tID){
 		echo "Element.hide('viewfollowup');";
 		echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$tID'});";
 		echo "};";
-
-		echo "function showPlan(){\n";
-		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups'});";
-		echo "}";
-		echo "</script>\n";
+		echo "</script>";
 
 		echo "<div id='viewfollowup'>\n";
 		echo "</div>\n";	
@@ -2034,7 +2037,7 @@ function showFollowupsSummary($tID){
 				echo $lang["job"][32];	
 			else {
 				$data2=$db->fetch_array($result2);
-				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"]);
+				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
 			}
 			echo "</td>";
 			
@@ -2094,13 +2097,13 @@ function showAddFollowupForm($tID){
 	echo "<table width='100%'>";
 
 	if ($isadmin){
-		echo "<tr>";
+/*		echo "<tr>";
 		echo "<td>".$lang["joblist"][3].":</td>";
 		echo "<td>";
 		dropdownUsers("author",$_SESSION["glpiID"]);
 		echo "</td>";
 		echo "</tr>";
-	
+*/	
 
 		echo "<tr>";
 		echo "<td>".$lang["job"][30].":</td>";
@@ -2211,7 +2214,7 @@ function showUpdateFollowupForm($ID){
 			echo "<td width='50%' valign='top'>";
 			echo "<table width='100%'>";
 
-			echo "<tr>";
+/*			echo "<tr>";
 			echo "<td>".$lang["joblist"][3].":</td>";
 			echo "<td>";
 			if ($isadmin)
@@ -2219,6 +2222,7 @@ function showUpdateFollowupForm($ID){
 			else echo getUserName($data["author"]);
 			echo "</td>";
 			echo "</tr>";
+*/
 
 			if ($isadmin){
 				echo "<tr>";
@@ -2272,7 +2276,7 @@ function showUpdateFollowupForm($ID){
 				else echo $lang["job"][32];	
 			else {
 				$data2=$db->fetch_array($result2);
-				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"]);
+				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
 				if ($isadmin)
 					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$HTMLRel."pics/edit.png'></a>";
 					

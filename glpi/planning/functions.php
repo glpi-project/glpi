@@ -108,6 +108,10 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	$followup->getfromDB($fup);
 	$j=new Job();
 	$j->getFromDB($followup->fields['tracking'],0);
+	if ($planID==-1){
+		if ($j->fields["assign"])
+			$planning->fields["id_assign"]=$j->fields["assign"];
+	}
 	
 	echo "<input type='hidden' name='id_followup' value='$fup'>";
 	echo "<input type='hidden' name='id_tracking' value='".$followup->fields['tracking']."'>";
@@ -130,9 +134,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	else {
 	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
 	echo "<td>";
-	if ($planID==-1)
-	dropdownUsers("id_assign",$_SESSION["glpiID"],-1);
-	else dropdownUsers("id_assign",$planning->fields["id_assign"],-1);
+	dropdownUsers("id_assign",$planning->fields["id_assign"],-1);
 
 	echo "</td></tr>";
 	

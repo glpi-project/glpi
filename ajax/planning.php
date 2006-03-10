@@ -62,12 +62,13 @@
 	$end_hour=date("H",$end);
 	$begin_min=date("i",$begin);
 	$end_min=date("i",$end);
-
 	echo "<table class='tab_cadre' cellpadding='2'>";
-//	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
-//	echo "<td>";
-//	dropdownUsers("plan['id_assign']",$_SESSION["glpiID"],-1);
-//	echo "</td></tr>";
+	if (isset($_GET["author"])){
+		echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
+		echo "<td>";
+		dropdownUsers("plan[id_assign]",$_GET["author"],-1);
+		echo "</td></tr>";
+	}
 
 	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
 	showCalendarForm($_GET['form'],"plan[begin_date]",$begin_date);
