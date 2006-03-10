@@ -710,7 +710,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$db->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-	echo $QUERY."<br>\n";
+	//echo $QUERY."<br>\n";
 	
 	// Set display type for export if define
 	$output_type=0;
