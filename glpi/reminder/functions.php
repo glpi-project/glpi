@@ -112,10 +112,10 @@ function showReminderForm ($target,$ID) {
 		if($remind_edit) { 
 			echo "<select name='type' $read>";
 		
-			echo "<option value='private' ". (($remind->fields["type"]=="private")?"selected='selected'":"") .">".$lang["reminder"][4]."</option>";	
+			echo "<option value='private' ". (((isset($_GET["type"])&&$_GET["type"]=="private")||$remind->fields["type"]=="private")?"selected='selected'":"") .">".$lang["reminder"][4]."</option>";	
 		
 			if($issuperadmin){
-				echo "<option value='public' ". (($remind->fields["type"]=="public")?"selected='selected'":"").">".$lang["reminder"][5]."</option>";	
+				echo "<option value='public' ". ((isset($_GET["type"])&&$_GET["type"]=="public")||($remind->fields["type"]=="public")?"selected='selected'":"").">".$lang["reminder"][5]."</option>";	
 			}		
 			echo "</select>";
 		}else{
@@ -314,7 +314,7 @@ function showCentralReminder($type="private"){
 		echo "<div align='center'><br><table class='tab_cadrehov'>";
 		
 		echo "<tr><th><div style='position: relative'><span><strong>"."$titre"."</strong></span>";
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."reminder/reminder-info-form.php\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span></div>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."reminder/reminder-info-form.php?type=$type\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span></div>";
 		echo "</th></tr>";
 	if($db->numrows($result)>0){
 		while ($data =$db->fetch_array($result)){ 
