@@ -329,7 +329,7 @@ while(!feof($fileHandle))
 //    echo $TPSCOUR."<br>";
     
     // on indique le  length pour la fonction fgets pour compatibilité avec les versions <=PHP 4.2
-    $buffer=fgets($fileHandle,1024);
+    $buffer=fgets($fileHandle,10240);
     if (substr($buffer,strlen($buffer),1)==0)
         $buffer=substr($buffer,0,strlen($buffer)-1);
     
@@ -337,15 +337,16 @@ while(!feof($fileHandle))
     {
         $formattedQuery .= $buffer;
 	if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
-        if (substr($formattedQuery,-1)==";")
+        if (substr($formattedQuery,-1)==";"){
         // Do not use the $db->query 
         if ($db->query($formattedQuery)) //réussie sinon continue à conca&téner
         {
+	
             $offset=ftell($fileHandle);
             $formattedQuery = "";
             $cpt++;
         }
-		
+	}
     }
     
 }
