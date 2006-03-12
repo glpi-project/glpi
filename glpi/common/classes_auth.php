@@ -124,7 +124,7 @@ class Identification
 	* @return boolean : connection success
 	*
 	*/
-  function connection_ldap($host,$basedn,$login,$pass,$condition,$port)
+  function connection_ldap($host,$dn,$login,$pass,$condition,$port)
   {
 	global $cfg_glpi;
 	
@@ -134,9 +134,9 @@ class Identification
 		}
   	error_reporting(16);
   	
-	$dn = $cfg_glpi["ldap_login"] ."=" . $login . "," . $basedn;
+	//$dn = $cfg_glpi["ldap_login"] ."=" . $login . "," . $basedn;
   	$rv = false;
-  	if ( $ds = ldap_connect($host,$port) )
+	if ( $ds=ldap_connect($host,$port) )
   	{
   		// switch to protocol version 3 to make ssl work
   		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
@@ -147,13 +147,16 @@ class Identification
 				return false;
 			} 
 		}
-
   		if (ldap_bind($ds, $dn, $pass) ) {
                      $filter="(".$cfg_glpi["ldap_login"]."=$login)";
                      if ($condition!="") $filter="(& $filter $condition)";
-                     $sr=ldap_search($ds, $basedn, $filter);
+		      $thedn=explode(",", $dn);
+		      unset($thedn[0]);
+			$basedn=implode(",",$thedn);
+			    
+		     $sr=ldap_search($ds, $basedn, $filter);
                      $info = ldap_get_entries ( $ds, $sr );
-                     if ( $info["count"] == 1 )
+		     if ( $info["count"] == 1 )
                      {
                         $rv=true;
                      }
@@ -218,7 +221,6 @@ if ($cfg_glpi["ldap_use_tls"]){
 		return false;
 	} 
 }
-
   if ($rdn=="") $r = ldap_bind ( $ds);
   else $r = ldap_bind ( $ds,$rdn,$rpass);
 
@@ -228,7 +230,6 @@ if ($cfg_glpi["ldap_use_tls"]){
        ldap_close ( $ds );
        return false;
       }
-
     $sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
 
     if (!$sr)
@@ -237,9 +238,7 @@ if ($cfg_glpi["ldap_use_tls"]){
        ldap_close ( $ds );
        return false;
        }
-       
     $info = ldap_get_entries ( $ds, $sr );
-
     if ( $info["count"] != 1 )
        {
        $this->err.="User not found or several users found.<br>\n";
@@ -249,9 +248,10 @@ if ($cfg_glpi["ldap_use_tls"]){
        }
    ldap_free_result ( $sr );
    ldap_close ( $ds );
-   $thedn=explode(",", $info[0]["dn"]);
-   unset($thedn[0]);
-   return implode(",",$thedn);
+   //$thedn=explode(",", $info[0]["dn"]);
+   //unset($thedn[0]);
+   //return implode(",",$thedn);
+   return $info[0]["dn"];
   }  		 // ldap_get_dn()
  		
 	/**
