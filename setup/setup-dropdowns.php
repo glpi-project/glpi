@@ -86,7 +86,7 @@ if (isset($_POST["several_add"])) {
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["delete"])) {
 	checkAuthentication("admin");
-	if(!dropdownUsed(0, $_POST["ID"]) && empty($_POST["forcedelete"])) {
+	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 		showDeleteConfirmForm($_SERVER["PHP_SELF"],$_POST["tablename"], $_POST["ID"]);
 		commonFooter();

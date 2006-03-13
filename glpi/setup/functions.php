@@ -575,8 +575,19 @@ function showDeleteConfirmForm($target,$table, $ID) {
 	}	
 
 	if ($table=="glpi_dropdown_kbcategories"){
-	echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
-	return;
+		$query = "Select count(*) as cpt FROM $table where parentID = '".$ID."'";
+        	$result = $db->query($query);
+	        if($db->result($result,0,"cpt") > 0)  {	
+			echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
+			return;
+		} else {
+			$query = "Select count(*) as cpt FROM glpi_kbitems where categoryID = '".$ID."'";
+	        	$result = $db->query($query);
+		        if($db->result($result,0,"cpt") > 0)  {
+				echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
+				return;
+			}
+		}
 	}
 		
 	echo "<div align='center'>";
@@ -610,7 +621,7 @@ function showDeleteConfirmForm($target,$table, $ID) {
 
 
 function getDropdownNameFromTable($table) {
-
+	
 	if(ereg("glpi_type_",$table)){
 		$name = ereg_replace("glpi_type_","",$table);
 	}
@@ -643,7 +654,7 @@ function dropdownUsed($table, $ID) {
 
 	global $db;
 	$name = getDropdownNameFromTable($table);
-
+	
 	$var1 = true;
 	switch($name) {
 	case "cartridge_type":
@@ -725,7 +736,6 @@ function dropdownUsed($table, $ID) {
 		$query = "Select count(*) as cpt FROM glpi_kbitems where categoryID = ".$ID."";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
-
 		break;
 	case "location" :
 		$query = "Select count(*) as cpt FROM glpi_dropdown_locations where parentID = ".$ID."";
