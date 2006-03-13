@@ -1117,7 +1117,7 @@ if ($val=="NULL") $SEARCH=" IS $NOT NULL ";
 
 switch ($table.".".$field){
 case "glpi_users.name" :
-	return " ( $table.$field $SEARCH AND glpi_users.realname $SEARCH ) ";
+	return " ( $table.$field $SEARCH OR glpi_users.realname $SEARCH ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
 //	$larg=500;
