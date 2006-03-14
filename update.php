@@ -3699,7 +3699,7 @@ if(!TableExists("glpi_ocs_link")) {
   KEY `glpi_id` (`glpi_id`),
   KEY `auto_update` (`auto_update`),
   KEY `last_update` (`last_update`)
-) ENGINE=MyISAM";
+) TYPE=MyISAM";
 	$db->query($query) or die("0.65 MODE OCS creation ocs_link ".$lang["update"][90].$db->error());
 }
 
@@ -3736,7 +3736,7 @@ if(!TableExists("glpi_ocs_config")) {
   `default_state` int(11) NOT NULL default '0',
   `tag_limit` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM";
+) TYPE=MyISAM";
 
 	$db->query($query) or die("0.65 MODE OCS creation ocs_config ".$lang["update"][90].$db->error());
 	$query = "INSERT INTO `glpi_ocs_config` VALUES (1, 'ocs', 'ocs', 'localhost', 'ocsweb', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '');";
@@ -3761,7 +3761,7 @@ if(!TableExists("glpi_dropdown_budget")) {
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM;";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.65 add dropdown_budget ".$lang["update"][90].$db->error());
 }
 
@@ -3793,7 +3793,7 @@ if(!TableExists("glpi_dropdown_os_version")) {
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM;";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.65 add dropdown_os_version ".$lang["update"][90].$db->error());
 }
 
@@ -3802,7 +3802,7 @@ if(!TableExists("glpi_dropdown_os_sp")) {
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM;";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.65 add dropdown_os_sp ".$lang["update"][90].$db->error());
 }
 
@@ -3843,7 +3843,7 @@ $query = "CREATE TABLE `glpi_dropdown_model_phones` (
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM;";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.65 add dropdown_model_phones ".$lang["update"][90].$db->error());
 }
 
@@ -3854,7 +3854,7 @@ $query = "CREATE TABLE `glpi_type_phones` (
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM;";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.65 add type_phones ".$lang["update"][90].$db->error());
 }
 
@@ -3866,7 +3866,7 @@ $query = "CREATE TABLE `glpi_dropdown_phone_power` (
   `name` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM;";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.65 add dropdown_phone_power ".$lang["update"][90].$db->error());
 }
 
@@ -3905,7 +3905,7 @@ $query = "CREATE TABLE `glpi_phones` (
   KEY `deleted` (`deleted`),
   KEY `is_template` (`is_template`),
   KEY `tech_num` (`tech_num`)
-) ENGINE=MyISAM;";
+) TYPE=MyISAM;";
 	$db->query($query) or die("0.65 add phones ".$lang["update"][90].$db->error());
 
 $query="INSERT INTO `glpi_phones` VALUES (1, NULL, '0000-00-00 00:00:00', NULL, NULL, 0, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, 0, '', 0, 0, 0, '0', 'N', '1', 'Blank Template', NULL);";
@@ -3931,7 +3931,7 @@ $query="CREATE TABLE `glpi_reminder` (
   KEY `author` (`author`),
   KEY `rv` (`rv`),
   KEY `type` (`type`)
-) ENGINE=MyISAM ;";
+) TYPE=MyISAM ;";
 
 $db->query($query) or die("0.65 add reminder ".$lang["update"][90].$db->error());
 }
