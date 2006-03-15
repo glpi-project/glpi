@@ -37,12 +37,15 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
+include ($phproot . "/glpi/common/functions_display.php");
 include ($phproot . "/glpi/common/functions_db.php");
 include ($phproot . "/glpi/config/based_config.php");
 include($cfg_glpi["config_dir"] . "/config_db.php");
 
 if(!session_id()){@session_start();}
 
+// Init debug variable
+$cfg_glpi["debug"]=0;
 
 
 //################################ Functions ################################

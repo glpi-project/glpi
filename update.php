@@ -4043,11 +4043,17 @@ elseif(empty($_POST["ajout_su"])) {
 	if(test_connect()) {
 		echo "<h3>".$lang["update"][93]."</h3>";
 		if (!isset($_POST["update_location"]))
+			$current_verison="0.31";
 			if(!TableExists("glpi_config")) {
 				updateDbTo031();
 				$tab = updateDbUpTo031();
 				updaterootdoc();
 			} else {
+				// Get current version
+				$query="SELECT version FROM glpi_config";
+				$result=$db->query($query) or die("get current version".$db->error());
+				$current_version=trim($db->result($result,0,0));
+
 				$tab = updateDbUpTo031();
 				updaterootdoc();
 			}
@@ -4061,11 +4067,6 @@ elseif(empty($_POST["ajout_su"])) {
 				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
 			}
 			if (showLocationUpdateForm()){
-				// Get current version
-				$query="SELECT version FROM glpi_config";
-				$result=$db->query($query) or die("get current version".$db->error());
-				$current_version=trim($db->result($result,0,0));
-
 				switch ($current_version){
 					case "0.31": 
 					case "0.4": 
