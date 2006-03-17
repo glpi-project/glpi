@@ -272,7 +272,10 @@ function commonHeader($title,$url)
 	echo "</div>";
 
 	echo "<div onmouseover=\"javascript:hidemenu();\">";
+	displayMessageAfterRedirect();
+}
 
+function displayMessageAfterRedirect(){
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
 		echo "<div align='center'><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></div>";
@@ -414,13 +417,7 @@ function helpHeader($title,$url,$name) {
 	echo "</table>\n";
 	echo "</div>";
 
-	// Affichage du message apres redirection
-	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
-		echo "<div align='center'><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></div>";
-		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
-		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
-	}
-
+	displayMessageAfterRedirect();
 }
 
 /**
@@ -686,7 +683,7 @@ function printHelpDesk ($name,$from_helpdesk) {
 	$max_size=round($max_size,1);
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=850,height=800')\">";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
 	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";

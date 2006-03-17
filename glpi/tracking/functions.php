@@ -644,7 +644,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign=0,$realtime=0) {
+function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign=0,$realtime=0,$category=0) {
 	// Put Job in database
 
 	GLOBAL $cfg_glpi,$lang;
@@ -671,6 +671,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->fields["uemail"] = $uemail;
 	if (empty($emailupdates)) $emailupdates="no";
 	$job->fields["emailupdates"] = $emailupdates;
+	$job->fields["category"] = $category;
 
 	$user=new User;
 	$user->getfromDBbyID($author);
@@ -735,7 +736,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if (!empty($error)) {
 		echo "<div align='center'><strong>$error</strong></div>";
 	}
-	echo "<form method='get' action='$target'>";
+	echo "<form method='post' action='$target' enctype=\"multipart/form-data\">";
 	echo "<div align='center'>";
 
 	if ($device_type!=0){
@@ -765,10 +766,10 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][0].":</td>";
 	echo "<td align='center' class='tab_bg_2'><select name='status'>";
 	echo "<option value='new' ";
-	if ($_GET["status"]=="new") echo "selected";
+	if (isset($_GET["status"])&&$_GET["status"]=="new") echo "selected";
 	echo ">".$lang["job"][14]."</option>";
 	echo "<option value='old_done' ";
-	if ($_GET["status"]=="old_done") echo "selected";	
+	if (isset($_GET["status"])&&$_GET["status"]=="old_done") echo "selected";	
 	echo ">".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
 
@@ -786,7 +787,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 			echo "<select name='minute'>";
 			for ($i=0;$i<60;$i++){
 			$selected="";
-			if (isset($_GET["minute"])&&$_GET["minute"]==$i) $selected="selected";
+			if (isset($_POST["minute"])&&$_POST["minute"]==$i) $selected="selected";
 			echo "<option value='$i' $selected>$i</option>";
 			}
 			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
@@ -811,6 +812,13 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<td align='center'>";
 	dropdownUsers("assign",$assign);
 	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2' align='center'><td>".$lang["tracking"][20].":</td>";
+	
+	echo "<td align='center'>";
+	dropdown("glpi_dropdown_tracking_category","category",0);
+	echo "</td></tr>";
+
 
 	if($cfg_glpi["mailing"] == 1)
 	{
@@ -838,6 +846,16 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='2' align='center'><textarea cols='60' rows='14'  name='contents'></textarea></td></tr>";
+
+	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+	$max_size/=1024*1024;
+	$max_size=round($max_size,1);
+
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+	echo "</td>";
+	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
+	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit'>";
