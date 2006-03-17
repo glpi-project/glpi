@@ -90,6 +90,7 @@ echo "<p style='text-align:center;'><label>Select your language </label><select 
 	echo "<option value=\"hungarian\">Hungarian</option>";
 	echo "<option value=\"polish\">Polish</option>";
 	echo "<option value=\"rumanian\">Rumanian</option>";
+	echo "<option value=\"russian\">Russian</option>";
 	echo "</select></p>"; 
 	echo "";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\" /><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
