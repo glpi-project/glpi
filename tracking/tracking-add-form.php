@@ -89,7 +89,7 @@ elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 	if (isset($_POST["hour"])&&isset($_POST["minute"]))
 	$realtime=$_POST["hour"]+$_POST["minute"]/60;
 
-	if (postJob($_POST["device_type"],$_POST["ID"],$_POST["user"],$_POST["status"],$_POST["priority"],$_POST["isgroup"],$uemail,$_POST["emailupdates"],$_POST["contents"],$_POST["assign"],$realtime,$_POST["assign"]))
+	if (postJob($_POST["device_type"],$_POST["ID"],$_POST["user"],$_POST["status"],$_POST["priority"],$_POST["isgroup"],$uemail,$_POST["emailupdates"],$_POST["contents"],$_POST["assign"],$realtime,$_POST["category"]))
 	{
 		$error=$lang["tracking"][9];
 		displayMessageAfterRedirect();
