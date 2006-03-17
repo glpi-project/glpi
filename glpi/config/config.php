@@ -74,6 +74,7 @@ $cfg_glpi["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","english.h
 				"polish"=>array("Polish","polish.php","english.html","hd-english.html","pl"),
 				"portugese"=>array("Português (brasileiro)","portugese.php","english.html","hd-english.html","br"),
 				"rumaninian"=>array("Rumanian","rumanian.php","english.html","hd-english.html","ro"),
+				"russian"=>array("Russian","russian.php","english.html","hd-english.html","ru"),
 				);
 
 // ITEMS TYPE
