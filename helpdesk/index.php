@@ -45,54 +45,57 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_phones.php");
+include ($phproot . "/glpi/includes_documents.php");
 
 checkAuthentication("normal");
 
 commonHeader("Helpdesk",$_SERVER["PHP_SELF"]);
 
-if (!isset($_GET["user"])) $user=$_SESSION["glpiID"];
-else $user=$_GET["user"];
-if (!isset($_GET["assign"])) $assign=0;
-else $assign=$_GET["assign"];
+if (!isset($_POST["user"])) $user=$_SESSION["glpiID"];
+else $user=$_POST["user"];
+if (!isset($_POST["assign"])) $assign=0;
+else $assign=$_POST["assign"];
 
-if(empty($_GET["isgroup"])) $_GET["isgroup"] = "";
-if(empty($_GET["status"])) $_GET["status"] = "new";
-if(empty($_GET["uemail"])) $_GET["uemail"] = "";
-if(empty($_GET["emailupdates"])) $_GET["emailupdates"] = "";
+if(empty($_POST["isgroup"])) $_POST["isgroup"] = "";
+if(empty($_POST["status"])) $_POST["status"] = "new";
+if(empty($_POST["uemail"])) $_POST["uemail"] = "";
+if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "";
 $error = "";
 
 
-if (isset($_GET["priority"]) && empty($_GET["contents"]))
+if (isset($_POST["priority"]) && empty($_POST["contents"]))
 {
 	$error=$lang["tracking"][8] ;
 	addFormTracking(0,0,$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
-elseif (isset($_GET["priority"]) && !empty($_GET["contents"]))
+elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
-	$uemail=$_GET["uemail"];
-	if (isset($_GET["emailupdates"])&&$_GET["emailupdates"]=='yes'&&empty($_GET["uemail"])){
+	$uemail=$_POST["uemail"];
+	if (isset($_POST["emailupdates"])&&$_POST["emailupdates"]=='yes'&&empty($_POST["uemail"])){
 		$u=new User;		
-		$u->getfromDB($_GET["user"]);
+		$u->getfromDB($_POST["user"]);
 		$uemail=$u->fields['email'];
 		}
 
 		
-	if (isset($_GET["hour"])&&isset($_GET["minute"]))
-	$realtime=$_GET["hour"]+$_GET["minute"]/60;
+	if (isset($_POST["hour"])&&isset($_POST["minute"]))
+	$realtime=$_POST["hour"]+$_POST["minute"]/60;
 
-	if (!isset($_GET["computer"])||$_GET["computer"]==0){
-		$_GET["device_type"]==0;
-		$_GET["computer"]=0;
+	if (!isset($_POST["computer"])||$_POST["computer"]==0){
+		$_POST["device_type"]==0;
+		$_POST["computer"]=0;
 		}
 
-	if (postJob($_GET["device_type"],$_GET["computer"],$_GET["user"],$_GET["status"],$_GET["priority"],$_GET["isgroup"],$uemail,$_GET["emailupdates"],$_GET["contents"],$_GET["assign"],$realtime))
+	if (postJob($_POST["device_type"],$_POST["computer"],$_POST["user"],$_POST["status"],$_POST["priority"],$_POST["isgroup"],$uemail,$_POST["emailupdates"],$_POST["contents"],$_POST["assign"],$realtime,$_POST["category"]))
 	{
 		$error=$lang["tracking"][9];
+		displayMessageAfterRedirect();
 		addFormTracking(0,0,$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 	else
 	{
 		$error=$lang["tracking"][10];
+		displayMessageAfterRedirect();
 		addFormTracking(0,0,$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 } 
