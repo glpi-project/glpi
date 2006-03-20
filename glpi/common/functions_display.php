@@ -470,6 +470,14 @@ function nullHeader($title,$url) {
 	
         echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
 
+	// Calendar scripts 
+	if (isset($_SESSION["glpilanguage"])){
+		echo "<style type=\"text/css\">@import url(".$HTMLRel."calendar/aqua/theme.css);</style>";
+		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar.js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar-setup.js\"></script>";
+	}
+
 	
 	// End of Head
 	echo "</head>\n";

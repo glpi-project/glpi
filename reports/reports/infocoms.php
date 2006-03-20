@@ -111,8 +111,13 @@ function display_infocoms_report($device_type,$begin,$end){
 		while ($line=$db->fetch_array($result)){
 			
 			$comp->getFromDB($device_type,$line["FK_device"]);
-//				print_r($comp);
+
 			if (isset($comp->obj->fields["is_template"])&&$comp->obj->fields["is_template"]==0){
+
+				if (isset($comp->obj->fields["is_global"])&&$comp->obj->fields["is_global"]){
+					
+					$line["value"]*=getNumberConnections($device_type,$line["FK_device"]);
+				}
 
 				if ($line["value"]>0) $valeursoustot+=$line["value"];	
 
@@ -217,4 +222,5 @@ if (count($valeurgraphtot)>0){
 	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
 	graphBy($valeurgraphtotdisplay,$lang["financial"][21],"",0,"year");
 }
+commonFooter();
 ?>
