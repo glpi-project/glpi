@@ -396,7 +396,7 @@ function updateSort($input) {
 
 	$query = "UPDATE glpi_users SET tracking_order = '".$input["tracking_order"]."' WHERE (ID = '".$_SESSION["glpiID"]."')";
 	if ($result=$db->query($query)) {
-		$_SESSION["tracking_order"] = $input["tracking_order"];
+		$_SESSION["glpitracking_order"] = $input["tracking_order"];
 		return true;
 	} else {
 		return false;
@@ -445,7 +445,7 @@ function showSortForm($target) {
 
 	GLOBAL $cfg_glpi, $lang;
 	
-	$order = $_SESSION["tracking_order"];
+	$order = $_SESSION["glpitracking_order"];
 	
 	echo "<div align='center'>\n";
 	echo "<form method='post' action=\"$target\">\n";

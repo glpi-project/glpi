@@ -162,7 +162,7 @@ function isSuperAdmin($authtype) {
 **/      
 function checkAuthentication($authtype) {
 	// Universal method to have a magic-quote-gpc system
-	global $_POST, $_GET,$_COOKIE,$tab,$cfg_glpi;
+	global $_POST, $_GET,$_COOKIE,$tab,$cfg_glpi,$lang, $HTMLRel;
 	// Clean array and addslashes
 	
 	if (get_magic_quotes_gpc()) {
@@ -197,17 +197,17 @@ function checkAuthentication($authtype) {
 	
 	
 	if(!session_id()){@session_start();}
-
-	if (isset($_SESSION["root"])&&$cfg_glpi["root_doc"]!=$_SESSION["root"]) {
-		glpi_header($_SESSION["root"]);
+	
+	if (isset($_SESSION["glpiroot"])&&$cfg_glpi["root_doc"]!=$_SESSION["glpiroot"]) {
+		glpi_header($_SESSION["glpiroot"]);
 	}
 	
 	// Override cfg_features by session value
-	if (isset($_SESSION['list_limit'])) $cfg_glpi["list_limit"]=$_SESSION['list_limit'];
+	if (isset($_SESSION['glpilist_limit'])) $cfg_glpi["list_limit"]=$_SESSION['glpilist_limit'];
 
-	GLOBAL $cfg_glpi, $lang, $HTMLRel;
+	
 
-	if(empty($_SESSION["authorisation"])&& $authtype != "anonymous")
+	if(empty($_SESSION["glpiauthorisation"])&& $authtype != "anonymous")
 	{
 		nullHeader("Login",$_SERVER["PHP_SELF"]);
 		echo "<div align='center'><b><a href=\"".$cfg_glpi["root_doc"]."/logout.php\">Relogin</a></b></div>";

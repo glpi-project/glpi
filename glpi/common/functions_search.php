@@ -46,56 +46,56 @@ $tab=array();
 
 if (is_array($_GET))
 foreach ($_GET as $key => $val)
-		$_SESSION['search'][$type][$key]=$val;
+		$_SESSION['glpisearch'][$type][$key]=$val;
 
 if (!isset($_GET["start"]))
-	if (isset($_SESSION['search'][$type]["start"])) $_GET["start"]=$_SESSION['search'][$type]["start"];
+	if (isset($_SESSION['glpisearch'][$type]["start"])) $_GET["start"]=$_SESSION['glpisearch'][$type]["start"];
 	else $_GET["start"] = 0;
 
 if (!isset($_GET["order"]))
-	if (isset($_SESSION['search'][$type]["order"])) $_GET["order"]=$_SESSION['search'][$type]["order"];
+	if (isset($_SESSION['glpisearch'][$type]["order"])) $_GET["order"]=$_SESSION['glpisearch'][$type]["order"];
 	else $_GET["order"] = "ASC";
 
 if (!isset($_GET["deleted"]))
-if (isset($_SESSION['search'][$type]["deleted"])) $_GET["deleted"]=$_SESSION['search'][$type]["deleted"];
+if (isset($_SESSION['glpisearch'][$type]["deleted"])) $_GET["deleted"]=$_SESSION['glpisearch'][$type]["deleted"];
 else $_GET["deleted"] = "N";
 
 if (!isset($_GET["distinct"]))
-if (isset($_SESSION['search'][$type]["distinct"])) $_GET["distinct"]=$_SESSION['search'][$type]["distinct"];
+if (isset($_SESSION['glpisearch'][$type]["distinct"])) $_GET["distinct"]=$_SESSION['glpisearch'][$type]["distinct"];
 else $_GET["distinct"] = "N";
 	
 
 if (!isset($_GET["link"]))
-	if (isset($_SESSION['search'][$type]["link"])) $_GET["link"]=$_SESSION['search'][$type]["link"];
+	if (isset($_SESSION['glpisearch'][$type]["link"])) $_GET["link"]=$_SESSION['glpisearch'][$type]["link"];
 	else $_GET["link"] = array();
 
 if (!isset($_GET["field"]))
-	if (isset($_SESSION['search'][$type]["field"])) $_GET["field"]=$_SESSION['search'][$type]["field"];
+	if (isset($_SESSION['glpisearch'][$type]["field"])) $_GET["field"]=$_SESSION['glpisearch'][$type]["field"];
 	else $_GET["field"] = array(0 => "view");
 
 if (!isset($_GET["contains"]))
-	if (isset($_SESSION['search'][$type]["contains"])) $_GET["contains"]=$_SESSION['search'][$type]["contains"];
+	if (isset($_SESSION['glpisearch'][$type]["contains"])) $_GET["contains"]=$_SESSION['glpisearch'][$type]["contains"];
 	else $_GET["contains"] = array(0 => "");
 
 if (!isset($_GET["link2"]))
-	if (isset($_SESSION['search'][$type]["link2"])) $_GET["link2"]=$_SESSION['search'][$type]["link2"];
+	if (isset($_SESSION['glpisearch'][$type]["link2"])) $_GET["link2"]=$_SESSION['glpisearch'][$type]["link2"];
 	else $_GET["link2"] = array();
 
 if (!isset($_GET["field2"]))
-	if (isset($_SESSION['search'][$type]["field2"])) $_GET["field2"]=$_SESSION['search'][$type]["field2"];
+	if (isset($_SESSION['glpisearch'][$type]["field2"])) $_GET["field2"]=$_SESSION['glpisearch'][$type]["field2"];
 	else $_GET["field2"] = array(0 => "view");
 
 if (!isset($_GET["contains2"]))
-	if (isset($_SESSION['search'][$type]["contains2"])) $_GET["contains2"]=$_SESSION['search'][$type]["contains2"];
+	if (isset($_SESSION['glpisearch'][$type]["contains2"])) $_GET["contains2"]=$_SESSION['glpisearch'][$type]["contains2"];
 	else $_GET["contains2"] = array(0 => "");
 
 if (!isset($_GET["type2"]))
-	if (isset($_SESSION['search'][$type]["type2"])) $_GET["type2"]=$_SESSION['search'][$type]["type2"];
+	if (isset($_SESSION['glpisearch'][$type]["type2"])) $_GET["type2"]=$_SESSION['glpisearch'][$type]["type2"];
 	else $_GET["type2"] = "";
 
 
 if (!isset($_GET["sort"]))
-	if (isset($_SESSION['search'][$type]["sort"])) $_GET["sort"]=$_SESSION['search'][$type]["sort"];
+	if (isset($_SESSION['glpisearch'][$type]["sort"])) $_GET["sort"]=$_SESSION['glpisearch'][$type]["sort"];
 	else $_GET["sort"] = 1;
 
 if (!isset($_SESSION["glpisearchcount"][$type])) $_SESSION["glpisearchcount"][$type]=1;

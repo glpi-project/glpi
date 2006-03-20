@@ -65,7 +65,7 @@ if (isset($_GET["delete_search_count2"])){
 if (isset($_GET["reset_search"])){
 	unset($_SESSION["glpisearchcount2"][$_GET["type"]]);
 	unset($_SESSION["glpisearchcount"][$_GET["type"]]);
-	unset($_SESSION["search"][$_GET["type"]]);
+	unset($_SESSION["glpisearch"][$_GET["type"]]);
 	if ($cut=strpos($_SERVER['HTTP_REFERER'],"?"))
 		$REDIRECT=substr($_SERVER['HTTP_REFERER'],0,$cut);
 	else $REDIRECT=$_SERVER['HTTP_REFERER'];

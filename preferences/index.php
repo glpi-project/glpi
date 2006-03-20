@@ -45,7 +45,7 @@ if (isset($_POST["changepw"])) {
 	
 	checkAuthentication("post-only");
 	
-	if ($_SESSION["extauth"]!=1)
+	if ($_SESSION["glpiextauth"]!=1)
 		updateUser($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["updatesort"])) {
@@ -65,7 +65,7 @@ if (isset($_POST["changepw"])) {
         echo "<div align='center'><table border='0'><tr><td>";
         echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][11]."</b></span>";
         echo "</td></tr></table></div>";
-	if ($_SESSION["extauth"]!=1)
+	if ($_SESSION["glpiextauth"]!=1)
 		showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	showSortForm($_SERVER["PHP_SELF"]);
 	showLangSelect($_SERVER["PHP_SELF"]);

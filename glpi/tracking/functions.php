@@ -137,14 +137,15 @@ function getTrackingPrefs ($ID) {
 	// Returns users preference settings for job tracking
 	// Currently only supports sort order
 
-	global $db;
+	/*global $db;
 	$query = "SELECT tracking_order FROM glpi_users WHERE (ID = '$ID')";
 	$result = $db->query($query);
 	if ($result&&$db->numrows($result)==1)
 	$tracking_order = $db->result($result, 0, "tracking_order");
 	else $tracking_order="yes";
+	*/
 
-	if($tracking_order == "yes")
+	if($_SESSION["glpitracking_order"] == "yes")
 	{
 		$prefs["order"] = "ASC";
 	} 
