@@ -59,7 +59,7 @@ function commonHeader($title,$url)
 
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
- 		$_SESSION['list_limit']=$_POST['list_limit'];
+ 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
      		 $cfg_glpi["list_limit"]=$_POST['list_limit'];
 	 }
 
@@ -299,7 +299,7 @@ function helpHeader($title,$url,$name) {
 
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
- 		$_SESSION['list_limit']=$_POST['list_limit'];
+ 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
      		 $cfg_glpi["list_limit"]=$_POST['list_limit'];
 	 }
 
@@ -381,7 +381,7 @@ function helpHeader($title,$url,$name) {
 
 	// And he can change his password, thats it
 	echo "<td>";
-	if ($_SESSION["extauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+	if ($_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
 		showPasswordForm($cfg_glpi["root_doc"]."/preferences/index.php",$name);
 		else echo "&nbsp;";
 	echo "</td>";
@@ -437,7 +437,7 @@ function nullHeader($title,$url) {
 
 	// Override list-limit if choosen
 	if (isset($_POST['list_limit'])) {
-		$_SESSION['list_limit']=$_POST['list_limit'];
+		$_SESSION['glpilist_limit']=$_POST['list_limit'];
 		$cfg_glpi["list_limit"]=$_POST['list_limit'];
 	 }
 
@@ -771,8 +771,8 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	echo "<form method='POST' action=\"$target?$parameters&amp;start=$start\">\n";
 	echo "<span>".$lang["pager"][4]."&nbsp;</span>";
 	echo "<select name='list_limit' onChange='submit()'>";
-	for ($i=5;$i<=200;$i+=5) echo "<option value='$i' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==$i)?" selected ":"").">$i</option>\n";
-	echo "<option value='9999999' ".((isset($_SESSION["list_limit"])&&$_SESSION["list_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
+	for ($i=5;$i<=200;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	echo "<option value='9999999' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
 	echo "</select><span>&nbsp;";
 	echo $lang["pager"][5];
 	echo "</span>";

@@ -496,13 +496,13 @@ global $cfg_glpi;
 		$_SESSION["glpirealname"] = $realname;
 		$_SESSION["glpitype"] = $type;
 		$_SESSION["glpilanguage"] = $language;
-		$_SESSION["tracking_order"] = $tracking_order;
-		$_SESSION["authorisation"] = true;
-		$_SESSION["extauth"] = $this->extauth;
+		$_SESSION["glpitracking_order"] = $tracking_order;
+		$_SESSION["glpiauthorisation"] = true;
+		$_SESSION["glpiextauth"] = $this->extauth;
 		$_SESSION["glpisearchcount"] = array();
 		$_SESSION["glpisearchcount2"] = array();
-		$_SESSION["root"] = $cfg_glpi["root_doc"];
-		$_SESSION["list_limit"] = $cfg_glpi["list_limit"];
+		$_SESSION["glpiroot"] = $cfg_glpi["root_doc"];
+		$_SESSION["glpilist_limit"] = $cfg_glpi["list_limit"];
 	}
 
 	function eraseCookies()
