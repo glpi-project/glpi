@@ -107,8 +107,10 @@ function display_infocoms_report($device_type,$begin,$end){
 		while ($line=$db->fetch_array($result)){
 			
 			$comp->getFromDB($device_type,$line["FK_device"]);
-//				print_r($comp);
 
+				if ($device_type==LICENSE_TYPE&&$comp->obj->fields["serial"]=="global"){
+					$line["value"]*=getInstallionsForLicense($line["FK_device"]);
+				}
 				if ($line["value"]>0) $valeursoustot+=$line["value"];	
 
 				$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_glpi["date_fiscale"],"n");
@@ -205,4 +207,6 @@ if (count($valeurgraphtot)>0){
 	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
 	graphBy($valeurgraphtotdisplay,$lang["financial"][21],"",0,"year");
 }
+
+commonFooter();
 ?>

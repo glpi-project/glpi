@@ -173,4 +173,16 @@ function Connect($target,$sID,$cID,$type) {
 	return $newID;	
 }
 
+function getNumberConnections($type,$ID){
+	global $db;
+	$query = "SELECT count(*) FROM glpi_connect_wire INNER JOIN glpi_computers ON ( glpi_connect_wire.end2=glpi_computers.ID ) WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' AND glpi_computers.deleted='N' AND glpi_computers.is_template='0'";
+	
+	$result = $db->query($query);
+	
+	if ($db->numrows($result)!=0){
+		return $db->result($result,0,0);
+	} else return 0;
+	
+}
+
 ?>
