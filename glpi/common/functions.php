@@ -171,10 +171,13 @@ function utf8_decode_deep($value) {
 *
 */
 function resume_text($string,$length=255){
-
+	
 	if (strlen($string)>$length){
-
-	$string=substr($string,0,$length)."&nbsp;(...)";
+	$lastchar=substr($string,$length-1,1);
+	// last char is not utf8 encoded
+	if ($lastchar==utf8_decode($lastchar))
+		$string=substr($string,0,$length)."&nbsp;(...)";
+	else $string=substr($string,0,$length-1)."&nbsp;(...)";
 	}
 
 	return $string;
