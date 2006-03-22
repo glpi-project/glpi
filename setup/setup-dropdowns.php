@@ -131,6 +131,7 @@ if (isset($_POST["several_add"])) {
 			"ram_type"=>$lang["setup"][86],	
 			"enttype"=>$lang["setup"][80],
 			"hdd_type"=>$lang["setup"][93],
+			"phone_power"=>$lang["setup"][505],
 			),
 
 		$lang["common"][22]=>array(
@@ -170,7 +171,6 @@ if (isset($_POST["several_add"])) {
 			"domain"=>$lang["setup"][89],
 			"network"=>$lang["setup"][88],
 			"vlan"=>$lang["setup"][90],	
-			"phone_power"=>$lang["setup"][505],
 			),
 
 	); //end $opt
