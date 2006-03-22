@@ -119,7 +119,7 @@ else
 		 default :
 		 	switch ($type){
 		 		case "tracking":
-				 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-followups.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID");
 					 break;
 		 		case "computers":
 				 	glpi_header($cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=$ID");
