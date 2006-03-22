@@ -1472,7 +1472,7 @@ function updateTracking($input){
 	$global_mail_change_count=0;
 	if (in_array("assign",$updates)){
 		$new_assign_name=getAssignName($job->fields["assign"],USER_TYPE);
-		if ($old_assign_name="[Nobody]")
+		if ($old_assign_name=="[Nobody]")
         	       	$old_assign_name=$lang["mailing"][105];
 		$change_followup_content.=$lang["mailing"][12].": ".$old_assign_name." -> ".$new_assign_name."\n";
 		$global_mail_change_count++;
