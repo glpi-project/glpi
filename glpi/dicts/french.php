@@ -825,7 +825,7 @@ $lang["networking"][53]="Nouveau matériel à partir d'un modèle";
 $lang["networking"][54]="Matériel ID";
 $lang["networking"][55]="Associer un VLAN";
 $lang["networking"][56]="VLAN";
-$lang["networking"][57]="Choissisez une adresse MAC dans la liste ou spécifiez la ci-dessous.";
+$lang["networking"][57]="Choisissez une adresse MAC dans la liste ou spécifiez la ci-dessous.";
 
 
 $lang["ocsng"][0]="OCS Inventory NG";
@@ -1101,9 +1101,9 @@ $lang["setup"][75]="Comme enfant de";
 $lang["setup"][76]="Au même niveau que";
 $lang["setup"][78]="Base de connaissances";
 $lang["setup"][79]="Catégorie des tickets";
-$lang["setup"][80]="Type de tiers";
+$lang["setup"][80]="Type de Tiers";
 $lang["setup"][81]="Rubriques des documents";
-$lang["setup"][82]="Type de contacts";
+$lang["setup"][82]="Type de Contacts";
 $lang["setup"][83]="Statut des matériels";
 $lang["setup"][84]="Type de cartouches";
 $lang["setup"][85]="Type de contrats";
