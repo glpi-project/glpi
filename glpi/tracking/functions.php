@@ -91,7 +91,7 @@ function showTrackingOnglets($target){
 			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
 
 			$job=new Job();
-			$job->getFromDB($ID);
+			$job->getFromDB($ID,1);
 			
 			if (!ereg("old_",$job->fields["status"])){
 				echo "<li class='invisible'>&nbsp;</li>";
@@ -1784,7 +1784,7 @@ function showJobDetails ($ID){
 		echo "<tr><td align='right'>";
 		echo $lang["job"][5].":</td><td>&nbsp;</td></tr>";
 		
-		if ($isadmin||can_assign_job($_SESSION["glpiname"])){
+		if ($isadmin||(can_assign_job($_SESSION["glpiname"])&&$_SESSION["glpitype"]!="post-only")){
 			echo "<tr><td align='right'>";
 			echo $lang["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"]);
@@ -1960,7 +1960,7 @@ function showJobDetails ($ID){
 
 			echo "</td></tr>";
 		// Troisi�e Ligne
-		if ($isadmin||can_assign_job($_SESSION["glpiname"])){
+		if ($isadmin||(can_assign_job($_SESSION["glpiname"])&&$_SESSION["glpitype"]!="post-only")){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}
