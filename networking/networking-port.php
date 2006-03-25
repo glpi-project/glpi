@@ -53,10 +53,12 @@ if (isset($tab["referer"])) $REFERER=$tab["referer"];
 
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
+$ADDREFERER="";
+if (!ereg("&referer=",$_SERVER["HTTP_REFERER"]))$ADDREFERER="&referer=".$REFERER;
+
 if(isset($_POST["add"]))
 {	
 	checkAuthentication("admin");
-	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	
 	unset($_POST["referer"]);
 	unset($tab["referer"]);
@@ -74,7 +76,7 @@ if(isset($_POST["add"]))
 	if (!isset($tab["several"])){
 	addNetport($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
-	showNetportForm($_SERVER["PHP_SELF"],"",$_POST["on_device"],$_POST["device_type"],"");
+	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 	}
 	else {
 		unset($tab['several']);
@@ -86,9 +88,8 @@ if(isset($_POST["add"]))
 		    addNetport($tab);	
 			}
 	    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
-		showNetportForm($_SERVER["PHP_SELF"],"",$_POST["on_device"],$_POST["device_type"],"yes");
+		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 		}
-	commonFooter();
 
 }
 else if(isset($_POST["delete"]))
@@ -113,12 +114,7 @@ else if(isset($_POST["update"]))
 	}
 
 	updateNetport($_POST);
-	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
-	if (!isset($_POST["on_device"])) $_POST["on_device"]="";
-	if (!isset($_POST["device_type"])) $_POST["device_type"]="";
-	if (!isset($_POST["several"])) $_POST["several"]="";
-	showNetportForm($_SERVER["PHP_SELF"],$_POST["ID"],$_POST["on_device"],$_POST["device_type"],$_POST["several"]);
-	commonFooter();
+	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
 else if (isset($_POST['assign_vlan'])){
 /*	if ($_POST["vlan"]!=0&&count($_POST['toassign'])>0){
@@ -130,12 +126,12 @@ else if (isset($_POST['assign_vlan'])){
 		assignVlan($_POST["ID"],$_POST["vlan"]);	
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." assign vlan to ports.");
 	}
-	glpi_header($_SERVER['HTTP_REFERER']."&referer=".$tab['referer']);
+	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
 else if (isset($_GET['unassign_vlan'])){
 	unassignVlan($_GET['ID']);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." unassign a vlan to a port.");
-	glpi_header($_SERVER['HTTP_REFERER']."&referer=".$tab['referer']);
+	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
 else 
 {
