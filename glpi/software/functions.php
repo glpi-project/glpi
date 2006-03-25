@@ -466,7 +466,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		$result_inst = $db->query($query_inst);
 		$num_inst=$db->numrows($result_inst);
 
-		echo "<tr class='tab_bg_1'>";
+		echo "<tr class='tab_bg_1' valign='top'>";
 		echo "<td align='center'><strong>".$serial."</strong></td>";
 		echo "<td align='center'><strong>";
 		echo $num_tot;
@@ -622,7 +622,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			
 			// Comment
 			if (!empty($data_inst["COMMENT"])) {
-			echo "<img onmouseout=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'none')\" onmouseover=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'block')\" src=\"".$HTMLRel."pics/aide.png\" alt='".$lang["common"][25]."' title='".$lang["common"][25]."'>";
+			echo "<img onmouseout=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'none')\" onmouseover=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'block')\" src=\"".$HTMLRel."pics/aide.png\" alt=''>";
 			echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 			// delete
