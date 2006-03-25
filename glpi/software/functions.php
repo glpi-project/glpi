@@ -704,6 +704,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	$values=$lic->fields;
 	} 
 	
+	if (empty($values['expire'])) $values['expire']="0000-00-00";
 	
 	
 	
