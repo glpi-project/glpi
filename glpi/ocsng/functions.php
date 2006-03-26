@@ -743,6 +743,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 					if(!empty($line2["CAPACITY"])&&$line2["CAPACITY"]!="No") {
 						if($line2["DESCRIPTION"]) $ram["designation"] = $line2["DESCRIPTION"];
 						else $ram["designation"] = "Unknown";
+						$ram["specif_default"] =  $line2["CAPACITY"];
 						if (!in_array(RAM_DEVICE."$$$$$".$ram["designation"],$import_device)){
 							$ram["frequence"] =  $line2["SPEED"];
 							$ram["type"] = ocsImportDropdown("glpi_dropdown_ram_type","name",$line2["TYPE"]);
@@ -879,6 +880,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 				for($i = 0;$i < $line["PROCESSORN"]; $i++) {
 					$processor = array();
 					$processor["designation"] = $line["PROCESSORT"];
+					$processor["specif_default"] =  $line["PROCESSORS"];
 					if (!in_array(PROCESSOR_DEVICE."$$$$$".$processor["designation"],$import_device)){
 						$proc_id = ocsAddDevice(PROCESSOR_DEVICE,$processor);
 						$devID=compdevice_add($glpi_id,PROCESSOR_DEVICE,$proc_id,$line["PROCESSORS"],$dohistory);
