@@ -1355,7 +1355,7 @@ function showFormExtSources($target) {
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][157]."</p><p>".$lang["setup"][158]."</p></td></th></table></div>";
 	}
 
-	if(extension_loaded('curl')&&extension_loaded('domxml'))
+	if(function_exists('curl_init')&&(version_compare(PHP_VERSION,'5','>=')||(function_exists("domxml_open_mem")&&function_exists("utf8_decode"))))
 	{
 		echo "<div align='center'><p > ".$lang["setup"][173]."</p>";
 
