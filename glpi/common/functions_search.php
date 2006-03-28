@@ -650,7 +650,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		{
 			$LINK="";
 			if (isset($link2[$key])) $LINK=$link2[$key];
-			if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"]==1)			
+			
+			if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1)			
 				$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
 			else { // Meta Where Search
 				$LINK=" ";
