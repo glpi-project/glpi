@@ -553,8 +553,8 @@ $lang["install"][89]="Parfait !";
 $lang["install"][90]="Essayez d'augmenter le paramètre memory_limit dans le fichier php.ini.";
 $lang["install"][91]="Mémoire allouée > 16 Mo";
 $lang["install"][92]="Licence";
-$lang["install"][93]="J'ai lu et ACCEPTE les termes de la licence ennoncés ci-dessus.";
-$lang["install"][94]="J'ai lu et  N'ACCEPTE  PAS les termes de la licence ennoncés ci-dessus";
+$lang["install"][93]="J'ai lu et ACCEPTE les termes de la licence énoncés ci-dessus.";
+$lang["install"][94]="J'ai lu et  N'ACCEPTE  PAS les termes de la licence énoncés ci-dessus";
 $lang["install"][95]="Mémoire non limitée";
 $lang["install"][96]="Mémoire illimitée";
 
@@ -969,6 +969,7 @@ $lang["reminder"][11]="Calendrier";
 $lang["reminder"][12]="Ajouter au calendrier";
 $lang["reminder"][13]="Pas de note trouvée";
 $lang["reminder"][14]="Par";
+$lang["reminder"][15]="Sans titre";
 
 $lang["reports"][0]="Sélectionner un rapport à générer";
 $lang["reports"][4]="Liste du materiel sous contrat";

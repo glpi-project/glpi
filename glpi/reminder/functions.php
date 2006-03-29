@@ -63,10 +63,16 @@ function showReminderForm ($target,$ID) {
 
 	if (!$ID) {
 		
-		if($remind->getEmpty()) $remind_edit = true;
+		if($remind->getEmpty()){
+			 $remind_edit = true;
+			$remind->fields["title"]=$lang["reminder"][6];
+			$onfocus="onfocus=\"this.value=''\"";
+			}
+
+
 	} else {
 		if($remind->getfromDB($ID)){
-
+			$onfocus="";
 			if($remind->fields["author"]==$author) {
 				$remind_edit = true;
 			} elseif($remind->fields["type"]=="public") { 
@@ -93,7 +99,7 @@ function showReminderForm ($target,$ID) {
 		echo "<td>";
 		
 		if($remind_edit) { 
-			echo "<input type='text' size='80' name='title' $read value=\"".$remind->fields["title"]."\">";
+			echo "<input type='text' size='80' name='title' $read value=\"".$remind->fields["title"]."\"  ".$onfocus.">";
 		}else{ 
 			echo  $remind->fields["title"];
 		}
@@ -215,8 +221,12 @@ function showReminderForm ($target,$ID) {
 function updateReminder($input) {
 	// Update reminder in database
 
+	GLOBAL $lang;
+
 	$remind = new Reminder;
 	$remind->getFromDB($input["ID"]);
+
+	if(empty($input["title"])) $input["title"]=$lang["reminder"][15];
 
 	if (isset($input['plan'])){
 		$plan=$input['plan'];
@@ -251,6 +261,8 @@ function updateReminder($input) {
 function addReminder($input) {
 	
 	$remind = new Reminder;
+
+	if(empty($input["title"])) $input["title"]=$lang["reminder"][15];
 	
 	$input["begin"] = $input["end"] = "0000-00-00 00:00:00";
 
