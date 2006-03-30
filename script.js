@@ -10,9 +10,40 @@ function setdisplay (objet, statut) {
 }
 
 function hidemenu(){
+	var ie=false;
+
+	var appVer = navigator.appVersion.toLowerCase();
+	var iePos = appVer.indexOf('msie');
+	 if (iePos !=-1) {
+		 var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
+		 var is_major = parseInt(is_minor);
+ 	}
+	 if (navigator.appName.substring(0,9) == "Microsoft")
+	 { // Check if IE version is 6 or older
+ 		if (is_major <= 6) {
+			ie=true;
+		}
+	}
+
 	for (var i = 1; i<=10; i++) {
 		var e=document.getElementById('smenu'+i);
 		if (e) {
+			if (ie){
+				 var selx=0; var sely=0; var selp;
+				 if(e.offsetParent){
+					 selp=e;
+					 while(selp.offsetParent){
+					 	selp=selp.offsetParent;
+						 selx+=selp.offsetLeft;
+						 sely+=selp.offsetTop;
+					 }
+				 }
+				 selx+=e.offsetLeft;
+		 		sely+=e.offsetTop;
+				 selw=e.offsetWidth;
+				 selh=e.offsetHeight;
+				showSelect(selx,sely,selw,selh);
+			}
 			setdisplay(e,'none');
 		}
 	}	
