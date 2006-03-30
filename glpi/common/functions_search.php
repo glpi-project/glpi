@@ -980,7 +980,8 @@ if (!ereg("$NAME$num",$GROUPBY)) {
 				$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 		break;
 		default :
-			if ($val!="NULL")
+			
+			if ($val!="null")
 				$GROUPBY.=" ( $NAME$num $NOT LIKE '%$val%') ";
 			else $GROUPBY.=" ( $NAME$num IS $NOT NULL) ";
 		break;
