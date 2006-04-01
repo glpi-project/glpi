@@ -20,8 +20,8 @@ checkAuthentication("normal");
 //export ICAL
 
 if (!isset($_GET["uID"])) $_GET["uID"]=$_SESSION["glpiID"];
-
-
+// Send UTF8 Headers
+@header ("content-type:text/calendar; charset=UTF-8");
 echo generateIcal($_GET["uID"]);
 
 

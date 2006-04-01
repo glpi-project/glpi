@@ -1031,7 +1031,7 @@ $debutcal=debutIcal(getUserName($who));
 $fincal= "END:VCALENDAR\n";	
 }
 
-return $debutcal.$event.$fincal;
+return utf8_decode($debutcal.$event.$fincal);
 
 }
 
