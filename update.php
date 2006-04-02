@@ -3992,6 +3992,7 @@ $query="CREATE TABLE `glpi_profiles` (
   `create_ticket` char(1) default NULL,
   `delete_ticket` char(1) default NULL,
   `comment_ticket` char(1) default NULL,
+  `comment_all_ticket` char(1) default NULL,
   `update_ticket` char(1) default NULL,
   `own_ticket` char(1) default NULL,
   `steal_sticket` char(1) default NULL,
