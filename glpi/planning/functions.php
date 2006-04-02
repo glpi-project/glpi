@@ -951,11 +951,17 @@ GLOBAL  $cfg_glpi, $lang;
 
  	$debut_cal = "BEGIN:VCALENDAR\n";
         $debut_cal .= "VERSION:2.0\n";
+
+	if ( ! empty ( $cfg_glpi["version"]) ) {
+		$debut_cal.= "PRODID:-//GLPI-Planning-".$cfg_glpi["version"]."\n";
+		} else {
+		$debut_cal.= "PRODID:-//GLPI-Planning-UnknownVersion\n";
+	}
         $debut_cal .= "X-WR-CALNAME ;VALUE=TEXT:$name\n";
-      //  $debut_cal .= "PRODID:\n";
+    
      //   $debut_cal .= "X-WR-RELCALID:n";
      //   $debut_cal .= "X-WR-TIMEZONE:US/Pacific\n";
-        $debut_cal .= "CALSCALE:GREGORIAN\n";
+        $debut_cal .= "CALSCALE:GREGORIAN\n\n";
         return (string) $debut_cal;
     }
 
@@ -970,7 +976,7 @@ function generateIcal($who){
 
 GLOBAL  $db,$cfg_glpi, $lang;
 
-
+// export job
 $query="SELECT * from glpi_tracking_planning WHERE id_assign=$who";
 
 $result=$db->query($query);
@@ -985,20 +991,48 @@ while ($data=$db->fetch_array($result)){
 	 $fup->getFromDB($data["id_followup"]); 
 	 $job->getFromDB($fup->fields["tracking"],0);
 		
-	$interv[$i]["id_tracking"]=$data['id_followup'];
-	$interv[$i]["id_assign"]=$data['id_assign'];
-	$interv[$i]["ID"]=$data['ID'];
-	$interv[$i]["begin"]=$data['begin'];
-	$interv[$i]["end"]=$data['end'];
+	$interv[$data["begin"]."$$".$i]["id_tracking"]=$data['id_followup'];
+	$interv[$data["begin"]."$$".$i]["id_assign"]=$data['id_assign'];
+	$interv[$data["begin"]."$$".$i]["ID"]=$data['ID'];
+	$interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
+	$interv[$data["begin"]."$$".$i]["end"]=$data['end'];
 	//$interv[$i]["content"]=substr($job->contents,0,$cfg_glpi["cut"]);
-	$interv[$i]["content"]=substr($job->fields['contents'],0,$cfg_glpi["cut"]);
-	$interv[$i]["device"]=$job->computername;
+	$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$cfg_glpi["cut"]);
+	$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
 	$i++;
 }
+
+
+// reminder 
+		
+	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')";
+	
+	$result2=$db->query($query2);
+	
+	
+	$remind=new Reminder();
+	
+	$i=0;
+	if ($db->numrows($result2)>0)
+	while ($data=$db->fetch_array($result2)){
+		$remind->getFromDB($data["ID"]);
+		
+		
+		$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
+		$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+		$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+		$interv[$data["begin"]."$$".$i]["title"]=$remind->fields["title"];
+		$interv[$data["begin"]."$$".$i]["content"]=$remind->fields["text"];
+		
+		$i++;
+	}
 
 $debutcal="";
 $event="";
 $fincal="";
+
+
+ksort($interv);
 
 if (count($interv)>0) {
 	
@@ -1008,25 +1042,33 @@ $debutcal=debutIcal(getUserName($who));
 
 		$event .= "BEGIN:VEVENT\n";
 
-		$event.="UID:Job#".$val["id_tracking"];
+		if(isset($val["id_tracking"])){
+			$event.="UID:Job#".$val["id_tracking"]."\n";
+			}else{
+			$event.="UID:Event#".$val["id_reminder"]."\n";
+		}		
 
 		$event.="DTSTAMP:".date_ical($val["begin"])."\n";
-
 
 		$event .= "DTSTART:".date_ical($val["begin"])."\n";
 
 		$event .= "DTEND:".date_ical($val["end"])."\n";
 
- 		$event .= "SUMMARY:".$lang["planning"][8]." # ".$val["id_tracking"]." ".$lang["planning"][10]." # ".$val["device"]."\n";
+		if(isset($val["id_tracking"])){
+ 			$event .= "SUMMARY:".$lang["planning"][8]." # ".$val["id_tracking"]." ".$lang["planning"][10]." # ".$val["device"]."\n";
+			}else{
+			$event .= "SUMMARY:".$val["title"]."\n";
+		}
 
 		$event .= "DESCRIPTION:".$val["content"]."\n";
 		
 		//todo recup la cat�orie d'intervention.
 		//$event .= "CATEGORIES:".$val["categorie"]."\n";
+		if(isset($val["id_tracking"])){
+			$event .= "URL:".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";
+		}
 
-		$event .= "URL:".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";
-
-  		$event .= "END:VEVENT\n";
+  		$event .= "END:VEVENT\n\n";
 		}
 $fincal= "END:VCALENDAR\n";	
 }
