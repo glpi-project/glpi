@@ -95,6 +95,17 @@ a:hover
 	color: black;
 }
 
+
+/* Lien pour Show plan */
+
+.showplan {
+font-weight: bold;
+text-decoration: none; 
+color : #009966; 
+cursor:pointer;
+}
+
+
 hr{
 	border: 1px solid #cccccc;
 }
