@@ -211,7 +211,7 @@ function commonHeader($title,$url)
 
 	// PLUGINS
 	$plugins=array();
-	if (count($plugin_hooks["menu_entry"]))
+	if (isset($plugin_hooks["menu_entry"])&&count($plugin_hooks["menu_entry"]))
 	foreach  ($plugin_hooks["menu_entry"] as $plugin => $active) {
 		if ($active){
 			$function="plugin_version_$plugin";
