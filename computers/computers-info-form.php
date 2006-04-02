@@ -200,7 +200,8 @@ if (isset($_GET['onglet'])) {
 				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
 				break;
 			default :
-				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
+				if (!display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'], $tab["withtemplate"]))
+					showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);	
 				break;
 			}
 		}
@@ -265,7 +266,7 @@ if (isset($_GET['onglet'])) {
 				ocsEditLock($_SERVER["PHP_SELF"],$tab["ID"]);
 				break;
 			default :
-				if (!display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+				if (!display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]))
 					showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
 				break;
 			}

@@ -124,8 +124,10 @@ else
 				break;
 			
 			default :
-				showPorts($tab["ID"], NETWORKING_TYPE,$tab["withtemplate"]);
-				if ($tab["withtemplate"]!=2) showPortsAdd($tab["ID"],NETWORKING_TYPE);
+				if (!display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
+					showPorts($tab["ID"], NETWORKING_TYPE,$tab["withtemplate"]);
+					if ($tab["withtemplate"]!=2) showPortsAdd($tab["ID"],NETWORKING_TYPE);
+				}
 				break;
 			}
 			
@@ -181,7 +183,7 @@ else
 				showHistory(NETWORKING_TYPE,$tab["ID"]);
 				break;
 			default :
-				if (!display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+				if (!display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
 					showPorts($tab["ID"],NETWORKING_TYPE);
 					showPortsAdd($tab["ID"],NETWORKING_TYPE);
 				}

@@ -159,6 +159,9 @@ else
 			case 5 :			
 				showDocumentAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
 				break;
+			default :
+				display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+				break;
 		}
 		
 		
@@ -210,7 +213,7 @@ else
 				showHistory(MONITOR_TYPE,$tab["ID"]);
 				break;	
 			default :
-				if (!display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+				if (!display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]))
 					showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
 				break;	
 		}
