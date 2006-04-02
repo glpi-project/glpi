@@ -95,6 +95,8 @@ function showComputerOnglets($target,$withtemplate,$actif){
 		echo "<li".(($actif==13)?" class='actif'":"")."><a href='$target&amp;onglet=13$template'>".$lang["Menu"][33]."</a></li>";
 	
 
+	display_plugin_headings($target,COMPUTER_TYPE,$withtemplate,$actif);
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li".(($actif==-1)?" class='actif'":"")."><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
@@ -501,6 +503,7 @@ function updateComputer($input,$dohistory=1) {
 	}
 	$comp->updateInDB($updates);
 	
+	do_hook_function("item_update",array("type"=>COMPUTER_TYPE, "ID" => $input["ID"]));
 }
 /**
 * Add a computer in the database.
@@ -608,7 +611,7 @@ function addComputer($input) {
 			$np->addToDB();
 			}
 	}
-		
+	do_hook_function("item_add",array("type"=>COMPUTER_TYPE, "ID" => $newID));
 	return $newID;
 }
 /**
@@ -627,6 +630,10 @@ function deleteComputer($input,$force=0) {
 
 	$comp = new Computer;
 	$comp->deleteFromDB($input["ID"],$force);
+	if ($force)
+		do_hook_function("item_purge",array("type"=>COMPUTER_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>COMPUTER_TYPE, "ID" => $input["ID"]));
 } 	
 /**
 * Restore a computer trashed in the database.
@@ -643,6 +650,7 @@ function restoreComputer($input) {
 	
 	$ct = new Computer;
 	$ct->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>COMPUTER_TYPE, "ID" => $input["ID"]));
 } 
 
 /**

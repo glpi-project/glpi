@@ -64,7 +64,11 @@ function showContactOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
+	
+	display_plugin_headings($target,CONTACT_TYPE,$withtemplate,$actif);
+	
 	echo "<li class='invisible'>&nbsp;</li>";
+
 	
 	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 	$ID=$ereg[1];
@@ -233,6 +237,7 @@ function updateContact($input) {
 	if(isset($updates))
 		$con->updateInDB($updates);
 
+	do_hook_function("item_update",array("type"=>CONTACT_TYPE, "ID" => $input["ID"]));
 }
 
 /**
@@ -261,7 +266,9 @@ function addContact($input) {
 		}
 	}
 
-	return $con->addToDB();
+	$newID= $con->addToDB();
+	do_hook_function("item_add",array("type"=>CONTACT_TYPE, "ID" => $newID));
+	return $newID;
 
 }
 /**
@@ -281,7 +288,11 @@ function deleteContact($input,$force=0) {
 	
 	$con = new Contact;
 	$con->deleteFromDB($input["ID"],$force);
-	
+	if ($force)
+		do_hook_function("item_purge",array("type"=>CONTACT_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>CONTACT_TYPE, "ID" => $input["ID"]));
+
 } 
 
 /**
@@ -299,6 +310,7 @@ function restoreContact($input) {
 	
 	$con = new Contact;
 	$con->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>CONTACT_TYPE, "ID" => $input["ID"]));
 } 
 
 /**

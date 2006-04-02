@@ -133,7 +133,7 @@ showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"new");
 //showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 }
 
-
+do_hook("central_action");
 
 commonFooter();
 

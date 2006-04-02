@@ -70,6 +70,9 @@ function showConsumableOnglets($target,$withtemplate,$actif){
 	if(empty($withtemplate)){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
+
+	display_plugin_headings($target,CONSUMABLE_TYPE,$withtemplate,$actif);
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	
@@ -238,6 +241,7 @@ function updateConsumableType($input) {
 	
 		$sw->updateInDB($updates);
 	}
+	do_hook_function("item_update",array("type"=>CONSUMABLE_TYPE, "ID" => $input["ID"]));
 }
 /**
 * Add  a consumable type in the database.
@@ -263,7 +267,9 @@ function addConsumableType($input) {
 			$sw->fields[$key] = $input[$key];
 		}
 	}
-	return $sw->addToDB();
+	$newID= $sw->addToDB();
+	do_hook_function("item_add",array("type"=>CONSUMABLE_TYPE, "ID" => $newID));
+	return $newID;
 }
 
 /**
@@ -282,6 +288,11 @@ function deleteConsumableType($input,$force=0) {
 	
 	$ct = new ConsumableType;
 	$ct->deleteFromDB($input["ID"],$force);
+	if ($force)
+		do_hook_function("item_purge",array("type"=>CONSUMABLE_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>CONSUMABLE_TYPE, "ID" => $input["ID"]));
+
 } 
 
 /**
@@ -300,6 +311,7 @@ function restoreConsumableType($input) {
 	
 	$ct = new ConsumableType;
 	$ct->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>CONSUMABLE_TYPE, "ID" => $input["ID"]));
 } 
 
 /**

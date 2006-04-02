@@ -174,11 +174,12 @@ else
 	} else {
 
 		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
-			$j=new Job;
 			foreach ($_POST["todel"] as $key => $val){
-				if ($val==1) $j->deleteInDB($key);
+				if ($val==1) {
+					deleteTracking($key);
 				}
 			}
+		}
 
 		if (showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
@@ -217,9 +218,11 @@ else
 					showHistory(PERIPHERAL_TYPE,$tab["ID"]);
 				break;		
 				default :
-					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
-					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
-					showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
+					if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
+						showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
+						showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
+					}
 					break;
 			}
 			

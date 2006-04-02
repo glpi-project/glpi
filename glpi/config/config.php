@@ -78,30 +78,30 @@ $cfg_glpi["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","english.h
 				);
 
 // ITEMS TYPE
-define("GENERAL_TYPE","0");
-define("COMPUTER_TYPE","1");
-define("NETWORKING_TYPE","2");
-define("PRINTER_TYPE","3");
-define("MONITOR_TYPE","4");
-define("PERIPHERAL_TYPE","5");
-define("SOFTWARE_TYPE","6");
-define("CONTACT_TYPE","7");
-define("ENTERPRISE_TYPE","8");
-define("INFOCOM_TYPE","9");
-define("CONTRACT_TYPE","10");
-define("CARTRIDGE_TYPE","11");
+define("GENERAL_TYPE","0");//
+define("COMPUTER_TYPE","1");//
+define("NETWORKING_TYPE","2");//
+define("PRINTER_TYPE","3");//
+define("MONITOR_TYPE","4");//
+define("PERIPHERAL_TYPE","5");//
+define("SOFTWARE_TYPE","6");//
+define("CONTACT_TYPE","7");//
+define("ENTERPRISE_TYPE","8");//
+define("INFOCOM_TYPE","9");//
+define("CONTRACT_TYPE","10");//
+define("CARTRIDGE_TYPE","11");//
 define("TYPEDOC_TYPE","12");
-define("DOCUMENT_TYPE","13");
-define("KNOWBASE_TYPE","14");
-define("USER_TYPE","15");
-define("TRACKING_TYPE","16");
-define("CONSUMABLE_TYPE","17");
+define("DOCUMENT_TYPE","13");//
+define("KNOWBASE_TYPE","14");//
+define("USER_TYPE","15");//
+define("TRACKING_TYPE","16");//
+define("CONSUMABLE_TYPE","17");//
 define("CONSUMABLE_ITEM_TYPE","18");
 define("CARTRIDGE_ITEM_TYPE","19");
 define("LICENSE_TYPE","20");
 define("LINK_TYPE","21");
 define("STATE_TYPE","22");
-define("PHONE_TYPE","23");
+define("PHONE_TYPE","23");//
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");

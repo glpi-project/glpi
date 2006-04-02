@@ -172,6 +172,7 @@ if (isset($_GET['onglet'])) {
 //	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
+
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	
 	$ci=new CommonItem();
@@ -206,11 +207,12 @@ if (isset($_GET['onglet'])) {
 	}
 	} else {
 	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
-		$j=new Job;
 		foreach ($_POST["todel"] as $key => $val){
-			if ($val==1) $j->deleteInDB($key);
+			if ($val==1) {
+				deleteTracking($key);
 			}
 		}
+	}
 		
 		if (showComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])) {
 			switch($_SESSION['glpi_onglet']){
@@ -263,7 +265,8 @@ if (isset($_GET['onglet'])) {
 				ocsEditLock($_SERVER["PHP_SELF"],$tab["ID"]);
 				break;
 			default :
-				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
+				if (!display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+					showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
 				break;
 			}
 			

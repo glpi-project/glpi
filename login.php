@@ -208,6 +208,15 @@ if ( ! $auth_succeded ) {
 // now we can continue with the process...
 $identificat->setcookies();
 
+$dirplug=$phproot."/plugins";
+$dh  = opendir($dirplug);
+while (false !== ($filename = readdir($dh))) {
+	if ($filename!="CVS"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename)){
+		$_SESSION["glpi_plugins"][]=$filename;
+	}
+}
+
+
 // GET THE IP OF THE CLIENT
 $ip = (getenv("HTTP_X_FORWARDED_FOR")
 ? getenv("HTTP_X_FORWARDED_FOR")

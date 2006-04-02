@@ -143,7 +143,8 @@ else
 			showNotesForm($_SERVER["PHP_SELF"],DOCUMENT_TYPE,$tab["ID"]);
 			break;
 		default :
-			showDeviceDocument($tab["ID"]);
+			if (!display_plugin_action(DOCUMENT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+				showDeviceDocument($tab["ID"]);
 			break;
 		}
 	}

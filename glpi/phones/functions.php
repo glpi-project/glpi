@@ -66,6 +66,9 @@ function showPhoneOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
+
+	display_plugin_headings($target,PHONE_TYPE,$withtemplate,$actif);
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
@@ -365,6 +368,8 @@ function updatePhone($input) {
 	else updateState(PHONE_TYPE,$input["ID"],$input["state"]);
 
 	$mon->updateInDB($updates);
+	
+	do_hook_function("item_update",array("type"=>PHONE_TYPE, "ID" => $input["ID"]));
 
 }
 
@@ -449,6 +454,9 @@ function addPhone($input) {
 			addDeviceDocument($data["FK_doc"],PHONE_TYPE,$newID);
 	}
 
+
+	do_hook_function("item_add",array("type"=>PHONE_TYPE, "ID" => $newID));
+
 	return $newID;
 }
 
@@ -457,7 +465,10 @@ function deletePhone($input,$force=0) {
 	
 	$mon = new Phone;
 	$mon->deleteFromDB($input["ID"],$force);
-	
+	if ($force)
+		do_hook_function("item_purge",array("type"=>PHONE_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>PHONE_TYPE, "ID" => $input["ID"]));
 }
 
 function restorePhone($input) {
@@ -465,6 +476,7 @@ function restorePhone($input) {
 	
 	$ct = new Phone;
 	$ct->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>PHONE_TYPE, "ID" => $input["ID"]));
 } 
  	
 ?>

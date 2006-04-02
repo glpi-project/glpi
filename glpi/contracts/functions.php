@@ -67,6 +67,9 @@ function showContractOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
+
+	display_plugin_headings($target,CONTRACT_TYPE,$withtemplate,$actif);
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	
 	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
@@ -292,6 +295,7 @@ function updateContract($input) {
 	
 		$con->updateInDB($updates);
 	}
+	do_hook_function("item_update",array("type"=>CONTRACT_TYPE, "ID" => $newID));
 }
 
 /**
@@ -319,7 +323,9 @@ function addContract($input) {
 		}
 	}
 
-	return $con->addToDB();
+	$newID= $con->addToDB();
+	do_hook_function("item_add",array("type"=>CONTRACT_TYPE, "ID" => $newID));
+	return $newID;
 }
 
 /**
@@ -338,6 +344,10 @@ function deleteContract($input,$force=0) {
 	
 	$con = new Contract;
 	$con->deleteFromDB($input["ID"],$force);
+	if ($force)
+		do_hook_function("item_purge",array("type"=>CONTRACT_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>CONTRACT_TYPE, "ID" => $input["ID"]));
 } 
 
 /**
@@ -355,6 +365,7 @@ function restoreContract($input) {
 	
 	$con = new Contract;
 	$con->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>CONTRACT_TYPE, "ID" => $input["ID"]));
 } 
 
 /**

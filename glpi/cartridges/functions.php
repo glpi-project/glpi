@@ -69,6 +69,9 @@ function showCartridgeOnglets($target,$withtemplate,$actif){
 	if(empty($withtemplate)){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
+	
+	display_plugin_headings($target,CARTRIDGE_TYPE,$withtemplate,$actif);
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	
@@ -237,6 +240,7 @@ function updateCartridgeType($input) {
 	
 		$sw->updateInDB($updates);
 	}
+	do_hook_function("item_update",array("type"=>CARTRIDGE_TYPE, "ID" => $input["ID"]));
 }
 /**
 * Add  a cartridge type in the database.
@@ -263,7 +267,9 @@ function addCartridgeType($input) {
 		}
 	}
 
-	return $sw->addToDB();
+	$newID=$sw->addToDB();
+	do_hook_function("item_add",array("type"=>CARTRIDGE_TYPE, "ID" => $newID));		
+	return $newID;
 }
 
 /**
@@ -282,6 +288,12 @@ function deleteCartridgeType($input,$force=0) {
 	
 	$ct = new CartridgeType;
 	$ct->deleteFromDB($input["ID"],$force);
+
+	if ($force)
+		do_hook_function("item_purge",array("type"=>CARTRIDGE_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>CARTRIDGE_TYPE, "ID" => $input["ID"]));
+
 } 
 
 /**
@@ -300,6 +312,7 @@ function restoreCartridgeType($input) {
 	
 	$ct = new CartridgeType;
 	$ct->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>CARTRIDGE_TYPE, "ID" => $input["ID"]));
 } 
 
 /**

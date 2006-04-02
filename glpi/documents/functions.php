@@ -57,6 +57,7 @@ function showDocumentOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	
+	display_plugin_headings($target,DOCUMENT_TYPE,$withtemplate,$actif);
 	
 	echo "<li class='invisible'>&nbsp;</li>";
 	
@@ -229,6 +230,7 @@ function updateDocument($input) {
 	
 		$con->updateInDB($updates);
 	}
+	do_hook_function("item_update",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
 }
 
 
@@ -393,8 +395,11 @@ function addDocument($input,$only_if_upload_succeed=0) {
 			$con->fields[$key] = $input[$key];
 		}
 	}
-	if (!$only_if_upload_succeed||!empty($input['filename']))
-		return $con->addToDB();
+	if (!$only_if_upload_succeed||!empty($input['filename'])){
+		$newID= $con->addToDB();
+		do_hook_function("item_add",array("type"=>DOCUMENT_TYPE, "ID" => $newID));
+		return $newID;
+	}
 	else return false;
 }
 
@@ -404,6 +409,11 @@ function deleteDocument($input,$force=0) {
 	
 	$con = new Document;
 	$con->deleteFromDB($input["ID"],$force);
+	if ($force)
+		do_hook_function("item_purge",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
+
 } 
 
 function restoreDocument($input) {
@@ -411,6 +421,7 @@ function restoreDocument($input) {
 	
 	$con = new Document;
 	$con->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
 } 
 
 

@@ -126,9 +126,11 @@ else
 				showNotesForm($_SERVER["PHP_SELF"],CONSUMABLE_TYPE,$tab["ID"]);
 				break;
 		default :
-			showConsumableAdd($tab["ID"]);
-			showConsumables($tab["ID"]);
-			showConsumables($tab["ID"],1);
+			if (!display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+				showConsumableAdd($tab["ID"]);
+				showConsumables($tab["ID"]);
+				showConsumables($tab["ID"],1);
+			}
 		break;
 		}
 	}

@@ -68,15 +68,18 @@ function showTrackingOnglets($target){
 	echo "<div id='barre_onglets'><ul id='onglet'>";
    		
 		 if (isNormal($_SESSION['glpitype'])){
-				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID\">".$lang["job"][38]." $ID</a></li>";
+				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID&onglet=1\">".$lang["job"][38]." $ID</a></li>";
+
+				display_plugin_headings($target,TRACKING_TYPE,"","");
+
 				echo "<li class='invisible'>&nbsp;</li>";
 				
 				// admin yes  
 				if (isAdmin($_SESSION['glpitype'])||$cfg_glpi["post_only_followup"]){
-				
-				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></li>";
+					echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></li>";
 				}
 		
+
 				// Post-only could'nt see other item  but other user yes 
 				echo "<li class='invisible'>&nbsp;</li>";
 		
@@ -722,6 +725,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 			$mail = new Mailing($type,$job,$user);
 			$mail->send();
 		}
+		do_hook_function("item_add",array("type"=>TRACKING_TYPE, "ID" => $tID));
 		return true;	
 	} else {
 		return false;
@@ -1575,7 +1579,7 @@ function updateTracking($input){
 			$mail = new Mailing("attrib",$job,$user);
 			$mail->send();
 	}
-
+	do_hook_function("item_update",array("type"=>TRACKING_TYPE, "ID" => $input["ID"]));
 }
 
 function updateFollowup($input){
@@ -1976,10 +1980,10 @@ echo "</div>";
 		echo "}";
 		echo "</script>\n";
 
-	showFollowupsSummary($ID);
+	
 	}
 	
-	
+	return true;
 }
 
 function showFollowupsSummary($tID){
@@ -2337,5 +2341,24 @@ function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
 			$totalcost=($realtime*$cost_time)+$cost_fixed+$cost_material;
 			return $totalcost;
 		}
+
+/**
+* Delete a tracking in the database.
+*
+* Delete a tracking in the database.
+*
+*@param $input array : the _POST vars returned bye the tracking form when press delete
+*
+*@return Nothing ()
+*
+**/
+function deleteTracking($input) {
+	// Delete Computer
+
+	$comp = new Computer;
+	$comp->deleteFromDB($input["ID"],$force);
+	do_hook_function("item_purge",array("type"=>TRACKING_TYPE, "ID" => $input["ID"]));
+} 	
+
 
 ?>
