@@ -85,20 +85,22 @@ function showComputerOnglets($target,$withtemplate,$actif){
 	echo "<li".(($actif==3)?" class='actif'":"")."><a href='$target&amp;onglet=3$template'>".$lang["title"][27]."</a></li>";
 	echo "<li".(($actif==4)?" class='actif'":"")."><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
 	echo "<li".(($actif==5)?" class='actif'":"")."><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
-	if(empty($withtemplate)){
-	echo "<li".(($actif==6)?" class='actif'":"")."><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
-	echo "<li".(($actif==7)?" class='actif'":"")."><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
-	echo "<li".(($actif==10)?" class='actif'":"")."><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
-	echo "<li".(($actif==12)?" class='actif'":"")."><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
-
-	if ($cfg_glpi["ocs_mode"])
-		echo "<li".(($actif==13)?" class='actif'":"")."><a href='$target&amp;onglet=13$template'>".$lang["Menu"][33]."</a></li>";
 	
+	if(empty($withtemplate)){
+		echo "<li".(($actif==6)?" class='actif'":"")."><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
+		echo "<li".(($actif==7)?" class='actif'":"")."><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
+		echo "<li".(($actif==10)?" class='actif'":"")."><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
+		echo "<li".(($actif==12)?" class='actif'":"")."><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
 
+		if ($cfg_glpi["ocs_mode"])
+			echo "<li".(($actif==13)?" class='actif'":"")."><a href='$target&amp;onglet=13$template'>".$lang["Menu"][33]."</a></li>";
+	}	
+	
 	display_plugin_headings($target,COMPUTER_TYPE,$withtemplate,$actif);
-
-	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li".(($actif==-1)?" class='actif'":"")."><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
+	
+	if(empty($withtemplate)){
+		echo "<li class='invisible'>&nbsp;</li>";
+		echo "<li".(($actif==-1)?" class='actif'":"")."><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
 	echo "<li class='invisible'>&nbsp;</li>";
 	

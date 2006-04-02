@@ -163,8 +163,10 @@ else
 					break;
 				
 				default :
-					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
-					if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
+					if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
+						showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
+						if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
+					}
 
 					break;
 			}
@@ -218,7 +220,7 @@ else
 					showHistory(PERIPHERAL_TYPE,$tab["ID"]);
 				break;		
 				default :
-					if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+					if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
 						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
 						showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
 						showPortsAdd($tab["ID"],PERIPHERAL_TYPE);

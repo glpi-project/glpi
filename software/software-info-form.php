@@ -126,6 +126,9 @@ else
 				case 5 :
 					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
 					break;
+				default :
+					display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'], $tab["withtemplate"]);
+					break;
 			}
 		}
 		
@@ -182,7 +185,7 @@ else
 					showHistory(SOFTWARE_TYPE,$tab["ID"]);
 				break;
 				default :
-					if (!display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+					if (!display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
 						showLicensesAdd($tab["ID"]);
 						showLicenses($tab["ID"]);
 					}

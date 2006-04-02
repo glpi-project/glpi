@@ -166,6 +166,9 @@ if (isset($_GET['onglet'])) {
 				case 5 :			
 					showDocumentAssociated(PRINTER_TYPE,$tab["ID"],$tab["withtemplate"]);	
 					break;
+				default :
+					display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+					break;
 			}	
 			
 			
@@ -232,7 +235,7 @@ if (isset($_GET['onglet'])) {
 					showHistory(PRINTER_TYPE,$tab["ID"]);
 				break;
 				default :
-					if (!display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+					if (!display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
 						showCartridgeInstalled($tab["ID"]);		
 						showCartridgeInstalled($tab["ID"],1);
 					}

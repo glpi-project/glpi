@@ -141,8 +141,10 @@ else
 					break;
 				
 				default :
-					showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
-					if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PHONE_TYPE);
+					if (!display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
+						showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
+						if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PHONE_TYPE);
+					}
 
 					break;
 			}
@@ -196,7 +198,7 @@ else
 					showHistory(PHONE_TYPE,$tab["ID"]);
 				break;		
 				default :
-					if (!display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+					if (!display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
 						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PHONE_TYPE);
 						showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 						showPortsAdd($tab["ID"],PHONE_TYPE);

@@ -95,7 +95,7 @@ function do_hook_function($name,$parm=NULL) {
     return $ret;
 }
 
-function display_plugin_action($type,$ID,$onglet){
+function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 	global $plugin_hooks;
 
 	$split=split("_",$onglet);
@@ -110,7 +110,7 @@ function display_plugin_action($type,$ID,$onglet){
 				
 				if (isset($actions[$ID_onglet])&&function_exists($actions[$ID_onglet])){
 					$function=$actions[$ID_onglet];
-					$function($type,$ID);
+					$function($type,$ID,$withtemplate);
 					return true;
 				}	
 			}
@@ -122,16 +122,18 @@ function display_plugin_action($type,$ID,$onglet){
 
 function display_plugin_headings($target,$type,$withtemplate,$actif){
 	global $plugin_hooks;
-	$do=false;
+	
 	$template="";
 	if(!empty($withtemplate)){
 		$template="&amp;withtemplate=$withtemplate";
 	}
 	if (isset($plugin_hooks["headings"]) && is_array($plugin_hooks["headings"])) {
         	foreach ($plugin_hooks["headings"] as $plug => $function) {
+		
             	if (function_exists($function)) {
 	                $onglet=$function($type,$withtemplate);
-			if (count($onglet))
+			
+			if (is_array($onglet)&&count($onglet))
 			foreach ($onglet as $key => $val)
 				echo "<li".(($actif==$plug."_".$key)?" class='actif'":"")."><a href='$target&amp;onglet=".$plug."_".$key."$template'>".$val."</a></li>";
         	    }
