@@ -135,11 +135,12 @@ else
 
 
 		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
-			$j=new Job;
 			foreach ($_POST["todel"] as $key => $val){
-				if ($val==1) $j->deleteInDB($key);
+				if ($val==1) {
+					deleteTracking($key);
 				}
 			}
+		}
 
 		if (showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'])){
 			switch($_SESSION['glpi_onglet']){
@@ -181,8 +182,10 @@ else
 					showHistory(SOFTWARE_TYPE,$tab["ID"]);
 				break;
 				default :
-					showLicensesAdd($tab["ID"]);
-					showLicenses($tab["ID"]);
+					if (!display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+						showLicensesAdd($tab["ID"]);
+						showLicenses($tab["ID"]);
+					}
 					break;
 			}
 		}

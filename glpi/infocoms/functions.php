@@ -234,6 +234,7 @@ function updateInfocom($input) {
 	
 		$ic->updateInDB($updates);
 	}
+	do_hook_function("item_update",array("type"=>INFOCOM_TYPE, "ID" => $input["ID"]));
 }
 
 function addInfocom($input) {
@@ -250,15 +251,18 @@ function addInfocom($input) {
 		}
 	}
 
-	return $ic->addToDB();
+	$newID= $ic->addToDB();
+	do_hook_function("item_add",array("type"=>INFOCOM_TYPE, "ID" => $newID));	
+	return $newID;
 }
 
 
-function deleteInfocom($input,$force=0) {
+function deleteInfocom($input) {
 	// Delete Infocom
 	
 	$ic = new Infocom;
 	$ic->deleteFromDB($input["ID"],$force);
+	do_hook_function("item_purge",array("type"=>INFOCOM_TYPE, "ID" => $input["ID"]));
 } 
 
 function dropdownDuration($name,$value=0){

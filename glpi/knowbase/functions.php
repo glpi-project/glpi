@@ -260,10 +260,9 @@ function addKbItem($input){
 		}
 	}
 
-	$ki->addToDB();
-
-
-
+	$newID=$ki->addToDB();
+	do_hook_function("item_add",array("type"=>KNOWBASE_TYPE, "ID" => $newID));
+	return $newID;
 }
 
 
@@ -276,13 +275,14 @@ function addKbItem($input){
 * 
 * @return nothing 
 **/
-function deleteKbItem($input){
+function deleteKbItem($ID){
 
 	// Delete Reservation Item 
 	//ok
 	
 	$ki = new kbitem;
-	$ki->deleteFromDB($input);
+	$ki->deleteFromDB($ID);
+	do_hook_function("item_purge",array("type"=>KNOWBASE_TYPE, "ID" => $ID));
 }
 
 /**
@@ -322,7 +322,7 @@ function updateKbItem($input) {
 	}
 	if (isset($updates))
 		$ki->updateInDB($updates);
-
+	do_hook_function("item_update",array("type"=>KNOWBASE_TYPE, "ID" => $input["ID"]));
 }
 
 

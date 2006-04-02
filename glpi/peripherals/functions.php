@@ -66,6 +66,9 @@ function showPeripheralOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
+	
+	display_plugin_headings($target,PERIPHERAL_TYPE,$withtemplate,$actif);
+	
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
@@ -328,6 +331,7 @@ function updatePeripheral($input,$dohistory=1) {
 	else updateState(PERIPHERAL_TYPE,$input["ID"],$input["state"]);
 
 	$mon->updateInDB($updates);
+	do_hook_function("item_update",array("type"=>PERIPHERAL_TYPE, "ID" => $input["ID"]));
 
 }
 
@@ -411,7 +415,9 @@ function addPeripheral($input) {
 		while ($data=$db->fetch_array($result))
 			addDeviceDocument($data["FK_doc"],PERIPHERAL_TYPE,$newID);
 	}
-
+	
+	do_hook_function("item_add",array("type"=>PERIPHERAL_TYPE, "ID" => $newID));		
+	
 	return $newID;
 }
 
@@ -420,6 +426,11 @@ function deletePeripheral($input,$force=0) {
 	
 	$mon = new Peripheral;
 	$mon->deleteFromDB($input["ID"],$force);
+	if ($force)
+		do_hook_function("item_purge",array("type"=>PERIPHERAL_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>PERIPHERAL_TYPE, "ID" => $input["ID"]));
+
 	
 }
 
@@ -428,6 +439,7 @@ function restorePeripheral($input) {
 	
 	$ct = new Peripheral;
 	$ct->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>PERIPHERAL_TYPE, "ID" => $input["ID"]));
 } 
  	
 ?>

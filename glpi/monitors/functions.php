@@ -66,6 +66,9 @@ function showMonitorOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
+
+	display_plugin_headings($target,MONITOR_TYPE,$withtemplate,$actif);
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
@@ -388,6 +391,7 @@ function updateMonitor($input,$dohistory=1) {
 	else updateState(MONITOR_TYPE,$input["ID"],$input["state"]);
 	
 	$mon->updateInDB($updates);
+	do_hook_function("item_update",array("type"=>MONITOR_TYPE, "ID" => $input["ID"]));
 	
 }
 
@@ -456,7 +460,7 @@ function addMonitor($input) {
 		while ($data=$db->fetch_array($result))
 			addDeviceDocument($data["FK_doc"],MONITOR_TYPE,$newID);
 	}
-
+	do_hook_function("item_add",array("type"=>MONITOR_TYPE, "ID" => $newID));	
 	
 return $newID;	
 
@@ -467,7 +471,11 @@ function deleteMonitor($input,$force=0) {
 	
 	$mon = new Monitor;
 	$mon->deleteFromDB($input["ID"],$force);
-	
+	if ($force)
+		do_hook_function("item_purge",array("type"=>MONITOR_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>MONITOR_TYPE, "ID" => $input["ID"]));
+
 } 	
 
 function restoreMonitor($input) {
@@ -475,6 +483,7 @@ function restoreMonitor($input) {
 	
 	$mon = new Monitor;
 	$mon->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>MONITOR_TYPE, "ID" => $input["ID"]));
 } 
 
 ?>

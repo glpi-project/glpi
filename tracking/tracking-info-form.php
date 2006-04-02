@@ -82,7 +82,18 @@ if (isset($_POST['update'])){
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 }
 
+if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+if (isset($_GET['onglet'])) {
+	$_SESSION['glpi_onglet']=$_GET['onglet'];
+}
 
-showJobDetails($_GET["ID"]);
+if (showJobDetails($_GET["ID"])){
+
+	switch($_SESSION['glpi_onglet']){
+	default :
+		if (!display_plugin_action(TRACKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
+			showFollowupsSummary($_GET["ID"]);
+	}
+}
 commonFooter();
 ?>

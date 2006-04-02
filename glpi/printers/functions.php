@@ -70,6 +70,9 @@ function showPrinterOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
+
+	display_plugin_headings($target,PRINTER_TYPE,$withtemplate,$actif);
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
@@ -380,7 +383,7 @@ function updatePrinter($input,$dohistory=1) {
 	else updateState(PRINTER_TYPE,$input["ID"],$input["state"]);
 
 	$printer->updateInDB($updates);
-
+	do_hook_function("item_update",array("type"=>PRINTER_TYPE, "ID" => $input["ID"]));
 }
 
 function addPrinter($input) {
@@ -464,7 +467,7 @@ function addPrinter($input) {
 		while ($data=$db->fetch_array($result))
 			addDeviceDocument($data["FK_doc"],PRINTER_TYPE,$newID);
 	}
-
+	do_hook_function("item_add",array("type"=>PRINTER_TYPE, "ID" => $newID));	
 
 	return $newID;
 }
@@ -474,7 +477,11 @@ function deletePrinter($input,$force=0) {
 	
 	$printer = new Printer;
 	$printer->deleteFromDB($input["ID"],$force);
-	
+	if ($force)
+		do_hook_function("item_purge",array("type"=>PRINTER_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>PRINTER_TYPE, "ID" => $input["ID"]));
+
 } 	
 
 function restorePrinter($input) {
@@ -482,6 +489,7 @@ function restorePrinter($input) {
 	
 	$ct = new Printer;
 	$ct->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>PRINTER_TYPE, "ID" => $input["ID"]));
 } 
 
 ?>

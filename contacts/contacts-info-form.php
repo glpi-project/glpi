@@ -122,10 +122,11 @@ else
 			break;
 
 		case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],CONTACT_TYPE,$tab["ID"]);
-				break;
+			showNotesForm($_SERVER["PHP_SELF"],CONTACT_TYPE,$tab["ID"]);
+			break;
 		default :
-			showEnterpriseContact($tab["ID"]);
+			if (!display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+				showEnterpriseContact($tab["ID"]);
 		break;
 		}
 	}	

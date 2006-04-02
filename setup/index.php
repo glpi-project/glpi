@@ -83,6 +83,8 @@ echo "</td>";
 echo "<td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td>";
 echo "</tr>";
 
+echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup-plugins.php\"><b>Plugins</b></a></td></tr>";
+
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup-check-version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
 
 

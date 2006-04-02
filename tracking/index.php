@@ -115,11 +115,12 @@ if ($tab["enddate1"]!="0000-00-00"&&$tab["enddate2"]!="0000-00-00"&&strcmp($tab[
 }
 
 if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["todel"])){
-	$j=new Job;
 	foreach ($_POST["todel"] as $key => $val){
-		if ($val==1) $j->deleteInDB($key);
+		if ($val==1) {
+			deleteTracking($key);
 		}
 	}
+}
 
 if (!$tab["extended"])
 	searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);

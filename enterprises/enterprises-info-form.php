@@ -153,7 +153,8 @@ else
 				showNotesForm($_SERVER["PHP_SELF"],ENTERPRISE_TYPE,$tab["ID"]);
 				break;			
 			default : 
-				showAssociatedContact($tab["ID"]);
+				if (!display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+					showAssociatedContact($tab["ID"]);
 
 				break;
 		}

@@ -69,6 +69,9 @@ function showNetworkingOnglets($target,$withtemplate,$actif){
 	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
 	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
 	echo "<li "; if ($actif=="12") {echo "class='actif'";} echo "><a href='$target&amp;onglet=12$template'>".$lang["title"][38]."</a></li>";
+
+	display_plugin_headings($target,NETWORKING_TYPE,$withtemplate,$actif);
+
 	echo "<li class='invisible'>&nbsp;</li>";
 	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	}
@@ -383,6 +386,7 @@ function addNetdevice($input) {
 			addDeviceDocument($data["FK_doc"],NETWORKING_TYPE,$newID);
 	}
 
+	do_hook_function("item_add",array("type"=>NETWORKING_TYPE, "ID" => $newID));		
 	return $newID;
 	
 }
@@ -424,7 +428,7 @@ function updateNetdevice($input) {
 	else updateState(NETWORKING_TYPE,$input["ID"],$input["state"]);
 
 	$netdev->updateInDB($updates);
-
+	do_hook_function("item_update",array("type"=>NETWORKING_TYPE, "ID" => $input["ID"]));
 }
 
 function deleteNetdevice($input,$force=0) {
@@ -432,6 +436,11 @@ function deleteNetdevice($input,$force=0) {
 	
 	$netdev = new Netdevice;
 	$netdev->deleteFromDB($input["ID"],$force);
+	if ($force)
+		do_hook_function("item_purge",array("type"=>COMPUTER_TYPE, "ID" => $input["ID"]));
+	else 
+		do_hook_function("item_delete",array("type"=>COMPUTER_TYPE, "ID" => $input["ID"]));
+
 } 
 
 function restoreNetdevice($input) {
@@ -439,6 +448,7 @@ function restoreNetdevice($input) {
 	
 	$ct = new Netdevice;
 	$ct->restoreInDB($input["ID"]);
+	do_hook_function("item_restore",array("type"=>COMPUTER_TYPE, "ID" => $input["ID"]));
 } 
 
 

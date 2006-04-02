@@ -137,10 +137,12 @@ else
 				showNotesForm($_SERVER["PHP_SELF"],CARTRIDGE_TYPE,$tab["ID"]);
 				break;
 		default :
-			showCompatiblePrinters($tab["ID"]);
-			showCartridgesAdd($tab["ID"]);
-			showCartridges($tab["ID"]);
-			showCartridges($tab["ID"],1);
+			if (!display_plugin_action(CARTRIDGE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+				showCompatiblePrinters($tab["ID"]);
+				showCartridgesAdd($tab["ID"]);
+				showCartridges($tab["ID"]);
+				showCartridges($tab["ID"],1);
+			}
 		break;
 		}
 	}

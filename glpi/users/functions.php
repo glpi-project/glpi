@@ -284,7 +284,9 @@ global $cfg_glpi;
 				}
 			}
 
-			return $user->addToDB();
+			$newID= $user->addToDB();
+			do_hook_function("item_add",array("type"=>USER_TYPE, "ID" => $newID));
+			return $newID;
 	} else {
 		return false;
 	}
@@ -342,6 +344,7 @@ function updateUser($input) {
 	if(!empty($updates)) {
 		$user->updateInDB($updates);
 	}
+	do_hook_function("item_update",array("type"=>USER_TYPE, "ID" => $input["ID"]));
 }
 
 function deleteUser($input) {
@@ -349,6 +352,7 @@ function deleteUser($input) {
 	if(isSuperAdmin($_SESSION["glpitype"])) {
 		$user = new User($input["ID"]);
 		$user->deleteFromDB($input["ID"]);
+		do_hook_function("item_purge",array("type"=>USER_TYPE, "ID" => $input["ID"]));
 	}
 } 
 function showFormAssign($target)

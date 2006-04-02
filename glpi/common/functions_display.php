@@ -55,7 +55,7 @@ function commonHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot ;
+	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks ;
 
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
@@ -63,7 +63,7 @@ function commonHeader($title,$url)
      		 $cfg_glpi["list_limit"]=$_POST['list_limit'];
 	 }
 
-	
+
 	//  menu list 	
 	$utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
 	$lang["Menu"][19]=>array("/knowbase/index.php"," "),
@@ -210,12 +210,17 @@ function commonHeader($title,$url)
 	}
 
 	// PLUGINS
-	$dirplug=$phproot."/plugins";
-	$dh  = opendir($dirplug);
-	while (false !== ($filename = readdir($dh))) {
-   		if ($filename!="CVS"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename))
-   		$plugins[]=$filename;
+	$plugins=array();
+	if (count($plugin_hooks["menu_entry"]))
+	foreach  ($plugin_hooks["menu_entry"] as $plugin => $active) {
+		if ($active){
+			$function="plugin_version_$plugin";
+		
+			if (function_exists($function))
+				$plugins[$plugin]=$function();
+		}
 	}
+	
 	if (isset($plugins)&&count($plugins)>0){
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu5');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
@@ -223,7 +228,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu5\"><ul>";
 		// list menu item 
 		foreach ($plugins as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/plugins/".$val."/\" accesskey=\"".$val."\">".$val."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/plugins/".$key."/\">".$val["name"]."</a></span></li>\n";
 		}
 			echo "</ul></dd>\n";
 		echo "</dl>\n";

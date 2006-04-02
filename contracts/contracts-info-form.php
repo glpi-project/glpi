@@ -157,8 +157,10 @@ else
 				showNotesForm($_SERVER["PHP_SELF"],CONTRACT_TYPE,$tab["ID"]);
 				break;
 		default :
-			showEnterpriseContract($tab["ID"]);
-			showDeviceContract($tab["ID"]);
+			if (!display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+				showEnterpriseContract($tab["ID"]);
+				showDeviceContract($tab["ID"]);
+			}
 		break;
 		}
 	}	

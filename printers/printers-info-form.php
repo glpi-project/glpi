@@ -178,11 +178,12 @@ if (isset($_GET['onglet'])) {
 	} else {
 
 		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
-			$j=new Job;
 			foreach ($_POST["todel"] as $key => $val){
-				if ($val==1) $j->deleteInDB($key);
+				if ($val==1) {
+					deleteTracking($key);
 				}
 			}
+		}
 
 
 		if (showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
@@ -231,9 +232,10 @@ if (isset($_GET['onglet'])) {
 					showHistory(PRINTER_TYPE,$tab["ID"]);
 				break;
 				default :
-
-					showCartridgeInstalled($tab["ID"]);		
-					showCartridgeInstalled($tab["ID"],1);
+					if (!display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+						showCartridgeInstalled($tab["ID"]);		
+						showCartridgeInstalled($tab["ID"],1);
+					}
 					break;
 			}		
 			
