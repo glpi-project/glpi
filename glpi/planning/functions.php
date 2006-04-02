@@ -957,6 +957,8 @@ GLOBAL  $cfg_glpi, $lang;
 		} else {
 		$debut_cal.= "PRODID:-//GLPI-Planning-UnknownVersion\n";
 	}
+
+	$debut_cal.= "METHOD:PUBLISH\n"; // Outlook want's this in the header, why I don't know...
         $debut_cal .= "X-WR-CALNAME ;VALUE=TEXT:$name\n";
     
      //   $debut_cal .= "X-WR-RELCALID:n";
