@@ -577,7 +577,8 @@ switch ($current_version){
 	case "0.51": 
 	case "0.51a": update051to06();
 	case "0.6": update06to065();
-	case "0.65": 
+	case "0.65": update065to068();
+	case "0.68":
 	break;
 	default:
 	update031to04();
@@ -589,7 +590,7 @@ switch ($current_version){
 }
 
 // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.65', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.68', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
 	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
 
 optimize_tables();
@@ -3954,6 +3955,62 @@ if(!FieldExists("glpi_consumables","id_user")) {
 
 
 } // fin 0.65
+
+// Update from 0.65 to 0.65
+function update065to068(){
+	global $db;
+
+if(!TableExists("glpi_profiles")) {
+$query="CREATE TABLE `glpi_profiles` (
+  `ID` int(11) NOT NULL auto_increment,
+  `interface` varchar(50) NOT NULL default 'helpdesk',
+  `computer` char(1) default NULL,
+  `monitor` char(1) default NULL,
+  `software` char(1) default NULL,
+  `networking` char(1) default NULL,
+  `printer` char(1) default NULL,
+  `cartridge` char(1) default NULL,
+  `consumable` char(1) default NULL,
+  `phone` char(1) default NULL,
+  `notes` char(1) default NULL,
+  `contact_enterprise` char(1) default NULL,
+  `document` char(1) default NULL,
+  `contract_infocom` char(1) default NULL,
+  `knowbase` char(1) default NULL,
+  `faq` char(1) default NULL,
+  `reservation` char(1) default NULL,
+  `reports` char(1) default NULL,
+  `ocsng` char(1) default NULL,
+  `dropdown` char(1) default NULL,
+  `device` char(1) default NULL,
+  `typedoc` char(1) default NULL,
+  `link` char(1) default NULL,
+  `config` char(1) default NULL,
+  `search_config` char(1) default NULL,
+  `update` char(1) default NULL,
+  `user` char(1) default NULL,
+  `create_ticket` char(1) default NULL,
+  `delete_ticket` char(1) default NULL,
+  `comment_ticket` char(1) default NULL,
+  `update_ticket` char(1) default NULL,
+  `own_ticket` char(1) default NULL,
+  `steal_sticket` char(1) default NULL,
+  `assign_ticket` char(1) default NULL,
+  `show_ticket` char(1) default NULL,
+  `show_full_ticket` char(1) default NULL,
+  `observe_ticket` char(1) default NULL,
+  `show_planning` char(1) default NULL,
+  `show_all_planning` char(1) default NULL,
+  `statistic` char(1) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `interface` (`interface`)
+) TYPE=MyISAM;";
+
+$db->query($query) or die("0.68 add profiles ".$lang["update"][90].$db->error());
+
+}
+
+} // fin 0.68
 
 
 function updateTreeDropdown(){
