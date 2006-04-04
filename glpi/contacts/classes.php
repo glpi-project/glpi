@@ -36,118 +36,18 @@
 include ("_relpos.php");
 
 // CLASSES contact
-class Contact {
+class Contact extends CommonDBTM{
 
-	var $fields	= array();
-	var $updates	= array();
-	
-	function getfromDB ($ID) {
-
-		// Make new database object and fill variables
-		global $db;
-		$query = "SELECT * FROM glpi_contacts WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)==1){
-			$data = $db->fetch_assoc($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-		} else return false;
-		} else {
-			return false;
-		}
+	function Contact () {
+		$this->table="glpi_contacts";
+		$this->type=CONTACT_TYPE;
 	}
-		
-function getEmpty () {
-	//make an empty database object
-	global $db;
-	$fields = $db->list_fields("glpi_contacts");
-	$columns = $db->num_fields($fields);
-	for ($i = 0; $i < $columns; $i++) {
-		$name = $db->field_name($fields, $i);
-		$this->fields[$name] = "";
-		
-	}
-	return true;
-}
 
-	function updateInDB($updates)  {
-
+	function cleanDBonPurge($ID) {
 		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_contacts SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_contacts (";
-		$i=0;
-		
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-	}
-	
-	function restoreInDB($ID) {
-		global $db;
-		$query = "UPDATE glpi_contacts SET deleted='N' WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	function deleteFromDB($ID,$force=0) {
-
-		global $db;
-		if ($force==1){
-			$query = "DELETE from glpi_contacts WHERE ID = '$ID'";
-			$db->query($query);
 			
-			$query = "DELETE from glpi_contact_enterprise WHERE FK_contact = '$ID'";
-			
-			if ($result = $db->query($query)) {
-					return true;
-			} else {
-				return false;
-			}
-		}else {
-		$query = "UPDATE glpi_contacts SET deleted='Y' WHERE ID = '$ID'";		
-		return ($result = $db->query($query));
-		}
+		$query = "DELETE from glpi_contact_enterprise WHERE FK_contact = '$ID'";
+		$db->query($query);
 	}
 
 }
