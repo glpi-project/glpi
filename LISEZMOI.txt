@@ -362,3 +362,4 @@ ne serait qu'en cas de problèmes avec les sources de données externes.
 
 Les plugins sont gérés par GLPI au sein du répertoire plugins.
 Il suffit de mettre en place le répertoire du plugin dans ce répertoire et il apparait ensuite dans le menu.
+Vous pourrez configurer éventuellement votre plugin par la suite.
