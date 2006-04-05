@@ -36,100 +36,13 @@
 include ("_relpos.php");
 // CLASSES PlanningTracking
 
-class PlanningTracking{
-	var $fields	= array();
-	var $updates	= array();
-	
-	function getfromDB ($ID) {
+class PlanningTracking extends CommonDBTM {
 
-		// Make new database object and fill variables
-		global $db;
-		$query = "SELECT * FROM glpi_tracking_planning WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			$data = $db->fetch_array($result);
-			if (!empty($data))
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-
-		} else {
-			return false;
-		}
+	function PlanningTracking () {
+		$this->table="glpi_tracking_planning";
 	}
 	
-	
-
-	function getEmpty () {
-	//make an empty database object
-	global $db;
-	$fields = $db->list_fields("glpi_tracking_planning");
-	$columns = $db->num_fields($fields);
-	for ($i = 0; $i < $columns; $i++) {
-		$name = $db->field_name($fields, $i);
-		$this->fields[$name] = "";
-	}
-}
-
-	function updateInDB($updates)  {
-
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_tracking_planning SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_tracking_planning (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-		
-		$result=$db->query($query);
-		return $db->insert_id();
-	}
-
-	function deleteFromDB($ID) {
-
-		global $db;
-
-		$query = "DELETE from glpi_tracking_planning WHERE ID = '$ID'";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+	// SPECIFIC FUNCTIONS
 	
 	function is_alreadyplanned(){
 		global $db;

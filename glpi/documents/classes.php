@@ -36,135 +36,25 @@
 include ("_relpos.php");
 
 
-class Document {
+class Document extends CommonDBTM {
 
-	var $fields	= array();
-	var $updates	= array();
-	
-	function getfromDB ($ID) {
-
-		global $db;
-		$query = "SELECT * FROM glpi_docs WHERE (ID = '$ID')";
-		
-		if ($result = $db->query($query)) {
-		if ($db->numrows($result)==1){
-			$data = $db->fetch_array($result);
-		
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-		} else return false;
-		} else {
-			return false;
-		}
+	function Document () {
+		$this->table="glpi_docs";
 	}
 	
-	function getEmpty () {
-	global $db;
-	$fields = $db->list_fields("glpi_docs");
-	$columns = $db->num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			$name = $db->field_name($fields, $i);
-			$this->fields[$name] = "";
-		}
-	return true;
-	}
-
-	function restoreInDB($ID) {
-		global $db;
-		$query = "UPDATE glpi_docs SET deleted='N' WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 	
-	function updateInDB($updates)  {
-
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_docs SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-		
-	}
+	function cleanDBonPurge($ID) {
+		global $db,$cfg_glpi,$phproot,$lang;
 	
-	function addToDB() {
-		
-		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_docs (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-
-	}
-
-	function isUsed($ID){
-	return true;
-	global $db;
-	$query="SELECT * from glpi_doc_device where FK_doc = '$ID'";
-	$result = $db->query($query);
-	return ($db->numrows($result)>0);
-	}
-	
-	function deleteFromDB($ID,$force=0) {
-	global $db,$cfg_glpi,$phproot,$lang;
-	
-		$this->getFromDB($ID);	
-		if ($force==1||!$this->isUsed($ID)){
-			$query = "DELETE from glpi_docs WHERE ID = '$ID'";
-			if ($result = $db->query($query)) {
+		$query3 = "DELETE FROM glpi_doc_device WHERE (FK_doc = '$ID')";
+		$result3 = $db->query($query3);
 				
-				$query3 = "DELETE FROM glpi_doc_device WHERE (FK_doc = '$ID')";
-				$result3 = $db->query($query3);
-				
-				// UNLINK DU FICHIER
-				if (!empty($this->fields["filename"]))
-				if(is_file($cfg_glpi["doc_dir"]."/".$this->fields["filename"])&& !is_dir($cfg_glpi["doc_dir"]."/".$this->fields["filename"])) {
-						if (unlink($cfg_glpi["doc_dir"]."/".$this->fields["filename"]))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$this->fields["filename"]."<br>";
-						else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$this->fields["filename"]."<br>";
-						}
-
-				
-					return true;
-			} else {
-				return false;
-			}
-		} else {
-		$query = "UPDATE glpi_docs SET deleted='Y' WHERE ID = '$ID'";		
-		return ($result = $db->query($query));
+		// UNLINK DU FICHIER
+		if (!empty($this->fields["filename"]))
+		if(is_file($cfg_glpi["doc_dir"]."/".$this->fields["filename"])&& !is_dir($cfg_glpi["doc_dir"]."/".$this->fields["filename"])) {
+			if (unlink($cfg_glpi["doc_dir"]."/".$this->fields["filename"]))
+				$_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$this->fields["filename"]."<br>";
+			else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$this->fields["filename"]."<br>";
 		}
 	}
 	
