@@ -28,9 +28,6 @@
  ------------------------------------------------------------------------
 */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -41,215 +38,100 @@ include ("_relpos.php");
 // CLASSES Networking
 
 
-class Netdevice {
+class Netdevice extends CommonDBTM {
 
-	var $fields	= array();
-	var $updates	= array();
-	
-	function getfromDB ($ID) {
-
-		// Make new database object and fill variables
-		global $db;
-		$query = "SELECT * FROM glpi_networking WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)==1){
-			$data = $db->fetch_assoc($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-		} else return false;
-		} else {
-			return false;
-		}
+	function Netdevice () {
+		$this->table="glpi_networking";
 	}
+
 	
-function getEmpty() {
-		//make an empty database object
+
+
+	function cleanDBonPurge($ID) {
 		global $db;
-		
-		$fields = $db->list_fields("glpi_networking");
-		$columns = $db->num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			$name = $db->field_name($fields, $i);
-			$this->fields[$name] = "";
+
+		$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".NETWORKING_TYPE."')";
+		$result = $db->query($query);
+		while ($data = $db->fetch_array($result)){
+			$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
+			$result2 = $db->query($q);				
 		}
-		return true;
-}
 
-	function updateInDB($updates)  {
-		global $db;
+		$job=new Job;
 
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_networking SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		global $db;
-
-		$this->fields["comments"] = addslashes($this->fields["comments"]);
-		
-		// Build query
-		$query = "INSERT INTO glpi_networking (";
+		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".NETWORKING_TYPE."')";
+		$result = $db->query($query);
+		$number = $db->numrows($result);
 		$i=0;
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
+		while ($i < $number) {
+			$job->deleteinDB($db->result($result,$i,"ID"));
 			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
 		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-
-	}
-
-	function restoreInDB($ID) {
-		global $db;
-		$query = "UPDATE glpi_networking SET deleted='N' WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	function isUsed($ID){
-	return true;
-	global $db;
-	
-	$query="SELECT * from glpi_tracking where computer = '$ID' AND device_type='".NETWORKING_TYPE."'";
-	$result = $db->query($query);
-	if ($db->numrows($result)>0) return true;
-	
-	$query="SELECT * from glpi_networking_ports where on_device = '$ID' AND device_type='".NETWORKING_TYPE."'";
-	$result = $db->query($query);
-	if ($db->numrows($result)==0) return false;
-	else {
-		while ($data=$db->fetch_array($result)){
-			$query2="SELECT * from glpi_networking_wire where end1 = '".$data['ID']."' OR end2='".$data['ID']."'";
-			$result2 = $db->query($query2);
-			if ($db->numrows($result2)>0) return true;
-		}
-		return false;
-	}
-	}
-
-
-	function deleteFromDB($ID,$force=0) {
-
-		global $db;
-
-		if ($force==1||!$this->isUsed($ID)){
-			$query = "DELETE from glpi_networking WHERE ID = '$ID'";
 			
-			if ($result = $db->query($query)) {
+		$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".NETWORKING_TYPE."')";
+		$result = $db->query($query);
+
+		$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
+		$result = $db->query($query);
 			
-				$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".NETWORKING_TYPE."')";
-				$result = $db->query($query);
-				while ($data = $db->fetch_array($result)){
-						$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
-						$result2 = $db->query($q);				
-				}
+		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
+		$result = $db->query($query);
 
-				$job=new Job;
-
-				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".NETWORKING_TYPE."')";
-				$result = $db->query($query);
-				$number = $db->numrows($result);
-				$i=0;
-				while ($i < $number) {
- 		  		$job->deleteinDB($db->result($result,$i,"ID"));
-					$i++;
-				}
-			
-				$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".NETWORKING_TYPE."')";
-				$result = $db->query($query);
-
-				$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
-				$result = $db->query($query);
-			
-				$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
-				$result = $db->query($query);
-
-				$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
-				$result = $db->query($query);
+		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
+		$result = $db->query($query);
 				
-				$query="select * from glpi_reservation_item where (device_type='".NETWORKING_TYPE."' and id_device='$ID')";
-				if ($result = $db->query($query)) {
-					if ($db->numrows($result)>0) {
-						deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
-					}
-				}
-			
-				return true;
-			} else {
-				return false;
+		$query="select * from glpi_reservation_item where (device_type='".NETWORKING_TYPE."' and id_device='$ID')";
+		if ($result = $db->query($query)) {
+			if ($db->numrows($result)>0) {
+				deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
 			}
-		} else {
-		$query = "UPDATE glpi_networking SET deleted='Y' WHERE ID = '$ID'";		
-		return ($result = $db->query($query));
 		}
-			
 	}
-
 }
 
 
-class Netport {
+class Netport  extends CommonDBTM {
 
-	var $fields		= array();
 
 	var $contact_id		= 0;
 	
 	var $device_name	= "";
 	var $device_ID		= 0;
 	var $device_type		= 0;
-	
-	function getFromDB($ID) 
+
+	function Netdevice () {
+		$this->table="glpi_networking_ports";
+	}
+
+
+	function updateInDB($updates)
 	{
 
-		// Make new database object and fill variables
 		global $db;
-		$query = "SELECT * FROM glpi_networking_ports WHERE (ID = '$ID')";
-		if ($result = $db->query($query))
+
+		for ($i=0; $i < count($updates); $i++)
 		{
-			$data = $db->fetch_assoc($result);
-			if (is_array($data))
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
+			$query  = "UPDATE glpi_networking_ports SET ";
+			$query .= $updates[$i];
+			$query .= "='";
+			$query .= $this->fields[$updates[$i]];
+			$query .= "' WHERE ID='";
+			$query .= $this->fields["ID"];	
+			$query .= "'";
+		// Update opposite if exist
+		if ($updates[$i]=="netpoint"||$updates[$i]=="ifaddr"||$updates[$i]=="ifmac"){
+			$n=new Netwire;
+			if ($opp=$n->getOppositeContact($this->fields["ID"])){
+				$query.=" OR ID='$opp' ";
 			}
-
-			return true;
-
-		} else {
-			return false;
 		}
+			$result=$db->query($query);
+			}	
+			
 	}
-	
+
+	// SPECIFIC FUNCTIONS
+
 	function getFromNull()
 	{
 		global $db;
@@ -300,84 +182,6 @@ class Netport {
 		
 	}
 
-	function updateInDB($updates)
-	{
-
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++)
-		{
-			$query  = "UPDATE glpi_networking_ports SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-		// Update opposite if exist
-		if ($updates[$i]=="netpoint"||$updates[$i]=="ifaddr"||$updates[$i]=="ifmac"){
-			$n=new Netwire;
-			if ($opp=$n->getOppositeContact($this->fields["ID"])){
-				$query.=" OR ID='$opp' ";
-			}
-		}
-			$result=$db->query($query);
-			}	
-			
-	}
-	
-	function addToDB()
-	{
-		global $db;
-		
-		// Build query
-		$query = "INSERT INTO glpi_networking_ports (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++)
-		{
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1)
-			{
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) 
-		{
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1)
-			{
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-	
-	}
-
-	
-	function deleteFromDB($ID)
-	{
-
-		global $db;
-
-		$query = "DELETE from glpi_networking_ports WHERE ID = '$ID'";
-		if ($result = $db->query($query))
-		{
-			return true;
-		} 
-		else
-		{
-			return false;
-		}
-	}
 	
 }
 
