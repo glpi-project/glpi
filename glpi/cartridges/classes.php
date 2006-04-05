@@ -42,60 +42,29 @@ include ("_relpos.php");
 	\see Cartridge
 	\author Julien Dombre
 */
-class CartridgeType {
+class CartridgeType extends CommonDBTM {
 
-	//! Fields of CartridgeType
-	/**
-	Fields are :
-	- ID 
-  	- name : its name
-  	- ref : its reference
-  	- type : 1= Toner, 2=InkJet 
-  	- FK_glpi_enterprise : FK to the manufacturer
-  	- deleted : enum('Y','N') NOT NULL default 'N',
-  	- comments : some comments
-	*/
-	var $fields	= array();
-	//! Fields tu update
-	var $updates	= array();
-	
-   //! Get the item from table glpi_cartridge_type from the database
-    /*!
-      \param ID ID of the CartridgeType.
-      \return Is the item correctly loaded
-    */
-	function getfromDB ($ID) {
+	function CartridgeType () {
+		$this->table="glpi_cartridges_type";
+		$this->type=CARTRIDGE_TYPE;
+	}
 
-		// Make new database object and fill variables
+	function cleanDBonPurge($ID) {
 		global $db;
-		$query = "SELECT * FROM glpi_cartridges_type WHERE (ID = '$ID')";
-		
-		if ($result = $db->query($query)) {
-		if ($db->numrows($result)==1){
-			$data = $db->fetch_assoc($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-		} else return false;
-		} else {
-			return false;
-		}
+		// Delete cartridges
+		$query = "DELETE FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$ID')";
+		$db->query($query);
+		// Delete all cartridge assoc
+		$query2 = "DELETE FROM glpi_cartridges_assoc WHERE (FK_glpi_cartridges_type = '$ID')";
+		$result2 = $db->query($query2);
 	}
-	
-	function getEmpty () {
-	global $db,$cfg_glpi;
-	
-	$fields = $db->list_fields("glpi_cartridges_type");
-	$columns = $db->num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			$name = $db->field_name($fields, $i);
-			$this->fields[$name] = "";
-		}
-		
-	$this->fields["alarm"]=$cfg_glpi["cartridges_alarm"];
-	return true;
+
+	function post_getEmpty () {
+		global $cfg_glpi;
+		$this->fields["alarm"]=$cfg_glpi["cartridges_alarm"];
 	}
+
+	///// SPECIFIC FUNCTIONS
 
 	function countCartridges() {
 		global $db;
@@ -107,190 +76,27 @@ class CartridgeType {
 			return false;
 		}
 	}
-	function restoreInDB($ID) {
-		global $db;
-		$query = "UPDATE glpi_cartridges_type SET deleted='N' WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	function updateInDB($updates)  {
 
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_cartridges_type SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_cartridges_type (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-
-	}
-
-	function deleteFromDB($ID,$force=0) {
-
-		global $db;
-		$this->getFromDB($ID);		
-		if ($force==1/*||$this->countCartridges()==0*/){
-			$query = "DELETE from glpi_cartridges_type WHERE ID = '$ID'";
-			if ($result = $db->query($query)) {
-				// Delete cartridges
-				if ($force==1){
-				$query3 = "DELETE FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = \"$ID\")";
-				$result3 = $db->query($query3);
-				} 
-				// Delete all cartridge assoc
-				$query2 = "DELETE FROM glpi_cartridges_assoc WHERE (FK_glpi_cartridges_type = \"$ID\")";
-				if ($result2 = $db->query($query2)) {
-					return true;
-				}
-			} else {
-				return false;
-			}
-		} else {
-		$query = "UPDATE glpi_cartridges_type SET deleted='Y' WHERE ID = '$ID'";		
-		return ($result = $db->query($query));
-		}
-	}
-	
 }
+
 //!  Cartridge Class
 /**
   This class is used to manage the cartridges.
   \see CartridgeType
   \author Julien Dombre
 */
+class Cartridge extends CommonDBTM {
 
-class Cartridge {
-
-
-	var $fields	= array();
-	var $updates	= array();
-	
-	function getfromDB ($ID) {
-
-		// Make new database object and fill variables
-		global $db;
-		$query = "SELECT * FROM glpi_cartridges WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-		if ($db->numrows($result)==1){
-			$data = $db->fetch_array($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-		} else return false;
-		} else {
-			return false;
-		}
-	}
-
-
-	function updateInDB($updates)  {
-
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_cartridges SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			
-			$result=$db->query($query);
-		}
-		
+	function Cartridge () {
+		$this->table="glpi_cartridges";
+		$this->type=CARTRIDGE_ITEM_TYPE;
 	}
 	
-	function addToDB() {
-		
+
+	function cleanDBonPurge($ID) {
 		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_cartridges (";
-		$i=0;
-		foreach ($this->fields as $key => $val) 
-		if (!is_integer($key)){
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-
-	}
-
-
-	function deleteFromDB($ID) {
-
-		global $db;
-
-		$query = "DELETE from glpi_cartridges WHERE ID = '$ID'";
-		if ($result = $db->query($query)) {
-
-			$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CARTRIDGE_ITEM_TYPE."')";
-			$result = $db->query($query);
-
-				return true;
-		} else {
-			return false;
-		}
+		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CARTRIDGE_ITEM_TYPE."')";
+		$result = $db->query($query);
 	}
 
 }

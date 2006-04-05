@@ -262,7 +262,10 @@ class CommonDBTM {
 			$this->fields[$name] = "";
 		
 		}
+		$this->post_getEmpty();
 		return true;
+	}
+	function post_getEmpty () {
 	}
 
 	function updateInDB($updates)  {
@@ -315,13 +318,15 @@ class CommonDBTM {
 	}
 	
 	function restoreInDB($ID) {
-		global $db;
-		$query = "UPDATE ".$this->table." SET deleted='N' WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
+		global $db,$cfg_glpi;
+		if (in_array($this->table,$cfg_glpi["deleted_tables"])){
+			$query = "UPDATE ".$this->table." SET deleted='N' WHERE (ID = '$ID')";
+			if ($result = $db->query($query)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else return false;
 	}
 	function deleteFromDB($ID,$force=0) {
 
