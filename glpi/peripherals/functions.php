@@ -378,7 +378,7 @@ function addPeripheral($input) {
 	
 	// ADD Infocoms
 	$ic= new Infocom();
-	if ($ic->getFromDB(PERIPHERAL_TYPE,$oldID)){
+	if ($ic->getFromDBforDevice(PERIPHERAL_TYPE,$oldID)){
 		$ic->fields["FK_device"]=$newID;
 		unset ($ic->fields["ID"]);
 		$ic->addToDB();

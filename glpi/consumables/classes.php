@@ -46,7 +46,6 @@ class ConsumableType extends CommonDBTM {
 
 	function ConsumableType () {
 		$this->table="glpi_consumables_type";
-		$this->type=CONSUMABLE_TYPE;
 	}
 
 	function cleanDBonPurge($ID) {
@@ -73,7 +72,6 @@ class Consumable extends CommonDBTM {
 
 	function Consumable () {
 		$this->table="glpi_consumables";
-		$this->type=CONSUMABLE_ITEM_TYPE;
 	}
 	
 

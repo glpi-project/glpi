@@ -46,7 +46,6 @@ class CartridgeType extends CommonDBTM {
 
 	function CartridgeType () {
 		$this->table="glpi_cartridges_type";
-		$this->type=CARTRIDGE_TYPE;
 	}
 
 	function cleanDBonPurge($ID) {
@@ -89,7 +88,6 @@ class Cartridge extends CommonDBTM {
 
 	function Cartridge () {
 		$this->table="glpi_cartridges";
-		$this->type=CARTRIDGE_ITEM_TYPE;
 	}
 	
 

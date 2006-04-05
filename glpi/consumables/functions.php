@@ -503,7 +503,7 @@ function addConsumable($tID) {
 	
 	// Add infocoms if exists for the licence
 	$ic=new Infocom();
-	if ($ic->getFromDB(CONSUMABLE_TYPE,$c->fields["FK_glpi_consumables_type"])){
+	if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$c->fields["FK_glpi_consumables_type"])){
 		unset($ic->fields["ID"]);
 		$ic->fields["FK_device"]=$newID;
 		$ic->fields["device_type"]=CONSUMABLE_ITEM_TYPE;

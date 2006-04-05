@@ -319,7 +319,7 @@ function addSoftware($input) {
 	
 	// ADD Infocoms
 	$ic= new Infocom();
-	if ($ic->getFromDB(SOFTWARE_TYPE,$oldID)){
+	if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$oldID)){
 		$ic->fields["FK_device"]=$newID;
 		unset ($ic->fields["ID"]);
 		$ic->addToDB();
@@ -682,7 +682,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 		$button= $lang["buttons"][8];
 		$ic=new Infocom();
 		
-		if ($ic->getFromDB(SOFTWARE_TYPE,$sID))
+		if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$sID))
 			$show_infocom=true;
 		
 		break;
@@ -808,7 +808,7 @@ function addLicense($input) {
 
 	// Add infocoms if exists for the licence
 	$ic=new Infocom();
-	if ($ic->getFromDB(SOFTWARE_TYPE,$lic->fields["sID"])){
+	if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$lic->fields["sID"])){
 		unset($ic->fields["ID"]);
 		$ic->fields["FK_device"]=$newID;
 		$ic->fields["device_type"]=LICENSE_TYPE;

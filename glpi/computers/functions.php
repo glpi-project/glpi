@@ -564,7 +564,7 @@ function addComputer($input) {
 	
 	// ADD Infocoms
 	$ic= new Infocom();
-	if ($ic->getFromDB(COMPUTER_TYPE,$oldID)){
+	if ($ic->getFromDBforDevice(COMPUTER_TYPE,$oldID)){
 		$ic->fields["FK_device"]=$newID;
 		unset ($ic->fields["ID"]);
 		$ic->addToDB();

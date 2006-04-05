@@ -54,7 +54,7 @@ $ci=new CommonItem();
 
 if (isset($_GET["ID"])){
 	$ic=new Infocom();
-	$ic->getFromDBbyID($_GET["ID"]);
+	$ic->getFromDB($_GET["ID"]);
 	$_GET["device_type"]=$ic->fields["device_type"];
 	$_GET["device_id"]=$ic->fields["FK_device"];
 }

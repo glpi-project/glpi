@@ -31,10 +31,7 @@
 include ("_relpos.php");
 
 //Class Devices
-class Device {
-	var $fields = array();
-	var $updates = array();
-	var $table='';
+class Device extends CommonDBTM {
 	var $type=0;
 
 	function Device($dev_type) {
@@ -42,105 +39,14 @@ class Device {
 		$this->table=getDeviceTable($dev_type);
 	}
 	
-	function getFromDB($ID) {
+	
+	function cleanDBonPurge($ID) {
 		global $db;
-		$query = "SELECT * FROM ".$this->table." WHERE ID = '$ID' LIMIT 0,1";
-		//echo $query;
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)==1) {
-				$data = $db->fetch_array($result);
-				foreach ($data as $key => $val) {
-					$this->fields[$key] = $val;
-				}
-				return true;
-			} else return false;
-		} else {
-			return false;
-		}
+		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+		$db->query($query2);
 	}
 	
-	function getEmpty () {
-		//make an empty database object
-		global $db;
-		$fields = $db->list_fields($this->table);
-		$columns = $db->num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			$name = $db->field_name($fields, $i);
-			$this->fields[$name] = "";
-		}
-		return true;
-	}
-	
-	function updateInDB($updates)  {
-
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE ".$this->table." SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		global $db;
-		$i=0;
-		// Build query
-		$query = "INSERT INTO ".$this->table." (";
-		
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-		if ($result=$db->query($query)) {
-			return $db->insert_id();
-		} else {
-			return false;
-		}
-	}
-	
-	function deleteFromDB($ID) {
-
-		global $db;
-		$query = "DELETE from ".$this->table." WHERE (ID = '$ID')";
-		
-		if ($result = $db->query($query)) {
-			$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
-			
-			if ($result2 = $db->query($query2)) {
-			
-			
-			
-				return true;
-			}
-			else return false;
-		}
-		else return false;
-	}
-	
-	
+	// SPECIFIC FUNCTIONS
 	
 	function computer_link($compID,$device_type,$specificity='') {
 		global $db;

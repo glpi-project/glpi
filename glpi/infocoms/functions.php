@@ -53,7 +53,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	}
 		
 	echo "<br>";
-	if (!$ic->getfromDB($device_type,$dev_ID)){
+	if (!$ic->getfromDBforDevice($device_type,$dev_ID)){
 		if ($withtemplate!=2){
 		echo "<div align='center'>";
 		echo "<b><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$lang["financial"][68]."</a></b><br>";
@@ -210,13 +210,13 @@ function updateInfocom($input) {
 
 	$ic = new Infocom;
 	if (isset($input["ID"])){
-		$ic->getFromDBbyID($input["ID"]);
+		$ic->getFromDB($input["ID"]);
 	} else {
-		if (!$ic->getFromDB($input["device_type"],$input["FK_device"])){
+		if (!$ic->getFromDBforDevice($input["device_type"],$input["FK_device"])){
 			$input2["FK_device"]=$input["FK_device"];
 			$input2["device_type"]=$input["device_type"];
 			addInfocom($input2);
-			$ic->getFromDB($input["device_type"],$input["FK_device"]);
+			$ic->getFromDBforDevice($input["device_type"],$input["FK_device"]);
 		}
 	}
 

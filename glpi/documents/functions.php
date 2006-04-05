@@ -445,12 +445,17 @@ function showDeviceDocument($instID,$search='') {
 	$ci=new CommonItem();
 	while ($i < $number) {
 		$type=$db->result($result, $i, "device_type");
-		$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".name";
-		$result_linked=$db->query($query);
+		$column="name";
+		if ($type==TRACKING_TYPE) $column="ID";
+
+		$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".$column";
+		
+		if ($result_linked=$db->query($query))
 		if ($db->numrows($result_linked)){
 			$ci->setType($type);
 			while ($data=$db->fetch_assoc($result_linked)){
 				$ID="";
+				if ($type==TRACKING_TYPE) $data["name"]=$lang["job"][38]." ".$data["ID"];
 				if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 				$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
@@ -589,7 +594,8 @@ global $db,$HTMLRel,$cfg_glpi;
 	if (count($splitter)==2){
 		
 		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
-		$result=$db->query($query);
+		
+		if ($result=$db->query($query))
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
 			$out="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
