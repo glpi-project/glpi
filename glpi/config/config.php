@@ -102,6 +102,7 @@ define("LICENSE_TYPE","20");
 define("LINK_TYPE","21");
 define("STATE_TYPE","22");
 define("PHONE_TYPE","23");//
+define("DEVICE_TYPE","24");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");
@@ -194,7 +195,7 @@ $INFOFORM_PAGES=array(
 		DOCUMENT_TYPE => "documents/documents-info-form.php",
 		KNOWBASE_TYPE => "knowbase/knowbase-info-form.php",
 		USER_TYPE => "users/users-info-form.php",
-		TRACKING_TYPE => "????",
+		TRACKING_TYPE => "tracking/tracking-info-form.php",
 		CONSUMABLE_TYPE => "consumables/consumables-info-form.php",
 		CONSUMABLE_ITEM_TYPE => "??",
 		CARTRIDGE_ITEM_TYPE => "??",
@@ -246,7 +247,7 @@ $cfg_glpi["typedoc_icon_dir"] = "pics/icones";
 // *********************************************************************************
 
 // Mode debug ou traduction
-//$cfg_glpi["debug"]=2;
+$cfg_glpi["debug"]=2;
 $cfg_glpi["debug_sql"]=($cfg_glpi["debug"]==2?1:0); // affiche les requetes
 $cfg_glpi["debug_vars"]=($cfg_glpi["debug"]==2?1:0); // affiche les variables
 $cfg_glpi["debug_profile"]=($cfg_glpi["debug"]==2?1:0); // Profile les requetes

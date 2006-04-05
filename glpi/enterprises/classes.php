@@ -36,39 +36,43 @@
 include ("_relpos.php");
 
 
-class Enterprise {
+class Enterprise extends CommonDBTM {
 
-	var $fields	= array();
-	var $updates	= array();
-	
-	function getfromDB ($ID) {
+	function Enterprise () {
+		$this->table="glpi_enterprises";
+	}
+
+
+	function cleanDBonPurge($ID) {
 
 		global $db;
-		$query = "SELECT * FROM glpi_enterprises WHERE (ID = '$ID')";
-		
-		if ($result = $db->query($query)) {
-		if ($db->numrows($result)==1){
-			$data = $db->fetch_array($result);
-				foreach ($data as $key => $val) {
-					$this->fields[$key] = $val;
-				}
-				return true;
-		} else return false;
-		} else {
-			return false;
+
+		$job=new Job;
+
+		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".ENTERPRISE_TYPE."')";
+		$result = $db->query($query);
+		$number = $db->numrows($result);
+		$i=0;
+		while ($i < $number) {
+			$job->deleteinDB($db->result($result,$i,"ID"));
+			$i++;
 		}
+
+				
+		// Delete all enterprises associations from infocoms and contract
+		$query3 = "DELETE FROM glpi_contract_enterprise WHERE (FK_enterprise = \"$ID\")";
+		$result3 = $db->query($query3);
+				
+		// Delete all contact enterprise associations
+		$query2 = "DELETE FROM glpi_contact_enterprise WHERE (FK_enterprise = \"$ID\")";
+		$result2 = $db->query($query2);
+					
+		/// TODO : UPDATE ALL FK_manufacturer to NULL
 	}
 	
-	function getEmpty () {
-	global $db;
-	$fields = $db->list_fields("glpi_enterprises");
-	$columns = $db->num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			$name = $db->field_name($fields, $i);
-			$this->fields[$name] = "";
-		}
-	return true;
-	}
+	
+
+	// SPECIFIC FUNCTION
 
 	function countContacts() {
 		global $db;
@@ -80,133 +84,9 @@ class Enterprise {
 			return false;
 		}
 	}
-	function isUsed() {
-		return true;
-		global $db;
-		$query = "SELECT * FROM glpi_contact_enterprise WHERE (FK_enterprise = '".$this->fields["ID"]."')";
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)>0) return true;
-			else {
-				$query2 = "SELECT * FROM glpi_infocoms WHERE (FK_enterprise = '".$this->fields["ID"]."')";
-				$result2 = $db->query($query2);
-				if ($db->numrows($result2)>0) return true;
-				
-					$query="SELECT * from glpi_tracking where computer = '".$this->fields["ID"]."' AND device_type='".ENTERPRISE_TYPE."'";
-					$result = $db->query($query);
-					if ($db->numrows($result)>0) return true;
-				else {
-					
-				/// TODO : ajouter tous les liens FK_manufacturer !!!
-				return false;
-				
-				}
-			}
-		
-			
-		} else return true;
-		
-	}
 
-	function restoreInDB($ID) {
-		global $db;
-		$query = "UPDATE glpi_enterprises SET deleted='N' WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 	
-	function updateInDB($updates)  {
 
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_enterprises SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_enterprises (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-
-	}
-
-	function deleteFromDB($ID,$force=0) {
-
-		global $db;
-
-		$this->getFromDB($ID);		
-		if ($force==1||!$this->isUsed()){
-			$query = "DELETE from glpi_enterprises WHERE ID = '$ID'";
-			if ($result = $db->query($query)) {
-
-				$job=new Job;
-
-				$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".ENTERPRISE_TYPE."')";
-				$result = $db->query($query);
-				$number = $db->numrows($result);
-				$i=0;
-				while ($i < $number) {
- 		  		$job->deleteinDB($db->result($result,$i,"ID"));
-					$i++;
-				}
-
-				
-				// Delete all enterprises associations from infocoms and contract
-				$query3 = "DELETE FROM glpi_contract_enterprise WHERE (FK_enterprise = \"$ID\")";
-				$result3 = $db->query($query3);
-				
-				// Delete all contact enterprise associations
-				$query2 = "DELETE FROM glpi_contact_enterprise WHERE (FK_enterprise = \"$ID\")";
-				if ($result2 = $db->query($query2)) {
-					
-					
-					/// TODO : UPDATE ALL FK_manufacturer to NULL
-					return true;
-				}
-			} else {
-				return false;
-			}
-		} else {
-		$query = "UPDATE glpi_enterprises SET deleted='Y' WHERE ID = '$ID'";		
-		return ($result = $db->query($query));
-		}
-	}
 	
 }
 

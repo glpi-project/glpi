@@ -36,130 +36,22 @@
 include ("_relpos.php");
 
 
-class Contract {
+class Contract extends CommonDBTM {
 
-	var $fields	= array();
-	var $updates	= array();
-	
-	function getfromDB ($ID) {
 
-		global $db;
-		$query = "SELECT * FROM glpi_contracts WHERE (ID = '$ID')";
-		
-		if ($result = $db->query($query)) {
-		if ($db->numrows($result)==1){
-			$data = $db->fetch_array($result);
-		
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-		} else return false;
-		} else {
-			return false;
-		}
+	function Contract () {
+		$this->table="glpi_contracts";
 	}
 	
-	function getEmpty () {
-	global $db;
-	$fields = $db->list_fields("glpi_contracts");
-	$columns = $db->num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			$name = $db->field_name($fields, $i);
-			$this->fields[$name] = "";
-		}
-	return true;
-	}
-
-	function restoreInDB($ID) {
-		global $db;
-		$query = "UPDATE glpi_contracts SET deleted='N' WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	function updateInDB($updates)  {
+	function cleanDBonPurge($ID) {
 
 		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_contracts SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_contracts (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-
-	}
-
-	function isUsed($ID){
-	return true;
-	global $db;
-	$query="SELECT * from glpi_contract_device where FK_contract = '$ID'";
-	$result = $db->query($query);
-	return ($db->numrows($result)>0);
-	}
-	
-	function deleteFromDB($ID,$force=0) {
-
-		global $db;
-		$this->getFromDB($ID);		
-		if ($force==1||!$this->isUsed($ID)){
-			$query = "DELETE from glpi_contracts WHERE ID = '$ID'";
-			if ($result = $db->query($query)) {
 				
-				$query2 = "DELETE FROM glpi_contract_enterprise WHERE (FK_contract = '$ID')";
-				$result2 = $db->query($query2);
+		$query2 = "DELETE FROM glpi_contract_enterprise WHERE (FK_contract = '$ID')";
+		$db->query($query2);
 
-				$query3 = "DELETE FROM glpi_contract_device WHERE (FK_contract = '$ID')";
-				$result3 = $db->query($query3);
-				
-					return true;
-			} else {
-				return false;
-			}
-		} else {
-		$query = "UPDATE glpi_contracts SET deleted='Y' WHERE ID = '$ID'";		
-		return ($result = $db->query($query));
-		}
+		$query3 = "DELETE FROM glpi_contract_device WHERE (FK_contract = '$ID')";
+		$db->query($query3);
 	}
 	
 }

@@ -551,12 +551,13 @@ function addCartridge($tID) {
 	// Add infocoms if exists for the licence
 	$ic=new Infocom();
 	
-	if ($ic->getFromDB(CARTRIDGE_TYPE,$c->fields["FK_glpi_cartridges_type"])){
+	if ($ic->getFromDBforDevice(CARTRIDGE_TYPE,$c->fields["FK_glpi_cartridges_type"])){
 		unset($ic->fields["ID"]);
 		$ic->fields["FK_device"]=$newID;
 		$ic->fields["device_type"]=CARTRIDGE_ITEM_TYPE;
 		$ic->addToDB();
 	}
+
 	return $newID;
 
 }

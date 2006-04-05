@@ -228,13 +228,13 @@ class CommonDBTM {
 	var $fields	= array();
 	var $updates	= array();
 	var $table="";
-	var $type="";
 	
 	function CommonDBTM () {
 
 	}
 
-	function getfromDB ($ID) {
+	// Specific ones : COMPUTER -> must to be review getFromDB avec 2 param -> getFromDBwithDevice
+	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
 		global $db;
@@ -282,9 +282,13 @@ class CommonDBTM {
 			$query .= "'";
 			$result=$db->query($query);
 		}
-		
+		$this->post_updateInDB($updates);
 	}
 	
+	function post_updateInDB($updates)  {
+
+	}
+
 	function addToDB() {
 		
 		global $db;
@@ -313,8 +317,11 @@ class CommonDBTM {
 		}
 		$query .= ")";
 
-		$result=$db->query($query);
-		return $db->insert_id();
+		if ($result=$db->query($query)) {
+			return $db->insert_id();
+		} else {
+			return false;
+		}
 	}
 	
 	function restoreInDB($ID) {
@@ -422,6 +429,9 @@ class CommonItem{
 			case USER_TYPE : 
 				$this->obj= new User;	
 				break;					
+			case TRACKING_TYPE : 
+				$this->obj= new Job;	
+				break;
 			case CARTRIDGE_TYPE : 
 				$this->obj= new CartridgeType;	
 				break;					
@@ -508,6 +518,9 @@ class CommonItem{
 			case USER_TYPE : 
 				return $lang["setup"][57];
 				break;	
+			case TRACKING_TYPE : 
+				return $lang["job"][38];
+				break;	
 			case CARTRIDGE_TYPE : 
 				return $lang["cartridges"][16];
 				break;
@@ -589,6 +602,7 @@ class CommonItem{
 			case CONTACT_TYPE : 
 			case KNOWBASE_TYPE : 
 			case USER_TYPE : 
+			case TRACKING_TYPE : 			
 			case CARTRIDGE_TYPE : 
 			case CONSUMABLE_TYPE : 
 			case DOCUMENT_TYPE : 

@@ -36,12 +36,16 @@
 include ("_relpos.php");
 
 
-class InfoCom {
+class InfoCom extends CommonDBTM {
 
-	var $fields	= array();
-	var $updates	= array();
+
+	function InfoCom () {
+		$this->table="glpi_infocoms";
+	}
 	
-	function getfromDB ($device_type,$ID) {
+
+	// Specific Functions
+	function getFromDBforDevice ($device_type,$ID) {
 
 		global $db;
 		$query = "SELECT * FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='$device_type')";
@@ -60,106 +64,6 @@ class InfoCom {
 		}
 	}
 
-	function getfromDBbyID ($ID) {
-
-		global $db;
-		$query = "SELECT * FROM glpi_infocoms WHERE (ID = '$ID')";
-		
-		if ($result = $db->query($query)) {
-		if ($db->numrows($result)==1){	
-			$data = $db->fetch_array($result);
-			
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-		} else return false;
-		} else {
-			return false;
-		}
-	}
-	
-	function getEmpty () {
-	global $db;
-	$fields = $db->list_fields("glpi_infocoms");
-	$columns = $db->num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			$name = $db->field_name($fields, $i);
-			$this->fields[$name] = "";
-		}
-	}
-
-	function restoreInDB($ID) {
-		global $db;
-		$query = "UPDATE glpi_infocoms SET deleted='N' WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	function updateInDB($updates)  {
-
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_infocoms SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-//			echo $query."<br>";
-			$result=$db->query($query);
-		}
-		
-	}
-	
-	function addToDB() {
-		
-		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_infocoms (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-		
-		$result=$db->query($query);
-		return $db->insert_id();
-
-	}
-
-	function deleteFromDB($ID) {
-
-		global $db;
-		$query = "DELETE from glpi_infocoms WHERE ID = '$ID'";
-		if ($result = $db->query($query)) {
-				return true;
-		} else {
-				return false;
-		}
-	}
-	
 }
 
 ?>
