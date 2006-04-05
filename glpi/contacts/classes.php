@@ -40,7 +40,6 @@ class Contact extends CommonDBTM{
 
 	function Contact () {
 		$this->table="glpi_contacts";
-		$this->type=CONTACT_TYPE;
 	}
 
 	function cleanDBonPurge($ID) {

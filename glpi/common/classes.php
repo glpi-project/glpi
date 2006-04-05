@@ -268,6 +268,7 @@ class CommonDBTM {
 	function post_getEmpty () {
 	}
 
+	// Specific Ones : Netdevice / License
 	function updateInDB($updates)  {
 
 		global $db;
