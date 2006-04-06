@@ -319,12 +319,17 @@ class CommonDBTM {
 		$query .= ")";
 
 		if ($result=$db->query($query)) {
+			$this->post_addToDB();
 			return $db->insert_id();
 		} else {
 			return false;
 		}
 	}
 	
+	function post_addToDB(){
+
+	}
+
 	function restoreInDB($ID) {
 		global $db,$cfg_glpi;
 		if (in_array($this->table,$cfg_glpi["deleted_tables"])){

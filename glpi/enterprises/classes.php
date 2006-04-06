@@ -49,16 +49,6 @@ class Enterprise extends CommonDBTM {
 
 		$job=new Job;
 
-		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".ENTERPRISE_TYPE."')";
-		$result = $db->query($query);
-		$number = $db->numrows($result);
-		$i=0;
-		while ($i < $number) {
-			$job->deleteinDB($db->result($result,$i,"ID"));
-			$i++;
-		}
-
-				
 		// Delete all enterprises associations from infocoms and contract
 		$query3 = "DELETE FROM glpi_contract_enterprise WHERE (FK_enterprise = \"$ID\")";
 		$result3 = $db->query($query3);
