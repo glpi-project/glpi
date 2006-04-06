@@ -59,7 +59,7 @@ class Software  extends CommonDBTM {
 		$number = $db->numrows($result);
 		$i=0;
 		while ($i < $number) {
-			$job->deleteinDB($db->result($result,$i,"ID"));
+			$job->deleteFromDB($db->result($result,$i,"ID"));
 			$i++;
 		}
 

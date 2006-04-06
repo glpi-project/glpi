@@ -1691,7 +1691,7 @@ function deleteFollowup($input) {
 	// Delete Contact
 	
 	$con = new Followup;
-	$con->deleteInDB($input["ID"]);
+	$con->deleteFromDB($input["ID"]);
 
 	$job=new Job();
 	$job->getFromDB($input['tracking'],0);
