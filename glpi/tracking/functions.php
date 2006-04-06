@@ -2355,8 +2355,8 @@ function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
 function deleteTracking($input) {
 	// Delete Computer
 
-	$comp = new Computer;
-	$comp->deleteFromDB($input["ID"],$force);
+	$job = new Job;
+	$job->deleteFromDB($input["ID"],$force);
 	do_hook_function("item_purge",array("type"=>TRACKING_TYPE, "ID" => $input["ID"]));
 } 	
 

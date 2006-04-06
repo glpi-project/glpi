@@ -254,7 +254,7 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 
 		$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
 		$dbocs->query($query) or die($dbocs->error().$query);
-		$comp = new Computer;
+		//$comp = new Computer;
 		if ($idlink = ocs_link($ocs_id, $glpi_id)){
 
 			$input["ID"] = $glpi_id;

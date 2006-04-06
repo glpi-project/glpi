@@ -645,9 +645,9 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 		$comp=new Computer();
 
 		if (!empty($netport->device_type))
-		$comp->getFromDB($netport->device_ID,1);
+		$comp->getFromDBwithDevices($netport->device_ID);
 		else 
-		$comp->getFromDB($ondevice,1);
+		$comp->getFromDBwithDevices($ondevice);
 
 		$macs=array();
 		$i=0;
