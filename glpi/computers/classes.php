@@ -47,42 +47,24 @@ class Computer extends CommonDBTM {
 		$this->table="glpi_computers";
 	}
 	
-	// TO BE REVIEW : getFromDB avec 2 param -> getFromDBwithDevice
-	function getFromDB ($ID,$load_device=0) {
+	function getFromDBwithDevices ($ID) {
 
 		global $db;
-		
-		// Make new database object and fill variables
-		global $db;
-		$query = "SELECT * FROM ".$this->table." WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)==1){
-			$data = $db->fetch_assoc($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
 
-			if ($load_device){
-				$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE FK_computers = '$ID' ORDER BY device_type, ID";
-				if ($result = $db->query($query)) {
-					if ($db->numrows($result)>0) {
-						$i = 0;
-						while($data = $db->fetch_array($result)) {
-							$this->devices[$i] = array("compDevID"=>$data["ID"],"devType"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"]);
-							$i++;
-						}
+		if ($this->getFromDB($ID)){
+			$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE FK_computers = '$ID' ORDER BY device_type, ID";
+			if ($result = $db->query($query)) {
+				if ($db->numrows($result)>0) {
+					$i = 0;
+					while($data = $db->fetch_array($result)) {
+						$this->devices[$i] = array("compDevID"=>$data["ID"],"devType"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"]);
+						$i++;
 					}
 				}
-			}
-
 			return true;
-		} else return false;
-		} else {
-			return false;
+			} 
 		}
-
-
-	
+		return false;
 	}
 	
 

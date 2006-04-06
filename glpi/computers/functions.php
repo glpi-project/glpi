@@ -408,7 +408,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	if(empty($ID) && $withtemplate == 1) {
 		$comp->getEmpty();
 	} else {
-		$comp->getfromDB($ID,1);
+		$comp->getfromDBwithDevices($ID);
 	}
 
 	if (!empty($ID)){
@@ -457,7 +457,7 @@ function updateComputer($input,$dohistory=1) {
 	global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot, $lang ;
 
 	$comp = new Computer;
-	$comp->getFromDB($input["ID"],0);
+	$comp->getFromDB($input["ID"]);
 	
 	// set new date and make sure it gets updated
 	$updates[0]= "date_mod";
@@ -554,7 +554,7 @@ function addComputer($input) {
 	}
 	
 	// ADD Devices
-	$comp->getFromDB($oldID,1);
+	$comp->getFromDBwithDevices($oldID);
 	foreach($comp->devices as $key => $val) {
 			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
 		}
