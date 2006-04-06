@@ -829,7 +829,7 @@ $lang["networking"][57]="Choisissez une adresse MAC dans la liste ou spécifiez 
 
 
 $lang["ocsng"][0]="OCS Inventory NG";
-$lang["ocsng"][1]="Synchronisation des ordinateurs déjà  importés";
+$lang["ocsng"][1]="Synchronisation des ordinateurs déjà importés";
 $lang["ocsng"][2]="Importation de nouveaux ordinateurs";
 $lang["ocsng"][4]="Lier de nouveaux ordinateurs à des ordinateurs existants";
 $lang["ocsng"][5]="Importer nouveaux ordinateurs";
