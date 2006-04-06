@@ -233,7 +233,7 @@ class CommonDBTM {
 
 	}
 
-	// Specific ones : COMPUTER -> must to be review getFromDB avec 2 param -> getFromDBwithDevice
+	// Specific ones : StateItem / Reservation Item
 	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
