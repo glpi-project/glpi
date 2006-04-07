@@ -42,39 +42,39 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 
-
+$con=new Contact;
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	$newID=addContact($_POST);
+	$newID=$con->add($_POST);
 	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteContact($_POST);
+	$con->delete($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreContact($_POST);
+	$con->restore($_POST);
 	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
-	deleteContact($_POST,1);
+	$con->delete($_POST,1);
 	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateContact($_POST);
+	$con->update($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -105,9 +105,8 @@ else
 
 	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
 	
-	$ci=new CommonItem();
-	if ($ci->getFromDB(CONTACT_TYPE,$tab["ID"]))
-	showContactOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+	if ($con->getFromDB($tab["ID"]))
+	$con->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showContactForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))

@@ -40,6 +40,7 @@ class Contact extends CommonDBTM{
 
 	function Contact () {
 		$this->table="glpi_contacts";
+		$this->type=CONTACT_TYPE;
 	}
 
 	function cleanDBonPurge($ID) {
@@ -49,6 +50,13 @@ class Contact extends CommonDBTM{
 		$db->query($query);
 	}
 
+	function defineOnglets(){
+		global $lang;
+		return array(	1 => $lang["title"][26],
+				7 => $lang["title"][34],
+				10 => $lang["title"][37],
+		);
+	}
 }
 
 ?>

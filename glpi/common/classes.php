@@ -228,6 +228,7 @@ class CommonDBTM {
 	var $fields	= array();
 	var $updates	= array();
 	var $table="";
+	var $type=-1;
 	
 	function CommonDBTM () {
 
@@ -367,6 +368,156 @@ class CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 	}
+
+	// Common functions
+
+	/**
+	* Add an item in the database.
+	*
+	* Add an item in the database with all it's items.
+	*
+	*@param $input array : the _POST vars returned bye the item form when press add
+	*
+	*
+	*@return integer the new ID of the added item
+	*
+	**/
+	function add($input) {
+
+		// dump status
+		unset($input['add']);
+		$input=$this->prepareInputForAdd($input);
+
+		// fill array for udpate
+		foreach ($input as $key => $val) {
+			if ($key[0]!='_'&& (!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
+				$this->fields[$key] = $input[$key];
+			}
+		}
+
+		$newID= $this->addToDB();
+
+		$this->postAddItem($newID);
+
+		do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
+
+		return $newID;
+	}
+
+	function prepareInputForAdd($input) {
+		return $input;
+	}
+	
+	function postAddItem($newID) {
+	}
+
+
+	/**
+	* Update some elements of an item in the database
+	*
+	* Update some elements of an item in the database.
+	*
+	*@param $input array : the _POST vars returned bye the item form when press update
+	*
+	*
+	*@return Nothing (call to the class member)
+	*
+	**/
+	function update($input) {
+	
+		$this->getFromDB($input["ID"]);
+
+		// Fill the update-array with changes
+		$x=0;
+		foreach ($input as $key => $val) {
+			if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
+				$this->fields[$key] = $input[$key];
+				$updates[$x] = $key;
+				$x++;
+			}
+		}
+		if(isset($updates))
+			$this->updateInDB($updates);
+
+		do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
+	}
+	
+
+	/**
+	* Delete an item in the database.
+	*
+	* Delete an item in the database.
+	*
+	*@param $input array : the _POST vars returned bye the item form when press delete
+	*@param $force boolean : force deletion
+	*
+	*
+	*@return Nothing ()
+	*
+	**/
+	function delete($input,$force=0) {
+	
+		$this->deleteFromDB($input["ID"],$force);
+		if ($force)
+			do_hook_function("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
+		else 
+			do_hook_function("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+
+	}
+
+	/**
+	* Restore an item trashed in the database.
+	*
+	* Restore an item trashed in the database.
+	*
+	*@param $input array : the _POST vars returned bye the item form when press restore
+	*
+	*@return Nothing ()
+	*
+	**/
+	function restore($input) {
+	
+		$this->restoreInDB($input["ID"]);
+		do_hook_function("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
+	}
+
+	function defineOnglets(){
+		return array();
+	}
+	
+	function showOnglets($target,$withtemplate,$actif){
+		global $lang, $HTMLRel;
+
+		$template="";
+		if(!empty($withtemplate)){
+			$template="&amp;withtemplate=$withtemplate";
+		}
+	
+		echo "<div id='barre_onglets'><ul id='onglet'>";
+		
+		if (count($onglets=$this->defineOnglets())){
+			foreach ($onglets as $key => $val ) {
+				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template'>".$val."</a></li>";
+				}
+		}
+	
+		display_plugin_headings($target,$this->type,$withtemplate,$actif);
+	
+		echo "<li class='invisible'>&nbsp;</li>";
+	
+		if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
+			$ID=$ereg[1];
+			$next=getNextItem($this->table,$ID);
+			$prev=getPreviousItem($this->table,$ID);
+			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
+			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+		}
+
+		echo "</ul></div>";
+	
+	}
+
 }
 
 
