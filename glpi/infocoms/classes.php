@@ -41,6 +41,7 @@ class InfoCom extends CommonDBTM {
 
 	function InfoCom () {
 		$this->table="glpi_infocoms";
+		$this->type=INFOCOM_TYPE;
 	}
 	
 
@@ -62,6 +63,21 @@ class InfoCom extends CommonDBTM {
 		} else {
 			return false;
 		}
+	}
+
+	function prepareInputForUpdate($input) {
+		if (isset($input["ID"])){
+			$this->getFromDB($input["ID"]);
+		} else {
+			if (!$this->getFromDBforDevice($input["device_type"],$input["FK_device"])){
+				$input2["FK_device"]=$input["FK_device"];
+				$input2["device_type"]=$input["device_type"];
+				$this->add($input2);
+				$this->getFromDBforDevice($input["device_type"],$input["FK_device"]);
+			}
+		}
+
+		return $input;
 	}
 
 }

@@ -91,7 +91,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 	// Affichage Module réservation 
 	//******************
 	checkAuthentication("post-only");
-
+	$rr=new ReservationResa();
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
@@ -102,7 +102,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		$item=$_POST["id_item"];
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
 		if ($_SESSION["glpiID"]==$_POST["id_user"]) // test Sécurité
-		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
+		if ($rr->update($_POST,$_SERVER["PHP_SELF"],$item))
 			glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 		else exit();			
 	}
@@ -110,7 +110,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	
 	if (isset($_POST["clear_resa"])){
-		if (deleteReservation($_POST["ID"])){
+		if ($rr->delete($_POST["ID"])){
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]."delete a reservation.");
 		}
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
@@ -140,7 +140,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
 			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
 			if ($_SESSION["glpiID"]==$_POST["id_user"]) 
-			$ok=addReservation($_POST,$_SERVER["PHP_SELF"],$ok);
+			$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
 
 		}
 		// Positionnement du calendrier au mois de debut

@@ -706,8 +706,8 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input=array();
 		$input["name"]=$lang["tracking"][24]." $tID";
-		
-		if ($docID=addDocument($input,1))
+		$doc=new Document();
+		if ($docID=$doc->add($input,1))
 			addDeviceDocument($docID,TRACKING_TYPE,$tID);
 		}
 		
@@ -1415,7 +1415,8 @@ function updateTracking($input){
 	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input2=array();
 		$input2["name"]=$lang["tracking"][24]." ".$input["ID"];
-		if ($docID=addDocument($input2,1)){
+		$doc=new Document();
+		if ($docID=$doc->add($input2,1)){
 			addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 			}
 	}

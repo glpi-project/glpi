@@ -40,6 +40,7 @@ class Enterprise extends CommonDBTM {
 
 	function Enterprise () {
 		$this->table="glpi_enterprises";
+		$this->type=ENTERPRISE_TYPE;
 	}
 
 
@@ -60,7 +61,17 @@ class Enterprise extends CommonDBTM {
 		/// TODO : UPDATE ALL FK_manufacturer to NULL
 	}
 	
-	
+	function defineOnglets(){
+		global $lang;
+		return array(	1 => $lang["title"][26],
+				4 => $lang["Menu"][26],
+				5 => $lang["title"][25],
+				6 => $lang["title"][28],
+				7 => $lang["title"][34],
+				10 => $lang["title"][37],
+		);
+	}
+
 
 	// SPECIFIC FUNCTION
 

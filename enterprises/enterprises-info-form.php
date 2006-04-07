@@ -55,36 +55,43 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;
 
-
+$ent=new Enterprise();
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 
-	$newID=addEnterprise($_POST);
+	$newID=$ent->add($_POST);
 	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteEnterprise($_POST);
+	$ent->delete($_POST);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreEnterprise($_POST);
+	$ent->restore($_POST);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
-	deleteEnterprise($_POST,1);
+	$ent->delete($_POST,1);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
+else if (isset($_POST["update"]))
+{
+	checkAuthentication("admin");
+	$ent->update($_POST);
+	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} 
 else if (isset($_POST["addcontact"])){
 	checkAuthentication("admin");
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
@@ -97,13 +104,6 @@ else if (isset($_GET["deletecontact"])){
 	logEvent(0, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][37]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["update"]))
-{
-	checkAuthentication("admin");
-	updateEnterprise($_POST);
-	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-} 
 else
 {
 	if (empty($tab["ID"]))
@@ -120,7 +120,7 @@ else
 	commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
 	$ci=new CommonItem();
 	if ($ci->getFromDB(ENTERPRISE_TYPE,$tab["ID"]))
-		showEnterpriseOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$ent->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showEnterpriseForm($_SERVER["PHP_SELF"],$tab["ID"])){
 		if (!empty($tab["ID"]))

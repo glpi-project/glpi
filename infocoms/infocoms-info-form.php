@@ -51,25 +51,27 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["search"])) $tab["search"] = "";
 
+$ic=new Infocom();
+
 if (isset($_GET["add"]))
 {
 	checkAuthentication("admin");
 
-	$newID=addInfocom($_GET);
+	$newID=$ic->add($_GET);
 	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteInfocom($_POST);
+	$ic->delete($_POST);
 	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateInfocom($_POST);
+	$ic->update($_POST);
 	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
