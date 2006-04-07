@@ -381,6 +381,7 @@ class CommonDBTM {
 	*@return integer the new ID of the added item
 	*
 	**/
+	// specific ones : document, reservationresa
 	function add($input) {
 
 		// dump status
@@ -422,8 +423,11 @@ class CommonDBTM {
 	*@return Nothing (call to the class member)
 	*
 	**/
+	// specific ones : document, reservationresa
 	function update($input) {
 	
+		$input=$this->prepareInputForUpdate($input);
+
 		$this->getFromDB($input["ID"]);
 
 		// Fill the update-array with changes
@@ -440,6 +444,10 @@ class CommonDBTM {
 
 		do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 	}
+
+	function prepareInputForUpdate($input) {
+		return $input;
+	}
 	
 
 	/**
@@ -455,7 +463,7 @@ class CommonDBTM {
 	*
 	**/
 	function delete($input,$force=0) {
-	
+		$this->pre_deleteItem($input["ID"]);
 		$this->deleteFromDB($input["ID"],$force);
 		if ($force)
 			do_hook_function("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
@@ -463,7 +471,9 @@ class CommonDBTM {
 			do_hook_function("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
 
 	}
+	function pre_deleteItem($ID) {
 
+	}
 	/**
 	* Restore an item trashed in the database.
 	*
@@ -499,9 +509,13 @@ class CommonDBTM {
 				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template'>".$val."</a></li>";
 				}
 		}
+
+		echo "<li class='invisible'>&nbsp;</li>";
+
+		echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
 	
 		display_plugin_headings($target,$this->type,$withtemplate,$actif);
-	
+
 		echo "<li class='invisible'>&nbsp;</li>";
 	
 		if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
@@ -511,6 +525,12 @@ class CommonDBTM {
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
 			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+
+			if (function_exists("isReservable")&&isReservable(COMPUTER_TYPE,$ID)){
+				echo "<li class='invisible'>&nbsp;</li>";
+				echo "<li".(($actif==11)?" class='actif'":"")."><a href='$target&amp;onglet=11$template'>".$lang["title"][35]."</a></li>";
+			}
+
 		}
 
 		echo "</ul></div>";

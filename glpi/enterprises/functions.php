@@ -191,68 +191,6 @@ function showEnterpriseForm ($target,$ID) {
 
 }
 
-function updateEnterprise($input) {
-	// Update Software in the database
-
-	$ent = new Enterprise;
-	$ent->getFromDB($input["ID"]);
-
-	// Fill the update-array with changes
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$ent->fields) && $ent->fields[$key] != $input[$key]) {
-			$ent->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-	if(!empty($updates)) {
-	
-		$ent->updateInDB($updates);
-	}
-	do_hook_function("item_update",array("type"=>ENTERPRISE_TYPE, "ID" => $input["ID"]));
-}
-
-function addEnterprise($input) {
-	
-	$ent = new Enterprise;
-
-	// dump status
-	unset($input['add']);
-
-	// fill array for update
-	foreach ($input as $key => $val) {
-		if ($key[0]!='_'&&(empty($ent->fields[$key]) || $ent->fields[$key] != $input[$key])) {
-			$ent->fields[$key] = $input[$key];
-		}
-	}
-
-	$newID= $ent->addToDB();
-	do_hook_function("item_add",array("type"=>ENTERPRISE_TYPE, "ID" => $newID));		
-	return $newID;
-}
-
-
-function deleteEnterprise($input,$force=0) {
-	// Delete Enterprise
-	
-	$ent = new Enterprise;
-	$ent->deleteFromDB($input["ID"],$force);
-	if ($force)
-		do_hook_function("item_purge",array("type"=>ENTERPRISE_TYPE, "ID" => $input["ID"]));
-	else 
-		do_hook_function("item_delete",array("type"=>ENTERPRISE_TYPE, "ID" => $input["ID"]));
-
-} 
-
-function restoreEnterprise($input) {
-	// Restore Enterprise
-	
-	$ent = new Enterprise;
-	$ent->restoreInDB($input["ID"]);
-	do_hook_function("item_restore",array("type"=>ENTERPRISE_TYPE, "ID" => $input["ID"]));
-} 
-
 
 function showAssociatedContact($instID) {
 	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;

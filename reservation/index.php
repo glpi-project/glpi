@@ -49,6 +49,9 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
+$ri=new ReservationItem();
+$rr=new ReservationResa();
+
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
 	checkAuthentication("normal");
 
@@ -57,14 +60,13 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
 		$_POST["begin"]=date("Y-m-d H:i:00",mktime($_POST["begin_hour"],$_POST["begin_min"],0,$begin_month,$begin_day,$begin_year));
 		$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
-		$r=new ReservationResa;
 		
 		unset($_POST["begin_date"]);unset($_POST["begin_hour"]);unset($_POST["begin_min"]);
 		unset($_POST["end_date"]);unset($_POST["end_hour"]);unset($_POST["end_min"]);
 		$item=$_POST["id_item"];
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
 		if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
-		if (updateReservationResa($_POST,$_SERVER["PHP_SELF"],$item))
+		if ($rr->update($_POST,$_SERVER["PHP_SELF"],$item))
 			glpi_header($cfg_glpi["root_doc"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 	}
 
@@ -103,7 +105,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
 			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
 			if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
-			$ok=addReservation($_POST,$_SERVER["PHP_SELF"],$ok);
+			$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
 
 		}
 		// Positionnement du calendrier au mois de debut
@@ -129,13 +131,13 @@ else {
 	else {
 	if (isset($_GET["add"]))
 	{
-		addReservationItem($_GET);
+		$ri->add($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
 		glpi_header($_SERVER['HTTP_REFERER']);
 	} 
 	else if (isset($_GET["delete"]))
 	{
-		deleteReservationItem($_GET);
+		$ri->delete($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 		glpi_header($_SERVER['HTTP_REFERER']);
 	}
@@ -143,7 +145,7 @@ else {
 
 	if (isset($_POST["updatecomment"]))
 	{
-		updateReservationComment($_POST);
+		$ri->update($_POST);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	} 
 

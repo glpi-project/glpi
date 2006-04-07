@@ -266,30 +266,6 @@ if ($resaID=isReservable($device_type,$id_device)) {
 }
 }
 
-function addReservationItem($input){
-// Add Reservation Item, nasty hack until we get PHP4-array-functions
-
-	$ri = new ReservationItem;
-
-	// dump status
-	unset($input['add']);
-	
-	// fill array for update
-	foreach ($input as $key => $val) {
-		$ri->fields[$key] = $input[$key];
-	}
-
-	return $ri->addToDB();
-}
-
-function deleteReservationItem($input){
-
-	// Delete Reservation Item 
-	
-	$ri = new ReservationItem;
-	$ri->deleteFromDB($input["ID"]);
-}
-
 function printCalendrier($target,$ID=""){
 global $lang, $HTMLRel;
 
@@ -695,65 +671,6 @@ function printReservationItem($target,$ID,$date){
 
 }
 
-function deleteReservation($ID){
-	// Delete a Reservation
-	global $cfg_glpi;
-	$resa = new ReservationResa;
-	
-	
-	if ($resa->getfromDB($ID))
-	if (isset($resa->fields["id_user"])&&($resa->fields["id_user"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"]))){
-		// Processing Email
-		if ($cfg_glpi["mailing"]){
-			$mail = new MailingResa($resa,"delete");
-			$mail->send();
-		}
-
-		return $resa->deleteFromDB($ID);
-	}
-	
-	return false;
-}
-
-
-function addReservation($input,$target,$ok=true){
-	global $cfg_glpi;
-	// Add a Reservation
-	if ($ok){
-	$resa = new ReservationResa;
-	
-  // set new date.
-   $resa->fields["id_item"] = $input["id_item"];
-   $resa->fields["comment"] = $input["comment"];
-   $resa->fields["id_user"] = $input["id_user"];
-   $resa->fields["begin"] = $input["begin_date"]." ".sprintf("%02d",$input["begin_hour"]).":".sprintf("%02d",$input["begin_min"]).":00";
-   $resa->fields["end"] = $input["end_date"]." ".sprintf("%02d",$input["end_hour"]).":".sprintf("%02d",$input["end_min"]).":00";
-
-	if (!$resa->test_valid_date()){
-		$resa->displayError("date",$input["id_item"],$target);
-		return false;
-	}
-	
-	if ($resa->is_reserved()){
-		$resa->displayError("is_res",$input["id_item"],$target);
-		return false;
-	}
-
-	if ($input["id_user"]>0)
-		if ($resa->addToDB()){
-			// Processing Email
-			if ($cfg_glpi["mailing"])
-			{
-				$mail = new MailingResa($resa,"new");
-				$mail->send();
-			}
-			return true;
-		}
-		else return false;
-	else return true;
-}
-}
-
 
 function printReservationItems($target){
 global $db,$lang,$HTMLRel;
@@ -817,88 +734,6 @@ function showReservationCommentForm($target,$ID){
 	return true;
 	} else return false;
 }
-
-function updateReservationComment($input){
-
-	// Update  in the database
-
-	$ri = new ReservationItem;
-	$ri->getFromDB($input["ID"]);
-	
-	// Get all flags and fill with 0 if unchecked in form
-	foreach ($ri->fields as $key => $val) {
-		if (eregi("\.*flag\.*",$key)) {
-			if (!isset($input[$key])) {
-				$input[$key]=0;
-			}
-		}
-	}	
-
-	// Fill the update-array with changes
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$ri->fields) && $ri->fields[$key] != $input[$key]) {
-			$ri->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-	if (isset($updates))
-		$ri->updateInDB($updates);
-
-}
-
-function updateReservationResa($input,$target,$item){
-global $lang,$cfg_glpi;
-	// Update a printer in the database
-
-	$ri = new ReservationResa;
-	$ri->getFromDB($input["ID"]);
-
-	// Get all flags and fill with 0 if unchecked in form
-	foreach ($ri->fields as $key => $val) {
-		if (eregi("\.*flag\.*",$key)) {
-			if (!isset($input[$key])) {
-				$input[$key]=0;
-			}
-		}
-	}	
-
-	// Fill the update-array with changes
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$ri->fields) && $ri->fields[$key] != $input[$key]) {
-			$ri->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-	$ri->fields["begin"]=$_POST["begin"];
-	$ri->fields["end"]=$_POST["end"];
-	if (!$ri->test_valid_date()){
-		$ri->displayError("date",$item,$target);
-		return false;
-	}
-	
-	if ($ri->is_reserved()){
-		$ri->displayError("is_res",$item,$target);
-		return false;
-	}
-	
-	
-	if (isset($updates)){
-		$ri->updateInDB($updates);
-		// Processing Email
-		if ($cfg_glpi["mailing"])
-		{
-			$mail = new MailingResa($ri,"update");
-			$mail->send();
-		}
-
-		}
-	return true;
-}
-
 
 function printDeviceReservations($target,$type,$ID){
 	global $db,$lang,$cfg_glpi;

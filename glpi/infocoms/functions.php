@@ -205,65 +205,9 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	}
 }
 
-function updateInfocom($input) {
-	// Update Software in the database
-
-	$ic = new Infocom;
-	if (isset($input["ID"])){
-		$ic->getFromDB($input["ID"]);
-	} else {
-		if (!$ic->getFromDBforDevice($input["device_type"],$input["FK_device"])){
-			$input2["FK_device"]=$input["FK_device"];
-			$input2["device_type"]=$input["device_type"];
-			addInfocom($input2);
-			$ic->getFromDBforDevice($input["device_type"],$input["FK_device"]);
-		}
-	}
-
-	// Fill the update-array with changes
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$ic->fields) && $ic->fields[$key] != $input[$key]) {
-			$ic->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-
-	if(!empty($updates)) {
-	
-		$ic->updateInDB($updates);
-	}
-	do_hook_function("item_update",array("type"=>INFOCOM_TYPE, "ID" => $input["ID"]));
-}
-
-function addInfocom($input) {
-	
-	$ic = new Infocom;
-
-	// dump status
-	unset($input['add']);
-
-	// fill array for update
-	foreach ($input as $key => $val) {
-		if ($key[0]!='_'&&(empty($ic->fields[$key]) || $ic->fields[$key] != $input[$key])) {
-			$ic->fields[$key] = $input[$key];
-		}
-	}
-
-	$newID= $ic->addToDB();
-	do_hook_function("item_add",array("type"=>INFOCOM_TYPE, "ID" => $newID));	
-	return $newID;
-}
 
 
-function deleteInfocom($input) {
-	// Delete Infocom
-	
-	$ic = new Infocom;
-	$ic->deleteFromDB($input["ID"],$force);
-	do_hook_function("item_purge",array("type"=>INFOCOM_TYPE, "ID" => $input["ID"]));
-} 
+
 
 function dropdownDuration($name,$value=0){
 	global $lang;

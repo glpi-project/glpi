@@ -42,6 +42,7 @@ class ReservationItem extends CommonDBTM {
 
 	function ReservationItem () {
 		$this->table="glpi_reservation_item";
+		$this->type=-1;
 	}
 
 	function getfromDB ($ID) {
@@ -196,7 +197,105 @@ class ReservationResa extends CommonDBTM {
 
 	function ReservationResa () {
 		$this->table="glpi_reservation_resa";
+		$this->type=-1;
 	}
+
+	function pre_deleteItem($ID) {
+		global $cfg_glpi;
+		if ($this->getfromDB($ID))
+		if (isset($this->fields["id_user"])&&($this->fields["id_user"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"]))){
+			// Processing Email
+			if ($cfg_glpi["mailing"]){
+				$mail = new MailingResa($this,"delete");
+				$mail->send();
+			}
+
+		}
+	}
+
+
+	function update($input,$target,$item){
+		global $lang,$cfg_glpi;
+		// Update a printer in the database
+
+		$this->getFromDB($input["ID"]);
+
+		// Get all flags and fill with 0 if unchecked in form
+		foreach ($this->fields as $key => $val) {
+			if (eregi("\.*flag\.*",$key)) {
+				if (!isset($input[$key])) {
+					$input[$key]=0;
+				}
+			}
+		}	
+
+		// Fill the update-array with changes
+		$x=0;
+		foreach ($input as $key => $val) {
+			if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
+				$this->fields[$key] = $input[$key];
+				$updates[$x] = $key;
+				$x++;
+			}
+		}
+		$this->fields["begin"]=$_POST["begin"];
+		$this->fields["end"]=$_POST["end"];
+		if (!$this->test_valid_date()){
+			$this->displayError("date",$item,$target);
+			return false;
+		}
+	
+		if ($this->is_reserved()){
+			$this->displayError("is_res",$item,$target);
+			return false;
+		}
+	
+	
+		if (isset($updates)){
+			$this->updateInDB($updates);
+			// Processing Email
+			if ($cfg_glpi["mailing"]){
+				$mail = new MailingResa($this,"update");
+				$mail->send();
+			}
+		}
+		return true;
+	}
+
+	function add($input,$target,$ok=true){
+		global $cfg_glpi;
+		// Add a Reservation
+		if ($ok){
+	
+  			// set new date.
+   			$this->fields["id_item"] = $input["id_item"];
+   			$this->fields["comment"] = $input["comment"];
+   			$this->fields["id_user"] = $input["id_user"];
+   			$this->fields["begin"] = $input["begin_date"]." ".sprintf("%02d",$input["begin_hour"]).":".sprintf("%02d",$input["begin_min"]).":00";
+   			$this->fields["end"] = $input["end_date"]." ".sprintf("%02d",$input["end_hour"]).":".sprintf("%02d",$input["end_min"]).":00";
+
+			if (!$this->test_valid_date()){
+				$this->displayError("date",$input["id_item"],$target);
+				return false;
+			}
+	
+			if ($this->is_reserved()){
+				$this->displayError("is_res",$input["id_item"],$target);
+				return false;
+			}
+
+			if ($input["id_user"]>0)
+			if ($this->addToDB()){
+				// Processing Email
+				if ($cfg_glpi["mailing"]){
+					$mail = new MailingResa($this,"new");
+					$mail->send();
+				}
+				return true;
+			} else return false;
+		}
+	}
+
 
 	// SPECIFIC FUNCTIONS
 	

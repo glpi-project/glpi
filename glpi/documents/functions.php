@@ -45,36 +45,6 @@ function titleDocument(){
          echo "</td></tr></table></div>";
 }
 
-function showDocumentOnglets($target,$withtemplate,$actif){
-	global $lang, $HTMLRel;
-
-	$template="";
-	if(!empty($withtemplate)){
-		$template="&amp;withtemplate=$withtemplate";
-	}
-	
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
-	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
-	
-	display_plugin_headings($target,DOCUMENT_TYPE,$withtemplate,$actif);
-	
-	echo "<li class='invisible'>&nbsp;</li>";
-	
-	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
-	$ID=$ereg[1];
-	$next=getNextItem("glpi_docs",$ID);
-	$prev=getPreviousItem("glpi_docs",$ID);
-	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
-	}
-
-	echo "</ul></div>";
-	
-}
-
-
 function showDocumentForm ($target,$ID) {
 	// Show Document or blank form
 	
@@ -200,38 +170,6 @@ function showDocumentForm ($target,$ID) {
 
 }
 
-function updateDocument($input) {
-	// Update Software in the database
-
-	$con = new Document;
-	$con->getFromDB($input["ID"]);
-	
-	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
-		$input['mime']=$_FILES['filename']['type'];
-		
-	if (isset($input["upload_file"])&&!empty($input["upload_file"])){
-		$input['filename']=moveUploadedDocument($input["upload_file"],$input['current_filename']);
-	} else 	$input['filename']= uploadDocument($_FILES['filename'],$input['current_filename']);
-	
-	if (empty($input['filename'])) unset($input['filename']);
-	unset($input['current_filename']);	
-
-
-	// Fill the update-array with changes
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$con->fields) && $con->fields[$key] != $input[$key]) {
-			$con->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-	if(!empty($updates)) {
-	
-		$con->updateInDB($updates);
-	}
-	do_hook_function("item_update",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
-}
 
 
 function moveUploadedDocument($filename,$old_file=''){
@@ -368,61 +306,6 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 
 return "";
 }
-
-function addDocument($input,$only_if_upload_succeed=0) {
-
-	$con = new Document;
-
-	// dump status
-	unset($input['add']);
-	
-	
-	if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
-		$input['mime']=$_FILES['filename']['type'];
-		
-
-	if (isset($input["upload_file"])&&!empty($input["upload_file"])){
-		$input['filename']=moveUploadedDocument($input["upload_file"]);
-		
-	} else 	$input['filename']= uploadDocument($_FILES['filename']);
-	
-	unset($input["upload_file"]);
-
-
-	// fill array for update
-	foreach ($input as $key => $val) {
-		if ($key[0]!='_'&&(empty($con->fields[$key]) || $con->fields[$key] != $input[$key])) {
-			$con->fields[$key] = $input[$key];
-		}
-	}
-	if (!$only_if_upload_succeed||!empty($input['filename'])){
-		$newID= $con->addToDB();
-		do_hook_function("item_add",array("type"=>DOCUMENT_TYPE, "ID" => $newID));
-		return $newID;
-	}
-	else return false;
-}
-
-
-function deleteDocument($input,$force=0) {
-	// Delete Document
-	
-	$con = new Document;
-	$con->deleteFromDB($input["ID"],$force);
-	if ($force)
-		do_hook_function("item_purge",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
-	else 
-		do_hook_function("item_delete",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
-
-} 
-
-function restoreDocument($input) {
-	// Restore Document
-	
-	$con = new Document;
-	$con->restoreInDB($input["ID"]);
-	do_hook_function("item_restore",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
-} 
 
 
 function showDeviceDocument($instID,$search='') {
