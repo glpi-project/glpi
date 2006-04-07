@@ -221,7 +221,7 @@ function commonHeader($title,$url)
 	if (isset($plugins)&&count($plugins)>0){
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu5');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
-		echo "<span class='menu_title'>-&nbsp;Plugins&nbsp;-</span></dt>\n";
+		echo "<span class='menu_title'>-&nbsp;".$lang["common"][29]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu5\"><ul>";
 		// list menu item 
 		foreach ($plugins as $key => $val) {
