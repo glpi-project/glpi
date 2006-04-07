@@ -348,7 +348,6 @@ class CommonDBTM {
 
 
 		if ($force==1||!in_array($this->table,$cfg_glpi["deleted_tables"])){
-			$db->query($query);
 			
 			$this->cleanDBonPurge($ID);
 

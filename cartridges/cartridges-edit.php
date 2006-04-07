@@ -45,10 +45,11 @@ if(!isset($tab["cID"])) $tab["cID"] = "";
 
 //print_r($_POST);
 
+$cart= new Cartridge();
 if (isset($_POST["update_pages"])||isset($_POST["update_pages_x"]))
 {
 	checkAuthentication("admin");
-	updateCartridgePages($_POST["cID"],$_POST['pages']);
+	$cart->updatePages($_POST["cID"],$_POST['pages']);
 	
 	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." update a cartridge.");
 	
@@ -58,7 +59,7 @@ else if (isset($_GET["add"]))
 {
 	
 	checkAuthentication("admin");
-	addCartridge($_GET["tID"]);
+	$cart->add($_GET);
 	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -68,7 +69,7 @@ else if (isset($_POST["add_several"]))
 	
 	checkAuthentication("admin");
 	for ($i=0;$i<$_POST["to_add"];$i++)
-		addCartridge($_POST["tID"]);
+		$cart->add($_POST);
 	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." cartridge.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -76,29 +77,29 @@ else if (isset($_POST["add_several"]))
 else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
-	deleteCartridge($tab["ID"]);
+	$cart->delete($tab);
 	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted a cartridge.");
+	glpi_header($_SERVER['HTTP_REFERER']." ");
+}
+else if (isset($tab["restore"]))
+{
+	checkAuthentication("admin");
+	$cart->restore($tab);
+	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." restore cartridge.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["install"]))
 {
 	checkAuthentication("admin");
-	installCartridge($tab["pID"],$tab["tID"]);
+	$cart->install($tab["pID"],$tab["tID"]);
 	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
 	//echo $tab["back"];
 	glpi_header($cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$tab["pID"]);
 }
-else if (isset($tab["restore"]))
-{
-	checkAuthentication("admin");
-	restoreCartridge($tab["ID"]);
-	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." restore cartridge.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
-}
 else if (isset($tab["uninstall"]))
 {
 	checkAuthentication("admin");
-	uninstallCartridge($tab["ID"]);
+	$cart->uninstall($tab["ID"]);
 	logEvent(0, "cartridges", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }

@@ -50,35 +50,44 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
+$con=new Contract();
+
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 
-	$newID=addContract($_POST);
+	$newID=$con->add($_POST);
 	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["num"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteContract($_POST);
+	$con->delete($_POST);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreContract($_POST);
+	$con->restore($_POST);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
-	deleteContract($_POST,1);
+	$con->delete($_POST,1);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
+else if (isset($_POST["update"]))
+{
+	checkAuthentication("admin");
+	$con->update($_POST);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} 
 else if (isset($_POST["additem"])){
 	checkAuthentication("admin");
 	
@@ -112,13 +121,6 @@ else if (isset($_GET["deleteenterprise"])){
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["update"]))
-{
-	checkAuthentication("admin");
-	updateContract($_POST);
-	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-} 
 else
 {
 	if (empty($tab["ID"]))
@@ -136,7 +138,7 @@ else
 	
 	$ci=new CommonItem();
 	if ($ci->getFromDB(CONTRACT_TYPE,$tab["ID"]))
-	showContractOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+	$con->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showContractForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))

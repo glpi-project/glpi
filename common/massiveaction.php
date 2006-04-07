@@ -68,7 +68,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					$ci->obj->deleteFromDB($key);
-					do_hook_function("item_delete",array("type"=>$_POST["device_type"], "ID" => $input["ID"]));
+					do_hook_function("item_delete",array("type"=>$_POST["device_type"], "ID" => $key));
 				}
 			}
 		break;
@@ -78,7 +78,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					$ci->obj->deleteFromDB($key,1);
-					do_hook_function("item_purge",array("type"=>$_POST["device_type"], "ID" => $input["ID"]));
+					do_hook_function("item_purge",array("type"=>$_POST["device_type"], "ID" => $key));
 				}
 			}
 		break;
@@ -88,7 +88,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					$ci->obj->restoreInDB($key);
-					do_hook_function("item_restore",array("type"=>$_POST["device_type"], "ID" => $input["ID"]));
+					do_hook_function("item_restore",array("type"=>$_POST["device_type"], "ID" => $key));
 				}
 			}
 		break;
