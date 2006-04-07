@@ -389,7 +389,7 @@ function showKbCategories($parentID=0,$contains='')
 			
 			echo " ".$row["name"]."</b>\n";
 			if (!empty($row["comments"])){
-				echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$ID'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$ID'),'block')\">";
+				echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
 				echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
 			}
 			if ($_SESSION["kb_show"][$ID]=='Y'){
@@ -714,7 +714,7 @@ function faqShowCategories($parentID=0,$contains='')
 				echo " ".$row["name"]."</b>\n";
 
 				if (!empty($row["comments"])){
-					echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$ID'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$ID'),'block')\">";
+					echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
 					echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
 				}
 

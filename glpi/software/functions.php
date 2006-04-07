@@ -636,7 +636,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			
 			// Comment
 			if (!empty($data_inst["COMMENT"])) {
-			echo "<img onmouseout=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'none')\" onmouseover=\"setdisplay(getElementById('comment_".$data_inst["ID"]."'),'block')\" src=\"".$HTMLRel."pics/aide.png\" alt=''>";
+			echo "<img onmouseout=\"cleanhide('comment_".$data_inst["ID"]."')\" onmouseover=\"cleandisplay('comment_".$data_inst["ID"]."')\" src=\"".$HTMLRel."pics/aide.png\" alt=''>";
 			echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 			// delete
