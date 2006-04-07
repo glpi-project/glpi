@@ -90,7 +90,7 @@ class Netdevice extends CommonDBTM {
 }
 
 
-class Netport  extends CommonDBTM {
+class Netport extends CommonDBTM {
 
 
 	var $contact_id		= 0;
@@ -99,7 +99,7 @@ class Netport  extends CommonDBTM {
 	var $device_ID		= 0;
 	var $device_type		= 0;
 
-	function Netdevice () {
+	function Netport () {
 		$this->table="glpi_networking_ports";
 	}
 
