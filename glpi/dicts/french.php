@@ -197,6 +197,7 @@ $lang["common"][25]="Commentaires";
 $lang["common"][26]="Dernière modification";
 $lang["common"][27]="Date";
 $lang["common"][28]="Supprimé";
+$lang["common"][29]="Plugins";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";

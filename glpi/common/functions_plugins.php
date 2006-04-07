@@ -121,24 +121,36 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 }
 
 function display_plugin_headings($target,$type,$withtemplate,$actif){
-	global $plugin_hooks;
+	global $plugin_hooks,$lang;
 	
 	$template="";
 	if(!empty($withtemplate)){
 		$template="&amp;withtemplate=$withtemplate";
 	}
+	$display_onglets=array();
 	if (isset($plugin_hooks["headings"]) && is_array($plugin_hooks["headings"])) {
         	foreach ($plugin_hooks["headings"] as $plug => $function) {
 		
-            	if (function_exists($function)) {
-	                $onglet=$function($type,$withtemplate);
+            		if (function_exists($function)) {
+	                	$onglet=$function($type,$withtemplate);
 			
-			if (is_array($onglet)&&count($onglet))
-			foreach ($onglet as $key => $val)
-				echo "<li".(($actif==$plug."_".$key)?" class='actif'":"")."><a href='$target&amp;onglet=".$plug."_".$key."$template'>".$val."</a></li>";
-        	    }
-        	}
-    	}
+				if (is_array($onglet)&&count($onglet))
+				foreach ($onglet as $key => $val)
+					$display_onglets[$plug."_".$key]=$val;
+				//echo "<li".(($actif==$plug."_".$key)?" class='actif'":"")."><a href='$target&amp;onglet=".$plug."_".$key."$template'>".$val."</a></li>";
+			}
+		}
+		if (count($display_onglets)){
+			echo "<li".(ereg($plug,$actif)?" class='actif'":"")."  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$lang["common"][29]."</a>";
+			
+			echo "<span class='over_link' id='onglet_plugins' align='center'>";
+			foreach ($display_onglets as $key => $val)
+				echo "<a href='$target&amp;onglet=".$key.$template."'>".$val."</a>";
+			echo "</span>";
+			echo "</li>";
+		}
+		
+	}
 
 }
 
