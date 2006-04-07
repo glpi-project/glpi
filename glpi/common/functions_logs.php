@@ -97,7 +97,7 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 			
 						if($val2["table"]==$LINK_ID_TABLE[$device_type]){
 						// 1er cas $key est un champs normal -> on ne touche pas au valeur 
-						$changes=array($id_search_option, $oldvalues,$newvalues);
+						$changes=array($id_search_option, addslashes($oldvalues),$newvalues);
 						}else {
 						//2�e cas $key est un champs li� il faut r�up�er les valeurs du dropdown
 						$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldvalues)), addslashes(getDropdownName( $val2["table"],$newvalues)));
@@ -105,6 +105,7 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 
 					}
 				} // fin foreach
+			
 			if (count($changes))
 				historyLog ($id_device,$device_type,$changes);
 
