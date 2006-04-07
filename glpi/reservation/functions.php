@@ -676,7 +676,7 @@ function printReservationItem($target,$ID,$date){
 					$comment="";
 					$rand=mt_rand();
 					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"])){
-						$modif="<a onmouseout=\"setdisplay(getElementById('content_".$ID.$rand."'),'none')\" onmouseover=\"setdisplay(getElementById('content_".$ID.$rand."'),'block')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;item=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
+						$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;item=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
 						$modif_end="</a>";
 						$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";
 						}

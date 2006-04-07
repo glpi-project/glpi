@@ -158,7 +158,7 @@ echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
 echo "</span>\n";	
 
 if ($display_comments&&!empty($comments)) {
-	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
 	echo "<span class='over_link' id='comments_$rand'>".nl2br($comments)."</span>";
 }
 
@@ -269,7 +269,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 		echo "</span>\n";	
 		if (!empty($user["comments"])&&$display_comments) {
 			echo "<a href='".$user["link"]."'>";
-			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
 			echo "</a>";
 			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
 		}
@@ -339,7 +339,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 		echo "</span>\n";	
 		if (!empty($user["comments"])&&$display_comments) {
 			echo "<a href='".$user["link"]."'>";
-			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
 			echo "</a>";
 			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
 		}
@@ -459,7 +459,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 		echo "</span>\n";	
 		if (!empty($user["comments"])&&$display_comments) {
 			echo "<a href='".$user["link"]."'>";
-			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"setdisplay(getElementById('comments_$rand'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$rand'),'block')\">";
+			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
 			echo "</a>";
 			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
 		}
