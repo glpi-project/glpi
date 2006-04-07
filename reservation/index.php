@@ -74,7 +74,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
 
 	if (isset($_POST["clear_resa"])){
-		if (deleteReservation($_POST["ID"])){
+		if ($rr->delete($_POST["ID"])){
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 		}
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
