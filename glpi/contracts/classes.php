@@ -41,6 +41,7 @@ class Contract extends CommonDBTM {
 
 	function Contract () {
 		$this->table="glpi_contracts";
+		$this->type=CONTRACT_TYPE;
 	}
 	
 	function cleanDBonPurge($ID) {
@@ -53,6 +54,16 @@ class Contract extends CommonDBTM {
 		$query3 = "DELETE FROM glpi_contract_device WHERE (FK_contract = '$ID')";
 		$db->query($query3);
 	}
+
+	function defineOnglets(){
+		global $lang;
+		return array(	1 => $lang["title"][26],
+				5 => $lang["title"][25],
+				7 => $lang["title"][34],
+				10 => $lang["title"][37],
+		);
+	}
+
 	
 }
 

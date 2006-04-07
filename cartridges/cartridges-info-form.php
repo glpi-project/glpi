@@ -45,54 +45,55 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
+$cartype=new CartridgeType();
+
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 
-	$newID=addCartridgeType($_POST);
+	$newID=$cartype->add($_POST);
 	logEvent($newID, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteCartridgeType($_POST);
+	$cartype->delete($_POST);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreCartridgeType($_POST);
+	$cartype->restore($_POST);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
-	deleteCartridgeType($_POST,1);
+	$cartype->delete($_POST,1);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
-else if (isset($_POST["addtype"])){
+else if (isset($_POST["update"]))
+{
 	checkAuthentication("admin");
-	addCompatibleType($_POST["tID"],$_POST["model"]);
+	$cartype->update($_POST);
+	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["addtype"])){
+	checkAuthentication("admin");
+	$cartype->addCompatibleType($_POST["tID"],$_POST["model"]);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][30]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletetype"])){
 	checkAuthentication("admin");
-	deleteCompatibleType($_GET["ID"]);
+	$cartype->deleteCompatibleType($_GET["ID"]);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][31]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["update"]))
-{
-	checkAuthentication("admin");
-	updateCartridgeType($_POST);
-	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-} 
 else
 {
 	if (empty($tab["ID"]))
@@ -109,7 +110,7 @@ else
 	
 	$ci=new CommonItem();
 	if ($ci->getFromDB(CARTRIDGE_TYPE,$tab["ID"]))
-		showCartridgeOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$cartype->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showCartridgeTypeForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
