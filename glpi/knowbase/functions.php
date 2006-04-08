@@ -106,14 +106,18 @@ function showKbItemForm($target,$ID){
 
 	// show kb item form
 	
-	GLOBAL  $lang,$HTMLRel;
+	GLOBAL  $lang,$HTMLRel,$cfg_glpi;
 
 	$ki= new kbitem;	
 	
 	echo "<div align='center'>";
 	echo "<div id='contenukb'>";
-	echo "<script type='text/javascript' language='javascript' src='".$HTMLRel."toolbar.js'></script>";
-	echo "<form method='post' name='form_kb' action=\"$target\">";
+	//echo "<script type='text/javascript' language='javascript' src='".$HTMLRel."toolbar.js'></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."tiny_mce/tiny_mce_gzip.php\"></script>";
+	echo "<script language=\"javascript\" type=\"text/javascript\">";
+	echo "tinyMCE.init({	language : \"".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][5]."\",  mode : \"exact\",  elements: \"answer\", plugins : \"table\", theme : \"advanced\",  theme_advanced_toolbar_location : \"top\", theme_advanced_toolbar_align : \"left\",   theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent\", theme_advanced_buttons2 : \"forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator\",  theme_advanced_buttons3 : \"\",});";
+	echo "</script>";
+	echo "<form method='post' id='form_kb' name='form_kb' action=\"$target\">";
 	
 	if (empty($ID)) {
 		
@@ -148,7 +152,7 @@ function showKbItemForm($target,$ID){
 		</script>
 		";	
 	*/
-	
+	/*
 	echo "<p class='toolbar'>";
 	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[b]', '[/b]')\"><img src=\"".$HTMLRel."pics/gras.png\" alt='".$lang["toolbar"][1]."' title='".$lang["toolbar"][1]."' style=\"vertical-align:middle;\"></a>";
 	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[i]', '[/i]')\"><img src=\"".$HTMLRel."pics/italique.png\" alt='".$lang["toolbar"][2]."' title='".$lang["toolbar"][2]."' style='vertical-align:middle;'></a>";
@@ -161,7 +165,9 @@ function showKbItemForm($target,$ID){
 	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=blue]', '[/color]')\"><img src=\"".$HTMLRel."pics/bleu.png\" alt='".$lang["toolbar"][9]."' title='".$lang["toolbar"][9]."' style='vertical-align:middle;'></a>";
 	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=yellow]', '[/color]')\"><img src=\"".$HTMLRel."pics/jaune.png\" alt='".$lang["toolbar"][10]."' title='".$lang["toolbar"][10]."' style='vertical-align:middle;'></a>";
 	echo "</p>";
-	echo "<textarea cols='80' rows='15'  name='answer' >".$ki->fields["answer"]."</textarea></div>"; 
+	*/
+	echo "<textarea cols='80' rows='30' id='answer'  name='answer' >".$ki->fields["answer"]."</textarea></div>"; 
+	
 	echo "</fieldset>";
 	
 	
@@ -249,7 +255,7 @@ function addKbItem($input){
 // Add kb Item, nasty hack until we get PHP4-array-functions
 // ok
 	$ki = new kbitem;
-
+	
 	// dump status
 	unset($input['add']);
 	
@@ -508,7 +514,8 @@ function ShowKbItemFull($ID)
 	echo "</td></tr>\n";
 	echo "<tr  class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][4]."</h2>\n";
 	//$answer = autop($ki->fields["answer"]);
-	$answer = rembo($ki->fields["answer"]);
+	//$answer = rembo($ki->fields["answer"]); 
+	$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
 	//echo clicurl(bbcode($answer));
 	echo $answer;
 	echo "</td></tr></table></div><br>";
