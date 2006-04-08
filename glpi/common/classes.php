@@ -229,6 +229,7 @@ class CommonDBTM {
 	var $updates	= array();
 	var $table="";
 	var $type=-1;
+	var $dohistory=false;
 	
 	function CommonDBTM () {
 
@@ -397,7 +398,7 @@ class CommonDBTM {
 
 		$newID= $this->addToDB();
 
-		$this->postAddItem($newID);
+		$this->postAddItem($newID,$input);
 
 		do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
 
@@ -408,7 +409,7 @@ class CommonDBTM {
 		return $input;
 	}
 	
-	function postAddItem($newID) {
+	function postAddItem($newID,$input) {
 	}
 
 
@@ -424,7 +425,7 @@ class CommonDBTM {
 	*
 	**/
 	// specific ones : document, reservationresa
-	function update($input) {
+	function update($input,$history=1) {
 	
 		$input=$this->prepareInputForUpdate($input);
 
@@ -434,6 +435,11 @@ class CommonDBTM {
 		$x=0;
 		foreach ($input as $key => $val) {
 			if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
+				// Debut logs
+				if ($this->dohistory&&$history)
+					constructHistory($input["ID"],$this->type,$key,$this->fields[$key],$input[$key]);
+				// Fin des logs
+
 				$this->fields[$key] = $input[$key];
 				$updates[$x] = $key;
 				$x++;
@@ -442,6 +448,8 @@ class CommonDBTM {
 		if(isset($updates))
 			$this->updateInDB($updates);
 
+		$this->post_updateItem($input,$updates,$history);
+
 		do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 	}
 
@@ -449,6 +457,8 @@ class CommonDBTM {
 		return $input;
 	}
 	
+	function post_updateItem($input,$updates,$history=1) {
+	}
 
 	/**
 	* Delete an item in the database.
@@ -490,7 +500,7 @@ class CommonDBTM {
 		do_hook_function("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
 	}
 
-	function defineOnglets(){
+	function defineOnglets($withtemplate){
 		return array();
 	}
 	
@@ -504,7 +514,7 @@ class CommonDBTM {
 	
 		echo "<div id='barre_onglets'><ul id='onglet'>";
 		
-		if (count($onglets=$this->defineOnglets())){
+		if (count($onglets=$this->defineOnglets($withtemplate))){
 			foreach ($onglets as $key => $val ) {
 				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template'>".$val."</a></li>";
 				}

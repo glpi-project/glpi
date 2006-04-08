@@ -68,7 +68,7 @@ class CartridgeType extends CommonDBTM {
 		$this->fields["alarm"]=$cfg_glpi["cartridges_alarm"];
 	}
 
-	function defineOnglets(){
+	function defineOnglets($withtemplate){
 		global $lang;
 		return array(	1 => $lang["title"][26],
 				4 => $lang["Menu"][26],
@@ -154,7 +154,7 @@ class Cartridge extends CommonDBTM {
 				"date_in"=>date("Y-m-d"));
 	}
 
-	function postAddItem($newID) {
+	function postAddItem($newID,$input) {
 		// Add infocoms if exists for the licence
 		$ic=new Infocom();
 	

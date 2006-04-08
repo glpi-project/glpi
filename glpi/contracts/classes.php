@@ -55,7 +55,7 @@ class Contract extends CommonDBTM {
 		$db->query($query3);
 	}
 
-	function defineOnglets(){
+	function defineOnglets($withtemplate){
 		global $lang;
 		return array(	1 => $lang["title"][26],
 				5 => $lang["title"][25],

@@ -196,7 +196,8 @@ function ocsManageDeleted(){
 				$result=$db->query($query) or die($db->error().$query);
 				if ($db->numrows($result)){
 					$del=$db->fetch_array($result);
-					deleteComputer(array("ID"=>$del["glpi_id"]),0);
+					$comp=new Computer();
+					$comp->delete(array("ID"=>$del["glpi_id"]),0);
 				}
 			
 			}
@@ -257,9 +258,10 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 		//$comp = new Computer;
 		if ($idlink = ocs_link($ocs_id, $glpi_id)){
 
+			$comp=new Computer();
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
-			updateComputer($input);
+			$comp->update($input);
 
 			// Reset using GLPI Config
 			$cfg_ocs=getOcsConf(1);
@@ -442,7 +444,8 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 
 		if (count($compupdate)){
 			$compupdate["ID"] = $glpi_id;
-			updateComputer($compupdate,$dohistory);
+			$comp=new Computer();
+			$comp->update($compupdate,$dohistory);
 		}
 		
 	}
@@ -487,7 +490,8 @@ function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1)
 		
 		if (count($compupdate)){
 			$compupdate["ID"] = $glpi_id;
-			updateComputer($compupdate,$dohistory);
+			$comp=new Computer();
+			$comp->update($compupdate,$dohistory);
 		}
 		
 	}

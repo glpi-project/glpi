@@ -60,10 +60,11 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
+$comp=new Computer();
 //Add a new computer
 if (isset($tab["add"])) {
 	checkAuthentication("admin");
-	$newID=addComputer($tab);
+	$newID=$comp->add($tab);
 	logEvent($newID, "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$tab["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -72,8 +73,8 @@ else if (isset($tab["delete"])) {
 	checkAuthentication("admin");
 
 	if (!empty($tab["withtemplate"]))
-	deleteComputer($tab,1);
-	else deleteComputer($tab);
+	$comp->delete($tab,1);
+	else $comp->delete($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/setup/setup-templates.php");
@@ -83,14 +84,14 @@ else if (isset($tab["delete"])) {
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreComputer($_POST);
+	$comp->restore($_POST);
 	logEvent($tab["ID"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/computers/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deleteComputer($tab,1);
+	$comp->delete($tab,1);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/computers/");
 }
@@ -99,7 +100,7 @@ else if (isset($tab["update"])) {
 	if(empty($tab["show"])) $tab["show"] = "";
 	if(empty($tab["contains"])) $tab["contains"] = "";
 	checkAuthentication("admin");
-	updateComputer($tab);
+	$comp->update($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -177,7 +178,7 @@ if (isset($_GET['onglet'])) {
 	
 	$ci=new CommonItem();
 	if ($ci->getFromDB(COMPUTER_TYPE,$tab["ID"]))
-		showComputerOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		$comp->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
 		
