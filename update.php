@@ -4011,7 +4011,22 @@ $db->query($query) or die("0.68 add profiles ".$lang["update"][90].$db->error())
 
 }
 
-} // fin 0.68
+// Convert old content of knowbase in HTML 
+if(TableExists("glpi_kbitems")){
+$query="SELECT * FROM glpi_kbitems ";
+	$result=$db->query($query);
+
+	if ($db->numrows($result)>0){
+			while($line = $db->fetch_array($result)) {
+			$query="UPDATE glpi_kbitems SET answer='".rembo($line["answer"])."' WHERE ID='".$line["ID"]."'";
+			$db->query($query) 	 or die("0.68 convert knowbase to xhtml ".$lang["update"][90].$db->error());
+			}
+		mysql_free_result($result);
+	}
+}
+
+
+} // fin 0.68 #####################################################################################
 
 
 function updateTreeDropdown(){
