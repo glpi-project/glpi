@@ -53,7 +53,7 @@ function showPasswordForm($target,$name) {
 	GLOBAL $cfg_glpi, $lang;
 	
 	$user = new User();
-	if ($user->getFromDB($name)){
+	if ($user->getFromDBbyName($name)){
 		echo "<form method='post' action=\"$target\">";
 		echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
@@ -77,7 +77,7 @@ function showUserinfo($target,$ID) {
 	$user = new User();
 	
 	
-	$user->getfromDBbyID($ID);
+	$user->getfromDB($ID);
 		
 	
 	
@@ -121,12 +121,11 @@ function showUserform($target,$name) {
 		return 0;
 	}
 	if(empty($name)) {
-	// Partie ajout d'un user
-	// il manque un getEmpty pour les users	
-	$user->getEmpty();
-	
+		// Partie ajout d'un user
+		// il manque un getEmpty pour les users	
+		$user->getEmpty();
 	} else {
-		$user->getfromDB($name);
+		$user->getfromDBbyName($name);
 		
 	}
 	echo "<div align='center'>";
@@ -253,108 +252,6 @@ function showUserform($target,$name) {
 
 
 
-function addUser($input) {
-global $cfg_glpi;
-	
-	//only admin and superadmin can add some user
-	if(isAdmin($_SESSION["glpitype"])) {
-		//Only super-admin's can add users with admin or super-admin access.
-		//set to "normal" by default
-		if(!isSuperAdmin($_SESSION["glpitype"])) {
-			if($input["type"] != "normal" && $input["type"] != "post-only") {
-				$input["type"] = "normal";
-			}
-		}
-			// Add User, nasty hack until we get PHP4-array-functions
-			$user = new User($input["name"]);
-			if(empty($input["password"]))  $input["password"] = "";
-			// dump status
-			unset($input["add"]);
-			
-			// change email_form to email (not to have a problem with preselected email)
-			if (isset($input["email_form"])){
-				$input["email"]=$input["email_form"];
-				unset($input["email_form"]);
-			}
-	
-			// fill array for update
-			foreach ($input as $key => $val) {
-				if ($key[0]!='_'&&(!isset($user->fields[$key]) || $user->fields[$key] != $input[$key])) {
-					$user->fields[$key] = $input[$key];
-				}
-			}
-
-			$newID= $user->addToDB();
-			do_hook_function("item_add",array("type"=>USER_TYPE, "ID" => $newID));
-			return $newID;
-	} else {
-		return false;
-	}
-}
-
-
-function updateUser($input) {
-
-	//only admin and superadmin can update some user
-
-	// Update User in the database
-	if (isset($input["name"])){
-		$user = new User($input["name"]);
-		$user->getFromDB($input["name"]); 
-	} else if (isset($input["ID"])){
-		$user = new User("");
-		$user->getFromDBbyID($input["ID"]); 
-	} else return;
-
-	// password updated by admin user or own password for user
-	if(empty($input["password"]) || (!isAdmin($_SESSION["glpitype"])&&$_SESSION["glpiname"]!=$input['name'])) {
-		unset($user->fields["password"]);
-		unset($user->fields["password_md5"]);
-		unset($input["password"]);
-	} 
-	
-	// change email_form to email (not to have a problem with preselected email)
-	if (isset($input["email_form"])){
-	$input["email"]=$input["email_form"];
-	unset($input["email_form"]);
-	}
-	
-	//Only super-admin's can set admin or super-admin access.
-	//set to "normal" by default
-	//if user type is already admin or super-admin do not touch it
-	if(isset($input["type"])&&!isSuperAdmin($_SESSION["glpitype"])) {
-		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
-			$input["type"] = "normal";
-		}
-		
-	}
-	
-	
-	// fill array for update
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$user->fields) &&  $input[$key] != $user->fields[$key]) {
-			$user->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-	
-	
-	if(!empty($updates)) {
-		$user->updateInDB($updates);
-	}
-	do_hook_function("item_update",array("type"=>USER_TYPE, "ID" => $input["ID"]));
-}
-
-function deleteUser($input) {
-	// Delete User (only superadmin can delete an user)
-	if(isSuperAdmin($_SESSION["glpitype"])) {
-		$user = new User($input["ID"]);
-		$user->deleteFromDB($input["ID"]);
-		do_hook_function("item_purge",array("type"=>USER_TYPE, "ID" => $input["ID"]));
-	}
-} 
 function showFormAssign($target)
 {
 
@@ -371,8 +268,8 @@ function showFormAssign($target)
 		  $i = 0;
 		  while ($i < $db->numrows($result)) {
 			$name = $db->result($result,$i,"name");
-			$user = new User($name);
-			$user->getFromDB($name);
+			$user = new User();
+			$user->getFromDBbyName($name);
 			
 			echo "<tr class='tab_bg_1'>";	
 			echo "<form method='post' action=\"$target\">";

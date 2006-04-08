@@ -677,8 +677,8 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 	$job->fields["emailupdates"] = $emailupdates;
 	$job->fields["category"] = $category;
 
-	$user=new User;
-	$user->getfromDBbyID($author);
+	$user=new User();
+	$user->getFromDB($author);
 	if ($emailupdates=="yes"&&empty($uemail)){
 		$job->fields["uemail"]=$user->fields["email"];
 	}
@@ -1457,7 +1457,7 @@ function updateTracking($input){
 
 	if (in_array("author",$updates)){
 		$user=new User;
-		$user->getfromDBbyID($input["author"]);
+		$user->getfromDB($input["author"]);
 		if (!empty($user->fields["email"])){
 			$updates[]="uemail";
 			$job->fields["uemail"]=$user->fields["email"];
@@ -1511,9 +1511,9 @@ function updateTracking($input){
 	}
 	if (in_array("author",$updates)){
 		$author=new User;
-		$author->getFromDBbyID($old_author);
+		$author->getFromDB($old_author);
 		$old_author_name=$author->getName();
-		$author->getFromDBbyID($job->fields["author"]);
+		$author->getFromDB($job->fields["author"]);
 		$new_author_name=$author->getName();
 		$change_followup_content.=$lang["mailing"][18].": $old_author_name -> ".$new_author_name."\n";
 
@@ -1563,7 +1563,7 @@ function updateTracking($input){
 	if ($mail_send==0&&count($updates)>$global_mail_change_count&&$cfg_glpi["mailing"])
 		{
 			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
+			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mailtype="update";
 			if (in_array("status",$updates)&&ereg("old_",$input["status"]))
 				$mailtype="finish";
@@ -1576,7 +1576,7 @@ function updateTracking($input){
 	// Send mail to attrib if attrib change	
 	if (($mail_send==0||!$cfg_glpi["mailing_followup_attrib"])&&$cfg_glpi["mailing"]&&in_array("assign",$updates)&&$job->fields["assign"]>0){
 			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
+			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing("attrib",$job,$user);
 			$mail->send();
 	}
@@ -1611,7 +1611,7 @@ function updateFollowup($input){
 	if (in_array("contents",$updates)&&$cfg_glpi["mailing"])
 		{
 			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
+			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing("followup",$job,$user);
 			$mail->send();
 		}
@@ -1681,7 +1681,7 @@ function addFollowup($input,$type="followup"){
 		{
 			if ($close) $type="finish";
 			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
+			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing($type,$job,$user);
 			$mail->send();
 		}
@@ -1710,9 +1710,9 @@ function showJobDetails ($ID){
 	if ($job->getfromDB($ID,1)) {
 
 		$author=new User();
-		$author->getFromDBbyID($job->fields["author"]);
+		$author->getFromDB($job->fields["author"]);
 		$assign=new User();
-		$assign->getFromDBbyID($job->fields["assign"]);
+		$assign->getFromDB($job->fields["assign"]);
 		$item=new CommonItem();
 		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
 

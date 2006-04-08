@@ -346,7 +346,7 @@ class ReservationResa extends CommonDBTM {
 		$ci->getFromDB($this->fields["id_item"]);		
 		
 		$u=new User();
-		$u->getFromDbbyID($this->fields["id_user"]);
+		$u->getFromDB($this->fields["id_user"]);
 		$content="";
 		
 		$content.=$lang["mailing"][1]."\n";	

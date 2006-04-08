@@ -73,7 +73,7 @@ elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 	$uemail=$_POST["uemail"];
 	if (isset($_POST["emailupdates"])&&$_POST["emailupdates"]=='yes'&&empty($_POST["uemail"])){
 		$u=new User;		
-		$u->getfromDB($_POST["user"]);
+		$u->getFromDB($_POST["user"]);
 		$uemail=$u->fields['email'];
 		}
 

@@ -41,12 +41,16 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+
+
 if (isset($_POST["changepw"])) {
 	
 	checkAuthentication("post-only");
 	
-	if ($_SESSION["glpiextauth"]!=1)
-		updateUser($_POST);
+	if ($_SESSION["glpiextauth"]!=1){
+		$user=new User();
+		$user->update($_POST);
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["updatesort"])) {
 	checkAuthentication("normal");

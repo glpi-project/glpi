@@ -630,7 +630,7 @@ function printReservationItem($target,$ID,$date){
 				echo "<table width='100%' >";
 			while ($row=$db->fetch_array($result)){
 				echo "<tr>";
-				$user->getfromDBbyID($row["id_user"]);
+				$user->getfromDB($row["id_user"]);
 				$display="";					
 				if ($debut>$row['begin']) $heure_debut="00:00";
 				else $heure_debut=get_hour_from_sql($row['begin']);
