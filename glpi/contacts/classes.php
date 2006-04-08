@@ -50,7 +50,7 @@ class Contact extends CommonDBTM{
 		$db->query($query);
 	}
 
-	function defineOnglets(){
+	function defineOnglets($withtemplate){
 		global $lang;
 		return array(	1 => $lang["title"][26],
 				7 => $lang["title"][34],

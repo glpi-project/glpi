@@ -59,7 +59,7 @@ class Document extends CommonDBTM {
 		}
 	}
 
-	function defineOnglets(){
+	function defineOnglets($withtemplate){
 		global $lang;
 		return array(	1 => $lang["title"][26],
 				10 => $lang["title"][37],
