@@ -71,7 +71,7 @@ if (!isset($_POST["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
 	$user=phpCAS::getUser();
 	$auth_succeded=true;
 	$identificat->extauth=1;
-	$user_present = $identificat->user->getFromDB($user);
+	$user_present = $identificat->user->getFromDBbyName($user);
 	if (!$user_present) $identificat->user->fields["name"]=$user;
 }
 if (isset($_POST["noCAS"])) $_SESSION["noCAS"]=1;
@@ -91,11 +91,11 @@ $identificat->err=$lang["login"][8];
 	if ($exists==1){
 		// Without UTF8 decoding
 		if (!$auth_succeded) $auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
-		if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
+		if ($auth_succeded) $user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 		
 		// With UTF8 decoding
 		//if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
-		//if ($auth_succeded) $user_present = $identificat->user->getFromDB(utf8_decode($_POST['login_name']));
+		//if ($auth_succeded) $user_present = $identificat->user->getFromDBbyName(utf8_decode($_POST['login_name']));
 	
 	}
 
@@ -104,7 +104,7 @@ $identificat->err=$lang["login"][8];
 		$auth_succeded = $identificat->connection_imap($cfg_glpi["imap_auth_server"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
 		if ($auth_succeded) {
 			$identificat->extauth=1;
-			$user_present = $identificat->user->getFromDB($_POST['login_name']);
+			$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 
 			if ($identificat->user->getFromIMAP($cfg_glpi["imap_host"],utf8_decode($_POST['login_name']))) {
 				$update_list = array('email');
@@ -123,7 +123,7 @@ $identificat->err=$lang["login"][8];
 		    $auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
-				$user_present = $identificat->user->getFromDB($_POST['login_name']);
+				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 				$update_list = array();
 				if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']))) {
 					$update_list = array_keys($cfg_glpi['ldap_fields']);
@@ -138,7 +138,7 @@ $identificat->err=$lang["login"][8];
 		$auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 		if ($auth_succeded) {
 			$identificat->extauth=1;
-			$user_present = $identificat->user->getFromDB($_POST['login_name']);
+			$user_present = $identificat->user->getFromDBName($_POST['login_name']);
 			$update_list = array();
 			if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$cfg_glpi["ldap_basedn"],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']))) {
 				$update_list = array_keys($cfg_glpi['ldap_fields']);
@@ -159,7 +159,7 @@ $identificat->err=$lang["login"][8];
 		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_glpi["ldap_host"],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
-				$user_present = $identificat->user->getFromDB($_POST['login_name']);
+				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 				$update_list = array();
 				if ($identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$_POST['login_name'],$cfg_glpi["ldap_condition"])) {
 				$update_list = array_keys($cfg_glpi['ldap_fields']);
@@ -173,7 +173,9 @@ $identificat->err=$lang["login"][8];
 // Ok, we have gathered sufficient data, if the first return false the user
 // are not present on the DB, so we add it.
 // if not, we update it.
-
+echo $user_present;
+print_r($identificat->user);
+//exit();
 
 if ($auth_succeded)
 if (!$user_present&&$cfg_glpi["auto_add_users"]) {

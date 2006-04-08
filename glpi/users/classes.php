@@ -36,14 +36,24 @@
 
 include ("_relpos.php");
 
-class User {
+class User extends CommonDBTM {
 
 	var $fields = array();
 
-  function User($ID = '') {
-  	global $cfg_glpi;
-  	
-	  $this->fields['ID'] = $ID;
+  function User() {
+	global $cfg_glpi;
+  
+	$this->table="glpi_users";
+	$this->type=USER_TYPE;
+	
+	$this->fields["type"]="post-only";
+	$this->fields['can_assign_job'] = 'no';
+	$this->fields['tracking_order'] = 'no';
+	if (isset($cfg_glpi["default_language"]))
+		$this->fields['language'] = $cfg_glpi["default_language"];
+  	else $this->fields['language'] = "english";
+
+/*	  $this->fields['ID'] = $ID;
   	$this->fields['name'] = '';
   	$this->fields['password'] = '';
 	  $this->fields['password_md5'] = '';
@@ -57,9 +67,19 @@ class User {
 	if (isset($cfg_glpi["default_language"]))
 		$this->fields['language'] = $cfg_glpi["default_language"];
 	else $this->fields['language'] = "english";
+*/
 }
+
+	function cleanDBonPurge($ID) {
+
+		global $db;
+
+		// Tracking items left?
+		$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
+		$db->query($query3);
+	}
 	
-	function getFromDB($name) {
+	function getFromDBbyName($name) {
 		global $db;
 		$query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
 		if ($result = $db->query($query)) {
@@ -76,42 +96,192 @@ class User {
 		}
 		return false;
 	}
+
+	function addToDB($ext_auth=0) {
+		
+		global $db;
+
+		
+		// Build query
+		$query = "INSERT INTO glpi_users (";
+		$i=0;
+		foreach ($this->fields as $key => $val) {
+			if ($key!="ID"){
+				$fields[$i] = $key;
+				if($key == "password") $indice = $i;
+				if($key == "password_md5") $indice2 = $i;
+				$values[$i] = $val;
+				$i++;
+			}
+		}		
+		for ($i=0; $i < count($fields); $i++) {
+			$query .= "glpi_users.".$fields[$i];
+			if ($i!=count($fields)-1) {
+				$query .= ",";
+			}
+		}
+		$query .= ") VALUES (";
+		for ($i=0; $i < count($values); $i++) {
+			if($i === $indice) {
+				if (!$ext_auth) {
+					$mdpchiff = md5($values[$i]);
+					$query .= " PASSWORD('".$values[$i]."')";
+					}
+				else {
+					$query .= " '' ";
+					$mdpchiff='';
+				}
+				
+				
+				
+			}
+			elseif($i === $indice2) {
+				$query .= " '".$mdpchiff."'";
+			}
+			else {
+				$query .= "'".$values[$i]."'";
+			}
+			if ($i!=count($values)-1) {
+				$query .= ",";
+			}
+		}
+		$query .= ")";
+
+		$result=$db->query($query);
+		return $db->insert_id();
+	}
+
+	function updateInDB($updates)  {
+
+		global $db;
+		for ($i=0; $i < count($updates); $i++) {
+			$query  = "UPDATE glpi_users SET ";
+			$query .= $updates[$i];
+			$query .= "=";
+			if ( ($updates[$i]=="password") && ($this->fields[$updates[$i]] != "") ) {
+				$query .= "PASSWORD('".$this->fields[$updates[$i]]."')";
+				$mdpchiff = md5($this->fields[$updates[$i]]);
+				$query .= ", password_md5='". $mdpchiff ."'";
+			} else {
+				$query .= "'".$this->fields[$updates[$i]]."'";
+			}
+			$query .= " WHERE ID='";
+			$query .= $this->fields["ID"];	
+			$query .= "'";
+			
+			$result=$db->query($query);
+		}
+		
+	}
+
+function add($input) {
+global $cfg_glpi;
+	
+	//only admin and superadmin can add some user
+	if(isAdmin($_SESSION["glpitype"])) {
+		//Only super-admin's can add users with admin or super-admin access.
+		//set to "normal" by default
+		if(!isSuperAdmin($_SESSION["glpitype"])) {
+			if($input["type"] != "normal" && $input["type"] != "post-only") {
+				$input["type"] = "normal";
+			}
+		}
+			// Add User, nasty hack until we get PHP4-array-functions
+			if(empty($input["password"]))  $input["password"] = "";
+			// dump status
+			unset($input["add"]);
+			
+			// change email_form to email (not to have a problem with preselected email)
+			if (isset($input["email_form"])){
+				$input["email"]=$input["email_form"];
+				unset($input["email_form"]);
+			}
+	
+			// fill array for update
+			foreach ($input as $key => $val) {
+				if ($key[0]!='_'&&(!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
+					$this->fields[$key] = $input[$key];
+				}
+			}
+
+			$newID= $this->addToDB();
+			do_hook_function("item_add",array("type"=>USER_TYPE, "ID" => $newID));
+			return $newID;
+	} else {
+		return false;
+	}
+}
+
+
+function update($input) {
+
+	//only admin and superadmin can update some user
+
+	// Update User in the database
+	if (isset($input["name"])){
+		$this->getFromDBbyName($input["name"]); 
+	} else if (isset($input["ID"])){
+		$this->getFromDB($input["ID"]); 
+	} else return;
+
+	// password updated by admin user or own password for user
+	if(empty($input["password"]) || (!isAdmin($_SESSION["glpitype"])&&$_SESSION["glpiname"]!=$input['name'])) {
+		unset($this->fields["password"]);
+		unset($this->fields["password_md5"]);
+		unset($input["password"]);
+	} 
+	
+	// change email_form to email (not to have a problem with preselected email)
+	if (isset($input["email_form"])){
+	$input["email"]=$input["email_form"];
+	unset($input["email_form"]);
+	}
+	
+	//Only super-admin's can set admin or super-admin access.
+	//set to "normal" by default
+	//if user type is already admin or super-admin do not touch it
+	if(isset($input["type"])&&!isSuperAdmin($_SESSION["glpitype"])) {
+		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
+			$input["type"] = "normal";
+		}
+		
+	}
+	
+	
+	// fill array for update
+	$x=0;
+	foreach ($input as $key => $val) {
+		if (array_key_exists($key,$this->fields) &&  $input[$key] != $this->fields[$key]) {
+			$this->fields[$key] = $input[$key];
+			$updates[$x] = $key;
+			$x++;
+		}
+	}
+	
+	
+	if(!empty($updates)) {
+		$this->updateInDB($updates);
+	}
+	do_hook_function("item_update",array("type"=>USER_TYPE, "ID" => $input["ID"]));
+}
+
+function delete($input) {
+	// Delete User (only superadmin can delete an user)
+	if(isSuperAdmin($_SESSION["glpitype"])) {
+		$this->deleteFromDB($input["ID"]);
+		do_hook_function("item_purge",array("type"=>USER_TYPE, "ID" => $input["ID"]));
+	}
+} 
+
+
+	// SPECIFIC FUNCTIONS
 	
 	function getName(){
 	if (strlen($this->fields["realname"])>0) return $this->fields["realname"];
 	else return $this->fields["name"];
 	
 	}
-
-	function getFromDBbyID($ID) {
-		global $db;
-		$query = "SELECT * FROM glpi_users WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
-		if ($db->numrows($result)!=1) return false;
-		$data = $db->fetch_array($result);
-			if (empty($data)) {
-				return false;
-			}
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-				if ($key=="name") $this->fields[$key] = $val;
-			}
-			return true;
-		}
-		return false;
-	}
 	
-	function getEmpty () {
-	//make an empty database object
-	global $db;
-	$fields = $db->list_fields("glpi_users");
-	$columns = $db->num_fields($fields);
-	for ($i = 0; $i < $columns; $i++) {
-		$name = $db->field_name($fields, $i);
-		$this->fields[$name] = "";
-	}
-}
-
 	// Function that try to load from LDAP the user information...
 	//
 	function getFromLDAP($host,$port,$basedn,$adm,$pass,$fields,$name)
@@ -190,8 +360,8 @@ class User {
 		global $db;
 		// we prevent some delay..
 		if (empty($host)) {
-			unset($user->fields["password"]);
-			unset($user->fields["password_md5"]);
+			unset($this->fields["password"]);
+			unset($this->fields["password_md5"]);
 			return false;
 		}
 	
@@ -290,82 +460,6 @@ class User {
 	} // getFromIMAP()  	    
 
 	
-	function addToDB($ext_auth=0) {
-		
-		global $db;
-
-		
-		// Build query
-		$query = "INSERT INTO glpi_users (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			if ($key!="ID"){
-				$fields[$i] = $key;
-				if($key == "password") $indice = $i;
-				if($key == "password_md5") $indice2 = $i;
-				$values[$i] = $val;
-				$i++;
-			}
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= "glpi_users.".$fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			if($i === $indice) {
-				if (!$ext_auth) {
-					$mdpchiff = md5($values[$i]);
-					$query .= " PASSWORD('".$values[$i]."')";
-					}
-				else {
-					$query .= " '' ";
-					$mdpchiff='';
-				}
-				
-				
-				
-			}
-			elseif($i === $indice2) {
-				$query .= " '".$mdpchiff."'";
-			}
-			else {
-				$query .= "'".$values[$i]."'";
-			}
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-	}
-
-	function updateInDB($updates)  {
-
-		global $db;
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_users SET ";
-			$query .= $updates[$i];
-			$query .= "=";
-			if ( ($updates[$i]=="password") && ($this->fields[$updates[$i]] != "") ) {
-				$query .= "PASSWORD('".$this->fields[$updates[$i]]."')";
-				$mdpchiff = md5($this->fields[$updates[$i]]);
-				$query .= ", password_md5='". $mdpchiff ."'";
-			} else {
-				$query .= "'".$this->fields[$updates[$i]]."'";
-			}
-			$query .= " WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			
-			$result=$db->query($query);
-		}
-		
-	}
 	
 	function blankPassword () {
 		global $db;
@@ -376,27 +470,6 @@ class User {
 		}
 		}
 
-	function deleteFromDB($ID) {
-
-		global $db;
-
-		$query = "DELETE from glpi_users WHERE ID = '$ID'";
-		if ($result = $db->query($query)) {
-				// Tracking items left?
-				$query_track = "SELECT assign FROM glpi_tracking WHERE (assign = '$ID')";
-				$result_track = $db->query($query_track);
-				if ($db->numrows($result_track)>0) { 
-					$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
-					if ($result3 = $db->query($query3)) {
-						return true;
-					}
-				} else {
-					return true;
-				}
-		} else {
-			return false;
-		}
-	}
 }
 
 ?>

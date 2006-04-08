@@ -270,7 +270,7 @@ class CommonDBTM {
 	function post_getEmpty () {
 	}
 
-	// Specific Ones : Netdevice / License
+	// Specific Ones : Netdevice / License / User
 	function updateInDB($updates)  {
 
 		global $db;
@@ -292,6 +292,7 @@ class CommonDBTM {
 
 	}
 
+	// Specific ones : User
 	function addToDB() {
 		
 		global $db;
@@ -382,7 +383,7 @@ class CommonDBTM {
 	*@return integer the new ID of the added item
 	*
 	**/
-	// specific ones : document, reservationresa
+	// specific ones : document, reservationresa , user
 	function add($input) {
 
 		// dump status
@@ -424,7 +425,7 @@ class CommonDBTM {
 	*@return Nothing (call to the class member)
 	*
 	**/
-	// specific ones : document, reservationresa
+	// specific ones : document, reservationresa, user
 	function update($input,$history=1) {
 	
 		$input=$this->prepareInputForUpdate($input);
@@ -472,6 +473,7 @@ class CommonDBTM {
 	*@return Nothing ()
 	*
 	**/
+	// specific ones : 
 	function delete($input,$force=0) {
 		$this->pre_deleteItem($input["ID"]);
 		$this->deleteFromDB($input["ID"],$force);

@@ -680,7 +680,7 @@ function addPlanningTracking($input,$target,$nomail=0){
 	if ($nomail==0&&$cfg_glpi["mailing"])
 		{
 			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
+			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing("followup",$job,$user);
 			$mail->send();
 		}
@@ -760,7 +760,7 @@ function updatePlanningTracking($input,$target,$item){
 	if (count($updates)>0&&$cfg_glpi["mailing"])
 		{
 			$user=new User;
-			$user->getfromDB($_SESSION["glpiname"]);
+			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing("followup",$job,$user);
 			$mail->send();
 		}
