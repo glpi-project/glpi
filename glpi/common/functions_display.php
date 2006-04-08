@@ -128,6 +128,7 @@ function commonHeader($title,$url)
 	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
 	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar-setup.js\"></script>";
 
+	
 	// End of Head
 	echo "</head>\n";
 	// Body 

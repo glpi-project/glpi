@@ -184,9 +184,11 @@ function resume_text($string,$length=255){
 }
 
 
-//****************
+//*************************************************************************************************************
 // De jolies fonctions pour améliorer l'affichage du texte de la FAQ/knowledgbase
-//***************
+// obsolète since 0.68 but DONT DELETE  THIS SECTION !!
+// USED IN THE UPDATE SCRIPT
+//************************************************************************************************************
 
 /**
 *Met en "ordre" une chaine avant affichage
