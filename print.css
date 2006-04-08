@@ -30,7 +30,7 @@
 
   b
   {
-    font-wheight: bold;
+    font-weight: bold;
   }
 
  .center {
@@ -50,14 +50,14 @@ text-align:center;
 
   a, a:link
   {
-    font-wheight: bold;
+    font-weight: bold;
     text-decoration: none;
   	color : #009966;
   }
 
   /*
  a:visited   {
-    font-wheight: bold;
+    font-weight: bold;
     text-decoration: none;
      color : #009966;
   }
@@ -251,7 +251,7 @@ margin-top: 100px;
 .sous_logo {
   font-family: arial;
 	font-size: 9px;
-	color: #eeeee;
+	color: #eeeeee;
 	text-decoration: none;
 	}
 
