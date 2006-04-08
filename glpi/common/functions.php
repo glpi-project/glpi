@@ -184,166 +184,6 @@ function resume_text($string,$length=255){
 }
 
 
-//*************************************************************************************************************
-// De jolies fonctions pour améliorer l'affichage du texte de la FAQ/knowledgbase
-// obsolète since 0.68 but DONT DELETE  THIS SECTION !!
-// USED IN THE UPDATE SCRIPT
-//************************************************************************************************************
-
-/**
-*Met en "ordre" une chaine avant affichage
-* Remplace trés AVANTAGEUSEMENT nl2br 
-* 
-* @param $pee
-* @param $br
-* 
-* @return $string
-*/
-function autop($pee, $br=1) {
-
-// Thanks  to Matthew Mullenweg
-
-$pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
-$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
-$pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs, including one at the end
-if ($br) $pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
-return $pee;
-}
-
-
-/**
-* Rend une url cliquable htp/https/ftp meme avec une variable Get
-*
-* @param $chaine
-* 
-* 
-* 
-* @return $string
-*/
-function clicurl($chaine){
-
-$text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine); 
-
-return $text;
-}
-
-/**
-* Split the message into tokens ($inside contains all text inside $start and $end, and $outside contains all text outside)
-*
-* @param $text
-* @param $start
-* @param $end
-* 
-* @return array 
-*/
-function split_text($text, $start, $end)
-{
-	
-// Adapté de PunBB 
-//Copyright (C)  Rickard Andersson (rickard@punbb.org)
-
-	$tokens = explode($start, $text);
-
-	$outside[] = $tokens[0];
-
-	$num_tokens = count($tokens);
-	for ($i = 1; $i < $num_tokens; ++$i)
-	{
-		$temp = explode($end, $tokens[$i]);
-		$inside[] = $temp[0];
-		$outside[] = $temp[1];
-	}
-
-	
-
-	return array($inside, $outside);
-}
-
-
-/**
-* Replace bbcode in text by html tag
-*
-* @param $string
-* 
-* 
-* 
-* @return $string 
-*/
-function rembo($string){
-
-// Adapté de PunBB 
-//Copyright (C)  Rickard Andersson (rickard@punbb.org)
-
-// If the message contains a code tag we have to split it up (text within [code][/code] shouldn't be touched)
-	if (strpos($string, '[code]') !== false && strpos($string, '[/code]') !== false)
-	{
-		list($inside, $outside) = split_text($string, '[code]', '[/code]');
-		$outside = array_map('trim', $outside);
-		$string = implode('<">', $outside);
-	}
-
-
-
-
-	$pattern = array('#\[b\](.*?)\[/b\]#s',
-					 '#\[i\](.*?)\[/i\]#s',
-					 '#\[u\](.*?)\[/u\]#s',
-					  '#\[s\](.*?)\[/s\]#s',
-					  '#\[c\](.*?)\[/c\]#s',
-					 '#\[g\](.*?)\[/g\]#s',
-					 //'#\[url\](.*?)\[/url\]#e',
-					 //'#\[url=(.*?)\](.*?)\[/url\]#e',
-					 '#\[email\](.*?)\[/email\]#',
-					 '#\[email=(.*?)\](.*?)\[/email\]#',
-					 '#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#s');
-
-					 
-	$replace = array('<strong>$1</strong>',
-					 '<em>$1</em>',
-					 '<span class="souligne">$1</span>',
-					'<span class="barre">$1</span>',
-					'<div align="center">$1</div>',
-					'<big>$1</big>',
-					// 'truncate_url(\'$1\')',
-					 //'truncate_url(\'$1\', \'$2\')',
-					 '<a href="mailto:$1">$1</a>',
-					 '<a href="mailto:$1">$2</a>',
-					 '<span style="color: $1">$2</span>');
-
-	// This thing takes a while! :)
-	$string = preg_replace($pattern, $replace, $string);
-
-	
-	
-	$string=clicurl($string);
-	
-	$string=autop($string);
-	
-	
-	// If we split up the message before we have to concatenate it together again (code tags)
-	if (isset($inside))
-	{
-		$outside = explode('<">', $string);
-		$string = '';
-
-		$num_tokens = count($outside);
-
-		for ($i = 0; $i < $num_tokens; ++$i)
-		{
-			$string .= $outside[$i];
-			if (isset($inside[$i]))
-				$string .= '<br><br><table  class="code" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><b>Code:</b><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
-		}
-	}
-
-	
-	
-	
-	
-	
-	return $string;
-}
-
 
 
 
@@ -549,6 +389,174 @@ $result=$db->list_tables();
   	 }
 mysql_free_result($result);
 }
+
+
+
+
+
+
+
+//*************************************************************************************************************
+// De jolies fonctions pour améliorer l'affichage du texte de la FAQ/knowledgbase
+// obsolète since 0.68 but DONT DELETE  THIS SECTION !!
+// USED IN THE UPDATE SCRIPT
+//************************************************************************************************************
+
+/**
+*Met en "ordre" une chaine avant affichage
+* Remplace trés AVANTAGEUSEMENT nl2br 
+* 
+* @param $pee
+* @param $br
+* 
+* @return $string
+*/
+function autop($pee, $br=1) {
+
+// Thanks  to Matthew Mullenweg
+
+$pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
+$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
+$pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs, including one at the end
+if ($br) $pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
+return $pee;
+}
+
+
+/**
+* Rend une url cliquable htp/https/ftp meme avec une variable Get
+*
+* @param $chaine
+* 
+* 
+* 
+* @return $string
+*/
+function clicurl($chaine){
+
+$text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine); 
+
+return $text;
+}
+
+/**
+* Split the message into tokens ($inside contains all text inside $start and $end, and $outside contains all text outside)
+*
+* @param $text
+* @param $start
+* @param $end
+* 
+* @return array 
+*/
+function split_text($text, $start, $end)
+{
+	
+// Adapté de PunBB 
+//Copyright (C)  Rickard Andersson (rickard@punbb.org)
+
+	$tokens = explode($start, $text);
+
+	$outside[] = $tokens[0];
+
+	$num_tokens = count($tokens);
+	for ($i = 1; $i < $num_tokens; ++$i)
+	{
+		$temp = explode($end, $tokens[$i]);
+		$inside[] = $temp[0];
+		$outside[] = $temp[1];
+	}
+
+	
+
+	return array($inside, $outside);
+}
+
+
+/**
+* Replace bbcode in text by html tag
+*
+* @param $string
+* 
+* 
+* 
+* @return $string 
+*/
+function rembo($string){
+
+// Adapté de PunBB 
+//Copyright (C)  Rickard Andersson (rickard@punbb.org)
+
+// If the message contains a code tag we have to split it up (text within [code][/code] shouldn't be touched)
+	if (strpos($string, '[code]') !== false && strpos($string, '[/code]') !== false)
+	{
+		list($inside, $outside) = split_text($string, '[code]', '[/code]');
+		$outside = array_map('trim', $outside);
+		$string = implode('<">', $outside);
+	}
+
+
+
+
+	$pattern = array('#\[b\](.*?)\[/b\]#s',
+					 '#\[i\](.*?)\[/i\]#s',
+					 '#\[u\](.*?)\[/u\]#s',
+					  '#\[s\](.*?)\[/s\]#s',
+					  '#\[c\](.*?)\[/c\]#s',
+					 '#\[g\](.*?)\[/g\]#s',
+					 //'#\[url\](.*?)\[/url\]#e',
+					 //'#\[url=(.*?)\](.*?)\[/url\]#e',
+					 '#\[email\](.*?)\[/email\]#',
+					 '#\[email=(.*?)\](.*?)\[/email\]#',
+					 '#\[color=([a-zA-Z]*|\#?[0-9a-fA-F]{6})](.*?)\[/color\]#s');
+
+					 
+	$replace = array('<strong>$1</strong>',
+					 '<em>$1</em>',
+					 '<span class="souligne">$1</span>',
+					'<span class="barre">$1</span>',
+					'<div align="center">$1</div>',
+					'<big>$1</big>',
+					// 'truncate_url(\'$1\')',
+					 //'truncate_url(\'$1\', \'$2\')',
+					 '<a href="mailto:$1">$1</a>',
+					 '<a href="mailto:$1">$2</a>',
+					 '<span style="color: $1">$2</span>');
+
+	// This thing takes a while! :)
+	$string = preg_replace($pattern, $replace, $string);
+
+	
+	
+	$string=clicurl($string);
+	
+	$string=autop($string);
+	
+	
+	// If we split up the message before we have to concatenate it together again (code tags)
+	if (isset($inside))
+	{
+		$outside = explode('<">', $string);
+		$string = '';
+
+		$num_tokens = count($outside);
+
+		for ($i = 0; $i < $num_tokens; ++$i)
+		{
+			$string .= $outside[$i];
+			if (isset($inside[$i]))
+				$string .= '<br><br><table  class="code" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><b>Code:</b><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
+		}
+	}
+
+	
+	
+	
+	
+	
+	return $string;
+}
+
+
 
 
 ?>
