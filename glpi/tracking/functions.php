@@ -1553,7 +1553,8 @@ function updateTracking($input){
 		$mailtype="update";
 		if (in_array("status",$updates)&&ereg("old_",$input["status"]))
 			$mailtype="finish";
-		addFollowup($newinput,$mailtype);
+		$fup=new Followup();
+		$fup->add($newinput,$mailtype);
 		$mail_send++;
 	}
 
@@ -1582,123 +1583,6 @@ function updateTracking($input){
 	}
 	do_hook_function("item_update",array("type"=>TRACKING_TYPE, "ID" => $input["ID"]));
 }
-
-function updateFollowup($input){
-	global $lang,$cfg_glpi;
-	$fup = new Followup;
-	$fup->getFromDB($input["ID"]);
-
-	$input["realtime"]=$input["hour"]+$input["minute"]/60;
-	$input["author"]=$_SESSION["glpiID"];
-
-
-	$x=0;
-	$updates=array();
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$fup->fields) && $fup->fields[$key] != $input[$key]) {
-			$fup->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-
-	if(count($updates)>0)
-		$fup->updateInDB($updates);
-
-	$job=new Job;
-	$job->getFromDB($input["tracking"],1);
-
-	if (in_array("contents",$updates)&&$cfg_glpi["mailing"])
-		{
-			$user=new User;
-			$user->getfromDBbyName($_SESSION["glpiname"]);
-			$mail = new Mailing("followup",$job,$user);
-			$mail->send();
-		}
-
-}
-
-function addFollowup($input,$type="followup"){
-	global $cfg_glpi;
-	$fup = new Followup;
-
-	$isadmin=isAdmin($_SESSION['glpitype']);
-	$close=0;
-	unset($input["add"]);
-	
-	$input["author"]=$_SESSION["glpiID"];
-
-	if ($isadmin&&$type!="update"&&$type!="finish"){
-		if (isset($input['plan'])){
-		$plan=$input['plan'];
-		unset($input['plan']);
-		}	
-
-	
-		if (isset($input["add_close"])) $close=1;
-		unset($input["add_close"]);
-	
-		if ($input["hour"]>0||$input["minute"]>0)
-		$input["realtime"]=$input["hour"]+$input["minute"]/60;
-	}
-
-	unset($input["minute"]);
-	unset($input["hour"]);
-
-	$input["date"] = date("Y-m-d H:i:s");
-	foreach ($input as $key => $val) {
-		if ($key[0]!='_'&&(empty($fup->fields[$key]) || $fup->fields[$key] != $input[$key])) {
-			$fup->fields[$key] = $input[$key];
-		}
-	}
-	$newID=$fup->addToDB();	
-
-	$job=new Job;
-	$job->getFromDB($input["tracking"],0);
-
-	if ($isadmin&&$type!="update"&&$type!="finish"){
-		if (isset($plan)){
-			$plan['id_followup']=$newID;
-			$plan['id_tracking']=$input['tracking'];
-			if (!addPlanningTracking($plan,"",1)){
-				return false;
-			}
-		}
-
-
-		if ($close&&$type!="update"&&$type!="finish"){
-			$updates[]="status";
-			$updates[]="closedate";
-			$job->fields["status"]="old_done";
-			$job->fields["closedate"] = date("Y-m-d H:i:s");
-			$job->updateInDB($updates);
-		}
-
-		$job->updateRealtime();		
-	}
-
-	if ($cfg_glpi["mailing"])
-		{
-			if ($close) $type="finish";
-			$user=new User;
-			$user->getfromDBbyName($_SESSION["glpiname"]);
-			$mail = new Mailing($type,$job,$user);
-			$mail->send();
-		}
-	return $newID;
-}
-
-function deleteFollowup($input) {
-	// Delete Contact
-	
-	$con = new Followup;
-	$con->deleteFromDB($input["ID"]);
-
-	$job=new Job();
-	$job->getFromDB($input['tracking'],0);
-	$job->updateRealtime();		
-
-} 
 
 
 function showJobDetails ($ID){

@@ -60,6 +60,9 @@ checkAuthentication("normal");
 }
 */
 
+$fup=new Followup();
+$track=new Job();
+
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 if (isset($_POST['update'])){
 	updateTracking($_POST);
@@ -67,17 +70,17 @@ if (isset($_POST['update'])){
 
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["ID"]);
 }else if (isset($_POST['add'])||isset($_POST['add_close'])) {
-	$newID=addFollowup($_POST);
+	$newID=$fup->add($_POST);
 
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][20]." $newID.");
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 		
 } else if (isset($_POST["update_followup"])){
-	updateFollowup($_POST);
+	$fup->update($_POST);
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$lang["log"][21]." ".$_POST["ID"].".");
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 } else if (isset($_POST["delete_followup"])){
-	deleteFollowup($_POST);
+	$fup->delete($_POST);
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][22]." ".$_POST["ID"].".");
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 }

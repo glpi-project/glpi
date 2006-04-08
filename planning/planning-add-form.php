@@ -48,11 +48,13 @@ include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_phones.php");
 
 checkAuthentication("admin");
+
+$pt=new PlanningTracking();
 	
 if (isset($_POST["add_planning"])){
 
 checkAuthentication("normal");
-if (addPlanningTracking($_POST,"")){
+if ($pt->add($_POST,"")){
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["id_tracking"]);
 } 
@@ -67,7 +69,7 @@ if (addPlanningTracking($_POST,"")){
 	$_POST["begin"]=date("Y-m-d H:i:00",mktime($_POST["begin_hour"],$_POST["begin_min"],0,$begin_month,$begin_day,$begin_year));
 	$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
 
-	if (updatePlanningTracking($_POST,$_SERVER["PHP_SELF"],$_POST["ID"])){
+	if ($pt->update($_POST,$_SERVER["PHP_SELF"],$_POST["ID"])){
 		logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][21]);
 		glpi_header($_POST["referer"]);
 	}
@@ -76,7 +78,7 @@ if (addPlanningTracking($_POST,"")){
 	
 } else if (isset($_POST["delete"])){
 	
-	deletePlanningTracking($_POST["ID"]);
+	$pt->delete($_POST["ID"]);
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["id_tracking"]);
 		
