@@ -4011,19 +4011,30 @@ $db->query($query) or die("0.68 add profiles ".$lang["update"][90].$db->error())
 
 }
 
-// Convert old content of knowbase in HTML 
+// Convert old content of knowbase in HTML And add new fields
 if(TableExists("glpi_kbitems")){
-$query="SELECT * FROM glpi_kbitems ";
-	$result=$db->query($query);
 
-	if ($db->numrows($result)>0){
-			while($line = $db->fetch_array($result)) {
-			$query="UPDATE glpi_kbitems SET answer='".rembo($line["answer"])."' WHERE ID='".$line["ID"]."'";
-			$db->query($query) 	 or die("0.68 convert knowbase to xhtml ".$lang["update"][90].$db->error());
+	if(!FieldExists("glpi_kbitems","author")) {
+		// convert
+		$query="SELECT * FROM glpi_kbitems ";
+			$result=$db->query($query);
+		
+			if ($db->numrows($result)>0){
+					while($line = $db->fetch_array($result)) {
+					$query="UPDATE glpi_kbitems SET answer='".rembo($line["answer"])."' WHERE ID='".$line["ID"]."'";
+					$db->query($query) 	 or die("0.68 convert knowbase to xhtml ".$lang["update"][90].$db->error());
+					}
+				mysql_free_result($result);
 			}
-		mysql_free_result($result);
+		// add new fields
+		$query="ALTER TABLE `glpi_kbitems` ADD `author` INT( 11 ) NOT NULL DEFAULT '0' AFTER `faq` ,
+				ADD `view` INT( 11 ) NOT NULL DEFAULT '0' AFTER `author` ,
+				ADD `date` DATETIME NULL DEFAULT NULL AFTER `view` ,
+				ADD `date_mod` DATETIME NULL DEFAULT NULL AFTER `date` ;";
+		$db->query($query) or die("0.68 add  fields in knowbase ".$lang["update"][90].$db->error());
+
 	}
-}
+} // fin convert
 
 
 } // fin 0.68 #####################################################################################
