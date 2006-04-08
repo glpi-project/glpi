@@ -41,6 +41,7 @@ class Software  extends CommonDBTM {
 	function Software () {
 		$this->table="glpi_software";
 		$this->type=SOFTWARE_TYPE;
+		$this->dohistory=true;
 	}
 
 	function defineOnglets($withtemplate){

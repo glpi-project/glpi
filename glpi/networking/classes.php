@@ -42,9 +42,123 @@ class Netdevice extends CommonDBTM {
 
 	function Netdevice () {
 		$this->table="glpi_networking";
+		$this->type=NETWORKING_TYPE;
+		$this->dohistory=true;
 	}
 
 	
+	function defineOnglets($withtemplate){
+		global $lang;
+		$ong= array(	1 => $lang["title"][26],
+				4 => $lang["Menu"][26],
+				5 => $lang["title"][25],
+			);
+
+		if(empty($withtemplate)){
+			$ong[6]=$lang["title"][28];
+			$ong[7]=$lang["title"][34];
+			$ong[10]=$lang["title"][37];
+			$ong[12]=$lang["title"][38];
+
+		}	
+		return $ong;
+	}
+
+	function prepareInputForUpdate($input) {
+		// set new date.
+		$input["date_mod"] = date("Y-m-d H:i:s");
+	
+		return $input;
+	}
+
+	function post_updateItem($input,$updates,$history=1) {
+
+		if(isset($input["state"])){
+			if (isset($input["is_template"])&&$input["is_template"]==1){
+				updateState(NETWORKING_TYPE,$input["ID"],$input["state"],1);
+			}else {
+				updateState(NETWORKING_TYPE,$input["ID"],$input["state"]);
+			}
+		}
+	}
+
+
+	function prepareInputForAdd($input) {
+		// set new date.
+		$input["date_mod"] = date("Y-m-d H:i:s");
+ 
+		// dump status
+		$input["_oldID"]=$input["ID"];
+		unset($input['withtemplate']);
+		unset($input['ID']);
+	
+		// Manage state
+		$input["_state"]=-1;
+		if (isset($input["state"])){
+			$input["_state"]=$input["state"];
+			unset($input["state"]);
+		}
+
+		return $input;
+	}
+
+	function postAddItem($newID,$input) {
+		global $db;
+		// Add state
+		if ($input["_state"]>0){
+			if (isset($input["is_template"])&&$input["is_template"]==1)
+				updateState(NETWORKING_TYPE,$newID,$input["_state"],1);
+			else updateState(NETWORKING_TYPE,$newID,$input["_state"]);
+		}
+
+		// ADD Infocoms
+		$ic= new Infocom();
+		if ($ic->getFromDBforDevice(NETWORKING_TYPE,$input["_oldID"])){
+			$ic->fields["FK_device"]=$newID;
+			unset ($ic->fields["ID"]);
+			$ic->addToDB();
+		}
+	
+		// ADD Ports
+		$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+		
+			while ($data=$db->fetch_array($result)){
+				$np= new Netport();
+				$np->getFromDB($data["ID"]);
+				unset($np->fields["ID"]);
+				unset($np->fields["ifaddr"]);
+				unset($np->fields["ifmac"]);
+				unset($np->fields["netpoint"]);
+				$np->fields["on_device"]=$newID;
+				$np->addToDB();
+			}
+		}
+
+		// ADD Contract				
+		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+		
+			while ($data=$db->fetch_array($result))
+				addDeviceContract($data["FK_contract"],NETWORKING_TYPE,$newID);
+		}
+	
+		// ADD Documents			
+		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+		
+			while ($data=$db->fetch_array($result))
+				addDeviceDocument($data["FK_doc"],NETWORKING_TYPE,$newID);
+		}
+
+	}
+
+	function pre_deleteItem($ID) {
+		removeConnector($ID);	
+	}
 
 
 	function cleanDBonPurge($ID) {
@@ -101,6 +215,7 @@ class Netport extends CommonDBTM {
 
 	function Netport () {
 		$this->table="glpi_networking_ports";
+		$this->type=-1;
 	}
 
 
@@ -118,16 +233,33 @@ class Netport extends CommonDBTM {
 			$query .= "' WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
-		// Update opposite if exist
-		if ($updates[$i]=="netpoint"||$updates[$i]=="ifaddr"||$updates[$i]=="ifmac"){
-			$n=new Netwire;
-			if ($opp=$n->getOppositeContact($this->fields["ID"])){
-				$query.=" OR ID='$opp' ";
+			// Update opposite if exist
+			if ($updates[$i]=="netpoint"||$updates[$i]=="ifaddr"||$updates[$i]=="ifmac"){
+				$n=new Netwire;
+				if ($opp=$n->getOppositeContact($this->fields["ID"])){
+					$query.=" OR ID='$opp' ";
+				}
 			}
-		}
 			$result=$db->query($query);
 			}	
 			
+	}
+
+
+
+	function prepareInputForUpdate($input) {
+		// Is a preselected mac adress selected ?
+		if (isset($input['pre_mac'])&&!empty($input['pre_mac'])){
+			$input['ifmac']=$input['pre_mac'];
+			unset($input['pre_mac']);
+		}
+		return $input;
+	}
+
+
+	function prepareInputForAdd($input) {
+		unset($input['search']);
+		return $input;
 	}
 
 	// SPECIFIC FUNCTIONS
