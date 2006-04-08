@@ -45,39 +45,41 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
+$ct=new ConsumableType();
+
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 
-	$newID=addConsumableType($_POST);
+	$newID=$ct->add($_POST);
 	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteConsumableType($_POST);
+	$ct->delete($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreConsumableType($_POST);
+	$ct->restore($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["purge"]))
 {
 	checkAuthentication("admin");
-	deleteConsumableType($_POST,1);
+	$ct->delete($_POST,1);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateConsumableType($_POST);
+	$ct->update($_POST);
 	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
@@ -95,9 +97,9 @@ else
 
 	commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
 	
-	$ci=new CommonItem();
-	if ($ci->getFromDB(CONSUMABLE_TYPE,$tab["ID"]))
-	showConsumableOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+	
+	if ($ct->getFromDB($tab["ID"]))
+		$ct->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showConsumableTypeForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))

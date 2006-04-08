@@ -40,6 +40,7 @@ class kbitem extends CommonDBTM {
 
 	function kbitem () {
 		$this->table="glpi_kbitems";
+		$this->type=KNOWBASE_TYPE;
 	}
 
 }

@@ -43,11 +43,12 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["tID"])) $tab["tID"] = "";
 if(!isset($tab["cID"])) $tab["cID"] = "";
 
+$con=new Consumable();
 if (isset($_GET["add"]))
 {
 	
 	checkAuthentication("admin");
-	addConsumable($_GET["tID"]);
+	$con->add($_GET);
 	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added a consumable.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -57,7 +58,7 @@ else if (isset($_POST["add_several"]))
 	
 	checkAuthentication("admin");
 	for ($i=0;$i<$_POST["to_add"];$i++)
-		addConsumable($_POST["tID"]);
+		$con->add($_POST);
 	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." consumable.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -65,7 +66,7 @@ else if (isset($_POST["add_several"]))
 else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
-	deleteConsumable($tab["ID"]);
+	$con->delete($tab);
 	logEvent(0, "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -74,7 +75,7 @@ else if (isset($tab["give"]))
 
 	if (isset($tab["out"]))
 	foreach ($tab["out"] as $key => $val)
-		outConsumable($key,$tab["id_user"]);
+		$con->out($key,$tab["id_user"]);
 
 	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." user ".$tab["id_user"]." take out a consummable.");
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -82,7 +83,7 @@ else if (isset($tab["give"]))
 else if (isset($tab["restore"]))
 {
 	checkAuthentication("admin");
-	restoreConsumable($tab["ID"]);
+	$con->restore($tab);
 	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." restore a consummable.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }

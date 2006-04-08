@@ -494,6 +494,7 @@ class CommonDBTM {
 	*@return Nothing ()
 	*
 	**/
+	// specific ones : cartridges / consumables
 	function restore($input) {
 	
 		$this->restoreInDB($input["ID"]);

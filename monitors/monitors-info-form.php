@@ -146,7 +146,7 @@ else
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 	$ci=new CommonItem();
 	if ($ci->getFromDB(MONITOR_TYPE,$tab["ID"]))
-	showMonitorOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		showMonitorOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {
 
 		if (showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){

@@ -176,8 +176,7 @@ if (isset($_GET['onglet'])) {
 
 	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 	
-	$ci=new CommonItem();
-	if ($ci->getFromDB(COMPUTER_TYPE,$tab["ID"]))
+	if ($comp->getFromDB($tab["ID"]))
 		$comp->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {

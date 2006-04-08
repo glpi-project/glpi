@@ -118,8 +118,8 @@ else
 
 
 	commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
-	$ci=new CommonItem();
-	if ($ci->getFromDB(ENTERPRISE_TYPE,$tab["ID"]))
+	
+	if ($ent->getFromDB($tab["ID"]))
 		$ent->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showEnterpriseForm($_SERVER["PHP_SELF"],$tab["ID"])){
