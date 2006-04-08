@@ -51,10 +51,12 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
+$ph=new Phone();
+
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	$newID=addPhone($_POST);
+	$newID=$ph->add($_POST);
 	logEvent($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -62,8 +64,8 @@ else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	if (!empty($tab["withtemplate"]))
-		deletePhone($tab,1);
-	else deletePhone($tab);
+		$ph->delete($tab,1);
+	else $ph->delete($tab);
 
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -74,21 +76,21 @@ else if (isset($tab["delete"]))
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restorePhone($_POST);
+	$ph->restore($_POST);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/phones/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deletePhone($tab,1);
+	$ph->delete($tab,1);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/phones/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updatePhone($_POST);
+	$ph->update($_POST);
 	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -122,9 +124,8 @@ else
 	
 	commonHeader($lang["title"][41],$_SERVER["PHP_SELF"]);
 	
-	$ci=new CommonItem();
-	if ($ci->getFromDB(PHONE_TYPE,$tab["ID"]))
-		showPhoneOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	if ($ph->getFromDB($tab["ID"]))
+		$ph->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 		
 	if (!empty($tab["withtemplate"])) {
 

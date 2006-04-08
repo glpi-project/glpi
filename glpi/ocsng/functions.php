@@ -1120,7 +1120,8 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 							if (!$m->fields["is_global"]){
 								$mon["ID"]=$id_monitor;
 								unset($mon["comments"]);
-								updateMonitor($mon);
+								
+								$m->update($mon);
 							} else {
 								$m->fields=$mon;
 								$id_monitor=$m->addToDB();
@@ -1296,13 +1297,16 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 					if ($db->result($result2,0,0)==1){
 						switch ($device_type){
 							case MONITOR_TYPE:
-							deleteMonitor(array('ID'=>$data['end1']),1);
+							$mon=new Monitor();
+							$mon->delete(array('ID'=>$data['end1']),1);
 							break;
 							case PRINTER_TYPE:
-							deletePrinter(array('ID'=>$data['end1']),1);
+							$print=new Printer();
+							$print->delete(array('ID'=>$data['end1']),1);
 							break;
 							case PERIPHERAL_TYPE:
-							deletePeripheral(array('ID'=>$data['end1']),1);
+							$per=new Peripheral();
+							$per->delete(array('ID'=>$data['end1']),1);
 							break;
 						}
 					}
@@ -1538,12 +1542,13 @@ function ocsResetPeriphs($glpi_computer_id) {
 
 	$query = "SELECT * FROM glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".PERIPHERAL_TYPE."'";
 	$result=$db->query($query);
+	$per=new Peripheral();
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_assoc($result)){
 			$query2="SELECT COUNT(*) FROM glpi_connect_wire WHERE end1 = '".$data['end1']."' and type = '".PERIPHERAL_TYPE."'";
 			$result2=$db->query($query2);
 			if ($db->result($result2,0,0)==1){
-				deletePeripheral(array('ID'=>$data['end1']),1);
+				$per->delete(array('ID'=>$data['end1']),1);
 			}
 		}
 		
@@ -1567,12 +1572,13 @@ function ocsResetMonitors($glpi_computer_id) {
 	global $db;
 	$query = "SELECT * FROM glpi_connect_wire where end2 = '".$glpi_computer_id."' and type = '".MONITOR_TYPE."'";
 	$result=$db->query($query);
+	$mon=new Monitor();
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_assoc($result)){
 			$query2="SELECT COUNT(*) FROM glpi_connect_wire WHERE end1 = '".$data['end1']."' and type = '".MONITOR_TYPE."'";
 			$result2=$db->query($query2);
 			if ($db->result($result2,0,0)==1){
-				deleteMonitor(array('ID'=>$data['end1']),1);
+				$mon->delete(array('ID'=>$data['end1']),1);
 			}
 		}
 		
