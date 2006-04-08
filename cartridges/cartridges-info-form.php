@@ -108,8 +108,7 @@ else
 
 	commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
 	
-	$ci=new CommonItem();
-	if ($ci->getFromDB(CARTRIDGE_TYPE,$tab["ID"]))
+	if ($cartype->getFromDB($tab["ID"]))
 		$cartype->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if (showCartridgeTypeForm($_SERVER["PHP_SELF"],$tab["ID"])) {

@@ -46,6 +46,7 @@ class ConsumableType extends CommonDBTM {
 
 	function ConsumableType () {
 		$this->table="glpi_consumables_type";
+		$this->type=CONSUMABLE_TYPE;
 	}
 
 	function cleanDBonPurge($ID) {
@@ -60,6 +61,16 @@ class ConsumableType extends CommonDBTM {
 		$this->fields["alarm"]=$cfg_glpi["cartridges_alarm"];
 	}
 
+	function defineOnglets($withtemplate){
+		global $lang;
+		return array(	1 => $lang["title"][26],
+				4 => $lang["Menu"][26],
+				5 => $lang["title"][25],
+				7 => $lang["title"][34],
+				10 => $lang["title"][37],
+			);
+	}
+
 }
 
 //!  Consumable Class
@@ -72,6 +83,7 @@ class Consumable extends CommonDBTM {
 
 	function Consumable () {
 		$this->table="glpi_consumables";
+		$this->type=CONSUMABLE_ITEM_TYPE;
 	}
 	
 
@@ -80,6 +92,57 @@ class Consumable extends CommonDBTM {
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CONSUMABLE_ITEM_TYPE."')";
 		$result = $db->query($query);
 	}
+
+	function prepareInputForAdd($input) {
+		return array("FK_glpi_consumables_type"=>$input["tID"],
+				"date_in"=>date("Y-m-d"));
+	}
+
+	function postAddItem($newID,$input) {
+		// Add infocoms if exists for the licence
+		$ic=new Infocom();
+	
+		if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["FK_glpi_consumables_type"])){
+			unset($ic->fields["ID"]);
+			$ic->fields["FK_device"]=$newID;
+			$ic->fields["device_type"]=CONSUMABLE_ITEM_TYPE;
+			$ic->addToDB();
+		}
+	}
+
+	function restore($input){
+		global $db;
+		$query = "UPDATE glpi_consumables SET date_out = NULL WHERE ID='".$input["ID"]."'";
+
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	* UnLink a consumable linked to a printer
+	*
+	* UnLink the consumable identified by $ID
+	*
+	*@param $ID : consumable identifier
+	*
+	*@return boolean
+	*
+	**/
+	function out($ID,$id_user=0) {
+
+		global $db;
+		$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."', id_user='$id_user' WHERE ID='$ID'";
+
+		if ($result = $db->query($query)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 
 }
 

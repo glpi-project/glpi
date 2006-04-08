@@ -49,6 +49,7 @@ if(!isset($tab["addtofaq"])) $tab["addtofaq"] = "";
 if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 
+$kb=new kbItem;
 	
 	if ($tab["ID"]=="new"){
 // on affiche le formulaire de saisie de l'item
@@ -67,7 +68,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	checkAuthentication("admin");
 	
 	
-	addKbItem($_POST);
+	$kb->add($_POST);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	
 	glpi_header($cfg_glpi["root_doc"]."/knowbase/");
@@ -94,7 +95,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 	checkAuthentication("admin");
 	
-	updateKbItem($_POST);
+	$kb->update($_POST);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][21]);	
 		
 	glpi_header($cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
@@ -108,7 +109,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 	
 	checkAuthentication("admin");
 	
-	deleteKbItem($tab["ID"]);
+	$kb->delete($tab["ID"]);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][22]);	
 	glpi_header($cfg_glpi["root_doc"]."/knowbase/");
 	}
