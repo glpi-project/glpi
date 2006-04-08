@@ -572,7 +572,7 @@ for ($i=0;$i<$max['kbcategories'];$i++){
 $nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
 for ($j=0;$j<$nb;$j++){
 	$k++;
-	$query="INSERT INTO glpi_kbitems VALUES ('','$i','Question $k','Reponse $k','".$faq[mt_rand(0,1)]."')";
+	$query="INSERT INTO glpi_kbitems VALUES ('','$i','Question $k','Reponse $k','".$faq[mt_rand(0,1)]."','".mt_rand(2,$max['users_sadmin']+$max['users_admin'])."','".mt_rand(0,1000)."',NOW(),NOW())";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 }
