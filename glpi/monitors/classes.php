@@ -44,6 +44,96 @@ class Monitor extends CommonDBTM {
 		$this->table="glpi_monitors";
 	}	
 
+	function defineOnglets($withtemplate){
+		global $lang,$cfg_glpi;
+		$ong= array(	1 => $lang["title"][26],
+				4 => $lang["Menu"][26],
+				5 => $lang["title"][25],
+			);
+
+		if(empty($withtemplate)){
+			$ong[6]=$lang["title"][28];
+			$ong[7]=$lang["title"][34];
+			$ong[10]=$lang["title"][37];
+			$ong[12]=$lang["title"][38];
+
+		}	
+		return $ong;
+	}
+
+	function prepareInputForUpdate($input) {
+		// set new date.
+		$input["date_mod"] = date("Y-m-d H:i:s");
+	
+		return $input;
+	}
+
+	function post_updateItem($input,$updates,$history=1) {
+
+		if(isset($input["state"])){
+			if (isset($input["is_template"])&&$input["is_template"]==1){
+				updateState(MONITOR_TYPE,$input["ID"],$input["state"],1);
+			}else {
+				updateState(MONITOR_TYPE,$input["ID"],$input["state"]);
+			}
+		}
+	}
+
+	function prepareInputForAdd($input) {
+		// set new date.
+		$input["date_mod"] = date("Y-m-d H:i:s");
+ 
+		// dump status
+		$input["_oldID"]=$input["ID"];
+		unset($input['withtemplate']);
+		unset($input['ID']);
+	
+		// Manage state
+		$input["_state"]=-1;
+		if (isset($input["state"])){
+			$input["_state"]=$input["state"];
+			unset($input["state"]);
+		}
+
+		return $input;
+	}
+
+	function postAddItem($newID,$input) {
+		global $db;
+		// Add state
+		if ($input["_state"]>0){
+			if (isset($input["is_template"])&&$input["is_template"]==1)
+				updateState(MONITOR_TYPE,$newID,$input["_state"],1);
+			else updateState(MONITOR_TYPE,$newID,$input["_state"]);
+		}
+
+		// ADD Infocoms
+		$ic= new Infocom();
+		if ($ic->getFromDBforDevice(MONITOR_TYPE,$input["_oldID"])){
+			$ic->fields["FK_device"]=$newID;
+			unset ($ic->fields["ID"]);
+			$ic->addToDB();
+		}
+
+		// ADD Contract				
+		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".MONITOR_TYPE."';";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+		
+			while ($data=$db->fetch_array($result))
+				addDeviceContract($data["FK_contract"],MONITOR_TYPE,$newID);
+		}
+	
+		// ADD Documents			
+		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".MONITOR_TYPE."';";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+		
+			while ($data=$db->fetch_array($result))
+				addDeviceDocument($data["FK_doc"],MONITOR_TYPE,$newID);
+		}
+
+	}
 
 	function cleanDBonPurge($ID) {
 

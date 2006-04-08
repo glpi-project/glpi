@@ -42,25 +42,26 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 
+$link=new Link();
 
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	$newID=addLink($_POST);
+	$newID=$link->add($_POST);
 	logEvent($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($cfg_glpi["root_doc"]."/links/");
 }
 else if (isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	deleteLink($_POST);
+	$link->delete($_POST);
 	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/links/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateLink($_POST);
+	$link->update($_POST);
 	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -91,7 +92,6 @@ else
 
 	commonHeader($lang["title"][33],$_SERVER["PHP_SELF"]);
 
-//	showLinkOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 	if (showLinkForm($_SERVER["PHP_SELF"],$tab["ID"])&&!empty($tab["ID"]))
 		showLinkDevice($tab["ID"]);
 	commonFooter();

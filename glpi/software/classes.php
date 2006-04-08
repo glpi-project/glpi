@@ -77,13 +77,18 @@ class Software  extends CommonDBTM {
 
 		if (isset($input['is_update'])&&$input['is_update']=='N') $input['update_software']=-1;
 
+		// dump status
+		$input["_oldID"]=$input["ID"];
+		unset($input['withtemplate']);
+		unset($input['ID']);
+
 		return $input;
 	}
 	function postAddItem($newID,$input) {
 		global $db;
 		// ADD Infocoms
 		$ic= new Infocom();
-		if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$oldID)){
+		if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$input["_oldID"])){
 			$ic->fields["FK_device"]=$newID;
 			unset ($ic->fields["ID"]);
 			$ic->addToDB();
@@ -91,7 +96,7 @@ class Software  extends CommonDBTM {
 	
 
 		// ADD Contract				
-		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".SOFTWARE_TYPE."';";
+		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".SOFTWARE_TYPE."';";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 		
@@ -100,7 +105,7 @@ class Software  extends CommonDBTM {
 		}
 	
 		// ADD Documents			
-		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='$oldID' AND device_type='".SOFTWARE_TYPE."';";
+		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".SOFTWARE_TYPE."';";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 		
