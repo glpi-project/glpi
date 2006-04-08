@@ -132,6 +132,7 @@ class Computer extends CommonDBTM {
 	}
 
 	function postAddItem($newID,$input) {
+		global $db;
 		// Add state
 		if ($input["_state"]>0){
 			if (isset($input["is_template"])&&$input["is_template"]==1)
