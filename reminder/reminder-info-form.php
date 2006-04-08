@@ -47,6 +47,7 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;
 
+$rem=new Reminder();
 
 if (isset($_POST["add"]))
 {
@@ -57,7 +58,7 @@ if (isset($_POST["add"]))
 	}
 	
 
-	$newID=addReminder($_POST);
+	$newID=$rem->add($_POST);
 	
 	glpi_header($cfg_glpi["root_doc"]."/reminder/");
 } 
@@ -68,7 +69,7 @@ else if (isset($_POST["delete"]))
 	}else {
 		checkAuthentication("normal"); //
 	}
-	deleteReminder($_POST);
+	$rem->delete($_POST);
 	
 	glpi_header($cfg_glpi["root_doc"]."/reminder/");
 }
@@ -79,7 +80,7 @@ else if (isset($_POST["update"]))
 	}else {
 		checkAuthentication("normal"); //
 	}
-	updateReminder($_POST);
+	$rem->update($_POST);
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

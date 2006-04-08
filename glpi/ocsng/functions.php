@@ -1393,7 +1393,8 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 						if (!empty($publisher))
 							$updates["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
 						$updates["ID"]=$db->result($result_name,0,"ID");
-						updateSoftware($updates);
+						$soft=new Software();
+						$soft->update($updates);
 					}
 				}
 			}
@@ -1417,7 +1418,8 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 						$query3="SELECT COUNT(*) FROM glpi_licenses where sID='".$lic->fields['sID']."'";
 						$result3=$db->query($query3);
 						if ($db->result($result3,0,0)==1){
-							deleteSoftware(array('ID'=>$lic->fields['sID']),1);
+							$soft=new Software ();
+							$osft->delete(array('ID'=>$lic->fields['sID']),1);
 						}
 						deleteLicense($data['license']);
 					}
@@ -1488,7 +1490,8 @@ function ocsResetLicenses($glpi_computer_id) {
 				$query3="SELECT COUNT(*) FROM glpi_licenses where sID='".$lic->fields['sID']."'";
 				$result3=$db->query($query3);
 				if ($db->result($result3,0,0)==1){
-					deleteSoftware(array('ID'=>$lic->fields['sID']),1);
+					$soft=new Software();
+					$soft->delete(array('ID'=>$lic->fields['sID']),1);
 				}
 				deleteLicense($data['license']);
 				

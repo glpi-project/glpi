@@ -521,10 +521,12 @@ class CommonDBTM {
 				}
 		}
 
-		echo "<li class='invisible'>&nbsp;</li>";
 
-		echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
-	
+		if(empty($withtemplate)){
+			echo "<li class='invisible'>&nbsp;</li>";
+			echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
+		}
+
 		display_plugin_headings($target,$this->type,$withtemplate,$actif);
 
 		echo "<li class='invisible'>&nbsp;</li>";

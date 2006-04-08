@@ -103,6 +103,7 @@ define("LINK_TYPE","21");
 define("STATE_TYPE","22");
 define("PHONE_TYPE","23");//
 define("DEVICE_TYPE","24");
+define("REMINDER_TYPE","25");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");

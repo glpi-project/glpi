@@ -42,6 +42,19 @@ class Typedoc  extends CommonDBTM {
 
 	function Typedoc () {
 		$this->table="glpi_type_docs";
+		$this->type=TYPEDOC_TYPE;
+	}
+
+	function prepareInputForUpdate($input) {
+		// set new date.
+		$input["date_mod"] = date("Y-m-d H:i:s");
+		return $input;
+	}
+	function prepareInputForAdd($input) {
+		// set new date.
+		$input["date_mod"] = date("Y-m-d H:i:s");
+	
+		return $input;
 	}
 	
 }

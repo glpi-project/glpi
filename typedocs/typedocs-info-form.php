@@ -42,18 +42,19 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 
 
+$td=new TypeDoc();
 if (isset($_POST["add"]))
 {
 	checkAuthentication("super-admin");
 	
-	if ($newID=addTypedoc($_POST))
+	if ($newID=$td->add($_POST))
 		logEvent($newID, "typedocs", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
 	checkAuthentication("super-admin");
-	deleteTypedoc($tab,1);
+	$td->delete($tab,1);
 
 	logEvent($tab["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -65,7 +66,7 @@ else if (isset($tab["delete"]))
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("super-admin");
-	updateTypedoc($_POST);
+	$td->update($_POST);
 	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
