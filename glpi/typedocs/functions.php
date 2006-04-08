@@ -137,68 +137,7 @@ function showTypedocForm ($target,$ID) {
 }
 
 
-function updateTypedoc($input) {
-	// Update a Peripheral in the database
 
-	$mon = new Typedoc;
-	$mon->getFromDB($input["ID"]);
-
-	// set new date and make sure it gets updated
-	
-	$updates[0]= "date_mod";
-	$mon->fields["date_mod"] = date("Y-m-d H:i:s");
-
-	// Get all flags and fill with 0 if unchecked in form
-	foreach ($mon->fields as $key => $val) {
-		if (eregi("\.*flag\.*",$key)) {
-			if (!isset($input[$key])) {
-				$input[$key]=0;
-			}
-		}
-	}
-
-	// Fill the update-array with changes
-	$x=1;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$mon->fields) && $mon->fields[$key] != $input[$key]) {
-			$mon->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-
-	$mon->updateInDB($updates);
-
-}
-
-function addTypedoc($input) {
-	// Add Peripheral, nasty hack until we get PHP4-array-functions
-	global $db;
-	$mon = new Typedoc;
-
-	// dump status
-	unset($input["add"]);
-	
- 	// set new date.
- 	$mon->fields["date_mod"] = date("Y-m-d H:i:s");
-	
-	// fill array for udpate
-	foreach ($input as $key => $val) {
-		if ($key[0]!='_'&&(!isset($mon->fields[$key]) || $mon->fields[$key] != $input[$key])) {
-			$mon->fields[$key] = $input[$key];
-		}
-	}
-
-	return $mon->addToDB();
-}
-
-function deleteTypedoc($input,$force=0) {
-	// Delete Printer
-	
-	$mon = new Typedoc;
-	$mon->deleteFromDB($input["ID"],$force);
-	
-}
 
 function isValidDoc($filename){
 	global $db;

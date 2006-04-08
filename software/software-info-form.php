@@ -53,12 +53,13 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 if(!isset($tab["search_software"])) $tab["search_software"] = "";
 
+$soft=new Software();
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
 	unset($_POST["search_software"]);
 
-	$newID=addSoftware($_POST);
+	$newID=$soft->add($_POST);
 	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -66,8 +67,8 @@ else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	if (!empty($tab["withtemplate"]))
-		deleteSoftware($tab,1);
-	else deleteSoftware($tab);
+		$soft->delete($tab,1);
+	else $soft->delete($tab);
 
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -78,14 +79,14 @@ else if (isset($tab["delete"]))
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreSoftware($_POST);
+	$soft->restore($_POST);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/software/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deleteSoftware($tab,1);
+	$soft->delete($tab,1);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/software/");
 }
@@ -93,7 +94,7 @@ else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 	unset($_POST["search_software"]);
-	updateSoftware($_POST);
+	$soft->update($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
@@ -109,10 +110,9 @@ else
 	
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	
-	$ci=new CommonItem();
-	if ($ci->getFromDB(SOFTWARE_TYPE,$tab["ID"]))
-	
-	showSoftwareOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	if ($soft->getFromDB($tab["ID"]))
+		$soft->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+
 	if (!empty($tab["withtemplate"])) {
 
 		if (showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'], $tab["withtemplate"])){

@@ -40,7 +40,52 @@ class Reminder extends CommonDBTM {
 
 	function Reminder () {
 		$this->table="glpi_reminder";
+		$this->type=REMINDER_TYPE;
 	}
+
+	function prepareInputForAdd($input) {
+		global $lang;
+
+		if(empty($input["title"])) $input["title"]=$lang["reminder"][15];
+	
+		$input["begin"] = $input["end"] = "0000-00-00 00:00:00";
+
+		if (isset($input['plan'])){
+			$input['_plan']=$input['plan'];
+			unset($input['plan']);
+			$input['rv']="1";
+			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":".$input['_plan']["begin_min"].":00";
+  			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":".$input['_plan']["end_min"].":00";
+		}	
+
+		
+		// set new date.
+   		$input["date"] = date("Y-m-d H:i:s");
+
+		return $input;
+	}
+
+	function prepareInputForUpdate($input) {
+		global $lang;
+
+		if(empty($input["title"])) $input["title"]=$lang["reminder"][15];
+	
+
+		if (isset($input['plan'])){
+			$input['_plan']=$input['plan'];
+			unset($input['plan']);
+			$input['rv']="1";
+			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":".$input['_plan']["begin_min"].":00";
+  			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":".$input['_plan']["end_min"].":00";
+		}	
+
+		
+		// set new date.
+   		$input["date_mod"] = date("Y-m-d H:i:s");
+
+		return $input;
+	}
+
 	
 }
 

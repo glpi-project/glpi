@@ -40,6 +40,74 @@ class Software  extends CommonDBTM {
 
 	function Software () {
 		$this->table="glpi_software";
+		$this->type=SOFTWARE_TYPE;
+	}
+
+	function defineOnglets($withtemplate){
+		global $lang,$cfg_glpi;
+		$ong[1]= $lang["title"][26];
+		if(empty($withtemplate)){
+			$ong[2]= $lang["software"][19];
+		}
+		$ong[4] = $lang["Menu"][26];
+		$ong[5] = $lang["title"][25];
+
+		if(empty($withtemplate)){
+			$ong[6]=$lang["title"][28];
+			$ong[7]=$lang["title"][34];
+			$ong[10]=$lang["title"][37];
+			$ong[12]=$lang["title"][38];
+
+		}	
+		return $ong;
+	}
+
+	function prepareInputForUpdate($input) {
+		// set new date.
+		$input["date_mod"] = date("Y-m-d H:i:s");
+
+		if (isset($input['is_update'])&&$input['is_update']=='N') $input['update_software']=-1;
+
+		return $input;
+	}
+
+	function prepareInputForAdd($input) {
+		// set new date.
+		$input["date_mod"] = date("Y-m-d H:i:s");
+
+		if (isset($input['is_update'])&&$input['is_update']=='N') $input['update_software']=-1;
+
+		return $input;
+	}
+	function postAddItem($newID,$input) {
+		global $db;
+		// ADD Infocoms
+		$ic= new Infocom();
+		if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$oldID)){
+			$ic->fields["FK_device"]=$newID;
+			unset ($ic->fields["ID"]);
+			$ic->addToDB();
+		}
+	
+
+		// ADD Contract				
+		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".SOFTWARE_TYPE."';";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+		
+			while ($data=$db->fetch_array($result))
+				addDeviceContract($data["FK_contract"],SOFTWARE_TYPE,$newID);
+		}
+	
+		// ADD Documents			
+		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='$oldID' AND device_type='".SOFTWARE_TYPE."';";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+		
+			while ($data=$db->fetch_array($result))
+				addDeviceDocument($data["FK_doc"],SOFTWARE_TYPE,$newID);
+		}
+
 	}
 	
 	function cleanDBonPurge($ID) {
