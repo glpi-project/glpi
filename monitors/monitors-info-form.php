@@ -109,29 +109,6 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 	logEvent($tab["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][27]);
 	glpi_header($cfg_glpi["root_doc"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
 
-/*
- 	if($tab["connect"]==1)
-	{
-		checkAuthentication("admin");
-		commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
-		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
-		commonFooter();
-	}
-	else if ($tab["connect"]==2)
-	{
-		checkAuthentication("admin");
-		commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
-		listConnectComputers($_SERVER["PHP_SELF"],$tab);
-		commonFooter();
-	}
-	else if ($tab["connect"]==3)
-	{
-		checkAuthentication("admin");
-		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],MONITOR_TYPE);
-		logEvent($tab["sID"], "monitors", 5, "inventory", $_SESSION["glpiname"]." connected item.");
-		glpi_header($cfg_glpi["root_doc"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
-	}
-*/
 }
 else
 {

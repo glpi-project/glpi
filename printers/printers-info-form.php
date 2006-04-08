@@ -55,11 +55,11 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-
+$print=new Printer();
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	$newID=addPrinter($_POST);
+	$newID=$print->add($_POST);
 	logEvent($newID, "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$lang["log"][20]."  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -67,8 +67,8 @@ else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	if (!empty($tab["withtemplate"]))
-		deletePrinter($tab,1);
-	else deletePrinter($tab);
+		$print->delete($tab,1);
+	else $print->delete($tab);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/setup/setup-templates.php");
@@ -78,21 +78,21 @@ else if (isset($tab["delete"]))
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restorePrinter($_POST);
+	$print->restore($_POST);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/printers/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deletePrinter($tab,1);
+	$print->delete($tab,1);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/printers/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updatePrinter($_POST);
+	$print->update($_POST);
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -110,29 +110,6 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PRINTER_TYPE);
 	logEvent($tab["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$lang["log"][27]);
 	glpi_header($cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
-/*	if($tab["connect"]==1)
-	{
-		checkAuthentication("admin");
-		commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
-		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
-		commonFooter();
-	}	 
-	else if($tab["connect"]==2)
-	{
-		checkAuthentication("admin");
-		commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
-		listConnectComputers($_SERVER["PHP_SELF"],$tab);
-		commonFooter();
-	} 
-	else if($tab["connect"]==3)
-	{
-		checkAuthentication("admin");
-		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PRINTER_TYPE);
-		logEvent($tab["sID"], "printers", 5, "inventory", $_SESSION["glpiname"] ." connected item.");
-		
-		glpi_header($cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
-	}
-*/	
 }
 else
 {
@@ -145,9 +122,10 @@ if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
 //		glpi_header($_SERVER['HTTP_REFERER']);
 }	
-	$ci=new CommonItem();
-	if ($ci->getFromDB(PRINTER_TYPE,$tab["ID"]))
-		showPrinterOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	
+	if ($print->getFromDB($tab["ID"]))
+		$print->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+
 	if (!empty($tab["withtemplate"])) {
 		
 		if (showPrintersForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
