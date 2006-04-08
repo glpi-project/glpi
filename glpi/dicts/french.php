@@ -198,6 +198,7 @@ $lang["common"][26]="Dernière modification";
 $lang["common"][27]="Date";
 $lang["common"][28]="Supprimé";
 $lang["common"][29]="Plugins";
+$lang["common"][30]="Nouvel item";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
@@ -635,6 +636,9 @@ $lang["knowbase"][21]="Tout déplier";
 $lang["knowbase"][22]="Tout replier";
 $lang["knowbase"][23]="Catégorie";
 $lang["knowbase"][24]="Accéder à la FAQ";
+$lang["knowbase"][25]="Auteur";
+$lang["knowbase"][26]="Vues";
+$lang["knowbase"][27]="Le";
 
 $lang["links"][1]="Lien ou Nom du fichier";
 $lang["links"][2]="Ajouter Lien externe...";

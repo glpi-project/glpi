@@ -146,7 +146,7 @@ function showKbItemForm($target,$ID){
 	
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][4]."</legend><div align='center'>";
-	/*echo "
+	/* echo "
 		<script type='text/javascript' language='javascript'>
 		drawToolbar('form_kb.answer');
 		</script>
@@ -173,7 +173,11 @@ function showKbItemForm($target,$ID){
 	
 	echo "<br>\n";
 	
-	
+	echo "<fieldset>";
+	echo "<div style='position: relative; text-align:left;'><span style='font-size:10px; color:#aaaaaa;'>".$lang["knowbase"][25]." : ".getUserName($ki->fields["author"],"1")." | ".$lang["knowbase"][27]." : ". convDateTime($ki->fields["date"])."</span>";
+	echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>". $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ".$lang["knowbase"][26]." : ".$ki->fields["view"]."</span></div>";
+	echo "</fieldset>";
+
 	echo "<p align='center'>";
 	if ($ki->fields["faq"] == "yes") {
 			echo "<input class='submit' type='checkbox' name='faq' value='yes' checked>";
@@ -183,13 +187,16 @@ function showKbItemForm($target,$ID){
 	echo $lang["knowbase"][5]."<br><br>\n";
 	
 	if (empty($ID)) {
+	echo "<input type='hidden' name='author' value=\"".$_SESSION['glpiID']."\">\n";
 	echo "<input type='submit' class='submit' name='add' value=\"".$lang["buttons"][2]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\">";
 	} else {
 	echo "<input type='submit' class='submit' name='update' value=\"".$lang["buttons"][7]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\">";
 	}
 	
 	echo "</p>";
-	echo "</form></div></div>";
+	echo "</form>";
+	
+	echo "</div></div>";
 } 
 
 /**
@@ -402,9 +409,13 @@ function ShowKbItemFull($ID)
 {
 	
 	// show item : question and answer
-	// ok
-	global $lang;
 	
+	global $db,$lang;
+	
+	//update counter view
+	$query="UPDATE glpi_kbitems SET view=view+1 WHERE ID = '$ID'";
+	$db->query($query);
+
 	$ki= new kbitem;	
 	
 	$ki->getfromDB($ID);
@@ -415,20 +426,27 @@ function ShowKbItemFull($ID)
 	
 	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th>";
 	
-	echo $lang["knowbase"][23].": ".$fullcategoryname."</th></tr>";
+
+
+	echo "<div style='position: relative'><span><strong>".$lang["knowbase"][23].": ".$fullcategoryname."</strong></span>";
+	echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>".$lang["knowbase"][25]." : ".getUserName($ki->fields["author"],"1")." | ".$lang["knowbase"][27]." : ". convDateTime($ki->fields["date"])."</span></div></th></tr>";
+
 	echo "<tr class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][3]."</h2>";
-	//$question = autop($ki->fields["question"]);
-	$question = rembo($ki->fields["question"]);
-	//echo clicurl($question);
+	
+	$question = $ki->fields["question"];
+	
 	echo $question;
 	echo "</td></tr>\n";
 	echo "<tr  class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][4]."</h2>\n";
-	//$answer = autop($ki->fields["answer"]);
-	//$answer = rembo($ki->fields["answer"]); 
+	
 	$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
-	//echo clicurl(bbcode($answer));
+	
 	echo $answer;
-	echo "</td></tr></table></div><br>";
+	echo "</td></tr>";
+	
+	echo "<tr><th style='text-align:right;font-size:10px; color:#aaaaaa; '>". $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ".$lang["knowbase"][26]." : ".$ki->fields["view"]."</th></tr>";
+
+	echo "</table></div><br>";
 	
 	
 }
