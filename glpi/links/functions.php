@@ -52,33 +52,6 @@ function titleLinks(){
                 echo "</td></tr></table></div>";
 }
 
-function showLinkOnglets($target,$withtemplate,$actif){
-	global $lang, $HTMLRel;
-
-	$template="";
-	if(!empty($withtemplate)){
-		$template="&amp;withtemplate=$withtemplate";
-	}
-	
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
-	
-	
-	echo "<li class='invisible'>&nbsp;</li>";
-	
-	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
-	$ID=$ereg[1];
-	$next=getNextItem("glpi_links",$ID);
-	$prev=getPreviousItem("glpi_links",$ID);
-	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
-	}
-
-	echo "</ul></div>";
-	
-}
-
 
 /**
 * Print the link form
@@ -168,85 +141,6 @@ function showLinkForm ($target,$ID) {
 	return true;
 }
 
-/**
-* Update some elements of a link in the database
-*
-* Update some elements of a link in the database.
-*
-*@param $input array : the _POST vars returned bye the link form when press update (see showlinkform())
-*
-*
-*@return Nothing (call to the class member)
-*
-**/
-function updateLink($input) {
-	// Update a Link in the database
-
-	$con = new Link;
-	$con->getFromDB($input["ID"]);
-
-	// Fill the update-array with changes
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$con->fields) && $con->fields[$key] != $input[$key]) {
-			$con->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-
-	if(isset($updates))
-		$con->updateInDB($updates);
-
-}
-
-/**
-* Add a link in the database.
-*
-* Add a link in the database with all it's items.
-*
-*@param $input array : the _POST vars returned bye the link form when press add(see showlinkform())
-*
-*
-*@return Nothing (call to classes members)
-*
-**/
-function addLink($input) {
-	// Add Link, nasty hack until we get PHP4-array-functions
-
-	$con = new Link;
-
-	// dump status
-	unset($input['add']);
-	
-	// fill array for udpate
-	foreach ($input as $key => $val) {
-		if (!isset($con->fields[$key]) || $con->fields[$key] != $input[$key]) {
-			$con->fields[$key] = $input[$key];
-		}
-	}
-	
-	return $con->addToDB();
-
-}
-/**
-* Delete a link in the database.
-*
-* Delete a link in the database.
-*
-*@param $input array : the _POST vars returned bye the link form when press delete(see showlinkform())
-*
-*
-*@return Nothing ()
-*
-**/
-function deleteLink($input) {
-	// Delete Link
-	
-	$con = new Link;
-	$con->deleteFromDB($input["ID"]);
-	
-} 
 
 /**
 * Print the HTML array for device on link

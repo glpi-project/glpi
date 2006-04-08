@@ -141,21 +141,21 @@ class Computer extends CommonDBTM {
 		}
 	
 		// ADD Devices
-		$this->getFromDBwithDevices($oldID);
+		$this->getFromDBwithDevices($input["_oldID"]);
 		foreach($this->devices as $key => $val) {
 				compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
 			}
 	
 		// ADD Infocoms
 		$ic= new Infocom();
-		if ($ic->getFromDBforDevice(COMPUTER_TYPE,$oldID)){
+		if ($ic->getFromDBforDevice(COMPUTER_TYPE,$input["_oldID"])){
 			$ic->fields["FK_device"]=$newID;
 			unset ($ic->fields["ID"]);
 			$ic->addToDB();
 		}
 	
 		// ADD software
-		$query="SELECT license from glpi_inst_software WHERE cID='$oldID'";
+		$query="SELECT license from glpi_inst_software WHERE cID='".$input["_oldID"]."'";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			while ($data=$db->fetch_array($result))
@@ -163,7 +163,7 @@ class Computer extends CommonDBTM {
 		}
 	
 		// ADD Contract				
-		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='$oldID' AND device_type='".COMPUTER_TYPE."';";
+		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			while ($data=$db->fetch_array($result))
@@ -171,7 +171,7 @@ class Computer extends CommonDBTM {
 		}
 
 		// ADD Documents			
-		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='$oldID' AND device_type='".COMPUTER_TYPE."';";
+		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			while ($data=$db->fetch_array($result))
@@ -179,7 +179,7 @@ class Computer extends CommonDBTM {
 		}
 	
 		// ADD Ports
-		$query="SELECT ID from glpi_networking_ports WHERE on_device='$oldID' AND device_type='".COMPUTER_TYPE."';";
+		$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			while ($data=$db->fetch_array($result)){

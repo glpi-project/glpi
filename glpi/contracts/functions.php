@@ -670,10 +670,11 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		
 		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 	}
-	if (!empty($withtemplate))
-	echo "<input type='hidden' name='is_template' value='1'>";
 	echo "</table></div>"    ;
-	echo "</form>";
+
+	if (!empty($withtemplate))
+		echo "<input type='hidden' name='is_template' value='1'>";
+	if ($withtemplate!=2) echo "</form>";
 	
 }
 

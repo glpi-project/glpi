@@ -53,11 +53,11 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-
+$mon=new Monitor();
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	$newID=addMonitor($_POST);
+	$newID=$mon->add($_POST);
 	logEvent($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -65,8 +65,8 @@ else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	if (!empty($tab["withtemplate"]))
-		deleteMonitor($tab,1);
-	else deleteMonitor($tab);
+		$mon->delete($tab,1);
+	else $mon->delete($tab);
 	
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -77,21 +77,21 @@ else if (isset($tab["delete"]))
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreMonitor($_POST);
+	$mon->restore($_POST);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/monitors/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deleteMonitor($tab,1);
+	$mon->delete($tab,1);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/monitors/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateMonitor($_POST);
+	$mon->update($_POST);
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -144,9 +144,8 @@ else
 	}
 
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
-	$ci=new CommonItem();
-	if ($ci->getFromDB(MONITOR_TYPE,$tab["ID"]))
-		showMonitorOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	if ($mon->getFromDB($tab["ID"]))
+		$mon->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {
 
 		if (showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
