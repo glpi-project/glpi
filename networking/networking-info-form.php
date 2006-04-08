@@ -53,10 +53,11 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
+$nd=new Netdevice();
 if (isset($_POST["add"]))
 {
 	checkAuthentication("admin");
-	$newID=addNetdevice($_POST);
+	$newID=$nd->add($_POST);
 	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." :  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -64,8 +65,8 @@ else if (isset($tab["delete"]))
 {
 	checkAuthentication("admin");
 	if (!empty($tab["withtemplate"]))
-		deleteNetdevice($tab,1);
-	else deleteNetdevice($tab);
+		$nd->delete($tab,1);
+	else $nd->delete($tab);
 
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -76,21 +77,21 @@ else if (isset($tab["delete"]))
 else if (isset($_POST["restore"]))
 {
 	checkAuthentication("admin");
-	restoreNetdevice($_POST);
+	$nd->restore($_POST);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/networking/");
 }
 else if (isset($tab["purge"]))
 {
 	checkAuthentication("admin");
-	deleteNetdevice($tab,1);
+	$nd->delete($tab,1);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/networking/");
 }
 else if (isset($_POST["update"]))
 {
 	checkAuthentication("admin");
-	updateNetdevice($_POST);
+	$nd->update($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -106,9 +107,8 @@ else
 
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	
-	$ci=new CommonItem();
-	if ($ci->getFromDB(NETWORKING_TYPE,$tab["ID"]))
-		showNetworkingOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	if ($nd->getFromDB($tab["ID"]))
+		$nd->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	
 	if (!empty($tab["withtemplate"])) {
 

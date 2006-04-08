@@ -56,6 +56,7 @@ $REFERER=preg_replace("/&/","&amp;",$REFERER);
 $ADDREFERER="";
 if (!ereg("&referer=",$_SERVER["HTTP_REFERER"]))$ADDREFERER="&referer=".$REFERER;
 
+$np=new Netport();
 if(isset($_POST["add"]))
 {	
 	checkAuthentication("admin");
@@ -74,7 +75,7 @@ if(isset($_POST["add"]))
 
 
 	if (!isset($tab["several"])){
-	addNetport($_POST);
+	$np->add($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 	}
@@ -85,8 +86,8 @@ if(isset($_POST["add"]))
 		for ($i=$_POST["from_logical_number"];$i<=$_POST["to_logical_number"];$i++){
 			$tab["logical_number"]=$i;
 			$tab["name"]=$_POST["name"].$i;
-		    addNetport($tab);	
-			}
+		        $np->add($tab);	
+		}
 	    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
 		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 		}
@@ -95,9 +96,7 @@ if(isset($_POST["add"]))
 else if(isset($_POST["delete"]))
 {
 	checkAuthentication("admin");
-	$n=new Netport();
-	$n->getFromDB($_POST["ID"]);
-	deleteNetport($_POST);
+	$np->delete($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted networking port.");
 	glpi_header($_POST["referer"]);
 }
@@ -105,15 +104,7 @@ else if(isset($_POST["update"]))
 {
 	checkAuthentication("admin");
 
-	// Is a preselected mac adress selected ?
-	if (isset($_POST['pre_mac'])&&!empty($_POST['pre_mac'])){
-		$_POST['ifmac']=$_POST['pre_mac'];
-		unset($_POST['pre_mac']);
-		unset($tab['pre_mac']);
-		
-	}
-
-	updateNetport($_POST);
+	$np->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
 else if (isset($_POST['assign_vlan'])){

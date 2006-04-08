@@ -938,12 +938,13 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 						$netport["on_device"]=$glpi_id;
 						$netport["logical_number"]=$i;
 						$netport["device_type"]=COMPUTER_TYPE;
-							
+						$np=new Netport();
 						if ($netid) {
 							$netport["ID"]=$netid;
-							updateNetport($netport);
+							
+							$np->update($netport);
 						} else {
-							addNetport($netport);
+							$np->add($netport);
 						}
 						$i++;
 					}
