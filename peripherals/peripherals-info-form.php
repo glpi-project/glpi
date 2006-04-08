@@ -108,30 +108,6 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PERIPHERAL_TYPE);
 	logEvent($tab["sID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($cfg_glpi["root_doc"]."/peripherals/peripherals-info-form.php?ID=".$tab["sID"]);
-
-
-/* 	if($tab["connect"]==1)
-	{
-		checkAuthentication("admin");
-		commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
-		showConnectSearch($_SERVER["PHP_SELF"],$tab["ID"]);
-		commonFooter();
-	}
-	else if ($tab["connect"]==2)
-	{
-		checkAuthentication("admin");
-		commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
-		listConnectComputers($_SERVER["PHP_SELF"],$tab);
-		commonFooter();
-	}
-	else if ($tab["connect"]==3)
-	{
-		checkAuthentication("admin");
-		Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["cID"],PERIPHERAL_TYPE);
-		logEvent($tab["sID"], "Peripherals", 4, "inventory", $_SESSION["glpiname"]." connected item.");
-		glpi_header($cfg_glpi["root_doc"]."/peripherals/peripherals-info-form.php?ID=".$tab["sID"]);
-	}
-*/	
 }
 else
 {
