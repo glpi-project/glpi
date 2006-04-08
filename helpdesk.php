@@ -68,7 +68,8 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	// Affichage interventions en cours
 	//******************
 	if (isset($_POST['add'])&&$cfg_glpi["post_only_followup"]) {
-		$newID=addFollowup($_POST);
+		$fup=new Followup();
+		$newID=$fup->add($_POST);
 
 		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][20]." $newID.");
 		glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=".$_POST["tracking"]);

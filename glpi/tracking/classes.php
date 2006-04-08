@@ -301,6 +301,105 @@ class Followup  extends CommonDBTM {
 		$db->query($querydel);				
 	}
 
+	function prepareInputForUpdate($input) {
+		$input["realtime"]=$input["hour"]+$input["minute"]/60;
+		$input["author"]=$_SESSION["glpiID"];
+
+		return $input;
+	}
+
+	function post_updateItem($input,$updates,$history=1) {
+		global $cfg_glpi;
+		$job=new Job;
+		$job->getFromDB($input["tracking"],1);
+
+		if (in_array("contents",$updates)&&$cfg_glpi["mailing"]){
+			$user=new User;
+			$user->getfromDBbyName($_SESSION["glpiname"]);
+			$mail = new Mailing("followup",$job,$user);
+			$mail->send();
+		}
+	}
+
+	function add($input,$type="followup"){
+		global $cfg_glpi;
+
+		$isadmin=isAdmin($_SESSION['glpitype']);
+		$close=0;
+		unset($input["add"]);
+	
+		$input["author"]=$_SESSION["glpiID"];
+
+		if ($isadmin&&$type!="update"&&$type!="finish"){
+			if (isset($input['plan'])){
+			$plan=$input['plan'];
+			unset($input['plan']);
+			}	
+			if (isset($input["add_close"])) $close=1;
+			unset($input["add_close"]);
+	
+			if ($input["hour"]>0||$input["minute"]>0)
+			$input["realtime"]=$input["hour"]+$input["minute"]/60;
+		}
+
+		unset($input["minute"]);
+		unset($input["hour"]);
+
+		$input["date"] = date("Y-m-d H:i:s");
+		foreach ($input as $key => $val) {
+			if ($key[0]!='_'&&(empty($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
+				$this->fields[$key] = $input[$key];
+			}
+		}
+		$newID=$this->addToDB();	
+
+		$job=new Job;
+		$job->getFromDB($input["tracking"],0);
+
+		if ($isadmin&&$type!="update"&&$type!="finish"){
+			if (isset($plan)){
+				$plan['id_followup']=$newID;
+				$plan['id_tracking']=$input['tracking'];
+				$pt=new PlanningTracking();
+				if (!$pt->add($plan,"",1)){
+					return false;
+				}
+			}
+
+
+			if ($close&&$type!="update"&&$type!="finish"){
+				$updates[]="status";
+				$updates[]="closedate";
+				$job->fields["status"]="old_done";
+				$job->fields["closedate"] = date("Y-m-d H:i:s");
+				$job->updateInDB($updates);
+			}
+
+			$job->updateRealtime();		
+		}
+
+		if ($cfg_glpi["mailing"]){
+			if ($close) $type="finish";
+			$user=new User;
+			$user->getfromDBbyName($_SESSION["glpiname"]);
+			$mail = new Mailing($type,$job,$user);
+			$mail->send();
+		}
+		return $newID;
+	}
+
+
+	function delete($input) {
+		// Delete Contact
+	
+		$this->deleteFromDB($input["ID"]);
+
+		$job=new Job();
+		$job->getFromDB($input['tracking'],0);
+		$job->updateRealtime();		
+
+	} 
+
 	// SPECIFIC FUNCTIONS
 	
 	function getAuthorName($link=0){

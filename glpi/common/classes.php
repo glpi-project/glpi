@@ -383,7 +383,7 @@ class CommonDBTM {
 	*@return integer the new ID of the added item
 	*
 	**/
-	// specific ones : document, reservationresa , user
+	// specific ones : document, reservationresa , user, planningtracking, followup
 	function add($input) {
 
 		// dump status
@@ -425,7 +425,7 @@ class CommonDBTM {
 	*@return Nothing (call to the class member)
 	*
 	**/
-	// specific ones : document, reservationresa, user
+	// specific ones : document, reservationresa, user, planningtracking
 	function update($input,$history=1) {
 	
 		$input=$this->prepareInputForUpdate($input);
@@ -473,7 +473,7 @@ class CommonDBTM {
 	*@return Nothing ()
 	*
 	**/
-	// specific ones : 
+	// specific ones : Followup
 	function delete($input,$force=0) {
 		$this->pre_deleteItem($input["ID"]);
 		$this->deleteFromDB($input["ID"],$force);
