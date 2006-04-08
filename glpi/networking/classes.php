@@ -75,9 +75,9 @@ class Netdevice extends CommonDBTM {
 
 		if(isset($input["state"])){
 			if (isset($input["is_template"])&&$input["is_template"]==1){
-				updateState(NETWORKING_TYPE,$input["ID"],$input["state"],1);
+				updateState(NETWORKING_TYPE,$input["ID"],$input["state"],1,0);
 			}else {
-				updateState(NETWORKING_TYPE,$input["ID"],$input["state"]);
+				updateState(NETWORKING_TYPE,$input["ID"],$input["state"],0,$history);
 			}
 		}
 	}
@@ -107,8 +107,8 @@ class Netdevice extends CommonDBTM {
 		// Add state
 		if ($input["_state"]>0){
 			if (isset($input["is_template"])&&$input["is_template"]==1)
-				updateState(NETWORKING_TYPE,$newID,$input["_state"],1);
-			else updateState(NETWORKING_TYPE,$newID,$input["_state"]);
+				updateState(NETWORKING_TYPE,$newID,$input["_state"],1,0);
+			else updateState(NETWORKING_TYPE,$newID,$input["_state"],0,0);
 		}
 
 		// ADD Infocoms

@@ -42,6 +42,8 @@ class Monitor extends CommonDBTM {
 
 	function Monitor () {
 		$this->table="glpi_monitors";
+		$this->type=MONITOR_TYPE;
+		$this->dohistory=true;
 	}	
 
 	function defineOnglets($withtemplate){
@@ -72,9 +74,9 @@ class Monitor extends CommonDBTM {
 
 		if(isset($input["state"])){
 			if (isset($input["is_template"])&&$input["is_template"]==1){
-				updateState(MONITOR_TYPE,$input["ID"],$input["state"],1);
+				updateState(MONITOR_TYPE,$input["ID"],$input["state"],1,0);
 			}else {
-				updateState(MONITOR_TYPE,$input["ID"],$input["state"]);
+				updateState(MONITOR_TYPE,$input["ID"],$input["state"],0,$history);
 			}
 		}
 	}
@@ -103,8 +105,8 @@ class Monitor extends CommonDBTM {
 		// Add state
 		if ($input["_state"]>0){
 			if (isset($input["is_template"])&&$input["is_template"]==1)
-				updateState(MONITOR_TYPE,$newID,$input["_state"],1);
-			else updateState(MONITOR_TYPE,$newID,$input["_state"]);
+				updateState(MONITOR_TYPE,$newID,$input["_state"],1,0);
+			else updateState(MONITOR_TYPE,$newID,$input["_state"],0,0);
 		}
 
 		// ADD Infocoms

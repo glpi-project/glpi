@@ -67,8 +67,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			$ci->getFromDB($_POST["device_type"],-1);
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
-					$ci->obj->deleteFromDB($key);
-					do_hook_function("item_delete",array("type"=>$_POST["device_type"], "ID" => $key));
+					$ci->obj->delete(array("ID"=>$key));
 				}
 			}
 		break;
@@ -77,8 +76,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			$ci->getFromDB($_POST["device_type"],-1);
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
-					$ci->obj->deleteFromDB($key,1);
-					do_hook_function("item_purge",array("type"=>$_POST["device_type"], "ID" => $key));
+					$ci->obj->delete(array("ID"=>$key),1);
 				}
 			}
 		break;
@@ -87,8 +85,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			$ci->getFromDB($_POST["device_type"],-1);
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
-					$ci->obj->restoreInDB($key);
-					do_hook_function("item_restore",array("type"=>$_POST["device_type"], "ID" => $key));
+					$ci->obj->restore(array("ID"=>$key));
 				}
 			}
 		break;
@@ -101,59 +98,11 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 					updateInfocom($_POST);
 				}
 			} else {
-				$input[$_POST["field"]]=$_POST[$_POST["field"]];
-				foreach ($_POST["item"] as $key => $val)
-				if ($val==1){
-					$input["ID"]=$key;
-					switch($_POST["device_type"]){
-						case COMPUTER_TYPE:
-							updateComputer($input);
-							break;
-						case NETWORKING_TYPE:
-							updateNetdevice($input);
-							break;
-						case PRINTER_TYPE:
-							updatePrinter($input);
-							break;
-						case MONITOR_TYPE:
-							updateMonitor($input);
-							break;
-						case PERIPHERAL_TYPE:
-							updatePeripheral($input);
-							break;
-						case SOFTWARE_TYPE:
-							updateSoftware($input);
-							break;
-						case CONTACT_TYPE:
-							updateContact($input);
-							break;
-						case ENTERPRISE_TYPE:
-							updateEnterprise($input);
-							break;
-						case CONTRACT_TYPE:
-							updateContract($input);
-							break;
-						case CARTRIDGE_TYPE:
-							updateCartridgeType($input);
-							break;
-						case TYPEDOC_TYPE:
-							updateTypeDoc($input);
-							break;
-						case DOCUMENT_TYPE:
-							updateDocument($input);
-							break;
-						case USER_TYPE:
-							updateUser($input);
-							break;
-						case CONSUMABLE_TYPE:
-							updateConsumableType($input);
-							break;
-						case LINK_TYPE:
-							updateLink($input);
-							break;
-						case PHONE_TYPE:
-							updatePhone($input);
-							break;
+				$ci=new CommonItem();
+				$ci->getFromDB($_POST["device_type"],-1);
+				foreach ($_POST["item"] as $key => $val){
+					if ($val==1) {
+						$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 					}
 				}
 			}
