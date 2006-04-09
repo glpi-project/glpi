@@ -68,8 +68,8 @@ $kb=new kbItem;
 	checkAuthentication("admin");
 	
 	
-	$kb->add($_POST);
-	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][20]);
+	$newID=$kb->add($_POST);
+	logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	
 	glpi_header($cfg_glpi["root_doc"]."/knowbase/");
 	}
@@ -96,7 +96,7 @@ $kb=new kbItem;
 	checkAuthentication("admin");
 	
 	$kb->update($_POST);
-	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][21]);	
+	logEvent($tab["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][21]);	
 		
 	glpi_header($cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
 	}
