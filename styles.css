@@ -147,17 +147,18 @@ select {
 }
 
 option.tree {
-	background-position: left center;
-	background-image: url("pics/tree_arbo.png");
-	background-repeat: no-repeat;
+
 	border:0;
+	border-bottom:1px solid #C0CAD4;
 }
 
 option.treeroot {
-	background-position: left center;
-	background-image: url("pics/tree_root.png");
-	background-repeat: no-repeat;
+	
+	background: url("pics/treeroot.png") 0 2px no-repeat;
+	background-color:#eeeeee;
 	border:0;
+	margin-top:5px;
+	font-weight:bold;
 }
 
 

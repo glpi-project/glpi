@@ -135,9 +135,13 @@
 					$level = $data['level'];
 					if (empty($data['name'])) $output="($ID)";
 					$class="class='tree'";
-					if ($level==1) $class="class='treeroot'";
-					$style=" $class style=\"color: #202020; padding-left:5px; margin-left: ".(16*($level-1))."px;\" ";
-					echo "<option value=\"$ID\" $style title=\"".$data['completename']."\">".substr($data['name'],0,$_POST["limit"])."</option>";
+					$raquo="&raquo;";
+					if ($level==1){
+						 $class="class='treeroot'";
+						$raquo="";
+					}
+					$style=" $class style=\" padding-left: ".(8*($level))."px;\" ";
+					echo "<option value=\"$ID\" $style title=\"".$data['completename']."\">".$raquo.substr($data['name'],0,$_POST["limit"])."</option>";
 				}
 			}
 			echo "</select>";
