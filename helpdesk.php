@@ -182,7 +182,7 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	
 	if (isset($_GET["ID"])){
 	
-	ShowKbItemFull($_GET["ID"]);
+	ShowKbItemFull($_GET["ID"],"no");
 	showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
 	
 	} else {

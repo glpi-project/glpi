@@ -173,11 +173,23 @@ function showKbItemForm($target,$ID){
 	
 	echo "<br>\n";
 	
-	echo "<fieldset>";
-	echo "<div style='position: relative; text-align:left;'><span style='font-size:10px; color:#aaaaaa;'>".$lang["knowbase"][25]." : ".getUserName($ki->fields["author"],"1")." | ".$lang["knowbase"][27]." : ". convDateTime($ki->fields["date"])."</span>";
-	echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>". $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ".$lang["knowbase"][26]." : ".$ki->fields["view"]."</span></div>";
-	echo "</fieldset>";
-
+	if (!empty($ID)) {
+		echo "<fieldset>";
+		echo "<div style='position: relative; text-align:left;'><span style='font-size:10px; color:#aaaaaa;'>";
+			if ($ki->fields["author"]){
+			echo $lang["knowbase"][25]." : ".getUserName($ki->fields["author"],"1")."   |   ";
+			}
+			if ($ki->fields["date"]){
+			echo $lang["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
+			}
+		echo "</span>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
+			if ($ki->fields["date_mod"]){
+			echo $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])."   |  ";
+			}
+			echo $lang["knowbase"][26]." : ".$ki->fields["view"]."</span></div>";
+		echo "</fieldset>";
+	}
 	echo "<p align='center'>";
 	if ($ki->fields["faq"] == "yes") {
 			echo "<input class='submit' type='checkbox' name='faq' value='yes' checked>";
@@ -405,7 +417,7 @@ function showKbItem($ID)
 * 
 * @return nothing (display item : question and answer)
 **/
-function ShowKbItemFull($ID)
+function ShowKbItemFull($ID,$linkauthor="yes")
 {
 	
 	// show item : question and answer
@@ -429,7 +441,16 @@ function ShowKbItemFull($ID)
 
 
 	echo "<div style='position: relative'><span><strong>".$lang["knowbase"][23].": ".$fullcategoryname."</strong></span>";
-	echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>".$lang["knowbase"][25]." : ".getUserName($ki->fields["author"],"1")." | ".$lang["knowbase"][27]." : ". convDateTime($ki->fields["date"])."</span></div></th></tr>";
+	echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
+		if($ki->fields["author"]){
+			echo $lang["knowbase"][25]." : ";
+			echo ($linkauthor=="yes") ? "".getUserName($ki->fields["author"],"1")."" : "".getUserName($ki->fields["author"])."";
+			echo " | ";
+		}
+		if($ki->fields["date"]){
+			echo $lang["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
+		}	
+	echo "</span></div></th></tr>";
 
 	echo "<tr class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][3]."</h2>";
 	
@@ -444,7 +465,11 @@ function ShowKbItemFull($ID)
 	echo $answer;
 	echo "</td></tr>";
 	
-	echo "<tr><th style='text-align:right;font-size:10px; color:#aaaaaa; '>". $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ".$lang["knowbase"][26]." : ".$ki->fields["view"]."</th></tr>";
+	echo "<tr><th style='text-align:right;font-size:10px; color:#aaaaaa; '>";
+		if($ki->fields["date_mod"]){
+			echo  $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ";
+		}
+	echo $lang["knowbase"][26]." : ".$ki->fields["view"]."</th></tr>";
 
 	echo "</table></div><br>";
 	
