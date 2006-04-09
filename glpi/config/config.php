@@ -249,7 +249,7 @@ if ( !isset($_SERVER['REQUEST_URI']) ) {
     $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
 }
 
-$glpidir=str_replace($phproot,"",getcwd());
+$glpidir=str_replace($phproot,"",str_replace('\\', '/',getcwd()));
 
 $globaldir=preg_replace("/\/[a-zA-Z-]+\.php/","",$_SERVER['REQUEST_URI']);
 $globaldir=preg_replace("/\?.*/","",$globaldir);
