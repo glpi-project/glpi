@@ -38,6 +38,26 @@
 
 include ("_relpos.php");
 include ($phproot . "/glpi/common/Timer.php");
+include ($phproot . "/glpi/common/classes.php");
+include ($phproot . "/glpi/config/config.php");
+
+
+$TIMER_DEBUG=new Script_Timer;
+$TIMER_DEBUG->Start_Timer();
+
+include ("_relpos.php");
+
+if ($cfg_glpi["debug"]){
+	if ($cfg_glpi["debug_profile"]){		
+		$SQL_TOTAL_TIMER=0;
+		$SQL_TOTAL_REQUEST=0;
+	}
+	if ($cfg_glpi["debug_sql"]){		
+		$DEBUG_SQL_STRING="";
+	}
+}
+
+
 include ($phproot . "/glpi/common/classes_auth.php");
 include ($phproot . "/glpi/common/classes_connection.php");
 include ($phproot . "/glpi/common/classes_mailing.php");
@@ -51,8 +71,6 @@ include ($phproot . "/glpi/common/functions_logs.php");
 include ($phproot . "/glpi/common/functions_auth.php");
 include ($phproot . "/glpi/common/functions_connection.php");
 include ($phproot . "/glpi/common/functions_db.php");
-include ($phproot . "/glpi/common/classes.php");
-include ($phproot . "/glpi/config/config.php");
 include ($phproot . "/glpi/common/functions_plugins.php");
 
 $db=new DB();
@@ -78,18 +96,5 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 	}
 }
 
-
-$TIMER_DEBUG=new Script_Timer;
-$TIMER_DEBUG->Start_Timer();
-
-if ($cfg_glpi["debug"]){
-	if ($cfg_glpi["debug_profile"]){		
-		$SQL_TOTAL_TIMER=0;
-		$SQL_TOTAL_REQUEST=0;
-	}
-	if ($cfg_glpi["debug_sql"]){		
-		$DEBUG_SQL_STRING="";
-	}
-}
 
 ?>
