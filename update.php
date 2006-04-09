@@ -167,25 +167,6 @@ function superAdminExists() {
 
 /*---------------------------------------------------------------------*/
 /**
-* Put the correct root_doc value on glpi_config table.
-*
-*
-* @returns nothing if everything is right, display query and mysql error if bad.
-*/
-function updaterootdoc() {
-	global $db;
-	// hack pour IIS qui ne connait pas $_SERVER['REQUEST_URI']  grrrr
-	if ( !isset($_SERVER['REQUEST_URI']) ) {
-	    $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
-	}
-	
-	$root_doc = ereg_replace("/update.php","",$_SERVER['REQUEST_URI']);
-	$query = "update glpi_config set root_doc = '".$root_doc."' where ID = '1'";
-	$db->query($query) or die(" root_doc ".$lang["update"][90].$db->error());
-}
-
-/*---------------------------------------------------------------------*/
-/**
 * Display the form of content update (addslashes compatibility (V0.4))
 *
 *
@@ -4045,6 +4026,12 @@ if(TableExists("glpi_kbitems")){
 		regenerateTreeCompleteName($t);
 	}
 
+	if(FieldExists("glpi_config","root_doc")) {	
+		$query="ALTER TABLE `glpi_config` DROP  `root_doc`";
+		$db->query($query) or die("0.68 drop root_doc ".$lang["update"][90].$db->error());
+		regenerateTreeCompleteName($t);
+	}
+
 } // fin 0.68 #####################################################################################
 
 
@@ -4139,7 +4126,6 @@ elseif(empty($_POST["ajout_su"])) {
 			if(!TableExists("glpi_config")) {
 				updateDbTo031();
 				$tab = updateDbUpTo031();
-				updaterootdoc();
 			} else {
 				// Get current version
 				$query="SELECT version FROM glpi_config";
@@ -4147,7 +4133,6 @@ elseif(empty($_POST["ajout_su"])) {
 				$current_version=trim($db->result($result,0,0));
 
 				$tab = updateDbUpTo031();
-				updaterootdoc();
 			}
 		
 		if(!superAdminExists()) {
