@@ -115,7 +115,7 @@ hr{
 	display: none;
 	position: absolute;
 	border: 1px solid gray;
-	background: transparent url("pics/fondTR.png") repeat; 
+	background: transparent url("pics/fondTR2.png") repeat; 
 	-moz-border-radius: 5px;
 	padding: 5px;
 	font-size: 11px;
@@ -817,8 +817,49 @@ ul#onglet li.actif a {
 
 }
 
+/* Over onglet div */
+#onglet_plugins{
+	display: none;
+	position: absolute;
+	top:21px;
+	left:-20px;
+	padding: 5px;
+	font-size: 11px;
+	width:100px;
+	background: transparent url("pics/fondTR.png") repeat; 
+	border: 1px solid gray;	
+	-moz-border-radius: 5px;
+}
 
+ #onglet_plugins dl{
+margin: 0;
+padding: 0;
+list-style-type: none;	
+border:0;
 
+}
+
+#onglet_plugins dt {
+	text-align: center;
+	padding: 2px;
+	background:none;
+	border:0;
+	
+	
+}
+#onglet_plugins dt a {
+	font-size:10px;	
+	color: #000;
+	text-decoration: none;
+	display: block;
+	/*height: 100%;*/
+	border: 0 none;
+}
+#onglet_plugins dt a:hover {
+	color: #000;
+	background: #fccc6f;
+
+}
 
 /* #################################### */
 /* Raccourcis typo */

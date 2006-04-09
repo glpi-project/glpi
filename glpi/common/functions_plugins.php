@@ -143,13 +143,14 @@ function display_plugin_headings($target,$type,$withtemplate,$actif){
 		if (count($display_onglets)){
 			echo "<li class='invisible'>&nbsp;</li>";
 	
-			echo "<li".(ereg($plug,$actif)?" class='actif'":"")."  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$lang["common"][29]."</a>";
-			
-			echo "<span class='over_link' id='onglet_plugins' align='center'>";
+			echo "<li".(ereg($plug,$actif)?" class='actif'":"")." style='position:relative;'  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$lang["common"][29]."</a>";
+				
+			echo "<div  id='onglet_plugins' ><dl>";
 			foreach ($display_onglets as $key => $val)
-				echo "<a href='$target&amp;onglet=".$key.$template."'>".$val."</a>";
-			echo "</span>";
-			echo "</li>";
+				echo "<dt><a href='$target&amp;onglet=".$key.$template."'>".$val."</a></dt>";
+			echo "</dl></div>";
+		echo "</li>";
+			
 		}
 		
 	} 
