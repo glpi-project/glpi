@@ -244,6 +244,18 @@ $cfg_glpi=array_merge($cfg_glpi,$data=$db->fetch_assoc($result));
 // Path for icon of document type
 $cfg_glpi["typedoc_icon_dir"] = "pics/icones";
 
+
+if ( !isset($_SERVER['REQUEST_URI']) ) {
+    $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
+}
+
+$glpidir=str_replace($phproot,"",getcwd());
+$globaldir=preg_replace("/\/[a-zA-Z-]+\.php/","",$_SERVER['REQUEST_URI']);
+$globaldir=preg_replace("/\?.*/","",$globaldir);
+
+$cfg_glpi["root_doc"]=str_replace($glpidir,"",$globaldir);
+
+//exit();
 // *************************** Mode NORMAL / TRALATION /DEBUG  **********************
 // *********************************************************************************
 
