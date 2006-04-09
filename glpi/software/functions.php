@@ -45,9 +45,9 @@ function titleSoftware(){
          
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td>\n";
-         echo "<td><a class='icon_consol' href=\"software-add-select.php\"><strong>".$lang["software"][0]."</strong></a>\n";
+         echo "<td><a class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
                 echo "</td>";
-                echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."'>".$lang["common"][8]."</a></td>";
+                echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
                 echo "</tr></table></div>";
 
 }

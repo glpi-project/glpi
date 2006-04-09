@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_setup.php");
 checkAuthentication("admin");
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
-listTemplates($_GET["type"],$HTMLRel .$INFOFORM_PAGES[$_GET["type"]]);
+listTemplates($_GET["type"],$HTMLRel .$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
 
 commonFooter();
 
