@@ -45,9 +45,9 @@ function titleNetdevices() {
          GLOBAL  $lang,$HTMLRel;
 
           echo "<div align='center'><table border='0'><tr><td>";
-          echo "<img src=\"".$HTMLRel."pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td><td><a  class='icon_consol' href=\"networking-add-select.php\"><b>".$lang["networking"][11]."</b></a>";
+          echo "<img src=\"".$HTMLRel."pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".NETWORKING_TYPE."&amp;add=1\"><b>".$lang["networking"][11]."</b></a>";
                 echo "</td>";
-                echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".NETWORKING_TYPE."'>".$lang["common"][8]."</a></td>";
+                echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".NETWORKING_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
                 echo "</tr></table></div>";
  
 }

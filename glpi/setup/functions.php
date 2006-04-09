@@ -907,7 +907,7 @@ function dropdownUsed($table, $ID) {
 
 
 
-function listTemplates($type,$target) {
+function listTemplates($type,$target,$add=0) {
 
 	GLOBAL $db,$cfg_glpi, $lang;
 
@@ -946,31 +946,42 @@ function listTemplates($type,$target) {
 	if ($result = $db->query($query)) {
 		
 		echo "<div align='center'><table class='tab_cadre' width='50%'>";
-		echo "<tr><th colspan='2'>".$lang["common"][14]." - $title:</th></tr>";
-		$i=0;
-		while ($i < $db->numrows($result)) {
-			$ID = $db->result($result,$i,"ID");
-			$templname = $db->result($result,$i,"tplname");
+		if ($add)
+			echo "<tr><th>".$lang["common"][7]." - $title:</th></tr>";
+		else 
+			echo "<tr><th colspan='2'>".$lang["common"][14]." - $title:</th></tr>";
+		
+		while ($data= $db->fetch_array($result)) {
+			
+			$templname = $data["tplname"];
+			if ($templname=="Blank Template")
+				$templname=$lang["common"][31];
 			
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
-			echo "<a href=\"$target?ID=$ID&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
-			echo "<td align='center' class='tab_bg_2'>";
-			if ($templname!="Blank Template")
-			echo "<b><a href=\"$target?ID=$ID&amp;purge=purge&amp;withtemplate=1\">".$lang["buttons"][6]."</a></b>";
-			else echo "&nbsp;";
+			if (!$add){
+				echo "<a href=\"$target?ID=".$data["ID"]."&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+
+				echo "<td align='center' class='tab_bg_2'>";
+				if ($data["tplname"]!="Blank Template")
+				echo "<b><a href=\"$target?ID=".$data["ID"]."&amp;purge=purge&amp;withtemplate=1\">".$lang["buttons"][6]."</a></b>";
+				else echo "&nbsp;";
+				echo "</td>";
+			} else {
+				echo "<a href=\"$target?ID=".$data["ID"]."&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+			}
 			
-			echo "</td>";
 			echo "</tr>";		
 
-			$i++;
 		}
 
-		echo "<tr>";
-		echo "<td colspan='2' align='center' class='tab_bg_2'>";
-		echo "<b><a href=\"$target?withtemplate=1\">".$lang["common"][9]."</a></b>";
-		echo "</td>";
-		echo "</tr>";
+		if (!$add){
+			echo "<tr>";
+			echo "<td colspan='2' align='center' class='tab_bg_2'>";
+			echo "<b><a href=\"$target?withtemplate=1\">".$lang["common"][9]."</a></b>";
+			echo "</td>";
+			echo "</tr>";
+		}
 				
 		echo "</table></div>";
 	}

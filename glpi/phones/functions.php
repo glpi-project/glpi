@@ -43,9 +43,9 @@ include ("_relpos.php");
 function titlephones(){
                 GLOBAL  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/phones.png\" alt='".$lang["phones"][0]."' title='".$lang["phones"][0]."'></td><td><a  class='icon_consol' href=\"phones-add-select.php\"><b>".$lang["phones"][0]."</b></a>";
+                echo "<img src=\"".$HTMLRel."pics/phones.png\" alt='".$lang["phones"][0]."' title='".$lang["phones"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".PHONE_TYPE."&amp;add=1\"><b>".$lang["phones"][0]."</b></a>";
                 echo "</td>";
-                echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".PHONE_TYPE."'>".$lang["common"][8]."</a></td>";
+                echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".PHONE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
                 echo "</tr></table></div>";
 }
 
