@@ -173,9 +173,6 @@ $identificat->err=$lang["login"][8];
 // Ok, we have gathered sufficient data, if the first return false the user
 // are not present on the DB, so we add it.
 // if not, we update it.
-echo $user_present;
-print_r($identificat->user);
-//exit();
 
 if ($auth_succeded)
 if (!$user_present&&$cfg_glpi["auto_add_users"]) {
