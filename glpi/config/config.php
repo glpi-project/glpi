@@ -250,12 +250,11 @@ if ( !isset($_SERVER['REQUEST_URI']) ) {
 }
 
 $glpidir=str_replace($phproot,"",getcwd());
+
 $globaldir=preg_replace("/\/[a-zA-Z-]+\.php/","",$_SERVER['REQUEST_URI']);
 $globaldir=preg_replace("/\?.*/","",$globaldir);
-
 $cfg_glpi["root_doc"]=str_replace($glpidir,"",$globaldir);
 
-//exit();
 // *************************** Mode NORMAL / TRALATION /DEBUG  **********************
 // *********************************************************************************
 

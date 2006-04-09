@@ -39,6 +39,8 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/common/Timer.php");
 include ($phproot . "/glpi/common/classes.php");
+include ($phproot . "/glpi/common/functions_auth.php");
+include ($phproot . "/glpi/common/functions_display.php");
 include ($phproot . "/glpi/config/config.php");
 
 
@@ -64,11 +66,9 @@ include ($phproot . "/glpi/common/classes_mailing.php");
 include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/common/functions_dropdown.php");
 include ($phproot . "/glpi/common/functions_reports.php");
-include ($phproot . "/glpi/common/functions_display.php");
 include ($phproot . "/glpi/common/functions_search.php");
 include ($phproot . "/glpi/common/functions_export.php");
 include ($phproot . "/glpi/common/functions_logs.php");
-include ($phproot . "/glpi/common/functions_auth.php");
 include ($phproot . "/glpi/common/functions_connection.php");
 include ($phproot . "/glpi/common/functions_db.php");
 include ($phproot . "/glpi/common/functions_plugins.php");

@@ -945,11 +945,6 @@ function step7() {
 	    $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
 	}
 	
-	$root_doc = ereg_replace("/install.php","",$_SERVER['REQUEST_URI']);
-	
-	$query = "update glpi_config set root_doc = '".$root_doc."'";
-	$db->query($query);
-
 	$query="UPDATE glpi_config SET url_base='".ereg_replace("/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
 	$db->query($query);
 	
