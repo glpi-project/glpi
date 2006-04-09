@@ -141,10 +141,25 @@ option {border:1px solid #ccc;
 
 .submit { text-align:center;}
 
-select { font-size: 11px;
-border: 1px solid #888888;
-
+select { 
+	font-size: 11px;
+	border: 1px solid #888888;
 }
+
+option.tree {
+	background-position: left center;
+	background-image: url("pics/tree_arbo.png");
+	background-repeat: no-repeat;
+	border:0;
+}
+
+option.treeroot {
+	background-position: left center;
+	background-image: url("pics/tree_root.png");
+	background-repeat: no-repeat;
+	border:0;
+}
+
 
 
 textarea, input {
