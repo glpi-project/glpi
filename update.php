@@ -4036,6 +4036,14 @@ if(TableExists("glpi_kbitems")){
 	}
 } // fin convert
 
+	// Add Level To Dropdown 
+	$dropdowntree_tables=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
+	foreach ($dropdowntree_tables as $t)
+	if(!FieldExists($t,"level")) {	
+		$query="ALTER TABLE `$t` ADD `level` INT(11)";
+		$db->query($query) or die("0.68 add level to $t ".$lang["update"][90].$db->error());
+		regenerateTreeCompleteName($t);
+	}
 
 } // fin 0.68 #####################################################################################
 

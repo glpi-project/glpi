@@ -84,58 +84,95 @@
 			}
 		}
 		echo "</select>";
-	}	else {
-
-	$where="WHERE '1'='1' ";
-	if (in_array($_POST['table'],$cfg_glpi["deleted_tables"]))
-		$where.=" AND deleted='N' ";
-	if (in_array($_POST['table'],$cfg_glpi["template_tables"]))
-		$where.=" AND is_template='0' ";
-		
-
-$where .=" AND  (ID <> '".$_POST['value']."' ";
-
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-		if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"]))
-		$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
-		else $where.=" AND name LIKE '%".$_POST['searchText']."%' ";
-
-$where.=")";
-
-	$NBMAX=$cfg_glpi["dropdown_max"];
-	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
-
-
-	if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"]))
-		$query = "SELECT ID, completename as name FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
-	else $query = "SELECT ID, name FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
-	
-	$result = $db->query($query);
-
-	echo "<select name=\"".$_POST['myname']."\" size='1'>";
-
-	if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
-
-	if ($table=="glpi_dropdown_kbcategories")
-	echo "<option value=\"0\">--".$lang["knowbase"][12]."--</option>";
-	else echo "<option value=\"0\">-----</option>";
-
-	$output=getDropdownName($_POST['table'],$_POST['value']);
-	if (!empty($output)&&$output!="&nbsp;")
-	echo "<option selected value='".$_POST['value']."'>".$output."</option>";
-	
-	if ($db->numrows($result)) {
-		while ($data =$db->fetch_array($result)) {
-			$output = $data['name'];
-			$ID = $data['ID'];
-			if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$_POST["limit"])."</option>";
+	} else {
+		$first=true;
+		$where="WHERE ";
+		if (in_array($_POST['table'],$cfg_glpi["deleted_tables"])){
+			if (!$first) $where.=" AND ";
+			else $first=false;
+			$where.=" deleted='N' ";
 		}
-	}
-	echo "</select>";
+		if (in_array($_POST['table'],$cfg_glpi["template_tables"])){
+			if (!$first) $where.=" AND ";
+			else $first=false;
+			$where.=" is_template='0' ";
+		}
+		
+		if (!$first) $where.=" AND ";
+		else $first=false;
+			$where .=" (ID <> '".$_POST['value']."' ";
 
+		$NBMAX=$cfg_glpi["dropdown_max"];
+		$LIMIT="LIMIT 0,$NBMAX";
+		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
+
+
+		if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"])){
+			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+				$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
+			$where.=")";
+
+			$query = "SELECT ID, name, completename, level FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
+			$result = $db->query($query);
+			
+			echo "<select name=\"".$_POST['myname']."\" size='1'>";
+
+			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+				echo "<option class='tree' value=\"0\">--".$lang["common"][11]."--</option>";
+
+			if ($table=="glpi_dropdown_kbcategories")
+				echo "<option class='tree' value=\"0\">--".$lang["knowbase"][12]."--</option>";
+			else echo "<option class='tree' value=\"0\">-----</option>";
+
+			$output=getDropdownName($_POST['table'],$_POST['value']);
+			if (!empty($output)&&$output!="&nbsp;")
+			echo "<option class='tree' selected value='".$_POST['value']."'>".$output."</option>";
+	
+			if ($db->numrows($result)) {
+				while ($data =$db->fetch_array($result)) {
+					
+					$ID = $data['ID'];
+					$level = $data['level'];
+					if (empty($data['name'])) $output="($ID)";
+					$class="class='tree'";
+					if ($level==1) $class="class='treeroot'";
+					$style=" $class style=\"color: #202020; padding-left:5px; margin-left: ".(16*($level-1))."px;\" ";
+					echo "<option value=\"$ID\" $style title=\"".$data['completename']."\">".substr($data['name'],0,$_POST["limit"])."</option>";
+				}
+			}
+			echo "</select>";
+
+		} else {
+			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+				$where.=" AND name LIKE '%".$_POST['searchText']."%' ";
+			$where.=")";
+
+			$query = "SELECT ID, name FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
+	
+			$result = $db->query($query);
+
+			echo "<select name=\"".$_POST['myname']."\" size='1'>";
+
+			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+				echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+
+			echo "<option value=\"0\">-----</option>";
+
+			$output=getDropdownName($_POST['table'],$_POST['value']);
+			if (!empty($output)&&$output!="&nbsp;")
+			echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+	
+			if ($db->numrows($result)) {
+				while ($data =$db->fetch_array($result)) {
+					$output = $data['name'];
+					$ID = $data['ID'];
+					
+					if (empty($output)) $output="($ID)";
+					echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$_POST["limit"])."</option>";
+				}
+			}
+			echo "</select>";
+		}
 	}
 
 

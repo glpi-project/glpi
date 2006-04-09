@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-04-02 19:51
+#GLPI Dump database on 2006-04-09 18:28
 
 ### Dump table glpi_cartridges
 
@@ -859,6 +859,7 @@ CREATE TABLE `glpi_dropdown_kbcategories` (
     `name` varchar(255) NOT NULL,
     `completename` text NOT NULL,
     `comments` text,
+    `level` int(11),
    PRIMARY KEY (`ID`),
    UNIQUE parentID_2 (`parentID`, `name`),
    KEY parentID (`parentID`),
@@ -875,6 +876,7 @@ CREATE TABLE `glpi_dropdown_locations` (
     `parentID` int(11) DEFAULT '0' NOT NULL,
     `completename` text NOT NULL,
     `comments` text,
+    `level` int(11),
    PRIMARY KEY (`ID`),
    UNIQUE name (`name`, `parentID`),
    KEY parentID (`parentID`)
@@ -1130,7 +1132,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-02 19:51:08','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-09 18:28:17','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1221,6 +1223,10 @@ CREATE TABLE `glpi_kbitems` (
     `question` text,
     `answer` text,
     `faq` enum('yes','no') DEFAULT 'no' NOT NULL,
+    `author` int(11) DEFAULT '0' NOT NULL,
+    `view` int(11) DEFAULT '0' NOT NULL,
+    `date` datetime,
+    `date_mod` datetime,
    PRIMARY KEY (`ID`),
    KEY categoryID (`categoryID`)
 ) TYPE=MyISAM;

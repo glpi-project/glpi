@@ -142,11 +142,12 @@ else return $name;
 * @return string name
 */
 // DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
-function getTreeValueName($table,$ID, $wholename="")
+function getTreeValueName($table,$ID, $wholename="",$level=0)
 {
 	global $db,$lang;
 	
 	$query = "select * from $table where (ID = $ID)";
+	$name="";
 	
 	if ($result=$db->query($query)){
 		if ($db->numrows($result)>0){
@@ -159,13 +160,15 @@ function getTreeValueName($table,$ID, $wholename="")
 			$name = $row["name"];
 		} else
 		{
-			$name = $row["name"] . ">";
+			$name = $row["name"] . " > ";
 		}
-		$name = getTreeValueName($table,$parentID, $name) . $name;
+		$level++;
+		list($tmpname,$level)=getTreeValueName($table,$parentID, $name,$level);
+		$name =  $tmpname. $name;
 	}
 	
 	}
-return (@$name);
+return array($name,$level);
 }
 
 /**
@@ -337,8 +340,9 @@ function regenerateTreeCompleteName($table){
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result)){
-		$query="UPDATE $table SET completename='".addslashes(getTreeValueName("$table",$data['ID']))."' WHERE ID='".$data['ID']."'";
-		$db->query($query);
+			list($name,$level)=getTreeValueName($table,$data['ID']);
+			$query="UPDATE $table SET completename='".addslashes($name)."', level='$level' WHERE ID='".$data['ID']."'";
+			$db->query($query);
 		}
 	}
 }
@@ -352,7 +356,10 @@ function regenerateTreeCompleteName($table){
 */
 function regenerateTreeCompleteNameUnderID($table,$ID){
 	global $db;
-	$query="UPDATE $table SET completename='".addslashes(getTreeValueName("$table",$ID))."' WHERE ID='".$ID."'";
+	
+	list($name,$level)=getTreeValueName($table,$ID);
+
+	$query="UPDATE $table SET completename='".addslashes($name)."', level='$level' WHERE ID='".$ID."'";
 	$db->query($query);
 	$query="SELECT ID FROM $table WHERE parentID='$ID'";
 	$result=$db->query($query);

@@ -541,15 +541,15 @@ for ($i=0;$i<$max['type_phones'];$i++){
 optimize_tables ();
 
 for ($i=0;$i<max(1,pow($max['kbcategories'],1/3));$i++){
-	$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','0','categorie $i','','comment categorie $i')";
+	$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','0','categorie $i','','comment categorie $i','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$newID=$db->insert_id();
 	for ($j=0;$j<mt_rand(0,pow($max['kbcategories'],1/2));$j++){
-		$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID','s-categorie $j','','comment s-categorie $j')";
+		$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID','s-categorie $j','','comment s-categorie $j','2')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$newID2=$db->insert_id();
 		for ($k=0;$k<mt_rand(0,pow($max['kbcategories'],1/2));$k++){
-			$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID2','ss-categorie $k','','comment categorie $i')";
+			$query="INSERT INTO glpi_dropdown_kbcategories VALUES ('','$newID2','ss-categorie $k','','comment categorie $i','3')";
 			$db->query($query) or die("PB REQUETE ".$query);
 		}	
 	}
@@ -601,23 +601,23 @@ for ($i=0;$i<$max['contract'];$i++){
 
 // LOCATIONS
 for ($i=0;$i<pow($max['locations'],1/5);$i++){
-	$query="INSERT INTO glpi_dropdown_locations VALUES ('','lieu $i','0','','comment lieu $i')";
+	$query="INSERT INTO glpi_dropdown_locations VALUES ('','lieu $i','0','','comment lieu $i','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$newID=$db->insert_id();
 	for ($j=0;$j<mt_rand(0,pow($max['locations'],1/4));$j++){
-		$query="INSERT INTO glpi_dropdown_locations VALUES ('','s-lieu $j','$newID','','comment s-lieu $j')";
+		$query="INSERT INTO glpi_dropdown_locations VALUES ('','s-lieu $j','$newID','','comment s-lieu $j','2')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$newID2=$db->insert_id();
 		for ($k=0;$k<mt_rand(0,pow($max['locations'],1/4));$k++){
-			$query="INSERT INTO glpi_dropdown_locations VALUES ('','ss-lieu $k','$newID2','','comment ss-lieu $k')";
+			$query="INSERT INTO glpi_dropdown_locations VALUES ('','ss-lieu $k','$newID2','','comment ss-lieu $k','3')";
 			$db->query($query) or die("PB REQUETE ".$query);
 			$newID3=$db->insert_id();
 			for ($l=0;$l<mt_rand(0,pow($max['locations'],1/4));$l++){
-				$query="INSERT INTO glpi_dropdown_locations VALUES ('','sss-lieu $l','$newID3','','comment sss-lieu $l')";
+				$query="INSERT INTO glpi_dropdown_locations VALUES ('','sss-lieu $l','$newID3','','comment sss-lieu $l','4')";
 				$db->query($query) or die("PB REQUETE ".$query);
 				$newID4=$db->insert_id();
 				for ($m=0;$m<mt_rand(0,pow($max['locations'],1/4));$m++){
-					$query="INSERT INTO glpi_dropdown_locations VALUES ('','ssss-lieu $m','$newID4','','comment ssss-lieu $m')";
+					$query="INSERT INTO glpi_dropdown_locations VALUES ('','ssss-lieu $m','$newID4','','comment ssss-lieu $m',5)";
 					$db->query($query) or die("PB REQUETE ".$query);
 				}	
 			}	
