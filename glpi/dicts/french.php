@@ -164,6 +164,8 @@ $lang["central"][8]="Ajouts";
 $lang["central"][9]="Vos tickets en cours";
 $lang["central"][10]="Les nouveaux tickets";
 $lang["central"][11]="Vos tickets en attente";
+$lang["central"][12]="Vue personnelle";
+$lang["central"][13]="Vue globale";
 
 $lang["choice"][0]="Non";
 $lang["choice"][1]="Oui";
