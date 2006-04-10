@@ -72,7 +72,11 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		$newID=$fup->add($_POST);
 
 		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][20]." $newID.");
-		glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=".$_POST["tracking"]);
+		glpi_header($_SERVER['HTTP_REFERER']);
+//		if ($_SESSION["glpitype"]="normal")
+//			glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
+//		else 
+//			glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=".$_POST["tracking"]);
 	}	
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
@@ -84,6 +88,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	}
 	else {
 		 showJobDetails($_GET["ID"]);
+		 showFollowupsSummary($_GET["ID"]);
 	}
 }
 elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
