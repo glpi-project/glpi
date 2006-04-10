@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-04-09 23:10
+#GLPI Dump database on 2006-04-10 22:20
 
 ### Dump table glpi_cartridges
 
@@ -1131,6 +1131,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-10 22:20:05','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1587,7 +1588,9 @@ INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','
 DROP TABLE IF EXISTS `glpi_profiles`;
 CREATE TABLE `glpi_profiles` (
     `ID` int(11) NOT NULL auto_increment,
+    `name` varchar(255),
     `interface` varchar(50) DEFAULT 'helpdesk' NOT NULL,
+    `default` enum('0','1') DEFAULT '0' NOT NULL,
     `computer` char(1),
     `monitor` char(1),
     `software` char(1),
@@ -1631,6 +1634,10 @@ CREATE TABLE `glpi_profiles` (
    KEY interface (`interface`)
 ) TYPE=MyISAM;
 
+INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r',NULL,NULL,'r','r',NULL,NULL,NULL,NULL,'r',NULL,NULL,NULL,NULL,'r','1',NULL,'0',NULL,NULL,NULL,NULL,NULL,'1','0','1',NULL,NULL,NULL);
+INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r',NULL,NULL,NULL,'r','r',NULL,'w','r','r','1','1','0','0','0','1','0','0','1','0','1','1','0','1');
+INSERT INTO glpi_profiles VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w',NULL,'w','r','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1');
+INSERT INTO glpi_profiles VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w','w','w','r','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1');
 
 ### Dump table glpi_reminder
 
