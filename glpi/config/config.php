@@ -254,6 +254,7 @@ $glpidir=str_replace($phproot,"",str_replace('\\', '/',getcwd()));
 $globaldir=preg_replace("/\/[a-zA-Z-]+\.php/","",$_SERVER['REQUEST_URI']);
 $globaldir=preg_replace("/\?.*/","",$globaldir);
 $cfg_glpi["root_doc"]=str_replace($glpidir,"",$globaldir);
+$cfg_glpi["root_doc"]=preg_replace("/\/$/","",$cfg_glpi["root_doc"]);
 
 // *************************** Mode NORMAL / TRALATION /DEBUG  **********************
 // *********************************************************************************
