@@ -1026,7 +1026,6 @@ function showFormConfigGen($target){
 	echo "<form name='form' action=\"$target\" method=\"post\">";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][101]." </td><td> <input type=\"text\" name=\"root_doc\" value=\"". $db->result($result,0,"root_doc") ."\"></td></tr>";
 	$default_language=$db->result($result,0,"default_language");
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
 		while (list($val)=each($cfg_glpi["languages"])){
@@ -1508,10 +1507,10 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($root_doc,$event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users,$post_only_followup,$ocs_mode,$debug) {
+function updateConfigGen($event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users,$post_only_followup,$ocs_mode,$debug) {
 	
 	global $db;	
-		$query = "update glpi_config set root_doc = '". $root_doc ."', ";
+		$query = "update glpi_config set ";
 		$query.= "event_loglevel = '". $event_loglevel ."', default_language = '". $default_language ."',";
 		$query.= "expire_events = '". $expire_events ."', permit_helpdesk='". $permit_helpdesk ."',";
 		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";

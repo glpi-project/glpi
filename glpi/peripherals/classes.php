@@ -153,6 +153,7 @@ class Peripheral  extends CommonDBTM  {
 	}
 
 	function cleanDBonPurge($ID) {
+		global $db;
 
 		$query="select * from glpi_reservation_item where (device_type='".PERIPHERAL_TYPE."' and id_device='$ID')";
 		if ($result = $db->query($query)) {

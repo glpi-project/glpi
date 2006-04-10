@@ -76,15 +76,14 @@ if ($dbocs->numrows($result_ocs)>0){
 		$already_linked[$data["ocs_id"]]=$data["last_update"];
 		}
 	}
-
 	// Get all existing computers name in GLPI
 	$computer_names=array();
 	if ($db->numrows($result_glpi_comp)>0){
 		while($data=$dbocs->fetch_array($result_glpi_comp)){
-		$computer_names[$data["name"]]=$data["ID"];
+			$computer_names[$data["name"]]=$data["ID"];
 		}
 	}
-	
+
 	// Clean $hardware from already linked element
 	if (count($already_linked)>0){
 		foreach ($already_linked as $ID => $date){
