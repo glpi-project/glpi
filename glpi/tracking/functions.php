@@ -1887,17 +1887,17 @@ function showFollowupsSummary($tID){
 
 
 
-		$rand=mt_rand();
+	$rand=mt_rand();
+	
+	echo "<script type='text/javascript' >\n";
+	echo "function showAddFollowup(){\n";
+	echo "Element.hide('viewfollowup');";
+	echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$tID'});";
+	echo "};";
+	echo "</script>";
 
-		echo "<script type='text/javascript' >\n";
-		echo "function showAddFollowup(){\n";
-		echo "Element.hide('viewfollowup');";
-		echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$tID'});";
-		echo "};";
-		echo "</script>";
-
-		echo "<div id='viewfollowup'>\n";
-		echo "</div>\n";	
+	echo "<div id='viewfollowup'>\n";
+	echo "</div>\n";	
 
 
 	echo "<div align='center'>";
