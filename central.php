@@ -62,7 +62,12 @@ if (isset($_GET['redirect'])){
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID");
 }
 
+// show "my view" in first
+if (!isset($_SESSION['glpi_viewcentral'])) $_SESSION['glpi_viewcentral']="my";
+if (isset($_GET['onglet'])) $_SESSION['glpi_viewcentral']=$_GET['onglet'];
 
+if (!isset($_GET['start'])) $_GET['start']=0;
+if(empty($_GET["start"])) $_GET["start"] = 0;
 // Greet the user
 
 echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</span></b></div>";
@@ -70,69 +75,96 @@ echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$lang["central"]
 
 checkNewVersionAvailable();
 
-if (!isset($_GET['start'])) $_GET['start']=0;
 
 echo "<br><br><div align='center'>";
-echo "<table><tr><td align='center' valign='top'  width='450px'>";
+showCentralOnglets($_SERVER["PHP_SELF"],$_SESSION['glpi_viewcentral']);
 
-showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
-echo "</td>";
-echo "<td align='center' valign='top'  width='450px'>";
-ShowPlanningCentral($_SESSION["glpiID"]);
-echo "</td></tr>";
+if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI 
 
-
-
-echo "<tr>";
-
-
-echo "<td  align='center' valign='top' width='450px'>";
-
-showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
-
-echo "</td>";
-
-
-echo "<td  align='center' valign='top' width='450'>";
-	// Show Job count with links
-
-showCentralReminder();
-echo "</td>";
-echo "</tr><tr><td align='center' valign='top'  width='450px'>";
-showCentralJobCount();
-echo "</td>";
-
-echo "<td align='center' valign='top'  width='450px'>";
-showCentralReminder("public");
-echo "</td></tr>";
-
-echo "<tr>";
-echo "<td  align='center' valign='top' width='450px'>";
-	if ($cfg_glpi["num_of_events"]>0){
+	echo "<table  class='tab_cadre_central' ><tr><td align='center' valign='top'  width='450px'><br>";
 	
-	 //Show last add events
-	showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+	showCentralJobCount();
+	echo "</td>";
+	echo "<td align='center' valign='top'  width='450px'>";
+	if ($cfg_glpi["num_of_events"]>0){
 		
+		//Show last add events
+		showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+			
+		}
+		else {echo "&nbsp";}
+	echo "</td></tr>";
+	
+	
+		
+	echo "</table>";
+	echo "</div>";
+	
+	
+	if ($cfg_glpi["jobs_at_login"]){
+		echo "<br>";
+		
+		echo "<div align='center'><b>";
+		echo $lang["central"][10];
+		echo "</b></div>";
+		
+		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"new");
+		//showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 	}
-	else {echo "&nbsp";}
 
-echo "</td><td  align='center' valign='top' width='450px'>&nbsp;</td>";
-echo "</tr>";
-echo "</table>";
-echo "</div>";
+}else{  // show "my view" 
 
-if(empty($_GET["start"])) $_GET["start"] = 0;
-if ($cfg_glpi["jobs_at_login"]){
-echo "<br>";
 
-echo "<div align='center'><b>";
-echo $lang["central"][10];
-echo "</b></div>";
+echo "<table class='tab_cadre_central' ><tr><td align='center' valign='top'  width='450px'>";
+	
+	showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
+	echo "</td>";
+	echo "<td align='center' valign='top'  width='450px'><br>";
+	ShowPlanningCentral($_SESSION["glpiID"]);
+	echo "</td></tr>";
+	
+	
+	
+	echo "<tr>";
+	
+	
+	echo "<td  align='center' valign='top' width='450px'>";
+	
+	showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
+	
+	echo "</td>";
+	
+	
+	echo "<td  align='center' valign='top' width='450'>";
+		// Show Job count with links
+	
+	showCentralReminder();
+	echo "</td>";
+	echo "</tr><tr><td align='center' valign='top'  width='450px'>";
+	//showCentralJobCount();
+	echo "</td>";
+	
+	echo "<td align='center' valign='top'  width='450px'>";
+	showCentralReminder("public");
+	echo "</td></tr>";
+	
+	
+	echo "</table>";
+	echo "</div>";
+	
+	
+	
 
-showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"new");
-//showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
+
+
+
+
+
+
+
 }
 
+echo "<br>";
 do_hook("central_action");
 
 commonFooter();
