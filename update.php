@@ -4001,16 +4001,47 @@ $query="CREATE TABLE `glpi_profiles` (
 	$query="INSERT INTO `glpi_profiles` VALUES (4, 'super-admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
 	$db->query($query) or die("0.68 add super-admin profile ".$lang["update"][90].$db->error());
 
-	$query="SELECT post_only_followup FROM glpi_config WHERE ID='1' ";
-	$result=$db->query($query)
-	if ($db->result($result,0,0)){
-		$query="UPDATE glpi_profiles SET comment_ticket='1';";
-		$db->query($query) or die("0.68 update default glpi_profiles ".$lang["update"][90].$db->error());
-	}
-
-	// TO DO : drop post-only_followup field of glpi_config
-
 }
+
+
+	if (FieldExists("glpi_config","`post_only_followup`")){
+
+		$query="SELECT post_only_followup FROM glpi_config WHERE ID='1' ";
+		$result=$db->query($query);
+		if ($db->result($result,0,0)){
+			$query="UPDATE glpi_profiles SET comment_ticket='1';";
+			$db->query($query) or die("0.68 update default glpi_profiles ".$lang["update"][90].$db->error());
+		}
+
+		// TO DO : drop post_only_followup field of glpi_config
+		$query="ALTER TABLE `glpi_config` DROP `post_only_followup`;";
+		$db->query($query) or die("0.68 drop post_only_followup in glpi_config ".$lang["update"][90].$db->error());
+	}
+	
+	if(!TableExists("glpi_users_profiles")) {	
+		$query="CREATE TABLE `glpi_users_profiles` (
+		`ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		`FK_users` INT NOT NULL DEFAULT '0',
+		`FK_profiles` INT NOT NULL DEFAULT '0',
+		KEY(`FK_users`),
+		KEY(`FK_profiles`)
+		) TYPE = MYISAM ;";
+		$db->query($query) or die("0.68 create users_profiles table ".$lang["update"][90].$db->error());
+
+		$profiles=array("post-only"=>1,"normal"=>2,"admin"=>3,"super-admin"=>4);
+		$query="SELECT ID, type FROM glpi_users";
+		$result=$db->query($query);
+		if ($db->numrows($result)){
+			while ($data=$db->fetch_array($result)){
+				$query2="INSERT INTO glpi_users_profiles (FK_users,FK_profiles) VALUES ('".$data['ID']."','".$profiles[$data['type']]."')";
+				$db->query($query2);
+			}
+		}
+		// TODO drop type in glpi_users
+
+	}
+	
+
 
 // Convert old content of knowbase in HTML And add new fields
 if(TableExists("glpi_kbitems")){

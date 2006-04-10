@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-04-10 22:20
+#GLPI Dump database on 2006-04-10 23:09
 
 ### Dump table glpi_cartridges
 
@@ -1131,7 +1131,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-10 22:20:05','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-10 23:09:48','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1990,3 +1990,21 @@ INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D275933019
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','post-only','','no','0','no','english','1');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','super-admin','','yes','0','yes','french','1');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','normal','','no','0','no','english','1');
+
+### Dump table glpi_users_profiles
+
+DROP TABLE IF EXISTS `glpi_users_profiles`;
+CREATE TABLE `glpi_users_profiles` (
+    `ID` int(11) NOT NULL auto_increment,
+    `FK_users` int(11) DEFAULT '0' NOT NULL,
+    `FK_profiles` int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (`ID`),
+   KEY FK_users (`FK_users`),
+   KEY FK_profiles (`FK_profiles`)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_users_profiles VALUES ('1','1','1');
+INSERT INTO glpi_users_profiles VALUES ('2','2','4');
+INSERT INTO glpi_users_profiles VALUES ('3','3','1');
+INSERT INTO glpi_users_profiles VALUES ('4','4','4');
+INSERT INTO glpi_users_profiles VALUES ('5','5','2');
