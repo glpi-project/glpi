@@ -228,8 +228,22 @@ td { }
 	z-index:1;
 	text-align: left;
 	font-size: 11px;
-	
+	background-color: #ffffff;
 }
+
+.tab_cadre_central{
+-moz-border-radius: 4px;
+	border: 1px solid #bbbbbb;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
+	width:950px;
+	cell-padding: 10px,;
+	/* background-color: #FFF4DF; */
+	background : url("pics/fond-central.png") repeat-x top right ;
+}
+
+
 
 .tab_cadre_fixe{
 	-moz-border-radius: 4px;
@@ -246,9 +260,10 @@ td { }
 	text-align: left;
 	font-size: 11px;
 	width: 80%;
+	background-color: #ffffff;
 }
 
-.tab_cadre th, .tab_cadre_fixe th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th {
+.tab_cadre th, .tab_cadre_fixe th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th  {
 	font-size: 11px;
 	font-weight: bold;
 	background-color: #fccc6f;

@@ -935,5 +935,24 @@ function printCleanArray($tab,$pad=0){
 		else echo $val."<br>";
 		}
 }
+/**
+*  show onglet for central
+*
+* @param 
+* @param 
+* @param 
+* @return nothing
+*/
+function showCentralOnglets($target,$actif) {
+	global $lang, $HTMLRel;
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li "; if ($actif=="my"){ echo "class='actif'";} echo  "><a href='$target?onglet=my'>".$lang["central"][12]."</a></li>";
+	echo "<li "; if ($actif=="global"){ echo "class='actif'";} echo  "><a href='$target?onglet=global'>".$lang["central"][13]."</a></li>";
+	echo "</ul></div>";
+}
+
+
+
+
 
 ?>
