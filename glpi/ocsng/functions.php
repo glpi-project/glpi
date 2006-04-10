@@ -1271,7 +1271,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 					}	
 					if ($id_periph){
 						$connID=Connect("",$id_periph,$glpi_id,PERIPHERAL_TYPE);
-						addToOcsArray($glpi_id,array($connID=>$periph["name"]),"import_periph");
+						addToOcsArray($glpi_id,array($connID=>$periph["name"]),"import_peripheral");
 					}
 				} else {
 					$id=array_search($periph["name"],$import_periph);
