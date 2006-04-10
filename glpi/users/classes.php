@@ -341,11 +341,11 @@ function delete($input) {
 				$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
 				$result=$db->query($query);
 				if ($db->numrows($result)==0){
-					$db->query("INSERT INTO glpi_dropdown_locations (name,completename) VALUES ('".$this->fields['location']."','".$this->fields['location']."')");
-					}
+					$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
 					$this->fields['location']=$db->insert_id();
+					regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
+				} else $this->fields['location']=$db->result($result,0,"ID");
 			}
-			
 			return true;
   		}
   	}
@@ -423,9 +423,10 @@ function delete($input) {
 					$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
 					$result=$db->query($query);
 					if ($db->numrows($result)==0){
-						$db->query("INSERT INTO glpi_dropdown_locations (name,completename) VALUES ('".$this->fields['location']."','".$this->fields['location']."')");
-						}
+						$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
 						$this->fields['location']=$db->insert_id();
+						regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
+					} else $this->fields['location']=$db->result($result,0,"ID");
 				}
 
 				return true;
