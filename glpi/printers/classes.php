@@ -158,7 +158,7 @@ class Printer  extends CommonDBTM {
 
 
 	function cleanDBonPurge($ID) {
-
+		global $db;
 		$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".PRINTER_TYPE."')";
 		$result = $db->query($query);
 		while ($data = $db->fetch_array($result)){
