@@ -84,7 +84,7 @@ $lang["buttons"][34]="Annuler";
 $lang["buttons"][35]="Avancée";
 $lang["buttons"][36]="Basique";
 $lang["buttons"][37]="Importer";
-$lang["buttons"][38]="Déverouiller";
+$lang["buttons"][38]="Déverrouiller";
 
 $lang["calendar"][0]="Erreur : date invalide";
 
