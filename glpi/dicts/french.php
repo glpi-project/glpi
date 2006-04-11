@@ -793,7 +793,7 @@ $lang["Menu"][31]="Helpdesk";
 $lang["Menu"][32]="Consommables";
 $lang["Menu"][33]="OCSNG";
 $lang["Menu"][34]="Téléphones";
-$lang["Menu"][35]="Profiles";
+$lang["Menu"][35]="Profils";
 
 $lang["monitors"][0]="Ajouter moniteur...";
 $lang["monitors"][4]="Moniteur";
@@ -961,8 +961,8 @@ $lang["printers"][33]="Gestion globale";
 $lang["printers"][34]="Gestion unitaire";
 $lang["printers"][35]="Type de gestion";
 
-$lang["profiles"][0]="Ajouter un profile...";
-$lang["profiles"][1]="Sélectionnez un profile...";
+$lang["profiles"][0]="Ajouter un profil...";
+$lang["profiles"][1]="Sélectionnez un profil...";
 $lang["profiles"][2]="Interface";
 $lang["profiles"][3]="Droits de l'interface Helpdesk";
 $lang["profiles"][4]="Droits de l'interface Central";
@@ -974,7 +974,7 @@ $lang["profiles"][9]="Voir les suivis publics";
 $lang["profiles"][10]="Lecture";
 $lang["profiles"][11]="Ecriture";
 $lang["profiles"][12]="Aucun Accès";
-$lang["profiles"][13]="Profile par défaut";
+$lang["profiles"][13]="Profil par défaut";
 
 $lang["reminder"][0]="Notes personnelles";
 $lang["reminder"][1]="Notes publiques";

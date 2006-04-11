@@ -130,17 +130,9 @@ function showHelpdeskProfilesForm($ID){
 	echo "<td>".$lang["profiles"][7].":</td><td>";
 	dropdownYesNoInt("show_ticket",$prof->fields["show_ticket"]);
 	echo "</td>";
-	echo "<td>".$lang["profiles"][8].":</td><td>";
-	dropdownYesNoInt("show_full_ticket",$prof->fields["show_full_ticket"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'>";
 	echo "<td>".$lang["profiles"][9].":</td><td>";
 	dropdownYesNoInt("observe_ticket",$prof->fields["observe_ticket"]);
-	echo "</td>";
-	echo "<td>&nbsp;</td><td>&nbsp;";
 	echo "</td></tr>";
-
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["Menu"][18]."</strong></td>";
 	echo "</tr>";
@@ -154,21 +146,6 @@ function showHelpdeskProfilesForm($ID){
 	dropdownNoneReadWrite("reservation",$prof->fields["reservation"],1,1,0);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'>";
-	echo "<td>".$lang["document"][7].":</td><td>";
-	dropdownNoneReadWrite("typedoc",$prof->fields["typedoc"],0,1,0);
-	echo "</td>";
-	echo "<td>".$lang["Menu"][14].":</td><td>";
-	dropdownNoneReadWrite("user",$prof->fields["user"],1,1,0);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'>";
-	echo "<td>".$lang["Menu"][27].":</td><td>";
-	dropdownNoneReadWrite("document",$prof->fields["document"],1,1,0);
-	echo "</td>";
-	echo "<td>&nbsp;</td><td>&nbsp;";
-	echo "</td></tr>";
-	
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 	if ($ID){
 		echo "<input type='hidden' name='ID' value=$ID>";
