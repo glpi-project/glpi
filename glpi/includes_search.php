@@ -1494,7 +1494,7 @@ CONTRACT_TYPE => array(
 					"name" => "Echeance",
 				),	
 			13 => array(	"table" => "glpi_contracts", 
-					"field" => "echeancepreavis",
+					"field" => "echeance_preavis",
 					"linkfield"=>"",
 					"name" => "Echeance + preavis",
 							),	
