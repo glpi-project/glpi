@@ -1066,6 +1066,13 @@ case "glpi_users.name" :
 case "glpi_contracts.end_date" :
 	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 	break;
+case "glpi_contracts.echeancepreavis" : // ajout jmd
+	return "";
+	break;
+case "glpi_contracts.echeance" : // ajout jmd
+	return "";
+	break;
+
 case "glpi_device_hdd.specif_default" :
 	return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
 	break;
@@ -1160,6 +1167,38 @@ case "glpi_contracts.end_date" :
 		}
 		else {
 			return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
+		}
+
+	
+	break;
+// ajout jmd
+case "glpi_contracts.echeance" :
+
+		$search=array("/\&lt;/","/\&gt;/");
+		$replace=array("<",">");
+		$val=preg_replace($search,$replace,$val);
+		if (ereg("([<>])(.*)",$val,$regs)){
+			return "DATEDIFF( ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]."";
+		}
+		else {
+			// return ? 
+		}
+
+	
+	break;
+// ajout jmd
+case "glpi_contracts.echeancepreavis" :
+
+		$search=array("/\&lt;/","/\&gt;/");
+		$replace=array("<",">");
+		$val=preg_replace($search,$replace,$val);
+		if (ereg("([<>])(.*)",$val,$regs)){
+			
+			return " $table.notice<>0 AND DATEDIFF( ADDDATE($table.begin_date, INTERVAL ($table.duration+$table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]."";
+
+		}
+		else {
+			// return  ?
 		}
 
 	
@@ -1512,6 +1551,10 @@ switch ($field){
 		if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
 			return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
 		break;
+	case "glpi_contracts.echeancepreavis": // ajout jmd
+		return "toto";
+	case "glpi_contracts.echeance": // ajout jmd
+		return "toto";
 	case "glpi_contracts.begin_date":
 	case "glpi_infocoms.buy_date":
 	case "glpi_infocoms.use_date":

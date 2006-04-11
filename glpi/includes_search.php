@@ -1487,7 +1487,20 @@ CONTRACT_TYPE => array(
 					"linkfield"=>"cost",
 					"name" => $lang["financial"][5],
 				),
-		),
+			
+			12 => array(	"table" => "glpi_contracts", 
+					"field" => "echeance",
+					"linkfield"=>"",
+					"name" => "Echeance",
+				),	
+			13 => array(	"table" => "glpi_contracts", 
+					"field" => "echeancepreavis",
+					"linkfield"=>"",
+					"name" => "Echeance + preavis",
+							),	
+			
+
+	),
 CARTRIDGE_TYPE => array(
 			1 => array(	"table" => "glpi_cartridges_type", 
 					"field" => "name",
