@@ -283,7 +283,7 @@ class CommonDBTM {
 			$query .= "' WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
-			echo $query;
+			
 			$result=$db->query($query);
 		}
 		$this->post_updateInDB($updates);
