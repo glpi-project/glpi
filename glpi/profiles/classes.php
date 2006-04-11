@@ -43,6 +43,15 @@ class Profile extends CommonDBTM{
 		$this->type=-1;
 	}
 
+	function post_updateItem($input,$updates,$history=1) {
+		global $db;
+		
+		if (isset($input["default"])&&$input["default"]==1){
+			$query="UPDATE glpi_profiles SET `default`='0' WHERE ID <> '".$input['ID']."'";
+			$db->query($query);
+		}
+	}
+
 	function getFromDBForUser($ID){
 
 		// Make new database object and fill variables

@@ -276,13 +276,14 @@ class CommonDBTM {
 		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE ".$this->table." SET ";
+			$query  = "UPDATE `".$this->table."` SET `";
 			$query .= $updates[$i];
-			$query .= "='";
+			$query .= "`='";
 			$query .= $this->fields[$updates[$i]];
 			$query .= "' WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
+			echo $query;
 			$result=$db->query($query);
 		}
 		$this->post_updateInDB($updates);
@@ -427,13 +428,14 @@ class CommonDBTM {
 	**/
 	// specific ones : document, reservationresa, user, planningtracking
 	function update($input,$history=1) {
-	
+		unset($input['update']);
 		$input=$this->prepareInputForUpdate($input);
 
 		$this->getFromDB($input["ID"]);
 
 		// Fill the update-array with changes
 		$x=0;
+		$updates=array();
 		foreach ($input as $key => $val) {
 			if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
 				// Debut logs
@@ -446,8 +448,10 @@ class CommonDBTM {
 				$x++;
 			}
 		}
-		if(isset($updates))
+		if(count($updates)){
 			$this->updateInDB($updates);
+			
+		} 
 
 		$this->post_updateItem($input,$updates,$history);
 

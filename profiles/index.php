@@ -50,7 +50,7 @@ $prof=new Profile();
 if (isset($_POST["update"])){
 	$prof->update($_POST);
 }else if (isset($_POST["add"])){
-	$prof->add($_POST);
+	$ID=$prof->add($_POST);
 }
 
 	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/profiles/index.php\">";
