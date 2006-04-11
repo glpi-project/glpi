@@ -45,12 +45,13 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_enterprises.php");
+//include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_users.php");
 include ($phproot . "/glpi/includes_setup.php");
 include ($phproot . "/glpi/includes_planning.php");
 include ($phproot . "/glpi/includes_phones.php");
 include ($phproot . "/glpi/includes_reminder.php");
+include ($phproot . "/glpi/includes_financial.php");
 
 checkAuthentication("normal");
 
@@ -93,11 +94,11 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 			
 		}
 		else {echo "&nbsp";}
-	echo "</td></tr>";
-	
-	
-		
-	echo "</table>";
+	echo "</td></tr><tr>";
+	echo "<td align='center' valign='top'  width='450px'>";
+	showCentralContract();
+	echo "</td><td align='center' valign='top'  width='450px'></td>";	
+	echo "</tr></table>";
 	echo "</div>";
 	
 	
