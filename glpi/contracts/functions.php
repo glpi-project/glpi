@@ -256,23 +256,27 @@ function showCentralContract(){
 	 $result = $db->query($query);
 	$contract0=$db->numrows($result);
 	
+	/*
 	// contrats  echeance j-7
 	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
 	 $result = $db->query($query);
 	$contract7= $db->numrows($result);
+	*/
 
 	// contrats echeance j -30
 	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
 	 $result = $db->query($query);
 	$contract30= $db->numrows($result);
 	
+	/*
 	// contrats avec préavis echeance j-7
 	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration+glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration+glpi_contracts.notice) MONTH),CURDATE() )<=7";
 	 $result = $db->query($query);
 	$contractpre7= $db->numrows($result);
+	*/
 
 	// contrats avec préavis echeance j -30
-	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration+glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration+glpi_contracts.notice) MONTH),CURDATE() )<30";
+	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration+glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
 	 $result = $db->query($query);
 	$contractpre30= $db->numrows($result);
 
@@ -283,19 +287,19 @@ function showCentralContract(){
 	echo "<tr><th colspan='2'><b><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset=reset_before\">Contrats</a></b></th></tr>";
 	//echo "<tr><th ><b>".$lang["tracking"][28]."</b></th><th>".$lang["tracking"][29]."</th></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=new&amp;reset=reset_before\">ECHUS</a> </td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&glpisearchcount=2&contains%5B0%5D=%3E0&field%5B0%5D=20&link%5B1%5D=AND&contains%5B1%5D=%3C1&field%5B1%5D=20&sort=20&deleted=N&start=0\">ECHUS depuis - de 30j</a> </td>";
 	echo "<td>$contract0</td></tr>";
+	//echo "<tr class='tab_bg_2'>";
+	//echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=assign&amp;reset=reset_before\">Echéance 7J</a></td>";
+	//echo "<td>".$contract7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=assign&amp;reset=reset_before\">Echéance 7J</a></td>";
-	echo "<td>".$contract7."</td></tr>";
-	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=plan&amp;reset=reset_before\">Echéance 30 J</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&glpisearchcount=2&contains%5B0%5D=%3C0&field%5B0%5D=20&link%5B1%5D=AND&contains%5B1%5D=%3E-1&field%5B1%5D=20&sort=20&deleted=N&start=0\">Echéance 30 J</a></td>";
 	echo "<td>".$contract30."</td></tr>";
+	//echo "<tr class='tab_bg_2'>";
+	//echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=plan&amp;reset=reset_before\">Préavis Echéance 7 J</a></td>";
+	//echo "<td>".$contractpre7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=plan&amp;reset=reset_before\">Préavis Echéance 7 J</a></td>";
-	echo "<td>".$contractpre7."</td></tr>";
-	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=plan&amp;reset=reset_before\">Préavis Echéance 30 J</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?contains%5B0%5D=%3E0&field%5B0%5D=20&link%5B1%5D=AND&contains%5B1%5D=%3C1&field%5B1%5D=20&sort=20&deleted=N&start=0\">Préavis Echéance 30 J</a></td>";
 	echo "<td>".$contractpre30."</td></tr>";
 	
 	echo "</table></div><br>";
