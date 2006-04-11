@@ -44,8 +44,13 @@ function manageGetValuesInSearch($type=0){
 global $_GET;
 $tab=array();
 
-if (isset($_GET["reset_before"]))
+if (isset($_GET["reset_before"])){
 	unset($_SESSION['glpisearch'][$type]);
+	unset($_SESSION['glpisearchcount'][$type]);
+	unset($_SESSION['glpisearchcount2'][$type]);
+	if (isset($_GET["glpisearchcount"])) 
+		$_SESSION["glpisearchcount"][$type]=$_GET["glpisearchcount"];
+	}
 
 if (is_array($_GET))
 foreach ($_GET as $key => $val)
