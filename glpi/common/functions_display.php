@@ -91,6 +91,7 @@ function commonHeader($title,$url)
 		$lang["Menu"][13]=>array("/stats/index.php","1"));
 			
 	$config = array($lang["Menu"][14]=>array("/users/index.php","u"),
+		$lang["Menu"][35]=>array("/profiles/index.php","p"),
 		$lang["Menu"][10]=>array("/setup/index.php","2"),
 		$lang["Menu"][11]=>array("/preferences/index.php","p"),
 		$lang["Menu"][12]=>array("/backups/index.php","b"),
