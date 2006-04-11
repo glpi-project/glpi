@@ -1181,7 +1181,7 @@ case "glpi_contracts.echeance" :
 			return " DATEDIFF(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]." ";
 		}
 		else {
-			// return ? 
+			return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
 		}
 
 	
@@ -1194,11 +1194,15 @@ case "glpi_contracts.echeance_preavis" :
 		$val=preg_replace($search,$replace,$val);
 		if (ereg("([<>])(.*)",$val,$regs)){
 			
+<<<<<<< .mine
+			return " $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
+=======
 			return " $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration-$table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
+>>>>>>> .r3131
 
 		}
 		else {
-			// return  ?
+			return " ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
 		}
 
 	
