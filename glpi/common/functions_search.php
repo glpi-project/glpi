@@ -1066,11 +1066,11 @@ case "glpi_users.name" :
 case "glpi_contracts.end_date" :
 	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 	break;
-case "glpi_contracts.echeancepreavis" : // ajout jmd
-	return "";
+case "glpi_contracts.echeance_preavis" : // ajout jmd
+	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".notice AS ".$NAME."_".$num."_3, ";
 	break;
 case "glpi_contracts.echeance" : // ajout jmd
-	return "";
+	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 	break;
 
 case "glpi_device_hdd.specif_default" :
@@ -1178,7 +1178,7 @@ case "glpi_contracts.echeance" :
 		$replace=array("<",">");
 		$val=preg_replace($search,$replace,$val);
 		if (ereg("([<>])(.*)",$val,$regs)){
-			return "DATEDIFF( ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]."";
+			return " DATEDIFF(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]." ";
 		}
 		else {
 			// return ? 
@@ -1187,14 +1187,14 @@ case "glpi_contracts.echeance" :
 	
 	break;
 // ajout jmd
-case "glpi_contracts.echeancepreavis" :
+case "glpi_contracts.echeance_preavis" :
 
 		$search=array("/\&lt;/","/\&gt;/");
 		$replace=array("<",">");
 		$val=preg_replace($search,$replace,$val);
 		if (ereg("([<>])(.*)",$val,$regs)){
 			
-			return " $table.notice<>0 AND DATEDIFF( ADDDATE($table.begin_date, INTERVAL ($table.duration+$table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]."";
+			return " $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration+$table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
 
 		}
 		else {
@@ -1551,7 +1551,7 @@ switch ($field){
 		if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
 			return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
 		break;
-	case "glpi_contracts.echeancepreavis": // ajout jmd
+	case "glpi_contracts.echeance_preavis": // ajout jmd
 		return "toto";
 	case "glpi_contracts.echeance": // ajout jmd
 		return "toto";
