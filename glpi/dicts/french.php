@@ -793,6 +793,7 @@ $lang["Menu"][31]="Helpdesk";
 $lang["Menu"][32]="Consommables";
 $lang["Menu"][33]="OCSNG";
 $lang["Menu"][34]="Téléphones";
+$lang["Menu"][35]="Profiles";
 
 $lang["monitors"][0]="Ajouter moniteur...";
 $lang["monitors"][4]="Moniteur";
