@@ -974,6 +974,7 @@ $lang["profiles"][9]="Voir les suivis publics";
 $lang["profiles"][10]="Lecture";
 $lang["profiles"][11]="Ecriture";
 $lang["profiles"][12]="Aucun Accès";
+$lang["profiles"][13]="Profile par défaut";
 
 $lang["reminder"][0]="Notes personnelles";
 $lang["reminder"][1]="Notes publiques";

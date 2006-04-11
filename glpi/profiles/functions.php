@@ -113,9 +113,10 @@ function showHelpdeskProfilesForm($ID){
 	}
 
 	echo "<table class='tab_cadre'><tr>";
-	echo "<th colspan='4'>".$lang["profiles"][3].":</th></tr>";
-	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["title"][24]."</strong></td>";
-	echo "</tr>";
+	echo "<th colspan='4'>".$lang["profiles"][3].":&nbsp;&nbsp;".$lang["profiles"][13].":";
+	dropdownYesNoInt("default",$prof->fields["default"]);
+	echo "</th></tr>";
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["title"][24]."</strong></td></tr>";
 
 	echo "<tr class='tab_bg_2'>";
 	echo "<td>".$lang["profiles"][5].":</td><td>";
