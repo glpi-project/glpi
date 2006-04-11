@@ -661,6 +661,28 @@ function dropdownYesNoInt($name,$value){
 	echo "</select>\n";	
 }	
 
+
+/**
+* Make a select box for a None Read Write choice
+*
+*
+*
+* @param $name select name
+* @param $value preselected value.
+* @return nothing (print out an HTML select box)
+*/
+function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
+	global $lang;
+	echo "<select name='$name'>\n";
+	if ($none)
+		echo "<option value='' ".(empty($value)?" selected ":"").">".$lang["profiles"][12]."</option>\n";
+	if ($read)
+		echo "<option value='r' ".($value=='r'?" selected ":"").">".$lang["profiles"][10]."</option>\n";
+	if ($Write)
+		echo "<option value='r' ".($value=='w'?" selected ":"").">".$lang["profiles"][11]."</option>\n";
+	echo "</select>\n";	
+}	
+
 /**
 * Make a select box for Tracking device type
 *

@@ -961,7 +961,19 @@ $lang["printers"][33]="Gestion globale";
 $lang["printers"][34]="Gestion unitaire";
 $lang["printers"][35]="Type de gestion";
 
-
+$lang["profiles"][0]="Ajouter un profile...";
+$lang["profiles"][1]="Sélectionnez un profile...";
+$lang["profiles"][2]="Interface";
+$lang["profiles"][3]="Droits de l'interface Helpdesk";
+$lang["profiles"][4]="Droits de l'interface Central";
+$lang["profiles"][5]="Créer un ticket";
+$lang["profiles"][6]="Ajouter un suivi";
+$lang["profiles"][7]="Voir les tickets";
+$lang["profiles"][8]="Voir tous les suivis (publics et privés)";
+$lang["profiles"][9]="Voir les suivis publics";
+$lang["profiles"][10]="Lecture";
+$lang["profiles"][11]="Ecriture";
+$lang["profiles"][12]="Aucun Accès";
 
 $lang["reminder"][0]="Notes personnelles";
 $lang["reminder"][1]="Notes publiques";

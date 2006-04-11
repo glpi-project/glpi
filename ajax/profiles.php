@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: functions_display.php 3110 2006-04-10 10:15:23Z silvermat $
+ * @version $Id: autocompletion.php 2768 2006-02-24 05:15:47Z moyo $
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -33,49 +33,17 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_profiles.php");
 
-checkAuthentication("super-admin");
+	include ("_relpos.php");
+	include ($phproot."/glpi/includes.php");
+	include ($phproot."/glpi/includes_profiles.php");
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
 
-commonHeader($lang["Menu"][35],$_SERVER["PHP_SELF"]);
-titleProfiles();
+	checkAuthentication("super-admin");
 
-if(!isset($_POST["ID"])) $ID=0;
-else $ID=$_POST["ID"];
-
-$prof=new Profile();
-
-if (isset($_POST["update"])){
-	$prof->update($_POST);
-}else if (isset($_POST["add"])){
-	$prof->add($_POST);
-}
-
-	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/profiles/index.php\">";
-	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
-	echo $lang["profiles"][1].": </th></tr><tr class='tab_bg_1'><td>";
-
-	$query="SELECT ID, name FROM glpi_profiles ORDER BY name";
-	$result=$db->query($query);
-
-	echo "<select name='ID'>";
-	while ($data=$db->fetch_assoc($result)){
-		echo "<option value='".$data["ID"]."' ".($ID==$data["ID"]?"selected":"").">".$data['name']."</option>";
-	}
-	echo "</select>";
-	echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
-	echo "</table></form></div>";
-
-
-if(isset($_POST["ID"])){
-	showProfilesForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-} else if (isset($_GET["add"])){
-	showProfilesForm($_SERVER["PHP_SELF"],0);
-}
-
-commonFooter();
-
-
+	if ($_POST["interface"]=="helpdesk")
+		showHelpdeskProfilesForm($_POST["ID"]);
+	else if ($_POST["interface"]=="central")
+		showCentralProfilesForm($_POST["ID"]);
 ?>
