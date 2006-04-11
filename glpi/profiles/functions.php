@@ -143,7 +143,7 @@ function showHelpdeskProfilesForm($ID){
 	dropdownNoneReadWrite("faq",$prof->fields["faq"],1,1,0);
 	echo "</td>";
 	echo "<td>".$lang["title"][35].":</td><td>";
-	dropdownNoneReadWrite("reservation",$prof->fields["reservation"],1,1,0);
+	dropdownYesNoInt("reservation_helpdesk",$prof->fields["reservation_helpdesk"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
