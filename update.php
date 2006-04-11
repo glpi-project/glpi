@@ -3944,7 +3944,7 @@ function update065to068(){
 if(!TableExists("glpi_profiles")) {
 $query="CREATE TABLE `glpi_profiles` (
   `ID` int(11) NOT NULL auto_increment,
-  `name` varchar(255) NULL,
+  `name` varchar(255) default NULL,
   `interface` varchar(50) NOT NULL default 'helpdesk',
   `default` enum('0','1') NOT NULL default '0',
   `computer` char(1) default NULL,
@@ -3961,7 +3961,8 @@ $query="CREATE TABLE `glpi_profiles` (
   `contract_infocom` char(1) default NULL,
   `knowbase` char(1) default NULL,
   `faq` char(1) default NULL,
-  `reservation` char(1) default NULL,
+  `reservation_helpdesk` char(1) default NULL,
+  `reservation_central` char(1) default NULL,
   `reports` char(1) default NULL,
   `ocsng` char(1) default NULL,
   `dropdown` char(1) default NULL,
@@ -3971,6 +3972,7 @@ $query="CREATE TABLE `glpi_profiles` (
   `config` char(1) default NULL,
   `search_config` char(1) default NULL,
   `update` char(1) default NULL,
+  `profile` char(1) default NULL,
   `user` char(1) default NULL,
   `create_ticket` char(1) default NULL,
   `delete_ticket` char(1) default NULL,
@@ -3992,13 +3994,13 @@ $query="CREATE TABLE `glpi_profiles` (
 
 	$db->query($query) or die("0.68 add profiles ".$lang["update"][90].$db->error());
 
-	$query="INSERT INTO `glpi_profiles` VALUES (1, 'post-only', 'helpdesk', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'r', NULL, NULL, 'r', 'r', NULL, NULL, NULL, NULL, 'r', NULL, NULL, NULL, NULL, 'r', '1', NULL, '0', NULL, NULL, NULL, NULL, NULL, '1', '0', '1', NULL, NULL, NULL);";
+	$query="INSERT INTO `glpi_profiles` VALUES (1, 'post-only', 'helpdesk', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'r', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '0', NULL, NULL, NULL, NULL, NULL, '1', NULL, '1', NULL, NULL, NULL);";
 	$db->query($query) or die("0.68 add post-only profile ".$lang["update"][90].$db->error());
-	$query="INSERT INTO `glpi_profiles` VALUES (2, 'normal', 'central', '0', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', NULL, NULL, NULL, 'r', 'r', NULL, 'w', 'r', 'r', '1', '1', '0', '0', '0', '1', '0', '0', '1', '0', '1', '1', '0', '1');";
+	$query="INSERT INTO `glpi_profiles` VALUES (2, 'normal', 'central', '0', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', '1', 'r', 'r', NULL, NULL, NULL, 'r', 'r', NULL, 'w', 'r', NULL, 'r', '1', '1', '0', '0', '0', '1', '0', '0', '1', '0', '1', '1', '0', '1');";
 	$db->query($query) or die("0.68 add normal profile ".$lang["update"][90].$db->error());
-	$query="INSERT INTO `glpi_profiles` VALUES (3, 'admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', 'w', 'w', 'w', NULL, 'w', 'r', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
+	$query="INSERT INTO `glpi_profiles` VALUES (3, 'admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'w', 'w', 'w', 'w', NULL, 'w', 'r', 'r', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
 	$db->query($query) or die("0.68 add admin profile ".$lang["update"][90].$db->error());
-	$query="INSERT INTO `glpi_profiles` VALUES (4, 'super-admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
+	$query="INSERT INTO `glpi_profiles` VALUES (4, 'super-admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
 	$db->query($query) or die("0.68 add super-admin profile ".$lang["update"][90].$db->error());
 
 }
