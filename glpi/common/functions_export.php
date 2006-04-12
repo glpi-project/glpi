@@ -345,6 +345,8 @@ function html_clean($value){
 $search=array(
 	"/<a[^>]+>/",
 	"/<img[^>]+>/",
+	"/<span[^>]+>/",
+	"/<\/span>/",
 	"/<\/a>/",
 	"/<strong>/",
 	"/<\/strong>/",
@@ -358,6 +360,8 @@ $search=array(
 	"/&nbsp;/",
 	);
 $replace=array(
+	"",
+	"",
 	"",
 	"",
 	"",
