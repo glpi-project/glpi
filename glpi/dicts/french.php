@@ -444,11 +444,11 @@ $lang["financial"][89]="TCO (valeur+montant des interventions) ";
 $lang["financial"][90]="TCO mensuel  ";
 $lang["financial"][91]="TCO";
 $lang["financial"][92]="VNC";
-$lang["financial"][93]="Expiré(s) depuis ";
-$lang["financial"][94]="Expire(nt) dans moins de 7 jours";
-$lang["financial"][95]="Expire(nt) dans moins de 30 jours";
-$lang["financial"][96]="Expire(nt)+préavis dans moins de 7 jours";
-$lang["financial"][97]="Expire(nt)+préavis dans moins de 30 jours";
+$lang["financial"][93]="Contrat(s) expiré(s) depuis moins de 30 jours ";
+$lang["financial"][94]="Contrat(s) qui expire(nt) dans moins de 7 jours";
+$lang["financial"][95]="Contrat(s) qui expire(nt) dans moins de 30 jours";
+$lang["financial"][96]="Contrat(s) dont le préavis débute dans moins de 7 jours";
+$lang["financial"][97]="Contrats dont le préavis debute dans moins de 30 jours";
 $lang["financial"][98]="Expiration";
 $lang["financial"][99]="Expiration+préavis";
 
