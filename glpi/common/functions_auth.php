@@ -36,11 +36,11 @@
 function haveRight($module,$right){
 
 $matches=array(
-	""  => array("","r","w"),
+	""  => array("","r","w"), // ne doit pas arriver normalement
 	"r" => array("r","w"),
 	"w" => array("w"),
 	"1" => array("1"),
-	"0" => array("0","1"),
+	"0" => array("0","1"), // ne doit pas arriver non plus
 );
 
 if (isset($_SESSION["glpiprofile"][$module])&&in_array($_SESSION["glpiprofile"][$module],$matches[$right]))
@@ -196,7 +196,7 @@ function isSuperAdmin($authtype) {
 function checkAuthentication($authtype) {
 
 	// Nouvelle gestion des droits :
-	// ne faire dans le checkAuth que la verif des droits -> a renommer CheckRight
+	// ne faire dans le checkAuth que la verif des droits -> checkRight
 	// Tout le reste : secu + loadlang -> includes.php ou config.php
 
 	// Universal method to have a magic-quote-gpc system
