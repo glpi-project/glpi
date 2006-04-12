@@ -678,8 +678,8 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 		echo "<option value='' ".(empty($value)?" selected ":"").">".$lang["profiles"][12]."</option>\n";
 	if ($read)
 		echo "<option value='r' ".($value=='r'?" selected ":"").">".$lang["profiles"][10]."</option>\n";
-	if ($Write)
-		echo "<option value='r' ".($value=='w'?" selected ":"").">".$lang["profiles"][11]."</option>\n";
+	if ($write)
+		echo "<option value='w' ".($value=='w'?" selected ":"").">".$lang["profiles"][11]."</option>\n";
 	echo "</select>\n";	
 }	
 

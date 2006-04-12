@@ -1624,7 +1624,7 @@ CREATE TABLE `glpi_profiles` (
     `comment_all_ticket` char(1),
     `update_ticket` char(1),
     `own_ticket` char(1),
-    `steal_sticket` char(1),
+    `steal_ticket` char(1),
     `assign_ticket` char(1),
     `show_ticket` char(1),
     `show_full_ticket` char(1),
