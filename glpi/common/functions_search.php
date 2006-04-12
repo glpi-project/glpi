@@ -1020,6 +1020,12 @@ function addOrderBy($field,$order,$key=0){
 	case "glpi_contracts.end_date":
 		return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
 	break;
+	case "glpi_contracts.expire":
+		return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
+	break;
+	case "glpi_contracts.expire_notice":
+		return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH) $order ";
+	break;
 	default:
 		return " ORDER BY $field $order ";
 		break;
@@ -1066,10 +1072,10 @@ case "glpi_users.name" :
 case "glpi_contracts.end_date" :
 	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 	break;
-case "glpi_contracts.echeance_preavis" : // ajout jmd
+case "glpi_contracts.expire_notice" : // ajout jmd
 	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".notice AS ".$NAME."_".$num."_3, ";
 	break;
-case "glpi_contracts.echeance" : // ajout jmd
+case "glpi_contracts.expire" : // ajout jmd
 	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 	break;
 
@@ -1172,7 +1178,7 @@ case "glpi_contracts.end_date" :
 	
 	break;
 // ajout jmd
-case "glpi_contracts.echeance" :
+case "glpi_contracts.expire" :
 
 		$search=array("/\&lt;/","/\&gt;/");
 		$replace=array("<",">");
@@ -1187,7 +1193,7 @@ case "glpi_contracts.echeance" :
 	
 	break;
 // ajout jmd
-case "glpi_contracts.echeance_preavis" :
+case "glpi_contracts.expire_notice" :
 
 		$search=array("/\&lt;/","/\&gt;/");
 		$replace=array("<",">");
@@ -1551,10 +1557,12 @@ switch ($field){
 		if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
 			return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
 		break;
-	case "glpi_contracts.echeance_preavis": // ajout jmd
-		return "toto";
-	case "glpi_contracts.echeance": // ajout jmd
-		return "toto";
+	case "glpi_contracts.expire_notice": // ajout jmd
+		if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
+		return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"],$data["ITEM_".$num."_3"]);
+	case "glpi_contracts.expire": // ajout jmd
+		if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
+		return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
 	case "glpi_contracts.begin_date":
 	case "glpi_infocoms.buy_date":
 	case "glpi_infocoms.use_date":

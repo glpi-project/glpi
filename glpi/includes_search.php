@@ -1489,14 +1489,14 @@ CONTRACT_TYPE => array(
 				),
 			
 			12 => array(	"table" => "glpi_contracts", 
-					"field" => "echeance",
+					"field" => "expire",
 					"linkfield"=>"",
-					"name" => "Echeance",
+					"name" => $lang["financial"][98],
 				),	
 			13 => array(	"table" => "glpi_contracts", 
-					"field" => "echeance_preavis",
+					"field" => "expire_notice",
 					"linkfield"=>"",
-					"name" => "Echeance + preavis",
+					"name" =>$lang["financial"][99],
 							),	
 			
 

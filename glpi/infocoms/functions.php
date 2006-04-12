@@ -273,6 +273,20 @@ else return convDate(date("Y-m-d", strtotime("$from+$addwarranty month ")));
 
 }
 
+function getExpir($begin,$duration,$notice="0"){
+	if ($begin==NULL || $begin=='0000-00-00'){
+	return "";
+	} else {
+	 $diff=strtotime("$begin+$duration month -$notice month")-time();
+	$diff_days=floor($diff/60/60/24);
+		if($diff_days>0){
+		return $diff_days." Jours";
+		}else{
+		return "<span class='red'>".$diff_days." Jours</span>";
+		}
+	}
+
+}
 
 /**
 * Calculate amortissement for an item
