@@ -251,45 +251,47 @@ function showPrintersForm ($target,$ID,$withtemplate='') {
 	echo "</td>\n";
 	echo "</tr>\n";
 	
-		echo "<tr>\n";
+	
 
-	if (haveRight("printer","w"))
-	if ($template) {
+
+	if (haveRight("printer","w")){
+		echo "<tr>\n";
+	
+		if ($template) {
 
 			if (empty($ID)||$withtemplate==2){
-			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-			echo "</td>\n";
+				echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+				echo "</td>\n";
 			} else {
-			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-			echo "</td>\n";
+				echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td>\n";
 			}
 
+		} else {
 
-	} else {
-
-		echo "<td class='tab_bg_2' valign='top' align='center'>";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		echo "</td>\n\n";
-		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-		echo "<div align='center'>";
-		if ($printer->fields["deleted"]=='N')
-		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		else {
-		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+			echo "<td class='tab_bg_2' valign='top' align='center'>";
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+			echo "</td>\n\n";
+			echo "<td class='tab_bg_2' valign='top' align='center'>\n";
+			echo "<div align='center'>";
+			if ($printer->fields["deleted"]=='N')
+				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+			else {
+				echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
 		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+			}
+			echo "</div>";
+			echo "</td>";
+
 		}
-		echo "</div>";
-		echo "</td>";
-
-	}
 		echo "</tr>";
-
+	}
 		echo "</table></form></div>";
 
 	return true;	
