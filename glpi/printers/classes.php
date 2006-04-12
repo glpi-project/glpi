@@ -48,16 +48,23 @@ class Printer  extends CommonDBTM {
 
 	function defineOnglets($withtemplate){
 		global $lang,$cfg_glpi;
-		$ong= array(	1 => $lang["title"][26],
-				3 => $lang["title"][27],
-				4 => $lang["Menu"][26],
-				5 => $lang["title"][25],
-			);
+		
+		if (haveRight("cartridge","r"))	
+			$ong[1]=$lang["title"][26];
+		if (haveRight("contract_infocom","r"))	
+			$ong[3]=$lang["title"][27];
+		if (haveRight("networking","r")||haveRight("computer","r"))
+			$ong[4]=$lang["Menu"][26];
+		if (haveRight("document","r"))
+			$ong[5]=$lang["title"][25];
 
 		if(empty($withtemplate)){
-			$ong[6]=$lang["title"][28];
-			$ong[7]=$lang["title"][34];
-			$ong[10]=$lang["title"][37];
+			if (haveRight("show_ticket","1"))	
+				$ong[6]=$lang["title"][28];
+			if (haveRight("link","r"))
+				$ong[7]=$lang["title"][34];
+			if (haveRight("notes","r"))
+				$ong[10]=$lang["title"][37];
 			$ong[12]=$lang["title"][38];
 
 		}	

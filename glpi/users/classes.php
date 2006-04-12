@@ -77,6 +77,9 @@ class User extends CommonDBTM {
 		// Tracking items left?
 		$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
 		$db->query($query3);
+
+		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
+		$db->query($query);
 	}
 	
 	function getFromDBbyName($name) {
@@ -196,6 +199,12 @@ global $cfg_glpi;
 				$input["email"]=$input["email_form"];
 				unset($input["email_form"]);
 			}
+
+
+			if (isset($input["profile"])){
+				$input["_profile"]=$input["profile"];
+				unset($input["profile"]);
+			}
 	
 			// fill array for update
 			foreach ($input as $key => $val) {
@@ -205,6 +214,12 @@ global $cfg_glpi;
 			}
 
 			$newID= $this->addToDB();
+
+			if (isset($input["_profile"])){
+				$prof=new Profile();
+				$prof->updateForUser($newID,$input["_profile"]);
+			}
+
 			do_hook_function("item_add",array("type"=>USER_TYPE, "ID" => $newID));
 			return $newID;
 	} else {
@@ -236,7 +251,7 @@ function update($input) {
 	$input["email"]=$input["email_form"];
 	unset($input["email_form"]);
 	}
-	
+		
 	//Only super-admin's can set admin or super-admin access.
 	//set to "normal" by default
 	//if user type is already admin or super-admin do not touch it
@@ -247,7 +262,11 @@ function update($input) {
 		
 	}
 	
-	
+	if (isset($input["profile"])){
+		$prof=new Profile();
+		$prof->updateForUser($input["ID"],$input["profile"]);
+	}
+
 	// fill array for update
 	$x=0;
 	foreach ($input as $key => $val) {

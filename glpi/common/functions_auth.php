@@ -33,6 +33,33 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+function haveRight($module,$right){
+
+$matches=array(
+	""  => array("","r","w"),
+	"r" => array("r","w"),
+	"w" => array("w"),
+	"1" => array("1"),
+	"0" => array("0","1"),
+);
+
+if (isset($_SESSION["glpiprofile"][$module])&&in_array($_SESSION["glpiprofile"][$module],$matches[$right]))
+	return true;
+else return false;
+}
+
+
+function checkRight($module,$right) {
+	global $lang,$HTMLRel;
+
+	if (!haveRight($module,$right)){
+		commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$lang["login"][5]."</b></div>";
+		commonFooter();
+		exit();
+	}
+}
 /**
 * Test if an user have the right to assign a job to another user 
 *
@@ -42,6 +69,7 @@
 *@param $name (username).
 *@return boolean
 */
+// TO BE DELETED
 function can_assign_job($name)
 {
   global $db;
@@ -70,6 +98,7 @@ function can_assign_job($name)
 *@return boolean
 *
 **/
+// TO BE DELETED
 function isPostOnly($authtype) {
 	switch ($authtype){
 		case "post-only" :
@@ -94,6 +123,7 @@ function isPostOnly($authtype) {
 *@return boolean
 *
 **/
+// TO BE DELETED
 function isNormal($authtype) {
 	switch ($authtype){
 		case "normal" :
@@ -118,6 +148,7 @@ function isNormal($authtype) {
 *@return boolean
 *
 **/
+// TO BE DELETED
 function isAdmin($authtype) {
 	switch ($authtype){
 		case "admin":
@@ -140,6 +171,7 @@ function isAdmin($authtype) {
 *@return boolean
 *
 **/
+// TO BE DELETED
 function isSuperAdmin($authtype) {
 	switch ($authtype){
 			case "super-admin":
@@ -160,7 +192,13 @@ function isSuperAdmin($authtype) {
 * @Return Nothing (display function)
 *
 **/      
+// TO BE DELETED
 function checkAuthentication($authtype) {
+
+	// Nouvelle gestion des droits :
+	// ne faire dans le checkAuth que la verif des droits -> a renommer CheckRight
+	// Tout le reste : secu + loadlang -> includes.php ou config.php
+
 	// Universal method to have a magic-quote-gpc system
 	global $_POST, $_GET,$_COOKIE,$tab,$cfg_glpi,$lang, $HTMLRel;
 	// Clean array and addslashes

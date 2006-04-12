@@ -52,6 +52,26 @@ class Profile extends CommonDBTM{
 		}
 	}
 
+	function updateForUser($ID,$prof){
+		global $db;
+		// Get user profile
+		$query = "SELECT FK_profiles, ID FROM glpi_users_profiles WHERE (FK_users = '$ID')";
+		if ($result = $db->query($query)) {
+			// Profile found
+			if ($db->numrows($result)){
+				$data=$db->fetch_array($query);
+				if ($data["FK_profiles"]!=$prof){
+					$query="UPDATE glpi_users_profiles SET FK_profiles='$prof' WHERE ID='".$data["ID"]."';";
+					$db->query($query);
+				}
+			} else { // Profile not found
+					$query="INSERT INTO glpi_users_profiles (FK_users, FK_profiles) VALUES ('$ID','$prof');";
+					$db->query($query);
+			}
+		}
+
+	}
+
 	function getFromDBForUser($ID){
 
 		// Make new database object and fill variables
@@ -59,26 +79,28 @@ class Profile extends CommonDBTM{
 		$ID_profile=0;
 		// Get user profile
 		$query = "SELECT FK_profiles FROM glpi_users_profiles WHERE (FK_users = '$ID')";
+		
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)){
 				$ID_profile = $db->result($result,0,0);
 			} else {
 				// Get default profile
-				$query = "SELECT ID FROM glpi_profiles WHERE (default = '1')";
+				$query = "SELECT ID FROM glpi_profiles WHERE (`default` = '1')";
+				$result = $db->query($query);
 				if ($db->numrows($result)){
 					$ID_profile = $db->result($result,0,0);
 				} else {
 					// Get first helpdesk profile
 					$query = "SELECT ID FROM glpi_profiles WHERE (interface = 'helpdesk')";
+					$result = $db->query($query);
 					if ($db->numrows($result)){
 						$ID_profile = $db->result($result,0,0);
 					}
 				}
 			}
 		}
-
 		if ($ID_profile){
-			return $this->getFromDB($id_profile);
+			return $this->getFromDB($ID_profile);
 		} else return false;
 	}
 	// Unset unused rights for helpdesk
