@@ -187,6 +187,11 @@ function showUserform($target,$name) {
 		}
 	}
 	echo "</td></tr>";	
+	echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>";
+	$prof=new Profile();
+	$prof->getFromDBforUser($user->fields["ID"]);
+	dropdownValue("glpi_profiles","profile",$prof->fields["ID"]);
+	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>";
 	autocompletionTextField("email_form","glpi_users","email",$user->fields["email"],20);
 	echo "</td></tr>";

@@ -503,6 +503,10 @@ global $cfg_glpi;
 		$_SESSION["glpisearchcount2"] = array();
 		$_SESSION["glpiroot"] = $cfg_glpi["root_doc"];
 		$_SESSION["glpilist_limit"] = $cfg_glpi["list_limit"];
+		$prof=new Profile();
+		$prof->getFromDBForUser($ID);
+		$prof->cleanProfile();
+		$_SESSION["glpiprofile"]=$prof->fields;
 	}
 
 	function eraseCookies()
