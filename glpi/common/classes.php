@@ -428,9 +428,9 @@ class CommonDBTM {
 	**/
 	// specific ones : document, reservationresa, user, planningtracking
 	function update($input,$history=1) {
-		unset($input['update']);
+		
 		$input=$this->prepareInputForUpdate($input);
-
+		unset($input['update']);
 		$this->getFromDB($input["ID"]);
 
 		// Fill the update-array with changes
@@ -448,6 +448,7 @@ class CommonDBTM {
 				$x++;
 			}
 		}
+
 		if(count($updates)){
 			$this->updateInDB($updates);
 			
