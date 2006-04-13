@@ -62,14 +62,21 @@ class Enterprise extends CommonDBTM {
 	}
 	
 	function defineOnglets($withtemplate){
-		global $lang;
-		return array(	1 => $lang["title"][26],
-				4 => $lang["Menu"][26],
-				5 => $lang["title"][25],
-				6 => $lang["title"][28],
-				7 => $lang["title"][34],
-				10 => $lang["title"][37],
-		);
+		global $lang,$cfg_glpi;
+
+			if(haveRight("contact_enterprise","r"))
+				$ong[1] = $lang["title"][26];
+			if (haveRight("contract_infocom","r"))	
+				$ong[4] = $lang["Menu"][26];
+			if (haveRight("document","r"))
+				$ong[5] = $lang["title"][25];
+			if (haveRight("show_ticket","1"))	
+				$ong[6] = $lang["title"][28];
+			if (haveRight("link","r"))
+				$ong[7] = $lang["title"][34];
+			if (haveRight("notes","r"))
+				$ong[10] = $lang["title"][37];
+		return $ong;
 	}
 
 
