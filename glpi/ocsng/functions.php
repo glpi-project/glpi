@@ -1449,7 +1449,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 function ocsImportLicense($software) {
     global $db,$langOcs;
     
-    $query = "SELECT ID FROM glpi_licenses WHERE sid = '".$software."'";
+    $query = "SELECT ID FROM glpi_licenses WHERE sid = '".$software."' AND serial='global' ";
     $result = $db->query($query) or die("Verification existence License du soft-id :".$software." - ".$db->error());
     if ($db->numrows($result)>0){
         $data = $db->fetch_array($result);
