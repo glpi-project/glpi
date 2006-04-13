@@ -58,7 +58,6 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 $print=new Printer();
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
 	checkRight("printer","w");
 	
 	$newID=$print->add($_POST);
@@ -67,7 +66,6 @@ if (isset($_POST["add"]))
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
 	checkRight("printer","w");
 
 	if (!empty($tab["withtemplate"]))
@@ -81,7 +79,6 @@ else if (isset($tab["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
 	checkRight("printer","w");
 	$print->restore($_POST);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
@@ -89,7 +86,6 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($tab["purge"]))
 {
-	checkAuthentication("admin");
 	checkRight("printer","w");
 	$print->delete($tab,1);
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
@@ -97,7 +93,6 @@ else if (isset($tab["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
 	checkRight("printer","w");
 	$print->update($_POST);
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
@@ -105,7 +100,6 @@ else if (isset($_POST["update"]))
 }
 else if (isset($tab["disconnect"]))
 {
-	checkAuthentication("admin");
 	checkRight("printer","w");
 	Disconnect($tab["ID"]);
 	logEvent(0, "printers", 5, "inventory", $_SESSION["glpiname"]."  ".$lang["log"][26]);
@@ -114,7 +108,6 @@ else if (isset($tab["disconnect"]))
 else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
 
-	checkAuthentication("admin");
 	checkRight("printer","w");
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PRINTER_TYPE);
 	logEvent($tab["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$lang["log"][27]);
@@ -122,7 +115,6 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 }
 else
 {
-	checkAuthentication("normal");
 	checkRight("printer","r");
 	
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);

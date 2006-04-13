@@ -42,7 +42,6 @@ include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_state.php");
 
-checkAuthentication("normal");
 checkRight("printer","r");
 
 commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);

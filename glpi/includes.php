@@ -37,17 +37,20 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
+
+if(!session_id()){@session_start();}
+
 include ($phproot . "/glpi/common/Timer.php");
 include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions_auth.php");
 include ($phproot . "/glpi/common/functions_display.php");
 include ($phproot . "/glpi/config/config.php");
 
+	// Load Language file
+	loadLanguage();
 
 $TIMER_DEBUG=new Script_Timer;
 $TIMER_DEBUG->Start_Timer();
-
-include ("_relpos.php");
 
 if ($cfg_glpi["debug"]){
 	if ($cfg_glpi["debug_profile"]){		
@@ -75,7 +78,25 @@ include ($phproot . "/glpi/common/functions_plugins.php");
 
 $db=new DB();
 
-if(!session_id()){@session_start();}
+
+	// Security system
+	if (get_magic_quotes_gpc()) {
+		if (isset($_POST)){
+			$_POST = array_map('stripslashes_deep', $_POST);
+		}
+		if (isset($_GET)){
+			$_GET = array_map('stripslashes_deep', $_GET);
+		}
+	}    
+	if (isset($_POST)){
+		$_POST = array_map('addslashes_deep', $_POST);
+		$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
+	}
+	if (isset($_GET)){
+		$_GET = array_map('addslashes_deep', $_GET);
+		$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
+	}
+
 
 /* On startup, register all plugins configured for use. */
 global $cfg_glpi_plugins;

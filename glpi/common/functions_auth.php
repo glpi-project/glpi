@@ -203,30 +203,6 @@ function checkAuthentication($authtype) {
 	global $_POST, $_GET,$_COOKIE,$tab,$cfg_glpi,$lang, $HTMLRel;
 	// Clean array and addslashes
 	
-	if (get_magic_quotes_gpc()) {
-		if (isset($_POST)){
-			$_POST = array_map('stripslashes_deep', $_POST);
-		}
-		if (isset($_GET)){
-			$_GET = array_map('stripslashes_deep', $_GET);
-		}
-		if (isset($tab)){
-			$tab = array_map('stripslashes_deep', $tab);    
-		}
-	}    
-	if (isset($_POST)){
-		$_POST = array_map('addslashes_deep', $_POST);
-		$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
-	}
-	if (isset($_GET)){
-		$_GET = array_map('addslashes_deep', $_GET);
-		$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
-	}
-	if (isset($tab)){
-		$tab = array_map('addslashes_deep', $tab);
-		$tab = array_map('clean_cross_side_scripting_deep', $tab);
-	}
-
 	// Checks a GLOBAL user and password against the database
 	// If $authtype is "normal" or "admin", it checks if the user
 	// has the privileges to do something. Should be used in every 
@@ -236,15 +212,6 @@ function checkAuthentication($authtype) {
 	
 	if(!session_id()){@session_start();}
 	
-	if (isset($_SESSION["glpiroot"])&&$cfg_glpi["root_doc"]!=$_SESSION["glpiroot"]) {
-		glpi_header($_SESSION["glpiroot"]);
-	}
-	
-	// Override cfg_features by session value
-	if (isset($_SESSION['glpilist_limit'])) $cfg_glpi["list_limit"]=$_SESSION['glpilist_limit'];
-
-	
-
 	if(empty($_SESSION["glpiauthorisation"])&& $authtype != "anonymous")
 	{
 		nullHeader("Login",$_SERVER["PHP_SELF"]);
@@ -253,8 +220,6 @@ function checkAuthentication($authtype) {
 		die();	
 	}
 
-	// New database object
-	loadLanguage();
 	$type="anonymous";
 	if (isset($_SESSION["glpitype"]))
 		$type = $_SESSION["glpitype"];	
