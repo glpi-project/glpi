@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">  
    <head>
-          <title> CONSOLE HELP - GLPI</title>
+          <title>central CONSOLE HELP - GLPI</title>
           <meta http-equiv="Content-type" content="text/html; charset=iso-8859-15"/>
           <meta http-equiv="Content-Script-Type" content="text/javascript"/>
           <meta http-equiv="Content-Style-Type" content="text/css"/>
@@ -224,7 +224,7 @@ font-size: 13px;
     <div class='menu'>
       <h1>Table of contents</h1>    
       <ul>
-        <li><a href="#accueil">1 - central console reception</a></li>
+        <li><a href="#accueil">1 - Central console reception</a></li>
 	<li>
 	  <ul>
 	    <li><a href="#general">a) General informations</a></li>
@@ -434,11 +434,11 @@ font-size: 13px;
          Following informations are given for each ticket : status (new, assigned, planned, pending, closed, solved or not), identifying number (ID), open and closure date, priority level, author of the ticket, name of the person assigned to the ticket, associated material, category, description and tracking informations for the ticket.</p>
       <p>The following makes you better understanding of ticket status :</p>
       <p><img src="../pics/new.png" width="12" height="12" alt="nouveau" style="vertical-align: middle;" /> New<br />
-         <img src="../pics/assign.png" width="12" height="12" alt="assigné" style="vertical-align: middle;" /> Assigned<br />
-	 <img src="../pics/plan.png" width="12" height="12" alt="planifié" style="vertical-align: middle;" /> Planned<br />
+         <img src="../pics/assign.png" width="12" height="12" alt="assignï¿œ" style="vertical-align: middle;" /> Assigned<br />
+	 <img src="../pics/plan.png" width="12" height="12" alt="planifiï¿œ" style="vertical-align: middle;" /> Planned<br />
 	 <img src="../pics/waiting.png" width="12" height="12" alt="en attente" style="vertical-align: middle;" /> Pending<br />
-	 <img src="../pics/old_notdone.png" width="12" height="12" alt="fermé (non résolu)" style="vertical-align: middle;" /> Closed unsolved<br />
-	 <img src="../pics/old_done.png" width="12" height="12" alt="fermé (résolu)" style="vertical-align: middle;" /> Closed solved</p>
+	 <img src="../pics/old_notdone.png" width="12" height="12" alt="fermï¿œ (non rï¿œsolu)" style="vertical-align: middle;" /> Closed unsolved<br />
+	 <img src="../pics/old_done.png" width="12" height="12" alt="fermï¿œ (rï¿œsolu)" style="vertical-align: middle;" /> Closed solved</p>
       <p>You can also show tracking informations of each ticket directly into the table, by using the drop-down list.</p>
       <p>You can access to more detailed informations by clicking on those different elements.</p>
       <p>To add some tracking informations to a ticket, or to modify the ticket, you just have to click on the link "infos". It shows you the complete historical of the ticket.<br />
@@ -691,10 +691,10 @@ font-size: 13px;
 	 - Date Format : permit to parametrize the display date.<br />
 	 (YYYY-MM-DD ou DD-MM-YYYY).<br />
 	 <br />
-	 <img src="../pics/warning.png" width="20" height="20" alt="Attention" style="vertical-align: middle;" /> <span style="color: #990000;font-weight: bold">WARNING :</span> Even if you choose the format of the dates in form JJ-MM-YYYY, at the time of a research by date, it is necessary to use syntax [Year]-[Month]-[Day].</p>
+	 <img src="../pics/warning.png" width="20" height="20" alt="Attention" style="vertical-align: middle;" /> <span style="color: #990000;font-weight: bold">WARNING :</span> Even if you choose the format of the dates in form DD-MM-YYYY, at the time of a research by date, it is necessary to use syntax [Year]-[Month]-[Day].</p>
       <p>- Authorize the anonymous view of the FAQ : allows or not the consultation of the FAQ for the anonymous users (without preliminary authentification).</p>
       <p>- Maximum number of characters to view in select box : allows to limit the number of character posted in the drop-down lists.</p>
-      <p>- Use Ajax : allows to activate not new system AJAX of GLPI (management of research, fields texts).<br />
+      <p>- Use Ajax : allows to activate or not the new system AJAX of GLPI (management of research, fields texts).<br />
          <br />
 	 - Autocompletion of text fields with Ajax : if "Use AJAX" is activated, this makes possible to visualize -at the time of typing of characters in the text area- the already existing elements in the database, thanks to a list of results envisaged for this purpose.<br />
 	 <br />
@@ -719,7 +719,7 @@ font-size: 13px;
 	 - You can enter the email address of the administrator and the signature added to each email. You can add a link to the ticket in the emails sent by specifying the URL of the base which will be used.
 	 <br />
 	 <br />
-	 - The other options enable you to limit the emails sentding process. For each type of users, you can allow the sending while the creation of an intervention, the update of the ticket in itself, the follow-up addition and enclose intervention.
+	 - The other options enable you to limit the emails sending process. For each type of users, you can allow the sending while the creation of an intervention, the update of the ticket in itself, the follow-up addition and enclose intervention.
 	 <br />
 	 - The groups defined :  the administrator, all users of the type ' admin' or ' normal ', the person in charge of the task and the caller of the intervention.
 	 <br />
@@ -728,7 +728,7 @@ font-size: 13px;
 
       <h4><a name="adminb10" id="adminb10"></a>x) External authentification</h4>
       <p>The external authentification enables you to use alternative sources of authentification. Thus it avoids you having to add all the users manually.</p>
-      <p>In order to be able to use one of these modes of authentification, you forst must activate the corresponding extensions in your PHP configuration.</p>
+      <p>In order to be able to use one of these modes of authentification, you first must activate the corresponding extensions in your PHP configuration.</p>
       <p>The first solution is to use an email server :<br />
          - You must define in the first part the server to be used. To define it correctly defer to the link <a target='blank' href="http://www.php.net/manual/fr/function.imap-open.php">php.net</a> who provides many examples.<br />
 	 <br />
@@ -737,7 +737,7 @@ font-size: 13px;
 	 - {localhost:993/imap/ssl},<br />
 	 - {localhost:995/pop3/ssl/novalidate-cert}... </p>
       <p>- The second parameter defines the email docentral which will be automatically used to fill the email addresses of the new users. If the user is called toto, his address will be then toto@docentral_email.</p>
-      <p>The second solution is the usage of a LDAP or an Active Directory server. For this configuration, plese refer to corresponding documentation present on the Web site of GLPI.</p>
+      <p>The second solution is the usage of a LDAP or an Active Directory server. For this configuration, please refer to corresponding documentation present on the Web site of GLPI.</p>
       <p>The third solution is the use of a CAS server. Once it is configured, you can always connect with a local user while adding  ?noCAS=1 to your URL.</p>
 
       <h4><a name="adminb11" id="adminb11"></a>xi) Check if a new version is available</h4>
