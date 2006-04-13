@@ -850,12 +850,12 @@ ul#onglet li.actif a {
 
 /* Over onglet div */
 #onglet_plugins{
-	display: none;
+	display: none; 
 	position: absolute;
 	top:21px;
 	left:-20px;
 	padding: 5px;
-	font-size: 11px;
+	font-size: 10px;
 	width:100px;
 	background: transparent url("pics/fondTR.png") repeat; 
 	border: 1px solid gray;	
@@ -875,18 +875,25 @@ border:0;
 	padding: 2px;
 	background:none;
 	border:0;
-	
-	
+	width:100%;
+	height:18px;
+
 }
 #onglet_plugins dt a {
 	font-size:10px;	
 	color: #000;
 	text-decoration: none;
 	display: block;
-	/*height: 100%;*/
 	border: 0 none;
 }
 #onglet_plugins dt a:hover {
+	color: #000;
+	background: #fccc6f;
+
+}
+
+
+#onglet_plugins dt:hover {
 	color: #000;
 	background: #fccc6f;
 
