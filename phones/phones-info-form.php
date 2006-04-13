@@ -193,7 +193,7 @@ else
 					showNotesForm($_SERVER["PHP_SELF"],PHONE_TYPE,$tab["ID"]);
 					break;	
 				case 11 :
-					printDeviceReservations($_SERVER["PHP_SELF"],PHONE_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER["PHP_SELF"],PHONE_TYPE,$tab["ID"]);
 					break;
 				case 12 :
 					showHistory(PHONE_TYPE,$tab["ID"]);

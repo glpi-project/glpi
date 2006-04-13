@@ -886,26 +886,28 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 * @return nothing
 */
 function showNotesForm($target,$type,$id){
-global $HTMLRel,$lang;
+	global $HTMLRel,$lang;
 
-//new objet
- $ci =new CommonItem;
-//getfromdb
-$ci->getfromDB ($type,$id);
+	if (!haveRight("notes","r")) return;
+	//new objet
+	$ci =new CommonItem;
+	//getfromdb
+	$ci->getfromDB ($type,$id);
 
 
-echo "<form name='form' method='post' action=\"".$target."\">";
-echo "<div align='center'>";
-echo "<table class='tab_cadre_fixe' >";
-echo "<tr><th align='center' >";
-echo "Notes";
-echo "</th></tr>";
-echo "<tr><td valign='middle' align='center' class='tab_bg_1' ><textarea class='textarea_notes' cols='100' rows='35' name='notes' >".$ci->obj->fields["notes"]."</textarea></td></tr>";
-echo "<tr><td class='tab_bg_2' align='center' >\n";
-echo "<input type='hidden' name='ID' value=$id>";
-echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-echo "</td></tr>\n";
-echo "</table></div></form>";
+	echo "<form name='form' method='post' action=\"".$target."\">";
+	echo "<div align='center'>";
+	echo "<table class='tab_cadre_fixe' >";
+	echo "<tr><th align='center' >";
+	echo $lang["title"][37];
+	echo "</th></tr>";
+	echo "<tr><td valign='middle' align='center' class='tab_bg_1' ><textarea class='textarea_notes' cols='100' rows='35' name='notes' >".$ci->obj->fields["notes"]."</textarea></td></tr>";
+	echo "<tr><td class='tab_bg_2' align='center' >\n";
+	echo "<input type='hidden' name='ID' value=$id>";
+	if (haveRight("notes","w"))
+		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+	echo "</td></tr>\n";
+	echo "</table></div></form>";
 }
 
 function header_nocache(){

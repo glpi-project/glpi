@@ -48,7 +48,24 @@ function showConnect($target,$ID,$type) {
 		GLOBAL $lang, $cfg_glpi;
 
 		$connect = new Connection;
-
+		
+		switch ($type){
+			case COMPUTER_TYPE:
+				if (!haveRight("computer","r")) return;
+				break;
+			case PRINTER_TYPE:
+				if (!haveRight("printer","r")) return;
+				break;
+			case MONITOR_TYPE:
+				if (!haveRight("monitor","r")) return;
+				break;
+			case PERIPHERAL_TYPE:
+				if (!haveRight("peripheral","r")) return;
+				break;
+			case PHONE_TYPE:
+				if (!haveRight("phone","r")) return;
+				break;
+		}
 		// Is global connection ?
 		$global=0;
 		$ci=new CommonItem();

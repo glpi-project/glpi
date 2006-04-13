@@ -166,7 +166,9 @@ function showCentralJobList($target,$start,$status="process") {
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
+	
+	if (!haveRight("show_ticket","1")) return;
 		
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
@@ -225,9 +227,10 @@ function showCentralJobList($target,$start,$status="process") {
 function showCentralJobCount(){
 // show a tab with count of jobs in the central and give link	
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
 		
-	
+	if (!haveRight("show_ticket","1")) return;	
+
 	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking GROUP BY status";
 	
 
@@ -274,8 +277,10 @@ function showOldJobListForItem($username,$item_type,$item) {
 	// affiche toutes les vielles intervention pour un $item donn� 
 
 
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$HTMLRel;
 		
+	if (!haveRight("show_ticket","1")) return;
+
 	// Form to delete old item
 	if (isAdmin($_SESSION["glpitype"])){
 		echo "<form method='post' action=\"".$_SERVER["PHP_SELF"]."?ID=$item\" name='oldTrackingForm' id='oldTrackingForm'>";
@@ -349,8 +354,10 @@ function showJobListForItem($username,$item_type,$item) {
 	// $item is required
 	//affiche toutes les vielles intervention pour un $item donn� 
 
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
 		
+	if (!haveRight("show_ticket","1")) return;
+
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 	
 $where = "(status = 'new' OR status= 'assign' OR status='plan')";	
@@ -414,7 +421,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
 
-	GLOBAL $cfg_glpi, $lang, $HTMLRel;
+	global $cfg_glpi, $lang, $HTMLRel;
 	
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
@@ -1249,7 +1256,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			
 				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
 				echo "</td><td>";
-				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete' class='submit'></td>";
+				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
 				echo "<td width='75%'>&nbsp;</td></table></div>";
 				// End form for delete item
 				echo "</form>";
@@ -2237,12 +2244,12 @@ function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
 *@return Nothing ()
 *
 **/
-function deleteTracking($input) {
+function deleteTracking($ID) {
 	// Delete Computer
 
 	$job = new Job;
-	$job->deleteFromDB($input["ID"],$force);
-	do_hook_function("item_purge",array("type"=>TRACKING_TYPE, "ID" => $input["ID"]));
+	$job->deleteInDB($ID);
+	do_hook_function("item_purge",array("type"=>TRACKING_TYPE, "ID" => $ID));
 } 	
 
 

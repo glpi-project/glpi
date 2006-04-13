@@ -118,6 +118,17 @@ else
 
 
 	commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
+
+
+	if (haveRight("delete_ticket","1"))
+	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
+		foreach ($_POST["todel"] as $key => $val){
+			if ($val==1) {
+				
+				deleteTracking($key);
+			}
+		}
+	}
 	
 	if ($ent->getFromDB($tab["ID"]))
 		$ent->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
@@ -143,7 +154,7 @@ else
 				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"],0);
 				break;
 			case 6 :
-				showTrackingList($_SERVER["PHP_SELF"],$start,"all",0,0,$_GET["ID"]);
+				showTrackingList($_SERVER["PHP_SELF"]."?ID=".$tab["ID"],$start,"all",0,0,$_GET["ID"]);
 //				showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"enterprise","","","",$start);	
 				break;
 			case 7 : 
