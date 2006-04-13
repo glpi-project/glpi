@@ -177,7 +177,7 @@ else
 				showNotesForm($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
 				break;			
 			case 11 :
-				printDeviceReservations($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
+				showDeviceReservations($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
 				break;
 			case 12 :
 				showHistory(NETWORKING_TYPE,$tab["ID"]);

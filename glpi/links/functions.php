@@ -68,7 +68,9 @@ function titleLinks(){
 **/
 function showLinkForm ($target,$ID) {
 
-	GLOBAL $cfg_glpi, $lang,$HTMLRel;
+	global $cfg_glpi, $lang,$HTMLRel;
+
+	if (!haveRight("link","r"))	return;
 
 	$con = new Link;
 	$con_spotted=false;
@@ -155,7 +157,6 @@ function showLinkForm ($target,$ID) {
 function showLinkDevice($instID) {
 	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
 
-    
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -208,8 +209,10 @@ if ($tID>0&&$lID>0){
 }
 
 function showLinkOnDevice($type,$ID){
-global $db,$lang,$HTMLRel;
+	global $db,$lang,$HTMLRel;
 	
+	if (!haveRight("link","r"))	return;
+
 	$query="SELECT glpi_links.ID as ID, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
 	$result=$db->query($query);
 

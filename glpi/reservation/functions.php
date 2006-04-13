@@ -735,10 +735,12 @@ function showReservationCommentForm($target,$ID){
 	} else return false;
 }
 
-function printDeviceReservations($target,$type,$ID){
+function showDeviceReservations($target,$type,$ID){
 	global $db,$lang,$cfg_glpi;
 	$resaID=0;
 	
+	if (!haveRight("reservation_helpdesk","r")&&!haveRight("reservation_central","r")) return;
+
 	if ($resaID=isReservable($type,$ID)){
 		echo "<div align='center'>";
 

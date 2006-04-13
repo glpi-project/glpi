@@ -59,6 +59,8 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	
 	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
+	if (!haveRight("networking","r")) return;
+
 	$netdev = new Netdevice;
 
 	$netdev_spotted = false;
@@ -267,7 +269,8 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 function showPorts ($device,$device_type,$withtemplate='') {
 	
 	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel,$LINK_ID_TABLE;
-	
+
+	if (!haveRight("networking","r")) return;
 		
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
@@ -335,7 +338,6 @@ function showPorts ($device,$device_type,$withtemplate='') {
 function showPortVLAN($ID,$withtemplate,$referer=''){
 global $db,$HTMLRel,$lang;
 
-
 echo "<table cellpadding='0' cellspacing='0'>";
 /*if ($withtemplate!=2){
 	$sel="";
@@ -379,6 +381,8 @@ $db->query($query);
 function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $location = '') {
 
 	GLOBAL $cfg_glpi, $lang, $REFERER;
+	
+	if (!haveRight("networking","r")) return;
 
 	$netport = new Netport;
 	if($ID)
@@ -551,6 +555,8 @@ function showPortsAdd($ID,$devtype) {
 	
 	GLOBAL $db,$cfg_glpi, $lang,$LINK_ID_TABLE;
 	
+	if (!haveRight("networking","r")) return;
+
 	$device_real_table_name = $LINK_ID_TABLE[$devtype];
 
 	$query = "SELECT location from ".$device_real_table_name." where ID = ".$ID."";
