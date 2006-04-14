@@ -32,6 +32,49 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
+
+require_once($phproot . "/glpi/phpmailer/class.phpmailer.php");
+
+/**
+ *  glpi_phpmailer class extends 
+ */
+class glpi_phpmailer extends phpmailer {
+	
+	 // Set default variables for all new objects
+	 var $WordWrap = 50;
+	 var $CharSet ="utf-8";
+    	
+
+	function glpi_phpmailer(){
+	GLOBAL $cfg_glpi;
+	
+	// Comes from config
+	
+	if($cfg_glpi['smtp_mode'] == 'enabled') {
+			$this->Host = $cfg_glpi['smtp_host'];
+			$this->Port = $cfg_glpi['smtp_port'];
+
+			if($cfg_glpi['smtp_username'] != '') {
+					$this->SMTPAuth  = true;
+					$this->Username  = $cfg_glpi['smtp_username'];
+					$this->Password  =  $cfg_glpi['smtp_password'];
+				}
+
+			if($cfg_glpi['debug']=="2"){
+			$this->SMTPDebug    = TRUE;
+			}
+
+		$this->Mailer = "smtp";
+	}
+     
+} 
+
+
+
+
+}
+
+
 /**
  *  Mailing class for trackings
  */
@@ -278,29 +321,25 @@ class Mailing
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
-				require_once($phproot."/glpi/common/MIMEMail.php");
+				//require_once($phproot."/glpi/common/MIMEMail.php");
 				for ($i=0;$i<count($users);$i++)
 				{
-				$mmail=new MIMEMail();
-		  		$mmail->ReplyTo($replyto);
-		  		$mmail->From($sender);
-		  		
-		  		$mmail->To($users[$i]);
-		  		$mmail->Subject($subject);		  
-		  		$mmail->Priority(2);
-		  		$mmail->MessageStream($body);
-				
-				// Attach a file
-		  		// $mmail->AttachFile($FILE);
-		  		
-				// Notification reception
-				// $mmail->setHeader('Disposition-Notification-To', "\"".$users[0]['name']."\" <".$users[0]['email'].">"); 
-		  
-		  		$mmail->Send();
-				
-				}
+					$mmail=new glpi_phpmailer();
+					$mmail->From=$sender;
+					$mmail->AddReplyTo("$replyto", ''); 
+					$mmail->FromName=$sender;
+					
+					$mmail->AddAddress("$users[$i]", "");
+					$mmail->Subject=$subject	;  
+					$mmail->Body=$body;
+					
+					if(!$mmail->Send()){
+						echo "<div align='center'>There was a problem sending this mail !</div>";
+					}
+					$mmail->ClearAddresses(); 
+		  		}
 			} else {
-				echo "Type d'envoi invalide";
+				echo "Invalid mail type";
 			}
 		}
 	}
@@ -475,25 +514,23 @@ class MailingResa{
 				$replyto=$this->get_reply_to_address ();
 
 				// Send all mails
-				require_once($phproot."/glpi/common/MIMEMail.php");
+				//require_once($phproot."/glpi/common/MIMEMail.php");
 				for ($i=0;$i<count($users);$i++)
 				{
-				$mmail=new MIMEMail();
-		  		$mmail->ReplyTo($replyto);
-		  		$mmail->From($sender);
-		  		
-		  		$mmail->To($users[$i]);
-		  		$mmail->Subject($subject);		  
-		  		$mmail->Priority(2);
-		  		$mmail->MessageStream($body);
+						
+					$mmail=new glpi_phpmailer();
+					$mmail->From=$sender;
+					$mmail->AddReplyTo("$replyto", ''); 
+					$mmail->FromName=$sender;
+					$mmail->AddAddress("$users[$i]", "");
+					$mmail->Subject=$subject	;  
+					$mmail->Body=$body;
+					
+					if(!$mmail->Send()){
+						echo "<div align='center'>There was a problem sending this mail !</div>";
+					}
+					$mmail->ClearAddresses(); 
 				
-				// Attach a file
-		  		// $mmail->AttachFile($FILE);
-		  		
-				// Notification reception
-				// $mmail->setHeader('Disposition-Notification-To', "\"".$users[0]['name']."\" <".$users[0]['email'].">"); 
-		  
-		  		$mmail->Send();
 				}
 		}
 	}

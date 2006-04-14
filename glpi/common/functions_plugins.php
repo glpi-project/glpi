@@ -147,7 +147,7 @@ function display_plugin_headings($target,$type,$withtemplate,$actif){
 				
 			echo "<div  id='onglet_plugins' ><dl>";
 			foreach ($display_onglets as $key => $val)
-				echo "<dt><a href='$target&amp;onglet=".$key.$template."'>".$val."</a></dt><br>";
+				echo "<dt><a href='$target&amp;onglet=".$key.$template."'>".$val."</a></dt>";
 			echo "</dl></div>";
 		echo "</li>";
 			
