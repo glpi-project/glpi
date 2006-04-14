@@ -46,8 +46,8 @@ class Profile extends CommonDBTM{
 	function post_updateItem($input,$updates,$history=1) {
 		global $db;
 		
-		if (isset($input["default"])&&$input["default"]==1){
-			$query="UPDATE glpi_profiles SET `default`='0' WHERE ID <> '".$input['ID']."'";
+		if (isset($input["is_default"])&&$input["is_default"]==1){
+			$query="UPDATE glpi_profiles SET `is_default`='0' WHERE ID <> '".$input['ID']."'";
 			$db->query($query);
 		}
 	}
@@ -59,7 +59,7 @@ class Profile extends CommonDBTM{
 		if ($result = $db->query($query)) {
 			// Profile found
 			if ($db->numrows($result)){
-				$data=$db->fetch_array($query);
+				$data=$db->fetch_array($result);
 				if ($data["FK_profiles"]!=$prof){
 					$query="UPDATE glpi_users_profiles SET FK_profiles='$prof' WHERE ID='".$data["ID"]."';";
 					$db->query($query);
@@ -85,7 +85,7 @@ class Profile extends CommonDBTM{
 				$ID_profile = $db->result($result,0,0);
 			} else {
 				// Get default profile
-				$query = "SELECT ID FROM glpi_profiles WHERE (`default` = '1')";
+				$query = "SELECT ID FROM glpi_profiles WHERE (`is_default` = '1')";
 				$result = $db->query($query);
 				if ($db->numrows($result)){
 					$ID_profile = $db->result($result,0,0);

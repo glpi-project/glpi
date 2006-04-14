@@ -114,7 +114,7 @@ function showHelpdeskProfilesForm($ID){
 
 	echo "<table class='tab_cadre'><tr>";
 	echo "<th colspan='4'>".$lang["profiles"][3].":&nbsp;&nbsp;".$lang["profiles"][13].":";
-	dropdownYesNoInt("default",$prof->fields["default"]);
+	dropdownYesNoInt("is_default",$prof->fields["is_default"]);
 	echo "</th></tr>";
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["title"][24]."</strong></td></tr>";
 
@@ -147,7 +147,7 @@ function showHelpdeskProfilesForm($ID){
 	echo "</td></tr>";
 
 	$colspan=4;
-	if (!$prof->fields["default"])
+	if (!$prof->fields["is_default"])
 		$colspan=2;
 
 	echo "<tr class='tab_bg_1'><td colspan='$colspan' align='center'>";
@@ -155,7 +155,7 @@ function showHelpdeskProfilesForm($ID){
 		echo "<input type='hidden' name='ID' value=$ID>";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 
-		if (!$prof->fields["default"]){
+		if (!$prof->fields["is_default"]){
 			echo "</td><td colspan='$colspan' align='center'>";
 			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 			}
@@ -180,7 +180,7 @@ function showCentralProfilesForm($ID){
 
 	echo "<table class='tab_cadre'><tr>";
 	echo "<th colspan='6'>".$lang["profiles"][3].":&nbsp;&nbsp;".$lang["profiles"][13].":";
-	dropdownYesNoInt("default",$prof->fields["default"]);
+	dropdownYesNoInt("is_default",$prof->fields["is_default"]);
 	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$lang["setup"][10]."</strong></td></tr>";
@@ -351,13 +351,13 @@ function showCentralProfilesForm($ID){
 	echo "</td></tr>";
 
 	$colspan=6;
-	if (!$prof->fields["default"])
+	if (!$prof->fields["is_default"])
 		$colspan=3;
 	echo "<tr class='tab_bg_1'><td colspan='$colspan' align='center'>";
 	if ($ID){
 		echo "<input type='hidden' name='ID' value=$ID>";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		if (!$prof->fields["default"]){
+		if (!$prof->fields["is_default"]){
 			echo "</td><td colspan='$colspan' align='center'>";
 			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 			}
