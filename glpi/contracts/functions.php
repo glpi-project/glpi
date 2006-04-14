@@ -72,7 +72,7 @@ function showContractForm ($target,$ID) {
 	// Show Contract or blank form
 	
 	GLOBAL $cfg_glpi,$lang,$HTMLRel;
-	if (!haveRight("contract_infocom","r")) return;
+	if (!haveRight("contract_infocom","r")) return false;
 
 	$con = new Contract;
 	$con_spotted=false;
@@ -251,7 +251,7 @@ return true;
 function showCentralContract(){
 
 	GLOBAL $db,$cfg_glpi, $lang;
-	if (!haveRight("contract_infocom","r")) return;
+	if (!haveRight("contract_infocom","r")) return false;
 
 	// contrats echus depuis moins de 30j
 	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
@@ -325,7 +325,7 @@ function showCentralContract(){
 **/
 function showDeviceContract($instID) {
 	GLOBAL $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
-	if (!haveRight("contract_infocom","r")) return;
+	if (!haveRight("contract_infocom","r")) return false;
     
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
 
@@ -425,7 +425,7 @@ $result = $db->query($query);
 **/
 function showEnterpriseContract($instID) {
 	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel,$cfg_glpi;
-	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return;
+	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
     
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID";
@@ -694,7 +694,7 @@ function dropdownContracts($name){
 function showContractAssociated($device_type,$ID,$withtemplate=''){
 
 	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
-	if (!haveRight("contract_infocom","r"))	return;
+	if (!haveRight("contract_infocom","r"))	return false;
     
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
 

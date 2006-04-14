@@ -39,7 +39,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	// Show Infocom or blank form
 	
 	GLOBAL $cfg_glpi,$lang,$HTMLRel;
-	if (!haveRight("contract_infocom","r")) return;
+	if (!haveRight("contract_infocom","r")) return false;
 	$date_fiscale=$cfg_glpi["date_fiscale"];
 	
 	$ic = new Infocom;

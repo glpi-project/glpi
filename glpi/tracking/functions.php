@@ -168,7 +168,7 @@ function showCentralJobList($target,$start,$status="process") {
 
 	global $db,$cfg_glpi, $lang, $HTMLRel;
 	
-	if (!haveRight("show_ticket","1")) return;
+	if (!haveRight("show_ticket","1")) return false;
 		
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
@@ -229,7 +229,7 @@ function showCentralJobCount(){
 
 	global $db,$cfg_glpi, $lang, $HTMLRel;
 		
-	if (!haveRight("show_ticket","1")) return;	
+	if (!haveRight("show_ticket","1")) return false;	
 
 	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking GROUP BY status";
 	
@@ -279,7 +279,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 		
-	if (!haveRight("show_ticket","1")) return;
+	if (!haveRight("show_ticket","1")) return false;
 
 	// Form to delete old item
 	if (isAdmin($_SESSION["glpitype"])){
@@ -356,7 +356,7 @@ function showJobListForItem($username,$item_type,$item) {
 
 	global $db,$cfg_glpi, $lang;
 		
-	if (!haveRight("show_ticket","1")) return;
+	if (!haveRight("show_ticket","1")) return false;
 
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 	

@@ -72,7 +72,7 @@ function showCartridgeTypeForm ($target,$ID) {
 	
 	global $cfg_glpi,$lang;
 
-	if (!haveRight("cartridge","r")) return;
+	if (!haveRight("cartridge","r")) return false;
 
 	$ct = new CartridgeType;
 	$ct_spotted = false;
@@ -190,7 +190,7 @@ function showCartridgesAdd($ID) {
 	
 	global $cfg_glpi,$lang,$HTMLRel;
 	
-	if (!haveRight("cartridge","r")) return;
+	if (!haveRight("cartridge","r")) return false;
 	
 	echo "<form method='post'  action=\"".$HTMLRel."cartridges/cartridges-edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
@@ -225,7 +225,7 @@ function showCartridges ($tID,$show_old=0) {
 
 	global $db,$cfg_glpi,$lang,$HTMLRel;
 	
-	if (!haveRight("cartridge","r")) return;
+	if (!haveRight("cartridge","r")) return false;
 	
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')";
 
@@ -401,7 +401,7 @@ echo "</table></div>\n\n";
 function showCompatiblePrinters($instID) {
 	global $db,$cfg_glpi, $lang;
 
-	if (!haveRight("cartridge","r")||!haveRight("printer","r")) return;
+	if (!haveRight("cartridge","r")||!haveRight("printer","r")) return false;
 
 	$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_assoc.ID as ID FROM glpi_cartridges_assoc, glpi_dropdown_model_printers WHERE glpi_cartridges_assoc.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' order by glpi_dropdown_model_printers.name";
 	
@@ -448,7 +448,7 @@ function showCartridgeInstalled($instID,$old=0) {
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
-	if (!haveRight("cartridge","r")) return;
+	if (!haveRight("cartridge","r")) return false;
     	
 	$query = "SELECT glpi_cartridges_type.ID as tID, glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
 	if ($old==0)
