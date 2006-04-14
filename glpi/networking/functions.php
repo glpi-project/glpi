@@ -59,7 +59,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	
 	GLOBAL $cfg_glpi, $lang,$HTMLRel;
 
-	if (!haveRight("networking","r")) return;
+	if (!haveRight("networking","r")) return false;
 
 	$netdev = new Netdevice;
 
@@ -270,7 +270,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	
 	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel,$LINK_ID_TABLE;
 
-	if (!haveRight("networking","r")) return;
+	if (!haveRight("networking","r")) return false;
 		
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
@@ -382,7 +382,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 
 	GLOBAL $cfg_glpi, $lang, $REFERER;
 	
-	if (!haveRight("networking","r")) return;
+	if (!haveRight("networking","r")) return false;
 
 	$netport = new Netport;
 	if($ID)
@@ -555,7 +555,7 @@ function showPortsAdd($ID,$devtype) {
 	
 	GLOBAL $db,$cfg_glpi, $lang,$LINK_ID_TABLE;
 	
-	if (!haveRight("networking","r")) return;
+	if (!haveRight("networking","r")) return false;
 
 	$device_real_table_name = $LINK_ID_TABLE[$devtype];
 

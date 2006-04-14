@@ -46,7 +46,7 @@ function titleDocument(){
 }
 
 function showDocumentForm ($target,$ID) {
-	if (!haveRight("document","r"))	return;
+	if (!haveRight("document","r"))	return false;
 
 	// Show Document or blank form
 	
@@ -313,7 +313,7 @@ return "";
 function showDeviceDocument($instID,$search='') {
 	GLOBAL $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
-	if (!haveRight("document","r"))	return;
+	if (!haveRight("document","r"))	return false;
 
 	$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
 
@@ -392,7 +392,7 @@ $result = $db->query($query);
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
-	if (!haveRight("document","r"))	return;
+	if (!haveRight("document","r"))	return false;
     
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
 	

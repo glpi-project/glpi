@@ -118,7 +118,7 @@ function IsDevice($field) {
 function showComputerForm($target,$ID,$withtemplate='') {
 	global $lang,$HTMLRel,$cfg_glpi;
 
-	if (!haveRight("computer","r")) return;
+	if (!haveRight("computer","r")) return false;
 	
 	$comp = new Computer;
 	$computer_spotted = false;
@@ -343,7 +343,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	global $lang;
 
-	if (!haveRight("computer","r")) return;
+	if (!haveRight("computer","r")) return false;
 
 	$comp = new Computer;
 	if(empty($ID) && $withtemplate == 1) {

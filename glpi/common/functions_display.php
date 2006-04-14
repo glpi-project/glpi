@@ -888,7 +888,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 function showNotesForm($target,$type,$id){
 	global $HTMLRel,$lang;
 
-	if (!haveRight("notes","r")) return;
+	if (!haveRight("notes","r")) return false;
 	//new objet
 	$ci =new CommonItem;
 	//getfromdb
