@@ -117,6 +117,9 @@ function IsDevice($field) {
 **/
 function showComputerForm($target,$ID,$withtemplate='') {
 	global $lang,$HTMLRel,$cfg_glpi;
+
+	if (!haveRight("computer","r")) return;
+	
 	$comp = new Computer;
 	$computer_spotted = false;
 	if(empty($ID) && $withtemplate == 1) {
@@ -275,7 +278,9 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		dropdownValue("glpi_dropdown_auto_update", "auto_update", $comp->fields["auto_update"]);
 		echo "</td>";
 		
-		echo "</tr><tr>";
+		echo "</tr>";
+		if (haveRight("computer","w")) {
+		echo "<tr>\n";
 		if ($template) {
 			if (empty($ID)||$withtemplate==2){
 			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
@@ -305,9 +310,8 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "</div>";
 			echo "</td>";
 		}
-
 		echo "</tr>\n";
-		
+		}
 		
 		
 		echo "</table>";
@@ -338,6 +342,9 @@ function showComputerForm($target,$ID,$withtemplate='') {
 **/
 function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	global $lang;
+
+	if (!haveRight("computer","r")) return;
+
 	$comp = new Computer;
 	if(empty($ID) && $withtemplate == 1) {
 		$comp->getEmpty();
@@ -401,6 +408,9 @@ function showConnections($target,$ID,$withtemplate='') {
 	$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 	$ci=new CommonItem;
 	foreach ($items as $type){
+	$ci->setType($type);
+	if ($ci->haveRight("r")){
+
 		echo "<td align='center'>";
 		$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
 		if ($result=$db->query($query)) {
@@ -458,6 +468,7 @@ function showConnections($target,$ID,$withtemplate='') {
 
 		}
 		echo "</td>";
+	}
 	}
 
 	echo "</tr>";
