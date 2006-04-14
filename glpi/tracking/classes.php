@@ -157,7 +157,7 @@ class Job {
 	}
 	
 
-	function textFollowups() {
+	function textFollowups($format="text") {
 		// get the last followup for this job and give its contents as
 		GLOBAL $db,$lang;
 		
@@ -165,36 +165,66 @@ class Job {
 		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->ID."' AND private = '0' ORDER by date DESC";
 		$result=$db->query($query);
 		$nbfollow=$db->numrows($result);
-		$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." : $nbfollow\n".$lang["mailing"][1]."\n";
-		
-		if ($nbfollow>0){
-			$fup=new Followup();
-			while ($data=$db->fetch_array($result)){
-					$fup->getfromDB($data['ID']);
-					$message .= "[ ".convDateTime($fup->fields["date"])." ]\n";
-					$message .= $lang["mailing"][2]." ".$fup->getAuthorName()."\n";
-					$message .= $lang["mailing"][3]."\n".$fup->fields["contents"]."\n";
-					if ($fup->fields["realtime"]>0)
-						$message .= $lang["mailing"][104]." ".getRealtime($fup->fields["realtime"])."\n";
+		if($format=="html"){
+			$message = $lang["mailing"][1]."<br>".$lang["mailing"][4]." : $nbfollow<br>".$lang["mailing"][1]."<br>";
+			
+			if ($nbfollow>0){
+				$fup=new Followup();
+				while ($data=$db->fetch_array($result)){
+						$fup->getfromDB($data['ID']);
+						$message .= "[ ".convDateTime($fup->fields["date"])." ]<br>";
+						$message .= $lang["mailing"][2]." ".$fup->getAuthorName()."<br>";
+						$message .= $lang["mailing"][3]."<br>".$fup->fields["contents"]."<br>";
+						if ($fup->fields["realtime"]>0)
+							$message .= $lang["mailing"][104]." ".getRealtime($fup->fields["realtime"])."<br>";
+	
+						$message.=$lang["mailing"][25]." ";
+						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+						$result2=$db->query($query2);
+						if ($db->numrows($result2)==0)
+					$message.=$lang["job"][32]."<br>";
+						else {
+							$data2=$db->fetch_array($result2);
+							$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."<br>";
+						}
+						
+						$message.=$lang["mailing"][0]."<br>";	
+				}	
+			}
+		}else{ // text format
+			$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." : $nbfollow\n".$lang["mailing"][1]."\n";
+			
+			if ($nbfollow>0){
+				$fup=new Followup();
+				while ($data=$db->fetch_array($result)){
+						$fup->getfromDB($data['ID']);
+						$message .= "[ ".convDateTime($fup->fields["date"])." ]\n";
+						$message .= $lang["mailing"][2]." ".$fup->getAuthorName()."\n";
+						$message .= $lang["mailing"][3]."\n".$fup->fields["contents"]."\n";
+						if ($fup->fields["realtime"]>0)
+							$message .= $lang["mailing"][104]." ".getRealtime($fup->fields["realtime"])."\n";
+	
+						$message.=$lang["mailing"][25]." ";
+						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+						$result2=$db->query($query2);
+						if ($db->numrows($result2)==0)
+					$message.=$lang["job"][32]."\n";
+						else {
+							$data2=$db->fetch_array($result2);
+							$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
+						}
+						
+						$message.=$lang["mailing"][0]."\n";	
+				}	
+			}
 
-					$message.=$lang["mailing"][25]." ";
-					$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
-					$result2=$db->query($query2);
-					if ($db->numrows($result2)==0)
-				      $message.=$lang["job"][32]."\n";
-					else {
-						$data2=$db->fetch_array($result2);
-						$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
-					}
-					
-					$message.=$lang["mailing"][0]."\n";	
-			}	
+
 		}
 		return $message;
 		} else return "";
 	}
 	
-	function textDescription(){
+	function textDescription($format="text"){
 		GLOBAL $db,$lang;
 		
 		
@@ -207,34 +237,67 @@ class Job {
 				$contact=$m->obj->fields["contact"];
 		}
 		
-		$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
-		$author=$this->getAuthorName();
-		if (empty($author)) $author=$lang["mailing"][108];
-		$message.= $lang["mailing"][2]." ".$author."\n";
-		$message.= $lang["mailing"][6]." ".convDateTime($this->fields["date"])."\n";
-		$message.= $lang["mailing"][7]." ".$name."\n";
-		$message.= $lang["mailing"][24]." ".getStatusName($this->fields["status"])."\n";
-		$assign=getAssignName($this->fields["assign"],USER_TYPE);
-		if ($assign=="[Nobody]")
-			$assign=$lang["mailing"][105];
-		$message.= $lang["mailing"][8]." ".$assign."\n";
-		$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."\n";
-		if ($this->fields["device_type"]!=SOFTWARE_TYPE)
-			$message.= $lang["mailing"][28]." ".$contact."\n";
-		if ($this->fields["emailupdates"]=="yes"){
-		        $message.=$lang["mailing"][103]." ".$lang["choice"][1]."\n";
-	        } else {
-		        $message.=$lang["mailing"][103]." ".$lang["choice"][0]."\n";
+		if($format=="html"){
+			$message = $lang["mailing"][1]."<br><strong>".$lang["mailing"][5]."</strong><br>".$lang["mailing"][1]."<br>";
+			$author=$this->getAuthorName();
+			if (empty($author)) $author=$lang["mailing"][108];
+			$message.= $lang["mailing"][2]." ".$author."<br>";
+			$message.= $lang["mailing"][6]." ".convDateTime($this->fields["date"])."<br>";
+			$message.= $lang["mailing"][7]." ".$name."<br>";
+			$message.= $lang["mailing"][24]." ".getStatusName($this->fields["status"])."<br>";
+			$assign=getAssignName($this->fields["assign"],USER_TYPE);
+			if ($assign=="[Nobody]")
+				$assign=$lang["mailing"][105];
+			$message.= $lang["mailing"][8]." ".$assign."<br>";
+			$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."<br>";
+			if ($this->fields["device_type"]!=SOFTWARE_TYPE)
+				$message.= $lang["mailing"][28]." ".$contact."<br>";
+			if ($this->fields["emailupdates"]=="yes"){
+				$message.=$lang["mailing"][103]." ".$lang["choice"][1]."<br>";
+			} else {
+				$message.=$lang["mailing"][103]." ".$lang["choice"][0]."<br>";
+			}
+			
+			$message.= $lang["mailing"][26]." ";
+			if (isset($this->fields["category"])&&$this->fields["category"]){
+				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
+			} else $message.=$lang["mailing"][100];
+			$message.= "<br>";
+			
+			$message.= $lang["mailing"][3]."<br>".$this->fields["contents"]."<br>";	
+			$message.="<br><br>";
+		}else{ //text format
+			$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
+			$author=$this->getAuthorName();
+			if (empty($author)) $author=$lang["mailing"][108];
+			$message.= $lang["mailing"][2]." ".$author."\n";
+			$message.= $lang["mailing"][6]." ".convDateTime($this->fields["date"])."\n";
+			$message.= $lang["mailing"][7]." ".$name."\n";
+			$message.= $lang["mailing"][24]." ".getStatusName($this->fields["status"])."\n";
+			$assign=getAssignName($this->fields["assign"],USER_TYPE);
+			if ($assign=="[Nobody]")
+				$assign=$lang["mailing"][105];
+			$message.= $lang["mailing"][8]." ".$assign."\n";
+			$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."\n";
+			if ($this->fields["device_type"]!=SOFTWARE_TYPE)
+				$message.= $lang["mailing"][28]." ".$contact."\n";
+			if ($this->fields["emailupdates"]=="yes"){
+				$message.=$lang["mailing"][103]." ".$lang["choice"][1]."\n";
+			} else {
+				$message.=$lang["mailing"][103]." ".$lang["choice"][0]."\n";
+			}
+			
+			$message.= $lang["mailing"][26]." ";
+			if (isset($this->fields["category"])&&$this->fields["category"]){
+				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
+			} else $message.=$lang["mailing"][100];
+			$message.= "\n";
+			
+			$message.= $lang["mailing"][3]."\n".$this->fields["contents"]."\n";	
+			$message.="\n\n";
+
 		}
-		
-		$message.= $lang["mailing"][26]." ";
-		 if (isset($this->fields["category"])&&$this->fields["category"]){
-			 $message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
-		} else $message.=$lang["mailing"][100];
-		$message.= "\n";
-		
-		$message.= $lang["mailing"][3]."\n".$this->fields["contents"]."\n";	
-		$message.="\n\n";
+
 		return $message;
 	}
 	
