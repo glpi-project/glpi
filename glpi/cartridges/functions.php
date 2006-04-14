@@ -53,43 +53,6 @@ function titleCartridge(){
          echo "</td></tr></table></div>";
 }
 
-function showCartridgeOnglets($target,$withtemplate,$actif){
-	global $lang,$HTMLRel;
-	
-	$template="";
-	if(!empty($withtemplate)){
-		$template="&amp;withtemplate=$withtemplate";
-	}
-
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
-	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
-	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
-	
-	if(empty($withtemplate)){
-	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
-	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
-	
-	display_plugin_headings($target,CARTRIDGE_TYPE,$withtemplate,$actif);
-
-	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
-	
-	}	
-	echo "<li class='invisible'>&nbsp;</li>";
-	
-	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
-	$ID=$ereg[1];
-	$next=getNextItem("glpi_cartridges_type",$ID);
-	$prev=getPreviousItem("glpi_cartridges_type",$ID);
-	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-		if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
-	}
-	echo "</ul></div>";
-	
-}
-
 
 /**
 * Print the cartridge type form
@@ -438,7 +401,8 @@ echo "</table></div>\n\n";
 function showCompatiblePrinters($instID) {
 	global $db,$cfg_glpi, $lang;
 
-    
+	if (!haveRight("cartridge","r")||!haveRight("printer","r")) return;
+
 	$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_assoc.ID as ID FROM glpi_cartridges_assoc, glpi_dropdown_model_printers WHERE glpi_cartridges_assoc.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' order by glpi_dropdown_model_printers.name";
 	
 	$result = $db->query($query);

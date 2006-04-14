@@ -43,32 +43,17 @@
 *
 */
 function showConnect($target,$ID,$type) {
-		// Prints a direct connection to a computer
+	// Prints a direct connection to a computer
 
-		GLOBAL $lang, $cfg_glpi;
+	global $lang, $cfg_glpi;
 
-		$connect = new Connection;
+	$connect = new Connection;
 		
-		switch ($type){
-			case COMPUTER_TYPE:
-				if (!haveRight("computer","r")) return;
-				break;
-			case PRINTER_TYPE:
-				if (!haveRight("printer","r")) return;
-				break;
-			case MONITOR_TYPE:
-				if (!haveRight("monitor","r")) return;
-				break;
-			case PERIPHERAL_TYPE:
-				if (!haveRight("peripheral","r")) return;
-				break;
-			case PHONE_TYPE:
-				if (!haveRight("phone","r")) return;
-				break;
-		}
-		// Is global connection ?
-		$global=0;
-		$ci=new CommonItem();
+	// Is global connection ?
+	$global=0;
+	$ci=new CommonItem();
+	$ci->setType($type);
+	if ($ci->haveRight("r")){
 		$ci->getFromDB($type,$ID);
 		$global=$ci->obj->fields['is_global'];
 		
@@ -128,6 +113,7 @@ function showConnect($target,$ID,$type) {
 		echo "</td>";
 		echo "</tr>";
 		echo "</table></div><br>";
+	}
 }
 
 /**
