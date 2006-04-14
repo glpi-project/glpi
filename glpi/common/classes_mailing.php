@@ -211,23 +211,38 @@ class Mailing
 	* Format the mail body to send
 	* @return mail body string
 	*/
-	function get_mail_body()
+	function get_mail_body($format="text")
 	{
 		global $cfg_glpi, $lang;
 		
 		// Create message body from Job and type
 		$body="";
 		
-		if ($cfg_glpi["url_in_mail"]&&!empty($cfg_glpi["url_base"])){
-			$body.=$lang["mailing"][1]."\n"; $body.="URL : ".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
+		if($format=="html"){
+			if ($cfg_glpi["url_in_mail"]&&!empty($cfg_glpi["url_base"])){
+				$body.=$lang["mailing"][1]."<br>"; $body.="URL :<a href=\" ".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\">".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]." </a><br>";
+				
+				}
 			
-			}
-		
-		$body.=$this->job->textDescription();
-		if ($this->type!="new") $body.=$this->job->textFollowups();
-		
-		
-		
+			$body.=$this->job->textDescription("html");
+			if ($this->type!="new") $body.=$this->job->textFollowups("html");
+			
+			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+		}else{ // text format
+			
+				if ($cfg_glpi["url_in_mail"]&&!empty($cfg_glpi["url_base"])){
+				$body.=$lang["mailing"][1]."\n"; $body.="URL : ".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
+				
+				}
+			
+			$body.=$this->job->textDescription();
+			if ($this->type!="new") $body.=$this->job->textFollowups();
+			
+			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
+			$body=ereg_replace("<br />","",$body);
+			$body=ereg_replace("<br>","",$body);
+		}
+
 		return $body;
 	}
 
@@ -309,11 +324,6 @@ class Mailing
 			{
 				// get users to send mail
 				$users=$this->get_users_to_send_mail();
-				// get body + signature OK
-				$body=$this->get_mail_body()."\n-- \n".$cfg_glpi["mailing_signature"];
-				$body=ereg_replace("<br />","",$body);
-				$body=ereg_replace("<br>","",$body);
-
 				// get subject OK
 				$subject=$this->get_mail_subject();
 				// get sender :  OK
@@ -331,7 +341,9 @@ class Mailing
 					
 					$mmail->AddAddress("$users[$i]", "");
 					$mmail->Subject=$subject	;  
-					$mmail->Body=$body;
+					$mmail->Body=$this->get_mail_body("html");
+					$mmail->isHTML(true);
+					$mmail->AltBody=$this->get_mail_body("text");
 					
 					if(!$mmail->Send()){
 						echo "<div align='center'>There was a problem sending this mail !</div>";
@@ -443,13 +455,20 @@ class MailingResa{
 	* Format the mail body to send
 	* @return mail body string
 	*/
-	function get_mail_body()
+	function get_mail_body($format="text")
 	{
 		// Create message body from Job and type
 		$body="";
 		
-		$body.=$this->resa->textDescription();
-		
+		if($format=="html"){
+
+			$body.=$this->resa->textDescription();
+		}else{ // text format
+
+			$body.=$this->resa->textDescription();
+			$body=ereg_replace("<br />","",$body);
+			$body=ereg_replace("<br>","",$body);
+		}
 		return $body;
 	}
 	/**
@@ -501,11 +520,7 @@ class MailingResa{
 		{
 				// get users to send mail
 				$users=$this->get_users_to_send_mail();
-				// get body + signature OK
-				$body=$this->get_mail_body()."\n-- \n".$cfg_glpi["mailing_signature"];
-				$body=ereg_replace("<br />","",$body);
-				$body=ereg_replace("<br>","",$body);
-
+				
 				// get subject OK
 				$subject=$this->get_mail_subject();
 				// get sender :  OK
@@ -524,7 +539,10 @@ class MailingResa{
 					$mmail->FromName=$sender;
 					$mmail->AddAddress("$users[$i]", "");
 					$mmail->Subject=$subject	;  
-					$mmail->Body=$body;
+					$mmail->Body=$this->get_mail_body("html");
+					$mmail->isHTML(true);
+					$mmail->AltBody=$this->get_mail_body("text");
+
 					
 					if(!$mmail->Send()){
 						echo "<div align='center'>There was a problem sending this mail !</div>";
