@@ -3946,7 +3946,7 @@ $query="CREATE TABLE `glpi_profiles` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) default NULL,
   `interface` varchar(50) NOT NULL default 'helpdesk',
-  `default` enum('0','1') NOT NULL default '0',
+  `is_default` enum('0','1') NOT NULL default '0',
   `computer` char(1) default NULL,
   `monitor` char(1) default NULL,
   `software` char(1) default NULL,
