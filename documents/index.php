@@ -37,12 +37,11 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_documents.php");
 
-checkAuthentication("normal");
+checkRight("document","r");
 
 commonHeader($lang["title"][25],$_SERVER["PHP_SELF"]);
 
 titleDocument();
-
 
 include ($phproot . "/glpi/includes_search.php");
 

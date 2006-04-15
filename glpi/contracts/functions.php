@@ -46,7 +46,7 @@ include ("_relpos.php");
 **/
 function titleContract(){
 
-         GLOBAL  $lang,$HTMLRel;
+         global  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/contracts.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td><td><a  class='icon_consol' href=\"contracts-info-form.php\"><b>".$lang["financial"][0]."</b></a>";
@@ -71,7 +71,8 @@ function titleContract(){
 function showContractForm ($target,$ID) {
 	// Show Contract or blank form
 	
-	GLOBAL $cfg_glpi,$lang,$HTMLRel;
+	global $cfg_glpi,$lang,$HTMLRel;
+
 	if (!haveRight("contract_infocom","r")) return false;
 
 	$con = new Contract;
@@ -191,6 +192,7 @@ function showContractForm ($target,$ID) {
 	dropdownHours("monday_end_hour",$con->fields["monday_end_hour"]);	
 	echo "</td></tr>";
 	
+	if (haveRight("contract_infocom","w"))
 	if (!$ID) {
 
 		echo "<tr>";
@@ -198,8 +200,6 @@ function showContractForm ($target,$ID) {
 		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
 		echo "</tr>";
-
-		echo "</table></div></form>";
 
 	} else {
 
@@ -222,13 +222,11 @@ function showContractForm ($target,$ID) {
 		echo "</td>";
 		echo "</tr>";
 
-		echo "</table></div>";
-		echo "</form>";
 	}
+	echo "</table></div></form>";
+
 	} else {
 	echo "<div align='center'><b>".$lang["financial"][40]."</b></div>";
-	echo "<hr noshade>";
-	searchFormContract();
 	return false;
 	
 	}
@@ -250,7 +248,8 @@ return true;
 
 function showCentralContract(){
 
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
+
 	if (!haveRight("contract_infocom","r")) return false;
 
 	// contrats echus depuis moins de 30j
@@ -324,7 +323,8 @@ function showCentralContract(){
 *
 **/
 function showDeviceContract($instID) {
-	GLOBAL $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+
 	if (!haveRight("contract_infocom","r")) return false;
     
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
@@ -389,6 +389,7 @@ function showDeviceContract($instID) {
 **/
 function addDeviceContract($conID,$type,$ID,$template=0){
 	global $db;
+
 if ($ID>0&&$conID>0){
 	
 	$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type, is_template ) VALUES ('$conID','$ID','$type','$template');";
@@ -424,7 +425,8 @@ $result = $db->query($query);
 *
 **/
 function showEnterpriseContract($instID) {
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel,$cfg_glpi;
+	global $db,$cfg_glpi, $lang,$HTMLRel,$cfg_glpi;
+
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
     
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
@@ -693,7 +695,8 @@ function dropdownContracts($name){
 **/
 function showContractAssociated($device_type,$ID,$withtemplate=''){
 
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$HTMLRel;
+
 	if (!haveRight("contract_infocom","r"))	return false;
     
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
@@ -769,7 +772,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 **/
 function showContractAssociatedEnterprise($ID){
 
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$HTMLRel;
 
     
 	$query = "SELECT * FROM glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_enterprise = '$ID'";

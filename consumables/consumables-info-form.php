@@ -49,7 +49,7 @@ $ct=new ConsumableType();
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("consumable","w");
 
 	$newID=$ct->add($_POST);
 	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
@@ -57,37 +57,39 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("consumable","w");
+
 	$ct->delete($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("consumable","w");
+
 	$ct->restore($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("consumable","w");
+
 	$ct->delete($_POST,1);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/consumables/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("consumable","w");
+
 	$ct->update($_POST);
 	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkRight("consumable","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {

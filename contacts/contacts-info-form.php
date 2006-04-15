@@ -45,47 +45,54 @@ if(empty($tab["ID"])) $tab["ID"] = "";
 $con=new Contact;
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$newID=$con->add($_POST);
 	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$con->delete($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$con->restore($_POST);
 	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$con->delete($_POST,1);
 	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/contacts/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$con->update($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
 	logEvent($tab["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$lang["log"][34]);
 	glpi_header($cfg_glpi["root_doc"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent(0, "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$lang["log"][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -93,14 +100,11 @@ else if (isset($_GET["deleteenterprise"])){
 
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkRight("contact_enterprise","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);

@@ -38,7 +38,7 @@ include ("_relpos.php");
 
 function titleDocument(){
 
-         GLOBAL  $lang,$HTMLRel;
+         global  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td><td><a  class='icon_consol' href=\"documents-info-form.php\"><b>".$lang["document"][13]."</b></a>";
@@ -46,11 +46,9 @@ function titleDocument(){
 }
 
 function showDocumentForm ($target,$ID) {
-	if (!haveRight("document","r"))	return false;
+	global $cfg_glpi,$lang,$HTMLRel;
 
-	// Show Document or blank form
-	
-	GLOBAL $cfg_glpi,$lang,$HTMLRel;
+	if (!haveRight("document","r"))	return false;
 
 	$con = new Document;
 	$con_spotted=false;
@@ -311,7 +309,7 @@ return "";
 
 
 function showDeviceDocument($instID,$search='') {
-	GLOBAL $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("document","r"))	return false;
 
@@ -331,40 +329,43 @@ function showDeviceDocument($instID,$search='') {
 	$ci=new CommonItem();
 	while ($i < $number) {
 		$type=$db->result($result, $i, "device_type");
-		$column="name";
-		if ($type==TRACKING_TYPE) $column="ID";
+		if ($ci->haveRight("r")){
+			$column="name";
+			if ($type==TRACKING_TYPE) $column="ID";
 
-		$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".$column";
+			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".$column";
 		
-		if ($result_linked=$db->query($query))
-		if ($db->numrows($result_linked)){
-			$ci->setType($type);
-			while ($data=$db->fetch_assoc($result_linked)){
-				$ID="";
-				if ($type==TRACKING_TYPE) $data["name"]=$lang["job"][38]." ".$data["ID"];
-				if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-				$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+			if ($result_linked=$db->query($query))
+			if ($db->numrows($result_linked)){
+				$ci->setType($type);
+				while ($data=$db->fetch_assoc($result_linked)){
+					$ID="";
+					if ($type==TRACKING_TYPE) $data["name"]=$lang["job"][38]." ".$data["ID"];
+					if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 				
-				echo "<tr class='tab_bg_1'>";
-				echo "<td align='center'>".$ci->getType()."</td>";
+					echo "<tr class='tab_bg_1'>";
+					echo "<td align='center'>".$ci->getType()."</td>";
 
-				echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
-				echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+				}
 			}
 		}
-	
 	$i++;
 	}
 	
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+	if (!haveRight("document","w"))	{
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	
-	echo "<input type='hidden' name='conID' value='$instID'>";
+		echo "<input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",0,0,1,1,1,1);
-	echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</td>";
-	echo "<td align='center' class='tab_bg_2'>";
-	echo "</td></tr>";
+		echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</td>";
+		echo "<td align='center' class='tab_bg_2'>";
+		echo "</td></tr>";
+	}
 	
 	echo "</table></div>"    ;
 	echo "</form>";
@@ -391,7 +392,7 @@ $result = $db->query($query);
 // $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$HTMLRel;
 	if (!haveRight("document","r"))	return false;
     
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
@@ -501,7 +502,6 @@ return preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$name);
 
 function showUploadedFilesDropdown($myname){
 	global $cfg_glpi,$lang;
-
 
 	if (is_dir($cfg_glpi["doc_dir"]."/UPLOAD")){
 		$uploaded_files=array();
