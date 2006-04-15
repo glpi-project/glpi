@@ -38,7 +38,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_cartridges.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 
-checkAuthentication("normal");
+checkRight("cartridge","r");
 
 commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
 

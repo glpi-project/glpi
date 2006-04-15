@@ -42,6 +42,7 @@ if(!session_id()){@session_start();}
 
 include ($phproot . "/glpi/common/Timer.php");
 include ($phproot . "/glpi/common/classes.php");
+include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/common/functions_auth.php");
 include ($phproot . "/glpi/common/functions_display.php");
 include ($phproot . "/glpi/config/config.php");
@@ -66,7 +67,6 @@ if ($cfg_glpi["debug"]){
 include ($phproot . "/glpi/common/classes_auth.php");
 include ($phproot . "/glpi/common/classes_connection.php");
 include ($phproot . "/glpi/common/classes_mailing.php");
-include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/common/functions_dropdown.php");
 include ($phproot . "/glpi/common/functions_reports.php");
 include ($phproot . "/glpi/common/functions_search.php");
