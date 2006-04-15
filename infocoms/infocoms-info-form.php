@@ -55,7 +55,7 @@ $ic=new Infocom();
 
 if (isset($_GET["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("contract_infocom","w");
 
 	$newID=$ic->add($_GET);
 	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]);
@@ -63,23 +63,23 @@ if (isset($_GET["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("contract_infocom","w");
+
 	$ic->delete($_POST);
 	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("contract_infocom","w");
+
 	$ic->update($_POST);
 	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkRight("contract_infocom","r");
 
 	commonHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
 	showInfocomForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);

@@ -38,7 +38,7 @@ include ("_relpos.php");
 function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplate='') {
 	// Show Infocom or blank form
 	
-	GLOBAL $cfg_glpi,$lang,$HTMLRel;
+	global $cfg_glpi,$lang,$HTMLRel;
 	if (!haveRight("contract_infocom","r")) return false;
 	$date_fiscale=$cfg_glpi["date_fiscale"];
 	

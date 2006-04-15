@@ -48,7 +48,9 @@ include ("_relpos.php");
 * @return nothing (display the form)
 **/
 function searchFormKnowbase($target,$contains){
-global $lang;
+	global $lang;
+	if (!haveRight("knowbase","r")) return false;
+
 	echo "<form method=post action=\"$target\">";
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe'>";
 
@@ -79,15 +81,13 @@ global $lang;
 function titleknowbase(){
 
 	
-	GLOBAL  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
 
-         echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td><td>";
-         //if (countElementsInTable("glpi_dropdown_kbcategories"))
-         echo "<a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
-         //else echo "<span class='icon_consol'>".$lang["knowbase"][2]."</span>";
-         echo "</td></tr>";
-		echo "</table></div>";
+        echo "<div align='center'><table border='0'><tr><td>";
+        echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td><td>";
+	echo "<a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
+        echo "</td></tr>";
+	echo "</table></div>";
 	
 }
 
@@ -106,8 +106,8 @@ function showKbItemForm($target,$ID){
 
 	// show kb item form
 	
-	GLOBAL  $lang,$HTMLRel,$cfg_glpi;
-
+	global  $lang,$HTMLRel,$cfg_glpi;
+	if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
 	$ki= new kbitem;	
 	
 	echo "<div align='center'>";
@@ -134,7 +134,7 @@ function showKbItemForm($target,$ID){
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][13]."</legend>";
 	echo "<p style='text-align:center'>".$lang["knowbase"][6];
-	kbcategoryList($ki->fields["categoryID"],"yes");
+	dropdownValue("glpi_dropdown_kbcategories","categoryID",$ki->fields["categoryID"]);
 	echo "</p>";
 	echo "</fieldset>";
 		
@@ -146,26 +146,6 @@ function showKbItemForm($target,$ID){
 	
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][4]."</legend><div align='center'>";
-	/* echo "
-		<script type='text/javascript' language='javascript'>
-		drawToolbar('form_kb.answer');
-		</script>
-		";	
-	*/
-	/*
-	echo "<p class='toolbar'>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[b]', '[/b]')\"><img src=\"".$HTMLRel."pics/gras.png\" alt='".$lang["toolbar"][1]."' title='".$lang["toolbar"][1]."' style=\"vertical-align:middle;\"></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[i]', '[/i]')\"><img src=\"".$HTMLRel."pics/italique.png\" alt='".$lang["toolbar"][2]."' title='".$lang["toolbar"][2]."' style='vertical-align:middle;'></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[u]', '[/u]')\"><img src=\"".$HTMLRel."pics/souligne.png\" alt='".$lang["toolbar"][3]."' title='".$lang["toolbar"][3]."' style='vertical-align:middle;'></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[s]', '[/s]')\"><img src=\"".$HTMLRel."pics/barre.png\" alt='".$lang["toolbar"][4]."' title='".$lang["toolbar"][4]."' style='vertical-align:middle;'></a>";		
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[g]', '[/g]')\"><img src=\"".$HTMLRel."pics/grand.png\" alt='".$lang["toolbar"][7]."' title='".$lang["toolbar"][7]."' style='vertical-align:middle;'></a>";	
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[c]', '[/c]')\"><img src=\"".$HTMLRel."pics/centre.png\" alt='".$lang["toolbar"][5]."' title='".$lang["toolbar"][5]."' style='vertical-align:middle;'></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[code]', '[/code]')\"><img src=\"".$HTMLRel."pics/code.png\" alt='".$lang["toolbar"][6]."' title='".$lang["toolbar"][6]."' style='vertical-align:middle;'></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=red]', '[/color]')\"><img src=\"".$HTMLRel."pics/rouge.png\" alt='".$lang["toolbar"][8]."' title='".$lang["toolbar"][8]."' style='vertical-align:middle;'></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=blue]', '[/color]')\"><img src=\"".$HTMLRel."pics/bleu.png\" alt='".$lang["toolbar"][9]."' title='".$lang["toolbar"][9]."' style='vertical-align:middle;'></a>";
-	echo "<a href=\"javascript:raccourciTypo(document.form_kb.answer , '[color=yellow]', '[/color]')\"><img src=\"".$HTMLRel."pics/jaune.png\" alt='".$lang["toolbar"][10]."' title='".$lang["toolbar"][10]."' style='vertical-align:middle;'></a>";
-	echo "</p>";
-	*/
 	echo "<textarea cols='80' rows='30' id='answer'  name='answer' >".$ki->fields["answer"]."</textarea></div>"; 
 	
 	echo "</fieldset>";
@@ -224,7 +204,8 @@ function kbItemMenu($ID)
 {
 	global $lang,$HTMLRel, $cfg_glpi;
 
-	
+	if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
+
 	$ki= new kbitem;	
 	
 	$ki->getfromDB($ID);
@@ -274,7 +255,7 @@ function showKbCategoriesall($contains='')
 {
 
 	global $lang;	
-
+	if (!haveRight("knowbase","r")) return false;
 	
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
 	echo "<tr><th align='center' >".$lang["knowbase"][0]."</th></tr><tr><td align='left' class='tab_bg_3'>";	
@@ -301,6 +282,9 @@ function showKbCategories($parentID=0,$contains='')
 	// ok
 	
 	global $db,$lang,$HTMLRel;
+
+	if (!haveRight("knowbase","r")) return false;
+
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
 		
@@ -352,8 +336,10 @@ function showKbCategories($parentID=0,$contains='')
 function showKbItemAll($parentID,$contains='')
 {
 	// show kb item in each categories
-	//ok 
+
 	global $db;	
+
+	if (!haveRight("knowbase","r")) return false;
 
 	$WHERE="";
 	if (strlen($contains)) $WHERE=" AND (question LIKE '%$contains%' OR answer LIKE '%$contains%') ";
@@ -390,7 +376,6 @@ function showKbItemAll($parentID,$contains='')
 function showKbItem($ID)
 {
 	// show each kb items
-	//ok 
 	
 	global $db,$cfg_glpi,  $lang;
 
@@ -419,11 +404,12 @@ function showKbItem($ID)
 **/
 function ShowKbItemFull($ID,$linkauthor="yes")
 {
-	
 	// show item : question and answer
 	
 	global $db,$lang;
-	
+
+	if (!haveRight("knowbase","r")) return false;	
+
 	//update counter view
 	$query="UPDATE glpi_kbitems SET view=view+1 WHERE ID = '$ID'";
 	$db->query($query);
@@ -477,31 +463,6 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 }
 
 
-/**
-* Print out (html) select show select category
-*
-* @param $current integer
-* @param $nullroot string yes or no
-*
-* 
-* @return nothing (display select)
-**/
-function kbcategoryList($current=0,$nullroot="yes")
-{
-	// show select category
-	// ok ?
-	
-	global $lang;
-	
-	
-
-	dropdownValue("glpi_dropdown_kbcategories","categoryID",$current);
-	
-}
-
-
-
-
 //*******************
 // Gestion de la  FAQ
 //******************
@@ -552,7 +513,7 @@ function getFAQCategories()
 {
 	
 	global $db;	
-	
+
 	$query = "select * from glpi_kbitems where (faq = 'yes')";
 
 	$catNumbers = array();
@@ -618,6 +579,8 @@ function faqShowCategoriesall($target,$contains)
 {
 
 	global $lang;	
+
+	if (!haveRight("faq","r")) return false;	
 
 	searchFormKnowbase($target,$contains);
 	

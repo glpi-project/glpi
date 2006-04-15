@@ -46,7 +46,7 @@ include ("_relpos.php");
 *
 **/
 function titleLinks(){
-                GLOBAL  $lang,$HTMLRel;
+                global  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/links.png\" alt='".$lang["links"][2]."' title='".$lang["links"][2]."'></td><td><a  class='icon_consol' href=\"links-info-form.php?new=1\"><b>".$lang["links"][2]."</b></a>";
                 echo "</td></tr></table></div>";
@@ -109,6 +109,7 @@ function showLinkForm ($target,$ID) {
 	echo "<textarea name='data' rows='10' cols='80'>".$con->fields["data"]."</textarea>";
 	echo "</td></tr>";
 
+	if (haveRight("link","w"))
 	if ($ID=="") {
 
 		echo "<tr>";
@@ -116,8 +117,6 @@ function showLinkForm ($target,$ID) {
 		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
 		echo "</tr>";
-
-		echo "</table></div></form>";
 
 	} else {
 
@@ -132,9 +131,10 @@ function showLinkForm ($target,$ID) {
 		echo "</td>";
 		echo "</tr>";
 
-		echo "</table></div></form>";
+		
 
 	}
+	echo "</table></div></form>";
 	}else {
 	echo "<div align='center'><b>".$lang["links"][8]."</b></div>";
 	return false;
@@ -155,7 +155,7 @@ function showLinkForm ($target,$ID) {
 *
 **/
 function showLinkDevice($instID) {
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$HTMLRel;
 
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $db->query($query);
