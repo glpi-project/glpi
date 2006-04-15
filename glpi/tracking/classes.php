@@ -238,9 +238,11 @@ class Job {
 		}
 		
 		if($format=="html"){
-			$message= "<html><head></head><body>";
-			//$message.="<div style='border: 2px solid #EFD182'>";
-			 $message.=$lang["mailing"][1]."<br><strong>".$lang["mailing"][5]."</strong><br>".$lang["mailing"][1]."<br>";
+			$message= "<html><head> <style type=\"text/css\">";
+			$message.=".description{ color: inherit; background: #ebebeb; border-style: solid; border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }";
+			$message.=" </style></head><body>";
+			
+			 $message.="<div class='description'><strong>".$lang["mailing"][5]."</strong></div><br>";
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$lang["mailing"][108];
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][2]."</span> ".$author."<br>";
@@ -266,8 +268,8 @@ class Job {
 			} else $message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][100]."</span>";
 			$message.= "<br>";
 			
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][3]."</span><br>".$this->fields["contents"]."<br>><br>";	
-			//$message.="</div<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][3]."</span><br>".$this->fields["contents"]."<br><br>";	
+			
 		}else{ //text format
 			$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
 			$author=$this->getAuthorName();
