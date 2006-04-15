@@ -52,10 +52,12 @@ class Contact extends CommonDBTM{
 
 	function defineOnglets($withtemplate){
 		global $lang;
-		return array(	1 => $lang["title"][26],
-				7 => $lang["title"][34],
-				10 => $lang["title"][37],
-		);
+		$ong[1]=$lang["title"][26];
+		if (haveRight("link","r"))	
+			$ong[7]=$lang["title"][34];
+		if (haveRight("notes","r"))
+			$ong[10]=$lang["title"][37];
+		return $ong;
 	}
 }
 

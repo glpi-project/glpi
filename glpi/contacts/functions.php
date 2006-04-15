@@ -67,7 +67,9 @@ function titleContacts(){
 **/
 function showContactForm ($target,$ID) {
 
-	GLOBAL $cfg_glpi, $lang,$HTMLRel;
+	global $cfg_glpi, $lang,$HTMLRel;
+
+	if (!haveRight("contact_enterprise","r")) return false;
 
 	$con = new Contact;
 	$con_spotted=false;
@@ -136,6 +138,7 @@ function showContactForm ($target,$ID) {
 	echo "</td>";
 	echo "</tr>";
 	
+	if (haveRight("contact_enterprise","w")) 
 	if ($ID=="") {
 
 		echo "<tr>";
@@ -144,7 +147,6 @@ function showContactForm ($target,$ID) {
 		echo "</td>";
 		echo "</tr>";
 
-		echo "</table></div></form>";
 
 	} else {
 
@@ -164,9 +166,8 @@ function showContactForm ($target,$ID) {
 		echo "</td>";
 		echo "</tr>";
 
-		echo "</table></div></form>";
-
 	}
+	echo "</table></div></form>";
 	
 	} else {
 	echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
@@ -187,7 +188,9 @@ function showContactForm ($target,$ID) {
 *
 **/
 function showEnterpriseContact($instID) {
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$HTMLRel;
+	
+	if (!haveRight("contact_enterprise","r")) return false;
 
     
 	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";

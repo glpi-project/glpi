@@ -38,7 +38,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_consumables.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 
-checkAuthentication("normal");
+checkRight("consumable","r");
 
 commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
 

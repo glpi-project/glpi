@@ -37,6 +37,8 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_documents.php");
 
+checkRight("document","r");
+
 if (isset($_GET["file"])){
 $splitter=split("/",$_GET["file"]);
 if (count($splitter)==2)

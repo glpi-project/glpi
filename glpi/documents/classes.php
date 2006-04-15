@@ -61,9 +61,10 @@ class Document extends CommonDBTM {
 
 	function defineOnglets($withtemplate){
 		global $lang;
-		return array(	1 => $lang["title"][26],
-				10 => $lang["title"][37],
-		);
+		$ong[5]=$lang["title"][26];
+		if (haveRight("notes","r"))
+			$ong[10]=$lang["title"][37];
+		return $ong;
 	}
 
 

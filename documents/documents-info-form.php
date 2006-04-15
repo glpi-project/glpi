@@ -56,7 +56,7 @@ $doc= new Document();
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("document","w");
 
 	$newID=$doc->add($_POST);
 	logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
@@ -64,21 +64,24 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("document","w");
+
 	$doc->delete($_POST);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/documents/");
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("document","w");
+
 	$doc->restore($_POST);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/documents/");
 }
 else if (isset($_POST["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("document","w");
+
 	$doc->delete($_POST,1);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/documents/");
@@ -86,13 +89,15 @@ else if (isset($_POST["purge"]))
 
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("document","w");
+
 	$doc->update($_POST);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["additem"])){
-	checkAuthentication("admin");
+
+	checkRight("document","w");
 
 	$template=0;
 	if (isset($_POST["is_template"])) $template=1;
@@ -104,29 +109,32 @@ else if (isset($_POST["additem"])){
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"])){
-	checkAuthentication("admin");
+
+	checkRight("document","w");
+
 	deleteDeviceDocument($_GET["ID"]);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
-	checkAuthentication("admin");
+
+	checkRight("document","w");
 
 	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][32]);
 	glpi_header($cfg_glpi["root_doc"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
-	checkAuthentication("admin");
+
+	checkRight("document","w");
+
 	deleteEnterpriseDocument($_GET["ID"]);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][33]);
 	glpi_header($cfg_glpi["root_doc"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
 }
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkRight("document","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {

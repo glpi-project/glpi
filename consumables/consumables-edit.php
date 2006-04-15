@@ -46,8 +46,8 @@ if(!isset($tab["cID"])) $tab["cID"] = "";
 $con=new Consumable();
 if (isset($_GET["add"]))
 {
-	
-	checkAuthentication("admin");
+	checkRight("consumable","w");
+
 	$con->add($_GET);
 	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added a consumable.");
 	
@@ -55,8 +55,8 @@ if (isset($_GET["add"]))
 }
 else if (isset($_POST["add_several"]))
 {
+	checkRight("consumable","w");
 	
-	checkAuthentication("admin");
 	for ($i=0;$i<$_POST["to_add"];$i++)
 		$con->add($_POST);
 	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." consumable.");
@@ -65,13 +65,15 @@ else if (isset($_POST["add_several"]))
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("consumable","w");
+
 	$con->delete($tab);
 	logEvent(0, "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["give"]))
-{	checkAuthentication("admin");
+{	
+	checkRight("consumable","w");
 
 	if (isset($tab["out"]))
 	foreach ($tab["out"] as $key => $val)
@@ -82,7 +84,8 @@ else if (isset($tab["give"]))
 }
 else if (isset($tab["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("consumable","w");
+
 	$con->restore($tab);
 	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." restore a consummable.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");

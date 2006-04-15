@@ -54,7 +54,7 @@ $con=new Contract();
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("contract_infocom","w");
 
 	$newID=$con->add($_POST);
 	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["num"].".");
@@ -62,36 +62,39 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("contract_infocom","w");
+
 	$con->delete($_POST);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("contract_infocom","w");
+
 	$con->restore($_POST);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
 else if (isset($_POST["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("contract_infocom","w");
+
 	$con->delete($_POST,1);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/contracts/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("contract_infocom","w");
+
 	$con->update($_POST);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["additem"])){
-	checkAuthentication("admin");
-	
-	
+
+	checkRight("contract_infocom","w");
 	
 	$template=0;
 	if (isset($_POST["is_template"])) $template=1;
@@ -103,34 +106,36 @@ else if (isset($_POST["additem"])){
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"])){
-	checkAuthentication("admin");
+	
+	checkRight("contract_infocom","w");
+
 	deleteDeviceContract($_GET["ID"]);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
-	checkAuthentication("admin");
+
+	checkRight("contract_infocom","w");
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][34]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteenterprise"])){
-	checkAuthentication("admin");
+
+	checkRight("contract_infocom","w");
+
 	deleteEnterpriseContract($_GET["ID"]);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkRight("contract_infocom","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
@@ -155,8 +160,8 @@ else
 			showLinkOnDevice(CONTRACT_TYPE,$tab["ID"]);
 			break;
 		case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],CONTRACT_TYPE,$tab["ID"]);
-				break;
+			showNotesForm($_SERVER["PHP_SELF"],CONTRACT_TYPE,$tab["ID"]);
+			break;
 		default :
 			if (!display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
 				showEnterpriseContract($tab["ID"]);

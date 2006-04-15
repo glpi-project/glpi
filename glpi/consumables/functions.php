@@ -54,43 +54,6 @@ function titleConsumable(){
          echo "</tr></table></div>";
 }
 
-function showConsumableOnglets($target,$withtemplate,$actif){
-	global $lang,$HTMLRel;
-	
-	$template="";
-	if(!empty($withtemplate)){
-		$template="&amp;withtemplate=$withtemplate";
-	}
-
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
-	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
-	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
-	
-	if(empty($withtemplate)){
-	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
-	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
-
-	display_plugin_headings($target,CONSUMABLE_TYPE,$withtemplate,$actif);
-
-	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
-	
-	}	
-	echo "<li class='invisible'>&nbsp;</li>";
-	
-	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
-	$ID=$ereg[1];
-	$next=getNextItem("glpi_consumables_type",$ID);
-	$prev=getPreviousItem("glpi_consumables_type",$ID);
-	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-		if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
-	}
-	echo "</ul></div>";
-	
-}
-
 
 /**
 * Print the consumable type form
@@ -108,7 +71,9 @@ function showConsumableOnglets($target,$withtemplate,$actif){
 function showConsumableTypeForm ($target,$ID) {
 	// Show ConsumableType or blank form
 	
-	GLOBAL $cfg_glpi,$lang;
+	global $cfg_glpi,$lang;
+
+	if (!haveRight("consumable","r")) return false;
 
 	$ct = new ConsumableType;
 	$ct_spotted=false;
@@ -224,8 +189,9 @@ function showConsumableTypeForm ($target,$ID) {
 **/
 function showConsumableAdd($ID) {
 	
-	GLOBAL $cfg_glpi,$lang,$HTMLRel;
+	global $cfg_glpi,$lang,$HTMLRel;
 	
+	if (!haveRight("consumable","w")) return false;
 	
 	echo "<form method='post'  action=\"".$HTMLRel."consumables/consumables-edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
@@ -258,9 +224,9 @@ function showConsumableAdd($ID) {
 **/
 function showConsumables ($tID,$show_old=0) {
 
-	GLOBAL $db,$cfg_glpi,$lang,$HTMLRel;
+	global $db,$cfg_glpi,$lang,$HTMLRel;
 	
-	
+	if (!haveRight("consumable","r")) return false;
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
 
@@ -390,7 +356,7 @@ if (!$show_old)
 **/
 function countConsumables($tID,$alarm,$nohtml=0) {
 	
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
 	
 	
 	$out="";
@@ -519,7 +485,9 @@ else if (isOldConsumable($cID)) return $lang["consumables"][22];
 
 
 function showConsumableSummary($target){
-global $db,$lang;
+	global $db,$lang;
+
+	if (!haveRight("consumable","r")) return false;
 
 	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type, id_user FROM glpi_consumables WHERE date_out IS NOT NULL GROUP BY id_user,FK_glpi_consumables_type";
 	$used=array();
