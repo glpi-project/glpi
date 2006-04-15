@@ -86,7 +86,6 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	 checkAuthentication("normal");
 
 	
 	commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);

@@ -37,7 +37,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_profiles.php");
 
-checkAuthentication("super-admin");
+checkRight("profile","r");
 
 commonHeader($lang["Menu"][35],$_SERVER["PHP_SELF"]);
 titleProfiles();
@@ -48,8 +48,11 @@ else $ID=$_POST["ID"];
 $prof=new Profile();
 
 if (isset($_POST["update"])){
+	checkRight("profile","w");
+
 	$prof->update($_POST);
 }else if (isset($_POST["add"])){
+	checkRight("profile","w");
 	$ID=$prof->add($_POST);
 }
 

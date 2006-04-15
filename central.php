@@ -53,7 +53,7 @@ include ($phproot . "/glpi/includes_phones.php");
 include ($phproot . "/glpi/includes_reminder.php");
 include ($phproot . "/glpi/includes_financial.php");
 
-checkAuthentication("normal");
+checkCentralAccess();
 
 commonHeader($lang["title"][0],$_SERVER["PHP_SELF"]);
 

@@ -40,7 +40,7 @@ function titleUsers(){
                 
 		// Un titre pour la gestion des users
 		
-		GLOBAL  $lang,$HTMLRel;
+		global  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td>";
                 echo "<td><a  class='icon_consol' href=\"users-info-form.php?new=1\"><b>".$lang["setup"][2]."</b></a></td>";
@@ -50,7 +50,7 @@ function titleUsers(){
 }
 function showPasswordForm($target,$name) {
 
-	GLOBAL $cfg_glpi, $lang;
+	global $cfg_glpi, $lang;
 	
 	$user = new User();
 	if ($user->getFromDBbyName($name)){
@@ -72,7 +72,9 @@ function showUserinfo($target,$ID) {
 	
 	// Affiche les infos User
 	
-	GLOBAL $cfg_glpi, $lang;
+	global $cfg_glpi, $lang;
+
+	if (!haveRight("user","r")) return false;
 	
 	$user = new User();
 	
@@ -111,7 +113,9 @@ function showUserinfo($target,$ID) {
 function showUserform($target,$name) {
 	
 	// Affiche un formulaire User
-	GLOBAL $cfg_glpi, $lang;
+	global $cfg_glpi, $lang;
+
+	if (!haveRight("user","r")) return false;
 	
 	$user = new User();
 	if($name == 'Helpdesk') {
@@ -221,6 +225,7 @@ function showUserform($target,$name) {
 		echo "></p>";
 		echo "</td></tr>";
 	}
+	if (haveRight("user","w"))
 	if ($name=="") {
 		echo "<tr >";
 		echo "<td class='tab_bg_2' valign='top' colspan='2' align='center'>";
@@ -256,11 +261,11 @@ function showUserform($target,$name) {
 
 
 
-
+// TO BE DELETED
 function showFormAssign($target)
 {
 
-	GLOBAL $db,$cfg_glpi, $lang, $IRMName;
+	global $db,$cfg_glpi, $lang, $IRMName;
 	
 	$query = "SELECT name FROM glpi_users where name <> 'Helpdesk' and name <> '".$_SESSION["glpiname"]."' ORDER BY type DESC";
 	
@@ -311,7 +316,7 @@ function updateSort($input) {
 
 function showLangSelect($target) {
 
-	GLOBAL $cfg_glpi, $lang;
+	global $cfg_glpi, $lang;
 	
 	$l = $_SESSION["glpilanguage"]; 
 	
@@ -349,7 +354,7 @@ function updateLanguage($input) {
 
 function showSortForm($target) {
 
-	GLOBAL $cfg_glpi, $lang;
+	global $cfg_glpi, $lang;
 	
 	$order = $_SESSION["glpitracking_order"];
 	
@@ -380,6 +385,9 @@ function showSortForm($target) {
 function showAddExtAuthUserForm($target){
 	global $lang;
 	
+	if (!haveRight("user","w")) return false;
+
+
 	echo "<div align='center'>\n";
 	echo "<form method='get' action=\"$target\">\n";
 

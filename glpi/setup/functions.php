@@ -41,7 +41,9 @@ include ("_relpos.php");
 
 function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='',$type='') {
 
-	GLOBAL $cfg_glpi, $lang, $HTMLRel;
+	global $cfg_glpi, $lang, $HTMLRel;
+
+	if (!haveRight("dropdown","w")) return false;
 
 	echo "<div align='center'>&nbsp;\n";
 	echo "<form method='post' action=\"$target\">";
@@ -124,7 +126,9 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
+
+	if (!haveRight("dropdown","w")) return false;
 
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
@@ -235,8 +239,10 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 function showFormTypeDown ($target,$name,$human,$ID) {
 
-	GLOBAL $cfg_glpi, $lang, $HTMLRel;
+	global $cfg_glpi, $lang, $HTMLRel;
 	
+	if (!haveRight("dropdown","w")) return false;	
+
 	echo "<div align='center'>&nbsp;";
 	
 	echo "<form action=\"$target\" method='post'>";
@@ -563,6 +569,8 @@ function replaceDropDropDown($input) {
 
 function showDeleteConfirmForm($target,$table, $ID) {
 	global $db,$lang;
+
+	if (!haveRight("dropdown","w")) return false;
 	
 	if ($table=="glpi_dropdown_locations"){
 		
@@ -909,8 +917,11 @@ function dropdownUsed($table, $ID) {
 
 function listTemplates($type,$target,$add=0) {
 
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
 
+	$ci=new CommonItem();
+	$ci->setType($type);
+	if (!$ci->haveRight("w")) return false;
 		
 	switch ($type){
 	case COMPUTER_TYPE :
@@ -995,7 +1006,7 @@ function listTemplates($type,$target,$add=0) {
 
 function titleConfigGen(){
 
-GLOBAL  $lang,$HTMLRel;
+global  $lang,$HTMLRel;
 
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][100]."</span>";
@@ -1006,7 +1017,7 @@ GLOBAL  $lang,$HTMLRel;
 
 function titleConfigDisplay(){
 
-GLOBAL  $lang,$HTMLRel;
+global  $lang,$HTMLRel;
 
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][119]."</span>";
@@ -1017,8 +1028,9 @@ GLOBAL  $lang,$HTMLRel;
 
 function showFormConfigGen($target){
 	
-	GLOBAL  $db,$lang,$HTMLRel,$cfg_glpi;
+	global  $db,$lang,$HTMLRel,$cfg_glpi;
 	
+	if (!haveRight("config","w")) return false;	
 	
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
@@ -1094,7 +1106,9 @@ function showFormConfigGen($target){
 
 function showFormConfigDisplay($target){
 	
-	GLOBAL $db, $lang,$HTMLRel,$cfg_glpi;
+	global $db, $lang,$HTMLRel,$cfg_glpi;
+	
+	if (!haveRight("config","w")) return false;	
 	
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
@@ -1211,7 +1225,7 @@ function showFormConfigDisplay($target){
 function titleExtSources(){
 // Un titre pour la gestion des sources externes
 		
-		GLOBAL  $lang,$HTMLRel;
+		global  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][150]."</span>";
 		 echo "</td></tr></table>&nbsp;</div>";
@@ -1224,6 +1238,8 @@ function titleExtSources(){
 
 function showMailServerConfig($value){
 global $lang;
+
+	if (!haveRight("config","w")) return false;	
 
 if (ereg(":",$value)){
 $addr=ereg_replace("{","",preg_replace("/:.*/","",$value));
@@ -1288,7 +1304,9 @@ return $out;
 
 function showFormExtSources($target) {
 
-	GLOBAL  $db,$lang,$HTMLRel;
+	global  $db,$lang,$HTMLRel;
+
+	if (!haveRight("config","w")) return false;	
 	
 	$query = "select * from glpi_config where ID = 1";
 	$result = $db->query($query);
@@ -1392,7 +1410,7 @@ function showFormExtSources($target) {
 function titleMailing(){
 // Un titre pour la gestion du suivi par mail
 		
-		GLOBAL  $lang,$HTMLRel;
+		global  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/mail.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][200]."</span>";
 		 echo "</td></tr></table></div>";
@@ -1402,6 +1420,8 @@ function titleMailing(){
 function showFormMailing($target) {
 	
 	global $db,$lang;
+
+	if (!haveRight("config","w")) return false;	
 
 		$query = "select * from glpi_config where ID = 1";
 		$result = $db->query($query);
@@ -1641,6 +1661,8 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 function checkNewVersionAvailable($auto=1){
 	global $db,$lang,$cfg_glpi;
 
+	if (!haveRight("update","1")) return false;	
+
 	$do_check=1;
 	
 	if ($auto&&$cfg_glpi["auto_update_check"]==0) return;
@@ -1771,7 +1793,10 @@ function ocsUpdateConfig($input, $id) {
 function ocsFormDBConfig($target, $id) {
 
 
-	GLOBAL  $db,$dbocs,$lang;
+	global  $db,$dbocs,$lang;
+
+	if (!haveRight("config","1")) return false;	
+
 	$query = "select * from glpi_ocs_config where ID = '".$id."'";
 	$result = $db->query($query);
 	$data=$db->fetch_array($result);
@@ -1802,7 +1827,9 @@ function ocsFormDBConfig($target, $id) {
 function ocsFormConfig($target, $id) {
 
 
-	GLOBAL  $db,$lang;
+	global  $db,$lang;
+
+	if (!haveRight("config","1")) return false;	
 
 	$query = "select * from glpi_ocs_config where ID = '".$id."'";
 	$result = $db->query($query);

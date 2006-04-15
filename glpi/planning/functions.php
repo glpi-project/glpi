@@ -49,7 +49,9 @@ function titleTrackingPlanning(){
 
 function showTrackingPlanningForm($device_type,$id_device){
 
-GLOBAL $db,$cfg_glpi,$lang;
+global $db,$cfg_glpi,$lang;
+
+if (!haveRight("comment_all_ticket","1")) return false;
 
 $query="select * from glpi_reservation_item where (device_type='$device_type' and id_device='$id_device')";
 
@@ -72,6 +74,9 @@ echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservatio
 
 function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	global $lang,$HTMLRel,$cfg_glpi;
+
+	if (!haveRight("comment_all_ticket","1")) return false;
+
 	$split=split(":",$cfg_glpi["planning_begin"]);
 	$global_begin=intval($split[0]);
 
@@ -210,6 +215,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 function showPlanning($who,$when,$type){
 	global $lang,$cfg_glpi;
 	
+	if (!haveRight("show_planning","1")&&!haveRight("show_all_planning","1")) return false;
 	$date=split("-",$when);
 	$time=mktime(1,0,0,$date[1],$date[2],$date[0]);
 	$dayofweek=date("w",$time);
@@ -598,12 +604,12 @@ else return $time;
 
 function ShowPlanningCentral($who){
 
-
 	global $db,$cfg_glpi,$HTMLRel,$lang;
+
+	if (!haveRight("show_planning","1")) return false;
 	
 	$when=strftime("%Y-%m-%d");
 	$debut=$when;
-	
 	
 	// followup
 	$ASSIGN="";

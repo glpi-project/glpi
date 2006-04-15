@@ -38,7 +38,7 @@ include ("_relpos.php");
 
 function titleReminder(){
 
-         GLOBAL  $lang,$HTMLRel;
+         global  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/reminder.png\" alt='".$lang["reminder"][0]."' title='".$lang["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."reminder/reminder-info-form.php\"><b>".$lang["buttons"][8]."</b></a>";
@@ -51,7 +51,7 @@ function titleReminder(){
 function showReminderForm ($target,$ID) {
 	// Show Reminder or blank form
 	
-	GLOBAL $cfg_glpi,$lang;
+	global $cfg_glpi,$lang;
 	
 	$issuperadmin=isSuperAdmin($_SESSION['glpitype']);
 	$author=$_SESSION['glpiID'];
@@ -221,7 +221,7 @@ function showReminderForm ($target,$ID) {
 function showCentralReminder($type="private"){
 	// show reminder that are not planned 
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
 	
 	$author=$_SESSION['glpiID'];	
 	$today=date("Y-m-d H:i:s");
@@ -274,7 +274,7 @@ function showCentralReminder($type="private"){
 function showListReminder($type="private"){
 	// show reminder that are not planned 
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
 	
 	$author=$_SESSION['glpiID'];	
 	

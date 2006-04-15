@@ -38,7 +38,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_documents.php");
 
 
-checkAuthentication("super-admin");
+checkRight("typedoc","r");
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 

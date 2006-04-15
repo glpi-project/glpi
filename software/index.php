@@ -41,7 +41,7 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_financial.php");
 
-checkAuthentication("normal");
+checkRight("software","r");
 
 commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 

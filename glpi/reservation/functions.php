@@ -46,22 +46,17 @@ include ("_relpos.php");
 
 
 function titleReservation(){
-           GLOBAL  $lang,$HTMLRel;
-           
-              
-	     
-	     echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["reservation"][1]."</span>";
-		 echo "</b></td><td><a class='icon_consol' href='".$HTMLRel."reservation/index.php?show=resa&amp;ID'>".$lang["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
-	   
-	   
-	   
+           global  $lang,$HTMLRel;
+
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["reservation"][1]."</span>";
+	echo "</b></td><td><a class='icon_consol' href='".$HTMLRel."reservation/index.php?show=resa&amp;ID'>".$lang["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
 }
 
 function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	// Print Search Form
-	
-	GLOBAL $cfg_glpi,  $lang;
+		
+	global $cfg_glpi,  $lang;
 
 	$option["glpi_reservation_item.ID"]				= $lang["common"][2];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
@@ -113,7 +108,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 function showReservationItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start){
 	// Lists Reservation Items
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
 
 	// Build query
 	if($field=="all") {
@@ -255,7 +250,9 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 
 function showReservationForm($device_type,$id_device){
 
-GLOBAL $cfg_glpi,$lang;
+global $cfg_glpi,$lang;
+
+if (!haveRight("reservation_central","w")) return false;
 
 echo "<a href=\"".$cfg_glpi["root_doc"]."/reservation/index.php?";
 if ($resaID=isReservable($device_type,$id_device)) {
@@ -269,6 +266,7 @@ if ($resaID=isReservable($device_type,$id_device)) {
 function printCalendrier($target,$ID=""){
 global $lang, $HTMLRel;
 
+if (!haveRight("reservation_helpdesk","r")) return false;
 
 if (!isset($_GET["mois_courant"]))
 	$mois_courant=strftime("%m");
@@ -443,6 +441,8 @@ echo "</td></tr></table></div>";
 function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	global $lang,$HTMLRel;
 	
+	if (!haveRight("reservation_helpdesk","w")) return false;
+
 	$resa= new ReservationResa;
 	if ($resaID!=-1)
 		$resa->getFromDB($resaID);
@@ -613,7 +613,7 @@ else  {
 
 function printReservationItem($target,$ID,$date){
 		global $db,$lang, $HTMLRel;
-
+		
 		$id_user=$_SESSION["glpiID"];
 
 		$m=new ReservationItem;
@@ -675,6 +675,8 @@ function printReservationItem($target,$ID,$date){
 function printReservationItems($target){
 global $db,$lang,$HTMLRel;
 
+if (!haveRight("reservation_helpdesk","r")) return false;
+
 $ri=new ReservationItem;
 
 
@@ -701,6 +703,7 @@ $query="select ID from glpi_reservation_item ORDER BY device_type";
 function showReservationCommentForm($target,$ID){
 	global $lang,$HTMLRel;
 
+	if (!haveRight("reservation_central","w")) return false;
 
 	$r=new ReservationItem;
 	if ($r->getfromDB($ID)){
@@ -739,7 +742,7 @@ function showDeviceReservations($target,$type,$ID){
 	global $db,$lang,$cfg_glpi;
 	$resaID=0;
 	
-	if (!haveRight("reservation_helpdesk","r")&&!haveRight("reservation_central","r")) return false;
+	if (!haveRight("reservation_central","r")) return false;
 
 	if ($resaID=isReservable($type,$ID)){
 		echo "<div align='center'>";

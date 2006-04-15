@@ -59,6 +59,9 @@ function titleProfiles(){
 
 function showProfilesForm($target,$ID){
 	global $lang,$cfg_glpi;
+
+	if (!haveRight("profile","r")) return false;
+
 	$prof=new Profile();
 	$onfocus="";
 	if ($ID){
@@ -105,6 +108,9 @@ function showProfilesForm($target,$ID){
 
 function showHelpdeskProfilesForm($ID){
 	global $lang;
+
+	if (!haveRight("profile","r")) return false;
+
 	$prof=new Profile();
 	if ($ID){
 		$prof->getFromDB($ID);
@@ -171,6 +177,9 @@ function showHelpdeskProfilesForm($ID){
 
 function showCentralProfilesForm($ID){
 	global $lang;
+
+	if (!haveRight("profile","r")) return false;
+
 	$prof=new Profile();
 	if ($ID){
 		$prof->getFromDB($ID);

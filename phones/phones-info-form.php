@@ -55,14 +55,16 @@ $ph=new Phone();
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("phone","w");
+
 	$newID=$ph->add($_POST);
 	logEvent($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("phone","w");
+
 	if (!empty($tab["withtemplate"]))
 		$ph->delete($tab,1);
 	else $ph->delete($tab);
@@ -75,28 +77,32 @@ else if (isset($tab["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("phone","w");
+
 	$ph->restore($_POST);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/phones/");
 }
 else if (isset($tab["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("phone","w");
+
 	$ph->delete($tab,1);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/phones/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("phone","w");
+
 	$ph->update($_POST);
 	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
 {
-	checkAuthentication("admin");
+	checkRight("phone","w");
+
 	Disconnect($tab["ID"]);
 	logEvent(0, "phones", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -104,7 +110,8 @@ else if (isset($tab["disconnect"]))
 else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
 
-	checkAuthentication("admin");
+	checkRight("phone","w");
+
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PHONE_TYPE);
 	logEvent($tab["sID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($cfg_glpi["root_doc"]."/phones/phones-info-form.php?ID=".$tab["sID"]);
@@ -113,7 +120,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 }
 else
 {
-	checkAuthentication("normal");
+	checkRight("phone","r");
 	
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -154,6 +161,7 @@ else
 		
 	} else {
 
+		if (haveRight("delete_ticket","1"))
 		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 			foreach ($_POST["todel"] as $key => $val){
 				if ($val==1) {

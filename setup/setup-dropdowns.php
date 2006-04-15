@@ -40,6 +40,9 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
+
+checkRight("dropdown","w");
+
 //if(isset($_SERVER['HTTP_REFERER']))
 //$httpreferer=preg_replace("/\?which=\w*/","",$_SERVER['HTTP_REFERER']);
 if (isset($_POST["which"]))$which=$_POST["which"];
@@ -64,7 +67,7 @@ elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
 else $ID="";
 
 if (isset($_POST["several_add"])) {
-	checkAuthentication("admin");
+
 	for ($i=$_POST["from"];$i<=$_POST["to"];$i++){
 		$_POST["value"]=$_POST["before"].$i.$_POST["after"];
 		addDropdown($_POST);
@@ -75,17 +78,14 @@ if (isset($_POST["several_add"])) {
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 }else if (isset($_POST["move"])) {
-	checkAuthentication("admin");
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]."".$lang["log"][21]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 }else if (isset($_POST["add"])) {
-	checkAuthentication("admin");
 	addDropdown($_POST);
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["delete"])) {
-	checkAuthentication("admin");
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 		showDeleteConfirmForm($_SERVER["PHP_SELF"],$_POST["tablename"], $_POST["ID"]);
@@ -97,18 +97,15 @@ if (isset($_POST["several_add"])) {
 	}
 
 } else if (isset($_POST["update"])) {
-	checkAuthentication("admin");
 	updateDropdown($_POST);
 	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&ID=$ID");
 } else if (isset($_POST["replace"])) {
-	checkAuthentication("admin");
 	replaceDropDropDown($_POST);
 	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which");
 }
  else {
-	checkAuthentication("normal");
 	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 	$optgroup=array(

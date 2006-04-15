@@ -38,7 +38,8 @@ include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_users.php");
 
 
-checkAuthentication("normal");
+checkRight("user","r");
+
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);	
 titleUsers();
 

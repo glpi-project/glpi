@@ -47,7 +47,7 @@ include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_phones.php");
 
-checkAuthentication("admin");
+checkRight("comment_all_ticket","1");
 
 $pt=new PlanningTracking();
 	

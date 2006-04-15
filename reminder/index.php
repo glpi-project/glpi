@@ -37,8 +37,6 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_reminder.php");
 
-checkAuthentication("normal");
-
 commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);
 
 titleReminder();

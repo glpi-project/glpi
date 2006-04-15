@@ -39,7 +39,7 @@ include ($phproot . "/glpi/includes_phones.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_state.php");
 
-checkAuthentication("normal");
+checkRight("phone","r");
 
 commonHeader($lang["title"][41],$_SERVER["PHP_SELF"]);
 

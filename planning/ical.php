@@ -16,8 +16,6 @@ include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 
 
-checkAuthentication("normal");
-
 //export ICAL
 
 if (!isset($_GET["uID"])) $_GET["uID"]=$_SESSION["glpiID"];

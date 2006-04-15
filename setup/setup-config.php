@@ -37,7 +37,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-checkAuthentication("super-admin");
+checkRight("config","w");
 
 if(!empty($_GET["next"])) {
 

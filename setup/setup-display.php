@@ -43,8 +43,11 @@ if (isset($_POST["which"]))$which=$_POST["which"];
 elseif (isset($_GET["which"]))$which=$_GET["which"];
 else $which=COMPUTER_TYPE;
 
-checkAuthentication("normal");
+
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+
+checkCentralAccess();
+
 include ($phproot . "/glpi/includes_search.php");
 
 

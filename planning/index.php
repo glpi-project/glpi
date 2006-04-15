@@ -48,8 +48,6 @@ include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_reminder.php");
 include ($phproot . "/glpi/includes_phones.php");
 
-checkAuthentication("normal");
-
 commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
 
 if (!isset($_GET["date"])||$_GET["date"]=="0000-00-00") $_GET["date"]=strftime("%Y-%m-%d");

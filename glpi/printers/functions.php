@@ -41,23 +41,23 @@ include ("_relpos.php");
 //fonction imprimantes
 
 function titlePrinters(){
-           GLOBAL  $lang,$HTMLRel;
-           
-           echo "<div align='center'><table border='0'><tr><td>";
+	global  $lang,$HTMLRel;
 
-           echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td>";
+	echo "<div align='center'><table border='0'><tr><td>";
+
+	echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td>";
 	if (haveRight("printer","w")){
 		echo "<td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".PRINTER_TYPE."&amp;add=1\"><b>".$lang["printers"][0]."</b></a></td>";
-
-                echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".PRINTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
-                echo "</tr></table></div>";
+		echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".PRINTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+		echo "</tr></table></div>";
 	}
 }
 
 
 function showPrintersForm ($target,$ID,$withtemplate='') {
 
-	GLOBAL $cfg_glpi, $lang,$HTMLRel;
+	global $cfg_glpi, $lang,$HTMLRel;
+	if (!haveRight("printer","r")) return false;
 
 	$printer = new Printer;
 
