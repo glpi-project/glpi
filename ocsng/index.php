@@ -36,7 +36,7 @@
 include ("_relpos.php");
 include ($phproot."/glpi/includes.php");
 
-	checkAuthentication("admin");
+	checkRight("ocsng","w");
 
 	commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 	if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);

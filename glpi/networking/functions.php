@@ -42,13 +42,13 @@ include ("_relpos.php");
 function titleNetdevices() {
          // titre
          
-         GLOBAL  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
 
-          echo "<div align='center'><table border='0'><tr><td>";
-          echo "<img src=\"".$HTMLRel."pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".NETWORKING_TYPE."&amp;add=1\"><b>".$lang["networking"][11]."</b></a>";
-                echo "</td>";
-                echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".NETWORKING_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
-                echo "</tr></table></div>";
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".NETWORKING_TYPE."&amp;add=1\"><b>".$lang["networking"][11]."</b></a>";
+	echo "</td>";
+	echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".NETWORKING_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+	echo "</tr></table></div>";
  
 }
 
@@ -57,7 +57,7 @@ function titleNetdevices() {
 function showNetworkingForm ($target,$ID,$withtemplate='') {
 	// Show device or blank form
 	
-	GLOBAL $cfg_glpi, $lang,$HTMLRel;
+	global $cfg_glpi, $lang,$HTMLRel;
 
 	if (!haveRight("networking","r")) return false;
 
@@ -217,9 +217,11 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 	echo "</td>";
 	echo "</tr>\n";
 
-	echo "<tr>\n";
+
+	if (haveRight("networking","w")) {
+		echo "<tr>\n";
 	
-	if ($template) {
+		if ($template) {
 
 			if (empty($ID)||$withtemplate==2){
 			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
@@ -233,27 +235,28 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 			echo "</td>\n";
 			}
 
-	} else {
+		} else {
 
-		echo "<td class='tab_bg_2' valign='top'>";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "<td class='tab_bg_2' valign='top'>\n";
+			echo "<td class='tab_bg_2' valign='top'>";
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+			echo "<td class='tab_bg_2' valign='top'>\n";
 
-		echo "<div align='center'>\n";
-		if ($netdev->fields["deleted"]=='N')
-		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>\n";
-		else {
-		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>\n";
+			echo "<div align='center'>\n";
+			if ($netdev->fields["deleted"]=='N')
+				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>\n";
+			else {
+				echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>\n";
 		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>\n";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>\n";
+			}
+			echo "</div>\n";
+			echo "</td>\n";
 		}
-		echo "</div>\n";
-		echo "</td>\n";
-	}
 		echo "</tr>\n";
-
-		echo "</table></form></div>\n";
+	}
+	
+	echo "</table></form></div>\n";
 
 	return true;
 		}
@@ -268,7 +271,7 @@ function showNetworkingForm ($target,$ID,$withtemplate='') {
 
 function showPorts ($device,$device_type,$withtemplate='') {
 	
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel,$LINK_ID_TABLE;
+	global $db,$cfg_glpi, $lang,$HTMLRel,$LINK_ID_TABLE;
 
 	if (!haveRight("networking","r")) return false;
 		
@@ -380,7 +383,7 @@ $db->query($query);
 
 function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $location = '') {
 
-	GLOBAL $cfg_glpi, $lang, $REFERER;
+	global $cfg_glpi, $lang, $REFERER;
 	
 	if (!haveRight("networking","r")) return false;
 
@@ -553,9 +556,11 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 
 function showPortsAdd($ID,$devtype) {
 	
-	GLOBAL $db,$cfg_glpi, $lang,$LINK_ID_TABLE;
+	global $db,$cfg_glpi, $lang,$LINK_ID_TABLE;
 	
-	if (!haveRight("networking","r")) return false;
+	$ci=new CommonItem();
+	$ci->setType($devtype);
+	if (!$ci->haveRight("w")) return false;
 
 	$device_real_table_name = $LINK_ID_TABLE[$devtype];
 
@@ -579,11 +584,15 @@ function showPortsAdd($ID,$devtype) {
 
 function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
-	GLOBAL $cfg_glpi, $lang,$INFOFORM_PAGES;
+	global $cfg_glpi, $lang,$INFOFORM_PAGES;
+
+	$ci=new CommonItem();
+	$ci->setType($type);
+	if (!$ci->haveRight("r")) return false;
 
 	$contact = new Netport;
 	$netport = new Netport;
-
+	
 	if ($contact->getContact($ID)) {
 		$netport->getfromDB($contact->contact_id);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
@@ -633,7 +642,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
 function makeConnector($sport,$dport) {
 
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
 	
 	// Get netpoint for $sport and $dport
 	$ps=new Netport;
@@ -723,7 +732,7 @@ function makeConnector($sport,$dport) {
 
 function removeConnector($ID) {
 
-	GLOBAL $db,$cfg_glpi;
+	global $db,$cfg_glpi;
 	
 	// Update to blank networking item
 	$nw=new Netwire;

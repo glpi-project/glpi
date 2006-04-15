@@ -44,7 +44,7 @@ include ($phproot . "/glpi/includes_printers.php");
 include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_phones.php");
 
-checkAuthentication("admin");
+checkRight("networking","w");
 
 
 commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
@@ -64,26 +64,6 @@ else
 		makeConnector($tab["sport"],$tab["dport"]);
 	glpi_header($_SERVER['HTTP_REFERER']);	
 
-/*	switch ($tab["next"]) 
-	{
-		case "";
-			showConnectorSearch($_SERVER["PHP_SELF"],$tab["ID"]);
-		break;
-
-		case "compsearch";
-			listConnectorComputers($_SERVER["PHP_SELF"],$tab);
-		break;
-
-		case "showports";
-			listConnectorPorts($_SERVER["PHP_SELF"],$tab);
-		break;		
-
-		case "connect";
-			makeConnector($tab["sport"],$tab["dport"]);
-		break;		
-	}
-
-*/
 }
 
 commonFooter();

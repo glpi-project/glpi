@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_networking.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_state.php");
 
-checkAuthentication("normal");
+checkRight("networking","r");
 
 commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 

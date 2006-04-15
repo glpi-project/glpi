@@ -55,14 +55,16 @@ $per=new Peripheral();
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("peripheral","w");
+
 	$newID=$per->add($_POST);
 	logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("peripheral","w");
+
 	if (!empty($tab["withtemplate"]))
 		$per->delete($tab,1);
 	else $per->delete($tab);
@@ -75,28 +77,32 @@ else if (isset($tab["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("peripheral","w");
+
 	$per->restore($_POST);
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/peripherals/");
 }
 else if (isset($tab["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("peripheral","w");
+
 	$per->delete($tab,1);
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/peripherals/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("peripheral","w");
+
 	$per->update($_POST);
 	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
 {
-	checkAuthentication("admin");
+	checkRight("peripheral","w");
+
 	Disconnect($tab["ID"]);
 	logEvent(0, "peripherals", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -104,14 +110,15 @@ else if (isset($tab["disconnect"]))
 else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
 
-	checkAuthentication("admin");
+	checkRight("peripheral","w");
+
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PERIPHERAL_TYPE);
 	logEvent($tab["sID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($cfg_glpi["root_doc"]."/peripherals/peripherals-info-form.php?ID=".$tab["sID"]);
 }
 else
 {
-	checkAuthentication("normal");
+	checkRight("peripheral","r");
 	
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -152,6 +159,7 @@ else
 		
 	} else {
 
+		if (haveRight("delete_ticket","1"))
 		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 			foreach ($_POST["todel"] as $key => $val){
 				if ($val==1) {

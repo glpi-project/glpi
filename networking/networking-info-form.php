@@ -56,14 +56,14 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 $nd=new Netdevice();
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("networking","w");
 	$newID=$nd->add($_POST);
 	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." :  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("networking","w");
 	if (!empty($tab["withtemplate"]))
 		$nd->delete($tab,1);
 	else $nd->delete($tab);
@@ -76,28 +76,28 @@ else if (isset($tab["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("networking","w");
 	$nd->restore($_POST);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/networking/");
 }
 else if (isset($tab["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("networking","w");
 	$nd->delete($tab,1);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/networking/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("networking","w");
 	$nd->update($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	checkAuthentication("normal");
+	checkRight("networking","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -137,7 +137,7 @@ else
 		}
 		
 	} else {
-
+		if (haveRight("delete_ticket","1"))
 		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 			foreach ($_POST["todel"] as $key => $val){
 				if ($val==1) {

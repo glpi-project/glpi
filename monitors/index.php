@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_monitors.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_state.php");
 
-checkAuthentication("normal");
+checkRight("monitor","r");
 
 commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 

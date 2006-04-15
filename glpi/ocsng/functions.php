@@ -36,6 +36,8 @@
 function ocsShowNewComputer($check,$start,$tolinked=0){
 global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
 
+if (!haveRight("ocsng","w")) return false;
+
 $cfg_ocs=getOcsConf(1);
 
 $WHERE="";
@@ -567,6 +569,8 @@ function ocsCleanLinks(){
 
 function ocsShowUpdateComputer($check,$start){
 global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
+
+if (!haveRight("ocsng","w")) return false;
 
 $cfg_ocs=getOcsConf(1);
 

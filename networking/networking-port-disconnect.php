@@ -40,7 +40,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
 
-checkAuthentication("admin");
+checkRight("networking","w");
 
 removeConnector($_GET["ID"]);
 $fin="";
