@@ -50,7 +50,7 @@ class glpi_phpmailer extends phpmailer {
 	
 	// Comes from config
 	
-	if($cfg_glpi['smtp_mode'] == 'enabled') {
+	if($cfg_glpi['smtp_mode'] == '1') {
 			$this->Host = $cfg_glpi['smtp_host'];
 			$this->Port = $cfg_glpi['smtp_port'];
 

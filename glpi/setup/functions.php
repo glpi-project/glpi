@@ -1410,7 +1410,7 @@ function showFormMailing($target) {
 		
 		echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][201]."</th></tr>";
 		
-			if (function_exists('mail')) {
+		//	if (function_exists('mail')) {
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td align='center'>&nbsp; ".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][203]."</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"".$db->result($result,0,"admin_email")."\"> </td></tr>";
@@ -1420,6 +1420,29 @@ function showFormMailing($target) {
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][226]."</td><td align='center'>&nbsp; ".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"1\" "; if($db->result($result,0,"url_in_mail") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"0\" "; if($db->result($result,0,"url_in_mail") == 0) echo "checked"; echo " ></td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][227]."</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"".$db->result($result,0,"url_base")."\"> </td></tr>";
+
+		if (!function_exists('mail')) {
+		echo "<tr class='tab_bg_2'><td align='center' colspan='2'><span class='red'>".$lang["setup"][217]." : </span><span>".$lang["setup"][218]."</span></td></tr>";
+		}
+
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][231]."</td><td align='center'>&nbsp; ";
+		
+		if (!function_exists('mail')) { // if mail php disabled we forced SMTP usage 
+			echo $lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"1\" checked >";
+		}else{
+			echo $lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"1\" "; if($db->result($result,0,"smtp_mode") == 1) echo "checked"; echo " >";
+		
+			echo "&nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"0\" "; if($db->result($result,0,"smtp_mode") == 0) echo "checked"; echo " ></td></tr>";
+		}
+			
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][232]."</td><td> <input type=\"text\" name=\"smtp_host\" size='40' value=\"".$db->result($result,0,"smtp_host")."\"> </td></tr>";
+
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][233]."</td><td> <input type=\"text\" name=\"smtp_port\" size='40' value=\"".$db->result($result,0,"smtp_port")."\"> </td></tr>";
+
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][234]."</td><td> <input type=\"text\" name=\"smtp_username\" size='40' value=\"".$db->result($result,0,"smtp_username")."\"> </td></tr>";
+
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][235]."</td><td> <input type=\"text\" name=\"smtp_password\" size='40' value=\"".$db->result($result,0,"smtp_password")."\"> </td></tr>";
+
 		echo "</table>";
 		
 		echo "<p><b>".$lang["setup"][205]."</b></p>";
@@ -1495,13 +1518,13 @@ function showFormMailing($target) {
 
 		echo "</div>";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
-		}
-		else {
+		//}
+		//else {
 		
 			
-		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][217]."</p><p>".$lang["setup"][218]."</p></td></tr></table></div>";
+		//echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][217]."</p><p>".$lang["setup"][218]."</p></td></tr></table></div>";
 		
-		}
+		//}
 		
 		echo "</form>";
 
@@ -1572,7 +1595,7 @@ function updateCAS($cas_host,$cas_port,$cas_uri) {
 		$db->query($query);
 }
 
-function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib,$mailing_resa_admin,$mailing_resa_all_admin,$mailing_resa_user,$url,$url_in_mail,$mailing_attrib_attrib,$mailing_update_admin,$mailing_update_all_admin,$mailing_update_all_normal,$mailing_update_attrib,$mailing_update_user) {
+function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib,$mailing_resa_admin,$mailing_resa_all_admin,$mailing_resa_user,$url,$url_in_mail,$mailing_attrib_attrib,$mailing_update_admin,$mailing_update_all_admin,$mailing_update_all_normal,$mailing_update_attrib,$mailing_update_user,$smtp_mode,$smtp_host,$smtp_port,$smtp_username,$smtp_password) {
 
 	global $db;
 	$query = "update glpi_config set mailing = '". $mailing ."', ";
@@ -1603,7 +1626,12 @@ function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_ad
 	$query .= "mailing_resa_all_admin = '". $mailing_resa_all_admin ."', ";
 	$query .= "mailing_resa_user = '". $mailing_resa_user ."', ";
 	$query .= "url_base = '". $url ."', ";
-	$query .= "url_in_mail = '". $url_in_mail ."' ";
+	$query .= "url_in_mail = '". $url_in_mail ."', ";
+	$query .= "smtp_mode = '". $smtp_mode ."', ";
+	$query .= "smtp_host = '". $smtp_host ."', ";
+	$query .= "smtp_port = '". $smtp_port ."', ";
+	$query .= "smtp_username = '". $smtp_username  ."', ";
+	$query .= "smtp_password = '". $smtp_password ."' ";
 	$query .= "where ID = 1";
 	
 	if($db->query($query)) return true;
