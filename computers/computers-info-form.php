@@ -63,14 +63,14 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 $comp=new Computer();
 //Add a new computer
 if (isset($tab["add"])) {
-	checkAuthentication("admin");
+	checkRight("computer","w");
 	$newID=$comp->add($tab);
 	logEvent($newID, "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$tab["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 // delete a computer
 else if (isset($tab["delete"])) {
-	checkAuthentication("admin");
+	checkRight("computer","w");
 
 	if (!empty($tab["withtemplate"]))
 	$comp->delete($tab,1);
@@ -83,14 +83,14 @@ else if (isset($tab["delete"])) {
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("computer","w");
 	$comp->restore($_POST);
 	logEvent($tab["ID"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/computers/");
 }
 else if (isset($tab["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("computer","w");
 	$comp->delete($tab,1);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/computers/");
@@ -99,26 +99,27 @@ else if (isset($tab["purge"]))
 else if (isset($tab["update"])) {
 	if(empty($tab["show"])) $tab["show"] = "";
 	if(empty($tab["contains"])) $tab["contains"] = "";
-	checkAuthentication("admin");
+	checkRight("computer","w");
 	$comp->update($tab);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //Disconnect a device 
 else if (isset($tab["disconnect"])) {
-	checkAuthentication("admin");
+	checkRight("computer","w");
 	Disconnect($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 else if (isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0){
+	checkRight("computer","w");
 	Connect($_SERVER["PHP_SELF"],$tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][27]);
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 //Update a device specification
 elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
-	checkAuthentication("admin");
+	checkRight("computer","w");
 	foreach ($_POST as $key => $val){
 		$tab=split("_",$key);
 		if (count($tab)==2&&$tab[0]=="devicevalue"){
@@ -130,7 +131,7 @@ elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
 }
 //add a new device
 elseif (isset($_POST["connect_device"])) {
-		checkAuthentication("admin");
+		checkRight("computer","w");
 		if (isset($_POST["new_device_id"])&&$_POST["new_device_id"]>0)
 			compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
 		glpi_header($_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
@@ -148,13 +149,14 @@ elseif(isset($_POST["device_action"])) {
 	}
 
 	if ($devtodel>0){
-		checkAuthentication("admin");
+		checkRight("computer","w");
 		unlink_device_computer($devtodel);
 		logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$lang["log"][29]." ".$tab["ID"].".");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif(isset($tab["unlock_field"])){
+	checkRight("ocsng","w");
 	if (isset($tab["lockfield"])&&count($tab["lockfield"])){
 		foreach ($tab["lockfield"] as $key => $val)
 			deleteInOcsArray($tab["ID"],$key,"computer_update");
@@ -164,7 +166,7 @@ elseif(isset($tab["unlock_field"])){
 //print computer informations
 else {
 
-	checkAuthentication("normal");
+	checkRight("computer","r");
 
 
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
@@ -207,6 +209,7 @@ if (isset($_GET['onglet'])) {
 		}
 	}
 	} else {
+	if (haveRight("delete_ticket","1"))
 	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 		foreach ($_POST["todel"] as $key => $val){
 			if ($val==1) {

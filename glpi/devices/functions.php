@@ -166,6 +166,8 @@ global $lang;
 function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate='') {
 	global $lang,$HTMLRel;
 	
+	if (!haveRight("computer","r")) return false;
+	
 	//print the good form switch the wanted device type.
 	$entry=array();
 	$type="";
@@ -288,7 +290,6 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 
 			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='devicevalue_$compDevID' value=\"".$specif."\" size='$specificity_size' ></td>";
 			echo "<td align='center'>";
-
 			echo "<input type='image' name='update_device' value='$compDevID' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
 			echo "</td>";
 
