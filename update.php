@@ -4084,6 +4084,15 @@ if(TableExists("glpi_kbitems")){
 		$db->query($query) or die("0.68 drop root_doc ".$lang["update"][90].$db->error());
 		regenerateTreeCompleteName($t);
 	}
+	// add smtp config
+	if(!FieldExists("glpi_config","smtp_mode")) {	
+		$query="ALTER TABLE  `glpi_config` ADD  `smtp_mode` tinyint(4) DEFAULT '0' NOT NULL,
+   		ADD  `smtp_host` varchar(255),
+  		ADD  `smtp_port` int(11) DEFAULT '25' NOT NULL,
+   		ADD  `smtp_username` varchar(255),
+   		ADD  `smtp_password` varchar(255);";
+		$db->query($query) or die("0.68 add smtp config ".$lang["update"][90].$db->error());
+	}
 
 } // fin 0.68 #####################################################################################
 

@@ -1260,8 +1260,8 @@ $lang["setup"][213]="A la fermeture du ticket ";
 $lang["setup"][214]="A l'ouverture du ticket ";
 $lang["setup"][215]="Pour chaque nouveau suivi le concernant";
 $lang["setup"][216]="A la fermeture d'un ticket le concernant";
-$lang["setup"][217]="La fonction mail n'existe pas ou est désactivée sur votre système";
-$lang["setup"][218]="Impossible de configurer les envois de suivis par mails";
+$lang["setup"][217]="La fonction mail PHP  n'existe pas ou est désactivée sur votre système";
+$lang["setup"][218]="L'utilisation d'un serveur SMTP est indispensable";
 $lang["setup"][219]="Autoriser les ouvertures de tickets anonymes (helpdesk.html)";
 $lang["setup"][220]="Impossible de modifier l'utilisateur 'Helpdesk'";
 $lang["setup"][221]="Date de début d'exercice fiscal (jour et mois)";
@@ -1274,6 +1274,12 @@ $lang["setup"][227]="URL de base utilisée";
 $lang["setup"][228]="Champ de login";
 $lang["setup"][229]="A chaque changement de responsable";
 $lang["setup"][230]="A la mise à jour du ticket";
+$lang["setup"][231]="Utiliser un serveur SMTP pour l'envoir des mails";
+$lang["setup"][232]="Hote SMTP";
+$lang["setup"][233]="Port du serveur SMTP";
+$lang["setup"][234]="Login SMTP";
+$lang["setup"][235]="Mot de passe  SMTP";
+
 
 $lang["setup"][250]="Affichage recherche par défaut ";
 $lang["setup"][251]="Sélectionnez une rubrique ";
