@@ -944,6 +944,8 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 function device_selecter($target,$cID,$withtemplate='') {
 	global $lang,$HTMLRel,$cfg_glpi;
 
+	if (!haveRight("computer","w")) return false;
+
 	if(!empty($withtemplate) && $withtemplate == 2) {
 	//do nothing
 	} else {

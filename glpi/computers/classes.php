@@ -51,20 +51,28 @@ class Computer extends CommonDBTM {
 
 	function defineOnglets($withtemplate){
 		global $lang,$cfg_glpi;
-		$ong= array(	1 => $lang["title"][26],
-				2 => $lang["title"][12],
-				3 => $lang["title"][27],
-				4 => $lang["Menu"][26],
-				5 => $lang["title"][25],
-			);
+		
+		$ong[1]=$lang["title"][26];
+		if (haveRight("software","r"))	
+			$ong[2]=$lang["title"][12];
+		if (haveRight("networking","r")||haveRight("printer","r")||haveRight("monitor","r")||haveRight("peripheral","r")||haveRight("phone","r"))	
+			$ong[3]=$lang["title"][27];
+		if (haveRight("contract_infocom","r"))	
+			$ong[4]=$lang["Menu"][26];
+		if (haveRight("document","r"))	
+			$ong[5]=$lang["title"][25];
 
 		if(empty($withtemplate)){
-			$ong[6]=$lang["title"][28];
-			$ong[7]=$lang["title"][34];
-			$ong[10]=$lang["title"][37];
+			if (haveRight("show_ticket","1"))	
+				$ong[6]=$lang["title"][28];
+			if (haveRight("link","r"))	
+				$ong[7]=$lang["title"][34];
+			if (haveRight("notes","r"))	
+				$ong[10]=$lang["title"][37];
+
 			$ong[12]=$lang["title"][38];
 
-			if ($cfg_glpi["ocs_mode"])
+			if ($cfg_glpi["ocs_mode"]&&haveRight("ocsng","w"))
 				$ong[13]=$lang["Menu"][33];
 		}	
 		return $ong;

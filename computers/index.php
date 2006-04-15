@@ -42,7 +42,6 @@ include ($phproot . "/glpi/includes_computers.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_state.php");
 
-checkAuthentication("normal");
 
 if (isset($_GET["add_search_count"])){
 	$_SESSION["glpisearchcount"][$_GET["type"]]++;
@@ -71,6 +70,9 @@ if (isset($_GET["reset_search"])){
 	else $REDIRECT=$_SERVER['HTTP_REFERER'];
 	glpi_header($REDIRECT);
 }
+
+checkRight("computer","r");
+
 commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 
 titleComputers();
