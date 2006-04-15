@@ -72,11 +72,11 @@ class CartridgeType extends CommonDBTM {
 		global $lang;
 		
 		$ong[1]=$lang["title"][26];
-		if (haveRight("contract_infocom","r"))	
+		if (haveRight("contract_infocom","r"))
 			$ong[4]=$lang["Menu"][26];
-		if (haveRight("document","r"))	
+		if (haveRight("document","r"))
 			$ong[5]=$lang["title"][25];
-		if (haveRight("link","r"))	
+		if (haveRight("link","r"))
 			$ong[7]=$lang["title"][34];
 		if (haveRight("notes","r"))
 			$ong[10]=$lang["title"][37];

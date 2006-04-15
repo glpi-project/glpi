@@ -56,14 +56,16 @@ if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 $mon=new Monitor();
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("monitor","w");
+
 	$newID=$mon->add($_POST);
 	logEvent($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("monitor","w");
+
 	if (!empty($tab["withtemplate"]))
 		$mon->delete($tab,1);
 	else $mon->delete($tab);
@@ -76,35 +78,40 @@ else if (isset($tab["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("monitor","w");
+
 	$mon->restore($_POST);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/monitors/");
 }
 else if (isset($tab["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("monitor","w");
+
 	$mon->delete($tab,1);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/monitors/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("monitor","w");
+
 	$mon->update($_POST);
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
 {
-	checkAuthentication("admin");
+	checkRight("monitor","w");
+
 	Disconnect($tab["ID"]);
 	logEvent(0, "monitors", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
-	checkAuthentication("admin");
+	checkRight("monitor","w");
+
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],MONITOR_TYPE);
 	logEvent($tab["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][27]);
 	glpi_header($cfg_glpi["root_doc"]."/monitors/monitors-info-form.php?ID=".$tab["sID"]);
@@ -112,7 +119,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 }
 else
 {
-	checkAuthentication("normal");
+	checkRight("monitor","r");
 	
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -145,7 +152,7 @@ else
 		}
 		
 	} else {
-
+		if (haveRight("delete_ticket","1"))
 		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 			foreach ($_POST["todel"] as $key => $val){
 				if ($val==1) {

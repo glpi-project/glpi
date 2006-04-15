@@ -48,7 +48,8 @@ include ($phproot."/glpi/includes_tracking.php");
 include ($phproot."/glpi/includes_phones.php");
 include ($phproot."/glpi/includes_state.php");
 
-checkAuthentication("admin");
+checkRight("ocsng","w");
+
 commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 
 $cfg_glpi["use_ajax"] = 1; 

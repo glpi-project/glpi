@@ -39,7 +39,7 @@ include ($phproot . "/glpi/includes_peripherals.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_state.php");
 
-checkAuthentication("normal");
+checkRight("peripheral","r");
 
 commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 

@@ -41,17 +41,19 @@ include ("_relpos.php");
 
 
 function titleperipherals(){
-                GLOBAL  $lang,$HTMLRel;
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["peripherals"][0]."' title='".$lang["peripherals"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."&amp;add=1\"><b>".$lang["peripherals"][0]."</b></a>";
-                echo "</td>";
-                echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
-                echo "</tr></table></div>";
+	global  $lang,$HTMLRel;
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["peripherals"][0]."' title='".$lang["peripherals"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."&amp;add=1\"><b>".$lang["peripherals"][0]."</b></a>";
+	echo "</td>";
+	echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+	echo "</tr></table></div>";
 }
 
 function showperipheralForm ($target,$ID,$withtemplate='') {
 
-	GLOBAL $cfg_glpi, $lang,$HTMLRel;
+	global $cfg_glpi, $lang,$HTMLRel;
+
+	if (!haveRight("peripheral","r")) return false;
 
 	$mon = new Peripheral;
 
