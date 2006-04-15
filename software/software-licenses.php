@@ -60,8 +60,8 @@ else
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
-	//print_r($_POST);
+	checkRight("software","w");
+	
 	if ($_POST["serial"]=="free")$number=1;
 	else $number=$_POST["number"];
 	unset($tab["number"]);
@@ -76,7 +76,8 @@ if (isset($_POST["add"]))
 	glpi_header($_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
 }
 else if (isset($tab["update_stock_licenses"])||isset($tab["update_stock_licenses_x"])){
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	foreach ($tab as $key => $val)
 	if (ereg("stock_licenses_([0-9]+)",$key,$regs))
 		if ($val!=$tab["nb_licenses_".$regs[1]])
@@ -85,7 +86,8 @@ else if (isset($tab["update_stock_licenses"])||isset($tab["update_stock_licenses
 
 }	
 else if (isset($tab["update_expire"])||isset($tab["update_expire_x"])){
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	$lic=new License;
 	$input["expire"]=$tab["expire"];
 
@@ -98,7 +100,8 @@ else if (isset($tab["update_expire"])||isset($tab["update_expire_x"])){
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	$lic=new License;
 	$input["buy"]=$tab["buy"];	
 
@@ -110,25 +113,10 @@ else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-/*else if (isset($tab["duplicate"]))
-{
-	checkAuthentication("admin");
-	$lic=new License();
-	$lic->getFromDB($tab["lID"]);
-	
-	unset($lic->fields["ID"]);
-	if (is_null($lic->fields["expire"]))
-	unset($lic->fields["expire"]);
-	$lic->addToDB();
-		
-	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
-	
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-*/
 else if (isset($tab["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	unset($tab["search_software"]);
 
 	updateLicense($tab);
@@ -137,47 +125,38 @@ else if (isset($tab["update"]))
 }
 else if (isset($tab["form"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"]);
 	commonFooter();
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	deleteLicense($tab["ID"]);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
-/*
-else if (isset($tab["select"]))
-{
-	if ($tab["sID"]==-1)
-		glpi_header($_SERVER['HTTP_REFERER']." ");
-	
-	checkAuthentication("admin");
-	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
-	showLicenseSelect($_SERVER['HTTP_REFERER']."&withtemplate=".$tab["withtemplate"],$_SERVER["PHP_SELF"],$tab["cID"],$tab["sID"],$tab["withtemplate"]);
-	commonFooter();
-}
-*/
 else if (isset($tab["install"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	installSoftware($tab["cID"],$tab["licenseID"],$tab["sID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["uninstall"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	uninstallSoftware($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
 else if (isset($tab["back"]))
 {
-	
 	glpi_header($tab["back"]." ");
 }
 

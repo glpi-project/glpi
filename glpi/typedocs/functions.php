@@ -41,18 +41,20 @@ include ("_relpos.php");
 
 
 function titleTypedocs(){
-                GLOBAL  $lang,$HTMLRel;
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td><td><a  class='icon_consol' href=\"typedocs-info-form.php\"><b>".$lang["document"][12]."</b></a>";
-                echo "</td>";
-                echo "</tr></table></div>";
+	global  $lang,$HTMLRel;
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td><td><a  class='icon_consol' href=\"typedocs-info-form.php\"><b>".$lang["document"][12]."</b></a>";
+	echo "</td>";
+	echo "</tr></table></div>";
 }
 
 
 
 function showTypedocForm ($target,$ID) {
 
-	GLOBAL $cfg_glpi, $lang,$HTMLRel,$phproot;
+	global $cfg_glpi, $lang,$HTMLRel,$phproot;
+
+	if (!haveRight("typedoc","r")) return false;
 
 	$mon = new Typedoc;
 

@@ -42,8 +42,11 @@ include ($phproot . "/glpi/includes_devices.php");
 require ("functions.php");
 
 
-checkAuthentication("normal");
+
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+
+checkRight("statistic","1");
+
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 $year=date("Y")-2;

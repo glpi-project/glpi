@@ -32,7 +32,8 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_documents.php");
 
-checkAuthentication("post-only");
+checkLoginUser();
+
 nullHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 include ($phproot . "/glpi/includes_search.php");
@@ -40,6 +41,5 @@ include ($phproot . "/glpi/includes_search.php");
 manageGetValuesInSearch(TYPEDOC_TYPE);
 showList(TYPEDOC_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-//showTypedocListe($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 
 ?>

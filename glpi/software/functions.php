@@ -41,21 +41,22 @@ include ("_relpos.php");
 
 function titleSoftware(){
 
-         GLOBAL  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
          
-         echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td>\n";
-         echo "<td><a class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
-                echo "</td>";
-                echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
-                echo "</tr></table></div>";
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td>\n";
+	echo "<td><a class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
+	echo "</td>";
+	echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+	echo "</tr></table></div>";
 
 }
 function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	// Show Software or blank form
 	
-	GLOBAL $cfg_glpi,$lang;
+	global $cfg_glpi,$lang;
 	
+	if (!haveRight("software","r")) return false;
 	
 	$sw = new Software;
 
@@ -153,52 +154,46 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
-	echo "<tr>";
+	if (!haveRight("cartridge","<")){
+		echo "<tr>";
 
-	if ($template) {
+		if ($template) {
 
 			if (empty($ID)||$withtemplate==2){
-			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-			echo "</td>\n";
+				echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+				echo "</td>\n";
 			} else {
-			echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-			echo "</td>\n";
+				echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td>\n";
 			}
+		} else {
 
-
-	} else {
-
-
-                echo "<td class='tab_bg_2'>&nbsp;</td>";
-                echo "<td class='tab_bg_2' valign='top'>";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
-		echo "</td>";
-//		echo "</form>\n\n";
-		//echo "<form action=\"$target\" method='post'>\n";
-		echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
-//		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<div align='center'>";
-		if ($sw->fields["deleted"]=='N')
-		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		else {
-		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+	                echo "<td class='tab_bg_2'>&nbsp;</td>";
+        	        echo "<td class='tab_bg_2' valign='top'>";
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+			echo "</td>";
+			echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
+			echo "<div align='center'>";
+			if ($sw->fields["deleted"]=='N')
+				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+			else {
+				echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+			}
+			echo "</div>";
+			echo "</td>";
 		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
 		}
-		echo "</div>";
-		echo "</td>";
-		
-	}
 		echo "</tr>";
+	}
+	echo "</table></form></div>";
 
-		echo "</table></form></div>";
-
-		return true;	
+	return true;	
 	}
 	else {
                 echo "<div align='center'><b>".$lang["software"][22]."</b></div>";
@@ -210,8 +205,10 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 
 function showLicensesAdd($ID) {
 	
-	GLOBAL $cfg_glpi,$lang;
+	global $cfg_glpi,$lang;
 	
+	if (!haveRight("software","w")) return false;
+
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=add&amp;sID=$ID\">";
@@ -222,9 +219,9 @@ function showLicensesAdd($ID) {
 
 function showLicenses ($sID,$show_computers=0) {
 
-	GLOBAL $db,$cfg_glpi, $HTMLRel, $lang;
+	global $db,$cfg_glpi, $HTMLRel, $lang;
 	
-	
+	if (!haveRight("software","r")) return false;
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
 	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='Y')";
@@ -424,18 +421,6 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 				
 			}
 		}
-		// Dupliquer une licence
-/* 	  $query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
-		if ($result_new = $db->query($query_new)) {			
-			
-			$IDdup=$db->result($result_new,0,0);
-			if ($serial!="free"&&$serial!="global"){
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?duplicate=duplicate&amp;lID=$IDdup\">";
-				echo "<img src=\"".$HTMLRel."pics/add.png\" alt='".$lang["buttons"][8]."' title='".$lang["buttons"][8]."'>";
-				echo "</a></strong>";
-			}
-		}
-*/
 
 		// Add select all checkbox
 		if ($show_computers){
@@ -510,7 +495,9 @@ echo "</form>";
 
 function showLicenseForm($target,$action,$sID,$lID="") {
 
-	GLOBAL $cfg_glpi, $lang,$HTMLRel;
+	global $cfg_glpi, $lang,$HTMLRel;
+
+	if (!haveRight("software","w")) return false;
 
 	$show_infocom=false;
 	
@@ -534,13 +521,10 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	$values=array();
 	// defaults values :
 	$values['serial']='';
-	//$values['number']='1';
 	$values['expire']="0000-00-00";
 	$values['oem']='N';
 	$values["oem_computer"]='';
 	$values["comments"]='';
-//	$values['is_update']='N';
-//	$values["update_software"]='';
 	$values['buy']='Y';
 	
 	
@@ -786,7 +770,7 @@ function uninstallSoftware($ID) {
 
 function showSoftwareInstalled($instID,$withtemplate='') {
 
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
         
 	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
 	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
@@ -890,7 +874,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 function countInstallations($sID,$nohtml=0) {
 	
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
 	
 	
 	// Get total

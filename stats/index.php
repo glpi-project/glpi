@@ -36,9 +36,9 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 
-checkAuthentication("normal");
-
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+
+checkRight("statistic","1");
 
 // titre
         echo "<div align='center'><table border='0'><tr><td>";

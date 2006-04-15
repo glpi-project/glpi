@@ -45,7 +45,7 @@ if(empty($tab["ID"])) $tab["ID"] = "";
 $td=new TypeDoc();
 if (isset($_POST["add"]))
 {
-	checkAuthentication("super-admin");
+	checkRight("typedoc","w");
 	
 	if ($newID=$td->add($_POST))
 		logEvent($newID, "typedocs", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
@@ -53,7 +53,8 @@ if (isset($_POST["add"]))
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("super-admin");
+	checkRight("typedoc","w");
+
 	$td->delete($tab,1);
 
 	logEvent($tab["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
@@ -65,14 +66,15 @@ else if (isset($tab["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("super-admin");
+	checkRight("typedoc","w");
+
 	$td->update($_POST);
 	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	checkAuthentication("super-admin");
+	checkRight("typedoc","r");
 
 	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 	showTypedocForm($_SERVER["PHP_SELF"],$tab["ID"]);

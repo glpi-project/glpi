@@ -41,7 +41,7 @@ include ("_relpos.php");
 
 
 function titlephones(){
-                GLOBAL  $lang,$HTMLRel;
+                global  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
                 echo "<img src=\"".$HTMLRel."pics/phones.png\" alt='".$lang["phones"][0]."' title='".$lang["phones"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".PHONE_TYPE."&amp;add=1\"><b>".$lang["phones"][0]."</b></a>";
                 echo "</td>";
@@ -52,7 +52,9 @@ function titlephones(){
 
 function showPhoneForm ($target,$ID,$withtemplate='') {
 
-	GLOBAL $cfg_glpi, $lang,$HTMLRel;
+	global $cfg_glpi, $lang,$HTMLRel;
+
+	if (!haveRight("phone","r")) return false;
 
 	$mon = new Phone;
 
@@ -239,46 +241,44 @@ function showPhoneForm ($target,$ID,$withtemplate='') {
 	echo "</td>";
 	echo "</tr>";
 	
-	echo "<tr>";
+	if (haveRight("phone","w")){
+		echo "<tr>";
 
-	if ($template) {
+		if ($template) {
 
 			if (empty($ID)||$withtemplate==2){
-			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-			echo "</td>\n";
+				echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+				echo "</td>\n";
 			} else {
-			echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-			echo "</td>\n";
+				echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td>\n";
 			}
+		} else {
 
-
-	} else {
-
-		echo "<td class='tab_bg_2' valign='top' align='center'>";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		echo "</td>";
-		echo "<td class='tab_bg_2' valign='top'>\n";
-		echo "<div align='center'>";
-		if ($mon->fields["deleted"]=='N')
-		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		else {
-		echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
-		
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+			echo "<td class='tab_bg_2' valign='top' align='center'>";
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+			echo "</td>";
+			echo "<td class='tab_bg_2' valign='top'>\n";
+			echo "<div align='center'>";
+			if ($mon->fields["deleted"]=='N')
+				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+			else {
+				echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+			}
+			echo "</div>";
+			echo "</td>";
 		}
-		echo "</div>";
-		echo "</td>";
-	}
 		echo "</tr>";
-
-		echo "</table></form></div>";
+	}
+	echo "</table></form></div>";
 	
-		return true;	
+	return true;	
 	}
 	else {
                 echo "<div align='center'><b>".$lang["phones"][17]."</b></div>";

@@ -56,7 +56,8 @@ if(!isset($tab["search_software"])) $tab["search_software"] = "";
 $soft=new Software();
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	unset($_POST["search_software"]);
 
 	$newID=$soft->add($_POST);
@@ -65,7 +66,8 @@ if (isset($_POST["add"]))
 }
 else if (isset($tab["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	if (!empty($tab["withtemplate"]))
 		$soft->delete($tab,1);
 	else $soft->delete($tab);
@@ -78,21 +80,24 @@ else if (isset($tab["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	$soft->restore($_POST);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/software/");
 }
 else if (isset($tab["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	$soft->delete($tab,1);
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/software/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("software","w");
+
 	unset($_POST["search_software"]);
 	$soft->update($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
@@ -100,7 +105,7 @@ else if (isset($_POST["update"]))
 } 
 else
 {
-	checkAuthentication("normal");
+	checkRight("software","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -136,7 +141,7 @@ else
 		
 	} else {
 
-
+		if (haveRight("delete_ticket","1"))
 		if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 			foreach ($_POST["todel"] as $key => $val){
 				if ($val==1) {

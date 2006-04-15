@@ -49,7 +49,8 @@ if (empty($_GET["name"])&&isset($_GET["ID"])){
 if(empty($_GET["name"])) $_GET["name"] = "";
 
 if (isset($_POST["add"])) {
-	checkAuthentication("admin");
+	checkRight("user","w");
+
 	// Pas de nom pas d'ajout	
 	if (!empty($_POST["name"])){
 		$newID=$user->add($_POST);
@@ -57,20 +58,24 @@ if (isset($_POST["add"])) {
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
-	checkAuthentication("admin");
+	checkRight("user","w");
+
 	$user->delete($_POST);
 	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$lang["log"][22]." ".$_POST["ID"].".");
 	glpi_header($cfg_glpi["root_doc"]."/users/");
 } else if (isset($_POST["update"])) {
-	checkAuthentication("admin");
+	checkRight("user","w");
+
 	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 	$user->update($_POST);
 	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$lang["log"][21]."  ".$_POST["name"].".");
 	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
 } else {
 	
+
 	if (!isset($_GET["ext_auth"])){
-		checkAuthentication("admin");
+		checkRight("user","w");
+
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 		showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
 	} else {
@@ -83,7 +88,7 @@ if (isset($_POST["add"])) {
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
-		checkAuthentication("admin");
+		checkRight("user","w");
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 		showAddExtAuthUserForm($_SERVER["PHP_SELF"]);
 	}

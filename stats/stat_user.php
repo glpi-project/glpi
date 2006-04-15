@@ -40,9 +40,9 @@ include ($phproot . "/glpi/includes_users.php");
 require ("functions.php");
 
 
-checkAuthentication("normal");
-
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+
+checkRight("statistic","1");
 
 echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$lang["stats"][18]."</span></b></p></div>";
 

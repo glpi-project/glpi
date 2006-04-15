@@ -37,10 +37,10 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-checkauthentication("super-admin");
-
-
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+
+checkRight("update","1");
+
 checkNewVersionAvailable(0);
 
 commonFooter();

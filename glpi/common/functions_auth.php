@@ -60,6 +60,48 @@ function checkRight($module,$right) {
 		exit();
 	}
 }
+
+function checkCommonItemRight($type,$right) {
+	global $lang,$HTMLRel;
+
+	$ci=new CommonItem();
+	$ci->setType($type);
+	if (!$ci->haveRight($right)){
+		commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$lang["login"][5]."</b></div>";
+		commonFooter();
+		exit();
+	}
+}
+
+function checkCentralAccess(){
+
+	global $lang,$HTMLRel;
+
+	if ($_SESSION["glpiprofile"]["interface"]!="central"){
+		commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$lang["login"][5]."</b></div>";
+		commonFooter();
+		exit();
+	}
+}
+
+function checkLoginUser(){
+
+	global $lang,$HTMLRel;
+
+	if (!isset($_SESSION["glpiuser"])){
+		commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$lang["login"][5]."</b></div>";
+		commonFooter();
+		exit();
+	}
+}
+
+
 /**
 * Test if an user have the right to assign a job to another user 
 *
