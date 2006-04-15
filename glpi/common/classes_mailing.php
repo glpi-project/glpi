@@ -331,7 +331,6 @@ class Mailing
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
-				//require_once($phproot."/glpi/common/MIMEMail.php");
 				for ($i=0;$i<count($users);$i++)
 				{
 					$mmail=new glpi_phpmailer();
@@ -529,7 +528,6 @@ class MailingResa{
 				$replyto=$this->get_reply_to_address ();
 
 				// Send all mails
-				//require_once($phproot."/glpi/common/MIMEMail.php");
 				for ($i=0;$i<count($users);$i++)
 				{
 						
