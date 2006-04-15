@@ -399,80 +399,90 @@ function showConnections($target,$ID,$withtemplate='') {
 
 	
 	$state=new StateItem();
-
-	echo "&nbsp;<div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='4'>".$lang["connect"][0].":</th></tr>";
-	echo "<tr><th>".$lang["computers"][39].":</th><th>".$lang["computers"][40].":</th><th>".$lang["computers"][46].":</th><th>".$lang["computers"][55].":</th></tr>";
-
-	echo "<tr class='tab_bg_1'>";
-	$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 	$ci=new CommonItem;
-	foreach ($items as $type){
-	$ci->setType($type);
-	if ($ci->haveRight("r")){
 
-		echo "<td align='center'>";
-		$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
-		if ($result=$db->query($query)) {
-			$resultnum = $db->numrows($result);
-			if ($resultnum>0) {
-				echo "<table width='100%'>";
-				for ($i=0; $i < $resultnum; $i++) {
-					$tID = $db->result($result, $i, "end1");
-					$connID = $db->result($result, $i, "ID");
-					$ci->getFromDB($type,$tID);
+	$items=array(PRINTER_TYPE=>$lang["computers"][39],MONITOR_TYPE=>$lang["computers"][40],PERIPHERAL_TYPE=>$lang["computers"][46],PHONE_TYPE=>$lang["computers"][55]);
+
+	
+	foreach ($items as $type => $title){
+		$ci->setType($type);
+		if (!$ci->haveRight("r")) unset($items[$type]);
+			
+	}
+	if (count($items)){
+		echo "&nbsp;<div align='center'><table class='tab_cadre_fixe'>";
+
+		echo "<tr><th colspan='".count($items)."'>".$lang["connect"][0].":</th></tr>";
+
+		echo "<tr>";
+		foreach ($items as $type => $title)
+			echo "<th>".$title.":</th>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_1'>";
+	
+		foreach ($items as $type=>$title){
+			echo "<td align='center'>";
+			$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
+			if ($result=$db->query($query)) {
+				$resultnum = $db->numrows($result);
+				if ($resultnum>0) {
+					echo "<table width='100%'>";
+					for ($i=0; $i < $resultnum; $i++) {
+						$tID = $db->result($result, $i, "end1");
+						$connID = $db->result($result, $i, "ID");
+						$ci->getFromDB($type,$tID);
 				
-					echo "<tr ".($ci->obj->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
-					echo "<td align='center'><b>";
-					echo $ci->getLink();
-					echo "</b>";
-					if ($state->getfromDB($type,$tID))
-						echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
+						echo "<tr ".($ci->obj->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
+						echo "<td align='center'><b>";
+						echo $ci->getLink();
+						echo "</b>";
+						if ($state->getfromDB($type,$tID))
+							echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
 
-					echo "</td>";
-					if(empty($withtemplate) || $withtemplate != 2) {
-						echo "<td align='center'><a 	href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
-						echo $lang["buttons"][10];
-						echo "</b></a></td>";
+						echo "</td>";
+						if(empty($withtemplate) || $withtemplate != 2) {
+							echo "<td align='center'><a 	href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
+							echo $lang["buttons"][10];
+							echo "</b></a></td>";
+						}
+						echo "</tr>";
 					}
-					echo "</tr>";
+					echo "</table>";
+				} else {
+					switch ($type){
+						case PRINTER_TYPE:
+							echo $lang["computers"][38];
+							break;
+						case MONITOR_TYPE:
+							echo $lang["computers"][37];
+							break;
+						case PERIPHERAL_TYPE:
+							echo $lang["computers"][47];
+							break;
+						case PHONE_TYPE:
+							echo $lang["computers"][54];
+							break;
+					}
+					echo "<br>";
 				}
-				echo "</table>";
-			} else {
-				switch ($type){
-					case PRINTER_TYPE:
-						echo $lang["computers"][38];
-						break;
-					case MONITOR_TYPE:
-						echo $lang["computers"][37];
-						break;
-					case PERIPHERAL_TYPE:
-						echo $lang["computers"][47];
-						break;
-					case PHONE_TYPE:
-						echo $lang["computers"][54];
-						break;
+				if ($ci->haveRight("w")&&haveRight("computer","w"))
+				if(empty($withtemplate) || $withtemplate != 2) {
+					echo "<form method='post' action=\"$target\">";
+					echo "<input type='hidden' name='connect' value='connect'>";
+					echo "<input type='hidden' name='cID' value='$ID'>";
+					echo "<input type='hidden' name='device_type' value='".$type."'>";
+					dropdownConnect($type,"item");
+					echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+					echo "</form>";
 				}
-				echo "<br>";
 			}
-			if(empty($withtemplate) || $withtemplate != 2) {
-				echo "<form method='post' action=\"$target\">";
-				echo "<input type='hidden' name='connect' value='connect'>";
-				echo "<input type='hidden' name='cID' value='$ID'>";
-				echo "<input type='hidden' name='device_type' value='".$type."'>";
-				dropdownConnect($type,"item");
-				echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-
-				echo "</form>";
-			}
-
+			echo "</td>";
 		}
-		echo "</td>";
-	}
-	}
 
-	echo "</tr>";
-	echo "</table></div><br>";
+		echo "</tr>";
+		echo "</table></div><br>";
+	}
 	
 }
 

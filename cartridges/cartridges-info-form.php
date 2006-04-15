@@ -49,7 +49,7 @@ $cartype=new CartridgeType();
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("cartridge","w");
 
 	$newID=$cartype->add($_POST);
 	logEvent($newID, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
@@ -57,53 +57,58 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("cartridge","w");
+
 	$cartype->delete($_POST);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("cartridge","w");
+
 	$cartype->restore($_POST);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
 else if (isset($_POST["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("cartridge","w");
+
 	$cartype->delete($_POST,1);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("cartridge","w");
+
 	$cartype->update($_POST);
 	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["addtype"])){
-	checkAuthentication("admin");
+
+	checkRight("cartridge","w");
+
 	$cartype->addCompatibleType($_POST["tID"],$_POST["model"]);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][30]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletetype"])){
-	checkAuthentication("admin");
+
+	checkRight("cartridge","w");
+
 	$cartype->deleteCompatibleType($_GET["ID"]);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][31]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkRight("cartridge","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-	//	glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);

@@ -133,6 +133,8 @@ function showCartridgeTypeForm ($target,$ID) {
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ct->fields["comments"]."</textarea>";
 	echo "</td></tr>\n";
 	
+
+	if (haveRight("cartridge","w"))
 	if (!$ID) {
 
 		echo "<tr>\n";
@@ -140,9 +142,6 @@ function showCartridgeTypeForm ($target,$ID) {
 		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
 		echo "</tr>\n";
-
-		echo "</table></div></form>";
-
 	} else {
 
 		echo "<tr>\n";
@@ -163,10 +162,10 @@ function showCartridgeTypeForm ($target,$ID) {
 		echo "</div>";
 		echo "</td>";
 		echo "</tr>\n";
-
-		echo "</table></div></form>";
-		
 	}
+
+	echo "</table></div></form>";
+
 	}
 	else {
 	echo "<div align='center'><b>".$lang["cartridges"][7]."</b></div>";
@@ -190,7 +189,7 @@ function showCartridgesAdd($ID) {
 	
 	global $cfg_glpi,$lang,$HTMLRel;
 	
-	if (!haveRight("cartridge","r")) return false;
+	if (!haveRight("cartridge","w")) return false;
 	
 	echo "<form method='post'  action=\"".$HTMLRel."cartridges/cartridges-edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
@@ -500,7 +499,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		$tmp_dend=split("-",$date_use);
 
 		$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-					  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+				  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);
 		$stock_time+=$stock_time_tmp;
 
 		echo "</td><td align='center'>";

@@ -214,7 +214,9 @@ function showCentralProfilesForm($ID){
 	echo "<td>".$lang["Menu"][34].":</td><td>";
 	dropdownNoneReadWrite("phone",$prof->fields["phone"],1,1,1);
 	echo "</td>";
-	echo "<td>&nbsp;</td><td>&nbsp;</td>";
+	echo "<td>".$lang["Menu"][16].":</td><td>";
+	dropdownNoneReadWrite("peripheral",$prof->fields["peripheral"],1,1,1);
+	echo "</td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$lang["Menu"][26]."</strong></td></tr>";

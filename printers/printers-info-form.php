@@ -122,7 +122,6 @@ else
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
-//		glpi_header($_SERVER['HTTP_REFERER']);
 }	
 	
 	if ($print->getFromDB($tab["ID"]))
@@ -216,10 +215,8 @@ if (isset($_GET['onglet'])) {
 				break;
 				default :
 					if (!display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-						if (haveRight("cartridge","r")){
 							showCartridgeInstalled($tab["ID"]);		
 							showCartridgeInstalled($tab["ID"],1);
-						}
 					}
 					break;
 			}		
