@@ -37,7 +37,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_financial.php");
 
-checkAuthentication("normal");
+checkRight("contact_enterprise","r");
 
 commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
 

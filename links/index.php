@@ -37,7 +37,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_links.php");
 
-checkAuthentication("normal");
+checkRight("link","r");
 
 commonHeader($lang["title"][33],$_SERVER["PHP_SELF"]);
 

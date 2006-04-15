@@ -38,49 +38,11 @@ include ("_relpos.php");
 
 function titleEnterprise(){
 
-         GLOBAL  $lang,$HTMLRel;
+         global  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
          echo "<img src=\"".$HTMLRel."pics/entreprises.png\" alt='".$lang["financial"][25]."' title='".$lang["financial"][25]."'></td><td><a  class='icon_consol' href=\"enterprises-info-form.php\"><b>".$lang["financial"][25]."</b></a>";
          echo "</td></tr></table></div>";
-}
-
-function showEnterpriseOnglets($target,$withtemplate,$actif){
-	global $lang, $HTMLRel;
-
-	$template="";
-	if(!empty($withtemplate)){
-		$template="&amp;withtemplate=$withtemplate";
-	}	
-
-	if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
-	$ID=$ereg[1];
-
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="1"){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=1$template'>".$lang["title"][26]."</a></li>";
-	echo "<li "; if ($actif=="4") {echo "class='actif'";} echo "><a href='$target&amp;onglet=4$template'>".$lang["Menu"][26]."</a></li>";
-	echo "<li "; if ($actif=="5") {echo "class='actif'";} echo "><a href='$target&amp;onglet=5$template'>".$lang["title"][25]."</a></li>";
-	echo "<li "; if ($actif=="6") {echo "class='actif'";} echo "><a href='$target&amp;onglet=6$template'>".$lang["title"][28]."</a></li>";
-	echo "<li "; if ($actif=="7") {echo "class='actif'";} echo "><a href='$target&amp;onglet=7$template'>".$lang["title"][34]."</a></li>";
-	echo "<li "; if ($actif=="10") {echo "class='actif'";} echo "><a href='$target&amp;onglet=10$template'>".$lang["title"][37]."</a></li>";
-
-	display_plugin_headings($target,ENTERPRISE_TYPE,$withtemplate,$actif);
-
-	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
-	
-	echo "<li class='invisible'>&nbsp;</li>";
-	
-	$next=getNextItem("glpi_enterprises",$ID);
-	$prev=getPreviousItem("glpi_enterprises",$ID);
-	$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-	if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-	if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
-	echo "</ul></div>";
-	
-	}
-
-	
 }
 
 
@@ -89,7 +51,9 @@ function showEnterpriseOnglets($target,$withtemplate,$actif){
 function showEnterpriseForm ($target,$ID) {
 	// Show Enterprise or blank form
 	
-	GLOBAL $cfg_glpi,$lang;
+	global $cfg_glpi,$lang;
+
+	if (!haveRight("contact_enterprise","r")) return false;
 
 	$ent = new Enterprise;
 	$ent_spotted=false;
@@ -145,6 +109,8 @@ function showEnterpriseForm ($target,$ID) {
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ent->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
+
+	if (haveRight("contact_enterprise","w"))
 	if (!$ID) {
 
 		echo "<tr>";
@@ -152,8 +118,6 @@ function showEnterpriseForm ($target,$ID) {
 		echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
 		echo "</td>";
 		echo "</tr>";
-
-		echo "</table></div></form>";
 
 	} else {
 
@@ -175,12 +139,10 @@ function showEnterpriseForm ($target,$ID) {
 		
 		echo "</td>";
 		echo "</tr>";
-
-		echo "</table></div>";
-		echo "</form>";
-		
-		return true;
 	}
+
+		echo "</table></div></form>";
+
 	
 	} else {
 	echo "<div align='center'><b>".$lang["financial"][39]."</b></div>";
@@ -193,9 +155,10 @@ function showEnterpriseForm ($target,$ID) {
 
 
 function showAssociatedContact($instID) {
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$HTMLRel;
 
-    
+	if (!haveRight("contact_enterprise","r")) return false;
+
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent FROM glpi_contact_enterprise, glpi_contacts WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' order by glpi_contacts.name";
 
 	$result = $db->query($query);

@@ -46,33 +46,38 @@ $link=new Link();
 
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("link","w");
+
 	$newID=$link->add($_POST);
 	logEvent($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($cfg_glpi["root_doc"]."/links/");
 }
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("link","w");
+
 	$link->delete($_POST);
 	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/links/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("link","w");
+
 	$link->update($_POST);
 	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["adddevice"])){
-	checkAuthentication("admin");
+	checkRight("link","w");
+
 	addLinkDevice($_POST["device_type"],$_POST["lID"]);
 	logEvent($tab["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][32]);
 	glpi_header($cfg_glpi["root_doc"]."/links/links-info-form.php?ID=".$_POST["lID"]);
 }
 else if (isset($_GET["deletedevice"])){
-	checkAuthentication("admin");
+	checkRight("link","w");
+
 	deleteLinkDevice($_GET["ID"]);
 	logEvent(0, "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -80,9 +85,7 @@ else if (isset($_GET["deletedevice"])){
 
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkRight("link","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {

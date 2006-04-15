@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_knowbase.php");
 include ($phproot . "/glpi/includes_cartridges.php");
 include ($phproot . "/glpi/includes_consumables.php");
 
-checkAuthentication("normal");
+checkRight("link","r");
 
 if (isset($_GET["lID"])){
 	$query="SELECT glpi_links.ID as ID, glpi_links.name as name,glpi_links.data as data from glpi_links WHERE glpi_links.ID='".$_GET["lID"]."'";

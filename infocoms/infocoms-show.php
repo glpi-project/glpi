@@ -46,7 +46,7 @@ include ($phproot . "/glpi/includes_cartridges.php");
 include ($phproot . "/glpi/includes_consumables.php");
 
 
-checkAuthentication("normal");
+checkRight("contract_infocom","r");
 
 nullHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
 

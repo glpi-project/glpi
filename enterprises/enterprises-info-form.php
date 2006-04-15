@@ -58,7 +58,7 @@ else $start=0;
 $ent=new Enterprise();
 if (isset($_POST["add"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
 
 	$newID=$ent->add($_POST);
 	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
@@ -66,54 +66,57 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$ent->delete($_POST);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
 else if (isset($_POST["restore"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$ent->restore($_POST);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
 else if (isset($_POST["purge"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$ent->delete($_POST,1);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
 }
 else if (isset($_POST["update"]))
 {
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	$ent->update($_POST);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["addcontact"])){
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][36]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletecontact"])){
-	checkAuthentication("admin");
+	checkRight("contact_enterprise","w");
+
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent(0, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][37]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	if (empty($tab["ID"]))
-	checkAuthentication("admin");
-	else checkAuthentication("normal");
+	checkRight("contact_enterprise","r");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 
@@ -124,7 +127,6 @@ else
 	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 		foreach ($_POST["todel"] as $key => $val){
 			if ($val==1) {
-				
 				deleteTracking($key);
 			}
 		}
@@ -141,7 +143,6 @@ else
 				showContractAssociatedEnterprise($tab["ID"]);
 				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
 				showTrackingList($_SERVER["PHP_SELF"],$start,"all",0,0,$_GET["ID"]);
-//				showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"enterprise","","","",$start);
 				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
 				break;
 			case 1 :
@@ -155,7 +156,6 @@ else
 				break;
 			case 6 :
 				showTrackingList($_SERVER["PHP_SELF"]."?ID=".$tab["ID"],$start,"all",0,0,$_GET["ID"]);
-//				showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"enterprise","","","",$start);	
 				break;
 			case 7 : 
 				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
