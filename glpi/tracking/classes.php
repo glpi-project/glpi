@@ -238,34 +238,36 @@ class Job {
 		}
 		
 		if($format=="html"){
-			$message = $lang["mailing"][1]."<br><strong>".$lang["mailing"][5]."</strong><br>".$lang["mailing"][1]."<br>";
+			$message= "<html><head></head><body>";
+			//$message.="<div style='border: 2px solid #EFD182'>";
+			 $message.=$lang["mailing"][1]."<br><strong>".$lang["mailing"][5]."</strong><br>".$lang["mailing"][1]."<br>";
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$lang["mailing"][108];
-			$message.= $lang["mailing"][2]." ".$author."<br>";
-			$message.= $lang["mailing"][6]." ".convDateTime($this->fields["date"])."<br>";
-			$message.= $lang["mailing"][7]." ".$name."<br>";
-			$message.= $lang["mailing"][24]." ".getStatusName($this->fields["status"])."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][2]."</span> ".$author."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][6]."</span> ".convDateTime($this->fields["date"])."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][7]."</span> ".$name."<br>";
+			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][24]."</span> ".getStatusName($this->fields["status"])."<br>";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
 			if ($assign=="[Nobody]")
 				$assign=$lang["mailing"][105];
-			$message.= $lang["mailing"][8]." ".$assign."<br>";
-			$message.= $lang["mailing"][16]." ".getPriorityName($this->fields["priority"])."<br>";
+			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][8]."</span> ".$assign."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][16]."</span> ".getPriorityName($this->fields["priority"])."<br>";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE)
-				$message.= $lang["mailing"][28]." ".$contact."<br>";
+				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][28]."</span> ".$contact."<br>";
 			if ($this->fields["emailupdates"]=="yes"){
-				$message.=$lang["mailing"][103]." ".$lang["choice"][1]."<br>";
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][103]."</span> ".$lang["choice"][1]."<br>";
 			} else {
-				$message.=$lang["mailing"][103]." ".$lang["choice"][0]."<br>";
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][103]."</span> ".$lang["choice"][0]."<br>";
 			}
 			
-			$message.= $lang["mailing"][26]." ";
+			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][26]."</span> ";
 			if (isset($this->fields["category"])&&$this->fields["category"]){
 				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
-			} else $message.=$lang["mailing"][100];
+			} else $message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][100]."</span>";
 			$message.= "<br>";
 			
-			$message.= $lang["mailing"][3]."<br>".$this->fields["contents"]."<br>";	
-			$message.="<br><br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][3]."</span><br>".$this->fields["contents"]."<br>><br>";	
+			//$message.="</div<br>";
 		}else{ //text format
 			$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
 			$author=$this->getAuthorName();
