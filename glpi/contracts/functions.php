@@ -713,9 +713,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
-	if (!haveRight("contract_infocom","r"))	return false;
+	if (!haveRight("contract_infocom","r")||!haveTypeRight($device_type,"r"))	return false;
 	$canedit=false;
-	if (haveRight("contract_infocom","w"))	$canedit=true;
+	if (haveTypeRight($device_type,"w"))	$canedit=true;
 
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
 
@@ -799,7 +799,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 function showContractAssociatedEnterprise($ID){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
-	if (!haveRight("contract_infocom","r")) return false;
+	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r")) return false;
 	$canedit=false;
 	if (haveRight("contract_infocom","w")) $canedit=true;
     
