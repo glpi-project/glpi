@@ -53,7 +53,7 @@ $ri=new ReservationItem();
 $rr=new ReservationResa();
 
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
-	checkAuthentication("normal");
+	checkRight("reservation_helpdesk","1");
 
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
@@ -122,7 +122,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	}
 }
 else {
-	checkAuthentication("normal");
+	checkRight("reservation_central","r");
 	if ($_SESSION["glpitype"]=="normal"){
 		commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 		printReservationItems($_SERVER["PHP_SELF"]);
@@ -131,12 +131,14 @@ else {
 	else {
 	if (isset($_GET["add"]))
 	{
+		checkRight("reservation_central","w");
 		$ri->add($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
 		glpi_header($_SERVER['HTTP_REFERER']);
 	} 
 	else if (isset($_GET["delete"]))
 	{
+		checkRight("reservation_central","w");
 		$ri->delete($_GET);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 		glpi_header($_SERVER['HTTP_REFERER']);
@@ -145,6 +147,7 @@ else {
 
 	if (isset($_POST["updatecomment"]))
 	{
+		checkRight("reservation_central","w");
 		$ri->update($_POST);
 		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	} 
@@ -157,13 +160,14 @@ else {
 	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
 
 
-	checkAuthentication("admin");
+	checkRight("reservation_central","r");
 
 	commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
 	if (isset($_GET["comment"])){
 		if (showReservationCommentForm($_SERVER["PHP_SELF"],$_GET["comment"])){
 			}
 		else {
+			
 			titleReservation();
 			searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 			showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);

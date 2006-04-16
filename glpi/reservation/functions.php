@@ -57,6 +57,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 	// Print Search Form
 		
 	global $cfg_glpi,  $lang;
+	if (!haveRight("reservation_central","r")) return false;
 
 	$option["glpi_reservation_item.ID"]				= $lang["common"][2];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
@@ -109,6 +110,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 	// Lists Reservation Items
 
 	global $db,$cfg_glpi, $lang, $HTMLRel;
+
+	if (!haveRight("reservation_central","r")) return false;
 
 	// Build query
 	if($field=="all") {

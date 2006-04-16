@@ -45,7 +45,7 @@ include ($phproot . "/glpi/includes_setup.php");
 
 if (isset($_POST["changepw"])) {
 	
-	checkAuthentication("post-only");
+	checkCentralAccess();
 	
 	if ($_SESSION["glpiextauth"]!=1){
 		$user=new User();
@@ -53,17 +53,17 @@ if (isset($_POST["changepw"])) {
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["updatesort"])) {
-	checkAuthentication("normal");
+	checkCentralAccess();
 	updateSort($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["changelang"])) {
-	checkAuthentication("post-only");
+	checkLoginUser();
 	updateLanguage($_POST);
 	
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	checkAuthentication("normal");
+	checkCentralAccess();
 	commonHeader($lang["title"][17],$_SERVER["PHP_SELF"]);
         // titre
         echo "<div align='center'><table border='0'><tr><td>";

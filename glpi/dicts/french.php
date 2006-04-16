@@ -991,6 +991,7 @@ $lang["profiles"][19]="Assigner un ticket";
 $lang["profiles"][20]="Voir mon planning";
 $lang["profiles"][21]="Voir tous les planning";
 $lang["profiles"][22]="Profil";
+$lang["profiles"][23]="Administration des réservations";
 
 $lang["reminder"][0]="Notes personnelles";
 $lang["reminder"][1]="Notes publiques";
