@@ -424,7 +424,7 @@ function isSuperAdmin($authtype) {
 *
 **/      
 // TO BE DELETED
-function checkAuthentication($authtype) {
+/*function checkAuthentication($authtype) {
 
 	// Nouvelle gestion des droits :
 	// ne faire dans le checkAuth que la verif des droits -> checkRight
@@ -522,7 +522,7 @@ function checkAuthentication($authtype) {
 		}
 	}
 }
-
+*/
 
 /**
 * Include the good language dict.

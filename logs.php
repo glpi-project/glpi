@@ -49,7 +49,7 @@ include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_users.php");
 
 
-checkAuthentication("admin");
+checkRight("logs","r");
 
 commonHeader($lang["title"][32],$_SERVER["PHP_SELF"]);
 
