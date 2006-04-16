@@ -83,7 +83,6 @@ if (isset($_POST["add"])) {
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
 				$user=new User();
 				$user->fields["name"]=$_GET['login'];
-				$user->fields["type"]=$_GET['type'];
 				$user->addToDB(1);
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);

@@ -89,12 +89,18 @@ class Profile extends CommonDBTM{
 				$result = $db->query($query);
 				if ($db->numrows($result)){
 					$ID_profile = $db->result($result,0,0);
+					$input["FK_users"]=$ID;
+					$input["FK_profiles"]=$ID_profile;
+					$this->add($input);
 				} else {
 					// Get first helpdesk profile
 					$query = "SELECT ID FROM glpi_profiles WHERE (interface = 'helpdesk')";
 					$result = $db->query($query);
 					if ($db->numrows($result)){
 						$ID_profile = $db->result($result,0,0);
+						$input["FK_users"]=$ID;
+						$input["FK_profiles"]=$ID_profile;
+						$this->add($input);
 					}
 				}
 			}

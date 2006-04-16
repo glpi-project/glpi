@@ -4040,11 +4040,14 @@ $query="CREATE TABLE `glpi_profiles` (
 		if ($db->numrows($result)){
 			while ($data=$db->fetch_array($result)){
 				$query2="INSERT INTO glpi_users_profiles (FK_users,FK_profiles) VALUES ('".$data['ID']."','".$profiles[$data['type']]."')";
-				$db->query($query2);
+				$db->query($query2) or die("0.68 insert new users_profiles ".$lang["update"][90].$db->error());
 			}
 		}
 		// TODO drop type in glpi_users and can_assign_job
-
+		$query="ALTER TABLE `glpi_users` DROP `type`, DROP `can_assign_job`;";
+		$db->query($query) or die("0.68 drop type and can_assign_job from users ".$lang["update"][90].$db->error());
+		$query="DELETE FROM glpi_display WHERE type='".USER_TYPE."' AND num='4';";
+		$db->query($query) or die("0.68 drop glpi_display for user type ".$lang["update"][90].$db->error());
 	}
 	
 
@@ -4117,22 +4120,6 @@ regenerateTreeCompleteName("glpi_dropdown_kbcategories");
 }
 }
 
-function showFormSu() {
-	include ("_relpos.php");
-	global $db,$lang;
-	echo "<div align='center'>";
-	echo "<h3>".$lang["update"][97]."</h3>";
-	echo "<p>".$lang["update"][98]."</p>";
-	echo "<p>".$lang["update"][99]."</p>";
-	echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
-	echo "<p>".$lang["update"][100]." <input type=\"text\" name=\"login_su\" /></p>";
-	echo "<p>".$lang["update"][101]." <input type=\"password\" name=\"pass_su1\" /></p>";
-	echo "<p>".$lang["update"][102]." <input type=\"password\" name=\"pass_su2\" /></p>";
-	echo "<input type=\"submit\" class='submit' name=\"ajout_su\" value=\"".$lang["install"][25] ."\" />";
-	echo "</form>";
-	echo "</div>";
-}
-
 //Debut du script
 	
 	if(!isset($_SESSION)) session_start();
@@ -4166,7 +4153,7 @@ function showFormSu() {
 
 // step 1    avec bouton de confirmation
 
-if(empty($_POST["continuer"]) && empty($_POST["ajout_su"]) && empty($_POST["from_update"])) {
+if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 	
 	if(empty($from_install)&&!isset($_POST["from_update"])) {
 		echo "<div align='center'>";
@@ -4184,10 +4171,10 @@ if(empty($_POST["continuer"]) && empty($_POST["ajout_su"]) && empty($_POST["from
 	}
 }
 // Step 2  
-elseif(empty($_POST["ajout_su"])) {
+else {
 	if(test_connect()) {
 		echo "<h3>".$lang["update"][93]."</h3>";
-		if (!isset($_POST["update_location"]))
+		if (!isset($_POST["update_location"])){
 			$current_verison="0.31";
 			if(!TableExists("glpi_config")) {
 				updateDbTo031();
@@ -4200,11 +4187,7 @@ elseif(empty($_POST["ajout_su"])) {
 
 				$tab = updateDbUpTo031();
 			}
-		
-		if(!superAdminExists()) {
-			showFormSu();
-		}
-		else {
+	
 			echo "<div align='center'>";
 			if(!empty($tab) && $tab["adminchange"]) {
 				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
@@ -4233,51 +4216,6 @@ elseif(empty($_POST["ajout_su"])) {
 		echo $lang["update"][95] ."</h3>";
         }
 	
-}
-elseif(!empty($_POST["ajout_su"])) {
-	if(!empty($_POST["pass_su1"]) && !empty($_POST["login_su"]) && $_POST["pass_su1"] == $_POST["pass_su2"]) {
-
-		include ($phproot . "/glpi/users/classes.php");
-
-		$user = new User;
-		$user->fields["name"]=$_POST["login_su"];
-		$user->fields["password"]=$_POST["pass_su1"];
-		$user->fields["type"]="super-admin";
-		$user->fields["language"]=$_SESSION["dict"];
-		$user->addToDB();
-
-		echo "<div align='center'>";
-		echo "<h3>".$lang["update"][104]."</h3>";
-		echo "</div>";
-		if (showLocationUpdateForm()){
-				// Get current version
-				$query="SELECT version FROM glpi_config";
-				$result=$db->query($query) or die("get current version".$db->error());
-				$current_version=trim($db->result($result,0,0));
-
-				switch ($current_version){
-					case "0.31": 
-					case "0.4": 
-					case "0.41": 
-					case "0.42": 
-					case "0.5": 
-					case "0.51": 
-					case "0.51a": 
-						showContentUpdateForm();
-						break;
-					default:
-					echo "<div align='center'><a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></div>";
-						break;
-				}
-			
-		}
-	}
-	else {
-		echo "<div align='center' color='red'>";
-		echo "<h3>".$lang["update"][103]."</h3>";
-		echo "</div>";
-		showFormSu();
-	}
 }
 
 echo "<div class='bas'></div></div></div></body></html>";

@@ -104,9 +104,9 @@ else
 
 		list($type,$ID)=split("_",$_GET["redirect"]);
 		// Déjà connecté
-		if (isset($_SESSION["glpitype"])&&!empty($_SESSION["glpitype"])){
-		 switch ($_SESSION["glpitype"]){
-		 case "post-only" :
+		if (isset($_SESSION["glpiprofile"]["interface"])&&!empty($_SESSION["glpiprofile"]["interface"])){
+		 switch ($_SESSION["glpiprofile"]["interface"]){
+		 case "helpdesk" :
 		 	switch ($type){
 		 		case "tracking":
 				 	glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=$ID");
@@ -116,7 +116,7 @@ else
 					 break;
 			 	}
 		 	break;
-		 default :
+		 case "central" :
 		 	switch ($type){
 		 		case "tracking":
 				 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID");
