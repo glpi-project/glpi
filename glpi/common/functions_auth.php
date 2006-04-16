@@ -330,7 +330,7 @@ function can_assign_job($name)
 *
 **/
 // TO BE DELETED
-function isPostOnly($authtype) {
+/*function isPostOnly($authtype) {
 	switch ($authtype){
 		case "post-only" :
 		case "normal" :
@@ -342,6 +342,7 @@ function isPostOnly($authtype) {
 			return false;
 		}
 }
+*/
 /**
 * Test if an user has the normal rights or higher.
 *
@@ -403,7 +404,7 @@ function isAdmin($authtype) {
 *
 **/
 // TO BE DELETED
-function isSuperAdmin($authtype) {
+/*function isSuperAdmin($authtype) {
 	switch ($authtype){
 			case "super-admin":
 			return true;
@@ -412,7 +413,7 @@ function isSuperAdmin($authtype) {
 			return false;
 		}
 }
-
+*/
 /**
 * Verify if the current user has some rights
 *

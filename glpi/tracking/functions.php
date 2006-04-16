@@ -41,7 +41,7 @@ include ("_relpos.php");
 
 
 function titleTracking(){
-           GLOBAL  $lang,$HTMLRel;
+           global  $lang,$HTMLRel;
 	// titre
         echo "<div align='center'><table border='0'><tr><td>\n";
         echo "<img src=\"".$HTMLRel."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_sous_nav'>".$lang["tracking"][0]."</span>\n";
@@ -426,7 +426,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 	$isadmin=isAdmin($_SESSION['glpitype']);
-	$ispostonly=(strcmp($_SESSION["glpitype"],"post-only")==0);
+	$viewusers=haveRight("user","r");
 	$align="align='center'";
 	$align_desc="align='left'";
 	if ($followups) { 
@@ -483,7 +483,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 
 		// Fourth Column
 	
-		if (!$ispostonly)
+		if ($viewusers)
 		$fourth_col="<strong>".$job->getAuthorName(1)."</strong>";
 		else
 		$fourth_col="<strong>".$job->getAuthorName()."</strong>";
@@ -492,14 +492,14 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 
 		// Fifth column
 		$fifth_col="";
-		if (!$ispostonly)
+		if ($viewusers)
 			$fifth_col.=getAssignName($job->fields["assign"],USER_TYPE,1);
 		else
 			$fifth_col.="<strong>".getAssignName($job->fields["assign"],USER_TYPE)."</strong>";
 		
 		if ($job->fields["assign_ent"]>0){
 			$fifth_col.="<br>";
-			if (!$ispostonly)
+			if ($viewusers)
 				$fifth_col.=getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
 			else
 				$fifth_col.="<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
@@ -511,10 +511,11 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		// Sixth Colum
 		$sixth_col="";
 		$deleted=0;
-		if (!$ispostonly){
+		$m= new CommonItem;
+		if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
+
+		if (haveTypeRight($job->fields["device_type"],"r")){
 			
-			$m= new CommonItem;
-			if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
 			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
 				$deleted=1;
 			$sixth_col.=$m->getType();
@@ -533,7 +534,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 			if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
 				$deleted=1;
 			$sixth_col.=$m->getType();
-			$sixth_col.="<br><strong>$job->computername";
+			$sixth_col.="<br><strong>".$job->computername;
 			if ($cfg_glpi["view_ID"])
 				$sixth_col.="(".$job->fields["computer"].")";
 			$sixth_col.="</strong>";
@@ -562,7 +563,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		$nineth_column="";
 		// Job Controls
 		
-		if (!$ispostonly)
+		if ($_SESSION["glpiprofile"]["interface"]=="central")
 		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		else
 		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")";
@@ -583,13 +584,11 @@ function showJobVeryShort($ID) {
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
 
-	GLOBAL $cfg_glpi, $lang;
+	global $cfg_glpi, $lang;
 
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
-
-	$ispostonly=(strcmp($_SESSION["glpitype"],"post-only")==0);
-	
+	$viewusers=haveRight("user","r");
 	if ($job->getfromDB($ID,0))
 	{
 		$bgcolor=$cfg_glpi["priority_".$job->fields["priority"]];
@@ -609,17 +608,18 @@ function showJobVeryShort($ID) {
 	
 		echo "<td align='center'>";
 
-		if (!$ispostonly)
+		if ($viewusers)
 		echo "<strong>".$job->getAuthorName(1)."</strong>";
 		else
 		echo "<strong>".$job->getAuthorName()."</strong>";
 
 		echo "</td>";
 
-		if (!$ispostonly){
+		$m= new CommonItem;
+		$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
+
+		if (haveTypeRight($job->fields["device_type"],"r")){
 			echo "<td align='center' ";
-			$m= new CommonItem;
-			$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
 			if (isset($m->obj)&&isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
 			echo "class='tab_bg_1_2'";
 			echo ">";
@@ -632,7 +632,7 @@ function showJobVeryShort($ID) {
 			echo "</td>";
 		}
 		else
-		echo "<td  align='center' ><strong>$job->computername (".$job->fields["computer"].")</strong></td>";
+		echo "<td  align='center' >".$m->getType()."<br><strong>$job->computername (".$job->fields["computer"].")</strong></td>";
 
 		$stripped_content =resume_text($job->fields["contents"],100);
 		echo "<td ><strong>".$stripped_content."</strong>";
@@ -641,7 +641,7 @@ function showJobVeryShort($ID) {
 		// Job Controls
 		echo "<td width='40' align='center'>";
 		
-		if (!$ispostonly)
+		if ($_SESSION["glpiprofile"]["interface"]=="central")
 		echo "<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
 		echo "<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
@@ -658,7 +658,7 @@ function showJobVeryShort($ID) {
 function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign=0,$realtime=0,$category=0) {
 	// Put Job in database
 
-	GLOBAL $cfg_glpi,$lang;
+	global $cfg_glpi,$lang;
 	
 	$job = new Job;
 
@@ -743,7 +743,7 @@ function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$em
 function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
-	GLOBAL $cfg_glpi, $lang,$cfg_glpi,$REFERER;
+	global $cfg_glpi, $lang,$cfg_glpi,$REFERER;
 
 	if (!empty($error)) {
 		echo "<div align='center'><strong>$error</strong></div>";
@@ -889,7 +889,7 @@ function getRealtime($realtime){
 function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
-	GLOBAL $cfg_glpi,  $lang,$HTMLRel,$phproot;
+	global $cfg_glpi,  $lang,$HTMLRel,$phproot;
 
 	if ($extended==1){
 		$option["comp.ID"]				= $lang["common"][2];
@@ -1059,7 +1059,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	GLOBAL $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$HTMLRel;
 		
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
@@ -1277,7 +1277,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 function showFollowupsShort($ID) {
 	// Print Followups for a job
 
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
 
 	// Get Number of Followups
 	
