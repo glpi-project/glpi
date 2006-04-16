@@ -79,8 +79,9 @@ function showUserinfo($target,$ID) {
 	$user = new User();
 	
 	
-	$user->getfromDB($ID);
-		
+	$user->getFromDB($ID);
+	$prof=new Profile();
+	$prof->getFromDBForUser($ID);
 	
 	
 	echo "<div align='center'>";
@@ -94,7 +95,7 @@ function showUserinfo($target,$ID) {
 									
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>".$user->fields["realname"]."</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][17]."</td><td>".$user->fields["type"]."</td></tr>";	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$user->fields["email"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$user->fields["phone"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
@@ -162,34 +163,12 @@ function showUserform($target,$name) {
 		if (!empty($user->fields["password"])||!empty($user->fields["password_md5"])||$name==""){
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
 		}
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
-		autocompletionTextField("realname","glpi_users","realname",$user->fields["realname"],20);
-		echo "</td></tr>";
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][17]."</td><td>";
-		
-		dropdownUserType("type",$user->fields["type"]);
-	} else {
-		if (($user->fields["type"]!="super-admin"&&!empty($user->fields["password"]))||$name=="")
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
-		autocompletionTextField("realname","glpi_users","realname",$user->fields["realname"],20);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][17]."</td>";
-		if($user->fields["type"] != "super-admin" && $user->fields["type"] != "admin") {
-			echo "<td><select name='type' >";
-			echo "<option value='normal'";
-			if (empty($name)||$user->fields["type"]=="normal") { echo " selected"; }
-			echo ">Normal";
-			echo "<option value=\"post-only\"";
-			if ($user->fields["type"]=="post-only") { echo " selected"; }
-			echo ">Post Only";
-			echo "</select>";	
-		} else {
-			echo "<td align='center'>".$user->fields["type"]."</td>";
-		}
 	}
+
+	echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
+	autocompletionTextField("realname","glpi_users","realname",$user->fields["realname"],20);
+	echo "</td></tr>";
+
 	echo "</td></tr>";	
 	echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>";
 	$prof=new Profile();
@@ -242,46 +221,6 @@ function showUserform($target,$name) {
 
 
 
-// TO BE DELETED
-function showFormAssign($target)
-{
-
-	global $db,$cfg_glpi, $lang, $IRMName;
-	
-	$query = "SELECT name FROM glpi_users where name <> 'Helpdesk' and name <> '".$_SESSION["glpiname"]."' ORDER BY type DESC";
-	
-	if ($result = $db->query($query)) {
-
-		echo "<div align='center'><table class='tab_cadre'>";
-		echo "<tr><th>".$lang["setup"][57]."</th><th colspan='2'>".$lang["setup"][58]."</th>";
-		echo "</tr>";
-		
-		  $i = 0;
-		  while ($i < $db->numrows($result)) {
-			$name = $db->result($result,$i,"name");
-			$user = new User();
-			$user->getFromDBbyName($name);
-			
-			echo "<tr class='tab_bg_1'>";	
-			echo "<form method='post' action=\"$target\">";
-			echo "<td align='center'><b>".$user->fields["name"]."</b>";
-			echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
-			echo "</td>";
-			echo "<td align='center'><strong>".$lang["choice"][0]."</strong><input type='radio' value='no' name='can_assign_job' ";
-			if ($user->fields["can_assign_job"] == 'no') echo "checked ";
-      echo ">";
-      echo "<td align='center'><strong>".$lang["choice"][1]."</strong><input type='radio' value='yes' name='can_assign_job' ";
-			if ($user->fields["can_assign_job"] == 'yes') echo "checked";
-      echo ">";
-			echo "</td>";
-			echo "<td class='tab_bg_2'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\"></td>";
-						
-                        echo "</form>";
-	
-      $i++;
-			}
-echo "</table></div>";}
-}
 function updateSort($input) {
 
 	global $db;
@@ -382,10 +321,6 @@ function showAddExtAuthUserForm($target){
 	echo "<input type='hidden' name='ext_auth' value='1'>\n";
 	echo "<input type='submit' name='add_ext_auth' value=\"".$lang["buttons"][8]."\" class='submit'>\n";
 	echo "</td></tr>\n";
-	echo "<tr class='tab_bg_1'><td>".$lang["common"][17]."</td>\n";
-	echo "<td>";
-	dropdownUserType("type");
-	echo "</td></tr>";
 	
 	echo "</table>";
 	echo "</form>\n";

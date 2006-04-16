@@ -485,7 +485,6 @@ global $cfg_glpi;
 		$name = $this->user->fields['name'];
 		$realname = $this->user->fields['realname'];
 		$password = md5($this->user->fields['password']);
-		$type = $this->user->fields['type'];
 		$language = $this->user->fields['language'];
 		$tracking_order = $this->user->fields['tracking_order'];
 
@@ -494,7 +493,6 @@ global $cfg_glpi;
 		$_SESSION["glpipass"] = $password;
 		$_SESSION["glpiname"] = $name;
 		$_SESSION["glpirealname"] = $realname;
-		$_SESSION["glpitype"] = $type;
 		$_SESSION["glpilanguage"] = $language;
 		$_SESSION["glpitracking_order"] = $tracking_order;
 		$_SESSION["glpiauthorisation"] = true;

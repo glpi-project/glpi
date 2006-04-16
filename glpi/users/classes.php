@@ -46,28 +46,11 @@ class User extends CommonDBTM {
 	$this->table="glpi_users";
 	$this->type=USER_TYPE;
 	
-	$this->fields["type"]="post-only";
-	$this->fields['can_assign_job'] = 'no';
 	$this->fields['tracking_order'] = 'no';
 	if (isset($cfg_glpi["default_language"]))
 		$this->fields['language'] = $cfg_glpi["default_language"];
   	else $this->fields['language'] = "english";
 
-/*	  $this->fields['ID'] = $ID;
-  	$this->fields['name'] = '';
-  	$this->fields['password'] = '';
-	  $this->fields['password_md5'] = '';
-  	$this->fields['email'] = '';
-  	$this->fields['location'] = 'NULL';
-  	$this->fields['phone'] = '';
-  	$this->fields['type'] = 'post-only';
-  	$this->fields['realname'] = '';
-  	$this->fields['can_assign_job'] = 'no';
-	$this->fields['tracking_order'] = 'no';
-	if (isset($cfg_glpi["default_language"]))
-		$this->fields['language'] = $cfg_glpi["default_language"];
-	else $this->fields['language'] = "english";
-*/
 }
 
 	function cleanDBonPurge($ID) {

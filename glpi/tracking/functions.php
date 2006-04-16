@@ -1616,7 +1616,7 @@ function showJobDetails ($ID){
 		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
 
 		// test if the user if authorized to view this job
-		if (strcmp($_SESSION["glpitype"],"post-only")==0&&$_SESSION["glpiID"]!=$job->fields["author"])
+		if (!haveRight("show_ticket","1")&&$_SESSION["glpiID"]!=$job->fields["author"])
 		   { echo "Warning !! ";return;}
 
 		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
