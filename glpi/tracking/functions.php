@@ -67,7 +67,7 @@ function showTrackingOnglets($target){
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
    		
-		 if (isNormal($_SESSION['glpitype'])){
+		 if ($_SESSION["glpiprofile"]["interface"]=="central"){
 				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID&onglet=1\">".$lang["job"][38]." $ID</a></li>";
 
 				display_plugin_headings($target,TRACKING_TYPE,"","");
@@ -75,7 +75,7 @@ function showTrackingOnglets($target){
 				echo "<li class='invisible'>&nbsp;</li>";
 				
 				// admin yes  
-				if (isAdmin($_SESSION['glpitype'])||$cfg_glpi["post_only_followup"]){
+				if (haveRight("comment_ticket","1")||haveRight("comment_all_ticket","1")){
 					echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></li>";
 				}
 		
@@ -88,7 +88,7 @@ function showTrackingOnglets($target){
 				$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
 				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
-		}elseif ($cfg_glpi["post_only_followup"]){
+		}elseif (haveRight("comment_ticket","1")){
 		
 			// Postonly could post followup in helpdesk area	
 			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
@@ -1599,6 +1599,8 @@ function showJobDetails ($ID){
 	$isadmin=isAdmin($_SESSION['glpitype']);
 	
 	if ($job->getfromDB($ID,1)) {
+
+		if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]) return false;
 
 		$author=new User();
 		$author->getFromDB($job->fields["author"]);

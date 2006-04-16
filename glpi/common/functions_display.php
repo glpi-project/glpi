@@ -786,28 +786,24 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 	echo "</form>\n";
 	echo "</td>\n";
 	
-	if ($item_type_output>0&&isNormal($_SESSION["glpitype"])){
-	echo "<td class='tab_bg_2' width='30%'>" ;
-	echo "<form method='GET' action=\"".$cfg_glpi["root_doc"]."/reports/dynamicReport.php\" target='_blank'>\n";
-	echo "<input type='hidden' name='item_type' value='$item_type_output'>";
-	$split=split("&amp;",$parameters);
-	//echo $parameters;
-	for ($i=0;$i<count($split);$i++){
-		$pos=strpos($split[$i],'=');
-		echo "<input type='hidden' name=\"".substr($split[$i],0,$pos)."\" value=\"".substr($split[$i],$pos+1)."\">";
-		}
-	echo "<select name='display_type'>";
-	echo "<option value='2'>".$lang["buttons"][27]."</option>";
-	echo "<option value='1'>".$lang["buttons"][28]."</option>";
-	echo "<option value='-2'>".$lang["buttons"][29]."</option>";
-	echo "<option value='-1'>".$lang["buttons"][30]."</option>";
-	echo "</select>";
-	echo "&nbsp;<input type='image' name='export'  src='".$HTMLRel."pics/export.png' title='".$lang["buttons"][31]."' value='".$lang["buttons"][31]."'>";
-	echo "</form>";
-	echo "</td>" ;
-	/*echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=1&amp;item_type=".$item_type_output."&amp;export_all=1\"><img src=\"".$HTMLRel."pics/slk.png\" alt='".$lang["buttons"][28]."' title='".$lang["buttons"][28]."'></a></td>";
-	echo "<td class='tab_bg_2'><a target='_blank' href=\"".$HTMLRel."reports/dynamicReport.php?$parameters&amp;display_type=2&amp;item_type=".$item_type_output."&amp;export_all=1\"><img src=\"".$HTMLRel."pics/pdf.png\" alt='".$lang["buttons"][27]."' title='".$lang["buttons"][27]."'></a></td>";
-	*/
+ 	if ($item_type_output>0&&$_SESSION["glpiprofile"]["interface"]=="central"){
+		echo "<td class='tab_bg_2' width='30%'>" ;
+		echo "<form method='GET' action=\"".$cfg_glpi["root_doc"]."/reports/dynamicReport.php\" target='_blank'>\n";
+		echo "<input type='hidden' name='item_type' value='$item_type_output'>";
+		$split=split("&amp;",$parameters);
+		for ($i=0;$i<count($split);$i++){
+			$pos=strpos($split[$i],'=');
+			echo "<input type='hidden' name=\"".substr($split[$i],0,$pos)."\" value=\"".substr($split[$i],$pos+1)."\">";
+			}
+		echo "<select name='display_type'>";
+		echo "<option value='2'>".$lang["buttons"][27]."</option>";
+		echo "<option value='1'>".$lang["buttons"][28]."</option>";
+		echo "<option value='-2'>".$lang["buttons"][29]."</option>";
+		echo "<option value='-1'>".$lang["buttons"][30]."</option>";
+		echo "</select>";
+		echo "&nbsp;<input type='image' name='export'  src='".$HTMLRel."pics/export.png' title='".$lang["buttons"][31]."' value='".$lang["buttons"][31]."'>";
+		echo "</form>";
+		echo "</td>" ;
 	}
 	
 	echo "<td  width='50%' align='center' class='tab_bg_2'><b>";

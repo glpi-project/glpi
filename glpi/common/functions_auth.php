@@ -356,7 +356,7 @@ function can_assign_job($name)
 *
 **/
 // TO BE DELETED
-function isNormal($authtype) {
+/*function isNormal($authtype) {
 	switch ($authtype){
 		case "normal" :
 		case "admin":
@@ -367,7 +367,7 @@ function isNormal($authtype) {
 			return false;
 		}
 }
-
+*/
 /**
 * Test if an user has the admin rights or higher.
 *
