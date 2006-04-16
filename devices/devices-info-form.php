@@ -59,26 +59,28 @@ $REFERER=preg_replace("/&/","&amp;",$REFERER);
 unset($_POST["referer"]);
 unset($tab["referer"]);
 
+checkRight("device","w");
+
 if (isset($_POST["add"])) {
-	checkRight("device","w");
+	
 	addDevice($_POST);
 	logEvent(0, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]." ".$_POST["designation"].".");
 	glpi_header($cfg_glpi["root_doc"]."/devices/index.php?device_type=".$_POST["device_type"]);
 }
 else if (isset($tab["delete"])) {
-	checkRight("device","w");
+
 	deleteDevice($tab);
 	logEvent($tab["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/devices/index.php?device_type=".$tab["device_type"]);
 }
 else if (isset($_POST["update"])) {
-	checkRight("device","w");
+
 	updateDevice($_POST);
 	logEvent($_POST["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']."&referer=$REFERER");
 }
 else {
-	checkRight("device","w");
+
 	commonHeader($lang["title"][30],$_SERVER["PHP_SELF"]);
 	showDevicesForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"]);
 	commonFooter();

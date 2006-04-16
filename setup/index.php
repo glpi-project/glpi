@@ -40,7 +40,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_setup.php");
 
-checkauthentication("admin");
+checkCentralAccess();
 
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
@@ -59,29 +59,48 @@ echo "<tr><th colspan='2'>".$lang["setup"][62]."</th></tr>";
 
 //echo "<tr><th align='center'>Donnees</th><th align='center'>Configuration</th></tr>";
 
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"setup-dropdowns.php\"><b>".$lang["setup"][0]."</b></a></td>";
-echo "<td align='center'><a href=\"setup-config.php?next=confgen\"><b>".$lang["setup"][70]."</b></a></td>";
-echo "</tr>";
+$config=array();
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."devices/\"><b>".$lang["setup"][222]."</b></a></td>";
-echo "<td align='center'><a href=\"setup-config.php?next=confdisplay\"><b>".$lang["setup"][119]."</b></a></td>";
-echo " </tr>";
-
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."typedocs/\"><b>".$lang["document"][7]."</b></a></td>";
-echo "<td align='center'><a href=\"setup-display.php\"><b>".$lang["setup"][250]."</b></a></td>";
-echo " </tr>";
-
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"".$HTMLRel."links/\"><b>".$lang["setup"][87]."</b></a></td>";
-echo "<td  align='center'><a href=\"setup-config.php?next=mailing\"><b>".$lang["setup"][68]."</b></a></td>";
-echo " </tr>";
-
-echo "<tr class='tab_bg_1'><td align='center'>";
+if (haveRight("config","w")){
+	$config["setup-config.php?next=confgen"]=$lang["setup"][70];
+	$config["setup-config.php?next=confdisplay"]=$lang["setup"][119];
+	$config["setup-config.php?next=mailing"]=$lang["setup"][68];
+	$config["setup-config.php?next=extauth"]=$lang["setup"][67];
+}
 if ($cfg_glpi["ocs_mode"])
-	echo "<a href=\"setup-config.php?next=ocsng\"><b>".$lang["setup"][134]."</b></a>";
-else echo "&nbsp;";
-echo "</td>";
-echo "<td  align='center'><a href=\"setup-config.php?next=extsources\"><b>".$lang["setup"][67]."</b></a></td>";
-echo "</tr>";
+	$config["setup-config.php?next=ocsng"]=$lang["setup"][134];
+
+$data=array();
+$data["setup-display.php"]=$lang["setup"][250];
+if (haveRight("dropdown","w")){
+	$data["setup-dropdown.php"]=$lang["setup"][0];
+}
+if (haveRight("device","w")){
+	$data[$HTMLRel."devices/"]=$lang["setup"][222];
+}
+if (haveRight("typedoc","r")){
+	$data[$HTMLRel."typedocs/"]=$lang["document"][7];
+}
+if (haveRight("link","r")){
+	$data[$HTMLRel."links/"]=$lang["setup"][87];
+}
+	
+echo "<tr class='tab_bg_1'><td>";
+if (count($data)>0){
+	echo "<table>";
+	foreach ($data as $page => $title)
+		echo "<tr><td><a href=\"$page\"><b>$title</b></a></td></tr>\n";
+	echo "</table>";
+} else echo "&nbsp;";
+echo "</td><td>";
+if (count($config)>0){
+	echo "<table>";
+	foreach ($config as $page => $title)
+		echo "<tr><td><a href=\"$page\"><b>$title</b></a></td></tr>\n";
+	echo "</table>";
+} else echo "&nbsp;";
+
+echo "</td></tr>";
 
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup-plugins.php\"><b>Plugins</b></a></td></tr>";
 
