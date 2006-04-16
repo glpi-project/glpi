@@ -57,11 +57,11 @@ include ($phproot . "/glpi/includes_cartridges.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
+checkTypeRight($_POST["device_type"],"w");
+
 commonHeader($lang["title"][42],$_SERVER["PHP_SELF"]);
 
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
-
-checkCommonItemRight($_POST["device_type"],"w");
 
 	switch($_POST["action"]){
 		case "delete":

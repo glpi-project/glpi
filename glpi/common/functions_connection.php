@@ -52,8 +52,9 @@ function showConnect($target,$ID,$type) {
 	// Is global connection ?
 	$global=0;
 	$ci=new CommonItem();
-	$ci->setType($type);
-	if ($ci->haveRight("r")){
+	if (haveTypeRight($type,"r")){
+		$canedit=false;
+		if (haveTypeRight($type,"w")) $canedit=true;
 		$ci->getFromDB($type,$ID);
 		$global=$ci->obj->fields['is_global'];
 		
@@ -74,7 +75,10 @@ function showConnect($target,$ID,$type) {
 					echo "</a>";
 					echo "</b></td>";
 					echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
-					echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["buttons"][10]."</a></b>";
+					if ($canedit)
+						echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["buttons"][10]."</a>";
+					else echo "&nbsp;";
+					echo "</b>";
 					}
 			}
 		} else {
@@ -82,14 +86,15 @@ function showConnect($target,$ID,$type) {
 			echo "<i>".$lang["connect"][1]."</i>";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'>";
-			echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='connect' value='connect'>";
-			echo "<input type='hidden' name='sID' value='$ID'>";
-			echo "<input type='hidden' name='device_type' value='$type'>";
-			dropdownConnect(COMPUTER_TYPE,"item");
-			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
-
-			echo "</form>";
+			if ($canedit){
+				echo "<form method='post' action=\"$target\">";
+				echo "<input type='hidden' name='connect' value='connect'>";
+				echo "<input type='hidden' name='sID' value='$ID'>";
+				echo "<input type='hidden' name='device_type' value='$type'>";
+				dropdownConnect(COMPUTER_TYPE,"item");
+				echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+				echo "</form>";
+			} else echo "&nbsp;";
 
 		}
 

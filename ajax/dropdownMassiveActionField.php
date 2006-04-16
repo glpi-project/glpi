@@ -39,7 +39,7 @@ include ($phproot."/glpi/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkCommonItemRight($_POST["device_type"],"w");
+checkTypeRight($_POST["device_type"],"w");
 
 if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
 	include ($phproot."/glpi/includes_search.php");

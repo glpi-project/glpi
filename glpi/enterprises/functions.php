@@ -38,11 +38,14 @@ include ("_relpos.php");
 
 function titleEnterprise(){
 
-         global  $lang,$HTMLRel;
-         
-         echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/entreprises.png\" alt='".$lang["financial"][25]."' title='".$lang["financial"][25]."'></td><td><a  class='icon_consol' href=\"enterprises-info-form.php\"><b>".$lang["financial"][25]."</b></a>";
-         echo "</td></tr></table></div>";
+	global  $lang,$HTMLRel;
+ 
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/entreprises.png\" alt='".$lang["financial"][25]."' title='".$lang["financial"][25]."'></td>";
+	if (haveRight("contact_enterprise","w")){
+		echo "<td><a  class='icon_consol' href=\"enterprises-info-form.php\"><b>".$lang["financial"][25]."</b></a></td>";
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][23]."</b></span></td>";
+	echo "</tr></table></div>";
 }
 
 
@@ -158,7 +161,8 @@ function showAssociatedContact($instID) {
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
 	if (!haveRight("contact_enterprise","r")) return false;
-
+	$canedit=false;
+	if (haveRight("contact_enterprise","w")) $canedit=true;
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent FROM glpi_contact_enterprise, glpi_contacts WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' order by glpi_contacts.name";
 
 	$result = $db->query($query);
@@ -182,23 +186,29 @@ function showAssociatedContact($instID) {
 	echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
 	echo "<td align='center'><a href='mailto:".$db->result($result, $i, "glpi_contacts.email")."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$db->result($result, $i, "glpi_contacts.type"))."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'>";
+	if ($canedit)
+		echo "<a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$lang["buttons"][6]."</b></a>";
+	else echo "&nbsp;";
+	echo "</td></tr>";
 	$i++;
 	}
 	
 	echo "</table><br>"    ;
+	if ($canedit){
+		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/enterprises/enterprises-info-form.php\">";
+		echo "<table  class='tab_cadre_fixe'>";
 	
-	 echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/enterprises/enterprises-info-form.php\">";
-	echo "<table  class='tab_cadre_fixe'>";
-	
-	echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
-	echo "<input type='hidden' name='eID' value='$instID'>";
+		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
+		echo "<input type='hidden' name='eID' value='$instID'>";
 		dropdown("glpi_contacts","cID");
-	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='submit' name='addcontact' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</td></tr>";
+		echo "</td><td align='center' class='tab_bg_2'>";
+		echo "<input type='submit' name='addcontact' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</td></tr>";
 	
-	echo "</table></form></div>"    ;
+		echo "</table></form>";
+	}
+	echo "</div>";
 	
 }
 

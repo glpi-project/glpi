@@ -45,15 +45,16 @@ include ("_relpos.php");
 *
 **/
 function titleComputers(){
-              //titre
-              
-        GLOBAL  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
 
-         echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/computer.png\" alt='".$lang["computers"][0]."' title='".$lang["computers"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".COMPUTER_TYPE."&amp;add=1\"><b>".$lang["computers"][0]."</b></a>";
-         echo "</td>";
-         echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".COMPUTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
-         echo "</tr></table></div>";
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/computer.png\" alt='".$lang["computers"][0]."' title='".$lang["computers"][0]."'></td>";
+	if (haveRight("computer","w")){
+		echo "<td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".COMPUTER_TYPE."&amp;add=1\"><b>".$lang["computers"][0]."</b></a>";
+		echo "</td>";
+		echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".COMPUTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][0]."</b></span></td>";
+	echo "</tr></table></div>";
 
 }
 
@@ -395,7 +396,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 **/
 function showConnections($target,$ID,$withtemplate='') {
 
-	GLOBAL $db,$cfg_glpi, $lang,$INFOFORM_PAGES;
+	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES;
 
 	
 	$state=new StateItem();
@@ -405,8 +406,7 @@ function showConnections($target,$ID,$withtemplate='') {
 
 	
 	foreach ($items as $type => $title){
-		$ci->setType($type);
-		if (!$ci->haveRight("r")) unset($items[$type]);
+		if (!$haveTypeRight($type,"r")) unset($items[$type]);
 			
 	}
 	if (count($items)){
@@ -422,6 +422,9 @@ function showConnections($target,$ID,$withtemplate='') {
 		echo "<tr class='tab_bg_1'>";
 	
 		foreach ($items as $type=>$title){
+			$canedit=false;
+			if (haveTypeRight($type,"w")) $canedit=true;
+	
 			echo "<td align='center'>";
 			$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
 			if ($result=$db->query($query)) {
@@ -441,7 +444,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
 
 						echo "</td>";
-						if(empty($withtemplate) || $withtemplate != 2) {
+						if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
 							echo "<td align='center'><a 	href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
 							echo $lang["buttons"][10];
 							echo "</b></a></td>";
@@ -466,7 +469,7 @@ function showConnections($target,$ID,$withtemplate='') {
 					}
 					echo "<br>";
 				}
-				if ($ci->haveRight("w")&&haveRight("computer","w"))
+				if (haveTypeRight("w"))
 				if(empty($withtemplate) || $withtemplate != 2) {
 					echo "<form method='post' action=\"$target\">";
 					echo "<input type='hidden' name='connect' value='connect'>";

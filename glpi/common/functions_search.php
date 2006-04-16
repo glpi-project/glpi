@@ -743,7 +743,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				printPager($start,$numrows,$target,$parameters,$type);
 
 			// Form to delete old item
-			$isadmin=isAdmin($_SESSION['glpitype']);
+			$isadmin=haveTypeRight($type,"w");
 			if ($isadmin&&$output_type==0){
 				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$cfg_glpi["root_doc"]."/common/massiveaction.php\">";
 			}
@@ -767,7 +767,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			echo displaySearchNewLine($output_type);
 			$header_num=1;
 			
-			if ($output_type==0)// HTML display - massive modif
+			if ($output_type==0&&$isadmin)// HTML display - massive modif
 				echo displaySearchHeaderItem($output_type,"",$header_num,"",0,$order);
 
 			// Display column Headers for toview items
@@ -830,7 +830,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo displaySearchNewLine($output_type);
 					
 
-				if ($output_type==0){// HTML display - massive modif
+				if ($output_type==0&&$isadmin){// HTML display - massive modif
 					$sel="";
 					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 					echo displaySearchItem($output_type,"<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>",$item_num,$row_num,0,"width='10'");
