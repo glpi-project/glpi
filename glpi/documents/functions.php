@@ -402,9 +402,9 @@ $result = $db->query($query);
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
-	if (!haveRight("document","r"))	return false;
+	if (!haveTypeRight($device_type,"r")&&$device_type!=KNOWBASE_TYPE)	return false;
 	$canedit=false;
-	if (haveRight("document","w")) $canedit=true;
+	if (haveTypeRight($device_type,"w")) $canedit=true;
 
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
 	
