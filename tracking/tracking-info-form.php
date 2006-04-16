@@ -53,12 +53,6 @@ include ($phproot . "/glpi/includes_phones.php");
 
 checkCentralAccess();
 
-/*if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
-{
-	postFollowups ($_POST["ID"],$_SESSION["glpiID"],$_POST["contents"]);
-	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["ID"]);
-}
-*/
 
 $fup=new Followup();
 $track=new Job();

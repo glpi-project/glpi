@@ -65,7 +65,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		unset($_POST["end_date"]);unset($_POST["end_hour"]);unset($_POST["end_min"]);
 		$item=$_POST["id_item"];
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
-		if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
+		if (haveRight("reservaration_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) 
 		if ($rr->update($_POST,$_SERVER["PHP_SELF"],$item))
 			glpi_header($cfg_glpi["root_doc"]."/reservation/index.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 	}
@@ -104,7 +104,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		for ($i=1;$i<=$times&&$ok;$i++){
 			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
 			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
-			if (isAdmin($_SESSION["glpitype"])||$_SESSION["glpiID"]==$_POST["id_user"]) 
+			if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) 
 			$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
 
 		}

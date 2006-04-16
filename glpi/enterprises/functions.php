@@ -161,8 +161,8 @@ function showAssociatedContact($instID) {
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
 	if (!haveRight("contact_enterprise","r")) return false;
-	$canedit=false;
-	if (haveRight("contact_enterprise","w")) $canedit=true;
+	$canedit=haveRight("contact_enterprise","w");
+
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent FROM glpi_contact_enterprise, glpi_contacts WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' order by glpi_contacts.name";
 
 	$result = $db->query($query);

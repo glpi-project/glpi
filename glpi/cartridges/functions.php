@@ -228,8 +228,7 @@ function showCartridges ($tID,$show_old=0) {
 	global $db,$cfg_glpi,$lang,$HTMLRel;
 	
 	if (!haveRight("cartridge","r")) return false;
-	$canedit=false;
-	if (haveRight("cartridge","w")) $canedit=true;
+	$canedit=haveRight("cartridge","w");
 	
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')";
 
@@ -456,8 +455,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
 	if (!haveRight("cartridge","r")) return false;
-	$canedit=false;
-	if (haveRight("cartridge","w")) $canedit=true;
+	$canedit=haveRight("cartridge","w");
 
 	$query = "SELECT glpi_cartridges_type.ID as tID, glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
 	if ($old==0)

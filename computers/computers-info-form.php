@@ -209,8 +209,8 @@ if (isset($_GET['onglet'])) {
 		}
 	}
 	} else {
-	if (haveRight("delete_ticket","1"))
-	if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
+
+	if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 		foreach ($_POST["todel"] as $key => $val){
 			if ($val==1) {
 				deleteTracking($key);

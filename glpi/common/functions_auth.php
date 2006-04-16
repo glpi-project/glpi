@@ -148,8 +148,8 @@ function checkSeveralRightsOr($modules) {
 	
 	$valid=false;
 	if (count($modules))
-	foreach ($modules as $mod => $right)
-	if (haveRight($mod,$right)) $valid=true;
+		foreach ($modules as $mod => $right)
+			if (haveRight($mod,$right)) $valid=true;
 
 	if (!$valid){
 		if (!$HEADER_LOADED){
@@ -381,7 +381,7 @@ function can_assign_job($name)
 *
 **/
 // TO BE DELETED
-function isAdmin($authtype) {
+/*function isAdmin($authtype) {
 	switch ($authtype){
 		case "admin":
 		case "super-admin":
@@ -391,6 +391,7 @@ function isAdmin($authtype) {
 			return false;
 		}
 }
+*/
 /**
 * Test if an user has the super-admin rights or higher.
 *

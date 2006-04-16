@@ -53,8 +53,8 @@ function showConnect($target,$ID,$type) {
 	$global=0;
 	$ci=new CommonItem();
 	if (haveTypeRight($type,"r")){
-		$canedit=false;
-		if (haveTypeRight($type,"w")) $canedit=true;
+		$canedit=haveTypeRight($type,"w");
+
 		$ci->getFromDB($type,$ID);
 		$global=$ci->obj->fields['is_global'];
 		
