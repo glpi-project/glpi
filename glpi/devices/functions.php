@@ -278,7 +278,9 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	} else if(empty($specificity_label)) echo "<td colspan='60'>&nbsp;</td>";
 	else $colspan=60;
 	
-	
+	$canedit=false;
+	if (haveRight("computer","w"))	
+		$canedit=true;
 	if(!empty($specificity_label)) {
 		
 		//Mise a jour des spécificitées
@@ -290,12 +292,15 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 
 			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='devicevalue_$compDevID' value=\"".$specif."\" size='$specificity_size' ></td>";
 			echo "<td align='center'>";
-			echo "<input type='image' name='update_device' value='$compDevID' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+			if ($canedit)
+				echo "<input type='image' name='update_device' value='$compDevID' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+			else echo "&nbsp;";
 			echo "</td>";
 
 			echo "<td>";
-
-			echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
+			if ($canedit)
+				echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
+			else echo "&nbsp;";
 			echo "</td>";
 
 		}
@@ -305,9 +310,10 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		if(!empty($withtemplate) && $withtemplate == 2) {
   		  echo "<td>&nbsp;</td>";
   		 } else {
-  		echo "<td>";
-
-			echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
+  			echo "<td>";
+			if ($canedit)
+				echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
+			else echo "&nbsp;";
 
   		echo "</td>";
   		 }

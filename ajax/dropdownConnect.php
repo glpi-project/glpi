@@ -39,7 +39,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkCommonItemRight($_POST["idtable"],"w");
+	checkTypeRight($_POST["idtable"],"w");
 
 	// Make a select box
 

@@ -46,10 +46,13 @@ include ("_relpos.php");
 *
 **/
 function titleContacts(){
-                GLOBAL  $lang,$HTMLRel;
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/contacts.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td><td><a  class='icon_consol' href=\"contacts-info-form.php?new=1\"><b>".$lang["financial"][24]."</b></a>";
-                echo "</td></tr></table></div>";
+	global  $lang,$HTMLRel;
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/contacts.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
+	if (haveRight("contact_enterprise","w")){
+		echo "<td><a  class='icon_consol' href=\"contacts-info-form.php?new=1\"><b>".$lang["financial"][24]."</b></a></td>";
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][22]."</b></span></td>";
+	echo "</tr></table></div>";
 }
 
 /**
@@ -191,7 +194,8 @@ function showEnterpriseContact($instID) {
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	
 	if (!haveRight("contact_enterprise","r")) return false;
-
+	$canedit=false;
+	if (haveRight("contact_enterprise","w")) $canedit=true;
     
 	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '$instID' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
@@ -223,17 +227,22 @@ function showEnterpriseContact($instID) {
 	echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 	echo "<td align='center'  width='100'>".$data["fax"]."</td>";
 	echo "<td align='center'>".$website."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'>";
+	if ($canedit) 
+		echo "<a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a>";
+	else echo "&nbsp;";
+	echo "</td></tr>";
 	}
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
+	if ($canedit){
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID");
 	
-	echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</div>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-	
-	echo "</tr>";
+		echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</div>";
+		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		echo "</tr>";
+	}
 	
 	echo "</table></div></form>"    ;
 	

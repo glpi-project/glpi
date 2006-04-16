@@ -49,6 +49,81 @@ else return false;
 }
 
 
+	/**
+	* Get The Type Name of the Object
+	*
+	* @return String: name of the object type in the current language
+	*/
+	function haveTypeRight ($type,$right){
+		global $lang;
+		
+		switch ($type){
+			case GENERAL_TYPE :
+				return true;;
+				break;
+			case COMPUTER_TYPE :
+				return haveRight("computer",$right);
+				break;
+			case NETWORKING_TYPE :
+				return haveRight("networking",$right);
+				break;
+			case PRINTER_TYPE :
+				return haveRight("printer",$right);
+				break;
+			case MONITOR_TYPE : 
+				return haveRight("monitor",$right);
+				break;
+			case PERIPHERAL_TYPE : 
+				return haveRight("peripheral",$right);
+				break;				
+			case PHONE_TYPE : 
+				return haveRight("phone",$right);
+				break;				
+			case SOFTWARE_TYPE : 
+			case LICENSE_TYPE : 
+				return haveRight("software",$right);
+				break;				
+			case CONTRACT_TYPE : 
+				return haveRight("contract_infocom",$right);
+				break;				
+			case ENTERPRISE_TYPE : 
+				return haveRight("contact_enterprise",$right);
+				break;
+			case CONTACT_TYPE : 
+				return haveRight("contact_enterprise",$right);
+				break;
+			case KNOWBASE_TYPE : 
+				return haveRight("knowbase",$right);
+				break;	
+			case USER_TYPE : 
+				return haveRight("user",$right);
+				break;	
+			case TRACKING_TYPE : 
+				return haveRight("show_ticket",$right);
+				break;	
+			case CARTRIDGE_TYPE : 
+				return haveRight("cartridge",$right);
+				break;
+			case CONSUMABLE_TYPE : 
+				return haveRight("consumable",$right);
+				break;					
+			case LICENSE_TYPE : 
+				return haveRight("software",$right);
+				break;					
+			case CARTRIDGE_ITEM_TYPE : 
+				return haveRight("cartridge",$right);
+				break;
+			case CONSUMABLE_ITEM_TYPE : 
+				return haveRight("consumable",$right);
+				break;					
+			case DOCUMENT_TYPE : 
+				return haveRight("document",$right);
+				break;					
+			}
+		return false;
+	}
+
+
 function checkRight($module,$right) {
 	global $lang,$HTMLRel,$HEADER_LOADED;
 
@@ -68,12 +143,10 @@ function checkRight($module,$right) {
 	}
 }
 
-function checkCommonItemRight($type,$right) {
+function checkTypeRight($type,$right) {
 	global $lang,$HTMLRel,$HEADER_LOADED;
 
-	$ci=new CommonItem();
-	$ci->setType($type);
-	if (!$ci->haveRight($right)){
+	if (!haveTypeRight($type,$right)){
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);

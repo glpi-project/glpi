@@ -42,7 +42,7 @@ include ($phproot . "/glpi/includes_setup.php");
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
-checkCommonItemRight($_GET["type"],"w");
+checkTypeRight($_GET["type"],"w");
 
 listTemplates($_GET["type"],$HTMLRel .$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
 

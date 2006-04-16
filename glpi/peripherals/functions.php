@@ -43,9 +43,12 @@ include ("_relpos.php");
 function titleperipherals(){
 	global  $lang,$HTMLRel;
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["peripherals"][0]."' title='".$lang["peripherals"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."&amp;add=1\"><b>".$lang["peripherals"][0]."</b></a>";
-	echo "</td>";
-	echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+	echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["peripherals"][0]."' title='".$lang["peripherals"][0]."'></td>";
+	if (haveRight("peripheral","w")){
+		echo "<td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."&amp;add=1\"><b>".$lang["peripherals"][0]."</b></a>";
+		echo "</td>";
+		echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".PERIPHERAL_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][16]."</b></span></td>";
 	echo "</tr></table></div>";
 }
 

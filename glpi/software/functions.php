@@ -45,9 +45,11 @@ function titleSoftware(){
          
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td>\n";
-	echo "<td><a class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
-	echo "</td>";
-	echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+	if (haveRight("software","w")){
+		echo "<td><a class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
+		echo "</td>";
+		echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][4]."</b></span></td>";
 	echo "</tr></table></div>";
 
 }
@@ -154,7 +156,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
-	if (!haveRight("cartridge","<")){
+	if (!haveRight("cartridge","w")){
 		echo "<tr>";
 
 		if ($template) {
@@ -222,6 +224,8 @@ function showLicenses ($sID,$show_computers=0) {
 	global $db,$cfg_glpi, $HTMLRel, $lang;
 	
 	if (!haveRight("software","r")) return false;
+	$canedit=false;
+	if (haveRight("software","w")) $canedit=true;
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
 	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='Y')";
@@ -249,7 +253,7 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "<tr><th>".$lang["common"][19]."</th><th>".$lang["software"][21]."</th><th>".$lang["software"][32]."</th><th>".$lang["software"][28]."</th><th>".$lang["software"][35]."</th>";
 			echo "<th>";
 			
-			if ($show_computers){
+			if ($show_computers&&$canedit){
 				echo $lang["buttons"][14]."&nbsp;";
 				echo "<select name='update_licenses' id='update_licenses_choice'>";
 				echo "<option value=''>-----</option>";
@@ -369,12 +373,13 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		echo $lang["software"][19].": $num_inst&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		}	
 		
+		
 		$restant=$num_tot-$num_inst;
 	 	  $query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
 			if ($result_new = $db->query($query_new)) {			
 				$IDdup=$db->result($result_new,0,0);
 			
-				if ($serial!="free"&&$serial!="global") {
+				if ($serial!="free"&&$serial!="global"&&$canedit) {
 					echo $lang["software"][20].":";
 					echo "<select name='stock_licenses_$IDdup'>";
 					if (max(0,$restant-100)>0) echo "<option value='0'>0</option>";
@@ -384,14 +389,13 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 					echo "<input type='hidden' name='nb_licenses_$IDdup' value='$restant'>";
 					echo "<input type='image' name='update_stock_licenses' value='$IDdup' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
 				}
-				if ($serial=="free"||$serial=="global"){
+				if (($serial=="free"||$serial=="global")){
 					// Display infocoms
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
 					showDisplayInfocomLink(LICENSE_TYPE,$IDdup,1);
 					echo "</strong>";
 				}
 			}
-
 
 		if ($restant!=0||$serial=="free"||$serial=="global") {
 			// Get first non installed license ID
@@ -408,22 +412,24 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 					}
 				}
 				if (!empty($ID)){
-				echo "</td><td align='center'>";
-				if ($serial=="free"||$serial=="global"){
-					echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?delete=delete&amp;ID=$ID\">";
-					echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
-					echo "</a></strong>";
-				}
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
-				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
-				echo "</a></strong>";
+					echo "</td><td align='center'>";
+					if ($canedit){
+						if (($serial=="free"||$serial=="global")){
+							echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?delete=delete&amp;ID=$ID\">";
+							echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
+							echo "</a></strong>";
+						}
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
+						echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
+						echo "</a></strong>";
+					} else echo "&nbsp;";
 				}
 				
 			}
 		}
 
 		// Add select all checkbox
-		if ($show_computers){
+		if ($show_computers&&$canedit){
 		if ($num_inst>0&&$serial!="free"&&$serial!="global"){
 			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$lang["search"][7].":";
 			$rand=mt_rand();
@@ -450,7 +456,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 		while ($data_inst=$db->fetch_array($result_inst)){
 			echo "<tr class='tab_bg_1".(($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]=='Y'?"_2":"")."'><td align='center'>";
 
-			if ($serial!="free"&&$serial!="global") 
+			if ($serial!="free"&&$serial!="global"&&$canedit) 
 			echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
 
 			echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
@@ -463,14 +469,19 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 			// delete
-			echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
-			echo "<img src=\"".$HTMLRel."pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
-			echo "</a>";
+			if ($canedit){
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
+				echo "<img src=\"".$HTMLRel."pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
+				echo "</a>";
+			}
 
 			if ($serial!="free"&&$serial!="global"){
-				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
-				echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
-				echo "</a></strong>";
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				if ($canedit){
+					echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
+					echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
+					echo "</a></strong>";
+				}
 				// Display infocoms
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
 				showDisplayInfocomLink(LICENSE_TYPE,$data_inst["lID"],1);
@@ -662,7 +673,7 @@ function updateLicense($input) {
 	}
 
 	if(!empty($updates)) {
-	
+		if ($updates)
 		$lic->updateInDB($updates);
 	}
 }
@@ -851,7 +862,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$result = $db->query($q);
 	$nb = $db->numrows($result);
 	
-	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0) {
+	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0||!haveRight("software","w")) {
 		echo "</table></div>";
 	} else {
 		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
@@ -902,7 +913,7 @@ function countInstallations($sID,$nohtml=0) {
 			$installed = getInstalledLicence($sID);
 		
 			// Get remaining
-			$remaining = $total - $installed;
+			$remaining = max(0,$total - $installed);
 
 			// Output
 			if (!$nohtml){

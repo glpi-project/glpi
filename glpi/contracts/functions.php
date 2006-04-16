@@ -46,11 +46,14 @@ include ("_relpos.php");
 **/
 function titleContract(){
 
-         global  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
          
-         echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/contracts.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td><td><a  class='icon_consol' href=\"contracts-info-form.php\"><b>".$lang["financial"][0]."</b></a>";
-         echo "</td></tr></table></div>";
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/contracts.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td>";
+	if (haveRight("contract_infocom","w")){
+		echo "<td><a  class='icon_consol' href=\"contracts-info-form.php\"><b>".$lang["financial"][0]."</b></a></td>";
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][25]."</b></span></td>";
+	echo "</tr></table></div>";
 }
 
 
@@ -326,7 +329,8 @@ function showDeviceContract($instID) {
 	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("contract_infocom","r")) return false;
-    
+	$canedit=false;
+    	if (haveRight("contract_infocom","w")) $canedit=true;
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
 
 	$result = $db->query($query);
@@ -343,32 +347,38 @@ function showDeviceContract($instID) {
 	$ci=new CommonItem;
 	while ($i < $number) {
 		$type=$db->result($result, $i, "device_type");
+		if (haveTypeRight($type,"r")){
+			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD  FROM glpi_contract_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device) WHERE glpi_contract_device.device_type='$type' AND glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".name";
+			$result_linked=$db->query($query);
+			if ($db->numrows($result_linked)){
+				$ci->setType($type);
+				while ($data=$db->fetch_assoc($result_linked)){
+					$ID="";
+					if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
-		$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD  FROM glpi_contract_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device) WHERE glpi_contract_device.device_type='$type' AND glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".name";
-		$result_linked=$db->query($query);
-		if ($db->numrows($result_linked)){
-			$ci->setType($type);
-			while ($data=$db->fetch_assoc($result_linked)){
-				$ID="";
-				if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-				$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
-
-				echo "<tr class='tab_bg_1'>";
-				echo "<td align='center'>".$ci->getType()."</td>";
-				echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
-				echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+					echo "<tr class='tab_bg_1'>";
+					echo "<td align='center'>".$ci->getType()."</td>";
+					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td align='center' class='tab_bg_2'>";
+					if ($canedit){
+						echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a>";
+					} else echo "&nbsp;";
+					echo "</td></tr>";
+				}
 			}
 		}
 	$i++;
 	}
-	echo "<tr class='tab_bg_1'><td colspan='2' align='right'>";
-	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
+	if ($canedit){
+		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>";
+		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item");
-	echo "</div></td><td><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "<input type='hidden' name='ID' value='$instID'>";
-	echo "</td>";
-	echo "</tr>";
-	
+		echo "</div></td><td><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "<input type='hidden' name='ID' value='$instID'>";
+		echo "</td>";
+		echo "</tr>";
+	}
 	echo "</table></div>"    ;
 	echo "</form>";
 	
@@ -428,7 +438,8 @@ function showEnterpriseContract($instID) {
 	global $db,$cfg_glpi, $lang,$HTMLRel,$cfg_glpi;
 
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
-    
+    	$canedit=false;
+	if (haveRight("contract_infocom","w")) $canedit=true;
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID";
 	$result = $db->query($query);
@@ -461,17 +472,22 @@ function showEnterpriseContract($instID) {
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
 	echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
 	echo "<td align='center'>".$website."</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'>";
+	if ($canedit)
+		echo "<a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a>";
+	else echo "&nbsp;";
+	echo "</td></tr>";
 	$i++;
 	}
- 	echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
-	echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
+	if ($canedit){
+	 	echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
+		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID");
-	echo "</div></td><td align='center'>";
-	echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
-	
-	echo "</tr>";
+		echo "</div></td><td align='center'>";
+		echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
+		echo "</tr>";
+	}
 	
 	echo "</table></div></form>"    ;
 	
@@ -698,7 +714,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
 	if (!haveRight("contract_infocom","r"))	return false;
-    
+	$canedit=false;
+	if (haveRight("contract_infocom","w"))	$canedit=true;
+
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
 
 	$result = $db->query($query);
@@ -733,14 +751,22 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];
 	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 	echo "</td>";
-
-	if ($withtemplate!=2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	
+	if ($withtemplate!=2) {
+		echo "<td align='center' class='tab_bg_2'>";
+		if ($canedit)
+			echo "<a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+		else echo "&nbsp;";
+		echo "</td>";
+		}
+	echo "</tr>";
 	$i++;
 	}
 	$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
 	$result = $db->query($q);
 	$nb = $db->numrows($result);
 	
+	if ($canedit)
 	if ($withtemplate!=2&&$nb>0){
 		echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 		echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
@@ -773,7 +799,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 function showContractAssociatedEnterprise($ID){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
-
+	if (!haveRight("contract_infocom","r")) return false;
+	$canedit=false;
+	if (haveRight("contract_infocom","w")) $canedit=true;
     
 	$query = "SELECT * FROM glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_enterprise = '$ID'";
 
@@ -810,22 +838,28 @@ function showContractAssociatedEnterprise($ID){
 	if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 	echo "</td>";
 
-	echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."contracts/contracts-info-form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	echo "<td align='center' class='tab_bg_2'>";
+	if ($canedit) 
+		echo "<a href='".$HTMLRel."contracts/contracts-info-form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+	else echo "&nbsp;";
+	echo "</td></tr>";
 	$i++;
 	}
-	$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
-	$result = $db->query($q);
-	$nb = $db->numrows($result);
+	if (haveRight("contract_infocom","w")){
+		$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
+		$result = $db->query($q);
+		$nb = $db->numrows($result);
 	
-	if ($nb>0){
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-		echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
-		dropdownContracts("conID");
-		echo "</div></td><td align='center'>";
-		echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td>";
+		if ($nb>0){
+			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
+			dropdownContracts("conID");
+			echo "</div></td><td align='center'>";
+			echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "</td>";
 		
-		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+			echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+		}
 	}
 	echo "</table></div>"    ;
 	echo "</form>";

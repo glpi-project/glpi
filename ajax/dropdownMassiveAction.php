@@ -39,7 +39,7 @@ include ($phproot."/glpi/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-	checkCommonItemRight($_POST["type"],"w");
+	checkTypeRight($_POST["type"],"w");
 
 	if (isset($_POST["action"])){
 		echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";

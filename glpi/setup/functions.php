@@ -919,9 +919,7 @@ function listTemplates($type,$target,$add=0) {
 
 	global $db,$cfg_glpi, $lang;
 
-	$ci=new CommonItem();
-	$ci->setType($type);
-	if (!$ci->haveRight("w")) return false;
+	if (!haveTypeRight($type,"w")) return false;
 		
 	switch ($type){
 	case COMPUTER_TYPE :

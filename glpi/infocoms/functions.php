@@ -54,7 +54,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		
 	echo "<br>";
 	if (!$ic->getfromDBforDevice($device_type,$dev_ID)){
-		if ($withtemplate!=2){
+		if (haveRight("contract_infocom","w")&&$withtemplate!=2){
 		echo "<div align='center'>";
 		echo "<b><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$lang["financial"][68]."</a></b><br>";
 		echo "</div>";
@@ -182,7 +182,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo $lang["common"][25].":	</td>";
 		echo "<td align='center' colspan='3'><textarea cols='80' $option rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
 		echo "</td></tr>";
-		if ($withtemplate!=2){
+		if (haveRight("contract_infocom","w")&&$withtemplate!=2){
 			echo "<tr>";
                 
 		        echo "<td class='tab_bg_2' colspan='2' align='center'>";
@@ -661,6 +661,8 @@ return " OR glpi_infocoms.num_immo LIKE '%".$contains."%' OR glpi_infocoms.num_c
 function showDisplayInfocomLink($device_type,$device_id,$update=0){
 global $db,$HTMLRel,$lang;
 
+if (!haveRight("contract_infocom","r")) return false;
+
 $query="SELECT COUNT(ID) FROM glpi_infocoms WHERE FK_device='$device_id' AND device_type='$device_type'";
 $add="add";
 $text=$lang["buttons"][8];
@@ -669,7 +671,7 @@ if ($db->result($result,0,0)>0) {
 	$add="";
 	$text=$lang["buttons"][23];
 }
-
+if (!empty($add)&&haveTypeRight($device_type,"w"))
 echo "<span onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
 }
 

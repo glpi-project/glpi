@@ -38,11 +38,14 @@ include ("_relpos.php");
 
 function titleDocument(){
 
-         global  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
          
-         echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td><td><a  class='icon_consol' href=\"documents-info-form.php\"><b>".$lang["document"][13]."</b></a>";
-         echo "</td></tr></table></div>";
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td>";
+	if (haveRight("document","w")){
+		echo "<td><a  class='icon_consol' href=\"documents-info-form.php\"><b>".$lang["document"][13]."</b></a></td>";
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][27]."</b></span></td>";
+	echo "</tr></table></div>";
 }
 
 function showDocumentForm ($target,$ID) {
@@ -312,6 +315,8 @@ function showDeviceDocument($instID,$search='') {
 	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("document","r"))	return false;
+	$canedit=false;
+	if (haveRight("document","w")) $canedit=true;
 
 	$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
 
@@ -329,7 +334,7 @@ function showDeviceDocument($instID,$search='') {
 	$ci=new CommonItem();
 	while ($i < $number) {
 		$type=$db->result($result, $i, "device_type");
-		if ($ci->haveRight("r")){
+		if (haveTypeRight($type,"r")){
 			$column="name";
 			if ($type==TRACKING_TYPE) $column="ID";
 
@@ -349,14 +354,18 @@ function showDeviceDocument($instID,$search='') {
 					echo "<td align='center'>".$ci->getType()."</td>";
 
 					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
-					echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+					echo "<td align='center' class='tab_bg_2'>";
+					if ($canedit){
+						echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a>";
+					} else echo "&nbsp;";
+					echo "</td></tr>";
 				}
 			}
 		}
 	$i++;
 	}
 	
-	if (!haveRight("document","w"))	{
+	if (haveRight("document","w"))	{
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	
 		echo "<input type='hidden' name='conID' value='$instID'>";
@@ -394,7 +403,9 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	if (!haveRight("document","r"))	return false;
-    
+	$canedit=false;
+	if (haveRight("document","w")) $canedit=true;
+
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
 	
 
@@ -440,11 +451,18 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$con->fields["rubrique"])."</td>";
 	echo "<td align='center'>".$con->fields["mime"]."</td>";
 
-	if ($withtemplate<2)echo "<td align='center' class='tab_bg_2'><a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+	if ($withtemplate<2) {
+		echo "<td align='center' class='tab_bg_2'>";
+		if ($canedit)
+			echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+		else echo "&nbsp;";
+			echo "</td>";
+	}
+	echo "</tr>";
 	$i++;
 	}
 	
-	if (isset($_SESSION["glpitype"])&&isAdmin($_SESSION["glpitype"])){
+	if ($canedit){
 		$q="SELECT * FROM glpi_docs WHERE deleted='N'";
 		$result = $db->query($q);
 		$nb = $db->numrows($result);

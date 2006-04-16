@@ -50,9 +50,8 @@ function titlePrinters(){
 		echo "<td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".PRINTER_TYPE."&amp;add=1\"><b>".$lang["printers"][0]."</b></a></td>";
 		echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".PRINTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
 		echo "</tr></table></div>";
-	}
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][2]."</b></span></td>";
 }
-
 
 function showPrintersForm ($target,$ID,$withtemplate='') {
 

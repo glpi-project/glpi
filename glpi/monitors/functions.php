@@ -38,12 +38,15 @@ include ("_relpos.php");
 
 
 function titleMonitors(){
-                global  $lang,$HTMLRel;
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/ecran.png\" alt='".$lang["monitors"][0]."' title='".$lang["monitors"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".MONITOR_TYPE."&amp;add=1\"><b>".$lang["monitors"][0]."</b></a>";
-                echo "</td>";
-                echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".MONITOR_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
-                echo "</tr></table></div>";
+		global  $lang,$HTMLRel;
+		echo "<div align='center'><table border='0'><tr><td>";
+		echo "<img src=\"".$HTMLRel."pics/ecran.png\" alt='".$lang["monitors"][0]."' title='".$lang["monitors"][0]."'></td>";
+		if (haveRight("monitor","w")){
+			echo "<td><a  class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".MONITOR_TYPE."&amp;add=1\"><b>".$lang["monitors"][0]."</b></a>";
+			echo "</td>";
+			echo "<td><a class='icon_consol' href='".$HTMLRel."setup/setup-templates.php?type=".MONITOR_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][3]."</b></span></td>";
+		echo "</tr></table></div>";
 }
 
 

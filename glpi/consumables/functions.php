@@ -46,12 +46,15 @@ include ("_relpos.php");
 **/
 function titleConsumable(){
 
-         GLOBAL  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
          
-         echo "<div align='center'><table border='0'><tr><td>";
-         echo "<a href='index.php'><img src=\"".$HTMLRel."pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></a></td><td><a  class='icon_consol' href=\"consumables-info-form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<a href='index.php'><img src=\"".$HTMLRel."pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></a></td>";
+	if (haveRight("consumable","w")){
+		echo "<td><a  class='icon_consol' href=\"consumables-info-form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
+	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][32]."</b></span></td>";
 	echo "<td><a class='icon_consol' href='index.php?synthese=yes'>".$lang["state"][11]."</a></td>";
-         echo "</tr></table></div>";
+	echo "</tr></table></div>";
 }
 
 
@@ -134,6 +137,7 @@ function showConsumableTypeForm ($target,$ID) {
 	echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ct->fields["comments"]."</textarea>";
 	echo "</td></tr>\n";
 	
+	if (haveRight("consumable","w"))
 	if (!$ID) {
 
 		echo "<tr>\n";
@@ -142,7 +146,6 @@ function showConsumableTypeForm ($target,$ID) {
 		echo "</td>";
 		echo "</tr>\n";
 
-		echo "</table></div></form>";
 
 	} else {
 
@@ -165,9 +168,9 @@ function showConsumableTypeForm ($target,$ID) {
 		echo "</td>";
 		echo "</tr>\n";
 
-		echo "</table></div></form>";
 		
 	}
+		echo "</table></div></form>";
 	
 	} else {
 	
@@ -227,6 +230,8 @@ function showConsumables ($tID,$show_old=0) {
 	global $db,$cfg_glpi,$lang,$HTMLRel;
 	
 	if (!haveRight("consumable","r")) return false;
+	$canedit=false;
+	if (haveRight("consumable","w")) $canedit=true;
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
 
@@ -235,9 +240,8 @@ function showConsumables ($tID,$show_old=0) {
 			$total=$db->result($result, 0, "COUNT");
 			$unused=getUnusedConsumablesNumber($tID);
 			$old=getOldConsumablesNumber($tID);
-			if (!$show_old){
+			if (!$show_old&&$canedit){
 				echo "<form method='post' action='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php'>";
-				//echo "<input type='hidden' name='tID' value='$tID'>";
 			}
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			if ($show_old==0){
@@ -260,13 +264,14 @@ function showConsumables ($tID,$show_old=0) {
 
 			echo "<th>".$lang["financial"][3]."</th>";
 			
-				if (!$show_old){
+				if (!$show_old&&$canedit){
 				echo "<th>";
 				dropdownAllUsers("id_user",0);
 				echo "<input type='submit' name='give' value='".$lang["consumables"][32]."'>";
 				echo "</th>";
 				} else {echo "<th>&nbsp;</th>";}
-				echo "<th>&nbsp;</th></tr>";
+				if ($canedit)
+					echo "<th>&nbsp;</th></tr>";
 			} else {
 
 				echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
@@ -316,13 +321,13 @@ $query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin W
 		echo "</td>";
 
 				
-		if ($show_old==0){
+		if ($show_old==0&&$canedit){
 			echo "<td align='center'>";
 			echo "<input type='checkbox' name='out[".$data["ID"]."]'>";
 			echo "</td>";
 		}
 
-		if ($show_old!=0){
+		if ($show_old!=0&&$canedit){
 			echo "<td align='center'>";
 			echo "<a href='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][37]."</a>";
 			echo "</td>";
@@ -336,7 +341,7 @@ $query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin W
 	}	
 	}	
 echo "</table></div>\n\n";
-if (!$show_old)
+if (!$show_old&&$canedit)
 	echo "</form>";
 }
 
