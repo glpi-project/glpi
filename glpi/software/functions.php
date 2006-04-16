@@ -224,8 +224,7 @@ function showLicenses ($sID,$show_computers=0) {
 	global $db,$cfg_glpi, $HTMLRel, $lang;
 	
 	if (!haveRight("software","r")) return false;
-	$canedit=false;
-	if (haveRight("software","w")) $canedit=true;
+	$canedit=haveRight("software","w");
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
 	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='Y')";

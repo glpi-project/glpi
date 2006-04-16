@@ -329,8 +329,8 @@ function showDeviceContract($instID) {
 	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("contract_infocom","r")) return false;
-	$canedit=false;
-    	if (haveRight("contract_infocom","w")) $canedit=true;
+	$canedit=haveRight("contract_infocom","w");
+
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
 
 	$result = $db->query($query);
@@ -438,8 +438,8 @@ function showEnterpriseContract($instID) {
 	global $db,$cfg_glpi, $lang,$HTMLRel,$cfg_glpi;
 
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
-    	$canedit=false;
-	if (haveRight("contract_infocom","w")) $canedit=true;
+    	$canedit=haveRight("contract_infocom","w");
+
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID";
 	$result = $db->query($query);
@@ -714,8 +714,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
 	if (!haveRight("contract_infocom","r")||!haveTypeRight($device_type,"r"))	return false;
-	$canedit=false;
-	if (haveTypeRight($device_type,"w"))	$canedit=true;
+	$canedit=haveTypeRight($device_type,"w");
 
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
 
@@ -800,8 +799,7 @@ function showContractAssociatedEnterprise($ID){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r")) return false;
-	$canedit=false;
-	if (haveRight("contract_infocom","w")) $canedit=true;
+	$canedit=haveRight("contract_infocom","w");
     
 	$query = "SELECT * FROM glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_enterprise = '$ID'";
 

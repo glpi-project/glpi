@@ -230,8 +230,7 @@ function showConsumables ($tID,$show_old=0) {
 	global $db,$cfg_glpi,$lang,$HTMLRel;
 	
 	if (!haveRight("consumable","r")) return false;
-	$canedit=false;
-	if (haveRight("consumable","w")) $canedit=true;
+	$canedit=haveRight("consumable","w");
 
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
 

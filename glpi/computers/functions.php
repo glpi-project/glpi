@@ -422,8 +422,7 @@ function showConnections($target,$ID,$withtemplate='') {
 		echo "<tr class='tab_bg_1'>";
 	
 		foreach ($items as $type=>$title){
-			$canedit=false;
-			if (haveTypeRight($type,"w")) $canedit=true;
+			$canedit=haveTypeRight($type,"w");
 	
 			echo "<td align='center'>";
 			$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";

@@ -280,9 +280,10 @@ function showOldJobListForItem($username,$item_type,$item) {
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 		
 	if (!haveRight("show_ticket","1")) return false;
+	$candelete=haveRight("delete_ticket","1");
 
 	// Form to delete old item
-	if (isAdmin($_SESSION["glpitype"])){
+	if ($candelete){
 		echo "<form method='post' action=\"".$_SERVER["PHP_SELF"]."?ID=$item\" name='oldTrackingForm' id='oldTrackingForm'>";
 		echo "<input type='hidden' name='ID' value='$item'>";
 		}
@@ -318,7 +319,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 
 		echo "</table></div>";
 
-		if (isAdmin($_SESSION["glpitype"])){
+		if ($candelete){
 		echo "<br><div align='center'>";
 		
 		echo "<table class ='delete-old-job' cellpadding='5' width='950'>";
@@ -345,7 +346,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_ty
 	}
 
 	// End form for delete item
-	if (isAdmin($_SESSION["glpitype"]))
+	if ($candelete)
 	echo "</form>";
 
 }
@@ -425,7 +426,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 	
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
-	$isadmin=isAdmin($_SESSION['glpitype']);
+	$candelete=haveRight("delete_ticket","1");
 	$viewusers=haveRight("user","r");
 	$align="align='center'";
 	$align_desc="align='left'";
@@ -446,7 +447,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		$first_col.="<br><img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
 		else $first_col.=" - ".getStatusName($job->fields["status"]);
 
-		if ($isadmin&&$output_type==0&&ereg("old_",$job->fields["status"])){
+		if ($candelete&&$output_type==0&&ereg("old_",$job->fields["status"])){
 			$sel="";
 			if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 			$first_col.="<input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
@@ -566,7 +567,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		if ($_SESSION["glpiprofile"]["interface"]=="central")
 		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		else
-		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups($isadmin).")";
+		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
 
 		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$align." width='40'");
 
@@ -1060,12 +1061,11 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	// are listed.
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
-		
+	
+	$candelete=haveRight("delete_ticket","1");
+
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
-	$isadmin=isAdmin($_SESSION['glpitype']);
-	
-	
 	// Reduce computer list
 	if ($computers_search){
 	// Build query
@@ -1226,7 +1226,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			$nbcols=9;
 			
 			// Form to delete old item
-			if ($isadmin&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
+			if ($candelete&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
 			echo "<form method='post' id='TrackingForm' name='TrackingForm' action=\"$target\">";
 			}
 
@@ -1249,7 +1249,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			echo displaySearchFooter($output_type);
 
 			// Delete selected item
-			if ($isadmin&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
+			if ($candelete&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='900'>";
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
@@ -1471,8 +1471,14 @@ function updateTracking($input){
 		}
 	}
 
-	if (!isAdmin($_SESSION['glpitype'])&&can_assign_job($_SESSION["glpiname"])){
-		$updates=array_intersect($updates,array("assign","assign_ent"));
+	if (!haveRight("update_ticket","1")){
+		if (haveRight("assign_ticket","1"))
+			$updates=array_intersect($updates,array("assign","assign_ent"));
+		else if (haveRight("steal_ticket","1")){
+			if ($input["assign"]==$_SESSION["glpiID"])
+				$updates=array_intersect($updates,array("assign"));
+			else $updates=array();
+		}
 	}
 	
 	// Update Job
@@ -1596,8 +1602,8 @@ function showJobDetails ($ID){
 	global $db,$cfg_glpi,$lang,$HTMLRel;
 	$job=new Job();
 	
-	$isadmin=isAdmin($_SESSION['glpitype']);
-	
+	$canupdate=haveRight("update_ticket","1");
+
 	if ($job->getfromDB($ID,1)) {
 
 		if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]) return false;
@@ -1637,28 +1643,28 @@ function showJobDetails ($ID){
 		echo "<table cellpadding='3'>";
 		echo "<tr class='tab_bg_2'><td align='right'>";
 		echo $lang["joblist"][0].":</td><td>";
-		if ($isadmin)
+		if ($canupdate)
 			dropdownStatus("status",$job->fields["status"]);
 		else echo getStatusName($job->fields["status"]);
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
 		echo $lang["joblist"][3].":</td><td>";
-		if ($isadmin)
+		if ($canupdate)
 			dropdownAllUsers("author",$job->fields["author"]);
 		else echo $author->getName();
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
 		echo $lang["joblist"][2].":</td><td>";
-		if ($isadmin)
+		if ($canupdate)
 			dropdownPriority("priority",$job->fields["priority"]);
 		else echo getPriorityName($job->fields["priority"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>";
 		echo $lang["tracking"][20].":</td><td>";
-		if ($isadmin)
+		if ($canupdate)
 			dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
 		else echo getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
 		echo "</td></tr>";
@@ -1670,7 +1676,7 @@ function showJobDetails ($ID){
 
 		echo "<table border='0'><tr><td align='right'>";
 		echo $lang["common"][1].":</td><td>";
-		if ($isadmin){
+		if ($canupdate){
 			echo $item->getType()." - ".$item->getLink()."<br>";
 			dropdownAllItems("item",0);
 			}
@@ -1682,22 +1688,23 @@ function showJobDetails ($ID){
 		echo "<tr><td align='right'>";
 		echo $lang["job"][5].":</td><td>&nbsp;</td></tr>";
 		
-		if ($isadmin||(can_assign_job($_SESSION["glpiname"])&&$_SESSION["glpitype"]!="post-only")){
+		if ($canupdate||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
 			echo "<tr><td align='right'>";
 			echo $lang["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"]);
-			echo "</td></tr>";
-
-			echo "<tr><td align='right'>";
-			echo $lang["job"][28].":</td><td>";
-			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"]);
 			echo "</td></tr>";
 		} else {
                        echo "<tr><td align='right'>";
                        echo $lang["job"][27].":</td><td>";
                        echo getUserName($job->fields["assign"]);
                        echo "</td></tr>";
-
+		}
+		if ($canupdate||haveRight("assign_ticket","1")){
+			echo "<tr><td align='right'>";
+			echo $lang["job"][28].":</td><td>";
+			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"]);
+			echo "</td></tr>";
+		} else {
                        echo "<tr><td align='right'>";
                        echo $lang["job"][28].":</td><td>";
                        echo getDropdownName("glpi_enterprises",$job->fields["assign_ent"]);
@@ -1719,7 +1726,7 @@ function showJobDetails ($ID){
 		// Troisi�e Colonne
 		echo "<td valign='top' width='20%'>";
 
-		if($isadmin){  // admin = oui on affiche les couts liés à l'interventions
+		if(haveRight("contract_infocom","r")){  // admin = oui on affiche les couts liés à l'interventions
 			echo "<table border='0'>";
 			if ($job->fields["realtime"]>0){
 						echo "<tr><td align='right'>";
@@ -1764,7 +1771,7 @@ function showJobDetails ($ID){
 		echo "<tr  class='tab_bg_2'><td width='15%'>".$lang["joblist"][6]."<br><br></td>";
 		echo "<td  width='85%' align='left'>";
 
-		if ($isadmin){ // Admin =oui on autorise la modification de la description
+		if ($canupdate){ // Admin =oui on autorise la modification de la description
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
@@ -1796,7 +1803,7 @@ function showJobDetails ($ID){
 		if ($cfg_glpi["mailing"]==1){
 			echo "<table><tr><td align='right'>";
 			echo $lang["job"][19].":</td><td>";
-			if ($isadmin){
+			if ($canupdate){
 				echo "<select name='emailupdates'>";
 				echo "<option value='no'>".$lang["choice"][0]."</option>";
 				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$lang["choice"][1]."</option>";
@@ -1810,7 +1817,7 @@ function showJobDetails ($ID){
 				echo "<tr><td align='right'>";
 				echo $lang["joblist"][27].":";
 				echo "</td><td>";
-				if ($isadmin){
+				if ($canupdate){
 					autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15);
 
 						if (!empty($job->fields["uemail"]))
@@ -1827,7 +1834,7 @@ function showJobDetails ($ID){
 
 		
 		// File associated ?
-		if ($isadmin){
+		if ($canupdate){
 
 			$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->ID."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
 			$result2 = $db->query($query2);
@@ -1858,7 +1865,7 @@ function showJobDetails ($ID){
 
 			echo "</td></tr>";
 		// Troisi�e Ligne
-		if ($isadmin||(can_assign_job($_SESSION["glpiname"])&&$_SESSION["glpitype"]!="post-only")){
+		if ($canupdate||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}
@@ -1884,11 +1891,11 @@ function showFollowupsSummary($tID){
 	global $db,$lang,$cfg_glpi,$HTMLRel;
 	
 
-	$isadmin=isAdmin($_SESSION['glpitype']);
 	// Display existing Followups
+	$showprivate=haveRight("show_full_ticket","1");
 
 	$RESTRICT="";
-	if (!$isadmin)  $RESTRICT=" AND private='0' ";
+	if (!$showprivate)  $RESTRICT=" AND private='0' ";
 
 	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
 	$result=$db->query($query);
@@ -1921,7 +1928,7 @@ function showFollowupsSummary($tID){
 
 		echo "<table class='tab_cadrehov_pointer'>";
 		echo "<tr><th>&nbsp;</th><th>".$lang["common"][27]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th>";
-		if ($isadmin)
+		if ($showprivate)
 			echo "<th>".$lang["job"][30]."</th>";
 		echo "</tr>";
 		while ($data=$db->fetch_array($result)){
@@ -1959,7 +1966,7 @@ function showFollowupsSummary($tID){
 			echo "</td>";
 			
 			echo "<td>".getUserName($data["author"])."</td>";
-			if ($isadmin){
+			if ($showprivate){
 				echo "<td>";
 				if ($data["private"])
 					echo $lang["choice"][1];
@@ -1980,7 +1987,7 @@ function showAddFollowupForm($tID){
 	
 	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
 
-	$isadmin=haveRight("comment_all_ticket","1");
+	$commentall=haveRight("comment_all_ticket","1");
 	if ($_SESSION["glpiprofile"]["interface"]=="central"){
 		$target=$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php";
 	} else {
@@ -1994,7 +2001,7 @@ function showAddFollowupForm($tID){
 	echo $lang["job"][29];
 	echo "</th></tr>";
 	
-	if ($isadmin){
+	if ($commentall){
 		$width_left=$width_right="50%";
 		$cols=50;
 	} else {
@@ -2014,15 +2021,7 @@ function showAddFollowupForm($tID){
 	echo "<td width='$width_right' valign='top'>";
 	echo "<table width='100%'>";
 
-	if ($isadmin){
-/*		echo "<tr>";
-		echo "<td>".$lang["joblist"][3].":</td>";
-		echo "<td>";
-		dropdownUsers("author",$_SESSION["glpiID"]);
-		echo "</td>";
-		echo "</tr>";
-*/	
-
+	if ($commentall){
 		echo "<tr>";
 		echo "<td>".$lang["job"][30].":</td>";
 		echo "<td>";
@@ -2068,7 +2067,7 @@ function showAddFollowupForm($tID){
 		echo "<td align='center'>";
 		echo "<input type='submit' name='add' value='".$lang["buttons"][8]."' class='submit'>";
 		echo "</td>";
-	if ($isadmin){
+	if ($commentall){
 		echo "<td align='center'>";
 		echo "<input type='submit' name='add_close' value='".$lang["buttons"][26]."' class='submit'>";
 		echo "</td>";
@@ -2080,9 +2079,6 @@ function showAddFollowupForm($tID){
 		echo "</td></tr>";
 		echo "</table>";
 		echo "<input type='hidden' name='tracking' value='$tID'>";
-		if (!$isadmin){
-			echo "<input type='hidden' name='author' value='".$_SESSION["glpiID"]."'>";
-		}
 		echo "</form></div>";
 	
 }
@@ -2094,12 +2090,9 @@ function showUpdateFollowupForm($ID){
 	
 	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
 
-	$isadmin=haveRight("comment_all_ticket","1");
+	$commentall=haveRight("comment_all_ticket","1");
 
 	// Display existing Followups
-
-	$RESTRICT="";
-	if (!$isadmin)  $RESTRICT=" AND private='0' ";
 
 	$query = "SELECT * FROM glpi_followups WHERE (ID = $ID)";
 	$result=$db->query($query);
@@ -2121,7 +2114,7 @@ function showUpdateFollowupForm($ID){
 			echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["common"][27].":<br>".convDateTime($data["date"])."</td>";
 			echo "<td width='90%'>";
 			
-			if ($isadmin){
+			if ($commentall){
 				echo "<textarea name='contents' cols='50' rows='6'>".$data["contents"]."</textarea>";
 			} else echo nl2br($data["contents"]);
 			
@@ -2133,17 +2126,8 @@ function showUpdateFollowupForm($ID){
 			echo "<td width='50%' valign='top'>";
 			echo "<table width='100%'>";
 
-/*			echo "<tr>";
-			echo "<td>".$lang["joblist"][3].":</td>";
-			echo "<td>";
-			if ($isadmin)
-				dropdownUsers("author",$data["author"]);
-			else echo getUserName($data["author"]);
-			echo "</td>";
-			echo "</tr>";
-*/
 
-			if ($isadmin){
+			if ($commentall){
 				echo "<tr>";
 				echo "<td>".$lang["job"][30].":</td>";
 				echo "<td>";
@@ -2161,7 +2145,7 @@ function showUpdateFollowupForm($ID){
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
 			
-			if ($isadmin){
+			if ($commmentall){
 	
 				echo "<select name='hour'>";
 				for ($i=0;$i<100;$i++){
@@ -2190,13 +2174,13 @@ function showUpdateFollowupForm($ID){
 			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 			$result2=$db->query($query2);
 			if ($db->numrows($result2)==0)
-				if ($isadmin)
+				if ($commentall)
 					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$lang["buttons"][8]."</a>";
 				else echo $lang["job"][32];	
 			else {
 				$data2=$db->fetch_array($result2);
 				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
-				if ($isadmin)
+				if ($commentall)
 					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$HTMLRel."pics/edit.png'></a>";
 					
 			}
@@ -2204,7 +2188,7 @@ function showUpdateFollowupForm($ID){
 			echo "</td>";
 			echo "</tr>";
 
-			if ($isadmin){
+			if ($commentall){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center' colspan='2'>";
 				echo "<table width='100%'><tr><td align='center'>";
@@ -2221,7 +2205,7 @@ function showUpdateFollowupForm($ID){
 			echo "</td></tr>";
 	
 			echo "</table>";
-			if ($isadmin){
+			if ($commentall){
 				echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 				echo "<input type='hidden' name='tracking' value='".$data["tracking"]."'>";
 				echo "</form>";

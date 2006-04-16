@@ -482,7 +482,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	echo "<td>";
 	echo "<b>".$r->getType()." - ".$r->getName()."</b>";
     echo "</td></tr>";
-	if (!isAdmin($_SESSION["glpitype"]))
+	if (!haveRight("reservation_central","w"))
 	echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
 	else {
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][31].":	</td>";
@@ -654,7 +654,7 @@ function printReservationItem($target,$ID,$date){
 					$modif_end="";
 					$comment="";
 					$rand=mt_rand();
-					if ($_SESSION["glpiID"]==$user->fields["ID"]||isAdmin($_SESSION["glpitype"])){
+					if ($_SESSION["glpiID"]==$user->fields["ID"]||haveRight("reservation_central","r")){
 						$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;item=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
 						$modif_end="</a>";
 						$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";

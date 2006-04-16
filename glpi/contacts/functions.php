@@ -194,8 +194,7 @@ function showEnterpriseContact($instID) {
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	
 	if (!haveRight("contact_enterprise","r")) return false;
-	$canedit=false;
-	if (haveRight("contact_enterprise","w")) $canedit=true;
+	$canedit=haveRight("contact_enterprise","w");
     
 	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '$instID' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";

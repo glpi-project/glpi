@@ -189,7 +189,7 @@ function add($input,$target,$nomail=0){
 
 		if ($this->getfromDB($ID)){
 
-			if (isset($this->fields["id_assign"])&&($this->fields["id_assign"]==$_SESSION["glpiID"]||isAdmin($_SESSION["glpitype"]))){
+			if (isset($this->fields["id_assign"])&&($this->fields["id_assign"]==$_SESSION["glpiID"]||haveRight("comment_all_ticket","1"))){
 				// Auto update realtime
 				$fup=new Followup();
 				$fup->getFromDB($this->fields["id_followup"]);

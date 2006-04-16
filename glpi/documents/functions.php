@@ -315,8 +315,7 @@ function showDeviceDocument($instID,$search='') {
 	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("document","r"))	return false;
-	$canedit=false;
-	if (haveRight("document","w")) $canedit=true;
+	$canedit=haveRight("document","w");
 
 	$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
 
@@ -403,8 +402,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	if (!haveTypeRight($device_type,"r")&&$device_type!=KNOWBASE_TYPE)	return false;
-	$canedit=false;
-	if (haveTypeRight($device_type,"w")) $canedit=true;
+	$canedit=haveTypeRight($device_type,"w");
 
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
 	

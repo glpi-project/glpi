@@ -134,7 +134,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "<b>".$j->computername."</b>";
 	echo "</td></tr>";
 
-	if (!isAdmin($_SESSION["glpitype"]))
+	if (!haveRight("comment_all_ticket","1"))
 	echo "<input type='hidden' name='id_assign' value='".$_SESSION["glpiID"]."'>";
 	else {
 	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";

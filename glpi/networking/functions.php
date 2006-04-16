@@ -340,8 +340,8 @@ function showPorts ($device,$device_type,$withtemplate='') {
 function showPortVLAN($ID,$withtemplate,$referer=''){
 global $db,$HTMLRel,$lang;
 
-$canedit=false;
-if (haveRight("networking","w")) $canedit=true;
+$canedit=haveRight("networking","w");
+
 echo "<table cellpadding='0' cellspacing='0'>";
 
 $query="SELECT * from glpi_networking_vlan WHERE FK_port='$ID'";
@@ -583,8 +583,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 	global $cfg_glpi, $lang,$INFOFORM_PAGES;
 
 	if (!haveTypeRight($type,"r")) return false;
-	$canedit=false;
-	if (haveRight("networking","w")) $canedit=true;
+	$canedit=haveRight("networking","w");
 
 	$contact = new Netport;
 	$netport = new Netport;

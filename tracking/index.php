@@ -114,7 +114,7 @@ if ($tab["enddate1"]!="0000-00-00"&&$tab["enddate2"]!="0000-00-00"&&strcmp($tab[
 	$tab["enddate2"]=$tmp;
 }
 
-if (isAdmin($_SESSION["glpitype"])&&isset($_POST["delete"])&&!empty($_POST["todel"])){
+if (haveRight("delete_ticket","1")&&isset($_POST["delete"])&&!empty($_POST["todel"])){
 	foreach ($_POST["todel"] as $key => $val){
 		if ($val==1) {
 			deleteTracking($key);
