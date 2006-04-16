@@ -1454,14 +1454,10 @@ switch ($field){
 		break;
 	case "glpi_type_docs.name" :		
 		$type=TYPEDOC_TYPE;
-		$isadmin=isNormal($_SESSION["glpitype"]);
-		if ($isadmin)
-			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		else $out="";
+		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 		$out.= $data["ITEM_$num"];
-		if ($isadmin && ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"]))) $out.= " (".$data["ID"].")";
-		if ($isadmin)
-			$out.= "</a>";
+		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		$out.= "</a>";
 		return $out;
 		break;
 	case "glpi_links.name" :		

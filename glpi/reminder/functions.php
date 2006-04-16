@@ -53,7 +53,7 @@ function showReminderForm ($target,$ID) {
 	
 	global $cfg_glpi,$lang;
 	
-	$issuperadmin=isSuperAdmin($_SESSION['glpitype']);
+	$issuperadmin=haveRight("reminder_public","w");
 	$author=$_SESSION['glpiID'];
 		
 	$remind = new Reminder;

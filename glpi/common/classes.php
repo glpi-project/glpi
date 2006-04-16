@@ -384,7 +384,7 @@ class CommonDBTM {
 	*@return integer the new ID of the added item
 	*
 	**/
-	// specific ones : document, reservationresa , user, planningtracking, followup
+	// specific ones : document, reservationresa , planningtracking, followup
 	function add($input) {
 
 		// dump status
@@ -426,37 +426,37 @@ class CommonDBTM {
 	*@return Nothing (call to the class member)
 	*
 	**/
-	// specific ones : document, reservationresa, user, planningtracking
+	// specific ones : document, reservationresa, planningtracking
 	function update($input,$history=1) {
 		
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
-		$this->getFromDB($input["ID"]);
+		if ($this->getFromDB($input["ID"])){
 
-		// Fill the update-array with changes
-		$x=0;
-		$updates=array();
-		foreach ($input as $key => $val) {
-			if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
-				// Debut logs
-				if ($this->dohistory&&$history)
-					constructHistory($input["ID"],$this->type,$key,$this->fields[$key],$input[$key]);
-				// Fin des logs
+			// Fill the update-array with changes
+			$x=0;
+			$updates=array();
+			foreach ($input as $key => $val) {
+				if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
+					// Debut logs
+					if ($this->dohistory&&$history)
+						constructHistory($input["ID"],$this->type,$key,$this->fields[$key],$input[$key]);
+					// Fin des logs
 
-				$this->fields[$key] = $input[$key];
-				$updates[$x] = $key;
-				$x++;
+					$this->fields[$key] = $input[$key];
+					$updates[$x] = $key;
+					$x++;
+				}
 			}
+
+			if(count($updates)){
+				$this->updateInDB($updates);
+			} 
+
+			$this->post_updateItem($input,$updates,$history);
+
+			do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 		}
-
-		if(count($updates)){
-			$this->updateInDB($updates);
-			
-		} 
-
-		$this->post_updateItem($input,$updates,$history);
-
-		do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 	}
 
 	function prepareInputForUpdate($input) {
