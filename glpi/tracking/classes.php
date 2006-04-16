@@ -391,7 +391,14 @@ class Followup  extends CommonDBTM {
 	function add($input,$type="followup"){
 		global $cfg_glpi;
 
-		$isadmin=isAdmin($_SESSION['glpitype']);
+		$isadmin=haveRight("comment_all_ticket","1");
+
+		$job=new Job;
+		$job->getFromDB($input["tracking"],0);
+
+		// Security to add unauthorized followups
+		if (!$isadmin&&$job->fields["author"]!=$_SESSION["glpiID"]) return;
+
 		$close=0;
 		unset($input["add"]);
 	
@@ -419,9 +426,6 @@ class Followup  extends CommonDBTM {
 			}
 		}
 		$newID=$this->addToDB();	
-
-		$job=new Job;
-		$job->getFromDB($input["tracking"],0);
 
 		if ($isadmin&&$type!="update"&&$type!="finish"){
 			if (isset($plan)){

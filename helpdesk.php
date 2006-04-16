@@ -55,7 +55,7 @@ include ($phproot . "/glpi/includes_phones.php");
 
 // Redirect management
 if (isset($_GET['redirect'])){
-	checkAuthentication("post-only");
+	checkHelpdeskAccess();
 	list($type,$ID)=split("_",$_GET["redirect"]);
 	glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=$ID");
 }
@@ -63,11 +63,11 @@ if (isset($_GET['redirect'])){
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 {
 
-	checkAuthentication("post-only");
+	checkHelpdeskAccess();
 	//*******************
 	// Affichage interventions en cours
 	//******************
-	if (isset($_POST['add'])&&$cfg_glpi["post_only_followup"]) {
+	if (isset($_POST['add'])&&haveRight("comment_ticket","1")) {
 		$fup=new Followup();
 		$newID=$fup->add($_POST);
 
@@ -96,7 +96,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 	//*******************
 	// Affichage Module réservation 
 	//******************
-	checkAuthentication("post-only");
+	checkRight("reservation_helpdesk","1");
 	$rr=new ReservationResa();
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
@@ -175,14 +175,8 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 
 else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	$name="";
-	checkAuthentication("anonymous");
-	if ($cfg_glpi["public_faq"]&&!isset($_SESSION["glpiname"])){
-		nullHeader($lang["title"][1],$_SERVER["PHP_SELF"]);
-	}
-	else {
-		checkAuthentication("post-only");
-		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	}
+	checkRight("faq","r");
+	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 	
 	if (isset($_GET["ID"])){
@@ -218,9 +212,10 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 
 
 else {
-checkAuthentication("post-only");
+checkHelpdeskAccess();
 helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-printHelpDesk($_SESSION["glpiname"],1);
+
+printHelpDesk($_SESSION["glpiID"],1);
 }
 
 helpFooter();

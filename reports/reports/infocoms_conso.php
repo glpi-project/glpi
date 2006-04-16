@@ -44,7 +44,8 @@ include ($phproot . "/glpi/includes_consumables.php");
 include ($phproot . "/glpi/includes_software.php");
 
 
-checkAuthentication("normal");
+checkRight("reports","r");
+
 commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
 

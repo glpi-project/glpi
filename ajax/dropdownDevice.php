@@ -40,7 +40,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 	
-	checkAuthentication("post-only");
+	checkCentralAccess();
 
 if (isset($_POST["idtable"])){
 	$table=getDeviceTable($_POST["idtable"]);

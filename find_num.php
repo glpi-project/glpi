@@ -42,8 +42,7 @@ if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($cfg_glpi["permit_h
 {
 	$id = new Identification();
 	$id->setCookies();
-}
-checkAuthentication("post-only");
+} else exit();
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");

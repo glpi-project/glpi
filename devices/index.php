@@ -43,7 +43,7 @@ include ($phproot . "/glpi/includes_enterprises.php");
 
 
 
-checkAuthentication("normal");
+checkRight("device","w");
 
 commonHeader($lang["title"][30],$_SERVER["PHP_SELF"]);
 

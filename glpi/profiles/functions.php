@@ -133,11 +133,10 @@ function showHelpdeskProfilesForm($ID){
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'>";
-	echo "<td>".$lang["profiles"][7].":</td><td>";
-	dropdownYesNoInt("show_ticket",$prof->fields["show_ticket"]);
-	echo "</td>";
 	echo "<td>".$lang["profiles"][9].":</td><td>";
 	dropdownYesNoInt("observe_ticket",$prof->fields["observe_ticket"]);
+	echo "</td>";
+	echo "<td>&nbsp;</td><td>&nbsp;";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["Menu"][18]."</strong></td>";

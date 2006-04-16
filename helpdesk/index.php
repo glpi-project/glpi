@@ -47,7 +47,7 @@ include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_phones.php");
 include ($phproot . "/glpi/includes_documents.php");
 
-checkAuthentication("normal");
+checkRight("create_ticket","1");
 
 commonHeader("Helpdesk",$_SERVER["PHP_SELF"]);
 
