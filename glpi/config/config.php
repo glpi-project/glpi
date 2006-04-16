@@ -207,29 +207,6 @@ $INFOFORM_PAGES=array(
 );
 
 
-
-// *************************** El�ents optionnels  **********************
-// ***********************************************************************
-// ***********************************************************************
-
-// Navigation Functions
-// Fonctions du menu
-class baseFunctions {
-	// Could have inventory, maintain, admin and settings, 
-	//changes these values on the dicts on header menu.
-
-	var $inventory	= true;
-
-	var $maintain	= true;
-
-	var $settings	= true;
-
-	var $utils	= true;
-
-	var $financial	= true;
-
-}
-
 //Options g�� dynamiquement, ne pas toucher cette partie.
 //Options from DB, do not touch this part.
 $cfg_glpi["debug"]=$cfg_glpi["debug_sql"]=$cfg_glpi["debug_vars"]=$cfg_glpi["debug_profile"]=$cfg_glpi["debug_lang"]=0;
