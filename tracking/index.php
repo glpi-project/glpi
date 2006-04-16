@@ -49,7 +49,7 @@ include ($phproot . "/glpi/includes_software.php");
 include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_phones.php");
 
-checkAuthentication("normal");
+checkCentralAccess();
 
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 

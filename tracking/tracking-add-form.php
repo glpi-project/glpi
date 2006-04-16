@@ -51,7 +51,7 @@ include ($phproot . "/glpi/includes_enterprises.php");
 include ($phproot . "/glpi/includes_phones.php");
 include ($phproot . "/glpi/includes_documents.php");
 
-checkAuthentication("admin");
+checkRight("create_ticket","1");
 
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 if(empty($_POST["isgroup"])) $_POST["isgroup"] = "";

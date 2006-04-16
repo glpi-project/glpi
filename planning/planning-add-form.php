@@ -53,7 +53,6 @@ $pt=new PlanningTracking();
 	
 if (isset($_POST["add_planning"])){
 
-checkAuthentication("normal");
 if ($pt->add($_POST,"")){
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][20]);
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["id_tracking"]);

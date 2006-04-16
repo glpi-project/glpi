@@ -51,7 +51,7 @@ include ($phproot . "/glpi/includes_documents.php");
 include ($phproot . "/glpi/includes_planning.php");
 include ($phproot . "/glpi/includes_phones.php");
 
-checkAuthentication("normal");
+checkCentralAccess();
 
 /*if (isset($_POST["contents"])&&!empty($_POST["contents"])&&isAdmin($_SESSION["glpitype"]))
 {
@@ -65,21 +65,25 @@ $track=new Job();
 
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 if (isset($_POST['update'])){
+	checkRight("update_ticket","1");
 	updateTracking($_POST);
 	logEvent($_POST["ID"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][21]);
 
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["ID"]);
 }else if (isset($_POST['add'])||isset($_POST['add_close'])) {
+	checkSeveralRightsOr(array("comment_ticket"=>"1","comment_all_ticket"=>"1"));
 	$newID=$fup->add($_POST);
 
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][20]." $newID.");
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 		
 } else if (isset($_POST["update_followup"])){
+	checkRight("comment_all_ticket","1");
 	$fup->update($_POST);
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$lang["log"][21]." ".$_POST["ID"].".");
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);
 } else if (isset($_POST["delete_followup"])){
+	checkRight("comment_all_ticket","1");
 	$fup->delete($_POST);
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][22]." ".$_POST["ID"].".");
 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["tracking"]);

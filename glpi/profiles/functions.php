@@ -319,7 +319,7 @@ function showCentralProfilesForm($ID){
 	echo "<td>".$lang["Menu"][33].":</td><td>";
 	dropdownNoneReadWrite("ocsng",$prof->fields["ocsng"],1,0,1);
 	echo "</td>";
-	echo "<td>".$lang["title"][35].":</td><td>";
+	echo "<td>".$lang["profiles"][23].":</td><td>";
 	dropdownNoneReadWrite("reservation_central",$prof->fields["reservation_central"],1,1,1);
 	echo "</td></tr>";
 

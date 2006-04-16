@@ -55,7 +55,7 @@ if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permi
 	$id = new Identification();
 	$id->setCookies();
 }
-checkAuthentication("post-only");
+checkRight("create_ticket","1");
 
 $glpiname = $_SESSION["glpiname"];
 

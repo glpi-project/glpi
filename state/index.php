@@ -58,13 +58,13 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 	if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
 
 if (isset($tab["deletestate"])) {
-	checkAuthentication("admin");
+	checkTypeRight($tab["device_type"],"w");
 	updateState($tab["device_type"],$tab["device_id"],0);
 
 	logEvent(0, "state", 4, "state", $_SESSION["glpiname"]." delete state.");
 }
 
-	checkAuthentication("normal");
+	checkCentralAccess();
 
 	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 	

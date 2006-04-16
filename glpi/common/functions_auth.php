@@ -143,6 +143,54 @@ function checkRight($module,$right) {
 	}
 }
 
+function checkSeveralRightsOr($modules) {
+	global $lang,$HTMLRel,$HEADER_LOADED;
+	
+	$valid=false;
+	if (count($modules))
+	foreach ($modules as $mod => $right)
+	if (haveRight($mod,$right)) $valid=true;
+
+	if (!$valid){
+		if (!$HEADER_LOADED){
+			if (!isset($_SESSION["glpiprofile"]["interface"]))
+				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="central")
+				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
+				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		}
+		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$lang["login"][5]."</b></div>";
+		nullFooter();
+		exit();
+	}
+}
+
+function checkSeveralRightsAnd($modules) {
+	global $lang,$HTMLRel,$HEADER_LOADED;
+	
+	$valid=true;
+	if (count($modules))
+	foreach ($modules as $mod => $right)
+	if (!haveRight($mod,$right)) $valid=false;
+
+	if (!$valid){
+		if (!$HEADER_LOADED){
+			if (!isset($_SESSION["glpiprofile"]["interface"]))
+				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="central")
+				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
+				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		}
+		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$lang["login"][5]."</b></div>";
+		nullFooter();
+		exit();
+	}
+}
+
 function checkTypeRight($type,$right) {
 	global $lang,$HTMLRel,$HEADER_LOADED;
 
