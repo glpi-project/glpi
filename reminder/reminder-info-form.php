@@ -48,13 +48,11 @@ if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;
 
 $rem=new Reminder();
-
+checkCentralAccess();
 if (isset($_POST["add"]))
 {
 	if (isset($_POST["add"])&&isset($_POST["public"])){
-		checkAuthentication("superadmin"); // seuls superadmin peuvent poster des notes publiques
-	}else {
-		checkAuthentication("normal"); //
+		checkRight("reminder_public","w");
 	}
 	
 
@@ -64,10 +62,8 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	if (isset($_POST["add"])&&isset($_POST["public"])){
-		checkAuthentication("superadmin"); // seuls superadmin peuvent poster des notes publiques
-	}else {
-		checkAuthentication("normal"); //
+	if (isset($_POST["delete"])&&isset($_POST["public"])){
+		checkRight("reminder_public","w");
 	}
 	$rem->delete($_POST);
 	
@@ -75,24 +71,20 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	if (isset($_POST["add"])&&isset($_POST["public"])){
-		checkAuthentication("superadmin"); // seuls superadmin peuvent poster des notes publiques
-	}else {
-		checkAuthentication("normal"); //
+	if (isset($_POST["update"])&&isset($_POST["public"])){
+		checkRight("reminder_public","w");
 	}
+
 	$rem->update($_POST);
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-
-	
 	commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);
 	$remind=new Reminder();
 	$remind->getFromDB($tab["ID"]);
 	showReminderForm($_SERVER["PHP_SELF"],$tab["ID"]);
-	
 
 	commonFooter();
 }

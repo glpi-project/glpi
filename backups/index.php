@@ -37,7 +37,7 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/config/based_config.php");
 
-checkauthentication("super-admin");
+checkRight("backup","w");
 
 // full path 
 $path = $cfg_glpi["dump_dir"] ;
