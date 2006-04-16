@@ -158,7 +158,7 @@ function showUserform($target,$name) {
 		echo "</td></tr>";
 	}
 	//do some rights verification
-	if(isSuperAdmin($_SESSION["glpitype"])) {
+	if(haveRight("user","w")) {
 		if (!empty($user->fields["password"])||!empty($user->fields["password_md5"])||$name==""){
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
 		}
@@ -214,17 +214,7 @@ function showUserform($target,$name) {
 	
 	echo "</select>";
 	echo "</td></tr>";
-	if (isSuperAdmin($_SESSION["glpitype"])) {
-		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center' >".$lang["setup"][58]."</td>
-		<td align='center' ><p><strong>".$lang["choice"][0]."</strong><input type='radio' value='no' name='can_assign_job' ";
-		if (empty($name)||$user->fields["can_assign_job"] == 'no') echo "checked ";
-		echo "></p>";
-		echo "<p><strong>".$lang["choice"][1]."</strong><input type='radio' value='yes' name='can_assign_job' ";
-		if ($user->fields["can_assign_job"] == 'yes') echo "checked";
-		echo "></p>";
-		echo "</td></tr>";
-	}
+
 	if (haveRight("user","w"))
 	if ($name=="") {
 		echo "<tr >";
@@ -233,23 +223,14 @@ function showUserform($target,$name) {
 		echo "</td>";
 		echo "</tr>";	
 	} else {
-		if(isSuperadmin($_SESSION["glpitype"])) {
-			echo "<tr>";
-			echo "<td class='tab_bg_2' valign='top' align='center'>";	
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
-			echo "</td>";
-			echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";
-			echo "</td>";
-			echo "</tr>";
-		}
-		else {
-			echo "<tr>";
-			echo "<td class='tab_bg_2' valign='top' colspan='2' align='center'>";	
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
-			echo "</td>";
-			echo "</tr>";
-		}
+		echo "<tr>";
+		echo "<td class='tab_bg_2' valign='top' align='center'>";	
+		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
+		echo "</td>";
+		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";
+		echo "</td>";
+		echo "</tr>";
 	}
 
 	echo "</table></form></div>";

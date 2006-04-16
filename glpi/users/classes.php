@@ -177,120 +177,62 @@ class User extends CommonDBTM {
 		
 	}
 
-function add($input) {
-global $cfg_glpi;
-	
-	//only admin and superadmin can add some user
-	if(isAdmin($_SESSION["glpitype"])) {
-		//Only super-admin's can add users with admin or super-admin access.
-		//set to "normal" by default
-		if(!isSuperAdmin($_SESSION["glpitype"])) {
-			if($input["type"] != "normal" && $input["type"] != "post-only") {
-				$input["type"] = "normal";
-			}
+
+
+	function prepareInputForAdd($input) {
+		// Add User, nasty hack until we get PHP4-array-functions
+		if(empty($input["password"]))  $input["password"] = "";
+
+		// change email_form to email (not to have a problem with preselected email)
+		if (isset($input["email_form"])){
+			$input["email"]=$input["email_form"];
+			unset($input["email_form"]);
 		}
-			// Add User, nasty hack until we get PHP4-array-functions
-			if(empty($input["password"]))  $input["password"] = "";
-			// dump status
-			unset($input["add"]);
-			
-			// change email_form to email (not to have a problem with preselected email)
-			if (isset($input["email_form"])){
-				$input["email"]=$input["email_form"];
-				unset($input["email_form"]);
-			}
 
+		if (isset($input["profile"])){
+			$input["_profile"]=$input["profile"];
+			unset($input["profile"]);
+		}
 
-			if (isset($input["profile"])){
-				$input["_profile"]=$input["profile"];
-				unset($input["profile"]);
-			}
-	
-			// fill array for update
-			foreach ($input as $key => $val) {
-				if ($key[0]!='_'&&(!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
-					$this->fields[$key] = $input[$key];
-				}
-			}
-
-			$newID= $this->addToDB();
-
-			if (isset($input["_profile"])){
-				$prof=new Profile();
-				$prof->updateForUser($newID,$input["_profile"]);
-			}
-
-			do_hook_function("item_add",array("type"=>USER_TYPE, "ID" => $newID));
-			return $newID;
-	} else {
-		return false;
+		return $input;
 	}
-}
-
-
-function update($input) {
-
-	//only admin and superadmin can update some user
-
-	// Update User in the database
-	if (isset($input["name"])){
-		$this->getFromDBbyName($input["name"]); 
-	} else if (isset($input["ID"])){
-		$this->getFromDB($input["ID"]); 
-	} else return;
-
-	// password updated by admin user or own password for user
-	if(empty($input["password"]) || (!isAdmin($_SESSION["glpitype"])&&$_SESSION["glpiname"]!=$input['name'])) {
-		unset($this->fields["password"]);
-		unset($this->fields["password_md5"]);
-		unset($input["password"]);
-	} 
 	
-	// change email_form to email (not to have a problem with preselected email)
-	if (isset($input["email_form"])){
-	$input["email"]=$input["email_form"];
-	unset($input["email_form"]);
+	function postAddItem($newID,$input) {
+		if (isset($input["_profile"])){
+			$prof=new Profile();
+			$prof->updateForUser($newID,$input["_profile"]);
+		}
 	}
-		
-	//Only super-admin's can set admin or super-admin access.
-	//set to "normal" by default
-	//if user type is already admin or super-admin do not touch it
-	if(isset($input["type"])&&!isSuperAdmin($_SESSION["glpitype"])) {
-		if(!empty($input["type"]) && $input["type"] != "normal" && $input["type"] != "post-only") {
-			$input["type"] = "normal";
+
+	function prepareInputForUpdate($input) {
+		// Update User in the database
+		if (!isset($input["ID"])&&isset($input["name"])){
+			if ($this->getFromDBbyName($input["name"]))
+				$input["ID"]=$this->fields["ID"];
+		} 
+
+		// password updated by admin user or own password for user
+		if(empty($input["password"]) || ($_SESSION["glpiname"]!=$input['name'])) {
+			unset($this->fields["password"]);
+			unset($this->fields["password_md5"]);
+			unset($input["password"]);
+		} 
+	
+		// change email_form to email (not to have a problem with preselected email)
+		if (isset($input["email_form"])){
+			$input["email"]=$input["email_form"];
+			unset($input["email_form"]);
 		}
 		
-	}
-	
-	if (isset($input["profile"])){
-		$prof=new Profile();
-		$prof->updateForUser($input["ID"],$input["profile"]);
-	}
-
-	// fill array for update
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$this->fields) &&  $input[$key] != $this->fields[$key]) {
-			$this->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
+		if (isset($input["profile"])){
+			$prof=new Profile();
+			$prof->updateForUser($input["ID"],$input["profile"]);
+			unset($input["profile"]);
 		}
-	}
-	
-	
-	if(!empty($updates)) {
-		$this->updateInDB($updates);
-	}
-	do_hook_function("item_update",array("type"=>USER_TYPE, "ID" => $input["ID"]));
-}
 
-function delete($input) {
-	// Delete User (only superadmin can delete an user)
-	if(isSuperAdmin($_SESSION["glpitype"])) {
-		$this->deleteFromDB($input["ID"]);
-		do_hook_function("item_purge",array("type"=>USER_TYPE, "ID" => $input["ID"]));
+		return $input;
 	}
-} 
+
 
 
 	// SPECIFIC FUNCTIONS

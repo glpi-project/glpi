@@ -4043,7 +4043,7 @@ $query="CREATE TABLE `glpi_profiles` (
 				$db->query($query2);
 			}
 		}
-		// TODO drop type in glpi_users
+		// TODO drop type in glpi_users and can_assign_job
 
 	}
 	
