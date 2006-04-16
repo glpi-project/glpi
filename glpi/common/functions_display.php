@@ -62,40 +62,71 @@ function commonHeader($title,$url)
 
 
 	//  menu list 	
-	$utils = array($lang["Menu"][17]=>array("/reservation/index.php","1"),
-	$lang["Menu"][19]=>array("/knowbase/index.php"," "),
-	$lang["Menu"][6]=>array("/reports/index.php"," "),
-	//$lang["Menu"][33]=>array("/ocsng/index.php"," "),
-	);
-	if ($cfg_glpi["ocs_mode"]) $utils[$lang["Menu"][33]]=array("/ocsng/index.php"," ");
-
-	$inventory = array($lang["Menu"][0]=>array("/computers/index.php","c"),
-		$lang["Menu"][3]=>array("/monitors/index.php","m"),
-		$lang["Menu"][4]=>array("/software/index.php","s"),  
-		$lang["Menu"][1]=>array("/networking/index.php","n"),
-		$lang["Menu"][16]=>array("/peripherals/index.php","r"),
-		$lang["Menu"][2]=>array("/printers/index.php","p"),
-		$lang["Menu"][21]=>array("/cartridges/index.php","c"),
-		$lang["Menu"][32]=>array("/consumables/index.php","g"),     
-		$lang["Menu"][34]=>array("/phones/index.php","n"),
-		$lang["Menu"][28]=>array("/state/index.php","s"),
-		);
-	$financial = array($lang["Menu"][22]=>array("/contacts/index.php","t"),
-		$lang["Menu"][23]=>array("/enterprises/index.php","e"),
-		$lang["Menu"][25]=>array("/contracts/index.php","n"),
-		$lang["Menu"][27]=>array("/documents/index.php","d"),
-	);
-	$maintain =	array($lang["Menu"][5]=>array("/tracking/index.php","t"),
-		$lang["Menu"][31]=>array("/helpdesk/index.php","h"),
-		$lang["Menu"][29]=>array("/planning/index.php","l"),
-		$lang["Menu"][13]=>array("/stats/index.php","1"));
+	//////// UTILS
+	$utils=array();
+	if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
+		$utils[$lang["Menu"][17]]=array("/reservation/index.php","1");
+	if (haveRight("knowbase","r")||haveRight("faq","r")) 
+		$utils[$lang["Menu"][19]]=array("/knowbase/index.php"," ");
+	if (haveRight("reports","w"))
+		$utils[$lang["Menu"][6]]=array("/reports/index.php"," ");
+	if ($cfg_glpi["ocs_mode"]&&haveRight("ocsng","w")) 
+		$utils[$lang["Menu"][33]]=array("/ocsng/index.php"," ");
+	
+	//////// INVENTORY
+	$inventory=array();
+	if (haveRight("computer","r"))
+		$inventory[$lang["Menu"][0]]=array("/computers/index.php","c");
+	if (haveRight("monitor","r"))
+		$inventory[$lang["Menu"][3]]=array("/monitors/index.php","m");
+	if (haveRight("software","r"))
+		$inventory[$lang["Menu"][4]]=array("/software/index.php","s");  
+	if (haveRight("networking","r"))
+		$inventory[$lang["Menu"][1]]=array("/networking/index.php","n");
+	if (haveRight("peripheral","r"))
+		$inventory[$lang["Menu"][16]]=array("/peripherals/index.php","r");
+	if (haveRight("printer","r"))
+		$inventory[$lang["Menu"][2]]=array("/printers/index.php","p");
+	if (haveRight("cartridge","r"))
+		$inventory[$lang["Menu"][21]]=array("/cartridges/index.php","c");
+	if (haveRight("consumable","r"))
+		$inventory[$lang["Menu"][32]]=array("/consumables/index.php","g");
+	if (haveRight("phone","r"))
+		$inventory[$lang["Menu"][34]]=array("/phones/index.php","n");
+	if (count($inventory))
+		$inventory[$lang["Menu"][28]]=array("/state/index.php","s");
+	
+	//////// FINANCIAL
+	$financial=array();
+	if (haveRight("contact_enterprise","r")){
+		$financial[$lang["Menu"][22]]=array("/contacts/index.php","t");
+		$financial[$lang["Menu"][23]]=array("/enterprises/index.php","e");
+	}
+	if (haveRight("contract_infocom","r"))
+		$financial[$lang["Menu"][25]]=array("/contracts/index.php","n");
+	if (haveRight("document","r"))
+		$financial[$lang["Menu"][27]]=array("/documents/index.php","d");
+	
+	//////// ASSISTANCE
+	$maintain[$lang["Menu"][5]]=array("/tracking/index.php","t");
+	if (haveRight("create_ticket","1"))
+		$maintain[$lang["Menu"][31]]=array("/helpdesk/index.php","h");
+	if (haveRight("show_planning","1")||haveRight("show_all_planning","1"))
+		$maintain[$lang["Menu"][29]]=array("/planning/index.php","l");
+	if (haveRight("statistic","1"))
+		$maintain[$lang["Menu"][13]]=array("/stats/index.php","1");
 			
-	$config = array($lang["Menu"][14]=>array("/users/index.php","u"),
-		$lang["Menu"][35]=>array("/profiles/index.php","p"),
-		$lang["Menu"][10]=>array("/setup/index.php","2"),
-		$lang["Menu"][11]=>array("/preferences/index.php","p"),
-		$lang["Menu"][12]=>array("/backups/index.php","b"),
-		$lang["Menu"][30]=>array("/logs.php","l"),);
+	//////// ADMINISTRATION
+	if (haveRight("user","r"))
+		$config[$lang["Menu"][14]]=array("/users/index.php","u");
+	if (haveRight("profile","w"))
+		$config[$lang["Menu"][35]]=array("/profiles/index.php","p");
+	$config[$lang["Menu"][10]]=array("/setup/index.php","2");
+	$config[$lang["Menu"][11]]=array("/preferences/index.php","p");
+	if (haveRight("backup","w"))
+		$config[$lang["Menu"][12]]=array("/backups/index.php","b");
+	if (haveRight("logs","r"))
+		$config[$lang["Menu"][30]]=array("/logs.php","l");
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
@@ -138,11 +169,6 @@ function commonHeader($title,$url)
 	// Main Headline
 	echo "<div id='navigation'>";
 
-	// New object from the configured base functions, we check some
-	// object-variables in this object: inventory, maintain, admin
-	// and settings. We build the navigation bar here.
-	$navigation = new baseFunctions;
-	
 	//menu
 	echo "<div id='menu'>";
 	// Logo with link to command center
@@ -152,7 +178,7 @@ function commonHeader($title,$url)
 	// Get object-variables and build the navigation-elements
 	
 	// Inventory
-	if ($navigation->inventory) {
+	if (count($inventory)) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span><dt>\n";
 		echo "<dd id=\"smenu1\"><ul>";
@@ -168,7 +194,7 @@ function commonHeader($title,$url)
 	}
 
 	// Maintain / Tracking / ticket
-	if ($navigation->maintain) {
+	if (count($maintain)) {
 		
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu2');\"><img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["title"][24]."&nbsp;-</span></dt>\n";
@@ -181,7 +207,7 @@ function commonHeader($title,$url)
 		echo "</dl>\n";
 	}
 	// Financial
-	if ($navigation->financial) {
+	if (count($financial)) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu3');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["Menu"][26]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span></dt>\n";
@@ -195,7 +221,7 @@ function commonHeader($title,$url)
 	}
 	
 	// Tools
-	if ($navigation->utils) {
+	if (count($utils)) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu4');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][18]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][18]."&nbsp;-</span></dt>\n";
@@ -234,8 +260,8 @@ function commonHeader($title,$url)
 	}
 	
 	// Administration 
-	if ($navigation->settings) {
-			echo "<dl><dt onmouseover=\"javascript:montre('smenu6');\">";
+	if (count($config)) {
+		echo "<dl><dt onmouseover=\"javascript:montre('smenu6');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][15]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu6\"><ul>";
