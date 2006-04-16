@@ -40,7 +40,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkCentralAccess();
 
 	// Make a select box
 

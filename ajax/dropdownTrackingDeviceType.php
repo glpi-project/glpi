@@ -40,7 +40,7 @@
 	header_nocache();
 
 
-	checkAuthentication("post-only");
+	checkCentralAccess();
 
 	// Make a select box
 

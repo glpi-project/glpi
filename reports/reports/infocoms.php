@@ -48,7 +48,8 @@ include ($phproot . "/glpi/includes_phones.php");
 include ($phproot . "/stats/functions.php");
 
 
-checkAuthentication("normal");
+checkRight("reports","r");
+
 commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
 

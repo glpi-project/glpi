@@ -36,7 +36,7 @@ include ($phproot . "/glpi/includes.php");
 
 
 
-checkAuthentication("normal");
+checkRight("reports","r");
 
 commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 

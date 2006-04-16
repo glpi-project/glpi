@@ -40,7 +40,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("super-admin");
+	checkRight("profile","r");
 
 	if ($_POST["interface"]=="helpdesk")
 		showHelpdeskProfilesForm($_POST["ID"]);

@@ -36,9 +36,8 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
-checkAuthentication("normal");
 
-
+checkRight("reports","r");
 
 $query2="SELECT glpi_dropdown_locations.name as stage
 FROM glpi_dropdown_locations

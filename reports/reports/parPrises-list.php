@@ -37,8 +37,8 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
-checkAuthentication("normal");
 
+checkRight("reports","r");
 
 if (isset($_POST["prise"])){
 

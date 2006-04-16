@@ -50,40 +50,81 @@ else return false;
 
 
 function checkRight($module,$right) {
-	global $lang,$HTMLRel;
+	global $lang,$HTMLRel,$HEADER_LOADED;
 
 	if (!haveRight($module,$right)){
-		commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		if (!$HEADER_LOADED){
+			if (!isset($_SESSION["glpiprofile"]["interface"]))
+				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="central")
+				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
+				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
-		commonFooter();
+		nullFooter();
 		exit();
 	}
 }
 
 function checkCommonItemRight($type,$right) {
-	global $lang,$HTMLRel;
+	global $lang,$HTMLRel,$HEADER_LOADED;
 
 	$ci=new CommonItem();
 	$ci->setType($type);
 	if (!$ci->haveRight($right)){
-		commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		if (!$HEADER_LOADED){
+			if (!isset($_SESSION["glpiprofile"]["interface"]))
+				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="central")
+				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
+				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
-		commonFooter();
+		nullFooter();
 		exit();
 	}
 }
 
 function checkCentralAccess(){
 
-	global $lang,$HTMLRel;
+	global $lang,$HTMLRel,$HEADER_LOADED;
 
 	if ($_SESSION["glpiprofile"]["interface"]!="central"){
-		commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		if (!$HEADER_LOADED){
+			if (!isset($_SESSION["glpiprofile"]["interface"]))
+				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="central")
+				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
+				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
-		commonFooter();
+		nullFooter();
+		exit();
+	}
+}
+
+function checkHelpdeskAccess(){
+
+	global $lang,$HTMLRel,$HEADER_LOADED;
+
+	if ($_SESSION["glpiprofile"]["interface"]!="helpdesk"){
+		if (!$HEADER_LOADED){
+			if (!isset($_SESSION["glpiprofile"]["interface"]))
+				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="central")
+				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
+				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		}
+		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$lang["login"][5]."</b></div>";
+		nullFooter();
 		exit();
 	}
 }
@@ -93,12 +134,39 @@ function checkLoginUser(){
 	global $lang,$HTMLRel;
 
 	if (!isset($_SESSION["glpiuser"])){
-		commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		if (!$HEADER_LOADED){
+			if (!isset($_SESSION["glpiprofile"]["interface"]))
+				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="central")
+				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
+				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
-		commonFooter();
+		nullFooter();
 		exit();
 	}
+}
+
+function checkAccessToPublicFaq(){
+	global $lang,$HTMLRel,$cfg_glpi;
+
+	if ($cfg_glpi["public_faq"] == 0 || !haveRight("faq","r")){
+		if (!$HEADER_LOADED){
+			if (!isset($_SESSION["glpiprofile"]["interface"]))
+				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="central")
+				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
+				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+		}
+		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$lang["login"][5]."</b></div>";
+		nullFooter();
+		exit();
+	}
+
 }
 
 

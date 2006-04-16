@@ -47,8 +47,8 @@ include ($phproot . "/glpi/common/functions_auth.php");
 include ($phproot . "/glpi/common/functions_display.php");
 include ($phproot . "/glpi/config/config.php");
 
-	// Load Language file
-	loadLanguage();
+// Load Language file
+loadLanguage();
 
 $TIMER_DEBUG=new Script_Timer;
 $TIMER_DEBUG->Start_Timer();
@@ -99,7 +99,6 @@ $db=new DB();
 
 
 /* On startup, register all plugins configured for use. */
-global $cfg_glpi_plugins;
 if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 	do_hook("config");
 
@@ -116,6 +115,9 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 			include ($phproot . "/plugins/$name/dicts/french.php");
 	}
 }
+
+// Mark if Header is loaded or not :
+$HEADER_LOADED=false;
 
 
 ?>

@@ -48,16 +48,6 @@ if(!isset($tab["lID"])) $tab["lID"] = "";
 if(!isset($tab["sID"])) $tab["sID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = 0;
 
-/*if (isset($tab["Modif_Interne"])){
-	checkAuthentication("admin");
-	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
-	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"],$tab['search_computer']);
-	commonFooter();
-
-}
-else 
-*/
-
 if (isset($_POST["add"]))
 {
 	checkRight("software","w");

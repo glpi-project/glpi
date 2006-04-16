@@ -1976,9 +1976,10 @@ function showFollowupsSummary($tID){
 function showAddFollowupForm($tID){
 	global $db,$lang,$cfg_glpi,$HTMLRel;
 	
+	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
 
-	$isadmin=isAdmin($_SESSION['glpitype']);
-	if ($isadmin){
+	$isadmin=haveRight("comment_all_ticket","1");
+	if ($_SESSION["glpiprofile"]["interface"]=="central"){
 		$target=$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php";
 	} else {
 		$target=$cfg_glpi["root_doc"]."/helpdesk.php?show=user";
@@ -2089,8 +2090,9 @@ function showAddFollowupForm($tID){
 function showUpdateFollowupForm($ID){
 	global $db,$lang,$cfg_glpi,$HTMLRel;
 	
+	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
 
-	$isadmin=isAdmin($_SESSION['glpitype']);
+	$isadmin=haveRight("comment_all_ticket","1");
 
 	// Display existing Followups
 

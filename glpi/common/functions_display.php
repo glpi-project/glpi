@@ -52,8 +52,8 @@ function commonHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks ;
-
+	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks,$HEADER_LOADED ;
+	$HEADER_LOADED=true;;
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
  		$_SESSION['glpilist_limit']=$_POST['list_limit'];
@@ -299,8 +299,8 @@ function displayMessageAfterRedirect(){
 function helpHeader($title,$url,$name) {
 	// Print a nice HTML-head for help page
 
-	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot, $cfg_glpi; ;
-
+	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot, $cfg_glpi,$HEADER_LOADED ;
+	$HEADER_LOADED=true;
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
  		$_SESSION['glpilist_limit']=$_POST['list_limit'];
@@ -432,7 +432,8 @@ function helpHeader($title,$url,$name) {
 * @param $url not used anymore.
 **/
 function nullHeader($title,$url) {
-	global $cfg_glpi;
+	global $cfg_glpi,$HEADER_LOADED;
+	$HEADER_LOADED=true;
 	// Print a nice HTML-head with no controls
 
 	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot ;
@@ -623,11 +624,13 @@ echo "<div id='footer'><div align='right'>";
 * @param $from_helpdesk int : is display from the helpdesk.php ?
 * @return nothing (print the helpdesk)
 */
-function printHelpDesk ($name,$from_helpdesk) {
+function printHelpDesk ($ID,$from_helpdesk) {
 
-	GLOBAL $db,$cfg_glpi,$lang;
+	global $db,$cfg_glpi,$lang;
 
-	$query = "SELECT email,realname,name FROM glpi_users WHERE (name = '$name')";
+	if (!haveRight("create_ticket","1")) return false;
+
+	$query = "SELECT email,realname,name FROM glpi_users WHERE (ID = '$ID')";
 	$result=$db->query($query);
 	$email = $db->result($result,0,"email");
 	$realname = $db->result($result,0,"realname");

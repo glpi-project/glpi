@@ -38,7 +38,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkRight("create_ticket","1");
 	
 		$where="WHERE '1'='1' ";
 		if (in_array($_POST['table'],$cfg_glpi["deleted_tables"]))

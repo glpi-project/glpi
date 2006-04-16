@@ -52,7 +52,7 @@ include ($phproot . "/glpi/includes_tracking.php");
 include ($phproot . "/glpi/includes_financial.php");
 include ($phproot . "/glpi/includes_phones.php");
 
-checkAuthentication("normal");
+checkCentralAccess("normal");
 include ($phproot . "/glpi/includes_search.php");
 //print_r($_GET);
 if (isset($_GET["item_type"])&&isset($_GET["display_type"])){

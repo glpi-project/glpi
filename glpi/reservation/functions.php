@@ -266,7 +266,7 @@ if ($resaID=isReservable($device_type,$id_device)) {
 function printCalendrier($target,$ID=""){
 global $lang, $HTMLRel;
 
-if (!haveRight("reservation_helpdesk","r")) return false;
+if (!haveRight("reservation_helpdesk","1")) return false;
 
 if (!isset($_GET["mois_courant"]))
 	$mois_courant=strftime("%m");
@@ -441,7 +441,7 @@ echo "</td></tr></table></div>";
 function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	global $lang,$HTMLRel;
 	
-	if (!haveRight("reservation_helpdesk","w")) return false;
+	if (!haveRight("reservation_helpdesk","1")) return false;
 
 	$resa= new ReservationResa;
 	if ($resaID!=-1)
@@ -675,7 +675,7 @@ function printReservationItem($target,$ID,$date){
 function printReservationItems($target){
 global $db,$lang,$HTMLRel;
 
-if (!haveRight("reservation_helpdesk","r")) return false;
+if (!haveRight("reservation_helpdesk","1")) return false;
 
 $ri=new ReservationItem;
 

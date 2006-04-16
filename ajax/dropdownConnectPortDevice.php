@@ -39,7 +39,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkRight("networking","w");
 
 
 if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){

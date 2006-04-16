@@ -41,7 +41,8 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_software.php");
 
-checkAuthentication("normal");
+checkRight("reports","r");
+
 commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
 # Title

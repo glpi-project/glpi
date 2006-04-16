@@ -37,8 +37,8 @@
 include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_networking.php");
-checkAuthentication("normal");
 
+checkRight("reports","r");
 
 //$item_db_name[0] = "glpi_computers";
 //$item_db_name[1] = "glpi_networking";

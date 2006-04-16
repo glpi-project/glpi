@@ -41,7 +41,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkRight("software","w");
 	
 if ($_POST['sID']>0){
 	// Make a select box

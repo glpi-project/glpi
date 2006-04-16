@@ -35,7 +35,6 @@
 
 	include ("_relpos.php");
 	include ($phproot."/glpi/includes.php");
-	checkAuthentication("normal");
 	include ($phproot."/glpi/includes_search.php");
 
 
@@ -43,6 +42,7 @@
 	header_nocache();
 
 if ($_POST["type"]>0){
+	checkCommonItemRight($_POST["type"],"r");
 	echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".$_POST["val"]."\" >";
 	echo "&nbsp;";
 	echo $lang["search"][10]."&nbsp;";

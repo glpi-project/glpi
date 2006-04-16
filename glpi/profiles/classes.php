@@ -105,7 +105,7 @@ class Profile extends CommonDBTM{
 	}
 	// Unset unused rights for helpdesk
 	function cleanProfile(){
-		$helpdesk=array("name","interface","faq","reservation","create_ticket","comment_ticket","show_ticket","observe_ticket");
+		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket");
 		if ($this->fields["interface"]=="helpdesk"){
 			foreach($this->fields as $key=>$val){
 				if (!in_array($key,$helpdesk))

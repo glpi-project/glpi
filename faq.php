@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes_knowbase.php");
 include ($phproot . "/glpi/includes_documents.php");
 
 
-checkAuthentication("anonymous");
+checkAccessToPublicFaq();
 
 //*********************
 // Affichage Module FAQ
