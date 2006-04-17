@@ -151,21 +151,18 @@ function showHelpdeskProfilesForm($ID){
 	dropdownYesNoInt("reservation_helpdesk",$prof->fields["reservation_helpdesk"]);
 	echo "</td></tr>";
 
-	$colspan=4;
-	if (!$prof->fields["is_default"])
-		$colspan=2;
 
-	echo "<tr class='tab_bg_1'><td colspan='$colspan' align='center'>";
+	echo "<tr class='tab_bg_1'>";
 	if ($ID){
+		echo "<td colspan='2' align='center'>";
 		echo "<input type='hidden' name='ID' value=$ID>";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 
-		if (!$prof->fields["is_default"]){
-			echo "</td><td colspan='$colspan' align='center'>";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-			}
+		echo "</td><td colspan='2' align='center'>";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 
 	} else {
+		echo "<td colspan='4' align='center'>";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	}
 	echo "</td></tr>";
@@ -371,18 +368,15 @@ function showCentralProfilesForm($ID){
 	dropdownNoneReadWrite("reminder_public",$prof->fields["reminder_public"],1,0,1);
 	echo "</td></tr>";
 
-	$colspan=6;
-	if (!$prof->fields["is_default"])
-		$colspan=3;
-	echo "<tr class='tab_bg_1'><td colspan='$colspan' align='center'>";
+	echo "<tr class='tab_bg_1'>";
 	if ($ID){
+		echo "<td colspan='3' align='center'>";
 		echo "<input type='hidden' name='ID' value=$ID>";
 		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-		if (!$prof->fields["is_default"]){
-			echo "</td><td colspan='$colspan' align='center'>";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-			}
+		echo "</td><td colspan='3' align='center'>";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 	} else {
+		echo "<td colspan='6' align='center'>";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	}
 	echo "</td></tr>";

@@ -47,13 +47,14 @@ else $ID=$_POST["ID"];
 
 $prof=new Profile();
 
-if (isset($_POST["update"])){
+if (isset($_POST["add"])){
+	
+	checkRight("profile","w");
+	$ID=$prof->add($_POST);
+}else  if (isset($_POST["update"])){
 	checkRight("profile","w");
 
 	$prof->update($_POST);
-}else if (isset($_POST["add"])){
-	checkRight("profile","w");
-	$ID=$prof->add($_POST);
 }
 
 	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/profiles/index.php\">";
