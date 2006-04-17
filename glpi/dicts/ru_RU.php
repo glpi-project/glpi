@@ -1,6 +1,6 @@
 <?php 
 	/* 
-  * @version : fonction.php,v 1.15 2006/01/18 23:24:25 moyo Exp $
+  * @version : fonction.php 3182 2006-04-17 01:27:08Z moyo $
   ----------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -26,7 +26,7 @@ GLPI - Gestionnaire Libre de Parc Informatique
  Purpose of file:
  ----------------------------------------------------------------------
 */ 
-	//russian
+	//ru_RU
 
 
 $lang["backup"][0]="Выгрузить SQL"; 
@@ -159,6 +159,8 @@ $lang["central"][8]="Дополнения";
 $lang["central"][9]="Ваши заявки в процессе"; 
 $lang["central"][10]="Новые заявки"; 
 $lang["central"][11]="Ваши приостановленные заявки"; 
+$lang["central"][12]="Personnal View"; 
+$lang["central"][13]="Global View"; 
 
 $lang["choice"][0]="Нет"; 
 $lang["choice"][1]="Да"; 
@@ -192,6 +194,9 @@ $lang["common"][25]="Примечания";
 $lang["common"][26]="Последнее обновление"; 
 $lang["common"][27]="Дата"; 
 $lang["common"][28]="Удалено"; 
+$lang["common"][29]="Plugins"; 
+$lang["common"][30]="New Item"; 
+$lang["common"][31]="Blank Template"; 
 
 $lang["computers"][0]="Добавление компьютера..."; 
 $lang["computers"][9]="ОС"; 
@@ -433,6 +438,13 @@ $lang["financial"][89]="TCO (value + tracking cost)";
 $lang["financial"][90]="Monthly TCO"; 
 $lang["financial"][91]="TCO"; 
 $lang["financial"][92]="ANV"; 
+$lang["financial"][93]="Contracts expired since less than 30 days"; 
+$lang["financial"][94]="Contracts which expire in less than 7 days"; 
+$lang["financial"][95]="Contracts which expire in less than 30 days"; 
+$lang["financial"][96]="Contracts which have notice beginning in less than 7 days"; 
+$lang["financial"][97]="Contracts which have notice beginning in less than 30 days"; 
+$lang["financial"][98]="End Date"; 
+$lang["financial"][99]="End Date + Notice"; 
 
 $lang["help"][0]="Добро пожаловать"; 
 $lang["help"][1]="Опишите Вашу проблему"; 
@@ -627,6 +639,9 @@ $lang["knowbase"][21]="Показать все";
 $lang["knowbase"][22]="Скрыть все"; 
 $lang["knowbase"][23]="Категория"; 
 $lang["knowbase"][24]="Доступ к ЧаВо"; 
+$lang["knowbase"][25]="Author"; 
+$lang["knowbase"][26]="Views"; 
+$lang["knowbase"][27]="On"; 
 
 $lang["links"][1]="Ссылка или имя файла"; 
 $lang["links"][2]="Добавить внешнюю ссылку..."; 
@@ -771,6 +786,7 @@ $lang["Menu"][31]="Поддержка";
 $lang["Menu"][32]="Расходные материалы"; 
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Телефоны"; 
+$lang["Menu"][35]="Profiles"; 
 
 $lang["monitors"][0]="Добавить монитор..."; 
 $lang["monitors"][4]="Монитор"; 
@@ -933,6 +949,31 @@ $lang["printers"][33]="Глобальное управление";
 $lang["printers"][34]="Упрпавление модулем"; 
 $lang["printers"][35]="Тип управления"; 
 
+$lang["profiles"][0]="Add a profile..."; 
+$lang["profiles"][1]="Select a profile..."; 
+$lang["profiles"][2]="Interface"; 
+$lang["profiles"][3]="Helpdesk Rights"; 
+$lang["profiles"][4]="Central Rights"; 
+$lang["profiles"][5]="Create a ticket"; 
+$lang["profiles"][6]="Add followups to my tickets"; 
+$lang["profiles"][7]="Show tickets"; 
+$lang["profiles"][8]="View all followups (public and private)"; 
+$lang["profiles"][9]="Show public followups"; 
+$lang["profiles"][10]="Read"; 
+$lang["profiles"][11]="Write"; 
+$lang["profiles"][12]="No Access"; 
+$lang["profiles"][13]="Default Profile"; 
+$lang["profiles"][14]="Delete a ticket"; 
+$lang["profiles"][15]="Add followups to all tickets"; 
+$lang["profiles"][16]="Own a ticket"; 
+$lang["profiles"][17]="Steal a ticket"; 
+$lang["profiles"][18]="Update a ticket"; 
+$lang["profiles"][19]="Assign a ticket"; 
+$lang["profiles"][20]="View my planning"; 
+$lang["profiles"][21]="View all planning"; 
+$lang["profiles"][22]="Profile"; 
+$lang["profiles"][23]="Reservation Administration"; 
+
 $lang["reminder"][0]="Частные заметки"; 
 $lang["reminder"][1]="Публичные заметки"; 
 $lang["reminder"][2]="Personal appointment"; 
@@ -948,6 +989,7 @@ $lang["reminder"][11]="Календарь";
 $lang["reminder"][12]="Добавить в календарь"; 
 $lang["reminder"][13]="Заметка не найдена"; 
 $lang["reminder"][14]="By"; 
+$lang["reminder"][15]="Without Title"; 
 
 $lang["reports"][0]="Выберите желаемый тип отчета"; 
 $lang["reports"][4]="Список оборудования по основаниям"; 
@@ -1207,6 +1249,11 @@ $lang["setup"][227]="Использовать URL";
 $lang["setup"][228]="Поле имени пользователя"; 
 $lang["setup"][229]="При изменении назначения"; 
 $lang["setup"][230]="При обновлении заявки"; 
+$lang["setup"][231]="Use a SMTP server to send emails"; 
+$lang["setup"][232]="SMTP Host"; 
+$lang["setup"][233]="SMTP Port"; 
+$lang["setup"][234]="SMTP Login"; 
+$lang["setup"][235]="SMTP Password"; 
 $lang["setup"][250]="Список полей поиска по умолчанию"; 
 $lang["setup"][251]="Выберите заголовок"; 
 $lang["setup"][252]="Выберите элементы для показа по умолчанию"; 

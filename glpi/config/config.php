@@ -64,7 +64,8 @@ require_once ($cfg_glpi["config_dir"] . "/config_db.php");
 // dictionnaires
 // Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
 
-$cfg_glpi["languages"]=array("de_DE"=>array("Deutsch","de_DE.php","en_GB.html","hd-en_GB.html","de","en"),
+$cfg_glpi["languages"]=array(   "pt_BR"=>array("Brazilian","pt_BR.php","en_GB.html","hd-en_GB.html","br","en"),
+				"de_DE"=>array("Deutsch","de_DE.php","en_GB.html","hd-en_GB.html","de","en"),
 				"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","en"),
 				"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
 				"es_ES"=>array("Español (castellano)","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),

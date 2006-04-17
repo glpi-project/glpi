@@ -1,6 +1,6 @@
 <?php 
 	/* 
-  * @version : fonction.php,v 1.15 2006/01/18 23:24:25 moyo Exp $
+  * @version : fonction.php 3182 2006-04-17 01:27:08Z moyo $
   ----------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -26,7 +26,7 @@ GLPI - Gestionnaire Libre de Parc Informatique
  Purpose of file:
  ----------------------------------------------------------------------
 */ 
-	//hungarian
+	//hu_HU
 
 
 $lang["backup"][0]="SQL dumpolása"; 
@@ -80,7 +80,7 @@ $lang["buttons"][34]="Mégsem";
 $lang["buttons"][35]="Haladó"; 
 $lang["buttons"][36]="Alap"; 
 $lang["buttons"][37]="Importál"; 
-$lang["buttons"][38]="Feolold"; 
+$lang["buttons"][38]="Feloldás"; 
 
 $lang["calendar"][0]="Hibás dátum !"; 
 
@@ -159,6 +159,8 @@ $lang["central"][8]="bővítmény";
 $lang["central"][9]="A kövekező bejelentéseid vannak folyamatban"; 
 $lang["central"][10]="Az új bejelentések"; 
 $lang["central"][11]="Készenlétben levő bejelentéseid"; 
+$lang["central"][12]="Personnal View"; 
+$lang["central"][13]="Global View"; 
 
 $lang["choice"][0]="Nem"; 
 $lang["choice"][1]="Igen"; 
@@ -192,6 +194,9 @@ $lang["common"][25]="Megjegyzések";
 $lang["common"][26]="Utoljára frissítve"; 
 $lang["common"][27]="Dátum"; 
 $lang["common"][28]="Törölve"; 
+$lang["common"][29]="Bővítmények"; 
+$lang["common"][30]="New Item"; 
+$lang["common"][31]="Blank Template"; 
 
 $lang["computers"][0]="Számítógép hozzáadása.."; 
 $lang["computers"][9]="Operációs rendszer"; 
@@ -210,8 +215,8 @@ $lang["computers"][38]="Nincs kapcsolódó nyomtató";
 $lang["computers"][39]="Nyomtatók"; 
 $lang["computers"][40]="Monitor(ok)"; 
 $lang["computers"][44]="Számítógépek"; 
-$lang["computers"][46]="Egységek"; 
-$lang["computers"][47]="Nincs kapcsolódó egység"; 
+$lang["computers"][46]="Perifériák"; 
+$lang["computers"][47]="Nincs kapcsolódó periféria"; 
 $lang["computers"][48]="A hely frissítése megtörtént. A kapcsolódó tételek ugyanoda lettek mozgatva."; 
 $lang["computers"][49]="Kapcsolattartó frissítése megtörtént. A kapcsolódó tételek ugyanezen kapcsolatra lettek frissítve."; 
 $lang["computers"][51]="Frissít"; 
@@ -260,10 +265,10 @@ $lang["devices"][5]="Alaplap";
 $lang["devices"][6]="RAM"; 
 $lang["devices"][7]="Hangkártya"; 
 $lang["devices"][10]="Belső egységek"; 
-$lang["devices"][12]="Egység hozzáadása"; 
+$lang["devices"][12]="Új periféria.."; 
 $lang["devices"][14]="Név"; 
 $lang["devices"][17]="Válaszd ki a belső egység típusát"; 
-$lang["devices"][18]="Nincs egység"; 
+$lang["devices"][18]="Nincs periféria"; 
 $lang["devices"][19]="Meghajtók"; 
 $lang["devices"][20]="Vezérlők"; 
 $lang["devices"][21]="Egyéb perifériák"; 
@@ -433,6 +438,13 @@ $lang["financial"][89]="TCO (érték+követés költsége)";
 $lang["financial"][90]="Összes havi költség"; 
 $lang["financial"][91]="TCO"; 
 $lang["financial"][92]="ANV"; 
+$lang["financial"][93]="Contracts expired since less than 30 days"; 
+$lang["financial"][94]="Contracts which expire in less than 7 days"; 
+$lang["financial"][95]="Contracts which expire in less than 30 days"; 
+$lang["financial"][96]="Contracts which have notice beginning in less than 7 days"; 
+$lang["financial"][97]="Contracts which have notice beginning in less than 30 days"; 
+$lang["financial"][98]="End Date"; 
+$lang["financial"][99]="End Date + Notice"; 
 
 $lang["help"][0]="Üdvözöllek"; 
 $lang["help"][1]="Írd le a problémádat"; 
@@ -627,6 +639,9 @@ $lang["knowbase"][21]="Mindent mutat";
 $lang["knowbase"][22]="Mindent elrejt"; 
 $lang["knowbase"][23]="Kategória"; 
 $lang["knowbase"][24]="Hozzáférés a GY.I.K.-hez"; 
+$lang["knowbase"][25]="Author"; 
+$lang["knowbase"][26]="Views"; 
+$lang["knowbase"][27]="On"; 
 
 $lang["links"][1]="Hivatkozás vagy fájlnév"; 
 $lang["links"][2]="Új külső hivatkozás"; 
@@ -771,6 +786,7 @@ $lang["Menu"][31]="Helpdesk";
 $lang["Menu"][32]="Kellékek"; 
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Telefonok"; 
+$lang["Menu"][35]="Profiles"; 
 
 $lang["monitors"][0]="Monitor hozzáadása"; 
 $lang["monitors"][4]="Monitor"; 
@@ -933,6 +949,31 @@ $lang["printers"][33]="Globális kezelés";
 $lang["printers"][34]="Egység kezelés"; 
 $lang["printers"][35]="Kezelés típusa"; 
 
+$lang["profiles"][0]="Add a profile..."; 
+$lang["profiles"][1]="Select a profile..."; 
+$lang["profiles"][2]="Interface"; 
+$lang["profiles"][3]="Helpdesk Rights"; 
+$lang["profiles"][4]="Central Rights"; 
+$lang["profiles"][5]="Create a ticket"; 
+$lang["profiles"][6]="Add followups to my tickets"; 
+$lang["profiles"][7]="Show tickets"; 
+$lang["profiles"][8]="View all followups (public and private)"; 
+$lang["profiles"][9]="Show public followups"; 
+$lang["profiles"][10]="Read"; 
+$lang["profiles"][11]="Write"; 
+$lang["profiles"][12]="No Access"; 
+$lang["profiles"][13]="Default Profile"; 
+$lang["profiles"][14]="Delete a ticket"; 
+$lang["profiles"][15]="Add followups to all tickets"; 
+$lang["profiles"][16]="Own a ticket"; 
+$lang["profiles"][17]="Steal a ticket"; 
+$lang["profiles"][18]="Update a ticket"; 
+$lang["profiles"][19]="Assign a ticket"; 
+$lang["profiles"][20]="View my planning"; 
+$lang["profiles"][21]="View all planning"; 
+$lang["profiles"][22]="Profile"; 
+$lang["profiles"][23]="Reservation Administration"; 
+
 $lang["reminder"][0]="Személyes megjegyzések"; 
 $lang["reminder"][1]="Nyilvános megjegyzések"; 
 $lang["reminder"][2]="Személyes találkozó"; 
@@ -948,6 +989,7 @@ $lang["reminder"][11]="Naptár";
 $lang["reminder"][12]="Hozzáadás a naptárhoz"; 
 $lang["reminder"][13]="Nincs megjegyzés"; 
 $lang["reminder"][14]="Rendezés"; 
+$lang["reminder"][15]="Without Title"; 
 
 $lang["reports"][0]="Válassz jelentéstípust"; 
 $lang["reports"][4]="Szerződéses hardverek"; 
@@ -1207,6 +1249,11 @@ $lang["setup"][227]="Használt alap URL";
 $lang["setup"][228]="Bejelentkezés mező"; 
 $lang["setup"][229]="Amikor a hozzárendelés megváltozik"; 
 $lang["setup"][230]="Bejelentés frissítésekor"; 
+$lang["setup"][231]="Use a SMTP server to send emails"; 
+$lang["setup"][232]="SMTP Host"; 
+$lang["setup"][233]="SMTP Port"; 
+$lang["setup"][234]="SMTP Login"; 
+$lang["setup"][235]="SMTP Password"; 
 $lang["setup"][250]="Alapértelmezett keresési mező lista"; 
 $lang["setup"][251]="Válassz fejlécet"; 
 $lang["setup"][252]="Válassz alapértelemezett tételt"; 

@@ -1,6 +1,6 @@
 <?php 
 	/* 
-  * @version : fonction.php,v 1.15 2006/01/18 23:24:25 moyo Exp $
+  * @version : fonction.php 3182 2006-04-17 01:27:08Z moyo $
   ----------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -26,7 +26,7 @@ GLPI - Gestionnaire Libre de Parc Informatique
  Purpose of file:
  ----------------------------------------------------------------------
 */ 
-	//castellano
+	//es_ES
 
 
 $lang["backup"][0]="Guardar SQL"; 
@@ -159,6 +159,8 @@ $lang["central"][8]="Agregados";
 $lang["central"][9]="Sus servicios pendientes"; 
 $lang["central"][10]="Los servicios nuevos"; 
 $lang["central"][11]="Sus tickets en espera"; 
+$lang["central"][12]="Personnal View"; 
+$lang["central"][13]="Global View"; 
 
 $lang["choice"][0]="No"; 
 $lang["choice"][1]="Sí"; 
@@ -192,6 +194,9 @@ $lang["common"][25]="Comentarios";
 $lang["common"][26]="Última modificación"; 
 $lang["common"][27]="Fecha"; 
 $lang["common"][28]="Eliminado"; 
+$lang["common"][29]="Plugins"; 
+$lang["common"][30]="New Item"; 
+$lang["common"][31]="Blank Template"; 
 
 $lang["computers"][0]="Agregar computador..."; 
 $lang["computers"][9]="OS"; 
@@ -433,6 +438,13 @@ $lang["financial"][89]="TCO (valor + monto de servicios)";
 $lang["financial"][90]="TCO mensual"; 
 $lang["financial"][91]="TCO"; 
 $lang["financial"][92]="VNC"; 
+$lang["financial"][93]="Contracts expired since less than 30 days"; 
+$lang["financial"][94]="Contracts which expire in less than 7 days"; 
+$lang["financial"][95]="Contracts which expire in less than 30 days"; 
+$lang["financial"][96]="Contracts which have notice beginning in less than 7 days"; 
+$lang["financial"][97]="Contracts which have notice beginning in less than 30 days"; 
+$lang["financial"][98]="End Date"; 
+$lang["financial"][99]="End Date + Notice"; 
 
 $lang["help"][0]="Bienvenido"; 
 $lang["help"][1]="Por favor, describa su problema"; 
@@ -627,6 +639,9 @@ $lang["knowbase"][21]="Desplegar todo";
 $lang["knowbase"][22]="Replegar todo"; 
 $lang["knowbase"][23]="Categoría"; 
 $lang["knowbase"][24]="Acceder a la FAQ"; 
+$lang["knowbase"][25]="Author"; 
+$lang["knowbase"][26]="Views"; 
+$lang["knowbase"][27]="On"; 
 
 $lang["links"][1]="Enlace o nombre de archivo"; 
 $lang["links"][2]="Agregar enlace externo"; 
@@ -771,6 +786,7 @@ $lang["Menu"][31]="Mesa de Ayuda";
 $lang["Menu"][32]="Insumos"; 
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Teléfonos"; 
+$lang["Menu"][35]="Profiles"; 
 
 $lang["monitors"][0]="Agregar monitor..."; 
 $lang["monitors"][4]="Monitor"; 
@@ -933,6 +949,31 @@ $lang["printers"][33]="Gestión global";
 $lang["printers"][34]="Gestión unitaria"; 
 $lang["printers"][35]="Tipo de gestión"; 
 
+$lang["profiles"][0]="Add a profile..."; 
+$lang["profiles"][1]="Select a profile..."; 
+$lang["profiles"][2]="Interface"; 
+$lang["profiles"][3]="Helpdesk Rights"; 
+$lang["profiles"][4]="Central Rights"; 
+$lang["profiles"][5]="Create a ticket"; 
+$lang["profiles"][6]="Add followups to my tickets"; 
+$lang["profiles"][7]="Show tickets"; 
+$lang["profiles"][8]="View all followups (public and private)"; 
+$lang["profiles"][9]="Show public followups"; 
+$lang["profiles"][10]="Read"; 
+$lang["profiles"][11]="Write"; 
+$lang["profiles"][12]="No Access"; 
+$lang["profiles"][13]="Default Profile"; 
+$lang["profiles"][14]="Delete a ticket"; 
+$lang["profiles"][15]="Add followups to all tickets"; 
+$lang["profiles"][16]="Own a ticket"; 
+$lang["profiles"][17]="Steal a ticket"; 
+$lang["profiles"][18]="Update a ticket"; 
+$lang["profiles"][19]="Assign a ticket"; 
+$lang["profiles"][20]="View my planning"; 
+$lang["profiles"][21]="View all planning"; 
+$lang["profiles"][22]="Profile"; 
+$lang["profiles"][23]="Reservation Administration"; 
+
 $lang["reminder"][0]="Notas personales"; 
 $lang["reminder"][1]="Notas públicas"; 
 $lang["reminder"][2]="Reunión personal"; 
@@ -948,6 +989,7 @@ $lang["reminder"][11]="Calendario";
 $lang["reminder"][12]="Agregar al calendario"; 
 $lang["reminder"][13]="No se encontraron notas"; 
 $lang["reminder"][14]="Por"; 
+$lang["reminder"][15]="Without Title"; 
 
 $lang["reports"][0]="Seleccionar un reporte a ser generado"; 
 $lang["reports"][4]="Lista del material bajo contrato"; 
@@ -1207,6 +1249,11 @@ $lang["setup"][227]="URL de base utilizado";
 $lang["setup"][228]="Campo de login"; 
 $lang["setup"][229]="A cada cambio de responsable"; 
 $lang["setup"][230]="A la actualización del ticket"; 
+$lang["setup"][231]="Use a SMTP server to send emails"; 
+$lang["setup"][232]="SMTP Host"; 
+$lang["setup"][233]="SMTP Port"; 
+$lang["setup"][234]="SMTP Login"; 
+$lang["setup"][235]="SMTP Password"; 
 $lang["setup"][250]="Presentación de búsqueda por defecto"; 
 $lang["setup"][251]="Seleccione un título"; 
 $lang["setup"][252]="Seleccione los elementos a presentar por defecto"; 

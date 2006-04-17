@@ -1,6 +1,6 @@
 <?php 
 	/* 
-  * @version : fonction.php,v 1.15 2006/01/18 23:24:25 moyo Exp $
+  * @version : fonction.php 3182 2006-04-17 01:27:08Z moyo $
   ----------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -26,7 +26,7 @@ GLPI - Gestionnaire Libre de Parc Informatique
  Purpose of file:
  ----------------------------------------------------------------------
 */ 
-	//english
+	//en_GB
 
 
 $lang["backup"][0]="Dump SQL"; 
@@ -159,6 +159,8 @@ $lang["central"][8]="Additions";
 $lang["central"][9]="Your tickets in progress"; 
 $lang["central"][10]="The new tickets"; 
 $lang["central"][11]="Your pending Tickets"; 
+$lang["central"][12]="Personnal View"; 
+$lang["central"][13]="Global View"; 
 
 $lang["choice"][0]="No"; 
 $lang["choice"][1]="Yes"; 
@@ -192,6 +194,9 @@ $lang["common"][25]="Comments";
 $lang["common"][26]="Last update"; 
 $lang["common"][27]="Date"; 
 $lang["common"][28]="Deleted"; 
+$lang["common"][29]="Plugins"; 
+$lang["common"][30]="New Item"; 
+$lang["common"][31]="Blank Template"; 
 
 $lang["computers"][0]="Add Computer..."; 
 $lang["computers"][9]="OS"; 
@@ -203,7 +208,7 @@ $lang["computers"][23]="RAM Type";
 $lang["computers"][24]="RAM Size"; 
 $lang["computers"][25]="HD Size"; 
 $lang["computers"][28]="Server"; 
-$lang["computers"][32]="No Computer found."; 
+$lang["computers"][32]="No computer found"; 
 $lang["computers"][36]="HD-Type"; 
 $lang["computers"][37]="No connected monitor."; 
 $lang["computers"][38]="No connected printer"; 
@@ -233,7 +238,7 @@ $lang["consumables"][0]="Consumable";
 $lang["consumables"][1]="In stock"; 
 $lang["consumables"][2]="Reference"; 
 $lang["consumables"][6]="Add Consumable Type..."; 
-$lang["consumables"][7]="No consumable founded"; 
+$lang["consumables"][7]="No consumable found"; 
 $lang["consumables"][9]="No consumable"; 
 $lang["consumables"][12]="Consumable Type"; 
 $lang["consumables"][13]="New"; 
@@ -385,7 +390,7 @@ $lang["financial"][31]="Email";
 $lang["financial"][33]="Add a Contact"; 
 $lang["financial"][36]="Add a Contract"; 
 $lang["financial"][38]="Non contact found"; 
-$lang["financial"][39]="No company founded"; 
+$lang["financial"][39]="No company found"; 
 $lang["financial"][40]="No contract found"; 
 $lang["financial"][42]="Commercial"; 
 $lang["financial"][43]="Technician"; 
@@ -433,6 +438,13 @@ $lang["financial"][89]="TCO (value + tracking cost)";
 $lang["financial"][90]="Monthly TCO"; 
 $lang["financial"][91]="TCO"; 
 $lang["financial"][92]="ANV"; 
+$lang["financial"][93]="Contracts expired since less than 30 days"; 
+$lang["financial"][94]="Contracts which expire in less than 7 days"; 
+$lang["financial"][95]="Contracts which expire in less than 30 days"; 
+$lang["financial"][96]="Contracts which have notice beginning in less than 7 days"; 
+$lang["financial"][97]="Contracts which have notice beginning in less than 30 days"; 
+$lang["financial"][98]="End Date"; 
+$lang["financial"][99]="End Date + Notice"; 
 
 $lang["help"][0]="Welcome"; 
 $lang["help"][1]="Please describe your problem"; 
@@ -560,7 +572,7 @@ $lang["job"][12]="No follow-ups for this ticket.";
 $lang["job"][13]="Add a new ticket"; 
 $lang["job"][14]="New ticket"; 
 $lang["job"][15]="Historical"; 
-$lang["job"][16]="founded"; 
+$lang["job"][16]="found"; 
 $lang["job"][17]="ticket"; 
 $lang["job"][18]="old"; 
 $lang["job"][19]="Email Follow-ups"; 
@@ -591,7 +603,7 @@ $lang["joblist"][3]="Author";
 $lang["joblist"][4]="Assigned"; 
 $lang["joblist"][6]="Description"; 
 $lang["joblist"][7]="New ticket for this item..."; 
-$lang["joblist"][8]="No ticket found."; 
+$lang["joblist"][8]="No ticket found"; 
 $lang["joblist"][9]="New"; 
 $lang["joblist"][10]="Closed (solved)"; 
 $lang["joblist"][11]="Opened on"; 
@@ -603,7 +615,7 @@ $lang["joblist"][18]="Processing (assigned)";
 $lang["joblist"][19]="Processing (planned)"; 
 $lang["joblist"][20]="All"; 
 $lang["joblist"][21]="Processing"; 
-$lang["joblist"][22]="No old ticket founded"; 
+$lang["joblist"][22]="No old ticket found"; 
 $lang["joblist"][24]="Not closed"; 
 $lang["joblist"][25]="Old"; 
 $lang["joblist"][26]="Pending"; 
@@ -627,6 +639,9 @@ $lang["knowbase"][21]="Show all";
 $lang["knowbase"][22]="Hide all"; 
 $lang["knowbase"][23]="Category"; 
 $lang["knowbase"][24]="FAQ access"; 
+$lang["knowbase"][25]="Author"; 
+$lang["knowbase"][26]="Views"; 
+$lang["knowbase"][27]="On"; 
 
 $lang["links"][1]="Link or Filename"; 
 $lang["links"][2]="Add an external link..."; 
@@ -771,12 +786,13 @@ $lang["Menu"][31]="Helpdesk";
 $lang["Menu"][32]="Consumables"; 
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Phones"; 
+$lang["Menu"][35]="Profiles"; 
 
 $lang["monitors"][0]="Add Monitor..."; 
 $lang["monitors"][4]="Monitor"; 
 $lang["monitors"][14]="Microphone"; 
 $lang["monitors"][15]="Speakers"; 
-$lang["monitors"][17]="No monitor founded."; 
+$lang["monitors"][17]="No monitor found"; 
 $lang["monitors"][18]="Flags"; 
 $lang["monitors"][19]="Sub-D"; 
 $lang["monitors"][20]="BNC"; 
@@ -798,7 +814,7 @@ $lang["networking"][20]="Port Manager";
 $lang["networking"][21]="Logical Number"; 
 $lang["networking"][25]="on"; 
 $lang["networking"][37]="Networking port found"; 
-$lang["networking"][38]="No computer found."; 
+$lang["networking"][38]="No computer found"; 
 $lang["networking"][44]="The port"; 
 $lang["networking"][45]="is now connected on port"; 
 $lang["networking"][46]="Add several ports..."; 
@@ -887,7 +903,7 @@ $lang["peripherals"][33]="Management Type";
 
 $lang["phones"][0]="Add Phone..."; 
 $lang["phones"][4]="Phone"; 
-$lang["phones"][17]="No phone founded"; 
+$lang["phones"][17]="No phone found"; 
 $lang["phones"][18]="Brand"; 
 $lang["phones"][29]="Phone ID"; 
 $lang["phones"][30]="New model based on a template"; 
@@ -920,7 +936,7 @@ $lang["printers"][4]="Printer";
 $lang["printers"][8]="Contact Person"; 
 $lang["printers"][14]="Serial Interface"; 
 $lang["printers"][15]="Parallel Interface"; 
-$lang["printers"][17]="No printer found."; 
+$lang["printers"][17]="No printer found"; 
 $lang["printers"][18]="Flags"; 
 $lang["printers"][23]="RAM"; 
 $lang["printers"][26]="Number"; 
@@ -932,6 +948,31 @@ $lang["printers"][31]="Printed pages";
 $lang["printers"][33]="Global management"; 
 $lang["printers"][34]="Unit management"; 
 $lang["printers"][35]="Management Type"; 
+
+$lang["profiles"][0]="Add a profile..."; 
+$lang["profiles"][1]="Select a profile..."; 
+$lang["profiles"][2]="Interface"; 
+$lang["profiles"][3]="Helpdesk Rights"; 
+$lang["profiles"][4]="Central Rights"; 
+$lang["profiles"][5]="Create a ticket"; 
+$lang["profiles"][6]="Add followups to my tickets"; 
+$lang["profiles"][7]="Show tickets"; 
+$lang["profiles"][8]="View all followups (public and private)"; 
+$lang["profiles"][9]="Show public followups"; 
+$lang["profiles"][10]="Read"; 
+$lang["profiles"][11]="Write"; 
+$lang["profiles"][12]="No Access"; 
+$lang["profiles"][13]="Default Profile"; 
+$lang["profiles"][14]="Delete a ticket"; 
+$lang["profiles"][15]="Add followups to all tickets"; 
+$lang["profiles"][16]="Own a ticket"; 
+$lang["profiles"][17]="Steal a ticket"; 
+$lang["profiles"][18]="Update a ticket"; 
+$lang["profiles"][19]="Assign a ticket"; 
+$lang["profiles"][20]="View my planning"; 
+$lang["profiles"][21]="View all planning"; 
+$lang["profiles"][22]="Profile"; 
+$lang["profiles"][23]="Reservation Administration"; 
 
 $lang["reminder"][0]="Personal notes"; 
 $lang["reminder"][1]="Public notes"; 
@@ -948,6 +989,7 @@ $lang["reminder"][11]="Calendar";
 $lang["reminder"][12]="Add to calendar"; 
 $lang["reminder"][13]="No note founded"; 
 $lang["reminder"][14]="By"; 
+$lang["reminder"][15]="Without Title"; 
 
 $lang["reports"][0]="Select a report you want to generate"; 
 $lang["reports"][4]="List of the hardware under contract"; 
@@ -1034,7 +1076,7 @@ $lang["search"][8]="Begin date";
 $lang["search"][9]="End date"; 
 $lang["search"][10]="in"; 
 $lang["search"][11]="Items Seen"; 
-$lang["search"][15]="No item founded"; 
+$lang["search"][15]="No item found"; 
 $lang["search"][16]="A least"; 
 $lang["search"][17]="Add a search criteria"; 
 $lang["search"][18]="Delete a search criteria"; 
@@ -1193,8 +1235,8 @@ $lang["setup"][213]="At the closing of a ticket";
 $lang["setup"][214]="When he posts a new ticket"; 
 $lang["setup"][215]="For each follow-up of his tickets"; 
 $lang["setup"][216]="At the closing of his tickets"; 
-$lang["setup"][217]="The mail function is unknown or is not activated on your system"; 
-$lang["setup"][218]="Impossible to configure the email follow-ups"; 
+$lang["setup"][217]="The PHP mail function is unknown or is not activated on your system"; 
+$lang["setup"][218]="The use of a SMTP is needed"; 
 $lang["setup"][219]="Allow anonymous tickets post (helpdesk.html)"; 
 $lang["setup"][220]="'Helpdesk' user could not be modified"; 
 $lang["setup"][221]="Beginning of fiscal year (day and month)"; 
@@ -1207,6 +1249,11 @@ $lang["setup"][227]="Base URL used";
 $lang["setup"][228]="Login Field"; 
 $lang["setup"][229]="When the assignment changes"; 
 $lang["setup"][230]="When updating a ticket"; 
+$lang["setup"][231]="Use a SMTP server to send emails"; 
+$lang["setup"][232]="SMTP Host"; 
+$lang["setup"][233]="SMTP Port"; 
+$lang["setup"][234]="SMTP Login"; 
+$lang["setup"][235]="SMTP Password"; 
 $lang["setup"][250]="Default search fields list"; 
 $lang["setup"][251]="Select a heading"; 
 $lang["setup"][252]="Select default items to show"; 
@@ -1242,7 +1289,7 @@ $lang["software"][17]="Installed Software";
 $lang["software"][19]="Installations"; 
 $lang["software"][20]="Remaining"; 
 $lang["software"][21]="Total"; 
-$lang["software"][22]="No Software found."; 
+$lang["software"][22]="No software found"; 
 $lang["software"][25]="Expire on"; 
 $lang["software"][26]="Never expired"; 
 $lang["software"][27]="Expired licence"; 
@@ -1263,7 +1310,7 @@ $lang["software"][43]="Add a licence to buy";
 $lang["state"][0]="Status"; 
 $lang["state"][1]="Item Status"; 
 $lang["state"][6]="Item Type"; 
-$lang["state"][7]="No Item founded"; 
+$lang["state"][7]="No item found"; 
 $lang["state"][10]="Total"; 
 $lang["state"][11]="Synthesis"; 
 
