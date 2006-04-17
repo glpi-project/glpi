@@ -291,19 +291,19 @@ function showCentralContract(){
 	echo "<tr><th colspan='2'><b><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset=reset_before\">".$lang["financial"][1]."</a></b></th></tr>";
 	
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&glpisearchcount=2&sort=12&order=DESC&start=0&field[0]=12&field[1]=12&link[1]=AND&contains[0]=%3C0&contains[1]=%3E-30\">".$lang["financial"][93]."</a> </td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&amp;glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".$lang["financial"][93]."</a> </td>";
 	echo "<td>$contract0</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&glpisearchcount=2&contains%5B0%5D=%3E0&field%5B0%5D=12&link%5B1%5D=AND&contains%5B1%5D=%3C7&field%5B1%5D=12&sort=12&deleted=N&start=0\">".$lang["financial"][94]."</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=N&amp;start=0\">".$lang["financial"][94]."</a></td>";
 	echo "<td>".$contract7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&glpisearchcount=2&contains%5B0%5D=%3E6&field%5B0%5D=12&link%5B1%5D=AND&contains%5B1%5D=%3C30&field%5B1%5D=12&sort=12&deleted=N&start=0\">".$lang["financial"][95]."</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=N&amp;start=0\">".$lang["financial"][95]."</a></td>";
 	echo "<td>".$contract30."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&glpisearchcount=2&contains%5B0%5D=%3E0&field%5B0%5D=13&link%5B1%5D=AND&contains%5B1%5D=%3C7&field%5B1%5D=13&sort=12&deleted=N&start=0\">".$lang["financial"][96]."</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;deleted=N&amp;start=0\">".$lang["financial"][96]."</a></td>";
 	echo "<td>".$contractpre7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&glpisearchcount=2&sort=13&order=DESC&start=0&field[0]=13&field[1]=13&link[1]=AND&contains[0]=%3E0&contains[1]=%3C30\">".$lang["financial"][97]."</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/contracts/index.php?reset_before=1&amp;glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E0&amp;contains[1]=%3C30\">".$lang["financial"][97]."</a></td>";
 	echo "<td>".$contractpre30."</td></tr>";
 	
 	echo "</table></div><br>";
