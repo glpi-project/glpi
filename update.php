@@ -4043,11 +4043,8 @@ $query="CREATE TABLE `glpi_profiles` (
 				$db->query($query2) or die("0.68 insert new users_profiles ".$lang["update"][90].$db->error());
 			}
 		}
-		// TODO drop type in glpi_users and can_assign_job
 		$query="ALTER TABLE `glpi_users` DROP `type`, DROP `can_assign_job`;";
 		$db->query($query) or die("0.68 drop type and can_assign_job from users ".$lang["update"][90].$db->error());
-		$query="DELETE FROM glpi_display WHERE type='".USER_TYPE."' AND num='4';";
-		$db->query($query) or die("0.68 drop glpi_display for user type ".$lang["update"][90].$db->error());
 	}
 	
 
