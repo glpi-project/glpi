@@ -49,7 +49,7 @@ include ("_relpos.php");
 **/
 function searchFormKnowbase($target,$contains){
 	global $lang;
-	if (!haveRight("knowbase","r")) return false;
+	if (!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
 
 	echo "<form method=post action=\"$target\">";
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe'>";
@@ -84,9 +84,13 @@ function titleknowbase(){
 	global  $lang,$HTMLRel;
 
         echo "<div align='center'><table border='0'><tr><td>";
-        echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td><td>";
-	echo "<a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
-        echo "</td></tr>";
+        echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td>";
+	if (haveRight("faq","w")||haveRight("knowbase","w")){
+		echo "<td>";
+		echo "<a  class='icon_consol' href=\"knowbase-info-form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
+        	echo "</td>";
+	} else echo "<td><span class='icon_sous_nav'>".$lang["title"][5]."</span></td>";
+	echo "</tr>";
 	echo "</table></div>";
 	
 }
@@ -110,6 +114,17 @@ function showKbItemForm($target,$ID){
 	if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
 	$ki= new kbitem;	
 	
+	if (empty($ID)) {
+		
+		$ki->getEmpty();
+		
+	
+	} else {
+		$ki->getfromDB($ID);
+		if ($ki->fields["faq"]=="yes"&&!haveRight("faq","w")) return false;
+		if ($ki->fields["faq"]!="yes"&&!haveRight("knowbase","w")) return false;
+	
+	}	
 	echo "<div align='center'>";
 	echo "<div id='contenukb'>";
 	//echo "<script type='text/javascript' language='javascript' src='".$HTMLRel."toolbar.js'></script>";
@@ -119,17 +134,10 @@ function showKbItemForm($target,$ID){
 	echo "</script>";
 	echo "<form method='post' id='form_kb' name='form_kb' action=\"$target\">";
 	
-	if (empty($ID)) {
-		
-		$ki->getEmpty();
-		
 	
-	} else {
-		$ki->getfromDB($ID);
-	
+	if (!empty($ID))
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		
-	echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-	}		
 
 	echo "<fieldset>";
 	echo "<legend>".$lang["knowbase"][13]."</legend>";
@@ -171,12 +179,15 @@ function showKbItemForm($target,$ID){
 		echo "</fieldset>";
 	}
 	echo "<p align='center'>";
-	if ($ki->fields["faq"] == "yes") {
+
+	if (haveRight("faq","w")&&haveRight("knowbase","w")){
+		if ($ki->fields["faq"] == "yes") {
 			echo "<input class='submit' type='checkbox' name='faq' value='yes' checked>";
 		} else {
 			echo "<input class='submit' type='checkbox' name='faq' value='yes'>";
 		}
-	echo $lang["knowbase"][5]."<br><br>\n";
+		echo $lang["knowbase"][5]."<br><br>\n";
+	}
 	
 	if (empty($ID)) {
 	echo "<input type='hidden' name='author' value=\"".$_SESSION['glpiID']."\">\n";
@@ -209,9 +220,11 @@ function kbItemMenu($ID)
 	$ki= new kbitem;	
 	
 	$ki->getfromDB($ID);
-
-	
 	$isFAQ = $ki->fields["faq"];
+	$editFAQ=haveRight("faq","w");
+	$edit=true;
+	if ($isFAQ=="yes"&&!haveRight("faq","w")) $edit=false;
+	if ($isFAQ!="yes"&&!haveRight("knowbase","w")) $edit=false;
 	
 	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='3'>";
 	
@@ -226,6 +239,7 @@ function kbItemMenu($ID)
 
 	
 	echo "<tr>\n";
+	if ($editFAQ)
 	if($isFAQ == "yes")
 	{
 		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;removefromfaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqremove.png\" alt='".$lang["knowbase"][7]."' title='".$lang["knowbase"][7]."'></a></td>\n";
@@ -234,9 +248,12 @@ function kbItemMenu($ID)
 	{
 		echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;addtofaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqadd.png\" alt='".$lang["knowbase"][5]."' title='".$lang["knowbase"][5]."'></a></td>\n";
 	}
-	echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;modify=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqedit.png\" alt='".$lang["knowbase"][8]."' title='".$lang["knowbase"][8]."'></a></td>\n";
-	echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;delete=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqdelete.png\" alt='".$lang["knowbase"][9]."' title='".$lang["knowbase"][9]."'></a>";
-	echo "		</td></tr>\n";
+
+	if ($edit){
+		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;modify=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqedit.png\" alt='".$lang["knowbase"][8]."' title='".$lang["knowbase"][8]."'></a></td>\n";
+		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=$ID&amp;delete=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqdelete.png\" alt='".$lang["knowbase"][9]."' title='".$lang["knowbase"][9]."'></a></td>";
+	}
+	echo "</tr>\n";
 	echo "</table></div>\n";
 	
 }
@@ -251,12 +268,14 @@ function kbItemMenu($ID)
 * 
 * @return nothing (display all kb catégories)
 **/
-function showKbCategoriesall($contains='')
+function showKbCategoriesall($target,$contains='')
 {
 
 	global $lang;	
 	if (!haveRight("knowbase","r")) return false;
 	
+	searchFormKnowbase($target,$contains);
+
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
 	echo "<tr><th align='center' >".$lang["knowbase"][0]."</th></tr><tr><td align='left' class='tab_bg_3'>";	
 	
@@ -407,24 +426,28 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 	// show item : question and answer
 	
 	global $db,$lang;
+	
+	if (!haveRight("user","r")) $linkauthor="no";
 
-	if (!haveRight("knowbase","r")) return false;	
+	$ki= new kbitem;	
+	
+	$ki->getfromDB($ID);
+	if ($ki->fields["faq"]=="yes"){
+		if (!haveRight("faq","r")) return false;	
+	}
+	else 
+		if (!haveRight("knowbase","r")) return false;	
 
 	//update counter view
 	$query="UPDATE glpi_kbitems SET view=view+1 WHERE ID = '$ID'";
 	$db->query($query);
 
-	$ki= new kbitem;	
-	
-	$ki->getfromDB($ID);
 		
 	
 	$categoryID = $ki->fields["categoryID"];
 	$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
 	
 	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th>";
-	
-
 
 	echo "<div style='position: relative'><span><strong>".$lang["knowbase"][23].": ".$fullcategoryname."</strong></span>";
 	echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
@@ -459,7 +482,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 
 	echo "</table></div><br>";
 	
-	
+	return true;	
 }
 
 

@@ -52,7 +52,10 @@ class kbitem extends CommonDBTM {
 		
 		// set title for question if empty
 		if(empty($input["question"])) $input["question"]=$lang["common"][30];
-	
+		
+		if (haveRight("faq","w")&&!haveRight("knowbase","w")) $input["faq"]="yes";
+		if (!haveRight("faq","w")&&haveRight("knowbase","w")) $input["faq"]="no";
+
 		return $input;
 		}
 

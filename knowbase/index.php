@@ -40,7 +40,7 @@ include ($phproot . "/glpi/includes_knowbase.php");
 
 
 
-checkRight("knowbase","r");
+	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
 
 	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 
@@ -62,10 +62,13 @@ checkRight("knowbase","r");
 	if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
 	
 	titleknowbase();
+
+	if (haveRight("knowbase","r"))
+		showKbCategoriesall($_SERVER["PHP_SELF"],$contains);
+	else {
+		faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
+	}
 	
-	searchFormKnowbase($_SERVER["PHP_SELF"],$contains);
-	echo "&nbsp;";
-	showKbCategoriesall($contains);
 
 
 commonFooter();
