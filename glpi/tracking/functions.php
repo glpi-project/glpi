@@ -1630,7 +1630,7 @@ function showJobDetails ($ID){
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// Premi�e ligne
 		echo "<tr ><th colspan='2' style='font-size:10px'>";
-		echo $lang["joblist"][11].":<strong>".convDateTime($job->fields["date"])."</strong>";"</th>";
+		echo $lang["joblist"][11].": <strong>".convDateTime($job->fields["date"])."</strong>";"</th>";
 		echo "<th style='font-size:10px'>".$lang["joblist"][12].":\n";
 		if (!ereg("old_",$job->fields["status"]))
 		{
@@ -1894,7 +1894,8 @@ echo "</div>";
 function showFollowupsSummary($tID){
 	global $db,$lang,$cfg_glpi,$HTMLRel;
 	
-	if (!haveRight("observe_ticket","1")||!haveRight("show_full_ticket","1")) return false;
+	
+	if (!haveRight("observe_ticket","1")&&!haveRight("show_full_ticket","1")) return false;
 
 	// Display existing Followups
 	$showprivate=haveRight("show_full_ticket","1");
