@@ -1413,18 +1413,24 @@ function getStatusName($value){
 
 function updateTracking($input){
 	global $lang,$cfg_glpi;
+	
+	// Security checks
 	if (!haveRight("update_ticket","1")){
 		if (haveRight("assign_ticket","1")){
 			$ret["ID"]=$input["ID"];
 			$ret["assign"]=$input["assign"];
 			$ret["assign_ent"]=$input["assign_ent"];
 			$input=$ret;
+		} else if (haveRight("steal_ticket","1")&&$input["assign"]==$_SESSION["glpiID"]){
+			$ret["ID"]=$input["ID"];
+			$ret["assign"]=$input["assign"];
+			$input=$ret;
+		} else {
+			$ret["ID"]=$input["ID"];
+			$input=$ret;
 		}
 
 	}
-
-	print_r($input);
-	exit();
 
 	$job = new Job;
 	$job->getFromDB($input["ID"],0);
@@ -1705,12 +1711,17 @@ function showJobDetails ($ID){
 		echo "<tr><td align='right'>";
 		echo $lang["job"][5].":</td><td>&nbsp;</td></tr>";
 		
-		if ($canupdate||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
+		if ($canupdate||haveRight("assign_ticket","1")){
 			echo "<tr><td align='right'>";
 			echo $lang["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"own_ticket");
 			echo "</td></tr>";
-		} else {
+		} else if (haveRight("steal_ticket","1")) {
+			echo "<tr><td align='right'>";
+			echo $lang["job"][27].":</td><td>";
+			dropdownUsers("assign",$job->fields["assign"],"ID");
+			echo "</td></tr>";
+		}else {
                        echo "<tr><td align='right'>";
                        echo $lang["job"][27].":</td><td>";
                        echo getUserName($job->fields["assign"]);

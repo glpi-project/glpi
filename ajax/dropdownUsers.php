@@ -35,6 +35,7 @@
 
 
 	include ("_relpos.php");
+	$AJAX_INCLUDE=1;
 	include ($phproot."/glpi/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
@@ -44,6 +45,8 @@
 
 	if ($_POST['right']=="interface")
 		$where=" glpi_profiles.".$_POST['right']."='central' ";
+	else if ($_POST['right']=="ID")
+		$where=" glpi_users.ID='".$_SESSION["glpiID"]."' ";
 	else 
 		$where=" glpi_profiles.".$_POST['right']."='1' ";
 	if (isset($_POST['value']))
