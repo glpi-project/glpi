@@ -54,7 +54,7 @@ $kb=new kbItem;
 	if ($tab["ID"]=="new"){
 // on affiche le formulaire de saisie de l'item
 
-	checkRight("knowbase","w");
+	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 
 	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 	
@@ -80,7 +80,7 @@ $kb=new kbItem;
 		
 	// modifier un item dans la base de connaissance
 	
-	checkRight("knowbase","w");
+	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
 	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 
 	showKbItemForm($_SERVER["PHP_SELF"],$tab["ID"]);
@@ -94,7 +94,7 @@ $kb=new kbItem;
 	
 	// actualiser  un item dans la base de connaissances
 	
-	checkRight("knowbase","w");
+	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 	
 	$kb->update($_POST);
 	logEvent($tab["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][21]);	
@@ -108,7 +108,7 @@ $kb=new kbItem;
 	
 	// effacer un item dans la base de connaissances
 	
-	checkRight("knowbase","w");
+	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 	
 	$kb->delete($tab["ID"]);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][22]);	
@@ -121,7 +121,7 @@ $kb=new kbItem;
 	
 	// ajouter  un item dans la faq
 	
-	checkRight("knowbase","w");
+	checkRight("faq","w");
 	
 	KbItemaddtofaq($tab["ID"]);
 	
@@ -136,7 +136,7 @@ $kb=new kbItem;
 	
 	// retirer  un item de la faq
 	
-	checkRight("knowbase","w");
+	checkRight("faq","w");
 	
 	KbItemremovefromfaq($tab["ID"]);
 	
@@ -152,15 +152,14 @@ $kb=new kbItem;
 
 	else  {
 // Affiche un item de la base de connaissances
-
-	checkRight("knowbase","r");
+	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
 	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
-	ShowKbItemFull($tab["ID"]);
-	
-		if (haveRight("knowbase","r")){
-			kbItemMenu($tab["ID"]);
-		}
+
+
+	if (ShowKbItemFull($tab["ID"])){
+		kbItemMenu($tab["ID"]);
 		showDocumentAssociated(KNOWBASE_TYPE,$tab["ID"]);
+	}
 	commonFooter();
 	}
 

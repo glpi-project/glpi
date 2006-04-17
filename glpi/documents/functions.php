@@ -402,6 +402,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	if (!haveTypeRight($device_type,"r")&&$device_type!=KNOWBASE_TYPE)	return false;
+	$canread=haveTypeRight($device_type,"r");
 	$canedit=haveTypeRight($device_type,"w");
 
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
@@ -429,7 +430,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$con=new Document;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-	if ($withtemplate!=3){
+	if ($withtemplate!=3&&$canread){
 		echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"];
 		if ($cfg_glpi["view_ID"]) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
