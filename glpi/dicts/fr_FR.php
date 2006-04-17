@@ -86,8 +86,6 @@ $lang["buttons"][36]="Basique";
 $lang["buttons"][37]="Importer";
 $lang["buttons"][38]="Déverrouiller";
 
-$lang["calendar"][0]="Erreur : date invalide";
-
 $lang["calendarD"][0]="D";
 $lang["calendarD"][1]="L";
 $lang["calendarD"][2]="M"; 
@@ -717,9 +715,7 @@ $lang["log"][57]="Configuration";
 $lang["log"][58]="Réservation";
 
 
-$lang["login"][0]="Login impossible, vérifiez que votre navigateur accepte les cookies.";
 $lang["login"][1]="Se reconnecter";
-$lang["login"][3]="Non logué";
 $lang["login"][5]="Accés refusé";
 $lang["login"][6]="Identifiant";
 $lang["login"][7]="Mot de passe";
@@ -995,8 +991,6 @@ $lang["profiles"][23]="Administration des réservations";
 
 $lang["reminder"][0]="Notes personnelles";
 $lang["reminder"][1]="Notes publiques";
-$lang["reminder"][2]="Rdv personnel";
-$lang["reminder"][3]="Rdv public";
 $lang["reminder"][4]="Note personnelle";
 $lang["reminder"][5]="Note publique";
 $lang["reminder"][6]="Nouvelle note";
@@ -1007,7 +1001,6 @@ $lang["reminder"][10]="Type";
 $lang["reminder"][11]="Calendrier";
 $lang["reminder"][12]="Ajouter au calendrier";
 $lang["reminder"][13]="Pas de note trouvée";
-$lang["reminder"][14]="Par";
 $lang["reminder"][15]="Sans titre";
 
 $lang["reports"][0]="Sélectionner un rapport à générer";
@@ -1107,7 +1100,6 @@ $lang["setup"][0]="Intitulés";
 $lang["setup"][2]="Ajouter un utilisateur GLPI";
 $lang["setup"][4]="Types d'ordinateurs";
 $lang["setup"][5]="Système d'exploitation";
-$lang["setup"][7]="Microprocesseur";
 $lang["setup"][9]="Interface réseau";
 $lang["setup"][10]="Inventaire";
 $lang["setup"][11]="changer le mot de passe pour";
@@ -1124,7 +1116,6 @@ $lang["setup"][42]="Types de matériels réseau";
 $lang["setup"][43]="Types d'imprimantes";
 $lang["setup"][44]="Types de moniteurs";
 $lang["setup"][57]="Utilisateur";
-$lang["setup"][58]="Droit d'attribution de ticket";
 $lang["setup"][62]="Sélectionnez la catégorie à configurer";
 $lang["setup"][63]="Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs éléments.";
 $lang["setup"][64]="Si vous confirmez la suppression, les éléments utilisant cet intitulé se verront attribuer un champs NULL";
@@ -1164,7 +1155,6 @@ $lang["setup"][99]="Budget";
 
 
 $lang["setup"][100]="Configuration générale";
-$lang["setup"][101]="Chemin d'installation";
 $lang["setup"][102]="Niveau de log";
 $lang["setup"][103]="1- Critique (erreur de login seulement)";
 $lang["setup"][104]="2- Sévère (Non utilisée)";
@@ -1426,18 +1416,6 @@ $lang["title"][40]="Notes personnelles et publiques";
 $lang["title"][41]="Téléphone";
 $lang["title"][42]="Modification Massive";
 
-
-$lang["toolbar"][1]="Gras";
-$lang["toolbar"][2]="Italique";
-$lang["toolbar"][3]="Souligné";
-$lang["toolbar"][4]="Barré";
-$lang["toolbar"][5]="Centré";
-$lang["toolbar"][6]="Code";
-$lang["toolbar"][7]="Titre";
-$lang["toolbar"][8]="Rouge";
-$lang["toolbar"][9]="Bleu";
-$lang["toolbar"][10]="Jaune";
-
 $lang["tracking"][0]="Suivi des tickets";
 $lang["tracking"][8]="Pas de description, veuillez recommencer";
 $lang["tracking"][9]="Nouveau ticket ouvert, suivant...";
@@ -1462,14 +1440,6 @@ $lang["update"][93]="Connexion à la base de données réussie";
 $lang["update"][94]="La mise à jour est réussie, votre base de données est actualisée";
 $lang["update"][95]="La connexion à la base de données a échouée, verifiez les paramètres de connexion figurant dans le fichier config_db.php";
 $lang["update"][96]="Tous vos utilisateurs ayant précedemment les droits 'admin' se sont vu attribuer les droits 'super-admin' avec l'ajout de ce nouveau type d'utilisateur";
-$lang["update"][97]="La base de données que vous venez de mettre à jour ne contient aucun utilisateur 'super-admin'";
-$lang["update"][98]="Vous devez en créer un absolument afin de pouvoir re-configurer l'application (notamment les accès aux sources de données externes)";
-$lang["update"][99]="Vous pourrez supprimer cet utilisateur une fois que vous aurez configuré l'application";
-$lang["update"][100]="Entrez le login";
-$lang["update"][101]="Entrez le mot de passe";
-$lang["update"][102]="Re-entrez le mot de passe";
-$lang["update"][103]="Le Login ou le mot de passe sont vides, ou vous avez saisi deux mots de passes différents";
-$lang["update"][104]="Utilisateur bien enregistré vous pouvez vous connecter à l'application";
 $lang["update"][105]="Impossible d'accéder à la mise à jour de cette façon !!";
 $lang["update"][106]="Retourner à GLPI";
 $lang["update"][107]="Vous devez maintenant procéder à la mise à jour de l'ancien contenu de votre base de données";
