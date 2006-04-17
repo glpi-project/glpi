@@ -188,14 +188,40 @@ class User extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
+		
+		
 		// Update User in the database
 		if (!isset($input["ID"])&&isset($input["name"])){
 			if ($this->getFromDBbyName($input["name"]))
 				$input["ID"]=$this->fields["ID"];
 		} 
 
+		// Security system
+		if (!haveRight("user","w")){
+			if($_SESSION["glpiID"]==$input['ID']) {
+				$ret=array();
+				$ret["ID"]=$input["ID"];
+				if (isset($input["password"]))	$ret["password"]=$input["password"];
+				if (isset($input["language"]))	{
+					$ret["language"]=$input["language"];
+					$_SESSION["glpilanguage"]=$input["language"];
+				}
+				if (isset($input["tracking_order"]))	{
+					$ret["tracking_order"]=$input["tracking_order"];
+					$_SESSION["glpitracking_order"]=$input["tracking_order"];
+				}
+				return $ret;
+			} else return array();
+		}
+		if (isset($input["language"]))	{
+			$_SESSION["glpilanguage"]=$input["language"];
+		}
+		if (isset($input["tracking_order"]))	{
+			$_SESSION["glpitracking_order"]=$input["tracking_order"];
+		}
+
 		// password updated by admin user or own password for user
-		if(empty($input["password"]) || ($_SESSION["glpiname"]!=$input['name'])) {
+		if(empty($input["password"])) {
 			unset($this->fields["password"]);
 			unset($this->fields["password_md5"]);
 			unset($input["password"]);

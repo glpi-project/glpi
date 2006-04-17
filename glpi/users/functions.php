@@ -60,7 +60,7 @@ function showPasswordForm($target,$name) {
 		echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 		echo "<input type='password' name='password' size='10'>";
 		echo "</td><td align='center' class='tab_bg_2'>";
-		echo "<input type='hidden' name='name' value=\"".$user->fields["name"]."\">";
+		echo "<input type='hidden' name='name' value=\"".$name."\">";
 		echo "<input type='submit' name='changepw' value=\"".$lang["buttons"][14]."\" class='submit'>";
 		echo "</td></tr>";
 		echo "</table></div>";
@@ -221,19 +221,6 @@ function showUserform($target,$name) {
 
 
 
-function updateSort($input) {
-
-	global $db;
-
-	$query = "UPDATE glpi_users SET tracking_order = '".$input["tracking_order"]."' WHERE (ID = '".$_SESSION["glpiID"]."')";
-	if ($result=$db->query($query)) {
-		$_SESSION["glpitracking_order"] = $input["tracking_order"];
-		return true;
-	} else {
-		return false;
-	}
-}
-
 function showLangSelect($target) {
 
 	global $cfg_glpi, $lang;
@@ -255,21 +242,10 @@ function showLangSelect($target) {
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='changelang' value=\"".$lang["buttons"][14]."\" class='submit'>";
+	echo "<input type='hidden' name='ID' value=\"".$_SESSION["glpiID"]."\">";
 	echo "</td></tr>";
 	echo "</table></div>";
 	echo "</form>";
-}
-
-function updateLanguage($input) {
-	
-	global $db;
-	$query = "UPDATE glpi_users SET language = '".$input["language"]."' WHERE (ID = '".$_SESSION["glpiID"]."')";
-	if ($result=$db->query($query)) {
-		$_SESSION["glpilanguage"] = $input["language"];
-		return true;
-	} else {
-		return false;
-	}
 }
 
 function showSortForm($target) {
@@ -287,13 +263,14 @@ function showSortForm($target) {
 	echo "<select name='tracking_order'>\n";
 	echo "<option value=\"yes\"";
 	if ($order=="yes") { echo " selected"; }	
-	echo ">".$lang["choice"][0];
+	echo ">".$lang["choice"][1];
 	echo "<option value=\"no\"";
 	if ($order=="no") { echo " selected"; }
-	echo ">".$lang["choice"][1];
+	echo ">".$lang["choice"][0];
 	echo "</select>\n";
 	echo "</td>\n";
 	echo "<td align='center' class='tab_bg_2'>\n";
+	echo "<input type='hidden' name='ID' value=\"".$_SESSION["glpiID"]."\">";
 	echo "<input type='submit' name='updatesort' value=\"".$lang["buttons"][14]."\" class='submit'>\n";
 	echo "</td></tr>\n";
 	echo "</table>";
