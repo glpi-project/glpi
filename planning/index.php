@@ -50,9 +50,11 @@ include ($phproot . "/glpi/includes_phones.php");
 
 commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
 
+checkSeveralRightsOr(array("show_all_planning"=>"1","show_planning"=>"1"));
+
 if (!isset($_GET["date"])||$_GET["date"]=="0000-00-00") $_GET["date"]=strftime("%Y-%m-%d");
 if (!isset($_GET["type"])) $_GET["type"]="week";
-if (!isset($_GET["uID"])||!("show_all_planning","1")) $_GET["uID"]=$_SESSION["glpiID"];
+if (!isset($_GET["uID"])||!haveRight("show_all_planning","1")) $_GET["uID"]=$_SESSION["glpiID"];
 
 
 if ($_GET["type"]!="month"){
