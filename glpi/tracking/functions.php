@@ -68,7 +68,7 @@ function showTrackingOnglets($target){
 	echo "<div id='barre_onglets'><ul id='onglet'>";
    		
 		 if ($_SESSION["glpiprofile"]["interface"]=="central"){
-				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID&onglet=1\">".$lang["job"][38]." $ID</a></li>";
+				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID&amp;onglet=1\">".$lang["job"][38]." $ID</a></li>";
 				
 				if (haveRight("show_ticket","1"))
 				display_plugin_headings($target,TRACKING_TYPE,"","");
@@ -1413,6 +1413,19 @@ function getStatusName($value){
 
 function updateTracking($input){
 	global $lang,$cfg_glpi;
+	if (!haveRight("update_ticket","1")){
+		if (haveRight("assign_ticket","1")){
+			$ret["ID"]=$input["ID"];
+			$ret["assign"]=$input["assign"];
+			$ret["assign_ent"]=$input["assign_ent"];
+			$input=$ret;
+		}
+
+	}
+
+	print_r($input);
+	exit();
+
 	$job = new Job;
 	$job->getFromDB($input["ID"],0);
 	if (isset($input["item"])&& $input["item"]!=0){
@@ -1762,7 +1775,7 @@ function showJobDetails ($ID){
 			echo $lang["job"][43].": ";
 			echo "</td><td><strong>";
 			echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],$job->fields["cost_fixed"],$job->fields["cost_material"]);
-			echo "<strong></td></tr>\n</table>";
+			echo "</strong></td></tr>\n</table>";
 		}
 		
 		echo "</td></tr>";

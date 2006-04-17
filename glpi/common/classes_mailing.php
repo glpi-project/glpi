@@ -145,7 +145,7 @@ class Mailing
 			$nb++;
 		}
 
-		if (isset($cfg_glpi["mailing_".$this->type."_all_admin"])&&$cfg_glpi["mailing_".$this->type."_all_admin"])
+/*		if (isset($cfg_glpi["mailing_".$this->type."_all_admin"])&&$cfg_glpi["mailing_".$this->type."_all_admin"])
 		{
 			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("admin").")";
 			if ($result = $db->query($query)) 
@@ -161,8 +161,8 @@ class Mailing
 				}
 			}
 		}	
-
-		if (isset($cfg_glpi["mailing_".$this->type."_all_normal"])&&$cfg_glpi["mailing_".$this->type."_all_normal"])
+*/
+/*		if (isset($cfg_glpi["mailing_".$this->type."_all_normal"])&&$cfg_glpi["mailing_".$this->type."_all_normal"])
 		{
 			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("normal").")";
 			if ($result = $db->query($query)) 
@@ -178,7 +178,7 @@ class Mailing
 				}
 			}
 		}	
-
+*/
 		if (isset($cfg_glpi["mailing_".$this->type."_attrib"])&&$cfg_glpi["mailing_".$this->type."_attrib"]&&$this->job->fields["assign"])
 		{
 			$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
@@ -420,7 +420,7 @@ class MailingResa{
 			$nb++;
 		}
 
-		if ($cfg_glpi["mailing_resa_all_admin"])
+/*		if ($cfg_glpi["mailing_resa_all_admin"])
 		{
 			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("admin").")";
 			if ($result = $db->query($query)) 
@@ -436,7 +436,7 @@ class MailingResa{
 				}
 			}
 		}	
-
+*/
 		if ($cfg_glpi["mailing_resa_user"])
 		{
 			$user = new User;

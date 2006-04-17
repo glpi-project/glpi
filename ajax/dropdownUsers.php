@@ -41,7 +41,7 @@
 
 	checkCentralAccess();
 // Make a select box with all glpi users
-	$where=" AND '1'='1' ";
+	$where=" '1'='1' ";
 	if (isset($_POST['value']))
 		$where.=" AND  (ID <> '".$_POST['value']."') ";
 
@@ -54,7 +54,9 @@
 	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 	
 			
-	$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY realname,name $LIMIT";
+	//$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY realname,name $LIMIT";
+	$query = "SELECT * FROM glpi_users WHERE $where ORDER BY realname,name $LIMIT";
+	
 	$result = $db->query($query);
 	echo "<select name=\"".$_POST['myname']."\">";
 
