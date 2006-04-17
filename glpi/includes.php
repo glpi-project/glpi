@@ -109,10 +109,10 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 			include ($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
 		else if (file_exists($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
 			include ($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
-		else if (file_exists($phproot . "/plugins/$name/dicts/english.php"))
-			include ($phproot . "/plugins/$name/dicts/english.php");
-		else if (file_exists($phproot . "/plugins/$name/dicts/french.php"))
-			include ($phproot . "/plugins/$name/dicts/french.php");
+		else if (file_exists($phproot . "/plugins/$name/dicts/en_GB.php"))
+			include ($phproot . "/plugins/$name/dicts/en_GB.php");
+		else if (file_exists($phproot . "/plugins/$name/dicts/fr_FR.php"))
+			include ($phproot . "/plugins/$name/dicts/fr_FR.php");
 	}
 }
 

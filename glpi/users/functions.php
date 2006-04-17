@@ -236,7 +236,7 @@ function showLangSelect($target) {
 	while (list($cle)=each($cfg_glpi["languages"])){
 		echo "<option value=\"".$cle."\"";
 			if ($l==$cle) { echo " selected"; }
-		echo ">".$cfg_glpi["languages"][$cle][0];
+		echo ">".$cfg_glpi["languages"][$cle][0]." ($cle)";
 	}
 	echo "</select>";
 	echo "</td>";
