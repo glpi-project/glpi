@@ -44,7 +44,7 @@
 *@param $authtype auth type
 *@returns : string (in order to construct a SQL where clause)
 **/
-function searchUserbyType($authtype) {
+/*function searchUserbyType($authtype) {
 	switch ($authtype){
 		case "post-only" :
 			return " 1=1 ";
@@ -62,7 +62,7 @@ function searchUserbyType($authtype) {
 			return "";
 		}
 }
-
+*/
 /**
 * Count the number of elements in a table.
 *
