@@ -44,22 +44,22 @@ include ($phproot . "/glpi/includes_setup.php");
 
 
 if (isset($_POST["changepw"])) {
-	
-	checkCentralAccess();
-	
+	checkLoginUser();
 	if ($_SESSION["glpiextauth"]!=1){
 		$user=new User();
 		$user->update($_POST);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["updatesort"])) {
-	checkCentralAccess();
-	updateSort($_POST);
+	checkLoginUser();
+	$user=new User();
+	$user->update($_POST);
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["changelang"])) {
 	checkLoginUser();
-	updateLanguage($_POST);
-	
+	$user=new User();
+	$user->update($_POST);
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {

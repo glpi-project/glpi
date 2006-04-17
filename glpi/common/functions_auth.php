@@ -252,9 +252,9 @@ function checkHelpdeskAccess(){
 
 function checkLoginUser(){
 
-	global $lang,$HTMLRel;
+	global $lang,$HTMLRel,$HEADER_LOADED;
 
-	if (!isset($_SESSION["glpiuser"])){
+	if (!isset($_SESSION["glpiname"])){
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
@@ -271,7 +271,7 @@ function checkLoginUser(){
 }
 
 function checkAccessToPublicFaq(){
-	global $lang,$HTMLRel,$cfg_glpi;
+	global $lang,$HTMLRel,$cfg_glpi,$HEADER_LOADED;
 
 	if ($cfg_glpi["public_faq"] == 0 || !haveRight("faq","r")){
 		if (!$HEADER_LOADED){

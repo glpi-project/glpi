@@ -108,7 +108,8 @@ function commonHeader($title,$url)
 		$financial[$lang["Menu"][27]]=array("/documents/index.php","d");
 	
 	//////// ASSISTANCE
-	$maintain[$lang["Menu"][5]]=array("/tracking/index.php","t");
+	if (haveRight("observe_ticket","1")||haveRight("show_ticket","1"))
+		$maintain[$lang["Menu"][5]]=array("/tracking/index.php","t");
 	if (haveRight("create_ticket","1"))
 		$maintain[$lang["Menu"][31]]=array("/helpdesk/index.php","h");
 	if (haveRight("show_planning","1")||haveRight("show_all_planning","1"))
@@ -322,7 +323,7 @@ function displayMessageAfterRedirect(){
 * @param $url not used anymore.
 * @param $name name of the user who want to display the header
 **/
-function helpHeader($title,$url,$name) {
+function helpHeader($title,$url) {
 	// Print a nice HTML-head for help page
 
 	GLOBAL $cfg_glpi,$lang,$HTMLRel,$phproot, $cfg_glpi,$HEADER_LOADED ;
@@ -412,19 +413,25 @@ function helpHeader($title,$url,$name) {
 	// And he can change his password, thats it
 	echo "<td>";
 	if ($_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
-		showPasswordForm($cfg_glpi["root_doc"]."/preferences/index.php",$name);
+		showPasswordForm($cfg_glpi["root_doc"]."/preferences/index.php",$_SESSION["glpiname"]);
 		else echo "&nbsp;";
 	echo "</td>";
 	// We tracking or post a new one
 	echo "<td>";
-        echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a><br><br>";
-        echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
+	if (haveRight("create_ticket","1"))
+        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a>";
+	echo "<br><br>";
+	if (haveRight("observe_ticket","1"))
+        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
 	echo "</td>";
 	//reservation
 	
 	echo "<td>";
-        echo "<a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a><br><br>";
-        echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=faq\"><img  src=\"".$HTMLRel."pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
+	if (haveRight("reservation_helpdesk","1"))
+        	echo "<a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a>";
+	echo "<br><br>";
+	if (haveRight("faq","r"))
+        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=faq\"><img  src=\"".$HTMLRel."pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
 	
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
