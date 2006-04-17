@@ -69,7 +69,8 @@ function showTrackingOnglets($target){
    		
 		 if ($_SESSION["glpiprofile"]["interface"]=="central"){
 				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID&onglet=1\">".$lang["job"][38]." $ID</a></li>";
-
+				
+				if (haveRight("show_ticket","1"))
 				display_plugin_headings($target,TRACKING_TYPE,"","");
 
 				echo "<li class='invisible'>&nbsp;</li>";
@@ -892,6 +893,8 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	
 	global $cfg_glpi,  $lang,$HTMLRel,$phproot;
 
+	if (!haveRight("show_ticket","1")) $author=$_SESSION["glpiID"];
+
 	if ($extended==1){
 		$option["comp.ID"]				= $lang["common"][2];
 		$option["comp.name"]				= $lang["common"][16];
@@ -1063,7 +1066,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	
 	$candelete=haveRight("delete_ticket","1");
-
+	if (!haveRight("show_ticket","1")) $author=$_SESSION["glpiID"];
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
 	// Reduce computer list
@@ -1173,6 +1176,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	
 	if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
 	if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
+	
 	if ($author!=0) $where.=" AND glpi_tracking.author = '$author'";
 
 	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
@@ -1890,6 +1894,7 @@ echo "</div>";
 function showFollowupsSummary($tID){
 	global $db,$lang,$cfg_glpi,$HTMLRel;
 	
+	if (!haveRight("observe_ticket","1")||!haveRight("show_full_ticket","1")) return false;
 
 	// Display existing Followups
 	$showprivate=haveRight("show_full_ticket","1");

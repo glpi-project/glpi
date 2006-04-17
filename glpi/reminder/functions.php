@@ -242,7 +242,9 @@ function showCentralReminder($type="private"){
 		echo "<div align='center'><br><table class='tab_cadrehov'>";
 		
 		echo "<tr><th><div style='position: relative'><span><strong>"."$titre"."</strong></span>";
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."reminder/reminder-info-form.php?type=$type\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span></div>";
+		if ($type!="public"||haveRight("reminder_public","w"))
+			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."reminder/reminder-info-form.php?type=$type\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span>";
+		echo "</div>";
 		echo "</th></tr>";
 	if($db->numrows($result)>0){
 		while ($data =$db->fetch_array($result)){ 
