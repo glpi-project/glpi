@@ -448,7 +448,7 @@ $lang["financial"][93]="Contrat(s) expiré(s) depuis moins de 30 jours ";
 $lang["financial"][94]="Contrat(s) qui expire(nt) dans moins de 7 jours";
 $lang["financial"][95]="Contrat(s) qui expire(nt) dans moins de 30 jours";
 $lang["financial"][96]="Contrat(s) dont le préavis débute dans moins de 7 jours";
-$lang["financial"][97]="Contrats dont le préavis debute dans moins de 30 jours";
+$lang["financial"][97]="Contrats dont le préavis débute dans moins de 30 jours";
 $lang["financial"][98]="Expiration";
 $lang["financial"][99]="Expiration+préavis";
 

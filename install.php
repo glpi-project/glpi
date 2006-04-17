@@ -86,6 +86,7 @@ echo "<p style='text-align:center;'><label>Select your language </label><select 
 	echo "<option value=\"it_IT\">Italiano (it_IT)</option>";
 	echo "<option value=\"es_ES\">Espanol (es_ES)</option>";
 	echo "<option value=\"pt_PT\">Portuguese (pt_PT)</option>";
+	echo "<option value=\"pt_BR\">Brazilian (pt_BR)</option>";
 	echo "<option value=\"nl_NL\">Dutch (nl_NL)</option>";
 	echo "<option value=\"hu_HU\">Hungarian (hu_HU)</option>";
 	echo "<option value=\"po_PO\">Polish (po_PO)</option>";
