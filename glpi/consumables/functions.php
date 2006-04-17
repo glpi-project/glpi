@@ -119,7 +119,7 @@ function showConsumableTypeForm ($target,$ID) {
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
-		dropdownUsersID("tech_num", $ct->fields["tech_num"]);
+		dropdownUsersID("tech_num", $ct->fields["tech_num"],"interface");
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["consumables"][36].": 	</td><td colspan='2'>\n";

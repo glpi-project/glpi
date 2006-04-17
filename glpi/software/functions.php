@@ -129,7 +129,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td>";
-		dropdownUsersID("tech_num", $sw->fields["tech_num"]);
+		dropdownUsersID("tech_num", $sw->fields["tech_num"],"interface");
 	echo "</td>";
 
 	echo "<td>".$lang["common"][15].": 	</td><td colspan='2'>";

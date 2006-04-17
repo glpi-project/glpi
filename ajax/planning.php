@@ -66,7 +66,7 @@
 	if (isset($_GET["author"])){
 		echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
 		echo "<td>";
-		dropdownUsers("plan[id_assign]",$_GET["author"],-1);
+		dropdownUsers("plan[id_assign]",$_GET["author"],"own_ticket",-1);
 		echo "</td></tr>";
 	}
 

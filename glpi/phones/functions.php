@@ -126,7 +126,7 @@ function showPhoneForm ($target,$ID,$withtemplate='') {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
-		dropdownUsersID("tech_num", $mon->fields["tech_num"]);
+		dropdownUsersID("tech_num", $mon->fields["tech_num"],"interface");
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["common"][21].":	</td><td>";

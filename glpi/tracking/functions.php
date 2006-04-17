@@ -824,7 +824,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["buttons"][3].":</td>";
 	
 	echo "<td align='center'>";
-	dropdownUsers("assign",$assign);
+	dropdownUsers("assign",$assign,"own_ticket");
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["tracking"][20].":</td>";
@@ -974,7 +974,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<td colspan='4' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 
 	echo $lang["job"][27].":&nbsp;";
-	dropdownUsers("assign",$assign);
+	dropdownUsers("assign",$assign,"own_ticket");
 	echo $lang["job"][28].":&nbsp;";
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 
@@ -1708,7 +1708,7 @@ function showJobDetails ($ID){
 		if ($canupdate||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
 			echo "<tr><td align='right'>";
 			echo $lang["job"][27].":</td><td>";
-			dropdownUsers("assign",$job->fields["assign"]);
+			dropdownUsers("assign",$job->fields["assign"],"own_ticket");
 			echo "</td></tr>";
 		} else {
                        echo "<tr><td align='right'>";

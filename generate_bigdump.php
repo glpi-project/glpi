@@ -640,17 +640,25 @@ $max['locations']=$db->result($result,0,0) or die (" PB RESULT ".$query);
 for ($i=0;$i<$max['users_sadmin'];$i++){
 	$query="INSERT INTO glpi_users VALUES ('','sadmin$i','',MD5('sadmin$i'),'sadmin$i@tutu.com','tel $i','','".mt_rand(1,$max['locations'])."','no','fr_FR','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
+	$query="INSERT INTO glpi_users_profiles VALUES ('','".$db->insert_id()."','4');";
+	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_admin'];$i++){
 	$query="INSERT INTO glpi_users VALUES ('','admin$i','',MD5('admin$i'),'admin$i@tutu.com','tel $i','','".mt_rand(1,$max['locations'])."','no','fr_FR','1')";
+	$db->query($query) or die("PB REQUETE ".$query);
+	$query="INSERT INTO glpi_users_profiles VALUES ('','".$db->insert_id()."','3');";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_normal'];$i++){
 	$query="INSERT INTO glpi_users VALUES ('','normal$i','',MD5('normal$i'),'normal$i@tutu.com','tel $i','','".mt_rand(1,$max['locations'])."','no','fr_FR','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
+	$query="INSERT INTO glpi_users_profiles VALUES ('','".$db->insert_id()."','2');";
+	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_postonly'];$i++){
 	$query="INSERT INTO glpi_users VALUES ('','postonly$i','',MD5('postonly$i'),'postonly$i@tutu.com','tel $i','','".mt_rand(1,$max['locations'])."','no','fr_FR','1')";
+	$db->query($query) or die("PB REQUETE ".$query);
+	$query="INSERT INTO glpi_users_profiles VALUES ('','".$db->insert_id()."','1');";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 

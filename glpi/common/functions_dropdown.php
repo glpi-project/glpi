@@ -226,7 +226,7 @@ function dropdownNoValue($table,$myname,$value) {
 *
 */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
-function dropdownUsers($myname,$value,$all=0,$display_comments=1) {
+function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 	// Make a select box with all glpi users
 
 	global $HTMLRel,$cfg_glpi,$lang;
@@ -243,7 +243,7 @@ function dropdownUsers($myname,$value,$all=0,$display_comments=1) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname&all=$all'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname&all=$all&right=$right'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -363,10 +363,10 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 * @param $myname
 * @return nothing (print out an HTML select box)
 */
-function dropdownUsersID($myname,$value) {
+function dropdownUsersID($myname,$value,$right) {
 	// Make a select box with all glpi users
 
-	dropdownUsers($myname,$value);
+	dropdownUsers($myname,$value,$right);
 }
 
 /**

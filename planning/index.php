@@ -52,7 +52,7 @@ commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
 
 if (!isset($_GET["date"])||$_GET["date"]=="0000-00-00") $_GET["date"]=strftime("%Y-%m-%d");
 if (!isset($_GET["type"])) $_GET["type"]="week";
-if (!isset($_GET["uID"])) $_GET["uID"]=$_SESSION["glpiID"];
+if (!isset($_GET["uID"])||!("show_all_planning","1")) $_GET["uID"]=$_SESSION["glpiID"];
 
 
 if ($_GET["type"]!="month"){
@@ -102,7 +102,9 @@ titleTrackingPlanning();
 	echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
 	echo "<td>";
-	dropdownUsers("uID",$_GET['uID'],1);
+	if (haveRight("show_all_planning","1"))
+		dropdownUsers("uID",$_GET['uID'],"interface",1);
+	else echo "&nbsp;";
 	echo "</td>";
 	echo "<td align='right'>";
 	echo $lang["common"][27].":</td><td>";
