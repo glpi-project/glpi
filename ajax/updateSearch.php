@@ -34,6 +34,7 @@
 // ----------------------------------------------------------------------
 
 	include ("_relpos.php");
+	$AJAX_INCLUDE=1;
 	include ($phproot."/glpi/includes.php");
 	include ($phproot."/glpi/includes_search.php");
 

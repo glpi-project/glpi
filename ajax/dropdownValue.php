@@ -35,6 +35,7 @@
 
 
 	include ("_relpos.php");
+	$AJAX_INCLUDE=1;
 	include ($phproot."/glpi/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
@@ -113,6 +114,7 @@
 			$where.=")";
 
 			$query = "SELECT ID, name, completename, level FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
+			
 			$result = $db->query($query);
 			
 			echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -120,7 +122,7 @@
 			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 				echo "<option class='tree' value=\"0\">--".$lang["common"][11]."--</option>";
 
-			if ($table=="glpi_dropdown_kbcategories")
+			if ($_POST["table"]=="glpi_dropdown_kbcategories")
 				echo "<option class='tree' value=\"0\">--".$lang["knowbase"][12]."--</option>";
 			else echo "<option class='tree' value=\"0\">-----</option>";
 

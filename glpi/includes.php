@@ -45,6 +45,7 @@ include ($phproot . "/glpi/common/classes.php");
 include ($phproot . "/glpi/common/functions.php");
 include ($phproot . "/glpi/common/functions_auth.php");
 include ($phproot . "/glpi/common/functions_display.php");
+include ($phproot . "/glpi/common/functions_dropdown.php");
 include ($phproot . "/glpi/config/config.php");
 
 // Load Language file
@@ -63,18 +64,20 @@ if ($cfg_glpi["debug"]){
 	}
 }
 
-
-include ($phproot . "/glpi/common/classes_auth.php");
-include ($phproot . "/glpi/common/classes_connection.php");
-include ($phproot . "/glpi/common/classes_mailing.php");
-include ($phproot . "/glpi/common/functions_dropdown.php");
-include ($phproot . "/glpi/common/functions_reports.php");
-include ($phproot . "/glpi/common/functions_search.php");
-include ($phproot . "/glpi/common/functions_export.php");
-include ($phproot . "/glpi/common/functions_logs.php");
-include ($phproot . "/glpi/common/functions_connection.php");
 include ($phproot . "/glpi/common/functions_db.php");
-include ($phproot . "/glpi/common/functions_plugins.php");
+
+if (!isset($AJAX_INCLUDE)){
+
+	include ($phproot . "/glpi/common/classes_auth.php");
+	include ($phproot . "/glpi/common/classes_connection.php");
+	include ($phproot . "/glpi/common/classes_mailing.php");
+	include ($phproot . "/glpi/common/functions_reports.php");
+	include ($phproot . "/glpi/common/functions_search.php");
+	include ($phproot . "/glpi/common/functions_export.php");
+	include ($phproot . "/glpi/common/functions_logs.php");
+	include ($phproot . "/glpi/common/functions_connection.php");
+	include ($phproot . "/glpi/common/functions_plugins.php");
+}
 
 $db=new DB();
 
@@ -99,6 +102,7 @@ $db=new DB();
 
 
 /* On startup, register all plugins configured for use. */
+if (!isset($AJAX_INCLUDE))
 if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 	do_hook("config");
 
@@ -118,6 +122,8 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 
 // Mark if Header is loaded or not :
 $HEADER_LOADED=false;
+if (isset($AJAX_INCLUDE))
+	$HEADER_LOADED=true;;
 
 
 ?>

@@ -35,6 +35,7 @@
 
 //print_r($_GET);
 	include ("_relpos.php");
+	$AJAX_INCLUDE=1;
 	include ($phproot."/glpi/includes.php");
 
 	// Send UTF8 Headers

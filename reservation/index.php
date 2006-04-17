@@ -122,7 +122,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	}
 }
 else {
-	checkSeveralRightsOr("reservation_central","r","reservation_helpdesk","1");
+	checkSeveralRightsOr(array("reservation_central"=>"r","reservation_helpdesk"=>"1"));
 	if (!haveRight("reservation_central","r")){
 		commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
 		printReservationItems($_SERVER["PHP_SELF"]);

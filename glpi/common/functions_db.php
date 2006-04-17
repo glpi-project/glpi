@@ -456,7 +456,7 @@ else return -1;
 function getUserName($ID,$link=0){
 	global $db,$cfg_glpi,$lang;
 
-	$query="SELECT * from glpi_users WHERE ID='$ID'";
+	$query="SELECT * from glpi_users WHERE ID=$ID";
 	$result=$db->query($query);
 	$user="";
 	if ($link==2) $user=array("name"=>"","comments"=>"","link"=>"");
