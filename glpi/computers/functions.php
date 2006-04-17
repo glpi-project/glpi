@@ -224,7 +224,7 @@ function showComputerForm($target,$ID,$withtemplate='') {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td >".$lang["common"][10].": 	</td>";
 		echo "<td >";
-			dropdownUsersID("tech_num",$comp->fields["tech_num"]);
+			dropdownUsersID("tech_num",$comp->fields["tech_num"],"interface");
 		echo "</td>";
 
 		echo "<td>".$lang["common"][19].":	</td><td>";

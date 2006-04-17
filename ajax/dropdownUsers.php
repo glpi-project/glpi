@@ -41,12 +41,16 @@
 
 	checkCentralAccess();
 // Make a select box with all glpi users
-	$where=" '1'='1' ";
+
+	if ($_POST['right']=="interface")
+		$where=" glpi_profiles.".$_POST['right']."='central' ";
+	else 
+		$where=" glpi_profiles.".$_POST['right']."='1' ";
 	if (isset($_POST['value']))
-		$where.=" AND  (ID <> '".$_POST['value']."') ";
+		$where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
 
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-		$where.=" AND (name LIKE '%".$_POST['searchText']."%' OR realname LIKE '%".$_POST['searchText']."%')";
+		$where.=" AND (glpi_users.name LIKE '%".$_POST['searchText']."%' OR glpi_users.realname LIKE '%".$_POST['searchText']."%')";
 
 
 	$NBMAX=$cfg_glpi["dropdown_max"];
@@ -55,7 +59,8 @@
 	
 			
 	//$query = "SELECT * FROM glpi_users WHERE (".searchUserbyType("normal").") $where ORDER BY realname,name $LIMIT";
-	$query = "SELECT * FROM glpi_users WHERE $where ORDER BY realname,name $LIMIT";
+	$query = "SELECT glpi_users.* FROM glpi_profiles LEFT JOIN glpi_users_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles) 
+				LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_profiles.FK_users) WHERE $where ORDER BY realname,name $LIMIT";
 	
 	$result = $db->query($query);
 	echo "<select name=\"".$_POST['myname']."\">";

@@ -139,7 +139,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	else {
 	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
 	echo "<td>";
-	dropdownUsers("id_assign",$planning->fields["id_assign"],-1);
+	dropdownUsers("id_assign",$planning->fields["id_assign"],"own_ticket",-1);
 
 	echo "</td></tr>";
 	
