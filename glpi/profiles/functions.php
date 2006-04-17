@@ -187,7 +187,7 @@ function showCentralProfilesForm($ID){
 	}
 
 	echo "<table class='tab_cadre'><tr>";
-	echo "<th colspan='6'>".$lang["profiles"][3].":&nbsp;&nbsp;".$lang["profiles"][13].":";
+	echo "<th colspan='6'>".$lang["profiles"][4].":&nbsp;&nbsp;".$lang["profiles"][13].":";
 	dropdownYesNoInt("is_default",$prof->fields["is_default"]);
 	echo "</th></tr>";
 
