@@ -80,17 +80,17 @@ function choose_language()
 
 echo "<form action=\"install.php\" method=\"post\">";
 echo "<p style='text-align:center;'><label>Select your language </label><select name=\"language\">";
-	echo "<option value=\"french\">Fran&ccedil;ais</option>";
-	echo "<option value=\"english\">English</option>";
-	echo "<option value=\"deutsch\">Deutch</option>";
-	echo "<option value=\"italian\">Italiano</option>";
-	echo "<option value=\"castellano\">Espanol (castellano)</option>";
-	echo "<option value=\"portugese\">Portuguese</option>";
-	echo "<option value=\"dutch\">Dutch</option>";
-	echo "<option value=\"hungarian\">Hungarian</option>";
-	echo "<option value=\"polish\">Polish</option>";
-	echo "<option value=\"rumanian\">Rumanian</option>";
-	echo "<option value=\"russian\">Russian</option>";
+	echo "<option value=\"fr_FR\">Fran&ccedil;ais (fr_FR)</option>";
+	echo "<option value=\"en_GB\">English (en_GB)</option>";
+	echo "<option value=\"de_DE\">Deutch (de_DE)</option>";
+	echo "<option value=\"it_IT\">Italiano (it_IT)</option>";
+	echo "<option value=\"es_ES\">Espanol (es_ES)</option>";
+	echo "<option value=\"pt_PT\">Portuguese (pt_PT)</option>";
+	echo "<option value=\"nl_NL\">Dutch (nl_NL)</option>";
+	echo "<option value=\"hu_HU\">Hungarian (hu_HU)</option>";
+	echo "<option value=\"po_PO\">Polish (po_PO)</option>";
+	echo "<option value=\"ro_RO\">Romanian (ro_RO)</option>";
+	echo "<option value=\"ru_RU\">Russian (ru_RU)</option>";
 	echo "</select></p>"; 
 	echo "";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\" /><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
@@ -1004,7 +1004,7 @@ function update1($host,$user,$password,$dbname) {
 //------------Start of install script---------------------------
 if(!session_id()) session_start();
 include ("_relpos.php");
-if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
+if(empty($_SESSION["dict"])) $_SESSION["dict"] = "en_GB";
 if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
 
 

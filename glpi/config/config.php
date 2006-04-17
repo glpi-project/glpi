@@ -64,17 +64,17 @@ require_once ($cfg_glpi["config_dir"] . "/config_db.php");
 // dictionnaires
 // Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
 
-$cfg_glpi["languages"]=array("deutsch"=>array("Deutsch","deutsch.php","english.html","hd-english.html","de","en"),
-				"dutch"=>array("Dutch","dutch.php","english.html","hd-english.html","nl","en"),
-				"english"=>array("English","english.php","english.html","hd-english.html","en","en"),
-				"castellano"=>array("Español (castellano)","castellano.php","castellano.html","hd-castellano.html","es","en"),
-				"french"=>array("Français","french.php","french.html","hd-french.html","fr","fr"),
-				"hungarian"=>array("Hungarian","hungarian.php","english.html","hd-english.html","hu","en"),
-				"italian"=>array("Italiano","italian.php","english.html","hd-italian.html","it","en"),
-				"polish"=>array("Polish","polish.php","english.html","hd-english.html","pl","en"),
-				"portugese"=>array("Português (brasileiro)","portugese.php","english.html","hd-english.html","br","en"),
-				"rumaninian"=>array("Rumanian","rumanian.php","english.html","hd-english.html","ro","en"),
-				"russian"=>array("Russian","russian.php","english.html","hd-english.html","ru","en"),
+$cfg_glpi["languages"]=array("de_DE"=>array("Deutsch","de_DE.php","en_GB.html","hd-en_GB.html","de","en"),
+				"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","en"),
+				"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
+				"es_ES"=>array("Español (castellano)","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),
+				"fr_FR"=>array("Français","fr_FR.php","fr_FR.html","hd-fr_FR.html","fr","fr"),
+				"hu_HU"=>array("Hungarian","hu_HU.php","en_GB.html","hd-en_GB.html","hu","en"),
+				"it_IT"=>array("Italiano","it_IT.php","en_GB.html","hd-it_IT.html","it","en"),
+				"po_PO"=>array("Polish","po_PO.php","en_GB.html","hd-en_GB.html","pl","en"),
+				"pt_PT"=>array("Português","pt_PT.php","en_GB.html","hd-en_GB.html","br","en"),
+				"ro_RO"=>array("Romanian","ro_RO.php","en_GB.html","hd-en_GB.html","ro","en"),
+				"ru_RU"=>array("Russian","ru_RU.php","en_GB.html","hd-en_GB.html","ru","en"),
 				);
 
 // ITEMS TYPE

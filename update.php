@@ -1046,7 +1046,7 @@ if(!FieldExists("glpi_tracking","device_type")) {
 // Ajout language par defaut
 if(!FieldExists("glpi_config","default_language")) {
 
-	$query = "ALTER TABLE `glpi_config` ADD `default_language` VARCHAR(255) DEFAULT 'french' NOT NULL ;";
+	$query = "ALTER TABLE `glpi_config` ADD `default_language` VARCHAR(255) DEFAULT 'english' NOT NULL ;";
 	$db->query($query) or die("4204 ".$lang["update"][90].$db->error());
 
 }
@@ -2226,7 +2226,7 @@ if (TableExists("glpi_prefs")){
 		}
 		while($line = $db->fetch_array($result)) {
 			if(!in_array($line["name"],$prefs)) {
-				$query_insert =  "INSERT INTO `glpi_prefs` (`username` , `tracking_order` , `language`) VALUES ('".$line["name"]."', 'no', 'french')";
+				$query_insert =  "INSERT INTO `glpi_prefs` (`username` , `tracking_order` , `language`) VALUES ('".$line["name"]."', 'no', 'english')";
 				$db->query($query_insert) or die("glpi maj prefs ".$lang["update"][90].$db->error()); 
 			}
 		}
@@ -4101,6 +4101,20 @@ if(TableExists("glpi_kbitems")){
 		$db->query($query) or die("0.68 add smtp config ".$lang["update"][90].$db->error());
 	}
 
+	$map_lang=array("french"=>"fr_FR","english"=>"en_GB","deutsch"=>"de_DE","italian"=>"it_IT","castillano"=>"es_ES","portugese"=>"pt_PT","dutch"=>"nl_NL","hungarian"=>"hu_HU","polish"=>"po_PO","rumanian"=>"ro_RO","russian"=>"ru_RU");
+	foreach ($map_lang as $old => $new){
+		$query="UPDATE glpi_users SET language='$new' WHERE language='$old';";
+		$db->query($query) or die("0.68 update $new lang user setting ".$lang["update"][90].$db->error());
+
+	}
+	$query="SELECT default_language FROM glpi_config WHERE ID='1';";
+	$result=$db->query($query);
+	$def_lang=$db->result($result,0,0);
+	if (isset($map_lang[$def_lang])){
+		$query="UPDATE glpi_config SET default_language='".$map_lang[$def_lang]."' WHERE ID='1';";
+		$db->query($query) or die("0.68 update default_language in config ".$lang["update"][90].$db->error());
+	}
+
 } // fin 0.68 #####################################################################################
 
 
@@ -4123,7 +4137,11 @@ regenerateTreeCompleteName("glpi_dropdown_kbcategories");
 //Debut du script
 	
 	if(!isset($_SESSION)) session_start();
-	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "french";
+	
+	if(empty($_SESSION["dict"])) {
+		if (isset($_SESSION["glpilanguage"])) $_SESSION["dict"]=$_SESSION["glpilanguage"];
+		else $_SESSION["dict"] = "en_GB";
+	}
 	loadLang($_SESSION["dict"]);
 	include ("_relpos.php");
 	
