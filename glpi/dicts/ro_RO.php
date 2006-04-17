@@ -1,6 +1,6 @@
 <?php 
 	/* 
-  * @version : fonction.php,v 1.15 2006/01/18 23:24:25 moyo Exp $
+  * @version : fonction.php 3182 2006-04-17 01:27:08Z moyo $
   ----------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -26,7 +26,7 @@ GLPI - Gestionnaire Libre de Parc Informatique
  Purpose of file:
  ----------------------------------------------------------------------
 */ 
-	//rumanian
+	//ro_RO
 
 
 $lang["backup"][0]="Exporta in SQL"; 
@@ -159,6 +159,8 @@ $lang["central"][8]="Adaugari";
 $lang["central"][9]="Ticketele aflate in procesare"; 
 $lang["central"][10]="Noile tickete"; 
 $lang["central"][11]="Your pending Tickets"; 
+$lang["central"][12]="Personnal View"; 
+$lang["central"][13]="Global View"; 
 
 $lang["choice"][0]="Nu"; 
 $lang["choice"][1]="Da"; 
@@ -192,6 +194,9 @@ $lang["common"][25]="Comments";
 $lang["common"][26]="Last update"; 
 $lang["common"][27]="Date"; 
 $lang["common"][28]="Deleted"; 
+$lang["common"][29]="Plugins"; 
+$lang["common"][30]="New Item"; 
+$lang["common"][31]="Blank Template"; 
 
 $lang["computers"][0]="Adauga calculator..."; 
 $lang["computers"][9]="OS"; 
@@ -433,6 +438,13 @@ $lang["financial"][89]="TCO (value + tracking cost)";
 $lang["financial"][90]="Monthly TCO"; 
 $lang["financial"][91]="TCO"; 
 $lang["financial"][92]="ANV"; 
+$lang["financial"][93]="Contracts expired since less than 30 days"; 
+$lang["financial"][94]="Contracts which expire in less than 7 days"; 
+$lang["financial"][95]="Contracts which expire in less than 30 days"; 
+$lang["financial"][96]="Contracts which have notice beginning in less than 7 days"; 
+$lang["financial"][97]="Contracts which have notice beginning in less than 30 days"; 
+$lang["financial"][98]="End Date"; 
+$lang["financial"][99]="End Date + Notice"; 
 
 $lang["help"][0]="Bine ati venit"; 
 $lang["help"][1]="Va rog descrieti problema"; 
@@ -628,6 +640,9 @@ $lang["knowbase"][21]="Arata tot/toate";
 $lang["knowbase"][22]="Ascunde tot/toate"; 
 $lang["knowbase"][23]="Categorie"; 
 $lang["knowbase"][24]="Accesati FAQ (intrebarile cele mai frecvente)"; 
+$lang["knowbase"][25]="Author"; 
+$lang["knowbase"][26]="Views"; 
+$lang["knowbase"][27]="On"; 
 
 $lang["links"][1]="Adresa"; 
 $lang["links"][2]="Adauga o adresa externa"; 
@@ -772,6 +787,7 @@ $lang["Menu"][31]="Ajutor";
 $lang["Menu"][32]="Consumabile"; 
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Phones"; 
+$lang["Menu"][35]="Profiles"; 
 
 $lang["monitors"][0]="Adauga monitoare..."; 
 $lang["monitors"][4]="Monitor"; 
@@ -888,7 +904,7 @@ $lang["peripherals"][33]="Tip de management";
 
 $lang["phones"][0]="Add Phone..."; 
 $lang["phones"][4]="Phone"; 
-$lang["phones"][17]="No phone founded"; 
+$lang["phones"][17]="No phone found"; 
 $lang["phones"][18]="Brand"; 
 $lang["phones"][29]="Phone ID"; 
 $lang["phones"][30]="New model based on a template"; 
@@ -934,6 +950,31 @@ $lang["printers"][33]="Global management";
 $lang["printers"][34]="Unit management"; 
 $lang["printers"][35]="Management Type"; 
 
+$lang["profiles"][0]="Add a profile..."; 
+$lang["profiles"][1]="Select a profile..."; 
+$lang["profiles"][2]="Interface"; 
+$lang["profiles"][3]="Helpdesk Rights"; 
+$lang["profiles"][4]="Central Rights"; 
+$lang["profiles"][5]="Create a ticket"; 
+$lang["profiles"][6]="Add followups to my tickets"; 
+$lang["profiles"][7]="Show tickets"; 
+$lang["profiles"][8]="View all followups (public and private)"; 
+$lang["profiles"][9]="Show public followups"; 
+$lang["profiles"][10]="Read"; 
+$lang["profiles"][11]="Write"; 
+$lang["profiles"][12]="No Access"; 
+$lang["profiles"][13]="Default Profile"; 
+$lang["profiles"][14]="Delete a ticket"; 
+$lang["profiles"][15]="Add followups to all tickets"; 
+$lang["profiles"][16]="Own a ticket"; 
+$lang["profiles"][17]="Steal a ticket"; 
+$lang["profiles"][18]="Update a ticket"; 
+$lang["profiles"][19]="Assign a ticket"; 
+$lang["profiles"][20]="View my planning"; 
+$lang["profiles"][21]="View all planning"; 
+$lang["profiles"][22]="Profile"; 
+$lang["profiles"][23]="Reservation Administration"; 
+
 $lang["reminder"][0]="Personal notes"; 
 $lang["reminder"][1]="Public notes"; 
 $lang["reminder"][2]="Personal appointment"; 
@@ -949,6 +990,7 @@ $lang["reminder"][11]="Calendar";
 $lang["reminder"][12]="Add to calendar"; 
 $lang["reminder"][13]="No note founded"; 
 $lang["reminder"][14]="By"; 
+$lang["reminder"][15]="Without Title"; 
 
 $lang["reports"][0]="Selectati un raport pe care doriti sa il generati"; 
 $lang["reports"][4]="Lista de hardware sub contract"; 
@@ -1208,6 +1250,11 @@ $lang["setup"][227]="Baza adresei de web folosita";
 $lang["setup"][228]="Camp de logare"; 
 $lang["setup"][229]="Cand se schimba atribuirea"; 
 $lang["setup"][230]="When updating a ticket"; 
+$lang["setup"][231]="Use a SMTP server to send emails"; 
+$lang["setup"][232]="SMTP Host"; 
+$lang["setup"][233]="SMTP Port"; 
+$lang["setup"][234]="SMTP Login"; 
+$lang["setup"][235]="SMTP Password"; 
 $lang["setup"][250]="Lista implicita a campurilor de cautare"; 
 $lang["setup"][251]="Selecteaza un antet"; 
 $lang["setup"][252]="Selecteaza obiectele implicite ce vor fi afisate"; 
