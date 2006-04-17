@@ -1729,6 +1729,16 @@ switch ($new_table){
 		
 		return $out." LEFT JOIN $new_table $AS ON (glpi_state_item.state = $nt.ID) ";
 		break;
+	case "glpi_users_profiles":
+		return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_users) ";
+		break;
+
+	case "glpi_profiles":
+		// Link to glpi_users_profiles before
+		$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_users_profiles");
+		
+		return $out." LEFT JOIN $new_table $AS ON (glpi_users_profiles.FK_profiles = $nt.ID) ";
+		break;
 	
 	case "glpi_contracts":
 		// Link to glpi_networking_ports before
