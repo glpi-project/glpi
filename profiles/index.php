@@ -51,7 +51,13 @@ if (isset($_POST["add"])){
 	
 	checkRight("profile","w");
 	$ID=$prof->add($_POST);
-}else  if (isset($_POST["update"])){
+}else  if (isset($_POST["delete"])){
+	checkRight("profile","w");
+
+	$prof->delete($_POST);
+	$ID=0;
+}
+else  if (isset($_POST["update"])){
 	checkRight("profile","w");
 
 	$prof->update($_POST);
@@ -72,12 +78,11 @@ if (isset($_POST["add"])){
 	echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
 	echo "</table></form></div>";
 
-
-if(isset($_POST["ID"])){
-	showProfilesForm($_SERVER["PHP_SELF"],$_POST["ID"]);
-} else if (isset($_GET["add"])){
+if (isset($_GET["add"])){
 	showProfilesForm($_SERVER["PHP_SELF"],0);
-}
+} else if ($ID>0){
+	showProfilesForm($_SERVER["PHP_SELF"],$ID);
+} 
 
 commonFooter();
 
