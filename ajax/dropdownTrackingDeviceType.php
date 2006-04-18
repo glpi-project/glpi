@@ -41,7 +41,7 @@
 	header_nocache();
 
 
-	checkCentralAccess();
+	checkLoginUser();
 
 	// Make a select box
 
