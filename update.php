@@ -4059,7 +4059,7 @@ if(TableExists("glpi_kbitems")){
 		
 			if ($db->numrows($result)>0){
 					while($line = $db->fetch_array($result)) {
-					$query="UPDATE glpi_kbitems SET answer='".rembo($line["answer"])."' WHERE ID='".$line["ID"]."'";
+					$query="UPDATE glpi_kbitems SET answer='".addslashes(rembo($line["answer"]))."' WHERE ID='".$line["ID"]."'";
 					$db->query($query) 	 or die("0.68 convert knowbase to xhtml ".$lang["update"][90].$db->error());
 					}
 				mysql_free_result($result);
