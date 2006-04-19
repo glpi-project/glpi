@@ -96,12 +96,17 @@ function showLinkForm ($target,$ID) {
 	echo "</b></th></tr>";
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["links"][6].":	</td>";
-	echo "<td>[ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN]</td>";
+	echo "<td>[ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL]</td>";
 	echo "</tr>";
+
+	echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":	</td>";
+	echo "<td>";
+		autocompletionTextField("name","glpi_links","name",$con->fields["name"],80);		
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["links"][1].":	</td>";
 	echo "<td>";
-		autocompletionTextField("name","glpi_links","name",$con->fields["name"],80);		
+		autocompletionTextField("link","glpi_links","link",$con->fields["link"],80);		
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["links"][9].":	</td>";
@@ -213,7 +218,7 @@ function showLinkOnDevice($type,$ID){
 	
 	if (!haveRight("link","r")) return false;
 
-	$query="SELECT glpi_links.ID as ID, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
+	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
 	$result=$db->query($query);
 
 	echo "<br>";
@@ -222,8 +227,13 @@ function showLinkOnDevice($type,$ID){
 	if ($db->numrows($result)>0){
 		echo "<div align='center'><table class='tab_cadre'><tr><th>".$lang["title"][33]."</th></tr>";
 
-		while ($data=$db->fetch_array($result)){
-		$link=$data["name"];
+		while ($data=$db->fetch_assoc($result)){
+		
+		$name=$data["name"];
+		if (empty($name))
+			$name=$data["link"];
+
+		$link=$data["link"];
 		$file=trim($data["data"]);
 		if (empty($file)){
 
@@ -235,10 +245,20 @@ function showLinkOnDevice($type,$ID){
 				$link=ereg_replace("\[ID\]",$ID,$link);
 			}
 
+			if (ereg("\[SERIAL\]",$link)){
+				if (isset($ci->obj->fields["serial"]))
+					$link=ereg_replace("\[SERIAL\]",$ci->obj->fields["serial"],$link);
+			}
+			if (ereg("\[OTHERSERIAL\]",$link)){
+				if (isset($ci->obj->fields["otherserial"]))
+					$link=ereg_replace("\[OTHERSERIAL\]",$ci->obj->fields["otherserial"],$link);
+			}
+
 			if (ereg("\[LOCATIONID\]",$link)){
 				if (isset($ci->obj->fields["location"]))
 					$link=ereg_replace("\[LOCATIONID\]",$ci->obj->fields["location"],$link);
 			}
+
 			if (ereg("\[LOCATION\]",$link)){
 				if (isset($ci->obj->fields["location"]))
 					$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$link);
@@ -282,7 +302,7 @@ function showLinkOnDevice($type,$ID){
 				}
 			}
 			} else 
-			echo "<tr class='tab_bg_2'><td><a target='_blank' href='$link'>$link</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a target='_blank' href='$link'>$name</a></td></tr>";
 
 		} else {// File Generated Link
 			$link=$data['name'];		
@@ -297,7 +317,7 @@ function showLinkOnDevice($type,$ID){
 				$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
 			}
 
-			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/links/send-links.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$link."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/links/send-links.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$name."</a></td></tr>";
 		}
 	
 
