@@ -38,7 +38,7 @@ include ("_relpos.php");
 
 
 function titleState(){
-           GLOBAL  $lang,$HTMLRel;
+           global  $lang,$HTMLRel;
            
               
 	     
@@ -54,7 +54,7 @@ function titleState(){
 function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$state=""){
 	// Print Search Form
 	
-	GLOBAL $cfg_glpi,  $lang;
+	global $cfg_glpi,  $lang;
 
 	$option["glpi_state_item.ID"]				= $lang["common"][2];
 //	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
@@ -109,8 +109,14 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$state){
 	// Lists Reservation Items
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
 
+	$state_type=$cfg_glpi["state_type"];
+
+	foreach ($state_type as $key=>$type)
+	if (!haveTypeRight($type,"r")) {
+		unset($state_type[$key]);
+	}
 		
 
 	// Build query
@@ -133,6 +139,15 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 		$where .= " AND (glpi_state_item.state = '".$state."')";
 	}
 	
+	$where.=" AND (";
+	$first=true;
+	foreach ($state_type as $val){
+		if (!$first) $where.=" OR ";
+		else $first=false;
+		$where.=" glpi_state_item.device_type = $val ";
+	}
+
+	$where.=" )";
 
 	if (!$start) {
 		$start = 0;
@@ -284,13 +299,23 @@ $si->getFromDB($device_type,$id_device);
 }
 
 function showStateSummary($target){
-global $db,$lang;
+global $db,$lang,$cfg_glpi;
+
+
+$state_type=$cfg_glpi["state_type"];
+
+foreach ($state_type as $key=>$type)
+if (!haveTypeRight($type,"r")) {
+	unset($state_type[$key]);
+}
 
 $query = "select glpi_dropdown_state.name as state, glpi_dropdown_state.ID as id_state, glpi_state_item.device_type as d_type, count(*) as cmp from glpi_state_item ";
 $query.= " LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID = glpi_state_item.state) ";
 $query .= " WHERE glpi_state_item.is_template='0' GROUP BY glpi_state_item.device_type,glpi_dropdown_state.ID,glpi_dropdown_state.name ORDER BY glpi_dropdown_state.name,glpi_state_item.device_type";
 
-$state_type=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
+
+
+
 
 	if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
