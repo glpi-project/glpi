@@ -68,7 +68,7 @@ function commonHeader($title,$url)
 		$utils[$lang["Menu"][17]]=array("/reservation/index.php","1");
 	if (haveRight("knowbase","r")||haveRight("faq","r")) 
 		$utils[$lang["Menu"][19]]=array("/knowbase/index.php"," ");
-	if (haveRight("reports","w"))
+	if (haveRight("reports","r"))
 		$utils[$lang["Menu"][6]]=array("/reports/index.php"," ");
 	if ($cfg_glpi["ocs_mode"]&&haveRight("ocsng","w")) 
 		$utils[$lang["Menu"][33]]=array("/ocsng/index.php"," ");
