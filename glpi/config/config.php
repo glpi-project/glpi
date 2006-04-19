@@ -264,7 +264,7 @@ if(!empty($cfg_glpi["ldap_host"])){
 	$cfg_glpi["ldap_pass"] = utf8_decode($cfg_glpi["ldap_pass"]);
 
 	//// AJOUTER CA DANS LA CONFIG POST INSTALL
-	$cfg_glpi['ldap_fields'] = array( "name" => $cfg_glpi['ldap_field_name'], 
+	$cfg_glpi['ldap_fields'] = array( "name" => $cfg_glpi['ldap_login'], 
 					"email" => $cfg_glpi['ldap_field_email'], 
 					"location" => $cfg_glpi['ldap_field_location'], 
 					"phone" => $cfg_glpi['ldap_field_phone'], 

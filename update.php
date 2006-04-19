@@ -4121,6 +4121,11 @@ if(TableExists("glpi_kbitems")){
 		$query="UPDATE glpi_links SET name=link";
 		$db->query($query) or die("0.68 init name field in link ".$lang["update"][90].$db->error());
 	}
+
+	if(FieldExists("glpi_config","ldap_field_name")) {	
+		$query="ALTER TABLE `glpi_config` DROP `ldap_field_name` ";
+		$db->query($query) or die("0.68 drop ldap_field_name in config ".$lang["update"][90].$db->error());
+	}
 } // fin 0.68 #####################################################################################
 
 

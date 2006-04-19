@@ -41,7 +41,7 @@ checkRight("config","w");
 
 if(!empty($_GET["next"])) {
 
-	if($_GET["next"] == "extsources") {
+	if($_GET["next"] == "extauth") {
 		commonHeader($lang["title"][14],$_SERVER["PHP_SELF"]);
 		titleExtSources();
 		showFormExtSources($_SERVER["PHP_SELF"]);
@@ -79,7 +79,7 @@ elseif(!empty($_POST["update_ext"])) {
 	if(empty($_POST["LDAP_Test"]) ) {
 //todo test remote connection
 	
-		updateLDAP($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["ldap_condition"],$_POST["ldap_login"],$_POST["ldap_field_name"],$_POST["ldap_field_email"],$_POST["ldap_field_location"],$_POST["ldap_field_phone"],$_POST["ldap_field_realname"],$_POST["ldap_port"],$_POST["ldap_use_tls"]);
+		updateLDAP($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["ldap_condition"],$_POST["ldap_login"],$_POST["ldap_field_email"],$_POST["ldap_field_location"],$_POST["ldap_field_phone"],$_POST["ldap_field_realname"],$_POST["ldap_port"],$_POST["ldap_use_tls"]);
 	}
 	if(empty($_POST["IMAP_Test"])) {
 		$auth_server=constructIMAPAuthServer($_POST);
@@ -88,7 +88,7 @@ elseif(!empty($_POST["update_ext"])) {
 	if(empty($_POST["CA_Test"])) {
 		updateCAS($_POST["cas_host"],$_POST["cas_port"],$_POST["cas_uri"]);
 	}
-	glpi_header($cfg_glpi["root_doc"]."/setup/setup-config.php?next=extsources");
+	glpi_header($cfg_glpi["root_doc"]."/setup/setup-config.php?next=extauth");
 }
 elseif(!empty($_POST["update_confgen"])) {
 	updateConfigGen($_POST["event_loglevel"], $_POST["expire_events"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["date_fiscale"],$_POST["cartridges_alarm"],

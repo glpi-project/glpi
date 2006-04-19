@@ -1363,15 +1363,12 @@ function showFormExtSources($target) {
 		
 		echo "<tr class='tab_bg_1'><td align='center' colspan='4'>".$lang["setup"][167]."</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>name</td><td><input type=\"text\" name=\"ldap_field_name\" value=\"". $db->result($result,0,"ldap_field_name") ."\" ></td>";
+		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $db->result($result,0,"ldap_field_realname") ."\" ></td>";
 		echo "<td align='center'>email</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"". $db->result($result,0,"ldap_field_email") ."\" ></td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>location</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". $db->result($result,0,"ldap_field_location") ."\" ></td>";
 		echo "<td align='center'>phone</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". $db->result($result,0,"ldap_field_phone") ."\" ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $db->result($result,0,"ldap_field_realname") ."\" ></td>";
-		echo "<td align='center'>&nbsp;</td><td>&nbsp;</td></tr>";
-		
 		echo "</table>&nbsp;</div>";
 	}
 	else {
@@ -1583,14 +1580,14 @@ function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$pri
 	
 }
 
-function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition,$ldap_login,$field_name,$field_email,$field_location,$field_phone,$field_realname,$ldap_port,$ldap_use_tls) {
+function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition,$ldap_login,$field_email,$field_location,$field_phone,$field_realname,$ldap_port,$ldap_use_tls) {
 	
 	global $db;
 	//TODO : test the remote LDAP connection
 		$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
 		$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
 		$query .= "ldap_pass = '". $ldap_pass ."', ldap_condition = '". $ldap_condition ."', ldap_login = '". $ldap_login ."',";
-		$query .= "ldap_field_name = '". $field_name ."', ldap_field_email = '". $field_email ."', ";
+		$query .= " ldap_field_email = '". $field_email ."', ";
 		$query .= "ldap_field_location = '". $field_location ."', ldap_field_phone = '". $field_phone ."', ";
 		$query .= "ldap_field_realname = '". $field_realname ."', ldap_port = '". $ldap_port ."', ldap_use_tls = '". $ldap_use_tls ."' ";
 		$query.= " where ID = '1' ";
