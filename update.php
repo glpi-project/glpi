@@ -4112,6 +4112,15 @@ if(TableExists("glpi_kbitems")){
 		$db->query($query) or die("0.68 update default_language in config ".$lang["update"][90].$db->error());
 	}
 
+	// Improve link management
+	if(!FieldExists("glpi_links","link")) {	
+		$query="ALTER TABLE `glpi_links` CHANGE `name` `link` VARCHAR( 255 ) NULL DEFAULT NULL ";
+		$db->query($query) or die("0.68 rename name in link ".$lang["update"][90].$db->error());
+		$query="ALTER TABLE `glpi_links` ADD `name` VARCHAR( 255 ) NULL AFTER `ID`";
+		$db->query($query) or die("0.68 add name in link ".$lang["update"][90].$db->error());
+		$query="UPDATE glpi_links SET name=link";
+		$db->query($query) or die("0.68 init name field in link ".$lang["update"][90].$db->error());
+	}
 } // fin 0.68 #####################################################################################
 
 

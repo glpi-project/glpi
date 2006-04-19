@@ -45,12 +45,12 @@ include ($phproot . "/glpi/includes_consumables.php");
 checkRight("link","r");
 
 if (isset($_GET["lID"])){
-	$query="SELECT glpi_links.ID as ID, glpi_links.name as name,glpi_links.data as data from glpi_links WHERE glpi_links.ID='".$_GET["lID"]."'";
+	$query="SELECT glpi_links.ID as ID, glpi_links.link as link,glpi_links.data as data from glpi_links WHERE glpi_links.ID='".$_GET["lID"]."'";
 
 	$result=$db->query($query);
 	if ($db->numrows($result)==1){
 		$file=$db->result($result,0,"data");
-		$link=$db->result($result,0,"name");
+		$link=$db->result($result,0,"link");
 
 		$ci=new CommonItem;
 
@@ -75,6 +75,16 @@ if (isset($_GET["lID"])){
 			if (ereg("\[ID\]",$file)){
 				$file=ereg_replace("\[ID\]",$_GET["ID"],$file);
 			}
+
+			if (ereg("\[SERIAL\]",$file)){
+				if (isset($ci->obj->fields["serial"]))
+					$file=ereg_replace("\[SERIAL\]",$ci->obj->fields["serial"],$file);
+			}
+			if (ereg("\[OTHERSERIAL\]",$file)){
+				if (isset($ci->obj->fields["otherserial"]))
+					$file=ereg_replace("\[OTHERSERIAL\]",$ci->obj->fields["otherserial"],$file);
+			}
+
 		
 			if (ereg("\[LOCATIONID\]",$file)){
 				if (isset($ci->obj->fields["location"]))
