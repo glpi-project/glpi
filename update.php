@@ -4144,6 +4144,10 @@ if(TableExists("glpi_kbitems")){
 		$query="ALTER TABLE `glpi_config` DROP `ldap_field_name` ";
 		$db->query($query) or die("0.68 drop ldap_field_name in config ".$lang["update"][90].$db->error());
 	}
+
+	// Security user Helpdesk
+	$query="UPDATE glpi_users SET password='', active='0' WHERE name='Helpdesk';";
+	$db->query($query) or die("0.68 security update for user Helpdesk ".$lang["update"][90].$db->error());
 } // fin 0.68 #####################################################################################
 
 
