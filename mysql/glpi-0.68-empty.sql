@@ -1993,7 +1993,7 @@ CREATE TABLE `glpi_users` (
    KEY name_2 (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','14e43c2d31dcbdd1','','',NULL,'Helpdesk Injector',NULL,'no','fr_FR','1');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'Helpdesk Injector',NULL,'no','fr_FR','0');
 INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','','0','yes','fr_FR','1');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','0','no','en_GB','1');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','0','yes','fr_FR','1');
