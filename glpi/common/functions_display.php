@@ -591,10 +591,10 @@ echo "</table></div>";
 		if ($cfg_glpi["debug_profile"]){
 			echo "<h2>TIME</h2>";
 			echo $TIMER_DEBUG->Get_Time()."s";
-			echo "<h2>MEMORY</h2>";
-			echo memory_get_usage();
-
-
+			if (function_exists("memory_get_usage")){
+				echo "<h2>MEMORY</h2>";
+				echo memory_get_usage();
+			}
 		}
 		if ($cfg_glpi["debug_vars"]){
 			echo "<h2>POST VARIABLE</h2>";
