@@ -117,7 +117,16 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 		//showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 	}
 
-}else{  // show "my view" 
+}else if($_SESSION['glpi_viewcentral']=="plugins"){
+	echo "<table class='tab_cadre_central' ><tr><td>";
+
+	do_hook("central_action");
+	echo "</td></tr>";
+	
+	
+	echo "</table>";
+
+} else{  // show "my view" 
 
 
 
@@ -162,20 +171,7 @@ echo "<table class='tab_cadre_central' ><tr>";
 	echo "</table>";
 	echo "</div>";
 	
-	
-	
-
-
-
-
-
-
-
-
 }
-
-echo "<br>";
-do_hook("central_action");
 
 commonFooter();
 
