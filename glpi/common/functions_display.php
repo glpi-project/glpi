@@ -983,10 +983,12 @@ function printCleanArray($tab,$pad=0){
 * @return nothing
 */
 function showCentralOnglets($target,$actif) {
-	global $lang, $HTMLRel;
+	global $lang, $HTMLRel,$plugin_hooks;
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($actif=="my"){ echo "class='actif'";} echo  "><a href='$target?onglet=my'>".$lang["central"][12]."</a></li>";
 	echo "<li "; if ($actif=="global"){ echo "class='actif'";} echo  "><a href='$target?onglet=global'>".$lang["central"][13]."</a></li>";
+	if (count($plugin_hooks['central_action']))
+	echo "<li "; if ($actif=="plugins"){ echo "class='actif'";} echo  "><a href='$target?onglet=plugins'>".$lang["common"][29]."</a></li>";
 	echo "</ul></div>";
 }
 
