@@ -2310,6 +2310,9 @@ global $db,$lang;
 	 echo "<p class='center'>Version 0.6 </p>";
 
 /*******************************GLPI 0.6***********************************************/
+$query= "UPDATE `glpi_tracking` SET `category`='0' WHERE `category` IS NULL;";
+$db->query($query) or die("0.6 prepare for alter category tracking ".$lang["update"][90].$db->error());	
+
 $query= "ALTER TABLE `glpi_tracking` CHANGE `category` `category` INT(11) DEFAULT '0' NOT NULL";
 $db->query($query) or die("0.6 alter category tracking ".$lang["update"][90].$db->error());	
 
@@ -2429,6 +2432,11 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 		$users[$line["name"]]=$line["ID"];
 	}
 	mysql_free_result($result);
+
+	// Update authors tracking
+	$query= "UPDATE `glpi_tracking` SET `author`='0' WHERE `author` IS NULL;";
+	$db->query($query) or die("0.6 prepare for alter category tracking ".$lang["update"][90].$db->error());	
+
 	// Load tracking authors tables
 	$authors=array();
 	$query="SELECT ID, author FROM glpi_tracking";
@@ -2437,9 +2445,6 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 		$authors[$line["ID"]]=$line["author"];
 	}
 	mysql_free_result($result);
-	// Update authors tracking
-	$query= "ALTER TABLE `glpi_tracking` CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
-	$db->query($query) or die("0.6 alter author in tracking ".$lang["update"][90].$db->error());	
 
 	if (count($authors)>0)
 	foreach ($authors as $ID => $val){
@@ -2449,8 +2454,13 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 		}
 	}
 	unset($authors);
+
+	$query= "ALTER TABLE `glpi_tracking` CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
+	$db->query($query) or die("0.6 alter author in tracking ".$lang["update"][90].$db->error());	
 	
 	$assign=array();
+
+
 	// Load tracking assign tables
 	$query="SELECT ID, assign FROM glpi_tracking";
 	$result=$db->query($query);
@@ -2459,9 +2469,6 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	}
 	mysql_free_result($result);
 
-	// Update assign tracking
-	$query= "ALTER TABLE `glpi_tracking` CHANGE `assign` `assign` INT(11) DEFAULT '0' NOT NULL";
-	$db->query($query) or die("0.6 alter assign in tracking ".$lang["update"][90].$db->error());	
 
 	if (count($assign)>0)
 	foreach ($assign as $ID => $val){
@@ -2472,6 +2479,10 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	}
 	unset($assign);
 
+	// Update assign tracking
+	$query= "ALTER TABLE `glpi_tracking` CHANGE `assign` `assign` INT(11) DEFAULT '0' NOT NULL";
+	$db->query($query) or die("0.6 alter assign in tracking ".$lang["update"][90].$db->error());	
+
 	$authors=array();
 	// Load followup authors tables
 	$query="SELECT ID, author FROM glpi_followups";
@@ -2481,9 +2492,6 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	}
 	mysql_free_result($result);
 	
-	// Update authors tracking
-	$query= "ALTER TABLE `glpi_followups` CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
-	$db->query($query) or die("0.6 alter author in followups ".$lang["update"][90].$db->error());	
 
 	if (count($authors)>0)
 	foreach ($authors as $ID => $val){
@@ -2493,6 +2501,10 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 		}
 	}
 	unset($authors);
+
+	// Update authors tracking
+	$query= "ALTER TABLE `glpi_followups` CHANGE `author` `author` INT(11) DEFAULT '0' NOT NULL";
+	$db->query($query) or die("0.6 alter author in followups ".$lang["update"][90].$db->error());	
 
 	// Update Enterprise Tracking
 	$query="SELECT computer, ID FROM glpi_tracking WHERE device_type='".ENTERPRISE_TYPE."'";
@@ -3285,20 +3297,20 @@ if(TableExists("glpi_type_docs")){
 	$query="SELECT * from glpi_type_docs WHERE ext='odt' OR ext='ods' OR ext='odp' OR ext='otp' OR ext='ott' OR ext='ots' OR ext='odf' OR ext='odg' OR ext='otg' OR ext='odb' OR ext='oth' OR ext='odm' OR ext='odc' OR ext='odi'";
 	$result=$db->query($query);
 	if ($db->numrows($result)==0){
-		$query2="INSERT INTO `glpi_type_docs` ( `ID` , `name` , `ext` , `icon` , `mime` , `upload` , `date_mod` ) VALUES (NULL, 'Oasis Open Office Writer', 'odt', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:41:13'),
-	(NULL, 'Oasis Open Office Calc', 'ods', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:41:31'),
-	(NULL, 'Oasis Open Office Impress', 'odp', 'odp-dist.png', NULL, 'Y', '2006-01-21 17:42:54'),
-	(NULL, 'Oasis Open Office Impress Template', 'otp', 'odp-dist.png', NULL, 'Y', '2006-01-21 17:43:58'),
-	(NULL, 'Oasis Open Office Writer Template', 'ott', 'odt-dist.png', NULL, 'Y', '2006-01-21 17:44:41'),
-	(NULL, 'Oasis Open Office Calc Template', 'ots', 'ods-dist.png', NULL, 'Y', '2006-01-21 17:45:30'),
-	(NULL, 'Oasis Open Office Math', 'odf', 'odf-dist.png', NULL, 'Y', '2006-01-21 17:48:05'),
-	(NULL, 'Oasis Open Office Draw', 'odg', 'odg-dist.png', NULL, 'Y', '2006-01-21 17:48:31'),
-	(NULL, 'Oasis Open Office Draw Template', 'otg', 'odg-dist.png', NULL, 'Y', '2006-01-21 17:49:46'),
-	(NULL, 'Oasis Open Office Base', 'odb', 'odb-dist.png', NULL, 'Y', '2006-01-21 18:03:34'),
-	(NULL, 'Oasis Open Office HTML', 'oth', 'oth-dist.png', NULL, 'Y', '2006-01-21 18:05:27'),
-	(NULL, 'Oasis Open Office Writer Master', 'odm', 'odm-dist.png', NULL, 'Y', '2006-01-21 18:06:34'),
-	(NULL, 'Oasis Open Office Chart', 'odc', NULL, NULL, 'Y', '2006-01-21 18:07:48'),
-	(NULL, 'Oasis Open Office Image', 'odi', NULL, NULL, 'Y', '2006-01-21 18:08:18');";
+		$query2="INSERT INTO `glpi_type_docs` ( `name` , `ext` , `icon` , `mime` , `upload` , `date_mod` ) VALUES ('Oasis Open Office Writer', 'odt', 'odt-dist.png', '', 'Y', '2006-01-21 17:41:13'),
+	( 'Oasis Open Office Calc', 'ods', 'ods-dist.png', '', 'Y', '2006-01-21 17:41:31'),
+	('Oasis Open Office Impress', 'odp', 'odp-dist.png', '', 'Y', '2006-01-21 17:42:54'),
+	('Oasis Open Office Impress Template', 'otp', 'odp-dist.png', '', 'Y', '2006-01-21 17:43:58'),
+	('Oasis Open Office Writer Template', 'ott', 'odt-dist.png', '', 'Y', '2006-01-21 17:44:41'),
+	('Oasis Open Office Calc Template', 'ots', 'ods-dist.png', '', 'Y', '2006-01-21 17:45:30'),
+	('Oasis Open Office Math', 'odf', 'odf-dist.png', '', 'Y', '2006-01-21 17:48:05'),
+	('Oasis Open Office Draw', 'odg', 'odg-dist.png', '', 'Y', '2006-01-21 17:48:31'),
+	('Oasis Open Office Draw Template', 'otg', 'odg-dist.png', '', 'Y', '2006-01-21 17:49:46'),
+	('Oasis Open Office Base', 'odb', 'odb-dist.png', '', 'Y', '2006-01-21 18:03:34'),
+	('Oasis Open Office HTML', 'oth', 'oth-dist.png', '', 'Y', '2006-01-21 18:05:27'),
+	('Oasis Open Office Writer Master', 'odm', 'odm-dist.png', '', 'Y', '2006-01-21 18:06:34'),
+	('Oasis Open Office Chart', 'odc', NULL, '', 'Y', '2006-01-21 18:07:48'),
+	('Oasis Open Office Image', 'odi', NULL, '', 'Y', '2006-01-21 18:08:18');";
 		$db->query($query2) or die("0.65 add new type docs ".$lang["update"][90].$db->error());
 	}
 }
@@ -3341,6 +3353,8 @@ $inv_table=array("computers","monitors","networking","peripherals","printers");
 
 foreach ($inv_table as $table)
 if(FieldExists("glpi_$table","comments")) {	
+	$query="UPDATE glpi_$table SET location='0' WHERE location IS NULL;";
+	$db->query($query) or die("0.65 prepare data fro alter various fields in $table ".$lang["update"][90].$db->error());
 	$query="ALTER TABLE `glpi_$table` CHANGE `name` `name` VARCHAR( 200 ) NULL ,
 		CHANGE `serial` `serial` VARCHAR( 200 ) NULL ,
 		CHANGE `otherserial` `otherserial` VARCHAR( 200 ) NULL ,
@@ -3352,7 +3366,11 @@ if(FieldExists("glpi_$table","comments")) {
 }
 
 if(FieldExists("glpi_computers","os")) {	
-	$db->query($query) or die("0.65 alter various fields in $table ".$lang["update"][90].$db->error());
+	$query="UPDATE glpi_computers SET model='0' WHERE model IS NULL;";
+	$db->query($query) or die("0.65 prepare model for alter computers ".$lang["update"][90].$db->error());
+	$query="UPDATE glpi_computers SET type='0' WHERE type IS NULL;";
+	$db->query($query) or die("0.65 prepare type for alter computers ".$lang["update"][90].$db->error());
+	
 	$query="ALTER TABLE `glpi_computers` CHANGE `os` `os` INT( 11 ) NOT NULL DEFAULT '0',
 		CHANGE `model` `model` INT( 11 ) NOT NULL DEFAULT '0',
 		CHANGE `type` `type` INT( 11 ) NOT NULL DEFAULT '0'";
