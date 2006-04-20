@@ -893,7 +893,12 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	
 	global $cfg_glpi,  $lang,$HTMLRel,$phproot;
 
-	if (!haveRight("show_ticket","1")) $author=$_SESSION["glpiID"];
+	if (!haveRight("show_ticket","1")) {
+		if ($author==0&&$assign==0)
+			if (!haveRight("own_ticket","1"))
+				$author=$_SESSION["glpiID"];
+			else $assign=$_SESSION["glpiID"];
+	}
 
 	if ($extended==1){
 		$option["comp.ID"]				= $lang["common"][2];
@@ -952,7 +957,9 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][20]."</option>";
 	echo "</select></td>";
 	echo "<td  colspan='2' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
-	dropdownUsersTracking("author",$author,"author");
+	if (!haveRight("show_ticket","1")) 
+		dropdownUsers("author",$author,"ID");
+	else dropdownUsersTracking("author",$author,"author");
 	echo "</td>";
 
 	echo "<td colspan='1' align='center'>".$lang["joblist"][2].":&nbsp;";
@@ -974,7 +981,9 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<td colspan='4' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
 
 	echo $lang["job"][27].":&nbsp;";
-	dropdownUsers("assign",$assign,"own_ticket");
+	if (!haveRight("show_ticket","1")) 
+		dropdownUsers("assign",$assign,"ID");
+	else dropdownUsers("assign",$assign,"own_ticket");
 	echo $lang["job"][28].":&nbsp;";
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 
@@ -1066,7 +1075,12 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	
 	$candelete=haveRight("delete_ticket","1");
-	if (!haveRight("show_ticket","1")) $author=$_SESSION["glpiID"];
+	if (!haveRight("show_ticket","1")) {
+		if ($author==0&&$assign==0)
+			if (!haveRight("own_ticket","1"))
+				$author=$_SESSION["glpiID"];
+			else $assign=$_SESSION["glpiID"];
+	}
 	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
 	// Reduce computer list
