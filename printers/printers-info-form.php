@@ -182,6 +182,7 @@ if (isset($_GET['onglet'])) {
 						showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
 						showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);		
 						showLinkOnDevice(PRINTER_TYPE,$tab["ID"]);
+						display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 					break;
 				case 3 :			
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);

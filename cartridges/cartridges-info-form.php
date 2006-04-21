@@ -127,6 +127,7 @@ else
 			showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",CARTRIDGE_TYPE,$tab["ID"],1);
 			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
 			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
+			display_plugin_action(CARTRIDGE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 			break;
 		case 4 :
 			showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",CARTRIDGE_TYPE,$tab["ID"],1);

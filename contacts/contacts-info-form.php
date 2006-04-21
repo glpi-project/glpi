@@ -117,8 +117,8 @@ else
 		switch($_SESSION['glpi_onglet']){
 		case -1 :	
 			showEnterpriseContact($tab["ID"]);
-		
 			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
+			display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 			break;
 		case 7 : 
 			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);

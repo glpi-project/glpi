@@ -179,6 +179,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
 					showLinkOnDevice(PERIPHERAL_TYPE,$tab["ID"]);
+					display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 					break;
 				case 4 :
 					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PERIPHERAL_TYPE,$tab["ID"]);

@@ -170,6 +170,7 @@ else
 				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
 				showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
+				display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 				break;
 			case 4 :			
 				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",MONITOR_TYPE,$tab["ID"]);

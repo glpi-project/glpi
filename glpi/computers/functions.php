@@ -406,7 +406,7 @@ function showConnections($target,$ID,$withtemplate='') {
 
 	
 	foreach ($items as $type => $title){
-		if (!$haveTypeRight($type,"r")) unset($items[$type]);
+		if (!haveTypeRight($type,"r")) unset($items[$type]);
 			
 	}
 	if (count($items)){
@@ -468,7 +468,7 @@ function showConnections($target,$ID,$withtemplate='') {
 					}
 					echo "<br>";
 				}
-				if (haveTypeRight("w"))
+				if ($canedit)
 				if(empty($withtemplate) || $withtemplate != 2) {
 					echo "<form method='post' action=\"$target\">";
 					echo "<input type='hidden' name='connect' value='connect'>";

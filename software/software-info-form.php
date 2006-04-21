@@ -160,6 +160,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
 					showLinkOnDevice(SOFTWARE_TYPE,$tab["ID"]);
+					display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 					break;
 				case 2 :
 					showLicensesAdd($tab["ID"]);
