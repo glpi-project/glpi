@@ -1790,7 +1790,7 @@ function ocsFormDBConfig($target, $id) {
 
 	global  $db,$dbocs,$lang;
 
-	if (!haveRight("config","1")) return false;	
+	if (!haveRight("ocsng","w")) return false;	
 
 	$query = "select * from glpi_ocs_config where ID = '".$id."'";
 	$result = $db->query($query);
@@ -1824,7 +1824,7 @@ function ocsFormConfig($target, $id) {
 
 	global  $db,$lang;
 
-	if (!haveRight("config","1")) return false;	
+	if (!haveRight("ocsng","w")) return false;	
 
 	$query = "select * from glpi_ocs_config where ID = '".$id."'";
 	$result = $db->query($query);
