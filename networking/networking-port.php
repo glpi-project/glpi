@@ -82,10 +82,13 @@ if(isset($_POST["add"]))
 	else {
 		unset($tab['several']);
 		unset($tab['from_logical_number']);
-		unset($tab['to_logical_number']);		
+		unset($tab['to_logical_number']);	
 		for ($i=$_POST["from_logical_number"];$i<=$_POST["to_logical_number"];$i++){
+			$add="";
+			if ($i<10)	$add="0";
 			$tab["logical_number"]=$i;
-			$tab["name"]=$_POST["name"].$i;
+			$tab["name"]=$_POST["name"].$add.$i;
+			
 		        $np->add($tab);	
 		}
 	    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");

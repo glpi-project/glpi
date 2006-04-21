@@ -53,7 +53,7 @@
 			$where.=" AND $table.is_template='0' ";		
 			
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-			$where.=" AND $table.name LIKE '%".$_POST['searchText']."%' ";
+			$where.=" AND ( $table.name LIKE '%".$_POST['searchText']."%' OR $table.serial LIKE '%".$_POST['searchText']."%' )";
 
 		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
@@ -70,7 +70,7 @@
 	$LEFTJOINCONNECT="";
 	if ($_POST["idtable"]!=COMPUTER_TYPE)		
 		$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
-	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name from $table $LEFTJOINCONNECT $CONNECT_SEARCH $where order by name ASC";
+	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name,$table.serial as serial from $table $LEFTJOINCONNECT $CONNECT_SEARCH $where order by name ASC";
 
 		$result = $db->query($query);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -82,6 +82,7 @@
 		if ($db->numrows($result)) {
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['name'];
+				if (!empty($data['serial'])) $output.=" - ".$data["serial"];
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
 
