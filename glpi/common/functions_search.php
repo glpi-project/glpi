@@ -1102,8 +1102,8 @@ default:
 	if ($meta){
 		
 		if ($table!=$LINK_ID_TABLE[$type])
-			return " GROUP_CONCAT( DISTINCT LCASE(".$pretable.$table.$addtable.".".$field.") SEPARATOR '$$$$') AS META_$num, ";
-		else return " GROUP_CONCAT( DISTINCT LCASE(".$table.$addtable.".".$field.") SEPARATOR '$$$$') AS META_$num, ";
+			return " LCASE(GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$')) AS META_$num, ";
+		else return " LCASE(GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$')) AS META_$num, ";
 
 	}
 	else 
