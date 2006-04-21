@@ -156,7 +156,7 @@ function showSoftwareForm ($target,$ID,$search_software="",$withtemplate='') {
 	echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$sw->fields["comments"]."</textarea>";
 	echo "</td></tr>";
 	
-	if (!haveRight("cartridge","w")){
+	if (haveRight("software","w")){
 		echo "<tr>";
 
 		if ($template) {
