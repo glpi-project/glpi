@@ -105,6 +105,7 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 
 				$actions=$function($type);
 				
+				if (is_array($actions))
 				foreach ($actions as $key => $action){
 				if (function_exists($action)){
 					echo "<br>";

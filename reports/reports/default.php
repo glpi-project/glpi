@@ -59,25 +59,67 @@ $query = "SELECT count(ID) FROM glpi_software where deleted ='N'  AND is_templat
 $result = $db->query($query);
 $number_of_software = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_printers where deleted ='N'  AND is_template = '0' ";
+$query = "SELECT count(ID) FROM glpi_printers where deleted ='N'  AND is_template = '0' AND is_global='0' ";
 $result = $db->query($query);
 $number_of_printers = $db->result($result,0,0);
+
+$query2="SELECT ID FROM glpi_printers where deleted ='N'  AND is_template = '0' AND is_global='1' ";
+$result = $db->query($query2);
+if ($db->numrows($result)){
+	while ($data=$db->fetch_assoc($result)){
+		$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PRINTER_TYPE."' AND end1='".$data["ID"]."';";
+		$result = $db->query($query);
+		$number_of_printers += $db->result($result,0,0);
+	}
+}
+
 
 $query = "SELECT count(ID) FROM glpi_networking where deleted ='N'  AND is_template = '0' ";
 $result = $db->query($query);
 $number_of_networking = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_monitors where deleted ='N'  AND is_template = '0' ";
+$query = "SELECT count(ID) FROM glpi_monitors where deleted ='N'  AND is_template = '0' AND is_global='0'  ";
 $result = $db->query($query);
 $number_of_monitors = $db->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_peripherals where deleted ='N'  AND is_template = '0' ";
+$query2="SELECT ID FROM glpi_monitors where deleted ='N'  AND is_template = '0' AND is_global='1' ";
+$result = $db->query($query2);
+if ($db->numrows($result)){
+	while ($data=$db->fetch_assoc($result)){
+		$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".MONITOR_TYPE."' AND end1='".$data["ID"]."';";
+		$result = $db->query($query);
+		$number_of_monitors += $db->result($result,0,0);
+	}
+}
+
+
+$query = "SELECT count(ID) FROM glpi_peripherals where deleted ='N'  AND is_template = '0' AND is_global='0'  ";
 $result = $db->query($query);
 $number_of_peripherals = $db->result($result,0,0);
+
+$query2="SELECT ID FROM glpi_peripherals where deleted ='N'  AND is_template = '0' AND is_global='1' ";
+$result = $db->query($query2);
+if ($db->numrows($result)){
+	while ($data=$db->fetch_assoc($result)){
+		$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PERIPHERAL_TYPE."' AND end1='".$data["ID"]."';";
+		$result = $db->query($query);
+		$number_of_peripherals += $db->result($result,0,0);
+	}
+}
 
 $query = "SELECT count(ID) FROM glpi_phones where deleted ='N'  AND is_template = '0' ";
 $result = $db->query($query);
 $number_of_phones = $db->result($result,0,0);
+
+$query2="SELECT ID FROM glpi_phones where deleted ='N'  AND is_template = '0' AND is_global='1' ";
+$result = $db->query($query2);
+if ($db->numrows($result)){
+	while ($data=$db->fetch_assoc($result)){
+		$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PHONE_TYPE."' AND end1='".$data["ID"]."';";
+		$result = $db->query($query);
+		$number_of_phones += $db->result($result,0,0);
+	}
+}
 
 # 2. Spew out the data in a table
 
@@ -161,9 +203,21 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$type = $db->result($result, $i, "ID");
 	$net = $db->result($result, $i, "name");
-	$query = "SELECT count(*) FROM glpi_monitors WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
+	$query = "SELECT count(*) FROM glpi_monitors WHERE (type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
+
+	$query2="SELECT ID FROM glpi_monitors where type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
+	$result2 = $db->query($query2);
+	if ($db->numrows($result2)){
+		while ($data=$db->fetch_assoc($result2)){
+			$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".MONITOR_TYPE."' AND end1='".$data["ID"]."';";
+			$result3 = $db->query($query);
+			$counter += $db->result($result3,0,0);
+		}
+	}
+
+
 	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
 	$i++;
 }
@@ -183,6 +237,18 @@ while ($i < $number) {
 	$query = "SELECT count(*) FROM glpi_printers WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
+
+	$query2="SELECT ID FROM glpi_printers where type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
+	$result2 = $db->query($query2);
+	if ($db->numrows($result2)){
+		while ($data=$db->fetch_assoc($result2)){
+			$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PRINTER_TYPE."' AND end1='".$data["ID"]."';";
+			$result3 = $db->query($query);
+			$counter += $db->result($result3,0,0);
+		}
+	}
+
+
 	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
 	$i++;
 }
@@ -202,6 +268,17 @@ while ($i < $number) {
 	$query = "SELECT count(*) FROM glpi_peripherals WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
+
+	$query2="SELECT ID FROM glpi_peripherals where type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
+	$result2 = $db->query($query2);
+	if ($db->numrows($result2)){
+		while ($data=$db->fetch_assoc($result2)){
+			$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PERIPHERAL_TYPE."' AND end1='".$data["ID"]."';";
+			$result3 = $db->query($query);
+			$counter += $db->result($result3,0,0);
+		}
+	}
+
 	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
 	$i++;
 }
@@ -221,6 +298,17 @@ while ($i < $number) {
 	$query = "SELECT count(*) FROM glpi_phones WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
+
+	$query2="SELECT ID FROM glpi_phones where type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
+	$result2 = $db->query($query2);
+	if ($db->numrows($result2)){
+		while ($data=$db->fetch_assoc($result2)){
+			$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PHONE_TYPE."' AND end1='".$data["ID"]."';";
+			$result3 = $db->query($query);
+			$counter += $db->result($result3,0,0);
+		}
+	}
+
 	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
 	$i++;
 }
