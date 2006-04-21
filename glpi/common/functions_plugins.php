@@ -99,7 +99,7 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 	global $plugin_hooks;
 	// Show all Case
 	if ($onglet==-1){
-		if (is_array($plugin_hooks["headings_action"])&&count($plugin_hooks["headings_action"]))	
+		if (isset($plugin_hooks["headings_action"])&&is_array($plugin_hooks["headings_action"])&&count($plugin_hooks["headings_action"]))	
 		foreach ($plugin_hooks["headings_action"] as $plug => $function)
 			if (function_exists($function)){
 
