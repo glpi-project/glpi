@@ -97,26 +97,44 @@ function do_hook_function($name,$parm=NULL) {
 
 function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 	global $plugin_hooks;
-
-	$split=split("_",$onglet);
-	if (count($split)==2){
-		list($plug,$ID_onglet)=$split;
-
-		if (isset($plugin_hooks["headings_action"][$plug])){
-			$function=$plugin_hooks["headings_action"][$plug];
+	// Show all Case
+	if ($onglet==-1){
+		
+		foreach ($plugin_hooks["headings_action"] as $plug => $function)
 			if (function_exists($function)){
-				
+
 				$actions=$function($type);
 				
-				if (isset($actions[$ID_onglet])&&function_exists($actions[$ID_onglet])){
-					$function=$actions[$ID_onglet];
-					$function($type,$ID,$withtemplate);
-					return true;
+				foreach ($actions as $key => $action){
+				if (function_exists($action)){
+					echo "<br>";
+					$action($type,$ID,$withtemplate);
 				}	
+
 			}
 		}
+		return true;
+
+	} else {
+		$split=split("_",$onglet);
+		if (count($split)==2){
+			list($plug,$ID_onglet)=$split;
+			if (isset($plugin_hooks["headings_action"][$plug])){
+				$function=$plugin_hooks["headings_action"][$plug];
+				if (function_exists($function)){
+				
+					$actions=$function($type);
+				
+					if (isset($actions[$ID_onglet])&&function_exists($actions[$ID_onglet])){
+						$function=$actions[$ID_onglet];
+						$function($type,$ID,$withtemplate);
+						return true;
+					}	
+				}
+			}
 		
-	} 
+		}
+	}
 	return false;
 }
 

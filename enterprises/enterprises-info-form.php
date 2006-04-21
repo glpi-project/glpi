@@ -143,6 +143,7 @@ else
 				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
 				showTrackingList($_SERVER["PHP_SELF"],$start,"all",0,0,$_GET["ID"]);
 				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
+				display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 				break;
 			case 1 :
 				showAssociatedContact($tab["ID"]);

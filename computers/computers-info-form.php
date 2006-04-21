@@ -232,6 +232,7 @@ if (isset($_GET['onglet'])) {
 				showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 				showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 				showLinkOnDevice(COMPUTER_TYPE,$tab["ID"]);
+				display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 				break;
 			case 2 :
 				showSoftwareInstalled($tab["ID"]);

@@ -152,6 +152,7 @@ else
 			showDeviceContract($tab["ID"]);
 			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
 			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
+			display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])
 			break;
 		case 5 : 
 			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);

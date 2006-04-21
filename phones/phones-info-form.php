@@ -181,6 +181,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$tab["ID"]);
 					showOldJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$tab["ID"]);
 					showLinkOnDevice(PHONE_TYPE,$tab["ID"]);
+					display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 					break;
 				case 4 :
 					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"]);
