@@ -71,7 +71,7 @@ function showTrackingOnglets($target){
 				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID&amp;onglet=1\">".$lang["job"][38]." $ID</a></li>";
 				
 				if (haveRight("show_ticket","1"))
-				display_plugin_headings($target,TRACKING_TYPE,"","");
+					display_plugin_headings($target,TRACKING_TYPE,"","");
 
 				echo "<li class='invisible'>&nbsp;</li>";
 				
@@ -1643,7 +1643,7 @@ function showJobDetails ($ID){
 
 	if ($job->getfromDB($ID,1)) {
 
-		if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]) return false;
+		if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]) return false;
 
 		$author=new User();
 		$author->getFromDB($job->fields["author"]);
@@ -1651,10 +1651,6 @@ function showJobDetails ($ID){
 		$assign->getFromDB($job->fields["assign"]);
 		$item=new CommonItem();
 		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
-
-		// test if the user if authorized to view this job
-		if (!haveRight("show_ticket","1")&&$_SESSION["glpiID"]!=$job->fields["author"])
-		   { echo "Warning !! ";return;}
 
 		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
 
@@ -1912,16 +1908,25 @@ function showJobDetails ($ID){
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}
 		
-echo "</table>";
-echo "<input type='hidden' name='ID' value='$ID'>";
-echo "</form>";
-echo "</div>";
-		echo "<script type='text/javascript' >\n";
-		echo "function showPlan(){\n";
-		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&author=".$job->fields["assign"]."'});";
-		echo "}";
-		echo "</script>\n";
+	echo "</table>";
+	echo "<input type='hidden' name='ID' value='$ID'>";
+	echo "</form>";
+	echo "</div>";
+
+	echo "<script type='text/javascript' >\n";
+	echo "function showPlan(){\n";
+	echo "Element.hide('plan');";
+	echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&author=".$job->fields["assign"]."'});";
+	echo "};";
+	echo "function showAddFollowup(){\n";
+	echo "Element.hide('viewfollowup');";
+	echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$ID'});";
+	echo "};";
+	echo "</script>";
+
+	echo "<div id='viewfollowup'>\n";
+	echo "</div>\n";	
+
 
 	
 	}
@@ -1946,19 +1951,8 @@ function showFollowupsSummary($tID){
 	
 
 
-
 	$rand=mt_rand();
 	
-	echo "<script type='text/javascript' >\n";
-	echo "function showAddFollowup(){\n";
-	echo "Element.hide('viewfollowup');";
-	echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$tID'});";
-	echo "};";
-	echo "</script>";
-
-	echo "<div id='viewfollowup'>\n";
-	echo "</div>\n";	
-
 
 	echo "<div align='center'>";
 	echo "<h3>".$lang["job"][37]."</h3>";
