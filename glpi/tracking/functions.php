@@ -2183,7 +2183,7 @@ function showUpdateFollowupForm($ID){
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
 			
-			if ($commmentall){
+			if ($commentall){
 	
 				echo "<select name='hour'>";
 				for ($i=0;$i<100;$i++){
