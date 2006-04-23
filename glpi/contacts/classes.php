@@ -59,6 +59,35 @@ class Contact extends CommonDBTM{
 			$ong[10]=$lang["title"][37];
 		return $ong;
 	}
+
+
+	function GetAdress() {
+		global $db;
+
+		$query = "SELECT  glpi_enterprises.address as address  FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
+		
+		if ($result = $db->query($query)) {
+						
+			return $db->result($result, 0, "address");
+		} else {
+			return false;
+		}
+	}
+
+	function GetWebsite() {
+		global $db;
+
+		$query = "SELECT  glpi_enterprises.website as website FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
+		
+		if ($result = $db->query($query)) {
+			return $db->result($result, 0, "website");
+		} else {
+			return false;
+		}
+	}
+
+
+
 }
 
 ?>
