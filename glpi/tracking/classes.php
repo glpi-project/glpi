@@ -39,30 +39,24 @@
 include ("_relpos.php");
 // Tracking Classes
 
-class Job {
+class Job extends CommonDBTM{
 
 	var $fields	= array();
 	var $updates	= array();
 	var $computername	= "";
 	var $computerfound	= 0;
 	
+	function Job(){
+		$this->table="glpi_tracking";
+		$this->type=TRACKING_TYPE;
+	}
 
-	function getfromDB ($ID,$purecontent) {
+	function getFromDBwithData ($ID,$purecontent) {
 
 		global $db,$lang;
-
-		$this->ID = $ID;
-
-		// Make new database object and fill variables
 		
-		$query = "SELECT * FROM glpi_tracking WHERE (ID = $ID)";
+		if ($this->getFromDB($ID)){
 
-		if ($result = $db->query($query)) 
-			if ($db->numrows($result)==1){
-			$data = $db->fetch_assoc($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
 			if (!$purecontent) {
 				$this->fields["contents"] = nl2br(preg_replace("/\r\n\r\n/","\r\n",$this->fields["contents"]));
 			}
@@ -81,7 +75,6 @@ class Job {
 		} else {
 			return false;
 		}
-		return false;
 	}
 
 	function numberOfFollowups($with_private=1){
@@ -89,7 +82,7 @@ class Job {
 		$RESTRICT="";
 		if ($with_private!=1) $RESTRICT = " AND private='0'";
 		// Set number of followups
-		$query = "SELECT count(*) FROM glpi_followups WHERE (tracking = $this->ID) $RESTRICT";
+		$query = "SELECT count(*) FROM glpi_followups WHERE (tracking = ".$this->fields["ID"].") $RESTRICT";
 		$result = $db->query($query);
 		return $db->result($result,0,0);
 
@@ -146,9 +139,9 @@ class Job {
 		// update Status of Job
 		
 		global $db;
-		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '".$this->ID."'";
+		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."'";
 		if ($result = $db->query($query)) {
-				$query2="UPDATE glpi_tracking SET realtime='".$db->result($result,0,0)."' WHERE ID='".$this->ID."'";
+				$query2="UPDATE glpi_tracking SET realtime='".$db->result($result,0,0)."' WHERE ID='".$this->fields["ID"]."'";
 				$db->query($query2);
 				return true;
 		} else {
@@ -161,8 +154,8 @@ class Job {
 		// get the last followup for this job and give its contents as
 		GLOBAL $db,$lang;
 		
-		if (isset($this->ID)){
-		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->ID."' AND private = '0' ORDER by date DESC";
+		if (isset($this->fields["ID"])){
+		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' AND private = '0' ORDER by date DESC";
 		$result=$db->query($query);
 		$nbfollow=$db->numrows($result);
 		if($format=="html"){
@@ -305,28 +298,23 @@ class Job {
 		return $message;
 	}
 	
-	function deleteInDB ($ID) {
+
+	function cleanDBonPurge($ID) {
 		global $db;
-		if ($ID!=""){
-			
-			$query2="delete from glpi_tracking where ID = '$ID'";
-			$query1="delete from glpi_followups where tracking = '$ID'";
 
-			$query="SELECT ID FROM glpi_followups WHERE tracking = '$ID'";
-			$result=$db->query($query);
-			if ($db->numrows($result)>0)
-			while ($data=$db->fetch_array($result)){
-				$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '".$data['ID']."'";
-				$db->query($querydel);				
-			}
+		$query="SELECT ID FROM glpi_followups WHERE tracking = '$ID'";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0)
+		while ($data=$db->fetch_array($result)){
+			$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '".$data['ID']."'";
+			$db->query($querydel);				
+		}
+		$query1="delete from glpi_followups where tracking = '$ID'";
+		$db->query($query1);
 
-			$db->query($query1);
-			$db->query($query2);
-			 return true;
-			}
-			 return false;		
 	}
-	
+
+
 	function getAuthorName($link=0){
 	
 	return getUserName($this->fields["author"],$link);
@@ -346,7 +334,7 @@ class Followup  extends CommonDBTM {
 
 		if (isset($this->fields["realtime"])&&$this->fields["realtime"]>0) {
 			$job=new Job();
-			$job->getfromDB($this->fields["tracking"],0);
+			$job->getfromDB($this->fields["tracking"]);
 			$job->updateRealTime();
 		}
 	}
@@ -356,7 +344,7 @@ class Followup  extends CommonDBTM {
 		for ($i=0; $i < count($updates); $i++) {
 			if ($updates[$i]=="realtime") {
 				$job=new Job();
-				$job->getfromDB($this->fields["tracking"],0);
+				$job->getfromDB($this->fields["tracking"]);
 				$job->updateRealTime();
 			}
 		}
@@ -378,7 +366,7 @@ class Followup  extends CommonDBTM {
 	function post_updateItem($input,$updates,$history=1) {
 		global $cfg_glpi;
 		$job=new Job;
-		$job->getFromDB($input["tracking"],1);
+		$job->getFromDBwithData($input["tracking"],1);
 
 		if (in_array("contents",$updates)&&$cfg_glpi["mailing"]){
 			$user=new User;
@@ -394,7 +382,7 @@ class Followup  extends CommonDBTM {
 		$isadmin=haveRight("comment_all_ticket","1");
 
 		$job=new Job;
-		$job->getFromDB($input["tracking"],0);
+		$job->getFromDB($input["tracking"]);
 
 		// Security to add unauthorized followups
 		if (!$isadmin&&$job->fields["author"]!=$_SESSION["glpiID"]) return;
@@ -466,7 +454,7 @@ class Followup  extends CommonDBTM {
 		$this->deleteFromDB($input["ID"]);
 
 		$job=new Job();
-		$job->getFromDB($input['tracking'],0);
+		$job->getFromDB($input['tracking']);
 		$job->updateRealtime();		
 
 	} 
