@@ -1600,11 +1600,11 @@ function updateTracking($input){
 		$newinput["author"]=$_SESSION['glpiID'];
 		$newinput["private"]=$newinput["hour"]=$newinput["minute"]=0;
 		$newinput["tracking"]=$job->fields["ID"];
-		$mailtype="update";
+		$newinput["type"]="update";
 		if (in_array("status",$updates)&&ereg("old_",$input["status"]))
 			$mailtype="finish";
 		$fup=new Followup();
-		$fup->add($newinput,$mailtype);
+		$fup->add($newinput);
 		$mail_send++;
 	}
 
@@ -1928,10 +1928,10 @@ function showJobDetails ($ID){
 	echo "</div>\n";	
 
 
-	
+	return true;
 	}
 	
-	return true;
+	return false;
 }
 
 function showFollowupsSummary($tID){

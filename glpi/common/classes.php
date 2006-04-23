@@ -240,7 +240,10 @@ class CommonDBTM {
 
 		// Make new database object and fill variables
 		global $db;
+		if (empty($ID)) return false;
+
 		$query = "SELECT * FROM ".$this->table." WHERE (ID = '$ID')";
+
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
 			$data = $db->fetch_assoc($result);
@@ -393,20 +396,22 @@ class CommonDBTM {
 		unset($input['add']);
 		$input=$this->prepareInputForAdd($input);
 
-		// fill array for udpate
-		foreach ($input as $key => $val) {
-			if ($key[0]!='_'&& (!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
-				$this->fields[$key] = $input[$key];
+		if ($input&&is_array($input)){
+			// fill array for udpate
+			foreach ($input as $key => $val) {
+				if ($key[0]!='_'&& (!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
+					$this->fields[$key] = $input[$key];
+				}
 			}
-		}
 
-		$newID= $this->addToDB();
+			$newID= $this->addToDB();
 
-		$this->postAddItem($newID,$input);
+			$this->postAddItem($newID,$input);
 
-		do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
-
-		return $newID;
+			do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
+		
+			return $newID;
+		} else return false;
 	}
 
 	function prepareInputForAdd($input) {
