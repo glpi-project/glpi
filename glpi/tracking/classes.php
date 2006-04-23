@@ -51,6 +51,8 @@ class Job extends CommonDBTM{
 		$this->type=TRACKING_TYPE;
 	}
 
+
+
 	function getFromDBwithData ($ID,$purecontent) {
 
 		global $db,$lang;
@@ -77,6 +79,25 @@ class Job extends CommonDBTM{
 		}
 	}
 
+
+	function cleanDBonPurge($ID) {
+		global $db;
+
+		$query="SELECT ID FROM glpi_followups WHERE tracking = '$ID'";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0)
+		while ($data=$db->fetch_array($result)){
+			$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '".$data['ID']."'";
+			$db->query($querydel);				
+		}
+		$query1="delete from glpi_followups where tracking = '$ID'";
+		$db->query($query1);
+
+	}
+
+
+	// SPECIFIC FUNCTIONS
+
 	function numberOfFollowups($with_private=1){
 		global $db;
 		$RESTRICT="";
@@ -88,60 +109,15 @@ class Job extends CommonDBTM{
 
 	}
 
-	function updateInDB($updates)  {
-
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_tracking SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			$result=$db->query($query);
-		}
-	}
-
-	function addToDB() {
-		
-		global $db;
-
-		// Build query
-		$query = "INSERT INTO glpi_tracking (";
-		$i=0;
-		
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= $fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-		$result=$db->query($query);
-		return $db->insert_id();
-	}	
-
-	function updateRealtime() {
+	function updateRealTime() {
 		// update Status of Job
 		
 		global $db;
 		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."'";
 		if ($result = $db->query($query)) {
-				$query2="UPDATE glpi_tracking SET realtime='".$db->result($result,0,0)."' WHERE ID='".$this->fields["ID"]."'";
+				$sum=$db->result($result,0,0);
+				if (is_null($sum)) $sum=0;
+				$query2="UPDATE glpi_tracking SET realtime='".$sum."' WHERE ID='".$this->fields["ID"]."'";
 				$db->query($query2);
 				return true;
 		} else {
@@ -299,22 +275,6 @@ class Job extends CommonDBTM{
 	}
 	
 
-	function cleanDBonPurge($ID) {
-		global $db;
-
-		$query="SELECT ID FROM glpi_followups WHERE tracking = '$ID'";
-		$result=$db->query($query);
-		if ($db->numrows($result)>0)
-		while ($data=$db->fetch_array($result)){
-			$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '".$data['ID']."'";
-			$db->query($querydel);				
-		}
-		$query1="delete from glpi_followups where tracking = '$ID'";
-		$db->query($query1);
-
-	}
-
-
 	function getAuthorName($link=0){
 	
 	return getUserName($this->fields["author"],$link);
@@ -327,6 +287,7 @@ class Followup  extends CommonDBTM {
 	
 	function Followup () {
 		$this->table="glpi_followups";
+		$this->type=-1;
 	}
 
 
@@ -355,6 +316,13 @@ class Followup  extends CommonDBTM {
 		$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '$ID'";
 		$db->query($querydel);				
 	}
+
+	function post_deleteFromDB($ID){
+		$job=new Job();
+		$job->getFromDB($this->fields['tracking']);
+		$job->updateRealtime();		
+	}
+
 
 	function prepareInputForUpdate($input) {
 		$input["realtime"]=$input["hour"]+$input["minute"]/60;
@@ -447,17 +415,6 @@ class Followup  extends CommonDBTM {
 		return $newID;
 	}
 
-
-	function delete($input) {
-		// Delete Contact
-	
-		$this->deleteFromDB($input["ID"]);
-
-		$job=new Job();
-		$job->getFromDB($input['tracking']);
-		$job->updateRealtime();		
-
-	} 
 
 	// SPECIFIC FUNCTIONS
 	
