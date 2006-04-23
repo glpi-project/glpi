@@ -93,6 +93,7 @@ function showContactForm ($target,$ID) {
 		
 	} else {
 		echo $lang["common"][18]." ID $ID:";
+		echo "<a href='".$cfg_glpi["root_doc"]."/contacts/vcard.php?ID=$ID'>Vcard</a>";
 	}		
 	echo "</b></th></tr>";
 	
@@ -245,6 +246,48 @@ function showEnterpriseContact($instID) {
 	
 	echo "</table></div></form>"    ;
 	
+}
+
+function generateVcard($ID){
+	
+	$contact = new Contact;
+	$contact->getfromDB($ID);
+	
+	// build the Vcard
+	
+	$vcard = new vCard();
+	
+	
+
+	$vcard->setName($contact->fields["name"], $contact->fields["name"], "", "");  // saloperie de fiche contact qui gère pas le nom et le prénom ! TODO changer ça 
+	
+	$vcard->setPhoneNumber($contact->fields["phone"], "PREF;WORK;VOICE");
+	
+	//if ($contact->birthday) $vcard->setBirthday($contact->birthday);
+	
+	//$vcard->setAddress("", "", $contact->GetAdress(), "", "", "", ""); // saloperie de fiche contact qui gère pas l'adresse correctement ! TODO changer ça 
+	
+	$vcard->setEmail($contact->fields["email"]);
+	
+	$vcard->setNote($contact->fields["comments"]);
+	
+	$vcard->setURL($contact->GetWebsite(), "WORK");
+	
+	
+	
+	// send the  VCard 
+	
+	$output = $vcard->getVCard();
+	
+	$filename =$vcard->getFileName();      // "xxx xxx.vcf"
+	
+	//@Header("Content-Disposition: attachment; filename=\"$filename\"");
+	//@Header("Content-Length: ".strlen($output));
+	//@Header("Connection: close");
+	@Header("content-type: text/x-vcard; charset=UTF-8");
+	
+	echo $output;
+
 }
 
 
