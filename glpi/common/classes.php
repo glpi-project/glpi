@@ -349,7 +349,6 @@ class CommonDBTM {
 
 		global $db,$cfg_glpi;
 
-
 		if ($force==1||!in_array($this->table,$cfg_glpi["deleted_tables"])){
 			
 			$this->cleanDBonPurge($ID);
@@ -357,7 +356,8 @@ class CommonDBTM {
 			$query = "DELETE from ".$this->table." WHERE ID = '$ID'";
 		
 			if ($result = $db->query($query)) {
-					return true;
+				$this->post_deleteFromDB($ID);
+				return true;
 			} else {
 				return false;
 			}
@@ -367,6 +367,8 @@ class CommonDBTM {
 		}
 	}
 
+	function post_deleteFromDB($ID){
+	}
 
 	function cleanDBonPurge($ID) {
 	}
@@ -478,14 +480,16 @@ class CommonDBTM {
 	*@return Nothing ()
 	*
 	**/
-	// specific ones : Followup
 	function delete($input,$force=0) {
-		$this->pre_deleteItem($input["ID"]);
-		$this->deleteFromDB($input["ID"],$force);
-		if ($force)
-			do_hook_function("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
-		else 
-			do_hook_function("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+		if ($this->getFromDB($input["ID"])){
+			$this->pre_deleteItem($input["ID"]);
+			$this->deleteFromDB($input["ID"],$force);
+			if ($force)
+				do_hook_function("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
+			else 
+				do_hook_function("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+		return true;
+		} else return false;
 
 	}
 	function pre_deleteItem($ID) {
