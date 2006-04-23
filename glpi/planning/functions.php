@@ -112,7 +112,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	$followup=new Followup;
 	$followup->getfromDB($fup);
 	$j=new Job();
-	$j->getFromDB($followup->fields['tracking'],0);
+	$j->getFromDBwithData($followup->fields['tracking'],0);
 	if ($planID==-1){
 		if ($j->fields["assign"])
 			$planning->fields["id_assign"]=$j->fields["assign"];
@@ -394,7 +394,7 @@ $i=0;
 if ($db->numrows($result)>0)
 while ($data=$db->fetch_array($result)){
 	$fup->getFromDB($data["id_followup"]);
-	$job->getFromDB($fup->fields["tracking"],0);
+	$job->getFromDBwithData($fup->fields["tracking"],0);
 	
 	$interv[$data["begin"]."$$".$i]["id_followup"]=$data["id_followup"];
 	$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
@@ -632,7 +632,7 @@ function ShowPlanningCentral($who){
 	if ($db->numrows($result)>0)
 	while ($data=$db->fetch_array($result)){
 		$fup->getFromDB($data["id_followup"]);
-		$job->getFromDB($fup->fields["tracking"],0);
+		$job->getFromDBwithData($fup->fields["tracking"],0);
 		
 		$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
 		$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
@@ -823,7 +823,7 @@ if ($db->numrows($result)>0)
 while ($data=$db->fetch_array($result)){
 	
 	 $fup->getFromDB($data["id_followup"]); 
-	 $job->getFromDB($fup->fields["tracking"],0);
+	 $job->getFromDBwithData($fup->fields["tracking"],0);
 		
 	$interv[$data["begin"]."$$".$i]["id_tracking"]=$data['id_followup'];
 	$interv[$data["begin"]."$$".$i]["id_assign"]=$data['id_assign'];

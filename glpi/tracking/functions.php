@@ -95,7 +95,7 @@ function showTrackingOnglets($target){
 			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
 
 			$job=new Job();
-			$job->getFromDB($ID,1);
+			$job->getFromDB($ID);
 			
 			if (!ereg("old_",$job->fields["status"])){
 				echo "<li class='invisible'>&nbsp;</li>";
@@ -435,7 +435,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 				$align.=" valign='top' ";
 				$align_desc.=" valign='top' ";
 			}
-	if ($job->getfromDB($ID,0))
+	if ($job->getfromDBwithData($ID,0))
 	{
 		$item_num=1;
 		$bgcolor=$cfg_glpi["priority_".$job->fields["priority"]];
@@ -443,7 +443,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		echo displaySearchNewLine($output_type);
 
 		// First column
-		$first_col= "ID: ".$job->ID;
+		$first_col= "ID: ".$job->fields["ID"];
 		if ($output_type==0)
 		$first_col.="<br><img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
 		else $first_col.=" - ".getStatusName($job->fields["status"]);
@@ -451,7 +451,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		if ($candelete&&$output_type==0&&ereg("old_",$job->fields["status"])){
 			$sel="";
 			if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-			$first_col.="<input type='checkbox' name='todel[".$job->ID."]' value='1' $sel>";
+			$first_col.="<input type='checkbox' name='todel[".$job->fields["ID"]."]' value='1' $sel>";
 		}
 
 		echo displaySearchItem($output_type,$first_col,$item_num,$row_num,0,$align);
@@ -554,7 +554,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		$eigth_column="<strong>".$stripped_content."</strong>";
 		if ($followups&&$output_type==0)
 		{
-			$eigth_column.=showFollowupsShort($job->ID);
+			$eigth_column.=showFollowupsShort($job->fields["ID"]);
 		}
 
 
@@ -566,9 +566,9 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		// Job Controls
 		
 		if ($_SESSION["glpiprofile"]["interface"]=="central")
-		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		else
-		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
 
 		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$align." width='40'");
 
@@ -591,19 +591,19 @@ function showJobVeryShort($ID) {
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 	$viewusers=haveRight("user","r");
-	if ($job->getfromDB($ID,0))
+	if ($job->getfromDBwithData($ID,0))
 	{
 		$bgcolor=$cfg_glpi["priority_".$job->fields["priority"]];
 		if ($job->fields["status"] == "new")
 		{
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->ID."</td>";
+			echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["ID"]."</td>";
 
 		}
 		else
 		{
  			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->ID;
+			echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["ID"];
 			echo "</td>";
 		}
 
@@ -644,9 +644,9 @@ function showJobVeryShort($ID) {
 		echo "<td width='40' align='center'>";
 		
 		if ($_SESSION["glpiprofile"]["interface"]=="central")
-		echo "<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$job->ID\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+		echo "<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
-		echo "<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$job->ID\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+		echo "<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 
 		// Finish Line
 		echo "</tr>";
@@ -1447,7 +1447,7 @@ function updateTracking($input){
 	}
 
 	$job = new Job;
-	$job->getFromDB($input["ID"],0);
+	$job->getFromDBwithData($input["ID"],0);
 	if (isset($input["item"])&& $input["item"]!=0){
 		$input["computer"]=$input["item"];
 		$input["device_type"]=$input["type"];
@@ -1641,7 +1641,7 @@ function showJobDetails ($ID){
 	
 	$canupdate=haveRight("update_ticket","1");
 
-	if ($job->getfromDB($ID,1)) {
+	if ($job->getfromDB($ID)) {
 
 		if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]) return false;
 
@@ -1874,7 +1874,7 @@ function showJobDetails ($ID){
 		// File associated ?
 		if ($canupdate){
 
-			$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->ID."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
+			$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->fields["ID"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
 			$result2 = $db->query($query2);
 			$numfiles=$db->numrows($result2);
 			//$colspan=1;
@@ -2259,24 +2259,5 @@ function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
 			$totalcost=($realtime*$cost_time)+$cost_fixed+$cost_material;
 			return $totalcost;
 		}
-
-/**
-* Delete a tracking in the database.
-*
-* Delete a tracking in the database.
-*
-*@param $input array : the _POST vars returned bye the tracking form when press delete
-*
-*@return Nothing ()
-*
-**/
-function deleteTracking($ID) {
-	// Delete Computer
-
-	$job = new Job;
-	$job->deleteInDB($ID);
-	do_hook_function("item_purge",array("type"=>TRACKING_TYPE, "ID" => $ID));
-} 	
-
 
 ?>

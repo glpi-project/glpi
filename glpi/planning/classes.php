@@ -81,7 +81,7 @@ class PlanningTracking extends CommonDBTM {
 
 	// Auto update Status
 	$job=new Job();
-	$job->getFromDB($input["id_tracking"],0);
+	$job->getFromDB($input["id_tracking"]);
 	if ($job->fields["status"]=="new"||$job->fields["status"]=="assign"){
 		$job->fields["status"]="plan";
 		$updates[]="status";
@@ -144,7 +144,7 @@ function add($input,$target,$nomail=0){
 */
 	// Auto update Status
 	$job=new Job();
-	$job->getFromDB($input["id_tracking"],0);
+	$job->getFromDB($input["id_tracking"]);
 	if ($job->fields["status"]=="new"||$job->fields["status"]=="assign"){
 		$job->fields["status"]="plan";
 		$updates[]="status";

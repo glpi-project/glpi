@@ -211,9 +211,10 @@ if (isset($_GET['onglet'])) {
 	} else {
 
 	if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
+		$job=new Job();
 		foreach ($_POST["todel"] as $key => $val){
 			if ($val==1) {
-				deleteTracking($key);
+				$jopb->delete($key);
 			}
 		}
 	}
