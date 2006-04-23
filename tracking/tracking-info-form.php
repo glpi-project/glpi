@@ -88,6 +88,7 @@ if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
 }
 
+if (isset($_GET["ID"]))
 if (showJobDetails($_GET["ID"])){
 
 	switch($_SESSION['glpi_onglet']){

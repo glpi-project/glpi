@@ -312,7 +312,7 @@ function displayMessageAfterRedirect(){
 		echo "<div align='center'><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></div>";
 		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
-	}
+	} else $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 }
 
 /**

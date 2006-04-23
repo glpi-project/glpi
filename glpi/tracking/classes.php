@@ -128,7 +128,7 @@ class Job extends CommonDBTM{
 
 	function textFollowups($format="text") {
 		// get the last followup for this job and give its contents as
-		GLOBAL $db,$lang;
+		global $db,$lang;
 		
 		if (isset($this->fields["ID"])){
 		$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' AND private = '0' ORDER by date DESC";
@@ -194,7 +194,7 @@ class Job extends CommonDBTM{
 	}
 	
 	function textDescription($format="text"){
-		GLOBAL $db,$lang;
+		global $db,$lang;
 		
 		
 		$m= new CommonItem;
@@ -305,7 +305,7 @@ class Followup  extends CommonDBTM {
 		for ($i=0; $i < count($updates); $i++) {
 			if ($updates[$i]=="realtime") {
 				$job=new Job();
-				$job->getfromDB($this->fields["tracking"]);
+				$job->getFromDB($this->fields["tracking"]);
 				$job->updateRealTime();
 			}
 		}
@@ -344,28 +344,31 @@ class Followup  extends CommonDBTM {
 		}
 	}
 
-	function add($input,$type="followup"){
-		global $cfg_glpi;
+	function prepareInputForAdd($input) {
 
-		$isadmin=haveRight("comment_all_ticket","1");
+		$input["_isadmin"]=haveRight("comment_all_ticket","1");
 
-		$job=new Job;
-		$job->getFromDB($input["tracking"]);
-
+		$input["_job"]=new Job;
+		$input["_job"]->getFromDB($input["tracking"]);
+		
 		// Security to add unauthorized followups
-		if (!$isadmin&&$job->fields["author"]!=$_SESSION["glpiID"]) return;
+		if (!$input["_isadmin"]&&$job->fields["author"]!=$_SESSION["glpiID"]) return false;
 
-		$close=0;
+		if (!isset($input["type"])) $input["type"]="followup";
+		$input["_type"]=$input["type"];
+		unset($input["type"]);
+
+		$input['_close']=0;
 		unset($input["add"]);
 	
 		$input["author"]=$_SESSION["glpiID"];
 
-		if ($isadmin&&$type!="update"&&$type!="finish"){
+		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
 			if (isset($input['plan'])){
-			$plan=$input['plan'];
+			$input['_plan']=$input['plan'];
 			unset($input['plan']);
 			}	
-			if (isset($input["add_close"])) $close=1;
+			if (isset($input["add_close"])) $input['_close']=1;
 			unset($input["add_close"]);
 	
 			if ($input["hour"]>0||$input["minute"]>0)
@@ -376,43 +379,44 @@ class Followup  extends CommonDBTM {
 		unset($input["hour"]);
 
 		$input["date"] = date("Y-m-d H:i:s");
-		foreach ($input as $key => $val) {
-			if ($key[0]!='_'&&(empty($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
-				$this->fields[$key] = $input[$key];
-			}
-		}
-		$newID=$this->addToDB();	
 
-		if ($isadmin&&$type!="update"&&$type!="finish"){
-			if (isset($plan)){
-				$plan['id_followup']=$newID;
-				$plan['id_tracking']=$input['tracking'];
+
+		return $input;
+	}
+	
+	function postAddItem($newID,$input) {
+		global $cfg_glpi;
+
+		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
+			if (isset($input["_plan"])){
+				$input["_plan"]['id_followup']=$newID;
+				$input["_plan"]['id_tracking']=$input['tracking'];
 				$pt=new PlanningTracking();
-				if (!$pt->add($plan,"",1)){
+				
+				if (!$pt->add($input["_plan"],"",1)){
 					return false;
 				}
 			}
 
 
-			if ($close&&$type!="update"&&$type!="finish"){
+			if ($input["_close"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
 				$updates[]="status";
 				$updates[]="closedate";
-				$job->fields["status"]="old_done";
-				$job->fields["closedate"] = date("Y-m-d H:i:s");
-				$job->updateInDB($updates);
+				$input["_job"]->fields["status"]="old_done";
+				$input["_job"]->fields["closedate"] = date("Y-m-d H:i:s");
+				$input["_job"]->updateInDB($updates);
 			}
 
-			$job->updateRealtime();		
+//			$input["_job"]->updateRealtime();		
 		}
 
 		if ($cfg_glpi["mailing"]){
-			if ($close) $type="finish";
+			if ($input["_close"]) $input["_type"]="finish";
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
-			$mail = new Mailing($type,$job,$user);
+			$mail = new Mailing($input["type"],$job,$user);
 			$mail->send();
 		}
-		return $newID;
 	}
 
 

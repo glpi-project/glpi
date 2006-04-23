@@ -154,6 +154,7 @@ function add($input,$target,$nomail=0){
 	// Auto update realtime
 	$fup=new Followup();
 	$fup->getFromDB($input["id_followup"]);
+	
 	if ($fup->fields["realtime"]==0){
 		$tmp_beg=split(" ",$this->fields["begin"]);
 		$tmp_end=split(" ",$this->fields["end"]);
@@ -234,10 +235,10 @@ function add($input,$target,$nomail=0){
 		//echo "<br><div align='center'>";
 		switch ($type){
 			case "date":
-			 $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["planning"][1]."<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["planning"][1]."<br>";
 			break;
 			case "is_res":
-			 $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["planning"][0]."<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["planning"][0]."<br>";
 			break;
 			default :
 				$_SESSION["MESSAGE_AFTER_REDIRECT"].="Erreur Inconnue<br>";
