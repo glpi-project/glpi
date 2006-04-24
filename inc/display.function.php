@@ -146,20 +146,20 @@ function commonHeader($title,$url)
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
 	//  CSS link
-        echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' >";
+        echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."css/print.css' >";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."scriptaculous/scriptaculous.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 
 	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$HTMLRel."calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar-setup.js\"></script>";
+	echo "<style type=\"text/css\">@import url(".$HTMLRel."lib/calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar-setup.js\"></script>";
 
 	
 	// End of Head
@@ -366,14 +366,14 @@ function helpHeader($title,$url) {
 		
 	// Appel CSS
 	
-        echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."print.css' >";
+        echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."css/print.css' >";
 
 	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$HTMLRel."calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar-setup.js\"></script>";
+	echo "<style type=\"text/css\">@import url(".$HTMLRel."lib/calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar-setup.js\"></script>";
 	
 	// End of Head
 	echo "</head>\n";
@@ -506,14 +506,14 @@ function nullHeader($title,$url) {
 	
 	// Appel CSS
 	
-        echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
+        echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
 
 	// Calendar scripts 
 	if (isset($_SESSION["glpilanguage"])){
-		echo "<style type=\"text/css\">@import url(".$HTMLRel."calendar/aqua/theme.css);</style>";
-		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar.js\"></script>";
-		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
-		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."calendar/calendar-setup.js\"></script>";
+		echo "<style type=\"text/css\">@import url(".$HTMLRel."lib/calendar/aqua/theme.css);</style>";
+		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar.js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar-setup.js\"></script>";
 	}
 
 	
