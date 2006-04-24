@@ -34,10 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_knowbase.php");
-
-
+$NEEDED_ITEMS=array("knowbase");
+include ($phproot . "/inc/includes.php");
 
 
 	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
