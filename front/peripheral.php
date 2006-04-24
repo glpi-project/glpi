@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("peripheral","infocom","contract","state");
+$NEEDED_ITEMS=array("search","peripheral","infocom","contract","state");
 include ($phproot . "/inc/includes.php");
 
 checkRight("peripheral","r");
@@ -43,7 +43,6 @@ commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 
 titlePeripherals();
 
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(PERIPHERAL_TYPE);
 
