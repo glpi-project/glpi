@@ -37,11 +37,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_state.php");
-
+$NEEDED_ITEMS=array("search","computer","state","infocom");
+include ($phproot . "/inc/includes.php");
 
 if (isset($_GET["add_search_count"])){
 	$_SESSION["glpisearchcount"][$_GET["type"]]++;
@@ -76,8 +73,6 @@ checkRight("computer","r");
 commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
 
 titleComputers();
-
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(COMPUTER_TYPE);
 

@@ -72,7 +72,7 @@ if (!isset($AJAX_INCLUDE)){
 	include ($phproot . "/inc/connection.class.php");
 //	include ($phproot . "/inc/mailing.class.php");
 	include ($phproot . "/inc/report.function.php");
-	include ($phproot . "/inc/search.function.php");
+//	include ($phproot . "/inc/search.function.php");
 	include ($phproot . "/inc/export.function.php");
 	include ($phproot . "/inc/log.function.php");
 	include ($phproot . "/inc/connection.function.php");

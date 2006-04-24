@@ -37,7 +37,7 @@
 // BIG DUMP GENERATION FOR THE 0.6 VERSION
 
 include ("_relpos.php");
-include ($phproot."/glpi/includes.php");
+include ($phproot."/inc/includes.php");
 
 
 $multiplicator=1;
