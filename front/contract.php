@@ -27,25 +27,29 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
 */
-
+ 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$Dir = str_replace('\\', '/', getcwd());
-$Dir = explode('/', $Dir);
-$NDir = count($Dir);
-for($i=count($Dir); $i>0;$i--)
-{
-if(file_exists(implode('/', $Dir) . '/siteroot.php'))
-{
-$phproot = implode('/', $Dir);
-$HTMLRel = str_repeat("../", $NDir - count($Dir));
-$i = 0;
-}
-unset($Dir[$i]);
-}
+include ("_relpos.php");
+include ($phproot . "/glpi/includes.php");
+include ($phproot . "/glpi/includes_financial.php");
 
+checkRight("contract_infocom","r");
+
+commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
+
+titleContract();
+include ($phproot . "/glpi/includes_search.php");
+
+manageGetValuesInSearch(CONTRACT_TYPE);
+
+searchForm(CONTRACT_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+
+showList(CONTRACT_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+
+commonFooter();
 
 ?>
