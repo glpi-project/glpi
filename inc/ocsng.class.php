@@ -30,8 +30,6 @@
 // Original Author of file: Bazile Lebeau
 // Purpose of file:
 // ----------------------------------------------------------------------
-require_once ("_relpos.php");
-require_once ($phproot."/glpi/includes.php");
 
 class DBocs extends DBmysql { 
 
