@@ -35,10 +35,10 @@
 
 
 include ("_relpos.php");
-include ($phproot . "/glpi/common/classes.php");
-include ($phproot . "/glpi/common/functions.php");
-include ($phproot . "/glpi/common/functions_db.php");
-include ($phproot . "/glpi/config/based_config.php");
+include ($phproot . "/inc/common.class.php");
+include ($phproot . "/inc/common.function.php");
+include ($phproot . "/inc/db.function.php");
+include ($phproot . "/config/based_config.php");
 include ($cfg_glpi["config_dir"] . "/config_db.php");
 
 // Init debug variable
@@ -92,7 +92,7 @@ if(!function_exists('loadLang')) {
 			unset($lang);
 			global $lang;
 			include ("_relpos.php");
-			$file = $phproot ."/glpi/dicts/".$language.".php";
+			$file = $phproot ."/locales/".$language.".php";
 			include($file);
 	}
 }

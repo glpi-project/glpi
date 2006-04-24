@@ -59,7 +59,7 @@ $identificat = new Identification();
 $auth_succeded=false;
 
 if (!isset($_POST["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
-	include ($phproot . "/glpi/CAS/CAS.php");
+	include ($phproot . "/lib/phpcas/CAS.php");
 	phpCAS::client(CAS_VERSION_2_0,$cfg_glpi["cas_host"],intval($cfg_glpi["cas_port"]),$cfg_glpi["cas_uri"]);
 
 	// force CAS authentication

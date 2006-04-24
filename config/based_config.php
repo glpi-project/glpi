@@ -43,8 +43,8 @@ $cfg_glpi["doc_dir"] = $phproot . "/files";
 
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
-if(file_exists($phproot ."/glpi/config/config_path.php")) {
-    include($phproot ."/glpi/config/config_path.php");
+if(file_exists($phproot ."/config/config_path.php")) {
+    include($phproot ."/config/config_path.php");
 }
 
 ?>

@@ -35,7 +35,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("setup");
+$NEEDED_ITEMS=array("setup","ocsng");
 include ($phproot . "/inc/includes.php");
 
 checkRight("config","w");
@@ -64,7 +64,6 @@ if(!empty($_GET["next"])) {
 	}
 	elseif($_GET["next"] == "ocsng") {
 		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
-		include ($phproot . "/glpi/includes_ocsng.php");
 		ocsFormDBConfig($_SERVER["PHP_SELF"], 1);
 	}
 	

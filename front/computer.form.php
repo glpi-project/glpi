@@ -37,7 +37,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("computer","device","networking","monitor","printer","tracking","software","peripheral","reservation","state","infocom","contract","document","user","link","ocsng","phone","enterprise");
+$NEEDED_ITEMS=array("computer","device","networking","monitor","printer","tracking","software","peripheral","reservation","state","infocom","contract","document","user","link","ocsng","phone","enterprise","search");
 include ($phproot . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
@@ -252,7 +252,6 @@ if (isset($_GET['onglet'])) {
 				showHistory(COMPUTER_TYPE,$tab["ID"]);
 				break;
 			case 13 :
-				include ($phproot."/glpi/includes_search.php");
 				ocsEditLock($_SERVER["PHP_SELF"],$tab["ID"]);
 				break;
 			default :
