@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("document");
+$NEEDED_ITEMS=array("search","document");
 include ($phproot . "/inc/includes.php");
 
 checkRight("document","r");
@@ -43,7 +43,6 @@ commonHeader($lang["title"][25],$_SERVER["PHP_SELF"]);
 
 titleDocument();
 
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(DOCUMENT_TYPE);
 
