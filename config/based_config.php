@@ -33,13 +33,13 @@
 include ("_relpos.php");
 
 // Default location for based configuration
-$cfg_glpi["config_dir"] = $phproot . "/glpi/config/";
+$cfg_glpi["config_dir"] = $phproot . "/config/";
 
 // Default location for backup dump
-$cfg_glpi["dump_dir"] = $phproot . "/backups/dump/";
+$cfg_glpi["dump_dir"] = $phproot . "/files/_dumps/";
 
 // Path for documents storage
-$cfg_glpi["doc_dir"] = $phproot . "/docs";
+$cfg_glpi["doc_dir"] = $phproot . "/files";
 
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
