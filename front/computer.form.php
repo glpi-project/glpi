@@ -64,21 +64,21 @@ else if (isset($tab["delete"])) {
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
 	 else 
-		glpi_header($cfg_glpi["root_doc"]."/computers/");
+		glpi_header($cfg_glpi["root_doc"]."/front/computer.php");
 }
 else if (isset($_POST["restore"]))
 {
 	checkRight("computer","w");
 	$comp->restore($_POST);
 	logEvent($tab["ID"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/computers/");
+	glpi_header($cfg_glpi["root_doc"]."/front/computer.php");
 }
 else if (isset($tab["purge"]))
 {
 	checkRight("computer","w");
 	$comp->delete($tab,1);
 	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/computers/");
+	glpi_header($cfg_glpi["root_doc"]."/front/computer.php");
 }
 //update a computer
 else if (isset($tab["update"])) {

@@ -35,7 +35,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("search","document");
+$NEEDED_ITEMS=array("search","typedoc");
 include ($phproot . "/inc/includes.php");
 
 checkRight("typedoc","r");

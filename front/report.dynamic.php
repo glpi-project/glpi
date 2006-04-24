@@ -52,8 +52,9 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 	}
 
 	// PDF case
-	if ($_GET["display_type"]==2)
-		include ($phproot . "/glpi/includes_ezpdf.php");
+	if ($_GET["display_type"]==2){
+		include ($phproot . "/lib/ezpdf/class.ezpdf.php");
+	}
 
 	switch ($_GET["item_type"]){
 	case STATE_TYPE :
@@ -65,7 +66,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
 	default :
 		manageGetValuesInSearch($_GET["item_type"]);
-
+	
 		showList($_GET["item_type"],$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 		break;
 	}

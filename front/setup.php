@@ -77,13 +77,13 @@ if (haveRight("dropdown","w")){
 	$data["setup.dropdown.php"]=$lang["setup"][0];
 }
 if (haveRight("device","w")){
-	$data[$HTMLRel."devices/"]=$lang["setup"][222];
+	$data[$HTMLRel."front/device.php"]=$lang["setup"][222];
 }
 if (haveRight("typedoc","r")){
-	$data[$HTMLRel."typedocs/"]=$lang["document"][7];
+	$data[$HTMLRel."front/typedoc.php"]=$lang["document"][7];
 }
 if (haveRight("link","r")){
-	$data[$HTMLRel."links/"]=$lang["setup"][87];
+	$data[$HTMLRel."front/link.php"]=$lang["setup"][87];
 }
 	
 echo "<tr class='tab_bg_1'><td>";
@@ -103,7 +103,7 @@ if (count($config)>0){
 
 echo "</td></tr>";
 
-echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup-plugins.php\"><b>Plugins</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>Plugins</b></a></td></tr>";
 
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
 
