@@ -657,91 +657,6 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function postJob($device_type,$ID,$author,$status,$priority,$isgroup,$uemail,$emailupdates,$contents,$assign=0,$realtime=0,$category=0) {
-	// Put Job in database
-
-	global $cfg_glpi,$lang;
-	
-	$job = new Job;
-
-	if (!$isgroup) {
-		$job->isgroup = "no";
-	} else {
-		$job->isgroup = "yes";
-	}
-	if ($assign>0&&$status=="new")
-		$job->fields["status"] = "assign";
-	else 
-		$job->fields["status"] = $status;
-	$job->fields["author"] = $author;
-	$job->fields["device_type"] = $device_type;
-	if ($device_type==0)
-	$job->fields["computer"]=0;
-	else 
-	$job->fields["computer"] = $ID;
-	$job->fields["contents"] = $contents;
-	$job->fields["priority"] = $priority;
-	$job->fields["uemail"] = $uemail;
-	if (empty($emailupdates)) $emailupdates="no";
-	$job->fields["emailupdates"] = $emailupdates;
-	$job->fields["category"] = $category;
-
-	$user=new User();
-	$user->getFromDB($author);
-	if ($emailupdates=="yes"&&empty($uemail)){
-		$job->fields["uemail"]=$user->fields["email"];
-	}
-
-	$job->fields["assign"] = $assign;
-
-	if ($cfg_glpi["auto_assign"]&&$assign==0){
-		$ci=new CommonItem;
-		$ci->getFromDB($device_type,$ID);
-		if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
-			$job->fields["assign"] = $ci->obj->fields['tech_num'];
-			$job->fields["status"] = "assign";
-		}
-	}
-
-	$job->fields["realtime"] = $realtime;
-	$job->fields["date"] = date("Y-m-d H:i:s");
-	if (strstr($status,"old_"))
-		$job->fields["closedate"] = date("Y-m-d H:i:s");
-	// ajout suite  �tracking sur tous les items 
-
-	if ($tID=$job->addToDB()) {
-		$job->fields["ID"]=$tID;
-		// add Document if exists
-		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
-		$input=array();
-		$input["name"]=$lang["tracking"][24]." $tID";
-		$doc=new Document();
-		if ($docID=$doc->add($input,1))
-			addDeviceDocument($docID,TRACKING_TYPE,$tID);
-		}
-		
-		
-		
-		// Log this event
-		logEvent($tID,"tracking",4,"tracking",getUserName($author)." ".$lang["log"][20]);
-		
-		// Processing Email
-		if ($cfg_glpi["mailing"])
-		{
-			$job->fields=stripslashes_deep($job->fields);
-			$type="new";
-			if (ereg("old_",$job->fields["status"])) $type="finish";
-			$mail = new Mailing($type,$job,$user);
-			$mail->send();
-		}
-		do_hook_function("item_add",array("type"=>TRACKING_TYPE, "ID" => $tID));
-		return true;	
-	} else {
-		return false;
-	}
-}
-
-
 function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
@@ -754,7 +669,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<div align='center'>";
 
 	if ($device_type!=0){
-		echo "<input type='hidden' name='referer' value='$REFERER'>";
+		echo "<input type='hidden' name='_referer' value='$REFERER'>";
 		echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
 	}	
 	echo "<table class='tab_cadre'><tr><th colspan='2'>".$lang["job"][13].": <br>";
@@ -817,7 +732,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	
 	echo "<td align='center'>";
 
-	dropdownAllUsers("user",$author);
+	dropdownAllUsers("author",$author);
 	echo "</td></tr>";
 	
 
@@ -853,7 +768,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	echo "<tr><th colspan='2' align='center'>".$lang["job"][11].":";
 	if ($device_type!=0){
-	echo "<input type='hidden' name='ID' value=\"$ID\">";
+	echo "<input type='hidden' name='computer' value=\"$ID\">";
 	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
 	}
 
@@ -866,7 +781,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	$max_size=round($max_size,1);
 
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
 	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";

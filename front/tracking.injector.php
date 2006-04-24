@@ -66,13 +66,14 @@ foreach ($varstosav as $v){
         $_SESSION["helpdeskSaved"][$v] = $_POST[$v];
 }
 
+$track=new Job();
 
 if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 	}
-	else if ($_POST["from_helpdesk"]){
+	else if ($_POST["_from_helpdesk"]){
 		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
 	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
@@ -88,7 +89,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 	}
-	else if ($_POST["from_helpdesk"]){
+	else if ($_POST["_from_helpdesk"]){
 		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
 	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
@@ -106,7 +107,7 @@ elseif (empty($ID)&&$_POST["device_type"]!=0)
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 	}
-	else if ($_POST["from_helpdesk"]){
+	else if ($_POST["_from_helpdesk"]){
 		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
 	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
@@ -120,17 +121,14 @@ elseif (empty($ID)&&$_POST["device_type"]!=0)
 } 
 else
 {
-	if(empty($_POST["isgroup"])) $_POST["isgroup"] = "";
-	if(empty($_POST["uemail"])) $_POST["uemail"] = "";
-	if(empty($_POST["emailupdates"])) $_POST["emailupdates"] = "no";
+
 	$ci=new CommonItem;
-	
 	
 	if ($_POST["device_type"]!=0&&!$ci->getFromDB($_POST["device_type"],$ID)){
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 		}
-		else if ($_POST["from_helpdesk"]){
+		else if ($_POST["_from_helpdesk"]){
 			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 		}
 		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
@@ -142,12 +140,12 @@ else
 		echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
 		echo "</div>";
 		
-	} else if (postJob($_POST["device_type"],$ID,$_SESSION["glpiID"],$status,$_POST["priority"],$_POST["isgroup"],$_POST["uemail"],$_POST["emailupdates"],$_POST["contents"]))
+	} else if ($track->add($_POST))
 	{
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 		}
-		else if ($_POST["from_helpdesk"]){
+		else if ($_POST["_from_helpdesk"]){
 			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 		}
 		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
@@ -165,7 +163,7 @@ else
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 		}
-		else if ($_POST["from_helpdesk"]){
+		else if ($_POST["_from_helpdesk"]){
 			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 		}
 		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);

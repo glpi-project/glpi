@@ -688,8 +688,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		if (isset($_SESSION["helpdeskSaved"]["contents"]))
                 $contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
 
-	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_glpi["root_doc"]."/tracking/tracking-injector.php\"  enctype=\"multipart/form-data\">";
-	echo "<input type='hidden' name='from_helpdesk' value='$from_helpdesk'>";
+	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_glpi["root_doc"]."/front/tracking.injector.php\"  enctype=\"multipart/form-data\">";
+	echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
 
 	echo "<div align='center'><table  class='tab_cadre'>";
 
@@ -735,14 +735,13 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$max_size=round($max_size,1);
 	
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/typedocs/list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
 	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'> <input type='submit' value=\"".$lang["help"][14]."\" class='submit'>";
-	echo "<input type='hidden' name='IRMName' value=\"$name\">";
 	echo "</td></tr>";
 
 	echo "</table>";

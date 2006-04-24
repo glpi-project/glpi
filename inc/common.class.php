@@ -401,13 +401,12 @@ class CommonDBTM {
 				}
 			}
 
-			$newID= $this->addToDB();
-
-			$this->postAddItem($newID,$input);
-
-			do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
-		
-			return $newID;
+			if ($newID= $this->addToDB()){
+				$this->postAddItem($newID,$input);
+				do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
+				return $newID;
+			} else return false;
+			
 		} else return false;
 	}
 

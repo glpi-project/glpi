@@ -302,6 +302,81 @@ class Job extends CommonDBTM{
 	}
 
 
+	function prepareInputForAdd($input) {
+		global $cfg_glpi;
+		
+		if (isset($input["assign"])&&$input["assign"]>0&&isset($input["status"])&&$input["status"]=="new")
+			$input["status"] = "assign";
+		
+		if (isset($input["computer"])&&$input["computer"]==0)
+			$input["device_type"]=0;	
+
+		if ($input["device_type"]==0)
+			$input["computer"]=0;
+
+		if (!isset($input["author"]))
+			$input["author"]=$_SESSION["glpiID"];
+
+		if (isset($input["emailupdates"])&&$input["emailupdates"]=="yes"&&empty($input["uemail"])){
+			$user=new User();
+			$user->getFromDB($input["author"]);
+			$input["uemail"]=$user->fields["email"];
+		}
+
+		if ($cfg_glpi["auto_assign"]&&$assign==0){
+			$ci=new CommonItem;
+			$ci->getFromDB($input["device_type"],$input["computer"]);
+			if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
+				$input["assign"] = $ci->obj->fields['tech_num'];
+				if ($input["assign"]>0)
+					$input["status"] = "assign";
+			}
+		}
+
+		if (isset($input["hour"])&&isset($input["minute"])){
+			$input["realtime"]=$input["hour"]+$input["minute"]/60;
+			unset($input["hour"]);
+			unset($input["minute"]);
+		}
+
+		$input["date"] = date("Y-m-d H:i:s");
+
+		if (isset($input["status"])&&strstr($input["status"],"old_"))
+			$input["closedate"] = date("Y-m-d H:i:s");
+
+		return $input;
+	}
+	
+	function postAddItem($newID,$input) {
+		global $lang,$cfg_glpi;
+
+		// add Document if exists
+		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
+		$input2=array();
+		$input2["name"]=$lang["tracking"][24]." $newID";
+		$doc=new Document();
+		if ($docID=$doc->add($input,1))
+			addDeviceDocument($docID,TRACKING_TYPE,$newID);
+		}
+		
+		// Log this event
+		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$lang["log"][20]);
+		
+		// Processing Email
+		if ($cfg_glpi["mailing"])
+		{
+			$user=new User();
+			$user->getFromDB($input["author"]);
+
+			$this->fields=stripslashes_deep($this->fields);
+			$type="new";
+			if (ereg("old_",$this->fields["status"])) $type="finish";
+			$mail = new Mailing($type,$this,$user);
+			$mail->send();
+		}
+
+	}
+
 	// SPECIFIC FUNCTIONS
 
 	function numberOfFollowups($with_private=1){
