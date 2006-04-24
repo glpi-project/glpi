@@ -180,7 +180,7 @@ if (isset($_GET['onglet'])) {
 					showPortsAdd($tab["ID"],COMPUTER_TYPE);
 				break;					
 			case 4 :
-				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 				showContractAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
 				break;
 			case 5 :
@@ -212,7 +212,7 @@ if (isset($_GET['onglet'])) {
 				showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
 				showPorts($tab["ID"], COMPUTER_TYPE);
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
-				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
 				showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
 				showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
@@ -229,7 +229,7 @@ if (isset($_GET['onglet'])) {
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
 				break;
 			case 4 :
-				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",COMPUTER_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
 				showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 				break;
 			case 5 :

@@ -190,7 +190,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 			echo "</td>\n\n";
 //			echo "</form>";
-//			echo "<form method='post' action=\"".$HTMLRel."infocoms/infocoms-info-form.php\"><div align='center'>";
+//			echo "<form method='post' action=\"".$HTMLRel."front/infocom.form.php\"><div align='center'>";
 //			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
 			echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
 			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";

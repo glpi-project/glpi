@@ -43,7 +43,7 @@ function titleEnterprise(){
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/entreprises.png\" alt='".$lang["financial"][25]."' title='".$lang["financial"][25]."'></td>";
 	if (haveRight("contact_enterprise","w")){
-		echo "<td><a  class='icon_consol' href=\"enterprises-info-form.php\"><b>".$lang["financial"][25]."</b></a></td>";
+		echo "<td><a  class='icon_consol' href=\"enterprise.form.php\"><b>".$lang["financial"][25]."</b></a></td>";
 	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][23]."</b></span></td>";
 	echo "</tr></table></div>";
 }
@@ -180,7 +180,7 @@ function showAssociatedContact($instID) {
 	while ($i < $number) {
 		$ID=$db->result($result, $i, "ID_ent");
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'><a href='".$HTMLRel."contacts/contacts-info-form.php?ID=".$db->result($result, $i, "ID")."'>".$db->result($result, $i, "glpi_contacts.name")."</a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."front/contact.form.php?ID=".$db->result($result, $i, "ID")."'>".$db->result($result, $i, "glpi_contacts.name")."</a></td>";
 	echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.phone")."</td>";
 	echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.phone2")."</td>";
 	echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
@@ -196,7 +196,7 @@ function showAssociatedContact($instID) {
 	
 	echo "</table><br>"    ;
 	if ($canedit){
-		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/enterprises/enterprises-info-form.php\">";
+		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/enterprise.form.php\">";
 		echo "<table  class='tab_cadre_fixe'>";
 	
 		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
@@ -244,7 +244,7 @@ function getEnterpriseLinks($value,$withname=0){
 			$ret.= "<a href='$website' target='_blank'><img src='".$HTMLRel."pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
 		}
 		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
-		$ret.= "<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$ent->fields['ID']."'><img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
+		$ret.= "<a href='".$HTMLRel."front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
 		}
 
 return $ret;

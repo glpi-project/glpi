@@ -50,7 +50,7 @@ function titleContacts(){
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/contacts.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
 	if (haveRight("contact_enterprise","w")){
-		echo "<td><a  class='icon_consol' href=\"contacts-info-form.php?new=1\"><b>".$lang["financial"][24]."</b></a></td>";
+		echo "<td><a  class='icon_consol' href=\"contact.form.php?new=1\"><b>".$lang["financial"][24]."</b></a></td>";
 	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][22]."</b></span></td>";
 	echo "</tr></table></div>";
 }
@@ -203,7 +203,7 @@ function showEnterpriseContact($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contacts/contacts-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contact.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang["financial"][26]."</th>";
@@ -222,7 +222,7 @@ function showEnterpriseContact($instID) {
 			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 		}
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'><a href='".$HTMLRel."/enterprises/enterprises-info-form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
 	echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 	echo "<td align='center'  width='100'>".$data["fax"]."</td>";

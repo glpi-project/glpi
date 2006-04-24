@@ -555,7 +555,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	
 	
 	echo "<div align='center'><strong>";
-	echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-info-form.php?ID=$sID\">";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/software.form.php?ID=$sID\">";
 	echo $lang["buttons"][13]."</strong>";
 	echo "</a><br>";
 	
@@ -811,7 +811,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		echo "<tr class='tab_bg_1$expirecss'>";
 	
-		echo "<td align='center'><strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-info-form.php?ID=".$data['sID']."\">";
+		echo "<td align='center'><strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
 		echo $sw->fields["name"]." (v. ".$sw->fields["version"].")</a>";
 		echo "</strong>";
 		echo " - ".$data['serial']."</td>";

@@ -51,7 +51,7 @@ function titleCartridge(){
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/cartouches.png\" alt='".$lang["cartridges"][6]."' title='".$lang["cartridges"][6]."'></td>";
 	if (haveRight("cartridge","w")){
-		echo "<td><a  class='icon_consol' href=\"cartridges-info-form.php\"><b>".$lang["cartridges"][6]."</b></a></td>";
+		echo "<td><a  class='icon_consol' href=\"cartridge.form.php\"><b>".$lang["cartridges"][6]."</b></a></td>";
 	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][21]."</b></span></td>";
 	echo "</tr></table></div>";
 }
@@ -309,7 +309,7 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		if (!is_null($date_use)){
 			$p=new Printer;
 			if ($p->getFromDB($data["FK_glpi_printers"]))
-				echo "<a href='".$cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$p->fields["ID"]."'><b>".$p->fields["name"]." (".$p->fields["ID"].")</b></a>";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/printer.form.php?ID=".$p->fields["ID"]."'><b>".$p->fields["name"]." (".$p->fields["ID"].")</b></a>";
 			else echo "N/A";
 
 		$tmp_dbeg=split("-",$date_in);
@@ -413,7 +413,7 @@ function showCompatiblePrinters($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/cartridges/cartridges-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/cartridge.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["cartridges"][32].":</th></tr>";
 	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["common"][22]."</th><th>&nbsp;</th></tr>";

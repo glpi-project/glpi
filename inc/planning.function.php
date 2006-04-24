@@ -466,7 +466,7 @@ foreach ($interv as $key => $val){
 			echo "<img src='$HTMLRel/pics/rdv_interv.png' alt=''>&nbsp;";
 			
 			
-			echo "<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+			echo "<a href='".$HTMLRel."front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
 			echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 
@@ -485,7 +485,7 @@ foreach ($interv as $key => $val){
 					$img="rdv_public.png";
 				} 
 			echo "<img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
-			echo "<a href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
+			echo "<a href='".$HTMLRel."front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["title"];
 			echo $author;
 			echo "</a>";
@@ -506,7 +506,7 @@ foreach ($interv as $key => $val){
 		if(isset($val["id_tracking"])){  // show tracking
 			$rand=mt_rand();
 			echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
-			echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+			echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$HTMLRel."front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
 			echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 			echo "<br>".$val["device"];
@@ -528,7 +528,7 @@ foreach ($interv as $key => $val){
 			
 			$rand=mt_rand();
 			echo "<div class='planning' ><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
-			echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
+			echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$HTMLRel."front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 			echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
 				if ($who!=$val["author"]){
 					$author="<br>Par ".getUserName($val["author"]);
@@ -549,7 +549,7 @@ foreach ($interv as $key => $val){
 		if(isset($val["id_tracking"])){  // show tracking
 		$rand=mt_rand();
 		echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
-		echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+		echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$HTMLRel."front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
 		echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 		echo "<br>".$val["device"];
@@ -570,7 +570,7 @@ foreach ($interv as $key => $val){
 				} 
 		$rand=mt_rand();
 		echo "<div class='planning' ><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
-		echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>";
+		echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$HTMLRel."front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
 			if ($who!=$val["author"]){
 					$author="<br>Par ".getUserName($val["author"]);
@@ -683,10 +683,10 @@ function ShowPlanningCentral($who){
 			echo date("H:i",strtotime($val["end"]));
 			echo "</td>";
 			if(isset($val["id_tracking"])){
-				echo "<td>".$val["device"]."<a href='".$HTMLRel."tracking/tracking-info-form.php?ID=".$val["id_tracking"]."'>";
+				echo "<td>".$val["device"]."<a href='".$HTMLRel."front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 				echo ": ".resume_text($val["content"],125)."</a>";
 			}else{
-				echo "<td><a href='".$HTMLRel."reminder/reminder-info-form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
+				echo "<td><a href='".$HTMLRel."front/reminder.form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
 				echo "</a>: ".resume_text($val["text"],125);
 			}
 	

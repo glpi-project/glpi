@@ -82,7 +82,7 @@ $i=0;
 if (is_array($nomEnt))
 foreach($nomEnt as $key){
 	$val[$i]["assign_ent"]=$key["assign_ent"];
-	$val[$i]["link"]="<a href='".$HTMLRel."enterprises/enterprises-info-form.php?ID=".$key["assign_ent"]."'>";
+	$val[$i]["link"]="<a href='".$HTMLRel."front/enterprise.form.php?ID=".$key["assign_ent"]."'>";
 	$val[$i]["link"].=$key["name"];
 	$val[$i]["link"].="</a>";
 $i++;

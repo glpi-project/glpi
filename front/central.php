@@ -47,7 +47,7 @@ commonHeader($lang["title"][0],$_SERVER["PHP_SELF"]);
 // Redirect management
 if (isset($_GET['redirect'])){
 	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID");
+	glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=$ID");
 }
 
 // show "my view" in first

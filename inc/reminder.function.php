@@ -41,7 +41,7 @@ function titleReminder(){
          global  $lang,$HTMLRel;
          
          echo "<div align='center'><table border='0'><tr><td>";
-         echo "<img src=\"".$HTMLRel."pics/reminder.png\" alt='".$lang["reminder"][0]."' title='".$lang["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."reminder/reminder-info-form.php\"><b>".$lang["buttons"][8]."</b></a>";
+         echo "<img src=\"".$HTMLRel."pics/reminder.png\" alt='".$lang["reminder"][0]."' title='".$lang["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."front/reminder.form.php\"><b>".$lang["buttons"][8]."</b></a>";
          echo "</td></tr></table></div>";
 }
 
@@ -243,13 +243,13 @@ function showCentralReminder($type="private"){
 		
 		echo "<tr><th><div style='position: relative'><span><strong>"."$titre"."</strong></span>";
 		if ($type!="public"||haveRight("reminder_public","w"))
-			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."reminder/reminder-info-form.php?type=$type\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span>";
+			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."front/reminder.form.php?type=$type\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span>";
 		echo "</div>";
 		echo "</th></tr>";
 	if($db->numrows($result)>0){
 		while ($data =$db->fetch_array($result)){ 
 
-			echo "<tr class='tab_bg_2'><td><div style='position: relative'><span><a style='margin-left:8px' href=\"".$cfg_glpi["root_doc"]."/reminder/reminder-info-form.php?ID=".$data["ID"]."\">".$data["title"]."</a></span>";
+			echo "<tr class='tab_bg_2'><td><div style='position: relative'><span><a style='margin-left:8px' href=\"".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a></span>";
 
 			if($data["rv"]=="1"){
 
@@ -326,7 +326,7 @@ function showListReminder($type="private"){
 		if (count($tabremind)>0){
 			foreach ($tabremind as $key => $val){
 
-			echo "<tr class='tab_bg_2'><td width='70%'><a href=\"".$cfg_glpi["root_doc"]."/reminder/reminder-info-form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
+			echo "<tr class='tab_bg_2'><td width='70%'><a href=\"".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
 			
 				if($val["end"]!=""){	
 				echo "<td style='text-align:center;'>";

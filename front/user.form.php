@@ -42,7 +42,7 @@ $user=new User();
 if (empty($_GET["name"])&&isset($_GET["ID"])){
 	
 	$user->getFromDB($_GET["ID"]);
-	glpi_header($cfg_glpi["root_doc"]."/users/users-info-form.php?name=".$user->fields['name']);
+	glpi_header($cfg_glpi["root_doc"]."/front/user.form.php?name=".$user->fields['name']);
 }
 
 if(empty($_GET["name"])) $_GET["name"] = "";

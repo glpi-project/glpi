@@ -48,7 +48,7 @@
 function titleLinks(){
                 global  $lang,$HTMLRel;
                 echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/links.png\" alt='".$lang["links"][2]."' title='".$lang["links"][2]."'></td><td><a  class='icon_consol' href=\"links-info-form.php?new=1\"><b>".$lang["links"][2]."</b></a>";
+                echo "<img src=\"".$HTMLRel."pics/links.png\" alt='".$lang["links"][2]."' title='".$lang["links"][2]."'></td><td><a  class='icon_consol' href=\"link.form.php?new=1\"><b>".$lang["links"][2]."</b></a>";
                 echo "</td></tr></table></div>";
 }
 
@@ -167,7 +167,7 @@ function showLinkDevice($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/links/links-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/link.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>".$lang["links"][4].":</th></tr>";
 	echo "<tr><th>".$lang["common"][17]."</th>";

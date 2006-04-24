@@ -68,7 +68,7 @@ function showTrackingOnglets($target){
 	echo "<div id='barre_onglets'><ul id='onglet'>";
    		
 		 if ($_SESSION["glpiprofile"]["interface"]=="central"){
-				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID&amp;onglet=1\">".$lang["job"][38]." $ID</a></li>";
+				echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=$ID&amp;onglet=1\">".$lang["job"][38]." $ID</a></li>";
 				
 				if (haveRight("show_ticket","1"))
 					display_plugin_headings($target,TRACKING_TYPE,"","");
@@ -566,7 +566,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		// Job Controls
 		
 		if ($_SESSION["glpiprofile"]["interface"]=="central")
-		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		else
 		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
 
@@ -644,7 +644,7 @@ function showJobVeryShort($ID) {
 		echo "<td width='40' align='center'>";
 		
 		if ($_SESSION["glpiprofile"]["interface"]=="central")
-		echo "<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+		echo "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
 		echo "<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 
@@ -1378,7 +1378,7 @@ function getAssignName($ID,$type,$link=0){
 			$before="";
 			$after="";
 			if ($link){
-				$before="<a href=\"".$cfg_glpi["root_doc"]."/enterprises/enterprises-info-form.php?ID=".$ID."\">";
+				$before="<a href=\"".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=".$ID."\">";
 				$after="</a>";
 			}
 		
@@ -1655,7 +1655,7 @@ function showJobDetails ($ID){
 		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
 
 		echo "<div align='center'>";
-		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php\"  enctype=\"multipart/form-data\">\n";
+		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php\"  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// Premi�e ligne
 		echo "<tr ><th colspan='2' style='font-size:10px'>";
@@ -1889,7 +1889,7 @@ function showJobDetails ($ID){
 					echo "<tr><td>";
 					$con->getFromDB($data["FK_doc"]);
 					echo getDocumentLink($con->fields["filename"]);
-					echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
+					echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
 					echo "</td></tr>";
 					//$i++;
 				}
@@ -2027,7 +2027,7 @@ function showAddFollowupForm($tID){
 
 	$commentall=haveRight("comment_all_ticket","1");
 	if ($_SESSION["glpiprofile"]["interface"]=="central"){
-		$target=$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php";
+		$target=$cfg_glpi["root_doc"]."/front/tracking.form.php";
 	} else {
 		$target=$cfg_glpi["root_doc"]."/helpdesk.php?show=user";
 	}
@@ -2144,7 +2144,7 @@ function showUpdateFollowupForm($ID){
 			echo $lang["job"][39];
 			echo "</th></tr>";
 			echo "<tr class='tab_bg_2'><td>";
-			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/tracking/tracking-info-form.php\">\n";
+			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php\">\n";
 
 			echo "<table width='100%'>";
 			echo "<tr class='tab_bg_2'><td width='50%'>";

@@ -103,7 +103,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 	checkRight("printer","w");
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PRINTER_TYPE);
 	logEvent($tab["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$lang["log"][27]);
-	glpi_header($cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$tab["sID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/printer.form.php?ID=".$tab["sID"]);
 }
 else
 {
@@ -131,7 +131,7 @@ if (isset($_GET['onglet'])) {
 					break;
 
 				case 4 :			
-					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PRINTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);	
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);	
 					showContractAssociated(PRINTER_TYPE,$tab["ID"],$tab["withtemplate"]);
 					break;
 				case 5 :
@@ -169,7 +169,7 @@ if (isset($_GET['onglet'])) {
 						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
 						showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 						showPortsAdd($tab["ID"],PRINTER_TYPE);	
-						showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PRINTER_TYPE,$tab["ID"]);
+						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"]);
 						showContractAssociated(PRINTER_TYPE,$tab["ID"]);
 						showDocumentAssociated(PRINTER_TYPE,$tab["ID"]);
 						showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
@@ -183,7 +183,7 @@ if (isset($_GET['onglet'])) {
 					showPortsAdd($tab["ID"],PRINTER_TYPE);	
 					break;
 				case 4 :	
-					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PRINTER_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"]);
 					showContractAssociated(PRINTER_TYPE,$tab["ID"]);
 					break;
 				case 5 :

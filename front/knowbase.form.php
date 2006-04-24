@@ -97,7 +97,7 @@ $kb=new kbItem;
 	$kb->update($_POST);
 	logEvent($tab["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][21]);	
 		
-	glpi_header($cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
 	}
 	
 	else if (isset($tab["ID"])  && strcmp($tab["delete"],"yes") == 0){
@@ -125,7 +125,7 @@ $kb=new kbItem;
 	
 	
 		
-	glpi_header($cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
 	}
 	
 	
@@ -141,7 +141,7 @@ $kb=new kbItem;
 	
 	
 		
-	glpi_header($cfg_glpi["root_doc"]."/knowbase/knowbase-info-form.php?ID=".$tab["ID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
 	}
 	
 	else if (empty($tab["ID"])) {

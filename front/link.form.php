@@ -73,7 +73,7 @@ else if (isset($_POST["adddevice"])){
 
 	addLinkDevice($_POST["device_type"],$_POST["lID"]);
 	logEvent($tab["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][32]);
-	glpi_header($cfg_glpi["root_doc"]."/links/links-info-form.php?ID=".$_POST["lID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/link.form.php?ID=".$_POST["lID"]);
 }
 else if (isset($_GET["deletedevice"])){
 	checkRight("link","w");

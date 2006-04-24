@@ -383,9 +383,9 @@ function showAddEvents($target,$order,$sort,$user="") {
 			echo $item;
 		} else {
 				if ($itemtype=="reservation"){
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/$itemtype/index.php?show=resa&amp;ID=";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
 				} else {
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/$itemtype/".$itemtype."-info-form.php?ID=";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$itemtype.".form.php?ID=";
 				}
 			echo $item;
 			echo "\">$item</a>";
@@ -510,9 +510,9 @@ function showEvents($target,$order,$sort,$start=0) {
 				echo "<a href='#' onClick=\"window.open('".$cfg_glpi["root_doc"]."/infocoms/infocoms-show.php?ID=$item','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\">$item</a>";					
 			} else {
 				if ($itemtype=="reservation"){
-					echo "<a href=\"".$cfg_glpi["root_doc"]."/$itemtype/index.php?show=resa&amp;ID=";
+					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
 				} else {
-					echo "<a href=\"".$cfg_glpi["root_doc"]."/$itemtype/".$itemtype."-info-form.php?ID=";
+					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$itemtype.".form.php?ID=";
 				}
 				echo $item;
 				echo "\">$item</a>";

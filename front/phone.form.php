@@ -106,7 +106,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 
 	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PHONE_TYPE);
 	logEvent($tab["sID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
-	glpi_header($cfg_glpi["root_doc"]."/phones/phones-info-form.php?ID=".$tab["sID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/phone.form.php?ID=".$tab["sID"]);
 
 
 }
@@ -133,7 +133,7 @@ else
 
 			switch($_SESSION['glpi_onglet']){
 				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 					showContractAssociated(PHONE_TYPE,$tab["ID"],$tab["withtemplate"]);
 					break;
 				case 5 :
@@ -168,7 +168,7 @@ else
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PHONE_TYPE);
 					showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 					showPortsAdd($tab["ID"],PHONE_TYPE);
-					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$tab["ID"]);
 					showContractAssociated(PHONE_TYPE,$tab["ID"]);
 					showDocumentAssociated(PHONE_TYPE,$tab["ID"]);
 					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$tab["ID"]);
@@ -177,7 +177,7 @@ else
 					display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 					break;
 				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",PHONE_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$tab["ID"]);
 					showContractAssociated(PHONE_TYPE,$tab["ID"]);
 					break;
 				case 5 :

@@ -43,7 +43,7 @@ function titleDocument(){
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td>";
 	if (haveRight("document","w")){
-		echo "<td><a  class='icon_consol' href=\"documents-info-form.php\"><b>".$lang["document"][13]."</b></a></td>";
+		echo "<td><a  class='icon_consol' href=\"document.form.php\"><b>".$lang["document"][13]."</b></a></td>";
 	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][27]."</b></span></td>";
 	echo "</tr></table></div>";
 }
@@ -323,7 +323,7 @@ function showDeviceDocument($instID,$search='') {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/documents/documents-info-form.php\">";
+	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/document.form.php\">";
 	
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["document"][19].":</th></tr>";
@@ -412,7 +412,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/documents/documents-info-form.php\">";
+    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/document.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th>";
@@ -431,7 +431,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 	if ($withtemplate!=3&&$canread){
-		echo "<td align='center'><a href='".$HTMLRel."documents/documents-info-form.php?ID=$cID'><b>".$con->fields["name"];
+		echo "<td align='center'><a href='".$HTMLRel."front/document.form.php?ID=$cID'><b>".$con->fields["name"];
 		if ($cfg_glpi["view_ID"]) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
 	} else {
@@ -453,7 +453,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	if ($withtemplate<2) {
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$HTMLRel."documents/documents-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 			echo "</td>";
 	}
