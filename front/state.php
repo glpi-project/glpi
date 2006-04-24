@@ -35,7 +35,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("user","computer","printer","monitor","periphal","networking","phone");
+$NEEDED_ITEMS=array("state","user","computer","printer","monitor","periphal","networking","phone");
 include ($phproot . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
