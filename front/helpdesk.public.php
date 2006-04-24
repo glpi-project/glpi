@@ -46,7 +46,7 @@ include ($phproot . "/inc/includes.php");
 if (isset($_GET['redirect'])){
 	checkHelpdeskAccess();
 	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=$ID");
+	glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&ID=$ID");
 }
 
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
@@ -95,7 +95,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
 		if ($_SESSION["glpiID"]==$_POST["id_user"]) // test Sécurité
 		if ($rr->update($_POST,$_SERVER["PHP_SELF"],$item))
-			glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
+			glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 		else exit();			
 	}
 

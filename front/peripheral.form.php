@@ -64,7 +64,7 @@ else if (isset($tab["delete"]))
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
 	 else 
-	glpi_header($cfg_glpi["root_doc"]."/peripherals/");
+	glpi_header($cfg_glpi["root_doc"]."/front/peripheral.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -72,7 +72,7 @@ else if (isset($_POST["restore"]))
 
 	$per->restore($_POST);
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/peripherals/");
+	glpi_header($cfg_glpi["root_doc"]."/front/peripheral.php");
 }
 else if (isset($tab["purge"]))
 {
@@ -80,7 +80,7 @@ else if (isset($tab["purge"]))
 
 	$per->delete($tab,1);
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/peripherals/");
+	glpi_header($cfg_glpi["root_doc"]."/front/peripheral.php");
 }
 else if (isset($_POST["update"]))
 {
