@@ -99,13 +99,13 @@ function commonHeader($title,$url)
 	//////// FINANCIAL
 	$financial=array();
 	if (haveRight("contact_enterprise","r")){
-		$financial[$lang["Menu"][22]]=array("/contacts/index.php","t");
-		$financial[$lang["Menu"][23]]=array("/enterprises/index.php","e");
+		$financial[$lang["Menu"][22]]=array("contact.php","t");
+		$financial[$lang["Menu"][23]]=array("enterprise.php","e");
 	}
 	if (haveRight("contract_infocom","r"))
-		$financial[$lang["Menu"][25]]=array("/contracts/index.php","n");
+		$financial[$lang["Menu"][25]]=array("contract.php","n");
 	if (haveRight("document","r"))
-		$financial[$lang["Menu"][27]]=array("/documents/index.php","d");
+		$financial[$lang["Menu"][27]]=array("document.php","d");
 	
 	//////// ASSISTANCE
 	if (haveRight("observe_ticket","1")||haveRight("show_ticket","1"))
