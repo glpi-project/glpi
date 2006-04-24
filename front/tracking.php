@@ -37,7 +37,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("user","tracking","computer","printer","monitor","periphal","networking","software","enterprise","phone","document");
+$NEEDED_ITEMS=array("user","tracking","computer","printer","monitor","periphal","networking","software","enterprise","phone","document","peripheral");
 include ($phproot . "/inc/includes.php");
 
 checkCentralAccess();

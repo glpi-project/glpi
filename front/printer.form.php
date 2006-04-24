@@ -38,7 +38,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("printer","computer","networking","reservation","tracking","cartridge","contract","infocom","document","state","user","link");
+$NEEDED_ITEMS=array("printer","computer","networking","reservation","tracking","cartridge","contract","infocom","document","state","user","link","enterprise");
 include ($phproot . "/inc/includes.php");
 
 
