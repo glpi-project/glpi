@@ -37,16 +37,11 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
+$NEEDED_ITEMS=array("user","tracking","computer","printer","networking","peripheral","monitor","software","phone");
+include ($phproot . "/inc/includes.php");
+
 include ("glpi/includes.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_enterprises.php");
-include ($phproot . "/glpi/includes_users.php");
+
 
 
 checkRight("logs","r");

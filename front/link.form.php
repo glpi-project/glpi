@@ -34,8 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_links.php");
+$NEEDED_ITEMS=array("link");
+include ($phproot . "/inc/includes.php");
 
 
 if(isset($_GET)) $tab = $_GET;

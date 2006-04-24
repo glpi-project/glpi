@@ -34,25 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot."/glpi/includes.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_devices.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_reservation.php");
-include ($phproot . "/glpi/includes_state.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_documents.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_links.php");
-include ($phproot . "/glpi/includes_ocsng.php");
-include ($phproot . "/glpi/includes_phones.php");
-include ($phproot . "/glpi/includes_consumables.php");
-include ($phproot . "/glpi/includes_cartridges.php");
+$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","infocom","link","ocsng","consumable","cartridge");
+include ($phproot . "/inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();

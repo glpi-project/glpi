@@ -34,18 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_reservation.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_phones.php");
-include ($phproot . "/glpi/includes_documents.php");
+$NEEDED_ITEMS=array("user","tracking","document","computer","printer","networking","peripheral","monitor","software","infocom","phone");
+include ($phproot . "/inc/includes.php");
 
 checkRight("create_ticket","1");
 
