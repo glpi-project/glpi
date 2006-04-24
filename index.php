@@ -38,7 +38,7 @@
 include ("_relpos.php");
 include ($phproot . "/config/based_config.php");
 if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
-	include($phproot ."/install.php");
+	include($phproot ."/install/install.php");
 	die();
 }
 else

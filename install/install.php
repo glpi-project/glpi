@@ -56,7 +56,7 @@ function header_html($etape)
         echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
         echo "<title>Setup GLPI</title>";
         // CSS 
-	echo "<link rel='stylesheet'  href='style_install.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet'  href='css/style_install.css' type='text/css' media='screen' >";
      
          echo "</head>";
         echo "<body>";
@@ -78,7 +78,7 @@ function footer_html()
 function choose_language()
 {
 
-echo "<form action=\"install.php\" method=\"post\">";
+echo "<form action=\"install/install.php\" method=\"post\">";
 echo "<p style='text-align:center;'><label>Select your language </label><select name=\"language\">";
 	echo "<option value=\"fr_FR\">Fran&ccedil;ais (fr_FR)</option>";
 	echo "<option value=\"en_GB\">English (en_GB)</option>";
@@ -105,7 +105,7 @@ function loadLang($language) {
 		unset($lang);
 		global $lang;
 		include ("_relpos.php");
-		$file = $phproot ."/glpi/dicts/".$language.".php";
+		$file = $phproot ."/locales/".$language.".php";
 		include($file);
 }
 
@@ -846,12 +846,12 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		global $lang, $cfg_glpi;		
 		
 		include ("_relpos.php");
-		include ($phproot . "/glpi/common/classes.php");
-		include ($phproot . "/glpi/common/functions.php");
+		include ($phproot . "/inc/common.class.php");
+		include ($phproot . "/inc/common.function.php");
 		include ($cfg_glpi["config_dir"] . "/config_db.php");
 		
 		$db = new DB;
-		$db_file = $phproot ."/mysql/glpi-0.68-empty.sql";
+		$db_file = $phproot ."/install/mysql/glpi-0.68-empty.sql";
 		$dbf_handle = fopen($db_file, "rt");
 		$sql_query = fread($dbf_handle, filesize($db_file));
 		fclose($dbf_handle);
@@ -936,8 +936,8 @@ function step7() {
 
 	global $lang,$cfg_glpi;
 	include ("_relpos.php");
-	require_once ($phproot . "/glpi/common/classes.php");
-	require_once ($phproot . "/glpi/common/functions.php");
+	require_once ($phproot . "/inc/common.class.php");
+	require_once ($phproot . "/inc/common.function.php");
 	require_once ($cfg_glpi["config_dir"] . "/config_db.php");
 	$db = new DB;
 	
@@ -958,7 +958,7 @@ function step7() {
 	echo "<li>".$lang["install"][61]."</li></ul></p>";
 	echo "<p>".$lang["install"][62]."</p>";
 	echo "<p>".$lang["install"][63]."</p>";
-	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+	echo "<p class='submit'> <a href=\"".$HTMLRel."index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 	}
 
 //Create the file config_db.php
@@ -1009,7 +1009,7 @@ if(empty($_SESSION["dict"])) $_SESSION["dict"] = "en_GB";
 if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
 
 
-include("glpi/config/based_config.php");
+include("../config/based_config.php");
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 if(file_exists($cfg_glpi["config_dir"] . "/config_path.php")) {
