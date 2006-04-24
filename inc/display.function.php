@@ -174,7 +174,7 @@ function commonHeader($title,$url)
 	echo "<div id='menu'>";
 	// Logo with link to command center
 	
-	echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$cfg_glpi["root_doc"]."/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
+	echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$cfg_glpi["root_doc"]."/front/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
 		
 	// Get object-variables and build the navigation-elements
 	
