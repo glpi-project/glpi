@@ -47,7 +47,7 @@
 
 #bloc .haut{
 height: 53px;
- background: url(pics/haut_install.png) 0 0 no-repeat; 
+ background: url(./pics/haut_install.png) 0 0 no-repeat; 
 width:760px;
 margin:0;
 padding:0;
@@ -55,7 +55,7 @@ padding:0;
 
 #bloc{
 
-background: url(pics/milieu_install.png) 0 0 repeat-y;
+background: url(./pics/milieu_install.png) 0 0 repeat-y;
 width:760px;
 margin:0;
 text-align:left;
@@ -64,7 +64,7 @@ text-align:left;
 
 #bloc .bas{
 height: 31px;
-background: url(pics/bas_install.png)  0 0  no-repeat; 
+background: url(./pics/bas_install.png)  0 0  no-repeat; 
 
 width:760px;
 
