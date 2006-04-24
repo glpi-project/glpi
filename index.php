@@ -36,14 +36,14 @@
 // Test si config_db n'existe pas on lance l'installation
 
 include ("_relpos.php");
-include ($phproot . "/glpi/config/based_config.php");
+include ($phproot . "/config/based_config.php");
 if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
 	include($phproot ."/install.php");
 	die();
 }
 else
 {
-	include ($phproot . "/glpi/includes.php");
+	include ($phproot . "/inc/includes.php");
 	// load default dictionnary 
 	loadLanguage();
 	// Using CAS server
@@ -65,7 +65,7 @@ else
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
 
 	// Appel CSS
-	echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' />";
+	echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' />";
 	echo "</head>";
 
 	// Body with configured stuff
@@ -109,23 +109,23 @@ else
 		 case "helpdesk" :
 		 	switch ($type){
 		 		case "tracking":
-				 	glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.php?show=user&ID=$ID");
 					 break;
 				 default:
-					 glpi_header($cfg_glpi["root_doc"]."/helpdesk.php");
+					 glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.php");
 					 break;
 			 	}
 		 	break;
 		 case "central" :
 		 	switch ($type){
 		 		case "tracking":
-				 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/front/tracking-info-form.php?ID=$ID");
 					 break;
 		 		case "computers":
-				 	glpi_header($cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/front/computers-info-form.php?ID=$ID");
 					 break;
 				 default:
-					 glpi_header($cfg_glpi["root_doc"]."/central.php");
+					 glpi_header($cfg_glpi["root_doc"]."/front/central.php");
 					 break;
 			 	}
 		 	break;
