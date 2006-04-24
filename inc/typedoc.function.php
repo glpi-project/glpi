@@ -43,7 +43,7 @@
 function titleTypedocs(){
 	global  $lang,$HTMLRel;
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td><td><a  class='icon_consol' href=\"typedocs-info-form.php\"><b>".$lang["document"][12]."</b></a>";
+	echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td><td><a  class='icon_consol' href=\"typedoc.form.php\"><b>".$lang["document"][12]."</b></a>";
 	echo "</td>";
 	echo "</tr></table></div>";
 }

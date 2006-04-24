@@ -120,7 +120,7 @@ else
 		if (!empty($tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
 					break;
 				case 5 :
@@ -150,7 +150,7 @@ else
 				case -1:
 					showLicensesAdd($tab["ID"]);
 					showLicenses($tab["ID"]);
-					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
@@ -163,7 +163,7 @@ else
 					showLicenses($tab["ID"],1);
 					break;
 				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",SOFTWARE_TYPE,$tab["ID"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					break;
 				case 5 :

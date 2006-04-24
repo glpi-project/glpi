@@ -111,7 +111,7 @@ else if (isset($_POST["addenterprise"])){
 
 	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][32]);
-	glpi_header($cfg_glpi["root_doc"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/document.form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 
@@ -119,7 +119,7 @@ else if (isset($_GET["deleteenterprise"])){
 
 	deleteEnterpriseDocument($_GET["ID"]);
 	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][33]);
-	glpi_header($cfg_glpi["root_doc"]."/documents/documents-info-form.php?ID=".$_POST["conID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/document.form.php?ID=".$_POST["conID"]);
 }
 else
 {

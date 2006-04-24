@@ -51,7 +51,7 @@ function titleConsumable(){
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<a href='index.php'><img src=\"".$HTMLRel."pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></a></td>";
 	if (haveRight("consumable","w")){
-		echo "<td><a  class='icon_consol' href=\"consumables-info-form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
+		echo "<td><a  class='icon_consol' href=\"consumable.form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
 	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][32]."</b></span></td>";
 	echo "<td><a class='icon_consol' href='index.php?synthese=yes'>".$lang["state"][11]."</a></td>";
 	echo "</tr></table></div>";

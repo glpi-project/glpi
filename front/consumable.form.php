@@ -106,13 +106,13 @@ else
 			showConsumableAdd($tab["ID"]);
 			showConsumables($tab["ID"]);
 			showConsumables($tab["ID"],1);
-			showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+			showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
 			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
 			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
 			display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 			break;
 		case 4 :
-			showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+			showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
 			break;
 			
 		case 5 :

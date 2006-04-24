@@ -143,37 +143,37 @@ class ReservationItem extends CommonDBTM {
 				$out.= "</a>";
 				break;
 			case PHONE_TYPE : 
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/phones/phones-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/phone.form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;				
 			case NETWORKING_TYPE :
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/networking/networking-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;
 			case PRINTER_TYPE :
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/printers/printers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/printer.form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;
 			case MONITOR_TYPE : 
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/monitors/monitors-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/monitor.form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;
 			case PERIPHERAL_TYPE : 
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/peripherals/peripherals-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/peripheral.form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;	
 			case SOFTWARE_TYPE : 
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/software/software-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/software.form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;								
 			case PHONE_TYPE : 
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/phones/phones-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/phone.form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;	

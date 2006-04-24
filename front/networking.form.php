@@ -108,7 +108,7 @@ else
 		if (!empty($tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 			case 4 :
-				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 				showContractAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 				break;
 			case 5 :
@@ -144,7 +144,7 @@ else
 			case -1:
 				showPorts($tab["ID"],NETWORKING_TYPE);
 				showPortsAdd($tab["ID"],NETWORKING_TYPE);
-				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
 				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 				showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
@@ -153,7 +153,7 @@ else
 				display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 				break;
 			case 4 :
-				showInfocomForm($cfg_glpi["root_doc"]."/infocoms/infocoms-info-form.php",NETWORKING_TYPE,$tab["ID"]);
+				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
 				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 				break;
 			case 5 :

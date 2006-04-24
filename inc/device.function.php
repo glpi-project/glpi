@@ -264,7 +264,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	
 	echo "<tr class='tab_bg_2'>";
 	echo "<td align='center'><a href='".$HTMLRel."devices/index.php?device_type=".$device->type."'>$type</a></td>";
-	echo "<td align='center'><a href='".$HTMLRel."devices/devices-info-form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
 	
 	if (count($entry)>0){
 		$more=0;
@@ -499,7 +499,7 @@ function showDevicesList($device_type,$target) {
 				$device->getFromDB($ID);
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/devices/devices-info-form.php?ID=$ID&amp;device_type=$device_type\">";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/device.form.php?ID=$ID&amp;device_type=$device_type\">";
 				echo $device->fields["designation"]." (".$device->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$device->fields["FK_glpi_enterprise"]) ."</td>";
@@ -520,7 +520,7 @@ function titleDevices($device_type){
 	GLOBAL  $lang,$HTMLRel;           
 	echo "<div align='center'><table border='0'><tr><td>";
 	//TODO : CHANGER LE PICS et le alt.!!!!!!!!!!!
-	echo "<img src=\"".$HTMLRel."pics/periph.png\" alt='".$lang["devices"][12]."' title='".$lang["devices"][12]."'></td><td><a  class='icon_consol' href=\"devices-info-form.php?device_type=$device_type\"><b>".$lang["devices"][12]."</b></a>";
+	echo "<img src=\"".$HTMLRel."pics/periph.png\" alt='".$lang["devices"][12]."' title='".$lang["devices"][12]."'></td><td><a  class='icon_consol' href=\"device.form.php?device_type=$device_type\"><b>".$lang["devices"][12]."</b></a>";
 	echo "</td>";
 	echo "</tr></table></div>";
 }

@@ -58,7 +58,7 @@ else {
 	echo "<div align='center'><strong>".$ci->getType()." - ".$ci->getLink()."</strong></div>";
 	if (isset($_GET["update"])&&$_GET["update"]==1) $withtemplate=0;
 	else $withtemplate=2;
-	showInfocomForm ($HTMLRel."infocoms/infocoms-info-form.php",$_GET["device_type"],$_GET["device_id"],1,$withtemplate);
+	showInfocomForm ($HTMLRel."front/infocom.form.php",$_GET["device_type"],$_GET["device_id"],1,$withtemplate);
 }
 
 

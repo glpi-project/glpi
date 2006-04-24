@@ -51,7 +51,7 @@ function titleContract(){
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/contracts.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td>";
 	if (haveRight("contract_infocom","w")){
-		echo "<td><a  class='icon_consol' href=\"contracts-info-form.php\"><b>".$lang["financial"][0]."</b></a></td>";
+		echo "<td><a  class='icon_consol' href=\"contract.form.php\"><b>".$lang["financial"][0]."</b></a></td>";
 	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][25]."</b></span></td>";
 	echo "</tr></table></div>";
 }
@@ -337,7 +337,7 @@ function showDeviceContract($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contracts/contracts-info-form.php\">";
+	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contract.form.php\">";
 	
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["financial"][49].":</th></tr>";
@@ -446,7 +446,7 @@ function showEnterpriseContract($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contracts/contracts-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contract.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["financial"][65].":</th></tr>";
 	echo "<tr><th>".$lang["financial"][26]."</th>";
@@ -466,7 +466,7 @@ function showEnterpriseContract($instID) {
 	$entID=$db->result($result, $i, "entID");
 	$entname=getDropdownName("glpi_enterprises",$entID);
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/enterprises/enterprises-info-form.php?ID=$entID'>".$entname;
+	echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
 	if ($cfg_glpi["view_ID"]||empty($entname)) echo " ($entID)";
 	echo "</a></td>";
 	echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
@@ -722,7 +722,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contracts/contracts-info-form.php\">";
+    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contract.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th>";
@@ -740,7 +740,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$con=new Contract;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"];
+	echo "<td align='center'><a href='".$HTMLRel."front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
 	if ($cfg_glpi["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 	echo "</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
@@ -754,7 +754,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	if ($withtemplate!=2) {
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$HTMLRel."contracts/contracts-info-form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$HTMLRel."front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 		echo "</td>";
 		}
@@ -807,7 +807,7 @@ function showContractAssociatedEnterprise($ID){
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/contracts/contracts-info-form.php\">";
+    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contract.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th>";
@@ -825,7 +825,7 @@ function showContractAssociatedEnterprise($ID){
 		$con=new Contract;
 		$con->getFromDB($cID);
 	echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-	echo "<td align='center'><a href='".$HTMLRel."contracts/contracts-info-form.php?ID=$cID'><b>".$con->fields["name"];
+	echo "<td align='center'><a href='".$HTMLRel."front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
 	if ($cfg_glpi["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 	echo "</b></a></td>";
 	echo "<td align='center'>".$con->fields["num"]."</td>";
@@ -838,7 +838,7 @@ function showContractAssociatedEnterprise($ID){
 
 	echo "<td align='center' class='tab_bg_2'>";
 	if ($canedit) 
-		echo "<a href='".$HTMLRel."contracts/contracts-info-form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+		echo "<a href='".$HTMLRel."front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
 	else echo "&nbsp;";
 	echo "</td></tr>";
 	$i++;

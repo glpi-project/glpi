@@ -87,7 +87,7 @@ else if (isset($_POST["addenterprise"])){
 
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
 	logEvent($tab["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$lang["log"][34]);
-	glpi_header($cfg_glpi["root_doc"]."/contacts/contacts-info-form.php?ID=".$_POST["conID"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/contact.form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 	checkRight("contact_enterprise","w");

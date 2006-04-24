@@ -45,7 +45,7 @@ if (isset($_POST["add_planning"])){
 
 if ($pt->add($_POST,"")){
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][20]);
-	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["id_tracking"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$_POST["id_tracking"]);
 } 
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_POST["referer"]);
@@ -69,7 +69,7 @@ if ($pt->add($_POST,"")){
 	
 	$pt->delete($_POST["ID"]);
 	logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=".$_POST["id_tracking"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$_POST["id_tracking"]);
 		
 } else if (isset($_GET["edit"])){
 	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
