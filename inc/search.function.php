@@ -160,14 +160,14 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo "<tr><td align='right'>";
 		// First line display add / delete images for normal and meta search items
 		if ($i==0){
-			echo "<a href='".$cfg_glpi["root_doc"]."/computers/index.php?add_search_count=1&amp;type=$type'><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"][$type]>1)
-			echo "<a href='".$cfg_glpi["root_doc"]."/computers/index.php?delete_search_count=1&amp;type=$type'><img src=\"".$HTMLRel."pics/moins.png\" alt='-' title='".$lang["search"][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?delete_search_count=1&amp;type=$type'><img src=\"".$HTMLRel."pics/moins.png\" alt='-' title='".$lang["search"][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
 			if (isset($names[$type])){
-				echo "<a href='".$cfg_glpi["root_doc"]."/computers/index.php?add_search_count2=1&amp;type=$type'><img src=\"".$HTMLRel."pics/meta_plus.png\" alt='+' title='".$lang["search"][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?add_search_count2=1&amp;type=$type'><img src=\"".$HTMLRel."pics/meta_plus.png\" alt='+' title='".$lang["search"][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 				if ($_SESSION["glpisearchcount2"][$type]>0)
-				echo "<a href='".$cfg_glpi["root_doc"]."/computers/index.php?delete_search_count2=1&amp;type=$type'><img src=\"".$HTMLRel."pics/meta_moins.png\" alt='-' title='".$lang["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?delete_search_count2=1&amp;type=$type'><img src=\"".$HTMLRel."pics/meta_moins.png\" alt='-' title='".$lang["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
 		// Display link item
@@ -343,7 +343,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</td>";
 	// Display Reset search
 	echo "<td>";
-	echo "<a href='".$HTMLRel."/computers/index.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$HTMLRel."pics/reset.png' class='calendrier'</a>";
+	echo "<a href='".$HTMLRel."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$HTMLRel."pics/reset.png' class='calendrier'</a>";
 	echo "</td>";
 	// Display submit button
 	echo "<td width='80' align='center' class='tab_bg_2'>";

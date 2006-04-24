@@ -50,7 +50,7 @@ function titleReservation(){
 
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["reservation"][1]."</span>";
-	echo "</b></td><td><a class='icon_consol' href='".$HTMLRel."reservation/index.php?show=resa&amp;ID'>".$lang["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
+	echo "</b></td><td><a class='icon_consol' href='".$HTMLRel."front/reservation.php?show=resa&amp;ID'>".$lang["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
 }
 
 function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort= ""){
@@ -65,7 +65,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 //	$option["glpi_software.version"]			= $lang["software"][5];
 	$option["glpi_reservation.comments"]			= $lang["common"][25];
 	
-	echo "<form method=get action=\"".$cfg_glpi["root_doc"]."/reservation/index.php\">";
+	echo "<form method=get action=\"".$cfg_glpi["root_doc"]."/front/reservation.php\">";
 	echo "<div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -257,7 +257,7 @@ global $cfg_glpi,$lang;
 
 if (!haveRight("reservation_central","w")) return false;
 
-echo "<a href=\"".$cfg_glpi["root_doc"]."/reservation/index.php?";
+echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?";
 if ($resaID=isReservable($device_type,$id_device)) {
 	// Supprimer le matériel
 	echo "ID=".$resaID."&amp;delete=delete\">".$lang["reservation"][6]."</a>";	
@@ -750,7 +750,7 @@ function showDeviceReservations($target,$type,$ID){
 	if ($resaID=isReservable($type,$ID)){
 		echo "<div align='center'>";
 
-		echo "<a href='".$cfg_glpi["root_doc"]."/reservation/index.php?show=resa&ID=$resaID'>".$lang["reservation"][21]."</a>";
+		echo "<a href='".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&ID=$resaID'>".$lang["reservation"][21]."</a>";
 		$now=date("Y-m-d H:i:s");
 		// Print reservation in progress
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";

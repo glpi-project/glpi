@@ -43,9 +43,9 @@ function titleState(){
               
 	     
 	     echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/status.png\" alt='' title=''></td><td><b><a class='icon_consol' href='".$HTMLRel."state/index.php?synthese=no'>".$lang["state"][1]."</a>";
+                echo "<img src=\"".$HTMLRel."pics/status.png\" alt='' title=''></td><td><b><a class='icon_consol' href='".$HTMLRel."front/state.php?synthese=no'>".$lang["state"][1]."</a>";
 		 echo "</b></td>";
-	   echo "<td><a class='icon_consol' href='".$HTMLRel."state/index.php?synthese=yes'>".$lang["state"][11]."</a></td>";
+	   echo "<td><a class='icon_consol' href='".$HTMLRel."front/state.php?synthese=yes'>".$lang["state"][11]."</a></td>";
          echo "</tr></table></div>";
 	   
 	   
@@ -62,7 +62,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 //	$option["glpi_software.version"]			= $lang["software"][5];
 //      $option["glpi_state.comments"]			= $lang["common"][16];
 	
-	echo "<form method=\"get\" action=\"".$cfg_glpi["root_doc"]."/state/index.php\">";
+	echo "<form method=\"get\" action=\"".$cfg_glpi["root_doc"]."/front/state.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";

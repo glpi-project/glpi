@@ -57,8 +57,8 @@ $query="select * from glpi_reservation_item where (device_type='$device_type' an
 
 if ($result = $db->query($query)) {
 		$numrows =  $db->numrows($result);
-//echo "<form name='resa_form' method='post' action=".$cfg_glpi["root_doc"]."/reservation/index.php>";
-echo "<a href=\"".$cfg_glpi["root_doc"]."/reservation/index.php?";
+//echo "<form name='resa_form' method='post' action=".$cfg_glpi["root_doc"]."/front/reservation.php>";
+echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?";
 // Ajouter le mat�iel
 if ($numrows==0){
 echo "id_device=$id_device&amp;device_type=$device_type&amp;add=add\">".$lang["reservation"][7]."</a>";
@@ -671,7 +671,7 @@ function ShowPlanningCentral($who){
 	
 	ksort($interv);
 	
-	echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$HTMLRel."planning/index.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["buttons"][33]."</th><th>".$lang["buttons"][32]."</th><th>".$lang["joblist"][6]."</th></tr>";
+	echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$HTMLRel."front/planning.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["buttons"][33]."</th><th>".$lang["buttons"][32]."</th><th>".$lang["joblist"][6]."</th></tr>";
 		if (count($interv)>0){
 			foreach ($interv as $key => $val){
 						

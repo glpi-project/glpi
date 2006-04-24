@@ -73,7 +73,7 @@ if(!empty($_GET["next"])) {
 elseif(!empty($_POST["update_mailing"])) {
 
 	updateMailing($_POST["mailing"],$_POST["admin_email"],$_POST["mailing_signature"],$_POST["mailing_new_admin"],$_POST["mailing_followup_admin"],$_POST["mailing_finish_admin"],$_POST["mailing_new_all_admin"],$_POST["mailing_followup_all_admin"],$_POST["mailing_finish_all_admin"],$_POST["mailing_new_all_normal"],$_POST["mailing_followup_all_normal"],$_POST["mailing_finish_all_normal"],$_POST["mailing_followup_attrib"],$_POST["mailing_finish_attrib"],$_POST["mailing_new_user"],$_POST["mailing_followup_user"],$_POST["mailing_finish_user"],$_POST["mailing_new_attrib"],$_POST["mailing_resa_admin"],$_POST["mailing_resa_all_admin"],$_POST["mailing_resa_user"],$_POST["url_base"],$_POST["url_in_mail"],$_POST["mailing_attrib_attrib"],$_POST["mailing_update_admin"],$_POST["mailing_update_all_admin"],$_POST["mailing_update_all_normal"],$_POST["mailing_update_attrib"],$_POST["mailing_update_user"],$_POST["smtp_mode"],$_POST["smtp_host"],$_POST["smtp_port"],$_POST["smtp_username"], $_POST["smtp_password"]);
-	glpi_header($cfg_glpi["root_doc"]."/setup/index.php");
+	glpi_header($cfg_glpi["root_doc"]."/font/setup.php");
 }
 elseif(!empty($_POST["update_ext"])) {
 

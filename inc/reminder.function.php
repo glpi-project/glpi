@@ -228,10 +228,10 @@ function showCentralReminder($type="private"){
 	
 	if($type=="public"){ // show public reminder
 	$query="SELECT * FROM glpi_reminder WHERE type='public' AND (begin>='$today' or rv='0')";
-	$titre="<a href=\"".$HTMLRel."reminder/index.php\">".$lang["reminder"][1]."</a>";
+	$titre="<a href=\"".$HTMLRel."front/reminder.php\">".$lang["reminder"][1]."</a>";
 	}else{ // show private reminder
 	$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (begin>='$today' or rv='0') ";
-	$titre="<a href=\"".$HTMLRel."reminder/index.php\">".$lang["reminder"][0]."</a>";
+	$titre="<a href=\"".$HTMLRel."front/reminder.php\">".$lang["reminder"][0]."</a>";
 	}
 
 	
@@ -256,7 +256,7 @@ function showCentralReminder($type="private"){
 				$tab=split(" ",$data["begin"]);
 				$date_url=$tab[0];
 			
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_glpi["root_doc"]."/planning/index.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
+				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_glpi["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
 
 
 
@@ -333,7 +333,7 @@ function showListReminder($type="private"){
 
 				$tab=split(" ",$val["begin"]);
 				$date_url=$tab[0];
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/planning/index.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
 				echo "</td>";
 				echo "<td style='text-align:center;' ><strong>".convDateTime($val["begin"]);
 				echo "<br>".convDateTime($val["end"])."</strong>";

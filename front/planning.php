@@ -88,7 +88,7 @@ if ($_GET["type"]!="month"){
 
 titleTrackingPlanning();
 
-	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"index.php\">";
+	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"planning.php\">";
 	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 	echo "<td>";
 	echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";

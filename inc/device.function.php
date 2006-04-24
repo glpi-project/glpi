@@ -263,7 +263,7 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	}
 	
 	echo "<tr class='tab_bg_2'>";
-	echo "<td align='center'><a href='".$HTMLRel."devices/index.php?device_type=".$device->type."'>$type</a></td>";
+	echo "<td align='center'><a href='".$HTMLRel."front/device.php?device_type=".$device->type."'>$type</a></td>";
 	echo "<td align='center'><a href='".$HTMLRel."front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
 	
 	if (count($entry)>0){
@@ -421,7 +421,7 @@ function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$
 	$option["glpi_enterprises.name"]			= $lang["common"][5];
 
 
-	echo "<form method='get' action=\"".$cfg_glpi["root_doc"]."/devices/index.php\">";
+	echo "<form method='get' action=\"".$cfg_glpi["root_doc"]."/front/device.php\">";
 	echo "<div align='center'><table  width='750' class='tab_cadre'>";
 	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";

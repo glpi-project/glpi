@@ -64,7 +64,7 @@ else  if (isset($_POST["update"])){
 	$prof->update($_POST);
 }
 
-	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/profiles/index.php\">";
+	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/profile.php\">";
 	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 	echo $lang["profiles"][1].": </th></tr><tr class='tab_bg_1'><td>";
 

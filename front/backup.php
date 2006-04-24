@@ -63,24 +63,24 @@ else {$defaulttimeout=max(1,$max_time-2);$defaultrowlimit=2;}
 <!--
 function dump(what3){
    if (confirm("<?php echo $lang["backup"][15];?> " + what3 +  "?")) {
-         window.location = "index.php?dump=" + what3;
+         window.location = "backup.php?dump=" + what3;
    }
 }
 function restore(what) {
    if (confirm("<?php echo $lang["backup"][16];?> " + what +  "?")) {
-         window.location = "index.php?file=" + what +"&donotcheckversion=1";
+         window.location = "backup.php?file=" + what +"&donotcheckversion=1";
    }
 }
 
 function erase(what2){
    if (confirm("<?php echo $lang["backup"][17];?> " + what2 +  "?")) {
-         window.location = "index.php?delfile=" + what2;
+         window.location = "backup.php?delfile=" + what2;
    }
 }
 
 function xmlnow(what4){
    if (confirm("<?php echo $lang["backup"][18] ;?> " + what4 +  "?")) {
-         window.location = "index.php?xmlnow=" + what4;
+         window.location = "backup.php?xmlnow=" + what4;
    }
 }
 
@@ -493,8 +493,8 @@ if ($percent >= 0) {
 if ($offsettable>=0){
 if (backupMySql($db,$fichier,$duree,$rowlimit))
 {
-    echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
-    echo "<script>window.location=\"index.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
+    echo "<script>window.location=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
 	glpi_flush();    
 	exit;
 
@@ -551,8 +551,8 @@ displayProgressBar(400,$percent);
 if ($offset!=-1){
 if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
 {
-    echo "<br>Redirection automatique sinon cliquez <a href=\"index.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">ici</a>";
-    echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"index.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
+    echo "<br>Redirection automatique sinon cliquez <a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">ici</a>";
+    echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"backup.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
 	glpi_flush();
 	exit;
 }
@@ -605,7 +605,7 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"". $HTMLRel."pi
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
 
 			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$lang["backup"][14]."</a>&nbsp;</td>
-	        	<td>&nbsp;<a href=\"index.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
+	        	<td>&nbsp;<a href=\"backup.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
 	    }
 	      }
 closedir($dir);
@@ -622,7 +622,7 @@ $dir=opendir($path);
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
                          	<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
-	        	<td>&nbsp;<a  href=\"index.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
+	        	<td>&nbsp;<a  href=\"backup.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
 	    }
 	}
 	closedir($dir);

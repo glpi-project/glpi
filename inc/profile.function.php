@@ -52,7 +52,7 @@ function titleProfiles(){
         echo "<div align='center'><table border='0'><tr><td>";
         echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][35]."' title='".$lang["Menu"][35]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][35]."</b></span>";
         echo "</td>";
-         echo "<td><a class='icon_consol' href='".$HTMLRel."profiles/index.php?add=new'>".$lang["profiles"][0]."</a></td>";
+         echo "<td><a class='icon_consol' href='".$HTMLRel."front/profile.php?add=new'>".$lang["profiles"][0]."</a></td>";
 	echo "</tr></table></div>";
 }
 
