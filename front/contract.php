@@ -34,15 +34,14 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_financial.php");
+$NEEDED_ITEMS=array("contract","infocom","search");
+include ($phproot . "/inc/includes.php");
 
 checkRight("contract_infocom","r");
 
 commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
 
 titleContract();
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(CONTRACT_TYPE);
 

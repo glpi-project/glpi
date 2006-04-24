@@ -34,8 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_documents.php");
+$NEEDED_ITEMS=array("document");
+include ($phproot . "/inc/includes.php");
 
 checkRight("document","r");
 
