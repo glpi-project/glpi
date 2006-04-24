@@ -37,21 +37,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ("glpi/includes.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_software.php");
-//include ($phproot . "/glpi/includes_enterprises.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_setup.php");
-include ($phproot . "/glpi/includes_planning.php");
-include ($phproot . "/glpi/includes_phones.php");
-include ($phproot . "/glpi/includes_reminder.php");
-include ($phproot . "/glpi/includes_financial.php");
+$NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","networking","software","user","setup","planning","phones","reminder","enterprise","contract");
+include ($phproot."/inc/includes.php");
 
 checkCentralAccess();
 
