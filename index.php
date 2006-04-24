@@ -44,8 +44,7 @@ if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
 else
 {
 	include ($phproot . "/inc/includes.php");
-	// load default dictionnary 
-	loadLanguage();
+
 	// Using CAS server
 	if (!empty($cfg_glpi["cas_host"])&&!isset($_GET["noCAS"])) {
 		glpi_header("login.php");

@@ -35,7 +35,7 @@
 
  
 include ("_relpos.php");
-include ($phproot . '/glpi/config/based_config.php');
+include ("based_config.php");
 
 // Current version of GLPI
 define("GLPI_VERSION","0.68");

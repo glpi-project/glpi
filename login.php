@@ -40,14 +40,9 @@
  
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_profiles.php");
-include ($phproot . "/glpi/includes_setup.php");
+$NEEDED_ITEMS=array("user","profile","setup");
 
-// load default dictionnary 
-	loadLanguage();
-
+include ($phproot . "/inc/includes.php");
 
 //$database=$cfg_db["database"];
 //SetCookie("cfg_dbdb",$database,0,"/");
@@ -241,11 +236,11 @@ $REDIRECT="?redirect=".$_POST['redirect'];
 // Redirect to Command Central if not post-only
 if ($_SESSION["glpiprofile"]["interface"] == "helpdesk")
 {
-	glpi_header("helpdesk.php$REDIRECT");
+	glpi_header("front/helpdesk_public.php$REDIRECT");
 }
 else
 {
-	glpi_header("central.php$REDIRECT");
+	glpi_header("front/central.php$REDIRECT");
 }
 
 ?>

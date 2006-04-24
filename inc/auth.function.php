@@ -305,9 +305,9 @@ function loadLanguage() {
 	GLOBAL $lang,$cfg_glpi;
 
 	if(empty($_SESSION["glpilanguage"])) {
-		$file= "/glpi/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1];
+		$file= "/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1];
 	} else {
-		$file = "/glpi/dicts/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1];
+		$file = "/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1];
 	}
 		include ("_relpos.php");
 		include ($phproot . $file);
