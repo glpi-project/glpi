@@ -66,7 +66,7 @@ else if (isset($tab["delete"]))
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
 	 else 
-	glpi_header($cfg_glpi["root_doc"]."/monitors/");
+	glpi_header($cfg_glpi["root_doc"]."/front/monitor.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -74,7 +74,7 @@ else if (isset($_POST["restore"]))
 
 	$mon->restore($_POST);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/monitors/");
+	glpi_header($cfg_glpi["root_doc"]."/front/monitor.php");
 }
 else if (isset($tab["purge"]))
 {
@@ -82,7 +82,7 @@ else if (isset($tab["purge"]))
 
 	$mon->delete($tab,1);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/monitors/");
+	glpi_header($cfg_glpi["root_doc"]."/front/monitor.php");
 }
 else if (isset($_POST["update"]))
 {

@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
 
 	$user->delete($_POST);
 	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$lang["log"][22]." ".$_POST["ID"].".");
-	glpi_header($cfg_glpi["root_doc"]."/users/");
+	glpi_header($cfg_glpi["root_doc"]."/front/user.php");
 } else if (isset($_POST["update"])) {
 	checkRight("user","w");
 

@@ -59,7 +59,7 @@ else if (isset($_POST["delete"]))
 
 	$ent->delete($_POST);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
+	glpi_header($cfg_glpi["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -67,7 +67,7 @@ else if (isset($_POST["restore"]))
 
 	$ent->restore($_POST);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
+	glpi_header($cfg_glpi["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["purge"]))
 {
@@ -75,7 +75,7 @@ else if (isset($_POST["purge"]))
 
 	$ent->delete($_POST,1);
 	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/enterprises/");
+	glpi_header($cfg_glpi["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["update"]))
 {

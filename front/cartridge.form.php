@@ -57,7 +57,7 @@ else if (isset($_POST["delete"]))
 
 	$cartype->delete($_POST);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
+	glpi_header($cfg_glpi["root_doc"]."/front/cartridge.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -65,7 +65,7 @@ else if (isset($_POST["restore"]))
 
 	$cartype->restore($_POST);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
+	glpi_header($cfg_glpi["root_doc"]."/front/cartridge.php");
 }
 else if (isset($_POST["purge"]))
 {
@@ -73,7 +73,7 @@ else if (isset($_POST["purge"]))
 
 	$cartype->delete($_POST,1);
 	logEvent($tab["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/cartridges/");
+	glpi_header($cfg_glpi["root_doc"]."/front/cartridge.php");
 }
 else if (isset($_POST["update"]))
 {

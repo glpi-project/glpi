@@ -54,8 +54,6 @@ else $start=0;
 
 showTrackingList($_SERVER["PHP_SELF"],$start,"all",$_GET["ID"]);
 
-//showJobList($_SERVER["PHP_SELF"],$_GET["ID"],"user","","","",$start);
-
 commonFooter();
 
 ?>

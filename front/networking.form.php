@@ -64,21 +64,21 @@ else if (isset($tab["delete"]))
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
 	 else 
-	glpi_header($cfg_glpi["root_doc"]."/networking/");
+	glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["restore"]))
 {
 	checkRight("networking","w");
 	$nd->restore($_POST);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/networking/");
+	glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
 }
 else if (isset($tab["purge"]))
 {
 	checkRight("networking","w");
 	$nd->delete($tab,1);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/networking/");
+	glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["update"]))
 {

@@ -46,7 +46,7 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(empty($tab["device_type"])) {
-	 glpi_header($cfg_glpi["root_doc"] . "/devices/");
+	 glpi_header($cfg_glpi["root_doc"] . "/front/device.php");
 }
 
 if (isset($_SERVER["HTTP_REFERER"])) $REFERER=$_SERVER["HTTP_REFERER"];

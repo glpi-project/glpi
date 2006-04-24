@@ -57,7 +57,7 @@ else if (isset($_POST["delete"]))
 
 	$ct->delete($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/consumables/");
+	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -65,7 +65,7 @@ else if (isset($_POST["restore"]))
 
 	$ct->restore($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/consumables/");
+	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["purge"]))
 {
@@ -73,7 +73,7 @@ else if (isset($_POST["purge"]))
 
 	$ct->delete($_POST,1);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/consumables/");
+	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["update"]))
 {
