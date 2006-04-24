@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("phone","infocom","contract","state");
+$NEEDED_ITEMS=array("search","phone","infocom","contract","state");
 include ($phproot . "/inc/includes.php");
 
 
@@ -44,7 +44,6 @@ commonHeader($lang["title"][41],$_SERVER["PHP_SELF"]);
 
 titlePhones();
 
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(PHONE_TYPE);
 

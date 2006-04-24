@@ -92,7 +92,7 @@ function commonHeader($title,$url)
 	if (haveRight("consumable","r"))
 		$inventory[$lang["Menu"][32]]=array("consumable.php","g");
 	if (haveRight("phone","r"))
-		$inventory[$lang["Menu"][34]]=array("phones.php","n");
+		$inventory[$lang["Menu"][34]]=array("phone.php","n");
 	if (count($inventory))
 		$inventory[$lang["Menu"][28]]=array("state.php","s");
 	
