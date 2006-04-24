@@ -34,15 +34,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_state.php");
-include ($phproot . "/glpi/includes_phones.php");
+
+$NEEDED_ITEMS=array("user","computer","printer","monitor","periphal","networking","phone");
+include ($phproot . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

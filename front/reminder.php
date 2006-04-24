@@ -37,6 +37,10 @@ include ("_relpos.php");
 include ($phproot . "/glpi/includes.php");
 include ($phproot . "/glpi/includes_reminder.php");
 
+$NEEDED_ITEMS=array("reminder");
+include ($phproot . "/inc/includes.php");
+
+
 checkCentralAccess();
 
 commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);

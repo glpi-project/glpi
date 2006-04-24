@@ -37,7 +37,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
+
+$NEEDED_ITEMS=array("search","setup");
+include ($phproot . "/inc/includes.php");
 
 if (isset($_POST["which"]))$which=$_POST["which"];
 elseif (isset($_GET["which"]))$which=$_GET["which"];
@@ -48,7 +50,7 @@ commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 checkCentralAccess();
 
-include ($phproot . "/glpi/includes_search.php");
+
 
 
 if (isset($_POST["add"])) {

@@ -36,17 +36,8 @@
 include ("_relpos.php");
 
 
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_phones.php");
-include ($phproot . "/stats/functions.php");
-
+$NEEDED_ITEMS=array("contract","infocom","computer","printer","monitor","peripheral","networking","software","phone","stat");
+include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 

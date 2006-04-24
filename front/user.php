@@ -33,9 +33,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+
+
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_users.php");
+$NEEDED_ITEMS=array("search","user");
+include ($phproot . "/inc/includes.php");
 
 
 checkRight("user","r");
@@ -43,7 +45,7 @@ checkRight("user","r");
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);	
 titleUsers();
 
-include ($phproot . "/glpi/includes_search.php");
+
 
 manageGetValuesInSearch(USER_TYPE);
 

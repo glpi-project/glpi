@@ -34,8 +34,8 @@
  
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_networking.php");
+$NEEDED_ITEMS=array("networking");
+include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 

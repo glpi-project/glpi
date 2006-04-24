@@ -34,11 +34,10 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
 
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_reminder.php");
+$NEEDED_ITEMS=array("reminder","tracking","user");
+include ($phproot . "/inc/includes.php");
+
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
