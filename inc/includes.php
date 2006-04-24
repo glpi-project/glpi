@@ -40,13 +40,13 @@ include ("_relpos.php");
 
 if(!session_id()){@session_start();}
 
-include ($phproot . "/glpi/common/Timer.php");
-include ($phproot . "/glpi/common/classes.php");
-include ($phproot . "/glpi/common/functions.php");
-include ($phproot . "/glpi/common/functions_auth.php");
-include ($phproot . "/glpi/common/functions_display.php");
-include ($phproot . "/glpi/common/functions_dropdown.php");
-include ($phproot . "/glpi/config/config.php");
+include ($phproot . "/inc/timer.class.php");
+include ($phproot . "/inc/common.class.php");
+include ($phproot . "/inc/common.function.php");
+include ($phproot . "/inc/auth.function.php");
+include ($phproot . "/inc/display.function.php");
+include ($phproot . "/inc/dropdown.function.php");
+include ($phproot . "/config/config.php");
 
 // Load Language file
 loadLanguage();
@@ -64,19 +64,19 @@ if ($cfg_glpi["debug"]){
 	}
 }
 
-include ($phproot . "/glpi/common/functions_db.php");
+include ($phproot . "/inc/db.function.php");
 
 if (!isset($AJAX_INCLUDE)){
 
-	include ($phproot . "/glpi/common/classes_auth.php");
-	include ($phproot . "/glpi/common/classes_connection.php");
-	include ($phproot . "/glpi/common/classes_mailing.php");
-	include ($phproot . "/glpi/common/functions_reports.php");
-	include ($phproot . "/glpi/common/functions_search.php");
-	include ($phproot . "/glpi/common/functions_export.php");
-	include ($phproot . "/glpi/common/functions_logs.php");
-	include ($phproot . "/glpi/common/functions_connection.php");
-	include ($phproot . "/glpi/common/functions_plugins.php");
+	include ($phproot . "/inc/auth.class.php");
+	include ($phproot . "/inc/connection.class.php");
+//	include ($phproot . "/inc/mailing.class.php");
+	include ($phproot . "/inc/report.function.php");
+	include ($phproot . "/inc/search.function.php");
+	include ($phproot . "/inc/export.function.php");
+	include ($phproot . "/inc/log.function.php");
+	include ($phproot . "/inc/connection.function.php");
+	include ($phproot . "/inc/plugin.function.php");
 }
 
 $db=new DB();
@@ -124,6 +124,14 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 $HEADER_LOADED=false;
 if (isset($AJAX_INCLUDE))
 	$HEADER_LOADED=true;;
-
+// include needed files
+if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
+	foreach ($NEEDED_ITEMS as $item){
+		if (file_exists($phproot . "/inc/$item.class.php"))
+			include ($phproot . "/inc/$item.class.php");
+		if (file_exists($phproot . "/inc/$item.function.php"))
+			include ($phproot . "/inc/$item.function.php");
+	}
+}
 
 ?>
