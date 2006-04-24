@@ -40,10 +40,6 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("user","tracking","computer","printer","networking","peripheral","monitor","software","phone");
 include ($phproot . "/inc/includes.php");
 
-include ("glpi/includes.php");
-
-
-
 checkRight("logs","r");
 
 commonHeader($lang["title"][32],$_SERVER["PHP_SELF"]);
