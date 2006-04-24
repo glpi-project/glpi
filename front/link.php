@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("link");
+$NEEDED_ITEMS=array("link","search");
 include ($phproot . "/inc/includes.php");
 
 checkRight("link","r");
@@ -42,8 +42,6 @@ checkRight("link","r");
 commonHeader($lang["title"][33],$_SERVER["PHP_SELF"]);
 
 titleLinks();
-
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(LINK_TYPE);
 

@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 
 	$newID=$link->add($_POST);
 	logEvent($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
-	glpi_header($cfg_glpi["root_doc"]."/links/");
+	glpi_header($cfg_glpi["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["delete"]))
 {
@@ -58,7 +58,7 @@ else if (isset($_POST["delete"]))
 
 	$link->delete($_POST);
 	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/links/");
+	glpi_header($cfg_glpi["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["update"]))
 {
