@@ -630,7 +630,7 @@ if ($dbocs->numrows($result_ocs)>0){
 
 		foreach ($already_linked as $ID => $tab){
 
-			echo "<tr align='center' class='tab_bg_2'><td><a href='".$HTMLRel."computers/computers-info-form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td><td>".$tab["date"]."</td><td>".$hardware[$ID]["date"]."</td><td>";
+			echo "<tr align='center' class='tab_bg_2'><td><a href='".$HTMLRel."front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td><td>".$tab["date"]."</td><td>".$hardware[$ID]["date"]."</td><td>";
 			
 			echo "<input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
 			echo "</td></tr>";

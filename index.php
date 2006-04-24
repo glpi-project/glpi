@@ -121,7 +121,7 @@ else
 				 	glpi_header($cfg_glpi["root_doc"]."/front/tracking-info-form.php?ID=$ID");
 					 break;
 		 		case "computers":
-				 	glpi_header($cfg_glpi["root_doc"]."/front/computers-info-form.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/front/computer.form.php?ID=$ID");
 					 break;
 				 default:
 					 glpi_header($cfg_glpi["root_doc"]."/front/central.php");

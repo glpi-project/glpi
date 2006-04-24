@@ -138,7 +138,7 @@ class ReservationItem extends CommonDBTM {
 		$out="";	
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/computer.form.php?ID=".$this->fields["id_device"]."\">".$this->getName();
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;

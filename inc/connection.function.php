@@ -69,7 +69,7 @@ function showConnect($target,$ID,$type) {
 			foreach ($computers as $key => $computer){
 				if ($connect->getComputerData($computer)){
 					echo "<tr><td class='tab_bg_1".($connect->deleted=='Y'?"_2":"")."'><b>".$lang["help"][25].": ";
-					echo "<a href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$connect->device_ID."\">";
+					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/computer.form.php?ID=".$connect->device_ID."\">";
 					echo $connect->device_name;
 					if ($cfg_glpi["view_ID"]||empty($connect->device_name)) echo " (".$connect->device_ID.")";
 					echo "</a>";

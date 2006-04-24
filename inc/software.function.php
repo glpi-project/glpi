@@ -343,7 +343,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			if ($data["OEM"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
-			echo "<a href='".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 			else echo "N/A";
 			echo "<strong>";
 			} 
@@ -458,7 +458,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			if ($serial!="free"&&$serial!="global"&&$canedit) 
 			echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
 
-			echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$data_inst["cID"]."\">";
+			echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/front/computer.form.php?ID=".$data_inst["cID"]."\">";
 			echo $data_inst["cname"];
 			echo "</a></strong></td><td align='center'>";
 			
@@ -834,7 +834,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			if ($data["oem"]=='Y') {
 			echo "<br><strong>";
 			if (isset($comp->fields['ID']))
-			echo "<a href='".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 			else echo "N/A";
 			echo "<strong>";
 			} 
