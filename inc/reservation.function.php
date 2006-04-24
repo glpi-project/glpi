@@ -41,7 +41,7 @@
 // 5 peripherals
 // 6 
 
-include ("_relpos.php");
+ 
 // FUNCTIONS Reservation
 
 

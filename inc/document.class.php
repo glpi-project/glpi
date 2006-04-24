@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 
 
 class Document extends CommonDBTM {

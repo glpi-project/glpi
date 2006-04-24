@@ -36,10 +36,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 
 if(!session_id()){@session_start();}
-
+include ("_relpos.php");
 include ($phproot . "/inc/timer.class.php");
 include ($phproot . "/inc/common.class.php");
 include ($phproot . "/inc/common.function.php");

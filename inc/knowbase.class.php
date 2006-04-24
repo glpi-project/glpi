@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 // CLASSE knowledgebase
 
 class kbitem extends CommonDBTM {

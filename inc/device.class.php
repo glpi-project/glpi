@@ -28,7 +28,7 @@
  ------------------------------------------------------------------------
 */
 
-include ("_relpos.php");
+ 
 
 //Class Devices
 class Device extends CommonDBTM {

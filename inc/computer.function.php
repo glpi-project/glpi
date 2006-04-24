@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 // FUNCTIONS Computers
 /**
 * Print a good title for computer pages

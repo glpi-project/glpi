@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 // CLASSES Reservation_Item and Reservation_Resa
 
 class ReservationItem extends CommonDBTM {

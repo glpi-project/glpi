@@ -309,7 +309,7 @@ function loadLanguage() {
 	} else {
 		$file = "/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1];
 	}
-		include ("_relpos.php");
+		 
 		include ($phproot . $file);
 		
 	// Debug display lang element with item

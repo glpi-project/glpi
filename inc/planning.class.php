@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 // CLASSES PlanningTracking
 
 class PlanningTracking extends CommonDBTM {

@@ -37,7 +37,7 @@
 // ----------------------------------------------------------------------
 // And Marco Gaiarin for ldap features 
 
-include ("_relpos.php");
+ 
 // CLASSES Setup
 
 
