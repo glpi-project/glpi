@@ -302,7 +302,7 @@ function checkAccessToPublicFaq(){
 */
 function loadLanguage() {
 
-	GLOBAL $lang,$cfg_glpi;
+	global $lang,$cfg_glpi,$phproot;
 
 	if(empty($_SESSION["glpilanguage"])) {
 		$file= "/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1];
