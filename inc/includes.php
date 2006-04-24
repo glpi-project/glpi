@@ -35,9 +35,6 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-
-
-
 if(!session_id()){@session_start();}
 include ("_relpos.php");
 include ($phproot . "/inc/timer.class.php");
