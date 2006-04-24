@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 	include ("_relpos.php");
-	include ($phproot."/glpi/includes.php");
+	include ($phproot."/inc/includes.php");
 	$AJAX_INCLUDE=1;
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();

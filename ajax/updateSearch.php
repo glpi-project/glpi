@@ -35,8 +35,8 @@
 
 	include ("_relpos.php");
 	$AJAX_INCLUDE=1;
-	include ($phproot."/glpi/includes.php");
-	include ($phproot."/glpi/includes_search.php");
+	$NEEDED_ITEMS=array("search");
+	include ($phproot."/inc/includes.php");
 
 
 	header("Content-Type: text/html; charset=UTF-8");
