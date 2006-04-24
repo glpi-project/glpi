@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-require_once($phproot . "/glpi/phpmailer/class.phpmailer.php");
+require_once($phproot . "/lib/phpmailer/class.phpmailer.php");
 
 /**
  *  glpi_phpmailer class extends 
