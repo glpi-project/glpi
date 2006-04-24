@@ -34,10 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_knowbase.php");
-include ($phproot . "/glpi/includes_documents.php");
+$NEEDED_ITEMS=array("user","knowbase","document");
+include ($phproot . "/inc/includes.php");
 
 
 checkAccessToPublicFaq();

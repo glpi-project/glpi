@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/config/based_config.php");
+include ($phproot . "/inc/includes.php");
 
 checkRight("backup","w");
 

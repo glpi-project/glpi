@@ -33,9 +33,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/contacts/classes-vcard.php");
+$NEEDED_ITEMS=array("contact","enterprise");
+include ($phproot . "/inc/includes.php");
 
 	if (empty($_GET["ID"])) {
 	

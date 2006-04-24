@@ -34,17 +34,14 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_cartridges.php");
-include ($phproot . "/glpi/includes_enterprises.php");
+$NEEDED_ITEMS=array("cartridge","infocom","search");
+include ($phproot . "/inc/includes.php");
 
 checkRight("cartridge","r");
 
 commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
 
 titleCartridge();
-
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(CARTRIDGE_TYPE);
 

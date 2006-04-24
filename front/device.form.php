@@ -37,9 +37,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_devices.php");
-include ($phproot . "/glpi/includes_enterprises.php");
+$NEEDED_ITEMS=array("device","enterprise");
+include ($phproot . "/inc/includes.php");
 
 
 

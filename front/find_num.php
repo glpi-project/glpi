@@ -34,8 +34,8 @@
 // ----------------------------------------------------------------------
 
 	include ("_relpos.php");
-	include ($phproot . "/glpi/includes.php");
-	include ($phproot . "/glpi/includes_users.php");
+	$NEEDED_ITEMS=array("user");
+	include ($phproot . "/inc/includes.php");
 
 
 if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))

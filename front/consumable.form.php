@@ -34,12 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_consumables.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_links.php");
-include ($phproot . "/glpi/includes_documents.php");
+$NEEDED_ITEMS=array("consumable","printer","infocom","link","document");
+include ($phproot . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

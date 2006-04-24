@@ -34,9 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_consumables.php");
-include ($phproot . "/glpi/includes_enterprises.php");
+$NEEDED_ITEMS=array("consumable","enterprise","search");
+include ($phproot . "/inc/includes.php");
 
 checkRight("consumable","r");
 
@@ -49,8 +48,6 @@ if (isset($_GET["synthese"])){
 showConsumableSummary($_SERVER["PHP_SELF"]);
 
 } else {
-
-	include ($phproot . "/glpi/includes_search.php");
 
 	manageGetValuesInSearch(CONSUMABLE_TYPE);
 
