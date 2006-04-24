@@ -502,12 +502,12 @@ global $db,$HTMLRel,$cfg_glpi;
 		if ($result=$db->query($query))
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
-			$out="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
+			$out="<a href=\"".$HTMLRel."front/document.send.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
 			}
 	
 	}
 	
-	$out.="<a href=\"".$HTMLRel."documents/send-document.php?file=$filename\" target=\"_blank\"><b>$fileout</b></a>";	
+	$out.="<a href=\"".$HTMLRel."front/document.send.php?file=$filename\" target=\"_blank\"><b>$fileout</b></a>";	
 	
 	
 	return $out;

@@ -92,7 +92,7 @@ function showTrackingOnglets($target){
 		}elseif (haveRight("comment_ticket","1")){
 		
 			// Postonly could post followup in helpdesk area	
-			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
+			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
 
 			$job=new Job();
 			$job->getFromDB($ID);
@@ -568,7 +568,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		if ($_SESSION["glpiprofile"]["interface"]=="central")
 		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		else
-		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
 
 		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$align." width='40'");
 
@@ -646,7 +646,7 @@ function showJobVeryShort($ID) {
 		if ($_SESSION["glpiprofile"]["interface"]=="central")
 		echo "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
-		echo "<a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+		echo "<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 
 		// Finish Line
 		echo "</tr>";
@@ -1231,7 +1231,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 
 			// Pager
 			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item";
-			if (ereg("users-info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
+			if (ereg("user.info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
 			if (ereg("helpdesk",$target)) 
 				$parameters.="&show=user";
@@ -2029,7 +2029,7 @@ function showAddFollowupForm($tID){
 	if ($_SESSION["glpiprofile"]["interface"]=="central"){
 		$target=$cfg_glpi["root_doc"]."/front/tracking.form.php";
 	} else {
-		$target=$cfg_glpi["root_doc"]."/helpdesk.php?show=user";
+		$target=$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user";
 	}
 	// Display Add Table
 	echo "<div align='center'>";
@@ -2213,13 +2213,13 @@ function showUpdateFollowupForm($ID){
 			$result2=$db->query($query2);
 			if ($db->numrows($result2)==0)
 				if ($commentall)
-					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$lang["buttons"][8]."</a>";
+					echo "<a href='".$HTMLRel."front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$lang["buttons"][8]."</a>";
 				else echo $lang["job"][32];	
 			else {
 				$data2=$db->fetch_array($result2);
 				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
 				if ($commentall)
-					echo "<a href='".$HTMLRel."planning/planning-add-form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$HTMLRel."pics/edit.png'></a>";
+					echo "<a href='".$HTMLRel."front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$HTMLRel."pics/edit.png'></a>";
 					
 			}
 			

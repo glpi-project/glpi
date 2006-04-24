@@ -93,7 +93,7 @@ function showContactForm ($target,$ID) {
 		
 	} else {
 		echo $lang["common"][18]." ID $ID:";
-		echo "<a href='".$cfg_glpi["root_doc"]."/contacts/vcard.php?ID=$ID'>Vcard</a>";
+		echo "<a href='".$cfg_glpi["root_doc"]."/front/contact.vcard.php?ID=$ID'>Vcard</a>";
 	}		
 	echo "</b></th></tr>";
 	

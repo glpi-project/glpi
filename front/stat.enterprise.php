@@ -105,7 +105,7 @@ echo "<tr><th>".$lang["stats"][44]."</th><th>&nbsp;</th><th>".$lang["stats"][13]
   for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++)
   {
 	echo "<tr class='tab_bg_2'>";
-	echo "<td>".$val[$i]['link']."</td><td><a href='graph_item.php?ID=".$val[$i]['assign_ent']."&amp;type=enterprise'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+	echo "<td>".$val[$i]['link']."</td><td><a href='stat.graph.php?ID=".$val[$i]['assign_ent']."&amp;type=enterprise'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 	//le nombre d'intervention
 	//the number of intervention
 		echo "<td>".getNbinter(4,'assign_ent',$val[$i]["assign_ent"],$_POST["date1"],$_POST["date2"])."</td>";

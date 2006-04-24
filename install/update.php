@@ -4192,7 +4192,7 @@ regenerateTreeCompleteName("glpi_dropdown_kbcategories");
         echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
         echo "<title>Setup GLPI</title>";
        // CSS
-	echo "<link rel='stylesheet'  href='style_install.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet'  href='".$HTMLRel."css/style_install.css' type='text/css' media='screen' >";
        
          echo "</head>";
         echo "<body>";

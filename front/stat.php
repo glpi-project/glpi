@@ -53,15 +53,15 @@ echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 
 
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_global.php\"><b>".$lang["stats"][1]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_technicien.php\"><b>".$lang["stats"][2]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_enterprise.php\"><b>".$lang["stats"][42]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_lieux.php\"><b>".$lang["stats"][3]."</b></a><br> (".$lang["common"][15]
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.global.php\"><b>".$lang["stats"][1]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.technicien.php\"><b>".$lang["stats"][2]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.enterprise.php\"><b>".$lang["stats"][42]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.location.php\"><b>".$lang["stats"][3]."</b></a><br> (".$lang["common"][15]
 	.", ".$lang["common"][17]	= "Type".", ".$lang["computers"][9]	= "OS".", ".$lang["computers"][21].", ".$lang["computers"][36]
 	.", ".$lang["devices"][2].", ".$lang["devices"][5].")</td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_user.php\"><b>".$lang["stats"][4]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_category.php\"><b>".$lang["stats"][36]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat_priority.php\"><b>".$lang["stats"][39]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.user.php\"><b>".$lang["stats"][4]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.category.php\"><b>".$lang["stats"][36]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.priority.php\"><b>".$lang["stats"][39]."</b></a></td></tr>";
 
 
 echo "</table></div>";

@@ -445,10 +445,10 @@ else return -1;
 }
 
 /**
-* Get name of the user with ID=$ID (optional with link to users-info.php)
+* Get name of the user with ID=$ID (optional with link to user.info.php)
 *
 *@param $ID int : ID of the user.
-*@param $link int : 1 = Show link to users-info.php 2 = return array with comments and link
+*@param $link int : 1 = Show link to user.info.php 2 = return array with comments and link
 *
 *@return string : username string (realname if not empty and name if realname is empty).
 *
@@ -465,7 +465,7 @@ function getUserName($ID,$link=0){
 		$before="";
 		$after="";
 		if ($link==1){
-			$before="<a href=\"".$cfg_glpi["root_doc"]."/users/users-info.php?ID=".$ID."\">";
+			$before="<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$ID."\">";
 			$after="</a>";
 		}
 		if (strlen($data["realname"])>0) $username=$before.$data["realname"].$after;
@@ -473,7 +473,7 @@ function getUserName($ID,$link=0){
 
 		if ($link==2){
 			$user["name"]=$username;
-			$user["link"]=$cfg_glpi["root_doc"]."/users/users-info.php?ID=".$ID;
+			$user["link"]=$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$ID;
 			$user["comments"]=$lang["common"][16].": ".$username."<br>";
 			$user["comments"].=$lang["setup"][14].": ".$data["email"]."<br>";
 			$user["comments"].=$lang["setup"][15].": ".$data["phone"]."<br>";
