@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("contract","enterprise","computer","printer","monitor","peripheral","networking","software","document","link","phone");
+$NEEDED_ITEMS=array("contract","enterprise","computer","printer","monitor","peripheral","networking","software","document","link","phone","infocom");
 include ($phproot . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
@@ -143,7 +143,7 @@ else
 			showDeviceContract($tab["ID"]);
 			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
 			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
-			display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])
+			display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 			break;
 		case 5 : 
 			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);

@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("consumable","printer","infocom","link","document");
+$NEEDED_ITEMS=array("consumable","printer","infocom","link","document","enterprise","contract");
 include ($phproot . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
