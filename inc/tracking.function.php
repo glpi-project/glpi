@@ -381,7 +381,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		if ($item)
 		{
 			echo "<tr><td align='center' class='tab_bg_2' colspan='9'>";
-			echo "<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-add-form.php?ID=$item&amp;device_type=$item_type\"><strong>";
+			echo "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.add.php?ID=$item&amp;device_type=$item_type\"><strong>";
 			echo $lang["joblist"][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
@@ -407,7 +407,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		{
 			 
 			  echo "<tr><td align='center' class='tab_bg_2' colspan='8'>";
-			  echo "<a href=\"".$cfg_glpi["root_doc"]."/tracking/tracking-add-form.php?ID=$item&amp;device_type=$item_type\"><strong>";
+			  echo "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.add.php?ID=$item&amp;device_type=$item_type\"><strong>";
 			  echo $lang["joblist"][7];
 			  echo "</strong></a>";
 			  echo "</td></tr>";
