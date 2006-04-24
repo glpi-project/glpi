@@ -406,14 +406,14 @@ function helpHeader($title,$url) {
 	// Just give him a language selector
 	echo "<td>";
 		if (!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
-		showLangSelect($cfg_glpi["root_doc"]."/preferences/index.php");
+		showLangSelect($cfg_glpi["root_doc"]."/front/preference.php");
 		else echo "&nbsp;";
 	echo "</td>";
 
 	// And he can change his password, thats it
 	echo "<td>";
 	if ($_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
-		showPasswordForm($cfg_glpi["root_doc"]."/preferences/index.php",$_SESSION["glpiname"]);
+		showPasswordForm($cfg_glpi["root_doc"]."/front/preference.php",$_SESSION["glpiname"]);
 		else echo "&nbsp;";
 	echo "</td>";
 	// We tracking or post a new one

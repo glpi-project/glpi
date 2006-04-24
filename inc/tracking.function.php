@@ -201,7 +201,7 @@ function showCentralJobList($target,$start,$status="process") {
 		echo "<div align='center'>";
 		echo "<table class='tab_cadrehov'>";
 		
-		echo "<tr><th colspan='5'><b><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
+		echo "<tr><th colspan='5'><b><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$lang["joblist"][3]."</th>";
 		echo "<th>".$lang["tracking"][20]."</th>";
@@ -249,19 +249,19 @@ function showCentralJobCount(){
 
 	echo "<div align='center'><table class='tab_cadrehov' style='text-align:center'>";
 	
-	echo "<tr><th colspan='2'><b><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=process&amp;reset=reset_before\">".$lang["tracking"][0]."</a></b></th></tr>";
+	echo "<tr><th colspan='2'><b><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".$lang["tracking"][0]."</a></b></th></tr>";
 	echo "<tr><th ><b>".$lang["tracking"][28]."</b></th><th>".$lang["tracking"][29]."</th></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=new&amp;reset=reset_before\">".$lang["tracking"][30]."</a> </td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=new&amp;reset=reset_before\">".$lang["tracking"][30]."</a> </td>";
 	echo "<td>".$status["new"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=assign&amp;reset=reset_before\">".$lang["tracking"][31]."</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=assign&amp;reset=reset_before\">".$lang["tracking"][31]."</a></td>";
 	echo "<td>".$status["assign"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=plan&amp;reset=reset_before\">".$lang["tracking"][32]."</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=plan&amp;reset=reset_before\">".$lang["tracking"][32]."</a></td>";
 	echo "<td>".$status["plan"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/tracking/index.php?status=waiting&amp;reset=reset_before\">".$lang["tracking"][33]."</a></td>";
+	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=waiting&amp;reset=reset_before\">".$lang["tracking"][33]."</a></td>";
 	echo "<td>".$status["waiting"]."</td></tr>";
 
 	

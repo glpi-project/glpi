@@ -64,13 +64,13 @@ if (isset($_POST["add"])) {
 	
 	addDevice($_POST);
 	logEvent(0, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]." ".$_POST["designation"].".");
-	glpi_header($cfg_glpi["root_doc"]."/devices/index.php?device_type=".$_POST["device_type"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/device.php?device_type=".$_POST["device_type"]);
 }
 else if (isset($tab["delete"])) {
 
 	deleteDevice($tab);
 	logEvent($tab["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/devices/index.php?device_type=".$tab["device_type"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/device.php?device_type=".$tab["device_type"]);
 }
 else if (isset($_POST["update"])) {
 
