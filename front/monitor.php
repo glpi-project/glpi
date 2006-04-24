@@ -37,17 +37,14 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_state.php");
+$NEEDED_ITEMS=array("monitor","state","infocom","contract","search");
+include ($phproot . "/inc/includes.php");
 
 checkRight("monitor","r");
 
 commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 
 titleMonitors();
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(MONITOR_TYPE);
 
