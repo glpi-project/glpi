@@ -35,7 +35,7 @@
 	
 	include ("_relpos.php");
 	$AJAX_INCLUDE=1;
-	include ($phproot."/glpi/includes.php");
+	include ($phproot."/inc/includes.php");
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
