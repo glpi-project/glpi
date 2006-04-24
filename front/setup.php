@@ -63,18 +63,18 @@ echo "<tr><th colspan='2'>".$lang["setup"][62]."</th></tr>";
 $config=array();
 
 if (haveRight("config","w")){
-	$config["setup-config.php?next=confgen"]=$lang["setup"][70];
-	$config["setup-config.php?next=confdisplay"]=$lang["setup"][119];
-	$config["setup-config.php?next=mailing"]=$lang["setup"][68];
-	$config["setup-config.php?next=extauth"]=$lang["setup"][67];
+	$config["setup.config.php?next=confgen"]=$lang["setup"][70];
+	$config["setup.config.php?next=confdisplay"]=$lang["setup"][119];
+	$config["setup.config.php?next=mailing"]=$lang["setup"][68];
+	$config["setup.config.php?next=extauth"]=$lang["setup"][67];
 }
 if ($cfg_glpi["ocs_mode"])
-	$config["setup-config.php?next=ocsng"]=$lang["setup"][134];
+	$config["setup.config.php?next=ocsng"]=$lang["setup"][134];
 
 $data=array();
-$data["setup-display.php"]=$lang["setup"][250];
+$data["setup.display.php"]=$lang["setup"][250];
 if (haveRight("dropdown","w")){
-	$data["setup-dropdowns.php"]=$lang["setup"][0];
+	$data["setup.dropdown.php"]=$lang["setup"][0];
 }
 if (haveRight("device","w")){
 	$data[$HTMLRel."devices/"]=$lang["setup"][222];
@@ -105,7 +105,7 @@ echo "</td></tr>";
 
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup-plugins.php\"><b>Plugins</b></a></td></tr>";
 
-echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup-check-version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
 
 
 

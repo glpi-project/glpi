@@ -62,7 +62,7 @@ else if (isset($tab["delete"]))
 
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_glpi["root_doc"]."/setup/setup-templates.php");
+		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
 	 else 
 	glpi_header($cfg_glpi["root_doc"]."/peripherals/");
 }
