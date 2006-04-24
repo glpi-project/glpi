@@ -444,7 +444,7 @@ function showConnections($target,$ID,$withtemplate='') {
 
 						echo "</td>";
 						if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
-							echo "<td align='center'><a 	href=\"".$cfg_glpi["root_doc"]."/computers/computers-info-form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
+							echo "<td align='center'><a 	href=\"".$cfg_glpi["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
 							echo $lang["buttons"][10];
 							echo "</b></a></td>";
 						}
