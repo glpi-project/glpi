@@ -38,10 +38,9 @@
 
 include ("_relpos.php");
 
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_state.php");
+$NEEDED_ITEMS=array("networking","infocom","contract","state","search");
+include ($phproot . "/inc/includes.php");
+
 
 checkRight("networking","r");
 
@@ -49,8 +48,6 @@ commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 
 titleNetdevices();
 
-
-include ($phproot . "/glpi/includes_search.php");
 
 manageGetValuesInSearch(NETWORKING_TYPE);
 

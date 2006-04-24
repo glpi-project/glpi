@@ -34,19 +34,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot."/glpi/includes.php");
-include ($phproot."/glpi/includes_ocsng.php");
-include ($phproot."/glpi/includes_computers.php");
-include ($phproot."/glpi/includes_financial.php");
-include ($phproot."/glpi/includes_devices.php");
-include ($phproot."/glpi/includes_networking.php");
-include ($phproot."/glpi/includes_monitors.php");
-include ($phproot."/glpi/includes_peripherals.php");
-include ($phproot."/glpi/includes_printers.php");
-include ($phproot."/glpi/includes_software.php");
-include ($phproot."/glpi/includes_tracking.php");
-include ($phproot."/glpi/includes_phones.php");
-include ($phproot."/glpi/includes_state.php");
+$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking");
+include ($phproot . "/inc/includes.php");
 
 checkRight("ocsng","w");
 

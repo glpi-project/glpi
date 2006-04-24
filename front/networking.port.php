@@ -37,9 +37,8 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_computers.php");
+$NEEDED_ITEMS=array("networking","computer");
+include ($phproot . "/inc/includes.php");
 
 //print_r($_POST);
 if(isset($_GET)) $tab = $_GET;
