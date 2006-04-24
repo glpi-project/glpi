@@ -46,9 +46,9 @@ function titleSoftware(){
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td>\n";
 	if (haveRight("software","w")){
-		echo "<td><a class='icon_consol' href=\"".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
+		echo "<td><a class='icon_consol' href=\"".$HTMLRel."front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
 		echo "</td>";
-		echo "<td><a class='icon_consol'  href='".$HTMLRel."setup/setup-templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+		echo "<td><a class='icon_consol'  href='".$HTMLRel."front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
 	} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][4]."</b></span></td>";
 	echo "</tr></table></div>";
 
@@ -213,7 +213,7 @@ function showLicensesAdd($ID) {
 
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
-	echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=add&amp;sID=$ID\">";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?form=add&amp;sID=$ID\">";
 	echo $lang["software"][12];
 	echo "</a></strong></td></tr>";
 	echo "</table></div><br>";
@@ -240,7 +240,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$pb="";
 			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)&&!isGlobalSoftware($sID)) $pb="class='tab_bg_1_2'";
 			
-			echo "<form name='lic_form' method='get' action=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php\">";
+			echo "<form name='lic_form' method='get' action=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php\">";
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='5' $pb >";
@@ -414,11 +414,11 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 					echo "</td><td align='center'>";
 					if ($canedit){
 						if (($serial=="free"||$serial=="global")){
-							echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?delete=delete&amp;ID=$ID\">";
+							echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?delete=delete&amp;ID=$ID\">";
 							echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
 							echo "</a></strong>";
 						}
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
 						echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 						echo "</a></strong>";
 					} else echo "&nbsp;";
@@ -469,7 +469,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			}
 			// delete
 			if ($canedit){
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
 				echo "<img src=\"".$HTMLRel."pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
 				echo "</a>";
 			}
@@ -477,7 +477,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 			if ($serial!="free"&&$serial!="global"){
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 				if ($canedit){
-					echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
+					echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
 					echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 					echo "</a></strong>";
 				}
@@ -850,7 +850,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			//do nothing
 			echo "&nbsp;";
 		} else {
-			echo "<a href=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
+			echo "<a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
 			echo "<strong>".$lang["buttons"][5]."</strong></a>";
 		}
 		echo "</td></tr>";
@@ -865,7 +865,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		echo "</table></div>";
 	} else {
 		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
-		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/software/software-licenses.php\">";
+		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php\">";
 
 		echo "<div class='software-instal'>";
 		echo "<input type='hidden' name='cID' value='$instID'>";

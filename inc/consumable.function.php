@@ -196,10 +196,10 @@ function showConsumableAdd($ID) {
 	
 	if (!haveRight("consumable","w")) return false;
 	
-	echo "<form method='post'  action=\"".$HTMLRel."consumables/consumables-edit.php\">";
+	echo "<form method='post'  action=\"".$HTMLRel."front/consumable.edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
-	echo "<a href=\"".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?add=add&amp;tID=$ID\">";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/consumable.edit.php?add=add&amp;tID=$ID\">";
 	echo $lang["consumables"][17];
 	echo "</a></b></td>";
 	echo "<td align='center' class='tab_bg_2'>";
@@ -240,7 +240,7 @@ function showConsumables ($tID,$show_old=0) {
 			$unused=getUnusedConsumablesNumber($tID);
 			$old=getOldConsumablesNumber($tID);
 			if (!$show_old&&$canedit){
-				echo "<form method='post' action='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php'>";
+				echo "<form method='post' action='".$cfg_glpi["root_doc"]."/front/consumable.edit.php'>";
 			}
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			if ($show_old==0){
@@ -328,13 +328,13 @@ $query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin W
 
 		if ($show_old!=0&&$canedit){
 			echo "<td align='center'>";
-			echo "<a href='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][37]."</a>";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][37]."</a>";
 			echo "</td>";
 		}						
 		
 		echo "<td align='center'>";
 		
-		echo "<a href='".$cfg_glpi["root_doc"]."/consumables/consumables-edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
+		echo "<a href='".$cfg_glpi["root_doc"]."/front/consumable.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
 		echo "</td></tr>";
 		
 	}	
