@@ -65,36 +65,36 @@ function commonHeader($title,$url)
 	//////// UTILS
 	$utils=array();
 	if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
-		$utils[$lang["Menu"][17]]=array("/reservation/index.php","1");
+		$utils[$lang["Menu"][17]]=array("reservation.php","1");
 	if (haveRight("knowbase","r")||haveRight("faq","r")) 
-		$utils[$lang["Menu"][19]]=array("/knowbase/index.php"," ");
+		$utils[$lang["Menu"][19]]=array("knowbase.php"," ");
 	if (haveRight("reports","r"))
-		$utils[$lang["Menu"][6]]=array("/reports/index.php"," ");
+		$utils[$lang["Menu"][6]]=array("report.php"," ");
 	if ($cfg_glpi["ocs_mode"]&&haveRight("ocsng","w")) 
-		$utils[$lang["Menu"][33]]=array("/ocsng/index.php"," ");
+		$utils[$lang["Menu"][33]]=array("ocsng.php"," ");
 	
 	//////// INVENTORY
 	$inventory=array();
 	if (haveRight("computer","r"))
-		$inventory[$lang["Menu"][0]]=array("/computers/index.php","c");
+		$inventory[$lang["Menu"][0]]=array("computer.php","c");
 	if (haveRight("monitor","r"))
-		$inventory[$lang["Menu"][3]]=array("/monitors/index.php","m");
+		$inventory[$lang["Menu"][3]]=array("monitor.php","m");
 	if (haveRight("software","r"))
-		$inventory[$lang["Menu"][4]]=array("/software/index.php","s");  
+		$inventory[$lang["Menu"][4]]=array("software.php","s");  
 	if (haveRight("networking","r"))
-		$inventory[$lang["Menu"][1]]=array("/networking/index.php","n");
+		$inventory[$lang["Menu"][1]]=array("networking.php","n");
 	if (haveRight("peripheral","r"))
-		$inventory[$lang["Menu"][16]]=array("/peripherals/index.php","r");
+		$inventory[$lang["Menu"][16]]=array("peripheral.php","r");
 	if (haveRight("printer","r"))
-		$inventory[$lang["Menu"][2]]=array("/printers/index.php","p");
+		$inventory[$lang["Menu"][2]]=array("printer.php","p");
 	if (haveRight("cartridge","r"))
-		$inventory[$lang["Menu"][21]]=array("/cartridges/index.php","c");
+		$inventory[$lang["Menu"][21]]=array("cartridge.php","c");
 	if (haveRight("consumable","r"))
-		$inventory[$lang["Menu"][32]]=array("/consumables/index.php","g");
+		$inventory[$lang["Menu"][32]]=array("consumable.php","g");
 	if (haveRight("phone","r"))
-		$inventory[$lang["Menu"][34]]=array("/phones/index.php","n");
+		$inventory[$lang["Menu"][34]]=array("phones.php","n");
 	if (count($inventory))
-		$inventory[$lang["Menu"][28]]=array("/state/index.php","s");
+		$inventory[$lang["Menu"][28]]=array("state.php","s");
 	
 	//////// FINANCIAL
 	$financial=array();
@@ -109,25 +109,25 @@ function commonHeader($title,$url)
 	
 	//////// ASSISTANCE
 	if (haveRight("observe_ticket","1")||haveRight("show_ticket","1"))
-		$maintain[$lang["Menu"][5]]=array("/tracking/index.php","t");
+		$maintain[$lang["Menu"][5]]=array("tracking.php","t");
 	if (haveRight("create_ticket","1"))
-		$maintain[$lang["Menu"][31]]=array("/helpdesk/index.php","h");
+		$maintain[$lang["Menu"][31]]=array("helpdesk.php","h");
 	if (haveRight("show_planning","1")||haveRight("show_all_planning","1"))
-		$maintain[$lang["Menu"][29]]=array("/planning/index.php","l");
+		$maintain[$lang["Menu"][29]]=array("planning.php","l");
 	if (haveRight("statistic","1"))
-		$maintain[$lang["Menu"][13]]=array("/stats/index.php","1");
+		$maintain[$lang["Menu"][13]]=array("stat.php","1");
 			
 	//////// ADMINISTRATION
 	if (haveRight("user","r"))
-		$config[$lang["Menu"][14]]=array("/users/index.php","u");
+		$config[$lang["Menu"][14]]=array("user.php","u");
 	if (haveRight("profile","w"))
-		$config[$lang["Menu"][35]]=array("/profiles/index.php","p");
-	$config[$lang["Menu"][10]]=array("/setup/index.php","2");
-	$config[$lang["Menu"][11]]=array("/preferences/index.php","p");
+		$config[$lang["Menu"][35]]=array("profile.php","p");
+	$config[$lang["Menu"][10]]=array("setup.php","2");
+	$config[$lang["Menu"][11]]=array("preference.php","p");
 	if (haveRight("backup","w"))
-		$config[$lang["Menu"][12]]=array("/backups/index.php","b");
+		$config[$lang["Menu"][12]]=array("backup.php","b");
 	if (haveRight("logs","r"))
-		$config[$lang["Menu"][30]]=array("/logs.php","l");
+		$config[$lang["Menu"][30]]=array("log.php","l");
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
@@ -186,7 +186,7 @@ function commonHeader($title,$url)
 		$i=0;
 		// list menu item 
 		 foreach ($inventory as $key => $val) {
-		 	echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+		 	echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
                          	$i++;
 	        }
 			
@@ -202,7 +202,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu2\"><ul>";
 		// list menu item 
 		foreach ($maintain as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
 		echo "</ul></dd>\n";
 		echo "</dl>\n";
@@ -215,7 +215,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu3\"><ul>";
 		// list menu item 
 		foreach ($financial as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
 			echo "</ul></dd>\n";
 		echo "</dl>\n";
@@ -229,7 +229,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu4\"><ul>";
 		// list menu item 
 		foreach ($utils as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
 		echo "</ul></dd>\n";
 		echo "</dl>\n";
@@ -268,7 +268,7 @@ function commonHeader($title,$url)
 		echo "<dd id=\"smenu6\"><ul>";
 		// list menu item 
 		foreach ($config as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"].$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
 		}
 		echo "</ul></dd>\n";
 		echo "</dl>\n";
