@@ -108,7 +108,7 @@ echo "<tr><th>".$lang["stats"][20]."</th><th>&nbsp;</th><th>".$lang["stats"][22]
    for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++)
    {
 	echo "<tr class='tab_bg_1'>";
-	echo "<td><a href=".$HTMLRel."users/users-info.php?ID=".$val[$i]['ID'].">".$val[$i]['name']."</a></td><td><a href='graph_item.php?ID=".$val[$i]['ID']."&amp;type=user'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
+	echo "<td><a href=".$HTMLRel."front/user.info.php?ID=".$val[$i]['ID'].">".$val[$i]['name']."</a></td><td><a href='stat.graph.php?ID=".$val[$i]['ID']."&amp;type=user'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 
 		echo "<td>".getNbinter(4,'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
 		echo "<td>".getNbresol(4,'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";

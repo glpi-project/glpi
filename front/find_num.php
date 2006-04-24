@@ -57,7 +57,7 @@ header("Content-Type: text/html; charset=UTF-8");
 <?php
 include ("_relpos.php");
 // Appel CSS
- echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' >";
+ echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
 // Appel javascript
 echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 

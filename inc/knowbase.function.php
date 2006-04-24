@@ -732,7 +732,7 @@ function faqShowItem($ID)
 	if ($result=$db->query($query)){
 	$data = $db->fetch_array($result);
 	$question = $data["question"];
-	echo "<li><a href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=faq&amp;ID=$ID\">$question</a>\n";
+	echo "<li><a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=faq&amp;ID=$ID\">$question</a>\n";
 	}
 
 }

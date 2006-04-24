@@ -419,19 +419,19 @@ function helpHeader($title,$url) {
 	// We tracking or post a new one
 	echo "<td>";
 	if (haveRight("create_ticket","1"))
-        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a>";
+        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a>";
 	echo "<br><br>";
 	if (haveRight("observe_ticket","1"))
-        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
+        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
 	echo "</td>";
 	//reservation
 	
 	echo "<td>";
 	if (haveRight("reservation_helpdesk","1"))
-        	echo "<a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a>";
+        	echo "<a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a>";
 	echo "<br><br>";
 	if (haveRight("faq","r"))
-        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/helpdesk.php?show=faq\"><img  src=\"".$HTMLRel."pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
+        	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=faq\"><img  src=\"".$HTMLRel."pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
 	
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with

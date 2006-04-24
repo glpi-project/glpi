@@ -318,7 +318,7 @@ function showLinkOnDevice($type,$ID){
 				$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
 			}
 
-			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/links/send-links.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$name."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/front/link.send.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$name."</a></td></tr>";
 		}
 	
 

@@ -337,7 +337,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$i = 0;
 
 	echo "<div align='center'><br><table  class='tab_cadrehov'>";
-	echo "<tr><th colspan='5'><a href=\"".$cfg_glpi["root_doc"]."/logs.php\">".$lang["central"][2]." ".$cfg_glpi["num_of_events"]." ".$lang["central"][8]."</a></th></tr>";
+	echo "<tr><th colspan='5'><a href=\"".$cfg_glpi["root_doc"]."/front/log.php\">".$lang["central"][2]." ".$cfg_glpi["num_of_events"]." ".$lang["central"][8]."</a></th></tr>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>";

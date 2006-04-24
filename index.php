@@ -84,7 +84,7 @@ else
 	echo "<ul>";
 	// Affichage autorisé FAQ
 	if ($cfg_glpi["public_faq"]){
-		echo "<li><a href='faq.php'>".$lang["knowbase"][24]."</a></li>";}
+		echo "<li><a href='front/faq.php'>".$lang["knowbase"][24]."</a></li>";}
 	echo "</ul>";
 	echo "</div>";
 

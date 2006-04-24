@@ -731,11 +731,11 @@ function urlIcal ($who) {
 
 GLOBAL  $cfg_glpi, $lang;
 
-echo "<a href=\"".$cfg_glpi["root_doc"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
+echo "<a href=\"".$cfg_glpi["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
 echo "<br>";
 
 // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_glpi["root_doc"]."/planning/ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][13]."</span></a>";
+echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_glpi["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][13]."</span></a>";
 
 }
 

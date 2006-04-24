@@ -403,7 +403,7 @@ echo "</div>";
 }
 else  { 
 //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
-	echo "<p class='submit'> <a href=\"index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+	echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 echo "</div>";
 
 }
