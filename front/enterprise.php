@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("contact","enterprise","contract");
+$NEEDED_ITEMS=array("search","contact","enterprise","contract");
 include ($phproot . "/inc/includes.php");
 
 checkRight("contact_enterprise","r");
@@ -43,7 +43,7 @@ commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
 
 titleEnterprise();
 
-include ($phproot . "/glpi/includes_search.php");
+
 
 manageGetValuesInSearch(ENTERPRISE_TYPE);
 
