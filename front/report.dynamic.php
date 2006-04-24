@@ -37,24 +37,12 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_consumables.php");
-include ($phproot . "/glpi/includes_cartridges.php");
-include ($phproot . "/glpi/includes_state.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_printers.php");
-include ($phproot . "/glpi/includes_monitors.php");
-include ($phproot . "/glpi/includes_peripherals.php");
-include ($phproot . "/glpi/includes_networking.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_phones.php");
+
+$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom");
+include ($phproot . "/inc/includes.php");
 
 checkCentralAccess();
-include ($phproot . "/glpi/includes_search.php");
-//print_r($_GET);
+
 if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
 

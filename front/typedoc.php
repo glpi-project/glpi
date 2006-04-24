@@ -34,9 +34,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_documents.php");
 
+$NEEDED_ITEMS=array("search","document");
+include ($phproot . "/inc/includes.php");
 
 checkRight("typedoc","r");
 
@@ -44,7 +44,7 @@ commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 titleTypedocs();
 
-include ($phproot . "/glpi/includes_search.php");
+
 
 manageGetValuesInSearch(TYPEDOC_TYPE);
 

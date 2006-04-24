@@ -37,10 +37,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_software.php");
-include ($phproot . "/glpi/includes_computers.php");
-include ($phproot . "/glpi/includes_financial.php");
+i
+$NEEDED_ITEMS=array("computer","software","infocom","contract");
+include ($phproot . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

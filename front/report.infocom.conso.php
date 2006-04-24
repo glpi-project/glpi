@@ -36,13 +36,8 @@
 include ("_relpos.php");
 
 
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/stats/functions.php");
-include ($phproot . "/glpi/includes_cartridges.php");
-include ($phproot . "/glpi/includes_consumables.php");
-include ($phproot . "/glpi/includes_software.php");
-
+$NEEDED_ITEMS=array("contract","infocom","software","cartridge","consumable","stat");
+include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 

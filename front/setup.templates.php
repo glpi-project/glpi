@@ -37,8 +37,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_setup.php");
+
+$NEEDED_ITEMS=array("setup");
+include ($phproot . "/inc/includes.php");
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 

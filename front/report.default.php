@@ -38,8 +38,9 @@
 
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_software.php");
+
+$NEEDED_ITEMS=array("software");
+include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 

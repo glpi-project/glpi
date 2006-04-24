@@ -34,8 +34,11 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_financial.php");
+
+
+$NEEDED_ITEMS=array("contract","infocom");
+include ($phproot . "/inc/includes.php");
+
 
 checkRight("reports","r");
 

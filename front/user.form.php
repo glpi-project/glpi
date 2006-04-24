@@ -34,10 +34,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_profiles.php");
 
+$NEEDED_ITEMS=array("user","profile");
+include ($phproot . "/inc/includes.php");
 
 $user=new User();
 if (empty($_GET["name"])&&isset($_GET["ID"])){

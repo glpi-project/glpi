@@ -34,8 +34,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_profiles.php");
+
+$NEEDED_ITEMS=array("profile");
+include ($phproot . "/inc/includes.php");
 
 checkRight("profile","r");
 

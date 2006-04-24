@@ -34,14 +34,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_tracking.php");
-include ($phproot . "/glpi/includes_enterprises.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_devices.php");
-require ("functions.php");
 
-
+$NEEDED_ITEMS=array("stat","tracking","user","enterprise","device");
+include ($phproot . "/inc/includes.php");
 
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
