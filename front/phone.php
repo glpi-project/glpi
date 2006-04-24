@@ -34,10 +34,9 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_phones.php");
-include ($phproot . "/glpi/includes_financial.php");
-include ($phproot . "/glpi/includes_state.php");
+$NEEDED_ITEMS=array("phone","infocom","contract","state");
+include ($phproot . "/inc/includes.php");
+
 
 checkRight("phone","r");
 
