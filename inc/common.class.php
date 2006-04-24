@@ -246,10 +246,7 @@ class CommonDBTM {
 
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
-			$data = $db->fetch_assoc($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
+				$this->fields = $db->fetch_assoc($result);
 			return true;
 		} else return false;
 		} else {
@@ -436,9 +433,10 @@ class CommonDBTM {
 	// specific ones : document, reservationresa, planningtracking
 	function update($input,$history=1) {
 		
-		$input=$this->prepareInputForUpdate($input);
-		unset($input['update']);
 		if ($this->getFromDB($input["ID"])){
+
+			$input=$this->prepareInputForUpdate($input);
+			unset($input['update']);
 
 			// Fill the update-array with changes
 			$x=0;
@@ -457,6 +455,7 @@ class CommonDBTM {
 			}
 
 			if(count($updates)){
+				list($input,$updates)=$this->pre_updateInDB($input,$updates);
 				$this->updateInDB($updates);
 			} 
 
@@ -471,6 +470,10 @@ class CommonDBTM {
 	}
 	
 	function post_updateItem($input,$updates,$history=1) {
+	}
+
+	function pre_updateInDB($input,$updates) {
+		return array($input,$updates);
 	}
 
 	/**

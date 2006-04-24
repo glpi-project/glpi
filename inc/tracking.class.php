@@ -95,6 +95,212 @@ class Job extends CommonDBTM{
 
 	}
 
+	function prepareInputForUpdate($input) {
+	
+	// Security checks
+	if (!haveRight("update_ticket","1")){
+		if (haveRight("assign_ticket","1")){
+			$ret["ID"]=$input["ID"];
+			$ret["assign"]=$input["assign"];
+			$ret["assign_ent"]=$input["assign_ent"];
+			$input=$ret;
+		} else if (haveRight("steal_ticket","1")&&$input["assign"]==$_SESSION["glpiID"]){
+			$ret["ID"]=$input["ID"];
+			$ret["assign"]=$input["assign"];
+			$input=$ret;
+		} else {
+			$ret["ID"]=$input["ID"];
+			$input=$ret;
+		}
+
+	}
+
+	if (isset($input["item"])&& $input["item"]!=0){
+		$input["computer"]=$input["item"];
+		$input["device_type"]=$input["type"];
+		}
+	else if ($input["type"]!=0)
+		$input["device_type"]=0;
+
+	// add Document if exists
+	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
+		$input2=array();
+		$input2["name"]=$lang["tracking"][24]." ".$input["ID"];
+		$doc=new Document();
+		if ($docID=$doc->add($input2,1)){
+			addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
+			}
+	}
+
+	// Old values for add followup in change
+	$input["_old_assign_name"]=getAssignName($this->fields["assign"],USER_TYPE);
+	$input["_old_assign_ent_name"]=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
+	$input["_old_category"]=$this->fields["category"];
+	$input["_old_item"]=$this->fields["computer"];
+	$input["_old_item_type"]=$this->fields["device_type"];
+	$input["_old_author"]=$this->fields["author"];
+	$input["_old_priority"]=$this->fields["priority"];
+	$input["_old_status"]=$this->fields["status"];
+
+
+
+
+		return $input;
+	}
+
+	function pre_updateInDB($input,$updates) {
+	if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0))&&$this->fields["status"]=="new"){
+		$updates[]="status";
+		$this->fields["status"]="assign";
+	}
+
+	if ($input["assign_ent"]==0&&$input["assign"]==0&&$input["status"]=="assign"){
+		$updates[]="status";
+		$this->fields["status"]="new";
+	}
+	
+	if (in_array("status",$updates)&&ereg("old_",$input["status"])){
+		$updates[]="closedate";
+		$this->fields["closedate"]=date("Y-m-d H:i:s");
+	}
+
+	if (in_array("author",$updates)){
+		$user=new User;
+		$user->getfromDB($input["author"]);
+		if (!empty($user->fields["email"])){
+			$updates[]="uemail";
+			$this->fields["uemail"]=$user->fields["email"];
+		}
+	}
+
+	if (!haveRight("update_ticket","1")){
+		if (haveRight("assign_ticket","1"))
+			$updates=array_intersect($updates,array("assign","assign_ent"));
+		else if (haveRight("steal_ticket","1")){
+			if ($input["assign"]==$_SESSION["glpiID"])
+				$updates=array_intersect($updates,array("assign"));
+			else $updates=array();
+		}
+	}
+
+		return array($input,$updates);
+	}
+
+	function post_updateItem($input,$updates,$history=1) {
+		global $cfg_glpi,$lang;
+
+	// New values for add followup in change
+	$change_followup_content="";
+	$global_mail_change_count=0;
+	if (in_array("assign",$updates)){
+		$new_assign_name=getAssignName($this->fields["assign"],USER_TYPE);
+		if ($input["_old_assign_name"]=="[Nobody]")
+        	       	$input["_old_assign_name"]=$lang["mailing"][105];
+		$change_followup_content.=$lang["mailing"][12].": ".$input["_old_assign_name"]." -> ".$new_assign_name."\n";
+		$global_mail_change_count++;
+	}
+	if (in_array("assign_ent",$updates)){
+		$new_assign_ent_name=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
+		$change_followup_content.=$lang["mailing"][12].": ".$input["_old_assign_ent_name"]." -> ".$new_assign_ent_name."\n";
+		$global_mail_change_count++;
+	}
+	if (in_array("category",$updates)){
+		$new_category=$this->fields["category"];
+		$old_category_name=ereg_replace("&nbsp;",$lang["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$input["_old_category"]));
+		$new_category_name=ereg_replace("&nbsp;",$lang["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
+		$change_followup_content.=$lang["mailing"][14].": ".$old_category_name." -> ".$new_category_name."\n";
+		$global_mail_change_count++;
+	}
+	if (in_array("computer",$updates)||in_array("device_type",$updates)){	
+		$ci=new CommonItem;
+		$ci->getfromDB($input["_old_item_type"],$input["_old_item"]);
+		$old_item_name=$ci->getName();
+		if ($old_item_name=="N/A"||empty($old_item_name))
+        	       $old_item_name=$lang["mailing"][107];
+		$ci->getfromDB($this->fields["device_type"],$this->fields["computer"]);
+		$new_item_name=$ci->getName();
+		if ($new_item_name=="N/A"||empty($new_item_name))
+        	     $new_item_name=$lang["mailing"][107];
+		
+		$change_followup_content.=$lang["mailing"][17].": $old_item_name -> ".$new_item_name."\n";
+		if (in_array("computer",$updates)) $global_mail_change_count++;
+		if (in_array("device_type",$updates)) $global_mail_change_count++;
+	}
+	if (in_array("author",$updates)){
+		$author=new User;
+		$author->getFromDB($input["_old_author"]);
+		$old_author_name=$author->getName();
+		$author->getFromDB($this->fields["author"]);
+		$new_author_name=$author->getName();
+		$change_followup_content.=$lang["mailing"][18].": $old_author_name -> ".$new_author_name."\n";
+
+		$global_mail_change_count++;
+	}
+	if (in_array("priority",$updates)){
+		$new_priority=$this->fields["priority"];
+		$change_followup_content.=$lang["mailing"][15].": ".getPriorityName($input["_old_priority"])." -> ".getPriorityName($new_priority)."\n";
+		$global_mail_change_count++;		
+	}
+	if (in_array("status",$updates)){
+		$new_status=$this->fields["status"];
+		$change_followup_content.=$lang["mailing"][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
+
+		if (ereg("old_",$new_status))
+			$newinput["add_close"]="add_close";
+		if (in_array("closedate",$updates))	
+			$global_mail_change_count++; // Manage closedate
+			
+			$global_mail_change_count++;
+	}
+	if (in_array("emailupdates",$updates)){
+	        if ($this->fields["emailupdates"]=="yes")
+		        $change_followup_content.=$lang["mailing"][101]."\n";
+        	else if ($this->fields["emailupdates"]=="no")
+         		$change_followup_content.=$lang["mailing"][102]."\n";
+	        $global_mail_change_count++;
+	}
+
+	$mail_send=0;
+	if (!empty($change_followup_content)){ // Add followup if not empty
+
+		$newinput["contents"]=addslashes($change_followup_content);
+		$newinput["author"]=$_SESSION['glpiID'];
+		$newinput["private"]=$newinput["hour"]=$newinput["minute"]=0;
+		$newinput["tracking"]=$this->fields["ID"];
+		$newinput["type"]="update";
+		if (in_array("status",$updates)&&ereg("old_",$input["status"]))
+			$input["type"]="finish";
+		$fup=new Followup();
+		$fup->add($newinput);
+		$mail_send++;
+	}
+
+	// Clean content to mail
+	$this->fields["contents"]=stripslashes($this->fields["contents"]);
+
+	if ($mail_send==0&&count($updates)>$global_mail_change_count&&$cfg_glpi["mailing"])
+		{
+			$user=new User;
+			$user->getfromDBbyName($_SESSION["glpiname"]);
+			$mailtype="update";
+			if (in_array("status",$updates)&&ereg("old_",$input["status"]))
+				$mailtype="finish";
+			else $mail_send++;
+
+			$mail = new Mailing($mailtype,$this,$user);
+			$mail->send();
+		}
+
+	// Send mail to attrib if attrib change	
+	if (($mail_send==0||!$cfg_glpi["mailing_followup_attrib"])&&$cfg_glpi["mailing"]&&in_array("assign",$updates)&&$this->fields["assign"]>0){
+			$user=new User;
+			$user->getfromDBbyName($_SESSION["glpiname"]);
+			$mail = new Mailing("attrib",$this,$user);
+			$mail->send();
+	}
+
+	}
+
 
 	// SPECIFIC FUNCTIONS
 
