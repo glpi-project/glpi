@@ -34,9 +34,8 @@
 // ----------------------------------------------------------------------
  
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_tracking.php");
-require ("functions.php");
+$NEEDED_ITEMS=array("tracking","stat");
+include ($phproot . "/inc/includes.php");
 
 
 $NEEDED_ITEMS=array("stat","tracking");

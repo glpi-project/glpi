@@ -36,6 +36,7 @@
 
 include ("_relpos.php");
 $AJAX_INCLUDE=1;
+$NEEDED_ITEMS=array("search","contract","infocom");
 include ($phproot."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -43,7 +44,7 @@ header_nocache();
 checkTypeRight($_POST["device_type"],"w");
 
 if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
-	include ($phproot."/glpi/includes_search.php");
+	
 	$search=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]];	
 	// Specific state case
 	if ($_POST["id_field"]==31) $search["linkfield"]="state";
@@ -55,7 +56,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 		} else 
 			autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
 	} else { 
-		include ($phproot."/glpi/includes_financial.php");
+		
 		if ($search["table"]=="glpi_infocoms"){ // infocoms case
 			switch ($search["field"]){
 				case "buy_date" :

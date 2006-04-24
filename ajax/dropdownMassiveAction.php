@@ -36,6 +36,7 @@
 
 include ("_relpos.php");
 $AJAX_INCLUDE=1;
+$NEEDED_ITEMS=array("search");
 include ($phproot."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -53,7 +54,6 @@ header_nocache();
 				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 			break;
 			case "update":
-				include ($phproot."/glpi/includes_search.php");
 				echo "<select name='id_field' id='massiveaction_field'>";
 				echo "<option value='0' selected>------</option>";
 				foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val){

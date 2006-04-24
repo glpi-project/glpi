@@ -35,11 +35,11 @@
 
 //#################### INCLUDE & SESSIONS ############################
 include ("_relpos.php");
-include ($phproot . "/glpi/common/classes.php");
-include ($phproot . "/glpi/common/functions.php");
-include ($phproot . "/glpi/common/functions_display.php");
-include ($phproot . "/glpi/common/functions_db.php");
-include ($phproot . "/glpi/config/based_config.php");
+include ($phproot . "/inc/common.class.php");
+include ($phproot . "/inc/common.function.php");
+include ($phproot . "/inc/display.function.php");
+include ($phproot . "/inc/db.function.php");
+include ($phproot . "/config/based_config.php");
 include($cfg_glpi["config_dir"] . "/config_db.php");
 
 if(!session_id()){@session_start();}
@@ -54,7 +54,7 @@ function loadLang() {
 			unset($lang);
 			global $lang;
 			include ("_relpos.php");
-			$file = $phproot ."/glpi/dicts/".$_SESSION["dict"].".php";
+			$file = $phproot ."/locales/".$_SESSION["dict"].".php";
 			include($file);
 }
 
