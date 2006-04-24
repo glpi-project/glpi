@@ -57,7 +57,7 @@ if (isset($_POST["add"]))
 
 	$newID=$rem->add($_POST);
 	
-	glpi_header($cfg_glpi["root_doc"]."/reminder/");
+	glpi_header($cfg_glpi["root_doc"]."/front/reminder.php");
 } 
 else if (isset($_POST["delete"]))
 {
@@ -66,7 +66,7 @@ else if (isset($_POST["delete"]))
 	}
 	$rem->delete($_POST);
 	
-	glpi_header($cfg_glpi["root_doc"]."/reminder/");
+	glpi_header($cfg_glpi["root_doc"]."/front/reminder.php");
 }
 else if (isset($_POST["update"]))
 {
