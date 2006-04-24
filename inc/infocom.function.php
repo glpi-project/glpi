@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 
 function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplate='') {
 	// Show Infocom or blank form

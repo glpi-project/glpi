@@ -36,7 +36,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 // FUNCTIONS Setup
 
 function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='',$type='') {

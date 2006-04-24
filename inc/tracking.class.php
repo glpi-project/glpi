@@ -36,7 +36,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 // Tracking Classes
 
 class Job extends CommonDBTM{

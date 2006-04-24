@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+ 
 // CLASSES State_Item
 
 class StateItem  extends CommonDBTM {

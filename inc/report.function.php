@@ -62,7 +62,7 @@ function report_perso($item_type,$query)
 GLOBAL $db,$cfg_glpi, $lang;
 
 $result = $db->query($query);
-include ("_relpos.php");
+ 
 
 
 switch($item_type)

@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 // And Marco Gaiarin for ldap features 
 
-include ("_relpos.php");
+ 
 
 class User extends CommonDBTM {
 
