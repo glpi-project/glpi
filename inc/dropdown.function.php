@@ -484,10 +484,11 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 * @return nothing (print out an HTML select box)
 */
 function dropdownIcons($myname,$value,$store_path){
-global $HTMLRel;
+global $HTMLRel,$lang;
 if (is_dir($store_path)){
 if ($dh = opendir($store_path)) {
 	echo "<select name=\"$myname\">";
+	echo "<option value=''>-----</option>";
        while (($file = readdir($dh)) !== false) {
            if (eregi(".png$",$file)){
 	   if ($file == $value) {
