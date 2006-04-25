@@ -1429,7 +1429,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 							$soft=new Software ();
 							$osft->delete(array('ID'=>$lic->fields['sID']),1);
 						}
-						deleteLicense($data['license']);
+						$lic->delete(array("ID"=>$data['license']));
 					}
 				}
 		
@@ -1501,7 +1501,7 @@ function ocsResetLicenses($glpi_computer_id) {
 					$soft=new Software();
 					$soft->delete(array('ID'=>$lic->fields['sID']),1);
 				}
-				deleteLicense($data['license']);
+				$lic->delete(array("ID"=>$data['license']));
 				
 			}
 		}

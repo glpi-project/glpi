@@ -170,26 +170,36 @@ class License  extends CommonDBTM {
 		$this->table="glpi_licenses";
 	}
 	
-	function updateInDB($updates)  {
+	function prepareInputForUpdate($input) {
+		if (empty($input['expire'])) unset($input['expire']);
+		if (!isset($input['expire'])||$input['expire']=="0000-00-00") $input['expire']="NULL";
+		if (isset($input['oem'])&&$input['oem']=='N') $input['oem_computer']=-1;
 
-		global $db;
+		return $input;
+	}
 
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_licenses SET ";
-			$query .= $updates[$i];
-			if ($updates[$i]=="expire"&&$this->fields[$updates[$i]]=="NULL")
-				$query .= " = NULL";
-			else {
-				$query .= "='";
-				$query .= $this->fields[$updates[$i]]."'";
-			}
-			$query .= " WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
+	function prepareInputForAdd($input) {
+		if (empty($input['expire'])||$input['expire']=="0000-00-00") unset($input['expire']);
+		if ($input['oem']=='N') $input['oem_computer']=-1;
+		unset($input["form"]);
+		unset($input["withtemplate"]);
+		unset($input["lID"]);
 
-			$result=$db->query($query);
+		return $input;
+	}
+	
+	function postAddItem($newID,$input) {
+		if ($input['oem']=='Y'&&$input['oem_computer']>0)
+			installSoftware($input['oem_computer'],$newID);
+
+		// Add infocoms if exists for the licence
+		$ic=new Infocom();
+		if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$lic->fields["sID"])){
+			unset($ic->fields["ID"]);
+			$ic->fields["FK_device"]=$newID;
+			$ic->fields["device_type"]=LICENSE_TYPE;
+			$ic->addToDB();
 		}
-		
 	}
 	
 	function cleanDBonPurge($ID) {

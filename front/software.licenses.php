@@ -37,7 +37,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-i
+
 $NEEDED_ITEMS=array("computer","software","infocom","contract");
 include ($phproot . "/inc/includes.php");
 
@@ -46,6 +46,8 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["lID"])) $tab["lID"] = "";
 if(!isset($tab["sID"])) $tab["sID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = 0;
+
+$lic=new License;
 
 if (isset($_POST["add"]))
 {
@@ -57,7 +59,7 @@ if (isset($_POST["add"]))
 	
 	
 	for ($i=1;$i<=$number;$i++){
-	addLicense($tab);
+	$lic->add($tab);
 	}
 	
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
@@ -82,8 +84,8 @@ else if (isset($tab["update_expire"])||isset($tab["update_expire_x"])){
 
 	foreach ($tab as $key => $val)
 	if (ereg("license_([0-9]+)",$key,$ereg)){
-		$input["lID"]=$ereg[1];
-		updateLicense($input);
+		$input["ID"]=$ereg[1];
+		$lic->update($input);
 	}
 
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -96,8 +98,8 @@ else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
 
 	foreach ($tab as $key => $val)
 	if (ereg("license_([0-9]+)",$key,$ereg)){
-		$input["lID"]=$ereg[1];
-		updateLicense($input);
+		$input["ID"]=$ereg[1];
+		$lic->update($input);
 	}
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -108,7 +110,7 @@ else if (isset($tab["update"]))
 
 	unset($tab["search_software"]);
 
-	updateLicense($tab);
+	$lic->update($tab);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
@@ -124,7 +126,7 @@ else if (isset($tab["delete"]))
 {
 	checkRight("software","w");
 
-	deleteLicense($tab["ID"]);
+	$lic->delete(array("ID"=>$tab["ID"]));
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
