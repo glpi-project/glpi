@@ -44,7 +44,9 @@ include ($phproot . "/inc/includes.php");
 checkRight("printer","r");
 
 commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
-titlePrinters();
+
+$print=new Printer();
+$print->title();
 
 
 manageGetValuesInSearch(PRINTER_TYPE);

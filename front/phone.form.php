@@ -43,13 +43,13 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-$ph=new Phone();
+$phone=new Phone();
 
 if (isset($_POST["add"]))
 {
 	checkRight("phone","w");
 
-	$newID=$ph->add($_POST);
+	$newID=$phone->add($_POST);
 	logEvent($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -58,8 +58,8 @@ else if (isset($tab["delete"]))
 	checkRight("phone","w");
 
 	if (!empty($tab["withtemplate"]))
-		$ph->delete($tab,1);
-	else $ph->delete($tab);
+		$phone->delete($tab,1);
+	else $phone->delete($tab);
 
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -71,7 +71,7 @@ else if (isset($_POST["restore"]))
 {
 	checkRight("phone","w");
 
-	$ph->restore($_POST);
+	$phone->restore($_POST);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/front/phone.php");
 }
@@ -79,7 +79,7 @@ else if (isset($tab["purge"]))
 {
 	checkRight("phone","w");
 
-	$ph->delete($tab,1);
+	$phone->delete($tab,1);
 	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/front/phone.php");
 }
@@ -87,7 +87,7 @@ else if (isset($_POST["update"]))
 {
 	checkRight("phone","w");
 
-	$ph->update($_POST);
+	$phone->update($_POST);
 	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -123,8 +123,8 @@ else
 	
 	commonHeader($lang["title"][41],$_SERVER["PHP_SELF"]);
 	
-	if ($ph->getFromDB($tab["ID"]))
-		$ph->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	if ($phone->getFromDB($tab["ID"]))
+		$phone->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 		
 	if (!empty($tab["withtemplate"])) {
 

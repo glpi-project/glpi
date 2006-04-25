@@ -44,7 +44,8 @@ checkRight("monitor","r");
 
 commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
 
-titleMonitors();
+$monitor=new Monitor;
+$monitor->title();
 
 manageGetValuesInSearch(MONITOR_TYPE);
 
