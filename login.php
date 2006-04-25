@@ -172,7 +172,10 @@ $identificat->err=$lang["login"][8];
 
 if ($auth_succeded)
 if (!$user_present&&$cfg_glpi["auto_add_users"]) {
-	$identificat->user->fields["ID"]=$identificat->user->addToDB($identificat->extauth);
+	$input=array();
+	if ($identificat->extauth)
+		$input["_extauth"]=1;
+	$identificat->user->fields["ID"]=$identificat->user->add($input);
 } else if (!$user_present){ // Auto add not enable so auth failed
 	$identificat->err.=$lang["login"][11];
 	$auth_succeded=false;	

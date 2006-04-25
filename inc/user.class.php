@@ -83,89 +83,17 @@ class User extends CommonDBTM {
 		return false;
 	}
 
-	function addToDB($ext_auth=0) {
-		
-		global $db;
-
-		
-		// Build query
-		$query = "INSERT INTO glpi_users (";
-		$i=0;
-		foreach ($this->fields as $key => $val) {
-			if ($key!="ID"){
-				$fields[$i] = $key;
-				if($key == "password") $indice = $i;
-				if($key == "password_md5") $indice2 = $i;
-				$values[$i] = $val;
-				$i++;
-			}
-		}		
-		for ($i=0; $i < count($fields); $i++) {
-			$query .= "glpi_users.".$fields[$i];
-			if ($i!=count($fields)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
-			if($i === $indice) {
-				if (!$ext_auth) {
-					$mdpchiff = md5($values[$i]);
-					$query .= " PASSWORD('".$values[$i]."')";
-					}
-				else {
-					$query .= " '' ";
-					$mdpchiff='';
-				}
-				
-				
-				
-			}
-			elseif($i === $indice2) {
-				$query .= " '".$mdpchiff."'";
-			}
-			else {
-				$query .= "'".$values[$i]."'";
-			}
-			if ($i!=count($values)-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
-
-		$result=$db->query($query);
-		return $db->insert_id();
-	}
-
-	function updateInDB($updates)  {
-
-		global $db;
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE glpi_users SET ";
-			$query .= $updates[$i];
-			$query .= "=";
-			if ( ($updates[$i]=="password") && ($this->fields[$updates[$i]] != "") ) {
-				$query .= "PASSWORD('".$this->fields[$updates[$i]]."')";
-				$mdpchiff = md5($this->fields[$updates[$i]]);
-				$query .= ", password_md5='". $mdpchiff ."'";
-			} else {
-				$query .= "'".$this->fields[$updates[$i]]."'";
-			}
-			$query .= " WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			
-			$result=$db->query($query);
-		}
-		
-	}
-
-
 
 	function prepareInputForAdd($input) {
 		// Add User, nasty hack until we get PHP4-array-functions
-		if(empty($input["password"]))  $input["password"] = "";
-
+		if (isset($input["password"])) {
+			$input["password_md5"]=md5($input["password"]);
+			$input["password"]="";
+		}
+		if (isset($input["_extauth"])){
+			$input["password"]="";
+			$input["password_md5"]="";
+		}
 		// change email_form to email (not to have a problem with preselected email)
 		if (isset($input["email_form"])){
 			$input["email"]=$input["email_form"];
@@ -189,6 +117,15 @@ class User extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 		
+
+		if (isset($input["password"])) {
+			if(empty($input["password"])) {
+				unset($input["password"]);
+			} else {
+				$input["password_md5"]=md5($input["password"]);
+				$input["password"]="";
+			}
+		}
 		
 		// Update User in the database
 		if (!isset($input["ID"])&&isset($input["name"])){
@@ -202,6 +139,7 @@ class User extends CommonDBTM {
 				$ret=array();
 				$ret["ID"]=$input["ID"];
 				if (isset($input["password"]))	$ret["password"]=$input["password"];
+				if (isset($input["password_md5"]))	$ret["password_md5"]=$input["password_md5"];
 				if (isset($input["language"]))	{
 					$ret["language"]=$input["language"];
 					$_SESSION["glpilanguage"]=$input["language"];
@@ -220,13 +158,6 @@ class User extends CommonDBTM {
 			$_SESSION["glpitracking_order"]=$input["tracking_order"];
 		}
 
-		// password updated by admin user or own password for user
-		if(empty($input["password"])) {
-			unset($this->fields["password"]);
-			unset($this->fields["password_md5"]);
-			unset($input["password"]);
-		} 
-	
 		// change email_form to email (not to have a problem with preselected email)
 		if (isset($input["email_form"])){
 			$input["email"]=$input["email_form"];

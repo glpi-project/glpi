@@ -270,7 +270,7 @@ class CommonDBTM {
 	function post_getEmpty () {
 	}
 
-	// Specific Ones : Netdevice / License / User
+	// Specific Ones : Netdevice / License 
 	function updateInDB($updates)  {
 
 		global $db;
@@ -293,7 +293,6 @@ class CommonDBTM {
 
 	}
 
-	// Specific ones : User
 	function addToDB() {
 		
 		global $db;

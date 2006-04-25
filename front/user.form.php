@@ -81,8 +81,9 @@ if (isset($_POST["add"])) {
 		if (isset($_GET['add_ext_auth'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
 				$user=new User();
-				$user->fields["name"]=$_GET['login'];
-				$user->addToDB(1);
+				$input["name"]=$_GET['login'];
+				$input["_extauth"]=1;
+				$user->add($input);
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
