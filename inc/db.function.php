@@ -518,17 +518,13 @@ function TableExists($tablename) {
 **/
 function FieldExists($table, $field) {
 	global $db;
-	$result = $db->query("SELECT * FROM ". $table ."");
-	$fields = $db->num_fields($result);
-	$var1 = false;
-	for ($i=0; $i < $fields; $i++) {
-		$name  = $db->field_name($result, $i);
-		if(strcmp($name,$field)==0) {
-			$var1 = true;
-		}
-	}
-	mysql_free_result($result);
-	return $var1;
+	
+	if ($fields = $db->list_fields($table)){
+		
+		if (isset($fields[$field]))
+			return true;
+		else return false;
+	} else return false;
 }
 
 // return true if the field $field of the table $table is a mysql index

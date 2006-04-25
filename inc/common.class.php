@@ -177,7 +177,7 @@ class DBmysql {
 	* @return number of fields
 	*/
 	function num_fields($result) {
-		return mysql_num_rows($result);
+		return mysql_num_fields($result);
 	}
 	/**
 	* Give name of a field of a Mysql result
@@ -203,7 +203,10 @@ class DBmysql {
 		$result = $this->query("SHOW COLUMNS FROM $table");
 		if ($result) {
 			if ($this->numrows($result) > 0) {
-				return mysql_fetch_assoc($result);
+				while ($data = mysql_fetch_assoc($result)){
+					$ret[$data["Field"]]= $data;
+				}
+				return $ret;
 			} else return array();
 		} else return false;
 
