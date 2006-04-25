@@ -41,7 +41,8 @@ checkRight("peripheral","r");
 
 commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 
-titlePeripherals();
+$peripheral=new Peripheral();
+$peripheral->titlePeripherals();
 
 
 manageGetValuesInSearch(PERIPHERAL_TYPE);

@@ -45,12 +45,12 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-$mon=new Monitor();
+$monitor=new Monitor();
 if (isset($_POST["add"]))
 {
 	checkRight("monitor","w");
 
-	$newID=$mon->add($_POST);
+	$newID=$monitor->add($_POST);
 	logEvent($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -59,8 +59,8 @@ else if (isset($tab["delete"]))
 	checkRight("monitor","w");
 
 	if (!empty($tab["withtemplate"]))
-		$mon->delete($tab,1);
-	else $mon->delete($tab);
+		$monitor->delete($tab,1);
+	else $monitor->delete($tab);
 	
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -72,7 +72,7 @@ else if (isset($_POST["restore"]))
 {
 	checkRight("monitor","w");
 
-	$mon->restore($_POST);
+	$monitor->restore($_POST);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/front/monitor.php");
 }
@@ -80,7 +80,7 @@ else if (isset($tab["purge"]))
 {
 	checkRight("monitor","w");
 
-	$mon->delete($tab,1);
+	$monitor->delete($tab,1);
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/front/monitor.php");
 }
@@ -88,7 +88,7 @@ else if (isset($_POST["update"]))
 {
 	checkRight("monitor","w");
 
-	$mon->update($_POST);
+	$monitor->update($_POST);
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -120,11 +120,11 @@ else
 	}
 
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
-	if ($mon->getFromDB($tab["ID"]))
-		$mon->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	if ($monitor->getFromDB($tab["ID"]))
+		$monitor->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {
 
-		if (showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if (showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		if (!empty($tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 			case 4 :
@@ -153,7 +153,7 @@ else
 			}
 		}
 
-		if (showMonitorsForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		if (showForm($_SERVER["PHP_SELF"],$tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 			case -1:
 				showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);

@@ -42,13 +42,13 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-$per=new Peripheral();
+$peripheral=new Peripheral();
 
 if (isset($_POST["add"]))
 {
 	checkRight("peripheral","w");
 
-	$newID=$per->add($_POST);
+	$newID=$peripheral->add($_POST);
 	logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -57,8 +57,8 @@ else if (isset($tab["delete"]))
 	checkRight("peripheral","w");
 
 	if (!empty($tab["withtemplate"]))
-		$per->delete($tab,1);
-	else $per->delete($tab);
+		$peripheral->delete($tab,1);
+	else $peripheral->delete($tab);
 
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -70,7 +70,7 @@ else if (isset($_POST["restore"]))
 {
 	checkRight("peripheral","w");
 
-	$per->restore($_POST);
+	$peripheral->restore($_POST);
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/front/peripheral.php");
 }
@@ -78,7 +78,7 @@ else if (isset($tab["purge"]))
 {
 	checkRight("peripheral","w");
 
-	$per->delete($tab,1);
+	$peripheral->delete($tab,1);
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/front/peripheral.php");
 }
@@ -86,7 +86,7 @@ else if (isset($_POST["update"]))
 {
 	checkRight("peripheral","w");
 
-	$per->update($_POST);
+	$peripheral->update($_POST);
 	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -120,8 +120,8 @@ else
 	
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 	
-	if ($per->getFromDB($tab["ID"]))
-		$per->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	if ($peripheral->getFromDB($tab["ID"]))
+		$peripheral->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 		
 	if (!empty($tab["withtemplate"])) {
 
