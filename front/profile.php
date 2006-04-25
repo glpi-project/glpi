@@ -40,13 +40,14 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("profile","r");
 
+$prof=new Profile();
+
 commonHeader($lang["Menu"][35],$_SERVER["PHP_SELF"]);
-titleProfiles();
+$prof->title();
 
 if(!isset($_POST["ID"])) $ID=0;
 else $ID=$_POST["ID"];
 
-$prof=new Profile();
 
 if (isset($_POST["add"])){
 	
@@ -80,9 +81,9 @@ else  if (isset($_POST["update"])){
 	echo "</table></form></div>";
 
 if (isset($_GET["add"])){
-	showProfilesForm($_SERVER["PHP_SELF"],0);
+	$prof->showForm($_SERVER["PHP_SELF"],0);
 } else if ($ID>0){
-	showProfilesForm($_SERVER["PHP_SELF"],$ID);
+	$prof->showForm($_SERVER["PHP_SELF"],$ID);
 } 
 
 commonFooter();
