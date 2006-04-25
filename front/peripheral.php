@@ -42,7 +42,7 @@ checkRight("peripheral","r");
 commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
 
 $peripheral=new Peripheral();
-$peripheral->titlePeripherals();
+$peripheral->title();
 
 
 manageGetValuesInSearch(PERIPHERAL_TYPE);

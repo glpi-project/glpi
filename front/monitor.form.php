@@ -124,7 +124,7 @@ else
 		$monitor->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	if (!empty($tab["withtemplate"])) {
 
-		if (showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($monitor->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		if (!empty($tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 			case 4 :
@@ -153,7 +153,7 @@ else
 			}
 		}
 
-		if (showForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		if ($monitor->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 			case -1:
 				showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);

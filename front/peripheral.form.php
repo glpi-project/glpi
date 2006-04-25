@@ -125,7 +125,7 @@ else
 		
 	if (!empty($tab["withtemplate"])) {
 
-		if (showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($peripheral->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		if (!empty($tab["ID"])){
 
 			switch($_SESSION['glpi_onglet']){
@@ -159,7 +159,7 @@ else
 			}
 		}
 
-		if (showPeripheralForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		if ($peripheral->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);

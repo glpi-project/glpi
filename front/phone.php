@@ -43,7 +43,7 @@ checkRight("phone","r");
 commonHeader($lang["title"][41],$_SERVER["PHP_SELF"]);
 
 $phone=new Phone();
-$phone->titlePhones();
+$phone->title();
 
 
 manageGetValuesInSearch(PHONE_TYPE);
