@@ -115,7 +115,7 @@ else
 
 	if (!empty($tab["withtemplate"])) {
 
-		if (showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'], $tab["withtemplate"])){
+		if ($soft->showForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'], $tab["withtemplate"])){
 		
 		if (!empty($tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
@@ -145,7 +145,7 @@ else
 			}
 		}
 
-		if (showSoftwareForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'])){
+		if ($soft->showForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showLicensesAdd($tab["ID"]);

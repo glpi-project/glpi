@@ -42,12 +42,12 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 
 
-$td=new TypeDoc();
+$typedoc=new TypeDoc();
 if (isset($_POST["add"]))
 {
 	checkRight("typedoc","w");
 	
-	if ($newID=$td->add($_POST))
+	if ($newID=$typedoc->add($_POST))
 		logEvent($newID, "typedocs", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -55,7 +55,7 @@ else if (isset($tab["delete"]))
 {
 	checkRight("typedoc","w");
 
-	$td->delete($tab,1);
+	$typedoc->delete($tab,1);
 
 	logEvent($tab["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
 /*	if(!empty($tab["withtemplate"])) 
@@ -69,7 +69,7 @@ else if (isset($_POST["update"]))
 {
 	checkRight("typedoc","w");
 
-	$td->update($_POST);
+	$typedoc->update($_POST);
 	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -78,7 +78,7 @@ else
 	checkRight("typedoc","r");
 
 	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
-	showTypedocForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	$typedoc->showForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 }
 
