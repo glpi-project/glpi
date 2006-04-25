@@ -71,8 +71,8 @@ if (isset($_GET["reset_search"])){
 checkRight("computer","r");
 
 commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
-
-titleComputers();
+$computer=new Computer();
+$computer->title();
 
 manageGetValuesInSearch(COMPUTER_TYPE);
 

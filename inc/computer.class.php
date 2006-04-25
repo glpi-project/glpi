@@ -334,6 +334,253 @@ class Computer extends CommonDBTM {
 		$query = "DELETE FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
 		$result = $db->query($query);
 	}
+
+	/**
+	* Print a good title for computer pages
+	*
+	*@return nothing (diplays)
+	*
+	**/
+	function title(){
+		global  $lang,$HTMLRel;
+	
+		echo "<div align='center'><table border='0'><tr><td>";
+		echo "<img src=\"".$HTMLRel."pics/computer.png\" alt='".$lang["computers"][0]."' title='".$lang["computers"][0]."'></td>";
+		if (haveRight("computer","w")){
+			echo "<td><a  class='icon_consol' href=\"".$HTMLRel."front/setup.templates.php?type=".COMPUTER_TYPE."&amp;add=1\"><b>".$lang["computers"][0]."</b></a>";
+			echo "</td>";
+			echo "<td><a class='icon_consol' href='".$HTMLRel."front/setup.templates.php?type=".COMPUTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][0]."</b></span></td>";
+		echo "</tr></table></div>";
+	
+	}
+
+	/**
+	* Print the computer form
+	*
+	*
+	* Print général computer form
+	*
+	*@param $target filename : where to go when done.
+	*@param $ID Integer : Id of the computer or the template to print
+	*@param $withtemplate='' boolean : template or basic computer
+	*
+	*
+	*@return Nothing (display)
+	*
+	**/
+	function showForm($target,$ID,$withtemplate='') {
+		global $lang,$HTMLRel,$cfg_glpi;
+	
+		if (!haveRight("computer","r")) return false;
+		
+		
+		$computer_spotted = false;
+		if(empty($ID) && $withtemplate == 1) {
+			if($this->getEmpty()) $computer_spotted = true;
+		} else {
+			if($this->getfromDB($ID)) $computer_spotted = true;
+		}
+		if($computer_spotted) {
+			if(!empty($withtemplate) && $withtemplate == 2) {
+				$template = "newcomp";
+				$datestring = $lang["computers"][14].": ";
+				$date = convDateTime(date("Y-m-d H:i:s"));
+			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+				$template = "newtemplate";
+				$datestring = $lang["computers"][14].": ";
+				$date = convDateTime(date("Y-m-d H:i:s"));
+			} else {
+				$datestring = $lang["common"][26].": ";
+				$date = convDateTime($this->fields["date_mod"]);
+				$template = false;
+			}
+			
+			echo "<form name='form' method='post' action=\"$target\">";
+			if(strcmp($template,"newtemplate") === 0) {
+				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\">";
+			}
+	
+			echo "<div align='center'>";
+			echo "<table class='tab_cadre_fixe' >";
+			
+			
+			echo "<tr><th colspan ='2' align='center' >";
+			if(!$template) {
+				echo $lang["computers"][13].": ".$this->fields["ID"];
+			}elseif (strcmp($template,"newcomp") === 0) {
+				echo $lang["computers"][12].": ".$this->fields["tplname"];
+				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
+			}elseif (strcmp($template,"newtemplate") === 0) {
+				echo $lang["common"][6]."&nbsp;: ";
+				autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],20);	
+			}
+			
+			
+			echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
+			if (!$template&&!empty($this->fields['tplname']))
+				echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$this->fields['tplname'].")";
+			if ($this->fields["ocs_import"])
+				echo "&nbsp;&nbsp;&nbsp;(".$lang["ocsng"][7].")";
+	
+			echo "</th></tr>";
+			
+			echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
+	
+			echo "<td>";
+			autocompletionTextField("name","glpi_computers","name",$this->fields["name"],20);
+			echo "</td>";
+							
+			echo "<td>".$lang["common"][18].":	</td><td>";
+			autocompletionTextField("contact","glpi_computers","contact",$this->fields["contact"],20);
+			
+			echo "</td></tr>";
+			
+			echo "<tr class='tab_bg_1'>";
+					echo "<td >".$lang["common"][17].": 	</td>";
+			echo "<td >";
+				dropdownValue("glpi_type_computers", "type", $this->fields["type"]);
+			
+			echo "</td>";
+	
+			
+			
+			echo "<td>".$lang["common"][21].":		</td><td>";
+			autocompletionTextField("contact_num","glpi_computers","contact_num",$this->fields["contact_num"],20);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td >".$lang["common"][22].": 	</td>";
+			echo "<td >";
+				dropdownValue("glpi_dropdown_model", "model", $this->fields["model"]);
+			
+			echo "</td>";
+			
+			
+			echo "<td>".$lang["setup"][88].":</td><td>";
+			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td >".$lang["common"][15].": 	</td>";
+			echo "<td >";
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+			
+			echo "</td>";
+			
+			
+			echo "<td>".$lang["setup"][89].":</td><td>";
+			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
+			echo "</td></tr>";
+			
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td >".$lang["common"][10].": 	</td>";
+			echo "<td >";
+				dropdownUsersID("tech_num",$this->fields["tech_num"],"interface");
+			echo "</td>";
+	
+			echo "<td>".$lang["common"][19].":	</td><td>";
+			autocompletionTextField("serial","glpi_computers","serial",$this->fields["serial"],20);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$lang["common"][5].": 	</td><td>";
+			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+			echo "</td>";
+	
+			echo "<td>".$lang["common"][20].":	</td><td>";
+			autocompletionTextField("otherserial","glpi_computers","otherserial",$this->fields["otherserial"],20);
+			echo "</td></tr>";
+		
+			echo "<tr class='tab_bg_1'>";
+			
+			echo "<td>".$lang["computers"][9].":</td><td>";
+			dropdownValue("glpi_dropdown_os", "os", $this->fields["os"]);
+			echo "</td>";
+			
+			echo "<td>".$lang["state"][0].":</td><td>";
+			$si=new StateItem();
+			$t=0;
+			if ($template) $t=1;
+			$si->getfromDB(COMPUTER_TYPE,$this->fields["ID"],$t);
+			dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+			echo "</td></tr>";
+					
+			echo "<tr class='tab_bg_1'>";
+			
+			echo "<td>".$lang["computers"][52].":</td><td>";
+			dropdownValue("glpi_dropdown_os_version", "os_version", $this->fields["os_version"]);
+			echo "</td>";
+			
+			if (!$template){
+			echo "<td>".$lang["reservation"][24].":</td><td><b>";
+			showReservationForm(COMPUTER_TYPE,$ID);
+			echo "</b></td>";
+			} else echo "<td>&nbsp;</td><td>&nbsp;</td>";
+			echo "</tr>";
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$lang["computers"][53].":</td><td>";
+			dropdownValue("glpi_dropdown_os_sp", "os_sp", $this->fields["os_sp"]);
+			echo "</td>";
+			
+			echo "<td valign='middle' rowspan='2'>".$lang["common"][25].":</td><td valign='middle' rowspan='2'><textarea  cols='60' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+			echo "</tr>";
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$lang["computers"][51].":</td><td>";
+			dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
+			echo "</td>";
+			
+			echo "</tr>";
+			if (haveRight("computer","w")) {
+			echo "<tr>\n";
+			if ($template) {
+				if (empty($ID)||$withtemplate==2){
+				echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+				echo "</td>\n";
+				} else {
+				echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td>\n";
+				}
+			} else {
+				echo "<td class='tab_bg_2' colspan='2' align='center' valign='top'>\n";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td>\n";
+				echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<div align='center'>";
+			if ($this->fields["deleted"]=='N')
+			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+			else {
+			echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+			
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+			}
+			echo "</div>";
+				echo "</td>";
+			}
+			echo "</tr>\n";
+			}
+			
+			
+			echo "</table>";
+			echo "</div>";
+		echo "</form>";
+			
+			
+			return true;
+		}
+		else {
+		echo "<div align='center'><b>".$lang["computers"][32]."</b></div>";
+		return false;
+		}
+	}
+
 }
 
 
