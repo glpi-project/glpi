@@ -41,7 +41,8 @@ checkRight("consumable","r");
 
 commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
 
-titleConsumable();
+$constype=new ConsumableType();
+$constype->title();
 
 
 if (isset($_GET["synthese"])){

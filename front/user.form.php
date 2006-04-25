@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
 	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 	$user->update($_POST);
 	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$lang["log"][21]."  ".$_POST["name"].".");
-	showUserform($_SERVER["PHP_SELF"],$_POST["name"]);
+	$user->showForm($_SERVER["PHP_SELF"],$_POST["name"]);
 } else {
 	
 
@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
 		checkRight("user","w");
 
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-		showUserform($_SERVER["PHP_SELF"],$_GET["name"]);
+		$user->showForm($_SERVER["PHP_SELF"],$_GET["name"]);
 	} else {
 		if (isset($_GET['add_ext_auth'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){

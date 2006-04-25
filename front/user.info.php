@@ -47,7 +47,9 @@ commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 
 checkRight("user","r");
 
-showUserInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
+$user=new User();
+
+$user->showInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
 if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;
 

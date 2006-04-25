@@ -41,13 +41,13 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-$ct=new ConsumableType();
+$constype=new ConsumableType();
 
 if (isset($_POST["add"]))
 {
 	checkRight("consumable","w");
 
-	$newID=$ct->add($_POST);
+	$newID=$constype->add($_POST);
 	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
@@ -55,7 +55,7 @@ else if (isset($_POST["delete"]))
 {
 	checkRight("consumable","w");
 
-	$ct->delete($_POST);
+	$constype->delete($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
 }
@@ -63,7 +63,7 @@ else if (isset($_POST["restore"]))
 {
 	checkRight("consumable","w");
 
-	$ct->restore($_POST);
+	$constype->restore($_POST);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
 }
@@ -71,7 +71,7 @@ else if (isset($_POST["purge"]))
 {
 	checkRight("consumable","w");
 
-	$ct->delete($_POST,1);
+	$constype->delete($_POST,1);
 	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
 }
@@ -79,7 +79,7 @@ else if (isset($_POST["update"]))
 {
 	checkRight("consumable","w");
 
-	$ct->update($_POST);
+	$constype->update($_POST);
 	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
@@ -96,10 +96,10 @@ else
 	commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
 	
 	
-	if ($ct->getFromDB($tab["ID"]))
-		$ct->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+	if ($constype->getFromDB($tab["ID"]))
+		$constype->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if (showConsumableTypeForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+	if ($constype->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
 		switch($_SESSION['glpi_onglet']){
 		case -1 :	

@@ -266,12 +266,11 @@ class CommonDBTM {
 	function getEmpty () {
 		//make an empty database object
 		global $db;
-		$fields = $db->list_fields($this->table);
-		$nb=count($fields);
-		for ($i = 0; $i < $nb; $i++) {
-			$this->fields[$fields[$i]["Field"]] = "";
-		
-		}
+		if ($fields = $db->list_fields($this->table)){
+			foreach ($fields as $key => $val){
+			$this->fields[$key] = "";
+			}
+		} else return false;
 		$this->post_getEmpty();
 		return true;
 	}
