@@ -45,7 +45,9 @@ checkRight("software","r");
 
 commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
 
-titleSoftware();
+$soft=new Software();
+
+$soft->title();
 
 
 manageGetValuesInSearch(SOFTWARE_TYPE);

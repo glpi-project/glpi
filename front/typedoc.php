@@ -42,7 +42,8 @@ checkRight("typedoc","r");
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
-titleTypedocs();
+$typedoc=new Typedoc;
+$typedoc->title();
 
 
 
