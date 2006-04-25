@@ -413,7 +413,7 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$sort= "") {
 
 	
-	GLOBAL $cfg_glpi,  $lang,$HTMLRel;
+	global $cfg_glpi,  $lang,$HTMLRel;
 
 	$option[$device_type.".designation"]			= $lang["devices"][14];
 	$option[$device_type.".ID"]				= $lang["common"][2];
@@ -461,13 +461,9 @@ function showDevicesList($device_type,$target) {
 
 	// Lists Device from a device_type
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
 
 	
-	// Build query
-		$fields = $db->list_fields(getDeviceTable($device_type));
-		$columns = $db->num_fields($fields);
-		
 	$query = "select DISTINCT device.ID from ".getDeviceTable($device_type)." as device ";
 	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = device.FK_glpi_enterprise ) ";
 	$query .= " ORDER by device.designation ASC";
@@ -517,7 +513,7 @@ function showDevicesList($device_type,$target) {
 
 
 function titleDevices($device_type){
-	GLOBAL  $lang,$HTMLRel;           
+	global  $lang,$HTMLRel;           
 	echo "<div align='center'><table border='0'><tr><td>";
 	//TODO : CHANGER LE PICS et le alt.!!!!!!!!!!!
 	echo "<img src=\"".$HTMLRel."pics/periph.png\" alt='".$lang["devices"][12]."' title='".$lang["devices"][12]."'></td><td><a  class='icon_consol' href=\"device.form.php?device_type=$device_type\"><b>".$lang["devices"][12]."</b></a>";
@@ -548,7 +544,7 @@ function getDictDeviceLabel($device_num=-1) {
 
 function showDevicesForm ($target,$ID,$device_type) {
 
-	GLOBAL $cfg_glpi,$lang,$HTMLRel,$REFERER;
+	global $cfg_glpi,$lang,$HTMLRel,$REFERER;
 
 	$device = new Device($device_type);
 
