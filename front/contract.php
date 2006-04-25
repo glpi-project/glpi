@@ -41,7 +41,8 @@ checkRight("contract_infocom","r");
 
 commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
 
-titleContract();
+$contract=new Contract();
+$contract->title();
 
 manageGetValuesInSearch(CONTRACT_TYPE);
 

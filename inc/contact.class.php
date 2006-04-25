@@ -86,6 +86,149 @@ class Contact extends CommonDBTM{
 		}
 	}
 
+	/**
+	* Print a good title for coontact pages
+	*
+	*
+	*
+	*
+	*@return nothing (diplays)
+	*
+	**/
+	function title(){
+		global  $lang,$HTMLRel;
+		echo "<div align='center'><table border='0'><tr><td>";
+		echo "<img src=\"".$HTMLRel."pics/contacts.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
+		if (haveRight("contact_enterprise","w")){
+			echo "<td><a  class='icon_consol' href=\"contact.form.php?new=1\"><b>".$lang["financial"][24]."</b></a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][22]."</b></span></td>";
+		echo "</tr></table></div>";
+	}
+	
+	/**
+	* Print the contact form
+	*
+	*
+	* Print général contact form
+	*
+	*@param $target filename : where to go when done.
+	*@param $ID Integer : Id of the contact to print
+	*
+	*
+	*@return Nothing (display)
+	*
+	**/
+	function showForm ($target,$ID) {
+	
+		global $cfg_glpi, $lang,$HTMLRel;
+	
+		if (!haveRight("contact_enterprise","r")) return false;
+	
+		$con_spotted=false;
+		
+		if (empty($ID)) {
+			
+			if($this->getEmpty()) $con_spotted = true;
+		} else {
+			if($this->getfromDB($ID)) $con_spotted = true;
+		}
+		
+		if ($con_spotted){
+		echo "<form method='post' name=form action=\"$target\"><div align='center'>";
+		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
+		echo "<tr><th colspan='2'><b>";
+		if (empty($ID)) {
+			echo $lang["financial"][33].":";
+			
+		} else {
+			echo $lang["common"][18]." ID $ID:";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/contact.vcard.php?ID=$ID'>Vcard</a>";
+		}		
+		echo "</b></th></tr>";
+		
+		echo "<tr><td class='tab_bg_1' valign='top'>";
+	
+		echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+		echo "<tr><td>".$lang["common"][16].":	</td>";
+		echo "<td>";
+		autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],30);	
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["financial"][29].": 	</td>";
+		echo "<td>";
+		autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],30);	
+	
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["financial"][29]." 2:	</td><td>";
+		autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],30);
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["financial"][30].":	</td><td>";
+		autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],30);
+		echo "</td></tr>";
+		echo "<tr><td>".$lang["financial"][31].":	</td><td>";
+		autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],30);
+		echo "</td></tr>";
+		echo "<tr><td>".$lang["common"][17].":	</td>";
+		echo "<td>";
+		dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
+		echo "</td>";
+		echo "</tr>";
+	
+		echo "</table>";
+	
+		echo "</td>\n";	
+		
+		echo "<td class='tab_bg_1' valign='top'>";
+	
+		echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
+		echo $lang["common"][25].":	</td></tr>";
+		echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+		echo "</td></tr></table>";
+	
+		echo "</td>";
+		echo "</tr>";
+		
+		if (haveRight("contact_enterprise","w")) 
+		if ($ID=="") {
+	
+			echo "<tr>";
+			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+			echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+			echo "</td>";
+			echo "</tr>";
+	
+	
+		} else {
+	
+			echo "<tr>";
+			echo "<td class='tab_bg_2' valign='top'>";
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></div>";
+			echo "</td>\n\n";
+			echo "<td class='tab_bg_2' valign='top'>\n";
+			if ($this->fields["deleted"]=='N')
+			echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+			else {
+			echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+			
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
+			}
+			echo "</td>";
+			echo "</tr>";
+	
+		}
+		echo "</table></div></form>";
+		
+		} else {
+		echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
+		return false;
+		
+		}
+		return true;
+	}
 
 
 }

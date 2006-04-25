@@ -41,12 +41,12 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(empty($tab["ID"])) $tab["ID"] = "";
 
-$con=new Contact;
+$contact=new Contact;
 if (isset($_POST["add"]))
 {
 	checkRight("contact_enterprise","w");
 
-	$newID=$con->add($_POST);
+	$newID=$contact->add($_POST);
 	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -54,7 +54,7 @@ else if (isset($_POST["delete"]))
 {
 	checkRight("contact_enterprise","w");
 
-	$con->delete($_POST);
+	$contact->delete($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/front/contact.php");
 }
@@ -62,7 +62,7 @@ else if (isset($_POST["restore"]))
 {
 	checkRight("contact_enterprise","w");
 
-	$con->restore($_POST);
+	$contact->restore($_POST);
 	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/front/contact.php");
 }
@@ -70,7 +70,7 @@ else if (isset($_POST["purge"]))
 {
 	checkRight("contact_enterprise","w");
 
-	$con->delete($_POST,1);
+	$contact->delete($_POST,1);
 	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/front/contact.php");
 }
@@ -78,7 +78,7 @@ else if (isset($_POST["update"]))
 {
 	checkRight("contact_enterprise","w");
 
-	$con->update($_POST);
+	$contact->update($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -108,10 +108,10 @@ else
 
 	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
 	
-	if ($con->getFromDB($tab["ID"]))
-	$con->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+	if ($contact->getFromDB($tab["ID"]))
+	$contact->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if (showContactForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+	if ($contact->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
 		switch($_SESSION['glpi_onglet']){
 		case -1 :	
