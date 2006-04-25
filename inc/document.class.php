@@ -67,10 +67,8 @@ class Document extends CommonDBTM {
 		return $ong;
 	}
 
-
-	function add($input,$only_if_upload_succeed=0) {
-		// dump status
-		unset($input['add']);
+	function prepareInputForAdd($input) {
+		
 	
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
 			$input['mime']=$_FILES['filename']['type'];
@@ -80,24 +78,16 @@ class Document extends CommonDBTM {
 		} else 	$input['filename']= uploadDocument($_FILES['filename']);
 	
 		unset($input["upload_file"]);
-
-		// fill array for update
-		foreach ($input as $key => $val) {
-			if ($key[0]!='_'&&(empty($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
-				$this->fields[$key] = $input[$key];
-			}
+		if (!isset($input["_only_if_upload_succeed"])||!$input["_only_if_upload_succeed"]||!empty($input['filename'])) {
+			return $input;
 		}
-		if (!$only_if_upload_succeed||!empty($input['filename'])){
-			$newID= $this->addToDB();
-			do_hook_function("item_add",array("type"=>DOCUMENT_TYPE, "ID" => $newID));
-			return $newID;
+		else {
+			return false;
 		}
-		else return false;
 	}
 
-	function update($input) {
-		$this->getFromDB($input["ID"]);
-	
+
+	function prepareInputForUpdate($input) {
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
 			$input['mime']=$_FILES['filename']['type'];
 		
@@ -108,21 +98,9 @@ class Document extends CommonDBTM {
 		if (empty($input['filename'])) unset($input['filename']);
 		unset($input['current_filename']);	
 
-
-		// Fill the update-array with changes
-		$x=0;
-		foreach ($input as $key => $val) {
-			if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
-				$this->fields[$key] = $input[$key];
-				$updates[$x] = $key;
-				$x++;
-			}
-		}
-		if(!empty($updates)) {
-			$this->updateInDB($updates);
-		}
-		do_hook_function("item_update",array("type"=>DOCUMENT_TYPE, "ID" => $input["ID"]));
+		return $input;
 	}
+	
 }
 
 ?>

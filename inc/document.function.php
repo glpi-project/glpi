@@ -180,8 +180,8 @@ function moveUploadedDocument($filename,$old_file=''){
 
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 
-	if (is_dir($cfg_glpi["doc_dir"]."/UPLOAD")){
-		if (is_file($cfg_glpi["doc_dir"]."/UPLOAD/".$filename)){
+	if (is_dir($cfg_glpi["doc_dir"]."/_uploads")){
+		if (is_file($cfg_glpi["doc_dir"]."/_uploads/".$filename)){
 			$dir=isValidDoc($filename);
 			$new_path=getUploadFileValidLocationName($dir,$filename,0);
 			if (!empty($new_path)){
@@ -195,14 +195,14 @@ function moveUploadedDocument($filename,$old_file=''){
 				}
 				
 				// Déplacement si droit
-				if (is_writable ($cfg_glpi["doc_dir"]."/UPLOAD/".$filename)){
-					if (rename($cfg_glpi["doc_dir"]."/UPLOAD/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
+				if (is_writable ($cfg_glpi["doc_dir"]."/_uploads/".$filename)){
+					if (rename($cfg_glpi["doc_dir"]."/_uploads/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][39]."<br>";
 						return $new_path;
 						}
 					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][40]."<br>";
 				} else { // Copi sinon
-					if (copy($cfg_glpi["doc_dir"]."/UPLOAD/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
+					if (copy($cfg_glpi["doc_dir"]."/_uploads/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][41]."<br>";
 						return $new_path;
 						}
@@ -210,7 +210,7 @@ function moveUploadedDocument($filename,$old_file=''){
 				}
 			}
 		
-		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][38].": ".$cfg_glpi["doc_dir"]."/UPLOAD/".$filename."<br>";
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][38].": ".$cfg_glpi["doc_dir"]."/_uploads/".$filename."<br>";
 
 	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][35]."<br>";
 
@@ -520,9 +520,9 @@ return preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$name);
 function showUploadedFilesDropdown($myname){
 	global $cfg_glpi,$lang;
 
-	if (is_dir($cfg_glpi["doc_dir"]."/UPLOAD")){
+	if (is_dir($cfg_glpi["doc_dir"]."/_uploads")){
 		$uploaded_files=array();
-		if ($handle = opendir($cfg_glpi["doc_dir"]."/UPLOAD")) {
+		if ($handle = opendir($cfg_glpi["doc_dir"]."/_uploads")) {
    			while (false !== ($file = readdir($handle))) {
        				if ($file != "." && $file != "..") {
 					$dir=isValidDoc($file);
@@ -542,5 +542,19 @@ function showUploadedFilesDropdown($myname){
 		} else echo $lang["document"][37];
 	} else echo $lang["document"][35];
 }
+
+function isValidDoc($filename){
+	global $db;
+	$splitter=split("\.",$filename);
+	$ext=end($splitter);
+	
+	$query="SELECT * from glpi_type_docs where ext LIKE '$ext' AND upload='Y'";
+	if ($result = $db->query($query))
+	if ($db->numrows($result)>0)
+	return strtoupper($ext);
+	
+return "";
+}
+
 
 ?>

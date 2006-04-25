@@ -96,7 +96,7 @@ class Job extends CommonDBTM{
 	}
 
 	function prepareInputForUpdate($input) {
-	
+		global $lang;
 	// Security checks
 	if (!haveRight("update_ticket","1")){
 		if (haveRight("assign_ticket","1")){
@@ -126,8 +126,9 @@ class Job extends CommonDBTM{
 	if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input2=array();
 		$input2["name"]=$lang["tracking"][24]." ".$input["ID"];
+		$input2["_only_if_upload_succeed"]=1;
 		$doc=new Document();
-		if ($docID=$doc->add($input2,1)){
+		if ($docID=$doc->add($input2)){
 			addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 			}
 	}
@@ -354,8 +355,9 @@ class Job extends CommonDBTM{
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 		$input2=array();
 		$input2["name"]=$lang["tracking"][24]." $newID";
+		$input2["_only_if_upload_succeed"]=1;
 		$doc=new Document();
-		if ($docID=$doc->add($input,1))
+		if ($docID=$doc->add($input2))
 			addDeviceDocument($docID,TRACKING_TYPE,$newID);
 		}
 		
