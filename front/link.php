@@ -41,7 +41,8 @@ checkRight("link","r");
 
 commonHeader($lang["title"][33],$_SERVER["PHP_SELF"]);
 
-titleLinks();
+$link=new Link();
+$link->title();
 
 manageGetValuesInSearch(LINK_TYPE);
 
