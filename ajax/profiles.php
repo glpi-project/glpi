@@ -43,9 +43,9 @@
 	header_nocache();
 
 	checkRight("profile","r");
-
+	$prof=new Profile();
 	if ($_POST["interface"]=="helpdesk")
-		showHelpdeskProfilesForm($_POST["ID"]);
+		$prof->showHelpdeskForm($_POST["ID"]);
 	else if ($_POST["interface"]=="central")
-		showCentralProfilesForm($_POST["ID"]);
+		$prof->showCentralForm($_POST["ID"]);
 ?>
