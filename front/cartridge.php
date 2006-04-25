@@ -41,7 +41,8 @@ checkRight("cartridge","r");
 
 commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
 
-titleCartridge();
+$cartridge=new CartridgeType
+$cartridge->title();
 
 manageGetValuesInSearch(CARTRIDGE_TYPE);
 
