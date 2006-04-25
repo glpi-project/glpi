@@ -223,34 +223,18 @@ class Netport extends CommonDBTM {
 		$this->type=-1;
 	}
 
-
-	function updateInDB($updates)
-	{
-
-		global $db;
-
-		for ($i=0; $i < count($updates); $i++)
-		{
-			$query  = "UPDATE glpi_networking_ports SET ";
-			$query .= $updates[$i];
-			$query .= "='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			// Update opposite if exist
-			if ($updates[$i]=="netpoint"||$updates[$i]=="ifaddr"||$updates[$i]=="ifmac"){
-				$n=new Netwire;
-				if ($opp=$n->getOppositeContact($this->fields["ID"])){
-					$query.=" OR ID='$opp' ";
-				}
+	function post_updateItem($input,$updates,$history){
+		$tomatch=array("netpoint","ifaddr","ifmac");
+		$updates=array_intersect($updates,$tomatch);
+		if (count($updates)){
+			$save_ID=$this->fields["ID"];
+			$n=new Netwire;
+			if ($this->fields["ID"]=$n->getOppositeContact($save_ID)){
+				$this->updateInDB($updates);
 			}
-			$result=$db->query($query);
-			}	
-			
+			$this->fields["ID"]=$save_ID;
+		}
 	}
-
-
 
 	function prepareInputForUpdate($input) {
 		// Is a preselected mac adress selected ?
