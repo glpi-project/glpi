@@ -307,37 +307,39 @@ class CommonDBTM {
 		
 		global $db;
 
-		// Build query
-		$query = "INSERT INTO ".$this->table." (";
-		$i=0;
-		
-		foreach ($this->fields as $key => $val) {
-			$fields[$i] = $key;
-			$values[$i] = $val;
-			$i++;
-		}		
-		$nb_fields=count($fields);
-		for ($i=0; $i < $nb_fields; $i++) {
-			$query .= "`".$fields[$i]."`";
-			if ($i!=$nb_fields-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ") VALUES (";
-		for ($i=0; $i < $nb_fields; $i++) {
-			$query .= "'".$values[$i]."'";
-			if ($i!=$nb_fields-1) {
-				$query .= ",";
-			}
-		}
-		$query .= ")";
+		$nb_fields=count($this->fields);
+		if ($nb_fields>0){		
 
-		if ($result=$db->query($query)) {
-			$this->post_addToDB();
-			return $db->insert_id();
-		} else {
-			return false;
-		}
+			// Build query
+			$query = "INSERT INTO ".$this->table." (";
+			$i=0;
+			foreach ($this->fields as $key => $val) {
+				$fields[$i] = $key;
+				$values[$i] = $val;
+				$i++;
+			}		
+		
+			for ($i=0; $i < $nb_fields; $i++) {
+				$query .= "`".$fields[$i]."`";
+				if ($i!=$nb_fields-1) {
+					$query .= ",";
+				}
+			}
+			$query .= ") VALUES (";
+			for ($i=0; $i < $nb_fields; $i++) {
+				$query .= "'".$values[$i]."'";
+				if ($i!=$nb_fields-1) {
+					$query .= ",";
+				}
+			}
+			$query .= ")";
+			if ($result=$db->query($query)) {
+				$this->post_addToDB();
+				return $db->insert_id();
+			} else {
+				return false;
+			}
+		} else return false;
 	}
 	
 	function post_addToDB(){
@@ -396,7 +398,7 @@ class CommonDBTM {
 	*@return integer the new ID of the added item
 	*
 	**/
-	// specific ones : document, reservationresa , planningtracking, followup
+	// specific ones : reservationresa , planningtracking
 	function add($input) {
 
 		// dump status
@@ -439,7 +441,7 @@ class CommonDBTM {
 	*@return Nothing (call to the class member)
 	*
 	**/
-	// specific ones : document, reservationresa, planningtracking
+	// specific ones : reservationresa, planningtracking
 	function update($input,$history=1) {
 		
 		if ($this->getFromDB($input["ID"])){
@@ -465,12 +467,14 @@ class CommonDBTM {
 
 			if(count($updates)){
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
-				$this->updateInDB($updates);
+				if ($this->updateInDB($updates)){
+					$this->post_updateItem($input,$updates,$history);
+					do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
+				}
+
 			} 
 
-			$this->post_updateItem($input,$updates,$history);
-
-			do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
+			
 		}
 	}
 

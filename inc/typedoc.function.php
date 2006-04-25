@@ -141,18 +141,6 @@ function showTypedocForm ($target,$ID) {
 
 
 
-function isValidDoc($filename){
-	global $db;
-	$splitter=split("\.",$filename);
-	$ext=end($splitter);
-	
-	$query="SELECT * from glpi_type_docs where ext LIKE '$ext' AND upload='Y'";
-	if ($result = $db->query($query))
-	if ($db->numrows($result)>0)
-	return strtoupper($ext);
-	
-return "";
-}
 
  	
 ?>
