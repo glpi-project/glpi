@@ -606,7 +606,8 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	echo "<tr class='tab_bg_2'>";
 	echo "<td align='center' colspan='3'>";
 	echo "<input type='hidden' name='sID' value=".$sID.">";
-	echo "<input type='hidden' name='lID' value=".$lID.">";
+	if ($action=="update")
+		echo "<input type='hidden' name='ID' value=".$lID.">";
 	echo "<input type='hidden' name='form' value=".$action.">";
 	echo "<input type='submit' name='$action' value=\"".$button."\" class='submit'>";
 	echo "</td>";
@@ -615,75 +616,6 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 }
 
 
-function addLicense($input) {
-	$lic = new License;
-	
-	// dump status
-	unset($input["lID"]);
-	unset($input["form"]);
-	unset($input["add"]);
-	unset($input["withtemplate"]);
-	
-	if (empty($input['expire'])||$input['expire']=="0000-00-00") unset($input['expire']);
-	if ($input['oem']=='N') $input['oem_computer']=-1;
-
-	// fill array for update
-	foreach ($input as $key => $val) {
-		if ($key[0]!='_'&&(empty($lic->fields[$key]) || $sw->fields[$key] != $input[$key])) {
-			$lic->fields[$key] = $input[$key];
-		}
-	}
-	$newID=$lic->addToDB();
-	
-	if ($input['oem']=='Y')
-		installSoftware($input['oem_computer'],$newID);
-
-	// Add infocoms if exists for the licence
-	$ic=new Infocom();
-	if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$lic->fields["sID"])){
-		unset($ic->fields["ID"]);
-		$ic->fields["FK_device"]=$newID;
-		$ic->fields["device_type"]=LICENSE_TYPE;
-		$ic->addToDB();
-	}
-	
-	return $newID;
-}
-
-function updateLicense($input) {
-	// Update License in the database
-
-	$lic = new License;
-	$lic->getFromDB($input["lID"]);
-
-	if (empty($input['expire'])) unset($input['expire']);
-	if (!isset($input['expire'])||$input['expire']=="0000-00-00") $input['expire']="NULL";
-	if (isset($input['oem'])&&$input['oem']=='N') $input['oem_computer']=-1;
-
-	
-	// Fill the update-array with changes
-	$x=0;
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$lic->fields) && $lic->fields[$key] != $input[$key]) {
-			$lic->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-
-	if(!empty($updates)) {
-		if ($updates)
-		$lic->updateInDB($updates);
-	}
-}
-
-function deleteLicense($ID) {
-	// Delete License
-	
-	$lic = new License;
-	$lic->deleteFromDB($ID);
-	
-} 
 
 function updateNumberLicenses($likeID,$number,$new_number){
 	global $db;
@@ -702,6 +634,7 @@ if ($number>$new_number){
 
 		for ($i=0;$i<$number-$new_number;$i++){
 			$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE $SEARCH_LICENCE";
+			
 			if ($result_first = $db->query($query_first)) {			
 				if ($lic->fields["serial"]=="free"||$lic->fields["serial"]=="global")
 				$ID=$db->result($result_first,0,"ID");
@@ -714,7 +647,7 @@ if ($number>$new_number){
 					}
 				}
 				if (!empty($ID)){
-					deleteLicense($ID);
+					$lic->delete(array("ID"=>$ID));
 				}
 			}
 			

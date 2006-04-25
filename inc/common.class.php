@@ -275,17 +275,22 @@ class CommonDBTM {
 	function post_getEmpty () {
 	}
 
-	// Specific Ones :  License 
 	function updateInDB($updates)  {
 
 		global $db;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE `".$this->table."` SET `";
-			$query .= $updates[$i];
-			$query .= "`='";
-			$query .= $this->fields[$updates[$i]];
-			$query .= "' WHERE ID='";
+			$query .= $updates[$i]."`";
+			
+			if ($this->fields[$updates[$i]]=="NULL"){
+				$query .= " = ";
+				$query .= $this->fields[$updates[$i]];
+			} else {
+				$query .= " = '";
+				$query .= $this->fields[$updates[$i]]."'";
+			}
+			$query .= " WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
 			
@@ -326,7 +331,7 @@ class CommonDBTM {
 			}
 		}
 		$query .= ")";
-		
+
 		if ($result=$db->query($query)) {
 			$this->post_addToDB();
 			return $db->insert_id();
@@ -359,7 +364,7 @@ class CommonDBTM {
 			$this->cleanDBonPurge($ID);
 
 			$query = "DELETE from ".$this->table." WHERE ID = '$ID'";
-		
+			
 			if ($result = $db->query($query)) {
 				$this->post_deleteFromDB($ID);
 				return true;
