@@ -177,7 +177,7 @@ class DBmysql {
 	* @return number of fields
 	*/
 	function num_fields($result) {
-		return mysql_num_fields($result);
+		return mysql_num_rows($result);
 	}
 	/**
 	* Give name of a field of a Mysql result
@@ -200,7 +200,14 @@ class DBmysql {
 		return mysql_tablename($result,$nb);
 	}
 	function list_fields($table) {
-		return mysql_list_fields($this->dbdefault,$table,$this->dbh);
+		$result = $this->query("SHOW COLUMNS FROM $table");
+		if ($result) {
+			if ($this->numrows($result) > 0) {
+				return mysql_fetch_assoc($result);
+			} else return array();
+		} else return false;
+
+
 	}
 	function affected_rows() {
 		return mysql_affected_rows($this->dbh);
@@ -226,7 +233,6 @@ class DBmysql {
 class CommonDBTM {
 
 	var $fields	= array();
-	var $updates	= array();
 	var $table="";
 	var $type=-1;
 	var $dohistory=false;
@@ -258,10 +264,9 @@ class CommonDBTM {
 		//make an empty database object
 		global $db;
 		$fields = $db->list_fields($this->table);
-		$columns = $db->num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			$name = $db->field_name($fields, $i);
-			$this->fields[$name] = "";
+		$nb=count($fields);
+		for ($i = 0; $i < $nb; $i++) {
+			$this->fields[$fields[$i]["Field"]] = "";
 		
 		}
 		$this->post_getEmpty();
