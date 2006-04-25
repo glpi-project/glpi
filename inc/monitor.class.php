@@ -180,6 +180,281 @@ class Monitor extends CommonDBTM {
 		$db->query($query);
 	}
 
+	function title(){
+		global  $lang,$HTMLRel;
+		echo "<div align='center'><table border='0'><tr><td>";
+		echo "<img src=\"".$HTMLRel."pics/ecran.png\" alt='".$lang["monitors"][0]."' title='".$lang["monitors"][0]."'></td>";
+		if (haveRight("monitor","w")){
+			echo "<td><a  class='icon_consol' href=\"".$HTMLRel."front/setup.templates.php?type=".MONITOR_TYPE."&amp;add=1\"><b>".$lang["monitors"][0]."</b></a>";
+			echo "</td>";
+			echo "<td><a class='icon_consol' href='".$HTMLRel."front/setup.templates.php?type=".MONITOR_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][3]."</b></span></td>";
+		echo "</tr></table></div>";
+}
+
+
+	function showForm ($target,$ID,$withtemplate='') {
+	
+		global $cfg_glpi, $lang,$HTMLRel;
+	
+		if (!haveRight("monitor","r")) return false;
+	
+		
+		$mon_spotted = false;
+	
+		if(empty($ID) && $withtemplate == 1) {
+			if($this->getEmpty()) $mon_spotted = true;
+		} else {
+			if($this->getfromDB($ID)) $mon_spotted = true;
+		}
+	
+		if($mon_spotted) {
+			if(!empty($withtemplate) && $withtemplate == 2) {
+				$template = "newcomp";
+				$datestring = $lang["computers"][14].": ";
+				$date = convDateTime(date("Y-m-d H:i:s"));
+			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+				$template = "newtemplate";
+				$datestring = $lang["computers"][14].": ";
+				$date = convDateTime(date("Y-m-d H:i:s"));
+			} else {
+				$datestring = $lang["common"][26]." : ";
+				$date = convDateTime($this->fields["date_mod"]);
+				$template = false;
+			}
+	
+		echo "<div align='center'><form method='post' name=form action=\"$target\">";
+			if(strcmp($template,"newtemplate") === 0) {
+				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
+			}
+		
+		echo "<table  class='tab_cadre_fixe' cellpadding='2'>";
+	
+			echo "<tr><th align='center' >";
+			if(!$template) {
+				echo $lang["monitors"][29].": ".$this->fields["ID"];
+			}elseif (strcmp($template,"newcomp") === 0) {
+				echo $lang["monitors"][30].": ".$this->fields["tplname"];
+				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
+			}elseif (strcmp($template,"newtemplate") === 0) {
+				echo $lang["common"][6]."&nbsp;: ";
+				autocompletionTextField("tplname","glpi_monitors","tplname",$this->fields["tplname"],20);	
+			}
+			
+			echo "</th><th  align='center'>".$datestring.$date;
+			if (!$template&&!empty($this->fields['tplname']))
+				echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$this->fields['tplname'].")";
+			echo "</th></tr>";
+	
+		
+		echo "<tr><td class='tab_bg_1' valign='top'>";
+	
+		echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+		echo "<tr><td>".$lang["common"][16].":	</td>";
+		echo "<td>";
+		autocompletionTextField("name","glpi_monitors","name",$this->fields["name"],20);	
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["common"][15].": 	</td><td>";
+			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+		echo "</td></tr>";
+	
+		echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
+			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+		echo "</td></tr>";
+			
+		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
+			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["common"][21].":	</td>";
+		echo "<td>";
+		autocompletionTextField("contact_num","glpi_monitors","contact_num",$this->fields["contact_num"],20);	
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["common"][18].":	</td><td>";
+		autocompletionTextField("contact","glpi_monitors","contact",$this->fields["contact"],20);	
+	
+		echo "</td></tr>";
+		if (!$template){
+			echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
+			showReservationForm(MONITOR_TYPE,$ID);
+			echo "</b></td></tr>";
+		}
+	
+		echo "<tr><td>".$lang["state"][0].":</td><td>";
+		$si=new StateItem();
+		$t=0;
+		if ($template) $t=1;
+		$si->getfromDB(MONITOR_TYPE,$this->fields["ID"],$t);
+		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["peripherals"][33].":</td><td>";
+		echo "<select name='is_global'>";
+		echo "<option value='0' ".(!$this->fields["is_global"]?" selected":"").">".$lang["peripherals"][32]."</option>";
+		echo "<option value='1' ".($this->fields["is_global"]?" selected":"").">".$lang["peripherals"][31]."</option>";
+		echo "</select>";
+		echo "</td></tr>";
+	
+		echo "</table>";
+	
+		echo "</td>\n";	
+		echo "<td class='tab_bg_1' valign='top'>";
+	
+		echo "<table cellpadding='1' cellspacing='0' border='0'";
+	
+		echo "<tr><td>".$lang["common"][17].": 	</td><td>";
+			dropdownValue("glpi_type_monitors", "type", $this->fields["type"]);
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["common"][22].": 	</td><td>";
+			dropdownValue("glpi_dropdown_model_monitors", "model", $this->fields["model"]);
+		echo "</td></tr>";
+			
+		echo "<tr><td>".$lang["common"][19].":	</td><td>";
+		autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],20);	
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["common"][20].":</td><td>";
+		autocompletionTextField("otherserial","glpi_monitors","otherserial",$this->fields["otherserial"],20);	
+		echo "</td></tr>";
+	
+		echo "<tr><td>".$lang["monitors"][21].":</td>";
+		echo "<td>";
+		autocompletionTextField("size","glpi_monitors","size",$this->fields["size"],2);	
+		echo "\"</td></tr>";
+	
+			echo "<tr><td>".$lang["monitors"][18].": </td><td>";
+	
+			// micro?
+			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>";
+			if ($this->fields["flags_micro"] == 1) {
+				echo "<input type='checkbox' name='flags_micro' value='1' checked>";
+			} else {
+				echo "<input type='checkbox' name='flags_micro' value='1'>";
+			}
+			echo "</td><td>".$lang["monitors"][14]."</td>";
+	//		echo "</tr></table>";
+	
+			// speakers?
+	//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>";
+			if ($this->fields["flags_speaker"] == 1) {
+				echo "<input type='checkbox' name='flags_speaker' value='1' checked>";
+			} else {
+				echo "<input type='checkbox' name='flags_speaker' value='1'>";
+			}
+			echo "</td><td>".$lang["monitors"][15]."</td>";
+	//		echo "</tr></table>";
+			echo "</tr><tr>";
+	
+			// sub-d?
+	//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>";
+			if ($this->fields["flags_subd"] == 1) {
+				echo "<input type='checkbox' name='flags_subd' value='1' checked>";
+			} else {
+				echo "<input type='checkbox' name='flags_subd' value='1'>";
+			}
+			echo "</td><td>".$lang["monitors"][19]."</td>";
+	//		echo "</tr></table>";
+	
+			// bnc?
+	//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>";
+			if ($this->fields["flags_bnc"] == 1) {
+				echo "<input type='checkbox' name='flags_bnc' value='1' checked>";
+			} else {
+				echo "<input type='checkbox' name='flags_bnc' value='1'>";
+			}
+			echo "</td><td>".$lang["monitors"][20]."</td>";
+	//		echo "</tr></table>";
+			echo "</tr><tr>";
+			
+			// dvi?
+	//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>";
+			if ($this->fields["flags_dvi"] == 1) {
+				echo "<input type='checkbox' name='flags_dvi' value='1' checked>";
+			} else {
+				echo "<input type='checkbox' name='flags_dvi' value='1'>";
+			}
+			echo "</td><td>".$lang["monitors"][32]."</td>";
+			echo "<td>&nbsp;</td><td>&nbsp;</td>";
+			echo "</tr></table>";
+	
+	
+	echo "</td></tr>";
+	
+		echo "</table>";
+		echo "</td>\n";	
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+	
+		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
+		echo $lang["common"][25].":	</td>";
+		echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+		echo "</td></tr></table>";
+	
+		echo "</td>";
+		echo "</tr>";
+	
+	
+		if (haveRight("monitor","w")){
+	
+			echo "<tr>";
+		
+			if ($template) {
+	
+				if (empty($ID)||$withtemplate==2){
+				echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+				echo "</td>\n";
+				} else {
+				echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td>\n";
+				}
+			} else {
+	
+				echo "<td class='tab_bg_2' valign='top' align='center'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td>\n\n";
+				echo "<td class='tab_bg_2' valign='top'>\n";
+				echo "<div align='center'>";
+				if ($this->fields["deleted"]=='N')
+					echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+				else {
+					echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+			
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+				}
+				echo "</div>";
+				echo "</td>";
+			}
+			echo "</tr>";
+		}
+	
+			echo "</table></form></div>";
+		
+		return true;
+			}
+		else {
+			echo "<div align='center'><b>".$lang["monitors"][17]."</b></div>";
+			return false;
+		}
+	
+		
+		
+	}
+
 }
 
 ?>

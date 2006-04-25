@@ -212,7 +212,7 @@ class Printer  extends CommonDBTM {
 	}
 
 	
-	function titlePrinters(){
+	function title(){
 		global  $lang,$HTMLRel;
 	
 		echo "<div align='center'><table border='0'><tr><td>";
@@ -225,7 +225,7 @@ class Printer  extends CommonDBTM {
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][2]."</b></span></td>";
 	}
 	
-	function showPrintersForm ($target,$ID,$withtemplate='') {
+	function showForm ($target,$ID,$withtemplate='') {
 	
 		global $cfg_glpi, $lang,$HTMLRel;
 		if (!haveRight("printer","r")) return false;
