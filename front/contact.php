@@ -41,7 +41,8 @@ checkRight("contact_enterprise","r");
 
 commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
 
-titleContacts();
+$contact=new Contact();
+$contact->title();
 
 
 manageGetValuesInSearch(CONTACT_TYPE);

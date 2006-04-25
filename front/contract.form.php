@@ -41,13 +41,13 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-$con=new Contract();
+$contract=new Contract();
 
 if (isset($_POST["add"]))
 {
 	checkRight("contract_infocom","w");
 
-	$newID=$con->add($_POST);
+	$newID=$contract->add($_POST);
 	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["num"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
@@ -55,7 +55,7 @@ else if (isset($_POST["delete"]))
 {
 	checkRight("contract_infocom","w");
 
-	$con->delete($_POST);
+	$contract->delete($_POST);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	glpi_header($cfg_glpi["root_doc"]."/front/contract.php");
 }
@@ -63,7 +63,7 @@ else if (isset($_POST["restore"]))
 {
 	checkRight("contract_infocom","w");
 
-	$con->restore($_POST);
+	$contract->restore($_POST);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/front/contract.php");
 }
@@ -71,7 +71,7 @@ else if (isset($_POST["purge"]))
 {
 	checkRight("contract_infocom","w");
 
-	$con->delete($_POST,1);
+	$contract->delete($_POST,1);
 	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/front/contract.php");
 }
@@ -79,7 +79,7 @@ else if (isset($_POST["update"]))
 {
 	checkRight("contract_infocom","w");
 
-	$con->update($_POST);
+	$contract->update($_POST);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
@@ -132,10 +132,10 @@ else
 	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
 
 	
-	if ($con->getFromDB($tab["ID"]))
-		$con->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+	if ($contract->getFromDB($tab["ID"]))
+		$contract->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if (showContractForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+	if ($contract->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
 		switch($_SESSION['glpi_onglet']){
 		case -1 :	
