@@ -43,7 +43,9 @@ include ($phproot . "/inc/includes.php");
 checkRight("user","r");
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);	
-titleUsers();
+
+$user=new User();
+$user->title();
 
 
 
