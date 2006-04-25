@@ -121,7 +121,7 @@ if (isset($_GET['onglet'])) {
 
 	if (!empty($tab["withtemplate"])) {
 		
-		if (showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($print->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		
 			if (!empty($tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
@@ -160,7 +160,7 @@ if (isset($_GET['onglet'])) {
 		}
 
 
-		if (showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($print->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		
 			switch($_SESSION['glpi_onglet']){
 				case -1:

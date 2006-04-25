@@ -196,7 +196,7 @@ class Phone extends CommonDBTM {
 	}
 
 
-	function titlephones(){
+	function title(){
 	global  $lang,$HTMLRel;
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/phones.png\" alt='".$lang["phones"][0]."' title='".$lang["phones"][0]."'></td>";
@@ -209,7 +209,7 @@ class Phone extends CommonDBTM {
 }
 
 
-function showPhoneForm ($target,$ID,$withtemplate='') {
+function showForm ($target,$ID,$withtemplate='') {
 
 	global $cfg_glpi, $lang,$HTMLRel;
 

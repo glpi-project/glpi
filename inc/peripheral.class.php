@@ -192,7 +192,7 @@ class Peripheral  extends CommonDBTM  {
 		$result = $db->query($query);
 	}
 
-	function titleperipherals(){
+	function title(){
 	global  $lang,$HTMLRel;
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/periphs.png\" alt='".$lang["peripherals"][0]."' title='".$lang["peripherals"][0]."'></td>";
@@ -204,7 +204,7 @@ class Peripheral  extends CommonDBTM  {
 	echo "</tr></table></div>";
 }
 
-function showperipheralForm ($target,$ID,$withtemplate='') {
+function showForm ($target,$ID,$withtemplate='') {
 
 	global $cfg_glpi, $lang,$HTMLRel;
 

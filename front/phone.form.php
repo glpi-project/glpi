@@ -128,7 +128,7 @@ else
 		
 	if (!empty($tab["withtemplate"])) {
 
-		if (showPhoneForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($phone->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		if (!empty($tab["ID"])){
 
 			switch($_SESSION['glpi_onglet']){
@@ -162,7 +162,7 @@ else
 			}
 		}
 
-		if (showPhoneForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		if ($phone->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PHONE_TYPE);
