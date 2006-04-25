@@ -311,16 +311,17 @@ class CommonDBTM {
 			$values[$i] = $val;
 			$i++;
 		}		
-		for ($i=0; $i < count($fields); $i++) {
+		$nb_fields=count($fields);
+		for ($i=0; $i < $nb_fields; $i++) {
 			$query .= "`".$fields[$i]."`";
-			if ($i!=count($fields)-1) {
+			if ($i!=$nb_fields-1) {
 				$query .= ",";
 			}
 		}
 		$query .= ") VALUES (";
-		for ($i=0; $i < count($values); $i++) {
+		for ($i=0; $i < $nb_fields; $i++) {
 			$query .= "'".$values[$i]."'";
-			if ($i!=count($values)-1) {
+			if ($i!=$nb_fields-1) {
 				$query .= ",";
 			}
 		}
