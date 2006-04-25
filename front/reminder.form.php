@@ -46,7 +46,7 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;
 
-$rem=new Reminder();
+$remind=new Reminder();
 checkCentralAccess();
 if (isset($_POST["add"]))
 {
@@ -55,7 +55,7 @@ if (isset($_POST["add"]))
 	}
 	
 
-	$newID=$rem->add($_POST);
+	$newID=$remind->add($_POST);
 	
 	glpi_header($cfg_glpi["root_doc"]."/front/reminder.php");
 } 
@@ -64,7 +64,7 @@ else if (isset($_POST["delete"]))
 	if (isset($_POST["delete"])&&isset($_POST["public"])){
 		checkRight("reminder_public","w");
 	}
-	$rem->delete($_POST);
+	$remind->delete($_POST);
 	
 	glpi_header($cfg_glpi["root_doc"]."/front/reminder.php");
 }
@@ -74,16 +74,14 @@ else if (isset($_POST["update"]))
 		checkRight("reminder_public","w");
 	}
 
-	$rem->update($_POST);
+	$remind->update($_POST);
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
 	commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);
-	$remind=new Reminder();
-	$remind->getFromDB($tab["ID"]);
-	showReminderForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	$remind->showForm($_SERVER["PHP_SELF"],$tab["ID"]);
 
 	commonFooter();
 }

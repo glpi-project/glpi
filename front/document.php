@@ -41,7 +41,9 @@ checkRight("document","r");
 
 commonHeader($lang["title"][25],$_SERVER["PHP_SELF"]);
 
-titleDocument();
+$doc=new Document();
+
+$doc->title();
 
 
 manageGetValuesInSearch(DOCUMENT_TYPE);

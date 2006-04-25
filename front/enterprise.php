@@ -41,7 +41,9 @@ checkRight("contact_enterprise","r");
 
 commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
 
-titleEnterprise();
+
+$ent=new Enterprise();
+$ent->title();
 
 
 

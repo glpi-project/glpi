@@ -42,7 +42,8 @@ checkCentralAccess();
 
 commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);
 
-titleReminder();
+$remind=new Reminder();
+$remind->title();
 
 showListReminder();
 
