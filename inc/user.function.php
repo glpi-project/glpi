@@ -111,7 +111,7 @@ function showUserinfo($target,$ID) {
 
 
 
-function showUserform($target,$name) {
+function showUserForm($target,$name) {
 	
 	// Affiche un formulaire User
 	global $cfg_glpi, $lang;
@@ -161,7 +161,7 @@ function showUserform($target,$name) {
 	//do some rights verification
 	if(haveRight("user","w")) {
 		if (!empty($user->fields["password"])||!empty($user->fields["password_md5"])||$name==""){
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value=\"".$user->fields["password"]."\" size='20' /></td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 		}
 	}
 
