@@ -847,7 +847,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		global $lang, $cfg_glpi;		
 		
 		include ("_relpos.php");
-		include ($phproot . "/inc/common.class.php");
+		include ($phproot . "/inc/dbmysql.class.php");
 		include ($phproot . "/inc/common.function.php");
 		include ($cfg_glpi["config_dir"] . "/config_db.php");
 		
@@ -937,7 +937,7 @@ function step7() {
 
 	global $lang,$cfg_glpi;
 	include ("_relpos.php");
-	require_once ($phproot . "/inc/common.class.php");
+	require_once ($phproot . "/inc/dbmysql.class.php");
 	require_once ($phproot . "/inc/common.function.php");
 	require_once ($cfg_glpi["config_dir"] . "/config_db.php");
 	$db = new DB;
