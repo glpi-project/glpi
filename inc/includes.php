@@ -38,7 +38,9 @@
 if(!session_id()){@session_start();}
 include ("_relpos.php");
 include ($phproot . "/inc/timer.class.php");
-include ($phproot . "/inc/common.class.php");
+include ($phproot . "/inc/dbmysql.class.php");
+include ($phproot . "/inc/commondbtm.class.php");
+include ($phproot . "/inc/commonitem.class.php");
 include ($phproot . "/inc/common.function.php");
 include ($phproot . "/inc/auth.function.php");
 include ($phproot . "/inc/display.function.php");
