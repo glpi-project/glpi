@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: setup.class.php 3313 2006-04-24 03:20:51Z silvermat $
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -40,4 +40,22 @@
  
 // CLASSES Setup
 
+class Config extends CommonDBTM {
+
+	function Config () {
+		$this->table="glpi_config";
+		$this->type=-1;
+	}
+
+	function prepareInputForUpdate($input) {
+		if (isset($input['mail_server'])&&!empty($input['mail_server']))
+			$input["imap_auth_server"]=constructIMAPAuthServer($input);
+		if (isset($input["planning_begin"]))
+			$input["planning_begin"]=$input["planning_begin"].":00:00";
+		if (isset($input["planning_end"]))
+			$input["planning_end"]=$input["planning_end"].":00:00";
+		return $input;
+	}
+
+}
 ?>

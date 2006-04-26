@@ -106,7 +106,7 @@ $query="CREATE TABLE `glpi_profiles` (
 }
 
 
-	if (FieldExists("glpi_config","`post_only_followup`")){
+	if (FieldExists("glpi_config","post_only_followup")){
 
 		$query="SELECT post_only_followup FROM glpi_config WHERE ID='1' ";
 		$result=$db->query($query);
