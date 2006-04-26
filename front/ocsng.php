@@ -49,11 +49,11 @@ include ($phproot."/inc/includes.php");
 	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 	echo "<tr><th>".$lang["ocsng"][0]."</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ocsng-sync.php\"><b>".$lang["ocsng"][1]."</b></a></td></tr>";
+	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ocsng.sync.php\"><b>".$lang["ocsng"][1]."</b></a></td></tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng-import.php\"><b>".$lang["ocsng"][2]."</b></a></td> </tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.import.php\"><b>".$lang["ocsng"][2]."</b></a></td> </tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng-link.php\"><b>".$lang["ocsng"][4]."</b></a></td> </tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>".$lang["ocsng"][4]."</b></a></td> </tr>";
 
 	echo "</table></div>";
 

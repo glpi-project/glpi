@@ -745,7 +745,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Form to delete old item
 			$isadmin=haveTypeRight($type,"w");
 			if ($isadmin&&$output_type==0){
-				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$cfg_glpi["root_doc"]."/common/massiveaction.php\">";
+				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$cfg_glpi["root_doc"]."/front/massiveaction.php\">";
 			}
 			
 			// Compute number of columns to display
