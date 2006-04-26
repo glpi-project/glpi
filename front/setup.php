@@ -104,8 +104,8 @@ if (count($config)>0){
 echo "</td></tr>";
 
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>Plugins</b></a></td></tr>";
-
-echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
+if (haveRight("update","r"))
+	echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$lang["setup"][300]."</b></a></td></tr>";
 
 
 
