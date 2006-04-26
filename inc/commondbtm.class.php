@@ -95,6 +95,7 @@ class CommonDBTM {
 			$result=$db->query($query);
 		}
 		$this->post_updateInDB($updates);
+		return true;
 	}
 	
 	function post_updateInDB($updates)  {

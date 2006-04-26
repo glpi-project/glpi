@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-04-26 14:57
+#GLPI Dump database on 2006-04-26 17:50
 
 ### Dump table glpi_cartridges
 
@@ -1110,7 +1110,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-26 14:56:46','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-26 17:50:48','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1274,7 +1274,7 @@ INSERT INTO glpi_mailing_profiles VALUES ('5','update','-1');
 INSERT INTO glpi_mailing_profiles VALUES ('6','followup','-1');
 INSERT INTO glpi_mailing_profiles VALUES ('7','finish','-1');
 INSERT INTO glpi_mailing_profiles VALUES ('8','update','-2');
-INSERT INTO glpi_mailing_profiles VALUES ('9','attrib','-2');
+INSERT INTO glpi_mailing_profiles VALUES ('9','update','-4');
 INSERT INTO glpi_mailing_profiles VALUES ('10','new','-3');
 INSERT INTO glpi_mailing_profiles VALUES ('11','update','-3');
 INSERT INTO glpi_mailing_profiles VALUES ('12','followup','-3');
