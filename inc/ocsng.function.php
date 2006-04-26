@@ -119,7 +119,7 @@ if ($dbocs->numrows($result_ocs)>0){
 		echo "<tr><th>".$lang["ocsng"][5]."</th><th>".$lang["common"][27]."</th><th>TAG</th><th>&nbsp;</th></tr>";
 		
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-		echo "<input type='submit' name='import_ok' value='".$lang["buttons"][37]."'>";
+		echo "<input class='submit' type='submit' name='import_ok' value='".$lang["buttons"][37]."'>";
 		echo "</td></tr>";
 
 		
@@ -138,7 +138,7 @@ if ($dbocs->numrows($result_ocs)>0){
 		
 		}
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-		echo "<input type='submit' name='import_ok' value='".$lang["buttons"][37]."'>";
+		echo "<input class='submit' type='submit' name='import_ok' value='".$lang["buttons"][37]."'>";
 		echo "</td></tr>";
 		echo "</table>";
 		echo "</form>";
@@ -323,7 +323,6 @@ function ocsUpdateComputer($ID,$dohistory){
 		
 		// Is an update to do ?
 		if ($mixed_checksum){
-
 			// Get updates on computers :
 			$computer_updates=importArrayFromDB($line["computer_update"]);
 			
@@ -346,6 +345,7 @@ function ocsUpdateComputer($ID,$dohistory){
 				ocsUpdateDevices(GFX_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
 			if ($mixed_checksum&pow(2,SOUNDS_FL))
 				ocsUpdateDevices(SND_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+			
 			if ($mixed_checksum&pow(2,NETWORKS_FL))
 				ocsUpdateDevices(NETWORK_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
 			if ($mixed_checksum&pow(2,MODEMS_FL)||$mixed_checksum&pow(2,PORTS_FL))
@@ -381,7 +381,7 @@ function ocsUpdateComputer($ID,$dohistory){
 			// Update OCS Cheksum
 			$query_ocs="UPDATE hardware SET CHECKSUM= (CHECKSUM - $mixed_checksum) WHERE DEVICEID='".$line['ocs_id']."'";
 			$dbocs->query($query_ocs) or die($dbocs->error().$query_ocs);
-		}
+		} 
 	}
     }
 }
@@ -625,7 +625,7 @@ if ($dbocs->numrows($result_ocs)>0){
 		echo "<tr><th>".$lang["ocsng"][11]."</th><th>".$lang["ocsng"][13]."</th><th>".$lang["ocsng"][14]."</th><th>&nbsp;</th></tr>";
 		
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-		echo "<input type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
+		echo "<input class='submit' type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
 		echo "</td></tr>";
 
 		foreach ($already_linked as $ID => $tab){
@@ -636,7 +636,7 @@ if ($dbocs->numrows($result_ocs)>0){
 			echo "</td></tr>";
 		}
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-		echo "<input type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
+		echo "<input class='submit' type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
 		echo "</td></tr>";
 		echo "</table>";
 		echo "</form>";
@@ -712,7 +712,7 @@ function ocsEditLock($target,$ID){
 				if ($val2["linkfield"]==$val)
 				echo "<tr class='tab_bg_1'><td>".$val2["name"]."</td><td><input type='checkbox' name='lockfield[".$key."]'></td></tr>";
 			}
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input type='submit' name='unlock_field' value='".$lang["buttons"][38]."'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_field' value='".$lang["buttons"][38]."'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		} else echo "<strong>".$lang["ocsng"][15]."</strong>";
@@ -901,10 +901,12 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		}
 		break;
 		case NETWORK_DEVICE:
+		
 		//Carte reseau
 		if ($cfg_ocs["import_device_iface"]||$cfg_ocs["import_ip"]){
 			
 			$query2 = "select * from networks where DEVICEID = '".$ocs_id."' ORDER BY ID";
+			
 			$result2 = $dbocs->query($query2);
 			$i=0;
 			// Add network device
@@ -924,9 +926,11 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 							unset($import_device[$id]);
 						}						
 					}
+					
 					if (!empty($line2["IPADDRESS"])&&$cfg_ocs["import_ip"]){
+
 						// Is there an existing networking port ?
-						$query="SELECT * FROM glpi_networking_ports WHERE device_type='".COMPUTER_TYPE."' AND on_device='$glpi_id' AND ifaddr='".$line2["IPADDRESS"]."'";
+						$query="SELECT * FROM glpi_networking_ports WHERE device_type='".COMPUTER_TYPE."' AND on_device='$glpi_id' AND ifmac='".$line2["MACADDR"]."'";
 				
 						
 						$result=$db->query($query);
@@ -955,6 +959,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			}
 			
 		}
+
 		break;
 		case GFX_DEVICE:
 		//carte graphique
@@ -1009,11 +1014,12 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 
 	// Delete Unexisting Items not found in OCS
 	if ($do_clean&&count($import_device)){
-		foreach ($import_device as $key => $val)
-		if (ereg($device_type."$$$$$",$val)){
+		foreach ($import_device as $key => $val){
+		if (!(strpos($val,$device_type."$$")===false)){
 			unlink_device_computer($key,$dohistory);
 			deleteInOcsArray($glpi_id,$key,"import_device");
-			}
+			} 
+		}
 	}
 		//Alimentation
 		//Carte mere
