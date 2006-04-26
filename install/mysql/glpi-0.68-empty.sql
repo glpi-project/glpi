@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-04-19 18:55
+#GLPI Dump database on 2006-04-26 13:57
 
 ### Dump table glpi_cartridges
 
@@ -137,31 +137,7 @@ CREATE TABLE `glpi_config` (
     `ldap_rootdn` varchar(200),
     `ldap_pass` varchar(200),
     `admin_email` varchar(200),
-    `mailing_resa_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_resa_user` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_resa_admin` tinyint(4) DEFAULT '1' NOT NULL,
     `mailing_signature` varchar(200) DEFAULT '--' NOT NULL,
-    `mailing_new_admin` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_update_admin` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_followup_admin` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_finish_admin` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_new_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_update_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_followup_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_finish_all_admin` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_new_all_normal` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_update_all_normal` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_followup_all_normal` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_finish_all_normal` tinyint(4) DEFAULT '0' NOT NULL,
-    `mailing_new_attrib` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_update_attrib` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_followup_attrib` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_finish_attrib` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_new_user` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_update_user` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_followup_user` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_finish_user` tinyint(4) DEFAULT '1' NOT NULL,
-    `mailing_attrib_attrib` tinyint(4) DEFAULT '1' NOT NULL,
     `ldap_field_email` varchar(200),
     `ldap_field_location` varchar(200),
     `ldap_field_realname` varchar(200),
@@ -190,7 +166,7 @@ CREATE TABLE `glpi_config` (
     `url_in_mail` enum('0','1') DEFAULT '0' NOT NULL,
     `text_login` text,
     `auto_update_check` smallint(6) DEFAULT '0' NOT NULL,
-    `last_update_check` date DEFAULT '2006-04-19' NOT NULL,
+    `last_update_check` date DEFAULT '2006-02-28' NOT NULL,
     `founded_new_version` varchar(10),
     `dropdown_max` int(11) DEFAULT '100' NOT NULL,
     `ajax_wildcard` char(1) DEFAULT '*' NOT NULL,
@@ -213,7 +189,7 @@ CREATE TABLE `glpi_config` (
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','1','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','0','1','1','SIGNATURE','1','1','1','1','1','0','0','0','0','0','0','0','0','1','0','0','1','1','1','1','1','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-04-19','','100','*','0','50','1','1','0','name','0','50','1','0','0','0',NULL,'25',NULL,NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','1','0','0','0',NULL,'25',NULL,NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -1135,7 +1111,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-04-19 18:55:30','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-26 13:57:30','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1277,6 +1253,33 @@ CREATE TABLE `glpi_links_device` (
    KEY FK_links (`FK_links`)
 ) TYPE=MyISAM;
 
+
+### Dump table glpi_mailing_profiles
+
+DROP TABLE IF EXISTS `glpi_mailing_profiles`;
+CREATE TABLE `glpi_mailing_profiles` (
+    `ID` int(11) NOT NULL auto_increment,
+    `type` varchar(255),
+    `FK_profiles` int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (`ID`),
+   UNIQUE type_profiles (`type`, `FK_profiles`),
+   KEY type (`type`),
+   KEY FK_profiles (`FK_profiles`)
+) TYPE=MyISAM;
+
+INSERT INTO glpi_mailing_profiles VALUES ('1','resa','-3');
+INSERT INTO glpi_mailing_profiles VALUES ('2','resa','-1');
+INSERT INTO glpi_mailing_profiles VALUES ('3','new','3');
+INSERT INTO glpi_mailing_profiles VALUES ('4','new','-1');
+INSERT INTO glpi_mailing_profiles VALUES ('5','update','-1');
+INSERT INTO glpi_mailing_profiles VALUES ('6','followup','-1');
+INSERT INTO glpi_mailing_profiles VALUES ('7','finish','-1');
+INSERT INTO glpi_mailing_profiles VALUES ('8','update','-2');
+INSERT INTO glpi_mailing_profiles VALUES ('9','attrib','-2');
+INSERT INTO glpi_mailing_profiles VALUES ('10','new','-3');
+INSERT INTO glpi_mailing_profiles VALUES ('11','update','-3');
+INSERT INTO glpi_mailing_profiles VALUES ('12','followup','-3');
+INSERT INTO glpi_mailing_profiles VALUES ('13','finish','-3');
 
 ### Dump table glpi_monitors
 
@@ -2007,6 +2010,7 @@ CREATE TABLE `glpi_users_profiles` (
     `FK_users` int(11) DEFAULT '0' NOT NULL,
     `FK_profiles` int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`),
+   UNIQUE FK_users_profiles (`FK_users`, `FK_profiles`),
    KEY FK_users (`FK_users`),
    KEY FK_profiles (`FK_profiles`)
 ) TYPE=MyISAM;
