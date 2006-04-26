@@ -33,10 +33,5 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-include ($phproot . "/inc/includes.php");
-
-
-glpi_header("..");
 
 ?>
