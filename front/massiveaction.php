@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","infocom","link","ocsng","consumable","cartridge");
+$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","link","ocsng","consumable","cartridge");
 include ($phproot . "/inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");

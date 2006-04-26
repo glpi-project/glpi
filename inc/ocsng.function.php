@@ -517,7 +517,7 @@ function ocsImportDropdown($dpdTable,$dpdRow,$value) {
 	$query2 = "select * from ".$dpdTable." where $dpdRow='".$value."'";
 	$result2 = $db->query($query2);
 	if($db->numrows($result2) == 0) {
-		$query3 = "insert into ".$dpdTable." (ID,".$dpdRow.") values ('','".$value."')";
+		$query3 = "insert into ".$dpdTable." (".$dpdRow.") values ('".$value."')";
 		$db->query($query3) or die("echec de l'importation".$db->error());
 		return $db->insert_id();
 	} else {
@@ -1068,19 +1068,22 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 		if ($cfg_ocs["import_monitor"]){
 			$do_clean=true;
 			
-			$query = "select DISTINCT CAPTION, MANUFACTURER, DESCRIPTION, SERIAL from monitors where DEVICEID = '".$ocs_id."' and CAPTION <> 'NULL'";
+			$query = "select DISTINCT CAPTION, MANUFACTURER, DESCRIPTION, SERIAL, TYPE from monitors where DEVICEID = '".$ocs_id."'";
 			$result = $dbocs->query($query) or die($dbocs->error());
-		
 			if($dbocs->numrows($result) > 0) 
 			while($line = $dbocs->fetch_array($result)) {
 				$line=addslashes_deep($line);
 				$mon["name"] = $line["CAPTION"];
+				if (empty($mon["name"])) $mon["name"] = $line["TYPE"];
+				if (empty($mon["name"])) $mon["name"] = $line["MANUFACTURER"];
+				if (!empty($mon["name"]))
 				if (!in_array($mon["name"],$import_periph)){
 					$mon["FK_glpi_enterprise"] = ocsImportEnterprise($line["MANUFACTURER"]);
 					$mon["comments"] = $line["DESCRIPTION"];
 					$mon["serial"] = $line["SERIAL"];
 					$mon["date_mod"] = date("Y-m-d H:i:s");
 					$id_monitor=0;
+					$found_already_monitor=false;
 					if($cfg_ocs["import_monitor"] == 1) {
 						//Config says : manage monitors as global
 						//check if monitors already exists in GLPI
@@ -1096,6 +1099,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 							$m=new Monitor;
 							$m->fields=$mon;
 							$id_monitor=$m->addToDB();
+							
 							if ($id_monitor){
 								if ($cfg_ocs["default_state"]){
 									updateState(MONITOR_TYPE,$id_monitor,$cfg_ocs["default_state"],0,0);
@@ -1107,7 +1111,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						//Import all monitors as non global.
 						$mon["is_global"]=0;
 						$m=new Monitor;
-						$found_already_monitor=false;
+						
 						// First import - Is there already a monitor ?
 						if (count($import_periph)==0){
 							$query_search="SELECT end1 FROM glpi_connect_wire WHERE end2='$glpi_id' AND type='".MONITOR_TYPE."'";
@@ -1119,6 +1123,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						}
 						
 						if ($found_already_monitor&&$id_monitor){
+							
 							$m->getFromDB($id_monitor);
 							if (!$m->fields["is_global"]){
 								$mon["ID"]=$id_monitor;
@@ -1136,7 +1141,9 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 								}
 							}
 						} else {
+							
 							$m->fields=$mon;
+							
 							$id_monitor=$m->addToDB();
 							if ($id_monitor){
 								if ($cfg_ocs["default_state"]){
@@ -1162,16 +1169,21 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 		if ($cfg_ocs["import_printer"]){
 			$do_clean=true;
 			
-			$query = "select * from printers where DEVICEID = '".$ocs_id."' AND DRIVER <> ''";
+			$query = "select * from printers where DEVICEID = '".$ocs_id."'";
 			$result = $dbocs->query($query) or die($dbocs->error());
 		
 			if($dbocs->numrows($result) > 0) 
 			while($line = $dbocs->fetch_array($result)) {
 				$line=addslashes_deep($line);
 				
-				$print["name"] = $line["DRIVER"];
+				// TO TEST : PARSE NAME to have real name.
+				$print["name"] = $line["NAME"];
+				if (empty($print["name"]))	$print["name"] = $line["DRIVER"];
+
+				if (!empty($print["name"]))
 				if (!in_array($print["name"],$import_periph)){
-					$print["comments"] = $line["PORT"]."\r\n".$line["NAME"];
+					//$print["comments"] = $line["PORT"]."\r\n".$line["NAME"];
+					$print["comments"] = $line["PORT"]."\r\n".$line["DRIVER"];
 					$print["date_mod"] = date("Y-m-d H:i:s");
 					$id_printer=0;
 
