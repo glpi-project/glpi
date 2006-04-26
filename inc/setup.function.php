@@ -1470,6 +1470,7 @@ function showFormMailing($target) {
 		while ($data=$db->fetch_assoc($result))
 			$profiles[$data["ID"]]=$data["name"];
 		ksort($profiles);
+		echo "<div align='center'>";
 		echo "<input type='hidden' name='update_notifications' value='1'>";
 		// ADMIN
 		echo "<table class='tab_cadre_fixe'>";
@@ -1501,7 +1502,7 @@ function showFormMailing($target) {
 		echo "</tr>";
 		
 		echo "</table>";
-
+		echo "</div>";
 	}
 	echo "</form>";
 
@@ -1755,6 +1756,7 @@ function ocsFormDBConfig($target, $id) {
 	echo "</table></div>";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_ocs\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 	echo "</form>";
+	
 
 	echo "<div align='center'>";
 	if (!$dbocs->error){
