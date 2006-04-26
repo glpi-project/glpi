@@ -78,7 +78,7 @@ opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n";
 foreach (readdir(DIRHANDLE)){ 
 if ($_ ne '..' && $_ ne '.'){
 	
-	if (-d "$dir/$_" && $_!~m/dicts/ && $_!~m/CVS/){
+	if (-d "$dir/$_" && $_!~m/locales/ && $_!~m/CVS/ && $_!=~m/\.svn/){
 		if ($count_all==1 || $count==0){
 			do_dir("$dir/$_",$module,$i);
 		}

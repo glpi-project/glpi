@@ -1411,176 +1411,195 @@ function showFormMailing($target) {
 
 	if (!haveRight("config","w")) return false;	
 
-		$query = "select * from glpi_config where ID = 1";
-		$result = $db->query($query);
-		echo "<form action=\"$target\" method=\"post\">";
-		
-		
+	echo "<form action=\"$target\" method=\"post\">";
+	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
+
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+	echo "<li "; if ($_SESSION['glpi_mailconfig']==1){ echo "class='actif'";} echo  "><a href='$target?next=mailing&amp;onglet=1'>".$lang["Menu"][10]."</a></li>";
+	echo "<li "; if ($_SESSION['glpi_mailconfig']==2){ echo "class='actif'";} echo  "><a href='$target?next=mailing&amp;onglet=2'>".$lang["setup"][240]."</a></li>";
+	echo "</ul></div>";
+
+	if ($_SESSION['glpi_mailconfig']==1){
 		echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][201]."</th></tr>";
 		
-		//	if (function_exists('mail')) {
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td align='center'>&nbsp; ".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"1\" "; if($db->result($result,0,"mailing") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"mailing\" value=\"0\" "; if($db->result($result,0,"mailing") == 0) echo "checked"; echo " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td>";
+		dropdownYesNoInt("mailing",$cfg_glpi["mailing"]);
+		echo "</td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][203]."</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"".$db->result($result,0,"admin_email")."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][203]."</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"".$cfg_glpi["admin_email"]."\"> </td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][204]."</td><td><input type=\"text\" name=\"mailing_signature\" size='40' value=\"".$db->result($result,0,"mailing_signature")."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][204]."</td><td><input type=\"text\" name=\"mailing_signature\" size='40' value=\"".$cfg_glpi["mailing_signature"]."\" ></td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][226]."</td><td align='center'>&nbsp; ".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"1\" "; if($db->result($result,0,"url_in_mail") == 1) echo "checked"; echo " > &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"url_in_mail\" value=\"0\" "; if($db->result($result,0,"url_in_mail") == 0) echo "checked"; echo " ></td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][226]."</td><td>";
+		dropdownYesNoInt("url_in_mail",$cfg_glpi["url_in_mail"]);
+		echo "</td></tr>";
 		
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][227]."</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"".$db->result($result,0,"url_base")."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][227]."</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"".$cfg_glpi["url_base"]."\"> </td></tr>";
 
 		if (!function_exists('mail')) {
 		echo "<tr class='tab_bg_2'><td align='center' colspan='2'><span class='red'>".$lang["setup"][217]." : </span><span>".$lang["setup"][218]."</span></td></tr>";
 		}
 
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][231]."</td><td align='center'>&nbsp; ";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][231]."</td><td>&nbsp; ";
 		
 		if (!function_exists('mail')) { // if mail php disabled we forced SMTP usage 
 			echo $lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"1\" checked >";
 		}else{
-			echo $lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"1\" "; if($db->result($result,0,"smtp_mode") == 1) echo "checked"; echo " >";
-		
-			echo "&nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"0\" "; if($db->result($result,0,"smtp_mode") == 0) echo "checked"; echo " ></td></tr>";
+			dropdownYesNoInt("smtp_mode",$cfg_glpi["smtp_mode"]);
 		}
+		echo "</td></tr>";
 			
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][232]."</td><td> <input type=\"text\" name=\"smtp_host\" size='40' value=\"".$db->result($result,0,"smtp_host")."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][232]."</td><td> <input type=\"text\" name=\"smtp_host\" size='40' value=\"".$cfg_glpi["smtp_host"]."\"> </td></tr>";
 
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][233]."</td><td> <input type=\"text\" name=\"smtp_port\" size='40' value=\"".$db->result($result,0,"smtp_port")."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][233]."</td><td> <input type=\"text\" name=\"smtp_port\" size='40' value=\"".$cfg_glpi["smtp_port"]."\"> </td></tr>";
 
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][234]."</td><td> <input type=\"text\" name=\"smtp_username\" size='40' value=\"".$db->result($result,0,"smtp_username")."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][234]."</td><td> <input type=\"text\" name=\"smtp_username\" size='40' value=\"".$cfg_glpi["smtp_username"]."\"> </td></tr>";
 
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][235]."</td><td> <input type=\"text\" name=\"smtp_password\" size='40' value=\"".$db->result($result,0,"smtp_password")."\"> </td></tr>";
-
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][235]."</td><td> <input type=\"text\" name=\"smtp_password\" size='40' value=\"".$cfg_glpi["smtp_password"]."\"> </td></tr>";
+		
 		echo "</table>";
-		
-		echo "<p><b>".$lang["setup"][205]."</b></p>";
-		
-		// ADMIN
-		echo "<table class='tab_cadre_fixe'><tr><th colspan='6'>".$lang["setup"][206]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_admin") == 0) echo "checked"; echo " ></td>";
-		
-		echo "<td >".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_admin\" value=\"1\" "; if($db->result($result,0,"mailing_update_admin") == 1) echo "checked"; echo "></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_admin\" value=\"0\" "; if($db->result($result,0,"mailing_update_admin") == 0) echo "checked"; echo " ></td></tr>";
-		
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][212]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_admin\" value=\"1\" "; if($db->result($result,0,"mailing_followup_admin") == 1) echo "checked"; echo "></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_admin\" value=\"0\" "; if($db->result($result,0,"mailing_followup_admin") == 0) echo "checked"; echo " ></td>";
-		
-		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_admin\" value=\"1\" "; if($db->result($result,0,"mailing_finish_admin") == 1) echo "checked"; echo " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_admin\" value=\"0\" "; if($db->result($result,0,"mailing_finish_admin") == 0) echo "checked"; echo " ></td></tr>";
-		
-		// ALL ADMIN
-		echo "<tr class='tab_bg_2'><th colspan='6'>".$lang["setup"][207]."</th></tr>";
-		
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_new_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_new_all_admin") == 0) echo "checked"; echo  " ></td>";
-		
-		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_update_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_update_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
-
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_followup_all_admin") == 0) echo "checked"; echo  " ></td>";
-		
-		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_all_admin\" value=\"0\"  "; if($db->result($result,0,"mailing_finish_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
-		
-		// ALL NORMAL
-		echo "<tr><th colspan='6'>".$lang["setup"][208]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"1\"  "; if($db->result($result,0,"mailing_new_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_all_normal\" value=\"0\"  "; if($db->result($result,0,"mailing_new_all_normal") == 0) echo "checked"; echo  " ></td>";
-
-		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_update_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_update_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
-
-		
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_followup_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_followup_all_normal") == 0) echo "checked"; echo  " ></td>";
-		
-		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"1\" "; if($db->result($result,0,"mailing_finish_all_normal") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_all_normal\" value=\"0\" "; if($db->result($result,0,"mailing_finish_all_normal") == 0) echo "checked"; echo  " ></td></tr>";
-		
-		// ASSIGN
-		echo "<tr><th colspan='6'>".$lang["setup"][209]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][211]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_new_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_new_attrib") == 0) echo "checked"; echo  " ></td>";
-		
-		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_update_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_update_attrib") == 0) echo "checked"; echo  " ></td></tr>";
-
-
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][212]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_followup_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_followup_attrib") == 0) echo "checked"; echo  " ></td>";
-
-		echo "<td>".$lang["setup"][213]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_finish_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_attrib\" value=\"0\" "; if($db->result($result,0,"mailing_finish_attrib") == 0) echo "checked"; echo  " ></td></tr>";
-
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][229]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"1\" "; if($db->result($result,0,"mailing_attrib_attrib") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_attrib_attrib\" value=\"0\"  "; if($db->result($result,0,"mailing_attrib_attrib") == 0) echo "checked"; echo  " ></td>";
-		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
-
-		// USER
-		echo "<tr><th colspan='6'>".$lang["setup"][210]."</th></tr>";
-		
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][214]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_new_user\" value=\"1\" "; if($db->result($result,0,"mailing_new_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_new_user\" value=\"0\" "; if($db->result($result,0,"mailing_new_user") == 0) echo "checked"; echo  " ></td>";
-
-		echo "<td>".$lang["setup"][230]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_update_user\" value=\"1\" "; if($db->result($result,0,"mailing_update_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_update_user\" value=\"0\" "; if($db->result($result,0,"mailing_update_user") == 0) echo "checked"; echo  " ></td></tr>";
-		
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][215]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_followup_user\" value=\"1\" "; if($db->result($result,0,"mailing_followup_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_followup_user\" value=\"0\" "; if($db->result($result,0,"mailing_followup_user") == 0) echo "checked"; echo  " ></td>";
-		
-		echo "<td>".$lang["setup"][216]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_finish_user\" value=\"1\"  "; if($db->result($result,0,"mailing_finish_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_finish_user\" value=\"0\" "; if($db->result($result,0,"mailing_finish_user") == 0) echo "checked"; echo  " ></td></tr>";
-		echo "</table>";
-
-		echo "<p><b>".$lang["setup"][224]."</b></p>";
-		
-		echo "<table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][225]."<th></tr>";
-
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][206]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_admin") == 0) echo "checked"; echo  " ></td></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][207]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"1\" "; if($db->result($result,0,"mailing_resa_all_admin") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_all_admin\" value=\"0\" "; if($db->result($result,0,"mailing_resa_all_admin") == 0) echo "checked"; echo  " ></td></tr>";
-		echo "<tr class='tab_bg_2'><td>".$lang["setup"][210]."</td><td> ".$lang["choice"][1]." <input type=\"radio\" name=\"mailing_resa_user\" value=\"1\" "; if($db->result($result,0,"mailing_resa_user") == 1) echo "checked"; echo  " ></td><td> ".$lang["choice"][0]." <input type=\"radio\" name=\"mailing_resa_user\" value=\"0\" "; if($db->result($result,0,"mailing_resa_user") == 0) echo "checked"; echo  " ></td></tr>";
-
-		echo "</table>";
-
-
-		echo "</div>";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
-		//}
-		//else {
+	} else if ($_SESSION['glpi_mailconfig']==2)	{
+
+		$profiles[-1]=$lang["setup"][237];
+		$profiles[-3]=$lang["setup"][238];
+		$profiles[-2]=$lang["setup"][239];
 		
-			
-		//echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][217]."</p><p>".$lang["setup"][218]."</p></td></tr></table></div>";
+		$query="SELECT ID, name FROM glpi_profiles order by name";
+		$result=$db->query($query);
+		while ($data=$db->fetch_assoc($result))
+			$profiles[$data["ID"]]=$data["name"];
+		ksort($profiles);
+		echo "<input type='hidden' name='update_notifications' value='1'>";
+		// ADMIN
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='3'>".$lang["setup"][211]."</th></tr>";
+		echo "<tr class='tab_bg_2'>";
+		showFormMailingType("new",$profiles);
+		echo "</tr>";
+		echo "<tr><th colspan='3'>".$lang["setup"][212]."</th></tr>";
+		echo "<tr class='tab_bg_1'>";
+		showFormMailingType("followup",$profiles);
+		echo "</tr>";
+		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][213]."</th></tr>";
+		echo "<tr class='tab_bg_2'>";
+		showFormMailingType("finish",$profiles);
+		echo "</tr>";
+		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][230]."</th></tr>";
+		echo "<tr class='tab_bg_1'>";
+		$profiles[-4]=$lang["setup"][236];
+		ksort($profiles);
+		showFormMailingType("update",$profiles);
+		unset($profiles[-4]);
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][225]."</th></tr>";
+		echo "<tr class='tab_bg_1'>";
+		unset($profiles[-2]);
+		showFormMailingType("resa",$profiles);
+		// Close Ticket
+		echo "</tr>";
 		
-		//}
-		
-		echo "</form>";
+		echo "</table>";
+
+	}
+	echo "</form>";
 
 }
 
+function showFormMailingType($type,$profiles){
+		global $lang,$db;
 
-function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib,$mailing_resa_admin,$mailing_resa_all_admin,$mailing_resa_user,$url,$url_in_mail,$mailing_attrib_attrib,$mailing_update_admin,$mailing_update_all_admin,$mailing_update_all_normal,$mailing_update_attrib,$mailing_update_user,$smtp_mode,$smtp_host,$smtp_port,$smtp_username,$smtp_password) {
+		echo "<td align='right'>";
 
+		echo "<select name='mailing_to_add_".$type."[]' multiple size='5'>";
+		
+		foreach ($profiles as $key => $val){
+			echo "<option value='$key'>".($key>0?$lang["profiles"][22]." ":"").$val."</option>";
+		}
+		echo "</select>";
+		echo "</td>";
+		echo "<td align='center'>";
+		echo "<input type='submit'  class=\"submit\" name='mailing_add_$type' value='".$lang["buttons"][8]." >>'><br><br>";
+		echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< ".$lang["buttons"][6]."'>";
+		echo "</td>";
+		echo "<td>";
+		echo "<select name='mailing_to_delete_".$type."[]' multiple size='5'>";
+		$query="SELECT glpi_mailing_profiles.FK_profiles as prof, glpi_mailing_profiles.ID as ID, glpi_profiles.name as name FROM glpi_mailing_profiles LEFT JOIN glpi_profiles ON (glpi_mailing_profiles.FK_profiles = glpi_profiles.ID ) WHERE glpi_mailing_profiles.type='$type' ORDER BY glpi_mailing_profiles.FK_profiles;";
+		$result=$db->query($query);
+		while ($data=$db->fetch_assoc($result)){
+			$name="";
+			if ($data["prof"]>0)
+				$name=$lang["profiles"][22]." ".$data["name"];
+			else {
+				switch ($data["prof"]){
+					case -1: $name=$lang["setup"][237];break;
+					case -2: $name=$lang["setup"][239];break;
+					case -3: $name=$lang["setup"][238];break;
+					case -4: $name=$lang["setup"][236];break;
+				}
+			}
+			echo "<option value='".$data["ID"]."'>".$name."</option>";
+		}
+		echo "</select>";
+		echo "</td>";
+
+}
+
+function updateMailNotifications($input){
 	global $db;
-	$query = "update glpi_config set mailing = '". $mailing ."', ";
-	$query .= "admin_email = '". $admin_email ."', ";
-	$query .= "mailing_signature = '". $mailing_signature ."', ";
-	$query .= "mailing_new_admin = '". $mailing_new_admin ."', ";
-	$query .= "mailing_update_admin = '". $mailing_update_admin ."', ";
-	$query .= "mailing_followup_admin = '". $mailing_followup_admin ."', ";
-	$query .= "mailing_finish_admin = '". $mailing_finish_admin ."', ";
-	$query .= "mailing_new_all_admin = '". $mailing_new_all_admin ."', ";
-	$query .= "mailing_update_all_admin = '". $mailing_update_all_admin ."', ";
-	$query .= "mailing_followup_all_admin = '". $mailing_followup_all_admin ."', ";
-	$query .= "mailing_finish_all_admin = '". $mailing_finish_all_admin ."', ";
-	$query .= "mailing_new_all_normal = '". $mailing_new_all_normal ."', ";
-	$query .= "mailing_update_all_normal = '". $mailing_update_all_normal ."', ";
-	$query .= "mailing_followup_all_normal = '". $mailing_followup_all_normal ."', ";
-	$query .= "mailing_finish_all_normal = '". $mailing_finish_all_normal ."', ";
-	$query .= "mailing_new_attrib = '". $mailing_new_attrib ."', ";
-	$query .= "mailing_update_attrib = '". $mailing_update_attrib ."', ";
-	$query .= "mailing_followup_attrib = '". $mailing_followup_attrib ."', ";
-	$query .= "mailing_finish_attrib = '". $mailing_finish_attrib ."', ";
-	$query .= "mailing_new_user = '". $mailing_new_user ."', ";
-	$query .= "mailing_update_user = '". $mailing_update_user ."', ";
-	$query .= "mailing_followup_user = '". $mailing_followup_user ."', ";
-	$query .= "mailing_finish_user = '". $mailing_finish_user ."', ";
-	$query .= "mailing_attrib_attrib = '". $mailing_attrib_attrib ."', ";
-	$query .= "mailing_resa_admin = '". $mailing_resa_admin ."', ";
-	$query .= "mailing_resa_all_admin = '". $mailing_resa_all_admin ."', ";
-	$query .= "mailing_resa_user = '". $mailing_resa_user ."', ";
-	$query .= "url_base = '". $url ."', ";
-	$query .= "url_in_mail = '". $url_in_mail ."', ";
-	$query .= "smtp_mode = '". $smtp_mode ."', ";
-	$query .= "smtp_host = '". $smtp_host ."', ";
-	$query .= "smtp_port = '". $smtp_port ."', ";
-	$query .= "smtp_username = '". $smtp_username  ."', ";
-	$query .= "smtp_password = '". $smtp_password ."' ";
-	$query .= "where ID = 1";
+	$type="";
+	$action="";
+	if (isset($input["mailing_add_finish"])){
+		$type="finish";
+		$action="add";
+	} else if (isset($input["mailing_delete_finish"])){
+		$type="finish";
+		$action="delete";
+	} else if (isset($input["mailing_add_new"])){
+		$type="new";
+		$action="add";
+	} else if (isset($input["mailing_delete_new"])){
+		$type="new";
+		$action="delete";
+	} else if (isset($input["mailing_add_update"])){
+		$type="update";
+		$action="add";
+	} else if (isset($input["mailing_delete_update"])){
+		$type="update";
+		$action="delete";
+	} else if (isset($input["mailing_add_followup"])){
+		$type="followup";
+		$action="add";
+	} else if (isset($input["mailing_delete_followup"])){
+		$type="followup";
+		$action="delete";
+	} else if (isset($input["mailing_add_resa"])){
+		$type="resa";
+		$action="add";
+	} else if (isset($input["mailing_delete_resa"])){
+		$type="resa";
+		$action="delete";
+	} 
 	
-	if($db->query($query)) return true;
-	else return false;
+	if (count($input["mailing_to_".$action."_".$type])>0){
+		foreach ($input["mailing_to_".$action."_".$type] as $val){
+			switch ($action){
+				case "add":
+					$query="INSERT INTO glpi_mailing_profiles (type,FK_profiles) VALUES ('$type','$val')";
+					$db->query($query);
+					break;
+				case "delete":
+					$query="DELETE FROM glpi_mailing_profiles WHERE ID='$val'";
+					$db->query($query);
+					break;
+			} 
+		}
+	}
+
+
 }
+
 
 function checkNewVersionAvailable($auto=1){
 	global $db,$lang,$cfg_glpi;
