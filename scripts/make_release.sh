@@ -28,7 +28,7 @@
 
 if [ ! "$#" -eq 2 ]
 then
- echo "Usage $0 glpi_cvs_dir release";
+ echo "Usage $0 glpi_svn_dir release";
  exit ;
 fi
 
@@ -63,43 +63,36 @@ cp -rf $INIT_DIR /tmp/glpi;
 echo "Move to this directory";
 cd /tmp/glpi;
 
-echo "Delete CVS directories";
+echo "Delete CVS/SVN directories";
 \rm -rf CVS;
 \rm -rf */CVS;
 \rm -rf */*/CVS;
 \rm -rf */*/*/CVS;
 \rm -rf */*/*/*/CVS;
 \rm -rf */*/*/*/*/CVS;
+\rm -rf .svn;
+\rm -rf */.svn;
+\rm -rf */*/.svn;
+\rm -rf */*/*/.svn;
+\rm -rf */*/*/*/.svn;
+\rm -rf */*/*/*/*/.svn;
 
 echo "Delete template Headers"
 \rm HEADER;
 
 echo "Delete bigdumps and older sql files";
-\rm mysql/*bigdump*;
-\rm mysql/updatedb.back;
-\rm mysql/glpi-0.3*-*;
-\rm mysql/glpi-0.4*-*;
-\rm mysql/glpi-0.5*;
-\rm mysql/glpi-0.6-*;
-\rm mysql/glpi-*-default*;
-\rm mysql/irm*;
-
-echo "Delete LDAP directories";
-\rm -rf ldap;
-\rm -rf plugins/ocs;
-\rm -rf glpi/ldap;
-echo "Delete repair directories";
-\rm -rf repair;
-\rm -rf glpi/repair;
+\rm install/mysql/*bigdump*;
+\rm install/mysql/updatedb.back;
+\rm install/mysql/glpi-0.3*-*;
+\rm install/mysql/glpi-0.4*-*;
+\rm install/mysql/glpi-0.5*;
+\rm install/mysql/glpi-0.6-*;
+\rm install/mysql/glpi-0.65-*;
+\rm install/mysql/glpi-*-default*;
+\rm install/mysql/irm*;
 
 echo "Delete various scripts and directories"
-\rm make_release.sh;
-\rm Doxyfile;
-\rm modify_headers.pl;
-\rm check_dict.pl;
-\rm generate_bigdump.php;
-\rm -rf reports/reports/phpexcel
-\rm -rf conffiles
+\rm -rf scripts;
 
 echo "Must be root to generate a clean tarball - Please login"
 su -c "cd /tmp; chown -R root.root /tmp/glpi; tar czvf /tmp/glpi-$RELEASE.tar.gz glpi; \rm -rf /tmp/glpi"
