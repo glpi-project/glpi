@@ -1030,64 +1030,64 @@ function showFormConfigGen($target){
 	
 	if (!haveRight("config","w")) return false;	
 	
-	$query = "select * from glpi_config where ID = 1";
-	$result = $db->query($query);
-	
 	echo "<form name='form' action=\"$target\" method=\"post\">";
+	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
-	$default_language=$db->result($result,0,"default_language");
+	$default_language=$cfg_glpi["default_language"];
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
-		while (list($val)=each($cfg_glpi["languages"])){
-		echo "<option value=\"".$val."\"";
-			if($default_language==$val){ echo " selected";}
-		echo ">".$cfg_glpi["languages"][$val][0];
+		foreach ($cfg_glpi["languages"] as $key => $val){
+		echo "<option value=\"".$key."\"";
+			if($default_language==$key){ echo " selected";}
+		echo ">".$val[0]. " (".$key.")";
 		}
 	
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][133]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"ocs_mode\" value=\"1\" "; if($db->result($result,0,"ocs_mode") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"ocs_mode\" value=\"0\" "; if($db->result($result,0,"ocs_mode") == 0) echo "checked"; 
-	echo " ></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][133]." </td><td>";
+	dropdownYesNoInt("ocs_mode",$cfg_glpi["ocs_mode"]);
+   	echo "</td></tr>";
 
 	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][102]." </td><td><select name=\"event_loglevel\">";
-	$level=$db->result($result,0,"event_loglevel");
+	$level=$cfg_glpi["event_loglevel"];
 	echo "<option value=\"1\"";  if($level==1){ echo " selected";} echo ">".$lang["setup"][103]." </option>";
 	echo "<option value=\"2\"";  if($level==2){ echo " selected";} echo ">".$lang["setup"][104]."</option>";
 	echo "<option value=\"3\"";  if($level==3){ echo " selected";} echo ">".$lang["setup"][105]."</option>";
 	echo "<option value=\"4\"";  if($level==4){ echo " selected";} echo ">".$lang["setup"][106]." </option>";
 	echo "<option value=\"5\"";  if($level==5){ echo " selected";} echo ">".$lang["setup"][107]."</option>";
 	echo "</select></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $db->result($result,0,"expire_events") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $cfg_glpi["expire_events"] ."\"></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"1\" "; if($db->result($result,0,"auto_assign") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_assign\" value=\"0\" "; if($db->result($result,0,"auto_assign") == 0) echo "checked"; 
-	echo " ></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>";
+	dropdownYesNoInt("auto_assign",$cfg_glpi["auto_assign"]);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][221]."</td><td>";
-	showCalendarForm("form","date_fiscale",$db->result($result,0,"date_fiscale"),0);	
+	showCalendarForm("form","date_fiscale",$cfg_glpi["date_fiscale"],0);	
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][219]."</td><td>&nbsp;".$lang["choice"][1]."<input type=\"radio\" name=\"permit_helpdesk\" value=\"1\""; if($db->result($result,0,"permit_helpdesk") == 1) echo "checked=\"checked\""; echo " />&nbsp;".$lang["choice"][0]."<input type=\"radio\" name=\"permit_helpdesk\" value=\"0\""; if($db->result($result,0,"permit_helpdesk") == 0) echo "checked=\"checked\""; echo" /></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][219]."</td><td>";
+	dropdownYesNoInt("permit_helpdesk",$cfg_glpi["permit_helpdesk"]);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
 	for ($i=0;$i<=100;$i++)
-		echo "<option value='$i' ".($i==$db->result($result,0,"cartridges_alarm")?" selected ":"").">$i</option>";
+		echo "<option value='$i' ".($i==$cfg_glpi["cartridges_alarm"]?" selected ":"").">$i</option>";
 	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][306]." </td><td><select name=\"auto_update_check\">";
-	$check=$db->result($result,0,"auto_update_check");
+	$check=$cfg_glpi["auto_update_check"];
 	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][307]." </option>";
 	echo "<option value=\"7\"";  if($check==7){ echo " selected";} echo ">".$lang["setup"][308]."</option>";
 	echo "<option value=\"30\"";  if($check==30){ echo " selected";} echo ">".$lang["setup"][309]."</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][124]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"auto_add_users\" value=\"1\" "; if($db->result($result,0,"auto_add_users") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"auto_add_users\" value=\"0\" "; if($db->result($result,0,"auto_add_users") == 0) echo "checked"; 
-	echo " ></td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][132]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"post_only_followup\" value=\"1\" "; if($db->result($result,0,"post_only_followup") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"post_only_followup\" value=\"0\" "; if($db->result($result,0,"post_only_followup") == 0) echo "checked"; 
-	echo " ></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][124]." </td><td>";
+	dropdownYesNoInt("auto_add_users",$cfg_glpi["auto_add_users"]);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][138]." </td><td><select name=\"debug\">";
-	$check=$db->result($result,0,"debug");
+	$check=$cfg_glpi["debug"];
 	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][135]." </option>";
 	echo "<option value=\"1\"";  if($check==1){ echo " selected";} echo ">".$lang["setup"][136]."</option>";
 	echo "<option value=\"2\"";  if($check==2){ echo " selected";} echo ">".$lang["setup"][137]."</option>";
@@ -1095,7 +1095,7 @@ function showFormConfigGen($target){
 
 
 	
-		echo "</table>&nbsp;</div>";	
+	echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 
 	
@@ -1108,23 +1108,25 @@ function showFormConfigDisplay($target){
 	
 	if (!haveRight("config","w")) return false;	
 	
-	$query = "select * from glpi_config where ID = 1";
-	$result = $db->query($query);
-	
+	// Needed for list_limit
+	$cfg=new Config();
+	$cfg->getFromDB(1);
 	echo "<form name='form' action=\"$target\" method=\"post\">";
+	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
 	
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $db->result($result,0,"num_of_events") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"1\" "; if($db->result($result,0,"jobs_at_login") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"jobs_at_login\" value=\"0\" "; if($db->result($result,0,"jobs_at_login") == 0) echo "checked"; 
-	echo " ></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $cfg_glpi["num_of_events"] ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>";
+	dropdownYesNoInt("jobs_at_login",$cfg_glpi["jobs_at_login"]);
+	echo " </td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $db->result($result,0,"list_limit") ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $db->result($result,0,"cut") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $cfg->fields["list_limit"] ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $cfg_glpi["cut"] ."\"></td></tr>";
 
 	
-	$plan_begin=split(":",$db->result($result,0,"planning_begin"));
-	$plan_end=split(":",$db->result($result,0,"planning_end"));
+	$plan_begin=split(":",$cfg_glpi["planning_begin"]);
+	$plan_end=split(":",$cfg_glpi["planning_end"]);
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][223]."</td><td>";
 	echo "<select name='planning_begin'>";
 	for ($i=0;$i<=24;$i++) echo "<option value='$i'".($plan_begin[0]==$i?" selected ":"").">$i</option>";
@@ -1138,25 +1140,25 @@ function showFormConfigDisplay($target){
 	
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][114]."</td><td>";
 	echo "<table><tr>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_1")."'>1:<input type=\"text\" name=\"priority[1]\" size='7' value=\"".$db->result($result,0,"priority_1")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_2")."'>2:<input type=\"text\" name=\"priority[2]\" size='7' value=\"".$db->result($result,0,"priority_2")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_3")."'>3:<input type=\"text\" name=\"priority[3]\" size='7' value=\"".$db->result($result,0,"priority_3")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_4")."'>4:<input type=\"text\" name=\"priority[4]\" size='7' value=\"".$db->result($result,0,"priority_4")."\"></td>";
-	echo "<td bgcolor='".$db->result($result,0,"priority_5")."'>5:<input type=\"text\" name=\"priority[5]\" size='7' value=\"".$db->result($result,0,"priority_5")."\"></td>";
+	echo "<td bgcolor='".$cfg_glpi["priority_1"]."'>1:<input type=\"text\" name=\"priority_1\" size='7' value=\"".$cfg_glpi["priority_1"]."\"></td>";
+	echo "<td bgcolor='".$cfg_glpi["priority_2"]."'>2:<input type=\"text\" name=\"priority_2\" size='7' value=\"".$cfg_glpi["priority_2"]."\"></td>";
+	echo "<td bgcolor='".$cfg_glpi["priority_3"]."'>3:<input type=\"text\" name=\"priority_3\" size='7' value=\"".$cfg_glpi["priority_3"]."\"></td>";
+	echo "<td bgcolor='".$cfg_glpi["priority_4"]."'>4:<input type=\"text\" name=\"priority_4\" size='7' value=\"".$cfg_glpi["priority_4"]."\"></td>";
+	echo "<td bgcolor='".$cfg_glpi["priority_5"]."'>5:<input type=\"text\" name=\"priority_5\" size='7' value=\"".$cfg_glpi["priority_5"]."\"></td>";
 	echo "</tr></table>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][128]." </td><td><select name=\"dateformat\">";
-	$dateformat=$db->result($result,0,"dateformat");
-	echo "<option value=\"0\"";  if($dateformat==0){ echo " selected";} echo ">YYYY-MM-DD</option>";
-	echo "<option value=\"1\"";  if($dateformat==1){ echo " selected";} echo ">DD-MM-YYYY</option>";
+	echo "<option value=\"0\"";  if($cfg_glpi["dateformat"]==0){ echo " selected";} echo ">YYYY-MM-DD</option>";
+	echo "<option value=\"1\"";  if($cfg_glpi["dateformat"]==1){ echo " selected";} echo ">DD-MM-YYYY</option>";
 	echo "</select></td></tr>";
 
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>   &nbsp;".$lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"1\" "; if($db->result($result,0,"public_faq") == 1) echo "checked=\"checked\""; echo " /> &nbsp;".$lang["choice"][0]."  &nbsp;<input type=\"radio\" name=\"public_faq\" value=\"0\" "; if($db->result($result,0,"public_faq") == 0) echo "checked";
-	echo " ></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>";
+	dropdownYesNoInt("public_faq",$cfg_glpi["public_faq"]);
+	echo " </td></tr>";
 
-	$dp_limit=$db->result($result,0,"dropdown_limit");
+	$dp_limit=$cfg_glpi["dropdown_limit"];
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][131]."</td><td>";
 	echo "<select name='dropdown_limit'>";
 	for ($i=20;$i<=100;$i++) echo "<option value='$i'".($dp_limit==$i?" selected ":"").">$i</option>";
@@ -1165,47 +1167,41 @@ function showFormConfigDisplay($target){
 	echo "</td></tr>";
 
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][120]." </td><td><select name=\"use_ajax\">";
-	$use_ajax=$db->result($result,0,"use_ajax");
-	echo "<option value=\"1\"";  if($use_ajax==1){ echo " selected";} echo ">".$lang["choice"][1]." </option>";
-	echo "<option value=\"0\"";  if($use_ajax==0){ echo " selected";} echo ">".$lang["choice"][0]."</option>";
-	echo "</select></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][120]." </td><td>";
+	dropdownYesNoInt("use_ajax",$cfg_glpi["use_ajax"]);
+	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][127]." </td><td><select name=\"ajax_autocompletion\">";
-	$ajax_autocompletion=$db->result($result,0,"ajax_autocompletion");
-	echo "<option value=\"1\"";  if($ajax_autocompletion==1){ echo " selected";} echo ">".$lang["choice"][1]." </option>";
-	echo "<option value=\"0\"";  if($ajax_autocompletion==0){ echo " selected";} echo ">".$lang["choice"][0]."</option>";
-	echo "</select></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][127]." </td><td>";
+	dropdownYesNoInt("ajax_autocompletion",$cfg_glpi["ajax_autocompletion"]);
+	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $db->result($result,0,"ajax_wildcard") ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $cfg_glpi["ajax_wildcard"] ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][122]."</td><td>";
 	echo "<select name='dropdown_max'>";
-	$dropdown_max=$db->result($result,0,"dropdown_max");
+	$dropdown_max=$cfg_glpi["dropdown_max"];
 	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($dropdown_max==$i?" selected ":"").">$i</option>";
 	echo "</select>";
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][123]."</td><td>";
 	echo "<select name='ajax_limit_count'>";
-	$ajax_limit_count=$db->result($result,0,"ajax_limit_count");
+	$ajax_limit_count=$cfg_glpi["ajax_limit_count"];
 	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($ajax_limit_count==$i?" selected ":"").">$i</option>";
 	echo "</select>";
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][118]." </td><td>";
 	echo "<textarea cols='35' rows='4' name='text_login' >";
-	echo $db->result($result,0,"text_login");
+	echo $cfg_glpi["text_login"];
 	echo "</textarea>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][129]." </td><td><select name=\"view_ID\">";
-	$view_ID=$db->result($result,0,"view_ID");
-	echo "<option value=\"1\"";  if($view_ID==1){ echo " selected";} echo ">".$lang["choice"][1]." </option>";
-	echo "<option value=\"0\"";  if($view_ID==0){ echo " selected";} echo ">".$lang["choice"][0]."</option>";
-	echo "</select></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][129]." </td><td>";
+	dropdownYesNoInt("view_ID",$cfg_glpi["view_ID"]);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][130]." </td><td><select name=\"nextprev_item\">";
-	$nextprev_item=$db->result($result,0,"nextprev_item");
+	$nextprev_item=$cfg_glpi["nextprev_item"];
 	echo "<option value=\"ID\"";  if($nextprev_item=="ID"){ echo " selected";} echo ">".$lang["common"][2]." </option>";
 	echo "<option value=\"name\"";  if($nextprev_item=="name"){ echo " selected";} echo ">".$lang["common"][16]."</option>";
 	echo "</select></td></tr>";
@@ -1220,7 +1216,7 @@ function showFormConfigDisplay($target){
 
 
 
-function titleExtSources(){
+function titleExtAuth(){
 // Un titre pour la gestion des sources externes
 		
 		global  $lang,$HTMLRel;
@@ -1300,17 +1296,14 @@ return $out;
 	
 }
 
-function showFormExtSources($target) {
+function showFormExtAuth($target) {
 
-	global  $db,$lang,$HTMLRel;
+	global  $db,$lang,$HTMLRel,$cfg_glpi;
 
 	if (!haveRight("config","w")) return false;	
 	
-	$query = "select * from glpi_config where ID = 1";
-	$result = $db->query($query);
-	
 	echo "<form action=\"$target\" method=\"post\">";
-	
+	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	if(function_exists('imap_open')) {
 
 		echo "<div align='center'>";
@@ -1318,9 +1311,9 @@ function showFormExtSources($target) {
 //		echo "<p>".$lang["setup"][161]."</p>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"". $db->result($result,0,"imap_host") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"". $cfg_glpi["imap_host"] ."\" ></td></tr>";
 
-		showMailServerConfig($db->result($result,0,"imap_auth_server"));
+		showMailServerConfig($cfg_glpi["imap_auth_server"]);
 		echo "</table>&nbsp;</div>";
 	}
 	else {
@@ -1337,19 +1330,19 @@ function showFormExtSources($target) {
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='4'>".$lang["setup"][152]."</th></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $db->result($result,0,"ldap_host") ."\"></td>";
-		echo "<td align='center'>".$lang["setup"][172]."</td><td><input type=\"text\" name=\"ldap_port\" value=\"". $db->result($result,0,"ldap_port") ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $cfg_glpi["ldap_host"] ."\"></td>";
+		echo "<td align='center'>".$lang["setup"][172]."</td><td><input type=\"text\" name=\"ldap_port\" value=\"". $cfg_glpi["ldap_port"] ."\"></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $db->result($result,0,"ldap_basedn") ."\" ></td>";
-		echo "<td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $db->result($result,0,"ldap_rootdn") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $cfg_glpi["ldap_basedn"] ."\" ></td>";
+		echo "<td align='center'>".$lang["setup"][155]."</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"". $cfg_glpi["ldap_rootdn"] ."\" ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"password\" name=\"ldap_pass\" value=\"". $db->result($result,0,"ldap_pass") ."\" ></td>";
-		echo "<td align='center'>".$lang["setup"][159]."</td><td><input type=\"text\" name=\"ldap_condition\" value=\"". $db->result($result,0,"ldap_condition") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][156]."</td><td><input type=\"password\" name=\"ldap_pass\" value=\"". $cfg_glpi["ldap_pass"] ."\" ></td>";
+		echo "<td align='center'>".$lang["setup"][159]."</td><td><input type=\"text\" name=\"ldap_condition\" value=\"". $cfg_glpi["ldap_condition"] ."\" ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][228]."</td><td><input type=\"text\" name=\"ldap_login\" value=\"". $db->result($result,0,"ldap_login") ."\" ></td>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][228]."</td><td><input type=\"text\" name=\"ldap_login\" value=\"". $cfg_glpi["ldap_login"] ."\" ></td>";
 		echo "<td align='center'>".$lang["setup"][180]."</td><td>";
 		if (function_exists("ldap_start_tls")){
-			$ldap_use_tls=$db->result($result,0,"ldap_use_tls");
+			$ldap_use_tls=$cfg_glpi["ldap_use_tls"];
 			echo "<select name='ldap_use_tls'>\n";
 			echo "<option value='0' ".(!$ldap_use_tls?" selected ":"").">".$lang["choice"][0]."</option>\n";
 			echo "<option value='1' ".($ldap_use_tls?" selected ":"").">".$lang["choice"][1]."</option>\n";
@@ -1363,11 +1356,11 @@ function showFormExtSources($target) {
 		
 		echo "<tr class='tab_bg_1'><td align='center' colspan='4'>".$lang["setup"][167]."</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $db->result($result,0,"ldap_field_realname") ."\" ></td>";
-		echo "<td align='center'>email</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"". $db->result($result,0,"ldap_field_email") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $cfg_glpi["ldap_field_realname"] ."\" ></td>";
+		echo "<td align='center'>email</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"". $cfg_glpi["ldap_field_email"] ."\" ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>location</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". $db->result($result,0,"ldap_field_location") ."\" ></td>";
-		echo "<td align='center'>phone</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". $db->result($result,0,"ldap_field_phone") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>location</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". $cfg_glpi["ldap_field_location"] ."\" ></td>";
+		echo "<td align='center'>phone</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". $cfg_glpi["ldap_field_phone"] ."\" ></td></tr>";
 
 		echo "</table>&nbsp;</div>";
 	}
@@ -1384,9 +1377,9 @@ function showFormExtSources($target) {
 
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][177]."</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][174]."</td><td><input type=\"text\" name=\"cas_host\" value=\"". $db->result($result,0,"cas_host") ."\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][175]."</td><td><input type=\"text\" name=\"cas_port\" value=\"". $db->result($result,0,"cas_port") ."\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][176]."</td><td><input type=\"text\" name=\"cas_uri\" value=\"". $db->result($result,0,"cas_uri") ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][174]."</td><td><input type=\"text\" name=\"cas_host\" value=\"". $cfg_glpi["cas_host"] ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][175]."</td><td><input type=\"text\" name=\"cas_port\" value=\"". $cfg_glpi["cas_port"] ."\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][176]."</td><td><input type=\"text\" name=\"cas_uri\" value=\"". $cfg_glpi["cas_uri"] ."\" ></td></tr>";
 		
 		echo "</table>&nbsp;</div>";
 	}
@@ -1414,7 +1407,7 @@ function titleMailing(){
 
 function showFormMailing($target) {
 	
-	global $db,$lang;
+	global $db,$lang,$cfg_glpi;
 
 	if (!haveRight("config","w")) return false;	
 
@@ -1545,70 +1538,6 @@ function showFormMailing($target) {
 
 }
 
-function updateConfigGen($event_loglevel,$expire_events, $permit_helpdesk,$default_language,$date_fiscale,$cartridges_alarm,$auto_assign,$auto_update_check,$auto_add_users,$post_only_followup,$ocs_mode,$debug) {
-	
-	global $db;	
-		$query = "update glpi_config set ";
-		$query.= "event_loglevel = '". $event_loglevel ."', default_language = '". $default_language ."',";
-		$query.= "expire_events = '". $expire_events ."', permit_helpdesk='". $permit_helpdesk ."',";
-		$query.= " date_fiscale = '". $date_fiscale ."', cartridges_alarm='".$cartridges_alarm."', ";
-		$query.= " auto_assign = '". $auto_assign ."', auto_update_check = '".$auto_update_check."', ";
-		$query.= " auto_add_users = '".$auto_add_users."', post_only_followup = '".$post_only_followup."', ";
-		$query.= " ocs_mode = '".$ocs_mode."', ";
-		$query.= " debug = '".$debug."' where ID = '1' ";
-		
-		$db->query($query);
-	
-}
-
-function updateConfigDisplay($num_of_events,$jobs_at_login,$list_limit,$cut,$priority,$planning_begin,$planning_end,$public_faq,$text_login,$use_ajax,$ajax_wildcard,$ajax_limit_count,$dropdown_max,$ajax_autocompletion,$dateformat,$view_id,$nextprev_item,$dp_limit) {
-	
-	global $db;
-	
-		$query = "update glpi_config SET ";
-		$query.= " num_of_events = '". $num_of_events ."',";
-		$query.= " jobs_at_login = '". $jobs_at_login ."' , list_limit = '". $list_limit ."' , cut = '". $cut ."', ";
-		$query.= " priority_1 = '". $priority[1] ."', priority_2 = '". $priority[2] ."', priority_3 = '". $priority[3] ."', priority_4 = '". $priority[4] ."', priority_5 = '". $priority[5] ."', ";
-		$query.= " planning_begin = '". $planning_begin .":00:00', planning_end='".$planning_end.":00:00', ";
-		$query.= " public_faq = '". $public_faq ."', text_login = '". $text_login ."', ";
-		$query.= " use_ajax = '". $use_ajax ."', ajax_wildcard = '". $ajax_wildcard ."', ";
-		$query.= " ajax_limit_count = '". $ajax_limit_count ."', dropdown_max = '". $dropdown_max ."', ";		
-		$query.= " ajax_autocompletion = '". $ajax_autocompletion ."',dateformat='".$dateformat."', ";				
-		$query.= " view_ID = '". $view_id ."',nextprev_item='".$nextprev_item."', dropdown_limit='".$dp_limit."' ";				
-		$query.= " where ID = '1' ";
-		$db->query($query);
-	
-}
-
-function updateLDAP($ldap_host,$ldap_basedn,$ldap_rootdn,$ldap_pass,$ldap_condition,$ldap_login,$field_email,$field_location,$field_phone,$field_realname,$ldap_port,$ldap_use_tls) {
-	
-	global $db;
-	//TODO : test the remote LDAP connection
-		$query = "update glpi_config set ldap_host = '". $ldap_host ."', ";
-		$query.= "ldap_basedn = '". $ldap_basedn ."', ldap_rootdn = '". $ldap_rootdn ."', ";
-		$query .= "ldap_pass = '". $ldap_pass ."', ldap_condition = '". $ldap_condition ."', ldap_login = '". $ldap_login ."',";
-		$query .= " ldap_field_email = '". $field_email ."', ";
-		$query .= "ldap_field_location = '". $field_location ."', ldap_field_phone = '". $field_phone ."', ";
-		$query .= "ldap_field_realname = '". $field_realname ."', ldap_port = '". $ldap_port ."', ldap_use_tls = '". $ldap_use_tls ."' ";
-		$query.= " where ID = '1' ";
-		$db->query($query);
-}
-function updateIMAP($imap_auth_server,$imap_host) {
-	global $db;
-	//TODO : test the remote IMAP connection
-		$query = "update glpi_config set imap_auth_server = '". $imap_auth_server ."', ";
-		$query.= "imap_host = '". $imap_host ."' where ID = '1'";
-		$db->query($query);
-}
-
-function updateCAS($cas_host,$cas_port,$cas_uri) {
-	global $db;
-	//TODO : test the remote IMAP connection
-		$query = "update glpi_config set cas_host = '". $cas_host ."', ";
-		$query.= "cas_uri = '". $cas_uri."',";
-		$query.= "cas_port = '". $cas_port ."' where ID = '1'";
-		$db->query($query);
-}
 
 function updateMailing($mailing,$admin_email, $mailing_signature,$mailing_new_admin,$mailing_followup_admin,$mailing_finish_admin,$mailing_new_all_admin,$mailing_followup_all_admin,$mailing_finish_all_admin,$mailing_new_all_normal,$mailing_followup_all_normal,$mailing_finish_all_normal,$mailing_followup_attrib,$mailing_finish_attrib,$mailing_new_user,$mailing_followup_user,$mailing_finish_user,$mailing_new_attrib,$mailing_resa_admin,$mailing_resa_all_admin,$mailing_resa_user,$url,$url_in_mail,$mailing_attrib_attrib,$mailing_update_admin,$mailing_update_all_admin,$mailing_update_all_normal,$mailing_update_attrib,$mailing_update_user,$smtp_mode,$smtp_host,$smtp_port,$smtp_username,$smtp_password) {
 

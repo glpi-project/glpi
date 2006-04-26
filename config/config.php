@@ -215,11 +215,11 @@ $INFOFORM_PAGES=array(
 $cfg_glpi["debug"]=$cfg_glpi["debug_sql"]=$cfg_glpi["debug_vars"]=$cfg_glpi["debug_profile"]=$cfg_glpi["debug_lang"]=0;
 
 $db = new DB;
-$query = "select * from glpi_config";
-$result = $db->query($query);
-if($result)
+$config_object=new Config();
+
+if($config_object->getFromDB(1))
 {
-$cfg_glpi=array_merge($cfg_glpi,$data=$db->fetch_assoc($result));
+$cfg_glpi=array_merge($cfg_glpi,$config_object->fields);
 
 // Path for icon of document type
 $cfg_glpi["typedoc_icon_dir"] = "pics/icones";

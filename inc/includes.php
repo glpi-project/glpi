@@ -45,6 +45,7 @@ include ($phproot . "/inc/common.function.php");
 include ($phproot . "/inc/auth.function.php");
 include ($phproot . "/inc/display.function.php");
 include ($phproot . "/inc/dropdown.function.php");
+include ($phproot . "/inc/config.class.php");
 include ($phproot . "/config/config.php");
 
 // Load Language file
@@ -124,12 +125,15 @@ $HEADER_LOADED=false;
 if (isset($AJAX_INCLUDE))
 	$HEADER_LOADED=true;;
 // include needed files
+$dbocs=NULL;
 if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
 	foreach ($NEEDED_ITEMS as $item){
 		if (file_exists($phproot . "/inc/$item.class.php"))
 			include ($phproot . "/inc/$item.class.php");
 		if (file_exists($phproot . "/inc/$item.function.php"))
 			include ($phproot . "/inc/$item.function.php");
+		if ($item=="ocsng"&&$cfg_glpi["ocs_mode"])
+			$dbocs=new DBocs();
 	}
 }
 

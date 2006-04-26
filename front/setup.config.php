@@ -39,13 +39,13 @@ $NEEDED_ITEMS=array("setup","ocsng");
 include ($phproot . "/inc/includes.php");
 
 checkRight("config","w");
-
+$config= new Config();
 if(!empty($_GET["next"])) {
 
 	if($_GET["next"] == "extauth") {
 		commonHeader($lang["title"][14],$_SERVER["PHP_SELF"]);
-		titleExtSources();
-		showFormExtSources($_SERVER["PHP_SELF"]);
+		titleExtAuth();
+		showFormExtAuth($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "mailing") {
 		commonHeader($lang["title"][15],$_SERVER["PHP_SELF"]);
@@ -75,34 +75,19 @@ elseif(!empty($_POST["update_mailing"])) {
 	glpi_header($cfg_glpi["root_doc"]."/font/setup.php");
 }
 elseif(!empty($_POST["update_ext"])) {
-
-	if(empty($_POST["LDAP_Test"]) ) {
-//todo test remote connection
-	
-		updateLDAP($_POST["ldap_host"],$_POST["ldap_basedn"],$_POST["ldap_rootdn"],$_POST["ldap_pass"],$_POST["ldap_condition"],$_POST["ldap_login"],$_POST["ldap_field_email"],$_POST["ldap_field_location"],$_POST["ldap_field_phone"],$_POST["ldap_field_realname"],$_POST["ldap_port"],$_POST["ldap_use_tls"]);
-	}
-	if(empty($_POST["IMAP_Test"])) {
-		$auth_server=constructIMAPAuthServer($_POST);
-		updateIMAP($auth_server,$_POST["imap_host"]);
-	}
-	if(empty($_POST["CA_Test"])) {
-		updateCAS($_POST["cas_host"],$_POST["cas_port"],$_POST["cas_uri"]);
-	}
+	$config->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=extauth");
+
 }
 elseif(!empty($_POST["update_confgen"])) {
-	updateConfigGen($_POST["event_loglevel"], $_POST["expire_events"],$_POST["permit_helpdesk"],$_POST["default_language"],$_POST["date_fiscale"],$_POST["cartridges_alarm"],
-	$_POST["auto_assign"],$_POST["auto_update_check"],$_POST["auto_add_users"],$_POST["post_only_followup"],$_POST["ocs_mode"], $_POST["debug"]);
+	$config->update($_POST);
 	if ($_POST["ocs_mode"]&&!$cfg_glpi["ocs_mode"])
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=ocsng");
 	else 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=confgen");
 }
 elseif(!empty($_POST["update_confdisplay"])) {
-	updateConfigDisplay($_POST["num_of_events"], $_POST["jobs_at_login"],$_POST["list_limit"], $_POST["cut"],$_POST["priority"],
-	$_POST["planning_begin"],$_POST["planning_end"],$_POST["public_faq"],$_POST["text_login"],
-	$_POST["use_ajax"],$_POST["ajax_wildcard"],$_POST["ajax_limit_count"],$_POST["dropdown_max"],$_POST["ajax_autocompletion"],$_POST["dateformat"],
-	$_POST["view_ID"],$_POST["nextprev_item"],$_POST["dropdown_limit"]);
+	$config->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=confdisplay");
 } elseif(!empty($_POST["update_ocs_config"])) {
 	ocsUpdateConfig($_POST, 1);
