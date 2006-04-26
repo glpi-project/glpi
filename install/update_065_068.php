@@ -237,7 +237,7 @@ $query="CREATE TABLE `glpi_profiles` (
 				$db->query($query2) or die("0.68 populate mailing_profiles finish attrib ".$lang["update"][90].$db->error());
 			}
 			if ($data["mailing_attrib_attrib"]){
-				$query2="INSERT INTO `glpi_mailing_profiles` (type,FK_profiles) VALUES ('attrib','-2');";
+				$query2="INSERT INTO `glpi_mailing_profiles` (type,FK_profiles) VALUES ('update','-4');";
 				$db->query($query2) or die("0.68 populate mailing_profiles finish attrib ".$lang["update"][90].$db->error());
 			}	
 			if ($data["mailing_new_user"]){

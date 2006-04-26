@@ -46,7 +46,7 @@ class glpi_phpmailer extends phpmailer {
     	
 
 	function glpi_phpmailer(){
-	GLOBAL $cfg_glpi;
+	global $cfg_glpi;
 	
 	// Comes from config
 	
@@ -61,7 +61,7 @@ class glpi_phpmailer extends phpmailer {
 				}
 
 			if($cfg_glpi['debug']=="2"){
-			$this->SMTPDebug    = TRUE;
+				$this->SMTPDebug    = TRUE;
 			}
 
 		$this->Mailer = "smtp";
@@ -134,76 +134,70 @@ class Mailing
 	*/
 	function get_users_to_send_mail()
 	{
-		GLOBAL $db,$cfg_glpi;
+		global $db,$cfg_glpi;
 		
 		$emails=array();
-		$nb=0;
-				
-		if (isset($cfg_glpi["mailing_".$this->type."_admin"])&&$cfg_glpi["mailing_".$this->type."_admin"]&&$this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
-		{
-			$emails[$nb]=$cfg_glpi["admin_email"];
-			$nb++;
-		}
-
-/*		if (isset($cfg_glpi["mailing_".$this->type."_all_admin"])&&$cfg_glpi["mailing_".$this->type."_all_admin"])
-		{
-			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("admin").")";
-			if ($result = $db->query($query)) 
-			{
-				while ($row = $db->fetch_row($result))
-				{
-					// Test du format du mail et de sa non existance dans la table
-					if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails))
-					{
-						$emails[$nb]=$row[0];
-						$nb++;
-					}
-				}
-			}
-		}	
-*/
-/*		if (isset($cfg_glpi["mailing_".$this->type."_all_normal"])&&$cfg_glpi["mailing_".$this->type."_all_normal"])
-		{
-			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("normal").")";
-			if ($result = $db->query($query)) 
-			{
-				while ($row = $db->fetch_row($result))
-				{
-					// Test du format du mail et de sa non existance dans la table
-					if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails))
-					{
-						$emails[$nb]=$row[0];
-						$nb++;
-					}
-				}
-			}
-		}	
-*/
-		if (isset($cfg_glpi["mailing_".$this->type."_attrib"])&&$cfg_glpi["mailing_".$this->type."_attrib"]&&$this->job->fields["assign"])
-		{
-			$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
-			if ($result2 = $db->query($query2)) 
-			{
-				if ($db->numrows($result2)==1)
-				{
-					$row2 = $db->fetch_row($result2);
-					if ($this->is_valid_email($row2[0])&&!in_array($row2[0],$emails))
-						{
-							$emails[$nb]=$row2[0];
-							$nb++;
+			
+		$query="SELECT FK_profiles as PROFILE FROM glpi_mailing_profiles WHERE type='".$this->type."'";
+		$result=$db->query($query);
+		if ($db->numrows($result)){
+			while ($data=$db->fetch_assoc($result)){
+				switch ($data["PROFILE"]){
+					// ADMIN SEND
+					case -1 :
+						if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
+							$emails[]=$cfg_glpi["admin_email"];
+						break;
+					// ASSIGN SEND
+					case -2 :
+						$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
+						if ($result2 = $db->query($query2)) {
+							if ($db->numrows($result2)==1){
+								$row = $db->fetch_row($result2);
+								if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
+									$emails[]=$row[0];
+								}
+							}
 						}
+						break;
+					// USER SEND
+					case -3 :
+						if ($this->job->fields["emailupdates"]=="yes"&&$this->is_valid_email($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
+							$emails[]=$this->job->fields["uemail"];
+					
+						}
+						break;
+					// OLD ASSIGN SEND
+					case -4 :
+						if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
+							$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["_old_assign"]."')";
+							if ($result2 = $db->query($query2)) {
+								if ($db->numrows($result2)==1){
+									$row = $db->fetch_row($result2);
+									if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
+										$emails[]=$row[0];
+									}
+								}
+							}
+						}
+						break;
+					// ALL PROFILE USER SEND
+					default :
+						if ($data["PROFILE"]>0){
+							$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["PROFILE"]."'";
+							if ($result2= $db->query($query)){
+								while ($data=$db->fetch_assoc($result2)){
+								if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+										$emails[]=$data["EMAIL"];
+									}
+								}
+							}
+						}
+					break;
 				}
 			}
 		}
 
-		if (isset($cfg_glpi["mailing_".$this->type."_user"])&&$cfg_glpi["mailing_".$this->type."_user"]&&$this->job->fields["emailupdates"]=="yes")
-		{
-			if ($this->is_valid_email($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails))
-			{
-				$emails[$nb]=$this->job->fields["uemail"];
-				$nb++;
-			}
-		}
 		return $emails;
 	}
 
@@ -252,7 +246,7 @@ class Mailing
 	*/
 	function get_mail_subject()
 	{
-		GLOBAL $lang;
+		global $lang;
 		
 		// Create the message subject 
 		$subject=sprintf("%s%07d%s","[GLPI #",$this->job->fields["ID"],"] ");
@@ -289,7 +283,7 @@ class Mailing
 	*/
 	function get_reply_to_address ()
 	{
-		GLOBAL $cfg_glpi;
+		global $cfg_glpi;
 	$replyto="";
 
 	switch ($this->type){
@@ -317,7 +311,7 @@ class Mailing
 	*/
 	function send()
 	{
-		GLOBAL $cfg_glpi,$phproot;
+		global $cfg_glpi,$phproot;
 		if ($cfg_glpi["mailing"])
 		{
 			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($this->type,"new")||strcmp($this->type,"attrib")||strcmp($this->type,"followup")||strcmp($this->type,"finish")))
@@ -409,44 +403,45 @@ class MailingResa{
 	*/
 	function get_users_to_send_mail()
 	{
-		GLOBAL $db,$cfg_glpi;
+		global $db,$cfg_glpi;
 		
 		$emails=array();
-		$nb=0;
-		
-		if ($cfg_glpi["mailing_resa_admin"]&&$this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
-		{
-			$emails[$nb]=$cfg_glpi["admin_email"];
-			$nb++;
-		}
 
-/*		if ($cfg_glpi["mailing_resa_all_admin"])
-		{
-			$query = "SELECT email FROM glpi_users WHERE (".searchUserbyType("admin").")";
-			if ($result = $db->query($query)) 
-			{
-				while ($row = $db->fetch_row($result))
-				{
-					// Test du format du mail et de sa non existance dans la table
-					if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails))
-					{
-						$emails[$nb]=$row[0];
-						$nb++;
-					}
+		$query="SELECT FK_profiles as PROFILE FROM glpi_mailing_profiles WHERE type='resa'";
+		$result=$db->query($query);
+		if ($db->numrows($result)){
+			while ($data=$db->fetch_assoc($result)){
+				switch ($data["PROFILE"]){
+					// ADMIN SEND
+					case -1 :
+						if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
+							$emails[]=$cfg_glpi["admin_email"];
+						break;
+					// USER SEND
+					case -3 :
+						$user = new User;
+						if ($user->getFromDB($this->resa->fields["id_user"]))
+						if ($this->is_valid_email($user->fields["email"])&&!in_array($user->fields["email"],$emails)){
+							$emails[]=$user->fields["email"];
+						}
+						break;
+					// ALL PROFILE USER SEND
+					default :
+						if ($data["PROFILE"]>0){
+							$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["PROFILE"]."'";
+							if ($result2= $db->query($query)){
+								while ($data=$db->fetch_assoc($result2)){
+								if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+										$emails[]=$data["EMAIL"];
+									}
+								}
+							}
+						}
+					break;
 				}
 			}
-		}	
-*/
-		if ($cfg_glpi["mailing_resa_user"])
-		{
-			$user = new User;
-			if ($user->getFromDB($this->resa->fields["id_user"]))
-			if ($this->is_valid_email($user->fields["email"])&&!in_array($user->fields["email"],$emails))
-			{
-				$emails[$nb]=$user->fields["email"];
-				$nb++;
-			}
 		}
+	
 		return $emails;
 	}
 
@@ -476,7 +471,7 @@ class MailingResa{
 	*/
 	function get_mail_subject()
 	{
-		GLOBAL $lang;
+		global $lang;
 		
 		// Create the message subject 
 		if ($this->type=="new")
@@ -493,7 +488,7 @@ class MailingResa{
 	*/
 	function get_reply_to_address ()
 	{
-		GLOBAL $cfg_glpi;
+		global $cfg_glpi;
 	$replyto="";
 
 	$user = new User;
@@ -514,7 +509,7 @@ class MailingResa{
 	*/
 	function send()
 	{
-		GLOBAL $cfg_glpi,$phproot;
+		global $cfg_glpi,$phproot;
 		if ($cfg_glpi["mailing"]&&$this->is_valid_email($cfg_glpi["admin_email"]))
 		{
 				// get users to send mail
