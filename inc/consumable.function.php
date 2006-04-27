@@ -230,7 +230,7 @@ function countConsumables($tID,$alarm,$nohtml=0) {
 	if ($unused<=$alarm)
 		$highlight="class='tab_bg_1_2'";
 	if (!$nohtml)
-		$out.= "<div $highlight><b>".$lang["consumables"][30].":&nbsp;$total</b>&nbsp;&nbsp;&nbsp;".$lang["consumables"][13].": $unused&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
+		$out.= "<div $highlight>".$lang["consumables"][30].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["consumables"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
 	else $out.= $lang["consumables"][30].": $total   ".$lang["consumables"][13].": $unused   ".$lang["consumables"][15].": $old";			
 
 	} else {
