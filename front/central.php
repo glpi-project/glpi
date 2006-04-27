@@ -160,6 +160,9 @@ echo "<table class='tab_cadre_central' ><tr>";
 	
 }
 
+callCron();
+
+
 commonFooter();
 
 ?>
