@@ -1621,7 +1621,7 @@ function checkNewVersionAvailable($auto=1){
 				
 	}
 	
-	 if (!$do_check){
+	 if ($do_check){
 	 	echo "<br>";
 	 	if ($auto) echo "<div align='center'><strong>".$lang["setup"][310]."</strong></div>";
 		$latest_version = '';
