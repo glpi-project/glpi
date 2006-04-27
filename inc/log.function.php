@@ -96,7 +96,7 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 					$id_search_option=$key2; // on r�upere dans $SEARCH_OPTION l'id_search_options
 			
 						if($val2["table"]==$LINK_ID_TABLE[$device_type]){
-						// 1er cas $key est un champs normal -> on ne touche pas au valeur 
+						// 1er cas $key est un champs normal -> on ne touche pas aux valeurs 
 						$changes=array($id_search_option, addslashes($oldvalues),$newvalues);
 						}else {
 						//2�e cas $key est un champs li� il faut r�up�er les valeurs du dropdown
@@ -277,6 +277,7 @@ function logArray(){
 				"login"=>$lang["log"][55],
 				"setup"=>$lang["log"][57],
 				"reservation"=>$lang["log"][58],
+				"cron"=>$lang["log"][59],
 				"document"=>$lang["log"][56]);
 	
 return array($logItemtype,$logService);

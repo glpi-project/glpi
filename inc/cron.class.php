@@ -131,7 +131,7 @@ function launch() {
 		// (On laisse toutefois flotter sur une heure, pas la peine de s'exciter
 		// pour si peu)
 		else if ($date_lock > $t + 3600)
-			echo "Erreur de date du fichier $lock : $date_lock > $t !";
+			//echo "Erreur de date du fichier $lock : $date_lock > $t !";
 	}
 	if (!$tache) return;
 
@@ -141,7 +141,7 @@ function launch() {
 	// Ne rien lancer non plus si serveur naze evidemment
 
 	if (!$this->get_lock('cron')) {
-		echo "tache $tache: pas de lock cron";
+		//echo "tache $tache: pas de lock cron";
 		return;
 	}
 
@@ -168,9 +168,12 @@ function launch() {
 
 			// si la tache a eu un effet : log
 			if ($code_de_retour) {
-				echo "cron: $tache (" . $this->timer('tache') . ")";
+				//echo "cron: $tache (" . $this->timer('tache') . ")";
 				// eventuellement modifier la date du fichier
+				
 				if ($code_de_retour < 0) @touch($lock, (0 - $code_de_retour));
+				else // Log Event 
+				logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ")".$lang["log"][45] );
 			}# else log("cron $tache a reprendre");
 		} else {echo "Erreur fonction manquante";}
 
