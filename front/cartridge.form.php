@@ -112,7 +112,7 @@ else
 	if ($cartype->getFromDB($tab["ID"]))
 		$cartype->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if ($cardtype->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+	if ($cartype->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
 		switch($_SESSION['glpi_onglet']){
 		case -1 :	
