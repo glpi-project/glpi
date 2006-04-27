@@ -701,8 +701,8 @@ $lang["log"][41]="échec de connexion";
 $lang["log"][42]="Réservation";
 $lang["log"][43]="téléphone";
 $lang["log"][44]="Intitulé";
-
-
+$lang["log"][45]="Réussie";
+$lang["log"][46]="Echouée";
 
 $lang["log"][50]="Inventaire";
 $lang["log"][51]="Suivi";
@@ -713,7 +713,7 @@ $lang["log"][55]="Connexion";
 $lang["log"][56]="Documents";
 $lang["log"][57]="Configuration";
 $lang["log"][58]="Réservation";
-
+$lang["log"][59]="Cron";
 
 $lang["login"][1]="Se reconnecter";
 $lang["login"][5]="Accés refusé";

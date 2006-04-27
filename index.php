@@ -177,4 +177,7 @@ echo "</body></html>";
 
 // End
 
+// Appel de cron
+callCron();
+
 ?>
