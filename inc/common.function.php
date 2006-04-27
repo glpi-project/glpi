@@ -351,6 +351,21 @@ echo "<script language=javascript>window.location=\"".$dest."\"</script>";
 exit();
 }
 
+/**
+* Call cron
+*
+*
+*
+* @param 
+* @return nothing
+*
+*/
+function callCron{
+echo "<div style=\"background-image: url('cron.php');\"></div>";
+}
+
+
+
 
 /**
 * Get hour from sql
