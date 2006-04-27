@@ -45,7 +45,7 @@ $NEEDED_ITEMS=array("user","profile","setup");
 include ($phproot . "/inc/includes.php");
 
 //$database=$cfg_db["database"];
-//SetCookie("cfg_dbdb",$database,0,"/");
+
 
 $_POST=array_map('stripslashes',$_POST);
 
@@ -204,7 +204,7 @@ if ( ! $auth_succeded ) {
 }
 
 // now we can continue with the process...
-$identificat->setcookies();
+$identificat->initSession();
 
 $dirplug=$phproot."/plugins";
 $dh  = opendir($dirplug);
