@@ -1071,7 +1071,7 @@ function showFormConfigGen($target){
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
-	for ($i=0;$i<=100;$i++)
+	for ($i=-1;$i<=100;$i++)
 		echo "<option value='$i' ".($i==$cfg_glpi["cartridges_alarm"]?" selected ":"").">$i</option>";
 	echo "</select></td></tr>";
 
