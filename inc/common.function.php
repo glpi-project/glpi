@@ -356,13 +356,13 @@ exit();
 *
 *
 *
-* @param 
+* 
 * @return nothing
 *
 */
-function callCron{
+function callCron(
 echo "<div style=\"background-image: url('cron.php');\"></div>";
-}
+)
 
 
 

@@ -50,6 +50,7 @@ $image = pack("H*", "47494638396118001800800000ffffff00000021f90401000000002c000
 	echo $image;
 	flush();
 
+//Definitions possibles des taches directement en passant un array (rappel les taches appellent des fonctions cron_matache() )
 //$taches=array("test"=>30,"test2"=>10);
 //$cron=new Cron($taches);
 
