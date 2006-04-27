@@ -881,20 +881,10 @@ $lang["ocsconfig"][14]="Import global : tout est importé mais le matériel est 
 $lang["ocsconfig"][15]="Pas d'import : GLPI n'importera pas ces éléments";
 $lang["ocsconfig"][16]="Statut par défaut";
 $lang["ocsconfig"][17]="Limiter l'importation aux tags suivants (séparateur $, rien pour tous)";
-$lang["ocsconfig"][19]="OS";
-$lang["ocsconfig"][24]="Domaine";
 $lang["ocsconfig"][27]="Informations générales Ordinateurs";
 $lang["ocsconfig"][28]="Périphériques";
-$lang["ocsconfig"][29]="Processeurs";
-$lang["ocsconfig"][30]="Mémoires";
-$lang["ocsconfig"][31]="Disques Durs";
-$lang["ocsconfig"][32]="Cartes Réseau";
-$lang["ocsconfig"][33]="Cartes Graphique";
-$lang["ocsconfig"][34]="Cartes Son";
-$lang["ocsconfig"][35]="Lecteurs";
 $lang["ocsconfig"][36]="Modems";
 $lang["ocsconfig"][37]="Ports";
-$lang["ocsconfig"][38]="IP";
 
 
 $lang["pager"][1]="à";
