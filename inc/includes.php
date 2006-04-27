@@ -37,16 +37,16 @@
 // ----------------------------------------------------------------------
 if(!session_id()){@session_start();}
 include ("_relpos.php");
-include ($phproot . "/inc/timer.class.php");
-include ($phproot . "/inc/dbmysql.class.php");
-include ($phproot . "/inc/commondbtm.class.php");
-include ($phproot . "/inc/commonitem.class.php");
-include ($phproot . "/inc/common.function.php");
-include ($phproot . "/inc/auth.function.php");
-include ($phproot . "/inc/display.function.php");
-include ($phproot . "/inc/dropdown.function.php");
-include ($phproot . "/inc/config.class.php");
-include ($phproot . "/config/config.php");
+include_once ($phproot . "/inc/timer.class.php");
+include_once ($phproot . "/inc/dbmysql.class.php");
+include_once ($phproot . "/inc/commondbtm.class.php");
+include_once ($phproot . "/inc/commonitem.class.php");
+include_once ($phproot . "/inc/common.function.php");
+include_once ($phproot . "/inc/auth.function.php");
+include_once ($phproot . "/inc/display.function.php");
+include_once ($phproot . "/inc/dropdown.function.php");
+include_once ($phproot . "/inc/config.class.php");
+include_once ($phproot . "/config/config.php");
 
 // Load Language file
 loadLanguage();
@@ -64,19 +64,19 @@ if ($cfg_glpi["debug"]){
 	}
 }
 
-include ($phproot . "/inc/db.function.php");
+include_once ($phproot . "/inc/db.function.php");
 
 if (!isset($AJAX_INCLUDE)){
 
-	include ($phproot . "/inc/auth.class.php");
-	include ($phproot . "/inc/connection.class.php");
-	include ($phproot . "/inc/mailing.class.php");
-	include ($phproot . "/inc/report.function.php");
-//	include ($phproot . "/inc/search.function.php");
-	include ($phproot . "/inc/export.function.php");
-	include ($phproot . "/inc/log.function.php");
-	include ($phproot . "/inc/connection.function.php");
-	include ($phproot . "/inc/plugin.function.php");
+	include_once ($phproot . "/inc/auth.class.php");
+	include_once ($phproot . "/inc/connection.class.php");
+	include_once ($phproot . "/inc/mailing.class.php");
+	include_once ($phproot . "/inc/report.function.php");
+//	include_once ($phproot . "/inc/search.function.php");
+	include_once ($phproot . "/inc/export.function.php");
+	include_once ($phproot . "/inc/log.function.php");
+	include_once ($phproot . "/inc/connection.function.php");
+	include_once ($phproot . "/inc/plugin.function.php");
 }
 
 $db=new DB();
@@ -110,13 +110,13 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 		use_plugin($name);
 	
 		if (file_exists($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
-			include ($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
+			include_once ($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
 		else if (file_exists($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
-			include ($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
+			include_once ($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
 		else if (file_exists($phproot . "/plugins/$name/dicts/en_GB.php"))
-			include ($phproot . "/plugins/$name/dicts/en_GB.php");
+			include_once ($phproot . "/plugins/$name/dicts/en_GB.php");
 		else if (file_exists($phproot . "/plugins/$name/dicts/fr_FR.php"))
-			include ($phproot . "/plugins/$name/dicts/fr_FR.php");
+			include_once ($phproot . "/plugins/$name/dicts/fr_FR.php");
 	}
 }
 
@@ -124,16 +124,7 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 $HEADER_LOADED=false;
 if (isset($AJAX_INCLUDE))
 	$HEADER_LOADED=true;;
-if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
-	foreach ($NEEDED_ITEMS as $item){
-		if (file_exists($phproot . "/inc/$item.class.php"))
-			include ($phproot . "/inc/$item.class.php");
-		if (file_exists($phproot . "/inc/$item.function.php"))
-			include ($phproot . "/inc/$item.function.php");
-		if ($item=="ocsng"&&$cfg_glpi["ocs_mode"]){
-			$dbocs=new DBocs();
-		}
-	}
-}
+if (isset($NEEDED_ITEMS))
+	glpi_includes($NEEDED_ITEMS)
 
 ?>

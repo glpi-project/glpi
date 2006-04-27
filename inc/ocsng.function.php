@@ -567,86 +567,126 @@ function ocsCleanLinks(){
 }
 
 
-function ocsShowUpdateComputer($check,$start){
-global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
+function cron_ocsng(){
 
-if (!haveRight("ocsng","w")) return false;
-
-$cfg_ocs=getOcsConf(1);
-
-$query_ocs = "select * from hardware WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0 order by lastdate";
-$result_ocs = $dbocs->query($query_ocs) or die($dbocs->error());
-
-$query_glpi = "select glpi_ocs_link.last_update as last_update,  glpi_ocs_link.glpi_id as glpi_id, glpi_ocs_link.ocs_id as ocs_id, glpi_computers.name as name, glpi_ocs_link.auto_update as auto_update, glpi_ocs_link.ID as ID";
-$query_glpi.= " from glpi_ocs_link LEFT JOIN glpi_computers ON (glpi_computers.ID = glpi_ocs_link.glpi_id) ";
-$query_glpi.= " ORDER by glpi_ocs_link.last_update, glpi_computers.name";
-
-$result_glpi = $db->query($query_glpi) or die($db->error());
-if ($dbocs->numrows($result_ocs)>0){
+	global $db,$dbocs;
 	
-	// Get all hardware from OCS DB
-	$hardware=array();
-	while($data=$dbocs->fetch_array($result_ocs)){
-	$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
-	$hardware[$data["DEVICEID"]]["name"]=addslashes($data["NAME"]);
-	}
+	$dbocs=new DBocs();
 
-	// Get all links between glpi and OCS
-	$already_linked=array();
-	if ($db->numrows($result_glpi)>0){
-		while($data=$dbocs->fetch_assoc($result_glpi)){
+	$cfg_ocs=getOcsConf(1);
+	
+	$query_ocs = "select * from hardware WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0 order by lastdate";
+	$result_ocs = $dbocs->query($query_ocs) or die($dbocs->error());
+	if ($dbocs->numrows($result_ocs)>0){
+
+		$hardware=array();
+		while($data=$dbocs->fetch_array($result_ocs)){
+			$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
+			$hardware[$data["DEVICEID"]]["name"]=addslashes($data["NAME"]);
+		}
+
+
+		$query_glpi = "SELECT * FROM glpi_ocs_link ORDER BY last_update";
+		$result_glpi = $db->query($query_glpi);
+		$done=false;
+		while(!$done&&$data=$db->fetch_assoc($result_glpi)){
 			$data=addslashes_deep($data);
 			if (isset($hardware[$data["ocs_id"]])){ 
-				$already_linked[$data["ocs_id"]]["date"]=$data["last_update"];
-				$already_linked[$data["ocs_id"]]["name"]=$data["name"];
-				$already_linked[$data["ocs_id"]]["ID"]=$data["ID"];
-				$already_linked[$data["ocs_id"]]["glpi_id"]=$data["glpi_id"];
+				$needed=array("computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking");
+				glpi_includes($needed);
+
+				ocsUpdateComputer($data["ID"],1);
+				$done=true;
 			}
 		}
-	}
-	echo "<div align='center'>";
-	echo "<h2>".$lang["ocsng"][10]."</h2>";
+		if ($done) return -1;
+		else return 0;
 	
-	if (($numrows=count($already_linked))>0){
+	} else return 0;
 
-		$parameters="check=$check";
-   		printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
+}
 
-		// delete end 
-		array_splice($already_linked,$start+$cfg_glpi["list_limit"]);
-		// delete begin
-		if ($start>0)
-		array_splice($already_linked,0,$start);
 
-		echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$_SERVER["PHP_SELF"]."'>";
+function ocsShowUpdateComputer($check,$start){
+	global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
+	
+	if (!haveRight("ocsng","w")) return false;
+	
+	$cfg_ocs=getOcsConf(1);
+	
+	$query_ocs = "select * from hardware WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0 order by lastdate";
+	$result_ocs = $dbocs->query($query_ocs) or die($dbocs->error());
+	
+	$query_glpi = "select glpi_ocs_link.last_update as last_update,  glpi_ocs_link.glpi_id as glpi_id, glpi_ocs_link.ocs_id as ocs_id, glpi_computers.name as name, glpi_ocs_link.auto_update as auto_update, glpi_ocs_link.ID as ID";
+	$query_glpi.= " from glpi_ocs_link LEFT JOIN glpi_computers ON (glpi_computers.ID = glpi_ocs_link.glpi_id) ";
+	$query_glpi.= " ORDER by glpi_ocs_link.last_update, glpi_computers.name";
+	
+	$result_glpi = $db->query($query_glpi) or die($db->error());
+	if ($dbocs->numrows($result_ocs)>0){
 		
-		echo "<a href='".$_SERVER["PHP_SELF"]."?check=all' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th>".$lang["ocsng"][11]."</th><th>".$lang["ocsng"][13]."</th><th>".$lang["ocsng"][14]."</th><th>&nbsp;</th></tr>";
-		
-		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-		echo "<input class='submit' type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
-		echo "</td></tr>";
-
-		foreach ($already_linked as $ID => $tab){
-
-			echo "<tr align='center' class='tab_bg_2'><td><a href='".$HTMLRel."front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td><td>".$tab["date"]."</td><td>".$hardware[$ID]["date"]."</td><td>";
-			
-			echo "<input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
-			echo "</td></tr>";
+		// Get all hardware from OCS DB
+		$hardware=array();
+		while($data=$dbocs->fetch_array($result_ocs)){
+			$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
+			$hardware[$data["DEVICEID"]]["name"]=addslashes($data["NAME"]);
 		}
-		echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-		echo "<input class='submit' type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
-		echo "</td></tr>";
-		echo "</table>";
-		echo "</form>";
-   		printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
-
-	} else echo "<br><strong>".$lang["ocsng"][11]."</strong>";
-
-	echo "</div>";
-
-} else echo "<div align='center'><strong>".$lang["ocsng"][12]."</strong></div>";
+	
+		// Get all links between glpi and OCS
+		$already_linked=array();
+		if ($db->numrows($result_glpi)>0){
+			while($data=$db->fetch_assoc($result_glpi)){
+				$data=addslashes_deep($data);
+				if (isset($hardware[$data["ocs_id"]])){ 
+					$already_linked[$data["ocs_id"]]["date"]=$data["last_update"];
+					$already_linked[$data["ocs_id"]]["name"]=$data["name"];
+					$already_linked[$data["ocs_id"]]["ID"]=$data["ID"];
+					$already_linked[$data["ocs_id"]]["glpi_id"]=$data["glpi_id"];
+				}
+			}
+		}
+		echo "<div align='center'>";
+		echo "<h2>".$lang["ocsng"][10]."</h2>";
+		
+		if (($numrows=count($already_linked))>0){
+	
+			$parameters="check=$check";
+			printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
+	
+			// delete end 
+			array_splice($already_linked,$start+$cfg_glpi["list_limit"]);
+			// delete begin
+			if ($start>0)
+			array_splice($already_linked,0,$start);
+	
+			echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$_SERVER["PHP_SELF"]."'>";
+			
+			echo "<a href='".$_SERVER["PHP_SELF"]."?check=all' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
+			echo "<table class='tab_cadre'>";
+			echo "<tr><th>".$lang["ocsng"][11]."</th><th>".$lang["ocsng"][13]."</th><th>".$lang["ocsng"][14]."</th><th>&nbsp;</th></tr>";
+			
+			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
+			echo "<input class='submit' type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
+			echo "</td></tr>";
+	
+			foreach ($already_linked as $ID => $tab){
+	
+				echo "<tr align='center' class='tab_bg_2'><td><a href='".$HTMLRel."front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td><td>".$tab["date"]."</td><td>".$hardware[$ID]["date"]."</td><td>";
+				
+				echo "<input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
+				echo "</td></tr>";
+			}
+			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
+			echo "<input class='submit' type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
+			echo "</td></tr>";
+			echo "</table>";
+			echo "</form>";
+			printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
+	
+		} else echo "<br><strong>".$lang["ocsng"][11]."</strong>";
+	
+		echo "</div>";
+	
+	} else echo "<div align='center'><strong>".$lang["ocsng"][12]."</strong></div>";
 }
 
 
