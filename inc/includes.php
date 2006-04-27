@@ -27,10 +27,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
 */
- 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -38,6 +35,11 @@
 if(!session_id()){@session_start();}
 include ("_relpos.php");
 include_once ($phproot . "/inc/timer.class.php");
+
+// Init Timer to compute time of display
+$TIMER_DEBUG=new Script_Timer;
+$TIMER_DEBUG->Start_Timer();
+
 include_once ($phproot . "/inc/dbmysql.class.php");
 include_once ($phproot . "/inc/commondbtm.class.php");
 include_once ($phproot . "/inc/commonitem.class.php");
@@ -48,11 +50,10 @@ include_once ($phproot . "/inc/dropdown.function.php");
 include_once ($phproot . "/inc/config.class.php");
 include_once ($phproot . "/config/config.php");
 
+
+
 // Load Language file
 loadLanguage();
-
-$TIMER_DEBUG=new Script_Timer;
-$TIMER_DEBUG->Start_Timer();
 
 if ($cfg_glpi["debug"]){
 	if ($cfg_glpi["debug_profile"]){		
@@ -82,23 +83,23 @@ if (!isset($AJAX_INCLUDE)){
 $db=new DB();
 
 
-	// Security system
-	if (get_magic_quotes_gpc()) {
-		if (isset($_POST)){
-			$_POST = array_map('stripslashes_deep', $_POST);
-		}
-		if (isset($_GET)){
-			$_GET = array_map('stripslashes_deep', $_GET);
-		}
-	}    
+// Security system
+if (get_magic_quotes_gpc()) {
 	if (isset($_POST)){
-		$_POST = array_map('addslashes_deep', $_POST);
-		$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
+		$_POST = array_map('stripslashes_deep', $_POST);
 	}
 	if (isset($_GET)){
-		$_GET = array_map('addslashes_deep', $_GET);
-		$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
+		$_GET = array_map('stripslashes_deep', $_GET);
 	}
+}    
+if (isset($_POST)){
+	$_POST = array_map('addslashes_deep', $_POST);
+	$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
+}
+if (isset($_GET)){
+	$_GET = array_map('addslashes_deep', $_GET);
+	$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
+}
 
 
 /* On startup, register all plugins configured for use. */
@@ -124,7 +125,8 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 $HEADER_LOADED=false;
 if (isset($AJAX_INCLUDE))
 	$HEADER_LOADED=true;;
-if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS))
+
+if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
 	foreach ($NEEDED_ITEMS as $item){
 		if (file_exists($phproot . "/inc/$item.class.php"))
 			include_once ($phproot . "/inc/$item.class.php");
@@ -133,5 +135,13 @@ if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS))
 		if ($item=="ocsng"&&$cfg_glpi["ocs_mode"])
 			$dbocs=new DBocs;
 	}
+}
 
+// call function callcron() every 5min
+if (isset($_SESSION["glpicrontimer"])){
+	if (($_SESSION["glpicrontimer"]-time())>300){
+		callCron();
+		$_SESSION["glpicrontimer"]=time();
+	}
+}
 ?>
