@@ -593,7 +593,12 @@ function cron_ocsng(){
 			$data=addslashes_deep($data);
 			if (isset($hardware[$data["ocs_id"]])){ 
 				$needed=array("computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking");
-				glpi_includes($needed);
+				foreach ($needed as $item){
+					if (file_exists($phproot . "/inc/$item.class.php"))
+						include_once ($phproot . "/inc/$item.class.php");
+					if (file_exists($phproot . "/inc/$item.function.php"))
+						include_once ($phproot . "/inc/$item.function.php");
+				}
 
 				ocsUpdateComputer($data["ID"],1);
 				$done=true;

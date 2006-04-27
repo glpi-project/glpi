@@ -556,17 +556,4 @@ function rembo($string){
 	return $string;
 }
 
-
-function glpi_includes($needed_items){
-	global $phproot;
-	if (is_array($needed_items)à
-	foreach ($needed_items as $item){
-		if (file_exists($phproot . "/inc/$item.class.php"))
-			include_once ($phproot . "/inc/$item.class.php");
-		if (file_exists($phproot . "/inc/$item.function.php"))
-			include_once ($phproot . "/inc/$item.function.php");
-	}
-
-}
-
 ?>
