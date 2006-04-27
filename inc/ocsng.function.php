@@ -438,7 +438,11 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 		if($cfg_ocs["import_general_contact"]&&!in_array("contact",$computer_updates)) {
 			$compupdate["contact"] = $line["USERID"];
 		}
-			
+		
+		if($cfg_ocs["import_general_name"]&&!in_array("name",$computer_updates)) {
+			$compupdate["name"] = $line["NAME"];
+		}
+	
 		if($cfg_ocs["import_general_comments"]&&!in_array("comments",$computer_updates)) {
 			$compupdate["comments"] = "Swap: ".$line["SWAP"];
 		}
