@@ -1626,23 +1626,24 @@ function checkNewVersionAvailable($auto=1){
 	 	if ($auto) echo "<div align='center'><strong>".$lang["setup"][310]."</strong></div>";
 		$latest_version = '';
 		
-		 if ($fp=fsockopen("glpi.indepnet.org", 80, $errno, $errstr, 10)){
-			
-		   	$out = "GET /latest_version HTTP/1.1\r\n";
-			//$out .= "Host: ".$_SERVER["SERVER_ADDR"]."\r\n";
-			$out .= "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.8) Gecko/20051111 Firefox/1.5 \r\n";	
-			$out .= "Connection: Close\r\n\r\n";
-			echo $out;
-			fwrite($fp, $out);
-			
+		 if ($fp=@fsockopen("glpi.indepnet.org", 80, $errno, $errstr, 1)){
+		
+			$request  = "GET /latest_version HTTP/1.1\r\n";
+			$request .= "Host: glpi.indepnet.org\r\n";
+			$request .= 'User-Agent: GLPICheckAuth/'.trim($cfg_glpi["version"])."\r\n";
+			$request .= "Connection: Close\r\n\r\n";
+			 
+			fwrite($fp, $request);
   			while (!feof($fp)) {
-       				$latest_version=fgets($fp, 128);
+       				$ret=fgets($fp, 128);
+				if (!empty($ret))
+					$latest_version=$ret;
    			}
 		 	fclose($fp);
 		 }
 
 		 if (strlen(trim($latest_version)) == 0)
-			echo "<div align='center'>".$lang["setup"][304]." $errstr</div>";
+			echo "<div align='center'>".$lang["setup"][304]." ($errstr)</div>";
 		 else {			
 			$cur_version = str_replace(array('.', ' '), '', strtolower(trim($cfg_glpi["version"])));
 			$cur_version = ($cur_version<10) ? intval($cur_version) * 10 : intval($cur_version);

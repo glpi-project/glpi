@@ -93,7 +93,7 @@
 class Cron {
 
 
-var $taches; 
+var $taches=array(); 
 
 function Cron($taches=array()){
 	if(count($taches)>0){
