@@ -1605,7 +1605,7 @@ function updateMailNotifications($input){
 function checkNewVersionAvailable($auto=1){
 	global $db,$lang,$cfg_glpi;
 
-	if (!haveRight("update","1")) return false;	
+	if (!haveRight("update","r")) return false;	
 
 	$do_check=1;
 	
@@ -1620,21 +1620,35 @@ function checkNewVersionAvailable($auto=1){
 		}
 				
 	}
-	 if ($do_check)
-	 if (ini_get('allow_url_fopen')){
+	
+	 if (!$do_check){
 	 	echo "<br>";
 	 	if ($auto) echo "<div align='center'><strong>".$lang["setup"][310]."</strong></div>";
-		 $fp = fopen("http://glpi.indepnet.org/latest_version", 'r');
-	     $latest_version = trim(@fread($fp, 16));
-		 fclose($fp);
-		 if ($latest_version == '')
-			echo "<div align='center'>".$lang["setup"][304]."</div>";
-		 else {			
-	        $cur_version = str_replace(array('.', ' '), '', strtolower($cfg_glpi["version"]));
-            $cur_version = (strlen($cur_version) == 2) ? intval($cur_version) * 10 : intval($cur_version);
+		$latest_version = '';
+		
+		 if ($fp=fsockopen("glpi.indepnet.org", 80, $errno, $errstr, 10)){
+			
+		   	$out = "GET /latest_version HTTP/1.1\r\n";
+			//$out .= "Host: ".$_SERVER["SERVER_ADDR"]."\r\n";
+			$out .= "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.8) Gecko/20051111 Firefox/1.5 \r\n";	
+			$out .= "Connection: Close\r\n\r\n";
+			echo $out;
+			fwrite($fp, $out);
+			
+  			while (!feof($fp)) {
+       				$latest_version=fgets($fp, 128);
+   			}
+		 	fclose($fp);
+		 }
 
-            $lat_version = str_replace('.', '', strtolower($latest_version));
-            $lat_version = (strlen($lat_version) == 2) ? intval($lat_version) * 10 : intval($lat_version);
+		 if (strlen(trim($latest_version)) == 0)
+			echo "<div align='center'>".$lang["setup"][304]." $errstr</div>";
+		 else {			
+			$cur_version = str_replace(array('.', ' '), '', strtolower(trim($cfg_glpi["version"])));
+			$cur_version = ($cur_version<10) ? intval($cur_version) * 10 : intval($cur_version);
+		
+			$lat_version = str_replace('.', '', strtolower(trim($latest_version)));
+			$lat_version = ($lat_version< 10) ? intval($lat_version) * 10 : intval($lat_version);
 
 			if ($cur_version < $lat_version){
 				echo "<div align='center'>".$lang["setup"][301]." ".$latest_version."</div>";
@@ -1655,8 +1669,7 @@ function checkNewVersionAvailable($auto=1){
 					$db->query($query);
 					}
 			}
- 	} else 
- 	echo "<div align='center'>".$lang["setup"][305]."</div>";           
+ 	} 
 }
 
 /**

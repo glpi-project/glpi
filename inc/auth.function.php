@@ -213,8 +213,8 @@ function checkTypeRight($type,$right) {
 function checkCentralAccess(){
 
 	global $lang,$HTMLRel,$HEADER_LOADED;
-
-	if ($_SESSION["glpiprofile"]["interface"]!="central"){
+	
+	if (!isset($_SESSION["glpiprofile"])||$_SESSION["glpiprofile"]["interface"]!="central"){
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
@@ -234,7 +234,7 @@ function checkHelpdeskAccess(){
 
 	global $lang,$HTMLRel,$HEADER_LOADED;
 
-	if ($_SESSION["glpiprofile"]["interface"]!="helpdesk"){
+	if (!isset($_SESSION["glpiprofile"])||$_SESSION["glpiprofile"]["interface"]!="helpdesk"){
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);

@@ -592,7 +592,6 @@ function cron_ocsng(){
 
 		$query_glpi = "SELECT * FROM glpi_ocs_link ORDER BY last_update";
 		$result_glpi = $db->query($query_glpi);
-		$done=false;
 		while(!$done&&$data=$db->fetch_assoc($result_glpi)){
 			$data=addslashes_deep($data);
 			if (isset($hardware[$data["ocs_id"]])){ 
@@ -605,13 +604,11 @@ function cron_ocsng(){
 				}
 
 				ocsUpdateComputer($data["ID"],1);
-				$done=true;
 			}
 		}
-		if ($done) return -1;
-		else return 0;
 	
-	} else return 0;
+	} 
+	return 0;
 
 }
 
