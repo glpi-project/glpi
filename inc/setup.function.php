@@ -1687,65 +1687,20 @@ function ocsUpdateDBConfig($input, $id) {
 	
 }
 
-/**
-* Update the configuration of the OCS Mode
-*
-* Update this config from the form, do the query and go back to the form.
-*
-*@param $input array : The _POST values from the config form
-*@param $id int : template or basic computers
-*
-*@return nothing (displays or error)
-*
-**/
-function ocsUpdateConfig($input, $id) {
-	
-	global $db,$phproot;
-
-	$checksum=0;
-
-	if ($input["import_ip"]) $checksum|= pow(2,NETWORKS_FL);
-	if ($input["import_device_ports"]) $checksum|= pow(2,PORTS_FL);
-	if ($input["import_device_modems"]) $checksum|= pow(2,MODEMS_FL);
-	if ($input["import_device_drives"]) $checksum|= pow(2,STORAGES_FL);
-	if ($input["import_device_sound"]) $checksum|= pow(2,SOUNDS_FL);
-	if ($input["import_device_gfxcard"]) $checksum|= pow(2,VIDEOS_FL);
-	if ($input["import_device_iface"]) $checksum|= pow(2,NETWORKS_FL);
-	if ($input["import_device_hdd"]) $checksum|= pow(2,STORAGES_FL);
-	if ($input["import_device_memory"]) $checksum|= pow(2,MEMORIES_FL);
-	if (	$input["import_device_processor"]
-		||$input["import_general_contact"]
-		||$input["import_general_comments"]
-		||$input["import_general_domain"]
-		||$input["import_general_os"]) $checksum|= pow(2,HARDWARE_FL);
-	if (	$input["import_general_enterprise"]
-		||$input["import_general_type"]
-		||$input["import_general_model"]
-		||$input["import_general_serial"]) $checksum|= pow(2,BIOS_FL);
-	if ($input["import_printer"]) $checksum|= pow(2,PRINTERS_FL);
-	if ($input["import_software"]) $checksum|= pow(2,SOFTWARES_FL);
-	if ($input["import_monitor"]) $checksum|= pow(2,MONITORS_FL);
-	if ($input["import_periph"]) $checksum|= pow(2,INPUTS_FL);
-		
-	$query = "update glpi_ocs_config set tag_limit = '".$input["tag_limit"]."', default_state = '".$input["default_state"]."', import_periph = '".$input["import_periph"]."'  ,import_monitor = '".$input["import_monitor"]."',import_software =  '".$input["import_software"]."', import_printer = '".$input["import_printer"]."',`import_general_os` = '".$input["import_general_os"]."',`import_general_serial` = '".$input["import_general_serial"]."',`import_general_model` = '".$input["import_general_model"]."',`import_general_enterprise` = '".$input["import_general_enterprise"]."',`import_general_type` = '".$input["import_general_type"]."',`import_general_domain` = '".$input["import_general_domain"]."',`import_general_contact` = '".$input["import_general_contact"]."',`import_general_comments` = '".$input["import_general_comments"]."',`import_device_processor` = '".$input["import_device_processor"]."',`import_device_memory` = '".$input["import_device_memory"]."',`import_device_hdd` = '".$input["import_device_hdd"]."',`import_device_iface` = '".$input["import_device_iface"]."',`import_device_gfxcard` = '".$input["import_device_gfxcard"]."',`import_device_sound` = '".$input["import_device_sound"]."',`import_device_drives` = '".$input["import_device_drives"]."',`import_device_modems` = '".$input["import_device_modems"]."',`import_device_ports` = '".$input["import_device_ports"]."',`import_ip` = '".$input["import_ip"]."',`checksum` = '".$checksum."'  where ID = '".$id."'";
-
-	$db->query($query);
-}
 
 
 
 function ocsFormDBConfig($target, $id) {
 
 
-	global  $db,$dbocs,$lang;
+	global  $db,$dbocs,$lang,$cfg_glpi;
 
 	if (!haveRight("ocsng","w")) return false;	
 
-	$query = "select * from glpi_ocs_config where ID = '".$id."'";
-	$result = $db->query($query);
-	$data=$db->fetch_array($result);
+	$data=getOcsConf($id);
 
 	echo "<form name='formdbconfig' action=\"$target\" method=\"post\">";
+	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<input type='hidden' name='update_ocs_dbconfig' value='1'>";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["ocsconfig"][0]."</th></tr>";
@@ -1772,15 +1727,14 @@ function ocsFormDBConfig($target, $id) {
 function ocsFormConfig($target, $id) {
 
 
-	global  $db,$lang;
+	global  $db,$lang,$cfg_glpi;
 
 	if (!haveRight("ocsng","w")) return false;	
 
-	$query = "select * from glpi_ocs_config where ID = '".$id."'";
-	$result = $db->query($query);
-	$data=$db->fetch_array($result);
+	$data=getOcsConf($id);
 
 	echo "<form name='formconfig' action=\"$target\" method=\"post\">";
+	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<input type='hidden' name='update_ocs_config' value='1'>";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["ocsconfig"][5]."</th></tr>";
@@ -1834,147 +1788,81 @@ function ocsFormConfig($target, $id) {
 
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th>".$lang["ocsconfig"][27]."</th><th>".$lang["ocsconfig"][28]."</th></tr>";
-	$os=$data["import_general_os"];
-	$serial=$data["import_general_serial"];
-	$model=$data["import_general_model"];
-	$enterprise=$data["import_general_enterprise"];
-	$type=$data["import_general_type"];
-	$domain=$data["import_general_domain"];
-	$contact=$data["import_general_contact"];
-	$comments=$data["import_general_comments"];
 	echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][19]." </td><td>";
-	echo "<select name='import_general_os'>";
-	echo "<option value='0' ".($os==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($os==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][16]." </td><td>";
+	dropdownYesNoInt("import_general_name",$data["import_general_name"]);
 	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["computers"][9]." </td><td>";
+	dropdownYesNoInt("import_general_os",$data["import_general_os"]);
+	echo "</td></tr>";
+
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][19]." </td><td>";
-	echo "<select name='import_general_serial'>";
-	echo "<option value='0' ".($serial==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($serial==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	dropdownYesNoInt("import_general_serial",$data["import_general_serial"]);
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][22]." </td><td>";
-	echo "<select name='import_general_model'>";
-	echo "<option value='0' ".($model==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($model==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	dropdownYesNoInt("import_general_model",$data["import_general_model"]);
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][5]." </td><td>";
-	echo "<select name='import_general_enterprise'>";
-	echo "<option value='0' ".($enterprise==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($enterprise==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	dropdownYesNoInt("import_general_enterprise",$data["import_general_enterprise"]);
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][17]." </td><td>";
-	echo "<select name='import_general_type'>";
-	echo "<option value='0' ".($type==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($type==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	dropdownYesNoInt("import_general_type",$data["import_general_type"]);
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][24]." </td><td>";
-	echo "<select name='import_general_domain'>";
-	echo "<option value='0' ".($domain==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($domain==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][89]." </td><td>";
+	dropdownYesNoInt("import_general_domain",$data["import_general_domain"]);
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][18]." </td><td>";
-	echo "<select name='import_general_contact'>";
-	echo "<option value='0' ".($contact==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($contact==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	dropdownYesNoInt("import_general_contact",$data["import_general_contact"]);
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][25]." </td><td>";
-	echo "<select name='import_general_comments'>";
-	echo "<option value='0' ".($comments==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($comments==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	dropdownYesNoInt("import_general_comments",$data["import_general_comments"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;";
 	echo "</td></tr>";
-	$ip=$data["import_ip"];
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][38]." </td><td>";
-	echo "<select name='import_ip'>";
-	echo "<option value='0' ".($ip==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($ip==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["networking"][14]." </td><td>";
+	dropdownYesNoInt("import_ip",$data["import_ip"]);
 	echo "</td></tr>";
 
 	echo "</table></td>";
 	echo "<td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
-	$processor=$data["import_device_processor"];
-	$memory=$data["import_device_memory"];
-	$hdd=$data["import_device_hdd"];
-	$iface=$data["import_device_iface"];
-	$gfxcard=$data["import_device_gfxcard"];
-	$sound=$data["import_device_sound"];
-	$drives=$data["import_device_drives"];
-	$modems=$data["import_device_modems"];
-	$ports=$data["import_device_ports"];
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][29]." </td><td>";
-	echo "<select name='import_device_processor'>";
-	echo "<option value='0' ".($processor==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($processor==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["devices"][4]." </td><td>";
+	dropdownYesNoInt("import_device_processor",$data["import_device_processor"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][30]." </td><td>";
-	echo "<select name='import_device_memory'>";
-	echo "<option value='0' ".($memory==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($memory==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["devices"][6]." </td><td>";
+	dropdownYesNoInt("import_device_memory",$data["import_device_memory"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][31]." </td><td>";
-	echo "<select name='import_device_hdd'>";
-	echo "<option value='0' ".($hdd==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($hdd==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["devices"][1]." </td><td>";
+	dropdownYesNoInt("import_device_hdd",$data["import_device_hdd"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][32]." </td><td>";
-	echo "<select name='import_device_iface'>";
-	echo "<option value='0' ".($iface==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($iface==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["devices"][3]." </td><td>";
+	dropdownYesNoInt("import_device_iface",$data["import_device_iface"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][33]." </td><td>";
-	echo "<select name='import_device_gfxcard'>";
-	echo "<option value='0' ".($gfxcard==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($gfxcard==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["devices"][2]." </td><td>";
+	dropdownYesNoInt("import_device_gfxcard",$data["import_device_gfxcard"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][34]." </td><td>";
-	echo "<select name='import_device_sound'>";
-	echo "<option value='0' ".($sound==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($sound==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["devices"][7]." </td><td>";
+	dropdownYesNoInt("import_device_sound",$data["import_device_sound"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][35]." </td><td>";
-	echo "<select name='import_device_drives'>";
-	echo "<option value='0' ".($drives==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($drives==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["devices"][19]." </td><td>";
+	dropdownYesNoInt("import_device_drives",$data["import_device_drives"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][36]." </td><td>";
-	echo "<select name='import_device_modems'>";
-	echo "<option value='0' ".($modems==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($modems==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	dropdownYesNoInt("import_device_modems",$data["import_device_modems"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][37]." </td><td>";
-	echo "<select name='import_device_ports'>";
-	echo "<option value='0' ".($ports==0?" selected ":"").">".$lang["choice"][0]."</option>";
-	echo "<option value='1' ".($ports==1?" selected ":"").">".$lang["choice"][1]."</option>";
-	echo "</select>";
+	dropdownYesNoInt("import_device_ports",$data["import_device_ports"]);
 	echo "</td></tr>";
 
 	echo "</table></td></tr>";

@@ -40,6 +40,8 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("config","w");
 $config= new Config();
+if ($cfg_glpi["ocs_mode"]) $ocsconfig=new ConfigOCS();
+
 
 if (!isset($_SESSION['glpi_mailconfig'])) $_SESSION['glpi_mailconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_mailconfig']=$_GET['onglet'];
@@ -68,7 +70,7 @@ if(!empty($_GET["next"])) {
 	}
 	elseif($_GET["next"] == "ocsng") {
 		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
-		ocsFormDBConfig($_SERVER["PHP_SELF"], 1);
+		ocsFormDBConfig($_SERVER["PHP_SELF"], $cfg_glpi["ID"]);
 	}
 	
 	
@@ -99,10 +101,11 @@ elseif(!empty($_POST["update_confdisplay"])) {
 	$config->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=confdisplay");
 } elseif(!empty($_POST["update_ocs_config"])) {
-	ocsUpdateConfig($_POST, 1);
+	
+	$ocsconfig->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=ocsng");
 } elseif(!empty($_POST["update_ocs_dbconfig"])) {
-	ocsUpdateDBConfig($_POST, 1);
+	$ocsconfig->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=ocsng");
 }
 

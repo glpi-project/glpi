@@ -369,6 +369,12 @@ if(TableExists("glpi_kbitems")){
 	// Security user Helpdesk
 	$query="UPDATE glpi_users SET password='', active='0' WHERE name='Helpdesk';";
 	$db->query($query) or die("0.68 security update for user Helpdesk ".$lang["update"][90].$db->error());
+
+	if(!FieldExists("glpi_ocs_config","import_general_name")) {	
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_general_name` INT( 2 ) NOT NULL DEFAULT '0' AFTER `import_printer`"; 
+		$db->query($query) or die("0.68 add import_name in ocs_config ".$lang["update"][90].$db->error());
+	}
+
 } // fin 0.68 #####################################################################################
 
 ?>
