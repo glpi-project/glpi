@@ -1630,7 +1630,7 @@ function checkNewVersionAvailable($auto=1){
 		
 			$request  = "GET /latest_version HTTP/1.1\r\n";
 			$request .= "Host: glpi.indepnet.org\r\n";
-			$request .= 'User-Agent: GLPICheckAuth/'.trim($cfg_glpi["version"])."\r\n";
+			$request .= 'User-Agent: GLPICheckUpdate/'.trim($cfg_glpi["version"])."\r\n";
 			$request .= "Connection: Close\r\n\r\n";
 			 
 			fwrite($fp, $request);
