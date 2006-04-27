@@ -592,7 +592,7 @@ function cron_ocsng(){
 		while(!$done&&$data=$db->fetch_assoc($result_glpi)){
 			$data=addslashes_deep($data);
 			if (isset($hardware[$data["ocs_id"]])){ 
-				$needed=array("computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking");
+				$needed=array("computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
 				foreach ($needed as $item){
 					if (file_exists($phproot . "/inc/$item.class.php"))
 						include_once ($phproot . "/inc/$item.class.php");
