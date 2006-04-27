@@ -168,7 +168,7 @@ class ConsumableType extends CommonDBTM {
 		echo "</td></tr>\n";
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["consumables"][38].":</td><td colspan='2'><select name='alarm'>\n";
-		for ($i=0;$i<=100;$i++)
+		for ($i=-1;$i<=100;$i++)
 			echo "<option value='$i' ".($i==$this->fields["alarm"]?" selected ":"").">$i</option>";
 		echo "</select></td></tr>\n";
 		
