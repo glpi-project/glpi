@@ -44,7 +44,7 @@ include ($phproot . "/inc/includes.php");
 if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))
 {
 	$id = new Identification();
-	$id->setCookies();
+	$id->initSession();
 }
 checkRight("create_ticket","1");
 
