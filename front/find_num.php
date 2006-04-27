@@ -41,7 +41,7 @@
 if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))
 {
 	$id = new Identification();
-	$id->setCookies();
+	$id->initSession();
 } else exit();
 
 // Send UTF8 Headers

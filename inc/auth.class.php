@@ -476,38 +476,31 @@ global $cfg_glpi;
 	} // connection_db()
 
 
-	// Set Cookie for this user
-	function setCookies()
+	// Init session for this user
+	function initSession()
 	{
 		global $cfg_glpi;
 
-		$ID = $this->user->fields['ID'];
-		$name = $this->user->fields['name'];
-		$realname = $this->user->fields['realname'];
-		$password = md5($this->user->fields['password']);
-		$language = $this->user->fields['language'];
-		$tracking_order = $this->user->fields['tracking_order'];
-
 		if(!session_id()) session_start();
-		$_SESSION["glpiID"] = $ID;
-		$_SESSION["glpipass"] = $password;
-		$_SESSION["glpiname"] = $name;
-		$_SESSION["glpirealname"] = $realname;
-		$_SESSION["glpilanguage"] = $language;
-		$_SESSION["glpitracking_order"] = $tracking_order;
+		$_SESSION["glpiID"] = $this->user->fields['ID'];
+		$_SESSION["glpiname"] = $this->user->fields['name'];
+		$_SESSION["glpirealname"] = $this->user->fields['realname'];
+		$_SESSION["glpilanguage"] = $this->user->fields['language'];
+		$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
 		$_SESSION["glpiauthorisation"] = true;
 		$_SESSION["glpiextauth"] = $this->extauth;
 		$_SESSION["glpisearchcount"] = array();
 		$_SESSION["glpisearchcount2"] = array();
 		$_SESSION["glpiroot"] = $cfg_glpi["root_doc"];
 		$_SESSION["glpilist_limit"] = $cfg_glpi["list_limit"];
+		$_SESSION["glpicrontimer"]=time();
 		$prof=new Profile();
-		$prof->getFromDBForUser($ID);
+		$prof->getFromDBForUser($_SESSION["glpiID"]);
 		$prof->cleanProfile();
 		$_SESSION["glpiprofile"]=$prof->fields;
 	}
 
-	function eraseCookies()
+	function destroySession()
 	{
 		$_SESSION = array();
 		session_destroy();
