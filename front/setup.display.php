@@ -127,7 +127,7 @@ $db->query($query);
 	
 //	asort($dp);
 	
-	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/setup/setup-display.php\">";
+	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 	echo $lang["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
 
@@ -143,7 +143,7 @@ echo "<option value='$key' $sel>".$val."</option>";
 	echo "<div align='center'>";
 	echo "<table class='tab_cadre' cellpadding='2' width='50%' ><tr><th colspan='4'>";
 	echo $lang["setup"][252].": </th></tr><tr class='tab_bg_1'><td colspan='4' align='center'>";
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/setup/setup-display.php\">";
+	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 	echo "<input type='hidden' name='which' value='$which'>";
 	echo "<select name='to_add'>";
 	foreach ($SEARCH_OPTION[$which] as $key => $val)
@@ -174,7 +174,7 @@ echo "<option value='$key' $sel>".$val."</option>";
 		echo "</td>";
 		if ($i!=0){
 			echo "<td align='center' valign='middle'>";
-			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/setup/setup-display.php\">";
+			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 			echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 			echo "<input type='hidden' name='which' value='$which'>";
 			echo "<input type='image' name='up'  value=\"".$lang["buttons"][24]."\"  src=\"".$HTMLRel."pics/puce-up2.png\" alt=\"".$lang["buttons"][24]."\"  title=\"".$lang["buttons"][24]."\" >";	
@@ -183,7 +183,7 @@ echo "<option value='$key' $sel>".$val."</option>";
 		} else echo "<td>&nbsp;</td>";
 		if ($i!=$numrows-1){
 			echo "<td align='center' valign='middle'>";
-			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/setup/setup-display.php\">";
+			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 			echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 			echo "<input type='hidden' name='which' value='$which'>";
 			echo "<input type='image' name='down' value=\"".$lang["buttons"][25]."\" src=\"".$HTMLRel."pics/puce-down2.png\" alt=\"".$lang["buttons"][25]."\"  title=\"".$lang["buttons"][25]."\" >";	
@@ -191,7 +191,7 @@ echo "<option value='$key' $sel>".$val."</option>";
 			echo "</td>";
 		} else echo "<td>&nbsp;</td>";
 		echo "<td align='center' valign='middle'>";
-		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/setup/setup-display.php\">";
+		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 		echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 		echo "<input type='hidden' name='which' value='$which'>";
 		echo "<input type='image' name='delete' value=\"".$lang["buttons"][6]."\"src=\"".$HTMLRel."pics/puce-delete2.png\" alt=\"".$lang["buttons"][6]."\"  title=\"".$lang["buttons"][6]."\" >";	
