@@ -247,7 +247,8 @@ class Netport extends CommonDBTM {
 
 
 	function prepareInputForAdd($input) {
-		unset($input['search']);
+		if (strlen($input["logical_number"])==0) unset($input["logical_number"]);
+		//unset($input['search']);
 		return $input;
 	}
 

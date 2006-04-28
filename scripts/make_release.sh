@@ -63,22 +63,8 @@ cp -rf $INIT_DIR /tmp/glpi;
 echo "Move to this directory";
 cd /tmp/glpi;
 
-echo "Delete CVS/SVN directories";
-\rm -rf CVS;
-\rm -rf */CVS;
-\rm -rf */*/CVS;
-\rm -rf */*/*/CVS;
-\rm -rf */*/*/*/CVS;
-\rm -rf */*/*/*/*/CVS;
-\rm -rf .svn;
-\rm -rf */.svn;
-\rm -rf */*/.svn;
-\rm -rf */*/*/.svn;
-\rm -rf */*/*/*/.svn;
-\rm -rf */*/*/*/*/.svn;
-
-echo "Delete template Headers"
-\rm HEADER;
+echo "Delete SVN directories";
+find . -name .svn -type d -exec  \rm -rf {} \;
 
 echo "Delete bigdumps and older sql files";
 \rm install/mysql/*bigdump*;
