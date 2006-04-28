@@ -292,7 +292,7 @@ function sendFile($file,$filename){
 		
      	header("Content-type: ".$mime);
 		 // Condition for IE bug
-		 if (!ereg("https://",$_SERVER["SCRIPT_URI"]))
+		 if (isset($_SERVER["SCRIPT_URI"])&&!ereg("https://",$_SERVER["SCRIPT_URI"]))
 	     	header('Pragma: no-cache');
      	header('Expires: 0');
 		$f=fopen($file,"r");

@@ -42,7 +42,13 @@ checkRight("document","r");
 if (isset($_GET["file"])){
 $splitter=split("/",$_GET["file"]);
 if (count($splitter)==2)
-	sendFile($cfg_glpi["doc_dir"]."/".$_GET["file"],$splitter[1]);
+	$send=false;
+	if (!$splitter[0][0]=="_") $send=true;
+	else if ($splitter[0]=="_dumps"&&haveRight("backup","w")) $send=true;
+	else $send=false;
+	if ($send&&file_exists($cfg_glpi["doc_dir"]."/".$_GET["file"]))
+		sendFile($cfg_glpi["doc_dir"]."/".$_GET["file"],$splitter[1]);
+	else echo "You do not have right to give this file";
 }
 
 
