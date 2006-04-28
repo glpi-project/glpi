@@ -32,8 +32,10 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-if(!session_id()){@session_start();}
 include ("_relpos.php");
+session_save_path($phproot."/files/_sessions");
+if(!session_id()){@session_start();}
+
 include_once ($phproot . "/inc/timer.class.php");
 
 // Init Timer to compute time of display

@@ -40,11 +40,6 @@ checkRight("backup","w");
 
 // full path 
 $path = $cfg_glpi["dump_dir"] ;
-if (!is_dir($path)) mkdir($path, 0777);
-if (isset($_GET["sendFile"])){
-sendFile($path.$_GET["sendFile"],$_GET["sendFile"]);
-exit();
-}
 
 
 
@@ -605,7 +600,7 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"". $HTMLRel."pi
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
 
 			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$lang["backup"][14]."</a>&nbsp;</td>
-	        	<td>&nbsp;<a href=\"backup.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
+	        	<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$lang["backup"][13]."</a></td></tr>";
 	    }
 	      }
 closedir($dir);
@@ -622,7 +617,7 @@ $dir=opendir($path);
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
                          	<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
-	        	<td>&nbsp;<a  href=\"backup.php?sendFile=$file\">".$lang["backup"][13]."</a></td></tr>";
+	        	<td>&nbsp;<a  href=\"document.send.php?file=_dumps/$file\">".$lang["backup"][13]."</a></td></tr>";
 	    }
 	}
 	closedir($dir);
