@@ -74,7 +74,7 @@ if ($cfg_glpi["ocs_mode"]&&haveRight("ocsng","w"))
 $data=array();
 $data["setup.display.php"]=$lang["setup"][250];
 if (haveRight("dropdown","w")){
-	$data["setup.dropdown.php"]=$lang["setup"][0];
+	$data["setup.dropdowns.php"]=$lang["setup"][0];
 }
 if (haveRight("device","w")){
 	$data[$HTMLRel."front/device.php"]=$lang["setup"][222];
