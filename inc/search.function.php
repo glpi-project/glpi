@@ -1122,7 +1122,7 @@ default:
 *@param $val item num in the request
 *@param $nott is it a negative serach ?
 *@param $type device type
-*@param $meta is a meta search (meta=2 in includes_search.php)
+*@param $meta is a meta search (meta=2 in search.class.php)
 *
 *@return select string
 *
