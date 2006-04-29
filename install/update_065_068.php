@@ -374,6 +374,52 @@ if(TableExists("glpi_kbitems")){
 		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_general_name` INT( 2 ) NOT NULL DEFAULT '0' AFTER `import_printer`"; 
 		$db->query($query) or die("0.68 add import_name in ocs_config ".$lang["update"][90].$db->error());
 	}
+	// Clean default values for devices
+	if(FieldExists("glpi_device_drive","speed")) {	
+		$query = "ALTER TABLE `glpi_device_drive` CHANGE `speed` `speed` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter speed in device_drive ".$lang["update"][90].$db->error());
+	}
+
+	if(FieldExists("glpi_device_gfxcard","ram")) {	
+		$query = "ALTER TABLE `glpi_device_gfxcard` CHANGE `ram` `ram` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter ram in device_gfxcard ".$lang["update"][90].$db->error());
+	}
+	
+	if(FieldExists("glpi_device_hdd","rpm")) {	
+		$query = "ALTER TABLE `glpi_device_hdd` CHANGE `rpm` `rpm` VARCHAR( 255 ) NULL , CHANGE `cache` `cache` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter rpm and cache in device_hdd ".$lang["update"][90].$db->error());
+	}	
+
+	if(FieldExists("glpi_device_iface","bandwidth")) {	
+		$query = "ALTER TABLE `glpi_device_iface` CHANGE `bandwidth` `bandwidth` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter bandwidth in device_iface ".$lang["update"][90].$db->error());
+	}
+
+	if(FieldExists("glpi_device_moboard","chipset")) {	
+		$query = "ALTER TABLE `glpi_device_moboard` CHANGE `chipset` `chipset` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter chipset in device_moboard ".$lang["update"][90].$db->error());
+	}
+	
+	if(FieldExists("glpi_device_drive","speed")) {	
+		$query = "ALTER TABLE `glpi_device_drive` CHANGE `speed` `speed` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter speed in device_drive ".$lang["update"][90].$db->error());
+	}
+	
+	if(FieldExists("glpi_device_power","power")) {	
+		$query = "ALTER TABLE `glpi_device_power` CHANGE `power` `power` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter power in device_power ".$lang["update"][90].$db->error());
+	}
+	
+	if(FieldExists("glpi_device_ram","frequence")) {	
+		$query = "ALTER TABLE `glpi_device_ram` CHANGE `frequence` `frequence` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter frequence in device_ram ".$lang["update"][90].$db->error());
+	}
+
+	if(FieldExists("glpi_device_sndcard","type")) {	
+		$query = "ALTER TABLE `glpi_device_sndcard` CHANGE `type` `type` VARCHAR( 255 ) NULL "; 
+		$db->query($query) or die("0.68 alter type in device_sndcard ".$lang["update"][90].$db->error());
+	}	
+	
 
 } // fin 0.68 #####################################################################################
 

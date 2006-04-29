@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-04-27 03:48
+#GLPI Dump database on 2006-04-29 13:23
 
 ### Dump table glpi_cartridges
 
@@ -188,7 +188,7 @@ CREATE TABLE `glpi_config` (
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -386,7 +386,7 @@ CREATE TABLE `glpi_device_drive` (
     `ID` int(11) NOT NULL auto_increment,
     `designation` varchar(255),
     `is_writer` enum('Y','N') DEFAULT 'Y' NOT NULL,
-    `speed` varchar(30) NOT NULL,
+    `speed` varchar(255),
     `interface` enum('IDE','SATA','SCSI') DEFAULT 'IDE' NOT NULL,
     `comment` text,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
@@ -403,7 +403,7 @@ DROP TABLE IF EXISTS `glpi_device_gfxcard`;
 CREATE TABLE `glpi_device_gfxcard` (
     `ID` int(11) NOT NULL auto_increment,
     `designation` varchar(255),
-    `ram` varchar(10) NOT NULL,
+    `ram` varchar(255),
     `interface` enum('AGP','PCI','PCI-X','Other') DEFAULT 'AGP' NOT NULL,
     `comment` text,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
@@ -420,9 +420,9 @@ DROP TABLE IF EXISTS `glpi_device_hdd`;
 CREATE TABLE `glpi_device_hdd` (
     `ID` int(11) NOT NULL auto_increment,
     `designation` varchar(255),
-    `rpm` varchar(20) NOT NULL,
+    `rpm` varchar(255),
     `interface` int(11) DEFAULT '0' NOT NULL,
-    `cache` varchar(20) NOT NULL,
+    `cache` varchar(255),
     `comment` text,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `specif_default` varchar(250),
@@ -438,7 +438,7 @@ DROP TABLE IF EXISTS `glpi_device_iface`;
 CREATE TABLE `glpi_device_iface` (
     `ID` int(11) NOT NULL auto_increment,
     `designation` varchar(255),
-    `bandwidth` varchar(20) NOT NULL,
+    `bandwidth` varchar(255),
     `comment` text,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `specif_default` varchar(250),
@@ -454,7 +454,7 @@ DROP TABLE IF EXISTS `glpi_device_moboard`;
 CREATE TABLE `glpi_device_moboard` (
     `ID` int(11) NOT NULL auto_increment,
     `designation` varchar(255),
-    `chipset` varchar(120) NOT NULL,
+    `chipset` varchar(255),
     `comment` text,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `specif_default` varchar(250),
@@ -485,7 +485,7 @@ DROP TABLE IF EXISTS `glpi_device_power`;
 CREATE TABLE `glpi_device_power` (
     `ID` int(11) NOT NULL auto_increment,
     `designation` varchar(255),
-    `power` varchar(20) NOT NULL,
+    `power` varchar(255),
     `atx` enum('Y','N') DEFAULT 'Y' NOT NULL,
     `comment` text,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
@@ -518,7 +518,7 @@ DROP TABLE IF EXISTS `glpi_device_ram`;
 CREATE TABLE `glpi_device_ram` (
     `ID` int(11) NOT NULL auto_increment,
     `designation` varchar(255),
-    `frequence` varchar(8) NOT NULL,
+    `frequence` varchar(255),
     `comment` text,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `specif_default` varchar(250),
@@ -535,7 +535,7 @@ DROP TABLE IF EXISTS `glpi_device_sndcard`;
 CREATE TABLE `glpi_device_sndcard` (
     `ID` int(11) NOT NULL auto_increment,
     `designation` varchar(255),
-    `type` varchar(100) NOT NULL,
+    `type` varchar(255),
     `comment` text,
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
     `specif_default` varchar(250),
@@ -1110,7 +1110,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-27 03:47:35','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-29 13:23:28','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
