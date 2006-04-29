@@ -78,7 +78,7 @@ $number_of_phone = $db->numrows($result);
 
 # Titre
 
-echo "<form name='form' method='post' action='contrats-list.php'>";
+echo "<form name='form' method='post' action='report.contract.list.php'>";
 
 echo "<div align='center'>";
 echo "<table class='tab_cadre' >";

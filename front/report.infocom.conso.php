@@ -56,7 +56,7 @@ $_POST["date1"]=$_POST["date2"];
 $_POST["date2"]=$tmp;
 }
 
-echo "<div align='center'><form method=\"post\" name=\"form\" action=\"infocoms_conso.php\">";
+echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $lang["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);

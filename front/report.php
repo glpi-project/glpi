@@ -57,7 +57,7 @@ echo "<tr><th>".$lang["reports"][0].":</th></tr>";
 // Report generation
 // Default Report included
 $report_list["default"]["name"] = $lang["reports"][26];
-$report_list["default"]["file"] = "reports/default.php";
+$report_list["default"]["file"] = "report.default.php";
 
 // Vous pouvez faire vos propres rapports :
 // My Own Report:
@@ -67,17 +67,17 @@ $report_list["default"]["file"] = "reports/default.php";
 
 // Rapport ajoutés par GLPI V0.2
 $report_list["Contrats"]["name"] = $lang["reports"][27];
-$report_list["Contrats"]["file"] = "reports/contrats.php";
+$report_list["Contrats"]["file"] = "report.contract.php";
 $report_list["Par_annee"]["name"] = $lang["reports"][28];
-$report_list["Par_annee"]["file"] = "reports/parAnnee.php";
+$report_list["Par_annee"]["file"] = "report.year.php";
 //$report_list["Intervention"]["name"] = $lang["reports"][25];
 //$report_list["Intervention"]["file"] = "reports/tracking.php";
 $report_list["Rapport prises reseau"]["name"]=$lang["reports"][33];
-$report_list["Rapport prises reseau"]["file"]="reports/reseau.php";
+$report_list["Rapport prises reseau"]["file"]="report.networking.php";
 $report_list["Infocoms"]["name"]=$lang["reports"][62];
-$report_list["Infocoms"]["file"]="reports/infocoms.php";
+$report_list["Infocoms"]["file"]="report.infocom.php";
 $report_list["Infocoms2"]["name"]=$lang["reports"][63];
-$report_list["Infocoms2"]["file"]="reports/infocoms_conso.php";
+$report_list["Infocoms2"]["file"]="report.infocom.conso.php";
 
 $i = 0;
 $count = count($report_list);

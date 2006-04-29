@@ -46,7 +46,7 @@ commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 # Titre
 
 
-echo "<form name='form' method='post' action='parAnnee-list.php'>";
+echo "<form name='form' method='post' action='report.year.list.php'>";
 
 echo "<div align='center'>";
 echo "<table class='tab_cadre' >";
