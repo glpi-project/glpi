@@ -87,7 +87,7 @@ class DBmysql {
 		}
 		
 		//mysql_ping($this->dbh);
-		$res=mysql_query($query,$this->dbh);
+		$res=@mysql_query($query,$this->dbh);
 		if (!$res) {
 			$this->DBmysql();
 			$res=mysql_query($query,$this->dbh);
