@@ -61,7 +61,7 @@ $report_list["switch"]["file"] = "parSwitch.php";
 $report_list["prise"]["name"] = $lang["reports"][37];
 $report_list["prise"]["file"] = "parPrises.php";
 
-echo "<form name='form' method='post' action='parLieu-list.php'>";
+echo "<form name='form' method='post' action='report.location.list.php'>";
 echo "<table class='tab_cadre'  width='500'>";
 echo "<tr class='tab_bg_1'><td>".$lang["reports"][39]."</td>";
 echo "<td>";
@@ -73,7 +73,7 @@ echo "<input type='submit' value='".$lang["reports"][15]."' class='submit'>";
 	echo "</form>";
 
 
-echo "<form name='form2' method='post' action='parSwitch-list.php'>";
+echo "<form name='form2' method='post' action='reoprt.switch.list.php'>";
 echo "<table class='tab_cadre' width='500'>";
 echo "<tr class='tab_bg_1'><td>".$lang["reports"][41]."</td>";
 echo "<td>";
@@ -86,7 +86,7 @@ echo "<input type='submit' value='".$lang["reports"][15]."' class='submit'>";
 
 
 if (countElementsInTable("glpi_dropdown_netpoint")>0){
-	echo "<form name='form3' method='post' action='parPrises-list.php'>";
+	echo "<form name='form3' method='post' action='report.netpoint.list.php'>";
 	echo "<table class='tab_cadre'  width='500'>";
 	echo "<tr class='tab_bg_1'><td>".$lang["reports"][42]."</td>";
 	echo "<td>";
