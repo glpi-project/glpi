@@ -1253,7 +1253,7 @@ $lang["setup"][237]="Administrateur";
 $lang["setup"][238]="Demandeur";
 $lang["setup"][239]="Technicien chargé du ticket";
 $lang["setup"][240]="Options de notification";
-
+$lang["setup"][241]="Aucun critère personnel. Voulez vous créer vos paramètres personnels ?";
 
 $lang["setup"][250]="Affichage recherche par défaut ";
 $lang["setup"][251]="Sélectionnez une rubrique ";

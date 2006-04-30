@@ -37,6 +37,8 @@
 //Ce script g��e ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
 error_reporting(0);   // Baaz si tu touches �cette ligne  pour tes tests merci de la remettre en �at quand tu commits.
+
+session_save_path("../files/_sessions");
 $cfg_glpi["debug"]=0;
 //Print a correct  Html header for application
 function header_html($etape)

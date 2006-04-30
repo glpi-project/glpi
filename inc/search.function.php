@@ -398,13 +398,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// Add first element (name)
 	array_push($toview,1);
 	// Add default items
-	$query="SELECT * FROM glpi_display WHERE type='$type' ORDER by rank";
+	$query="SELECT * FROM glpi_display WHERE type='$type' AND FK_users='".$_SESSION["glpiID"]."' ORDER by rank";
 	$result=$db->query($query);
+	// GET default serach options
+	if ($db->numrows($result)==0){
+		$query="SELECT * FROM glpi_display WHERE type='$type' AND FK_users='0' ORDER by rank";
+		$result=$db->query($query);
+	}
+	
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result))
 			array_push($toview,$data["num"]);
 	}
-
+	
 	// Add searched items
 	if (count($field)>0)
 		foreach($field as $key => $val)

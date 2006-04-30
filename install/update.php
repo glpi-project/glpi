@@ -41,6 +41,8 @@ include ($phproot . "/inc/db.function.php");
 include ($phproot . "/config/based_config.php");
 include ($cfg_glpi["config_dir"] . "/config_db.php");
 
+session_save_path("../files/_sessions");
+
 // Init debug variable
 $cfg_glpi["debug"]=0;
 

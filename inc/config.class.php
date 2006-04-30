@@ -35,7 +35,6 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-// And Marco Gaiarin for ldap features 
 
  
 // CLASSES Setup
