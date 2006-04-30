@@ -46,7 +46,8 @@ checkRight("networking","r");
 
 commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 
-titleNetdevices();
+$netdevice=new Netdevice();
+$netdevice->title();
 
 
 manageGetValuesInSearch(NETWORKING_TYPE);

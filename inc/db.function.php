@@ -564,4 +564,57 @@ function isIndex($table, $field) {
   return $TAB;
  }
 
+
+//***************************************************************
+// Création automatique d'un nouveau code à partir du gabarit
+// @object     : objet concerné
+// @field      : nom de champ du gabarit contenant le format du code
+// @isTemplate : true si template new
+// @type       : type d'objet
+function autoName($objectName, $field, $isTemplate, $type){
+	global $LINK_ID_TABLE,$db;
+	
+	//$objectName = isset($object->fields[$field]) ? $object->fields[$field] : '';
+	
+	$len = strlen($objectName);
+	if($isTemplate && $len > 8 && substr($objectName,0,4) === '&lt;' && substr($objectName,$len - 4,4) === '&gt;') {
+		$autoNum = substr($objectName, 4, $len - 8);
+		$mask = '';
+		if(preg_match( "/\\#{1,10}/", $autoNum, $mask)){
+			$global = strpos($autoNum, '\\g') !== false && $type != INFOCOM_TYPE ? 1 : 0;
+			$autoNum = str_replace(array('\\y','\\Y','\\m','\\d','_','%','\\g'), array(date('y'),date('Y'),date('m'),date('d'),'\\_','\\%',''), $autoNum);
+			$mask = $mask[0];
+			$pos = strpos($autoNum, $mask) + 1;
+			$len = strlen($mask);
+			$like = str_replace('#', '_', $autoNum);
+			if ($global == 1){
+				$query = "";
+				$first = 1;
+				foreach($LINK_ID_TABLE as $t=>$table){
+					if ($t == COMPUTER_TYPE || $t == MONITOR_TYPE  || $t == NETWORKING_TYPE || $t == PERIPHERAL_TYPE || $t == PRINTER_TYPE || $t == PHONE_TYPE){
+						$query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code FROM $table WHERE $field LIKE '$like' AND deleted = 'N' AND is_template = '0'";
+					$first = 0;
+					}
+				}
+				$query = "SELECT CAST(SUBSTRING(code, $pos, $len) AS unsigned) AS no FROM ($query) AS codes";
+			} else	{
+				$table = $LINK_ID_TABLE[$type];
+				$query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no FROM $table"
+				." WHERE $field LIKE '$like' ";
+				if ($type != INFOCOM_TYPE)
+					$query .= " AND deleted = 'N' AND is_template = '0'";
+			}
+			$query = "SELECT MAX(Num.no) AS lastNo FROM (".$query.") AS Num";
+			$resultNo = $db->query($query);
+
+			if ($db->numrows($resultNo)>0) {
+				$data = $db->fetch_array($resultNo);
+				$newNo = $data['lastNo'] + 1;
+			} else	$newNo = 0;
+			$objectName = str_replace(array($mask,'\\_','\\%'), array(str_pad($newNo, $len, '0', STR_PAD_LEFT),'_','%'), $autoNum);
+		}
+	}
+	return $objectName;
+    }
+
 ?>
