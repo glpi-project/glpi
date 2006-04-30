@@ -204,11 +204,21 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo ">".$lang["search"][11]."</option>";
 
         	reset($options);
+		$first_group=true;
 		foreach ($options as $key => $val) {
-			echo "<option value=\"".$key."\""; 
-			if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-			echo ">". substr($val["name"],0,30) ."</option>\n";
+			// print groups
+			if (!is_array($val)){
+				if (!$first_group) echo "</optgroup>";
+				else $first_group=false;
+				echo "<optgroup label=\"$val\">";
+			}else {
+				echo "<option value=\"".$key."\""; 
+				if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
+				echo ">". substr($val["name"],0,30) ."</option>\n";
+			}
 		}
+		if (!$first_group)
+			echo "</optgroup>";
 
     	echo "<option value='all' ";
 		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
@@ -312,11 +322,22 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($options);
+	$first_group=true;
 	foreach ($options as $key => $val) {
-		echo "<option value=\"".$key."\"";
-		if($key == $sort) echo " selected";
-		echo ">".substr($val["name"],0,20)."</option>\n";
+		if (!is_array($val)){
+			if (!$first_group) echo "</optgroup>";
+			else $first_group=false;
+			echo "<optgroup label=\"$val\">";
+		}else {
+
+			echo "<option value=\"".$key."\"";
+			if($key == $sort) echo " selected";
+			echo ">".substr($val["name"],0,20)."</option>\n";
+		}
 	}
+	if (!$first_group)
+		echo "</optgroup>";
+
 	echo "</select> ";
 	echo "</td>";
 	

@@ -200,6 +200,7 @@ $lang["common"][28]="Supprimé";
 $lang["common"][29]="Plugins";
 $lang["common"][30]="Nouvel item";
 $lang["common"][31]="Gabarit vide";
+$lang["common"][32]="Caractéristiques";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
