@@ -419,7 +419,15 @@ if(TableExists("glpi_kbitems")){
 		$query = "ALTER TABLE `glpi_device_sndcard` CHANGE `type` `type` VARCHAR( 255 ) NULL "; 
 		$db->query($query) or die("0.68 alter type in device_sndcard ".$lang["update"][90].$db->error());
 	}	
+
+	if(!FieldExists("glpi_display","FK_users")) {	
+		$query = "ALTER TABLE `glpi_display` ADD `FK_users` INT NOT NULL DEFAULT '0'"; 
+		$db->query($query) or die("0.68 alter display add FK_users".$lang["update"][90].$db->error());
+		$query="ALTER TABLE `glpi_display` DROP INDEX `type_2` ,ADD UNIQUE `type_2` ( `type` , `num` , `FK_users` )";
+		$db->query($query) or die("0.68 alter display update unique key".$lang["update"][90].$db->error());
+	}	
 	
+ 
 
 } // fin 0.68 #####################################################################################
 

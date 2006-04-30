@@ -28,15 +28,10 @@
  ------------------------------------------------------------------------
 */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-// And Julien Dombre for externals identifications
-// And Marco Gaiarin for ldap features
  
 
 include ("_relpos.php");
