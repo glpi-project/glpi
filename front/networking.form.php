@@ -45,11 +45,11 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-$nd=new Netdevice();
+$netdevice=new Netdevice();
 if (isset($_POST["add"]))
 {
 	checkRight("networking","w");
-	$newID=$nd->add($_POST);
+	$newID=$netdevice->add($_POST);
 	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." :  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -57,8 +57,8 @@ else if (isset($tab["delete"]))
 {
 	checkRight("networking","w");
 	if (!empty($tab["withtemplate"]))
-		$nd->delete($tab,1);
-	else $nd->delete($tab);
+		$netdevice->delete($tab,1);
+	else $netdevice->delete($tab);
 
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
@@ -69,21 +69,21 @@ else if (isset($tab["delete"]))
 else if (isset($_POST["restore"]))
 {
 	checkRight("networking","w");
-	$nd->restore($_POST);
+	$netdevice->restore($_POST);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
 	glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
 }
 else if (isset($tab["purge"]))
 {
 	checkRight("networking","w");
-	$nd->delete($tab,1);
+	$netdevice->delete($tab,1);
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
 	glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["update"]))
 {
 	checkRight("networking","w");
-	$nd->update($_POST);
+	$netdevice->update($_POST);
 	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -99,12 +99,12 @@ else
 
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 	
-	if ($nd->getFromDB($tab["ID"]))
-		$nd->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+	if ($netdevice->getFromDB($tab["ID"]))
+		$netdevice->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	
 	if (!empty($tab["withtemplate"])) {
 
-		if (showNetworkingForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($netdevice->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
 		if (!empty($tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 			case 4 :
@@ -139,7 +139,7 @@ else
 		}
 
 	
-		if (showNetworkingForm ($_SERVER["PHP_SELF"],$tab["ID"])){
+		if ($netdevice->showForm ($_SERVER["PHP_SELF"],$tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 			case -1:
 				showPorts($tab["ID"],NETWORKING_TYPE);

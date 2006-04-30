@@ -121,6 +121,10 @@ class Monitor extends CommonDBTM {
 		if ($ic->getFromDBforDevice(MONITOR_TYPE,$input["_oldID"])){
 			$ic->fields["FK_device"]=$newID;
 			unset ($ic->fields["ID"]);
+			if (isset($ic->fields["num_immo"])) {
+			    $ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+			}
+
 			$ic->addToDB();
 		}
 
@@ -251,9 +255,12 @@ class Monitor extends CommonDBTM {
 	
 		echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	
-		echo "<tr><td>".$lang["common"][16].":	</td>";
+		echo "<tr><td>".$lang["common"][16]."*:	</td>";
 		echo "<td>";
-		autocompletionTextField("name","glpi_monitors","name",$this->fields["name"],20);	
+		$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), MONITOR_TYPE);
+		autocompletionTextField("name","glpi_monitors","name",$objectName,20);
+
+		//autocompletionTextField("name","glpi_monitors","name",$this->fields["name"],20);	
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["common"][15].": 	</td><td>";
@@ -317,8 +324,11 @@ class Monitor extends CommonDBTM {
 		autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],20);	
 		echo "</td></tr>";
 	
-		echo "<tr><td>".$lang["common"][20].":</td><td>";
-		autocompletionTextField("otherserial","glpi_monitors","otherserial",$this->fields["otherserial"],20);	
+		echo "<tr><td>".$lang["common"][20]."*:</td><td>";
+		$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), MONITOR_TYPE);
+		autocompletionTextField("otherserial","glpi_monitors","otherserial",$objectName,20);
+
+		//autocompletionTextField("otherserial","glpi_monitors","otherserial",$this->fields["otherserial"],20);	
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["monitors"][21].":</td>";

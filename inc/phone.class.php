@@ -119,6 +119,10 @@ class Phone extends CommonDBTM {
 		if ($ic->getFromDBforDevice(PHONE_TYPE,$input["_oldID"])){
 			$ic->fields["FK_device"]=$newID;
 			unset ($ic->fields["ID"]);
+			if (isset($ic->fields["num_immo"])) {
+			    $ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+			}
+
 			$ic->addToDB();
 		}
 
@@ -272,17 +276,20 @@ function showForm ($target,$ID,$withtemplate='') {
 
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-	echo "<tr><td>".$lang["common"][16].":	</td>";
+	echo "<tr><td>".$lang["common"][16]."*:	</td>";
 	echo "<td>";
-	autocompletionTextField("name","glpi_phones","name",$this->fields["name"],20);		
+	$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PHONE_TYPE);
+	autocompletionTextField("name","glpi_phones","name",$objectName,20);
+
+	//autocompletionTextField("name","glpi_phones","name",$this->fields["name"],20);		
 	echo "</td></tr>";
 
 	echo "<tr><td>".$lang["common"][15].": 	</td><td>";
-		dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+	dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>";
-		dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+	dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["common"][21].":	</td><td>";
@@ -340,8 +347,11 @@ function showForm ($target,$ID,$withtemplate='') {
 	autocompletionTextField("serial","glpi_phones","serial",$this->fields["serial"],20);		
 	echo "</td></tr>";
 
-	echo "<tr><td>".$lang["common"][20].":</td><td>";
-	autocompletionTextField("otherserial","glpi_phones","otherserial",$this->fields["otherserial"],20);		
+	echo "<tr><td>".$lang["common"][20]."*:</td><td>";
+	$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PHONE_TYPE);
+	autocompletionTextField("otherserial","glpi_phones","otherserial",$objectName,20);
+
+	//autocompletionTextField("otherserial","glpi_phones","otherserial",$this->fields["otherserial"],20);		
 	echo "</td></tr>";
 
 

@@ -139,9 +139,11 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "</tr>";
 		
 		if ($show_immo==1){
-		echo "<tr class='tab_bg_1'><td>".$lang["financial"][20].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][20]."*:		</td>";
 		echo "<td >";
-		autocompletionTextField("num_immo","glpi_infocoms","num_immo",$ic->fields["num_immo"],25,$option);	
+		$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE);
+                autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,25,$option); 
+		//autocompletionTextField("num_immo","glpi_infocoms","num_immo",$ic->fields["num_immo"],25,$option);	
 
 		echo "</td>";
 		
