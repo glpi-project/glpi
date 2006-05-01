@@ -36,7 +36,7 @@ exit();
 $badwritten=`grep -r "\\\$lang\\\['" * | wc -l`;
 if ($badwritten!=0){
 	print "WRONG dict uses:\n";
-	$badwritten=`grep -r -n "\\\$lang\\\['" *`;
+	$badwritten=`grep -r -n "\\\$lang\\\['" *.php`;
 	print $badwritten;
 	print "\n\n";
 }
@@ -77,8 +77,8 @@ my $found_php=0;
 opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n"; 
 foreach (readdir(DIRHANDLE)){ 
 if ($_ ne '..' && $_ ne '.'){
-	
-	if (-d "$dir/$_" && $_!~m/locales/ && $_!~m/CVS/ && $_!=~m/\.svn/){
+		
+	if (-d "$dir/$_" && $_!~m/locales/ && $_!~m/files/ && $_!~m/\.svn/ ){
 		if ($count_all==1 || $count==0){
 			do_dir("$dir/$_",$module,$i);
 		}
