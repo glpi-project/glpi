@@ -75,6 +75,7 @@ class InfoCom extends CommonDBTM {
 				$this->add($input2);
 				$this->getFromDBforDevice($input["device_type"],$input["FK_device"]);
 			}
+			$input["ID"]=$this->fields["ID"];
 		}
 
 		return $input;

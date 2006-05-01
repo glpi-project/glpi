@@ -80,9 +80,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 				$ic=new Infocom();
 				foreach ($_POST["item"] as $key => $val)
 				if ($val==1){
-					$ic->getFromDBforDevice ($_POST["device_type"],$key);
-					
-					$ic->update(array("ID"=>$ic->fields["ID"],$_POST["field"] => $_POST[$_POST["field"]]));
+					$ic->update(array("device_type"=>$_POST["device_type"],"FK_device"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 				}
 			} else {
 				$ci=new CommonItem();
