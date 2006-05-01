@@ -132,6 +132,7 @@ class CommonDBTM {
 				}
 			}
 			$query .= ")";
+			
 			if ($result=$db->query($query)) {
 				$this->post_addToDB();
 				return $db->insert_id();
@@ -243,10 +244,10 @@ class CommonDBTM {
 	// specific ones : reservationresa, planningtracking
 	function update($input,$history=1) {
 		
-		if ($this->getFromDB($input["ID"])){
+		$input=$this->prepareInputForUpdate($input);
+		unset($input['update']);
 
-			$input=$this->prepareInputForUpdate($input);
-			unset($input['update']);
+		if ($this->getFromDB($input["ID"])){
 
 			// Fill the update-array with changes
 			$x=0;

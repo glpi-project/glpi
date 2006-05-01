@@ -134,6 +134,7 @@ class Job extends CommonDBTM{
 	}
 
 	// Old values for add followup in change
+	$this->getFromDB($input["ID"]);
 	$input["_old_assign_name"]=getAssignName($this->fields["assign"],USER_TYPE);
 	$this->fields["_old_assign"]=$this->fields["assign"];
 	$input["_old_assign_ent_name"]=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
