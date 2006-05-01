@@ -277,7 +277,7 @@ class Profile extends CommonDBTM{
 		echo "</td>";
 		echo "<td>".$lang["Menu"][4].":</td><td>";
 		dropdownNoneReadWrite("software",$this->fields["software"],1,1,1);
-		echo "</td></tr";
+		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$lang["Menu"][1].":</td><td>";
