@@ -142,8 +142,9 @@
 						 $class="class='treeroot'";
 						$raquo="";
 					}
-					$style=" $class style=\" padding-left: ".(8*($level))."px;\" ";
-					echo "<option value=\"$ID\" $style title=\"".$data['completename']."\">".$raquo.substr($data['name'],0,$_POST["limit"])."</option>";
+					//$style=" $class style=\" padding-left: ".(8*($level))."px;\" ";
+					$style=" $class ";
+					echo "<option value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($data['name'],0,$_POST["limit"])."</option>";
 				}
 			}
 			echo "</select>";
