@@ -120,7 +120,7 @@ class Enterprise extends CommonDBTM {
 			
 			if($this->getEmpty()) $spotted = true;
 		} else {
-			if($ent->getfromDB($ID)) $spotted = true;
+			if($this->getfromDB($ID)) $spotted = true;
 		}
 		if ($spotted){
 		echo "<form method='post' action=\"$target\"><div align='center'>";
@@ -135,37 +135,37 @@ class Enterprise extends CommonDBTM {
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
 		echo "<td>";
-			autocompletionTextField("name","glpi_enterprises","name",$ent->fields["name"],25);
+			autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],25);
 		echo "</td>";
 	
 		echo "<td>".$lang["financial"][79].":		</td><td colspan='2'>";
-		dropdownValue("glpi_dropdown_enttype", "type", $ent->fields["type"]);
+		dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][29].":		</td>";
 		echo "<td>";
-			autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$ent->fields["phonenumber"],25);	
+			autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],25);	
 		echo "</td>";
 	
 		echo "<td>".$lang["financial"][30].":		</td><td>";
-			autocompletionTextField("fax","glpi_enterprises","fax",$ent->fields["fax"],25);	
+			autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],25);	
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][45].":		</td>";
 		echo "<td>";
-			autocompletionTextField("website","glpi_enterprises","website",$ent->fields["website"],25);	
+			autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],25);	
 		echo "</td>";
 		echo "<td>".$lang["financial"][31].":		</td><td>";
-			autocompletionTextField("email","glpi_enterprises","email",$ent->fields["email"],25);		
+			autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],25);		
 		echo "</td></tr>";
 		
 	
 		echo "<tr class='tab_bg_1'><td >".$lang["financial"][44].":		</td>";
-		echo "<td align='center'><textarea cols='35' rows='4' name='address' >".$ent->fields["address"]."</textarea>";
+		echo "<td align='center'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
 	
 		echo "<td valign='top'>";
 		echo $lang["common"][25].":	</td>";
-		echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$ent->fields["comments"]."</textarea>";
+		echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 		echo "</td></tr>";
 		
 	
@@ -188,7 +188,7 @@ class Enterprise extends CommonDBTM {
 			echo "</td>\n\n";
 			echo "<td class='tab_bg_2'>&nbsp;</td><td class='tab_bg_2' valign='top'>\n";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			if ($ent->fields["deleted"]=='N')
+			if ($this->fields["deleted"]=='N')
 			echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
 			else {
 			echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
