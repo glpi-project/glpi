@@ -48,8 +48,10 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 	$search=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]];	
 	// Specific state case
 	if ($_POST["id_field"]==31) $search["linkfield"]="state";
-
-	echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
+	if (empty($search["linkfield"]))
+		echo "<input type='hidden' name='field' value='".$search["field"]."'>";
+	else 
+		echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
 		if ($search["table"].".".$search["linkfield"]=="glpi_users.active"){
 			dropdownYesNoInt("active",1);

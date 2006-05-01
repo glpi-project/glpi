@@ -77,16 +77,19 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		case "update":
 			// Infocoms case
 			if (($_POST["id_field"]>=25&&$_POST["id_field"]<=28)||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)||($_POST["id_field"]>=50&&$_POST["id_field"]<=58)){
+				$ic=new Infocom();
 				foreach ($_POST["item"] as $key => $val)
 				if ($val==1){
-					$_POST["FK_device"]=$key;
-					updateInfocom($_POST);
+					$ic->getFromDBforDevice ($_POST["device_type"],$key);
+					
+					$ic->update(array("ID"=>$ic->fields["ID"],$_POST["field"] => $_POST[$_POST["field"]]));
 				}
 			} else {
 				$ci=new CommonItem();
 				$ci->getFromDB($_POST["device_type"],-1);
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
+						
 						$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 					}
 				}
