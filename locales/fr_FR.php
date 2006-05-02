@@ -392,6 +392,7 @@ $lang["financial"][26]="Entreprise";
 $lang["financial"][29]="Téléphone";
 $lang["financial"][30]="Fax";
 $lang["financial"][31]="Email";
+$lang["financial"][32]="Fournisseur";
 $lang["financial"][33]="Ajouter un Contact";
 $lang["financial"][36]="Ajouter un Contrat";
 $lang["financial"][38]="Pas de contact trouvé";
