@@ -753,7 +753,7 @@ echo "</div>";
 * @param $myname
 * @return nothing (print out an HTML select box)
 */
-function dropdownConnect($type,$myname) {
+function dropdownConnect($type,$myname,$onlyglobal=0) {
 
 
 	global $HTMLRel,$cfg_glpi;
@@ -778,7 +778,7 @@ echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 echo "           onLoading:function(request)\n";
 echo "            {Element.show('search_spinner_$myname$rand');},\n";
-echo "           method:'post', parameters:'searchText=' + value+'&idtable=$type&myname=$myname'\n";
+echo "           method:'post', parameters:'searchText=' + value+'&idtable=$type&myname=$myname&onlyglobal=$onlyglobal'\n";
 echo "})})\n";
 echo "</script>\n";
 

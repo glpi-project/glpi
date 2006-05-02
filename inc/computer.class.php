@@ -204,6 +204,17 @@ class Computer extends CommonDBTM {
 				$np->addToDB();
 			}
 		}
+
+		// Add connected devices
+		$query="SELECT * from glpi_connect_wire WHERE end2='".$input["_oldID"]."';";
+		
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+			while ($data=$db->fetch_array($result)){
+				Connect("",$data["end1"],$newID,$data["type"]);
+			}
+		}
+
 	}
 
 	function post_updateInDB($updates)  {
