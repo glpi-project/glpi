@@ -797,7 +797,6 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 
 
 ul#onglet {
-	font: bold 10px verdana, arial, sans-serif;
 	list-style-type: none;
 	padding-bottom: 24px;
 	border-bottom: 1px solid #ffffff;
@@ -827,7 +826,7 @@ ul#onglet li.invisible {
 	border-bottom: 1px solid #fff;
 	border: 1px solid #fff;
 	background-color: #ffffff;
-	width: 20px;
+	width: 15px;
 	background:  transparent; 
 }
 
@@ -841,6 +840,9 @@ ul#onglet li.actif a {
 	color: #666;
 	text-decoration: none;
 	padding: 3px;
+	font-size: 10px;
+	font-family:  Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bold;
 }
 
 #onglet a:hover {
@@ -855,7 +857,7 @@ ul#onglet li.actif a {
 	top:21px;
 	left:-20px;
 	padding: 5px;
-	font-size: 10px;
+	font-size: 8px;
 	width:100px;
 	background: transparent url("../pics/fondTR.png") repeat; 
 	border: 1px solid gray;	
@@ -863,10 +865,10 @@ ul#onglet li.actif a {
 }
 
  #onglet_plugins dl{
-margin: 0;
-padding: 0;
-list-style-type: none;	
-border:0;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;	
+	border:0;
 
 }
 
