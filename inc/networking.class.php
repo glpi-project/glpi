@@ -492,19 +492,6 @@ class Netport extends CommonDBTM {
 
 	// SPECIFIC FUNCTIONS
 
-	function getFromNull()
-	{
-		global $db;
-		$query = "select * from glpi_networking_ports";
-		$result = $db->query($query);
-		$num_flds = $db->num_fields($result);
-		for($i=0; $i < $num_flds; $i++)
-		{
-			$key = $db->field_name($result,$i);
-			$this->fields[$key] = "";
-		}
-	}
-
 	function getDeviceData($ID,$type)
 	{
 		global $db,$LINK_ID_TABLE;
