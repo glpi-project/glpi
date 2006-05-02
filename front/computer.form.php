@@ -175,6 +175,7 @@ if (isset($_GET['onglet'])) {
 				showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
 				break;
 			case 3 :
+				showConnections($_SERVER["PHP_SELF"],$tab["ID"],$tab["withtemplate"]);
 				showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
 				if ($tab["withtemplate"]!=2)
 					showPortsAdd($tab["ID"],COMPUTER_TYPE);
