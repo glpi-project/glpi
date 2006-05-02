@@ -112,14 +112,14 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 	foreach ($_SESSION["glpi_plugins"] as $name) {
 		use_plugin($name);
 	
-		if (file_exists($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
-			include_once ($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
-		else if (file_exists($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
-			include_once ($phproot . "/plugins/$name/dicts/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
-		else if (file_exists($phproot . "/plugins/$name/dicts/en_GB.php"))
-			include_once ($phproot . "/plugins/$name/dicts/en_GB.php");
-		else if (file_exists($phproot . "/plugins/$name/dicts/fr_FR.php"))
-			include_once ($phproot . "/plugins/$name/dicts/fr_FR.php");
+		if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
+			include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
+		else if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
+			include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
+		else if (file_exists($phproot . "/plugins/$name/locales/en_GB.php"))
+			include_once ($phproot . "/plugins/$name/locales/en_GB.php");
+		else if (file_exists($phproot . "/plugins/$name/locales/fr_FR.php"))
+			include_once ($phproot . "/plugins/$name/locales/fr_FR.php");
 	}
 }
 
