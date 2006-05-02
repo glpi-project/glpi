@@ -1694,8 +1694,9 @@ function ocsResetPrinters($glpi_computer_id) {
 		while ($data=$db->fetch_assoc($result)){
 			$query2="SELECT COUNT(*) FROM glpi_connect_wire WHERE end1 = '".$data['end1']."' and type = '".PRINTER_TYPE."'";
 			$result2=$db->query($query2);
+			$printer=new Printer();
 			if ($db->result($result2,0,0)==1){
-				deletePrinter(array('ID'=>$data['end1']),1);
+				$printer->delete(array('ID'=>$data['end1']),1);
 			}
 		}
 		
