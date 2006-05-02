@@ -36,7 +36,7 @@
 
 //Ce script g��e ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
-error_reporting(0);   
+error_reporting(0);
 
 session_save_path("../files/_sessions");
 $cfg_glpi["debug"]=0;
@@ -502,7 +502,7 @@ echo "</form>";
 //Step 1 checking some compatibilty issue and some write tests.
 function step1($update)
 {
-	global $lang,$cfg_glpi;
+	global $lang,$cfg_glpi,$phproot;
 
 	$error = 0;
 	echo "<h3>".$lang["install"][5]."</h3>";
@@ -533,6 +533,8 @@ function step1($update)
 		echo "<td>".$lang["install"][73]."</td></tr>";
 	}
 	
+
+
 
 // ***********
 
@@ -636,7 +638,7 @@ function step1($update)
 
 // file test
 
-// il faut un test dans /dump  et /docs et /glpi/config/
+// il faut un test dans /files/_dumps  et /files et /config/ et /files/_sessions et /files/_cron
 
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][16]."</b></td>";
 	
@@ -699,6 +701,46 @@ function step1($update)
 			echo "<td>".$lang["install"][20]."</td></tr>";
 		}
 	}
+
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][50]."</b></td>";
+	$fp = fopen($phproot . "/files/_sessions/test_glpi.txt",'w');
+	if (empty($fp)) {
+		echo "<td><p class='red'>".$lang["install"][17]. " " . $phproot . "/files/_sessions/test_glpi.txt" ."</p>". $lang["install"][51]."</td></tr>";
+		$error = 2;
+	}
+	else {
+		$fw = fwrite($fp,"This file was created for testing reasons. ");
+		fclose($fp);
+		$delete = unlink($phproot . "/files/_sessions/test_glpi.txt");
+		if (!$delete) {
+			echo "<td>".$lang["install"][19]."</td></tr>";
+			if($error != 2) $error = 1;
+		}
+		else {
+			echo "<td>".$lang["install"][20]."</td></tr>";
+		}
+	}
+
+	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][52]."</b></td>";
+	$fp = fopen($phproot . "/files/_cron/test_glpi.txt",'w');
+	if (empty($fp)) {
+		echo "<td><p class='red'>".$lang["install"][17]. " " . $phproot . "/files/_cron/test_glpi.txt" ."</p>". $lang["install"][53]."</td></tr>";
+		$error = 2;
+	}
+	else {
+		$fw = fwrite($fp,"This file was created for testing reasons. ");
+		fclose($fp);
+		$delete = unlink($phproot . "/files/_cron/test_glpi.txt");
+		if (!$delete) {
+			echo "<td>".$lang["install"][19]."</td></tr>";
+			if($error != 2) $error = 1;
+		}
+		else {
+			echo "<td>".$lang["install"][20]."</td></tr>";
+		}
+	}
+
+
 	echo "</table>";
         switch ($error) {
 		case 0 :       
@@ -775,6 +817,21 @@ function step3($host,$user,$password,$update)
 	}
 	else {
 		echo  "<h3>".$lang["update"][93]."</h3>";
+
+		// Check Mysql Version
+		$result=mysql_query("SELECT VERSION() AS version");
+		$row=mysql_fetch_row($result);
+		$match = explode('.', $row[0]);
+		// defaut mysql version
+		$mysql_version=32332;
+		if (isset($row)) {
+			$mysql_version= (int)sprintf('%d%02d%02d', $match[0], $match[1], intval($match[2]));
+        	}
+		if ($mysql_version<41000){
+			echo "<table><tr><td><b>".$lang["install"][54]."</b></td>";
+			echo "<td class='red'><strong>".$lang["install"][56]." ".$row[0]."</strong></td></tr></table>";
+		} 
+
 		if($update == "no") {
 
 			echo "<p>".$lang["install"][38]."</p>";
