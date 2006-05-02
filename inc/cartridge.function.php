@@ -502,8 +502,8 @@ function countCartridges($tID,$alarm,$nohtml=0) {
 		$highlight="class='tab_bg_1_2'";
 
 	if (!$nohtml)
-		$out.= "<div $highlight>".$lang["cartridges"][30].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["cartridges"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</div>";
-	else 	$out.= $lang["cartridges"][30].": $total   ".$lang["cartridges"][13].": $unused   ".$lang["cartridges"][14].": $used   ".$lang["cartridges"][15].": $old";		
+		$out.= "<div $highlight>".$lang["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["cartridges"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</div>";
+	else 	$out.= $lang["common"][33].": $total   ".$lang["cartridges"][13].": $unused   ".$lang["cartridges"][14].": $used   ".$lang["cartridges"][15].": $old";		
 
 	} else {
 		if (!$nohtml)

@@ -230,8 +230,8 @@ function countConsumables($tID,$alarm,$nohtml=0) {
 	if ($unused<=$alarm)
 		$highlight="class='tab_bg_1_2'";
 	if (!$nohtml)
-		$out.= "<div $highlight>".$lang["consumables"][30].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["consumables"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
-	else $out.= $lang["consumables"][30].": $total   ".$lang["consumables"][13].": $unused   ".$lang["consumables"][15].": $old";			
+		$out.= "<div $highlight>".$lang["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["consumables"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
+	else $out.= $lang["common"][33].": $total   ".$lang["consumables"][13].": $unused   ".$lang["consumables"][15].": $old";			
 
 	} else {
 		if (!$nohtml)
@@ -388,7 +388,7 @@ function showConsumableSummary($target){
 			echo "<th>$type</th>";
 			$total[$key]=0;
 		}
-		echo "<th>".$lang["state"][10]."</th>";
+		echo "<th>".$lang["common"][33]."</th>";
 		echo "</tr>";
 	
 		// new
@@ -415,7 +415,7 @@ function showConsumableSummary($target){
 			echo "<td align='center'>".$tot."</td>";
 			echo "</tr>";
 		}
-		echo "<tr class='tab_bg_1'><td><strong>".$lang["state"][10]."</strong></td>";
+		echo "<tr class='tab_bg_1'><td><strong>".$lang["common"][33]."</strong></td>";
 		$tot=0;
 		foreach ($types as $id_type => $type){
 			$tot+=$total[$id_type];

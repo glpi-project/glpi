@@ -334,7 +334,7 @@ $query .= " WHERE glpi_state_item.is_template='0' GROUP BY glpi_state_item.devic
 				echo "<th>".$ci->getType()."</th>";
 				$total[$type]=0;
 			}
-			echo "<th>".$lang["state"][10]."</th>";
+			echo "<th>".$lang["common"][33]."</th>";
 			echo "</tr>";
 				$current_state=-1;
 				$states=array();
@@ -362,7 +362,7 @@ $query .= " WHERE glpi_state_item.is_template='0' GROUP BY glpi_state_item.devic
 				echo "<td align='center'><strong>$tot</strong></td>";
 				echo "</tr>";
 			}
-			echo "<tr class='tab_bg_2'><td align='center'><strong><a href='$target?state=0'>".$lang["state"][10]."</a></strong></td>";
+			echo "<tr class='tab_bg_2'><td align='center'><strong><a href='$target?state=0'>".$lang["common"][33]."</a></strong></td>";
 			$tot=0;
 			foreach ($state_type as $type){
 			echo "<td align='center'><strong>".$total[$type]."</strong></td>";
