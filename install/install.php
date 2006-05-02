@@ -36,7 +36,7 @@
 
 //Ce script g��e ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
-error_reporting(0);   // Baaz si tu touches �cette ligne  pour tes tests merci de la remettre en �at quand tu commits.
+error_reporting(0);   
 
 session_save_path("../files/_sessions");
 $cfg_glpi["debug"]=0;
@@ -987,7 +987,7 @@ function update1($host,$user,$password,$dbname) {
 	if(create_conn_file($host,$user,$password,$dbname) && !empty($dbname)) {
 		
 		$from_install = true;
-		include($phproot ."/update.php");
+		include($phproot ."/install/update.php");
 	}
 	else {
 		echo $lang["install"][70];

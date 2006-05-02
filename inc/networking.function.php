@@ -163,7 +163,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $
 	}
 	else
 	{
-		$netport->getFromNull();
+		$netport->getEmpty();
 	}
 	
 	// Ajout des infos d��remplies
