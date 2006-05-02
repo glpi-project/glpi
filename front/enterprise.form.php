@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("enterprise","contact","document","contract","tracking","user","computer","printer","monitor","peripheral","networking","software","link","phone","infocom");
+$NEEDED_ITEMS=array("enterprise","contact","document","contract","tracking","user","computer","printer","monitor","peripheral","networking","software","link","phone","infocom","device");
 include ($phproot . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
@@ -152,7 +152,16 @@ else
 				break;
 			case 10 :
 				showNotesForm($_SERVER["PHP_SELF"],ENTERPRISE_TYPE,$tab["ID"]);
-				break;			
+				break;	
+			case 15 :
+				showDeviceManufacturer($tab["ID"]);
+				break;	
+			case 16 :
+				showInternalDeviceManufacturer($tab["ID"]);
+				break;	
+			case 17 :
+				showInfocomEnterprise($tab["ID"]);
+				break;					
 			default : 
 				if (!display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
 					showAssociatedContact($tab["ID"]);

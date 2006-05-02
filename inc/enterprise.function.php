@@ -34,7 +34,163 @@
 // ----------------------------------------------------------------------
 
  
+/**
+* Print the HTML array for infocoms linked 
+*
+* Print the HTML array for infocoms linked 
+*
+*@param $instID array : Manufacturer identifier.
+*
+*@return Nothing (display)
+*
+**/
+function showInfocomEnterprise($instID) {
 
+	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+
+	if (!haveRight("contact_enterprise","r")) return false;
+
+	$query = "SELECT DISTINCT device_type FROM glpi_infocoms WHERE FK_enterprise = '$instID' ORDER BY device_type";
+
+	$result = $db->query($query);
+	$number = $db->numrows($result);
+	$i = 0;
+	
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<tr><th colspan='2'>".$lang["financial"][49].":</th></tr>";
+	echo "<tr><th>".$lang["common"][17]."</th>";
+	echo "<th>".$lang["common"][16]."</th>";
+	echo "</tr>";
+	$ci=new CommonItem;
+	$num=0;
+	while ($i < $number) {
+		$type=$db->result($result, $i, "device_type");
+		if (haveTypeRight($type,"r")&&$type!=CONSUMABLE_ITEM_TYPE&&$type!=CARTRIDGE_ITEM_TYPE&&$type!=LICENSE_TYPE){
+			$query = "SELECT ".$LINK_ID_TABLE[$type].".* FROM glpi_infocoms INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.FK_device) WHERE glpi_infocoms.device_type='$type' AND glpi_infocoms.FK_enterprise = '$instID' order by ".$LINK_ID_TABLE[$type].".name";
+			$result_linked=$db->query($query);
+			if ($db->numrows($result_linked)){
+				$ci->setType($type);
+				while ($data=$db->fetch_assoc($result_linked)){
+					$ID="";
+					if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+
+					echo "<tr class='tab_bg_1'>";
+					echo "<td align='center'>".$ci->getType()."</td>";
+					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "</tr>";
+					$num++;
+				}
+			}
+		}
+	$i++;
+	}
+	echo "<tr class='tab_bg_2'><td colspan='2' align='center'>$num</td></tr> ";
+	echo "</table></div>"    ;
+
+	
+}
+
+
+/**
+* Print the HTML array for devices with manufacturer 
+*
+* Print the HTML array for devices with manufacturer 
+*
+*@param $instID array : Manufacturer identifier.
+*
+*@return Nothing (display)
+*
+**/
+function showDeviceManufacturer($instID) {
+	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+
+	if (!haveRight("contract_infocom","r")) return false;
+
+
+	$types=array(COMPUTER_TYPE,CONSUMABLE_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,CARTRIDGE_TYPE);
+
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<tr><th colspan='2'>".$lang["financial"][49].":</th></tr>";
+	echo "<tr><th>".$lang["common"][17]."</th>";
+	echo "<th>".$lang["common"][16]."</th>";
+	echo "</tr>";
+	$ci=new CommonItem;
+	$num=0;
+	foreach ($types as $type){
+		if (haveTypeRight($type,"r")){
+			$query = "SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_glpi_enterprise = '$instID' order by name";
+			$result_linked=$db->query($query);
+			if ($db->numrows($result_linked)){
+				$ci->setType($type);
+				while ($data=$db->fetch_assoc($result_linked)){
+					$ID="";
+					if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+
+					echo "<tr class='tab_bg_1'>";
+					echo "<td align='center'>".$ci->getType()."</td>";
+					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "</tr>";
+					$num++;
+				}
+			}
+		}
+	}
+	echo "<tr class='tab_bg_2'><td colspan='2' align='center'>$num</td></tr> ";
+	echo "</table></div>"    ;
+	
+}
+
+/**
+* Print the HTML array for internal devices with manufacturer 
+*
+* Print the HTML array for internal devices with manufacturer 
+*
+*@param $instID array : Manufacturer identifier.
+*
+*@return Nothing (display)
+*
+**/
+function showInternalDeviceManufacturer($instID) {
+	global $db,$cfg_glpi, $lang,$HTMLRel;
+
+	if (!haveRight("contract_infocom","r")) return false;
+	$canview=haveRight("device","w");
+
+	$types=array(MOBOARD_DEVICE,PROCESSOR_DEVICE,RAM_DEVICE,HDD_DEVICE,NETWORK_DEVICE,DRIVE_DEVICE,CONTROL_DEVICE,GFX_DEVICE,SND_DEVICE,PCI_DEVICE,CASE_DEVICE,POWER_DEVICE);
+
+
+	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<tr><th colspan='2'>".$lang["financial"][49].":</th></tr>";
+	echo "<tr><th>".$lang["common"][17]."</th>";
+	echo "<th>".$lang["common"][16]."</th>";
+	echo "</tr>";
+	$num=0;
+	foreach ($types as $type){
+		$query = "SELECT * FROM ".getDeviceTable($type)." WHERE FK_glpi_enterprise = '$instID' order by designation";
+		
+		$result_linked=$db->query($query);
+		if ($db->numrows($result_linked)){
+			while ($data=$db->fetch_assoc($result_linked)){
+				$ID="";
+				echo "<tr class='tab_bg_1'>";
+				if ($canview){
+					echo "<td align='center'><a href='".$HTMLRel."front/device.php?device_type=".$type."'>".getDeviceTypeLabel($type)."</a></td>";
+					echo "<td align='center'><a href='".$HTMLRel."front/device.form.php?ID=".$data["ID"]."&amp;device_type=".$type."'>&nbsp;".$data["designation"]."&nbsp;</a></td>";
+				} else {
+					echo "<td align='center'>".getDeviceTypeLabel($type)."</td>";
+					echo "<td align='center'>".$data["designation"]."</td>";
+				}
+				echo "</tr>";
+				$num++;
+			}
+		}
+	}
+	echo "<tr class='tab_bg_2'><td colspan='2' align='center'>$num</td></tr> ";
+	echo "</table></div>"    ;
+	
+}
 
 
 
