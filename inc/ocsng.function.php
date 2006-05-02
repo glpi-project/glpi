@@ -444,7 +444,9 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 		}
 	
 		if($cfg_ocs["import_general_comments"]&&!in_array("comments",$computer_updates)) {
-			$compupdate["comments"] = "Swap: ".$line["SWAP"];
+			$compupdate["comments"]="";;
+			if (!empty($line["DESCRIPTION"])) $compupdate["comments"] .= $line["DESCRIPTION"]."\r\n";
+			$compupdate["comments"] .= "Swap: ".$line["SWAP"];
 		}
 
 		if (count($compupdate)){
