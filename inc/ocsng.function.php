@@ -1511,7 +1511,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 						$result3=$db->query($query3);
 						if ($db->result($result3,0,0)==1){
 							$soft=new Software ();
-							$osft->delete(array('ID'=>$lic->fields['sID']),1);
+							$soft->delete(array('ID'=>$lic->fields['sID']),1);
 						}
 						$lic->delete(array("ID"=>$data['license']));
 					}
