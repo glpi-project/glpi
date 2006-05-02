@@ -142,7 +142,7 @@ class Enterprise extends CommonDBTM {
 			autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],25);
 		echo "</td>";
 	
-		echo "<td>".$lang["financial"][79].":		</td><td colspan='2'>";
+		echo "<td>".$lang["financial"][79].":		</td><td>";
 		dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
 		echo "</td></tr>";
 		
@@ -169,7 +169,7 @@ class Enterprise extends CommonDBTM {
 	
 		echo "<td valign='top'>";
 		echo $lang["common"][25].":	</td>";
-		echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+		echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 		echo "</td></tr>";
 		
 	
