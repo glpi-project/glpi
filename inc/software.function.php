@@ -84,7 +84,7 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "<th colspan='1'>";
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
-			echo "<tr><th>".$lang["common"][19]."</th><th>".$lang["software"][21]."</th><th>".$lang["software"][32]."</th><th>".$lang["software"][28]."</th><th>".$lang["software"][35]."</th>";
+			echo "<tr><th>".$lang["common"][19]."</th><th>".$lang["common"][33]."</th><th>".$lang["software"][32]."</th><th>".$lang["software"][28]."</th><th>".$lang["software"][35]."</th>";
 			echo "<th>";
 			
 			if ($show_computers&&$canedit){
@@ -700,10 +700,10 @@ function countInstallations($sID,$nohtml=0) {
 				$remaining = "<span class='$color'>$remaining";
 				$remaining .= "</span>";
 				$out.= "<td width='20%'>".$lang["software"][20].": <strong>$remaining</strong></td>";
-				$out.= "<td width='20%'>".$lang["software"][21].": <strong>".$total."</strong></td>";
+				$out.= "<td width='20%'>".$lang["common"][33].": <strong>".$total."</strong></td>";
 			} else {
 				$out.= "  ".$lang["software"][20].": $remaining";
-				$out.= "  ".$lang["software"][21].": ".$total;
+				$out.= "  ".$lang["common"][33].": ".$total;
 			}
 
 			$tobuy=getLicenceToBuy($sID);
