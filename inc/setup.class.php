@@ -140,11 +140,13 @@ class SetupSearchDisplay extends CommonDBTM{
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 		echo $lang["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
 
+		
 		foreach ($dp as $key => $val){
 			$sel="";
 			if ($type==$key) $sel="selected";
 			echo "<option value='$key' $sel>".$val."</option>";
 		}
+		
 		echo "</select></td>";
 		echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
 		echo "</table></form></div>";
@@ -194,9 +196,17 @@ class SetupSearchDisplay extends CommonDBTM{
 				echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 		
 				echo "<select name='num'>";
+				$first_group=true;
 				foreach ($SEARCH_OPTION[$type] as $key => $val)
-				if ($key!=1)
-					echo "<option value='$key' $sel>".$val["name"]."</option>";
+					if (!is_array($val)){
+						if (!$first_group) echo "</optgroup>";
+						else $first_group=false;
+						echo "<optgroup label='$val'>";
+					} else 	if ($key!=1){
+						echo "<option value='$key'>".$val["name"]."</option>";
+					}
+				if (!$first_group) echo "</optgroup>";
+
 				echo "</select>";
 				echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit' >";
 				echo "</form>";
