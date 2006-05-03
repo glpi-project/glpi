@@ -511,8 +511,8 @@ function nullHeader($title,$url) {
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."scriptaculous/scriptaculous.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
 	
 	// Appel CSS
 	
