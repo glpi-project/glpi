@@ -65,7 +65,7 @@ if(!isset($_GET["start"])) $_GET["start"] = 0;
 if (isset($_GET["dropdown"])) $_POST["dropdown"] = $_GET["dropdown"];
 if(empty($_POST["dropdown"])) $_POST["dropdown"] = "glpi_type_computers";
 
-echo "<form method=\"post\" name=\"form\" action=\"stat_lieux.php\">";
+echo "<form method=\"post\" name=\"form\" action=\"stat.location.php\">";
 
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name=\"dropdown\">";
