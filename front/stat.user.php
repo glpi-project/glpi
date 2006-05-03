@@ -64,7 +64,7 @@ $_POST["date2"]=$tmp;
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 
 
-echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat_user.php\">";
+echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.user.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $lang["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
