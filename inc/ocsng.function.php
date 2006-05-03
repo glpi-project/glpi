@@ -225,6 +225,7 @@ function ocsImportComputer($DEVICEID){
 	$comp = new Computer;
 	if ($dbocs->numrows($result)==1){
 		$line=$dbocs->fetch_array($result);
+		$line=addslashes_deep($line);
 		$dbocs->close();
 
 		$comp->fields["name"] = $line["NAME"];
