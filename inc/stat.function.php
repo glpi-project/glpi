@@ -42,6 +42,158 @@ function is_dropdown_stat($postfromselect) {
 }
 
 
+function getStatsItems($date1,$date2,$type){
+	global $HTMLRel;
+	$val=array();
+	switch ($type){
+		case "technicien":
+			$nomTech = getNbIntervTech($date1,$date2);
+		
+			
+			$i=0;
+			if (is_array($nomTech))
+			foreach($nomTech as $key){
+				$val[$i]["ID"]=$key["assign"];
+				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["assign"]."'>";
+				$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
+				$val[$i]["link"].="</a>";
+			$i++;
+			}
+		break;
+		case "enterprise":
+			$nomEnt = getNbIntervEnterprise($date1,$date2);
+			
+			$i=0;
+			if (is_array($nomEnt))
+			foreach($nomEnt as $key){
+				$val[$i]["ID"]=$key["assign_ent"];
+				$val[$i]["link"]="<a href='".$HTMLRel."front/enterprise.form.php?ID=".$key["assign_ent"]."'>";
+				$val[$i]["link"].=$key["name"];
+				$val[$i]["link"].="</a>";
+			$i++;
+			}
+	
+		break;
+		case "user":
+			$nomUsr = getNbIntervAuthor($date1,$date2);
+			
+			$i=0;
+			if (is_array($nomUsr))
+			foreach($nomUsr as $key){
+				$val[$i]["ID"]=$key["ID"];
+				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["ID"]."'>";
+				$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
+				$val[$i]["link"].="</a>";
+				$i++;
+			}
+
+		break;
+		case "category":
+			$nomUsr = getNbIntervCategory();
+			$i=0;
+			if (is_array($nomUsr))
+			foreach($nomUsr as $key){
+				$val[$i]["ID"]=$key["ID"];
+				$val[$i]["link"]=$key["category"];
+				$i++;
+			}
+
+		break;
+
+		case "priority":
+			$nomUsr = getNbIntervPriority();
+			$i=0;
+			if (is_array($nomUsr))
+			foreach($nomUsr as $key){
+				$val[$i]["ID"]=$key["ID"];
+				$val[$i]["link"]=$key["priority"];
+				$i++;
+			}
+
+		break;
+	}
+	return $val;
+}
+
+function displayStats($type,$field,$date1,$date2,$start,$val){
+	global $lang,$cfg_glpi,$HTMLRel;
+
+	// Set display type for export if define
+	$output_type=0;
+	if (isset($_GET["display_type"]))
+		$output_type=$_GET["display_type"];
+
+	if ($output_type==0) // HTML display
+	echo "<div align ='center'>";
+
+	if (is_array($val)){
+
+
+		$end_display=$start+$cfg_glpi["list_limit"];
+		$numrows=count($val);
+		if (isset($_GET['export_all'])) {
+			$start=0;
+			$end_display=$numrows;
+		}
+		$nbcols=8;
+		if ($output_type!=0) // not HTML display
+			 $nbcols--;
+		echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols);
+		echo displaySearchNewLine($output_type);
+		$header_num=1;
+		echo displaySearchHeaderItem($output_type,$lang["stats"][16],$header_num);
+		if ($output_type==0) // HTML display
+			echo displaySearchHeaderItem($output_type,"",$header_num);
+		echo displaySearchHeaderItem($output_type,$lang["stats"][13],$header_num);
+		echo displaySearchHeaderItem($output_type,$lang["stats"][14],$header_num);
+		echo displaySearchHeaderItem($output_type,$lang["stats"][15],$header_num);
+		echo displaySearchHeaderItem($output_type,$lang["stats"][25],$header_num);
+		echo displaySearchHeaderItem($output_type,$lang["stats"][27],$header_num);
+		echo displaySearchHeaderItem($output_type,$lang["stats"][30],$header_num);
+		// End Line for column headers		
+			echo displaySearchEndLine($output_type);
+//		echo "<table class='tab_cadre_fixe' cellpadding='5' >";
+//		echo "<tr><th>".$lang["stats"][16]."</th><th>&nbsp;</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
+		$row_num=1;
+		for ($i=$start;$i< $numrows && $i<($end_display);$i++){
+			$row_num++;
+			$item_num=1;
+			echo displaySearchNewLine($output_type);
+			echo displaySearchItem($output_type,$val[$i]['link'],$item_num,$row_num);
+			if ($output_type==0) // HTML display
+				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$val[$i]['ID']."&amp;type=$type'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
+			
+			//le nombre d'intervention
+			//the number of intervention
+				echo displaySearchItem($output_type,getNbinter(4,$field,$val[$i]["ID"],$date1,$date2),$item_num,$row_num);
+			//le nombre d'intervention resolues
+			//the number of resolved intervention
+				echo displaySearchItem($output_type,getNbresol(4,$field,$val[$i]["ID"],$date1,$date2),$item_num,$row_num);
+			//Le temps moyen de resolution
+			//The average time to resolv
+				echo displaySearchItem($output_type,getResolAvg(4, $field,$val[$i]["ID"],$date1,$date2),$item_num,$row_num);
+			//Le temps moyen de l'intervention réelle
+			//The average realtime to resolv
+				echo displaySearchItem($output_type,getRealAvg(4, $field,$val[$i]["ID"],$date1,$date2),$item_num,$row_num);
+			//Le temps total de l'intervention réelle
+			//The total realtime to resolv
+				echo displaySearchItem($output_type,getRealTotal(4, $field,$val[$i]["ID"],$date1,$date2),$item_num,$row_num);
+			//Le temps total de l'intervention réelle
+			//The total realtime to resolv
+				echo displaySearchItem($output_type,getFirstActionAvg(4, $field,$val[$i]["ID"],$date1,$date2),$item_num,$row_num);
+		
+			echo displaySearchEndLine($output_type);
+		}
+	// Display footer
+	echo displaySearchFooter($output_type);
+	} else {
+		echo $lang["stats"][23];
+	}
+	if ($output_type==0) // HTML display
+	echo "</div>";
+}
+
+
 //return an array from tracking
 //it contains the distinct users witch have any intervention assigned to.
 function getNbIntervTech($date1,$date2)

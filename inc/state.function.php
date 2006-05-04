@@ -189,7 +189,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 
 			$nbcols=6;
 			// Display List Header
-			echo displaySearchHeader($output_type,$cfg_glpi["list_limit"]+1,$nbcols);
+			echo displaySearchHeader($output_type,$numrows_limit+1,$nbcols);
 			// New Line for Header Items Line
 			echo displaySearchNewLine($output_type);
 			

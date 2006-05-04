@@ -73,47 +73,15 @@ showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-//Get the distinct intervention categories
-$nomUsr = getNbIntervPriority();
 
-echo "<div align ='center'>";
+$type="priority";
+$field="glpi_tracking.priority";
 
-if (is_array($nomUsr))
-{
+$val=getStatsItems($_POST["date1"],$_POST["date2"],$type);
+$params=array("type"=>$type,"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
+printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"],STAT_TYPE,$params);
 
-$numrows=count($nomUsr);
-
-printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
-
-//affichage du tableau
-//table display
-echo "<table class='tab_cadre_fixe' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][41]."</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
-//Pour chacun de ces auteurs on affiche
-//foreach these authors display
-   for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++)
-   {
-	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$nomUsr[$i]['priority']."</td><td><a href='stat.graph.php?ID=".$nomUsr[$i]['ID']."&amp;type=priority'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
-
-		echo "<td>".getNbinter(4,'glpi_tracking.priority',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getNbresol(4,'glpi_tracking.priority',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getResolAvg(4, 'glpi_tracking.priority',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealAvg(4, 'glpi_tracking.priority',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealTotal(4, 'glpi_tracking.priority',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getFirstActionAvg(4, 'glpi_tracking.priority',$nomUsr[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-
-	echo "</tr>";
-  }
-echo "</table>";
-}
-else {
-
-echo $lang["stats"][23];
-}
-
-echo "</div>"; 
-
+displayStats($type,$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
 
 commonFooter();
 ?>

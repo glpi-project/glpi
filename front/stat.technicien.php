@@ -72,69 +72,14 @@ echo "</td></tr>";
 echo "</table></form></div>";
 
 
-//recuperation des different utilisateurs ayant eu des interventions attribuées
-//get distinct user who has intervention assigned to
-$nomTech = getNbIntervTech($_POST["date1"],$_POST["date2"]);
+$type="technicien";
+$field="assign";
 
-$val=array();
-$i=0;
-if (is_array($nomTech))
-foreach($nomTech as $key){
-	$val[$i]["assign"]=$key["assign"];
-	$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["assign"]."'>";
-	$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
-	$val[$i]["link"].="</a>";
-$i++;
-}
+$val=getStatsItems($_POST["date1"],$_POST["date2"],$type);
+$params=array("type"=>$type,"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
+printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"],STAT_TYPE,$params);
 
-$numrows=count($val);
-printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
-
-
-echo "<div align ='center'>";
-if (is_array($nomTech))
- {
-//affichage du tableu
-//table display
-echo "<table class='tab_cadre_fixe' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][16]."</th><th>&nbsp;</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
-//Pour chacun de ces utilisateurs on affiche
-//foreach these users display
-
-  for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++)
-  {
-	echo "<tr class='tab_bg_2'>";
-	echo "<td>".$val[$i]['link']."</td><td><a href='stat.graph.php?ID=".$val[$i]['assign']."&amp;type=technicien'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
-	//le nombre d'intervention
-	//the number of intervention
-		echo "<td>".getNbinter(4,'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
-	//le nombre d'intervention resolues
-	//the number of resolved intervention
-		echo "<td>".getNbresol(4,'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
-	//Le temps moyen de resolution
-	//The average time to resolv
-		echo "<td>".getResolAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
-	//Le temps moyen de l'intervention réelle
-	//The average realtime to resolv
-		echo "<td>".getRealAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
-	//Le temps total de l'intervention réelle
-	//The total realtime to resolv
-		echo "<td>".getRealTotal(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
-	//Le temps total de l'intervention réelle
-	//The total realtime to resolv
-		echo "<td>".getFirstActionAvg(4, 'assign',$val[$i]["assign"],$_POST["date1"],$_POST["date2"])."</td>";
-
-	echo "</tr>";
-  }
-echo "</table>";
-}
-else {
-
-echo $lang["stats"][23];
-}
-
-echo "</div>";
-
+displayStats($type,$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
 
 commonFooter();
 ?>

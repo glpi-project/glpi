@@ -774,7 +774,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 * @return nothing (print a pager)
 *
 */
-function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
+function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$item_type_output_param=0) {
 
 	global $cfg_glpi, $lang, $HTMLRel,$cfg_glpi;
 	
@@ -836,6 +836,8 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0) {
 		echo "<td class='tab_bg_2' width='30%'>" ;
 		echo "<form method='GET' action=\"".$cfg_glpi["root_doc"]."/front/report.dynamic.php\" target='_blank'>\n";
 		echo "<input type='hidden' name='item_type' value='$item_type_output'>";
+		if ($item_type_output_param!=0)
+			echo "<input type='hidden' name='item_type_param' value='".serialize($item_type_output_param)."'>";
 		$split=split("&amp;",$parameters);
 		for ($i=0;$i<count($split);$i++){
 			$pos=strpos($split[$i],'=');

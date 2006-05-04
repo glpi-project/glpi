@@ -36,7 +36,7 @@
 include ("_relpos.php");
 
 
-$NEEDED_ITEMS=array("user","stat");
+$NEEDED_ITEMS=array("user","stat","tracking");
 include ($phproot . "/inc/includes.php");
 
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
@@ -74,60 +74,15 @@ showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-//On recupere les differents auteurs d'interventions
-//Get the distinct intervention authors
-$nomUsr = getNbIntervAuthor($_POST["date1"],$_POST["date2"]);
 
+$type="user";
+$field="glpi_tracking.author";
 
-//Pour chacun de ces auteurs on affiche
-//foreach these authors display
-$val=array();
-$i=0;
-if (is_array($nomUsr))
-foreach($nomUsr as $key){
-	$val[$i]["ID"]=$key["ID"];
-	$val[$i]["name"]=empty($key["realname"])?$key["name"]:$key["realname"];
-	$i++;
-}
+$val=getStatsItems($_POST["date1"],$_POST["date2"],$type);
+$params=array("type"=>$type,"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
+printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"],STAT_TYPE,$params);
 
-//sort($val);
-$numrows=count($val);
-printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
-
-echo "<div align ='center'>";
-
-if (is_array($nomUsr))
-{
-
-//affichage du tableau
-//table display
-echo "<table class='tab_cadre_fixe' cellpadding='5' >";
-echo "<tr><th>".$lang["stats"][20]."</th><th>&nbsp;</th><th>".$lang["stats"][22]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
-
-
-   for ($i=$_GET['start'];$i< $numrows && $i<($_GET['start']+$cfg_glpi["list_limit"]);$i++)
-   {
-	echo "<tr class='tab_bg_1'>";
-	echo "<td><a href=".$HTMLRel."front/user.info.php?ID=".$val[$i]['ID'].">".$val[$i]['name']."</a></td><td><a href='stat.graph.php?ID=".$val[$i]['ID']."&amp;type=user'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
-
-		echo "<td>".getNbinter(4,'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getNbresol(4,'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getResolAvg(4, 'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealAvg(4, 'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getRealTotal(4, 'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-		echo "<td>".getFirstActionAvg(4, 'glpi_tracking.author',$val[$i]['ID'], $_POST["date1"], $_POST["date2"])."</td>";
-
-	echo "</tr>";
-  }
-echo "</table>";
-}
-else {
-
-echo $lang["stats"][23];
-}
-
-echo "</div>"; 
-
+displayStats($type,$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
 
 commonFooter();
 ?>

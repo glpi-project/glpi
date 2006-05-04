@@ -227,28 +227,29 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 
         		// en-tête du fichier
         		// --------------------------------------------------------------------
-        		echo "ID;PGLPI EXPORT\n"; // ID;Pappli
+        		echo "ID;PGLPI_EXPORT\n"; // ID;Pappli
         		echo "\n";
         		// formats
-        		echo "P;PGeneral\n";      
-        		echo "P;P#,##0.00\n";       // P;Pformat_1 (reels)
-        		echo "P;P#,##0\n";          // P;Pformat_2 (entiers)
-        		echo "P;P@\n";              // P;Pformat_3 (textes)
-        		echo "\n";
+//        		echo "P;PGeneral\n";      
+//        		echo "P;P#,##0.00\n";       // P;Pformat_1 (reels)
+//        		echo "P;P#,##0\n";          // P;Pformat_2 (entiers)
+//        		echo "P;P@\n";              // P;Pformat_3 (textes)
+//        		echo "\n";
         		// polices
-        		echo "P;EArial;M200\n";
+/*        		echo "P;EArial;M200\n";
         		echo "P;EArial;M200\n";
         		echo "P;EArial;M200\n";
         		echo "P;FArial;M200;SB\n";
         		echo "\n";
-        		// nb lignes * nb colonnes
+*/        		// nb lignes * nb colonnes
         		echo "B;Y".$rows;
         		echo ";X".$cols."\n"; // B;Yligmax;Xcolmax
         		echo "\n";
 
 			// largeurs des colonnes
-			for ($i=1;$i<=$cols;$i++)
-				echo "F;W".$i." ".$i." 20\n";
+//			for ($i=1;$i<=$cols;$i++)
+//				echo "F;W".$i." ".$i." 20\n";
+
 			break;
 
 		default :
