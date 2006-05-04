@@ -788,8 +788,24 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($output_type==0)// HTML display - massive modif
 				$nbcols++;
 
+			// Define begin and end var for loop
+			// Search case
+			$begin_display=$start;
+			$end_display=$start+$cfg_glpi["list_limit"];
+			// No search Case
+			if ($nosearch){
+				$begin_display=0;
+				$end_display=min($numrows-$start,$cfg_glpi["list_limit"]);
+				}
+			// Export All case
+			if (isset($_GET['export_all'])) {
+				$begin_display=0;
+				$end_display=$numrows;
+			}
+
+
 			// Display List Header
-			echo displaySearchHeader($output_type,$cfg_glpi["list_limit"]+1,$nbcols);
+			echo displaySearchHeader($output_type,$end_display-$begin_display+1,$nbcols);
 			// New Line for Header Items Line
 			echo displaySearchNewLine($output_type);
 			$header_num=1;
@@ -828,21 +844,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			// Define begin and end var for loop
 			// Search case
-			$i=$start;
-			$end_display=$start+$cfg_glpi["list_limit"];
-			// No search Case
-			if ($nosearch){
-				$i=0;
-				$end_display=min($numrows-$start,$cfg_glpi["list_limit"]);
-				}
-			// Export All case
-			if (isset($_GET['export_all'])) {
-				$i=0;
-				$end_display=$numrows;
-			}
+			$i=$begin_display;			
 			
-			
-
 			// Num of the row (1=header_line)
 			$row_num=1;
 			// Display Loop

@@ -1163,16 +1163,20 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			echo "<form method='post' id='TrackingForm' name='TrackingForm' action=\"$target\">";
 			}
 
-			// Display List Header
-			echo displaySearchHeader($output_type,$cfg_glpi["list_limit"]+1,$nbcols,1);
-
-			commonTrackingListHeader($output_type);
-
 			$i=$start;
 			if (isset($_GET['export_all']))
 				$i=0;
+
+			$end_display=$start+$cfg_glpi["list_limit"];
+			if (isset($_GET['export_all']))
+				$end_display=$numrows;
+			// Display List Header
+			echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols,1);
+
+			commonTrackingListHeader($output_type);
+
 			
-			while ($i < $numrows && ($i<($start+$cfg_glpi["list_limit"])||isset($_GET['export_all']))){
+			while ($i < $numrows && $i<$end_display){
 				$ID = $db->result($result, $i, "ID");
 				showJobShort($ID, $showfollowups,$output_type,$i-$start+1);
 				$i++;
