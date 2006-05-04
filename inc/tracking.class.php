@@ -514,7 +514,7 @@ class Job extends CommonDBTM{
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][26]."</span> ";
 			if (isset($this->fields["category"])&&$this->fields["category"]){
 				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
-			} else $message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][100]."</span>";
+			} else $message.=$lang["mailing"][100];
 			$message.= "<br>";
 			
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][3]."</span><br>".$this->fields["contents"]."<br><br>";	
