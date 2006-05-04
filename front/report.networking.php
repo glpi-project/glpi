@@ -73,7 +73,7 @@ echo "<input type='submit' value='".$lang["reports"][15]."' class='submit'>";
 	echo "</form>";
 
 
-echo "<form name='form2' method='post' action='reoprt.switch.list.php'>";
+echo "<form name='form2' method='post' action='report.switch.list.php'>";
 echo "<table class='tab_cadre' width='500'>";
 echo "<tr class='tab_bg_1'><td>".$lang["reports"][41]."</td>";
 echo "<td>";
