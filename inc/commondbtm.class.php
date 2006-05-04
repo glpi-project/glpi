@@ -134,10 +134,9 @@ class CommonDBTM {
 			$query .= ")";
 			
 			if ($result=$db->query($query)) {
-				$newID=$db->insert_id();
-				$this->fields["ID"]=$newID;
+				$this->fields["ID"]=$db->insert_id();
 				$this->post_addToDB();
-				return $newID;
+				return $this->fields["ID"];
 			} else {
 				return false;
 			}
