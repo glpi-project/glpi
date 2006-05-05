@@ -43,7 +43,7 @@ function is_dropdown_stat($postfromselect) {
 
 
 function getStatsItems($date1,$date2,$type){
-	global $HTMLRel;
+	global $HTMLRel,$db;
 	$val=array();
 	switch ($type){
 		case "technicien":
@@ -111,11 +111,43 @@ function getStatsItems($date1,$date2,$type){
 			}
 
 		break;
+		case "glpi_type_computers":
+		case "glpi_dropdown_model":
+		case "glpi_dropdown_os":
+		case "glpi_dropdown_locations":
+			$nomUsr = getNbIntervDropdown($type);
+		
+			$i=0;
+			if (is_array($nomUsr))
+			foreach($nomUsr as $key){
+				$val[$i]["ID"]=$key["ID"];
+				$val[$i]["link"]=$key["name"];
+				$i++;
+			}
+		break;
+		// DEVICE CASE
+		default :
+			$device_table = getDeviceTable($type);
+	
+			//select devices IDs (table row)
+			$query = "select ID, designation from ".$device_table." order by designation";
+			$result = $db->query($query);
+		
+			if($db->numrows($result) >=1) {
+				$i = 0;
+				while($line = $db->fetch_assoc($result)) {
+					$val[$i]['ID'] = $line['ID'];
+					$val[$i]['link'] = $line['designation'];
+					$i++;
+				}
+			}
+
+		break;
 	}
 	return $val;
 }
 
-function displayStats($type,$field,$date1,$date2,$start,$val){
+function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 	global $lang,$cfg_glpi,$HTMLRel;
 
 	// Set display type for export if define
@@ -126,11 +158,11 @@ function displayStats($type,$field,$date1,$date2,$start,$val){
 	if ($output_type==0) // HTML display
 	echo "<div align ='center'>";
 
-	if (is_array($val)){
+	if (is_array($value)){
 
 
 		$end_display=$start+$cfg_glpi["list_limit"];
-		$numrows=count($val);
+		$numrows=count($value);
 		if (isset($_GET['export_all'])) {
 			$start=0;
 			$end_display=$numrows;
@@ -159,49 +191,54 @@ function displayStats($type,$field,$date1,$date2,$start,$val){
 			$row_num++;
 			$item_num=1;
 			echo displaySearchNewLine($output_type);
-			echo displaySearchItem($output_type,$val[$i]['link'],$item_num,$row_num);
+			echo displaySearchItem($output_type,$value[$i]['link'],$item_num,$row_num);
 			if ($output_type==0) // HTML display
-				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$val[$i]['ID']."&amp;type=$type'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
+				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
 			
 			//le nombre d'intervention
 			//the number of intervention
-				$opened=constructEntryValues("inter_total",$date1,$date2,$type,$val[$i]["ID"]);
+				$opened=constructEntryValues("inter_total",$date1,$date2,$type,$value[$i]["ID"],$value2);
 				$nb_opened=array_sum($opened);
 				echo displaySearchItem($output_type,$nb_opened,$item_num,$row_num);
 			//le nombre d'intervention resolues
 			//the number of resolved intervention
-				$solved=constructEntryValues("inter_solved",$date1,$date2,$type,$val[$i]["ID"]);
+				$solved=constructEntryValues("inter_solved",$date1,$date2,$type,$value[$i]["ID"],$value2);
 				$nb_solved=array_sum($solved);
 				echo displaySearchItem($output_type,$nb_solved,$item_num,$row_num);
 			//Le temps moyen de resolution
 			//The average time to resolv
-				$data=constructEntryValues("inter_avgsolvedtime",$date1,$date2,$type,$val[$i]["ID"]);
+				$data=constructEntryValues("inter_avgsolvedtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
 				foreach ($data as $key2 => $val2){
 					$data[$key2]*=$solved[$key2];
 				}
-				$nb=array_sum($data)/$nb_solved;
+				if ($nb_solved>0)
+					$nb=array_sum($data)/$nb_solved;
+				else $nb=0;
 				echo displaySearchItem($output_type,toTimeStr($nb*60*60,0),$item_num,$row_num);
 			//Le temps moyen de l'intervention réelle
 			//The average realtime to resolv
-				$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$val[$i]["ID"]);
+				$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
 				foreach ($data as $key2 => $val2){
 					$data[$key2]*=$solved[$key2];
 				}
 				$total_realtime=array_sum($data);
-				$nb=$total_realtime/$nb_solved;
+				if ($nb_solved>0)
+					$nb=$total_realtime/$nb_solved;
+				else $nb=0;
 				echo displaySearchItem($output_type,toTimeStr($nb*60,0),$item_num,$row_num);
 			//Le temps total de l'intervention réelle
 			//The total realtime to resolv
 				echo displaySearchItem($output_type,toTimeStr($total_realtime*60,0),$item_num,$row_num);				
 			//Le temps moyen de prise en compte du ticket
 			//The average time to take a ticket into account
-				$data=constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$val[$i]["ID"]);
+				$data=constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$value[$i]["ID"],$value2);
 
 				foreach ($data as $key2 => $val2){
 					$data[$key2]*=$solved[$key2];
 				}
-				
-				$nb=array_sum($data)/$nb_solved;
+				if ($nb_solved>0)
+					$nb=array_sum($data)/$nb_solved;
+				else $nb=0;
 				echo displaySearchItem($output_type,toTimeStr($nb*3600,0),$item_num,$row_num);
 		
 			echo displaySearchEndLine($output_type);
@@ -357,174 +394,6 @@ function getNbIntervCategory()
 	else return 0;	
 	
 }
-//Return a counted number of intervention
-//$chps contains the table where we apply the where clause
-//$value contains the value to parse in the table
-//common usage in query  "where $chps = '$value'";
-function getNbInter($chps, $value, $date1 = '', $date2 = '')
-{
-	global $db;
-	$dropdowns = array ("location", "type", "os","model");
-	
-	$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
-		
-	if(!empty($chps) && (!empty($value) || $value==0)) {
-		if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
-			$query .= ", glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and $chps = '$value' ";
-		}
-		else {
-			$query .= " where $chps = '$value'";
-		}
-	} else {
-		$query .= " where '1'= '1' ";
-	}
-	if ($date1!="") $query.= " and date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	$result = $db->query($query);
-	return $db->result($result,0,"total");
-}
-
-//Return a counted number of resolved/old intervention
-//$chps contains the table where we apply the where clause
-//$value contains the value to parse in the table
-//common usage in query  "where $chps = '$value'";
-function getNbResol($chps, $value, $date1 = '', $date2= '')
-{
-	global $db;
-	$dropdowns = array ("location", "type", "os","model");
-	$query = "select count(glpi_tracking.ID) as total from glpi_tracking";
-	if(!empty($chps) && (!empty($value) || $value==0)) {
-		if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
-			$query .= ", glpi_computers where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and $chps = '$value'";
-		}
-		else {
-			$query .= " where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')";
-		}
-	}
-	else {
-		$query.= " where '1'='1' ";
-	}
-	if ($date1!="") $query.= " and date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-		
-	
-	$result = $db->query($query);
-	return $db->result($result,0,"total");
-	
-}
-
-//Return the average time to reslove an intervention
-//$chps contains the table where we apply the where clause
-//$value contains the value to parse in the table
-//common usage in query  "where $chps = '$value'";
-function getResolAvg($chps, $value, $date1 = '', $date2 = '')
-{
-	global $db;
-	$dropdowns = array ("location", "type", "os","model");
-	
-	if(!empty($chps) && (!empty($value) || $value==0)) {
-		if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
-			$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
-			$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
-		}
-		else {
-			$query = "select AVG(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date))";
-			$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
-		}
-	}
-	else {
-		$query = "select SUM(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total from glpi_tracking";
-		$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
-	}
-	if ($date1!="") $query.= " and date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-		
-	$result = $db->query($query);
-	if($db->numrows($result) == 1)
-	{
-		$sec = $db->result($result,0,"total");
-	}
-	if(empty($sec)) $sec = 0;
-	$temps = toTimeStr($sec);
-	return $temps;
-	
-}
-
-//Return the real time to resolve an intervention
-//$chps contains the table where we apply the where clause
-//$value contains the value to parse in the table
-//common usage in query  "where $chps = '$value'";
-function getRealAvg($chps, $value, $date1 = '', $date2 = '')
-{
-	global $db;
-	$dropdowns = array ("location", "type", "os","model");
-
-	if(!empty($chps) && (!empty($value) || $value==0)) {
-		if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
-			$query = "select AVG(glpi_tracking.realtime)";
-			$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
-		}
-		else {
-			$query = "select AVG(glpi_tracking.realtime)";
-			$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
-		}
-	}
-	else {
-		$query = "select AVG(glpi_tracking.realtime) as total from glpi_tracking";
-		$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and glpi_tracking.realtime > 0";
-	}
-	if ($date1!="") $query.= " and date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-		
-		
-	$result = $db->query($query);
-	if($db->numrows($result) == 1)
-	{
-		$realtime = $db->result($result,0,"total");
-	}
-	if(empty($realtime)) $realtime = 0;
-	$temps = getRealtime($realtime);
-	return $temps;
-	
-}
-
-//Return the sum real time to reslove an intervention
-//$chps contains the table where we apply the where clause
-//$value contains the value to parse in the table
-//common usage in query  "where $chps = '$value'";
-function getRealTotal($chps, $value, $date1 = '', $date2 = '')
-{
-	global $db;
-	$dropdowns = array ("location", "type", "os","model");
-	if(!empty($chps) && (!empty($value) || $value==0)) {
-		if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
-			$query = "select SUM(glpi_tracking.realtime)";
-			$query .= " as total from glpi_tracking, glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value' and glpi_tracking.realtime > 0";
-		}
-		else {
-			$query = "select SUM(glpi_tracking.realtime)";
-			$query .= " as total from glpi_tracking where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
-		}
-	}
-	else {
-		$query = "select SUM(glpi_tracking.realtime) as total from glpi_tracking";
-		$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00' and glpi_tracking.realtime > 0";
-	}
-	if ($date1!="") $query.= " and date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-		
-	$result = $db->query($query);
-	if($db->numrows($result) == 1)
-	{
-		$realtime = $db->result($result,0,"total");
-	}
-	if(empty($realtime)) $realtime = 0;
-	$temps = getRealtime($realtime);
-	return $temps;
-	
-}
-
-
 
 //Make a good string from the unix timestamp $sec
 //
@@ -567,51 +436,6 @@ function toTimeStr($sec,$display_sec=1)
 }
 
 
-//Return the first action on each intervention
-//$chps contains the table where we apply the where clause
-//$value contains the value to parse in the table
-//common usage in query  "where $chps = '$value'";
-function getFirstActionAvg($chps, $value, $date1 = '', $date2 = '')
-{
-	global $db;
-	$dropdowns = array ("location", "type", "os","model");
-
-	if(!empty($chps) && (!empty($value) || $value==0)) {
-		if(in_array(ereg_replace("glpi_computers.","",$chps),$dropdowns)) {
-			$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
-			$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID), glpi_computers where glpi_tracking.device_type='".COMPUTER_TYPE."' AND glpi_tracking.computer = glpi_computers.ID and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'  and $chps = '$value'";
-		}
-		else {
-			$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first";
-			$query .= " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where $chps = '$value' and ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
-		}
-	}
-	else {
-		$query = "select glpi_tracking.ID AS ID, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) as total, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) as first from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID)";
-		$query .= " where ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') and glpi_tracking.closedate != '0000-00-00'";
-	}
-	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-		
-
-	$query.=" GROUP BY glpi_tracking.ID";
-
-	$result = $db->query($query);
-	$numrows=$db->numrows($result);
-	$total=0;
-	if ($numrows>0){
-		while($line = $db->fetch_array($result)) {
-		$actu=$line['total'];
-		if (!empty($line['first'])&&$line['first']<$actu)
-		$actu=$line['first'];
-		$total+=$actu;
-		}
-		$total/=$numrows;
-	}
-	$temps=toTimeStr(floor($total));
-	return $temps;
-	
-}
 
 function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value2=""){
 	global $db;

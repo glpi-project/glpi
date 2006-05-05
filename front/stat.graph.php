@@ -170,9 +170,9 @@ case "priority":
 	break;	
 case "device":
 	$val1=$_GET["ID"];
-	$val2=$_GET["device"];
+	$val2=$_GET["champ"];
 
-	$device_table = getDeviceTable($_GET["device"]);
+	$device_table = getDeviceTable($_GET["champ"]);
 
 	$next=getNextItem($device_table,$_GET["ID"]);
 	$prev=getPreviousItem($device_table,$_GET["ID"]);
