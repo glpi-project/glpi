@@ -126,22 +126,22 @@ if(is_dropdown_stat($_POST["dropdown"])) {
 			echo "<td>".getDropdownName($_POST["dropdown"],$type[$i]["ID"]) ."&nbsp;($count)</td><td><a href='stat.graph.php?ID=".$type[$i]["ID"]."&amp;champ=".$champ."&amp;type=comp_champ'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a></td>";
 			//le nombre d'intervention
 			//the number of intervention
-			echo "<td>".getNbinter(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
+			echo "<td>".getNbinter("glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"] )."</td>";
 			//le nombre d'intervention resolues
 			//the number of resolved intervention
-			echo "<td>".getNbresol(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getNbresol("glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//Le temps moyen de resolution
 			//The average time to resolv
-			echo "<td>".getResolAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getResolAvg("glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//Le temps moyen de l'intervention r�lle
 			//The average realtime to resolv
-			echo "<td>".getRealAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getRealAvg("glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//Le temps total de l'intervention r�lle
 			//The total realtime to resolv
-			echo "<td>".getRealTotal(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getRealTotal("glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 			//
 			//
-			echo "<td>".getFirstActionAvg(4,"glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
+			echo "<td>".getFirstActionAvg("glpi_computers.".getDropdownNameFromTableForStats($_POST["dropdown"]),$type[$i]["ID"],$_POST["date1"],$_POST["date2"])."</td>";
 
 			echo "</tr>";
 		}
