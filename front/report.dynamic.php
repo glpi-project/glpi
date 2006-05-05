@@ -38,7 +38,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stats","enterprise");
+$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stats","enterprise","device");
 include ($phproot . "/inc/includes.php");
 
 checkCentralAccess();
@@ -65,10 +65,24 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 			showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],$_GET["status"],$_GET["author"],$_GET["assign"],$_GET["assign_ent"],$_GET["category"],$_GET["priority"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);		
 			break;
 		case STAT_TYPE :
+			
 			if (isset($_GET["item_type_param"])){
 				$params=unserialize(stripslashes($_GET["item_type_param"]));
-				$val=getStatsItems($params["date1"],$params["date2"],$params["type"]);
-				displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val);
+				switch ($params["type"]){
+					case "comp_champ":
+						$val=getStatsItems($params["date1"],$params["date2"],$params["table"]);
+						displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
+						break;
+					case "device":
+						$val=getStatsItems($params["date1"],$params["date2"],$params["field"]);
+						displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
+						break;
+
+					default:
+						$val=getStatsItems($params["date1"],$params["date2"],$params["type"]);
+						displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val);
+						break;
+				}
 			}
 			break;
 		default :
