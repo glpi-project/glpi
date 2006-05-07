@@ -105,7 +105,7 @@ class CommonDBTM {
 	function addToDB() {
 		
 		global $db;
-
+		//unset($this->fields["ID"]);
 		$nb_fields=count($this->fields);
 		if ($nb_fields>0){		
 

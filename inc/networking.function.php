@@ -50,9 +50,6 @@ function showPorts ($device,$device_type,$withtemplate='') {
 		
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
-	$query = "SELECT location from ".$device_real_table_name." where ID = ".$device."";
-	$location = $db->result($db->query($query),0,"location");
-
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
@@ -82,7 +79,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				$netport->getfromDB(current($devid));
 				echo "<tr class='tab_bg_1'>";
 				echo "<td align='center'><b>";
-				if ($withtemplate!=2) echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."&amp;location=".$location."\">";
+				if ($withtemplate!=2) echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."\">";
 				echo $netport->fields["logical_number"];
 				if ($withtemplate!=2) echo "</a>";
 				echo "</b></td>";
@@ -149,7 +146,7 @@ $query="DELETE FROM glpi_networking_vlan WHERE ID='$ID'";
 $db->query($query);
 }
 
-function showNetportForm($target,$ID,$ondevice,$devtype,$several,$search = '', $location = '') {
+function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	global $cfg_glpi, $lang, $REFERER;
 	
@@ -330,17 +327,15 @@ function showPortsAdd($ID,$devtype) {
 
 	$device_real_table_name = $LINK_ID_TABLE[$devtype];
 
-	$query = "SELECT location from ".$device_real_table_name." where ID = ".$ID."";
-	$location = $db->result($db->query($query),0,"location");
 
 	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
-	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype&amp;location=$location\"><b>";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype\"><b>";
 	echo $lang["networking"][19];
 	echo "</b></a></td>";
 	echo "<td align='center' class='tab_bg_2' width='50%'>";
-	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype&amp;several=yes&amp;location=$location\"><b>";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype&amp;several=yes\"><b>";
 	echo $lang["networking"][46];
 	echo "</b></a></td>";
 

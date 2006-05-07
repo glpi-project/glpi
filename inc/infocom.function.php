@@ -170,7 +170,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 		echo "</td></tr>";
 		}
 		//TCO
-		if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE){
+		if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE&&$device_type!=CONSUMABLE_ITEM_TYPE&&$device_type!=LICENSE_TYPE&&$device_type!=CARTRIDGE_ITEM_TYPE){
 			
 			echo "<tr class='tab_bg_1'><td>";
 			echo $lang["financial"][89]." : </td><td>";
@@ -666,6 +666,7 @@ global $db,$HTMLRel,$lang;
 if (!haveRight("contract_infocom","r")) return false;
 
 $query="SELECT COUNT(ID) FROM glpi_infocoms WHERE FK_device='$device_id' AND device_type='$device_type'";
+
 $add="add";
 $text=$lang["buttons"][8];
 $result=$db->query($query);
@@ -673,8 +674,8 @@ if ($db->result($result,0,0)>0) {
 	$add="";
 	$text=$lang["buttons"][23];
 }
-if (!empty($add)&&haveTypeRight($device_type,"w"))
-echo "<span onClick=\"window.open('".$HTMLRel."infocoms/infocoms-show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
+if (haveTypeRight($device_type,"w"))
+echo "<span onClick=\"window.open('".$HTMLRel."front/infocom.show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
 }
 
 ?>

@@ -227,7 +227,7 @@ function showHistory($device_type,$id_device){
 function logEvent ($item, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
 	if ($level <= $cfg_glpi["event_loglevel"]) { 
 		 $query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', NOW(), '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 
@@ -242,7 +242,7 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 **/
 function logArray(){
 
-	GLOBAL $lang;
+	global $lang;
 
 	$logItemtype=array("system"=>$lang["log"][1],
 				"computers"=>$lang["log"][2],
@@ -299,7 +299,7 @@ return array($logItemtype,$logService);
 function showAddEvents($target,$order,$sort,$user="") {
 	// Show events from $result in table form
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
 
 	list($logItemtype,$logService)=logArray();
 
@@ -414,7 +414,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 function showEvents($target,$order,$sort,$start=0) {
 	// Show events from $result in table form
 
-	GLOBAL $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
 
 	 list($logItemtype,$logService)=logArray();
 	
@@ -505,7 +505,7 @@ function showEvents($target,$order,$sort,$start=0) {
 
 		//echo "<td>$itemtype:</td><td align='center'><b>";
 		if ($item=="-1" || $item=="0") {
-			echo $item;
+			echo "&nbsp;";//$item;
 		} else {
 			if ($itemtype=="infocom"){
 				echo "<a href='#' onClick=\"window.open('".$cfg_glpi["root_doc"]."/infocoms/infocoms-show.php?ID=$item','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\">$item</a>";					
@@ -513,7 +513,10 @@ function showEvents($target,$order,$sort,$start=0) {
 				if ($itemtype=="reservation"){
 					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
 				} else {
-					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$itemtype.".form.php?ID=";
+					if ($itemtype[strlen($itemtype)-1]=='s')
+						$show=substr($itemtype,0,strlen($itemtype)-1);
+					else $show=$itemtype;
+					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$show.".form.php?ID=";
 				}
 				echo $item;
 				echo "\">$item</a>";
