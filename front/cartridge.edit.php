@@ -65,10 +65,11 @@ else if (isset($_GET["add"]))
 }
 else if (isset($_POST["add_several"]))
 {
-	
 	checkRight("cartridge","w");
-	for ($i=0;$i<$_POST["to_add"];$i++)
+	for ($i=0;$i<$_POST["to_add"];$i++){
+		unset($cart->fields["ID"]);
 		$cart->add($_POST);
+	}
 	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." cartridge.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);

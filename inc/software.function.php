@@ -496,8 +496,10 @@ if ($number>$new_number){
 	if (is_null($lic->fields["expire"]))
 		unset($lic->fields["expire"]);
 
-	for ($i=0;$i<$new_number-$number;$i++)
+	for ($i=0;$i<$new_number-$number;$i++){
+		unset($lic->fields["ID"]);
 		$lic->addToDB();
+		}
 	
 
 }

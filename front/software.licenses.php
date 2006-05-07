@@ -59,7 +59,8 @@ if (isset($_POST["add"]))
 	
 	
 	for ($i=1;$i<=$number;$i++){
-	$lic->add($tab);
+		unset($lic->fields["ID"]);
+		$lic->add($tab);
 	}
 	
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");

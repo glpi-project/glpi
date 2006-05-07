@@ -43,7 +43,6 @@ include ($phproot . "/inc/includes.php");
 //print_r($_POST);
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(empty($tab["search"])) $tab["search"] = "";
 
 
 if (isset($_SERVER["HTTP_REFERER"]))
@@ -87,12 +86,12 @@ if(isset($_POST["add"]))
 			if ($i<10)	$add="0";
 			$tab["logical_number"]=$i;
 			$tab["name"]=$_POST["name"].$add.$i;
-			
+			unset($np->fields["ID"]);
 		        $np->add($tab);	
 		}
 	    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
 		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
-		}
+	}
 
 }
 else if(isset($_POST["delete"]))
@@ -130,18 +129,17 @@ else
 	if(empty($tab["on_device"])) $tab["on_device"] ="";
 	if(empty($tab["device_type"])) $tab["device_type"] ="";
 	if(empty($tab["several"])) $tab["several"] ="";
-	if(empty($tab["location"])) $tab["location"] = "";
 
 	checkRight("networking","w");
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
 
 	if(isset($tab["ID"]))
 	{
-		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["on_device"],$tab["device_type"],$tab["several"],$tab["search"],$tab["location"]);
+		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["on_device"],$tab["device_type"],$tab["several"]);
 	}
 	else
 	{
-		showNetportForm($_SERVER["PHP_SELF"],"",$tab["on_device"],$tab["device_type"],$tab["several"],$tab["search"],$tab["location"]);
+		showNetportForm($_SERVER["PHP_SELF"],"",$tab["on_device"],$tab["device_type"],$tab["several"]);
 	}
 	commonFooter();
 }
