@@ -226,7 +226,7 @@ function convDateTime($time) {
  if ($cfg_glpi["dateformat"]!=0) {
    $date = substr($time,8,2)."-";        // jour 
    $date = $date.substr($time,5,2)."-";  // mois 
-   $date = $date.substr($time,0,4). " "; // année 
+   $date = $date.substr($time,0,4); // année 
    //$date = $date.substr($time,11,5);     // heures et minutes 
    return $date; 
  }else {
