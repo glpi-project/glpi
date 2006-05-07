@@ -171,8 +171,8 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 				echo "<a href='".$cfg_glpi["root_doc"]."/front/printer.form.php?ID=".$p->fields["ID"]."'><b>".$p->fields["name"]." (".$p->fields["ID"].")</b></a>";
 			else echo "N/A";
 
-		$tmp_dbeg=split("-",$date_in);
-		$tmp_dend=split("-",$date_use);
+		$tmp_dbeg=split("-",$data["date_in"]);
+		$tmp_dend=split("-",$data["date_use"]);
 
 		$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
 					  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
@@ -185,9 +185,9 @@ $query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')
 		echo $date_out;		
 
 		if ($show_old!=0){
-			$tmp_dbeg=split("-",$date_use);
-			$tmp_dend=split("-",$date_out);
-
+			$tmp_dbeg=split("-",$data["date_use"]);
+			$tmp_dend=split("-",$data["date_out"]);
+			
 			$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
 						  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
 			$use_time+=$use_time_tmp;
