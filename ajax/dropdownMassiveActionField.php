@@ -35,26 +35,30 @@
 
 
 include ("_relpos.php");
-include ($phproot."/glpi/includes.php");
+$AJAX_INCLUDE=1;
+$NEEDED_ITEMS=array("search","contract","infocom");
+include ($phproot."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkAuthentication("admin");
+checkTypeRight($_POST["device_type"],"w");
 
 if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
-	include ($phproot."/glpi/includes_search.php");
+	
 	$search=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]];	
 	// Specific state case
 	if ($_POST["id_field"]==31) $search["linkfield"]="state";
-
-	echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
+	if (empty($search["linkfield"]))
+		echo "<input type='hidden' name='field' value='".$search["field"]."'>";
+	else 
+		echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
 		if ($search["table"].".".$search["linkfield"]=="glpi_users.active"){
 			dropdownYesNoInt("active",1);
 		} else 
 			autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
 	} else { 
-		include ($phproot."/glpi/includes_financial.php");
+		
 		if ($search["table"]=="glpi_infocoms"){ // infocoms case
 			switch ($search["field"]){
 				case "buy_date" :

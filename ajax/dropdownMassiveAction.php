@@ -35,11 +35,13 @@
 
 
 include ("_relpos.php");
-include ($phproot."/glpi/includes.php");
+$AJAX_INCLUDE=1;
+$NEEDED_ITEMS=array("search");
+include ($phproot."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkAuthentication("admin");
+	checkTypeRight($_POST["type"],"w");
 
 	if (isset($_POST["action"])){
 		echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
@@ -52,15 +54,34 @@ checkAuthentication("admin");
 				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 			break;
 			case "update":
-				include ($phproot."/glpi/includes_search.php");
+				$first_group=true;
+				$newgroup="";
+				$items_in_group=0;
 				echo "<select name='id_field' id='massiveaction_field'>";
 				echo "<option value='0' selected>------</option>";
 				foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val){
-					if ($key>1){ // No ID
-						if (!empty($val["linkfield"])||$val["table"]=="glpi_dropdown_state"||$val["table"]=="glpi_infocoms"||$val["table"]=="glpi_enterprises_infocoms"||$val["table"]=="glpi_dropdown_budget")
-							echo "<option value='$key'>".$val["name"]."</option>";
+					if (!is_array($val)){
+						if (!empty($newgroup)&&$items_in_group>0) {
+							echo $newgroup;
+							$first_group=false;
+						}
+						$items_in_group=0;
+						$newgroup="";
+						if (!$first_group) $newgroup.="</optgroup>";
+						$newgroup.="<optgroup label=\"$val\">";
+					} else {
+						if ($key>1){ // No ID
+							if (!empty($val["linkfield"])||$val["table"]=="glpi_dropdown_state"||$val["table"]=="glpi_infocoms"||$val["table"]=="glpi_enterprises_infocoms"||$val["table"]=="glpi_dropdown_budget"){
+								$newgroup.= "<option value='$key'>".$val["name"]."</option>";
+								$items_in_group++;
+							}
+						}
 					}
 				}
+				if (!empty($newgroup)) echo $newgroup;
+				if (!$first_group)
+					echo "</optgroup>";
+
 				echo "</select>";
 
 				echo "<script type='text/javascript' >\n";

@@ -34,13 +34,14 @@
 // ----------------------------------------------------------------------
 	
 	include ("_relpos.php");
-	include ($phproot."/glpi/includes.php");
+	$AJAX_INCLUDE=1;
+	include ($phproot."/inc/includes.php");
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkCentralAccess();
 
 	echo "<textarea rows='".$_POST['rows']."' cols='".$_POST['cols']."' name='".$_POST['name']."'>";
 	echo stripslashes(urldecode($_POST["data"]));

@@ -34,15 +34,16 @@
 // ----------------------------------------------------------------------
 
 	include ("_relpos.php");
-	include ($phproot."/glpi/includes.php");
-	checkAuthentication("normal");
-	include ($phproot."/glpi/includes_search.php");
+	$AJAX_INCLUDE=1;
+	$NEEDED_ITEMS=array("search");
+	include ($phproot."/inc/includes.php");
 
 
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
 if ($_POST["type"]>0){
+	checkTypeRight($_POST["type"],"r");
 	echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".$_POST["val"]."\" >";
 	echo "&nbsp;";
 	echo $lang["search"][10]."&nbsp;";
