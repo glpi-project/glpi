@@ -32,7 +32,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
  
-Contenu :
+Contenu : TEST
 
 - Qu'est ce que c'est ?
 - Dépendances
