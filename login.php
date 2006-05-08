@@ -28,28 +28,19 @@
  ------------------------------------------------------------------------
 */
 
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-// And Julien Dombre for externals identifications
-// And Marco Gaiarin for ldap features
  
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_users.php");
-include ($phproot . "/glpi/includes_setup.php");
+$NEEDED_ITEMS=array("user","profile","setup");
 
-// load default dictionnary 
-	loadLanguage();
-
+include ($phproot . "/inc/includes.php");
 
 //$database=$cfg_db["database"];
-//SetCookie("cfg_dbdb",$database,0,"/");
+
 
 $_POST=array_map('stripslashes',$_POST);
 
@@ -63,7 +54,7 @@ $identificat = new Identification();
 $auth_succeded=false;
 
 if (!isset($_POST["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
-	include ($phproot . "/glpi/CAS/CAS.php");
+	include ($phproot . "/lib/phpcas/CAS.php");
 	phpCAS::client(CAS_VERSION_2_0,$cfg_glpi["cas_host"],intval($cfg_glpi["cas_port"]),$cfg_glpi["cas_uri"]);
 
 	// force CAS authentication
@@ -71,7 +62,7 @@ if (!isset($_POST["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
 	$user=phpCAS::getUser();
 	$auth_succeded=true;
 	$identificat->extauth=1;
-	$user_present = $identificat->user->getFromDB($user);
+	$user_present = $identificat->user->getFromDBbyName($user);
 	if (!$user_present) $identificat->user->fields["name"]=$user;
 }
 if (isset($_POST["noCAS"])) $_SESSION["noCAS"]=1;
@@ -91,11 +82,11 @@ $identificat->err=$lang["login"][8];
 	if ($exists==1){
 		// Without UTF8 decoding
 		if (!$auth_succeded) $auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
-		if ($auth_succeded) $user_present = $identificat->user->getFromDB($_POST['login_name']);
+		if ($auth_succeded) $user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 		
 		// With UTF8 decoding
 		//if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
-		//if ($auth_succeded) $user_present = $identificat->user->getFromDB(utf8_decode($_POST['login_name']));
+		//if ($auth_succeded) $user_present = $identificat->user->getFromDBbyName(utf8_decode($_POST['login_name']));
 	
 	}
 
@@ -104,7 +95,7 @@ $identificat->err=$lang["login"][8];
 		$auth_succeded = $identificat->connection_imap($cfg_glpi["imap_auth_server"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
 		if ($auth_succeded) {
 			$identificat->extauth=1;
-			$user_present = $identificat->user->getFromDB($_POST['login_name']);
+			$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 
 			if ($identificat->user->getFromIMAP($cfg_glpi["imap_host"],utf8_decode($_POST['login_name']))) {
 				$update_list = array('email');
@@ -123,7 +114,7 @@ $identificat->err=$lang["login"][8];
 		    $auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
-				$user_present = $identificat->user->getFromDB($_POST['login_name']);
+				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 				$update_list = array();
 				if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']))) {
 					$update_list = array_keys($cfg_glpi['ldap_fields']);
@@ -138,7 +129,7 @@ $identificat->err=$lang["login"][8];
 		$auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 		if ($auth_succeded) {
 			$identificat->extauth=1;
-			$user_present = $identificat->user->getFromDB($_POST['login_name']);
+			$user_present = $identificat->user->getFromDBName($_POST['login_name']);
 			$update_list = array();
 			if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$cfg_glpi["ldap_basedn"],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']))) {
 				$update_list = array_keys($cfg_glpi['ldap_fields']);
@@ -159,7 +150,7 @@ $identificat->err=$lang["login"][8];
 		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_glpi["ldap_host"],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
-				$user_present = $identificat->user->getFromDB($_POST['login_name']);
+				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 				$update_list = array();
 				if ($identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$_POST['login_name'],$cfg_glpi["ldap_condition"])) {
 				$update_list = array_keys($cfg_glpi['ldap_fields']);
@@ -174,10 +165,12 @@ $identificat->err=$lang["login"][8];
 // are not present on the DB, so we add it.
 // if not, we update it.
 
-
 if ($auth_succeded)
 if (!$user_present&&$cfg_glpi["auto_add_users"]) {
-	$identificat->user->fields["ID"]=$identificat->user->addToDB($identificat->extauth);
+	$input=array();
+	if ($identificat->extauth)
+		$input["_extauth"]=1;
+	$identificat->user->fields["ID"]=$identificat->user->add($input);
 } else if (!$user_present){ // Auto add not enable so auth failed
 	$identificat->err.=$lang["login"][11];
 	$auth_succeded=false;	
@@ -206,7 +199,7 @@ if ( ! $auth_succeded ) {
 }
 
 // now we can continue with the process...
-$identificat->setcookies();
+$identificat->initSession();
 
 $dirplug=$phproot."/plugins";
 $dh  = opendir($dirplug);
@@ -239,13 +232,13 @@ if (isset($_POST['redirect']))
 $REDIRECT="?redirect=".$_POST['redirect'];
 
 // Redirect to Command Central if not post-only
-if ($identificat->user->fields['type'] == "post-only")
+if ($_SESSION["glpiprofile"]["interface"] == "helpdesk")
 {
-	glpi_header("helpdesk.php$REDIRECT");
+	glpi_header("front/helpdesk.public.php$REDIRECT");
 }
 else
 {
-	glpi_header("central.php$REDIRECT");
+	glpi_header("front/central.php$REDIRECT");
 }
 
 ?>

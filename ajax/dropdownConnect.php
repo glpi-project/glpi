@@ -35,41 +35,48 @@
 
 
 	include ("_relpos.php");
-	include ($phproot."/glpi/includes.php");
+	$AJAX_INCLUDE=1;
+	include ($phproot."/inc/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkTypeRight($_POST["idtable"],"w");
 
 	// Make a select box
 
-		$table=$LINK_ID_TABLE[$_POST["idtable"]];
+	$table=$LINK_ID_TABLE[$_POST["idtable"]];
 
-		$where="";		
-		if (in_array($table,$cfg_glpi["deleted_tables"]))
-			$where.=" AND $table.deleted='N' ";
-		if (in_array($table,$cfg_glpi["template_tables"]))
-			$where.=" AND $table.is_template='0' ";		
+	$where="";		
+	if (in_array($table,$cfg_glpi["deleted_tables"]))
+		$where.=" AND $table.deleted='N' ";
+	if (in_array($table,$cfg_glpi["template_tables"]))
+		$where.=" AND $table.is_template='0' ";		
 			
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-			$where.=" AND $table.name LIKE '%".$_POST['searchText']."%' ";
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+		$where.=" AND ( $table.name LIKE '%".$_POST['searchText']."%' OR $table.serial LIKE '%".$_POST['searchText']."%' )";
 
-		$NBMAX=$cfg_glpi["dropdown_max"];
-		$LIMIT="LIMIT 0,$NBMAX";
+	$NBMAX=$cfg_glpi["dropdown_max"];
+	$LIMIT="LIMIT 0,$NBMAX";
 
-		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
+	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 						
 	
-	if ($_POST["idtable"]==COMPUTER_TYPE)
-		$CONNECT_SEARCH=" WHERE '1' = '1' ";
-	else {
-		$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";	
-	}
-		
+	if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
+		$CONNECT_SEARCH=" WHERE ( $table.is_global='1' ) ";
+	} else {
+		if ($_POST["idtable"]==COMPUTER_TYPE)
+			$CONNECT_SEARCH=" WHERE '1' = '1' ";
+		else {
+			$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";	
+		}
+	}	
+
 	$LEFTJOINCONNECT="";
-	if ($_POST["idtable"]!=COMPUTER_TYPE)		
+	if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"])		
 		$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
-	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name from $table $LEFTJOINCONNECT $CONNECT_SEARCH $where order by name ASC";
+	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name,$table.serial as serial from $table $LEFTJOINCONNECT $CONNECT_SEARCH $where order by name ASC";
+
+
 
 		$result = $db->query($query);
 		echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -81,6 +88,7 @@
 		if ($db->numrows($result)) {
 			while ($data = $db->fetch_array($result)) {
 				$output = $data['name'];
+				if (!empty($data['serial'])) $output.=" - ".$data["serial"];
 				$ID = $data['ID'];
 				if (empty($output)) $output="($ID)";
 

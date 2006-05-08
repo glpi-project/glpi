@@ -35,13 +35,14 @@
 
 //print_r($_GET);
 	include ("_relpos.php");
-	include ($phproot."/glpi/includes.php");
+	$AJAX_INCLUDE=1;
+	include ($phproot."/inc/includes.php");
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkCentralAccess();
 
 	$split=split(":",$cfg_glpi["planning_begin"]);
 	$global_begin=intval($split[0]);
@@ -66,7 +67,7 @@
 	if (isset($_GET["author"])){
 		echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
 		echo "<td>";
-		dropdownUsers("plan[id_assign]",$_GET["author"],-1);
+		dropdownUsers("plan[id_assign]",$_GET["author"],"own_ticket",-1);
 		echo "</td></tr>";
 	}
 

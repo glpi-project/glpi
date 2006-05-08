@@ -35,13 +35,14 @@
 
 
 	include ("_relpos.php");
-	include ($phproot."/glpi/includes.php");
-	include ($phproot."/glpi/includes_software.php");
-	include ($phproot."/glpi/includes_computers.php");
+	$AJAX_INCLUDE=1;
+	$NEEDED_ITEMS=array("software","computer");
+	include ($phproot."/inc/includes.php");
+
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkRight("software","w");
 	
 if ($_POST['sID']>0){
 	// Make a select box

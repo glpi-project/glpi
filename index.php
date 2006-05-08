@@ -36,16 +36,15 @@
 // Test si config_db n'existe pas on lance l'installation
 
 include ("_relpos.php");
-include ($phproot . "/glpi/config/based_config.php");
+include ($phproot . "/config/based_config.php");
 if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
-	include($phproot ."/install.php");
+	include($phproot ."/install/install.php");
 	die();
 }
 else
 {
-	include ($phproot . "/glpi/includes.php");
-	// load default dictionnary 
-	loadLanguage();
+	include ($phproot . "/inc/includes.php");
+
 	// Using CAS server
 	if (!empty($cfg_glpi["cas_host"])&&!isset($_GET["noCAS"])) {
 		glpi_header("login.php");
@@ -65,7 +64,7 @@ else
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
 
 	// Appel CSS
-	echo "<link rel='stylesheet'  href='".$HTMLRel."styles.css' type='text/css' media='screen' />";
+	echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' />";
 	echo "</head>";
 
 	// Body with configured stuff
@@ -85,7 +84,7 @@ else
 	echo "<ul>";
 	// Affichage autorisé FAQ
 	if ($cfg_glpi["public_faq"]){
-		echo "<li><a href='faq.php'>".$lang["knowbase"][24]."</a></li>";}
+		echo "<li><a href='front/faq.php'>".$lang["knowbase"][24]."</a></li>";}
 	echo "</ul>";
 	echo "</div>";
 
@@ -104,28 +103,28 @@ else
 
 		list($type,$ID)=split("_",$_GET["redirect"]);
 		// Déjà connecté
-		if (isset($_SESSION["glpitype"])&&!empty($_SESSION["glpitype"])){
-		 switch ($_SESSION["glpitype"]){
-		 case "post-only" :
+		if (isset($_SESSION["glpiprofile"]["interface"])&&!empty($_SESSION["glpiprofile"]["interface"])){
+		 switch ($_SESSION["glpiprofile"]["interface"]){
+		 case "helpdesk" :
 		 	switch ($type){
 		 		case "tracking":
-				 	glpi_header($cfg_glpi["root_doc"]."/helpdesk.php?show=user&ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.php?show=user&ID=$ID");
 					 break;
 				 default:
-					 glpi_header($cfg_glpi["root_doc"]."/helpdesk.php");
+					 glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.php");
 					 break;
 			 	}
 		 	break;
-		 default :
+		 case "central" :
 		 	switch ($type){
 		 		case "tracking":
-				 	glpi_header($cfg_glpi["root_doc"]."/tracking/tracking-info-form.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/front/tracking-info-form.php?ID=$ID");
 					 break;
 		 		case "computers":
-				 	glpi_header($cfg_glpi["root_doc"]."/computers/computers-info-form.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/front/computer.form.php?ID=$ID");
 					 break;
 				 default:
-					 glpi_header($cfg_glpi["root_doc"]."/central.php");
+					 glpi_header($cfg_glpi["root_doc"]."/front/central.php");
 					 break;
 			 	}
 		 	break;
@@ -177,5 +176,8 @@ else
 echo "</body></html>";
 
 // End
+
+// Appel de cron
+callCron();
 
 ?>

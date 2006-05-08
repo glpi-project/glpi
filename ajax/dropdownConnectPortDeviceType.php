@@ -35,11 +35,12 @@
 
 
 	include ("_relpos.php");
-	include ($phproot."/glpi/includes.php");
+	$AJAX_INCLUDE=1;
+	include ($phproot."/inc/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkAuthentication("post-only");
+	checkRight("networking","w");
 
 	// Make a select box
 

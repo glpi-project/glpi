@@ -28,22 +28,19 @@
  ------------------------------------------------------------------------
 */
  
-// Based on:
-// IRMA, Information Resource-Management and Administration
-// Christian Bauer 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-include ($phproot . "/glpi/includes.php");
-include ($phproot . "/glpi/includes_users.php");
+$NEEDED_ITEMS=array("user");
+include ($phproot . "/inc/includes.php");
 
 @session_start();
 
 if (!isset($_SESSION["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
-	include ($phproot . "/glpi/CAS/CAS.php");
+	include ($phproot . "/lib/phpcas/CAS.php");
 	phpCAS::client(CAS_VERSION_2_0,$cfg_glpi["cas_host"],intval($cfg_glpi["cas_port"]),$cfg_glpi["cas_uri"]);
 	phpCAS::logout();
 }
@@ -56,7 +53,7 @@ if (isset($_SESSION["noCAS"])) $noCAS="?noCAS=1";
 
 
 $id = new Identification();
-$id->eraseCookies();
+$id->destroySession();
 
 // Redirect to the login-page
 
