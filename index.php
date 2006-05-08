@@ -48,7 +48,7 @@ else
 	// Using CAS server
 	if (!empty($cfg_glpi["cas_host"])&&!isset($_GET["noCAS"])) {
 		glpi_header("login.php");
-		}
+	}
 
 
 	// Send UTF8 Headers
