@@ -128,13 +128,11 @@ else
 					 break;
 			 	}
 		 	break;
-		 
 		 }
 		}
 		// Non connecté : connection puis redirection 
 		else {
-		echo "<input type='hidden' name='redirect' value='".$_GET['redirect']."'>";
-		
+			echo "<input type='hidden' name='redirect' value='".$_GET['redirect']."'>";
 		}
 	}
 	
