@@ -384,9 +384,13 @@ function showAddEvents($target,$order,$sort,$user="") {
 			echo $item;
 		} else {
 				if ($itemtype=="reservation"){
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
+					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
 				} else {
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$itemtype.".form.php?ID=";
+					if ($itemtype[strlen($itemtype)-1]=='s')
+						$show=substr($itemtype,0,strlen($itemtype)-1);
+					else $show=$itemtype;
+
+					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$show.".form.php?ID=";
 				}
 			echo $item;
 			echo "\">$item</a>";
