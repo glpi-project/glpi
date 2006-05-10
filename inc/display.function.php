@@ -186,7 +186,7 @@ function commonHeader($title,$url)
 	// Inventory
 	if (count($inventory)) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>\n";
-		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span><dt>\n";
+		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu1\"><ul>";
 		$i=0;
 		// list menu item 
