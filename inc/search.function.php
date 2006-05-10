@@ -364,7 +364,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	echo "</td>";
 	// Display Reset search
 	echo "<td>";
-	echo "<a href='".$HTMLRel."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$HTMLRel."pics/reset.png' class='calendrier'</a>";
+	echo "<a href='".$HTMLRel."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$HTMLRel."pics/reset.png' class='calendrier'></a>";
 	echo "</td>";
 	// Display submit button
 	echo "<td width='80' align='center' class='tab_bg_2'>";
