@@ -80,7 +80,7 @@ function showCentralReminder($type="private"){
 
 			}
 
-			echo "</td></tr>";
+			echo "</div></td></tr>";
 
 		
 		}
