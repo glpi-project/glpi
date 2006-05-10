@@ -520,11 +520,12 @@ function showEvents($target,$order,$sort,$start=0) {
 					if ($itemtype[strlen($itemtype)-1]=='s')
 						$show=substr($itemtype,0,strlen($itemtype)-1);
 					else $show=$itemtype;
+
 					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$show.".form.php?ID=";
 				}
 				echo $item;
 				echo "\">$item</a>";
-		   }
+			}
 		}			
 		echo "</b></td><td>".convDateTime($date)."</td><td align='center'>".$logService[$service]."</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";
