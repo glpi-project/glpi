@@ -75,7 +75,7 @@ if(!empty($_GET["next"])) {
 	
 }
 elseif (!empty($_POST["test_smtp_send"])){
-	testSmtpMail();
+	testMail();
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=mailing");
 }
 elseif(!empty($_POST["update_mailing"])) {
