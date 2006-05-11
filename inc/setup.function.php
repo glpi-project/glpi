@@ -1463,15 +1463,20 @@ function showFormMailing($target) {
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][235]."</td><td> <input type=\"password\" name=\"smtp_password\" size='40' value=\"".$cfg_glpi["smtp_password"]."\"> </td></tr>";
 		
 		
-			echo "<tr class='tab_bg_2'><td align='center'>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
 			echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
-			echo "</td>";
-			echo "<td align='right'>";
-			echo "<input class=\"submit\" type=\"submit\" name=\"test_smtp_send\" value=\"".$lang["setup"][229]."\">";
-			echo " </td></tr>";
+			echo "</td></tr>";
 		
-
 		echo "</table>";
+		echo "</div>";
+		echo "</form>";
+		echo "<form action=\"$target\" method=\"post\">";
+		echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][229]."</th></tr>";
+		echo "<tr class='tab_bg_2'>";
+		echo "<td align='center'>";
+		echo "<input class=\"submit\" type=\"submit\" name=\"test_smtp_send\" value=\"".$lang["buttons"][2]."\">";
+		echo " </td></tr></table></div>";
+
 	} else if ($_SESSION['glpi_mailconfig']==2)	{
 
 		$profiles[-1]=$lang["setup"][237];

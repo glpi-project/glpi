@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-function testSmtpMail(){
+function testMail(){
 	global $cfg_glpi,$lang;
 	$mmail=new glpi_phpmailer();
 	$mmail->From=$cfg_glpi["admin_email"];
