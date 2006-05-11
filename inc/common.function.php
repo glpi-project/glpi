@@ -361,7 +361,7 @@ exit();
 *
 */
 function callCron(){
-echo "<div style=\"background-image: url('cron.php');\"></div>";
+echo "<div style=\"background-image: url('front/cron.php');\"></div>";
 }
 
 
