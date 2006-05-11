@@ -35,13 +35,12 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("setup","ocsng");
+$NEEDED_ITEMS=array("setup","ocsng","mailing");
 include ($phproot . "/inc/includes.php");
 
 checkRight("config","w");
 $config= new Config();
 if ($cfg_glpi["ocs_mode"]) $ocsconfig=new ConfigOCS();
-
 
 if (!isset($_SESSION['glpi_mailconfig'])) $_SESSION['glpi_mailconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_mailconfig']=$_GET['onglet'];
@@ -75,8 +74,11 @@ if(!empty($_GET["next"])) {
 	
 	
 }
+elseif (!empty($_POST["test_smtp_send"])){
+	testSmtpMail();
+	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=mailing");
+}
 elseif(!empty($_POST["update_mailing"])) {
-
 	$config->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=mailing");
 }
@@ -108,7 +110,6 @@ elseif(!empty($_POST["update_confdisplay"])) {
 	$ocsconfig->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=ocsng");
 }
-
 commonFooter();
 
 

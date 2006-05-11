@@ -332,7 +332,7 @@ class Mailing
 					$mmail->AddReplyTo("$replyto", ''); 
 					$mmail->FromName=$sender;
 					
-					$mmail->AddAddress("$users[$i]", "");
+					$mmail->AddAddress($users[$i], "");
 					$mmail->Subject=$subject	;  
 					$mmail->Body=$this->get_mail_body("html");
 					$mmail->isHTML(true);
@@ -530,7 +530,7 @@ class MailingResa{
 					$mmail->From=$sender;
 					$mmail->AddReplyTo("$replyto", ''); 
 					$mmail->FromName=$sender;
-					$mmail->AddAddress("$users[$i]", "");
+					$mmail->AddAddress($users[$i], "");
 					$mmail->Subject=$subject	;  
 					$mmail->Body=$this->get_mail_body("html");
 					$mmail->isHTML(true);
