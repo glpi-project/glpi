@@ -301,6 +301,18 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("peripheral",$this->fields["peripheral"],1,1,1);
 		echo "</td>";
 		echo "</tr>";
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$lang["title"][37].":</td><td>";
+		dropdownNoneReadWrite("notes",$this->fields["notes"],1,1,1);
+		echo "</td>";
+		echo "<td>&nbsp;</td><td>";
+		echo "&nbsp;";
+		echo "</td>";
+		echo "<td>&nbsp;</td><td>";
+		echo "&nbsp;";
+		echo "</td>";
+		echo "</tr>";
 	
 		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$lang["Menu"][26]."</strong></td></tr>";
 	
