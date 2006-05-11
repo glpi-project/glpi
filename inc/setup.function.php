@@ -1462,8 +1462,16 @@ function showFormMailing($target) {
 
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][235]."</td><td> <input type=\"text\" name=\"smtp_password\" size='40' value=\"".$cfg_glpi["smtp_password"]."\"> </td></tr>";
 		
+		
+			echo "<tr class='tab_bg_2'><td align='center'>";
+			echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+			echo "</td>";
+			echo "<td align='right'>";
+			echo "<input class=\"submit\" type=\"submit\" name=\"test_smtp_send\" value=\"".$lang["setup"][229]."\">";
+			echo " </td></tr>";
+		
+
 		echo "</table>";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 	} else if ($_SESSION['glpi_mailconfig']==2)	{
 
 		$profiles[-1]=$lang["setup"][237];
