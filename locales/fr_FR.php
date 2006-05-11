@@ -1270,15 +1270,21 @@ $lang["setup"][300]="Vérifier si une nouvelle version est disponible";
 $lang["setup"][301]="Une nouvelle version est disponible :";
 $lang["setup"][302]="Elle est disponible sur le site de GLPI : <a href='http://glpi.indepnet.org' target='_blank'>http://glpi.indepnet.org</a>";
 $lang["setup"][303]="Vous disposez de la dernière version disponible";
-$lang["setup"][304]="Vérification Impossible";
+$lang["setup"][304]="Vérification Impossible. Si vous êtes derrière un proxy configurez le.";
 $lang["setup"][305]="Cette fonctionnalité n'est pas disponible car allow_url_fopen n'est pas activé dans votre configuration PHP.";
 $lang["setup"][306]="Vérifier la présence de mises à jour";
 $lang["setup"][307]="Jamais";
 $lang["setup"][308]="Toutes les semaines";
 $lang["setup"][309]="Tous les mois";
 $lang["setup"][310]="Vérification automatique de la présence d'une mise à jour";
+$lang["setup"][311]="Connection au serveur proxy impossible";
+
 
 $lang["setup"][400]="Actif";
+$lang["setup"][401]="Adresse Proxy";
+$lang["setup"][402]="Port Proxy";
+$lang["setup"][403]="Utilisateur Proxy";
+$lang["setup"][404]="Mot de Passe Proxy";
 
 $lang["setup"][500]="OS Version";
 $lang["setup"][501]="Service Pack";
