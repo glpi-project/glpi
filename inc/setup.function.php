@@ -1460,7 +1460,7 @@ function showFormMailing($target) {
 
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][234]."</td><td> <input type=\"text\" name=\"smtp_username\" size='40' value=\"".$cfg_glpi["smtp_username"]."\"> </td></tr>";
 
-		echo "<tr class='tab_bg_2'><td >".$lang["setup"][235]."</td><td> <input type=\"text\" name=\"smtp_password\" size='40' value=\"".$cfg_glpi["smtp_password"]."\"> </td></tr>";
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][235]."</td><td> <input type=\"password\" name=\"smtp_password\" size='40' value=\"".$cfg_glpi["smtp_password"]."\"> </td></tr>";
 		
 		
 			echo "<tr class='tab_bg_2'><td align='center'>";
