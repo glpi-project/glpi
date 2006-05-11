@@ -423,10 +423,17 @@ if(TableExists("glpi_kbitems")){
 	if(!FieldExists("glpi_display","FK_users")) {	
 		$query = "ALTER TABLE `glpi_display` ADD `FK_users` INT NOT NULL DEFAULT '0'"; 
 		$db->query($query) or die("0.68 alter display add FK_users".$lang["update"][90].$db->error());
-		$query="ALTER TABLE `glpi_display` DROP INDEX `type_2` ,ADD UNIQUE `type_2` ( `type` , `num` , `FK_users` )";
+		$query="ALTER TABLE `glpi_display` DROP INDEX `type_2`, ADD UNIQUE `type_2` ( `type` , `num` , `FK_users` )";
 		$db->query($query) or die("0.68 alter display update unique key".$lang["update"][90].$db->error());
 	}	
 	
+// Proxy configuration
+
+	if(!FieldExists("glpi_config","proxy_name")) {	
+		$query = "ALTER TABLE `glpi_config` ADD `proxy_name` VARCHAR( 255 ) NULL, ADD `proxy_port` VARCHAR( 255 ) DEFAULT '8080' NOT NULL, ADD `proxy_user` VARCHAR( 255 ) NULL, ADD `proxy_password` VARCHAR( 255 ) NULL"; 
+		$db->query($query) or die("0.68 add proxy fields to glpi_config".$lang["update"][90].$db->error());
+	}	
+
  
 
 } // fin 0.68 #####################################################################################

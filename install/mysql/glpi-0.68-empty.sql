@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-04-30 18:13
+#GLPI Dump database on 2006-05-11 09:02
 
 ### Dump table glpi_cartridges
 
@@ -185,10 +185,14 @@ CREATE TABLE `glpi_config` (
     `smtp_port` int(11) DEFAULT '25' NOT NULL,
     `smtp_username` varchar(255),
     `smtp_password` varchar(255),
+    `proxy_name` varchar(255),
+    `proxy_port` varchar(255) DEFAULT '8080' NOT NULL,
+    `proxy_user` varchar(255),
+    `proxy_password` varchar(255),
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -1111,7 +1115,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-04-30 18:13:44','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-11 09:01:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 

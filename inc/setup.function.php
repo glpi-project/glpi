@@ -1057,6 +1057,7 @@ function showFormConfigGen($target){
 	echo "<option value=\"4\"";  if($level==4){ echo " selected";} echo ">".$lang["setup"][106]." </option>";
 	echo "<option value=\"5\"";  if($level==5){ echo " selected";} echo ">".$lang["setup"][107]."</option>";
 	echo "</select></td></tr>";
+
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $cfg_glpi["expire_events"] ."\"></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>";
@@ -1075,13 +1076,6 @@ function showFormConfigGen($target){
 		echo "<option value='$i' ".($i==$cfg_glpi["cartridges_alarm"]?" selected ":"").">$i</option>";
 	echo "</select></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][306]." </td><td><select name=\"auto_update_check\">";
-	$check=$cfg_glpi["auto_update_check"];
-	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][307]." </option>";
-	echo "<option value=\"7\"";  if($check==7){ echo " selected";} echo ">".$lang["setup"][308]."</option>";
-	echo "<option value=\"30\"";  if($check==30){ echo " selected";} echo ">".$lang["setup"][309]."</option>";
-	echo "</select></td></tr>";
-
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][124]." </td><td>";
 	dropdownYesNoInt("auto_add_users",$cfg_glpi["auto_add_users"]);
 	echo "</td></tr>";
@@ -1094,6 +1088,17 @@ function showFormConfigGen($target){
 	echo "</select></td></tr>";
 
 
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][306]." </td><td><select name=\"auto_update_check\">";
+	$check=$cfg_glpi["auto_update_check"];
+	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][307]." </option>";
+	echo "<option value=\"7\"";  if($check==7){ echo " selected";} echo ">".$lang["setup"][308]."</option>";
+	echo "<option value=\"30\"";  if($check==30){ echo " selected";} echo ">".$lang["setup"][309]."</option>";
+	echo "</select></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][401]." </td><td><input type=\"text\" name=\"proxy_name\" value=\"". $cfg_glpi["proxy_name"] ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][402]." </td><td><input type=\"text\" name=\"proxy_port\" value=\"". $cfg_glpi["proxy_port"] ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][403]." </td><td><input type=\"text\" name=\"proxy_user\" value=\"". $cfg_glpi["proxy_user"] ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][404]." </td><td><input type=\"text\" name=\"proxy_password\" value=\"". $cfg_glpi["proxy_password"] ."\"></td></tr>";
 	
 	echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
@@ -1606,7 +1611,6 @@ function checkNewVersionAvailable($auto=1){
 	global $db,$lang,$cfg_glpi;
 
 	if (!haveRight("update","r")) return false;	
-
 	$do_check=1;
 	
 	if ($auto&&$cfg_glpi["auto_update_check"]==0) return;
@@ -1621,26 +1625,48 @@ function checkNewVersionAvailable($auto=1){
 				
 	}
 	
-	 if ($do_check){
+	 if (!$do_check){
 	 	echo "<br>";
 	 	if ($auto) echo "<div align='center'><strong>".$lang["setup"][310]."</strong></div>";
 		$latest_version = '';
 		
-		 if ($fp=@fsockopen("glpi.indepnet.org", 80, $errno, $errstr, 1)){
-		
-			$request  = "GET /latest_version HTTP/1.1\r\n";
-			$request .= "Host: glpi.indepnet.org\r\n";
-			$request .= 'User-Agent: GLPICheckUpdate/'.trim($cfg_glpi["version"])."\r\n";
-			$request .= "Connection: Close\r\n\r\n";
-			 
-			fwrite($fp, $request);
-  			while (!feof($fp)) {
-       				$ret=fgets($fp, 128);
+		// Connection directe
+		 if (empty($cfg_glpi["proxy_name"])){
+			if ($fp=@fsockopen("glpi.indepnet.org", 80, $errno, $errstr, 1)){
+			
+				$request  = "GET /latest_version HTTP/1.1\r\n";
+				$request .= "Host: glpi.indepnet.org\r\n";
+				$request .= 'User-Agent: GLPICheckUpdate/'.trim($cfg_glpi["version"])."\r\n";
+				$request .= "Connection: Close\r\n\r\n";
+				
+				fwrite($fp, $request);
+				while (!feof($fp)) {
+					$ret=fgets($fp, 128);
+					if (!empty($ret))
+						$latest_version=$ret;
+				}
+				fclose($fp);
+			}
+		} else { // Connection using proxy
+			$proxy_cont = ''; //laissez vide
+			
+			$proxy_fp = fsockopen($cfg_glpi["proxy_name"], $cfg_glpi["proxy_port"], $errno, $errstr, 1);
+			if (!$proxy_fp)    {
+				echo "<div align='center'>".$lang["setup"][311]." ($errstr)</div>";
+			} 
+			
+			fputs($proxy_fp, "GET http://glpi.indepnet.org/latest_version HTTP/1.0\r\nHost: ".$cfg_glpi["proxy_name"]."\r\n");
+			if (!empty($cfg_glpi["proxy_user"]))
+				fputs($proxy_fp, "Proxy-Authorization: Basic " . base64_encode ($cfg_glpi["proxy_user"].":".$cfg_glpi["proxy_password"]) . "\r\n");    // added
+			fputs($proxy_fp,"\r\n");
+			while(!feof($proxy_fp)) {
+				$ret = fread($proxy_fp,128);
 				if (!empty($ret))
 					$latest_version=$ret;
-   			}
-		 	fclose($fp);
-		 }
+			}
+			fclose($proxy_fp);
+		
+		}
 
 		 if (strlen(trim($latest_version)) == 0)
 			echo "<div align='center'>".$lang["setup"][304]." ($errstr)</div>";
