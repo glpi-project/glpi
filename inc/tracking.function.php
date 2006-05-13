@@ -661,7 +661,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	// Prints a nice form to add jobs
 
 	global $cfg_glpi, $lang,$cfg_glpi,$REFERER;
-
+	
 	if (!empty($error)) {
 		echo "<div align='center'><strong>$error</strong></div>";
 	}
@@ -898,7 +898,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo $lang["job"][27].":&nbsp;";
 	if (!haveRight("show_ticket","1")) 
 		dropdownUsers("assign",$assign,"ID");
-	else dropdownUsers("assign",$assign,"own_ticket");
+	else dropdownUsers("assign",$assign,"own_ticket",1);
 	echo $lang["job"][28].":&nbsp;";
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 
