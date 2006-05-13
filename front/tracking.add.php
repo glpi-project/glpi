@@ -47,7 +47,6 @@ commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 $error = "";
 $track=new Job();
 
-
 if (!isset($_POST["user"])) $user=$_SESSION["glpiID"];
 else $user=$_POST["user"];
 if (!isset($_POST["assign"])) $assign=0;
@@ -58,6 +57,8 @@ if (isset($_SERVER["HTTP_REFERER"]))
 	$REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($_POST["_referer"])) $REFERER=$_POST["_referer"];
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
+
+
  
 if (isset($_POST["priority"]) && empty($_POST["contents"]))
 {
@@ -80,9 +81,10 @@ elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 		addFormTracking($_POST["device_type"],$_POST["computer"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 } 
-else if (isset($_GET["computer"])&&isset($_GET["device_type"]))
+else if (isset($_GET["ID"])&&isset($_GET["device_type"]))
 {
-	addFormTracking($_GET["device_type"],$_GET["computer"],$user,$assign,$_SERVER["PHP_SELF"],$error);
+
+	addFormTracking($_GET["device_type"],$_GET["ID"],$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 
 
