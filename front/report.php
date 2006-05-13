@@ -65,19 +65,27 @@ $report_list["default"]["file"] = "report.default.php";
 // $report_list["my_own"]["file"] = "reports/my_own.php";
 
 
+
+if (haveRight("contract_infocom","r")){
 // Rapport ajoutés par GLPI V0.2
-$report_list["Contrats"]["name"] = $lang["reports"][27];
-$report_list["Contrats"]["file"] = "report.contract.php";
-$report_list["Par_annee"]["name"] = $lang["reports"][28];
-$report_list["Par_annee"]["file"] = "report.year.php";
-//$report_list["Intervention"]["name"] = $lang["reports"][25];
-//$report_list["Intervention"]["file"] = "reports/tracking.php";
-$report_list["Rapport prises reseau"]["name"]=$lang["reports"][33];
-$report_list["Rapport prises reseau"]["file"]="report.networking.php";
-$report_list["Infocoms"]["name"]=$lang["reports"][62];
-$report_list["Infocoms"]["file"]="report.infocom.php";
-$report_list["Infocoms2"]["name"]=$lang["reports"][63];
-$report_list["Infocoms2"]["file"]="report.infocom.conso.php";
+	$report_list["Contrats"]["name"] = $lang["reports"][27];
+	$report_list["Contrats"]["file"] = "report.contract.php";
+	$report_list["Par_annee"]["name"] = $lang["reports"][28];
+	$report_list["Par_annee"]["file"] = "report.year.php";
+	$report_list["Infocoms"]["name"]=$lang["reports"][62];
+	$report_list["Infocoms"]["file"]="report.infocom.php";
+	$report_list["Infocoms2"]["name"]=$lang["reports"][63];
+	$report_list["Infocoms2"]["file"]="report.infocom.conso.php";
+}
+if (haveRight("networking","r")){
+	$report_list["Rapport prises reseau"]["name"]=$lang["reports"][33];
+	$report_list["Rapport prises reseau"]["file"]="report.networking.php";
+}
+if (haveRight("reservation_central","r")){
+	$report_list["reservation"]["name"]=$lang["reservation"][24];
+	$report_list["reservation"]["file"]="report.reservation.php";
+}
+
 
 $i = 0;
 $count = count($report_list);
