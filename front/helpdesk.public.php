@@ -74,8 +74,13 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		//showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_GET["show"],"","","",$_GET["start"]);
 	}
 	else {
-		 showJobDetails($_GET["ID"]);
-		 showFollowupsSummary($_GET["ID"]);
+		if (isset($_POST["update"])){
+			$track=new Job();
+			$track->update($_POST);
+		}
+		
+		 if (showJobDetails($_SERVER["PHP_SELF"]."?show=user&ID=".$_GET["ID"],$_GET["ID"]))
+		 	showFollowupsSummary($_GET["ID"]);
 	}
 }
 elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){

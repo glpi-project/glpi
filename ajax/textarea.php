@@ -41,7 +41,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkCentralAccess();
+	checkLoginUser();
 
 	echo "<textarea rows='".$_POST['rows']."' cols='".$_POST['cols']."' name='".$_POST['name']."'>";
 	echo stripslashes(urldecode($_POST["data"]));

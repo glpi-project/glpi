@@ -1345,15 +1345,18 @@ function getStatusName($value){
 }
 
 
-function showJobDetails ($ID){
+function showJobDetails ($target,$ID){
 	global $db,$cfg_glpi,$lang,$HTMLRel;
 	$job=new Job();
 	
 	$canupdate=haveRight("update_ticket","1");
+	
 
 	if ($job->getfromDB($ID)) {
 
 		if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]) return false;
+		
+		$canupdate_descr=$canupdate||($job->numberOfFollowups()==0&&$job->fields["author"]==$_SESSION["glpiID"]);
 
 		$author=new User();
 		$author->getFromDB($job->fields["author"]);
@@ -1365,7 +1368,7 @@ function showJobDetails ($ID){
 		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
 
 		echo "<div align='center'>";
-		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php\"  enctype=\"multipart/form-data\">\n";
+		echo "<form method='post' action='$target'  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// Premi�e ligne
 		echo "<tr ><th colspan='2' style='font-size:10px'>";
@@ -1519,7 +1522,7 @@ function showJobDetails ($ID){
 		echo "<tr  class='tab_bg_2'><td width='15%'>".$lang["joblist"][6]."<br><br></td>";
 		echo "<td  width='85%' align='left'>";
 
-		if ($canupdate){ // Admin =oui on autorise la modification de la description
+		if ($canupdate_descr){ // Admin =oui on autorise la modification de la description
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
@@ -1613,7 +1616,7 @@ function showJobDetails ($ID){
 
 			echo "</td></tr>";
 		// Troisi�e Ligne
-		if ($canupdate||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
+		if ($canupdate||$canupdate_descr||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}
