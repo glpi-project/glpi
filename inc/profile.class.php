@@ -133,7 +133,9 @@ class Profile extends CommonDBTM{
 		echo "<div align='center'><table border='0'><tr><td>";
 		echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][35]."' title='".$lang["Menu"][35]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][35]."</b></span>";
 		echo "</td>";
-		echo "<td><a class='icon_consol' href='".$HTMLRel."front/profile.php?add=new'>".$lang["profiles"][0]."</a></td>";
+		if (haveRight("profile","w")){
+			echo "<td><a class='icon_consol' href='".$HTMLRel."front/profile.php?add=new'>".$lang["profiles"][0]."</a></td>";
+		}
 		echo "</tr></table></div>";
 	}
 	
@@ -190,7 +192,7 @@ class Profile extends CommonDBTM{
 		global $lang;
 	
 		if (!haveRight("profile","r")) return false;
-	
+		$canedit=haveRight("profile","w");
 		if ($ID){
 			$this->getFromDB($ID);
 		} else {
@@ -231,20 +233,22 @@ class Profile extends CommonDBTM{
 		echo "</td></tr>";
 	
 	
-		echo "<tr class='tab_bg_1'>";
-		if ($ID){
-			echo "<td colspan='2' align='center'>";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-	
-			echo "</td><td colspan='2' align='center'>";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	
-		} else {
-			echo "<td colspan='4' align='center'>";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		if ($canedit){
+			echo "<tr class='tab_bg_1'>";
+			if ($ID){
+				echo "<td colspan='2' align='center'>";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+		
+				echo "</td><td colspan='2' align='center'>";
+				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		
+			} else {
+				echo "<td colspan='4' align='center'>";
+				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			}
+			echo "</td></tr>";
 		}
-		echo "</td></tr>";
 		echo "</table>";
 	
 	}
@@ -254,7 +258,8 @@ class Profile extends CommonDBTM{
 		global $lang;
 	
 		if (!haveRight("profile","r")) return false;
-	
+		$canedit=haveRight("profile","w");
+
 		if ($ID){
 			$this->getFromDB($ID);
 		} else {
@@ -457,19 +462,21 @@ class Profile extends CommonDBTM{
 		echo "<td>".$lang["reminder"][1].":</td><td>";
 		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,0,1);
 		echo "</td></tr>";
-	
-		echo "<tr class='tab_bg_1'>";
-		if ($ID){
-			echo "<td colspan='3' align='center'>";
-			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-			echo "</td><td colspan='3' align='center'>";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		} else {
-			echo "<td colspan='6' align='center'>";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		
+		if ($canedit){
+			echo "<tr class='tab_bg_1'>";
+			if ($ID){
+				echo "<td colspan='3' align='center'>";
+				echo "<input type='hidden' name='ID' value=$ID>";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td><td colspan='3' align='center'>";
+				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+			} else {
+				echo "<td colspan='6' align='center'>";
+				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			}
+			echo "</td></tr>";
 		}
-		echo "</td></tr>";
 		echo "</table>";
 	
 	}

@@ -125,7 +125,7 @@ function commonHeader($title,$url)
 	//////// ADMINISTRATION
 	if (haveRight("user","r"))
 		$config[$lang["Menu"][14]]=array("user.php","u");
-	if (haveRight("profile","w"))
+	if (haveRight("profile","r"))
 		$config[$lang["Menu"][35]]=array("profile.php","p");
 	$config[$lang["Menu"][10]]=array("setup.php","2");
 	$config[$lang["Menu"][11]]=array("preference.php","p");
