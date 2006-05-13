@@ -799,6 +799,69 @@ function showDeviceReservations($target,$type,$ID){
 	} else echo "<div align='center'><strong>".$lang["reservation"][34]."</strong></div>";
 }
 
+function showUserReservations($target,$ID){
+	global $db,$lang,$cfg_glpi;
+	$resaID=0;
+	
+	if (!haveRight("reservation_central","r")) return false;
+
+	echo "<div align='center'>";
+	
+	$now=date("Y-m-d H:i:s");
+
+		// Print reservation in progress
+		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_user='$ID' ORDER BY begin";
+		$result=$db->query($query);
+		$ri=new ReservationItem();
+		echo "<table class='tab_cadrehov'><tr><th colspan='5'>".$lang["reservation"][35]."</th></tr>";
+		if ($db->numrows($result)==0){	
+			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$lang["reservation"][37]."</td></tr>";
+		} else {
+			echo "<tr><th>".$lang["search"][8]."</th><th>".$lang["search"][9]."</th><th>".$lang["common"][1]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
+			
+			while ($data=$db->fetch_assoc($result)){
+				echo "<tr class='tab_bg_2'>";
+				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
+				echo "<td align='center'>".convDateTime($data["end"])."</td>";
+				if ($ri->getFromDB($data["id_item"]))
+					echo "<td align='center'>".$ri->getLink()."</td>";
+				else echo "<td align='center'>&nbsp;</td>";
+				echo "<td align='center'>".getUserName($data["id_user"])."</td>";
+				echo "<td align='center'>".nl2br($data["comment"])."</td>";
+				echo "</tr>";
+			}
+		}
+		echo "</table>";
+		echo "<br>";
+		// Print old reservations
+
+		$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_user='$ID' ORDER BY begin DESC";
+		$result=$db->query($query);
+
+		echo "<table class='tab_cadrehov'><tr><th colspan='5'>".$lang["reservation"][36]."</th></tr>";
+		if ($db->numrows($result)==0){	
+			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$lang["reservation"][37]."</td></tr>";
+		} else {
+			echo "<tr><th>".$lang["search"][8]."</th><th>".$lang["search"][9]."</th><th>".$lang["common"][1]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
+			while ($data=$db->fetch_assoc($result)){
+				echo "<tr class='tab_bg_2'>";
+				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
+				echo "<td align='center'>".convDateTime($data["end"])."</td>";
+				if ($ri->getFromDB($data["id_item"]))
+					echo "<td align='center'>".$ri->getLink()."</td>";
+				else echo "<td align='center'>&nbsp;</td>";
+				echo "<td align='center'>".getUserName($data["id_user"])."</td>";
+				echo "<td align='center'>".nl2br($data["comment"])."</td>";
+				echo "</tr>";
+			}
+		}
+		echo "</table>";
+		echo "<br>";
+		
+		echo "</div>";
+		
+}
+
 function isReservable($type,$ID){
 
 	global $db;

@@ -394,33 +394,33 @@ class User extends CommonDBTM {
 		if (!haveRight("user","r")) return false;
 		
 	
-		$this->getFromDB($ID);
-		$prof=new Profile();
-		$prof->getFromDBForUser($ID);
+		if ($this->getFromDB($ID)){
+			$prof=new Profile();
+			$prof->getFromDBForUser($ID);
 		
 		
-		echo "<div align='center'>";
+			echo "<div align='center'>";
 			echo "<table class='tab_cadre'>";
 			echo   "<tr><th colspan='2'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
 			echo "<tr class='tab_bg_1'>";	
 			
-				echo "<td align='center'>".$lang["setup"][18]."</td>";
+			echo "<td align='center'>".$lang["setup"][18]."</td>";
 				
-				echo "<td align='center'><b>".$this->fields["name"]."</b></td></tr>";
+			echo "<td align='center'><b>".$this->fields["name"]."</b></td></tr>";
 										
-				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>".$this->fields["realname"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>".$this->fields["realname"]."</td></tr>";
 	
-				echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
-				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$this->fields["email"]."</td></tr>";
-				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$this->fields["phone"]."</td></tr>";
-				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
-				echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
-				echo "</td></tr>";
-				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($this->fields["active"]?$lang["choice"][1]:$lang["choice"][0])."</td></tr>";
-		echo "</table></div>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$this->fields["email"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$this->fields["phone"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+			echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
+			echo "</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($this->fields["active"]?$lang["choice"][1]:$lang["choice"][0])."</td></tr>";
+			echo "</table></div>";
 	
-		echo "<div align='center' ><p><b>".$lang["tracking"][11]."</b></p></div>";
-		
+			echo "<div align='center' ><p><b>".$lang["tracking"][11]."</b></p></div>";
+		}
 	}
 	
 	
