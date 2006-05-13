@@ -79,7 +79,7 @@ if (isset($_GET['onglet'])) {
 }
 
 if (isset($_GET["ID"]))
-if (showJobDetails($_GET["ID"])){
+if (showJobDetails($_SERVER["PHP_SELF"],$_GET["ID"])){
 
 	switch($_SESSION['glpi_onglet']){
 	default :

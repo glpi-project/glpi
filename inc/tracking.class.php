@@ -108,8 +108,9 @@ class Job extends CommonDBTM{
 			$ret["ID"]=$input["ID"];
 			$ret["assign"]=$input["assign"];
 			$input=$ret;
-		} else {
+// 		} else { // Default case can only update contents if no followups already added
 			$ret["ID"]=$input["ID"];
+			$ret["contents"]=$input["contents"];
 			$input=$ret;
 		}
 		
@@ -119,7 +120,7 @@ class Job extends CommonDBTM{
 		$input["computer"]=$input["item"];
 		$input["device_type"]=$input["type"];
 		}
-	else if ($input["type"]!=0)
+	else if (isset($input["type"])&&$input["type"]!=0)
 		$input["device_type"]=0;
 
 	// add Document if exists
@@ -154,15 +155,16 @@ class Job extends CommonDBTM{
 		$updates[]="status";
 		$this->fields["status"]="assign";
 	}
-
-	if ($input["assign_ent"]==0&&$input["assign"]==0&&$input["status"]=="assign"){
-		$updates[]="status";
-		$this->fields["status"]="new";
-	}
+	if (isset($input["status"])){
+		if ($input["assign_ent"]==0&&$input["assign"]==0&&$input["status"]=="assign"){
+			$updates[]="status";
+			$this->fields["status"]="new";
+		}
 	
-	if (in_array("status",$updates)&&ereg("old_",$input["status"])){
-		$updates[]="closedate";
-		$this->fields["closedate"]=date("Y-m-d H:i:s");
+		if (in_array("status",$updates)&&ereg("old_",$input["status"])){
+			$updates[]="closedate";
+			$this->fields["closedate"]=date("Y-m-d H:i:s");
+		}
 	}
 
 	if (in_array("author",$updates)){
@@ -181,6 +183,8 @@ class Job extends CommonDBTM{
 			if ($input["assign"]==$_SESSION["glpiID"])
 				$updates=array_intersect($updates,array("assign"));
 			else $updates=array();
+		} else if ($this->fields["author"]==$_SESSION["glpiID"]&&$this->numberOfFollowups()==0){ // Helpdesk case
+			$updates=array_intersect($updates,array("contents"));
 		}
 	}
 
