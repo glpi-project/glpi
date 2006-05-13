@@ -38,7 +38,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("user","tracking","computer","printer","monitor","periphal","networking","software","enterprise","phone","document");
+$NEEDED_ITEMS=array("user","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document");
 include ($phproot . "/inc/includes.php");
 
 if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))
