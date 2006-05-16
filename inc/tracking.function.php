@@ -1657,7 +1657,7 @@ function showFollowupsSummary($tID){
 	$showprivate=haveRight("show_full_ticket","1");
 
 	$RESTRICT="";
-	if (!$showprivate)  $RESTRICT=" AND private='0' ";
+	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
 
 	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
 	$result=$db->query($query);
