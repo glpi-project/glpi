@@ -56,7 +56,9 @@ include ($phproot."/inc/includes.php");
 	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>".$lang["ocsng"][4]."</b></a></td> </tr>";
 
 	echo "</table></div>";
-
+	
+	ocsCleanLinks();
+	ocsManageDeleted();
 
 	commonFooter();
 
