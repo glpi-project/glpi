@@ -112,7 +112,7 @@ CREATE TABLE `glpi_computers` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_computers VALUES ('19','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','0','0','1','Blank Template','0','N',NULL,'0');
+INSERT INTO glpi_computers VALUES ('1','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','0','0','1','Blank Template','0','N',NULL,'0');
 
 ### Dump table glpi_config
 
@@ -1307,7 +1307,7 @@ CREATE TABLE `glpi_monitors` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_monitors VALUES ('4','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template',NULL);
+INSERT INTO glpi_monitors VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template',NULL);
 
 ### Dump table glpi_networking
 
@@ -1347,7 +1347,7 @@ CREATE TABLE `glpi_networking` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_networking VALUES ('10','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL);
+INSERT INTO glpi_networking VALUES ('1','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL);
 
 ### Dump table glpi_networking_ports
 
@@ -1576,7 +1576,7 @@ CREATE TABLE `glpi_printers` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_printers VALUES ('3','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL);
+INSERT INTO glpi_printers VALUES ('1','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL);
 
 ### Dump table glpi_reminder
 
@@ -1675,7 +1675,7 @@ CREATE TABLE `glpi_software` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_software VALUES ('6','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL);
+INSERT INTO glpi_software VALUES ('1','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL);
 
 ### Dump table glpi_state_item
 

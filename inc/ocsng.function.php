@@ -300,7 +300,7 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 }
 
 
-function ocsUpdateComputer($ID,$dohistory){
+function ocsUpdateComputer($ID,$dohistory,$force=0){
 
     global $db,$dbocs;
 
@@ -314,7 +314,11 @@ function ocsUpdateComputer($ID,$dohistory){
 	$query_ocs = "SELECT CHECKSUM FROM hardware WHERE DEVICEID='".$line['ocs_id']."'";
 	$result_ocs = $dbocs->query($query_ocs) or die($dbocs->error().$query_ocs);
 	if ($dbocs->numrows($result_ocs)==1){
-		$ocs_checksum=$dbocs->result($result_ocs,0,0);
+		if ($force)
+			$ocs_checksum=MAX_OCS_CHECKSUM;
+		else 
+			$ocs_checksum=$dbocs->result($result_ocs,0,0);
+
 	
 
 		$mixed_checksum=intval($ocs_checksum) &  intval($cfg_ocs["checksum"]);
@@ -746,9 +750,22 @@ function ocsEditLock($target,$ID){
 	$result=$db->query($query);
 	if ($db->numrows($result)==1){
 		$data=$db->fetch_assoc($result);
+
+		echo "<div align='center'>";
+		echo "<form method='post' action=\"$target\">";
+		echo "<input type='hidden' name='ID' value='$ID'>";
+		echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+		echo "<input type='hidden' name='resynch_id' value='".$data["ID"]."'>";
+		echo "<input class=submit type='submit' name='force_ocs_resynch' value='".$lang["ocsng"][24]."'>";
+		echo "</td><tr></table>";
+		echo "</form>";
+
+		echo "</div>";
+
 		echo "<div align='center'>";
 		// Print lock fields for OCSNG
-		$lockable_fields=array("type","FK_glpi_enterprise","model","serial","comments","contact","domain","os");
+		
+		$lockable_fields=array("name","type","FK_glpi_enterprise","model","serial","comments","contact","domain","os","os_sp","os_version");
 		$locked=array_intersect(importArrayFromDB($data["computer_update"]),$lockable_fields);
 		
 		if (count($locked)){
@@ -758,7 +775,7 @@ function ocsEditLock($target,$ID){
 			echo "<tr><th colspan='2'>".$lang["ocsng"][16]."</th></tr>";
 			foreach ($locked as $key => $val){
 				foreach ($SEARCH_OPTION[COMPUTER_TYPE] as $key2 => $val2)
-				if ($val2["linkfield"]==$val)
+				if ($val2["linkfield"]==$val||($val2["table"]=="glpi_computers"&&$val2["field"]==$val))
 				echo "<tr class='tab_bg_1'><td>".$val2["name"]."</td><td><input type='checkbox' name='lockfield[".$key."]'></td></tr>";
 			}
 			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_field' value='".$lang["buttons"][38]."'></td></tr>";

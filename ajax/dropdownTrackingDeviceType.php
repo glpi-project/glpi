@@ -49,9 +49,9 @@
 if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
 	
-	echo "<div align='center'>".$lang["help"][23]."</div><br>";
+	echo "<div align='center'>".$lang["help"][23]."</div>";
 	$rand=mt_rand();
-	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'>";	
+	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'><br>";	
 	
 
 	echo "<script type='text/javascript' >";

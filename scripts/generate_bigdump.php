@@ -44,6 +44,7 @@ $multiplicator=1;
 
 $max['locations']=100;
 $max['kbcategories']=8;
+$max['tracking_category']=5;
 $MAX_KBITEMS_BY_CAT=10;
 
 // DROPDOWNS
@@ -65,7 +66,6 @@ $max['os_sp']=5;
 $max['ram_type']=5;
 $max['rubdocs']=5;
 $max['state']=5;
-$max['tracking_category']=5;
 $max['vlan']=5;
 $max['type_computers']=3;
 $max['type_printers']=3;
@@ -474,14 +474,6 @@ for ($i=0;$i<$max['state'];$i++){
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
-$items=array("Maintenance Materielle","Maintenance Logicielle","Accueil personne","Probleme Impression","Probleme Compte","Probleme Reseau","Probleme Mail","Commande Livre","Hebergement Web");
-for ($i=0;$i<$max['tracking_category'];$i++){
-	if (isset($items[$i])) $val=$items[$i];
-	else $val="Categorie $i";
-	$query="INSERT INTO glpi_dropdown_tracking_category VALUES (NULL,'$val','comment $val')";
-	$db->query($query) or die("PB REQUETE ".$query);
-}
-
 $items=array("SIC","LMS","LMP","LEA","SP2MI","STIC","MATH","ENS-MECA","POUBELLE","WIFI");
 for ($i=0;$i<$max['vlan'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
@@ -539,6 +531,32 @@ for ($i=0;$i<$max['type_phones'];$i++){
 }
 
 optimize_tables ();
+
+for ($i=0;$i<max(1,pow($max['tracking_category'],1/3));$i++){
+	$query="INSERT INTO glpi_dropdown_tracking_category VALUES (NULL,'0','categorie $i','','comment categorie $i','1')";
+	$db->query($query) or die("PB REQUETE ".$query);
+	$newID=$db->insert_id();
+	for ($j=0;$j<mt_rand(0,pow($max['tracking_category'],1/2));$j++){
+		$query="INSERT INTO glpi_dropdown_tracking_category VALUES (NULL,'$newID','s-categorie $j','','comment s-categorie $j','2')";
+		$db->query($query) or die("PB REQUETE ".$query);
+		$newID2=$db->insert_id();
+		for ($k=0;$k<mt_rand(0,pow($max['tracking_category'],1/2));$k++){
+			$query="INSERT INTO glpi_dropdown_tracking_category VALUES (NULL,'$newID2','ss-categorie $k','','comment categorie $i','3')";
+			$db->query($query) or die("PB REQUETE ".$query);
+		}	
+	}
+}	
+
+$query = "OPTIMIZE TABLE  glpi_dropdown_tracking_category;";
+$db->query($query) or die("PB REQUETE ".$query);
+
+regenerateTreeCompleteName("glpi_dropdown_tracking_category");
+
+$max['tracking_category']=0;
+$query="SELECT MAX(ID) FROM glpi_dropdown_tracking_category";
+$result=$db->query($query) or die("PB REQUETE ".$query);
+$max['tracking_category']=$db->result($result,0,0) or die (" PB RESULT ".$query);
+
 
 for ($i=0;$i<max(1,pow($max['kbcategories'],1/3));$i++){
 	$query="INSERT INTO glpi_dropdown_kbcategories VALUES (NULL,'0','categorie $i','','comment categorie $i','1')";

@@ -437,7 +437,7 @@ class User extends CommonDBTM {
 			echo "<div align='center'>";
 			echo $lang["setup"][220];
 			echo "</div>";
-			return 0;
+			return false;
 		}
 		if(empty($name)) {
 			// Partie ajout d'un user

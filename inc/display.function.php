@@ -398,9 +398,10 @@ function helpHeader($title,$url) {
 	echo "<tr>";
 	
 	// Logo with link to command center
-	echo "<td align='center' width='25%'>\n";
-	
+	echo "<td align='center' width='20%'>\n";
+	echo "<a class='icon_logo' style='background: transparent' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\">";
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
+	echo "</a>";
 	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>";
 	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"];
 	else echo $_SESSION["glpiname"];
@@ -411,23 +412,23 @@ function helpHeader($title,$url) {
 
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
-	if (ereg("tracking-injector",$_SERVER["PHP_SELF"]))
-	echo "<td width='100%'>&nbsp;</td>";
+	//if (ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+//		echo "<td width='100%'>&nbsp;</td>";
 	// Just give him a language selector
-	echo "<td>";
-		if (!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+	echo "<td width='40%' align='center'>";
+		if ($cfg_glpi["debug"]!=DEMO_MODE&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
 		showLangSelect($cfg_glpi["root_doc"]."/front/preference.php");
 		else echo "&nbsp;";
 	echo "</td>";
 
 	// And he can change his password, thats it
-	echo "<td>";
-	if ($_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+	echo "<td width='40%' align='center'>";
+	if ($cfg_glpi["debug"]!=DEMO_MODE&&$_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
 		showPasswordForm($cfg_glpi["root_doc"]."/front/preference.php",$_SESSION["glpiname"]);
 		else echo "&nbsp;";
 	echo "</td>";
 	// We tracking or post a new one
-	echo "<td>";
+	echo "<td width='100' align='center'>";
 	if (haveRight("create_ticket","1"))
         	echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a>";
 	echo "<br><br>";
@@ -436,7 +437,7 @@ function helpHeader($title,$url) {
 	echo "</td>";
 	//reservation
 	
-	echo "<td>";
+	echo "<td width='100' align='center'>";
 	if (haveRight("reservation_helpdesk","1"))
         	echo "<a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a>";
 	echo "<br><br>";
@@ -688,6 +689,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
         $device_type = 0;
 	$computer="";
 	$contents="";
+	$category = 0;
 		
 		if (isset($_SESSION["helpdeskSaved"]["emailupdates"]))
                 $emailupdates = stripslashes($_SESSION["helpdeskSaved"]["emailupdates"]);
@@ -695,6 +697,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
                 $email = stripslashes($_SESSION["helpdeskSaved"]["uemail"]);
 		if (isset($_SESSION["helpdeskSaved"]["device_type"]))
                 $device_type = stripslashes($_SESSION["helpdeskSaved"]["device_type"]);
+		if (isset($_SESSION["helpdeskSaved"]["category"]))
+                $device_type = stripslashes($_SESSION["helpdeskSaved"]["category"]);
 		if (isset($_SESSION["helpdeskSaved"]["contents"]))
                 $contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
 
@@ -732,6 +736,12 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	dropdownTrackingDeviceType("device_type",$device_type);
 	
 	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_1'>";
+	echo "<td>".$lang["tracking"][20].":</td><td>";
+	dropdownValue("glpi_dropdown_tracking_category","category",$category);
+	echo "</td>";
+	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'>".$lang["help"][13].":</td>";

@@ -209,7 +209,7 @@ class CommonDBTM {
 		if ($input&&is_array($input)){
 			// fill array for udpate
 			foreach ($input as $key => $val) {
-				if ($key[0]!='_'&& (!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
+				if ($key[0]!='_'&& (!isset($this->fields[$key]) || $this->fields[$key] !== $input[$key])) {
 					$this->fields[$key] = $input[$key];
 				}
 			}
@@ -254,7 +254,7 @@ class CommonDBTM {
 			$x=0;
 			$updates=array();
 			foreach ($input as $key => $val) {
-				if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
+				if (array_key_exists($key,$this->fields) && $this->fields[$key] !== $input[$key]) {
 					// Debut logs
 					if ($this->dohistory&&$history)
 						constructHistory($input["ID"],$this->type,$key,$this->fields[$key],$input[$key]);
