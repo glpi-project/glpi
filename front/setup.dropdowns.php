@@ -208,7 +208,7 @@ if (isset($_POST["several_add"])) {
 
 	switch ($which){
 		case "tracking_category" :
-		showFormDropDown($_SERVER["PHP_SELF"],"tracking_category",$lang["setup"][79],$ID);
+		showFormTreeDown($_SERVER["PHP_SELF"],"tracking_category",$lang["setup"][79],$ID);
 		break;
 				
 		case "kbcategories" :

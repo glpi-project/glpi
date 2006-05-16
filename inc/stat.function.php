@@ -378,7 +378,7 @@ function getNbIntervPriority()
 function getNbIntervCategory()
 {	
 	global $db;
-	$query = "SELECT id as ID, name as category FROM glpi_dropdown_tracking_category order by name";
+	$query = "SELECT id as ID, completename as category FROM glpi_dropdown_tracking_category order by completename";
 	$result = $db->query($query);
 
 	if($db->numrows($result) >=1) {

@@ -1032,8 +1032,8 @@ function showFormConfigGen($target){
 	
 	echo "<form name='form' action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
-	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
+	echo "<div align='center'><table class='tab_cadre_fixe'>";
+	echo "<tr><th colspan='4'>".$lang["setup"][100]."</th></tr>";
 	$default_language=$cfg_glpi["default_language"];
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
 		foreach ($cfg_glpi["languages"] as $key => $val){
@@ -1042,9 +1042,9 @@ function showFormConfigGen($target){
 		echo ">".$val[0]. " (".$key.")";
 		}
 	
-	echo "</select></td></tr>";
+	echo "</select></td>";
 
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][133]." </td><td>";
+	echo "<td align='center'> ".$lang["setup"][133]." </td><td>";
 	dropdownYesNoInt("ocs_mode",$cfg_glpi["ocs_mode"]);
    	echo "</td></tr>";
 
@@ -1056,35 +1056,39 @@ function showFormConfigGen($target){
 	echo "<option value=\"3\"";  if($level==3){ echo " selected";} echo ">".$lang["setup"][105]."</option>";
 	echo "<option value=\"4\"";  if($level==4){ echo " selected";} echo ">".$lang["setup"][106]." </option>";
 	echo "<option value=\"5\"";  if($level==5){ echo " selected";} echo ">".$lang["setup"][107]."</option>";
-	echo "</select></td></tr>";
+	echo "</select></td>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $cfg_glpi["expire_events"] ."\"></td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][116]." </td><td>";
+	echo "<td align='center'> ".$lang["setup"][116]." </td><td>";
 	dropdownYesNoInt("auto_assign",$cfg_glpi["auto_assign"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][221]."</td><td>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $cfg_glpi["expire_events"] ."\"></td>";
+
+	echo "<td align='center'>".$lang["setup"][221]."</td><td>";
 	showCalendarForm("form","date_fiscale",$cfg_glpi["date_fiscale"],0);	
 	echo "</td></tr>";
+
+
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][219]."</td><td>";
 	dropdownYesNoInt("permit_helpdesk",$cfg_glpi["permit_helpdesk"]);
-	echo "</td></tr>";
+	echo "</td>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
+	echo "<td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
 	for ($i=-1;$i<=100;$i++)
 		echo "<option value='$i' ".($i==$cfg_glpi["cartridges_alarm"]?" selected ":"").">$i</option>";
 	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][124]." </td><td>";
 	dropdownYesNoInt("auto_add_users",$cfg_glpi["auto_add_users"]);
-	echo "</td></tr>";
+	echo "</td>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][138]." </td><td><select name=\"debug\">";
+	echo "<td align='center'>".$lang["setup"][138]." </td><td><select name=\"debug\">";
 	$check=$cfg_glpi["debug"];
-	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][135]." </option>";
-	echo "<option value=\"1\"";  if($check==1){ echo " selected";} echo ">".$lang["setup"][136]."</option>";
-	echo "<option value=\"2\"";  if($check==2){ echo " selected";} echo ">".$lang["setup"][137]."</option>";
+	echo "<option value=\"".NORMAL_MODE."\"";  if($cfg_glpi["debug"]==NORMAL_MODE){ echo " selected";} echo ">".$lang["setup"][135]." </option>";
+	echo "<option value=\"".TRANSLATION_MODE."\"";  if($cfg_glpi["debug"]==TRANSLATION_MODE){ echo " selected";} echo ">".$lang["setup"][136]."</option>";
+	echo "<option value=\"".DEBUG_MODE."\"";  if($cfg_glpi["debug"]==DEBUG_MODE){ echo " selected";} echo ">".$lang["setup"][137]."</option>";
+	echo "<option value=\"".DEMO_MODE."\"";  if($cfg_glpi["debug"]==DEMO_MODE){ echo " selected";} echo ">".$lang["setup"][141]."</option>";
 	echo "</select></td></tr>";
 
 
@@ -1093,15 +1097,21 @@ function showFormConfigGen($target){
 	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][307]." </option>";
 	echo "<option value=\"7\"";  if($check==7){ echo " selected";} echo ">".$lang["setup"][308]."</option>";
 	echo "<option value=\"30\"";  if($check==30){ echo " selected";} echo ">".$lang["setup"][309]."</option>";
-	echo "</select></td></tr>";
+	echo "</select></td>";
+	echo "<td align='center'>".$lang["setup"][405]."</td><td>";
+	dropdownYesNoInt("followup_on_update_ticket",$cfg_glpi["followup_on_update_ticket"]);
+	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][401]." </td><td><input type=\"text\" name=\"proxy_name\" value=\"". $cfg_glpi["proxy_name"] ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][402]." </td><td><input type=\"text\" name=\"proxy_port\" value=\"". $cfg_glpi["proxy_port"] ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][403]." </td><td><input type=\"text\" name=\"proxy_user\" value=\"". $cfg_glpi["proxy_user"] ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][404]." </td><td><input type=\"text\" name=\"proxy_password\" value=\"". $cfg_glpi["proxy_password"] ."\"></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][401]." </td><td><input type=\"text\" name=\"proxy_name\" value=\"". $cfg_glpi["proxy_name"] ."\"></td>";
+	echo "<td align='center'>".$lang["setup"][402]." </td><td><input type=\"text\" name=\"proxy_port\" value=\"". $cfg_glpi["proxy_port"] ."\"></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][403]." </td><td><input type=\"text\" name=\"proxy_user\" value=\"". $cfg_glpi["proxy_user"] ."\"></td>";
+	echo "<td align='center'>".$lang["setup"][404]." </td><td><input type=\"text\" name=\"proxy_password\" value=\"". $cfg_glpi["proxy_password"] ."\"></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></td></tr>";
 	
-	echo "</table>&nbsp;</div>";	
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
+	echo "</table></div>";	
 
 	
 	echo "</form>";

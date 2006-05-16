@@ -42,26 +42,42 @@ include ($phproot . "/inc/includes.php");
 
 
 if (isset($_POST["changepw"])) {
-	checkLoginUser();
+	if ($cfg_glpi["debug"]==DEMO_MODE){
+		checkRight("config","w");
+	} else {
+		checkLoginUser();
+	}
 	if ($_SESSION["glpiextauth"]!=1){
 		$user=new User();
 		$user->update($_POST);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["updatesort"])) {
-	checkLoginUser();
+	if ($cfg_glpi["debug"]==DEMO_MODE){
+		checkRight("config","w");
+	} else {
+		checkLoginUser();
+	}
 	$user=new User();
 	$user->update($_POST);
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["changelang"])) {
-	checkLoginUser();
+	if ($cfg_glpi["debug"]==DEMO_MODE){
+		checkRight("config","w");
+	} else {
+		checkLoginUser();
+	}
 	$user=new User();
 	$user->update($_POST);
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	checkCentralAccess();
+	if ($cfg_glpi["debug"]==DEMO_MODE){
+		checkRight("config","w");
+	} else {
+		checkCentralAccess();
+	}
 	commonHeader($lang["title"][17],$_SERVER["PHP_SELF"]);
         // titre
         echo "<div align='center'><table border='0'><tr><td>";

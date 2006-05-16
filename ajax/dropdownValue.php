@@ -40,7 +40,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkCentralAccess();
+	checkLoginUser();
 
 	// Make a select box with preselected values
 	if (!isset($_POST["limit"])) $_POST["limit"]=$cfg_glpi["dropdown_limit"];
@@ -99,10 +99,7 @@
 			$where.=" is_template='0' ";
 		}
 		
-		if (!$first) $where.=" AND ";
-		else $first=false;
-			$where .=" (ID <> '".$_POST['value']."' ";
-
+	
 		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
 		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
@@ -111,7 +108,8 @@
 		if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"])){
 			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 				$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
-			$where.=")";
+			
+			if ($where=="WHERE ") $where="";
 
 			$query = "SELECT ID, name, completename, level FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
 			
@@ -150,6 +148,10 @@
 			echo "</select>";
 
 		} else {
+			if (!$first) $where.=" AND ";
+			else $first=false;
+			$where .=" (ID <> '".$_POST['value']."' ";
+
 			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 				$where.=" AND name LIKE '%".$_POST['searchText']."%' ";
 			$where.=")";

@@ -217,7 +217,10 @@ $ip = (getenv("HTTP_X_FORWARDED_FOR")
 
 
 // Log Event
-logEvent("-1", "system", 3, "login", $_POST['login_name']." ".$lang["log"][40]." : ".$ip);
+if ($cfg_glpi["debug"]==DEMO_MODE)
+	logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in.".$lang["log"][40]." : ".$ip);
+else 
+	logEvent("-1", "system", 3, "login", $_POST['login_name']." ".$lang["log"][40]." : ".$ip);
 
 // Expire Event Log
 if ($cfg_glpi["expire_events"]>0){

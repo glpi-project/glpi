@@ -872,6 +872,7 @@ $lang["ocsng"][20]="Version d'OCS NG non valide : nécessite RC2";
 $lang["ocsng"][21]="Echec de connexion à la base de données OCS NG";
 $lang["ocsng"][22]="Attention ! Les données importées (voir votre configuration) écraseront les données existantes";
 $lang["ocsng"][23]="Importation impossible, ordinateur de destination de GLPI déjà lié à un élément d'OCS NG";
+$lang["ocsng"][24]="Forcer la synchronisation";
 
 $lang["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
 $lang["ocsconfig"][1]="Utilisateur de la base de données OCSweb";
@@ -1193,7 +1194,7 @@ $lang["setup"][137]="Debug";
 $lang["setup"][138]="Utiliser GLPI en Mode";
 $lang["setup"][139]="Général";
 $lang["setup"][140]="Types";
-
+$lang["setup"][141]="Démonstration";
 $lang["setup"][142]="Gestion";
 $lang["setup"][143]="Assistance";
 $lang["setup"][144]="Outils";
@@ -1290,6 +1291,7 @@ $lang["setup"][401]="Adresse Proxy";
 $lang["setup"][402]="Port Proxy";
 $lang["setup"][403]="Utilisateur Proxy";
 $lang["setup"][404]="Mot de Passe Proxy";
+$lang["setup"][405]="Logguer les modifications des tickets en ajoutant des suivis";
 
 $lang["setup"][500]="OS Version";
 $lang["setup"][501]="Service Pack";

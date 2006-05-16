@@ -149,6 +149,13 @@ define("SOFTWARES_FL","16");
 define("MAX_OCS_CHECKSUM","131071");
 
 
+// GLPI MODE
+define("NORMAL_MODE","0");
+define("TRANSLATION_MODE","1");
+define("DEBUG_MODE","2");
+define("DEMO_MODE","3");
+
+
 //DEVICE ARRAY.
 
 $cfg_glpi["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
@@ -156,7 +163,7 @@ $cfg_glpi["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_print
 
 $cfg_glpi["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones");
 
-$cfg_glpi["dropdowntree_tables"]=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
+$cfg_glpi["dropdowntree_tables"]=array("glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
 $cfg_glpi["state_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 
 $LINK_ID_TABLE=array(
@@ -242,11 +249,11 @@ $cfg_glpi["root_doc"]=preg_replace("/\/$/","",$cfg_glpi["root_doc"]);
 // *********************************************************************************
 
 // Mode debug ou traduction
-$cfg_glpi["debug"]=2;
-$cfg_glpi["debug_sql"]=($cfg_glpi["debug"]==2?1:0); // affiche les requetes
-$cfg_glpi["debug_vars"]=($cfg_glpi["debug"]==2?1:0); // affiche les variables
-$cfg_glpi["debug_profile"]=($cfg_glpi["debug"]==2?1:0); // Profile les requetes
-$cfg_glpi["debug_lang"]=($cfg_glpi["debug"]==1?1:0); // affiche les variables de trads
+$cfg_glpi["debug"]=DEBUG_MODE;
+$cfg_glpi["debug_sql"]=($cfg_glpi["debug"]==DEBUG_MODE?1:0); // affiche les requetes
+$cfg_glpi["debug_vars"]=($cfg_glpi["debug"]==DEBUG_MODE?1:0); // affiche les variables
+$cfg_glpi["debug_profile"]=($cfg_glpi["debug"]==DEBUG_MODE?1:0); // Profile les requetes
+$cfg_glpi["debug_lang"]=($cfg_glpi["debug"]==TRANSLATION_MODE?1:0); // affiche les variables de trads
 
 // Mode debug activé on affiche un certains nombres d'informations
 	if ($cfg_glpi["debug"]==2){

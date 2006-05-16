@@ -147,9 +147,11 @@ elseif(isset($tab["unlock_field"])){
 			deleteInOcsArray($tab["ID"],$key,"computer_update");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
-}
-//print computer informations
-else {
+} elseif (isset($tab["force_ocs_resynch"])){
+	checkRight("ocsng","w");
+	ocsUpdateComputer($tab["resynch_id"],2,1);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} else {//print computer informations
 
 	checkRight("computer","r");
 

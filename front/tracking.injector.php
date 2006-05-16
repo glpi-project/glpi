@@ -38,19 +38,12 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("user","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document");
+$NEEDED_ITEMS=array("user","profile","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document");
 include ($phproot . "/inc/includes.php");
 
 if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))
 {
-	$id = new Identification();
-	$id->initSession();
-}
-checkRight("create_ticket","1");
-
-$glpiname = $_SESSION["glpiname"];
-
-loadLanguage($_SESSION["glpiname"]);
+} else checkRight("create_ticket","1");
 
 $status = "new";
 
@@ -77,10 +70,12 @@ if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
 	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+
 	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $lang["help"][15]."<br><br>";
-	echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
+	echo "<a href=\"".$_SERVER["HTTP_REFERER"]."\">".$lang["buttons"][13]."</a>";
 	echo "</b></div>";
+
 	nullFooter();
 	exit;
 }
@@ -97,30 +92,12 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][16]."<br><br>";
-	echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
+	echo "<a href=\"".$_SERVER["HTTP_REFERER"]."\">".$lang["buttons"][13]."</a>";
 	echo "</b></div>";
 	nullFooter();
 	exit;
-}
-elseif (empty($ID)&&$_POST["device_type"]!=0)
-{
-	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
-	}
-	else if ($_POST["_from_helpdesk"]){
-		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	}
-	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-
-	echo $lang["help"][17]."<br><br>";
-	echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
-	echo "</b></div>";
-	nullFooter();
-	exit;
-} 
-else
-{
+} else{
+	if (!isset($_POST["device_type"])||(empty($ID)&&$_POST["device_type"]!=0)) $_POST["device_type"]=0;
 
 	$ci=new CommonItem;
 	

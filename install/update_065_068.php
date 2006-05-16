@@ -433,8 +433,21 @@ if(TableExists("glpi_kbitems")){
 		$query = "ALTER TABLE `glpi_config` ADD `proxy_name` VARCHAR( 255 ) NULL, ADD `proxy_port` VARCHAR( 255 ) DEFAULT '8080' NOT NULL, ADD `proxy_user` VARCHAR( 255 ) NULL, ADD `proxy_password` VARCHAR( 255 ) NULL"; 
 		$db->query($query) or die("0.68 add proxy fields to glpi_config".$lang["update"][90].$db->error());
 	}	
-
+// Log update with followups
+	if(!FieldExists("glpi_config","followup_on_update_ticket")) {	
+		$query = "ALTER TABLE `glpi_config` ADD `followup_on_update_ticket` tinyint(4) DEFAULT '1' NOT NULL;"; 
+		$db->query($query) or die("0.68 add followup_on_update_ticket to glpi_config".$lang["update"][90].$db->error());
+	}	
  
+
+// Ticket Category -> Tree mode
+	if(!FieldExists("glpi_dropdown_tracking_category","completename")) {	
+		$query = "ALTER TABLE glpi_dropdown_tracking_category ADD `parentID` INT NOT NULL DEFAULT '0' AFTER `ID`,
+			ADD `completename` TEXT NOT NULL DEFAULT '' AFTER `name`,
+			ADD `level` INT NULL AFTER `comments` "; 
+		$db->query($query) or die("0.68 glpi_dropdown_tracking_category to dropdown tree".$lang["update"][90].$db->error());
+		regenerateTreeCompleteName("glpi_dropdown_tracking_category");
+	}
 
 } // fin 0.68 #####################################################################################
 

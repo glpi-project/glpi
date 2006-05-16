@@ -745,7 +745,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["tracking"][20].":</td>";
 	
 	echo "<td align='center'>";
-	dropdown("glpi_dropdown_tracking_category","category",0);
+	dropdownValue("glpi_dropdown_tracking_category","category",0);
 	echo "</td></tr>";
 
 
@@ -881,7 +881,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	dropdownPriority("priority",$priority,1);
 	echo "</td>";
 
-	echo "<td colspan='2' align='center'>".$lang["tracking"][20]."&nbsp;:&nbsp;";
+	echo "<td colspan='2' align='center'>".$lang["tracking"][20].":&nbsp;";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 

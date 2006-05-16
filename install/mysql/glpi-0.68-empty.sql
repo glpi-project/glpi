@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-05-11 09:02
+#GLPI Dump database on 2006-05-15 15:24
 
 ### Dump table glpi_cartridges
 
@@ -189,10 +189,11 @@ CREATE TABLE `glpi_config` (
     `proxy_port` varchar(255) DEFAULT '8080' NOT NULL,
     `proxy_user` varchar(255),
     `proxy_password` varchar(255),
+    `followup_on_update_ticket` tinyint(4) DEFAULT '1' NOT NULL,
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1');
 
 ### Dump table glpi_connect_wire
 
@@ -1057,8 +1058,11 @@ CREATE TABLE `glpi_dropdown_state` (
 DROP TABLE IF EXISTS `glpi_dropdown_tracking_category`;
 CREATE TABLE `glpi_dropdown_tracking_category` (
     `ID` int(11) NOT NULL auto_increment,
+    `parentID` int(11) DEFAULT '0' NOT NULL,
     `name` varchar(255),
+    `completename` text NOT NULL,
     `comments` text,
+    `level` int(11),
    PRIMARY KEY (`ID`),
    KEY name (`name`)
 ) TYPE=MyISAM;
@@ -1115,7 +1119,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-11 09:01:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-15 15:24:25','login','3','glpi IP connection : 127.0.0.1');
 
 ### Dump table glpi_followups
 
