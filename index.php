@@ -161,7 +161,25 @@ else
 	
 
 	echo "</div>"; // fin contenu login
+	
+	if ($cfg_glpi["debug"]==DEMO_MODE){
+		echo "<div align='center'";
+		$query="SELECT count(*) FROM `glpi_event_log` where message LIKE '%logged in%'";
+		$query2="SELECT date FROM `glpi_event_log` order by date ASC limit 1";
+		$db=new DB;
+		$result=$db->query($query);
+		$result2=$db->query($query2);
+		$nb_login=$db->result($result,0,0);
+		$date=$db->result($result2,0,0);
 		
+		echo "<b>$nb_login</b> logins since $date" ;
+	
+		$queryfail="SELECT count(*) FROM `glpi_event_log` where message LIKE '%failed login%'";
+		$resultfail=$db->query($queryfail);
+		$nb_fail=$db->result($resultfail,0,0);
+		echo "<br><b>$nb_fail</b> erreurs de connexion";
+		echo "</div>";
+	}
 	
 
 	echo "<div id='footer-login'>";
@@ -176,6 +194,7 @@ echo "</body></html>";
 // End
 
 // Appel de cron
-callCron();
+if ($cfg_glpi["debug"]!=DEMO_MODE)
+	callCron();
 
 ?>

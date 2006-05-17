@@ -194,7 +194,10 @@ if ( ! $auth_succeded ) {
 	echo "<div align='center'><b>".$identificat->getErr().".</b><br><br>";
 	echo "<b><a href=\"".$cfg_glpi["root_doc"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
 	nullFooter();
-	logevent(-1, "system", 1, "login", $lang["log"][41]." : ".$_POST['login_name']);
+	if ($cfg_glpi["debug"]==DEMO_MODE)
+		logevent(-1, "system", 1, "login", "failed login: ".$_POST['login_name']);
+	else 
+		logevent(-1, "system", 1, "login", $lang["log"][41].": ".$_POST['login_name']);
 	exit;
 }
 
