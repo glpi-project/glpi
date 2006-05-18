@@ -83,12 +83,12 @@ class Computer extends CommonDBTM {
 		global $db;
 
 		if ($this->getFromDB($ID)){
-			$query = "SELECT ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE FK_computers = '$ID' ORDER BY device_type, ID";
+			$query = "SELECT count(*) AS NB, ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE FK_computers = '$ID' GROUP BY device_type, FK_device, specificity ORDER BY device_type, ID";
 			if ($result = $db->query($query)) {
 				if ($db->numrows($result)>0) {
 					$i = 0;
 					while($data = $db->fetch_array($result)) {
-						$this->devices[$i] = array("compDevID"=>$data["ID"],"devType"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"]);
+						$this->devices[$i] = array("compDevID"=>$data["ID"],"devType"=>$data["device_type"],"devID"=>$data["FK_device"],"specificity"=>$data["specificity"],"quantity"=>$data["NB"]);
 						$i++;
 					}
 				}

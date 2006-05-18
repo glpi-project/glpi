@@ -114,15 +114,11 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 		echo "<input type='hidden' name='ID' value='$ID'>";	
 		echo "<input type='hidden' name='device_action' value='$ID'>";			
 		echo "<table class='tab_cadre_fixe' >";
-		echo "<tr><th colspan='66'>".$lang["devices"][10]."</th></tr>";
+		echo "<tr><th colspan='67'>".$lang["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {
-			$devType = $val["devType"];
-			$devID = $val["devID"];
-			$specif = $val["specificity"];
-			$compDevID = $val["compDevID"];
-			$device = new Device($devType);
-			$device->getFromDB($devID);
-			printDeviceComputer($device,$specif,$comp->fields["ID"],$compDevID,$withtemplate);
+			$device = new Device($val["devType"]);
+			$device->getFromDB($val["devID"]);
+			printDeviceComputer($device,$val["quantity"],$val["specificity"],$comp->fields["ID"],$val["compDevID"],$withtemplate);
 			
 		}
 		echo "</table>";

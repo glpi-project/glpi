@@ -163,7 +163,7 @@ global $lang;
 
 
 //print form/tab for a device linked to a computer
-function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate='') {
+function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$withtemplate='') {
 	global $lang,$HTMLRel;
 	
 	if (!haveRight("computer","r")) return false;
@@ -263,6 +263,12 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 	}
 	
 	echo "<tr class='tab_bg_2'>";
+	echo "<td align='center'>";
+	echo "<select name='quantity_$compDevID'>";
+	for ($i=1;$i<100;$i++)
+		echo "<option value='$i' ".($quantity==$i?"selected":"").">$i</option>";
+	echo "</select>";
+	echo "x</td>";
 	echo "<td align='center'><a href='".$HTMLRel."front/device.php?device_type=".$device->type."'>$type</a></td>";
 	echo "<td align='center'><a href='".$HTMLRel."front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
 	
@@ -306,7 +312,12 @@ function printDeviceComputer($device,$specif,$compID,$compDevID,$withtemplate=''
 		}
 		
 	} else {
-   		echo "<td>&nbsp;</td>";
+   		echo "<td>";
+		if ($canedit)
+			echo "<input type='image' name='update_device' value='$compDevID' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+		else echo "&nbsp;";
+
+		echo "</td>";
 		if(!empty($withtemplate) && $withtemplate == 2) {
   		  echo "<td>&nbsp;</td>";
   		 } else {
@@ -333,14 +344,12 @@ function update_device_specif($newValue,$compDevID) {
 	// Check old value for history 
 	global $db;
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
-		if ($result = $db->query($query)) {
+	if ($result = $db->query($query)) {
 		$data = $db->fetch_array($result);
-		} 
-
-	// Is it a real change ?
-	if($data["specificity"]!=$newValue){
-		// Update specificity 
-		$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE ID = '".$compDevID."'";
+		// Is it a real change ?
+		if($data["specificity"]!=$newValue){
+			// Update specificity 
+			$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'";
 			if($db->query($query2)){
 				$changes[0]='0';
 				$changes[1]=$data["specificity"];
@@ -349,11 +358,39 @@ function update_device_specif($newValue,$compDevID) {
 				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],UPDATE_DEVICE);
 	
 				return true;
-			}else{ return false;}
+			}else{ 
+				return false;
+			}
+		}
 	}
 
 }
 
+
+function update_device_quantity($newNumber,$compDevID){
+	// Check old value for history 
+	global $db;
+	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
+	if ($result = $db->query($query)) {
+		$data = $db->fetch_array($result);
+		$query2 = "SELECT ID FROM glpi_computer_device WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'";
+		if ($result2 = $db->query($query2)) {
+			// Delete devices
+			$number=$db->numrows($result2);
+			if ($number>$newNumber){
+				for ($i=$newNumber;$i<$number;$i++){
+					$data2 = $db->fetch_array($result2);
+					unlink_device_computer($data2["ID"],0);
+				}
+			// Add devices
+			} else if ($number<$newNumber){
+				for ($i=$number;$i<$newNumber;$i++){
+					compdevice_add($data["FK_computers"],$data["device_type"],$data["FK_device"],$data["specificity"],0);
+				}
+			}
+		}
+	}
+}
 
 /**
 * Unlink a device, linked to a computer.
@@ -389,7 +426,6 @@ function unlink_device_computer($compDevID,$dohistory=1){
 	 return true;
 	}else{ return false;}
 
-die;
 }
 
 //Link the device to the computer
