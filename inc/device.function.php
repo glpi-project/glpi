@@ -167,7 +167,8 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	global $lang,$HTMLRel;
 	
 	if (!haveRight("computer","r")) return false;
-	
+	$canedit=haveRight("computer","w");
+
 	//print the good form switch the wanted device type.
 	$entry=array();
 	$type="";
@@ -265,7 +266,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	echo "<tr class='tab_bg_2'>";
 	echo "<td align='center'>";
 	echo "<select name='quantity_$compDevID'>";
-	for ($i=1;$i<100;$i++)
+	for ($i=0;$i<100;$i++)
 		echo "<option value='$i' ".($quantity==$i?"selected":"").">$i</option>";
 	echo "</select>";
 	echo "x</td>";
@@ -284,51 +285,21 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	} else if(empty($specificity_label)) echo "<td colspan='60'>&nbsp;</td>";
 	else $colspan=60;
 	
-	$canedit=false;
-	if (haveRight("computer","w"))	
-		$canedit=true;
+	
 	if(!empty($specificity_label)) {
 		
 		//Mise a jour des spécificitées
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			if(empty($specif)) $specif = "&nbsp;";
-			echo "<td colspan='$colspan'>".$specificity_label.":&nbsp;$specif</td><td>&nbsp;</td><td>&nbsp;</td>";
+			echo "<td colspan='$colspan'>".$specificity_label.":&nbsp;$specif</td><td>&nbsp;</td>";
 		}
 		else {
 
 			echo "<td align='right' colspan='$colspan'>".$specificity_label.":&nbsp;<input type='text' name='devicevalue_$compDevID' value=\"".$specif."\" size='$specificity_size' ></td>";
-			echo "<td align='center'>";
-			if ($canedit)
-				echo "<input type='image' name='update_device' value='$compDevID' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
-			else echo "&nbsp;";
-			echo "</td>";
-
-			echo "<td>";
-			if ($canedit)
-				echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
-			else echo "&nbsp;";
-			echo "</td>";
 
 		}
 		
-	} else {
-   		echo "<td>";
-		if ($canedit)
-			echo "<input type='image' name='update_device' value='$compDevID' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
-		else echo "&nbsp;";
-
-		echo "</td>";
-		if(!empty($withtemplate) && $withtemplate == 2) {
-  		  echo "<td>&nbsp;</td>";
-  		 } else {
-  			echo "<td>";
-			if ($canedit)
-				echo "<input type='image' name='unlink_device_$compDevID' value='$compDevID' src='".$HTMLRel."pics/delete2.png' class='calendrier'>";
-			else echo "&nbsp;";
-
-  		echo "</td>";
-  		 }
-  	}
+	} 
 	echo "</tr>";
 }
 

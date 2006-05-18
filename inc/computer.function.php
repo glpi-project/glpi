@@ -99,6 +99,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	global $lang;
 
 	if (!haveRight("computer","r")) return false;
+	$canedit=haveRight("computer","w");
 
 	$comp = new Computer;
 	if(empty($ID) && $withtemplate == 1) {
@@ -114,13 +115,15 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 		echo "<input type='hidden' name='ID' value='$ID'>";	
 		echo "<input type='hidden' name='device_action' value='$ID'>";			
 		echo "<table class='tab_cadre_fixe' >";
-		echo "<tr><th colspan='67'>".$lang["devices"][10]."</th></tr>";
+		echo "<tr><th colspan='65'>".$lang["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {
 			$device = new Device($val["devType"]);
 			$device->getFromDB($val["devID"]);
 			printDeviceComputer($device,$val["quantity"],$val["specificity"],$comp->fields["ID"],$val["compDevID"],$withtemplate);
 			
 		}
+		if ($canedit)
+			echo "<tr><td colspan='65' align='center' class='tab_bg_1'><input type='submit' class='submit' name='update_device' value='".$lang["buttons"][7]."'></td></tr>";
 		echo "</table>";
 
 		echo "</form>";
