@@ -107,8 +107,11 @@ elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
 	checkRight("computer","w");
 	foreach ($_POST as $key => $val){
 		$tab=split("_",$key);
-		if (count($tab)==2&&$tab[0]=="devicevalue"){
-		update_device_specif($val,$tab[1]);
+		if (count($tab)==2)
+		if ($tab[0]=="devicevalue"){
+			update_device_specif($val,$tab[1]);
+		} else if ($tab[0]=="quantity"){
+			update_device_quantity($val,$tab[1]);
 		}
 	}
 	logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$lang["log"][28]);
