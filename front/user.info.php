@@ -47,6 +47,7 @@ commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 
 checkRight("user","r");
 
+
 $user=new User();
 
 $user->showInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
@@ -54,7 +55,9 @@ if (isset($_GET["start"])) $start=$_GET["start"];
 else $start=0;
 
 
-showTrackingList($_SERVER["PHP_SELF"],$start,"all",$_GET["ID"]);
+
+
+showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"]);
 
 commonFooter();
 
