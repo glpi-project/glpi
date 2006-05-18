@@ -114,23 +114,37 @@ function showTrackingOnglets($target){
 
 
 
-function commonTrackingListHeader($output_type=0){
+function commonTrackingListHeader($output_type=0,$target="",$parameters="",$sort="",$order=""){
 	global $lang,$cfg_glpi;
 
 	// New Line for Header Items Line
 	echo displaySearchNewLine($output_type);
-		
+	// $show_sort if 
 	$header_num=1;
-	$order="ASC";
-	
-	echo displaySearchHeaderItem($output_type,$lang["joblist"][0],$header_num,"",0,$order);
-	echo displaySearchHeaderItem($output_type,$lang["common"][27],$header_num,"",0,$order);
-	echo displaySearchHeaderItem($output_type,$lang["joblist"][2],$header_num,"",0,$order);
-	echo displaySearchHeaderItem($output_type,$lang["joblist"][3],$header_num,"",0,$order);
-	echo displaySearchHeaderItem($output_type,$lang["joblist"][4],$header_num,"",0,$order);
-	echo displaySearchHeaderItem($output_type,$lang["common"][1],$header_num,"",0,$order);
-	echo displaySearchHeaderItem($output_type,$lang["tracking"][20],$header_num,"",0,$order);
-	echo displaySearchHeaderItem($output_type,$lang["joblist"][6],$header_num,"",0,$order);
+	// Only display sort on tracking list
+	$display_sort=ereg("tracking.php",$target);
+
+	$items=array(
+		$lang["joblist"][0]=>"glpi_tracking.status",
+		$lang["common"][27]=>"glpi_tracking.date",
+		$lang["joblist"][2]=>"glpi_tracking.priority",
+		$lang["joblist"][3]=>"author.name",
+		$lang["joblist"][4]=>"assign.name",
+		$lang["common"][1]=>"glpi_tracking.device_type,glpi_tracking.computer",
+		$lang["tracking"][20]=>"glpi_dropdown_tracking_category.completename",
+		$lang["joblist"][6]=>"glpi_tracking.contents",
+		);
+
+	foreach ($items as $key => $val){
+		$issort=0;
+		$link="";
+		if ($display_sort){
+			if ($sort==$val) $issort=1;
+			$link=$target."?".$parameters."&order=".($order=="ASC"?"DESC":"ASC")."&sort=$val";
+		}
+		echo displaySearchHeaderItem($output_type,$key,$header_num,$link,$issort,$order);
+	}
+
 	echo displaySearchHeaderItem($output_type,"",$header_num,"",0,$order);
 		
 	// End Line for column headers		
@@ -981,7 +995,7 @@ if($extended)	{
 }
 
 
-function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1047,7 +1061,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 	}
 	$query = "select DISTINCT glpi_tracking.ID as ID from glpi_tracking";
 	if ($computers_search){
-	$query.= " LEFT JOIN glpi_computers as comp on comp.ID=glpi_tracking.computer ";
+	$query.= " LEFT JOIN glpi_computers as comp on ( comp.ID=glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTERçTYPE."' )";
 	$query.= " LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
 	$query.= "LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
 	$query.= "LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
@@ -1068,6 +1082,16 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 
 	if ($contains2!=""&&$field2!="contents"&&$field2!="ID") {
 		$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
+	}
+
+	if ($sort=="author.name"){
+		$query.= " LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) ";
+	}
+	if ($sort=="assign.name"){
+		$query.= " LEFT JOIN glpi_users as assign ON ( glpi_tracking.assign = assign.ID) ";
+	}
+	if ($sort=="glpi_dropdown_tracking_category.completename"){
+		$query.= " LEFT JOIN glpi_dropdown_tracking_category ON ( glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
 	}
 
 	$where=" WHERE '1' = '1'";
@@ -1129,7 +1153,13 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 		}
 	}
 
-   $query.=$where." ORDER BY glpi_tracking.date ".$prefs["order"];
+	if ($sort=="")
+		$sort="glpi_tracking.date";
+	if ($order==""&&$sort=="")
+		$order=$prefs["order"];
+	else if ($order=="") $order="ASC";
+
+	$query.=$where." ORDER BY $sort $order";
 
 	// Get it from database	
 	if ($result = $db->query($query)) {
@@ -1145,7 +1175,8 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 
 
 			// Pager
-			$parameters="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item";
+			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item";
+			$parameters=$parameters2."&amp;sort=$sort&amp;order=$order";
 			if (ereg("user.info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
 			if (ereg("helpdesk",$target)) 
@@ -1173,7 +1204,7 @@ function showTrackingList($target,$start="",$status="new",$author=0,$assign=0,$a
 			// Display List Header
 			echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols,1);
 
-			commonTrackingListHeader($output_type);
+			commonTrackingListHeader($output_type,$target,$parameters2,$sort,$order);
 
 			
 			while ($i < $numrows && $i<$end_display){

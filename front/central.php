@@ -97,7 +97,7 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 		echo $lang["central"][10];
 		echo "</b></div>";
 		
-		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"new");
+		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"","","new");
 		//showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 	}
 

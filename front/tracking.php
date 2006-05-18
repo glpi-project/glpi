@@ -68,6 +68,8 @@ if (isset($_SESSION['tracking'])&&is_array($_SESSION['tracking']))
 foreach ($_SESSION['tracking'] as $key => $val)
 if (!isset($tab[$key])) $tab[$key]=$val;
 
+if (!isset($tab["sort"])||isset($tab['reset'])) $tab["sort"]="";
+if (!isset($tab["order"])||isset($tab['reset'])) $tab["order"]="";
 if (!isset($tab["start"])||isset($tab['reset'])) $tab["start"]=0;
 if (!isset($tab["priority"])||isset($tab['reset'])) $tab["priority"]=0;
 if (!isset($tab["field2"])||isset($tab['reset'])) $tab["field2"]="both";
@@ -120,9 +122,9 @@ else
 	searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
 if (!$tab["extended"])
-	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
+	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 else 
-	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
+	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
 //showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_SESSION["tracking_show"],$_SESSION["tracking_contains"],"","",$_SESSION["tracking_start"],$_SESSION["tracking_device"],$_SESSION["tracking_category"],$_SESSION["tracking_containsID"],$_SESSION["tracking_desc"]);
 
