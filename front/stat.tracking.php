@@ -47,6 +47,7 @@ checkRight("statistic","1");
 if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
 if (isset($_GET["type"])) $_POST["type"] = $_GET["type"];
+if (empty($_POST["type"])) $_POST["type"]="user";
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 $year=date("Y")-1;
@@ -62,6 +63,7 @@ $_POST["date2"]=$tmp;
 }
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
+
 
 $type=$_POST["type"];
 
@@ -79,8 +81,12 @@ $items=array(
 		"field"=>"glpi_tracking.priority"
 	),
 	"technicien"=>array(	
-		"title"=>$lang["stats"][2],
+		"title"=>$lang["stats"][2]." ".$lang["stats"][48],
 		"field"=>"glpi_tracking.assign"
+	),
+	"technicien_followup"=>array(	
+		"title"=>$lang["stats"][2]." ".$lang["stats"][49],
+		"field"=>"glpi_followup.author"
 	),
 	"enterprise"=>array(	
 		"title"=>$lang["stats"][42],
