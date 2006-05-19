@@ -62,6 +62,7 @@ echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.user.php\"><b>".$lang["stats"][4]."</b></a></td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.category.php\"><b>".$lang["stats"][36]."</b></a></td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.priority.php\"><b>".$lang["stats"][39]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.item.php\"><b>".$lang["stats"][45]."</b></a></td></tr>";
 
 
 echo "</table></div>";
