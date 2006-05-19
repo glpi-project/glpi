@@ -42,7 +42,7 @@ commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 checkRight("statistic","1");
 
-echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$lang["stats"][37]."</span></b></p></div>";
+echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$lang["stats"][46]."</span></b></p></div>";
 
 if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
@@ -80,6 +80,7 @@ if ($numrows>0){
 	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
 	
 	echo "<div align='center'><table class='tab_cadre'>";
+	echo "<tr><th>".$lang["common"][1]."</th><th>".$lang["stats"][13]."</th></tr>";
 	$end_display=min($numrows-$_GET['start'],$cfg_glpi["list_limit"]);
 	$db->data_seek($result,$_GET['start']);
 		
