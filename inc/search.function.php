@@ -404,7 +404,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	global $db,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_glpi,$lang;
 
 	// Define meta table where search must be done in HAVING clause
-	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor");
+	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor","glpi_tracking");
 	$names=array(
 		COMPUTER_TYPE => $lang["Menu"][0],
 //		NETWORKING_TYPE => $lang["Menu"][1],
@@ -642,7 +642,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
-	if ($_SESSION["glpisearchcount2"][$type]>0||count($SEARCH_ALL)>0)	
+	// Meta Search / Search All / Count tickets
+	if ($_SESSION["glpisearchcount2"][$type]>0||count($SEARCH_ALL)>0||in_array(60,$toview))	
 		$GROUPBY=" GROUP BY ID";
 
 	// Specific case of group by : multiple links with the reference table
@@ -1045,6 +1046,7 @@ function addOrderBy($field,$order,$key=0){
 	case "glpi_device_hdd.specif_default" :
 	case "glpi_device_ram.specif_default" :
 	case "glpi_device_processor.specif_default" :
+	case "glpi_tracking.count" :
 		return " ORDER BY ITEM_$key $order ";
 		break;
 	case "glpi_contracts.end_date":
@@ -1127,6 +1129,9 @@ case "glpi_licenses.serial" :
 case "glpi_networking_ports.ifaddr" :
 case "glpi_dropdown_netpoint.name" :
 	return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+	break;
+case "glpi_tracking.count" :
+	return " COUNT(glpi_tracking.ID) AS ".$NAME."_".$num.", ";
 	break;
 default:
 	if ($meta){
@@ -1603,6 +1608,12 @@ switch ($field){
 	case "glpi_infocoms.amort_type":
 		return getAmortTypeName($data["ITEM_$num"]);
 		break;
+	case "glpi_tracking.count":
+		$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
+		$out.= $data["ITEM_$num"];
+		$out.="</a>";
+		return $out;
+		break;
 
 	default:
 		return $data["ITEM_$num"];
@@ -1730,6 +1741,10 @@ switch ($new_table){
 		
 		return $out." LEFT JOIN $new_table $AS ON (glpi_networking_ports.netpoint = $nt.ID) ";
 		break;
+	case "glpi_tracking":
+		return " LEFT JOIN $new_table $AS ON ($nt.device_type='$type' AND $rt.ID = $nt.computer) ";
+		break;
+
 	case "glpi_users":
 		return " LEFT JOIN $new_table $AS ON ($rt.tech_num = $nt.ID) ";
 		break;
@@ -1840,7 +1855,6 @@ switch ($new_table){
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";
 		break;
-
 	default :
 		return "";
 		break;
