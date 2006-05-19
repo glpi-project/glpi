@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: stat.user.php 3441 2006-05-04 22:22:14Z moyo $
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -43,10 +43,10 @@ commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 
 checkRight("statistic","1");
 
-echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$lang["stats"][18]."</span></b></p></div>";
 
 if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
+if (isset($_GET["type"])) $_POST["type"] = $_GET["type"];
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 $year=date("Y")-1;
@@ -63,9 +63,46 @@ $_POST["date2"]=$tmp;
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 
+$type=$_POST["type"];
 
-echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.user.php\">";
-echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
+$items=array(
+	"user"=>array(	
+		"title"=>$lang["stats"][4],
+		"field"=>"glpi_tracking.author"
+		),
+	"category"=>array(	
+		"title"=>$lang["stats"][36],
+		"field"=>"glpi_tracking.author"
+	),
+	"priority"=>array(	
+		"title"=>$lang["stats"][39],
+		"field"=>"glpi_tracking.priority"
+	),
+	"technicien"=>array(	
+		"title"=>$lang["stats"][2],
+		"field"=>"glpi_tracking.assign"
+	),
+	"enterprise"=>array(	
+		"title"=>$lang["stats"][42],
+		"field"=>"glpi_tracking.assign_ent"
+	),
+
+	);
+
+$field=$items[$type]["field"];
+
+echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$items[$type]["title"]."</span></b></p></div>";
+
+
+echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.tracking.php\">";
+echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
+echo "<td rowspan='2' align='center'>";
+echo "<select name='type'>";
+foreach ($items as $key => $val)
+	echo "<option value='$key' ".($key==$type?"selected":"").">".$val["title"]."</option>";
+echo "</select>";
+echo "</td>";
+echo "<td align='right'>";
 echo $lang["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
 echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
@@ -75,12 +112,9 @@ echo "</td></tr>";
 echo "</table></form></div>";
 
 
-$type="user";
-$field="glpi_tracking.author";
-
 $val=getStatsItems($_POST["date1"],$_POST["date2"],$type);
 $params=array("type"=>$type,"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
-printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"],STAT_TYPE,$params);
+printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;type=".$_POST["type"],STAT_TYPE,$params);
 
 displayStats($type,$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
 
