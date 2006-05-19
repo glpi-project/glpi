@@ -84,6 +84,26 @@ case "technicien":
 	echo "</tr>";
 	echo "</table></div><br>";
 	break;
+case "technicien_followup":
+	$val1=$_GET["ID"];
+	$val2="";
+
+	$next=getNextItem("glpi_users",$_GET["ID"]);
+	$prev=getPreviousItem("glpi_users",$_GET["ID"]);
+
+	echo "<div align='center'>";
+	echo "<table class='icon_nav'>";
+	echo "<tr>";
+	echo "<td >";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	echo "</td>";
+	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$lang["stats"][16].": ".getAssignName($_GET["ID"],USER_TYPE,1)."</b></td>";
+	echo "<td  >";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+	break;
 case "enterprise":
 	$val1=$_GET["ID"];
 	$val2="";

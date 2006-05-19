@@ -1370,6 +1370,8 @@ $lang["stats"][44]="Nom de l'entreprise";
 $lang["stats"][45]="Nombre de tickets par matériel";
 $lang["stats"][46]="Statistiques par matériel";
 $lang["stats"][47]="Statistiques par caractéristiques des tickets";
+$lang["stats"][48]="basé sur les tickets";
+$lang["stats"][49]="basé sur les suivis";
 
 $lang["title"][0]="Centre de contrôle";
 $lang["title"][1]="Accès au Helpdesk seulement";

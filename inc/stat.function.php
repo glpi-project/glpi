@@ -45,6 +45,7 @@ function is_dropdown_stat($postfromselect) {
 function getStatsItems($date1,$date2,$type){
 	global $HTMLRel,$db;
 	$val=array();
+
 	switch ($type){
 		case "technicien":
 			$nomTech = getNbIntervTech($date1,$date2);
@@ -55,6 +56,20 @@ function getStatsItems($date1,$date2,$type){
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["assign"];
 				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["assign"]."'>";
+				$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
+				$val[$i]["link"].="</a>";
+			$i++;
+			}
+		break;
+		case "technicien_followup":
+			$nomTech = getNbIntervTechFollowup($date1,$date2);
+		
+			
+			$i=0;
+			if (is_array($nomTech))
+			foreach($nomTech as $key){
+				$val[$i]["ID"]=$key["author"];
+				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["author"]."'>";
 				$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
 				$val[$i]["link"].="</a>";
 			$i++;
@@ -281,6 +296,34 @@ function getNbIntervTech($date1,$date2)
 
 //return an array from tracking
 //it contains the distinct users witch have any intervention assigned to.
+function getNbIntervTechFollowup($date1,$date2)
+{
+	global $db;
+	$query = "SELECT distinct glpi_followups.author as author, glpi_users.name as name, glpi_users.realname as realname";
+	$query.= " FROM glpi_tracking ";
+	$query.= " LEFT JOIN glpi_followups ON (glpi_tracking.ID = glpi_followups.tracking) ";
+	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_followups.author) ";
+	
+	$query.= " WHERE glpi_followups.author != 0 ";
+	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	
+	$query.= " order by realname, name";
+	$result = $db->query($query);
+	if($db->numrows($result) >=1) {
+		$i = 0;
+		while($line = $db->fetch_assoc($result)) {
+		$tab[$i] = $line;
+		$i++;
+		}
+		return $tab;
+	}
+	else return 0;	
+}
+
+
+//return an array from tracking
+//it contains the distinct users witch have any intervention assigned to.
 function getNbIntervEnterprise($date1,$date2)
 {
 	global $db;
@@ -450,11 +493,16 @@ $begin.=" 00:00:00";
 	
 	
 	$WHERE=" WHERE '1'='1' ";
-	
+	$LEFTJOIN="";
 	switch ($param){
+
 	case "technicien":
 		$WHERE.=" AND glpi_tracking.assign='$value'";
 		break;
+	case "technicien_followup":
+		$WHERE.=" AND glpi_followups.author='$value'";
+		$LEFTJOIN= "LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID)";
+		break;	
 	case "enterprise":
 		$WHERE.=" AND glpi_tracking.assign_ent='$value'";
 		break;
@@ -496,42 +544,45 @@ $begin.=" 00:00:00";
 	switch($type)	{
 	
 		case "inter_total": 
-			if (!empty($begin)) $WHERE.= " AND date >= '$begin' ";
-			 if (!empty($end)) $WHERE.= " AND date <= '$end' ";
+			if (!empty($begin)) $WHERE.= " AND glpi_tracking.date >= '$begin' ";
+			 if (!empty($end)) $WHERE.= " AND glpi_tracking.date <= '$end' ";
 
-			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date),'%Y-%m') AS date_unix, COUNT(ID) AS total_visites  FROM glpi_tracking ".
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.date),'%Y-%m') AS date_unix, COUNT(glpi_tracking.ID) AS total_visites  FROM glpi_tracking ".$LEFTJOIN.
 				$WHERE.
-				" GROUP BY date_unix ORDER BY date";
+				" GROUP BY date_unix ORDER BY glpi_tracking.date";
 				break;
 		case "inter_solved": 
-			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND closedate <> '0000-00-00 00:00:00' ";
-			if (!empty($begin)) $WHERE.= " AND closedate >= '$begin' ";
-			 if (!empty($end)) $WHERE.= " AND closedate <= '$end' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
+			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
+			 if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
 
-			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(closedate),'%Y-%m') AS date_unix, COUNT(ID) AS total_visites  FROM glpi_tracking ".
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, COUNT(glpi_tracking.ID) AS total_visites  FROM glpi_tracking ".$LEFTJOIN.
 				$WHERE.
-				" GROUP BY date_unix ORDER BY closedate";
+				" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 				break;
 	case "inter_avgsolvedtime" :
-			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND closedate <> '0000-00-00 00:00:00' ";
-			if (!empty($begin)) $WHERE.= " AND closedate >= '$begin' ";
-			 if (!empty($end)) $WHERE.= " AND closedate <= '$end' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
+			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
+			 if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
 
-			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(closedate),'%Y-%m') AS date_unix, 24*AVG(TO_DAYS(closedate)-TO_DAYS(date)) AS total_visites  FROM glpi_tracking ".
-				$WHERE.
-				" GROUP BY date_unix ORDER BY closedate";
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, 24*AVG(TO_DAYS(glpi_tracking.closedate)-TO_DAYS(glpi_tracking.date)) AS total_visites  FROM glpi_tracking ".
+				$LEFTJOIN.$WHERE.
+				" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 				break;
 	case "inter_avgrealtime" :
-			$WHERE.=" AND realtime > '0' ";
-			if (!empty($begin)) $WHERE.= " AND closedate >= '$begin' ";
-			 if (!empty($end)) $WHERE.= " AND closedate <= '$end' ";
+			if ($param=="technicien_followup")
+				$realtime_table="glpi_followups";
+			else $realtime_table="glpi_tracking";
+			$WHERE.=" AND $realtime_table.realtime > '0' ";
+			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
+			 if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
 
-			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(closedate),'%Y-%m') AS date_unix, 60*AVG(realtime) AS total_visites  FROM glpi_tracking ".
-				$WHERE.
-				" GROUP BY date_unix ORDER BY closedate";
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, 60*AVG($realtime_table.realtime) AS total_visites  FROM glpi_tracking ".
+				$LEFTJOIN.$WHERE.
+				" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 				break;
 	case "inter_avgtakeaccount" :
-			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
 
