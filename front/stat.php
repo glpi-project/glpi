@@ -54,14 +54,10 @@ echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 
 
 	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.global.php\"><b>".$lang["stats"][1]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.technicien.php\"><b>".$lang["stats"][2]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.enterprise.php\"><b>".$lang["stats"][42]."</b></a></td></tr>";
+	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.tracking.php\"><b>".$lang["stats"][47]."</b></a></td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.location.php\"><b>".$lang["stats"][3]."</b></a><br> (".$lang["common"][15]
 	.", ".$lang["common"][17]	= "Type".", ".$lang["computers"][9]	= "OS".", ".$lang["computers"][21].", ".$lang["computers"][36]
 	.", ".$lang["devices"][2].", ".$lang["devices"][5].")</td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.user.php\"><b>".$lang["stats"][4]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.category.php\"><b>".$lang["stats"][36]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.priority.php\"><b>".$lang["stats"][39]."</b></a></td></tr>";
 	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.item.php\"><b>".$lang["stats"][45]."</b></a></td></tr>";
 
 
