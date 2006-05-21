@@ -993,6 +993,8 @@ $lang["profiles"][20]="Voir son planning";
 $lang["profiles"][21]="Voir tous les planning";
 $lang["profiles"][22]="Profil";
 $lang["profiles"][23]="Administration des réservations";
+$lang["profiles"][24]="Mise à jour de mot de passe";
+$lang["profiles"][25]="Général";
 
 $lang["reminder"][0]="Notes personnelles";
 $lang["reminder"][1]="Notes publiques";
@@ -1265,7 +1267,7 @@ $lang["setup"][231]="Utiliser un serveur SMTP pour l'envoir des mails";
 $lang["setup"][232]="Hote SMTP";
 $lang["setup"][233]="Port du serveur SMTP";
 $lang["setup"][234]="Login SMTP";
-$lang["setup"][235]="Mot de passe  SMTP";
+$lang["setup"][235]="Mot de passe SMTP";
 $lang["setup"][236]="Ancien technicien chargé du ticket";
 $lang["setup"][237]="Administrateur";
 $lang["setup"][238]="Demandeur";
