@@ -133,7 +133,7 @@ Installez l'ensemble des fichiers de GLPI dans l'espace Web, à l'endroit où vous
 accessible au public.
 
 Maintenant, il est nécessaire d'accorder des permissions à certains répertoires, de manière à ce que PHP 
-ait les droits en écriture sur : /backups/dump /glpi/config et glpi/docs
+ait les droits en écriture sur : /files et /config
 
 --- Début de l'installation
 
@@ -221,7 +221,10 @@ pour effectuer votre première connection à l'application.
 
 En cas de grosse erreur (du genre : vous avez oublié votre propre accès à GLPI...), pour « relancer » cette 
 procédure d'installation, il faut utiliser votre logiciel FTP (par exemple) et effacer le fichier suivant :
--  glpi/config/config_db.php
+-  config/config_db.php
+
+Pour plus de sécurité il faut ne permettre l'accès en lecture au fichier config/config_db.php que par l'utilisateur du serveur web.
+Exemple : chmod 400 config/config_db.php
 
 Pointer votre navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut) relancera 
 alors la procédure de configuration (en réalité, c'est l'absence de fichier « config_db.php » qui provoque le 
@@ -253,15 +256,20 @@ II) Récupération et installation des fichiers.
 1)Téléchargez le tarball de la dernière version  disponible dans la rubrique téléchargement du site du 
 projet glpi (http://glpi.indepnet.org).
 
+Cas vous passer en GLPI >= 0.68 :
+Sauvegardez bien tous votre répertoire GLPI et supprimez le.
+Certains répertoires ont changés. Il vous faut donc copier leur contenu.
+/backup/dump -> /files/_dumps
+/docs/ -> /files
+
 2)Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
 
-3)Supprimez le fichier [votre_racine_http/]glpi/glpi/config/config_db.php
+3)Supprimez le fichier [votre_racine_http/]/glpi/config/config_db.php
 
 4) Verifiez ou changez les droits sur les dossiers suivants :
 
--[votre_racine_http/]glpi/backups/dump
--[votre_racine_http/]glpi/glpi/config/
--[votre_racine_http/]glpi/docs/
+-[votre_racine_http/]/glpi/files
+-[votre_racine_http/]/glpi/config/
 
 de manière à ce que PHP y ait les droits d'écriture.
 

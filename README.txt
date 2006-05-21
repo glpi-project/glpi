@@ -94,16 +94,20 @@ II) Get and install the files
 1) Download the last tarball on the download ("Télécharger" in french) section of the website 
 of the GLPI project (http://glpi.indepnet.org).
 
+Case : you pass to a GLPI >= 0.68 :
+Backup all your GLPI directory and delete it.
+Some directories have changed. You must to copy files :
+/backup/dump -> /files/_dumps
+/docs/ -> /files
 
 2) Uncompress the GLPI tarball where the previous one was.
 
-3) Delete the file [your_http_root/]glpi/glpi/config/config_db.php
+3) Delete the file [your_http_root/]/config/config_db.php
 
 4) Change acces rights to the following directory (add write access) :
 
--[your_http_root/]glpi/backups/dump
--[your_http_root/]glpi/glpi/config/
--[your_http_root/]glpi/docs/
+-[your_http_root/]/glpi/config/
+-[your_http_root/]/glpi/files
 
 in order that PHP can write in them.
 
@@ -111,7 +115,7 @@ III)Launch the update :
 
 1) Use your favorite browser to get the address http://yourserver/glpi/
 
-2) Select your favorite langagea and click on « ok ».
+2) Select your favorite langage and click on « ok ».
 
 3) Click on  « update ».
 
@@ -237,7 +241,7 @@ If your are the administrator of the server unpack the tarball in the root apach
 Install the whole files of GLPI in your web space, where you want that GLPI is accessible to the public.
 
 Now, it is necessary to modify permissions to some directories in order that PHP can write in:
-/backups/dump and /glpi/config
+/files and /config
 
 --- Begin of the installation
 
@@ -319,7 +323,10 @@ with the application.
 
 In case of error (of the kind: you forgot your own access to GLPI...), to start again this procedure of 
 installation, it is necessary to use your software ftp (for example) and to erase the following file: 
--  glpi/config/config_db.php
+-  config/config_db.php
+
+For security reasons you must to set the read right to config/config_db.php only to the  web service user.
+Example : chmod 400 config/config_db.php
 
 Use your browser to get the root of GLPI: http://yourserver/glpi/ (by default) to start again 
 the procedure of configuration then (actually, it is the absence of file "config_db.php" which causes 
