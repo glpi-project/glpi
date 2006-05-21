@@ -313,8 +313,9 @@ class Job extends CommonDBTM{
 
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
-
-		if (!isset($input["author"])&&isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]<0)
+		
+		if (!isset($input["author"]))
+		if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
 			$input["author"]=$_SESSION["glpiID"];
 		else $input["author"]=1; // Helpdesk injector
 		
@@ -346,10 +347,12 @@ class Job extends CommonDBTM{
 
 		if (isset($input["hour"])&&isset($input["minute"])){
 			$input["realtime"]=$input["hour"]+$input["minute"]/60;
+			$input["_hour"]=$input["hour"];
+			$input["_minute"]=$input["minute"];
 			unset($input["hour"]);
 			unset($input["minute"]);
 		}
-
+		
 		$input["date"] = date("Y-m-d H:i:s");
 
 		if (isset($input["status"])&&strstr($input["status"],"old_"))
@@ -363,19 +366,27 @@ class Job extends CommonDBTM{
 
 		// add Document if exists
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
-		$input2=array();
-		$input2["name"]=$lang["tracking"][24]." $newID";
-		$input2["_only_if_upload_succeed"]=1;
-		$doc=new Document();
-		if ($docID=$doc->add($input2))
-			addDeviceDocument($docID,TRACKING_TYPE,$newID);
+			$input2=array();
+			$input2["name"]=$lang["tracking"][24]." $newID";
+			$input2["_only_if_upload_succeed"]=1;
+			$doc=new Document();
+			if ($docID=$doc->add($input2))
+				addDeviceDocument($docID,TRACKING_TYPE,$newID);
 		}
 		
 		// Log this event
 		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$lang["log"][20]);
 		
+		$already_mail=false;
+		if (isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0){
+			
+			$fup=new Followup();
+			$fup->add(array("type"=>"new","hour"=>$input["_hour"],"minute"=>$input["_minute"],"tracking"=>$newID));
+			$already_mail=true;
+		}
+
 		// Processing Email
-		if ($cfg_glpi["mailing"])
+		if ($cfg_glpi["mailing"]&&!$already_mail)
 		{
 			$user=new User();
 			$user->getFromDB($input["author"]);
@@ -678,7 +689,6 @@ class Followup  extends CommonDBTM {
 
 		$input["date"] = date("Y-m-d H:i:s");
 
-
 		return $input;
 	}
 	
@@ -705,7 +715,6 @@ class Followup  extends CommonDBTM {
 				$input["_job"]->updateInDB($updates);
 			}
 
-//			$input["_job"]->updateRealtime();		
 		}
 
 		if ($cfg_glpi["mailing"]){
