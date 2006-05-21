@@ -349,16 +349,18 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	
 }
 
-function getDocumentLink($filename){
+function getDocumentLink($filename,$params=""){
 global $db,$HTMLRel,$cfg_glpi;	
 	if (empty($filename))
 		return "&nbsp;";
 	$out="";
 	$splitter=split("/",$filename);
 	if (count($splitter)==2)
-	$fileout=$splitter[1];
+		$fileout=$splitter[1];
 	else $fileout=$filename;
+
 	if (strlen($fileout)>20) $fileout=substr($fileout,0,20)."...";
+	
 	if (count($splitter)==2){
 		
 		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
@@ -366,12 +368,13 @@ global $db,$HTMLRel,$cfg_glpi;
 		if ($result=$db->query($query))
 		if ($db->numrows($result)>0){
 			$icon=$db->result($result,0,'icon');
-			$out="<a href=\"".$HTMLRel."front/document.send.php?file=$filename\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
+
+			$out="<a href=\"".$HTMLRel."front/document.send.php?file=$filename$params\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
 			}
 	
 	}
 	
-	$out.="<a href=\"".$HTMLRel."front/document.send.php?file=$filename\" target=\"_blank\"><b>$fileout</b></a>";	
+	$out.="<a href=\"".$HTMLRel."front/document.send.php?file=$filename$params\" target=\"_blank\"><b>$fileout</b></a>";	
 	
 	
 	return $out;

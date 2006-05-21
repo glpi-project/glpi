@@ -127,6 +127,7 @@ class Job extends CommonDBTM{
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 			$input2=array();
 			$input2["name"]=$lang["tracking"][24]." ".$input["ID"];
+			$input2["FK_tracking"]=$input["ID"];
 			$input2["_only_if_upload_succeed"]=1;
 			$doc=new Document();
 			if ($docID=$doc->add($input2)){
@@ -368,6 +369,7 @@ class Job extends CommonDBTM{
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 			$input2=array();
 			$input2["name"]=$lang["tracking"][24]." $newID";
+			$input2["FK_tracking"]=$newID;
 			$input2["_only_if_upload_succeed"]=1;
 			$doc=new Document();
 			if ($docID=$doc->add($input2))
@@ -659,7 +661,7 @@ class Followup  extends CommonDBTM {
 		$input["_job"]->getFromDB($input["tracking"]);
 		
 		// Security to add unauthorized followups
-		if (!$input["_isadmin"]&&$job->fields["author"]!=$_SESSION["glpiID"]) return false;
+		if (!$input["_isadmin"]&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]) return false;
 		
 		// Pass old assign From Job in case of assign change
 		if (isset($input["_old_assign"]))

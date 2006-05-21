@@ -42,7 +42,15 @@ class Document extends CommonDBTM {
 		$this->table="glpi_docs";
 		$this->type=DOCUMENT_TYPE;
 	}
-	
+	function getFromDBbyFilename($filename){
+		global $db;
+		$query="SELECT ID FROM glpi_docs WHERE filename='$filename'";
+		$result=$db->query($query);
+		if ($db->numrows($result)==1){
+			return $this->getFromDB($db->result($result,0,0));
+		} 
+		return false;
+	}	
 	
 	function cleanDBonPurge($ID) {
 		global $db,$cfg_glpi,$phproot,$lang;
@@ -68,7 +76,8 @@ class Document extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		
+		$input["date_mod"] = date("Y-m-d H:i:s");
+		$input["FK_users"] = $_SESSION["glpiID"];
 	
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
 			$input['mime']=$_FILES['filename']['type'];
@@ -88,6 +97,7 @@ class Document extends CommonDBTM {
 
 
 	function prepareInputForUpdate($input) {
+		$input["date_mod"] = date("Y-m-d H:i:s");
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
 			$input['mime']=$_FILES['filename']['type'];
 		
@@ -205,7 +215,11 @@ class Document extends CommonDBTM {
 		} else {
 	
 			echo "<tr>";
-			echo "<td class='tab_bg_2'></td>";
+			echo "<td class='tab_bg_2'>";
+			if ($this->fields["FK_users"]>0)
+				echo $lang["document"][42]." ".getUserName($this->fields["FK_users"],1);
+			else echo "&nbsp;";
+			echo "</td>";
 			echo "<td class='tab_bg_2' valign='top'>";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 			echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
