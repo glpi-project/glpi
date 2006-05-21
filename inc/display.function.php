@@ -423,7 +423,7 @@ function helpHeader($title,$url) {
 
 	// And he can change his password, thats it
 	echo "<td width='40%' align='center'>";
-	if ($cfg_glpi["debug"]!=DEMO_MODE&&$_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+	if (haveRight("password_update","1")&&$cfg_glpi["debug"]!=DEMO_MODE&&$_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
 		showPasswordForm($cfg_glpi["root_doc"]."/front/preference.php",$_SESSION["glpiname"]);
 		else echo "&nbsp;";
 	echo "</td>";

@@ -45,7 +45,7 @@ if (isset($_POST["changepw"])) {
 	if ($cfg_glpi["debug"]==DEMO_MODE){
 		checkRight("config","w");
 	} else {
-		checkLoginUser();
+		checkRight("password_update","1");
 	}
 	if ($_SESSION["glpiextauth"]!=1){
 		$user=new User();
@@ -83,7 +83,7 @@ if (isset($_POST["changepw"])) {
         echo "<div align='center'><table border='0'><tr><td>";
         echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][11]."</b></span>";
         echo "</td></tr></table></div>";
-	if ($_SESSION["glpiextauth"]!=1)
+	if ($_SESSION["glpiextauth"]!=1&&haveRight("password_update","1"))
 		showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	showSortForm($_SERVER["PHP_SELF"]);
 	showLangSelect($_SERVER["PHP_SELF"]);
