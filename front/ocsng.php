@@ -34,6 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
+$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
 include ($phproot."/inc/includes.php");
 
 	checkRight("ocsng","w");
@@ -57,8 +58,8 @@ include ($phproot."/inc/includes.php");
 
 	echo "</table></div>";
 	
-	ocsCleanLinks();
 	ocsManageDeleted();
+	ocsCleanLinks();
 
 	commonFooter();
 

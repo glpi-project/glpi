@@ -204,8 +204,6 @@ function ocsManageDeleted(){
 			}
 		}
 	}
-
-
 }
 
 
@@ -249,7 +247,21 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 	
 	$query="SELECT * FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
 	$result=$db->query($query);
-	if ($db->numrows($result)==0){
+	$ocs_exists=true;
+	// Already link - check if the OCS computer already exists
+	if ($db->numrows($result)>0){
+		$data=$db->fetch_assoc($result);
+		$query = "SELECT * FROM hardware WHERE DEVICEID='".$data["ocs_id"]."'";
+		$result_ocs=$dbocs->query($query) or die($dbocs->error().$query);
+		// Not found
+		if ($dbocs->numrows($result_ocs)==0){
+			$ocs_exists=false;
+			$query="DELETE FROM glpi_ocs_link WHERE ID='".$data["ID"]."'";
+			$db->query($query);
+		}
+	} 
+
+	if (!$ocs_exists||$db->numrows($result)==0){
 	
 		// Set OCS checksum to max value
 		$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE DEVICEID='$ocs_id'";
@@ -297,6 +309,7 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 			ocsUpdateComputer($idlink,0);
 		}
 	} else echo $ocs_id." - ".$lang["ocsng"][23];
+
 }
 
 
