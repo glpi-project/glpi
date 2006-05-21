@@ -686,7 +686,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<input type='hidden' name='_referer' value='$REFERER'>";
 		echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
 	}	
-	echo "<table class='tab_cadre'><tr><th colspan='2'>".$lang["job"][13].": <br>";
+	echo "<table class='tab_cadre'><tr><th><a href='$target'>".$lang["buttons"][16]."</a></th><th>".$lang["job"][13].": <br>";
 	if ($device_type!=0){
 		$m=new CommonItem;
 		$m->getfromDB($device_type,$ID);
@@ -709,33 +709,35 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][0].":</td>";
 	echo "<td align='center' class='tab_bg_2'><select name='status'>";
 	echo "<option value='new' ";
-	if (isset($_GET["status"])&&$_GET["status"]=="new") echo "selected";
+	if (isset($_POST["status"])&&$_POST["status"]=="new") echo "selected";
 	echo ">".$lang["job"][14]."</option>";
 	echo "<option value='old_done' ";
-	if (isset($_GET["status"])&&$_GET["status"]=="old_done") echo "selected";	
+	if (isset($_POST["status"])&&$_POST["status"]=="old_done") echo "selected";	
 	echo ">".$lang["job"][15]."</option>";
 	echo "</select></td></tr>";
 
-			echo "<tr>";
-			echo "<td class='tab_bg_2' align='center'>";
-			echo $lang["job"][20].":</td>";
-			echo "<td align='center' class='tab_bg_2'><select name='hour'>";
-			for ($i=0;$i<100;$i++){
+	// Need comment right to add a followup with the realtime
+	if (haveRight("comment_all_ticket","1")){
+		echo "<tr>";
+		echo "<td class='tab_bg_2' align='center'>";
+		echo $lang["job"][20].":</td>";
+		echo "<td align='center' class='tab_bg_2'><select name='hour'>";
+		for ($i=0;$i<100;$i++){
 			$selected="";
-			if (isset($_GET["hour"])&&$_GET["hour"]==$i) $selected="selected";
+			if (isset($_POST["hour"])&&$_POST["hour"]==$i) $selected="selected";
 			echo "<option value='$i' $selected>$i</option>";
-			}			
+		}			
 		
-			echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
-			echo "<select name='minute'>";
-			for ($i=0;$i<60;$i++){
+		echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
+		echo "<select name='minute'>";
+		for ($i=0;$i<60;$i++){
 			$selected="";
 			if (isset($_POST["minute"])&&$_POST["minute"]==$i) $selected="selected";
 			echo "<option value='$i' $selected>$i</option>";
-			}
-			echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
-			echo "</td></tr>";
-
+		}
+		echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
+		echo "</td></tr>";
+	}
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2'>";
