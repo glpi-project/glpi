@@ -34,23 +34,58 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("document");
+$NEEDED_ITEMS=array("document","tracking");
 include ($phproot . "/inc/includes.php");
 
-checkRight("document","r");
+checkLoginUser();
 
 if (isset($_GET["file"])){
+
 	$splitter=split("/",$_GET["file"]);
 	
 	if (count($splitter)==2){
 		$send=false;
-		if ($splitter[0][0]!="_") $send=true;
-		else if ($splitter[0]=="_dumps"&&haveRight("backup","w")) $send=true;
-		else $send=false;
+		
+		if ($splitter[0]=="_dumps"&&haveRight("backup","w")) $send=true;
+		
+		if (!$send){
+			$doc=new Document;
+			$founded=$doc->getFromDBbyFilename($_GET["file"]);
+			
+			if ($founded){
+				
+				if ($_SESSION["glpiprofile"]["interface"]=="central"){
+					// My doc Check
+					if ($doc->fields["FK_users"]==$_SESSION["glpiID"])
+						$send=true;
+					// else Common doc right access
+					else if (haveRight("document","r"))
+						$send=true;
+					// Tracking Case
+					if (!$send&&isset($_GET["tracking"])){
+						$job=new Job;
+						$job->getFromDB($_GET["tracking"]);
+						print_r($job);
+						if ($job->fields["author"]==$_SESSION["glpiID"]||$job->fields["assign"]==$_SESSION["glpiID"]){
+							$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$_GET["tracking"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' AND FK_doc='".$doc->fields["ID"]."'";
+							$result=$db->query($query);
+							if ($db->numrows($result)>0)
+								$send=true;
+						}
+					}
+				} else {
+					// Check if it is my doc
+					if ($doc->fields["FK_users"]==$_SESSION["glpiID"])
+						$send=true;
+				}
+			} else echo $lang["document"][43];
+		}
+
+
 		if ($send&&file_exists($cfg_glpi["doc_dir"]."/".$_GET["file"]))
 			sendFile($cfg_glpi["doc_dir"]."/".$_GET["file"],$splitter[1]);
-		else echo "You do not have right to give this file";
-		}
+		else echo $lang["document"][45];
+	} else echo $lang["document"][44];
 }
 
 

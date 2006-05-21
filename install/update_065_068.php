@@ -448,6 +448,11 @@ if(TableExists("glpi_kbitems")){
 		$db->query($query) or die("0.68 glpi_dropdown_tracking_category to dropdown tree".$lang["update"][90].$db->error());
 		regenerateTreeCompleteName("glpi_dropdown_tracking_category");
 	}
+// User to Document
+	if(!FieldExists("glpi_docs","FK_users")) {	
+		$query = "ALTER TABLE `glpi_docs` ADD `FK_users` int DEFAULT '0' NOT NULL, ADD `FK_tracking` int DEFAULT '0' NOT NULL;"; 
+		$db->query($query) or die("0.68 add FK_users to docs".$lang["update"][90].$db->error());
+	}	
 
 } // fin 0.68 #####################################################################################
 

@@ -1622,38 +1622,30 @@ function showJobDetails ($target,$ID){
 
 		
 		// File associated ?
-		if ($canupdate){
+		$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->fields["ID"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
+		$result2 = $db->query($query2);
+		$numfiles=$db->numrows($result2);
+		echo "<table width='100%'><tr><th colspan='2'>".$lang["tracking"][25]."</th></tr>";			
 
-			$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->fields["ID"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
-			$result2 = $db->query($query2);
-			$numfiles=$db->numrows($result2);
-			//$colspan=1;
-			//if ($numfiles>1) $colspan=2;
-			echo "<table width='100%'><tr><th colspan='2'>".$lang["tracking"][25]."</th></tr>";			
-
-			if ($numfiles>0){
-				//$i=0;
-				$con=new Document;
-				while ($data=$db->fetch_array($result2)){
-					//if ($i%2==0&&$i>0) echo "</tr><tr>";
-					echo "<tr><td>";
-					$con->getFromDB($data["FK_doc"]);
-					echo getDocumentLink($con->fields["filename"]);
+		if ($numfiles>0){
+			$doc=new Document;
+			while ($data=$db->fetch_array($result2)){
+				echo "<tr><td>";
+				$doc->getFromDB($data["FK_doc"]);
+				
+				echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
+				if (haveRight("document","w"))
 					echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
-					echo "</td></tr>";
-					//$i++;
-				}
-				//if ($i%2==1) echo "<td>&nbsp;</td>";
-				//echo "</tr>";
+				echo "</td></tr>";
 			}
-			echo "<tr><td colspan='2'>";
-			echo "<input type='file' name='filename' size='20'>";
-			echo "</td></tr></table>";
-		} else echo "&nbsp;";
+		}
+		echo "<tr><td colspan='2'>";
+		echo "<input type='file' name='filename' size='20'>";
+		echo "</td></tr></table>";
 
 			echo "</td></tr>";
 		// Troisi�e Ligne
-		if ($canupdate||$canupdate_descr||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
+		if ($canupdate||$job->fields["author"]==$_SESSION["glpiID"]||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}

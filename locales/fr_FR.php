@@ -355,6 +355,10 @@ $lang["document"][38]="Fichier introuvable";
 $lang["document"][39]="Document déplacé avec succès";
 $lang["document"][40]="Problème dans le déplacement du fichier";
 $lang["document"][41]="Document copié avec succès";
+$lang["document"][42]="Ajouté par";
+$lang["document"][43]="Fichier inconnu";
+$lang["document"][44]="Nom de fichier incorrect";
+$lang["document"][45]="Vous n'avez pas le droit d'accèder à ce fichier";
 
 $lang["event"][0]="Item (ID)"; 
 $lang["event"][2]="Service";
