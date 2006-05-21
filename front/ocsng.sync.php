@@ -66,8 +66,8 @@ if (!isset($_POST["update_ok"])){
 if (!isset($_GET['check'])) $_GET['check']='all';
 if (!isset($_GET['start'])) $_GET['start']=0;
 
-ocsCleanLinks();
 ocsManageDeleted();
+ocsCleanLinks();
 ocsShowUpdateComputer($_GET['check'],$_GET['start']);
 
 } else {

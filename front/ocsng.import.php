@@ -66,8 +66,8 @@ if (!isset($_GET['check'])) $_GET['check']='all';
 if (!isset($_GET['start'])) $_GET['start']=0;
 
 if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
-ocsCleanLinks();
 ocsManageDeleted();
+ocsCleanLinks();
 ocsShowNewComputer($_GET['check'],$_GET['start']);
 
 } else {
