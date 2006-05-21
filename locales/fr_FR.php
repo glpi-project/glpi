@@ -900,6 +900,8 @@ $lang["ocsconfig"][27]="Informations générales Ordinateurs";
 $lang["ocsconfig"][28]="Périphériques";
 $lang["ocsconfig"][36]="Modems";
 $lang["ocsconfig"][37]="Ports";
+$lang["ocsconfig"][38]="Utiliser le dictionnaire logiciel d'OCS";
+$lang["ocsconfig"][39]="TAG OCS";
 
 
 $lang["pager"][1]="à";
