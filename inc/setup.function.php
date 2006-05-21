@@ -1841,6 +1841,9 @@ function ocsFormConfig($target, $id) {
 	echo "</select>";
 
 	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][38]." </td><td>";
+	dropdownYesNoInt("use_soft_dict",$data["use_soft_dict"]);
+	echo "</td></tr>";
 	echo "</table></div>";
 
 	echo "<div align='center'>".$lang["ocsconfig"][15]."</div>";
@@ -1852,6 +1855,17 @@ function ocsFormConfig($target, $id) {
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th>".$lang["ocsconfig"][27]."</th><th>".$lang["ocsconfig"][28]."</th></tr>";
 	echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][39]." </td><td>";
+	echo "<select name='import_tag_field'>";
+	echo "<option value=''>".$lang["ocsconfig"][11]."</option>";
+	echo "<option value='otherserial' ".($data["import_tag_field"]=="otherserial"?"selected":"").">".$lang["common"][20]."</option>";
+	echo "<option value='contact_num' ".($data["import_tag_field"]=="contact_num"?"selected":"").">".$lang["common"][21]."</option>";
+	echo "<option value='location' ".($data["import_tag_field"]=="location"?"selected":"").">".$lang["common"][15]."</option>";
+	echo "<option value='network' ".($data["import_tag_field"]=="network"?"selected":"").">".$lang["setup"][88]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
+
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][16]." </td><td>";
 	dropdownYesNoInt("import_general_name",$data["import_general_name"]);

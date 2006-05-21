@@ -234,10 +234,43 @@ function ocsImportComputer($DEVICEID){
 			if ($cfg_ocs["default_state"]){
 				updateState(COMPUTER_TYPE,$glpi_id,$cfg_ocs["default_state"],0,0);
 			}
+			ocsImportTag($line['DEVICEID'],$glpi_id,$cfg_ocs);
 		}
 
 		if ($idlink = ocs_link($line['DEVICEID'], $glpi_id)){
+			
+			
 			ocsUpdateComputer($idlink,0);
+		}
+	}
+}
+
+function ocsImportTag($ocs_id,$glpi_id,$cfg_ocs){
+	global $dbocs;
+	// Import TAG
+	if (!empty($cfg_ocs["import_tag_field"])){
+		$query = "SELECT TAG FROM accountinfo WHERE DEVICEID='$ocs_id'";
+		$resultocs=$dbocs->query($query) or die($dbocs->error().$query);
+		if ($dbocs->numrows($resultocs)>0){
+			$tag=addslashes($dbocs->result($resultocs,0,0));
+			if (!empty($tag)){
+				$comp=new Computer();
+				$input["ID"] = $glpi_id;
+					
+				switch ($cfg_ocs["import_tag_field"]){
+					case "otherserial":
+					case "contact_num":
+						$input[$cfg_ocs["import_tag_field"]]=$tag;
+						break;
+					case "location":
+						$input[$cfg_ocs["import_tag_field"]]=ocsImportDropdown('glpi_dropdown_locations','name',$tag);;
+						break;
+					case "network":
+						$input[$cfg_ocs["import_tag_field"]]=ocsImportDropdown('glpi_dropdown_network','name',$tag);;
+						break;
+				}
+				$comp->update($input);
+			}
 		}
 	}
 }
@@ -276,9 +309,13 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
 			$comp->update($input);
+			
 
 			// Reset using GLPI Config
 			$cfg_ocs=getOcsConf(1);
+
+			ocsImportTag($ocs_id,$glpi_id,$cfg_ocs);
+
 			if($cfg_ocs["import_general_os"]) 
 				ocsResetDropdown($glpi_id,"os","glpi_dropdown_os");
 			if($cfg_ocs["import_device_processor"]) 
@@ -537,10 +574,13 @@ function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1)
 **/
 
 function ocsImportDropdown($dpdTable,$dpdRow,$value) {
-	global $db;
+	global $db,$cfg_glpi;
 	$query2 = "select * from ".$dpdTable." where $dpdRow='".$value."'";
 	$result2 = $db->query($query2);
 	if($db->numrows($result2) == 0) {
+		if (in_array($dpdTable,$cfg_glpi["dropdowntree_tables"])&&$dpdRow=="name"){
+			$query3 = "insert into ".$dpdTable." (".$dpdRow.",completename) values ('".$value."','".$value."')";
+		} else 
 		$query3 = "insert into ".$dpdTable." (".$dpdRow.") values ('".$value."')";
 		$db->query($query3) or die("echec de l'importation".$db->error());
 		return $db->insert_id();
@@ -1465,7 +1505,9 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 	global $dbocs,$db;
 	if($cfg_ocs["import_software"]){
 		
-		$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER FROM softwares INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) WHERE softwares.DEVICEID='$ocs_id'";
+		if ($cfg_ocs["use_soft_dict"])
+			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER FROM softwares INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) WHERE softwares.DEVICEID='$ocs_id'";
+		else $query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME, softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER FROM softwares WHERE softwares.DEVICEID='$ocs_id'";
 		$already_imported=array();
 		$result2 = $dbocs->query($query2) or die($dbocs->error());
 		if ($dbocs->numrows($result2)>0)

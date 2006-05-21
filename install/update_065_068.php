@@ -454,7 +454,16 @@ if(TableExists("glpi_kbitems")){
 		$query = "ALTER TABLE `glpi_docs` ADD `FK_users` int DEFAULT '0' NOT NULL, ADD `FK_tracking` int DEFAULT '0' NOT NULL;"; 
 		$db->query($query) or die("0.68 add FK_users to docs".$lang["update"][90].$db->error());
 	}	
-
+// Import Ocs TAG
+	if(!FieldExists("glpi_ocs_config","import_tag_field")) {	
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_tag_field` varchar( 255 ) NULL;"; 
+		$db->query($query) or die("0.68 add import_tag_field to ocs_config".$lang["update"][90].$db->error());
+	}
+// Use ocs soft dict
+if(!FieldExists("glpi_ocs_config","use_soft_dict")) {	
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `use_soft_dict` char( 1 ) DEFAULT '1';"; 
+		$db->query($query) or die("0.68 add use_soft_dict to ocs_config".$lang["update"][90].$db->error());
+	}
 } // fin 0.68 #####################################################################################
 
 ?>
