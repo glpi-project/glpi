@@ -381,7 +381,10 @@ class Job extends CommonDBTM{
 		if (isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0){
 			
 			$fup=new Followup();
-			$fup->add(array("type"=>"new","hour"=>$input["_hour"],"minute"=>$input["_minute"],"tracking"=>$newID));
+			$toadd=array("type"=>"new","hour"=>$input["_hour"],"minute"=>$input["_minute"],"tracking"=>$newID);
+			if (isset($input["assign"])&&$input["assign"]>0)
+				$toadd["author"]=$input["assign"];
+			$fup->add($toadd);
 			$already_mail=true;
 		}
 
@@ -670,7 +673,8 @@ class Followup  extends CommonDBTM {
 		$input['_close']=0;
 		unset($input["add"]);
 	
-		$input["author"]=$_SESSION["glpiID"];
+		if (!isset($input["author"]))
+			$input["author"]=$_SESSION["glpiID"];
 
 		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
 			if (isset($input['plan'])){

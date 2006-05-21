@@ -741,13 +741,14 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-	dropdownPriority("priority",3);
+	$priority=3;
+	if (isset($_POST["priority"]))$priority=$_POST["priority"];
+	dropdownPriority("priority",$priority);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][3].":</td>";
 	
 	echo "<td align='center'>";
-
 	dropdownAllUsers("author",$author);
 	echo "</td></tr>";
 	
@@ -761,7 +762,10 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["tracking"][20].":</td>";
 	
 	echo "<td align='center'>";
-	dropdownValue("glpi_dropdown_tracking_category","category",0);
+	$category=0;
+	if (isset($_POST["category"]))$priority=$_POST["category"];
+
+	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td></tr>";
 
 
