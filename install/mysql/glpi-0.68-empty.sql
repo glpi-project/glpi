@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-05-21 18:25
+#GLPI Dump database on 2006-05-21 23:32
 
 ### Dump table glpi_cartridges
 
@@ -1121,7 +1121,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-21 18:25:04','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-21 23:32:26','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1456,10 +1456,12 @@ CREATE TABLE `glpi_ocs_config` (
     `import_ip` int(2) DEFAULT '0' NOT NULL,
     `default_state` int(11) DEFAULT '0' NOT NULL,
     `tag_limit` varchar(255) NOT NULL,
+    `import_tag_field` varchar(255),
+    `use_soft_dict` char(1) DEFAULT '1',
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_ocs_config VALUES ('1','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','');
+INSERT INTO glpi_ocs_config VALUES ('1','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'1');
 
 ### Dump table glpi_ocs_link
 
