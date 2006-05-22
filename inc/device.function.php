@@ -267,9 +267,9 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	echo "<td align='center'>";
 	echo "<select name='quantity_$compDevID'>";
 	for ($i=0;$i<100;$i++)
-		echo "<option value='$i' ".($quantity==$i?"selected":"").">$i</option>";
+		echo "<option value='$i' ".($quantity==$i?"selected":"").">".$i."x</option>";
 	echo "</select>";
-	echo "x</td>";
+	echo "</td>";
 	echo "<td align='center'><a href='".$HTMLRel."front/device.php?device_type=".$device->type."'>$type</a></td>";
 	echo "<td align='center'><a href='".$HTMLRel."front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
 	
