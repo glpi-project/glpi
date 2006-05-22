@@ -106,8 +106,12 @@
 
 
 		if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"])){
-			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-				$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
+			
+			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]){
+				if (!$first) $where.=" AND ";
+				else $first=false;
+				$where.=" completename LIKE '%".$_POST['searchText']."%' ";
+			}
 			
 			if ($where=="WHERE ") $where="";
 

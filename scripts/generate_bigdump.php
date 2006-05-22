@@ -599,7 +599,7 @@ for ($j=0;$j<$nb;$j++){
 for ($i=0;$i<$max['document'];$i++){
 	$link="";
 	if (mt_rand(0,100)<50) $link="http://linktodoc/doc$i";
-	$query="INSERT INTO glpi_docs VALUES (NULL,'document $i','','".mt_rand(1,$max['rubdocs'])."','',NOW(),'comment $i','N','$link','notes document $i')";
+	$query="INSERT INTO glpi_docs VALUES (NULL,'document $i','','".mt_rand(1,$max['rubdocs'])."','',NOW(),'comment $i','N','$link','notes document $i','0','0')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
