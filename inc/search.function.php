@@ -576,11 +576,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$first2=true;
 
    		        foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
+			if (is_array($val2))
 			// Add Where clause if not to be done ine HAVING CLAUSE
 			if (!in_array($val2["table"],$META_SPECIF_TABLE)){
                                 $LINK=" OR ";
                                 if ($first2) {$LINK=" ";$first2=false;}
-                                
                                 $WHERE.= $LINK.addWhere($NOT,$type,$val2["table"],$val2["field"],$contains[$key]);
 			}
 
@@ -1723,6 +1723,9 @@ switch ($new_table){
 		break;
 	case "glpi_dropdown_os_version":
 		return " LEFT JOIN $new_table $AS ON ($rt.os_version = $nt.ID) ";
+		break;
+	case "glpi_dropdown_auto_update":
+		return " LEFT JOIN $new_table $AS ON ($rt.auto_update = $nt.ID) ";
 		break;
 	case "glpi_dropdown_os_sp":
 		return " LEFT JOIN $new_table $AS ON ($rt.os_sp = $nt.ID) ";
