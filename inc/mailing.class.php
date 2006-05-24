@@ -341,7 +341,7 @@ class Mailing
 					$mmail->AltBody=$this->get_mail_body("text");
 					
 					if(!$mmail->Send()){
-						echo "<div align='center'>There was a problem sending this mail !</div>";
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
 					}
 					$mmail->ClearAddresses(); 
 		  		}
