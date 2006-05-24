@@ -314,13 +314,17 @@ class Job extends CommonDBTM{
 
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
-		
+
+
+		if (!isset($input["status"])) $input["status"]="new";
+		if (!isset($input["assign"])) $input["assign"]=0;
+
 		if (!isset($input["author"]))
 		if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
 			$input["author"]=$_SESSION["glpiID"];
 		else $input["author"]=1; // Helpdesk injector
 		
-		if (isset($input["assign"])&&$input["assign"]>0&&isset($input["status"])&&$input["status"]=="new")
+		if ($input["assign"]>0&&$input["status"]=="new")
 			$input["status"] = "assign";
 		
 		if (isset($input["computer"])&&$input["computer"]==0)
@@ -336,7 +340,7 @@ class Job extends CommonDBTM{
 			$input["uemail"]=$user->fields["email"];
 		}
 
-		if ($cfg_glpi["auto_assign"]&&$assign==0){
+		if ($cfg_glpi["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
 			$ci=new CommonItem;
 			$ci->getFromDB($input["device_type"],$input["computer"]);
 			if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
@@ -356,7 +360,7 @@ class Job extends CommonDBTM{
 		
 		$input["date"] = date("Y-m-d H:i:s");
 
-		if (isset($input["status"])&&strstr($input["status"],"old_"))
+		if (strstr($input["status"],"old_"))
 			$input["closedate"] = date("Y-m-d H:i:s");
 
 		return $input;
@@ -384,7 +388,7 @@ class Job extends CommonDBTM{
 			
 			$fup=new Followup();
 			$toadd=array("type"=>"new","hour"=>$input["_hour"],"minute"=>$input["_minute"],"tracking"=>$newID);
-			if (isset($input["assign"])&&$input["assign"]>0)
+			if ($input["assign"]>0)
 				$toadd["author"]=$input["assign"];
 			$fup->add($toadd);
 			$already_mail=true;
@@ -398,7 +402,7 @@ class Job extends CommonDBTM{
 
 			$this->fields=stripslashes_deep($this->fields);
 			$type="new";
-			if (ereg("old_",$this->fields["status"])) $type="finish";
+			if (isset($this->fields["status"])&&ereg("old_",$this->fields["status"])) $type="finish";
 			$mail = new Mailing($type,$this,$user);
 			$mail->send();
 		}

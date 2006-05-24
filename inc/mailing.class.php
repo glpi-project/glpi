@@ -150,12 +150,14 @@ class Mailing
 						break;
 					// ASSIGN SEND
 					case -2 :
-						$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
-						if ($result2 = $db->query($query2)) {
-							if ($db->numrows($result2)==1){
-								$row = $db->fetch_row($result2);
-								if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
-									$emails[]=$row[0];
+						if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
+							$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
+							if ($result2 = $db->query($query2)) {
+								if ($db->numrows($result2)==1){
+									$row = $db->fetch_row($result2);
+									if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
+										$emails[]=$row[0];
+									}
 								}
 							}
 						}
