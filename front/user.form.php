@@ -38,11 +38,14 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("user","profile");
 include ($phproot . "/inc/includes.php");
 
+if(empty($_GET["ID"])) $_GET["ID"] = "";
+
+
 $user=new User();
-if (empty($_GET["name"])&&isset($_GET["ID"])){
+if (empty($_GET["ID"])&&isset($_GET["name"])){
 	
-	$user->getFromDB($_GET["ID"]);
-	glpi_header($cfg_glpi["root_doc"]."/front/user.form.php?name=".$user->fields['name']);
+	$user->getFromDBbyName($_GET["name"]);
+	glpi_header($cfg_glpi["root_doc"]."/front/user.form.php?ID=".$user->fields['ID']);
 }
 
 if(empty($_GET["name"])) $_GET["name"] = "";
@@ -76,7 +79,8 @@ if (isset($_POST["add"])) {
 		checkRight("user","w");
 
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-		$user->showForm($_SERVER["PHP_SELF"],$_GET["name"]);
+		
+		$user->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
 	} else {
 		if (isset($_GET['add_ext_auth'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){

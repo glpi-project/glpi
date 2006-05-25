@@ -170,4 +170,49 @@ function useAuthExt(){
 global $cfg_glpi;	
 return (!empty($cfg_glpi["imap_auth_server"])||!empty($cfg_glpi["ldap_host"])||!empty($cfg_glpi["cas_host"]));
 }
+
+/**
+*  show onglet for Users
+*
+* @param 
+* @param 
+* @param 
+* @return nothing
+*/
+function showUsersTitle($target,$actif) {
+	global $lang, $HTMLRel;
+
+	echo "<div align='center'><table border='0'><tr>";
+	echo "<td><a  class='icon_consol' href='".$target."&onglet=tracking'><b>".$lang["title"][24]."</b></a>";
+	echo "</td>";
+	echo "<td><a class='icon_consol' href='".$target."&onglet=hardware'>".$lang["setup"][10]."</a></td>";
+	echo "</tr></table></div><br>";
+}
+
+function showDeviceUser($ID){
+	global $db,$cfg_glpi, $lang, $HTMLRel,$LINK_ID_TABLE,$INFOFORM_PAGES;
+
+
+	// TODO ADD GROUP Handling
+	$ci=new CommonItem();
+	echo "<div align='center'><table class='tab_cadre'><tr><th>".$lang["common"][17]."</th><th>".$lang["common"][16]."</th><th>&nbsp;</th></tr>";
+	foreach ($cfg_glpi["linkuser_type"] as $type){
+		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+			$ci->setType($type);
+			$type_name=$ci->getType();
+			$cansee=haveTypeRight($type,"r");
+			while ($data=$db->fetch_array($result)){
+				$link=$data["name"];
+				if ($cansee) $link="<a href='".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link."</a>";
+				$linktype=$lang["common"][34];
+				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td><td>$linktype</td></tr>";
+			}
+		}
+
+	}
+	echo "</table></div>";
+}
+
 ?>

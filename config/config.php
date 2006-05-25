@@ -165,6 +165,7 @@ $cfg_glpi["template_tables"]=array("glpi_computers","glpi_networking","glpi_prin
 
 $cfg_glpi["dropdowntree_tables"]=array("glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
 $cfg_glpi["state_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
+$cfg_glpi["linkuser_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 
 $LINK_ID_TABLE=array(
 		COMPUTER_TYPE=> "glpi_computers",
