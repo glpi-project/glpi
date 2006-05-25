@@ -340,11 +340,13 @@ function helpHeader($title,$url) {
 
 	global $cfg_glpi,$lang,$HTMLRel,$phproot, $cfg_glpi,$HEADER_LOADED ;
 
+	if ($HEADER_LOADED) return;
+	$HEADER_LOADED=true;
+	
 	// Gestion timeout session
 	if (!isset($_SESSION["glpiID"]))
 		glpi_header($HTMLRel."/index.php");
-
-	$HEADER_LOADED=true;
+	
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
  		$_SESSION['glpilist_limit']=$_POST['list_limit'];
@@ -484,6 +486,7 @@ function helpHeader($title,$url) {
 **/
 function nullHeader($title,$url) {
 	global $cfg_glpi,$HEADER_LOADED;
+	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 	// Print a nice HTML-head with no controls
 
@@ -567,11 +570,13 @@ function popHeader($title,$url)
 
 	global $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks,$HEADER_LOADED ;
 
+	if ($HEADER_LOADED) return;
+	$HEADER_LOADED=true;
 	// Gestion timeout session
 	if (!isset($_SESSION["glpiID"]))
 		glpi_header($HTMLRel."/index.php");
 
-	$HEADER_LOADED=true;;
+	
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
  		$_SESSION['glpilist_limit']=$_POST['list_limit'];
@@ -623,6 +628,11 @@ function popHeader($title,$url)
 
 
 function popFooter() {
+	global $FOOTER_LOADED;
+
+	if ($FOOTER_LOADED) return;
+	$FOOTER_LOADED=true;
+
 	// Print foot 
 
 	echo "</body></html>";
@@ -646,7 +656,11 @@ function popFooter() {
 function commonFooter() {
 	// Print foot for every page
 
-global $lang,$cfg_glpi,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST;
+global $lang,$cfg_glpi,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST,$FOOTER_LOADED;
+
+	if ($FOOTER_LOADED) return;
+	$FOOTER_LOADED=true;
+
 echo "</div>";
 echo "<div id='footer' >";
 echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
@@ -722,7 +736,11 @@ echo "</table></div>";
 **/
 function helpFooter() {
 	// Print foot for help page
-global $cfg_glpi;
+global $cfg_glpi,$FOOTER_LOADED;
+
+	if ($FOOTER_LOADED) return;
+	$FOOTER_LOADED=true;
+
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
 	echo "<span class='copyright'>GLPI ".$cfg_glpi["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
@@ -739,7 +757,11 @@ echo "<div id='footer'><div align='right'>";
 **/
 function nullFooter() {
 	// Print foot for null page
-global $cfg_glpi;
+global $cfg_glpi,$FOOTER_LOADED;
+
+	if ($FOOTER_LOADED) return;
+	$FOOTER_LOADED=true;
+
 echo "<div id='footer'><div align='right'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\">";
 	echo "<span class='copyright'>GLPI ".(isset($cfg_glpi["version"])?$cfg_glpi["version"]:"")." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";

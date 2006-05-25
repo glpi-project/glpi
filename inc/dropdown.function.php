@@ -180,7 +180,7 @@ if ($dropdown_right){
 //	echo "<a href='".$cfg_glpi["root_doc"]."/front/setup.dropdowns.php?which=$which"."' target='_blank'>";
 
 if (!empty($which)||($display_comments&&!empty($comments)))
-	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/setup-pop.dropdowns.php?which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">";
+	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">";
 
 //if (!empty($which))
 //	echo "</a>";
