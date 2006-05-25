@@ -192,12 +192,22 @@ function showUsersTitle($target,$actif) {
 function showDeviceUser($ID){
 	global $db,$cfg_glpi, $lang, $HTMLRel,$LINK_ID_TABLE,$INFOFORM_PAGES;
 
-
-	// TODO ADD GROUP Handling
+	$group_where="";
+	$groups=array();
+	$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID';";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_array($result)){
+			$group_where=" OR FK_groups = '".$data["FK_groups"]."' ";
+			$groups[$data["FK_groups"]]=$data["name"];
+		}
+	}
+	
+	
 	$ci=new CommonItem();
 	echo "<div align='center'><table class='tab_cadre'><tr><th>".$lang["common"][17]."</th><th>".$lang["common"][16]."</th><th>&nbsp;</th></tr>";
 	foreach ($cfg_glpi["linkuser_type"] as $type){
-		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
+		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID' $group_where";
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			$ci->setType($type);
@@ -206,7 +216,13 @@ function showDeviceUser($ID){
 			while ($data=$db->fetch_array($result)){
 				$link=$data["name"];
 				if ($cansee) $link="<a href='".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link."</a>";
-				$linktype=$lang["common"][34];
+				$linktype="";
+				if ($data["FK_users"]==$ID)
+					$linktype.=$lang["common"][34];
+				if (isset($groups[$data["FK_groups"]])){
+					if (!empty($linktype)) $linktype.=" / ";
+					$linktype.=$lang["common"][35]." ".$groups[$data["FK_groups"]];
+				}
 				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td><td>$linktype</td></tr>";
 			}
 		}
