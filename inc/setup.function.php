@@ -1377,6 +1377,9 @@ function showFormExtAuth($target) {
 		echo "<tr class='tab_bg_2'><td align='center'>location</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". $cfg_glpi["ldap_field_location"] ."\" ></td>";
 		echo "<td align='center'>phone</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". $cfg_glpi["ldap_field_phone"] ."\" ></td></tr>";
 
+		echo "<tr class='tab_bg_2'><td align='center'>&nbsp;</td><td>&nbsp;</td>";
+		echo "<td align='center'>".$lang["common"][35]."</td><td><input type=\"text\" name=\"ldap_field_group\" value=\"". $cfg_glpi["ldap_field_group"] ."\" ></td></tr>";
+
 		echo "</table>&nbsp;</div>";
 	}
 	else {

@@ -120,6 +120,9 @@ class CommonItem{
 			case DOCUMENT_TYPE : 
 				$this->obj= new Document;	
 				break;					
+			case GROUP_TYPE : 
+				$this->obj= new Group;	
+				break;					
 			}
 
 			if ($this->obj!=NULL){
@@ -209,6 +212,9 @@ class CommonItem{
 			case DOCUMENT_TYPE : 
 				return $lang["document"][0];
 				break;					
+			case GROUP_TYPE : 
+				return $lang["common"][35];
+				break;					
 			}
 	
 	}
@@ -275,6 +281,7 @@ class CommonItem{
 			case CARTRIDGE_TYPE : 
 			case CONSUMABLE_TYPE : 
 			case DOCUMENT_TYPE : 
+			case GROUP_TYPE : 
 				if($cfg_glpi["view_ID"]) $ID= " (".$this->id_device.")";
 				return "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
 				break;

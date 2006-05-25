@@ -55,7 +55,7 @@ class User extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 
-		global $db;
+		global $db,$cfg_glpi,$LINK_ID_TABLE;
 
 		// Tracking items left?
 		$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
@@ -63,6 +63,15 @@ class User extends CommonDBTM {
 
 		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
 		$db->query($query);
+
+		$query = "DELETE from glpi_users_groups WHERE FK_users = '$ID'";
+		$db->query($query);
+
+		foreach ($cfg_glpi["linkuser_type"] as $type){
+			$query2="UPDATE ".$LINK_ID_TABLE[$type]." SET FK_groups=0 WHERE FK_groups='$ID';";
+			$db->query($query2);
+		}
+
 	}
 	
 	function getFromDBbyName($name) {

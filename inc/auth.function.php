@@ -119,6 +119,9 @@ else return false;
 			case DOCUMENT_TYPE : 
 				return haveRight("document",$right);
 				break;					
+			case GROUP_TYPE : 
+				return haveRight("group",$right);
+				break;					
 			}
 		return false;
 	}

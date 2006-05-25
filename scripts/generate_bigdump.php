@@ -89,6 +89,8 @@ $max['users_normal']=5;
 $max['users_postonly']=10;
 $max['enterprises']=5;
 $max['contacts']=10;
+$max['groups']=3;
+
 // INVENTORY ITEMS
 $max['computers']=1000;
 $max['printers']=100;
@@ -654,29 +656,48 @@ $result=$db->query($query) or die("PB REQUETE ".$query);
 $max['locations']=$db->result($result,0,0) or die (" PB RESULT ".$query);
 
 
+// glpi_groups
+
+for ($i=0;$i<$max['groups'];$i++){
+	$query="INSERT INTO glpi_groups VALUES (NULL,'group $i','comment group $i','','')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+
 // glpi_users
 for ($i=0;$i<$max['users_sadmin'];$i++){
 	$query="INSERT INTO glpi_users VALUES (NULL,'sadmin$i','',MD5('sadmin$i'),'sadmin$i@tutu.com','tel $i','','".mt_rand(1,$max['locations'])."','no','fr_FR','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
-	$query="INSERT INTO glpi_users_profiles VALUES (NULL,'".$db->insert_id()."','4');";
+	$user_id=$db->insert_id();
+	$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','4');";
+	$db->query($query) or die("PB REQUETE ".$query);
+	$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand(1,$max["groups"])."');";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_admin'];$i++){
 	$query="INSERT INTO glpi_users VALUES (NULL,'admin$i','',MD5('admin$i'),'admin$i@tutu.com','tel $i','','".mt_rand(1,$max['locations'])."','no','fr_FR','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
-	$query="INSERT INTO glpi_users_profiles VALUES (NULL,'".$db->insert_id()."','3');";
+	$user_id=$db->insert_id();
+	$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','3');";
+	$db->query($query) or die("PB REQUETE ".$query);
+	$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand(1,$max["groups"])."');";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_normal'];$i++){
 	$query="INSERT INTO glpi_users VALUES (NULL,'normal$i','',MD5('normal$i'),'normal$i@tutu.com','tel $i','','".mt_rand(1,$max['locations'])."','no','fr_FR','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
-	$query="INSERT INTO glpi_users_profiles VALUES (NULL,'".$db->insert_id()."','2');";
+	$user_id=$db->insert_id();
+	$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','2');";
+	$db->query($query) or die("PB REQUETE ".$query);
+	$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand(1,$max["groups"])."');";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 for ($i=0;$i<$max['users_postonly'];$i++){
 	$query="INSERT INTO glpi_users VALUES (NULL,'postonly$i','',MD5('postonly$i'),'postonly$i@tutu.com','tel $i','','".mt_rand(1,$max['locations'])."','no','fr_FR','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
-	$query="INSERT INTO glpi_users_profiles VALUES (NULL,'".$db->insert_id()."','1');";
+	$user_id=$db->insert_id();
+	$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','1');";
+	$db->query($query) or die("PB REQUETE ".$query);
+	$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand(1,$max["groups"])."');";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -796,7 +817,7 @@ while ($data=$db->fetch_array($result)){
 	$vlanID=mt_rand(1,$max["vlan"]);
 	$vlan_loc[$data['ID']]=$vlanID;
 	$netname="networking $i";
-	$query="INSERT INTO glpi_networking VALUES (NULL,'$netname','".mt_rand(32,256)."','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".mt_rand(1,$max['model_networking'])."','".mt_rand(1,$max['type_networking'])."','".mt_rand(1,$max['firmware'])."','".mt_rand(1,$max['enterprises'])."','N','0','','".getNextMAC()."','".getNextIP()."','notes networking $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+	$query="INSERT INTO glpi_networking VALUES (NULL,'$netname','".mt_rand(32,256)."','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".mt_rand(1,$max['model_networking'])."','".mt_rand(1,$max['type_networking'])."','".mt_rand(1,$max['firmware'])."','".mt_rand(1,$max['enterprises'])."','N','0','','".getNextMAC()."','".getNextIP()."','notes networking $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$netwID=$db->insert_id();
 	add_documents(NETWORKING_TYPE,$netwID);
@@ -855,7 +876,7 @@ while ($data=$db->fetch_array($result)){
 	
 	$typeID=mt_rand(1,$max['type_printers']);
 	$modelID=mt_rand(1,$max['model_printers']);
-	$query="INSERT INTO glpi_printers VALUES (NULL,'printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','".GetRandomString(10)."','".GetRandomString(10)."','0','0','1','comments $i','".mt_rand(0,64)."','".$data['ID']."','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$max['enterprises'])."','0','N','0','','0','notes printers ".$data['ID']."','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+	$query="INSERT INTO glpi_printers VALUES (NULL,'printer of loc ".$data['ID']."',NOW(),'contact ".$data['ID']."','num ".$data['ID']."','$techID','".GetRandomString(10)."','".GetRandomString(10)."','0','0','1','comments $i','".mt_rand(0,64)."','".$data['ID']."','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$max['enterprises'])."','0','N','0','','0','notes printers ".$data['ID']."','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$printID=$db->insert_id();
 	add_documents(PRINTER_TYPE,$printID);
@@ -1021,7 +1042,7 @@ for ($i=0;$i<$max['computers'];$i++){
 	$techID=mt_rand(1,$max['users_sadmin']+$max['users_admin']);
 	$domainID=mt_rand(1,$max['domain']);
 	$networkID=mt_rand(1,$max['network']);
-	$query="INSERT INTO glpi_computers VALUES (NULL,'computers $i','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID','',NOW(),'".mt_rand(1,$max['os'])."','".mt_rand(1,$max['os_version'])."','".mt_rand(1,$max['os_sp'])."','".mt_rand(1,$max['auto_update'])."','".$loc."','$domainID','$networkID','".mt_rand(1,$max['model'])."','".mt_rand(1,$max['type_computers'])."','0','','".mt_rand(1,$max['enterprises'])."','N','note computer $i','0','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+	$query="INSERT INTO glpi_computers VALUES (NULL,'computers $i','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID','',NOW(),'".mt_rand(1,$max['os'])."','".mt_rand(1,$max['os_version'])."','".mt_rand(1,$max['os_sp'])."','".mt_rand(1,$max['auto_update'])."','".$loc."','$domainID','$networkID','".mt_rand(1,$max['model'])."','".mt_rand(1,$max['type_computers'])."','0','','".mt_rand(1,$max['enterprises'])."','N','note computer $i','0','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$compID=$db->insert_id();
 	add_documents(COMPUTER_TYPE,$compID);
@@ -1109,7 +1130,7 @@ for ($i=0;$i<$max['computers'];$i++){
 
 	// Ajout d'un ecran sur l'ordi
 	
-	$query="INSERT INTO glpi_monitors VALUES (NULL,'monitor $i',NOW(),'contact $i','num $i','$techID','comment $i','".GetRandomString(10)."','".GetRandomString(10)."','".mt_rand(14,22)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','$loc','".mt_rand(1,$max['model_monitors'])."','".mt_rand(1,$max['type_monitors'])."','".mt_rand(1,$max['enterprises'])."','0','N','0','','notes monitor $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+	$query="INSERT INTO glpi_monitors VALUES (NULL,'monitor $i',NOW(),'contact $i','num $i','$techID','comment $i','".GetRandomString(10)."','".GetRandomString(10)."','".mt_rand(14,22)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(0,1)."','$loc','".mt_rand(1,$max['model_monitors'])."','".mt_rand(1,$max['type_monitors'])."','".mt_rand(1,$max['enterprises'])."','0','N','0','','notes monitor $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 	$db->query($query) or die("PB REQUETE ".$query);	
 	$monID=$db->insert_id();
 	add_documents(MONITOR_TYPE,$monID);	
@@ -1129,7 +1150,7 @@ for ($i=0;$i<$max['computers'];$i++){
 
 	// Ajout d'un téléphone avec l'ordi
 
-	$query="INSERT INTO glpi_phones VALUES (NULL,'phone $i',NOW(),'contact $i','num $i','$techID','comment $i','".GetRandomString(10)."','".GetRandomString(10)."','".GetRandomString(10)."','$loc','".mt_rand(1,$max['type_phones'])."','".mt_rand(1,$max['model_phones'])."','".GetRandomString(10)."','".mt_rand(1,$max['phone_power'])."','".GetRandomString(10)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(1,$max['enterprises'])."','0','N','0','','notes monitor $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+	$query="INSERT INTO glpi_phones VALUES (NULL,'phone $i',NOW(),'contact $i','num $i','$techID','comment $i','".GetRandomString(10)."','".GetRandomString(10)."','".GetRandomString(10)."','$loc','".mt_rand(1,$max['type_phones'])."','".mt_rand(1,$max['model_phones'])."','".GetRandomString(10)."','".mt_rand(1,$max['phone_power'])."','".GetRandomString(10)."','".mt_rand(0,1)."','".mt_rand(0,1)."','".mt_rand(1,$max['enterprises'])."','0','N','0','','notes monitor $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 	$db->query($query) or die("PB REQUETE ".$query);	
 	$telID=$db->insert_id();
 	add_documents(PHONE_TYPE,$monID);	
@@ -1150,7 +1171,7 @@ for ($i=0;$i<$max['computers'];$i++){
 	
 	// Ajout des periphs externes en connection directe
 	while (mt_rand(0,100)<$percent['peripherals']){
-		$query="INSERT INTO glpi_peripherals VALUES (NULL,'periph of comp $i',NOW(),'contact $i','num $i','$techID','comments $i','".GetRandomString(10)."','".GetRandomString(10)."','$loc','".mt_rand(1,$max['type_peripherals'])."','".mt_rand(1,$max['model_peripherals'])."','brand $i','".mt_rand(1,$max['enterprises'])."','0','N','0','','notes peripherals $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+		$query="INSERT INTO glpi_peripherals VALUES (NULL,'periph of comp $i',NOW(),'contact $i','num $i','$techID','comments $i','".GetRandomString(10)."','".GetRandomString(10)."','$loc','".mt_rand(1,$max['type_peripherals'])."','".mt_rand(1,$max['model_peripherals'])."','brand $i','".mt_rand(1,$max['enterprises'])."','0','N','0','','notes peripherals $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$periphID=$db->insert_id();
 		add_documents(PERIPHERAL_TYPE,$periphID);
@@ -1176,7 +1197,7 @@ for ($i=0;$i<$max['computers'];$i++){
 		// Add printer 
 		$typeID=mt_rand(1,$max['type_printers']);
 		$modelID=mt_rand(1,$max['model_printers']);
-		$query="INSERT INTO glpi_printers VALUES (NULL,'printer of comp $i',NOW(),'contact $i','num $i','$techID','".GetRandomString(10)."','".GetRandomString(10)."','0','0','1','comments $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$max['enterprises'])."','0','N','0','','0','notes printers $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+		$query="INSERT INTO glpi_printers VALUES (NULL,'printer of comp $i',NOW(),'contact $i','num $i','$techID','".GetRandomString(10)."','".GetRandomString(10)."','0','0','1','comments $i','".mt_rand(0,64)."','$loc','$domainID','$networkID','$modelID','$typeID','".mt_rand(1,$max['enterprises'])."','0','N','0','','0','notes printers $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$printID=$db->insert_id();
 		add_documents(PRINTER_TYPE,$printID);
@@ -1239,7 +1260,7 @@ for ($i=0;$i<$max['software'];$i++){
 	$loc=mt_rand(1,$max['locations']);
 	$techID=mt_rand(1,$max['users_sadmin']+$max['users_admin']);
 	$os=mt_rand(1,$max['os']);
-	$query="INSERT INTO glpi_software VALUES (NULL,'$name','$version','comments $i','$loc','$techID','$os','N','-1','".mt_rand(1,$max['enterprises'])."','N','0','',NOW(),'notes software $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+	$query="INSERT INTO glpi_software VALUES (NULL,'$name','$version','comments $i','$loc','$techID','$os','N','-1','".mt_rand(1,$max['enterprises'])."','N','0','',NOW(),'notes software $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$softID=$db->insert_id();
 	add_documents(SOFTWARE_TYPE,$softID);
@@ -1293,7 +1314,7 @@ for ($i=0;$i<$max['software'];$i++){
 // Add global peripherals
 for ($i=0;$i<$max['global_peripherals'];$i++){
 	$techID=mt_rand(1,$max['users_sadmin']+$max['users_admin']);
-	$query="INSERT INTO glpi_peripherals VALUES (NULL,'periph $i',NOW(),'contact $i','num $i','$techID','comments $i','".GetRandomString(10)."','".GetRandomString(10)."','0','".mt_rand(1,$max['type_peripherals'])."','".mt_rand(1,$max['model_peripherals'])."','brand $i','".mt_rand(1,$max['enterprises'])."','1','N','0','','notes peripherals $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','0')";
+	$query="INSERT INTO glpi_peripherals VALUES (NULL,'periph $i',NOW(),'contact $i','num $i','$techID','comments $i','".GetRandomString(10)."','".GetRandomString(10)."','0','".mt_rand(1,$max['type_peripherals'])."','".mt_rand(1,$max['model_peripherals'])."','brand $i','".mt_rand(1,$max['enterprises'])."','1','N','0','','notes peripherals $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$periphID=$db->insert_id();
 	add_documents(PERIPHERAL_TYPE,$periphID);

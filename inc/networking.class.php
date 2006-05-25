@@ -318,7 +318,7 @@ class Netdevice extends CommonDBTM {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["common"][35].": 	</td><td>";
-			//dropdownValue("glpi_users", "FK_groups", $this->fields["FK_groups"]);
+			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
 		echo "</td></tr>";
 		
 		if (!$template){

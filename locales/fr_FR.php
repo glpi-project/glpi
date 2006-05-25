@@ -716,6 +716,7 @@ $lang["log"][43]="téléphone";
 $lang["log"][44]="Intitulé";
 $lang["log"][45]="Réussie";
 $lang["log"][46]="Echouée";
+$lang["log"][47]="groupe";
 
 $lang["log"][50]="Inventaire";
 $lang["log"][51]="Suivi";
@@ -813,6 +814,7 @@ $lang["Menu"][32]="Consommables";
 $lang["Menu"][33]="OCSNG";
 $lang["Menu"][34]="Téléphones";
 $lang["Menu"][35]="Profils";
+$lang["Menu"][36]="Groupes";
 
 $lang["monitors"][0]="Ajouter moniteur...";
 $lang["monitors"][4]="Moniteur";
@@ -1309,6 +1311,9 @@ $lang["setup"][503]="Modèles de téléphones";
 $lang["setup"][504]="Types de téléphones";
 $lang["setup"][505]="Types d'alimentation téléphone";
 
+$lang["setup"][600]="Champ LDAP";
+$lang["setup"][601]="Valeur LDAP";
+$lang["setup"][602]="Ajouter Groupe...";
 
 $lang["software"][0]="Ajouter logiciel...";
 $lang["software"][3]="Plateforme";

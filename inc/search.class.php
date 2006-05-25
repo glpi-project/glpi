@@ -2011,9 +2011,32 @@ PHONE_TYPE => array(
 				),
 
 		),
-
+//DEVICE_TYPE => "",
+//REMINDER_TYPE => "",
+//STAT_TYPE => "",
+GROUP_TYPE => array(
+			"common" => $lang["common"][32],
+			1 => array(	"table" => "glpi_groups", 
+					"field" => "name",
+					"linkfield"=>"name",
+					"name" => $lang["common"][16],
+					"meta" => 1,
+				),
+		),
 );
-/*
 
-*/
+if (!empty($cfg_glpi["ldap_host"])){
+$SEARCH_OPTION[GROUP_TYPE][2]=array(	"table" => "glpi_groups", 
+					"field" => "ldap_field",
+					"linkfield"=>"ldap_field",
+					"name" => $lang["setup"][600],
+					"meta" => 1,
+				);
+$SEARCH_OPTION[GROUP_TYPE][3]=array(	"table" => "glpi_groups", 
+					"field" => "ldap_value",
+					"linkfield"=>"ldap_value",
+					"name" => $lang["setup"][601],
+					"meta" => 1,
+				);
+}
 ?>
