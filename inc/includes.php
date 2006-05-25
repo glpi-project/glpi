@@ -125,6 +125,7 @@ if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 
 // Mark if Header is loaded or not :
 $HEADER_LOADED=false;
+$FOOTER_LOADED=false;
 if (isset($AJAX_INCLUDE))
 	$HEADER_LOADED=true;;
 
