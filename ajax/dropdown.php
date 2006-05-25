@@ -50,7 +50,7 @@
 		$where="WHERE '1'='1' ";
 			
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-			$where.=" AND designation LIKE '%".$_POST['searchText']."%' ";
+			$where.=" AND designation ".makeTextSearch($_POST['searchText']);
 
 		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
@@ -85,7 +85,7 @@
 	} else if($_POST['table'] == "glpi_dropdown_netpoint") {
 		
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
+			$where=" WHERE (t1.name ".makeTextSearch($_POST['searchText'])." OR t2.completename ".makeTextSearch($_POST['searchText']).")";
 			
 		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
@@ -118,10 +118,10 @@
 			
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 		if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"]))
-		$where.=" AND completename LIKE '%".$_POST['searchText']."%' ";
+		$where.=" AND completename ".makeTextSearch($_POST['searchText'])." ";
 		else if ($_POST['table']=="glpi_users")
-			$where.=" AND (name LIKE '%".$_POST['searchText']."%'  OR realname LIKE '%".$_POST['searchText']."%')";
-		else $where.=" AND name LIKE '%".$_POST['searchText']."%' ";
+			$where.=" AND (name ".makeTextSearch($_POST['searchText'])."  OR realname ".makeTextSearch($_POST['searchText']).")";
+		else $where.=" AND name ".makeTextSearch($_POST['searchText']);
 
 		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";

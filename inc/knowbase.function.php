@@ -361,7 +361,11 @@ function showKbItemAll($parentID,$contains='')
 	if (!haveRight("knowbase","r")) return false;
 
 	$WHERE="";
-	if (strlen($contains)) $WHERE=" AND (question LIKE '%$contains%' OR answer LIKE '%$contains%') ";
+	
+	if (strlen($contains)) {
+		$SEARCH=makeTextSearch($contains);
+		$WHERE=" AND (question $SEARCH OR answer $SEARCH) ";
+	}
 
 	$query = "select * from glpi_kbitems where (categoryID = $parentID) $WHERE order by question asc";
 	
@@ -692,9 +696,12 @@ function faqShowItems($parentID,$contains)
 	// ok	
 
 	$WHERE="";
-	if (strlen($contains)) $WHERE=" AND (question LIKE '%$contains%' OR answer LIKE '%$contains%') ";
+	if (strlen($contains)) {
+		$SEARCH=makeTextSearch($contains);
+		$WHERE=" AND (question $SEARCH OR answer $SEARCH) ";
+	}
 
-	
+
 	$query = "select * from glpi_kbitems where (categoryID = $parentID) and (faq = 'yes') $WHERE order by question asc";
 
 	
@@ -847,15 +854,16 @@ function searchLimitSessionVarKnowbase($contains){
 	global $db;
 	ExpandSessionVarHideAll();	
 	
+	$SEARCH=makeTextSearch($contains);
 
 // Recherche categories
-	$query = "select ID from glpi_dropdown_kbcategories WHERE name LIKE '%$contains%'";
+	$query = "select ID from glpi_dropdown_kbcategories WHERE name $SEARCH";
 	if ($result=$db->query($query)){
 		while ($data=$db->fetch_array($result))
 		ExpandSessionVarShow($data["ID"],1);
 	}
 // Recherche items
-	$query = "select categoryID from glpi_kbitems WHERE question LIKE '%$contains%' OR answer LIKE '%$contains%'";
+	$query = "select categoryID from glpi_kbitems WHERE question $SEARCH OR answer $SEARCH";
 	if ($result=$db->query($query)){
 		while ($data=$db->fetch_array($result))
 		ExpandSessionVarShow($data["categoryID"],1);

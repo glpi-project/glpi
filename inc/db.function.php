@@ -180,7 +180,7 @@ return array($name,$level);
 */
 function getRealSearchForTreeItem($table,$search){
 
-return " ( $table.completename LIKE '%$search%' ) ";
+return " ( $table.completename ".makeTextSearch($search)." ) ";
 
 /*if (empty($search)) return " ( $table.name LIKE '%$search%' ) ";
 

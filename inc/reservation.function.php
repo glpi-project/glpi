@@ -70,7 +70,9 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<select name=\"field\" size='1'>";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />&nbsp;";
+	echo $lang["search"][10];
+	echo "&nbsp;<select name=\"field\" size='1'>";
         echo "<option value='all' ";
 	if($field == "all") echo "selected";
 	echo ">".$lang["search"][7]."</option>";
@@ -81,17 +83,6 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 		echo ">". $val ."</option>\n";
 	}
 	echo "</select>&nbsp;";
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
-	echo "</select>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
-	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
@@ -115,19 +106,10 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 
 	// Build query
 	if($field=="all") {
-	/*	$where = " (";
-		$where .= "res_item.".$coco . " LIKE '%".$contains."%'";
-		$where .= ")";
-	*/
-	$where=" 1 = 1 ";
+		$where=" 1 = 1 ";
 	}
 	else {
-		if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
-		}
-		else {
-			$where = "($field LIKE '".$contains."')";
-		}
+		$where=" ($field ".makeTextSearch($contains).") ";
 	}
 
 	if (!$start) {

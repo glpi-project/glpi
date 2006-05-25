@@ -47,7 +47,7 @@
 		$where =" AND  (ID <> '".$_POST['value']."' ";
 
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-		$where.=" AND (name LIKE '%".$_POST['searchText']."%' OR realname LIKE '%".$_POST['searchText']."%')";
+		$where.=" AND (name ".makeTextSearch($_POST['searchText'])." OR realname ".makeTextSearch($_POST['searchText']).")";
 
 	$where.=")";	
 

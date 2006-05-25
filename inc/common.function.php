@@ -571,4 +571,27 @@ function rembo($string){
 	return $string;
 }
 
+function makeTextSearch($val,$not=0){
+	$NOT="";
+	if ($not) $NOT= " NOT ";
+	
+	if ($val=="NULL"||$val=="null") $SEARCH=" IS $NOT NULL ";
+	else {
+		$begin=0;
+		$end=0;
+		if (($length=strlen($val))>0){
+			if (($val[0]=='^'))
+				$begin=1;
+			if ($val[$length-1]=='$')
+				$end=1;
+		}
+		if ($begin||$end) 
+			$val=substr($val,$begin,$length-$end);
+
+		$SEARCH=" $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
+	}
+	
+	return $SEARCH;
+}
+
 ?>
