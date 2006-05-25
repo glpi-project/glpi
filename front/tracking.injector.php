@@ -48,7 +48,7 @@ if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permi
 $status = "new";
 
 // Sauvegarde des données dans le cas de retours avec des navigateurs pourris style IE
-$varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents');
+$varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents','_my_items','category');
 
 foreach ($varstosav as $v){
 		if (isset($_POST[$v]))

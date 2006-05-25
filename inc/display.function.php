@@ -797,17 +797,20 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$computer="";
 	$contents="";
 	$category = 0;
-		
-		if (isset($_SESSION["helpdeskSaved"]["emailupdates"]))
-                $emailupdates = stripslashes($_SESSION["helpdeskSaved"]["emailupdates"]);
-		if (isset($_SESSION["helpdeskSaved"]["email"]))
+
+	
+	if (isset($_SESSION["helpdeskSaved"]["emailupdates"]))
+               $emailupdates = stripslashes($_SESSION["helpdeskSaved"]["emailupdates"]);
+	if (isset($_SESSION["helpdeskSaved"]["email"]))
                 $email = stripslashes($_SESSION["helpdeskSaved"]["uemail"]);
-		if (isset($_SESSION["helpdeskSaved"]["device_type"]))
+	if (isset($_SESSION["helpdeskSaved"]["device_type"]))
                 $device_type = stripslashes($_SESSION["helpdeskSaved"]["device_type"]);
-		if (isset($_SESSION["helpdeskSaved"]["category"]))
-                $device_type = stripslashes($_SESSION["helpdeskSaved"]["category"]);
-		if (isset($_SESSION["helpdeskSaved"]["contents"]))
+	if (isset($_SESSION["helpdeskSaved"]["category"]))
+               $device_type = stripslashes($_SESSION["helpdeskSaved"]["category"]);
+	if (isset($_SESSION["helpdeskSaved"]["contents"]))
                 $contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
+	if (isset($_SESSION["helpdeskSaved"]["category"]))
+                $category = stripslashes($_SESSION["helpdeskSaved"]["category"]);
 
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_glpi["root_doc"]."/front/tracking.injector.php\"  enctype=\"multipart/form-data\">";
 	echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
@@ -846,6 +849,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["tracking"][20].":</td><td>";
+	
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 	echo "</tr>";

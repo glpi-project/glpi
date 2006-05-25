@@ -745,7 +745,8 @@ function dropdownTrackingDeviceType($myname,$value){
 	}
 
 	$ci=new CommonItem();
-	
+	$my_item="";
+	if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
 	foreach ($cfg_glpi["linkuser_type"] as $type){
 		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$_SESSION["glpiID"]."' $group_where";
 		
@@ -754,7 +755,7 @@ function dropdownTrackingDeviceType($myname,$value){
 			$ci->setType($type);
 			$type_name=$ci->getType();
 			while ($data=$db->fetch_array($result)){
-				$my_devices.="<option value='".$type."_".$data["ID"]."'>$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+				$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
 			}
 		}
 
