@@ -479,7 +479,7 @@ if(!FieldExists("glpi_$table","FK_users")) {
 		$query2="SELECT glpi_users.ID AS USER, glpi_$table.ID AS ID FROM glpi_$table LEFT JOIN glpi_users ON (glpi_$table.contact = glpi_users.name AND glpi_$table.contact <> '') WHERE glpi_users.ID IS NOT NULL";
 		$result2=$db->query($query2);
 		if ($db->numrows($result2)>0){
-			while ($data=$db->fecth_assoc($result2)){
+			while ($data=$db->fetch_assoc($result2)){
 				$query3="UPDATE glpi_$table SET FK_users='".$data["USER"]."' WHERE ID='".$data["ID"]."'";
 				$db->query($query3);
 			}
@@ -488,7 +488,7 @@ if(!FieldExists("glpi_$table","FK_users")) {
 		$query2="SELECT glpi_users.ID AS USER, glpi_$table.ID AS ID FROM glpi_$table LEFT JOIN glpi_users ON (glpi_$table.contact = glpi_users.realname AND glpi_$table.contact <> '') WHERE glpi_users.ID IS NOT NULL AND glpi_$table.FK_users ='0' ";
 		$result2=$db->query($query2);
 		if ($db->numrows($result2)>0){
-			while ($data=$db->fecth_assoc($result2)){
+			while ($data=$db->fetch_assoc($result2)){
 				$query3="UPDATE glpi_$table SET FK_users='".$data["USER"]."' WHERE ID='".$data["ID"]."'";
 				$db->query($query3);
 			}
