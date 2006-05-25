@@ -46,15 +46,37 @@ else $user=$_POST["user"];
 if (!isset($_POST["assign"])) $assign=0;
 else $assign=$_POST["assign"];
 
+if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
+	$splitter=split("_",$_POST["_my_items"]);
+	if (count($splitter)==2){
+		$_POST["device_type"]=$splitter[0];
+		$_POST["computer"]=$splitter[1];
+	}
+}
+
+
+if (isset($_GET["device_type"])) $device_type=$_GET["device_type"];
+else if (isset($_POST["device_type"])) $device_type=$_POST["device_type"];
+else $device_type=0;
+
+if (isset($_GET["computer"])) $computer=$_GET["computer"];
+else if (isset($_POST["computer"])) $computer=$_POST["computer"];
+else $computer=0;
+
 if(empty($_POST["status"])) $_POST["status"] = "new";
 $error = "";
+
+if (isset($_SERVER["HTTP_REFERER"]))
+	$REFERER=$_SERVER["HTTP_REFERER"];
+if (isset($_POST["_referer"])) $REFERER=$_POST["_referer"];
+$REFERER=preg_replace("/&/","&amp;",$REFERER);
 
 $track=new Job();
 
 if (isset($_POST["priority"]) && empty($_POST["contents"]))
 {
 	$error=$lang["tracking"][8] ;
-	addFormTracking(0,0,$user,$assign,$_SERVER["PHP_SELF"],$error);
+	addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
@@ -63,18 +85,18 @@ elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 	{
 		$error=$lang["tracking"][9];
 		displayMessageAfterRedirect();
-		addFormTracking(0,0,$user,$assign,$_SERVER["PHP_SELF"],$error);
+		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 	else
 	{
 		$error=$lang["tracking"][10];
 		displayMessageAfterRedirect();
-		addFormTracking(0,0,$user,$assign,$_SERVER["PHP_SELF"],$error);
+		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 } 
 else
 {
-	addFormTracking(0,0,$user,$assign,$_SERVER["PHP_SELF"],$error);
+	addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 
 commonFooter();

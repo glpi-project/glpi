@@ -395,7 +395,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		if ($item)
 		{
 			echo "<tr><td align='center' class='tab_bg_2' colspan='9'>";
-			echo "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.add.php?ID=$item&amp;device_type=$item_type\"><strong>";
+			echo "<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
 			echo $lang["joblist"][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
@@ -421,7 +421,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 		{
 			 
 			  echo "<tr><td align='center' class='tab_bg_2' colspan='8'>";
-			  echo "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.add.php?ID=$item&amp;device_type=$item_type\"><strong>";
+			  echo "<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
 			  echo $lang["joblist"][7];
 			  echo "</strong></a>";
 			  echo "</td></tr>";
@@ -682,10 +682,10 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<form method='post' action='$target' enctype=\"multipart/form-data\">";
 	echo "<div align='center'>";
 
-	if ($device_type!=0){
+//	if ($device_type!=0){
 		echo "<input type='hidden' name='_referer' value='$REFERER'>";
 		echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
-	}	
+//	}	
 	echo "<table class='tab_cadre'><tr><th><a href='$target'>".$lang["buttons"][16]."</a></th><th>".$lang["job"][13].": <br>";
 	if ($device_type!=0){
 		$m=new CommonItem;
@@ -742,7 +742,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2'>";
 	$priority=3;
-	if (isset($_POST["priority"]))$priority=$_POST["priority"];
+	if (isset($_POST["priority"])) $priority=$_POST["priority"];
 	dropdownPriority("priority",$priority);
 	echo "</td></tr>";
 
