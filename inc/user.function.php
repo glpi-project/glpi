@@ -206,6 +206,7 @@ function showDeviceUser($ID){
 	
 	$ci=new CommonItem();
 	echo "<div align='center'><table class='tab_cadre'><tr><th>".$lang["common"][17]."</th><th>".$lang["common"][16]."</th><th>&nbsp;</th></tr>";
+	
 	foreach ($cfg_glpi["linkuser_type"] as $type){
 		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID' $group_where";
 		$result=$db->query($query);
@@ -215,7 +216,7 @@ function showDeviceUser($ID){
 			$cansee=haveTypeRight($type,"r");
 			while ($data=$db->fetch_array($result)){
 				$link=$data["name"];
-				if ($cansee) $link="<a href='".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link."</a>";
+				if ($cansee) $link="<a href='".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</a>";
 				$linktype="";
 				if ($data["FK_users"]==$ID)
 					$linktype.=$lang["common"][34];
@@ -230,5 +231,61 @@ function showDeviceUser($ID){
 	}
 	echo "</table></div>";
 }
+
+function showGroupAssociated($ID){
+	global $db,$cfg_glpi, $lang,$HTMLRel;
+
+	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
+
+	$canedit=haveRight("user","w");
+	
+	$nb_per_line=5;
+
+	echo "<div align='center'><table class='tab_cadre'><tr><th colspan='$nb_per_line'>".$lang["Menu"][36]."</th></tr>";
+	$query="SELECT glpi_groups.* from glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID' ORDER BY glpi_groups.name";
+	
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		$i=0;
+		
+		while ($data=$db->fetch_array($result)){
+			if ($i%$nb_per_line==0) {
+				if ($i!=0) echo "</tr>";
+				echo "<tr class='tab_bg_1'>";
+			}
+
+			echo "<td><a href='".$cfg_glpi["root_doc"]."/front/group.form.php?ID=".$data["ID"]."'>".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</a>";
+			echo "&nbsp;";
+			if ($canedit)
+				echo "<a href='".$_SERVER["PHP_SELF"]."?deleteuser=deleteuser&amp;gID=$ID&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
+			
+			echo "</td>";
+			$i++;
+		}
+		while ($i%$nb_per_line!=0){
+			echo "<td>&nbsp;</td>";
+			$i++;
+		}
+		echo "</tr>";
+	}
+	
+	echo "</table></div><br>";
+
+	if ($canedit){
+		echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/group.form.php\">";
+		echo "<table  class='tab_cadre_fixe'>";
+	
+		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["setup"][604]."</tr><tr><td class='tab_bg_2' align='center'>";
+		echo "<input type='hidden' name='FK_users' value='$ID'>";
+		dropdownValue("glpi_groups","FK_groups",0);
+		echo "</td><td align='center' class='tab_bg_2'>";
+		echo "<input type='submit' name='adduser' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</td></tr>";
+	
+		echo "</table></form></div>";
+	}
+
+}
+
 
 ?>

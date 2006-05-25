@@ -1635,7 +1635,7 @@ function showJobDetails ($target,$ID){
 				
 				echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
 				if (haveRight("document","w"))
-					echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
+					echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
 				echo "</td></tr>";
 			}
 		}

@@ -495,7 +495,6 @@ class User extends CommonDBTM {
 		autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 		echo "</td></tr>";
 	
-		echo "</td></tr>";	
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>";
 		$prof=new Profile();
 		$prof->getFromDBforUser($this->fields["ID"]);
