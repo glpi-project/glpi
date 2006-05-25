@@ -49,14 +49,33 @@ if ($_POST["type"]>0){
 	echo $lang["search"][10]."&nbsp;";
 
 	echo "<select name=\"field2[".$_POST["num"]."]\" size='1'>";
-
-	foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val) 
-	if ($val["meta"])
-	{
-			echo "<option value=\"".$key."\" title=\"".$val["name"]."\""; 
-			if($key == $_POST["field"]) echo "selected";
-			echo ">". substr($val["name"],0,20) ."</option>\n";
+	$first_group=true;
+	$newgroup="";
+	$items_in_group=0;
+	foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val) {
+		// print groups
+		if (!is_array($val)){
+			if (!empty($newgroup)&&$items_in_group>0) {
+				echo $newgroup;
+				$first_group=false;
+			}
+			$items_in_group=0;
+			$newgroup="";
+			if (!$first_group) $newgroup.="</optgroup>";
+			$newgroup.="<optgroup label=\"$val\">";
+		} else {
+			if ($val["meta"]){
+				$newgroup.= "<option value=\"".$key."\" title=\"".$val["name"]."\""; 
+				if($key == $_POST["field"]) $newgroup.= "selected";
+				$newgroup.= ">". substr($val["name"],0,20) ."</option>\n";
+				$items_in_group++;
+			}
+		}
 	}
+	if (!empty($newgroup)&&$items_in_group>0) echo $newgroup;
+	if (!$first_group)
+		echo "</optgroup>";
+
 	echo "</select>&nbsp;";
 }
 ?>

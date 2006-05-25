@@ -78,7 +78,7 @@ header_nocache();
 						}
 					}
 				}
-				if (!empty($newgroup)) echo $newgroup;
+				if (!empty($newgroup)&&$items_in_group>0) echo $newgroup;
 				if (!$first_group)
 					echo "</optgroup>";
 

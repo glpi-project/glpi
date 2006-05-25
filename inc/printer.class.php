@@ -315,20 +315,22 @@ class Printer  extends CommonDBTM {
 		echo "<tr><td>".$lang["printers"][8].":	</td><td>\n";
 		autocompletionTextField("contact","glpi_printers","contact",$this->fields["contact"],20);			
 		echo "</td></tr>\n";
+
+		echo "<tr><td>".$lang["common"][34].": 	</td><td>";
+			dropdownValue("glpi_users", "FK_users", $this->fields["FK_users"]);
+		echo "</td></tr>";
+
+		echo "<tr><td>".$lang["common"][35].": 	</td><td>";
+			//dropdownValue("glpi_users", "FK_groups", $this->fields["FK_groups"]);
+		echo "</td></tr>";
+
+
 		if (!$template){
 			echo "<tr><td>".$lang["reservation"][24].":</td><td><b>\n";
 			showReservationForm(PRINTER_TYPE,$ID);
 			echo "</b></td></tr>\n";
 		}
 			
-			echo "<tr><td>".$lang["state"][0].":</td><td>\n";
-			$si=new StateItem();
-			$t=0;
-			if ($template) $t=1;
-			$si->getfromDB(PRINTER_TYPE,$this->fields["ID"],$t);
-			dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-			echo "</td></tr>\n";
-	
 		echo "<tr><td>".$lang["setup"][88].": 	</td><td>\n";
 			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
 		echo "</td></tr>\n";
@@ -345,6 +347,14 @@ class Printer  extends CommonDBTM {
 	
 		// table type,serial..
 		echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+
+		echo "<tr><td>".$lang["state"][0].":</td><td>\n";
+		$si=new StateItem();
+		$t=0;
+		if ($template) $t=1;
+		$si->getfromDB(PRINTER_TYPE,$this->fields["ID"],$t);
+		dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+		echo "</td></tr>\n";
 	
 		echo "<tr><td>".$lang["common"][17].": 	</td><td>\n";
 			dropdownValue("glpi_type_printers", "type", $this->fields["type"]);

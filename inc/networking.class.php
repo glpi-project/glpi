@@ -291,8 +291,10 @@ class Netdevice extends CommonDBTM {
 		echo "<td>";
 		$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE);
 		autocompletionTextField("name","glpi_networking","name",$objectName,20);
+		echo "</td></tr>\n";
 
-		//autocompletionTextField("name","glpi_networking","name",$this->fields["name"],20);	
+		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>\n";
+			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
 		echo "</td></tr>\n";
 	
 		echo "<tr><td>".$lang["common"][15].": 	</td><td>\n";
@@ -310,6 +312,14 @@ class Netdevice extends CommonDBTM {
 		echo "<tr><td>".$lang["common"][18].":	</td><td>\n";
 			autocompletionTextField("contact","glpi_networking","contact",$this->fields["contact"],20);	
 		echo "</td></tr>\n";
+
+		echo "<tr><td>".$lang["common"][34].": 	</td><td>";
+			dropdownValue("glpi_users", "FK_users", $this->fields["FK_users"]);
+		echo "</td></tr>";
+
+		echo "<tr><td>".$lang["common"][35].": 	</td><td>";
+			//dropdownValue("glpi_users", "FK_groups", $this->fields["FK_groups"]);
+		echo "</td></tr>";
 		
 		if (!$template){
 		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
@@ -326,13 +336,6 @@ class Netdevice extends CommonDBTM {
 			dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 			echo "</td></tr>\n";
 			
-		echo "<tr><td>".$lang["setup"][88].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
-		echo "</td></tr>\n";
-	
-		echo "<tr><td>".$lang["setup"][89].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
-		echo "</td></tr>\n";
 	
 		echo "</table>\n";
 	
@@ -348,10 +351,6 @@ class Netdevice extends CommonDBTM {
 		echo "<tr><td>".$lang["common"][22].": 	</td><td>";
 			dropdownValue("glpi_dropdown_model_networking", "model", $this->fields["model"]);
 		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-		echo "</td></tr>\n";
 		
 		echo "<tr><td>".$lang["networking"][49].": 	</td><td>\n";
 		dropdownValue("glpi_dropdown_firmware", "firmware", $this->fields["firmware"]);
@@ -369,6 +368,14 @@ class Netdevice extends CommonDBTM {
 		$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE);
 		autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,20);
 		//autocompletionTextField("otherserial","glpi_networking","otherserial",$this->fields["otherserial"],20);	
+		echo "</td></tr>\n";
+
+		echo "<tr><td>".$lang["setup"][88].": 	</td><td>\n";
+			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
+		echo "</td></tr>\n";
+	
+		echo "<tr><td>".$lang["setup"][89].": 	</td><td>\n";
+			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
 		echo "</td></tr>\n";
 		
 		echo "<tr><td>".$lang["networking"][14].":</td><td>\n";

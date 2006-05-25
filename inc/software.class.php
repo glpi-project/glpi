@@ -239,6 +239,17 @@ class Software  extends CommonDBTM {
 		echo "<td>".$lang["common"][5].": 	</td><td>";
 		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
 		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'>";
+		echo "<td >".$lang["common"][34].": 	</td>";
+		echo "<td >";
+		dropdownValue("glpi_users", "FK_users", $this->fields["FK_users"]);
+		echo "</td>";
+			
+			
+		echo "<td>".$lang["common"][35].":</td><td>";
+		//dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td>";
 		dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");

@@ -468,6 +468,17 @@ class Computer extends CommonDBTM {
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_1'>";
+			echo "<td >".$lang["common"][34].": 	</td>";
+			echo "<td >";
+			dropdownValue("glpi_users", "FK_users", $this->fields["FK_users"]);
+			echo "</td>";
+			
+			
+			echo "<td>".$lang["common"][35].":</td><td>";
+			//dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'>";
 			echo "<td >".$lang["common"][22].": 	</td>";
 			echo "<td >";
 				dropdownValue("glpi_dropdown_model", "model", $this->fields["model"]);
