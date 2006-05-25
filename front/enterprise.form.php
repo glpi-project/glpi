@@ -89,14 +89,14 @@ else if (isset($_POST["addcontact"])){
 	checkRight("contact_enterprise","w");
 
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][36]);
+	logEvent($tab["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][36]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletecontact"])){
 	checkRight("contact_enterprise","w");
 
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent(0, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][37]);
+	logEvent($_GET["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][37]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

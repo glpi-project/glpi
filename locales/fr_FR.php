@@ -717,6 +717,8 @@ $lang["log"][44]="Intitulé";
 $lang["log"][45]="Réussie";
 $lang["log"][46]="Echouée";
 $lang["log"][47]="groupe";
+$lang["log"][48]="ajout utilisateur au groupe";
+$lang["log"][49]="suppression utilisateur au groupe";
 
 $lang["log"][50]="Inventaire";
 $lang["log"][51]="Suivi";
@@ -1314,6 +1316,8 @@ $lang["setup"][505]="Types d'alimentation téléphone";
 $lang["setup"][600]="Champ LDAP";
 $lang["setup"][601]="Valeur LDAP";
 $lang["setup"][602]="Ajouter Groupe...";
+$lang["setup"][603]="Ajouter un Utilisateur";
+$lang["setup"][604]="Associé à un groupe";
 
 $lang["software"][0]="Ajouter logiciel...";
 $lang["software"][3]="Plateforme";

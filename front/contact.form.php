@@ -93,7 +93,7 @@ else if (isset($_GET["deleteenterprise"])){
 	checkRight("contact_enterprise","w");
 
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent(0, "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$lang["log"][35]);
+	logEvent($_GET["cID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$lang["log"][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 

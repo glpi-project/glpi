@@ -61,16 +61,15 @@ class Group extends CommonDBTM{
 	}
 
 
-/*	function defineOnglets($withtemplate){
+	function defineOnglets($withtemplate){
 		global $lang;
-		$ong[1]=$lang["title"][26];
-		if (haveRight("link","r"))	
-			$ong[7]=$lang["title"][34];
-		if (haveRight("notes","r"))
-			$ong[10]=$lang["title"][37];
+		if (haveRight("user","r"))	
+			$ong[1]=$lang["Menu"][14];
+
+		$ong[2]=$lang["common"][1];
 		return $ong;
 	}
-*/
+
 
 
 	/**
