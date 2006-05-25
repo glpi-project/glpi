@@ -172,6 +172,8 @@ function commonHeader($title,$url)
 	// Body 
 	echo "<body>";
 	
+	
+
 	// Main Headline
 	echo "<div id='navigation'>";
 
@@ -308,6 +310,9 @@ function commonHeader($title,$url)
 	echo "</div>";
 
 	echo "<div onmouseover=\"javascript:hidemenu();\">";
+	
+	
+	
 	displayMessageAfterRedirect();
 }
 
@@ -552,6 +557,84 @@ function nullHeader($title,$url) {
 	
 	echo "</div>";
 }
+
+
+function popHeader($title,$url)
+{
+	// Print a nice HTML-head for every page
+
+	global $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks,$HEADER_LOADED ;
+
+	// Gestion timeout session
+	if (!isset($_SESSION["glpiID"]))
+		glpi_header($HTMLRel."/index.php");
+
+	$HEADER_LOADED=true;;
+	// Override list-limit if choosen
+ 	if (isset($_POST['list_limit'])) {
+ 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
+     		 $cfg_glpi["list_limit"]=$_POST['list_limit'];
+	 }
+
+
+	
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+	// Send extra expires header if configured
+	if ($cfg_glpi["sendexpire"]) {
+		header_nocache();
+	}
+	// Start the page
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+	echo "\n<html><head><title>GLPI - ".$title."</title>";
+        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
+	// Send extra expires header if configured
+	if ($cfg_glpi["sendexpire"]) {
+		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
+		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
+	}
+	//  CSS link
+        echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."css/print.css' >";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
+	// AJAX library
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
+	// Some Javascript-Functions which we may need later
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+
+	// Calendar scripts 
+	echo "<style type=\"text/css\">@import url(".$HTMLRel."lib/calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar-setup.js\"></script>";
+
+	
+	// End of Head
+	echo "</head>\n";
+	// Body 
+	echo "<body>";
+			
+	displayMessageAfterRedirect();
+}
+
+
+function popFooter() {
+	// Print foot 
+
+	echo "</body></html>";
+}
+
+
+
+
+
+
+
+
+
+
 
 /**
 * Print footer for every page
