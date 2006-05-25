@@ -1091,6 +1091,7 @@ case "glpi_users.name" :
 	$linkfield="";
 	if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
 		$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+	
 	return $pretable.$table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2, ".$pretable.$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3,";
 	break;
 case "glpi_contracts.end_date" :
@@ -1166,7 +1167,11 @@ $SEARCH=makeTextSearch($val,$nott);
 
 switch ($table.".".$field){
 case "glpi_users.name" :
-	return " ( $table.$field $SEARCH OR glpi_users.realname $SEARCH ) ";
+	$linkfield="";
+	if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
+		$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+
+	return " ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
 //	$larg=500;
