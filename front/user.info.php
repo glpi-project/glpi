@@ -47,18 +47,22 @@ commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 
 checkRight("user","r");
 
+if (!isset($_SESSION['glpi_viewuser'])) $_SESSION['glpi_viewuser']="tracking";
+if (isset($_GET['onglet'])) $_SESSION['glpi_viewuser']=$_GET['onglet'];
 
 $user=new User();
 
-$user->showInfo($_SERVER["PHP_SELF"],$_GET["ID"]);
-if (isset($_GET["start"])) $start=$_GET["start"];
-else $start=0;
+if ($user->showInfo($_SERVER["PHP_SELF"],$_GET["ID"])){
 
-
-
-
-showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"]);
-
+	if($_SESSION['glpi_viewuser']=="tracking"){
+		if (isset($_GET["start"])) $start=$_GET["start"];
+		else $start=0;
+	
+		showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"]);
+	} else {
+		showDeviceUser($_GET["ID"]);
+	}
+}
 commonFooter();
 
 ?>

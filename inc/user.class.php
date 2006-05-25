@@ -398,7 +398,8 @@ class User extends CommonDBTM {
 			$prof=new Profile();
 			$prof->getFromDBForUser($ID);
 		
-		
+			showUsersTitle($target."?ID=$ID",$_SESSION['glpi_viewuser']);
+
 			echo "<div align='center'>";
 			echo "<table class='tab_cadre'>";
 			echo   "<tr><th colspan='2'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
@@ -417,34 +418,36 @@ class User extends CommonDBTM {
 			echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
 			echo "</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($this->fields["active"]?$lang["choice"][1]:$lang["choice"][0])."</td></tr>";
-			echo "</table></div>";
+			echo "</table></div><br>";
 	
-			echo "<div align='center' ><p><b>".$lang["tracking"][11]."</b></p></div>";
+			return true;
 		}
+		return false;
 	}
 	
 	
 	
 	
-	function showForm($target,$name) {
+	function showForm($target,$ID) {
 		
 		// Affiche un formulaire User
 		global $cfg_glpi, $lang;
 	
 		if (!haveRight("user","r")) return false;
 		
-		if($name == 'Helpdesk') {
+		// Helpdesk case
+		if($ID == 1) {
 			echo "<div align='center'>";
 			echo $lang["setup"][220];
 			echo "</div>";
 			return false;
 		}
-		if(empty($name)) {
+		if(empty($ID)) {
 			// Partie ajout d'un user
 			// il manque un getEmpty pour les users	
 			$this->getEmpty();
 		} else {
-			$this->getfromDBbyName($name);
+			$this->getfromDB($ID);
 			
 		}
 		echo "<div align='center'>";
@@ -453,7 +456,7 @@ class User extends CommonDBTM {
 		echo "<tr class='tab_bg_1'>";	
 		echo "<td align='center'>".$lang["setup"][18]."</td>";
 		// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
-		if ($name=="") {
+		if ($this->fields["name"]=="") {
 			echo "<td><input  name='name' value=\"".$this->fields["name"]."\">";
 			echo "</td></tr>";
 		// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
@@ -474,7 +477,7 @@ class User extends CommonDBTM {
 		}
 		//do some rights verification
 		if(haveRight("user","w")) {
-			if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$name==""){
+			if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$this->fields["name"]==""){
 				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 			}
 		}
@@ -509,7 +512,7 @@ class User extends CommonDBTM {
 		echo "</td></tr>";
 	
 		if (haveRight("user","w"))
-		if ($name=="") {
+		if ($this->fields["name"]=="") {
 			echo "<tr >";
 			echo "<td class='tab_bg_2' valign='top' colspan='2' align='center'>";
 			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";

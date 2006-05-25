@@ -1347,9 +1347,6 @@ switch ($field){
 	case "glpi_users.active" :
 			return $lang["choice"][$data["ITEM_$num"]];
 		break;
-
-//	case "glpi_users.name" :
-//		break;
 	case "glpi_users.name" :		
 		// USER search case
 		if (empty($linkfield)){
@@ -1358,10 +1355,13 @@ switch ($field){
 			$out.= $data["ITEM_$num"];
 			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 			$out.= "</a>";
+			$out.= "&nbsp;<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ID"]."\">";
+			$out.= "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png'>";
+			$out.= "</a>";
 		} else {
 			$type=USER_TYPE;
 			if ($data["ITEM_".$num."_3"]>0)
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ITEM_".$num."_3"]."\">";
 			// print realname or login name
 			if (!empty($data["ITEM_".$num."_2"]))
 				$out .= $data["ITEM_".$num."_2"];
