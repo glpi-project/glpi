@@ -300,18 +300,20 @@ function showForm ($target,$ID,$withtemplate='') {
 	autocompletionTextField("contact","glpi_phones","contact",$this->fields["contact"],20);		
 	echo "</td></tr>";
 
-		if (!$template){
+	echo "<tr><td>".$lang["common"][34].": 	</td><td>";
+		dropdownValue("glpi_users", "FK_users", $this->fields["FK_users"]);
+	echo "</td></tr>";
+
+	echo "<tr><td>".$lang["common"][35].": 	</td><td>";
+		//dropdownValue("glpi_users", "FK_groups", $this->fields["FK_groups"]);
+	echo "</td></tr>";
+
+	if (!$template){
 		echo "<tr><td>".$lang["reservation"][24].":</td><td><b>";
 		showReservationForm(PHONE_TYPE,$ID);
 		echo "</b></td></tr>";
-		}
+	}
 		
-	echo "<tr><td>".$lang["phones"][33].":</td><td>";
-	echo "<select name='is_global'>";
-	echo "<option value='0' ".(!$this->fields["is_global"]?" selected":"").">".$lang["phones"][32]."</option>";
-	echo "<option value='1' ".($this->fields["is_global"]?" selected":"").">".$lang["phones"][31]."</option>";
-	echo "</select>";
-	echo "</td></tr>";
 	
 	echo "<tr><td>".$lang["common"][17].": 	</td><td>";
 		dropdownValue("glpi_type_phones", "type", $this->fields["type"]);
@@ -328,6 +330,13 @@ function showForm ($target,$ID,$withtemplate='') {
 
 	echo "<table cellpadding='1' cellspacing='0' border='0'>";
 
+
+	echo "<tr><td>".$lang["phones"][33].":</td><td>";
+	echo "<select name='is_global'>";
+	echo "<option value='0' ".(!$this->fields["is_global"]?" selected":"").">".$lang["phones"][32]."</option>";
+	echo "<option value='1' ".($this->fields["is_global"]?" selected":"").">".$lang["phones"][31]."</option>";
+	echo "</select>";
+	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["phones"][36].":</td><td>";
 		dropdownValue("glpi_dropdown_phone_power", "power", $this->fields["power"]);

@@ -201,6 +201,8 @@ $lang["common"][30]="Nouvel item";
 $lang["common"][31]="Gabarit vide";
 $lang["common"][32]="Caractéristiques";
 $lang["common"][33]="Total";
+$lang["common"][34]="Utilisateur";
+$lang["common"][35]="Groupe";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-05-21 23:32
+#GLPI Dump database on 2006-05-25 11:52
 
 ### Dump table glpi_cartridges
 
@@ -99,6 +99,8 @@ CREATE TABLE `glpi_computers` (
     `deleted` enum('Y','N') DEFAULT 'N' NOT NULL,
     `notes` longtext,
     `ocs_import` tinyint(4) DEFAULT '0' NOT NULL,
+    `FK_users` int(11),
+    `FK_groups` int(11),
    PRIMARY KEY (`ID`),
    KEY location (`location`),
    KEY os (`os`),
@@ -112,7 +114,7 @@ CREATE TABLE `glpi_computers` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_computers VALUES ('1','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','0','0','1','Blank Template','0','N',NULL,'0');
+INSERT INTO glpi_computers VALUES ('1','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','0','0','1','Blank Template','0','N',NULL,'0',NULL,NULL);
 
 ### Dump table glpi_config
 
@@ -1121,7 +1123,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-21 23:32:26','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-25 11:52:31','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1319,6 +1321,8 @@ CREATE TABLE `glpi_monitors` (
     `is_template` enum('0','1') DEFAULT '0' NOT NULL,
     `tplname` varchar(255),
     `notes` longtext,
+    `FK_users` int(11),
+    `FK_groups` int(11),
    PRIMARY KEY (`ID`),
    KEY ID (`ID`),
    KEY type (`type`),
@@ -1330,7 +1334,7 @@ CREATE TABLE `glpi_monitors` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_monitors VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template',NULL);
+INSERT INTO glpi_monitors VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template',NULL,NULL,NULL);
 
 ### Dump table glpi_networking
 
@@ -1349,7 +1353,7 @@ CREATE TABLE `glpi_networking` (
     `location` int(11) DEFAULT '0' NOT NULL,
     `domain` int(11) DEFAULT '0' NOT NULL,
     `network` int(11) DEFAULT '0' NOT NULL,
-    `type` int(11),
+    `type` int(11) DEFAULT '0',
     `model` int(11),
     `firmware` int(11),
     `FK_glpi_enterprise` int(11) DEFAULT '0' NOT NULL,
@@ -1359,6 +1363,8 @@ CREATE TABLE `glpi_networking` (
     `ifmac` varchar(200),
     `ifaddr` varchar(200),
     `notes` longtext,
+    `FK_users` int(11),
+    `FK_groups` int(11),
    PRIMARY KEY (`ID`),
    KEY location (`location`),
    KEY type (`type`),
@@ -1370,7 +1376,7 @@ CREATE TABLE `glpi_networking` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_networking VALUES ('1','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL);
+INSERT INTO glpi_networking VALUES ('1','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL,NULL,NULL);
 
 ### Dump table glpi_networking_ports
 
@@ -1510,6 +1516,8 @@ CREATE TABLE `glpi_peripherals` (
     `is_template` enum('0','1') DEFAULT '0' NOT NULL,
     `tplname` varchar(255),
     `notes` longtext,
+    `FK_users` int(11),
+    `FK_groups` int(11),
    PRIMARY KEY (`ID`),
    KEY type (`type`),
    KEY location (`location`),
@@ -1520,7 +1528,7 @@ CREATE TABLE `glpi_peripherals` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','0','','0','0','N','1','Blank Template',NULL);
+INSERT INTO glpi_peripherals VALUES ('1','','0000-00-00 00:00:00','','','0','','','','0','0','0','','0','0','N','1','Blank Template',NULL,NULL,NULL);
 
 ### Dump table glpi_phones
 
@@ -1550,6 +1558,8 @@ CREATE TABLE `glpi_phones` (
     `is_template` enum('0','1') DEFAULT '0' NOT NULL,
     `tplname` varchar(255),
     `notes` longtext,
+    `FK_users` int(11),
+    `FK_groups` int(11),
    PRIMARY KEY (`ID`),
    KEY type (`type`),
    KEY name (`name`),
@@ -1560,7 +1570,7 @@ CREATE TABLE `glpi_phones` (
    KEY tech_num (`tech_num`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_phones VALUES ('1',NULL,'0000-00-00 00:00:00',NULL,NULL,'0',NULL,NULL,NULL,NULL,'0','0',NULL,NULL,'0','','0','0','0','0','N','1','Blank Template',NULL);
+INSERT INTO glpi_phones VALUES ('1',NULL,'0000-00-00 00:00:00',NULL,NULL,'0',NULL,NULL,NULL,NULL,'0','0',NULL,NULL,'0','','0','0','0','0','N','1','Blank Template',NULL,NULL,NULL);
 
 ### Dump table glpi_printers
 
@@ -1591,6 +1601,8 @@ CREATE TABLE `glpi_printers` (
     `tplname` varchar(255),
     `initial_pages` varchar(30) DEFAULT '0' NOT NULL,
     `notes` longtext,
+    `FK_users` int(11),
+    `FK_groups` int(11),
    PRIMARY KEY (`ID`),
    KEY id (`ID`),
    KEY location (`location`),
@@ -1602,7 +1614,7 @@ CREATE TABLE `glpi_printers` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_printers VALUES ('1','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL);
+INSERT INTO glpi_printers VALUES ('1','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL,NULL,NULL);
 
 ### Dump table glpi_profiles
 
@@ -1753,6 +1765,8 @@ CREATE TABLE `glpi_software` (
     `tplname` varchar(255),
     `date_mod` datetime,
     `notes` longtext,
+    `FK_users` int(11),
+    `FK_groups` int(11),
    PRIMARY KEY (`ID`),
    KEY platform (`platform`),
    KEY location (`location`),
@@ -1764,7 +1778,7 @@ CREATE TABLE `glpi_software` (
    KEY name (`name`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_software VALUES ('1','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL);
+INSERT INTO glpi_software VALUES ('1','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL,NULL,NULL);
 
 ### Dump table glpi_state_item
 

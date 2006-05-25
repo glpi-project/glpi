@@ -35,7 +35,7 @@
 
 // Update from 0.65 to 0.65
 function update065to068(){
-	global $db;
+	global $db,$lang;
 
 if(!TableExists("glpi_profiles")) {
 $query="CREATE TABLE `glpi_profiles` (
@@ -464,6 +464,38 @@ if(!FieldExists("glpi_ocs_config","use_soft_dict")) {
 		$query = "ALTER TABLE `glpi_ocs_config` ADD `use_soft_dict` char( 1 ) DEFAULT '1';"; 
 		$db->query($query) or die("0.68 add use_soft_dict to ocs_config".$lang["update"][90].$db->error());
 	}
+
+// Link user and group to hardware
+$new_link=array("computers","software","monitors","networking","peripherals","printers","phones");
+
+foreach ($new_link as $table)
+if(!FieldExists("glpi_$table","FK_users")) {	
+	$query="ALTER TABLE `glpi_$table` ADD `FK_users` INT(11) DEFAULT '0', ADD `FK_groups` INT(11) DEFAULT '0';";
+	$db->query($query) or die("0.65 add link user group field in $table ".$lang["update"][90].$db->error());
+
+	if ($table != "software"){
+		// Update using name field of users
+		$query2="SELECT glpi_users.ID AS USER, glpi_$table.ID AS ID FROM glpi_$table LEFT JOIN glpi_users ON (glpi_$table.contact = glpi_users.name AND glpi_$table.contact <> '') WHERE glpi_users.ID IS NOT NULL";
+		$result2=$db->query($query2);
+		if ($db->numrows($result2)>0){
+			while ($data=$db->fecth_assoc($result2)){
+				$query3="UPDATE glpi_$table SET FK_users='".$data["USER"]."' WHERE ID='".$data["ID"]."'";
+				$db->query($query3);
+			}
+		}
+		// Update using realname field of users
+		$query2="SELECT glpi_users.ID AS USER, glpi_$table.ID AS ID FROM glpi_$table LEFT JOIN glpi_users ON (glpi_$table.contact = glpi_users.realname AND glpi_$table.contact <> '') WHERE glpi_users.ID IS NOT NULL AND glpi_$table.FK_users ='0' ";
+		$result2=$db->query($query2);
+		if ($db->numrows($result2)>0){
+			while ($data=$db->fecth_assoc($result2)){
+				$query3="UPDATE glpi_$table SET FK_users='".$data["USER"]."' WHERE ID='".$data["ID"]."'";
+				$db->query($query3);
+			}
+		}
+	}
+
+}
+
 } // fin 0.68 #####################################################################################
 
 ?>

@@ -462,7 +462,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 	// Add select for all toview item
 	for ($i=0;$i<$toview_count;$i++){
-		$SELECT.=addSelect($type,$SEARCH_OPTION[$type][$toview[$i]]["table"],$SEARCH_OPTION[$type][$toview[$i]]["field"],$i,0);
+		$SELECT.=addSelect($type,$toview[$i],$i,0);
 	}
 
 	// Get specific item for extra column
@@ -479,13 +479,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	// Add all table for toview items
 	for ($i=1;$i<$toview_count;$i++)
-		$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"]);
+		$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"],$SEARCH_OPTION[$type][$toview[$i]]["linkfield"]);
 
 
 	// Search all case :
 	if (count($SEARCH_ALL)>0)
 	foreach ($SEARCH_OPTION[$type] as $key => $val)
-			$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$key]["table"]);
+			$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$key]["table"],$SEARCH_OPTION[$type][$key]["linkfield"]);
 
 
 	//// 3 - WHERE
@@ -529,7 +529,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 			// Add Where clause if not to be done ine HAVING CLAUSE
 			if (!in_array($SEARCH_OPTION[$type][$field[$key]]["table"],$META_SPECIF_TABLE)){
-				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$field[$key]]["table"],$SEARCH_OPTION[$type][$field[$key]]["field"],$contains[$key]);
+				$WHERE.= $LINK.addWhere($NOT,$type,$field[$key],$contains[$key]);
                         	$i++;
 			}
 		// if real search (strlen >0) and view search
@@ -555,7 +555,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if (!in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
 				$LINK=" OR ";
 				if ($first2) {$LINK=" ";$first2=false;}
-				$WHERE.= $LINK.addWhere($NOT,$type,$SEARCH_OPTION[$type][$val2]["table"],$SEARCH_OPTION[$type][$val2]["field"],$contains[$key]);
+				$WHERE.= $LINK.addWhere($NOT,$type,$val2,$contains[$key]);
 			}
 			$WHERE.=" ) ";
 			$i++;
@@ -581,7 +581,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if (!in_array($val2["table"],$META_SPECIF_TABLE)){
                                 $LINK=" OR ";
                                 if ($first2) {$LINK=" ";$first2=false;}
-                                $WHERE.= $LINK.addWhere($NOT,$type,$val2["table"],$val2["field"],$contains[$key]);
+                                $WHERE.= $LINK.addWhere($NOT,$type,$key2,$contains[$key]);
 			}
 
 		        $WHERE.=")";
@@ -611,7 +611,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		// a - SELECT 
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 		if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i]))	{
-			$SELECT.=addSelect($type2[$i],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["field"],$i,1,$type2[$i]);		
+			$SELECT.=addSelect($type2[$i],$field2[$i],$i,1,$type2[$i]);		
 		}
 
 		// b - ADD LEFT JOIN 
@@ -627,7 +627,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 		if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
 			if (!in_array($SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"]."_".$type2[$i],$already_link_tables2)){
-				$FROM.=addLeftJoin($type2[$i],$LINK_ID_TABLE[$type2[$i]],$already_link_tables2,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],0,1,$type2[$i]);				
+				$FROM.=addLeftJoin($type2[$i],$LINK_ID_TABLE[$type2[$i]],$already_link_tables2,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["linkfield"],0,1,$type2[$i]);				
 			}
 			
 		}
@@ -703,7 +703,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					else $LINK=" AND ";
 				}
 
-				$WHERE.= $LINK.addWhere($NOT,$type2[$key],$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"],$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],$contains2[$key],1);
+				$WHERE.= $LINK.addWhere($NOT,$type2[$key],$field2[$key],$contains2[$key],1);
 			}
 		}
 
@@ -868,22 +868,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				}
 
 				// Print first element - specific case for user 
-				if ($SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]=="glpi_users.name")
-					echo displaySearchItem($output_type,giveItem($type,"glpi_users.name.brut",$data,0),$item_num,$row_num);
-				else 
-					echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0),$item_num,$row_num);
+				echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0,$SEARCH_OPTION[$type][1]["linkfield"]),$item_num,$row_num);
 
 				// Print other toview items
 				for ($j=1;$j<$toview_count;$j++){
-					// Specific case of enterprises
-					if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_enterprises.name")
-						echo displaySearchItem($output_type,giveItem($type,"glpi_enterprises.name.brut",$data,$j),$item_num,$row_num);
-					// Specific case of contracts
-					else if ($SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]=="glpi_contracts.name")
-						echo  displaySearchItem($output_type,giveItem($type,"glpi_contracts.name.brut",$data,$j),$item_num,$row_num);
-					// General case
-					else  
-						echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j),$item_num,$row_num);
+					echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j,$SEARCH_OPTION[$type][$toview[$j]]["linkfield"]),$item_num,$row_num);
 
 				}
 				
@@ -1080,9 +1069,11 @@ function addOrderBy($field,$order,$key=0){
 *@return select string
 *
 **/
-function addSelect ($type,$table,$field,$num,$meta=0,$meta_type=0){
-global $LINK_ID_TABLE;
+function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
+global $LINK_ID_TABLE,$SEARCH_OPTION;
 
+$table=$SEARCH_OPTION[$type][$ID]["table"];
+$field=$SEARCH_OPTION[$type][$ID]["field"];
 $addtable="";
 $pretable="";
 $NAME="ITEM";
@@ -1099,16 +1090,19 @@ case "glpi_enterprises_infocoms.name" :
 	return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$addtable.".website AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_3, ";
 	break;
 case "glpi_users.name" :
-	return $pretable.$table.$addtable.".".$field." AS ITEM_$num, glpi_users.realname AS ".$NAME."_".$num."_2, ";
+	$linkfield="";
+	if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
+		$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+	return $pretable.$table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2, ".$pretable.$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3,";
 	break;
 case "glpi_contracts.end_date" :
-	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
+	return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 	break;
 case "glpi_contracts.expire_notice" : // ajout jmd
-	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".notice AS ".$NAME."_".$num."_3, ";
+	return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".notice AS ".$NAME."_".$num."_3, ";
 	break;
 case "glpi_contracts.expire" : // ajout jmd
-	return $pretable.$table.$addtable.".begin_date AS ITEM_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
+	return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 	break;
 
 case "glpi_device_hdd.specif_default" :
@@ -1162,8 +1156,12 @@ default:
 *@return select string
 *
 **/
-function addWhere ($nott,$type,$table,$field,$val,$meta=0){
-global $LINK_ID_TABLE,$lang;
+function addWhere ($nott,$type,$ID,$val,$meta=0){
+global $LINK_ID_TABLE,$lang,$SEARCH_OPTION;
+
+$table=$SEARCH_OPTION[$type][$ID]["table"];
+$field=$SEARCH_OPTION[$type][$ID]["field"];
+
 
 $NOT="";
 if ($nott) $NOT=" NOT";
@@ -1326,7 +1324,7 @@ default:
 *@return string to print
 *
 **/
-function giveItem ($type,$field,$data,$num){
+function giveItem ($type,$field,$data,$num,$linkfield=""){
 global $cfg_glpi,$INFOFORM_PAGES,$HTMLRel,$cfg_glpi,$lang;
 
 switch ($field){
@@ -1350,18 +1348,30 @@ switch ($field){
 			return $lang["choice"][$data["ITEM_$num"]];
 		break;
 
-	case "glpi_users.name" :
-		// print realname or login name
-		if (!empty($data["ITEM_".$num."_2"]))
-			return $data["ITEM_".$num."_2"];
-		else return $data["ITEM_$num"];
-		break;
-	case "glpi_users.name.brut" :		
-		$type=USER_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
+//	case "glpi_users.name" :
+//		break;
+	case "glpi_users.name" :		
+		// USER search case
+		if (empty($linkfield)){
+			//$type=USER_TYPE;
+			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+			$out.= $data["ITEM_$num"];
+			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+			$out.= "</a>";
+		} else {
+			$type=USER_TYPE;
+			if ($data["ITEM_".$num."_3"]>0)
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
+			// print realname or login name
+			if (!empty($data["ITEM_".$num."_2"]))
+				$out .= $data["ITEM_".$num."_2"];
+			else $out .= $data["ITEM_$num"];
+
+			if ($data["ITEM_".$num."_3"]>0&&($cfg_glpi["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
+
+			if ($data["ITEM_".$num."_3"]>0)
+				$out.= "</a>";
+		}
 		return $out;
 		break;
 	case "glpi_computers.name" :
@@ -1445,40 +1455,39 @@ switch ($field){
 		return $out;
 		break;	
 	case "glpi_contracts.name" :
-		$type=CONTRACT_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
+		if ($type==CONTRACT_TYPE){
+			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+			$out.= $data["ITEM_$num"];
+			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+			$out.= "/a>";
+		} else {
+			$out= $data["ITEM_$num"];
+		}
 		return $out;
 		break;	
-	case "glpi_contracts.name.brut" :
-		$type=CONTRACT_TYPE;
-		$out= $data["ITEM_$num"];
-		return $out;
-		break;			
 
 	case "glpi_enterprises.name" :
-		$type=ENTERPRISE_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		if (!empty($data["ITEM_".$num."_2"]))
-			$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+		if (empty($linkfield)){
+			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+			$out.= $data["ITEM_$num"];
+			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+			$out.= "</a>";
+			if (!empty($data["ITEM_".$num."_2"]))
+				$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+		} else {
+			$type=ENTERPRISE_TYPE;
+			if ($data["ITEM_".$num."_3"]>0)
+				$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($data["ITEM_".$num."_3"]>0&&($cfg_glpi["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
+			if ($data["ITEM_".$num."_3"]>0)
+				$out.= "</a>";
+			if (!empty($data["ITEM_".$num."_2"]))
+				$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+		}
 		return $out;
 		break;	
 	case "glpi_enterprises_infocoms.name" :
-	case "glpi_enterprises.name.brut" :
-		$type=ENTERPRISE_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
-		$out.= $data["ITEM_$num"];
-		if (!empty($data["ITEM_".$num."_3"])&&($cfg_glpi["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
-		$out.= "</a>";
-		if (!empty($data["ITEM_".$num."_2"]))
-			$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
-		return $out;
-		break;			
 	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
 		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
@@ -1668,12 +1677,19 @@ switch ($table){
 *@return Left join string
 *
 **/
-function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$device_type=0,$meta=0,$meta_type=0){
+function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfield,$device_type=0,$meta=0,$meta_type=0){
 
 
 // Rename table for meta left join
 $AS="";
 $nt=$new_table;
+
+// Multiple link possibilies case
+if ($new_table=="glpi_users"){
+	$AS = " AS ".$new_table."_".$linkfield;
+	$nt.="_".$linkfield;
+}
+
 $addmetanum="";
 $rt=$ref_table;
 if ($meta) {
@@ -1682,8 +1698,11 @@ if ($meta) {
 	//$rt.="_".$meta_type;
 }
 
-if (in_array(translate_table($new_table,$device_type,$meta_type),$already_link_tables)) return "";
-else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type));
+// Auto link
+if ($ref_table==$new_table) return "";
+
+if (in_array(translate_table($new_table,$device_type,$meta_type).".".$linkfield,$already_link_tables)) return "";
+else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
 
 switch ($new_table){
 	case "glpi_dropdown_locations":
@@ -1734,13 +1753,13 @@ switch ($new_table){
 		$out="";
 		// Add networking device for computers
 		if ($type==COMPUTER_TYPE)
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",NETWORK_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON ($rt.ID = $nt.on_device AND $nt.device_type='$type') ";
 		break;
 	case "glpi_dropdown_netpoint":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_networking_ports");
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_networking_ports",$linkfield);
 		
 		return $out." LEFT JOIN $new_table $AS ON (glpi_networking_ports.netpoint = $nt.ID) ";
 		break;
@@ -1749,17 +1768,17 @@ switch ($new_table){
 		break;
 
 	case "glpi_users":
-		return " LEFT JOIN $new_table $AS ON ($rt.tech_num = $nt.ID) ";
+		return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 		break;
 	case "glpi_enterprises":
 		return " LEFT JOIN $new_table $AS ON ($rt.FK_glpi_enterprise = $nt.ID) ";
 		break;
 	case "glpi_enterprises_infocoms":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms");
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
 		return $out." LEFT JOIN glpi_enterprises AS glpi_enterprises_infocoms ON (glpi_infocoms.FK_enterprise = $nt.ID) ";
 		break;
 	case "glpi_dropdown_budget":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms");
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_infocoms.budget = $nt.ID) ";
 		break;
 	case "glpi_infocoms":
@@ -1773,7 +1792,7 @@ switch ($new_table){
 		break;
 	case "glpi_dropdown_state":
 		// Link to glpi_state_item before
-		$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_state_item");
+		$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_state_item",$linkfield);
 		
 		return $out." LEFT JOIN $new_table $AS ON (glpi_state_item.state = $nt.ID) ";
 		break;
@@ -1783,14 +1802,14 @@ switch ($new_table){
 
 	case "glpi_profiles":
 		// Link to glpi_users_profiles before
-		$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_users_profiles");
+		$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_users_profiles",$linkfield);
 		
 		return $out." LEFT JOIN $new_table $AS ON (glpi_users_profiles.FK_profiles = $nt.ID) ";
 		break;
 	
 	case "glpi_contracts":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contract_device");
+		$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contract_device",$linkfield);
 		
 		return $out." LEFT JOIN $new_table $AS ON (glpi_contract_device.FK_contract = $nt.ID) ";
 		break;
@@ -1819,42 +1838,42 @@ switch ($new_table){
 	case "glpi_device_processor":
 
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",PROCESSOR_DEVICE,$meta,$meta_type);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".FK_device = $nt.ID) ";
 		break;		
 	case "glpi_device_ram":
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",RAM_DEVICE,$meta,$meta_type);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,RAM_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".FK_device = $nt.ID) ";
 		break;		
 	case "glpi_device_iface":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",NETWORK_DEVICE,$meta,$meta_type);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".NETWORK_DEVICE.".FK_device = $nt.ID) ";
 		break;	
 	case "glpi_device_sndcard":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",SND_DEVICE,$meta,$meta_type);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,SND_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".SND_DEVICE.".FK_device = $nt.ID) ";
 		break;		
 	case "glpi_device_gfxcard":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",GFX_DEVICE,$meta,$meta_type);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,GFX_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".GFX_DEVICE.".FK_device = $nt.ID) ";
 		break;	
 	case "glpi_device_moboard":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",MOBOARD_DEVICE,$meta,$meta_type);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,MOBOARD_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".MOBOARD_DEVICE.".FK_device = $nt.ID) ";
 		break;	
 	case "glpi_device_hdd":
 		// Link to glpi_networking_ports before
-		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",HDD_DEVICE,$meta,$meta_type);
+		$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,HDD_DEVICE,$meta,$meta_type);
 		
 		return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";
 		break;
