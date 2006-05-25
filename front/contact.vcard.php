@@ -35,6 +35,7 @@
 include ("_relpos.php");
 $NEEDED_ITEMS=array("contact","enterprise");
 include ($phproot . "/inc/includes.php");
+include ($phproot . "/lib/vcardclass/classes-vcard.php");
 
 	if (empty($_GET["ID"])) {
 	

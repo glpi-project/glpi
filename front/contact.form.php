@@ -32,10 +32,10 @@
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
-
 include ("_relpos.php");
 $NEEDED_ITEMS=array("contact","enterprise","link");
 include ($phproot . "/inc/includes.php");
+
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
