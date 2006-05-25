@@ -967,9 +967,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 **/
 function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 
-$NOT="";
+$NOT=0;
 if (ereg("NOT",$link)){
- $NOT=" NOT";
+ $NOT=1;
  $link=ereg_replace(" NOT","",$link);
 }
 
@@ -989,30 +989,27 @@ if (!ereg("$NAME$num",$GROUPBY)) {
 
 		case "glpi_device_ram.specif_default" :
 			$larg=100;
-			if (empty($NOT))
+			if (!$NOT)
 				$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
 			else 
 				$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 		break;
 		case "glpi_device_processor.specif_default" :
 			$larg=100;
-			if (empty($NOT))
+			if (!$NOT)
 				$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
 			else 
 				$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 		break;
 		case "glpi_device_hdd.specif_default" :
 			$larg=1000;
-			if (empty($NOT))
+			if (!$NOT)
 				$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
 			else 
 				$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 		break;
 		default :
-			
-			if ($val!="null")
-				$GROUPBY.=" ( $NAME$num $NOT LIKE '%$val%') ";
-			else $GROUPBY.=" ( $NAME$num IS $NOT NULL) ";
+			$GROUPBY.= makeTextSearch($val,$NOT);
 		break;
 	}
 }
@@ -1163,14 +1160,9 @@ global $LINK_ID_TABLE,$lang,$SEARCH_OPTION;
 $table=$SEARCH_OPTION[$type][$ID]["table"];
 $field=$SEARCH_OPTION[$type][$ID]["field"];
 
-
-$NOT="";
-if ($nott) $NOT=" NOT";
-
 if ($meta&&$LINK_ID_TABLE[$type]!=$table) $table.="_".$type;
 
-$SEARCH=" $NOT LIKE '%".$val."%' ";
-if ($val=="NULL") $SEARCH=" IS $NOT NULL ";
+$SEARCH=makeTextSearch($val,$nott);
 
 switch ($table.".".$field){
 case "glpi_users.name" :
@@ -1179,17 +1171,17 @@ case "glpi_users.name" :
 case "glpi_device_hdd.specif_default" :
 //	$larg=500;
 //	return " ( DEVICE_".HDD_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".HDD_DEVICE.".specificity > ".($val-$larg)." ) ";
-	return " $table.$field $NOT LIKE '%%' ";
+	return " $table.$field ".makeTextSearch("",$nott);
 	break;
 case "glpi_device_ram.specif_default" :
 //	$larg=50;
 //	return " ( DEVICE_".RAM_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".RAM_DEVICE.".specificity > ".($val-$larg)." ) ";
-	return " $table.$field $NOT LIKE '%%' ";
+	return " $table.$field ".makeTextSearch("",$nott);
 	break;
 case "glpi_device_processor.specif_default" :
 //	$larg=50;
 //	return " ( DEVICE_".RAM_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".RAM_DEVICE.".specificity > ".($val-$larg)." ) ";
-	return " $table.$field $NOT LIKE '%%' ";
+	return " $table.$field ".makeTextSearch("",$nott);
 	break;
 
 case "glpi_networking_ports.ifmac" :

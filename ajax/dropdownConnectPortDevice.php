@@ -54,7 +54,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 		$where.=" AND is_template='0' ";		
 		
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-			$where.=" AND name LIKE '%".$_POST['searchText']."%' ";
+			$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
 
 		$NBMAX=$cfg_glpi["dropdown_max"];
 		

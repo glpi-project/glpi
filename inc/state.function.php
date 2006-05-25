@@ -70,7 +70,9 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 	echo $lang["state"][0]." : &nbsp; &nbsp;";
 	dropdownValue("glpi_dropdown_state","state",$state);
 	echo "</td><td align='center'>";
-	echo "<select name=\"field\" size='1'>";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />&nbsp;";
+	echo $lang["search"][10];
+	echo "&nbsp;<select name=\"field\" size='1'>";
         echo "<option value='all' ";
 	if($field == "all") echo "selected";
 	echo ">".$lang["search"][7]."</option>";
@@ -80,17 +82,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 		if($key == $field) echo "selected";
 		echo ">". $val ."</option>\n";
 	}
-	echo "</select>&nbsp;";
-	echo $lang["search"][1];
-	echo "&nbsp;<select name='phrasetype' size='1' >";
-	echo "<option value='contains'";
-	if($phrasetype == "contains") echo "selected";
-	echo ">".$lang["search"][2]."</option>";
-	echo "<option value='exact'";
-	if($phrasetype == "exact") echo "selected";
-	echo ">".$lang["search"][3]."</option>";
 	echo "</select>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />";
 	echo "&nbsp;";
 	echo $lang["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
@@ -121,19 +113,10 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 
 	// Build query
 	if($field=="all") {
-	/*	$where = " (";
-		$where .= "res_item.".$coco . " LIKE '%".$contains."%'";
-		$where .= ")";
-	*/
 	$where=" 1 = 1 ";
 	}
 	else {
-		if ($phrasetype == "contains") {
-			$where = "($field LIKE '%".$contains."%')";
-		}
-		else {
-			$where = "($field LIKE '".$contains."')";
-		}
+		$where = "($field ".makeTextSearch($contains).")";
 	}
 	if(!empty($state)) {
 		$where .= " AND (glpi_state_item.state = '".$state."')";

@@ -50,7 +50,7 @@
 
 	$where="";	
 	if (strlen($_POST['searchSoft'])>0&&$_POST['searchSoft']!=$cfg_glpi["ajax_wildcard"])
-		$where.=" AND name LIKE '%".$_POST['searchSoft']."%' ";
+		$where.=" AND name ".makeTextSearch($_POST['searchSoft'])." ";
 	
 	$query = "SELECT * FROM glpi_software WHERE deleted='N' AND is_template='0' $where order by name";
 	$result = $db->query($query);

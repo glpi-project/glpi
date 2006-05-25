@@ -50,9 +50,9 @@
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"]){
 				$WWHERE="";
 				if ($_POST['table']!="glpi_software"){
-				$WWHERE=" OR contact LIKE '%".$_POST['searchText']."%' OR serial LIKE '%".$_POST['searchText']."%' OR otherserial LIKE '%".$_POST['searchText']."%'";
+				$WWHERE=" OR contact ".makeTextSearch($_POST['searchText'])." OR serial ".makeTextSearch($_POST['searchText'])." OR otherserial ".makeTextSearch($_POST['searchText']);
 				}
-			$where.=" AND (name LIKE '%".$_POST['searchText']."%' OR ID = '".$_POST['searchText']."' $WWHERE)";
+			$where.=" AND (name ".makeTextSearch($_POST['searchText'])." OR ID = '".$_POST['searchText']."' $WWHERE)";
 		}
 
 		

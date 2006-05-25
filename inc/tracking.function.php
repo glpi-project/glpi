@@ -1020,45 +1020,47 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 	// Reduce computer list
 	if ($computers_search){
+	$SEARCH=makeTextSearch($contains);
 	// Build query
 	if($field == "all") {
 		$wherecomp = " (";
 		$query = "SHOW COLUMNS FROM glpi_computers";
 		$result = $db->query($query);
 		$i = 0;
+		
 		while($line = $db->fetch_array($result)) {
 			if($i != 0) {
 				$wherecomp .= " OR ";
 			}
 			if(IsDropdown($line["Field"])) {
-				$wherecomp .= " glpi_dropdown_". $line["Field"] .".name LIKE '%".$contains."%'";
+				$wherecomp .= " glpi_dropdown_". $line["Field"] .".name $SEARCH" ;
 			}
 			elseif($line["Field"] == "location") {
-				$wherecomp .= " glpi_dropdown_locations.name LIKE '%".$contains."%'";
+				$wherecomp .= " glpi_dropdown_locations.name $SEARCH";
 			}
 			else {
-   			$wherecomp .= "comp.".$line["Field"] . " LIKE '%".$contains."%'";
+   			$wherecomp .= "comp.".$line["Field"] . $SEARCH;
 			}
 			$i++;
 		}
 		foreach($cfg_glpi["devices_tables"] as $key => $val) {
 			if ($val!="drive"&&$val!="control"&&$val!="pci"&&$val!="case"&&$val!="power")
-			$wherecomp .= " OR ".$val.".designation LIKE '%".$contains."%'";
+			$wherecomp .= " OR ".$val.".designation ".makeTextSearch($contains,$NOT);
 		}
-		$wherecomp .= " OR glpi_networking_ports.ifaddr LIKE '%".$contains."%'";
-		$wherecomp .= " OR glpi_networking_ports.ifmac LIKE '%".$contains."%'";
-		$wherecomp .= " OR glpi_dropdown_netpoint.name LIKE '%".$contains."%'";
-		$wherecomp .= " OR glpi_enterprises.name LIKE '%".$contains."%'";
-		$wherecomp .= " OR resptech.name LIKE '%".$contains."%'";
+		$wherecomp .= " OR glpi_networking_ports.ifaddr $SEARCH";
+		$wherecomp .= " OR glpi_networking_ports.ifmac $SEARCH";
+		$wherecomp .= " OR glpi_dropdown_netpoint.name $SEARCH";
+		$wherecomp .= " OR glpi_enterprises.name $SEARCH";
+		$wherecomp .= " OR resptech.name $SEARCH";
 		
 		$wherecomp .= ")";
 	}
 	else {
 		if(IsDevice($field)) {
-			$wherecomp = "(glpi_device_".$field." LIKE '%".$contains."')";
+			$wherecomp = "(glpi_device_".$field." $SEARCH )";
 		}
 		else {
-			$wherecomp = "($field LIKE '%".$contains."%')";
+			$wherecomp = "($field $SEARCH)";
 		}
 	}
 	}
@@ -1142,15 +1144,16 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 
 	if ($contains2!=""){
+		$SEARCH2=makeTextSearch($contains2);
 		switch ($field2){
 			case "both" :
-			$where.= " AND (glpi_followups.contents LIKE '%".$contains2."%' OR glpi_tracking.contents LIKE '%".$contains2."%')";
+			$where.= " AND (glpi_followups.contents $SEARCH2 OR glpi_tracking.contents $SEARCH2)";
 			break;
 			case "followup" :
-			$where.= " AND (glpi_followups.contents LIKE '%".$contains2."%')";
+			$where.= " AND (glpi_followups.contents $SEARCH2)";
 			break;
 			case "contents" :
-			$where.= " AND (glpi_tracking.contents LIKE '%".$contains2."%')";
+			$where.= " AND (glpi_tracking.contents $SEARCH2)";
 			break;
 			case "ID" :
 			$where= " WHERE (glpi_tracking.ID = '".$contains2."')";

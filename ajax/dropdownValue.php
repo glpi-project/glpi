@@ -49,7 +49,7 @@
 
 		$where="";
 		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-			$where=" WHERE (t1.name LIKE '%".$_POST['searchText']."%' OR t2.completename LIKE '%".$_POST['searchText']."%')";
+			$where=" WHERE (t1.name ".makeTextSearch($_POST['searchText'])." OR t2.completename ".makeTextSearch($_POST['searchText']).")";
 
 		$NBMAX=$cfg_glpi["dropdown_max"];
 		$LIMIT="LIMIT 0,$NBMAX";
@@ -110,7 +110,7 @@
 			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]){
 				if (!$first) $where.=" AND ";
 				else $first=false;
-				$where.=" completename LIKE '%".$_POST['searchText']."%' ";
+				$where.=" completename ".makeTextSearch($_POST['searchText']);
 			}
 			
 			if ($where=="WHERE ") $where="";
@@ -157,7 +157,7 @@
 			$where .=" (ID <> '".$_POST['value']."' ";
 
 			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-				$where.=" AND name LIKE '%".$_POST['searchText']."%' ";
+				$where.=" AND name ".makeTextSearch($_POST['searchText']);
 			$where.=")";
 
 			$query = "SELECT ID, name FROM ".$_POST['table']." $where ORDER BY name $LIMIT";

@@ -53,7 +53,7 @@
 		$where.=" AND $table.is_template='0' ";		
 			
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-		$where.=" AND ( $table.name LIKE '%".$_POST['searchText']."%' OR $table.serial LIKE '%".$_POST['searchText']."%' )";
+		$where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
 	$NBMAX=$cfg_glpi["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
