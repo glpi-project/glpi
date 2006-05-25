@@ -157,6 +157,7 @@ echo "<span id='results_$myname$rand'>\n";
 echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
 echo "</span>\n";	
 
+
 $comments_display="";
 $comments_display2="";
 if ($display_comments&&!empty($comments)) {
@@ -185,6 +186,14 @@ if (!empty($which))
 	echo "</a>";
 
 	echo $comments_display2;
+
+/*
+	if ($display_comments&&!empty($comments)) { 
+		if (!empty($which)) echo "&nbsp;"; 
+		echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">"; 
+		echo "<span class='over_link' id='comments_$rand'>".nl2br($comments)."</span>"; 
+	} 
+*/
 
 if ($table=="glpi_enterprises")
 	echo getEnterpriseLinks($value);	
