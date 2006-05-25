@@ -59,7 +59,9 @@ function showGroupDevice($ID){
 }
 
 function showGroupUser($ID){
-	global $db,$cfg_glpi, $lang, $HTMLRel,$LINK_ID_TABLE,$INFOFORM_PAGES;
+	global $db,$cfg_glpi, $lang, $HTMLRel;
+	
+	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
 
 	$canedit=haveRight("group","w");
 	
@@ -80,10 +82,10 @@ function showGroupUser($ID){
 			if (empty($data["realname"]))
 				$name=$data["name"];
 			else $name=$data["realname"];
-			echo "<td><a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ID"]."'>".$name."</a>";
+			echo "<td><a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ID"]."'>".$name.($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</a>";
 			echo "&nbsp;";
 			if ($canedit)
-				echo "<a href='".$_SERVER["PHP_SELF"]."?deleteuser=deleteuser&amp;gID=$ID&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png'></a>";
+				echo "<a href='".$_SERVER["PHP_SELF"]."?deleteuser=deleteuser&amp;gID=$ID&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
 			
 			echo "</td>";
 			$i++;

@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
 	commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 	$user->update($_POST);
 	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$lang["log"][21]."  ".$_POST["name"].".");
-	$user->showForm($_SERVER["PHP_SELF"],$_POST["name"]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 	
 
@@ -81,6 +81,7 @@ if (isset($_POST["add"])) {
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 		
 		$user->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
+		showGroupAssociated($_GET["ID"]);
 	} else {
 		if (isset($_GET['add_ext_auth'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
