@@ -1436,6 +1436,8 @@ $lang["title"][41]="Téléphone";
 $lang["title"][42]="Modification Massive";
 
 $lang["tracking"][0]="Suivi des tickets";
+$lang["tracking"][1]="Mes matériels";
+$lang["tracking"][2]="Ou recherche complète";
 $lang["tracking"][8]="Pas de description, veuillez recommencer";
 $lang["tracking"][9]="Nouveau ticket ouvert, suivant...";
 $lang["tracking"][10]="Ouverture du ticket impossible, vérifiez la base de données";

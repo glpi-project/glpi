@@ -727,9 +727,43 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 * @return nothing (print out an HTML select box)
 */
 function dropdownTrackingDeviceType($myname,$value){
-	global $lang,$HTMLRel,$cfg_glpi;
+	global $lang,$HTMLRel,$cfg_glpi,$db,$LINK_ID_TABLE;
 	
 	$rand=mt_rand();
+
+	$my_devices="";
+
+	$group_where="";
+	$groups=array();
+	$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$_SESSION["glpiID"]."';";
+	
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_array($result)){
+			$group_where=" OR FK_groups = '".$data["FK_groups"]."' ";
+		}
+	}
+
+	$ci=new CommonItem();
+	
+	foreach ($cfg_glpi["linkuser_type"] as $type){
+		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$_SESSION["glpiID"]."' $group_where";
+		
+		$result=$db->query($query);
+		if ($db->numrows($result)>0){
+			$ci->setType($type);
+			$type_name=$ci->getType();
+			while ($data=$db->fetch_array($result)){
+				$my_devices.="<option value='".$type."_".$data["ID"]."'>$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+			}
+		}
+
+	}
+
+	if (!empty($my_devices)){
+		echo $lang["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>-----</option>$my_devices</select><br>";
+		echo $lang["tracking"][2].":&nbsp;";
+	}
 	
 	echo "<select id='search_$myname$rand' name='$myname'>\n";
 

@@ -47,10 +47,6 @@ if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permi
 
 $status = "new";
 
-$ID=0;
-if (isset($_POST["computer"]))
-$ID=$_POST["computer"];
-
 // Sauvegarde des données dans le cas de retours avec des navigateurs pourris style IE
 $varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents');
 
@@ -97,11 +93,22 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	nullFooter();
 	exit;
 } else{
-	if (!isset($_POST["device_type"])||(empty($ID)&&$_POST["device_type"]!=0)) $_POST["device_type"]=0;
+	if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
+		$splitter=split("_",$_POST["_my_items"]);
+		if (count($splitter)==2){
+			$_POST["device_type"]=$splitter[0];
+			$_POST["computer"]=$splitter[1];
+		}
+	}
+
+	if (!isset($_POST["device_type"])||(empty($_POST["computer"])&&$_POST["device_type"]!=0)) {
+		$_POST["device_type"]=0;
+		$_POST["computer"]=0;
+	}
 
 	$ci=new CommonItem;
 	
-	if ($_POST["device_type"]!=0&&!$ci->getFromDB($_POST["device_type"],$ID)){
+	if ($_POST["device_type"]!=0&&!$ci->getFromDB($_POST["device_type"],$_POST["computer"])){
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 		}
