@@ -158,7 +158,19 @@ echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
 echo "</span>\n";	
 
 if ($display_comments&&!empty($comments)) {
+	$which="";
+	if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
+		$search=array("/glpi_dropdown_/","/glpi_type_/");
+		$replace=array("","");
+		$which=preg_replace($search,$replace,$table);
+		
+	}
+	if (!empty($which)){
+		echo "<a href='".$cfg_glpi["root_doc"]."/front/setup.dropdowns.php?which=$which"."' target='_blank'>";
+	}
 	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
+	if (!empty($which))
+		echo "</a>";
 	echo "<span class='over_link' id='comments_$rand'>".nl2br($comments)."</span>";
 }
 
