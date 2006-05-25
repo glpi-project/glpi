@@ -157,24 +157,34 @@ echo "<span id='results_$myname$rand'>\n";
 echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
 echo "</span>\n";	
 
-	$which="";
+$comments_display="";
+$comments_display2="";
+if ($display_comments&&!empty($comments)) {
+	$comments_display=" onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\" ";
+	$comments_display2="<span class='over_link' id='comments_$rand'>".nl2br($comments)."</span>";
+}
+
+$which="";
+$dropdown_right=haveRight("dropdown","w");
+
+if ($dropdown_right){
 	if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
 		$search=array("/glpi_dropdown_/","/glpi_type_/");
 		$replace=array("","");
 		$which=preg_replace($search,$replace,$table);
-		
 	}
-	
-	if (!empty($which)){
-		echo "<a href='".$cfg_glpi["root_doc"]."/front/setup.dropdowns.php?which=$which"."' target='_blank'>";
-		echo "<img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
-		echo "</a>";
-	}
-if ($display_comments&&!empty($comments)) {
-	if (!empty($which)) echo "&nbsp;";
-	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
-	echo "<span class='over_link' id='comments_$rand'>".nl2br($comments)."</span>";
 }
+	
+if (!empty($which))
+	echo "<a href='".$cfg_glpi["root_doc"]."/front/setup.dropdowns.php?which=$which"."' target='_blank'>";
+
+if (!empty($which)||($display_comments&&!empty($comments)))
+	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display>";
+
+if (!empty($which))
+	echo "</a>";
+
+	echo $comments_display2;
 
 if ($table=="glpi_enterprises")
 	echo getEnterpriseLinks($value);	
