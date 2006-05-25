@@ -185,7 +185,7 @@ function showUsersTitle($target,$actif) {
 	echo "<div align='center'><table border='0'><tr>";
 	echo "<td><a  class='icon_consol' href='".$target."&onglet=tracking'><b>".$lang["title"][24]."</b></a>";
 	echo "</td>";
-	echo "<td><a class='icon_consol' href='".$target."&onglet=hardware'>".$lang["setup"][10]."</a></td>";
+	echo "<td><a class='icon_consol' href='".$target."&onglet=hardware'>".$lang["common"][1]."</a></td>";
 	echo "</tr></table></div><br>";
 }
 
