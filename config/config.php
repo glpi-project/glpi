@@ -106,6 +106,7 @@ define("PHONE_TYPE","23");//
 define("DEVICE_TYPE","24");
 define("REMINDER_TYPE","25");
 define("STAT_TYPE","26");
+define("GROUP_TYPE","27");
 
 
 // DEVICE TYPE
@@ -191,6 +192,10 @@ $LINK_ID_TABLE=array(
 		LINK_TYPE => "glpi_links",
 		STATE_TYPE => "glpi_state_item",
 		PHONE_TYPE => "glpi_phones",
+		DEVICE_TYPE => "???",
+		REMINDER_TYPE => "glpi_reminder",
+		STAT_TYPE => "???",
+		GROUP_TYPE => "glpi_groups",
 );
 
 $INFOFORM_PAGES=array( 
@@ -217,6 +222,10 @@ $INFOFORM_PAGES=array(
 		LINK_TYPE => "front/link.form.php",
 		STATE_TYPE => "??",
 		PHONE_TYPE => "front/phone.form.php",
+		DEVICE_TYPE => "???",
+		REMINDER_TYPE => "front/reminder.form.php",
+		STAT_TYPE => "???",
+		GROUP_TYPE => "front/group.form.php",
 );
 
 

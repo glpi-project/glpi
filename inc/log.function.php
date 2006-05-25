@@ -267,7 +267,8 @@ function logArray(){
 				"reservation"=>$lang["log"][42],
 				"contracts"=>$lang["log"][17],
 				"phones"=>$lang["log"][43],
-				"dropdown"=>$lang["log"][44]);
+				"dropdown"=>$lang["log"][44],
+				"groups"=>$lang["log"][47]);
 	
 	$logService=array("inventory"=>$lang["log"][50],
 				"tracking"=>$lang["log"][51],

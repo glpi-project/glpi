@@ -772,6 +772,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			// Form to delete old item
 			$isadmin=haveTypeRight($type,"w");
+
 			if ($isadmin&&$output_type==0){
 				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$cfg_glpi["root_doc"]."/front/massiveaction.php\">";
 			}
@@ -1350,7 +1351,6 @@ switch ($field){
 	case "glpi_users.name" :		
 		// USER search case
 		if (empty($linkfield)){
-			//$type=USER_TYPE;
 			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 			$out.= $data["ITEM_$num"];
 			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
@@ -1375,85 +1375,27 @@ switch ($field){
 		return $out;
 		break;
 	case "glpi_computers.name" :
-		$type=COMPUTER_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;
 	case "glpi_printers.name" :
-		$type=PRINTER_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;
 	case "glpi_networking.name" :
-		$type=NETWORKING_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;
 	case "glpi_phones.name" :
-		$type=PHONE_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;
 	case "glpi_monitors.name" :
-		$type=MONITOR_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;
 	case "glpi_software.name" :
-		$type=SOFTWARE_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
- 		return $out;
-		break;
 	case "glpi_peripherals.name" :
-		$type=PERIPHERAL_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;	
 	case "glpi_cartridges_type.name" :
-		$type=CARTRIDGE_TYPE;
+	case "glpi_consumables_type.name" :
+	case "glpi_contacts.name" :
+	case "glpi_type_docs.name" :
+	case "glpi_links.name" :
+	case "glpi_docs.name" :
+	case "glpi_groups.name" :
 		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 		$out.= $data["ITEM_$num"];
 		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 		$out.= "</a>";
 		return $out;
 		break;
-	case "glpi_consumables_type.name" :
-		$type=CONSUMABLE_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;	
-	case "glpi_contacts.name" :
-		$type=CONTACT_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;	
+	
+	
 	case "glpi_contracts.name" :
 		if ($type==CONTRACT_TYPE){
 			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
@@ -1488,7 +1430,6 @@ switch ($field){
 		return $out;
 		break;	
 	case "glpi_enterprises_infocoms.name" :
-	case "glpi_docs.name" :		
 		$type=DOCUMENT_TYPE;
 		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 		$out.= $data["ITEM_$num"];
@@ -1496,22 +1437,6 @@ switch ($field){
 		$out.= "</a>";
 		return $out;
 		break;
-	case "glpi_type_docs.name" :		
-		$type=TYPEDOC_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;
-	case "glpi_links.name" :		
-		$type=LINK_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
-		return $out;
-		break;		
 	case "glpi_type_docs.icon" :
 		if (!empty($data["ITEM_$num"]))
 			return "<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";

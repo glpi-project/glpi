@@ -71,6 +71,7 @@ $query="CREATE TABLE `glpi_profiles` (
   `update` char(1) default NULL,
   `profile` char(1) default NULL,
   `user` char(1) default NULL,
+  `group` char(1) default NULL,
   `logs` char(1) default NULL,
   `reminder_public` char(1) default NULL,
   `backup` char(1) default NULL,
@@ -95,13 +96,13 @@ $query="CREATE TABLE `glpi_profiles` (
 
 	$db->query($query) or die("0.68 add profiles ".$lang["update"][90].$db->error());
 
-	$query="INSERT INTO `glpi_profiles` VALUES (1, 'post-only', 'helpdesk', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'r', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '1');";
+	$query="INSERT INTO `glpi_profiles` VALUES (1, 'post-only', 'helpdesk', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'r', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '1');";
 	$db->query($query) or die("0.68 add post-only profile ".$lang["update"][90].$db->error());
-	$query="INSERT INTO `glpi_profiles` VALUES (2, 'normal', 'central', '0', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', '1', 'r', 'r', NULL, NULL, NULL, 'r', 'r', NULL, NULL, 'r', NULL, 'r', NULL, NULL, NULL, '1', '1', '0', '0', '0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '1');";
+	$query="INSERT INTO `glpi_profiles` VALUES (2, 'normal', 'central', '0', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', '1', 'r', 'r', NULL, NULL, NULL, 'r', 'r', NULL, NULL, 'r', NULL, 'r', 'r', NULL, NULL, NULL, '1', '1', '1', '0', '0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '1');";
 	$db->query($query) or die("0.68 add normal profile ".$lang["update"][90].$db->error());
-	$query="INSERT INTO `glpi_profiles` VALUES (3, 'admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'w', 'w', 'w', 'w', NULL, 'w', 'r', 'r', 'w', NULL, NULL, NULL, '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
+	$query="INSERT INTO `glpi_profiles` VALUES (3, 'admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'w', 'w', 'w', 'w', NULL, 'w', 'r', 'r', 'w', 'w', NULL, NULL, NULL, '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
 	$db->query($query) or die("0.68 add admin profile ".$lang["update"][90].$db->error());
-	$query="INSERT INTO `glpi_profiles` VALUES (4, 'super-admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', 'r', 'w', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
+	$query="INSERT INTO `glpi_profiles` VALUES (4, 'super-admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', 'w', 'r', 'w', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');";
 	$db->query($query) or die("0.68 add super-admin profile ".$lang["update"][90].$db->error());
 
 }
@@ -494,6 +495,40 @@ if(!FieldExists("glpi_$table","FK_users")) {
 		}
 	}
 
+}
+
+// Group management
+if(!TableExists("glpi_groups")) {
+	$query="CREATE TABLE `glpi_groups` (
+	`ID` int(11) NOT NULL auto_increment,
+	`name` varchar(255) default NULL,
+	`comments` text,
+	`ldap_field` varchar(255) default NULL,
+	`ldap_value` varchar(255) default NULL,
+	PRIMARY KEY  (`ID`),
+	KEY `name` (`name`),
+	KEY `ldap_field` (`ldap_field`)
+	) TYPE=MyISAM;";
+	$db->query($query) or die("0.68 add groups ".$lang["update"][90].$db->error());
+}
+
+if(!TableExists("glpi_users_groups")) {
+
+$query="CREATE TABLE `glpi_users_groups` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_users` int(11) default '0',
+  `FK_groups` int(11) default '0',
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `FK_users` (`FK_users`,`FK_groups`),
+  KEY `FK_users_2` (`FK_users`),
+  KEY `FK_groups` (`FK_groups`)
+) TYPE=MyISAM;";
+$db->query($query) or die("0.68 add users_groups ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","ldap_field_group")) {	
+	$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_group` varchar(255) NULL;";
+	$db->query($query) or die("0.68 add ldap_field_group in config ".$lang["update"][90].$db->error());
 }
 
 } // fin 0.68 #####################################################################################

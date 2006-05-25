@@ -125,6 +125,8 @@ function commonHeader($title,$url)
 	//////// ADMINISTRATION
 	if (haveRight("user","r"))
 		$config[$lang["Menu"][14]]=array("user.php","u");
+	if (haveRight("group","r"))
+		$config[$lang["Menu"][36]]=array("group.php","g");
 	if (haveRight("profile","r"))
 		$config[$lang["Menu"][35]]=array("profile.php","p");
 	$config[$lang["Menu"][10]]=array("setup.php","2");
@@ -1078,6 +1080,7 @@ function printCleanArray($tab,$pad=0){
 		else echo $val."<br>";
 		}
 }
+
 /**
 *  show onglet for central
 *
