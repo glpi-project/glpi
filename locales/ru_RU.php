@@ -196,6 +196,8 @@ $lang["common"][30]="New Item";
 $lang["common"][31]="Blank Template"; 
 $lang["common"][32]="Characteristics"; 
 $lang["common"][33]="Total"; 
+$lang["common"][34]="User"; 
+$lang["common"][35]="Group"; 
 
 $lang["computers"][0]="Добавление компьютера..."; 
 $lang["computers"][9]="ОС"; 
@@ -706,6 +708,9 @@ $lang["log"][43]="phone";
 $lang["log"][44]="Heading"; 
 $lang["log"][45]="Successfull"; 
 $lang["log"][46]="Failed"; 
+$lang["log"][47]="group"; 
+$lang["log"][48]="add user to group"; 
+$lang["log"][49]="delete user to group"; 
 $lang["log"][50]="Inventory"; 
 $lang["log"][51]="Tracking"; 
 $lang["log"][52]="Planning"; 
@@ -799,6 +804,7 @@ $lang["Menu"][32]="Расходные материалы";
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Телефоны"; 
 $lang["Menu"][35]="Profiles"; 
+$lang["Menu"][36]="Groups"; 
 
 $lang["monitors"][0]="Добавить монитор..."; 
 $lang["monitors"][4]="Монитор"; 
@@ -863,6 +869,8 @@ $lang["ocsconfig"][27]="Общая информация о компьютере"
 $lang["ocsconfig"][28]="Периферийные устройства"; 
 $lang["ocsconfig"][36]="Модемы"; 
 $lang["ocsconfig"][37]="Порты"; 
+$lang["ocsconfig"][38]="Use the software dictionnary of OCS"; 
+$lang["ocsconfig"][39]="OCS TAG"; 
 
 $lang["ocsng"][0]="OCS Inventory NG"; 
 $lang["ocsng"][1]="Синхронизация уже импортированных компьютеров"; 
@@ -1276,6 +1284,12 @@ $lang["setup"][501]="Пакет обновления";
 $lang["setup"][503]="Модели телефонов"; 
 $lang["setup"][504]="Типы телефонов"; 
 $lang["setup"][505]="Типы блоков питания телефонов"; 
+$lang["setup"][600]="LDAP Field"; 
+$lang["setup"][601]="LDAP Value"; 
+$lang["setup"][602]="Add Group..."; 
+$lang["setup"][603]="Add a user"; 
+$lang["setup"][604]="Add to a group"; 
+$lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Добавить ПО..."; 
 $lang["software"][3]="Платформа"; 
@@ -1394,6 +1408,8 @@ $lang["title"][41]="Телефон";
 $lang["title"][42]="Massive modification"; 
 
 $lang["tracking"][0]="Отслеживание заявок"; 
+$lang["tracking"][1]="My devices"; 
+$lang["tracking"][2]="Or complete search"; 
 $lang["tracking"][8]="Нет описания, попробуйте еще раз"; 
 $lang["tracking"][9]="New ticket post, next..."; 
 $lang["tracking"][10]="Невозможно добавить заявку, проверьте базу данных"; 

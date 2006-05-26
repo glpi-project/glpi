@@ -196,6 +196,8 @@ $lang["common"][30]="New Item";
 $lang["common"][31]="Blank Template"; 
 $lang["common"][32]="Characteristics"; 
 $lang["common"][33]="Total"; 
+$lang["common"][34]="User"; 
+$lang["common"][35]="Group"; 
 
 $lang["computers"][0]="Toevoegen Computer..."; 
 $lang["computers"][9]="Besturingssysteem"; 
@@ -706,6 +708,9 @@ $lang["log"][43]="telefoon";
 $lang["log"][44]="Hoofding"; 
 $lang["log"][45]="Successfull"; 
 $lang["log"][46]="Failed"; 
+$lang["log"][47]="group"; 
+$lang["log"][48]="add user to group"; 
+$lang["log"][49]="delete user to group"; 
 $lang["log"][50]="Inventaris"; 
 $lang["log"][51]="Natrekken"; 
 $lang["log"][52]="Planning"; 
@@ -799,6 +804,7 @@ $lang["Menu"][32]="Verbruiksartikelen";
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Telefoons"; 
 $lang["Menu"][35]="Profiles"; 
+$lang["Menu"][36]="Groups"; 
 
 $lang["monitors"][0]="Scherm toevoegen..."; 
 $lang["monitors"][4]="Scherm"; 
@@ -863,6 +869,8 @@ $lang["ocsconfig"][27]="Algemene computerinformatie";
 $lang["ocsconfig"][28]="Randapparatuur"; 
 $lang["ocsconfig"][36]="Modems"; 
 $lang["ocsconfig"][37]="Poorten"; 
+$lang["ocsconfig"][38]="Use the software dictionnary of OCS"; 
+$lang["ocsconfig"][39]="OCS TAG"; 
 
 $lang["ocsng"][0]="OCS Inventory NG"; 
 $lang["ocsng"][1]="Synchronisatie van de reeds ge&iuml;mporteerde computers"; 
@@ -1276,6 +1284,12 @@ $lang["setup"][501]="Servicepakket";
 $lang["setup"][503]="Telefoonmodellen"; 
 $lang["setup"][504]="Telefoontypes"; 
 $lang["setup"][505]="Stroomvoorzieningstype voor telefoons"; 
+$lang["setup"][600]="LDAP Field"; 
+$lang["setup"][601]="LDAP Value"; 
+$lang["setup"][602]="Add Group..."; 
+$lang["setup"][603]="Add a user"; 
+$lang["setup"][604]="Add to a group"; 
+$lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Software toevoegen ..."; 
 $lang["software"][3]="Platform"; 
@@ -1394,6 +1408,8 @@ $lang["title"][41]="Telefoon";
 $lang["title"][42]="Massa-aanpassingen"; 
 
 $lang["tracking"][0]="Opvolging van tussenkomsten"; 
+$lang["tracking"][1]="My devices"; 
+$lang["tracking"][2]="Or complete search"; 
 $lang["tracking"][8]="Geen beschrijving, probeer opnieuw"; 
 $lang["tracking"][9]="Nieuwe tussenkomst aanvragen, volgende ..."; 
 $lang["tracking"][10]="Tussenkomst toevoegen mislukt, controleer de databank"; 

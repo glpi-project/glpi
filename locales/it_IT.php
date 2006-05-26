@@ -196,6 +196,8 @@ $lang["common"][30]="New Item";
 $lang["common"][31]="Blank Template"; 
 $lang["common"][32]="Characteristics"; 
 $lang["common"][33]="Total"; 
+$lang["common"][34]="User"; 
+$lang["common"][35]="Group"; 
 
 $lang["computers"][0]="Aggiungi un computer..."; 
 $lang["computers"][9]="SO"; 
@@ -706,6 +708,9 @@ $lang["log"][43]="phone";
 $lang["log"][44]="Heading"; 
 $lang["log"][45]="Successfull"; 
 $lang["log"][46]="Failed"; 
+$lang["log"][47]="group"; 
+$lang["log"][48]="add user to group"; 
+$lang["log"][49]="delete user to group"; 
 $lang["log"][50]="Inventory"; 
 $lang["log"][51]="Tracking"; 
 $lang["log"][52]="Planning"; 
@@ -799,6 +804,7 @@ $lang["Menu"][32]="Consumabili";
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Telefonia"; 
 $lang["Menu"][35]="Profiles"; 
+$lang["Menu"][36]="Groups"; 
 
 $lang["monitors"][0]="Aggiungi schermo..."; 
 $lang["monitors"][4]="Schermo"; 
@@ -863,6 +869,8 @@ $lang["ocsconfig"][27]="General computer informations";
 $lang["ocsconfig"][28]="Peripherals"; 
 $lang["ocsconfig"][36]="Modems"; 
 $lang["ocsconfig"][37]="Ports"; 
+$lang["ocsconfig"][38]="Use the software dictionnary of OCS"; 
+$lang["ocsconfig"][39]="OCS TAG"; 
 
 $lang["ocsng"][0]="OCS Inventory NG"; 
 $lang["ocsng"][1]="Synchronization of the already imported computers"; 
@@ -1276,6 +1284,12 @@ $lang["setup"][501]="Service Pack";
 $lang["setup"][503]="Modelli telefoni"; 
 $lang["setup"][504]="Tipologie telefoni"; 
 $lang["setup"][505]="Tipologie alimentazione telefoni"; 
+$lang["setup"][600]="LDAP Field"; 
+$lang["setup"][601]="LDAP Value"; 
+$lang["setup"][602]="Add Group..."; 
+$lang["setup"][603]="Add a user"; 
+$lang["setup"][604]="Add to a group"; 
+$lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Aggiungi software..."; 
 $lang["software"][3]="Piattaforma"; 
@@ -1394,6 +1408,8 @@ $lang["title"][41]="Telefonia";
 $lang["title"][42]="Modifica generalizzata"; 
 
 $lang["tracking"][0]="Gestione chiamate"; 
+$lang["tracking"][1]="My devices"; 
+$lang["tracking"][2]="Or complete search"; 
 $lang["tracking"][8]="No description, please retry"; 
 $lang["tracking"][9]="Nuova chiamata inserita, altra..."; 
 $lang["tracking"][10]="Impossibile aggiungere la chiamata, controlla il database"; 

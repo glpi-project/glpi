@@ -196,6 +196,8 @@ $lang["common"][30]="New Item";
 $lang["common"][31]="Blank Template"; 
 $lang["common"][32]="Characteristics"; 
 $lang["common"][33]="Total"; 
+$lang["common"][34]="User"; 
+$lang["common"][35]="Group"; 
 
 $lang["computers"][0]="Agregar computador..."; 
 $lang["computers"][9]="OS"; 
@@ -706,6 +708,9 @@ $lang["log"][43]="teléfono";
 $lang["log"][44]="Titulado"; 
 $lang["log"][45]="Successfull"; 
 $lang["log"][46]="Failed"; 
+$lang["log"][47]="group"; 
+$lang["log"][48]="add user to group"; 
+$lang["log"][49]="delete user to group"; 
 $lang["log"][50]="Inventario"; 
 $lang["log"][51]="Seguimiento"; 
 $lang["log"][52]="Planificación"; 
@@ -799,6 +804,7 @@ $lang["Menu"][32]="Insumos";
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Teléfonos"; 
 $lang["Menu"][35]="Profiles"; 
+$lang["Menu"][36]="Groups"; 
 
 $lang["monitors"][0]="Agregar monitor..."; 
 $lang["monitors"][4]="Monitor"; 
@@ -863,6 +869,8 @@ $lang["ocsconfig"][27]="Información general de computadores";
 $lang["ocsconfig"][28]="Periféricos"; 
 $lang["ocsconfig"][36]="Modems"; 
 $lang["ocsconfig"][37]="Ports"; 
+$lang["ocsconfig"][38]="Use the software dictionnary of OCS"; 
+$lang["ocsconfig"][39]="OCS TAG"; 
 
 $lang["ocsng"][0]="Inventario OCS NG"; 
 $lang["ocsng"][1]="Sincronización de computadores ya importados"; 
@@ -1276,6 +1284,12 @@ $lang["setup"][501]="Service Pack";
 $lang["setup"][503]="Modelos de teléfonos"; 
 $lang["setup"][504]="Tipos de teléfonos"; 
 $lang["setup"][505]="Tipos de alimentación de teléfono"; 
+$lang["setup"][600]="LDAP Field"; 
+$lang["setup"][601]="LDAP Value"; 
+$lang["setup"][602]="Add Group..."; 
+$lang["setup"][603]="Add a user"; 
+$lang["setup"][604]="Add to a group"; 
+$lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Agregar software..."; 
 $lang["software"][3]="Plataforma"; 
@@ -1394,6 +1408,8 @@ $lang["title"][41]="Teléfono";
 $lang["title"][42]="Modificación masiva"; 
 
 $lang["tracking"][0]="Seguimiento de tickets"; 
+$lang["tracking"][1]="My devices"; 
+$lang["tracking"][2]="Or complete search"; 
 $lang["tracking"][8]="Sin descripción, por favor recomience"; 
 $lang["tracking"][9]="Nuevo servicio ingresado, a seguir..."; 
 $lang["tracking"][10]="Imposible abrir servicio, verifique la base de datos"; 
