@@ -124,10 +124,10 @@ class Group extends CommonDBTM{
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 		echo "<tr><th colspan='2'><b>";
 		if (empty($ID)) {
-			echo $lang["financial"][33].":";
+			echo $lang["setup"][605].":";
 			
 		} else {
-			echo $lang["common"][18]." ID $ID:";
+			echo $lang["common"][35]." ID $ID:";
 		}		
 		echo "</b></th></tr>";
 		

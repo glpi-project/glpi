@@ -1318,6 +1318,7 @@ $lang["setup"][601]="Valeur LDAP";
 $lang["setup"][602]="Ajouter Groupe...";
 $lang["setup"][603]="Ajouter un Utilisateur";
 $lang["setup"][604]="Associé à un groupe";
+$lang["setup"][605]="Ajouter Groupe";
 
 $lang["software"][0]="Ajouter logiciel...";
 $lang["software"][3]="Plateforme";
