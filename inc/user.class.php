@@ -122,10 +122,15 @@ class User extends CommonDBTM {
 			$prof=new Profile();
 			$prof->updateForUser($newID,$input["_profile"]);
 		}
+		if (isset($input["_groups"])){
+			foreach($input["_groups"] as $group){
+				addUserGroup($newID,$group);
+			}
+		}
 	}
 
 	function prepareInputForUpdate($input) {
-		
+		global $db;
 
 		if (isset($input["password"])) {
 			if(empty($input["password"])) {
@@ -142,8 +147,8 @@ class User extends CommonDBTM {
 				$input["ID"]=$this->fields["ID"];
 		} 
 
-		// Security system
-		if (!haveRight("user","w")){
+		// Security system execpt for login update
+		if (!haveRight("user","w")&&!ereg("login.php",$_SERVER["PHP_SELF"])){
 			if($_SESSION["glpiID"]==$input['ID']) {
 				$ret=array();
 				$ret["ID"]=$input["ID"];
@@ -178,6 +183,27 @@ class User extends CommonDBTM {
 			$prof->updateForUser($input["ID"],$input["profile"]);
 			unset($input["profile"]);
 		}
+		
+		if (isset($input["_groups"])&&count($input["_groups"])){
+			
+			// Delete not available groups like to LDAP
+			$query="SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$input["ID"]."' AND glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL";
+			
+			$result=$db->query($query);
+			if ($db->numrows($result)>0){
+				while ($data=$db->fetch_array($result))
+				if (!in_array($data["FK_groups"],$input["_groups"])){
+					deleteUserGroup($data["ID"]);
+				}
+			}
+
+			foreach($input["_groups"] as $group){
+				addUserGroup($input["ID"],$group);
+			}
+			unset ($input["_groups"]);
+		}
+
+
 
 		return $input;
 	}
@@ -230,33 +256,7 @@ class User extends CommonDBTM {
 
 	  	if ( $bv )
 	  	{
-	  		$f = array_values($fields);
-	  		$sr = ldap_search($ds, $basedn, $cfg_glpi["ldap_login"]."=".$name, $f);
-	  		$v = ldap_get_entries($ds, $sr);
-			
-			if ( (empty($v)) || empty($v[0][$fields['name']][0]) ) {
-	  			return false;
-	  		}
-
-  		$fields=array_filter($fields);
-			foreach ($fields as $k => $e)	{
-				
-					if (!empty($v[0][$e][0]))
-						$this->fields[$k] = $v[0][$e][0];
-			}
-			
-			// Is location get from LDAP ?
-			if (!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
-				
-				$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
-				$result=$db->query($query);
-				if ($db->numrows($result)==0){
-					$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
-					$this->fields['location']=$db->insert_id();
-					regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
-				} else $this->fields['location']=$db->result($result,0,"ID");
-			}
-			return true;
+			return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$cfg_glpi["ldap_login"]."=".$name);
   		}
   	}
   	return false;
@@ -303,7 +303,6 @@ class User extends CommonDBTM {
                  $findcn[1]=str_replace('\,', ',', $findcn[1]);
                  $filter="(CN=".$findcn[1].")";
 
-                 if ($condition!="") $filter="(& $filter $condition)";
 	  		$bv = ldap_bind($ds, $adm, $pass);
 	  	}
 	  	else
@@ -313,39 +312,76 @@ class User extends CommonDBTM {
 
 	  	if ( $bv )
 	  	{
-	  		$f = array_values(array_filter($fields));
-	  		$sr = ldap_search($ds, $basedn, $filter, $f);
-	  		$v = ldap_get_entries($ds, $sr);
-//	  		print_r($v);
-	  		if (count($v)==0){
-	  			return false;
-	  		}
-	  		$fields=array_filter($fields);
-				foreach ($fields as $k => $e)
-				{
-					if (!empty($v[0][$e][0]))
-						$this->fields[$k] = $v[0][$e][0];
-				}
+			return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$filter);
 
-				// Is location get from LDAP ?
-				if (!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
-					
-					$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
-					$result=$db->query($query);
-					if ($db->numrows($result)==0){
-						$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
-						$this->fields['location']=$db->insert_id();
-						regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
-					} else $this->fields['location']=$db->result($result,0,"ID");
-				}
-
-				return true;
   		}
   	}
   	
   	return false;
 
 	} // getFromLDAP_active_directory()
+
+  function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
+	global $db;
+	
+	$fields=array_filter($fields);
+	
+	$f = array_values($fields);
+
+	$sr = ldap_search($ldapconn, $basedn, $filter, $f);
+	
+	$v = ldap_get_entries($ldapconn, $sr);
+	
+	
+			
+	if ( !is_array($v)||count($v)==0 || empty($v[0][$fields['name']][0]) ) {
+		return false;
+	}
+
+	foreach ($fields as $k => $e)	{
+		if (!empty($v[0][$e][0]))
+			$this->fields[$k] = $v[0][$e][0];
+	}
+			
+	// Is location get from LDAP ?
+	if (isset($fields['location'])&&!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
+		$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
+		$result=$db->query($query);
+		if ($db->numrows($result)==0){
+			$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
+			$this->fields['location']=$db->insert_id();
+			regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
+		} else $this->fields['location']=$db->result($result,0,"ID");
+	}
+
+	// Get group fields
+	$query="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL";
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		$group_fields=array();
+		$groups=array();
+		while ($data=$db->fetch_assoc($result)){
+			$group_fields[]=$data["ldap_field"];
+			$groups[$data["ldap_field"]]=array($data["ID"]=>$data["ldap_value"]);
+		}
+		$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
+	
+		$v = ldap_get_entries($ldapconn, $sr);
+		
+		if ( is_array($v)&&count($v)>0){
+			foreach ($v[0] as $key => $val){
+				if (is_array($val))
+				for ($i=0;$i<$val["count"];$i++){
+					if ($group_found=array_search($val[$i],$groups[$key])){
+						$this->fields["_groups"][]=$group_found;
+					}
+				}
+			}
+		}
+	}
+
+	return true;
+}
 
   // Function that try to load from IMAP the user information... this is
   // a fake one, as you can see...

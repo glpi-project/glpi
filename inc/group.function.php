@@ -126,9 +126,9 @@ if ($uID>0&&$gID>0){
 
 function deleteUserGroup($ID){
 
-global $db;
-$query="DELETE FROM glpi_users_groups WHERE ID= '$ID';";
-$result = $db->query($query);
+	global $db;
+	$query="DELETE FROM glpi_users_groups WHERE ID= '$ID';";
+	$result = $db->query($query);
 }
 
 ?>
