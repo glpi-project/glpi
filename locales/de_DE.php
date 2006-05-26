@@ -196,6 +196,8 @@ $lang["common"][30]="New Item";
 $lang["common"][31]="Blank Template"; 
 $lang["common"][32]="Characteristics"; 
 $lang["common"][33]="Total"; 
+$lang["common"][34]="User"; 
+$lang["common"][35]="Group"; 
 
 $lang["computers"][0]="Computer hinzufügen..."; 
 $lang["computers"][9]="Betriebssystem"; 
@@ -706,6 +708,9 @@ $lang["log"][43]="Telefon";
 $lang["log"][44]="Titel"; 
 $lang["log"][45]="Successfull"; 
 $lang["log"][46]="Failed"; 
+$lang["log"][47]="group"; 
+$lang["log"][48]="add user to group"; 
+$lang["log"][49]="delete user to group"; 
 $lang["log"][50]="Inventar"; 
 $lang["log"][51]="Ablaufverfolgung"; 
 $lang["log"][52]="Zeitplan"; 
@@ -799,6 +804,7 @@ $lang["Menu"][32]="Verbrauchsmaterial";
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Telefone"; 
 $lang["Menu"][35]="Profiles"; 
+$lang["Menu"][36]="Groups"; 
 
 $lang["monitors"][0]="Monitor hinzufügen..."; 
 $lang["monitors"][4]="Monitor"; 
@@ -863,6 +869,8 @@ $lang["ocsconfig"][27]="Allgemeine Computerinformationen";
 $lang["ocsconfig"][28]="Peripheriegeräte"; 
 $lang["ocsconfig"][36]="Modems"; 
 $lang["ocsconfig"][37]="Ports"; 
+$lang["ocsconfig"][38]="Use the software dictionnary of OCS"; 
+$lang["ocsconfig"][39]="OCS TAG"; 
 
 $lang["ocsng"][0]="OCS Inventory NG"; 
 $lang["ocsng"][1]="Synchronisierung der bereits importierten Computer"; 
@@ -1276,6 +1284,12 @@ $lang["setup"][501]="Service Pack";
 $lang["setup"][503]="Telefonmodelle"; 
 $lang["setup"][504]="Telefon Typen"; 
 $lang["setup"][505]="Typen von Telefonnetzteilen"; 
+$lang["setup"][600]="LDAP Field"; 
+$lang["setup"][601]="LDAP Value"; 
+$lang["setup"][602]="Add Group..."; 
+$lang["setup"][603]="Add a user"; 
+$lang["setup"][604]="Add to a group"; 
+$lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Software hinzufügen..."; 
 $lang["software"][3]="Platform"; 
@@ -1394,6 +1408,8 @@ $lang["title"][41]="Telefon";
 $lang["title"][42]="Massive Änderung"; 
 
 $lang["tracking"][0]="Liste der Fälle"; 
+$lang["tracking"][1]="My devices"; 
+$lang["tracking"][2]="Or complete search"; 
 $lang["tracking"][8]="keine Beschreibung, bitte eintragen"; 
 $lang["tracking"][9]="neuen Fall eintragen, nächster..."; 
 $lang["tracking"][10]="Fehler: Eintrag nicht mölich, Datenbank überprüfen"; 

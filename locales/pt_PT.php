@@ -196,6 +196,8 @@ $lang["common"][30]="New Item";
 $lang["common"][31]="Blank Template"; 
 $lang["common"][32]="Characteristics"; 
 $lang["common"][33]="Total"; 
+$lang["common"][34]="User"; 
+$lang["common"][35]="Group"; 
 
 $lang["computers"][0]="Adicionar computador"; 
 $lang["computers"][9]="Sistema Operativo"; 
@@ -706,6 +708,9 @@ $lang["log"][43]="telefone";
 $lang["log"][44]="Cabecalho"; 
 $lang["log"][45]="Successfull"; 
 $lang["log"][46]="Failed"; 
+$lang["log"][47]="group"; 
+$lang["log"][48]="add user to group"; 
+$lang["log"][49]="delete user to group"; 
 $lang["log"][50]="Inventáro"; 
 $lang["log"][51]="Manter rasto"; 
 $lang["log"][52]="Planeamento"; 
@@ -799,6 +804,7 @@ $lang["Menu"][32]="Consumíveis";
 $lang["Menu"][33]="OCSNG"; 
 $lang["Menu"][34]="Telefones"; 
 $lang["Menu"][35]="Profiles"; 
+$lang["Menu"][36]="Groups"; 
 
 $lang["monitors"][0]="Adicionar Monitor"; 
 $lang["monitors"][4]="Monitor"; 
@@ -863,6 +869,8 @@ $lang["ocsconfig"][27]="Informações gerais dos computadores";
 $lang["ocsconfig"][28]="Periféricos"; 
 $lang["ocsconfig"][36]="Modems"; 
 $lang["ocsconfig"][37]="Portas"; 
+$lang["ocsconfig"][38]="Use the software dictionnary of OCS"; 
+$lang["ocsconfig"][39]="OCS TAG"; 
 
 $lang["ocsng"][0]="OCS Inventory NG"; 
 $lang["ocsng"][1]="Sincronização do computadores já importados"; 
@@ -1276,6 +1284,12 @@ $lang["setup"][501]="Service Pack";
 $lang["setup"][503]="Modelos de telefones"; 
 $lang["setup"][504]="Tipos de telefones"; 
 $lang["setup"][505]="Fontes de alimentação para tipos de telefone"; 
+$lang["setup"][600]="LDAP Field"; 
+$lang["setup"][601]="LDAP Value"; 
+$lang["setup"][602]="Add Group..."; 
+$lang["setup"][603]="Add a user"; 
+$lang["setup"][604]="Add to a group"; 
+$lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Adicionar Software..."; 
 $lang["software"][3]="Plataforma"; 
@@ -1394,6 +1408,8 @@ $lang["title"][41]="Telefone";
 $lang["title"][42]="Alterações massivas"; 
 
 $lang["tracking"][0]="Actualizações de senhas"; 
+$lang["tracking"][1]="My devices"; 
+$lang["tracking"][2]="Or complete search"; 
 $lang["tracking"][8]="Sem descrição, por favor, tente novamente"; 
 $lang["tracking"][9]="Colocação de novas senhas, seguinte..."; 
 $lang["tracking"][10]="Impossível adicionar senha, verificar a base de dados"; 
