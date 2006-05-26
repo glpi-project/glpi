@@ -35,7 +35,7 @@
  
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("user","profile","setup");
+$NEEDED_ITEMS=array("user","profile","setup","group");
 
 include ($phproot . "/inc/includes.php");
 
@@ -45,8 +45,6 @@ include ($phproot . "/inc/includes.php");
 $_POST=array_map('stripslashes',$_POST);
 
 //Do login and checks
-//echo "test";
-$update_list = array();
 $user_present=1;
 if (!isset($_POST['login_name'])) $_POST['login_name']="";
 $identificat = new Identification();
@@ -80,9 +78,12 @@ $identificat->err=$lang["login"][8];
 	// Pas en premier car sinon on ne fait pas le blankpassword
 	// First try to connect via le DATABASE
 	if ($exists==1){
+		
 		// Without UTF8 decoding
 		if (!$auth_succeded) $auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
-		if ($auth_succeded) $user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+		if ($auth_succeded) {
+			$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+		}
 		
 		// With UTF8 decoding
 		//if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
@@ -98,7 +99,7 @@ $identificat->err=$lang["login"][8];
 			$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 
 			if ($identificat->user->getFromIMAP($cfg_glpi["imap_host"],utf8_decode($_POST['login_name']))) {
-				$update_list = array('email');
+				//$update_list = array('email');
 			}
 		}
 	}
@@ -115,9 +116,9 @@ $identificat->err=$lang["login"][8];
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				$update_list = array();
+				//$update_list = array();
 				if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']))) {
-					$update_list = array_keys($cfg_glpi['ldap_fields']);
+					//$update_list = array_keys($cfg_glpi['ldap_fields']);
 				}
 			}
 	   	}
@@ -130,9 +131,9 @@ $identificat->err=$lang["login"][8];
 		if ($auth_succeded) {
 			$identificat->extauth=1;
 			$user_present = $identificat->user->getFromDBName($_POST['login_name']);
-			$update_list = array();
+			//$update_list = array();
 			if ($identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$cfg_glpi["ldap_basedn"],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']))) {
-				$update_list = array_keys($cfg_glpi['ldap_fields']);
+				//$update_list = array_keys($cfg_glpi['ldap_fields']);
 			}
 		}
 	}
@@ -151,9 +152,9 @@ $identificat->err=$lang["login"][8];
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				$update_list = array();
+				//$update_list = array();
 				if ($identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$_POST['login_name'],$cfg_glpi["ldap_condition"])) {
-				$update_list = array_keys($cfg_glpi['ldap_fields']);
+				//$update_list = array_keys($cfg_glpi['ldap_fields']);
 				}
 			}
    		}
@@ -167,10 +168,12 @@ $identificat->err=$lang["login"][8];
 
 if ($auth_succeded)
 if (!$user_present&&$cfg_glpi["auto_add_users"]) {
-	$input=array();
 	if ($identificat->extauth)
-		$input["_extauth"]=1;
+		$identificat->user->fields["_extauth"]=1;
+	$input=$identificat->user->fields;
+	unset($identificat->user->fields);
 	$identificat->user->fields["ID"]=$identificat->user->add($input);
+	
 } else if (!$user_present){ // Auto add not enable so auth failed
 	$identificat->err.=$lang["login"][11];
 	$auth_succeded=false;	
@@ -179,11 +182,13 @@ if (!$user_present&&$cfg_glpi["auto_add_users"]) {
 		$identificat->err.=$lang["login"][11];
 		$auth_succeded=false;	
 	} else {
-		if (!empty($update_list))
-			$identificat->user->updateInDB($update_list);
-		// Blank PWD to clean old database for the external auth
-		if ($identificat->extauth)
+			
+		// update user and Blank PWD to clean old database for the external auth
+		if ($identificat->extauth){
+			
+			$identificat->user->update($identificat->user->fields);
 			$identificat->user->blankPassword();
+		}
 	}
 }
 
