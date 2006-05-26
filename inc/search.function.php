@@ -1357,6 +1357,7 @@ switch ($field){
 			$out.= "</a>";
 		} else {
 			$type=USER_TYPE;
+			$out="";
 			if ($data["ITEM_".$num."_3"]>0)
 				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ITEM_".$num."_3"]."\">";
 			// print realname or login name
@@ -1415,6 +1416,7 @@ switch ($field){
 				$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
 		} else {
 			$type=ENTERPRISE_TYPE;
+			$out="";
 			if ($data["ITEM_".$num."_3"]>0)
 				$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
 			$out.= $data["ITEM_$num"];
