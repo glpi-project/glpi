@@ -226,6 +226,7 @@ $lang["computers"][46]="Périphérique(s)";
 $lang["computers"][47]="Pas de périphérique connecté";
 $lang["computers"][48]="Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur.";
 $lang["computers"][49]="Modification du contact. Les éléments connectés ont pris comme contact celui de l'ordinateur.";
+$lang["computers"][50]="Modification de l'utilisateur ou du groupe. Les éléments connectés ont été mis à jour avec les même valeurs que l'ordinateur.";
 $lang["computers"][51]="Source de mise à jour";
 $lang["computers"][52]="OS Version";
 $lang["computers"][53]="Service Pack";

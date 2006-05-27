@@ -167,14 +167,26 @@ function Connect($target,$sID,$cID,$type) {
 			$updates[0]="location";
 			$dev->obj->fields['location']=$comp->fields['location'];
 			$dev->obj->updateInDB($updates);
+			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
 		}
+		if ($comp->fields['FK_users']!=$dev->obj->fields['FK_users']||$comp->fields['FK_groups']!=$dev->obj->fields['FK_groups']){
+			$updates[0]="FK_users";
+			$updates[1]="FK_groups";
+			$dev->obj->fields['FK_users']=$comp->fields['FK_users'];
+			$dev->obj->fields['FK_groups']=$comp->fields['FK_groups'];
+			$dev->obj->updateInDB($updates);
+			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][50];
+		}
+
 		if ($comp->fields['contact']!=$dev->obj->fields['contact']||$comp->fields['contact_num']!=$dev->obj->fields['contact_num']){
 			$updates[0]="contact";
 			$updates[1]="contact_num";
 			$dev->obj->fields['contact']=$comp->fields['contact'];
 			$dev->obj->fields['contact_num']=$comp->fields['contact_num'];
 			$dev->obj->updateInDB($updates);
+			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
 		}
 	}
