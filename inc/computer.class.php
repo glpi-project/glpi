@@ -240,25 +240,66 @@ class Computer extends CommonDBTM {
 							$tID = $db->result($result, $j, "end1");
 							$ci->getfromDB($t,$tID);
 							if (!$ci->obj->fields['is_global']){
-								$ci->obj->fields['contact']=$this->fields['contact'];
-								$ci->obj->fields['contact_num']=$this->fields['contact_num'];
-								$ci->obj->updateInDB($updates3);
-								$update_done=true;
+								if ($ci->obj->fields['contact']!=$this->fields['contact']||$ci->obj->fields['contact_num']!=$this->fields['contact_num']){
+									$ci->obj->fields['contact']=$this->fields['contact'];
+									$ci->obj->fields['contact_num']=$this->fields['contact_num'];
+									$ci->obj->updateInDB($updates3);
+									$update_done=true;
+								}
 							}
 						}
 					}
 				}
 			}
 
-		if ($update_done) {
-			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-			$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["computers"][49];
-		}
+			if ($update_done) {
+				if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["computers"][49];
+			}
 		
 		}
+
+		// Mise a jour des users et groupes des éléments rattachés
+		if (($updates[$i]=="FK_users" && $this->fields["FK_users"]!=0)||($updates[$i]=="FK_groups" && $this->fields["FK_groups"]!=0)){
+			$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
+			$ci=new CommonItem();
+			$update_done=false;
+			$updates4[0]="FK_users";
+			$updates4[1]="FK_groups";
+			
+			foreach ($items as $t){
+				$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+				
+				if ($result=$db->query($query)) {
+					$resultnum = $db->numrows($result);
+					
+					if ($resultnum>0) {
+						for ($j=0; $j < $resultnum; $j++) {
+							$tID = $db->result($result, $j, "end1");
+
+							$ci->getfromDB($t,$tID);
+							if (!$ci->obj->fields['is_global']){
+								if ($ci->obj->fields["FK_users"]!=$this->fields["FK_users"]||$ci->obj->fields["FK_groups"]!=$this->fields["FK_groups"]){
+									$ci->obj->fields["FK_users"]=$this->fields["FK_users"];
+									$ci->obj->fields["FK_groups"]=$this->fields["FK_groups"];
+									$ci->obj->updateInDB($updates4);
+									$update_done=true;
+								}
+							}
+						}
+					}
+				}
+			}
+			if ($update_done) {
+				if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["computers"][50];
+			}
+
+		}
+
 		
-		// Mise a jour du lieu des éléments rattachés
-		if ($updates[$i]=="location" && $this->fields[$updates[$i]]!=0){
+		// Mise a jour des lieux des éléments rattachés
+		if ($updates[$i]=="location" && $this->fields["location"]!=0){
 			$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 			$ci=new CommonItem();
 			$update_done=false;
@@ -276,18 +317,20 @@ class Computer extends CommonDBTM {
 
 							$ci->getfromDB($t,$tID);
 							if (!$ci->obj->fields['is_global']){
-								$ci->obj->fields['location']=$this->fields['location'];
-								$ci->obj->updateInDB($updates2);
-								$update_done=true;
+								if ($ci->obj->fields["location"]!=$this->fields["location"]){
+									$ci->obj->fields["location"]=$this->fields["location"];
+									$ci->obj->updateInDB($updates2);
+									$update_done=true;
+								}
 							}
 						}
 					}
 				}
 			}
-		if ($update_done) {
-			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-			$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["computers"][48];
-		}
+			if ($update_done) {
+				if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["computers"][48];
+			}
 
 		}
 	
