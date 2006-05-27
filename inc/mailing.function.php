@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: mailing.class.php 3375 2006-04-26 16:58:45Z moyo $
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
  
- http://indepnet.net/   http://glpi.indepnet.org
+ http://indepnet.net/   http://glpi-project.org
  ----------------------------------------------------------------------
 
  LICENSE

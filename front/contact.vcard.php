@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: contacts-info-form.php 3161 2006-04-15 21:30:54Z moyo $
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
  
- http://indepnet.net/   http://glpi.indepnet.org
+ http://indepnet.net/   http://glpi-project.org
  ----------------------------------------------------------------------
 
  LICENSE

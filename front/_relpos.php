@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: _relpos.php 2437 2006-01-18 23:21:33Z silvermat $
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
  
- http://indepnet.net/   http://glpi.indepnet.org
+ http://indepnet.net/   http://glpi-project.org
  ----------------------------------------------------------------------
 
  LICENSE
