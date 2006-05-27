@@ -160,13 +160,13 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 
 
 			// Set display type for export if define
-			$output_type=0;
+			$output_type=HTML_OUTPUT;
 			if (isset($_GET["display_type"]))
 				$output_type=$_GET["display_type"];
 
 			// Pager
 			$parameters="start=$start&amp;state=$state&amp;field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
-			if ($output_type==0)
+			if ($output_type==HTML_OUTPUT)
 				printPager($start,$numrows,$target,$parameters,STATE_TYPE);
 
 			$nbcols=6;
@@ -231,7 +231,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			// Display footer
 			echo displaySearchFooter($output_type);
 
-			if ($output_type==0) // In case of HTML display
+			if ($output_type==HTML_OUTPUT) // In case of HTML display
 				printPager($start,$numrows,$target,$parameters);
 
 		} else {

@@ -161,6 +161,12 @@ define("ASSIGN_MAILING","-2");
 define("USER_MAILING","-3");
 define("OLD_ASSIGN_MAILING","-4");
 
+// EXPORT TYPE
+define("HTML_OUTPUT","0");
+define("SYLK_OUTPUT","1");
+define("PDF_OUTPUT","2");
+
+
 //DEVICE ARRAY.
 
 $cfg_glpi["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
