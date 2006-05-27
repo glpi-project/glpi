@@ -155,6 +155,11 @@ define("TRANSLATION_MODE","1");
 define("DEBUG_MODE","2");
 define("DEMO_MODE","3");
 
+// MAILING TYPE
+define("ADMIN_MAILING","-1");
+define("ASSIGN_MAILING","-2");
+define("USER_MAILING","-3");
+define("OLD_ASSIGN_MAILING","-4");
 
 //DEVICE ARRAY.
 

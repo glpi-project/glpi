@@ -143,12 +143,12 @@ class Mailing
 			while ($data=$db->fetch_assoc($result)){
 				switch ($data["PROFILE"]){
 					// ADMIN SEND
-					case -1 :
+					case ADMIN_MAILING :
 						if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
 							$emails[]=$cfg_glpi["admin_email"];
 						break;
 					// ASSIGN SEND
-					case -2 :
+					case ASSIGN_MAILING :
 						if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
 							$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
 							if ($result2 = $db->query($query2)) {
@@ -162,14 +162,14 @@ class Mailing
 						}
 						break;
 					// USER SEND
-					case -3 :
+					case USER_MAILING :
 						if ($this->job->fields["emailupdates"]=="yes"&&$this->is_valid_email($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
 							$emails[]=$this->job->fields["uemail"];
 					
 						}
 						break;
 					// OLD ASSIGN SEND
-					case -4 :
+					case OLD_ASSIGN_MAILING :
 						if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
 							$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["_old_assign"]."')";
 							if ($result2 = $db->query($query2)) {
@@ -414,12 +414,12 @@ class MailingResa{
 			while ($data=$db->fetch_assoc($result)){
 				switch ($data["PROFILE"]){
 					// ADMIN SEND
-					case -1 :
+					case ADMIN_MAILING :
 						if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
 							$emails[]=$cfg_glpi["admin_email"];
 						break;
 					// USER SEND
-					case -3 :
+					case USER_MAILING :
 						$user = new User;
 						if ($user->getFromDB($this->resa->fields["id_user"]))
 						if ($this->is_valid_email($user->fields["email"])&&!in_array($user->fields["email"],$emails)){
