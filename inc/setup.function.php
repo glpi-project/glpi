@@ -1491,9 +1491,9 @@ function showFormMailing($target) {
 
 	} else if ($_SESSION['glpi_mailconfig']==2)	{
 
-		$profiles[-1]=$lang["setup"][237];
-		$profiles[-3]=$lang["setup"][238];
-		$profiles[-2]=$lang["setup"][239];
+		$profiles[ADMIN_MAILING]=$lang["setup"][237];
+		$profiles[USER_MAILING]=$lang["setup"][238];
+		$profiles[ASSIGN_MAILING]=$lang["setup"][239];
 		
 		$query="SELECT ID, name FROM glpi_profiles order by name";
 		$result=$db->query($query);
@@ -1518,15 +1518,15 @@ function showFormMailing($target) {
 		echo "</tr>";
 		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][230]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";
-		$profiles[-4]=$lang["setup"][236];
+		$profiles[OLD_ASSIGN_MAILING]=$lang["setup"][236];
 		ksort($profiles);
 		showFormMailingType("update",$profiles);
-		unset($profiles[-4]);
+		unset($profiles[OLD_ASSIGN_MAILING]);
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][225]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";
-		unset($profiles[-2]);
+		unset($profiles[ASSIGN_MAILING]);
 		showFormMailingType("resa",$profiles);
 		// Close Ticket
 		echo "</tr>";
@@ -1564,10 +1564,10 @@ function showFormMailingType($type,$profiles){
 				$name=$lang["profiles"][22]." ".$data["name"];
 			else {
 				switch ($data["prof"]){
-					case -1: $name=$lang["setup"][237];break;
-					case -2: $name=$lang["setup"][239];break;
-					case -3: $name=$lang["setup"][238];break;
-					case -4: $name=$lang["setup"][236];break;
+					case ADMIN_MAILING: $name=$lang["setup"][237];break;
+					case ASSIGN_MAILING: $name=$lang["setup"][239];break;
+					case USER_MAILING: $name=$lang["setup"][238];break;
+					case OLD_ASSIGN_MAILING: $name=$lang["setup"][236];break;
 				}
 			}
 			echo "<option value='".$data["ID"]."'>".$name."</option>";
