@@ -1,12 +1,11 @@
 #!/usr/bin/perl
 #!/usr/bin/perl -w 
 
-
 # ----------------------------------------------------------------------
 # GLPI - Gestionnaire Libre de Parc Informatique
-# Copyright (C) 2003-2005 by the INDEPNET Development Team.
+# Copyright (C) 2003-2006 by the INDEPNET Development Team.
 # 
-# http://indepnet.net/   http://glpi.indepnet.org
+# http://indepnet.net/   http://glpi-project.org
 # ----------------------------------------------------------------------
 #
 # LICENSE
@@ -29,8 +28,6 @@
 # ------------------------------------------------------------------------
 
 
-
-
 do_dir("..");
 
 
@@ -42,13 +39,13 @@ opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n";
 foreach (readdir(DIRHANDLE)){ 
 	if ($_ ne '..' && $_ ne '.'){
 		if (-d "$dir/$_"){
-			if ($_ !~ m/.svn/i && $_ !~ m/CVS/i && $_ !~ m/CAS/i && $_ !~ m/ezpdf/i  && $_ !~ m/tiny_mce/i  && $_ !~ m/vcardclass/i  && $_ !~ m/phpmailer/i  && $_ !~ m/scripts/i){
+			if ($_ !~ m/.svn/i && $_ !~ m/CVS/i && $_ !~ m/CAS/i && $_ !~ m/ezpdf/i  && $_ !~ m/tiny_mce/i  && $_ !~ m/vcardclass/i  && $_ !~ m/phpmailer/i  && $_ !~ m/scripts/i && $_ !~ m/calendar/i){
 				
 				do_dir("$dir/$_");
 			}
 		} else {
 	 		if(!(-l "$dir/$_")){
-				if ((index($_,".php",0)!=-1)||(index($_,".txt",0)!=-1)){
+				if ((index($_,".php",0)!=-1)||(index($_,".txt",0)!=-1)||(index($_,".css",0)!=-1)){
 					do_file("$dir/$_");
 	 			}
 			}

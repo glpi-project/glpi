@@ -91,7 +91,7 @@ II) Get and install the files
 
 
 1) Download the last tarball on the download ("Télécharger" in french) section of the website 
-of the GLPI project (http://glpi.indepnet.org).
+of the GLPI project (http://glpi-project.org).
 
 Case : you pass to a GLPI >= 0.68 :
 Backup all your GLPI directory and delete it.
@@ -227,7 +227,7 @@ You must know the data of your MySQL connection (provided by the administrator):
 --- Getting GLPI
 
 GLPI is available in the website :
--  http://glpi.indepnet.org in the "téléchargement" section.
+-  http://glpi-project.org in the "téléchargement" section.
 
 Choose the version you want to install. Unpack the tarball in your personnal computer.
 Upload the obtained directory into your web server.
