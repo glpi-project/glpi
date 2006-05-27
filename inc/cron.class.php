@@ -1,11 +1,10 @@
 <?php
 /*
- * @version $Id: cartridge.class.php 3354 2006-04-25 15:04:18Z silvermat $
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
  
- http://indepnet.net/   http://glpi.indepnet.org
+ http://indepnet.net/   http://glpi-project.org
  ----------------------------------------------------------------------
 
  LICENSE
