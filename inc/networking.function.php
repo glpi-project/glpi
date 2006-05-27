@@ -52,13 +52,15 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
-			
 			$colspan=8;
-			if ($withtemplate!=2){
+			if (empty($withtemplate)){
+				echo "<form id='networking_ports' name='networking_ports' method='post' action=\"".$cfg_glpi["root_doc"]."/front/networking.port.php\">";
+				$colspan++;
 			}
 			
-			echo "<br><div align='center'><table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='$colspan'>";
+			echo "<div align='center'><table class='tab_cadre_fixe'>";
+			echo "<tr>";
+			echo "<th colspan='$colspan'>";
 			echo $db->numrows($result)." ";
 			if ($db->numrows($result)<2) {
 				echo $lang["networking"][37];
@@ -68,7 +70,11 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo ":</th>";
 
 			echo "</tr>";        
-			echo "<tr><th>#</th><th>".$lang["common"][16]."</th><th>".$lang["networking"][51]."</th>";
+			echo "<tr>";
+			if ($withtemplate!=2){
+				echo "<th>&nbsp;</th>";
+			}
+			echo "<th>#</th><th>".$lang["common"][16]."</th><th>".$lang["networking"][51]."</th>";
 			echo "<th>".$lang["networking"][14]."</th><th>".$lang["networking"][15]."</th>";
 			echo "<th>".$lang["networking"][56]."</th>";
 			echo "<th>".$lang["networking"][16]."</th><th>".$lang["networking"][17].":</th></tr>\n";
@@ -77,6 +83,9 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				$netport = new Netport;
 				$netport->getfromDB(current($devid));
 				echo "<tr class='tab_bg_1'>";
+				if ($withtemplate!=2){
+					echo "<td align='center' width='20'><input type='checkbox' name='del_port[".$netport->fields["ID"]."]' value='1'></td>";
+				}
 				echo "<td align='center'><b>";
 				if ($withtemplate!=2) echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."\">";
 				echo $netport->fields["logical_number"];
@@ -98,7 +107,22 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			}
 			echo "</table>";
 			echo "</div>\n\n";
+
+				echo "<div align='center'>";
+				echo "<table cellpadding='5' width='950'>";
+				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=all'>".$lang["buttons"][18]."</a></td>";
 			
+				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=none'>".$lang["buttons"][19]."</a>";
+				echo "</td>";
+				echo "<td><input type='submit' class='submit' name='delete_several' value='".$lang["buttons"][6]."'></td>";
+				echo "<td width='80%'>&nbsp;</td>";
+				echo "</table>";
+				
+				echo "</div>";
+
+			if (empty($withtemplate)){
+				echo "</form>";
+			}
 		}
 	}
 }
@@ -108,21 +132,24 @@ global $db,$HTMLRel,$lang;
 
 $canedit=haveRight("networking","w");
 
-echo "<table cellpadding='0' cellspacing='0'>";
+
 
 $query="SELECT * from glpi_networking_vlan WHERE FK_port='$ID'";
 $result=$db->query($query);
-if ($db->numrows($result)>0)
-while ($line=$db->fetch_array($result)){
-	echo "<tr><td>".getDropdownName("glpi_dropdown_vlan",$line["FK_vlan"]);
-	echo "</td><td>";
-	if ($canedit){
-		echo "<a href='".$HTMLRel."front/networking.port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."&amp;referer=$referer'>";
-		echo "<img src=\"".$HTMLRel."/pics/delete2.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'></a>";
-	} else echo "&nbsp;";
-    echo "</td></tr>";
-}
-echo "</table>";
+if ($db->numrows($result)>0){
+	echo "<table cellpadding='0' cellspacing='0'>";	
+	while ($line=$db->fetch_array($result)){
+		echo "<tr><td>".getDropdownName("glpi_dropdown_vlan",$line["FK_vlan"]);
+		echo "</td><td>";
+		if ($canedit){
+			echo "<a href='".$HTMLRel."front/networking.port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."&amp;referer=$referer'>";
+			echo "<img src=\"".$HTMLRel."/pics/delete2.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'></a>";
+		} else echo "&nbsp;";
+	echo "</td></tr>";
+	}
+	echo "</table>";
+} else echo "&nbsp;";
+
 
 }
 
@@ -373,7 +400,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		if ($canedit){
 			echo "<td align='right'><b>";
 			if ($withtemplate!=2)
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.disconnect.php?ID=$ID\">".$lang["buttons"][10]."</a>";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?disconnect=disconnect&ID=$ID\">".$lang["buttons"][10]."</a>";
 			else "&nbsp;";
 			echo "</b></td>";
 		}
@@ -384,11 +411,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		if ($canedit){
 			echo "<td align='left'>";
 			if ($withtemplate!=2&&$withtemplate!=1){
-				echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/networking.port.connect.php\">";
-				echo "<input type='hidden' name='connect' value='connect'>";
-				echo "<input type='hidden' name='sport' value='$ID'>";
 				dropdownConnectPort($ID,$type,"dport");
-				echo "</form>";
 				}
 			else echo "&nbsp;";
 			echo "</td>";

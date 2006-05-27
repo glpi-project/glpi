@@ -885,16 +885,15 @@ function dropdownConnectPort($ID,$type,$myname) {
 	global $db,$lang,$HTMLRel,$cfg_glpi;
 	
 	$items=array(
-	COMPUTER_TYPE=>"glpi_computers",
-	NETWORKING_TYPE=>"glpi_networking",
-	PRINTER_TYPE=>"glpi_printers",
-	PERIPHERAL_TYPE=>"glpi_peripherals",
-	PHONE_TYPE=>"glpi_phones",
+		COMPUTER_TYPE=>"glpi_computers",
+		NETWORKING_TYPE=>"glpi_networking",
+		PRINTER_TYPE=>"glpi_printers",
+		PERIPHERAL_TYPE=>"glpi_peripherals",
+		PHONE_TYPE=>"glpi_phones",
 	);
 
-	
 	$rand=mt_rand();
-	echo "<select name='type' id='item_type$rand'>\n";
+	echo "<select name='type[$ID]' id='item_type$rand'>\n";
 	echo "<option value='0'>-----</option>\n";
 	echo "<option value='".COMPUTER_TYPE."'>".$lang["Menu"][0]."</option>\n";
 	echo "<option value='".NETWORKING_TYPE."'>".$lang["Menu"][1]."</option>\n";
