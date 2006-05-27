@@ -914,8 +914,42 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		   	// End Line
 		        echo displaySearchEndLine($output_type);
 			}
+			$title="";
+			// Create title
+			if ($output_type==PDF_OUTPUT) {
+				if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
+					for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
+						if (strlen($contains[$key])){
+							if (isset($link[$key])) $title.=" ".$link[$key]." ";
+							switch ($field[$key]){
+								case "all":
+									$title.=$lang["search"][7];
+									break;
+								case "view":
+									$title.=$lang["search"][11];
+									break;
+								default :
+									$title.=$SEARCH_OPTION[$type][$field[$key]]["name"];
+									break;
+							}
+							$title.=" = ".$contains[$key];
+						}
+					}
+				}
+				if ($_SESSION["glpisearchcount2"][$type]>0&&count($contains2)>0) {
+					for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++){
+						if (strlen($contains2[$key])){
+							if (isset($link2[$key])) $title.=" ".$link2[$key]." ";
+							$title.=$names[$type2[$key]]."/";
+							$title.=$SEARCH_OPTION[$type2[$key]][$field2[$key]]["name"];
+							$title.=" = ".$contains2[$key];
+						}
+					}
+				}
+			}
+			
 			// Display footer
-			echo displaySearchFooter($output_type);
+			echo displaySearchFooter($output_type,$title);
 
 
 			// Delete selected item
@@ -1008,7 +1042,7 @@ if (!ereg("$NAME$num",$GROUPBY)) {
 				$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 		break;
 		default :
-			$GROUPBY.= makeTextSearch($val,$NOT);
+			$GROUPBY.= $NAME.$num.makeTextSearch($val,$NOT);
 		break;
 	}
 }

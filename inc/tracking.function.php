@@ -764,7 +764,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	
 	echo "<td align='center'>";
 	$category=0;
-	if (isset($_POST["category"]))$priority=$_POST["category"];
+	if (isset($_POST["category"])) $category=$_POST["category"];
 
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td></tr>";
@@ -1124,16 +1124,15 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		$where.=" AND glpi_tracking.computer = '$item'";	
 	
 	switch ($status){
-	case "new": $where.=" AND glpi_tracking.status = 'new'"; break;
-	case "notold": $where.=" AND (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' OR glpi_tracking.status = 'waiting')"; break;
-	case "old": $where.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
-	case "process": $where.=" AND ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
-	case "waiting": $where.=" AND ( glpi_tracking.status = 'waiting' )"; break;
-	case "old_done": $where.=" AND ( glpi_tracking.status = 'old_done' )"; break;
-	case "old_notdone": $where.=" AND ( glpi_tracking.status = 'old_notdone' )"; break;
-	case "assign": $where.=" AND ( glpi_tracking.status = 'assign' )"; break;
-	case "plan": $where.=" AND ( glpi_tracking.status = 'plan' )"; break;
-		
+		case "new": $where.=" AND glpi_tracking.status = 'new'"; break;
+		case "notold": $where.=" AND (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' OR glpi_tracking.status = 'waiting')"; break;
+		case "old": $where.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
+		case "process": $where.=" AND ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
+		case "waiting": $where.=" AND ( glpi_tracking.status = 'waiting' )"; break;
+		case "old_done": $where.=" AND ( glpi_tracking.status = 'old_done' )"; break;
+		case "old_notdone": $where.=" AND ( glpi_tracking.status = 'old_notdone' )"; break;
+		case "assign": $where.=" AND ( glpi_tracking.status = 'assign' )"; break;
+		case "plan": $where.=" AND ( glpi_tracking.status = 'plan' )"; break;
 	}
 	
 	if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
@@ -1222,9 +1221,36 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				showJobShort($ID, $showfollowups,$output_type,$i-$start+1);
 				$i++;
 			}
+			$title="";
+			// Title for PDF export
+			if ($output_type==PDF_OUTPUT){
+				$title.=$lang["joblist"][0]." = ";
+				switch($status){
+					case "new": $title.=$lang["joblist"][9];break;
+					case "assign": $title.=$lang["joblist"][18];break;
+					case "plan": $title.=$lang["joblist"][19];break;
+					case "waiting": $title.=$lang["joblist"][26];break;
+					case "old_done": $title.=$lang["joblist"][10];break;
+					case "old_notdone": $title.=$lang["joblist"][17];break;
+					case "notold": $title.=$lang["joblist"][24];break;
+					case "process": $title.=$lang["joblist"][21];break;
+					case "old": $title.=$lang["joblist"][25];break;
+					case "all": $title.=$lang["joblist"][20];break;
+				}
+				if ($author!=0) $title.=" - ".$lang["joblist"][3]." = ".getUserName($author);
+				if ($assign!=0) $title.=" - ".$lang["job"][27]." = ".getUserName($assign);
+				if ($category!=0) $title.=" - ".$lang["tracking"][20]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
+				if ($assign_ent!=0) $title.=" - ".$lang["job"][27]." = ".getDropdownName("glpi_enterprises",$assign_ent);
+				if ($priority!=0) $title.=" - ".$lang["joblist"][2]." = ".getPriorityName($priority);
+				if ($type!=0&&$item!=0){
+					$ci=new CommonItem();
+					$ci->getFromDB($type,$item);
+					$title.=" - ".$lang["common"][1]." = ".$ci->getType()." / ".$ci->getNameID();
 
+				}
+			}
 			// Display footer
-			echo displaySearchFooter($output_type);
+			echo displaySearchFooter($output_type,$title);
 
 			// Delete selected item
 			if ($candelete&&$output_type==HTML_OUTPUT&&($status=="old"||$status=="all"||ereg("old_",$status))){

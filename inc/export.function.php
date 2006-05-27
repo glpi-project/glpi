@@ -156,10 +156,10 @@ function displaySearchFooter($type,$title=""){
 			$pdf= new Cezpdf('a4','landscape');
 			$pdf->selectFont($phproot."/lib/ezpdf/fonts/Helvetica.afm");
 			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($pdf_array)." ".utf8_decode($lang["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
-			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800);
+			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800,'titleFontSize'=>8,);
 			//print_r($pdf_size);
 			
-			$pdf->ezTable($pdf_array,$pdf_header,$title,$options);
+			$pdf->ezTable($pdf_array,$pdf_header,utf8_decode($title),$options);
 			$pdf->ezStream();
 			
 			break;
