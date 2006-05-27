@@ -749,7 +749,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//echo $QUERY."<br>\n";
 	
 	// Set display type for export if define
-	$output_type=0;
+	$output_type=HTML_OUTPUT;
 	if (isset($_GET["display_type"]))
 		$output_type=$_GET["display_type"];
 		
@@ -766,13 +766,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
 			
 			// Display pager only for HTML
-			if ($output_type==0) 
+			if ($output_type==HTML_OUTPUT) 
 				printPager($start,$numrows,$target,$parameters,$type);
 
 			// Form to delete old item
 			$isadmin=haveTypeRight($type,"w");
 
-			if ($isadmin&&$output_type==0){
+			if ($isadmin&&$output_type==HTML_OUTPUT){
 				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$cfg_glpi["root_doc"]."/front/massiveaction.php\">";
 			}
 			
@@ -786,7 +786,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$nbcols++;
 			}
 			
-			if ($output_type==0)// HTML display - massive modif
+			if ($output_type==HTML_OUTPUT)// HTML display - massive modif
 				$nbcols++;
 
 			// Define begin and end var for loop
@@ -811,7 +811,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			echo displaySearchNewLine($output_type);
 			$header_num=1;
 			
-			if ($output_type==0&&$isadmin)// HTML display - massive modif
+			if ($output_type==HTML_OUTPUT&&$isadmin)// HTML display - massive modif
 				echo displaySearchHeaderItem($output_type,"",$header_num,"",0,$order);
 
 			// Display column Headers for toview items
@@ -861,7 +861,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo displaySearchNewLine($output_type);
 					
 
-				if ($output_type==0&&$isadmin){// HTML display - massive modif
+				if ($output_type==HTML_OUTPUT&&$isadmin){// HTML display - massive modif
 					$sel="";
 					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 					echo displaySearchItem($output_type,"<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>",$item_num,$row_num,0,"width='10'");
@@ -919,7 +919,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 
 			// Delete selected item
-			if ($isadmin&&$output_type==0){
+			if ($isadmin&&$output_type==HTML_OUTPUT){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='80%'>";
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all'>".$lang["buttons"][18]."</a></td>";
@@ -935,7 +935,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo "</form>";
 			}
 			
-			if ($output_type==0) // In case of HTML display
+			if ($output_type==HTML_OUTPUT) // In case of HTML display
 				printPager($start,$numrows,$target,$parameters);
 
 		} else {

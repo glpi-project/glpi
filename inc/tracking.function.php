@@ -113,7 +113,7 @@ function showTrackingOnglets($target){
 
 
 
-function commonTrackingListHeader($output_type=0,$target="",$parameters="",$sort="",$order=""){
+function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameters="",$sort="",$order=""){
 	global $lang,$cfg_glpi;
 
 	// New Line for Header Items Line
@@ -431,7 +431,7 @@ $query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and 
 }
 
 
-function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
+function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	// Prints a job in short form
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
@@ -457,11 +457,11 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 
 		// First column
 		$first_col= "ID: ".$job->fields["ID"];
-		if ($output_type==0)
+		if ($output_type==HTML_OUTPUT)
 		$first_col.="<br><img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
 		else $first_col.=" - ".getStatusName($job->fields["status"]);
 
-		if ($candelete&&$output_type==0&&ereg("old_",$job->fields["status"])){
+		if ($candelete&&$output_type==HTML_OUTPUT&&ereg("old_",$job->fields["status"])){
 			$sel="";
 			if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 			$first_col.="<input type='checkbox' name='todel[".$job->fields["ID"]."]' value='1' $sel>";
@@ -473,20 +473,22 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		$second_col="";	
 		if (!ereg("old_",$job->fields["status"]))
 		{
-			$second_col.="<small>".$lang["joblist"][11].":<br>&nbsp;".convDateTime($job->fields["date"])."</small>";
+			$second_col.="<small>".$lang["joblist"][11].":";
+			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
+			$second_col.= "&nbsp;".convDateTime($job->fields["date"])."</small>";
 		}
 		else
 		{
 			$second_col.="<small>".$lang["joblist"][11].":";
-			if ($output_type==0) $second_col.="<br>";
+			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
 			$second_col.="&nbsp;".convDateTime($job->fields["date"]);
 			$second_col.="<br>";
 			$second_col.="<i>".$lang["joblist"][12].":";
-			if ($output_type==0) $second_col.="<br>";
+			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
 			$second_col.="&nbsp;".convDateTime($job->fields["closedate"])."</i>";
 			$second_col.="<br>";
 			if ($job->fields["realtime"]>0) $second_col.=$lang["job"][20].": ";
-			if ($output_type==0) $second_col.="<br>";
+			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
 			$second_col.="&nbsp;".getRealtime($job->fields["realtime"]);
 			$second_col.="</small>";
 		}
@@ -565,7 +567,7 @@ function showJobShort($ID, $followups,$output_type=0,$row_num=0) {
 		if ($followups){$stripped_content=resume_text($job->fields["contents"],$cfg_glpi["cut"]);}
 
 		$eigth_column="<strong>".$stripped_content."</strong>";
-		if ($followups&&$output_type==0)
+		if ($followups&&$output_type==HTML_OUTPUT)
 		{
 			$eigth_column.=showFollowupsShort($job->fields["ID"]);
 		}
@@ -1177,7 +1179,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		if ($start<$numrows) {
 
 			// Set display type for export if define
-			$output_type=0;
+			$output_type=HTML_OUTPUT;
 			if (isset($_GET["display_type"]))
 				$output_type=$_GET["display_type"];
 
@@ -1189,7 +1191,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			// Manage helpdesk
 			if (ereg("helpdesk",$target)) 
 				$parameters.="&show=user";
-			if ($output_type==0){
+			if ($output_type==HTML_OUTPUT){
 				if (!ereg("helpdesk",$target)) 
 					printPager($start,$numrows,$target,$parameters,TRACKING_TYPE);
 				else printPager($start,$numrows,$target,$parameters);
@@ -1198,7 +1200,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			$nbcols=9;
 			
 			// Form to delete old item
-			if ($candelete&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
+			if ($candelete&&$output_type==HTML_OUTPUT&&($status=="old"||$status=="all"||ereg("old_",$status))){
 			echo "<form method='post' id='TrackingForm' name='TrackingForm' action=\"$target\">";
 			}
 
@@ -1225,7 +1227,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			echo displaySearchFooter($output_type);
 
 			// Delete selected item
-			if ($candelete&&$output_type==0&&($status=="old"||$status=="all"||ereg("old_",$status))){
+			if ($candelete&&$output_type==HTML_OUTPUT&&($status=="old"||$status=="all"||ereg("old_",$status))){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='900'>";
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
@@ -1240,7 +1242,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			
 			
 			// Pager
-			if ($output_type==0) // In case of HTML display
+			if ($output_type==HTML_OUTPUT) // In case of HTML display
 				printPager($start,$numrows,$target,$parameters);
 
 		} else {

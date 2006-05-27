@@ -165,12 +165,12 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 	global $lang,$cfg_glpi,$HTMLRel;
 
 	// Set display type for export if define
-	$output_type=0;
+	$output_type=HTML_OUTPUT;
 	if (isset($_GET["display_type"]))
 		$output_type=$_GET["display_type"];
 
-	if ($output_type==0) // HTML display
-	echo "<div align ='center'>";
+	if ($output_type==HTML_OUTPUT) // HTML display
+		echo "<div align ='center'>";
 
 	if (is_array($value)){
 
@@ -182,13 +182,13 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			$end_display=$numrows;
 		}
 		$nbcols=8;
-		if ($output_type!=0) // not HTML display
+		if ($output_type!=HTML_OUTPUT) // not HTML display
 			 $nbcols--;
 		echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols);
 		echo displaySearchNewLine($output_type);
 		$header_num=1;
 		echo displaySearchHeaderItem($output_type,$lang["stats"][16],$header_num);
-		if ($output_type==0) // HTML display
+		if ($output_type==HTML_OUTPUT) // HTML display
 			echo displaySearchHeaderItem($output_type,"",$header_num);
 		echo displaySearchHeaderItem($output_type,$lang["stats"][13],$header_num);
 		echo displaySearchHeaderItem($output_type,$lang["stats"][14],$header_num);
@@ -197,16 +197,14 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 		echo displaySearchHeaderItem($output_type,$lang["stats"][27],$header_num);
 		echo displaySearchHeaderItem($output_type,$lang["stats"][30],$header_num);
 		// End Line for column headers		
-			echo displaySearchEndLine($output_type);
-//		echo "<table class='tab_cadre_fixe' cellpadding='5' >";
-//		echo "<tr><th>".$lang["stats"][16]."</th><th>&nbsp;</th><th>".$lang["stats"][13]."</th><th>".$lang["stats"][14]."</th><th>".$lang["stats"][15]."</th><th>".$lang["stats"][25]."</th><th>".$lang["stats"][27]."</th><th>".$lang["stats"][30]."</th></tr>";
+		echo displaySearchEndLine($output_type);
 		$row_num=1;
 		for ($i=$start;$i< $numrows && $i<($end_display);$i++){
 			$row_num++;
 			$item_num=1;
 			echo displaySearchNewLine($output_type);
 			echo displaySearchItem($output_type,$value[$i]['link'],$item_num,$row_num);
-			if ($output_type==0) // HTML display
+			if ($output_type==HTML_OUTPUT) // HTML display
 				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
 			
 			//le nombre d'intervention
@@ -262,7 +260,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 	} else {
 		echo $lang["stats"][23];
 	}
-	if ($output_type==0) // HTML display
+	if ($output_type==HTML_OUTPUT) // HTML display
 	echo "</div>";
 }
 
