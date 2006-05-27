@@ -1289,7 +1289,7 @@ $lang["setup"][252]="Sélectionnez les éléments à afficher par défaut ";
 
 $lang["setup"][300]="Vérifier si une nouvelle version est disponible";
 $lang["setup"][301]="Une nouvelle version est disponible :";
-$lang["setup"][302]="Elle est disponible sur le site de GLPI : <a href='http://glpi.indepnet.org' target='_blank'>http://glpi.indepnet.org</a>";
+$lang["setup"][302]="Elle est disponible sur le site de GLPI : <a href='http://glpi-project.org' target='_blank'>http://glpi-project.org</a>";
 $lang["setup"][303]="Vous disposez de la dernière version disponible";
 $lang["setup"][304]="Vérification Impossible. Si vous êtes derrière un proxy configurez le.";
 $lang["setup"][306]="Vérifier la présence de mises à jour";

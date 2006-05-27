@@ -1657,10 +1657,10 @@ function checkNewVersionAvailable($auto=1){
 		
 		// Connection directe
 		 if (empty($cfg_glpi["proxy_name"])){
-			if ($fp=@fsockopen("glpi.indepnet.org", 80, $errno, $errstr, 1)){
+			if ($fp=@fsockopen("glpi-project.org", 80, $errno, $errstr, 1)){
 			
 				$request  = "GET /latest_version HTTP/1.1\r\n";
-				$request .= "Host: glpi.indepnet.org\r\n";
+				$request .= "Host: glpi-project.org\r\n";
 				$request .= 'User-Agent: GLPICheckUpdate/'.trim($cfg_glpi["version"])."\r\n";
 				$request .= "Connection: Close\r\n\r\n";
 				
@@ -1680,7 +1680,7 @@ function checkNewVersionAvailable($auto=1){
 				echo "<div align='center'>".$lang["setup"][311]." ($errstr)</div>";
 			} 
 			
-			fputs($proxy_fp, "GET http://glpi.indepnet.org/latest_version HTTP/1.0\r\nHost: ".$cfg_glpi["proxy_name"]."\r\n");
+			fputs($proxy_fp, "GET http://glpi-project.org/latest_version HTTP/1.0\r\nHost: ".$cfg_glpi["proxy_name"]."\r\n");
 			if (!empty($cfg_glpi["proxy_user"]))
 				fputs($proxy_fp, "Proxy-Authorization: Basic " . base64_encode ($cfg_glpi["proxy_user"].":".$cfg_glpi["proxy_password"]) . "\r\n");    // added
 			fputs($proxy_fp,"\r\n");
