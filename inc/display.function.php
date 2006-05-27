@@ -672,7 +672,7 @@ if (!empty($cfg_glpi["founded_new_version"]))
 
 
 echo "<td align='right'>";
-echo "<a href=\"http://GLPI.indepnet.org/\">";
+echo "<a href=\"http://glpi-project.org/\">";
 echo "<span class='copyright'>GLPI ".$cfg_glpi["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 echo "</a>";
 
@@ -742,7 +742,7 @@ global $cfg_glpi,$FOOTER_LOADED;
 	$FOOTER_LOADED=true;
 
 echo "<div id='footer'><div align='right'>";
-	echo "<a href=\"http://GLPI.indepnet.org/\">";
+	echo "<a href=\"http://glpi-project.org/\">";
 	echo "<span class='copyright'>GLPI ".$cfg_glpi["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a></div>";
 		echo "</div>";
@@ -763,7 +763,7 @@ global $cfg_glpi,$FOOTER_LOADED;
 	$FOOTER_LOADED=true;
 
 echo "<div id='footer'><div align='right'>";
-	echo "<a href=\"http://GLPI.indepnet.org/\">";
+	echo "<a href=\"http://glpi-project.org/\">";
 	echo "<span class='copyright'>GLPI ".(isset($cfg_glpi["version"])?$cfg_glpi["version"]:"")." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a>";
 		echo "</div></div>";
