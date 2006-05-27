@@ -100,12 +100,44 @@ else if(isset($_POST["delete"]))
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted networking port.");
 	glpi_header($_POST["referer"]);
 }
+else if(isset($_POST["delete_several"]))
+{
+	checkRight("networking","w");
+	if (isset($_POST["del_port"])&&count($_POST["del_port"]))
+	foreach ($_POST["del_port"] as $port_id => $val){
+		$np->delete(array("ID"=>$port_id));
+	}
+	
+	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted several networking ports.");
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if(isset($_POST["update"]))
 {
 	checkRight("networking","w");
 
 	$np->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
+}
+else if (isset($_POST["connect"])){
+	if (isset($_POST["dport"])&&count($_POST["dport"]))
+	foreach ($_POST["dport"] as $sport => $dport){
+		if($sport && $dport){
+			makeConnector($sport,$dport);
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);	
+}
+else if (isset($tab["disconnect"])){
+	checkRight("networking","w");
+	if (isset($_GET["ID"])){
+		removeConnector($_GET["ID"]);
+		$fin="";
+		if (isset($_GET["sport"])) $fin="?sport=".$_GET["sport"];
+	
+		glpi_header($_SERVER['HTTP_REFERER'].$fin);
+	}
+
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST['assign_vlan'])){
 	checkRight("networking","w");

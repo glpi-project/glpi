@@ -180,9 +180,9 @@ if (isset($_GET['onglet'])) {
 				break;
 			case 3 :
 				showConnections($_SERVER["PHP_SELF"],$tab["ID"],$tab["withtemplate"]);
-				showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
 				if ($tab["withtemplate"]!=2)
 					showPortsAdd($tab["ID"],COMPUTER_TYPE);
+				showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
 				break;					
 			case 4 :
 				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
@@ -215,8 +215,8 @@ if (isset($_GET['onglet'])) {
 				showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
 				showSoftwareInstalled($tab["ID"]);
 				showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
-				showPorts($tab["ID"], COMPUTER_TYPE);
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
+				showPorts($tab["ID"], COMPUTER_TYPE);
 				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
 				showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
@@ -230,8 +230,8 @@ if (isset($_GET['onglet'])) {
 				break;
 			case 3 :
 				showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
-				showPorts($tab["ID"], COMPUTER_TYPE);
 				showPortsAdd($tab["ID"],COMPUTER_TYPE);
+				showPorts($tab["ID"], COMPUTER_TYPE);
 				break;
 			case 4 :
 				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
