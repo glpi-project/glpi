@@ -196,15 +196,16 @@ class Identification
  function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
  {
 	global $cfg_glpi;
+
   // we prevent some delay...
   if (empty($host)) {
 	return false;
   }
-  $ldap_server=$host;
+
   $ldap_login_attr = $cfg_glpi["ldap_login"];
   $ldap_dn ="";
   error_reporting(16);
-  $ds = ldap_connect ($ldap_server,$port);
+  $ds = ldap_connect ($host,$port);
 
   if (!$ds)
     {
@@ -212,6 +213,7 @@ class Identification
      return false;
      
     }
+
   ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
 if ($cfg_glpi["ldap_use_tls"]){
@@ -350,11 +352,10 @@ global $cfg_glpi;
 	return false;
   }
 
-  $ldap_server=$host;
   $ldap_login_attr = "sAMAccountName";                          
   $ldap_dn ="";
 	error_reporting(16);
-  $ds = ldap_connect ($ldap_server,$port);
+  $ds = ldap_connect ($host,$port);
   if (!$ds)
     {
  	$this->err .= ldap_error($ds)."<br>";
