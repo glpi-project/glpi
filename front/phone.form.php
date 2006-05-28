@@ -90,6 +90,14 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($tab["unglobalize"]))
+{
+	checkRight("phone","w");
+
+	unglobalizeDevice(PHONE_TYPE,$tab["ID"]);
+	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][50]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if (isset($tab["disconnect"]))
 {
 	checkRight("phone","w");

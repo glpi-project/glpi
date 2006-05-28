@@ -1104,9 +1104,27 @@ function dropdownMassiveAction($device_type,$deleted){
 	
 	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
-	
-
-
 }
+
+function globalManagementDropdown($target,$withtemplate,$ID,$value){
+	global $lang,$HTMLRel;	
+	
+	echo "<select name='is_global'>";
+	echo "<option value='0' ".(!$value?" selected":"").">".$lang["peripherals"][32]."</option>";
+	echo "<option value='1' ".($value?" selected":"").">".$lang["peripherals"][31]."</option>";
+	echo "</select>";
+	if ($value&&empty($withtemplate)) {
+		echo "<script language=\"JavaScript\" type=\"text/javascript\">";
+		echo "function unglobalize(what){";
+		echo "if (confirm(\"".$lang["common"][40]."\\n".$lang["common"][39]."\")) {";
+		echo "window.location = what;";
+		echo "}}";
+		echo "</script>";
+
+		echo "&nbsp;<a alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" href=\"javascript:unglobalize('$target?unglobalize=unglobalize&ID=$ID')\">".$lang["common"][38]."</a>&nbsp;";
+		echo "<img alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" src='".$HTMLRel."pics/aide.png'\">";
+	}		
+}
+
 
 ?>

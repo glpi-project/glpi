@@ -419,10 +419,7 @@ class Printer  extends CommonDBTM {
 	
 	
 		echo "<tr><td>".$lang["printers"][35].":</td><td>";
-		echo "<select name='is_global'>";
-		echo "<option value='0' ".(!$this->fields["is_global"]?" selected":"").">".$lang["printers"][34]."</option>";
-		echo "<option value='1' ".($this->fields["is_global"]?" selected":"").">".$lang["printers"][33]."</option>";
-		echo "</select>";
+		globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
 		echo "</td></tr>";
 	
 		echo "</table>\n";
