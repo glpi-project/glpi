@@ -496,7 +496,16 @@ if(!FieldExists("glpi_$table","FK_users")) {
 
 }
 
-// Group management
+
+
+
+//// Group management
+// Manage old plugin table
+if(FieldExists("glpi_groups","extend")){
+	$query= "ALTER TABLE `glpi_groups` RENAME `glpi_plugin_droits_groups`;";
+	$db->query($query) or die("0.68 rename plugin groups table ".$lang["update"][90].$db->error());
+}
+
 if(!TableExists("glpi_groups")) {
 	$query="CREATE TABLE `glpi_groups` (
 	`ID` int(11) NOT NULL auto_increment,
