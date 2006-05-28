@@ -45,11 +45,11 @@
 	switch ($_POST["type"]){
 	case "update_buy"	:
 		echo "<select name='buy'><option value='Y'>".$lang["choice"][1]."</option><option value='N'>".$lang["choice"][0]."</option></select>";
-		echo "&nbsp;&nbsp;<input type='image' name='update_buy' value='update_buy' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+		echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$lang["buttons"][14]."' class='submit'>";
 		break;
 	case "update_expire" :
 		showCalendarForm("lic_form","expire",date("Y-m-d"));
-		echo "&nbsp;&nbsp;<input type='image' name='update_expire' value='update_expire' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+		echo "&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$lang["buttons"][14]."' class='submit'>";
 		break;
 	}
 
