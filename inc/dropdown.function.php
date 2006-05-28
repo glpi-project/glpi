@@ -929,7 +929,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 * @param $withtemplate
 * @return nothing (print out an HTML select box)
 */
-function dropdownSoftwareToInstall($myname,$withtemplate) {
+function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
 	global $db,$lang,$HTMLRel,$cfg_glpi;
 	
 	$rand=mt_rand();
@@ -944,7 +944,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchSoft=' + value+'&myname=$myname&withtemplate=$withtemplate'\n";
+	echo "           method:'post', parameters:'searchSoft=' + value+'&myname=$myname&withtemplate=$withtemplate&massiveaction=$massiveaction'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -1086,6 +1086,8 @@ function dropdownMassiveAction($device_type,$deleted){
 		} else {
 			echo "<option value=\"delete\">".$lang["buttons"][6]."</option>";
 			echo "<option value=\"update\">".$lang["buttons"][14]."</option>";
+			if ($device_type==COMPUTER_TYPE)
+				echo "<option value=\"install\">".$lang["buttons"][4]."</option>";
 		}
 		echo "</select>";
 
