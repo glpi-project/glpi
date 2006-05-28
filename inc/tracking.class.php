@@ -383,10 +383,13 @@ class Job extends CommonDBTM{
 		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$lang["log"][20]);
 		
 		$already_mail=false;
-		if (isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0){
+		if ((isset($input["_followup"])&&strlen($input["_followup"]))||(isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0)){
 			
 			$fup=new Followup();
-			$toadd=array("type"=>"new","hour"=>$input["_hour"],"minute"=>$input["_minute"],"tracking"=>$newID);
+			$toadd=array("type"=>"new","tracking"=>$newID);
+			if (isset($input["_hour"])) $toadd["hour"]=$input["_hour"];
+			if (isset($input["_minute"])) $toadd["minute"]=$input["_minute"];
+			if (isset($input["_followup"])&&strlen($input["_followup"])) $toadd["contents"]=$input["_followup"];
 			if ($input["assign"]>0)
 				$toadd["author"]=$input["assign"];
 			$fup->add($toadd);

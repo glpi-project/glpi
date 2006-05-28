@@ -813,6 +813,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$cfg_glpi["root_doc"]."/front/tracking.injector.php\"  enctype=\"multipart/form-data\">";
 	echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
+	echo "<input type='hidden' name='request_type' value='1'>";
 
 	echo "<div align='center'><table  class='tab_cadre'>";
 

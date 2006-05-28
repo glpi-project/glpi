@@ -687,7 +687,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<input type='hidden' name='_referer' value='$REFERER'>";
 		echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
 //	}	
-	echo "<table class='tab_cadre'><tr><th><a href='$target'>".$lang["buttons"][16]."</a></th><th>".$lang["job"][13].": <br>";
+	echo "<table class='tab_cadre'><tr><th><a href='$target'>".$lang["buttons"][16]."</a></th><th colspan='3'>".$lang["job"][13].": <br>";
 	if ($device_type!=0){
 		$m=new CommonItem;
 		$m->getfromDB($device_type,$ID);
@@ -696,13 +696,13 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1' align='center'><td>".$lang["common"][27].":</td>";
-	echo "<td align='center'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
+	echo "<td align='center' colspan='3'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
 
 	if ($device_type==0){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>".$lang["help"][24].": </td>";
-		echo "<td align='center'>";
-		dropdownTrackingDeviceType("device_type",$device_type);
+		echo "<td align='center' colspan='3'>";
+		dropdownTrackingDeviceType("device_type",$device_type,4);
 		echo "</td></tr>";
 	}
 
@@ -715,14 +715,22 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<option value='old_done' ";
 	if (isset($_POST["status"])&&$_POST["status"]=="old_done") echo "selected";	
 	echo ">".$lang["job"][15]."</option>";
-	echo "</select></td></tr>";
+	echo "</select></td>";
+
+	echo "<td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
+	echo "<td align='center' class='tab_bg_2'>";
+	$priority=3;
+	if (isset($_POST["priority"])) $priority=$_POST["priority"];
+	dropdownPriority("priority",$priority);
+	echo "</td></tr>";
+
 
 	// Need comment right to add a followup with the realtime
 	if (haveRight("comment_all_ticket","1")){
-		echo "<tr>";
-		echo "<td class='tab_bg_2' align='center'>";
+		echo "<tr  class='tab_bg_2'>";
+		echo "<td align='center'>";
 		echo $lang["job"][20].":</td>";
-		echo "<td align='center' class='tab_bg_2'><select name='hour'>";
+		echo "<td align='center' colspan='3'><select name='hour'>";
 		for ($i=0;$i<100;$i++){
 			$selected="";
 			if (isset($_POST["hour"])&&$_POST["hour"]==$i) $selected="selected";
@@ -740,34 +748,33 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "</td></tr>";
 	}
 
-	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
-	echo "<td align='center' class='tab_bg_2'>";
-	$priority=3;
-	if (isset($_POST["priority"])) $priority=$_POST["priority"];
-	dropdownPriority("priority",$priority);
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["job"][44].":</td>";
+	echo "<td align='center'>";
+	$request_type=1;
+	if (isset($_POST["request_type"])) $request_type=$_POST["request_type"];
+	dropdownRequestType("request_type",$request_type);
+	echo "</td>";
+
+	echo "<td>".$lang["tracking"][20].":</td>";
+	echo "<td align='center'>";
+	$category=0;
+	if (isset($_POST["category"])) $category=$_POST["category"];
+	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td></tr>";
+
 
 	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][3].":</td>";
-	
 	echo "<td align='center'>";
 	dropdownAllUsers("author",$author);
-	echo "</td></tr>";
+	echo "</td>";
 	
 
-	echo "<tr class='tab_bg_2' align='center'><td>".$lang["buttons"][3].":</td>";
-	
+	echo "<td>".$lang["buttons"][3].":</td>";
 	echo "<td align='center'>";
 	dropdownUsers("assign",$assign,"own_ticket");
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2' align='center'><td>".$lang["tracking"][20].":</td>";
-	
-	echo "<td align='center'>";
-	$category=0;
-	if (isset($_POST["category"])) $category=$_POST["category"];
-
-	dropdownValue("glpi_dropdown_tracking_category","category",$category);
-	echo "</td></tr>";
 
 
 	if($cfg_glpi["mailing"] == 1)
@@ -778,8 +785,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<option value='no'>".$lang["choice"][0]."";
 		echo "<option value='yes' selected>".$lang["choice"][1]."";
 		echo "</select>";
-		echo "</td></tr>";
-		echo "<tr class='tab_bg_1'>";
+		echo "</td>";
 		echo "<td align='center'>".$lang["help"][11].":</td>";
 		echo "<td>	";
 		echo "<input type='text' size='30' name='uemail'>";
@@ -787,15 +793,15 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		
 	}
 
-	echo "<tr><th colspan='2' align='center'>".$lang["job"][11].":";
+	echo "<tr><th colspan='4' align='center'>".$lang["job"][11].":";
 	if ($device_type!=0){
-	echo "<input type='hidden' name='computer' value=\"$ID\">";
-	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
+		echo "<input type='hidden' name='computer' value=\"$ID\">";
+		echo "<input type='hidden' name='device_type' value=\"$device_type\">";
 	}
 
 	echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='2' align='center'><textarea cols='60' rows='14'  name='contents'></textarea></td></tr>";
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='contents'></textarea></td></tr>";
 
 	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
 	$max_size/=1024*1024;
@@ -804,12 +810,17 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
 	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
-	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
+	echo "<td colspan='3'><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit'>";
 	echo "</td></tr>";
+
+	if (haveRight("comment_all_ticket","1")){
+		echo "<tr><th colspan='4' align='center'>".$lang["job"][45].":</th></tr>";
+		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='_followup'></textarea></td></tr>";
+	}
 	
 	echo "</table></div></form>";
 
@@ -1313,21 +1324,22 @@ function dropdownPriority($name,$value=0,$complete=0){
 	
 	echo "<select name='$name'>";
 	if ($complete){
-	echo "<option value='0' ".($value==1?" selected ":"").">".$lang["search"][7]."";
-	echo "<option value='-5' ".($value==-5?" selected ":"").">".$lang["search"][16]." ".$lang["help"][3]."";
-	echo "<option value='-4' ".($value==-4?" selected ":"").">".$lang["search"][16]." ".$lang["help"][4]."";
-	echo "<option value='-3' ".($value==-3?" selected ":"").">".$lang["search"][16]." ".$lang["help"][5]."";
-	echo "<option value='-2' ".($value==-2?" selected ":"").">".$lang["search"][16]." ".$lang["help"][6]."";
-	echo "<option value='-1' ".($value==-1?" selected ":"").">".$lang["search"][16]." ".$lang["help"][7]."";
+	echo "<option value='0' ".($value==1?" selected ":"").">".$lang["search"][7]."</option>";
+	echo "<option value='-5' ".($value==-5?" selected ":"").">".$lang["search"][16]." ".$lang["help"][3]."</option>";
+	echo "<option value='-4' ".($value==-4?" selected ":"").">".$lang["search"][16]." ".$lang["help"][4]."</option>";
+	echo "<option value='-3' ".($value==-3?" selected ":"").">".$lang["search"][16]." ".$lang["help"][5]."</option>";
+	echo "<option value='-2' ".($value==-2?" selected ":"").">".$lang["search"][16]." ".$lang["help"][6]."</option>";
+	echo "<option value='-1' ".($value==-1?" selected ":"").">".$lang["search"][16]." ".$lang["help"][7]."</option>";
 	}
-	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["help"][3]."";
-	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["help"][4]."";
-	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["help"][5]."";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["help"][6]."";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["help"][7]."";
+	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["help"][3]."</option>";
+	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["help"][4]."</option>";
+	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["help"][5]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["help"][6]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["help"][7]."</option>";
 
 	echo "</select>";	
 }
+
 
 function getPriorityName($value){
 	global $lang;
@@ -1350,6 +1362,48 @@ function getPriorityName($value){
 		break;
 	}	
 }
+
+function getRequestTypeName($value){
+	global $lang;
+	
+	switch ($value){
+	case 1 :
+		return $lang["Menu"][31];
+		break;
+	case 2 :
+		return $lang["setup"][14];
+		break;
+	case 3 :
+		return $lang["title"][41];
+		break;
+	case 4 :
+		return $lang["tracking"][34];
+		break;
+	case 5 :
+		return $lang["tracking"][35];
+		break;
+	case 6 :
+		return $lang["tracking"][36];
+		break;
+	default : return "";
+	}	
+}
+
+function dropdownRequestType($name,$value=0){
+	global $lang;
+	
+	echo "<select name='$name'>";
+	echo "<option value='0' ".($value==0?" selected ":"").">-----</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["Menu"][31]."</option>"; // Helpdesk
+	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["setup"][14]."</option>"; // mail
+	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["title"][41]."</option>"; // phone
+	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["tracking"][34]."</option>"; // direct
+	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["tracking"][35]."</option>"; // writing
+	echo "<option value='6' ".($value==6?" selected ":"").">".$lang["tracking"][36]."</option>"; // other
+
+	echo "</select>";	
+}
+
 
 function getAssignName($ID,$type,$link=0){
 	global $cfg_glpi;
@@ -1487,7 +1541,16 @@ function showJobDetails ($target,$ID){
 		// Deuxi�e colonne
 		echo "<td valign='top' width='33%'>";
 
-		echo "<table border='0'><tr><td align='right'>";
+		echo "<table border='0'>";
+
+		echo "<tr><td align='right'>";
+		echo $lang["job"][44].":</td><td>";
+		if ($canupdate)
+			dropdownRequestType("request_type",$job->fields["request_type"]);
+		else echo getRequestTypeName($job->fields["request_type"]);
+		echo "</td></tr>";
+
+		echo "<tr><td align='right'>";
 		echo $lang["common"][1].":</td><td>";
 		if ($canupdate){
 			echo $item->getType()." - ".$item->getLink()."<br>";

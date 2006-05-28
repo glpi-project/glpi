@@ -80,14 +80,12 @@ if (isset($_POST["priority"]) && empty($_POST["contents"]))
 elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
 
-	if ($track->add($_POST))
-	{
+	if ($track->add($_POST)){
 		$error=$lang["tracking"][9];
 		displayMessageAfterRedirect();
 		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
-	else
-	{
+	else {
 		$error=$lang["tracking"][10];
 		displayMessageAfterRedirect();
 		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
