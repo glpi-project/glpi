@@ -89,6 +89,14 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($tab["unglobalize"]))
+{
+	checkRight("peripheral","w");
+
+	unglobalizeDevice(PERIPHERAL_TYPE,$tab["ID"]);
+	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][50]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if (isset($tab["disconnect"]))
 {
 	checkRight("peripheral","w");

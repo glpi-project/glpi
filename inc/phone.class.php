@@ -331,10 +331,7 @@ function showForm ($target,$ID,$withtemplate='') {
 
 
 	echo "<tr><td>".$lang["phones"][33].":</td><td>";
-	echo "<select name='is_global'>";
-	echo "<option value='0' ".(!$this->fields["is_global"]?" selected":"").">".$lang["phones"][32]."</option>";
-	echo "<option value='1' ".($this->fields["is_global"]?" selected":"").">".$lang["phones"][31]."</option>";
-	echo "</select>";
+	globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);	
 	echo "</td></tr>";
 		
 	echo "<tr><td>".$lang["phones"][36].":</td><td>";

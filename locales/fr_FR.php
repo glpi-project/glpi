@@ -204,6 +204,9 @@ $lang["common"][34]="Utilisateur";
 $lang["common"][35]="Groupe";
 $lang["common"][36]="Catégorie";
 $lang["common"][37]="Auteur";
+$lang["common"][38]="Déglobaliser";
+$lang["common"][39]="Duplique l'élément autant de fois qu'il y a de connections";
+$lang["common"][40]="Etes vous sur de vouloir déglobaliser cet élément ?";
 
 $lang["computers"][0]="Ajouter ordinateur...";
 $lang["computers"][9]="OS";
@@ -719,6 +722,7 @@ $lang["log"][46]="Echouée";
 $lang["log"][47]="groupe";
 $lang["log"][48]="ajout utilisateur au groupe";
 $lang["log"][49]="suppression utilisateur au groupe";
+$lang["log"][50]="déglobalisation de l'item";
 
 $lang["log"][50]="Inventaire";
 $lang["log"][51]="Suivi";

@@ -204,4 +204,38 @@ function getNumberConnections($type,$ID){
 	
 }
 
+function unglobalizeDevice($device_type,$ID){
+	global $db;
+	$ci=new CommonItem();
+	// Update item to unit management :
+	$ci->getFromDB($device_type,$ID);
+	//if (isset($ci->obj->fields["is_global"])&&$ci->obj->fields["is_global"]){
+		$input=array("ID"=>$ID,"is_global"=>"0");
+		$ci->obj->update($input);
+		echo "UNGLOBALIZE";
+	//}
+
+	$query = "SELECT glpi_connect_wire.ID AS connectID FROM glpi_connect_wire INNER JOIN glpi_computers ON ( glpi_connect_wire.end2=glpi_computers.ID ) WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$device_type' AND glpi_computers.deleted='N' AND glpi_computers.is_template='0'";
+	$result=$db->query($query);
+	if (($nb=$db->numrows($result))>1){
+		$si=new StateItem();
+		$si->getfromDB($device_type,$ID,0);
+
+		for ($i=1;$i<$nb;$i++){
+			// Get ID of the computer
+			if ($data=$db->fetch_array($result)){
+				// Add new Item
+				unset($ci->obj->fields["ID"]);
+				if ($newID=$ci->obj->add(array("ID"=>$ID,"state"=>$si->fields["state"]))){
+					// Update Connection
+					$query2="UPDATE glpi_connect_wire SET end1='$newID' WHERE ID='".$data["connectID"]."'";
+					$db->query($query2);
+				}
+				
+			}
+		}
+		
+	}
+}
+
 ?>

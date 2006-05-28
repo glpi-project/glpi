@@ -314,10 +314,7 @@ class Monitor extends CommonDBTM {
 
 	
 		echo "<tr><td>".$lang["peripherals"][33].":</td><td>";
-		echo "<select name='is_global'>";
-		echo "<option value='0' ".(!$this->fields["is_global"]?" selected":"").">".$lang["peripherals"][32]."</option>";
-		echo "<option value='1' ".($this->fields["is_global"]?" selected":"").">".$lang["peripherals"][31]."</option>";
-		echo "</select>";
+		globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
 		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["common"][17].": 	</td><td>";
