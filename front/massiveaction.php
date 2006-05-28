@@ -43,6 +43,7 @@ checkTypeRight($_POST["device_type"],"w");
 
 commonHeader($lang["title"][42],$_SERVER["PHP_SELF"]);
 
+
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
 
 	switch($_POST["action"]){
@@ -90,6 +91,11 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 						$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 					}
 				}
+			}
+		break;
+		case "install":
+			foreach ($_POST["item"] as $key => $val){
+				installSoftware($key,$_POST["lID"],$_POST["sID"]);
 			}
 		break;
 	}

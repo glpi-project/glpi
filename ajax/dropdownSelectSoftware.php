@@ -75,7 +75,7 @@
 	echo "            {Element.hide('search_spinner_".$_POST["myname"]."$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_".$_POST["myname"]."$rand');},\n";
-	echo "           method:'post', parameters:'sID='+value+'&myname=".$_POST["myname"]."'\n";
+	echo "           method:'post', parameters:'sID='+value+'&myname=".$_POST["myname"]."&massiveaction=".$_POST["massiveaction"]."'\n";
 	echo "})})\n";
 	echo "</script>\n";
 	

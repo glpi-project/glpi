@@ -52,6 +52,9 @@ header_nocache();
 			case "restore":
 				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 			break;
+			case "install":
+				dropdownSoftwareToInstall("lID",0,1);
+			break;
 			case "update":
 				$first_group=true;
 				$newgroup="";
