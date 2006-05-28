@@ -1109,11 +1109,8 @@ function dropdownMassiveAction($device_type,$deleted){
 function globalManagementDropdown($target,$withtemplate,$ID,$value){
 	global $lang,$HTMLRel;	
 	
-	echo "<select name='is_global'>";
-	echo "<option value='0' ".(!$value?" selected":"").">".$lang["peripherals"][32]."</option>";
-	echo "<option value='1' ".($value?" selected":"").">".$lang["peripherals"][31]."</option>";
-	echo "</select>";
 	if ($value&&empty($withtemplate)) {
+		echo $lang["peripherals"][31];
 		echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 		echo "function unglobalize(what){";
 		echo "if (confirm(\"".$lang["common"][40]."\\n".$lang["common"][39]."\")) {";
@@ -1123,7 +1120,12 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value){
 
 		echo "&nbsp;<a alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" href=\"javascript:unglobalize('$target?unglobalize=unglobalize&ID=$ID')\">".$lang["common"][38]."</a>&nbsp;";
 		echo "<img alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" src='".$HTMLRel."pics/aide.png'\">";
-	}		
+	} else {
+		echo "<select name='is_global'>";
+		echo "<option value='0' ".(!$value?" selected":"").">".$lang["peripherals"][32]."</option>";
+		echo "<option value='1' ".($value?" selected":"").">".$lang["peripherals"][31]."</option>";
+		echo "</select>";
+	}
 }
 
 
