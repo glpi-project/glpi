@@ -722,7 +722,6 @@ $lang["log"][46]="Echouée";
 $lang["log"][47]="groupe";
 $lang["log"][48]="ajout utilisateur au groupe";
 $lang["log"][49]="suppression utilisateur au groupe";
-$lang["log"][50]="déglobalisation de l'item";
 
 $lang["log"][50]="Inventaire";
 $lang["log"][51]="Suivi";
@@ -734,6 +733,8 @@ $lang["log"][56]="Documents";
 $lang["log"][57]="Configuration";
 $lang["log"][58]="Réservation";
 $lang["log"][59]="Cron";
+
+$lang["log"][60]="déglobalisation de l'item";
 
 $lang["login"][1]="Se reconnecter";
 $lang["login"][5]="Accés refusé";
