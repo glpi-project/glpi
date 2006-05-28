@@ -94,7 +94,7 @@ else if (isset($tab["unglobalize"]))
 	checkRight("peripheral","w");
 
 	unglobalizeDevice(PERIPHERAL_TYPE,$tab["ID"]);
-	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][50]);
+	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][60]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["disconnect"]))
