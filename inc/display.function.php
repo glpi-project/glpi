@@ -848,7 +848,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["tracking"][20].":</td><td>";
+	echo "<td>".$lang["common"][36].":</td><td>";
 	
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";

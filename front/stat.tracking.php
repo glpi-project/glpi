@@ -68,19 +68,19 @@ $type=$_POST["type"];
 
 $items=array(
 	"user"=>array(	
-		"title"=>$lang["stats"][4],
+		"title"=>$lang["common"][34],
 		"field"=>"glpi_tracking.author"
 		),
 	"category"=>array(	
-		"title"=>$lang["stats"][36],
+		"title"=>$lang["common"][37],
 		"field"=>"glpi_tracking.author"
 	),
 	"priority"=>array(	
-		"title"=>$lang["stats"][39],
+		"title"=>$lang["joblist"][2],
 		"field"=>"glpi_tracking.priority"
 	),
 	"request_type"=>array(	
-		"title"=>$lang["stats"][50],
+		"title"=>$lang["job"][44],
 		"field"=>"glpi_tracking.request_type"
 	),
 	"technicien"=>array(	
@@ -92,7 +92,7 @@ $items=array(
 		"field"=>"glpi_followup.author"
 	),
 	"enterprise"=>array(	
-		"title"=>$lang["stats"][42],
+		"title"=>$lang["financial"][26],
 		"field"=>"glpi_tracking.assign_ent"
 	),
 

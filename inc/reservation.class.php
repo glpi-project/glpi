@@ -349,11 +349,11 @@ class ReservationResa extends CommonDBTM {
 		$content="";
 		
 		$content.=$lang["mailing"][1]."\n";	
-		$content.=$lang["mailing"][2]." ".$u->getName()."\n";
+		$content.=$lang["joblist"][3].": ".$u->getName()."\n";
 		$content.=$lang["mailing"][7]." ".$ci->getName()."\n";
-		$content.=$lang["mailing"][20]." ".convDateTime($this->fields["begin"])."\n";
-		$content.=$lang["mailing"][21]." ".convDateTime($this->fields["end"])."\n";
-		$content.=$lang["mailing"][22]." ".$this->fields["comment"]."\n";
+		$content.=$lang["search"][8].": ".convDateTime($this->fields["begin"])."\n";
+		$content.=$lang["search"][9].": ".convDateTime($this->fields["end"])."\n";
+		$content.=$lang["common"][25].": ".$this->fields["comment"]."\n";
 		$content.=$lang["mailing"][1]."\n";	
 		return $content;
 		

@@ -164,7 +164,7 @@ function showKbItemForm($target,$ID){
 		echo "<fieldset>";
 		echo "<div style='position: relative; text-align:left;'><span style='font-size:10px; color:#aaaaaa;'>";
 			if ($ki->fields["author"]){
-			echo $lang["knowbase"][25]." : ".getUserName($ki->fields["author"],"1")."   |   ";
+			echo $lang["common"][37]." : ".getUserName($ki->fields["author"],"1")."   |   ";
 			}
 			if ($ki->fields["date"]){
 			echo $lang["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
@@ -452,10 +452,10 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 	
 	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th>";
 
-	echo "<div style='position: relative'><span><strong>".$lang["knowbase"][23].": ".$fullcategoryname."</strong></span>";
+	echo "<div style='position: relative'><span><strong>".$lang["common"][36].": ".$fullcategoryname."</strong></span>";
 	echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
 		if($ki->fields["author"]){
-			echo $lang["knowbase"][25]." : ";
+			echo $lang["common"][37]." : ";
 			echo ($linkauthor=="yes") ? "".getUserName($ki->fields["author"],"1")."" : "".getUserName($ki->fields["author"])."";
 			echo " | ";
 		}

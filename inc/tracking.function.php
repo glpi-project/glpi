@@ -127,10 +127,10 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 		$lang["joblist"][0]=>"glpi_tracking.status",
 		$lang["common"][27]=>"glpi_tracking.date",
 		$lang["joblist"][2]=>"glpi_tracking.priority",
-		$lang["joblist"][3]=>"author.name",
+		$lang["common"][37]=>"author.name",
 		$lang["joblist"][4]=>"assign.name",
 		$lang["common"][1]=>"glpi_tracking.device_type,glpi_tracking.computer",
-		$lang["tracking"][20]=>"glpi_dropdown_tracking_category.completename",
+		$lang["common"][36]=>"glpi_dropdown_tracking_category.completename",
 		$lang["joblist"][6]=>"glpi_tracking.contents",
 		);
 
@@ -216,8 +216,8 @@ function showCentralJobList($target,$start,$status="process") {
 		
 		echo "<tr><th colspan='5'><b><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
 		echo "<tr><th></th>";
-		echo "<th>".$lang["joblist"][3]."</th>";
-		echo "<th>".$lang["tracking"][20]."</th>";
+		echo "<th>".$lang["common"][37]."</th>";
+		echo "<th>".$lang["common"][36]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number) {
 			$ID = $db->result($result, $i, "ID");
@@ -756,7 +756,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	dropdownRequestType("request_type",$request_type);
 	echo "</td>";
 
-	echo "<td>".$lang["tracking"][20].":</td>";
+	echo "<td>".$lang["common"][36].":</td>";
 	echo "<td align='center'>";
 	$category=0;
 	if (isset($_POST["category"])) $category=$_POST["category"];
@@ -764,7 +764,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</td></tr>";
 
 
-	echo "<tr class='tab_bg_2' align='center'><td>".$lang["joblist"][3].":</td>";
+	echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
 	echo "<td align='center'>";
 	dropdownAllUsers("author",$author);
 	echo "</td>";
@@ -903,7 +903,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][25]."</option>";	
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][20]."</option>";
 	echo "</select></td>";
-	echo "<td  colspan='2' align='center'>".$lang["joblist"][3]."&nbsp;:&nbsp;";
+	echo "<td  colspan='2' align='center'>".$lang["common"][37]."&nbsp;:&nbsp;";
 	if (!haveRight("show_ticket","1")) 
 		dropdownUsers("author",$author,"ID");
 	else dropdownUsersTracking("author",$author,"author");
@@ -913,7 +913,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	dropdownPriority("priority",$priority,1);
 	echo "</td>";
 
-	echo "<td colspan='2' align='center'>".$lang["tracking"][20].":&nbsp;";
+	echo "<td colspan='2' align='center'>".$lang["common"][36].":&nbsp;";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 
@@ -1248,9 +1248,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 					case "old": $title.=$lang["joblist"][25];break;
 					case "all": $title.=$lang["joblist"][20];break;
 				}
-				if ($author!=0) $title.=" - ".$lang["joblist"][3]." = ".getUserName($author);
+				if ($author!=0) $title.=" - ".$lang["common"][37]." = ".getUserName($author);
 				if ($assign!=0) $title.=" - ".$lang["job"][27]." = ".getUserName($assign);
-				if ($category!=0) $title.=" - ".$lang["tracking"][20]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
+				if ($category!=0) $title.=" - ".$lang["common"][36]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
 				if ($assign_ent!=0) $title.=" - ".$lang["job"][27]." = ".getDropdownName("glpi_enterprises",$assign_ent);
 				if ($priority!=0) $title.=" - ".$lang["joblist"][2]." = ".getPriorityName($priority);
 				if ($type!=0&&$item!=0){
@@ -1302,7 +1302,7 @@ function showFollowupsShort($ID) {
 	$out="";
 	if ($db->numrows($result)>0) {
 		$out.="<div align='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
-		$out.="<tr><th>".$lang["common"][27]."</th><th>".$lang["joblist"][3]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
+		$out.="<tr><th>".$lang["common"][27]."</th><th>".$lang["common"][37]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
 
 		while ($data=$db->fetch_array($result)) {
 			
@@ -1516,7 +1516,7 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
-		echo $lang["joblist"][3].":</td><td>";
+		echo $lang["common"][37].":</td><td>";
 		if ($canupdate)
 			dropdownAllUsers("author",$job->fields["author"]);
 		else echo $author->getName();
@@ -1530,7 +1530,7 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 
 		echo "<tr><td>";
-		echo $lang["tracking"][20].":</td><td>";
+		echo $lang["common"][36].":</td><td>";
 		if ($canupdate)
 			dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
 		else echo getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
@@ -1800,7 +1800,7 @@ function showFollowupsSummary($tID){
 	else {	
 
 		echo "<table class='tab_cadrehov_pointer'>";
-		echo "<tr><th>&nbsp;</th><th>".$lang["common"][27]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["joblist"][3]."</th>";
+		echo "<tr><th>&nbsp;</th><th>".$lang["common"][27]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["common"][37]."</th>";
 		if ($showprivate)
 			echo "<th>".$lang["job"][30]."</th>";
 		echo "</tr>";
