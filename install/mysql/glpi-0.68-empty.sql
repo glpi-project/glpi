@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-05-25 16:59
+#GLPI Dump database on 2006-05-28 17:19
 
 ### Dump table glpi_cartridges
 
@@ -1124,7 +1124,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-25 16:59:24','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-05-28 17:19:17','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1821,6 +1821,7 @@ CREATE TABLE `glpi_tracking` (
     `closedate` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     `status` enum('new','old_done','assign','plan','old_notdone','waiting') DEFAULT 'new' NOT NULL,
     `author` int(11) DEFAULT '0' NOT NULL,
+    `request_type` tinyint(2) DEFAULT '0',
     `assign` int(11) DEFAULT '0' NOT NULL,
     `assign_ent` int(11) DEFAULT '0' NOT NULL,
     `device_type` int(11) DEFAULT '1' NOT NULL,

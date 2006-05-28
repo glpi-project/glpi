@@ -725,7 +725,7 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 * @param $value preselected value.
 * @return nothing (print out an HTML select box)
 */
-function dropdownTrackingDeviceType($myname,$value){
+function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 	global $lang,$HTMLRel,$cfg_glpi,$db,$LINK_ID_TABLE;
 	
 	$rand=mt_rand();
@@ -792,7 +792,7 @@ echo "</script>\n";
 
 echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-echo "</td></tr><tr><td class='tab_bg_2' colspan='2'>";
+echo "</td></tr><tr><td class='tab_bg_2' colspan='$colspan'>";
 echo "<div align='center'>";
 echo "<span id='results_$myname$rand'>\n";
 

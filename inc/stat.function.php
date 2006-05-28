@@ -125,6 +125,17 @@ function getStatsItems($date1,$date2,$type){
 			}
 
 		break;
+		case "request_type":
+			$nomUsr = getNbIntervRequestType();
+			$i=0;
+			if (is_array($nomUsr))
+			foreach($nomUsr as $key){
+				$val[$i]["ID"]=$key["ID"];
+				$val[$i]["link"]=$key["request_type"];
+				$i++;
+			}
+
+		break;
 		case "glpi_type_computers":
 		case "glpi_dropdown_model":
 		case "glpi_dropdown_os":
@@ -413,6 +424,26 @@ function getNbIntervPriority()
 	
 }
 
+function getNbIntervRequestType()
+{	
+	global $db;
+	$query = "SELECT DISTINCT request_type FROM glpi_tracking order by request_type";
+	$result = $db->query($query);
+
+	if($db->numrows($result) >=1) {
+		$i = 0;
+		while($line = $db->fetch_assoc($result)) {
+		$tab[$i]["ID"] = $line["request_type"];
+		$tab[$i]["request_type"] = getRequestTypeName($line["request_type"]);
+		$i++;
+		}
+		
+		return $tab;
+	}
+	else return 0;	
+	
+}
+
 //return an array from tracking
 //it contains the distinct category of interventions.
 function getNbIntervCategory()
@@ -511,6 +542,9 @@ $begin.=" 00:00:00";
 		break;
 	case "priority":
 		$WHERE.=" AND glpi_tracking.priority='$value'";
+		break;
+	case "request_type":
+		$WHERE.=" AND glpi_tracking.request_type='$value'";
 		break;
 		
 	case "device":

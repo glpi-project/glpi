@@ -613,6 +613,8 @@ $lang["job"][40]="Coût horaire";
 $lang["job"][41]="Côut fixe";
 $lang["job"][42]="Coût matériel";
 $lang["job"][43]="Coût total";
+$lang["job"][44]="Type de demande";
+$lang["job"][45]="Ajouter un suivi";
 
 
 $lang["joblist"][0]="Statut";
@@ -1392,6 +1394,7 @@ $lang["stats"][46]="Statistiques par matériel";
 $lang["stats"][47]="Statistiques par caractéristiques des tickets";
 $lang["stats"][48]="basé sur les tickets";
 $lang["stats"][49]="basé sur les suivis";
+$lang["stats"][50]="Par type de demande";
 
 $lang["title"][0]="Centre de contrôle";
 $lang["title"][1]="Accès au Helpdesk seulement";
@@ -1452,6 +1455,9 @@ $lang["tracking"][30]="Nouveaux";
 $lang["tracking"][31]="En cours (attribués)";
 $lang["tracking"][32]="En cours (planifiés)";
 $lang["tracking"][33]="En attente";
+$lang["tracking"][34]="Directe";
+$lang["tracking"][35]="Ecrite";
+$lang["tracking"][36]="Autre";
 
 $lang["update"][88]="Votre version de la base de données n'est pas compatible avec la version du code installé. Une mise à jour est nécessaire.";
 $lang["update"][89]="Vous essayez d'utiliser GLPI avec une version de la base de données prévue pour une version supérieure. Veuillez installer la version correspondante à votre base de données.";

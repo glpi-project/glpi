@@ -43,7 +43,7 @@ checkRight("statistic","1");
 
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
-$year=date("Y")-2;
+$year=date("Y")-1;
 $_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
 
 $_POST["date2"]=date("Y-m-d");
@@ -180,6 +180,27 @@ case "priority":
 	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 	echo "</td>";
 	echo "<td width='400' align='center'><b>".$lang["stats"][41].": ".getPriorityName($_GET["ID"])."</b></td>";
+	echo "<td>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+
+	break;	
+case "request_type":
+	$val1=$_GET["ID"];
+	$val2="";
+	$next=$prev=0;
+	if ($val1<6) $next=$val1+1;
+	if ($val1>0) $prev=$val1-1;
+
+	echo "<div align='center'>";
+	echo "<table class='icon_nav'>";
+	echo "<tr>";
+	echo "<td>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	echo "</td>";
+	echo "<td width='400' align='center'><b>".$lang["job"][44].": ".getRequestTypeName($_GET["ID"])."</b></td>";
 	echo "<td>";
 	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 	echo "</td>";

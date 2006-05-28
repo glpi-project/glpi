@@ -539,6 +539,11 @@ if(!FieldExists("glpi_config","ldap_field_group")) {
 	$db->query($query) or die("0.68 add ldap_field_group in config ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_tracking","request_type")) {	
+	$query="ALTER TABLE  `glpi_tracking` ADD  `request_type` tinyint(2) DEFAULT '0' AFTER `author`;";
+	$db->query($query) or die("0.68 add request_type in tracking ".$lang["update"][90].$db->error());
+}
+
 } // fin 0.68 #####################################################################################
 
 ?>

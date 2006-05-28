@@ -79,6 +79,10 @@ $items=array(
 		"title"=>$lang["stats"][39],
 		"field"=>"glpi_tracking.priority"
 	),
+	"request_type"=>array(	
+		"title"=>$lang["stats"][50],
+		"field"=>"glpi_tracking.request_type"
+	),
 	"technicien"=>array(	
 		"title"=>$lang["stats"][2]." ".$lang["stats"][48],
 		"field"=>"glpi_tracking.assign"
