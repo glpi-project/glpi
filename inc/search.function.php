@@ -593,12 +593,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 4 - ORDER
 	// Add order by if order item is a normal item
 	if (!in_array($SEARCH_OPTION[$type][$sort]["table"],$META_SPECIF_TABLE))	
-		$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order);
+		$ORDER= addOrderBy($type,$sort,$order);
 	// Add order by if order item must to be treated by the GROUP BY HAVING clause
 	else {
 		foreach($toview as $key => $val)
 		if ($sort==$val)
-			$ORDER= addOrderBy($SEARCH_OPTION[$type][$sort]["table"].".".$SEARCH_OPTION[$type][$sort]["field"],$order,$key);	
+			$ORDER= addOrderBy($type,$sort,$order,$key);	
 	}
 
 
@@ -1061,8 +1061,13 @@ return $GROUPBY;
 *@return select string
 *
 **/
-function addOrderBy($field,$order,$key=0){
-	switch($field){
+function addOrderBy($type,$ID,$order,$key=0){
+	global $SEARCH_OPTION;
+	$table=$SEARCH_OPTION[$type][$ID]["table"];
+	$field=$SEARCH_OPTION[$type][$ID]["field"];
+	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
+
+	switch($table.".".$field){
 	case "glpi_device_hdd.specif_default" :
 	case "glpi_device_ram.specif_default" :
 	case "glpi_device_processor.specif_default" :
@@ -1078,6 +1083,14 @@ function addOrderBy($field,$order,$key=0){
 	case "glpi_contracts.expire_notice":
 		return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH) $order ";
 	break;
+	case "glpi_users.name" :
+		$linkfield="";
+		if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
+			$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+		
+		return " ORDER BY ".$table.$linkfield.".".$field." $order ";
+	break;
+
 	default:
 		return " ORDER BY $field $order ";
 		break;
