@@ -1060,38 +1060,51 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 					}
 					
 					if (!empty($line2["IPADDRESS"])&&$cfg_ocs["import_ip"]){
+						$ocs_ips=split(",",$line2["IPADDRESS"]);
+						sort(array_unique($ocs_ips));
 
 						// Is there an existing networking port ?
-						$query="SELECT * FROM glpi_networking_ports WHERE device_type='".COMPUTER_TYPE."' AND on_device='$glpi_id' AND ifmac='".$line2["MACADDR"]."'";
-				
-						
+						$query="SELECT * FROM glpi_networking_ports WHERE device_type='".COMPUTER_TYPE."' AND on_device='$glpi_id' AND ifmac='".$line2["MACADDR"]."' ORDER BY ID";
+						$glpi_ips=array();
 						$result=$db->query($query);
-						$netid=0;
-						if ($db->numrows($result)>0)
-							$netid=$db->result($result,0,"ID");
+						if ($db->numrows($result)>0){
+							while ($data=$db->fetch_array($result))
+							$glpi_ips[]=$data["ID"];
+						}
 						unset($netport);
-						$netport["ifaddr"]=$line2["IPADDRESS"];
 						$netport["ifmac"]=$line2["MACADDR"];
 						$netport["iface"]=ocsImportDropdown("glpi_dropdown_iface","name",$line2["TYPE"]);
 						$netport["name"]=$line2["DESCRIPTION"];
 						$netport["on_device"]=$glpi_id;
-						$netport["logical_number"]=$i;
 						$netport["device_type"]=COMPUTER_TYPE;
+
 						$np=new Netport();
-						if ($netid) {
-							$netport["ID"]=$netid;
+						// Update already in DB
+						for ($j=0;$j<min(count($glpi_ips),count($ocs_ips));$j++){
 							
+							$netport["ifaddr"]=$ocs_ips[$j];
+							$netport["logical_number"]=$i;
+							$netport["ID"]=$glpi_ips[$j];
 							$np->update($netport);
-						} else {
-							$np->add($netport);
+							$i++;
 						}
-						$i++;
+						
+						// If other IP founded
+						if (count($glpi_ips)<count($ocs_ips))
+						for ($j=count($glpi_ips);$j<count($ocs_ips);$j++){
+							unset($netport["ID"]);
+							unset($np->fields["ID"]);
+							$netport["ifaddr"]=$ocs_ips[$j];
+							$netport["logical_number"]=$i;
+							$np->add($netport);
+							$i++;
+						}
+						
 					}
 				}
 			}
 			
 		}
-
 		break;
 		case GFX_DEVICE:
 		//carte graphique
