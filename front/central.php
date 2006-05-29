@@ -55,37 +55,47 @@ if(empty($_GET["start"])) $_GET["start"] = 0;
 // Greet the user
 
 echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</span></b></div>";
-//echo "<hr noshade>";
 
 checkNewVersionAvailable();
 
 
-echo "<br><br><div align='center'>";
+echo "<br><br>";
 showCentralOnglets($_SERVER["PHP_SELF"],$_SESSION['glpi_viewcentral']);
 
 $showticket=haveRight("show_ticket","1");
 
 if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI 
 
-	echo "<table  class='tab_cadre_central' ><tr>";
-	if ($showticket){
-		echo "<td align='center' valign='top'  width='450px'><br>";
-		showCentralJobCount();
-		echo "</td>";
-	}
-	echo "<td align='center' valign='top'  width='450px'>";
-	if ($cfg_glpi["num_of_events"]>0){
-		
-		//Show last add events
-		showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
-			
+	echo "<div align='center'>";
+	echo "<table  class='tab_cadre_central' ><tr><td>";
+		echo "<table border='0'>";
+		if ($showticket){
+			echo "<tr><td align='center' valign='top'  width='450px'><br>";
+			showCentralJobCount();
+			echo "</td></tr>";
 		}
-		else {echo "&nbsp";}
-	echo "</td></tr><tr>";
-	echo "<td align='center' valign='top'  width='450px'>";
-	showCentralContract();
-	echo "</td><td align='center' valign='top'  width='450px'>&nbsp;</td>";	
-	echo "</tr></table>";
+
+		echo "<tr>";
+		echo "<td align='center' valign='top'  width='450px'>";
+		showCentralContract();
+		echo "</td>";	
+		echo "</tr>";
+		echo "</table>";
+
+	echo "</td><td align='left' valign='top'>";
+		echo "<table border='0' width='450px'><tr>";
+		echo "<td align='center'>";
+		if ($cfg_glpi["num_of_events"]>0){
+		
+			//Show last add events
+			showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+			
+		} else {echo "&nbsp";}
+		echo "</td></tr>";
+		echo "</table>";
+	echo "</td></tr>";
+	
+	echo "</table>";
 	echo "</div>";
 	
 	
@@ -97,7 +107,6 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 		echo "</b></div>";
 		
 		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"","","new");
-		//showJobList($_SERVER["PHP_SELF"],"","unassigned","","","",$_GET["start"]);
 	}
 
 }else if($_SESSION['glpi_viewcentral']=="plugins"){
@@ -112,7 +121,7 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 } else{  // show "my view" 
 
 
-
+echo "<div align='center'>";
 echo "<table class='tab_cadre_central' ><tr>";
 	
 	if ($showticket){

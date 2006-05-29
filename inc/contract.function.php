@@ -54,37 +54,37 @@ function showCentralContract(){
 	if (!haveRight("contract_infocom","r")) return false;
 
 	// contrats echus depuis moins de 30j
-	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
 	 $result = $db->query($query);
-	$contract0=$db->numrows($result);
+	$contract0=$db->result($result,0,0);
 	
 	
 	// contrats  echeance j-7
-	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
 	 $result = $db->query($query);
-	$contract7= $db->numrows($result);
+	$contract7= $db->result($result,0,0);
 	
 
 	// contrats echeance j -30
-	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
 	 $result = $db->query($query);
-	$contract30= $db->numrows($result);
+	$contract30= $db->result($result,0,0);
 	
 	
 	// contrats avec préavis echeance j-7
-	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
-	 $result = $db->query($query);
-	$contractpre7= $db->numrows($result);
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
+	$result = $db->query($query);
+	$contractpre7= $db->result($result,0,0);
 	
 
 	// contrats avec préavis echeance j -30
-	$query = "SELECT *  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
 	 $result = $db->query($query);
-	$contractpre30= $db->numrows($result);
+	$contractpre30= $db->result($result,0,0);
 
 	
 
-	echo "<div align='center'><table class='tab_cadrehov' style='text-align:center'>";
+	echo "<table class='tab_cadrehov' style='text-align:center'>";
 	
 	echo "<tr><th colspan='2'><b><a href=\"".$cfg_glpi["root_doc"]."/front/contract.php?reset=reset_before\">".$lang["financial"][1]."</a></b></th></tr>";
 	
@@ -104,9 +104,7 @@ function showCentralContract(){
 	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30\">".$lang["financial"][97]."</a></td>";
 	echo "<td>".$contractpre30."</td></tr>";
 	
-	echo "</table></div><br>";
-
-
+	echo "</table>";
 
 
 }
