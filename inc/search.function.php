@@ -1092,7 +1092,7 @@ function addOrderBy($type,$ID,$order,$key=0){
 	break;
 
 	default:
-		return " ORDER BY $field $order ";
+		return " ORDER BY $table.$field $order ";
 		break;
 	}
 
