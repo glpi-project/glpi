@@ -54,8 +54,7 @@ $ADDREFERER="";
 if (!ereg("&referer=",$_SERVER["HTTP_REFERER"]))$ADDREFERER="&referer=".$REFERER;
 
 $np=new Netport();
-if(isset($_POST["add"]))
-{	
+if(isset($_POST["add"])){	
 	checkRight("networking","w");
 	
 	unset($_POST["referer"]);
@@ -139,6 +138,19 @@ else if (isset($tab["disconnect"])){
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if(isset($_POST["assign_vlan_several"]))
+{
+	checkRight("networking","w");
+	if ($_POST["vlan"]>0){
+		if (isset($_POST["del_port"])&&count($_POST["del_port"]))
+		foreach ($_POST["del_port"] as $port_id => $val){
+			assignVlan($port_id,$_POST["vlan"]);
+		}
+		
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." assign vlan to ports.");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if (isset($_POST['assign_vlan'])){
 	checkRight("networking","w");
 
@@ -148,10 +160,23 @@ else if (isset($_POST['assign_vlan'])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
+else if(isset($_POST["unassign_vlan_several"]))
+{
+	checkRight("networking","w");
+	if ($_POST["vlan"]>0){
+		if (isset($_POST["del_port"])&&count($_POST["del_port"]))
+		foreach ($_POST["del_port"] as $port_id => $val){
+			unassignVlan($port_id,$_POST["vlan"]);
+		}
+		
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." unassign vlan to ports.");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if (isset($_GET['unassign_vlan'])){
 	checkRight("networking","w");
 
-	unassignVlan($_GET['ID']);
+	unassignVlanbyID($_GET['ID']);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." unassign a vlan to a port.");
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }

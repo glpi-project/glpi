@@ -46,6 +46,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	global $db,$cfg_glpi, $lang,$HTMLRel,$LINK_ID_TABLE;
 
 	if (!haveRight("networking","r")) return false;
+	$canedit=haveRight("networking","w");
 		
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
@@ -55,6 +56,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			$colspan=8;
 			if (empty($withtemplate)){
 				echo "<form id='networking_ports' name='networking_ports' method='post' action=\"".$cfg_glpi["root_doc"]."/front/networking.port.php\">";
+				if ($canedit)
 				$colspan++;
 			}
 			
@@ -71,7 +73,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 
 			echo "</tr>";        
 			echo "<tr>";
-			if ($withtemplate!=2){
+			if ($withtemplate!=2&&$canedit){
 				echo "<th>&nbsp;</th>";
 			}
 			echo "<th>#</th><th>".$lang["common"][16]."</th><th>".$lang["networking"][51]."</th>";
@@ -83,7 +85,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				$netport = new Netport;
 				$netport->getfromDB(current($devid));
 				echo "<tr class='tab_bg_1'>";
-				if ($withtemplate!=2){
+				if ($withtemplate!=2&&$canedit){
 					echo "<td align='center' width='20'><input type='checkbox' name='del_port[".$netport->fields["ID"]."]' value='1'></td>";
 				}
 				echo "<td align='center'><b>";
@@ -107,19 +109,21 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			}
 			echo "</table>";
 			echo "</div>\n\n";
-
+			
+			if ($canedit){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='950'>";
 				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=all'>".$lang["buttons"][18]."</a></td>";
 			
 				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=none'>".$lang["buttons"][19]."</a>";
 				echo "</td>";
-				echo "<td><input type='submit' class='submit' name='delete_several' value='".$lang["buttons"][6]."'></td>";
-				echo "<td width='80%'>&nbsp;</td>";
+				echo "<td width='80%' align='left'>";
+				dropdownMassiveActionPorts();
+				echo "</td>";
 				echo "</table>";
 				
 				echo "</div>";
-
+			} 
 			if (empty($withtemplate)){
 				echo "</form>";
 			}
@@ -166,10 +170,16 @@ if ($np->getContact($port)){
 
 }
 
-function unassignVlan($ID){
-global $db;
-$query="DELETE FROM glpi_networking_vlan WHERE ID='$ID'";
-$db->query($query);
+function unassignVlanbyID($ID){
+	global $db;
+	$query="DELETE FROM glpi_networking_vlan WHERE ID='$ID'";
+	$db->query($query);
+}
+
+function unassignVlan($portID,$vlanID){
+	global $db;
+	$query="DELETE FROM glpi_networking_vlan WHERE FK_port='$portID' AND FK_vlan='$vlanID'";
+	$db->query($query);
 }
 
 function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
@@ -374,7 +384,7 @@ function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 	global $cfg_glpi, $lang,$INFOFORM_PAGES;
 
 	if (!haveTypeRight($type,"r")) return false;
-	$canedit=haveRight("networking","w");
+	$canedit=haveTypeRight("networking","w");
 
 	$contact = new Netport;
 	$netport = new Netport;

@@ -133,8 +133,8 @@ if (isset($_GET['onglet'])) {
 			if (!empty($tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case 3 :
-					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 					if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PRINTER_TYPE);
+					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 					break;
 
 				case 4 :			
@@ -174,8 +174,8 @@ if (isset($_GET['onglet'])) {
 						showCartridgeInstalled($tab["ID"]);
 						showCartridgeInstalled($tab["ID"],1);		
 						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
-						showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 						showPortsAdd($tab["ID"],PRINTER_TYPE);	
+						showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"]);
 						showContractAssociated(PRINTER_TYPE,$tab["ID"]);
 						showDocumentAssociated(PRINTER_TYPE,$tab["ID"]);
@@ -186,8 +186,8 @@ if (isset($_GET['onglet'])) {
 					break;
 				case 3 :			
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
-					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 					showPortsAdd($tab["ID"],PRINTER_TYPE);	
+					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
 					break;
 				case 4 :	
 					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"]);
