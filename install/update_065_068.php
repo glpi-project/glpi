@@ -546,6 +546,14 @@ if(!FieldExists("glpi_tracking","request_type")) {
 	$db->query($query) or die("0.68 add request_type in tracking ".$lang["update"][90].$db->error());
 }
 
+// History update for software
+if(FieldExists("glpi_history","device_internal_action")) {	
+	$query="ALTER TABLE `glpi_history` CHANGE `device_internal_action` `linked_action` TINYINT( 4 ) NULL DEFAULT '0'";
+	$db->query($query) or die("0.68 alater glpi_history ".$lang["update"][90].$db->error());
+}
+
+
+
 } // fin 0.68 #####################################################################################
 
 ?>

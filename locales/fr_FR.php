@@ -700,7 +700,7 @@ $lang["log"][23]="restauration de l'item";
 $lang["log"][24]="purge de l'item";
 $lang["log"][26]="déconnexion de l'item";
 $lang["log"][27]="connexion de l'item";
-$lang["log"][28]="modification de la caractéristique d'un périphérique interne";
+$lang["log"][28]="modification des périphériques internes";
 $lang["log"][29]="déconnexion d'un périphérique interne sur l'ordinateur ";
 $lang["log"][30]="association d'un type";
 $lang["log"][31]="suppression d'un type";
@@ -1347,6 +1347,8 @@ $lang["software"][40]="Aucune licence";
 $lang["software"][41]="Logiciel ID";
 $lang["software"][42]="Nouveau logiciel à partir d'un modèle";
 $lang["software"][43]="Ajouter une licence à acheter";
+$lang["software"][44]="Installation d'un logiciel";
+$lang["software"][45]="Désinstallation d'un logiciel";
 
 $lang["state"][0]="Statut";
 $lang["state"][1]="Statuts des matériels";
