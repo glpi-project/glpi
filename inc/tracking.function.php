@@ -835,7 +835,7 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	global $cfg_glpi,  $lang,$HTMLRel,$phproot;
@@ -925,7 +925,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	dropdownAllItems("item",$type,$item);
 	echo "</td></tr></table>";
 	echo "</td>";
-	echo "<td colspan='4' align='center'>".$lang["job"][5]."&nbsp;:&nbsp;";
+	echo "<td colspan='3' align='center'>".$lang["job"][5].":&nbsp;";
 
 	echo $lang["job"][27].":&nbsp;";
 	if (!haveRight("show_ticket","1")) 
@@ -934,6 +934,9 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo $lang["job"][28].":&nbsp;";
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 
+	echo "</td>";
+	echo "<td align='center'>".$lang["job"][44].":&nbsp;";
+	dropdownRequestType("request_type",$request_type);
 	echo "</td>";
 	echo "</tr>";
 
@@ -1013,7 +1016,7 @@ if($extended)	{
 }
 
 
-function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1150,6 +1153,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
 	
 	if ($author!=0) $where.=" AND glpi_tracking.author = '$author'";
+
+	if ($request_type!=0) $where.=" AND glpi_tracking.request_type = '$request_type'";
 
 	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
 	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
