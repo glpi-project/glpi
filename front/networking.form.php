@@ -141,8 +141,8 @@ else
 		if ($netdevice->showForm ($_SERVER["PHP_SELF"],$tab["ID"])){
 		switch($_SESSION['glpi_onglet']){
 			case -1:
-				showPorts($tab["ID"],NETWORKING_TYPE);
 				showPortsAdd($tab["ID"],NETWORKING_TYPE);
+				showPorts($tab["ID"],NETWORKING_TYPE);
 				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
 				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
@@ -176,8 +176,8 @@ else
 				break;
 			default :
 				if (!display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-					showPorts($tab["ID"],NETWORKING_TYPE);
 					showPortsAdd($tab["ID"],NETWORKING_TYPE);
+					showPorts($tab["ID"],NETWORKING_TYPE);
 				}
 				break;
 			}

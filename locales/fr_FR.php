@@ -855,6 +855,7 @@ $lang["networking"][54]="Matériel ID";
 $lang["networking"][55]="Associer un VLAN";
 $lang["networking"][56]="VLAN";
 $lang["networking"][57]="Choisissez une adresse MAC dans la liste ou spécifiez-la ci-dessous.";
+$lang["networking"][58]="Supprimer un VLAN";
 
 
 $lang["ocsng"][0]="OCS Inventory NG";

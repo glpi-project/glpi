@@ -149,8 +149,8 @@ else
 				
 				default :
 					if (!display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-						showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 						if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PHONE_TYPE);
+						showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 					}
 
 					break;
@@ -173,8 +173,8 @@ else
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PHONE_TYPE);
-					showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 					showPortsAdd($tab["ID"],PHONE_TYPE);
+					showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$tab["ID"]);
 					showContractAssociated(PHONE_TYPE,$tab["ID"]);
 					showDocumentAssociated(PHONE_TYPE,$tab["ID"]);
@@ -209,8 +209,8 @@ else
 				default :
 					if (!display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
 						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PHONE_TYPE);
-						showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 						showPortsAdd($tab["ID"],PHONE_TYPE);
+						showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 					}
 					break;
 			}

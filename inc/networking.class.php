@@ -496,6 +496,13 @@ class Netport extends CommonDBTM {
 		return $input;
 	}
 
+	function cleanDBonPurge($ID) {
+		global $db;
+
+		$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
+		$result = $db->query($query);
+	}
+
 	// SPECIFIC FUNCTIONS
 
 	function getDeviceData($ID,$type)
