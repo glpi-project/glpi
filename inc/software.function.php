@@ -506,7 +506,7 @@ if ($number>$new_number){
 }
 
 
-function installSoftware($cID,$lID,$sID='') {
+function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 
 	global $db;
 	
@@ -514,7 +514,20 @@ function installSoftware($cID,$lID,$sID='') {
 	if (!empty($lID)&&$lID>0){
 		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
 		if ($result = $db->query($query)) {
-			return $db->insert_id();
+			$newID=$db->insert_id();
+			if ($dohistory==1){
+				$lic=new License();
+				$lic->getFromDB($lID);
+				$soft=new Software();
+				if ($soft->getFromDB($lic->fields["sID"])){
+					$changes[0]='0';
+					$changes[1]="";
+					$changes[2]=$soft->fields["name"]." (v. ".$soft->fields["version"].")";
+					// history log
+					historyLog ($cID,COMPUTER_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
+				}
+			}
+			return $newID;
 		} else {
 			return false;
 		}
@@ -527,7 +540,19 @@ function installSoftware($cID,$lID,$sID='') {
 		
 		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
 		if ($result = $db->query($query)) {
-			return $db->insert_id();
+			$newID=$db->insert_id();
+			if ($dohistory==1){
+				$soft=new Software();
+				if ($soft->getFromDB($sID)){
+					$changes[0]='0';
+					$changes[1]="";
+					$changes[2]=$soft->fields["name"]." (v. ".$soft->fields["version"].")";
+					// history log
+					historyLog ($cID,COMPUTER_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
+				}
+			}
+
+			return $newID;
 		} else {
 			return false;
 		}
@@ -535,12 +560,33 @@ function installSoftware($cID,$lID,$sID='') {
 	}
 }
 
-function uninstallSoftware($ID) {
+function uninstallSoftware($ID,$dohistory=1) {
 
 	global $db;
-	$query = "DELETE FROM glpi_inst_software WHERE(ID = '$ID')";
-//	echo $query;
+	
+	// license data for history
+	if ($dohistory==1){
+		$query2 = "SELECT * FROM glpi_inst_software WHERE (ID = '$ID')";
+		$result2=$db->query($query2);
+		$data=$db->fetch_array($result2);
+		$lic=new License();
+		$lic->getFromDB($data["license"]);
+	}
+
+	$query = "DELETE FROM glpi_inst_software WHERE (ID = '$ID')";
+
 	if ($result = $db->query($query)) {
+		if ($dohistory==1){
+			$soft=new Software();
+			if ($soft->getFromDB($lic->fields["sID"])){
+				$changes[0]='0';
+				$changes[1]=$soft->fields["name"]." (v. ".$soft->fields["version"].")";
+				$changes[2]="";
+				// history log
+				historyLog ($data["cID"],COMPUTER_TYPE,$changes,0,HISTORY_UNINSTALL_SOFTWARE);
+			}
+		}
+
 		return true;
 	} else {
 		return false;

@@ -102,17 +102,27 @@ else if (isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0){
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 //Update a device specification
-elseif(isset($_POST["update_device_x"])||isset($_POST["update_device"])) {
+elseif(isset($_POST["update_device"])) {
 	checkRight("computer","w");
+
+	// Update quantity
+	foreach ($_POST as $key => $val){
+		$tab=split("_",$key);
+		if (count($tab)==2)
+		if ($tab[0]=="quantity"){
+			update_device_quantity($val,$tab[1]);
+		}
+	}
+
+	// Update specificity
 	foreach ($_POST as $key => $val){
 		$tab=split("_",$key);
 		if (count($tab)==2)
 		if ($tab[0]=="devicevalue"){
 			update_device_specif($val,$tab[1]);
-		} else if ($tab[0]=="quantity"){
-			update_device_quantity($val,$tab[1]);
-		}
+		} 
 	}
+
 	logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$lang["log"][28]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -122,25 +132,6 @@ elseif (isset($_POST["connect_device"])) {
 		if (isset($_POST["new_device_id"])&&$_POST["new_device_id"]>0)
 			compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
 		glpi_header($_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
-}
-// Unlink a device 
-// Problem avec IE donc test sur le hidden action_device - MERCI IE :(
-//elseif(isset($_POST["unlink_device"])||isset($_POST["unlink_device_x"])) {
-elseif(isset($_POST["device_action"])) {
-	
-	$devtodel=-1;
-	foreach ($_POST as $key => $val)
-	if (preg_match("/unlink_device_([0-9]+)_x/",$key,$match))
-	{
-	$devtodel=$match[1];	
-	}
-
-	if ($devtodel>0){
-		checkRight("computer","w");
-		unlink_device_computer($devtodel);
-		logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$lang["log"][29]." ".$tab["ID"].".");
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif(isset($tab["unlock_field"])){
 	checkRight("ocsng","w");

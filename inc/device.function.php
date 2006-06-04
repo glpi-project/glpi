@@ -314,18 +314,20 @@ function update_device_specif($newValue,$compDevID) {
 	// Check old value for history 
 	global $db;
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
-	if ($result = $db->query($query)) {
+	if ($result = $db->query($query)) 
+	if ($db->numrows($result)){
 		$data = $db->fetch_array($result);
 		// Is it a real change ?
 		if($data["specificity"]!=$newValue){
 			// Update specificity 
 			$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'";
 			if($db->query($query2)){
+				
 				$changes[0]='0';
 				$changes[1]=$data["specificity"];
 				$changes[2]=$newValue;
 				// history log
-				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],UPDATE_DEVICE);
+				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_UPDATE_DEVICE);
 	
 				return true;
 			}else{ 
@@ -350,12 +352,12 @@ function update_device_quantity($newNumber,$compDevID){
 			if ($number>$newNumber){
 				for ($i=$newNumber;$i<$number;$i++){
 					$data2 = $db->fetch_array($result2);
-					unlink_device_computer($data2["ID"],0);
+					unlink_device_computer($data2["ID"],1);
 				}
 			// Add devices
 			} else if ($number<$newNumber){
 				for ($i=$number;$i<$newNumber;$i++){
-					compdevice_add($data["FK_computers"],$data["device_type"],$data["FK_device"],$data["specificity"],0);
+					compdevice_add($data["FK_computers"],$data["device_type"],$data["FK_device"],$data["specificity"],1);
 				}
 			}
 		}
@@ -376,21 +378,20 @@ function unlink_device_computer($compDevID,$dohistory=1){
 	global $db;
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
 		if ($result = $db->query($query)) {
-		$data = $db->fetch_array($result);
+			$data = $db->fetch_array($result);
 		} 
-	$device = new Device($data["device_type"]);
-	$device->getFromDB($data["FK_device"]);
-	//echo $query;
-	// unlink 
-	
+
 	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
 	if($db->query($query2)){
 		if ($dohistory==1){
+			$device = new Device($data["device_type"]);
+			$device->getFromDB($data["FK_device"]);
+
 			$changes[0]='0';
 			$changes[1]=$device->fields["designation"];
 			$changes[2]="";
 			// history log
-			historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],DELETE_DEVICE);
+			historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_DELETE_DEVICE);
 		}
 
 	 return true;
@@ -409,7 +410,7 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 		$changes[1]="";
 		$changes[2]=$device->fields["designation"];
 		// history log
-		historyLog ($cID,COMPUTER_TYPE,$changes,$device_type,ADD_DEVICE);
+		historyLog ($cID,COMPUTER_TYPE,$changes,$device_type,HISTORY_ADD_DEVICE);
 	}
 	return $newID;
 }

@@ -43,7 +43,7 @@
 * @param $device_type
 * @param $changes
 **/
-function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',$device_internal_action='0') {
+function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',$linked_action='0') {
 
 		global $db;
 
@@ -57,10 +57,8 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 			$new_value=$changes[2];
 
 				// Build query
-				$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,device_internal_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$device_internal_action','". addslashes(getUserName($_SESSION["glpiID"],$link=0))."','$date_mod','$id_search_option','$old_value','$new_value');";
+				$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes(getUserName($_SESSION["glpiID"],$link=0))."','$date_mod','$id_search_option','$old_value','$new_value');";
 				
-				//echo $query;
-				//echo  "<br>";
 				
 				$db->query($query)  or die($db->error());
 				
@@ -162,26 +160,33 @@ function showHistory($device_type,$id_device){
 			$user_name = $data["user_name"];
 			
 			// This is an internal device ?
-			if($data["device_internal_type"]){
+			if($data["linked_action"]){
 			// Yes it is an internal device
 			
-				switch ($data["device_internal_action"]){
+				switch ($data["linked_action"]){
 				
-				case ADD_DEVICE :
-				$field=getDeviceTypeLabel($data["device_internal_type"]);
-				$change = $lang["devices"][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
+				case HISTORY_ADD_DEVICE :
+					$field=getDeviceTypeLabel($data["device_internal_type"]);
+					$change = $lang["devices"][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
 					break;
 
-				case UPDATE_DEVICE :
-				$field=getDeviceTypeLabel($data["device_internal_type"]);
-				$change = getDeviceSpecifityLabel($data["device_internal_type"])."&nbsp;:&nbsp;\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";	
+				case HISTORY_UPDATE_DEVICE :
+					$field=getDeviceTypeLabel($data["device_internal_type"]);
+					$change = getDeviceSpecifityLabel($data["device_internal_type"])."&nbsp;:&nbsp;\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";	
 					break;
 
-				case DELETE_DEVICE :
-				$field=getDeviceTypeLabel($data["device_internal_type"]);
-				$change = $lang["devices"][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";		
+				case HISTORY_DELETE_DEVICE :
+					$field=getDeviceTypeLabel($data["device_internal_type"]);
+					$change = $lang["devices"][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;
-				
+				case HISTORY_INSTALL_SOFTWARE :
+					$field=$lang["software"][10];
+					$change = $lang["software"][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					break;				
+				case HISTORY_UNINSTALL_SOFTWARE :
+					$field=$lang["software"][10];
+					$change = $lang["software"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					break;				
 				}
 
 

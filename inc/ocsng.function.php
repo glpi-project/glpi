@@ -427,7 +427,7 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 			if ($mixed_checksum&pow(2,SOFTWARES_FL)){
 				// Get import monitors
 				$import_software=importArrayFromDB($line["import_software"]);
-				ocsUpdateSoftware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_software);
+				ocsUpdateSoftware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_software,$dohistory);
 			} 
 
 			
@@ -1513,7 +1513,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 *@return integer : inserted software id.
 *
 **/
-function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
+function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory) {
 	global $dbocs,$db;
 	if($cfg_ocs["import_software"]){
 		
@@ -1552,7 +1552,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 					$isNewSoft = $soft->addToDB();
 				}
 				if ($isNewSoft){
-					$instID=installSoftware($glpi_id,ocsImportLicense($isNewSoft));
+					$instID=installSoftware($glpi_id,ocsImportLicense($isNewSoft),'',$dohistory);
 					addToOcsArray($glpi_id,array($instID=>$initname),"import_software");
 				}
 						
@@ -1602,7 +1602,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software) {
 					}
 				}
 		
-				uninstallSoftware($key);
+				uninstallSoftware($key,$dohistory);
 				deleteInOcsArray($glpi_id,$key,"import_software");
 			}
 		}

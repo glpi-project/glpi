@@ -123,9 +123,11 @@ define("CASE_DEVICE","11");
 define("POWER_DEVICE","12");
 
 // DEVICE INTERNAL ACTION
-define("ADD_DEVICE","1");
-define("UPDATE_DEVICE","2");
-define("DELETE_DEVICE","3");
+define("HISTORY_ADD_DEVICE","1");
+define("HISTORY_UPDATE_DEVICE","2");
+define("HISTORY_DELETE_DEVICE","3");
+define("HISTORY_INSTALL_SOFTWARE","4");
+define("HISTORY_UNINSTALL_SOFTWARE","5");
 
 // OCSNG TYPES
 define("HARDWARE_FL","0");
