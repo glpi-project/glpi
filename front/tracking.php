@@ -81,6 +81,7 @@ if (!isset($tab["status"])||isset($tab['reset'])) $tab["status"]="notold";
 if (!isset($tab["showfollowups"])||isset($tab['reset'])) $tab["showfollowups"]=0;
 if (!isset($tab["item"])||isset($tab['reset'])) $tab["item"]=0;
 if (!isset($tab["type"])||isset($tab['reset'])) $tab["type"]=0;
+if (!isset($tab["request_type"])||isset($tab['reset'])) $tab["request_type"]=0;
 
 if (!isset($tab["extended"])) $tab["extended"]=0;
 
@@ -116,14 +117,14 @@ if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST
 }
 
 if (!$tab["extended"])
-	searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
+	searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 else 
-	searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
+	searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
 if (!$tab["extended"])
-	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
+	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 else 
-	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
+	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
 //showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_SESSION["tracking_show"],$_SESSION["tracking_contains"],"","",$_SESSION["tracking_start"],$_SESSION["tracking_device"],$_SESSION["tracking_category"],$_SESSION["tracking_containsID"],$_SESSION["tracking_desc"]);
 
