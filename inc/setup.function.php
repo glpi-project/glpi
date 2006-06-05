@@ -1491,14 +1491,21 @@ function showFormMailing($target) {
 
 	} else if ($_SESSION['glpi_mailconfig']==2)	{
 
-		$profiles[ADMIN_MAILING]=$lang["setup"][237];
-		$profiles[USER_MAILING]=$lang["setup"][238];
-		$profiles[ASSIGN_MAILING]=$lang["setup"][239];
+		$profiles[USER_MAILING_TYPE."_".ADMIN_MAILING]=$lang["setup"][237];
+		$profiles[USER_MAILING_TYPE."_".USER_MAILING]=$lang["setup"][238];
+		$profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]=$lang["setup"][239];
 		
 		$query="SELECT ID, name FROM glpi_profiles order by name";
 		$result=$db->query($query);
 		while ($data=$db->fetch_assoc($result))
-			$profiles[$data["ID"]]=$data["name"];
+			$profiles[PROFILE_MAILING_TYPE."_".$data["ID"]]=$lang["profiles"][22]." ".$data["name"];
+
+		$query="SELECT ID, name FROM glpi_groups order by name";
+		$result=$db->query($query);
+		while ($data=$db->fetch_assoc($result))
+			$profiles[GROUP_MAILING_TYPE."_".$data["ID"]]=$lang["common"][35]." ".$data["name"];
+
+
 		ksort($profiles);
 		echo "<div align='center'>";
 		echo "<input type='hidden' name='update_notifications' value='1'>";
@@ -1518,17 +1525,16 @@ function showFormMailing($target) {
 		echo "</tr>";
 		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][230]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";
-		$profiles[OLD_ASSIGN_MAILING]=$lang["setup"][236];
+		$profiles[USER_MAILING_TYPE."_".OLD_ASSIGN_MAILING]=$lang["setup"][236];
 		ksort($profiles);
 		showFormMailingType("update",$profiles);
-		unset($profiles[OLD_ASSIGN_MAILING]);
+		unset($profiles[USER_MAILING_TYPE."_".OLD_ASSIGN_MAILING]);
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][225]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";
-		unset($profiles[ASSIGN_MAILING]);
+		unset($profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]);
 		showFormMailingType("resa",$profiles);
-		// Close Ticket
 		echo "</tr>";
 		
 		echo "</table>";
@@ -1546,7 +1552,8 @@ function showFormMailingType($type,$profiles){
 		echo "<select name='mailing_to_add_".$type."[]' multiple size='5'>";
 		
 		foreach ($profiles as $key => $val){
-			echo "<option value='$key'>".($key>0?$lang["profiles"][22]." ":"").$val."</option>";
+			list($item_type,$item)=split("_",$key);
+			echo "<option value='$key'>".$val."</option>";
 		}
 		echo "</select>";
 		echo "</td>";
@@ -1556,22 +1563,35 @@ function showFormMailingType($type,$profiles){
 		echo "</td>";
 		echo "<td>";
 		echo "<select name='mailing_to_delete_".$type."[]' multiple size='5'>";
-		$query="SELECT glpi_mailing_profiles.FK_profiles as prof, glpi_mailing_profiles.ID as ID, glpi_profiles.name as name FROM glpi_mailing_profiles LEFT JOIN glpi_profiles ON (glpi_mailing_profiles.FK_profiles = glpi_profiles.ID ) WHERE glpi_mailing_profiles.type='$type' ORDER BY glpi_mailing_profiles.FK_profiles;";
+		// Get User mailing
+		$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID FROM glpi_mailing WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".USER_MAILING_TYPE."' ORDER BY glpi_mailing.FK_item;";
 		$result=$db->query($query);
+		if ($db->numrows($result))
 		while ($data=$db->fetch_assoc($result)){
-			$name="";
-			if ($data["prof"]>0)
-				$name=$lang["profiles"][22]." ".$data["name"];
-			else {
-				switch ($data["prof"]){
-					case ADMIN_MAILING: $name=$lang["setup"][237];break;
-					case ASSIGN_MAILING: $name=$lang["setup"][239];break;
-					case USER_MAILING: $name=$lang["setup"][238];break;
-					case OLD_ASSIGN_MAILING: $name=$lang["setup"][236];break;
-				}
+			switch ($data["item"]){
+				case ADMIN_MAILING: $name=$lang["setup"][237];break;
+				case ASSIGN_MAILING: $name=$lang["setup"][239];break;
+				case USER_MAILING: $name=$lang["setup"][238];break;
+				case OLD_ASSIGN_MAILING: $name=$lang["setup"][236];break;
 			}
 			echo "<option value='".$data["ID"]."'>".$name."</option>";
 		}
+		// Get Profile mailing
+		$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_profiles.name as prof FROM glpi_mailing LEFT JOIN glpi_profiles ON (glpi_mailing.FK_item = glpi_profiles.ID) WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".PROFILE_MAILING_TYPE."' ORDER BY glpi_profiles.name;";
+		$result=$db->query($query);
+		if ($db->numrows($result))
+		while ($data=$db->fetch_assoc($result)){
+			echo "<option value='".$data["ID"]."'>".$lang["profiles"][22]." ".$data["prof"]."</option>";
+		}
+
+		// Get Group mailing
+		$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_groups.name as name FROM glpi_mailing LEFT JOIN glpi_groups ON (glpi_mailing.FK_item = glpi_groups.ID) WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".GROUP_MAILING_TYPE."' ORDER BY glpi_groups.name;";
+		$result=$db->query($query);
+		if ($db->numrows($result))
+		while ($data=$db->fetch_assoc($result)){
+			echo "<option value='".$data["ID"]."'>".$lang["common"][35]." ".$data["name"]."</option>";
+		}
+
 		echo "</select>";
 		echo "</td>";
 
@@ -1617,11 +1637,12 @@ function updateMailNotifications($input){
 		foreach ($input["mailing_to_".$action."_".$type] as $val){
 			switch ($action){
 				case "add":
-					$query="INSERT INTO glpi_mailing_profiles (type,FK_profiles) VALUES ('$type','$val')";
+					list($item_type,$item)=split("_",$val);
+					$query="INSERT INTO glpi_mailing (type,FK_item,item_type) VALUES ('$type','$item','$item_type')";
 					$db->query($query);
 					break;
 				case "delete":
-					$query="DELETE FROM glpi_mailing_profiles WHERE ID='$val'";
+					$query="DELETE FROM glpi_mailing WHERE ID='$val'";
 					$db->query($query);
 					break;
 			} 

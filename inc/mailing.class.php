@@ -137,64 +137,78 @@ class Mailing
 		
 		$emails=array();
 			
-		$query="SELECT FK_profiles as PROFILE FROM glpi_mailing_profiles WHERE type='".$this->type."'";
+		$query="SELECT * FROM glpi_mailing WHERE type='".$this->type."'";
 		$result=$db->query($query);
 		if ($db->numrows($result)){
 			while ($data=$db->fetch_assoc($result)){
-				switch ($data["PROFILE"]){
-					// ADMIN SEND
-					case ADMIN_MAILING :
-						if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
-							$emails[]=$cfg_glpi["admin_email"];
-						break;
-					// ASSIGN SEND
-					case ASSIGN_MAILING :
-						if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
-							$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
-							if ($result2 = $db->query($query2)) {
-								if ($db->numrows($result2)==1){
-									$row = $db->fetch_row($result2);
-									if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
-										$emails[]=$row[0];
+				switch ($data["item_type"]){
+					case USER_MAILING_TYPE :
+						switch($data["FK_item"]){
+							// ADMIN SEND
+							case ADMIN_MAILING :
+								if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
+									$emails[]=$cfg_glpi["admin_email"];
+								break;
+							// ASSIGN SEND
+							case ASSIGN_MAILING :
+								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
+									$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
+									if ($result2 = $db->query($query2)) {
+										if ($db->numrows($result2)==1){
+											$row = $db->fetch_row($result2);
+											if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
+												$emails[]=$row[0];
+											}
+										}
 									}
+								}
+								break;
+							// USER SEND
+							case USER_MAILING :
+								if ($this->job->fields["emailupdates"]=="yes"&&$this->is_valid_email($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
+									$emails[]=$this->job->fields["uemail"];
+							
+								}
+								break;
+							// OLD ASSIGN SEND
+							case OLD_ASSIGN_MAILING :
+								if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
+									$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["_old_assign"]."')";
+									if ($result2 = $db->query($query2)) {
+										if ($db->numrows($result2)==1){
+											$row = $db->fetch_row($result2);
+											if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
+												$emails[]=$row[0];
+											}
+										}
+									}
+								}
+								break;
+							}
+						break;
+					case PROFILE_MAILING_TYPE :
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'";
+						if ($result2= $db->query($query)){
+							if ($db->numrows($result2))
+							while ($data=$db->fetch_assoc($result2)){
+							if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+									$emails[]=$data["EMAIL"];
 								}
 							}
 						}
 						break;
-					// USER SEND
-					case USER_MAILING :
-						if ($this->job->fields["emailupdates"]=="yes"&&$this->is_valid_email($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
-							$emails[]=$this->job->fields["uemail"];
-					
-						}
-						break;
-					// OLD ASSIGN SEND
-					case OLD_ASSIGN_MAILING :
-						if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
-							$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["_old_assign"]."')";
-							if ($result2 = $db->query($query2)) {
-								if ($db->numrows($result2)==1){
-									$row = $db->fetch_row($result2);
-									if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
-										$emails[]=$row[0];
-									}
+					case GROUP_MAILING_TYPE :
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+						
+						if ($result2= $db->query($query)){
+							if ($db->numrows($result2))
+							while ($data=$db->fetch_assoc($result2)){
+							if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+									$emails[]=$data["EMAIL"];
 								}
 							}
 						}
 						break;
-					// ALL PROFILE USER SEND
-					default :
-						if ($data["PROFILE"]>0){
-							$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["PROFILE"]."'";
-							if ($result2= $db->query($query)){
-								while ($data=$db->fetch_assoc($result2)){
-								if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-										$emails[]=$data["EMAIL"];
-									}
-								}
-							}
-						}
-					break;
 				}
 			}
 		}
@@ -338,7 +352,6 @@ class Mailing
 					$mmail->Body=$this->get_mail_body("html");
 					$mmail->isHTML(true);
 					$mmail->AltBody=$this->get_mail_body("text");
-					
 					if(!$mmail->Send()){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
 					}
@@ -408,37 +421,50 @@ class MailingResa{
 		
 		$emails=array();
 
-		$query="SELECT FK_profiles as PROFILE FROM glpi_mailing_profiles WHERE type='resa'";
+		$query="SELECT * FROM glpi_mailing WHERE type='resa'";
 		$result=$db->query($query);
 		if ($db->numrows($result)){
 			while ($data=$db->fetch_assoc($result)){
-				switch ($data["PROFILE"]){
-					// ADMIN SEND
-					case ADMIN_MAILING :
-						if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
-							$emails[]=$cfg_glpi["admin_email"];
-						break;
-					// USER SEND
-					case USER_MAILING :
-						$user = new User;
-						if ($user->getFromDB($this->resa->fields["id_user"]))
-						if ($this->is_valid_email($user->fields["email"])&&!in_array($user->fields["email"],$emails)){
-							$emails[]=$user->fields["email"];
+				switch ($data["item_type"]){
+					case USER_MAILING_TYPE :
+						switch ($data["FK_item"]){
+							// ADMIN SEND
+							case ADMIN_MAILING :
+								if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
+									$emails[]=$cfg_glpi["admin_email"];
+								break;
+							// USER SEND
+							case USER_MAILING :
+								$user = new User;
+								if ($user->getFromDB($this->resa->fields["id_user"]))
+								if ($this->is_valid_email($user->fields["email"])&&!in_array($user->fields["email"],$emails)){
+									$emails[]=$user->fields["email"];
+								}
+								break;
 						}
 						break;
-					// ALL PROFILE USER SEND
-					default :
-						if ($data["PROFILE"]>0){
-							$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["PROFILE"]."'";
-							if ($result2= $db->query($query)){
-								while ($data=$db->fetch_assoc($result2)){
-								if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-										$emails[]=$data["EMAIL"];
-									}
+					case PROFILE_MAILING_TYPE :
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'";
+						if ($result2= $db->query($query)){
+							if ($db->numrows($result2))
+							while ($data=$db->fetch_assoc($result2)){
+							if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+									$emails[]=$data["EMAIL"];
 								}
 							}
 						}
-					break;
+						break;
+					case GROUP_MAILING_TYPE :
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+						if ($result2= $db->query($query)){
+							if ($db->numrows($result2))
+							while ($data=$db->fetch_assoc($result2)){
+							if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+									$emails[]=$data["EMAIL"];
+								}
+							}
+						}
+						break;
 				}
 			}
 		}
