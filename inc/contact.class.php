@@ -65,11 +65,12 @@ class Contact extends CommonDBTM{
 
 		$query = "SELECT  glpi_enterprises.address as address  FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 		
-		if ($result = $db->query($query)) {
+		if ($result = $db->query($query)) 
+		if ($db->numrows($result)){
 						
 			return $db->result($result, 0, "address");
 		} else {
-			return false;
+			return "";
 		}
 	}
 
@@ -78,10 +79,11 @@ class Contact extends CommonDBTM{
 
 		$query = "SELECT  glpi_enterprises.website as website FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 		
-		if ($result = $db->query($query)) {
+		if ($result = $db->query($query)) 
+		if ($db->numrows($result)){
 			return $db->result($result, 0, "website");
 		} else {
-			return false;
+			return "";
 		}
 	}
 

@@ -134,6 +134,7 @@ function generateVcard($ID){
 	
 	$output = $vcard->getVCard();
 	
+
 	$filename =$vcard->getFileName();      // "xxx xxx.vcf"
 	
 	//@Header("Content-Disposition: attachment; filename=\"$filename\"");
