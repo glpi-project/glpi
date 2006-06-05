@@ -64,7 +64,7 @@ if (isset($_GET["file"])){
 					if (!$send&&isset($_GET["tracking"])){
 						$job=new Job;
 						$job->getFromDB($_GET["tracking"]);
-						print_r($job);
+						
 						if ($job->fields["author"]==$_SESSION["glpiID"]||$job->fields["assign"]==$_SESSION["glpiID"]){
 							$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$_GET["tracking"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' AND FK_doc='".$doc->fields["ID"]."'";
 							$result=$db->query($query);
