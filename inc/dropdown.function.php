@@ -175,24 +175,14 @@ if ($dropdown_right){
 	}
 }
 	
-//if (!empty($which))
-//	echo "<a href='".$cfg_glpi["root_doc"]."/front/setup.dropdowns.php?which=$which"."' target='_blank'>";
-
-if (!empty($which)||($display_comments&&!empty($comments)))
-	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">";
-
-//if (!empty($which))
-//	echo "</a>";
+if (!empty($which)||($display_comments&&!empty($comments))){
+	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display ";
+	if ($dropdown_right) echo " onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+	echo ">";
+}
 
 	echo $comments_display2;
 
-/*
-	if ($display_comments&&!empty($comments)) { 
-		if (!empty($which)) echo "&nbsp;"; 
-		echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">"; 
-		echo "<span class='over_link' id='comments_$rand'>".nl2br($comments)."</span>"; 
-	} 
-*/
 
 if ($table=="glpi_enterprises")
 	echo getEnterpriseLinks($value);	

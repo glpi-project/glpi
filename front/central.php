@@ -110,6 +110,7 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 	}
 
 }else if($_SESSION['glpi_viewcentral']=="plugins"){
+	echo "<div align='center'>";
 	echo "<table class='tab_cadre_central' ><tr><td>";
 
 	do_hook("central_action");
@@ -117,7 +118,7 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 	
 	
 	echo "</table>";
-
+	echo "</div>";
 } else{  // show "my view" 
 
 
