@@ -158,10 +158,15 @@ define("DEBUG_MODE","2");
 define("DEMO_MODE","3");
 
 // MAILING TYPE
-define("ADMIN_MAILING","-1");
-define("ASSIGN_MAILING","-2");
-define("USER_MAILING","-3");
-define("OLD_ASSIGN_MAILING","-4");
+define("USER_MAILING_TYPE","1");
+define("PROFILE_MAILING_TYPE","2");
+define("GROUP_MAILING_TYPE","3");
+
+// MAILING USERS TYPE
+define("ADMIN_MAILING","1");
+define("ASSIGN_MAILING","2");
+define("USER_MAILING","3");
+define("OLD_ASSIGN_MAILING","4");
 
 // EXPORT TYPE
 define("HTML_OUTPUT","0");

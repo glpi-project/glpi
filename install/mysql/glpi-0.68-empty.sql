@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-06-04 18:43
+#GLPI Dump database on 2006-06-05 18:40
 
 ### Dump table glpi_cartridges
 
@@ -1124,7 +1124,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-06-04 18:43:09','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-06-05 18:40:31','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1282,32 +1282,35 @@ CREATE TABLE `glpi_links_device` (
 ) TYPE=MyISAM;
 
 
-### Dump table glpi_mailing_profiles
+### Dump table glpi_mailing
 
-DROP TABLE IF EXISTS `glpi_mailing_profiles`;
-CREATE TABLE `glpi_mailing_profiles` (
+DROP TABLE IF EXISTS `glpi_mailing`;
+CREATE TABLE `glpi_mailing` (
     `ID` int(11) NOT NULL auto_increment,
     `type` varchar(255),
-    `FK_profiles` int(11) DEFAULT '0' NOT NULL,
+    `FK_item` int(11) DEFAULT '0' NOT NULL,
+    `item_type` int(11) DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`),
-   UNIQUE type_profiles (`type`, `FK_profiles`),
+   UNIQUE mailings (`type`, `FK_item`, `item_type`),
    KEY type (`type`),
-   KEY FK_profiles (`FK_profiles`)
+   KEY FK_item (`FK_item`),
+   KEY item_type (`item_type`),
+   KEY items (`item_type`, `FK_item`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_mailing_profiles VALUES ('1','resa','-3');
-INSERT INTO glpi_mailing_profiles VALUES ('2','resa','-1');
-INSERT INTO glpi_mailing_profiles VALUES ('3','new','3');
-INSERT INTO glpi_mailing_profiles VALUES ('4','new','-1');
-INSERT INTO glpi_mailing_profiles VALUES ('5','update','-1');
-INSERT INTO glpi_mailing_profiles VALUES ('6','followup','-1');
-INSERT INTO glpi_mailing_profiles VALUES ('7','finish','-1');
-INSERT INTO glpi_mailing_profiles VALUES ('8','update','-2');
-INSERT INTO glpi_mailing_profiles VALUES ('9','update','-4');
-INSERT INTO glpi_mailing_profiles VALUES ('10','new','-3');
-INSERT INTO glpi_mailing_profiles VALUES ('11','update','-3');
-INSERT INTO glpi_mailing_profiles VALUES ('12','followup','-3');
-INSERT INTO glpi_mailing_profiles VALUES ('13','finish','-3');
+INSERT INTO glpi_mailing VALUES ('1','resa','3','1');
+INSERT INTO glpi_mailing VALUES ('2','resa','1','1');
+INSERT INTO glpi_mailing VALUES ('3','new','3','2');
+INSERT INTO glpi_mailing VALUES ('4','new','1','1');
+INSERT INTO glpi_mailing VALUES ('5','update','1','1');
+INSERT INTO glpi_mailing VALUES ('6','followup','1','1');
+INSERT INTO glpi_mailing VALUES ('7','finish','1','1');
+INSERT INTO glpi_mailing VALUES ('8','update','2','1');
+INSERT INTO glpi_mailing VALUES ('9','update','4','1');
+INSERT INTO glpi_mailing VALUES ('10','new','3','1');
+INSERT INTO glpi_mailing VALUES ('11','update','3','1');
+INSERT INTO glpi_mailing VALUES ('12','followup','3','1');
+INSERT INTO glpi_mailing VALUES ('13','finish','3','1');
 
 ### Dump table glpi_monitors
 
