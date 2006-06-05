@@ -111,6 +111,7 @@ function commonHeader($title,$url)
 	if (haveRight("document","r"))
 		$financial[$lang["Menu"][27]]=array("document.php","d");
 	
+	$maintain=array();
 	//////// ASSISTANCE
 	if (haveRight("observe_ticket","1")||haveRight("show_ticket","1"))
 		$maintain[$lang["Menu"][5]]=array("tracking.php","t");

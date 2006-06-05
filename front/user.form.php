@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
 	
 
 	if (!isset($_GET["ext_auth"])){
-		checkRight("user","w");
+		checkRight("user","r");
 
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 		

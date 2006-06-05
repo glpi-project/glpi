@@ -128,6 +128,8 @@ class SetupSearchDisplay extends CommonDBTM{
 			$dp[DOCUMENT_TYPE]=$lang["Menu"][17];
 		if (haveRight("user","r"))
 			$dp[USER_TYPE]=$lang["Menu"][14];
+		if (haveRight("group","r"))
+			$dp[GROUP_TYPE]=$lang["Menu"][36];
 		if (haveRight("consumable","r"))
 			$dp[CONSUMABLE_TYPE]=$lang["Menu"][32];
 		if (haveRight("link","r"))

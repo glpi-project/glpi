@@ -318,10 +318,9 @@ class Profile extends CommonDBTM{
 		echo "<td>".$lang["profiles"][24].":</td><td>";
 		dropdownYesNoInt("password_update",$this->fields["password_update"]);
 		echo "</td>";
-		echo "<td>&nbsp;</td><td>";
-		echo "&nbsp;";
-		echo "</td>";
-		echo "</tr>";
+		echo "<td>".$lang["reminder"][1].":</td><td>";
+		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,0,1);
+		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$lang["Menu"][26]."</strong></td></tr>";
 	
@@ -457,14 +456,14 @@ class Profile extends CommonDBTM{
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$lang["Menu"][30].":</td><td>";
-		dropdownNoneReadWrite("logs",$this->fields["logs"],1,1,0);
+		echo "<td>".$lang["Menu"][36].":</td><td>";
+		dropdownNoneReadWrite("group",$this->fields["group"],1,1,1);
 		echo "</td>";
 		echo "<td>".$lang["Menu"][12].":</td><td>";
 		dropdownNoneReadWrite("backup",$this->fields["backup"],1,0,1);
 		echo "</td>";
-		echo "<td>".$lang["reminder"][1].":</td><td>";
-		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,0,1);
+		echo "<td>".$lang["Menu"][30].":</td><td>";
+		dropdownNoneReadWrite("logs",$this->fields["logs"],1,1,0);
 		echo "</td></tr>";
 		
 		if ($canedit){

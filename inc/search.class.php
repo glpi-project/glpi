@@ -2027,22 +2027,26 @@ GROUP_TYPE => array(
 					"name" => $lang["common"][2],
 					"meta" => 1,
 				),
-
-		),
-);
-
-if (!empty($cfg_glpi["ldap_host"])){
-$SEARCH_OPTION[GROUP_TYPE][3]=array(	"table" => "glpi_groups", 
+			16 => array(	"table" => "glpi_groups", 
+					"field" => "comments",
+					"linkfield"=>"",
+					"name" => $lang["common"][25],
+					"meta" => 1,
+				),
+			3 => array(	"table" => "glpi_groups", 
 					"field" => "ldap_field",
 					"linkfield"=>"ldap_field",
 					"name" => $lang["setup"][600],
 					"meta" => 1,
-				);
-$SEARCH_OPTION[GROUP_TYPE][4]=array(	"table" => "glpi_groups", 
+				),
+			4 => array(	"table" => "glpi_groups", 
 					"field" => "ldap_value",
 					"linkfield"=>"ldap_value",
 					"name" => $lang["setup"][601],
 					"meta" => 1,
-				);
-}
+				),
+
+		),
+);
+
 ?>
