@@ -1739,7 +1739,8 @@ function showJobDetails ($target,$ID){
 			}
 		}
 		echo "<tr><td colspan='2'>";
-		echo "<input type='file' name='filename' size='20'>";
+		echo "<input type='file' name='filename' size='20'><br>";
+		dropdown("glpi_docs","document");
 		echo "</td></tr></table>";
 
 			echo "</td></tr>";

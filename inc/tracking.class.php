@@ -133,6 +133,10 @@ class Job extends CommonDBTM{
 				addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 				}
 		}
+		if (isset($input["document"])&&$input["document"]>0){
+			addDeviceDocument($input["document"],TRACKING_TYPE,$input["ID"]);
+			unset($input["document"]);
+		}
 	
 		// Old values for add followup in change
 		if ($cfg_glpi["followup_on_update_ticket"]){
