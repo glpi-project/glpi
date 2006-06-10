@@ -53,12 +53,12 @@ if (isset($_POST["idtable"])){
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
 	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_ID$rand','".$cfg_glpi["root_doc"]."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, ";
+	echo "      	new Ajax.Updater('results_ID$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
 	echo "           onComplete:function(request)";
 	echo "            {Element.hide('search_spinner$rand');}, ";
 	echo "           onLoading:function(request)";
 	echo "            {Element.show('search_spinner$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST["myname"]."'";
+	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST["myname"]."&value=0'";
 	echo "})})";
 	echo "</script>";	
 	

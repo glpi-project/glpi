@@ -211,7 +211,7 @@ $identificat->initSession();
 $dirplug=$phproot."/plugins";
 $dh  = opendir($dirplug);
 while (false !== ($filename = readdir($dh))) {
-	if ($filename!="CVS"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename)){
+	if ($filename!=".svn"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename)){
 		$_SESSION["glpi_plugins"][]=$filename;
 	}
 }
