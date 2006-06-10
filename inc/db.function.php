@@ -474,9 +474,12 @@ function getUserName($ID,$link=0){
 			$user["name"]=$username;
 			$user["link"]=$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$ID;
 			$user["comments"]=$lang["common"][16].": ".$username."<br>";
-			$user["comments"].=$lang["setup"][14].": ".$data["email"]."<br>";
-			$user["comments"].=$lang["setup"][15].": ".$data["phone"]."<br>";
-			$user["comments"].=$lang["common"][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"],0)."<br>";
+			if (!empty($data["email"]))
+				$user["comments"].=$lang["setup"][14].": ".$data["email"]."<br>";
+			if (!empty($data["phone"]))
+				$user["comments"].=$lang["setup"][15].": ".$data["phone"]."<br>";
+			if ($data["location"])
+				$user["comments"].=$lang["common"][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"],0)."<br>";
 		} else $user=$username;
 	}
 

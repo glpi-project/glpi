@@ -284,11 +284,11 @@ class Monitor extends CommonDBTM {
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["common"][34].": 	</td><td>";
-			dropdownValue("glpi_users", "FK_users", $this->fields["FK_users"]);
+		dropdownAllUsers("FK_users", $this->fields["FK_users"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["common"][35].": 	</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+		dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>".$lang["state"][0].":</td><td>";
