@@ -599,7 +599,7 @@ class Computer extends CommonDBTM {
 			dropdownValue("glpi_dropdown_os_sp", "os_sp", $this->fields["os_sp"]);
 			echo "</td>";
 			
-			echo "<td valign='middle' rowspan='2'>".$lang["common"][25].":</td><td valign='middle' rowspan='2'><textarea  cols='60' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+			echo "<td valign='middle' rowspan='2'>".$lang["common"][25].":</td><td valign='middle' rowspan='2'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
 			echo "</tr>";
 			echo "<tr class='tab_bg_1'>";
 			echo "<td>".$lang["computers"][51].":</td><td>";

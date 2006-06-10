@@ -507,7 +507,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 function KbItemaddtofaq($ID)
 {
 	global $db;
-	$db->query("UPDATE glpi_kbitems SET faq='yes' WHERE ID=$ID");
+	$db->query("UPDATE glpi_kbitems SET faq='yes' WHERE ID='$ID'");
 }
 
 /**
@@ -522,7 +522,7 @@ function KbItemaddtofaq($ID)
 function KbItemremovefromfaq($ID)
 {
 	global $db;
-	$db->query("UPDATE glpi_kbitems SET faq='no' WHERE ID=$ID");
+	$db->query("UPDATE glpi_kbitems SET faq='no' WHERE ID='$ID'");
 }
  
 
@@ -793,7 +793,7 @@ function ExpandSessionVarShow($ID,$recurse=0){
 	$_SESSION["kb_show"][$ID]='Y';
 	if ($recurse!=0){
 		
-		$query="select parentID from glpi_dropdown_kbcategories where ID=$ID";
+		$query="select parentID from glpi_dropdown_kbcategories where ID='$ID'";
 		$result=$db->query($query);
 		$data=$db->fetch_array($result);
 		if ($data["parentID"]!=0)

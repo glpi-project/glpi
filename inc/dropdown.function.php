@@ -68,7 +68,7 @@ function dropdown($table,$myname) {
 */
 function dropdownValue($table,$myname,$value,$display_comments=1) {
 	
-	global $HTMLRel,$cfg_glpi,$lang;
+	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
 	
@@ -105,17 +105,28 @@ if ($cfg_glpi["use_ajax"])
 	$nb=countElementsInTable($table);
 
 if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
+//	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
+
 }
 
 
 
 echo "<span id='results_$myname$rand'>\n";
-echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
+if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+	$_POST["myname"]=$myname;
+	$_POST["table"]=$table;
+	$_POST["value"]=$value;
+	$_POST["limit"]=$limit_length;
+	$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
+	include ($phproot."/ajax/dropdownValue.php");
+} else {
+	echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
+}
 echo "</span>\n";	
 
 
@@ -213,7 +224,7 @@ function dropdownNoValue($table,$myname,$value) {
 function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_glpi,$lang;
+	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
 	
@@ -227,7 +238,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname&all=$all&right=$right'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&myname=$myname&all=$all&right=$right'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -241,29 +252,38 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
+	//echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
 
 	echo "<span id='results_$myname$rand'>\n";
-	if (!empty($value)&&$value>0){
-		$user=getUserName($value,2);
-		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
-		echo "</span>\n";	
-		if (!empty($user["comments"])&&$display_comments) {
-			echo "<a href='".$user["link"]."'>";
-			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
-			echo "</a>";
-			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
+	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+		$_POST["myname"]=$myname;
+		$_POST["all"]=$all;
+		$_POST["value"]=$value;
+		$_POST["right"]=$right;
+		$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
+		include ($phproot."/ajax/dropdownUsers.php");
+		echo "</span>\n";
+	}else {
+		if (!empty($value)&&$value>0){
+			$user=getUserName($value,2);
+			echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
+			echo "</span>\n";	
+			if (!empty($user["comments"])&&$display_comments) {
+				echo "<a href='".$user["link"]."'>";
+				echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
+				echo "</a>";
+				echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
+			}
+		} else {
+			if ($all)
+				echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
+			else 
+				echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+			echo "</span>\n";	
 		}
-		
-	} else {
-		if ($all)
-			echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
-		else 
-			echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
-		echo "</span>\n";	
 	}
 	
 
@@ -346,13 +366,13 @@ function getDropdownName($table,$id,$withcomments=0) {
 *
 * @param $value
 * @param $myname
-* @param $champ
+* @param $field
 * @param $display_comments
 * @return nothing (print out an HTML select box)
 */
 
-function dropdownUsersTracking($myname,$value,$champ,$display_comments=1) {
-	global $HTMLRel,$cfg_glpi,$lang;
+function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
+	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
 	
@@ -366,7 +386,7 @@ function dropdownUsersTracking($myname,$value,$champ,$display_comments=1) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&champ=$champ&myname=$myname'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&field=$field&myname=$myname'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -380,26 +400,36 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
+	//echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
 	echo "<span id='results_$myname$rand'>\n";
-	if (!empty($value)&&$value>0){
-		$user=getUserName($value,2);
-		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
+	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+		$_POST["myname"]=$myname;
+		$_POST["value"]=$value;
+		$_POST["field"]=$field;
+		$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
+		include ($phproot."/ajax/dropdownUsersTracking.php");
 		echo "</span>\n";	
-		if (!empty($user["comments"])&&$display_comments) {
-			echo "<a href='".$user["link"]."'>";
-			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
-			echo "</a>";
-			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
-		}
+	}else {
 
+		if (!empty($value)&&$value>0){
+			$user=getUserName($value,2);
+			echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
+			echo "</span>\n";	
+			if (!empty($user["comments"])&&$display_comments) {
+				echo "<a href='".$user["link"]."'>";
+				echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
+				echo "</a>";
+				echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
+			}
+	
+			}
+		else {
+			echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
+			echo "</span>\n";	
 		}
-	else {
-		echo "<select name='$myname'><option value='0'>[ ".$lang["search"][7]." ]</option></select>\n";
-		echo "</span>\n";	
 	}
 	
 	

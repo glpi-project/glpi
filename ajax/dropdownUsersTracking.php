@@ -32,14 +32,16 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-
+	if(ereg("dropdownUsersTracking.php",$_SERVER['PHP_SELF'])){
+		include ("_relpos.php");
+		$AJAX_INCLUDE=1;
+		include ($phproot."/inc/includes.php");
+		header("Content-Type: text/html; charset=UTF-8");
+		header_nocache();
+	
+	}
 	checkCentralAccess();
+
 // Make a select box with all glpi users
 		$where="'1'='1'";
 
@@ -55,7 +57,7 @@
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 	
-	$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['champ']." AND glpi_tracking.".$_POST['champ']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
+	$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['field']." AND glpi_tracking.".$_POST['field']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
 	$result = $db->query($query);
 
 	echo "<select name=\"".$_POST['myname']."\">";

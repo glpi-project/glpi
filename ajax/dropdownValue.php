@@ -32,18 +32,18 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-
+	// Direct access to file
+	if(ereg("dropdownValue.php",$_SERVER['PHP_SELF'])){
+		include ("_relpos.php");
+		$AJAX_INCLUDE=1;
+		include ($phproot."/inc/includes.php");
+		header("Content-Type: text/html; charset=UTF-8");
+		header_nocache();
+	};
 	checkLoginUser();
 
 	// Make a select box with preselected values
 	if (!isset($_POST["limit"])) $_POST["limit"]=$cfg_glpi["dropdown_limit"];
-	
 	if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 		$where="";
@@ -79,7 +79,7 @@
 				$loc=$data['loc'];
 				$ID = $data['ID'];
 				echo "<option value=\"$ID\" title=\"$output\"";
-				if ($ID==$_POST['value']) echo " selected ";
+				//if ($ID==$_POST['value']) echo " selected ";
 				echo ">".$output." ($loc)</option>";
 			}
 		}
@@ -127,26 +127,34 @@
 				echo "<option class='tree' value=\"0\">--".$lang["knowbase"][12]."--</option>";
 			else echo "<option class='tree' value=\"0\">-----</option>";
 
-			$output=getDropdownName($_POST['table'],$_POST['value']);
-			if (!empty($output)&&$output!="&nbsp;")
-			echo "<option class='tree' selected value='".$_POST['value']."'>".$output."</option>";
+			$outputval=getDropdownName($_POST['table'],$_POST['value']);
+			if (!empty($outputval)&&$outputval!="&nbsp;")
+			echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
 	
 			if ($db->numrows($result)) {
 				while ($data =$db->fetch_array($result)) {
 					
 					$ID = $data['ID'];
 					$level = $data['level'];
+					
 					if (empty($data['name'])) $output="($ID)";
-					$class="class='tree'";
-					$raquo="&raquo;";
-					if ($level==1){
-						 $class="class='treeroot'";
-						$raquo="";
+					else $output=$data['name'];
+					if ($ID==$_POST["value"]) {
+						$output=$outputval;
+						echo "<option class='tree' value='".$ID."'>".$output."</option>";
+					} else {
+						$class=" class='tree' ";
+						$raquo="&raquo;";
+						if ($level==1){
+							$class=" class='treeroot' ";
+							$raquo="";
+						}
+						//$style=" $class style=\" padding-left: ".(8*($level))."px;\" ";
+						$style=$class;
+						echo "<option value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,$_POST["limit"])."</option>";
 					}
-					//$style=" $class style=\" padding-left: ".(8*($level))."px;\" ";
-					$style=" $class ";
-					echo "<option value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($data['name'],0,$_POST["limit"])."</option>";
 				}
+		
 			}
 			echo "</select>";
 

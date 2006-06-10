@@ -89,7 +89,7 @@ function countElementsInTable($table){
 function getTreeLeafValueName($table,$ID,$withcomments=0)
 {
 	global $db;
-	$query = "select * from $table where (ID = $ID)";
+	$query = "select * from $table where (ID = '$ID')";
 	$name="";
 	$comments="";
 	if ($result=$db->query($query)){
@@ -116,7 +116,7 @@ else return $name;
 function getTreeValueCompleteName($table,$ID,$withcomments=0)
 {
 	global $db;
-	$query = "select * from $table where (ID = $ID)";
+	$query = "select * from $table where (ID = '$ID')";
 	$name="";
 	$comments="";
 	if ($result=$db->query($query)){
@@ -145,7 +145,7 @@ function getTreeValueName($table,$ID, $wholename="",$level=0)
 {
 	global $db,$lang;
 	
-	$query = "select * from $table where (ID = $ID)";
+	$query = "select * from $table where (ID = '$ID')";
 	$name="";
 	
 	if ($result=$db->query($query)){
@@ -386,7 +386,7 @@ if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
 $search=$ID;
 
 if ($nextprev_item!="ID"){
-	$query="select ".$nextprev_item." FROM $table where ID=$ID";
+	$query="select ".$nextprev_item." FROM $table where ID='$ID'";
 	$result=$db->query($query);
 	$search=addslashes($db->result($result,0,0));
 }
