@@ -55,14 +55,14 @@
 		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 			
 			
-		$query = "select t1.ID as ID, t1.name as netpname, t2.completename as loc from glpi_dropdown_netpoint as t1";
+		$query = "select t1.comments as comments, t1.ID as ID, t1.name as netpname, t2.completename as loc from glpi_dropdown_netpoint as t1";
 		$query .= " left join glpi_dropdown_locations as t2 on (t1.location = t2.ID)";
 		$query.=$where;
 		$query .= " order by t1.name,t2.name $LIMIT"; 
 		
 		$result = $db->query($query);
 
-		echo "<select name=\"".$_POST['myname']."\">";
+		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 		
 		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
@@ -78,7 +78,9 @@
 				$output = $data['netpname'];
 				$loc=$data['loc'];
 				$ID = $data['ID'];
-				echo "<option value=\"$ID\" title=\"$output\"";
+				$addcomment="";
+				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
+				echo "<option value=\"$ID\" title=\"$output$addcomment\"";
 				//if ($ID==$_POST['value']) echo " selected ";
 				echo ">".$output." ($loc)</option>";
 			}
@@ -114,11 +116,11 @@
 			
 			if ($where=="WHERE ") $where="";
 
-			$query = "SELECT ID, name, completename, level FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
+			$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
 			
 			$result = $db->query($query);
 			
-			echo "<select name=\"".$_POST['myname']."\" size='1'>";
+			echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
 			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 				echo "<option class='tree' value=\"0\">--".$lang["common"][11]."--</option>";
@@ -149,9 +151,11 @@
 							$class=" class='treeroot' ";
 							$raquo="";
 						}
-						//$style=" $class style=\" padding-left: ".(8*($level))."px;\" ";
 						$style=$class;
-						echo "<option value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,$_POST["limit"])."</option>";
+						$addcomment="";
+						if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
+
+						echo "<option value=\"$ID\" $style title=\"".$data['completename']."$addcomment\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,$_POST["limit"])."</option>";
 					}
 				}
 		
@@ -171,11 +175,10 @@
 				$where.=" AND name ".makeTextSearch($_POST['searchText']);
 			$where.=")";
 
-			$query = "SELECT ID, $field as NAME FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
+			$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
 	
 			$result = $db->query($query);
-
-			echo "<select name=\"".$_POST['myname']."\" size='1'>";
+			echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
 			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 				echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
@@ -188,16 +191,27 @@
 	
 			if ($db->numrows($result)) {
 				while ($data =$db->fetch_array($result)) {
-					$output = $data['NAME'];
+					$output = $data[$field];
 					$ID = $data['ID'];
-					
+					$addcomment="";
+					if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
+
 					if (empty($output)) $output="($ID)";
-					echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$_POST["limit"])."</option>";
+					echo "<option value=\"$ID\" title=\"$output$addcomment\">".substr($output,0,$_POST["limit"])."</option>";
 				}
 			}
 			echo "</select>";
 		}
 	}
 
+	if (isset($_POST["comments"])&&$_POST["comments"]){
+		echo "<script type='text/javascript' >\n";
+		echo "   new Form.Element.Observer('dropdown_".$_POST["myname"].$_POST["rand"]."', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$cfg_glpi["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
+		echo "           method:'post', parameters:'value='+value+'&table=".$_POST["table"]."'\n";
+		echo "})})\n";
+		echo "</script>\n";
+	}
 
 ?>

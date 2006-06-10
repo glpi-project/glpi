@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot."/inc/includes.php");
 
 
-$multiplicator=30;
+$multiplicator=1;
 
 $max['locations']=100;
 $max['kbcategories']=8;
@@ -367,7 +367,7 @@ for ($i=0;$i<$max['iface'];$i++){
 $items=array("Non","Oui - generique","Oui - specifique entite");
 for ($i=0;$i<$max['auto_update'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
-	else $val="type de mise à jour $i";
+	else $val="type de mise a jour $i";
 	$query="INSERT INTO glpi_dropdown_auto_update VALUES (NULL,'$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
@@ -706,7 +706,7 @@ for ($i=0;$i<$max['enterprises'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="enterprise_$i";
 
-	$query="INSERT INTO glpi_enterprises VALUES (NULL,'$val','".mt_rand(1,$max['enttype'])."','address $i','http://www.$val.com/','phone $i','comment $i','N','fax $i','info@ent$i.com','notes enterprises $i')";
+	$query="INSERT INTO glpi_enterprises VALUES (NULL,'$val','".mt_rand(1,$max['enttype'])."','address $i','http://www.$val.com/','phone $i','comment enterprises $i','N','fax $i','info@ent$i.com','notes enterprises $i')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$entID=$db->insert_id();
 	add_documents(ENTERPRISE_TYPE,$entID);

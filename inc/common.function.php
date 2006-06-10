@@ -570,6 +570,7 @@ function rembo($string){
 	return $string;
 }
 
+// Create SQL search condition
 function makeTextSearch($val,$not=0){
 	$NOT="";
 	if ($not) $NOT= " NOT ";

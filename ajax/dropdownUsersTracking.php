@@ -60,7 +60,7 @@
 	$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['field']." AND glpi_tracking.".$_POST['field']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
 	$result = $db->query($query);
 
-	echo "<select name=\"".$_POST['myname']."\">";
+	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
 	if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
 	echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
@@ -87,5 +87,14 @@
 	}
 	echo "</select>";
 
+	if (isset($_POST["comments"])&&$_POST["comments"]){
+		echo "<script type='text/javascript' >\n";
+		echo "   new Form.Element.Observer('dropdown_".$_POST["myname"].$_POST["rand"]."', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$cfg_glpi["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
+		echo "           method:'post', parameters:'value='+value+'&table=glpi_users'\n";
+		echo "})})\n";
+		echo "</script>\n";
+	}
 
 ?>
