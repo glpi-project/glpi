@@ -50,45 +50,7 @@
 **/
 function dropdown($table,$myname) {
 
-
-	global $HTMLRel,$cfg_glpi;
-
-	$rand=mt_rand();
-	
-	displaySearchTextAjaxDropdown($myname.$rand);
-
-echo "<script type='text/javascript' >\n";
-echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdown.php',{asynchronous:true, evalScripts:true, \n";
-echo "           onComplete:function(request)\n";
-echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-echo "           onLoading:function(request)\n";
-echo "            {Element.show('search_spinner_$myname$rand');},\n";
-echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=$myname'\n";
-echo "})})\n";
-echo "</script>\n";
-
-
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
-
-$nb=0;
-if ($cfg_glpi["use_ajax"])
-	$nb=countElementsInTable($table);
-
-if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
-	echo "<script type='text/javascript' >\n";
-	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
-	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
-	echo "</script>\n";
-}
-
-
-echo "<span id='results_$myname$rand'>\n";
-echo "<select name='$myname'><option value='0'>------</option></select>\n";
-echo "</span>\n";	
-
+	dropdownValue($table,$myname,0,1);
 }
 
 /**
@@ -319,60 +281,8 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 * 
 */
 function dropdownAllUsers($myname,$value,$display_comments=1) {
-	global $lang;
-	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_glpi;
-
-	$rand=mt_rand();
-	
-	displaySearchTextAjaxDropdown($myname.$rand);
-
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownAllUsers.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&table=glpi_users&myname=$myname'\n";
-	echo "})})\n";
-	echo "</script>\n";
-
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-
-$nb=0;
-if ($cfg_glpi["use_ajax"])
-	$nb=countElementsInTable("glpi_users");
-
-if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
-	echo "<script type='text/javascript' >\n";
-	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
-	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
-	echo "</script>\n";
-}
-
-	echo "<span id='results_$myname$rand'>\n";
-	if (!empty($value)&&$value>0){
-		$user=getUserName($value,2);
-		echo "<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
-		echo "</span>\n";	
-		if (!empty($user["comments"])&&$display_comments) {
-			echo "<a href='".$user["link"]."'>";
-			echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\">";
-			echo "</a>";
-			echo "<span class='over_link' id='comments_$rand'>".$user["comments"]."</span>";
-		}
-		
-		}
-	else {
-		echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
-		echo "</span>\n";	
-	}
-	
-
+	dropdownUsers($myname,$value,"all",0,$display_comments);
 }
 
 

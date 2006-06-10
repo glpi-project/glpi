@@ -155,11 +155,15 @@
 			else $first=false;
 			$where .=" (ID <> '".$_POST['value']."' ";
 
+
+			$field="name";
+			if (ereg("glpi_device",$_POST['table'])) $field="designation";
+
 			if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
 				$where.=" AND name ".makeTextSearch($_POST['searchText']);
 			$where.=")";
 
-			$query = "SELECT ID, name FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
+			$query = "SELECT ID, $field as NAME FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
 	
 			$result = $db->query($query);
 
@@ -176,7 +180,7 @@
 	
 			if ($db->numrows($result)) {
 				while ($data =$db->fetch_array($result)) {
-					$output = $data['name'];
+					$output = $data['NAME'];
 					$ID = $data['ID'];
 					
 					if (empty($output)) $output="($ID)";
