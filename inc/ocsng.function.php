@@ -1310,7 +1310,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 					}	
 					if ($id_monitor){
 						if (!$found_already_monitor)
-							$connID=Connect("",$id_monitor,$glpi_id,MONITOR_TYPE);
+							$connID=Connect($id_monitor,$glpi_id,MONITOR_TYPE);
 						addToOcsArray($glpi_id,array($connID=>$mon["name"]),"import_monitor");
 					}
 				} else {
@@ -1377,7 +1377,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						}
 					}	
 					if ($id_printer){
-						$connID=Connect("",$id_printer,$glpi_id,PRINTER_TYPE);
+						$connID=Connect($id_printer,$glpi_id,PRINTER_TYPE);
 						addToOcsArray($glpi_id,array($connID=>$print["name"]),"import_printers");
 					}
 				} else {
@@ -1441,7 +1441,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						}
 					}	
 					if ($id_periph){
-						$connID=Connect("",$id_periph,$glpi_id,PERIPHERAL_TYPE);
+						$connID=Connect($id_periph,$glpi_id,PERIPHERAL_TYPE);
 						addToOcsArray($glpi_id,array($connID=>$periph["name"]),"import_peripheral");
 					}
 				} else {

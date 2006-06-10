@@ -108,7 +108,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
 
 	checkRight("printer","w");
-	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PRINTER_TYPE);
+	Connect($tab["sID"],$tab["item"],PRINTER_TYPE);
 	logEvent($tab["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$lang["log"][27]);
 	glpi_header($cfg_glpi["root_doc"]."/front/printer.form.php?ID=".$tab["sID"]);
 }

@@ -55,6 +55,13 @@ header_nocache();
 			case "install":
 				dropdownSoftwareToInstall("lID",0,1);
 			break;
+			case "connect":
+				dropdownConnect(COMPUTER_TYPE,"connect_item");
+				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+			break;
+			case "disconnect":
+				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+			break;
 			case "update":
 				$first_group=true;
 				$newgroup="";
