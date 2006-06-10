@@ -141,12 +141,11 @@ function Disconnect($ID) {
 *
 *
 *
-* @param $target
 * @param $sID connection source ID.
 * @param $cID computer ID (where the sID would be connected).
 * @param $type connection type.
 */
-function Connect($target,$sID,$cID,$type) {
+function Connect($sID,$cID,$type) {
 	global $lang;
 	// Makes a direct connection
 

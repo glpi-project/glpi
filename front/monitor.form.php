@@ -111,7 +111,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 {
 	checkRight("monitor","w");
 
-	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],MONITOR_TYPE);
+	Connect($tab["sID"],$tab["item"],MONITOR_TYPE);
 	logEvent($tab["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][27]);
 	glpi_header($cfg_glpi["root_doc"]."/front/monitor.form.php?ID=".$tab["sID"]);
 

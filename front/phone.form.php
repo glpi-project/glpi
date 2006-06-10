@@ -111,7 +111,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 
 	checkRight("phone","w");
 
-	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PHONE_TYPE);
+	Connect($tab["sID"],$tab["item"],PHONE_TYPE);
 	logEvent($tab["sID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($cfg_glpi["root_doc"]."/front/phone.form.php?ID=".$tab["sID"]);
 

@@ -47,6 +47,27 @@ commonHeader($lang["title"][42],$_SERVER["PHP_SELF"]);
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
 
 	switch($_POST["action"]){
+		case "connect":
+			$ci=new CommonItem();
+			if (isset($_POST["connect_item"])&&$_POST["connect_item"])
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					if ($ci->getFromDB($_POST["device_type"],$key))
+					if ($ci->obj->fields["is_global"]||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
+						Connect($key,$_POST["connect_item"],$_POST["device_type"]);
+					}
+				}
+			}
+
+		break;
+		case "disconnect":
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					$query="DELETE FROM glpi_connect_wire WHERE type='".$_POST["device_type"]."' AND end1 = '$key'";
+					$db->query($query);
+				}
+			}
+		break;
 		case "delete":
 			$ci=new CommonItem();
 			$ci->getFromDB($_POST["device_type"],-1);

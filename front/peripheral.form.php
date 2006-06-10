@@ -110,7 +110,7 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 
 	checkRight("peripheral","w");
 
-	Connect($_SERVER["PHP_SELF"],$tab["sID"],$tab["item"],PERIPHERAL_TYPE);
+	Connect($tab["sID"],$tab["item"],PERIPHERAL_TYPE);
 	logEvent($tab["sID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
 	glpi_header($cfg_glpi["root_doc"]."/front/peripheral.form.php?ID=".$tab["sID"]);
 }

@@ -97,7 +97,7 @@ else if (isset($tab["disconnect"])) {
 }
 else if (isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0){
 	checkRight("computer","w");
-	Connect($_SERVER["PHP_SELF"],$tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
+	Connect($tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][27]);
 	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
 }

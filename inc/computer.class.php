@@ -210,7 +210,7 @@ class Computer extends CommonDBTM {
 		$result=$db->query($query);
 		if ($db->numrows($result)>0){
 			while ($data=$db->fetch_array($result)){
-				Connect("",$data["end1"],$newID,$data["type"]);
+				Connect($data["end1"],$newID,$data["type"]);
 			}
 		}
 

@@ -1027,6 +1027,10 @@ function dropdownMassiveAction($device_type,$deleted){
 			echo "<option value=\"update\">".$lang["buttons"][14]."</option>";
 			if ($device_type==COMPUTER_TYPE)
 				echo "<option value=\"install\">".$lang["buttons"][4]."</option>";
+			if ($device_type==PHONE_TYPE || $device_type==PERIPHERAL_TYPE || $device_type==MONITOR_TYPE || $device_type==PERIPHERAL_TYPE || $device_type==PRINTER_TYPE){
+				echo "<option value=\"connect\">".$lang["buttons"][9]."</option>";
+				echo "<option value=\"disconnect\">".$lang["buttons"][10]."</option>";
+			}
 		}
 		echo "</select>";
 
