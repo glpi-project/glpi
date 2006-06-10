@@ -32,13 +32,14 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-
+	// Direct access to file
+	if(ereg("dropdownUsers.php",$_SERVER['PHP_SELF'])){
+		include ("_relpos.php");
+		$AJAX_INCLUDE=1;
+		include ($phproot."/inc/includes.php");
+		header("Content-Type: text/html; charset=UTF-8");
+		header_nocache();
+	}
 	checkCentralAccess();
 // Make a select box with all glpi users
 

@@ -39,7 +39,7 @@ include ("_relpos.php");
 include ($phproot."/inc/includes.php");
 
 
-$multiplicator=1;
+$multiplicator=30;
 
 $max['locations']=100;
 $max['kbcategories']=8;
@@ -542,7 +542,7 @@ for ($i=0;$i<max(1,pow($max['tracking_category'],1/3));$i++){
 		$db->query($query) or die("PB REQUETE ".$query);
 		$newID2=$db->insert_id();
 		for ($k=0;$k<mt_rand(0,pow($max['tracking_category'],1/2));$k++){
-			$query="INSERT INTO glpi_dropdown_tracking_category VALUES (NULL,'$newID2','ss-categorie $k','','comment categorie $i','3')";
+			$query="INSERT INTO glpi_dropdown_tracking_category VALUES (NULL,'$newID2','ss-categorie $k','','comment ss-categorie $k','3')";
 			$db->query($query) or die("PB REQUETE ".$query);
 		}	
 	}
