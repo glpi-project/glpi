@@ -567,7 +567,61 @@ if(FieldExists("glpi_history","device_internal_action")) {
 	$db->query($query) or die("0.68 alater glpi_history ".$lang["update"][90].$db->error());
 }
 
+if(!TableExists("glpi_alerts")) {
 
+$query="CREATE TABLE `glpi_alerts` (
+  `ID` int(11) NOT NULL auto_increment,
+  `device_type` int(11) default '0',
+  `FK_device` int(11) default '0',
+  `type` int(11) default '0',
+  `date` datetime,
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `alert` (`device_type`,`FK_device`,`type`),
+  KEY `item` (`device_type`,`FK_device`),
+  KEY `device_type` (`device_type`),
+  KEY `FK_device` (`FK_device`),
+  KEY `type` (`type`),
+  KEY `date` (`date`)
+) TYPE=MyISAM;";
+$db->query($query) or die("0.68 add alerts ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_contracts","alert")) {	
+	$query="ALTER TABLE  `glpi_contracts` ADD  `alert` tinyint(2) NOT NULL DEFAULT '0';";
+	$db->query($query) or die("0.68 add alert in contracts ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_infocoms","alert")) {	
+	$query="ALTER TABLE  `glpi_infocoms` ADD  `alert` tinyint(2) NOT NULL DEFAULT '0';";
+	$db->query($query) or die("0.68 add alert in infocoms ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","contract_alerts")) {	
+	$query="ALTER TABLE  `glpi_config` ADD  `contract_alerts` tinyint(2) NOT NULL  DEFAULT '0';";
+	$db->query($query) or die("0.68 add contract_alerts in config ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","infocom_alerts")) {	
+	$query="ALTER TABLE  `glpi_config` ADD  `infocom_alerts` tinyint(2) NOT NULL DEFAULT '0';";
+	$db->query($query) or die("0.68 add infocom_alerts in config ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","helpdesk_public_hardware")) {	
+	// 3 = activation mes matériels + tous les matériels (checksum 1*2^0+1*2^1)
+	$query="ALTER TABLE  `glpi_config` ADD  `helpdesk_public_hardware` tinyint(2) NOT NULL  DEFAULT '3';";
+	$db->query($query) or die("0.68 add helpdesk_public_hardware in config ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","helpdesk_central_hardware")) {	
+	// 3 = activation mes matériels + tous les matériels (checksum 1*2^0+1*2^1)
+	$query="ALTER TABLE  `glpi_config` ADD  `helpdesk_central_hardware` tinyint(2) NOT NULL  DEFAULT '3';";
+	$db->query($query) or die("0.68 add helpdesk_central_hardware in config ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_tracking","FK_group")) {	
+	$query="ALTER TABLE  `glpi_tracking` ADD  `FK_group` int(11) NOT NULL  DEFAULT '0' AFTER `author`;";
+	$db->query($query) or die("0.68 add FK_group in tracking ".$lang["update"][90].$db->error());
+}
 
 } // fin 0.68 #####################################################################################
 

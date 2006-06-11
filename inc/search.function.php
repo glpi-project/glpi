@@ -1445,7 +1445,7 @@ switch ($field){
 			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 			$out.= $data["ITEM_$num"];
 			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-			$out.= "/a>";
+			$out.= "</a>";
 		} else {
 			$out= $data["ITEM_$num"];
 		}

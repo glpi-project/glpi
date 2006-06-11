@@ -1,4 +1,23 @@
-#GLPI Dump database on 2006-06-05 18:40
+#GLPI Dump database on 2006-06-11 22:01
+
+### Dump table glpi_alerts
+
+DROP TABLE IF EXISTS `glpi_alerts`;
+CREATE TABLE `glpi_alerts` (
+    `ID` int(11) NOT NULL auto_increment,
+    `device_type` int(11) DEFAULT '0',
+    `FK_device` int(11) DEFAULT '0',
+    `type` int(11) DEFAULT '0',
+    `date` datetime,
+   PRIMARY KEY (`ID`),
+   UNIQUE alert (`device_type`, `FK_device`, `type`),
+   KEY item (`device_type`, `FK_device`),
+   KEY device_type (`device_type`),
+   KEY FK_device (`FK_device`),
+   KEY type (`type`),
+   KEY date (`date`)
+) TYPE=MyISAM;
+
 
 ### Dump table glpi_cartridges
 
@@ -193,10 +212,14 @@ CREATE TABLE `glpi_config` (
     `proxy_password` varchar(255),
     `followup_on_update_ticket` tinyint(4) DEFAULT '1' NOT NULL,
     `ldap_field_group` varchar(255),
+    `contract_alerts` tinyint(2) DEFAULT '0' NOT NULL,
+    `infocom_alerts` tinyint(2) DEFAULT '0' NOT NULL,
+    `helpdesk_public_hardware` tinyint(2) DEFAULT '3' NOT NULL,
+    `helpdesk_central_hardware` tinyint(2) DEFAULT '3' NOT NULL,
    PRIMARY KEY (`ID`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn','telephonenumber','','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','2006-02-28','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','3','3');
 
 ### Dump table glpi_connect_wire
 
@@ -346,6 +369,7 @@ CREATE TABLE `glpi_contracts` (
     `monday` enum('Y','N') DEFAULT 'N' NOT NULL,
     `device_countmax` int(11) DEFAULT '0' NOT NULL,
     `notes` longtext,
+    `alert` tinyint(2) DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`),
    KEY contract_type (`contract_type`),
    KEY begin_date (`begin_date`),
@@ -1124,7 +1148,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-06-05 18:40:31','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-06-11 22:01:21','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1201,6 +1225,7 @@ CREATE TABLE `glpi_infocoms` (
     `comments` text,
     `facture` varchar(200),
     `budget` int(11) DEFAULT '0',
+    `alert` tinyint(2) DEFAULT '0' NOT NULL,
    PRIMARY KEY (`ID`),
    UNIQUE FK_device (`FK_device`, `device_type`),
    KEY FK_enterprise (`FK_enterprise`),
@@ -1824,6 +1849,7 @@ CREATE TABLE `glpi_tracking` (
     `closedate` datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     `status` enum('new','old_done','assign','plan','old_notdone','waiting') DEFAULT 'new' NOT NULL,
     `author` int(11) DEFAULT '0' NOT NULL,
+    `FK_group` int(11) DEFAULT '0' NOT NULL,
     `request_type` tinyint(2) DEFAULT '0',
     `assign` int(11) DEFAULT '0' NOT NULL,
     `assign_ent` int(11) DEFAULT '0' NOT NULL,
