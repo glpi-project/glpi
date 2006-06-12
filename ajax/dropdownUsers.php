@@ -45,6 +45,7 @@
 // Make a select box with all glpi users
 
 	$joinprofile=false;
+	if (!isset($_POST['right'])) $_POST['right']="all";
 	if ($_POST['right']=="interface"){
 		$where=" glpi_profiles.".$_POST['right']."='central' ";
 		$joinprofile=true;
@@ -73,7 +74,6 @@
 	$query = "SELECT glpi_users.* FROM glpi_users ";
 	if ($joinprofile) $query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users) LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles)";
 	$query.= " WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
-	
 	$result = $db->query($query);
 	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
