@@ -379,12 +379,12 @@ function showPortsAdd($ID,$devtype) {
 	echo "</table></div><br>";
 }
 
-function showConnection ($ID,$withtemplate='',$type=COMPUTER_TYPE) {
+function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
 	global $cfg_glpi, $lang,$INFOFORM_PAGES;
 
 	if (!haveTypeRight($type,"r")) return false;
-	$canedit=haveTypeRight("networking","w");
+	$canedit=haveRight("networking","w");
 
 	$contact = new Netport;
 	$netport = new Netport;
