@@ -67,7 +67,7 @@ function dropdown($table,$myname) {
 * @return nothing (display the select box)
 *
 */
-function dropdownValue($table,$myname,$value,$display_comments=1) {
+function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 	
 	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
 
