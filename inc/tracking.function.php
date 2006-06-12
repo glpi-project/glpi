@@ -925,6 +925,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	if (!haveRight("show_ticket","1")) 
 		dropdownUsers("assign",$assign,"ID");
 	else dropdownUsers("assign",$assign,"own_ticket",1);
+	echo "&nbsp;";
 	echo $lang["job"][28].":&nbsp;";
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 

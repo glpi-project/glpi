@@ -36,7 +36,7 @@
 
 include ("_relpos.php");
 $AJAX_INCLUDE=1;
-$NEEDED_ITEMS=array("search","contract","infocom");
+$NEEDED_ITEMS=array("search","contract","infocom","enterprise");
 include ($phproot."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -84,14 +84,14 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 					break;
 			}
 		} else if ($search["table"]=="glpi_enterprises_infocoms"){ // Infocoms enterprises
-			dropdownValue("glpi_enterprises","FK_enterprise");
+			dropdown("glpi_enterprises","FK_enterprise");
 		} else if ($search["table"]=="glpi_dropdown_budget"){ // Infocoms budget
-			dropdownValue("glpi_dropdown_budget","budget");
+			dropdown("glpi_dropdown_budget","budget");
 		} else {// dropdown case
 			dropdown($search["table"],$search["linkfield"]);
 		}
 	}
-	echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+	echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 }
 
 ?>
