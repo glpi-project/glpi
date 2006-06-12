@@ -1,5 +1,6 @@
 <?php
 /*
+* @version $Id$
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -96,6 +97,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			}
 		break;
 		case "update":
+
 			// Infocoms case
 			if (($_POST["id_field"]>=25&&$_POST["id_field"]<=28)||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)||($_POST["id_field"]>=50&&$_POST["id_field"]<=58)){
 				$ic=new Infocom();
