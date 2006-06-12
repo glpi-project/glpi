@@ -1,5 +1,6 @@
 <?php
 /*
+* @version $Id$
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -66,6 +67,7 @@ class InfoCom extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 		if (isset($input["ID"])){
+			
 			$this->getFromDB($input["ID"]);
 		} else {
 			if (!$this->getFromDBforDevice($input["device_type"],$input["FK_device"])){
@@ -76,7 +78,6 @@ class InfoCom extends CommonDBTM {
 			}
 			$input["ID"]=$this->fields["ID"];
 		}
-
 		return $input;
 	}
 
