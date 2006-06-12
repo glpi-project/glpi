@@ -1245,7 +1245,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						//check if monitors already exists in GLPI
 						$mon["is_global"]=1;
 						$db = new db;
-						$query = "select ID from glpi_monitors where name = '".$line["CAPTION"]."' AND is_global = '1'";
+						$query = "select ID from glpi_monitors where name = '".$mon["name"]."' AND is_global = '1'";
 						$result_search = $db->query($query);
 						if($db->numrows($result_search) > 0) {
 							//Periph is already in GLPI
@@ -1348,7 +1348,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						//check if printers already exists in GLPI
 						$print["is_global"]=1;
 						$db = new db;
-						$query = "select ID from glpi_printers where name = '".$line["DRIVER"]."' AND is_global = '1'";
+						$query = "select ID from glpi_printers where name = '".$print["name"]."' AND is_global = '1'";
 						$result_search = $db->query($query);
 						if($db->numrows($result_search) > 0) {
 							//Periph is already in GLPI
@@ -1412,7 +1412,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						//check if peripherals already exists in GLPI
 						$periph["is_global"]=1;
 						$db = new db;
-						$query = "select ID from glpi_peripherals where name = '".$line["CAPTION"]."' AND is_global = '1'";
+						$query = "select ID from glpi_peripherals where name = '".$periph["name"]."' AND is_global = '1'";
 						$result_search = $db->query($query);
 						if($db->numrows($result_search) > 0) {
 							//Periph is already in GLPI
