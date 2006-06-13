@@ -151,21 +151,20 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	echo displaySearchEndLine($output_type);
 }
 
-function getTrackingPrefs ($ID) {
+function getTrackingOrderPrefs ($ID) {
 	// Returns users preference settings for job tracking
 	// Currently only supports sort order
 
 
 	if($_SESSION["glpitracking_order"] == "yes")
 	{
-		$prefs["order"] = "ASC";
+		return "ASC";
 	} 
 	else
 	{
-		$prefs["order"] = "DESC";
+		return "DESC";
 	}
 
-	return $prefs;
 }
 
 function showCentralJobList($target,$start,$status="process") {
@@ -178,17 +177,14 @@ function showCentralJobList($target,$start,$status="process") {
 	
 	if (!haveRight("show_ticket","1")) return false;
 		
-	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
-
-
 	if($status=="waiting"){ // on affiche les tickets en attente
-		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='waiting' ) ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='waiting' ) ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 		$title=$lang["central"][11];
 		
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 	
-		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ORDER BY date ".$prefs["order"]."";
+		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 		$title=$lang["central"][9];
 	}
@@ -298,10 +294,8 @@ function showOldJobListForItem($username,$item_type,$item) {
 
 
 
-	$prefs = getTrackingPrefs($_SESSION["glpiID"]);	
-	
 $where = "(status = 'old_done' OR status = 'old_notdone')";	
-$query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".$prefs["order"]."";
+$query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 	
 
 	$result = $db->query($query);
@@ -367,10 +361,9 @@ function showJobListForItem($username,$item_type,$item) {
 		
 	if (!haveRight("show_ticket","1")) return false;
 
-	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 	
 $where = "(status = 'new' OR status= 'assign' OR status='plan')";	
-$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".$prefs["order"]."";
+$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 	
 	$result = $db->query($query);
@@ -1026,7 +1019,6 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				$author=$_SESSION["glpiID"];
 			else $assign=$_SESSION["glpiID"];
 	}
-	$prefs = getTrackingPrefs($_SESSION["glpiID"]);
 
 	// Reduce computer list
 	if ($computers_search){
@@ -1175,12 +1167,11 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 	if ($sort=="")
 		$sort="glpi_tracking.date";
-	if ($order==""&&$sort=="")
-		$order=$prefs["order"];
-	else if ($order=="") $order="ASC";
+	if ($order=="")
+		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 	$query.=$where." ORDER BY $sort $order";
-
+	//echo $query;
 	// Get it from database	
 	if ($result = $db->query($query)) {
 		
