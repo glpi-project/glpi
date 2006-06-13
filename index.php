@@ -118,7 +118,7 @@ else
 		 case "central" :
 		 	switch ($type){
 		 		case "tracking":
-				 	glpi_header($cfg_glpi["root_doc"]."/front/tracking-info-form.php?ID=$ID");
+				 	glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=$ID");
 					 break;
 		 		case "computers":
 				 	glpi_header($cfg_glpi["root_doc"]."/front/computer.form.php?ID=$ID");
