@@ -1419,6 +1419,18 @@ switch ($field){
 		}
 		return $out;
 		break;
+	case "glpi_groups.name" :		
+		if ($type==GROUP_TYPE){
+			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+			$out.= $data["ITEM_$num"];
+			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+			$out.= "</a>";
+		} else {
+			$out= $data["ITEM_$num"];
+		}
+		return $out;
+		break;
+
 	case "glpi_computers.name" :
 	case "glpi_printers.name" :
 	case "glpi_networking.name" :
@@ -1432,7 +1444,6 @@ switch ($field){
 	case "glpi_type_docs.name" :
 	case "glpi_links.name" :
 	case "glpi_docs.name" :
-	case "glpi_groups.name" :
 		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 		$out.= $data["ITEM_$num"];
 		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
@@ -1738,6 +1749,9 @@ switch ($new_table){
 		return " LEFT JOIN $new_table $AS ON ($nt.device_type='$type' AND $rt.ID = $nt.computer) ";
 		break;
 
+	case "glpi_groups":
+		return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
+		break;
 	case "glpi_users":
 		return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 		break;
