@@ -51,16 +51,6 @@ echo "<tr><th align='center' colspan='3' >".$lang["reports"][33]."</th></tr>";
 echo "</table><br>";
 // 3. Selection d'affichage pour generer la liste
 
-
-$report_list["etage"]["name"] = $lang["reports"][39];
-$report_list["etage"]["file"] = "parEtage.php";
-$report_list["bureau"]["name"] = $lang["reports"][40];
-$report_list["bureau"]["file"] = "parBureau.php";
-$report_list["switch"]["name"] = $lang["reports"][41];
-$report_list["switch"]["file"] = "parSwitch.php";
-$report_list["prise"]["name"] = $lang["reports"][37];
-$report_list["prise"]["file"] = "parPrises.php";
-
 echo "<form name='form' method='post' action='report.location.list.php'>";
 echo "<table class='tab_cadre'  width='500'>";
 echo "<tr class='tab_bg_1'><td>".$lang["reports"][39]."</td>";
