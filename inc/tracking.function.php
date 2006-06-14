@@ -158,11 +158,11 @@ function getTrackingOrderPrefs ($ID) {
 
 	if($_SESSION["glpitracking_order"] == "yes")
 	{
-		return "ASC";
+		return "DESC";
 	} 
 	else
 	{
-		return "DESC";
+		return "ASC";
 	}
 
 }
