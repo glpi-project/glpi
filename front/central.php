@@ -124,26 +124,36 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 
 
 echo "<div align='center'>";
-echo "<table class='tab_cadre_central' ><tr>";
+echo "<table class='tab_cadre_central' >";
+echo "<tr><td>";
+echo "<table border='0'><tr>";
 	
 	if ($showticket){
 		echo "<td align='center' valign='top'  width='450px'>";
 		showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
 		echo "</td>";
 	}
-	echo "<td align='center' valign='top'  width='450px'><br>";
-	ShowPlanningCentral($_SESSION["glpiID"]);
-	echo "</td></tr>";
-	
-	
-	
-	echo "<tr>";
-	
+	echo "</tr><tr>";
 	if ($showticket){
 		echo "<td  align='center' valign='top' width='450px'>";
 		showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
 		echo "</td>";
 	}
+	echo "</tr><tr>"	;
+	if ($showticket){
+		echo "<td align='center' valign='top'  width='450px'>";
+		//showCentralJobCount();
+		echo "</td>";
+	}
+	echo "</tr>";
+
+echo "</table></td><td><table border='0'><tr>";
+
+	echo "<td align='center' valign='top'  width='450px'><br>";
+	ShowPlanningCentral($_SESSION["glpiID"]);
+	echo "</td></tr>";
+	echo "<tr>";
+	
 	
 	echo "<td  align='center' valign='top' width='450'>";
 		// Show Job count with links
@@ -151,18 +161,13 @@ echo "<table class='tab_cadre_central' ><tr>";
 	showCentralReminder();
 	echo "</td>";
 	echo "</tr><tr>";
-	if ($showticket){
-		echo "<td align='center' valign='top'  width='450px'>";
-		//showCentralJobCount();
-		echo "</td>";
-	}
-	
+
 	echo "<td align='center' valign='top'  width='450px'>";
 	showCentralReminder("public");
 	echo "</td></tr>";
 	
 	
-	echo "</table>";
+	echo "</table></td></tr></table>";
 	echo "</div>";
 	
 }
