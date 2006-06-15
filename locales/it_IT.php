@@ -200,6 +200,9 @@ $lang["common"][34]="User";
 $lang["common"][35]="Group"; 
 $lang["common"][36]="Category"; 
 $lang["common"][37]="Author"; 
+$lang["common"][38]="Unglobalize"; 
+$lang["common"][39]="Duplicate the element as many once as there are connections"; 
+$lang["common"][40]="Do you really want to unglobalize this item ?"; 
 
 $lang["computers"][0]="Aggiungi un computer..."; 
 $lang["computers"][9]="SO"; 
@@ -691,7 +694,7 @@ $lang["log"][23]="restore item";
 $lang["log"][24]="purge item"; 
 $lang["log"][26]="disconnect item"; 
 $lang["log"][27]="item connection"; 
-$lang["log"][28]="update a caracteristic of a device"; 
+$lang["log"][28]="update internal devices"; 
 $lang["log"][29]="disconnect a device on the computer"; 
 $lang["log"][30]="associate a type"; 
 $lang["log"][31]="delete a type"; 
@@ -723,6 +726,7 @@ $lang["log"][56]="Documents";
 $lang["log"][57]="Setup"; 
 $lang["log"][58]="Reservation"; 
 $lang["log"][59]="Cron"; 
+$lang["log"][60]="Item Unglobalization"; 
 
 $lang["login"][1]="Ritenta il login"; 
 $lang["login"][5]="Accesso non consentito"; 
@@ -840,6 +844,7 @@ $lang["networking"][54]="ID";
 $lang["networking"][55]="Associa una VLAN"; 
 $lang["networking"][56]="VLAN"; 
 $lang["networking"][57]="Scegli un indirizzo MAC dalla lista o inseriscilo qui sotto"; 
+$lang["networking"][58]="Delete a VLAN"; 
 
 $lang["ocsconfig"][0]="OCS NG -> GLPI import module configuration"; 
 $lang["ocsconfig"][1]="User of the OCSweb database"; 
@@ -1282,7 +1287,7 @@ $lang["setup"][600]="LDAP Field";
 $lang["setup"][601]="LDAP Value"; 
 $lang["setup"][602]="Add Group..."; 
 $lang["setup"][603]="Add a user"; 
-$lang["setup"][604]="Add to a group"; 
+$lang["setup"][604]="Associate to a group"; 
 $lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Aggiungi software..."; 
@@ -1315,6 +1320,8 @@ $lang["software"][40]="Nessuna licenza";
 $lang["software"][41]="ID software"; 
 $lang["software"][42]="Nuovo software da modello"; 
 $lang["software"][43]="Aggiungi una licenza da acquistare"; 
+$lang["software"][44]="Install a software"; 
+$lang["software"][45]="Uninstall a software"; 
 
 $lang["state"][0]="Stato"; 
 $lang["state"][1]="Archivio"; 
