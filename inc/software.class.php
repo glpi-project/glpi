@@ -357,22 +357,30 @@ class License  extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		if (empty($input['expire'])||$input['expire']=="0000-00-00") unset($input['expire']);
+		if (empty($input['expire'])||$input['expire']=="0000-00-00"||$input['expire']=="NULL") unset($input['expire']);
 		if ($input['oem']=='N') $input['oem_computer']=-1;
+		if ($input['oem_computer']==0) $input['oem_computer']=-1;
 		unset($input["form"]);
 		unset($input["withtemplate"]);
 		unset($input["lID"]);
-
 		return $input;
 	}
 	
 	function postAddItem($newID,$input) {
-		if ($input['oem']=='Y'&&$input['oem_computer']>0)
+		// Add license but not for unglobalize system
+		if (!isset($input["_duplicate_license"])&&$input['oem']=='Y'&&$input['oem_computer']>0)
 			installSoftware($input['oem_computer'],$newID);
 
+		$type=SOFTWARE_TYPE;
+		$dupid=$this->fields["sID"];
+		if (isset($input["_duplicate_license"])){
+			$type=LICENSE_TYPE;
+			$dupid=$input["_duplicate_license"];
+		} 
+		
 		// Add infocoms if exists for the licence
 		$ic=new Infocom();
-		if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$lic->fields["sID"])){
+		if ($ic->getFromDBforDevice($type,$dupid)){
 			unset($ic->fields["ID"]);
 			$ic->fields["FK_device"]=$newID;
 			$ic->fields["device_type"]=LICENSE_TYPE;

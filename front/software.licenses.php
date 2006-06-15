@@ -147,6 +147,11 @@ else if (isset($tab["uninstall"]))
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
+else if (isset($tab["unglobalize"])&&isset($tab["ID"])){
+	unglobalizeLicense($tab["ID"]);
+	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][60]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if (isset($tab["back"]))
 {
 	glpi_header($tab["back"]." ");
