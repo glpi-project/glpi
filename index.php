@@ -184,7 +184,7 @@ else
 
 	echo "<div id='footer-login'>";
 	echo "<a href=\"http://GLPI.indepnet.org/\" title=\"Powered By Indepnet\"  >";
-	echo "GLPI version ".$cfg_glpi["version"]." Copyright (C) 2003-2005 INDEPNET Development Team.";
+	echo "GLPI version ".$cfg_glpi["version"]." Copyright (C) 2003-2006 INDEPNET Development Team.";
 	echo "</a>";
 	echo "</div>";
 	
