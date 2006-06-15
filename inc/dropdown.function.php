@@ -669,86 +669,100 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 	global $lang,$HTMLRel,$cfg_glpi,$db,$LINK_ID_TABLE;
 	
 	$rand=mt_rand();
-
-	$my_devices="";
-
-	$group_where="";
-	$groups=array();
-	$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$_SESSION["glpiID"]."';";
 	
-	$result=$db->query($query);
-	if ($db->numrows($result)>0){
-		while ($data=$db->fetch_array($result)){
-			$group_where=" OR FK_groups = '".$data["FK_groups"]."' ";
-		}
-	}
-
-	$ci=new CommonItem();
-	$my_item="";
-	if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
-	foreach ($cfg_glpi["linkuser_type"] as $type){
-		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$_SESSION["glpiID"]."' $group_where";
+	$hardware_link=$_SESSION["glpiprofile"]["helpdesk_hardware"];
+	
+	if ($hardware_link==0){
+		echo "<input type='hidden' name='$myname' value='0'>";
+		echo "<input type='hidden' name='computer' value='0'>";
+	} else {
+	
+		// View my hardware
+		if ($hardware_link&pow(2,HELPDESK_MY_HARDWARE)){
+			$my_devices="";
 		
-		$result=$db->query($query);
-		if ($db->numrows($result)>0){
-			$ci->setType($type);
-			$type_name=$ci->getType();
-			while ($data=$db->fetch_array($result)){
-				$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+			$group_where="";
+			$groups=array();
+			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$_SESSION["glpiID"]."';";
+			
+			$result=$db->query($query);
+			if ($db->numrows($result)>0){
+				while ($data=$db->fetch_array($result)){
+					$group_where=" OR FK_groups = '".$data["FK_groups"]."' ";
+				}
+			}
+			
+			$ci=new CommonItem();
+			$my_item="";
+			if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
+			foreach ($cfg_glpi["linkuser_type"] as $type){
+				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$_SESSION["glpiID"]."' $group_where";
+				
+				$result=$db->query($query);
+				if ($db->numrows($result)>0){
+					$ci->setType($type);
+					$type_name=$ci->getType();
+					while ($data=$db->fetch_array($result)){
+						$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+					}
+				}
+		
+			}
+			
+			if (!empty($my_devices)){
+				echo $lang["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>-----</option>$my_devices</select>";
+				if ($hardware_link&pow(2,HELPDESK_ALL_HARDWARE))
+					echo "<br>".$lang["tracking"][2].":&nbsp;";
 			}
 		}
+		
+		if ($hardware_link&pow(2,HELPDESK_ALL_HARDWARE)){
 
-	}
-
-	if (!empty($my_devices)){
-		echo $lang["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>-----</option>$my_devices</select><br>";
-		echo $lang["tracking"][2].":&nbsp;";
-	}
-	
-	echo "<select id='search_$myname$rand' name='$myname'>\n";
-
-	echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."</option>\n";
-	echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
-	echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>\n";
-	echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
-	echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
-	echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
-	echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
-	echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$lang["help"][35]."</option>\n";
-	echo "</select>\n";
-
-echo "<script type='text/javascript' >\n";
-echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownTrackingDeviceType.php',{asynchronous:true, evalScripts:true, \n";
-echo "           onComplete:function(request)\n";
-echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-echo "           onLoading:function(request)\n";
-echo "            {Element.show('search_spinner_$myname$rand');},\n";
-echo "           method:'post', parameters:'type=' + value+'&myname=computer'\n";
-echo "})})\n";
-echo "</script>\n";
-
-
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-
-echo "</td></tr><tr><td class='tab_bg_2' colspan='$colspan'>";
-echo "<div align='center'>";
-echo "<span id='results_$myname$rand'>\n";
-
-if (isset($_SESSION["helpdeskSaved"]["computer"])){
-	$ci=new CommonItem();
-	if ($ci->getFromDB($value,$_SESSION["helpdeskSaved"]["computer"])){
-		echo "<select name='computer'>\n";
-		echo "<option value='".$_SESSION["helpdeskSaved"]["computer"]."'>".$ci->getName()."</option>\n";
-	
-		echo "</select>\n";
-	}
-}
-
-echo "</span>\n";	
-echo "</div>";
+			echo "<select id='search_$myname$rand' name='$myname'>\n";
+		
+			echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."</option>\n";
+			echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
+			echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>\n";
+			echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
+			echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
+			echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
+			echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
+			echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$lang["help"][35]."</option>\n";
+			echo "</select>\n";
+		
+			echo "<script type='text/javascript' >\n";
+			echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+			echo "      function(element, value) {\n";
+			echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownTrackingDeviceType.php',{asynchronous:true, evalScripts:true, \n";
+			echo "           onComplete:function(request)\n";
+			echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+			echo "           onLoading:function(request)\n";
+			echo "            {Element.show('search_spinner_$myname$rand');},\n";
+			echo "           method:'post', parameters:'type=' + value+'&myname=computer'\n";
+			echo "})})\n";
+			echo "</script>\n";
 			
+			
+			echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+			
+			echo "</td></tr><tr><td class='tab_bg_2' colspan='$colspan'>";
+			echo "<div align='center'>";
+			echo "<span id='results_$myname$rand'>\n";
+			
+			if (isset($_SESSION["helpdeskSaved"]["computer"])){
+				$ci=new CommonItem();
+				if ($ci->getFromDB($value,$_SESSION["helpdeskSaved"]["computer"])){
+					echo "<select name='computer'>\n";
+					echo "<option value='".$_SESSION["helpdeskSaved"]["computer"]."'>".$ci->getName()."</option>\n";
+				
+					echo "</select>\n";
+				}
+			}
+			
+			echo "</span>\n";	
+			echo "</div>";
+		}
+	}		
 }
 
 /**

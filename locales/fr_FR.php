@@ -1297,6 +1297,8 @@ $lang["setup"][309]="Tous les mois";
 $lang["setup"][310]="Vérification automatique de la présence d'une mise à jour";
 $lang["setup"][311]="Connection au serveur proxy impossible";
 
+$lang["setup"][350]="Liaison avec les matériels pour la création de tickets";
+$lang["setup"][351]="Tous les matériels";
 
 $lang["setup"][400]="Actif";
 $lang["setup"][401]="Adresse Proxy";

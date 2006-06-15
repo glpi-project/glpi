@@ -842,12 +842,13 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "</td></tr>";
 	}
 
-	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$lang["help"][24].": </td>";
-	echo "<td>";
-	dropdownTrackingDeviceType("device_type",$device_type);
-	
-	echo "</td></tr>";
+	if ($_SESSION["glpiprofile"]["helpdesk_hardware"]!=0){
+		echo "<tr class='tab_bg_1'>";
+		echo "<td>".$lang["help"][24].": </td>";
+		echo "<td>";
+		dropdownTrackingDeviceType("device_type",$device_type);
+		echo "</td></tr>";
+	}
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$lang["common"][36].":</td><td>";

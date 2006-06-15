@@ -685,12 +685,14 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr class='tab_bg_1' align='center'><td>".$lang["common"][27].":</td>";
 	echo "<td align='center' colspan='3'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
 
-	if ($device_type==0){
+	if ($device_type==0&&$_SESSION["glpiprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>".$lang["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
 		dropdownTrackingDeviceType("device_type",$device_type,4);
 		echo "</td></tr>";
+	} else {
+		echo "<input type='hidden' name='device_type' value='0'>";
 	}
 
 
