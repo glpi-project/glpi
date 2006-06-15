@@ -1085,18 +1085,18 @@ function showFormConfigGen($target){
 
 	echo "<td align='center'>".$lang["setup"][138]." </td><td><select name=\"debug\">";
 	$check=$cfg_glpi["debug"];
-	echo "<option value=\"".NORMAL_MODE."\"";  if($cfg_glpi["debug"]==NORMAL_MODE){ echo " selected";} echo ">".$lang["setup"][135]." </option>";
-	echo "<option value=\"".TRANSLATION_MODE."\"";  if($cfg_glpi["debug"]==TRANSLATION_MODE){ echo " selected";} echo ">".$lang["setup"][136]."</option>";
-	echo "<option value=\"".DEBUG_MODE."\"";  if($cfg_glpi["debug"]==DEBUG_MODE){ echo " selected";} echo ">".$lang["setup"][137]."</option>";
-	echo "<option value=\"".DEMO_MODE."\"";  if($cfg_glpi["debug"]==DEMO_MODE){ echo " selected";} echo ">".$lang["setup"][141]."</option>";
+	echo "<option value=\"".NORMAL_MODE."\" ".($cfg_glpi["debug"]==NORMAL_MODE?" selected ":"")." >".$lang["setup"][135]." </option>";
+	echo "<option value=\"".TRANSLATION_MODE."\" ".($cfg_glpi["debug"]==TRANSLATION_MODE?" selected ":"")." >".$lang["setup"][136]." </option>";
+	echo "<option value=\"".DEBUG_MODE."\" ".($cfg_glpi["debug"]==DEBUG_MODE?" selected ":"")." >".$lang["setup"][137]." </option>";
+	echo "<option value=\"".DEMO_MODE."\" ".($cfg_glpi["debug"]==DEMO_MODE?" selected ":"")." >".$lang["setup"][141]." </option>";
 	echo "</select></td></tr>";
 
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][306]." </td><td><select name=\"auto_update_check\">";
 	$check=$cfg_glpi["auto_update_check"];
-	echo "<option value=\"0\"";  if($check==0){ echo " selected";} echo ">".$lang["setup"][307]." </option>";
-	echo "<option value=\"7\"";  if($check==7){ echo " selected";} echo ">".$lang["setup"][308]."</option>";
-	echo "<option value=\"30\"";  if($check==30){ echo " selected";} echo ">".$lang["setup"][309]."</option>";
+	echo "<option value=\"0\" ".($check==0?" selected":"").">".$lang["setup"][307]." </option>";
+	echo "<option value=\"7\" ".($check==7?" selected":"").">".$lang["setup"][308]." </option>";
+	echo "<option value=\"30\" ".($check==30?" selected":"").">".$lang["setup"][309]." </option>";
 	echo "</select></td>";
 	echo "<td align='center'>".$lang["setup"][405]."</td><td>";
 	dropdownYesNoInt("followup_on_update_ticket",$cfg_glpi["followup_on_update_ticket"]);

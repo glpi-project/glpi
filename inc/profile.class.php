@@ -107,7 +107,7 @@ class Profile extends CommonDBTM{
 	}
 	// Unset unused rights for helpdesk
 	function cleanProfile(){
-		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update");
+		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware");
 		if ($this->fields["interface"]=="helpdesk"){
 			foreach($this->fields as $key=>$val){
 				if (!in_array($key,$helpdesk))
@@ -221,6 +221,16 @@ class Profile extends CommonDBTM{
 		dropdownYesNoInt("password_update",$this->fields["password_update"]);
 		echo "</td>";
 		echo "</tr>";
+		
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$lang["setup"][350]."</td><td>";
+		echo "<select name=\"helpdesk_hardware\">";
+		echo "<option value=\"0\" ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >------</option>";
+		echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".$lang["tracking"][1]."</option>";
+		echo "<option value=\"".pow(2,HELPDESK_ALL_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_ALL_HARDWARE)?"selected":"")." >".$lang["setup"][351]."</option>";
+		echo "<option value=\"".(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))."\" ".($this->fields["helpdesk_hardware"]==(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))?"selected":"")." >".$lang["tracking"][1]." + ".$lang["setup"][351]."</option>";
+		echo "</select>";
+		echo "</td><td colspan='2'>&nbsp;</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["Menu"][18]."</strong></td>";
 		echo "</tr>";
@@ -390,8 +400,15 @@ class Profile extends CommonDBTM{
 		echo "<td>".$lang["profiles"][21].":</td><td>";
 		dropdownYesNoInt("show_all_planning",$this->fields["show_all_planning"]);
 		echo "</td>";
-		echo "<td>&nbsp;</td><td>";
-		echo "&nbsp;</td></tr>";
+
+		echo "<td>".$lang["setup"][350]."</td><td>";
+		echo "<select name=\"helpdesk_hardware\">";
+		echo "<option value=\"0\" ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >------</option>";
+		echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".$lang["tracking"][1]."</option>";
+		echo "<option value=\"".pow(2,HELPDESK_ALL_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_ALL_HARDWARE)?"selected":"")." >".$lang["setup"][351]."</option>";
+		echo "<option value=\"".(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))."\" ".($this->fields["helpdesk_hardware"]==(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))?"selected":"")." >".$lang["tracking"][1]." + ".$lang["setup"][351]."</option>";
+		echo "</select>";
+		echo "</td></tr>";
 	
 	
 		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$lang["Menu"][18]."</strong></td>";
