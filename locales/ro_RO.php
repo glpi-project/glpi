@@ -200,6 +200,9 @@ $lang["common"][34]="User";
 $lang["common"][35]="Group"; 
 $lang["common"][36]="Category"; 
 $lang["common"][37]="Author"; 
+$lang["common"][38]="Unglobalize"; 
+$lang["common"][39]="Duplicate the element as many once as there are connections"; 
+$lang["common"][40]="Do you really want to unglobalize this item ?"; 
 
 $lang["computers"][0]="Adauga calculator..."; 
 $lang["computers"][9]="OS"; 
@@ -723,6 +726,7 @@ $lang["log"][56]="Documente";
 $lang["log"][57]="Setare"; 
 $lang["log"][58]="Rezervare"; 
 $lang["log"][59]="Cron"; 
+$lang["log"][60]="Item Unglobalization"; 
 
 $lang["login"][1]="Logativa din nou"; 
 $lang["login"][5]="Acces interzis"; 
@@ -840,6 +844,7 @@ $lang["networking"][54]="ID Hardware";
 $lang["networking"][55]="Asociaza un VLAN"; 
 $lang["networking"][56]="VLAN"; 
 $lang["networking"][57]="Alege o adresa mac in lista sau specifica  mai jos"; 
+$lang["networking"][58]="Delete a VLAN"; 
 
 $lang["ocsconfig"][0]="OCS NG -> GLPI import module configuration"; 
 $lang["ocsconfig"][1]="User of the OCSweb database"; 
@@ -1282,7 +1287,7 @@ $lang["setup"][600]="LDAP Field";
 $lang["setup"][601]="LDAP Value"; 
 $lang["setup"][602]="Add Group..."; 
 $lang["setup"][603]="Add a user"; 
-$lang["setup"][604]="Add to a group"; 
+$lang["setup"][604]="Associate to a group"; 
 $lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Adauga software..."; 
@@ -1315,6 +1320,8 @@ $lang["software"][40]="Fara licenta";
 $lang["software"][41]="ID software"; 
 $lang["software"][42]="Nou software bazat pe model"; 
 $lang["software"][43]="Adauga o licenta de cumparat"; 
+$lang["software"][44]="Install a software"; 
+$lang["software"][45]="Uninstall a software"; 
 
 $lang["state"][0]="Stare"; 
 $lang["state"][1]="Starea obiectului"; 

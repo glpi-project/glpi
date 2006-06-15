@@ -200,6 +200,9 @@ $lang["common"][34]="User";
 $lang["common"][35]="Group"; 
 $lang["common"][36]="Category"; 
 $lang["common"][37]="Author"; 
+$lang["common"][38]="Unglobalize"; 
+$lang["common"][39]="Duplicate the element as many once as there are connections"; 
+$lang["common"][40]="Do you really want to unglobalize this item ?"; 
 
 $lang["computers"][0]="Toevoegen Computer..."; 
 $lang["computers"][9]="Besturingssysteem"; 
@@ -723,6 +726,7 @@ $lang["log"][56]="Documenten";
 $lang["log"][57]="Instelling"; 
 $lang["log"][58]="Boeking"; 
 $lang["log"][59]="Cron"; 
+$lang["log"][60]="Item Unglobalization"; 
 
 $lang["login"][1]="Opnieuw inloggen"; 
 $lang["login"][5]="Toegang geweigerd"; 
@@ -840,6 +844,7 @@ $lang["networking"][54]="Hardware-ID";
 $lang["networking"][55]="Toevoegen bijhorend VLAN"; 
 $lang["networking"][56]="VLAN"; 
 $lang["networking"][57]="Kies een MAC-adres uit de lijst of vul het beneden in."; 
+$lang["networking"][58]="Delete a VLAN"; 
 
 $lang["ocsconfig"][0]="OCS NG -> GLPI-importmoduleconfiguratie"; 
 $lang["ocsconfig"][1]="Gebruiker van de OCS-Web-database"; 
@@ -1282,7 +1287,7 @@ $lang["setup"][600]="LDAP Field";
 $lang["setup"][601]="LDAP Value"; 
 $lang["setup"][602]="Add Group..."; 
 $lang["setup"][603]="Add a user"; 
-$lang["setup"][604]="Add to a group"; 
+$lang["setup"][604]="Associate to a group"; 
 $lang["setup"][605]="Add Group"; 
 
 $lang["software"][0]="Software toevoegen ..."; 
@@ -1315,6 +1320,8 @@ $lang["software"][40]="Geen licentie";
 $lang["software"][41]="Software-ID"; 
 $lang["software"][42]="Software aan de hand van sjabloon toevoegen"; 
 $lang["software"][43]="Voeg een licentie toe om te kopen"; 
+$lang["software"][44]="Install a software"; 
+$lang["software"][45]="Uninstall a software"; 
 
 $lang["state"][0]="Staat"; 
 $lang["state"][1]="Itemstaat"; 
