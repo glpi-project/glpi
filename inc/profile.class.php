@@ -52,6 +52,28 @@ class Profile extends CommonDBTM{
 		}
 	}
 
+	function prepareInputForUpdate($input){
+		if (isset($input["helpdesk_hardware_type"])){
+			$types=$input["helpdesk_hardware_type"];
+			unset($input["helpdesk_hardware_type"]);
+			$input["helpdesk_hardware_type"]=0;
+			foreach ($types as $val)
+				$input["helpdesk_hardware_type"]+=pow(2,$val);
+		}
+		return $input;
+	}
+
+	function prepareInputForAdd($input){
+		if (isset($input["helpdesk_hardware_type"])){
+			$types=$input["helpdesk_hardware_type"];
+			unset($input["helpdesk_hardware_type"]);
+			$input["helpdesk_hardware_type"]=0;
+			foreach ($types as $val)
+				$input["helpdesk_hardware_type"]+=pow(2,$val);
+		}
+		return $input;
+	}
+
 	function updateForUser($ID,$prof){
 		global $db;
 		// Get user profile
@@ -107,7 +129,7 @@ class Profile extends CommonDBTM{
 	}
 	// Unset unused rights for helpdesk
 	function cleanProfile(){
-		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware");
+		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type");
 		if ($this->fields["interface"]=="helpdesk"){
 			foreach($this->fields as $key=>$val){
 				if (!in_array($key,$helpdesk))
@@ -230,7 +252,20 @@ class Profile extends CommonDBTM{
 		echo "<option value=\"".pow(2,HELPDESK_ALL_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_ALL_HARDWARE)?"selected":"")." >".$lang["setup"][351]."</option>";
 		echo "<option value=\"".(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))."\" ".($this->fields["helpdesk_hardware"]==(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))?"selected":"")." >".$lang["tracking"][1]." + ".$lang["setup"][351]."</option>";
 		echo "</select>";
-		echo "</td><td colspan='2'>&nbsp;</td></tr>";
+		echo "</td><td>".$lang["setup"][352]."</td>";
+		echo "<td>";
+			echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
+			echo "<option value='".COMPUTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))?" selected":"").">".$lang["help"][25]."</option>\n";
+			echo "<option value='".NETWORKING_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,NETWORKING_TYPE))?" selected":"").">".$lang["help"][26]."</option>\n";
+			echo "<option value='".PRINTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PRINTER_TYPE))?" selected":"").">".$lang["help"][27]."</option>\n";
+			echo "<option value='".MONITOR_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,MONITOR_TYPE))?" selected":"").">".$lang["help"][28]."</option>\n";
+			echo "<option value='".PERIPHERAL_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PERIPHERAL_TYPE))?" selected":"").">".$lang["help"][29]."</option>\n";
+			echo "<option value='".SOFTWARE_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE))?" selected":"").">".$lang["help"][31]."</option>\n";
+			echo "<option value='".PHONE_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))?" selected":"").">".$lang["help"][35]."</option>\n";
+			echo "</select>";
+		echo "</td>";
+
+		echo "</tr>";
 	
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["Menu"][18]."</strong></td>";
 		echo "</tr>";
@@ -401,15 +436,35 @@ class Profile extends CommonDBTM{
 		dropdownYesNoInt("show_all_planning",$this->fields["show_all_planning"]);
 		echo "</td>";
 
-		echo "<td>".$lang["setup"][350]."</td><td>";
+		echo "<td colspan='2'>&nbsp;</td></tr>";
+
+		echo "<tr class='tab_bg_2'>";
+
+		echo "<td colspan='2'>".$lang["setup"][350].":</td><td>";
 		echo "<select name=\"helpdesk_hardware\">";
 		echo "<option value=\"0\" ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >------</option>";
 		echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".$lang["tracking"][1]."</option>";
 		echo "<option value=\"".pow(2,HELPDESK_ALL_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_ALL_HARDWARE)?"selected":"")." >".$lang["setup"][351]."</option>";
 		echo "<option value=\"".(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))."\" ".($this->fields["helpdesk_hardware"]==(pow(2,HELPDESK_MY_HARDWARE)+pow(2,HELPDESK_ALL_HARDWARE))?"selected":"")." >".$lang["tracking"][1]." + ".$lang["setup"][351]."</option>";
 		echo "</select>";
-		echo "</td></tr>";
+		echo "</td>";
+
+		echo "<td colspan='2'>".$lang["setup"][352].":</td>";
+		echo "<td>";
+			echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
+			echo "<option value='".COMPUTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))?" selected":"").">".$lang["help"][25]."</option>\n";
+			echo "<option value='".NETWORKING_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,NETWORKING_TYPE))?" selected":"").">".$lang["help"][26]."</option>\n";
+			echo "<option value='".PRINTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PRINTER_TYPE))?" selected":"").">".$lang["help"][27]."</option>\n";
+			echo "<option value='".MONITOR_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,MONITOR_TYPE))?" selected":"").">".$lang["help"][28]."</option>\n";
+			echo "<option value='".PERIPHERAL_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PERIPHERAL_TYPE))?" selected":"").">".$lang["help"][29]."</option>\n";
+			echo "<option value='".SOFTWARE_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE))?" selected":"").">".$lang["help"][31]."</option>\n";
+			echo "<option value='".PHONE_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))?" selected":"").">".$lang["help"][35]."</option>\n";
+			echo "</select>";
+		echo "</td>";
+
+		echo "</tr>";
 	
+
 	
 		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$lang["Menu"][18]."</strong></td>";
 		echo "</tr>";

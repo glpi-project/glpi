@@ -670,15 +670,14 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 	
 	$rand=mt_rand();
 	
-	$hardware_link=$_SESSION["glpiprofile"]["helpdesk_hardware"];
 	
-	if ($hardware_link==0){
+	if ($_SESSION["glpiprofile"]["helpdesk_hardware"]==0){
 		echo "<input type='hidden' name='$myname' value='0'>";
 		echo "<input type='hidden' name='computer' value='0'>";
 	} else {
 	
 		// View my hardware
-		if ($hardware_link&pow(2,HELPDESK_MY_HARDWARE)){
+		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
 			$my_devices="";
 		
 			$group_where="";
@@ -695,7 +694,9 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 			$ci=new CommonItem();
 			$my_item="";
 			if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
-			foreach ($cfg_glpi["linkuser_type"] as $type){
+			foreach ($cfg_glpi["linkuser_type"] as $type)
+			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+				{
 				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$_SESSION["glpiID"]."' $group_where";
 				
 				$result=$db->query($query);
@@ -709,25 +710,32 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 		
 			}
 			
-			if (!empty($my_devices)){
+			//if (!empty($my_devices)){
 				echo $lang["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>-----</option>$my_devices</select>";
-				if ($hardware_link&pow(2,HELPDESK_ALL_HARDWARE))
+				if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE))
 					echo "<br>".$lang["tracking"][2].":&nbsp;";
-			}
+			//}
 		}
 		
-		if ($hardware_link&pow(2,HELPDESK_ALL_HARDWARE)){
+		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
 
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
 		
 			echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."</option>\n";
-			echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
-			echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>\n";
-			echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
-			echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
-			echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
-			echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
-			echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$lang["help"][35]."</option>\n";
+			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))
+				echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
+			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,NETWORKING_TYPE))
+				echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>\n";
+			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,PRINTER_TYPE))
+				echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
+			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,MONITOR_TYPE))
+				echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
+			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,PERIPHERAL_TYPE))
+				echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$lang["help"][29]."</option>\n";
+			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE))
+				echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
+			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))
+				echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$lang["help"][35]."</option>\n";
 			echo "</select>\n";
 		
 			echo "<script type='text/javascript' >\n";
