@@ -1120,5 +1120,15 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value){
 	}
 }
 
+function dropdownContractAlerting($myname,$value){
+	global $lang;
+	echo "<select name='$myname'>";
+	echo "<option value='0' ".($value==0?"selected":"")." >-------</option>";
+	echo "<option value='".pow(2,ALERT_END)."' ".($value==pow(2,ALERT_END)?"selected":"")." >".$lang["buttons"][32]."</option>";
+	echo "<option value='".pow(2,ALERT_NOTICE)."' ".($value==pow(2,ALERT_NOTICE)?"selected":"")." >".$lang["financial"][10]."</option>";
+	echo "<option value='".(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))."' ".($value==(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))?"selected":"")." >".$lang["buttons"][32]." + ".$lang["financial"][10]."</option>";
+	echo "</select>";
+
+}
 
 ?>
