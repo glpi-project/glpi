@@ -242,9 +242,13 @@ function get_def($db, $table) {
     while($line = $db->fetch_array($result)) {
     	$line=stripslashes_deep($line);
         $def .= "    `$line[Field]` $line[Type]";
-        if (isset($line["Default"]) && $line["Default"] != "") $def .= " DEFAULT '$line[Default]'";
+        if (isset($line["Default"]) && $line["Default"] != "") {
+		if ($line["Default"]=="CURRENT_TIMESTAMP")
+			$def .= " DEFAULT ".$line["Default"];
+		else $def .= " DEFAULT '".$line["Default"]."'";
+	}
         if (isset($line["Null"]) && $line["Null"] != "YES") $def .= " NOT NULL";
-       	if (isset($line["Extra"]) && $line["Extra"] != "") $def .= " $line[Extra]";
+       	if (isset($line["Extra"]) && $line["Extra"] != "") $def .= " ".$line["Extra"];
         	$def .= ",\n";
      }
      $def = ereg_replace(",\n$","", $def);

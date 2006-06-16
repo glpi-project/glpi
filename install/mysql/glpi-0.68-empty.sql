@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-06-16 16:26
+#GLPI Dump database on 2006-06-16 19:20
 
 ### Dump table glpi_alerts
 
@@ -8,7 +8,7 @@ CREATE TABLE `glpi_alerts` (
     `device_type` int(11) DEFAULT '0',
     `FK_device` int(11) DEFAULT '0',
     `type` int(11) DEFAULT '0',
-    `date` timestamp DEFAULT 'CURRENT_TIMESTAMP',
+    `date` timestamp DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`ID`),
    UNIQUE alert (`device_type`, `FK_device`, `type`),
    KEY item (`device_type`, `FK_device`),
@@ -1149,6 +1149,7 @@ CREATE TABLE `glpi_event_log` (
 ) TYPE=MyISAM;
 
 INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-06-16 16:26:36','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-06-16 19:18:34','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
