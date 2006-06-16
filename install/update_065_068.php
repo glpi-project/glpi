@@ -582,7 +582,7 @@ $query="CREATE TABLE `glpi_alerts` (
   `device_type` int(11) default '0',
   `FK_device` int(11) default '0',
   `type` int(11) default '0',
-  `date` datetime,
+  `date` timestamp NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `alert` (`device_type`,`FK_device`,`type`),
   KEY `item` (`device_type`,`FK_device`),
@@ -618,6 +618,17 @@ if(!FieldExists("glpi_tracking","FK_group")) {
 	$query="ALTER TABLE  `glpi_tracking` ADD  `FK_group` int(11) NOT NULL  DEFAULT '0' AFTER `author`;";
 	$db->query($query) or die("0.68 add FK_group in tracking ".$lang["update"][90].$db->error());
 }
+
+if(!FieldExists("glpi_config","cartridges_alert")) {	
+	$query="ALTER TABLE  `glpi_config` ADD  `cartridges_alert` int(11) NOT NULL  DEFAULT '0';";
+	$db->query($query) or die("0.68 add cartridges_alert in config ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","consumables_alert")) {	
+	$query="ALTER TABLE  `glpi_config` ADD  `consumables_alert` int(11) NOT NULL  DEFAULT '0';";
+	$db->query($query) or die("0.68 add consumables_alert in config ".$lang["update"][90].$db->error());
+}
+
 
 } // fin 0.68 #####################################################################################
 

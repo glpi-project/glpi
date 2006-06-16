@@ -238,7 +238,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 				if ($nb_solved>0)
 					$nb=array_sum($data)/$nb_solved;
 				else $nb=0;
-				echo displaySearchItem($output_type,toTimeStr($nb*60*60,0),$item_num,$row_num);
+				echo displaySearchItem($output_type,toTimeStr($nb*HOUR_TIMESTAMP,0),$item_num,$row_num);
 			//Le temps moyen de l'intervention réelle
 			//The average realtime to resolv
 				$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
@@ -249,10 +249,10 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 				if ($nb_solved>0)
 					$nb=$total_realtime/$nb_solved;
 				else $nb=0;
-				echo displaySearchItem($output_type,toTimeStr($nb*60,0),$item_num,$row_num);
+				echo displaySearchItem($output_type,toTimeStr($nb*MINUTE_TIMESTAMP,0),$item_num,$row_num);
 			//Le temps total de l'intervention réelle
 			//The total realtime to resolv
-				echo displaySearchItem($output_type,toTimeStr($total_realtime*60,0),$item_num,$row_num);				
+				echo displaySearchItem($output_type,toTimeStr($total_realtime*MINUTE_TIMESTAMP,0),$item_num,$row_num);				
 			//Le temps moyen de prise en compte du ticket
 			//The average time to take a ticket into account
 				$data=constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$value[$i]["ID"],$value2);
@@ -263,7 +263,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 				if ($nb_solved>0)
 					$nb=array_sum($data)/$nb_solved;
 				else $nb=0;
-				echo displaySearchItem($output_type,toTimeStr($nb*3600,0),$item_num,$row_num);
+				echo displaySearchItem($output_type,toTimeStr($nb*HOUR_TIMESTAMP,0),$item_num,$row_num);
 		
 			echo displaySearchEndLine($output_type);
 		}
@@ -475,31 +475,31 @@ function toTimeStr($sec,$display_sec=1)
 	$sec=floor($sec);
 	if ($sec<0) $sec=0;
 
-	if($sec < 60) {
+	if($sec < MINUTE_TIMESTAMP) {
 		
 		return $sec." ".$lang["stats"][34];
 	}
-	elseif($sec < 3600) {
-		$min = floor($sec/60);
-		$sec = $sec%60;
+	elseif($sec < HOUR_TIMESTAMP) {
+		$min = floor($sec/MINUTE_TIMESTAMP);
+		$sec = $sec%MINUTE_TIMESTAMP;
 		
 		$out=$min." ".$lang["stats"][33];
 		if ($display_sec) $out.=" ".$sec." ".$lang["stats"][34];
 		return $out;
 	}
-	elseif($sec <  86400) {
-		$heure = floor($sec/3600);
-		$min = floor(($sec%3600)/(60));
-		$sec = $sec%60;
+	elseif($sec <  DAY_TIMESTAMP) {
+		$heure = floor($sec/HOUR_TIMESTAMP);
+		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
+		$sec = $sec%MINUTE_TIMESTAMP;
 		$out=$heure." ".$lang["stats"][32]." ".$min." ".$lang["stats"][33];
 		if ($display_sec) $out.=" ".$sec." ".$lang["stats"][34];
 		return $out;
 	}
 	else {
-		$jour = floor($sec/86400);
-		$heure = floor(($sec%86400)/(3600));
-		$min = floor(($sec%3600)/(60));
-		$sec = $sec%60;
+		$jour = floor($sec/DAY_TIMESTAMP);
+		$heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
+		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
+		$sec = $sec%MINUTE_TIMESTAMP;
 		$out=$jour." ".$lang["stats"][31]." ".$heure." ".$lang["stats"][32]." ".$min." ".$lang["stats"][33];
 		if ($display_sec) $out.=" ".$sec." ".$lang["stats"][34];
 		return $out;
@@ -609,7 +609,7 @@ $begin.=" 00:00:00";
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
 			 if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
 
-			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, 60*AVG($realtime_table.realtime) AS total_visites  FROM glpi_tracking ".
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, ".MINUTE_TIMESTAMP."*AVG($realtime_table.realtime) AS total_visites  FROM glpi_tracking ".
 				$LEFTJOIN.$WHERE.
 				" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 				break;
@@ -650,7 +650,7 @@ while ($row = $db->fetch_array($result)) {
 if ($type=="inter_avgtakeaccount"){
 
 	foreach ($entrees as $key => $val){
-		$entrees[$key]=round($entrees[$key]/$count[$key]/3600);
+		$entrees[$key]=round($entrees[$key]/$count[$key]/HOUR_TIMESTAMP);
 
 		}
 }

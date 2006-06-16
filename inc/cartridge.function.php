@@ -649,4 +649,46 @@ else if (isUsedCartridge($cID)) return $lang["cartridges"][21];
 else if (isOldCartridge($cID)) return $lang["cartridges"][22];
 }
 
+function cron_cartridge(){
+	global $db,$HTMLRel,$cfg_glpi,$lang;
+
+	// Get cartridges type with alarm activated and last warning > 7 days
+	// TODO -> last warning delay to config
+	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_cartridges_type LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') WHERE glpi_cartridges_type.deleted='N' AND glpi_cartridges_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$cfg_glpi["cartridges_alert"].") < CURRENT_TIMESTAMP()) ;";
+	
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		$message="";
+		while ($data=$db->fetch_array($result)){
+			if (getUnusedCartridgesNumber($data["cartID"])<=$data["threshold"]){
+				// define message alert
+				$message.=$lang["mailing"][34]." ".$data["cartname"]."<br>";
+
+				// Mark alert as done
+				$alert=new Alert();
+				//// if alert exists -> delete 
+				if (!empty($data["alertID"])){
+					$alert->delete(array("ID"=>$data["alertID"]));
+				}
+	
+				$alert=new Alert();
+				//// add alert
+				$input["type"]=ALERT_THRESHOLD;
+				$input["device_type"]=CARTRIDGE_TYPE;
+				$input["FK_device"]=$data["cartID"];
+					
+				$alert->add($input);
+			}
+		}
+		echo $message;
+		if (!empty($message)){
+			$mail=new MailingAlert("alertcartridge",$message);
+			$mail->send();
+			return 1;
+		}
+
+	}
+	return 0;
+}
+
 ?>
