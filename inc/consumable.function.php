@@ -432,10 +432,9 @@ function showConsumableSummary($target){
 }
 
 function cron_consumable(){
-	global $db,$HTMLRel,$cfg_glpi,$lang;
+	global $db,$cfg_glpi,$lang;
 
-	// Get cartridges type with alarm activated and last warning > 7 days
-	// TODO -> last warning delay to config
+	// Get cartridges type with alarm activated and last warning > config
 	$query="SELECT glpi_consumables_type.ID AS consID, glpi_consumables_type.name AS consname, glpi_consumables_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_consumables_type LEFT JOIN glpi_alerts ON (glpi_consumables_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONSUMABLE_TYPE."') WHERE glpi_consumables_type.deleted='N' AND glpi_consumables_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$cfg_glpi["consumables_alert"].") < CURRENT_TIMESTAMP()) ;";
 	
 	$result=$db->query($query);
@@ -444,7 +443,7 @@ function cron_consumable(){
 		while ($data=$db->fetch_array($result)){
 			if (getUnusedConsumablesNumber($data["consID"])<=$data["threshold"]){
 				// define message alert
-				$message.=$lang["mailing"][35]." ".$data["consname"]."<br>";
+				$message.=$lang["mailing"][35]." ".$data["consname"]."<br>\n";
 
 				// Mark alert as done
 				$alert=new Alert();

@@ -180,6 +180,8 @@ define("HELPDESK_ALL_HARDWARE","1");
 
 // ALERTS TYPE
 define("ALERT_THRESHOLD","1");
+define("ALERT_END","2");
+define("ALERT_NOTICE","3");
 
 // TIMES
 define("MINUTE_TIMESTAMP","60");

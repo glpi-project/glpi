@@ -665,6 +665,12 @@ class MailingAlert
 			case "alertconsumable":
 			$subject.=" ".$lang["mailing"][36];
 				break;
+			case "alertcontract":
+			$subject.=" ".$lang["mailing"][39];
+				break;
+			case "alertinfocom":
+			$subject.=" ".$lang["mailing"][41];
+				break;
 		}
 		return $subject;
 	}

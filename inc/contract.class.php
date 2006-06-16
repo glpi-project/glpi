@@ -43,6 +43,11 @@ class Contract extends CommonDBTM {
 		$this->table="glpi_contracts";
 		$this->type=CONTRACT_TYPE;
 	}
+
+	function post_getEmpty () {
+		global $cfg_glpi;
+		$this->fields["alert"]=$cfg_glpi["contract_alerts"];
+	}
 	
 	function cleanDBonPurge($ID) {
 
@@ -181,7 +186,7 @@ class Contract extends CommonDBTM {
 	
 		echo "<td>".$lang["financial"][11].":		</td>";
 		echo "<td>";
-			dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
+		dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
 		echo "</td></tr>";
 	
 	
@@ -190,8 +195,10 @@ class Contract extends CommonDBTM {
 		echo "</td>";
 	
 	
-		echo "<td>&nbsp;</td>";
-		echo "<td>&nbsp;</td></tr>";
+		echo "<td>".$lang["common"][41]."</td>";
+		echo "<td>";
+		dropdownContractAlerting("alert",$this->fields["alert"]);
+		echo "</td></tr>";
 	
 	
 	

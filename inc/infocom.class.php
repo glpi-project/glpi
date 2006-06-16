@@ -44,6 +44,10 @@ class InfoCom extends CommonDBTM {
 		$this->type=INFOCOM_TYPE;
 	}
 	
+	function post_getEmpty () {
+		global $cfg_glpi;
+		$this->fields["alert"]=$cfg_glpi["infocom_alerts"];
+	}
 
 	// Specific Functions
 	function getFromDBforDevice ($device_type,$ID) {

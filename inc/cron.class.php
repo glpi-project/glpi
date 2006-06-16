@@ -112,11 +112,13 @@ function Cron($taches=array()){
 		if ($cfg_glpi["consumables_alert"]>0)
 			$this->taches["consumable"]=DAY_TIMESTAMP;
 		}
+		$this->taches["contract"]=DAY_TIMESTAMP;
+		$this->taches["infocom"]=DAY_TIMESTAMP;
 }
 
 function launch() {
 	
-	global $cfg_glpi, $phproot;
+	global $cfg_glpi, $phproot,$lang;
 	
 	$t = time();
 		
@@ -183,7 +185,7 @@ function launch() {
 				
 				if ($code_de_retour < 0) @touch($lock, (0 - $code_de_retour));
 				else // Log Event 
-				logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ")".$lang["log"][45] );
+				logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$lang["log"][45] );
 			}# else log("cron $tache a reprendre");
 		} else {echo "Erreur fonction manquante";}
 

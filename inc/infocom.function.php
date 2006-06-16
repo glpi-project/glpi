@@ -179,6 +179,21 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo  showTco($device_type,$dev_ID,$ic->fields["value"],$ic->fields["buy_date"]);
 			echo "</td></tr>";
 		}
+
+		echo "<tr class='tab_bg_1'><td>".$lang["setup"][247].":		</td>";
+		echo "<td>";
+		echo "<select name=\"alert\">";
+		echo "<option value=\"0\" ".($ic->fields["alert"]==0?" selected ":"")." >-----</option>";
+		echo "<option value=\"".pow(2,ALERT_END)."\" ".($ic->fields["alert"]==pow(2,ALERT_END)?" selected ":"")." >".$lang["financial"][80]." </option>";
+		echo "</select>";
+
+		echo "</td>";
+		
+
+		echo "<td>&nbsp;</td>";
+		echo "<td >&nbsp;";
+		echo "</td></tr>";
+
 		// commment
 		echo "<tr class='tab_bg_1'><td valign='top'>";
 		echo $lang["common"][25].":	</td>";
@@ -668,5 +683,60 @@ if ($db->result($result,0,0)>0) {
 if (haveTypeRight($device_type,"w"))
 echo "<span onClick=\"window.open('".$HTMLRel."front/infocom.show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
 }
+
+
+function cron_infocom(){
+	global $db,$cfg_glpi,$lang,$phproot;
+
+
+	$message="";
+
+	// Check notice
+	$query="SELECT glpi_infocoms.* FROM glpi_infocoms LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".INFOCOM_TYPE."' AND glpi_alerts.type='".ALERT_END."') WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 AND glpi_infocoms.warranty_duration<>0 AND glpi_infocoms.buy_date<>'0000-00-00' AND DATEDIFF( ADDDATE(glpi_infocoms.buy_date, INTERVAL (glpi_infocoms.warranty_duration) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
+
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		
+		$ci=new CommonItem();
+			$needed=array("computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
+			foreach ($needed as $item){
+				if (file_exists($phproot . "/inc/$item.class.php"))
+					include_once ($phproot . "/inc/$item.class.php");
+				if (file_exists($phproot . "/inc/$item.function.php"))
+					include_once ($phproot . "/inc/$item.function.php");
+			}
+		
+		while ($data=$db->fetch_array($result)){
+			if ($ci->getFromDB($data["device_type"],$data["FK_device"])){
+				// define message alert
+				$message.=$lang["mailing"][40]." ".$ci->getType()." - ".$ci->getName()."<br>\n";
+			} 
+			
+			// Mark alert as done
+			$alert=new Alert();
+			//// add alert
+			$input["type"]=ALERT_END;
+			$input["device_type"]=INFOCOM_TYPE;
+			$input["FK_device"]=$data["ID"];
+						
+			$alert->add($input);
+			
+		}
+		
+		if (!empty($message)){
+			$mail=new MailingAlert("alertinfocom",$message);
+			$mail->send();
+			return 1;
+		}
+
+	}
+
+
+
+	return 0;
+
+
+}
+
 
 ?>

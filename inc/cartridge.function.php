@@ -650,7 +650,7 @@ else if (isOldCartridge($cID)) return $lang["cartridges"][22];
 }
 
 function cron_cartridge(){
-	global $db,$HTMLRel,$cfg_glpi,$lang;
+	global $db,$cfg_glpi,$lang;
 
 	// Get cartridges type with alarm activated and last warning > 7 days
 	// TODO -> last warning delay to config
@@ -662,7 +662,7 @@ function cron_cartridge(){
 		while ($data=$db->fetch_array($result)){
 			if (getUnusedCartridgesNumber($data["cartID"])<=$data["threshold"]){
 				// define message alert
-				$message.=$lang["mailing"][34]." ".$data["cartname"]."<br>";
+				$message.=$lang["mailing"][34]." ".$data["cartname"]."<br>\n";
 
 				// Mark alert as done
 				$alert=new Alert();
@@ -680,7 +680,7 @@ function cron_cartridge(){
 				$alert->add($input);
 			}
 		}
-		echo $message;
+
 		if (!empty($message)){
 			$mail=new MailingAlert("alertcartridge",$message);
 			$mail->send();

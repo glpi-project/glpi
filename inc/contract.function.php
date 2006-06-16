@@ -686,4 +686,66 @@ function countDeviceForContract($ID){
 	return $db->numrows($result);
 	
 }
+
+function cron_contract(){
+	global $db,$cfg_glpi,$lang;
+
+
+	$message="";
+
+	// Check notice
+	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_NOTICE."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 AND glpi_contracts.deleted='N' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND glpi_contracts.notice<>'0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
+	
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_array($result)){
+			// define message alert
+			$message.=$lang["mailing"][37]." ".$data["name"]."<br>\n";
+
+			// Mark alert as done
+			$alert=new Alert();
+			//// add alert
+			$input["type"]=ALERT_NOTICE;
+			$input["device_type"]=CONTRACT_TYPE;
+			$input["FK_device"]=$data["ID"];
+					
+			$alert->add($input);
+		}
+		
+
+	}
+
+	// Check end
+	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_END."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.deleted='N' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
+	
+	$result=$db->query($query);
+	if ($db->numrows($result)>0){
+		while ($data=$db->fetch_array($result)){
+			// define message alert
+			$message.=$lang["mailing"][38]." ".$data["name"]."<br>\n";
+
+			// Mark alert as done
+			$alert=new Alert();
+			//// add alert
+			$input["type"]=ALERT_END;
+			$input["device_type"]=CONTRACT_TYPE;
+			$input["FK_device"]=$data["ID"];
+					
+			$alert->add($input);
+		}
+		
+
+	}
+
+
+	if (!empty($message)){
+		$mail=new MailingAlert("alertcontract",$message);
+		$mail->send();
+		return 1;
+	}
+
+	return 0;
+
+
+}
 ?>

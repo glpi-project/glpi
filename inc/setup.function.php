@@ -906,15 +906,6 @@ function dropdownUsed($table, $ID) {
 
 
 
-
-
-
-
-
-
-
-
-
 function listTemplates($type,$target,$add=0) {
 
 	global $db,$cfg_glpi, $lang;
@@ -1108,6 +1099,16 @@ function showFormConfigGen($target){
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][403]." </td><td><input type=\"text\" name=\"proxy_user\" value=\"". $cfg_glpi["proxy_user"] ."\"></td>";
 	echo "<td align='center'>".$lang["setup"][404]." </td><td><input type=\"text\" name=\"proxy_password\" value=\"". $cfg_glpi["proxy_password"] ."\"></td></tr>";
+	
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][246]." </td><td>";
+	dropdownContractAlerting("contract_alerts",$cfg_glpi["contract_alerts"]);
+	echo "</td>";
+	echo "<td align='center'>".$lang["setup"][247]."</td><td>";
+	echo "<select name=\"infocom_alerts\">";
+	echo "<option value=\"0\" ".($cfg_glpi["infocom_alerts"]==0?" selected ":"")." >-----</option>";
+	echo "<option value=\"".pow(2,ALERT_END)."\" ".($cfg_glpi["infocom_alerts"]==pow(2,ALERT_END)?" selected ":"")." >".$lang["financial"][80]." </option>";
+	echo "</select>";
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></td></tr>";
 	
@@ -1581,6 +1582,14 @@ function showFormMailing($target) {
 		echo "<tr><th colspan='3'>".$lang["setup"][244]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";
 		showFormMailingType("alertcartridge",$profiles);
+		echo "</tr>";
+		echo "<tr><th colspan='3'>".$lang["setup"][246]."</th></tr>";
+		echo "<tr class='tab_bg_2'>";
+		showFormMailingType("alertcontract",$profiles);
+		echo "</tr>";
+		echo "<tr><th colspan='3'>".$lang["setup"][247]."</th></tr>";
+		echo "<tr class='tab_bg_1'>";
+		showFormMailingType("alertinfocom",$profiles);
 		echo "</tr>";
 		echo "</table>";
 		echo "</div>";
