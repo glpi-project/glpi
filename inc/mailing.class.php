@@ -447,9 +447,11 @@ class MailingResa{
 		if($format=="html"){
 
 			$body.=$this->resa->textDescription();
+			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
 		}else{ // text format
 
 			$body.=$this->resa->textDescription();
+			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
 			$body=ereg_replace("<br />","",$body);
 			$body=ereg_replace("<br>","",$body);
 		}
@@ -634,9 +636,11 @@ class MailingAlert
 		if($format=="html"){
 
 			$body.=$this->message;
+			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
 		}else{ // text format
 
 			$body.=$this->message;
+			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
 			$body=ereg_replace("<br />","",$body);
 			$body=ereg_replace("<br>","",$body);
 		}
