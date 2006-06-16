@@ -622,7 +622,7 @@ function showTco($item_type,$item,$value,$date_achat=""){
 				$timestamp2 = mktime(0,0,0, $date_m, $date_d, $date_Y);
 				$timestamp = mktime(0,0,0, date("m"), date("d"), date("Y"));
 		
-				 $diff = floor(($timestamp - $timestamp2) / (3600 * 24 * 30)); // Mois d'utilisation
+				 $diff = floor(($timestamp - $timestamp2) / (MONTH_TIMESTAMP)); // Mois d'utilisation
 				
 				if ($diff)
 					return number_format((($totalcost+$value)/$diff),2,"."," "); // TCO mensuel

@@ -96,13 +96,21 @@ class Cron {
 var $taches=array(); 
 
 function Cron($taches=array()){
+	global $cfg_glpi;
 	if(count($taches)>0){
 		$this->taches=$taches;
 		}else{
 		// la cle est la tache, la valeur le temps minimal, en secondes, entre
 		// deux memes taches ex $this->taches["test"]=30;
-		//$this->taches["test"]=30;
 		
+		if ($cfg_glpi["ocs_mode"]){
+			// Every 5 mns
+			$this->taches["ocsng"]=300;
+		}
+		if ($cfg_glpi["cartridges_alert"]>0)
+			$this->taches["cartridge"]=DAY_TIMESTAMP;
+		if ($cfg_glpi["consumables_alert"]>0)
+			$this->taches["consumable"]=DAY_TIMESTAMP;
 		}
 }
 
@@ -120,17 +128,19 @@ function launch() {
 	foreach ($this->taches as $nom => $periode) {
 		$lock = $phproot.'/files/_cron/' . $nom . '.lock';
 		$date_lock = @filemtime($lock);
+		
 		if ($date_lock + $periode < $tmin) {
 			$tmin = $date_lock + $periode;
 			$tache = $nom;
 			$last = $date_lock;
+			
 		}
 		// debug : si la date du fichier est superieure a l'heure actuelle,
 		// c'est que le serveur a (ou a eu) des problemes de reglage horaire
 		// qui peuvent mettre en peril les taches cron : signaler dans le log
 		// (On laisse toutefois flotter sur une heure, pas la peine de s'exciter
 		// pour si peu)
-		else if ($date_lock > $t + 3600)
+//		else if ($date_lock > $t + HOUR_TIMESTAMP)
 			//echo "Erreur de date du fichier $lock : $date_lock > $t !";
 	}
 	if (!$tache) return;
@@ -156,15 +166,15 @@ function launch() {
 		$fct_trouve=false;
 		if (!function_exists($fonction)){
 			// pas trouvé de fonction -> inclusion de la fonction 
-			if(files_exit($phproot.'/inc/'.$tache.'function.php')) include_once($phproot.'/inc/'.$tache.'function.php');
-			if(files_exit($phproot.'/inc/'.$tache.'class.php')) include_once($phproot.'/inc/'.$tache.'class.php');
+			if(file_exists($phproot.'/inc/'.$tache.'.function.php')) include_once($phproot.'/inc/'.$tache.'.function.php');
+			if(file_exists($phproot.'/inc/'.$tache.'.class.php')) include_once($phproot.'/inc/'.$tache.'.class.php');
 			
 		} else { $fct_trouve=true;}
 
 		if ($fct_trouve||function_exists($fonction)){
 			// la fonction a été inclus ou la fonction existe
 			// l'appeler
-			echo $code_de_retour = $fonction($last);
+			$code_de_retour = $fonction($last);
 
 			// si la tache a eu un effet : log
 			if ($code_de_retour) {
@@ -227,7 +237,7 @@ function get_lock($nom, $timeout = 0) {
 	global $db, $cfg_glpi;
 	
 	// Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
-	define('_LOCK_TIME', intval(time()/3600-316982));
+	define('_LOCK_TIME', intval(time()/HOUR_TIMESTAMP-316982));
 	$nom .= _LOCK_TIME;
 
 	$nom = addslashes($nom);
@@ -253,6 +263,32 @@ function release_lock($nom) {
 
 
 
+
+}
+
+class Alert extends CommonDBTM {
+
+	function Alert () {
+		$this->table="glpi_alerts";
+		$this->type=0;
+	}
+	function getFromDBForDevice ($type,$ID) {
+
+		// Make new database object and fill variables
+		global $db;
+		if (empty($ID)) return false;
+
+		$query = "SELECT * FROM ".$this->table." WHERE (device_type='$type' AND FK_device = '$ID')";
+
+		if ($result = $db->query($query)) {
+			if ($db->numrows($result)==1){
+				$this->fields = $db->fetch_assoc($result);
+			return true;
+		} else return false;
+		} else {
+			return false;
+		}
+	}
 
 }
 

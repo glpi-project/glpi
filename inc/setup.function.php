@@ -1435,6 +1435,7 @@ function showFormMailing($target) {
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li "; if ($_SESSION['glpi_mailconfig']==1){ echo "class='actif'";} echo  "><a href='$target?next=mailing&amp;onglet=1'>".$lang["Menu"][10]."</a></li>";
 	echo "<li "; if ($_SESSION['glpi_mailconfig']==2){ echo "class='actif'";} echo  "><a href='$target?next=mailing&amp;onglet=2'>".$lang["setup"][240]."</a></li>";
+	echo "<li "; if ($_SESSION['glpi_mailconfig']==3){ echo "class='actif'";} echo  "><a href='$target?next=mailing&amp;onglet=3'>".$lang["setup"][242]."</a></li>";
 	echo "</ul></div>";
 
 	if ($_SESSION['glpi_mailconfig']==1){
@@ -1474,7 +1475,22 @@ function showFormMailing($target) {
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][234]."</td><td> <input type=\"text\" name=\"smtp_username\" size='40' value=\"".$cfg_glpi["smtp_username"]."\"> </td></tr>";
 
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][235]."</td><td> <input type=\"password\" name=\"smtp_password\" size='40' value=\"".$cfg_glpi["smtp_password"]."\"> </td></tr>";
-		
+
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][245]." ".$lang["setup"][244]."</td><td>";
+		echo "<select name='cartridges_alert'> ";
+		echo "<option value='0' ".($cfg_glpi["cartridges_alert"]==0?"selected":"")." >".$lang["setup"][307]."</option>";
+		echo "<option value='".WEEK_TIMESTAMP."' ".($cfg_glpi["cartridges_alert"]==WEEK_TIMESTAMP?"selected":"")." >".$lang["setup"][308]."</option>";
+		echo "<option value='".MONTH_TIMESTAMP."' ".($cfg_glpi["cartridges_alert"]==MONTH_TIMESTAMP?"selected":"")." >".$lang["setup"][309]."</option>";
+		echo "</select>";
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td >".$lang["setup"][245]." ".$lang["setup"][243]."</td><td>";
+		echo "<select name='consumables_alert'> ";
+		echo "<option value='0' ".($cfg_glpi["consumables_alert"]==0?"selected":"")." >".$lang["setup"][307]."</option>";
+		echo "<option value='".WEEK_TIMESTAMP."' ".($cfg_glpi["consumables_alert"]==WEEK_TIMESTAMP?"selected":"")." >".$lang["setup"][308]."</option>";
+		echo "<option value='".MONTH_TIMESTAMP."' ".($cfg_glpi["consumables_alert"]==MONTH_TIMESTAMP?"selected":"")." >".$lang["setup"][309]."</option>";
+		echo "</select>";
+		echo "</td></tr>";
 		
 			echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
 			echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
@@ -1533,13 +1549,42 @@ function showFormMailing($target) {
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][225]."</th></tr>";
-		echo "<tr class='tab_bg_1'>";
+		echo "<tr class='tab_bg_2'>";
 		unset($profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]);
 		showFormMailingType("resa",$profiles);
 		echo "</tr>";
 		
 		echo "</table>";
 		echo "</div>";
+	} else if ($_SESSION['glpi_mailconfig']==3)	{
+		$profiles[USER_MAILING_TYPE."_".ADMIN_MAILING]=$lang["setup"][237];
+		$query="SELECT ID, name FROM glpi_profiles order by name";
+		$result=$db->query($query);
+		while ($data=$db->fetch_assoc($result))
+			$profiles[PROFILE_MAILING_TYPE."_".$data["ID"]]=$lang["profiles"][22]." ".$data["name"];
+
+		$query="SELECT ID, name FROM glpi_groups order by name";
+		$result=$db->query($query);
+		while ($data=$db->fetch_assoc($result))
+			$profiles[GROUP_MAILING_TYPE."_".$data["ID"]]=$lang["common"][35]." ".$data["name"];
+
+
+		ksort($profiles);
+		echo "<div align='center'>";
+		echo "<input type='hidden' name='update_notifications' value='1'>";
+		// ADMIN
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='3'>".$lang["setup"][243]."</th></tr>";
+		echo "<tr class='tab_bg_2'>";
+		showFormMailingType("alertconsumable",$profiles);
+		echo "</tr>";
+		echo "<tr><th colspan='3'>".$lang["setup"][244]."</th></tr>";
+		echo "<tr class='tab_bg_1'>";
+		showFormMailingType("alertcartridge",$profiles);
+		echo "</tr>";
+		echo "</table>";
+		echo "</div>";
+
 	}
 	echo "</form>";
 
@@ -1602,38 +1647,17 @@ function updateMailNotifications($input){
 	global $db;
 	$type="";
 	$action="";
-	if (isset($input["mailing_add_finish"])){
-		$type="finish";
-		$action="add";
-	} else if (isset($input["mailing_delete_finish"])){
-		$type="finish";
-		$action="delete";
-	} else if (isset($input["mailing_add_new"])){
-		$type="new";
-		$action="add";
-	} else if (isset($input["mailing_delete_new"])){
-		$type="new";
-		$action="delete";
-	} else if (isset($input["mailing_add_update"])){
-		$type="update";
-		$action="add";
-	} else if (isset($input["mailing_delete_update"])){
-		$type="update";
-		$action="delete";
-	} else if (isset($input["mailing_add_followup"])){
-		$type="followup";
-		$action="add";
-	} else if (isset($input["mailing_delete_followup"])){
-		$type="followup";
-		$action="delete";
-	} else if (isset($input["mailing_add_resa"])){
-		$type="resa";
-		$action="add";
-	} else if (isset($input["mailing_delete_resa"])){
-		$type="resa";
-		$action="delete";
-	} 
-	
+
+
+	foreach ($input as $key => $val){
+		if (!ereg("mailing_to_",$key)&&ereg("mailing_",$key)){
+			if (preg_match("/mailing_([a-z]+)_([a-z]+)/",$key,$matches)){
+				$type=$matches[2];
+				$action=$matches[1];
+			}
+		}
+	}
+
 	if (count($input["mailing_to_".$action."_".$type])>0){
 		foreach ($input["mailing_to_".$action."_".$type] as $val){
 			switch ($action){

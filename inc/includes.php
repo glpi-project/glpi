@@ -74,6 +74,7 @@ if (!isset($AJAX_INCLUDE)){
 	include_once ($phproot . "/inc/auth.class.php");
 	include_once ($phproot . "/inc/connection.class.php");
 	include_once ($phproot . "/inc/mailing.class.php");
+	include_once ($phproot . "/inc/mailing.function.php");
 	include_once ($phproot . "/inc/report.function.php");
 //	include_once ($phproot . "/inc/search.function.php");
 	include_once ($phproot . "/inc/export.function.php");
@@ -140,14 +141,6 @@ if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
 			include_once ($phproot . "/inc/$item.function.php");
 		if ($item=="ocsng"&&$cfg_glpi["ocs_mode"])
 			$dbocs=new DBocs;
-	}
-}
-
-// call function callcron() every 5min
-if (isset($_SESSION["glpicrontimer"])){
-	if (($_SESSION["glpicrontimer"]-time())>300){
-		callCron();
-		$_SESSION["glpicrontimer"]=time();
 	}
 }
 ?>

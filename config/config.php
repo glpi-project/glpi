@@ -178,6 +178,16 @@ define("PDF_OUTPUT","2");
 define("HELPDESK_MY_HARDWARE","0");
 define("HELPDESK_ALL_HARDWARE","1");
 
+// ALERTS TYPE
+define("ALERT_THRESHOLD","1");
+
+// TIMES
+define("MINUTE_TIMESTAMP","60");
+define("HOUR_TIMESTAMP","3600");
+define("DAY_TIMESTAMP","86400");
+define("WEEK_TIMESTAMP","604800");
+define("MONTH_TIMESTAMP","2592000");
+
 
 
 //DEVICE ARRAY.

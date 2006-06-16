@@ -58,6 +58,7 @@ function commonHeader($title,$url)
 	if (!isset($_SESSION["glpiID"]))
 		glpi_header($HTMLRel."/index.php");
 
+
 	$HEADER_LOADED=true;;
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
@@ -314,6 +315,13 @@ function commonHeader($title,$url)
 
 	echo "<div onmouseover=\"javascript:hidemenu();\">";
 	
+	// call function callcron() every 5min
+	if (isset($_SESSION["glpicrontimer"])){
+		if (abs(time()-$_SESSION["glpicrontimer"])>300){
+			callCron();
+			$_SESSION["glpicrontimer"]=time();
+		} 
+	}
 	
 	
 	displayMessageAfterRedirect();
@@ -347,7 +355,7 @@ function helpHeader($title,$url) {
 	// Gestion timeout session
 	if (!isset($_SESSION["glpiID"]))
 		glpi_header($HTMLRel."/index.php");
-	
+
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
  		$_SESSION['glpilist_limit']=$_POST['list_limit'];
@@ -474,6 +482,15 @@ function helpHeader($title,$url) {
 	echo "</td></tr>";	
 	echo "</table>\n";
 	echo "</div>";
+
+	// call function callcron() every 5min
+	if (isset($_SESSION["glpicrontimer"])){
+		if (($_SESSION["glpicrontimer"]-time())>300){
+			callCron();
+			$_SESSION["glpicrontimer"]=time();
+		}
+	}
+
 
 	displayMessageAfterRedirect();
 }

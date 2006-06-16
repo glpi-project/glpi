@@ -104,26 +104,6 @@ class Mailing
 		$this->job=$job;
 		$this->user=$user;
 	}
-	/**
-	* Determine if email is valid
-	* @param $email email to check
-	* @return boolean 
-	*/
-	function is_valid_email($email="")
-	{
-		if( !eregi( "^" .
-			"[a-zA-Z0-9]+([_\\.-][a-zA-Z0-9]+)*" .    //user
-            "@" .
-            "([a-zA-Z0-9]+([\.-][a-zA-Z0-9]+)*)+" .   //domain
-            "\\.[a-zA-Z0-9]{2,}" .                    //sld, tld 
-            "$", $email)
-                        )
-        {
-        //echo "Erreur: '$email' n'est pas une adresse mail valide!<br>";
-        return false;
-        }
-		else return true;
-	}
 
 	/**
 	* Give mails to send the mail
@@ -147,7 +127,7 @@ class Mailing
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
+								if (isValidEmail($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
 									$emails[]=$cfg_glpi["admin_email"];
 								break;
 							// ASSIGN SEND
@@ -157,7 +137,7 @@ class Mailing
 									if ($result2 = $db->query($query2)) {
 										if ($db->numrows($result2)==1){
 											$row = $db->fetch_row($result2);
-											if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
+											if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
 												$emails[]=$row[0];
 											}
 										}
@@ -166,7 +146,7 @@ class Mailing
 								break;
 							// USER SEND
 							case USER_MAILING :
-								if ($this->job->fields["emailupdates"]=="yes"&&$this->is_valid_email($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
+								if ($this->job->fields["emailupdates"]=="yes"&&isValidEmail($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
 									$emails[]=$this->job->fields["uemail"];
 							
 								}
@@ -178,7 +158,7 @@ class Mailing
 									if ($result2 = $db->query($query2)) {
 										if ($db->numrows($result2)==1){
 											$row = $db->fetch_row($result2);
-											if ($this->is_valid_email($row[0])&&!in_array($row[0],$emails)){
+											if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
 												$emails[]=$row[0];
 											}
 										}
@@ -192,7 +172,7 @@ class Mailing
 						if ($result2= $db->query($query)){
 							if ($db->numrows($result2))
 							while ($data=$db->fetch_assoc($result2)){
-							if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+							if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 									$emails[]=$data["EMAIL"];
 								}
 							}
@@ -204,7 +184,7 @@ class Mailing
 						if ($result2= $db->query($query)){
 							if ($db->numrows($result2))
 							while ($data=$db->fetch_assoc($result2)){
-							if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+							if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 									$emails[]=$data["EMAIL"];
 								}
 							}
@@ -304,12 +284,12 @@ class Mailing
 
 	switch ($this->type){
 			case "new":
-				if ($this->is_valid_email($this->job->fields["uemail"])) $replyto=$this->job->fields["uemail"];
+				if (isValidEmail($this->job->fields["uemail"])) $replyto=$this->job->fields["uemail"];
 				else $replyto=$cfg_glpi["admin_email"];
 				break;
 			case "followup":
 			case "update":
-				if ($this->is_valid_email($this->user->fields["email"])) $replyto=$this->user->fields["email"];
+				if (isValidEmail($this->user->fields["email"])) $replyto=$this->user->fields["email"];
 				else $replyto=$cfg_glpi["admin_email"];
 				break;
 			default :
@@ -355,6 +335,7 @@ class Mailing
 					$mmail->AltBody=$this->get_mail_body("text");
 					if(!$mmail->Send()){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
+						return false;
 					}
 					$mmail->ClearAddresses(); 
 		  		}
@@ -362,6 +343,7 @@ class Mailing
 				echo "Invalid mail type";
 			}
 		}
+		return true;
 	}
 }
 
@@ -390,26 +372,6 @@ class MailingResa{
 	}
 
 	/**
-	* Determine if email is valid
-	* @param $email email to check
-	* @return boolean 
-	*/
-	function is_valid_email($email="")
-	{
-		if( !eregi( "^" .
-			"[a-zA-Z0-9]+([_\\.-][a-zA-Z0-9]+)*" .    //user
-            "@" .
-            "([a-zA-Z0-9]+([\.-][a-zA-Z0-9]+)*)+" .   //domain
-            "\\.[a-zA-Z0-9]{2,}" .                    //sld, tld 
-            "$", $email)
-                        )
-        {
-        return false;
-        }
-		else return true;
-	}
-
-	/**
 	* Give mails to send the mail
 	* 
 	* Determine email to send mail using global config and Mailing type
@@ -431,14 +393,14 @@ class MailingResa{
 						switch ($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if ($this->is_valid_email($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
+								if (isValidEmail($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
 									$emails[]=$cfg_glpi["admin_email"];
 								break;
 							// USER SEND
 							case USER_MAILING :
 								$user = new User;
 								if ($user->getFromDB($this->resa->fields["id_user"]))
-								if ($this->is_valid_email($user->fields["email"])&&!in_array($user->fields["email"],$emails)){
+								if (isValidEmail($user->fields["email"])&&!in_array($user->fields["email"],$emails)){
 									$emails[]=$user->fields["email"];
 								}
 								break;
@@ -449,7 +411,7 @@ class MailingResa{
 						if ($result2= $db->query($query)){
 							if ($db->numrows($result2))
 							while ($data=$db->fetch_assoc($result2)){
-							if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+							if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 									$emails[]=$data["EMAIL"];
 								}
 							}
@@ -460,7 +422,7 @@ class MailingResa{
 						if ($result2= $db->query($query)){
 							if ($db->numrows($result2))
 							while ($data=$db->fetch_assoc($result2)){
-							if ($this->is_valid_email($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+							if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 									$emails[]=$data["EMAIL"];
 								}
 							}
@@ -521,7 +483,7 @@ class MailingResa{
 
 	$user = new User;
 	if ($user->getFromDB($this->resa->fields["id_user"])){
-		if ($this->is_valid_email($user->fields["email"])) $replyto=$user->fields["email"];		
+		if (isValidEmail($user->fields["email"])) $replyto=$user->fields["email"];		
 		else $replyto=$cfg_glpi["admin_email"];
 	}
 	else $replyto=$cfg_glpi["admin_email"];		
@@ -538,7 +500,7 @@ class MailingResa{
 	function send()
 	{
 		global $cfg_glpi,$phproot;
-		if ($cfg_glpi["mailing"]&&$this->is_valid_email($cfg_glpi["admin_email"]))
+		if ($cfg_glpi["mailing"]&&isValidEmail($cfg_glpi["admin_email"]))
 		{
 				// get users to send mail
 				$users=$this->get_users_to_send_mail();
@@ -567,14 +529,195 @@ class MailingResa{
 					
 					if(!$mmail->Send()){
 						echo "<div align='center'>There was a problem sending this mail !</div>";
+						return false;
 					}
 					$mmail->ClearAddresses(); 
 				
 				}
 		}
+		return true;
 	}
 	
 }
 
+
+/**
+ *  Mailing class for alerts
+ */
+class MailingAlert
+{
+	//! mailing type (contract,infocom,cartridge,consumable)
+	var $type=NULL;
+	var $message="";
+ 
+	/**
+	* Constructor
+	* @param $type mailing type (new,attrib,followup,finish)
+	* @param $resa ReservationResa to mail
+	* @return nothing 
+	*/
+	function MailingAlert ($type,$message)
+	{
+	$this->type=$type;
+	$this->message=$message;
+	}
+
+
+	/**
+	* Give mails to send the mail
+	* 
+	* Determine email to send mail using global config and Mailing type
+	*
+	* @return array containing email
+	*/
+	function get_users_to_send_mail()
+	{
+		global $db,$cfg_glpi;
+		
+		$emails=array();
+			
+		$query="SELECT * FROM glpi_mailing WHERE type='".$this->type."'";
+		$result=$db->query($query);
+		if ($db->numrows($result)){
+			while ($data=$db->fetch_assoc($result)){
+				switch ($data["item_type"]){
+					case USER_MAILING_TYPE :
+						switch($data["FK_item"]){
+							// ADMIN SEND
+							case ADMIN_MAILING :
+								if (isValidEmail($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
+									$emails[]=$cfg_glpi["admin_email"];
+								break;
+							}
+						break;
+					case PROFILE_MAILING_TYPE :
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'";
+						if ($result2= $db->query($query)){
+							if ($db->numrows($result2))
+							while ($data=$db->fetch_assoc($result2)){
+							if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+									$emails[]=$data["EMAIL"];
+								}
+							}
+						}
+						break;
+					case GROUP_MAILING_TYPE :
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+						
+						if ($result2= $db->query($query)){
+							if ($db->numrows($result2))
+							while ($data=$db->fetch_assoc($result2)){
+							if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
+									$emails[]=$data["EMAIL"];
+								}
+							}
+						}
+						break;
+				}
+			}
+		}
+
+		return $emails;
+	}
+
+	/**
+	* Format the mail body to send
+	* @return mail body string
+	*/
+	function get_mail_body($format="text")
+	{
+		global $cfg_glpi, $lang;
+		
+		// Create message body from Job and type
+		$body="";
+		
+		if($format=="html"){
+
+			$body.=$this->message;
+		}else{ // text format
+
+			$body.=$this->message;
+			$body=ereg_replace("<br />","",$body);
+			$body=ereg_replace("<br>","",$body);
+		}
+		return $body;
+	}
+
+	/**
+	* Format the mail subject to send
+	* @return mail subject string
+	*/
+	function get_mail_subject()
+	{
+		global $lang;
+		
+		// Create the message subject 
+		$subject="[GLPI]";
+		
+		switch ($this->type){
+			case "alertcartridge":
+			$subject.=" ".$lang["mailing"][33];
+				break;
+			case "alertconsumable":
+			$subject.=" ".$lang["mailing"][36];
+				break;
+		}
+		return $subject;
+	}
+	
+	/**
+	* Get reply to address 
+	* @return return mail
+	*/
+	function get_reply_to_address ()
+	{
+		global $cfg_glpi;
+		$replyto=$cfg_glpi["admin_email"];
+
+		return $replyto;		
+	}
+	/**
+	* Send mail function
+	*
+	* Construct email and send it
+	*
+	* @return mail subject string
+	*/
+	function send()
+	{
+		global $cfg_glpi,$phproot;
+		if ($cfg_glpi["mailing"])
+		{
+			// get users to send mail
+			$users=$this->get_users_to_send_mail();
+			// get subject OK
+			$subject=$this->get_mail_subject();
+			// get sender :  OK
+			$sender= $cfg_glpi["admin_email"];
+			// get reply-to address : user->email ou job_email if not set OK
+			$replyto=$this->get_reply_to_address ();
+			// Send all mails
+			for ($i=0;$i<count($users);$i++)
+			{
+				$mmail=new glpi_phpmailer();
+				$mmail->From=$sender;
+				$mmail->AddReplyTo("$replyto", ''); 
+				$mmail->FromName=$sender;
+				
+				$mmail->AddAddress($users[$i], "");
+				$mmail->Subject=$subject	;  
+				$mmail->Body=$this->get_mail_body("html");
+				$mmail->isHTML(true);
+				$mmail->AltBody=$this->get_mail_body("text");
+				if(!$mmail->Send()){
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
+					return false;
+				}
+				$mmail->ClearAddresses(); 
+	  		}
+		}
+		return true;
+	}
+}
 
 ?>
