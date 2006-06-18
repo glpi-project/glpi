@@ -107,13 +107,16 @@ function Cron($taches=array()){
 			// Every 5 mns
 			$this->taches["ocsng"]=300;
 		}
-		if ($cfg_glpi["cartridges_alert"]>0)
-			$this->taches["cartridge"]=DAY_TIMESTAMP;
-		if ($cfg_glpi["consumables_alert"]>0)
-			$this->taches["consumable"]=DAY_TIMESTAMP;
+		// Mailing alerts if mailing activated
+		if ($cfg_glpi["mailing"]){
+			if ($cfg_glpi["cartridges_alert"]>0)
+				$this->taches["cartridge"]=DAY_TIMESTAMP;
+			if ($cfg_glpi["consumables_alert"]>0)
+				$this->taches["consumable"]=DAY_TIMESTAMP;
+			}
+			$this->taches["contract"]=DAY_TIMESTAMP;
+			$this->taches["infocom"]=DAY_TIMESTAMP;
 		}
-		$this->taches["contract"]=DAY_TIMESTAMP;
-		$this->taches["infocom"]=DAY_TIMESTAMP;
 }
 
 function launch() {

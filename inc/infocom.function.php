@@ -708,8 +708,9 @@ function cron_infocom(){
 		
 		while ($data=$db->fetch_array($result)){
 			if ($ci->getFromDB($data["device_type"],$data["FK_device"])){
-				// define message alert
-				$message.=$lang["mailing"][40]." ".$ci->getType()." - ".$ci->getName()."<br>\n";
+				// define message alert / Not for template items
+				if (!isset($ci->obj->fields["is_template"])||!$ci->obj->fields["is_template"])
+					$message.=$lang["mailing"][40]." ".$ci->getType()." - ".$ci->getName()."<br>\n";
 			} 
 			
 			// Mark alert as done
