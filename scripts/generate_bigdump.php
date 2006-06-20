@@ -262,7 +262,7 @@ function add_tracking($type,$ID){
 			$date2=$date1+mt_rand(10800,7776000); // + entre 3 heures et 3 mois
 			$status="old_done";
 		} else {
-			$date1=strtotime("$current_year-".mt_rand(1,12)."-".mt_rand(1,28));	
+			$date1=strtotime("$current_year-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));	
 			$date2="";
 			$status="new";
 		}
@@ -273,7 +273,7 @@ function add_tracking($type,$ID){
 		$enterprise=0;
 		if (mt_rand(0,100)<20)
 		$enterprise=mt_rand(1,$max['enterprises']);
-		$query="INSERT INTO glpi_tracking VALUES (NULL,'".date("Y-m-d H:i:s",$date1)."','".date("Y-m-d H:i:s",$date2)."','$status','".$users[0]."','".mt_rand(0,$max['groups'])."','".mt_rand(0,6)."','".$users[1]."','$enterprise','$type','$ID','tracking ".GetRandomString(15)."','".mt_rand(1,5)."','no','','no','".(mt_rand(0,3)+mt_rand(0,100)/100)."','".mt_rand(1,$max['tracking_category'])."','0','0','0')";
+		$query="INSERT INTO glpi_tracking VALUES (NULL,'".date("Y-m-d H:i:s",intval($date1))."','".date("Y-m-d H:i:s",intval($date2))."','$status','".$users[0]."','".mt_rand(0,$max['groups'])."','".mt_rand(0,6)."','".$users[1]."','$enterprise','$type','$ID','tracking ".GetRandomString(15)."','".mt_rand(1,5)."','no','','no','".(mt_rand(0,3)+mt_rand(0,100)/100)."','".mt_rand(1,$max['tracking_category'])."','0','0','0')";
 		$db->query($query) or die("PB REQUETE ".$query);
 		$tID=$db->insert_id();
 		// Add followups
