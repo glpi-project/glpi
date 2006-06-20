@@ -69,12 +69,12 @@ $type=$_POST["type"];
 
 $items=array(
 	"user"=>array(	
-		"title"=>$lang["common"][34],
+		"title"=>$lang["common"][37],
 		"field"=>"glpi_tracking.author"
 		),
 	"category"=>array(	
-		"title"=>$lang["common"][37],
-		"field"=>"glpi_tracking.author"
+		"title"=>$lang["common"][36],
+		"field"=>"glpi_tracking.category"
 	),
 	"priority"=>array(	
 		"title"=>$lang["joblist"][2],

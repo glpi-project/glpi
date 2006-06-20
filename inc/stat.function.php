@@ -199,7 +199,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 		echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols);
 		echo displaySearchNewLine($output_type);
 		$header_num=1;
-		echo displaySearchHeaderItem($output_type,$lang["stats"][16],$header_num);
+		echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
 		if ($output_type==HTML_OUTPUT) // HTML display
 			echo displaySearchHeaderItem($output_type,"",$header_num);
 		echo displaySearchHeaderItem($output_type,$lang["stats"][13],$header_num);
