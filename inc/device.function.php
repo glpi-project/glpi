@@ -504,7 +504,8 @@ function showDevicesList($device_type,$target) {
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/device.form.php?ID=$ID&amp;device_type=$device_type\">";
-				echo $device->fields["designation"]." (".$device->fields["ID"].")";
+				echo $device->fields["designation"];
+				if ($cfg_glpi["view_ID"]) echo " (".$device->fields["ID"].")";
 				echo "</a></b></td>";
 				echo "<td>". getDropdownName("glpi_enterprises",$device->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "</tr>";
