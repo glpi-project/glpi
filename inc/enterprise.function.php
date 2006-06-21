@@ -56,8 +56,8 @@ function showInfocomEnterprise($instID) {
 	$number = $db->numrows($result);
 	$i = 0;
 	
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='2'>".$lang["financial"][49].":</th></tr>";
+	echo "<br><br><div align='center'><table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["financial"][32].":</th></tr>";
 	echo "<tr><th>".$lang["common"][17]."</th>";
 	echo "<th>".$lang["common"][16]."</th>";
 	echo "</tr>";
@@ -110,8 +110,8 @@ function showDeviceManufacturer($instID) {
 
 	$types=array(COMPUTER_TYPE,CONSUMABLE_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,CARTRIDGE_TYPE);
 
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='2'>".$lang["financial"][49].":</th></tr>";
+	echo "<br><br><div align='center'><table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["common"][5].":</th></tr>";
 	echo "<tr><th>".$lang["common"][17]."</th>";
 	echo "<th>".$lang["common"][16]."</th>";
 	echo "</tr>";
@@ -161,11 +161,12 @@ function showInternalDeviceManufacturer($instID) {
 	$types=array(MOBOARD_DEVICE,PROCESSOR_DEVICE,RAM_DEVICE,HDD_DEVICE,NETWORK_DEVICE,DRIVE_DEVICE,CONTROL_DEVICE,GFX_DEVICE,SND_DEVICE,PCI_DEVICE,CASE_DEVICE,POWER_DEVICE);
 
 
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='2'>".$lang["financial"][49].":</th></tr>";
+	echo "<br><br><div align='center'><table class='tab_cadre'>";
+	echo "<tr><th colspan='2'>".$lang["setup"][222].":</th></tr>";
 	echo "<tr><th>".$lang["common"][17]."</th>";
 	echo "<th>".$lang["common"][16]."</th>";
 	echo "</tr>";
+
 	$num=0;
 	foreach ($types as $type){
 		$query = "SELECT * FROM ".getDeviceTable($type)." WHERE FK_glpi_enterprise = '$instID' order by designation";
