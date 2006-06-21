@@ -115,13 +115,17 @@ function generateVcard($ID){
 	
 	
 
-	$vcard->setName($contact->fields["name"], $contact->fields["name"], "", "");  // saloperie de fiche contact qui gère pas le nom et le prénom ! TODO changer ça 
+	$vcard->setName($contact->fields["name"], $contact->fields["firstname"], "", "");  
 	
 	$vcard->setPhoneNumber($contact->fields["phone"], "PREF;WORK;VOICE");
+	$vcard->setPhoneNumber($contact->fields["phone2"], "HOME;VOICE");
+	$vcard->setPhoneNumber($contact->fields["mobile"], "WORK;CELL");
 	
 	//if ($contact->birthday) $vcard->setBirthday($contact->birthday);
 	
-	//$vcard->setAddress("", "", $contact->GetAdress(), "", "", "", ""); // saloperie de fiche contact qui gère pas l'adresse correctement ! TODO changer ça 
+	$addr=$contact->GetAddress();
+	if (is_array($addr))
+		$vcard->setAddress($addr["name"], "", $addr["address"], $addr["town"], $addr["state"], $addr["postcode"], $addr["country"],"WORK;POSTAL"); 
 	
 	$vcard->setEmail($contact->fields["email"]);
 	
@@ -138,9 +142,9 @@ function generateVcard($ID){
 
 	$filename =$vcard->getFileName();      // "xxx xxx.vcf"
 	
-	//@Header("Content-Disposition: attachment; filename=\"$filename\"");
-	//@Header("Content-Length: ".strlen($output));
-	//@Header("Connection: close");
+	@Header("Content-Disposition: attachment; filename=\"$filename\"");
+	@Header("Content-Length: ".strlen($output));
+	@Header("Connection: close");
 	@Header("content-type: text/x-vcard; charset=UTF-8");
 	
 	echo $output;

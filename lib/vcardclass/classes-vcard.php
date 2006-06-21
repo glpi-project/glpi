@@ -83,7 +83,11 @@ class vCard {
     
     function setName($family="", $first="", $additional="", $prefix="", $suffix="") {
         $this->properties["N"] = "$family;$first;$additional;$prefix;$suffix";
-        $this->filename = "$first%20$family.vcf";
+	// MODIF GLPI
+	if (empty($first))
+		$this->filename = "$family.vcf";
+	else 
+        	$this->filename = "$first%20$family.vcf";
      //   if ($this->properties["FN"]=="") $this->setFormattedName(trim("$prefix $first $additional $family $suffix"));
     }
     
@@ -96,11 +100,11 @@ class vCard {
         $key = "ADR";
         if ($type!="") $key.= ";$type";
         $key.= ";ENCODING=QUOTED-PRINTABLE";
-        $this->properties[$key] = encode($name).";".encode($extended).";".encode($street).";".encode($city).";".encode($region).";".encode($zip).";".encode($country);
+        $this->properties[$key] = encode($postoffice).";".encode($extended).";".encode($street).";".encode($city).";".encode($region).";".encode($zip).";".encode($country);
         
-        if ($this->properties["LABEL;$type;ENCODING=QUOTED-PRINTABLE"] == "") {
+//        if ($this->properties["LABEL;$type;ENCODING=QUOTED-PRINTABLE"] == "") {
             //$this->setLabel($postoffice, $extended, $street, $city, $region, $zip, $country, $type);
-        }
+        //}
     }
     
     function setLabel($postoffice="", $extended="", $street="", $city="", $region="", $zip="", $country="", $type="HOME;POSTAL") {

@@ -629,6 +629,37 @@ if(!FieldExists("glpi_config","consumables_alert")) {
 	$db->query($query) or die("0.68 add consumables_alert in config ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_contacts","firstname")) {	
+	$query="ALTER TABLE  `glpi_contacts` ADD  `firstname` varchar(255)  DEFAULT '' AFTER `name`;";
+	$db->query($query) or die("0.68 add firstname in contacts ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_contacts","mobile")) {	
+	$query="ALTER TABLE  `glpi_contacts` ADD  `mobile` varchar(255)  DEFAULT '' AFTER `phone2`;";
+	$db->query($query) or die("0.68 add mobile in contacts ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_enterprises","country")) {	
+	$query="ALTER TABLE  `glpi_enterprises` ADD  `country` varchar(255)  DEFAULT '' AFTER `address`;";
+	$db->query($query) or die("0.68 add country in enterprises ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_enterprises","state")) {	
+	$query="ALTER TABLE  `glpi_enterprises` ADD  `state` varchar(255)  DEFAULT '' AFTER `address`;";
+	$db->query($query) or die("0.68 add state in enterprises ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_enterprises","town")) {	
+	$query="ALTER TABLE  `glpi_enterprises` ADD  `town` varchar(255)  DEFAULT '' AFTER `address`;";
+	$db->query($query) or die("0.68 add town in enterprises ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_enterprises","postcode")) {	
+	$query="ALTER TABLE  `glpi_enterprises` ADD  `postcode` varchar(255)  DEFAULT '' AFTER `address`;";
+	$db->query($query) or die("0.68 add postcode in enterprises ".$lang["update"][90].$db->error());
+}
+
+
 
 } // fin 0.68 #####################################################################################
 

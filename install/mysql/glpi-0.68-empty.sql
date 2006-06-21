@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-06-16 19:20
+#GLPI Dump database on 2006-06-21 19:20
 
 ### Dump table glpi_alerts
 
@@ -296,8 +296,10 @@ DROP TABLE IF EXISTS `glpi_contacts`;
 CREATE TABLE `glpi_contacts` (
     `ID` int(11) NOT NULL auto_increment,
     `name` varchar(255),
+    `firstname` varchar(255),
     `phone` varchar(200),
     `phone2` varchar(200),
+    `mobile` varchar(255),
     `fax` varchar(200),
     `email` varchar(255),
     `type` tinyint(4) DEFAULT '1' NOT NULL,
@@ -1117,6 +1119,10 @@ CREATE TABLE `glpi_enterprises` (
     `name` varchar(200),
     `type` int(11) DEFAULT '0' NOT NULL,
     `address` text,
+    `postcode` varchar(255),
+    `town` varchar(255),
+    `state` varchar(255),
+    `country` varchar(255),
     `website` varchar(200),
     `phonenumber` varchar(200),
     `comments` text,
@@ -1148,8 +1154,7 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-06-16 16:26:36','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-06-16 19:18:34','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-06-21 19:20:18','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1722,10 +1727,10 @@ CREATE TABLE `glpi_profiles` (
    KEY interface (`interface`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,'1','1','67');
-INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,NULL,NULL,'r','r',NULL,NULL,'r',NULL,'r','r',NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','0','1','1','0','1','1','1','67');
-INSERT INTO glpi_profiles VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','w','w','w','w',NULL,'w','r','r','w','w',NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','67');
-INSERT INTO glpi_profiles VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','w','w','w','w','w','w','r','w','w','w','r','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','67');
+INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,'1','1','8388674');
+INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,NULL,NULL,'r','r',NULL,NULL,'r',NULL,'r','r',NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','0','1','1','0','1','1','1','8388674');
+INSERT INTO glpi_profiles VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','w','w','w','w',NULL,'w','r','r','w','w',NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674');
+INSERT INTO glpi_profiles VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','w','w','w','w','w','w','r','w','w','w','r','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674');
 
 ### Dump table glpi_reminder
 

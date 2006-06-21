@@ -72,6 +72,11 @@ define("CARTRIDGE_ITEM_TYPE","19");
 define("LICENSE_TYPE","20");
 define("LINK_TYPE","21");
 define("STATE_TYPE","22");
+define("PHONE_TYPE","23");//
+define("DEVICE_TYPE","24");
+define("REMINDER_TYPE","25");
+define("STAT_TYPE","26");
+define("GROUP_TYPE","27");
 
 // DEVICE TYPE
 define("MOBOARD_DEVICE","1");

@@ -708,7 +708,7 @@ for ($i=0;$i<$max['enterprises'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="enterprise_$i";
 
-	$query="INSERT INTO glpi_enterprises VALUES (NULL,'$val','".mt_rand(1,$max['enttype'])."','address $i','http://www.$val.com/','phone $i','comment enterprises $i','N','fax $i','info@ent$i.com','notes enterprises $i')";
+	$query="INSERT INTO glpi_enterprises VALUES (NULL,'$val','".mt_rand(1,$max['enttype'])."','address $i', 'postcode $i','town $i','state $i','country $i','http://www.$val.com/','phone $i','comment enterprises $i','N','fax $i','info@ent$i.com','notes enterprises $i')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$entID=$db->insert_id();
 	add_documents(ENTERPRISE_TYPE,$entID);
@@ -719,7 +719,7 @@ $items=array("Jean Dupont","John Smith","Louis Durand","Pierre Martin","Auguste 
 for ($i=0;$i<$max['contacts'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="contact $i";
-	$query="INSERT INTO glpi_contacts VALUES (NULL,'$val','phone $i','phone2 $i','fax $i','email $i','".mt_rand(1,$max['contact_type'])."','comment $i','N','notes contact $i')";
+	$query="INSERT INTO glpi_contacts VALUES (NULL,'$val','','phone $i','phone2 $i','mobile $i','fax $i','email $i','".mt_rand(1,$max['contact_type'])."','comment $i','N','notes contact $i')";
 //	echo $query."<br>";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$conID=$db->insert_id();

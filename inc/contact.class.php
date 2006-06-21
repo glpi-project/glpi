@@ -61,18 +61,19 @@ class Contact extends CommonDBTM{
 	}
 
 
-	function GetAdress() {
+	function GetAddress() {
 		global $db;
 
-		$query = "SELECT  glpi_enterprises.address as address  FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
+		$query = "SELECT  glpi_enterprises.name, glpi_enterprises.address, glpi_enterprises.postcode, glpi_enterprises.town, glpi_enterprises.state, glpi_enterprises.country FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 		
 		if ($result = $db->query($query)) 
 		if ($db->numrows($result)){
-						
-			return $db->result($result, 0, "address");
-		} else {
-			return "";
-		}
+				if ($data=$db->fetch_assoc($result))	
+					return $data;
+		} 
+		
+		return "";
+		
 	}
 
 	function GetWebsite() {
@@ -156,6 +157,11 @@ class Contact extends CommonDBTM{
 		echo "<td>";
 		autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],30);	
 		echo "</td></tr>";
+
+		echo "<tr><td>".$lang["common"][43].":	</td>";
+		echo "<td>";
+		autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],30);	
+		echo "</td></tr>";
 	
 		echo "<tr><td>".$lang["financial"][29].": 	</td>";
 		echo "<td>";
@@ -166,6 +172,11 @@ class Contact extends CommonDBTM{
 		echo "<tr><td>".$lang["financial"][29]." 2:	</td><td>";
 		autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],30);
 		echo "</td></tr>";
+
+		echo "<tr><td>".$lang["common"][42].":	</td><td>";
+		autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],30);
+		echo "</td></tr>";
+
 	
 		echo "<tr><td>".$lang["financial"][30].":	</td><td>";
 		autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],30);
