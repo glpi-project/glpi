@@ -1025,6 +1025,7 @@ function showFormConfigGen($target){
 	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='4'>".$lang["setup"][100]."</th></tr>";
+
 	$default_language=$cfg_glpi["default_language"];
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
 		foreach ($cfg_glpi["languages"] as $key => $val){
@@ -1049,26 +1050,8 @@ function showFormConfigGen($target){
 	echo "<option value=\"5\"";  if($level==5){ echo " selected";} echo ">".$lang["setup"][107]."</option>";
 	echo "</select></td>";
 
-	echo "<td align='center'> ".$lang["setup"][116]." </td><td>";
-	dropdownYesNoInt("auto_assign",$cfg_glpi["auto_assign"]);
-	echo "</td></tr>";
+	echo "<td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $cfg_glpi["expire_events"] ."\"></td></tr>";
 
-
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][109]." </td><td><input type=\"text\" name=\"expire_events\" value=\"". $cfg_glpi["expire_events"] ."\"></td>";
-
-	echo "<td align='center'>".$lang["setup"][221]."</td><td>";
-	showCalendarForm("form","date_fiscale",$cfg_glpi["date_fiscale"],0);	
-	echo "</td></tr>";
-
-
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][219]."</td><td>";
-	dropdownYesNoInt("permit_helpdesk",$cfg_glpi["permit_helpdesk"]);
-	echo "</td>";
-
-	echo "<td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
-	for ($i=-1;$i<=100;$i++)
-		echo "<option value='$i' ".($i==$cfg_glpi["cartridges_alarm"]?" selected ":"").">$i</option>";
-	echo "</select></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][124]." </td><td>";
 	dropdownYesNoInt("auto_add_users",$cfg_glpi["auto_add_users"]);
@@ -1083,15 +1066,55 @@ function showFormConfigGen($target){
 	echo "</select></td></tr>";
 
 
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["setup"][10]."</strong></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][115]."</td><td><select name='cartridges_alarm'>";
+	for ($i=-1;$i<=100;$i++)
+		echo "<option value='$i' ".($i==$cfg_glpi["cartridges_alarm"]?" selected ":"").">$i</option>";
+	echo "</select></td>";
+
+	echo "<td align='center'>".$lang["setup"][221]."</td><td>";
+	showCalendarForm("form","date_fiscale",$cfg_glpi["date_fiscale"],0);	
+	echo "</td></tr>";
+
+
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["title"][24]."</strong></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][219]."</td><td>";
+	dropdownYesNoInt("permit_helpdesk",$cfg_glpi["permit_helpdesk"]);
+	echo "</td>";
+
+	echo "<td align='center'> ".$lang["setup"][116]." </td><td>";
+	dropdownYesNoInt("auto_assign",$cfg_glpi["auto_assign"]);
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][405]."</td><td>";
+	dropdownYesNoInt("followup_on_update_ticket",$cfg_glpi["followup_on_update_ticket"]);
+	echo "</td><td colspan='2'>&nbsp;</td></tr>";
+
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["common"][41]."</strong></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][246]." (".$lang["common"][44].")</td><td>";
+	dropdownContractAlerting("contract_alerts",$cfg_glpi["contract_alerts"]);
+	echo "</td>";
+
+	echo "<td align='center'>".$lang["setup"][247]." (".$lang["common"][44].")</td><td>";
+	echo "<select name=\"infocom_alerts\">";
+	echo "<option value=\"0\" ".($cfg_glpi["infocom_alerts"]==0?" selected ":"")." >-----</option>";
+	echo "<option value=\"".pow(2,ALERT_END)."\" ".($cfg_glpi["infocom_alerts"]==pow(2,ALERT_END)?" selected ":"")." >".$lang["financial"][80]." </option>";
+	echo "</select>";
+	echo "</td></tr>";
+
+
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["setup"][306]."</strong></td></tr>";
+
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][306]." </td><td><select name=\"auto_update_check\">";
 	$check=$cfg_glpi["auto_update_check"];
 	echo "<option value=\"0\" ".($check==0?" selected":"").">".$lang["setup"][307]." </option>";
 	echo "<option value=\"7\" ".($check==7?" selected":"").">".$lang["setup"][308]." </option>";
 	echo "<option value=\"30\" ".($check==30?" selected":"").">".$lang["setup"][309]." </option>";
-	echo "</select></td>";
-	echo "<td align='center'>".$lang["setup"][405]."</td><td>";
-	dropdownYesNoInt("followup_on_update_ticket",$cfg_glpi["followup_on_update_ticket"]);
-	echo "</td></tr>";
+	echo "</select></td><td colspan='2'>&nbsp;</td></tr>";
+
 
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][401]." </td><td><input type=\"text\" name=\"proxy_name\" value=\"". $cfg_glpi["proxy_name"] ."\"></td>";
@@ -1100,16 +1123,6 @@ function showFormConfigGen($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][403]." </td><td><input type=\"text\" name=\"proxy_user\" value=\"". $cfg_glpi["proxy_user"] ."\"></td>";
 	echo "<td align='center'>".$lang["setup"][404]." </td><td><input type=\"text\" name=\"proxy_password\" value=\"". $cfg_glpi["proxy_password"] ."\"></td></tr>";
 	
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][246]." </td><td>";
-	dropdownContractAlerting("contract_alerts",$cfg_glpi["contract_alerts"]);
-	echo "</td>";
-	echo "<td align='center'>".$lang["setup"][247]."</td><td>";
-	echo "<select name=\"infocom_alerts\">";
-	echo "<option value=\"0\" ".($cfg_glpi["infocom_alerts"]==0?" selected ":"")." >-----</option>";
-	echo "<option value=\"".pow(2,ALERT_END)."\" ".($cfg_glpi["infocom_alerts"]==pow(2,ALERT_END)?" selected ":"")." >".$lang["financial"][80]." </option>";
-	echo "</select>";
-	echo "</td></tr>";
-
 	echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></td></tr>";
 	
 	echo "</table></div>";	
