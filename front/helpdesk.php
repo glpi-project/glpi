@@ -65,7 +65,7 @@ else $computer=0;
 
 if(empty($_POST["status"])) $_POST["status"] = "new";
 $error = "";
-
+$REFERER="";
 if (isset($_SERVER["HTTP_REFERER"]))
 	$REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($_POST["_referer"])) $REFERER=$_POST["_referer"];
