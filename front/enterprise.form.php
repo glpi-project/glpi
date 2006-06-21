@@ -154,14 +154,14 @@ else
 				showNotesForm($_SERVER["PHP_SELF"],ENTERPRISE_TYPE,$tab["ID"]);
 				break;	
 			case 15 :
+				echo "<div align='center'><table border='0'><tr><td valign='top'>";
 				showDeviceManufacturer($tab["ID"]);
-				break;	
-			case 16 :
+				echo "</td><td valign='top'>";
 				showInternalDeviceManufacturer($tab["ID"]);
-				break;	
-			case 17 :
+				echo "</td><td valign='top'>";
 				showInfocomEnterprise($tab["ID"]);
-				break;					
+				echo "</td></tr></table></div>";
+				break;	
 			default : 
 				if (!display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
 					showAssociatedContact($tab["ID"]);
