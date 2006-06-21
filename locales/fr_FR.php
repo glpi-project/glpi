@@ -1391,11 +1391,11 @@ $lang["stats"][33]="Min(s)";
 $lang["stats"][34]="Sec(s)";
 $lang["stats"][35]="Ticket(s)";
 $lang["stats"][44]="Nom de l'entreprise";
-$lang["stats"][45]="Nombre de tickets par matériel";
+$lang["stats"][45]="Par matériel";
 $lang["stats"][46]="Statistiques par matériel";
-$lang["stats"][47]="Statistiques par caractéristiques des tickets";
-$lang["stats"][48]="basé sur les tickets";
-$lang["stats"][49]="basé sur les suivis";
+$lang["stats"][47]="Par tickets";
+$lang["stats"][48]="(assigné)";
+$lang["stats"][49]="(suivis)";
 
 $lang["title"][0]="Centre de contrôle";
 $lang["title"][1]="Accès au Helpdesk seulement";
