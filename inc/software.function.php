@@ -604,6 +604,7 @@ function uninstallSoftware($ID,$dohistory=1) {
 function showSoftwareInstalled($instID,$withtemplate='') {
 
 	global $db,$cfg_glpi, $lang;
+	if (!haveRight("software","r")) return false;
         
 	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
 	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
