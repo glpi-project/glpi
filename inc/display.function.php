@@ -1028,12 +1028,18 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 * @param $withtemplate if = 2 only display (add from template) : could not modify element
 * @return nothing
 */
-function showCalendarForm($form,$element,$value='',$withtemplate=''){
+function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0){
 		global $HTMLRel,$lang,$cfg_glpi;
 		$rand=mt_rand();
-		if (empty($value)) $value=date("Y-m-d");
-		echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='10' value=\"".convDate($value)."\">";
-		echo "<input id='data$rand' type='hidden' name='$element' size='10' value=\"".$value."\">";
+		if (empty($value)) {
+			if ($with_time) $value=date("Y-m-d H:i");
+			else 	$value=date("Y-m-d");
+		}
+
+		$size=10;
+		if ($with_time) $size=17;
+		echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='$size' value=\"".convDate($value)."\">";
+		echo "<input id='data$rand' type='hidden' name='$element' size='$size' value=\"".$value."\">";
 		
 		if ($withtemplate!=2){
 			echo "&nbsp;<img id='button$rand' src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'>";
@@ -1044,7 +1050,11 @@ function showCalendarForm($form,$element,$value='',$withtemplate=''){
 			echo "Calendar.setup(";
 			echo "{";
 			echo "inputField : 'data$rand',"; // ID of the input field
-			echo "ifFormat : '%Y-%m-%d',"; // the date format
+			if ($with_time){
+				echo "ifFormat : '%Y-%m-%d %H:%M',"; // the date format
+				echo "showsTime : true,"; 
+				}
+			else echo "ifFormat : '%Y-%m-%d',"; // the datetime format
 			echo "button : 'button$rand'"; // ID of the button
 			echo "});";
 			echo "</script>";

@@ -362,10 +362,17 @@ class Job extends CommonDBTM{
 			unset($input["minute"]);
 		}
 		
-		$input["date"] = date("Y-m-d H:i:s");
+		// Add and close for central helpdesk
+		if (isset($input["add_close"])){
+			$input["status"]="old_done";
+			unset($input["add_close"]);
+		}
+
+		if (!isset($input["date"]))
+			$input["date"] = date("Y-m-d H:i:s");
 
 		if (strstr($input["status"],"old_"))
-			$input["closedate"] = date("Y-m-d H:i:s");
+			$input["closedate"] = $input["date"];
 
 		return $input;
 	}

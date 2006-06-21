@@ -667,7 +667,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if (!empty($error)) {
 		echo "<div align='center'><strong>$error</strong></div>";
 	}
-	echo "<form method='post' action='$target' enctype=\"multipart/form-data\">";
+	echo "<form name='form_ticket' method='post' action='$target' enctype=\"multipart/form-data\">";
 	echo "<div align='center'>";
 
 //	if ($device_type!=0){
@@ -682,8 +682,8 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	}
 	echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1' align='center'><td>".$lang["common"][27].":</td>";
-	echo "<td align='center' colspan='3'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
+	//echo "<tr class='tab_bg_1' align='center'><td>".$lang["common"][27].":</td>";
+	//echo "<td align='center' colspan='3'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
 
 	if ($device_type==0&&$_SESSION["glpiprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
@@ -696,15 +696,10 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	}
 
 
-	echo "<tr><td class='tab_bg_2' align='center'>".$lang["joblist"][0].":</td>";
-	echo "<td align='center' class='tab_bg_2'><select name='status'>";
-	echo "<option value='new' ";
-	if (isset($_POST["status"])&&$_POST["status"]=="new") echo "selected";
-	echo ">".$lang["job"][14]."</option>";
-	echo "<option value='old_done' ";
-	if (isset($_POST["status"])&&$_POST["status"]=="old_done") echo "selected";	
-	echo ">".$lang["job"][15]."</option>";
-	echo "</select></td>";
+	echo "<tr><td class='tab_bg_2' align='center'>".$lang["common"][27].":</td>";
+	echo "<td align='center' class='tab_bg_2'>";
+	showCalendarForm("form_ticket","date",date("Y-m-d H:i"),0,1);	
+	echo "</td>";
 
 	echo "<td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2'>";
@@ -802,8 +797,10 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<td colspan='3'><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][2]."\" class='submit'>";
+	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
+	echo "<input type='submit' name='add' value=\"".$lang["buttons"][2]."\" class='submit'>";
+	echo "</td><td colspan='2' align='center'>";
+	echo "<input type='submit' name='add_close' value=\"".$lang["buttons"][26]."\" class='submit'>";
 	echo "</td></tr>";
 
 	if (haveRight("comment_all_ticket","1")){

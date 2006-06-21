@@ -626,7 +626,7 @@ $lang["job"][40]="Coût horaire";
 $lang["job"][41]="Côut fixe";
 $lang["job"][42]="Coût matériel";
 $lang["job"][43]="Coût total";
-$lang["job"][44]="Type de demande";
+$lang["job"][44]="Source de la demande";
 $lang["job"][45]="Ajouter un suivi";
 
 
