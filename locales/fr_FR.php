@@ -208,6 +208,8 @@ $lang["common"][38]="Déglobaliser";
 $lang["common"][39]="Duplique l'élément autant de fois qu'il y a de connections";
 $lang["common"][40]="Etes vous sur de vouloir déglobaliser cet élément ?";
 $lang["common"][41]="Alertes par email";
+$lang["common"][42]="Portable";
+$lang["common"][43]="Prénom";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
@@ -462,6 +464,10 @@ $lang["financial"][96]="Contrat(s) dont le préavis débute dans moins de 7 jour
 $lang["financial"][97]="Contrats dont le préavis débute dans moins de 30 jours";
 $lang["financial"][98]="Expiration";
 $lang["financial"][99]="Expiration+préavis";
+$lang["financial"][100]="Code Postal";
+$lang["financial"][101]="Ville";
+$lang["financial"][102]="Etat";
+$lang["financial"][103]="Pays";
 
 $lang["help"][0]="Bienvenue";
 $lang["help"][1]="Veuillez décrire votre problème";
