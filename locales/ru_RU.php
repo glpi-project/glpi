@@ -204,6 +204,9 @@ $lang["common"][38]="Unglobalize";
 $lang["common"][39]="Duplicate the element as many once as there are connections"; 
 $lang["common"][40]="Do you really want to unglobalize this item ?"; 
 $lang["common"][41]="Email Alarms"; 
+$lang["common"][42]="Mobile"; 
+$lang["common"][43]="Firstname"; 
+$lang["common"][44]="Default value"; 
 
 $lang["computers"][0]="Добавление компьютера..."; 
 $lang["computers"][9]="ОС"; 
@@ -457,6 +460,11 @@ $lang["financial"][96]="Contracts which have notice beginning in less than 7 day
 $lang["financial"][97]="Contracts which have notice beginning in less than 30 days"; 
 $lang["financial"][98]="Конечная дата"; 
 $lang["financial"][99]="End Date + Notice"; 
+$lang["financial"][100]="Zip Code"; 
+$lang["financial"][101]="City"; 
+$lang["financial"][102]="State"; 
+$lang["financial"][103]="Country"; 
+$lang["financial"][104]="Associated Items"; 
 
 $lang["help"][0]="Добро пожаловать"; 
 $lang["help"][1]="Опишите Вашу проблему"; 
@@ -613,7 +621,7 @@ $lang["job"][40]="Time cost";
 $lang["job"][41]="Fixed cost"; 
 $lang["job"][42]="Стоимость материалов"; 
 $lang["job"][43]="Общая стоимость"; 
-$lang["job"][44]="Request Type"; 
+$lang["job"][44]="Request source"; 
 $lang["job"][45]="Add a followup"; 
 
 $lang["joblist"][0]="Статус"; 
@@ -1363,11 +1371,11 @@ $lang["stats"][33]="Минут";
 $lang["stats"][34]="Секунд"; 
 $lang["stats"][35]="Заявок"; 
 $lang["stats"][44]="Наименование предприятия"; 
-$lang["stats"][45]="Number of tickets by hardware"; 
+$lang["stats"][45]="By hardware"; 
 $lang["stats"][46]="Statistics by hardware"; 
-$lang["stats"][47]="Statistics by characteristics of the tickets"; 
-$lang["stats"][48]="based on tickets"; 
-$lang["stats"][49]="based on followups"; 
+$lang["stats"][47]="By tickets"; 
+$lang["stats"][48]="(assigned)"; 
+$lang["stats"][49]="(followups)"; 
 
 $lang["title"][0]="Центр управления"; 
 $lang["title"][1]="Helpdesk Access Only"; 

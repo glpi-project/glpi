@@ -204,6 +204,9 @@ $lang["common"][38]="Unglobalize";
 $lang["common"][39]="Duplicate the element as many once as there are connections"; 
 $lang["common"][40]="Do you really want to unglobalize this item ?"; 
 $lang["common"][41]="Email Alarms"; 
+$lang["common"][42]="Mobile"; 
+$lang["common"][43]="Firstname"; 
+$lang["common"][44]="Default value"; 
 
 $lang["computers"][0]="Computer hinzufügen..."; 
 $lang["computers"][9]="Betriebssystem"; 
@@ -457,6 +460,11 @@ $lang["financial"][96]="Contracts which have notice beginning in less than 7 day
 $lang["financial"][97]="Contracts which have notice beginning in less than 30 days"; 
 $lang["financial"][98]="Enddatum"; 
 $lang["financial"][99]="Enddatum mit Notiz"; 
+$lang["financial"][100]="Zip Code"; 
+$lang["financial"][101]="City"; 
+$lang["financial"][102]="State"; 
+$lang["financial"][103]="Country"; 
+$lang["financial"][104]="Associated Items"; 
 
 $lang["help"][0]="Willkommen"; 
 $lang["help"][1]="Bitte beschreiben Sie Ihr Problem"; 

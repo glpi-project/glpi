@@ -204,6 +204,9 @@ $lang["common"][38]="Unglobalize";
 $lang["common"][39]="Duplicate the element as many once as there are connections"; 
 $lang["common"][40]="Do you really want to unglobalize this item ?"; 
 $lang["common"][41]="Email Alarms"; 
+$lang["common"][42]="Mobile"; 
+$lang["common"][43]="Firstname"; 
+$lang["common"][44]="Default value"; 
 
 $lang["computers"][0]="Adicionar computador"; 
 $lang["computers"][9]="Sistema Operativo"; 
@@ -457,6 +460,11 @@ $lang["financial"][96]="Contracts which have notice beginning in less than 7 day
 $lang["financial"][97]="Contracts which have notice beginning in less than 30 days"; 
 $lang["financial"][98]="End Date"; 
 $lang["financial"][99]="End Date + Notice"; 
+$lang["financial"][100]="Zip Code"; 
+$lang["financial"][101]="City"; 
+$lang["financial"][102]="State"; 
+$lang["financial"][103]="Country"; 
+$lang["financial"][104]="Associated Items"; 
 
 $lang["help"][0]="Bem Vindo"; 
 $lang["help"][1]="Por favor descreva seu problema"; 
@@ -613,7 +621,7 @@ $lang["job"][40]="Custo de tempo";
 $lang["job"][41]="Custo fixo"; 
 $lang["job"][42]="Custo de material"; 
 $lang["job"][43]="Custo total"; 
-$lang["job"][44]="Request Type"; 
+$lang["job"][44]="Request source"; 
 $lang["job"][45]="Add a followup"; 
 
 $lang["joblist"][0]="Estado"; 
@@ -1363,11 +1371,11 @@ $lang["stats"][33]="Minuto(s)";
 $lang["stats"][34]="Segundo(s)"; 
 $lang["stats"][35]="Senha(s)"; 
 $lang["stats"][44]="Nome de empresa"; 
-$lang["stats"][45]="Number of tickets by hardware"; 
+$lang["stats"][45]="By hardware"; 
 $lang["stats"][46]="Statistics by hardware"; 
-$lang["stats"][47]="Statistics by characteristics of the tickets"; 
-$lang["stats"][48]="based on tickets"; 
-$lang["stats"][49]="based on followups"; 
+$lang["stats"][47]="By tickets"; 
+$lang["stats"][48]="(assigned)"; 
+$lang["stats"][49]="(followups)"; 
 
 $lang["title"][0]="Centro de Comando"; 
 $lang["title"][1]="Acesso Somente ao Apóio técnico"; 
