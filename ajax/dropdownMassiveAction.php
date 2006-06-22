@@ -57,7 +57,7 @@ header_nocache();
 				dropdownSoftwareToInstall("lID",0,1);
 			break;
 			case "connect":
-				dropdownConnect(COMPUTER_TYPE,"connect_item");
+				dropdownConnect(COMPUTER_TYPE,$_POST["type"],"connect_item");
 				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 			break;
 			case "disconnect":

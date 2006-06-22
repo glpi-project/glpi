@@ -85,7 +85,8 @@ if (isset($_POST["changepw"])) {
         echo "</td></tr></table></div>";
 	if ($_SESSION["glpiextauth"]!=1&&haveRight("password_update","1"))
 		showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	showSortForm($_SERVER["PHP_SELF"]);
+	if (haveRight("show_ticket","1"))
+		showSortForm($_SERVER["PHP_SELF"]);
 	showLangSelect($_SERVER["PHP_SELF"]);
 	commonFooter();
 }

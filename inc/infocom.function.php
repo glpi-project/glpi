@@ -681,7 +681,7 @@ if ($db->result($result,0,0)>0) {
 	$text=$lang["buttons"][23];
 }
 if (haveTypeRight($device_type,"w"))
-echo "<span onClick=\"window.open('".$HTMLRel."front/infocom.show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
+echo "<span onClick=\"window.open('".$HTMLRel."front/infocom.show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
 }
 
 

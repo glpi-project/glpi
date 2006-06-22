@@ -567,8 +567,12 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$nineth_column="";
 		// Job Controls
 		
-		if ($_SESSION["glpiprofile"]["interface"]=="central")
-		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+		if ($_SESSION["glpiprofile"]["interface"]=="central"){
+			if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]) 
+				$nineth_column.="&nbsp;";
+			else 
+				$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+		}
 		else
 		$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
 
@@ -663,6 +667,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	// Prints a nice form to add jobs
 
 	global $cfg_glpi, $lang,$cfg_glpi,$REFERER;
+	if (!haveRight("create_ticket","1")) return false;
 	
 	if (!empty($error)) {
 		echo "<div align='center'><strong>$error</strong></div>";
@@ -696,17 +701,19 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	}
 
 
-	echo "<tr><td class='tab_bg_2' align='center'>".$lang["common"][27].":</td>";
-	echo "<td align='center' class='tab_bg_2'>";
-	showCalendarForm("form_ticket","date",date("Y-m-d H:i"),0,1);	
-	echo "</td>";
-
-	echo "<td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
-	echo "<td align='center' class='tab_bg_2'>";
-	$priority=3;
-	if (isset($_POST["priority"])) $priority=$_POST["priority"];
-	dropdownPriority("priority",$priority);
-	echo "</td></tr>";
+	if (haveRight("update_ticket","1")){
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][27].":</td>";
+		echo "<td align='center' class='tab_bg_2'>";
+		showCalendarForm("form_ticket","date",date("Y-m-d H:i"),0,1);	
+		echo "</td>";
+	
+		echo "<td align='center'>".$lang["job"][44].":</td>";
+		echo "<td align='center'>";
+		$request_type=1;
+		if (isset($_POST["request_type"])) $request_type=$_POST["request_type"];
+		dropdownRequestType("request_type",$request_type);
+		echo "</td></tr>";
+	}
 
 
 	// Need comment right to add a followup with the realtime
@@ -733,11 +740,13 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	}
 
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["job"][44].":</td>";
-	echo "<td align='center'>";
-	$request_type=1;
-	if (isset($_POST["request_type"])) $request_type=$_POST["request_type"];
-	dropdownRequestType("request_type",$request_type);
+	echo "<tr class='tab_bg_2'>";
+
+	echo "<td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
+	echo "<td align='center' class='tab_bg_2'>";
+	$priority=3;
+	if (isset($_POST["priority"])) $priority=$_POST["priority"];
+	dropdownPriority("priority",$priority);
 	echo "</td>";
 
 	echo "<td>".$lang["common"][36].":</td>";
@@ -747,17 +756,31 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td></tr>";
 
-
-	echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
-	echo "<td align='center'>";
-	dropdownAllUsers("author",$author);
-	echo "</td>";
 	
 
-	echo "<td>".$lang["buttons"][3].":</td>";
-	echo "<td align='center'>";
-	dropdownUsers("assign",$assign,"own_ticket");
-	echo "</td></tr>";
+	if (haveRight("update_ticket","1")){
+		echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
+		echo "<td align='center'>";
+		dropdownAllUsers("author",$author);
+		echo "</td>";
+	} else {
+	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td>";
+	}
+
+	if (haveRight("update_ticket","1")||haveRight("assign_ticket","1")){
+			echo "<td>".$lang["buttons"][3].":</td>";
+			echo "<td align='center'>";
+			dropdownUsers("assign",$assign,"own_ticket");
+			echo "</td></tr>";
+	} else if (haveRight("steal_ticket","1")) {
+		echo "<td>".$lang["buttons"][3].":</td>";
+		echo "<td align='center'>";
+		dropdownUsers("assign",$assign,"ID");
+		echo "</td></tr>";
+	}else {
+		echo "<td>&nbsp;</td><td>&nbsp;</td></tr>";
+	}
+
 
 
 

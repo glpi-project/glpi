@@ -48,8 +48,8 @@ class Phone extends CommonDBTM {
 	function defineOnglets($withtemplate){
 		global $lang,$cfg_glpi;
 		$ong=array();
-		if (haveRight("computer","r"))
-			$ong[1]=$lang["title"][26];
+		
+		$ong[1]=$lang["title"][26];
 		if (haveRight("contract_infocom","r"))
 			$ong[4]=$lang["Menu"][26];
 		if (haveRight("document","r"))
