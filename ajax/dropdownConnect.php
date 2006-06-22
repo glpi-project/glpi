@@ -40,7 +40,7 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 
-	checkTypeRight($_POST["idtable"],"w");
+	checkTypeRight($_POST["fromtype"],"w");
 
 	// Make a select box
 

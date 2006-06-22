@@ -129,14 +129,16 @@ class SetupSearchDisplay extends CommonDBTM{
 			$dp[DOCUMENT_TYPE]=$lang["Menu"][17];
 		if (haveRight("user","r"))
 			$dp[USER_TYPE]=$lang["Menu"][14];
-		if (haveRight("group","r"))
-			$dp[GROUP_TYPE]=$lang["Menu"][36];
 		if (haveRight("consumable","r"))
 			$dp[CONSUMABLE_TYPE]=$lang["Menu"][32];
+		if (haveRight("cartridge","r"))
+			$dp[CARTRIDGE_TYPE]=$lang["Menu"][21];
 		if (haveRight("link","r"))
 			$dp[LINK_TYPE]=$lang["setup"][87];
 		if (haveRight("phone","r"))
 			$dp[PHONE_TYPE]=$lang["Menu"][34];
+		if (haveRight("group","r"))
+			$dp[GROUP_TYPE]=$lang["Menu"][36];
 		
 		echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";

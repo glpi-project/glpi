@@ -91,7 +91,7 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='device_type' value='$type'>";
-				dropdownConnect(COMPUTER_TYPE,"item");
+				dropdownConnect(COMPUTER_TYPE,$type,"item");
 				echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
 				echo "</form>";
 			} else echo "&nbsp;";
@@ -108,7 +108,7 @@ function showConnect($target,$ID,$type) {
 			echo "<input type='hidden' name='connect' value='connect'>";
 			echo "<input type='hidden' name='sID' value='$ID'>";
 			echo "<input type='hidden' name='device_type' value='$type'>";
-			dropdownConnect(COMPUTER_TYPE,"item");
+			dropdownConnect(COMPUTER_TYPE,$type,"item");
 			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
 
 			echo "</form>";

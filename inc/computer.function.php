@@ -227,7 +227,7 @@ function showConnections($target,$ID,$withtemplate='') {
 					echo "<input type='hidden' name='connect' value='connect'>";
 					echo "<input type='hidden' name='cID' value='$ID'>";
 					echo "<input type='hidden' name='device_type' value='".$type."'>";
-					dropdownConnect($type,"item",$withtemplate);
+					dropdownConnect($type,COMPUTER_TYPE,"item",$withtemplate);
 					echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
 					echo "</form>";
 				}

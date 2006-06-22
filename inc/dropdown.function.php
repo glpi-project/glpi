@@ -687,7 +687,7 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 			$result=$db->query($query);
 			if ($db->numrows($result)>0){
 				while ($data=$db->fetch_array($result)){
-					$group_where=" OR FK_groups = '".$data["FK_groups"]."' ";
+					$group_where.=" OR FK_groups = '".$data["FK_groups"]."' ";
 				}
 			}
 			
@@ -782,7 +782,7 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 * @param $myname
 * @return nothing (print out an HTML select box)
 */
-function dropdownConnect($type,$myname,$onlyglobal=0) {
+function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 
 
 	global $HTMLRel,$cfg_glpi;
@@ -807,7 +807,7 @@ echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 echo "           onLoading:function(request)\n";
 echo "            {Element.show('search_spinner_$myname$rand');},\n";
-echo "           method:'post', parameters:'searchText=' + value+'&idtable=$type&myname=$myname&onlyglobal=$onlyglobal'\n";
+echo "           method:'post', parameters:'searchText=' + value+'&fromtype=$fromtype&idtable=$type&myname=$myname&onlyglobal=$onlyglobal'\n";
 echo "})})\n";
 echo "</script>\n";
 
