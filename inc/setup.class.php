@@ -173,7 +173,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		
 		echo "<div align='center'>";
 		// Defined items
-		$query="SELECT * from glpi_display WHERE type='$type' AND Fk_users='$IDuser' order by rank";
+		$query="SELECT * from glpi_display WHERE type='$type' AND FK_users='$IDuser' order by rank";
 		
 		$result=$db->query($query);
 		$numrows=0;
