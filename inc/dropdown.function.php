@@ -64,6 +64,7 @@ function dropdown($table,$myname) {
 * @param $table the dropdown table from witch we want values on the select
 * @param $myname the name of the HTML select
 * @param $value the preselected value we want
+* @param $display_comments display the comments near the dropdown
 * @return nothing (display the select box)
 *
 */
@@ -216,9 +217,11 @@ function dropdownNoValue($table,$myname,$value) {
 * Think it's unused now.
 *
 *
-* @param $value
-* @param $myname
-* @param $all
+* @param $myname select name
+* @param $value default value
+* @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
+* @param $all Nobody or All display for none selected
+* @param $display_comments display comments near the dropdown
 * @return nothing (print out an HTML select box)
 *
 *
@@ -663,6 +666,7 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 *
 * @param $myname select name
 * @param $value preselected value.
+* @param $colspan colspan to display the search engine
 * @return nothing (print out an HTML select box)
 */
 function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
@@ -778,8 +782,10 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 *
 *
 *
-* @param $type
-* @param $myname
+* @param $type type to connect
+* @param $fromtype from where the connection is
+* @param $myname select name
+* @param $onlyglobal display only global devices (used for templates)
 * @return nothing (print out an HTML select box)
 */
 function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
@@ -887,8 +893,9 @@ function dropdownConnectPort($ID,$type,$myname) {
 * Make a select box for  software to install
 *
 *
-* @param $myname
-* @param $withtemplate
+* @param $myname select name
+* @param $withtemplate is it a template computer ?
+* @param $masiveaction is it a massiveaction select ?
 * @return nothing (print out an HTML select box)
 */
 function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {

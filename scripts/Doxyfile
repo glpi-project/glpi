@@ -77,8 +77,7 @@ RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = */_relpos.php \
-                         */CAS/* \
-                         */ezpdf/* \
+                         */lib/* \
                          */plugins/* \
                          */DOCUMENTATION/*
 EXAMPLE_PATH           = 
