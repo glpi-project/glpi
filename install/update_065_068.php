@@ -543,6 +543,9 @@ if(!TableExists("glpi_groups")) {
 	KEY `ldap_field` (`ldap_field`)
 	) TYPE=MyISAM;";
 	$db->query($query) or die("0.68 add groups ".$lang["update"][90].$db->error());
+
+	$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES ('".GROUP_TYPE."', '16', '1', '0')";
+	$db->query($query) or die("0.68 add groups search config".$lang["update"][90].$db->error());
 }
 
 if(!TableExists("glpi_users_groups")) {

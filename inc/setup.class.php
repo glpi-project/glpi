@@ -50,7 +50,7 @@ class SetupSearchDisplay extends CommonDBTM{
 	}
 
 	function activatePerso($input){
-		global $db;
+		global $db,$SEARCH_OPTION;
 		$query="SELECT * FROM glpi_display WHERE type='".$input["type"]."' AND FK_users='0'";
 		$result=$db->query($query);
 		if ($db->numrows($result)){
@@ -60,7 +60,26 @@ class SetupSearchDisplay extends CommonDBTM{
 				$this->fields=$data;
 				$this->addToDB();
 			}
-		} else return false;
+		} else {
+		// No items in the global config
+			if (count($SEARCH_OPTION[$input["type"]])>1){
+				$done=false;
+				foreach($SEARCH_OPTION[$input["type"]] as $key => $val)
+				if (is_array($val)&&$key!=1&&!$done){
+					$data["FK_users"]=$input["FK_users"];
+					$data["type"]=$input["type"];
+					$data["type"]=$input["type"];
+					$data["rank"]=1;
+					$data["num"]=$key;
+					$this->fields=$data;
+					$this->addToDB();
+					$done=true;
+				}
+				
+
+			}
+
+		};
 
 	}
 
