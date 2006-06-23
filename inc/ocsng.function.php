@@ -446,7 +446,7 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 *
 * Get all config of the OCSNG mode
 *
-*
+* @param $id int : ID of the OCS config (default value 1)
 *@return Value of $confVar fields or false if unfound.
 *
 **/
@@ -466,6 +466,9 @@ function getOcsConf($id) {
 *
 *@param $ocs_id integer : glpi computer id
 *@param $glpi_id integer : ocs computer id.
+*@param $cfg_ocs array : ocs config
+*@param $computer_updates array : already updated fields of the computer
+*@param $dohistory log updates on history ?
 *
 *@return nothing.
 *
@@ -521,6 +524,9 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 *
 *@param $ocs_id integer : glpi computer id
 *@param $glpi_id integer : ocs computer id.
+*@param $cfg_ocs array : ocs config
+*@param $computer_updates array : already updated fields of the computer
+*@param $dohistory boolean : log changes ?
 *
 *@return nothing.
 *
@@ -848,8 +854,12 @@ function ocsEditLock($target,$ID){
 *
 * 
 *
+*@param $device_type integer : device type
 *@param $glpi_id integer : glpi computer id.
 *@param $ocs_id integer : ocs computer id (DEVICEID).
+*@param $cfg_ocs array : ocs config
+*@param $dohistory boolean : log changes ?
+*@param $import_device array : already imported devices
 *
 *@return Nothing (void).
 *
@@ -1212,8 +1222,12 @@ function ocsAddDevice($device_type,$dev_array) {
 *
 * 
 *
+*@param $device_type integer : device type 
 *@param $glpi_id integer : glpi computer id.
 *@param $ocs_id integer : ocs computer id (DEVICEID).
+*@param $cfg_ocs array : ocs config
+*@param $dohistory boolean : log changes ?
+*@param $import_periph array : already imported periph
 *
 *@return Nothing (void).
 *
@@ -1509,12 +1523,14 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 *
 * This function create a new software in GLPI with some general datas.
 *
-*@param $computer : id of a computer.
-*@param $name : name of the software.
-*@param $version : version of the software.
-*@param $publisher : id for a enterprise.
 *
-*@return integer : inserted software id.
+*@param $glpi_id integer : glpi computer id.
+*@param $ocs_id integer : ocs computer id (DEVICEID).
+*@param $cfg_ocs array : ocs config
+*@param $dohistory boolean : log changes ?
+*@param $import_software array : already imported softwares
+*
+*@return Nothing (void).
 *
 **/
 function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory) {

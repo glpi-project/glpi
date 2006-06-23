@@ -289,6 +289,7 @@ function showKbCategoriesall($target,$contains='')
 * Print out kb catégories
 *
 * @param $parentID integer
+* @param $contains
 * 
 *
 * 
@@ -347,6 +348,7 @@ function showKbCategories($parentID=0,$contains='')
 * Print out kb item in each categories
 *
 * @param $parentID integer
+* @param $contains
 * 
 *
 * 
@@ -420,6 +422,7 @@ function showKbItem($ID)
 * Print out (html) show item : question and answer
 *
 * @param $ID integer
+* @param $linkauthor
 * 
 *
 * 
@@ -625,6 +628,7 @@ function faqShowCategoriesall($target,$contains)
 * To be commented
 * 
 * @param $parentID
+* @param $contains
 * 
 * 
 * @return 
@@ -686,6 +690,7 @@ function faqShowCategories($parentID=0,$contains='')
 * To be commented
 * 
 * @param $parentID
+* @param $contains
 * 
 * 
 * @return 

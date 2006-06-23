@@ -88,6 +88,8 @@ return $out;
 *@param $value value to display
 *@param $num column number
 *@param $row  row number
+*@param $deleted is it a deleted item ?
+*@param $extraparam extra parameters for display
 *
 *@return string to display
 *
@@ -144,6 +146,7 @@ return $out;
 *
 *
 *@param $type display type (0=HTML, 1=Sylk,2=PDF)
+*@param $title title of file : used for PDF
 *
 *@return string to display
 *
@@ -180,6 +183,7 @@ return $out;
 *@param $type display type (0=HTML, 1=Sylk,2=PDF)
 *@param $cols number of columns
 *@param $rows  number of rows
+*@param $fixed  used tab_cadre_fixe table for HTML export ?  
 *
 *@return string to display
 *

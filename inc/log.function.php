@@ -43,6 +43,8 @@
 * @param $id_device
 * @param $device_type
 * @param $changes
+* @param $device_internal_type
+* @param $linked_action
 **/
 function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',$linked_action='0') {
 
@@ -73,6 +75,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 *
 * @param $id_device
 * @param $device_type
+* @param $key
 * @param $oldvalues
 * @param $newvalues
 **/

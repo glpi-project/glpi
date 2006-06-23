@@ -42,9 +42,7 @@
 * HTML array
 * 
 *
-*@param 
-*
-*@return Nothing (display)
+* @return Nothing (display)
 *
 **/
 

@@ -155,7 +155,7 @@ class DBmysql {
 	/**
 	* Move current pointer of a Mysql result to the specific row
 	* @param $result MySQL result handler
-	* @param $seek row to move current pointer
+	* @param $num row to move current pointer
 	* @return boolean
 	*/
 	function data_seek($result,$num){

@@ -371,6 +371,7 @@ function update_device_quantity($newNumber,$compDevID){
 * Unlink a device and a computer witch link ID is $compDevID (on table glpi_computer_device)
 *
 * @param $compDevID ID of the computer-device link (table glpi_computer_device)
+* @param $dohistory log history updates ?
 * @returns boolean
 **/
 function unlink_device_computer($compDevID,$dohistory=1){

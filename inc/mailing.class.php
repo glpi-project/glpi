@@ -555,7 +555,7 @@ class MailingAlert
 	/**
 	* Constructor
 	* @param $type mailing type (new,attrib,followup,finish)
-	* @param $resa ReservationResa to mail
+	* @param $message Message to send
 	* @return nothing 
 	*/
 	function MailingAlert ($type,$message)

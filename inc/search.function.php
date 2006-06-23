@@ -1054,7 +1054,8 @@ return $GROUPBY;
 * Generic Function to add ORDER BY to a request
 *
 *
-*@param $field field to add
+*@param $type ID of the device type
+*@param $ID field to add
 *@param $order order define
 *@param $key item number
 *
@@ -1103,10 +1104,9 @@ function addOrderBy($type,$ID,$order,$key=0){
 * Generic Function to add select to a request
 *
 *
-*@param $field field of the item to add
+*@param $ID ID of the item to add
 *@param $num item num in the request
 *@param $type device type
-*@param $table table of the item to add
 *@param $meta is it a meta item ?
 *@param $meta_type meta type table ID
 *
@@ -1192,11 +1192,10 @@ default:
 * Generic Function to add where to a request
 *
 *
-*@param $field field of the item to add
-*@param $table table of the item to add
 *@param $val item num in the request
 *@param $nott is it a negative serach ?
 *@param $type device type
+*@param $ID ID of the item to search
 *@param $meta is a meta search (meta=2 in search.class.php)
 *
 *@return select string
@@ -1364,6 +1363,7 @@ default:
 *@param $data array containing data results
 *@param $num item num in the request
 *@param $type device type
+*@param $linkfield field used to link
 *
 *
 *@return string to print
@@ -1654,6 +1654,7 @@ switch ($table){
 *@param $device_type device_type for search on computer device
 *@param $meta is it a meta item ?
 *@param $meta_type meta type table
+*@param $linkfield linkfield for LeftJoin
 *
 *
 *@return Left join string
@@ -1873,10 +1874,11 @@ switch ($new_table){
 * Generic Function to add left join for meta items
 *
 *
-*@param $reference_type reference item type ID 
+*@param $from_type reference item type ID 
 *@param $to_type item type to add
 *@param $already_link_tables2 array of tables already joined
 *@param $num meta number
+*@param $null Used LEFT JOIN (null generation) or INNER JOIN for strict join
 *
 *
 *@return Meta Left join string
