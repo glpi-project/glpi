@@ -75,12 +75,15 @@ else if (isset($_POST["adduser"]))
 	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deleteuser"]))
+else if (isset($_POST["deleteuser"]))
 {
 	checkRight("group","w");
 
-	deleteUserGroup($_GET["ID"]);
-	logEvent($_GET["gID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][49]);
+	if (count($_POST["item"]))
+	foreach ($_POST["item"] as $key => $val)
+		deleteUserGroup($key);
+
+	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
@@ -101,7 +104,7 @@ else
 		if (!empty($tab['ID']))
 		switch($_SESSION['glpi_onglet']){
 		case -1 :	
-			showGroupUser($tab["ID"]);
+			showGroupUser($_SERVER["PHP_SELF"],$tab["ID"]);
 			showGroupDevice($tab["ID"]);
 			break;
 		case 2 : 
@@ -110,7 +113,7 @@ else
 
 		default :
 			if (!display_plugin_action(GROUP_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
-				showGroupUser($tab["ID"]);
+				showGroupUser($_SERVER["PHP_SELF"],$tab["ID"]);
 			}
 			
 		break;

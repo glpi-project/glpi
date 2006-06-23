@@ -58,16 +58,39 @@ function showGroupDevice($ID){
 	echo "</table></div>";
 }
 
-function showGroupUser($ID){
+function showGroupUser($target,$ID){
 	global $db,$cfg_glpi, $lang, $HTMLRel;
 	
 	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
 
 	$canedit=haveRight("group","w");
 	
-	$nb_per_line=5;
+	$nb_per_line=3;
+	if ($canedit) $headerspan=$nb_per_line*2;
+	else $headerspan=$nb_per_line;
 
-	echo "<div align='center'><table class='tab_cadre'><tr><th colspan='$nb_per_line'>".$lang["Menu"][14]."</th></tr>";
+	echo "<form name='groupuser_form' id='groupuser_form' method='post' action=\"$target\">";
+
+
+
+	if ($canedit){
+
+		echo "<div align='center'>";
+		echo "<table  class='tab_cadre_fixe'>";
+		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
+		echo "<input type='hidden' name='FK_groups' value='$ID'>";
+		dropdownAllUsers("FK_users","glpi_users",0);
+		echo "</td><td align='center' class='tab_bg_2'>";
+		echo "<input type='submit' name='adduser' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</td></tr>";
+	
+		echo "</table></div><br>";
+
+	}
+
+
+
+	echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$lang["Menu"][14]."</th></tr>";
 	$query="SELECT glpi_users.*,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) WHERE glpi_users_groups.FK_groups='$ID' ORDER BY glpi_users.name, glpi_users.realname";
 	
 	$result=$db->query($query);
@@ -82,36 +105,45 @@ function showGroupUser($ID){
 			if (empty($data["realname"]))
 				$name=$data["name"];
 			else $name=$data["realname"];
+			if ($canedit){
+				echo "<td width='10'>";
+				$sel="";
+				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+				echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+				echo "</td>";
+			}
+
 			echo "<td><a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ID"]."'>".$name.($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</a>";
-			echo "&nbsp;";
-			if ($canedit)
-				echo "<a href='".$_SERVER["PHP_SELF"]."?deleteuser=deleteuser&amp;gID=$ID&amp;ID=".$data["linkID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
+			//	echo "<a href='".$_SERVER["PHP_SELF"]."?deleteuser=deleteuser&amp;gID=$ID&amp;ID=".$data["linkID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
 			
 			echo "</td>";
 			$i++;
 		}
 		while ($i%$nb_per_line!=0){
 			echo "<td>&nbsp;</td>";
+			if ($canedit) echo "<td>&nbsp;</td>";
 			$i++;
 		}
 		echo "</tr>";
 	}
 	
-	echo "</table></div><br>";
+	echo "</table></div>";
 
 	if ($canedit){
-		echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/group.form.php\">";
-		echo "<table  class='tab_cadre_fixe'>";
-	
-		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
-		echo "<input type='hidden' name='FK_groups' value='$ID'>";
-		dropdownAllUsers("FK_users","glpi_users",0);
-		echo "</td><td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='adduser' value=\"".$lang["buttons"][8]."\" class='submit'>";
-		echo "</td></tr>";
-	
-		echo "</table></form></div>";
+		echo "<div align='center'>";
+		echo "<table cellpadding='5' width='80%'>";
+		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=all'>".$lang["buttons"][18]."</a></td>";
+			
+		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=none'>".$lang["buttons"][19]."</a>";
+		echo "</td><td align='left' width='80%'>";
+		echo "<input type='submit' name='deleteuser' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "</td>";
+		echo "</table>";
+				
+		echo "</div>";
+
 	}
+		echo "</form>";
 
 }
 
