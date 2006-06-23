@@ -115,7 +115,7 @@ function commonHeader($title,$url)
 	
 	$maintain=array();
 	//////// ASSISTANCE
-	if (haveRight("observe_ticket","1")||haveRight("show_ticket","1"))
+	if (haveRight("observe_ticket","1")||haveRight("show_ticket","1")||haveRight("create_ticket","1"))
 		$maintain[$lang["Menu"][5]]=array("tracking.php","t");
 	if (haveRight("create_ticket","1"))
 		$maintain[$lang["Menu"][31]]=array("helpdesk.php","h");

@@ -40,7 +40,7 @@ include ($phproot . "/inc/includes.php");
 
 if (isset($_POST["type"]))$type=$_POST["type"];
 elseif (isset($_GET["type"]))$type=$_GET["type"];
-else $type=COMPUTER_TYPE;
+else $type=0;
 
 if (!isset($_SESSION['glpi_searchconfig'])) $_SESSION['glpi_searchconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_searchconfig']=$_GET['onglet'];
@@ -63,7 +63,7 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
 	$setupdisplay->down($_POST);
 }
-	$setupdisplay->title($type);
+	$type=$setupdisplay->title($type);
 	$setupdisplay->showForm($type);
 	commonFooter();
 ?>

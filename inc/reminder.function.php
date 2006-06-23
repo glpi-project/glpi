@@ -40,13 +40,13 @@ function showCentralReminder($type="private"){
 	$today=date("Y-m-d H:i:s");
 	
 	if($type=="public"){ // show public reminder
-	$query="SELECT * FROM glpi_reminder WHERE type='public' AND (begin>='$today' or rv='0')";
+	$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0')";
 	$titre="<a href=\"".$HTMLRel."front/reminder.php\">".$lang["reminder"][1]."</a>";
 	}else{ // show private reminder
-	$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (begin>='$today' or rv='0') ";
+	$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (end>='$today' or rv='0') ";
 	$titre="<a href=\"".$HTMLRel."front/reminder.php\">".$lang["reminder"][0]."</a>";
 	}
-
+	
 	
 	$result = $db->query($query);
 
