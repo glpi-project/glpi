@@ -270,19 +270,22 @@ function markAllRows( container_id ) {
 
         for ( var i = 0; i < rows.length; i++ ) {
 
-        checkbox = rows[i].getElementsByTagName( 'input' )[0];
-
-        if ( checkbox && checkbox.type == 'checkbox' ) {
-            unique_id = checkbox.name + checkbox.value;
-            if ( checkbox.disabled == false ) {
-                checkbox.checked = true;
-                if ( typeof(marked_row[unique_id]) == 'undefined' || !marked_row[unique_id] ) {
-                    rows[i].className += ' marked';
-                    marked_row[unique_id] = true;
-                }
-            }
-            }
-        }
+		checkboxes = rows[i].getElementsByTagName( 'input' );
+	
+		for ( var j = 0; j < checkboxes.length; j++ ) {
+			checkbox=checkboxes[j];
+			if ( checkbox && checkbox.type == 'checkbox' ) {
+				unique_id = checkbox.name + checkbox.value;
+				if ( checkbox.disabled == false ) {
+					checkbox.checked = true;
+					if ( typeof(marked_row[unique_id]) == 'undefined' || !marked_row[unique_id] ) {
+						rows[i].className += ' marked';
+						marked_row[unique_id] = true;
+					}
+				}
+			}
+		}
+	}
 
         return true;
 }
@@ -301,17 +304,18 @@ function unMarkAllRows( container_id ) {
     var checkbox;
 
         for ( var i = 0; i < rows.length; i++ ) {
+		checkboxes = rows[i].getElementsByTagName( 'input' );
 
-        checkbox = rows[i].getElementsByTagName( 'input' )[0];
-
-        if ( checkbox && checkbox.type == 'checkbox' ) {
-            unique_id = checkbox.name + checkbox.value;
-            checkbox.checked = false;
-            rows[i].className = rows[i].className.replace(' marked', '');
-            marked_row[unique_id] = false;
-        }
-        }
-
+		for ( var j = 0; j < checkboxes.length; j++ ) {
+			checkbox=checkboxes[j];
+			if ( checkbox && checkbox.type == 'checkbox' ) {
+				unique_id = checkbox.name + checkbox.value;
+				checkbox.checked = false;
+				rows[i].className = rows[i].className.replace(' marked', '');
+				marked_row[unique_id] = false;
+			}
+		}
+	}
         return true;
 }
 
