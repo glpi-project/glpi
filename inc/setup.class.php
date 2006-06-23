@@ -152,7 +152,7 @@ class SetupSearchDisplay extends CommonDBTM{
 				$type=TYPEDOC_TYPE;
 		}
 		if (haveRight("document","r")){
-			$dp[DOCUMENT_TYPE]=$lang["Menu"][17];
+			$dp[DOCUMENT_TYPE]=$lang["Menu"][27];
 			if (!$type)
 				$type=DOCUMENT_TYPE;
 		}
