@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-06-21 19:20
+#GLPI Dump database on 2006-06-23 16:51
 
 ### Dump table glpi_alerts
 
@@ -681,6 +681,7 @@ INSERT INTO glpi_display VALUES ('113','23','4','4','0');
 INSERT INTO glpi_display VALUES ('114','23','40','5','0');
 INSERT INTO glpi_display VALUES ('115','23','9','6','0');
 INSERT INTO glpi_display VALUES ('116','23','7','7','0');
+INSERT INTO glpi_display VALUES ('117','27','16','1','0');
 
 ### Dump table glpi_doc_device
 
@@ -1154,7 +1155,6 @@ CREATE TABLE `glpi_event_log` (
    KEY itemtype (`itemtype`)
 ) TYPE=MyISAM;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-06-21 19:20:18','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
