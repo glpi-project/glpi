@@ -105,41 +105,87 @@ class SetupSearchDisplay extends CommonDBTM{
 		global $lang,$cfg_glpi;
 
 		$dp=array();
-		if (haveRight("computer","r"))
+		if (haveRight("computer","r")){
 			$dp[COMPUTER_TYPE]=$lang["Menu"][0];
-		if (haveRight("networking","r"))
+			if (!$type)
+				$type=COMPUTER_TYPE;
+			}
+		if (haveRight("networking","r")){
 			$dp[NETWORKING_TYPE]=$lang["Menu"][1];
-		if (haveRight("printer","r"))
+			if (!$type)
+				$type=NETWORKING_TYPE;
+			}
+		if (haveRight("printer","r")){
 			$dp[PRINTER_TYPE]=$lang["Menu"][2];
-		if (haveRight("monitor","r"))
+			if (!$type)
+				$type=PRINTER_TYPE;
+			}
+		if (haveRight("monitor","r")){
 			$dp[MONITOR_TYPE]=$lang["Menu"][3];
-		if (haveRight("peripheral","r"))
+			if (!$type)
+				$type=MONITOR_TYPE;
+			}
+		if (haveRight("peripheral","r")){
 			$dp[PERIPHERAL_TYPE]=$lang["Menu"][16];
-		if (haveRight("software","r"))
+			if (!$type)
+				$type=PERIPHERAL_TYPE;
+			}
+		if (haveRight("software","r")){
 			$dp[SOFTWARE_TYPE]=$lang["Menu"][4];
+			if (!$type)
+				$type=SOFTWARE_TYPE;
+			}
 		if (haveRight("contact_enterprise","r")){
 			$dp[CONTACT_TYPE]=$lang["Menu"][22];
 			$dp[ENTERPRISE_TYPE]=$lang["Menu"][23];
+			if (!$type)
+				$type=CONTACT_TYPE;
 		}
-		if (haveRight("contract","r"))
+		if (haveRight("contract_infocom","r")){
 			$dp[CONTRACT_TYPE]=$lang["Menu"][25];
-		if (haveRight("typedoc","r"))
+			if (!$type)
+				$type=CONTRACT_TYPE;
+		}
+		if (haveRight("typedoc","r")){
 			$dp[TYPEDOC_TYPE]=$lang["document"][7];
-		if (haveRight("document","r"))
+			if (!$type)
+				$type=TYPEDOC_TYPE;
+		}
+		if (haveRight("document","r")){
 			$dp[DOCUMENT_TYPE]=$lang["Menu"][17];
-		if (haveRight("user","r"))
+			if (!$type)
+				$type=DOCUMENT_TYPE;
+		}
+		if (haveRight("user","r")){
 			$dp[USER_TYPE]=$lang["Menu"][14];
-		if (haveRight("consumable","r"))
+			if (!$type)
+				$type=USER_TYPE;
+		}
+		if (haveRight("consumable","r")){
 			$dp[CONSUMABLE_TYPE]=$lang["Menu"][32];
-		if (haveRight("cartridge","r"))
+			if (!$type)
+				$type=CONSUMABLE_TYPE;
+		}
+		if (haveRight("cartridge","r")){
 			$dp[CARTRIDGE_TYPE]=$lang["Menu"][21];
-		if (haveRight("link","r"))
+			if (!$type)
+				$type=CARTRIDGE_TYPE;
+		}
+		if (haveRight("link","r")){
 			$dp[LINK_TYPE]=$lang["setup"][87];
-		if (haveRight("phone","r"))
+			if (!$type)
+				$type=LINK_TYPE;
+		}
+		if (haveRight("phone","r")){
 			$dp[PHONE_TYPE]=$lang["Menu"][34];
-		if (haveRight("group","r"))
+			if (!$type)
+				$type=PHONE_TYPE;
+		}
+		if (haveRight("group","r")){
 			$dp[GROUP_TYPE]=$lang["Menu"][36];
-		
+			if (!$type)
+				$type=GROUP_TYPE;
+		}
 		echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 		echo $lang["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
@@ -159,7 +205,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		echo "<li "; if ($_SESSION['glpi_searchconfig']==1){ echo "class='actif'";} echo  "><a href='".$cfg_glpi["root_doc"]."/front/setup.display.php?onglet=1&amp;type=$type'>".$lang["central"][13]."</a></li>";
 		echo "<li "; if ($_SESSION['glpi_searchconfig']==2){ echo "class='actif'";} echo  "><a href='".$cfg_glpi["root_doc"]."/front/setup.display.php?onglet=2&amp;type=$type'>".$lang["central"][12]."</a></li>";
 		echo "</ul></div>";
-
+		return $type;
 	}
 
 	function showForm($type){
