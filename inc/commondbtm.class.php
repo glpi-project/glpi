@@ -237,6 +237,7 @@ class CommonDBTM {
 	* Update some elements of an item in the database.
 	*
 	*@param $input array : the _POST vars returned bye the item form when press update
+	*@param $history boolean : do history log ?
 	*
 	*
 	*@return Nothing (call to the class member)

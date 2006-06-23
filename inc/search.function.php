@@ -28,7 +28,7 @@
  ------------------------------------------------------------------------
 */
 
-/** \file functions_search.php
+/** \file search.function.php
 * Generic functions for Search Engine
 */
 
