@@ -342,7 +342,6 @@ function displayMessageAfterRedirect(){
 *
 * @param $title title of the page
 * @param $url not used anymore.
-* @param $name name of the user who want to display the header
 **/
 function helpHeader($title,$url) {
 	// Print a nice HTML-head for help page
@@ -793,7 +792,7 @@ echo "<div id='footer'><div align='right'>";
 /**
 * Print the helpdesk 
 *
-* @param $name string : name of the user who want to display the Helpdesk
+* @param $ID int : ID of the user who want to display the Helpdesk
 * @param $from_helpdesk int : is display from the helpdesk.php ?
 * @return nothing (print the helpdesk)
 */
@@ -912,6 +911,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 * @param $target page would be open when click on the option (last,previous etc)
 * @param $parameters parameters would be passed on the URL.
 * @param $item_type_output item type display - if >0 display export PDF et Sylk form
+* @param $item_type_output item type display - if >0 display export PDF et Sylk form
+* @param $item_type_output_param item type parameter for export
 * @return nothing (print a pager)
 *
 */
@@ -1026,6 +1027,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 * @param $element name of the element
 * @param $value default value to display
 * @param $withtemplate if = 2 only display (add from template) : could not modify element
+* @param $with_time use datetime format instead of date format ?
 * @return nothing
 */
 function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0){
@@ -1140,9 +1142,8 @@ function printCleanArray($tab,$pad=0){
 /**
 *  show onglet for central
 *
-* @param 
-* @param 
-* @param 
+* @param $target 
+* @param $actif
 * @return nothing
 */
 function showCentralOnglets($target,$actif) {

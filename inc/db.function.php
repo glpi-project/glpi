@@ -139,6 +139,7 @@ else return $name;
 * @param $table
 * @param $ID
 * @param $wholename
+* @param $level
 * @return string name
 */
 // DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE

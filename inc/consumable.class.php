@@ -277,6 +277,7 @@ class Consumable extends CommonDBTM {
 	* UnLink the consumable identified by $ID
 	*
 	*@param $ID : consumable identifier
+	*@param $id_user : ID of the user giving the consumable
 	*
 	*@return boolean
 	*

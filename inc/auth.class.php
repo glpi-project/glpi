@@ -115,7 +115,7 @@ class Identification
 	* Try a LDAP connection
 	*
 	* @param $host LDAP host to connect
-	* @param $basedn Basedn to use
+	* @param $dn Basedn to use
 	* @param $login Login to try
 	* @param $pass Password to try
 	* @param $condition Condition used to restrict login

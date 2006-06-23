@@ -56,7 +56,7 @@ function use_plugin ($name) {
 
 /**
  * This function executes a hook.
- * @param string $name Name of hook to fire
+ * @param $name Name of hook to fire
  * @return mixed $data
  */
 function do_hook ($name) {

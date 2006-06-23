@@ -313,7 +313,7 @@ function sendFile($file,$filename){
 }
 
 /**
-* Convert a value in byte, kbyte, mégabyte etc..
+* Convert a value in byte, kbyte, megabyte etc...
 *
 *
 *

@@ -306,6 +306,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 *
 * @param $myname
 * @param $value
+* @param $display_comments
 * @return nothing (print out an HTML select box)
 * 
 */
@@ -322,6 +323,7 @@ function dropdownAllUsers($myname,$value,$display_comments=1) {
 *
 * @param $value
 * @param $myname
+* @param $right
 * @return nothing (print out an HTML select box)
 */
 function dropdownUsersID($myname,$value,$right) {
@@ -645,6 +647,9 @@ function dropdownYesNoInt($name,$value){
 *
 * @param $name select name
 * @param $value preselected value.
+* @param $none display none choice ? 
+* @param $read display read choice ? 
+* @param $write display write choice ? 
 * @return nothing (print out an HTML select box)
 */
 function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
@@ -895,7 +900,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 *
 * @param $myname select name
 * @param $withtemplate is it a template computer ?
-* @param $masiveaction is it a massiveaction select ?
+* @param $massiveaction is it a massiveaction select ?
 * @return nothing (print out an HTML select box)
 */
 function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {

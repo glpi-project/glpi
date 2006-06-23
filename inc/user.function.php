@@ -174,9 +174,8 @@ return (!empty($cfg_glpi["imap_auth_server"])||!empty($cfg_glpi["ldap_host"])||!
 /**
 *  show onglet for Users
 *
-* @param 
-* @param 
-* @param 
+* @param $target 
+* @param $actif
 * @return nothing
 */
 function showUsersTitle($target,$actif) {
