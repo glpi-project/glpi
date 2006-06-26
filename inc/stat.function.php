@@ -56,11 +56,11 @@ function getStatsItems($date1,$date2,$type){
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["assign"];
 				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["assign"]."'>";
-				if (empty($key["realname"])
+				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
 					$val[$i]["link"].=$key["realname"];
-					if (empty($key["firstname"])	
+					if (empty($key["firstname"]))	
 						$val[$i]["link"].=" ".$key["firstname"];
 				}
 				$val[$i]["link"].="</a>";
@@ -76,11 +76,11 @@ function getStatsItems($date1,$date2,$type){
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["author"];
 				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["author"]."'>";
-				if (empty($key["realname"])
+				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
 					$val[$i]["link"].=$key["realname"];
-					if (empty($key["firstname"])	
+					if (empty($key["firstname"]))	
 						$val[$i]["link"].=" ".$key["firstname"];
 				}
 				$val[$i]["link"].="</a>";
@@ -109,11 +109,11 @@ function getStatsItems($date1,$date2,$type){
 			foreach($nomUsr as $key){
 				$val[$i]["ID"]=$key["ID"];
 				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["ID"]."'>";
-				if (empty($key["realname"])
+				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
 					$val[$i]["link"].=$key["realname"];
-					if (empty($key["firstname"])	
+					if (empty($key["firstname"]))	
 						$val[$i]["link"].=" ".$key["firstname"];
 				}
 				$val[$i]["link"].="</a>";

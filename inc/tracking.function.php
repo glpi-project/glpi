@@ -492,6 +492,9 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		else
 		$fourth_col="<strong>".$job->getAuthorName()."</strong>";
 
+		if ($job->fields["FK_group"])
+			$fourth_col.="<br>".getDropdownName("glpi_groups",$job->fields["FK_group"]);
+
 		echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,0,$align);
 
 		// Fifth column
@@ -844,7 +847,7 @@ function getRealtime($realtime){
 		return $output;
 		}
 
-function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 	
 	global $cfg_glpi,  $lang,$HTMLRel,$phproot;
@@ -899,7 +902,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='1' align='center'>".$lang["joblist"][0].":";
+	echo "<td colspan='1' align='center'>".$lang["joblist"][0].":<br>";
 	echo "<select name='status'>";
 	echo "<option value='new' ".($status=="new"?" selected ":"").">".$lang["joblist"][9]."</option>";
 	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$lang["joblist"][18]."</option>";
@@ -912,17 +915,19 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][25]."</option>";	
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][20]."</option>";
 	echo "</select></td>";
-	echo "<td  colspan='2' align='center'>".$lang["common"][37]."&nbsp;:&nbsp;";
-	if (!haveRight("show_ticket","1")) 
-		dropdownUsers("author",$author,"ID");
-	else dropdownUsersTracking("author",$author,"author");
+	echo "<td  colspan='1' align='center'>".$lang["common"][37].":<br>";
+	dropdownUsersTracking("author",$author,"author");
 	echo "</td>";
 
-	echo "<td colspan='1' align='center'>".$lang["joblist"][2].":&nbsp;";
+	echo "<td  colspan='1' align='center'>".$lang["common"][35].":<br>";
+	dropdownValue("glpi_groups","group",$group);
+	echo "</td>";
+
+	echo "<td colspan='1' align='center'>".$lang["joblist"][2].":<br>";
 	dropdownPriority("priority",$priority,1);
 	echo "</td>";
 
-	echo "<td colspan='2' align='center'>".$lang["common"][36].":&nbsp;";
+	echo "<td colspan='2' align='center'>".$lang["common"][36].":<br>";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 
@@ -934,18 +939,16 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	dropdownAllItems("item",$type,$item);
 	echo "</td></tr></table>";
 	echo "</td>";
-	echo "<td colspan='3' align='center'>".$lang["job"][5].":&nbsp;";
+	echo "<td colspan='3' align='center'>".$lang["job"][5].":<br>";
 
 	echo $lang["job"][27].":&nbsp;";
-	if (!haveRight("show_ticket","1")) 
-		dropdownUsers("assign",$assign,"ID");
-	else dropdownUsers("assign",$assign,"own_ticket",1);
-	echo "&nbsp;";
+	dropdownUsers("assign",$assign,"own_ticket",1);
+	echo "<br>";
 	echo $lang["job"][28].":&nbsp;";
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 
 	echo "</td>";
-	echo "<td align='center'>".$lang["job"][44].":&nbsp;";
+	echo "<td align='center'>".$lang["job"][44].":<br>";
 	dropdownRequestType("request_type",$request_type);
 	echo "</td>";
 	echo "</tr>";
@@ -996,10 +999,9 @@ if($extended)	{
  $elts=array("both"=>$lang["joblist"][6]." / ".$lang["job"][7],"contents"=>$lang["joblist"][6],"followup" => $lang["job"][7],"ID"=>"ID");
  echo "<select name='field2'>";
  foreach ($elts as $key => $val){
- $selected="";
- if ($field2==$key) $selected="selected";
- echo "<option value=\"$key\" $selected>$val</option>";
- 
+	$selected="";
+	if ($field2==$key) $selected="selected";
+	echo "<option value=\"$key\" $selected>$val</option>";
  }
  echo "</select>";
  
@@ -1026,11 +1028,14 @@ if($extended)	{
 }
 
 
-function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
 	// are listed.
+	// group = 0 : not use
+	// group = -1 : groups of the author
+	// group > 0 : specific group
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	
@@ -1162,6 +1167,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
 	
 	if ($author!=0) $where.=" AND glpi_tracking.author = '$author'";
+	
 
 	if ($request_type!=0) $where.=" AND glpi_tracking.request_type = '$request_type'";
 
@@ -1187,6 +1193,23 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		}
 	}
 
+
+	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
+	else if ($group==-1&&$author!=0){
+		// Get Author group's
+		$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='$author'";
+		$result_gp=$db->query($query_gp);
+		if ($db->numrows($result_gp)){
+			$where.=" OR ( ";
+			for ($i=0;$i<$db->numrows($result_gp);$i++){
+				if ($i>0) $where.=" OR ";
+				$where.=" glpi_tracking.FK_group = '".$db->result($result_gp,$i,"FK_groups")."' ";
+			}
+			$where.=" ) ";
+		}
+	}
+
+
 	if ($sort=="")
 		$sort="glpi_tracking.date";
 	if ($order=="")
@@ -1208,7 +1231,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 
 			// Pager
-			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
+			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
 			$parameters=$parameters2."&amp;sort=$sort&amp;order=$order";
 			if (ereg("user.info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
@@ -1262,6 +1285,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 					case "all": $title.=$lang["joblist"][20];break;
 				}
 				if ($author!=0) $title.=" - ".$lang["common"][37]." = ".getUserName($author);
+				if ($group>0) $title.=" - ".$lang["common"][35]." = ".getDropdownName("glpi_groups",$group);
 				if ($assign!=0) $title.=" - ".$lang["job"][27]." = ".getUserName($assign);
 				if ($request_type!=0) $title.=" - ".$lang["job"][44]." = ".getRequestTypeName($request_type);
 				if ($category!=0) $title.=" - ".$lang["common"][36]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
