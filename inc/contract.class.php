@@ -189,6 +189,14 @@ class Contract extends CommonDBTM {
 		dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
 		echo "</td></tr>";
 	
+		echo "<tr class='tab_bg_1'><td>".$lang["financial"][107].":		</td><td>";
+		dropdownContractRenewal("renewal",$this->fields["renewal"]);
+		echo "</td>";
+	
+	
+		echo "<td>&nbsp;</td>";
+		echo "<td>&nbsp;";
+		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][83].":		</td><td>";
 		dropdownContractTime("device_countmax",$this->fields["device_countmax"]);

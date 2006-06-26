@@ -610,7 +610,7 @@ for ($i=0;$i<$max['document'];$i++){
 for ($i=0;$i<$max['contract'];$i++){
 	$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);;
 
-	$query="INSERT INTO glpi_contracts VALUES (NULL,'contract $i','num $i','".mt_rand(100,10000)."','".mt_rand(1,$MAX_CONTRACT_TYPE)."','$date','".mt_rand(1,36)."','".mt_rand(1,3)."','".mt_rand(1,6)."','".mt_rand(1,12)."','".mt_rand(1,6)."','comment $i','compta num $i','N','08:00:00','19:00:00','09:00:00','16:00:00','Y','00:00:00','00:00:00','N','0','notes contract $i','0')";
+	$query="INSERT INTO glpi_contracts VALUES (NULL,'contract $i','num $i','".mt_rand(100,10000)."','".mt_rand(1,$MAX_CONTRACT_TYPE)."','$date','".mt_rand(1,36)."','".mt_rand(1,3)."','".mt_rand(1,36)."','".mt_rand(1,36)."','".mt_rand(1,6)."','comment $i','compta num $i','N','08:00:00','19:00:00','09:00:00','16:00:00','Y','00:00:00','00:00:00','N','0','notes contract $i','0','1')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$conID=$db->insert_id();
 	add_documents(CONTRACT_TYPE,$conID);

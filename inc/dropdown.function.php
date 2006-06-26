@@ -1144,4 +1144,31 @@ function dropdownContractAlerting($myname,$value){
 
 }
 
+
+/**
+* Print a select with hours
+*
+* Print a select named $name with hours options and selected value $value
+*
+*@param $name string : HTML select name
+*@param $value integer : HTML select selected value
+*
+*@return Nothing (display)
+*
+**/
+function dropdownHours($name,$value){
+
+	echo "<select name='$name'>";
+	for ($i=0;$i<10;$i++){
+	$tmp="0".$i;
+	$val=$tmp.":00";
+	echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+	}
+	for ($i=10;$i<24;$i++){
+	$val=$i.":00";
+	echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+	}
+	echo "</select>";	
+}	
+
 ?>
