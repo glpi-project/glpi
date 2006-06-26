@@ -50,7 +50,7 @@
 		$where.=" AND  (glpi_users.ID <> '".$_POST['value']."' ";
 				
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-		$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText']).")";
+		$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
 
 	$where.=")";	
 
@@ -58,7 +58,7 @@
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 	
-	$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['field']." AND glpi_tracking.".$_POST['field']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
+	$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['field']." AND glpi_tracking.".$_POST['field']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name $LIMIT";
 	$result = $db->query($query);
 
 	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
@@ -76,7 +76,12 @@
 	
 	if ($db->numrows($result)) {
 		while ($data=$db->fetch_array($result)) {
-			if (!empty($data["realname"])) $output = $data["realname"];
+			if (!empty($data["realname"])) {
+				$output = $data["realname"];
+				if (!empty($data["firstname"])) {
+					$output .= " ".$data["firstname"];
+				}
+			}
 			else $output = $data["name"];
 			
 			if ($data["ID"] == $value) {

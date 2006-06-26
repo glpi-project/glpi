@@ -64,7 +64,7 @@
 		$where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
 
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-		$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText']).")";
+		$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
 
 
 	$NBMAX=$cfg_glpi["dropdown_max"];
@@ -73,7 +73,7 @@
 	
 	$query = "SELECT glpi_users.* FROM glpi_users ";
 	if ($joinprofile) $query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users) LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles)";
-	$query.= " WHERE $where ORDER BY glpi_users.realname,glpi_users.name $LIMIT";
+	$query.= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name $LIMIT";
 	$result = $db->query($query);
 	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
@@ -93,7 +93,12 @@
 	
 	if ($db->numrows($result)) {
 		while ($data=$db->fetch_array($result)) {
-			if (!empty($data["realname"])) $output = $data["realname"];
+			if (!empty($data["realname"])) {
+				$output = $data["realname"];
+				if (!empty($data["firstname"])) {
+					$output .= " ".$data["firstname"];
+				}
+			}
 			else $output = $data["name"];
 			echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
    		}

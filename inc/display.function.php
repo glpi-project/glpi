@@ -307,7 +307,7 @@ function commonHeader($title,$url)
 	echo "<div style='font-size:9px; position:absolute; top:70px; right: 15px; text-align:center;'>";
 	echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
 	echo "</i><span class='nav_horl'><b>";
-	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"];
+	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"];
 	else echo $_SESSION["glpiname"];
 	echo "</b></span></div>\n";
 
@@ -420,7 +420,7 @@ function helpHeader($title,$url) {
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
 	echo "</a>";
 	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>";
-	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"];
+	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"];
 	else echo $_SESSION["glpiname"];
 	echo "</b></p></div>";
         echo "</td>";
@@ -802,10 +802,11 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 	if (!haveRight("create_ticket","1")) return false;
 
-	$query = "SELECT email,realname,name FROM glpi_users WHERE (ID = '$ID')";
+	$query = "SELECT email,realname,firstname,name FROM glpi_users WHERE (ID = '$ID')";
 	$result=$db->query($query);
 	$email = $db->result($result,0,"email");
 	$realname = $db->result($result,0,"realname");
+	$firstname = $db->result($result,0,"firstname");
 	$name = $db->result($result,0,"name");
 
 	// Get saved data from a back system
@@ -835,7 +836,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 	echo "<div align='center'><table  class='tab_cadre'>";
 
-	if ($realname!='') $name=$realname;
+	if ($realname!='') $name=$realname." ".$firstname;
 
 	echo "<tr><th colspan='2'>".$lang["help"][0]." $name, ".$lang["help"][1].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";

@@ -91,7 +91,7 @@ function showGroupUser($target,$ID){
 
 
 	echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$lang["Menu"][14]."</th></tr>";
-	$query="SELECT glpi_users.*,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) WHERE glpi_users_groups.FK_groups='$ID' ORDER BY glpi_users.name, glpi_users.realname";
+	$query="SELECT glpi_users.*,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) WHERE glpi_users_groups.FK_groups='$ID' ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
@@ -104,7 +104,12 @@ function showGroupUser($target,$ID){
 			}
 			if (empty($data["realname"]))
 				$name=$data["name"];
-			else $name=$data["realname"];
+			else {
+				$name=$data["realname"];
+				if (!empty($data["firstname"])){
+					$name.=" ".$data["firstname"];
+				}
+			}
 			if ($canedit){
 				echo "<td width='10'>";
 				$sel="";

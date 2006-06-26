@@ -489,6 +489,7 @@ global $cfg_glpi;
 		$_SESSION["glpiID"] = $this->user->fields['ID'];
 		$_SESSION["glpiname"] = $this->user->fields['name'];
 		$_SESSION["glpirealname"] = $this->user->fields['realname'];
+		$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
 		$_SESSION["glpilanguage"] = $this->user->fields['language'];
 		$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
 		$_SESSION["glpiauthorisation"] = true;

@@ -678,6 +678,40 @@ if(!FieldExists("glpi_contracts","renewal")) {
 		$db->query($query) or die("0.68 update contract facturation value ".$lang["update"][90].$db->error());
 	}
 
+// Add user fields
+if(!FieldExists("glpi_users","mobile")) {	
+	$query="ALTER TABLE  `glpi_users` ADD  `mobile` varchar(255)  DEFAULT '' AFTER `phone`;";
+	$db->query($query) or die("0.68 add mobile in users ".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_users","phone2")) {	
+	$query="ALTER TABLE  `glpi_users` ADD  `phone2` varchar(255)  DEFAULT '' AFTER `phone`;";
+	$db->query($query) or die("0.68 add phone2 in users ".$lang["update"][90].$db->error());
+}
+if(!FieldExists("glpi_users","firstname")) {	
+	$query="ALTER TABLE  `glpi_users` ADD  `firstname` varchar(255)  DEFAULT '' AFTER `realname`;";
+	$db->query($query) or die("0.68 add firstname in users ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_users","comments")) {	
+	$query="ALTER TABLE  `glpi_users` ADD  `comments` TEXT ;";
+	$db->query($query) or die("0.68 add comments in users ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","ldap_field_firstname")) {	
+	$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_firstname` varchar(200)  DEFAULT 'givenname' AFTER `ldap_field_realname`;";
+	$db->query($query) or die("0.68 add ldap_field_firstname in config ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","ldap_field_mobile")) {	
+	$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_mobile` varchar(200)  DEFAULT 'mobile' AFTER `ldap_field_phone`;";
+	$db->query($query) or die("0.68 add ldap_mobile in config ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config","ldap_field_phone2")) {	
+	$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_phone2` varchar(200)  DEFAULT 'homephone' AFTER `ldap_field_phone`;";
+	$db->query($query) or die("0.68 add ldap_field_phone2 in config ".$lang["update"][90].$db->error());
+}
+
 
 } // fin 0.68 #####################################################################################
 

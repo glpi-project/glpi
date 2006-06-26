@@ -321,7 +321,10 @@ if(!empty($cfg_glpi["ldap_host"])){
 					"email" => $cfg_glpi['ldap_field_email'], 
 					"location" => $cfg_glpi['ldap_field_location'], 
 					"phone" => $cfg_glpi['ldap_field_phone'], 
-					"realname" => $cfg_glpi['ldap_field_realname']
+					"phone2" => $cfg_glpi['ldap_field_phone2'], 
+					"mobile" => $cfg_glpi['ldap_field_mobile'], 
+					"realname" => $cfg_glpi['ldap_field_realname'],
+					"firstname" => $cfg_glpi['ldap_field_firstname']
 					);
 }
 
