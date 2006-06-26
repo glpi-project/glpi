@@ -55,7 +55,15 @@ if (!isset($_GET['start'])) $_GET['start']=0;
 if(empty($_GET["start"])) $_GET["start"] = 0;
 // Greet the user
 
-echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$lang["central"][0]." ".(empty($_SESSION["glpirealname"])?$_SESSION["glpiname"]:$_SESSION["glpirealname"]).", ".$lang["central"][1]."</span></b></div>";
+echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$lang["central"][0]." ";
+if (empty($_SESSION["glpirealname"]))
+	echo $_SESSION["glpiname"];
+else {
+	echo $_SESSION["glpirealname"];
+	if (!empty($_SESSION["glpifirstname"]))
+		echo " ".$_SESSION["glpifirstname"];	
+}
+echo ", ".$lang["central"][1]."</span></b></div>";
 
 checkNewVersionAvailable();
 

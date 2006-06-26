@@ -56,7 +56,13 @@ function getStatsItems($date1,$date2,$type){
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["assign"];
 				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["assign"]."'>";
-				$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
+				if (empty($key["realname"])
+					$val[$i]["link"].=$key["name"];
+				else {
+					$val[$i]["link"].=$key["realname"];
+					if (empty($key["firstname"])	
+						$val[$i]["link"].=" ".$key["firstname"];
+				}
 				$val[$i]["link"].="</a>";
 			$i++;
 			}
@@ -70,7 +76,13 @@ function getStatsItems($date1,$date2,$type){
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["author"];
 				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["author"]."'>";
-				$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
+				if (empty($key["realname"])
+					$val[$i]["link"].=$key["name"];
+				else {
+					$val[$i]["link"].=$key["realname"];
+					if (empty($key["firstname"])	
+						$val[$i]["link"].=" ".$key["firstname"];
+				}
 				$val[$i]["link"].="</a>";
 			$i++;
 			}
@@ -97,7 +109,13 @@ function getStatsItems($date1,$date2,$type){
 			foreach($nomUsr as $key){
 				$val[$i]["ID"]=$key["ID"];
 				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["ID"]."'>";
-				$val[$i]["link"].=empty($key["realname"])?$key["name"]:$key["realname"];
+				if (empty($key["realname"])
+					$val[$i]["link"].=$key["name"];
+				else {
+					$val[$i]["link"].=$key["realname"];
+					if (empty($key["firstname"])	
+						$val[$i]["link"].=" ".$key["firstname"];
+				}
 				$val[$i]["link"].="</a>";
 				$i++;
 			}
@@ -282,7 +300,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 function getNbIntervTech($date1,$date2)
 {
 	global $db;
-	$query = "SELECT distinct glpi_tracking.assign as assign, glpi_users.name as name, glpi_users.realname as realname";
+	$query = "SELECT distinct glpi_tracking.assign as assign, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_tracking.assign) ";
 	
@@ -290,7 +308,7 @@ function getNbIntervTech($date1,$date2)
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	
-	$query.= " order by realname, name";
+	$query.= " order by realname, firstname, name";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -308,7 +326,7 @@ function getNbIntervTech($date1,$date2)
 function getNbIntervTechFollowup($date1,$date2)
 {
 	global $db;
-	$query = "SELECT distinct glpi_followups.author as author, glpi_users.name as name, glpi_users.realname as realname";
+	$query = "SELECT distinct glpi_followups.author as author, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_followups ON (glpi_tracking.ID = glpi_followups.tracking) ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_followups.author) ";
@@ -317,7 +335,7 @@ function getNbIntervTechFollowup($date1,$date2)
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	
-	$query.= " order by realname, name";
+	$query.= " order by firstname, realname, name";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
@@ -384,12 +402,12 @@ function getNbIntervDropdown($dropdown)
 function getNbIntervAuthor($date1,$date2)
 {	
 	global $db;
-	$query = "SELECT DISTINCT glpi_tracking.author as ID, glpi_users.name as name, glpi_users.realname as realname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)";
+	$query = "SELECT DISTINCT glpi_tracking.author as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)";
 	$query.= " WHERE '1'='1' ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
-	$query.= " order by realname, name";
+	$query.= " order by realname, firstname, name";
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;

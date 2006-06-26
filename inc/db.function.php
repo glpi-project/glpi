@@ -34,36 +34,6 @@
 // ----------------------------------------------------------------------
 
 /**
-* Make a "where" clause for a mysql query on user table
-*
-*
-* Return a string witch contain the where clause, for a query 
-* under the glpi_users table, witch return users that have the right $authtype.
-* 
-*
-*@param $authtype auth type
-*@returns : string (in order to construct a SQL where clause)
-**/
-/*function searchUserbyType($authtype) {
-	switch ($authtype){
-		case "post-only" :
-			return " 1=1 ";
-			break;
-		case "normal" :
-			return " type ='super-admin' OR type ='admin' OR type ='normal'";
-			break;
-		case "admin":
-			return " type ='super-admin' OR type ='admin' ";
-			break;
-		case "super-admin":
-			return " type ='super-admin' ";
-			break;
-		default :
-			return "";
-		}
-}
-*/
-/**
 * Count the number of elements in a table.
 *
 * @param $table table name
@@ -469,7 +439,11 @@ function getUserName($ID,$link=0){
 			$before="<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$ID."\">";
 			$after="</a>";
 		}
-		if (strlen($data["realname"])>0) $username=$before.$data["realname"].$after;
+		if (strlen($data["realname"])>0) {
+			$temp=$data["realname"];
+			if (strlen($data["firstname"])>0)$temp.=" ".$data["firstname"];
+			$username=$before.$temp.$after;
+		}
 		else $username=$before.$data["name"].$after;
 
 		if ($link==2){

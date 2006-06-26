@@ -142,7 +142,7 @@ $where= " AND date_out IS NULL ORDER BY date_in";
 } else { //OLD
 $where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in";
 $leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.id_user) ";
-$addselect= ", glpi_users.realname AS REALNAME, glpi_users.name AS USERNAME ";
+$addselect= ", glpi_users.realname AS REALNAME, glpi_users.firstname AS FIRSTNAME, glpi_users.name AS USERNAME ";
 }
 
 $query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where ";
@@ -165,7 +165,11 @@ $query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin W
 
 		if ($show_old){
 			echo "<td align='center'>";
-			if (!empty($data["REALNAME"])) echo $data["REALNAME"];
+			if (!empty($data["REALNAME"])) {
+				echo $data["REALNAME"];
+				if (!empty($data["FIRSTNAME"]))
+				echo " ".$data["FIRSTNAME"];
+			}
 			else echo $data["USERNAME"];
 			echo "</td>";
 		}
