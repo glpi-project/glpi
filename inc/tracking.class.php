@@ -108,7 +108,7 @@ class Job extends CommonDBTM{
 				$ret["ID"]=$input["ID"];
 				$ret["assign"]=$input["assign"];
 				$input=$ret;
-	// 		} else { // Default case can only update contents if no followups already added
+	 		} else { // Default case can only update contents if no followups already added
 				$ret["ID"]=$input["ID"];
 				$ret["contents"]=$input["contents"];
 				$input=$ret;
@@ -119,8 +119,15 @@ class Job extends CommonDBTM{
 		if (isset($input["item"])&& $input["item"]!=0){
 			$input["computer"]=$input["item"];
 			$input["device_type"]=$input["type"];
+			
+			if ($this->fields['FK_group']){
+				$ci=new CommonItem;
+				$ci->getFromDB($input["device_type"],$input["computer"]);
+				if (isset($ci->obj->fields['FK_groups'])&&$ci->obj->fields['FK_groups']!=0){
+					$input["FK_group"] = $ci->obj->fields['FK_groups'];
+				}
 			}
-		else if (isset($input["type"])&&$input["type"]!=0)
+		} else if (isset($input["type"])&&$input["type"]!=0)
 			$input["device_type"]=0;
 	
 		// add Document if exists
@@ -336,7 +343,14 @@ class Job extends CommonDBTM{
 
 		if ($input["device_type"]==0)
 			$input["computer"]=0;
-
+		
+		if ($input["computer"]&&$input["device_type"]){
+			$ci=new CommonItem;
+			$ci->getFromDB($input["device_type"],$input["computer"]);
+			if (isset($ci->obj->fields['FK_groups'])&&$ci->obj->fields['FK_groups']!=0){
+				$input["FK_group"] = $ci->obj->fields['FK_groups'];
+			}
+		}
 
 		if (isset($input["emailupdates"])&&$input["emailupdates"]=="yes"&&empty($input["uemail"])){
 			$user=new User();

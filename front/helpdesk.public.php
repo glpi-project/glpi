@@ -70,7 +70,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 
 	if (!isset($_GET["ID"])) {
 		if (!isset($_GET["start"])) $_GET["start"]=0;
-		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"","","all",$_SESSION["glpiID"]);
+		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"","","all",$_SESSION["glpiID"],-1);
 		//showJobList($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_GET["show"],"","","",$_GET["start"]);
 	}
 	else {
