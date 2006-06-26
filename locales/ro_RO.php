@@ -756,6 +756,7 @@ $lang["mailing"][15]="Actualizeaza prioritatea ticket-ului";
 $lang["mailing"][17]="Actualizeaza obiectul ticket-ului"; 
 $lang["mailing"][18]="Actualizeaza autorul ticket-ului"; 
 $lang["mailing"][19]="Reservare noua"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Modificarea rezervarii"; 
 $lang["mailing"][25]="Planificare:"; 
 $lang["mailing"][27]="Actualizeaza starea ticket-ului"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Follow-up duration";
 $lang["mailing"][105]="Not assigned"; 
 $lang["mailing"][107]="Nothing"; 
 $lang["mailing"][108]="No author"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Calculatoare"; 
 $lang["Menu"][1]="Retele"; 

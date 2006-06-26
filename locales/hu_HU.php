@@ -756,6 +756,7 @@ $lang["mailing"][15]="Prioritás módosítása";
 $lang["mailing"][17]="Bejelentés tételeinek módosítása"; 
 $lang["mailing"][18]="Szerző módosítása"; 
 $lang["mailing"][19]="Új foglalás"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Foglalás módosítása"; 
 $lang["mailing"][25]="Tervezés:"; 
 $lang["mailing"][27]="Állapot módosítása"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Intézkedés időtartama";
 $lang["mailing"][105]="Kiadatlan"; 
 $lang["mailing"][107]="Üres"; 
 $lang["mailing"][108]="Nincs szerző"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Számítógépek"; 
 $lang["Menu"][1]="Hálózatok"; 

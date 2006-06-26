@@ -756,6 +756,7 @@ $lang["mailing"][15]="Cambio de prioridad del servicio";
 $lang["mailing"][17]="Cambio de material del servicio"; 
 $lang["mailing"][18]="Modificación de autor del servicio"; 
 $lang["mailing"][19]="Nueva reserva"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Modificación de reserva"; 
 $lang["mailing"][25]="Planificación"; 
 $lang["mailing"][27]="Modificación de estado del ticket"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Duración del servicio";
 $lang["mailing"][105]="No asignado"; 
 $lang["mailing"][107]="No hay material involucrado"; 
 $lang["mailing"][108]="No hay autor"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Computadores"; 
 $lang["Menu"][1]="Redes"; 

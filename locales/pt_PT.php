@@ -756,6 +756,7 @@ $lang["mailing"][15]="Actualização da prioridade da senha";
 $lang["mailing"][17]="Actualização do item da senha"; 
 $lang["mailing"][18]="Actualização do autor da senha"; 
 $lang["mailing"][19]="Nova reserva"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Modificação da reserva"; 
 $lang["mailing"][25]="Planeamento:"; 
 $lang["mailing"][27]="Actualização do estado da senha"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Duração da actualização";
 $lang["mailing"][105]="Não atribuido"; 
 $lang["mailing"][107]="Nada"; 
 $lang["mailing"][108]="Sem autor"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Computadores"; 
 $lang["Menu"][1]="Redes"; 

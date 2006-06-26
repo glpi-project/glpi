@@ -756,6 +756,7 @@ $lang["mailing"][15]="Update of the priority of the ticket";
 $lang["mailing"][17]="Update of the item of the ticket"; 
 $lang["mailing"][18]="Update of the author of the ticket"; 
 $lang["mailing"][19]="New reservation"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Reservation modification"; 
 $lang["mailing"][25]="Planning:"; 
 $lang["mailing"][27]="Update of the status of the ticket"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Follow-up duration";
 $lang["mailing"][105]="Not assigned"; 
 $lang["mailing"][107]="Nothing"; 
 $lang["mailing"][108]="No author"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Computers"; 
 $lang["Menu"][1]="Networks"; 

@@ -156,6 +156,7 @@ class Job extends CommonDBTM{
 			$input["_old_item"]=$this->fields["computer"];
 			$input["_old_item_type"]=$this->fields["device_type"];
 			$input["_old_author"]=$this->fields["author"];
+			$input["_old_group"]=$this->fields["FK_group"];
 			$input["_old_priority"]=$this->fields["priority"];
 			$input["_old_status"]=$this->fields["status"];
 		}
@@ -258,6 +259,14 @@ class Job extends CommonDBTM{
 		
 				$global_mail_change_count++;
 			}
+			if (in_array("FK_group",$updates)){
+				$new_group=$this->fields["FK_group"];
+				$old_group_name=ereg_replace("&nbsp;",$lang["mailing"][109],getDropdownName("glpi_groups",$input["_old_group"]));
+				$new_group_name=ereg_replace("&nbsp;",$lang["mailing"][109],getDropdownName("glpi_groups",$new_group));
+				$change_followup_content.=$lang["mailing"][20].": ".$old_group_name." -> ".$new_group_name."\n";
+				$global_mail_change_count++;
+			}
+
 			if (in_array("priority",$updates)){
 				$new_priority=$this->fields["priority"];
 				$change_followup_content.=$lang["mailing"][15].": ".getPriorityName($input["_old_priority"])." -> ".getPriorityName($new_priority)."\n";

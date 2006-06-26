@@ -756,6 +756,7 @@ $lang["mailing"][15]="Обновить приоритет заявки";
 $lang["mailing"][17]="Обновить элемент заявки"; 
 $lang["mailing"][18]="Обновить автора заявки"; 
 $lang["mailing"][19]="Новое резервирование"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Модификация резервирования"; 
 $lang["mailing"][25]="Планирование:"; 
 $lang["mailing"][27]="Обновить статус заявки"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Followup duration";
 $lang["mailing"][105]="Не назначено"; 
 $lang["mailing"][107]="Ничего"; 
 $lang["mailing"][108]="Нет автора"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Компьютеры"; 
 $lang["Menu"][1]="Сети"; 

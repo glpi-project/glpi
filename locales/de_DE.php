@@ -756,6 +756,7 @@ $lang["mailing"][15]="Update of the priority of the tracking";
 $lang["mailing"][17]="Hardware change of the intervention"; 
 $lang["mailing"][18]="Change of the author of the intervention"; 
 $lang["mailing"][19]="New reservation"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Reservation modification"; 
 $lang["mailing"][25]="Zeitplan"; 
 $lang["mailing"][27]="Status des Supporttickets ändern"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Zeit bis reagiert wurde";
 $lang["mailing"][105]="Nicht zugewiesen"; 
 $lang["mailing"][107]="Nichts"; 
 $lang["mailing"][108]="Kein Autor"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Computer"; 
 $lang["Menu"][1]="Netzwerk"; 
