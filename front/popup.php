@@ -38,6 +38,12 @@ if (isset($_GET["popup"])) $_SESSION["glpipopup"]=$_GET["popup"];
 if (isset($_SESSION["glpipopup"])){
 	switch ($_SESSION["glpipopup"]){
 		case "dropdown":
+			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["several_add"])||isset($_POST["move"])||isset($_POST["update"])){
+				echo "<script type='text/javascript' >\n";
+				echo "window.opener.location.reload();";
+				echo "</script>";
+			}
+
 			include "setup.dropdowns.php";
 			break;
 	}

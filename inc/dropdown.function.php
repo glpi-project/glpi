@@ -152,13 +152,14 @@ if ($dropdown_right){
 	}
 }
 	
-if (!empty($which)||($display_comments)){
+if ($display_comments){
 	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display ";
-	if ($dropdown_right&&!empty($which)) echo " onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+	if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
 	echo ">";
+	echo $comments_display2;
 }
 
-	echo $comments_display2;
+	
 
 
 if ($table=="glpi_enterprises")
