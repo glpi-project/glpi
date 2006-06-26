@@ -72,6 +72,10 @@ $items=array(
 		"title"=>$lang["common"][37],
 		"field"=>"glpi_tracking.author"
 		),
+	"group"=>array(	
+		"title"=>$lang["common"][35],
+		"field"=>"glpi_tracking.FK_group"
+		),
 	"category"=>array(	
 		"title"=>$lang["common"][36],
 		"field"=>"glpi_tracking.category"
