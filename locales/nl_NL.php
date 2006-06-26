@@ -756,6 +756,7 @@ $lang["mailing"][15]="Wijziging van de prioriteit van de tussenkomst";
 $lang["mailing"][17]="Hardwareveranderingen van de tussenkomst"; 
 $lang["mailing"][18]="Wijzigen van de auteur van de tussenkomst"; 
 $lang["mailing"][19]="Nieuwe reservatie"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Aanpassing in de boeking"; 
 $lang["mailing"][25]="Planning:"; 
 $lang["mailing"][27]="Bijwerken van de status van het ticket"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Duur van de opvolging";
 $lang["mailing"][105]="Niet toegekend"; 
 $lang["mailing"][107]="Niets"; 
 $lang["mailing"][108]="Geen auteur"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Computers"; 
 $lang["Menu"][1]="Netwerken"; 

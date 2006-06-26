@@ -1561,6 +1561,13 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
+		echo $lang["common"][35].":</td><td>";
+		if ($canupdate)
+			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"]);
+		else echo getDropdownName("glpi_groups",$job->fields["FK_group"]);
+		echo "</td></tr>";
+
+		echo "<tr><td align='right'>";
 		echo $lang["joblist"][2].":</td><td>";
 		if ($canupdate)
 			dropdownPriority("priority",$job->fields["priority"]);

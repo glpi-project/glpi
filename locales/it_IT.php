@@ -756,6 +756,7 @@ $lang["mailing"][15]="Modifica della priorità della chiamata";
 $lang["mailing"][17]="Modifica del dispositivo su cui è stata aperta la chiamata"; 
 $lang["mailing"][18]="Modifica dell'autore della chiamata"; 
 $lang["mailing"][19]="Nuova prenotazione"; 
+$lang["mailing"][20]="Update the group of the ticket"; 
 $lang["mailing"][23]="Modifica di una prenotazione"; 
 $lang["mailing"][25]="Pianificazione:"; 
 $lang["mailing"][27]="Aggiornamento dello stato della chiamata"; 
@@ -781,6 +782,7 @@ $lang["mailing"][104]="Persistenza dei commenti";
 $lang["mailing"][105]="Non assegnato"; 
 $lang["mailing"][107]="Niente"; 
 $lang["mailing"][108]="Nessun autore"; 
+$lang["mailing"][109]="No group"; 
 
 $lang["Menu"][0]="Computer"; 
 $lang["Menu"][1]="Apparecchiature di rete"; 

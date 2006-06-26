@@ -767,6 +767,7 @@ $lang["mailing"][15]="Changement de priorité du ticket";
 $lang["mailing"][17]="Changement de matériel concerné par le ticket";
 $lang["mailing"][18]="Changement de l'auteur du ticket";
 $lang["mailing"][19]="Nouvelle réservation";
+$lang["mailing"][20]="Changement de groupe du ticket";
 $lang["mailing"][23]="Modification réservation";
 $lang["mailing"][25]="Planification :";
 $lang["mailing"][27]="Changement de statut du ticket";
@@ -792,6 +793,7 @@ $lang["mailing"][104]="Durée de l'intervention";
 $lang["mailing"][105]="Non attribué";
 $lang["mailing"][107]="Pas de matériel concerné";
 $lang["mailing"][108]="Pas d'auteur";
+$lang["mailing"][109]="Pas de groupe";
 
 
 $lang["Menu"][0]="Ordinateurs";
