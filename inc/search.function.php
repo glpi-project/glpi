@@ -1564,7 +1564,12 @@ switch ($field){
 	break;
 	case "glpi_contracts.duration":
 	case "glpi_contracts.notice":
+	case "glpi_contracts.periodicity":
+	case "glpi_contracts.facturation":
 		return $data["ITEM_$num"]." ".$lang["financial"][57];
+		break;
+	case "glpi_contracts.renewal":
+		return getContractRenewalName($data["ITEM_$num"]);
 		break;
 	case "glpi_computers.date_mod":
 	case "glpi_printers.date_mod":

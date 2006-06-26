@@ -662,6 +662,21 @@ if(!FieldExists("glpi_enterprises","postcode")) {
 	$db->query($query) or die("0.68 add postcode in enterprises ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_contracts","renewal")) {	
+	$query="ALTER TABLE  `glpi_contracts` ADD  `renewal` tinyint(2) NOT NULL DEFAULT '0';";
+	$db->query($query) or die("0.68 add renewal in contracts ".$lang["update"][90].$db->error());
+}
+
+
+	// Update contract periodicity and facturation
+	$values=array("4"=>"6","5"=>"12","6"=>"24");
+
+	foreach ($values as $key => $val){
+		$query="UPDATE glpi_contracts SET periodicity='$val' WHERE periodicity='$key';";
+		$db->query($query) or die("0.68 update contract periodicity value ".$lang["update"][90].$db->error());
+		$query="UPDATE glpi_contracts SET facturation='$val' WHERE facturation='$key';";
+		$db->query($query) or die("0.68 update contract facturation value ".$lang["update"][90].$db->error());
+	}
 
 
 } // fin 0.68 #####################################################################################

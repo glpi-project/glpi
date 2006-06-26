@@ -348,7 +348,7 @@ function dropdownContractTime($name,$value=0){
 /**
 * Print a select with contract priority
 *
-* Print a select named $name with contract priority options and selected value $value
+* Print a select named $name with contract periodicty options and selected value $value
 *
 *@param $name string : HTML select name
 *@param $value integer : HTML select selected value
@@ -358,63 +358,19 @@ function dropdownContractTime($name,$value=0){
 **/
 function dropdownContractPeriodicity($name,$value=0){
 	global $lang;
-	
+	$values=array("1","2","3","6","12","24","36");
+
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][70]."</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["financial"][71]."</option>";
-	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["financial"][72]."</option>";
-	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["financial"][73]."</option>";
-	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["financial"][74]."</option>";
-	echo "<option value='6' ".($value==6?" selected ":"").">".$lang["financial"][75]."</option>";
+	foreach ( $values as $val)
+		echo "<option value='$val' ".($value==$val?" selected ":"").">".$val." ".$lang["financial"][57]."</option>";
 	echo "</select>";	
 }
 
-/**	
-* Get from dicts the Contract periodicity string
-*
-* Get the contract periodicity identified bye $value from dicts.
-*
-*@param $value integer : contract periodicity value.
-*
-*
-*@return string : dict entry
-*
-**/
-function getContractPeriodicity($value){
-	global $lang;
-	
-	switch ($value){
-	case 1 :
-		return $lang["financial"][70];
-		break;
-	case 2 :
-		return $lang["financial"][71];
-		break;
-	case 3 :
-		return $lang["financial"][72];
-		break;
-	case 4 :
-		return $lang["financial"][73];
-		break;
-	case 5 :
-		return $lang["financial"][74];
-		break;
-	case 6 :
-		return $lang["financial"][75];
-		break;
-	case 0 :
-		return "";
-		break;
-	
-	}	
-}
-
-
 /**
-* Print a select with hours
+* Print a select with contract renewal
 *
-* Print a select named $name with hours options and selected value $value
+* Print a select named $name with contract renewal options and selected value $value
 *
 *@param $name string : HTML select name
 *@param $value integer : HTML select selected value
@@ -422,21 +378,24 @@ function getContractPeriodicity($value){
 *@return Nothing (display)
 *
 **/
-function dropdownHours($name,$value){
+function dropdownContractRenewal($name,$value=0){
+	global $lang;
 
 	echo "<select name='$name'>";
-	for ($i=0;$i<10;$i++){
-	$tmp="0".$i;
-	$val=$tmp.":00";
-	echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-	}
-	for ($i=10;$i<24;$i++){
-	$val=$i.":00";
-	echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-	}
+	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][105]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["financial"][106]."</option>";
 	echo "</select>";	
-}	
+}
 
+function getContractRenewalName($value){
+	global $lang;
+	switch ($value){
+		case 1: return $lang["financial"][105];break;
+		case 2: return $lang["financial"][106];break;
+		default : return "";
+	}
+}
 
 /**
 * Get the entreprise identifier from a contract
