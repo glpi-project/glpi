@@ -167,6 +167,27 @@ case "category":
 	echo "</table></div><br>";
 
 	break;	
+case "group":
+	$val1=$_GET["ID"];
+	$val2="";
+
+	$next=getNextItem("glpi_groups",$_GET["ID"]);
+	$prev=getPreviousItem("glpi_groups",$_GET["ID"]);
+	
+	echo "<div align='center'>";
+	echo "<table class='icon_nav'>";
+	echo "<tr>";
+	echo "<td>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	echo "</td>";
+	echo "<td width='400' align='center'><b>".$lang["common"][35].": ".getDropdownName("glpi_groups",$_GET["ID"])."</b></td>";
+	echo "<td>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></div><br>";
+
+	break;	
 case "priority":
 	$val1=$_GET["ID"];
 	$val2="";

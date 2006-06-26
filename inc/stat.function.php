@@ -132,6 +132,17 @@ function getStatsItems($date1,$date2,$type){
 			}
 
 		break;
+		case "group":
+			$nomUsr = getNbIntervGroup();
+			$i=0;
+			if (is_array($nomUsr))
+			foreach($nomUsr as $key){
+				$val[$i]["ID"]=$key["ID"];
+				$val[$i]["link"]=$key["name"];
+				$i++;
+			}
+
+		break;
 
 		case "priority":
 			$nomUsr = getNbIntervPriority();
@@ -485,6 +496,28 @@ function getNbIntervCategory()
 	
 }
 
+//return an array from tracking
+//it contains the distinct group of interventions.
+function getNbIntervGroup()
+{	
+	global $db;
+	$query = "SELECT id as ID, name FROM glpi_groups order by name";
+	$result = $db->query($query);
+
+	if($db->numrows($result) >=1) {
+		$i = 0;
+		while($line = $db->fetch_assoc($result)) {
+		$tab[$i]["ID"] = $line["ID"];
+		$tab[$i]["name"] = $line["name"];
+		$i++;
+		}
+		
+		return $tab;
+	}
+	else return 0;	
+	
+}
+
 //Make a good string from the unix timestamp $sec
 //
 function toTimeStr($sec,$display_sec=1)
@@ -558,6 +591,9 @@ $begin.=" 00:00:00";
 		break;
 	case "category":
 		$WHERE.=" AND glpi_tracking.category='$value'";
+		break;
+	case "group":
+		$WHERE.=" AND glpi_tracking.FK_group='$value'";
 		break;
 	case "priority":
 		$WHERE.=" AND glpi_tracking.priority='$value'";
