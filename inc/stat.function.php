@@ -906,5 +906,62 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 }
 
 
+function showItemStats($target,$date1,$date2,$start){
+	global $db,$cfg_glpi,$lang;
+
+
+	$output_type=HTML_OUTPUT;
+		if (isset($_GET["display_type"]))
+			$output_type=$_GET["display_type"];
+
+
+$query="SELECT device_type,computer,COUNT(*) AS NB FROM glpi_tracking WHERE date<= '".$date2."' AND date>= '".$date1."' GROUP BY device_type,computer ORDER BY NB DESC";
+$result=$db->query($query);
+$numrows=$db->numrows($result);
+
+if ($numrows>0){
+	if ($output_type==HTML_OUTPUT){
+		printPager($start,$numrows,$target,"date1=".$date1."&amp;date2=".$date2."&amp;type=hardwares&amp;start=$start",STAT_TYPE);
+		echo "<div align='center'>";
+	}
+	
+	$i=$start;
+	if (isset($_GET['export_all']))
+		$i=0;
+
+	$end_display=$start+$cfg_glpi["list_limit"];
+	if (isset($_GET['export_all']))
+		$end_display=$numrows;
+	echo displaySearchHeader($output_type,$end_display-$start+1,2,1);
+	$header_num=1;
+	echo displaySearchNewLine($output_type);
+	echo displaySearchHeaderItem($output_type,$lang["common"][1],$header_num);
+	echo displaySearchHeaderItem($output_type,$lang["stats"][13],$header_num);
+	echo displaySearchEndLine($output_type);
+	
+	$db->data_seek($result,$start);
+
+	$ci=new CommonItem();
+	while ($i < $numrows && $i<($end_display)){
+		$item_num=1;
+		// Get data and increment loop variables
+		$data=$db->fetch_assoc($result);
+		$ci->getFromDB($data["device_type"],$data["computer"]);
+		$del=false;
+		if ($ci->obj->fields["deleted"]=='Y') $del=true;
+		//echo "<tr class='tab_bg_2$del'><td>".$ci->getLink()."</td><td>".$data["NB"]."</td></tr>";
+		echo displaySearchNewLine($output_type);
+		echo displaySearchItem($output_type,$ci->getLink(),$item_num,$i-$start+1,$del,"align='center'");
+		echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,$del,"align='center'");
+		$i++;
+	}
+
+	echo displaySearchFooter($output_type);
+	if ($output_type==HTML_OUTPUT)
+		echo "</div>";
+}
+
+}
+
 
 ?>

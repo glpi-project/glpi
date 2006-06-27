@@ -35,7 +35,7 @@
  
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","networking","software","phone");
+$NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","networking","software","phone","stat");
 include ($phproot . "/inc/includes.php");
 
 commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
@@ -72,29 +72,7 @@ showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 
-$query="SELECT device_type,computer,COUNT(*) AS NB FROM glpi_tracking WHERE date<'".$_POST["date2"]."' AND date>'".$_POST["date1"]."' GROUP BY device_type,computer ORDER BY NB DESC";
-$result=$db->query($query);
-$numrows=$db->numrows($result);
+showItemStats($_SERVER['PHP_SELF'],$_POST["date1"],$_POST["date2"],$_GET['start']);
 
-if ($numrows>0){
-	printPager($_GET['start'],$numrows,$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]);
-	
-	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th>".$lang["common"][1]."</th><th>".$lang["stats"][13]."</th></tr>";
-	$end_display=min($numrows-$_GET['start'],$cfg_glpi["list_limit"]);
-	$db->data_seek($result,$_GET['start']);
-		
-	$ci=new CommonItem();
-	while ($i < $numrows && $i<($end_display)){
-		// Get data and increment loop variables
-		$data=$db->fetch_assoc($result);
-		$ci->getFromDB($data["device_type"],$data["computer"]);
-		$del="";
-		if ($ci->obj->fields["deleted"]=='Y') $del="_2";
-		echo "<tr class='tab_bg_2$del'><td>".$ci->getLink()."</td><td>".$data["NB"]."</td></tr>";
-		$i++;
-	}
-	echo "</table></div>";
-}
 commonFooter();
 ?>

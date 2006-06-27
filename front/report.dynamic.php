@@ -38,7 +38,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stats","enterprise","device");
+$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stat","enterprise","device");
 include ($phproot . "/inc/includes.php");
 
 checkCentralAccess();
@@ -77,12 +77,13 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 						$val=getStatsItems($params["date1"],$params["date2"],$params["field"]);
 						displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val,$params["field"]);
 						break;
-
 					default:
 						$val=getStatsItems($params["date1"],$params["date2"],$params["type"]);
 						displayStats($params["type"],$params["field"],$params["date1"],$params["date2"],$params["start"],$val);
 						break;
 				}
+			} else if (isset($_GET["type"])&&$_GET["type"]=="hardwares"){
+				showItemStats("",$_GET["date1"],$_GET["date2"],$_GET['start']);
 			}
 			break;
 		default :
