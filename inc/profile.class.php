@@ -51,6 +51,14 @@ class Profile extends CommonDBTM{
 			$db->query($query);
 		}
 	}
+	function cleanDBonPurge($ID) {
+
+		global $db,$cfg_glpi,$LINK_ID_TABLE;
+
+		$query = "DELETE FROM glpi_users_profiles WHERE (FK_profiles = '$ID')";
+		$db->query($query);
+
+	}
 
 	function prepareInputForUpdate($input){
 		if (isset($input["helpdesk_hardware_type"])){
@@ -77,7 +85,8 @@ class Profile extends CommonDBTM{
 	function updateForUser($ID,$prof){
 		global $db;
 		// Get user profile
-		$query = "SELECT FK_profiles, ID FROM glpi_users_profiles WHERE (FK_users = '$ID')";
+		$query = "SELECT glpi_users_profiles.FK_profiles, glpi_users_profiles.ID FROM glpi_users_profiles INNER JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID) WHERE (glpi_users_profiles.FK_users = '$ID')";
+
 		if ($result = $db->query($query)) {
 			// Profile found
 			if ($db->numrows($result)){
@@ -87,6 +96,7 @@ class Profile extends CommonDBTM{
 					$db->query($query);
 				}
 			} else { // Profile not found
+					
 					$query="INSERT INTO glpi_users_profiles (FK_users, FK_profiles) VALUES ('$ID','$prof');";
 					$db->query($query);
 			}
@@ -105,7 +115,10 @@ class Profile extends CommonDBTM{
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)){
 				$ID_profile = $db->result($result,0,0);
-			} else {
+			}
+				
+			if (!$ID_profile||!$this->getFromDB($ID_profile)) {
+				$ID_profile=0;
 				// Get default profile
 				$query = "SELECT ID FROM glpi_profiles WHERE (`is_default` = '1')";
 				$result = $db->query($query);
@@ -118,13 +131,14 @@ class Profile extends CommonDBTM{
 					$result = $db->query($query);
 					if ($db->numrows($result)){
 						$ID_profile = $db->result($result,0,0);
+						$this->updateForUser($ID,$ID_profile);
 					}
 				}
 			}
 		}
 		if ($ID_profile){
-			$this->updateForUser($ID,$ID_profile);
-			return $this->getFromDB($ID_profile);
+			$this->getFromDB($ID_profile);
+			return $ID_profile;
 		} else return false;
 	}
 	// Unset unused rights for helpdesk
