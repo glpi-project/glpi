@@ -60,8 +60,11 @@ class Typedoc  extends CommonDBTM {
 	function title(){
 		global  $lang,$HTMLRel;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td><td><a  class='icon_consol' href=\"typedoc.form.php\"><b>".$lang["document"][12]."</b></a>";
-		echo "</td>";
+		echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td>";
+		if (haveRight("typedoc","w")){
+			echo "<td><a  class='icon_consol' href=\"typedoc.form.php\"><b>".$lang["document"][12]."</b></a>";
+			echo "</td>";
+		}
 		echo "</tr></table></div>";
 	}
 	
@@ -120,27 +123,29 @@ class Typedoc  extends CommonDBTM {
 		if (empty($this->fields["upload"])) $this->fields["upload"]='Y';
 		dropdownYesNo("upload",$this->fields["upload"]);
 		echo "</td></tr>";
-		echo "<tr>";
-		if(empty($ID)){
-	
-			echo "<td class='tab_bg_2' valign='top' colspan='3'>";
-			echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
-			echo "</td>";
-			
-		} else {
+
+		if (haveRight("typedoc","w")) {
+			echo "<tr>";
+			if(empty($ID)){
 		
-			echo "<td class='tab_bg_2' valign='top' align='center'>";
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
-			echo "</td>";
-			echo "<td class='tab_bg_2' valign='top'>\n";
-			echo "<div align='center'>";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-			echo "</div>";
-			echo "</td>";
-		}
+				echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+				echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+				echo "</td>";
+				
+			} else {
 			
+				echo "<td class='tab_bg_2' valign='top' align='center'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "</td>";
+				echo "<td class='tab_bg_2' valign='top'>\n";
+				echo "<div align='center'>";
+				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+				echo "</div>";
+				echo "</td>";
+			}
 			echo "</tr>";
+		}
 	
 			echo "</table></form></div>";
 		
