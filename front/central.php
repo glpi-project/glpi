@@ -76,33 +76,40 @@ $showticket=haveRight("show_ticket","1");
 if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI 
 
 	echo "<div align='center'>";
-	echo "<table  class='tab_cadre_central' ><tr><td>";
+	echo "<table  class='tab_cadre_central' ><tr>";
+	
+		echo "<td valign='top'>";
 		echo "<table border='0'>";
 		if ($showticket){
 			echo "<tr><td align='center' valign='top'  width='450px'><br>";
 			showCentralJobCount();
 			echo "</td></tr>";
 		}
-
-		echo "<tr>";
-		echo "<td align='center' valign='top'  width='450px'>";
-		showCentralContract();
-		echo "</td>";	
-		echo "</tr>";
+		if (haveRight("contract_infocom","r")){
+			echo "<tr>";
+			echo "<td align='center' valign='top'  width='450px'>";
+			showCentralContract();
+			echo "</td>";	
+			echo "</tr>";
+		}
 		echo "</table>";
-
-	echo "</td><td align='left' valign='top'>";
-		echo "<table border='0' width='450px'><tr>";
-		echo "<td align='center'>";
-		if ($cfg_glpi["num_of_events"]>0){
-		
-			//Show last add events
-			showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+		echo "</td>";
+	
+	if (haveRight("logs","r")){
+		echo "<td align='left' valign='top'>";
+			echo "<table border='0' width='450px'><tr>";
+			echo "<td align='center'>";
+			if ($cfg_glpi["num_of_events"]>0){
 			
-		} else {echo "&nbsp";}
-		echo "</td></tr>";
-		echo "</table>";
-	echo "</td></tr>";
+				//Show last add events
+				showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+				
+			} else {echo "&nbsp";}
+			echo "</td></tr>";
+			echo "</table>";
+		echo "</td>";
+	}
+	echo "</tr>";
 	
 	echo "</table>";
 	echo "</div>";
@@ -133,7 +140,7 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 
 echo "<div align='center'>";
 echo "<table class='tab_cadre_central' >";
-echo "<tr><td>";
+echo "<tr><td valign='top'>";
 echo "<table border='0'><tr>";
 	
 	if ($showticket){
@@ -147,13 +154,7 @@ echo "<table border='0'><tr>";
 		showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
 		echo "</td>";
 	}
-	echo "</tr><tr>"	;
-	if ($showticket){
-		echo "<td align='center' valign='top'  width='450px'>";
-		//showCentralJobCount();
-		echo "</td>";
-	}
-	echo "</tr>";
+	echo "</tr>"	;
 
 echo "</table></td><td><table border='0'><tr>";
 
