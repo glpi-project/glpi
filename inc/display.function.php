@@ -1150,13 +1150,11 @@ function printCleanArray($tab,$pad=0){
 function showCentralOnglets($target,$actif) {
 	global $lang, $HTMLRel,$plugin_hooks;
 	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li "; if ($actif=="my"){ echo "class='actif'";} echo  "><a href='$target?onglet=my'>".$lang["central"][12]."</a></li>";
+	echo "<li ".($actif=="my"?"class='actif'":"")."><a href='$target?onglet=my'>".$lang["central"][12]."</a></li>";
 	if (haveRight("show_ticket","1")||haveRight("logs","r")||haveRight("contract_infocom","r"))
-		echo "<li "; if ($actif=="global"){ echo "class='actif'";} echo  "><a href='$target?onglet=global'>".$lang["central"][13]."</a></li>";
+		echo "<li ".($actif=="global"?"class='actif'":"")."><a href='$target?onglet=global'>".$lang["central"][13]."</a></li>";
 	if (isset($plugin_hooks['central_action'])&&count($plugin_hooks['central_action'])){
-		echo "<li "; 
-		if ($actif=="plugins"){ echo "class='actif'";} 
-		echo  "><a href='$target?onglet=plugins'>".$lang["common"][29]."</a></li>";
+		echo "<li ".($actif=="plugins"?"class='actif'":"")."><a href='$target?onglet=plugins'>".$lang["common"][29]."</a></li>";
 	}
 	echo "</ul></div>";
 }
