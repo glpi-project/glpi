@@ -169,11 +169,13 @@ echo "</table></td><td><table border='0'><tr>";
 	
 	showCentralReminder();
 	echo "</td>";
-	echo "</tr><tr>";
+	echo "</tr>";
 
-	echo "<td align='center' valign='top'  width='450px'>";
-	showCentralReminder("public");
-	echo "</td></tr>";
+	if (haveRight("public_reminder","r")){
+		echo "<tr><td align='center' valign='top'  width='450px'>";
+		showCentralReminder("public");
+		echo "</td></tr>";
+	}
 	
 	
 	echo "</table></td></tr></table>";

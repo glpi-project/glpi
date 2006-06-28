@@ -365,7 +365,7 @@ class Profile extends CommonDBTM{
 		dropdownYesNoInt("password_update",$this->fields["password_update"]);
 		echo "</td>";
 		echo "<td>".$lang["reminder"][1].":</td><td>";
-		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,0,1);
+		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,1,1);
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$lang["Menu"][26]."</strong></td></tr>";
