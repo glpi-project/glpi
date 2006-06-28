@@ -644,8 +644,10 @@ function ShowPlanningCentral($who){
 	
 	
 	// reminder 
+	$read_public="";
+	if (haveRight("reminder_public","r")) $read_public=" OR type='public' ";
 		
-	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' $read_public)    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 	
 	$result2=$db->query($query2);
 	
