@@ -82,13 +82,15 @@ function showTrackingOnglets($target){
 		
 
 				// Post-only could'nt see other item  but other user yes 
-				echo "<li class='invisible'>&nbsp;</li>";
-		
-				$next=getNextItem("glpi_tracking",$ID);
-				$prev=getPreviousItem("glpi_tracking",$ID);
-				$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+				if (haveRight("show_ticket","1")){
+					echo "<li class='invisible'>&nbsp;</li>";
+			
+					$next=getNextItem("glpi_tracking",$ID);
+					$prev=getPreviousItem("glpi_tracking",$ID);
+					$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+					if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
+					if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+				}
 		}elseif (haveRight("comment_ticket","1")){
 		
 			// Postonly could post followup in helpdesk area	
@@ -1516,7 +1518,6 @@ function showJobDetails ($target,$ID){
 		if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]) return false;
 		
 		$canupdate_descr=$canupdate||($job->numberOfFollowups()==0&&$job->fields["author"]==$_SESSION["glpiID"]);
-
 		$author=new User();
 		$author->getFromDB($job->fields["author"]);
 		$assign=new User();
@@ -1967,20 +1968,23 @@ function showAddFollowupForm($tID){
 		echo "</select>".$lang["job"][22];
 		echo "</tr>";
 	
-		echo "<tr>";
-		echo "<td>".$lang["job"][35]."</td>";
-		echo "<td>";
+		if (haveRight("show_planning","1")){
+			echo "<tr>";
+			echo "<td>".$lang["job"][35]."</td>";
 
-		echo "<div id='plan'  onClick='showPlan()'>\n";
-		echo "<span class='showplan'>".$lang["job"][34]."</span>";
-		echo "</div>\n";	
-
-		echo "<div id='viewplan'>\n";
-		echo "</div>\n";	
+			echo "<td>";
+			echo "<div id='plan'  onClick='showPlan()'>\n";
+			echo "<span class='showplan'>".$lang["job"][34]."</span>";
+			echo "</div>\n";	
+	
+			echo "<div id='viewplan'>\n";
+			echo "</div>\n";	
+			
+			
+			echo "</td>";
 		
-		
-		echo "</td>";
-		echo "</tr>";
+			echo "</tr>";
+		}
 	}
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>";
