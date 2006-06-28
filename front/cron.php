@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 include ("_relpos.php");
-$NEEDED_ITEMS=array("cron");
+$NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
 include ($phproot."/inc/includes.php");
 
 

@@ -110,7 +110,8 @@ class Job extends CommonDBTM{
 				$input=$ret;
 	 		} else { // Default case can only update contents if no followups already added
 				$ret["ID"]=$input["ID"];
-				$ret["contents"]=$input["contents"];
+				if (isset($input["contents"]))
+					$ret["contents"]=$input["contents"];
 				$input=$ret;
 			}
 			

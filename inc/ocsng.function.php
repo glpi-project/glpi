@@ -66,7 +66,7 @@ if ($dbocs->numrows($result_ocs)>0){
 	// Get all hardware from OCS DB
 	$hardware=array();
 	while($data=$dbocs->fetch_array($result_ocs)){
-		$data=addslashes_deep($data);
+		$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 		$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
 		$hardware[$data["DEVICEID"]]["name"]=$data["NAME"];
 		$hardware[$data["DEVICEID"]]["TAG"]=$data["TAG"];
@@ -223,7 +223,7 @@ function ocsImportComputer($DEVICEID){
 	$comp = new Computer;
 	if ($dbocs->numrows($result)==1){
 		$line=$dbocs->fetch_array($result);
-		$line=addslashes_deep($line);
+		$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 		$dbocs->close();
 
 		$comp->fields["name"] = $line["NAME"];
@@ -372,10 +372,10 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 	
 
 		$mixed_checksum=intval($ocs_checksum) &  intval($cfg_ocs["checksum"]);
-		//echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
-		//echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
-		//echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
-		
+/*		echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
+		echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
+		echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
+*/		
 		// Is an update to do ?
 		if ($mixed_checksum){
 			// Get updates on computers :
@@ -383,6 +383,7 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 			
 			if ($mixed_checksum&pow(2,HARDWARE_FL))
 				ocsUpdateHardware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$computer_updates,$dohistory);
+
 			if ($mixed_checksum&pow(2,BIOS_FL))
 				ocsUpdateBios($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$computer_updates,$dohistory);
 
@@ -390,19 +391,24 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 			$import_device=importArrayFromDB($line["import_device"]);
 			if ($mixed_checksum&pow(2,MEMORIES_FL))
 				ocsUpdateDevices(RAM_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+
 			if ($mixed_checksum&pow(2,STORAGES_FL)){
 				ocsUpdateDevices(HDD_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
 				ocsUpdateDevices(DRIVE_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
 			}
+
 			if ($mixed_checksum&pow(2,HARDWARE_FL))
 				ocsUpdateDevices(PROCESSOR_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+
 			if ($mixed_checksum&pow(2,VIDEOS_FL))
 				ocsUpdateDevices(GFX_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+
 			if ($mixed_checksum&pow(2,SOUNDS_FL))
 				ocsUpdateDevices(SND_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
 			
 			if ($mixed_checksum&pow(2,NETWORKS_FL))
 				ocsUpdateDevices(NETWORK_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+
 			if ($mixed_checksum&pow(2,MODEMS_FL)||$mixed_checksum&pow(2,PORTS_FL))
 				ocsUpdateDevices(PCI_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
 
@@ -478,8 +484,9 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 	$query = "select * from hardware WHERE DEVICEID='".$ocs_id."'";
 	$result = $dbocs->query($query) or die($dbocs->error());
 	if ($dbocs->numrows($result)==1) {
+		
 		$line=$dbocs->fetch_assoc($result);
-		$line=addslashes_deep($line);
+		$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 		$compudate=array();
 		
 		if($cfg_ocs["import_general_os"]&&!in_array("os",$computer_updates)) {
@@ -503,10 +510,9 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 	
 		if($cfg_ocs["import_general_comments"]&&!in_array("comments",$computer_updates)) {
 			$compupdate["comments"]="";;
-			if (!empty($line["DESCRIPTION"])) $compupdate["comments"] .= $line["DESCRIPTION"]."\r\n";
+			if (!empty($line["DESCRIPTION"])&&$line["DESCRIPTION"]!="N/A") $compupdate["comments"] .= $line["DESCRIPTION"]."\r\n";
 			$compupdate["comments"] .= "Swap: ".$line["SWAP"];
 		}
-
 		if (count($compupdate)){
 			$compupdate["ID"] = $glpi_id;
 			$comp=new Computer();
@@ -537,7 +543,7 @@ function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1)
 	$result = $dbocs->query($query) or die($dbocs->error().$query);
 	if ($dbocs->numrows($result)==1) {
 		$line=$dbocs->fetch_assoc($result);
-		$line=addslashes_deep($line);
+		$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 		$compudate=array();
 
 		if($cfg_ocs["import_general_serial"]&&!in_array("serial",$computer_updates)) {
@@ -645,6 +651,7 @@ function cron_ocsng(){
 
 	$cfg_ocs=getOcsConf(1);
 	
+	
 	$query_ocs = "select * from hardware WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0 order by lastdate";
 	$result_ocs = $dbocs->query($query_ocs) or die($dbocs->error());
 	if ($dbocs->numrows($result_ocs)>0){
@@ -654,22 +661,15 @@ function cron_ocsng(){
 			$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
 			$hardware[$data["DEVICEID"]]["name"]=addslashes($data["NAME"]);
 		}
-
+		
 
 		$query_glpi = "SELECT * FROM glpi_ocs_link ORDER BY last_update";
 		$result_glpi = $db->query($query_glpi);
 		$done=false;
 		while(!$done&&$data=$db->fetch_assoc($result_glpi)){
-			$data=addslashes_deep($data);
+			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
+			
 			if (isset($hardware[$data["ocs_id"]])){ 
-				$needed=array("computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
-				foreach ($needed as $item){
-					if (file_exists($phproot . "/inc/$item.class.php"))
-						include_once ($phproot . "/inc/$item.class.php");
-					if (file_exists($phproot . "/inc/$item.function.php"))
-						include_once ($phproot . "/inc/$item.function.php");
-				}
-
 				ocsUpdateComputer($data["ID"],1);
 				$done=true;
 			}
@@ -710,7 +710,7 @@ function ocsShowUpdateComputer($check,$start){
 		$already_linked=array();
 		if ($db->numrows($result_glpi)>0){
 			while($data=$db->fetch_assoc($result_glpi)){
-				$data=addslashes_deep($data);
+				$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 				if (isset($hardware[$data["ocs_id"]])){ 
 					$already_linked[$data["ocs_id"]]["date"]=$data["last_update"];
 					$already_linked[$data["ocs_id"]]["name"]=$data["name"];
@@ -878,7 +878,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			$result2 = $dbocs->query($query2);
 			if($dbocs->numrows($result2) > 0) {
 				while($line2 = $dbocs->fetch_array($result2)) {
-						$line2=addslashes_deep($line2);			
+						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));			
 					if(!empty($line2["CAPACITY"])&&$line2["CAPACITY"]!="No") {
 						if($line2["DESCRIPTION"]) $ram["designation"] = $line2["DESCRIPTION"];
 						else $ram["designation"] = "Unknown";
@@ -909,7 +909,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			$result2 = $dbocs->query($query2);
 			if($dbocs->numrows($result2) > 0) {
 				while($line2 = $dbocs->fetch_array($result2)) {
-						$line2=addslashes_deep($line2);				
+						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 					if(!empty($line2["DISKSIZE"])&&eregi("hard disk",$line2["TYPE"])) {
 						if($line2["NAME"]) $dd["designation"] = $line2["NAME"];
 						else if($line2["MODEL"]) $dd["designation"] = $line2["MODEL"];
@@ -940,7 +940,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			$result2 = $dbocs->query($query2);
 			if($dbocs->numrows($result2) > 0) {
 				while($line2 = $dbocs->fetch_array($result2)) {
-					$line2=addslashes_deep($line2);
+					$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 					if(!eregi("hard disk",$line2["TYPE"])) {
 						if($line2["NAME"]) $stor["designation"] = $line2["NAME"];
 						else if($line2["MODEL"]) $stor["designation"] = $line2["MODEL"];
@@ -971,7 +971,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			$result2 = $dbocs->query($query2);
 			if($dbocs->numrows($result2) > 0) {
 				while($line2 = $dbocs->fetch_array($result2)) {
-						$line2=addslashes_deep($line2);				
+						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$mdm["designation"] = $line2["NAME"];
 						if (!in_array(PCI_DEVICE."$$$$$".$mdm["designation"],$import_device)){
 							if(!empty($line2["DESCRIPTION"])) $mdm["comment"] = $line2["TYPE"]."\r\n".$line2["DESCRIPTION"];
@@ -995,7 +995,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			$result2 = $dbocs->query($query2);
 			if($dbocs->numrows($result2) > 0) {
 				while($line2 = $dbocs->fetch_array($result2)) {
-						$line2=addslashes_deep($line2);			
+						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$port["designation"]="";	
 						if ($line2["TYPE"]!="Other") $port["designation"] .= $line2["TYPE"];
 						if ($line2["NAME"]!="Not Specified") $port["designation"] .= " ".$line2["NAME"];
@@ -1025,7 +1025,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			$result = $dbocs->query($query) or die($dbocs->error());
 			if ($dbocs->numrows($result)==1){
 				$line=$dbocs->fetch_array($result);
-				$line=addslashes_deep($line);				
+				$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 				for($i = 0;$i < $line["PROCESSORN"]; $i++) {
 					$processor = array();
 					$processor["designation"] = $line["PROCESSORT"];
@@ -1056,7 +1056,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			// Add network device
 			if($dbocs->numrows($result2) > 0) {
 				while($line2 = $dbocs->fetch_array($result2)) {
-					$line2=addslashes_deep($line2);				
+					$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 					if ($cfg_ocs["import_device_iface"]){
 						$do_clean=true;
 						$network["designation"] = $line2["DESCRIPTION"];
@@ -1129,7 +1129,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			$result2 = $dbocs->query($query2);
 			if($dbocs->numrows($result2) > 0) {
 				while($line2 = $dbocs->fetch_array($result2)) {
-						$line2=addslashes_deep($line2);				
+						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$video["designation"] = $line2["NAME"];
 						if (!in_array(GFX_DEVICE."$$$$$".$video["designation"],$import_device)){
 							$video["ram"]="";
@@ -1156,7 +1156,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			$result2 = $dbocs->query($query2);
 			if($dbocs->numrows($result2) > 0) {
 				while($line2 = $dbocs->fetch_array($result2)) {
-						$line2=addslashes_deep($line2);				
+						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$snd["designation"] = $line2["NAME"];
 						if (!in_array(SND_DEVICE."$$$$$".$snd["designation"],$import_device)){
 							if(!empty($line2["DESCRIPTION"])) $snd["comment"] =  $line2["DESCRIPTION"];
@@ -1245,7 +1245,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 			$result = $dbocs->query($query) or die($dbocs->error());
 			if($dbocs->numrows($result) > 0) 
 			while($line = $dbocs->fetch_array($result)) {
-				$line=addslashes_deep($line);
+				$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 				$mon["name"] = $line["CAPTION"];
 				if (empty($mon["name"])) $mon["name"] = $line["TYPE"];
 				if (empty($mon["name"])) $mon["name"] = $line["MANUFACTURER"];
@@ -1347,7 +1347,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 		
 			if($dbocs->numrows($result) > 0) 
 			while($line = $dbocs->fetch_array($result)) {
-				$line=addslashes_deep($line);
+				$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 				
 				// TO TEST : PARSE NAME to have real name.
 				$print["name"] = $line["NAME"];
@@ -1413,7 +1413,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 			$result = $dbocs->query($query) or die($dbocs->error());
 			if($dbocs->numrows($result) > 0) 
 			while($line = $dbocs->fetch_array($result)) {
-				$line=addslashes_deep($line);
+				$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 
 				$periph["name"] = $line["CAPTION"];
 				if (!in_array($periph["name"],$import_periph)){
@@ -1544,7 +1544,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 		$result2 = $dbocs->query($query2) or die($dbocs->error());
 		if ($dbocs->numrows($result2)>0)
 		while ($data2 = $dbocs->fetch_array($result2)){
-			$data2=addslashes_deep($data2);
+			$data2=clean_cross_side_scripting_deep(addslashes_deep($data2));
 			$initname =  $data2["INITNAME"];
 			$name= $data2["NAME"];
 			$version = $data2["VERSION"];
