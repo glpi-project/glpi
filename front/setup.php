@@ -67,9 +67,10 @@ if (haveRight("config","w")){
 	$config["setup.config.php?next=confdisplay"]=$lang["setup"][119];
 	$config["setup.config.php?next=mailing"]=$lang["setup"][68];
 	$config["setup.config.php?next=extauth"]=$lang["setup"][67];
+	if ($cfg_glpi["ocs_mode"]&&haveRight("ocsng","w"))
+		$config["setup.config.php?next=ocsng"]=$lang["setup"][134];
+
 }
-if ($cfg_glpi["ocs_mode"]&&haveRight("ocsng","w"))
-	$config["setup.config.php?next=ocsng"]=$lang["setup"][134];
 
 $data=array();
 $data["setup.display.php"]=$lang["setup"][250];
