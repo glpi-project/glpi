@@ -48,12 +48,15 @@ $track=new Job();
 
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 if (isset($_POST['update'])){
-	checkSeveralRightsOr(array("update_ticket"=>"1","assign_ticket"=>"1","steal_ticket"=>"1"));
+	checkSeveralRightsOr(array("update_ticket"=>"1","assign_ticket"=>"1","steal_ticket"=>"1","comment_ticket"=>"1","comment_all_ticket"=>"1"));
+
 	$track->update($_POST);
 	
 	logEvent($_POST["ID"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][21]);
 
 	glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$_POST["ID"]);
+
+	
 }else if (isset($_POST['add'])||isset($_POST['add_close'])) {
 	checkSeveralRightsOr(array("comment_ticket"=>"1","comment_all_ticket"=>"1"));
 	$newID=$fup->add($_POST);

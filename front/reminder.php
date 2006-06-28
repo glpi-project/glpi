@@ -47,7 +47,8 @@ $remind->title();
 
 showListReminder();
 
-showListReminder("public");
+if (haveRight("reminder_public","r"))
+	showListReminder("public");
 
 
 commonFooter();

@@ -828,7 +828,9 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][2]."\" class='submit'>";
 	echo "</td><td colspan='2' align='center'>";
-	echo "<input type='submit' name='add_close' value=\"".$lang["buttons"][26]."\" class='submit'>";
+	if (haveRight("comment_all_ticket","1"))
+		echo "<input type='submit' name='add_close' value=\"".$lang["buttons"][26]."\" class='submit'>";
+	else echo "&nbsp;";
 	echo "</td></tr>";
 
 	if (haveRight("comment_all_ticket","1")){
@@ -1769,23 +1771,31 @@ function showJobDetails ($target,$ID){
 		if ($numfiles>0){
 			$doc=new Document;
 			while ($data=$db->fetch_array($result2)){
-				echo "<tr><td>";
 				$doc->getFromDB($data["FK_doc"]);
-				
-				echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
-				if (haveRight("document","w"))
-					echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
-				echo "</td></tr>";
+
+				if (haveRight("show_ticket","1")||$doc->fields["FK_users"]==$_SESSION["glpiID"]){
+					echo "<tr><td>";
+					echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
+					if (haveRight("document","w"))
+						echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
+					echo "</td></tr>";
+				}
 			}
 		}
-		echo "<tr><td colspan='2'>";
-		echo "<input type='file' name='filename' size='20'><br>";
-		dropdown("glpi_docs","document");
-		echo "</td></tr></table>";
+		if ($canupdate||haveRight("comment_all_ticket","1")||haveRight("comment_ticket","1")){
+			echo "<tr><td colspan='2'>";
+			echo "<input type='file' name='filename' size='20'>";
+			if ($canupdate&&haveRight("document","r")){
+				echo "<br>";
+				dropdown("glpi_docs","document");
+			}
+			echo "</td></tr>";
+		}
+		echo "</table>";
 
 			echo "</td></tr>";
 		// Troisi�e Ligne
-		if ($canupdate||$job->fields["author"]==$_SESSION["glpiID"]||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
+		if ($canupdate||$canupdate_descr||haveRight("comment_all_ticket","1")||haveRight("comment_ticket","1")||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
 		}
@@ -1908,6 +1918,7 @@ function showAddFollowupForm($tID){
 	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
 
 	$commentall=haveRight("comment_all_ticket","1");
+
 	if ($_SESSION["glpiprofile"]["interface"]=="central"){
 		$target=$cfg_glpi["root_doc"]."/front/tracking.form.php";
 	} else {
