@@ -171,7 +171,7 @@ echo "</table></td><td><table border='0'><tr>";
 	echo "</td>";
 	echo "</tr>";
 
-	if (haveRight("public_reminder","r")){
+	if (haveRight("reminder_public","r")){
 		echo "<tr><td align='center' valign='top'  width='450px'>";
 		showCentralReminder("public");
 		echo "</td></tr>";
