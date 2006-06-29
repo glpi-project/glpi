@@ -235,7 +235,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$type = $db->result($result, $i, "ID");
 	$net = $db->result($result, $i, "name");
-	$query = "SELECT count(*) FROM glpi_printers WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
+	$query = "SELECT count(*) FROM glpi_printers WHERE (type = '$type' AND deleted ='N'  AND is_template = '0'  AND is_global='0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 
@@ -266,7 +266,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	$type = $db->result($result, $i, "ID");
 	$net = $db->result($result, $i, "name");
-	$query = "SELECT count(*) FROM glpi_peripherals WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
+	$query = "SELECT count(*) FROM glpi_peripherals WHERE (type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 
