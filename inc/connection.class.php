@@ -61,9 +61,9 @@ class Connection {
 	* @param $ID ID of the computer
 	* @return array of ID of connected items
 	*/
-	function getComputerContact ($ID) {
+	function getComputerContact ($type,$ID) {
 		global $db;
-		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$this->type')";
+		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$type')";
 		if ($result=$db->query($query)) {
 			if ($db->numrows($result)==0) return false;
 			$ret=array();

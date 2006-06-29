@@ -606,23 +606,20 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	global $db,$cfg_glpi, $lang;
 	if (!haveRight("software","r")) return false;
         
-	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
-	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name";
+	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_software.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial FROM glpi_inst_software, glpi_software,glpi_licenses ";
+	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name, glpi_software.version";
 	
 	$result = $db->query($query);
-	$number = $db->numrows($result);
 	$i = 0;
 		
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$lang["software"][17].":</th></tr>";
 			echo "<tr><th>".$lang["common"][16]."</th><th>".$lang["software"][32]."</th><th>".$lang["software"][28]."</th><th>".$lang["software"][35]."</th><th>&nbsp;</th></tr>";
-	
-	while ($i < $number) {
-		$lID = $db->result($result, $i, "license");
-		$ID = $db->result($result, $i, "ID");
-		$query2 = "SELECT * FROM glpi_licenses WHERE (ID = '$lID')";
-		$result2 = $db->query($query2);
-		$data=$db->fetch_array($result2);
+	if ($db->numrows($result))
+	while ($data=$db->fetch_array($result)) {
+		$lID = $data["license"];
+		$ID = $data["ID"];
+
 		$today=date("Y-m-d"); 
 		$expirer=0;
 		$expirecss="";
@@ -631,12 +628,12 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		$sw = new Software;
 		$sw->getFromDB($data['sID']);
 		
-		if ($sw->fields['deleted']=="Y") {$expirer=1; $expirecss="_2";}
+		if ($data['deleted']=="Y") {$expirer=1; $expirecss="_2";}
 
 		echo "<tr class='tab_bg_1$expirecss'>";
 	
 		echo "<td align='center'><strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
-		echo $sw->fields["name"]." (v. ".$sw->fields["version"].")</a>";
+		echo $sw->fields["name"]." (v. ".$data["version"].")</a>";
 		echo "</strong>";
 		echo " - ".$data['serial']."</td>";
 		echo "<td align='center'><strong>";
@@ -651,8 +648,8 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		if ($data['serial']!="free"&&$data['serial']!="global"){
 			// OEM
 			if ($data["oem"]=='Y') {
-			$comp=new Computer();
-			$comp->getFromDB($data["oem_computer"]);
+				$comp=new Computer();
+				$comp->getFromDB($data["oem_computer"]);
 			}
 			echo "<td align='center' class='tab_bg_1".($expirer||($data["oem"]=='Y'&&$comp->fields['ID']!=$instID)?"_2":"")."'>".($data["oem"]=='Y'?$lang["choice"][1]:$lang["choice"][0]);
 			if ($data["oem"]=='Y') {
@@ -681,9 +678,9 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		$i++;		
 	}
-	$q="SELECT * FROM glpi_software WHERE deleted='N' AND is_template='0'";
+	$q="SELECT count(*) FROM glpi_software WHERE deleted='N' AND is_template='0'";
 	$result = $db->query($q);
-	$nb = $db->numrows($result);
+	$nb = $db->result($result,0,0);
 	
 	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0||!haveRight("software","w")) {
 		echo "</table></div>";
@@ -693,7 +690,6 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		echo "<div class='software-instal'>";
 		echo "<input type='hidden' name='cID' value='$instID'>";
-		//echo "<input type='hidden' name='withtemplate' value='".$withtemplate."'>";
 			dropdownSoftwareToInstall("licenseID",$withtemplate);
 		echo "<input type='submit' name='install' value=\"".$lang["buttons"][4]."\" class='submit'>";
 		echo "</div>";
