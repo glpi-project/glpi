@@ -256,7 +256,7 @@ II) Récupération et installation des fichiers.
 1)Téléchargez le tarball de la dernière version  disponible dans la rubrique téléchargement du site du 
 projet glpi (http://glpi-project.org).
 
-Cas vous passer en GLPI >= 0.68 :
+Cas où vous passer en GLPI >= 0.68 :
 Sauvegardez bien tous votre répertoire GLPI et supprimez le.
 Certains répertoires ont changés. Il vous faut donc copier leur contenu.
 /backup/dump -> /files/_dumps
