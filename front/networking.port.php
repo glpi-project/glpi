@@ -37,7 +37,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("networking","computer");
+$NEEDED_ITEMS=array("networking","computer","printer","phone","peripheral");
 include ($phproot . "/inc/includes.php");
 
 //print_r($_POST);
