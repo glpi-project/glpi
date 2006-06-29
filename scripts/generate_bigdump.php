@@ -818,7 +818,7 @@ while ($data=$db->fetch_array($result)){
 	$vlanID=mt_rand(1,$max["vlan"]);
 	$vlan_loc[$data['ID']]=$vlanID;
 	$netname="networking $i";
-	$query="INSERT INTO glpi_networking VALUES (NULL,'$netname','".mt_rand(32,256)."','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".mt_rand(1,$max['model_networking'])."','".mt_rand(1,$max['type_networking'])."','".mt_rand(1,$max['firmware'])."','".mt_rand(1,$max['enterprises'])."','N','0','','".getNextMAC()."','".getNextIP()."','notes networking $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
+	$query="INSERT INTO glpi_networking VALUES (NULL,'$netname','".mt_rand(32,256)."','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".mt_rand(1,$max['type_networking'])."','".mt_rand(1,$max['model_networking'])."','".mt_rand(1,$max['firmware'])."','".mt_rand(1,$max['enterprises'])."','N','0','','".getNextMAC()."','".getNextIP()."','notes networking $i','".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."','".mt_rand(1,$max["groups"])."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$netwID=$db->insert_id();
 	add_documents(NETWORKING_TYPE,$netwID);

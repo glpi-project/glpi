@@ -141,11 +141,16 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$lang["setup"][5].":</b></td></
 
 $query = "SELECT * FROM glpi_dropdown_os ORDER BY name";
 $result = $db->query($query);
-$i = 0;
+$i = -1;
 $number = $db->numrows($result);
 while ($i < $number) {
-	$os = $db->result($result, $i, "name");
-	$id= $db->result($result, $i, "ID");
+	if ($i<0){
+		$id=0;
+		$os="&nbsp;";
+	} else {
+		$os = $db->result($result, $i, "name");
+		$id= $db->result($result, $i, "ID");
+	}
 	$query = "SELECT count(*) FROM glpi_computers WHERE deleted ='N'  AND is_template = '0' AND (os = '$id')";
 	$result2 = $db->query($query);
 	$counter = $db->result($result2,0,0);
@@ -180,11 +185,16 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$lang["Menu"][1].":</b></td></t
 
 $query = "SELECT * FROM glpi_type_networking ORDER BY name";
 $result = $db->query($query);
-$i = 0;
+$i = -1;
 $number = $db->numrows($result);
 while ($i < $number) {
-	$type = $db->result($result, $i, "ID");
-	$net = $db->result($result, $i, "name");
+	if ($i<0){
+		$type=0;
+		$net="&nbsp;";
+	} else {
+		$type = $db->result($result, $i, "ID");
+		$net = $db->result($result, $i, "name");
+	}
 	$query = "SELECT count(*) FROM glpi_networking WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
@@ -199,11 +209,16 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$lang["Menu"][3].":</b></td></t
 
 $query = "SELECT * FROM glpi_type_monitors ORDER BY name";
 $result = $db->query($query);
-$i = 0;
+$i = -1;
 $number = $db->numrows($result);
 while ($i < $number) {
-	$type = $db->result($result, $i, "ID");
-	$net = $db->result($result, $i, "name");
+	if ($i<0){
+		$type=0;
+		$net="&nbsp;";
+	} else {
+		$type = $db->result($result, $i, "ID");
+		$net = $db->result($result, $i, "name");
+	}
 	$query = "SELECT count(*) FROM glpi_monitors WHERE (type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
@@ -230,11 +245,16 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$lang["Menu"][2].":</b></td></t
 
 $query = "SELECT * FROM glpi_type_printers ORDER BY name";
 $result = $db->query($query);
-$i = 0;
+$i = -1;
 $number = $db->numrows($result);
 while ($i < $number) {
-	$type = $db->result($result, $i, "ID");
-	$net = $db->result($result, $i, "name");
+	if ($i<0){
+		$type=0;
+		$net="&nbsp;";
+	} else {
+		$type = $db->result($result, $i, "ID");
+		$net = $db->result($result, $i, "name");
+	}
 	$query = "SELECT count(*) FROM glpi_printers WHERE (type = '$type' AND deleted ='N'  AND is_template = '0'  AND is_global='0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
@@ -261,11 +281,16 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$lang["Menu"][16].":</b></td></
 
 $query = "SELECT * FROM glpi_type_peripherals ORDER BY name";
 $result = $db->query($query);
-$i = 0;
+$i = -1;
 $number = $db->numrows($result);
 while ($i < $number) {
-	$type = $db->result($result, $i, "ID");
-	$net = $db->result($result, $i, "name");
+	if ($i<0){
+		$type=0;
+		$net="&nbsp;";
+	} else {
+		$type = $db->result($result, $i, "ID");
+		$net = $db->result($result, $i, "name");
+	}
 	$query = "SELECT count(*) FROM glpi_peripherals WHERE (type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
@@ -291,11 +316,16 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$lang["Menu"][34].":</b></td></
 
 $query = "SELECT * FROM glpi_type_phones ORDER BY name";
 $result = $db->query($query);
-$i = 0;
+$i = -1;
 $number = $db->numrows($result);
 while ($i < $number) {
-	$type = $db->result($result, $i, "ID");
-	$net = $db->result($result, $i, "name");
+	if ($i<0){
+		$type=0;
+		$net="&nbsp;";
+	} else {
+		$type = $db->result($result, $i, "ID");
+		$net = $db->result($result, $i, "name");
+	}
 	$query = "SELECT count(*) FROM glpi_phones WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
