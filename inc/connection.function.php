@@ -58,8 +58,7 @@ function showConnect($target,$ID,$type) {
 		$ci->getFromDB($type,$ID);
 		$global=$ci->obj->fields['is_global'];
 		
-		$connect->type=$type;
-		$computers = $connect->getComputerContact($ID);
+		$computers = $connect->getComputerContact($type,$ID);
 
 		echo "<br><div align='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
 		echo $lang["connect"][0].":";
