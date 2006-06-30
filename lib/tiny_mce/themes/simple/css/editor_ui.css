@@ -44,6 +44,10 @@
 	padding-bottom: 1px;
 }
 
+.mceEditorIframe {
+	border: 0;
+}
+
 /* Button CSS rules */
 
 a.mceButtonDisabled img, a.mceButtonNormal img, a.mceButtonSelected img {
