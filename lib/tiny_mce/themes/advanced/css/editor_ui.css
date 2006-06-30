@@ -122,6 +122,10 @@
 	padding: 0;
 }
 
+.mceEditorIframe {
+	border: 0;
+}
+
 /* Button CSS rules */
 
 a.mceButtonDisabled img, a.mceButtonNormal img, a.mceButtonSelected img {
@@ -295,6 +299,7 @@ span.mceMenuButtonFocus img.mceMenuButton {
 .mceMenu a:hover {
 	background-color: #B6BDD2;
 	color: black;
+	text-decoration: none !important;
 }
 
 .mceMenu span {
