@@ -42,7 +42,6 @@
 
 	checkRight("software","w");
 	
-	//print_r($_POST);
 	switch ($_POST["type"]){
 	case "update_buy"	:
 		echo "<select name='buy'><option value='Y'>".$lang["choice"][1]."</option><option value='N'>".$lang["choice"][0]."</option></select>";
@@ -51,6 +50,10 @@
 	case "update_expire" :
 		showCalendarForm("lic_form","expire",date("Y-m-d"));
 		echo "&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$lang["buttons"][14]."' class='submit'>";
+		break;
+	case "move":
+		dropdownLicenseOfSoftware("lID",$_POST["sID"]);
+		echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$lang["buttons"][14]."' class='submit'>";
 		break;
 	}
 

@@ -1215,4 +1215,25 @@ function dropdownHours($name,$value){
 	echo "</select>";	
 }	
 
+function dropdownLicenseOfSoftware($myname,$sID) {
+	global $db,$lang;
+
+	$query="SELECT * from glpi_licenses WHERE sID='$sID' GROUP BY serial, expire, oem, oem_computer, buy ORDER BY serial,oem, oem_computer";
+	//echo $query;
+	$result=$db->query($query);
+	if ($db->numrows($result)){
+		echo "<select name='$myname'>";
+		while ($data=$db->fetch_array($result)){
+			echo "<option value='".$data["ID"]."'>".$data["serial"];
+			if ($data["expire"]!=NULL) echo " - ".$lang["software"][25]." ".$data["expire"];
+			else echo " - ".$lang["software"][26];
+			if ($data["buy"]=='Y') echo " - ".$lang["software"][35];
+			else echo " - ".$lang["software"][37];
+			if ($data["oem"]=='Y') echo " - ".$lang["software"][28];
+			echo "</option>";
+		}
+		echo "</select>";
+	}
+	
+}
 ?>
