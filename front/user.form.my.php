@@ -1,6 +1,6 @@
 <?php
 /*
-* @version $Id$
+* @version $Id: user.form.php 3576 2006-06-12 08:40:44Z moyo $
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -38,65 +38,24 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("user","profile");
 include ($phproot . "/inc/includes.php");
 
-if(empty($_GET["ID"])) $_GET["ID"] = "";
-
+checkLoginUser();
 
 $user=new User();
-if (empty($_GET["ID"])&&isset($_GET["name"])){
-	
-	$user->getFromDBbyName($_GET["name"]);
-	glpi_header($cfg_glpi["root_doc"]."/front/user.form.php?ID=".$user->fields['ID']);
-}
 
-if(empty($_GET["name"])) $_GET["name"] = "";
 
-if (isset($_POST["add"])) {
-	checkRight("user","w");
-
-	// Pas de nom pas d'ajout	
-	if (!empty($_POST["name"])){
-		$newID=$user->add($_POST);
-		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
-	checkRight("user","w");
-
-	$user->delete($_POST);
-	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$lang["log"][22]." ".$_POST["ID"].".");
-	glpi_header($cfg_glpi["root_doc"]."/front/user.php");
-} else if (isset($_POST["update"])) {
-	checkRight("user","w");
-
+if (isset($_POST["update"])&&$_POST["ID"]==$_SESSION["glpiID"]) {
 	$user->update($_POST);
 	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$lang["log"][21]."  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 	
-
-	if (!isset($_GET["ext_auth"])){
-		checkRight("user","r");
-
+	if ($_SESSION["glpiprofile"]["interface"]=="central")
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-		
-		$user->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
-		showGroupAssociated($_GET["ID"]);
+	else helpHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+	$user->showMyForm($_SERVER["PHP_SELF"],$_SESSION["glpiID"]);
+	if ($_SESSION["glpiprofile"]["interface"]=="central")
 		commonFooter();
-	} else {
-		if (isset($_GET['add_ext_auth'])){
-			if (isset($_GET['login'])&&!empty($_GET['login'])){
-				$user=new User();
-				$input["name"]=$_GET['login'];
-				$input["_extauth"]=1;
-				$user->add($input);
-			}
-			glpi_header($_SERVER['HTTP_REFERER']);
-		}
-		checkRight("user","w");
-		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-		showAddExtAuthUserForm($_SERVER["PHP_SELF"]);
-		commonFooter();
-	}
+	else helpFooter();
 }
 	
 

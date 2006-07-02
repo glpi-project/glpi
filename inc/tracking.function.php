@@ -1240,7 +1240,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			if (ereg("user.info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
 			if (ereg("helpdesk",$target)) 
-				$parameters.="&show=user";
+				$parameters.="&amp;show=user";
 			if ($output_type==HTML_OUTPUT){
 				if (!ereg("helpdesk",$target)) 
 					printPager($start,$numrows,$target,$parameters,TRACKING_TYPE);

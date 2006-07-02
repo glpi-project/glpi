@@ -300,16 +300,20 @@ function commonHeader($title,$url)
 
 
 	// End headline
-	echo "<hr class='separ'>";
+//	echo "<hr class='separ'>";
 	echo "</div>\n";
 
 	//clock
-	echo "<div style='font-size:9px; position:absolute; top:70px; right: 15px; text-align:center;'>";
+	echo "<div style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:101;'><p>";
 	echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><span class='nav_horl'><b>";
-	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"];
+	echo "</i><span class='nav_horl'>";
+	echo "<a href='".$HTMLRel."front/user.form.my.php'>";
+	if (!empty($_SESSION["glpirealname"])) {
+		echo $_SESSION["glpirealname"];
+		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
+	}
 	else echo $_SESSION["glpiname"];
-	echo "</b></span></div>\n";
+	echo "</a></span></p></div>\n";
 
 	echo "</div>";
 
@@ -420,9 +424,13 @@ function helpHeader($title,$url) {
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
 	echo "</a>";
 	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>";
-	if (!empty($_SESSION["glpirealname"])) echo $_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"];
+	echo "<a href='".$HTMLRel."front/user.form.my.php'>";
+	if (!empty($_SESSION["glpirealname"])) {
+		echo $_SESSION["glpirealname"];
+		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
+	}
 	else echo $_SESSION["glpiname"];
-	echo "</b></p></div>";
+	echo "</a></b></p></div>";
         echo "</td>";
 
 	echo "<td valign='middle'>";
