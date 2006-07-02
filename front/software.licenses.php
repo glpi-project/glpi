@@ -94,7 +94,6 @@ else if (isset($tab["update_expire"])||isset($tab["update_expire_x"])){
 else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
 	checkRight("software","w");
 
-	$lic=new License;
 	$input["buy"]=$tab["buy"];	
 
 	foreach ($tab as $key => $val)
@@ -103,6 +102,22 @@ else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
 		$lic->update($input);
 	}
 	
+	
+}
+else if (isset($tab["move"])||isset($tab["move"])){
+	if ($tab["lID"]&&$lic->getFromDB($tab["lID"])){
+		unset($lic->fields["ID"]);
+		unset($lic->fields["comments"]);
+		
+		$lic2=new License();
+		foreach ($tab as $key => $val)
+		if (ereg("license_([0-9]+)",$key,$ereg)){
+			$input=$lic->fields;
+			$input["ID"]=$ereg[1];
+			unset($lic2->fields);
+			$lic2->update($input);
+		}
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["update"]))

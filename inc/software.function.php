@@ -93,13 +93,14 @@ function showLicenses ($sID,$show_computers=0) {
 				echo "<option value=''>-----</option>";
 				echo "<option value='update_expire'>".$lang["software"][32]."</option>";
 				echo "<option value='update_buy'>".$lang["software"][35]."</option>";
+				echo "<option value='move'>".$lang["buttons"][20]."</option>";
 				echo "</select>";
 			
 				echo "<script type='text/javascript' >\n";
 				echo "   new Form.Element.Observer('update_licenses_choice', 1, \n";
 				echo "      function(element, value) {\n";
 				echo "      	new Ajax.Updater('update_licenses_view','".$cfg_glpi["root_doc"]."/ajax/updateLicenses.php',{asynchronous:true, evalScripts:true, \n";
-				echo "           method:'post', parameters:'type=' + value\n";
+				echo "           method:'post', parameters:'type=' + value+'&sID=$sID'\n";
 				echo "})})\n";
 				echo "</script>\n";
 
@@ -408,7 +409,9 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 
 	echo "<tr class='tab_bg_1'><td>".$lang["software"][16]."</td>";
 	echo "<td>";
-	autocompletionTextField("serial","glpi_licenses","serial",$values["serial"],20);
+	$readonly="";
+	if ($values["serial"]=="free"||$values["serial"]=="global") $readonly="readonly";
+	autocompletionTextField("serial","glpi_licenses","serial",$values["serial"],20,$readonly);
 	echo "</td></tr>";
 	
 	if ($action!="update"){
