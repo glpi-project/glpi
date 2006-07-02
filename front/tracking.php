@@ -120,7 +120,7 @@ if (isset($_POST["delete_inter"])&&!empty($_POST["todel"])&&haveRight("delete_ti
 
 if (!haveRight("show_ticket","1")){
 	// Show only my tickets
-	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],"","","all",$_SESSION["glpiID"],-1);
+	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],"","DESC","all",$_SESSION["glpiID"],-1);
 } else {
 
 	if (!$tab["extended"])
