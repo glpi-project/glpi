@@ -130,7 +130,7 @@ class User extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
-		global $db;
+		global $db,$cfg_glpi;
 
 		if (isset($input["password"])) {
 			if(empty($input["password"])) {
@@ -140,6 +140,12 @@ class User extends CommonDBTM {
 				$input["password"]="";
 			}
 		}
+
+		// change email_form to email (not to have a problem with preselected email)
+		if (isset($input["email_form"])){
+			$input["email"]=$input["email_form"];
+			unset($input["email_form"]);
+		}
 		
 		// Update User in the database
 		if (!isset($input["ID"])&&isset($input["name"])){
@@ -147,36 +153,34 @@ class User extends CommonDBTM {
 				$input["ID"]=$this->fields["ID"];
 		} 
 
-		// Security system execpt for login update
-		if (!haveRight("user","w")&&!ereg("login.php",$_SERVER["PHP_SELF"])){
-			if($_SESSION["glpiID"]==$input['ID']) {
-				$ret=array();
-				$ret["ID"]=$input["ID"];
-				if (isset($input["password"]))	$ret["password"]=$input["password"];
-				if (isset($input["password_md5"]))	$ret["password_md5"]=$input["password_md5"];
-				if (isset($input["language"]))	{
-					$ret["language"]=$input["language"];
-					$_SESSION["glpilanguage"]=$input["language"];
-				}
-				if (isset($input["tracking_order"]))	{
-					$ret["tracking_order"]=$input["tracking_order"];
-					$_SESSION["glpitracking_order"]=$input["tracking_order"];
-				}
-				return $ret;
-			} else return array();
-		}
-		if (isset($input["language"]))	{
+
+		if (isset($input["language"])&&$_SESSION["glpiID"]==$input['ID'])	{
 			$_SESSION["glpilanguage"]=$input["language"];
 		}
-		if (isset($input["tracking_order"]))	{
+		if (isset($input["tracking_order"])&&$_SESSION["glpiID"]==$input['ID'])	{
 			$_SESSION["glpitracking_order"]=$input["tracking_order"];
 		}
 
-		// change email_form to email (not to have a problem with preselected email)
-		if (isset($input["email_form"])){
-			$input["email"]=$input["email_form"];
-			unset($input["email_form"]);
+		// Security system execpt for login update
+		if (!haveRight("user","w")&&!ereg("login.php",$_SERVER["PHP_SELF"])){
+			if($_SESSION["glpiID"]==$input['ID']) {
+				$ret=$input;
+				// extauth imap case
+				if (isset($cfg_glpi['ldap_fields'])){
+					foreach ($cfg_glpi['ldap_fields'] as $key => $val)
+					if (!empty($val))
+						unset($ret[$key]);
+				}
+				// extauth imap case
+				if (!empty($cfg_glpi['imap_host']))
+					unset($ret["email"]);	
+
+				unset($ret["active"]);
+				unset($ret["comments"]);
+				return $ret;
+			} else return array();
 		}
+
 		
 		if (isset($input["profile"])){
 			$prof=new Profile();
@@ -482,7 +486,11 @@ class User extends CommonDBTM {
 		// Affiche un formulaire User
 		global $cfg_glpi, $lang;
 	
-		if (!haveRight("user","r")) return false;
+		if ($ID!=$_SESSION["glpiID"]&&!haveRight("user","r")) return false;
+		
+		$canedit=haveRight("user","w");
+		$canread=haveRight("user","r");
+		
 		
 		// Helpdesk case
 		if($ID == 1) {
@@ -595,6 +603,85 @@ class User extends CommonDBTM {
 	
 		echo "</table></form></div>";
 	}
+
+function showMyForm($target,$ID) {
+		
+	// Affiche un formulaire User
+	global $cfg_glpi, $lang;
+	
+	if ($ID!=$_SESSION["glpiID"]) return false;
+		
+	if ($this->getfromDB($ID)){
+		$extauth=empty($this->fields["password"])&&empty($this->fields["password_md5"]);
+		$imapauth=!empty($cfg_glpi["imap_host"]);
+
+		echo "<div align='center'>";
+		echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
+		echo "<tr><th colspan='2'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
+
+		echo "<tr class='tab_bg_1'>";	
+		echo "<td align='center'>".$lang["setup"][18]."</td>";
+		echo "<td align='center'><b>".$this->fields["name"]."</b>";
+		echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
+		echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
+		echo "</td></tr>";
+
+		//do some rights verification
+		if (!$extauth){
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+		} 
+	
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
+		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["realname"]))) {
+			autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
+		} else echo $this->fields["realname"];
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][43]."</td><td>";
+		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["firstname"]))){
+			autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
+		}  else echo $this->fields["firstname"];
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>";
+		if (!$extauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["email"]))){
+			autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
+		} else echo $this->fields["email"];
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone"]))){
+			autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
+		} else echo $this->fields["phone"];
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]." 2</td><td>";
+		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone2"]))){
+			autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
+		} else echo $this->fields["phone2"];
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["mobile"]))) {
+			autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
+		} else echo $this->fields["mobile"];
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["location"]))){
+			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],0);
+		} else echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
+		echo "</td></tr>";
+
+		echo "<tr>";
+		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
+		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
+		echo "</td>";
+		echo "</tr>";
+	
+		echo "</table></form></div>";
+	}
+}
 
 
 }
