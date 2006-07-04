@@ -49,6 +49,7 @@ if(!isset($tab["removefromfaq"])) $tab["removefromfaq"] = "";
 
 $kb=new kbItem;
 	
+
 	if ($tab["ID"]=="new"){
 // on affiche le formulaire de saisie de l'item
 
@@ -64,7 +65,7 @@ $kb=new kbItem;
 			
 	else if (isset($_POST["add"])){
 // ajoute un item dans la base de connaisssances 	
-	checkRight("knowbase","w");
+	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 	
 	
 	$newID=$kb->add($_POST);
