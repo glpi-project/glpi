@@ -37,7 +37,8 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("document","tracking");
 include ($phproot . "/inc/includes.php");
 
-checkLoginUser();
+if ($cfg_glpi["public_faq"] == 0)
+	checkLoginUser();
 
 if (isset($_GET["file"])){
 
@@ -54,6 +55,7 @@ if (isset($_GET["file"])){
 			
 			if ($founded){
 				
+
 				if ($_SESSION["glpiprofile"]["interface"]=="central"){
 					// My doc Check
 					if ($doc->fields["FK_users"]==$_SESSION["glpiID"])
@@ -61,6 +63,23 @@ if (isset($_GET["file"])){
 					// else Common doc right access
 					else if (haveRight("document","r"))
 						$send=true;
+					// Knowbase Case
+					if (!$send&&haveRight("knowbase","r")){
+						$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."'";
+						
+						$result=$db->query($query);
+						if ($db->numrows($result)>0)
+							$send=true;
+					}
+					if (!$send&&haveRight("faq","r")){
+						$query = "SELECT * FROM glpi_doc_device LEFT JOIN glpi_kbitems ON (glpi_kbitems.ID = glpi_doc_device.Fk_device) WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."' AND glpi_kbitems.faq='yes'";
+						
+						$result=$db->query($query);
+						if ($db->numrows($result)>0)
+							$send=true;
+					}
+
+					
 					// Tracking Case
 					if (!$send&&isset($_GET["tracking"])){
 						$job=new Job;
@@ -74,9 +93,20 @@ if (isset($_GET["file"])){
 						}
 					}
 				} else {
+					
 					// Check if it is my doc
 					if ($doc->fields["FK_users"]==$_SESSION["glpiID"])
 						$send=true;
+					else {
+						if (haveRight("faq","r")||$cfg_glpi["public_faq"]){
+							// Check if it is a FAQ document
+							$query = "SELECT * FROM glpi_doc_device LEFT JOIN glpi_kbitems ON (glpi_kbitems.ID = glpi_doc_device.Fk_device) WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."' AND glpi_kbitems.faq='yes'";
+						
+							$result=$db->query($query);
+							if ($db->numrows($result)>0)
+								$send=true;
+						}
+					}
 				}
 			} else echo $lang["document"][43];
 		}

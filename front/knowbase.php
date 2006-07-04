@@ -40,6 +40,10 @@ include ($phproot . "/inc/includes.php");
 
 	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
 
+	if (isset($_GET["ID"]))
+		glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
+
+
 	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 
 	initExpandSessionVar();
@@ -59,6 +63,7 @@ include ($phproot . "/inc/includes.php");
 	
 	if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
 	
+
 	titleknowbase();
 
 	if (haveRight("knowbase","r"))

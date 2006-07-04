@@ -304,16 +304,14 @@ function commonHeader($title,$url)
 	echo "</div>\n";
 
 	//clock
-	echo "<div style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:101;'><p>";
-	echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i><span class='nav_horl'>";
+	echo "<div class='nav_horl' style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:101;'>";
 	echo "<a href='".$HTMLRel."front/user.form.my.php'>";
 	if (!empty($_SESSION["glpirealname"])) {
 		echo $_SESSION["glpirealname"];
 		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
 	}
 	else echo $_SESSION["glpiname"];
-	echo "</a></span></p></div>\n";
+	echo "</a></span></div>\n";
 
 	echo "</div>";
 
@@ -693,8 +691,10 @@ echo $TIMER_DEBUG->Get_Time()."s</span>";
 echo "</td>";
 
 if (!empty($cfg_glpi["founded_new_version"]))
-	echo "<td align='center'>".$lang["setup"][301]." ".$cfg_glpi["founded_new_version"]."<br>".$lang["setup"][302]."</td>";
-
+	echo "<td align='center' class='copyright'>".$lang["setup"][301]." ".$cfg_glpi["founded_new_version"]."<br>".$lang["setup"][302]."</td>";
+echo "<td class='copyright'>";
+echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+echo "</td>";
 
 echo "<td align='right'>";
 echo "<a href=\"http://glpi-project.org/\">";

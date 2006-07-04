@@ -276,7 +276,7 @@ function checkLoginUser(){
 function checkAccessToPublicFaq(){
 	global $lang,$HTMLRel,$cfg_glpi,$HEADER_LOADED;
 
-	if ($cfg_glpi["public_faq"] == 0 || !haveRight("faq","r")){
+	if ($cfg_glpi["public_faq"] == 0 && !haveRight("faq","r")){
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
