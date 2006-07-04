@@ -70,7 +70,7 @@ else $contains="";
 if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
 
 
-faqShowCategoriesall($_SERVER["PHP_SELF"]."?show=faq",$contains);
+faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
 }
 //**************************
 //  fin Affichage Module FAQ

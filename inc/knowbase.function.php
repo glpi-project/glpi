@@ -432,7 +432,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 {
 	// show item : question and answer
 	
-	global $db,$lang;
+	global $db,$lang,$cfg_glpi;
 	
 	if (!haveRight("user","r")) $linkauthor="no";
 
@@ -440,7 +440,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 	
 	$ki->getfromDB($ID);
 	if ($ki->fields["faq"]=="yes"){
-		if (!haveRight("faq","r")) return false;	
+		if ($cfg_glpi["public_faq"] == 0&&!haveRight("faq","r")) return false;	
 	}
 	else 
 		if (!haveRight("knowbase","r")) return false;	
@@ -608,9 +608,9 @@ function getFAQParentCategories($ID, $catNumbers)
 function faqShowCategoriesall($target,$contains)
 {
 
-	global $lang;	
+	global $lang,$cfg_glpi;	
 
-	if (!haveRight("faq","r")) return false;	
+	if ($cfg_glpi["public_faq"] == 0 && !haveRight("faq","r")) return false;	
 
 	searchFormKnowbase($target,$contains);
 	
@@ -618,7 +618,7 @@ function faqShowCategoriesall($target,$contains)
 	echo "<tr><th align='center' >".$lang["knowbase"][1]."</th></tr><tr><td  align='left'>";	
 	
 	
-	faqShowCategories(0,$contains);
+	faqShowCategories($target,0,$contains);
 	
 	echo "</td></tr></table></div>";
 }
@@ -633,7 +633,7 @@ function faqShowCategoriesall($target,$contains)
 * 
 * @return 
 **/
-function faqShowCategories($parentID=0,$contains='')
+function faqShowCategories($target,$parentID=0,$contains='')
 {
 	global $db,$HTMLRel,$lang;
 		
@@ -642,7 +642,7 @@ function faqShowCategories($parentID=0,$contains='')
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
 	
-	if ($parentID==0) faqShowItems($parentID,$contains);
+	if ($parentID==0) faqShowItems($target,$parentID,$contains);
 
 	if ($result=$db->query($query)){
 			
@@ -673,7 +673,7 @@ function faqShowCategories($parentID=0,$contains='')
 				}
 
 				if ($_SESSION["kb_show"][$ID]=='Y'){
-	  				faqShowItems($ID,$contains);
+	  				faqShowItems($target,$ID,$contains);
 					faqShowCategories($ID,$contains);
 				}
 				echo "</ul>\n";
@@ -695,7 +695,7 @@ function faqShowCategories($parentID=0,$contains='')
 * 
 * @return 
 **/
-function faqShowItems($parentID,$contains)
+function faqShowItems($target,$parentID,$contains)
 {
 	global $db;
 	// ok	
@@ -715,7 +715,7 @@ function faqShowItems($parentID,$contains)
 		echo "<ul>\n";
 		while ($row=$db->fetch_array($result)){
 			$ID = $row["ID"];
-			faqShowItem($ID);
+			faqShowItem($target,$ID);
 		}
 	echo "</ul>\n";
 	}
@@ -732,7 +732,7 @@ function faqShowItems($parentID,$contains)
 * 
 * @return 
 **/
-function faqShowItem($ID)
+function faqShowItem($target,$ID)
 {
 	// ok
 	
@@ -744,7 +744,10 @@ function faqShowItem($ID)
 	if ($result=$db->query($query)){
 	$data = $db->fetch_array($result);
 	$question = $data["question"];
-	echo "<li><a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=faq&amp;ID=$ID\">$question</a>\n";
+	if (ereg("\?",$target)) $target.="&amp;";
+	else $target.="?";
+	
+	echo "<li><a href=\"".$target."ID=$ID\">$question</a>\n";
 	}
 
 }
