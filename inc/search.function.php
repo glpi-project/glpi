@@ -525,7 +525,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				}
 				else if (is_array($link)&&isset($link[$key]))
 					$LINK=" ".$link[$key];
-				else $LINK=" AND ";
+				else 
+					$LINK=" AND ";
 			}
 			// Add Where clause if not to be done ine HAVING CLAUSE
 			if (!in_array($SEARCH_OPTION[$type][$field[$key]]["table"],$META_SPECIF_TABLE)){
@@ -545,7 +546,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					$WHERE.=" ".$link[$key];
 				else 
 					$WHERE.=" AND ";
-				
 			}
 
 			 $WHERE.= " ( ";
@@ -564,14 +564,16 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			$NOT=0;
 			// Manage Link if not first item
-			if (isset($link[$key])&&(!$first||$i>0)) {
-				if (ereg("NOT",$link[$key])){
-				$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
-				$NOT=1;
-				}
+			if (!$first||$i>0) {
+				if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
+					$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
+					$NOT=1;
+				} else if (is_array($link)&&isset($link[$key]))
+					$WHERE.=" ".$link[$key];
 				else 
-				$WHERE.=" ".$link[$key];
-			} else $WHERE.=" AND ";
+					$WHERE.=" AND ";
+			}
+
 			 $WHERE.= " ( ";
 			$first2=true;
 
@@ -1336,10 +1338,14 @@ case "glpi_infocoms.amort_type":
 	else  return " ($table.$field = $val  ".$ADD." ) ";
 	break;
 case "glpi_users.active":
+	
+	if (!eregi($val,$lang["choice"][1])&&!eregi($val,$lang["choice"][0])&&$val!="NULL")
+		return "( 0 = 1 )";
+
 	$ADD="";
 	if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
 
-	if (eregi($val,$lang["choice"][1])) $val=1;
+	if (eregi($val,$lang["choice"][1])||$val==1) $val=1;
 	else $val=0;
 	if ($nott)
 		return " ($table.$field <> $val ".$ADD." ) ";
