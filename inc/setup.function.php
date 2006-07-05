@@ -1817,7 +1817,6 @@ function ocsUpdateDBConfig($input, $id) {
 
 		$db->query($query);
 	} else {
-		print_r($input);
 		echo $lang["ocsng"][17];
 	}
 	
