@@ -311,7 +311,7 @@ function commonHeader($title,$url)
 		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
 	}
 	else echo $_SESSION["glpiname"];
-	echo "</a></span></div>\n";
+	echo "</a></div>\n";
 
 	echo "</div>";
 
@@ -693,7 +693,7 @@ echo "</td>";
 if (!empty($cfg_glpi["founded_new_version"]))
 	echo "<td align='center' class='copyright'>".$lang["setup"][301]." ".$cfg_glpi["founded_new_version"]."<br>".$lang["setup"][302]."</td>";
 echo "<td class='copyright'>";
-echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
+echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y")."</i>";
 echo "</td>";
 
 echo "<td align='right'>";
