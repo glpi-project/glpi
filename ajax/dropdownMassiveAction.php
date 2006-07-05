@@ -63,6 +63,10 @@ header_nocache();
 			case "disconnect":
 				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 			break;
+			case "add_group":
+				dropdownValue("glpi_groups","group",0);
+				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+			break;
 			case "update":
 				$first_group=true;
 				$newgroup="";

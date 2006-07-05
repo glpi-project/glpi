@@ -1111,6 +1111,9 @@ function dropdownMassiveAction($device_type,$deleted){
 				echo "<option value=\"connect\">".$lang["buttons"][9]."</option>";
 				echo "<option value=\"disconnect\">".$lang["buttons"][10]."</option>";
 			}
+			if ($device_type==USER_TYPE){
+				echo "<option value=\"add_group\">".$lang["setup"][604]."</option>";
+			}
 		}
 		echo "</select>";
 
