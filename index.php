@@ -81,11 +81,10 @@ else
 
 	echo nl2br(unclean_cross_side_scripting_deep($cfg_glpi['text_login']));
 		
-	echo "<ul>";
 	// Affichage autorisé FAQ
 	if ($cfg_glpi["public_faq"]){
-		echo "<li><a href='front/faq.php'>".$lang["knowbase"][24]."</a></li>";}
-	echo "</ul>";
+		echo "<ul><li><a href='front/faq.php'>".$lang["knowbase"][24]."</a></li></ul>";
+		}
 	echo "</div>";
 
 	
@@ -189,12 +188,13 @@ else
 	echo "</div>";
 	
 }
+// Appel de cron
+if ($cfg_glpi["debug"]!=DEMO_MODE)
+	callCron();
+
 echo "</body></html>";
 
 // End
 
-// Appel de cron
-if ($cfg_glpi["debug"]!=DEMO_MODE)
-	callCron();
 
 ?>
