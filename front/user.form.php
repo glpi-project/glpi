@@ -35,7 +35,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("user","profile");
+$NEEDED_ITEMS=array("user","profile","group");
 include ($phproot . "/inc/includes.php");
 
 if(empty($_GET["ID"])) $_GET["ID"] = "";
@@ -71,6 +71,24 @@ if (isset($_POST["add"])) {
 	$user->update($_POST);
 	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$lang["log"][21]."  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["addgroup"]))
+{
+	checkRight("user","w");
+
+	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
+	
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][48]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["deletegroup"]))
+{
+	checkRight("user","w");
+	if (count($_POST["item"]))
+	foreach ($_POST["item"] as $key => $val)
+		deleteUserGroup($key);
+
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][49]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 	
 
@@ -80,7 +98,7 @@ if (isset($_POST["add"])) {
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
 		
 		$user->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
-		showGroupAssociated($_GET["ID"]);
+		showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
 		commonFooter();
 	} else {
 		if (isset($_GET['add_ext_auth'])){
