@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
-$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","link","ocsng","consumable","cartridge","contract","enterprise","contact","group");
+$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile");
 include ($phproot . "/inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -110,7 +110,6 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 				$ci->getFromDB($_POST["device_type"],-1);
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						
 						$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 					}
 				}
@@ -119,6 +118,11 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		case "install":
 			foreach ($_POST["item"] as $key => $val){
 				installSoftware($key,$_POST["lID"],$_POST["sID"]);
+			}
+		break;
+		case "add_group":
+			foreach ($_POST["item"] as $key => $val){
+				addUserGroup($key,$_POST["group"]);
 			}
 		break;
 	}
