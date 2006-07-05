@@ -119,7 +119,6 @@ function showGroupUser($target,$ID){
 			}
 
 			echo "<td><a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ID"]."'>".$name.($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</a>";
-			//	echo "<a href='".$_SERVER["PHP_SELF"]."?deleteuser=deleteuser&amp;gID=$ID&amp;ID=".$data["linkID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
 			
 			echo "</td>";
 			$i++;
