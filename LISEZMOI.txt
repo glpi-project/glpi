@@ -52,6 +52,7 @@ GLPI est un gestionnaire de parc informatique.
 Il permet de recenser et de gérer l'intégralité des composantes matérielles
 ou logicielles d'un parc informatique, et ainsi d'optimiser le travail des
 techniciens grâce à une maintenance plus cohérente.
+
 Les fonctionnalités principales de l'application s'articulent autour de deux
 axes :
 
@@ -84,17 +85,16 @@ avec l'une des ressources techniques à laquelle ils ont accès.
 --- INSTALLATION DE GLPI ET CONFIGURATION
 *************************************************************************************************************
 
-L'installation de GLPI est assez simple. Depuis la version 0.4 il n'y a plus, en particulier, de fichier à 
-modifier « à la main ».
+La procédure d'installation de GLPI est simple. Depuis la version 0.4 il n'y a plus, en particulier, de fichier à modifier « à la main ».
 
 La procédure est la suivante :
 
 1. Récupérez l'archive de GLPI sur notre serveur, et la décompacter sur votre ordinateur personnel. 
-Vous obtenez un dossier glpi contenant l'ensemble des fichiers du logiciel GLPI.
+Vous obtenez un dossier "glpi" contenant l'ensemble des fichiers du logiciel GLPI.
 
 2. Copier ce dossier sur le serveur destiné à accueillir GLPI.
 
-3. Connectez-vous avec votre navigateur sur GLPI. GLPI vous proposera une interface graphique vous permettant 
+3. Faites pointer votre navigateur vers l'url d'installation de  GLPI. GLPI vous proposera une interface graphique vous permettant 
 de configurer le logiciel. Une fois ces quelques informations de configuration fournies, 
 GLPI sera totalement installé et vous pourrez commencer à travailler.
 
@@ -110,11 +110,11 @@ Vous devez au minimum disposer d'un espace sur un serveur Web avec :
 Avant l'installation, vous devez avoir une base MySQL disponible. Si vous n'êtes pas l'administrateur 
 du serveur, il faut demander l'activation d'une base MySQL à l'administrateur.
 
-Vous devez connaître les données de votre connexion MySQL (fournies par l'administrateur) :
+Vous devez connaître les paramêtres de votre connexion MySQL (fournies par l'administrateur) :
 -  l'adresse du serveur MySQL ;
 -  votre login MySQL ;
 -  votre password MySQL ;
--  le nom de la base de données
+-  le nom de la base de données.
 
 --- Récupérer GLPI
 
@@ -217,14 +217,15 @@ L'étape 4 : vous indique que l'installation de GLPI est maintenant terminée, et 
 certain nombre d'informations. Lisez attentivement ces informations et cliquez sur « utiliser GLPI » 
 pour effectuer votre première connection à l'application.
 
+Remarque : Pour plus de sécurité, il est préférable de limiter l'accès en lecture au fichier config/config_db.php à l'utilisateur du serveur web.
+
+Exemple : chmod 400 config/config_db.php
+
 --- Fin de l'installation
 
 En cas de grosse erreur (du genre : vous avez oublié votre propre accès à GLPI...), pour « relancer » cette 
 procédure d'installation, il faut utiliser votre logiciel FTP (par exemple) et effacer le fichier suivant :
 -  config/config_db.php
-
-Pour plus de sécurité il faut ne permettre l'accès en lecture au fichier config/config_db.php que par l'utilisateur du serveur web.
-Exemple : chmod 400 config/config_db.php
 
 Pointer votre navigateur web sur le dossier racine de GLPI : http://votreserveur/glpi/ (par défaut) relancera 
 alors la procédure de configuration (en réalité, c'est l'absence de fichier « config_db.php » qui provoque le 
@@ -233,40 +234,42 @@ lancement de cette procédure).
 
 
 *************************************************************************************************************
---- MISES A JOUR 
+--- MISE A JOUR 
 *************************************************************************************************************
 
 
 I) Sauvegarde de votre ancienne configuration :
 
-Avant de faire quoi que ce soit il convient de faire deux choses :
+Avant de ancienne_installation_GLPI/backup/dumpfaire quoi que ce soit il convient de faire deux choses :
 
-1 - Sauvegardez votre base de donnée via l'interface de sauvegarde de glpi. 
+1 - Sauvegardez votre base de données via l'interface de sauvegarde de GLPI. 
 2 - Sauvegardez tout le répertoire GLPI (il contiendra la sauvegarde de votre base SQL et vos documents (GLPI >= 0.5))
 
-A partir de là, si la mise à jour se déroule mal ou que les nouvelles implantation de 
+A partir de là, si la mise à jour se déroule mal ou que les nouvelles fonctionnalités de 
 la version ne vous conviennent pas, il sera facile de revenir à votre version précédente.
 
-Si néanmoins cette procédure se déroulait mal, merci de nous faire parvenir au plus vite sur 
-les mailing listes, ou sur le forum du site du projet, ou sur le bugtrack la procédure utilisée 
-et le message d'erreur que vous obtenez.
+Si néanmoins vous rencontrez des problèmes de mise à jour, merci de nous informer sur 
+les mailing listes, ou sur le forum du site du projet, ou sur le bugtrack de la procédure utilisée 
+et du message d'erreur que vous obtenez.
 
 II) Récupération et installation des fichiers.
 
-1)Téléchargez le tarball de la dernière version  disponible dans la rubrique téléchargement du site du 
-projet glpi (http://glpi-project.org).
+1) Téléchargez le tarball de la dernière version  disponible dans la rubrique téléchargement du site du projet glpi (http://glpi-project.org).
 
 Cas où vous passer en GLPI >= 0.68 :
-Sauvegardez bien tous votre répertoire GLPI et supprimez le.
-Certains répertoires ont changés. Il vous faut donc copier leur contenu.
-/backup/dump -> /files/_dumps
-/docs/ -> /files
 
-2)Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
+Sauvegardez bien l'ensemble de votre répertoire GLPI et supprimez le.
 
-3)Supprimez le fichier [votre_racine_http/]/glpi/config/config_db.php
 
-4) Verifiez ou changez les droits sur les dossiers suivants :
+2) Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
+
+ !-  Certains répertoires ont changés. Il vous faut donc copier leur contenu -!
+
+ancienne_installation_GLPI/backup/dump -> nouvelle_installation_glpi/files/_dumps
+ancienne_installation_GLPI/docs/ -> nouvelle_installation_glpi/files
+
+
+3) Verifiez ou changez les droits sur les dossiers suivants :
 
 -[votre_racine_http/]/glpi/files
 -[votre_racine_http/]/glpi/config/
@@ -274,7 +277,7 @@ Certains répertoires ont changés. Il vous faut donc copier leur contenu.
 de manière à ce que PHP y ait les droits d'écriture.
 
 
-III)Lancement de la mise à jour :
+III) Lancement de la mise à jour :
 
 1) Faites pointer votre navigateur web sur http://votreserveur/glpi/
 
@@ -287,7 +290,7 @@ instructions et réessayez.
 
 Si tout c'est bien passé, cliquez sur « continuer ».
 
-5)Configurez l'accès au serveur Mysql, aidez vous du fichier config.php que vous avez sauvegardé, 
+5) Configurez l'accès au serveur Mysql, aidez vous du fichier config.php que vous avez sauvegardé, 
 pour remplir :
 Mysql serveur : le nom d'hôte mysql
 Mysql user : le nom d'utilisateur mysql
@@ -356,12 +359,9 @@ contenu dans votre base de données.
 
 12) Fin de la Mise à jour
 
-Si cette procédure réussi, votre base de données maintenant à jour vous pouvez configurer GLPI en cliquant 
-sur « utilisez GLPI » et en vous connectant avec l'utilisateur que vous venez de créer.
+Si cette procédure réussi, votre base de données maintenant à jour vous pouvez configurer GLPI en cliquant sur « utilisez GLPI » et en vous connectant avec l'utilisateur que vous venez de créer.
 
-Une fois la configuration terminée, vous pourrez supprimer cet utilisateur. Attention assurez vous qu'il 
-reste toujours un utilisateur « super-admin » ayant la possibilité de se connecter à l'application, 
-ne serait qu'en cas de problèmes avec les sources de données externes.
+Une fois la configuration terminée, vous pourrez supprimer cet utilisateur. Attention assurez vous qu'il reste toujours un utilisateur « super-admin » ayant la possibilité de se connecter à l'application, ne serait qu'en cas de problèmes avec les sources de données externes.
 
 
 *************************************************************************************************************
