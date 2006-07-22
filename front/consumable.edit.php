@@ -56,8 +56,10 @@ else if (isset($_POST["add_several"]))
 {
 	checkRight("consumable","w");
 	
-	for ($i=0;$i<$_POST["to_add"];$i++)
+	for ($i=0;$i<$_POST["to_add"];$i++){
+		unset($con->fields["ID"]);
 		$con->add($_POST);
+	}
 	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." consumable.");
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
