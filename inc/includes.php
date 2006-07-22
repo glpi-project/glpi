@@ -139,7 +139,7 @@ if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
 			include_once ($phproot . "/inc/$item.class.php");
 		if (file_exists($phproot . "/inc/$item.function.php"))
 			include_once ($phproot . "/inc/$item.function.php");
-		if ($item=="ocsng"&&$cfg_glpi["ocs_mode"])
+		if ($item=="ocsng"&&$cfg_glpi["ocs_mode"]&&isset($USE_OCSNGDB))
 			$dbocs=new DBocs;
 	}
 }
