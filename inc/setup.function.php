@@ -1851,7 +1851,8 @@ function ocsFormDBConfig($target, $id) {
 	echo "<div align='center'>";
 	if (!$dbocs->error){
 		echo $lang["ocsng"][18]."<br>";
-		if ($dbocs->query("SELECT CHECKSUM FROM hardware")) {
+		$result=$dbocs->query("SELECT TVALUE FROM config WHERE NAME='GUI_VERSION'");
+		if ($dbocs->numrows($result)==1&&$dbocs->result($result,0,0)>=4020) {
 			echo $lang["ocsng"][19]."</div>";
 			ocsFormConfig($target, $id);
 		} else echo $lang["ocsng"][20]."</div>";

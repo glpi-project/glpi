@@ -68,6 +68,7 @@ if(!empty($_GET["next"])) {
 		showFormConfigDisplay($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "ocsng") {
+		$dbocs=new DBocs();
 		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 		ocsFormDBConfig($_SERVER["PHP_SELF"], $cfg_glpi["ID"]);
 	}
@@ -103,7 +104,6 @@ elseif(!empty($_POST["update_confdisplay"])) {
 	$config->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=confdisplay");
 } elseif(!empty($_POST["update_ocs_config"])) {
-	
 	$ocsconfig->update($_POST);
 	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=ocsng");
 } elseif(!empty($_POST["update_ocs_dbconfig"])) {

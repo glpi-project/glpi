@@ -34,6 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
+$USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
 include ($phproot . "/inc/includes.php");
 
