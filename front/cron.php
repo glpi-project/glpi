@@ -33,7 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 include ("_relpos.php");
-$NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
+$USE_OCSNGDB=1;
+$NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise","ocsng");
 include ($phproot."/inc/includes.php");
 
 

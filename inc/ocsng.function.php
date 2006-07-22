@@ -70,7 +70,6 @@ if ($dbocs->numrows($result_ocs)>0){
 		$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
 		$hardware[$data["DEVICEID"]]["name"]=$data["NAME"];
 		$hardware[$data["DEVICEID"]]["TAG"]=$data["TAG"];
-		$hardware[$data["DEVICEID"]]["ID"]=$data["ID"];
 	}
 	// Get all links between glpi and OCS
 	$already_linked=array();
@@ -128,12 +127,12 @@ if ($dbocs->numrows($result_ocs)>0){
 			echo "<tr class='tab_bg_2'><td>".$tab["name"]."</td><td>".$tab["date"]."</td><td>".$tab["TAG"]."</td><td>";
 			
 			if ($tolinked==0)
-			echo "<input type='checkbox' name='toimport[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
+			echo "<input type='checkbox' name='toimport[$ID]' ".($check=="all"?"checked":"").">";
 			else {
 				if (isset($computer_names[$tab["name"]]))
-					dropdownValue("glpi_computers","tolink[".$tab["ID"]."]",$computer_names[$tab["name"]]);
+					dropdownValue("glpi_computers","tolink[$ID]",$computer_names[$tab["name"]]);
 				else
-					dropdown("glpi_computers","tolink[".$tab["ID"]."]");
+					dropdown("glpi_computers","tolink[$ID]");
 			}
 			echo "</td></tr>";
 		
@@ -167,7 +166,6 @@ if ($dbocs->numrows($result_ocs)>0){
 function ocs_link($ocs_item_id, $glpi_computer_id) {
 	global $db;
 	$query = "insert into glpi_ocs_link (glpi_id,ocs_id,last_update) VALUES ('".$glpi_computer_id."','".$ocs_item_id."',NOW())";
-	
 	$result=$db->query($query);
 	if ($result)
 		return ($db->insert_id());
@@ -208,18 +206,14 @@ function ocsManageDeleted(){
 }
 
 
-function ocsImportComputer($ID){
+function ocsImportComputer($ocs_deviceid){
 	global $dbocs;
 
 	// Set OCS checksum to max value
-	$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE ID='$ID'";
+	$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE DEVICEID='$ocs_deviceid'";
 	$dbocs->query($query);
 
-	$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
-	$dbocs->query($query);
-
-
-	$query = "SELECT * FROM hardware WHERE ID='$ID'";
+	$query = "SELECT * FROM hardware WHERE DEVICEID='$ocs_deviceid'";
 	$result = $dbocs->query($query);
 	$comp = new Computer;
 	if ($dbocs->numrows($result)==1){
@@ -239,8 +233,6 @@ function ocsImportComputer($ID){
 		}
 
 		if ($idlink = ocs_link($line['DEVICEID'], $glpi_id)){
-			
-			
 			ocsUpdateComputer($idlink,0);
 		}
 	}
@@ -276,7 +268,7 @@ function ocsImportTag($ocs_id,$glpi_id,$cfg_ocs){
 	}
 }
 
-function ocsLinkComputer($ocs_id,$glpi_id){
+function ocsLinkComputer($ocs_deviceid,$glpi_id){
 	global $db,$dbocs,$lang;
 	
 	$query="SELECT * FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
@@ -285,7 +277,7 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 	// Already link - check if the OCS computer already exists
 	if ($db->numrows($result)>0){
 		$data=$db->fetch_assoc($result);
-		$query = "SELECT * FROM hardware WHERE ID='".$data["ocs_id"]."'";
+		$query = "SELECT * FROM hardware WHERE DEVICEID='".$ocs_deviceid."'";
 		$result_ocs=$dbocs->query($query);
 		// Not found
 		if ($dbocs->numrows($result_ocs)==0){
@@ -296,27 +288,24 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 	} 
 
 	if (!$ocs_exists||$db->numrows($result)==0){
-	
+
 		// Set OCS checksum to max value
-		$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE ID='$ocs_id'";
+		$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE DEVICEID='$ocs_deviceid'";
 		$dbocs->query($query);
-
-		$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
-		$dbocs->query($query);
-		//$comp = new Computer;
-		if ($idlink = ocs_link($ocs_id, $glpi_id)){
-
+	
+		if ($idlink = ocs_link($ocs_deviceid, $glpi_id)){
+	
 			$comp=new Computer();
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
 			$comp->update($input);
-			
-
+				
+	
 			// Reset using GLPI Config
 			$cfg_ocs=getOcsConf(1);
-
+	
 			ocsImportTag($ocs_id,$glpi_id,$cfg_ocs);
-
+	
 			if($cfg_ocs["import_general_os"]) 
 				ocsResetDropdown($glpi_id,"os","glpi_dropdown_os");
 			if($cfg_ocs["import_device_processor"]) 
@@ -343,7 +332,7 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 				ocsResetMonitors($glpi_id);
 			if($cfg_ocs["import_printer"]) 
 				ocsResetPrinters($glpi_id);
-
+	
 			ocsUpdateComputer($idlink,0);
 		}
 	} else echo $ocs_id." - ".$lang["ocsng"][23];
@@ -367,6 +356,7 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 		$result_ocs = $dbocs->query($query_ocs);
 	
 		if ($dbocs->numrows($result_ocs)==1){
+			
 			$line['ocs_id']=$dbocs->result($result_ocs,0,0);
 			$query_ocs = "SELECT CHECKSUM FROM hardware WHERE ID='".$line['ocs_id']."'";
 			$result_ocs = $dbocs->query($query_ocs);
@@ -443,12 +433,12 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 						$import_software=importArrayFromDB($line["import_software"]);
 						ocsUpdateSoftware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_software,$dohistory);
 					} 
-		
+
 					
 		
 					// Update OCS Cheksum
-					$query_ocs="UPDATE hardware SET CHECKSUM= (CHECKSUM - $mixed_checksum) WHERE ID='".$line['ocs_id']."'";
-					$dbocs->query($query_ocs);
+//					$query_ocs="UPDATE hardware SET CHECKSUM= (CHECKSUM - $mixed_checksum) WHERE ID='".$line['ocs_id']."'";
+//					$dbocs->query($query_ocs);
 					// update last_update
 					$query = "UPDATE glpi_ocs_link SET last_update=NOW() WHERE ID='$ID'";
 					$db->query($query);
@@ -658,8 +648,6 @@ function cron_ocsng(){
 
 	global $db,$dbocs;
 	
-	$dbocs=new DBocs();
-
 	$cfg_ocs=getOcsConf(1);
 	
 	
@@ -672,20 +660,19 @@ function cron_ocsng(){
 			$hardware[$data["DEVICEID"]]["date"]=$data["LASTDATE"];
 			$hardware[$data["DEVICEID"]]["name"]=addslashes($data["NAME"]);
 		}
-		
 
 		$query_glpi = "SELECT * FROM glpi_ocs_link ORDER BY last_update";
 		$result_glpi = $db->query($query_glpi);
-		$done=false;
-		while(!$done&&$data=$db->fetch_assoc($result_glpi)){
+		$done=0;
+		while($done<5&&$data=$db->fetch_assoc($result_glpi)){
 			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 			
 			if (isset($hardware[$data["ocs_id"]])){ 
 				ocsUpdateComputer($data["ID"],1);
-				$done=true;
+				$done++;
 			}
 		}
-		if ($done) return 1;
+		if ($done>0) return 1;
 	
 	} 
 	return 0;
@@ -1032,7 +1019,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		if ($cfg_ocs["import_device_processor"]){
 			$do_clean=true;
 			
-			$query = "select * from hardware WHERE HARDWARE_ID='$ocs_id'";
+			$query = "select * from hardware WHERE ID='$ocs_id'";
 			$result = $dbocs->query($query);
 			if ($dbocs->numrows($result)==1){
 				$line=$dbocs->fetch_array($result);

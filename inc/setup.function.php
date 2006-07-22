@@ -1853,6 +1853,9 @@ function ocsFormDBConfig($target, $id) {
 		echo $lang["ocsng"][18]."<br>";
 		$result=$dbocs->query("SELECT TVALUE FROM config WHERE NAME='GUI_VERSION'");
 		if ($dbocs->numrows($result)==1&&$dbocs->result($result,0,0)>=4020) {
+			$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
+			$dbocs->query($query);
+
 			echo $lang["ocsng"][19]."</div>";
 			ocsFormConfig($target, $id);
 		} else echo $lang["ocsng"][20]."</div>";
