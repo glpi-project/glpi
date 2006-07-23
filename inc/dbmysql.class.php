@@ -212,6 +212,9 @@ class DBmysql {
 	function affected_rows() {
 		return mysql_affected_rows($this->dbh);
 	}
+	function free_result($result) {
+		return mysql_free_result($result);
+	}
 	function errno()
 	{
 		return mysql_errno($this->dbh);

@@ -161,7 +161,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	while($line = $db->fetch_array($result)) {
 		$users[$line["name"]]=$line["ID"];
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 
 	// Update authors tracking
 	$query= "UPDATE `glpi_tracking` SET `author`='0' WHERE `author` IS NULL;";
@@ -174,7 +174,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	while($line = $db->fetch_array($result)) {
 		$authors[$line["ID"]]=$line["author"];
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 
 	if (count($authors)>0)
 	foreach ($authors as $ID => $val){
@@ -197,7 +197,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	while($line = $db->fetch_array($result)) {
 		$assign[$line["ID"]]=$line["assign"];
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 
 
 	if (count($assign)>0)
@@ -220,7 +220,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 	while($line = $db->fetch_array($result)) {
 		$authors[$line["ID"]]=$line["author"];
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	
 
 	if (count($authors)>0)
@@ -245,7 +245,7 @@ if(!FieldExists("glpi_tracking","assign_type")) {
 		$query="UPDATE glpi_tracking SET assign='".$line["computer"]."', assign_type='".ENTERPRISE_TYPE."', device_type='0', computer='0' WHERE ID='".$line["ID"]."'";
 		$db->query($query);
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 }
 
 // Add planning feature 
@@ -294,7 +294,7 @@ if(!FieldExists("glpi_users","language")) {
 	$query2="UPDATE glpi_users SET language='".$data['language']."', tracking_order='".$data['tracking_order']."' WHERE name='".$data['username']."';";	
 	$db->query($query2) or die("0.6 move pref to users".$lang["update"][90].$db->error());	
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	// Drop glpi_prefs
 	$query="DROP TABLE `glpi_prefs`;";
 	$db->query($query) or die("0.6 drop glpi_prefs".$lang["update"][90].$db->error());
@@ -329,7 +329,7 @@ if(!TableExists("glpi_dropdown_ram_type")) {
 	while ($data=$db->fetch_array($result)){
 		$val[$data['name']]=$data['ID'];
 	}	
-	mysql_free_result($result);
+	$db->free_result($result);
 	
 	// Update glpi_device_ram
 	$query="SELECT * from glpi_device_ram";
@@ -339,7 +339,7 @@ if(!TableExists("glpi_dropdown_ram_type")) {
 		$query2="UPDATE glpi_device_ram SET new_type='".$val[$data['type']]."' WHERE ID ='".$data['ID']."';";
 		$db->query($query2);
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	// ALTER glpi_device_ram
 	$query="ALTER TABLE `glpi_device_ram` DROP `type`;";
 	$db->query($query) or die("0.6 drop type in glpi_dropdown_ram ".$lang["update"][90].$db->error());
@@ -504,7 +504,7 @@ if(!TableExists("glpi_dropdown_model")) {
 		$query="INSERT INTO `glpi_type_computers` (`ID`,`name`) VALUES ('".$data['ID']."','".addslashes($data['name'])."');";
 		$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());		
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 
 	$query="INSERT INTO `glpi_type_computers` (`name`) VALUES ('".$lang["computers"][28]."');";
 	$db->query($query) or die("0.6 insert value in glpi_type_computers ".$lang["update"][90].$db->error());

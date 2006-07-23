@@ -268,7 +268,7 @@ if(!FieldExists("glpi_tracking_planning","id_followup")) {
 	if ($db->numrows($result0)>0){
 		$suid=$db->result($result0,0,0);
 	}
-	mysql_free_result($result0);
+	$db->free_result($result0);
 	$query="SELECT * FROM glpi_tracking_planning order by id_tracking";
 	$result = $db->query($query);
 	$used_followups=array();
@@ -283,7 +283,7 @@ if(!FieldExists("glpi_tracking_planning","id_followup")) {
 		if (!in_array($data2['ID'],$used_followups)){
 				$found=$data2['ID'];
 		}
-		mysql_free_result($result2);
+		$db->free_result($result2);
 		// Followup not founded
 		if ($found<0){
 			$query3="INSERT INTO glpi_followups (tracking,date,author,contents) VALUES ('".$data["id_tracking"]."','".date("Y-m-d")."','$suid','Automatic Added followup for compatibility problem in update')";
@@ -295,7 +295,7 @@ if(!FieldExists("glpi_tracking_planning","id_followup")) {
 		$db->query($query4);
 	}
 	unset($used_followups);
-	mysql_free_result($result);
+	$db->free_result($result);
 	$query=" ALTER TABLE `glpi_tracking_planning` DROP `id_tracking` ;";
 	$db->query($query) or die("0.65 add index for id_followup in tracking_planning".$lang["update"][90].$db->error());
 }
@@ -367,7 +367,7 @@ foreach ($new_model as $model){
 			$query="INSERT INTO `glpi_dropdown_model_$model` (`ID`,`name`) VALUES ('".$data['ID']."','".addslashes($data['name'])."');";
 			$db->query($query) or die("0.6 insert value in glpi_dropdown_model_$model ".$lang["update"][90].$db->error());		
 		}
-		mysql_free_result($result);
+		$db->free_result($result);
 	}
 	
 	if (!FieldExists("glpi_$model","model")){

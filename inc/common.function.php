@@ -393,7 +393,7 @@ return $p[0].":".$p[1];
 function optimize_tables (){
 	
 	global $db;
-$result=$db->list_tables();
+	$result=$db->list_tables();
 	while ($line = $db->fetch_array($result))
    	{
    		if (ereg("glpi_",$line[0])){
@@ -402,7 +402,7 @@ $result=$db->list_tables();
    		$db->query($query);
 		}
   	 }
-mysql_free_result($result);
+	$db->free_result($result);
 }
 
 

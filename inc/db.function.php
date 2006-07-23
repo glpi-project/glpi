@@ -481,7 +481,7 @@ function TableExists($tablename) {
    for ($i=0;$i<$rcount;$i++) {
        if ($db->table_name($result, $i)==$tablename) return true;
    }
-   mysql_free_result($result);
+   $db->free_result($result);
    return false;
 }
 

@@ -69,7 +69,7 @@ if(!FieldExists("glpi_computers","is_template")) {
 		//echo $query2;
 		$db->query($query2) or die("0.5-convert template 2 computers ".$db->error());
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	$query = "DROP TABLE glpi_templates";
 	$db->query($query) or die("0.5 drop table templates ".$db->error());
 	
@@ -79,7 +79,7 @@ if(!FieldExists("glpi_computers","is_template")) {
 		$query="INSERT INTO glpi_computers (is_template,tplname) VALUES ('1','Blank Template')";
 		$db->query($query) or die("0.5 add blank template ".$lang["update"][90].$db->error());	
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 }
 
 
@@ -583,7 +583,7 @@ if(FieldExists("glpi_computers","osver")) {
 		
 		}
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	$query_alter= "ALTER TABLE `glpi_computers` DROP `osver` ";
 	$db->query($query_alter) or die("0.5 alter for update OS ".$lang["update"][90].$db->error());
 }
@@ -1127,8 +1127,8 @@ if (TableExists("glpi_prefs")){
 			}
 		}
 	}
-	mysql_free_result($result);
-	mysql_free_result($result2);
+	$db->free_result($result);
+	$db->free_result($result2);
 }
 
 
@@ -1166,7 +1166,7 @@ function updateMaintenanceInfos($table,$type,$ID){
 	$query_insert="INSERT INTO glpi_contract_device (FK_contract,FK_device,device_type) VALUES ('$ID','".$data["ID"]."','$type')";	
 	$result_insert=$db->query($query_insert) or die("0.5 insert for update maintenance ".$lang["update"][90].$db->error());
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	
 	$query_drop =  "ALTER TABLE `$table` DROP `maintenance`";
 	$result_drop=$db->query($query_drop) or die("0.5 drop for update maintenance ".$lang["update"][90].$db->error());
@@ -1190,7 +1190,7 @@ function updateWarrantyInfos($table,$type){
 			$result_insert=$db->query($query_insert) or die("0.5 insert for update warranty ".$lang["update"][90].$db->error());
 		}
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	
 	$query_drop =  "ALTER TABLE `$table` DROP `achat_date`";
 	$result_drop=$db->query($query_drop) or die("0.5 drop1 for update warranty ".$lang["update"][90].$db->error());
@@ -1255,7 +1255,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 			$db->query($query4) or die("unable to migrate from ".$dpdname." to ".$devname." for item computer:".$lncomp["ID"]."  ".$lang["update"][90].$db->error());
 		}
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	//Delete unused elements (dropdown on the computer table, dropdown table and specif)
 	$query = "ALTER TABLE glpi_computers drop `".$compDpdName."`";
 	$db->query($query) or die("Error : ".$query." ".$db->error());

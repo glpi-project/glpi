@@ -493,7 +493,7 @@ class Job extends CommonDBTM{
 				while ($data=$db->fetch_array($result)){
 						$fup->getfromDB($data['ID']);
 						$message .= "[ ".convDateTime($fup->fields["date"])." ]<br>";
-						$message .= $lang["joblist"][3].": ".$fup->getAuthorName()."<br>";
+						$message .= $lang["common"][37].": ".$fup->getAuthorName()."<br>";
 						$message .= $lang["mailing"][3]."<br>".$fup->fields["contents"]."<br>";
 						if ($fup->fields["realtime"]>0)
 							$message .= $lang["mailing"][104]." ".getRealtime($fup->fields["realtime"])."<br>";
@@ -567,6 +567,7 @@ class Job extends CommonDBTM{
 			if (empty($author)) $author=$lang["mailing"][108];
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][37].":</span> ".$author."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["search"][8].":</span> ".convDateTime($this->fields["date"])."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["job"][44].":</span> ".getRequestTypeName($this->fields["request_type"])."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][7]."</span> ".$name."<br>";
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["joblist"][0].":</span> ".getStatusName($this->fields["status"])."<br>";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
@@ -596,6 +597,7 @@ class Job extends CommonDBTM{
 			if (empty($author)) $author=$lang["mailing"][108];
 			$message.= $lang["common"][37].": ".$author."\n";
 			$message.= $lang["search"][8].": ".convDateTime($this->fields["date"])."\n";
+			$message.= $lang["job"][44].": ".getRequestTypeName($this->fields["request_type"])."\n";
 			$message.= $lang["mailing"][7]." ".$name."\n";
 			$message.= $lang["joblist"][0].": ".getStatusName($this->fields["status"])."\n";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
