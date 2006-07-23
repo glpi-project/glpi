@@ -536,7 +536,7 @@ class User extends CommonDBTM {
 		if(haveRight("user","w")) {
 			if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$this->fields["name"]==""){
 				echo "<td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
-			}
+			} else echo "<td colspan='2'>&nbsp;</td></tr>";
 		} else echo "<td colspan='2'>&nbsp;</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
