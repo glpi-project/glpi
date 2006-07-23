@@ -307,6 +307,7 @@ function loadLanguage() {
 
 	global $lang,$cfg_glpi,$phproot;
 	$file="";
+
 	if(empty($_SESSION["glpilanguage"])) {
 		if (isset($cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
 			$file= "/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1];
@@ -314,7 +315,7 @@ function loadLanguage() {
 		if (isset($cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
 			$file = "/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1];
 	}
-		if (empty($file)||!is_file($file))
+		if (empty($file)||!is_file($phproot . $file))
 			$file="/locales/en_GB.php";
 		include ($phproot . $file);
 		
