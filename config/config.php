@@ -65,6 +65,7 @@ require_once ($cfg_glpi["config_dir"] . "/config_db.php");
 // Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
 
 $cfg_glpi["languages"]=array(   "pt_BR"=>array("Brazilian","pt_BR.php","en_GB.html","hd-en_GB.html","br","en"),
+				"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
 				"de_DE"=>array("Deutsch","de_DE.php","en_GB.html","hd-en_GB.html","de","en"),
 				"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","en"),
 				"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
