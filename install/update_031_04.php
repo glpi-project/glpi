@@ -388,7 +388,7 @@ while($line = $db->fetch_array($result)) {
 		}
 	else {$curend1=$line['end1'];$curend2=$line['end2'];}
 	}	
-mysql_free_result($result);
+$db->free_result($result);
 		
 $query = "ALTER TABLE `glpi_networking_wire` ADD UNIQUE end1_1 (`end1`,`end2`) ";
 $db->query($query) or die("477 ".$lang["update"][90].$db->error());
@@ -416,7 +416,7 @@ while($line = $db->fetch_array($result)) {
 		}
 	else{ $curend1=$line['end1'];$curend2=$line['end2'];$curtype=$line['type'];}
 	}	
-mysql_free_result($result);	
+$db->free_result($result);	
 $query = "ALTER TABLE `glpi_connect_wire` ADD UNIQUE end1_1 (`end1`,`end2`,`type`) ";
 $db->query($query) or die("478 ".$lang["update"][90].$db->error());
 }

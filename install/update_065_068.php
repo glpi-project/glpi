@@ -325,7 +325,7 @@ if(TableExists("glpi_kbitems")){
 					$query="UPDATE glpi_kbitems SET answer='".addslashes(rembo($line["answer"]))."' WHERE ID='".$line["ID"]."'";
 					$db->query($query) 	 or die("0.68 convert knowbase to xhtml ".$lang["update"][90].$db->error());
 					}
-				mysql_free_result($result);
+				$db->free_result($result);
 			}
 		// add new fields
 		$query="ALTER TABLE `glpi_kbitems` ADD `author` INT( 11 ) NOT NULL DEFAULT '0' AFTER `faq` ,
@@ -711,6 +711,7 @@ if(!FieldExists("glpi_config","ldap_field_phone2")) {
 	$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_phone2` varchar(200)  DEFAULT 'homephone' AFTER `ldap_field_phone`;";
 	$db->query($query) or die("0.68 add ldap_field_phone2 in config ".$lang["update"][90].$db->error());
 }
+
 
 
 } // fin 0.68 #####################################################################################

@@ -1758,20 +1758,6 @@ CREATE TABLE `glpi_reminder` (
    KEY type (`type`)
 ) TYPE=MyISAM;
 
-
-### Dump table glpi_repair_item
-
-DROP TABLE IF EXISTS `glpi_repair_item`;
-CREATE TABLE `glpi_repair_item` (
-    `ID` int(11) NOT NULL auto_increment,
-    `device_type` tinyint(4) DEFAULT '0' NOT NULL,
-    `id_device` int(11) DEFAULT '0' NOT NULL,
-   PRIMARY KEY (`ID`),
-   KEY device_type (`device_type`),
-   KEY device_type_2 (`device_type`, `id_device`)
-) TYPE=MyISAM;
-
-
 ### Dump table glpi_reservation_item
 
 DROP TABLE IF EXISTS `glpi_reservation_item`;

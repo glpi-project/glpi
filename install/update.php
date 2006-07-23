@@ -183,7 +183,7 @@ function display_new_locations(){
 		echo "</tr>";
 	$data_old=$data;
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	echo "</table>";
 }
 
@@ -195,7 +195,7 @@ function display_old_locations(){
 	while ($data =  $db->fetch_array($result))
 	echo "<b>".$data['name']."</b> - ";
 	
-	mysql_free_result($result);
+	$db->free_result($result);
 }
 
 function location_create_new($split_char,$add_first){
@@ -263,7 +263,7 @@ function location_create_new($split_char,$add_first){
 		$result_insert=$db->query($query_insert);
 
 	}
-	mysql_free_result($result);
+	$db->free_result($result);
 	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT";
 	$result_auto_inc=$db->query($query_auto_inc);
 
@@ -359,7 +359,7 @@ while($line = $db->fetch_array($result)) {
 	$query = "update ". $table1 ." set temp = ". $line["row2"] ." where ID = '". $line["row1"] ."'";
 	$db->query($query) or die($lang["update"][90].$db->error());
 }
-mysql_free_result($result);
+$db->free_result($result);
 
 $query = "ALTER TABLE ". $table1 ." DROP ". $chps."";
 $db->query($query) or die($lang["update"][90].$db->error());

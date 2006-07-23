@@ -46,10 +46,6 @@ class XML
 	var $IsError; 		// 1 there is a problem !!!
 	var $ErrorString; 	// If there is an error, this string explains it
 	var $Type; 		// Which format do you want your XML ?
-	var $DB; 		// Database Name
-	var $DBhost; 		//Database Host
-	var $DBuser; 		// DataBase User
-	var $DBpassord; 	// DataBase Password
 	var $FilePath;  //path where the file will be saved.
 	
 // HERE I explain $Type
@@ -123,84 +119,67 @@ function XML()
 	$this->SqlString="";
 }
 	
-function MakeConnection ()
-{
-	$link = mysql_connect ($this->DBhost, $this->DBuser, $this->DBpassword) or die ("I can't connect with DataBase :(");
-	mysql_select_db ($this->DB) or die ("I'm connecting with Database Server but I can't select your DB.");
-	return $link;
-}
-
 	
 function DoXML()
 {
-  $fp = fopen($this->FilePath,'wb');
- 	fputs($fp, "<?xml version=\"1.0\"?>\n");
-  fputs($fp, "<dataxml>\n");
-  
-  foreach($this->SqlString as $strqry)
-  {
-	if ($strqry=="")
-	{
-		$this->IsError=1;
-		$this->ErrorString="Error the query can't be a null string";
-		return -1;
-	}
-	$link=$this->MakeConnection();
-	$result = mysql_query($strqry, $link);
-	if ($result==FALSE)
-	{
-		$this->IsError=1;
-		$this->ErrorString="Error in SQL Query : ".$strqry;
-		return -1;
-	}
-	// OK... let's create XML ;)
-	fputs($fp, "	<fields>\n");
-	$i = 0;
-	$FieldsVector=array();
-	while ($i < mysql_num_fields ($result))
-	{
-		$meta = mysql_fetch_field ($result);
-		if ($meta)
-		{
-			
-			fputs($fp, "		<field>".$meta->name."</field>\n");
-			$FieldsVector[]=$meta->name;
-			$i=$i+1;
-		}
-	}
-	fputs($fp, "	</fields>\n");
-	// And NOW the Data ...
-	fputs($fp, "	<rows>\n");
-	while ($row = mysql_fetch_array ($result))
-	{
-		fputs($fp, "		<row>\n");
-		for ($j=0; $j<$i; $j++)
-		{
-			$FieldName="";			// Name of TAG
-			$Attributes="";
-			switch ($this->Type)
-			{
-				case 1:
-					$FieldName="data";
-					break;
-				case 2:
-					$FieldName="data".$j;
-					break;
-				case 3:
-					$FieldName=$FieldsVector[$j];
-					break;
-				case 4:
-					$FieldName="data";
-					$Attributes=" fieldname=\"".$FieldsVector[$j]."\"";
-			}
-			fputs($fp, "			<".$FieldName.$Attributes.">".utf8_encode(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
-		}
-		fputs($fp, "		</row>\n");
-	}
-	fputs($fp, "	</rows>\n");
+	global $db;
+	$fp = fopen($this->FilePath,'wb');
+	fputs($fp, "<?xml version=\"1.0\"?>\n");
+	fputs($fp, "<dataxml>\n");
 
-	mysql_free_result($result);	
-	mysql_close ($link);
+	foreach($this->SqlString as $strqry){
+		if ($strqry==""){
+			$this->IsError=1;
+			$this->ErrorString="Error the query can't be a null string";
+			return -1;
+		}
+		$result = $db->query($strqry);
+
+		if ($result==FALSE){
+			$this->IsError=1;
+			$this->ErrorString="Error in SQL Query : ".$strqry;
+			return -1;
+		}
+		// OK... let's create XML ;)
+		fputs($fp, "	<fields>\n");
+		$i = 0;
+		$FieldsVector=array();
+		while ($i < $db->num_fields ($result)){
+			$name = $db->field_name($result,$i);
+			fputs($fp, "		<field>".$name."</field>\n");
+			$FieldsVector[]=$name;
+			$i++;
+		}
+	
+		fputs($fp, "	</fields>\n");
+		// And NOW the Data ...
+		fputs($fp, "	<rows>\n");
+		while ($row = $db->fetch_array ($result)){
+			fputs($fp, "		<row>\n");
+			for ($j=0; $j<$i; $j++){
+				$FieldName="";			// Name of TAG
+				$Attributes="";
+				switch ($this->Type){
+					case 1:
+						$FieldName="data";
+						break;
+					case 2:
+						$FieldName="data".$j;
+						break;
+					case 3:
+						$FieldName=$FieldsVector[$j];
+						break;
+					case 4:
+						$FieldName="data";
+						$Attributes=" fieldname=\"".$FieldsVector[$j]."\"";
+				}
+				fputs($fp, "			<".$FieldName.$Attributes.">".utf8_encode(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
+			}
+			fputs($fp, "		</row>\n");
+		}
+		fputs($fp, "	</rows>\n");
+
+		$db->free_result($result);
 	}
 	fputs($fp, "</dataxml>");
 	//OK free ...  ;)

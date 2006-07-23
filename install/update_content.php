@@ -54,7 +54,13 @@ function loadLang() {
 			unset($lang);
 			global $lang;
 			include ("_relpos.php");
-			$file = $phproot ."/locales/".$_SESSION["dict"].".php";
+			if (isset($_SESSION["dict"]))
+				$dict=$_SESSION["dict"];
+			else $dict="en_GB";
+			
+			$file = $phproot ."/locales/$dict.php";
+			if (!is_file($file))
+				$file = $phproot ."/locales/en_GB.php";
 			include($file);
 }
 

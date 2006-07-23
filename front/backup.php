@@ -34,6 +34,7 @@
 // ----------------------------------------------------------------------
 
 include ("_relpos.php");
+$NEEDED_ITEMS=array("xml");
 include ($phproot . "/inc/includes.php");
 
 checkRight("backup","w");
@@ -87,13 +88,6 @@ function xmlnow(what4){
 <?php
 
 
-// mySQL - variables
-$dbhost=$db->dbhost;
-$dbuser=$db->dbuser;
-$dbpass=$db->dbpassword;
-$dbname=$db->dbdefault;
-
-
 
 // les deux options qui suivent devraient être incluses dans le fichier de config plutot non ?
 // 1 only with ZLib support, else change value to 0
@@ -106,15 +100,9 @@ else $filetype = "sql";
 
 // génére un fichier backup.xml a partir de base dbhost connecté avec l'utilisateur dbuser et le mot de passe
 //dbpassword sur le serveur dbdefault
-function xmlbackup($dbdefault,$dbhost,$dbuser,$dbpassword)
+function xmlbackup()
 {
 global $cfg_glpi,$db;
-//on inclue le fichier contenant la classe XML.
-require('genxml.php');
-
-
-
-
 
 //on parcoure la DB et on liste tous les noms des tables dans $table
 //on incremente $query[] de "select * from $table"  pour chaque occurence de $table
@@ -147,18 +135,6 @@ $A=new XML();
 
 // Your query
 $A->SqlString=$query;
-
-// Name of Database
-$A->DB=$dbdefault;
-
-// Database user
-$A->DBuser=$dbuser;
-
-// Database Host
-$A->DBhost=$dbhost;
-
-// Database password
-$A->DBpassword=$dbpassword;
 
 //File path
 $A->FilePath = $chemin;
@@ -515,7 +491,7 @@ else  { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales trait
 
 if (isset($_GET["xmlnow"]) && $_GET["xmlnow"] !=""){
 
-xmlbackup($dbname, $dbhost, $dbuser, $dbpass);
+xmlbackup();
 
 
 }
