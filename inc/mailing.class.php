@@ -215,7 +215,7 @@ class Mailing
 				}
 			
 			$body.=$this->job->textDescription("html");
-			if ($this->type!="new") $body.=$this->job->textFollowups("html");
+			$body.=$this->job->textFollowups("html");
 			
 			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
 		}else{ // text format
@@ -226,7 +226,7 @@ class Mailing
 				}
 			
 			$body.=$this->job->textDescription();
-			if ($this->type!="new") $body.=$this->job->textFollowups();
+			$body.=$this->job->textFollowups();
 			
 			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
 			$body=ereg_replace("<br />","",$body);
