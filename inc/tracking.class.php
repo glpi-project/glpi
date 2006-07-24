@@ -336,7 +336,7 @@ class Job extends CommonDBTM{
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
-
+		if (!isset($input["request_type"])) $input["request_type"]=1;
 		if (!isset($input["status"])) $input["status"]="new";
 		if (!isset($input["assign"])) $input["assign"]=0;
 
@@ -428,6 +428,7 @@ class Job extends CommonDBTM{
 			if (isset($input["_followup"])&&strlen($input["_followup"])) $toadd["contents"]=$input["_followup"];
 			if ($input["assign"]>0)
 				$toadd["author"]=$input["assign"];
+
 			$fup->add($toadd);
 			$already_mail=true;
 		}
