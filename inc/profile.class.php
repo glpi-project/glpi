@@ -167,7 +167,7 @@ class Profile extends CommonDBTM{
 		global  $lang,$HTMLRel;
 	
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][35]."' title='".$lang["Menu"][35]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][35]."</b></span>";
+		echo "<img src=\"".$HTMLRel."pics/profils.png\" alt='".$lang["Menu"][35]."' title='".$lang["Menu"][35]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][35]."</b></span>";
 		echo "</td>";
 		if (haveRight("profile","w")){
 			echo "<td><a class='icon_consol' href='".$HTMLRel."front/profile.php?add=new'>".$lang["profiles"][0]."</a></td>";
