@@ -52,7 +52,7 @@ function showConsumableAdd($ID) {
 	if (!haveRight("consumable","w")) return false;
 	
 	echo "<form method='post'  action=\"".$HTMLRel."front/consumable.edit.php\">";
-	echo "<div align='center'>&nbsp;<table class='tab_cadre' width='90%' cellpadding='2'>";
+	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/consumable.edit.php?add=add&amp;tID=$ID\">";
 	echo $lang["consumables"][17];
@@ -128,9 +128,8 @@ function showConsumables ($tID,$show_old=0) {
 					echo "<th>&nbsp;</th></tr>";
 			} else {
 
-				echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
-				echo "<tr><th>".$lang["consumables"][7]."</th></tr>";
-				echo "</table></div>";
+				echo "<br>";
+				echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
 		}
 	}
 
