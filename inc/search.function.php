@@ -1594,7 +1594,9 @@ switch ($field){
 	case "glpi_contracts.notice":
 	case "glpi_contracts.periodicity":
 	case "glpi_contracts.facturation":
-		return $data["ITEM_$num"]." ".$lang["financial"][57];
+		if (!empty($data["ITEM_$num"]))
+			return $data["ITEM_$num"]." ".$lang["financial"][57];
+		else return "&nbsp;";
 		break;
 	case "glpi_contracts.renewal":
 		return getContractRenewalName($data["ITEM_$num"]);
@@ -1624,18 +1626,24 @@ switch ($field){
 		return convDate($data["ITEM_$num"]);
 		break;
 	case "glpi_infocoms.amort_time":
-		return $data["ITEM_$num"]." ".$lang["financial"][9];
+		if (!empty($data["ITEM_$num"]))
+			return $data["ITEM_$num"]." ".$lang["financial"][9];
+		else return "&nbsp;";
 		break;
 	case "glpi_infocoms.warranty_duration":
-		return $data["ITEM_$num"]." ".$lang["financial"][57];
+		if (!empty($data["ITEM_$num"]))
+			return $data["ITEM_$num"]." ".$lang["financial"][57];
+		else return "&nbsp;";
 		break;
 	case "glpi_infocoms.amort_type":
 		return getAmortTypeName($data["ITEM_$num"]);
 		break;
 	case "glpi_tracking.count":
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		$out.="</a>";
+		if ($data["ITEM_$num"]>0){
+			$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
+			$out.= $data["ITEM_$num"];
+			$out.="</a>";
+		} else $out.= $data["ITEM_$num"];
 		return $out;
 		break;
 

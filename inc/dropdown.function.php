@@ -51,7 +51,7 @@
 **/
 function dropdown($table,$myname) {
 
-	dropdownValue($table,$myname,0,1);
+	return dropdownValue($table,$myname,0,1);
 }
 
 /**
@@ -165,6 +165,7 @@ if ($display_comments){
 if ($table=="glpi_enterprises")
 	echo getEnterpriseLinks($value);	
 
+	return $rand;
 }
 
 
@@ -298,6 +299,8 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "</span>\n";
 
 	echo $comments_display;
+
+	return $rand;
 }
 
 
@@ -313,7 +316,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 */
 function dropdownAllUsers($myname,$value,$display_comments=1) {
 
-	dropdownUsers($myname,$value,"all",0,$display_comments);
+	return dropdownUsers($myname,$value,"all",0,$display_comments);
 }
 
 
@@ -330,7 +333,7 @@ function dropdownAllUsers($myname,$value,$display_comments=1) {
 function dropdownUsersID($myname,$value,$right) {
 	// Make a select box with all glpi users
 
-	dropdownUsers($myname,$value,$right);
+	return dropdownUsers($myname,$value,$right);
 }
 
 /**
@@ -449,6 +452,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 
 	echo $comments_display;	
 	
+	return $rand;
 }
 
 /**
@@ -602,7 +606,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 		echo "document.getElementById('item_type$rand').value='".$value_type."';";
 		echo "</script>\n";
 	}
-
+	return $rand;
 }
 
 /**
@@ -825,6 +829,7 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 			echo "</div>";
 		}
 	}		
+	return $rand;
 }
 
 /**
@@ -855,36 +860,38 @@ function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 
 	displaySearchTextAjaxDropdown($myname.$rand);
 
-echo "<script type='text/javascript' >\n";
-echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnect.php',{asynchronous:true, evalScripts:true, \n";
-echo "           onComplete:function(request)\n";
-echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-echo "           onLoading:function(request)\n";
-echo "            {Element.show('search_spinner_$myname$rand');},\n";
-echo "           method:'post', parameters:'searchText=' + value+'&fromtype=$fromtype&idtable=$type&myname=$myname&onlyglobal=$onlyglobal'\n";
-echo "})})\n";
-echo "</script>\n";
-
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
-
-$nb=0;
-if ($cfg_glpi["use_ajax"])
-	$nb=countElementsInTable($items[$type]);
-
-if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
-	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
-	echo "Element.hide('search_$myname$rand');";
-	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
+	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnect.php',{asynchronous:true, evalScripts:true, \n";
+	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&fromtype=$fromtype&idtable=$type&myname=$myname&onlyglobal=$onlyglobal'\n";
+	echo "})})\n";
 	echo "</script>\n";
-}
+	
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
+	
+	$nb=0;
+	if ($cfg_glpi["use_ajax"])
+		$nb=countElementsInTable($items[$type]);
+	
+	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_$myname$rand');";
+		echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
+		echo "</script>\n";
+	}
 
 
-echo "<span id='results_$myname$rand'>\n";
-echo "<select name='$myname'><option value='0'>------</option></select>\n";
-echo "</span>\n";	
+	echo "<span id='results_$myname$rand'>\n";
+	echo "<select name='$myname'><option value='0'>------</option></select>\n";
+	echo "</span>\n";	
+
+	return $rand;
 }
 
 
@@ -936,7 +943,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 
-
+	return $rand;
 }
 
 /**
@@ -988,7 +995,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
 	echo "</span>\n";	
 	
 	
-	
+	return $rand;
 }
 
 /**
@@ -1096,26 +1103,26 @@ function displaySearchTextAjaxDropdown($id){
 function dropdownMassiveAction($device_type,$deleted){
 	global $lang,$HTMLRel,$cfg_glpi;
 
-		echo "<select name=\"massiveaction\" id='massiveaction'>";
+	echo "<select name=\"massiveaction\" id='massiveaction'>";
 		
-		echo "<option value=\"-1\" selected>-----</option>";
-		if ($deleted=="Y"){
-			echo "<option value=\"purge\">".$lang["buttons"][22]."</option>";
-			echo "<option value=\"restore\">".$lang["buttons"][21]."</option>";
-		} else {
-			echo "<option value=\"delete\">".$lang["buttons"][6]."</option>";
-			echo "<option value=\"update\">".$lang["buttons"][14]."</option>";
-			if ($device_type==COMPUTER_TYPE)
-				echo "<option value=\"install\">".$lang["buttons"][4]."</option>";
-			if ($device_type==PHONE_TYPE || $device_type==PERIPHERAL_TYPE || $device_type==MONITOR_TYPE || $device_type==PERIPHERAL_TYPE || $device_type==PRINTER_TYPE){
-				echo "<option value=\"connect\">".$lang["buttons"][9]."</option>";
-				echo "<option value=\"disconnect\">".$lang["buttons"][10]."</option>";
-			}
-			if ($device_type==USER_TYPE){
-				echo "<option value=\"add_group\">".$lang["setup"][604]."</option>";
-			}
+	echo "<option value=\"-1\" selected>-----</option>";
+	if ($deleted=="Y"){
+		echo "<option value=\"purge\">".$lang["buttons"][22]."</option>";
+		echo "<option value=\"restore\">".$lang["buttons"][21]."</option>";
+	} else {
+		echo "<option value=\"delete\">".$lang["buttons"][6]."</option>";
+		echo "<option value=\"update\">".$lang["buttons"][14]."</option>";
+		if ($device_type==COMPUTER_TYPE)
+			echo "<option value=\"install\">".$lang["buttons"][4]."</option>";
+		if ($device_type==PHONE_TYPE || $device_type==PERIPHERAL_TYPE || $device_type==MONITOR_TYPE || $device_type==PERIPHERAL_TYPE || $device_type==PRINTER_TYPE){
+			echo "<option value=\"connect\">".$lang["buttons"][9]."</option>";
+			echo "<option value=\"disconnect\">".$lang["buttons"][10]."</option>";
 		}
-		echo "</select>";
+		if ($device_type==USER_TYPE){
+			echo "<option value=\"add_group\">".$lang["setup"][604]."</option>";
+		}
+	}
+	echo "</select>";
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('massiveaction', 1, \n";
