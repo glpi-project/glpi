@@ -94,11 +94,11 @@ function showListReminder($type="private"){
 	$author=$_SESSION['glpiID'];	
 	
 	if($type=="public"){ // show public reminder
-	$query="SELECT * FROM glpi_reminder WHERE type='public'";
-	$titre="Notes publiques";
+		$query="SELECT * FROM glpi_reminder WHERE type='public'";
+		$titre=$lang["reminder"][1];
 	}else{ // show private reminder
-	$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' ";
-	$titre="Notes persos";
+		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' ";
+		$titre=$lang["reminder"][0];
 	}
 
 	
