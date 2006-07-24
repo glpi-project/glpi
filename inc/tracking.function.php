@@ -671,7 +671,7 @@ function showJobVeryShort($ID) {
 function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
-	global $cfg_glpi, $lang,$cfg_glpi,$REFERER;
+	global $cfg_glpi, $lang,$cfg_glpi,$REFERER,$db;
 	if (!haveRight("create_ticket","1")) return false;
 	
 	if (!empty($error)) {
@@ -762,11 +762,11 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</td></tr>";
 
 	
-
+	$author_rand=0;
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
 		echo "<td align='center'>";
-		dropdownAllUsers("author",$author);
+		$author_rand=dropdownAllUsers("author",$author);
 		echo "</td>";
 	} else {
 	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td>";
@@ -789,8 +789,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 
 
-	if($cfg_glpi["mailing"] == 1)
-	{
+	if($cfg_glpi["mailing"] == 1){
+
+		$query="SELECT email from glpi_users WHERE ID='$author'";
+		$result=$db->query($query);
+		$email=$db->result($result,0,"email");
+
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$lang["help"][8].":</td>";
 		echo "<td align='center'>	<select name='emailupdates'>";
@@ -799,10 +803,21 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "</select>";
 		echo "</td>";
 		echo "<td align='center'>".$lang["help"][11].":</td>";
-		echo "<td>	";
-		echo "<input type='text' size='30' name='uemail'>";
-		echo "</td></tr>";
+		echo "<td><span id='uemail_result'>";
+		echo "<input type='text' size='30' name='uemail' value='$email'>";
+		echo "</span></td></tr>";
 		
+		if (haveRight("update_ticket","1")){
+			echo "<script type='text/javascript' >\n";
+			echo "   new Form.Element.Observer('dropdown_author$author_rand', 1, \n";
+			echo "      function(element, value) {\n";
+			echo "      	new Ajax.Updater('uemail_result','".$cfg_glpi["root_doc"]."/ajax/uemailUpdate.php',{asynchronous:true, evalScripts:true, \n";
+			echo "           method:'post', parameters:'value='+value\n";
+			echo "})})\n";
+			echo "</script>\n";
+		}
+
+
 	}
 
 	echo "<tr><th colspan='4' align='center'>".$lang["job"][11].":";
