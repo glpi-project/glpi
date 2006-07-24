@@ -1639,11 +1639,11 @@ switch ($field){
 		return getAmortTypeName($data["ITEM_$num"]);
 		break;
 	case "glpi_tracking.count":
-		if ($data["ITEM_$num"]>0){
+		if ($data["ITEM_$num"]>0&&haveRight("show_ticket","1")){
 			$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
 			$out.= $data["ITEM_$num"];
 			$out.="</a>";
-		} else $out.= $data["ITEM_$num"];
+		} else $out= $data["ITEM_$num"];
 		return $out;
 		break;
 

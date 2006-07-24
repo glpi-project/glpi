@@ -87,22 +87,22 @@ if (haveRight("link","r")){
 	$data[$HTMLRel."front/link.php"]=$lang["setup"][87];
 }
 	
-echo "<tr class='tab_bg_1'><td>";
+echo "<tr class='tab_bg_1'>";
 if (count($data)>0){
-	echo "<table>";
+	echo "<td><table>";
 	foreach ($data as $page => $title)
 		echo "<tr><td><a href=\"$page\"><b>$title</b></a></td></tr>\n";
-	echo "</table>";
-} else echo "&nbsp;";
-echo "</td><td>";
+	echo "</table></td>";
+} 
+
 if (count($config)>0){
-	echo "<table>";
+	echo "<td><table>";
 	foreach ($config as $page => $title)
 		echo "<tr><td><a href=\"$page\"><b>$title</b></a></td></tr>\n";
-	echo "</table>";
-} else echo "&nbsp;";
+	echo "</table></td>";
+} 
 
-echo "</td></tr>";
+echo "</tr>";
 
 if (isset($plugin_hooks['config_page'])&&is_array($plugin_hooks['config_page'])&&count($plugin_hooks['config_page']))
 	echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>Plugins</b></a></td></tr>";
