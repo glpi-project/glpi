@@ -364,7 +364,7 @@ class User extends CommonDBTM {
 		$groups=array();
 		while ($data=$db->fetch_assoc($result)){
 			$group_fields[]=$data["ldap_field"];
-			$groups[$data["ldap_field"]][$data["ID"]]$data["ldap_value"];
+			$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
 		}
 		$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
 	
