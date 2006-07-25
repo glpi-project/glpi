@@ -65,6 +65,9 @@ function showTrackingOnglets($target){
 	if (preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 	$ID=$ereg[1];
 
+	$job=new Job();
+	$job->getFromDB($ID);
+
 	echo "<div id='barre_onglets'><ul id='onglet'>";
    		
 		 if ($_SESSION["glpiprofile"]["interface"]=="central"){
@@ -76,7 +79,7 @@ function showTrackingOnglets($target){
 				echo "<li class='invisible'>&nbsp;</li>";
 				
 				// admin yes  
-				if (haveRight("comment_ticket","1")||haveRight("comment_all_ticket","1")){
+				if (haveRight("comment_ticket","1")||haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]){
 					echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></li>";
 				}
 		
@@ -96,9 +99,6 @@ function showTrackingOnglets($target){
 			// Postonly could post followup in helpdesk area	
 			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
 
-			$job=new Job();
-			$job->getFromDB($ID);
-			
 			if (!ereg("old_",$job->fields["status"])){
 				echo "<li class='invisible'>&nbsp;</li>";
 			
@@ -1929,10 +1929,14 @@ function showFollowupsSummary($tID){
 // Formulaire d'ajout de followup
 function showAddFollowupForm($tID){
 	global $db,$lang,$cfg_glpi,$HTMLRel;
-	
-	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
 
-	$commentall=haveRight("comment_all_ticket","1");
+	$job=new Job;
+	$job->getFromDB($tID);
+	
+	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")&&$job->fields["assign"]!=$_SESSION["glpiID"]) return false;
+
+
+	$commentall=(haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]);
 
 	if ($_SESSION["glpiprofile"]["interface"]=="central"){
 		$target=$cfg_glpi["root_doc"]."/front/tracking.form.php";
