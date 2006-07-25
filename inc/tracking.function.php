@@ -1117,7 +1117,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	}
 	$query = "select DISTINCT glpi_tracking.ID as ID from glpi_tracking";
 	if ($computers_search){
-	$query.= " LEFT JOIN glpi_computers as comp on ( comp.ID=glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTERÁTYPE."' )";
+	$query.= " LEFT JOIN glpi_computers as comp on ( comp.ID=glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."' )";
 	$query.= " LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
 	$query.= "LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
 	$query.= "LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
