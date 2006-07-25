@@ -592,6 +592,9 @@ function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1)
 
 function ocsImportDropdown($dpdTable,$dpdRow,$value) {
 	global $db,$cfg_glpi;
+
+	if (empty($value)) return 0;
+
 	$query2 = "select * from ".$dpdTable." where $dpdRow='".$value."'";
 	$result2 = $db->query($query2);
 	if($db->numrows($result2) == 0) {
@@ -621,6 +624,7 @@ function ocsImportDropdown($dpdTable,$dpdRow,$value) {
 **/
 function ocsImportEnterprise($name) {
     global $db;
+	if (empty($name)) return 0;
     $query = "SELECT ID FROM glpi_enterprises WHERE name = '".$name."'";
     $result = $db->query($query);
     if ($db->numrows($result)>0){
