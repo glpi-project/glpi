@@ -364,7 +364,7 @@ class User extends CommonDBTM {
 		$groups=array();
 		while ($data=$db->fetch_assoc($result)){
 			$group_fields[]=$data["ldap_field"];
-			$groups[$data["ldap_field"]]=array($data["ID"]=>$data["ldap_value"]);
+			$groups[$data["ldap_field"]][$data["ID"]]$data["ldap_value"];
 		}
 		$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
 	
@@ -373,7 +373,7 @@ class User extends CommonDBTM {
 		if ( is_array($v)&&count($v)>0){
 			foreach ($v[0] as $key => $val){
 				if (is_array($val))
-				for ($i=0;$i<$val["count"];$i++){
+				for ($i=0;$i<count($val);$i++){
 					if ($group_found=array_search($val[$i],$groups[$key])){
 						$this->fields["_groups"][]=$group_found;
 					}
