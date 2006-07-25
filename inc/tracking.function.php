@@ -1093,7 +1093,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		}
 		foreach($cfg_glpi["devices_tables"] as $key => $val) {
 			if ($val!="drive"&&$val!="control"&&$val!="pci"&&$val!="case"&&$val!="power")
-			$wherecomp .= " OR ".$val.".designation ".makeTextSearch($contains,$NOT);
+			$wherecomp .= " OR ".$val.".designation ".makeTextSearch($contains,0);
 		}
 		$wherecomp .= " OR glpi_networking_ports.ifaddr $SEARCH";
 		$wherecomp .= " OR glpi_networking_ports.ifmac $SEARCH";
@@ -1193,6 +1193,22 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
 	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 
+	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
+	else if ($group==-1&&$author!=0){
+		// Get Author group's
+		$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='$author'";
+		$result_gp=$db->query($query_gp);
+		if ($db->numrows($result_gp)){
+			$where.=" OR ( ";
+			for ($i=0;$i<$db->numrows($result_gp);$i++){
+				if ($i>0) $where.=" OR ";
+				$where.=" glpi_tracking.FK_group = '".$db->result($result_gp,$i,"FK_groups")."' ";
+			}
+			$where.=" ) ";
+		}
+	}
+
+
 	if ($contains2!=""){
 		$SEARCH2=makeTextSearch($contains2);
 		switch ($field2){
@@ -1212,21 +1228,6 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		}
 	}
 
-
-	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
-	else if ($group==-1&&$author!=0){
-		// Get Author group's
-		$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='$author'";
-		$result_gp=$db->query($query_gp);
-		if ($db->numrows($result_gp)){
-			$where.=" OR ( ";
-			for ($i=0;$i<$db->numrows($result_gp);$i++){
-				if ($i>0) $where.=" OR ";
-				$where.=" glpi_tracking.FK_group = '".$db->result($result_gp,$i,"FK_groups")."' ";
-			}
-			$where.=" ) ";
-		}
-	}
 
 
 	if ($sort=="")
