@@ -580,7 +580,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	echo "<tr><td>".$lang["common"][16].":	</td>";
 	echo "<td>";
-	autocompletionTextField("designation",$table,"designation",$device->fields["designation"],20);
+	autocompletionTextField("designation",$table,"designation",$device->fields["designation"],50);
 
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>";
