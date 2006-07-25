@@ -59,7 +59,7 @@ if (isset($_POST["idtable"])){
 	echo "            {Element.hide('search_spinner$rand');}, ";
 	echo "           onLoading:function(request)";
 	echo "            {Element.show('search_spinner$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST["myname"]."&value=0'";
+	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST["myname"]."&value=0&rand=$rand'";
 	echo "})})";
 	echo "</script>";	
 	
