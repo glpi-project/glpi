@@ -301,10 +301,10 @@ $cfg_glpi["debug_profile"]=($cfg_glpi["debug"]==DEBUG_MODE?1:0); // Profile les 
 $cfg_glpi["debug_lang"]=($cfg_glpi["debug"]==TRANSLATION_MODE?1:0); // affiche les variables de trads
 
 // Mode debug activé on affiche un certains nombres d'informations
-	if ($cfg_glpi["debug"]==2){
+if ($cfg_glpi["debug"]==2){
 	ini_set('display_errors','On');
 	error_reporting(E_ALL);
-	ini_set('error_prepend_string','<div style="position:absolute; top:5px; left:5px; background-color:red; z-index:10000">PHP ERROR : ');
+	ini_set('error_prepend_string','<div style="background-color:red; z-index:10000">PHP ERROR : ');
 	ini_set('error_append_string','</div>');
 }else{
 //Pas besoin des warnings de PHP en mode normal : on va eviter de faire peur ;)
