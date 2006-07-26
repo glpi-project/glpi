@@ -618,6 +618,7 @@ function faqShowCategoriesall($target,$contains)
 	echo "<tr><th align='center' >".$lang["knowbase"][1]."</th></tr><tr><td  align='left'>";	
 	
 	
+	
 	faqShowCategories($target,0,$contains);
 	
 	echo "</td></tr></table></div>";
@@ -674,7 +675,7 @@ function faqShowCategories($target,$parentID=0,$contains='')
 
 				if ($_SESSION["kb_show"][$ID]=='Y'){
 	  				faqShowItems($target,$ID,$contains);
-					faqShowCategories($ID,$contains);
+					faqShowCategories($target,$ID,$contains);
 				}
 				echo "</ul>\n";
 				}
