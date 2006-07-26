@@ -263,7 +263,7 @@ Sauvegardez bien l'ensemble de votre répertoire GLPI et supprimez le.
 
 2) Décompressez la nouvelle archive de GLPI, à la place de l'ancienne.
 
- !-  Certains répertoires ont changés. Il vous faut donc copier leur contenu -!
+ !-  Certains répertoires ont changé. Il vous faut donc copier leur contenu -!
 
 ancienne_installation_GLPI/backup/dump -> nouvelle_installation_glpi/files/_dumps
 ancienne_installation_GLPI/docs/ -> nouvelle_installation_glpi/files
@@ -314,6 +314,7 @@ votre base de données.
 En effet, celle-ci est maintenant hiérarchique. 
 Un système vous permet donc d'adapter vos anciens lieux a cette nouvelle architecture.
 Pour cela, deux paramètres vous sont présentés en bas de la page :
+
 1 - le caractère de séparation qui vous avez peut-etre utilisé pour définir votre hierarchie interne
 2 - la définition d'un lieu RACINE si vous le voulez
 
@@ -351,6 +352,7 @@ pas le nom d'un utilisateur déjà existant).
 ######
 
 11) Mise à jour du contenu
+
 En fonction de votre version antérieure, le contenu des données présentes dans votre base de données 
 peuvent avoir été stocké de manière non conforme au moteur de GLPI actuel. 
 Pour remédier à cela et afin que l'affichage de vos données soit correcte, l'ensemble de votre base données
