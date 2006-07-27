@@ -50,6 +50,18 @@ checkRight("user","r");
 if (!isset($_SESSION['glpi_viewuser'])) $_SESSION['glpi_viewuser']="tracking";
 if (isset($_GET['onglet'])) $_SESSION['glpi_viewuser']=$_GET['onglet'];
 
+
+	if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
+		$job=new Job();
+		foreach ($_POST["todel"] as $key => $val){
+			if ($val==1) {
+				$job->delete(array("ID"=>$key));
+			}
+		}
+		glpi_header($_SERVER['HTTP_REFERER']);
+	}
+
+
 $user=new User();
 
 if ($user->showInfo($_SERVER["PHP_SELF"],$_GET["ID"])){
@@ -63,6 +75,7 @@ if ($user->showInfo($_SERVER["PHP_SELF"],$_GET["ID"])){
 		showDeviceUser($_GET["ID"]);
 	}
 }
+
 commonFooter();
 
 ?>
