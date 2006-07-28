@@ -173,10 +173,6 @@ else
 		
 		echo "<b>$nb_login</b> logins since $date" ;
 	
-		$queryfail="SELECT count(*) FROM `glpi_event_log` where message LIKE '%failed login%'";
-		$resultfail=$db->query($queryfail);
-		$nb_fail=$db->result($resultfail,0,0);
-		echo "<br><b>$nb_fail</b> erreurs de connexion";
 		echo "</div>";
 	}
 	
