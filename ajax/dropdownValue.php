@@ -176,8 +176,11 @@
 				$where.=" AND name ".makeTextSearch($_POST['searchText']);
 			$where.=")";
 
-			$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
-	
+			if ($_POST['table']=="glpi_software")
+				$query = "SELECT CONCAT(name,' (v. ',version,')') as $field, ".$_POST['table'].".comments, ".$_POST['table'].".ID FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
+			else 
+				$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
+			
 			$result = $db->query($query);
 			echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
