@@ -70,7 +70,7 @@ class Profile extends CommonDBTM{
 		}
 		return $input;
 	}
-
+					
 	function prepareInputForAdd($input){
 		if (isset($input["helpdesk_hardware_type"])){
 			$types=$input["helpdesk_hardware_type"];
@@ -533,7 +533,7 @@ class Profile extends CommonDBTM{
 	
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$lang["setup"][306].":</td><td>";
-		dropdownYesNoInt("update",$this->fields["update"]);
+		dropdownNoneReadWrite("update",$this->fields["update"],1,1,0);
 		echo "</td>";
 		echo "<td>".$lang["Menu"][14].":</td><td>";
 		dropdownNoneReadWrite("user",$this->fields["user"],1,1,1);
