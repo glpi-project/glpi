@@ -627,7 +627,7 @@ function showMyForm($target,$ID) {
 		echo "</td></tr>";
 
 		//do some rights verification
-		if (!$extauth){
+		if (!$extauth&&haveRight("password_update","1")){
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 		} 
 	
