@@ -441,6 +441,8 @@ class MailingResa{
 	*/
 	function get_mail_body($format="text")
 	{
+		global $cfg_glpi;
+		
 		// Create message body from Job and type
 		$body="";
 		
