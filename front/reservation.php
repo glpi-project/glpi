@@ -59,7 +59,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		unset($_POST["end_date"]);unset($_POST["end_hour"]);unset($_POST["end_min"]);
 		$item=$_POST["id_item"];
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
-		if (haveRight("reservaration_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) 
+		if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) 
 		if ($rr->update($_POST,$_SERVER["PHP_SELF"],$item))
 			glpi_header($cfg_glpi["root_doc"]."/front/reservation.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
 	}
