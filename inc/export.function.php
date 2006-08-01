@@ -208,12 +208,14 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			
 			// en-tête HTTP
         		// --------------------------------------------------------------------
-        		header("Content-disposition: filename=glpi.slk");
+        		header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+			header('Pragma: private'); /// IE BUG + SSL
+			//header('Pragma: no-cache'); 
+			header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+			header("Content-disposition: filename=glpi.slk");
         		header('Content-type: application/octetstream');
-        		header('Pragma: no-cache');
-        		header('Expires: 0');
-
-
+        		
+			
         		// en-tête du fichier
         		// --------------------------------------------------------------------
         		echo "ID;PGLPI_EXPORT\n"; // ID;Pappli

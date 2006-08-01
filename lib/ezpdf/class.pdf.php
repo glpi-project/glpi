@@ -1913,6 +1913,10 @@ function stream($options=''){
   } else {
     $tmp = $this->output();
   }
+  header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+  header('Pragma: private'); /// IE BUG + SSL
+  //header('Pragma: no-cache'); 
+  header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
   header("Content-type: application/pdf");
   header("Content-Length: ".strlen(ltrim($tmp)));
   $fileName = (isset($options['Content-Disposition'])?$options['Content-Disposition']:'file.pdf');
