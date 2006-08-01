@@ -450,6 +450,7 @@ class MailingResa{
 
 			$body.=$this->resa->textDescription();
 			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+			$body=ereg_replace("\n","<br>",$body);
 		}else{ // text format
 
 			$body.=$this->resa->textDescription();
