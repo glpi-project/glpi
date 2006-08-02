@@ -640,6 +640,7 @@ class MailingAlert
 
 			$body.=$this->message;
 			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+			$body=ereg_replace("\n","<br>",$body);
 		}else{ // text format
 
 			$body.=$this->message;
