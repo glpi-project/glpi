@@ -197,7 +197,7 @@ if (isset($_GET['onglet'])) {
 		$job=new Job();
 		foreach ($_POST["todel"] as $key => $val){
 			if ($val==1) {
-				$jopb->delete(array("ID"=>$key));
+				$job->delete(array("ID"=>$key));
 			}
 		}
 	}
