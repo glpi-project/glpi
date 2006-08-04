@@ -1143,7 +1143,7 @@ case "glpi_users.name" :
 	if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
 		$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
 	
-	return $pretable.$table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2, ".$pretable.$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3,";
+	return $pretable.$table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2, ".$pretable.$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3, ".$pretable.$table.$linkfield.$addtable.".firstname AS ".$NAME."_".$num."_4,";
 	break;
 case "glpi_contracts.end_date" :
 	return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
@@ -1227,7 +1227,7 @@ case "glpi_users.name" :
 	if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
 		$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
 
-	return " ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH ) ";
+	return " ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH ) ";
 	break;
 case "glpi_device_hdd.specif_default" :
 //	$larg=500;
@@ -1422,8 +1422,8 @@ switch ($field){
 			if ($data["ITEM_".$num."_3"]>0)
 				$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ITEM_".$num."_3"]."\">";
 			// print realname or login name
-			if (!empty($data["ITEM_".$num."_2"]))
-				$out .= $data["ITEM_".$num."_2"];
+			if (!empty($data["ITEM_".$num."_2"])||!empty($data["ITEM_".$num."_4"]))
+				$out .= $data["ITEM_".$num."_2"]." ".$data["ITEM_".$num."_4"];
 			else $out .= $data["ITEM_$num"];
 
 			if ($data["ITEM_".$num."_3"]>0&&($cfg_glpi["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
