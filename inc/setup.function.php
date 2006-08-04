@@ -1709,7 +1709,8 @@ function checkNewVersionAvailable($auto=1){
 	if (!haveRight("update","r")) return false;	
 	$do_check=1;
 	
-	if ($auto&&$cfg_glpi["auto_update_check"]==0) return;
+	if ($auto)
+	if ($cfg_glpi["auto_update_check"]==0) $do_check=0;
 	else {
 		$last_check=split("-",$cfg_glpi["last_update_check"]);
 		$dateDiff = mktime() 
@@ -1721,7 +1722,7 @@ function checkNewVersionAvailable($auto=1){
 				
 	}
 	
-	 if (!$do_check){
+	 if ($do_check){
 	 	echo "<br>";
 	 	if ($auto) echo "<div align='center'><strong>".$lang["setup"][310]."</strong></div>";
 		$latest_version = '';
@@ -1763,7 +1764,7 @@ function checkNewVersionAvailable($auto=1){
 			fclose($proxy_fp);
 		
 		}
-
+		
 		 if (strlen(trim($latest_version)) == 0)
 			echo "<div align='center'>".$lang["setup"][304]." ($errstr)</div>";
 		 else {			
