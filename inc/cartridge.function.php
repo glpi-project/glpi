@@ -654,7 +654,7 @@ function cron_cartridge(){
 
 	// Get cartridges type with alarm activated and last warning > 7 days
 	// TODO -> last warning delay to config
-	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_cartridges_type LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') WHERE glpi_cartridges_type.deleted='N' AND glpi_cartridges_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$cfg_glpi["cartridges_alert"].") < CURRENT_TIMESTAMP()) ;";
+	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_glpi_cartridges_type.ref as cartref, type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_cartridges_type LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') WHERE glpi_cartridges_type.deleted='N' AND glpi_cartridges_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$cfg_glpi["cartridges_alert"].") < CURRENT_TIMESTAMP()) ;";
 	
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
@@ -662,7 +662,7 @@ function cron_cartridge(){
 		while ($data=$db->fetch_array($result)){
 			if (getUnusedCartridgesNumber($data["cartID"])<=$data["threshold"]){
 				// define message alert
-				$message.=$lang["mailing"][34]." ".$data["cartname"]."<br>\n";
+				$message.=$lang["mailing"][34]." ".$data["cartname"]." - ".$lang["cartridges"][2].": ".$data["cartref"]." - ".$lang["software"][20].": ".getUnusedCartridgesNumber($data["cartID"])."<br>\n";
 
 				// Mark alert as done
 				$alert=new Alert();
