@@ -325,7 +325,7 @@ function update_device_specif($newValue,$compDevID) {
 			if($db->query($query2)){
 				
 				$changes[0]='0';
-				$changes[1]=$data["specificity"];
+				$changes[1]=addslashes($data["specificity"]);
 				$changes[2]=$newValue;
 				// history log
 				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_UPDATE_DEVICE);
@@ -390,7 +390,7 @@ function unlink_device_computer($compDevID,$dohistory=1){
 			$device->getFromDB($data["FK_device"]);
 
 			$changes[0]='0';
-			$changes[1]=$device->fields["designation"];
+			$changes[1]=addslashes($device->fields["designation"]);
 			$changes[2]="";
 			// history log
 			historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_DELETE_DEVICE);
@@ -410,7 +410,7 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	if ($dohistory==1){
 		$changes[0]='0';
 		$changes[1]="";
-		$changes[2]=$device->fields["designation"];
+		$changes[2]=addslashes($device->fields["designation"]);
 		// history log
 		historyLog ($cID,COMPUTER_TYPE,$changes,$device_type,HISTORY_ADD_DEVICE);
 	}
