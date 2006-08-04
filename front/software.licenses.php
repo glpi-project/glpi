@@ -102,7 +102,7 @@ else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
 		$lic->update($input);
 	}
 	
-	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["move"])||isset($tab["move"])){
 	if ($tab["lID"]&&$lic->getFromDB($tab["lID"])){
