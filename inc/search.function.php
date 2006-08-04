@@ -1533,8 +1533,13 @@ switch ($field){
 	break;		
 	case "glpi_docs.link" :
 	case "glpi_enterprises.website" :
-		if (!empty($data["ITEM_$num"]))
-			return "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$data["ITEM_$num"]."</a>";
+		if (!empty($data["ITEM_$num"])){
+			$link=$data["ITEM_$num"];
+			if (strlen($data["ITEM_$num"])>30){
+				$link=substr($data["ITEM_$num"],0,30)."...";
+			}
+			return "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$link."</a>";
+		}
 		else return "&nbsp;";
 	break;	
 	case "glpi_enterprises.email" :
