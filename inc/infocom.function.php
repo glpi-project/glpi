@@ -112,7 +112,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	
 		echo "<td>".$lang["financial"][87].":	</td><td >";
 	
-		echo dropdownValue("glpi_dropdown_budget","budget",$ic->fields["budget"]);
+		dropdownValue("glpi_dropdown_budget","budget",$ic->fields["budget"]);
 				
 		echo "</td></tr>";
 		
