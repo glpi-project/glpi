@@ -45,8 +45,8 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 
 $ri=new ReservationItem();
 $rr=new ReservationResa();
-
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
+
 	checkRight("reservation_helpdesk","1");
 
 	if (isset($_POST["edit_resa"])){
@@ -68,18 +68,16 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
 
 	if (isset($_POST["clear_resa"])){
-		if ($rr->delete($_POST["ID"])){
+
+		if ($rr->delete($_POST)){
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 		}
+
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
 		printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
-	}
-
-
-
-	if (isset($_GET["ID"])){
+	} else if (isset($_GET["ID"])){
 		printCalendrier($_SERVER["PHP_SELF"],$_GET["ID"]);
 	}
 	else if (isset($_GET["add"])){
