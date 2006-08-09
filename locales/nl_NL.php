@@ -1082,6 +1082,8 @@ $lang["reservation"][34]="Item kan niet geboekt worden";
 $lang["reservation"][35]="Lopende en toekomstige boekingen"; 
 $lang["reservation"][36]="Voorbije boekingen"; 
 $lang["reservation"][37]="Geen boekingen"; 
+$lang["reservation"][38]="Are you sure you want do delete this item from the loan items ?"; 
+$lang["reservation"][39]="That will remove all the reservations in progress."; 
 
 $lang["search"][0]="Zoeken op"; 
 $lang["search"][2]="bevat"; 

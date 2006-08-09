@@ -1082,6 +1082,8 @@ $lang["reservation"][34]="Dispositivo non prenotabile";
 $lang["reservation"][35]="Prenotazioni in corso e future"; 
 $lang["reservation"][36]="Prenotazioni passate"; 
 $lang["reservation"][37]="Nessuna prenotazione"; 
+$lang["reservation"][38]="Are you sure you want do delete this item from the loan items ?"; 
+$lang["reservation"][39]="That will remove all the reservations in progress."; 
 
 $lang["search"][0]="Cerca"; 
 $lang["search"][2]="contiene"; 

@@ -1082,6 +1082,8 @@ $lang["reservation"][34]="Элемент не резервируется";
 $lang["reservation"][35]="Future and in progress Reservations"; 
 $lang["reservation"][36]="Прошлые резервирования"; 
 $lang["reservation"][37]="Нет резервирований"; 
+$lang["reservation"][38]="Are you sure you want do delete this item from the loan items ?"; 
+$lang["reservation"][39]="That will remove all the reservations in progress."; 
 
 $lang["search"][0]="Поиск"; 
 $lang["search"][2]="содержит"; 

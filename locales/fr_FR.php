@@ -1098,6 +1098,8 @@ $lang["reservation"][34]="Matériel non réservable";
 $lang["reservation"][35]="Réservations en cours et à venir";
 $lang["reservation"][36]="Réservations passées";
 $lang["reservation"][37]="Pas de réservations";
+$lang["reservation"][38]="Etes vous sur de vouloir rendre cet élément non réservable ?";
+$lang["reservation"][39]="Cela supprimera toutes les réservations en cours.";
 
 $lang["search"][0]="Recherche"; 
 $lang["search"][2]="contient";

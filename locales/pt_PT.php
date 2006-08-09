@@ -1082,6 +1082,8 @@ $lang["reservation"][34]="Não é possivel reservar este item";
 $lang["reservation"][35]="Reservas futuras e em progresso"; 
 $lang["reservation"][36]="Reservas passadsa"; 
 $lang["reservation"][37]="Nenhuma reserva"; 
+$lang["reservation"][38]="Are you sure you want do delete this item from the loan items ?"; 
+$lang["reservation"][39]="That will remove all the reservations in progress."; 
 
 $lang["search"][0]="Pesquisar por"; 
 $lang["search"][2]="contem"; 

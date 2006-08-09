@@ -1082,6 +1082,8 @@ $lang["reservation"][34]="Gerät kann nicht reserviert werden.";
 $lang["reservation"][35]="Aktuell gebuchte Reservierungen"; 
 $lang["reservation"][36]="Frühere Reservierungen"; 
 $lang["reservation"][37]="Keine Reservierungen"; 
+$lang["reservation"][38]="Are you sure you want do delete this item from the loan items ?"; 
+$lang["reservation"][39]="That will remove all the reservations in progress."; 
 
 $lang["search"][0]="Suchen"; 
 $lang["search"][2]="enthält"; 
