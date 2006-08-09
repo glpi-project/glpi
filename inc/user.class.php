@@ -134,8 +134,8 @@ class User extends CommonDBTM {
 		if ($ID==1){
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 			echo "alert('".addslashes($lang["setup"][220])."');";
-			echo "history.back();";
 			echo "</script>";
+			glpi_header($_SERVER['HTTP_REFERER']);
 			exit();
 		}	
 		
@@ -147,8 +147,8 @@ class User extends CommonDBTM {
 		if ($input["ID"]==1){
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 			echo "alert('".addslashes($lang["setup"][220])."');";
-			echo "history.back();";
 			echo "</script>";
+			glpi_header($_SERVER['HTTP_REFERER']);
 			exit();
 		}	
 
