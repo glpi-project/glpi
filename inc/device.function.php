@@ -323,11 +323,11 @@ function update_device_specif($newValue,$compDevID) {
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
 	if ($result = $db->query($query)) 
 	if ($db->numrows($result)){
-		$data = $db->fetch_array($result);
+		$data = addslashes_deep($db->fetch_array($result));
 		// Is it a real change ?
 		if($data["specificity"]!=$newValue){
 			// Update specificity 
-			$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'";
+			$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'  AND specificity='".$data["specificity"]."'";
 			if($db->query($query2)){
 				
 				$changes[0]='0';
@@ -351,9 +351,11 @@ function update_device_quantity($newNumber,$compDevID){
 	global $db;
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
 	if ($result = $db->query($query)) {
-		$data = $db->fetch_array($result);
-		$query2 = "SELECT ID FROM glpi_computer_device WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'";
+		$data = addslashes_deep($db->fetch_array($result));
+		
+		$query2 = "SELECT ID FROM glpi_computer_device WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."' AND specificity='".$data["specificity"]."'";
 		if ($result2 = $db->query($query2)) {
+			
 			// Delete devices
 			$number=$db->numrows($result2);
 			if ($number>$newNumber){
