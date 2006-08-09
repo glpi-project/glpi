@@ -251,14 +251,8 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 							echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
 							echo "</a></strong>";
 
-							echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-							echo "function unglobalize(what){";
-							echo "if (confirm(\"".addslashes($lang["common"][40])."\\n".addslashes($lang["common"][39])."\")) {";
-							echo "window.location = what;";
-							echo "}}";
-							echo "</script>";
+							echo "&nbsp;&nbsp;<a alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" href=\"javascript:confirmAction('".addslashes($lang["common"][40])."\\n".addslashes($lang["common"][39])."','".$cfg_glpi["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&sID=$sID&ID=$ID')\">".$lang["common"][38]."</a>&nbsp;";	
 
-							echo "&nbsp;&nbsp;<a alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" href=\"javascript:unglobalize('".$cfg_glpi["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&sID=$sID&ID=$ID')\">".$lang["common"][38]."</a>&nbsp;";
 							echo "<img alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" src='".$HTMLRel."pics/aide.png'\">";
 						}
 						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";

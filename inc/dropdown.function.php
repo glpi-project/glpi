@@ -1176,14 +1176,9 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value){
 	
 	if ($value&&empty($withtemplate)) {
 		echo $lang["peripherals"][31];
-		echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-		echo "function unglobalize(what){";
-		echo "if (confirm(\"".addslashes($lang["common"][40])."\\n".addslashes($lang["common"][39])."\")) {";
-		echo "window.location = what;";
-		echo "}}";
-		echo "</script>";
 
-		echo "&nbsp;<a alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" href=\"javascript:unglobalize('$target?unglobalize=unglobalize&ID=$ID')\">".$lang["common"][38]."</a>&nbsp;";
+		echo "&nbsp;<a alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" href=\"javascript:confirmAction('".addslashes($lang["common"][40])."\\n".addslashes($lang["common"][39])."','$target?unglobalize=unglobalize&ID=$ID')\">".$lang["common"][38]."</a>&nbsp;";	
+
 		echo "<img alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" src='".$HTMLRel."pics/aide.png'\">";
 	} else {
 		echo "<select name='is_global'>";
