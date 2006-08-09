@@ -348,7 +348,7 @@ function dropdownUsersID($myname,$value,$right) {
 * @return string the value of the dropdown or &nbsp; if not exists
 */
 function getDropdownName($table,$id,$withcomments=0) {
-	global $db,$cfg_glpi;
+	global $db,$cfg_glpi,$lang;
 	
 	if (in_array($table,$cfg_glpi["dropdowntree_tables"])){
 		return getTreeValueCompleteName($table,$id,$withcomments);
@@ -364,8 +364,14 @@ function getDropdownName($table,$id,$withcomments=0) {
 			$name = $data["name"];
 			if (isset($data["comments"]))
 				$comments = $data["comments"];
+			
 			if ($table=="glpi_dropdown_netpoint")
-				$name .= " (".getDropdownName("glpi_dropdown_locations",$db->result($result,0,"location")).")";
+				$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
+			if ($table=="glpi_software"){
+				$name .= "  (v. ".$data["version"].")";
+				if ($data["platform"]!=0)
+					$comments.="<br>".$lang["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
+			}
 			
 		}
 	}
