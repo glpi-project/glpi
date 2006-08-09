@@ -129,8 +129,28 @@ class User extends CommonDBTM {
 		}
 	}
 
+	function pre_deleteItem($ID) {
+		global $lang;
+		if ($ID==1){
+			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
+			echo "alert('".addslashes($lang["setup"][220])."');";
+			echo "history.back();";
+			echo "</script>";
+			exit();
+		}	
+		
+	}
+
 	function prepareInputForUpdate($input) {
-		global $db,$cfg_glpi;
+		global $db,$cfg_glpi,$lang;
+
+		if ($input["ID"]==1){
+			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
+			echo "alert('".addslashes($lang["setup"][220])."');";
+			echo "history.back();";
+			echo "</script>";
+			exit();
+		}	
 
 		if (isset($input["password"])) {
 			if(empty($input["password"])) {

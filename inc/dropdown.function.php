@@ -1178,7 +1178,7 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value){
 		echo $lang["peripherals"][31];
 		echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 		echo "function unglobalize(what){";
-		echo "if (confirm(\"".$lang["common"][40]."\\n".$lang["common"][39]."\")) {";
+		echo "if (confirm(\"".addslashes($lang["common"][40])."\\n".addslashes($lang["common"][39])."\")) {";
 		echo "window.location = what;";
 		echo "}}";
 		echo "</script>";

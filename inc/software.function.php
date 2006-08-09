@@ -253,7 +253,7 @@ $query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as
 
 							echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 							echo "function unglobalize(what){";
-							echo "if (confirm(\"".$lang["common"][40]."\\n".$lang["common"][39]."\")) {";
+							echo "if (confirm(\"".addslashes($lang["common"][40])."\\n".addslashes($lang["common"][39])."\")) {";
 							echo "window.location = what;";
 							echo "}}";
 							echo "</script>";
