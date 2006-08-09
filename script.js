@@ -319,3 +319,8 @@ function unMarkAllRows( container_id ) {
         return true;
 }
 
+function confirmAction(text,where){
+	if (confirm(text)) {
+		window.location = where;
+	}
+}

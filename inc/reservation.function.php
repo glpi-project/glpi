@@ -242,15 +242,7 @@ if (!haveRight("reservation_central","w")) return false;
 
 if ($resaID=isReservable($device_type,$id_device)) {
 	// Supprimer le matériel
-	echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-	echo "function deleteresaitem(what){";
-	echo "if (confirm(\"".addslashes($lang["reservation"][38])."\\n".addslashes($lang["reservation"][39])."\")) {";
-	echo "window.location = what;";
-	echo "}}";
-	echo "</script>";
-
-	echo "<a href=\"javascript:deleteresaitem('".$cfg_glpi["root_doc"]."/front/reservation.php?";
-	echo "ID=".$resaID."&amp;delete=delete')\">".$lang["reservation"][6]."</a>";	
+	echo "<a href=\"javascript:confirmAction('".addslashes($lang["reservation"][38])."\\n".addslashes($lang["reservation"][39])."','".$cfg_glpi["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\">".$lang["reservation"][6]."</a>";	
 
 }else {
 	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?";
