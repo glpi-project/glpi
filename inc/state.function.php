@@ -250,8 +250,7 @@ $si=new StateItem;
 $where="";
 if ($template==1)
 $where= " AND is_template='1'";
-
-$si->getFromDB($device_type,$id_device);
+$si->getFromDB($device_type,$id_device,$template);
 
 	if ($state!=$si->fields["state"])
 	if ($si->fields["state"]!=-1){
@@ -272,13 +271,13 @@ $si->getFromDB($device_type,$id_device);
 	} else {
 		if ($state!=0){
 			if ($template==1)
-			$db->query("INSERT INTO glpi_state_item (device_type,id_device,state,is_template) VALUES ('$device_type','$id_device','$state','1');");
+				$db->query("INSERT INTO glpi_state_item (device_type,id_device,state,is_template) VALUES ('$device_type','$id_device','$state','1');");
 			else 
-			$db->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
+				$db->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
 			}
 	
 	}
-	
+
 }
 
 function showStateSummary($target){
