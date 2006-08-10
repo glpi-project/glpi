@@ -1234,18 +1234,21 @@ function dropdownHours($name,$value,$withhalf=0,$withquarter=0){
 	for ($i=10;$i<=24;$i++){
 		$val=$i.":00";
 		echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-		if ($withquarter){
-			$val=$i.":15";
-			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		if ($i!=24){
+			if ($withquarter){
+				$val=$i.":15";
+				echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+			}
+			if ($withhalf){
+				$val=$i.":30";
+				echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+			}
+			if ($withquarter){
+				$val=$i.":45";
+				echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+			}	
 		}
-		if ($withhalf){
-			$val=$i.":30";
-			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-		}
-		if ($withquarter){
-			$val=$i.":45";
-			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-		}	}
+	}
 	echo "</select>";	
 }	
 
