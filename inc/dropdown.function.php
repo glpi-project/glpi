@@ -1211,18 +1211,41 @@ function dropdownContractAlerting($myname,$value){
 *@return Nothing (display)
 *
 **/
-function dropdownHours($name,$value){
+function dropdownHours($name,$value,$withhalf=0,$withquarter=0){
 
 	echo "<select name='$name'>";
 	for ($i=0;$i<10;$i++){
-	$tmp="0".$i;
-	$val=$tmp.":00";
-	echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		$tmp="0".$i;
+		$val=$tmp.":00";
+		echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		if ($withquarter){
+			$val=$tmp.":15";
+			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		}
+		if ($withhalf){
+			$val=$tmp.":30";
+			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		}
+		if ($withquarter){
+			$val=$tmp.":45";
+			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		}
 	}
-	for ($i=10;$i<24;$i++){
-	$val=$i.":00";
-	echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-	}
+	for ($i=10;$i<=24;$i++){
+		$val=$i.":00";
+		echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		if ($withquarter){
+			$val=$i.":15";
+			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		}
+		if ($withhalf){
+			$val=$i.":30";
+			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		}
+		if ($withquarter){
+			$val=$i.":45";
+			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+		}	}
 	echo "</select>";	
 }	
 
