@@ -1160,7 +1160,7 @@ function showFormConfigDisplay($target){
 	echo "<select name='planning_begin'>";
 	for ($i=0;$i<=24;$i++) echo "<option value='$i'".($plan_begin[0]==$i?" selected ":"").">$i</option>";
 	echo "</select>";
-	
+ 	echo "&nbsp;->&nbsp;";
 	echo "<select name='planning_end'>";
 	for ($i=0;$i<=24;$i++) echo "<option value='$i' ".($plan_end[0]==$i?" selected ":"").">$i</option>";
 	echo "</select>";
