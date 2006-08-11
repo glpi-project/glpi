@@ -475,6 +475,9 @@ switch ($current_version){
 		include("update_065_068.php");
 		update065to068();
 	case "0.68":
+		include("update_068_0681.php");
+		update068to0681();
+	case "0.68.1":
 	break;
 	default:
 	update031to04();
@@ -486,7 +489,7 @@ switch ($current_version){
 }
 
 // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.68', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.68.1', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
 	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
 
 optimize_tables();

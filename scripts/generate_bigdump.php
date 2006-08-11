@@ -785,7 +785,7 @@ for ($i=0;$i<$max['type_of_cartridges'];$i++){
 
 	// Ajout cartouche en stock
 	for ($j=0;$j<mt_rand(0,$max['cartridges_stock']);$j++){
-	$query="INSERT INTO glpi_cartridges VALUES(NULL,'$cartID','0',NOW(),NULL,NULL,'0')";
+	$query="INSERT INTO glpi_cartridges VALUES(NULL,'$cartID',NULL,NOW(),NULL,NULL,'0')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$ID=$db->insert_id();
 	
