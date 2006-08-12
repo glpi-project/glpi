@@ -136,7 +136,7 @@ if (isset($_POST["several_add"])) {
 			"contact_type"=>$lang["setup"][82],	
 			"ram_type"=>$lang["setup"][86],	
 			"enttype"=>$lang["setup"][80],
-			"hdd_type"=>$lang["setup"][93],
+			"interface"=>$lang["setup"][93],
 			"phone_power"=>$lang["setup"][505],
 			),
 
@@ -304,8 +304,8 @@ if (isset($_POST["several_add"])) {
 		case "ram_type" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"ram_type",$lang["setup"][86],$ID,$value2);
 		break;
-		case "hdd_type" : 
-		showFormDropDown($_SERVER["PHP_SELF"],"hdd_type",$lang["setup"][93],$ID,$value2);
+		case "interface" : 
+		showFormDropDown($_SERVER["PHP_SELF"],"interface",$lang["setup"][93],$ID,$value2);
 		break;
 		case "domain" : 
 		showFormDropDown($_SERVER["PHP_SELF"],"domain",$lang["setup"][89],$ID,$value2);

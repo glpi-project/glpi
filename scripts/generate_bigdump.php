@@ -57,7 +57,7 @@ $MAX_CONTRACT_TYPE=7;
 $max['domain']=5;
 $max['enttype']=1;
 $max['firmware']=5;
-$max['hdd_type']=1;
+$max['interface']=1;
 $max['iface']=5;
 $max['model']=5;
 $max['network']=5;
@@ -350,11 +350,11 @@ for ($i=0;$i<$max['firmware'];$i++){
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
-$items=array("USB","Firewire");
-for ($i=0;$i<$max['hdd_type'];$i++){
+$items=array("Firewire");
+for ($i=0;$i<$max['interface'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="type de disque dur $i";
-	$query="INSERT INTO glpi_dropdown_hdd_type VALUES (NULL,'$val','comment $val')";
+	$query="INSERT INTO glpi_dropdown_interface VALUES (NULL,'$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
@@ -785,7 +785,7 @@ for ($i=0;$i<$max['type_of_cartridges'];$i++){
 
 	// Ajout cartouche en stock
 	for ($j=0;$j<mt_rand(0,$max['cartridges_stock']);$j++){
-	$query="INSERT INTO glpi_cartridges VALUES(NULL,'$cartID',NULL,NOW(),NULL,NULL,'0')";
+	$query="INSERT INTO glpi_cartridges VALUES(NULL,'$cartID',0,NOW(),NULL,NULL,'0')";
 	$db->query($query) or die("PB REQUETE ".$query);
 	$ID=$db->insert_id();
 	
@@ -961,14 +961,14 @@ $items=array("Escalade 8006-2LP","Escalade 8506-4LP","2810SA","1210SA","DuoConne
 for ($i=0;$i<$max['device'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="control $i";
-	$query="INSERT INTO glpi_device_control VALUES (NULL,'$val','".mt_rand(0,3)."','N','comment $i','".mt_rand(1,$max['enterprises'])."','')";
+	$query="INSERT INTO glpi_device_control VALUES (NULL,'$val','N','comment $i','".mt_rand(1,$max['enterprises'])."','','".mt_rand(1,$max['interface'])."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 $items=array("DUW1616","DRW-1608P","DW1625","GSA-4160B","GSA-4165B","GSA-4167RBB","SHW-16H5S","SOHW-1673SX","DVR-110D","PX-716AL","PX-755A");
 for ($i=0;$i<$max['device'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="drive $i";
-	$query="INSERT INTO glpi_device_drive VALUES (NULL,'$val','Y','".mt_rand(0,60)."','".mt_rand(0,2)."','comment $i','".mt_rand(1,$max['enterprises'])."','')";
+	$query="INSERT INTO glpi_device_drive VALUES (NULL,'$val','Y','".mt_rand(0,60)."','comment $i','".mt_rand(1,$max['enterprises'])."','','".mt_rand(1,$max['interface'])."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 $items=array("A9250/TD","AX550/TD","Extreme N5900","V9520-X/TD","All-In-Wonder X800 GT","GV-NX66256D","GV-RX80256DE","Excalibur 9600XT","X1300 IceQ","WinFast PX6200 TD","Millenium 750","NX6600GT");
@@ -982,7 +982,7 @@ $items=array("Deskstar 7K500","Deskstar T7K250","Atlas 15K II","DiamondMax Plus"
 for ($i=0;$i<$max['device'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="hdd  $i";
-	$query="INSERT INTO glpi_device_hdd VALUES (NULL,'$val','".mt_rand(0,10500)."','".mt_rand(1,$max['hdd_type'])."','".mt_rand(0,8000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,300)."')";
+	$query="INSERT INTO glpi_device_hdd VALUES (NULL,'$val','".mt_rand(0,10500)."','".mt_rand(1,$max['interface'])."','".mt_rand(0,8000)."','comment $i','".mt_rand(1,$max['enterprises'])."','".mt_rand(0,300)."')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 $items=array("DFE-530TX","DFE-538TX","PWLA8492MF","PWLA8492MT","USBVPN1","GA311","FA511","TEG-PCBUSR","3C996-SX","3C996B-T","3C905C-TX-M");

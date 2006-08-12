@@ -411,8 +411,12 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_device_ram set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "hdd_type":
+	case "interface":
 		$query = "update glpi_device_hdd set interface = '". $input["newID"] ."'  where interface = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_device_drive set interface = '". $input["newID"] ."'  where interface = '".$input["oldID"]."'";
+		$db->query($query);
+		$query = "update glpi_device_control set interface = '". $input["newID"] ."'  where interface = '".$input["oldID"]."'";
 		$db->query($query);
 		break;	
 	case "vlan":
@@ -690,8 +694,14 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "hdd_type":
+	case "interface":
 		$query = "Select count(*) as cpt FROM glpi_device_hdd where interface = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_device_drive where interface = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		$query = "Select count(*) as cpt FROM glpi_device_control where interface = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;

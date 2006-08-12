@@ -350,6 +350,69 @@ if(!isIndex("glpi_printers", "domain")) {
 	$db->query($query) or die("0.68.1 add index on glpi_printers.domain ".$lang["update"][90].$db->error());
 }
 
+if(FieldExists("glpi_device_case", "format")) {
+	$query = "ALTER TABLE `glpi_device_case` CHANGE `format` `format` ENUM( 'Grand', 'Moyen', 'Micro', 'Slim', '' ) NULL DEFAULT 'Moyen'";
+	$db->query($query) or die("0.68.1 alter glpi_device_case.format ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_device_gfxcard", "interface")) {
+	$query = "ALTER TABLE `glpi_device_gfxcard` CHANGE `interface` `interface` ENUM( 'AGP', 'PCI', 'PCI-X', 'Other', '' ) NULL DEFAULT 'AGP'";
+	$db->query($query) or die("0.68.1 alter glpi_device_gfxcard.interface ".$lang["update"][90].$db->error());
+}
+
+// Add default values in GLPI_DROPDOWN_HDD_TYPE
+// Rename glpi_dropdown HDD_TYPE -> INTERFACE
+if(!TableExists("glpi_dropdown_interface")) {
+	$query = "ALTER TABLE `glpi_dropdown_hdd_type` RENAME `glpi_dropdown_interface` ";
+	$db->query($query) or die("0.68.1 alter dropdown_hdd_type -> dropdown_interface ".$lang["update"][90].$db->error());
+	
+	$values=array("SATA","IDE","SCSI","USB");
+	$interfaces=array();
+	foreach ($values as $val){
+		$query="SELECT * FROM glpi_dropdown_interface WHERE name LIKE '$val';";
+		$result=$db->query($query);
+		if ($db->numrows($result)==1){
+			$row=$db->fetch_array($result);
+			$interfaces[$val]=$row["ID"];
+		} else {
+			$query="INSERT INTO glpi_dropdown_interface (`name`) VALUES ('$val');";
+			$db->query($query);
+			$interfaces[$val]=$db->insert_id();
+		}
+	}
+	// ALTER TABLES
+	$query = "ALTER TABLE `glpi_device_control` CHANGE `interface` `interface2` ENUM( 'IDE', 'SATA', 'SCSI', 'USB' ) NOT NULL DEFAULT 'IDE'";
+	$db->query($query) or die("0.68.1 alter device_control ".$lang["update"][90].$db->error());
+	$query = "ALTER TABLE `glpi_device_drive` CHANGE `interface` `interface2` ENUM( 'IDE', 'SATA', 'SCSI' )  NOT NULL DEFAULT 'IDE'";
+	$db->query($query) or die("0.68.1 alter device_drive ".$lang["update"][90].$db->error());
+
+	$query = "ALTER TABLE `glpi_device_control` ADD `interface` INT NULL ";
+	$db->query($query) or die("0.68.1 alter device_control ".$lang["update"][90].$db->error());
+	$query = "ALTER TABLE `glpi_device_drive` ADD `interface` INT NULL ";
+	$db->query($query) or die("0.68.1 alter device_drive ".$lang["update"][90].$db->error());
+	
+
+	foreach ($interfaces as $name => $ID){
+		$query="UPDATE glpi_device_drive SET interface='$ID' WHERE interface2='$name';";
+		$db->query($query) or die("0.68.1 update data device_drive ".$lang["update"][90].$db->error());
+		$query="UPDATE glpi_device_control SET interface='$ID' WHERE interface2='$name';";
+		$db->query($query) or die("0.68.1 update data device_control ".$lang["update"][90].$db->error());
+	}
+
+	// DROP TABLES
+	$query = "ALTER TABLE `glpi_device_control` DROP `interface2`;";
+	$db->query($query) or die("0.68.1 drop interface2 device_drive ".$lang["update"][90].$db->error());
+	$query = "ALTER TABLE `glpi_device_drive` DROP `interface2`;";
+	$db->query($query) or die("0.68.1 drop interface2 device_drive ".$lang["update"][90].$db->error());
+	
+	// ADD INDEX
+	$query = "ALTER TABLE `glpi_device_drive` ADD INDEX ( `interface` )";
+	$db->query($query) or die("0.68.1 add index on glpi_device_drive.interface ".$lang["update"][90].$db->error());
+	$query = "ALTER TABLE `glpi_device_control` ADD INDEX ( `interface` )";
+	$db->query($query) or die("0.68.1 add index on glpi_device_drive.interface ".$lang["update"][90].$db->error());
+
+}
+
 } // fin 0.68 #####################################################################################
 
 ?>
