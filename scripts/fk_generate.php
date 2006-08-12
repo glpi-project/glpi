@@ -183,12 +183,14 @@ $db->query($query) or die($query." ".$db->error());
 
 // glpi_device_control
 $query="ALTER TABLE `glpi_device_control`
-  ADD CONSTRAINT `glpi_device_control_ibfk_1` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`);";
+  ADD CONSTRAINT `glpi_device_control_ibfk_1` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
+  ADD CONSTRAINT `glpi_device_control_ibfk_2` FOREIGN KEY (`interface`) REFERENCES `glpi_dropdown_interface` (`ID`);";
 $db->query($query) or die($query." ".$db->error());
 
 // glpi_device_drive
 $query="ALTER TABLE `glpi_device_drive`
-  ADD CONSTRAINT `glpi_device_drive_ibfk_1` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`);";
+  ADD CONSTRAINT `glpi_device_drive_ibfk_1` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
+  ADD CONSTRAINT `glpi_device_drive_ibfk_2` FOREIGN KEY (`interface`) REFERENCES `glpi_dropdown_interface` (`ID`);";
 $db->query($query) or die($query." ".$db->error());
 
 // glpi_device_gfxcard
@@ -199,7 +201,7 @@ $db->query($query) or die($query." ".$db->error());
 // glpi_device_hdd
 $query="ALTER TABLE `glpi_device_hdd`
   ADD CONSTRAINT `glpi_device_hdd_ibfk_2` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
-  ADD CONSTRAINT `glpi_device_hdd_ibfk_1` FOREIGN KEY (`interface`) REFERENCES `glpi_dropdown_hdd_type` (`ID`);";
+  ADD CONSTRAINT `glpi_device_hdd_ibfk_1` FOREIGN KEY (`interface`) REFERENCES `glpi_dropdown_interface` (`ID`);";
 $db->query($query) or die($query." ".$db->error());
 
 // glpi_device_iface

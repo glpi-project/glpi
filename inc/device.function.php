@@ -179,7 +179,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$lang["devices"][1];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["rpm"]))	$entry[$lang["device_hdd"][0]]=$device->fields["rpm"];
-			if (!empty($device->fields["interface"]))	$entry[$lang["device_hdd"][2]]=getDropdownName("glpi_dropdown_hdd_type",$device->fields["interface"]);
+			if (!empty($device->fields["interface"]))	$entry[$lang["device_hdd"][2]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 			if (!empty($device->fields["cache"])) $entry[$lang["device_hdd"][1]]=$device->fields["cache"];
 			
 			$specificity_size = 10;
@@ -641,7 +641,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 			echo "<tr><td>".$lang["device_hdd"][2].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_dropdown_hdd_type","interface",$device->fields["interface"]);
+			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
 			echo "</td>";
 
 			echo "</tr>";
@@ -662,17 +662,10 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "></td>";
 			echo "</tr>";
 			echo "<tr><td>".$lang["device_drive"][2].":</td>";
-			echo "<td><select name='interface'>";
-			echo "<option value=\"IDE\"";
-			if(strcmp($device->fields["interface"],"IDE") == 0) echo "selected='selected'";
-			echo ">".$lang["device_control"][2]."</option>";
-			echo "<option value=\"SATA\" ";
-			if(strcmp($device->fields["interface"],"SATA") == 0) echo "selected='selected'";
-			echo ">".$lang["device_control"][3]."</option>";
-			echo "<option value=\"SCSI\"";
-			if(strcmp($device->fields["interface"],"SCSI") == 0) echo "selected='selected'";
-			echo ">".$lang["device_control"][4]."</option>";
-			echo "</select>";
+			echo "<td>";
+
+			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
+
 			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$lang["device_drive"][1].":</td><td>";
@@ -692,20 +685,8 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "></td>";
 			echo "</tr>";
 			echo "<tr><td>".$lang["device_control"][1].":</td>";
-			echo "<td><select name='interface'>";
-			echo "<option value=\"IDE\"";
-			if(strcmp($device->fields["interface"],"IDE") == 0) echo "selected='selected'";
-			echo ">".$lang["device_control"][2]."</option>";
-			echo "<option value=\"SATA\" ";
-			if(strcmp($device->fields["interface"],"SATA") == 0) echo "selected='selected'";
-			echo ">".$lang["device_control"][3]."</option>";
-			echo "<option value=\"SCSI\"";
-			if(strcmp($device->fields["interface"],"SCSI") == 0) echo "selected='selected'";
-			echo ">".$lang["device_control"][4]."</option>";
-			echo "<option value=\"USB\"";
-			if(strcmp($device->fields["interface"],"USB") == 0) echo "selected='selected'";
-			echo ">".$lang["device_control"][5]."</option>";
-			echo "</select>";
+			echo "<td>";
+			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
 			echo "</td>";
 			echo "</tr>";
 		

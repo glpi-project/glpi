@@ -211,40 +211,17 @@ function get_content($db, $table,$from,$limit)
 
 
 function get_def($db, $table) {
+
+    
     $def = "### Dump table $table\n\n";
     $def .= "DROP TABLE IF EXISTS `$table`;\n";
-    $def .= "CREATE TABLE `$table` (\n";
-    $result = $db->query("SHOW FIELDS FROM $table");
-    while($line = $db->fetch_array($result)) {
-    	$line=stripslashes_deep($line);
-        $def .= "    `$line[Field]` $line[Type]";
-        if (isset($line["Default"]) && $line["Default"] != "") {
-		if ($line["Default"]=="CURRENT_TIMESTAMP")
-			$def .= " DEFAULT ".$line["Default"];
-		else $def .= " DEFAULT '".$line["Default"]."'";
-	}
-        if (isset($line["Null"]) && $line["Null"] != "YES") $def .= " NOT NULL";
-       	if (isset($line["Extra"]) && $line["Extra"] != "") $def .= " ".$line["Extra"];
-        	$def .= ",\n";
-     }
-     $def = ereg_replace(",\n$","", $def);
-     $result = $db->query("SHOW KEYS FROM $table");
-     while($line = $db->fetch_array($result)) {
-     	 $line=stripslashes_deep($line);
-          $kname=$line["Key_name"];
-          if(($kname != "PRIMARY") && ($line["Non_unique"] == 0)) $kname="UNIQUE|$kname";
-          if(!isset($index[$kname])) $index[$kname] = array();
-          $index[$kname][] = $line["Column_name"];
-     }
-     while(list($x, $columns) = @each($index)) {
-          $def .= ",\n";
-          if($x == "PRIMARY") $def .= "   PRIMARY KEY (`" . implode($columns, ", ") . "`)";
-          else if (substr($x,0,6) == "UNIQUE") $def .= "   UNIQUE ".substr($x,7)." (`" . implode($columns, "`, `") . "`)";
-          else $def .= "   KEY $x (`" . implode($columns, "`, `") . "`)";
-     }
-
-     $def .= "\n) TYPE=MyISAM;\n\n";
-     return $def;
+    $query = "SHOW CREATE TABLE $table";
+    $result=$db->query($query);
+    $row=$db->fetch_array($result);
+   
+   // DELETE charset definition : UNEEDED WHEN UTF8 CONVERSION OF THE DATABASE
+    $def.=preg_replace("/DEFAULT CHARSET.*/i",";",$row[1]);
+  return $def."\n\n";
 }
 
 
@@ -541,13 +518,10 @@ optimize_tables();
 if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 
    $filename=$_GET["delfile"];
-
-   unlink($path.$_GET["delfile"]);
-
-
-
-
+  if (is_file($path.$_GET["delfile"])){
+    unlink($path.$_GET["delfile"]);
    echo "<div align ='center'>".$filename." ".$lang["backup"][9]."</div>";
+  }
 
 }
 
