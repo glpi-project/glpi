@@ -705,7 +705,6 @@ $lang["log"][24]="purge de l'item";
 $lang["log"][26]="déconnexion de l'item";
 $lang["log"][27]="connexion de l'item";
 $lang["log"][28]="modification des composants";
-$lang["log"][29]="déconnexion d'un composant sur l'ordinateur ";
 $lang["log"][30]="association d'un type";
 $lang["log"][31]="suppression d'un type";
 $lang["log"][32]="ajout lien avec un  item";
