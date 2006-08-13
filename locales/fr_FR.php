@@ -1308,7 +1308,6 @@ $lang["setup"][306]="Vérifier la présence de mises à jour";
 $lang["setup"][307]="Jamais";
 $lang["setup"][308]="Toutes les semaines";
 $lang["setup"][309]="Tous les mois";
-$lang["setup"][310]="Vérification automatique de la présence d'une mise à jour";
 $lang["setup"][311]="Connection au serveur proxy impossible";
 
 $lang["setup"][350]="Liaison avec les matériels pour la création de tickets";

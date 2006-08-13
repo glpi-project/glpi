@@ -533,7 +533,7 @@ class Profile extends CommonDBTM{
 	
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$lang["setup"][306].":</td><td>";
-		dropdownNoneReadWrite("update",$this->fields["update"],1,1,0);
+		dropdownNoneReadWrite("check_update",$this->fields["check_update"],1,1,0);
 		echo "</td>";
 		echo "<td>".$lang["Menu"][14].":</td><td>";
 		dropdownNoneReadWrite("user",$this->fields["user"],1,1,1);

@@ -40,7 +40,7 @@ include ($phproot . "/inc/includes.php");
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
-checkRight("update","r");
+checkRight("check_update","r");
 
 checkNewVersionAvailable(0);
 
