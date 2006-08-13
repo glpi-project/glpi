@@ -413,6 +413,18 @@ if(!TableExists("glpi_dropdown_interface")) {
 
 }
 
+if(FieldExists("glpi_profiles", "update")) {
+	$query = "ALTER TABLE `glpi_profiles` CHANGE `update` `check_update` CHAR( 1 ) NULL DEFAULT NULL";
+	$db->query($query) or die("0.68.1 alter glpi_profiles.update ".$lang["update"][90].$db->error());
+}
+
+if(FieldExists("glpi_config", "last_update_check")) {
+	$query = "ALTER TABLE `glpi_config` DROP `last_update_check`;";
+	$db->query($query) or die("0.68.1 drop glpi_config.last_update_check ".$lang["update"][90].$db->error());
+}
+
+
+
 } // fin 0.68 #####################################################################################
 
 ?>

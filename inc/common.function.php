@@ -600,4 +600,74 @@ function makeTextSearch($val,$not=0){
 	return $SEARCH;
 }
 
+function checkNewVersionAvailable($auto=1){
+	global $db,$lang,$cfg_glpi;
+
+	if (!haveRight("check_update","r")) return false;	
+	
+	if (!$auto) echo "<br>";
+	$latest_version = '';
+		
+	// Connection directe
+	 if (empty($cfg_glpi["proxy_name"])){
+		if ($fp=@fsockopen("glpi-project.org", 80, $errno, $errstr, 1)){
+			
+			$request  = "GET /latest_version HTTP/1.1\r\n";
+			$request .= "Host: glpi-project.org\r\n";
+			$request .= 'User-Agent: GLPICheckUpdate/'.trim($cfg_glpi["version"])."\r\n";
+			$request .= "Connection: Close\r\n\r\n";
+				
+			fwrite($fp, $request);
+			while (!feof($fp)) {
+				$ret=fgets($fp, 128);
+				if (!empty($ret))
+					$latest_version=$ret;
+			}
+			fclose($fp);
+		}
+	} else { // Connection using proxy
+		$proxy_cont = ''; //laissez vide
+			
+		$proxy_fp = fsockopen($cfg_glpi["proxy_name"], $cfg_glpi["proxy_port"], $errno, $errstr, 1);
+		if (!$proxy_fp)    {
+			if (!$auto) echo "<div align='center'>".$lang["setup"][311]." ($errstr)</div>";
+		} 
+			
+		fputs($proxy_fp, "GET http://glpi-project.org/latest_version HTTP/1.0\r\nHost: ".$cfg_glpi["proxy_name"]."\r\n");
+		if (!empty($cfg_glpi["proxy_user"]))
+			fputs($proxy_fp, "Proxy-Authorization: Basic " . base64_encode ($cfg_glpi["proxy_user"].":".$cfg_glpi["proxy_password"]) . "\r\n");    // added
+		fputs($proxy_fp,"\r\n");
+		while(!feof($proxy_fp)) {
+			$ret = fread($proxy_fp,128);
+			if (!empty($ret))
+				$latest_version=$ret;
+		}
+		fclose($proxy_fp);
+	}
+	if (strlen(trim($latest_version)) == 0){
+		if (!$auto) echo "<div align='center'>".$lang["setup"][304]." ($errstr)</div>";
+	} else {			
+		$cur_version = str_replace(array('.', ' '), '', strtolower(trim($cfg_glpi["version"])));
+		$cur_version = ($cur_version<10) ? intval($cur_version) * 10 : intval($cur_version);
+		
+		$lat_version = str_replace('.', '', strtolower(trim($latest_version)));
+		$lat_version = ($lat_version< 10) ? intval($lat_version) * 10 : intval($lat_version);
+
+		if ($cur_version < $lat_version){
+			if (!$auto) {
+				echo "<div align='center'>".$lang["setup"][301]." ".$latest_version."</div>";
+				echo "<div align='center'>".$lang["setup"][302]."</div>";
+			}
+				
+			$query="UPDATE glpi_config SET founded_new_version='".$latest_version."' WHERE ID='1'";
+			$db->query($query);
+
+		}  else echo "<div align='center'>".$lang["setup"][303]."</div>";
+ 	} 
+	return 1;
+}
+
+function cron_check_update(){
+	checkNewVersionAvailable(1);
+}
 ?>

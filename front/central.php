@@ -65,9 +65,6 @@ else {
 }
 echo ", ".$lang["central"][1]."</span></b></div>";
 
-checkNewVersionAvailable();
-
-
 echo "<br><br>";
 showCentralOnglets($_SERVER["PHP_SELF"],$_SESSION['glpi_viewcentral']);
 

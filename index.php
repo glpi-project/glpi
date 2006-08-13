@@ -152,7 +152,9 @@ else
 	echo "<p ><span> <input type='submit' name='submit' value='".$lang["buttons"][2]."' class='submit' /></span></p>";
 	echo "</form>";
 	
-
+	echo "<script type='text/javascript' >\n";
+	echo "document.getElementById('login_name').focus();";
+	echo "</script>";
 
 
 	echo "</div>";  // fin box login
