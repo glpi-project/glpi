@@ -131,6 +131,12 @@ function checkRight($module,$right) {
 	global $lang,$HTMLRel,$HEADER_LOADED;
 
 	if (!haveRight($module,$right)){
+		// Gestion timeout session
+		if (!isset($_SESSION["glpiID"])){
+			glpi_header($HTMLRel."/index.php");
+			exit();
+		}
+
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
@@ -155,6 +161,12 @@ function checkSeveralRightsOr($modules) {
 			if (haveRight($mod,$right)) $valid=true;
 
 	if (!$valid){
+		// Gestion timeout session
+		if (!isset($_SESSION["glpiID"])){
+			glpi_header($HTMLRel."/index.php");
+			exit();
+		}
+
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
@@ -179,6 +191,11 @@ function checkSeveralRightsAnd($modules) {
 	if (!haveRight($mod,$right)) $valid=false;
 
 	if (!$valid){
+		// Gestion timeout session
+		if (!isset($_SESSION["glpiID"])){
+			glpi_header($HTMLRel."/index.php");
+			exit();
+		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
@@ -198,6 +215,11 @@ function checkTypeRight($type,$right) {
 	global $lang,$HTMLRel,$HEADER_LOADED;
 
 	if (!haveTypeRight($type,$right)){
+		// Gestion timeout session
+		if (!isset($_SESSION["glpiID"])){
+			glpi_header($HTMLRel."/index.php");
+			exit();
+		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
@@ -218,6 +240,11 @@ function checkCentralAccess(){
 	global $lang,$HTMLRel,$HEADER_LOADED;
 	
 	if (!isset($_SESSION["glpiprofile"])||$_SESSION["glpiprofile"]["interface"]!="central"){
+		// Gestion timeout session
+		if (!isset($_SESSION["glpiID"])){
+			glpi_header($HTMLRel."/index.php");
+			exit();
+		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
@@ -238,6 +265,11 @@ function checkHelpdeskAccess(){
 	global $lang,$HTMLRel,$HEADER_LOADED;
 
 	if (!isset($_SESSION["glpiprofile"])||$_SESSION["glpiprofile"]["interface"]!="helpdesk"){
+		// Gestion timeout session
+		if (!isset($_SESSION["glpiID"])){
+			glpi_header($HTMLRel."/index.php");
+			exit();
+		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
@@ -258,6 +290,11 @@ function checkLoginUser(){
 	global $lang,$HTMLRel,$HEADER_LOADED;
 
 	if (!isset($_SESSION["glpiname"])){
+		// Gestion timeout session
+		if (!isset($_SESSION["glpiID"])){
+			glpi_header($HTMLRel."/index.php");
+			exit();
+		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
 				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);

@@ -54,11 +54,6 @@ function commonHeader($title,$url)
 
 	global $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks,$HEADER_LOADED ;
 
-	// Gestion timeout session
-	if (!isset($_SESSION["glpiID"]))
-		glpi_header($HTMLRel."/index.php");
-
-
 	$HEADER_LOADED=true;;
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
@@ -353,10 +348,6 @@ function helpHeader($title,$url) {
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 	
-	// Gestion timeout session
-	if (!isset($_SESSION["glpiID"]))
-		glpi_header($HTMLRel."/index.php");
-
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {
  		$_SESSION['glpilist_limit']=$_POST['list_limit'];
@@ -595,9 +586,6 @@ function popHeader($title,$url)
 
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
-	// Gestion timeout session
-	if (!isset($_SESSION["glpiID"]))
-		glpi_header($HTMLRel."/index.php");
 
 	
 	// Override list-limit if choosen
