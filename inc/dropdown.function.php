@@ -682,27 +682,29 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 *
 * @param $myname select name
 * @param $value preselected value.
-* @param $colspan colspan to display the search engine
+* @param $userID User ID for my device section
 * @return nothing (print out an HTML select box)
 */
-function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
+function dropdownTrackingDeviceType($myname,$value,$userID=0){
 	global $lang,$HTMLRel,$cfg_glpi,$db,$LINK_ID_TABLE;
 	
 	$rand=mt_rand();
 	
+	if ($userID==0) $userID=$_SESSION["glpiID"];
 	
 	if ($_SESSION["glpiprofile"]["helpdesk_hardware"]==0){
 		echo "<input type='hidden' name='$myname' value='0'>";
 		echo "<input type='hidden' name='computer' value='0'>";
 	} else {
-	
+		echo "<div id='tracking_device_type_selecter'>";
+		echo "<table width='100%'>";
 		// View my hardware
 		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
 			$my_devices="";
 		
 			$group_where="";
 			$groups=array();
-			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$_SESSION["glpiID"]."';";
+			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."';";
 			
 			$result=$db->query($query);
 			if ($db->numrows($result)>0){
@@ -718,7 +720,7 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 			foreach ($cfg_glpi["linkuser_type"] as $type)
 			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 				{
-				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$_SESSION["glpiID"]."' $group_where";
+				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' $group_where";
 				
 				$result=$db->query($query);
 				if ($db->numrows($result)>0){
@@ -776,9 +778,10 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 				}
 			}
 
-			echo $lang["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>-----</option>$my_devices</select>";
+			echo "<tr><td align='center'>".$lang["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>-----</option>$my_devices</select>";
 			if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE))
 				echo "<br>".$lang["tracking"][2].":&nbsp;";
+			else echo "</td></tr>";
 		}
 		
 		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
@@ -801,6 +804,8 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))
 				echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$lang["help"][35]."</option>\n";
 			echo "</select>\n";
+
+			echo "</td></tr><tr><td align='center'>";
 		
 			echo "<script type='text/javascript' >\n";
 			echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -817,7 +822,6 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 			
 			echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 			
-			echo "</td></tr><tr><td class='tab_bg_2' colspan='$colspan'>";
 			echo "<div align='center'>";
 			echo "<span id='results_$myname$rand'>\n";
 			
@@ -833,7 +837,10 @@ function dropdownTrackingDeviceType($myname,$value,$colspan='2'){
 			
 			echo "</span>\n";	
 			echo "</div>";
+			echo "</td></tr>";
 		}
+		echo "</table>";
+		echo "</div";
 	}		
 	return $rand;
 }
