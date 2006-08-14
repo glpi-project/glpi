@@ -92,10 +92,20 @@ else if (isset($_POST["deletegroup"]))
 } else {
 	
 
+	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (isset($_GET['onglet'])) {
+		$_SESSION['glpi_onglet']=$_GET['onglet'];
+	}
+
+
 	if (!isset($_GET["ext_auth"])){
 		checkRight("user","r");
 
 		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+
+		if ($user->getFromDB($_GET["ID"]))
+			$user->showOnglets($_SERVER["PHP_SELF"]."?ID=".$_GET["ID"], "",$_SESSION['glpi_onglet'] );
+
 		
 		$user->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
 		showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);

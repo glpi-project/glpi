@@ -52,7 +52,13 @@ class User extends CommonDBTM {
   	else $this->fields['language'] = "english";
 
 }
+	function defineOnglets($withtemplate){
+		global $lang,$cfg_glpi;
+		
+		$ong[1]=$lang["title"][26];
 
+		return $ong;
+	}
 	function cleanDBonPurge($ID) {
 
 		global $db,$cfg_glpi,$LINK_ID_TABLE;
@@ -528,7 +534,7 @@ class User extends CommonDBTM {
 			
 		}
 		echo "<div align='center'>";
-		echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
+		echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='4'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
 		echo "<tr class='tab_bg_1'>";	
 		echo "<td align='center'>".$lang["setup"][18]."</td>";
