@@ -699,10 +699,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>".$lang["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
-		dropdownTrackingDeviceType("device_type",$device_type,4);
+		dropdownTrackingDeviceType("device_type",$device_type,$_SESSION["glpiID"]);
 		echo "</td></tr>";
 	} else {
+		echo "<tr class='tab_bg_2'><td colspan='4'>";
 		echo "<input type='hidden' name='device_type' value='0'>";
+		echo "</td></tr>";
 	}
 
 
@@ -767,6 +769,15 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
 		echo "<td align='center'>";
 		$author_rand=dropdownAllUsers("author",$author);
+
+		echo "<script type='text/javascript' >";
+		echo "   new Form.Element.Observer('dropdown_author$author_rand', 1, ";
+		echo "      function(element, value) {";
+		echo "      	new Ajax.Updater('tracking_device_type_selecter','".$cfg_glpi["root_doc"]."/ajax/updateTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
+		echo "           method:'post', parameters:'userID=' + value+'&device_type=$device_type'";
+		echo "})})";
+		echo "</script>";	
+
 		echo "</td>";
 	} else {
 	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td>";

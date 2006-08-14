@@ -49,9 +49,9 @@
 if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$_POST["type"]))){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
 	
-	echo "<div align='center'>".$lang["help"][23]."</div>";
+	echo "<div align='center'>".$lang["help"][23].":&nbsp;";
 	$rand=mt_rand();
-	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'><br>";	
+	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'></div>";	
 	
 
 	echo "<script type='text/javascript' >";

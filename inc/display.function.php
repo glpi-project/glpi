@@ -874,7 +874,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<td colspan='2' align='center'>".$lang["help"][13].":</td>";
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' align='center'><textarea name='contents' cols='45' rows='14' >$contents</textarea>";
+	echo "<td colspan='2' align='center'><textarea name='contents' cols='80' rows='14' >$contents</textarea>";
 	echo "</td></tr>";
 
 	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
