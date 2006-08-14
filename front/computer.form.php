@@ -154,7 +154,6 @@ elseif(isset($tab["unlock_field"])){
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
-//	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 

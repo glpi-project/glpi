@@ -302,14 +302,14 @@ function showGroupAssociated($target,$ID){
 		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=none'>".$lang["buttons"][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
 		echo "<input type='submit' name='deletegroup' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		echo "</td>";
+		echo "</td></tr>";
 		echo "</table>";
 				
 		echo "</div>";
 
 	}
 
-
+	echo "</form>";
 
 }
 
