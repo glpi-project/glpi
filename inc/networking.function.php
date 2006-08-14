@@ -51,7 +51,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 		
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
-	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY logical_number";
+	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
 	if ($result = $db->query($query)) {
 		if ($db->numrows($result)!=0) { 
 			$colspan=8;
