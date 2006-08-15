@@ -210,7 +210,7 @@ class Mailing
 		
 		if($format=="html"){
 			if ($cfg_glpi["url_in_mail"]&&!empty($cfg_glpi["url_base"])){
-				$body.=$lang["mailing"][1]."<br>"; $body.="URL :<a href=\" ".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\">".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]." </a><br>";
+				$body.="URL :<a href=\" ".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\">".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]." </a><br><br>";
 				
 				}
 			
@@ -218,6 +218,9 @@ class Mailing
 			$body.=$this->job->textFollowups("html");
 			
 			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+			$body.="</body></html>";
+			$body=ereg_replace("\n","<br>",$body);
+
 		}else{ // text format
 			
 				if ($cfg_glpi["url_in_mail"]&&!empty($cfg_glpi["url_base"])){
@@ -229,8 +232,8 @@ class Mailing
 			$body.=$this->job->textFollowups();
 			
 			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
-			$body=ereg_replace("<br />","",$body);
-			$body=ereg_replace("<br>","",$body);
+			$body=ereg_replace("<br />","\n",$body);
+			$body=ereg_replace("<br>","\n",$body);
 		}
 
 		return $body;
@@ -448,15 +451,16 @@ class MailingResa{
 		
 		if($format=="html"){
 
-			$body.=$this->resa->textDescription();
+			$body.=$this->resa->textDescription("html");
 			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+			$body.="</body></html>";
 			$body=ereg_replace("\n","<br>",$body);
 		}else{ // text format
 
 			$body.=$this->resa->textDescription();
 			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
-			$body=ereg_replace("<br />","",$body);
-			$body=ereg_replace("<br>","",$body);
+			$body=ereg_replace("<br />","\n",$body);
+			$body=ereg_replace("<br>","\n",$body);
 		}
 		return $body;
 	}
@@ -640,13 +644,14 @@ class MailingAlert
 
 			$body.=$this->message;
 			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+			$body.="</body></html>";
 			$body=ereg_replace("\n","<br>",$body);
 		}else{ // text format
 
 			$body.=$this->message;
 			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
-			$body=ereg_replace("<br />","",$body);
-			$body=ereg_replace("<br>","",$body);
+			$body=ereg_replace("<br />","\n",$body);
+			$body=ereg_replace("<br>","\n",$body);
 		}
 		return $body;
 	}
