@@ -132,7 +132,7 @@ class CommonDBTM {
 				}
 			}
 			$query .= ")";
-			
+
 			if ($result=$db->query($query)) {
 				$this->fields["ID"]=$db->insert_id();
 				$this->post_addToDB();
@@ -201,15 +201,16 @@ class CommonDBTM {
 	**/
 	// specific ones : reservationresa , planningtracking
 	function add($input) {
-
+		global $db;
 		// dump status
 		unset($input['add']);
 		$input=$this->prepareInputForAdd($input);
 
 		if ($input&&is_array($input)){
+			$table_fields=$db->list_fields($this->table);
 			// fill array for udpate
 			foreach ($input as $key => $val) {
-				if ($key[0]!='_'&& (!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
+				if ($key[0]!='_'&& isset($table_fields[$key])&&(!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
 					$this->fields[$key] = $input[$key];
 				}
 			}
@@ -250,7 +251,6 @@ class CommonDBTM {
 		unset($input['update']);
 
 		if ($this->getFromDB($input["ID"])){
-
 			// Fill the update-array with changes
 			$x=0;
 			$updates=array();
