@@ -76,11 +76,18 @@ class Document extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
+		global $lang;
 		$input["date_mod"] = date("Y-m-d H:i:s");
 		$input["FK_users"] = $_SESSION["glpiID"];
 	
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
 			$input['mime']=$_FILES['filename']['type'];
+
+		if (isset($input["item"])&&isset($input["type"])&&$input["type"]>0&&$input["item"]>0){
+			$ci=new CommonItem();
+			$ci->getFromDB($input["type"],$input["item"]);
+			$input["name"]=substr($lang["document"][18]." ".$ci->getType()." - ".$ci->getNameID(),0,255);
+		}
 
 		if (isset($input["upload_file"])&&!empty($input["upload_file"])){
 			$input['filename']=moveUploadedDocument($input["upload_file"]);
@@ -93,6 +100,19 @@ class Document extends CommonDBTM {
 		else {
 			return false;
 		}
+	}
+
+	function postAddItem($newID,$input) {
+		global $lang;
+		if (isset($input["item"])&&isset($input["type"])&&$input["item"]>0&&$input["type"]>0){
+			$template=0;
+			if (isset($_POST["is_template"])) $template=1;
+	
+			addDeviceDocument($newID,$input['type'],$input['item'],$template);
+			logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][32]);
+		}
+
+		
 	}
 
 

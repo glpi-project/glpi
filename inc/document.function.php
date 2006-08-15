@@ -267,6 +267,8 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 	
 	if (!haveRight("document","r")&&!haveTypeRight($device_type,"r")&&$device_type!=KNOWBASE_TYPE)	return false;
+	if (empty($withtemplate)) $withtemplate=0;
+
 	$canread=haveTypeRight($device_type,"r");
 	$canedit=haveTypeRight($device_type,"w");
 
@@ -276,7 +278,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$number = $db->numrows($result);
 	$i = 0;
 	
-    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/document.form.php\">";
+    if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th>";
@@ -331,7 +333,14 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$nb = $db->numrows($result);
 	
 		if ($withtemplate<2&&$nb>0){
-			echo "<tr class='tab_bg_1'><td align='right' colspan='5'>";
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td align='center' colspan='3'>";
+			echo "<input type='hidden' name='is_template' value='$withtemplate'>";
+			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
+			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "</td>";
+			echo "<td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 			dropdown("glpi_docs","conID");
 			echo "</div></td><td align='center'>";
