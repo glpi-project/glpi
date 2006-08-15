@@ -60,6 +60,7 @@ AS ip, c.ifmac AS mac,c.ID AS IDport, glpi_dropdown_locations.ID as location
 glpi_dropdown_locations.ID
 LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id 
  WHERE ".getRealQueryForTreeItem("glpi_dropdown_locations",$_POST["location"])." AND c.device_type=".NETWORKING_TYPE.";";
+
 	/*!
  	on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
  	affiche un rapport en fonction de l'étage choisi  

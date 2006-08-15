@@ -213,13 +213,16 @@ if (count($id_found)>0){
 *
 * @param $table
 * @param $IDf The ID of the father
+* @param $reallink real field to link ($table.ID if not set)
 * @return string the query
 */
-function getRealQueryForTreeItem($table,$IDf){
+function getRealQueryForTreeItem($table,$IDf,$reallink=""){
 
 global $db;
 
 if (empty($IDf)) return "";
+
+if (empty($reallink)) $reallink=$table.".ID";
 
 
 // IDs to be present in the final query
@@ -260,9 +263,13 @@ while (count($found)>0){
 
 // Construct the final request
 if (count($id_found)>0){
-	$ret=" ( '0' = '1' ";
-	foreach ($id_found as $key => $val)
-		$ret.=" OR $table.ID = '$val' ";
+	$ret=" ( ";
+	$i=0;
+	foreach ($id_found as $key => $val){
+		if ($i>0) $ret.=" OR ";
+		$ret.="$reallink = '$val' ";
+		$i++;
+	}
 	$ret.=") ";
 	
 	return $ret;
