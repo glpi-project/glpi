@@ -67,7 +67,7 @@ if (isset($_GET["tohide"])) {
 if (isset($_POST["contains"])) $contains=$_POST["contains"];
 else $contains="";
 
-searchLimitSessionVarKnowbase($contains);
+if (!empty($contains)) searchLimitSessionVarKnowbase($contains);
 
 
 faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
