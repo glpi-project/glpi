@@ -48,8 +48,8 @@
 * @return nothing (display the form)
 **/
 function searchFormKnowbase($target,$contains){
-	global $lang;
-	if (!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
+	global $lang,$cfg_glpi;
+	if ($cfg_glpi["public_faq"] == 0&&!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
 
 	echo "<form method=post action=\"$target\">";
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe'>";
@@ -672,7 +672,7 @@ function faqShowCategories($target,$parentID=0,$contains='')
 					echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
 					echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
 				}
-
+				
 				if ($_SESSION["kb_show"][$ID]=='Y'){
 	  				faqShowItems($target,$ID,$contains);
 					faqShowCategories($target,$ID,$contains);
