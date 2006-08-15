@@ -191,7 +191,7 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	if (isset($_POST["contains"])) $contains=$_POST["contains"];
 	else $contains="";
 
-	if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
+	searchLimitSessionVarKnowbase($contains);
 
 	
 	faqShowCategoriesall($_SERVER["PHP_SELF"]."?show=faq",$contains);

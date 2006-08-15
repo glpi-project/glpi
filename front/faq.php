@@ -48,8 +48,8 @@ nullHeader("Login",$_SERVER["PHP_SELF"]);
 
 if (isset($_GET["ID"])){
 
-ShowKbItemFull($_GET["ID"]);
-showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
+if (ShowKbItemFull($_GET["ID"]))
+	showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
 
 } else {
 initExpandSessionVar();
@@ -67,7 +67,7 @@ if (isset($_GET["tohide"])) {
 if (isset($_POST["contains"])) $contains=$_POST["contains"];
 else $contains="";
 
-if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
+searchLimitSessionVarKnowbase($contains);
 
 
 faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
