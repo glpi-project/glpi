@@ -1165,9 +1165,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 	if ($computers_search)
 	$where.=" AND glpi_tracking.device_type= '1'";
-	if ($category > 0)
-	$where.=" AND glpi_tracking.category = '$category'";
-	
+	if ($category > 0){
+		$where.=" AND ".getRealQueryForTreeItem("glpi_dropdown_tracking_category",$category,"glpi_tracking.category");
+	}
+
 	if ($computers_search) $where .= " AND $wherecomp";
 	if (!empty($date1)&&$date1!="0000-00-00") $where.=" AND glpi_tracking.date >= '$date1'";
 	if (!empty($date2)&&$date2!="0000-00-00") $where.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
