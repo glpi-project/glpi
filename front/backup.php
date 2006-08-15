@@ -544,35 +544,50 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"". $HTMLRel."pi
     </tr>
     <?php
 	$dir=opendir($path); 
+        $files=array();
 	while ($file = readdir ($dir)) { 
 	    if ($file != "." && $file != ".." && eregi("\.sql",$file)) { 
-	    	$taille_fic = filesize($path.$file)/1024;
-		$taille_fic = (int)$taille_fic;
-	        echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
+		$files[$file]=filemtime($path.$file);
+	    }
+       }
+	arsort($files);
+	if (count($files)){
+		foreach ($files as $file => $date){
+	    		$taille_fic = filesize($path.$file)/1024;
+			$taille_fic = (int)$taille_fic;
+	        	echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
 	        	<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
-	        	<td>&nbsp;" . convDateTime(date("Y-m-d H:i",filemtime($path.$file))) . "</td>
+	        	<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
 
 			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$lang["backup"][14]."</a>&nbsp;</td>
 	        	<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$lang["backup"][13]."</a></td></tr>";
-	    }
-	      }
-closedir($dir);
-$dir=opendir($path);
+		}
+	}
+	closedir($dir);
+	$dir=opendir($path);
+	unset($files);
+	$files=array();
 	while ($file = readdir ($dir)) {
-	    if ($file != "." && $file != ".." && eregi("\.xml",$file)) {
-	        $taille_fic = filesize($path.$file)/1024;
-		$taille_fic = (int)$taille_fic;
-	        echo "
+		if ($file != "." && $file != ".." && eregi("\.xml",$file)) {
+			$files[$file]=filemtime($path.$file);
+		}
+	}
+	arsort($files);
+	if (count($files)){
+		foreach ($files as $file => $date){
+		        $taille_fic = filesize($path.$file)/1024;
+			$taille_fic = (int)$taille_fic;
+	        	echo "
 	   	        <tr class='tab_bg_1'><td colspan='6' ><hr noshade></td></tr>
 	   	    	<tr class='tab_bg_2'><td>$file&nbsp;</td>
 	        	<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
-	        	<td>&nbsp;" . convDateTime(date("Y-m-d H:i",filemtime($path.$file))) . "</td>
+	        	<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
 	       		<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
                          	<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
 	        	<td>&nbsp;<a  href=\"document.send.php?file=_dumps/$file\">".$lang["backup"][13]."</a></td></tr>";
-	    }
+		}
 	}
 	closedir($dir);
 ?>
