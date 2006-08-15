@@ -64,17 +64,16 @@ function showPasswordForm($target,$name) {
 
 
 function showLangSelect($target) {
-
 	global $cfg_glpi, $lang;
 	
 	$l = $_SESSION["glpilanguage"]; 
-	
+
 	echo "<form method='post' action=\"$target\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
 	echo "<tr><th colspan='2'>".$lang["setup"][41].":</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name='language'>";
-
+	
 	while (list($cle)=each($cfg_glpi["languages"])){
 		echo "<option value=\"".$cle."\"";
 			if ($l==$cle) { echo " selected"; }
