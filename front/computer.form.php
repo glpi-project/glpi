@@ -94,13 +94,13 @@ else if (isset($tab["disconnect"])) {
 	checkRight("computer","w");
 	Disconnect($tab["ID"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
-	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0){
 	checkRight("computer","w");
 	Connect($tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][27]);
-	glpi_header($_SERVER["PHP_SELF"]."?ID=".$tab["cID"]."&withtemplate=".$tab["withtemplate"]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //Update a device specification
 elseif(isset($_POST["update_device"])) {
