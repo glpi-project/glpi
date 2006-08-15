@@ -209,11 +209,11 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	
 	
 	echo "<div align='center'>";
-	echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
+	echo "<p><a class='icon_consol' href='".$REFERER."'>".$lang["buttons"][13]."</a></p>";
 	
 	echo "<form method='post' action=\"$target\">";
 
-	echo "<input type='hidden' name='referer' value='$REFERER'>";
+	echo "<input type='hidden' name='referer' value='".urlencode($REFERER)."'>";
 	echo "<table class='tab_cadre'><tr>";
 	
 	echo "<th colspan='4'>".$lang["networking"][20].":</th>";

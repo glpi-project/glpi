@@ -47,12 +47,14 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 if (isset($_SERVER["HTTP_REFERER"]))
 $REFERER=$_SERVER["HTTP_REFERER"];
-if (isset($tab["referer"])) $REFERER=$tab["referer"];
 
+if (isset($tab["referer"])) $REFERER=urldecode($tab["referer"]);
+
+$REFERER=preg_replace("/&amp;/","&",$REFERER);
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
 $ADDREFERER="";
-if (!ereg("&referer=",$_SERVER["HTTP_REFERER"]))$ADDREFERER="&referer=".$REFERER;
+if (!ereg("&referer=",$_SERVER["HTTP_REFERER"]))$ADDREFERER="&referer=".urlencode($REFERER);
 
 $np=new Netport();
 if(isset($_POST["add"])){	
