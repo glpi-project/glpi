@@ -487,19 +487,19 @@ class Job extends CommonDBTM{
 		$result=$db->query($query);
 		$nbfollow=$db->numrows($result);
 		if($format=="html"){
-			$message = $lang["mailing"][1]."<br>".$lang["mailing"][4]." : $nbfollow<br>".$lang["mailing"][1]."<br>";
+			$message = "<div class='description'><strong>".$lang["mailing"][4]." : $nbfollow<br>"."</div><br>";
 			
 			if ($nbfollow>0){
 				$fup=new Followup();
 				while ($data=$db->fetch_array($result)){
 						$fup->getfromDB($data['ID']);
-						$message .= "[ ".convDateTime($fup->fields["date"])." ]<br>";
-						$message .= $lang["common"][37].": ".$fup->getAuthorName()."<br>";
-						$message .= $lang["mailing"][3]."<br>".$fup->fields["contents"]."<br>";
+						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ]</strong><br>";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][37].":</span> ".$fup->getAuthorName()."<br>";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][3].":</span><br>".$fup->fields["contents"]."<br>";
 						if ($fup->fields["realtime"]>0)
-							$message .= $lang["mailing"][104]." ".getRealtime($fup->fields["realtime"])."<br>";
+							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."<br>";
 	
-						$message.=$lang["mailing"][25]." ";
+						$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][25].":</span> ";
 						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 						$result2=$db->query($query2);
 						if ($db->numrows($result2)==0)
@@ -523,7 +523,7 @@ class Job extends CommonDBTM{
 						$message .= $lang["common"][37].": ".$fup->getAuthorName()."\n";
 						$message .= $lang["mailing"][3]."\n".$fup->fields["contents"]."\n";
 						if ($fup->fields["realtime"]>0)
-							$message .= $lang["mailing"][104]." ".getRealtime($fup->fields["realtime"])."\n";
+							$message .= $lang["mailing"][104].": ".getRealtime($fup->fields["realtime"])."\n";
 	
 						$message.=$lang["mailing"][25]." ";
 						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";

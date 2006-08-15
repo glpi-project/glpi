@@ -339,7 +339,7 @@ class ReservationResa extends CommonDBTM {
 		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$lang["reservation"][20]."</a>";
 		echo "</div>";
 		}
-	function textDescription(){
+	function textDescription($format="text"){
 		global $lang;
 		
 		$ci=new ReservationItem();
@@ -348,14 +348,25 @@ class ReservationResa extends CommonDBTM {
 		$u=new User();
 		$u->getFromDB($this->fields["id_user"]);
 		$content="";
-		
-		$content.=$lang["mailing"][1]."\n";	
-		$content.=$lang["common"][37].": ".$u->getName()."\n";
-		$content.=$lang["mailing"][7]." ".$ci->getName()."\n";
-		$content.=$lang["search"][8].": ".convDateTime($this->fields["begin"])."\n";
-		$content.=$lang["search"][9].": ".convDateTime($this->fields["end"])."\n";
-		$content.=$lang["common"][25].": ".$this->fields["comment"]."\n";
-		$content.=$lang["mailing"][1]."\n";	
+
+		if($format=="html"){
+			$content= "<html><head> <style type=\"text/css\">";
+			$content.=".description{ color: inherit; background: #ebebeb; border-style: solid; border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }";
+			$content.=" </style></head><body>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][37].":</span> ".$u->getName()."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][7].":</span> ".$ci->getName()."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["search"][8].":</span> ".convDateTime($this->fields["begin"])."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["search"][9].":</span> ".convDateTime($this->fields["end"])."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][25].":</span> ".$this->fields["comment"]."<br>";
+		} else { // text format
+			$content.=$lang["mailing"][1]."\n";
+        	        $content.=$lang["common"][37].": ".$u->getName()."\n";
+                	$content.=$lang["mailing"][7].": ".$ci->getName()."\n";
+                	$content.=$lang["search"][8].": ".convDateTime($this->fields["begin"])."\n";
+                	$content.=$lang["search"][9].": ".convDateTime($this->fields["end"])."\n";
+                	$content.=$lang["common"][25].": ".$this->fields["comment"]."\n";
+                	$content.=$lang["mailing"][1]."\n";
+		}
 		return $content;
 		
 	}
