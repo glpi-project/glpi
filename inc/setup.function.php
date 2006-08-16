@@ -1841,6 +1841,16 @@ function ocsFormConfig($target, $id) {
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][38]." </td><td>";
 	dropdownYesNoInt("use_soft_dict",$data["use_soft_dict"]);
 	echo "</td></tr>";
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][40]." </td><td>";
+	echo "<select name='cron_sync_number'>";
+	for ($i=1;$i<100;$i++){
+		echo "<option value='$i' ".($i==$data["cron_sync_number"]?" selected":"").">$i</option>";
+	}
+	echo "</select>";
+	
+	echo "</td></tr>";
+
 	echo "</table></div>";
 
 	echo "<div align='center'>".$lang["ocsconfig"][15]."</div>";
