@@ -672,7 +672,7 @@ function cron_ocsng(){
 		$query_glpi = "SELECT * FROM glpi_ocs_link ORDER BY last_update";
 		$result_glpi = $db->query($query_glpi);
 		$done=0;
-		while($done<5&&$data=$db->fetch_assoc($result_glpi)){
+		while($done<$cfg_ocs["cron_sync_number"]&&$data=$db->fetch_assoc($result_glpi)){
 			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 			
 			if (isset($hardware[$data["ocs_id"]])){ 

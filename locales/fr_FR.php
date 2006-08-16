@@ -920,6 +920,7 @@ $lang["ocsconfig"][36]="Modems";
 $lang["ocsconfig"][37]="Ports";
 $lang["ocsconfig"][38]="Utiliser le dictionnaire logiciel d'OCS";
 $lang["ocsconfig"][39]="TAG OCS";
+$lang["ocsconfig"][40]="Nombre d'élements à synchroniser via le cron";
 
 
 $lang["pager"][1]="à";
