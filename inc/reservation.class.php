@@ -220,6 +220,15 @@ class ReservationResa extends CommonDBTM {
 
 		$this->getFromDB($input["ID"]);
 
+		list($begin_year,$begin_month,$begin_day)=split("-",$input["begin_date"]);
+		list($end_year,$end_month,$end_day)=split("-",$input["end_date"]);
+
+		list($begin_hour,$begin_min)=split(":",$input["begin_hour"]);
+		list($end_hour,$end_min)=split(":",$input["end_hour"]);
+		$input["begin"]=date("Y-m-d H:i:00",mktime($begin_hour,$begin_min,0,$begin_month,$begin_day,$begin_year));
+		$input["end"]=date("Y-m-d H:i:00",mktime($end_hour,$end_min,0,$end_month,$end_day,$end_year));
+
+
 		// Get all flags and fill with 0 if unchecked in form
 		foreach ($this->fields as $key => $val) {
 			if (eregi("\.*flag\.*",$key)) {
@@ -239,8 +248,6 @@ class ReservationResa extends CommonDBTM {
 			}
 		}
 
-		$this->fields["begin"]=$_POST["begin"];
-		$this->fields["end"]=$_POST["end"];
 		if (!$this->test_valid_date()){
 			$this->displayError("date",$item,$target);
 			return false;
@@ -267,7 +274,7 @@ class ReservationResa extends CommonDBTM {
 		global $cfg_glpi;
 		// Add a Reservation
 		if ($ok){
-	
+
   			// set new date.
    			$this->fields["id_item"] = $input["id_item"];
    			$this->fields["comment"] = $input["comment"];

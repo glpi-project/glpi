@@ -725,14 +725,14 @@ class Followup  extends CommonDBTM {
 
 		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
 			if (isset($input['plan'])){
-			$input['_plan']=$input['plan'];
-			unset($input['plan']);
+				$input['_plan']=$input['plan'];
+				unset($input['plan']);
 			}	
 			if (isset($input["add_close"])) $input['_close']=1;
 			unset($input["add_close"]);
 	
 			if ($input["hour"]>0||$input["minute"]>0)
-			$input["realtime"]=$input["hour"]+$input["minute"]/60;
+				$input["realtime"]=$input["hour"]+$input["minute"]/60;
 		}
 
 		unset($input["minute"]);

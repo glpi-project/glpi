@@ -52,12 +52,6 @@ if ($pt->add($_POST,"")){
 
 } else if (isset($_POST["edit_planning"])){
 	
-	list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
-	list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
-
-	$_POST["begin"]=date("Y-m-d H:i:00",mktime($_POST["begin_hour"],$_POST["begin_min"],0,$begin_month,$begin_day,$begin_year));
-	$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
-
 	if ($pt->update($_POST,$_SERVER["PHP_SELF"],$_POST["ID"])){
 		logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][21]);
 		glpi_header($_POST["referer"]);

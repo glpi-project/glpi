@@ -1242,7 +1242,7 @@ function dropdownHours($name,$value,$limit_planning=0){
 		$begin=(int) $plan_begin[0];
 		$end=(int) $plan_end[0];
 	}
-	echo "<select name='$name'>";
+	echo "<select name=\"$name\">";
 	for ($i=$begin;$i<=$end;$i++){
 		if ($i<10)
 			$tmp="0".$i;
