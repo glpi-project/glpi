@@ -221,25 +221,25 @@ class Contract extends CommonDBTM {
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][60].":		</td><td colspan='3'>";
 		echo $lang["buttons"][33].":";
-		dropdownHours("week_begin_hour",$this->fields["week_begin_hour"],1,0);	
+		dropdownHours("week_begin_hour",$this->fields["week_begin_hour"]);	
 		echo $lang["buttons"][32].":";
-		dropdownHours("week_end_hour",$this->fields["week_end_hour"],1,0);	
+		dropdownHours("week_end_hour",$this->fields["week_end_hour"]);	
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][61].":		</td><td colspan='3'>";
 		dropdownYesNo("saturday",$this->fields["saturday"]);
 		echo $lang["buttons"][33].":";
-		dropdownHours("saturday_begin_hour",$this->fields["saturday_begin_hour"],1,0);	
+		dropdownHours("saturday_begin_hour",$this->fields["saturday_begin_hour"]);	
 		echo $lang["buttons"][32].":";
-		dropdownHours("saturday_end_hour",$this->fields["saturday_end_hour"],1,0);	
+		dropdownHours("saturday_end_hour",$this->fields["saturday_end_hour"]);	
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>".$lang["financial"][62].":		</td><td colspan='3'>";
 		dropdownYesNo("monday",$this->fields["monday"]);
 		echo $lang["buttons"][33].":";
-		dropdownHours("monday_begin_hour",$this->fields["monday_begin_hour"],1,0);	
+		dropdownHours("monday_begin_hour",$this->fields["monday_begin_hour"]);	
 		echo $lang["buttons"][32].":";
-		dropdownHours("monday_end_hour",$this->fields["monday_end_hour"],1,0);	
+		dropdownHours("monday_end_hour",$this->fields["monday_end_hour"]);	
 		echo "</td></tr>";
 		
 		if (haveRight("contract_infocom","w"))

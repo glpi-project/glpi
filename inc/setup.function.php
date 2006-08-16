@@ -1155,17 +1155,40 @@ function showFormConfigDisplay($target){
 	echo "<form name='form' action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["setup"][100]."</th></tr>";
+	echo "<tr><th colspan='4'>".$lang["setup"][100]."</th></tr>";
 	
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $cfg_glpi["num_of_events"] ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>";
-	dropdownYesNoInt("jobs_at_login",$cfg_glpi["jobs_at_login"]);
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $cfg_glpi["num_of_events"] ."\"></td>";
+	echo "<td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $cfg->fields["list_limit"] ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $cfg_glpi["cut"] ."\"></td>";
+
+	$dp_limit=$cfg_glpi["dropdown_limit"];
+	echo "<td align='center'>".$lang["setup"][131]."</td><td>";
+	echo "<select name='dropdown_limit'>";
+	for ($i=20;$i<=100;$i++) echo "<option value='$i'".($dp_limit==$i?" selected ":"").">$i</option>";
+	echo "</select>";	
+	
+	echo "</td></tr>";
+	
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][128]." </td><td><select name=\"dateformat\">";
+	echo "<option value=\"0\"";  if($cfg_glpi["dateformat"]==0){ echo " selected";} echo ">YYYY-MM-DD</option>";
+	echo "<option value=\"1\"";  if($cfg_glpi["dateformat"]==1){ echo " selected";} echo ">DD-MM-YYYY</option>";
+	echo "</select></td>";
+
+	echo "<td align='center'> ".$lang["setup"][117]." </td><td>";
+	dropdownYesNoInt("public_faq",$cfg_glpi["public_faq"]);
 	echo " </td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $cfg->fields["list_limit"] ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $cfg_glpi["cut"] ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][129]." </td><td>";
+	dropdownYesNoInt("view_ID",$cfg_glpi["view_ID"]);
+	echo "</td>";
 
-	
+	echo "<td align='center'>".$lang["setup"][130]." </td><td><select name=\"nextprev_item\">";
+	$nextprev_item=$cfg_glpi["nextprev_item"];
+	echo "<option value=\"ID\"";  if($nextprev_item=="ID"){ echo " selected";} echo ">".$lang["common"][2]." </option>";
+	echo "<option value=\"name\"";  if($nextprev_item=="name"){ echo " selected";} echo ">".$lang["common"][16]."</option>";
+	echo "</select></td></tr>";
+
 	$plan_begin=split(":",$cfg_glpi["planning_begin"]);
 	$plan_end=split(":",$cfg_glpi["planning_end"]);
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][223]."</td><td>";
@@ -1176,10 +1199,34 @@ function showFormConfigDisplay($target){
 	echo "<select name='planning_end'>";
 	for ($i=0;$i<=24;$i++) echo "<option value='$i' ".($plan_end[0]==$i?" selected ":"").">$i</option>";
 	echo "</select>";
-	
+
+
+	echo "</td><td align='center'>".$lang["setup"][148]."</td><td>";
+	echo "<select name='time_step'>";
+	$steps=array(5,10,15,20,30,60);
+	foreach ($steps as $step){
+		echo "<option value='$step'".($cfg_glpi["time_step"]==$step?" selected ":"").">$step</option>";
+	}
+	echo "</select>&nbsp;".$lang["job"][22];
 	echo "</td></tr>";
-	
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][114]."</td><td>";
+
+
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][118]." </td><td colspan='3' align='center'>";
+	echo "<textarea cols='70' rows='4' name='text_login' >";
+	echo $cfg_glpi["text_login"];
+	echo "</textarea>";
+	echo "</td></tr>";
+
+
+
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["title"][24]."</strong></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][110]." </td><td>";
+	dropdownYesNoInt("jobs_at_login",$cfg_glpi["jobs_at_login"]);
+	echo " </td><td colspan='2'>&nbsp;</td></tr>";
+
+
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][114]."</td><td colspan='3'>";
 	echo "<table><tr>";
 	echo "<td bgcolor='".$cfg_glpi["priority_1"]."'>1:<input type=\"text\" name=\"priority_1\" size='7' value=\"".$cfg_glpi["priority_1"]."\"></td>";
 	echo "<td bgcolor='".$cfg_glpi["priority_2"]."'>2:<input type=\"text\" name=\"priority_2\" size='7' value=\"".$cfg_glpi["priority_2"]."\"></td>";
@@ -1189,35 +1236,20 @@ function showFormConfigDisplay($target){
 	echo "</tr></table>";
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][128]." </td><td><select name=\"dateformat\">";
-	echo "<option value=\"0\"";  if($cfg_glpi["dateformat"]==0){ echo " selected";} echo ">YYYY-MM-DD</option>";
-	echo "<option value=\"1\"";  if($cfg_glpi["dateformat"]==1){ echo " selected";} echo ">DD-MM-YYYY</option>";
-	echo "</select></td></tr>";
-
-
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][117]." </td><td>";
-	dropdownYesNoInt("public_faq",$cfg_glpi["public_faq"]);
-	echo " </td></tr>";
-
-	$dp_limit=$cfg_glpi["dropdown_limit"];
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][131]."</td><td>";
-	echo "<select name='dropdown_limit'>";
-	for ($i=20;$i<=100;$i++) echo "<option value='$i'".($dp_limit==$i?" selected ":"").">$i</option>";
-	echo "</select>";
-
-	echo "</td></tr>";
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["setup"][147]."</strong></td></tr>";	
 
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][120]." </td><td>";
 	dropdownYesNoInt("use_ajax",$cfg_glpi["use_ajax"]);
-	echo "</td></tr>";
+	echo "</td>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][127]." </td><td>";
+	echo "<td align='center'>".$lang["setup"][127]." </td><td>";
 	dropdownYesNoInt("ajax_autocompletion",$cfg_glpi["ajax_autocompletion"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $cfg_glpi["ajax_wildcard"] ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][122]."</td><td>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $cfg_glpi["ajax_wildcard"] ."\"></td>";
+
+	echo "<td align='center'>".$lang["setup"][122]."</td><td>";
 	echo "<select name='dropdown_max'>";
 	$dropdown_max=$cfg_glpi["dropdown_max"];
 	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($dropdown_max==$i?" selected ":"").">$i</option>";
@@ -1229,23 +1261,9 @@ function showFormConfigDisplay($target){
 	$ajax_limit_count=$cfg_glpi["ajax_limit_count"];
 	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($ajax_limit_count==$i?" selected ":"").">$i</option>";
 	echo "</select>";
-	echo "</td></tr>";
+	echo "</td><td colspan='2'>&nbsp;</td></tr>";
 	
-	echo "<tr class='tab_bg_2'><td align='center'> ".$lang["setup"][118]." </td><td>";
-	echo "<textarea cols='35' rows='4' name='text_login' >";
-	echo $cfg_glpi["text_login"];
-	echo "</textarea>";
-	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][129]." </td><td>";
-	dropdownYesNoInt("view_ID",$cfg_glpi["view_ID"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][130]." </td><td><select name=\"nextprev_item\">";
-	$nextprev_item=$cfg_glpi["nextprev_item"];
-	echo "<option value=\"ID\"";  if($nextprev_item=="ID"){ echo " selected";} echo ">".$lang["common"][2]." </option>";
-	echo "<option value=\"name\"";  if($nextprev_item=="name"){ echo " selected";} echo ">".$lang["common"][16]."</option>";
-	echo "</select></td></tr>";
 		
 	echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confdisplay\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";

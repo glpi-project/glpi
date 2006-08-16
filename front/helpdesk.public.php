@@ -90,18 +90,22 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 	checkRight("reservation_helpdesk","1");
 	$rr=new ReservationResa();
 	if (isset($_POST["edit_resa"])){
+
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
-		$_POST["begin"]=date("Y-m-d H:i:00",mktime($_POST["begin_hour"],$_POST["begin_min"],0,$begin_month,$begin_day,$begin_year));
-		$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
+		list($begin_hour,$begin_min)=split(":",$_POST["begin_hour"]);
+		list($end_hour,$end_min)=split(":",$_POST["end_hour"]);
+		$_POST["begin"]=date("Y-m-d H:i:00",mktime($begin_hour,$begin_min,0,$begin_month,$begin_day,$begin_year));
+		$_POST["end"]=date("Y-m-d H:i:00",mktime($end_hour,$end_min,0,$end_month,$end_day,$end_year));
+		
 		unset($_POST["begin_date"]);unset($_POST["begin_hour"]);unset($_POST["begin_min"]);
 		unset($_POST["end_date"]);unset($_POST["end_hour"]);unset($_POST["end_min"]);
 		$item=$_POST["id_item"];
 		unset($_POST["edit_resa"]);unset($_POST["id_item"]);
-		if ($_SESSION["glpiID"]==$_POST["id_user"]) // test Sécurité
+		if ($_SESSION["glpiID"]==$_POST["id_user"]) 
 		if ($rr->update($_POST,$_SERVER["PHP_SELF"],$item))
 			glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa&ID=$item&mois_courant=$begin_month&annee_courante=$begin_year");
-		else exit();			
+		else exit();
 	}
 
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
@@ -136,8 +140,10 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		for ($i=1;$i<=$times&&$ok;$i++){
 			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
 			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
-			if ($_SESSION["glpiID"]==$_POST["id_user"]) 
-			$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
+			if ($_SESSION["glpiID"]==$_POST["id_user"]) {
+				unset($rr->fields["ID"]);
+				$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
+			}
 
 		}
 		// Positionnement du calendrier au mois de debut
