@@ -169,7 +169,20 @@ class Printer  extends CommonDBTM {
 
 
 	function cleanDBonPurge($ID) {
-		global $db;
+		global $db,$cfg_glpi;
+
+		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".PRINTER_TYPE."')";
+		$result = $db->query($query);
+
+		if ($db->numrows($result))
+		while ($data=$db->fetch_array($result)) {
+			if ($cfg_glpi["keep_tracking_on_delete"]==1){
+				$query = "UPDATE glpi_tracking SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
+				$db->query($query);
+			} else $job->delete(array("ID"=>$data["ID"]));
+		}
+
+
 		$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".PRINTER_TYPE."')";
 		$result = $db->query($query);
 		while ($data = $db->fetch_array($result)){
@@ -192,17 +205,6 @@ class Printer  extends CommonDBTM {
 			
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".PRINTER_TYPE."')";
 		$result = $db->query($query);
-
-		$job=new Job;
-
-		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".PRINTER_TYPE."')";
-		$result = $db->query($query);
-		$number = $db->numrows($result);
-		$i=0;
-		while ($i < $number) {
- 			$job->deleteFromDB($db->result($result,$i,"ID"));
-			$i++;
-		}
 
 		$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".PRINTER_TYPE."')";
 		$result = $db->query($query);

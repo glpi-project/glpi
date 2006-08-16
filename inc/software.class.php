@@ -118,7 +118,18 @@ class Software  extends CommonDBTM {
 	
 	function cleanDBonPurge($ID) {
 
-		global $db;
+		global $db,$cfg_glpi;
+
+		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".SOFTWARE_TYPE."')";
+		$result = $db->query($query);
+
+		if ($db->numrows($result))
+		while ($data=$db->fetch_array($result)) {
+			if ($cfg_glpi["keep_tracking_on_delete"]==1){
+				$query = "UPDATE glpi_tracking SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
+				$db->query($query);
+			} else $job->delete(array("ID"=>$data["ID"]));
+		}
 		
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
 		$result = $db->query($query);
@@ -126,27 +137,16 @@ class Software  extends CommonDBTM {
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
 		$result = $db->query($query);
 
-		$job=new Job;
-
-		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".SOFTWARE_TYPE."')";
-		$result = $db->query($query);
-		$number = $db->numrows($result);
-		$i=0;
-		while ($i < $number) {
-			$job->deleteFromDB($db->result($result,$i,"ID"));
-			$i++;
-		}
-
 		// Delete all Licenses
 		$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = '$ID')";
 	
 		if ($result2 = $db->query($query2)) {
-			$i=0;
-			while ($i < $db->numrows($result2)) {
-				$lID = $db->result($result2,$i,"ID");
+			if ($db->numrows($result2)){
 				$lic = new License;
-				$lic->deleteFromDB($lID);
-				$i++;
+
+				while ($data= $db->fetch_array($result2)) {
+					$lic->delete(array("ID"=>$data["ID"]));
+				}
 			}
 		}
 	}
