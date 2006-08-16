@@ -424,6 +424,30 @@ if(FieldExists("glpi_config", "last_update_check")) {
 }
 
 
+if(!FieldExists("glpi_config", "keep_tracking_on_delete")) {
+	$query = "ALTER TABLE `glpi_config` ADD `keep_tracking_on_delete` INT DEFAULT '1'";
+	$db->query($query) or die("0.68.1 drop glpi_config.keep_tracking_on_delete ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config", "show_admin_doc")) {
+	$query = "ALTER TABLE `glpi_config` ADD `show_admin_doc` INT DEFAULT '0' ";
+	$db->query($query) or die("0.68.1 drop glpi_config.show_admin_doc ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_config", "time_step")) {
+	$query = "ALTER TABLE `glpi_config` ADD `time_step` INT DEFAULT '5' ";
+	$db->query($query) or die("0.68.1 drop glpi_config.time_step ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_ocs_config", "cron_sync_number")) {
+	$query = "ALTER TABLE `glpi_ocs_config` ADD `cron_sync_number` INT DEFAULT '1' ";
+	$db->query($query) or die("0.68.1 drop glpi_ocs_config.cron_sync_number ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_profiles", "show_group_hardware")) {
+	$query = "ALTER TABLE `glpi_profiles` ADD `show_group_hardware` char(1) DEFAULT '0' ";
+	$db->query($query) or die("0.68.1 drop glpi_profiles.show_group_hardware ".$lang["update"][90].$db->error());
+}
 
 } // fin 0.68 #####################################################################################
 
