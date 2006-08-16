@@ -447,9 +447,9 @@ if(!FieldExists("glpi_ocs_config", "cron_sync_number")) {
 	$db->query($query) or die("0.68.1 drop glpi_ocs_config.cron_sync_number ".$lang["update"][90].$db->error());
 }
 
-if(!FieldExists("glpi_profiles", "show_group_hardware")) {
-	$query = "ALTER TABLE `glpi_profiles` ADD `show_group_hardware` char(1) DEFAULT '0' ";
-	$db->query($query) or die("0.68.1 drop glpi_profiles.show_group_hardware ".$lang["update"][90].$db->error());
+if(!FieldExists("glpi_profiles", "show_group_ticket")) {
+	$query = "ALTER TABLE `glpi_profiles` ADD `show_group_ticket` char(1) DEFAULT '0' ";
+	$db->query($query) or die("0.68.1 drop glpi_profiles.show_group_ticket ".$lang["update"][90].$db->error());
 }
 
 } // fin 0.68 #####################################################################################

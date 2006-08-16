@@ -1064,7 +1064,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 	// group = 0 : not use
-	// group = -1 : groups of the author
+	// group = -1 : groups of the author if session variable OK
 	// group > 0 : specific group
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
@@ -1206,20 +1206,19 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 
 	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
-	else if ($group==-1&&$author!=0){
+	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
-		$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='$author'";
-		$result_gp=$db->query($query_gp);
-		if ($db->numrows($result_gp)){
+		if (count($_SESSION["glpigroups"])){
 			$where.=" OR ( ";
-			for ($i=0;$i<$db->numrows($result_gp);$i++){
+			$i=0;
+			foreach ($_SESSION["glpigroups"] as $gp){
 				if ($i>0) $where.=" OR ";
-				$where.=" glpi_tracking.FK_group = '".$db->result($result_gp,$i,"FK_groups")."' ";
+				$where.=" glpi_tracking.FK_group = '$gp' ";
+				$i++;
 			}
-			$where.=" ) ";
+			$where.=")";
 		}
 	}
-
 
 	if ($contains2!=""){
 		$SEARCH2=makeTextSearch($contains2);

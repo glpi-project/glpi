@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-08-16 16:00
+#GLPI Dump database on 2006-08-16 16:37
 
 ### Dump table glpi_alerts
 
@@ -1188,7 +1188,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-16 16:00:33','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-16 16:37:26','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1790,7 +1790,7 @@ CREATE TABLE `glpi_profiles` (
   `password_update` char(1) default NULL,
   `helpdesk_hardware` tinyint(2) NOT NULL default '0',
   `helpdesk_hardware_type` int(11) NOT NULL default '0',
-  `show_group_hardware` char(1) default NULL,
+  `show_group_ticket` char(1) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `interface` (`interface`)
 ) ENGINE=MyISAM ;

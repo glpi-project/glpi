@@ -143,7 +143,7 @@ class Profile extends CommonDBTM{
 	}
 	// Unset unused rights for helpdesk
 	function cleanProfile(){
-		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type");
+		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket");
 		if ($this->fields["interface"]=="helpdesk"){
 			foreach($this->fields as $key=>$val){
 				if (!in_array($key,$helpdesk))
@@ -239,6 +239,18 @@ class Profile extends CommonDBTM{
 		echo "<th colspan='4'>".$lang["profiles"][3].":&nbsp;&nbsp;".$lang["profiles"][13].":";
 		dropdownYesNoInt("is_default",$this->fields["is_default"]);
 		echo "</th></tr>";
+
+		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$lang["profiles"][25]."</strong></td></tr>";
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$lang["profiles"][24].":</td><td>";
+		dropdownYesNoInt("password_update",$this->fields["password_update"]);
+		echo "</td>";
+		echo "<td colspan='2'>&nbsp;";
+		echo "</td>";
+		echo "</tr>";
+
+
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["title"][24]."</strong></td></tr>";
 	
 		echo "<tr class='tab_bg_2'>";
@@ -253,8 +265,8 @@ class Profile extends CommonDBTM{
 		echo "<td>".$lang["profiles"][9].":</td><td>";
 		dropdownYesNoInt("observe_ticket",$this->fields["observe_ticket"]);
 		echo "</td>";
-		echo "<td>".$lang["profiles"][24].":</td><td>";
-		dropdownYesNoInt("password_update",$this->fields["password_update"]);
+		echo "<td>".$lang["profiles"][26].":</td><td>";
+		dropdownYesNoInt("show_group_ticket",$this->fields["show_group_ticket"]);
 		echo "</td>";
 		echo "</tr>";
 		
@@ -450,7 +462,9 @@ class Profile extends CommonDBTM{
 		dropdownYesNoInt("show_all_planning",$this->fields["show_all_planning"]);
 		echo "</td>";
 
-		echo "<td colspan='2'>&nbsp;</td></tr>";
+		echo "<td>".$lang["profiles"][26]."</td><td>";
+		dropdownYesNoInt("show_group_ticket",$this->fields["show_group_ticket"]);
+		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 
