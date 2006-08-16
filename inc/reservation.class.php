@@ -238,6 +238,7 @@ class ReservationResa extends CommonDBTM {
 				$x++;
 			}
 		}
+
 		$this->fields["begin"]=$_POST["begin"];
 		$this->fields["end"]=$_POST["end"];
 		if (!$this->test_valid_date()){
@@ -271,8 +272,8 @@ class ReservationResa extends CommonDBTM {
    			$this->fields["id_item"] = $input["id_item"];
    			$this->fields["comment"] = $input["comment"];
    			$this->fields["id_user"] = $input["id_user"];
-   			$this->fields["begin"] = $input["begin_date"]." ".sprintf("%02d",$input["begin_hour"]).":".sprintf("%02d",$input["begin_min"]).":00";
-   			$this->fields["end"] = $input["end_date"]." ".sprintf("%02d",$input["end_hour"]).":".sprintf("%02d",$input["end_min"]).":00";
+   			$this->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":00";
+			$this->fields["end"] = $input["end_date"]." ".$input["end_hour"].":00";
 
 			if (!$this->test_valid_date()){
 				$this->displayError("date",$input["id_item"],$target);

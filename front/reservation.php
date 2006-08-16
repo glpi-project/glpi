@@ -43,6 +43,7 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
+
 $ri=new ReservationItem();
 $rr=new ReservationResa();
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
@@ -52,8 +53,10 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
-		$_POST["begin"]=date("Y-m-d H:i:00",mktime($_POST["begin_hour"],$_POST["begin_min"],0,$begin_month,$begin_day,$begin_year));
-		$_POST["end"]=date("Y-m-d H:i:00",mktime($_POST["end_hour"],$_POST["end_min"],0,$end_month,$end_day,$end_year));
+		list($begin_hour,$begin_min)=split(":",$_POST["begin_hour"]);
+		list($end_hour,$end_min)=split(":",$_POST["end_hour"]);
+		$_POST["begin"]=date("Y-m-d H:i:00",mktime($begin_hour,$begin_min,0,$begin_month,$begin_day,$begin_year));
+		$_POST["end"]=date("Y-m-d H:i:00",mktime($end_hour,$end_min,0,$end_month,$end_day,$end_year));
 		
 		unset($_POST["begin_date"]);unset($_POST["begin_hour"]);unset($_POST["begin_min"]);
 		unset($_POST["end_date"]);unset($_POST["end_hour"]);unset($_POST["end_min"]);
@@ -92,12 +95,16 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
 		$to_add=1;
+
 		if ($_POST["periodicity"]=="week") $to_add=7;
 		for ($i=1;$i<=$times&&$ok;$i++){
 			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
 			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
-			if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) 
-			$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
+		
+			if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) {
+				unset($rr->fields["ID"]);
+				$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
+			}
 
 		}
 		// Positionnement du calendrier au mois de debut

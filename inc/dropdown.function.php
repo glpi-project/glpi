@@ -1218,42 +1218,41 @@ function dropdownContractAlerting($myname,$value){
 *@return Nothing (display)
 *
 **/
-function dropdownHours($name,$value,$withhalf=0,$withquarter=0){
+function dropdownHours($name,$value,$limit_planning=0){
+	global $cfg_glpi;
 
-	echo "<select name='$name'>";
-	for ($i=0;$i<10;$i++){
-		$tmp="0".$i;
-		$val=$tmp.":00";
-		echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-		if ($withquarter){
-			$val=$tmp.":15";
-			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-		}
-		if ($withhalf){
-			$val=$tmp.":30";
-			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-		}
-		if ($withquarter){
-			$val=$tmp.":45";
-			echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
+	$begin=0;
+	$end=24;
+	$step=$cfg_glpi["time_step"];
+	// Check if the $step is Ok for the $value field
+	$split=split(":",$value);
+	// Valid value XX:YY ou XX:YY:ZZ
+	if (count($split)==2||count($split)==3){
+		$min=$split[1];
+		// Problem
+		if (($min%$step)!=0){
+			// set minimum step
+			$step=5;
 		}
 	}
-	for ($i=10;$i<=24;$i++){
-		$val=$i.":00";
-		echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-		if ($i!=24){
-			if ($withquarter){
-				$val=$i.":15";
-				echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-			}
-			if ($withhalf){
-				$val=$i.":30";
-				echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-			}
-			if ($withquarter){
-				$val=$i.":45";
-				echo "<option value='$val' ".($value==$val.":00"?" selected ":"").">$val</option>";
-			}	
+
+	if ($limit_planning){
+		$plan_begin=split(":",$cfg_glpi["planning_begin"]);
+		$plan_end=split(":",$cfg_glpi["planning_end"]);
+		$begin=(int) $plan_begin[0];
+		$end=(int) $plan_end[0];
+	}
+	echo "<select name='$name'>";
+	for ($i=$begin;$i<=$end;$i++){
+		if ($i<10)
+			$tmp="0".$i;
+		else $tmp=$i;
+		
+		for ($j=0;$j<60;$j+=$step){
+			if ($j<10) $val=$tmp.":0$j";
+			else $val=$tmp.":$j";
+			
+			echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
 		}
 	}
 	echo "</select>";	

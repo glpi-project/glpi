@@ -1221,6 +1221,8 @@ $lang["setup"][143]="Assistance";
 $lang["setup"][144]="Outils";
 $lang["setup"][145]="Os";
 $lang["setup"][146]="Réseau";
+$lang["setup"][147]="Ajax";
+$lang["setup"][148]="Pas pour les horaires";
 
 
 $lang["setup"][150]="Sources d'authentification externes";

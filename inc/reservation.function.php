@@ -443,10 +443,8 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	
 	$begin_date=date("Y-m-d",$begin);
 	$end_date=date("Y-m-d",$end);
-	$begin_hour=date("H",$begin);
-	$end_hour=date("H",$end);
-	$begin_min=date("i",$begin);
-	$end_min=date("i",$end);
+	$begin_hour=date("H:i",$begin);
+	$end_hour=date("H:i",$end);
 
 	echo "<div align='center'><form method='post' name=form action=\"$target\">";
 	
@@ -485,21 +483,8 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
 	echo "<td>";
-	echo "<select name='begin_hour'>";
-	for ($i=0;$i<24;$i++){
-	echo "<option value='$i'";
-	if ($i==$begin_hour) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
-	echo ":";
-	echo "<select name='begin_min'>";
-	for ($i=0;$i<60;$i+=5){
-	echo "<option value='$i'";
-	if ($i==$begin_min) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
+
+	dropdownHours("begin_hour",$begin_hour,1);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
@@ -508,21 +493,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
 	echo "<td>";
-	echo "<select name='end_hour'>";
-	for ($i=0;$i<24;$i++){
-	echo "<option value='$i'";
-	if ($i==$end_hour) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
-	echo ":";
-	echo "<select name='end_min'>";
-	for ($i=0;$i<60;$i+=5){
-	echo "<option value='$i'";
-	if ($i==$end_min) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
+	dropdownHours("end_hour",$end_hour,1);
 	echo "</td></tr>";
 
 	if ($resaID==-1){
