@@ -1011,6 +1011,7 @@ $lang["profiles"][22]="Profil";
 $lang["profiles"][23]="Administration des réservations";
 $lang["profiles"][24]="Mise à jour de mot de passe";
 $lang["profiles"][25]="Général";
+$lang["profiles"][26]="Voir les tickets de mes groupes";
 
 $lang["reminder"][0]="Notes personnelles";
 $lang["reminder"][1]="Notes publiques";

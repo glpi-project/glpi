@@ -483,7 +483,7 @@ global $cfg_glpi;
 	// Init session for this user
 	function initSession()
 	{
-		global $cfg_glpi;
+		global $cfg_glpi,$db;
 
 		if(!session_id()) session_start();
 		$_SESSION["glpiID"] = $this->user->fields['ID'];
@@ -503,6 +503,15 @@ global $cfg_glpi;
 		$prof->getFromDBForUser($_SESSION["glpiID"]);
 		$prof->cleanProfile();
 		$_SESSION["glpiprofile"]=$prof->fields;
+		$_SESSION["glpigroups"]=array();
+		$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='".$this->user->fields['ID']."'";
+		$result_gp=$db->query($query_gp);
+		if ($db->numrows($result_gp)){
+			while ($data=$db->fetch_array($result_gp)){
+				$_SESSION["glpigroups"][]=$data["FK_groups"];
+			}
+		}
+
 	}
 
 	function destroySession()
