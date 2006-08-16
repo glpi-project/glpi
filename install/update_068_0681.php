@@ -439,6 +439,9 @@ if(!FieldExists("glpi_config", "time_step")) {
 	$db->query($query) or die("0.68.1 drop glpi_config.time_step ".$lang["update"][90].$db->error());
 }
 
+$query="UPDATE glpi_config SET time_step='5', show_admin_doc='0', keep_tracking_on_delete='0';";
+$db->query($query) or die("0.68.1 update glpi_config data ".$lang["update"][90].$db->error());
+
 if(!FieldExists("glpi_ocs_config", "cron_sync_number")) {
 	$query = "ALTER TABLE `glpi_ocs_config` ADD `cron_sync_number` INT DEFAULT '1' ";
 	$db->query($query) or die("0.68.1 drop glpi_ocs_config.cron_sync_number ".$lang["update"][90].$db->error());

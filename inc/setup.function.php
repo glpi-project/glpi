@@ -1100,7 +1100,9 @@ function showFormConfigGen($target){
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][405]."</td><td>";
 	dropdownYesNoInt("followup_on_update_ticket",$cfg_glpi["followup_on_update_ticket"]);
-	echo "</td><td colspan='2'>&nbsp;</td></tr>";
+	echo "</td><td align='center'>".$lang["tracking"][37]."</td><td>";
+	dropdownYesNoInt("keep_tracking_on_delete",$cfg_glpi["keep_tracking_on_delete"]);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$lang["common"][41]."</strong></td></tr>";
 
