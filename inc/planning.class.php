@@ -48,6 +48,15 @@ class PlanningTracking extends CommonDBTM {
 
 		$this->getFromDB($input["ID"]);
 
+		list($begin_year,$begin_month,$begin_day)=split("-",$input["begin_date"]);
+		list($end_year,$end_month,$end_day)=split("-",$input["end_date"]);
+
+		list($begin_hour,$begin_min)=split(":",$input["begin_hour"]);
+		list($end_hour,$end_min)=split(":",$input["end_hour"]);
+		$input["begin"]=date("Y-m-d H:i:00",mktime($begin_hour,$begin_min,0,$begin_month,$begin_day,$begin_year));
+		$input["end"]=date("Y-m-d H:i:00",mktime($end_hour,$end_min,0,$end_month,$end_day,$end_year));
+
+
 	// Get all flags and fill with 0 if unchecked in form
 	foreach ($this->fields as $key => $val) {
 		if (eregi("\.*flag\.*",$key)) {
@@ -66,8 +75,6 @@ class PlanningTracking extends CommonDBTM {
 			$x++;
 		}
 	}
-	$this->fields["begin"]=$_POST["begin"];
-	$this->fields["end"]=$_POST["end"];
 
 	if (!$this->test_valid_date()){
 		$this->displayError("date",$item,$target);
@@ -124,8 +131,8 @@ function add($input,$target,$nomail=0){
   // set new date.
    $this->fields["id_followup"] = $input["id_followup"];
    $this->fields["id_assign"] = $input["id_assign"];
-   $this->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":".$input["begin_min"].":00";
-   $this->fields["end"] = $input["end_date"]." ".$input["end_hour"].":".$input["end_min"].":00";
+   $this->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":00";
+   $this->fields["end"] = $input["end_date"]." ".$input["end_hour"].":00";
 
 //	if (!empty($target)){
 		if (!$this->test_valid_date()){

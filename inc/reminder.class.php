@@ -54,8 +54,8 @@ class Reminder extends CommonDBTM {
 			$input['_plan']=$input['plan'];
 			unset($input['plan']);
 			$input['rv']="1";
-			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":".$input['_plan']["begin_min"].":00";
-  			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":".$input['_plan']["end_min"].":00";
+			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":00";
+  			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
 		}	
 
 		
@@ -75,8 +75,8 @@ class Reminder extends CommonDBTM {
 			$input['_plan']=$input['plan'];
 			unset($input['plan']);
 			$input['rv']="1";
-			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":".$input['_plan']["begin_min"].":00";
-  			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":".$input['_plan']["end_min"].":00";
+			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":00";
+  			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
 		}	
 
 		

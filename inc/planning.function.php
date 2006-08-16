@@ -99,10 +99,8 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	
 	$begin_date=date("Y-m-d",$begin);
 	$end_date=date("Y-m-d",$end);
-	$begin_hour=date("H",$begin);
-	$end_hour=date("H",$end);
-	$begin_min=date("i",$begin);
-	$end_min=date("i",$end);
+	$begin_hour=date("H:i",$begin);
+	$end_hour=date("H:i",$end);
 
 	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
 	if ($planID!=-1)
@@ -135,77 +133,47 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "</td></tr>";
 
 	if (!haveRight("comment_all_ticket","1"))
-	echo "<input type='hidden' name='id_assign' value='".$_SESSION["glpiID"]."'>";
+		echo "<input type='hidden' name='id_assign' value='".$_SESSION["glpiID"]."'>";
 	else {
-	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
-	echo "<td>";
-	dropdownUsers("id_assign",$planning->fields["id_assign"],"own_ticket",-1);
-
-	echo "</td></tr>";
-	
+		echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
+		echo "<td>";
+		dropdownUsers("id_assign",$planning->fields["id_assign"],"own_ticket",-1);
+		echo "</td></tr>";
 	}
 
 
 	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
 	showCalendarForm("form","begin_date",$begin_date);
-    echo "</td></tr>";
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
 	echo "<td>";
-	echo "<select name='begin_hour'>";
-	for ($i=$global_begin;$i<$global_end;$i++){
-	echo "<option value='$i'";
-	if ($i==$begin_hour) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
-	echo ":";
-	echo "<select name='begin_min'>";
-	for ($i=0;$i<60;$i+=5){
-	echo "<option value='$i'";
-	if ($i==$begin_min) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
+	dropdownHours("begin_hour",$begin_hour,1);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
 	showCalendarForm("form","end_date",$end_date);
-    echo "</td></tr>";
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
 	echo "<td>";
-	echo "<select name='end_hour'>";
-	for ($i=$global_begin;$i<$global_end;$i++){
-	echo "<option value='$i'";
-	if ($i==$end_hour) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
-	echo ":";
-	echo "<select name='end_min'>";
-	for ($i=0;$i<60;$i+=5){
-	echo "<option value='$i'";
-	if ($i==$end_min) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
+	dropdownHours("end_hour",$end_hour,1);
 	echo "</td></tr>";
 
 
 
 	if ($planID==-1){
-	echo "<tr class='tab_bg_2'>";
-	echo "<td colspan='2'  valign='top' align='center'>";
-	echo "<input type='submit' name='add_planning' value=\"".$lang["buttons"][8]."\" class='submit'>";
-	echo "</td></tr>\n";
+		echo "<tr class='tab_bg_2'>";
+		echo "<td colspan='2'  valign='top' align='center'>";
+		echo "<input type='submit' name='add_planning' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</td></tr>\n";
 	} else {
-	echo "<tr class='tab_bg_2'>";
-	echo "<td valign='top' align='center'>";
-	echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	echo "</td><td valign='top' align='center'>";
-	echo "<input type='submit' name='edit_planning' value=\"".$lang["buttons"][14]."\" class='submit'>";
-	echo "</td></tr>\n";
+		echo "<tr class='tab_bg_2'>";
+		echo "<td valign='top' align='center'>";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "</td><td valign='top' align='center'>";
+		echo "<input type='submit' name='edit_planning' value=\"".$lang["buttons"][14]."\" class='submit'>";
+		echo "</td></tr>\n";
 	}
 
 	echo "</table>";

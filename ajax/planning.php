@@ -59,10 +59,9 @@
 	
 	$begin_date=date("Y-m-d",$begin);
 	$end_date=date("Y-m-d",$end);
-	$begin_hour=date("H",$begin);
-	$end_hour=date("H",$end);
-	$begin_min=date("i",$begin);
-	$end_min=date("i",$end);
+	$begin_hour=date("H:i",$begin);
+	$end_hour=date("H:i",$end);
+
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	if (isset($_GET["author"])){
 		echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
@@ -77,45 +76,18 @@
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
 	echo "<td>";
-	echo "<select name='plan[begin_hour]'>";
-	for ($i=$global_begin;$i<$global_end;$i++){
-	echo "<option value='$i'";
-	if ($i==$begin_hour) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
-	echo ":";
-	echo "<select name='plan[begin_min]'>";
-	for ($i=0;$i<60;$i+=5){
-	echo "<option value='$i'";
-	if ($i==$begin_min) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
+	dropdownHours("plan[begin_hour]",$begin_hour,1);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
 	showCalendarForm($_GET['form'],"plan[end_date]",$end_date);
-    echo "</td></tr>";
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
 	echo "<td>";
-	echo "<select name='plan[end_hour]'>";
-	for ($i=$global_begin;$i<$global_end;$i++){
-	echo "<option value='$i'";
-	if ($i==$end_hour) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
-	echo ":";
-	echo "<select name='plan[end_min]'>";
-	for ($i=0;$i<60;$i+=5){
-	echo "<option value='$i'";
-	if ($i==$end_min) echo " selected ";
-	echo ">$i</option>";
-	}
-	echo "</select>";
+	dropdownHours("plan[end_hour]",$end_hour,1);
 	echo "</td></tr>";
+
 	echo "</table>";
 	
 
