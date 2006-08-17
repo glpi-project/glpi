@@ -105,11 +105,11 @@ if (!isset($AJAX_INCLUDE)){
 	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 		do_hook("config");
 
-		if (isset($_SESSION["glpilanguage"])&&count($_SESSION["glpi_plugins"]))
+		if (count($_SESSION["glpi_plugins"]))
 		foreach ($_SESSION["glpi_plugins"] as $name) {
 			use_plugin($name);
 		
-			if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
+			if (isset($_SESSION["glpilanguage"])&&file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
 				include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
 			else if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
 				include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
