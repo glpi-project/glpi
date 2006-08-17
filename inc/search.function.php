@@ -430,7 +430,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result))
-			array_push($toview,$data["num"]);
+			if (isset($SEARCH_OPTION[$type][$data["num"]]))
+				array_push($toview,$data["num"]);
 	}
 	
 	// Add searched items
