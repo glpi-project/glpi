@@ -1302,6 +1302,15 @@ $lang["setup"][250]="Affichage recherche par défaut ";
 $lang["setup"][251]="Sélectionnez une rubrique ";
 $lang["setup"][252]="Sélectionnez les éléments à afficher par défaut ";
 
+$lang["setup"][253]="Filtre des groupes ";
+$lang["setup"][254]="Type de recherche";
+$lang["setup"][255]="Attribut indiquant l'appartenance à un groupe ";
+
+$lang["setup"][256]="Dans les utilisateurs";
+$lang["setup"][257]="Dans les groupes";
+$lang["setup"][258]="Utilisateurs & groupes";
+$lang["setup"][259]="Appartenance à des groupes";
+
 $lang["setup"][300]="Vérifier si une nouvelle version est disponible";
 $lang["setup"][301]="Une nouvelle version est disponible :";
 $lang["setup"][302]="Elle est disponible sur le site de GLPI : <a href='http://glpi-project.org' target='_blank'>http://glpi-project.org</a>";

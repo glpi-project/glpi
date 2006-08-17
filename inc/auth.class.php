@@ -158,7 +158,12 @@ class Identification
                      $info = ldap_get_entries ( $ds, $sr );
 		     if ( $info["count"] == 1 )
                      {
-                        $rv=true;
+			//Hook to implement to restrict access by checking the ldap directory
+			if (do_hook_function("restrict_ldap_auth",$info))
+				$rv=true;
+			else
+				$this->err .= "Restricted ldap authentication failed<br>\n";
+
                      }
                      else
                      {
@@ -206,6 +211,7 @@ class Identification
   $ldap_login_attr = $cfg_glpi["ldap_login"];
   $ldap_dn ="";
   error_reporting(16);
+
   $ds = ldap_connect ($host,$port);
 
   if (!$ds)
@@ -223,6 +229,7 @@ if ($cfg_glpi["ldap_use_tls"]){
 		return false;
 	} 
 }
+
   if ($rdn=="") $r = ldap_bind ( $ds);
   else $r = ldap_bind ( $ds,$rdn,$rpass);
 
@@ -308,7 +315,11 @@ if ($cfg_glpi["ldap_use_tls"]){
                      $info = ldap_get_entries ( $ds, $sr );
                      if ( $info["count"] == 1 )
                      {
-                        $rv=true;
+			//Hook to implement to restrict access by checking the ldap directory
+			if (do_hook_function("restrict_ldap_auth",$info))
+				$rv=true;
+			else
+				$this->err .= "Restricted ldap authentication failed<br>\n";
                      }
                      else
                      {
@@ -528,6 +539,7 @@ global $cfg_glpi;
 	{
 		return $this->user;
 	}
+
 }
 
 
