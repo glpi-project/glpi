@@ -110,6 +110,7 @@ $identificat->err=$lang["login"][8];
 	   	$found_dn=false;
    		$auth_succeded=0;
    		$found_dn=$identificat->ldap_get_dn($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
+
 	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
 		    $auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
@@ -201,15 +202,6 @@ if ( ! $auth_succeded ) {
 
 // now we can continue with the process...
 $identificat->initSession();
-
-$dirplug=$phproot."/plugins";
-$dh  = opendir($dirplug);
-while (false !== ($filename = readdir($dh))) {
-	if ($filename!=".svn"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename)){
-		$_SESSION["glpi_plugins"][]=$filename;
-	}
-}
-
 
 // GET THE IP OF THE CLIENT
 $ip = (getenv("HTTP_X_FORWARDED_FOR")

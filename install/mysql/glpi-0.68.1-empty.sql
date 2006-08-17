@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-08-16 16:37
+#GLPI Dump database on 2006-08-17 15:36
 
 ### Dump table glpi_alerts
 
@@ -232,10 +232,13 @@ CREATE TABLE `glpi_config` (
   `keep_tracking_on_delete` int(11) default NULL,
   `show_admin_doc` int(11) default NULL,
   `time_step` int(11) default NULL,
+  `ldap_group_condition` varchar(255) default NULL,
+  `ldap_search_for_groups` tinyint(4) NOT NULL default '0',
+  `ldap_field_group_member` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68.1','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5');
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68.1','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -1188,7 +1191,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-16 16:37:26','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-17 15:20:37','login','3','glpi IP connection : 127.0.0.1');
 
 ### Dump table glpi_followups
 

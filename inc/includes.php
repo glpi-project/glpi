@@ -76,7 +76,6 @@ if (!isset($AJAX_INCLUDE)){
 	include_once ($phproot . "/inc/mailing.class.php");
 	include_once ($phproot . "/inc/mailing.function.php");
 	include_once ($phproot . "/inc/report.function.php");
-//	include_once ($phproot . "/inc/search.function.php");
 	include_once ($phproot . "/inc/export.function.php");
 	include_once ($phproot . "/inc/log.function.php");
 	include_once ($phproot . "/inc/connection.function.php");
@@ -87,15 +86,6 @@ $db=new DB();
 
 
 // Security system
-/*if (get_magic_quotes_gpc()) {
-	if (isset($_POST)){
-		$_POST = array_map('stripslashes_deep', $_POST);
-	}
-	if (isset($_GET)){
-		$_GET = array_map('stripslashes_deep', $_GET);
-	}
-}  
- */
 if (isset($_POST)){
 	if (!get_magic_quotes_gpc())
 		$_POST = array_map('addslashes_deep', $_POST);
@@ -109,21 +99,25 @@ if (isset($_GET)){
 
 
 /* On startup, register all plugins configured for use. */
-if (!isset($AJAX_INCLUDE))
-if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
-	do_hook("config");
+if (!isset($AJAX_INCLUDE)){
+	if (isset($_SESSION["glpi_plugins"])) initPlugins();
 
-	foreach ($_SESSION["glpi_plugins"] as $name) {
-		use_plugin($name);
-	
-		if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
-			include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
-		else if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
-			include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
-		else if (file_exists($phproot . "/plugins/$name/locales/en_GB.php"))
-			include_once ($phproot . "/plugins/$name/locales/en_GB.php");
-		else if (file_exists($phproot . "/plugins/$name/locales/fr_FR.php"))
-			include_once ($phproot . "/plugins/$name/locales/fr_FR.php");
+	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
+		do_hook("config");
+
+		if (isset($_SESSION["glpilanguage"])&&count($_SESSION["glpi_plugins"]))
+		foreach ($_SESSION["glpi_plugins"] as $name) {
+			use_plugin($name);
+		
+			if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
+				include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
+			else if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
+				include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
+			else if (file_exists($phproot . "/plugins/$name/locales/en_GB.php"))
+				include_once ($phproot . "/plugins/$name/locales/en_GB.php");
+			else if (file_exists($phproot . "/plugins/$name/locales/fr_FR.php"))
+				include_once ($phproot . "/plugins/$name/locales/fr_FR.php");
+		}
 	}
 }
 

@@ -452,6 +452,17 @@ if(!FieldExists("glpi_profiles", "show_group_ticket")) {
 	$db->query($query) or die("0.68.1 drop glpi_profiles.show_group_ticket ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_config", "ldap_group_condition")) {
+	$query = "ALTER TABLE `glpi_config` ADD `ldap_group_condition` VARCHAR( 255 ) NULL ,
+ADD `ldap_search_for_groups` TINYINT NOT NULL DEFAULT '0',
+ADD `ldap_field_group_member` VARCHAR( 255 ) NULL ";
+	$db->query($query) or die("0.68.1 add glpi_config.ldap_*_groups ".$lang["update"][90].$db->error());
+}
+
+
+
+
+
 } // fin 0.68 #####################################################################################
 
 ?>

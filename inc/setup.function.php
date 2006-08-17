@@ -1412,6 +1412,24 @@ function showFormExtAuth($target) {
 			
 		}
 		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td align='center' colspan='4'>".$lang["setup"][259]."</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][254]."</td><td>";
+		$ldap_search_for_groups=$cfg_glpi["ldap_search_for_groups"];
+
+		echo "<select name='ldap_search_for_groups'>\n";
+			echo "<option value='0' ".(!$ldap_search_for_groups?" selected ":"").">".$lang["setup"][256]."</option>\n";
+			echo "<option value='1' ".($ldap_search_for_groups?" selected ":"").">".$lang["setup"][257]."</option>\n";
+			echo "<option value='2' ".($ldap_search_for_groups?" selected ":"").">".$lang["setup"][258]."</option>\n";
+			echo "</select>\n";
+		echo "</td>";
+		echo "<td align='center'>".$lang["setup"][253]."</td><td><input type=\"text\" name=\"ldap_group_condition\" value=\"". $cfg_glpi["ldap_group_condition"] ."\" ></td></tr>";
+
+		echo "<tr class='tab_bg_2'><td align='center'></td><td>";
+		echo "</td>";
+		echo "<td align='center'>".$lang["setup"][255]."</td><td><input type=\"text\" name=\"ldap_field_group_member\" value=\"". $cfg_glpi["ldap_field_group_member"] ."\" ></td></tr>";
+
 		
 		echo "<tr class='tab_bg_1'><td align='center' colspan='4'>".$lang["setup"][167]."</td></tr>";
 
