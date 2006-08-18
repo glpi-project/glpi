@@ -495,7 +495,7 @@ class Job extends CommonDBTM{
 						$fup->getfromDB($data['ID']);
 						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ]</strong><br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][37].":</span> ".$fup->getAuthorName()."<br>";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][3].":</span><br>".$fup->fields["contents"]."<br>";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][3].":</span><br>".nl2br($fup->fields["contents"])."<br>";
 						if ($fup->fields["realtime"]>0)
 							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."<br>";
 	
@@ -590,7 +590,7 @@ class Job extends CommonDBTM{
 			} else $message.=$lang["mailing"][100];
 			$message.= "<br>";
 			
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][3]."</span><br>".$this->fields["contents"]."<br><br>";	
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][3]."</span><br>".nl2br($this->fields["contents"])."<br><br>";	
 			
 		}else{ //text format
 			$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
