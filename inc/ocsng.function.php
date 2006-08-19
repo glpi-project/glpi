@@ -557,7 +557,7 @@ function getOcsConf($id) {
 *
 **/
 function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1) {
- 	global $dbocs,$lang;
+ 	global $dbocs,$lang,$db;
 	$query = "SELECT * 
 			FROM hardware 
 			WHERE ID='".$ocs_id."'";
@@ -581,6 +581,13 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
 		
 		if($cfg_ocs["import_general_contact"]&&!in_array("contact",$computer_updates)) {
 			$compupdate["contact"] = $line["USERID"];
+			$query="SELECT ID 
+					FROM glpi_users
+					WHERE name='".$line["USERID"]."';";
+			$result=$db->query($query);
+			if ($db->numrows($result)==1&&!in_array("FK_users",$computer_updates)){
+				$compupdate["FK_users"] = $db->result($result,0,0);
+			}
 		}
 		
 		if($cfg_ocs["import_general_name"]&&!in_array("name",$computer_updates)) {
