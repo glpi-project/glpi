@@ -454,34 +454,34 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 	$categoryID = $ki->fields["categoryID"];
 	$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
 	
-	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th>";
+	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 
-	echo "<div style='position: relative'><span><strong>".$lang["common"][36].": ".$fullcategoryname."</strong></span>";
-	echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
-		if($ki->fields["author"]){
-			echo $lang["common"][37]." : ";
-			echo ($linkauthor=="yes") ? "".getUserName($ki->fields["author"],"1")."" : "".getUserName($ki->fields["author"])."";
-			echo " | ";
-		}
-		if($ki->fields["date"]){
-			echo $lang["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
-		}	
-	echo "</span></div></th></tr>";
+	echo "<strong>".$lang["common"][36].": ".$fullcategoryname."</strong></th></tr>";
 
-	echo "<tr class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][3]."</h2>";
+	echo "<tr class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>".$lang["knowbase"][3]."</h2>";
 	
 	$question = $ki->fields["question"];
 	
 	echo $question;
 	echo "</td></tr>\n";
-	echo "<tr  class='tab_bg_3'><td style='text-align:left'><h2>".$lang["knowbase"][4]."</h2>\n";
+	echo "<tr  class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>".$lang["knowbase"][4]."</h2>\n";
 	
 	$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
 	
 	echo $answer;
 	echo "</td></tr>";
 	
-	echo "<tr><th style='text-align:right;font-size:10px; color:#aaaaaa; '>";
+	echo "<tr><th style='text-align:left;font-size:10px; color:#aaaaaa;'>";
+	if($ki->fields["author"]){
+		echo $lang["common"][37]." : ";
+		echo ($linkauthor=="yes") ? "".getUserName($ki->fields["author"],"1")."" : "".getUserName($ki->fields["author"])."";
+		echo " | ";
+	}
+	if($ki->fields["date"]){
+		echo $lang["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
+	}	
+
+	echo "</th><th style='text-align:right;font-size:10px; color:#aaaaaa;'>";
 		if($ki->fields["date_mod"]){
 			echo  $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ";
 		}

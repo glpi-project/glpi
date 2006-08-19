@@ -644,15 +644,31 @@ function checkNewVersionAvailable($auto=1){
 		}
 		fclose($proxy_fp);
 	}
+
 	if (strlen(trim($latest_version)) == 0){
 		if (!$auto) echo "<div align='center'>".$lang["setup"][304]." ($errstr)</div>";
 	} else {			
-		$cur_version = str_replace(array('.', ' '), '', strtolower(trim($cfg_glpi["version"])));
-		$cur_version = ($cur_version<10) ? intval($cur_version) * 10 : intval($cur_version);
+		$splitted=split("\.",$cfg_glpi["version"]);
 		
-		$lat_version = str_replace('.', '', strtolower(trim($latest_version)));
-		$lat_version = ($lat_version< 10) ? intval($lat_version) * 10 : intval($lat_version);
+		if ($splitted[0]<10) $splitted[0].="0";
+		if ($splitted[1]<10) $splitted[1].="0";
+		$cur_version = $splitted[0]*10000+$splitted[1]*100;
+		if (isset($splitted[2])) {
+			if ($splitted[2]<10) $splitted[2].="0";
+			$cur_version+=$splitted[2];
+		}
 
+		$splitted=split("\.",$latest_version);
+
+		if ($splitted[0]<10) $splitted[0].="0";
+		if ($splitted[1]<10) $splitted[1].="0";
+		
+		$lat_version = $splitted[0]*10000+$splitted[1]*100;
+		if (isset($splitted[2])) {
+			if ($splitted[2]<10) $splitted[2].="0";
+			$lat_version+=$splitted[2];
+		}
+		
 		if ($cur_version < $lat_version){
 			if (!$auto) {
 				echo "<div align='center'>".$lang["setup"][301]." ".$latest_version."</div>";
