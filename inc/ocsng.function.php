@@ -1645,9 +1645,11 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 				if ($db->numrows($result_name)==1){
 					if ($db->result($result_name,0,"NAME")!=$name){
 						$updates["name"]=$name;
-						$updates["version"]=$version;
-						if (!empty($publisher))
-							$updates["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
+						// No update version
+						//$updates["version"]=$version;
+						// No update publisher
+						//if (!empty($publisher))
+						//	$updates["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
 						$updates["ID"]=$db->result($result_name,0,"ID");
 						$soft=new Software();
 						$soft->update($updates);
