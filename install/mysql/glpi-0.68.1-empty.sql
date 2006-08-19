@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-08-17 15:36
+#GLPI Dump database on 2006-08-19 17:05
 
 ### Dump table glpi_alerts
 
@@ -152,14 +152,14 @@ DROP TABLE IF EXISTS `glpi_config`;
 CREATE TABLE `glpi_config` (
   `ID` int(11) NOT NULL auto_increment,
   `ldap_port` varchar(10) NOT NULL default '389',
-  `num_of_events` varchar(200) default '',
-  `jobs_at_login` varchar(200) default '',
+  `num_of_events` varchar(200) default NULL,
+  `jobs_at_login` varchar(200) default NULL,
   `sendexpire` varchar(200) default NULL,
   `cut` varchar(200) default NULL,
   `expire_events` varchar(200) default NULL,
   `list_limit` varchar(200) default NULL,
   `version` varchar(200) default NULL,
-  `logotxt` varchar(200) default '',
+  `logotxt` varchar(200) default NULL,
   `event_loglevel` varchar(200) default NULL,
   `mailing` varchar(200) default NULL,
   `imap_auth_server` varchar(200) default NULL,
@@ -229,16 +229,16 @@ CREATE TABLE `glpi_config` (
   `infocom_alerts` tinyint(2) NOT NULL default '0',
   `cartridges_alert` int(11) NOT NULL default '0',
   `consumables_alert` int(11) NOT NULL default '0',
-  `keep_tracking_on_delete` int(11) default NULL,
-  `show_admin_doc` int(11) default NULL,
-  `time_step` int(11) default NULL,
+  `keep_tracking_on_delete` int(11) default '1',
+  `show_admin_doc` int(11) default '0',
+  `time_step` int(11) default '5',
   `ldap_group_condition` varchar(255) default NULL,
   `ldap_search_for_groups` tinyint(4) NOT NULL default '0',
   `ldap_field_group_member` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68.1','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.68.1','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -1191,7 +1191,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-17 15:20:37','login','3','glpi IP connection : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-19 17:05:19','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1583,9 +1583,11 @@ DROP TABLE IF EXISTS `glpi_ocs_link`;
 CREATE TABLE `glpi_ocs_link` (
   `ID` int(11) NOT NULL auto_increment,
   `glpi_id` int(11) NOT NULL default '0',
-  `ocs_id` varchar(255) NOT NULL,
+  `ocs_id` int(11) NOT NULL default '0',
+  `ocs_deviceid` varchar(255) NOT NULL,
   `auto_update` int(2) NOT NULL default '1',
   `last_update` datetime NOT NULL default '0000-00-00 00:00:00',
+  `last_ocs_update` datetime default NULL,
   `computer_update` longtext,
   `import_device` longtext,
   `import_software` longtext,
@@ -1593,8 +1595,8 @@ CREATE TABLE `glpi_ocs_link` (
   `import_peripheral` longtext,
   `import_printers` longtext,
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `ocs_id_2` (`ocs_id`),
-  KEY `ocs_id` (`ocs_id`),
+  UNIQUE KEY `ocs_id_2` (`ocs_deviceid`),
+  KEY `ocs_id` (`ocs_deviceid`),
   KEY `glpi_id` (`glpi_id`),
   KEY `auto_update` (`auto_update`),
   KEY `last_update` (`last_update`)
@@ -1741,7 +1743,7 @@ INSERT INTO glpi_printers VALUES ('1','','0000-00-00 00:00:00','','','0','','','
 DROP TABLE IF EXISTS `glpi_profiles`;
 CREATE TABLE `glpi_profiles` (
   `ID` int(11) NOT NULL auto_increment,
-  `name` varchar(255) default '',
+  `name` varchar(255) default NULL,
   `interface` varchar(50) NOT NULL default 'helpdesk',
   `is_default` enum('0','1') NOT NULL default '0',
   `computer` char(1) default NULL,
@@ -1793,15 +1795,15 @@ CREATE TABLE `glpi_profiles` (
   `password_update` char(1) default NULL,
   `helpdesk_hardware` tinyint(2) NOT NULL default '0',
   `helpdesk_hardware_type` int(11) NOT NULL default '0',
-  `show_group_ticket` char(1) default NULL,
+  `show_group_ticket` char(1) default '0',
   PRIMARY KEY  (`ID`),
   KEY `interface` (`interface`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,'1','1','8388674',NULL);
-INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,NULL,NULL,'r','r',NULL,NULL,'r',NULL,'r','r',NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','0','1','1','0','1','1','1','8388674',NULL);
-INSERT INTO glpi_profiles VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','w','w','w','w',NULL,'w','r','r','w','w',NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674',NULL);
-INSERT INTO glpi_profiles VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','w','w','w','w','w','w','r','w','w','w','r','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674',NULL);
+INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,'1','1','8388674','0');
+INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,NULL,NULL,'r','r',NULL,NULL,'r',NULL,'r','r',NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','0','1','1','0','1','1','1','8388674','0');
+INSERT INTO glpi_profiles VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','w','w','w','w',NULL,'w','r','r','w','w',NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674','0');
+INSERT INTO glpi_profiles VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','w','w','w','w','w','w','r','w','w','w','r','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674','0');
 
 ### Dump table glpi_reminder
 

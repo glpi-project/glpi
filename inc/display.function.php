@@ -53,7 +53,7 @@ function commonHeader($title,$url)
 	// Print a nice HTML-head for every page
 
 	global $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks,$HEADER_LOADED ;
-
+	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;;
 	// Override list-limit if choosen
  	if (isset($_POST['list_limit'])) {

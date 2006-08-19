@@ -35,7 +35,7 @@
 
 include ("_relpos.php");
 $USE_OCSNGDB=1;
-$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
+$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise","reservation");
 include ($phproot . "/inc/includes.php");
 
 checkRight("ocsng","w");
@@ -72,6 +72,7 @@ ocsCleanLinks();
 ocsShowNewComputer($_GET['check'],$_GET['start']);
 
 } else {
+
 	if (count($_POST['toimport'])>0){
 		$_SESSION["ocs_import_count"]=0;
 		foreach ($_POST['toimport'] as $key => $val){
@@ -81,6 +82,7 @@ ocsShowNewComputer($_GET['check'],$_GET['start']);
 			}
 		}
 	}
+
 	glpi_header($_SERVER['PHP_SELF']);
 }
 

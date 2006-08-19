@@ -35,7 +35,7 @@
 
 // Update from 0.68 to 0.68.1
 function update068to0681(){
-	global $db,$lang;
+	global $db,$lang,$phproot,$cfg_glpi;
 
 if(TableExists("glpi_repair_item")) {
 	$query = "DROP TABLE `glpi_repair_item`;";
@@ -459,8 +459,54 @@ ADD `ldap_field_group_member` VARCHAR( 255 ) NULL ";
 	$db->query($query) or die("0.68.1 add glpi_config.ldap_*_groups ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_ocs_link", "ocs_deviceid")) {
+	$query = "ALTER TABLE `glpi_ocs_link` CHANGE `ocs_id` `ocs_deviceid` VARCHAR( 255 ) NOT NULL ;";
+	$db->query($query) or die("0.68.1 add glpi_ocs_link.ocs_deviceid ".$lang["update"][90].$db->error());
+}
 
 
+if(!FieldExists("glpi_ocs_link", "ocs_id")) {
+	$query = "ALTER TABLE `glpi_ocs_link` ADD `ocs_id` INT NOT NULL DEFAULT '0' AFTER `glpi_id` ;";
+	$db->query($query) or die("0.68.1 add glpi_ocs_link.ocs_id ".$lang["update"][90].$db->error());
+}
+
+if(!FieldExists("glpi_ocs_link", "last_ocs_update")) {
+	$query = "ALTER TABLE `glpi_ocs_link` ADD `last_ocs_update` DATETIME NULL AFTER `last_update` ;";
+	$db->query($query) or die("0.68.1 add glpi_ocs_link.last_ocs_update ".$lang["update"][90].$db->error());
+}
+
+
+
+
+
+
+if (countElementsInTable("glpi_ocs_link")){
+	include ($phproot . "/inc/ocsng.class.php");
+	$cfg_glpi["ocs_mode"]=1;
+	$dbocs=new DBocs;
+	// Get datas to update
+	$query="SELECT * 
+			FROM glpi_ocs_link";
+	$result_glpi=$db->query($query);
+	while ($data_glpi=$db->fetch_array($result_glpi)){
+		// Get ocs informations
+		$query_ocs="SELECT * 
+					FROM hardware WHERE DEVICEID='".$data_glpi["ocs_deviceid"]."' 
+					LIMIT 1;";
+		
+		$result_ocs=$dbocs->query($query_ocs);
+		if ($result_ocs&&$dbocs->numrows($result_ocs)){
+			// Update ocs_id and last_ocs_update
+			$data_ocs=$dbocs->fetch_array($result_ocs);
+			$query_update="UPDATE glpi_ocs_link
+							SET ocs_id='".$data_ocs["ID"]."', 
+								last_ocs_update='".$data_ocs["LASTDATE"]."'
+							WHERE ID='".$data_glpi["ID"]."';";
+			
+			$db->query($query_update);
+		}
+	}
+}
 
 
 } // fin 0.68 #####################################################################################
