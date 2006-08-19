@@ -36,6 +36,7 @@ class DBocs extends DBmysql {
 
 	function DBocs() {
 		global $db,$cfg_glpi;
+
 		if ($cfg_glpi["ocs_mode"]){
 			$query = "select * from glpi_ocs_config";
 			$result = $db->query($query);

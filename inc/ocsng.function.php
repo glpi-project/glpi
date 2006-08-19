@@ -250,7 +250,6 @@ function ocsManageDeleted(){
 					$comp=new Computer();
 					$comp->delete(array("ID"=>$del["glpi_id"]),0);
 				}
-			
 			}
 		}
 	}
@@ -1546,15 +1545,15 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						switch ($device_type){
 							case MONITOR_TYPE:
 							$mon=new Monitor();
-							$mon->delete(array('ID'=>$data['end1']),1);
+							$mon->delete(array('ID'=>$data['end1']),0);
 							break;
 							case PRINTER_TYPE:
 							$print=new Printer();
-							$print->delete(array('ID'=>$data['end1']),1);
+							$print->delete(array('ID'=>$data['end1']),0);
 							break;
 							case PERIPHERAL_TYPE:
 							$per=new Peripheral();
-							$per->delete(array('ID'=>$data['end1']),1);
+							$per->delete(array('ID'=>$data['end1']),0);
 							break;
 						}
 					}
@@ -1676,7 +1675,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 						$result3=$db->query($query3);
 						if ($db->result($result3,0,0)==1){
 							$soft=new Software ();
-							$soft->delete(array('ID'=>$lic->fields['sID']),1);
+							$soft->delete(array('ID'=>$lic->fields['sID']),0);
 						}
 						$lic->delete(array("ID"=>$data['license']));
 					}
