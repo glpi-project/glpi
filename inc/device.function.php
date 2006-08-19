@@ -425,54 +425,6 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	return $newID;
 }
 
-/* --------------- not in use -------------------- but get it for later if needed.
-// Print Search Form
-function searchFormDevices($device_type,$field="",$phrasetype= "",$contains="",$sort= "") {
-
-	
-	global $cfg_glpi,  $lang,$HTMLRel;
-
-	$option[$device_type.".designation"]			= $lang["devices"][14];
-	$option[$device_type.".ID"]				= $lang["common"][2];
-	$option[$device_type.".comment"]			= $lang["common"][25];
-	$option["glpi_enterprises.name"]			= $lang["common"][5];
-
-
-	echo "<form method='get' action=\"".$cfg_glpi["root_doc"]."/front/device.php\">";
-	echo "<div align='center'><table  width='750' class='tab_cadre'>";
-	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
-	echo "&nbsp;";
-	echo $lang["search"][10]."&nbsp;";
-	
-	echo "<select name=\"field\" size='1'>";
-        echo "<option value='all' ";
-	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
-        reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\""; 
-		if($key == $field) echo "selected";
-		echo ">". $val ."</option>\n";
-	}
-	echo "</select>&nbsp;";
-	echo $lang["search"][4];
-	echo "&nbsp;<select name='sort' size='1'>";
-	reset($option);
-	foreach ($option as $key => $val) {
-		echo "<option value=\"".$key."\"";
-		if($key == $sort) echo "selected";
-		echo ">".$val."</option>\n";
-	}
-	echo "</select> ";
-	echo "<input type=\"hidden\" name=\"device_type\" value=\"".$device_type."\" />";
-	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
-	echo "</td></tr></table></div></form>";
-}
-*/
 
 function showDevicesList($device_type,$target) {
 
@@ -776,66 +728,11 @@ function showDevicesForm ($target,$ID,$device_type) {
 	}
 	else {
 		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
-		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
 		echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td>";
 	}
 	echo "</table></form></div>";
 }
-
-function updateDevice($input) {
-	// Update a device in the database
-
-	$device = new Device($input["device_type"]);
-	$device->getFromDB($input["ID"]);
-	
-	// Fill the update-array with changes
-	$x=0;
-	$updates = array();
-	foreach ($input as $key => $val) {
-		if (array_key_exists($key,$device->fields)&&$device->fields[$key] != $input[$key]) {
-			$device->fields[$key] = $input[$key];
-			$updates[$x] = $key;
-			$x++;
-		}
-	}
-	$device->updateInDB($updates);
-
-}
-
-function addDevice($input) {
-	// Add device
-	global $db;
-	$device = new Device($input["device_type"]);
-
-	
-	// dump status
-	$oldID=$input["ID"];
-	// Pop off the last Three attributes, no longer needed
-	unset($input['add']);
-	unset($input['ID']);
-	unset($input['device_type']);
-
- 	
-	// fill array for update
-	foreach ($input as $key => $val) {
-		if ($key[0]!='_'&&(empty($device->fields[$key]) || $device->fields[$key] != $input[$key])) {
-			$device->fields[$key] = $input[$key];
-		}
-	}
-	$new_id = $device->addToDB();
-
-
-
-
-}
-
-function deleteDevice($input) {
-	// Delete Device
-	$device = new Device($input["device_type"]);
-	$device->deleteFromDB($input["ID"]);
-	
-} 	
 
 ?>
