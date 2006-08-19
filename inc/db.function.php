@@ -42,7 +42,8 @@
 */
 function countElementsInTable($table){
 	global $db;
-	$query="SELECT count(*) as cpt from $table";
+	$query="SELECT count(*) AS cpt 
+			FROM $table";
 	$result=$db->query($query);
 	$ligne = $db->fetch_array($result);
 	return $ligne['cpt'];
@@ -60,7 +61,9 @@ function countElementsInTable($table){
 function getTreeLeafValueName($table,$ID,$withcomments=0)
 {
 	global $db;
-	$query = "select * from $table where (ID = '$ID')";
+	$query = "SELECT * 
+			FROM $table 
+			WHERE (ID = '$ID')";
 	$name="";
 	$comments="";
 	if ($result=$db->query($query)){
@@ -87,7 +90,9 @@ else return $name;
 function getTreeValueCompleteName($table,$ID,$withcomments=0)
 {
 	global $db;
-	$query = "select * from $table where (ID = '$ID')";
+	$query = "SELECT * 
+			FROM $table 
+			WHERE (ID = '$ID')";
 	$name="";
 	$comments="";
 	if ($result=$db->query($query)){
@@ -117,7 +122,9 @@ function getTreeValueName($table,$ID, $wholename="",$level=0)
 {
 	global $db,$lang;
 	
-	$query = "select * from $table where (ID = '$ID')";
+	$query = "SELECT * 
+			FROM $table 
+			WHERE (ID = '$ID')";
 	$name="";
 	
 	if ($result=$db->query($query)){
@@ -231,7 +238,9 @@ $id_found=array();
 $found=array();
 
 // First request init the  varriables
-$query="SELECT ID from $table WHERE ID = '$IDf'";
+$query="SELECT ID 
+		FROM $table 
+		WHERE ID = '$IDf'";
 if ( ($result=$db->query($query)) && ($db->numrows($result)>0) ){
 	while ($row=$db->fetch_array($result)){
 		array_push($id_found,$row['ID']);
@@ -242,7 +251,9 @@ if ( ($result=$db->query($query)) && ($db->numrows($result)>0) ){
 // Get the leafs of previous founded item
 while (count($found)>0){
 	// Get next elements
-	$query="SELECT ID from $table WHERE '0'='1' ";
+	$query="SELECT ID 
+			FROM $table 
+			WHERE '0'='1' ";
 	foreach ($found as $key => $val)
 		$query.= " OR parentID = '$val' ";
 		
@@ -288,7 +299,9 @@ function getTreeItemLevel($table,$ID){
 global $db;
 $level=0;
 
-$query="select parentID from $table where ID='$ID'";
+$query="SELECT parentID 
+		FROM $table 
+		WHERE ID='$ID'";
 while (1)
 {
 	if (($result=$db->query($query))&&$db->numrows($result)==1){
@@ -296,7 +309,9 @@ while (1)
 		if ($parentID==0) return $level;
 		else {
 			$level++;
-			$query="select parentID from $table where ID='$parentID'";
+			$query="SELECT parentID 
+					FROM $table 
+					WHERE ID='$parentID'";
 		}
 	}
 }
@@ -314,12 +329,15 @@ return -1;
 */
 function regenerateTreeCompleteName($table){
 	global $db;
-	$query="SELECT ID from $table";
+	$query="SELECT ID 
+			FROM $table";
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result)){
 			list($name,$level)=getTreeValueName($table,$data['ID']);
-			$query="UPDATE $table SET completename='".addslashes($name)."', level='$level' WHERE ID='".$data['ID']."'";
+			$query="UPDATE $table 
+					SET completename='".addslashes($name)."', level='$level' 
+					WHERE ID='".$data['ID']."'";
 			$db->query($query);
 		}
 	}
@@ -337,9 +355,13 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
 	
 	list($name,$level)=getTreeValueName($table,$ID);
 
-	$query="UPDATE $table SET completename='".addslashes($name)."', level='$level' WHERE ID='".$ID."'";
+	$query="UPDATE $table 
+			SET completename='".addslashes($name)."', level='$level' 
+			WHERE ID='".$ID."'";
 	$db->query($query);
-	$query="SELECT ID FROM $table WHERE parentID='$ID'";
+	$query="SELECT ID 
+			FROM $table 
+			WHERE parentID='$ID'";
 	$result=$db->query($query);
 	if ($db->numrows($result)>0){
 		while ($data=$db->fetch_array($result)){
@@ -365,19 +387,23 @@ if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
 $search=$ID;
 
 if ($nextprev_item!="ID"){
-	$query="select ".$nextprev_item." FROM $table where ID='$ID'";
+	$query="SELECT ".$nextprev_item." 
+			FROM $table 
+			WHERE ID='$ID'";
 	$result=$db->query($query);
 	$search=addslashes($db->result($result,0,0));
 }
 
-$query = "select ID from $table where ".$nextprev_item." > '$search' ";
+$query = "SELECT ID 
+		FROM $table 
+		WHERE ".$nextprev_item." > '$search' ";
 
 if (in_array($table,$cfg_glpi["deleted_tables"]))
 	$query.="AND deleted='N'";
 if (in_array($table,$cfg_glpi["template_tables"]))
 	$query.="AND is_template='0'";	
 		
-$query.=" order by ".$nextprev_item." ASC";
+$query.=" ORDER BY ".$nextprev_item." ASC";
 
 $result=$db->query($query);
 if ($db->numrows($result)>0)
@@ -401,19 +427,23 @@ if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
 
 $search=$ID;
 if ($nextprev_item!="ID"){
-	$query="select ".$nextprev_item." FROM $table where ID=$ID";
+	$query="SELECT ".$nextprev_item." 
+			FROM $table 
+			WHERE ID=$ID";
 	$result=$db->query($query);
 	$search=addslashes($db->result($result,0,0));
 }
 
-$query = "select ID from $table where ".$nextprev_item." < '$search' ";
+$query = "SELECT ID 
+		FROM $table 
+		WHERE ".$nextprev_item." < '$search' ";
 
 if (in_array($table,$cfg_glpi["deleted_tables"]))
 	$query.="AND deleted='N'";
 if (in_array($table,$cfg_glpi["template_tables"]))
 	$query.="AND is_template='0'";	
 		
-$query.=" order by ".$nextprev_item." DESC";
+$query.=" ORDER BY ".$nextprev_item." DESC";
 
 $result=$db->query($query);
 if ($db->numrows($result)>0)
@@ -434,7 +464,9 @@ else return -1;
 function getUserName($ID,$link=0){
 	global $db,$cfg_glpi,$lang;
 
-	$query="SELECT * from glpi_users WHERE ID='$ID'";
+	$query="SELECT * 
+			FROM glpi_users 
+			WHERE ID='$ID'";
 	$result=$db->query($query);
 	$user="";
 	if ($link==2) $user=array("name"=>"","comments"=>"","link"=>"");
@@ -517,7 +549,7 @@ function FieldExists($table, $field) {
 function isIndex($table, $field) {
 	
 		global $db;
-		$result = $db->query("SHOW INDEX from ". $table);
+		$result = $db->query("SHOW INDEX FROM ". $table);
 		if ($result&&$db->numrows($result)){
 			while ($data=$db->fetch_assoc($result))
 			if ($data["Key_name"]==$field){
@@ -577,19 +609,26 @@ function autoName($objectName, $field, $isTemplate, $type){
 				$first = 1;
 				foreach($LINK_ID_TABLE as $t=>$table){
 					if ($t == COMPUTER_TYPE || $t == MONITOR_TYPE  || $t == NETWORKING_TYPE || $t == PERIPHERAL_TYPE || $t == PRINTER_TYPE || $t == PHONE_TYPE){
-						$query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code FROM $table WHERE $field LIKE '$like' AND deleted = 'N' AND is_template = '0'";
+						$query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code 
+								FROM $table 
+								WHERE $field LIKE '$like' 
+									AND deleted = 'N' 
+									AND is_template = '0'";
 					$first = 0;
 					}
 				}
-				$query = "SELECT CAST(SUBSTRING(code, $pos, $len) AS unsigned) AS no FROM ($query) AS codes";
+				$query = "SELECT CAST(SUBSTRING(code, $pos, $len) AS unsigned) AS no 
+						FROM ($query) AS codes";
 			} else	{
 				$table = $LINK_ID_TABLE[$type];
-				$query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no FROM $table"
-				." WHERE $field LIKE '$like' ";
+				$query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no 
+						FROM $table 
+						WHERE $field LIKE '$like' ";
 				if ($type != INFOCOM_TYPE)
 					$query .= " AND deleted = 'N' AND is_template = '0'";
 			}
-			$query = "SELECT MAX(Num.no) AS lastNo FROM (".$query.") AS Num";
+			$query = "SELECT MAX(Num.no) AS lastNo 
+					FROM (".$query.") AS Num";
 			$resultNo = $db->query($query);
 
 			if ($db->numrows($resultNo)>0) {

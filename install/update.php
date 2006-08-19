@@ -38,6 +38,7 @@ include ("_relpos.php");
 include ($phproot . "/inc/dbmysql.class.php");
 include ($phproot . "/inc/common.function.php");
 include ($phproot . "/inc/db.function.php");
+include ($phproot . "/inc/display.function.php");
 include ($phproot . "/config/based_config.php");
 include ($cfg_glpi["config_dir"] . "/config_db.php");
 
@@ -522,7 +523,7 @@ regenerateTreeCompleteName("glpi_dropdown_kbcategories");
 }
 
 //Debut du script
-	
+	$HEADER_LOADED=true;
 	if(!isset($_SESSION)) session_start();
 	
 	if(empty($_SESSION["dict"])) {
