@@ -82,9 +82,6 @@ if (!isset($AJAX_INCLUDE)){
 	include_once ($phproot . "/inc/plugin.function.php");
 }
 
-$db=new DB();
-
-
 // Security system
 if (isset($_POST)){
 	if (!get_magic_quotes_gpc())

@@ -165,8 +165,16 @@ else
 	
 	if ($cfg_glpi["debug"]==DEMO_MODE){
 		echo "<div align='center'";
-		$query="SELECT count(*) FROM `glpi_event_log` where message LIKE '%logged in%'";
-		$query2="SELECT date FROM `glpi_event_log` order by date ASC limit 1";
+
+		$query="SELECT count(*) 
+			FROM `glpi_event_log` 
+			WHERE message LIKE '%logged in%'";
+
+		$query2="SELECT date 
+			FROM `glpi_event_log` 
+			ORDER BY date ASC 
+			LIMIT 1";
+
 		$db=new DB;
 		$result=$db->query($query);
 		$result2=$db->query($query2);
