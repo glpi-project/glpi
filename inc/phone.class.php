@@ -169,6 +169,8 @@ class Phone extends CommonDBTM {
 
 		global $db,$cfg_glpi;
 
+
+		$job =new Job();
 		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".PHONE_TYPE."')";
 		$result = $db->query($query);
 
@@ -183,7 +185,8 @@ class Phone extends CommonDBTM {
 		$query="select * from glpi_reservation_item where (device_type='".PHONE_TYPE."' and id_device='$ID')";
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)>0)
-			deleteReservationItem(array("ID"=>$db->result($result,0,"ID")));
+				$rr=new ReservationItem();
+				$rr->delete(array("ID"=>$db->result($result,0,"ID")));
 		}
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".PHONE_TYPE."')";
