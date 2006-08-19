@@ -120,6 +120,7 @@ class Software  extends CommonDBTM {
 
 		global $db,$cfg_glpi;
 
+		$job =new Job();
 		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".SOFTWARE_TYPE."')";
 		$result = $db->query($query);
 
@@ -136,6 +137,14 @@ class Software  extends CommonDBTM {
 
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
 		$result = $db->query($query);
+
+		$query="select * from glpi_reservation_item where (device_type='".SOFTWARE_TYPE."' and id_device='$ID')";
+		if ($result = $db->query($query)) {
+			if ($db->numrows($result)>0)
+				$rr=new ReservationItem();
+				$rr->delete(array("ID"=>$db->result($result,0,"ID")));
+		}
+
 
 		// Delete all Licenses
 		$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = '$ID')";
