@@ -87,6 +87,7 @@ if ($dbocs->numrows($result_ocs)>0){
 		$already_linked[$data["ocs_id"]]=$data["last_update"];
 		}
 	}
+
 	// Get all existing computers name in GLPI
 	$computer_names=array();
 	if ($db->numrows($result_glpi_comp)>0){
@@ -195,6 +196,12 @@ function ocsLink($ocs_id,$glpi_computer_id) {
 
 function ocsManageDeleted(){
 	global $db,$dbocs;
+
+	// Activate TRACE_DELETED : ALSO DONE IN THE CONFIG
+	$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
+	$dbocs->query($query);
+
+
 	$query="SELECT * FROM deleted_equiv";
 	$result = $dbocs->query($query);
 	if ($dbocs->numrows($result)){
