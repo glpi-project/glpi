@@ -489,6 +489,7 @@ if (countElementsInTable("glpi_ocs_link")){
 			FROM glpi_ocs_link";
 	$result_glpi=$db->query($query);
 	while ($data_glpi=$db->fetch_array($result_glpi)){
+
 		// Get ocs informations
 		$query_ocs="SELECT * 
 					FROM hardware WHERE DEVICEID='".$data_glpi["ocs_deviceid"]."' 
@@ -496,12 +497,12 @@ if (countElementsInTable("glpi_ocs_link")){
 		
 		$result_ocs=$dbocs->query($query_ocs);
 		if ($result_ocs&&$dbocs->numrows($result_ocs)){
-			// Update ocs_id and last_ocs_update
 			$data_ocs=$dbocs->fetch_array($result_ocs);
+			
 			$query_update="UPDATE glpi_ocs_link
-							SET ocs_id='".$data_ocs["ID"]."', 
-								last_ocs_update='".$data_ocs["LASTDATE"]."'
-							WHERE ID='".$data_glpi["ID"]."';";
+						SET ocs_id='".$data_ocs["ID"]."', 
+							last_ocs_update='".$data_ocs["LASTDATE"]."
+						WHERE ID='".$data_glpi["ID"]."';";
 			
 			$db->query($query_update);
 		}
