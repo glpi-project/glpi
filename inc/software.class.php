@@ -140,9 +140,10 @@ class Software  extends CommonDBTM {
 
 		$query="select * from glpi_reservation_item where (device_type='".SOFTWARE_TYPE."' and id_device='$ID')";
 		if ($result = $db->query($query)) {
-			if ($db->numrows($result)>0)
+			if ($db->numrows($result)>0){
 				$rr=new ReservationItem();
 				$rr->delete(array("ID"=>$db->result($result,0,"ID")));
+			}
 		}
 
 
