@@ -108,7 +108,7 @@ if ($dbocs->numrows($result_ocs)>0){
 	
 
 	if ($tolinked&&count($hardware)){
-	echo "<div align='center'><strong>".$lang["ocsng"][22]."</strong></div>";
+		echo "<div align='center'><strong>".$lang["ocsng"][22]."</strong></div>";
 	}
 
 	echo "<div align='center'>";
@@ -122,7 +122,7 @@ if ($dbocs->numrows($result_ocs)>0){
 		// delete begin
 		if ($start>0)
 		array_splice($hardware,0,$start);
-		echo "<div align='center'><strong>".$lang["ocsconfig"][18]."</strong></div>";
+		echo "<strong>".$lang["ocsconfig"][18]."</strong><br>";
 		echo "<form method='post' name='ocsng_form' id='ocsng_form' action='".$_SERVER["PHP_SELF"]."'>";
 		if ($tolinked==0)
 			echo "<a href='".$_SERVER["PHP_SELF"]."?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
@@ -276,7 +276,7 @@ function ocsImportComputer($ocs_id){
 	$query = "SELECT * FROM hardware WHERE ID='$ocs_id'";
 	$result = $dbocs->query($query);
 	$comp = new Computer;
-	if ($dbocs->numrows($result)==1){
+	if ($result&&$dbocs->numrows($result)==1){
 		$line=$dbocs->fetch_array($result);
 		$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 		$dbocs->close();
@@ -305,13 +305,13 @@ function ocsImportTag($ocs_id,$glpi_id,$cfg_ocs){
 		$query = "SELECT TAG 
 				FROM accountinfo 
 				WHERE HARDWARE_ID='$ocs_id'";
+		
 		$resultocs=$dbocs->query($query);
-		if ($dbocs->numrows($resultocs)>0){
+		if ($resultocs&&$dbocs->numrows($resultocs)>0){
 			$tag=addslashes($dbocs->result($resultocs,0,0));
 			if (!empty($tag)){
 				$comp=new Computer();
 				$input["ID"] = $glpi_id;
-					
 				switch ($cfg_ocs["import_tag_field"]){
 					case "otherserial":
 					case "contact_num":
@@ -324,7 +324,7 @@ function ocsImportTag($ocs_id,$glpi_id,$cfg_ocs){
 						$input[$cfg_ocs["import_tag_field"]]=ocsImportDropdown('glpi_dropdown_network','name',$tag);;
 						break;
 				}
-				$comp->update($input);
+				$comp->update($input,0);
 			}
 		}
 	}
@@ -1709,6 +1709,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 							case PRINTER_TYPE:
 							$print=new Printer();
 							$print->delete(array('ID'=>$data['end1']),0);
+				
 							break;
 							case PERIPHERAL_TYPE:
 							$per=new Peripheral();
@@ -1718,6 +1719,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 					}
 				}
 			}
+
 			Disconnect($key);
 			
 			switch ($device_type){

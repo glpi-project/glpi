@@ -134,4 +134,7 @@ if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
 			$dbocs=new DBocs;
 	}
 }
+
+if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
+
 ?>

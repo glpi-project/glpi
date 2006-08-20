@@ -1,6 +1,5 @@
 <?php
 /*
-* @version $Id$
  ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -29,66 +28,69 @@
 */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
+
+
+// MASS IMPORT for OCSNG
 
 include ("_relpos.php");
 $USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise","reservation");
-include ($phproot . "/inc/includes.php");
+include ($phproot."/inc/includes.php");
 
-checkRight("ocsng","w");
 
-commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 
-if (isset($_SESSION["ocs_import"])){
-	if ($count=count($_SESSION["ocs_import"])){
-		$percent=min(100,round(100*($_SESSION["ocs_import_count"]-$count)/$_SESSION["ocs_import_count"],0));
-		
-		displayProgressBar(400,$percent);
+//// PARAMETERS
+// Just import these ocs computer
+$ocs_id=0;
+if (isset($_GET["ocs_id"])) $ocs_id=$_GET["ocs_id"];
+// Limit import
+$limit=0;
+if (isset($_GET["limit"])) $limit=$_GET["limit"];
+// all sync auto_update and not auto_update
+$all=0;
+if (isset($_GET["all"])) $all=$_GET["all"];
 
-		$key=array_pop($_SESSION["ocs_import"]);
-		ocsImportComputer($key);
 
-		glpi_header($_SERVER['PHP_SELF']);
+	$cfg_ocs=getOcsConf(1);
+	ocsManageDeleted();
+	$WHERE="";
+	if ($ocs_id) $WHERE=" AND ID='$ocs_id'";
+	
+	$query_ocs = "SELECT * 
+				FROM hardware 
+				WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0
+				$WHERE";
+	$result_ocs = $dbocs->query($query_ocs);
+	if ($dbocs->numrows($result_ocs)>0){
 
-	} else {
-		unset($_SESSION["ocs_import"]);
+		$hardware=array();
+		while($data=$dbocs->fetch_array($result_ocs)){
+			$hardware[$data["ID"]]["date"]=$data["LASTDATE"];
+			$hardware[$data["ID"]]["name"]=addslashes($data["NAME"]);
+		}
+		$WHERE="WHERE auto_update= '1'";
+		if ($all) $WHERE="";
 
-		displayProgressBar(400,100);
-
-		echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";
-		echo "</strong></div>";
-	}
-}
-
-if (!isset($_POST["import_ok"])){
-if (!isset($_GET['check'])) $_GET['check']='all';
-if (!isset($_GET['start'])) $_GET['start']=0;
-
-if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
-ocsManageDeleted();
-ocsCleanLinks();
-ocsShowNewComputer($_GET['check'],$_GET['start']);
-
-} else {
-
-	if (count($_POST['toimport'])>0){
-		$_SESSION["ocs_import_count"]=0;
-		foreach ($_POST['toimport'] as $key => $val){
-			if ($val=="on")	{
-				$_SESSION["ocs_import"][]=$key;
-				$_SESSION["ocs_import_count"]++;
+		$query_glpi = "SELECT * 
+					FROM glpi_ocs_link 
+					$WHERE
+					ORDER BY last_update";
+		$result_glpi = $db->query($query_glpi);
+		$done=0;
+		while($data=$db->fetch_assoc($result_glpi)){
+			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
+			
+			if (isset($hardware[$data["ocs_id"]])){ 
+				ocsUpdateComputer($data["ID"],1);
+				if ($limit&&$done>=$limit) exit();
+				echo ".";
+				$done++;
 			}
 		}
-	}
+	} 
 
-	glpi_header($_SERVER['PHP_SELF']);
-}
-
-
-commonFooter();
-
+	
 ?>
