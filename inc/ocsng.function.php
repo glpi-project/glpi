@@ -767,6 +767,7 @@ function cron_ocsng(){
 
 		$query_glpi = "SELECT * 
 					FROM glpi_ocs_link 
+					WHERE auto_update= '1'
 					ORDER BY last_update";
 		$result_glpi = $db->query($query_glpi);
 		$done=0;
@@ -804,7 +805,7 @@ function ocsShowUpdateComputer($check,$start){
 					glpi_ocs_link.auto_update as auto_update, glpi_ocs_link.ID as ID 
 				FROM glpi_ocs_link 
 				LEFT JOIN glpi_computers ON (glpi_computers.ID = glpi_ocs_link.glpi_id) 
-				ORDER BY glpi_ocs_link.last_update, glpi_computers.name";
+				ORDER BY glpi_ocs_link.auto_update DESC, glpi_ocs_link.last_update, glpi_computers.name";
 	
 	$result_glpi = $db->query($query_glpi);
 	if ($dbocs->numrows($result_ocs)>0){
@@ -827,6 +828,7 @@ function ocsShowUpdateComputer($check,$start){
 					$already_linked[$data["ocs_id"]]["ID"]=$data["ID"];
 					$already_linked[$data["ocs_id"]]["glpi_id"]=$data["glpi_id"];
 					$already_linked[$data["ocs_id"]]["ocs_id"]=$data["ocs_id"];
+					$already_linked[$data["ocs_id"]]["auto_update"]=$data["auto_update"];
 				}
 			}
 		}
@@ -848,20 +850,22 @@ function ocsShowUpdateComputer($check,$start){
 			
 			echo "<a href='".$_SERVER["PHP_SELF"]."?check=all' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th>".$lang["ocsng"][11]."</th><th>".$lang["ocsng"][13]."</th><th>".$lang["ocsng"][14]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$lang["ocsng"][11]."</th><th>".$lang["ocsng"][13]."</th><th>".$lang["ocsng"][14]."</th><th>".$lang["ocsng"][6]."</th><th>&nbsp;</th></tr>";
 			
-			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
 			echo "<input class='submit' type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
 			echo "</td></tr>";
 	
 			foreach ($already_linked as $ID => $tab){
 	
-				echo "<tr align='center' class='tab_bg_2'><td><a href='".$HTMLRel."front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td><td>".$tab["date"]."</td><td>".$hardware[$tab["ocs_id"]]["date"]."</td><td>";
-				
-				echo "<input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
+				echo "<tr align='center' class='tab_bg_2'>";
+				echo "<td><a href='".$HTMLRel."front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td>";
+				echo "<td>".$tab["date"]."</td><td>".$hardware[$tab["ocs_id"]]["date"]."</td>";
+				echo "<td>".$lang["choice"][$tab["auto_update"]]."</td>";
+				echo "<td><input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
 				echo "</td></tr>";
 			}
-			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
 			echo "<input class='submit' type='submit' name='update_ok' value='".$lang["buttons"][7]."'>";
 			echo "</td></tr>";
 			echo "</table>";
