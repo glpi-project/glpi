@@ -1880,7 +1880,7 @@ function ocsFormConfig($target, $id) {
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["ocsconfig"][40]." </td><td>";
 	echo "<select name='cron_sync_number'>";
-	for ($i=1;$i<100;$i++){
+	for ($i=0;$i<100;$i++){
 		echo "<option value='$i' ".($i==$data["cron_sync_number"]?" selected":"").">$i</option>";
 	}
 	echo "</select>";
