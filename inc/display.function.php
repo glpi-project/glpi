@@ -254,13 +254,18 @@ function commonHeader($title,$url)
 	}
 	
 	if (isset($plugins)&&count($plugins)>0){
+		$list=array();
+		foreach ($plugins as $key => $val) {
+			$list[$key]=$val["name"];
+		}
+		asort($list);
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu5');\">";
 		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["common"][29]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu5\"><ul>";
 		// list menu item 
-		foreach ($plugins as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/plugins/".$key."/\">".$val["name"]."</a></span></li>\n";
+		foreach ($list as $key => $val) {
+			echo "<li><span class='menu'><a  href=\"".$cfg_glpi["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></span></li>\n";
 		}
 			echo "</ul></dd>\n";
 		echo "</dl>\n";
