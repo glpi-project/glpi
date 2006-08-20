@@ -85,7 +85,13 @@ header_nocache();
 						$newgroup.="<optgroup label=\"$val\">";
 					} else {
 						if ($key>1){ // No ID
-							if (!empty($val["linkfield"])||$val["table"]=="glpi_dropdown_state"||$val["table"]=="glpi_infocoms"||$val["table"]=="glpi_enterprises_infocoms"||$val["table"]=="glpi_dropdown_budget"){
+							if (!empty($val["linkfield"])
+								||$val["table"]=="glpi_dropdown_state"
+								||$val["table"]=="glpi_infocoms"
+								||$val["table"]=="glpi_enterprises_infocoms"
+								||$val["table"]=="glpi_dropdown_budget"
+								||($val["table"]=="glpi_ocs_link"&&$key==101 // auto_update_ocs
+							)){
 								$newgroup.= "<option value='$key'>".$val["name"]."</option>";
 								$items_in_group++;
 							}

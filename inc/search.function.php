@@ -214,7 +214,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			}else {
 				echo "<option value=\"".$key."\""; 
 				if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-				echo ">". substr($val["name"],0,30) ."</option>\n";
+				echo ">". substr($val["name"],0,32) ."</option>\n";
 			}
 		}
 		if (!$first_group)
@@ -1298,6 +1298,8 @@ case "glpi_contracts.expire_notice" :
 	
 	break;
 
+case "glpi_ocs_link.last_update":
+case "glpi_ocs_link.last_ocs_update":
 case "glpi_computers.date_mod":
 case "glpi_printers.date_mod":
 case "glpi_networking.date_mod":
@@ -1516,11 +1518,15 @@ switch ($field){
 		return $out;
 		break;	
 	case "glpi_enterprises_infocoms.name" :
-		$type=DOCUMENT_TYPE;
-		$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
+		$type=ENTERPRISE_TYPE;
+		$out="";
+		if (!empty($data["ITEM_".$num."_3"])){
+			$out.= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) 
+				$out.= " (".$data["ITEM_".$num."_3"].")";
+			$out.= "</a>";
+		}
 		return $out;
 		break;
 	case "glpi_type_docs.icon" :
@@ -1607,6 +1613,8 @@ switch ($field){
 	case "glpi_contracts.renewal":
 		return getContractRenewalName($data["ITEM_$num"]);
 		break;
+	case "glpi_ocs_link.last_update":
+	case "glpi_ocs_link.last_ocs_update":
 	case "glpi_computers.date_mod":
 	case "glpi_printers.date_mod":
 	case "glpi_networking.date_mod":
@@ -1735,6 +1743,9 @@ if (in_array(translate_table($new_table,$device_type,$meta_type).".".$linkfield,
 else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
 
 switch ($new_table){
+	case "glpi_ocs_link":
+		return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
+		break;
 	case "glpi_dropdown_locations":
 		return " LEFT JOIN $new_table $AS ON ($rt.location = $nt.ID) ";
 		break;

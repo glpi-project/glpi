@@ -106,6 +106,7 @@ class Computer extends CommonDBTM {
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
+		global $db;
 		// Manage changes for OCS if more than 1 element (date_mod)
 		if ($this->fields["ocs_import"]&&$history==1&&count($updates)>1){
 			mergeOcsArray($this->fields["ID"],$updates,"computer_update");
@@ -117,6 +118,11 @@ class Computer extends CommonDBTM {
 			}else {
 				updateState(COMPUTER_TYPE,$input["ID"],$input["state"],0,$history);
 			}
+		}
+
+		if (isset($input["_auto_update_ocs"])){
+			$query="UPDATE glpi_ocs_link SET auto_update='".$input["_auto_update_ocs"]."' 	WHERE glpi_id='".$input["ID"]."'";
+			$db->query($query);
 		}
 	}
 	
@@ -430,7 +436,7 @@ class Computer extends CommonDBTM {
 	*
 	**/
 	function showForm($target,$ID,$withtemplate='') {
-		global $lang,$HTMLRel,$cfg_glpi;
+		global $lang,$HTMLRel,$cfg_glpi,$db;
 	
 		if (!haveRight("computer","r")) return false;
 		
@@ -539,8 +545,7 @@ class Computer extends CommonDBTM {
 			echo "<tr class='tab_bg_1'>";
 			echo "<td >".$lang["common"][15].": 	</td>";
 			echo "<td >";
-				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-			
+			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 			echo "</td>";
 			
 			
@@ -609,6 +614,29 @@ class Computer extends CommonDBTM {
 			echo "<td>".$lang["computers"][51].":</td><td>";
 			dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
 			echo "</td>";
+			
+			if (!empty($ID)&&$this->fields["ocs_import"]){
+				$query="SELECT * 
+						FROM glpi_ocs_link 
+						WHERE glpi_id='$ID'";
+	
+				$result=$db->query($query);
+				if ($db->numrows($result)==1){
+					$data=$db->fetch_array($result);
+					echo "<tr class='tab_bg_1'>";
+					echo "<td colspan='2' align='center'>";
+					echo $lang["ocsng"][14].": ".convDateTime($data["last_ocs_update"]);
+					echo "<br>";
+					echo $lang["ocsng"][13].": ".convDateTime($data["last_update"]);
+					echo "</td>";
+					echo "<td >".$lang["ocsng"][6]." ".$lang["Menu"][33].": 	</td>";
+					echo "<td >";
+					dropdownYesNoInt("_auto_update_ocs",$data["auto_update"]);
+					echo "</td>";
+					
+					echo "</tr>";
+				}
+			}
 			
 			echo "</tr>";
 			if (haveRight("computer","w")) {

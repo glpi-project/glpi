@@ -642,7 +642,7 @@ function dropdownYesNo($name,$value){
 * @param $value preselected value.
 * @return nothing (print out an HTML select box)
 */
-function dropdownYesNoInt($name,$value){
+function dropdownYesNoInt($name,$value=0){
 	global $lang;
 	echo "<select name='$name'>\n";
 	echo "<option value='0' ".(!$value?" selected ":"").">".$lang["choice"][0]."</option>\n";
