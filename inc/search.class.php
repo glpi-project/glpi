@@ -363,7 +363,7 @@ COMPUTER_TYPE => array(
 			100 => array(	"table" => "glpi_computers", 
 					"field" => "ocs_import",
 					"linkfield"=>"",
-					"name" => $lang["ocsng"][3],
+					"name" => $lang["ocsng"][7],
 					"meta" => 0,
 				),
 			101 => array(	"table" => "glpi_ocs_link", 

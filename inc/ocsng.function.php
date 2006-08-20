@@ -104,6 +104,9 @@ if ($dbocs->numrows($result_ocs)>0){
 		}
 	}
 	
+	
+	
+
 	if ($tolinked&&count($hardware)){
 	echo "<div align='center'><strong>".$lang["ocsng"][22]."</strong></div>";
 	}
@@ -119,7 +122,7 @@ if ($dbocs->numrows($result_ocs)>0){
 		// delete begin
 		if ($start>0)
 		array_splice($hardware,0,$start);
-		
+		echo "<div align='center'><strong>".$lang["ocsconfig"][18]."</strong></div>";
 		echo "<form method='post' name='ocsng_form' id='ocsng_form' action='".$_SERVER["PHP_SELF"]."'>";
 		if ($tolinked==0)
 			echo "<a href='".$_SERVER["PHP_SELF"]."?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
@@ -333,6 +336,7 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 	$query="SELECT * 
 			FROM glpi_ocs_link 
 			WHERE glpi_id='$glpi_id'";
+
 	$result=$db->query($query);
 	$ocs_exists=true;
 	$numrows=$db->numrows($result);
@@ -407,7 +411,9 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 	
 			ocsUpdateComputer($idlink,0);
 		}
-	} else echo $ocs_id." - ".$lang["ocsng"][23];
+	} else {
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]= $ocs_id." - ".$lang["ocsng"][23];
+	}
 
 }
 
@@ -728,8 +734,10 @@ function ocsImportEnterprise($name) {
 }
 
 function ocsCleanLinks(){
-	global $db;
+	global $db,$dbocs;
 
+
+	// Delete unexisting GLPI computers
 	$query="SELECT glpi_ocs_link.ID AS ID 
 			FROM glpi_ocs_link 
 			LEFT JOIN glpi_computers ON glpi_computers.ID=glpi_ocs_link.glpi_id 
@@ -743,6 +751,36 @@ function ocsCleanLinks(){
 			$db->query($query2);
 		}
 	}
+
+	// Delete unexisting OCS hardware
+	$query_ocs = "SELECT * 
+				FROM hardware";
+	$result_ocs = $dbocs->query($query_ocs);
+	
+	$hardware=array();
+	if ($dbocs->numrows($result_ocs)>0){
+		while($data=$dbocs->fetch_array($result_ocs)){
+			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
+			$hardware[$data["ID"]]=$data["DEVICEID"];
+		}
+	}
+
+	$query="SELECT *
+			FROM glpi_ocs_link";
+	$result = $db->query($query);
+
+	if ($db->numrows($result)>0){
+		while($data=$db->fetch_array($result)){
+			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
+			if (!isset($hardware[$data["ocs_id"]])){
+				$query_del="DELETE FROM glpi_ocs_link 
+							WHERE ID='".$data["ID"]."'";
+				$db->query($query_del);
+			}
+		}
+	}
+	
+
 }
 
 
@@ -751,7 +789,7 @@ function cron_ocsng(){
 	global $db,$dbocs;
 	
 	$cfg_ocs=getOcsConf(1);
-	
+	ocsManageDeleted();
 	
 	$query_ocs = "SELECT * 
 				FROM hardware 
