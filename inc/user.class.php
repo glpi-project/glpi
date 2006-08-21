@@ -124,10 +124,15 @@ class User extends CommonDBTM {
 	}
 	
 	function postAddItem($newID,$input) {
+		$prof=new Profile();
 		if (isset($input["_profile"])){
-			$prof=new Profile();
+			
 			$prof->updateForUser($newID,$input["_profile"]);
+		} else {
+			$prof->getFromDBForUser($newID);
 		}
+
+
 		if (isset($input["_groups"])){
 			foreach($input["_groups"] as $group){
 				addUserGroup($newID,$group);

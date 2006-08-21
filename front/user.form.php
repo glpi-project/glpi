@@ -35,7 +35,7 @@
 
 include ("_relpos.php");
 
-$NEEDED_ITEMS=array("user","profile","group");
+$NEEDED_ITEMS=array("user","profile","group","setup");
 include ($phproot . "/inc/includes.php");
 
 if(empty($_GET["ID"])) $_GET["ID"] = "";
@@ -113,10 +113,24 @@ else if (isset($_POST["deletegroup"]))
 	} else {
 		if (isset($_GET['add_ext_auth'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
-				$user=new User();
-				$input["name"]=$_GET['login'];
-				$input["_extauth"]=1;
-				$user->add($input);
+				
+				// LDAP case : get all informations
+				if (!empty($cfg_glpi["ldap_host"])&&!empty($cfg_glpi["ldap_rootdn"])){
+					$identificat = new Identification();
+					$found_dn=$identificat->ldap_get_dn($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_GET['login']),$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
+					if ($found_dn&&!$identificat->user->getFromDBbyName($_GET['login'])){
+						$identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_GET['login']));
+						$identificat->user->fields["_extauth"]=1;
+						$input=$identificat->user->fields;
+						unset($identificat->user->fields);
+						$identificat->user->add($input);
+					}
+				} else {
+					$user=new User();
+					$input["name"]=$_GET['login'];
+					$input["_extauth"]=1;
+					$user->add($input);
+				}
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
