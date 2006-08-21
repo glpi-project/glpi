@@ -459,6 +459,12 @@ ADD `ldap_field_group_member` VARCHAR( 255 ) NULL ";
 	$db->query($query) or die("0.68.1 add glpi_config.ldap_*_groups ".$lang["update"][90].$db->error());
 }
 
+if(!FieldExists("glpi_groups", "ldap_group_dn")) {
+	$query = "ALTER TABLE `glpi_groups` ADD `ldap_group_dn` VARCHAR( 255 ) NULL ";
+	$db->query($query) or die("0.68.1 add glpi_groups.ldap_group_dn ".$lang["update"][90].$db->error());
+}
+
+
 if(!FieldExists("glpi_ocs_link", "ocs_deviceid")) {
 	$query = "ALTER TABLE `glpi_ocs_link` CHANGE `ocs_id` `ocs_deviceid` VARCHAR( 255 ) NOT NULL ;";
 	$db->query($query) or die("0.68.1 add glpi_ocs_link.ocs_deviceid ".$lang["update"][90].$db->error());

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-08-19 17:05
+#GLPI Dump database on 2006-08-22 00:18
 
 ### Dump table glpi_alerts
 
@@ -1191,7 +1191,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-19 17:05:19','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-22 00:17:56','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1220,6 +1220,7 @@ CREATE TABLE `glpi_groups` (
   `comments` text,
   `ldap_field` varchar(255) default NULL,
   `ldap_value` varchar(255) default NULL,
+  `ldap_group_dn` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`),
   KEY `ldap_field` (`ldap_field`)

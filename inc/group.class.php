@@ -141,7 +141,10 @@ class Group extends CommonDBTM{
 		echo "</td></tr>";
 		
 		if(!empty($cfg_glpi["ldap_host"])){
-			echo "<tr><td>".$lang["setup"][600].":	</td>";
+			echo "<tr><td colspan='2' align='center'>".$lang["setup"][256].":	</td>";
+			echo "</tr>";
+
+			echo "<tr><td>".$lang["setup"][260].":	</td>";
 			echo "<td>";
 			autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],30);	
 			echo "</td></tr>";
@@ -149,6 +152,15 @@ class Group extends CommonDBTM{
 			echo "<tr><td>".$lang["setup"][601].":	</td>";
 			echo "<td>";
 			autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],30);	
+			echo "</td></tr>";
+
+			echo "<tr><td colspan='2' align='center'>".$lang["setup"][257].":	</td>";
+			echo "</tr>";
+
+
+			echo "<tr><td>".$lang["setup"][261].":	</td>";
+			echo "<td>";
+			autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],30);	
 			echo "</td></tr>";
 		}
 	
