@@ -373,10 +373,10 @@ class User extends CommonDBTM {
 		for ($i=0; $i < count($info); $i++)
 		{
 
-			if ($info[$i]["dn"] != '')
-
 			//Get the cn of the group and add it to the list of groups
-			$listgroups[] = $info[$i]["dn"];
+			if ($info[$i]["dn"] != '')
+				$listgroups[$i] = $info[$i]["dn"];
+
 		}
 
 		//Create an array with the list of groups of the user
@@ -451,23 +451,19 @@ class User extends CommonDBTM {
 					$v = array_merge($v,$v2);
 				break;
 		}
-		
-
 		if ( is_array($v)&&count($v)>0){
 			foreach ($v as $attribute => $valattribute){
-				foreach ($v[$attribute] as $key => $val){
+				foreach ($valattribute as $key => $val){
 					if (is_array($val))
 					for ($i=0;$i<count($val);$i++){
-
-						for ($j=0; $j < count($groups[$key]);$j++){
-							if ($group_found= array_search($val[$i],$groups[$key][$j])){
-								$this->fields["_groups"][]=$group_found;
-							}
+						if ($group_found= array_search($val[$i],$groups[$key])){
+							$this->fields["_groups"][]=$group_found;
 						}
 					}
 				}
 			}
 		}
+
 	}
 
 	//Hook to retrieve more informations for ldap
