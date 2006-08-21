@@ -388,7 +388,7 @@ class User extends CommonDBTM {
 
 
   function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
-	global $db;
+	global $db,$cfg_glpi;
 	
 	$fields=array_filter($fields);
 	
@@ -424,6 +424,7 @@ class User extends CommonDBTM {
 	// Get group fields
 	$query="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL";
 	$result=$db->query($query);
+
 	if ($db->numrows($result)>0){
 		$group_fields=array();
 		$groups=array();
@@ -432,6 +433,7 @@ class User extends CommonDBTM {
 			$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
 		}
 
+		
 		switch ($cfg_glpi["ldap_search_for_groups"])
 		{
 			case 0:
