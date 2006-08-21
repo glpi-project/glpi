@@ -422,50 +422,54 @@ class User extends CommonDBTM {
 	}
 
 	// Get group fields
-	$query="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL";
-	$result=$db->query($query);
+	$query_user="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
+	$query_group="SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
 
-	if ($db->numrows($result)>0){
-		$group_fields=array();
-		$groups=array();
-		while ($data=$db->fetch_assoc($result)){
-			$group_fields[]=$data["ldap_field"];
-			$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
+	$group_fields=array();
+	$groups=array();
+	$v=array();
+	//The groupes are retrived by looking into an ldap user object
+	if ($cfg_glpi["ldap_search_for_groups"]==0||$cfg_glpi["ldap_search_for_groups"]==2){
+
+		$result=$db->query($query_user);
+	
+		if ($db->numrows($result)>0){
+			while ($data=$db->fetch_assoc($result)){
+				$group_fields[]=$data["ldap_field"];
+				$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
+			}
+			//iIf the groups must be retrieve from the ldap user object
+			$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
+			$v = ldap_get_entries($ldapconn, $sr);
+		}
+	}
+
+	//The groupes are retrived by looking into an ldap group object
+	if ($cfg_glpi["ldap_search_for_groups"]==0||$cfg_glpi["ldap_search_for_groups"]==2){
+
+		$result=$db->query($query_group);
+	
+		if ($db->numrows($result)>0){
+			while ($data=$db->fetch_assoc($result)){
+				$groups[$cfg_glpi["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
+			}
+			$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn);
+			$v = array_merge($v,$v2);
 		}
 
-		
-		switch ($cfg_glpi["ldap_search_for_groups"])
-		{
-			case 0:
-					//iIf the groups must be retrieve from the ldap user object
-					$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
-					$v = ldap_get_entries($ldapconn, $sr);
-				break;
-			case 1:
-					//The groupes are retrived by looking into an ldap group object
-					$v = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn);
-				break;
-			case 2:
-					//Search into users & groups, and merge the 2 arrays into 1
-					$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
-					$v = ldap_get_entries($ldapconn, $sr);
-					$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn);
-					$v = array_merge($v,$v2);
-				break;
-		}
-		if ( is_array($v)&&count($v)>0){
-			foreach ($v as $attribute => $valattribute){
-				foreach ($valattribute as $key => $val){
-					if (is_array($val))
-					for ($i=0;$i<count($val);$i++){
-						if ($group_found= array_search($val[$i],$groups[$key])){
-							$this->fields["_groups"][]=$group_found;
-						}
+	}
+	
+	if ( is_array($v)&&count($v)>0){
+		foreach ($v as $attribute => $valattribute){
+			foreach ($valattribute as $key => $val){
+				if (is_array($val))
+				for ($i=0;$i<count($val);$i++){
+					if ($group_found= array_search($val[$i],$groups[$key])){
+						$this->fields["_groups"][]=$group_found;
 					}
 				}
 			}
 		}
-
 	}
 
 	//Hook to retrieve more informations for ldap

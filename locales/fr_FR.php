@@ -1305,14 +1305,15 @@ $lang["setup"][250]="Affichage recherche par défaut ";
 $lang["setup"][251]="Sélectionnez une rubrique ";
 $lang["setup"][252]="Sélectionnez les éléments à afficher par défaut ";
 
-$lang["setup"][253]="Filtre des groupes ";
+$lang["setup"][253]="Filtre pour la recherche dans les groupes";
 $lang["setup"][254]="Type de recherche";
-$lang["setup"][255]="Attribut indiquant l'appartenance à un groupe ";
-
+$lang["setup"][255]="Attribut des groupes contenant les utilisateurs";
 $lang["setup"][256]="Dans les utilisateurs";
 $lang["setup"][257]="Dans les groupes";
 $lang["setup"][258]="Utilisateurs & groupes";
 $lang["setup"][259]="Appartenance à des groupes";
+$lang["setup"][260]="Attribut utilisateur indiquant ses groupes";
+$lang["setup"][261]="DN du groupe";
 
 $lang["setup"][300]="Vérifier si une nouvelle version est disponible";
 $lang["setup"][301]="Une nouvelle version est disponible :";
