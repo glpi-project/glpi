@@ -258,12 +258,9 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case CASE_DEVICE :
 			$type=$lang["devices"][22];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["format"])) {
-				switch($device->fields["format"]){
-					case "Grand" : $entry[$lang["common"][17]]=$lang["device_case"][1];break;
-					case "Moyen" : $entry[$lang["common"][17]]=$lang["device_case"][2];break;
-					case "Micro" : $entry[$lang["common"][17]]=$lang["device_case"][3];break;
-				}
+			print_r($device);
+			if (!empty($device->fields["type"])) {
+				$entry[$lang["device_case"][0]]=getDropdownName("glpi_dropdown_case_type",$device->fields["type"]);
 			}
 		
 		break;
@@ -666,17 +663,8 @@ function showDevicesForm ($target,$ID,$device_type) {
 		break;
 		case "glpi_device_case" :
 			echo "<tr><td>".$lang["device_case"][0].":</td>";
-			echo "<td><select name='format'>";
-			echo "<option value=\"Grand\"";
-			if(strcmp($device->fields["format"],"Grand") == 0) echo "selected='selected'";
-			echo ">".$lang["device_case"][1]."</option>";
-			echo "<option value=\"Moyen\" ";
-			if(strcmp($device->fields["format"],"Moyen") == 0) echo "selected='selected'";
-			echo ">".$lang["device_case"][2]."</option>";
-			echo "<option value=\"Micro\"";
-			if(strcmp($device->fields["format"],"Micro") == 0) echo "selected='selected'";
-			echo ">".$lang["device_case"][3]."</option>";
-			echo "</select>";
+			echo "<td>";
+			dropdownValue("glpi_dropdown_case_type","type",$device->fields["type"]);
 			echo "</td>";
 			echo "</tr>";
 

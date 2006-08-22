@@ -1140,6 +1140,7 @@ $lang["setup"][41]="Sélectionnez une Langue";
 $lang["setup"][42]="Types de matériels réseau";
 $lang["setup"][43]="Types d'imprimantes";
 $lang["setup"][44]="Types de moniteurs";
+$lang["setup"][45]="Type de boitiers";
 $lang["setup"][57]="Utilisateur";
 $lang["setup"][62]="Sélectionnez la catégorie à configurer";
 $lang["setup"][63]="Attention vous êtes sur le point de supprimer un intitulé utilisé pour un ou plusieurs éléments.";
