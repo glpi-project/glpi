@@ -93,7 +93,7 @@ else if (isset($tab["install"]))
 	checkRight("cartridge","w");
 	$cart->install($tab["pID"],$tab["tID"]);
 	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
-	//echo $tab["back"];
+
 	glpi_header($cfg_glpi["root_doc"]."/front/printer.form.php?ID=".$tab["pID"]);
 }
 else if (isset($tab["uninstall"]))

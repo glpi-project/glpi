@@ -33,10 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
-
-
-
 /**
 * Print out a link to add directly a new cartridge from a cartridge type.
 *
@@ -105,148 +101,127 @@ function showCartridges ($tID,$show_old=0) {
 				echo "&nbsp;".$lang["cartridges"][16]."&nbsp;-&nbsp;$unused&nbsp;".$lang["cartridges"][13]."&nbsp;-&nbsp;$used&nbsp;".$lang["cartridges"][14]."&nbsp;-&nbsp;$old&nbsp;".$lang["cartridges"][15]."</th>";
 				echo "<th colspan='2'>";
 				echo "&nbsp;</th></tr>";
-			}
-			else { // Old
+			} else { // Old
 				echo "<tr><th colspan='8'>";
 				echo $lang["cartridges"][35];
 				echo "</th>";
 				echo "<th colspan='2'>";
 				echo "&nbsp;</th></tr>";
-				
 			}
 			$i=0;
 			echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["cartridges"][27]."</th><th>".$lang["search"][9]."</th>";
 
-			if ($show_old==1)
+			if ($show_old==1){
 				echo "<th>".$lang["cartridges"][39]."</th>";
+			}
 			
 			echo "<th>".$lang["financial"][3]."</th>";
 			echo "<th colspan='2'>&nbsp;</th>";
 
 			echo "</tr>";
-				} else {
-
+		} else {
 			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
 			echo "<tr><th>".$lang["cartridges"][7]."</th></tr>";
 			echo "</table></div>";
 		}
 	}
 
-if ($show_old==0){ // NEW
-$where= " AND date_out IS NULL";
-} else { //OLD
-$where= " AND date_out IS NOT NULL";
-}
+	if ($show_old==0){ // NEW
+		$where= " AND date_out IS NULL";
+	} else { //OLD
+		$where= " AND date_out IS NOT NULL";
+	}
 
-$stock_time=0;
-$use_time=0;	
-$pages_printed=0;
-$nb_pages_printed=0;
-
-$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID') $where ORDER BY date_out ASC, date_use DESC, date_in";
+	$stock_time=0;
+	$use_time=0;	
+	$pages_printed=0;
+	$nb_pages_printed=0;
+	
+	$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID') $where ORDER BY date_out ASC, date_use DESC, date_in";
 
 	$pages=array();
 	if ($result = $db->query($query)) {			
-	$number=$db->numrows($result);
-	while ($data=$db->fetch_array($result)) {
-		$date_in=convDate($data["date_in"]);
-		$date_use=convDate($data["date_use"]);
-		$date_out=convDate($data["date_out"]);
-		$printer=$data["FK_glpi_printers"];
-		$page=$data["pages"];
+		$number=$db->numrows($result);
+		while ($data=$db->fetch_array($result)) {
+			$date_in=convDate($data["date_in"]);
+			$date_use=convDate($data["date_use"]);
+			$date_out=convDate($data["date_out"]);
+			$printer=$data["FK_glpi_printers"];
+			$page=$data["pages"];
 						
-		echo "<tr  class='tab_bg_1'><td align='center'>";
-		echo $data["ID"]; 
-		echo "</td><td align='center'>";
-		echo getCartridgeStatus($data["ID"]);
-		echo "</td><td align='center'>";
-		echo $date_in;
-		echo "</td><td align='center'>";
-		echo $date_use;
-
-		echo "</td><td align='center'>";
-		if (!is_null($date_use)){
-			$p=new Printer;
-			if ($p->getFromDB($data["FK_glpi_printers"]))
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/printer.form.php?ID=".$p->fields["ID"]."'><b>".$p->fields["name"]." (".$p->fields["ID"].")</b></a>";
-			else echo "N/A";
-
-		$tmp_dbeg=split("-",$data["date_in"]);
-		$tmp_dend=split("-",$data["date_use"]);
-
-		$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-					  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
-		$stock_time+=$stock_time_tmp;
-
-		}
-		
-		
-		echo "</td><td align='center'>";
-		echo $date_out;		
-
-		if ($show_old!=0){
-			$tmp_dbeg=split("-",$data["date_use"]);
-			$tmp_dend=split("-",$data["date_out"]);
-			
-			$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-						  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
-			$use_time+=$use_time_tmp;
-		}
-		echo "</td>";
-		
-		if ($show_old!=0){
-			// Get initial counter page
-			if (!isset($pages[$printer])){
-			$prn=new Printer;
-			$prn->getfromDB($printer);
-			$pages[$printer]=$prn->fields['initial_pages'];
+			echo "<tr  class='tab_bg_1'><td align='center'>";
+			echo $data["ID"]; 
+			echo "</td><td align='center'>";
+			echo getCartridgeStatus($data["ID"]);
+			echo "</td><td align='center'>";
+			echo $date_in;
+			echo "</td><td align='center'>";
+			echo $date_use;
+			echo "</td><td align='center'>";
+			if (!is_null($date_use)){
+				$p=new Printer;
+				if ($p->getFromDB($data["FK_glpi_printers"])){
+					echo "<a href='".$cfg_glpi["root_doc"]."/front/printer.form.php?ID=".$p->fields["ID"]."'><b>".$p->fields["name"]." (".$p->fields["ID"].")</b></a>";
+				}	else echo "N/A";
+				$tmp_dbeg=split("-",$data["date_in"]);
+				$tmp_dend=split("-",$data["date_use"]);
+				$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+										- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+				$stock_time+=$stock_time_tmp;
 			}
-			echo "<td align='center'>";
-				if ($pages[$printer]<$data['pages']){
-
-				$pages_printed+=$data['pages']-$pages[$printer];
-				$nb_pages_printed++;
-
-				echo ($data['pages']-$pages[$printer])." ".$lang["printers"][31];
-				$pages[$printer]=$data['pages'];
+			echo "</td><td align='center'>";
+			echo $date_out;		
+			if ($show_old!=0){
+				$tmp_dbeg=split("-",$data["date_use"]);
+				$tmp_dend=split("-",$data["date_out"]);
+				
+				$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+							  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+				$use_time+=$use_time_tmp;
 			}
 			echo "</td>";
+			if ($show_old!=0){
+				// Get initial counter page
+				if (!isset($pages[$printer])){
+					$prn=new Printer;
+					$prn->getfromDB($printer);
+					$pages[$printer]=$prn->fields['initial_pages'];
+				}
+				echo "<td align='center'>";
+				if ($pages[$printer]<$data['pages']){
+					$pages_printed+=$data['pages']-$pages[$printer];
+					$nb_pages_printed++;
+					echo ($data['pages']-$pages[$printer])." ".$lang["printers"][31];
+					$pages[$printer]=$data['pages'];
+				}
+				echo "</td>";
+			}
+			echo "<td align='center'>";
+			showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["ID"],1);
+			echo "</td>";
+			echo "<td align='center'>";
+			if (!is_null($date_use)&&$canedit)
+				echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["cartridges"][43]."</a>";		
+			else echo "&nbsp;";
+
+			echo "</td>";
+			echo "<td align='center'>";
+			if ($canedit){
+				echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
+			} else echo "&nbsp;";
+			echo "</td></tr>";
+		}	
+		if ($show_old!=0&&$number>0){
+			if ($nb_pages_printed==0) $nb_pages_printed=1;
+			echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
+			echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
+			echo "<td>&nbsp;</td>";
+			echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
+			echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
+			echo "<td colspan='3'>&nbsp;</td></tr>";
 		}
-
-		echo "<td align='center'>";
-		showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["ID"],1);
-		echo "</td>";
-		
-		echo "<td align='center'>";
-		if (!is_null($date_use)&&$canedit)
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["cartridges"][43]."</a>";		
-		else
-		echo "&nbsp;";
-
-		echo "</td>";
-
-
-		echo "<td align='center'>";
-		if ($canedit){
-			echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
-		} else echo "&nbsp;";
-		echo "</td></tr>";
-		
 	}	
-	if ($show_old!=0&&$number>0){
-		if ($nb_pages_printed==0) $nb_pages_printed=1;
-	echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
-	echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
-	echo "<td>&nbsp;</td>";
-	echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
-	echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
-	echo "<td colspan='3'>&nbsp;</td></tr>";
-		
-	}
-
-	}	
-echo "</table></div>\n\n";
-	
+	echo "</table></div>\n\n";
 }
 
 
@@ -280,10 +255,10 @@ function showCompatiblePrinters($instID) {
 	while ($i < $number) {
 		$ID=$db->result($result, $i, "ID");
 		$type=$db->result($result, $i, "type");
-	echo "<tr class='tab_bg_1'><td align='center'>$ID</td>";
-	echo "<td align='center'>$type</td>";
-	echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletetype=deletetype&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
-	$i++;
+		echo "<tr class='tab_bg_1'><td align='center'>$ID</td>";
+		echo "<td align='center'>$type</td>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletetype=deletetype&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+		$i++;
 	}
 	if (haveRight("cartridge","w")){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
@@ -295,7 +270,6 @@ function showCompatiblePrinters($instID) {
 	}
 	
 	echo "</table></div></form>"    ;
-	
 }
 
 /**
@@ -318,9 +292,9 @@ function showCartridgeInstalled($instID,$old=0) {
 
 	$query = "SELECT glpi_cartridges_type.ID as tID, glpi_cartridges_type.deleted as deleted, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as type, glpi_cartridges.ID as ID, glpi_cartridges.pages as pages, glpi_cartridges.date_use as date_use, glpi_cartridges.date_out as date_out, glpi_cartridges.date_in as date_in";
 	if ($old==0)
-	$query.= " FROM glpi_cartridges, glpi_cartridges_type WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.FK_glpi_printers= '$instID' AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridges_type.ID ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
+		$query.= " FROM glpi_cartridges, glpi_cartridges_type WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.FK_glpi_printers= '$instID' AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridges_type.ID ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 	else 
-	$query.= " FROM glpi_cartridges, glpi_cartridges_type WHERE glpi_cartridges.date_out IS NOT NULL AND glpi_cartridges.FK_glpi_printers= '$instID' AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridges_type.ID ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
+		$query.= " FROM glpi_cartridges, glpi_cartridges_type WHERE glpi_cartridges.date_out IS NOT NULL AND glpi_cartridges.FK_glpi_printers= '$instID' AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridges_type.ID ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 
 
 	$result = $db->query($query);
@@ -332,11 +306,12 @@ function showCartridgeInstalled($instID,$old=0) {
 
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	if ($old==0)
-	echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
+		echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
 	else echo "<tr><th colspan='8'>".$lang["cartridges"][35].":</th></tr>";
+	
 	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["search"][9]."</th>";
 	if ($old!=0)
-	echo "<th>".$lang["cartridges"][39]."</th>";
+		echo "<th>".$lang["cartridges"][39]."</th>";
 	
 	echo "<th>&nbsp;</th></tr>";
 
@@ -355,7 +330,6 @@ function showCartridgeInstalled($instID,$old=0) {
 		$ci->getFromDB(CARTRIDGE_TYPE,$data["tID"]);
 		echo $ci->getLink();
 		echo "</b></td><td align='center'>";
-
 		echo getCartridgeStatus($data["ID"]);
 		echo "</td><td align='center'>";
 		echo $date_in;
@@ -402,7 +376,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		}
 		if ($canedit)
 		if (is_null($date_out))
-		echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
+			echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
 		else echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["buttons"][6]."</a>";
 		echo "</td></tr>";
 		
@@ -412,29 +386,24 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/cartridge.edit.php\">";
 	
 		echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
-			dropdownCompatibleCartridges($instID);
+		dropdownCompatibleCartridges($instID);
 		echo "<input type='submit' name='install' value=\"".$lang["buttons"][4]."\" class='submit'>";
 			
 		echo "</div></form></td><td align='center' class='tab_bg_2'>&nbsp;";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";
 	} else { // Print average
-	if ($number>0){
-
-	if ($nb_pages_printed==0) $nb_pages_printed=1;
-
-	echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		if ($number>0){
+			if ($nb_pages_printed==0) $nb_pages_printed=1;
+			echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 	
-	echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
-	echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
-	echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
-	echo "<td>&nbsp;</td></tr>";
+			echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
+			echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
+			echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
+		echo "<td>&nbsp;</td></tr>";
+		}
 	}
-		
-	}
-        echo "</table></div>";
-	
-
+	echo "</table></div>";
 }
 
 
@@ -485,21 +454,19 @@ function dropdownCompatibleCartridges($pID) {
 *
 **/
 function countCartridges($tID,$alarm,$nohtml=0) {
-	
 	global $db,$cfg_glpi, $lang;
-	
 	
 	// Get total
 	$total = getCartridgesNumber($tID);
 	$out="";
 	if ($total!=0) {
-	$unused=getUnusedCartridgesNumber($tID);
-	$used=getUsedCartridgesNumber($tID);
-	$old=getOldCartridgesNumber($tID);
-
-	$highlight="";
-	if ($unused<=$alarm)
-		$highlight="class='tab_bg_1_2'";
+		$unused=getUnusedCartridgesNumber($tID);
+		$used=getUsedCartridgesNumber($tID);
+		$old=getOldCartridgesNumber($tID);
+	
+		$highlight="";
+		if ($unused<=$alarm)
+			$highlight="class='tab_bg_1_2'";
 
 	if (!$nohtml)
 		$out.= "<div $highlight>".$lang["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["cartridges"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</div>";
@@ -510,7 +477,7 @@ function countCartridges($tID,$alarm,$nohtml=0) {
 			$out.= "<div class='tab_bg_1_2'><i>".$lang["cartridges"][9]."</i></div>";
 		else $out.= $lang["cartridges"][9];
 	}
-return $out;
+	return $out;
 }	
 
 /**
@@ -592,10 +559,10 @@ function getUnusedCartridgesNumber($tID){
 *
 **/
 function isNewCartridge($cID){
-global $db;
-$query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_use IS NULL)";
-$result = $db->query($query);
-return ($db->numrows($result)==1);
+	global $db;
+	$query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_use IS NULL)";
+	$result = $db->query($query);
+	return ($db->numrows($result)==1);
 }
 
 /**
@@ -609,10 +576,14 @@ return ($db->numrows($result)==1);
 *
 **/
 function isUsedCartridge($cID){
-global $db;
-$query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_use IS NOT NULL AND date_out IS NULL)";
-$result = $db->query($query);
-return ($db->numrows($result)==1);
+	global $db;
+	$query = "SELECT ID 
+					FROM glpi_cartridges 
+					WHERE ( ID= '$cID' 
+						AND date_use IS NOT NULL 
+						AND date_out IS NULL)";
+	$result = $db->query($query);
+	return ($db->numrows($result)==1);
 }
 
 /**
@@ -626,10 +597,13 @@ return ($db->numrows($result)==1);
 *
 **/
 function isOldCartridge($cID){
-global $db;
-$query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_out IS NOT NULL)";
-$result = $db->query($query);
-return ($db->numrows($result)==1);
+	global $db;
+	$query = "SELECT ID 
+					FROM glpi_cartridges 
+					WHERE ( ID= '$cID' 
+								AND date_out IS NOT NULL)";
+	$result = $db->query($query);
+	return ($db->numrows($result)==1);
 }
 
 /**
@@ -643,10 +617,10 @@ return ($db->numrows($result)==1);
 *
 **/
 function getCartridgeStatus($cID){
-global $lang;
-if (isNewCartridge($cID)) return $lang["cartridges"][20];
-else if (isUsedCartridge($cID)) return $lang["cartridges"][21];
-else if (isOldCartridge($cID)) return $lang["cartridges"][22];
+	global $lang;
+	if (isNewCartridge($cID)) return $lang["cartridges"][20];
+	else if (isUsedCartridge($cID)) return $lang["cartridges"][21];
+	else if (isOldCartridge($cID)) return $lang["cartridges"][22];
 }
 
 function cron_cartridge(){
@@ -686,7 +660,6 @@ function cron_cartridge(){
 			$mail->send();
 			return 1;
 		}
-
 	}
 	return 0;
 }
