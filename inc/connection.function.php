@@ -61,7 +61,7 @@ function showConnect($target,$ID,$type) {
 		$computers = $connect->getComputerContact($type,$ID);
 
 		echo "<br><div align='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
-		echo $lang["connect"][0].":";
+		echo $lang["connect"][0].": ".count($computers);
 		echo "</th></tr>";
 
 		if ($computers&&count($computers)>0) {
