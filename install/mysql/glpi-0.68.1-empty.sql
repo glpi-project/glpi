@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-08-22 00:18
+#GLPI Dump database on 2006-08-22 03:23
 
 ### Dump table glpi_alerts
 
@@ -412,7 +412,7 @@ DROP TABLE IF EXISTS `glpi_device_case`;
 CREATE TABLE `glpi_device_case` (
   `ID` int(11) NOT NULL auto_increment,
   `designation` varchar(255) default NULL,
-  `format` enum('Grand','Moyen','Micro','Slim','') default 'Moyen',
+  `type` int(11) default NULL,
   `comment` text,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
   `specif_default` varchar(250) default NULL,
@@ -796,6 +796,7 @@ CREATE TABLE `glpi_dropdown_cartridge_type` (
 
 ### Dump table glpi_dropdown_case_type
 
+DROP TABLE IF EXISTS `glpi_dropdown_case_type`;
 CREATE TABLE `glpi_dropdown_case_type` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
@@ -804,6 +805,9 @@ CREATE TABLE `glpi_dropdown_case_type` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM ;
 
+INSERT INTO glpi_dropdown_case_type VALUES ('1','Grand',NULL);
+INSERT INTO glpi_dropdown_case_type VALUES ('2','Moyen',NULL);
+INSERT INTO glpi_dropdown_case_type VALUES ('3','Micro',NULL);
 
 ### Dump table glpi_dropdown_consumable_type
 
@@ -1202,7 +1206,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-22 00:17:56','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('4','-1','system','2006-08-22 03:23:36','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
