@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -42,14 +42,14 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-	if(!isset($_GET["start"])) $_GET["start"] = 0;
-	if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-	if (!isset($_GET["field"])) $_GET["field"] = "glpi_state_item.ID";
-	if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-	if (!isset($_GET["contains"])) $_GET["contains"] = "";
-	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_dropdown_state.name";
-	if (!isset($_GET["state"])) $_GET["state"] = "";
-	if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+if (!isset($_GET["field"])) $_GET["field"] = "glpi_state_item.ID";
+if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
+if (!isset($_GET["contains"])) $_GET["contains"] = "";
+if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_dropdown_state.name";
+if (!isset($_GET["state"])) $_GET["state"] = "";
+if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
 
 if (isset($tab["deletestate"])) {
 	checkTypeRight($tab["device_type"],"w");
@@ -58,18 +58,18 @@ if (isset($tab["deletestate"])) {
 	logEvent(0, "state", 4, "state", $_SESSION["glpiname"]." delete state.");
 }
 
-	checkCentralAccess();
+checkCentralAccess();
 
-	commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
-	
-	titleState();
-	
-	if ($_GET["synthese"]=="yes")
-		showStateSummary($_SERVER["PHP_SELF"]);
-	else {
-		searchFormStateItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["state"]);
-		showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
-	}
+commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
+
+titleState();
+
+if ($_GET["synthese"]=="yes")
+showStateSummary($_SERVER["PHP_SELF"]);
+else {
+	searchFormStateItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["state"]);
+	showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
+}
 
 commonFooter();
 ?>

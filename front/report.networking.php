@@ -26,11 +26,11 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 /*!
-    \brief affiche les diffents choix de rapports reseaux
+  \brief affiche les diffents choix de rapports reseaux
 
-*/
+ */
 include ("_relpos.php");
 
 include ($phproot . "/inc/includes.php");
@@ -58,9 +58,9 @@ echo "<td>";
 dropdownvalue("glpi_dropdown_locations","location","");
 echo "</td><td align='center' width='120'>";
 echo "<input type='submit' value='".$lang["reports"][15]."' class='submit'>";
-	echo "</td></tr>";
-	echo "</table>";
-	echo "</form>";
+echo "</td></tr>";
+echo "</table>";
+echo "</form>";
 
 
 echo "<form name='form2' method='post' action='report.switch.list.php'>";
@@ -70,9 +70,9 @@ echo "<td>";
 dropdownValue("glpi_networking", "switch", "");
 echo "</td><td align='center' width='120'>";
 echo "<input type='submit' value='".$lang["reports"][15]."' class='submit'>";
-	echo "</td></tr>";
-	echo "</table>";
-	echo "</form>";
+echo "</td></tr>";
+echo "</table>";
+echo "</form>";
 
 
 if (countElementsInTable("glpi_dropdown_netpoint")>0){

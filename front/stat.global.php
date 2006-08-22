@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
- 
+
 include ("_relpos.php");
 $NEEDED_ITEMS=array("tracking","stat");
 include ($phproot . "/inc/includes.php");
@@ -46,18 +46,18 @@ commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 checkRight("statistic","1");
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
-$year=date("Y")-1;
-$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+	$year=date("Y")-1;
+	$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
 
-$_POST["date2"]=date("Y-m-d");
+	$_POST["date2"]=date("Y-m-d");
 }
 
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
 if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
-$tmp=$_POST["date1"];
-$_POST["date1"]=$_POST["date2"];
-$_POST["date2"]=$tmp;
+	$tmp=$_POST["date1"];
+	$_POST["date1"]=$_POST["date2"];
+	$_POST["date2"]=$tmp;
 }
 
 
@@ -75,28 +75,28 @@ echo "</table></form></div>";
 ///////// Stats nombre intervention
 // Total des interventions
 $entrees_total=constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"]);
-	if (count($entrees_total)>0)
-graphBy($entrees_total,$lang["stats"][5],$lang["stats"][35],1,"month");
+if (count($entrees_total)>0)
+	graphBy($entrees_total,$lang["stats"][5],$lang["stats"][35],1,"month");
 
-// Total des interventions résolues
-$entrees_solved=constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"]);
-	if (count($entrees_solved)>0)
-graphBy($entrees_solved,$lang["stats"][11],$lang["stats"][35],1,"month");
+	// Total des interventions résolues
+	$entrees_solved=constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"]);
+if (count($entrees_solved)>0)
+	graphBy($entrees_solved,$lang["stats"][11],$lang["stats"][35],1,"month");
 
-//Temps moyen de resolution d'intervention
-$entrees_avgtime=constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"]);
-	if (count($entrees_avgtime)>0)
-graphBy($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0,"month");
+	//Temps moyen de resolution d'intervention
+	$entrees_avgtime=constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"]);
+if (count($entrees_avgtime)>0)
+	graphBy($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0,"month");
 
-//Temps moyen d'intervention réel
-$entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"]);
-	if (count($entrees_avgtime)>0)
-graphBy($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0,"month");
+	//Temps moyen d'intervention réel
+	$entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"]);
+if (count($entrees_avgtime)>0)
+	graphBy($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0,"month");
 
-//Temps moyen de prise en compte de l'intervention
-$entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"]);
-	if (count($entrees_avgtime)>0)
-graphBy($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0,"month");
+	//Temps moyen de prise en compte de l'intervention
+	$entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"]);
+if (count($entrees_avgtime)>0)
+	graphBy($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0,"month");
 
-commonFooter();
-?>
+	commonFooter();
+	?>

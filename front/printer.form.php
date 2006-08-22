@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -48,7 +48,7 @@ $print=new Printer();
 if (isset($_POST["add"]))
 {
 	checkRight("printer","w");
-	
+
 	$newID=$print->add($_POST);
 	logEvent($newID, "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$lang["log"][20]."  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -63,7 +63,7 @@ else if (isset($tab["delete"]))
 	logEvent($tab["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
-	 else 
+	else 
 		glpi_header($cfg_glpi["root_doc"]."/front/printer.php");
 }
 else if (isset($_POST["restore"]))
@@ -113,47 +113,47 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 else
 {
 	checkRight("printer","r");
-	
+
 	commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
 
-if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
-if (isset($_GET['onglet'])) {
-	$_SESSION['glpi_onglet']=$_GET['onglet'];
-}	
-	
+	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (isset($_GET['onglet'])) {
+		$_SESSION['glpi_onglet']=$_GET['onglet'];
+	}	
+
 	if ($print->getFromDB($tab["ID"]))
 		$print->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 
 	if (!empty($tab["withtemplate"])) {
-		
-		if ($print->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
-		
-			if (!empty($tab["ID"])){
-			switch($_SESSION['glpi_onglet']){
-				case 3 :
-					if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PRINTER_TYPE);
-					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
-					break;
 
-				case 4 :			
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);	
-					showContractAssociated(PRINTER_TYPE,$tab["ID"],$tab["withtemplate"]);
-					break;
-				case 5 :
-					showDocumentAssociated(PRINTER_TYPE,$tab["ID"],$tab["withtemplate"]);	
-					break;
-				default :
-					display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
-					break;
-			}	
-			
-			
-			
-		
-			
+		if ($print->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+
+			if (!empty($tab["ID"])){
+				switch($_SESSION['glpi_onglet']){
+					case 3 :
+						if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PRINTER_TYPE);
+						showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
+						break;
+
+					case 4 :			
+						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);	
+						showContractAssociated(PRINTER_TYPE,$tab["ID"],$tab["withtemplate"]);
+						break;
+					case 5 :
+						showDocumentAssociated(PRINTER_TYPE,$tab["ID"],$tab["withtemplate"]);	
+						break;
+					default :
+						display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+						break;
+				}	
+
+
+
+
+
 			}
 		}
-		
+
 	} else {
 		if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 			$job=new Job();
@@ -166,21 +166,21 @@ if (isset($_GET['onglet'])) {
 
 
 		if ($print->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
-		
+
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-						showCartridgeInstalled($tab["ID"]);
-						showCartridgeInstalled($tab["ID"],1);		
-						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
-						showPortsAdd($tab["ID"],PRINTER_TYPE);	
-						showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
-						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"]);
-						showContractAssociated(PRINTER_TYPE,$tab["ID"]);
-						showDocumentAssociated(PRINTER_TYPE,$tab["ID"]);
-						showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
-						showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);		
-						showLinkOnDevice(PRINTER_TYPE,$tab["ID"]);
-						display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+					showCartridgeInstalled($tab["ID"]);
+					showCartridgeInstalled($tab["ID"],1);		
+					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
+					showPortsAdd($tab["ID"],PRINTER_TYPE);	
+					showPorts($tab["ID"], PRINTER_TYPE,$tab["withtemplate"]);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$tab["ID"]);
+					showContractAssociated(PRINTER_TYPE,$tab["ID"]);
+					showDocumentAssociated(PRINTER_TYPE,$tab["ID"]);
+					showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);
+					showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$tab["ID"]);		
+					showLinkOnDevice(PRINTER_TYPE,$tab["ID"]);
+					display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 					break;
 				case 3 :			
 					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PRINTER_TYPE);
@@ -210,16 +210,16 @@ if (isset($_GET['onglet'])) {
 					break;
 				case 12 :
 					showHistory(PRINTER_TYPE,$tab["ID"]);
-				break;
+					break;
 				default :
 					if (!display_plugin_action(PRINTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-							showCartridgeInstalled($tab["ID"]);		
-							showCartridgeInstalled($tab["ID"],1);
+						showCartridgeInstalled($tab["ID"]);		
+						showCartridgeInstalled($tab["ID"],1);
 					}
 					break;
 			}		
-			
-			
+
+
 		}
 	}
 	commonFooter();

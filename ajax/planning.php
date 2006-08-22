@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,61 +34,61 @@
 // ----------------------------------------------------------------------
 
 //print_r($_GET);
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
 
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+// Send UTF8 Headers
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	checkCentralAccess();
+checkCentralAccess();
 
-	$split=split(":",$cfg_glpi["planning_begin"]);
-	$global_begin=intval($split[0]);
-	$split=split(":",$cfg_glpi["planning_end"]);
-	$global_end=intval($split[0]);
-	
-	
-	if (isset($_GET["begin_date"])&&!empty($_GET["begin_date"]))
-		$begin=strtotime($_GET["begin_date"]);
-	else $begin=strtotime(date("Y-m-d")." 12:00:00");
-	if (isset($_GET["end_date"])&&!empty($_GET["end_date"]))
-		$end=strtotime($_GET["end_date"]);
-	else $end=strtotime(date("Y-m-d")." 13:00:00");
-	
-	$begin_date=date("Y-m-d",$begin);
-	$end_date=date("Y-m-d",$end);
-	$begin_hour=date("H:i",$begin);
-	$end_hour=date("H:i",$end);
+$split=split(":",$cfg_glpi["planning_begin"]);
+$global_begin=intval($split[0]);
+$split=split(":",$cfg_glpi["planning_end"]);
+$global_end=intval($split[0]);
 
-	echo "<table class='tab_cadre' cellpadding='2'>";
-	if (isset($_GET["author"])){
-		echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
-		echo "<td>";
-		dropdownUsers("plan[id_assign]",$_GET["author"],"own_ticket",-1);
-		echo "</td></tr>";
-	}
 
-	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
-	showCalendarForm($_GET['form'],"plan[begin_date]",$begin_date);
-    	echo "</td></tr>";
+if (isset($_GET["begin_date"])&&!empty($_GET["begin_date"]))
+$begin=strtotime($_GET["begin_date"]);
+else $begin=strtotime(date("Y-m-d")." 12:00:00");
+if (isset($_GET["end_date"])&&!empty($_GET["end_date"]))
+$end=strtotime($_GET["end_date"]);
+else $end=strtotime(date("Y-m-d")." 13:00:00");
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
+$begin_date=date("Y-m-d",$begin);
+$end_date=date("Y-m-d",$end);
+$begin_hour=date("H:i",$begin);
+$end_hour=date("H:i",$end);
+
+echo "<table class='tab_cadre' cellpadding='2'>";
+if (isset($_GET["author"])){
+	echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
 	echo "<td>";
-	dropdownHours("plan[begin_hour]",$begin_hour,1);
+	dropdownUsers("plan[id_assign]",$_GET["author"],"own_ticket",-1);
 	echo "</td></tr>";
+}
 
-	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
-	showCalendarForm($_GET['form'],"plan[end_date]",$end_date);
-	echo "</td></tr>";
+echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
+showCalendarForm($_GET['form'],"plan[begin_date]",$begin_date);
+echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
-	echo "<td>";
-	dropdownHours("plan[end_hour]",$end_hour,1);
-	echo "</td></tr>";
+echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
+echo "<td>";
+dropdownHours("plan[begin_hour]",$begin_hour,1);
+echo "</td></tr>";
 
-	echo "</table>";
-	
+echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
+showCalendarForm($_GET['form'],"plan[end_date]",$end_date);
+echo "</td></tr>";
+
+echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
+echo "<td>";
+dropdownHours("plan[end_hour]",$end_hour,1);
+echo "</td></tr>";
+
+echo "</table>";
+
 
 ?>

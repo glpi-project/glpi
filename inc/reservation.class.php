@@ -26,14 +26,14 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 // CLASSES Reservation_Item and Reservation_Resa
 
 class ReservationItem extends CommonDBTM {
@@ -54,42 +54,42 @@ class ReservationItem extends CommonDBTM {
 			foreach ($data as $key => $val) {
 				$this->fields[$key] = $val;
 			}
-		if (!isset($this->fields["device_type"]))			
-		return false;
+			if (!isset($this->fields["device_type"]))			
+				return false;
 			switch ($this->fields["device_type"]){
-			case COMPUTER_TYPE :
-				$this->obj=new Computer;
-				break;
-			case NETWORKING_TYPE :
-				$this->obj=new Netdevice;
-				break;
-			case PRINTER_TYPE :
-				$this->obj=new Printer;
-				break;
-			case MONITOR_TYPE : 
-				$this->obj= new Monitor;	
-				break;
-			case PERIPHERAL_TYPE : 
-				$this->obj= new Peripheral;	
-				break;				
-			case PHONE_TYPE : 
-				$this->obj= new Phone;	
-				break;					
-			case SOFTWARE_TYPE : 
-				$this->obj= new Software;	
-				break;					
+				case COMPUTER_TYPE :
+					$this->obj=new Computer;
+					break;
+				case NETWORKING_TYPE :
+					$this->obj=new Netdevice;
+					break;
+				case PRINTER_TYPE :
+					$this->obj=new Printer;
+					break;
+				case MONITOR_TYPE : 
+					$this->obj= new Monitor;	
+					break;
+				case PERIPHERAL_TYPE : 
+					$this->obj= new Peripheral;	
+					break;				
+				case PHONE_TYPE : 
+					$this->obj= new Phone;	
+					break;					
+				case SOFTWARE_TYPE : 
+					$this->obj= new Software;	
+					break;					
 			}
 			if ($this->obj!=NULL)
-			return $this->obj->getfromDB($this->fields["id_device"]);
+				return $this->obj->getfromDB($this->fields["id_device"]);
 			else return false;
-			
+
 		} else {
 			return false;
 		}
 	}
 	function getType (){
 		global $lang;
-		
+
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
 				return $lang["computers"][44];
@@ -116,24 +116,24 @@ class ReservationItem extends CommonDBTM {
 			case PHONE_TYPE : 
 				return $lang["phones"][4];
 				break;
-			
-			}
-	
+
+		}
+
 	}
 	function getName(){
 		if (isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
-	return $this->obj->fields["name"];
-	else return "N/A";
+			return $this->obj->fields["name"];
+		else return "N/A";
 	}
 
 	function getLocation(){
 		if (isset($this->obj->fields["location"])&&$this->obj->fields["location"]!="")
-	return getTreeValueCompleteName("glpi_dropdown_locations",$this->obj->fields["location"]);
-	else return "N/A";
+			return getTreeValueCompleteName("glpi_dropdown_locations",$this->obj->fields["location"]);
+		else return "N/A";
 	}
-	
+
 	function getLink(){
-	
+
 		global $cfg_glpi;
 		$out="";	
 		switch ($this->fields["device_type"]){
@@ -177,11 +177,11 @@ class ReservationItem extends CommonDBTM {
 				if ($cfg_glpi["view_ID"]) $out.= " (".$this->fields["id_device"].")";
 				$out.= "</a>";
 				break;	
-			}
-	return $out;
-	
+		}
+		return $out;
+
 	}
-	
+
 
 	function cleanDBonPurge($ID) {
 
@@ -190,7 +190,7 @@ class ReservationItem extends CommonDBTM {
 		$query2 = "DELETE FROM glpi_reservation_resa WHERE (id_item = '$ID')";
 		$result2 = $db->query($query2);
 	}
-	
+
 }
 
 class ReservationResa extends CommonDBTM {
@@ -203,14 +203,14 @@ class ReservationResa extends CommonDBTM {
 	function pre_deleteItem($ID) {
 		global $cfg_glpi;
 		if ($this->getfromDB($ID))
-		if (isset($this->fields["id_user"])&&($this->fields["id_user"]==$_SESSION["glpiID"]||haveRight("reservation_central","w"))){
-			// Processing Email
-			if ($cfg_glpi["mailing"]){
-				$mail = new MailingResa($this,"delete");
-				$mail->send();
-			}
+			if (isset($this->fields["id_user"])&&($this->fields["id_user"]==$_SESSION["glpiID"]||haveRight("reservation_central","w"))){
+				// Processing Email
+				if ($cfg_glpi["mailing"]){
+					$mail = new MailingResa($this,"delete");
+					$mail->send();
+				}
 
-		}
+			}
 	}
 
 
@@ -252,13 +252,13 @@ class ReservationResa extends CommonDBTM {
 			$this->displayError("date",$item,$target);
 			return false;
 		}
-	
+
 		if ($this->is_reserved()){
 			$this->displayError("is_res",$item,$target);
 			return false;
 		}
-	
-	
+
+
 		if (isset($updates)){
 			$this->updateInDB($updates);
 			// Processing Email
@@ -275,84 +275,84 @@ class ReservationResa extends CommonDBTM {
 		// Add a Reservation
 		if ($ok){
 
-  			// set new date.
-   			$this->fields["id_item"] = $input["id_item"];
-   			$this->fields["comment"] = $input["comment"];
-   			$this->fields["id_user"] = $input["id_user"];
-   			$this->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":00";
+			// set new date.
+			$this->fields["id_item"] = $input["id_item"];
+			$this->fields["comment"] = $input["comment"];
+			$this->fields["id_user"] = $input["id_user"];
+			$this->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":00";
 			$this->fields["end"] = $input["end_date"]." ".$input["end_hour"].":00";
 
 			if (!$this->test_valid_date()){
 				$this->displayError("date",$input["id_item"],$target);
 				return false;
 			}
-	
+
 			if ($this->is_reserved()){
 				$this->displayError("is_res",$input["id_item"],$target);
 				return false;
 			}
 
 			if ($input["id_user"]>0)
-			if ($this->addToDB()){
-				// Processing Email
-				if ($cfg_glpi["mailing"]){
-					$mail = new MailingResa($this,"new");
-					$mail->send();
-				}
-				return true;
-			} else return false;
+				if ($this->addToDB()){
+					// Processing Email
+					if ($cfg_glpi["mailing"]){
+						$mail = new MailingResa($this,"new");
+						$mail->send();
+					}
+					return true;
+				} else return false;
 		}
 	}
 
 
 	// SPECIFIC FUNCTIONS
-	
+
 	function is_reserved(){
 		global $db;
 		if (!isset($this->fields["id_item"])||empty($this->fields["id_item"]))
-		return true;
-		
+			return true;
+
 		// When modify a reservation do not itself take into account 
 		$ID_where="";
 		if(isset($this->fields["ID"]))
-		$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
-		
+			$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
+
 		$query = "SELECT * FROM glpi_reservation_resa".
-		" WHERE $ID_where (id_item = '".$this->fields["id_item"]."') AND ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' < end))";
-//		echo $query."<br>";
+			" WHERE $ID_where (id_item = '".$this->fields["id_item"]."') AND ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' < end))";
+		//		echo $query."<br>";
 		if ($result=$db->query($query)){
 			return ($db->numrows($result)>0);
 		}
 		return true;
-		}
+	}
 	function test_valid_date(){
 		return (strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
-		}
+	}
 
 	function displayError($type,$ID,$target){
 		global $HTMLRel,$lang;
-		
+
 		echo "<br><div align='center'>";
 		switch ($type){
 			case "date":
-			 echo $lang["reservation"][19];
+				echo $lang["reservation"][19];
 			break;
 			case "is_res":
-			 echo $lang["reservation"][18];
+				echo $lang["reservation"][18];
 			break;
 			default :
-				echo "Erreur Inconnue";
+			echo "Erreur Inconnue";
 			break;
 		}
 		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$lang["reservation"][20]."</a>";
 		echo "</div>";
-		}
+	}
 	function textDescription($format="text"){
 		global $lang;
-		
+
 		$ci=new ReservationItem();
 		$ci->getFromDB($this->fields["id_item"]);		
-		
+
 		$u=new User();
 		$u->getFromDB($this->fields["id_user"]);
 		$content="";
@@ -368,15 +368,15 @@ class ReservationResa extends CommonDBTM {
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][25].":</span> ".nl2br($this->fields["comment"])."<br>";
 		} else { // text format
 			$content.=$lang["mailing"][1]."\n";
-        	        $content.=$lang["common"][37].": ".$u->getName()."\n";
-                	$content.=$lang["mailing"][7].": ".$ci->getName()."\n";
-                	$content.=$lang["search"][8].": ".convDateTime($this->fields["begin"])."\n";
-                	$content.=$lang["search"][9].": ".convDateTime($this->fields["end"])."\n";
-                	$content.=$lang["common"][25].": ".$this->fields["comment"]."\n";
-                	$content.=$lang["mailing"][1]."\n";
+			$content.=$lang["common"][37].": ".$u->getName()."\n";
+			$content.=$lang["mailing"][7].": ".$ci->getName()."\n";
+			$content.=$lang["search"][8].": ".convDateTime($this->fields["begin"])."\n";
+			$content.=$lang["search"][9].": ".convDateTime($this->fields["end"])."\n";
+			$content.=$lang["common"][25].": ".$this->fields["comment"]."\n";
+			$content.=$lang["mailing"][1]."\n";
 		}
 		return $content;
-		
+
 	}
 
 }

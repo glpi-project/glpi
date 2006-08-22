@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -74,13 +74,13 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 			$track=new Job();
 			$track->update($_POST);
 		}
-		
-		 if (showJobDetails($_SERVER["PHP_SELF"]."?show=user&ID=".$_GET["ID"],$_GET["ID"]))
-		 	showFollowupsSummary($_GET["ID"]);
+
+		if (showJobDetails($_SERVER["PHP_SELF"]."?show=user&ID=".$_GET["ID"],$_GET["ID"]))
+			showFollowupsSummary($_GET["ID"]);
 	}
 }
 elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
-	
+
 	//*******************
 	// Affichage Module réservation 
 	//******************
@@ -90,13 +90,13 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 
 		if ($_SESSION["glpiID"]==$_POST["id_user"]) 
-		if ($rr->update($_POST,$_SERVER["PHP_SELF"],$_POST["id_item"]))
-			glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
-		else exit();
+			if ($rr->update($_POST,$_SERVER["PHP_SELF"],$_POST["id_item"]))
+				glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
+			else exit();
 	}
 
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	
+
 	if (isset($_POST["clear_resa"])){
 		if ($rr->delete($_POST["ID"])){
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]."delete a reservation.");
@@ -136,7 +136,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		// Positionnement du calendrier au mois de debut
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
-		
+
 		if ($ok){
 			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." add a reservation.");
 			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
@@ -162,31 +162,31 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	checkRight("faq","r");
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
-	
+
 	if (isset($_GET["ID"])){
-	
-	if (ShowKbItemFull($_GET["ID"],"no"))
-		showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
-	
+
+		if (ShowKbItemFull($_GET["ID"],"no"))
+			showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
+
 	} else {
-	initExpandSessionVar();
+		initExpandSessionVar();
 
-	if (isset($_GET["toshow"])) {
-		if ($_GET["toshow"]=="all")
-			ExpandSessionVarShowAll();
-		else ExpandSessionVarShow($_GET["toshow"]);
-	}
-	if (isset($_GET["tohide"])) {
-		if ($_GET["tohide"]=="all")
-			ExpandSessionVarHideAll();
-		else ExpandSessionVarHide($_GET["tohide"]);
-	}
-	if (isset($_POST["contains"])) $contains=$_POST["contains"];
-	else $contains="";
-	
-	if (!empty($contains)) searchLimitSessionVarKnowbase($contains);
+		if (isset($_GET["toshow"])) {
+			if ($_GET["toshow"]=="all")
+				ExpandSessionVarShowAll();
+			else ExpandSessionVarShow($_GET["toshow"]);
+		}
+		if (isset($_GET["tohide"])) {
+			if ($_GET["tohide"]=="all")
+				ExpandSessionVarHideAll();
+			else ExpandSessionVarHide($_GET["tohide"]);
+		}
+		if (isset($_POST["contains"])) $contains=$_POST["contains"];
+		else $contains="";
 
-	faqShowCategoriesall($_SERVER["PHP_SELF"]."?show=faq",$contains);
+		if (!empty($contains)) searchLimitSessionVarKnowbase($contains);
+
+		faqShowCategoriesall($_SERVER["PHP_SELF"]."?show=faq",$contains);
 	}
 }
 //*******************
@@ -195,10 +195,10 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 
 
 else {
-checkHelpdeskAccess();
-helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	checkHelpdeskAccess();
+	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
-printHelpDesk($_SESSION["glpiID"],1);
+	printHelpDesk($_SESSION["glpiID"],1);
 }
 
 helpFooter();

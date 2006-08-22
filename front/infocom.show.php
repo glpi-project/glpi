@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
@@ -54,7 +54,7 @@ if (isset($_GET["ID"])){
 if(!isset($_GET["device_type"])||!isset($_GET["device_id"])||!$ci->getFromDB($_GET["device_type"],$_GET["device_id"]))
 echo "<div align='center'>".$lang["financial"][85]."</div>";
 else {
-	
+
 	echo "<div align='center'><strong>".$ci->getType()." - ".$ci->getLink()."</strong></div>";
 	if (isset($_GET["update"])&&$_GET["update"]==1) $withtemplate=0;
 	else $withtemplate=2;

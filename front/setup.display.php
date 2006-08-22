@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -63,7 +63,7 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
 	$setupdisplay->down($_POST);
 }
-	$type=$setupdisplay->title($type);
-	$setupdisplay->showForm($type);
-	commonFooter();
+$type=$setupdisplay->title($type);
+$setupdisplay->showForm($type);
+commonFooter();
 ?>

@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -34,21 +34,21 @@
 // ----------------------------------------------------------------------
 
 /**
-* Prints a direct connection to a computer
-*
-* @param $target the page where we'll print out this.
-* @param $ID the connection ID
-* @param $type the connection type
-* @return nothing (print out a table)
-*
-*/
+ * Prints a direct connection to a computer
+ *
+ * @param $target the page where we'll print out this.
+ * @param $ID the connection ID
+ * @param $type the connection type
+ * @return nothing (print out a table)
+ *
+ */
 function showConnect($target,$ID,$type) {
 	// Prints a direct connection to a computer
 
 	global $lang, $cfg_glpi;
 
 	$connect = new Connection;
-		
+
 	// Is global connection ?
 	$global=0;
 	$ci=new CommonItem();
@@ -57,7 +57,7 @@ function showConnect($target,$ID,$type) {
 
 		$ci->getFromDB($type,$ID);
 		$global=$ci->obj->fields['is_global'];
-		
+
 		$computers = $connect->getComputerContact($type,$ID);
 
 		echo "<br><div align='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
@@ -78,7 +78,7 @@ function showConnect($target,$ID,$type) {
 						echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["buttons"][10]."</a>";
 					else echo "&nbsp;";
 					echo "</b>";
-					}
+				}
 			}
 		} else {
 			echo "<tr><td class='tab_bg_1'><b>".$lang["help"][25].": </b>";
@@ -121,12 +121,12 @@ function showConnect($target,$ID,$type) {
 }
 
 /**
-* Disconnects a direct connection
-* 
-*
-* @param $ID the connection ID to disconnect.
-* @return nothing
-*/
+ * Disconnects a direct connection
+ * 
+ *
+ * @param $ID the connection ID to disconnect.
+ * @return nothing
+ */
 function Disconnect($ID) {
 	// Disconnects a direct connection
 
@@ -136,15 +136,15 @@ function Disconnect($ID) {
 
 
 /**
-*
-* Makes a direct connection
-*
-*
-*
-* @param $sID connection source ID.
-* @param $cID computer ID (where the sID would be connected).
-* @param $type connection type.
-*/
+ *
+ * Makes a direct connection
+ *
+ *
+ *
+ * @param $sID connection source ID.
+ * @param $cID computer ID (where the sID would be connected).
+ * @param $type connection type.
+ */
 function Connect($sID,$cID,$type) {
 	global $lang;
 	// Makes a direct connection
@@ -194,13 +194,13 @@ function Connect($sID,$cID,$type) {
 function getNumberConnections($type,$ID){
 	global $db;
 	$query = "SELECT count(*) FROM glpi_connect_wire INNER JOIN glpi_computers ON ( glpi_connect_wire.end2=glpi_computers.ID ) WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' AND glpi_computers.deleted='N' AND glpi_computers.is_template='0'";
-	
+
 	$result = $db->query($query);
-	
+
 	if ($db->numrows($result)!=0){
 		return $db->result($result,0,0);
 	} else return 0;
-	
+
 }
 
 function unglobalizeDevice($device_type,$ID){
@@ -211,14 +211,14 @@ function unglobalizeDevice($device_type,$ID){
 	if ($ci->obj->fields["is_global"]){
 		$input=array("ID"=>$ID,"is_global"=>"0");
 		$ci->obj->update($input);
-	
+
 		// Get connect_wire for this connection
 		$query = "SELECT glpi_connect_wire.ID AS connectID FROM glpi_connect_wire WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$device_type'";
 		$result=$db->query($query);
 		if (($nb=$db->numrows($result))>1){
 			$si=new StateItem();
 			$si->getfromDB($device_type,$ID,0);
-	
+
 			for ($i=1;$i<$nb;$i++){
 				// Get ID of the computer
 				if ($data=$db->fetch_array($result)){
@@ -229,10 +229,10 @@ function unglobalizeDevice($device_type,$ID){
 						$query2="UPDATE glpi_connect_wire SET end1='$newID' WHERE ID='".$data["connectID"]."'";
 						$db->query($query2);
 					}
-					
+
 				}
 			}
-			
+
 		}
 	}
 }

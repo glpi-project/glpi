@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -40,15 +40,15 @@ include ($phproot . "/inc/includes.php");
 
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
-	echo "<div align='center'>";
-    if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"])) {
+echo "<div align='center'>";
+if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"])) {
 	foreach ($plugin_hooks["config_page"] as $plug => $page){
 		$function="plugin_version_$plug";
 		$version=$function();
 		echo "<a href='".$HTMLRel."plugins/$plug/$page'>".$version["name"]."</a><br>";
 	}
-    }
-	echo "</div>";
+}
+echo "</div>";
 
 commonFooter();
 ?>

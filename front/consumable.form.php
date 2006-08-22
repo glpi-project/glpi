@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -90,52 +90,52 @@ else
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-	//	glpi_header($_SERVER['HTTP_REFERER']);
+		//	glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
-	
-	
+
+
 	if ($constype->getFromDB($tab["ID"]))
 		$constype->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($constype->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
-		switch($_SESSION['glpi_onglet']){
-		case -1 :	
-			showConsumableAdd($tab["ID"]);
-			showConsumables($tab["ID"]);
-			showConsumables($tab["ID"],1);
-			showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
-			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
-			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
-			display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
-			break;
-		case 4 :
-			showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
-			break;
-			
-		case 5 :
-			showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
-			break;
-			
-		case 7 : 
-			showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
-			break;
+			switch($_SESSION['glpi_onglet']){
+				case -1 :	
+					showConsumableAdd($tab["ID"]);
+					showConsumables($tab["ID"]);
+					showConsumables($tab["ID"],1);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+					showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
+					showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
+					display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					break;
+				case 4 :
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+					break;
 
-		case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],CONSUMABLE_TYPE,$tab["ID"]);
-				break;
-		default :
-			if (!display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
-				showConsumableAdd($tab["ID"]);
-				showConsumables($tab["ID"]);
-				showConsumables($tab["ID"],1);
+				case 5 :
+					showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
+					break;
+
+				case 7 : 
+					showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
+					break;
+
+				case 10 :
+					showNotesForm($_SERVER["PHP_SELF"],CONSUMABLE_TYPE,$tab["ID"]);
+					break;
+				default :
+					if (!display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+						showConsumableAdd($tab["ID"]);
+						showConsumables($tab["ID"]);
+						showConsumables($tab["ID"],1);
+					}
+					break;
 			}
-		break;
-		}
 	}
-	
+
 	commonFooter();
 }
 

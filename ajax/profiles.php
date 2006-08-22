@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,18 +34,18 @@
 // ----------------------------------------------------------------------
 
 
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	$NEEDED_ITEMS=array("profile");
-	include ($phproot."/inc/includes.php");
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+$NEEDED_ITEMS=array("profile");
+include ($phproot."/inc/includes.php");
 
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	checkRight("profile","r");
-	$prof=new Profile();
-	if ($_POST["interface"]=="helpdesk")
-		$prof->showHelpdeskForm($_POST["ID"]);
-	else if ($_POST["interface"]=="central")
-		$prof->showCentralForm($_POST["ID"]);
+checkRight("profile","r");
+$prof=new Profile();
+if ($_POST["interface"]=="helpdesk")
+$prof->showHelpdeskForm($_POST["ID"]);
+else if ($_POST["interface"]=="central")
+$prof->showCentralForm($_POST["ID"]);
 ?>

@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -43,7 +43,7 @@ if(empty($_GET["ID"])) $_GET["ID"] = "";
 
 $user=new User();
 if (empty($_GET["ID"])&&isset($_GET["name"])){
-	
+
 	$user->getFromDBbyName($_GET["name"]);
 	glpi_header($cfg_glpi["root_doc"]."/front/user.form.php?ID=".$user->fields['ID']);
 }
@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
 	checkRight("user","w");
 
 	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
-	
+
 	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -84,13 +84,13 @@ else if (isset($_POST["deletegroup"]))
 {
 	checkRight("user","w");
 	if (count($_POST["item"]))
-	foreach ($_POST["item"] as $key => $val)
-		deleteUserGroup($key);
+		foreach ($_POST["item"] as $key => $val)
+			deleteUserGroup($key);
 
 	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	
+
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -106,14 +106,14 @@ else if (isset($_POST["deletegroup"]))
 		if ($user->getFromDB($_GET["ID"]))
 			$user->showOnglets($_SERVER["PHP_SELF"]."?ID=".$_GET["ID"], "",$_SESSION['glpi_onglet'] );
 
-		
+
 		$user->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
 		showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
 		commonFooter();
 	} else {
 		if (isset($_GET['add_ext_auth'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
-				
+
 				// LDAP case : get all informations
 				if (!empty($cfg_glpi["ldap_host"])&&!empty($cfg_glpi["ldap_rootdn"])){
 					$identificat = new Identification();
@@ -140,7 +140,7 @@ else if (isset($_POST["deletegroup"]))
 		commonFooter();
 	}
 }
-	
+
 
 
 

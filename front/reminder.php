@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
@@ -48,7 +48,7 @@ $remind->title();
 showListReminder();
 
 if (haveRight("reminder_public","r"))
-	showListReminder("public");
+showListReminder("public");
 
 
 commonFooter();

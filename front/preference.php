@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // Based on:
 // IRMA, Information Resource-Management and Administration
 // Christian Bauer 
@@ -70,7 +70,7 @@ if (isset($_POST["changepw"])) {
 	}
 	$user=new User();
 	$user->update($_POST);
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 	if ($cfg_glpi["debug"]==DEMO_MODE){
@@ -79,10 +79,10 @@ if (isset($_POST["changepw"])) {
 		checkCentralAccess();
 	}
 	commonHeader($lang["title"][17],$_SERVER["PHP_SELF"]);
-        // titre
-        echo "<div align='center'><table border='0'><tr><td>";
-        echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][11]."</b></span>";
-        echo "</td></tr></table></div>";
+	// titre
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][11]."</b></span>";
+	echo "</td></tr></table></div>";
 	if ($_SESSION["glpiextauth"]!=1&&haveRight("password_update","1"))
 		showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	if (haveRight("show_ticket","1"))

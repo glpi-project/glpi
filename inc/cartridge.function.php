@@ -26,29 +26,29 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 /**
-* Print out a link to add directly a new cartridge from a cartridge type.
-*
-* Print out the link witch make a new cartridge from cartridge type idetified by $ID
-*
-*@param $ID Cartridge type identifier.
-*
-*
-*@return Nothing (displays)
-**/
+ * Print out a link to add directly a new cartridge from a cartridge type.
+ *
+ * Print out the link witch make a new cartridge from cartridge type idetified by $ID
+ *
+ *@param $ID Cartridge type identifier.
+ *
+ *
+ *@return Nothing (displays)
+ **/
 function showCartridgesAdd($ID) {
-	
+
 	global $cfg_glpi,$lang,$HTMLRel;
-	
+
 	if (!haveRight("cartridge","w")) return false;
-	
+
 	echo "<form method='post'  action=\"".$HTMLRel."front/cartridge.edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
@@ -61,7 +61,7 @@ function showCartridgesAdd($ID) {
 
 	echo "&nbsp;&nbsp;<select name='to_add'>";
 	for ($i=1;$i<100;$i++)
-	echo "<option value='$i'>$i</option>";
+		echo "<option value='$i'>$i</option>";
 	echo "</select>&nbsp;&nbsp;";
 	echo $lang["cartridges"][16];
 	echo "</td></tr>";
@@ -69,22 +69,22 @@ function showCartridgesAdd($ID) {
 	echo "</form><br>";
 }
 /**
-* Print out the cartridges of a defined type
-*
-* Print out all the cartridges that are issued from the cartridge type identified by $ID
-*
-*@param $tID integer : Cartridge type identifier.
-*@param $show_old boolean : show old cartridges or not. 
-*
-*@return Nothing (displays)
-**/
+ * Print out the cartridges of a defined type
+ *
+ * Print out all the cartridges that are issued from the cartridge type identified by $ID
+ *
+ *@param $tID integer : Cartridge type identifier.
+ *@param $show_old boolean : show old cartridges or not. 
+ *
+ *@return Nothing (displays)
+ **/
 function showCartridges ($tID,$show_old=0) {
 
 	global $db,$cfg_glpi,$lang,$HTMLRel;
-	
+
 	if (!haveRight("cartridge","r")) return false;
 	$canedit=haveRight("cartridge","w");
-	
+
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')";
 
 	if ($result = $db->query($query)) {
@@ -114,7 +114,7 @@ function showCartridges ($tID,$show_old=0) {
 			if ($show_old==1){
 				echo "<th>".$lang["cartridges"][39]."</th>";
 			}
-			
+
 			echo "<th>".$lang["financial"][3]."</th>";
 			echo "<th colspan='2'>&nbsp;</th>";
 
@@ -136,7 +136,7 @@ function showCartridges ($tID,$show_old=0) {
 	$use_time=0;	
 	$pages_printed=0;
 	$nb_pages_printed=0;
-	
+
 	$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID') $where ORDER BY date_out ASC, date_use DESC, date_in";
 
 	$pages=array();
@@ -148,7 +148,7 @@ function showCartridges ($tID,$show_old=0) {
 			$date_out=convDate($data["date_out"]);
 			$printer=$data["FK_glpi_printers"];
 			$page=$data["pages"];
-						
+
 			echo "<tr  class='tab_bg_1'><td align='center'>";
 			echo $data["ID"]; 
 			echo "</td><td align='center'>";
@@ -166,7 +166,7 @@ function showCartridges ($tID,$show_old=0) {
 				$tmp_dbeg=split("-",$data["date_in"]);
 				$tmp_dend=split("-",$data["date_use"]);
 				$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-										- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+					- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
 				$stock_time+=$stock_time_tmp;
 			}
 			echo "</td><td align='center'>";
@@ -174,9 +174,9 @@ function showCartridges ($tID,$show_old=0) {
 			if ($show_old!=0){
 				$tmp_dbeg=split("-",$data["date_use"]);
 				$tmp_dend=split("-",$data["date_out"]);
-				
+
 				$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-							  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+					- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
 				$use_time+=$use_time_tmp;
 			}
 			echo "</td>";
@@ -227,27 +227,27 @@ function showCartridges ($tID,$show_old=0) {
 
 
 /**
-* Show the printer types that are compatible with a cartridge type
-*
-* Show the printer types that are compatible with the cartridge type identified by $instID
-*
-*@param $instID : cartridge type identifier
-*
-*@return nothing (display)
-*
-**/
+ * Show the printer types that are compatible with a cartridge type
+ *
+ * Show the printer types that are compatible with the cartridge type identified by $instID
+ *
+ *@param $instID : cartridge type identifier
+ *
+ *@return nothing (display)
+ *
+ **/
 function showCompatiblePrinters($instID) {
 	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("cartridge","r")) return false;
 
 	$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_assoc.ID as ID FROM glpi_cartridges_assoc, glpi_dropdown_model_printers WHERE glpi_cartridges_assoc.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' order by glpi_dropdown_model_printers.name";
-	
+
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
-	
-    echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/cartridge.form.php\">";
+
+	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/cartridge.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$lang["cartridges"][32].":</th></tr>";
 	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["common"][22]."</th><th>&nbsp;</th></tr>";
@@ -268,21 +268,21 @@ function showCompatiblePrinters($instID) {
 		echo "<input type='submit' name='addtype' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
 	}
-	
+
 	echo "</table></div></form>"    ;
 }
 
 /**
-* Show installed cartridges
-*
-* Show installed cartridge for the printer type $instID
-*
-*@param $instID integer: printer type identifier.
-*@param $old boolean : old cartridges or not ?
-*
-*@return nothing (display)
-*
-**/
+ * Show installed cartridges
+ *
+ * Show installed cartridge for the printer type $instID
+ *
+ *@param $instID integer: printer type identifier.
+ *@param $old boolean : old cartridges or not ?
+ *
+ *@return nothing (display)
+ *
+ **/
 function showCartridgeInstalled($instID,$old=0) {
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
@@ -308,11 +308,11 @@ function showCartridgeInstalled($instID,$old=0) {
 	if ($old==0)
 		echo "<tr><th colspan='7'>".$lang["cartridges"][33].":</th></tr>";
 	else echo "<tr><th colspan='8'>".$lang["cartridges"][35].":</th></tr>";
-	
+
 	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["cartridges"][12]."</th><th>".$lang["cartridges"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["cartridges"][25]."</th><th>".$lang["search"][9]."</th>";
 	if ($old!=0)
 		echo "<th>".$lang["cartridges"][39]."</th>";
-	
+
 	echo "<th>&nbsp;</th></tr>";
 
 	$stock_time=0;
@@ -335,12 +335,12 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo $date_in;
 		echo "</td><td align='center'>";
 		echo $date_use;
-		
+
 		$tmp_dbeg=split("-",$date_in);
 		$tmp_dend=split("-",$date_use);
 
 		$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-				  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);
+			- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);
 		$stock_time+=$stock_time_tmp;
 
 		echo "</td><td align='center'>";
@@ -351,7 +351,7 @@ function showCartridgeInstalled($instID,$old=0) {
 			$tmp_dend=split("-",$date_out);
 
 			$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-						  - mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+				- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
 			$use_time+=$use_time_tmp;
 		}
 
@@ -375,20 +375,20 @@ function showCartridgeInstalled($instID,$old=0) {
 			echo "</td><td align='center'>";
 		}
 		if ($canedit)
-		if (is_null($date_out))
-			echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
-		else echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["buttons"][6]."</a>";
-		echo "</td></tr>";
-		
+			if (is_null($date_out))
+				echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."'>".$lang["cartridges"][29]."</a>";
+			else echo "&nbsp;&nbsp;&nbsp;<a href='".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$lang["buttons"][6]."</a>";
+			echo "</td></tr>";
+
 	}	
 	if ($old==0&&$canedit){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/cartridge.edit.php\">";
-	
+
 		echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
 		dropdownCompatibleCartridges($instID);
 		echo "<input type='submit' name='install' value=\"".$lang["buttons"][4]."\" class='submit'>";
-			
+
 		echo "</div></form></td><td align='center' class='tab_bg_2'>&nbsp;";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";
@@ -396,11 +396,11 @@ function showCartridgeInstalled($instID,$old=0) {
 		if ($number>0){
 			if ($nb_pages_printed==0) $nb_pages_printed=1;
 			echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-	
+
 			echo "<td align='center'>".$lang["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
 			echo "<td align='center'>".$lang["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$lang["financial"][57]."</td>";
 			echo "<td align='center'>".$lang["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
-		echo "<td>&nbsp;</td></tr>";
+			echo "<td>&nbsp;</td></tr>";
 		}
 	}
 	echo "</table></div>";
@@ -408,22 +408,22 @@ function showCartridgeInstalled($instID,$old=0) {
 
 
 /**
-* Print a select with compatible cartridge
-*
-* Print a select that contains compatibles cartridge for a printer model $pID
-*
-*@param $pID integer: printer type identifier.
-*
-*@return nothing (display)
-*
-**/
+ * Print a select with compatible cartridge
+ *
+ * Print a select that contains compatibles cartridge for a printer model $pID
+ *
+ *@param $pID integer: printer type identifier.
+ *
+ *@return nothing (display)
+ *
+ **/
 function dropdownCompatibleCartridges($pID) {
-	
+
 	global $db,$lang;
-	
+
 	$p=new Printer;
 	$p->getFromDB($pID);
-	
+
 	$query = "SELECT glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as name, glpi_cartridges_type.ID as tID FROM glpi_cartridges_type, glpi_cartridges_assoc WHERE glpi_cartridges_type.ID = glpi_cartridges_assoc.FK_glpi_cartridges_type AND glpi_cartridges_assoc.FK_glpi_dropdown_model_printers = '".$p->fields["model"]."' order by glpi_cartridges_type.name, glpi_cartridges_type.ref";
 	$result = $db->query($query);
 	$number = $db->numrows($result);
@@ -442,20 +442,20 @@ function dropdownCompatibleCartridges($pID) {
 }
 
 /**
-* Print the cartridge count HTML array for a defined cartridge type
-*
-* Print the cartridge count HTML array for the cartridge type $tID
-*
-*@param $tID integer: cartridge type identifier.
-*@param $alarm integer: threshold alarm value.
-*@param $nohtml integer: Return value without HTML tags.
-*
-*@return string to display
-*
-**/
+ * Print the cartridge count HTML array for a defined cartridge type
+ *
+ * Print the cartridge count HTML array for the cartridge type $tID
+ *
+ *@param $tID integer: cartridge type identifier.
+ *@param $alarm integer: threshold alarm value.
+ *@param $nohtml integer: Return value without HTML tags.
+ *
+ *@return string to display
+ *
+ **/
 function countCartridges($tID,$alarm,$nohtml=0) {
 	global $db,$cfg_glpi, $lang;
-	
+
 	// Get total
 	$total = getCartridgesNumber($tID);
 	$out="";
@@ -463,14 +463,14 @@ function countCartridges($tID,$alarm,$nohtml=0) {
 		$unused=getUnusedCartridgesNumber($tID);
 		$used=getUsedCartridgesNumber($tID);
 		$old=getOldCartridgesNumber($tID);
-	
+
 		$highlight="";
 		if ($unused<=$alarm)
 			$highlight="class='tab_bg_1_2'";
 
-	if (!$nohtml)
-		$out.= "<div $highlight>".$lang["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["cartridges"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</div>";
-	else 	$out.= $lang["common"][33].": $total   ".$lang["cartridges"][13].": $unused   ".$lang["cartridges"][14].": $used   ".$lang["cartridges"][15].": $old";		
+		if (!$nohtml)
+			$out.= "<div $highlight>".$lang["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["cartridges"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$lang["cartridges"][15].": $old</div>";
+		else 	$out.= $lang["common"][33].": $total   ".$lang["cartridges"][13].": $unused   ".$lang["cartridges"][14].": $used   ".$lang["cartridges"][15].": $old";		
 
 	} else {
 		if (!$nohtml)
@@ -481,15 +481,15 @@ function countCartridges($tID,$alarm,$nohtml=0) {
 }	
 
 /**
-* count how many cartbridge for a cartbridge type
-*
-* count how many cartbridge for the cartbridge type $tID
-*
-*@param $tID integer: cartridge type identifier.
-*
-*@return integer : number of cartridge counted.
-*
-**/
+ * count how many cartbridge for a cartbridge type
+ *
+ * count how many cartbridge for the cartbridge type $tID
+ *
+ *@param $tID integer: cartridge type identifier.
+ *
+ *@return integer : number of cartridge counted.
+ *
+ **/
 function getCartridgesNumber($tID){
 	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID')";
@@ -498,15 +498,15 @@ function getCartridgesNumber($tID){
 }
 
 /**
-* count how many cartridge used for a cartbridge type
-*
-* count how many cartridge used for the cartbridge type $tID
-*
-*@param $tID integer: cartridge type identifier.
-*
-*@return integer : number of cartridge used counted.
-*
-**/
+ * count how many cartridge used for a cartbridge type
+ *
+ * count how many cartridge used for the cartbridge type $tID
+ *
+ *@param $tID integer: cartridge type identifier.
+ *
+ *@return integer : number of cartridge used counted.
+ *
+ **/
 function getUsedCartridgesNumber($tID){
 	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID' AND date_use IS NOT NULL AND date_out IS NULL)";
@@ -515,15 +515,15 @@ function getUsedCartridgesNumber($tID){
 }
 
 /**
-* count how many old cartbridge for a cartbridge type
-*
-* count how many old cartbridge for the cartbridge type $tID
-*
-*@param $tID integer: cartridge type identifier.
-*
-*@return integer : number of old cartridge counted.
-*
-**/
+ * count how many old cartbridge for a cartbridge type
+ *
+ * count how many old cartbridge for the cartbridge type $tID
+ *
+ *@param $tID integer: cartridge type identifier.
+ *
+ *@return integer : number of old cartridge counted.
+ *
+ **/
 function getOldCartridgesNumber($tID){
 	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID'  AND date_out IS NOT NULL)";
@@ -531,15 +531,15 @@ function getOldCartridgesNumber($tID){
 	return $db->numrows($result);
 }
 /**
-* count how many cartbridge unused for a cartbridge type
-*
-* count how many cartbridge unused for the cartbridge type $tID
-*
-*@param $tID integer: cartridge type identifier.
-*
-*@return integer : number of cartridge unused counted.
-*
-**/
+ * count how many cartbridge unused for a cartbridge type
+ *
+ * count how many cartbridge unused for the cartbridge type $tID
+ *
+ *@param $tID integer: cartridge type identifier.
+ *
+ *@return integer : number of cartridge unused counted.
+ *
+ **/
 function getUnusedCartridgesNumber($tID){
 	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID'  AND date_use IS NULL)";
@@ -549,15 +549,15 @@ function getUnusedCartridgesNumber($tID){
 
 
 /**
-* To be commented
-*
-* 
-*
-*@param $cID integer : cartridge type.
-*
-*@return 
-*
-**/
+ * To be commented
+ *
+ * 
+ *
+ *@param $cID integer : cartridge type.
+ *
+ *@return 
+ *
+ **/
 function isNewCartridge($cID){
 	global $db;
 	$query = "SELECT ID FROM glpi_cartridges WHERE ( ID= '$cID' AND date_use IS NULL)";
@@ -566,56 +566,56 @@ function isNewCartridge($cID){
 }
 
 /**
-* To be commented
-*
-* 
-*
-*@param $cID integer : cartridge type.
-*
-*@return 
-*
-**/
+ * To be commented
+ *
+ * 
+ *
+ *@param $cID integer : cartridge type.
+ *
+ *@return 
+ *
+ **/
 function isUsedCartridge($cID){
 	global $db;
 	$query = "SELECT ID 
-					FROM glpi_cartridges 
-					WHERE ( ID= '$cID' 
-						AND date_use IS NOT NULL 
-						AND date_out IS NULL)";
+		FROM glpi_cartridges 
+		WHERE ( ID= '$cID' 
+				AND date_use IS NOT NULL 
+				AND date_out IS NULL)";
 	$result = $db->query($query);
 	return ($db->numrows($result)==1);
 }
 
 /**
-* To be commented
-*
-* 
-*
-*@param $cID integer : cartridge type.
-*
-*@return 
-*
-**/
+ * To be commented
+ *
+ * 
+ *
+ *@param $cID integer : cartridge type.
+ *
+ *@return 
+ *
+ **/
 function isOldCartridge($cID){
 	global $db;
 	$query = "SELECT ID 
-					FROM glpi_cartridges 
-					WHERE ( ID= '$cID' 
-								AND date_out IS NOT NULL)";
+		FROM glpi_cartridges 
+		WHERE ( ID= '$cID' 
+				AND date_out IS NOT NULL)";
 	$result = $db->query($query);
 	return ($db->numrows($result)==1);
 }
 
 /**
-* Get the dict value for the status of a cartridge
-*
-* 
-*
-*@param $cID integer : cartridge ID.
-*
-*@return string : dict value for the cartridge status.
-*
-**/
+ * Get the dict value for the status of a cartridge
+ *
+ * 
+ *
+ *@param $cID integer : cartridge ID.
+ *
+ *@return string : dict value for the cartridge status.
+ *
+ **/
 function getCartridgeStatus($cID){
 	global $lang;
 	if (isNewCartridge($cID)) return $lang["cartridges"][20];
@@ -644,17 +644,17 @@ function cron_cartridge(){
 				if (!empty($data["alertID"])){
 					$alert->delete(array("ID"=>$data["alertID"]));
 				}
-	
+
 				$alert=new Alert();
 				//// add alert
 				$input["type"]=ALERT_THRESHOLD;
 				$input["device_type"]=CARTRIDGE_TYPE;
 				$input["FK_device"]=$data["cartID"];
-					
+
 				$alert->add($input);
 			}
 		}
-		
+
 		if (!empty($message)){
 			$mail=new MailingAlert("alertcartridge",$message);
 			$mail->send();

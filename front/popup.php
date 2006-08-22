@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 include ("_relpos.php");
 $NEEDED_ITEMS=array("setup");
 include ($phproot . "/inc/includes.php");
@@ -44,8 +44,8 @@ if (isset($_SESSION["glpipopup"])){
 				echo "</script>";
 			}
 
-			include "setup.dropdowns.php";
-			break;
+		include "setup.dropdowns.php";
+		break;
 	}
 }
 

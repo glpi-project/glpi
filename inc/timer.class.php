@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -37,39 +37,39 @@
  *  Timer class for debug
  */
 class Script_Timer {
-  //! Timer value
-  var $timer=0;
-  //! Constructor
-  function Script_Timer ()
-  {
-    return true;
-  }
-  //! Start the Timer
-  function Start_Timer ()
-  {
-    $this->timer=microtime ();
+	//! Timer value
+	var $timer=0;
+	//! Constructor
+	function Script_Timer ()
+	{
+		return true;
+	}
+	//! Start the Timer
+	function Start_Timer ()
+	{
+		$this->timer=microtime ();
 
-    return true;
-  }
-  /**
-* Get the current time of the timer
-*
-* @param $decimals number of decimal of the result
-* @return time past from Start_Timer
-*
-*/
-  function Get_Time ($decimals = 3)
-  {
-    // $decimals will set the number of decimals you want for your milliseconds.
+		return true;
+	}
+	/**
+	 * Get the current time of the timer
+	 *
+	 * @param $decimals number of decimal of the result
+	 * @return time past from Start_Timer
+	 *
+	 */
+	function Get_Time ($decimals = 3)
+	{
+		// $decimals will set the number of decimals you want for your milliseconds.
 
-    // format start time
-    $start_time = explode (" ", $this->timer);
-    $start_time = $start_time[1] + $start_time[0];
-    // get and format end time
-    $end_time = explode (" ", microtime ());
-    $end_time = $end_time[1] + $end_time[0];
+		// format start time
+		$start_time = explode (" ", $this->timer);
+		$start_time = $start_time[1] + $start_time[0];
+		// get and format end time
+		$end_time = explode (" ", microtime ());
+		$end_time = $end_time[1] + $end_time[0];
 
-    return number_format ($end_time - $start_time, $decimals);
-  }
+		return number_format ($end_time - $start_time, $decimals);
+	}
 }
 ?>

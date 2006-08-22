@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
- 
+
 
 include ("_relpos.php");
 
@@ -48,15 +48,15 @@ if (!isset($_SESSION['glpi_viewuser'])) $_SESSION['glpi_viewuser']="tracking";
 if (isset($_GET['onglet'])) $_SESSION['glpi_viewuser']=$_GET['onglet'];
 
 
-	if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
-		$job=new Job();
-		foreach ($_POST["todel"] as $key => $val){
-			if ($val==1) {
-				$job->delete(array("ID"=>$key));
-			}
+if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
+	$job=new Job();
+	foreach ($_POST["todel"] as $key => $val){
+		if ($val==1) {
+			$job->delete(array("ID"=>$key));
 		}
-		glpi_header($_SERVER['HTTP_REFERER']);
 	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 
 
 $user=new User();
@@ -66,7 +66,7 @@ if ($user->showInfo($_SERVER["PHP_SELF"],$_GET["ID"])){
 	if($_SESSION['glpi_viewuser']=="tracking"){
 		if (isset($_GET["start"])) $start=$_GET["start"];
 		else $start=0;
-	
+
 		showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"],-1);
 	} else {
 		showDeviceUser($_GET["ID"]);

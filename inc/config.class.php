@@ -26,14 +26,14 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 // CLASSES Setup
 
 class Config extends CommonDBTM {
@@ -65,7 +65,7 @@ class ConfigOCS extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		if (isset($input["import_ip"])){
 			$input["checksum"]=0;
-		
+
 			if ($input["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
 			if ($input["import_device_ports"]) $input["checksum"]|= pow(2,PORTS_FL);
 			if ($input["import_device_modems"]) $input["checksum"]|= pow(2,MODEMS_FL);
@@ -76,15 +76,15 @@ class ConfigOCS extends CommonDBTM {
 			if ($input["import_device_hdd"]) $input["checksum"]|= pow(2,STORAGES_FL);
 			if ($input["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
 			if (	$input["import_device_processor"]
-				||$input["import_general_contact"]
-				||$input["import_general_comments"]
-				||$input["import_general_domain"]
-				||$input["import_general_os"]
-				||$input["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
+					||$input["import_general_contact"]
+					||$input["import_general_comments"]
+					||$input["import_general_domain"]
+					||$input["import_general_os"]
+					||$input["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
 			if (	$input["import_general_enterprise"]
-				||$input["import_general_type"]
-				||$input["import_general_model"]
-				||$input["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);
+					||$input["import_general_type"]
+					||$input["import_general_model"]
+					||$input["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);
 			if ($input["import_printer"]) $input["checksum"]|= pow(2,PRINTERS_FL);
 			if ($input["import_software"]) $input["checksum"]|= pow(2,SOFTWARES_FL);
 			if ($input["import_monitor"]) $input["checksum"]|= pow(2,MONITORS_FL);

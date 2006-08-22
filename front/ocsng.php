@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -38,30 +38,30 @@ $USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
 include ($phproot."/inc/includes.php");
 
-	checkRight("ocsng","w");
+checkRight("ocsng","w");
 
-	commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
-	if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
-	if (isset($_SESSION["ocs_link"])) unset($_SESSION["ocs_link"]);
-	if (isset($_SESSION["ocs_update"])) unset($_SESSION["ocs_update"]);
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."/pics/logoOcs.png\" alt='".$lang["ocsng"][0]."' title='".$lang["ocsng"][0]."' ></td>";
-	echo "</tr></table></div>";
+commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
+if (isset($_SESSION["ocs_link"])) unset($_SESSION["ocs_link"]);
+if (isset($_SESSION["ocs_update"])) unset($_SESSION["ocs_update"]);
+echo "<div align='center'><table border='0'><tr><td>";
+echo "<img src=\"".$HTMLRel."/pics/logoOcs.png\" alt='".$lang["ocsng"][0]."' title='".$lang["ocsng"][0]."' ></td>";
+echo "</tr></table></div>";
 
-	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-	echo "<tr><th>".$lang["ocsng"][0]."</th></tr>";
+echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
+echo "<tr><th>".$lang["ocsng"][0]."</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ocsng.sync.php\"><b>".$lang["ocsng"][1]."</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ocsng.sync.php\"><b>".$lang["ocsng"][1]."</b></a></td></tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.import.php\"><b>".$lang["ocsng"][2]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.import.php\"><b>".$lang["ocsng"][2]."</b></a></td> </tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>".$lang["ocsng"][4]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>".$lang["ocsng"][4]."</b></a></td> </tr>";
 
-	echo "</table></div>";
-	
-	ocsManageDeleted();
-	ocsCleanLinks();
+echo "</table></div>";
 
-	commonFooter();
+ocsManageDeleted();
+ocsCleanLinks();
+
+commonFooter();
 
 ?>

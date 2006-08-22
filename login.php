@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
- 
+
 
 include ("_relpos.php");
 $NEEDED_ITEMS=array("user","profile","setup","group");
@@ -66,123 +66,123 @@ if (!isset($_POST["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
 if (isset($_POST["noCAS"])) $_SESSION["noCAS"]=1;
 
 if (!$auth_succeded) // Pas de tests en configuration CAS
-if (empty($_POST['login_name'])||empty($_POST['login_password'])){
-$identificat->err=$lang["login"][8];
-} else {
+	if (empty($_POST['login_name'])||empty($_POST['login_password'])){
+		$identificat->err=$lang["login"][8];
+	} else {
 
-	// exists=0 -> no exist
-	// exists=1 -> exist with password
-	// exists=2 -> exist without password
-	$exists=$identificat->userExists($_POST['login_name']);
+		// exists=0 -> no exist
+		// exists=1 -> exist with password
+		// exists=2 -> exist without password
+		$exists=$identificat->userExists($_POST['login_name']);
 
-	// Pas en premier car sinon on ne fait pas le blankpassword
-	// First try to connect via le DATABASE
-	if ($exists==1){
-		
-		// Without UTF8 decoding
-		if (!$auth_succeded) $auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
-		if ($auth_succeded) {
-			$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-		}
-		
-		// With UTF8 decoding
-		//if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
-		//if ($auth_succeded) $user_present = $identificat->user->getFromDBbyName(utf8_decode($_POST['login_name']));
-	
-	}
+		// Pas en premier car sinon on ne fait pas le blankpassword
+		// First try to connect via le DATABASE
+		if ($exists==1){
 
-	// Second try IMAP/POP
-	if (!$auth_succeded&&!empty($cfg_glpi["imap_auth_server"])) {
-		$auth_succeded = $identificat->connection_imap($cfg_glpi["imap_auth_server"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
-		if ($auth_succeded) {
-			$identificat->extauth=1;
-			$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-
-			if ($identificat->user->getFromIMAP($cfg_glpi["imap_host"],utf8_decode($_POST['login_name']))) {
+			// Without UTF8 decoding
+			if (!$auth_succeded) $auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
+			if ($auth_succeded) {
+				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 			}
+
+			// With UTF8 decoding
+			//if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
+			//if ($auth_succeded) $user_present = $identificat->user->getFromDBbyName(utf8_decode($_POST['login_name']));
+
 		}
-	}
 
-	// Third try LDAP in depth search
-	// we check all the auth sources in turn...
-	// First, we get the dn and then, we try to log in
-	if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
-	   	$found_dn=false;
-   		$auth_succeded=0;
-   		$found_dn=$identificat->ldap_get_dn($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
-
-	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
+		// Second try IMAP/POP
+		if (!$auth_succeded&&!empty($cfg_glpi["imap_auth_server"])) {
+			$auth_succeded = $identificat->connection_imap($cfg_glpi["imap_auth_server"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
 			if ($auth_succeded) {
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				$identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']));
+
+				if ($identificat->user->getFromIMAP($cfg_glpi["imap_host"],utf8_decode($_POST['login_name']))) {
+				}
 			}
-	   	}
-	}
-
-	// Fourth try for flat LDAP 
-	// LDAP : Try now with the first base_dn
-	if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
-		$auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
-		if ($auth_succeded) {
-			$identificat->extauth=1;
-			$user_present = $identificat->user->getFromDBName($_POST['login_name']);
-			$identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$cfg_glpi["ldap_basedn"],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']));
-			
 		}
-	}
 
-	// Fifth try Active directory LDAP in depth search
-	// we check all the auth sources in turn...
-	// First, we get the dn and then, we try to log in
-	if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
-	   	//echo "AD";
-   		$found_dn=false;
-	   	$auth_succeded=0;
-	   	$found_dn=$identificat->ldap_get_dn_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],$_POST['login_name'],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
-   		//echo $found_dn."---";
-	   	if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-		    $auth_succeded = $identificat->connection_ldap_active_directory($cfg_glpi["ldap_host"],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
+		// Third try LDAP in depth search
+		// we check all the auth sources in turn...
+		// First, we get the dn and then, we try to log in
+		if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
+			$found_dn=false;
+			$auth_succeded=0;
+			$found_dn=$identificat->ldap_get_dn($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
+
+			if ($found_dn!=false&&!empty($_POST['login_password'])){ 
+				$auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
+				if ($auth_succeded) {
+					$identificat->extauth=1;
+					$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+					$identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']));
+				}
+			}
+		}
+
+		// Fourth try for flat LDAP 
+		// LDAP : Try now with the first base_dn
+		if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
+			$auth_succeded = $identificat->connection_ldap($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
 			if ($auth_succeded) {
 				$identificat->extauth=1;
-				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				$identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$_POST['login_name'],$cfg_glpi["ldap_condition"]);
-			}
-   		}
-	}
+				$user_present = $identificat->user->getFromDBName($_POST['login_name']);
+				$identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$cfg_glpi["ldap_basedn"],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_POST['login_name']));
 
-} // Fin des tests de connexion
+			}
+		}
+
+		// Fifth try Active directory LDAP in depth search
+		// we check all the auth sources in turn...
+		// First, we get the dn and then, we try to log in
+		if (!$auth_succeded&&!empty($cfg_glpi["ldap_host"])) {
+			//echo "AD";
+			$found_dn=false;
+			$auth_succeded=0;
+			$found_dn=$identificat->ldap_get_dn_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],$_POST['login_name'],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
+			//echo $found_dn."---";
+			if ($found_dn!=false&&!empty($_POST['login_password'])){ 
+				$auth_succeded = $identificat->connection_ldap_active_directory($cfg_glpi["ldap_host"],$found_dn,$_POST['login_name'],$_POST['login_password'],$cfg_glpi["ldap_condition"],$cfg_glpi["ldap_port"]);
+				if ($auth_succeded) {
+					$identificat->extauth=1;
+					$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+					$identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$_POST['login_name'],$cfg_glpi["ldap_condition"]);
+				}
+			}
+		}
+
+	} // Fin des tests de connexion
 
 // Ok, we have gathered sufficient data, if the first return false the user
 // are not present on the DB, so we add it.
 // if not, we update it.
 
 if ($auth_succeded)
-if (!$user_present&&$cfg_glpi["auto_add_users"]) {
-	if ($identificat->extauth)
-		$identificat->user->fields["_extauth"]=1;
-	$input=$identificat->user->fields;
-	unset($identificat->user->fields);
-	$identificat->user->fields["ID"]=$identificat->user->add($input);
-	
-} else if (!$user_present){ // Auto add not enable so auth failed
-	$identificat->err.=$lang["login"][11];
-	$auth_succeded=false;	
-} else if ($user_present) {
-	if (!$identificat->user->fields["active"]){
+	if (!$user_present&&$cfg_glpi["auto_add_users"]) {
+		if ($identificat->extauth)
+			$identificat->user->fields["_extauth"]=1;
+		$input=$identificat->user->fields;
+		unset($identificat->user->fields);
+		$identificat->user->fields["ID"]=$identificat->user->add($input);
+
+	} else if (!$user_present){ // Auto add not enable so auth failed
 		$identificat->err.=$lang["login"][11];
 		$auth_succeded=false;	
-	} else {
-			
-		// update user and Blank PWD to clean old database for the external auth
-		if ($identificat->extauth){
-			
-			$identificat->user->update($identificat->user->fields);
-			$identificat->user->blankPassword();
+	} else if ($user_present) {
+		if (!$identificat->user->fields["active"]){
+			$identificat->err.=$lang["login"][11];
+			$auth_succeded=false;	
+		} else {
+
+			// update user and Blank PWD to clean old database for the external auth
+			if ($identificat->extauth){
+
+				$identificat->user->update($identificat->user->fields);
+				$identificat->user->blankPassword();
+			}
 		}
 	}
-}
 
 
 // we have done at least a good login? No, we exit.
@@ -203,15 +203,15 @@ $identificat->initSession();
 
 // GET THE IP OF THE CLIENT
 $ip = (getenv("HTTP_X_FORWARDED_FOR")
-? getenv("HTTP_X_FORWARDED_FOR")
-: getenv("REMOTE_ADDR"));
+		? getenv("HTTP_X_FORWARDED_FOR")
+		: getenv("REMOTE_ADDR"));
 
 
 // Log Event
 if ($cfg_glpi["debug"]==DEMO_MODE)
-	logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in.".$lang["log"][40]." : ".$ip);
+logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in.".$lang["log"][40]." : ".$ip);
 else 
-	logEvent("-1", "system", 3, "login", $_POST['login_name']." ".$lang["log"][40]." : ".$ip);
+logEvent("-1", "system", 3, "login", $_POST['login_name']." ".$lang["log"][40]." : ".$ip);
 
 // Expire Event Log
 if ($cfg_glpi["expire_events"]>0){

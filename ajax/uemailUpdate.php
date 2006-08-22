@@ -26,26 +26,26 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
-	
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
 
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
 
-	checkCentralAccess();
+// Send UTF8 Headers
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	$query="SELECT email from glpi_users WHERE ID='".$_POST["value"]."'";
-	$result=$db->query($query);
-	$email=$db->result($result,0,"email");
-	echo "<input type='text' size='30' name='uemail' value='$email'>";
+checkCentralAccess();
+
+$query="SELECT email from glpi_users WHERE ID='".$_POST["value"]."'";
+$result=$db->query($query);
+$email=$db->result($result,0,"email");
+echo "<input type='text' size='30' name='uemail' value='$email'>";
 
 ?>

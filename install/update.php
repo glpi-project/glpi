@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -96,12 +96,12 @@ define("POWER_DEVICE","12");
 //Load language
 if(!function_exists('loadLang')) {
 	function loadLang($language) {
-		
-			unset($lang);
-			global $lang;
-			include ("_relpos.php");
-			$file = $phproot ."/locales/".$language.".php";
-			include($file);
+
+		unset($lang);
+		global $lang;
+		include ("_relpos.php");
+		$file = $phproot ."/locales/".$language.".php";
+		include($file);
 	}
 }
 
@@ -109,13 +109,13 @@ if(!function_exists('loadLang')) {
 
 /*---------------------------------------------------------------------*/
 /**
-* Display the form of content update (addslashes compatibility (V0.4))
-*
-*
-* @returns nothing (displays)
-*/
+ * Display the form of content update (addslashes compatibility (V0.4))
+ *
+ *
+ * @returns nothing (displays)
+ */
 function showContentUpdateForm() {
-	
+
 	global $lang;
 	echo "<div align='center'>";
 	echo "<h3>".$lang["update"][94]."</h3>";
@@ -164,25 +164,25 @@ function display_new_locations(){
 	echo "</tr>";
 
 	while ($data =  $db->fetch_array($result)){
-	
+
 		echo "<tr class=tab_bg_1>";
 		for ($i=0;$i<=$MAX_LEVEL;$i++){
 			if (!isset($data_old["NAME$i"])||($data_old["PARENT$i"]!=$data["PARENT$i"])||($data_old["NAME$i"]!=$data["NAME$i"])){
 				$name=$data["NAME$i"];
 				if (isset($data["NAME".($i+1)])&&!empty($data["NAME".($i+1)]))
-				$arrow="--->";
-			else $arrow="";
+					$arrow="--->";
+				else $arrow="";
 			} else {
 				$name="";
 				$arrow="";
 			}
-	
+
 			echo "<td>".$name."</td>";
 			echo "<td>$arrow</td>";
 		}
-	
+
 		echo "</tr>";
-	$data_old=$data;
+		$data_old=$data;
 	}
 	$db->free_result($result);
 	echo "</table>";
@@ -194,18 +194,18 @@ function display_old_locations(){
 	$result=$db->query($query);
 
 	while ($data =  $db->fetch_array($result))
-	echo "<b>".$data['name']."</b> - ";
-	
+		echo "<b>".$data['name']."</b> - ";
+
 	$db->free_result($result);
 }
 
 function location_create_new($split_char,$add_first){
 
 	global $db;
-	
+
 	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL";
 	$result_auto_inc=$db->query($query_auto_inc);
-	
+
 	$query="SELECT MAX(ID) AS MAX from glpi_dropdown_locations;";
 	//echo $query."<br>";
 	$result=$db->query($query);
@@ -213,44 +213,44 @@ function location_create_new($split_char,$add_first){
 	$new_ID++;
 
 
-	
+
 	$query="SELECT * from glpi_dropdown_locations;";
 	$result=$db->query($query);
 
 	$query_clear_new="TRUNCATE TABLE `glpi_dropdown_locations_new`";
 	//echo $query_clear_new."<br>";
-	
+
 	$result_clear_new=$db->query($query_clear_new); 
 
 	if (!empty($add_first)){
 		$root_ID=$new_ID;
 		$new_ID++;
 		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','".addslashes($add_first)."',0,'')";
-		
+
 		$result_insert=$db->query($query_insert);
-		
+
 	} else {
 		$root_ID=0;
 	}
 
 	while ($data =  $db->fetch_array($result)){
-		
+
 		if (!empty($split_char))
 			$splitter=split($split_char,$data['name']);
 		else $splitter=array($data['name']);
-	
+
 		$up_ID=$root_ID;
-	
+
 		for ($i=0;$i<count($splitter)-1;$i++){
 			// Entr� existe deja ??
 			$query_search="select ID from glpi_dropdown_locations_new WHERE name='".addslashes($splitter[$i])."'  AND parentID='".$up_ID."'";
-//				echo $query_search."<br>";
+			//				echo $query_search."<br>";
 			$result_search=$db->query($query_search);
 			if ($db->numrows($result_search)==1){	// Found
 				$up_ID=$db->result($result_search,0,"ID");
 			} else { // Not FOUND -> INSERT
 				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".addslashes($splitter[$i])."','$up_ID','')";
-//					echo $query_insert."<br>";
+				//					echo $query_insert."<br>";
 				$result_insert=$db->query($query_insert);
 				$up_ID=$new_ID++;
 
@@ -259,7 +259,7 @@ function location_create_new($split_char,$add_first){
 
 		// Ajout du dernier
 		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".addslashes($splitter[count($splitter)-1])."','$up_ID','')";
-//			echo $query_insert."<br>";
+		//			echo $query_insert."<br>";
 
 		$result_insert=$db->query($query_insert);
 
@@ -274,8 +274,8 @@ function location_create_new($split_char,$add_first){
 
 function showLocationUpdateForm(){
 	global $db,$lang;
-	
-	
+
+
 	if (FieldExists("glpi_dropdown_locations", "parentID")) {
 		updateTreeDropdown();
 		return true;
@@ -286,13 +286,13 @@ function showLocationUpdateForm(){
 
 	if(!TableExists("glpi_dropdown_locations_new")) {
 		$query = " CREATE TABLE `glpi_dropdown_locations_new` (
-				`ID` INT NOT NULL auto_increment,
-				`name` VARCHAR(255) NOT NULL ,
-				`parentID` INT NOT NULL ,
-				`comments` TEXT NULL ,
-				PRIMARY KEY (`ID`),
-				UNIQUE KEY (`name`,`parentID`), 
-				KEY(`parentID`)) TYPE=MyISAM;";
+			`ID` INT NOT NULL auto_increment,
+			`name` VARCHAR(255) NOT NULL ,
+			`parentID` INT NOT NULL ,
+			`comments` TEXT NULL ,
+			PRIMARY KEY (`ID`),
+			UNIQUE KEY (`name`,`parentID`), 
+			KEY(`parentID`)) TYPE=MyISAM;";
 		$db->query($query) or die("LOCATION ".$db->error());
 	}
 
@@ -329,53 +329,53 @@ function showLocationUpdateForm(){
 		updateTreeDropdown();
 		return true;
 	} else {
-	display_old_locations();	
+		display_old_locations();	
 	}
 }
 
 
 //test la connection a la base de donn�.
 function test_connect() {
-global $db;
-if($db->error == 0) return true;
-else return false;
+	global $db;
+	if($db->error == 0) return true;
+	else return false;
 }
 
 //Change table2 from varchar to ID+varchar and update table1.chps with depends
 function changeVarcharToID($table1, $table2, $chps)
 {
 
-global $db,$lang;
+	global $db,$lang;
 
-if(!FieldExists($table2, "ID")) {
-	$query = " ALTER TABLE `". $table2 ."` ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
-	$db->query($query) or die("".$lang["update"][90].$db->error());
-}
-$query = "ALTER TABLE $table1 ADD `temp` INT";
-$db->query($query) or die($lang["update"][90].$db->error());
+	if(!FieldExists($table2, "ID")) {
+		$query = " ALTER TABLE `". $table2 ."` ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
+		$db->query($query) or die("".$lang["update"][90].$db->error());
+	}
+	$query = "ALTER TABLE $table1 ADD `temp` INT";
+	$db->query($query) or die($lang["update"][90].$db->error());
 
-$query = "select ". $table1 .".ID as row1, ". $table2 .".ID as row2 from ". $table1 .",". $table2 ." where ". $table2 .".name = ". $table1 .".". $chps." ";
-$result = $db->query($query) or die($lang["update"][90].$db->error());
-while($line = $db->fetch_array($result)) {
-	$query = "update ". $table1 ." set temp = ". $line["row2"] ." where ID = '". $line["row1"] ."'";
+	$query = "select ". $table1 .".ID as row1, ". $table2 .".ID as row2 from ". $table1 .",". $table2 ." where ". $table2 .".name = ". $table1 .".". $chps." ";
+	$result = $db->query($query) or die($lang["update"][90].$db->error());
+	while($line = $db->fetch_array($result)) {
+		$query = "update ". $table1 ." set temp = ". $line["row2"] ." where ID = '". $line["row1"] ."'";
+		$db->query($query) or die($lang["update"][90].$db->error());
+	}
+	$db->free_result($result);
+
+	$query = "ALTER TABLE ". $table1 ." DROP ". $chps."";
+	$db->query($query) or die($lang["update"][90].$db->error());
+	$query = "ALTER TABLE ". $table1 ." CHANGE `temp` `". $chps ."` INT";
 	$db->query($query) or die($lang["update"][90].$db->error());
 }
-$db->free_result($result);
 
-$query = "ALTER TABLE ". $table1 ." DROP ". $chps."";
-$db->query($query) or die($lang["update"][90].$db->error());
-$query = "ALTER TABLE ". $table1 ." CHANGE `temp` `". $chps ."` INT";
-$db->query($query) or die($lang["update"][90].$db->error());
-}
 
- 
 
 //update database up to 0.31
 function updatedbUpTo031()
 {
 
-global $db,$lang;
-$ret = array();
+	global $db,$lang;
+	$ret = array();
 
 
 	// Check Mysql Version
@@ -386,116 +386,116 @@ $ret = array();
 	$mysql_version=32332;
 	if (isset($row)) {
 		$mysql_version= (int)sprintf('%d%02d%02d', $match[0], $match[1], intval($match[2]));
-       	}
+	}
 	if ($mysql_version<40101){
 		echo "<table><tr><td><b>".$lang["install"][54]."</b></td>";
 		echo "<td class='red'><strong>".$lang["install"][56]." ".$row[0]."</strong></td></tr></table>";
 	} 
 
 
-if(!TableExists("glpi_config"))
-{
-$query = "CREATE TABLE `glpi_config` (
-  `ID` int(11) NOT NULL auto_increment,
-  `num_of_events` varchar(200) NOT NULL default '',
-  `jobs_at_login` varchar(200) NOT NULL default '',
-  `sendexpire` varchar(200) NOT NULL default '',
-  `cut` varchar(200) NOT NULL default '',
-  `expire_events` varchar(200) NOT NULL default '',
-  `list_limit` varchar(200) NOT NULL default '',
-  `version` varchar(200) NOT NULL default '',
-  `logotxt` varchar(200) NOT NULL default '',
-  `root_doc` varchar(200) NOT NULL default '',
-  `event_loglevel` varchar(200) NOT NULL default '',
-  `mailing` varchar(200) NOT NULL default '',
-  `imap_auth_server` varchar(200) NOT NULL default '',
-  `imap_host` varchar(200) NOT NULL default '',
-  `ldap_host` varchar(200) NOT NULL default '',
-  `ldap_basedn` varchar(200) NOT NULL default '',
-  `ldap_rootdn` varchar(200) NOT NULL default '',
-  `ldap_pass` varchar(200) NOT NULL default '',
-  `admin_email` varchar(200) NOT NULL default '',
-  `mailing_signature` varchar(200) NOT NULL default '',
-  `mailing_new_admin` varchar(200) NOT NULL default '',
-  `mailing_followup_admin` varchar(200) NOT NULL default '',
-  `mailing_finish_admin` varchar(200) NOT NULL default '',
-  `mailing_new_all_admin` varchar(200) NOT NULL default '',
-  `mailing_followup_all_admin` varchar(200) NOT NULL default '',
-  `mailing_finish_all_admin` varchar(200) NOT NULL default '',
-  `mailing_new_all_normal` varchar(200) NOT NULL default '',
-  `mailing_followup_all_normal` varchar(200) NOT NULL default '',
-  `mailing_finish_all_normal` varchar(200) NOT NULL default '',
-  `mailing_new_attrib` varchar(200) NOT NULL default '',
-  `mailing_followup_attrib` varchar(200) NOT NULL default '',
-  `mailing_finish_attrib` varchar(200) NOT NULL default '',
-  `mailing_new_user` varchar(200) NOT NULL default '',
-  `mailing_followup_user` varchar(200) NOT NULL default '',
-  `mailing_finish_user` varchar(200) NOT NULL default '',
-  `ldap_field_name` varchar(200) NOT NULL default '',
-  `ldap_field_email` varchar(200) NOT NULL default '',
-  `ldap_field_location` varchar(200) NOT NULL default '',
-  `ldap_field_realname` varchar(200) NOT NULL default '',
-  `ldap_field_phone` varchar(200) NOT NULL default '',
-  PRIMARY KEY  (`ID`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ";
-$db->query($query) or die($lang["update"][90].$db->error());
+	if(!TableExists("glpi_config"))
+	{
+		$query = "CREATE TABLE `glpi_config` (
+			`ID` int(11) NOT NULL auto_increment,
+			`num_of_events` varchar(200) NOT NULL default '',
+			`jobs_at_login` varchar(200) NOT NULL default '',
+			`sendexpire` varchar(200) NOT NULL default '',
+			`cut` varchar(200) NOT NULL default '',
+			`expire_events` varchar(200) NOT NULL default '',
+			`list_limit` varchar(200) NOT NULL default '',
+			`version` varchar(200) NOT NULL default '',
+			`logotxt` varchar(200) NOT NULL default '',
+			`root_doc` varchar(200) NOT NULL default '',
+			`event_loglevel` varchar(200) NOT NULL default '',
+			`mailing` varchar(200) NOT NULL default '',
+			`imap_auth_server` varchar(200) NOT NULL default '',
+			`imap_host` varchar(200) NOT NULL default '',
+			`ldap_host` varchar(200) NOT NULL default '',
+			`ldap_basedn` varchar(200) NOT NULL default '',
+			`ldap_rootdn` varchar(200) NOT NULL default '',
+			`ldap_pass` varchar(200) NOT NULL default '',
+			`admin_email` varchar(200) NOT NULL default '',
+			`mailing_signature` varchar(200) NOT NULL default '',
+			`mailing_new_admin` varchar(200) NOT NULL default '',
+			`mailing_followup_admin` varchar(200) NOT NULL default '',
+			`mailing_finish_admin` varchar(200) NOT NULL default '',
+			`mailing_new_all_admin` varchar(200) NOT NULL default '',
+			`mailing_followup_all_admin` varchar(200) NOT NULL default '',
+			`mailing_finish_all_admin` varchar(200) NOT NULL default '',
+			`mailing_new_all_normal` varchar(200) NOT NULL default '',
+			`mailing_followup_all_normal` varchar(200) NOT NULL default '',
+			`mailing_finish_all_normal` varchar(200) NOT NULL default '',
+			`mailing_new_attrib` varchar(200) NOT NULL default '',
+			`mailing_followup_attrib` varchar(200) NOT NULL default '',
+			`mailing_finish_attrib` varchar(200) NOT NULL default '',
+			`mailing_new_user` varchar(200) NOT NULL default '',
+			`mailing_followup_user` varchar(200) NOT NULL default '',
+			`mailing_finish_user` varchar(200) NOT NULL default '',
+			`ldap_field_name` varchar(200) NOT NULL default '',
+			`ldap_field_email` varchar(200) NOT NULL default '',
+			`ldap_field_location` varchar(200) NOT NULL default '',
+			`ldap_field_realname` varchar(200) NOT NULL default '',
+			`ldap_field_phone` varchar(200) NOT NULL default '',
+			PRIMARY KEY  (`ID`)
+				) TYPE=MyISAM AUTO_INCREMENT=2 ";
+		$db->query($query) or die($lang["update"][90].$db->error());
 
-$query = "INSERT INTO `glpi_config` VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
-$db->query($query) or die($lang["update"][90].$db->error());
+		$query = "INSERT INTO `glpi_config` VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
+		$db->query($query) or die($lang["update"][90].$db->error());
 
-  echo "<p class='center'>Version > 0.31  </p>";
-}
+		echo "<p class='center'>Version > 0.31  </p>";
+	}
 
-// Get current version
-$query="SELECT version FROM glpi_config";
-$result=$db->query($query) or die("get current version".$db->error());
-$current_version=trim($db->result($result,0,0));
+	// Get current version
+	$query="SELECT version FROM glpi_config";
+	$result=$db->query($query) or die("get current version".$db->error());
+	$current_version=trim($db->result($result,0,0));
 
-switch ($current_version){
-	case "0.31": 
-		include("update_031_04.php");
+	switch ($current_version){
+		case "0.31": 
+			include("update_031_04.php");
 		update031to04();
-	case "0.4": 
-	case "0.41": 
-		include("update_04_042.php");
+		case "0.4": 
+			case "0.41": 
+			include("update_04_042.php");
 		update04to042();
-	case "0.42": 
-		include("update_042_05.php");
+		case "0.42": 
+			include("update_042_05.php");
 		update042to05();
-	case "0.5": 
-		include("update_05_051.php");
+		case "0.5": 
+			include("update_05_051.php");
 		update05to051();
-	case "0.51": 
-	case "0.51a": 
-		include("update_051_06.php");
+		case "0.51": 
+			case "0.51a": 
+			include("update_051_06.php");
 		update051to06();
-	case "0.6": 
-		include("update_06_065.php");
+		case "0.6": 
+			include("update_06_065.php");
 		update06to065();
-	case "0.65": 
-		include("update_065_068.php");
+		case "0.65": 
+			include("update_065_068.php");
 		update065to068();
-	case "0.68":
-		include("update_068_0681.php");
+		case "0.68":
+			include("update_068_0681.php");
 		update068to0681();
-	case "0.68.1":
-	break;
-	default:
-	update031to04();
-	update04to042();
-	update042to05();
-	update05to051();
-	update051to06();
-	break;
-}
+		case "0.68.1":
+			break;
+		default:
+		update031to04();
+		update04to042();
+		update042to05();
+		update05to051();
+		update051to06();
+		break;
+	}
 
-// Update version number and default langage and new version_founded ---- LEAVE AT THE END
+	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.68.1', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
 	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
 
-optimize_tables();
+	optimize_tables();
 
-return $ret;
+	return $ret;
 }
 
 
@@ -507,60 +507,60 @@ return $ret;
 
 
 function updateTreeDropdown(){
-global $db;
+	global $db;
 
-// Update Tree dropdown
-if(!FieldExists("glpi_dropdown_locations","completename")) {
-$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
-$db->query($query) or die("0.6 add completename in dropdown_locations ".$lang["update"][90].$db->error());	
-regenerateTreeCompleteName("glpi_dropdown_locations");
-}
-if(!FieldExists("glpi_dropdown_kbcategories","completename")) {
-$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
-$db->query($query) or die("0.6 add completename in dropdown_kbcategories ".$lang["update"][90].$db->error());	
-regenerateTreeCompleteName("glpi_dropdown_kbcategories");
-}
+	// Update Tree dropdown
+	if(!FieldExists("glpi_dropdown_locations","completename")) {
+		$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
+		$db->query($query) or die("0.6 add completename in dropdown_locations ".$lang["update"][90].$db->error());	
+		regenerateTreeCompleteName("glpi_dropdown_locations");
+	}
+	if(!FieldExists("glpi_dropdown_kbcategories","completename")) {
+		$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
+		$db->query($query) or die("0.6 add completename in dropdown_kbcategories ".$lang["update"][90].$db->error());	
+		regenerateTreeCompleteName("glpi_dropdown_kbcategories");
+	}
 }
 
 //Debut du script
-	$HEADER_LOADED=true;
-	if(!isset($_SESSION)) session_start();
-	
-	if(empty($_SESSION["dict"])) {
-		if (isset($_SESSION["glpilanguage"])) $_SESSION["dict"]=$_SESSION["glpilanguage"];
-		else $_SESSION["dict"] = "en_GB";
-	}
-	loadLang($_SESSION["dict"]);
-	include ("_relpos.php");
-	
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
+$HEADER_LOADED=true;
+if(!isset($_SESSION)) session_start();
 
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-        echo "<html>";
-        echo "<head>";
-        echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
-        echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\"> ";
-        echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\"> ";
-        echo "<meta http-equiv=\"Content-Language\" content=\"fr\"> ";
-        echo "<meta name=\"generator\" content=\"\">";
-        echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
-        echo "<title>Setup GLPI</title>";
-       // CSS
-	echo "<link rel='stylesheet'  href='".$HTMLRel."css/style_install.css' type='text/css' media='screen' >";
-       
-         echo "</head>";
-        echo "<body>";
-	echo "<div id='principal'>";
-	echo "<div id='bloc'>";
-	echo "<div class='haut'></div>";
-	 echo "<h2>GLPI SETUP</h2>";
-	echo "<br/><h3>Update</h3>";
+if(empty($_SESSION["dict"])) {
+	if (isset($_SESSION["glpilanguage"])) $_SESSION["dict"]=$_SESSION["glpilanguage"];
+	else $_SESSION["dict"] = "en_GB";
+}
+loadLang($_SESSION["dict"]);
+include ("_relpos.php");
+
+// Send UTF8 Headers
+header("Content-Type: text/html; charset=UTF-8");
+
+echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+echo "<html>";
+echo "<head>";
+echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
+echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\"> ";
+echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\"> ";
+echo "<meta http-equiv=\"Content-Language\" content=\"fr\"> ";
+echo "<meta name=\"generator\" content=\"\">";
+echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
+echo "<title>Setup GLPI</title>";
+// CSS
+echo "<link rel='stylesheet'  href='".$HTMLRel."css/style_install.css' type='text/css' media='screen' >";
+
+echo "</head>";
+echo "<body>";
+echo "<div id='principal'>";
+echo "<div id='bloc'>";
+echo "<div class='haut'></div>";
+echo "<h2>GLPI SETUP</h2>";
+echo "<br/><h3>Update</h3>";
 
 // step 1    avec bouton de confirmation
 
 if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
-	
+
 	if(empty($from_install)&&!isset($_POST["from_update"])) {
 		echo "<div align='center'>";
 		echo "<h3><span class='red'>".$lang["update"][105]."</span>";
@@ -570,7 +570,7 @@ if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 	else {
 		echo "<div align='center'>";
 		echo "<h3><span class='red'>".$lang["update"][91]."</span>".$lang["update"][92]. $db->dbdefault ."</h3>";
-	
+
 		echo "<form action=\"update.php\" method=\"post\">";
 		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$lang["install"][25] ."\" />";
 		echo "</form></div>";
@@ -594,7 +594,7 @@ else {
 
 				$tab = updateDbUpTo031();
 			}
-	
+
 			echo "<div align='center'>";
 			if(!empty($tab) && $tab["adminchange"]) {
 				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
@@ -603,27 +603,27 @@ else {
 			if (showLocationUpdateForm()){
 				switch ($current_version){
 					case "0.31": 
-					case "0.4": 
-					case "0.41": 
-					case "0.42": 
-					case "0.5": 
-					case "0.51": 
-					case "0.51a": 
+						case "0.4": 
+						case "0.41": 
+						case "0.42": 
+						case "0.5": 
+						case "0.51": 
+						case "0.51a": 
 						showContentUpdateForm();
-						break;
+					break;
 					default:
 					echo "<a href=\"".$HTMLRel."/index.php\"><span class='button'>".$lang["install"][64]."</span></a>";
-						break;
+					break;
 				}
-				}
-		echo "</div>";
+			}
+			echo "</div>";
 		}
 	}
 	else {
 		echo "<h3> ";
 		echo $lang["update"][95] ."</h3>";
-        }
-	
+	}
+
 }
 
 echo "<div class='bas'></div></div></div></body></html>";

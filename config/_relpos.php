@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -38,13 +38,13 @@ $Dir = explode('/', $Dir);
 $NDir = count($Dir);
 for($i=count($Dir); $i>0;$i--)
 {
-if(file_exists(implode('/', $Dir) . '/siteroot.php'))
-{
-$phproot = implode('/', $Dir);
-$HTMLRel = str_repeat("../", $NDir - count($Dir));
-$i = 0;
-}
-unset($Dir[$i]);
+	if(file_exists(implode('/', $Dir) . '/siteroot.php'))
+	{
+		$phproot = implode('/', $Dir);
+		$HTMLRel = str_repeat("../", $NDir - count($Dir));
+		$i = 0;
+	}
+	unset($Dir[$i]);
 }
 
 

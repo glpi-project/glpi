@@ -27,7 +27,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 
 include ("_relpos.php");
@@ -44,7 +44,7 @@ $cfg_glpi["doc_dir"] = $phproot . "/files";
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 if(file_exists($phproot ."/config/config_path.php")) {
-    include($phproot ."/config/config_path.php");
+	include($phproot ."/config/config_path.php");
 }
 
 ?>

@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre & Bazile Lebeau
@@ -51,17 +51,17 @@ $cfg_glpi["debug"]=0;
 //################################ Functions ################################
 
 function loadLang() {
-			unset($lang);
-			global $lang;
-			include ("_relpos.php");
-			if (isset($_SESSION["dict"]))
-				$dict=$_SESSION["dict"];
-			else $dict="en_GB";
-			
-			$file = $phproot ."/locales/$dict.php";
-			if (!is_file($file))
-				$file = $phproot ."/locales/en_GB.php";
-			include($file);
+	unset($lang);
+	global $lang;
+	include ("_relpos.php");
+	if (isset($_SESSION["dict"]))
+		$dict=$_SESSION["dict"];
+	else $dict="en_GB";
+
+	$file = $phproot ."/locales/$dict.php";
+	if (!is_file($file))
+		$file = $phproot ."/locales/en_GB.php";
+	include($file);
 }
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
@@ -72,35 +72,35 @@ $db=new DB;
 
 function init_time() 
 {
-    global $TPSDEB,$TPSCOUR;
-    
-    
-    list ($usec,$sec)=explode(" ",microtime());
-    $TPSDEB=$sec;
-    $TPSCOUR=0;
+	global $TPSDEB,$TPSCOUR;
+
+
+	list ($usec,$sec)=explode(" ",microtime());
+	$TPSDEB=$sec;
+	$TPSCOUR=0;
 
 }
 
 function current_time() 
 {
-    global $TPSDEB,$TPSCOUR;
-    list ($usec,$sec)=explode(" ",microtime());
-    $TPSFIN=$sec;
-    if (round($TPSFIN-$TPSDEB,1)>=$TPSCOUR+1) //une seconde de plus
-    {
-    $TPSCOUR=round($TPSFIN-$TPSDEB,1);
-    }
+	global $TPSDEB,$TPSCOUR;
+	list ($usec,$sec)=explode(" ",microtime());
+	$TPSFIN=$sec;
+	if (round($TPSFIN-$TPSDEB,1)>=$TPSCOUR+1) //une seconde de plus
+	{
+		$TPSCOUR=round($TPSFIN-$TPSDEB,1);
+	}
 
 }
 
 function test_content_ok(){
 	global $db;
-	
+
 	$query1="SELECT ID FROM glpi_computers WHERE  comments LIKE '%\\\\\\%';";
 	$query2="SELECT ID FROM glpi_printers WHERE  comments LIKE '%\\\\\\%';";	
 	$query3="SELECT ID FROM glpi_tracking WHERE  contents LIKE '%\\\\\\%';";	
 	$query4="SELECT ID FROM glpi_followups WHERE  contents LIKE '%\\\\\\%';";	
-	
+
 	$result1=$db->query($query1);
 	if ($db->numrows($result1)>0)
 		return false;
@@ -114,255 +114,255 @@ function test_content_ok(){
 	if ($db->numrows($result2)>0)
 		return false;
 	return true;		
-	}
+}
 
 function seems_utf8($Str) {
- for ($i=0; $i<strlen($Str); $i++) {
-  if (ord($Str[$i]) < 0x80) continue; # 0bbbbbbb
-  elseif ((ord($Str[$i]) & 0xE0) == 0xC0) $n=1; # 110bbbbb
-  elseif ((ord($Str[$i]) & 0xF0) == 0xE0) $n=2; # 1110bbbb
-  elseif ((ord($Str[$i]) & 0xF8) == 0xF0) $n=3; # 11110bbb
-  elseif ((ord($Str[$i]) & 0xFC) == 0xF8) $n=4; # 111110bb
-  elseif ((ord($Str[$i]) & 0xFE) == 0xFC) $n=5; # 1111110b
-  else return false; # Does not match any model
-  for ($j=0; $j<$n; $j++) { # n bytes matching 10bbbbbb follow ?
-   if ((++$i == strlen($Str)) || ((ord($Str[$i]) & 0xC0) != 0x80))
-   return false;
-  }
- }
- return true;
+	for ($i=0; $i<strlen($Str); $i++) {
+		if (ord($Str[$i]) < 0x80) continue; # 0bbbbbbb
+			elseif ((ord($Str[$i]) & 0xE0) == 0xC0) $n=1; # 110bbbbb
+				elseif ((ord($Str[$i]) & 0xF0) == 0xE0) $n=2; # 1110bbbb
+				elseif ((ord($Str[$i]) & 0xF8) == 0xF0) $n=3; # 11110bbb
+				elseif ((ord($Str[$i]) & 0xFC) == 0xF8) $n=4; # 111110bb
+				elseif ((ord($Str[$i]) & 0xFE) == 0xFC) $n=5; # 1111110b
+		else return false; # Does not match any model
+			for ($j=0; $j<$n; $j++) { # n bytes matching 10bbbbbb follow ?
+				if ((++$i == strlen($Str)) || ((ord($Str[$i]) & 0xC0) != 0x80))
+					return false;
+			}
+	}
+	return true;
 }
 
 function get_update_content($db, $table,$from,$limit,$conv_utf8)
 {
-     $content="";
-     $result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
-     
-     if($result)
-     while($row = $db->fetch_assoc($result)) {
-         if (isset($row["ID"])) {
-     		if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
-     		$row=stripslashes_deep($row);
-         	$insert = "UPDATE $table SET ";
-         	foreach ($row as $key => $val) {
-	         	$insert.=" ".$key."=";
-	         	
-            	if(!isset($val)) $insert .= "NULL,";
-            	else if($val != "") {
-            		if ($conv_utf8) {
-			// Gestion users AD qui sont déjà en UTF8
-			if ($table!="glpi_users"||!seems_utf8($val))
-				$val=utf8_encode($val);
+	$content="";
+	$result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
+
+	if($result)
+		while($row = $db->fetch_assoc($result)) {
+			if (isset($row["ID"])) {
+				if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
+				$row=stripslashes_deep($row);
+				$insert = "UPDATE $table SET ";
+				foreach ($row as $key => $val) {
+					$insert.=" ".$key."=";
+
+					if(!isset($val)) $insert .= "NULL,";
+					else if($val != "") {
+						if ($conv_utf8) {
+							// Gestion users AD qui sont déjà en UTF8
+							if ($table!="glpi_users"||!seems_utf8($val))
+								$val=utf8_encode($val);
+						}
+						$insert .= "'".addslashes($val)."',";
+					}
+					else $insert .= "'',";
+				}
+				$insert = ereg_replace(",$","",$insert);
+				$insert.=" WHERE ID = '".$row["ID"]."' ";
+				$insert .= ";\n";
+				$content .= $insert;
 			}
-            		$insert .= "'".addslashes($val)."',";
-            		}
-            	else $insert .= "'',";
-         	}
-         	$insert = ereg_replace(",$","",$insert);
-         	$insert.=" WHERE ID = '".$row["ID"]."' ";
-         	$insert .= ";\n";
-         	$content .= $insert;
 		}
-     }
-     //if ($table=="glpi_dropdown_locations") echo $content;
-     return $content;
+	//if ($table=="glpi_dropdown_locations") echo $content;
+	return $content;
 }
 
 
 function UpdateContent($db, $duree,$rowlimit,$conv_utf8)
 {
-// $dumpFile, fichier source
-// $database, nom de la base de données cible
-// $mysqlUser, login pouyr la connexion au serveur MySql
-// $mysqlPassword, mot de passe
-// $histMySql, nom de la machine serveur MySQl
-// $duree=timeout pour changement de page (-1 = aucun)
+	// $dumpFile, fichier source
+	// $database, nom de la base de données cible
+	// $mysqlUser, login pouyr la connexion au serveur MySql
+	// $mysqlPassword, mot de passe
+	// $histMySql, nom de la machine serveur MySQl
+	// $duree=timeout pour changement de page (-1 = aucun)
 
 
-global $TPSCOUR,$offsettable,$offsetrow,$cpt;
-if ($db->error)
-{
-     echo "Connexion impossible à $hostMySql pour $mysqlUser";
-     return FALSE;
-}
-
-$result=$db->list_tables();
-$numtab=0;
-while ($t=$db->fetch_array($result)){
-	if (ereg("glpi_",$t[0])){
-	$tables[$numtab]=$t[0];
-$numtab++;
-}
-}
-
-
-for (;$offsettable<$numtab;$offsettable++){
-// Dump de la strucutre table
-if ($offsetrow==-1){
-	$offsetrow++;
-	$cpt++;
+	global $TPSCOUR,$offsettable,$offsetrow,$cpt;
+	if ($db->error)
+	{
+		echo "Connexion impossible à $hostMySql pour $mysqlUser";
+		return FALSE;
 	}
-    current_time();
-    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
-        return TRUE;
 
-	$fin=0;
-	while (!$fin){
-	$todump=get_update_content($db,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8);
-//	echo $todump."<br>";
-	$rowtodump=substr_count($todump, "UPDATE ");
-	if ($rowtodump>0){
-//	echo $todump;
-	$result = $db->query($todump);
-//	if (!$result) echo "ECHEC ".$todump;
-	
-	$cpt+=$rowtodump;
-	$offsetrow+=$rowlimit;
-	if ($rowtodump<$rowlimit) $fin=1;
-    current_time();
-    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
-        return TRUE;
+	$result=$db->list_tables();
+	$numtab=0;
+	while ($t=$db->fetch_array($result)){
+		if (ereg("glpi_",$t[0])){
+			$tables[$numtab]=$t[0];
+			$numtab++;
+		}
+	}
+
+
+	for (;$offsettable<$numtab;$offsettable++){
+		// Dump de la strucutre table
+		if ($offsetrow==-1){
+			$offsetrow++;
+			$cpt++;
+		}
+		current_time();
+		if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+			return TRUE;
+
+		$fin=0;
+		while (!$fin){
+			$todump=get_update_content($db,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8);
+			//	echo $todump."<br>";
+			$rowtodump=substr_count($todump, "UPDATE ");
+			if ($rowtodump>0){
+				//	echo $todump;
+				$result = $db->query($todump);
+				//	if (!$result) echo "ECHEC ".$todump;
+
+				$cpt+=$rowtodump;
+				$offsetrow+=$rowlimit;
+				if ($rowtodump<$rowlimit) $fin=1;
+				current_time();
+				if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+					return TRUE;
+
+			}
+			else {$fin=1;$offsetrow=-1;}
+		}
+		if ($fin) $offsetrow=-1;
+		current_time();
+		if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
+			return TRUE;
 
 	}
-	else {$fin=1;$offsetrow=-1;}
-	}
-	if ($fin) $offsetrow=-1;
-    current_time();
-    if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
-        return TRUE;
-	
-}
-if ($db->error())
-     echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
-$offsettable=-1;
-return TRUE;
+	if ($db->error())
+		echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
+	$offsettable=-1;
+	return TRUE;
 }
 
 //########################### Script start ################################
 
 loadLang();
 
-		// Send UTF8 Headers
-		header("Content-Type: text/html; charset=UTF-8");
+// Send UTF8 Headers
+header("Content-Type: text/html; charset=UTF-8");
 
 //style and co
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-        echo "<html>";
-        echo "<head>";
-        echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
-        echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\"> ";
-        echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\"> ";
-        echo "<meta http-equiv=\"Content-Language\" content=\"fr\"> ";
-        echo "<meta name=\"generator\" content=\"\">";
-        echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
-        echo "<title>Setup GLPI</title>";
-       
-        echo "<style type=\"text/css\">";
-        echo "<!--
+echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+echo "<html>";
+echo "<head>";
+echo " <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
+echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\"> ";
+echo "<meta http-equiv=\"Content-Style-Type\" content=\"text/css\"> ";
+echo "<meta http-equiv=\"Content-Language\" content=\"fr\"> ";
+echo "<meta name=\"generator\" content=\"\">";
+echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
+echo "<title>Setup GLPI</title>";
 
-        /*  ... Definition des styles ... */
+echo "<style type=\"text/css\">";
+echo "<!--
 
-        body {
-        background-color:#C5DAC8;
-        color:#000000; }
-        
-       .principal {
-        background-color: #ffffff;
-        font-family: Verdana;font-size:12px;
-        text-align: justify ; 
-        -moz-border-radius: 4px;
-	border: 1px solid #FFC65D;
-         margin: 40px; 
-         padding: 40px 40px 10px 40px;
-       }
+/*  ... Definition des styles ... */
 
-       table {
-       text-align:center;
-       border: 0;
-       margin: 20px;
-       margin-left: auto;
-       margin-right: auto;
-       width: 90%;}
+body {
+	background-color:#C5DAC8;
+color:#000000; }
 
-       .red { color:red;}
-       .green {color:green;}
-       
-       h2 {
-        color:#FFC65D;
-        text-align:center;}
+.principal {
+	background-color: #ffffff;
+	font-family: Verdana;font-size:12px;
+	text-align: justify ; 
+	-moz-border-radius: 4px;
+border: 1px solid #FFC65D;
+margin: 40px; 
+padding: 40px 40px 10px 40px;
+}
 
-       h3 {
-        text-align:center;}
+table {
+	text-align:center;
+border: 0;
+margin: 20px;
+	margin-left: auto;
+	margin-right: auto;
+width: 90%;}
 
-        input {border: 1px solid #ccc;}
+.red { color:red;}
+.green {color:green;}
 
-        fieldset {
-        padding: 20px;
-          border: 1px dotted #ccc;
-        font-size: 12px;
-        font-weight:200;}
+h2 {
+color:#FFC65D;
+      text-align:center;}
 
-        .submit { text-align:center;}
-       
-        input.submit {
-        border:1px solid #000000;
-        background-color:#eeeeee;
-        }
-        
-        input.submit:hover {
-        border:1px solid #cccccc;
+      h3 {
+	      text-align:center;}
+
+	      input {border: 1px solid #ccc;}
+
+	      fieldset {
+padding: 20px;
+border: 1px dotted #ccc;
+	font-size: 12px;
+	font-weight:200;}
+
+	.submit { text-align:center;}
+
+	input.submit {
+border:1px solid #000000;
+       background-color:#eeeeee;
+	}
+
+input.submit:hover {
+border:1px solid #cccccc;
        background-color:#ffffff;
-        }
+}
 
-	.button {
-        font-weight:200;
-	color:#000000;
-	padding:5px;
+.button {
+	font-weight:200;
+color:#000000;
+padding:5px;
 	text-decoration:none;
-	border:1px solid #009966;
-        background-color:#eeeeee;
-        }
+border:1px solid #009966;
+       background-color:#eeeeee;
+}
 
-        .button:hover{
-          font-weight:200;
-	  color:#000000;
-	 padding:5px;
+.button:hover{
+	font-weight:200;
+color:#000000;
+padding:5px;
 	text-decoration:none;
-	border:1px solid #009966;
+border:1px solid #009966;
        background-color:#ffffff;
-        }
-	
-        -->  ";
-        echo "</style>";
-         echo "</head>";
-        echo "<body>";
-	echo "<div class=\"principal\">";
+}
+
+-->  ";
+echo "</style>";
+echo "</head>";
+echo "<body>";
+echo "<div class=\"principal\">";
 //end style and co
 /*if (!isset($_POST["oui"])&&!isset($_POST["non"])&&!isset($_GET["dump"]))
-if (test_content_ok()) {
-	echo "<div align=\"center\">";
-	echo $lang["update"]["108"];
-	echo $lang["update"]["109"];
-	echo "<form action=\"update_content.php\" method=\"post\">";
-	echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
-	echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
-	echo "</form></div>";
-}
-else {
-	echo "<div align=\"center\">";
-	echo $lang["update"]["110"];
-	echo $lang["update"]["109"];
-	echo "<form action=\"update_content.php\" method=\"post\">";
-	echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
-	echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
-	echo "</form></div>";
+  if (test_content_ok()) {
+  echo "<div align=\"center\">";
+  echo $lang["update"]["108"];
+  echo $lang["update"]["109"];
+  echo "<form action=\"update_content.php\" method=\"post\">";
+  echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
+  echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
+  echo "</form></div>";
+  }
+  else {
+  echo "<div align=\"center\">";
+  echo $lang["update"]["110"];
+  echo $lang["update"]["109"];
+  echo "<form action=\"update_content.php\" method=\"post\">";
+  echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
+  echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
+  echo "</form></div>";
 
-}
-*/
+  }
+ */
 // #################" UPDATE CONTENT #################################
 
-    $time_file=date("Y-m-d-h-i");
-	$cur_time=date("Y-m-d H:i");
+$time_file=date("Y-m-d-h-i");
+$cur_time=date("Y-m-d H:i");
 
 init_time(); //initialise le temps
 //début de fichier
@@ -380,37 +380,37 @@ else  $rowlimit=$_GET["rowlimit"];
 
 $tab=$db->list_tables();
 $tot=$db->numrows($tab);
-if(isset($offsettable)){
-if ($offsettable>=0)
-$percent=min(100,round(100*$offsettable/$tot,0));
-else $percent=100;
-}
+	if(isset($offsettable)){
+		if ($offsettable>=0)
+			$percent=min(100,round(100*$offsettable/$tot,0));
+		else $percent=100;
+	}
 else $percent=0;
 if ($percent >= 0) {
- 
-displayProgressBar(400,$percent);
+
+	displayProgressBar(400,$percent);
 
 }
 $conv_utf8=false;
 if(!FieldExists("glpi_config","utf8_conv")) {
-$conv_utf8=true;
+	$conv_utf8=true;
 }
 
-if ($offsettable>=0){
-	if (UpdateContent($db,$duree,$rowlimit,$conv_utf8))
-	{
-    echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">ici</a>";
-    echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
-echo "</div>";
+	if ($offsettable>=0){
+		if (UpdateContent($db,$duree,$rowlimit,$conv_utf8))
+		{
+			echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">ici</a>";
+			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
+			echo "</div>";
 
-	glpi_flush();    
-	exit;
+			glpi_flush();    
+			exit;
+		}
 	}
-}
 else  { 
-//echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
+	//echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
 	echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
-echo "</div>";
+	echo "</div>";
 
 }
 

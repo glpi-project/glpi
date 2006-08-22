@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Adaptation du fichier cron.php de SPIP Merci à leurs auteurs
 // Purpose of file: cron class
@@ -40,7 +40,7 @@
  *                                                                         *
  *  Ce programme est un logiciel libre distribue sous licence GNU/GPL.     *
  *  Pour plus de details voir le fichier COPYING.txt                       *
-\***************************************************************************/
+ \***************************************************************************/
 
 
 // --------------------------
@@ -93,26 +93,26 @@
 class Cron {
 
 
-var $taches=array(); 
+	var $taches=array(); 
 
-function Cron($taches=array()){
-	global $cfg_glpi;
-	if(count($taches)>0){
-		$this->taches=$taches;
+	function Cron($taches=array()){
+		global $cfg_glpi;
+		if(count($taches)>0){
+			$this->taches=$taches;
 		}else{
-		// la cle est la tache, la valeur le temps minimal, en secondes, entre
-		// deux memes taches ex $this->taches["test"]=30;
-		
-		if ($cfg_glpi["ocs_mode"]&&$cfg_glpi["cron_sync_number"]){
-			// Every 5 mns
-			$this->taches["ocsng"]=300;
-		}
-		// Mailing alerts if mailing activated
-		if ($cfg_glpi["mailing"]){
-			if ($cfg_glpi["cartridges_alert"]>0)
-				$this->taches["cartridge"]=DAY_TIMESTAMP;
-			if ($cfg_glpi["consumables_alert"]>0)
-				$this->taches["consumable"]=DAY_TIMESTAMP;
+			// la cle est la tache, la valeur le temps minimal, en secondes, entre
+			// deux memes taches ex $this->taches["test"]=30;
+
+			if ($cfg_glpi["ocs_mode"]&&$cfg_glpi["cron_sync_number"]){
+				// Every 5 mns
+				$this->taches["ocsng"]=300;
+			}
+			// Mailing alerts if mailing activated
+			if ($cfg_glpi["mailing"]){
+				if ($cfg_glpi["cartridges_alert"]>0)
+					$this->taches["cartridge"]=DAY_TIMESTAMP;
+				if ($cfg_glpi["consumables_alert"]>0)
+					$this->taches["consumable"]=DAY_TIMESTAMP;
 			}
 			$this->taches["contract"]=DAY_TIMESTAMP;
 			$this->taches["infocom"]=DAY_TIMESTAMP;
@@ -120,153 +120,153 @@ function Cron($taches=array()){
 		// Auto update check
 		if ($cfg_glpi["auto_update_check"]>0)
 			$this->taches["check_update"]=$cfg_glpi["auto_update_check"]*DAY_TIMESTAMP;
-}
+	}
 
-function launch() {
-	
-	global $cfg_glpi, $phproot,$lang;
-	
-	$t = time();
-		
-	// Quelle est la tache la plus urgente ?
-	$tache = FALSE;
-	$tmin = $t;
-	
-	
-	foreach ($this->taches as $nom => $periode) {
-		$lock = $phproot.'/files/_cron/' . $nom . '.lock';
-		$date_lock = @filemtime($lock);
-		
-		if ($date_lock + $periode < $tmin) {
-			$tmin = $date_lock + $periode;
-			$tache = $nom;
-			$last = $date_lock;
-			
-		}
-		// debug : si la date du fichier est superieure a l'heure actuelle,
-		// c'est que le serveur a (ou a eu) des problemes de reglage horaire
-		// qui peuvent mettre en peril les taches cron : signaler dans le log
-		// (On laisse toutefois flotter sur une heure, pas la peine de s'exciter
-		// pour si peu)
-//		else if ($date_lock > $t + HOUR_TIMESTAMP)
+	function launch() {
+
+		global $cfg_glpi, $phproot,$lang;
+
+		$t = time();
+
+		// Quelle est la tache la plus urgente ?
+		$tache = FALSE;
+		$tmin = $t;
+
+
+		foreach ($this->taches as $nom => $periode) {
+			$lock = $phproot.'/files/_cron/' . $nom . '.lock';
+			$date_lock = @filemtime($lock);
+
+			if ($date_lock + $periode < $tmin) {
+				$tmin = $date_lock + $periode;
+				$tache = $nom;
+				$last = $date_lock;
+
+			}
+			// debug : si la date du fichier est superieure a l'heure actuelle,
+			// c'est que le serveur a (ou a eu) des problemes de reglage horaire
+			// qui peuvent mettre en peril les taches cron : signaler dans le log
+			// (On laisse toutefois flotter sur une heure, pas la peine de s'exciter
+			// pour si peu)
+			//		else if ($date_lock > $t + HOUR_TIMESTAMP)
 			//echo "Erreur de date du fichier $lock : $date_lock > $t !";
-	}
-	if (!$tache) return;
-
-	// Interdire des taches paralleles, de maniere a eviter toute concurrence
-	// entre deux appli partageant la meme base, ainsi que toute interaction
-	// bizarre entre des taches differentes
-	// Ne rien lancer non plus si serveur naze evidemment
-
-	if (!$this->get_lock('cron')) {
-		//echo "tache $tache: pas de lock cron";
-		return;
-	}
-
-	// Un autre lock dans _DIR_SESSIONS, pour plus de securite
-	$lock = $phproot.'/files/_cron/'. $tache . '.lock';
-	if ($this->touch($lock, $this->taches[$tache])) {
-		// preparer la tache
-		$this->timer('tache');
-
-		$fonction = 'cron_' . $tache;
-		
-		$fct_trouve=false;
-		if (!function_exists($fonction)){
-			// pas trouvé de fonction -> inclusion de la fonction 
-			if(file_exists($phproot.'/inc/'.$tache.'.function.php')) include_once($phproot.'/inc/'.$tache.'.function.php');
-			if(file_exists($phproot.'/inc/'.$tache.'.class.php')) include_once($phproot.'/inc/'.$tache.'.class.php');
-			
-		} else { $fct_trouve=true;}
-
-		if ($fct_trouve||function_exists($fonction)){
-			// la fonction a été inclus ou la fonction existe
-			// l'appeler
-			$code_de_retour = $fonction($last);
-
-			// si la tache a eu un effet : log
-			if ($code_de_retour) {
-				//echo "cron: $tache (" . $this->timer('tache') . ")";
-				// eventuellement modifier la date du fichier
-				
-				if ($code_de_retour < 0) @touch($lock, (0 - $code_de_retour));
-				else // Log Event 
-				logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$lang["log"][45] );
-			}# else log("cron $tache a reprendre");
-		} else {echo "Erreur fonction manquante";}
-
-
-
-
-	}
-
-	// relacher le lock mysql
-	$this->release_lock('cron');
-}
-
-
-function touch($fichier, $duree=0, $touch=true) {
-	if (!($exists = @is_readable($fichier))
-	|| ($duree == 0)
-	|| (@filemtime($fichier) < time() - $duree)) {
-		if ($touch) {
-			if (!@touch($fichier)) { @unlink($fichier); @touch($fichier); };
-			if (!$exists) @chmod($fichier, 0666);
 		}
-		return true;
+		if (!$tache) return;
+
+		// Interdire des taches paralleles, de maniere a eviter toute concurrence
+		// entre deux appli partageant la meme base, ainsi que toute interaction
+		// bizarre entre des taches differentes
+		// Ne rien lancer non plus si serveur naze evidemment
+
+		if (!$this->get_lock('cron')) {
+			//echo "tache $tache: pas de lock cron";
+			return;
+		}
+
+		// Un autre lock dans _DIR_SESSIONS, pour plus de securite
+		$lock = $phproot.'/files/_cron/'. $tache . '.lock';
+		if ($this->touch($lock, $this->taches[$tache])) {
+			// preparer la tache
+			$this->timer('tache');
+
+			$fonction = 'cron_' . $tache;
+
+			$fct_trouve=false;
+			if (!function_exists($fonction)){
+				// pas trouvé de fonction -> inclusion de la fonction 
+				if(file_exists($phproot.'/inc/'.$tache.'.function.php')) include_once($phproot.'/inc/'.$tache.'.function.php');
+				if(file_exists($phproot.'/inc/'.$tache.'.class.php')) include_once($phproot.'/inc/'.$tache.'.class.php');
+
+			} else { $fct_trouve=true;}
+
+			if ($fct_trouve||function_exists($fonction)){
+				// la fonction a été inclus ou la fonction existe
+				// l'appeler
+				$code_de_retour = $fonction($last);
+
+				// si la tache a eu un effet : log
+				if ($code_de_retour) {
+					//echo "cron: $tache (" . $this->timer('tache') . ")";
+					// eventuellement modifier la date du fichier
+
+					if ($code_de_retour < 0) @touch($lock, (0 - $code_de_retour));
+					else // Log Event 
+						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$lang["log"][45] );
+				}# else log("cron $tache a reprendre");
+			} else {echo "Erreur fonction manquante";}
+
+
+
+
+		}
+
+		// relacher le lock mysql
+		$this->release_lock('cron');
 	}
-	return false;
-}
+
+
+	function touch($fichier, $duree=0, $touch=true) {
+		if (!($exists = @is_readable($fichier))
+				|| ($duree == 0)
+				|| (@filemtime($fichier) < time() - $duree)) {
+			if ($touch) {
+				if (!@touch($fichier)) { @unlink($fichier); @touch($fichier); };
+				if (!$exists) @chmod($fichier, 0666);
+			}
+			return true;
+		}
+		return false;
+	}
 
 
 
 
-//
-// timer : on l'appelle deux fois et on a la difference, affichable
-//
-function timer($t='rien') {
-	static $time;
-	$a=time(); $b=microtime();
+	//
+	// timer : on l'appelle deux fois et on a la difference, affichable
+	//
+	function timer($t='rien') {
+		static $time;
+		$a=time(); $b=microtime();
 
-	if (isset($time[$t])) {
-		$p = $a + $b - $time[$t];
-		unset($time[$t]);
-		return sprintf("%.2fs", $p);
-	} else
-		$time[$t] = $a + $b;
-}
-
-
-
-//
-// Poser un verrou local 
-//
-function get_lock($nom, $timeout = 0) {
-	global $db, $cfg_glpi;
-	
-	// Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
-	define('_LOCK_TIME', intval(time()/HOUR_TIMESTAMP-316982));
-	$nom .= _LOCK_TIME;
-
-	$nom = addslashes($nom);
-	$query = "SELECT GET_LOCK('$nom', $timeout)";
-	$result = $db->query($query);
-	list($lock_ok) = $db->fetch_array($result);
-
-	if (!$lock_ok) log("pas de lock sql pour $nom");
-	return $lock_ok;
-}
+		if (isset($time[$t])) {
+			$p = $a + $b - $time[$t];
+			unset($time[$t]);
+			return sprintf("%.2fs", $p);
+		} else
+			$time[$t] = $a + $b;
+	}
 
 
-function release_lock($nom) {
-	global $db,$cfg_glpi;
-	
-	$nom .= _LOCK_TIME;
 
-	$nom = addslashes($nom);
-	$query = "SELECT RELEASE_LOCK('$nom')";
-	$result = $db->query($query);
-}
+	//
+	// Poser un verrou local 
+	//
+	function get_lock($nom, $timeout = 0) {
+		global $db, $cfg_glpi;
+
+		// Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
+		define('_LOCK_TIME', intval(time()/HOUR_TIMESTAMP-316982));
+		$nom .= _LOCK_TIME;
+
+		$nom = addslashes($nom);
+		$query = "SELECT GET_LOCK('$nom', $timeout)";
+		$result = $db->query($query);
+		list($lock_ok) = $db->fetch_array($result);
+
+		if (!$lock_ok) log("pas de lock sql pour $nom");
+		return $lock_ok;
+	}
+
+
+	function release_lock($nom) {
+		global $db,$cfg_glpi;
+
+		$nom .= _LOCK_TIME;
+
+		$nom = addslashes($nom);
+		$query = "SELECT RELEASE_LOCK('$nom')";
+		$result = $db->query($query);
+	}
 
 
 
@@ -291,8 +291,8 @@ class Alert extends CommonDBTM {
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
 				$this->fields = $db->fetch_assoc($result);
-			return true;
-		} else return false;
+				return true;
+			} else return false;
 		} else {
 			return false;
 		}

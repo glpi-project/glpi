@@ -26,14 +26,14 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 
 // CLASSES contact
 class Group extends CommonDBTM{
@@ -45,7 +45,7 @@ class Group extends CommonDBTM{
 
 	function cleanDBonPurge($ID) {
 		global $db,$cfg_glpi,$LINK_ID_TABLE;
-			
+
 		$query = "DELETE from glpi_users_groups WHERE FK_groups = '$ID'";
 		$db->query($query);
 
@@ -73,14 +73,14 @@ class Group extends CommonDBTM{
 
 
 	/**
-	* Print a good title for coontact pages
-	*
-	*
-	*
-	*
-	*@return nothing (diplays)
-	*
-	**/
+	 * Print a good title for coontact pages
+	 *
+	 *
+	 *
+	 *
+	 *@return nothing (diplays)
+	 *
+	 **/
 	function title(){
 		global  $lang,$HTMLRel;
 		echo "<div align='center'><table border='0'><tr><td>";
@@ -90,124 +90,124 @@ class Group extends CommonDBTM{
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["setup"][602]."</b></span></td>";
 		echo "</tr></table></div>";
 	}
-	
+
 	/**
-	* Print the group form
-	*
-	*
-	* Print group form
-	*
-	*@param $target filename : where to go when done.
-	*@param $ID Integer : Id of the contact to print
-	*
-	*
-	*@return Nothing (display)
-	*
-	**/
+	 * Print the group form
+	 *
+	 *
+	 * Print group form
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the contact to print
+	 *
+	 *
+	 *@return Nothing (display)
+	 *
+	 **/
 	function showForm ($target,$ID) {
-	
+
 		global $cfg_glpi, $lang,$HTMLRel;
-	
+
 		if (!haveRight("group","r")) return false;
-	
+
 		$con_spotted=false;
-		
+
 		if (empty($ID)) {
-			
+
 			if($this->getEmpty()) $con_spotted = true;
 		} else {
 			if($this->getfromDB($ID)) $con_spotted = true;
 		}
-		
+
 		if ($con_spotted){
-		echo "<form method='post' name=form action=\"$target\"><div align='center'>";
-		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-		echo "<tr><th colspan='2'><b>";
-		if (empty($ID)) {
-			echo $lang["setup"][605].":";
-			
-		} else {
-			echo $lang["common"][35]." ID $ID:";
-		}		
-		echo "</b></th></tr>";
-		
-		echo "<tr><td class='tab_bg_1' valign='top'>";
-	
-		echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-	
-		echo "<tr><td>".$lang["common"][16].":	</td>";
-		echo "<td>";
-		autocompletionTextField("name","glpi_groups","name",$this->fields["name"],30);	
-		echo "</td></tr>";
-		
-		if(!empty($cfg_glpi["ldap_host"])){
-			echo "<tr><td colspan='2' align='center'>".$lang["setup"][256].":	</td>";
-			echo "</tr>";
+			echo "<form method='post' name=form action=\"$target\"><div align='center'>";
+			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
+			echo "<tr><th colspan='2'><b>";
+			if (empty($ID)) {
+				echo $lang["setup"][605].":";
 
-			echo "<tr><td>".$lang["setup"][260].":	</td>";
+			} else {
+				echo $lang["common"][35]." ID $ID:";
+			}		
+			echo "</b></th></tr>";
+
+			echo "<tr><td class='tab_bg_1' valign='top'>";
+
+			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+
+			echo "<tr><td>".$lang["common"][16].":	</td>";
 			echo "<td>";
-			autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],30);	
+			autocompletionTextField("name","glpi_groups","name",$this->fields["name"],30);	
 			echo "</td></tr>";
 
-			echo "<tr><td>".$lang["setup"][601].":	</td>";
-			echo "<td>";
-			autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],30);	
-			echo "</td></tr>";
+			if(!empty($cfg_glpi["ldap_host"])){
+				echo "<tr><td colspan='2' align='center'>".$lang["setup"][256].":	</td>";
+				echo "</tr>";
 
-			echo "<tr><td colspan='2' align='center'>".$lang["setup"][257].":	</td>";
-			echo "</tr>";
+				echo "<tr><td>".$lang["setup"][260].":	</td>";
+				echo "<td>";
+				autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],30);	
+				echo "</td></tr>";
+
+				echo "<tr><td>".$lang["setup"][601].":	</td>";
+				echo "<td>";
+				autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],30);	
+				echo "</td></tr>";
+
+				echo "<tr><td colspan='2' align='center'>".$lang["setup"][257].":	</td>";
+				echo "</tr>";
 
 
-			echo "<tr><td>".$lang["setup"][261].":	</td>";
-			echo "<td>";
-			autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],30);	
-			echo "</td></tr>";
-		}
-	
-		echo "</table>";
-	
-		echo "</td>\n";	
-		
-		echo "<td class='tab_bg_1' valign='top'>";
-	
-		echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-		echo $lang["common"][25].":	</td></tr>";
-		echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-		echo "</td></tr></table>";
-	
-		echo "</td>";
-		echo "</tr>";
-		
-		if (haveRight("group","w")) 
-		if ($ID=="") {
-	
-			echo "<tr>";
-			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-			echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+				echo "<tr><td>".$lang["setup"][261].":	</td>";
+				echo "<td>";
+				autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],30);	
+				echo "</td></tr>";
+			}
+
+			echo "</table>";
+
+			echo "</td>\n";	
+
+			echo "<td class='tab_bg_1' valign='top'>";
+
+			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
+			echo $lang["common"][25].":	</td></tr>";
+			echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+			echo "</td></tr></table>";
+
 			echo "</td>";
 			echo "</tr>";
-	
-	
+
+			if (haveRight("group","w")) 
+				if ($ID=="") {
+
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+					echo "</td>";
+					echo "</tr>";
+
+
+				} else {
+
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top'>";
+					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></div>";
+					echo "</td>\n\n";
+					echo "<td class='tab_bg_2' valign='top'>\n";
+					echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+
+					echo "</td>";
+					echo "</tr>";
+
+				}
+			echo "</table></div></form>";
+
 		} else {
-	
-			echo "<tr>";
-			echo "<td class='tab_bg_2' valign='top'>";
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></div>";
-			echo "</td>\n\n";
-			echo "<td class='tab_bg_2' valign='top'>\n";
-			echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
-			
-			echo "</td>";
-			echo "</tr>";
-	
-		}
-		echo "</table></div></form>";
-		
-		} else {
-		echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
-		return false;
-		
+			echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
+			return false;
+
 		}
 		return true;
 	}

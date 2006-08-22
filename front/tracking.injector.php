@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // Based on:
 // IRMA, Information Resource-Management and Administration
@@ -50,10 +50,10 @@ $status = "new";
 // Sauvegarde des données dans le cas de retours avec des navigateurs pourris style IE
 $varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents','_my_items','category');
 
-foreach ($varstosav as $v){
+	foreach ($varstosav as $v){
 		if (isset($_POST[$v]))
-        $_SESSION["helpdeskSaved"][$v] = $_POST[$v];
-}
+			$_SESSION["helpdeskSaved"][$v] = $_POST[$v];
+	}
 
 $track=new Job();
 
@@ -84,7 +84,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 	}
 	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
-	
+
 	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $lang["help"][16]."<br><br>";
@@ -107,7 +107,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	}
 
 	$ci=new CommonItem;
-	
+
 	if ($_POST["device_type"]!=0&&!$ci->getFromDB($_POST["device_type"],$_POST["computer"])){
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
@@ -123,7 +123,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 		echo "</b><br><br>";
 		echo "<a href=\"javascript:history.back()\">".$lang["buttons"][13]."</a>";
 		echo "</div>";
-		
+
 	} else if ($track->add($_POST))
 	{
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {

@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 /*!
-    \brief affiche le rapport réseau par switch 
+  \brief affiche le rapport réseau par switch 
 
-*/
+ */
 
- 
+
 
 include ("_relpos.php");
 $NEEDED_ITEMS=array("networking");
@@ -42,40 +42,40 @@ checkRight("reports","r");
 
 if (isset($_POST["prise"])){
 
-$query2="SELECT a.name as office,b.name as stage,glpi_dropdown_netpoint.name as prise
-FROM glpi_dropdown_netpoint
-LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
-LEFT JOIN glpi_dropdown_locations b ON b.id=a.parentid
-WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]."";
-$result = $db->query($query2);
-if ($db->numrows($result)==1){
-	commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
+	$query2="SELECT a.name as office,b.name as stage,glpi_dropdown_netpoint.name as prise
+		FROM glpi_dropdown_netpoint
+		LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
+		LEFT JOIN glpi_dropdown_locations b ON b.id=a.parentid
+		WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]."";
+	$result = $db->query($query2);
+	if ($db->numrows($result)==1){
+		commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
-	$ligne = $db->fetch_array($result);
-	$prise=$ligne['prise'];
-	$stage=$ligne['stage'];
-	$office=$ligne['office'];
+		$ligne = $db->fetch_array($result);
+		$prise=$ligne['prise'];
+		$stage=$ligne['stage'];
+		$office=$ligne['office'];
 
-	// Titre
-        echo "<div align='center'><h2>".$lang["reports"][51]." $prise  ($office / $stage)</h2></div><br><br>";
-        $query="SELECT a.name as bureau,a.ID as ID,glpi_dropdown_netpoint.name as prise,c.name as port,c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
-	FROM glpi_dropdown_netpoint
-	LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
-	LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id 
-	WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]." AND c.device_type=".NETWORKING_TYPE.";";
-	
-	/*!
- 	on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
- 	affiche un rapport en fonction de la prise choisie  
-	*/
+		// Titre
+		echo "<div align='center'><h2>".$lang["reports"][51]." $prise  ($office / $stage)</h2></div><br><br>";
+		$query="SELECT a.name as bureau,a.ID as ID,glpi_dropdown_netpoint.name as prise,c.name as port,c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
+			FROM glpi_dropdown_netpoint
+			LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
+			LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id 
+			WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]." AND c.device_type=".NETWORKING_TYPE.";";
 
-	report_perso("glpi_networking_prise",$query);
-	
-	commonFooter();
+		/*!
+		  on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
+		  affiche un rapport en fonction de la prise choisie  
+		 */
 
-} else  glpi_header($_SERVER['HTTP_REFERER']); 
-  	
-	
-		
+		report_perso("glpi_networking_prise",$query);
+
+		commonFooter();
+
+	} else  glpi_header($_SERVER['HTTP_REFERER']); 
+
+
+
 } 
 ?>

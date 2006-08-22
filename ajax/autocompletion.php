@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,20 +34,20 @@
 // ----------------------------------------------------------------------
 
 
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	checkCentralAccess();
+checkCentralAccess();
 
-	$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST[$_POST['myname']]."%' AND ".$_POST['field']." <> '".$_POST[$_POST['myname']]."' ORDER BY ".$_POST['field']." LIMIT 0,20";
-	if ($result=$db->query($query))
+$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST[$_POST['myname']]."%' AND ".$_POST['field']." <> '".$_POST[$_POST['myname']]."' ORDER BY ".$_POST['field']." LIMIT 0,20";
+if ($result=$db->query($query))
 	if ($db->numrows($result)>0){
 		echo "<ul class='autocomp'>";
 		while ($data=$db->fetch_array($result))
-		echo "<li class='autocomp'>".$data["VAL"]."</li>";
+			echo "<li class='autocomp'>".$data["VAL"]."</li>";
 		echo "</ul>";
 	}
 

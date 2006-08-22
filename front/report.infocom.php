@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
@@ -45,15 +45,15 @@ commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
 
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
-$year=date("Y")-1;
-$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+	$year=date("Y")-1;
+	$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
 
-$_POST["date2"]=date("Y-m-d");
+	$_POST["date2"]=date("Y-m-d");
 }
 if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
-$tmp=$_POST["date1"];
-$_POST["date1"]=$_POST["date2"];
-$_POST["date2"]=$tmp;
+	$tmp=$_POST["date1"];
+	$_POST["date1"]=$_POST["date2"];
+	$_POST["date2"]=$tmp;
 }
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
@@ -89,25 +89,25 @@ function display_infocoms_report($device_type,$begin,$end){
 	if ($db->numrows($result)>0){
 		$comp=new CommonItem();
 		$comp->getFromDB($device_type,0);
-		
+
 		echo "<h2>".$comp->getType()."</h2>";
-		
+
 		echo "<table class='tab_cadre'><tr><th>".$lang["common"][16]."</th><th>".$lang["financial"][21]."</th><th>".$lang["financial"][92]."</th><th>".$lang["financial"][91]."</th><th>".$lang["financial"][14]."</th><th>".$lang["financial"][76]."</th><th>".$lang["financial"][80]."</th></tr>";
-	
-	
+
+
 		$valeursoustot=0;
 		$valeurnettesoustot=0;
 		$valeurnettegraph=array();
 		$valeurgraph=array();
-		
+
 		while ($line=$db->fetch_array($result)){
-			
+
 			$comp->getFromDB($device_type,$line["FK_device"]);
 
 			if (isset($comp->obj->fields["is_template"])&&$comp->obj->fields["is_template"]==0){
 
 				if (isset($comp->obj->fields["is_global"])&&$comp->obj->fields["is_global"]){
-					
+
 					$line["value"]*=getNumberConnections($device_type,$line["FK_device"]);
 				}
 
@@ -117,12 +117,12 @@ function display_infocoms_report($device_type,$begin,$end){
 				$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_glpi["date_fiscale"],"all");
 
 				if (is_array($tmp)&&count($tmp)>0)
-				foreach ($tmp["annee"] as $key => $val){
-					if ($tmp["vcnetfin"][$key]>0){
-						if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
-						$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
+					foreach ($tmp["annee"] as $key => $val){
+						if ($tmp["vcnetfin"][$key]>0){
+							if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
+							$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
+						}
 					}
-				}
 				if ($line["buy_date"]!="0000-00-00"){
 					$year=substr($line["buy_date"],0,4);
 					if ($line["value"]>0){
@@ -130,56 +130,56 @@ function display_infocoms_report($device_type,$begin,$end){
 						$valeurgraph[$year]+=$line["value"];
 					}
 				}
-				
-			
+
+
 				$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
 
 				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td style='text-align:right'>".number_format($line["value"],2,"."," ")."</td><td style='text-align:right'>".number_format($valeurnette,2,"."," ")."</td><td style='text-align:right'>".showTco($device_type,$line["FK_device"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
-	
+
 			}
 
 		}	
-	
-	$valeurtot+=$valeursoustot;
-	$valeurnettetot+=$valeurnettesoustot;
 
-	echo "<tr><td colspan='6' align='center'><h3>".$lang["common"][33].": ".$lang["financial"][21]."=$valeursoustot - ".$lang["financial"][81]."=$valeurnettesoustot</h3></td></tr>";
+		$valeurtot+=$valeursoustot;
+		$valeurnettetot+=$valeurnettesoustot;
+
+		echo "<tr><td colspan='6' align='center'><h3>".$lang["common"][33].": ".$lang["financial"][21]."=$valeursoustot - ".$lang["financial"][81]."=$valeurnettesoustot</h3></td></tr>";
 
 
-	if (count($valeurnettegraph)>0){
-	
-		echo "<tr><td colspan='5'  align='center'>";
-		ksort($valeurnettegraph); 
+		if (count($valeurnettegraph)>0){
 
-		$valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
+			echo "<tr><td colspan='5'  align='center'>";
+			ksort($valeurnettegraph); 
 
-		foreach ($valeurnettegraph as $key => $val) {
-			if (!isset($valeurnettegraphtot[$key])) $valeurnettegraphtot[$key]=0;
-			$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
+			$valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
+
+			foreach ($valeurnettegraph as $key => $val) {
+				if (!isset($valeurnettegraphtot[$key])) $valeurnettegraphtot[$key]=0;
+				$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
+			}
+
+			graphBy($valeurnettegraphdisplay,$lang["financial"][81],"",0,"year");
+
+			echo "</td></tr>";
 		}
 
-		graphBy($valeurnettegraphdisplay,$lang["financial"][81],"",0,"year");
+		if (count($valeurgraph)>0){
+			echo "<tr><td colspan='5' align='center'>";
 
-		echo "</td></tr>";
-	}
-	
-	if (count($valeurgraph)>0){
-		echo "<tr><td colspan='5' align='center'>";
-	
-		ksort($valeurgraph); 
+			ksort($valeurgraph); 
 
-		$valeurgraphdisplay=array_map('round',$valeurgraph);
+			$valeurgraphdisplay=array_map('round',$valeurgraph);
 
-		foreach ($valeurgraph as $key => $val) {
-			if (!isset($valeurgraphtot[$key])) $valeurgraphtot[$key]=0;
-			$valeurgraphtot[$key]+=$valeurgraph[$key];
+			foreach ($valeurgraph as $key => $val) {
+				if (!isset($valeurgraphtot[$key])) $valeurgraphtot[$key]=0;
+				$valeurgraphtot[$key]+=$valeurgraph[$key];
+			}
+
+			graphBy($valeurgraphdisplay,$lang["financial"][21],"",0,"year");
+
+			echo "</td></tr>";
 		}
-
-		graphBy($valeurgraphdisplay,$lang["financial"][21],"",0,"year");
-
-		echo "</td></tr>";
-	}
-	echo "</table>";
+		echo "</table>";
 
 	}
 }
@@ -204,7 +204,7 @@ echo "</table>";
 
 
 
-	echo "<div align='center'><h3>".$lang["common"][33].": ".$lang["financial"][21]."=".number_format($valeurtot,2)." - ".$lang["financial"][81]."=".number_format($valeurnettetot,2)."</h3></div>";
+echo "<div align='center'><h3>".$lang["common"][33].": ".$lang["financial"][21]."=".number_format($valeurtot,2)." - ".$lang["financial"][81]."=".number_format($valeurnettetot,2)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);

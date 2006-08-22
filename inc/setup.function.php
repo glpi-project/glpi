@@ -26,14 +26,14 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 // FUNCTIONS Setup
 
 function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='',$type='') {
@@ -48,46 +48,46 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	echo "<table class='tab_cadre_fixe'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
-	echo "<tr><td  align='center' valign='middle' class='tab_bg_1'>";
-	echo "<input type='hidden' name='which' value='$name'>";
+		echo "<tr><td  align='center' valign='middle' class='tab_bg_1'>";
+		echo "<input type='hidden' name='which' value='$name'>";
 
 
-	$value=getTreeLeafValueName("glpi_dropdown_".$name,$ID,1);
+		$value=getTreeLeafValueName("glpi_dropdown_".$name,$ID,1);
 
-	dropdownValue("glpi_dropdown_".$name, "ID",$ID,0);
-        // on ajoute un input text pour entrer la valeur modifier
+		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0);
+		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
 
- 	echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value["name"]."\"><br>";
-	echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
+		echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value["name"]."\"><br>";
+		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
 
-	echo "</td><td align='center' class='tab_bg_2' width='99'>";
-	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
-	//  on ajoute un bouton modifier
-        echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
-        echo "</td><td align='center' class='tab_bg_2' width='99'>";
-        //
-        echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	echo "</td></tr></table></form>";
+		echo "</td><td align='center' class='tab_bg_2' width='99'>";
+		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
+		//  on ajoute un bouton modifier
+		echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
+		echo "</td><td align='center' class='tab_bg_2' width='99'>";
+		//
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "</td></tr></table></form>";
 
-	echo "<form method='post' action=\"$target\">";
+		echo "<form method='post' action=\"$target\">";
 
-	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
-	
-	echo "<tr><td align='center' class='tab_bg_1'>";
+		echo "<input type='hidden' name='which' value='$name'>";
+		echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 
-	dropdownValue("glpi_dropdown_".$name, "value_to_move",$tomove,0);
-	echo "&nbsp;&nbsp;&nbsp;".$lang["setup"][75]." :&nbsp;&nbsp;&nbsp;";
+		echo "<tr><td align='center' class='tab_bg_1'>";
 
-	dropdownValue("glpi_dropdown_".$name, "value_where",$where,0);
-	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
-	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
-	echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit'>";
-	
-	echo "</td></tr></table></form>";	
-		
+		dropdownValue("glpi_dropdown_".$name, "value_to_move",$tomove,0);
+		echo "&nbsp;&nbsp;&nbsp;".$lang["setup"][75]." :&nbsp;&nbsp;&nbsp;";
+
+		dropdownValue("glpi_dropdown_".$name, "value_where",$where,0);
+		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
+		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+		echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit'>";
+
+		echo "</td></tr></table></form>";	
+
 	}
 
 	echo "<form action=\"$target\" method='post'>";
@@ -95,7 +95,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
-		echo "<input type='text' maxlength='100' size='15' name='value'>&nbsp;&nbsp;&nbsp;";
+	echo "<input type='text' maxlength='100' size='15' name='value'>&nbsp;&nbsp;&nbsp;";
 
 
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
@@ -103,20 +103,20 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 		echo "<option value='under' ".($type=='under'?" selected ":"").">".$lang["setup"][75]."</option>";
 		echo "<option value='same' ".($type=='same'?" selected ":"").">".$lang["setup"][76]."</option>";
 		echo "</select>&nbsp;&nbsp;&nbsp;";
-;
+		;
 		dropdownValue("glpi_dropdown_".$name, "value2",$value2,0);
-		}		
+	}		
 	else echo "<input type='hidden' name='type' value='first'>";
 
 	echo "<br><textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'></textarea>";
-	 		
+
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'  width='202'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
-	
-	
-	
+
+
+
 	echo "</table></form></div>";
 }
 
@@ -133,54 +133,54 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
-	echo "<tr><td class='tab_bg_1' align='center' valign='top'>";
-	echo "<input type='hidden' name='which' value='$name'>";
+		echo "<tr><td class='tab_bg_1' align='center' valign='top'>";
+		echo "<input type='hidden' name='which' value='$name'>";
 
-	dropdownValue("glpi_dropdown_".$name, "ID",$ID,0);
-        // on ajoute un input text pour entrer la valeur modifier
+		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0);
+		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
-//        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
-	if ($name != "netpoint"){
-		if (!empty($ID)){
-			$value=getDropdownName("glpi_dropdown_".$name,$ID,1);
+		//        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
+		if ($name != "netpoint"){
+			if (!empty($ID)){
+				$value=getDropdownName("glpi_dropdown_".$name,$ID,1);
+			}
+			else $value=array("name"=>"","comments"=>"");
+		} else {$value="";$loc="";}
+
+		if($name == "netpoint") {
+			$query = "select * from glpi_dropdown_netpoint where ID = '". $ID ."'";
+			$result = $db->query($query);
+			$value=$loc=$comments="";
+			if($db->numrows($result) == 1) {
+				$value = $db->result($result,0,"name");
+				$loc = $db->result($result,0,"location");
+				$comments = $db->result($result,0,"comments");
+			}
+			echo "<br>";
+			echo $lang["common"][15].": ";		
+
+			dropdownValue("glpi_dropdown_locations", "value2",$loc,0);
+			echo $lang["networking"][52].": ";
+			echo "<input type='text' maxlength='100' size='10' name='value' value=\"".$value."\"><br>";
+			echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$comments."</textarea>";
+
+		} 
+		else {
+
+			echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value["name"]."\"><br>";
+			echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
 		}
-		else $value=array("name"=>"","comments"=>"");
-	} else {$value="";$loc="";}
+		//
+		echo "</td><td align='center' class='tab_bg_2' width='99'>";
+		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
+		//  on ajoute un bouton modifier
+		echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
+		echo "</td><td align='center' class='tab_bg_2' width='99'>";
+		//
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "</td></tr></table></form>";
 
-	if($name == "netpoint") {
-		$query = "select * from glpi_dropdown_netpoint where ID = '". $ID ."'";
-		$result = $db->query($query);
-		$value=$loc=$comments="";
-		if($db->numrows($result) == 1) {
-		$value = $db->result($result,0,"name");
-		$loc = $db->result($result,0,"location");
-		$comments = $db->result($result,0,"comments");
-		}
-		echo "<br>";
-		echo $lang["common"][15].": ";		
-
-		dropdownValue("glpi_dropdown_locations", "value2",$loc,0);
-		echo $lang["networking"][52].": ";
-		echo "<input type='text' maxlength='100' size='10' name='value' value=\"".$value."\"><br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$comments."</textarea>";
-
-	} 
-	else {
-		
-        	echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value["name"]."\"><br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
-        }
-	//
-	echo "</td><td align='center' class='tab_bg_2' width='99'>";
-	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
-	//  on ajoute un bouton modifier
-        echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
-        echo "</td><td align='center' class='tab_bg_2' width='99'>";
-        //
-        echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	echo "</td></tr></table></form>";
-	
 	}
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
@@ -201,7 +201,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 	echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
-	
+
 	// Multiple Add for Netpoint
 	if($name == "netpoint") {
 		echo "</table></form>";
@@ -230,49 +230,49 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo "<input type='submit' name='several_add' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
 	}
-	
+
 	echo "</table></form></div>";
 }
 
 function showFormTypeDown ($target,$name,$human,$ID) {
 
 	global $cfg_glpi, $lang, $HTMLRel;
-	
+
 	if (!haveRight("dropdown","w")) return false;	
 
 	echo "<div align='center'>&nbsp;";
-	
+
 	echo "<form action=\"$target\" method='post'>";
-	
+
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
-	
-	if (countElementsInTable("glpi_type_".$name)>0){
-	echo "<tr><td align='center' valign='center' class='tab_bg_1'>";
 
-	dropdownValue("glpi_type_".$name, "ID",$ID,0);
-	// on ajoute un input text pour entrer la valeur modifier
+	if (countElementsInTable("glpi_type_".$name)>0){
+		echo "<tr><td align='center' valign='center' class='tab_bg_1'>";
+
+		dropdownValue("glpi_type_".$name, "ID",$ID,0);
+		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
-	if (!empty($ID))
-		$value=getDropdownName("glpi_type_".$name,$ID,1);
-	else $value=array("name"=>"","comments"=>"");
+		if (!empty($ID))
+			$value=getDropdownName("glpi_type_".$name,$ID,1);
+		else $value=array("name"=>"","comments"=>"");
 
-	echo "<input type='text' maxlength='100' size='20' name='value'  value=\"".$value["name"]."\"><br>";
-	echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
+		echo "<input type='text' maxlength='100' size='20' name='value'  value=\"".$value["name"]."\"><br>";
+		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
 
-	echo "</td><td align='center' class='tab_bg_2'>";
-	echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
-	echo "<input type='hidden' name='which' value='$name'>";
-	
-	//  on ajoute un bouton modifier
-        echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
-	echo "</td><td align='center' class='tab_bg_2'>";
-        echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-	echo "</td></tr>";
+		echo "</td><td align='center' class='tab_bg_2'>";
+		echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
+		echo "<input type='hidden' name='which' value='$name'>";
+
+		//  on ajoute un bouton modifier
+		echo "<input type='submit' name='update' value='".$lang["buttons"][14]."' class='submit'>";
+		echo "</td><td align='center' class='tab_bg_2'>";
+		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "</td></tr>";
 	}
 	echo "</table></form>";
-	
+
 	echo "<form action=\"$target\" method='post'>";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
@@ -291,39 +291,39 @@ function moveTreeUnder($table,$to_move,$where){
 	if ($where!=$to_move){
 		// Is the $where location under the to move ???
 		$impossible_move=false;
-		
+
 		$current_ID=$where;
 		while ($current_ID!=0&&$impossible_move==false){
 
-		$query="select * from $table WHERE ID='$current_ID'";
-		$result = $db->query($query);
-		$current_ID=$db->result($result,0,"parentID");
-		if ($current_ID==$to_move) $impossible_move=true;
+			$query="select * from $table WHERE ID='$current_ID'";
+			$result = $db->query($query);
+			$current_ID=$db->result($result,0,"parentID");
+			if ($current_ID==$to_move) $impossible_move=true;
 
 		}
 		if (!$impossible_move){
-	
+
 			// Move Location
 			$query = "UPDATE $table SET parentID='$where' where ID='$to_move'";
 			$result = $db->query($query);
 			regenerateTreeCompleteNameUnderID($table,$to_move);
 		}	
-	
+
 	}	
 }
 
 function updateDropdown($input) {
 	global $db,$cfg_glpi;
-	
-		
+
+
 	if($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "update ".$input["tablename"]." SET name = '".$input["value"]."', location = '".$input["value2"]."', comments='".$input["comments"]."' where ID = '".$input["ID"]."'";
-		
+
 	}
 	else {
 		$query = "update ".$input["tablename"]." SET name = '".$input["value"]."', comments='".$input["comments"]."' where ID = '".$input["ID"]."'";
 	}
-	
+
 	if ($result=$db->query($query)) {
 		if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"]))
 			regenerateTreeCompleteNameUnderID($input["tablename"],$input["ID"]);
@@ -336,41 +336,41 @@ function updateDropdown($input) {
 
 function addDropdown($input) {
 	global $db,$cfg_glpi;
-	
+
 	if (!empty($input["value"])){
 
-	if($input["tablename"] == "glpi_dropdown_netpoint") {
-		$query = "INSERT INTO ".$input["tablename"]." (name,location,comments) VALUES ('".$input["value"]."', '".$input["value2"]."', '".$input["comments"]."')";
-	}
-	else if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"])){
-		if ($input['type']=="first"){
-		    $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '0','','".$input["comments"]."')";		
+		if($input["tablename"] == "glpi_dropdown_netpoint") {
+			$query = "INSERT INTO ".$input["tablename"]." (name,location,comments) VALUES ('".$input["value"]."', '".$input["value2"]."', '".$input["comments"]."')";
+		}
+		else if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"])){
+			if ($input['type']=="first"){
+				$query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '0','','".$input["comments"]."')";		
+			} else {
+				$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
+				$result=$db->query($query);
+				if ($db->numrows($result)>0){
+					$data=$db->fetch_array($result);
+					$level_up=$data["parentID"];
+					if ($input["type"]=="under") {
+						$level_up=$data["ID"];
+					} 
+					$query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '$level_up','','".$input["comments"]."')";		
+				} else $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '0','','".$input["comments"]."')";				
+			}
+		}
+		else {
+			$query = "INSERT INTO ".$input["tablename"]." (name,comments) VALUES ('".$input["value"]."','".$input["comments"]."')";
+		}
+
+		if ($result=$db->query($query)) {
+
+			if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"]))
+				regenerateTreeCompleteNameUnderID($input["tablename"],$db->insert_id());		
+			return true;
 		} else {
-			$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
-			$result=$db->query($query);
-			if ($db->numrows($result)>0){
-				$data=$db->fetch_array($result);
-				$level_up=$data["parentID"];
-				if ($input["type"]=="under") {
-					$level_up=$data["ID"];
-				} 
-				$query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '$level_up','','".$input["comments"]."')";		
-			} else $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '0','','".$input["comments"]."')";				
+			return false;
 		}
 	}
-	else {
-		$query = "INSERT INTO ".$input["tablename"]." (name,comments) VALUES ('".$input["value"]."','".$input["comments"]."')";
-	}
-
-	if ($result=$db->query($query)) {
-
-		if (in_array($input["tablename"],$cfg_glpi["dropdowntree_tables"]))
-			regenerateTreeCompleteNameUnderID($input["tablename"],$db->insert_id());		
-		return true;
-	} else {
-		return false;
-	}
-}
 }
 
 function deleteDropdown($input) {
@@ -388,48 +388,48 @@ function replaceDropDropDown($input) {
 	global $db;
 	$name = getDropdownNameFromTable($input["tablename"]);
 	switch($name) {
-	case "cartridge_type":
-		$query = "update glpi_cartridges_type set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "cartridge_type":
+			$query = "update glpi_cartridges_type set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "consumable_type":
-		$query = "update glpi_consumables_type set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "consumable_type":
+			$query = "update glpi_consumables_type set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "contact_type":
-		$query = "update glpi_contacts set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "contact_type":
+			$query = "update glpi_contacts set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "contract_type":
-		$query = "update glpi_contracts set contract_type = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "contract_type":
+			$query = "update glpi_contracts set contract_type = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "ram_type":
-		$query = "update glpi_device_ram set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "ram_type":
+			$query = "update glpi_device_ram set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "interface":
-		$query = "update glpi_device_hdd set interface = '". $input["newID"] ."'  where interface = '".$input["oldID"]."'";
+		case "interface":
+			$query = "update glpi_device_hdd set interface = '". $input["newID"] ."'  where interface = '".$input["oldID"]."'";
 		$db->query($query);
 		$query = "update glpi_device_drive set interface = '". $input["newID"] ."'  where interface = '".$input["oldID"]."'";
 		$db->query($query);
 		$query = "update glpi_device_control set interface = '". $input["newID"] ."'  where interface = '".$input["oldID"]."'";
 		$db->query($query);
 		break;	
-	case "vlan":
-		$query = "update glpi_networking_vlan set FK_vlan = '". $input["newID"] ."'  where FK_vlan = '".$input["oldID"]."'";
+		case "vlan":
+			$query = "update glpi_networking_vlan set FK_vlan = '". $input["newID"] ."'  where FK_vlan = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "domain":
-		$query = "update glpi_computers set domain = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "domain":
+			$query = "update glpi_computers set domain = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		$query = "update glpi_printers set domain = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		$query = "update glpi_networking set domain = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "network":
-		$query = "update glpi_computers set network = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "network":
+			$query = "update glpi_computers set network = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		$query = "update glpi_printers set network = '". $input["newID"] ."'  where network = '".$input["oldID"]."'";
 		$db->query($query);
@@ -437,34 +437,34 @@ function replaceDropDropDown($input) {
 		$db->query($query);
 		break;
 
-	case "enttype":
-		$query = "update glpi_enterprises set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "enttype":
+			$query = "update glpi_enterprises set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "firmware":
-		$query = "update glpi_networking set firmware = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "firmware":
+			$query = "update glpi_networking set firmware = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "os" :
-		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "os" :
+			$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		$query = "update glpi_software set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "os_version" :
-		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "os_version" :
+			$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "os_sp" :
-		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "os_sp" :
+			$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "iface" :
-		$query = "update glpi_networking_ports set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "iface" :
+			$query = "update glpi_networking_ports set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "location" :
-		$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "location" :
+			$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		$query = "update glpi_monitors set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$result = $db->query($query);
@@ -484,86 +484,86 @@ function replaceDropDropDown($input) {
 		$result = $db->query($query);
 
 		break;
-	case "monitors" :
-		$query = "update glpi_monitors set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "monitors" :
+			$query = "update glpi_monitors set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "computers" :
-		$query = "update glpi_computers set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "computers" :
+			$query = "update glpi_computers set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "model" :
-		$query = "update glpi_computers set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		case "model" :
+			$query = "update glpi_computers set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "model_printers" :
-		$query = "update glpi_printers set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		case "model_printers" :
+			$query = "update glpi_printers set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "model_monitors" :
-		$query = "update glpi_monitors set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		case "model_monitors" :
+			$query = "update glpi_monitors set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "model_peripherals" :
-		$query = "update glpi_peripherals set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		case "model_peripherals" :
+			$query = "update glpi_peripherals set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "model_phones" :
-		$query = "update glpi_phones set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		case "model_phones" :
+			$query = "update glpi_phones set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "model_networking" :
-		$query = "update glpi_networking set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
+		case "model_networking" :
+			$query = "update glpi_networking set model = '". $input["newID"] ."'  where model = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "printers" :
-		$query = "update glpi_printers set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "printers" :
+			$query = "update glpi_printers set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		$query = "update glpi_cartridges_assoc set FK_glpi_type_printer = '". $input["newID"] ."'  where FK_glpi_type_printer = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "networking" :
-		$query = "update glpi_networking set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "networking" :
+			$query = "update glpi_networking set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "netpoint" : 
-		$query = "update glpi_networking_ports set netpoint = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "netpoint" : 
+			$query = "update glpi_networking_ports set netpoint = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "rubdocs" : 
-		$query = "update glpi_docs set rubrique = '". $input["newID"] ."'  where rubrique = '".$input["oldID"]."'";
+		case "rubdocs" : 
+			$query = "update glpi_docs set rubrique = '". $input["newID"] ."'  where rubrique = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "tracking_category":
-		$query = "update glpi_tracking set category = '". $input["newID"] ."'  where category = '".$input["oldID"]."'";
+		case "tracking_category":
+			$query = "update glpi_tracking set category = '". $input["newID"] ."'  where category = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "peripherals" :
-		$query = "update glpi_peripherals set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "peripherals" :
+			$query = "update glpi_peripherals set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "phones" :
-		$query = "update glpi_phones set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "phones" :
+			$query = "update glpi_phones set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "state" :
-		$query = "update glpi_state_item set state = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "state" :
+			$query = "update glpi_state_item set state = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "auto_update" :
-		$query = "update glpi_computers set auto_update = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "auto_update" :
+			$query = "update glpi_computers set auto_update = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$result = $db->query($query);
 		break;
-	case "budget" :
-		$query = "update glpi_infocoms set budget = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		case "budget" :
+			$query = "update glpi_infocoms set budget = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "phone_power" :
-		$query = "update glpi_phones set power = '". $input["newID"] ."'  where power = '".$input["oldID"]."'";
+		case "phone_power" :
+			$query = "update glpi_phones set power = '". $input["newID"] ."'  where power = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
-	case "case_type":
-		$query = "update glpi_device_case set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		case "case_type":
+			$query = "update glpi_device_case set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
 
@@ -577,46 +577,46 @@ function showDeleteConfirmForm($target,$table, $ID) {
 	global $db,$lang;
 
 	if (!haveRight("dropdown","w")) return false;
-	
+
 	if ($table=="glpi_dropdown_locations"){
-		
+
 		$query = "Select count(*) as cpt FROM $table where parentID = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  {
-		echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
-		return;
+			echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
+			return;
 		}
 	}	
 
 	if ($table=="glpi_dropdown_kbcategories"){
 		$query = "Select count(*) as cpt FROM $table where parentID = '".$ID."'";
-        	$result = $db->query($query);
-	        if($db->result($result,0,"cpt") > 0)  {	
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  {	
 			echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
 			return;
 		} else {
 			$query = "Select count(*) as cpt FROM glpi_kbitems where categoryID = '".$ID."'";
-	        	$result = $db->query($query);
-		        if($db->result($result,0,"cpt") > 0)  {
+			$result = $db->query($query);
+			if($db->result($result,0,"cpt") > 0)  {
 				echo "<div align='center'><p style='color:red'>".$lang["setup"][74]."</p></div>";
 				return;
 			}
 		}
 	}
-		
+
 	echo "<div align='center'>";
 	echo "<p style='color:red'>".$lang["setup"][63]."</p>";
 	echo "<p>".$lang["setup"][64]."</p>";
-	
+
 	echo "<form action=\"". $target ."\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"". $table ."\"  />";
 	echo "<input type=\"hidden\" name=\"ID\" value=\"". $ID ."\"  />";
 	echo "<input type=\"hidden\" name=\"which\" value=\"". str_replace("glpi_type_","",str_replace("glpi_dropdown_","",$table)) ."\"  />";
 	echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
-	
+
 	echo "<table class='tab_cadre'><tr><td>";
 	echo "<input class='button' type=\"submit\" name=\"delete\" value=\"Confirmer\" /></td>";
-	
+
 	echo "<form action=\" ". $target ."\" method=\"post\">";
 	echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"Annuler\" /></td></tr></table>";
 	echo "</form>";
@@ -629,13 +629,13 @@ function showDeleteConfirmForm($target,$table, $ID) {
 	echo "<input type=\"hidden\" name=\"oldID\" value=\"". $ID ."\"  />";
 	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"Remplacer\" /></td></tr></table>";
 	echo "</form>";
-	
+
 	echo "</div>";
 }
 
 
 function getDropdownNameFromTable($table) {
-	
+
 	if(ereg("glpi_type_",$table)){
 		$name = ereg_replace("glpi_type_","",$table);
 	}
@@ -668,36 +668,36 @@ function dropdownUsed($table, $ID) {
 
 	global $db;
 	$name = getDropdownNameFromTable($table);
-	
+
 	$var1 = true;
 	switch($name) {
-	case "cartridge_type":
-		$query = "Select count(*) as cpt FROM glpi_cartridges_type where type = '".$ID."'";
+		case "cartridge_type":
+			$query = "Select count(*) as cpt FROM glpi_cartridges_type where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "consumable_type":
-		$query = "Select count(*) as cpt FROM glpi_consumables_type where type = '".$ID."'";
+		case "consumable_type":
+			$query = "Select count(*) as cpt FROM glpi_consumables_type where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "contact_type":
-		$query = "Select count(*) as cpt FROM glpi_contacts where type = '".$ID."'";
+		case "contact_type":
+			$query = "Select count(*) as cpt FROM glpi_contacts where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "contract_type":
-		$query = "Select count(*) as cpt FROM glpi_contracts where ". $name ." = '".$ID."'";
+		case "contract_type":
+			$query = "Select count(*) as cpt FROM glpi_contracts where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "ram_type":
-		$query = "Select count(*) as cpt FROM glpi_device_ram where type = '".$ID."'";
+		case "ram_type":
+			$query = "Select count(*) as cpt FROM glpi_device_ram where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "interface":
-		$query = "Select count(*) as cpt FROM glpi_device_hdd where interface = '".$ID."'";
+		case "interface":
+			$query = "Select count(*) as cpt FROM glpi_device_hdd where interface = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		$query = "Select count(*) as cpt FROM glpi_device_drive where interface = '".$ID."'";
@@ -707,13 +707,13 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "vlan":
-		$query = "Select count(*) as cpt FROM glpi_networking_vlan where FK_vlan = '".$ID."'";
+		case "vlan":
+			$query = "Select count(*) as cpt FROM glpi_networking_vlan where FK_vlan = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "domain":
-		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
+		case "domain":
+			$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		$query = "Select count(*) as cpt FROM glpi_printers where ". $name ." = '".$ID."'";
@@ -723,8 +723,8 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "network":
-		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
+		case "network":
+			$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		$query = "Select count(*) as cpt FROM glpi_printers where ". $name ." = '".$ID."'";
@@ -734,34 +734,34 @@ function dropdownUsed($table, $ID) {
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "enttype":
-		$query = "Select count(*) as cpt FROM glpi_enterprises where type = '".$ID."'";
+		case "enttype":
+			$query = "Select count(*) as cpt FROM glpi_enterprises where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "firmware":
-		$query = "Select count(*) as cpt FROM glpi_networking where ". $name ." = '".$ID."'";
+		case "firmware":
+			$query = "Select count(*) as cpt FROM glpi_networking where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "iface" : 
-		$query = "Select count(*) as cpt FROM glpi_networking_ports where ". $name ." = '".$ID."'";
+		case "iface" : 
+			$query = "Select count(*) as cpt FROM glpi_networking_ports where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "kbcategories" :
-		$query = "Select count(*) as cpt FROM glpi_dropdown_kbcategories where parentID = '".$ID."'";
+		case "kbcategories" :
+			$query = "Select count(*) as cpt FROM glpi_dropdown_kbcategories where parentID = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		$query = "Select count(*) as cpt FROM glpi_kbitems where categoryID = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "location" :
-		$query = "Select count(*) as cpt FROM glpi_dropdown_locations where parentID = '".$ID."'";
+		case "location" :
+			$query = "Select count(*) as cpt FROM glpi_dropdown_locations where parentID = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
-	
+
 		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
@@ -791,103 +791,103 @@ function dropdownUsed($table, $ID) {
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 
 		break;
-	case "netpoint" : 
-		$query = "Select count(*) as cpt FROM glpi_networking_ports where ". $name ." = '".$ID."'";
+		case "netpoint" : 
+			$query = "Select count(*) as cpt FROM glpi_networking_ports where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "os" :
-		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
+		case "os" :
+			$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		$query = "Select count(*) as cpt FROM glpi_software where platform = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;	
 		break;
-	case "os_version" :
-		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
+		case "os_version" :
+			$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "os_sp" :
-		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
+		case "os_sp" :
+			$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "rubdocs":
-		$query = "Select count(*) as cpt FROM glpi_docs where rubrique = '".$ID."'";
+		case "rubdocs":
+			$query = "Select count(*) as cpt FROM glpi_docs where rubrique = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "state":
-		$query = "Select count(*) as cpt FROM glpi_state_item where ". $name ." = '".$ID."'";
+		case "state":
+			$query = "Select count(*) as cpt FROM glpi_state_item where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
 
 
-	case "tracking_category":
-		$query = "Select count(*) as cpt FROM glpi_tracking where category = '".$ID."'";
+		case "tracking_category":
+			$query = "Select count(*) as cpt FROM glpi_tracking where category = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "computers" :
-		$query = "Select count(*) as cpt FROM glpi_computers where type = '".$ID."'";
+		case "computers" :
+			$query = "Select count(*) as cpt FROM glpi_computers where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "model" :
-		$query = "Select count(*) as cpt FROM glpi_computers where model = '".$ID."'";
+		case "model" :
+			$query = "Select count(*) as cpt FROM glpi_computers where model = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "model_printers" :
-		$query = "Select count(*) as cpt FROM glpi_printers where model = '".$ID."'";
+		case "model_printers" :
+			$query = "Select count(*) as cpt FROM glpi_printers where model = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "model_networking" :
-		$query = "Select count(*) as cpt FROM glpi_networking where model = '".$ID."'";
+		case "model_networking" :
+			$query = "Select count(*) as cpt FROM glpi_networking where model = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "model_monitors" :
-		$query = "Select count(*) as cpt FROM glpi_monitors where model = '".$ID."'";
+		case "model_monitors" :
+			$query = "Select count(*) as cpt FROM glpi_monitors where model = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "model_peripherals" :
-		$query = "Select count(*) as cpt FROM glpi_peripherals where model = '".$ID."'";
+		case "model_peripherals" :
+			$query = "Select count(*) as cpt FROM glpi_peripherals where model = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "model_phones" :
-		$query = "Select count(*) as cpt FROM glpi_phones where model = '".$ID."'";
+		case "model_phones" :
+			$query = "Select count(*) as cpt FROM glpi_phones where model = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "monitors" :
-		$query = "Select count(*) as cpt FROM glpi_monitors where type = '".$ID."'";
+		case "monitors" :
+			$query = "Select count(*) as cpt FROM glpi_monitors where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "networking" :
-		$query = "Select count(*) as cpt FROM glpi_networking where type = '".$ID."'";
+		case "networking" :
+			$query = "Select count(*) as cpt FROM glpi_networking where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "peripherals":
-		$query = "Select count(*) as cpt FROM glpi_peripherals where type = '".$ID."'";
+		case "peripherals":
+			$query = "Select count(*) as cpt FROM glpi_peripherals where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "phones":
-		$query = "Select count(*) as cpt FROM glpi_phones where type = '".$ID."'";
+		case "phones":
+			$query = "Select count(*) as cpt FROM glpi_phones where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "printers" :
-		$query = "Select count(*) as cpt FROM glpi_printers where type = '".$ID."'";
+		case "printers" :
+			$query = "Select count(*) as cpt FROM glpi_printers where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		$query = "Select count(*) as cpt FROM glpi_cartridges_assoc where FK_glpi_type_printer = '".$ID."'";
@@ -895,23 +895,23 @@ function dropdownUsed($table, $ID) {
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 
 		break;
-	case "auto_update" :
-		$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
+		case "auto_update" :
+			$query = "Select count(*) as cpt FROM glpi_computers where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "budget" :
-		$query = "Select count(*) as cpt FROM glpi_infocoms where ". $name ." = '".$ID."'";
+		case "budget" :
+			$query = "Select count(*) as cpt FROM glpi_infocoms where ". $name ." = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "phone_power" :
-		$query = "Select count(*) as cpt FROM glpi_phones where power = '".$ID."'";
+		case "phone_power" :
+			$query = "Select count(*) as cpt FROM glpi_phones where power = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
-	case "case_type":
-		$query = "Select count(*) as cpt FROM glpi_device_case where type = '".$ID."'";
+		case "case_type":
+			$query = "Select count(*) as cpt FROM glpi_device_case where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
@@ -928,52 +928,52 @@ function listTemplates($type,$target,$add=0) {
 	global $db,$cfg_glpi, $lang;
 
 	if (!haveTypeRight($type,"w")) return false;
-		
+
 	switch ($type){
-	case COMPUTER_TYPE :
-		$title=$lang["Menu"][0];
-		$query = "SELECT * FROM glpi_computers where is_template = '1' ORDER by tplname";
-		break;
-	case NETWORKING_TYPE :
-		$title=$lang["Menu"][1];
-		$query = "SELECT * FROM glpi_networking where is_template = '1' ORDER by tplname";
-		break;
-	case MONITOR_TYPE :
-		$title=$lang["Menu"][3];
-		$query = "SELECT * FROM glpi_monitors where is_template = '1' ORDER by tplname";
-		break;	
-	case PRINTER_TYPE :
-		$title=$lang["Menu"][2];
-		$query = "SELECT * FROM glpi_printers where is_template = '1' ORDER by tplname";
-		break;	
-	case PERIPHERAL_TYPE :
-		$title=$lang["Menu"][16];
-		$query = "SELECT * FROM glpi_peripherals where is_template = '1' ORDER by tplname";
-		break;
-	case SOFTWARE_TYPE :
-		$title=$lang["Menu"][4];
-		$query = "SELECT * FROM glpi_software where is_template = '1' ORDER by tplname";
-		break;
-	case PHONE_TYPE :
-		$title=$lang["Menu"][34];
-		$query = "SELECT * FROM glpi_phones where is_template = '1' ORDER by tplname";
-		break;
+		case COMPUTER_TYPE :
+			$title=$lang["Menu"][0];
+			$query = "SELECT * FROM glpi_computers where is_template = '1' ORDER by tplname";
+			break;
+		case NETWORKING_TYPE :
+			$title=$lang["Menu"][1];
+			$query = "SELECT * FROM glpi_networking where is_template = '1' ORDER by tplname";
+			break;
+		case MONITOR_TYPE :
+			$title=$lang["Menu"][3];
+			$query = "SELECT * FROM glpi_monitors where is_template = '1' ORDER by tplname";
+			break;	
+		case PRINTER_TYPE :
+			$title=$lang["Menu"][2];
+			$query = "SELECT * FROM glpi_printers where is_template = '1' ORDER by tplname";
+			break;	
+		case PERIPHERAL_TYPE :
+			$title=$lang["Menu"][16];
+			$query = "SELECT * FROM glpi_peripherals where is_template = '1' ORDER by tplname";
+			break;
+		case SOFTWARE_TYPE :
+			$title=$lang["Menu"][4];
+			$query = "SELECT * FROM glpi_software where is_template = '1' ORDER by tplname";
+			break;
+		case PHONE_TYPE :
+			$title=$lang["Menu"][34];
+			$query = "SELECT * FROM glpi_phones where is_template = '1' ORDER by tplname";
+			break;
 
 	}
 	if ($result = $db->query($query)) {
-		
+
 		echo "<div align='center'><table class='tab_cadre' width='50%'>";
 		if ($add)
 			echo "<tr><th>".$lang["common"][7]." - $title:</th></tr>";
 		else 
 			echo "<tr><th colspan='2'>".$lang["common"][14]." - $title:</th></tr>";
-		
+
 		while ($data= $db->fetch_array($result)) {
-			
+
 			$templname = $data["tplname"];
 			if ($templname=="Blank Template")
 				$templname=$lang["common"][31];
-			
+
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
 			if (!$add){
@@ -981,13 +981,13 @@ function listTemplates($type,$target,$add=0) {
 
 				echo "<td align='center' class='tab_bg_2'>";
 				if ($data["tplname"]!="Blank Template")
-				echo "<b><a href=\"$target?ID=".$data["ID"]."&amp;purge=purge&amp;withtemplate=1\">".$lang["buttons"][6]."</a></b>";
+					echo "<b><a href=\"$target?ID=".$data["ID"]."&amp;purge=purge&amp;withtemplate=1\">".$lang["buttons"][6]."</a></b>";
 				else echo "&nbsp;";
 				echo "</td>";
 			} else {
 				echo "<a href=\"$target?ID=".$data["ID"]."&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 			}
-			
+
 			echo "</tr>";		
 
 		}
@@ -999,10 +999,10 @@ function listTemplates($type,$target,$add=0) {
 			echo "</td>";
 			echo "</tr>";
 		}
-				
+
 		echo "</table></div>";
 	}
-	
+
 
 }
 
@@ -1012,32 +1012,32 @@ function listTemplates($type,$target,$add=0) {
 
 function titleConfigGen(){
 
-global  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
 
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][100]."</span>";
-		 echo "</b></td></tr></table>&nbsp;</div>";
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][100]."</span>";
+	echo "</b></td></tr></table>&nbsp;</div>";
 
 
 }
 
 function titleConfigDisplay(){
 
-global  $lang,$HTMLRel;
+	global  $lang,$HTMLRel;
 
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][119]."</span>";
-		 echo "</b></td></tr></table>&nbsp;</div>";
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][119]."</span>";
+	echo "</b></td></tr></table>&nbsp;</div>";
 
 
 }
 
 function showFormConfigGen($target){
-	
+
 	global  $db,$lang,$HTMLRel,$cfg_glpi;
-	
+
 	if (!haveRight("config","w")) return false;	
-	
+
 	echo "<form name='form' action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<div align='center'><table class='tab_cadre_fixe'>";
@@ -1045,19 +1045,19 @@ function showFormConfigGen($target){
 
 	$default_language=$cfg_glpi["default_language"];
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
-		foreach ($cfg_glpi["languages"] as $key => $val){
+	foreach ($cfg_glpi["languages"] as $key => $val){
 		echo "<option value=\"".$key."\"";
-			if($default_language==$key){ echo " selected";}
+		if($default_language==$key){ echo " selected";}
 		echo ">".$val[0]. " (".$key.")";
-		}
-	
+	}
+
 	echo "</select></td>";
 
 	echo "<td align='center'> ".$lang["setup"][133]." </td><td>";
 	dropdownYesNoInt("ocs_mode",$cfg_glpi["ocs_mode"]);
-   	echo "</td></tr>";
+	echo "</td></tr>";
 
-	
+
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][102]." </td><td><select name=\"event_loglevel\">";
 	$level=$cfg_glpi["event_loglevel"];
 	echo "<option value=\"1\"";  if($level==1){ echo " selected";} echo ">".$lang["setup"][103]." </option>";
@@ -1141,21 +1141,21 @@ function showFormConfigGen($target){
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][403]." </td><td><input type=\"text\" name=\"proxy_user\" value=\"". $cfg_glpi["proxy_user"] ."\"></td>";
 	echo "<td align='center'>".$lang["setup"][404]." </td><td><input type=\"text\" name=\"proxy_password\" value=\"". $cfg_glpi["proxy_password"] ."\"></td></tr>";
-	
+
 	echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update_confgen\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></td></tr>";
-	
+
 	echo "</table></div>";	
 
-	
+
 	echo "</form>";
 }
 
 function showFormConfigDisplay($target){
-	
+
 	global $db, $lang,$HTMLRel,$cfg_glpi;
-	
+
 	if (!haveRight("config","w")) return false;	
-	
+
 	// Needed for list_limit
 	$cfg=new Config();
 	$cfg->getFromDB(1);
@@ -1163,7 +1163,7 @@ function showFormConfigDisplay($target){
 	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='4'>".$lang["setup"][100]."</th></tr>";
-	
+
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $cfg_glpi["num_of_events"] ."\"></td>";
 	echo "<td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $cfg->fields["list_limit"] ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $cfg_glpi["cut"] ."\"></td>";
@@ -1173,9 +1173,9 @@ function showFormConfigDisplay($target){
 	echo "<select name='dropdown_limit'>";
 	for ($i=20;$i<=100;$i++) echo "<option value='$i'".($dp_limit==$i?" selected ":"").">$i</option>";
 	echo "</select>";	
-	
+
 	echo "</td></tr>";
-	
+
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][128]." </td><td><select name=\"dateformat\">";
 	echo "<option value=\"0\"";  if($cfg_glpi["dateformat"]==0){ echo " selected";} echo ">YYYY-MM-DD</option>";
@@ -1202,7 +1202,7 @@ function showFormConfigDisplay($target){
 	echo "<select name='planning_begin'>";
 	for ($i=0;$i<=24;$i++) echo "<option value='$i'".($plan_begin[0]==$i?" selected ":"").">$i</option>";
 	echo "</select>";
- 	echo "&nbsp;->&nbsp;";
+	echo "&nbsp;->&nbsp;";
 	echo "<select name='planning_end'>";
 	for ($i=0;$i<=24;$i++) echo "<option value='$i' ".($plan_end[0]==$i?" selected ":"").">$i</option>";
 	echo "</select>";
@@ -1269,13 +1269,13 @@ function showFormConfigDisplay($target){
 	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($ajax_limit_count==$i?" selected ":"").">$i</option>";
 	echo "</select>";
 	echo "</td><td colspan='2'>&nbsp;</td></tr>";
-	
 
-		
+
+
 	echo "</table>&nbsp;</div>";	
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_confdisplay\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 
-	
+
 	echo "</form>";
 }
 
@@ -1283,12 +1283,12 @@ function showFormConfigDisplay($target){
 
 
 function titleExtAuth(){
-// Un titre pour la gestion des sources externes
-		
-		global  $lang,$HTMLRel;
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][150]."</span>";
-		 echo "</td></tr></table>&nbsp;</div>";
+	// Un titre pour la gestion des sources externes
+
+	global  $lang,$HTMLRel;
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][150]."</span>";
+	echo "</td></tr></table>&nbsp;</div>";
 
 }
 
@@ -1297,69 +1297,69 @@ function titleExtAuth(){
 
 
 function showMailServerConfig($value){
-global $lang;
+	global $lang;
 
 	if (!haveRight("config","w")) return false;	
 
-if (ereg(":",$value)){
-$addr=ereg_replace("{","",preg_replace("/:.*/","",$value));
-$port=preg_replace("/.*:/","",preg_replace("/\/.*/","",$value));
-}
-else {
-	if (ereg("/",$value))
-	$addr=ereg_replace("{","",preg_replace("/\/.*/","",$value));
-	else $addr=ereg_replace("{","",preg_replace("/}.*/","",$value));
-	$port="";
-}
-$mailbox=preg_replace("/.*}/","",$value);
+	if (ereg(":",$value)){
+		$addr=ereg_replace("{","",preg_replace("/:.*/","",$value));
+		$port=preg_replace("/.*:/","",preg_replace("/\/.*/","",$value));
+	}
+	else {
+		if (ereg("/",$value))
+			$addr=ereg_replace("{","",preg_replace("/\/.*/","",$value));
+		else $addr=ereg_replace("{","",preg_replace("/}.*/","",$value));
+		$port="";
+	}
+	$mailbox=preg_replace("/.*}/","",$value);
 
-echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"". $addr."\" ></td></tr>";	
-echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][168]."</td><td>";
-echo "<select name='server_type'>";
-echo "<option value=''>&nbsp;</option>";
-echo "<option value='/imap' ".(ereg("/imap",$value)?" selected ":"").">IMAP</option>";
-echo "<option value='/pop' ".(ereg("/pop",$value)?" selected ":"").">POP</option>";
-echo "</select>";
-echo "<select name='server_ssl'>";
-echo "<option value=''>&nbsp;</option>";
-echo "<option value='/ssl' ".(ereg("/ssl",$value)?" selected ":"").">SSL</option>";
-echo "</select>";
-echo "<select name='server_cert'>";
-echo "<option value=''>&nbsp;</option>";
-echo "<option value='/novalidate-cert' ".(ereg("/novalidate-cert",$value)?" selected ":"").">NO-VALIDATE-CERT</option>";
-echo "<option value='/validate-cert' ".(ereg("/validate-cert",$value)?" selected ":"").">VALIDATE-CERT</option>";
-echo "</select>";
-echo "<select name='server_tls'>";
-echo "<option value=''>&nbsp;</option>";
-echo "<option value='/tls' ".(ereg("/tls",$value)?" selected ":"").">TLS</option>";
-echo "<option value='/notls' ".(ereg("/notls",$value)?" selected ":"").">NO-TLS</option>";
-echo "</select>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][163]."</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"". $addr."\" ></td></tr>";	
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][168]."</td><td>";
+	echo "<select name='server_type'>";
+	echo "<option value=''>&nbsp;</option>";
+	echo "<option value='/imap' ".(ereg("/imap",$value)?" selected ":"").">IMAP</option>";
+	echo "<option value='/pop' ".(ereg("/pop",$value)?" selected ":"").">POP</option>";
+	echo "</select>";
+	echo "<select name='server_ssl'>";
+	echo "<option value=''>&nbsp;</option>";
+	echo "<option value='/ssl' ".(ereg("/ssl",$value)?" selected ":"").">SSL</option>";
+	echo "</select>";
+	echo "<select name='server_cert'>";
+	echo "<option value=''>&nbsp;</option>";
+	echo "<option value='/novalidate-cert' ".(ereg("/novalidate-cert",$value)?" selected ":"").">NO-VALIDATE-CERT</option>";
+	echo "<option value='/validate-cert' ".(ereg("/validate-cert",$value)?" selected ":"").">VALIDATE-CERT</option>";
+	echo "</select>";
+	echo "<select name='server_tls'>";
+	echo "<option value=''>&nbsp;</option>";
+	echo "<option value='/tls' ".(ereg("/tls",$value)?" selected ":"").">TLS</option>";
+	echo "<option value='/notls' ".(ereg("/notls",$value)?" selected ":"").">NO-TLS</option>";
+	echo "</select>";
 
-echo "</td></tr>";	
+	echo "</td></tr>";	
 
-echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][169]."</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"". $mailbox."\" ></td></tr>";	
-echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][171]."</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"". $port."\" ></td></tr>";	
-if (empty($value)) $value="&nbsp;";
-echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][170]."</td><td><b>$value</b></td></tr>";	
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][169]."</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"". $mailbox."\" ></td></tr>";	
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][171]."</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"". $port."\" ></td></tr>";	
+	if (empty($value)) $value="&nbsp;";
+	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][170]."</td><td><b>$value</b></td></tr>";	
 
 }	
 
 function constructIMAPAuthServer($input){
 
-$out="";
-if (isset($input['mail_server'])&&!empty($input['mail_server'])) $out.="{".$input['mail_server'];
-else return $out;
-if (isset($input['server_port'])&&!empty($input['server_port'])) $out.=":".$input['server_port'];
-if (isset($input['server_type'])) $out.=$input['server_type'];
-if (isset($input['server_ssl'])) $out.=$input['server_ssl'];
-if (isset($input['server_cert'])) $out.=$input['server_cert'];
-if (isset($input['server_tls'])) $out.=$input['server_tls'];
+	$out="";
+	if (isset($input['mail_server'])&&!empty($input['mail_server'])) $out.="{".$input['mail_server'];
+	else return $out;
+	if (isset($input['server_port'])&&!empty($input['server_port'])) $out.=":".$input['server_port'];
+	if (isset($input['server_type'])) $out.=$input['server_type'];
+	if (isset($input['server_ssl'])) $out.=$input['server_ssl'];
+	if (isset($input['server_cert'])) $out.=$input['server_cert'];
+	if (isset($input['server_tls'])) $out.=$input['server_tls'];
 
-$out.="}";
-if (isset($input['server_mailbox'])) $out.=$input['server_mailbox'];
+	$out.="}";
+	if (isset($input['server_mailbox'])) $out.=$input['server_mailbox'];
 
-return $out;
-	
+	return $out;
+
 }
 
 function showFormExtAuth($target) {
@@ -1367,14 +1367,14 @@ function showFormExtAuth($target) {
 	global  $db,$lang,$HTMLRel,$cfg_glpi;
 
 	if (!haveRight("config","w")) return false;	
-	
+
 	echo "<form action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	if(function_exists('imap_open')) {
 
 		echo "<div align='center'>";
 		echo "<p >".$lang["setup"][160]."</p>";
-//		echo "<p>".$lang["setup"][161]."</p>";
+		//		echo "<p>".$lang["setup"][161]."</p>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][164]."</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"". $cfg_glpi["imap_host"] ."\" ></td></tr>";
@@ -1384,7 +1384,7 @@ function showFormExtAuth($target) {
 	}
 	else {
 		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
-		
+
 		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>".$lang["setup"][162]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][165]."</p><p>".$lang["setup"][166]."</p></td></tr></table></div>";
@@ -1416,7 +1416,7 @@ function showFormExtAuth($target) {
 		} else {
 			echo "<input type='hidden' name='ldap_use_tls' value='0'>";
 			echo $lang["setup"][181];
-			
+
 		}
 		echo "</td></tr>";
 
@@ -1426,10 +1426,10 @@ function showFormExtAuth($target) {
 		$ldap_search_for_groups=$cfg_glpi["ldap_search_for_groups"];
 
 		echo "<select name='ldap_search_for_groups'>\n";
-			echo "<option value='0' ".(($ldap_search_for_groups==0)?" selected ":"").">".$lang["setup"][256]."</option>\n";
-			echo "<option value='1' ".(($ldap_search_for_groups==1)?" selected ":"").">".$lang["setup"][257]."</option>\n";
-			echo "<option value='2' ".(($ldap_search_for_groups==2)?" selected ":"").">".$lang["setup"][258]."</option>\n";
-			echo "</select>\n";
+		echo "<option value='0' ".(($ldap_search_for_groups==0)?" selected ":"").">".$lang["setup"][256]."</option>\n";
+		echo "<option value='1' ".(($ldap_search_for_groups==1)?" selected ":"").">".$lang["setup"][257]."</option>\n";
+		echo "<option value='2' ".(($ldap_search_for_groups==2)?" selected ":"").">".$lang["setup"][258]."</option>\n";
+		echo "</select>\n";
 		echo "</td>";
 		echo "<td align='center'>".$lang["setup"][260]."</td><td><input type=\"text\" name=\"ldap_field_group\" value=\"". $cfg_glpi["ldap_field_group"] ."\" ></td></tr>";
 
@@ -1437,7 +1437,7 @@ function showFormExtAuth($target) {
 		echo "<input type=\"text\" name=\"ldap_group_condition\" value=\"". $cfg_glpi["ldap_group_condition"] ."\" ></td>";
 		echo "<td align='center'>".$lang["setup"][255]."</td><td><input type=\"text\" name=\"ldap_field_group_member\" value=\"". $cfg_glpi["ldap_field_group_member"] ."\" ></td></tr>";
 
-		
+
 		echo "<tr class='tab_bg_1'><td align='center' colspan='4'>".$lang["setup"][167]."</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $cfg_glpi["ldap_field_realname"] ."\" ></td>";
@@ -1470,7 +1470,7 @@ function showFormExtAuth($target) {
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][174]."</td><td><input type=\"text\" name=\"cas_host\" value=\"". $cfg_glpi["cas_host"] ."\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][175]."</td><td><input type=\"text\" name=\"cas_port\" value=\"". $cfg_glpi["cas_port"] ."\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][176]."</td><td><input type=\"text\" name=\"cas_uri\" value=\"". $cfg_glpi["cas_uri"] ."\" ></td></tr>";
-		
+
 		echo "</table>&nbsp;</div>";
 	}
 	else {
@@ -1479,24 +1479,24 @@ function showFormExtAuth($target) {
 		echo "<tr><th colspan='2'>".$lang["setup"][177]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>".$lang["setup"][178]."</p><p>".$lang["setup"][179]."</p></td></th></table></div>";
 	}
-	
+
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ext\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 	echo "</form>";
 }
 
 
 function titleMailing(){
-// Un titre pour la gestion du suivi par mail
-		
-		global  $lang,$HTMLRel;
-                echo "<div align='center'><table border='0'><tr><td>";
-                echo "<img src=\"".$HTMLRel."pics/mail.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][200]."</span>";
-		 echo "</td></tr></table></div>";
+	// Un titre pour la gestion du suivi par mail
+
+	global  $lang,$HTMLRel;
+	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<img src=\"".$HTMLRel."pics/mail.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][200]."</span>";
+	echo "</td></tr></table></div>";
 }
 
 
 function showFormMailing($target) {
-	
+
 	global $db,$lang,$cfg_glpi;
 
 	if (!haveRight("config","w")) return false;	
@@ -1512,34 +1512,34 @@ function showFormMailing($target) {
 
 	if ($_SESSION['glpi_mailconfig']==1){
 		echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>".$lang["setup"][201]."</th></tr>";
-		
+
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][202]."</td><td>";
 		dropdownYesNoInt("mailing",$cfg_glpi["mailing"]);
 		echo "</td></tr>";
-		
+
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][203]."</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"".$cfg_glpi["admin_email"]."\"> </td></tr>";
-		
+
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][204]."</td><td><input type=\"text\" name=\"mailing_signature\" size='40' value=\"".$cfg_glpi["mailing_signature"]."\" ></td></tr>";
-		
+
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][226]."</td><td>";
 		dropdownYesNoInt("url_in_mail",$cfg_glpi["url_in_mail"]);
 		echo "</td></tr>";
-		
+
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][227]."</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"".$cfg_glpi["url_base"]."\"> </td></tr>";
 
 		if (!function_exists('mail')) {
-		echo "<tr class='tab_bg_2'><td align='center' colspan='2'><span class='red'>".$lang["setup"][217]." : </span><span>".$lang["setup"][218]."</span></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><span class='red'>".$lang["setup"][217]." : </span><span>".$lang["setup"][218]."</span></td></tr>";
 		}
 
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][231]."</td><td>&nbsp; ";
-		
+
 		if (!function_exists('mail')) { // if mail php disabled we forced SMTP usage 
 			echo $lang["choice"][1]."  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"1\" checked >";
 		}else{
 			dropdownYesNoInt("smtp_mode",$cfg_glpi["smtp_mode"]);
 		}
 		echo "</td></tr>";
-			
+
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][232]."</td><td> <input type=\"text\" name=\"smtp_host\" size='40' value=\"".$cfg_glpi["smtp_host"]."\"> </td></tr>";
 
 		echo "<tr class='tab_bg_2'><td >".$lang["setup"][233]."</td><td> <input type=\"text\" name=\"smtp_port\" size='40' value=\"".$cfg_glpi["smtp_port"]."\"> </td></tr>";
@@ -1563,11 +1563,11 @@ function showFormMailing($target) {
 		echo "<option value='".MONTH_TIMESTAMP."' ".($cfg_glpi["consumables_alert"]==MONTH_TIMESTAMP?"selected":"")." >".$lang["setup"][309]."</option>";
 		echo "</select>";
 		echo "</td></tr>";
-		
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-			echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
-			echo "</td></tr>";
-		
+
+		echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
+		echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+		echo "</td></tr>";
+
 		echo "</table>";
 		echo "</div>";
 		echo "</form>";
@@ -1583,7 +1583,7 @@ function showFormMailing($target) {
 		$profiles[USER_MAILING_TYPE."_".ADMIN_MAILING]=$lang["setup"][237];
 		$profiles[USER_MAILING_TYPE."_".USER_MAILING]=$lang["setup"][238];
 		$profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]=$lang["setup"][239];
-		
+
 		$query="SELECT ID, name FROM glpi_profiles order by name";
 		$result=$db->query($query);
 		while ($data=$db->fetch_assoc($result))
@@ -1625,7 +1625,7 @@ function showFormMailing($target) {
 		unset($profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]);
 		showFormMailingType("resa",$profiles);
 		echo "</tr>";
-		
+
 		echo "</table>";
 		echo "</div>";
 	} else if ($_SESSION['glpi_mailconfig']==3)	{
@@ -1671,28 +1671,28 @@ function showFormMailing($target) {
 }
 
 function showFormMailingType($type,$profiles){
-		global $lang,$db;
+	global $lang,$db;
 
-		echo "<td align='right'>";
+	echo "<td align='right'>";
 
-		echo "<select name='mailing_to_add_".$type."[]' multiple size='5'>";
-		
-		foreach ($profiles as $key => $val){
-			list($item_type,$item)=split("_",$key);
-			echo "<option value='$key'>".$val."</option>";
-		}
-		echo "</select>";
-		echo "</td>";
-		echo "<td align='center'>";
-		echo "<input type='submit'  class=\"submit\" name='mailing_add_$type' value='".$lang["buttons"][8]." >>'><br><br>";
-		echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< ".$lang["buttons"][6]."'>";
-		echo "</td>";
-		echo "<td>";
-		echo "<select name='mailing_to_delete_".$type."[]' multiple size='5'>";
-		// Get User mailing
-		$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID FROM glpi_mailing WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".USER_MAILING_TYPE."' ORDER BY glpi_mailing.FK_item;";
-		$result=$db->query($query);
-		if ($db->numrows($result))
+	echo "<select name='mailing_to_add_".$type."[]' multiple size='5'>";
+
+	foreach ($profiles as $key => $val){
+		list($item_type,$item)=split("_",$key);
+		echo "<option value='$key'>".$val."</option>";
+	}
+	echo "</select>";
+	echo "</td>";
+	echo "<td align='center'>";
+	echo "<input type='submit'  class=\"submit\" name='mailing_add_$type' value='".$lang["buttons"][8]." >>'><br><br>";
+	echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< ".$lang["buttons"][6]."'>";
+	echo "</td>";
+	echo "<td>";
+	echo "<select name='mailing_to_delete_".$type."[]' multiple size='5'>";
+	// Get User mailing
+	$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID FROM glpi_mailing WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".USER_MAILING_TYPE."' ORDER BY glpi_mailing.FK_item;";
+	$result=$db->query($query);
+	if ($db->numrows($result))
 		while ($data=$db->fetch_assoc($result)){
 			switch ($data["item"]){
 				case ADMIN_MAILING: $name=$lang["setup"][237];break;
@@ -1702,24 +1702,24 @@ function showFormMailingType($type,$profiles){
 			}
 			echo "<option value='".$data["ID"]."'>".$name."</option>";
 		}
-		// Get Profile mailing
-		$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_profiles.name as prof FROM glpi_mailing LEFT JOIN glpi_profiles ON (glpi_mailing.FK_item = glpi_profiles.ID) WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".PROFILE_MAILING_TYPE."' ORDER BY glpi_profiles.name;";
-		$result=$db->query($query);
-		if ($db->numrows($result))
+	// Get Profile mailing
+	$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_profiles.name as prof FROM glpi_mailing LEFT JOIN glpi_profiles ON (glpi_mailing.FK_item = glpi_profiles.ID) WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".PROFILE_MAILING_TYPE."' ORDER BY glpi_profiles.name;";
+	$result=$db->query($query);
+	if ($db->numrows($result))
 		while ($data=$db->fetch_assoc($result)){
 			echo "<option value='".$data["ID"]."'>".$lang["profiles"][22]." ".$data["prof"]."</option>";
 		}
 
-		// Get Group mailing
-		$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_groups.name as name FROM glpi_mailing LEFT JOIN glpi_groups ON (glpi_mailing.FK_item = glpi_groups.ID) WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".GROUP_MAILING_TYPE."' ORDER BY glpi_groups.name;";
-		$result=$db->query($query);
-		if ($db->numrows($result))
+	// Get Group mailing
+	$query="SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_groups.name as name FROM glpi_mailing LEFT JOIN glpi_groups ON (glpi_mailing.FK_item = glpi_groups.ID) WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='".GROUP_MAILING_TYPE."' ORDER BY glpi_groups.name;";
+	$result=$db->query($query);
+	if ($db->numrows($result))
 		while ($data=$db->fetch_assoc($result)){
 			echo "<option value='".$data["ID"]."'>".$lang["common"][35]." ".$data["name"]."</option>";
 		}
 
-		echo "</select>";
-		echo "</td>";
+	echo "</select>";
+	echo "</td>";
 
 }
 
@@ -1743,13 +1743,13 @@ function updateMailNotifications($input){
 			switch ($action){
 				case "add":
 					list($item_type,$item)=split("_",$val);
-					$query="INSERT INTO glpi_mailing (type,FK_item,item_type) VALUES ('$type','$item','$item_type')";
-					$db->query($query);
-					break;
+				$query="INSERT INTO glpi_mailing (type,FK_item,item_type) VALUES ('$type','$item','$item_type')";
+				$db->query($query);
+				break;
 				case "delete":
 					$query="DELETE FROM glpi_mailing WHERE ID='$val'";
-					$db->query($query);
-					break;
+				$db->query($query);
+				break;
 			} 
 		}
 	}
@@ -1760,18 +1760,18 @@ function updateMailNotifications($input){
 
 
 /**
-* Update the DB configuration of the OCS Mode
-*
-* Update this DB config from the form, do the query and go back to the form.
-*
-*@param $input array : The _POST values from the config form
-*@param $id int : template or basic computers
-*
-*@return nothing (displays or error)
-*
-**/
+ * Update the DB configuration of the OCS Mode
+ *
+ * Update this DB config from the form, do the query and go back to the form.
+ *
+ *@param $input array : The _POST values from the config form
+ *@param $id int : template or basic computers
+ *
+ *@return nothing (displays or error)
+ *
+ **/
 function ocsUpdateDBConfig($input, $id) {
-	
+
 	global $db,$phproot;
 	if(!empty($input["ocs_db_user"]) && !empty($input["ocs_db_host"])) {
 
@@ -1783,7 +1783,7 @@ function ocsUpdateDBConfig($input, $id) {
 	} else {
 		echo $lang["ocsng"][17];
 	}
-	
+
 }
 
 
@@ -1810,7 +1810,7 @@ function ocsFormDBConfig($target, $id) {
 	echo "</table></div>";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_ocs\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 	echo "</form>";
-	
+
 
 	echo "<div align='center'>";
 	if (!$dbocs->error){
@@ -1824,7 +1824,7 @@ function ocsFormDBConfig($target, $id) {
 			ocsFormConfig($target, $id);
 		} else echo $lang["ocsng"][20]."</div>";
 	} else echo $lang["ocsng"][21]."</div>";
-	
+
 }
 
 function ocsFormConfig($target, $id) {
@@ -1891,7 +1891,7 @@ function ocsFormConfig($target, $id) {
 		echo "<option value='$i' ".($i==$data["cron_sync_number"]?" selected":"").">$i</option>";
 	}
 	echo "</select>";
-	
+
 	echo "</td></tr>";
 
 	echo "</table></div>";
@@ -1996,7 +1996,7 @@ function ocsFormConfig($target, $id) {
 	echo "</table></div>";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_ocs\" class=\"submit\" value=\"".$lang["buttons"][2]."\" ></p>";
 	echo "</form>";
-	
+
 }
 
 ?>

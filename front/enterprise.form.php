@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -120,54 +120,54 @@ else
 			}
 		}
 	}
-	
+
 	if ($ent->getFromDB($tab["ID"]))
 		$ent->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($ent->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
 		if (!empty($tab["ID"]))
-		switch($_SESSION['glpi_onglet']){
-			case -1:
-				showAssociatedContact($tab["ID"]);
-				showContractAssociatedEnterprise($tab["ID"]);
-				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
-				showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",0,0,0,$_GET["ID"]);
-				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
-				display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
-				break;
-			case 1 :
-				showAssociatedContact($tab["ID"]);
-				break;
-			case 4 :
-				showContractAssociatedEnterprise($tab["ID"]);
-				break;
-			case 5 :
-				showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"],0);
-				break;
-			case 6 :
-				showTrackingList($_SERVER["PHP_SELF"]."?ID=".$tab["ID"],$start,"","","all",0,0,0,$_GET["ID"]);
-				break;
-			case 7 : 
-				showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
-				break;
-			case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],ENTERPRISE_TYPE,$tab["ID"]);
-				break;	
-			case 15 :
-				echo "<div align='center'><table border='0'><tr><td valign='top'>";
-				showDeviceManufacturer($tab["ID"]);
-				echo "</td><td valign='top'>";
-				showInternalDeviceManufacturer($tab["ID"]);
-				echo "</td><td valign='top'>";
-				showInfocomEnterprise($tab["ID"]);
-				echo "</td></tr></table></div>";
-				break;	
-			default : 
-				if (!display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+			switch($_SESSION['glpi_onglet']){
+				case -1:
 					showAssociatedContact($tab["ID"]);
+					showContractAssociatedEnterprise($tab["ID"]);
+					showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
+					showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",0,0,0,$_GET["ID"]);
+					showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
+					display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					break;
+				case 1 :
+					showAssociatedContact($tab["ID"]);
+					break;
+				case 4 :
+					showContractAssociatedEnterprise($tab["ID"]);
+					break;
+				case 5 :
+					showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"],0);
+					break;
+				case 6 :
+					showTrackingList($_SERVER["PHP_SELF"]."?ID=".$tab["ID"],$start,"","","all",0,0,0,$_GET["ID"]);
+					break;
+				case 7 : 
+					showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
+					break;
+				case 10 :
+					showNotesForm($_SERVER["PHP_SELF"],ENTERPRISE_TYPE,$tab["ID"]);
+					break;	
+				case 15 :
+					echo "<div align='center'><table border='0'><tr><td valign='top'>";
+					showDeviceManufacturer($tab["ID"]);
+					echo "</td><td valign='top'>";
+					showInternalDeviceManufacturer($tab["ID"]);
+					echo "</td><td valign='top'>";
+					showInfocomEnterprise($tab["ID"]);
+					echo "</td></tr></table></div>";
+					break;	
+				default : 
+					if (!display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+						showAssociatedContact($tab["ID"]);
 
-				break;
-		}
+					break;
+			}
 	}
 
 	commonFooter();

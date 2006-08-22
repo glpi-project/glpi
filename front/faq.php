@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Jean-François MOREAU
 // Purpose of file: Display the knowledge base for anonymous users
@@ -48,29 +48,29 @@ nullHeader("Login",$_SERVER["PHP_SELF"]);
 
 if (isset($_GET["ID"])){
 
-if (ShowKbItemFull($_GET["ID"]))
-	showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
+	if (ShowKbItemFull($_GET["ID"]))
+		showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
 
 } else {
-initExpandSessionVar();
+	initExpandSessionVar();
 
-if (isset($_GET["toshow"])) {
-	if ($_GET["toshow"]=="all")
-		ExpandSessionVarShowAll();
-	else ExpandSessionVarShow($_GET["toshow"]);
-}
-if (isset($_GET["tohide"])) {
-	if ($_GET["tohide"]=="all")
-		ExpandSessionVarHideAll();
-	else ExpandSessionVarHide($_GET["tohide"]);
-}
-if (isset($_POST["contains"])) $contains=$_POST["contains"];
-else $contains="";
+	if (isset($_GET["toshow"])) {
+		if ($_GET["toshow"]=="all")
+			ExpandSessionVarShowAll();
+		else ExpandSessionVarShow($_GET["toshow"]);
+	}
+	if (isset($_GET["tohide"])) {
+		if ($_GET["tohide"]=="all")
+			ExpandSessionVarHideAll();
+		else ExpandSessionVarHide($_GET["tohide"]);
+	}
+	if (isset($_POST["contains"])) $contains=$_POST["contains"];
+	else $contains="";
 
-if (!empty($contains)) searchLimitSessionVarKnowbase($contains);
+	if (!empty($contains)) searchLimitSessionVarKnowbase($contains);
 
 
-faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
+	faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
 }
 //**************************
 //  fin Affichage Module FAQ

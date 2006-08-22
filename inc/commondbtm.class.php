@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // Common DataBase Table Manager Class
 class CommonDBTM {
@@ -35,7 +35,7 @@ class CommonDBTM {
 	var $table="";
 	var $type=-1;
 	var $dohistory=false;
-	
+
 	function CommonDBTM () {
 
 	}
@@ -52,19 +52,19 @@ class CommonDBTM {
 		if ($result = $db->query($query)) {
 			if ($db->numrows($result)==1){
 				$this->fields = $db->fetch_assoc($result);
-			return true;
-		} else return false;
+				return true;
+			} else return false;
 		} else {
 			return false;
 		}
 	}
-		
+
 	function getEmpty () {
 		//make an empty database object
 		global $db;
 		if ($fields = $db->list_fields($this->table)){
 			foreach ($fields as $key => $val){
-			$this->fields[$key] = "";
+				$this->fields[$key] = "";
 			}
 		} else return false;
 		$this->post_getEmpty();
@@ -80,7 +80,7 @@ class CommonDBTM {
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE `".$this->table."` SET `";
 			$query .= $updates[$i]."`";
-			
+
 			if ($this->fields[$updates[$i]]=="NULL"){
 				$query .= " = ";
 				$query .= $this->fields[$updates[$i]];
@@ -97,13 +97,13 @@ class CommonDBTM {
 		$this->post_updateInDB($updates);
 		return true;
 	}
-	
+
 	function post_updateInDB($updates)  {
 
 	}
 
 	function addToDB() {
-		
+
 		global $db;
 		//unset($this->fields["ID"]);
 		$nb_fields=count($this->fields);
@@ -117,7 +117,7 @@ class CommonDBTM {
 				$values[$i] = $val;
 				$i++;
 			}		
-		
+
 			for ($i=0; $i < $nb_fields; $i++) {
 				$query .= "`".$fields[$i]."`";
 				if ($i!=$nb_fields-1) {
@@ -142,7 +142,7 @@ class CommonDBTM {
 			}
 		} else return false;
 	}
-	
+
 	function post_addToDB(){
 
 	}
@@ -163,11 +163,11 @@ class CommonDBTM {
 		global $db,$cfg_glpi;
 
 		if ($force==1||!in_array($this->table,$cfg_glpi["deleted_tables"])){
-			
+
 			$this->cleanDBonPurge($ID);
 
 			$query = "DELETE from ".$this->table." WHERE ID = '$ID'";
-			
+
 			if ($result = $db->query($query)) {
 				$this->post_deleteFromDB($ID);
 				return true;
@@ -175,8 +175,8 @@ class CommonDBTM {
 				return false;
 			}
 		}else {
-		$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ID = '$ID'";		
-		return ($result = $db->query($query));
+			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ID = '$ID'";		
+			return ($result = $db->query($query));
 		}
 	}
 
@@ -189,16 +189,16 @@ class CommonDBTM {
 	// Common functions
 
 	/**
-	* Add an item in the database.
-	*
-	* Add an item in the database with all it's items.
-	*
-	*@param $input array : the _POST vars returned bye the item form when press add
-	*
-	*
-	*@return integer the new ID of the added item
-	*
-	**/
+	 * Add an item in the database.
+	 *
+	 * Add an item in the database with all it's items.
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press add
+	 *
+	 *
+	 *@return integer the new ID of the added item
+	 *
+	 **/
 	// specific ones : reservationresa , planningtracking
 	function add($input) {
 		global $db;
@@ -220,33 +220,33 @@ class CommonDBTM {
 				do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
 				return $newID;
 			} else return false;
-			
+
 		} else return false;
 	}
 
 	function prepareInputForAdd($input) {
 		return $input;
 	}
-	
+
 	function postAddItem($newID,$input) {
 	}
 
 
 	/**
-	* Update some elements of an item in the database
-	*
-	* Update some elements of an item in the database.
-	*
-	*@param $input array : the _POST vars returned bye the item form when press update
-	*@param $history boolean : do history log ?
-	*
-	*
-	*@return Nothing (call to the class member)
-	*
-	**/
+	 * Update some elements of an item in the database
+	 *
+	 * Update some elements of an item in the database.
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press update
+	 *@param $history boolean : do history log ?
+	 *
+	 *
+	 *@return Nothing (call to the class member)
+	 *
+	 **/
 	// specific ones : reservationresa, planningtracking
 	function update($input,$history=1) {
-		
+
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
 
@@ -276,14 +276,14 @@ class CommonDBTM {
 
 			} 
 
-			
+
 		}
 	}
 
 	function prepareInputForUpdate($input) {
 		return $input;
 	}
-	
+
 	function post_updateItem($input,$updates,$history=1) {
 	}
 
@@ -292,17 +292,17 @@ class CommonDBTM {
 	}
 
 	/**
-	* Delete an item in the database.
-	*
-	* Delete an item in the database.
-	*
-	*@param $input array : the _POST vars returned bye the item form when press delete
-	*@param $force boolean : force deletion
-	*
-	*
-	*@return Nothing ()
-	*
-	**/
+	 * Delete an item in the database.
+	 *
+	 * Delete an item in the database.
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press delete
+	 *@param $force boolean : force deletion
+	 *
+	 *
+	 *@return Nothing ()
+	 *
+	 **/
 	function delete($input,$force=0) {
 		if ($this->getFromDB($input["ID"])){
 			$this->pre_deleteItem($input["ID"]);
@@ -311,7 +311,7 @@ class CommonDBTM {
 				do_hook_function("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
 			else 
 				do_hook_function("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
-		return true;
+			return true;
 		} else return false;
 
 	}
@@ -319,18 +319,18 @@ class CommonDBTM {
 
 	}
 	/**
-	* Restore an item trashed in the database.
-	*
-	* Restore an item trashed in the database.
-	*
-	*@param $input array : the _POST vars returned bye the item form when press restore
-	*
-	*@return Nothing ()
-	*
-	**/
+	 * Restore an item trashed in the database.
+	 *
+	 * Restore an item trashed in the database.
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press restore
+	 *
+	 *@return Nothing ()
+	 *
+	 **/
 	// specific ones : cartridges / consumables
 	function restore($input) {
-	
+
 		$this->restoreInDB($input["ID"]);
 		do_hook_function("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
 	}
@@ -338,7 +338,7 @@ class CommonDBTM {
 	function defineOnglets($withtemplate){
 		return array();
 	}
-	
+
 	function showOnglets($target,$withtemplate,$actif){
 		global $lang, $HTMLRel;
 
@@ -346,13 +346,13 @@ class CommonDBTM {
 		if(!empty($withtemplate)){
 			$template="&amp;withtemplate=$withtemplate";
 		}
-	
+
 		echo "<div id='barre_onglets'><ul id='onglet'>";
-		
+
 		if (count($onglets=$this->defineOnglets($withtemplate))){
 			foreach ($onglets as $key => $val ) {
 				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template'>".$val."</a></li>";
-				}
+			}
 		}
 
 
@@ -364,7 +364,7 @@ class CommonDBTM {
 		display_plugin_headings($target,$this->type,$withtemplate,$actif);
 
 		echo "<li class='invisible'>&nbsp;</li>";
-	
+
 		if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 			$ID=$ereg[1];
 			$next=getNextItem($this->table,$ID);
@@ -381,7 +381,7 @@ class CommonDBTM {
 		}
 
 		echo "</ul></div>";
-	
+
 	}
 
 }

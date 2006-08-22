@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -63,8 +63,8 @@ else if (isset($tab["delete"]))
 	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
-	 else 
-	glpi_header($cfg_glpi["root_doc"]."/front/peripheral.php");
+	else 
+		glpi_header($cfg_glpi["root_doc"]."/front/peripheral.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -118,44 +118,44 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 else
 {
 	checkRight("peripheral","r");
-	
+
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-//		glpi_header($_SERVER['HTTP_REFERER']);
+		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
-	
-	
+
+
 	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
-	
+
 	if ($peripheral->getFromDB($tab["ID"]))
 		$peripheral->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
-		
+
 	if (!empty($tab["withtemplate"])) {
 
 		if ($peripheral->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
-		if (!empty($tab["ID"])){
+			if (!empty($tab["ID"])){
 
-			switch($_SESSION['glpi_onglet']){
-				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-					showContractAssociated(PERIPHERAL_TYPE,$tab["ID"],$tab["withtemplate"]);
-					break;
-				case 5 :
-					showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"],$tab["withtemplate"]);
-					break;
-				
-				default :
-					if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-						if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
-						showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
-					}
+				switch($_SESSION['glpi_onglet']){
+					case 4 :
+						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+						showContractAssociated(PERIPHERAL_TYPE,$tab["ID"],$tab["withtemplate"]);
+						break;
+					case 5 :
+						showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"],$tab["withtemplate"]);
+						break;
 
-					break;
+					default :
+						if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
+							if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
+							showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
+						}
+
+						break;
+				}
 			}
 		}
-		}
-		
+
 	} else {
 
 		if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
@@ -203,7 +203,7 @@ else
 					break;
 				case 12 :
 					showHistory(PERIPHERAL_TYPE,$tab["ID"]);
-				break;		
+					break;		
 				default :
 					if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
 						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
@@ -212,11 +212,11 @@ else
 					}
 					break;
 			}
-			
-			
-			
-			
-			
+
+
+
+
+
 		}
 	}
 	commonFooter();

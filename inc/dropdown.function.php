@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -40,36 +40,36 @@
 
 
 /**
-* Print out an HTML "<select>" for a dropdown
-*
-* 
-* 
-*
-* @param $table the dropdown table from witch we want values on the select
-* @param $myname the name of the HTML select
-* @return nothing (display the select box)
-**/
+ * Print out an HTML "<select>" for a dropdown
+ *
+ * 
+ * 
+ *
+ * @param $table the dropdown table from witch we want values on the select
+ * @param $myname the name of the HTML select
+ * @return nothing (display the select box)
+ **/
 function dropdown($table,$myname) {
 
 	return dropdownValue($table,$myname,0,1);
 }
 
 /**
-* Print out an HTML "<select>" for a dropdown with preselected value
-*
-*
-*
-*
-*
-* @param $table the dropdown table from witch we want values on the select
-* @param $myname the name of the HTML select
-* @param $value the preselected value we want
-* @param $display_comments display the comments near the dropdown
-* @return nothing (display the select box)
-*
-*/
+ * Print out an HTML "<select>" for a dropdown with preselected value
+ *
+ *
+ *
+ *
+ *
+ * @param $table the dropdown table from witch we want values on the select
+ * @param $myname the name of the HTML select
+ * @param $value the preselected value we want
+ * @param $display_comments display the comments near the dropdown
+ * @return nothing (display the select box)
+ *
+ */
 function dropdownValue($table,$myname,$value=0,$display_comments=1) {
-	
+
 	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
@@ -146,7 +146,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 			$which=preg_replace($search,$replace,$table);
 		}
 	}
-	
+
 	if ($display_comments){
 		echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display ";
 		if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
@@ -164,15 +164,15 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 
 
 /**
-* Make a select box without parameters value
-*
-*
-* @param $table
-* @param $myname
-* @param $value
-* @return nothing (print out an HTML select box)
-* 
-*/
+ * Make a select box without parameters value
+ *
+ *
+ * @param $table
+ * @param $myname
+ * @param $value
+ * @return nothing (print out an HTML select box)
+ * 
+ */
 function dropdownNoValue($table,$myname,$value) {
 	// Make a select box without parameters value
 
@@ -185,7 +185,7 @@ function dropdownNoValue($table,$myname,$value) {
 	if (in_array($table,$cfg_glpi["template_tables"])){
 		$where.="AND is_template='0'";
 	}
-		
+
 	if (in_array($table,$cfg_glpi["dropdowntree_tables"])){
 		$query = "SELECT ID FROM $table $where ORDER BY completename";
 	}
@@ -194,7 +194,7 @@ function dropdownNoValue($table,$myname,$value) {
 	}
 
 	$result = $db->query($query);
-	
+
 	echo "<select name=\"$myname\" size='1'>";
 	$i = 0;
 	$number = $db->numrows($result);
@@ -213,20 +213,20 @@ function dropdownNoValue($table,$myname,$value) {
 
 
 /**
-* Make a select box with all glpi users where select key = name
-*
-* Think it's unused now.
-*
-*
-* @param $myname select name
-* @param $value default value
-* @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
-* @param $all Nobody or All display for none selected
-* @param $display_comments display comments near the dropdown
-* @return nothing (print out an HTML select box)
-*
-*
-*/
+ * Make a select box with all glpi users where select key = name
+ *
+ * Think it's unused now.
+ *
+ *
+ * @param $myname select name
+ * @param $value default value
+ * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
+ * @param $all Nobody or All display for none selected
+ * @param $display_comments display comments near the dropdown
+ * @return nothing (print out an HTML select box)
+ *
+ *
+ */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
 function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 	// Make a select box with all glpi users
@@ -234,9 +234,9 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
-	
+
 	displaySearchTextAjaxDropdown($myname.$rand);
-	
+
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 	echo "      function(element, value) {\n";
@@ -249,23 +249,23 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 	echo "})})\n";
 	echo "</script>\n";
 
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-$nb=0;
-if ($cfg_glpi["use_ajax"])
-	$nb=countElementsInTable("glpi_users");
+	$nb=0;
+	if ($cfg_glpi["use_ajax"])
+		$nb=countElementsInTable("glpi_users");
 
-if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
-	echo "<script type='text/javascript' >\n";
-	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
-	echo "Element.hide('search_$myname$rand');";
-	//echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
-	echo "</script>\n";
-}
+	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_$myname$rand');";
+		//echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
+		echo "</script>\n";
+	}
 
 	$default_display="";
 	$comments_display="";
-	
+
 	$user=getUserName($value,2);
 	$default_display="<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
 	if ($display_comments) {
@@ -274,7 +274,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 		$comments_display.="</a>";
 		$comments_display.="<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
 	}
-	
+
 	echo "<span id='results_$myname$rand'>\n";
 	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 		$_POST["myname"]=$myname;
@@ -304,30 +304,30 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 
 
 /**
-* Make a select box with all glpi users
-*
-*
-* @param $myname
-* @param $value
-* @param $display_comments
-* @return nothing (print out an HTML select box)
-* 
-*/
+ * Make a select box with all glpi users
+ *
+ *
+ * @param $myname
+ * @param $value
+ * @param $display_comments
+ * @return nothing (print out an HTML select box)
+ * 
+ */
 function dropdownAllUsers($myname,$value,$display_comments=1) {
 	return dropdownUsers($myname,$value,"all",0,$display_comments);
 }
 
 
 /**
-* Make a select box with all glpi users where select key = ID
-*
-*
-*
-* @param $value
-* @param $myname
-* @param $right
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box with all glpi users where select key = ID
+ *
+ *
+ *
+ * @param $value
+ * @param $myname
+ * @param $right
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownUsersID($myname,$value,$right) {
 	// Make a select box with all glpi users
 
@@ -335,24 +335,24 @@ function dropdownUsersID($myname,$value,$right) {
 }
 
 /**
-* Get the value of a dropdown 
-*
-*
-* Returns the value of the dropdown from $table with ID $id.
-*
-* @param $table
-* @param $id
-* @param $withcomments
-* @return string the value of the dropdown or &nbsp; if not exists
-*/
+ * Get the value of a dropdown 
+ *
+ *
+ * Returns the value of the dropdown from $table with ID $id.
+ *
+ * @param $table
+ * @param $id
+ * @param $withcomments
+ * @return string the value of the dropdown or &nbsp; if not exists
+ */
 function getDropdownName($table,$id,$withcomments=0) {
 	global $db,$cfg_glpi,$lang;
-	
+
 	if (in_array($table,$cfg_glpi["dropdowntree_tables"])){
 		return getTreeValueCompleteName($table,$id,$withcomments);
 
 	} else	{
-	
+
 		$name = "";
 		$comments = "";
 		$query = "select * from ". $table ." where ID = '". $id ."'";
@@ -362,7 +362,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 				$name = $data["name"];
 				if (isset($data["comments"]))
 					$comments = $data["comments"];
-				
+
 				if ($table=="glpi_dropdown_netpoint")
 					$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
 				if ($table=="glpi_software"){
@@ -379,22 +379,22 @@ function getDropdownName($table,$id,$withcomments=0) {
 }
 
 /**
-* Make a select box with all glpi users in tracking table
-*
-*
-*
-* @param $value
-* @param $myname
-* @param $field
-* @param $display_comments
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box with all glpi users in tracking table
+ *
+ *
+ *
+ * @param $value
+ * @param $myname
+ * @param $field
+ * @param $display_comments
+ * @return nothing (print out an HTML select box)
+ */
 
 function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
-	
+
 	displaySearchTextAjaxDropdown($myname.$rand);
 
 	echo "<script type='text/javascript' >\n";
@@ -411,16 +411,16 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-$nb=0;
-if ($cfg_glpi["use_ajax"])
-	$nb=countElementsInTable("glpi_users");
+	$nb=0;
+	if ($cfg_glpi["use_ajax"])
+		$nb=countElementsInTable("glpi_users");
 
-if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
-	echo "<script type='text/javascript' >\n";
-	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
-	echo "Element.hide('search_$myname$rand');";
-	echo "</script>\n";
-}
+	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_$myname$rand');";
+		echo "</script>\n";
+	}
 
 	$default_display="";
 	$comments_display="";
@@ -443,7 +443,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 		$_POST["comments"]=$display_comments;
 		$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
 		include ($phproot."/ajax/dropdownUsersTracking.php");
-		
+
 	}else {
 		if (!empty($value)&&$value>0){
 			echo $default_display;
@@ -454,60 +454,60 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "</span>\n";	
 
 	echo $comments_display;	
-	
+
 	return $rand;
 }
 
 /**
-* 
-* Make a select box for icons
-*
-*
-* @param $value
-* @param $myname
-* @param $store_path
-* @return nothing (print out an HTML select box)
-*/
+ * 
+ * Make a select box for icons
+ *
+ *
+ * @param $value
+ * @param $myname
+ * @param $store_path
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownIcons($myname,$value,$store_path){
 	global $HTMLRel,$lang;
 	if (is_dir($store_path)){
 		if ($dh = opendir($store_path)) {
 			echo "<select name=\"$myname\">";
 			echo "<option value=''>-----</option>";
-				while (($file = readdir($dh)) !== false) {
-					if (eregi(".png$",$file)){
-						if ($file == $value) {
-							echo "<option value=\"$file\" selected>".$file;
-						} else {
-							echo "<option value=\"$file\">".$file;
-						}
-						echo "</option>";
+			while (($file = readdir($dh)) !== false) {
+				if (eregi(".png$",$file)){
+					if ($file == $value) {
+						echo "<option value=\"$file\" selected>".$file;
+					} else {
+						echo "<option value=\"$file\">".$file;
 					}
+					echo "</option>";
 				}
-		   closedir($dh);
-		   echo "</select>";
-	   } else echo "Error reading directory $store_path";
+			}
+			closedir($dh);
+			echo "</select>";
+		} else echo "Error reading directory $store_path";
 	} else echo "Error $store_path is not a directory";
 }
 
 
 /**
-* 
-* Make a select box for device type
-*
-*
-* @param $name name of the select box
-* @param $device_type default device type
-* @param $soft with softwares ?
-* @param $cart with cartridges ?
-* @param $cons with consumables ?
-* @return nothing (print out an HTML select box)
-*/
+ * 
+ * Make a select box for device type
+ *
+ *
+ * @param $name name of the select box
+ * @param $device_type default device type
+ * @param $soft with softwares ?
+ * @param $cart with cartridges ?
+ * @param $cons with consumables ?
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
-global $lang;
-echo "<select name='$name'>\n";
+	global $lang;
+	echo "<select name='$name'>\n";
 	echo "<option value='0'>-----</option>\n";
-    	echo "<option value='".COMPUTER_TYPE."' ".(($device_type==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
+	echo "<option value='".COMPUTER_TYPE."' ".(($device_type==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
 	echo "<option value='".NETWORKING_TYPE."' ".(($device_type==NETWORKING_TYPE)?" selected":"").">".$lang["help"][26]."</option>\n";
 	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$lang["help"][27]."</option>\n";
 	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$lang["help"][28]."</option>\n";
@@ -517,9 +517,9 @@ echo "<select name='$name'>\n";
 	if ($soft)
 		echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$lang["help"][31]."</option>\n";
 	if ($cart)
-	echo "<option value='".CARTRIDGE_TYPE."' ".(($device_type==CARTRIDGE_TYPE)?" selected":"").">".$lang["Menu"][21]."</option>\n";
+		echo "<option value='".CARTRIDGE_TYPE."' ".(($device_type==CARTRIDGE_TYPE)?" selected":"").">".$lang["Menu"][21]."</option>\n";
 	if ($cons)
-	echo "<option value='".CONSUMABLE_TYPE."' ".(($device_type==CONSUMABLE_TYPE)?" selected":"").">".$lang["Menu"][32]."</option>\n";
+		echo "<option value='".CONSUMABLE_TYPE."' ".(($device_type==CONSUMABLE_TYPE)?" selected":"").">".$lang["Menu"][32]."</option>\n";
 	echo "<option value='".CONTACT_TYPE."' ".(($device_type==CONTACT_TYPE)?" selected":"").">".$lang["Menu"][22]."</option>\n";
 	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$lang["Menu"][23]."</option>\n";
 	echo "<option value='".CONTRACT_TYPE."' ".(($device_type==CONTRACT_TYPE)?" selected":"").">".$lang["Menu"][25]."</option>\n";
@@ -531,38 +531,38 @@ echo "<select name='$name'>\n";
 
 
 /**
-* 
-*Make a select box for all items
-*
-*
-* @param $myname
-* @param $value_type
-* @param $value
-* @param $withenterprise
-* @param $withcartridge
-* @param $withconsumable
-* @param $withcontracts
-* @return nothing (print out an HTML select box)
-*/
+ * 
+ *Make a select box for all items
+ *
+ *
+ * @param $myname
+ * @param $value_type
+ * @param $value
+ * @param $withenterprise
+ * @param $withcartridge
+ * @param $withconsumable
+ * @param $withcontracts
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
 	global $db,$lang,$HTMLRel,$cfg_glpi;
-	
+
 	$items=array(
-	COMPUTER_TYPE=>"glpi_computers",
-	NETWORKING_TYPE=>"glpi_networking",
-	PRINTER_TYPE=>"glpi_printers",
-	MONITOR_TYPE=>"glpi_monitors",
-	PERIPHERAL_TYPE=>"glpi_peripherals",
-	SOFTWARE_TYPE=>"glpi_software",
-	PHONE_TYPE=>"glpi_phones",
-	);
+			COMPUTER_TYPE=>"glpi_computers",
+			NETWORKING_TYPE=>"glpi_networking",
+			PRINTER_TYPE=>"glpi_printers",
+			MONITOR_TYPE=>"glpi_monitors",
+			PERIPHERAL_TYPE=>"glpi_peripherals",
+			SOFTWARE_TYPE=>"glpi_software",
+			PHONE_TYPE=>"glpi_phones",
+		    );
 
 	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
 	if ($withcartridge==1) $items[CARTRIDGE_TYPE]="glpi_cartridges_type";
 	if ($withconsumable==1) $items[CONSUMABLE_TYPE]="glpi_consumables_type";
 	if ($withcontracts==1) $items[CONTRACT_TYPE]="glpi_contracts";
-	
-	
+
+
 	$rand=mt_rand();
 	echo "<table border='0'><tr><td>\n";
 	echo "<select name='type' id='item_type$rand'>\n";
@@ -579,8 +579,8 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 	if ($withconsumable==1) echo "<option value='".CONSUMABLE_TYPE."'>".$lang["Menu"][32]."</option>\n";
 	if ($withcontracts==1) echo "<option value='".CONTRACT_TYPE."'>".$lang["Menu"][25]."</option>\n";
 	echo "</select>\n";
-	
-	
+
+
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 	echo "      function(element, value) {\n";
@@ -591,7 +591,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value'\n";
 	echo "})})\n";
 	echo "</script>\n";
-	
+
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "</td><td>\n"	;
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
@@ -607,14 +607,14 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 }
 
 /**
-* Make a select box for a boolean choice (Yes/No)
-*
-*
-*
-* @param $name select name
-* @param $value preselected value.
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box for a boolean choice (Yes/No)
+ *
+ *
+ *
+ * @param $name select name
+ * @param $value preselected value.
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownYesNo($name,$value){
 	global $lang;
 	echo "<select name='$name'>\n";
@@ -625,14 +625,14 @@ function dropdownYesNo($name,$value){
 
 
 /**
-* Make a select box for a boolean choice (Yes/No)
-*
-*
-*
-* @param $name select name
-* @param $value preselected value.
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box for a boolean choice (Yes/No)
+ *
+ *
+ *
+ * @param $name select name
+ * @param $value preselected value.
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownYesNoInt($name,$value=0){
 	global $lang;
 	echo "<select name='$name'>\n";
@@ -643,17 +643,17 @@ function dropdownYesNoInt($name,$value=0){
 
 
 /**
-* Make a select box for a None Read Write choice
-*
-*
-*
-* @param $name select name
-* @param $value preselected value.
-* @param $none display none choice ? 
-* @param $read display read choice ? 
-* @param $write display write choice ? 
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box for a None Read Write choice
+ *
+ *
+ *
+ * @param $name select name
+ * @param $value preselected value.
+ * @param $none display none choice ? 
+ * @param $read display read choice ? 
+ * @param $write display write choice ? 
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 	global $lang;
 	echo "<select name='$name'>\n";
@@ -667,22 +667,22 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 }	
 
 /**
-* Make a select box for Tracking device type
-*
-*
-*
-* @param $myname select name
-* @param $value preselected value.
-* @param $userID User ID for my device section
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box for Tracking device type
+ *
+ *
+ *
+ * @param $myname select name
+ * @param $value preselected value.
+ * @param $userID User ID for my device section
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownTrackingDeviceType($myname,$value,$userID=0){
 	global $lang,$HTMLRel,$cfg_glpi,$db,$LINK_ID_TABLE;
-	
+
 	$rand=mt_rand();
-	
+
 	if ($userID==0) $userID=$_SESSION["glpiID"];
-	
+
 	if ($_SESSION["glpiprofile"]["helpdesk_hardware"]==0){
 		echo "<input type='hidden' name='$myname' value='0'>";
 		echo "<input type='hidden' name='computer' value='0'>";
@@ -692,42 +692,42 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 		// View my hardware
 		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
 			$my_devices="";
-		
+
 			$group_where="";
 			$groups=array();
 			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."';";
-			
+
 			$result=$db->query($query);
 			if ($db->numrows($result)>0){
 				while ($data=$db->fetch_array($result)){
 					$group_where.=" OR FK_groups = '".$data["FK_groups"]."' ";
 				}
 			}
-			
+
 			$ci=new CommonItem();
 			$my_item="";
 			if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
 			$computers=array();
 			foreach ($cfg_glpi["linkuser_type"] as $type)
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+				if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 				{
-				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' $group_where";
-				
-				$result=$db->query($query);
-				if ($db->numrows($result)>0){
-					$ci->setType($type);
-					$type_name=$ci->getType();
-					while ($data=$db->fetch_array($result)){
-						if ($type=COMPUTER_TYPE) $computers[]=$data["ID"];
-						$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+					$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' $group_where";
+
+					$result=$db->query($query);
+					if ($db->numrows($result)>0){
+						$ci->setType($type);
+						$type_name=$ci->getType();
+						while ($data=$db->fetch_array($result)){
+							if ($type=COMPUTER_TYPE) $computers[]=$data["ID"];
+							$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+						}
 					}
+
 				}
-		
-			}
-			
+
 			// Get linked items to computers
 			if (count($computers)){
-				
+
 				$search_computer=" (";
 				$first=true;
 				foreach ($computers as $ID){
@@ -740,19 +740,19 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 				// Direct Connection
 				$types=array(PERIPHERAL_TYPE,MONITOR_TYPE,PRINTER_TYPE,PHONE_TYPE);
 				foreach ($types as $type)
-				if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
-				{
-					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." ORDER BY ".$LINK_ID_TABLE[$type].".name";
-					$result=$db->query($query);
-					if ($db->numrows($result)>0){
-						$ci->setType($type);
-						$type_name=$ci->getType();
+					if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+					{
+						$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." ORDER BY ".$LINK_ID_TABLE[$type].".name";
+						$result=$db->query($query);
+						if ($db->numrows($result)>0){
+							$ci->setType($type);
+							$type_name=$ci->getType();
 
-						while ($data=$db->fetch_array($result)){
-							$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+							while ($data=$db->fetch_array($result)){
+								$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+							}
 						}
 					}
-				}
 				// Software
 				if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 					$query = "SELECT DISTINCT glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
@@ -774,11 +774,11 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 				echo "<br>".$lang["tracking"][2].":&nbsp;";
 			else echo "</td></tr>";
 		}
-		
+
 		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
 
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
-		
+
 			echo "<option value='0' ".(($value==0)?" selected":"").">".$lang["help"][30]."</option>\n";
 			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))
 				echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$lang["help"][25]."</option>\n";
@@ -797,7 +797,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 			echo "</select>\n";
 
 			echo "</td></tr><tr><td align='center'>";
-		
+
 			echo "<script type='text/javascript' >\n";
 			echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 			echo "      function(element, value) {\n";
@@ -809,23 +809,23 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 			echo "           method:'post', parameters:'type=' + value+'&myname=computer'\n";
 			echo "})})\n";
 			echo "</script>\n";
-			
-			
+
+
 			echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-			
+
 			echo "<div align='center'>";
 			echo "<span id='results_$myname$rand'>\n";
-			
+
 			if (isset($_SESSION["helpdeskSaved"]["computer"])){
 				$ci=new CommonItem();
 				if ($ci->getFromDB($value,$_SESSION["helpdeskSaved"]["computer"])){
 					echo "<select name='computer'>\n";
 					echo "<option value='".$_SESSION["helpdeskSaved"]["computer"]."'>".$ci->getName()."</option>\n";
-				
+
 					echo "</select>\n";
 				}
 			}
-			
+
 			echo "</span>\n";	
 			echo "</div>";
 			echo "</td></tr>";
@@ -837,28 +837,28 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 }
 
 /**
-* Make a select box for connections
-*
-*
-*
-* @param $type type to connect
-* @param $fromtype from where the connection is
-* @param $myname select name
-* @param $onlyglobal display only global devices (used for templates)
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box for connections
+ *
+ *
+ *
+ * @param $type type to connect
+ * @param $fromtype from where the connection is
+ * @param $myname select name
+ * @param $onlyglobal display only global devices (used for templates)
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 
 
 	global $HTMLRel,$cfg_glpi;
 
-		$items=array(
+	$items=array(
 			COMPUTER_TYPE=>"glpi_computers",
 			PRINTER_TYPE=>"glpi_printers",
 			MONITOR_TYPE=>"glpi_monitors",
 			PERIPHERAL_TYPE=>"glpi_peripherals",
 			PHONE_TYPE=>"glpi_phones",
-		);
+		    );
 
 	$rand=mt_rand();
 
@@ -875,13 +875,13 @@ function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 	echo "           method:'post', parameters:'searchText=' + value+'&fromtype=$fromtype&idtable=$type&myname=$myname&onlyglobal=$onlyglobal'\n";
 	echo "})})\n";
 	echo "</script>\n";
-	
+
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
-	
+
 	$nb=0;
 	if ($cfg_glpi["use_ajax"])
 		$nb=countElementsInTable($items[$type]);
-	
+
 	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
 		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
@@ -900,26 +900,26 @@ function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 
 
 /**
-* Make a select box for  connected port
-*
-*
-* @param $ID
-* @param $type
-* @param $myname
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box for  connected port
+ *
+ *
+ * @param $ID
+ * @param $type
+ * @param $myname
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownConnectPort($ID,$type,$myname) {
 
 
 	global $db,$lang,$HTMLRel,$cfg_glpi;
-	
+
 	$items=array(
-		COMPUTER_TYPE=>"glpi_computers",
-		NETWORKING_TYPE=>"glpi_networking",
-		PRINTER_TYPE=>"glpi_printers",
-		PERIPHERAL_TYPE=>"glpi_peripherals",
-		PHONE_TYPE=>"glpi_phones",
-	);
+			COMPUTER_TYPE=>"glpi_computers",
+			NETWORKING_TYPE=>"glpi_networking",
+			PRINTER_TYPE=>"glpi_printers",
+			PERIPHERAL_TYPE=>"glpi_peripherals",
+			PHONE_TYPE=>"glpi_phones",
+		    );
 
 	$rand=mt_rand();
 	echo "<select name='type[$ID]' id='item_type$rand'>\n";
@@ -930,8 +930,8 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "<option value='".PERIPHERAL_TYPE."'>".$lang["Menu"][16]."</option>\n";
 	echo "<option value='".PHONE_TYPE."'>".$lang["Menu"][34]."</option>\n";
 	echo "</select>\n";
-	
-	
+
+
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 	echo "      function(element, value) {\n";
@@ -943,7 +943,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "           method:'post', parameters:'current=$ID&type='+value+'&myname=$myname'\n";
 	echo "})})\n";
 	echo "</script>\n";
-	
+
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 
@@ -951,17 +951,17 @@ function dropdownConnectPort($ID,$type,$myname) {
 }
 
 /**
-* Make a select box for  software to install
-*
-*
-* @param $myname select name
-* @param $withtemplate is it a template computer ?
-* @param $massiveaction is it a massiveaction select ?
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box for  software to install
+ *
+ *
+ * @param $myname select name
+ * @param $withtemplate is it a template computer ?
+ * @param $massiveaction is it a massiveaction select ?
+ * @return nothing (print out an HTML select box)
+ */
 function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
 	global $db,$lang,$HTMLRel,$cfg_glpi;
-	
+
 	$rand=mt_rand();
 
 	displaySearchTextAjaxDropdown($myname.$rand);
@@ -997,22 +997,22 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
 	echo "<span id='results_$myname$rand'>\n";
 	echo "<select name='$myname'><option value='0'>------</option></select>\n";
 	echo "</span>\n";	
-	
-	
+
+
 	return $rand;
 }
 
 /**
-* Show div with auto completion
-*
-* @param $myname
-* @param $table
-* @param $field
-* @param $value
-* @param $size
-* @param $option
-* @return nothing (print out an HTML div)
-*/
+ * Show div with auto completion
+ *
+ * @param $myname
+ * @param $table
+ * @param $field
+ * @param $value
+ * @param $size
+ * @param $option
+ * @return nothing (print out an HTML div)
+ */
 function autocompletionTextField($myname,$table,$field,$value='',$size=20,$option=''){
 	global $HTMLRel,$cfg_glpi;
 
@@ -1021,7 +1021,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".ereg_replace("\"","''",$value)."\" size='$size'>\n";
 		echo "<div id='textfieldupdate_$myname$rand' style='display:none;border:1px solid black;background-color:white;'></div>\n";
 		echo "<script type='text/javascript' language='javascript' charset='utf-8'>";
-	    echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$HTMLRel."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
+		echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$HTMLRel."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
 		echo "</script>";
 	}	else {
 		echo "<input $option type='text' name='$myname' value=\"".ereg_replace("\"","''",$value)."\" size='$size'>\n";
@@ -1030,21 +1030,21 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 
 
 /**
-* Make a select box form  for device type 
-*
-*
-* @param $target
-* @param $cID
-* @param $withtemplate
-* @return nothing (print out an HTML select box)
-*/
+ * Make a select box form  for device type 
+ *
+ *
+ * @param $target
+ * @param $cID
+ * @param $withtemplate
+ * @return nothing (print out an HTML select box)
+ */
 function device_selecter($target,$cID,$withtemplate='') {
 	global $lang,$HTMLRel,$cfg_glpi;
 
 	if (!haveRight("computer","w")) return false;
 
 	if(!empty($withtemplate) && $withtemplate == 2) {
-	//do nothing
+		//do nothing
 	} else {
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr  class='tab_bg_1'><td colspan='2' align='right'>";
@@ -1056,7 +1056,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		$rand=mt_rand();
 
 		echo "<select name=\"new_device_type\" id='device$rand'>";
-		
+
 		echo "<option value=\"-1\">-----</option>";
 		echo "<option value=\"".MOBOARD_DEVICE."\">".getDictDeviceLabel(MOBOARD_DEVICE)."</option>";
 		echo "<option value=\"".HDD_DEVICE."\">".getDictDeviceLabel(HDD_DEVICE)."</option>";
@@ -1082,7 +1082,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "           method:'post', parameters:'idtable='+value+'&myname=new_device_id'\n";
 		echo "})})\n";
 		echo "</script>\n";
-	
+
 		echo "<div id='search_spinner_device$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 		echo "<span id='showdevice$rand'>&nbsp;</span>\n";
 
@@ -1094,7 +1094,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "</form>";
 		echo "</td>";
 		echo "</tr></table>";
-		}
+	}
 }
 
 
@@ -1108,7 +1108,7 @@ function dropdownMassiveAction($device_type,$deleted){
 	global $lang,$HTMLRel,$cfg_glpi;
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
-		
+
 	echo "<option value=\"-1\" selected>-----</option>";
 	if ($deleted=="Y"){
 		echo "<option value=\"purge\">".$lang["buttons"][22]."</option>";
@@ -1138,7 +1138,7 @@ function dropdownMassiveAction($device_type,$deleted){
 	echo "           method:'post', parameters:'deleted=$deleted&action='+value+'&type=$device_type'\n";
 	echo "})})\n";
 	echo "</script>\n";
-	
+
 	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
@@ -1147,7 +1147,7 @@ function dropdownMassiveActionPorts(){
 	global $lang,$HTMLRel,$cfg_glpi;
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
-		
+
 	echo "<option value=\"-1\" selected>-----</option>";
 	echo "<option value=\"delete\">".$lang["buttons"][6]."</option>";
 	echo "<option value=\"assign_vlan\">".$lang["networking"][55]."</option>";
@@ -1164,14 +1164,14 @@ function dropdownMassiveActionPorts(){
 	echo "           method:'post', parameters:'action='+value\n";
 	echo "})})\n";
 	echo "</script>\n";
-	
+
 	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 
 function globalManagementDropdown($target,$withtemplate,$ID,$value){
 	global $lang,$HTMLRel;	
-	
+
 	if ($value&&empty($withtemplate)) {
 		echo $lang["peripherals"][31];
 
@@ -1199,16 +1199,16 @@ function dropdownContractAlerting($myname,$value){
 
 
 /**
-* Print a select with hours
-*
-* Print a select named $name with hours options and selected value $value
-*
-*@param $name string : HTML select name
-*@param $value integer : HTML select selected value
-*
-*@return Nothing (display)
-*
-**/
+ * Print a select with hours
+ *
+ * Print a select named $name with hours options and selected value $value
+ *
+ *@param $name string : HTML select name
+ *@param $value integer : HTML select selected value
+ *
+ *@return Nothing (display)
+ *
+ **/
 function dropdownHours($name,$value,$limit_planning=0){
 	global $cfg_glpi;
 
@@ -1238,11 +1238,11 @@ function dropdownHours($name,$value,$limit_planning=0){
 		if ($i<10)
 			$tmp="0".$i;
 		else $tmp=$i;
-		
+
 		for ($j=0;$j<60;$j+=$step){
 			if ($j<10) $val=$tmp.":0$j";
 			else $val=$tmp.":$j";
-			
+
 			echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
 		}
 	}
@@ -1268,6 +1268,6 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 		}
 		echo "</select>";
 	}
-	
+
 }
 ?>

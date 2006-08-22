@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: 
 // Purpose of file:
 // ----------------------------------------------------------------------
- 
+
 include ("_relpos.php");
 
 $NEEDED_ITEMS=array("stat","tracking");
@@ -43,9 +43,9 @@ commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
 checkRight("statistic","1");
 
 // titre
-        echo "<div align='center'><table border='0'><tr><td>";
-        echo "<img src=\"".$HTMLRel."pics/statistiques.png\" alt='".$lang["Menu"][13]."' title='".$lang["Menu"][13]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][13]."</b></span>";
-        echo "</td></tr></table></div>";
+echo "<div align='center'><table border='0'><tr><td>";
+echo "<img src=\"".$HTMLRel."pics/statistiques.png\" alt='".$lang["Menu"][13]."' title='".$lang["Menu"][13]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][13]."</b></span>";
+echo "</td></tr></table></div>";
 
 
 //Affichage du tableau de présentation des stats
@@ -53,12 +53,12 @@ echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 
 
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.global.php\"><b>".$lang["stats"][1]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.tracking.php\"><b>".$lang["stats"][47]."</b></a></td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.location.php\"><b>".$lang["stats"][3]."</b></a><br> (".$lang["common"][15]
-	.", ".$lang["common"][17]	= "Type".", ".$lang["computers"][9]	= "OS".", ".$lang["computers"][21].", ".$lang["computers"][36]
-	.", ".$lang["devices"][2].", ".$lang["devices"][5].")</td></tr>";
-	echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.item.php\"><b>".$lang["stats"][45]."</b></a></td></tr>";
+echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.global.php\"><b>".$lang["stats"][1]."</b></a></td></tr>";
+echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.tracking.php\"><b>".$lang["stats"][47]."</b></a></td></tr>";
+echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.location.php\"><b>".$lang["stats"][3]."</b></a><br> (".$lang["common"][15]
+.", ".$lang["common"][17]	= "Type".", ".$lang["computers"][9]	= "OS".", ".$lang["computers"][21].", ".$lang["computers"][36]
+.", ".$lang["devices"][2].", ".$lang["devices"][5].")</td></tr>";
+echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.item.php\"><b>".$lang["stats"][45]."</b></a></td></tr>";
 
 
 echo "</table></div>";

@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -50,13 +50,13 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 	switch($_POST["action"]){
 		case "connect":
 			$ci=new CommonItem();
-			if (isset($_POST["connect_item"])&&$_POST["connect_item"])
+		if (isset($_POST["connect_item"])&&$_POST["connect_item"])
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					if ($ci->getFromDB($_POST["device_type"],$key))
-					if ($ci->obj->fields["is_global"]||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
-						Connect($key,$_POST["connect_item"],$_POST["device_type"]);
-					}
+						if ($ci->obj->fields["is_global"]||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
+							Connect($key,$_POST["connect_item"],$_POST["device_type"]);
+						}
 				}
 			}
 
@@ -71,30 +71,30 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		break;
 		case "delete":
 			$ci=new CommonItem();
-			$ci->getFromDB($_POST["device_type"],-1);
-			foreach ($_POST["item"] as $key => $val){
-				if ($val==1) {
-					$ci->obj->delete(array("ID"=>$key));
-				}
+		$ci->getFromDB($_POST["device_type"],-1);
+		foreach ($_POST["item"] as $key => $val){
+			if ($val==1) {
+				$ci->obj->delete(array("ID"=>$key));
 			}
+		}
 		break;
 		case "purge":
 			$ci=new CommonItem();
-			$ci->getFromDB($_POST["device_type"],-1);
-			foreach ($_POST["item"] as $key => $val){
-				if ($val==1) {
-					$ci->obj->delete(array("ID"=>$key),1);
-				}
+		$ci->getFromDB($_POST["device_type"],-1);
+		foreach ($_POST["item"] as $key => $val){
+			if ($val==1) {
+				$ci->obj->delete(array("ID"=>$key),1);
 			}
+		}
 		break;
 		case "restore":
 			$ci=new CommonItem();
-			$ci->getFromDB($_POST["device_type"],-1);
-			foreach ($_POST["item"] as $key => $val){
-				if ($val==1) {
-					$ci->obj->restore(array("ID"=>$key));
-				}
+		$ci->getFromDB($_POST["device_type"],-1);
+		foreach ($_POST["item"] as $key => $val){
+			if ($val==1) {
+				$ci->obj->restore(array("ID"=>$key));
 			}
+		}
 		break;
 		case "update":
 
@@ -102,9 +102,9 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			if (($_POST["id_field"]>=25&&$_POST["id_field"]<=28)||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)||($_POST["id_field"]>=50&&$_POST["id_field"]<=58)){
 				$ic=new Infocom();
 				foreach ($_POST["item"] as $key => $val)
-				if ($val==1){
-					$ic->update(array("device_type"=>$_POST["device_type"],"FK_device"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
-				}
+					if ($val==1){
+						$ic->update(array("device_type"=>$_POST["device_type"],"FK_device"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+					}
 			} else {
 				$ci=new CommonItem();
 				$ci->getFromDB($_POST["device_type"],-1);

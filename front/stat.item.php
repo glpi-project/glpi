@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
- 
+
 include ("_relpos.php");
 
 $NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","networking","software","phone","stat");
@@ -48,16 +48,16 @@ if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
-$year=date("Y")-1;
-$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+	$year=date("Y")-1;
+	$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
 
-$_POST["date2"]=date("Y-m-d");
+	$_POST["date2"]=date("Y-m-d");
 }
 
 if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
-$tmp=$_POST["date1"];
-$_POST["date1"]=$_POST["date2"];
-$_POST["date2"]=$tmp;
+	$tmp=$_POST["date1"];
+	$_POST["date1"]=$_POST["date2"];
+	$_POST["date2"]=$tmp;
 }
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;

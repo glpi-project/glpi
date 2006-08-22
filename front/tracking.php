@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -41,9 +41,9 @@ checkCentralAccess();
 
 commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
 
- titleTracking();
+titleTracking();
 
- 
+
 if(isset($_GET)) $tab = $_GET;
 //if(empty($tab) && isset($_POST)) $tab = $_POST;
 
@@ -53,12 +53,12 @@ if (isset($tab['reset'])&&$tab['reset']=="reset_before") {
 	unset($tab['reset']);
 }
 
-if (!isset($tab['reset'])){
-	if (is_array($tab))
-	foreach ($tab as $key => $val)
-		if ($key[0]!='_')
-			$_SESSION['tracking'][$key]=$val;
-}
+	if (!isset($tab['reset'])){
+		if (is_array($tab))
+			foreach ($tab as $key => $val)
+				if ($key[0]!='_')
+					$_SESSION['tracking'][$key]=$val;
+	}
 if (isset($tab['reset'])) unset($_SESSION['tracking']);
 
 if (isset($_SESSION['tracking'])&&is_array($_SESSION['tracking']))
@@ -124,7 +124,7 @@ if (!haveRight("show_ticket","1")){
 		searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 	else 
 		searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
-	
+
 	if (!$tab["extended"])
 		showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 	else 

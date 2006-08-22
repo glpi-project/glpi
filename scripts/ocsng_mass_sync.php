@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -55,43 +55,43 @@ $all=0;
 if (isset($_GET["all"])) $all=$_GET["all"];
 
 
-	$cfg_ocs=getOcsConf(1);
-	ocsManageDeleted();
-	$WHERE="";
-	if ($ocs_id) $WHERE=" AND ID='$ocs_id'";
-	
-	$query_ocs = "SELECT * 
-				FROM hardware 
-				WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0
-				$WHERE";
-	$result_ocs = $dbocs->query($query_ocs);
-	if ($dbocs->numrows($result_ocs)>0){
+$cfg_ocs=getOcsConf(1);
+ocsManageDeleted();
+$WHERE="";
+if ($ocs_id) $WHERE=" AND ID='$ocs_id'";
 
-		$hardware=array();
-		while($data=$dbocs->fetch_array($result_ocs)){
-			$hardware[$data["ID"]]["date"]=$data["LASTDATE"];
-			$hardware[$data["ID"]]["name"]=addslashes($data["NAME"]);
+$query_ocs = "SELECT * 
+FROM hardware 
+WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0
+$WHERE";
+$result_ocs = $dbocs->query($query_ocs);
+if ($dbocs->numrows($result_ocs)>0){
+
+	$hardware=array();
+	while($data=$dbocs->fetch_array($result_ocs)){
+		$hardware[$data["ID"]]["date"]=$data["LASTDATE"];
+		$hardware[$data["ID"]]["name"]=addslashes($data["NAME"]);
+	}
+	$WHERE="WHERE auto_update= '1'";
+	if ($all) $WHERE="";
+
+	$query_glpi = "SELECT * 
+		FROM glpi_ocs_link 
+		$WHERE
+		ORDER BY last_update";
+	$result_glpi = $db->query($query_glpi);
+	$done=0;
+	while($data=$db->fetch_assoc($result_glpi)){
+		$data=clean_cross_side_scripting_deep(addslashes_deep($data));
+
+		if (isset($hardware[$data["ocs_id"]])){ 
+			ocsUpdateComputer($data["ID"],1);
+			if ($limit&&$done>=$limit) exit();
+			echo ".";
+			$done++;
 		}
-		$WHERE="WHERE auto_update= '1'";
-		if ($all) $WHERE="";
+	}
+} 
 
-		$query_glpi = "SELECT * 
-					FROM glpi_ocs_link 
-					$WHERE
-					ORDER BY last_update";
-		$result_glpi = $db->query($query_glpi);
-		$done=0;
-		while($data=$db->fetch_assoc($result_glpi)){
-			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
-			
-			if (isset($hardware[$data["ocs_id"]])){ 
-				ocsUpdateComputer($data["ID"],1);
-				if ($limit&&$done>=$limit) exit();
-				echo ".";
-				$done++;
-			}
-		}
-	} 
 
-	
 ?>

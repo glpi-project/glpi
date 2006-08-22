@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
@@ -38,52 +38,52 @@ $NEEDED_ITEMS=array("document","tracking");
 include ($phproot . "/inc/includes.php");
 
 if ($cfg_glpi["public_faq"] == 0)
-	checkLoginUser();
+checkLoginUser();
 
 if (isset($_GET["file"])){
 
 	$splitter=split("/",$_GET["file"]);
-	
+
 	if (count($splitter)==2){
 		$send=false;
-		
+
 		if ($splitter[0]=="_dumps"&&haveRight("backup","w")) $send=true;
-		
+
 		if (!$send){
 			$doc=new Document;
 			$founded=$doc->getFromDBbyFilename($_GET["file"]);
-			
+
 			if ($founded){
-				
+
 
 				if ($_SESSION["glpiprofile"]["interface"]=="central"){
 					// My doc Check and Common doc right access
 					if (haveRight("document","r")
-						||$doc->fields["FK_users"]==$_SESSION["glpiID"])
+							||$doc->fields["FK_users"]==$_SESSION["glpiID"])
 						$send=true;
 
 					// Knowbase Case
 					if (!$send&&haveRight("knowbase","r")){
 						$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."'";
-						
+
 						$result=$db->query($query);
 						if ($db->numrows($result)>0)
 							$send=true;
 					}
 					if (!$send&&haveRight("faq","r")){
 						$query = "SELECT * FROM glpi_doc_device LEFT JOIN glpi_kbitems ON (glpi_kbitems.ID = glpi_doc_device.Fk_device) WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."' AND glpi_kbitems.faq='yes'";
-						
+
 						$result=$db->query($query);
 						if ($db->numrows($result)>0)
 							$send=true;
 					}
 
-					
+
 					// Tracking Case
 					if (!$send&&isset($_GET["tracking"])){
 						$job=new Job;
 						$job->getFromDB($_GET["tracking"]);
-						
+
 						if ($job->fields["author"]==$_SESSION["glpiID"]||$job->fields["assign"]==$_SESSION["glpiID"]){
 							$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$_GET["tracking"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' AND FK_doc='".$doc->fields["ID"]."'";
 							$result=$db->query($query);
@@ -92,7 +92,7 @@ if (isset($_GET["file"])){
 						}
 					}
 				} else {
-					
+
 					// Check if it is my doc
 					if ($doc->fields["FK_users"]==$_SESSION["glpiID"])
 						$send=true;
@@ -100,7 +100,7 @@ if (isset($_GET["file"])){
 						if (haveRight("faq","r")||$cfg_glpi["public_faq"]){
 							// Check if it is a FAQ document
 							$query = "SELECT * FROM glpi_doc_device LEFT JOIN glpi_kbitems ON (glpi_kbitems.ID = glpi_doc_device.Fk_device) WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."' AND glpi_kbitems.faq='yes'";
-						
+
 							$result=$db->query($query);
 							if ($db->numrows($result)>0)
 								$send=true;
@@ -110,7 +110,7 @@ if (isset($_GET["file"])){
 						if (!$send&&isset($_GET["tracking"])){
 							$job=new Job;
 							$job->getFromDB($_GET["tracking"]);
-							
+
 							if ($job->fields["author"]==$_SESSION["glpiID"]){
 								$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$_GET["tracking"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' AND FK_doc='".$doc->fields["ID"]."'";
 								$result=$db->query($query);

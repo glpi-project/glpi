@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
@@ -107,32 +107,32 @@ else
 	}
 
 	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
-	
+
 	if ($contact->getFromDB($tab["ID"]))
-	$contact->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$contact->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($contact->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
-		switch($_SESSION['glpi_onglet']){
-		case -1 :	
-			showEnterpriseContact($tab["ID"]);
-			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
-			display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
-			break;
-		case 7 : 
-			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
-			break;
+			switch($_SESSION['glpi_onglet']){
+				case -1 :	
+					showEnterpriseContact($tab["ID"]);
+					showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
+					display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					break;
+				case 7 : 
+					showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
+					break;
 
-		case 10 :
-			showNotesForm($_SERVER["PHP_SELF"],CONTACT_TYPE,$tab["ID"]);
-			break;
-		default :
-			if (!display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
-				showEnterpriseContact($tab["ID"]);
-		break;
-		}
+				case 10 :
+					showNotesForm($_SERVER["PHP_SELF"],CONTACT_TYPE,$tab["ID"]);
+					break;
+				default :
+					if (!display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+						showEnterpriseContact($tab["ID"]);
+					break;
+			}
 	}	
-	
+
 	commonFooter();
 }
 

@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -81,52 +81,52 @@ if ($ocs_id){
 }
 
 $query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG 
-				FROM hardware 
-				INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
-				$WHERE 
-				ORDER BY hardware.NAME";
-$result_ocs = $dbocs->query($query_ocs);
+	FROM hardware 
+INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
+	$WHERE 
+	ORDER BY hardware.NAME";
+	$result_ocs = $dbocs->query($query_ocs);
 
-// Existing OCS - GLPI link
-$query_glpi = "SELECT * 
-			FROM glpi_ocs_link";
-if ($ocs_id) $query_glpi.=" WHERE ocs_id='$ocs_id'";
-$result_glpi = $db->query($query_glpi);
+	// Existing OCS - GLPI link
+	$query_glpi = "SELECT * 
+	FROM glpi_ocs_link";
+	if ($ocs_id) $query_glpi.=" WHERE ocs_id='$ocs_id'";
+	$result_glpi = $db->query($query_glpi);
 
-if ($dbocs->numrows($result_ocs)>0){
-	
-	// Get all hardware from OCS DB
-	$hardware=array();
-	while($data=$dbocs->fetch_array($result_ocs)){
-		$data=clean_cross_side_scripting_deep(addslashes_deep($data));
-		$hardware[$data["ID"]]["ID"]=$data["ID"];
-	}
-	
-	// Get all links between glpi and OCS
-	$already_linked=array();
-	if ($db->numrows($result_glpi)>0){
-		while($data=$dbocs->fetch_array($result_glpi)){
-			$already_linked[$data["ocs_id"]]=$data["last_update"];
+	if ($dbocs->numrows($result_ocs)>0){
+
+		// Get all hardware from OCS DB
+		$hardware=array();
+		while($data=$dbocs->fetch_array($result_ocs)){
+			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
+			$hardware[$data["ID"]]["ID"]=$data["ID"];
+		}
+
+		// Get all links between glpi and OCS
+		$already_linked=array();
+		if ($db->numrows($result_glpi)>0){
+			while($data=$dbocs->fetch_array($result_glpi)){
+				$already_linked[$data["ocs_id"]]=$data["last_update"];
+			}
+		}
+
+		// Clean $hardware from already linked element
+		if (count($already_linked)>0){
+			foreach ($already_linked as $ID => $date){
+				if (isset($hardware[$ID])&&isset($already_linked[$ID]))
+					unset($hardware[$ID]);
+			}
+		}
+
+		if (count($hardware)){
+			$i=0;
+			foreach ($hardware as $ID => $tab){
+				echo ".";
+				if ($limit&&$i>=$limit) exit();
+				ocsImportComputer($ID);
+				$i++;
+			}
 		}
 	}
 
-	// Clean $hardware from already linked element
-	if (count($already_linked)>0){
-		foreach ($already_linked as $ID => $date){
-			if (isset($hardware[$ID])&&isset($already_linked[$ID]))
-			unset($hardware[$ID]);
-		}
-	}
-
-	if (count($hardware)){
-		$i=0;
-		foreach ($hardware as $ID => $tab){
-			echo ".";
-			if ($limit&&$i>=$limit) exit();
-			ocsImportComputer($ID);
-			$i++;
-		}
-	}
-}
-	
 ?>

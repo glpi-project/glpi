@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
@@ -71,7 +71,7 @@ else if (isset($_POST["adduser"]))
 	checkRight("group","w");
 
 	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
-	
+
 	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -80,8 +80,8 @@ else if (isset($_POST["deleteuser"]))
 	checkRight("group","w");
 
 	if (count($_POST["item"]))
-	foreach ($_POST["item"] as $key => $val)
-		deleteUserGroup($key);
+		foreach ($_POST["item"] as $key => $val)
+			deleteUserGroup($key);
 
 	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -96,30 +96,30 @@ else
 	}
 
 	commonHeader($lang["Menu"][36],$_SERVER["PHP_SELF"]);
-	
+
 	if ($group->getFromDB($tab["ID"]))
-	$group->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$group->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($group->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
-		switch($_SESSION['glpi_onglet']){
-		case -1 :	
-			showGroupUser($_SERVER["PHP_SELF"],$tab["ID"]);
-			showGroupDevice($tab["ID"]);
-			break;
-		case 2 : 
-			showGroupDevice($tab["ID"]);
-			break;
+			switch($_SESSION['glpi_onglet']){
+				case -1 :	
+					showGroupUser($_SERVER["PHP_SELF"],$tab["ID"]);
+					showGroupDevice($tab["ID"]);
+					break;
+				case 2 : 
+					showGroupDevice($tab["ID"]);
+					break;
 
-		default :
-			if (!display_plugin_action(GROUP_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
-				showGroupUser($_SERVER["PHP_SELF"],$tab["ID"]);
+				default :
+					if (!display_plugin_action(GROUP_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+						showGroupUser($_SERVER["PHP_SELF"],$tab["ID"]);
+					}
+
+					break;
 			}
-			
-		break;
-		}
 	}	
-	
+
 	commonFooter();
 }
 

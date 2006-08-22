@@ -26,31 +26,31 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
-	
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
 
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
 
-	checkLoginUser();
+// Send UTF8 Headers
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	if (isset($_POST["table"])&&isset($_POST["value"])&&$_POST["value"]>0){
-		if ($_POST["table"]=="glpi_users"){
-			$tmpname=getUserName($_POST["value"],2);
-			echo $tmpname["comments"];
-		} else {
-			$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
-			echo $tmpname["comments"];
-		}
+checkLoginUser();
+
+if (isset($_POST["table"])&&isset($_POST["value"])&&$_POST["value"]>0){
+	if ($_POST["table"]=="glpi_users"){
+		$tmpname=getUserName($_POST["value"],2);
+		echo $tmpname["comments"];
+	} else {
+		$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
+		echo $tmpname["comments"];
 	}
+}
 
 ?>

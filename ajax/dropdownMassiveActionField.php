@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -44,13 +44,13 @@ header_nocache();
 checkTypeRight($_POST["device_type"],"w");
 
 if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
-	
+
 	$search=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]];	
 	// Specific state case
 	if ($_POST["id_field"]==31) $search["linkfield"]="state";
 	// Specific budget case
 	if ($_POST["id_field"]==50) $search["linkfield"]="budget";
-	
+
 	$FIELDNAME_PRINTED=false;
 
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
@@ -59,53 +59,53 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 		} else 
 			autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
 	} else { 
-		
+
 		switch ($search["table"]){
 
 			case "glpi_infocoms":  // infocoms case
 				switch ($search["field"]){
 					case "buy_date" :
-					case "use_date" :
+						case "use_date" :
 						showCalendarForm("massiveaction_form",$search["field"]);
-						echo "&nbsp;&nbsp;";
-						break;
+					echo "&nbsp;&nbsp;";
+					break;
 					case "amort_type" :
 						dropdownAmortType("amort_type");
-						break;
+					break;
 					case "amort_time" :
 						dropdownDuration("amort_time");
-						break;
+					break;
 					case "warranty_duration" :
 						dropdownContractTime("warranty_duration");
-						echo " ".$lang["financial"][57]."&nbsp;&nbsp;";
-						break;
+					echo " ".$lang["financial"][57]."&nbsp;&nbsp;";
+					break;
 					default :
-						autocompletionTextField($search["field"],$search["table"],$search["field"]);
-						break;
+					autocompletionTextField($search["field"],$search["table"],$search["field"]);
+					break;
 				}
-				break;
+			break;
 			case "glpi_enterprises_infocoms": // Infocoms enterprises
 				dropdown("glpi_enterprises","FK_enterprise");
-				break;
+			break;
 			case "glpi_dropdown_budget": // Infocoms budget
 				dropdown("glpi_dropdown_budget","budget");
-				break;
+			break;
 			case "glpi_ocs_link": // auto_update ocs_link
 				dropdownYesNoInt("_auto_update_ocs");
-				echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
-				$FIELDNAME_PRINTED=true;
-				break;
+			echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
+			$FIELDNAME_PRINTED=true;
+			break;
 
 			default :// dropdown case
-				dropdown($search["table"],$search["linkfield"]);
-				break;
+			dropdown($search["table"],$search["linkfield"]);
+			break;
 		}
 	}
 	if (!$FIELDNAME_PRINTED)
-	if (empty($search["linkfield"]))
-		echo "<input type='hidden' name='field' value='".$search["field"]."'>";
-	else 
-		echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
+		if (empty($search["linkfield"]))
+			echo "<input type='hidden' name='field' value='".$search["field"]."'>";
+		else 
+			echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
 
 	echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 }

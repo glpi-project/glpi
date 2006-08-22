@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // Based on:
 // IRMA, Information Resource-Management and Administration
@@ -52,28 +52,28 @@ $lic=new License;
 if (isset($_POST["add"]))
 {
 	checkRight("software","w");
-	
+
 	if ($_POST["serial"]=="free")$number=1;
 	else $number=$_POST["number"];
 	unset($tab["number"]);
-	
-	
+
+
 	for ($i=1;$i<=$number;$i++){
 		unset($lic->fields["ID"]);
 		$lic->add($tab);
 	}
-	
+
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
-	
+
 	glpi_header($_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
 }
 else if (isset($tab["update_stock_licenses"])||isset($tab["update_stock_licenses_x"])){
 	checkRight("software","w");
 
 	foreach ($tab as $key => $val)
-	if (ereg("stock_licenses_([0-9]+)",$key,$regs))
-		if ($val!=$tab["nb_licenses_".$regs[1]])
-			updateNumberLicenses($regs[1],$tab["nb_licenses_".$regs[1]],$val);
+		if (ereg("stock_licenses_([0-9]+)",$key,$regs))
+			if ($val!=$tab["nb_licenses_".$regs[1]])
+				updateNumberLicenses($regs[1],$tab["nb_licenses_".$regs[1]],$val);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 }	
@@ -84,10 +84,10 @@ else if (isset($tab["update_expire"])||isset($tab["update_expire_x"])){
 	$input["expire"]=$tab["expire"];
 
 	foreach ($tab as $key => $val)
-	if (ereg("license_([0-9]+)",$key,$ereg)){
-		$input["ID"]=$ereg[1];
-		$lic->update($input);
-	}
+		if (ereg("license_([0-9]+)",$key,$ereg)){
+			$input["ID"]=$ereg[1];
+			$lic->update($input);
+		}
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -97,26 +97,26 @@ else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
 	$input["buy"]=$tab["buy"];	
 
 	foreach ($tab as $key => $val)
-	if (ereg("license_([0-9]+)",$key,$ereg)){
-		$input["ID"]=$ereg[1];
-		$lic->update($input);
-	}
-	
+		if (ereg("license_([0-9]+)",$key,$ereg)){
+			$input["ID"]=$ereg[1];
+			$lic->update($input);
+		}
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["move"])||isset($tab["move"])){
 	if ($tab["lID"]&&$lic->getFromDB($tab["lID"])){
 		unset($lic->fields["ID"]);
 		unset($lic->fields["comments"]);
-		
+
 		$lic2=new License();
 		foreach ($tab as $key => $val)
-		if (ereg("license_([0-9]+)",$key,$ereg)){
-			$input=$lic->fields;
-			$input["ID"]=$ereg[1];
-			unset($lic2->fields);
-			$lic2->update($input);
-		}
+			if (ereg("license_([0-9]+)",$key,$ereg)){
+				$input=$lic->fields;
+				$input["ID"]=$ereg[1];
+				unset($lic2->fields);
+				$lic2->update($input);
+			}
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

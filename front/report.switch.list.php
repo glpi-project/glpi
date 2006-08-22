@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 /*!
-    \brief affiche le rapport réseau par switch 
+  \brief affiche le rapport réseau par switch 
 
-*/
+ */
 
- 
+
 
 include ("_relpos.php");
 
@@ -59,20 +59,20 @@ if ($db->numrows($result)==1){
 	$switch=$ligne['switch'];
 
 	echo "<div align='center'><h2>".$lang["reports"][49]." $switch </h2></div><br><br>";
-	
+
 	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networking.name as switch
-        FROM glpi_networking
-        LEFT JOIN glpi_networking_ports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networking.ID
+		FROM glpi_networking
+		LEFT JOIN glpi_networking_ports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networking.ID
 		WHERE glpi_networking.id=".$_POST["switch"]."";
 
 	/*!
- 	on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
- 	affiche un rapport en fonction du switch choisi  
-	*/
+	  on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
+	  affiche un rapport en fonction du switch choisi  
+	 */
 
 	report_perso("glpi_networking_switch",$query);
 	commonFooter();
 
 } else  glpi_header($_SERVER['HTTP_REFERER']); 
-       	
+
 ?>
