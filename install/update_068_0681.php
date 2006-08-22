@@ -555,6 +555,38 @@ function update068to0681(){
 
 	}
 
+	// Clean state datas
+	if(TableExists("glpi_state_item")) {
+		$query="SELECT COUNT(*) AS CPT, device_type, id_device 
+			FROM glpi_state_item
+			GROUP BY device_type, id_device
+			HAVING CPT > 1";
+		$result=$db->query($query);
+		if ($db->numrows($result)){
+			while ($data=$db->fetch_array($result)){
+				$query2="DELETE FROM glpi_state_item
+								WHERE device_type='".$data["device_type"]."'
+								AND id_device='".$data["id_device"]."'
+								LIMIT ".($data["CPT"]-1).";";
+				$db->query($query2) or die("0.68.1 clean glpi_state_item ".$lang["update"][90].$db->error());
+			}
+		}
+	
+		if (isIndex("glpi_state_item","device_type")){
+			$query=" ALTER TABLE `glpi_state_item` DROP INDEX `device_type` ;";
+			$db->query($query) or die("0.68.1 drop index glpi_state_item ".$lang["update"][90].$db->error());
+		}
+		if (isIndex("glpi_state_item","device_type2")){
+			$query=" ALTER TABLE `glpi_state_item` DROP INDEX `device_type2` ;";
+			$db->query($query) or die("0.68.1 drop index glpi_state_item ".$lang["update"][90].$db->error());
+		}
+	
+		$query=" ALTER TABLE `glpi_state_item` ADD INDEX ( `device_type` ) ";
+		$db->query($query) or die("0.68.1 add index glpi_state_item ".$lang["update"][90].$db->error());
+		$query=" ALTER TABLE `glpi_state_item` ADD UNIQUE ( `device_type`,`id_device` ) ";
+		$db->query($query) or die("0.68.1 add unique glpi_state_item ".$lang["update"][90].$db->error());
+	}
+
 
 } // fin 0.68 #####################################################################################
 
