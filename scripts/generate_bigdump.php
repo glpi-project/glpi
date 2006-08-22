@@ -58,6 +58,7 @@ $max['domain']=5;
 $max['enttype']=1;
 $max['firmware']=5;
 $max['interface']=1;
+$max['case_type']=1;
 $max['iface']=5;
 $max['model']=5;
 $max['network']=5;
@@ -302,6 +303,7 @@ for ($i=0;$i<$max['budget'];$i++){
 	$query="INSERT INTO glpi_dropdown_budget VALUES (NULL,'$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
+
 $items=array();
 for ($i=0;$i<$max['phone_power'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
@@ -309,6 +311,15 @@ for ($i=0;$i<$max['phone_power'];$i++){
 	$query="INSERT INTO glpi_dropdown_phone_power VALUES (NULL,'$val','comment $val')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
+
+$items=array("Grand","Moyen","Micro","1U","5U");
+for ($i=0;$i<$max['case_type'];$i++){
+	if (isset($items[$i])) $val=$items[$i];
+	else $val="power $i";
+	$query="INSERT INTO glpi_dropdown_case_type VALUES (NULL,'$val','comment $val')";
+	$db->query($query) or die("PB REQUETE ".$query);
+}
+
 
 $items=array("Laser","Jet-Encre","Encre Solide");
 for ($i=0;$i<$max['cartridge_type'];$i++){
@@ -954,7 +965,7 @@ $items=array("Textorm 6A19","ARIA","SLK3000B-EU","Sonata II","TA-212","TA-551","
 for ($i=0;$i<$max['device'];$i++){
 	if (isset($items[$i])) $val=$items[$i];
 	else $val="case $i";
-	$query="INSERT INTO glpi_device_case VALUES (NULL,'$val','".mt_rand(0,2)."','comment $i','".mt_rand(1,$max['enterprises'])."','')";
+	$query="INSERT INTO glpi_device_case VALUES (NULL,'$val','".mt_rand(0,$max["case_type"])."','comment $i','".mt_rand(1,$max['enterprises'])."','')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 $items=array("Escalade 8006-2LP","Escalade 8506-4LP","2810SA","1210SA","DuoConnect","DU-420","DUB-A2","FastTrak SX4100B","DC-395U","TFU-H33PI");
