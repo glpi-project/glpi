@@ -1239,6 +1239,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 				$i=0;
 				// Add network device
 				if($dbocs->numrows($result2) > 0) {
+					$already_used_ip=array();
 					while($line2 = $dbocs->fetch_array($result2)) {
 						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 						if ($cfg_ocs["import_device_iface"]){
@@ -1272,8 +1273,11 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 							$result=$db->query($query);
 							if ($db->numrows($result)>0){
 								while ($data=$db->fetch_array($result))
-									$glpi_ips[]=$data["ID"];
+									if (!in_array($data["ID"],$already_used_ip)){
+										$glpi_ips[]=$data["ID"];
+									}
 							}
+							
 							unset($netport);
 							$netport["ifmac"]=$line2["MACADDR"];
 							$netport["iface"]=ocsImportDropdown("glpi_dropdown_iface","name",$line2["TYPE"]);
@@ -1284,12 +1288,12 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 							$np=new Netport();
 							// Update already in DB
 							for ($j=0;$j<min(count($glpi_ips),count($ocs_ips));$j++){
-
-								$netport["ifaddr"]=$ocs_ips[$j];
-								$netport["logical_number"]=$i;
-								$netport["ID"]=$glpi_ips[$j];
-								$np->update($netport);
-								$i++;
+									$netport["ifaddr"]=$ocs_ips[$j];
+									$netport["logical_number"]=$i;
+									$netport["ID"]=$glpi_ips[$j];
+									$already_used_ip[]=$glpi_ips[$j];
+									$np->update($netport);
+									$i++;
 							}
 
 							// If other IP founded
@@ -1302,7 +1306,6 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 									$np->add($netport);
 									$i++;
 								}
-
 						}
 					}
 				}
