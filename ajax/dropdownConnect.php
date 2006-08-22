@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,68 +34,68 @@
 // ----------------------------------------------------------------------
 
 
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	checkTypeRight($_POST["fromtype"],"w");
+checkTypeRight($_POST["fromtype"],"w");
 
-	// Make a select box
+// Make a select box
 
-	$table=$LINK_ID_TABLE[$_POST["idtable"]];
+$table=$LINK_ID_TABLE[$_POST["idtable"]];
 
-	$where="";		
-	if (in_array($table,$cfg_glpi["deleted_tables"]))
-		$where.=" AND $table.deleted='N' ";
-	if (in_array($table,$cfg_glpi["template_tables"]))
-		$where.=" AND $table.is_template='0' ";		
-			
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-		$where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
+$where="";		
+if (in_array($table,$cfg_glpi["deleted_tables"]))
+$where.=" AND $table.deleted='N' ";
+if (in_array($table,$cfg_glpi["template_tables"]))
+$where.=" AND $table.is_template='0' ";		
 
-	$NBMAX=$cfg_glpi["dropdown_max"];
-	$LIMIT="LIMIT 0,$NBMAX";
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+$where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
-	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
-						
-	
-	if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
-		$CONNECT_SEARCH=" WHERE ( $table.is_global='1' ) ";
-	} else {
-		if ($_POST["idtable"]==COMPUTER_TYPE)
-			$CONNECT_SEARCH=" WHERE '1' = '1' ";
-		else {
-			$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";	
-		}
-	}	
+$NBMAX=$cfg_glpi["dropdown_max"];
+$LIMIT="LIMIT 0,$NBMAX";
 
-	$LEFTJOINCONNECT="";
-	if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"])		
-		$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
-	$query = "SELECT DISTINCT $table.ID as ID,$table.name as name,$table.serial as serial from $table $LEFTJOINCONNECT $CONNECT_SEARCH $where order by name ASC";
+if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
 
 
+if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
+	$CONNECT_SEARCH=" WHERE ( $table.is_global='1' ) ";
+} else {
+	if ($_POST["idtable"]==COMPUTER_TYPE)
+		$CONNECT_SEARCH=" WHERE '1' = '1' ";
+	else {
+		$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";	
+	}
+}	
 
-		$result = $db->query($query);
-		echo "<select name=\"".$_POST['myname']."\" size='1'>";
-		
-		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
-	
-		echo "<option value=\"0\">-----</option>";
-		if ($db->numrows($result)) {
-			while ($data = $db->fetch_array($result)) {
-				$output = $data['name'];
-				if (!empty($data['serial'])) $output.=" - ".$data["serial"];
-				$ID = $data['ID'];
-				if (empty($output)) $output="($ID)";
+$LEFTJOINCONNECT="";
+if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"])		
+$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
+$query = "SELECT DISTINCT $table.ID as ID,$table.name as name,$table.serial as serial from $table $LEFTJOINCONNECT $CONNECT_SEARCH $where order by name ASC";
 
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
-			}
-		}
-		echo "</select>";
+
+
+$result = $db->query($query);
+echo "<select name=\"".$_POST['myname']."\" size='1'>";
+
+if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+
+echo "<option value=\"0\">-----</option>";
+if ($db->numrows($result)) {
+	while ($data = $db->fetch_array($result)) {
+		$output = $data['name'];
+		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
+		$ID = $data['ID'];
+		if (empty($output)) $output="($ID)";
+
+		echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
+	}
+}
+echo "</select>";
 
 
 ?>

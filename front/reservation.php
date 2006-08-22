@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -54,8 +54,8 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 
 		if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) 
-		if ($rr->update($_POST,$_SERVER["PHP_SELF"],$_POST["id_item"]))
-			glpi_header($cfg_glpi["root_doc"]."/front/reservation.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
+			if ($rr->update($_POST,$_SERVER["PHP_SELF"],$_POST["id_item"]))
+				glpi_header($cfg_glpi["root_doc"]."/front/reservation.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
 	}
 
 
@@ -91,7 +91,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		for ($i=1;$i<=$times&&$ok;$i++){
 			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
 			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
-		
+
 			if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) {
 				unset($rr->fields["ID"]);
 				$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
@@ -101,7 +101,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		// Positionnement du calendrier au mois de debut
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
-		
+
 		if ($ok){
 			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]);
 			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
@@ -118,57 +118,57 @@ else {
 		printReservationItems($_SERVER["PHP_SELF"]);
 	}
 	else {
-	if (isset($_GET["add"]))
-	{
-		checkRight("reservation_central","w");
-		$ri->add($_GET);
-		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
-		glpi_header($_SERVER['HTTP_REFERER']);
-	} 
-	else if (isset($_GET["delete"]))
-	{
-		checkRight("reservation_central","w");
-		$ri->delete($_GET);
-		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
-		glpi_header($_SERVER['HTTP_REFERER']);
-	}
+		if (isset($_GET["add"]))
+		{
+			checkRight("reservation_central","w");
+			$ri->add($_GET);
+			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
+			glpi_header($_SERVER['HTTP_REFERER']);
+		} 
+		else if (isset($_GET["delete"]))
+		{
+			checkRight("reservation_central","w");
+			$ri->delete($_GET);
+			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
+			glpi_header($_SERVER['HTTP_REFERER']);
+		}
 
 
-	if (isset($_POST["updatecomment"]))
-	{
-		checkRight("reservation_central","w");
-		$ri->update($_POST);
-		logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
-	} 
+		if (isset($_POST["updatecomment"]))
+		{
+			checkRight("reservation_central","w");
+			$ri->update($_POST);
+			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
+		} 
 
-	if(!isset($_GET["start"])) $_GET["start"] = 0;
-	if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-	if (!isset($_GET["field"])) $_GET["field"] = "glpi_reservation_item.ID";
-	if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-	if (!isset($_GET["contains"])) $_GET["contains"] = "";
-	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
+		if(!isset($_GET["start"])) $_GET["start"] = 0;
+		if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+		if (!isset($_GET["field"])) $_GET["field"] = "glpi_reservation_item.ID";
+		if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
+		if (!isset($_GET["contains"])) $_GET["contains"] = "";
+		if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
 
 
-	checkRight("reservation_central","r");
+		checkRight("reservation_central","r");
 
-	commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
-	if (isset($_GET["comment"])){
-		if (showReservationCommentForm($_SERVER["PHP_SELF"],$_GET["comment"])){
+		commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
+		if (isset($_GET["comment"])){
+			if (showReservationCommentForm($_SERVER["PHP_SELF"],$_GET["comment"])){
 			}
-		else {
-			
+			else {
+
+				titleReservation();
+				searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
+				showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+			}
+
+		}else {
+
 			titleReservation();
 			searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
 			showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 		}
-		
-	}else {
-	
-	titleReservation();
-	searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-	showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 	}
-}
 }
 commonFooter();
 

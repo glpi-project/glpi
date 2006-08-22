@@ -26,16 +26,16 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	include ("_relpos.php");
-	$NEEDED_ITEMS=array("user");
-	include ($phproot . "/inc/includes.php");
+include ("_relpos.php");
+$NEEDED_ITEMS=array("user");
+include ($phproot . "/inc/includes.php");
 
 
 if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))
@@ -51,13 +51,13 @@ header("Content-Type: text/html; charset=UTF-8");
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
- <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
- <title>GLPI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>GLPI</title>
 
 <?php
 include ("_relpos.php");
 // Appel CSS
- echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
+echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
 // Appel javascript
 echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 
@@ -68,27 +68,27 @@ echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 <body>
 <script language="javascript" type="text/javascript">
 function fillidfield(Type,Id){
-window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
-window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
-window.close();}
-</script>
+	window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
+	window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
+	window.close();}
+	</script>
 
-<?php 
+	<?php 
 
-echo "<div align='center'>";
-echo "<p><strong>".$lang["help"][22]."</strong></p>";
-echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER["PHP_SELF"]."\">"; 
+	echo "<div align='center'>";
+	echo "<p><strong>".$lang["help"][22]."</strong></p>";
+	echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER["PHP_SELF"]."\">"; 
 
-echo "<table cellspacing='1' width='100%'  class='tab_cadre'>";
-echo "<tr><th align='center'  width='100%' height='29'>".$lang["help"][23]."</th>";
- echo "</tr><tr><td class='tab_bg_1' align='center' width='100%'>"; 
-echo "<input name='NomContact' type='text' id='NomContact' >";
- echo "<input type='hidden' name='send' value='1' />"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
-echo "<input type='submit' name='send' value=\"". $lang["buttons"][0]."\">";
- echo "</td>  </tr> </table> </form></div>";
- 
- 
-if(isset($_POST["send"]))
+	echo "<table cellspacing='1' width='100%'  class='tab_cadre'>";
+	echo "<tr><th align='center'  width='100%' height='29'>".$lang["help"][23]."</th>";
+	echo "</tr><tr><td class='tab_bg_1' align='center' width='100%'>"; 
+	echo "<input name='NomContact' type='text' id='NomContact' >";
+	echo "<input type='hidden' name='send' value='1' />"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
+	echo "<input type='submit' name='send' value=\"". $lang["buttons"][0]."\">";
+	echo "</td>  </tr> </table> </form></div>";
+
+
+	if(isset($_POST["send"]))
 {
 	echo "<table width='100%' class='tab_cadre'>";
 	echo " <tr class='tab_bg3'>";
@@ -98,7 +98,7 @@ if(isset($_POST["send"]))
 	echo " <td align='center' width='5%'><b>".$lang["common"][2]."</b></td>";
 	echo " <td align='center' width='20%'><b>".$lang["common"][19]."&nbsp;/&nbsp;".$lang["common"][20]."</b></td>";
 	echo " </tr>";
-	
+
 
 	$query = "select name,ID,contact, serial, otherserial from glpi_computers where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $db->query($query);
@@ -233,7 +233,7 @@ if(isset($_POST["send"]))
 		echo "</tr>";
 	}
 
-     echo "</table>";
+	echo "</table>";
 }
 ?>
 </body></html>

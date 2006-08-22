@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -45,7 +45,7 @@ commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 if (isset($_SESSION["ocs_update"])){
 	if ($count=count($_SESSION["ocs_update"])){
 		$percent=min(100,round(100*($_SESSION["ocs_update_count"]-$count)/$_SESSION["ocs_update_count"],0));
-		
+
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_update"]);
@@ -64,12 +64,12 @@ if (isset($_SESSION["ocs_update"])){
 
 
 if (!isset($_POST["update_ok"])){
-if (!isset($_GET['check'])) $_GET['check']='all';
-if (!isset($_GET['start'])) $_GET['start']=0;
+	if (!isset($_GET['check'])) $_GET['check']='all';
+	if (!isset($_GET['start'])) $_GET['start']=0;
 
-ocsManageDeleted();
-ocsCleanLinks();
-ocsShowUpdateComputer($_GET['check'],$_GET['start']);
+	ocsManageDeleted();
+	ocsCleanLinks();
+	ocsShowUpdateComputer($_GET['check'],$_GET['start']);
 
 } else {
 	if (count($_POST['toupdate'])>0){
@@ -79,11 +79,11 @@ ocsShowUpdateComputer($_GET['check'],$_GET['start']);
 				$_SESSION["ocs_update"][]=$key;
 				$_SESSION["ocs_update_count"]++;
 			}
-			
+
 		}
 	}
 
-glpi_header($_SERVER['PHP_SELF']);
+	glpi_header($_SERVER['PHP_SELF']);
 }
 
 

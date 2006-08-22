@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // Based on:
 // IRMA, Information Resource-Management and Administration
 // Christian Bauer 
@@ -44,10 +44,10 @@ checkRight("reports","r");
 
 commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
 
- // titre
-        echo "<div align='center'><table ><tr><td>";
-        echo "<img src=\"".$HTMLRel."pics/rapports.png\" alt='".$lang["Menu"][6]."' title='".$lang["Menu"][6]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][6]."</b></span>";
-        echo "</td></tr></table></div>";
+// titre
+echo "<div align='center'><table ><tr><td>";
+echo "<img src=\"".$HTMLRel."pics/rapports.png\" alt='".$lang["Menu"][6]."' title='".$lang["Menu"][6]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][6]."</b></span>";
+echo "</td></tr></table></div>";
 
 
 
@@ -67,7 +67,7 @@ $report_list["default"]["file"] = "report.default.php";
 
 
 if (haveRight("contract_infocom","r")){
-// Rapport ajoutés par GLPI V0.2
+	// Rapport ajoutés par GLPI V0.2
 	$report_list["Contrats"]["name"] = $lang["reports"][27];
 	$report_list["Contrats"]["file"] = "report.contract.php";
 	$report_list["Par_annee"]["name"] = $lang["reports"][28];

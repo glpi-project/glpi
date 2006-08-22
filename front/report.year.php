@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -71,11 +71,11 @@ echo "</select> </p></td>";
 echo "<td width='150' align='center'><p><b>".$lang["reports"][23]."</b></p> ";
 echo "<p> <select name='annee[]'  size='8' multiple>";
 echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
-  $y = date("Y");
-  for ($i=$y-10;$i<$y+10;$i++)
-  {
-   echo " <option value='$i'>$i</option>";
-  }
+$y = date("Y");
+for ($i=$y-10;$i<$y+10;$i++)
+{
+	echo " <option value='$i'>$i</option>";
+}
 echo "</select></p></td></tr>";
 
 echo "<tr class='tab_bg_2'><td colspan='2'  align='center'><p><input type='submit' value='".$lang["reports"][15]."' class='submit'></p></td></tr>";

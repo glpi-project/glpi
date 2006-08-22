@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 // ----------------------------------------------------------------------
 // Original Author of file: Jean-Mathieu Doléans
 // Purpose of file:
@@ -37,15 +37,15 @@ $NEEDED_ITEMS=array("contact","enterprise");
 include ($phproot . "/inc/includes.php");
 include ($phproot . "/lib/vcardclass/classes-vcard.php");
 
-	if (empty($_GET["ID"])) {
-	
+if (empty($_GET["ID"])) {
+
 	glpi_header($cfg_glpi["root_doc"]."/contacts");
-	
-	}else {
-	
+
+}else {
+
 	checkRight("contact_enterprise","r");
-	
-	
+
+
 
 
 	generateVcard($_GET["ID"]);

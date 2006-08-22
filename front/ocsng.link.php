@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -47,9 +47,9 @@ $cfg_glpi["use_ajax"] = 1;
 if (isset($_SESSION["ocs_link"])){
 	if ($count=count($_SESSION["ocs_link"])){
 		$percent=min(100,round(100*($_SESSION["ocs_link_count"]-$count)/$_SESSION["ocs_link_count"],0));
-		
+
 		displayProgressBar(400,$percent);
-	
+
 		$key=array_pop($_SESSION["ocs_link"]);
 		ocsLinkComputer($key["ocs_id"],$key["glpi_id"]);
 		glpi_header($_SERVER['PHP_SELF']);
@@ -66,12 +66,12 @@ if (isset($_SESSION["ocs_link"])){
 
 
 if (!isset($_POST["import_ok"])){
-if (!isset($_GET['check'])) $_GET['check']='all';
-if (!isset($_GET['start'])) $_GET['start']=0;
+	if (!isset($_GET['check'])) $_GET['check']='all';
+	if (!isset($_GET['start'])) $_GET['start']=0;
 
-ocsManageDeleted();
-ocsCleanLinks();
-ocsShowNewComputer($_GET['check'],$_GET['start'],1);
+	ocsManageDeleted();
+	ocsCleanLinks();
+	ocsShowNewComputer($_GET['check'],$_GET['start'],1);
 
 } else {
 	if (count($_POST['tolink'])>0){
@@ -79,7 +79,7 @@ ocsShowNewComputer($_GET['check'],$_GET['start'],1);
 		foreach ($_POST['tolink'] as $ocs_id => $glpi_id){
 			if ($glpi_id>0){
 				$_SESSION["ocs_link"][]=array("ocs_id"=>$ocs_id,
-							      "glpi_id"=>$glpi_id);
+						"glpi_id"=>$glpi_id);
 				$_SESSION["ocs_link_count"]++;
 			}
 		}

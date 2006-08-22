@@ -27,7 +27,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Based on the original file:
@@ -47,145 +47,145 @@ class XML
 	var $ErrorString; 	// If there is an error, this string explains it
 	var $Type; 		// Which format do you want your XML ?
 	var $FilePath;  //path where the file will be saved.
-	
-// HERE I explain $Type
 
-/* For Example :
-1 (default) each value are in a tag called data
-		<dataxml>
-			<row>
-				<data>value field1 row1</data>
-				<data>value field2 row1</data>
-				<data>value field3 row1</data>
-			</row>
-			<row>
-				<data>value field1 row2</data>
-				<data>value field2 row2</data>
-				<data>value field3 row2</data>
-			</row>
-		</dataxml>
+	// HERE I explain $Type
 
-2 each value is in a tag called dataN , where N is a position of field
-		<dataxml>
-			<row>
-				<data1>value field1 row1</data1>
-				<data2>value field2 row1</data2>
-				<data3>value field3 row1</data3>
-			</row>
-			<row>
-				<data1>value field1 row2</data1>
-				<data2>value field2 row2</data2>
-				<data3>value field3 row2</data3>
-			</row>
-		</dataxml>
+	/* For Example :
+	   1 (default) each value are in a tag called data
+	   <dataxml>
+	   <row>
+	   <data>value field1 row1</data>
+	   <data>value field2 row1</data>
+	   <data>value field3 row1</data>
+	   </row>
+	   <row>
+	   <data>value field1 row2</data>
+	   <data>value field2 row2</data>
+	   <data>value field3 row2</data>
+	   </row>
+	   </dataxml>
 
-3 each value is in a tag called with the name of field
-		<dataxml>
-			<row>
-				<fieldname1>value field1 row1</fieldname1>
-				<fieldname2>value field2 row1</fieldname2>
-				<fieldname3>value field3 row1</fieldname3>
-			</row>
-			<row>
-				<fieldname1>value field1 row2</fieldname1>
-				<fieldname2>value field2 row2</fieldname2>
-				<fieldname3>value field3 row2</fieldname3>
-			</row>
-		</dataxml>
+	   2 each value is in a tag called dataN , where N is a position of field
+	   <dataxml>
+	   <row>
+	   <data1>value field1 row1</data1>
+	   <data2>value field2 row1</data2>
+	   <data3>value field3 row1</data3>
+	   </row>
+	   <row>
+	   <data1>value field1 row2</data1>
+	   <data2>value field2 row2</data2>
+	   <data3>value field3 row2</data3>
+	   </row>
+	   </dataxml>
 
-4 each value is in a tag with an attributes called fieldname with the name of field
-		<dataxml>
-			<row>
-				<data fieldname="fieldname1">value field1 row1</data>
-				<data fieldname="fieldname2">value field1 row1</data>
-				<data fieldname="fieldname3">value field1 row1</data>
-			</row>
-			<row>
-				<data fieldname="fieldname1">value field1 row2</data>
-				<data fieldname="fieldname2">value field1 row2</data>
-				<data fieldname="fieldname3">value field1 row2</data>
-			</row>
-		</dataxml>
+	   3 each value is in a tag called with the name of field
+	   <dataxml>
+	   <row>
+	   <fieldname1>value field1 row1</fieldname1>
+	   <fieldname2>value field2 row1</fieldname2>
+	   <fieldname3>value field3 row1</fieldname3>
+	   </row>
+	   <row>
+	   <fieldname1>value field1 row2</fieldname1>
+	   <fieldname2>value field2 row2</fieldname2>
+	   <fieldname3>value field3 row2</fieldname3>
+	   </row>
+	   </dataxml>
 
-		
-*/
-	
-function XML()
-{
-	// Initialize the values with DEFAULT value
-	$this->IsError=0;
-	$this->Type=1;
-	$this->ErrorString="NO errors ;)";
-	$this->SqlString="";
-}
-	
-	
-function DoXML()
-{
-	global $db;
-	$fp = fopen($this->FilePath,'wb');
-	fputs($fp, "<?xml version=\"1.0\"?>\n");
-	fputs($fp, "<dataxml>\n");
+	   4 each value is in a tag with an attributes called fieldname with the name of field
+	   <dataxml>
+	   <row>
+	   <data fieldname="fieldname1">value field1 row1</data>
+	   <data fieldname="fieldname2">value field1 row1</data>
+	   <data fieldname="fieldname3">value field1 row1</data>
+	   </row>
+	   <row>
+	   <data fieldname="fieldname1">value field1 row2</data>
+	   <data fieldname="fieldname2">value field1 row2</data>
+	   <data fieldname="fieldname3">value field1 row2</data>
+	   </row>
+	   </dataxml>
 
-	foreach($this->SqlString as $strqry){
-		if ($strqry==""){
-			$this->IsError=1;
-			$this->ErrorString="Error the query can't be a null string";
-			return -1;
-		}
-		$result = $db->query($strqry);
 
-		if ($result==FALSE){
-			$this->IsError=1;
-			$this->ErrorString="Error in SQL Query : ".$strqry;
-			return -1;
-		}
-		// OK... let's create XML ;)
-		fputs($fp, "	<fields>\n");
-		$i = 0;
-		$FieldsVector=array();
-		while ($i < $db->num_fields ($result)){
-			$name = $db->field_name($result,$i);
-			fputs($fp, "		<field>".$name."</field>\n");
-			$FieldsVector[]=$name;
-			$i++;
-		}
-	
-		fputs($fp, "	</fields>\n");
-		// And NOW the Data ...
-		fputs($fp, "	<rows>\n");
-		while ($row = $db->fetch_array ($result)){
-			fputs($fp, "		<row>\n");
-			for ($j=0; $j<$i; $j++){
-				$FieldName="";			// Name of TAG
-				$Attributes="";
-				switch ($this->Type){
-					case 1:
-						$FieldName="data";
-						break;
-					case 2:
-						$FieldName="data".$j;
-						break;
-					case 3:
-						$FieldName=$FieldsVector[$j];
-						break;
-					case 4:
-						$FieldName="data";
-						$Attributes=" fieldname=\"".$FieldsVector[$j]."\"";
-				}
-				fputs($fp, "			<".$FieldName.$Attributes.">".utf8_encode(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
-			}
-			fputs($fp, "		</row>\n");
-		}
-		fputs($fp, "	</rows>\n");
+	 */
 
-		$db->free_result($result);
+	function XML()
+	{
+		// Initialize the values with DEFAULT value
+		$this->IsError=0;
+		$this->Type=1;
+		$this->ErrorString="NO errors ;)";
+		$this->SqlString="";
 	}
-	fputs($fp, "</dataxml>");
-	//OK free ...  ;)
-	fclose($fp);
-	
-} // End  Function : DoXML
+
+
+	function DoXML()
+	{
+		global $db;
+		$fp = fopen($this->FilePath,'wb');
+		fputs($fp, "<?xml version=\"1.0\"?>\n");
+		fputs($fp, "<dataxml>\n");
+
+		foreach($this->SqlString as $strqry){
+			if ($strqry==""){
+				$this->IsError=1;
+				$this->ErrorString="Error the query can't be a null string";
+				return -1;
+			}
+			$result = $db->query($strqry);
+
+			if ($result==FALSE){
+				$this->IsError=1;
+				$this->ErrorString="Error in SQL Query : ".$strqry;
+				return -1;
+			}
+			// OK... let's create XML ;)
+			fputs($fp, "	<fields>\n");
+			$i = 0;
+			$FieldsVector=array();
+			while ($i < $db->num_fields ($result)){
+				$name = $db->field_name($result,$i);
+				fputs($fp, "		<field>".$name."</field>\n");
+				$FieldsVector[]=$name;
+				$i++;
+			}
+
+			fputs($fp, "	</fields>\n");
+			// And NOW the Data ...
+			fputs($fp, "	<rows>\n");
+			while ($row = $db->fetch_array ($result)){
+				fputs($fp, "		<row>\n");
+				for ($j=0; $j<$i; $j++){
+					$FieldName="";			// Name of TAG
+					$Attributes="";
+					switch ($this->Type){
+						case 1:
+							$FieldName="data";
+							break;
+						case 2:
+							$FieldName="data".$j;
+							break;
+						case 3:
+							$FieldName=$FieldsVector[$j];
+							break;
+						case 4:
+							$FieldName="data";
+							$Attributes=" fieldname=\"".$FieldsVector[$j]."\"";
+					}
+					fputs($fp, "			<".$FieldName.$Attributes.">".utf8_encode(htmlspecialchars($row[$j]))."</".$FieldName.">\n");
+				}
+				fputs($fp, "		</row>\n");
+			}
+			fputs($fp, "	</rows>\n");
+
+			$db->free_result($result);
+		}
+		fputs($fp, "</dataxml>");
+		//OK free ...  ;)
+		fclose($fp);
+
+	} // End  Function : DoXML
 } // Fine Class XML
 
 

@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -67,7 +67,7 @@ if(empty($_POST["status"])) $_POST["status"] = "new";
 $error = "";
 $REFERER="";
 if (isset($_SERVER["HTTP_REFERER"]))
-	$REFERER=$_SERVER["HTTP_REFERER"];
+$REFERER=$_SERVER["HTTP_REFERER"];
 if (isset($_POST["_referer"])) $REFERER=$_POST["_referer"];
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 

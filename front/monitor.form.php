@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -58,12 +58,12 @@ else if (isset($tab["delete"]))
 	if (!empty($tab["withtemplate"]))
 		$monitor->delete($tab,1);
 	else $monitor->delete($tab);
-	
+
 	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
-	 else 
-	glpi_header($cfg_glpi["root_doc"]."/front/monitor.php");
+	else 
+		glpi_header($cfg_glpi["root_doc"]."/front/monitor.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -117,11 +117,11 @@ else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
 else
 {
 	checkRight("monitor","r");
-	
+
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-//		glpi_header($_SERVER['HTTP_REFERER']);
+		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($lang["title"][18],$_SERVER["PHP_SELF"]);
@@ -130,24 +130,24 @@ else
 	if (!empty($tab["withtemplate"])) {
 
 		if ($monitor->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
-		if (!empty($tab["ID"])){
-		switch($_SESSION['glpi_onglet']){
-			case 4 :
-				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-				showContractAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
-				break;
-			case 5 :			
-				showDocumentAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
-				break;
-			default :
-				display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
-				break;
+			if (!empty($tab["ID"])){
+				switch($_SESSION['glpi_onglet']){
+					case 4 :
+						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+						showContractAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
+						break;
+					case 5 :			
+						showDocumentAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
+						break;
+					default :
+						display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+						break;
+				}
+
+
+			}
 		}
-		
-		
-		}
-		}
-		
+
 	} else {
 		if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 			$job=new Job();
@@ -159,49 +159,49 @@ else
 		}
 
 		if ($monitor->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
-		switch($_SESSION['glpi_onglet']){
-			case -1:
-				showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
-				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"]);
-				showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
-				showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);	
-				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
-				showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
-				display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
-				break;
-			case 4 :			
-				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"]);
-				showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
-				break;
-			case 5 :			
-				showDocumentAssociated(MONITOR_TYPE,$tab["ID"]);	
-				break;
-			case 6 :			
-				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
-				break;
-			case 7 :
-				showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
-				break;	
-			case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],MONITOR_TYPE,$tab["ID"]);
-				break;	
-			case 11 :
-				showDeviceReservations($_SERVER["PHP_SELF"],MONITOR_TYPE,$tab["ID"]);
-				break;
-			case 12 :
-				showHistory(MONITOR_TYPE,$tab["ID"]);
-				break;	
-			default :
-				if (!display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]))
+			switch($_SESSION['glpi_onglet']){
+				case -1:
 					showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
-				break;	
-		}
-			
-			
-			
-			
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"]);
+					showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
+					showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);	
+					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
+					showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
+					display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+					break;
+				case 4 :			
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"]);
+					showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
+					break;
+				case 5 :			
+					showDocumentAssociated(MONITOR_TYPE,$tab["ID"]);	
+					break;
+				case 6 :			
+					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
+					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
+					break;
+				case 7 :
+					showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
+					break;	
+				case 10 :
+					showNotesForm($_SERVER["PHP_SELF"],MONITOR_TYPE,$tab["ID"]);
+					break;	
+				case 11 :
+					showDeviceReservations($_SERVER["PHP_SELF"],MONITOR_TYPE,$tab["ID"]);
+					break;
+				case 12 :
+					showHistory(MONITOR_TYPE,$tab["ID"]);
+					break;	
+				default :
+					if (!display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]))
+						showConnect($_SERVER["PHP_SELF"],$tab['ID'],MONITOR_TYPE);
+					break;	
+			}
+
+
+
+
 		}
 	}
 	commonFooter();

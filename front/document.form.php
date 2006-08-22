@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -90,7 +90,7 @@ else if (isset($_POST["additem"])){
 
 	$template=0;
 	if (isset($_POST["is_template"])) $template=1;
-	
+
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item'],$template);
 		logEvent($tab["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][32]);
@@ -128,7 +128,7 @@ else
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-//		glpi_header($_SERVER['HTTP_REFERER']);
+		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($lang["title"][25],$_SERVER["PHP_SELF"]);
@@ -138,13 +138,13 @@ else
 
 	if ($doc->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
 		switch ($_SESSION['glpi_onglet']){
-		case 10 :
-			showNotesForm($_SERVER["PHP_SELF"],DOCUMENT_TYPE,$tab["ID"]);
-			break;
-		default :
-			if (!display_plugin_action(DOCUMENT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
-				showDeviceDocument($tab["ID"]);
-			break;
+			case 10 :
+				showNotesForm($_SERVER["PHP_SELF"],DOCUMENT_TYPE,$tab["ID"]);
+				break;
+			default :
+				if (!display_plugin_action(DOCUMENT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
+					showDeviceDocument($tab["ID"]);
+				break;
 		}
 	}
 	commonFooter();

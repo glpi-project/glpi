@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -60,8 +60,8 @@ else if (isset($tab["delete"]))
 	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
-	 else 
-	glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
+	else 
+		glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -91,40 +91,40 @@ else
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
-//		glpi_header($_SERVER['HTTP_REFERER']);
+		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
-	
+
 	if ($netdevice->getFromDB($tab["ID"]))
 		$netdevice->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
-	
+
 	if (!empty($tab["withtemplate"])) {
 
 		if ($netdevice->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
-		if (!empty($tab["ID"])){
-			switch($_SESSION['glpi_onglet']){
-			case 4 :
-				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-				showContractAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
-				break;
-			case 5 :
-				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);		
-				break;
-			
-			default :
-				if (!display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-					showPorts($tab["ID"], NETWORKING_TYPE,$tab["withtemplate"]);
-					if ($tab["withtemplate"]!=2) showPortsAdd($tab["ID"],NETWORKING_TYPE);
+			if (!empty($tab["ID"])){
+				switch($_SESSION['glpi_onglet']){
+					case 4 :
+						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+						showContractAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+						break;
+					case 5 :
+						showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);		
+						break;
+
+					default :
+						if (!display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
+							showPorts($tab["ID"], NETWORKING_TYPE,$tab["withtemplate"]);
+							if ($tab["withtemplate"]!=2) showPortsAdd($tab["ID"],NETWORKING_TYPE);
+						}
+						break;
 				}
-				break;
+
+
+
 			}
-			
-		
-		
 		}
-		}
-		
+
 	} else {
 		if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
 			$job=new Job();
@@ -135,52 +135,52 @@ else
 			}
 		}
 
-	
+
 		if ($netdevice->showForm ($_SERVER["PHP_SELF"],$tab["ID"])){
-		switch($_SESSION['glpi_onglet']){
-			case -1:
-				showPortsAdd($tab["ID"],NETWORKING_TYPE);
-				showPorts($tab["ID"],NETWORKING_TYPE);
-				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
-				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
-				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
-				showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
-				showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
-				showLinkOnDevice(NETWORKING_TYPE,$tab["ID"]);
-				display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
-				break;
-			case 4 :
-				showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
-				showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
-				break;
-			case 5 :
-				showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
-				break;
-			case 6 :
-				showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
-				showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
-				break;
-			case 7 :
-				showLinkOnDevice(NETWORKING_TYPE,$tab["ID"]);
-				break;	
-			case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
-				break;			
-			case 11 :
-				showDeviceReservations($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
-				break;
-			case 12 :
-				showHistory(NETWORKING_TYPE,$tab["ID"]);
-				break;
-			default :
-				if (!display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
+			switch($_SESSION['glpi_onglet']){
+				case -1:
 					showPortsAdd($tab["ID"],NETWORKING_TYPE);
 					showPorts($tab["ID"],NETWORKING_TYPE);
-				}
-				break;
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
+					showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
+					showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
+					showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
+					showLinkOnDevice(NETWORKING_TYPE,$tab["ID"]);
+					display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+					break;
+				case 4 :
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
+					showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
+					break;
+				case 5 :
+					showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
+					break;
+				case 6 :
+					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
+					showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
+					break;
+				case 7 :
+					showLinkOnDevice(NETWORKING_TYPE,$tab["ID"]);
+					break;	
+				case 10 :
+					showNotesForm($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
+					break;			
+				case 11 :
+					showDeviceReservations($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
+					break;
+				case 12 :
+					showHistory(NETWORKING_TYPE,$tab["ID"]);
+					break;
+				default :
+					if (!display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
+						showPortsAdd($tab["ID"],NETWORKING_TYPE);
+						showPorts($tab["ID"],NETWORKING_TYPE);
+					}
+					break;
 			}
 
-		
+
 		}
 	}
 	commonFooter();

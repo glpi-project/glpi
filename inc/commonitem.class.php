@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -45,24 +45,24 @@ class CommonItem{
 	var $device_type=0;
 	//! Device ID of the object
 	var $id_type=0;
-	
-	
+
+
 	/**
-	* Get an Object / General Function
-	*
-	* Create a new Object depending of $device_type and Get the item with the ID $id_device
-	*
-	* @param $device_type Device Type ID of the object
-	* @param $id_device Device ID of the object
-	*
-	* @return boolean : object founded and loaded
-	*/
+	 * Get an Object / General Function
+	 *
+	 * Create a new Object depending of $device_type and Get the item with the ID $id_device
+	 *
+	 * @param $device_type Device Type ID of the object
+	 * @param $id_device Device ID of the object
+	 *
+	 * @return boolean : object founded and loaded
+	 */
 	function getfromDB ($device_type,$id_device) {
 		$this->id_device=$id_device;
 		$this->device_type=$device_type;
 		// Make new database object and fill variables
 
-			switch ($device_type){
+		switch ($device_type){
 			case COMPUTER_TYPE :
 				$this->obj=new Computer;
 				break;
@@ -123,34 +123,34 @@ class CommonItem{
 			case GROUP_TYPE : 
 				$this->obj= new Group;	
 				break;					
-			}
+		}
 
-			if ($this->obj!=NULL){
-				// Do not load devices
-					return $this->obj->getfromDB($id_device);
-			}
-			else return false;
-			
+		if ($this->obj!=NULL){
+			// Do not load devices
+			return $this->obj->getfromDB($id_device);
+		}
+		else return false;
+
 	}
-	
+
 	/**
-	* Set the device type
-	*
-	* @param $device_type Device Type ID of the object
-	*
-	*/
+	 * Set the device type
+	 *
+	 * @param $device_type Device Type ID of the object
+	 *
+	 */
 	function setType ($device_type){
 		$this->device_type=$device_type;
 	}
 
 	/**
-	* Get The Type Name of the Object
-	*
-	* @return String: name of the object type in the current language
-	*/
+	 * Get The Type Name of the Object
+	 *
+	 * @return String: name of the object type in the current language
+	 */
 	function getType (){
 		global $lang;
-		
+
 		switch ($this->device_type){
 			case GENERAL_TYPE :
 				return $lang["help"][30];
@@ -215,20 +215,20 @@ class CommonItem{
 			case GROUP_TYPE : 
 				return $lang["common"][35];
 				break;					
-			}
-	
+		}
+
 	}
 
 	/**
-	* Get The Name of the Object
-	*
-	* @return String: name of the object in the current language
-	*/
+	 * Get The Name of the Object
+	 *
+	 * @return String: name of the object in the current language
+	 */
 	function getName(){
 		global $lang;
-		
+
 		if ($this->device_type==0) return "";
-		
+
 		if ($this->device_type==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
 			return $this->obj->fields["question"];
 		else if ($this->device_type==LICENSE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["serial"])&&$this->obj->fields["serial"]!="")
@@ -238,7 +238,7 @@ class CommonItem{
 			if (isset($this->obj->fields["ref"])&&!empty($this->obj->fields["ref"]))			
 				$name.=" - ".$this->obj->fields["ref"];
 			return $name;
-			}
+		}
 		else if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
 			return $this->obj->fields["name"];
 		else 
@@ -253,12 +253,12 @@ class CommonItem{
 		} else return $this->getName();
 	}
 	/**
-	* Get The link to the Object
-	*
-	* @return String: link to the object type in the current language
-	*/
+	 * Get The link to the Object
+	 *
+	 * @return String: link to the object type in the current language
+	 */
 	function getLink(){
-	
+
 		global $cfg_glpi,$INFOFORM_PAGES;
 		$ID="";
 		switch ($this->device_type){
@@ -294,11 +294,11 @@ class CommonItem{
 			case CONSUMABLE_ITEM_TYPE : 
 				return $this->getName();
 				break;						
-			}
+		}
 
-	
+
 	}
-	
+
 }
 
 

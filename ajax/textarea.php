@@ -26,25 +26,25 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
-	
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
 
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
 
-	checkLoginUser();
+// Send UTF8 Headers
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	echo "<textarea rows='".$_POST['rows']."' cols='".$_POST['cols']."' name='".$_POST['name']."'>";
-	echo stripslashes(urldecode($_POST["data"]));
-	echo "</textarea>";
+checkLoginUser();
+
+echo "<textarea rows='".$_POST['rows']."' cols='".$_POST['cols']."' name='".$_POST['name']."'>";
+echo stripslashes(urldecode($_POST["data"]));
+echo "</textarea>";
 
 ?>

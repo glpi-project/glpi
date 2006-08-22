@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -52,11 +52,11 @@ if ($_GET["type"]!="month"){
 
 	$step=0;
 	switch ($_GET["type"]){
-	case "week":
-		$step=7*60*60*24;
+		case "week":
+			$step=7*60*60*24;
 		break;
-	case "day":
-		$step=60*60*24;
+		case "day":
+			$step=60*60*24;
 		break;
 	}
 
@@ -83,40 +83,40 @@ if ($_GET["type"]!="month"){
 	}
 	$next=$year_next."-".$month_next."-".$split[2];
 	$prev=$year_prev."-".$month_prev."-".$split[2];
-	
+
 }
 
 titleTrackingPlanning();
 
-	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"planning.php\">";
-	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
-	echo "<td>";
-	echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
-	echo "</td>";
-	echo "<td>";
-	if (haveRight("show_all_planning","1"))
-		dropdownUsers("uID",$_GET['uID'],"interface",1);
-	else echo "&nbsp;";
-	echo "</td>";
-	echo "<td align='right'>";
-	echo $lang["common"][27].":</td><td>";
-	echo showCalendarForm("form","date",$_GET["date"]);
-	echo "</td>";
-	echo "<td><select name='type'>";
-	echo "<option value='day' ".($_GET["type"]=="day"?" selected ":"").">".$lang["planning"][5]."</option>";
-	echo "<option value='week' ".($_GET["type"]=="week"?" selected ":"").">".$lang["planning"][6]."</option>";
-	echo "<option value='month' ".($_GET["type"]=="month"?" selected ":"").">".$lang["planning"][14]."</option>";
-	echo "</select></td>";
-	echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td>";
-	echo "<td>";
-	urlIcal ($_GET['uID']);
-	echo "</td>";	
-	echo "<td>";
-	echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$next\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
-	echo "</td>";
+echo "<div align='center'><form method=\"get\" name=\"form\" action=\"planning.php\">";
+echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
+echo "<td>";
+echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+echo "</td>";
+echo "<td>";
+if (haveRight("show_all_planning","1"))
+dropdownUsers("uID",$_GET['uID'],"interface",1);
+else echo "&nbsp;";
+echo "</td>";
+echo "<td align='right'>";
+echo $lang["common"][27].":</td><td>";
+echo showCalendarForm("form","date",$_GET["date"]);
+echo "</td>";
+echo "<td><select name='type'>";
+echo "<option value='day' ".($_GET["type"]=="day"?" selected ":"").">".$lang["planning"][5]."</option>";
+echo "<option value='week' ".($_GET["type"]=="week"?" selected ":"").">".$lang["planning"][6]."</option>";
+echo "<option value='month' ".($_GET["type"]=="month"?" selected ":"").">".$lang["planning"][14]."</option>";
+echo "</select></td>";
+echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td>";
+echo "<td>";
+urlIcal ($_GET['uID']);
+echo "</td>";	
+echo "<td>";
+echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$next\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+echo "</td>";
 
-	echo "</tr>";
-	echo "</table></form></div>";
+echo "</tr>";
+echo "</table></form></div>";
 
 showPlanning($_GET['uID'],$_GET["date"],$_GET["type"]);
 

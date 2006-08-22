@@ -26,14 +26,14 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 // CLASSES State_Item
 
 class StateItem  extends CommonDBTM {
@@ -50,49 +50,49 @@ class StateItem  extends CommonDBTM {
 
 		$this->fields["state"]=-1;
 		// Make new database object and fill variables
-		
+
 		$query = "SELECT * FROM glpi_state_item WHERE (device_type='$device_type' AND id_device = '$id_device' AND is_template='$template' )";
 
 		if ($result = $db->query($query)) 
-		if ($db->numrows($result)>0){
-			$data = $db->fetch_array($result);
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
+			if ($db->numrows($result)>0){
+				$data = $db->fetch_array($result);
+				foreach ($data as $key => $val) {
+					$this->fields[$key] = $val;
+				}
+				if (!isset($this->fields["device_type"]))			
+					return false;
+				switch ($this->fields["device_type"]){
+					case COMPUTER_TYPE :
+						$this->obj=new Computer;
+						break;
+					case NETWORKING_TYPE :
+						$this->obj=new Netdevice;
+						break;
+					case PRINTER_TYPE :
+						$this->obj=new Printer;
+						break;
+					case PHONE_TYPE : 
+						$this->obj= new Phone;	
+						break;				
+					case MONITOR_TYPE : 
+						$this->obj= new Monitor;	
+						break;
+					case PERIPHERAL_TYPE : 
+						$this->obj= new Peripheral;	
+						break;				
+				}
+
+				if ($this->obj!=NULL)
+					return $this->obj->getfromDB($this->fields["id_device"]);
+				else return false;
+
+			} else {
+				return false;
 			}
-		if (!isset($this->fields["device_type"]))			
-		return false;
-			switch ($this->fields["device_type"]){
-			case COMPUTER_TYPE :
-				$this->obj=new Computer;
-				break;
-			case NETWORKING_TYPE :
-				$this->obj=new Netdevice;
-				break;
-			case PRINTER_TYPE :
-				$this->obj=new Printer;
-				break;
-			case PHONE_TYPE : 
-				$this->obj= new Phone;	
-				break;				
-			case MONITOR_TYPE : 
-				$this->obj= new Monitor;	
-				break;
-			case PERIPHERAL_TYPE : 
-				$this->obj= new Peripheral;	
-				break;				
-			}
-			
-			if ($this->obj!=NULL)
-			return $this->obj->getfromDB($this->fields["id_device"]);
-			else return false;
-			
-		} else {
-			return false;
-		}
 	}
 	function getType (){
 		global $lang;
-		
+
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
 				return $lang["computers"][44];
@@ -112,13 +112,13 @@ class StateItem  extends CommonDBTM {
 			case PHONE_TYPE : 
 				return $lang["phones"][4];
 				break;				
-			}
-	
+		}
+
 	}
-	
+
 	function getItemType (){
 		global $lang;
-		
+
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
 				return getDropdownName("glpi_type_computers",$this->obj->fields["type"]);
@@ -138,20 +138,20 @@ class StateItem  extends CommonDBTM {
 			case PHONE_TYPE : 
 				return getDropdownName("glpi_type_phones",$this->obj->fields["type"]);
 				break;				
-			}
-	
+		}
+
 	}
-	
+
 	function getName(){
 		if (isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
-	return $this->obj->fields["name"];
-	else return "N/A";
+			return $this->obj->fields["name"];
+		else return "N/A";
 	}
-	
+
 	function getLink(){
-	
+
 		global $cfg_glpi,$INFOFORM_PAGES;
-		
+
 		$show=$this->getName();
 		// show id if it was configure else nothing
 		if ($cfg_glpi["view_ID"]||empty($show)) $show.=" (".$this->fields["id_device"].")";
@@ -159,7 +159,7 @@ class StateItem  extends CommonDBTM {
 
 		return "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$this->fields["device_type"]]."?ID=".$this->fields["id_device"]."\">$show</a>";
 	}
-	
+
 }
 
 

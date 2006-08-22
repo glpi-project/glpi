@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,21 +34,21 @@
 // ----------------------------------------------------------------------
 
 
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	checkRight("networking","w");
+checkRight("networking","w");
 
-	// Make a select box
+// Make a select box
 
 if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
-	
+
 	$rand=mt_rand();
-	
+
 
 	displaySearchTextAjaxDropdown($rand);
 

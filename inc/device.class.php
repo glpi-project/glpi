@@ -26,9 +26,9 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
- 
+
 
 //Class Devices
 class Device extends CommonDBTM {
@@ -38,16 +38,16 @@ class Device extends CommonDBTM {
 		$this->type=$dev_type;
 		$this->table=getDeviceTable($dev_type);
 	}
-	
-	
+
+
 	function cleanDBonPurge($ID) {
 		global $db;
 		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
 		$db->query($query2);
 	}
-	
+
 	// SPECIFIC FUNCTIONS
-	
+
 	function computer_link($compID,$device_type,$specificity='') {
 		global $db;
 		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers,specificity) values ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";

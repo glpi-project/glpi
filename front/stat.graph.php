@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -44,18 +44,18 @@ checkRight("statistic","1");
 
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
-$year=date("Y")-1;
-$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
+	$year=date("Y")-1;
+	$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
 
-$_POST["date2"]=date("Y-m-d");
+	$_POST["date2"]=date("Y-m-d");
 }
 
 if(empty($_POST["date1"])) $_POST["date1"] = "";
 if(empty($_POST["date2"])) $_POST["date2"] = "";
 if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
-$tmp=$_POST["date1"];
-$_POST["date1"]=$_POST["date2"];
-$_POST["date2"]=$tmp;
+	$tmp=$_POST["date1"];
+	$_POST["date1"]=$_POST["date2"];
+	$_POST["date2"]=$tmp;
 }
 
 
@@ -64,8 +64,8 @@ $cleantarget=preg_replace("/&/","&amp;",$cleantarget);
 
 $job=new Job();
 switch($_GET["type"]){
-case "technicien":
-	$val1=$_GET["ID"];
+	case "technicien":
+		$val1=$_GET["ID"];
 	$val2="";
 
 	$next=getNextItem("glpi_users",$_GET["ID"]);
@@ -84,8 +84,8 @@ case "technicien":
 	echo "</tr>";
 	echo "</table></div><br>";
 	break;
-case "technicien_followup":
-	$val1=$_GET["ID"];
+	case "technicien_followup":
+		$val1=$_GET["ID"];
 	$val2="";
 
 	$next=getNextItem("glpi_users",$_GET["ID"]);
@@ -104,8 +104,8 @@ case "technicien_followup":
 	echo "</tr>";
 	echo "</table></div><br>";
 	break;
-case "enterprise":
-	$val1=$_GET["ID"];
+	case "enterprise":
+		$val1=$_GET["ID"];
 	$val2="";
 
 	$next=getNextItem("glpi_enterprises",$_GET["ID"]);
@@ -124,8 +124,8 @@ case "enterprise":
 	echo "</tr>";
 	echo "</table></div><br>";
 	break;
-case "user":
-	$val1=$_GET["ID"];
+	case "user":
+		$val1=$_GET["ID"];
 	$val2="";
 	$job->fields["author"]=$_GET["ID"];
 
@@ -146,13 +146,13 @@ case "user":
 	echo "</table></div><br>";
 
 	break;	
-case "category":
-	$val1=$_GET["ID"];
+	case "category":
+		$val1=$_GET["ID"];
 	$val2="";
 
 	$next=getNextItem("glpi_dropdown_tracking_category",$_GET["ID"]);
 	$prev=getPreviousItem("glpi_dropdown_tracking_category",$_GET["ID"]);
-	
+
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
@@ -167,13 +167,13 @@ case "category":
 	echo "</table></div><br>";
 
 	break;	
-case "group":
-	$val1=$_GET["ID"];
+	case "group":
+		$val1=$_GET["ID"];
 	$val2="";
 
 	$next=getNextItem("glpi_groups",$_GET["ID"]);
 	$prev=getPreviousItem("glpi_groups",$_GET["ID"]);
-	
+
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
@@ -188,8 +188,8 @@ case "group":
 	echo "</table></div><br>";
 
 	break;	
-case "priority":
-	$val1=$_GET["ID"];
+	case "priority":
+		$val1=$_GET["ID"];
 	$val2="";
 	$next=$prev=0;
 	if ($val1<5) $next=$val1+1;
@@ -209,8 +209,8 @@ case "priority":
 	echo "</table></div><br>";
 
 	break;	
-case "request_type":
-	$val1=$_GET["ID"];
+	case "request_type":
+		$val1=$_GET["ID"];
 	$val2="";
 	$next=$prev=0;
 	if ($val1<6) $next=$val1+1;
@@ -230,18 +230,18 @@ case "request_type":
 	echo "</table></div><br>";
 
 	break;	
-case "device":
-	$val1=$_GET["ID"];
+	case "device":
+		$val1=$_GET["ID"];
 	$val2=$_GET["champ"];
 
 	$device_table = getDeviceTable($_GET["champ"]);
 
 	$next=getNextItem($device_table,$_GET["ID"]);
 	$prev=getPreviousItem($device_table,$_GET["ID"]);
-	
+
 	$query = "select  designation from ".$device_table." WHERE ID='".$_GET['ID']."'";
 	$result=$db->query($query);
-	
+
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
@@ -256,8 +256,8 @@ case "device":
 	echo "</table></div><br>";
 
 	break;
-case "comp_champ":
-	$val1=$_GET["ID"];
+	case "comp_champ":
+		$val1=$_GET["ID"];
 	$val2=$_GET["champ"];
 
 	$table=str_replace("dropdown_type","type_computers",str_replace("location","locations","glpi_dropdown_".$_GET["champ"]));
@@ -265,7 +265,7 @@ case "comp_champ":
 
 	$next=getNextItem($table,$_GET["ID"]);
 	$prev=getPreviousItem($table,$_GET["ID"]);
-	
+
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
@@ -301,29 +301,29 @@ echo "</table></form></div>";
 ///////// Stats nombre intervention
 // Total des interventions
 $entrees_total=constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-	if (count($entrees_total)>0)
-graphBy($entrees_total,$lang["stats"][5],$lang["stats"][35],1,"month");
+if (count($entrees_total)>0)
+	graphBy($entrees_total,$lang["stats"][5],$lang["stats"][35],1,"month");
 
-// Total des interventions résolues
-$entrees_solved=constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-	if (count($entrees_solved)>0)
-graphBy($entrees_solved,$lang["stats"][11],$lang["stats"][35],1,"month");
+	// Total des interventions résolues
+	$entrees_solved=constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+if (count($entrees_solved)>0)
+	graphBy($entrees_solved,$lang["stats"][11],$lang["stats"][35],1,"month");
 
-//Temps moyen de resolution d'intervention
-$entrees_avgtime=constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-	if (count($entrees_avgtime)>0)
-graphBy($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0,"month");
+	//Temps moyen de resolution d'intervention
+	$entrees_avgtime=constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+if (count($entrees_avgtime)>0)
+	graphBy($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0,"month");
 
-//Temps moyen d'intervention réel
-$entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-	if (count($entrees_avgtime)>0)
-graphBy($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0,"month");
+	//Temps moyen d'intervention réel
+	$entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+if (count($entrees_avgtime)>0)
+	graphBy($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0,"month");
 
-//Temps moyen de prise en compte de l'intervention
-$entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
-	if (count($entrees_avgtime)>0)
-graphBy($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0,"month");
+	//Temps moyen de prise en compte de l'intervention
+	$entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
+if (count($entrees_avgtime)>0)
+	graphBy($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0,"month");
 
-commonFooter();
+	commonFooter();
 
-?>
+	?>

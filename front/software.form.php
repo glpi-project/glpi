@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -67,8 +67,8 @@ else if (isset($tab["delete"]))
 	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
 	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
-	 else 
-	glpi_header($cfg_glpi["root_doc"]."/front/software.php");
+	else 
+		glpi_header($cfg_glpi["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["restore"]))
 {
@@ -104,33 +104,33 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 		//glpi_header($_SERVER['HTTP_REFERER']);
 	}
-	
+
 	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
-	
+
 	if ($soft->getFromDB($tab["ID"]))
 		$soft->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 
 	if (!empty($tab["withtemplate"])) {
 
 		if ($soft->showForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'], $tab["withtemplate"])){
-		
-		if (!empty($tab["ID"])){
-		switch($_SESSION['glpi_onglet']){
-				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-					showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
-					break;
-				case 5 :
-					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
-					break;
-				default :
-					display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'], $tab["withtemplate"]);
-					break;
+
+			if (!empty($tab["ID"])){
+				switch($_SESSION['glpi_onglet']){
+					case 4 :
+						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+						showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
+						break;
+					case 5 :
+						showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
+						break;
+					default :
+						display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'], $tab["withtemplate"]);
+						break;
+				}
 			}
+
 		}
-		
-		}
-		
+
 	} else {
 
 		if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
@@ -181,7 +181,7 @@ else
 					break;
 				case 12 :
 					showHistory(SOFTWARE_TYPE,$tab["ID"]);
-				break;
+					break;
 				default :
 					if (!display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
 						showLicensesAdd($tab["ID"]);

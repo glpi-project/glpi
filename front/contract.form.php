@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -86,10 +86,10 @@ else if (isset($_POST["update"]))
 else if (isset($_POST["additem"])){
 
 	checkRight("contract_infocom","w");
-	
+
 	$template=0;
 	if (isset($_POST["is_template"])) $template=1;
-	
+
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item'],$template);
 		logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][32]);
@@ -97,7 +97,7 @@ else if (isset($_POST["additem"])){
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"])){
-	
+
 	checkRight("contract_infocom","w");
 
 	deleteDeviceContract($_GET["ID"]);
@@ -131,39 +131,39 @@ else
 
 	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
 
-	
+
 	if ($contract->getFromDB($tab["ID"]))
 		$contract->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($contract->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
-		switch($_SESSION['glpi_onglet']){
-		case -1 :	
-			showEnterpriseContract($tab["ID"]);
-			showDeviceContract($tab["ID"]);
-			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
-			showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
-			display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
-			break;
-		case 5 : 
-			showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
-			break;
-		case 7 : 
-			showLinkOnDevice(CONTRACT_TYPE,$tab["ID"]);
-			break;
-		case 10 :
-			showNotesForm($_SERVER["PHP_SELF"],CONTRACT_TYPE,$tab["ID"]);
-			break;
-		default :
-			if (!display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
-				showEnterpriseContract($tab["ID"]);
-				showDeviceContract($tab["ID"]);
+			switch($_SESSION['glpi_onglet']){
+				case -1 :	
+					showEnterpriseContract($tab["ID"]);
+					showDeviceContract($tab["ID"]);
+					showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
+					showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
+					display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					break;
+				case 5 : 
+					showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
+					break;
+				case 7 : 
+					showLinkOnDevice(CONTRACT_TYPE,$tab["ID"]);
+					break;
+				case 10 :
+					showNotesForm($_SERVER["PHP_SELF"],CONTRACT_TYPE,$tab["ID"]);
+					break;
+				default :
+					if (!display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+						showEnterpriseContract($tab["ID"]);
+						showDeviceContract($tab["ID"]);
+					}
+					break;
 			}
-		break;
-		}
 	}	
-	
-	
+
+
 	commonFooter();
 }
 

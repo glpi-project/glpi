@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,25 +34,25 @@
 // ----------------------------------------------------------------------
 
 
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
 
-	checkLoginUser();
+checkLoginUser();
 
-	// Make a select box
+// Make a select box
 
 
 if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$_POST["type"]))){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
-	
+
 	echo "<div align='center'>".$lang["help"][23].":&nbsp;";
 	$rand=mt_rand();
 	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'></div>";	
-	
+
 
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
@@ -65,9 +65,9 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpipro
 	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST['myname']."'";
 	echo "})})";
 	echo "</script>";	
-	
+
 	echo "<div id='search_spinner$rand' style=' position:absolute; background-color:white;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>";	
-	
+
 	echo "<span id='results_ID$rand'>";
 	echo "<select name='ID'><option value='0'>------</option></select>";
 	echo "</span>";	

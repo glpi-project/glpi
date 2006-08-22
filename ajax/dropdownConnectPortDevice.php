@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,52 +34,52 @@
 // ----------------------------------------------------------------------
 
 
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-	checkRight("networking","w");
+checkRight("networking","w");
 
 
 if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
 
-		$rand=mt_rand();
-		if (!isset($_POST['searchText']))$_POST['searchText']="";
-		
-		$where="WHERE '1'='1' ";
-		$where.=" AND deleted='N' ";
-		$where.=" AND is_template='0' ";		
-		
-		if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-			$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
+	$rand=mt_rand();
+	if (!isset($_POST['searchText']))$_POST['searchText']="";
 
-		$NBMAX=$cfg_glpi["dropdown_max"];
-		
-		$LIMIT="LIMIT 0,$NBMAX";
-		if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
-						
-		$query = "SELECT * FROM ".$table." $where ORDER BY name $LIMIT";
+	$where="WHERE '1'='1' ";
+	$where.=" AND deleted='N' ";
+	$where.=" AND is_template='0' ";		
 
-		$result = $db->query($query);
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+		$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
 
-		echo "<select id='item$rand' name=\"item\" size='1'>";
-		
-		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
-	
-		echo "<option value=\"0\">-----</option>";
-		if ($db->numrows($result)) {
-			while ($data = $db->fetch_array($result)) {
-				$output = $data['name'];
-				$ID = $data['ID'];
-				if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
-			}
+	$NBMAX=$cfg_glpi["dropdown_max"];
+
+	$LIMIT="LIMIT 0,$NBMAX";
+	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
+
+	$query = "SELECT * FROM ".$table." $where ORDER BY name $LIMIT";
+
+	$result = $db->query($query);
+
+	echo "<select id='item$rand' name=\"item\" size='1'>";
+
+	if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
+		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+
+	echo "<option value=\"0\">-----</option>";
+	if ($db->numrows($result)) {
+		while ($data = $db->fetch_array($result)) {
+			$output = $data['name'];
+			$ID = $data['ID'];
+			if (empty($output)) $output="($ID)";
+			echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
 		}
-		echo "</select>";
+	}
+	echo "</select>";
 
 	echo "<script type='text/javascript' >\n";
 	echo " new Form.Element.Observer('item$rand', 1, \n";

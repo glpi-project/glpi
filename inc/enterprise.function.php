@@ -26,24 +26,24 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 /**
-* Print the HTML array for infocoms linked 
-*
-* Print the HTML array for infocoms linked 
-*
-*@param $instID array : Manufacturer identifier.
-*
-*@return Nothing (display)
-*
-**/
+ * Print the HTML array for infocoms linked 
+ *
+ * Print the HTML array for infocoms linked 
+ *
+ *@param $instID array : Manufacturer identifier.
+ *
+ *@return Nothing (display)
+ *
+ **/
 function showInfocomEnterprise($instID) {
 
 	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
@@ -55,7 +55,7 @@ function showInfocomEnterprise($instID) {
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
-	
+
 	echo "<br><br><div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["financial"][32].":</th></tr>";
 	echo "<tr><th>".$lang["common"][17]."</th>";
@@ -83,25 +83,25 @@ function showInfocomEnterprise($instID) {
 				}
 			}
 		}
-	$i++;
+		$i++;
 	}
 	echo "<tr class='tab_bg_2'><td colspan='2' align='center'>$num</td></tr> ";
 	echo "</table></div>"    ;
 
-	
+
 }
 
 
 /**
-* Print the HTML array for devices with manufacturer 
-*
-* Print the HTML array for devices with manufacturer 
-*
-*@param $instID array : Manufacturer identifier.
-*
-*@return Nothing (display)
-*
-**/
+ * Print the HTML array for devices with manufacturer 
+ *
+ * Print the HTML array for devices with manufacturer 
+ *
+ *@param $instID array : Manufacturer identifier.
+ *
+ *@return Nothing (display)
+ *
+ **/
 function showDeviceManufacturer($instID) {
 	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
@@ -139,19 +139,19 @@ function showDeviceManufacturer($instID) {
 	}
 	echo "<tr class='tab_bg_2'><td colspan='2' align='center'>$num</td></tr> ";
 	echo "</table></div>"    ;
-	
+
 }
 
 /**
-* Print the HTML array for internal devices with manufacturer 
-*
-* Print the HTML array for internal devices with manufacturer 
-*
-*@param $instID array : Manufacturer identifier.
-*
-*@return Nothing (display)
-*
-**/
+ * Print the HTML array for internal devices with manufacturer 
+ *
+ * Print the HTML array for internal devices with manufacturer 
+ *
+ *@param $instID array : Manufacturer identifier.
+ *
+ *@return Nothing (display)
+ *
+ **/
 function showInternalDeviceManufacturer($instID) {
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
@@ -170,7 +170,7 @@ function showInternalDeviceManufacturer($instID) {
 	$num=0;
 	foreach ($types as $type){
 		$query = "SELECT * FROM ".getDeviceTable($type)." WHERE FK_glpi_enterprise = '$instID' order by designation";
-		
+
 		$result_linked=$db->query($query);
 		if ($db->numrows($result_linked)){
 			while ($data=$db->fetch_assoc($result_linked)){
@@ -190,7 +190,7 @@ function showInternalDeviceManufacturer($instID) {
 	}
 	echo "<tr class='tab_bg_2'><td colspan='2' align='center'>$num</td></tr> ";
 	echo "</table></div>"    ;
-	
+
 }
 
 
@@ -206,8 +206,8 @@ function showAssociatedContact($instID) {
 	$result = $db->query($query);
 	$number = $db->numrows($result);
 	$i = 0;
-	
-   
+
+
 	echo "<br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$lang["financial"][46].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th><th>".$lang["financial"][29]."</th>";
@@ -217,64 +217,64 @@ function showAssociatedContact($instID) {
 
 	while ($i < $number) {
 		$ID=$db->result($result, $i, "ID_ent");
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'><a href='".$HTMLRel."front/contact.form.php?ID=".$db->result($result, $i, "ID")."'>".$db->result($result, $i, "glpi_contacts.name")."</a></td>";
-	echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.phone")."</td>";
-	echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.phone2")."</td>";
-	echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
-	echo "<td align='center'><a href='mailto:".$db->result($result, $i, "glpi_contacts.email")."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
-	echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$db->result($result, $i, "glpi_contacts.type"))."</td>";
-	echo "<td align='center' class='tab_bg_2'>";
-	if ($canedit)
-		echo "<a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$lang["buttons"][6]."</b></a>";
-	else echo "&nbsp;";
-	echo "</td></tr>";
-	$i++;
+		echo "<tr class='tab_bg_1'>";
+		echo "<td align='center'><a href='".$HTMLRel."front/contact.form.php?ID=".$db->result($result, $i, "ID")."'>".$db->result($result, $i, "glpi_contacts.name")."</a></td>";
+		echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.phone")."</td>";
+		echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.phone2")."</td>";
+		echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
+		echo "<td align='center'><a href='mailto:".$db->result($result, $i, "glpi_contacts.email")."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
+		echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$db->result($result, $i, "glpi_contacts.type"))."</td>";
+		echo "<td align='center' class='tab_bg_2'>";
+		if ($canedit)
+			echo "<a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$lang["buttons"][6]."</b></a>";
+		else echo "&nbsp;";
+		echo "</td></tr>";
+		$i++;
 	}
-	
+
 	echo "</table><br>"    ;
 	if ($canedit){
 		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/enterprise.form.php\">";
 		echo "<table  class='tab_cadre_fixe'>";
-	
+
 		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
 		echo "<input type='hidden' name='eID' value='$instID'>";
 		dropdown("glpi_contacts","cID");
 		echo "</td><td align='center' class='tab_bg_2'>";
 		echo "<input type='submit' name='addcontact' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
-	
+
 		echo "</table></form>";
 	}
 	echo "</div>";
-	
+
 }
 
 function addContactEnterprise($eID,$cID){
 	global $db;
-if ($eID>0&&$cID>0){
-	
-	$query="INSERT INTO glpi_contact_enterprise (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
-	$result = $db->query($query);
-}
+	if ($eID>0&&$cID>0){
+
+		$query="INSERT INTO glpi_contact_enterprise (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
+		$result = $db->query($query);
+	}
 }
 
 function deleteContactEnterprise($ID){
 
-global $db;
-$query="DELETE FROM glpi_contact_enterprise WHERE ID= '$ID';";
-$result = $db->query($query);
+	global $db;
+	$query="DELETE FROM glpi_contact_enterprise WHERE ID= '$ID';";
+	$result = $db->query($query);
 }
 
 function getEnterpriseLinks($value,$withname=0){
-		global $HTMLRel,$lang;
-		$ret="";
-		
-		$ent=new Enterprise();
-		if ($ent->getFromDB($value)){
-		
+	global $HTMLRel,$lang;
+	$ret="";
+
+	$ent=new Enterprise();
+	if ($ent->getFromDB($value)){
+
 		if ($withname==1) $ret.=$ent->fields["name"];
-		
+
 		if (!empty($ent->fields['website'])){
 			if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
 			else $website=$ent->fields['website'];
@@ -283,9 +283,9 @@ function getEnterpriseLinks($value,$withname=0){
 		}
 		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
 		$ret.= "<a href='".$HTMLRel."front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
-		}
+	}
 
-return $ret;
+	return $ret;
 
 }
 ?>

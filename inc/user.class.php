@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -34,27 +34,27 @@
 // ----------------------------------------------------------------------
 // And Marco Gaiarin for ldap features 
 
- 
+
 
 class User extends CommonDBTM {
 
 	var $fields = array();
 
-  function User() {
-	global $cfg_glpi;
-  
-	$this->table="glpi_users";
-	$this->type=USER_TYPE;
-	
-	$this->fields['tracking_order'] = 'no';
-	if (isset($cfg_glpi["default_language"]))
-		$this->fields['language'] = $cfg_glpi["default_language"];
-  	else $this->fields['language'] = "english";
+	function User() {
+		global $cfg_glpi;
 
-}
+		$this->table="glpi_users";
+		$this->type=USER_TYPE;
+
+		$this->fields['tracking_order'] = 'no';
+		if (isset($cfg_glpi["default_language"]))
+			$this->fields['language'] = $cfg_glpi["default_language"];
+		else $this->fields['language'] = "english";
+
+	}
 	function defineOnglets($withtemplate){
 		global $lang,$cfg_glpi;
-		
+
 		$ong[1]=$lang["title"][26];
 
 		return $ong;
@@ -79,13 +79,13 @@ class User extends CommonDBTM {
 		}
 
 	}
-	
+
 	function getFromDBbyName($name) {
 		global $db;
 		$query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
 		if ($result = $db->query($query)) {
-		if ($db->numrows($result)!=1) return false;
-		$data = $db->fetch_assoc($result);
+			if ($db->numrows($result)!=1) return false;
+			$data = $db->fetch_assoc($result);
 			if (empty($data)) {
 				return false;
 			}
@@ -122,11 +122,11 @@ class User extends CommonDBTM {
 
 		return $input;
 	}
-	
+
 	function postAddItem($newID,$input) {
 		$prof=new Profile();
 		if (isset($input["_profile"])){
-			
+
 			$prof->updateForUser($newID,$input["_profile"]);
 		} else {
 			$prof->getFromDBForUser($newID);
@@ -149,7 +149,7 @@ class User extends CommonDBTM {
 			glpi_header($_SERVER['HTTP_REFERER']);
 			exit();
 		}	
-		
+
 	}
 
 	function prepareInputForUpdate($input) {
@@ -177,7 +177,7 @@ class User extends CommonDBTM {
 			$input["email"]=$input["email_form"];
 			unset($input["email_form"]);
 		}
-		
+
 		// Update User in the database
 		if (!isset($input["ID"])&&isset($input["name"])){
 			if ($this->getFromDBbyName($input["name"]))
@@ -199,8 +199,8 @@ class User extends CommonDBTM {
 				// extauth imap case
 				if (isset($cfg_glpi['ldap_fields'])){
 					foreach ($cfg_glpi['ldap_fields'] as $key => $val)
-					if (!empty($val))
-						unset($ret[$key]);
+						if (!empty($val))
+							unset($ret[$key]);
 				}
 				// extauth imap case
 				if (!empty($cfg_glpi['imap_host']))
@@ -212,24 +212,24 @@ class User extends CommonDBTM {
 			} else return array();
 		}
 
-		
+
 		if (isset($input["profile"])){
 			$prof=new Profile();
 			$prof->updateForUser($input["ID"],$input["profile"]);
 			unset($input["profile"]);
 		}
-		
+
 		if (isset($input["_groups"])&&count($input["_groups"])){
-			
+
 			// Delete not available groups like to LDAP
 			$query="SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$input["ID"]."' AND glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL";
-			
+
 			$result=$db->query($query);
 			if ($db->numrows($result)>0){
 				while ($data=$db->fetch_array($result))
-				if (!in_array($data["FK_groups"],$input["_groups"])){
-					deleteUserGroup($data["ID"]);
-				}
+					if (!in_array($data["FK_groups"],$input["_groups"])){
+						deleteUserGroup($data["ID"]);
+					}
 			}
 
 			foreach($input["_groups"] as $group){
@@ -246,13 +246,13 @@ class User extends CommonDBTM {
 
 
 	// SPECIFIC FUNCTIONS
-	
+
 	function getName(){
-	if (strlen($this->fields["realname"])>0) return $this->fields["realname"];
-	else return $this->fields["name"];
-	
+		if (strlen($this->fields["realname"])>0) return $this->fields["realname"];
+		else return $this->fields["name"];
+
 	}
-	
+
 	// Function that try to load from LDAP the user information...
 	//
 	function getFromLDAP($host,$port,$basedn,$adm,$pass,$fields,$name)
@@ -262,43 +262,43 @@ class User extends CommonDBTM {
 		if (empty($host)) {
 			return false;
 		}
-	
+
 		// some defaults...
 		$this->fields['password'] = "";
 		$this->fields['password_md5'] = "";
 		$this->fields['name'] = $name;
 
-	  if ( $ds = ldap_connect($host,$port) )
-	  {
+		if ( $ds = ldap_connect($host,$port) )
+		{
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
 			if ($cfg_glpi["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
-       					return false;
-   				} 
+					return false;
+				} 
 			}
 
-	  	if ( $adm != "" )
-	  	{
-		//	 	$dn = $cfg_glpi["ldap_login"]."=" . $adm . "," . $basedn;
-	  		$bv = ldap_bind($ds, $adm, $pass);
-	  	}
-	  	else
-	  	{
-	  		$bv = ldap_bind($ds);
-	  	}
+			if ( $adm != "" )
+			{
+				//	 	$dn = $cfg_glpi["ldap_login"]."=" . $adm . "," . $basedn;
+				$bv = ldap_bind($ds, $adm, $pass);
+			}
+			else
+			{
+				$bv = ldap_bind($ds);
+			}
 
-	  	if ( $bv )
-	  	{
-			return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$cfg_glpi["ldap_login"]."=".$name);
-  		}
-  	}
-  	return false;
+			if ( $bv )
+			{
+				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$cfg_glpi["ldap_login"]."=".$name);
+			}
+		}
+		return false;
 
 	} // getFromLDAP()
 
-// Function that try to load from LDAP the user information...
+	// Function that try to load from LDAP the user information...
 	//
 	function getFromLDAP_active_directory($host,$port,$basedn,$adm,$pass,$fields,$name)
 	{
@@ -309,50 +309,50 @@ class User extends CommonDBTM {
 			unset($this->fields["password_md5"]);
 			return false;
 		}
-	
+
 		// some defaults...
 		$this->fields['password'] = "";
 		$this->fields['password_md5'] = "";
-	    $this->fields['name'] = $name;		
-	    
-	  if ( $ds = ldap_connect($host,$port) )
-	  {
+		$this->fields['name'] = $name;		
+
+		if ( $ds = ldap_connect($host,$port) )
+		{
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
 			if ($cfg_glpi["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
-       					return false;
-   				} 
+					return false;
+				} 
 			}
 
-	  	if ( $adm != "" )
-	  	{
-				 $dn = $basedn;
- 				$findcn=explode(",O",$dn);
-				  // Cas ou pas de ,OU
+			if ( $adm != "" )
+			{
+				$dn = $basedn;
+				$findcn=explode(",O",$dn);
+				// Cas ou pas de ,OU
 				if ($dn==$findcn[0]) {
 					$findcn=explode(",C",$dn);
 				}
-                 $findcn=explode("=",$findcn[0]);
-                 $findcn[1]=str_replace('\,', ',', $findcn[1]);
-                 $filter="(CN=".$findcn[1].")";
+				$findcn=explode("=",$findcn[0]);
+				$findcn[1]=str_replace('\,', ',', $findcn[1]);
+				$filter="(CN=".$findcn[1].")";
 
-	  		$bv = ldap_bind($ds, $adm, $pass);
-	  	}
-	  	else
-	  	{
-	  		$bv = ldap_bind($ds);
-	  	}
+				$bv = ldap_bind($ds, $adm, $pass);
+			}
+			else
+			{
+				$bv = ldap_bind($ds);
+			}
 
-	  	if ( $bv )
-	  	{
-			return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$filter);
+			if ( $bv )
+			{
+				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$filter);
 
-  		}
-  	}
-  	
-  	return false;
+			}
+		}
+
+		return false;
 
 	} // getFromLDAP_active_directory()
 
@@ -392,171 +392,171 @@ class User extends CommonDBTM {
 	}
 
 
-  function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
-	global $db,$cfg_glpi;
-	
-	$fields=array_filter($fields);
-	
-	$f = array_values($fields);
+	function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
+		global $db,$cfg_glpi;
 
-	$sr = ldap_search($ldapconn, $basedn, $filter, $f);
-	
-	$v = ldap_get_entries($ldapconn, $sr);
-	
-	if ( !is_array($v)||count($v)==0 || empty($v[0][$fields['name']][0]) ) {
-		return false;
-	}
+		$fields=array_filter($fields);
 
-	//Store the dn of the user
-	$user_dn = $v[0]['dn'];
+		$f = array_values($fields);
 
-	foreach ($fields as $k => $e)	{
-		if (!empty($v[0][$e][0]))
-			$this->fields[$k] = $v[0][$e][0];
-	}
-			
-	// Is location get from LDAP ?
-	if (isset($fields['location'])&&!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
-		$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
-		$result=$db->query($query);
-		if ($db->numrows($result)==0){
-			$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
-			$this->fields['location']=$db->insert_id();
-			regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
-		} else $this->fields['location']=$db->result($result,0,"ID");
-	}
+		$sr = ldap_search($ldapconn, $basedn, $filter, $f);
 
-	// Get group fields
-	$query_user="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
-	$query_group="SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
+		$v = ldap_get_entries($ldapconn, $sr);
 
-	$group_fields=array();
-	$groups=array();
-	$v=array();
-	//The groupes are retrived by looking into an ldap user object
-	if ($cfg_glpi["ldap_search_for_groups"]==0||$cfg_glpi["ldap_search_for_groups"]==2){
-
-		$result=$db->query($query_user);
-	
-		if ($db->numrows($result)>0){
-			while ($data=$db->fetch_assoc($result)){
-				$group_fields[]=$data["ldap_field"];
-				$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
-			}
-			//iIf the groups must be retrieve from the ldap user object
-			$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
-			$v = ldap_get_entries($ldapconn, $sr);
-		}
-	}
-
-	//The groupes are retrived by looking into an ldap group object
-	if ($cfg_glpi["ldap_search_for_groups"]==0||$cfg_glpi["ldap_search_for_groups"]==2){
-
-		$result=$db->query($query_group);
-	
-		if ($db->numrows($result)>0){
-			while ($data=$db->fetch_assoc($result)){
-				$groups[$cfg_glpi["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
-			}
-			$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn);
-			$v = array_merge($v,$v2);
+		if ( !is_array($v)||count($v)==0 || empty($v[0][$fields['name']][0]) ) {
+			return false;
 		}
 
-	}
-	
-	if ( is_array($v)&&count($v)>0){
-		foreach ($v as $attribute => $valattribute){
-			foreach ($valattribute as $key => $val){
-				if (is_array($val))
-				for ($i=0;$i<count($val);$i++){
-					if ($group_found= array_search($val[$i],$groups[$key])){
-						$this->fields["_groups"][]=$group_found;
-					}
+		//Store the dn of the user
+		$user_dn = $v[0]['dn'];
+
+		foreach ($fields as $k => $e)	{
+			if (!empty($v[0][$e][0]))
+				$this->fields[$k] = $v[0][$e][0];
+		}
+
+		// Is location get from LDAP ?
+		if (isset($fields['location'])&&!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
+			$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
+			$result=$db->query($query);
+			if ($db->numrows($result)==0){
+				$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
+				$this->fields['location']=$db->insert_id();
+				regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
+			} else $this->fields['location']=$db->result($result,0,"ID");
+		}
+
+		// Get group fields
+		$query_user="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
+		$query_group="SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
+
+		$group_fields=array();
+		$groups=array();
+		$v=array();
+		//The groupes are retrived by looking into an ldap user object
+		if ($cfg_glpi["ldap_search_for_groups"]==0||$cfg_glpi["ldap_search_for_groups"]==2){
+
+			$result=$db->query($query_user);
+
+			if ($db->numrows($result)>0){
+				while ($data=$db->fetch_assoc($result)){
+					$group_fields[]=$data["ldap_field"];
+					$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
+				}
+				//iIf the groups must be retrieve from the ldap user object
+				$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
+				$v = ldap_get_entries($ldapconn, $sr);
+			}
+		}
+
+		//The groupes are retrived by looking into an ldap group object
+		if ($cfg_glpi["ldap_search_for_groups"]==0||$cfg_glpi["ldap_search_for_groups"]==2){
+
+			$result=$db->query($query_group);
+
+			if ($db->numrows($result)>0){
+				while ($data=$db->fetch_assoc($result)){
+					$groups[$cfg_glpi["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
+				}
+				$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn);
+				$v = array_merge($v,$v2);
+			}
+
+		}
+
+		if ( is_array($v)&&count($v)>0){
+			foreach ($v as $attribute => $valattribute){
+				foreach ($valattribute as $key => $val){
+					if (is_array($val))
+						for ($i=0;$i<count($val);$i++){
+							if ($group_found= array_search($val[$i],$groups[$key])){
+								$this->fields["_groups"][]=$group_found;
+							}
+						}
 				}
 			}
 		}
+
+		//Hook to retrieve more informations for ldap
+		$this->fields=do_hook_function("retrieve_more_data_from_ldap",$this->fields);
+
+		return true;
 	}
 
-	//Hook to retrieve more informations for ldap
-        $this->fields=do_hook_function("retrieve_more_data_from_ldap",$this->fields);
+	// Function that try to load from IMAP the user information... this is
+	// a fake one, as you can see...
+	function getFromIMAP($host, $name)
+	{
+		// we prevent some delay..
+		if (empty($host)) {
+			return false;
+		}
 
-	return true;
-}
+		// some defaults...
+		$this->fields['password'] = "";
+		$this->fields['password_md5'] = "";
+		if (ereg("@",$name))
+			$this->fields['email'] = $name;
+		else 
+			$this->fields['email'] = $name . "@" . $host;
 
-  // Function that try to load from IMAP the user information... this is
-  // a fake one, as you can see...
-  function getFromIMAP($host, $name)
-  {
-	// we prevent some delay..
-	if (empty($host)) {
-		return false;
-	}
+		$this->fields['name'] = $name;
 
-  	// some defaults...
-  	$this->fields['password'] = "";
-	$this->fields['password_md5'] = "";
-	if (ereg("@",$name))
-		$this->fields['email'] = $name;
-	else 
-  		$this->fields['email'] = $name . "@" . $host;
-	
-	$this->fields['name'] = $name;
-		
-	return true;
+		return true;
 
 	} // getFromIMAP()  	    
 
-	
-	
+
+
 	function blankPassword () {
 		global $db;
 		if (!empty($this->fields["name"])){
-		
-		$query  = "UPDATE glpi_users SET password='' , password_md5='' WHERE name='".$this->fields["name"]."'";	
-		$db->query($query);
+
+			$query  = "UPDATE glpi_users SET password='' , password_md5='' WHERE name='".$this->fields["name"]."'";	
+			$db->query($query);
 		}
-		}
+	}
 
 	function title(){
-                
+
 		// Un titre pour la gestion des users
-		
+
 		global  $lang,$HTMLRel;
 		echo "<div align='center'><table border='0'><tr><td>";
 		echo "<img src=\"".$HTMLRel."pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td>";
 		echo "<td><a  class='icon_consol' href=\"user.form.php?new=1\"><b>".$lang["setup"][2]."</b></a></td>";
 		if (useAuthExt())
 			echo "<td><a  class='icon_consol' href=\"user.form.php?new=1&ext_auth=1\"><b>".$lang["setup"][125]."</b></a></td>";
-			echo "</tr></table></div>";
+		echo "</tr></table></div>";
 	}
 
 	function showInfo($target,$ID) {
-		
+
 		// Affiche les infos User
-		
+
 		global $cfg_glpi, $lang;
-	
+
 		if (!haveRight("user","r")) return false;
-		
-	
+
+
 		if ($this->getFromDB($ID)){
 			$prof=new Profile();
 			$prof->getFromDBForUser($ID);
-		
+
 			showUsersTitle($target."?ID=$ID",$_SESSION['glpi_viewuser']);
 
 			echo "<div align='center'>";
 			echo "<table class='tab_cadre'>";
 			echo   "<tr><th colspan='2'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
 			echo "<tr class='tab_bg_1'>";	
-			
+
 			echo "<td align='center'>".$lang["setup"][18]."</td>";
-				
+
 			echo "<td align='center'><b>".$this->fields["name"]."</b></td></tr>";
-										
+
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>".$this->fields["realname"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][43]."</td><td>".$this->fields["firstname"]."</td></tr>";
-	
+
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$this->fields["email"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$this->fields["phone"]."</td></tr>";
@@ -570,26 +570,26 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($this->fields["active"]?$lang["choice"][1]:$lang["choice"][0])."</td></tr>";
 			echo "</table></div><br>";
-	
+
 			return true;
 		}
 		return false;
 	}
-	
-	
-	
-	
+
+
+
+
 	function showForm($target,$ID) {
-		
+
 		// Affiche un formulaire User
 		global $cfg_glpi, $lang;
-	
+
 		if ($ID!=$_SESSION["glpiID"]&&!haveRight("user","r")) return false;
-		
+
 		$canedit=haveRight("user","w");
 		$canread=haveRight("user","r");
-		
-		
+
+
 		// Helpdesk case
 		if($ID == 1) {
 			echo "<div align='center'>";
@@ -603,7 +603,7 @@ class User extends CommonDBTM {
 			$this->getEmpty();
 		} else {
 			$this->getfromDB($ID);
-			
+
 		}
 		echo "<div align='center'>";
 		echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -614,20 +614,20 @@ class User extends CommonDBTM {
 		if ($this->fields["name"]=="") {
 			echo "<td><input  name='name' value=\"".$this->fields["name"]."\">";
 			echo "</td>";
-		// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
+			// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 		} else {
 			if (empty($this->fields["password"])&&empty($this->fields["password_md5"])){
 				echo "<td align='center'><b>".$this->fields["name"]."</b>";
 				echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
-				}
+			}
 			else {
 				echo "<td>";
 				autocompletionTextField("name","glpi_users","name",$this->fields["name"],20);
 			}
-			
-			
+
+
 			echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
-			
+
 			echo "</td>";
 		}
 		//do some rights verification
@@ -636,14 +636,14 @@ class User extends CommonDBTM {
 				echo "<td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
 		} else echo "<td colspan='2'>&nbsp;</td></tr>";
-	
+
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
 		autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 		echo "</td>";
 		echo "<td align='center'>".$lang["common"][43]."</td><td>";
 		autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
 		echo "</td></tr>";
-	
+
 		echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>";
 		$prof=new Profile();
 		$prof->getFromDBforUser($this->fields["ID"]);
@@ -677,109 +677,109 @@ class User extends CommonDBTM {
 		echo "<select name='active'>";
 		echo "<option value='1' ".($active?" selected ":"").">".$lang["choice"][1]."</option>";
 		echo "<option value='0' ".(!$active?" selected ":"").">".$lang["choice"][0]."</option>";
-		
+
 		echo "</select>";
 		echo "</td><td colspan='2'>&nbsp;</td></tr>";
-	
+
 		if (haveRight("user","w"))
-		if ($this->fields["name"]=="") {
-			echo "<tr>";
-			echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
-			echo "</td>";
-			echo "</tr>";	
-		} else {
+			if ($this->fields["name"]=="") {
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";
+				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+				echo "</td>";
+				echo "</tr>";	
+			} else {
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
+				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
+				echo "</td>";
+				echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
+				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";
+				echo "</td>";
+				echo "</tr>";
+			}
+
+		echo "</table></form></div>";
+	}
+
+	function showMyForm($target,$ID) {
+
+		// Affiche un formulaire User
+		global $cfg_glpi, $lang;
+
+		if ($ID!=$_SESSION["glpiID"]) return false;
+
+		if ($this->getfromDB($ID)){
+			$extauth=empty($this->fields["password"])&&empty($this->fields["password_md5"]);
+			$imapauth=!empty($cfg_glpi["imap_host"]);
+
+			echo "<div align='center'>";
+			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
+			echo "<tr><th colspan='2'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
+
+			echo "<tr class='tab_bg_1'>";	
+			echo "<td align='center'>".$lang["setup"][18]."</td>";
+			echo "<td align='center'><b>".$this->fields["name"]."</b>";
+			echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
+			echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
+			echo "</td></tr>";
+
+			//do some rights verification
+			if (!$extauth&&haveRight("password_update","1")){
+				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+			} 
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
+			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["realname"]))) {
+				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
+			} else echo $this->fields["realname"];
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][43]."</td><td>";
+			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["firstname"]))){
+				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
+			}  else echo $this->fields["firstname"];
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>";
+			if (!$extauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["email"]))){
+				autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
+			} else echo $this->fields["email"];
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone"]))){
+				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
+			} else echo $this->fields["phone"];
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]." 2</td><td>";
+			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone2"]))){
+				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
+			} else echo $this->fields["phone2"];
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["mobile"]))) {
+				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
+			} else echo $this->fields["mobile"];
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["location"]))){
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],0);
+			} else echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
+			echo "</td></tr>";
+
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
 			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
 			echo "</td>";
-			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
-			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";
-			echo "</td>";
 			echo "</tr>";
+
+			echo "</table></form></div>";
 		}
-	
-		echo "</table></form></div>";
 	}
-
-function showMyForm($target,$ID) {
-		
-	// Affiche un formulaire User
-	global $cfg_glpi, $lang;
-	
-	if ($ID!=$_SESSION["glpiID"]) return false;
-		
-	if ($this->getfromDB($ID)){
-		$extauth=empty($this->fields["password"])&&empty($this->fields["password_md5"]);
-		$imapauth=!empty($cfg_glpi["imap_host"]);
-
-		echo "<div align='center'>";
-		echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
-		echo "<tr><th colspan='2'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
-
-		echo "<tr class='tab_bg_1'>";	
-		echo "<td align='center'>".$lang["setup"][18]."</td>";
-		echo "<td align='center'><b>".$this->fields["name"]."</b>";
-		echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
-		echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
-		echo "</td></tr>";
-
-		//do some rights verification
-		if (!$extauth&&haveRight("password_update","1")){
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
-		} 
-	
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
-		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["realname"]))) {
-			autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
-		} else echo $this->fields["realname"];
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][43]."</td><td>";
-		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["firstname"]))){
-			autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
-		}  else echo $this->fields["firstname"];
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>";
-		if (!$extauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["email"]))){
-			autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
-		} else echo $this->fields["email"];
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
-		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone"]))){
-			autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
-		} else echo $this->fields["phone"];
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]." 2</td><td>";
-		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone2"]))){
-			autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
-		} else echo $this->fields["phone2"];
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
-		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["mobile"]))) {
-			autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
-		} else echo $this->fields["mobile"];
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
-		if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["location"]))){
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],0);
-		} else echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
-		echo "</td></tr>";
-
-		echo "<tr>";
-		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
-		echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
-		echo "</td>";
-		echo "</tr>";
-	
-		echo "</table></form></div>";
-	}
-}
 
 
 }

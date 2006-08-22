@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -108,47 +108,47 @@ else
 	}
 
 	commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
-	
+
 	if ($cartype->getFromDB($tab["ID"]))
 		$cartype->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($cartype->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
 		if (!empty($tab['ID']))
-		switch($_SESSION['glpi_onglet']){
-		case -1 :	
-			showCompatiblePrinters($tab["ID"]);
-			showCartridgesAdd($tab["ID"]);
-			showCartridges($tab["ID"]);
-			showCartridges($tab["ID"],1);
-			showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$tab["ID"],1);
-			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
-			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
-			display_plugin_action(CARTRIDGE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
-			break;
-		case 4 :
-			showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$tab["ID"],1);
-			break;
-			
-		case 5 :
-			showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
-			break;			
-		case 7 : 
-			showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
-			break;
-		case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],CARTRIDGE_TYPE,$tab["ID"]);
-				break;
-		default :
-			if (!display_plugin_action(CARTRIDGE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
-				showCompatiblePrinters($tab["ID"]);
-				showCartridgesAdd($tab["ID"]);
-				showCartridges($tab["ID"]);
-				showCartridges($tab["ID"],1);
+			switch($_SESSION['glpi_onglet']){
+				case -1 :	
+					showCompatiblePrinters($tab["ID"]);
+					showCartridgesAdd($tab["ID"]);
+					showCartridges($tab["ID"]);
+					showCartridges($tab["ID"],1);
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$tab["ID"],1);
+					showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
+					showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
+					display_plugin_action(CARTRIDGE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					break;
+				case 4 :
+					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$tab["ID"],1);
+					break;
+
+				case 5 :
+					showDocumentAssociated(CARTRIDGE_TYPE,$tab["ID"]);
+					break;			
+				case 7 : 
+					showLinkOnDevice(CARTRIDGE_TYPE,$tab["ID"]);
+					break;
+				case 10 :
+					showNotesForm($_SERVER["PHP_SELF"],CARTRIDGE_TYPE,$tab["ID"]);
+					break;
+				default :
+					if (!display_plugin_action(CARTRIDGE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
+						showCompatiblePrinters($tab["ID"]);
+						showCartridgesAdd($tab["ID"]);
+						showCartridges($tab["ID"]);
+						showCartridges($tab["ID"],1);
+					}
+					break;
 			}
-		break;
-		}
 	}
-	
+
 	commonFooter();
 }
 

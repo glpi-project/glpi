@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -38,40 +38,40 @@ $NEEDED_ITEMS=array("knowbase");
 include ($phproot . "/inc/includes.php");
 
 
-	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
+checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
 
-	if (isset($_GET["ID"]))
-		glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
+if (isset($_GET["ID"]))
+glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
 
 
-	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
 
-	initExpandSessionVar();
+initExpandSessionVar();
 
-	if (isset($_GET["toshow"])) {
-		if ($_GET["toshow"]=="all")
-			ExpandSessionVarShowAll();
-		else ExpandSessionVarShow($_GET["toshow"]);
-	}
-	if (isset($_GET["tohide"])) {
-		if ($_GET["tohide"]=="all")
-			ExpandSessionVarHideAll();
-		else ExpandSessionVarHide($_GET["tohide"]);
-	}
-	if (isset($_POST["contains"])) $contains=$_POST["contains"];
-	else $contains="";
-	
-	if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
-	
+if (isset($_GET["toshow"])) {
+	if ($_GET["toshow"]=="all")
+		ExpandSessionVarShowAll();
+	else ExpandSessionVarShow($_GET["toshow"]);
+}
+if (isset($_GET["tohide"])) {
+	if ($_GET["tohide"]=="all")
+		ExpandSessionVarHideAll();
+	else ExpandSessionVarHide($_GET["tohide"]);
+}
+if (isset($_POST["contains"])) $contains=$_POST["contains"];
+else $contains="";
 
-	titleknowbase();
+if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
 
-	if (haveRight("knowbase","r"))
-		showKbCategoriesall($_SERVER["PHP_SELF"],$contains);
-	else {
-		faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
-	}
-	
+
+titleknowbase();
+
+if (haveRight("knowbase","r"))
+showKbCategoriesall($_SERVER["PHP_SELF"],$contains);
+else {
+	faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
+}
+
 
 
 commonFooter();

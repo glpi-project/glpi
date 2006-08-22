@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -56,7 +56,7 @@ if (!ereg("&referer=",$_SERVER["HTTP_REFERER"]))$ADDREFERER="&referer=".urlencod
 $np=new Netport();
 if(isset($_POST["add"])){	
 	checkRight("networking","w");
-	
+
 	unset($_POST["referer"]);
 	unset($tab["referer"]);
 
@@ -71,9 +71,9 @@ if(isset($_POST["add"])){
 
 
 	if (!isset($tab["several"])){
-	$np->add($_POST);
-	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
-	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
+		$np->add($_POST);
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
+		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 	}
 	else {
 		unset($tab['several']);
@@ -85,9 +85,9 @@ if(isset($_POST["add"])){
 			$tab["logical_number"]=$i;
 			$tab["name"]=$_POST["name"].$add.$i;
 			unset($np->fields["ID"]);
-		        $np->add($tab);	
+			$np->add($tab);	
 		}
-	    logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
 		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 	}
 
@@ -103,10 +103,10 @@ else if(isset($_POST["delete_several"]))
 {
 	checkRight("networking","w");
 	if (isset($_POST["del_port"])&&count($_POST["del_port"]))
-	foreach ($_POST["del_port"] as $port_id => $val){
-		$np->delete(array("ID"=>$port_id));
-	}
-	
+		foreach ($_POST["del_port"] as $port_id => $val){
+			$np->delete(array("ID"=>$port_id));
+		}
+
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted several networking ports.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -119,11 +119,11 @@ else if(isset($_POST["update"]))
 }
 else if (isset($_POST["connect"])){
 	if (isset($_POST["dport"])&&count($_POST["dport"]))
-	foreach ($_POST["dport"] as $sport => $dport){
-		if($sport && $dport){
-			makeConnector($sport,$dport);
+		foreach ($_POST["dport"] as $sport => $dport){
+			if($sport && $dport){
+				makeConnector($sport,$dport);
+			}
 		}
-	}
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 else if (isset($tab["disconnect"])){
@@ -132,7 +132,7 @@ else if (isset($tab["disconnect"])){
 		removeConnector($_GET["ID"]);
 		$fin="";
 		if (isset($_GET["sport"])) $fin="?sport=".$_GET["sport"];
-	
+
 		glpi_header($_SERVER['HTTP_REFERER'].$fin);
 	}
 
@@ -143,10 +143,10 @@ else if(isset($_POST["assign_vlan_several"]))
 	checkRight("networking","w");
 	if ($_POST["vlan"]>0){
 		if (isset($_POST["del_port"])&&count($_POST["del_port"]))
-		foreach ($_POST["del_port"] as $port_id => $val){
-			assignVlan($port_id,$_POST["vlan"]);
-		}
-		
+			foreach ($_POST["del_port"] as $port_id => $val){
+				assignVlan($port_id,$_POST["vlan"]);
+			}
+
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." assign vlan to ports.");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -165,10 +165,10 @@ else if(isset($_POST["unassign_vlan_several"]))
 	checkRight("networking","w");
 	if ($_POST["vlan"]>0){
 		if (isset($_POST["del_port"])&&count($_POST["del_port"]))
-		foreach ($_POST["del_port"] as $port_id => $val){
-			unassignVlan($port_id,$_POST["vlan"]);
-		}
-		
+			foreach ($_POST["del_port"] as $port_id => $val){
+				unassignVlan($port_id,$_POST["vlan"]);
+			}
+
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." unassign vlan to ports.");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);

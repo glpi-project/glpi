@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -49,18 +49,18 @@ if (isset($_POST["update_pages"])||isset($_POST["update_pages_x"]))
 {
 	checkRight("cartridge","w");
 	$cart->updatePages($_POST["cID"],$_POST['pages']);
-	
+
 	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." update a cartridge.");
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["add"]))
 {
-	
+
 	checkRight("cartridge","w");
 	$cart->add($_GET);
 	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["add_several"]))
@@ -71,7 +71,7 @@ else if (isset($_POST["add_several"]))
 		$cart->add($_POST);
 	}
 	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." cartridge.");
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))

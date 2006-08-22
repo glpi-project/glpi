@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -46,7 +46,7 @@ $typedoc=new TypeDoc();
 if (isset($_POST["add"]))
 {
 	checkRight("typedoc","w");
-	
+
 	if ($newID=$typedoc->add($_POST))
 		logEvent($newID, "typedocs", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -58,10 +58,10 @@ else if (isset($tab["delete"]))
 	$typedoc->delete($tab,1);
 
 	logEvent($tab["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
-/*	if(!empty($tab["withtemplate"])) 
+	/*	if(!empty($tab["withtemplate"])) 
 		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
-	 else 
-*/
+		else 
+	 */
 	glpi_header($cfg_glpi["root_doc"]."/front/typedoc.php");
 
 }

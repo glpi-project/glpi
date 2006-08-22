@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -41,31 +41,31 @@ class Identification
 	//! Error string
 	var $err;
 	/** User class variable
-	* @see User
-	*/
+	 * @see User
+	 */
 	var $user;
 	//! External authentification variable : boolean
 	var $extauth=0;
 
 	/**
-	* Constructor
-	*
-	* @return nothing 
-	*
-	*/
+	 * Constructor
+	 *
+	 * @return nothing 
+	 *
+	 */
 	function Identification()
 	{
 		$this->err = "";
 		$this->user = new User();
 	}
 
-	
+
 	/**
-	* Is the user exists in the DB
-	*
-	* @return 0 (Not in the DB -> check external auth), 1 ( Exist in the DB with a password -> check first local connection and external after), 2 (Exist in the DB with no password -> check only external auth)
-	*
-	*/
+	 * Is the user exists in the DB
+	 *
+	 * @return 0 (Not in the DB -> check external auth), 1 ( Exist in the DB with a password -> check first local connection and external after), 2 (Exist in the DB with no password -> check only external auth)
+	 *
+	 */
 	function userExists($name){
 		global $db;
 
@@ -82,15 +82,15 @@ class Identification
 
 	}
 	/**
-	* Try a IMAP/POP connection
-	*
-	* @param $host IMAP/POP host to connect
-	* @param $login Login to try
-	* @param $pass Password to try
-	*
-	* @return boolean : connection success
-	*
-	*/
+	 * Try a IMAP/POP connection
+	 *
+	 * @param $host IMAP/POP host to connect
+	 * @param $login Login to try
+	 * @param $pass Password to try
+	 *
+	 * @return boolean : connection success
+	 *
+	 */
 	function connection_imap($host,$login,$pass)
 	{
 		// we prevent some delay...
@@ -100,7 +100,7 @@ class Identification
 
 		error_reporting(16);
 		if($mbox = imap_open($host,$login,$pass))
-		//if($mbox)$mbox =
+			//if($mbox)$mbox =
 		{
 			imap_close($mbox);
 			return true;
@@ -112,34 +112,270 @@ class Identification
 	}
 
 	/**
-	* Try a LDAP connection
-	*
-	* @param $host LDAP host to connect
-	* @param $dn Basedn to use
-	* @param $login Login to try
-	* @param $pass Password to try
-	* @param $condition Condition used to restrict login
-	* @param $port LDAP port
-	*
-	* @return boolean : connection success
-	*
-	*/
-  function connection_ldap($host,$dn,$login,$pass,$condition,$port)
-  {
-	global $cfg_glpi;
-	
+	 * Try a LDAP connection
+	 *
+	 * @param $host LDAP host to connect
+	 * @param $dn Basedn to use
+	 * @param $login Login to try
+	 * @param $pass Password to try
+	 * @param $condition Condition used to restrict login
+	 * @param $port LDAP port
+	 *
+	 * @return boolean : connection success
+	 *
+	 */
+	function connection_ldap($host,$dn,$login,$pass,$condition,$port)
+	{
+		global $cfg_glpi;
+
 		// we prevent some delay...
 		if (empty($host)) {
 			return false;
 		}
-  	error_reporting(16);
-  	
-	//$dn = $cfg_glpi["ldap_login"] ."=" . $login . "," . $basedn;
-  	$rv = false;
-	if ( $ds=ldap_connect($host,$port) )
-  	{
-  		// switch to protocol version 3 to make ssl work
-  		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+		error_reporting(16);
+
+		//$dn = $cfg_glpi["ldap_login"] ."=" . $login . "," . $basedn;
+		$rv = false;
+		if ( $ds=ldap_connect($host,$port) )
+		{
+			// switch to protocol version 3 to make ssl work
+			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+
+			if ($cfg_glpi["ldap_use_tls"]){
+				if (!ldap_start_tls($ds)) {
+					$this->err .= ldap_error($ds)."<br>";
+					return false;
+				} 
+			}
+			if (ldap_bind($ds, $dn, $pass) ) {
+				$filter="(".$cfg_glpi["ldap_login"]."=$login)";
+				if ($condition!="") $filter="(& $filter $condition)";
+				$thedn=explode(",", $dn);
+				unset($thedn[0]);
+				$basedn=implode(",",$thedn);
+
+				$sr=ldap_search($ds, $basedn, $filter);
+				$info = ldap_get_entries ( $ds, $sr );
+				if ( $info["count"] == 1 )
+				{
+					//Hook to implement to restrict access by checking the ldap directory
+					if (do_hook_function("restrict_ldap_auth",$info))
+						$rv=true;
+					else
+						$this->err .= "Restricted ldap authentication failed<br>\n";
+
+				}
+				else
+				{
+					$this->err.="User not found or several users found.<br>\n";
+				}
+			}
+			else
+			{
+				$this->err .= ldap_error($ds)."<br>";
+			}
+			ldap_close($ds);
+		}
+		else
+		{
+			$this->err .= ldap_error($ds)."<br>";
+		}
+
+		return($rv);
+
+	} // connection_ldap()
+
+
+	/**
+	 * Find a user in a LDAP and return is BaseDN
+	 *
+	 * @param $host LDAP host to connect
+	 * @param $ldap_base_dn Basedn to use
+	 * @param $login Login to search
+	 * @param $rdn Root Basedn to connect
+	 * @param $rpass Root Password to connect
+	 * @param $port LDAP port
+	 *
+	 * @return String : basedn of the user / false if not founded
+	 *
+	 */
+	function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
+	{
+		global $cfg_glpi;
+
+		// we prevent some delay...
+		if (empty($host)) {
+			return false;
+		}
+
+		$ldap_login_attr = $cfg_glpi["ldap_login"];
+		$ldap_dn ="";
+		error_reporting(16);
+
+		$ds = ldap_connect ($host,$port);
+
+		if (!$ds)
+		{
+			$this->err.=ldap_error($ds)."<br>";
+			return false;
+
+		}
+
+		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+
+		if ($cfg_glpi["ldap_use_tls"]){
+			if (!ldap_start_tls($ds)) {
+				$this->err.=ldap_error($ds)."<br>";
+				return false;
+			} 
+		}
+
+		if ($rdn=="") $r = ldap_bind ( $ds);
+		else $r = ldap_bind ( $ds,$rdn,$rpass);
+
+		if (!$r)
+		{
+			$this->err.=ldap_error($ds)."<br>";
+			ldap_close ( $ds );
+			return false;
+		}
+		$sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
+
+		if (!$sr)
+		{
+			$this->err.=ldap_error($ds)."<br>";
+			ldap_close ( $ds );
+			return false;
+		}
+		$info = ldap_get_entries ( $ds, $sr );
+		if ( $info["count"] != 1 )
+		{
+			$this->err.="User not found or several users found.<br>\n";
+			ldap_free_result ( $sr );
+			ldap_close ( $ds );
+			return false;
+		}
+		ldap_free_result ( $sr );
+		ldap_close ( $ds );
+		//$thedn=explode(",", $info[0]["dn"]);
+		//unset($thedn[0]);
+		//return implode(",",$thedn);
+		return $info[0]["dn"];
+	}  		 // ldap_get_dn()
+
+	/**
+	 * Try a Active Directory connection
+	 *
+	 * @param $host LDAP host to connect
+	 * @param $basedn Basedn to use
+	 * @param $login Login to try
+	 * @param $pass Password to try
+	 * @param $condition Condition used to restrict login
+	 * @param $port LDAP port
+	 *
+	 * @return boolean : connection success
+	 *
+	 */
+	function connection_ldap_active_directory($host,$basedn,$login,$pass,$condition,$port)
+	{
+		global $cfg_glpi;
+
+		// we prevent some delay...
+		if (empty($host)) {
+			return false;
+		}
+
+		error_reporting(16);
+		$dn = $basedn;
+		$rv = false;
+		if ( $ds = ldap_connect($host,$port) )
+		{
+			// switch to protocol version 3 to make ssl work
+			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+
+			if ($cfg_glpi["ldap_use_tls"]){
+				if (!ldap_start_tls($ds)) {
+					$this->err .= ldap_error($ds)."<br>";
+					return false;
+				} 
+			}
+
+			if (ldap_bind($ds, $dn, $pass) ) {
+				$findcn=explode(",O",$dn);
+				// Cas ou pas de ,OU
+				if ($dn==$findcn[0]) {
+					$findcn=explode(",C",$dn);
+				}
+
+				$findcn=explode("=",$findcn[0]);
+				$findcn[1]=str_replace('\,', ',', $findcn[1]);
+				$filter="(CN=".$findcn[1].")";
+				if ($condition!="") $filter="(& $filter $condition)";
+				$sr=ldap_search($ds, $basedn, $filter);
+				$info = ldap_get_entries ( $ds, $sr );
+				if ( $info["count"] == 1 )
+				{
+					//Hook to implement to restrict access by checking the ldap directory
+					if (do_hook_function("restrict_ldap_auth",$info))
+						$rv=true;
+					else
+						$this->err .= "Restricted ldap authentication failed<br>\n";
+				}
+				else
+				{
+					$this->err.="User not found or several users found.<br>\n";
+				}
+			}
+			else
+			{
+				$this->err .= ldap_error($ds)."<br>";
+			}
+			ldap_close($ds);
+		}
+		else
+		{
+			$this->err .= ldap_error($ds)."<br>";
+		}
+
+		return($rv);
+
+	} // connection_ldap_active_directory()
+
+
+	/**
+	 * Find a user in an Active Directory and return is BaseDN
+	 *
+	 * @param $host LDAP host to connect
+	 * @param $ldap_base_dn Basedn to use
+	 * @param $login Login to search
+	 * @param $rdn Root Basedn to connect
+	 * @param $rpass Root Password to connect
+	 * @param $port LDAP port
+	 *
+	 * @return String : basedn of the user / false if not founded
+	 *
+	 */
+	function ldap_get_dn_active_directory($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
+	{
+		global $cfg_glpi;
+
+		// we prevent some delay...
+		if (empty($host)) {
+			return false;
+		}
+
+		$ldap_login_attr = "sAMAccountName";                          
+		$ldap_dn ="";
+		error_reporting(16);
+		$ds = ldap_connect ($host,$port);
+		if (!$ds)
+		{
+			$this->err .= ldap_error($ds)."<br>";
+			return false;
+		}
+
+		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+		ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 
 		if ($cfg_glpi["ldap_use_tls"]){
 			if (!ldap_start_tls($ds)) {
@@ -147,277 +383,41 @@ class Identification
 				return false;
 			} 
 		}
-  		if (ldap_bind($ds, $dn, $pass) ) {
-                     $filter="(".$cfg_glpi["ldap_login"]."=$login)";
-                     if ($condition!="") $filter="(& $filter $condition)";
-		      $thedn=explode(",", $dn);
-		      unset($thedn[0]);
-			$basedn=implode(",",$thedn);
-			    
-		     $sr=ldap_search($ds, $basedn, $filter);
-                     $info = ldap_get_entries ( $ds, $sr );
-		     if ( $info["count"] == 1 )
-                     {
-			//Hook to implement to restrict access by checking the ldap directory
-			if (do_hook_function("restrict_ldap_auth",$info))
-				$rv=true;
-			else
-				$this->err .= "Restricted ldap authentication failed<br>\n";
 
-                     }
-                     else
-                     {
-				       $this->err.="User not found or several users found.<br>\n";
-                     }
-  		}
-  		else
-  		{
-  			$this->err .= ldap_error($ds)."<br>";
-  		}
-  		ldap_close($ds);
-  	}
-  	else
-  	{
-  		$this->err .= ldap_error($ds)."<br>";
-  	}
-  	
-  	return($rv);
-
-  } // connection_ldap()
- 
- 
-	/**
-	* Find a user in a LDAP and return is BaseDN
-	*
-	* @param $host LDAP host to connect
-	* @param $ldap_base_dn Basedn to use
-	* @param $login Login to search
-	* @param $rdn Root Basedn to connect
-	* @param $rpass Root Password to connect
-	* @param $port LDAP port
-	*
-	* @return String : basedn of the user / false if not founded
-	*
-	*/
- function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
- {
-	global $cfg_glpi;
-
-  // we prevent some delay...
-  if (empty($host)) {
-	return false;
-  }
-
-  $ldap_login_attr = $cfg_glpi["ldap_login"];
-  $ldap_dn ="";
-  error_reporting(16);
-
-  $ds = ldap_connect ($host,$port);
-
-  if (!$ds)
-    {
-     $this->err.=ldap_error($ds)."<br>";
-     return false;
-     
-    }
-
-  ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
-
-if ($cfg_glpi["ldap_use_tls"]){
-	if (!ldap_start_tls($ds)) {
-		$this->err.=ldap_error($ds)."<br>";
-		return false;
-	} 
-}
-
-  if ($rdn=="") $r = ldap_bind ( $ds);
-  else $r = ldap_bind ( $ds,$rdn,$rpass);
-
-  if (!$r)
-      {
-       $this->err.=ldap_error($ds)."<br>";
-       ldap_close ( $ds );
-       return false;
-      }
-    $sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
-
-    if (!$sr)
-       {
-   	$this->err.=ldap_error($ds)."<br>";
-       ldap_close ( $ds );
-       return false;
-       }
-    $info = ldap_get_entries ( $ds, $sr );
-    if ( $info["count"] != 1 )
-       {
-       $this->err.="User not found or several users found.<br>\n";
-       ldap_free_result ( $sr );
-       ldap_close ( $ds );
-       return false;
-       }
-   ldap_free_result ( $sr );
-   ldap_close ( $ds );
-   //$thedn=explode(",", $info[0]["dn"]);
-   //unset($thedn[0]);
-   //return implode(",",$thedn);
-   return $info[0]["dn"];
-  }  		 // ldap_get_dn()
- 		
-	/**
-	* Try a Active Directory connection
-	*
-	* @param $host LDAP host to connect
-	* @param $basedn Basedn to use
-	* @param $login Login to try
-	* @param $pass Password to try
-	* @param $condition Condition used to restrict login
-	* @param $port LDAP port
-	*
-	* @return boolean : connection success
-	*
-	*/
-  function connection_ldap_active_directory($host,$basedn,$login,$pass,$condition,$port)
-  {
-	global $cfg_glpi;
-
-	// we prevent some delay...
-	if (empty($host)) {
-		return false;
-	}
-
-  	error_reporting(16);
-  	$dn = $basedn;
-  	$rv = false;
-  	if ( $ds = ldap_connect($host,$port) )
-  	{
-  		// switch to protocol version 3 to make ssl work
-  		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
-
-		if ($cfg_glpi["ldap_use_tls"]){
-			if (!ldap_start_tls($ds)) {
-       				$this->err .= ldap_error($ds)."<br>";
-				return false;
-   			} 
+		if ($rdn=="") {$r = ldap_bind ( $ds);
+		}
+		else {$r = ldap_bind ( $ds,$rdn,$rpass);
+		}
+		if (!$r)
+		{
+			$this->err .= ldap_error($ds)."<br>";
+			ldap_close ( $ds );
+			return false;
+		}
+		$sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
+		if (!$sr)
+		{
+			$this->err .= ldap_error($ds)."<br>";
+			ldap_close ( $ds );
+			return false;
 		}
 
-  		if (ldap_bind($ds, $dn, $pass) ) {
-			$findcn=explode(",O",$dn);
-              // Cas ou pas de ,OU
-             if ($dn==$findcn[0]) {
-              $findcn=explode(",C",$dn);
-             }
+		$info = ldap_get_entries ( $ds, $sr );
 
- 			$findcn=explode("=",$findcn[0]);
- 			$findcn[1]=str_replace('\,', ',', $findcn[1]);
- 			$filter="(CN=".$findcn[1].")";
-                     if ($condition!="") $filter="(& $filter $condition)";
-                     $sr=ldap_search($ds, $basedn, $filter);
-                     $info = ldap_get_entries ( $ds, $sr );
-                     if ( $info["count"] == 1 )
-                     {
-			//Hook to implement to restrict access by checking the ldap directory
-			if (do_hook_function("restrict_ldap_auth",$info))
-				$rv=true;
-			else
-				$this->err .= "Restricted ldap authentication failed<br>\n";
-                     }
-                     else
-                     {
-                       $this->err.="User not found or several users found.<br>\n";
-                     }
-  		}
-  		else
-  		{
-  			$this->err .= ldap_error($ds)."<br>";
-  		}
-  		ldap_close($ds);
-  	}
-  	else
-  	{
-  		$this->err .= ldap_error($ds)."<br>";
-  	}
-  	
-  	return($rv);
-
-  } // connection_ldap_active_directory()
- 
- 
-	/**
-	* Find a user in an Active Directory and return is BaseDN
-	*
-	* @param $host LDAP host to connect
-	* @param $ldap_base_dn Basedn to use
-	* @param $login Login to search
-	* @param $rdn Root Basedn to connect
-	* @param $rpass Root Password to connect
-	* @param $port LDAP port
-	*
-	* @return String : basedn of the user / false if not founded
-	*
-	*/
- function ldap_get_dn_active_directory($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
- {
-global $cfg_glpi;
-
-  // we prevent some delay...
-  if (empty($host)) {
-	return false;
-  }
-
-  $ldap_login_attr = "sAMAccountName";                          
-  $ldap_dn ="";
-	error_reporting(16);
-  $ds = ldap_connect ($host,$port);
-  if (!$ds)
-    {
- 	$this->err .= ldap_error($ds)."<br>";
-     return false;
-    }
-    
-  ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
-  ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-
-	if ($cfg_glpi["ldap_use_tls"]){
-		if (!ldap_start_tls($ds)) {
-			$this->err .= ldap_error($ds)."<br>";
+		if ( $info["count"] != 1 )
+		{
+			$this->err.="User not found or several users found.<br>\n";
+			ldap_free_result ( $sr );
+			ldap_close ( $ds );
 			return false;
-		} 
-	}
-  
-  if ($rdn=="") {$r = ldap_bind ( $ds);
-  }
-  else {$r = ldap_bind ( $ds,$rdn,$rpass);
-  }
-  if (!$r)
-      {
-		$this->err .= ldap_error($ds)."<br>";
-       ldap_close ( $ds );
-       return false;
-      }
-    $sr = ldap_search ($ds, $ldap_base_dn, "($ldap_login_attr=$login)");
-    if (!$sr)
-       {
-		$this->err .= ldap_error($ds)."<br>";
-       ldap_close ( $ds );
-       return false;
-       }
-  
-    $info = ldap_get_entries ( $ds, $sr );
+		}
+		ldap_free_result ( $sr );
+		ldap_close ( $ds );
+		$thedn=explode(",", $info[0]["dn"]);
 
-    if ( $info["count"] != 1 )
-       {
-       $this->err.="User not found or several users found.<br>\n";
-       ldap_free_result ( $sr );
-       ldap_close ( $ds );
-       return false;
-       }
-   ldap_free_result ( $sr );
-   ldap_close ( $ds );
-   $thedn=explode(",", $info[0]["dn"]);
+		return implode(",",$thedn);
+	}  		 // ldap_get_dn_active_directory()
 
-   return implode(",",$thedn);
-  }  		 // ldap_get_dn_active_directory()
- 		
 
 	// void;
 	//try to connect to DB
@@ -435,8 +435,8 @@ global $cfg_glpi;
 			$this->err .= "Empty Password<br>";
 			return false;
 		}
-		
-		
+
+
 		$query = "SELECT password, password_md5 from glpi_users where (name = '".$name."')";
 		$result = $db->query($query);
 		if (!$result){
@@ -449,7 +449,7 @@ global $cfg_glpi;
 			{
 				$password_md5_db=$db->result($result,0,"password_md5");
 				$password_md5_post = md5($password);
-				
+
 				if(strcmp($password_md5_db,$password_md5_post)==0) {
 					return true;
 				} else {

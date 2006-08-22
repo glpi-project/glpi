@@ -26,31 +26,31 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 
 /**
-* Print out a link to add directly a new consumable from a consumable type.
-*
-* Print out the link witch make a new consumable from consumable type idetified by $ID
-*
-*@param $ID Consumable type identifier.
-*
-*
-*@return Nothing (displays)
-**/
+ * Print out a link to add directly a new consumable from a consumable type.
+ *
+ * Print out the link witch make a new consumable from consumable type idetified by $ID
+ *
+ *@param $ID Consumable type identifier.
+ *
+ *
+ *@return Nothing (displays)
+ **/
 function showConsumableAdd($ID) {
-	
+
 	global $cfg_glpi,$lang,$HTMLRel;
-	
+
 	if (!haveRight("consumable","w")) return false;
-	
+
 	echo "<form method='post'  action=\"".$HTMLRel."front/consumable.edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
@@ -63,7 +63,7 @@ function showConsumableAdd($ID) {
 
 	echo "&nbsp;&nbsp;<select name='to_add'>";
 	for ($i=1;$i<100;$i++)
-	echo "<option value='$i'>$i</option>";
+		echo "<option value='$i'>$i</option>";
 	echo "</select>&nbsp;&nbsp;";
 	echo $lang["consumables"][16];
 	echo "</td></tr>";
@@ -71,19 +71,19 @@ function showConsumableAdd($ID) {
 	echo "</form><br>";
 }
 /**
-* Print out the consumables of a defined type
-*
-* Print out all the consumables that are issued from the consumable type identified by $ID
-*
-*@param $tID integer : Consumable type identifier.
-*@param $show_old boolean : show old consumables or not. 
-*
-*@return Nothing (displays)
-**/
+ * Print out the consumables of a defined type
+ *
+ * Print out all the consumables that are issued from the consumable type identified by $ID
+ *
+ *@param $tID integer : Consumable type identifier.
+ *@param $show_old boolean : show old consumables or not. 
+ *
+ *@return Nothing (displays)
+ **/
 function showConsumables ($tID,$show_old=0) {
 
 	global $db,$cfg_glpi,$lang,$HTMLRel;
-	
+
 	if (!haveRight("consumable","r")) return false;
 	$canedit=haveRight("consumable","w");
 
@@ -107,7 +107,7 @@ function showConsumables ($tID,$show_old=0) {
 				echo "<tr><th colspan='8'>";
 				echo $lang["consumables"][35];
 				echo "</th></tr>";
-				
+
 			}
 			$i=0;
 			echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["consumables"][23]."</th><th>".$lang["cartridges"][24]."</th><th>".$lang["consumables"][26]."</th>";
@@ -117,124 +117,124 @@ function showConsumables ($tID,$show_old=0) {
 				echo "<th>".$lang["setup"][57]."</th>";
 
 			echo "<th>".$lang["financial"][3]."</th>";
-			
-				if (!$show_old&&$canedit){
+
+			if (!$show_old&&$canedit){
 				echo "<th>";
 				dropdownAllUsers("id_user",0);
 				echo "<input type='submit' name='give' value='".$lang["consumables"][32]."'>";
 				echo "</th>";
-				} else {echo "<th>&nbsp;</th>";}
-				if ($canedit)
-					echo "<th>&nbsp;</th></tr>";
-			} else {
+			} else {echo "<th>&nbsp;</th>";}
+			if ($canedit)
+				echo "<th>&nbsp;</th></tr>";
+		} else {
 
-				echo "<br>";
-				echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
+			echo "<br>";
+			echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
 		}
 	}
 
-$where="";
-$leftjoin="";
-$addselect="";
-if ($show_old==0){ // NEW
-$where= " AND date_out IS NULL ORDER BY date_in";
-} else { //OLD
-$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in";
-$leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.id_user) ";
-$addselect= ", glpi_users.realname AS REALNAME, glpi_users.firstname AS FIRSTNAME, glpi_users.name AS USERNAME ";
-}
+	$where="";
+	$leftjoin="";
+	$addselect="";
+	if ($show_old==0){ // NEW
+		$where= " AND date_out IS NULL ORDER BY date_in";
+	} else { //OLD
+		$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in";
+		$leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.id_user) ";
+		$addselect= ", glpi_users.realname AS REALNAME, glpi_users.firstname AS FIRSTNAME, glpi_users.name AS USERNAME ";
+	}
 
-$query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where ";
+	$query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where ";
 
 	if ($result = $db->query($query)) {			
-	$number=$db->numrows($result);
-	while ($data=$db->fetch_array($result)) {
-		$date_in=convDate($data["date_in"]);
-		$date_out=convDate($data["date_out"]);
-						
-		echo "<tr  class='tab_bg_1'><td align='center'>";
-		echo $data["ID"]; 
-		echo "</td><td align='center'>";
-		echo getConsumableStatus($data["ID"]);
-		echo "</td><td align='center'>";
-		echo $date_in;
-		echo "</td><td align='center'>";
-		echo $date_out;		
-		echo "</td>";
+		$number=$db->numrows($result);
+		while ($data=$db->fetch_array($result)) {
+			$date_in=convDate($data["date_in"]);
+			$date_out=convDate($data["date_out"]);
 
-		if ($show_old){
-			echo "<td align='center'>";
-			if (!empty($data["REALNAME"])) {
-				echo $data["REALNAME"];
-				if (!empty($data["FIRSTNAME"]))
-				echo " ".$data["FIRSTNAME"];
+			echo "<tr  class='tab_bg_1'><td align='center'>";
+			echo $data["ID"]; 
+			echo "</td><td align='center'>";
+			echo getConsumableStatus($data["ID"]);
+			echo "</td><td align='center'>";
+			echo $date_in;
+			echo "</td><td align='center'>";
+			echo $date_out;		
+			echo "</td>";
+
+			if ($show_old){
+				echo "<td align='center'>";
+				if (!empty($data["REALNAME"])) {
+					echo $data["REALNAME"];
+					if (!empty($data["FIRSTNAME"]))
+						echo " ".$data["FIRSTNAME"];
+				}
+				else echo $data["USERNAME"];
+				echo "</td>";
 			}
-			else echo $data["USERNAME"];
-			echo "</td>";
-		}
 
-		echo "<td align='center'>";
-		showDisplayInfocomLink(CONSUMABLE_ITEM_TYPE,$data["ID"],1);
-		echo "</td>";
-
-				
-		if ($show_old==0&&$canedit){
 			echo "<td align='center'>";
-			echo "<input type='checkbox' name='out[".$data["ID"]."]'>";
+			showDisplayInfocomLink(CONSUMABLE_ITEM_TYPE,$data["ID"],1);
 			echo "</td>";
-		}
 
-		if ($show_old!=0&&$canedit){
+
+			if ($show_old==0&&$canedit){
+				echo "<td align='center'>";
+				echo "<input type='checkbox' name='out[".$data["ID"]."]'>";
+				echo "</td>";
+			}
+
+			if ($show_old!=0&&$canedit){
+				echo "<td align='center'>";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][37]."</a>";
+				echo "</td>";
+			}						
+
 			echo "<td align='center'>";
-			echo "<a href='".$cfg_glpi["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["consumables"][37]."</a>";
-			echo "</td>";
-		}						
-		
-		echo "<td align='center'>";
-		
-		echo "<a href='".$cfg_glpi["root_doc"]."/front/consumable.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
-		echo "</td></tr>";
-		
+
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/consumable.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$lang["buttons"][6]."</a>";
+			echo "</td></tr>";
+
+		}	
 	}	
-	}	
-echo "</table></div>\n\n";
-if (!$show_old&&$canedit)
-	echo "</form>";
+	echo "</table></div>\n\n";
+	if (!$show_old&&$canedit)
+		echo "</form>";
 }
 
 
 
 /**
-* Print the consumable count HTML array for a defined consumable type
-*
-* Print the consumable count HTML array for the consumable type $tID
-*
-*@param $tID integer: consumable type identifier.
-*@param $alarm integer: threshold alarm value.
-*@param $nohtml integer: Return value without HTML tags.
-*
-*@return string to display
-*
-**/
+ * Print the consumable count HTML array for a defined consumable type
+ *
+ * Print the consumable count HTML array for the consumable type $tID
+ *
+ *@param $tID integer: consumable type identifier.
+ *@param $alarm integer: threshold alarm value.
+ *@param $nohtml integer: Return value without HTML tags.
+ *
+ *@return string to display
+ *
+ **/
 function countConsumables($tID,$alarm,$nohtml=0) {
-	
+
 	global $db,$cfg_glpi, $lang;
-	
-	
+
+
 	$out="";
 	// Get total
 	$total = getConsumablesNumber($tID);
 
 	if ($total!=0) {
-	$unused=getUnusedConsumablesNumber($tID);
-	$old=getOldConsumablesNumber($tID);
+		$unused=getUnusedConsumablesNumber($tID);
+		$old=getOldConsumablesNumber($tID);
 
-	$highlight="";
-	if ($unused<=$alarm)
-		$highlight="class='tab_bg_1_2'";
-	if (!$nohtml)
-		$out.= "<div $highlight>".$lang["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["consumables"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
-	else $out.= $lang["common"][33].": $total   ".$lang["consumables"][13].": $unused   ".$lang["consumables"][15].": $old";			
+		$highlight="";
+		if ($unused<=$alarm)
+			$highlight="class='tab_bg_1_2'";
+		if (!$nohtml)
+			$out.= "<div $highlight>".$lang["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$lang["consumables"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$lang["consumables"][15].": $old</div>";			
+		else $out.= $lang["common"][33].": $total   ".$lang["consumables"][13].": $unused   ".$lang["consumables"][15].": $old";			
 
 	} else {
 		if (!$nohtml)
@@ -245,15 +245,15 @@ function countConsumables($tID,$alarm,$nohtml=0) {
 }	
 
 /**
-* count how many consumable for a consumable type
-*
-* count how many consumable for the consumable type $tID
-*
-*@param $tID integer: consumable type identifier.
-*
-*@return integer : number of consumable counted.
-*
-**/
+ * count how many consumable for a consumable type
+ *
+ * count how many consumable for the consumable type $tID
+ *
+ *@param $tID integer: consumable type identifier.
+ *
+ *@return integer : number of consumable counted.
+ *
+ **/
 function getConsumablesNumber($tID){
 	global $db;
 	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID')";
@@ -262,15 +262,15 @@ function getConsumablesNumber($tID){
 }
 
 /**
-* count how many old consumable for a consumable type
-*
-* count how many old consumable for the consumable type $tID
-*
-*@param $tID integer: consumable type identifier.
-*
-*@return integer : number of old consumable counted.
-*
-**/
+ * count how many old consumable for a consumable type
+ *
+ * count how many old consumable for the consumable type $tID
+ *
+ *@param $tID integer: consumable type identifier.
+ *
+ *@return integer : number of old consumable counted.
+ *
+ **/
 function getOldConsumablesNumber($tID){
 	global $db;
 	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID'  AND date_out IS NOT NULL)";
@@ -278,15 +278,15 @@ function getOldConsumablesNumber($tID){
 	return $db->numrows($result);
 }
 /**
-* count how many consumable unused for a consumable type
-*
-* count how many consumable unused for the consumable type $tID
-*
-*@param $tID integer: consumable type identifier.
-*
-*@return integer : number of consumable unused counted.
-*
-**/
+ * count how many consumable unused for a consumable type
+ *
+ * count how many consumable unused for the consumable type $tID
+ *
+ *@param $tID integer: consumable type identifier.
+ *
+ *@return integer : number of consumable unused counted.
+ *
+ **/
 function getUnusedConsumablesNumber($tID){
 	global $db;
 	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID'  AND date_out IS NULL)";
@@ -296,53 +296,53 @@ function getUnusedConsumablesNumber($tID){
 
 
 /**
-* To be commented
-*
-* 
-*
-*@param $cID integer : consumable type.
-*
-*@return 
-*
-**/
+ * To be commented
+ *
+ * 
+ *
+ *@param $cID integer : consumable type.
+ *
+ *@return 
+ *
+ **/
 function isNewConsumable($cID){
-global $db;
-$query = "SELECT ID FROM glpi_consumables WHERE ( ID= '$cID' AND date_out IS NULL)";
-$result = $db->query($query);
-return ($db->numrows($result)==1);
+	global $db;
+	$query = "SELECT ID FROM glpi_consumables WHERE ( ID= '$cID' AND date_out IS NULL)";
+	$result = $db->query($query);
+	return ($db->numrows($result)==1);
 }
 
 /**
-* To be commented
-*
-* 
-*
-*@param $cID integer : consumable type.
-*
-*@return 
-*
-**/
+ * To be commented
+ *
+ * 
+ *
+ *@param $cID integer : consumable type.
+ *
+ *@return 
+ *
+ **/
 function isOldConsumable($cID){
-global $db;
-$query = "SELECT ID FROM glpi_consumables WHERE ( ID= '$cID' AND date_out IS NOT NULL)";
-$result = $db->query($query);
-return ($db->numrows($result)==1);
+	global $db;
+	$query = "SELECT ID FROM glpi_consumables WHERE ( ID= '$cID' AND date_out IS NOT NULL)";
+	$result = $db->query($query);
+	return ($db->numrows($result)==1);
 }
 
 /**
-* Get the dict value for the status of a consumable
-*
-* 
-*
-*@param $cID integer : consumable ID.
-*
-*@return string : dict value for the consumable status.
-*
-**/
+ * Get the dict value for the status of a consumable
+ *
+ * 
+ *
+ *@param $cID integer : consumable ID.
+ *
+ *@return string : dict value for the consumable status.
+ *
+ **/
 function getConsumableStatus($cID){
-global $lang;
-if (isNewConsumable($cID)) return $lang["consumables"][20];
-else if (isOldConsumable($cID)) return $lang["consumables"][22];
+	global $lang;
+	if (isNewConsumable($cID)) return $lang["consumables"][20];
+	else if (isOldConsumable($cID)) return $lang["consumables"][22];
 }
 
 
@@ -356,25 +356,25 @@ function showConsumableSummary($target){
 
 	if ($result=$db->query($query)){
 		if ($db->numrows($result))
-		while ($data=$db->fetch_array($result))
-			$used[$data["id_user"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
+			while ($data=$db->fetch_array($result))
+				$used[$data["id_user"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
 	}
-	
+
 	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type FROM glpi_consumables WHERE date_out IS NULL GROUP BY FK_glpi_consumables_type";
 	$new=array();
 
 	if ($result=$db->query($query)){
 		if ($db->numrows($result))
-		while ($data=$db->fetch_array($result))
-			$new[$data["FK_glpi_consumables_type"]]=$data["COUNT"];
+			while ($data=$db->fetch_array($result))
+				$new[$data["FK_glpi_consumables_type"]]=$data["COUNT"];
 	}
 
 	$types=array();
 	$query="SELECT * from glpi_consumables_type";
 	if ($result=$db->query($query)){
 		if ($db->numrows($result))
-		while ($data=$db->fetch_array($result))
-			$types[$data["ID"]]=$data["name"];
+			while ($data=$db->fetch_array($result))
+				$types[$data["ID"]]=$data["name"];
 	}
 	asort($types);
 	$total=array();
@@ -393,7 +393,7 @@ function showConsumableSummary($target){
 		}
 		echo "<th>".$lang["common"][33]."</th>";
 		echo "</tr>";
-	
+
 		// new
 		echo "<tr class='tab_bg_2'><td><strong>".$lang["consumables"][1]."</strong></td>";
 		$tot=0;
@@ -429,7 +429,7 @@ function showConsumableSummary($target){
 		echo "</table></div>";
 
 	} else {
-			echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
+		echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
 	}
 
 }
@@ -454,13 +454,13 @@ function cron_consumable(){
 				if (!empty($data["alertID"])){
 					$alert->delete(array("ID"=>$data["alertID"]));
 				}
-	
+
 				$alert=new Alert();
 				//// add alert
 				$input["type"]=ALERT_THRESHOLD;
 				$input["device_type"]=CONSUMABLE_TYPE;
 				$input["FK_device"]=$data["consID"];
-					
+
 				$alert->add($input);
 			}
 		}

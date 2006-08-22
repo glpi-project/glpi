@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,20 +34,20 @@
 // ----------------------------------------------------------------------
 
 
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	$NEEDED_ITEMS=array("device");
-	include ($phproot."/inc/includes.php");
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+$NEEDED_ITEMS=array("device");
+include ($phproot."/inc/includes.php");
 
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	checkCentralAccess();
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
+
+checkCentralAccess();
 
 if (isset($_POST["idtable"])){
 	$table=getDeviceTable($_POST["idtable"]);
-	
-	
+
+
 	$rand=mt_rand();
 	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
 
@@ -62,7 +62,7 @@ if (isset($_POST["idtable"])){
 	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST["myname"]."&value=0&rand=$rand'";
 	echo "})})";
 	echo "</script>";	
-	
+
 	echo "<div id='search_spinner$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>";	
 
 	$nb=0;

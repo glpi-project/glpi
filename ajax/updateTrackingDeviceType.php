@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -34,13 +34,13 @@
 // ----------------------------------------------------------------------
 
 
-	include ("_relpos.php");
-	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
+include ("_relpos.php");
+$AJAX_INCLUDE=1;
+include ($phproot."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
 
-	checkRight("update_ticket","1");
-	dropdownTrackingDeviceType("device_type",$_POST["device_type"],$_POST["userID"]);
+checkRight("update_ticket","1");
+dropdownTrackingDeviceType("device_type",$_POST["device_type"],$_POST["userID"]);
 ?>

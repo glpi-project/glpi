@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -72,8 +72,8 @@ if(!empty($_GET["next"])) {
 		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 		ocsFormDBConfig($_SERVER["PHP_SELF"], $cfg_glpi["ID"]);
 	}
-	
-	
+
+
 }
 elseif (!empty($_POST["test_smtp_send"])){
 	testMail();

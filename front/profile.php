@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -50,7 +50,7 @@ else $ID=$_POST["ID"];
 
 
 if (isset($_POST["add"])){
-	
+
 	checkRight("profile","w");
 	$ID=$prof->add($_POST);
 }else  if (isset($_POST["delete"])){
@@ -65,20 +65,20 @@ else  if (isset($_POST["update"])){
 	$prof->update($_POST);
 }
 
-	echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/profile.php\">";
-	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
-	echo $lang["profiles"][1].": </th></tr><tr class='tab_bg_1'><td>";
+echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/profile.php\">";
+echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
+echo $lang["profiles"][1].": </th></tr><tr class='tab_bg_1'><td>";
 
-	$query="SELECT ID, name FROM glpi_profiles ORDER BY name";
-	$result=$db->query($query);
+$query="SELECT ID, name FROM glpi_profiles ORDER BY name";
+$result=$db->query($query);
 
-	echo "<select name='ID'>";
-	while ($data=$db->fetch_assoc($result)){
-		echo "<option value='".$data["ID"]."' ".($ID==$data["ID"]?"selected":"").">".$data['name']."</option>";
-	}
-	echo "</select>";
-	echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
-	echo "</table></form></div>";
+echo "<select name='ID'>";
+while ($data=$db->fetch_assoc($result)){
+	echo "<option value='".$data["ID"]."' ".($ID==$data["ID"]?"selected":"").">".$data['name']."</option>";
+}
+echo "</select>";
+echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
+echo "</table></form></div>";
 
 if (isset($_GET["add"])){
 	$prof->showForm($_SERVER["PHP_SELF"],0);

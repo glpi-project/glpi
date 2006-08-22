@@ -26,8 +26,8 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -43,7 +43,7 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(empty($tab["device_type"])) {
-	 glpi_header($cfg_glpi["root_doc"] . "/front/device.php");
+	glpi_header($cfg_glpi["root_doc"] . "/front/device.php");
 }
 
 if (isset($_SERVER["HTTP_REFERER"])) $REFERER=$_SERVER["HTTP_REFERER"];
@@ -60,7 +60,7 @@ checkRight("device","w");
 if (isset($_POST["add"])) {
 	$device=new Device($_POST["device_type"]);	
 	$newID=$device->add($_POST);
-	
+
 	logEvent($newID, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]." ".$_POST["designation"].".");
 	glpi_header($cfg_glpi["root_doc"]."/front/device.php?device_type=".$_POST["device_type"]);
 }

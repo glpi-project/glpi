@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -47,25 +47,25 @@ function testMail(){
 	} else $_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["setup"][205];
 }
 
-	/**
-	* Determine if email is valid
-	* @param $email email to check
-	* @return boolean 
-	*/
+/**
+ * Determine if email is valid
+ * @param $email email to check
+ * @return boolean 
+ */
 function isValidEmail($email="")
+{
+	if( !eregi( "^" .
+				"[a-zA-Z0-9]+([_\\.-][a-zA-Z0-9]+)*" .    //user
+				"@" .
+				"([a-zA-Z0-9]+([\.-][a-zA-Z0-9]+)*)+" .   //domain
+				"\\.[a-zA-Z0-9]{2,}" .                    //sld, tld 
+				"$", $email)
+	  )
 	{
-		if( !eregi( "^" .
-			"[a-zA-Z0-9]+([_\\.-][a-zA-Z0-9]+)*" .    //user
-            "@" .
-            "([a-zA-Z0-9]+([\.-][a-zA-Z0-9]+)*)+" .   //domain
-            "\\.[a-zA-Z0-9]{2,}" .                    //sld, tld 
-            "$", $email)
-                        )
-        {
-        //echo "Erreur: '$email' n'est pas une adresse mail valide!<br>";
-        return false;
-        }
-		else return true;
+		//echo "Erreur: '$email' n'est pas une adresse mail valide!<br>";
+		return false;
 	}
+	else return true;
+}
 
 ?>

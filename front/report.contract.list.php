@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
- 
+
 
 include ("_relpos.php");
 
@@ -64,48 +64,48 @@ if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != '0')
 		$query.= "INNER JOIN glpi_contracts ON glpi_contract_device.FK_contract=glpi_contracts.ID ";
 		$query.= "INNER JOIN ".$item_db_name[$val]." ON glpi_contract_device.device_type='$val' AND ".$item_db_name[$val].".ID =  glpi_contract_device.FK_device ";
 		$query.= "LEFT JOIN glpi_infocoms ON glpi_infocoms.device_type='$val' AND ".$item_db_name[$val].".ID =  glpi_infocoms.FK_device ";
-	
-	
+
+
 		$query.=" WHERE ".$item_db_name[$val].".is_template ='0' ";
-	
+
 		if(isset($_POST["annee"][0])&&$_POST["annee"][0] != 'toutes')
 		{
-				$query.=" AND ('1'='0' ";
-				foreach ($_POST["annee"] as $key2 => $val2){
-					$query.= " OR YEAR(glpi_infocoms.buy_date) = '".$val2."'";
-					$query.= " OR YEAR(glpi_contracts.begin_date) = '".$val2."'";
-				}
-				$query.= ")";
+			$query.=" AND ('1'='0' ";
+			foreach ($_POST["annee"] as $key2 => $val2){
+				$query.= " OR YEAR(glpi_infocoms.buy_date) = '".$val2."'";
+				$query.= " OR YEAR(glpi_contracts.begin_date) = '".$val2."'";
+			}
+			$query.= ")";
 		}
 		$query.= " order by ".$item_db_name[$val].".name asc";
-//		echo $query;
+		//		echo $query;
 		report_perso($item_db_name[$val],$query);
-		}
+	}
 }
 else
 {
 	$query=array();
-		foreach ($item_db_name as $key => $val)
-		{
+	foreach ($item_db_name as $key => $val)
+	{
 		$query[$key] = "select  ".$item_db_name[$key].".name as itemname, ".$item_db_name[$key].".deleted as itemdeleted, ".$item_db_name[$key].".*, glpi_contracts.*, glpi_infocoms.* from glpi_contract_device ";
 		$query[$key].= "INNER JOIN glpi_contracts ON glpi_contract_device.FK_contract=glpi_contracts.ID ";
 		$query[$key].= "INNER JOIN ".$item_db_name[$key]." ON glpi_contract_device.device_type='$key' AND ".$item_db_name[$key].".ID =  glpi_contract_device.FK_device ";
 		$query[$key].= "LEFT JOIN glpi_infocoms ON glpi_infocoms.device_type='$key' AND ".$item_db_name[$key].".ID =  glpi_infocoms.FK_device ";
-			
+
 		$query[$key].=" WHERE ".$item_db_name[$key].".is_template ='0' ";
 
-			if(isset($_POST["annee"][0])&&$_POST["annee"][0] != 'toutes')
-			{
-				$query[$key].=" AND ('1'='0' ";
-				foreach ($_POST["annee"] as $key2 => $val2){
-					$query[$key].= " OR YEAR(glpi_infocoms.buy_date) = '".$val2."'";
-					$query[$key].= " OR YEAR(glpi_contracts.begin_date) = '".$val2."'";
-				}
-				$query[$key].= ")";
+		if(isset($_POST["annee"][0])&&$_POST["annee"][0] != 'toutes')
+		{
+			$query[$key].=" AND ('1'='0' ";
+			foreach ($_POST["annee"] as $key2 => $val2){
+				$query[$key].= " OR YEAR(glpi_infocoms.buy_date) = '".$val2."'";
+				$query[$key].= " OR YEAR(glpi_contracts.begin_date) = '".$val2."'";
 			}
-//		echo $query[$key];
+			$query[$key].= ")";
+		}
+		//		echo $query[$key];
 		report_perso($item_db_name[$key],$query[$key]);
-		 }		
+	}		
 }
 
 echo "</div>";

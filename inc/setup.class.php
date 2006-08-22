@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -61,21 +61,21 @@ class SetupSearchDisplay extends CommonDBTM{
 				$this->addToDB();
 			}
 		} else {
-		// No items in the global config
+			// No items in the global config
 			if (count($SEARCH_OPTION[$input["type"]])>1){
 				$done=false;
 				foreach($SEARCH_OPTION[$input["type"]] as $key => $val)
-				if (is_array($val)&&$key!=1&&!$done){
-					$data["FK_users"]=$input["FK_users"];
-					$data["type"]=$input["type"];
-					$data["type"]=$input["type"];
-					$data["rank"]=1;
-					$data["num"]=$key;
-					$this->fields=$data;
-					$this->addToDB();
-					$done=true;
-				}
-				
+					if (is_array($val)&&$key!=1&&!$done){
+						$data["FK_users"]=$input["FK_users"];
+						$data["type"]=$input["type"];
+						$data["type"]=$input["type"];
+						$data["rank"]=1;
+						$data["num"]=$key;
+						$this->fields=$data;
+						$this->addToDB();
+						$done=true;
+					}
+
 
 			}
 
@@ -128,32 +128,32 @@ class SetupSearchDisplay extends CommonDBTM{
 			$dp[COMPUTER_TYPE]=$lang["Menu"][0];
 			if (!$type)
 				$type=COMPUTER_TYPE;
-			}
+		}
 		if (haveRight("networking","r")){
 			$dp[NETWORKING_TYPE]=$lang["Menu"][1];
 			if (!$type)
 				$type=NETWORKING_TYPE;
-			}
+		}
 		if (haveRight("printer","r")){
 			$dp[PRINTER_TYPE]=$lang["Menu"][2];
 			if (!$type)
 				$type=PRINTER_TYPE;
-			}
+		}
 		if (haveRight("monitor","r")){
 			$dp[MONITOR_TYPE]=$lang["Menu"][3];
 			if (!$type)
 				$type=MONITOR_TYPE;
-			}
+		}
 		if (haveRight("peripheral","r")){
 			$dp[PERIPHERAL_TYPE]=$lang["Menu"][16];
 			if (!$type)
 				$type=PERIPHERAL_TYPE;
-			}
+		}
 		if (haveRight("software","r")){
 			$dp[SOFTWARE_TYPE]=$lang["Menu"][4];
 			if (!$type)
 				$type=SOFTWARE_TYPE;
-			}
+		}
 		if (haveRight("contact_enterprise","r")){
 			$dp[CONTACT_TYPE]=$lang["Menu"][22];
 			$dp[ENTERPRISE_TYPE]=$lang["Menu"][23];
@@ -209,13 +209,13 @@ class SetupSearchDisplay extends CommonDBTM{
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 		echo $lang["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
 
-		
+
 		foreach ($dp as $key => $val){
 			$sel="";
 			if ($type==$key) $sel="selected";
 			echo "<option value='$key' $sel>".$val."</option>";
 		}
-		
+
 		echo "</select></td>";
 		echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
 		echo "</table></form></div>";
@@ -230,21 +230,21 @@ class SetupSearchDisplay extends CommonDBTM{
 	function showForm($type){
 		global $SEARCH_OPTION,$cfg_glpi,$lang,$db,$HTMLRel;
 
-		
+
 		$is_global=($_SESSION['glpi_searchconfig']==1);
 		if ($is_global) $IDuser=0;
 		else $IDuser=$_SESSION["glpiID"];
 		$global_write=haveRight("search_config","w");
-		
+
 		echo "<div align='center'>";
 		// Defined items
 		$query="SELECT * from glpi_display WHERE type='$type' AND FK_users='$IDuser' order by rank";
-		
+
 		$result=$db->query($query);
 		$numrows=0;
 		$numrows=$db->numrows($result);
 		if ($numrows==0&&!$is_global){
-			
+
 			echo "<table class='tab_cadre_fixe' cellpadding='2' ><tr><th colspan='4'>";
 			echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 			echo "<input type='hidden' name='type' value='$type'>";
@@ -253,7 +253,7 @@ class SetupSearchDisplay extends CommonDBTM{
 			echo $lang["setup"][241];
 			echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='activate' value=\"".$lang["buttons"][2]."\" class='submit' >";
 			echo "</form></th></tr></table>";
-			
+
 		} else {
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' ><tr><th colspan='4'>";
@@ -263,7 +263,7 @@ class SetupSearchDisplay extends CommonDBTM{
 				echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 				echo "<input type='hidden' name='type' value='$type'>";
 				echo "<input type='hidden' name='FK_users' value='$IDuser'>";
-		
+
 				echo "<select name='num'>";
 				$first_group=true;
 				foreach ($SEARCH_OPTION[$type] as $key => $val)
@@ -281,61 +281,61 @@ class SetupSearchDisplay extends CommonDBTM{
 				echo "</form>";
 				echo "</td></tr>";
 			}
-			
-			
+
+
 			// print first element 
 			echo "<tr class='tab_bg_2'><td  align='center' width='50%'>";
 			echo $SEARCH_OPTION[$type][1]["name"];
-			
-			
+
+
 			if (!$is_global||$global_write)
 				echo "</td><td colspan='3'>&nbsp;</td>";
 			echo "</tr>";
 			$i=0;
 			if ($numrows)
-			while ($data=$db->fetch_array($result))
-			if ($data["num"]!=1){
-				echo "<tr class='tab_bg_2'><td align='center' width='50%' >";
-				echo $SEARCH_OPTION[$type][$data["num"]]["name"];
-				echo "</td>";
-				if (!$is_global||$global_write){
-					if ($i!=0){
-						echo "<td align='center' valign='middle'>";
-						echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
-						echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
-						echo "<input type='hidden' name='FK_users' value='$IDuser'>";
-	
-						echo "<input type='hidden' name='type' value='$type'>";
-						echo "<input type='image' name='up'  value=\"".$lang["buttons"][24]."\"  src=\"".$HTMLRel."pics/puce-up2.png\" alt=\"".$lang["buttons"][24]."\"  title=\"".$lang["buttons"][24]."\" >";	
-						echo "</form>";
+				while ($data=$db->fetch_array($result))
+					if ($data["num"]!=1){
+						echo "<tr class='tab_bg_2'><td align='center' width='50%' >";
+						echo $SEARCH_OPTION[$type][$data["num"]]["name"];
 						echo "</td>";
-					} else echo "<td>&nbsp;</td>";
-					if ($i!=$numrows-1){
-						echo "<td align='center' valign='middle'>";
-						echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
-						echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
-						echo "<input type='hidden' name='FK_users' value='$IDuser'>";
-	
-						echo "<input type='hidden' name='type' value='$type'>";
-						echo "<input type='image' name='down' value=\"".$lang["buttons"][25]."\" src=\"".$HTMLRel."pics/puce-down2.png\" alt=\"".$lang["buttons"][25]."\"  title=\"".$lang["buttons"][25]."\" >";	
-						echo "</form>";
-						echo "</td>";
-					} else echo "<td>&nbsp;</td>";
+						if (!$is_global||$global_write){
+							if ($i!=0){
+								echo "<td align='center' valign='middle'>";
+								echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
+								echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+								echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
-					echo "<td align='center' valign='middle'>";
-					echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
-					echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
-					echo "<input type='hidden' name='FK_users' value='$IDuser'>";
-	
-					echo "<input type='hidden' name='type' value='$type'>";
-					echo "<input type='image' name='delete' value=\"".$lang["buttons"][6]."\"src=\"".$HTMLRel."pics/puce-delete2.png\" alt=\"".$lang["buttons"][6]."\"  title=\"".$lang["buttons"][6]."\" >";	
-					echo "</form>";
-					echo "</td>";
-				}
-				echo "</tr>";
-				$i++;
-			}
-		
+								echo "<input type='hidden' name='type' value='$type'>";
+								echo "<input type='image' name='up'  value=\"".$lang["buttons"][24]."\"  src=\"".$HTMLRel."pics/puce-up2.png\" alt=\"".$lang["buttons"][24]."\"  title=\"".$lang["buttons"][24]."\" >";	
+								echo "</form>";
+								echo "</td>";
+							} else echo "<td>&nbsp;</td>";
+							if ($i!=$numrows-1){
+								echo "<td align='center' valign='middle'>";
+								echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
+								echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+								echo "<input type='hidden' name='FK_users' value='$IDuser'>";
+
+								echo "<input type='hidden' name='type' value='$type'>";
+								echo "<input type='image' name='down' value=\"".$lang["buttons"][25]."\" src=\"".$HTMLRel."pics/puce-down2.png\" alt=\"".$lang["buttons"][25]."\"  title=\"".$lang["buttons"][25]."\" >";	
+								echo "</form>";
+								echo "</td>";
+							} else echo "<td>&nbsp;</td>";
+
+							echo "<td align='center' valign='middle'>";
+							echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
+							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
+							echo "<input type='hidden' name='FK_users' value='$IDuser'>";
+
+							echo "<input type='hidden' name='type' value='$type'>";
+							echo "<input type='image' name='delete' value=\"".$lang["buttons"][6]."\"src=\"".$HTMLRel."pics/puce-delete2.png\" alt=\"".$lang["buttons"][6]."\"  title=\"".$lang["buttons"][6]."\" >";	
+							echo "</form>";
+							echo "</td>";
+						}
+						echo "</tr>";
+						$i++;
+					}
+
 		}			
 		echo "</table></div>";
 	}

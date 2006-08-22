@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // Based on cacti plugin system
 // ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ $cfg_glpi_plugins = array();
 
 function initPlugins(){
 	global $phproot;
-	
+
 	$_SESSION["glpi_plugins"]=array();
 	$dirplug=$phproot."/plugins";
 	$dh  = opendir($dirplug);
@@ -57,15 +57,15 @@ function initPlugins(){
 }
 
 function use_plugin ($name) {
-    global $phproot,$cfg_glpi;
-    if (file_exists($phproot . "/plugins/$name/setup.php")) {
-        include_once($phproot . "/plugins/$name/setup.php");
-        $function = "plugin_init_$name";
-	
-        if (function_exists($function)) {
-            $function();
-        }
-    }
+	global $phproot,$cfg_glpi;
+	if (file_exists($phproot . "/plugins/$name/setup.php")) {
+		include_once($phproot . "/plugins/$name/setup.php");
+		$function = "plugin_init_$name";
+
+		if (function_exists($function)) {
+			$function();
+		}
+	}
 }
 
 /**
@@ -74,38 +74,38 @@ function use_plugin ($name) {
  * @return mixed $data
  */
 function do_hook ($name) {
-    global $plugin_hooks;
-    $data = func_get_args();
+	global $plugin_hooks;
+	$data = func_get_args();
 
-    if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
-        foreach ($plugin_hooks[$name] as $function) {
-            if (function_exists($function)) {
-                $function($data);
-            }
-        }
-    }
+	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
+		foreach ($plugin_hooks[$name] as $function) {
+			if (function_exists($function)) {
+				$function($data);
+			}
+		}
+	}
 
-    /* Variable-length argument lists have a slight problem when */
-    /* passing values by reference. Pity. This is a workaround.  */
-    return $data;
+	/* Variable-length argument lists have a slight problem when */
+	/* passing values by reference. Pity. This is a workaround.  */
+	return $data;
 }
 
 function do_hook_function($name,$parm=NULL) {
-    global $plugin_hooks;
-    $ret = $parm;
+	global $plugin_hooks;
+	$ret = $parm;
 
-    if (isset($plugin_hooks[$name])
-          && is_array($plugin_hooks[$name])) {
-        foreach ($plugin_hooks[$name] as $function) {
-            if (function_exists($function)) {
-                $ret = $function($ret);
-            }
-        }
-    }
+	if (isset($plugin_hooks[$name])
+			&& is_array($plugin_hooks[$name])) {
+		foreach ($plugin_hooks[$name] as $function) {
+			if (function_exists($function)) {
+				$ret = $function($ret);
+			}
+		}
+	}
 
-    /* Variable-length argument lists have a slight problem when */
-    /* passing values by reference. Pity. This is a workaround.  */
-    return $ret;
+	/* Variable-length argument lists have a slight problem when */
+	/* passing values by reference. Pity. This is a workaround.  */
+	return $ret;
 }
 
 function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
@@ -113,20 +113,20 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 	// Show all Case
 	if ($onglet==-1){
 		if (isset($plugin_hooks["headings_action"])&&is_array($plugin_hooks["headings_action"])&&count($plugin_hooks["headings_action"]))	
-		foreach ($plugin_hooks["headings_action"] as $plug => $function)
-			if (function_exists($function)){
+			foreach ($plugin_hooks["headings_action"] as $plug => $function)
+				if (function_exists($function)){
 
-				$actions=$function($type);
-				
-				if (is_array($actions)&&count($actions))
-				foreach ($actions as $key => $action){
-				if (function_exists($action)){
-					echo "<br>";
-					$action($type,$ID,$withtemplate);
-				}	
+					$actions=$function($type);
 
-			}
-		}
+					if (is_array($actions)&&count($actions))
+						foreach ($actions as $key => $action){
+							if (function_exists($action)){
+								echo "<br>";
+								$action($type,$ID,$withtemplate);
+							}	
+
+						}
+				}
 		return true;
 
 	} else {
@@ -136,9 +136,9 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 			if (isset($plugin_hooks["headings_action"][$plug])){
 				$function=$plugin_hooks["headings_action"][$plug];
 				if (function_exists($function)){
-				
+
 					$actions=$function($type);
-				
+
 					if (isset($actions[$ID_onglet])&&function_exists($actions[$ID_onglet])){
 						$function=$actions[$ID_onglet];
 						$function($type,$ID,$withtemplate);
@@ -146,7 +146,7 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 					}	
 				}
 			}
-		
+
 		}
 	}
 	return false;
@@ -154,37 +154,37 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 
 function display_plugin_headings($target,$type,$withtemplate,$actif){
 	global $plugin_hooks,$lang;
-	
+
 	$template="";
 	if(!empty($withtemplate)){
 		$template="&amp;withtemplate=$withtemplate";
 	}
 	$display_onglets=array();
 	if (isset($plugin_hooks["headings"]) && is_array($plugin_hooks["headings"])) {
-        	foreach ($plugin_hooks["headings"] as $plug => $function) {
-		
-            		if (function_exists($function)) {
-	                	$onglet=$function($type,$withtemplate);
-			
+		foreach ($plugin_hooks["headings"] as $plug => $function) {
+
+			if (function_exists($function)) {
+				$onglet=$function($type,$withtemplate);
+
 				if (is_array($onglet)&&count($onglet))
-				foreach ($onglet as $key => $val)
-					$display_onglets[$plug."_".$key]=$val;
+					foreach ($onglet as $key => $val)
+						$display_onglets[$plug."_".$key]=$val;
 				//echo "<li".(($actif==$plug."_".$key)?" class='actif'":"")."><a href='$target&amp;onglet=".$plug."_".$key."$template'>".$val."</a></li>";
 			}
 		}
 		if (count($display_onglets)){
 			echo "<li class='invisible'>&nbsp;</li>";
-	
+
 			echo "<li".(ereg($plug,$actif)?" class='actif'":"")." style='position:relative;'  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$lang["common"][29]."</a>";
-				
+
 			echo "<div  id='onglet_plugins' ><dl>";
 			foreach ($display_onglets as $key => $val)
 				echo "<dt><a href='$target&amp;onglet=".$key.$template."'>".$val."</a></dt>";
 			echo "</dl></div>";
-		echo "</li>";
-			
+			echo "</li>";
+
 		}
-		
+
 	} 
 
 }

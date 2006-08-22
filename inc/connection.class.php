@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -54,13 +54,13 @@ class Connection {
 	var $deleted ='N';
 
 	/**
-	* Get items connected to a computer
-	*
-	* $type must set before
-	*
-	* @param $ID ID of the computer
-	* @return array of ID of connected items
-	*/
+	 * Get items connected to a computer
+	 *
+	 * $type must set before
+	 *
+	 * @param $ID ID of the computer
+	 * @return array of ID of connected items
+	 */
 	function getComputerContact ($type,$ID) {
 		global $db;
 		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$type')";
@@ -74,18 +74,18 @@ class Connection {
 			}
 			return $ret;
 		} else {
-				return false;
+			return false;
 		}
 	}
 
 	/**
-	* Get computer Data
-	*
-	* Set device_name, device_ID and deleted 
-	*
-	* @param $ID ID of the computer
-	* @return boolean : computer found
-	*/
+	 * Get computer Data
+	 *
+	 * Set device_name, device_ID and deleted 
+	 *
+	 * @param $ID ID of the computer
+	 * @return boolean : computer found
+	 */
 	function getComputerData($ID) {
 		global $db;
 		$query = "SELECT * FROM glpi_computers WHERE (ID = '$ID')";
@@ -102,11 +102,11 @@ class Connection {
 	}
 
 	/**
-	* Delete connection
-	*
-	* @param $ID Connection ID
-	* @return boolean
-	*/
+	 * Delete connection
+	 *
+	 * @param $ID Connection ID
+	 * @return boolean
+	 */
 	function deleteFromDB($ID) {
 
 		global $db;
@@ -120,12 +120,12 @@ class Connection {
 	}
 
 	/**
-	* Add a connection
-	*
-	* end1, end2 and type must be set
-	*
-	* @return integer : ID of added connection
-	*/
+	 * Add a connection
+	 *
+	 * end1, end2 and type must be set
+	 *
+	 * @return integer : ID of added connection
+	 */
 	function addToDB() {
 		global $db;
 

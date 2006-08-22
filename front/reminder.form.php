@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -53,10 +53,10 @@ if (isset($_POST["add"]))
 	if (isset($_POST["add"])&&isset($_POST["public"])){
 		checkRight("reminder_public","w");
 	}
-	
+
 
 	$newID=$remind->add($_POST);
-	
+
 	glpi_header($cfg_glpi["root_doc"]."/front/reminder.php");
 } 
 else if (isset($_POST["delete"]))
@@ -65,7 +65,7 @@ else if (isset($_POST["delete"]))
 		checkRight("reminder_public","w");
 	}
 	$remind->delete($_POST);
-	
+
 	glpi_header($cfg_glpi["root_doc"]."/front/reminder.php");
 }
 else if (isset($_POST["update"]))
@@ -75,7 +75,7 @@ else if (isset($_POST["update"]))
 	}
 
 	$remind->update($_POST);
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

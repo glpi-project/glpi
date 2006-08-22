@@ -26,14 +26,14 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 // CLASSE knowledgebase
 
 class kbitem extends CommonDBTM {
@@ -44,20 +44,20 @@ class kbitem extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-			
+
 		global $lang;
 		// set new date.
 		$input["date"] = date("Y-m-d H:i:s");
 		// set author
-		
+
 		// set title for question if empty
 		if(empty($input["question"])) $input["question"]=$lang["common"][30];
-		
+
 		if (haveRight("faq","w")&&!haveRight("knowbase","w")) $input["faq"]="yes";
 		if (!haveRight("faq","w")&&haveRight("knowbase","w")) $input["faq"]="no";
 
 		return $input;
-		}
+	}
 
 	function prepareInputForUpdate($input) {
 		// set new date.
@@ -68,7 +68,7 @@ class kbitem extends CommonDBTM {
 		return $input;
 	}
 
-	
+
 
 
 

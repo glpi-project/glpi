@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -46,13 +46,13 @@ if (!isset($_GET["ID"])) $_GET["ID"]=0;
 echo "<div align='center'><form method=\"get\" name=\"form\" action=\"report.reservation.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td rowspan='2' align='center'>";
-	dropdownUsers("ID",$_GET["ID"],"reservation_helpdesk");
+dropdownUsers("ID",$_GET["ID"],"reservation_helpdesk");
 echo "</td>";
 echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
 echo "</table></form></div>";
 
 if ($_GET["ID"]>0)
-	showUserReservations($_SERVER["PHP_SELF"],$_GET["ID"]);
+showUserReservations($_SERVER["PHP_SELF"],$_GET["ID"]);
 
 commonFooter();
 

@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file:
@@ -45,7 +45,7 @@ commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
 if (isset($_SESSION["ocs_import"])){
 	if ($count=count($_SESSION["ocs_import"])){
 		$percent=min(100,round(100*($_SESSION["ocs_import_count"]-$count)/$_SESSION["ocs_import_count"],0));
-		
+
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_import"]);
@@ -65,13 +65,13 @@ if (isset($_SESSION["ocs_import"])){
 }
 
 if (!isset($_POST["import_ok"])){
-if (!isset($_GET['check'])) $_GET['check']='all';
-if (!isset($_GET['start'])) $_GET['start']=0;
+	if (!isset($_GET['check'])) $_GET['check']='all';
+	if (!isset($_GET['start'])) $_GET['start']=0;
 
-if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
-ocsManageDeleted();
-ocsCleanLinks();
-ocsShowNewComputer($_GET['check'],$_GET['start']);
+	if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
+	ocsManageDeleted();
+	ocsCleanLinks();
+	ocsShowNewComputer($_GET['check'],$_GET['start']);
 
 } else {
 

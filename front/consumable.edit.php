@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
+ */
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
@@ -49,19 +49,19 @@ if (isset($_GET["add"]))
 
 	$con->add($_GET);
 	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added a consumable.");
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["add_several"]))
 {
 	checkRight("consumable","w");
-	
+
 	for ($i=0;$i<$_POST["to_add"];$i++){
 		unset($con->fields["ID"]);
 		$con->add($_POST);
 	}
 	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." consumable.");
-	
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
@@ -77,8 +77,8 @@ else if (isset($tab["give"]))
 	checkRight("consumable","w");
 
 	if (isset($tab["out"]))
-	foreach ($tab["out"] as $key => $val)
-		$con->out($key,$tab["id_user"]);
+		foreach ($tab["out"] as $key => $val)
+			$con->out($key,$tab["id_user"]);
 
 	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." user ".$tab["id_user"]." take out a consummable.");
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -93,7 +93,7 @@ else if (isset($tab["restore"]))
 }
 else if (isset($tab["back"]))
 {
-	
+
 	glpi_header($tab["back"]." ");
 }
 

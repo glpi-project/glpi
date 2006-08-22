@@ -26,14 +26,14 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
-*/
- 
+ */
+
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
- 
+
 
 
 class InfoCom extends CommonDBTM {
@@ -43,7 +43,7 @@ class InfoCom extends CommonDBTM {
 		$this->table="glpi_infocoms";
 		$this->type=INFOCOM_TYPE;
 	}
-	
+
 	function post_getEmpty () {
 		global $cfg_glpi;
 		$this->fields["alert"]=$cfg_glpi["infocom_alerts"];
@@ -54,16 +54,16 @@ class InfoCom extends CommonDBTM {
 
 		global $db;
 		$query = "SELECT * FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='$device_type')";
-		
+
 		if ($result = $db->query($query)) {
-		if ($db->numrows($result)==1){	
-			$data = $db->fetch_assoc($result);
-			
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-			}
-			return true;
-		} else return false;
+			if ($db->numrows($result)==1){	
+				$data = $db->fetch_assoc($result);
+
+				foreach ($data as $key => $val) {
+					$this->fields[$key] = $val;
+				}
+				return true;
+			} else return false;
 		} else {
 			return false;
 		}
@@ -71,7 +71,7 @@ class InfoCom extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 		if (isset($input["ID"])){
-			
+
 			$this->getFromDB($input["ID"]);
 		} else {
 			if (!$this->getFromDBforDevice($input["device_type"],$input["FK_device"])){
