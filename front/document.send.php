@@ -57,12 +57,11 @@ if (isset($_GET["file"])){
 				
 
 				if ($_SESSION["glpiprofile"]["interface"]=="central"){
-					// My doc Check
-					if ($doc->fields["FK_users"]==$_SESSION["glpiID"])
+					// My doc Check and Common doc right access
+					if (haveRight("document","r")
+						||$doc->fields["FK_users"]==$_SESSION["glpiID"])
 						$send=true;
-					// else Common doc right access
-					else if (haveRight("document","r"))
-						$send=true;
+
 					// Knowbase Case
 					if (!$send&&haveRight("knowbase","r")){
 						$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."'";
@@ -106,6 +105,20 @@ if (isset($_GET["file"])){
 							if ($db->numrows($result)>0)
 								$send=true;
 						}
+
+						// Tracking Case
+						if (!$send&&isset($_GET["tracking"])){
+							$job=new Job;
+							$job->getFromDB($_GET["tracking"]);
+							
+							if ($job->fields["author"]==$_SESSION["glpiID"]){
+								$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$_GET["tracking"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' AND FK_doc='".$doc->fields["ID"]."'";
+								$result=$db->query($query);
+								if ($db->numrows($result)>0)
+									$send=true;
+							}
+						}
+
 					}
 				}
 			} else echo $lang["document"][43];
