@@ -549,7 +549,7 @@ if(!TableExists("glpi_dropdown_case_type")) {
 	$db->query($query) or die("0.68.1 glpi_device_case ".$lang["update"][90].$db->error());
 
 	// Supression du champts format
-	$query = "ALTER TABLE `glpi_device_case` DROP 'format`;";
+	$query = "ALTER TABLE `glpi_device_case` DROP `format`;";
 	$db->query($query) or die("0.68.1 drop format from glpi_device_case ".$lang["update"][90].$db->error());
 	
 
