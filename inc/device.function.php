@@ -258,7 +258,6 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case CASE_DEVICE :
 			$type=$lang["devices"][22];
 			$name=$device->fields["designation"];
-			print_r($device);
 			if (!empty($device->fields["type"])) {
 				$entry[$lang["device_case"][0]]=getDropdownName("glpi_dropdown_case_type",$device->fields["type"]);
 			}

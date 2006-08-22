@@ -515,6 +515,46 @@ if (countElementsInTable("glpi_ocs_link")){
 	}
 }
 
+if(!TableExists("glpi_dropdown_case_type")) {
+
+	$query ="CREATE TABLE `glpi_dropdown_case_type` (
+	`ID` int(11) NOT NULL auto_increment,
+	`name` varchar(255) NOT NULL,
+	`comments` text,
+	PRIMARY KEY  (`ID`),
+	KEY `name` (`name`)
+	) ENGINE=MyISAM ;";
+
+	$db->query($query) or die("0.68.1 add table dropdown_case_type ".$lang["update"][90].$db->error());
+	// ajout du champs type
+	$query = "ALTER TABLE `glpi_device_case` ADD  `type` INT( 11 ) default NULL AFTER `designation` ;";
+	
+	$db->query($query) or die("0.68.1 add glpi_device_case.type ".$lang["update"][90].$db->error());
+
+	// Ajout des entrees dans la table dropdown_case_type
+	$query = "INSERT INTO `glpi_dropdown_case_type` ( `ID` , `name` , `comments` ) VALUES ('1' , 'Grand', NULL);";
+	$db->query($query) or die("0.68.1 glpi_device_case ".$lang["update"][90].$db->error());
+	$query = "INSERT INTO `glpi_dropdown_case_type` ( `ID` , `name` , `comments` ) VALUES ('2' , 'Moyen', NULL);";
+	$db->query($query) or die("0.68.1 glpi_device_case ".$lang["update"][90].$db->error());
+	$query = "INSERT INTO `glpi_dropdown_case_type` ( `ID` , `name` , `comments` ) VALUES ('3' , 'Micro', NULL);";
+	$db->query($query) or die("0.68.1 glpi_device_case ".$lang["update"][90].$db->error());
+
+	// Mapping format enum / type
+
+	$query = "UPDATE `glpi_device_case` SET  `type`='1' WHERE `format`='Grand';";
+	$db->query($query) or die("0.68.1 glpi_device_case ".$lang["update"][90].$db->error());
+	$query = "UPDATE `glpi_device_case` SET  `type`='2' WHERE `format`='Moyen';";
+	$db->query($query) or die("0.68.1 glpi_device_case ".$lang["update"][90].$db->error());
+	$query = "UPDATE `glpi_device_case` SET  `type`='3' WHERE `format`='Micro';";
+	$db->query($query) or die("0.68.1 glpi_device_case ".$lang["update"][90].$db->error());
+
+	// Supression du champts format
+	$query = "ALTER TABLE `glpi_device_case` DROP 'format`;";
+	$db->query($query) or die("0.68.1 drop format from glpi_device_case ".$lang["update"][90].$db->error());
+	
+
+}
+
 
 } // fin 0.68 #####################################################################################
 
