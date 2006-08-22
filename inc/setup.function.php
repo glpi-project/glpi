@@ -565,6 +565,11 @@ function replaceDropDropDown($input) {
 		$query = "update glpi_phones set power = '". $input["newID"] ."'  where power = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
+	case "case_type":
+		$query = "update glpi_device_case set type = '". $input["newID"] ."'  where type = '".$input["oldID"]."'";
+		$db->query($query);
+		break;
+
 	}
 
 	$query = "delete from ". $input["tablename"] ." where ID = '". $input["oldID"] ."'";
@@ -905,6 +910,11 @@ function dropdownUsed($table, $ID) {
 		break;
 	case "phone_power" :
 		$query = "Select count(*) as cpt FROM glpi_phones where power = '".$ID."'";
+		$result = $db->query($query);
+		if($db->result($result,0,"cpt") > 0)  $var1 = false;
+		break;
+	case "case_type":
+		$query = "Select count(*) as cpt FROM glpi_device_case where type = '".$ID."'";
 		$result = $db->query($query);
 		if($db->result($result,0,"cpt") > 0)  $var1 = false;
 		break;
