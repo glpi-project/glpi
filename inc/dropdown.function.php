@@ -73,97 +73,90 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
-	
+
 	displaySearchTextAjaxDropdown($myname.$rand);
-$name="------";
-$comments="";
-$limit_length=$cfg_glpi["dropdown_limit"];
-if (empty($value)) $value=0;
-if ($value>0){
-	$tmpname=getDropdownName($table,$value,1);
-	if ($tmpname["name"]!="&nbsp;"){
-		$name=$tmpname["name"];
-		$comments=$tmpname["comments"];
-		$limit_length=max(strlen($name),$cfg_glpi["dropdown_limit"]);
+	$name="------";
+	$comments="";
+	$limit_length=$cfg_glpi["dropdown_limit"];
+	if (empty($value)) $value=0;
+	if ($value>0){
+		$tmpname=getDropdownName($table,$value,1);
+		if ($tmpname["name"]!="&nbsp;"){
+			$name=$tmpname["name"];
+			$comments=$tmpname["comments"];
+			$limit_length=max(strlen($name),$cfg_glpi["dropdown_limit"]);
+		}
 	}
-}
-
-echo "<script type='text/javascript' >\n";
-echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, \n";
-echo "           onComplete:function(request)\n";
-echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-echo "           onLoading:function(request)\n";
-echo "            {Element.show('search_spinner_$myname$rand');},\n";
-echo "           method:'post', parameters:'searchText='+value+'&value=$value&table=$table&myname=$myname&limit=$limit_length&comments=$display_comments&rand=$rand'\n";
-echo "})})\n";
-echo "</script>\n";
-
-echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-
-$nb=0;
-if ($cfg_glpi["use_ajax"])
-	$nb=countElementsInTable($table);
-
-if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 
 	echo "<script type='text/javascript' >\n";
-	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
-	echo "Element.hide('search_$myname$rand');";
-//	echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
+	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, \n";
+	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'searchText='+value+'&value=$value&table=$table&myname=$myname&limit=$limit_length&comments=$display_comments&rand=$rand'\n";
+	echo "})})\n";
 	echo "</script>\n";
 
-}
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-
-
-echo "<span id='results_$myname$rand'>\n";
-if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
-	$_POST["myname"]=$myname;
-	$_POST["table"]=$table;
-	$_POST["value"]=$value;
-	$_POST["rand"]=$rand;
-	$_POST["comments"]=$display_comments;
-	$_POST["limit"]=$limit_length;
-	$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
-	include ($phproot."/ajax/dropdownValue.php");
-} else {
-	echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
-}
-echo "</span>\n";	
-
-
-$comments_display="";
-$comments_display2="";
-if ($display_comments) {
-	$comments_display=" onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
-	$comments_display2="<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
-}
-
-$which="";
-$dropdown_right=haveRight("dropdown","w");
-
-if ($dropdown_right){
-	if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
-		$search=array("/glpi_dropdown_/","/glpi_type_/");
-		$replace=array("","");
-		$which=preg_replace($search,$replace,$table);
+	$nb=0;
+	if ($cfg_glpi["use_ajax"]){
+		$nb=countElementsInTable($table);
 	}
-}
+
+	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_$myname$rand');";
+		echo "</script>\n";
+	}
+
+	echo "<span id='results_$myname$rand'>\n";
+	if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
+		$_POST["myname"]=$myname;
+		$_POST["table"]=$table;
+		$_POST["value"]=$value;
+		$_POST["rand"]=$rand;
+		$_POST["comments"]=$display_comments;
+		$_POST["limit"]=$limit_length;
+		$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
+		include ($phproot."/ajax/dropdownValue.php");
+	} else {
+		echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
+	}
+	echo "</span>\n";	
+
+	$comments_display="";
+	$comments_display2="";
+	if ($display_comments) {
+		$comments_display=" onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
+		$comments_display2="<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
+	}
+
+	$which="";
+	$dropdown_right=haveRight("dropdown","w");
+
+	if ($dropdown_right){
+		if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
+			$search=array("/glpi_dropdown_/","/glpi_type_/");
+			$replace=array("","");
+			$which=preg_replace($search,$replace,$table);
+		}
+	}
 	
-if ($display_comments){
-	echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display ";
-	if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
-	echo ">";
-	echo $comments_display2;
-}
+	if ($display_comments){
+		echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display ";
+		if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+		echo ">";
+		echo $comments_display2;
+	}
 
-	
-
-
-if ($table=="glpi_enterprises")
-	echo getEnterpriseLinks($value);	
+	if ($table=="glpi_enterprises"){
+		echo getEnterpriseLinks($value);	
+	}
 
 	return $rand;
 }
@@ -186,14 +179,20 @@ function dropdownNoValue($table,$myname,$value) {
 	global $db,$cfg_glpi;
 
 	$where="";
-	if (in_array($table,$cfg_glpi["deleted_tables"]))
+	if (in_array($table,$cfg_glpi["deleted_tables"])){
 		$where="WHERE deleted='N'";
-	if (in_array($table,$cfg_glpi["template_tables"]))
+	}
+	if (in_array($table,$cfg_glpi["template_tables"])){
 		$where.="AND is_template='0'";
+	}
 		
-	if (in_array($table,$cfg_glpi["dropdowntree_tables"]))
+	if (in_array($table,$cfg_glpi["dropdowntree_tables"])){
 		$query = "SELECT ID FROM $table $where ORDER BY completename";
-	else $query = "SELECT ID FROM $table $where ORDER BY name";
+	}
+	else {
+		$query = "SELECT ID FROM $table $where ORDER BY name";
+	}
+
 	$result = $db->query($query);
 	
 	echo "<select name=\"$myname\" size='1'>";
@@ -266,7 +265,7 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 
 	$default_display="";
 	$comments_display="";
-
+	
 	$user=getUserName($value,2);
 	$default_display="<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
 	if ($display_comments) {
@@ -315,7 +314,6 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 * 
 */
 function dropdownAllUsers($myname,$value,$display_comments=1) {
-
 	return dropdownUsers($myname,$value,"all",0,$display_comments);
 }
 
@@ -358,21 +356,21 @@ function getDropdownName($table,$id,$withcomments=0) {
 		$name = "";
 		$comments = "";
 		$query = "select * from ". $table ." where ID = '". $id ."'";
-		if ($result = $db->query($query))
-		if($db->numrows($result) != 0) {
-			$data=$db->fetch_assoc($result);
-			$name = $data["name"];
-			if (isset($data["comments"]))
-				$comments = $data["comments"];
-			
-			if ($table=="glpi_dropdown_netpoint")
-				$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
-			if ($table=="glpi_software"){
-				$name .= "  (v. ".$data["version"].")";
-				if ($data["platform"]!=0)
-					$comments.="<br>".$lang["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
+		if ($result = $db->query($query)){
+			if($db->numrows($result) != 0) {
+				$data=$db->fetch_assoc($result);
+				$name = $data["name"];
+				if (isset($data["comments"]))
+					$comments = $data["comments"];
+				
+				if ($table=="glpi_dropdown_netpoint")
+					$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
+				if ($table=="glpi_software"){
+					$name .= "  (v. ".$data["version"].")";
+					if ($data["platform"]!=0)
+						$comments.="<br>".$lang["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
+				}
 			}
-			
 		}
 	}
 	if (empty($name)) $name="&nbsp;";
@@ -421,7 +419,6 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 	echo "<script type='text/javascript' >\n";
 	echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
 	echo "Element.hide('search_$myname$rand');";
-	//echo "document.getElementById('search_$myname$rand').value='".$cfg_glpi["ajax_wildcard"]."';";
 	echo "</script>\n";
 }
 
@@ -472,31 +469,25 @@ if (!$cfg_glpi["use_ajax"]||$nb<$cfg_glpi["ajax_limit_count"]){
 * @return nothing (print out an HTML select box)
 */
 function dropdownIcons($myname,$value,$store_path){
-global $HTMLRel,$lang;
-if (is_dir($store_path)){
-if ($dh = opendir($store_path)) {
-	echo "<select name=\"$myname\">";
-	echo "<option value=''>-----</option>";
-       while (($file = readdir($dh)) !== false) {
-           if (eregi(".png$",$file)){
-	   if ($file == $value) {
-				echo "<option value=\"$file\" selected>".$file;
-			} else {
-				echo "<option value=\"$file\">".$file;
-			}
-	echo "</option>";
-	   }
-	   
-       
-       }
-       closedir($dh);
-       echo "</select>";
-   } else echo "Error reading directory $store_path";
-
-
-} else echo "Error $store_path is not a directory";
-
-
+	global $HTMLRel,$lang;
+	if (is_dir($store_path)){
+		if ($dh = opendir($store_path)) {
+			echo "<select name=\"$myname\">";
+			echo "<option value=''>-----</option>";
+				while (($file = readdir($dh)) !== false) {
+					if (eregi(".png$",$file)){
+						if ($file == $value) {
+							echo "<option value=\"$file\" selected>".$file;
+						} else {
+							echo "<option value=\"$file\">".$file;
+						}
+						echo "</option>";
+					}
+				}
+		   closedir($dh);
+		   echo "</select>";
+	   } else echo "Error reading directory $store_path";
+	} else echo "Error $store_path is not a directory";
 }
 
 
