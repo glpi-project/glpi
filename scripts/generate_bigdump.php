@@ -660,7 +660,7 @@ $max['locations']=$db->result($result,0,0) or die (" PB RESULT ".$query);
 // glpi_groups
 
 for ($i=0;$i<$max['groups'];$i++){
-	$query="INSERT INTO glpi_groups VALUES (NULL,'group $i','comment group $i','','')";
+	$query="INSERT INTO glpi_groups VALUES (NULL,'group $i','comment group $i','','','')";
 	$db->query($query) or die("PB REQUETE ".$query);
 }
 
