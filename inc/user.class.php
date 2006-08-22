@@ -450,7 +450,7 @@ class User extends CommonDBTM {
 		}
 
 		//The groupes are retrived by looking into an ldap group object
-		if ($cfg_glpi["ldap_search_for_groups"]==0||$cfg_glpi["ldap_search_for_groups"]==2){
+		if ($cfg_glpi["ldap_search_for_groups"]==1||$cfg_glpi["ldap_search_for_groups"]==2){
 
 			$result=$db->query($query_group);
 
