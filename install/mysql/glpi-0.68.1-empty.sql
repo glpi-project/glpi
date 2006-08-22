@@ -794,6 +794,17 @@ CREATE TABLE `glpi_dropdown_cartridge_type` (
 ) ENGINE=MyISAM ;
 
 
+### Dump table glpi_dropdown_case_type
+
+CREATE TABLE `glpi_dropdown_case_type` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `comments` text,
+  PRIMARY KEY  (`ID`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM ;
+
+
 ### Dump table glpi_dropdown_consumable_type
 
 DROP TABLE IF EXISTS `glpi_dropdown_consumable_type`;
