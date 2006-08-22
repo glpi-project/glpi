@@ -19,10 +19,10 @@ function cleandisplay(id){
 		if (iePos !=-1) {
 			var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
 			var is_major = parseInt(is_minor);
- 		}
-	 	if (navigator.appName.substring(0,9) == "Microsoft")
-	 	{ // Check if IE version is 6 or older
- 			if (is_major <= 6) {
+		}
+		if (navigator.appName.substring(0,9) == "Microsoft")
+		{ // Check if IE version is 6 or older
+			if (is_major <= 6) {
 				ie=true;
 			}
 		}
@@ -30,19 +30,19 @@ function cleandisplay(id){
 		setdisplay(e,'block');
 
 		if (ie){
-			 var selx=0; var sely=0; var selp;
-			 if(e.offsetParent){
-				 selp=e;
-				 while(selp.offsetParent){
-				 	selp=selp.offsetParent;
-					 selx+=selp.offsetLeft;
-					 sely+=selp.offsetTop;
-				 }
-			 }
-			 selx+=e.offsetLeft;
-	 		sely+=e.offsetTop;
-			 selw=e.offsetWidth;
-			 selh=e.offsetHeight;
+			var selx=0; var sely=0; var selp;
+			if(e.offsetParent){
+				selp=e;
+				while(selp.offsetParent){
+					selp=selp.offsetParent;
+					selx+=selp.offsetLeft;
+					sely+=selp.offsetTop;
+				}
+			}
+			selx+=e.offsetLeft;
+			sely+=e.offsetTop;
+			selw=e.offsetWidth;
+			selh=e.offsetHeight;
 			hideSelect(selx,sely,selw,selh);
 		}
 	}
@@ -58,28 +58,28 @@ function cleanhide(id){
 		if (iePos !=-1) {
 			var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
 			var is_major = parseInt(is_minor);
- 		}
-	 	if (navigator.appName.substring(0,9) == "Microsoft")
-	 	{ // Check if IE version is 6 or older
- 			if (is_major <= 6) {
+		}
+		if (navigator.appName.substring(0,9) == "Microsoft")
+		{ // Check if IE version is 6 or older
+			if (is_major <= 6) {
 				ie=true;
 			}
 		}
 
 		if (ie){
-			 var selx=0; var sely=0; var selp;
-			 if(e.offsetParent){
-				 selp=e;
-				 while(selp.offsetParent){
-				 	selp=selp.offsetParent;
-					 selx+=selp.offsetLeft;
-					 sely+=selp.offsetTop;
-				 }
-			 }
-			 selx+=e.offsetLeft;
-	 		sely+=e.offsetTop;
-			 selw=e.offsetWidth;
-			 selh=e.offsetHeight;
+			var selx=0; var sely=0; var selp;
+			if(e.offsetParent){
+				selp=e;
+				while(selp.offsetParent){
+					selp=selp.offsetParent;
+					selx+=selp.offsetLeft;
+					sely+=selp.offsetTop;
+				}
+			}
+			selx+=e.offsetLeft;
+			sely+=e.offsetTop;
+			selw=e.offsetWidth;
+			selh=e.offsetHeight;
 			showSelect(selx,sely,selw,selh);
 		}
 		setdisplay(e,'none');
@@ -93,13 +93,13 @@ function hidemenu(){
 
 	var appVer = navigator.appVersion.toLowerCase();
 	var iePos = appVer.indexOf('msie');
-	 if (iePos !=-1) {
-		 var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
-		 var is_major = parseInt(is_minor);
- 	}
-	 if (navigator.appName.substring(0,9) == "Microsoft")
-	 { // Check if IE version is 6 or older
- 		if (is_major <= 6) {
+	if (iePos !=-1) {
+		var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
+		var is_major = parseInt(is_minor);
+	}
+	if (navigator.appName.substring(0,9) == "Microsoft")
+	{ // Check if IE version is 6 or older
+		if (is_major <= 6) {
 			ie=true;
 		}
 	}
@@ -108,19 +108,19 @@ function hidemenu(){
 		var e=document.getElementById('smenu'+i);
 		if (e) {
 			if (ie){
-				 var selx=0; var sely=0; var selp;
-				 if(e.offsetParent){
-					 selp=e;
-					 while(selp.offsetParent){
-					 	selp=selp.offsetParent;
-						 selx+=selp.offsetLeft;
-						 sely+=selp.offsetTop;
-					 }
-				 }
-				 selx+=e.offsetLeft;
-		 		sely+=e.offsetTop;
-				 selw=e.offsetWidth;
-				 selh=e.offsetHeight;
+				var selx=0; var sely=0; var selp;
+				if(e.offsetParent){
+					selp=e;
+					while(selp.offsetParent){
+						selp=selp.offsetParent;
+						selx+=selp.offsetLeft;
+						sely+=selp.offsetTop;
+					}
+				}
+				selx+=e.offsetLeft;
+				sely+=e.offsetTop;
+				selw=e.offsetWidth;
+				selh=e.offsetHeight;
 				showSelect(selx,sely,selw,selh);
 			}
 			setdisplay(e,'none');
@@ -129,19 +129,19 @@ function hidemenu(){
 }
 
 function montre(id) {
-var d = document.getElementById(id);
+	var d = document.getElementById(id);
 
-var ie=false;
+	var ie=false;
 
 	var appVer = navigator.appVersion.toLowerCase();
 	var iePos = appVer.indexOf('msie');
-	 if (iePos !=-1) {
-		 var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
-		 var is_major = parseInt(is_minor);
- 	}
-	 if (navigator.appName.substring(0,9) == "Microsoft")
-	 { // Check if IE version is 6 or older
- 		if (is_major <= 6) {
+	if (iePos !=-1) {
+		var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
+		var is_major = parseInt(is_minor);
+	}
+	if (navigator.appName.substring(0,9) == "Microsoft")
+	{ // Check if IE version is 6 or older
+		if (is_major <= 6) {
 			ie=true;
 		}
 	}
@@ -151,89 +151,89 @@ var ie=false;
 		if (e) {
 			setdisplay(e,'block');
 			if (ie){
-				 var selx=0; var sely=0; var selp;
-				 if(e.offsetParent){
-					 selp=e;
-					 while(selp.offsetParent){
-					 	selp=selp.offsetParent;
-						 selx+=selp.offsetLeft;
-						 sely+=selp.offsetTop;
-					 }
-				 }
-				 selx+=e.offsetLeft;
-		 		sely+=e.offsetTop;
-				 selw=e.offsetWidth;
-				 selh=e.offsetHeight;
+				var selx=0; var sely=0; var selp;
+				if(e.offsetParent){
+					selp=e;
+					while(selp.offsetParent){
+						selp=selp.offsetParent;
+						selx+=selp.offsetLeft;
+						sely+=selp.offsetTop;
+					}
+				}
+				selx+=e.offsetLeft;
+				sely+=e.offsetTop;
+				selw=e.offsetWidth;
+				selh=e.offsetHeight;
 				showSelect(selx,sely,selw,selh);
 			}
 			setdisplay(e,'none');
 		}
 	}
-if (d) {
-	setdisplay(d,'block'); 
-	clearTimeout(timeoutglobalvar);
-	timeoutglobalvar=setTimeout(function(){setdisplay(d, 'none')},5000);
-	
-	if (ie){
-		 var selx=0; var sely=0; var selp;
-		 if(d.offsetParent){
-			 selp=d;
-			 while(selp.offsetParent){
-				 selp=selp.offsetParent;
-				 selx+=selp.offsetLeft;
-				 sely+=selp.offsetTop;
-			 }
-		 }
-		 selx+=d.offsetLeft;
-		 sely+=d.offsetTop;
-		 selw=d.offsetWidth;
-		 selh=d.offsetHeight;
-		hideSelect(selx,sely,selw,selh);
+	if (d) {
+		setdisplay(d,'block'); 
+		clearTimeout(timeoutglobalvar);
+		timeoutglobalvar=setTimeout(function(){setdisplay(d, 'none')},5000);
+
+		if (ie){
+			var selx=0; var sely=0; var selp;
+			if(d.offsetParent){
+				selp=d;
+				while(selp.offsetParent){
+					selp=selp.offsetParent;
+					selx+=selp.offsetLeft;
+					sely+=selp.offsetTop;
+				}
+			}
+			selx+=d.offsetLeft;
+			sely+=d.offsetTop;
+			selw=d.offsetWidth;
+			selh=d.offsetHeight;
+			hideSelect(selx,sely,selw,selh);
+		}
 	}
-}
 }
 
 function showSelect(x,y,w,h){
-	 var selx,sely,selw,selh,i;
-	 var sel=document.getElementsByTagName("SELECT");
-	 for(i=0;i<sel.length;i++){
-	 selx=0; sely=0; var selp;
-	 if(sel[i].offsetParent){
-		 selp=sel[i];
-		 while(selp.offsetParent){
-			 selp=selp.offsetParent;
-			 selx+=selp.offsetLeft;
-			 sely+=selp.offsetTop;
-		 }
+	var selx,sely,selw,selh,i;
+	var sel=document.getElementsByTagName("SELECT");
+	for(i=0;i<sel.length;i++){
+		selx=0; sely=0; var selp;
+		if(sel[i].offsetParent){
+			selp=sel[i];
+			while(selp.offsetParent){
+				selp=selp.offsetParent;
+				selx+=selp.offsetLeft;
+				sely+=selp.offsetTop;
+			}
 		}
 		selx+=sel[i].offsetLeft;
 		sely+=sel[i].offsetTop;
 		selw=sel[i].offsetWidth;
 		selh=sel[i].offsetHeight;
 		if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
-		sel[i].style.visibility="visible";
-	 }
- }
+			sel[i].style.visibility="visible";
+	}
+}
 
 function hideSelect(x,y,w,h){
 	var selx,sely,selw,selh,i;
 	var sel=document.getElementsByTagName("SELECT");
 	for(i=0;i<sel.length;i++){
-		 selx=0; sely=0; var selp;
-		 if(sel[i].offsetParent){
-			 selp=sel[i];
-			 while(selp.offsetParent){
-				 selp=selp.offsetParent;
-				 selx+=selp.offsetLeft;
-				 sely+=selp.offsetTop;
-			 }
-		 }
-		 selx+=sel[i].offsetLeft;
-		 sely+=sel[i].offsetTop;
-		 selw=sel[i].offsetWidth;
-		 selh=sel[i].offsetHeight;
-		 if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
-		 sel[i].style.visibility="hidden";
+		selx=0; sely=0; var selp;
+		if(sel[i].offsetParent){
+			selp=sel[i];
+			while(selp.offsetParent){
+				selp=selp.offsetParent;
+				selx+=selp.offsetLeft;
+				sely+=selp.offsetTop;
+			}
+		}
+		selx+=sel[i].offsetLeft;
+		sely+=sel[i].offsetTop;
+		selw=sel[i].offsetWidth;
+		selh=sel[i].offsetHeight;
+		if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
+			sel[i].style.visibility="hidden";
 	}
 }
 
@@ -246,14 +246,14 @@ if ((browserName=="Netscape" && browserVer>=3) || (browserName=="Microsoft Inter
 else version="n2"; 
 
 function historyback() { history.back(); }
- 
+
 function historyforward() { history.forward(); }
 
 
 function fillidfield(Type,Id){
-window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
-window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
-window.close();
+	window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
+	window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
+	window.close();
 }
 
 /**
@@ -264,14 +264,14 @@ window.close();
  * @param    container    DOM element
  */
 function markAllRows( container_id ) {
-    var rows = document.getElementById(container_id).getElementsByTagName('tr');
-    var unique_id;
-    var checkbox;
+	var rows = document.getElementById(container_id).getElementsByTagName('tr');
+	var unique_id;
+	var checkbox;
 
-        for ( var i = 0; i < rows.length; i++ ) {
+	for ( var i = 0; i < rows.length; i++ ) {
 
 		checkboxes = rows[i].getElementsByTagName( 'input' );
-	
+
 		for ( var j = 0; j < checkboxes.length; j++ ) {
 			checkbox=checkboxes[j];
 			if ( checkbox && checkbox.type == 'checkbox' ) {
@@ -287,7 +287,7 @@ function markAllRows( container_id ) {
 		}
 	}
 
-        return true;
+	return true;
 }
 
 
@@ -299,11 +299,11 @@ function markAllRows( container_id ) {
  * @param    container    DOM element
  */
 function unMarkAllRows( container_id ) {
-        var rows = document.getElementById(container_id).getElementsByTagName('tr');
-    var unique_id;
-    var checkbox;
+	var rows = document.getElementById(container_id).getElementsByTagName('tr');
+	var unique_id;
+	var checkbox;
 
-        for ( var i = 0; i < rows.length; i++ ) {
+	for ( var i = 0; i < rows.length; i++ ) {
 		checkboxes = rows[i].getElementsByTagName( 'input' );
 
 		for ( var j = 0; j < checkboxes.length; j++ ) {
@@ -316,7 +316,7 @@ function unMarkAllRows( container_id ) {
 			}
 		}
 	}
-        return true;
+	return true;
 }
 
 function confirmAction(text,where){
