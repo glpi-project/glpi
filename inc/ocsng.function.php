@@ -137,7 +137,7 @@ function ocsShowNewComputer($check,$start,$tolinked=0){
 
 
 			foreach ($hardware as $ID => $tab){
-				echo "<tr class='tab_bg_2'><td>".$tab["name"]."</td><td>".$tab["date"]."</td><td>".$tab["TAG"]."</td><td>";
+				echo "<tr class='tab_bg_2'><td>".$tab["name"]."</td><td>".convDateTime($tab["date"])."</td><td>".$tab["TAG"]."</td><td>";
 
 				if ($tolinked==0)
 					echo "<input type='checkbox' name='toimport[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
@@ -898,7 +898,7 @@ function ocsShowUpdateComputer($check,$start){
 
 				echo "<tr align='center' class='tab_bg_2'>";
 				echo "<td><a href='".$HTMLRel."front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td>";
-				echo "<td>".$tab["date"]."</td><td>".$hardware[$tab["ocs_id"]]["date"]."</td>";
+				echo "<td>".$tab["date"]."</td><td>".convDateTime($hardware[$tab["ocs_id"]]["date"])."</td>";
 				echo "<td>".$lang["choice"][$tab["auto_update"]]."</td>";
 				echo "<td><input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
 				echo "</td></tr>";
