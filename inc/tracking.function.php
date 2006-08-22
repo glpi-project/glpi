@@ -1800,13 +1800,11 @@ function showJobDetails ($target,$ID){
 			while ($data=$db->fetch_array($result2)){
 				$doc->getFromDB($data["FK_doc"]);
 
-				if (haveRight("show_ticket","1")||$doc->fields["FK_users"]==$_SESSION["glpiID"]){
-					echo "<tr><td>";
-					echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
-					if (haveRight("document","w"))
-						echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
-					echo "</td></tr>";
-				}
+				echo "<tr><td>";
+				echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
+				if (haveRight("document","w"))
+					echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
+				echo "</td></tr>";
 			}
 		}
 		if ($canupdate||haveRight("comment_all_ticket","1")||haveRight("comment_ticket","1")){
