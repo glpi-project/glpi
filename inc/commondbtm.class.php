@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: HEADER 3794 2006-08-22 03:47:26Z moyo $
+ * @version $Id: HEADER 3795 2006-08-22 03:57:36Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
