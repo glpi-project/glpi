@@ -805,9 +805,6 @@ CREATE TABLE `glpi_dropdown_case_type` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_dropdown_case_type VALUES ('1','Grand',NULL);
-INSERT INTO glpi_dropdown_case_type VALUES ('2','Moyen',NULL);
-INSERT INTO glpi_dropdown_case_type VALUES ('3','Micro',NULL);
 
 ### Dump table glpi_dropdown_consumable_type
 
