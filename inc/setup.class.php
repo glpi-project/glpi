@@ -270,7 +270,7 @@ class SetupSearchDisplay extends CommonDBTM{
 					if (!is_array($val)){
 						if (!$first_group) echo "</optgroup>";
 						else $first_group=false;
-						echo "<optgroup label='$val'>";
+						echo "<optgroup label=\"".$val."\">";
 					} else 	if ($key!=1){
 						echo "<option value='$key'>".$val["name"]."</option>";
 					}
