@@ -219,15 +219,27 @@ class User extends CommonDBTM {
 			unset($input["profile"]);
 		}
 
+		
 		if (isset($input["_groups"])&&count($input["_groups"])){
-
+			$WHERE="";
+			switch ($cfg_glpi["ldap_search_for_groups"]){
+				case 0 : // user search
+					$WHERE="AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
+					break;
+				case 1 : // group search
+					$WHERE="AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
+					break;
+				case 2 : // user+ group search
+					$WHERE="AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
+								OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
+					break;
+			}
+		
 			// Delete not available groups like to LDAP
 			$query="SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
 						FROM glpi_users_groups 
 						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-						WHERE glpi_users_groups.FK_users='".$input["ID"]."' 
-							AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL ) 
-								OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
+						WHERE glpi_users_groups.FK_users='".$input["ID"]."' $WHERE";
 
 			$result=$db->query($query);
 			if ($db->numrows($result)>0){
