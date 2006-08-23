@@ -1,12 +1,11 @@
 <?php 
-	/* 
- * @version $Id$
- -------------------------------------------------------------------------
+/* 
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,9 +24,9 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
-*/ 
-	//hu_HU
+ ------------------------------------------------------------------------
+ */
+//hu_HU
 
 
 $lang["backup"][0]="SQL dumpolása"; 
@@ -877,7 +876,7 @@ $lang["ocsconfig"][14]="Globális import: minden importálva lesz de az anyagoka
 $lang["ocsconfig"][15]="Nincs import: a beépülő modul nem fogja importálni ezeket az elemeket"; 
 $lang["ocsconfig"][16]="Alapértelmezett állapot"; 
 $lang["ocsconfig"][17]="Az import szűkítése a következőkkel (elválasztó $, ha üres, mindent behoz)"; 
-$lang["ocsconfig"][18]="Először elllenőrizze a duplikátumok kezelését az OCSNG-ben"; 
+$lang["ocsconfig"][18]="First, check that duplicates are managed in OCSNG"; 
 $lang["ocsconfig"][27]="Általános számítógép információk"; 
 $lang["ocsconfig"][28]="Alkatrészek"; 
 $lang["ocsconfig"][36]="Modemek"; 
@@ -1122,7 +1121,7 @@ $lang["setup"][41]="Válassz nyelvet";
 $lang["setup"][42]="Hálózat típusok"; 
 $lang["setup"][43]="Nyomtató típusok"; 
 $lang["setup"][44]="Monitor típusok"; 
-$lang["setup"][45]="Case Type"; 
+$lang["setup"][45]="Ház típus"; 
 $lang["setup"][57]="Felhasználó"; 
 $lang["setup"][62]="Válassza ki a beállítandó kategóriát"; 
 $lang["setup"][63]="Figyelem, egy vagy több tételben használt fejlécet fogsz eltávolítani"; 
@@ -1281,15 +1280,15 @@ $lang["setup"][247]="Pénzügyi információk riasztásai";
 $lang["setup"][250]="Alapértelmezett keresési mezők"; 
 $lang["setup"][251]="Válassz fejlécet"; 
 $lang["setup"][252]="Válassz alapértelemezett tételt"; 
-$lang["setup"][253]="Filter to search in groups"; 
+$lang["setup"][253]="Szűrő a csoportokban kereséshez"; 
 $lang["setup"][254]="Keresés típus"; 
-$lang["setup"][255]="Group attribute containing its users"; 
+$lang["setup"][255]="Csoport attribútum"; 
 $lang["setup"][256]="Felhasználókban"; 
 $lang["setup"][257]="Csoportokban"; 
 $lang["setup"][258]="Felhasználók és csoportok"; 
 $lang["setup"][259]="Csoportokhoz tartozik"; 
-$lang["setup"][260]="User attribute containing its groups"; 
-$lang["setup"][261]="Group DN"; 
+$lang["setup"][260]="A csoportokat tartalmazó attribútum"; 
+$lang["setup"][261]="Csoport DN"; 
 $lang["setup"][300]="Új verzió ellenőrzése"; 
 $lang["setup"][301]="Az alábbi új verzió érhető el:"; 
 $lang["setup"][302]="Elérhető a GLPI weboldaláról: <a href='http://glpi-project.org' target='_blank'>http://glpi-project.org</a>"; 
