@@ -96,7 +96,7 @@ function showTrackingOnglets($target){
 			// Postonly could post followup in helpdesk area	
 			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
 
-			if (!ereg("old_",$job->fields["status"])){
+			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
 				echo "<li class='invisible'>&nbsp;</li>";
 
 				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
@@ -1541,7 +1541,12 @@ function showJobDetails ($target,$ID){
 
 	if ($job->getfromDB($ID)) {
 
-		if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]) return false;
+		if (!haveRight("show_ticket","1")
+			&&$job->fields["author"]!=$_SESSION["glpiID"]
+			&&$job->fields["assign"]!=$_SESSION["glpiID"]
+			&&!($_SESSION["glpiprofile"]["show_group_ticket"]&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"])) ){
+			return false;
+		}
 
 		$canupdate_descr=$canupdate||($job->numberOfFollowups()==0&&$job->fields["author"]==$_SESSION["glpiID"]);
 		$author=new User();
