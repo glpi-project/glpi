@@ -222,7 +222,12 @@ class User extends CommonDBTM {
 		if (isset($input["_groups"])&&count($input["_groups"])){
 
 			// Delete not available groups like to LDAP
-			$query="SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$input["ID"]."' AND glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL";
+			$query="SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
+						FROM glpi_users_groups 
+						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+						WHERE glpi_users_groups.FK_users='".$input["ID"]."' 
+							AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL ) 
+								OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
 
 			$result=$db->query($query);
 			if ($db->numrows($result)>0){
