@@ -107,8 +107,23 @@ else if (isset($_POST["deletegroup"]))
 			$user->showOnglets($_SERVER["PHP_SELF"]."?ID=".$_GET["ID"], "",$_SESSION['glpi_onglet'] );
 
 
-		$user->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
-		showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+		if ($user->showForm($_SERVER["PHP_SELF"],$_GET["ID"])){
+			if (!empty($_GET["ID"]))
+			switch($_SESSION['glpi_onglet']){
+				case -1:
+					showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+					display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					break;
+				case 1 :
+					showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+					break;
+				default : 
+					if (!display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
+						showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+					break;
+			}
+			
+		}
 		commonFooter();
 	} else {
 		if (isset($_GET['add_ext_auth'])){
