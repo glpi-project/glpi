@@ -417,11 +417,11 @@ function helpHeader($title,$url) {
 	echo "<a class='icon_logo' style='background: transparent' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\">";
 	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
 	echo "</a>";
-	echo "<div style='width:80px; text-align:center;'><p class='nav_horl'><b>";
+	echo "<div style='text-align:center;'><p class='nav_horl'><b>";
 	echo "<a href='".$HTMLRel."front/user.form.my.php'>";
 	if (!empty($_SESSION["glpirealname"])) {
 		echo $_SESSION["glpirealname"];
-		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
+		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<30) echo " ".$_SESSION["glpifirstname"];
 	}
 	else echo $_SESSION["glpiname"];
 	echo "</a></b></p></div>";

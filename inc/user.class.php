@@ -196,8 +196,9 @@ class User extends CommonDBTM {
 		if (!haveRight("user","w")&&!ereg("login.php",$_SERVER["PHP_SELF"])){
 			if($_SESSION["glpiID"]==$input['ID']) {
 				$ret=$input;
-				// extauth imap case
-				if (isset($cfg_glpi['ldap_fields'])){
+				// extauth ldap case
+				if ($_SESSION["glpiextauth"]&&isset($cfg_glpi['ldap_fields'])){
+					if (!empty($cfg_glpi["ldap_host"]))
 					foreach ($cfg_glpi['ldap_fields'] as $key => $val)
 						if (!empty($val))
 							unset($ret[$key]);
