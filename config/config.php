@@ -35,7 +35,7 @@
 
 
 include ("_relpos.php");
-include ("based_config.php");
+include ($phproot."/config/based_config.php");
 
 // Current version of GLPI
 define("GLPI_VERSION","0.68.1");
@@ -294,7 +294,7 @@ else
 		// *********************************************************************************
 
 		// Mode debug ou traduction
-		//$cfg_glpi["debug"]=DEBUG_MODE;
+		$cfg_glpi["debug"]=DEBUG_MODE;
 		$cfg_glpi["debug_sql"]=($cfg_glpi["debug"]==DEBUG_MODE?1:0); // affiche les requetes
 		$cfg_glpi["debug_vars"]=($cfg_glpi["debug"]==DEBUG_MODE?1:0); // affiche les variables
 		$cfg_glpi["debug_profile"]=($cfg_glpi["debug"]==DEBUG_MODE?1:0); // Profile les requetes
