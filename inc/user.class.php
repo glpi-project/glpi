@@ -615,109 +615,113 @@ class User extends CommonDBTM {
 			echo "</div>";
 			return false;
 		}
+		$spotted=false;
 		if(empty($ID)) {
 			// Partie ajout d'un user
 			// il manque un getEmpty pour les users	
-			$this->getEmpty();
+			$spotted=$this->getEmpty();
 		} else {
-			$this->getfromDB($ID);
-
+			$spotted=$this->getfromDB($ID);
 		}
-		echo "<div align='center'>";
-		echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='4'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
-		echo "<tr class='tab_bg_1'>";	
-		echo "<td align='center'>".$lang["setup"][18]."</td>";
-		// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
-		if ($this->fields["name"]=="") {
-			echo "<td><input  name='name' value=\"".$this->fields["name"]."\">";
-			echo "</td>";
-			// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
-		} else {
-			if (empty($this->fields["password"])&&empty($this->fields["password_md5"])){
-				echo "<td align='center'><b>".$this->fields["name"]."</b>";
-				echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
-			}
-			else {
-				echo "<td>";
-				autocompletionTextField("name","glpi_users","name",$this->fields["name"],20);
-			}
-
-
-			echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
-
-			echo "</td>";
-		}
-		//do some rights verification
-		if(haveRight("user","w")) {
-			if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$this->fields["name"]==""){
-				echo "<td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
-			} else echo "<td colspan='2'>&nbsp;</td></tr>";
-		} else echo "<td colspan='2'>&nbsp;</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
-		autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
-		echo "</td>";
-		echo "<td align='center'>".$lang["common"][43]."</td><td>";
-		autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>";
-		$prof=new Profile();
-		$prof->getFromDBforUser($this->fields["ID"]);
-		dropdownValue("glpi_profiles","profile",$prof->fields["ID"]);
-		echo "</td>";
-		echo "<td align='center'>".$lang["setup"][14]."</td><td>";
-		autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
-		autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
-		echo "</td>";
-		echo "<td align='center'>".$lang["setup"][15]." 2</td><td>";
-		autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
-		dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-		echo "</td>";
-		echo "<td align='center'>".$lang["setup"][15]."</td><td>";
-		autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$lang["common"][25].":</td><td colspan='3' align='center'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
-		echo "</tr>";
-
-
-		echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>";
-		$active=0;
-		if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
-		echo "<select name='active'>";
-		echo "<option value='1' ".($active?" selected ":"").">".$lang["choice"][1]."</option>";
-		echo "<option value='0' ".(!$active?" selected ":"").">".$lang["choice"][0]."</option>";
-
-		echo "</select>";
-		echo "</td><td colspan='2'>&nbsp;</td></tr>";
-
-		if (haveRight("user","w"))
+		if ($spotted) {
+			echo "<div align='center'>";
+			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='4'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
+			echo "<tr class='tab_bg_1'>";	
+			echo "<td align='center'>".$lang["setup"][18]."</td>";
+			// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
 			if ($this->fields["name"]=="") {
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";
-				echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+				echo "<td><input  name='name' value=\"".$this->fields["name"]."\">";
 				echo "</td>";
-				echo "</tr>";	
+				// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 			} else {
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
-				echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
+				if (empty($this->fields["password"])&&empty($this->fields["password_md5"])){
+					echo "<td align='center'><b>".$this->fields["name"]."</b>";
+					echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
+				}
+				else {
+					echo "<td>";
+					autocompletionTextField("name","glpi_users","name",$this->fields["name"],20);
+				}
+	
+	
+				echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
+	
 				echo "</td>";
-				echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
-				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";
-				echo "</td>";
-				echo "</tr>";
 			}
-
-		echo "</table></form></div>";
+			//do some rights verification
+			if(haveRight("user","w")) {
+				if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$this->fields["name"]==""){
+					echo "<td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+				} else echo "<td colspan='2'>&nbsp;</td></tr>";
+			} else echo "<td colspan='2'>&nbsp;</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
+			autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
+			echo "</td>";
+			echo "<td align='center'>".$lang["common"][43]."</td><td>";
+			autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>";
+			$prof=new Profile();
+			$prof->getFromDBforUser($this->fields["ID"]);
+			dropdownValue("glpi_profiles","profile",$prof->fields["ID"]);
+			echo "</td>";
+			echo "<td align='center'>".$lang["setup"][14]."</td><td>";
+			autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+			autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
+			echo "</td>";
+			echo "<td align='center'>".$lang["setup"][15]." 2</td><td>";
+			autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+			echo "</td>";
+			echo "<td align='center'>".$lang["setup"][15]."</td><td>";
+			autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td>".$lang["common"][25].":</td><td colspan='3' align='center'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+			echo "</tr>";
+	
+	
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>";
+			$active=0;
+			if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
+			echo "<select name='active'>";
+			echo "<option value='1' ".($active?" selected ":"").">".$lang["choice"][1]."</option>";
+			echo "<option value='0' ".(!$active?" selected ":"").">".$lang["choice"][0]."</option>";
+	
+			echo "</select>";
+			echo "</td><td colspan='2'>&nbsp;</td></tr>";
+	
+			if (haveRight("user","w"))
+				if ($this->fields["name"]=="") {
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";
+					echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+					echo "</td>";
+					echo "</tr>";	
+				} else {
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
+					echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
+					echo "</td>";
+					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
+					echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";
+					echo "</td>";
+					echo "</tr>";
+				}
+	
+			echo "</table></form></div>";
+			return true;
+		} 
+		return false;
 	}
 
 	function showMyForm($target,$ID) {
@@ -796,7 +800,9 @@ class User extends CommonDBTM {
 			echo "</tr>";
 
 			echo "</table></form></div>";
+			return true;
 		}
+		return false;
 	}
 
 

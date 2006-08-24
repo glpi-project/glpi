@@ -205,6 +205,7 @@ class SetupSearchDisplay extends CommonDBTM{
 			if (!$type)
 				$type=GROUP_TYPE;
 		}
+		asort($dp);
 		echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 		echo $lang["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
