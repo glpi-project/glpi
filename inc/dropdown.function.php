@@ -729,7 +729,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 				}
 			$my_devices.="</optgroup>";
 			// Get linked items to computers
-			if (count($already_add[COMPUTER_TYPE])){
+			if (isset($already_add[COMPUTER_TYPE])&&count($already_add[COMPUTER_TYPE])){
 
 				$search_computer=" (";
 				$first=true;
