@@ -76,8 +76,6 @@ else
 	echo "<div id='contenulogin'>";
 
 	echo "<div id='logo-login'>";
-	//echo "<a href=\"http://GLPI.indepnet.org/\" class='sous_logo'><img src=\"".$HTMLRel."pics/logo-glpi-login.png\"  alt=\"Logo GLPI Powered By Indepnet\" title=\"Powered By Indepnet\" /><br />";
-	//echo "</a>";
 
 	echo nl2br(unclean_cross_side_scripting_deep($cfg_glpi['text_login']));
 
@@ -189,7 +187,7 @@ else
 
 	echo "<div id='footer-login'>";
 	echo "<a href=\"http://glpi-project.org/\" title=\"Powered By Indepnet\"  >";
-	echo "GLPI version ".$cfg_glpi["version"]." Copyright (C) 2003-2006 INDEPNET Development Team.";
+	echo "GLPI version ".$cfg_glpi["version"]." Copyright (C) 2003-".date("Y")." INDEPNET Development Team.";
 	echo "</a>";
 	echo "</div>";
 
@@ -197,6 +195,7 @@ else
 // Appel de cron
 if ($cfg_glpi["debug"]!=DEMO_MODE)
 callCron();
+
 
 echo "</body></html>";
 
