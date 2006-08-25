@@ -309,7 +309,7 @@ class User extends CommonDBTM {
 
 			if ( $bv )
 			{
-				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$cfg_glpi["ldap_login"]."=".$name,0);
+				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$cfg_glpi["ldap_login"]."=".$name);
 			}
 		}
 		return false;
@@ -365,7 +365,7 @@ class User extends CommonDBTM {
 
 			if ( $bv )
 			{
-				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$filter,1);
+				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$filter);
 
 			}
 		}
@@ -375,47 +375,40 @@ class User extends CommonDBTM {
 	} // getFromLDAP_active_directory()
 
 	//Get all the group a user belongs to
-	// $AD=1 if activedirectory in use
-	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn,$AD=0)
+	function ldap_get_user_groups($ds,$ldap_groups_dn,$user_dn)
 	{
 		global $cfg_glpi;
 
-		$groups = array();
+		$groups[0][$cfg_glpi["ldap_field_group_member"]] = array();
 
-		//Only retrive cn and member attributes from groups
-		$field="dn";
-		if($AD){
-			$attrs="cn";
+		if (count($ldap_groups_dn))
+		foreach ($ldap_groups_dn as $ID => $ldap_base_dn) {
+	
+			$attrs=array("dn");
+			$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
+	
+			//Perform the search
+			$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
+	
+			//Get the result of the search as an array
+			$info=ldap_get_entries($ds,$sr);
+			
+			//Browse all the groups
+			for ($i=0; $i < count($info); $i++)
+			{
+				//Get the cn of the group and add it to the list of groups
+				if ($info[$i]["dn"] != ''){
+					array_push($groups[0][$cfg_glpi["ldap_field_group_member"]],$info[$i]["dn"]);
+					}
+	
+			}
+	
 		}
-
-		$attrs=array($field);
-		$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
-
-		//Perform the search
-		$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
-
-		//Get the result of the search as an array
-		$info=ldap_get_entries($ds,$sr);
-
-		//Browse all the groups
-		for ($i=0; $i < count($info); $i++)
-		{
-
-			//Get the cn of the group and add it to the list of groups
-			if ($info[$i][$field] != '')
-				$listgroups[$i] = $info[$i][$field];
-
-		}
-
-		//Create an array with the list of groups of the user
-		$groups[0][$cfg_glpi["ldap_field_group_member"]] = $listgroups;
-
 		//Return the groups of the user
 		return $groups;
 	}
 
-	// $AD=1 if activedirectory in use
-	function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter,$AD=0){
+	function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
 		global $db,$cfg_glpi;
 
 		$fields=array_filter($fields);
@@ -481,7 +474,7 @@ class User extends CommonDBTM {
 				while ($data=$db->fetch_assoc($result)){
 					$groups[$cfg_glpi["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
 				}
-				$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn,$AD);
+				$v2 = $this->ldap_get_user_groups($ldapconn,$groups[$cfg_glpi["ldap_field_group_member"]],$user_dn);
 				$v = array_merge($v,$v2);
 			}
 
@@ -499,7 +492,6 @@ class User extends CommonDBTM {
 				}
 			}
 		}
-
 		//Hook to retrieve more informations for ldap
 		$this->fields=do_hook_function("retrieve_more_data_from_ldap",$this->fields);
 
