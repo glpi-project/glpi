@@ -375,6 +375,7 @@ class User extends CommonDBTM {
 	} // getFromLDAP_active_directory()
 
 	//Get all the group a user belongs to
+	// Deep search cause to AD which do not find entries with basic DC base_dn
 	function ldap_get_user_groups($ds,$ldap_groups_dn,$user_dn)
 	{
 		global $cfg_glpi;
