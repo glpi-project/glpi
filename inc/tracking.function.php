@@ -139,7 +139,7 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 		$link="";
 		if ($display_sort){
 			if ($sort==$val) $issort=1;
-			$link=$target."?".$parameters."&order=".($order=="ASC"?"DESC":"ASC")."&sort=$val";
+			$link=$target."?".$parameters."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;sort=$val";
 		}
 		echo displaySearchHeaderItem($output_type,$key,$header_num,$link,$issort,$order);
 	}
@@ -329,7 +329,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
 			echo "</td><td>";
 			echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
-			echo "<td width='75%'>&nbsp;</td></table></div>";
+			echo "<td width='75%'>&nbsp;</td></tr></table></div>";
 		}
 	} 
 	else
@@ -337,11 +337,6 @@ function showOldJobListForItem($username,$item_type,$item) {
 		echo "<br><div align='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$lang["joblist"][22]."</th></tr>";
-
-		if ($item)
-		{
-			echo "<tr><td align='center' class='tab_bg_1'>";
-		}
 		echo "</table>";
 		echo "</div><br>";
 	}
@@ -361,7 +356,7 @@ function showJobListForItem($username,$item_type,$item) {
 	if (!haveRight("show_ticket","1")) return false;
 
 
-	$where = "(status = 'new' OR status= 'assign' OR status='plan')";	
+	$where = "(status = 'new' OR status= 'assign' OR status='plan' OR status='waiting')";	
 	$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 

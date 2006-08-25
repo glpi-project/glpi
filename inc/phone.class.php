@@ -394,10 +394,10 @@ class Phone extends CommonDBTM {
 			} else {
 				echo "<input type='checkbox' name='flags_casque' value='1'>";
 			}
-			echo "</td><td>".$lang["phones"][38]."</td>";
+			echo "</td><td>".$lang["phones"][38]."</td></tr>";
 
 			// hp?
-			echo "<td>";
+			echo "<tr><td>";
 			if ($this->fields["flags_hp"] == 1) {
 				echo "<input type='checkbox' name='flags_hp' value='1' checked>";
 			} else {
@@ -405,8 +405,8 @@ class Phone extends CommonDBTM {
 			}
 			echo "</td><td>".$lang["phones"][39]."</td>";
 
-			echo "</tr><tr></table>";
-
+			echo "</tr></table>";
+			echo "</td></tr>";
 			echo "</table>";
 			echo "</td>\n";	
 			echo "</tr>";
