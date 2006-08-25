@@ -439,18 +439,23 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 
 		if ($dbocs->numrows($result_ocs)==1){
 			$data_ocs=$dbocs->fetch_array($result_ocs);
-			if ($force)
+			if ($force){
 				$ocs_checksum=MAX_OCS_CHECKSUM;
-			else 
+				$query_ocs="UPDATE hardware 
+					SET CHECKSUM= (".MAX_OCS_CHECKSUM.") 
+					WHERE ID='".$line['ocs_id']."'";
+					$dbocs->query($query_ocs);
+			}else 
 				$ocs_checksum=$data_ocs["CHECKSUM"];
 
 
 
 			$mixed_checksum=intval($ocs_checksum) &  intval($cfg_ocs["checksum"]);
-			/*echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
+			
+			echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
 			  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 			  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
-			 */	
+			 	
 			// Is an update to do ?
 			if ($mixed_checksum){
 				// Get updates on computers :
@@ -635,6 +640,7 @@ function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1)
 		FROM bios 
 		WHERE HARDWARE_ID='".$ocs_id."'";
 	$result = $dbocs->query($query);
+	$compupdate=array();
 	if ($dbocs->numrows($result)==1) {
 		$line=$dbocs->fetch_assoc($result);
 		$line=clean_cross_side_scripting_deep(addslashes_deep($line));
@@ -898,7 +904,7 @@ function ocsShowUpdateComputer($check,$start){
 
 				echo "<tr align='center' class='tab_bg_2'>";
 				echo "<td><a href='".$HTMLRel."front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td>";
-				echo "<td>".$tab["date"]."</td><td>".convDateTime($hardware[$tab["ocs_id"]]["date"])."</td>";
+				echo "<td>".convDateTime($tab["date"])."</td><td>".convDateTime($hardware[$tab["ocs_id"]]["date"])."</td>";
 				echo "<td>".$lang["choice"][$tab["auto_update"]]."</td>";
 				echo "<td><input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
 				echo "</td></tr>";
