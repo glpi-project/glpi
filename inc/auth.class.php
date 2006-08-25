@@ -522,7 +522,7 @@ class Identification
 				$_SESSION["glpigroups"][]=$data["FK_groups"];
 			}
 		}
-
+		do_hook("init_session");
 	}
 
 	function destroySession()
