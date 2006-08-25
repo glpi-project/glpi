@@ -179,7 +179,8 @@ $db->query($query) or die($query." ".$db->error());
 
 // glpi_device_case
 $query="ALTER TABLE `glpi_device_case`
-ADD CONSTRAINT `glpi_device_case_ibfk_1` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`);";
+ADD CONSTRAINT `glpi_device_case_ibfk_1` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
+ADD CONSTRAINT `glpi_device_case_ibfk_2` FOREIGN KEY (`type`) REFERENCES `glpi_dropdown_case_type` (`ID`);";
 $db->query($query) or die($query." ".$db->error());
 
 // glpi_device_control
