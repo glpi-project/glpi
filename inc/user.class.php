@@ -374,40 +374,43 @@ class User extends CommonDBTM {
 
 	} // getFromLDAP_active_directory()
 
+
+	
 	//Get all the group a user belongs to
-	// Deep search cause to AD which do not find entries with basic DC base_dn
-	function ldap_get_user_groups($ds,$ldap_groups_dn,$user_dn)
+	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn)
 	{
 		global $cfg_glpi;
 
-		$groups[0][$cfg_glpi["ldap_field_group_member"]] = array();
+		$groups = array();
 
-		if (count($ldap_groups_dn))
-		foreach ($ldap_groups_dn as $ID => $ldap_base_dn) {
-	
-			$attrs=array("dn");
-			$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
-	
-			//Perform the search
-			$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
-	
-			//Get the result of the search as an array
-			$info=ldap_get_entries($ds,$sr);
-			
-			//Browse all the groups
-			for ($i=0; $i < count($info); $i++)
-			{
-				//Get the cn of the group and add it to the list of groups
-				if ($info[$i]["dn"] != ''){
-					array_push($groups[0][$cfg_glpi["ldap_field_group_member"]],$info[$i]["dn"]);
-					}
-	
-			}
-	
+		//Only retrive cn and member attributes from groups
+		$attrs=array("dn");
+
+		$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
+
+		//Perform the search
+		$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
+
+		//Get the result of the search as an array
+		$info=ldap_get_entries($ds,$sr);
+
+		//Browse all the groups
+		for ($i=0; $i < count($info); $i++)
+		{
+			//Get the cn of the group and add it to the list of groups
+			if ($info[$i]["dn"] != '')
+				$listgroups[$i] = $info[$i]["dn"];
 		}
+
+		//Create an array with the list of groups of the user
+		$groups[0][$cfg_glpi["ldap_field_group_member"]] = $listgroups;
+
 		//Return the groups of the user
 		return $groups;
 	}
+
+
+
 
 	function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
 		global $db,$cfg_glpi;
@@ -475,7 +478,7 @@ class User extends CommonDBTM {
 				while ($data=$db->fetch_assoc($result)){
 					$groups[$cfg_glpi["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
 				}
-				$v2 = $this->ldap_get_user_groups($ldapconn,$groups[$cfg_glpi["ldap_field_group_member"]],$user_dn);
+				$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn);
 				$v = array_merge($v,$v2);
 			}
 
