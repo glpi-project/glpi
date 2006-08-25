@@ -44,7 +44,7 @@ header_nocache();
 
 if ($_POST["type"]>0){
 	checkTypeRight($_POST["type"],"r");
-	echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".$_POST["val"]."\" >";
+	echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".stripslashes($_POST["val"])."\" >";
 	echo "&nbsp;";
 	echo $lang["search"][10]."&nbsp;";
 
