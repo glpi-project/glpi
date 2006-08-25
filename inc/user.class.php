@@ -309,7 +309,7 @@ class User extends CommonDBTM {
 
 			if ( $bv )
 			{
-				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$cfg_glpi["ldap_login"]."=".$name);
+				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$cfg_glpi["ldap_login"]."=".$name,0);
 			}
 		}
 		return false;
@@ -365,7 +365,7 @@ class User extends CommonDBTM {
 
 			if ( $bv )
 			{
-				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$filter);
+				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$filter,1);
 
 			}
 		}
@@ -375,7 +375,8 @@ class User extends CommonDBTM {
 	} // getFromLDAP_active_directory()
 
 	//Get all the group a user belongs to
-	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn)
+	// $AD=1 if activedirectory in use
+	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn,$AD=0)
 	{
 		global $cfg_glpi;
 
@@ -383,8 +384,20 @@ class User extends CommonDBTM {
 
 		//Only retrive cn and member attributes from groups
 		$attrs=array("dn");
+		if($AD){
+				$dn = $user_dn;
+				$findcn=explode(",O",$dn);
+				// Cas ou pas de ,OU
+				if ($dn==$findcn[0]) {
+					$findcn=explode(",C",$dn);
+				}
+				$findcn=explode("=",$findcn[0]);
+				$findcn[1]=str_replace('\,', ',', $findcn[1]);
+				$user_dn="CN=".$findcn[1]."";
 
-		$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
+			$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
+		}
+		else $filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
 
 		//Perform the search
 		$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
@@ -409,8 +422,8 @@ class User extends CommonDBTM {
 		return $groups;
 	}
 
-
-	function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
+	// $AD=1 if activedirectory in use
+	function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter,$AD=0){
 		global $db,$cfg_glpi;
 
 		$fields=array_filter($fields);
