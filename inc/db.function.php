@@ -464,40 +464,45 @@ function getPreviousItem($table,$ID){
 function getUserName($ID,$link=0){
 	global $db,$cfg_glpi,$lang;
 
-	$query="SELECT * 
-		FROM glpi_users 
-		WHERE ID='$ID'";
-	$result=$db->query($query);
 	$user="";
-	if ($link==2) $user=array("name"=>"","comments"=>"","link"=>"");
-	if ($db->numrows($result)==1){
-		$data=$db->fetch_assoc($result);
-		$before="";
-		$after="";
-		if ($link==1){
-			$before="<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$ID."\">";
-			$after="</a>";
-		}
-		if (strlen($data["realname"])>0) {
-			$temp=$data["realname"];
-			if (strlen($data["firstname"])>0)$temp.=" ".$data["firstname"];
-			$username=$before.$temp.$after;
-		}
-		else $username=$before.$data["name"].$after;
-
-		if ($link==2){
-			$user["name"]=$username;
-			$user["link"]=$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$ID;
-			$user["comments"]=$lang["common"][16].": ".$username."<br>";
-			if (!empty($data["email"]))
-				$user["comments"].=$lang["setup"][14].": ".$data["email"]."<br>";
-			if (!empty($data["phone"]))
-				$user["comments"].=$lang["setup"][15].": ".$data["phone"]."<br>";
-			if ($data["location"])
-				$user["comments"].=$lang["common"][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"],0)."<br>";
-		} else $user=$username;
+	if ($link==2){
+		$user=array("name"=>"","link"=>"","comments"=>"");
 	}
-
+	if ($ID){
+		$query="SELECT * 
+			FROM glpi_users 
+			WHERE ID='$ID'";
+		$result=$db->query($query);
+		
+		if ($link==2) $user=array("name"=>"","comments"=>"","link"=>"");
+		if ($db->numrows($result)==1){
+			$data=$db->fetch_assoc($result);
+			$before="";
+			$after="";
+			if ($link==1){
+				$before="<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$ID."\">";
+				$after="</a>";
+			}
+			if (strlen($data["realname"])>0) {
+				$temp=$data["realname"];
+				if (strlen($data["firstname"])>0)$temp.=" ".$data["firstname"];
+				$username=$before.$temp.$after;
+			}
+			else $username=$before.$data["name"].$after;
+	
+			if ($link==2){
+				$user["name"]=$username;
+				$user["link"]=$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$ID;
+				$user["comments"]=$lang["common"][16].": ".$username."<br>";
+				if (!empty($data["email"]))
+					$user["comments"].=$lang["setup"][14].": ".$data["email"]."<br>";
+				if (!empty($data["phone"]))
+					$user["comments"].=$lang["setup"][15].": ".$data["phone"]."<br>";
+				if ($data["location"])
+					$user["comments"].=$lang["common"][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"],0)."<br>";
+			} else $user=$username;
+		}
+	}
 	return $user;		
 }
 
