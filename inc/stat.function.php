@@ -391,15 +391,17 @@ function getNbIntervEnterprise($date1,$date2)
 //it contains the distinct location where there is/was an intervention
 function getNbIntervDropdown($dropdown)
 {
-	global $db;
-	$query = "SELECT * from ". $dropdown ." order by name";
+	global $db,$cfg_glpi;
+	$field="name";
+	if (in_array($dropdown,$cfg_glpi["dropdowntree_tables"])) $field="completename";
+	$query = "SELECT * from ". $dropdown ." order by $field";
 
 	$result = $db->query($query);
 	if($db->numrows($result) >=1) {
 		$i = 0;
 		while($line = $db->fetch_assoc($result)) {
 			$tab[$i]['ID'] = $line['ID'];
-			$tab[$i]['name'] = $line['name'];
+			$tab[$i]['name'] = $line[$field];
 			$i++;
 		}
 		return $tab;
