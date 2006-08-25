@@ -682,7 +682,7 @@ class User extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
 			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 			echo "</td>";
-			echo "<td align='center'>".$lang["setup"][15]."</td><td>";
+			echo "<td align='center'>".$lang["common"][42]."</td><td>";
 			autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
 			echo "</td></tr>";
 	

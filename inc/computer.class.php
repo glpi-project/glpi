@@ -247,9 +247,10 @@ class Computer extends CommonDBTM {
 								$ci->getfromDB($t,$tID);
 								if (!$ci->obj->fields['is_global']){
 									if ($ci->obj->fields['contact']!=$this->fields['contact']||$ci->obj->fields['contact_num']!=$this->fields['contact_num']){
-										$ci->obj->fields['contact']=$this->fields['contact'];
-										$ci->obj->fields['contact_num']=$this->fields['contact_num'];
-										$ci->obj->updateInDB($updates3);
+										$input["ID"]=$ci->obj->fields["ID"];
+										$input['contact']=$this->fields['contact'];
+										$input['contact_num']=$this->fields['contact_num'];
+										$ci->obj->update($input);
 										$update_done=true;
 									}
 								}
@@ -286,9 +287,10 @@ class Computer extends CommonDBTM {
 								$ci->getfromDB($t,$tID);
 								if (!$ci->obj->fields['is_global']){
 									if ($ci->obj->fields["FK_users"]!=$this->fields["FK_users"]||$ci->obj->fields["FK_groups"]!=$this->fields["FK_groups"]){
-										$ci->obj->fields["FK_users"]=$this->fields["FK_users"];
-										$ci->obj->fields["FK_groups"]=$this->fields["FK_groups"];
-										$ci->obj->updateInDB($updates4);
+										$input["ID"]=$ci->obj->fields["ID"];
+										$input["FK_users"]=$this->fields["FK_users"];
+										$input["FK_groups"]=$this->fields["FK_groups"];
+										$ci->obj->update($input);
 										$update_done=true;
 									}
 								}
@@ -324,8 +326,9 @@ class Computer extends CommonDBTM {
 								$ci->getfromDB($t,$tID);
 								if (!$ci->obj->fields['is_global']){
 									if ($ci->obj->fields["location"]!=$this->fields["location"]){
-										$ci->obj->fields["location"]=$this->fields["location"];
-										$ci->obj->updateInDB($updates2);
+										$input["ID"]=$ci->obj->fields["ID"];
+										$input["location"]=$this->fields["location"];
+										$ci->obj->update($input);
 										$update_done=true;
 									}
 								}
