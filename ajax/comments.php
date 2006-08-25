@@ -43,13 +43,16 @@ header_nocache();
 
 checkLoginUser();
 
-if (isset($_POST["table"])&&isset($_POST["value"])&&$_POST["value"]>0){
-	if ($_POST["table"]=="glpi_users"){
-		$tmpname=getUserName($_POST["value"],2);
-		echo $tmpname["comments"];
-	} else {
-		$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
-		echo $tmpname["comments"];
+if (isset($_POST["table"])&&isset($_POST["value"])&&$_POST["value"]>0){	
+	switch ($_POST["table"]){
+		case "glpi_users":
+			$tmpname=getUserName($_POST["value"],2);
+			echo $tmpname["comments"];
+			break;
+		default :
+			$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
+			echo $tmpname["comments"];
+			break;
 	}
 }
 

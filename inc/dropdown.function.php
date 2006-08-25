@@ -363,13 +363,37 @@ function getDropdownName($table,$id,$withcomments=0) {
 				if (isset($data["comments"]))
 					$comments = $data["comments"];
 
-				if ($table=="glpi_dropdown_netpoint")
-					$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
-				if ($table=="glpi_software"){
-					$name .= "  (v. ".$data["version"].")";
-					if ($data["platform"]!=0)
-						$comments.="<br>".$lang["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
+				switch ($table){
+					case "glpi_contacts" :
+						$name .= " ".$data["firstname"];
+						if (!empty($data["phone"])){
+							$comments.="<br><strong>".$lang["financial"][29].":</strong> ".$data["phone"];
+						}
+						if (!empty($data["phone2"])){
+							$comments.="<br><strong>".$lang["financial"][29]." 2:</strong> ".$data["phone2"];
+						}
+						if (!empty($data["mobile"])){
+							$comments.="<br><strong>".$lang["common"][42].":</strong> ".$data["mobile"];
+						}
+						if (!empty($data["fax"])){
+							$comments.="<br><strong>".$lang["financial"][30].":</strong> ".$data["fax"];
+						}
+						if (!empty($data["email"])){
+							$comments.="<br><strong>".$lang["financial"][31].":</strong> ".$data["email"];
+						}
+
+						
+						break;
+					case "glpi_dropdown_netpoint":
+						$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
+						break;
+					case "glpi_software":
+						$name .= "  (v. ".$data["version"].")";
+						if ($data["platform"]!=0)
+							$comments.="<br>".$lang["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
+						break;
 				}
+
 			}
 		}
 	}
