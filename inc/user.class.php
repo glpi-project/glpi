@@ -383,10 +383,12 @@ class User extends CommonDBTM {
 		$groups = array();
 
 		//Only retrive cn and member attributes from groups
+		$field="dn";
 		if($AD){
-			$attrs=array("cn");
-		}else $attrs=array("dn");
+			$attrs="cn";
+		}
 
+		$attrs=array($field);
 		$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
 
 		//Perform the search
@@ -400,8 +402,8 @@ class User extends CommonDBTM {
 		{
 
 			//Get the cn of the group and add it to the list of groups
-			if ($info[$i]["dn"] != '')
-				$listgroups[$i] = $info[$i]["dn"];
+			if ($info[$i][$field] != '')
+				$listgroups[$i] = $info[$i][$field];
 
 		}
 
