@@ -55,7 +55,7 @@ function searchFormKnowbase($target,$contains){
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe'>";
 
 	echo "<tr ><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". $contains ."\" ></td><td><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' ></td>";
+	echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". stripslashes($contains) ."\" ></td><td><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' ></td>";
 	// From helpdesk or central
 	if (ereg("\?",$target)) $separator="&amp;";
 	else $separator="?";

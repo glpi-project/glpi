@@ -70,7 +70,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />&nbsp;";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". stripslashes($contains) ."\" />&nbsp;";
 	echo $lang["search"][10];
 	echo "&nbsp;<select name=\"field\" size='1'>";
 	echo "<option value='all' ";

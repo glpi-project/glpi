@@ -987,7 +987,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		if ($computers_search) $selected="checked";
 		echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":&nbsp;";
 
-		echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" >";
+		echo "<input type='text' size='15' name=\"contains\" value=\"". stripslashes($contains) ."\" >";
 		echo "&nbsp;";
 		echo $lang["search"][10]."&nbsp;";
 
@@ -1035,7 +1035,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 
 	echo "&nbsp;".$lang["search"][2]."&nbsp;";
-	echo "<input type='text' size='15' name=\"contains2\" value=\"".$contains2."\">";
+	echo "<input type='text' size='15' name=\"contains2\" value=\"".stripslashes($contains2)."\">";
 	echo "</td>";
 
 	echo "<td align='center' colspan='1'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";

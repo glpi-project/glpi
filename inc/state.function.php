@@ -70,7 +70,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 	echo $lang["state"][0]." : &nbsp; &nbsp;";
 	dropdownValue("glpi_dropdown_state","state",$state);
 	echo "</td><td align='center'>";
-	echo "<input type='text' size='15' name=\"contains\" value=\"". $contains ."\" />&nbsp;";
+	echo "<input type='text' size='15' name=\"contains\" value=\"". stripslashes($contains) ."\" />&nbsp;";
 	echo $lang["search"][10];
 	echo "&nbsp;<select name=\"field\" size='1'>";
 	echo "<option value='all' ";
