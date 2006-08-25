@@ -49,14 +49,14 @@ if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"]
 		
 	}
 }
+
 $list=array();
 foreach ($names as $key => $val) {
 	$list[$key]=$val["name"];
 }
 asort($list);
-
 foreach ($list as $key => $val) {
-	echo "<a href='".$HTMLRel."plugins/$key/".$pages[$plug]."'>".$val."</a><br>";
+	echo "<a href='".$HTMLRel."plugins/$key/".$pages[$key]."'>".$val."</a><br>";
 }
 
 echo "</div>";
