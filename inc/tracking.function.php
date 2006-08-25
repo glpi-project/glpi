@@ -874,6 +874,41 @@ function getRealtime($realtime){
 	return $output;
 }
 
+function searchSimpleFormTracking($target,$status="all"){
+
+global $cfg_glpi,  $lang,$HTMLRel,$phproot;
+
+
+	echo "<div align='center' >";
+
+	echo "<form method='get' name=\"form\" action=\"".$target."\">";
+	echo "<table class='tab_cadre_fixe'>";
+	echo "<tr class='tab_bg_1'>";
+	echo "<td colspan='1' align='center'>".$lang["joblist"][0].":&nbsp;";
+	echo "<select name='status'>";
+	echo "<option value='new' ".($status=="new"?" selected ":"").">".$lang["joblist"][9]."</option>";
+	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$lang["joblist"][18]."</option>";
+	echo "<option value='plan' ".($status=="plan"?" selected ":"").">".$lang["joblist"][19]."</option>";
+	echo "<option value='waiting' ".($status=="waiting"?" selected ":"").">".$lang["joblist"][26]."</option>";
+	echo "<option value='old_done' ".($status=="old_done"?" selected ":"").">".$lang["joblist"][10]."</option>";
+	echo "<option value='old_notdone' ".($status=="old_notdone"?" selected ":"").">".$lang["joblist"][17]."</option>";
+	echo "<option value='notold' ".($status=="notold"?"selected":"").">".$lang["joblist"][24]."</option>";	
+	echo "<option value='process' ".($status=="process"?"selected":"").">".$lang["joblist"][21]."</option>";
+	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][25]."</option>";	
+	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][20]."</option>";
+	echo "</select></td>";
+	echo "<td align='center' colspan='1'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";
+	echo "</tr>";
+	echo "</table></div>";
+	echo "<input type='hidden' name='start' value='0'>";
+	// helpdesk case
+	if (ereg("helpdesk.public.php",$target)){
+		echo "<input type='hidden' name='show' value='user'>";
+	}
+	echo "</form>";
+
+}
+
 function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 
@@ -912,7 +947,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		$option["glpi_enterprises.name"]		= $lang["common"][5];
 		$option["resptech.name"]			=$lang["common"][10];
 	}
-	echo "<form method=get name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
+	echo "<form method='get' name=\"form\" action=\"".$target."\">";
 
 
 	echo "<div align='center' >";

@@ -76,7 +76,14 @@ if (!isset($tab["group"])||isset($tab['reset'])) $tab["group"]=0;
 if (!isset($tab["assign"])||isset($tab['reset'])) $tab["assign"]=0;
 if (!isset($tab["assign_ent"])||isset($tab['reset'])) $tab["assign_ent"]=0;
 if (!isset($tab["category"])||isset($tab['reset'])) $tab["category"]="";
-if (!isset($tab["status"])||isset($tab['reset'])) $tab["status"]="notold";
+if (!isset($tab["status"])||isset($tab['reset'])) {
+	// Limited case
+	if (!haveRight("show_ticket","1")){
+		$tab["status"]="all";
+	} else {
+		$tab["status"]="notold";
+	}
+} 
 if (!isset($tab["showfollowups"])||isset($tab['reset'])) $tab["showfollowups"]=0;
 if (!isset($tab["item"])||isset($tab['reset'])) $tab["item"]=0;
 if (!isset($tab["type"])||isset($tab['reset'])) $tab["type"]=0;
@@ -116,8 +123,8 @@ if (isset($_POST["delete_inter"])&&!empty($_POST["todel"])&&haveRight("delete_ti
 }
 
 if (!haveRight("show_ticket","1")){
-	// Show only my tickets
-	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],"","DESC","all",$_SESSION["glpiID"],-1);
+	searchSimpleFormTracking($_SERVER["PHP_SELF"],$tab["status"]);
+	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$_SESSION["glpiID"],-1);
 } else {
 
 	if (!$tab["extended"])
