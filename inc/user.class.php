@@ -383,21 +383,11 @@ class User extends CommonDBTM {
 		$groups = array();
 
 		//Only retrive cn and member attributes from groups
-		$attrs=array("dn");
 		if($AD){
-				$dn = $user_dn;
-				$findcn=explode(",O",$dn);
-				// Cas ou pas de ,OU
-				if ($dn==$findcn[0]) {
-					$findcn=explode(",C",$dn);
-				}
-				$findcn=explode("=",$findcn[0]);
-				$findcn[1]=str_replace('\,', ',', $findcn[1]);
-				$user_dn="CN=".$findcn[1]."";
+			$attrs=array("cn");
+		}else $attrs=array("dn");
 
-			$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
-		}
-		else $filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
+		$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
 
 		//Perform the search
 		$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
@@ -489,7 +479,7 @@ class User extends CommonDBTM {
 				while ($data=$db->fetch_assoc($result)){
 					$groups[$cfg_glpi["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
 				}
-				$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn);
+				$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn,$AD);
 				$v = array_merge($v,$v2);
 			}
 
