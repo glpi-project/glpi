@@ -1478,7 +1478,7 @@ $lang["tracking"][33]="En attente";
 $lang["tracking"][34]="Directe";
 $lang["tracking"][35]="Ecrite";
 $lang["tracking"][36]="Autre";
-$lang["tracking"][37]="Conserver les tickets à la suppression d'un élément de l'inventaire";
+$lang["tracking"][37]="Conserver les tickets à la purge d'un élément de l'inventaire";
 
 $lang["update"][88]="Votre version de la base de données n'est pas compatible avec la version du code installé. Une mise à jour est nécessaire.";
 $lang["update"][89]="Vous essayez d'utiliser GLPI avec une version de la base de données prévue pour une version supérieure. Veuillez installer la version correspondante à votre base de données.";
