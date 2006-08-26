@@ -297,8 +297,11 @@ emails</a></li>
 Authentifications externes</a></li>
 
           <li><a href="#admind10">x) Mode OCSNG</a></li>
+          
+           <li><a href="#admind11">xi)
+Plugins</a></li>
 
-          <li><a href="#admind11">xi)
+          <li><a href="#admind12">xi)
 V&eacute;rifier si une nouvelle version est disponible</a></li>
 
         </ul>
@@ -450,6 +453,12 @@ champ date</span> : permet de faire une recherche sur tout les
 mat&eacute;riels avec un d&eacute;lai correspondant au nombre
 de mois (exemple : ordinateurs vieux de 5 ans = &gt;60 avec le
 champ Date d'achat). </p>
+
+<img src="../pics/warning.png" alt="Attention" style="vertical-align: middle;" height="20" width="20" />
+<span style="color: rgb(153, 0, 0); font-weight: bold;">ATTENTION
+:</span> Pour des questions de s&eacute;curit&eacute;, L'op&eacute;rateur <span style="font-weight: bold;">"\"</span> n'est pas utilisable.
+     <br />
+      <br />
 
 Vous pouvez directement exporter la liste de vos mat&eacute;riels /
 logiciels ou le r&eacute;sultat de votre recherche au format SYLK
@@ -1072,7 +1081,7 @@ r&eacute;elle de panne</li>
 d&eacute;pend&nbsp; du profil de l'utilisateur
 connect&eacute;. Il peut donc varier selon le profil.<br />
 
-<h2><a name="gestion"></a>4 - Partie Gestions</h2>
+<h2><a name="gestion"></a>4 - Partie Gestion</h2>
 
 <h3><a name="gestiona"></a>a) Contacts</h3>
 
@@ -1387,7 +1396,7 @@ modifier des profils existants, ou les supprimer.</p>
 <p>Cette interface rassemble&nbsp; les droits li&eacute;s
 au helpdesk publique :&nbsp;&nbsp;Cr&eacute;er un ticket,
 ajouter des suivis, voir les suivis publics (les siens et ceux des
-intervenants sur le tickets), l'acc&eacute;der aux
+intervenants sur le tickets), voir les tickets de ses groupes, l'acc&eacute;der aux
 r&eacute;servations, &agrave; la FAQ et&nbsp; modifier son
 mot de passe.</p>
 
@@ -1636,15 +1645,16 @@ nouveaux utilisateurs.<br />
 
 <br />
 
+- L'activation du Mode OCS-NG.<br />
+
+<br />
+
+
 - Le niveau de log.<br />
 
-<p>- Ajout automatique des utilisateurs &agrave; partir des
-sources externes d'authentification : permet<br />
+<br />
 
-d'autoriser l'authentification &agrave; partir de source externes
-ou de la d&eacute;sactiver.</p>
-
-- L'activation du Mode OCS-NG. - Le temps de conservation des logs. <br />
+- Le temps de conservation des logs. <br />
 
 <br />
 
@@ -1653,7 +1663,12 @@ ou de la d&eacute;sactiver.</p>
 :</span> Si vous les gardez trop longtemps votre base de
 donn&eacute;es peut grossir de fa&ccedil;on importante.<br />
 
-<br />
+<p>- Ajout automatique des utilisateurs &agrave; partir des
+sources externes d'authentification : permet<br />
+
+d'autoriser l'authentification &agrave; partir de source externes
+ou de la d&eacute;sactiver.</p>
+
 
 - Le mode d'utilisation de GLPI : Le mode normal correspond
 &agrave; une utilisation classique de GLPI. Le mode debug s'adresse
@@ -1686,13 +1701,17 @@ demandes d'interventions anonymes via le fichier helpdesk.html.<br />
 
 <br />
 
+- Assigner automatiquement les nouvelles interventions au responsable
+technique s'il existe.<br />
+
+<br />
+
 - Logguer les modifications des tickets en ajoutant des suivis : permet
 de ne pas cr&eacute;er de suivi lors de la modification d'un ticket.<br />
 
 <br />
 
-- Assigner automatiquement les nouvelles interventions au responsable
-technique s'il existe.<br />
+- Conserver les tickets &agrave; la purge d'un &eacute;l&eacute;ment de l'inventaire.<br />
 
 <ul>
 
@@ -1729,14 +1748,16 @@ recherche :<br />
 
 </p>
 
+<ul>
+
+  <li>Configuration g&eacute;n&eacute;rale</li>
+
+</ul>
+
+
 <p> - Nombre d'&eacute;v&eacute;nements de log
 &agrave; afficher : nombre de log &agrave; afficher sur la page
 d'accueil de la console centrale. (0 = aucun)<br />
-
-<br />
-
-- Montrer les nouveaux tickets au login : montrer les nouveaux tickets
-"non attribu&eacute;s" sur la page d'accueil de la console centrale.<br />
 
 <br />
 
@@ -1751,21 +1772,56 @@ affich&eacute;es - suivis, ordinateurs...<br />
 taille des chaines de caract&egrave;res affich&eacute;es pour
 obtenir un affichage lisible.<br />
 
+<p>- Nombre de caract&egrave;res limite pour les listes
+d&eacute;roulantes : permet de limiter le nombre de
+caract&egrave;res affich&eacute;s dans les listes
+d&eacute;roulantes.</p>
+
+- Le format des dates : permet de param&eacute;trer l'affichage des
+dates<br />
+
+(YYYY-MM-DD ou DD-MM-YYYY).<br />
+
+<p>- Autoriser la consultation anonyme de la base de
+connaissances : permet ou non la consultation de la FAQ pour les
+utilisateurs anonymes (sans authentification pr&eacute;alable).</p>
+
+- Afficher les ID GLPI : permet d'afficher ou non les
+num&eacute;ros internes d'identification de chaque
+mat&eacute;riel / logiciel.<br />
+
 <br />
+
+- Utiliser pour Onglets Suivant/Pr&eacute;c&eacute;dent :
+permet de param&eacute;trer les onglets <img src="../pics/left.png" alt="Pr&eacute;c&eacute;dent" style="vertical-align: middle;" height="10" width="10" />
+et <img src="../pics/right.png" alt="Suivant" style="vertical-align: middle;" height="10" width="10" />
+vous permettant de naviguer au sein des &eacute;l&eacute;ments
+de l'inventaire en fonction de leur ID ou de leur nom.</p>
 
 - Limite d'affichage du planning : pour ne pas indiquer les 24h mais
 restreindre &agrave; la journ&eacute;e de travail effective.<br />
 
 <br />
 
-- Couleurs des priorit&eacute;s.<br />
+- Pas pour les horaires : modie le pas utilis&eacute; pour les horaires sur le planning, la r&eacute;servation et les notes.<br />
 
 <br />
 
-- Le format des dates : permet de param&eacute;trer l'affichage des
-dates<br />
+- Texte au login : texte affich&eacute; lors du login &agrave;
+GLPI. Celui ci peut contenir du code html, et ainsi comporter des liens externes.<br />
 
-(YYYY-MM-DD ou DD-MM-YYYY).<br />
+<ul>
+
+  <li>Assistance</li>
+
+</ul>
+
+- Montrer les nouveaux tickets au login : montrer les nouveaux tickets
+"non attribu&eacute;s" sur la page d'accueil de la console centrale.<br />
+
+<br />
+
+- Couleurs des priorit&eacute;s.<br />
 
 <br />
 
@@ -1775,14 +1831,11 @@ dates<br />
 des dates sous forme JJ-MM-YYYY, lors d'une recherche par date, il faut
 exclusivement utiliser la syntaxe [Ann&eacute;e]-[Mois]-[Jour].</p>
 
-<p>- Autoriser la consultation anonyme de la base de
-connaissances : permet ou non la consultation de la FAQ pour les
-utilisateurs anonymes (sans authentification pr&eacute;alable).</p>
+<ul>
 
-<p>- Nombre de caract&egrave;res limite pour les listes
-d&eacute;roulantes : permet de limiter le nombre de
-caract&egrave;res affich&eacute;s dans les listes
-d&eacute;roulantes.</p>
+  <li>Ajax</li>
+
+</ul>
 
 <p> - Utiliser AJAX : permet d'activer ou non le&nbsp;
 syst&egrave;me AJAX de GLPI (gestion des recherches, des champs
@@ -1822,23 +1875,6 @@ d'&eacute;l&eacute;ments affich&eacute; dans la liste de
 r&eacute;sultat est inf&eacute;rieur &agrave; cette valeur.<br />
 
 <br />
-
-- Texte au login : texte affich&eacute; lors du login &agrave;
-GLPI.<br />
-
-<br />
-
-- Afficher les ID GLPI : permet d'afficher ou non les
-num&eacute;ros internes d'identification de chaque
-mat&eacute;riel / logiciel.<br />
-
-<br />
-
-- Utiliser pour Onglets Suivant/Pr&eacute;c&eacute;dent :
-permet de param&eacute;trer les onglets <img src="../pics/left.png" alt="Pr&eacute;c&eacute;dent" style="vertical-align: middle;" height="10" width="10" />
-et <img src="../pics/right.png" alt="Suivant" style="vertical-align: middle;" height="10" width="10" />
-vous permettant de naviguer au sein des &eacute;l&eacute;ments
-de l'inventaire en fonction de leur ID ou de leur nom.</p>
 
 <p> <a name="admind8" id="admind8"></a></p>
 
@@ -1978,9 +2014,18 @@ mat&eacute;riels).</p>
 <p>Vous pouvez aussi choisir de ne pas utiliser le dictionnaire
 logiciel d'OCS-NG lors de l'import des logiciels.</p>
 
-<br />
+<p>Nombre d'&eacute;l&eacute;ments &agrave; synchroniser via le cron :
+ vous permet de param&eacute;trer la synchronisation automatique. Ceci vous permet de sp&eacute;cifier combien d'ordinateurs se synchronise automatiquement toutes les 5 minutes si quelqu'un est connect&eacute; à la console de glpi.</p>
+
 
 <p><a name="admind11" id="admind11"></a></p>
+
+<h4>xi) Plugins</h4>
+    
+<p>Cette partie ne s'affichera que si si vous en avez install&eacute; des plugins. 
+Vous aurez acc&egrave;s &agrave; leur configuration.</p>
+
+<p><a name="admind12" id="admind12"></a></p>
 
 <h4>xii) V&eacute;rifier si une nouvelle version est
 disponible</h4>
