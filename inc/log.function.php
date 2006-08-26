@@ -521,7 +521,7 @@ function showEvents($target,$order,$sort,$start=0) {
 			echo "&nbsp;";//$item;
 		} else {
 			if ($itemtype=="infocom"){
-				echo "<a href='#' onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=750,height=600,scrollbars=no')\">$item</a>";					
+				echo "<a href='#' onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\">$item</a>";					
 			} else {
 				if ($itemtype=="reservation"){
 					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
