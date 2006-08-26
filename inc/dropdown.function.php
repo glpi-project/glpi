@@ -810,7 +810,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 				
 			}
 
-			echo "<tr><td align='center'>".$lang["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>-----</option>$my_devices</select>";
+			echo "<tr><td align='center'>".$lang["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>--- ".$lang["help"][30]." ---</option>$my_devices</select>";
 			if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE))
 				echo "<br>".$lang["tracking"][2].":&nbsp;";
 			else echo "</td></tr>";
