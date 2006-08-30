@@ -618,6 +618,10 @@ function showJobVeryShort($ID) {
 		else
 			echo "<strong>".$job->getAuthorName()."</strong>";
 
+		if ($job->fields["FK_group"])
+			echo "<br>".getDropdownName("glpi_groups",$job->fields["FK_group"]);
+
+
 		echo "</td>";
 
 		$m= new CommonItem;

@@ -81,7 +81,7 @@ echo "Delete various scripts and directories"
 \rm -rf scripts;
 
 echo "Must be root to generate a clean tarball - Please login"
-su -c "cd /tmp; chown -R root.root /tmp/glpi; tar czvf /tmp/glpi-$RELEASE.tar.gz glpi; \rm -rf /tmp/glpi"
+echo "cd /tmp; chown -R root.root /tmp/glpi; tar czvf /tmp/glpi-$RELEASE.tar.gz glpi; \rm -rf /tmp/glpi" | sudo -s
 
 echo "Creating tarball";
 #cd ..;

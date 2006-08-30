@@ -266,7 +266,7 @@ class User extends CommonDBTM {
 	// SPECIFIC FUNCTIONS
 
 	function getName(){
-		if (strlen($this->fields["realname"])>0) return $this->fields["realname"];
+		if (strlen($this->fields["realname"])>0) return $this->fields["realname"]." ".$this->fields["firstname"];
 		else return $this->fields["name"];
 
 	}
