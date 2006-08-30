@@ -931,7 +931,8 @@ function mergeOcsArray($glpi_id,$tomerge,$field){
 		WHERE glpi_id='$glpi_id'";
 	if ($result=$db->query($query)){
 		$tab=importArrayFromDB($db->result($result,0,0));
-		$newtab=array_unique(array_merge($tomerge,$tab));
+		$newtab=array_merge($tomerge,$tab);
+		$newtab=array_unique($newtab);
 		$query="UPDATE glpi_ocs_link 
 			SET $field='".exportArrayToDB($newtab)."' 
 			WHERE glpi_id='$glpi_id'";
@@ -1266,7 +1267,8 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 
 						if (!empty($line2["IPADDRESS"])&&$cfg_ocs["import_ip"]){
 							$ocs_ips=split(",",$line2["IPADDRESS"]);
-							sort(array_unique($ocs_ips));
+							$ocs_ips=array_unique($ocs_ips);
+							sort($ocs_ips);
 
 							// Is there an existing networking port ?
 							$query="SELECT * 
