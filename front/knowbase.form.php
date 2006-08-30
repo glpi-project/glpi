@@ -104,12 +104,11 @@ else if (isset($_POST["update"])){
 else if (isset($tab["ID"])  && strcmp($tab["delete"],"yes") == 0){
 
 
-
 	// effacer un item dans la base de connaissances
 
 	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 
-	$kb->delete($tab["ID"]);
+	$kb->delete($tab);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][22]);	
 	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.php");
 }
