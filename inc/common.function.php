@@ -366,9 +366,11 @@ function glpi_header($dest){
  *
  */
 function callCron(){
-	if (ereg("front",$_SERVER['PHP_SELF']))
+	if (ereg("front",$_SERVER['PHP_SELF'])){
 		echo "<div style=\"background-image: url('cron.php');\"></div>";
-	else echo "<div style=\"background-image: url('front/cron.php');\"></div>";
+	} else {
+		echo "<div style=\"background-image: url('front/cron.php');\"></div>";
+	}
 }
 
 
