@@ -792,11 +792,13 @@ function ocsCleanLinks(){
 
 function cron_ocsng(){
 
-	global $db,$dbocs,$cfg_glpi;
+	global $db,$dbocs;
 
 	$cfg_ocs=getOcsConf(1);
 	ocsManageDeleted();
-
+	
+	if (!$cfg_ocs["cron_sync_number"]) return 0;
+	
 	$query_ocs = "SELECT * 
 		FROM hardware 
 		WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0";
@@ -815,7 +817,7 @@ function cron_ocsng(){
 			ORDER BY last_update";
 		$result_glpi = $db->query($query_glpi);
 		$done=0;
-		while($done<$cfg_glpi["cron_sync_number"]&&$data=$db->fetch_assoc($result_glpi)){
+		while($done<$cfg_ocs["cron_sync_number"]&&$data=$db->fetch_assoc($result_glpi)){
 			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 
 			if (isset($hardware[$data["ocs_id"]])){ 
