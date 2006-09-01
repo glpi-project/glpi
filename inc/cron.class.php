@@ -103,7 +103,7 @@ class Cron {
 			// la cle est la tache, la valeur le temps minimal, en secondes, entre
 			// deux memes taches ex $this->taches["test"]=30;
 
-			if ($cfg_glpi["ocs_mode"]&&$cfg_glpi["cron_sync_number"]){
+			if ($cfg_glpi["ocs_mode"]){
 				// Every 5 mns
 				$this->taches["ocsng"]=300;
 			}
