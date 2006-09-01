@@ -323,7 +323,7 @@ function commonHeader($title,$url)
 			callCron();
 			$_SESSION["glpicrontimer"]=time();
 		} 
-	}
+	} else $_SESSION["glpicrontimer"]=time();
 
 
 	displayMessageAfterRedirect();
@@ -490,8 +490,7 @@ function helpHeader($title,$url) {
 			callCron();
 			$_SESSION["glpicrontimer"]=time();
 		}
-	}
-
+	} else $_SESSION["glpicrontimer"]=time();
 
 	displayMessageAfterRedirect();
 }
