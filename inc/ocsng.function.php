@@ -452,10 +452,10 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 
 			$mixed_checksum=intval($ocs_checksum) &  intval($cfg_ocs["checksum"]);
 			
-			echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
+/*			echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
 			  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 			  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
-			 	
+ */			 	
 			// Is an update to do ?
 			if ($mixed_checksum){
 				// Get updates on computers :
