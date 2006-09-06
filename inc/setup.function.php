@@ -448,12 +448,13 @@ function replaceDropDropDown($input) {
 		case "os" :
 			$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
 		$db->query($query);
-		$query = "update glpi_software set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
+		$query = "update glpi_software set platform = '". $input["newID"] ."'  where platform = '".$input["oldID"]."'";
 		$db->query($query);
 		break;
 		case "os_version" :
 			$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
-		$db->query($query);
+			$db->query($query);
+			
 		break;
 		case "os_sp" :
 			$query = "update glpi_computers set ". $name ." = '". $input["newID"] ."'  where ". $name ." = '".$input["oldID"]."'";
