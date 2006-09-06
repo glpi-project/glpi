@@ -56,6 +56,7 @@ class User extends CommonDBTM {
 		global $lang,$cfg_glpi;
 
 		$ong[1]=$lang["title"][26];
+		$ong[2]=$lang["common"][1];
 
 		return $ong;
 	}
