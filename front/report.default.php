@@ -143,7 +143,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$id=0;
-		$os="&nbsp;";
+		$os="------";
 	} else {
 		$os = $db->result($result, $i, "name");
 		$id= $db->result($result, $i, "ID");
@@ -187,7 +187,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
-		$net="&nbsp;";
+		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
 		$net = $db->result($result, $i, "name");
@@ -211,7 +211,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
-		$net="&nbsp;";
+		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
 		$net = $db->result($result, $i, "name");
@@ -247,7 +247,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
-		$net="&nbsp;";
+		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
 		$net = $db->result($result, $i, "name");
@@ -283,7 +283,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
-		$net="&nbsp;";
+		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
 		$net = $db->result($result, $i, "name");
@@ -318,7 +318,7 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
-		$net="&nbsp;";
+		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
 		$net = $db->result($result, $i, "name");
