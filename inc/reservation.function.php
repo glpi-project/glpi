@@ -641,7 +641,7 @@ function printReservationItems($target){
 	$query="select ID from glpi_reservation_item ORDER BY device_type";
 
 	if ($result = $db->query($query)) {
-		echo "<div align='center'><table class='tab_cadre' cellspacing='5'>";
+		echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 		echo "<tr><th colspan='3'>".$lang["reservation"][1]."</th></tr>";
 		while ($row=$db->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
