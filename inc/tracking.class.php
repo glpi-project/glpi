@@ -337,65 +337,65 @@ class Job extends CommonDBTM{
 		if (!isset($input["status"])) $input["status"]="new";
 		if (!isset($input["assign"])) $input["assign"]=0;
 
-		if (!isset($input["author"]))
+		if (!isset($input["author"])){
 			if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
 				$input["author"]=$_SESSION["glpiID"];
 			else $input["author"]=1; // Helpdesk injector
+		}
+		if ($input["assign"]>0&&$input["status"]=="new")
+			$input["status"] = "assign";
 
-			if ($input["assign"]>0&&$input["status"]=="new")
-				$input["status"] = "assign";
+		if (isset($input["computer"])&&$input["computer"]==0)
+			$input["device_type"]=0;	
 
-			if (isset($input["computer"])&&$input["computer"]==0)
-				$input["device_type"]=0;	
+		if ($input["device_type"]==0)
+			$input["computer"]=0;
 
-			if ($input["device_type"]==0)
-				$input["computer"]=0;
-
-			if ($input["computer"]&&$input["device_type"]){
-				$ci=new CommonItem;
-				$ci->getFromDB($input["device_type"],$input["computer"]);
-				if (isset($ci->obj->fields['FK_groups'])&&$ci->obj->fields['FK_groups']!=0){
-					$input["FK_group"] = $ci->obj->fields['FK_groups'];
-				}
+		if ($input["computer"]&&$input["device_type"]){
+			$ci=new CommonItem;
+			$ci->getFromDB($input["device_type"],$input["computer"]);
+			if (isset($ci->obj->fields['FK_groups'])&&$ci->obj->fields['FK_groups']!=0){
+				$input["FK_group"] = $ci->obj->fields['FK_groups'];
 			}
+		}
 
-			if (isset($input["emailupdates"])&&$input["emailupdates"]=="yes"&&empty($input["uemail"])){
-				$user=new User();
-				$user->getFromDB($input["author"]);
-				$input["uemail"]=$user->fields["email"];
+		if (isset($input["emailupdates"])&&$input["emailupdates"]=="yes"&&empty($input["uemail"])){
+			$user=new User();
+			$user->getFromDB($input["author"]);
+			$input["uemail"]=$user->fields["email"];
+		}
+
+		if ($cfg_glpi["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
+			$ci=new CommonItem;
+			$ci->getFromDB($input["device_type"],$input["computer"]);
+			if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
+				$input["assign"] = $ci->obj->fields['tech_num'];
+				if ($input["assign"]>0)
+					$input["status"] = "assign";
 			}
+		}
 
-			if ($cfg_glpi["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
-				$ci=new CommonItem;
-				$ci->getFromDB($input["device_type"],$input["computer"]);
-				if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
-					$input["assign"] = $ci->obj->fields['tech_num'];
-					if ($input["assign"]>0)
-						$input["status"] = "assign";
-				}
-			}
+		if (isset($input["hour"])&&isset($input["minute"])){
+			$input["realtime"]=$input["hour"]+$input["minute"]/60;
+			$input["_hour"]=$input["hour"];
+			$input["_minute"]=$input["minute"];
+			unset($input["hour"]);
+			unset($input["minute"]);
+		}
 
-			if (isset($input["hour"])&&isset($input["minute"])){
-				$input["realtime"]=$input["hour"]+$input["minute"]/60;
-				$input["_hour"]=$input["hour"];
-				$input["_minute"]=$input["minute"];
-				unset($input["hour"]);
-				unset($input["minute"]);
-			}
+		// Add and close for central helpdesk
+		if (isset($input["add_close"])){
+			$input["status"]="old_done";
+			unset($input["add_close"]);
+		}
 
-			// Add and close for central helpdesk
-			if (isset($input["add_close"])){
-				$input["status"]="old_done";
-				unset($input["add_close"]);
-			}
+		if (!isset($input["date"]))
+			$input["date"] = date("Y-m-d H:i:s");
 
-			if (!isset($input["date"]))
-				$input["date"] = date("Y-m-d H:i:s");
+		if (strstr($input["status"],"old_"))
+			$input["closedate"] = $input["date"];
 
-			if (strstr($input["status"],"old_"))
-				$input["closedate"] = $input["date"];
-
-			return $input;
+		return $input;
 	}
 
 	function postAddItem($newID,$input) {
@@ -419,7 +419,9 @@ class Job extends CommonDBTM{
 		if ((isset($input["_followup"])&&strlen($input["_followup"]))||(isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0)){
 
 			$fup=new Followup();
-			$toadd=array("type"=>"new","tracking"=>$newID);
+			$type="new";
+			if (isset($this->fields["status"])&&ereg("old_",$this->fields["status"])) $type="finish";
+			$toadd=array("type"=>$type,"tracking"=>$newID);
 			if (isset($input["_hour"])) $toadd["hour"]=$input["_hour"];
 			if (isset($input["_minute"])) $toadd["minute"]=$input["_minute"];
 			if (isset($input["_followup"])&&strlen($input["_followup"])) $toadd["contents"]=$input["_followup"];
