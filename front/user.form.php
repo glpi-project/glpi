@@ -112,10 +112,14 @@ else if (isset($_POST["deletegroup"]))
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+					showDeviceUser($_GET["ID"]);
 					display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
 					showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+					break;
+				case 2 :
+					showDeviceUser($_GET["ID"]);
 					break;
 				default : 
 					if (!display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
