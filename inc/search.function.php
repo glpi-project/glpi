@@ -1227,8 +1227,11 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 			$linkfield="";
 		if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
 			$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
-
-		return " ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH ) ";
+		if (empty($linkfield)){ // glpi_users case / not link table
+			return " ( $table$linkfield.$field $SEARCH ) ";
+		} else {
+			return " ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH ) ";
+		}
 		break;
 		case "glpi_device_hdd.specif_default" :
 			//	$larg=500;
