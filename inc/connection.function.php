@@ -59,9 +59,11 @@ function showConnect($target,$ID,$type) {
 		$global=$ci->obj->fields['is_global'];
 
 		$computers = $connect->getComputerContact($type,$ID);
+		if (!$computers) $nb=0;
+		else $nb=count($computers);
 
 		echo "<br><div align='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
-		echo $lang["connect"][0].": ".count($computers);
+		echo $lang["connect"][0].": ".$nb;
 		echo "</th></tr>";
 
 		if ($computers&&count($computers)>0) {
