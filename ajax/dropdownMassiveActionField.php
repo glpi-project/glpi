@@ -53,6 +53,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 
 	$FIELDNAME_PRINTED=false;
 
+	
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
 		if ($search["table"].".".$search["linkfield"]=="glpi_users.active"){
 			dropdownYesNoInt("active",1);
@@ -86,19 +87,21 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			break;
 			case "glpi_enterprises_infocoms": // Infocoms enterprises
 				dropdown("glpi_enterprises","FK_enterprise");
+				echo "<input type='hidden' name='field' value='FK_enterprise'>";
+				$FIELDNAME_PRINTED=true;
 			break;
 			case "glpi_dropdown_budget": // Infocoms budget
 				dropdown("glpi_dropdown_budget","budget");
 			break;
 			case "glpi_ocs_link": // auto_update ocs_link
 				dropdownYesNoInt("_auto_update_ocs");
-			echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
-			$FIELDNAME_PRINTED=true;
+				echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
+				$FIELDNAME_PRINTED=true;
 			break;
 
 			default :// dropdown case
-			dropdown($search["table"],$search["linkfield"]);
-			break;
+				dropdown($search["table"],$search["linkfield"]);
+				break;
 		}
 	}
 	if (!$FIELDNAME_PRINTED)
