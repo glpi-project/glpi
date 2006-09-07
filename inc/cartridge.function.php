@@ -321,9 +321,9 @@ function showCartridgeInstalled($instID,$old=0) {
 	$nb_pages_printed=0;
 	$ci=new CommonItem();
 	while ($data=$db->fetch_array($result)) {
-		$date_in=$data["date_in"];
-		$date_use=$data["date_use"];
-		$date_out=$data["date_out"];
+		$date_in=convDate($data["date_in"]);
+		$date_use=convDate($data["date_use"]);
+		$date_out=convDate($data["date_out"]);
 		echo "<tr  class='tab_bg_1".($data["deleted"]=='Y'?"_2":"")."'><td align='center'>";
 		echo $data["ID"]; 
 		echo "</td><td align='center'><b>";
