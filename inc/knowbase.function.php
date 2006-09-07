@@ -615,7 +615,7 @@ function faqShowCategoriesall($target,$contains)
 	searchFormKnowbase($target,$contains);
 
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
-	echo "<tr class='tab_bg_2'><th align='center' >".$lang["knowbase"][1]."</th></tr><tr><td  align='left'>";	
+	echo "<tr ><th align='center' >".$lang["knowbase"][1]."</th></tr><tr class='tab_bg_2'><td  align='left'>";	
 
 
 
