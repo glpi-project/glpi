@@ -384,35 +384,28 @@ class Printer  extends CommonDBTM {
 
 			// serial interface?
 			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
+			echo "<td>".$lang["printers"][14]."</td>\n";
 			echo "<td>";
-			if ($this->fields["flags_serial"] == 1) {
-				echo "<input type='checkbox' name='flags_serial' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_serial' value='1'>";
-			}
-			echo "</td><td>".$lang["printers"][14]."</td>\n";
+			dropdownYesNoInt("flags_serial",$this->fields["flags_serial"]);
+			echo "</td>";
 			echo "</tr></table>\n";
 
 			// parallel interface?
 			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
+			echo "<td>".$lang["printers"][15]."</td>\n";
 			echo "<td>";
-			if ($this->fields["flags_par"] == 1) {
-				echo "<input type='checkbox' name='flags_par' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_par' value='1'>";
-			}
-			echo "</td><td>".$lang["printers"][15]."</td>\n";
+			dropdownYesNoInt("flags_par",$this->fields["flags_par"]);
+			echo "</td>";
+
 			echo "</tr></table>\n";
 
 			// USB ?
 			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
-			echo "<td>\n";
-			if ($this->fields["flags_usb"] == 1) {
-				echo "<input type='checkbox' name='flags_usb' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_usb' value='1'>";
-			}
-			echo "</td><td>".$lang["printers"][27]."</td>\n";
+			echo "<td>".$lang["printers"][27]."</td>\n";
+			echo "<td>";
+			dropdownYesNoInt("flags_usb",$this->fields["flags_usb"]);
+			echo "</td>";
+
 			echo "</tr></table>\n";
 
 			// Ram ?
