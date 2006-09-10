@@ -206,7 +206,7 @@ function showCentralJobList($target,$start,$status="process") {
 		echo "<tr><th colspan='5'><b><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$lang["common"][37]."</th>";
-		echo "<th>".$lang["common"][36]."</th>";
+		echo "<th>".$lang["common"][1]."</th>";
 		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
 		while ($i < $number) {
 			$ID = $db->result($result, $i, "ID");
