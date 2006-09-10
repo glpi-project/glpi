@@ -153,7 +153,7 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 	}
 	echo "</tr>"	;
 
-	echo "</table></td><td><table border='0'><tr>";
+	echo "</table></td><td valign='top'><table border='0'><tr>";
 
 	echo "<td align='center' valign='top'  width='450px'><br>";
 	ShowPlanningCentral($_SESSION["glpiID"]);
