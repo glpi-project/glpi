@@ -79,6 +79,8 @@ else
 			"pt_PT"=>array("Português","pt_PT.php","en_GB.html","hd-en_GB.html","br","en"),
 			"ro_RO"=>array("Romanian","ro_RO.php","en_GB.html","hd-en_GB.html","ro","en"),
 			"ru_RU"=>array("Russian","ru_RU.php","en_GB.html","hd-en_GB.html","ru","en"),
+			"zh_CN"=>array("Simplified Chinese","zh_CN.php","en_GB.html","hd-en_GB.html","en","en"),
+			"sv_SE"=>array("Swedish","sv_SE.php","en_GB.html","hd-en_GB.html","sv","en"),
 			);
 
 	// ITEMS TYPE

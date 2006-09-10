@@ -97,6 +97,8 @@ function choose_language()
 	echo "<option value=\"po_PO\">Polish (po_PO)</option>";
 	echo "<option value=\"ro_RO\">Romanian (ro_RO)</option>";
 	echo "<option value=\"ru_RU\">Russian (ru_RU)</option>";
+	echo "<option value=\"zh_CN\">Simplified Chinese (zh_CN)</option>";
+	echo "<option value=\"sv_SE\">Swedish (sv_SE)</option>";
 	echo "</select></p>"; 
 	echo "";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\" /><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
