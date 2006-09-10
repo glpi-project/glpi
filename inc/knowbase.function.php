@@ -147,13 +147,13 @@ function showKbItemForm($target,$ID){
 	echo "</fieldset>";
 
 	echo "<fieldset>";
-	echo "<legend>".$lang["knowbase"][3]."</legend>";
+	echo "<legend>".$lang["knowbase"][14]."</legend>";
 	echo "<div align='center'><textarea cols='80' rows='2'  name='question' >".$ki->fields["question"]."</textarea></div>"; 
 	echo "</fieldset>";
 
 
 	echo "<fieldset>";
-	echo "<legend>".$lang["knowbase"][4]."</legend><div align='center'>";
+	echo "<legend>".$lang["knowbase"][15]."</legend><div align='center'>";
 	echo "<textarea cols='80' rows='30' id='answer'  name='answer' >".$ki->fields["answer"]."</textarea></div>"; 
 
 	echo "</fieldset>";
@@ -458,13 +458,17 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 
 	echo "<strong>".$lang["common"][36].": ".$fullcategoryname."</strong></th></tr>";
 
-	echo "<tr class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>".$lang["knowbase"][3]."</h2>";
+	echo "<tr class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
+	echo ($ki->fields["faq"]=="yes") ? "".$lang["knowbase"][3]."" : "".$lang["knowbase"][14]."";
+	echo "</h2>";
 
 	$question = $ki->fields["question"];
 
 	echo $question;
 	echo "</td></tr>\n";
-	echo "<tr  class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>".$lang["knowbase"][4]."</h2>\n";
+	echo "<tr  class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
+	echo ($ki->fields["faq"]=="yes") ? "".$lang["knowbase"][4]."" : "".$lang["knowbase"][15]."";
+	echo "</h2>\n";
 
 	$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
 
