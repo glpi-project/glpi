@@ -841,7 +841,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	$max_size/=1024*1024;
 	$max_size=round($max_size,1);
 
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	";
+	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." ".$lang["common"][45]."):	";
 	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
 	echo "<td colspan='3'><input type='file' name='filename' value=\"\" size='25'></td>";
