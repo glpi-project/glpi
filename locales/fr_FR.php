@@ -212,6 +212,7 @@ $lang["common"][41]="Alertes par email";
 $lang["common"][42]="Portable";
 $lang["common"][43]="Prénom";
 $lang["common"][44]="Valeur par défaut";
+$lang["common"][45]="MB maxi";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
