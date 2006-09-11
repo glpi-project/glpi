@@ -1182,7 +1182,6 @@ $lang["setup"][98]="Source de mise à jour";
 $lang["setup"][99]="Budget";
 
 
-$lang["setup"][100]="Configuration générale";
 $lang["setup"][102]="Niveau de log";
 $lang["setup"][103]="1- Critique (erreur de login seulement)";
 $lang["setup"][104]="2- Sévère (Non utilisée)";
