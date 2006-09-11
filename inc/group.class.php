@@ -40,7 +40,7 @@ class Group extends CommonDBTM{
 
 	function Group () {
 		$this->table="glpi_groups";
-		$this->type=CONTACT_TYPE;
+		$this->type=GROUP_TYPE;
 	}
 
 	function cleanDBonPurge($ID) {

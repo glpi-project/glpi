@@ -106,6 +106,7 @@ else
 				case -1 :	
 					showGroupUser($_SERVER["PHP_SELF"],$tab["ID"]);
 					showGroupDevice($tab["ID"]);
+					display_plugin_action(GROUP_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 2 : 
 					showGroupDevice($tab["ID"]);
