@@ -1016,7 +1016,7 @@ function titleConfigGen(){
 	global  $lang,$HTMLRel;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][100]."</span>";
+	echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][70]."</span>";
 	echo "</b></td></tr></table>&nbsp;</div>";
 
 
@@ -1042,7 +1042,7 @@ function showFormConfigGen($target){
 	echo "<form name='form' action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='4'>".$lang["setup"][100]."</th></tr>";
+	echo "<tr><th colspan='4'>".$lang["setup"][70]."</th></tr>";
 
 	$default_language=$cfg_glpi["default_language"];
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][113]." </td><td><select name=\"default_language\">";
