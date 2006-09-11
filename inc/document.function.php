@@ -266,7 +266,9 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	global $db,$cfg_glpi, $lang,$HTMLRel;
 
-	if (!haveRight("document","r")&&!haveTypeRight($device_type,"r")&&$device_type!=KNOWBASE_TYPE)	return false;
+	if ($device_type!=KNOWBASE_TYPE)
+		if (!haveRight("document","r")||!haveTypeRight($device_type,"r"))	return false;
+
 	if (empty($withtemplate)) $withtemplate=0;
 
 	$canread=haveTypeRight($device_type,"r");
