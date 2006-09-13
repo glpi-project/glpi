@@ -215,15 +215,16 @@ function showAssociatedContact($instID) {
 	echo "<th>".$lang["financial"][31]."</th><th>".$lang["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
-	while ($i < $number) {
-		$ID=$db->result($result, $i, "ID_ent");
+	if ($number)
+	while ($data=$db->fetch_array($result)) {
+		$ID=$data["ID_ent"];
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><a href='".$HTMLRel."front/contact.form.php?ID=".$db->result($result, $i, "ID")."'>".$db->result($result, $i, "glpi_contacts.name")."</a></td>";
-		echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.phone")."</td>";
-		echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.phone2")."</td>";
-		echo "<td align='center'  width='100'>".$db->result($result, $i, "glpi_contacts.fax")."</td>";
-		echo "<td align='center'><a href='mailto:".$db->result($result, $i, "glpi_contacts.email")."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$db->result($result, $i, "glpi_contacts.type"))."</td>";
+		echo "<td align='center'><a href='".$HTMLRel."front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
+		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
+		echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
+		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
+		echo "<td align='center'><a href='mailto:".$data["email"]."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
+		echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
 			echo "<a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$lang["buttons"][6]."</b></a>";
