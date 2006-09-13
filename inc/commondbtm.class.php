@@ -373,7 +373,7 @@ class CommonDBTM {
 			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
 			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
 
-			if (haveRight("reservation_central","r")&&function_exists("isReservable")&&isReservable(COMPUTER_TYPE,$ID)){
+			if (haveRight("reservation_central","r")&&function_exists("isReservable")&&isReservable($this->type,$ID)){
 				echo "<li class='invisible'>&nbsp;</li>";
 				echo "<li".(($actif==11)?" class='actif'":"")."><a href='$target&amp;onglet=11$template'>".$lang["title"][35]."</a></li>";
 			}
