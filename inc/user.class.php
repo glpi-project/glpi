@@ -103,7 +103,7 @@ class User extends CommonDBTM {
 	function prepareInputForAdd($input) {
 		// Add User, nasty hack until we get PHP4-array-functions
 		if (isset($input["password"])) {
-			$input["password_md5"]=md5($input["password"]);
+			$input["password_md5"]=md5(unclean_cross_side_scripting_deep($input["password"]));
 			$input["password"]="";
 		}
 		if (isset($input["_extauth"])){
@@ -168,7 +168,7 @@ class User extends CommonDBTM {
 			if(empty($input["password"])) {
 				unset($input["password"]);
 			} else {
-				$input["password_md5"]=md5($input["password"]);
+				$input["password_md5"]=md5(unclean_cross_side_scripting_deep($input["password"]));
 				$input["password"]="";
 			}
 		}
