@@ -721,26 +721,17 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
 			$my_devices="";
 
-			$group_where="";
-			$groups=array();
-			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."';";
-
-			$result=$db->query($query);
-			if ($db->numrows($result)>0){
-				while ($data=$db->fetch_array($result)){
-					$group_where.=" OR FK_groups = '".$data["FK_groups"]."' ";
-				}
-			}
-
 			$ci=new CommonItem();
 			$my_item="";
-			$my_devices.="<optgroup label=\"".$lang["tracking"][1]."\">";
 
 			if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
+
+			// My items
+			$my_devices.="<optgroup label=\"".$lang["tracking"][1]."\">";
 			foreach ($cfg_glpi["linkuser_type"] as $type)
 				if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 				{
-					$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' $group_where";
+					$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."'";
 
 					$result=$db->query($query);
 					if ($db->numrows($result)>0){
@@ -754,6 +745,47 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 					}
 				}
 			$my_devices.="</optgroup>";
+
+
+			// My group items
+			if (haveRight("show_group_ticket","1")){
+				$group_where="";
+				$groups=array();
+				$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."';";
+	
+				$result=$db->query($query);
+				$first=true;
+				if ($db->numrows($result)>0){
+					while ($data=$db->fetch_array($result)){
+						if ($first) $first=false;
+						else $group_where.=" OR ";
+		
+						$group_where.=" FK_groups = '".$data["FK_groups"]."' ";
+					}
+	
+					$my_devices.="<optgroup label=\"".$lang["tracking"][1]." - ".$lang["common"][35]."\">";
+					foreach ($cfg_glpi["linkuser_type"] as $type)
+						if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+						{
+							$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where";
+	
+							$result=$db->query($query);
+							if ($db->numrows($result)>0){
+								$ci->setType($type);
+								$type_name=$ci->getType();
+								while ($data=$db->fetch_array($result)){
+									if (!in_array($data["ID"],$already_add[$type])){
+										$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
+										$already_add[$type][]=$data["ID"];
+									}
+								}
+								
+							}
+						}
+					$my_devices.="</optgroup>";
+				}
+			}
+
 			// Get linked items to computers
 			if (isset($already_add[COMPUTER_TYPE])&&count($already_add[COMPUTER_TYPE])){
 
