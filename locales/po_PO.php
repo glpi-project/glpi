@@ -208,6 +208,7 @@ $lang["common"][42]="Mobile";
 $lang["common"][43]="Firstname"; 
 $lang["common"][44]="Default value"; 
 $lang["common"][45]="MB max"; 
+$lang["common"][46]="Vcard"; 
 
 $lang["computers"][0]="Dodaj Komputer..."; 
 $lang["computers"][9]="OS"; 

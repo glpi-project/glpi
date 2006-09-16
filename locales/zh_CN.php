@@ -208,6 +208,7 @@ $lang["common"][42]="移动电话";
 $lang["common"][43]="名字"; 
 $lang["common"][44]="缺省值"; 
 $lang["common"][45]="MB max"; 
+$lang["common"][46]="Vcard"; 
 
 $lang["computers"][0]="添加计算机…"; 
 $lang["computers"][9]="操作系统"; 

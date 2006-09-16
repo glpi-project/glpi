@@ -170,7 +170,7 @@ $lang["common"][4]="Web";
 $lang["common"][5]="Hersteller"; 
 $lang["common"][6]="Vorlage Name"; 
 $lang["common"][7]="Vorlage auswählen"; 
-$lang["common"][8]="Vorlagen barbeiten..."; 
+$lang["common"][8]="Vorlagen bearbeiten..."; 
 $lang["common"][9]="Vorlage hinzufügen..."; 
 $lang["common"][10]="verwaltende Person"; 
 $lang["common"][11]="begrenzte Ansicht"; 
@@ -208,6 +208,7 @@ $lang["common"][42]="Mobile";
 $lang["common"][43]="Vorname"; 
 $lang["common"][44]="Standard Wert"; 
 $lang["common"][45]="MB max"; 
+$lang["common"][46]="Vcard"; 
 
 $lang["computers"][0]="Computer hinzufügen..."; 
 $lang["computers"][9]="Betriebssystem"; 

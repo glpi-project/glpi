@@ -104,7 +104,7 @@ function showEnterpriseContact($instID) {
 
 }
 
-function generateVcard($ID){
+function generateContactVcard($ID){
 
 	$contact = new Contact;
 	$contact->getfromDB($ID);

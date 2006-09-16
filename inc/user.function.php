@@ -310,4 +310,43 @@ function showGroupAssociated($target,$ID){
 }
 
 
+function generateUserVcard($ID){
+
+	$user = new User;
+	$user->getFromDB($ID);
+
+	// build the Vcard
+
+	$vcard = new vCard();
+
+	if (!empty($user->fields["realname"])||!empty($user->fields["firstname"])) $vcard->setName($user->fields["realname"], $user->fields["firstname"], "", ""); 
+	else $vcard->setName($user->fields["name"], "", "", "");
+
+	$vcard->setPhoneNumber($user->fields["phone"], "PREF;WORK;VOICE");
+	$vcard->setPhoneNumber($user->fields["phone2"], "HOME;VOICE");
+	$vcard->setPhoneNumber($user->fields["mobile"], "WORK;CELL");
+
+	//if ($user->birthday) $vcard->setBirthday($user->birthday);
+
+	$vcard->setEmail($user->fields["email"]);
+
+	$vcard->setNote($user->fields["comments"]);
+
+	// send the  VCard 
+
+	$output = $vcard->getVCard();
+
+
+	$filename =$vcard->getFileName();      // "xxx xxx.vcf"
+
+	@Header("Content-Disposition: attachment; filename=\"$filename\"");
+	@Header("Content-Length: ".strlen($output));
+	@Header("Connection: close");
+	@Header("content-type: text/x-vcard; charset=UTF-8");
+
+	echo $output;
+
+}
+
+
 ?>

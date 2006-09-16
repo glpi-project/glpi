@@ -208,6 +208,7 @@ $lang["common"][42]="Мобилен";
 $lang["common"][43]="Име"; 
 $lang["common"][44]="Значение по подразбиране"; 
 $lang["common"][45]="MB max"; 
+$lang["common"][46]="Vcard"; 
 
 $lang["computers"][0]="Добавяне на компютър..."; 
 $lang["computers"][9]="Операционна система"; 

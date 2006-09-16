@@ -628,7 +628,10 @@ class User extends CommonDBTM {
 		if ($spotted) {
 			echo "<div align='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
+			echo "<tr><th colspan='4'>".$lang["setup"][57]." : " .$this->fields["name"]."&nbsp;";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/user.vcard.php?ID=$ID'>".$lang["common"][46]."</a>"; 
+			echo "</th></tr>";
+			echo "</th></tr>";
 			echo "<tr class='tab_bg_1'>";	
 			echo "<td align='center'>".$lang["setup"][18]."</td>";
 			// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
