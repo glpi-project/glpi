@@ -596,9 +596,10 @@ function makeTextSearch($val,$not=0){
 				$end=1;
 		}
 		if ($begin||$end) 
-			$val=substr($val,$begin,$length-$end);
+			$val=substr($val,$begin,$length-$end-$begin);
 
 		$SEARCH=" $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
+
 	}
 
 	return $SEARCH;

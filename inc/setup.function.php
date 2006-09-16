@@ -1163,7 +1163,7 @@ function showFormConfigDisplay($target){
 	echo "<form name='form' action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='".$cfg_glpi["ID"]."'>";
 	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='4'>".$lang["setup"][100]."</th></tr>";
+	echo "<tr><th colspan='4'>".$lang["setup"][70]."</th></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$lang["setup"][108]."</td><td> <input type=\"text\" name=\"num_of_events\" value=\"". $cfg_glpi["num_of_events"] ."\"></td>";
 	echo "<td align='center'>".$lang["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $cfg->fields["list_limit"] ."\"></td></tr>";
