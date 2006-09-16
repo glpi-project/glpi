@@ -208,6 +208,7 @@ $lang["common"][42]="Cellulare";
 $lang["common"][43]="Nome"; 
 $lang["common"][44]="Valore predefinito"; 
 $lang["common"][45]="MB max"; 
+$lang["common"][46]="Vcard"; 
 
 $lang["computers"][0]="Aggiungi un computer..."; 
 $lang["computers"][9]="SO"; 

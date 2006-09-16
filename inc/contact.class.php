@@ -144,8 +144,8 @@ class Contact extends CommonDBTM{
 				echo $lang["financial"][33].":";
 
 			} else {
-				echo $lang["common"][18]." ID $ID:";
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/contact.vcard.php?ID=$ID'>Vcard</a>";
+				echo $lang["common"][18]." ID $ID:&nbsp;";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$lang["common"][46]."</a>";
 			}		
 			echo "</b></th></tr>";
 

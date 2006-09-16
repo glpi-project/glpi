@@ -39,16 +39,13 @@ include ($phproot . "/lib/vcardclass/classes-vcard.php");
 
 if (empty($_GET["ID"])) {
 
-	glpi_header($cfg_glpi["root_doc"]."/contacts");
+	glpi_header($cfg_glpi["root_doc"]."/front/contact.php");
 
 }else {
 
 	checkRight("contact_enterprise","r");
 
-
-
-
-	generateVcard($_GET["ID"]);
+	generateContactVcard($_GET["ID"]);
 
 }
 
