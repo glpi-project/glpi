@@ -108,7 +108,8 @@ function showDeviceManufacturer($instID) {
 	if (!haveRight("contract_infocom","r")) return false;
 
 
-	$types=array(COMPUTER_TYPE,CONSUMABLE_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,CARTRIDGE_TYPE);
+	$types=array(COMPUTER_TYPE,CONSUMABLE_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,CARTRIDGE_TYPE,SOFTWARE_TYPE);
+	sort($types);
 
 	echo "<br><br><div align='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$lang["common"][5].":</th></tr>";
