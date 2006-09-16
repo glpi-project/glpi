@@ -197,7 +197,7 @@ function showDeviceDocument($instID,$search='') {
 	$ci=new CommonItem();
 	while ($i < $number) {
 		$type=$db->result($result, $i, "device_type");
-		if (haveTypeRight($type,"r")){
+		if (($type!=TRACKING_TYPE&&haveTypeRight($type,"r"))||($type==TRACKING_TYPE&&haveTypeRight($type,"1"))){
 			$column="name";
 			if ($type==TRACKING_TYPE) $column="ID";
 
