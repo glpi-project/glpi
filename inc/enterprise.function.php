@@ -209,9 +209,9 @@ function showAssociatedContact($instID) {
 
 
 	echo "<br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='7'>".$lang["financial"][46].":</th></tr>";
+	echo "<tr><th colspan='8'>".$lang["financial"][46].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th><th>".$lang["financial"][29]."</th>";
-	echo "<th>".$lang["financial"][29]." 2</th><th>".$lang["financial"][30]."</th>";
+	echo "<th>".$lang["financial"][29]." 2</th><th>".$lang["common"][42]."</th><th>".$lang["financial"][30]."</th>";
 	echo "<th>".$lang["financial"][31]."</th><th>".$lang["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
@@ -222,6 +222,7 @@ function showAssociatedContact($instID) {
 		echo "<td align='center'><a href='".$HTMLRel."front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
+		echo "<td align='center'  width='100'>".$data["mobile"]."</td>";
 		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
 		echo "<td align='center'><a href='mailto:".$data["email"]."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
