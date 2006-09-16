@@ -67,6 +67,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$result_update = $db->query($query_update);
 			$nb_updates=$db->result($result_update, 0, "COUNT");;
 			$installed = getInstalledLicence($sID);
+			$tobuy=getLicenceToBuy($sID);
 			// As t'on utilisé trop de licences en prenant en compte les mises a jours (double install original + mise à jour)
 			// Rien si free software
 			$pb="";
@@ -77,7 +78,7 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='5' $pb >";
 			echo $nb_licences;
-			echo "&nbsp;".$lang["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$lang["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$lang["software"][19]."</th>";
+			echo "&nbsp;".$lang["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$lang["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$lang["software"][19]."&nbsp;-&nbsp;$tobuy&nbsp;".$lang["software"][37]."</th>";
 			echo "<th colspan='1'>";
 			echo " ".$lang["software"][19]." :</th></tr>";
 			$i=0;
