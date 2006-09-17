@@ -189,28 +189,26 @@ class Reminder extends CommonDBTM {
 
 			echo "<td align='center'>";
 
-			echo "<script type='text/javascript' >\n";
-			echo "function showPlan(){\n";
-			echo "Element.hide('plan');";
-			echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$this->fields["rv"])?"&begin_date=".$this->fields["begin"]."&end_date=".$this->fields["end"]."":"")."'});";
-			echo "}";
-			echo "</script>\n";
+			if($remind_edit) { 
+				echo "<script type='text/javascript' >\n";
+				echo "function showPlan(){\n";
+				echo "Element.hide('plan');";
+				echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$this->fields["rv"])?"&begin_date=".$this->fields["begin"]."&end_date=".$this->fields["end"]."":"")."'});";
+				echo "}";
+				echo "</script>\n";
+	
+				if(!$ID||$this->fields["rv"]==0){
+					echo "<div id='plan'  onClick='showPlan()'>\n";
+					echo "<span style='font-weight: bold;text-decoration: none; color : #009966; cursor:pointer;'>".$lang["reminder"][12]."</span>";
+				}else{
+					echo "<div id='plan'  onClick='showPlan()'>\n";
+					echo "<span style='font-weight: bold;text-decoration: none; color : #009966;cursor:pointer;'>".convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"])."</span>";
+				}	
 
-
-
-
-
-			if(!$ID||$this->fields["rv"]==0){
-				echo "<div id='plan'  onClick='showPlan()'>\n";
-				echo "<span style='font-weight: bold;text-decoration: none; color : #009966; cursor:pointer;'>".$lang["reminder"][12]."</span>";
-			}else{
-				echo "<div id='plan'  onClick='showPlan()'>\n";
-				echo "<span style='font-weight: bold;text-decoration: none; color : #009966;cursor:pointer;'>".convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"])."</span>";
-			}	
-
-			echo "</div>\n";
-			echo "<div id='viewplan'>\n";
-			echo "</div>\n";	
+				echo "</div>\n";
+				echo "<div id='viewplan'>\n";
+				echo "</div>\n";	
+			}
 			echo "</td>";
 
 
