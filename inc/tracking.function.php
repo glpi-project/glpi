@@ -799,8 +799,11 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if($cfg_glpi["mailing"] == 1){
 
 		$query="SELECT email from glpi_users WHERE ID='$author'";
+		
 		$result=$db->query($query);
-		$email=$db->result($result,0,"email");
+		$email="";
+		if ($result&&$db->numrows($result))
+			$email=$db->result($result,0,"email");
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$lang["help"][8].":</td>";
@@ -1943,7 +1946,10 @@ function showFollowupsSummary($tID){
 
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
-			echo "<td>$hour ".$lang["job"][21]."<br> $minute ".$lang["job"][22]."</td>";
+			echo "<td>";
+			if ($hour) echo "$hour ".$lang["job"][21]."<br>";
+			if ($minute||!$hour)
+				echo "$minute ".$lang["job"][22]."</td>";
 
 			echo "<td>";
 			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
