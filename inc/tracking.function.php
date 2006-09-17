@@ -815,7 +815,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<td align='center'>".$lang["help"][11].":</td>";
 		echo "<td><span id='uemail_result'>";
 		echo "<input type='text' size='30' name='uemail' value='$email'>";
-		echo "</span></td></tr>";
+		echo "</span>";
 
 		if (haveRight("update_ticket","1")){
 			echo "<script type='text/javascript' >\n";
@@ -827,6 +827,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 			echo "</script>\n";
 		}
 
+		echo "</td></tr>";
 
 	}
 
