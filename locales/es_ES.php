@@ -208,7 +208,7 @@ $lang["common"][42]="Portátil";
 $lang["common"][43]="Nombre"; 
 $lang["common"][44]="Valor predeterminado"; 
 $lang["common"][45]="MB máx."; 
-$lang["common"][46]="Vcard"; 
+$lang["common"][46]="vCard"; 
 
 $lang["computers"][0]="Agregar ordenador..."; 
 $lang["computers"][9]="S.O."; 
