@@ -387,7 +387,7 @@ function updatedbUpTo031()
 	if (isset($row)) {
 		$mysql_version= (int)sprintf('%d%02d%02d', $match[0], $match[1], intval($match[2]));
 	}
-	if ($mysql_version<40101){
+	if ($mysql_version<40113){
 		echo "<table><tr><td><b>".$lang["install"][54]."</b></td>";
 		echo "<td class='red'><strong>".$lang["install"][56]." ".$row[0]."</strong></td></tr></table>";
 	} 
