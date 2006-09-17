@@ -312,7 +312,8 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 
 
 //Update an internal device specificity
-function update_device_specif($newValue,$compDevID) {
+// $strict : update based on ID
+function update_device_specif($newValue,$compDevID,$strict=false) {
 
 	// Check old value for history 
 	global $db;
@@ -323,7 +324,10 @@ function update_device_specif($newValue,$compDevID) {
 			// Is it a real change ?
 			if($data["specificity"]!=$newValue){
 				// Update specificity 
-				$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'  AND specificity='".$data["specificity"]."'";
+				$WHERE=" WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'  AND specificity='".$data["specificity"]."'";
+				if ($strict) $WHERE=" WHERE ID='$compDevID'";
+				
+				$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' $WHERE";
 				if($db->query($query2)){
 
 					$changes[0]='0';
@@ -331,7 +335,6 @@ function update_device_specif($newValue,$compDevID) {
 					$changes[2]=$newValue;
 					// history log
 					historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_UPDATE_DEVICE);
-
 					return true;
 				}else{ 
 					return false;
