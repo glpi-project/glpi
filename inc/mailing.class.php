@@ -165,6 +165,25 @@ class Mailing
 									}
 								}
 								break;
+							// TECH SEND
+							case TECH_MAILING :
+								if (isset($this->job->fields["computer"])&&$this->job->fields["computer"]>0&&isset($this->job->fields["device_type"])&&$this->job->fields["device_type"]>0){
+									$ci= new CommonItem();
+									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
+									if (isset($ci->obj->fields["tech_num"])&&$ci->obj->fields["tech_num"]>0){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->obj->fields["tech_num"]."')";
+										if ($result2 = $db->query($query2)) {
+											if ($db->numrows($result2)==1){
+												$row = $db->fetch_row($result2);
+												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
+													$emails[]=$row[0];
+												}
+											}
+										}
+									}
+								}
+								break;
+								
 						}
 						break;
 					case PROFILE_MAILING_TYPE :

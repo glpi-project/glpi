@@ -1582,8 +1582,10 @@ function showFormMailing($target) {
 	} else if ($_SESSION['glpi_mailconfig']==2)	{
 
 		$profiles[USER_MAILING_TYPE."_".ADMIN_MAILING]=$lang["setup"][237];
+		$profiles[USER_MAILING_TYPE."_".TECH_MAILING]=$lang["common"][10];
 		$profiles[USER_MAILING_TYPE."_".USER_MAILING]=$lang["setup"][238];
 		$profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]=$lang["setup"][239];
+		
 
 		$query="SELECT ID, name FROM glpi_profiles order by name";
 		$result=$db->query($query);
@@ -1624,6 +1626,7 @@ function showFormMailing($target) {
 		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][225]."</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		unset($profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]);
+		unset($profiles[USER_MAILING_TYPE."_".TECH_MAILING]);
 		showFormMailingType("resa",$profiles);
 		echo "</tr>";
 
@@ -1700,6 +1703,7 @@ function showFormMailingType($type,$profiles){
 				case ASSIGN_MAILING: $name=$lang["setup"][239];break;
 				case USER_MAILING: $name=$lang["setup"][238];break;
 				case OLD_ASSIGN_MAILING: $name=$lang["setup"][236];break;
+				case TECH_MAILING: $name=$lang["common"][10];break;
 			}
 			echo "<option value='".$data["ID"]."'>".$name."</option>";
 		}
