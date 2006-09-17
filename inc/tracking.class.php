@@ -551,8 +551,12 @@ class Job extends CommonDBTM{
 		$m= new CommonItem;
 		$name=$lang["help"][30];
 		$contact=0;
+		$tech=0;
 		if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
 			$name=$m->getType()." ".$m->getName();
+			if (isset($m->obj->fields["tech_num"])&&$m->obj->fields["tech_num"]>0){
+					$tech=getUserName($m->obj->fields["tech_num"]);
+			}
 			if (isset($m->obj->fields["contact"]))
 				$contact=$m->obj->fields["contact"];
 			if (isset($m->obj->fields["FK_users"]))
@@ -577,6 +581,8 @@ class Job extends CommonDBTM{
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["search"][8].":</span> ".convDateTime($this->fields["date"])."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["job"][44].":</span> ".getRequestTypeName($this->fields["request_type"])."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][7]."</span> ".$name."<br>";
+			if ($tech)
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["common"][10].":</span> ".$tech."<br>";
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["joblist"][0].":</span> ".getStatusName($this->fields["status"])."<br>";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
 			if ($assign=="[Nobody]")
@@ -607,6 +613,8 @@ class Job extends CommonDBTM{
 			$message.= $lang["search"][8].": ".convDateTime($this->fields["date"])."\n";
 			$message.= $lang["job"][44].": ".getRequestTypeName($this->fields["request_type"])."\n";
 			$message.= $lang["mailing"][7]." ".$name."\n";
+			if ($tech)
+				$message.= $lang["common"][10].": ".$tech."\n";
 			$message.= $lang["joblist"][0].": ".getStatusName($this->fields["status"])."\n";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
 			if ($assign=="[Nobody]")

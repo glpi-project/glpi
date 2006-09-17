@@ -173,6 +173,7 @@ else
 	define("ASSIGN_MAILING","2");
 	define("USER_MAILING","3");
 	define("OLD_ASSIGN_MAILING","4");
+	define("TECH_MAILING","5");
 
 	// EXPORT TYPE
 	define("HTML_OUTPUT","0");
