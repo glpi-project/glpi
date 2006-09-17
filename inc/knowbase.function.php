@@ -165,17 +165,25 @@ function showKbItemForm($target,$ID){
 		echo "<fieldset>";
 		echo "<div style='position: relative; text-align:left;'><span style='font-size:10px; color:#aaaaaa;'>";
 		if ($ki->fields["author"]){
-			echo $lang["common"][37]." : ".getUserName($ki->fields["author"],"1")."   |   ";
+			echo $lang["common"][37]." : ".getUserName($ki->fields["author"],"1")."      ";
 		}
+		
+		echo "</span>";
+
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
+		if ($ki->fields["date_mod"]){
+			echo $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])."     ";
+		}
+		echo "</span><br />";
+		echo "<span style='font-size:10px; color:#aaaaaa;'>";
 		if ($ki->fields["date"]){
 			echo $lang["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
 		}
 		echo "</span>";
 		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
-		if ($ki->fields["date_mod"]){
-			echo $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])."   |  ";
-		}
 		echo $lang["knowbase"][26]." : ".$ki->fields["view"]."</span></div>";
+		
+
 		echo "</fieldset>";
 	}
 	echo "<p align='center'>";
