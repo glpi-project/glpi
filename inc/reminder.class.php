@@ -196,15 +196,25 @@ class Reminder extends CommonDBTM {
 				echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$this->fields["rv"])?"&begin_date=".$this->fields["begin"]."&end_date=".$this->fields["end"]."":"")."'});";
 				echo "}";
 				echo "</script>\n";
-	
-				if(!$ID||$this->fields["rv"]==0){
+			}
+			
+			if(!$ID||$this->fields["rv"]==0){
+				if($remind_edit) { 
 					echo "<div id='plan'  onClick='showPlan()'>\n";
 					echo "<span style='font-weight: bold;text-decoration: none; color : #009966; cursor:pointer;'>".$lang["reminder"][12]."</span>";
-				}else{
+				}
+			}else{
+				if($remind_edit) {
 					echo "<div id='plan'  onClick='showPlan()'>\n";
-					echo "<span style='font-weight: bold;text-decoration: none; color : #009966;cursor:pointer;'>".convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"])."</span>";
-				}	
-
+					echo "<span style='font-weight: bold;text-decoration: none; color : #009966;cursor:pointer;'>";
+				}
+				echo convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"]);
+				if($remind_edit){
+					echo "</span>";
+				}
+			}	
+			
+			if($remind_edit) { 
 				echo "</div>\n";
 				echo "<div id='viewplan'>\n";
 				echo "</div>\n";	
