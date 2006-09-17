@@ -550,11 +550,19 @@ class Job extends CommonDBTM{
 
 		$m= new CommonItem;
 		$name=$lang["help"][30];
-		$contact="";
+		$contact=0;
 		if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
 			$name=$m->getType()." ".$m->getName();
 			if (isset($m->obj->fields["contact"]))
 				$contact=$m->obj->fields["contact"];
+			if (isset($m->obj->fields["FK_users"]))
+				$contact=getUserName($m->obj->fields["FK_users"]);
+			if (isset($m->obj->fields["FK_groups"])){
+				if (!empty($contact)) $contact.=" / ";
+					$contact.=getDropdownName("glpi_groups",$m->obj->fields["FK_groups"]);
+			}
+				
+			
 		}
 
 		if($format=="html"){
@@ -575,7 +583,7 @@ class Job extends CommonDBTM{
 				$assign=$lang["mailing"][105];
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][8]."</span> ".$assign."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
-			if ($this->fields["device_type"]!=SOFTWARE_TYPE)
+			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&$contact)
 				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][28]."</span> ".$contact."<br>";
 			if ($this->fields["emailupdates"]=="yes"){
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][103]."</span> ".$lang["choice"][1]."<br>";
@@ -605,7 +613,7 @@ class Job extends CommonDBTM{
 				$assign=$lang["mailing"][105];
 			$message.= $lang["mailing"][8]." ".$assign."\n";
 			$message.= $lang["joblist"][2].": ".getPriorityName($this->fields["priority"])."\n";
-			if ($this->fields["device_type"]!=SOFTWARE_TYPE)
+			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&$contact)
 				$message.= $lang["mailing"][28]." ".$contact."\n";
 			if ($this->fields["emailupdates"]=="yes"){
 				$message.=$lang["mailing"][103]." ".$lang["choice"][1]."\n";
