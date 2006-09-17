@@ -158,7 +158,7 @@ class Reminder extends CommonDBTM {
 			if($remind_show) { 
 				echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":		</td>";
 				echo "<td>";
-				getUserName($this->fields["author"]);
+				echo getUserName($this->fields["author"]);
 				echo "</td></tr>";
 			}
 
