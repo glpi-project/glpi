@@ -66,8 +66,8 @@ $result = $db->query($query2);
 if ($db->numrows($result)){
 	while ($data=$db->fetch_assoc($result)){
 		$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PRINTER_TYPE."' AND end1='".$data["ID"]."';";
-		$result = $db->query($query);
-		$number_of_printers += $db->result($result,0,0);
+		$result2 = $db->query($query);
+		$number_of_printers += $db->result($result2,0,0);
 	}
 }
 
@@ -85,8 +85,8 @@ $result = $db->query($query2);
 if ($db->numrows($result)){
 	while ($data=$db->fetch_assoc($result)){
 		$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".MONITOR_TYPE."' AND end1='".$data["ID"]."';";
-		$result = $db->query($query);
-		$number_of_monitors += $db->result($result,0,0);
+		$result2 = $db->query($query);
+		$number_of_monitors += $db->result($result2,0,0);
 	}
 }
 
@@ -100,8 +100,8 @@ $result = $db->query($query2);
 if ($db->numrows($result)){
 	while ($data=$db->fetch_assoc($result)){
 		$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PERIPHERAL_TYPE."' AND end1='".$data["ID"]."';";
-		$result = $db->query($query);
-		$number_of_peripherals += $db->result($result,0,0);
+		$result2 = $db->query($query);
+		$number_of_peripherals += $db->result($result2,0,0);
 	}
 }
 
@@ -114,8 +114,8 @@ $result = $db->query($query2);
 if ($db->numrows($result)){
 	while ($data=$db->fetch_assoc($result)){
 		$query="SELECT count(*) FROM glpi_connect_wire WHERE type='".PHONE_TYPE."' AND end1='".$data["ID"]."';";
-		$result = $db->query($query);
-		$number_of_phones += $db->result($result,0,0);
+		$result2 = $db->query($query);
+		$number_of_phones += $db->result($result2,0,0);
 	}
 }
 
@@ -143,12 +143,14 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$id=0;
+		$os_search=" (os='0'  OR os IS NULL) ";
 		$os="------";
 	} else {
 		$os = $db->result($result, $i, "name");
 		$id= $db->result($result, $i, "ID");
+		$os_search=" os='$id' ";
 	}
-	$query = "SELECT count(*) FROM glpi_computers WHERE deleted ='N'  AND is_template = '0' AND (os = '$id')";
+	$query = "SELECT count(*) FROM glpi_computers WHERE deleted ='N'  AND is_template = '0' AND $os_search";
 	$result2 = $db->query($query);
 	$counter = $db->result($result2,0,0);
 	echo "<tr class='tab_bg_2'><td>$os</td><td>$counter</td></tr>";
@@ -187,12 +189,14 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
+		$type_search=" (type='0' OR type IS NULL) ";
 		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
+		$type_search=" type='$type' ";
 		$net = $db->result($result, $i, "name");
 	}
-	$query = "SELECT count(*) FROM glpi_networking WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
+	$query = "SELECT count(*) FROM glpi_networking WHERE ($type_search AND deleted ='N'  AND is_template = '0')";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
@@ -211,16 +215,18 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
+		$type_search=" (type='0' OR type IS NULL) ";
 		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
+		$type_search=" type='$type' ";
 		$net = $db->result($result, $i, "name");
 	}
-	$query = "SELECT count(*) FROM glpi_monitors WHERE (type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='0')";
+	$query = "SELECT count(*) FROM glpi_monitors WHERE $type_search AND deleted ='N'  AND is_template = '0' AND is_global='0'";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 
-	$query2="SELECT ID FROM glpi_monitors where type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
+	$query2="SELECT ID FROM glpi_monitors where $type_search AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
 	$result2 = $db->query($query2);
 	if ($db->numrows($result2)){
 		while ($data=$db->fetch_assoc($result2)){
@@ -246,17 +252,20 @@ $i = -1;
 $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
+		$type_search=" (type='0' OR type IS NULL) ";
 		$type=0;
 		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
+		$type_search=" type='$type' ";
 		$net = $db->result($result, $i, "name");
 	}
-	$query = "SELECT count(*) FROM glpi_printers WHERE (type = '$type' AND deleted ='N'  AND is_template = '0'  AND is_global='0')";
+	$query = "SELECT count(*) FROM glpi_printers WHERE $type_search AND deleted ='N'  AND is_template = '0'  AND is_global='0'";
+
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 
-	$query2="SELECT ID FROM glpi_printers where type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
+	$query2="SELECT ID FROM glpi_printers where $type_search AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
 	$result2 = $db->query($query2);
 	if ($db->numrows($result2)){
 		while ($data=$db->fetch_assoc($result2)){
@@ -283,16 +292,18 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
+		$type_search=" (type='0' OR type IS NULL) ";
 		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
+		$type_search=" type='$type' ";
 		$net = $db->result($result, $i, "name");
 	}
-	$query = "SELECT count(*) FROM glpi_peripherals WHERE (type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='0')";
+	$query = "SELECT count(*) FROM glpi_peripherals WHERE $type_search AND deleted ='N'  AND is_template = '0' AND is_global='0'";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 
-	$query2="SELECT ID FROM glpi_peripherals where type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
+	$query2="SELECT ID FROM glpi_peripherals where $type_search AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
 	$result2 = $db->query($query2);
 	if ($db->numrows($result2)){
 		while ($data=$db->fetch_assoc($result2)){
@@ -318,16 +329,18 @@ $number = $db->numrows($result);
 while ($i < $number) {
 	if ($i<0){
 		$type=0;
+		$type_search=" (type='0' OR type IS NULL) ";
 		$net="------";
 	} else {
 		$type = $db->result($result, $i, "ID");
+		$type_search=" type='$type' ";
 		$net = $db->result($result, $i, "name");
 	}
-	$query = "SELECT count(*) FROM glpi_phones WHERE (type = '$type' AND deleted ='N'  AND is_template = '0')";
+	$query = "SELECT count(*) FROM glpi_phones WHERE $type_search AND deleted ='N'  AND is_template = '0'";
 	$result3 = $db->query($query);
 	$counter = $db->result($result3,0,0);
 
-	$query2="SELECT ID FROM glpi_phones where type = '$type' AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
+	$query2="SELECT ID FROM glpi_phones WHERE $type_search AND deleted ='N'  AND is_template = '0' AND is_global='1' ";
 	$result2 = $db->query($query2);
 	if ($db->numrows($result2)){
 		while ($data=$db->fetch_assoc($result2)){
