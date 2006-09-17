@@ -931,6 +931,8 @@ function mergeOcsArray($glpi_id,$tomerge,$field){
 	$query="SELECT $field 
 		FROM glpi_ocs_link 
 		WHERE glpi_id='$glpi_id'";
+	$result=$db->query($query);
+	if ($db->numrows($result))
 	if ($result=$db->query($query)){
 		$tab=importArrayFromDB($db->result($result,0,0));
 		$newtab=array_merge($tomerge,$tab);
