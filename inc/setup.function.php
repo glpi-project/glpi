@@ -1626,7 +1626,6 @@ function showFormMailing($target) {
 		echo "<tr class='tab_bg_2'><th colspan='3'>".$lang["setup"][225]."</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		unset($profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]);
-		unset($profiles[USER_MAILING_TYPE."_".TECH_MAILING]);
 		showFormMailingType("resa",$profiles);
 		echo "</tr>";
 

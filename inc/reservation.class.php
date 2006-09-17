@@ -351,8 +351,16 @@ class ReservationResa extends CommonDBTM {
 		global $lang;
 
 		$ci=new ReservationItem();
-		$ci->getFromDB($this->fields["id_item"]);		
+		$name="";
+		if ($ci->getFromDB($this->fields["id_item"])){
+			$name=$ci->getType()." ".$ci->getName();
+		}
+		$tech=0;
+		if (isset($ci->obj->fields["tech_num"])&&$ci->obj->fields["tech_num"]>0){
+			$tech=getUserName($ci->obj->fields["tech_num"]);
+		}
 
+		
 		$u=new User();
 		$u->getFromDB($this->fields["id_user"]);
 		$content="";
@@ -362,14 +370,20 @@ class ReservationResa extends CommonDBTM {
 			$content.=".description{ color: inherit; background: #ebebeb; border-style: solid; border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }";
 			$content.=" </style></head><body>";
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][37].":</span> ".$u->getName()."<br>";
-			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][7].":</span> ".$ci->getName()."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][7]."</span> ".$name."<br>";
+			if ($tech)
+				$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["common"][10].":</span> ".$tech."<br>";
+
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["search"][8].":</span> ".convDateTime($this->fields["begin"])."<br>";
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["search"][9].":</span> ".convDateTime($this->fields["end"])."<br>";
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][25].":</span> ".nl2br($this->fields["comment"])."<br>";
 		} else { // text format
 			$content.=$lang["mailing"][1]."\n";
 			$content.=$lang["common"][37].": ".$u->getName()."\n";
-			$content.=$lang["mailing"][7].": ".$ci->getName()."\n";
+			$content.=$lang["mailing"][7]." ".$name."\n";
+			if ($tech)
+				$content.= $lang["common"][10].": ".$tech."\n";
+
 			$content.=$lang["search"][8].": ".convDateTime($this->fields["begin"])."\n";
 			$content.=$lang["search"][9].": ".convDateTime($this->fields["end"])."\n";
 			$content.=$lang["common"][25].": ".$this->fields["comment"]."\n";
