@@ -426,6 +426,23 @@ class MailingResa{
 										$emails[]=$user->fields["email"];
 									}
 								break;
+							// TEHC SEND
+							case TECH_MAILING :
+								$ri=new ReservationItem();
+								if ($ri->getFromDB($this->resa->fields["id_item"])){
+									if (isset($ri->obj->fields["tech_num"])&&$ri->obj->fields["tech_num"]>0){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ri->obj->fields["tech_num"]."')";
+										if ($result2 = $db->query($query2)) {
+											if ($db->numrows($result2)==1){
+												$row = $db->fetch_row($result2);
+												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
+													$emails[]=$row[0];
+												}
+											}
+										}
+									}
+								}
+								break;								
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
