@@ -773,6 +773,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 							if ($db->numrows($result)>0){
 								$ci->setType($type);
 								$type_name=$ci->getType();
+								if (!isset($already_add[$type])) $already_add[$type]=array();
 								while ($data=$db->fetch_array($result)){
 									if (!in_array($data["ID"],$already_add[$type])){
 										$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</option>";
