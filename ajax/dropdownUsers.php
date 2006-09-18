@@ -75,6 +75,7 @@ $query = "SELECT glpi_users.* FROM glpi_users ";
 if ($joinprofile) $query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users) LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles)";
 $query.= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name $LIMIT";
 $result = $db->query($query);
+
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
 if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
@@ -111,6 +112,24 @@ if (isset($_POST["comments"])&&$_POST["comments"]){
 	echo "      function(element, value) {\n";
 	echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$cfg_glpi["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           method:'post', parameters:'value='+value+'&table=glpi_users'\n";
+	echo "})})\n";
+	echo "</script>\n";
+}
+
+if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
+	echo "<script type='text/javascript' >";
+	echo "   new Form.Element.Observer('dropdown_author".$_POST["rand"]."', 1, ";
+	echo "      function(element, value) {";
+	echo "      	new Ajax.Updater('tracking_device_type_selecter','".$cfg_glpi["root_doc"]."/ajax/updateTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
+	echo "           method:'post', parameters:'userID=' + value+'&device_type=0'";
+	echo "})})";
+	echo "</script>";
+
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('dropdown_author".$_POST["rand"]."', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('uemail_result','".$cfg_glpi["root_doc"]."/ajax/uemailUpdate.php',{asynchronous:true, evalScripts:true, \n";
+	echo "           method:'post', parameters:'value='+value\n";
 	echo "})})\n";
 	echo "</script>\n";
 }
