@@ -167,9 +167,9 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
  * Make a select box without parameters value
  *
  *
- * @param $table
- * @param $myname
- * @param $value
+* @param $table the dropdown table from witch we want values on the select
+ * @param $myname the name of the HTML select
+ * @param $value the preselected value we want
  * @return nothing (print out an HTML select box)
  * 
  */
@@ -312,9 +312,9 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
  * Make a select box with all glpi users
  *
  *
- * @param $myname
- * @param $value
- * @param $display_comments
+* @param $myname select name
+ * @param $value default value
+ * @param $display_comments display comments near the dropdown
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
  * @return nothing (print out an HTML select box)
  * 
@@ -329,9 +329,9 @@ function dropdownAllUsers($myname,$value,$display_comments=1,$helpdesk_ajax=0) {
  *
  *
  *
- * @param $value
- * @param $myname
- * @param $right
+* @param $myname select name
+ * @param $value default value
+ * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
  * @return nothing (print out an HTML select box)
  */
 function dropdownUsersID($myname,$value,$right) {
@@ -346,9 +346,9 @@ function dropdownUsersID($myname,$value,$right) {
  *
  * Returns the value of the dropdown from $table with ID $id.
  *
- * @param $table
- * @param $id
- * @param $withcomments
+* @param $table the dropdown table from witch we want values on the select
+ * @param $id id of the element to get
+ * @param $withcomments give array with name and comments
  * @return string the value of the dropdown or &nbsp; if not exists
  */
 function getDropdownName($table,$id,$withcomments=0) {
@@ -415,10 +415,10 @@ function getDropdownName($table,$id,$withcomments=0) {
  *
  *
  *
- * @param $value
- * @param $myname
- * @param $field
- * @param $display_comments
+ * @param $myname the name of the HTML select
+ * @param $value the preselected value we want
+ * @param $field field of the glpi_tracking table to lookiup for possible users
+ * @param $display_comments display the comments near the dropdown
  * @return nothing (print out an HTML select box)
  */
 
@@ -495,9 +495,9 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
  * Make a select box for icons
  *
  *
- * @param $value
- * @param $myname
- * @param $store_path
+ * @param $value the preselected value we want
+ * @param $myname the name of the HTML select
+ * @param $store_path path where icons are stored
  * @return nothing (print out an HTML select box)
  */
 function dropdownIcons($myname,$value,$store_path){
@@ -567,13 +567,13 @@ function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
  *Make a select box for all items
  *
  *
- * @param $myname
- * @param $value_type
- * @param $value
- * @param $withenterprise
- * @param $withcartridge
- * @param $withconsumable
- * @param $withcontracts
+* @param $myname select name
+ * @param $value default value
+ * @param $value_type default value for the device type
+ * @param $withenterprise Add enterprises to device type list
+ * @param $withcartridge Add cartridges to device type list
+ * @param $withconsumable Add consumables to device type list
+ * @param $withcontracts Add contracts to device type list
  * @return nothing (print out an HTML select box)
  */
 function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
@@ -983,9 +983,9 @@ function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
  * Make a select box for  connected port
  *
  *
- * @param $ID
- * @param $type
- * @param $myname
+ * @param $ID ID of the current port to connect
+ * @param $type type of device where to search ports
+ * @param $myname select name
  * @return nothing (print out an HTML select box)
  */
 function dropdownConnectPort($ID,$type,$myname) {
@@ -1085,12 +1085,12 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
 /**
  * Show div with auto completion
  *
- * @param $myname
- * @param $table
- * @param $field
- * @param $value
- * @param $size
- * @param $option
+ * @param $myname text field name
+ * @param $table table to search for autocompletion
+ * @param $field field to serahc for autocompletion
+ * @param $value value to fill text field
+ * @param $size size of the text field
+ * @param $option option of the textfield
  * @return nothing (print out an HTML div)
  */
 function autocompletionTextField($myname,$table,$field,$value='',$size=20,$option=''){
@@ -1113,9 +1113,9 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
  * Make a select box form  for device type 
  *
  *
- * @param $target
- * @param $cID
- * @param $withtemplate
+ * @param $target URL to post the form
+ * @param $cID computer ID
+ * @param $withtemplate is it a template computer ?
  * @return nothing (print out an HTML select box)
  */
 function device_selecter($target,$cID,$withtemplate='') {
