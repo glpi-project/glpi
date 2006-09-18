@@ -764,15 +764,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
 		echo "<td align='center'>";
-		$author_rand=dropdownAllUsers("author",$author);
-
-		echo "<script type='text/javascript' >";
-		echo "   new Form.Element.Observer('dropdown_author$author_rand', 1, ";
-		echo "      function(element, value) {";
-		echo "      	new Ajax.Updater('tracking_device_type_selecter','".$cfg_glpi["root_doc"]."/ajax/updateTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
-		echo "           method:'post', parameters:'userID=' + value+'&device_type=$device_type'";
-		echo "})})";
-		echo "</script>";	
+		$author_rand=dropdownAllUsers("author",$author,1,1);
 
 		echo "</td>";
 	} else {
@@ -816,16 +808,6 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<td><span id='uemail_result'>";
 		echo "<input type='text' size='30' name='uemail' value='$email'>";
 		echo "</span>";
-
-		if (haveRight("update_ticket","1")){
-			echo "<script type='text/javascript' >\n";
-			echo "   new Form.Element.Observer('dropdown_author$author_rand', 1, \n";
-			echo "      function(element, value) {\n";
-			echo "      	new Ajax.Updater('uemail_result','".$cfg_glpi["root_doc"]."/ajax/uemailUpdate.php',{asynchronous:true, evalScripts:true, \n";
-			echo "           method:'post', parameters:'value='+value\n";
-			echo "})})\n";
-			echo "</script>\n";
-		}
 
 		echo "</td></tr>";
 

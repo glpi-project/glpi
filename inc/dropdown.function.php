@@ -223,12 +223,13 @@ function dropdownNoValue($table,$myname,$value) {
  * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
  * @param $all Nobody or All display for none selected
  * @param $display_comments display comments near the dropdown
+ * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
  * @return nothing (print out an HTML select box)
  *
  *
  */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
-function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
+function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdesk_ajax=0) {
 	// Make a select box with all glpi users
 
 	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
@@ -245,7 +246,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&myname=$myname&all=$all&right=$right&comments=$display_comments&rand=$rand'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&myname=$myname&all=$all&right=$right&comments=$display_comments&rand=$rand&helpdesk_ajax=$helpdesk_ajax'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -267,7 +268,8 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 	$comments_display="";
 
 	$user=getUserName($value,2);
-	$default_display="<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
+
+	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
 	if ($display_comments) {
 		$comments_display="<a href='".$user["link"]."'>";
 		$comments_display.="<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
@@ -284,6 +286,8 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 		$_POST["rand"]=$rand;
 		$_POST["comments"]=$display_comments;
 		$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
+		$_POST["helpdesk_ajax"]=$helpdesk_ajax;
+
 		include ($phproot."/ajax/dropdownUsers.php");
 	} else {
 		if (!empty($value)&&$value>0){
@@ -295,6 +299,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
 				echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
 		}
 	}
+
 	echo "</span>\n";
 
 	echo $comments_display;
@@ -310,11 +315,12 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1) {
  * @param $myname
  * @param $value
  * @param $display_comments
+ * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
  * @return nothing (print out an HTML select box)
  * 
  */
-function dropdownAllUsers($myname,$value,$display_comments=1) {
-	return dropdownUsers($myname,$value,"all",0,$display_comments);
+function dropdownAllUsers($myname,$value,$display_comments=1,$helpdesk_ajax=0) {
+	return dropdownUsers($myname,$value,"all",0,$display_comments,$helpdesk_ajax);
 }
 
 
