@@ -653,7 +653,7 @@ function checkNewVersionAvailable($auto=1){
 	if (strlen(trim($latest_version)) == 0){
 		if (!$auto) echo "<div align='center'>".$lang["setup"][304]." ($errstr)</div>";
 	} else {			
-		$splitted=split("\.",$cfg_glpi["version"]);
+		$splitted=split("\.",trim($cfg_glpi["version"]));
 
 		if ($splitted[0]<10) $splitted[0].="0";
 		if ($splitted[1]<10) $splitted[1].="0";
@@ -663,7 +663,7 @@ function checkNewVersionAvailable($auto=1){
 			$cur_version+=$splitted[2];
 		}
 
-		$splitted=split("\.",$latest_version);
+		$splitted=split("\.",trim($latest_version));
 
 		if ($splitted[0]<10) $splitted[0].="0";
 		if ($splitted[1]<10) $splitted[1].="0";
