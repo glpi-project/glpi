@@ -65,13 +65,13 @@ else
 	// Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
 
 	$cfg_glpi["languages"]=array(   
-			"es_AR"=>array("Argentino","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),
 			"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","en"),
 			"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
 			"de_DE"=>array("Deutch","de_DE.php","en_GB.html","hd-en_GB.html","de","en"),
 			"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","en"),
 			"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
-			"es_ES"=>array("Español (castellano)","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),
+			"es_AR"=>array("Español (Argentina)","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),
+			"es_ES"=>array("Español (España)","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),
 			"fr_FR"=>array("Français","fr_FR.php","fr_FR.html","hd-fr_FR.html","fr","fr"),
 			"hu_HU"=>array("Hungarian","hu_HU.php","en_GB.html","hd-en_GB.html","hu","en"),
 			"it_IT"=>array("Italiano","it_IT.php","en_GB.html","hd-it_IT.html","it","en"),
