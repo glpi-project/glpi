@@ -66,7 +66,7 @@ else
 
 	$cfg_glpi["languages"]=array(   
 			"es_AR"=>array("Argentino","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),
-			"pt_BR"=>array("Brazilian","pt_BR.php","en_GB.html","hd-en_GB.html","br","en"),
+			"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","en"),
 			"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
 			"de_DE"=>array("Deutch","de_DE.php","en_GB.html","hd-en_GB.html","de","en"),
 			"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","en"),
@@ -76,7 +76,7 @@ else
 			"hu_HU"=>array("Hungarian","hu_HU.php","en_GB.html","hd-en_GB.html","hu","en"),
 			"it_IT"=>array("Italiano","it_IT.php","en_GB.html","hd-it_IT.html","it","en"),
 			"po_PO"=>array("Polish","po_PO.php","en_GB.html","hd-en_GB.html","pl","en"),
-			"pt_PT"=>array("Português","pt_PT.php","en_GB.html","hd-en_GB.html","br","en"),
+			"pt_PT"=>array("Português","pt_PT.php","pt_PT.html","hd-en_GB.html","br","en"),
 			"ro_RO"=>array("Romanian","ro_RO.php","en_GB.html","hd-en_GB.html","ro","en"),
 			"ru_RU"=>array("Russian","ru_RU.php","en_GB.html","hd-en_GB.html","ru","en"),
 			"zh_CN"=>array("Simplified Chinese","zh_CN.php","en_GB.html","hd-en_GB.html","en","en"),
