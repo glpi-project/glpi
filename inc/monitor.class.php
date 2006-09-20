@@ -347,59 +347,38 @@ class Monitor extends CommonDBTM {
 
 			// micro?
 			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>".$lang["monitors"][14]."</td>";
 			echo "<td>";
-			if ($this->fields["flags_micro"] == 1) {
-				echo "<input type='checkbox' name='flags_micro' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_micro' value='1'>";
-			}
-			echo "</td><td>".$lang["monitors"][14]."</td>";
-			//		echo "</tr></table>";
+			dropdownYesNoInt("flags_micro",$this->fields["flags_micro"]);
+			echo "</td>";
 
 			// speakers?
-			//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>".$lang["monitors"][15]."</td>";
 			echo "<td>";
-			if ($this->fields["flags_speaker"] == 1) {
-				echo "<input type='checkbox' name='flags_speaker' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_speaker' value='1'>";
-			}
-			echo "</td><td>".$lang["monitors"][15]."</td>";
-			//		echo "</tr></table>";
+			dropdownYesNoInt("flags_speaker",$this->fields["flags_speaker"]);
+			echo "</td>";
 			echo "</tr><tr>";
 
 			// sub-d?
-			//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>".$lang["monitors"][19]."</td>";
 			echo "<td>";
-			if ($this->fields["flags_subd"] == 1) {
-				echo "<input type='checkbox' name='flags_subd' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_subd' value='1'>";
-			}
-			echo "</td><td>".$lang["monitors"][19]."</td>";
-			//		echo "</tr></table>";
+			dropdownYesNoInt("flags_subd",$this->fields["flags_subd"]);
+			echo "</td>";
 
 			// bnc?
-			//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>".$lang["monitors"][20]."</td>";
 			echo "<td>";
-			if ($this->fields["flags_bnc"] == 1) {
-				echo "<input type='checkbox' name='flags_bnc' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_bnc' value='1'>";
-			}
-			echo "</td><td>".$lang["monitors"][20]."</td>";
-			//		echo "</tr></table>";
+			dropdownYesNoInt("flags_bnc",$this->fields["flags_bnc"]);
+			echo "</td>";
+
 			echo "</tr><tr>";
 
 			// dvi?
-			//		echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>".$lang["monitors"][32]."</td>";
 			echo "<td>";
-			if ($this->fields["flags_dvi"] == 1) {
-				echo "<input type='checkbox' name='flags_dvi' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_dvi' value='1'>";
-			}
-			echo "</td><td>".$lang["monitors"][32]."</td>";
+			dropdownYesNoInt("flags_dvi",$this->fields["flags_dvi"]);
+			echo "</td>";
+
 			echo "<td>&nbsp;</td><td>&nbsp;</td>";
 			echo "</tr></table>";
 

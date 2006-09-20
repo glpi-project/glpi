@@ -388,22 +388,19 @@ class Phone extends CommonDBTM {
 
 			// micro?
 			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+			echo "<td>".$lang["phones"][38]."</td>";
 			echo "<td>";
-			if ($this->fields["flags_casque"] == 1) {
-				echo "<input type='checkbox' name='flags_casque' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_casque' value='1'>";
-			}
-			echo "</td><td>".$lang["phones"][38]."</td></tr>";
+			dropdownYesNoInt("flags_casque",$this->fields["flags_casque"]);
+			echo "</td>";
+
+			echo "</tr>";
 
 			// hp?
-			echo "<tr><td>";
-			if ($this->fields["flags_hp"] == 1) {
-				echo "<input type='checkbox' name='flags_hp' value='1' checked>";
-			} else {
-				echo "<input type='checkbox' name='flags_hp' value='1'>";
-			}
-			echo "</td><td>".$lang["phones"][39]."</td>";
+			echo "<tr>";
+			echo "<td>".$lang["phones"][39]."</td>";
+			echo "<td>";
+			dropdownYesNoInt("flags_hp",$this->fields["flags_hp"]);
+			echo "</td>";
 
 			echo "</tr></table>";
 			echo "</td></tr>";
