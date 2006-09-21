@@ -213,7 +213,7 @@ function showAssociatedContact($instID) {
 	echo "<tr><th colspan='8'>".$lang["financial"][46].":</th></tr>";
 	echo "<tr><th>".$lang["common"][16]."</th><th>".$lang["financial"][29]."</th>";
 	echo "<th>".$lang["financial"][29]." 2</th><th>".$lang["common"][42]."</th><th>".$lang["financial"][30]."</th>";
-	echo "<th>".$lang["financial"][31]."</th><th>".$lang["common"][17]."</th>";
+	echo "<th>".$lang["setup"][14]."</th><th>".$lang["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	if ($number)

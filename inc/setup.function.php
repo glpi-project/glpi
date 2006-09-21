@@ -1441,16 +1441,16 @@ function showFormExtAuth($target) {
 
 		echo "<tr class='tab_bg_1'><td align='center' colspan='4'>".$lang["setup"][167]."</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>realname</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $cfg_glpi["ldap_field_realname"] ."\" ></td>";
-		echo "<td align='center'>firstname</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"". $cfg_glpi["ldap_field_firstname"] ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][48]."</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"". $cfg_glpi["ldap_field_realname"] ."\" ></td>";
+		echo "<td align='center'>".$lang["common"][43]."</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"". $cfg_glpi["ldap_field_firstname"] ."\" ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>location</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". $cfg_glpi["ldap_field_location"] ."\" ></td>";
-		echo "<td align='center'>email</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"". $cfg_glpi["ldap_field_email"] ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][15]."</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"". $cfg_glpi["ldap_field_location"] ."\" ></td>";
+		echo "<td align='center'>".$lang["setup"][14]."</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"". $cfg_glpi["ldap_field_email"] ."\" ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>phone</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". $cfg_glpi["ldap_field_phone"] ."\" ></td>";
-		echo "<td align='center'>phone2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"". $cfg_glpi["ldap_field_phone2"] ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["financial"][29]."</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"". $cfg_glpi["ldap_field_phone"] ."\" ></td>";
+		echo "<td align='center'>".$lang["financial"][29]." 2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"". $cfg_glpi["ldap_field_phone2"] ."\" ></td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>mobile</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"". $cfg_glpi["ldap_field_mobile"] ."\" ></td>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][42]."</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"". $cfg_glpi["ldap_field_mobile"] ."\" ></td>";
 		echo "<td align='center' colspan='2'>&nbsp;</td></tr>";
 
 		echo "</table>&nbsp;</div>";

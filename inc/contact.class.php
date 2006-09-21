@@ -181,7 +181,7 @@ class Contact extends CommonDBTM{
 			echo "<tr><td>".$lang["financial"][30].":	</td><td>";
 			autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],30);
 			echo "</td></tr>";
-			echo "<tr><td>".$lang["financial"][31].":	</td><td>";
+			echo "<tr><td>".$lang["setup"][14].":	</td><td>";
 			autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],30);
 			echo "</td></tr>";
 			echo "<tr><td>".$lang["common"][17].":	</td>";
