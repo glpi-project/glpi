@@ -1076,8 +1076,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
 
 
-	include("../config/based_config.php");
-
 	// If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 	if(file_exists($cfg_glpi["config_dir"] . "/config_path.php")) {
 		include($cfg_glpi["config_dir"] . "/config_path.php");
