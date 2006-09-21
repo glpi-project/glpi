@@ -386,7 +386,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 								$comments.="<br><strong>".$lang["financial"][30].":</strong> ".$data["fax"];
 							}
 							if (!empty($data["email"])){
-								$comments.="<br><strong>".$lang["financial"][31].":</strong> ".$data["email"];
+								$comments.="<br><strong>".$lang["setup"][14].":</strong> ".$data["email"];
 							}
 	
 							

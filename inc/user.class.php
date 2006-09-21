@@ -579,10 +579,10 @@ class User extends CommonDBTM {
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$this->fields["email"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>".$this->fields["phone"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]." 2</td><td>".$this->fields["phone2"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]."</td><td>".$this->fields["phone"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]." 2</td><td>".$this->fields["phone2"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][42]."</td><td>".$this->fields["mobile"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][15]."</td><td>";
 			echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
 			echo "</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][25]."</td><td>";
@@ -676,14 +676,14 @@ class User extends CommonDBTM {
 			autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]."</td><td>";
 			autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
 			echo "</td>";
-			echo "<td align='center'>".$lang["setup"][15]." 2</td><td>";
+			echo "<td align='center'>".$lang["financial"][29]." 2</td><td>";
 			autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][15]."</td><td>";
 			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 			echo "</td>";
 			echo "<td align='center'>".$lang["common"][42]."</td><td>";
@@ -773,25 +773,25 @@ class User extends CommonDBTM {
 			} else echo $this->fields["email"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]."</td><td>";
 			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone"]))){
 				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
 			} else echo $this->fields["phone"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]." 2</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]." 2</td><td>";
 			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone2"]))){
 				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
 			} else echo $this->fields["phone2"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][15]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][42]."</td><td>";
 			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["mobile"]))) {
 				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
 			} else echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][16]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][15]."</td><td>";
 			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["location"]))){
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],0);
 			} else echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);

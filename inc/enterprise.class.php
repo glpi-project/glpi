@@ -166,7 +166,7 @@ class Enterprise extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$lang["financial"][31].":		</td><td>";
+			echo "<td>".$lang["setup"][14].":		</td><td>";
 			autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],25);		
 			echo "</td></tr>";
 
