@@ -38,7 +38,7 @@
 //Pas besoin des warnings de PHP
 error_reporting(0);
 
-session_save_path("../files/_sessions");
+//session_save_path("../files/_sessions");
 $cfg_glpi["debug"]=0;
 //Print a correct  Html header for application
 function header_html($etape)

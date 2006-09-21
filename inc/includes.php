@@ -33,8 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 include ("_relpos.php");
-session_save_path($phproot."/files/_sessions");
-if(!session_id()){@session_start();}
 
 include_once ($phproot . "/inc/timer.class.php");
 
@@ -51,6 +49,9 @@ include_once ($phproot . "/inc/display.function.php");
 include_once ($phproot . "/inc/dropdown.function.php");
 include_once ($phproot . "/inc/config.class.php");
 include_once ($phproot . "/config/config.php");
+
+session_save_path($cfg_glpi["doc_dir"]."/_sessions");
+if(!session_id()){@session_start();}
 
 
 
