@@ -153,7 +153,7 @@ class Contact extends CommonDBTM{
 
 			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$lang["common"][16].":	</td>";
+			echo "<tr><td>".$lang["common"][48].":	</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],30);	
 			echo "</td></tr>";

@@ -616,10 +616,10 @@ function showDeleteConfirmForm($target,$table, $ID) {
 	echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
 
 	echo "<table class='tab_cadre'><tr><td>";
-	echo "<input class='button' type=\"submit\" name=\"delete\" value=\"Confirmer\" /></td>";
+	echo "<input class='button' type=\"submit\" name=\"delete\" value=\"".$lang["buttons"][2]."\" /></td>";
 
 	echo "<form action=\" ". $target ."\" method=\"post\">";
-	echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"Annuler\" /></td></tr></table>";
+	echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"".$lang["buttons"][34]."\" /></td></tr></table>";
 	echo "</form>";
 	echo "<p>". $lang["setup"][65]."</p>";
 	echo "<form action=\" ". $target ."\" method=\"post\">";
@@ -628,7 +628,7 @@ function showDeleteConfirmForm($target,$table, $ID) {
 	dropdownNoValue($table,"newID",$ID);
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"". $table ."\"  />";
 	echo "<input type=\"hidden\" name=\"oldID\" value=\"". $ID ."\"  />";
-	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"Remplacer\" /></td></tr></table>";
+	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"".$lang["buttons"][39]."\" /></td></tr></table>";
 	echo "</form>";
 
 	echo "</div>";
