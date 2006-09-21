@@ -85,6 +85,7 @@ $lang["buttons"][35]="Avancée";
 $lang["buttons"][36]="Basique";
 $lang["buttons"][37]="Importer";
 $lang["buttons"][38]="Déverrouiller";
+$lang["buttons"][39]="Remplacer";
 
 $lang["calendarD"][0]="D";
 $lang["calendarD"][1]="L";
@@ -215,6 +216,7 @@ $lang["common"][44]="Valeur par défaut";
 $lang["common"][45]="MB maxi";
 $lang["common"][46]="Vcard";
 $lang["common"][47]="Progression";
+$lang["common"][48]="Nom de famille";
 
 
 $lang["computers"][0]="Ajouter ordinateur...";
@@ -1132,7 +1134,6 @@ $lang["setup"][5]="Système d'exploitation";
 $lang["setup"][9]="Interface réseau";
 $lang["setup"][10]="Inventaire";
 $lang["setup"][11]="changer le mot de passe pour";
-$lang["setup"][13]="Nom";
 $lang["setup"][14]="E-Mail";
 $lang["setup"][15]="Numéro de téléphone";
 $lang["setup"][16]="Lieu";

@@ -574,7 +574,7 @@ class User extends CommonDBTM {
 
 			echo "<td align='center'><b>".$this->fields["name"]."</b></td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>".$this->fields["realname"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][48]."</td><td>".$this->fields["realname"]."</td></tr>";
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][43]."</td><td>".$this->fields["firstname"]."</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
@@ -660,7 +660,7 @@ class User extends CommonDBTM {
 				} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][48]."</td><td>";
 			autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 			echo "</td>";
 			echo "<td align='center'>".$lang["common"][43]."</td><td>";
@@ -755,7 +755,7 @@ class User extends CommonDBTM {
 				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 			} 
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][13]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][48]."</td><td>";
 			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["realname"]))) {
 				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 			} else echo $this->fields["realname"];
