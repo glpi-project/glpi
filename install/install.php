@@ -37,8 +37,11 @@
 //Ce script g��e ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
 error_reporting(0);
+include ("_relpos.php");
+include ($phproot . "/config/based_config.php");
 
-//session_save_path("../files/_sessions");
+session_save_path($cfg_glpi["doc_dir"]."/_sessions");
+
 $cfg_glpi["debug"]=0;
 //Print a correct  Html header for application
 function header_html($etape)
@@ -707,15 +710,15 @@ function step1($update)
 	}
 
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][50]."</b></td>";
-	$fp = fopen($phproot . "/files/_sessions/test_glpi.txt",'w');
+	$fp = fopen($cfg_glpi["doc_dir"]."/_sessions/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]. " " . $phproot . "/files/_sessions/test_glpi.txt" ."</p>". $lang["install"][51]."</td></tr>";
+		echo "<td><p class='red'>".$lang["install"][17]. " " . $cfg_glpi["doc_dir"] . "/_sessions/test_glpi.txt" ."</p>". $lang["install"][51]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($phproot . "/files/_sessions/test_glpi.txt");
+		$delete = unlink($cfg_glpi["doc_dir"] . "/_sessions/test_glpi.txt");
 		if (!$delete) {
 			echo "<td>".$lang["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -726,15 +729,15 @@ function step1($update)
 	}
 
 	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][52]."</b></td>";
-	$fp = fopen($phproot . "/files/_cron/test_glpi.txt",'w');
+	$fp = fopen($cfg_glpi["doc_dir"]."/_cron/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]. " " . $phproot . "/files/_cron/test_glpi.txt" ."</p>". $lang["install"][53]."</td></tr>";
+		echo "<td><p class='red'>".$lang["install"][17]. " " . $cfg_glpi["doc_dir"]."/_cron/test_glpi.txt" ."</p>". $lang["install"][53]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($phproot . "/files/_cron/test_glpi.txt");
+		$delete = unlink($cfg_glpi["doc_dir"]."/_cron/test_glpi.txt");
 		if (!$delete) {
 			echo "<td>".$lang["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
