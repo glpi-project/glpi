@@ -293,8 +293,8 @@ class SetupSearchDisplay extends CommonDBTM{
 				echo "</td><td colspan='3'>&nbsp;</td>";
 			echo "</tr>";
 			$i=0;
-			if ($numrows)
-				while ($data=$db->fetch_array($result))
+			if ($numrows){
+				while ($data=$db->fetch_array($result)){
 					if ($data["num"]!=1){
 						echo "<tr class='tab_bg_2'><td align='center' width='50%' >";
 						echo $SEARCH_OPTION[$type][$data["num"]]["name"];
@@ -336,9 +336,11 @@ class SetupSearchDisplay extends CommonDBTM{
 						echo "</tr>";
 						$i++;
 					}
-
+				}
+			}
+		echo "</table>";
 		}			
-		echo "</table></div>";
+		echo "</div>";
 	}
 }
 
