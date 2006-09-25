@@ -60,7 +60,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 
 		echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value["name"]."\"><br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
+		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' >".$value["comments"]."</textarea>";
 
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
@@ -86,9 +86,10 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 		echo "<input type='submit' name='move' value=\"".$lang["buttons"][20]."\" class='submit'>";
 
-		echo "</td></tr></table></form>";	
+		echo "</td></tr>";	
 
 	}
+		echo "</table></form>";	
 
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
@@ -108,7 +109,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	}		
 	else echo "<input type='hidden' name='type' value='first'>";
 
-	echo "<br><textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'></textarea>";
+	echo "<br><textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' ></textarea>";
 
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'  width='202'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
@@ -163,13 +164,13 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 			dropdownValue("glpi_dropdown_locations", "value2",$loc,0);
 			echo $lang["networking"][52].": ";
 			echo "<input type='text' maxlength='100' size='10' name='value' value=\"".$value."\"><br>";
-			echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$comments."</textarea>";
+			echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' >".$comments."</textarea>";
 
 		} 
 		else {
 
 			echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value["name"]."\"><br>";
-			echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
+			echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' >".$value["comments"]."</textarea>";
 		}
 		//
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
@@ -179,9 +180,10 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		//
 		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
-		echo "</td></tr></table></form>";
+		echo "</td></tr>";
 
 	}
+	echo "</table></form>";
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$name'>";
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
@@ -191,11 +193,11 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		dropdownValue("glpi_dropdown_locations", "value2",$value2,0);
 		echo $lang["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'><br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'></textarea>";
+		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."'></textarea>";
 	}
 	else {
 		echo "<input type='text' maxlength='100' size='20' name='value'><br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'></textarea>";
+		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."'></textarea>";
 	}
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
@@ -224,7 +226,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo "</select>";
 
 		echo "<input type='text' maxlength='100' size='5' name='after'><br>";	
-		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'></textarea>";
+		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."'></textarea>";
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 		echo "<input type='submit' name='several_add' value=\"".$lang["buttons"][8]."\" class='submit'>";
@@ -248,7 +250,7 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 
 	if (countElementsInTable("glpi_type_".$name)>0){
-		echo "<tr><td align='center' valign='center' class='tab_bg_1'>";
+		echo "<tr><td align='center' valign='middle' class='tab_bg_1'>";
 
 		dropdownValue("glpi_type_".$name, "ID",$ID,0);
 		// on ajoute un input text pour entrer la valeur modifier
@@ -259,7 +261,7 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 		else $value=array("name"=>"","comments"=>"");
 
 		echo "<input type='text' maxlength='100' size='20' name='value'  value=\"".$value["name"]."\"><br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
+		echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."'>".$value["comments"]."</textarea>";
 
 		echo "</td><td align='center' class='tab_bg_2'>";
 		echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
@@ -277,7 +279,7 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><td align='center' class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='20' name='value'><br>";
-	echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."' alt='".$lang["common"][25]."'></textarea>";
+	echo "<textarea rows='2' cols='50' name='comments' title='".$lang["common"][25]."'></textarea>";
 
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
 	echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
