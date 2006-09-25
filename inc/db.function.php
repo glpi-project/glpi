@@ -398,12 +398,19 @@ function getNextItem($table,$ID){
 		FROM $table 
 		WHERE ".$nextprev_item." > '$search' ";
 
-	if (in_array($table,$cfg_glpi["deleted_tables"]))
-		$query.="AND deleted='N'";
-	if (in_array($table,$cfg_glpi["template_tables"]))
-		$query.="AND is_template='0'";	
+	// Same name case
+	if ($nextprev_item!="ID"){
+		$query .= " OR (".$nextprev_item." = '$search' AND ID > '$ID') ";
+	}
 
-	$query.=" ORDER BY ".$nextprev_item." ASC";
+	if (in_array($table,$cfg_glpi["deleted_tables"]))
+		$query.=" AND deleted='N' ";
+	if (in_array($table,$cfg_glpi["template_tables"]))
+		$query.=" AND is_template='0' ";	
+
+	//$query.=" ORDER BY ".$nextprev_item." ASC, ID ASC";
+	$query.=" ORDER BY $nextprev_item ASC, ID ASC";
+
 
 	$result=$db->query($query);
 	if ($db->numrows($result)>0)
@@ -438,12 +445,18 @@ function getPreviousItem($table,$ID){
 		FROM $table 
 		WHERE ".$nextprev_item." < '$search' ";
 
+	// Same name case
+	if ($nextprev_item!="ID"){
+		$query .= " OR (".$nextprev_item." = '$search' AND ID < '$ID') ";
+	}
+
+
 	if (in_array($table,$cfg_glpi["deleted_tables"]))
 		$query.="AND deleted='N'";
 	if (in_array($table,$cfg_glpi["template_tables"]))
 		$query.="AND is_template='0'";	
 
-	$query.=" ORDER BY ".$nextprev_item." DESC";
+	$query.=" ORDER BY ".$nextprev_item." DESC, ID DESC";
 
 	$result=$db->query($query);
 	if ($db->numrows($result)>0)
