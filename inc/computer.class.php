@@ -617,6 +617,7 @@ class Computer extends CommonDBTM {
 			echo "<td>".$lang["computers"][51].":</td><td>";
 			dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
 			echo "</td>";
+			echo "</tr>";
 
 			if (!empty($ID)&&$this->fields["ocs_import"]){
 				$query="SELECT * 
@@ -641,7 +642,6 @@ class Computer extends CommonDBTM {
 				}
 			}
 
-			echo "</tr>";
 			if (haveRight("computer","w")) {
 				echo "<tr>\n";
 				if ($template) {
