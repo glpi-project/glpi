@@ -173,7 +173,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		if (ereg("glpi_device",$_POST['table'])) $field="designation";
 
 		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
-			$where.=" AND name ".makeTextSearch($_POST['searchText']);
+			$where.=" AND $field ".makeTextSearch($_POST['searchText']);
 		$where.=")";
 
 		switch ($_POST['table']){
@@ -187,8 +187,9 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 				$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
 			break;
 		}
-
+		
 		$result = $db->query($query);
+
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
 		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
