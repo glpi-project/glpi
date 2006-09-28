@@ -165,7 +165,7 @@ else if (isset($tab["uninstall"]))
 else if (isset($tab["unglobalize"])&&isset($tab["ID"])){
 	unglobalizeLicense($tab["ID"]);
 	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][60]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($cfg_glpi["root_doc"]."/front/software.form.php?ID=".$tab["sID"]);
 }
 else if (isset($tab["back"]))
 {
