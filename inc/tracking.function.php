@@ -120,8 +120,6 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	echo displaySearchNewLine($output_type);
 	// $show_sort if 
 	$header_num=1;
-	// Only display sort on tracking list
-	$display_sort=ereg("tracking.php",$target);
 
 	$items=array(
 			$lang["joblist"][0]=>"glpi_tracking.status",
@@ -137,9 +135,10 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	foreach ($items as $key => $val){
 		$issort=0;
 		$link="";
-		if ($display_sort){
-			if ($sort==$val) $issort=1;
-			$link=$target."?".$parameters."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;sort=$val";
+		if ($sort==$val) $issort=1;
+		$link=$target."?".$parameters."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;sort=$val";
+		if (ereg("helpdesk",$target)){
+			$link.="&amp;show=user";
 		}
 		echo displaySearchHeaderItem($output_type,$key,$header_num,$link,$issort,$order);
 	}
