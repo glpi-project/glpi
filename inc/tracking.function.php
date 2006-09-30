@@ -688,8 +688,14 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	}
 	echo "</th></tr>";
 
-	//echo "<tr class='tab_bg_1' align='center'><td>".$lang["common"][27].":</td>";
-	//echo "<td align='center' colspan='3'>".convDateTime(date("Y-m-d H:i:s"))."</td></tr>";
+	$author_rand=0;
+	if (haveRight("update_ticket","1")){
+		echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
+		echo "<td align='center' colspan='3'>";
+		$author_rand=dropdownAllUsers("author",$author,1,1);
+
+		echo "</td></tr>";
+	} 
 
 	if ($device_type==0&&$_SESSION["glpiprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
@@ -760,29 +766,16 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</td></tr>";
 
 
-	$author_rand=0;
-	if (haveRight("update_ticket","1")){
-		echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
-		echo "<td align='center'>";
-		$author_rand=dropdownAllUsers("author",$author,1,1);
-
-		echo "</td>";
-	} else {
-		echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td>";
-	}
-
 	if (haveRight("update_ticket","1")||haveRight("assign_ticket","1")){
-		echo "<td>".$lang["buttons"][3].":</td>";
-		echo "<td align='center'>";
+		echo "<tr class='tab_bg_2'><td>".$lang["buttons"][3].":</td>";
+		echo "<td align='center' colspan='3'>";
 		dropdownUsers("assign",$assign,"own_ticket");
 		echo "</td></tr>";
 	} else if (haveRight("steal_ticket","1")) {
-		echo "<td>".$lang["buttons"][3].":</td>";
-		echo "<td align='center'>";
+		echo "<tr class='tab_bg_2'><td>".$lang["buttons"][3].":</td>";
+		echo "<td align='center' colspan='3'>";
 		dropdownUsers("assign",$assign,"ID");
 		echo "</td></tr>";
-	}else {
-		echo "<td>&nbsp;</td><td>&nbsp;</td></tr>";
 	}
 
 
@@ -884,13 +877,14 @@ global $cfg_glpi,  $lang,$HTMLRel,$phproot;
 	echo "</select></td>";
 	echo "<td align='center' colspan='1'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";
 	echo "</tr>";
-	echo "</table></div>";
+	echo "</table>";
 	echo "<input type='hidden' name='start' value='0'>";
 	// helpdesk case
 	if (ereg("helpdesk.public.php",$target)){
 		echo "<input type='hidden' name='show' value='user'>";
 	}
 	echo "</form>";
+	echo "</div>";
 
 }
 
