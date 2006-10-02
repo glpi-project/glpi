@@ -1351,6 +1351,10 @@ $lang["setup"][603]="Ajouter un Utilisateur";
 $lang["setup"][604]="Associer à un groupe";
 $lang["setup"][605]="Ajouter Groupe";
 
+$lang["setup"][700]="Configuration des plugins";
+$lang["setup"][701]="Sélectionnez le plugin à configurer";
+
+
 $lang["software"][0]="Ajouter logiciel...";
 $lang["software"][3]="Plateforme";
 $lang["software"][5]="Version";

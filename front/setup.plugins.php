@@ -36,30 +36,48 @@
 include ("_relpos.php");
 
 $NEEDED_ITEMS=array("setup");
+
+
+
+
+include ("_relpos.php");
+
+$NEEDED_ITEMS=array("setup");
 include ($phproot . "/inc/includes.php");
 
 
 commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
-echo "<div align='center'>";
+
 if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"])) {
 	foreach ($plugin_hooks["config_page"] as $plug => $page){
 		$function="plugin_version_$plug";
 		$names[$plug]=$function();
 		$pages[$plug]=$page;
-		
 	}
 }
 
-$list=array();
+echo "<div align='center'><table border='0'><tr><td>";
+echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."'></td>";
+
+// ligne a modifier en fonction de la modification des fichiers de langues 
+echo "<td><span class='icon_sous_nav'><b>".$lang["setup"][700]."</b></span></td>";
+echo "</tr></table></div>";
+
+echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
+
+// ligne a modifier en fonction de la modification des fichiers de langues
+echo "<tr><th colspan='2'>".$lang["setup"][701]."</th></tr>";
+
 foreach ($names as $key => $val) {
-	$list[$key]=$val["name"];
-}
-asort($list);
-foreach ($list as $key => $val) {
-	echo "<a href='".$HTMLRel."plugins/$key/".$pages[$key]."'>".$val."</a><br>";
+
+	echo "<tr class='tab_bg_1'><td align='center'><a href='".$HTMLRel."plugins/$key/".$pages[$key]."'><b>".$val["name"]."</b></a></td><td align='center'>#".$val["version"]."</td></tr>";
 }
 
-echo "</div>";
+echo "</table></div>";
 
 commonFooter();
+
+
+
+
 ?>
