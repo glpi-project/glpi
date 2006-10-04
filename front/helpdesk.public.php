@@ -102,8 +102,8 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 	if (isset($_POST["clear_resa"])){
-		if ($rr->delete($_POST["ID"])){
-			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]."delete a reservation.");
+		if ($rr->delete($_POST)){ // delete() need an array !
+			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." delete a reservation.");
 		}
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		$_GET["mois_courant"]=$begin_month;
