@@ -1214,7 +1214,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
 	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 
-	$author_search=false;
+	$search_author=false;
 	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
 	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
