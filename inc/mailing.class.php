@@ -144,11 +144,10 @@ class Mailing
 									}
 								}
 								break;
-								// USER SEND
-							case USER_MAILING :
+								// AUTHOR SEND
+							case AUTHOR_MAILING :
 								if ($this->job->fields["emailupdates"]=="yes"&&isValidEmail($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
 									$emails[]=$this->job->fields["uemail"];
-
 								}
 								break;
 								// OLD ASSIGN SEND
@@ -172,6 +171,25 @@ class Mailing
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									if (isset($ci->obj->fields["tech_num"])&&$ci->obj->fields["tech_num"]>0){
 										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->obj->fields["tech_num"]."')";
+										if ($result2 = $db->query($query2)) {
+											if ($db->numrows($result2)==1){
+												$row = $db->fetch_row($result2);
+												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
+													$emails[]=$row[0];
+												}
+											}
+										}
+									}
+								}
+								break;
+							// USER SEND
+							case USER_MAILING :
+								if (isset($this->job->fields["computer"])&&$this->job->fields["computer"]>0&&isset($this->job->fields["device_type"])&&$this->job->fields["device_type"]>0){
+									$ci= new CommonItem();
+									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
+									print_r($ci);
+									if (isset($ci->obj->fields["FK_users"])&&$ci->obj->fields["FK_users"]>0){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->obj->fields["FK_users"]."')";
 										if ($result2 = $db->query($query2)) {
 											if ($db->numrows($result2)==1){
 												$row = $db->fetch_row($result2);
@@ -418,15 +436,15 @@ class MailingResa{
 								if (isValidEmail($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
 									$emails[]=$cfg_glpi["admin_email"];
 								break;
-								// USER SEND
-							case USER_MAILING :
+								// AUTHOR SEND
+							case AUTHOR_MAILING :
 								$user = new User;
 								if ($user->getFromDB($this->resa->fields["id_user"]))
 									if (isValidEmail($user->fields["email"])&&!in_array($user->fields["email"],$emails)){
 										$emails[]=$user->fields["email"];
 									}
 								break;
-							// TEHC SEND
+							// TECH SEND
 							case TECH_MAILING :
 								$ri=new ReservationItem();
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
@@ -442,7 +460,25 @@ class MailingResa{
 										}
 									}
 								}
+								break;
+							// USER SEND
+							case USER_MAILING :
+								$ri=new ReservationItem();
+								if ($ri->getFromDB($this->resa->fields["id_item"])){
+									if (isset($ri->obj->fields["FK_users"])&&$ri->obj->fields["FK_users"]>0){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ri->obj->fields["FK_users"]."')";
+										if ($result2 = $db->query($query2)) {
+											if ($db->numrows($result2)==1){
+												$row = $db->fetch_row($result2);
+												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
+													$emails[]=$row[0];
+												}
+											}
+										}
+									}
+								}
 								break;								
+
 						}
 						break;
 					case PROFILE_MAILING_TYPE :

@@ -171,9 +171,10 @@ else
 	// MAILING USERS TYPE
 	define("ADMIN_MAILING","1");
 	define("ASSIGN_MAILING","2");
-	define("USER_MAILING","3");
+	define("AUTHOR_MAILING","3");
 	define("OLD_ASSIGN_MAILING","4");
 	define("TECH_MAILING","5");
+	define("USER_MAILING","6");
 
 	// EXPORT TYPE
 	define("HTML_OUTPUT","0");
