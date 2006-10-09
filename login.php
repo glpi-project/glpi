@@ -149,7 +149,7 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 				if ($auth_succeded) {
 					$identificat->extauth=1;
 					$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-					$identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$_POST['login_name'],$cfg_glpi["ldap_condition"]);
+					$identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$_POST['login_name']);
 				}
 			}
 		}
