@@ -1585,7 +1585,8 @@ function showFormMailing($target) {
 
 		$profiles[USER_MAILING_TYPE."_".ADMIN_MAILING]=$lang["setup"][237];
 		$profiles[USER_MAILING_TYPE."_".TECH_MAILING]=$lang["common"][10];
-		$profiles[USER_MAILING_TYPE."_".USER_MAILING]=$lang["setup"][238];
+		$profiles[USER_MAILING_TYPE."_".USER_MAILING]=$lang["common"][34]." ".$lang["common"][1];
+		$profiles[USER_MAILING_TYPE."_".AUTHOR_MAILING]=$lang["setup"][238];
 		$profiles[USER_MAILING_TYPE."_".ASSIGN_MAILING]=$lang["setup"][239];
 		
 
@@ -1702,7 +1703,8 @@ function showFormMailingType($type,$profiles){
 			switch ($data["item"]){
 				case ADMIN_MAILING: $name=$lang["setup"][237];break;
 				case ASSIGN_MAILING: $name=$lang["setup"][239];break;
-				case USER_MAILING: $name=$lang["setup"][238];break;
+				case AUTHOR_MAILING: $name=$lang["setup"][238];break;
+				case USER_MAILING: $name=$lang["common"][34]." ".$lang["common"][1];break;
 				case OLD_ASSIGN_MAILING: $name=$lang["setup"][236];break;
 				case TECH_MAILING: $name=$lang["common"][10];break;
 			}
