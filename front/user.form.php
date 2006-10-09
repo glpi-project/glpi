@@ -159,12 +159,6 @@ else if (isset($_POST["deletegroup"]))
 							$succeded=true;
 						}
 					}
-
-
-		}
-
-
-					
 				} else {
 					$user=new User();
 					$input["name"]=$_GET['login'];
