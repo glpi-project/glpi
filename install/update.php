@@ -378,21 +378,6 @@ function updatedbUpTo031()
 	$ret = array();
 
 
-	// Check Mysql Version
-	$result=$db->query("SELECT VERSION() AS version");
-	$row=$db->fetch_row($result);
-	$match = explode('.', $row[0]);
-	// defaut mysql version
-	$mysql_version=32332;
-	if (isset($row)) {
-		$mysql_version= (int)sprintf('%d%02d%02d', $match[0], $match[1], intval($match[2]));
-	}
-	if ($mysql_version<40113){
-		echo "<table><tr><td><b>".$lang["install"][54]."</b></td>";
-		echo "<td class='red'><strong>".$lang["install"][56]." ".$row[0]."</strong></td></tr></table>";
-	} 
-
-
 	if(!TableExists("glpi_config"))
 	{
 		$query = "CREATE TABLE `glpi_config` (
