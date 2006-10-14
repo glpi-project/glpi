@@ -115,7 +115,7 @@ if (isset($_POST["action"])){
 		echo "})})\n";
 		echo "</script>\n";
 
-		echo "<div id='search_spinner_massiveaction_field' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+		echo "<div id='search_spinner_massiveaction_field' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 		echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 
 		break;

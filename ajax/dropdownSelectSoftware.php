@@ -80,7 +80,7 @@ echo "           method:'post', parameters:'sID='+value+'&myname=".$_POST["mynam
 echo "})})\n";
 echo "</script>\n";
 
-echo "<div id='search_spinner_".$_POST["myname"]."$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+echo "<div id='search_spinner_".$_POST["myname"]."$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";	
 
 ?>
