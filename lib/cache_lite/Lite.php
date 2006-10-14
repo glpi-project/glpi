@@ -534,8 +534,11 @@ class Cache_Lite
     */
     function raiseError($msg, $code)
     {
-        include_once('PEAR.php');
-        return PEAR::raiseError($msg, $code, $this->_pearErrorMode);
+ //       include_once('PEAR.php');
+//        return PEAR::raiseError($msg, $code, $this->_pearErrorMode);
+	// Modif GLPI
+	trigger_error("Cache_Lite Error", E_USER_ERROR);
+
     }
     
     /**
