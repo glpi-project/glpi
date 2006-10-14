@@ -34,13 +34,16 @@
 // ----------------------------------------------------------------------
 
 
-include ("_relpos.php");
-$AJAX_INCLUDE=1;
-$NEEDED_ITEMS=array("tracking");
-include ($phproot."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+	define('GLPI_ROOT','..');
 
-showUpdateFollowupForm($_GET["ID"]);
+	$AJAX_INCLUDE=1;
+	$NEEDED_ITEMS=array("tracking");
+	include (GLPI_ROOT."/inc/includes.php");
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+	
+	if (isset($_GET["ID"])){
+		showUpdateFollowupForm($_GET["ID"]);
+	}
 
 ?>

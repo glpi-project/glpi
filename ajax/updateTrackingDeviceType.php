@@ -34,13 +34,14 @@
 // ----------------------------------------------------------------------
 
 
-include ("_relpos.php");
-$AJAX_INCLUDE=1;
-include ($phproot."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+	define('GLPI_ROOT','..');
 
-
-checkRight("update_ticket","1");
-dropdownTrackingDeviceType("device_type",$_POST["device_type"],$_POST["userID"]);
+	$AJAX_INCLUDE=1;
+	include (GLPI_ROOT."/inc/includes.php");
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+	
+	
+	checkRight("update_ticket","1");
+	dropdownTrackingDeviceType("device_type",$_POST["device_type"],$_POST["userID"]);
 ?>

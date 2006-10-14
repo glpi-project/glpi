@@ -33,8 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-include ($phproot."/inc/includes.php");
+define('GLPI_ROOT','..');
+include (GLPI_ROOT."/inc/includes.php");
 $AJAX_INCLUDE=1;
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();

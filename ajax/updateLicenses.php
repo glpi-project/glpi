@@ -33,28 +33,29 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-$AJAX_INCLUDE=1;
-include ($phproot."/inc/includes.php");
+	define('GLPI_ROOT','..');
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-checkRight("software","w");
-
-switch ($_POST["type"]){
-	case "update_buy"	:
-		echo "<select name='buy'><option value='Y'>".$lang["choice"][1]."</option><option value='N'>".$lang["choice"][0]."</option></select>";
-	echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$lang["buttons"][14]."' class='submit'>";
-	break;
-	case "update_expire" :
-		showCalendarForm("lic_form","expire",date("Y-m-d"));
-	echo "&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$lang["buttons"][14]."' class='submit'>";
-	break;
-	case "move":
-		dropdownLicenseOfSoftware("lID",$_POST["sID"]);
-	echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$lang["buttons"][14]."' class='submit'>";
-	break;
-}
+	$AJAX_INCLUDE=1;
+	include (GLPI_ROOT."/inc/includes.php");
+	
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+	
+	checkRight("software","w");
+	
+	switch ($_POST["type"]){
+		case "update_buy"	:
+			echo "<select name='buy'><option value='Y'>".$lang["choice"][1]."</option><option value='N'>".$lang["choice"][0]."</option></select>";
+		echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$lang["buttons"][14]."' class='submit'>";
+		break;
+		case "update_expire" :
+			showCalendarForm("lic_form","expire",date("Y-m-d"));
+		echo "&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$lang["buttons"][14]."' class='submit'>";
+		break;
+		case "move":
+			dropdownLicenseOfSoftware("lID",$_POST["sID"]);
+		echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$lang["buttons"][14]."' class='submit'>";
+		break;
+	}
 
 ?>
