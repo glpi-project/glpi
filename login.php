@@ -34,10 +34,10 @@
 // ----------------------------------------------------------------------
 
 
-include ("_relpos.php");
+define('GLPI_ROOT', '.');
 $NEEDED_ITEMS=array("user","profile","setup","group");
 
-include ($phproot . "/inc/includes.php");
+include (GLPI_ROOT . "/inc/includes.php");
 
 //$database=$cfg_db["database"];
 
@@ -54,7 +54,7 @@ $auth_succeded=false;
 $_POST['login_password']=unclean_cross_side_scripting_deep($_POST['login_password']);
 
 if (!isset($_POST["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
-	include ($phproot . "/lib/phpcas/CAS.php");
+	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
 	phpCAS::client(CAS_VERSION_2_0,$cfg_glpi["cas_host"],intval($cfg_glpi["cas_port"]),$cfg_glpi["cas_uri"]);
 
 	// force CAS authentication

@@ -33,9 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+define('GLPI_ROOT', '..');
 $NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","networking","software","user","setup","planning","phone","reminder","enterprise","contract");
-include ($phproot."/inc/includes.php");
+include (GLPI_ROOT."/inc/includes.php");
 
 checkCentralAccess();
 
