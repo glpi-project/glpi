@@ -533,7 +533,7 @@ echo "<meta name=\"generator\" content=\"\">";
 echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
 echo "<title>Setup GLPI</title>";
 // CSS
-echo "<link rel='stylesheet'  href='".$HTMLRel."css/style_install.css' type='text/css' media='screen' >";
+echo "<link rel='stylesheet'  href='../css/style_install.css' type='text/css' media='screen' >";
 
 echo "</head>";
 echo "<body>";
@@ -550,7 +550,7 @@ if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 	if(empty($from_install)&&!isset($_POST["from_update"])) {
 		echo "<div align='center'>";
 		echo "<h3><span class='red'>".$lang["update"][105]."</span>";
-		echo "<p class='submit'> <a href=\"".$HTMLRel."/index.php\"><span class='button'>".$lang["update"][106]."</span></a></p>";
+		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$lang["update"][106]."</span></a></p>";
 		echo "</div>";
 	}
 	else {
@@ -598,7 +598,7 @@ else {
 						showContentUpdateForm();
 					break;
 					default:
-					echo "<a href=\"".$HTMLRel."/index.php\"><span class='button'>".$lang["install"][64]."</span></a>";
+					echo "<a href=\"../index.php\"><span class='button'>".$lang["install"][64]."</span></a>";
 					break;
 				}
 			}

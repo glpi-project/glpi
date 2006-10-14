@@ -46,8 +46,6 @@ $cfg_glpi["debug"]=0;
 //Print a correct  Html header for application
 function header_html($etape)
 {
-	global $HTMLRel;
-
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 
@@ -62,7 +60,7 @@ function header_html($etape)
 	echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
 	echo "<title>Setup GLPI</title>";
 	// CSS 
-	echo "<link rel='stylesheet'  href='".$HTMLRel."css/style_install.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet'  href='../css/style_install.css' type='text/css' media='screen' >";
 
 	echo "</head>";
 	echo "<body>";
@@ -84,7 +82,7 @@ function footer_html()
 function choose_language()
 {
 
-	echo "<form action=\"install/install.php\" method=\"post\">";
+	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<p style='text-align:center;'><label>Select your language </label><select name=\"language\">";
 	echo "<option value=\"fr_FR\">Fran&ccedil;ais (fr_FR)</option>";
 	echo "<option value=\"en_GB\">English (en_GB)</option>";
@@ -417,8 +415,8 @@ function acceptLicence() {
 				     convey the exclusion of warranty; and each file should have at least
 				     the \"copyright\" line and a pointer to where the full notice is found.
 
-				     <one line to give the program's name and a brief idea of what it does.>
-				     Copyright (C) <year>  <name of author>
+				     &lt;one line to give the program's name and a brief idea of what it does.&gt;
+				     Copyright (C) &lt;year&gt;  &lt;name of author&gt;
 
 				     This program is free software; you can redistribute it and/or modify
 				     it under the terms of the GNU General Public License as published by
@@ -457,7 +455,7 @@ function acceptLicence() {
 				     Yoyodyne, Inc., hereby disclaims all copyright interest in the program
 				     `Gnomovision' (which makes passes at compilers) written by James Hacker.
 
-				     <signature of Ty Coon>, 1 April 1989
+				     &lt;signature of Ty Coon&gt;, 1 April 1989
 				     Ty Coon, President of Vice
 
 				     This General Public License does not permit incorporating your program into
@@ -475,12 +473,12 @@ function acceptLicence() {
 	echo " </label></p>";
 
 
-	echo "<p>";
+	echo "<br>";
 	echo "<label class=\"block\" for=\"disagree\"><input type=\"radio\" name=\"install\" value=\"lang_select\" checked=\"checked\" />";
 	echo $lang["install"][94];
 	echo " </label>";
 	echo "<p><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\"  /></p>";
-	echo "</p></form>";
+	echo "</form>";
 	echo "</div>";
 }
 
@@ -999,7 +997,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
 		}
 
-		$query="UPDATE glpi_config SET url_base='".ereg_replace("/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
+		$query="UPDATE glpi_config SET url_base='".ereg_replace("/install/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
 		$db->query($query);
 
 
@@ -1011,7 +1009,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		echo "<li>".$lang["install"][61]."</li></ul></p>";
 		echo "<p>".$lang["install"][62]."</p>";
 		echo "<p>".$lang["install"][63]."</p>";
-		echo "<p class='submit'> <a href=\"".$HTMLRel."index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
 	}
 
 	//Create the file config_db.php
