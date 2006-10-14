@@ -1768,37 +1768,6 @@ function updateMailNotifications($input){
 }
 
 
-
-/**
- * Update the DB configuration of the OCS Mode
- *
- * Update this DB config from the form, do the query and go back to the form.
- *
- *@param $input array : The _POST values from the config form
- *@param $id int : template or basic computers
- *
- *@return nothing (displays or error)
- *
- **/
-function ocsUpdateDBConfig($input, $id) {
-
-	global $DB;
-	if(!empty($input["ocs_db_user"]) && !empty($input["ocs_db_host"])) {
-
-		if(empty($input["ocs_db_passwd"])) $input["ocs_db_passwd"] = "";
-
-		$query = "update glpi_ocs_config set ocs_db_user = '".$input["ocs_db_user"]."', ocs_db_host = '".$input["ocs_db_host"]."', ocs_db_passwd = '".$input["ocs_db_passwd"]."', ocs_db_name = '".$input["ocs_db_name"]."' where ID = '".$id."'";
-
-		$DB->query($query);
-	} else {
-		echo $LANG["ocsng"][17];
-	}
-
-}
-
-
-
-
 function ocsFormDBConfig($target, $id) {
 
 

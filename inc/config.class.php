@@ -56,6 +56,11 @@ class Config extends CommonDBTM {
 		return $input;
 	}
 
+	function post_updateItem($input,$updates,$history=1) {
+		global $CACHE_CFG;
+		$CACHE_CFG->remove("CFG_GLPI_1","GLPI_CFG");
+	}
+
 }
 
 class ConfigOCS extends CommonDBTM {

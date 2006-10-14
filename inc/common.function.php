@@ -683,9 +683,10 @@ function checkNewVersionAvailable($auto=1){
 				echo "<div align='center'>".$LANG["setup"][302]."</div>";
 			}
 
-			$query="UPDATE glpi_config SET founded_new_version='".$latest_version."' WHERE ID='1'";
-			$DB->query($query);
-
+			$config_object=new Config();
+			$input["ID"]=1;
+			$input["founded_new_version"]=$latest_version;
+			$config_object->update($input);
 		}  else echo "<div align='center'>".$LANG["setup"][303]."</div>";
 	} 
 	return 1;
