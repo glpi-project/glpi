@@ -40,7 +40,7 @@ error_reporting(0);
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/config/based_config.php");
 
-session_save_path($CFG_GLPI["doc_dir"]."/_sessions");
+session_save_path(GLPI_DOC_DIR."/_sessions");
 
 $CFG_GLPI["debug"]=0;
 //Print a correct  Html header for application
@@ -646,7 +646,7 @@ function step1($update)
 
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][16]."</b></td>";
 
-	$fp = fopen($CFG_GLPI["dump_dir"] . "/test_glpi.txt",'w');
+	$fp = fopen(GLPI_DUMP_DIR . "/test_glpi.txt",'w');
 	if (empty($fp)) {
 		echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][18]."</td></tr>";
 		$error = 2;
@@ -654,7 +654,7 @@ function step1($update)
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($CFG_GLPI["dump_dir"] . "/test_glpi.txt");
+		$delete = unlink(GLPI_DUMP_DIR . "/test_glpi.txt");
 		if (!$delete) {
 			echo "<td  class='red'>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -667,7 +667,7 @@ function step1($update)
 
 
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][21]."</b></td>";	
-	$fp = fopen($CFG_GLPI['doc_dir'] . "/test_glpi.txt",'w');
+	$fp = fopen(GLPI_DOC_DIR . "/test_glpi.txt",'w');
 	if (empty($fp)) {
 		echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][22]."</td></tr>";
 		$error = 2;
@@ -675,7 +675,7 @@ function step1($update)
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($CFG_GLPI['doc_dir'] . "/test_glpi.txt");
+		$delete = unlink(GLPI_DOC_DIR . "/test_glpi.txt");
 		if (!$delete) {
 			echo "<td  class='red'>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -688,15 +688,15 @@ function step1($update)
 
 
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][23]."</b></td>";
-	$fp = fopen($CFG_GLPI["config_dir"] . "/test_glpi.txt",'w');
+	$fp = fopen(GLPI_CONFIG_DIR . "/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$LANG["install"][17]. " " . $CFG_GLPI["config_dir"] . "/test_glpi.txt" ."</p>". $LANG["install"][24]."</td></tr>";
+		echo "<td><p class='red'>".$LANG["install"][17]. " " . GLPI_CONFIG_DIR . "/test_glpi.txt" ."</p>". $LANG["install"][24]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($CFG_GLPI["config_dir"] . "/test_glpi.txt");
+		$delete = unlink(GLPI_CONFIG_DIR . "/test_glpi.txt");
 		if (!$delete) {
 			echo "<td>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -707,15 +707,15 @@ function step1($update)
 	}
 
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][50]."</b></td>";
-	$fp = fopen($CFG_GLPI["doc_dir"]."/_sessions/test_glpi.txt",'w');
+	$fp = fopen(GLPI_DOC_DIR."/_sessions/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$LANG["install"][17]. " " . $CFG_GLPI["doc_dir"] . "/_sessions/test_glpi.txt" ."</p>". $LANG["install"][51]."</td></tr>";
+		echo "<td><p class='red'>".$LANG["install"][17]. " " . GLPI_DOC_DIR . "/_sessions/test_glpi.txt" ."</p>". $LANG["install"][51]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($CFG_GLPI["doc_dir"] . "/_sessions/test_glpi.txt");
+		$delete = unlink(GLPI_DOC_DIR . "/_sessions/test_glpi.txt");
 		if (!$delete) {
 			echo "<td>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -726,15 +726,15 @@ function step1($update)
 	}
 
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][52]."</b></td>";
-	$fp = fopen($CFG_GLPI["doc_dir"]."/_cron/test_glpi.txt",'w');
+	$fp = fopen(GLPI_DOC_DIR."/_cron/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$LANG["install"][17]. " " . $CFG_GLPI["doc_dir"]."/_cron/test_glpi.txt" ."</p>". $LANG["install"][53]."</td></tr>";
+		echo "<td><p class='red'>".$LANG["install"][17]. " " . GLPI_DOC_DIR."/_cron/test_glpi.txt" ."</p>". $LANG["install"][53]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($CFG_GLPI["doc_dir"]."/_cron/test_glpi.txt");
+		$delete = unlink(GLPI_DOC_DIR."/_cron/test_glpi.txt");
 		if (!$delete) {
 			echo "<td>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
@@ -897,7 +897,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 		include (GLPI_ROOT . "/inc/dbmysql.class.php");
 		include (GLPI_ROOT . "/inc/common.function.php");
-		include ($CFG_GLPI["config_dir"] . "/config_db.php");
+		include (GLPI_CONFIG_DIR . "/config_db.php");
 
 		$DB = new DB;
 		$DB_file = GLPI_ROOT ."/install/mysql/glpi-0.68.1-empty.sql";
@@ -986,7 +986,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		global $LANG,$CFG_GLPI;
 		require_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 		require_once (GLPI_ROOT . "/inc/common.function.php");
-		require_once ($CFG_GLPI["config_dir"] . "/config_db.php");
+		require_once (GLPI_CONFIG_DIR . "/config_db.php");
 		$DB = new DB;
 
 		// hack pour IIS qui ne connait pas $_SERVER['REQUEST_URI']  grrrr
@@ -1015,7 +1015,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	{
 		global $CFG_GLPI;
 		$DB_str = "<?php \n class DB extends DBmysql { \n var \$DBhost	= \"". $host ."\"; \n var \$DBuser 	= \"". $user ."\"; \n var \$DBpassword= \"". $password ."\"; \n var \$DBdefault	= \"". $DBname ."\"; \n } \n ?>";
-		$fp = fopen($CFG_GLPI["config_dir"] . "/config_db.php",'wt');
+		$fp = fopen(GLPI_CONFIG_DIR . "/config_db.php",'wt');
 		if($fp) {
 			$fw = fwrite($fp,$DB_str);
 			fclose($fp);
@@ -1055,15 +1055,15 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 
 	// If this file exists, it is load, allow to set configdir/dumpdir elsewhere
-	if(file_exists($CFG_GLPI["config_dir"] . "/config_path.php")) {
-		include($CFG_GLPI["config_dir"] . "/config_path.php");
+	if(file_exists(GLPI_CONFIG_DIR . "/config_path.php")) {
+		include(GLPI_CONFIG_DIR . "/config_path.php");
 	}
 
 
 	loadLang($_SESSION["dict"]);
 	if(!isset($_POST["install"])) {
 		$_SESSION = array();
-		if(file_exists($CFG_GLPI["config_dir"] . "/config_db.php")) {
+		if(file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 			include(GLPI_ROOT ."/index.php");
 			die();
 		}

@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("backup","w");
 
 // full path 
-$path = $CFG_GLPI["dump_dir"] ;
+$path = GLPI_DUMP_DIR ;
 
 
 
@@ -130,7 +130,7 @@ function xmlbackup()
 	//le nom du fichier a generer...
 	//Si fichier existe deja il sera remplac�par le nouveau
 
-	$chemin = $CFG_GLPI["dump_dir"]."/backup.xml";
+	$chemin = GLPI_DUMP_DIR."/backup.xml";
 
 	// Creation d'une nouvelle instance de la classe
 	// et initialisation des variables

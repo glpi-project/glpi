@@ -47,29 +47,29 @@ function moveUploadedDocument($filename,$old_file=''){
 
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 
-	if (is_dir($CFG_GLPI["doc_dir"]."/_uploads")){
-		if (is_file($CFG_GLPI["doc_dir"]."/_uploads/".$filename)){
+	if (is_dir(GLPI_DOC_DIR."/_uploads")){
+		if (is_file(GLPI_DOC_DIR."/_uploads/".$filename)){
 			$dir=isValidDoc($filename);
 			$new_path=getUploadFileValidLocationName($dir,$filename,0);
 			if (!empty($new_path)){
 
 				// Delete old file
-				if(!empty($old_file)&& is_file($CFG_GLPI["doc_dir"]."/".$old_file)&& !is_dir($CFG_GLPI["doc_dir"]."/".$old_file)) {
-					if (unlink($CFG_GLPI["doc_dir"]."/".$old_file))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24].$CFG_GLPI["doc_dir"]."/".$old_file."<br>";
+				if(!empty($old_file)&& is_file(GLPI_DOC_DIR."/".$old_file)&& !is_dir(GLPI_DOC_DIR."/".$old_file)) {
+					if (unlink(GLPI_DOC_DIR."/".$old_file))
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24].GLPI_DOC_DIR."/".$old_file."<br>";
 					else 
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25].$CFG_GLPI["doc_dir"]."/".$old_file."<br>";
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25].GLPI_DOC_DIR."/".$old_file."<br>";
 				}
 
 				// D�lacement si droit
-				if (is_writable ($CFG_GLPI["doc_dir"]."/_uploads/".$filename)){
-					if (rename($CFG_GLPI["doc_dir"]."/_uploads/".$filename,$CFG_GLPI["doc_dir"]."/".$new_path)){
+				if (is_writable (GLPI_DOC_DIR."/_uploads/".$filename)){
+					if (rename(GLPI_DOC_DIR."/_uploads/".$filename,GLPI_DOC_DIR."/".$new_path)){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][39]."<br>";
 						return $new_path;
 					}
 					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][40]."<br>";
 				} else { // Copi sinon
-					if (copy($CFG_GLPI["doc_dir"]."/_uploads/".$filename,$CFG_GLPI["doc_dir"]."/".$new_path)){
+					if (copy(GLPI_DOC_DIR."/_uploads/".$filename,GLPI_DOC_DIR."/".$new_path)){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][41]."<br>";
 						return $new_path;
 					}
@@ -77,7 +77,7 @@ function moveUploadedDocument($filename,$old_file=''){
 				}
 			}
 
-		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][38].": ".$CFG_GLPI["doc_dir"]."/_uploads/".$filename."<br>";
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][38].": ".GLPI_DOC_DIR."/_uploads/".$filename."<br>";
 
 	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][35]."<br>";
 
@@ -101,15 +101,15 @@ function uploadDocument($FILEDESC,$old_file=''){
 
 		if (!empty($new_path)){
 			// Delete old file
-			if(!empty($old_file)&& is_file($CFG_GLPI["doc_dir"]."/".$old_file)&& !is_dir($CFG_GLPI["doc_dir"]."/".$old_file)) {
-				if (unlink($CFG_GLPI["doc_dir"]."/".$old_file))
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24].$CFG_GLPI["doc_dir"]."/".$old_file."<br>";
+			if(!empty($old_file)&& is_file(GLPI_DOC_DIR."/".$old_file)&& !is_dir(GLPI_DOC_DIR."/".$old_file)) {
+				if (unlink(GLPI_DOC_DIR."/".$old_file))
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24].GLPI_DOC_DIR."/".$old_file."<br>";
 				else 
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25].$CFG_GLPI["doc_dir"]."/".$old_file."<br>";
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25].GLPI_DOC_DIR."/".$old_file."<br>";
 			}
 
 			// Move uploaded file
-			if (move_uploaded_file($FILEDESC['tmp_name'],$CFG_GLPI["doc_dir"]."/".$new_path)) {
+			if (move_uploaded_file($FILEDESC['tmp_name'],GLPI_DOC_DIR."/".$new_path)) {
 				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][26]."<br>";
 				return $new_path;
 			} else {
@@ -129,20 +129,20 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 
 	if (!empty($dir)){
 		// Test existance repertoire DOCS
-		if (is_dir($CFG_GLPI["doc_dir"])){
+		if (is_dir(GLPI_DOC_DIR)){
 			// Test existance sous-repertoire type dans DOCS -> sinon cr�tion
-			if (!is_dir($CFG_GLPI["doc_dir"]."/".$dir)){
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][34]." ".$CFG_GLPI["doc_dir"]."/".$dir."<br>";
-				@mkdir($CFG_GLPI["doc_dir"]."/".$dir);
+			if (!is_dir(GLPI_DOC_DIR."/".$dir)){
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][34]." ".GLPI_DOC_DIR."/".$dir."<br>";
+				@mkdir(GLPI_DOC_DIR."/".$dir);
 			}
 			// Copy du fichier upload�si r�ertoire existe
-			if (is_dir($CFG_GLPI["doc_dir"]."/".$dir)){
+			if (is_dir(GLPI_DOC_DIR."/".$dir)){
 				if (!$force){
 					// Rename file if exists
 					$NB_CHAR_MORE=10;
 					$i=0;
 					$tmpfilename=$filename;
-					while ($i<$NB_CHAR_MORE&&is_file($CFG_GLPI["doc_dir"]."/".$dir."/".$filename)){
+					while ($i<$NB_CHAR_MORE&&is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
 						$filename="_".$filename;
 						$i++;
 					}
@@ -150,27 +150,27 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 					if ($i==$NB_CHAR_MORE){
 						$i=0;
 						$filename=$tmpfilename;
-						while ($i<$NB_CHAR_MORE&&is_file($CFG_GLPI["doc_dir"]."/".$dir."/".$filename)){
+						while ($i<$NB_CHAR_MORE&&is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
 							$filename="-".$filename;
 							$i++;
 						}
 						if ($i==$NB_CHAR_MORE){
 							$i=0;
 							$filename=$tmpfilename;
-							while ($i<$NB_CHAR_MORE&&is_file($CFG_GLPI["doc_dir"]."/".$dir."/".$filename)){
+							while ($i<$NB_CHAR_MORE&&is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
 								$filename="0".$filename;
 								$i++;
 							}
 						}
 					}
 				}
-				if ($force||!is_file($CFG_GLPI["doc_dir"]."/".$dir."/".$filename)){
+				if ($force||!is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
 					return $dir."/".$filename;
 				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][28]."<br>";
 
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][29]." ".$CFG_GLPI["doc_dir"]."/".$dir." ".$LANG["document"][30]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][29]." ".GLPI_DOC_DIR."/".$dir." ".$LANG["document"][30]."<br>";
 
-		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][31]." ".$CFG_GLPI["doc_dir"]."<br>";
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][31]." ".GLPI_DOC_DIR."<br>";
 
 	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][32]."<br>";
 
@@ -401,9 +401,9 @@ function cleanFilenameFocument($name){
 function showUploadedFilesDropdown($myname){
 	global $CFG_GLPI,$LANG;
 
-	if (is_dir($CFG_GLPI["doc_dir"]."/_uploads")){
+	if (is_dir(GLPI_DOC_DIR."/_uploads")){
 		$uploaded_files=array();
-		if ($handle = opendir($CFG_GLPI["doc_dir"]."/_uploads")) {
+		if ($handle = opendir(GLPI_DOC_DIR."/_uploads")) {
 			while (false !== ($file = readdir($handle))) {
 				if ($file != "." && $file != "..") {
 					$dir=isValidDoc($file);
