@@ -302,7 +302,7 @@ function loadLanguage() {
 	$cache = new Cache_Lite_File($options);
 
 	// Set a id for this cache : $file
-	if (!$LANG = $cache->get($file,"GLPI_LANG")) {
+	if (!($LANG = $cache->get($file,"GLPI_LANG"))) {
 		// Cache miss !
 		// Put in $LANG datas to put in cache
 		include (GLPI_ROOT . $file);
