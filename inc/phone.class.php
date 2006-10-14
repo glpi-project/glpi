@@ -206,13 +206,13 @@ class Phone extends CommonDBTM {
 
 
 	function title(){
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/phones.png\" alt='".$lang["phones"][0]."' title='".$lang["phones"][0]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/phones.png\" alt='".$lang["phones"][0]."' title='".$lang["phones"][0]."'></td>";
 		if (haveRight("phone","w")){
-			echo "<td><a  class='icon_consol' href=\"".$HTMLRel."front/setup.templates.php?type=".PHONE_TYPE."&amp;add=1\"><b>".$lang["phones"][0]."</b></a>";
+			echo "<td><a  class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".PHONE_TYPE."&amp;add=1\"><b>".$lang["phones"][0]."</b></a>";
 			echo "</td>";
-			echo "<td><a class='icon_consol' href='".$HTMLRel."front/setup.templates.php?type=".PHONE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+			echo "<td><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".PHONE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][34]."</b></span></td>";
 		echo "</tr></table></div>";
 	}
@@ -220,7 +220,7 @@ class Phone extends CommonDBTM {
 
 	function showForm ($target,$ID,$withtemplate='') {
 
-		global $cfg_glpi, $lang,$HTMLRel;
+		global $cfg_glpi, $lang;
 
 		if (!haveRight("phone","r")) return false;
 

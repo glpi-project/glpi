@@ -49,7 +49,7 @@
  *
  **/
 function showLinkDevice($instID) {
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $db->query($query);
@@ -103,7 +103,7 @@ function addLinkDevice($tID,$lID){
 }
 
 function showLinkOnDevice($type,$ID){
-	global $db,$lang,$HTMLRel;
+	global $db,$lang,$cfg_glpi;
 
 	if (!haveRight("link","r")) return false;
 
@@ -207,7 +207,7 @@ function showLinkOnDevice($type,$ID){
 					$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
 				}
 
-				echo "<tr class='tab_bg_2'><td><a href='".$HTMLRel."/front/link.send.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$name."</a></td></tr>";
+				echo "<tr class='tab_bg_2'><td><a href='".$cfg_glpi["root_doc"]."/front/link.send.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$name."</a></td></tr>";
 			}
 
 

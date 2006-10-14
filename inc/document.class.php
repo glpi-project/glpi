@@ -135,10 +135,10 @@ class Document extends CommonDBTM {
 
 	function title(){
 
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/docs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td>";
 		if (haveRight("document","w")){
 			echo "<td><a  class='icon_consol' href=\"document.form.php\"><b>".$lang["document"][13]."</b></a></td>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][27]."</b></span></td>";
@@ -146,7 +146,7 @@ class Document extends CommonDBTM {
 	}
 
 	function showForm ($target,$ID) {
-		global $cfg_glpi,$lang,$HTMLRel;
+		global $cfg_glpi,$lang;
 
 		if (!haveRight("document","r"))	return false;
 

@@ -84,10 +84,10 @@ class Contract extends CommonDBTM {
 	 **/
 	function title(){
 
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/contracts.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/contracts.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td>";
 		if (haveRight("contract_infocom","w")){
 			echo "<td><a  class='icon_consol' href=\"contract.form.php\"><b>".$lang["financial"][0]."</b></a></td>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][25]."</b></span></td>";
@@ -112,7 +112,7 @@ class Contract extends CommonDBTM {
 	function showForm ($target,$ID) {
 		// Show Contract or blank form
 
-		global $cfg_glpi,$lang,$HTMLRel;
+		global $cfg_glpi,$lang;
 
 		if (!haveRight("contract_infocom","r")) return false;
 

@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 function ocsShowNewComputer($check,$start,$tolinked=0){
-	global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
+	global $db,$dbocs,$lang,$cfg_glpi;
 
 	if (!haveRight("ocsng","w")) return false;
 
@@ -834,7 +834,7 @@ function cron_ocsng(){
 
 
 function ocsShowUpdateComputer($check,$start){
-	global $db,$dbocs,$lang,$HTMLRel,$cfg_glpi;
+	global $db,$dbocs,$lang,$cfg_glpi;
 
 	if (!haveRight("ocsng","w")) return false;
 
@@ -905,7 +905,7 @@ function ocsShowUpdateComputer($check,$start){
 			foreach ($already_linked as $ID => $tab){
 
 				echo "<tr align='center' class='tab_bg_2'>";
-				echo "<td><a href='".$HTMLRel."front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td>";
+				echo "<td><a href='".$cfg_glpi["root_doc"]."/front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td>";
 				echo "<td>".convDateTime($tab["date"])."</td><td>".convDateTime($hardware[$tab["ocs_id"]]["date"])."</td>";
 				echo "<td>".$lang["choice"][$tab["auto_update"]]."</td>";
 				echo "<td><input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";

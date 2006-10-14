@@ -38,7 +38,7 @@
 function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplate='') {
 	// Show Infocom or blank form
 
-	global $cfg_glpi,$lang,$HTMLRel;
+	global $cfg_glpi,$lang;
 	if (!haveRight("contract_infocom","r")) return false;
 	$date_fiscale=$cfg_glpi["date_fiscale"];
 
@@ -206,9 +206,6 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
 			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
 			echo "</td>\n\n";
-			//			echo "</form>";
-			//			echo "<form method='post' action=\"".$HTMLRel."front/infocom.form.php\"><div align='center'>";
-			//			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
 			echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
 			echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
 
@@ -667,7 +664,7 @@ function addInfocomOptionFieldsToResearch($option){
 }
 
 function showDisplayInfocomLink($device_type,$device_id,$update=0){
-	global $db,$HTMLRel,$lang;
+	global $db,$cfg_glpi,$lang;
 
 	if (!haveRight("contract_infocom","r")) return false;
 
@@ -681,7 +678,7 @@ function showDisplayInfocomLink($device_type,$device_id,$update=0){
 		$text=$lang["buttons"][23];
 	}
 	if (haveTypeRight($device_type,"w"))
-		echo "<span onClick=\"window.open('".$HTMLRel."front/infocom.show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$HTMLRel."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
+		echo "<span onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/infocom.show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\" style='cursor:pointer'><img src=\"".$cfg_glpi["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
 }
 
 

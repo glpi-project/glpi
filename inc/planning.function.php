@@ -39,10 +39,10 @@
 
 
 function titleTrackingPlanning(){
-	GLOBAL  $lang,$HTMLRel;
+	GLOBAL  $lang,$cfg_glpi;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["planning"][3]."</span>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["planning"][3]."</span>";
 	echo "</b></td></tr></table>&nbsp;</div>";
 }
 
@@ -73,7 +73,7 @@ function showTrackingPlanningForm($device_type,$id_device){
 
 
 function showAddPlanningTrackingForm($target,$fup,$planID=-1){
-	global $lang,$HTMLRel,$cfg_glpi;
+	global $lang,$cfg_glpi;
 
 	if (!haveRight("comment_all_ticket","1")) return false;
 
@@ -280,7 +280,7 @@ function showPlanning($who,$when,$type){
 			echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 
 			if (!empty($ID)){
-				echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$HTMLRel."pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
+				echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$cfg_glpi["root_doc"]."/pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
 			}
 
 			echo "<tr>";
@@ -312,7 +312,7 @@ function showPlanning($who,$when,$type){
 }
 
 function displayplanning($who,$when,$type){
-	global $db,$cfg_glpi,$HTMLRel,$lang;
+	global $db,$cfg_glpi,$lang;
 
 
 	//echo $when;
@@ -431,12 +431,12 @@ function displayplanning($who,$when,$type){
 
 				if(isset($val["id_tracking"])){  // show tracking
 
-					echo "<img src='$HTMLRel/pics/rdv_interv.png' alt=''>&nbsp;";
+					echo "<img src='".$cfg_glpi["root_doc"]."/pics/rdv_interv.png' alt=''>&nbsp;";
 
 
-					echo "<a href='".$HTMLRel."front/tracking.form.php?ID=".$val["id_tracking"]."'>";
+					echo "<a href='".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 					echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
-					echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+					echo "&nbsp;<img src=\"".$cfg_glpi["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 
 					if ($who==0){
 						echo "<br>";
@@ -452,8 +452,8 @@ function displayplanning($who,$when,$type){
 						$author="<br>".$lang["planning"][9]." : ".getUserName($val["author"]);
 						$img="rdv_public.png";
 					} 
-					echo "<img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
-					echo "<a href='".$HTMLRel."front/reminder.form.php?ID=".$val["id_reminder"]."'>";
+					echo "<img src='".$cfg_glpi["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
+					echo "<a href='".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 					echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["title"];
 					echo $author;
 					echo "</a>";
@@ -473,10 +473,10 @@ function displayplanning($who,$when,$type){
 
 					if(isset($val["id_tracking"])){  // show tracking
 						$rand=mt_rand();
-						echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
-						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$HTMLRel."front/tracking.form.php?ID=".$val["id_tracking"]."'>";
+						echo "<div class='planning' ><img src='".$cfg_glpi["root_doc"]."/pics/rdv_interv.png' alt=''>";
+						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
-						echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+						echo "&nbsp;<img src=\"".$cfg_glpi["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 						echo "<br>".$val["device"];
 
 						if ($who==0){
@@ -495,8 +495,8 @@ function displayplanning($who,$when,$type){
 						} 
 
 						$rand=mt_rand();
-						echo "<div class='planning' ><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
-						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$HTMLRel."front/reminder.form.php?ID=".$val["id_reminder"]."'>";
+						echo "<div class='planning' ><img src='".$cfg_glpi["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
+						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
 						if ($who!=$val["author"]){
 							$author="<br>Par ".getUserName($val["author"]);
@@ -516,10 +516,10 @@ function displayplanning($who,$when,$type){
 
 					if(isset($val["id_tracking"])){  // show tracking
 						$rand=mt_rand();
-						echo "<div class='planning' ><img src='$HTMLRel/pics/rdv_interv.png' alt=''>";
-						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$HTMLRel."front/tracking.form.php?ID=".$val["id_tracking"]."'>";
+						echo "<div class='planning' ><img src='".$cfg_glpi["root_doc"]."/pics/rdv_interv.png' alt=''>";
+						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
-						echo "&nbsp;<img src=\"".$HTMLRel."pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+						echo "&nbsp;<img src=\"".$cfg_glpi["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 						echo "<br>".$val["device"];
 						if ($who==0){
 							echo "<br>";
@@ -537,8 +537,8 @@ function displayplanning($who,$when,$type){
 							$img="rdv_public.png";
 						} 
 						$rand=mt_rand();
-						echo "<div class='planning' ><img src='$HTMLRel/pics/".$img."' alt=''>&nbsp;";
-						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$HTMLRel."front/reminder.form.php?ID=".$val["id_reminder"]."'>";
+						echo "<div class='planning' ><img src='".$cfg_glpi["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
+						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
 						if ($who!=$val["author"]){
 							$author="<br>Par ".getUserName($val["author"]);
@@ -572,7 +572,7 @@ function display_time($time){
 
 function ShowPlanningCentral($who){
 
-	global $db,$cfg_glpi,$HTMLRel,$lang;
+	global $db,$cfg_glpi,$lang;
 
 	if (!haveRight("show_planning","1")) return false;
 
@@ -641,7 +641,7 @@ function ShowPlanningCentral($who){
 
 	ksort($interv);
 
-	echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$HTMLRel."front/planning.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["buttons"][33]."</th><th>".$lang["buttons"][32]."</th><th>".$lang["joblist"][6]."</th></tr>";
+	echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$cfg_glpi["root_doc"]."/front/planning.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["buttons"][33]."</th><th>".$lang["buttons"][32]."</th><th>".$lang["joblist"][6]."</th></tr>";
 	if (count($interv)>0){
 		foreach ($interv as $key => $val){
 
@@ -653,10 +653,10 @@ function ShowPlanningCentral($who){
 			echo date("H:i",strtotime($val["end"]));
 			echo "</td>";
 			if(isset($val["id_tracking"])){
-				echo "<td>".$val["device"]."<a href='".$HTMLRel."front/tracking.form.php?ID=".$val["id_tracking"]."'>";
+				echo "<td>".$val["device"]."<a href='".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 				echo ": ".resume_text($val["content"],125)."</a>";
 			}else{
-				echo "<td><a href='".$HTMLRel."front/reminder.form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
+				echo "<td><a href='".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
 				echo "</a>: ".resume_text($val["text"],125);
 			}
 

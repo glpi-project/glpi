@@ -164,7 +164,7 @@ function getDeviceTypeLabel($dev_type){
 
 //print form/tab for a device linked to a computer
 function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$withtemplate='') {
-	global $lang,$HTMLRel;
+	global $lang,$cfg_glpi;
 
 	if (!haveRight("computer","r")) return false;
 	$canedit=haveRight("computer","w");
@@ -272,8 +272,8 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		echo "<option value='$i' ".($quantity==$i?"selected":"").">".$i."x</option>";
 	echo "</select>";
 	echo "</td>";
-	echo "<td align='center'><a href='".$HTMLRel."front/device.php?device_type=".$device->type."'>$type</a></td>";
-	echo "<td align='center'><a href='".$HTMLRel."front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
+	echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/device.php?device_type=".$device->type."'>$type</a></td>";
+	echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
 
 	if (count($entry)>0){
 		$more=0;
@@ -429,7 +429,7 @@ function showDevicesList($device_type,$target) {
 
 	// Lists Device from a device_type
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 
 	$query = "select DISTINCT device.ID from ".getDeviceTable($device_type)." as device ";
@@ -482,10 +482,10 @@ function showDevicesList($device_type,$target) {
 
 
 function titleDevices($device_type){
-	global  $lang,$HTMLRel;           
+	global  $lang,$cfg_glpi;
 	echo "<div align='center'><table border='0'><tr><td>";
 	//TODO : CHANGER LE PICS et le alt.!!!!!!!!!!!
-	echo "<img src=\"".$HTMLRel."pics/periph.png\" alt='".$lang["devices"][12]."' title='".$lang["devices"][12]."'></td><td><a  class='icon_consol' href=\"device.form.php?device_type=$device_type\"><b>".$lang["devices"][12]."</b></a>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/periph.png\" alt='".$lang["devices"][12]."' title='".$lang["devices"][12]."'></td><td><a  class='icon_consol' href=\"device.form.php?device_type=$device_type\"><b>".$lang["devices"][12]."</b></a>";
 	echo "</td>";
 	echo "</tr></table></div>";
 }
@@ -513,7 +513,7 @@ function getDictDeviceLabel($device_num=-1) {
 
 function showDevicesForm ($target,$ID,$device_type) {
 
-	global $cfg_glpi,$lang,$HTMLRel,$REFERER;
+	global $cfg_glpi,$lang,$REFERER;
 
 	$device = new Device($device_type);
 

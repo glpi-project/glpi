@@ -43,7 +43,7 @@
  *
  **/
 function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=""){
-	global $HTMLRel;
+	global $cfg_glpi;
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
@@ -59,8 +59,8 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 
 			$out="<th>";
 			if ($issort) {
-				if ($order=="DESC") $out.="<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else $out.="<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") $out.="<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else $out.="<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 
 			if (!empty($linkto))

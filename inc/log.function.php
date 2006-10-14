@@ -308,7 +308,7 @@ function logArray(){
 function showAddEvents($target,$order,$sort,$user="") {
 	// Show events from $result in table form
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	list($logItemtype,$logService)=logArray();
 
@@ -352,29 +352,29 @@ function showAddEvents($target,$order,$sort,$user="") {
 
 	echo "<th colspan='2'>";
 	if ($sort=="item") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["common"][27]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
 
 	echo "<th width='60%'>";
 	if ($sort=="message") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
 
@@ -427,7 +427,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 function showEvents($target,$order,$sort,$start=0) {
 	// Show events from $result in table form
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	list($logItemtype,$logService)=logArray();
 
@@ -470,36 +470,36 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	echo "<th colspan='2'>";
 	if ($sort=="item") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["common"][27]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="level") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=level&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
 
 	echo "<th width='60%'>";
 	if ($sort=="message") {
-		if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
 	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
 

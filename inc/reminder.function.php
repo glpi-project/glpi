@@ -34,17 +34,17 @@
 function showCentralReminder($type="private"){
 	// show reminder that are not planned 
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	$author=$_SESSION['glpiID'];	
 	$today=date("Y-m-d H:i:s");
 
 	if($type=="public"){ // show public reminder
 		$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0')";
-		$titre="<a href=\"".$HTMLRel."front/reminder.php\">".$lang["reminder"][1]."</a>";
+		$titre="<a href=\"".$cfg_glpi["root_doc"]."/front/reminder.php\">".$lang["reminder"][1]."</a>";
 	}else{ // show private reminder
 		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (end>='$today' or rv='0') ";
-		$titre="<a href=\"".$HTMLRel."front/reminder.php\">".$lang["reminder"][0]."</a>";
+		$titre="<a href=\"".$cfg_glpi["root_doc"]."/front/reminder.php\">".$lang["reminder"][0]."</a>";
 	}
 
 
@@ -56,7 +56,7 @@ function showCentralReminder($type="private"){
 
 	echo "<tr><th><div style='position: relative'><span><strong>"."$titre"."</strong></span>";
 	if ($type!="public"||haveRight("reminder_public","w"))
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$HTMLRel."front/reminder.form.php?type=$type\"><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_glpi["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$cfg_glpi["root_doc"]."/pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span>";
 	echo "</div>";
 	echo "</th></tr>";
 	if($db->numrows($result)>0){
@@ -69,7 +69,7 @@ function showCentralReminder($type="private"){
 				$tab=split(" ",$data["begin"]);
 				$date_url=$tab[0];
 
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_glpi["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
+				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_glpi["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$cfg_glpi["root_doc"]."/pics/rdv.png\" alt='".$lang["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
 
 
 
@@ -89,7 +89,7 @@ function showCentralReminder($type="private"){
 function showListReminder($type="private"){
 	// show reminder that are not planned 
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	$author=$_SESSION['glpiID'];	
 
@@ -146,7 +146,7 @@ function showListReminder($type="private"){
 
 				$tab=split(" ",$val["begin"]);
 				$date_url=$tab[0];
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$HTMLRel."pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$cfg_glpi["root_doc"]."/pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
 				echo "</td>";
 				echo "<td style='text-align:center;' ><strong>".convDateTime($val["begin"]);
 				echo "<br>".convDateTime($val["end"])."</strong>";

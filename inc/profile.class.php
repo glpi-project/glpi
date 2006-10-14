@@ -164,13 +164,13 @@ class Profile extends CommonDBTM{
 	function title(){
 		//titre
 
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/profils.png\" alt='".$lang["Menu"][35]."' title='".$lang["Menu"][35]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][35]."</b></span>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/profils.png\" alt='".$lang["Menu"][35]."' title='".$lang["Menu"][35]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][35]."</b></span>";
 		echo "</td>";
 		if (haveRight("profile","w")){
-			echo "<td><a class='icon_consol' href='".$HTMLRel."front/profile.php?add=new'>".$lang["profiles"][0]."</a></td>";
+			echo "<td><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/profile.php?add=new'>".$lang["profiles"][0]."</a></td>";
 		}
 		echo "</tr></table></div>";
 	}
