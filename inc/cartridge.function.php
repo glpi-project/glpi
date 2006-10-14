@@ -45,11 +45,11 @@
  **/
 function showCartridgesAdd($ID) {
 
-	global $cfg_glpi,$lang,$HTMLRel;
+	global $cfg_glpi,$lang;
 
 	if (!haveRight("cartridge","w")) return false;
 
-	echo "<form method='post'  action=\"".$HTMLRel."front/cartridge.edit.php\">";
+	echo "<form method='post'  action=\"".$cfg_glpi["root_doc"]."/front/cartridge.edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/cartridge.edit.php?add=add&amp;tID=$ID\">";
@@ -80,7 +80,7 @@ function showCartridgesAdd($ID) {
  **/
 function showCartridges ($tID,$show_old=0) {
 
-	global $db,$cfg_glpi,$lang,$HTMLRel;
+	global $db,$cfg_glpi,$lang;
 
 	if (!haveRight("cartridge","r")) return false;
 	$canedit=haveRight("cartridge","w");
@@ -285,7 +285,7 @@ function showCompatiblePrinters($instID) {
  **/
 function showCartridgeInstalled($instID,$old=0) {
 
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("cartridge","r")) return false;
 	$canedit=haveRight("cartridge","w");
@@ -363,7 +363,7 @@ function showCartridgeInstalled($instID,$old=0) {
 			}
 			echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
 			if ($canedit){
-				echo "<input type='image' name='update_pages' value='update_pages' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+				echo "<input type='image' name='update_pages' value='update_pages' src='".$cfg_glpi["root_doc"]."/pics/actualiser.png' class='calendrier'>";
 				echo "</form>";
 			}
 			if ($pages<$data['pages']){

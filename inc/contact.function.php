@@ -48,7 +48,7 @@
  *
  **/
 function showEnterpriseContact($instID) {
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("contact_enterprise","r")) return false;
 	$canedit=haveRight("contact_enterprise","w");
@@ -78,7 +78,7 @@ function showEnterpriseContact($instID) {
 			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 		}
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><a href='".$HTMLRel."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
+		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
