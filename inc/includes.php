@@ -32,23 +32,26 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-include ("_relpos.php");
 
-include_once ($phproot . "/inc/timer.class.php");
+if (!defined('GLPI_ROOT')){
+	die("Can not acces directly to this file");
+	}
+
+include_once (GLPI_ROOT . "/inc/timer.class.php");
 
 // Init Timer to compute time of display
 $TIMER_DEBUG=new Script_Timer;
 $TIMER_DEBUG->Start_Timer();
 
-include_once ($phproot . "/inc/dbmysql.class.php");
-include_once ($phproot . "/inc/commondbtm.class.php");
-include_once ($phproot . "/inc/commonitem.class.php");
-include_once ($phproot . "/inc/common.function.php");
-include_once ($phproot . "/inc/auth.function.php");
-include_once ($phproot . "/inc/display.function.php");
-include_once ($phproot . "/inc/dropdown.function.php");
-include_once ($phproot . "/inc/config.class.php");
-include_once ($phproot . "/config/config.php");
+include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
+include_once (GLPI_ROOT . "/inc/commonitem.class.php");
+include_once (GLPI_ROOT . "/inc/common.function.php");
+include_once (GLPI_ROOT . "/inc/auth.function.php");
+include_once (GLPI_ROOT . "/inc/display.function.php");
+include_once (GLPI_ROOT . "/inc/dropdown.function.php");
+include_once (GLPI_ROOT . "/inc/config.class.php");
+include_once (GLPI_ROOT . "/config/config.php");
 
 session_save_path($cfg_glpi["doc_dir"]."/_sessions");
 if(!session_id()){@session_start();}
@@ -68,19 +71,19 @@ if ($cfg_glpi["debug"]){
 	}
 }
 
-include_once ($phproot . "/inc/db.function.php");
+include_once (GLPI_ROOT . "/inc/db.function.php");
 
 if (!isset($AJAX_INCLUDE)){
 
-	include_once ($phproot . "/inc/auth.class.php");
-	include_once ($phproot . "/inc/connection.class.php");
-	include_once ($phproot . "/inc/mailing.class.php");
-	include_once ($phproot . "/inc/mailing.function.php");
-	include_once ($phproot . "/inc/report.function.php");
-	include_once ($phproot . "/inc/export.function.php");
-	include_once ($phproot . "/inc/log.function.php");
-	include_once ($phproot . "/inc/connection.function.php");
-	include_once ($phproot . "/inc/plugin.function.php");
+	include_once (GLPI_ROOT . "/inc/auth.class.php");
+	include_once (GLPI_ROOT . "/inc/connection.class.php");
+	include_once (GLPI_ROOT . "/inc/mailing.class.php");
+	include_once (GLPI_ROOT . "/inc/mailing.function.php");
+	include_once (GLPI_ROOT . "/inc/report.function.php");
+	include_once (GLPI_ROOT . "/inc/export.function.php");
+	include_once (GLPI_ROOT . "/inc/log.function.php");
+	include_once (GLPI_ROOT . "/inc/connection.function.php");
+	include_once (GLPI_ROOT . "/inc/plugin.function.php");
 }
 
 // Security system
@@ -107,14 +110,14 @@ if (!isset($AJAX_INCLUDE)){
 			foreach ($_SESSION["glpi_plugins"] as $name) {
 				use_plugin($name);
 
-				if (isset($_SESSION["glpilanguage"])&&file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
-					include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
-				else if (file_exists($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
-					include_once ($phproot . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
-				else if (file_exists($phproot . "/plugins/$name/locales/en_GB.php"))
-					include_once ($phproot . "/plugins/$name/locales/en_GB.php");
-				else if (file_exists($phproot . "/plugins/$name/locales/fr_FR.php"))
-					include_once ($phproot . "/plugins/$name/locales/fr_FR.php");
+				if (isset($_SESSION["glpilanguage"])&&file_exists(GLPI_ROOT . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
+					include_once (GLPI_ROOT . "/plugins/$name/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]);
+				else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
+					include_once (GLPI_ROOT . "/plugins/$name/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1]);
+				else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/en_GB.php"))
+					include_once (GLPI_ROOT . "/plugins/$name/locales/en_GB.php");
+				else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/fr_FR.php"))
+					include_once (GLPI_ROOT . "/plugins/$name/locales/fr_FR.php");
 			}
 	}
 }
@@ -127,10 +130,10 @@ if (isset($AJAX_INCLUDE))
 
 	if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
 		foreach ($NEEDED_ITEMS as $item){
-			if (file_exists($phproot . "/inc/$item.class.php"))
-				include_once ($phproot . "/inc/$item.class.php");
-			if (file_exists($phproot . "/inc/$item.function.php"))
-				include_once ($phproot . "/inc/$item.function.php");
+			if (file_exists(GLPI_ROOT . "/inc/$item.class.php"))
+				include_once (GLPI_ROOT . "/inc/$item.class.php");
+			if (file_exists(GLPI_ROOT . "/inc/$item.function.php"))
+				include_once (GLPI_ROOT . "/inc/$item.function.php");
 			if ($item=="ocsng"&&$cfg_glpi["ocs_mode"]&&isset($USE_OCSNGDB))
 				$dbocs=new DBocs;
 		}
