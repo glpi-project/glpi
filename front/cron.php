@@ -32,10 +32,11 @@
 // Original Author of file: JMD
 // Purpose of file:
 // ----------------------------------------------------------------------
-include ("_relpos.php");
+
 $USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise","ocsng");
-include ($phproot."/inc/includes.php");
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 
 //The advantage of using background-image is that cron is called in a separate

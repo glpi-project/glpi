@@ -36,10 +36,13 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 
 $NEEDED_ITEMS=array("user","profile","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document");
-include ($phproot . "/inc/includes.php");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
+
 
 if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permit_helpdesk"] == "1"))
 {

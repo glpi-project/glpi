@@ -33,10 +33,12 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 
 $NEEDED_ITEMS=array("planning","tracking","user","computer","printer","monitor","peripheral","networking","software","enterprise","reminder","phone");
-include ($phproot . "/inc/includes.php");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
 

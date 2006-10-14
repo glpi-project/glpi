@@ -33,9 +33,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 $NEEDED_ITEMS=array("computer","device","networking","monitor","printer","tracking","software","peripheral","reservation","state","infocom","contract","document","user","link","ocsng","phone","enterprise","search");
-include ($phproot . "/inc/includes.php");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

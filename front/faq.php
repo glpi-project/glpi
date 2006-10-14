@@ -33,9 +33,10 @@
 // Purpose of file: Display the knowledge base for anonymous users
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 $NEEDED_ITEMS=array("user","knowbase","document");
-include ($phproot . "/inc/includes.php");
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 
 checkAccessToPublicFaq();

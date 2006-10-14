@@ -33,9 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 $NEEDED_ITEMS=array("user","tracking","document","computer","printer","networking","peripheral","monitor","software","infocom","phone");
-include ($phproot . "/inc/includes.php");
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("create_ticket","1");
 

@@ -28,9 +28,11 @@
  --------------------------------------------------------------------------
  */
 
-include ("_relpos.php");
+
 $NEEDED_ITEMS=array("link","knowbase","computer","printer","networking","peripheral","monitor","software","infocom","phone","cartridge","consumable","contract","contact","enterprise");
-include ($phproot . "/inc/includes.php");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("link","r");
 

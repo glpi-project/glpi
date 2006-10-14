@@ -36,9 +36,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 $NEEDED_ITEMS=array("user","tracking","computer","printer","networking","peripheral","monitor","software","phone");
-include ($phproot . "/inc/includes.php");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("logs","r");
 

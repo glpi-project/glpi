@@ -32,10 +32,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 $NEEDED_ITEMS=array("user");
-include ($phproot . "/inc/includes.php");
-include ($phproot . "/lib/vcardclass/classes-vcard.php");
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
+include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
 
 if (empty($_GET["ID"])) {
 

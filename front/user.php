@@ -35,10 +35,11 @@
 
 
 
-include ("_relpos.php");
-$NEEDED_ITEMS=array("search","user");
-include ($phproot . "/inc/includes.php");
 
+$NEEDED_ITEMS=array("search","user");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("user","r");
 
