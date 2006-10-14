@@ -526,7 +526,7 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 }
 
 // Title backup
-echo " <div align='center'> <table border='0'><tr><td><img src=\"". $HTMLRel."pics/sauvegardes.png\" alt='".$lang["backup"][9]."'></td> <td><a href=\"javascript:dump('".$lang["backup"][19]."')\"  class='icon_consol'><b>". $lang["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$lang["backup"][19]."')\" class='icon_consol'><b>". $lang["backup"][1]."</b></a></td></tr></table>";
+echo " <div align='center'> <table border='0'><tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/sauvegardes.png\" alt='".$lang["backup"][9]."'></td> <td><a href=\"javascript:dump('".$lang["backup"][19]."')\"  class='icon_consol'><b>". $lang["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$lang["backup"][19]."')\" class='icon_consol'><b>". $lang["backup"][1]."</b></a></td></tr></table>";
 
 
 ?>

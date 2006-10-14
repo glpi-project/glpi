@@ -45,7 +45,7 @@ if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
 if (isset($_SESSION["ocs_link"])) unset($_SESSION["ocs_link"]);
 if (isset($_SESSION["ocs_update"])) unset($_SESSION["ocs_update"]);
 echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$HTMLRel."/pics/logoOcs.png\" alt='".$lang["ocsng"][0]."' title='".$lang["ocsng"][0]."' ></td>";
+echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/logoOcs.png\" alt='".$lang["ocsng"][0]."' title='".$lang["ocsng"][0]."' ></td>";
 echo "</tr></table></div>";
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";

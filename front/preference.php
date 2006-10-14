@@ -81,7 +81,7 @@ if (isset($_POST["changepw"])) {
 	commonHeader($lang["title"][17],$_SERVER["PHP_SELF"]);
 	// titre
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][11]."</b></span>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][11]."</b></span>";
 	echo "</td></tr></table></div>";
 	if ($_SESSION["glpiextauth"]!=1&&haveRight("password_update","1"))
 		showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
