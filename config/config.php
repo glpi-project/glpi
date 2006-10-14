@@ -244,7 +244,6 @@
 		$cache_options = array(
 			'cacheDir' => GLPI_DOC_DIR."/_cache/",
 			'lifeTime' => DEFAULT_CACHE_LIFETIME,
-			'pearErrorMode' => CACHE_LITE_ERROR_DIE,
 			'automaticSerialization' => true,
 			'caching' => ENABLE_CACHE,
 			'hashedDirectoryLevel' => 2,

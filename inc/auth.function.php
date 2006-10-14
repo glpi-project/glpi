@@ -292,7 +292,6 @@ function loadLanguage() {
 	$options = array(
    	 'cacheDir' => GLPI_DOC_DIR."/_cache/",
 	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
-	 'pearErrorMode' => CACHE_LITE_ERROR_DIE,
 	 'automaticSerialization' => true,
 	 'caching' => ENABLE_CACHE,
 	 'hashedDirectoryLevel' => 2,
@@ -301,9 +300,7 @@ function loadLanguage() {
 	$cache = new Cache_Lite_File($options);
 
 	// Set a id for this cache
-	$id = $file;
-
-	if ($data = $cache->get($id)) {
+	if ($data = $cache->get($file)) {
 
     	// Cache hit !
     	// Content is in $data
@@ -316,13 +313,8 @@ function loadLanguage() {
    	
 	include (GLPI_ROOT . $file);
 	
-	$data=$LANG;
-	
-   	 $cache->save($data);
+	 $cache->save($LANG);
 	}
-
-
-
 	
 
 	// Debug display lang element with item
