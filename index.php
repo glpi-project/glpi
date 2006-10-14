@@ -38,7 +38,8 @@
 include ("_relpos.php");
 include ($phproot . "/config/based_config.php");
 if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
-	include($phproot ."/install/install.php");
+	include ($phproot . "/inc/common.function.php");
+	glpi_header("install/install.php");
 	die();
 }
 else
@@ -49,8 +50,7 @@ else
 	if (!empty($cfg_glpi["cas_host"])&&!isset($_GET["noCAS"])) {
 		glpi_header("login.php");
 	}
-
-
+	
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 	// Start the page
@@ -61,10 +61,10 @@ else
 	echo "<head><title>GLPI Login</title>\n";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" />\n";
 	echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' />";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$cfg_glpi["root_doc"]."/pics/favicon.ico' />";
 
 	// Appel CSS
-	echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' />";
+	echo "<link rel='stylesheet'  href='".$cfg_glpi["root_doc"]."/css/styles.css' type='text/css' media='screen' />";
 	echo "</head>";
 
 	// Body with configured stuff
@@ -79,7 +79,7 @@ else
 
 	echo nl2br(unclean_cross_side_scripting_deep($cfg_glpi['text_login']));
 
-	// Affichage autorisé FAQ
+	// Affichage autorisï¿½FAQ
 	if ($cfg_glpi["public_faq"]){
 		echo "<ul><li><a href='front/faq.php'>".$lang["knowbase"][24]."</a></li></ul>";
 	}
@@ -96,10 +96,11 @@ else
 
 	// redirect to tracking
 	if (isset($_GET["redirect"])){
-		if(!session_id()){@session_start();}
+		if(!session_id()){
+			@session_start();
+		}
 
 		list($type,$ID)=split("_",$_GET["redirect"]);
-		// Déjà connecté
 		if (isset($_SESSION["glpiprofile"]["interface"])&&!empty($_SESSION["glpiprofile"]["interface"])){
 			switch ($_SESSION["glpiprofile"]["interface"]){
 				case "helpdesk" :
@@ -127,7 +128,7 @@ else
 				break;
 			}
 		}
-		// Non connecté : connection puis redirection 
+		// Non connectï¿½: connection puis redirection 
 		else {
 			echo "<input type='hidden' name='redirect' value='".$_GET['redirect']."'>";
 		}
