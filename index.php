@@ -35,16 +35,17 @@
 
 // Test si config_db n'existe pas on lance l'installation
 
-include ("_relpos.php");
-include ($phproot . "/config/based_config.php");
+define('GLPI_ROOT', '.');
+
+include (GLPI_ROOT . "/config/based_config.php");
 if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
-	include ($phproot . "/inc/common.function.php");
+	include (GLPI_ROOT . "/inc/common.function.php");
 	glpi_header("install/install.php");
 	die();
 }
 else
 {
-	include ($phproot . "/inc/includes.php");
+	include (GLPI_ROOT . "/inc/includes.php");
 
 	// Using CAS server
 	if (!empty($cfg_glpi["cas_host"])&&!isset($_GET["noCAS"])) {
