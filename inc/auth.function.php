@@ -288,7 +288,42 @@ function loadLanguage() {
 	}
 	if (empty($file)||!is_file(GLPI_ROOT . $file))
 		$file="/locales/en_GB.php";
+	
+	$options = array(
+   	 'cacheDir' => GLPI_DOC_DIR."/_cache/",
+	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
+	 'pearErrorMode' => CACHE_LITE_ERROR_DIE,
+	 'automaticSerialization' => true,
+	 'caching' => ENABLE_CACHE,
+	 'hashedDirectoryLevel' => 2,
+   	 'masterFile' => GLPI_ROOT . $file
+	);
+	$cache = new Cache_Lite_File($options);
+
+	// Set a id for this cache
+	$id = $file;
+
+	if ($data = $cache->get($id)) {
+
+    	// Cache hit !
+    	// Content is in $data
+   	 $LANG=$data;
+
+	} else { // No valid cache found (you have to make the page)
+
+    	// Cache miss !
+   	 // Put in $data datas to put in cache
+   	
 	include (GLPI_ROOT . $file);
+	
+	$data=$LANG;
+	
+   	 $cache->save($data);
+	}
+
+
+
+	
 
 	// Debug display lang element with item
 	if ($CFG_GLPI["debug"]&&$CFG_GLPI["debug_lang"]){
