@@ -57,7 +57,7 @@ if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"]
 }
 
 echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."'></td>";
+echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."'></td>";
 
 // ligne a modifier en fonction de la modification des fichiers de langues 
 echo "<td><span class='icon_sous_nav'><b>".$lang["setup"][700]."</b></span></td>";
@@ -70,7 +70,7 @@ echo "<tr><th colspan='2'>".$lang["setup"][701]."</th></tr>";
 
 foreach ($names as $key => $val) {
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href='".$HTMLRel."plugins/$key/".$pages[$key]."'><b>".$val["name"]."</b></a></td><td align='center'>#".$val["version"]."</td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href='".$cfg_glpi["root_doc"]."/plugins/$key/".$pages[$key]."'><b>".$val["name"]."</b></a></td><td align='center'>#".$val["version"]."</td></tr>";
 }
 
 echo "</table></div>";

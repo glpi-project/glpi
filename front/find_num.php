@@ -57,9 +57,9 @@ header("Content-Type: text/html; charset=UTF-8");
 <?php
 include ("_relpos.php");
 // Appel CSS
-echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
+echo "<link rel='stylesheet'  href='".$cfg_glpi["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
 // Appel javascript
-echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/script.js'></script>";
 
 ?>
 

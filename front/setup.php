@@ -49,7 +49,7 @@ commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 // titre
 echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."' ></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][10]."</b></span>";
+echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."' ></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][10]."</b></span>";
 echo "</td></tr></table></div>";
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
@@ -72,13 +72,13 @@ if (haveRight("dropdown","w")){
 	$data["setup.dropdowns.php"]=$lang["setup"][0];
 }
 if (haveRight("device","w")){
-	$data[$HTMLRel."front/device.php"]=$lang["setup"][222];
+	$data[$cfg_glpi["root_doc"]."/front/device.php"]=$lang["setup"][222];
 }
 if (haveRight("typedoc","r")){
-	$data[$HTMLRel."front/typedoc.php"]=$lang["document"][7];
+	$data[$cfg_glpi["root_doc"]."/front/typedoc.php"]=$lang["document"][7];
 }
 if (haveRight("link","r")){
-	$data[$HTMLRel."front/link.php"]=$lang["setup"][87];
+	$data[$cfg_glpi["root_doc"]."/front/link.php"]=$lang["setup"][87];
 }
 
 echo "<tr class='tab_bg_1'>";

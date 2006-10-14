@@ -45,7 +45,7 @@ commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
 
 checkTypeRight($_GET["type"],"w");
 
-listTemplates($_GET["type"],$HTMLRel .$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
+listTemplates($_GET["type"],$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
 
 commonFooter();
 
