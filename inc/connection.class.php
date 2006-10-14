@@ -33,6 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
 /**
  *  Connection class used to connect computer to peripherals, printers and monitors
  */

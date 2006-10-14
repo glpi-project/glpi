@@ -88,6 +88,9 @@
 // et fait touch() sauf si ca n'est pas souhaite
 // (regle aussi le probleme des droits sur les fichiers touch())
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
 
 
 class Cron {

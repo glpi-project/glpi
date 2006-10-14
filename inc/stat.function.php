@@ -33,6 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
 //return if the $postfromselect if a dropdown or not
 function is_dropdown_stat($postfromselect) {
 	$dropdowns = array ("locations","os","model");

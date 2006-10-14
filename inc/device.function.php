@@ -28,6 +28,10 @@
  --------------------------------------------------------------------------
  */
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
 function getDeviceTable($dev_type){
 	switch ($dev_type){
 		case MOBOARD_DEVICE :

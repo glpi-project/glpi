@@ -28,9 +28,15 @@
  --------------------------------------------------------------------------
  */
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
+
 /** \file search.function.php
  * Generic functions for Search Engine
  */
+
 
 /**
  * Completion of the URL $_GET values with the $_SESSION values or define default values

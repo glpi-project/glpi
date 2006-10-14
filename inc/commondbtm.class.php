@@ -28,6 +28,10 @@
  --------------------------------------------------------------------------
  */
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
 // Common DataBase Table Manager Class
 class CommonDBTM {
 

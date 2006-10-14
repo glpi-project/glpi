@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 if (!defined('GLPI_ROOT')){
-	die("Can not access directly to this file");
+	die("Sorry. You can't access directly to this file");
 	}
 
 include_once (GLPI_ROOT . "/inc/timer.class.php");
