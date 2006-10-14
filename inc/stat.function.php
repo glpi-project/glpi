@@ -43,7 +43,7 @@ function is_dropdown_stat($postfromselect) {
 
 
 function getStatsItems($date1,$date2,$type){
-	global $HTMLRel,$db;
+	global $cfg_glpi,$db;
 	$val=array();
 
 	switch ($type){
@@ -55,7 +55,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomTech))
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["assign"];
-				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["assign"]."'>";
+				$val[$i]["link"]="<a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$key["assign"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
@@ -75,7 +75,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomTech))
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["author"];
-				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["author"]."'>";
+				$val[$i]["link"]="<a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$key["author"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
@@ -94,7 +94,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomEnt))
 			foreach($nomEnt as $key){
 				$val[$i]["ID"]=$key["assign_ent"];
-				$val[$i]["link"]="<a href='".$HTMLRel."front/enterprise.form.php?ID=".$key["assign_ent"]."'>";
+				$val[$i]["link"]="<a href='".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=".$key["assign_ent"]."'>";
 				$val[$i]["link"].=$key["name"];
 				$val[$i]["link"].="</a>";
 				$i++;
@@ -108,7 +108,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomUsr))
 			foreach($nomUsr as $key){
 				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]="<a href='".$HTMLRel."front/user.info.php?ID=".$key["ID"]."'>";
+				$val[$i]["link"]="<a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$key["ID"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
@@ -203,7 +203,7 @@ function getStatsItems($date1,$date2,$type){
 }
 
 function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
-	global $lang,$cfg_glpi,$HTMLRel;
+	global $lang,$cfg_glpi;
 
 	// Set display type for export if define
 	$output_type=HTML_OUTPUT;
@@ -246,7 +246,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			echo displaySearchNewLine($output_type);
 			echo displaySearchItem($output_type,$value[$i]['link'],$item_num,$row_num);
 			if ($output_type==HTML_OUTPUT) // HTML display
-				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$HTMLRel."pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
+				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$cfg_glpi["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
 
 			//le nombre d'intervention
 			//the number of intervention
@@ -751,7 +751,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 // $type = "month" or "year"
 function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 
-	global $db,$HTMLRel,$lang;
+	global $db,$cfg_glpi,$lang;
 
 	$total="";
 	if ($showtotal==1) $total=array_sum($entrees);
@@ -776,9 +776,9 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 		if ($largeur > 50) $largeur = 50;
 	}
 
-	echo "<table cellpadding='0' cellspacing='0' border='0' ><tr><td style='background-image:url(".$HTMLRel."pics/fond-stats.gif)' >";
+	echo "<table cellpadding='0' cellspacing='0' border='0' ><tr><td style='background-image:url(".$cfg_glpi["root_doc"]."/pics/fond-stats.gif)' >";
 	echo "<table cellpadding='0' cellspacing='0' border='0'><tr>";
-	echo "<td bgcolor='black'><img src='".$HTMLRel."pics/noir.png' width='1' height='200' alt=''></td>";
+	echo "<td bgcolor='black'><img src='".$$cfg_glpi["root_doc"]."/pics/noir.png' width='1' height='200' alt=''></td>";
 
 	// Presentation graphique
 	$n = 0;
@@ -807,19 +807,19 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 		if ($hauteur >= 0){
 			if ($hauteur_moyenne > $hauteur) {
 				$difference = ($hauteur_moyenne - $hauteur) -1;
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/moyenne.png' width=".$largeur." height='1' >";
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height=".$difference." >";
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/noir.png' width=".$largeur." height='1' >";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/moyenne.png' width=".$largeur." height='1' >";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/rien.gif' width=".$largeur." height=".$difference." >";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/noir.png' width=".$largeur." height='1' >";
 				if (ereg("-01",$key)){ // janvier en couleur foncee
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph1.png' width=".$largeur." height=".$hauteur." >";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph1.png' width=".$largeur." height=".$hauteur." >";
 				} 
 				else {
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph2.png' width=".$largeur." height=".$hauteur." >";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph2.png' width=".$largeur." height=".$hauteur." >";
 				}
 			}
 			else if ($hauteur_moyenne < $hauteur) {
 				$difference = ($hauteur - $hauteur_moyenne) -1;
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/noir.png' width=".$largeur." height='1'>";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/noir.png' width=".$largeur." height='1'>";
 				if (ereg("-01",$key)){ // janvier en couleur foncee
 					$couleur =  "1";
 					$couleur2 =  "2";
@@ -828,26 +828,26 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 					$couleur = "2";
 					$couleur2 = "1";
 				}
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph$couleur.png' width=".$largeur." height=".$difference.">";
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/moyenne.png' width=".$largeur." height='1'>";
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph$couleur.png' width=".$largeur." height=".$hauteur_moyenne.">";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph$couleur.png' width=".$largeur." height=".$difference.">";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/moyenne.png' width=".$largeur." height='1'>";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph$couleur.png' width=".$largeur." height=".$hauteur_moyenne.">";
 			}
 			else {
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/noir.png' width=".$largeur." height='1'>";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/noir.png' width=".$largeur." height='1'>";
 				if (ereg("-01",$key)){ // janvier en couleur foncee
-					echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$HTMLRel."pics/fondgraph1.png' width=".$largeur." height=".$hauteur.">";
+					echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$cfg_glpi["root_doc"]."/pics/fondgraph1.png' width=".$largeur." height=".$hauteur.">";
 				} 
 				else {
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$HTMLRel."pics/fondgraph2.png' width=".$largeur." height=".$hauteur.">";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph2.png' width=".$largeur." height=".$hauteur.">";
 				}
 			}
 		}
 
-		echo "<img alt=\"$value\" title=\"$value\"  src='".$HTMLRel."pics/rien.gif' width=".$largeur." height='1'>";
+		echo "<img alt=\"$value\" title=\"$value\"  src='".$cfg_glpi["root_doc"]."/pics/rien.gif' width=".$largeur." height='1'>";
 		echo "</td>\n";
 
 	}
-	echo "<td bgcolor='black'><img src='".$HTMLRel."pics/noir.png' width='1' height='1' alt=''></td>";
+	echo "<td bgcolor='black'><img src='".$cfg_glpi["root_doc"]."/pics/noir.png' width='1' height='1' alt=''></td>";
 	echo "</tr>";
 	if ($largeur>10){
 		echo "<tr><td></td>";
@@ -867,8 +867,8 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 	else $r=0;
 	echo "</table>";
 	echo "</td>";
-	echo "<td style='background-image:url(".$HTMLRel."pics/fond-stats.gif)' valign='bottom'><img src='".$HTMLRel."pics/rien.gif' style='background-color:black;' width='3' height='1' alt=''></td>";
-	echo "<td><img src='".$HTMLRel."pics/rien.gif' width='5' height='1' alt=''></td>";
+	echo "<td style='background-image:url(".$cfg_glpi["root_doc"]."/pics/fond-stats.gif)' valign='bottom'><img src='".$cfg_glpi["root_doc"]."/pics/rien.gif' style='background-color:black;' width='3' height='1' alt=''></td>";
+	echo "<td><img src='".$cfg_glpi["root_doc"]."/pics/rien.gif' width='5' height='1' alt=''></td>";
 	echo "<td valign='top'>";
 	echo "<table cellpadding='0' cellspacing='0' border='0'>";
 	echo "<tr><td height='15' valign='top'>";		

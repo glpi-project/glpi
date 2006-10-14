@@ -53,7 +53,7 @@ function showLicensesAdd($ID) {
 
 function showLicenses ($sID,$show_computers=0) {
 
-	global $db,$cfg_glpi, $HTMLRel, $lang;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("software","r")) return false;
 	$canedit=haveRight("software","w");
@@ -217,7 +217,7 @@ function showLicenses ($sID,$show_computers=0) {
 						echo "<option value='$i' ".($i==$restant?" selected ":"").">$i</option>";
 					echo "</select>";
 					echo "<input type='hidden' name='nb_licenses_$IDdup' value='$restant'>";
-					echo "<input type='image' name='update_stock_licenses' value='$IDdup' src='".$HTMLRel."pics/actualiser.png' class='calendrier'>";
+					echo "<input type='image' name='update_stock_licenses' value='$IDdup' src='".$cfg_glpi["root_doc"]."/pics/actualiser.png' class='calendrier'>";
 				}
 				if (($serial=="free"||$serial=="global")){
 					// Display infocoms
@@ -246,15 +246,15 @@ function showLicenses ($sID,$show_computers=0) {
 						if ($canedit){
 							if (($serial=="free"||$serial=="global")){
 								echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?delete=delete&amp;ID=$ID\">";
-								echo "<img src=\"".$HTMLRel."pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
+								echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/delete.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'>";
 								echo "</a></strong>";
 
 								echo "&nbsp;&nbsp;<a alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" href=\"javascript:confirmAction('".addslashes($lang["common"][40])."\\n".addslashes($lang["common"][39])."','".$cfg_glpi["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&sID=$sID&ID=$ID')\">".$lang["common"][38]."</a>&nbsp;";	
 
-								echo "<img alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" src='".$HTMLRel."pics/aide.png'\">";
+								echo "<img alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" src='".$cfg_glpi["root_doc"]."/pics/aide.png'\">";
 							}
 							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
-							echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
+							echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 							echo "</a></strong>";
 						} else echo "&nbsp;";
 					}
@@ -299,13 +299,13 @@ function showLicenses ($sID,$show_computers=0) {
 
 					// Comment
 					if (!empty($data_inst["COMMENT"])) {
-						echo "<img onmouseout=\"cleanhide('comment_".$data_inst["ID"]."')\" onmouseover=\"cleandisplay('comment_".$data_inst["ID"]."')\" src=\"".$HTMLRel."pics/aide.png\" alt=''>";
+						echo "<img onmouseout=\"cleanhide('comment_".$data_inst["ID"]."')\" onmouseover=\"cleandisplay('comment_".$data_inst["ID"]."')\" src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" alt=''>";
 						echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 					}
 					// delete
 					if ($canedit){
 						echo "<a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
-						echo "<img src=\"".$HTMLRel."pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
+						echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/remove.png\" alt='".$lang["buttons"][5]."' title='".$lang["buttons"][5]."'>";
 						echo "</a>";
 					}
 
@@ -313,7 +313,7 @@ function showLicenses ($sID,$show_computers=0) {
 						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 						if ($canedit){
 							echo "<strong><a href=\"".$cfg_glpi["root_doc"]."/front/software.licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
-							echo "<img src=\"".$HTMLRel."pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
+							echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/edit.png\" alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'>";
 							echo "</a></strong>";
 						}
 						// Display infocoms
@@ -340,7 +340,7 @@ function showLicenses ($sID,$show_computers=0) {
 
 function showLicenseForm($target,$action,$sID,$lID="") {
 
-	global $cfg_glpi, $lang,$HTMLRel;
+	global $cfg_glpi, $lang;
 
 	if (!haveRight("software","w")) return false;
 

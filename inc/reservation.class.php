@@ -330,7 +330,7 @@ class ReservationResa extends CommonDBTM {
 	}
 
 	function displayError($type,$ID,$target){
-		global $HTMLRel,$lang;
+		global $lang;
 
 		echo "<br><div align='center'>";
 		switch ($type){

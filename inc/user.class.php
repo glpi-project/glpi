@@ -541,9 +541,9 @@ class User extends CommonDBTM {
 
 		// Un titre pour la gestion des users
 
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td>";
 		echo "<td><a  class='icon_consol' href=\"user.form.php?new=1\"><b>".$lang["setup"][2]."</b></a></td>";
 		if (useAuthExt())
 			echo "<td><a  class='icon_consol' href=\"user.form.php?new=1&ext_auth=1\"><b>".$lang["setup"][125]."</b></a></td>";

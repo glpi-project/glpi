@@ -46,11 +46,11 @@
 
 
 function titleReservation(){
-	global  $lang,$HTMLRel;
+	global  $lang,$cfg_glpi;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["reservation"][1]."</span>";
-	echo "</b></td><td><a class='icon_consol' href='".$HTMLRel."front/reservation.php?show=resa&amp;ID'>".$lang["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["reservation"][1]."</span>";
+	echo "</b></td><td><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID'>".$lang["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
 }
 
 function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort= ""){
@@ -100,7 +100,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 function showReservationItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start){
 	// Lists Reservation Items
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("reservation_central","r")) return false;
 
@@ -146,8 +146,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.ID") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.ID&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["common"][2]."</a></th>";
@@ -155,8 +155,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			// Device_Type			
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.device_type") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.device_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["reservation"][3]."</a></th>";
@@ -164,8 +164,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			// device
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.id_device") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.id_device&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["reservation"][4]."</a></th>";
@@ -177,8 +177,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			// Comments
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.comments") {
-				if ($order=="DESC") echo "<img src=\"".$HTMLRel."pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$HTMLRel."pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.comments&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
 			echo $lang["common"][25]."</a></th>";
@@ -251,7 +251,7 @@ function showReservationForm($device_type,$id_device){
 }
 
 function printCalendrier($target,$ID=""){
-	global $lang, $HTMLRel;
+	global $lang, $cfg_glpi;
 
 	if (!haveRight("reservation_helpdesk","1")) return false;
 
@@ -294,7 +294,7 @@ function printCalendrier($target,$ID=""){
 
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$type." - ".$name."</span>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$type." - ".$name."</span>";
 	echo "</b></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
 
@@ -311,8 +311,8 @@ function printCalendrier($target,$ID=""){
 
 	echo "<div align='center'>";
 
-	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></td><td><b>".
-		$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
+	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></td><td><b>".
+		$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
 	// test
 	echo "<table width='90%'><tr><td valign='top'  width='100'>";
 
@@ -391,7 +391,7 @@ function printCalendrier($target,$ID=""){
 		echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 
 		if (!empty($ID)){
-			echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$HTMLRel."pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
+			echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$cfg_glpi["root_doc"]."/pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
 		}
 		//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 		echo "<tr><td>";
@@ -426,7 +426,7 @@ function printCalendrier($target,$ID=""){
 }
 
 function showAddReservationForm($target,$ID,$date,$resaID=-1){
-	global $lang,$HTMLRel;
+	global $lang;
 
 	if (!haveRight("reservation_helpdesk","1")) return false;
 
@@ -570,7 +570,7 @@ function printReservation($target,$ID,$date){
 
 
 function printReservationItem($target,$ID,$date){
-	global $db,$lang, $HTMLRel;
+	global $db,$lang;
 
 	$id_user=$_SESSION["glpiID"];
 
@@ -631,7 +631,7 @@ function printReservationItem($target,$ID,$date){
 
 
 function printReservationItems($target){
-	global $db,$lang,$HTMLRel;
+	global $db,$lang;
 
 	if (!haveRight("reservation_helpdesk","1")) return false;
 
@@ -659,7 +659,7 @@ function printReservationItems($target){
 
 
 function showReservationCommentForm($target,$ID){
-	global $lang,$HTMLRel;
+	global $lang;
 
 	if (!haveRight("reservation_central","w")) return false;
 

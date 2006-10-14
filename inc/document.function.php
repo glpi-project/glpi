@@ -264,7 +264,7 @@ function deleteDeviceDocument($ID){
 // $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if ($device_type!=KNOWBASE_TYPE)
 		if (!haveRight("document","r")||!haveTypeRight($device_type,"r"))	return false;
@@ -299,7 +299,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 		if ($withtemplate!=3&&$canread){
-			echo "<td align='center'><a href='".$HTMLRel."front/document.form.php?ID=$cID'><b>".$con->fields["name"];
+			echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/document.form.php?ID=$cID'><b>".$con->fields["name"];
 			if ($cfg_glpi["view_ID"]) echo " (".$con->fields["ID"].")";
 			echo "</b></a></td>";
 		} else {
@@ -321,7 +321,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate<2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
 			else echo "&nbsp;";
 			echo "</td>";
 		}
@@ -361,7 +361,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 }
 
 function getDocumentLink($filename,$params=""){
-	global $db,$HTMLRel,$cfg_glpi;	
+	global $db,$cfg_glpi;	
 	if (empty($filename))
 		return "&nbsp;";
 	$out="";
@@ -380,12 +380,12 @@ function getDocumentLink($filename,$params=""){
 			if ($db->numrows($result)>0){
 				$icon=$db->result($result,0,'icon');
 
-				$out="<a href=\"".$HTMLRel."front/document.send.php?file=$filename$params\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"./".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
+				$out="<a href=\"".$cfg_glpi["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
 			}
 
 	}
 
-	$out.="<a href=\"".$HTMLRel."front/document.send.php?file=$filename$params\" target=\"_blank\"><b>$fileout</b></a>";	
+	$out.="<a href=\"".$cfg_glpi["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\"><b>$fileout</b></a>";	
 
 
 	return $out;
