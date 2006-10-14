@@ -223,21 +223,21 @@ class Printer  extends CommonDBTM {
 
 
 	function title(){
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 
 		echo "<div align='center'><table border='0'><tr><td>";
 
-		echo "<img src=\"".$HTMLRel."pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td>";
 		if (haveRight("printer","w")){
-			echo "<td><a  class='icon_consol' href=\"".$HTMLRel."front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=1\"><b>".$lang["printers"][0]."</b></a></td>";
-			echo "<td><a class='icon_consol'  href='".$HTMLRel."front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+			echo "<td><a  class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=1\"><b>".$lang["printers"][0]."</b></a></td>";
+			echo "<td><a class='icon_consol'  href='".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
 			echo "</tr></table></div>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][2]."</b></span></td>";
 	}
 
 	function showForm ($target,$ID,$withtemplate='') {
 
-		global $cfg_glpi, $lang,$HTMLRel;
+		global $cfg_glpi, $lang;
 		if (!haveRight("printer","r")) return false;
 
 

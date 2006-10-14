@@ -41,7 +41,7 @@
 
 function showPorts ($device,$device_type,$withtemplate='') {
 
-	global $db,$cfg_glpi, $lang,$HTMLRel,$LINK_ID_TABLE;
+	global $db,$cfg_glpi, $lang,$LINK_ID_TABLE;
 
 	if (!haveRight("networking","r")) return false;
 	$canedit=haveRight("networking","w");
@@ -111,7 +111,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			if ($canedit){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='950'>";
-				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=all'>".$lang["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=all'>".$lang["buttons"][18]."</a></td>";
 
 				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$device&amp;select=none'>".$lang["buttons"][19]."</a>";
 				echo "</td>";
@@ -130,7 +130,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 }
 
 function showPortVLAN($ID,$withtemplate,$referer=''){
-	global $db,$HTMLRel,$lang;
+	global $db,$cfg_glpi,$lang;
 
 	$canedit=haveRight("networking","w");
 
@@ -144,8 +144,8 @@ function showPortVLAN($ID,$withtemplate,$referer=''){
 			echo "<tr><td>".getDropdownName("glpi_dropdown_vlan",$line["FK_vlan"]);
 			echo "</td><td>";
 			if ($canedit){
-				echo "<a href='".$HTMLRel."front/networking.port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."&amp;referer=$referer'>";
-				echo "<img src=\"".$HTMLRel."/pics/delete2.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'></a>";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/networking.port.php?unassign_vlan=unassigned&amp;ID=".$line["ID"]."&amp;referer=$referer'>";
+				echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/delete2.png\" alt='".$lang["buttons"][6]."' title='".$lang["buttons"][6]."'></a>";
 			} else echo "&nbsp;";
 			echo "</td></tr>";
 		}

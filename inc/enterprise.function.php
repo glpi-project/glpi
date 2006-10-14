@@ -154,7 +154,7 @@ function showDeviceManufacturer($instID) {
  *
  **/
 function showInternalDeviceManufacturer($instID) {
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("contract_infocom","r")) return false;
 	$canview=haveRight("device","w");
@@ -178,8 +178,8 @@ function showInternalDeviceManufacturer($instID) {
 				$ID="";
 				echo "<tr class='tab_bg_1'>";
 				if ($canview){
-					echo "<td align='center'><a href='".$HTMLRel."front/device.php?device_type=".$type."'>".getDeviceTypeLabel($type)."</a></td>";
-					echo "<td align='center'><a href='".$HTMLRel."front/device.form.php?ID=".$data["ID"]."&amp;device_type=".$type."'>&nbsp;".$data["designation"]."&nbsp;</a></td>";
+					echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/device.php?device_type=".$type."'>".getDeviceTypeLabel($type)."</a></td>";
+					echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/device.form.php?ID=".$data["ID"]."&amp;device_type=".$type."'>&nbsp;".$data["designation"]."&nbsp;</a></td>";
 				} else {
 					echo "<td align='center'>".getDeviceTypeLabel($type)."</td>";
 					echo "<td align='center'>".$data["designation"]."</td>";
@@ -197,7 +197,7 @@ function showInternalDeviceManufacturer($instID) {
 
 
 function showAssociatedContact($instID) {
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("contact_enterprise","r")) return false;
 	$canedit=haveRight("contact_enterprise","w");
@@ -220,7 +220,7 @@ function showAssociatedContact($instID) {
 	while ($data=$db->fetch_array($result)) {
 		$ID=$data["ID_ent"];
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><a href='".$HTMLRel."front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
+		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
 		echo "<td align='center'  width='100'>".$data["mobile"]."</td>";
@@ -270,7 +270,7 @@ function deleteContactEnterprise($ID){
 }
 
 function getEnterpriseLinks($value,$withname=0){
-	global $HTMLRel,$lang;
+	global $cfg_glpi,$lang;
 	$ret="";
 
 	$ent=new Enterprise();
@@ -282,10 +282,10 @@ function getEnterpriseLinks($value,$withname=0){
 			if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
 			else $website=$ent->fields['website'];
 			$ret.= "&nbsp;&nbsp;";
-			$ret.= "<a href='$website' target='_blank'><img src='".$HTMLRel."pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
+			$ret.= "<a href='$website' target='_blank'><img src='".$cfg_glpi["root_doc"]."/pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
 		}
 		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
-		$ret.= "<a href='".$HTMLRel."front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$HTMLRel."pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
+		$ret.= "<a href='".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$cfg_glpi["root_doc"]."/pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
 	}
 
 	return $ret;

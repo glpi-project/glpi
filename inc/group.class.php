@@ -82,9 +82,9 @@ class Group extends CommonDBTM{
 	 *
 	 **/
 	function title(){
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/groupes.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/groupes.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
 		if (haveRight("group","w")){
 			echo "<td><a  class='icon_consol' href=\"group.form.php?new=1\"><b>".$lang["setup"][602]."</b></a></td>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["setup"][602]."</b></span></td>";
@@ -106,7 +106,7 @@ class Group extends CommonDBTM{
 	 **/
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang,$HTMLRel;
+		global $cfg_glpi, $lang;
 
 		if (!haveRight("group","r")) return false;
 

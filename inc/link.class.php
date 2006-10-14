@@ -61,9 +61,9 @@ class Link extends CommonDBTM {
 	 *
 	 **/
 	function title(){
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/links.png\" alt='".$lang["links"][2]."' title='".$lang["links"][2]."'></td><td><a  class='icon_consol' href=\"link.form.php?new=1\"><b>".$lang["links"][2]."</b></a>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/links.png\" alt='".$lang["links"][2]."' title='".$lang["links"][2]."'></td><td><a  class='icon_consol' href=\"link.form.php?new=1\"><b>".$lang["links"][2]."</b></a>";
 		echo "</td></tr></table></div>";
 	}
 
@@ -83,7 +83,7 @@ class Link extends CommonDBTM {
 	 **/
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang,$HTMLRel;
+		global $cfg_glpi, $lang;
 
 		if (!haveRight("link","r")) return false;
 

@@ -217,14 +217,14 @@ class Netdevice extends CommonDBTM {
 	function title() {
 		// titre
 
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/networking.png\" alt='".$lang["networking"][11]."' title='".$lang["networking"][11]."'></td>";
 		if (haveRight("networking","w")){
-			echo "<td><a  class='icon_consol' href=\"".$HTMLRel."front/setup.templates.php?type=".NETWORKING_TYPE."&amp;add=1\"><b>".$lang["networking"][11]."</b></a>";
+			echo "<td><a  class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".NETWORKING_TYPE."&amp;add=1\"><b>".$lang["networking"][11]."</b></a>";
 			echo "</td>";
-			echo "<td><a class='icon_consol' href='".$HTMLRel."front/setup.templates.php?type=".NETWORKING_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+			echo "<td><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".NETWORKING_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][1]."</b></span></td>";
 		echo "</tr></table></div>";
 
@@ -235,7 +235,7 @@ class Netdevice extends CommonDBTM {
 	function showForm ($target,$ID,$withtemplate='') {
 		// Show device or blank form
 
-		global $cfg_glpi, $lang,$HTMLRel;
+		global $cfg_glpi, $lang;
 
 		if (!haveRight("networking","r")) return false;
 

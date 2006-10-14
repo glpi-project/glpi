@@ -230,7 +230,7 @@ function deleteDeviceContract($ID){
  *
  **/
 function showEnterpriseContract($instID) {
-	global $db,$cfg_glpi, $lang,$HTMLRel,$cfg_glpi;
+	global $db,$cfg_glpi, $lang,$cfg_glpi;
 
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
 	$canedit=haveRight("contract_infocom","w");
@@ -408,7 +408,7 @@ function getContractRenewalName($value){
  *
  **/
 function getContractEnterprises($ID){
-	global $db,$HTMLRel;
+	global $db;
 
 	$query = "SELECT glpi_enterprises.* FROM glpi_contract_enterprise, glpi_enterprises WHERE glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID AND glpi_contract_enterprise.FK_contract = '$ID'";
 	$result = $db->query($query);
@@ -465,7 +465,7 @@ function dropdownContracts($name){
  **/
 function showContractAssociated($device_type,$ID,$withtemplate=''){
 
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("contract_infocom","r")||!haveTypeRight($device_type,"r"))	return false;
 	$canedit=haveTypeRight($device_type,"w");
@@ -494,7 +494,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-		echo "<td align='center'><a href='".$HTMLRel."front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
+		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
 		if ($cfg_glpi["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
 		echo "<td align='center'>".$con->fields["num"]."</td>";
@@ -508,7 +508,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate!=2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$HTMLRel."front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
 			else echo "&nbsp;";
 			echo "</td>";
 		}
@@ -551,7 +551,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
  **/
 function showContractAssociatedEnterprise($ID){
 
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang,$cfg_glpi;
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r")) return false;
 	$canedit=haveRight("contract_infocom","w");
 
@@ -579,7 +579,7 @@ function showContractAssociatedEnterprise($ID){
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-		echo "<td align='center'><a href='".$HTMLRel."front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
+		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
 		if ($cfg_glpi["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
 		echo "<td align='center'>".$con->fields["num"]."</td>";
@@ -592,7 +592,7 @@ function showContractAssociatedEnterprise($ID){
 
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
-			echo "<a href='".$HTMLRel."front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;

@@ -186,13 +186,13 @@ class Monitor extends CommonDBTM {
 	}
 
 	function title(){
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/ecran.png\" alt='".$lang["monitors"][0]."' title='".$lang["monitors"][0]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/ecran.png\" alt='".$lang["monitors"][0]."' title='".$lang["monitors"][0]."'></td>";
 		if (haveRight("monitor","w")){
-			echo "<td><a  class='icon_consol' href=\"".$HTMLRel."front/setup.templates.php?type=".MONITOR_TYPE."&amp;add=1\"><b>".$lang["monitors"][0]."</b></a>";
+			echo "<td><a  class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".MONITOR_TYPE."&amp;add=1\"><b>".$lang["monitors"][0]."</b></a>";
 			echo "</td>";
-			echo "<td><a class='icon_consol' href='".$HTMLRel."front/setup.templates.php?type=".MONITOR_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+			echo "<td><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".MONITOR_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][3]."</b></span></td>";
 		echo "</tr></table></div>";
 	}
@@ -200,7 +200,7 @@ class Monitor extends CommonDBTM {
 
 	function showForm ($target,$ID,$withtemplate='') {
 
-		global $cfg_glpi, $lang,$HTMLRel;
+		global $cfg_glpi, $lang;
 
 		if (!haveRight("monitor","r")) return false;
 

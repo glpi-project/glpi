@@ -89,10 +89,10 @@ class Reminder extends CommonDBTM {
 
 	function title(){
 
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/reminder.png\" alt='".$lang["reminder"][0]."' title='".$lang["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$HTMLRel."front/reminder.form.php\"><b>".$lang["buttons"][8]."</b></a>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reminder.png\" alt='".$lang["reminder"][0]."' title='".$lang["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/reminder.form.php\"><b>".$lang["buttons"][8]."</b></a>";
 		echo "</td></tr></table></div>";
 	}
 

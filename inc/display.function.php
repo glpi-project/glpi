@@ -52,7 +52,7 @@ function commonHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	global $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks,$HEADER_LOADED ;
+	global $cfg_glpi,$lang,$phproot,$plugin_hooks,$HEADER_LOADED ;
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;;
 	// Override list-limit if choosen
@@ -150,20 +150,20 @@ function commonHeader($title,$url)
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
 	//  CSS link
-	echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."css/print.css' >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
+	echo "<link rel='stylesheet'  href='".$cfg_glpi["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$cfg_glpi["root_doc"]."/css/print.css' >";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$cfg_glpi["root_doc"]."/pics/favicon.ico' >";
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
 	// Some Javascript-Functions which we may need later
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/script.js'></script>";
 
 	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$HTMLRel."lib/calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar-setup.js\"></script>";
+	echo "<style type=\"text/css\">@import url(".$cfg_glpi["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
 
 
 	// End of Head
@@ -180,13 +180,13 @@ function commonHeader($title,$url)
 	echo "<div id='menu'>";
 	// Logo with link to command center
 
-	echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$cfg_glpi["root_doc"]."/front/central.php\" accesskey=\"0\"><img  src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
+	echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$cfg_glpi["root_doc"]."/front/central.php\" accesskey=\"0\"><img  src=\"".$cfg_glpi["root_doc"]."/pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\"></a></dt></dl>";
 
 	// Get object-variables and build the navigation-elements
 
 	// Inventory
 	if (count($inventory)) {
-		echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$HTMLRel."pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>\n";
+		echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/inventaire.png\" alt=\"\" title=\"".$lang["setup"][10]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["setup"][10]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu1\"><ul>";
 		$i=0;
@@ -203,7 +203,7 @@ function commonHeader($title,$url)
 	// Maintain / Tracking / ticket
 	if (count($maintain)) {
 
-		echo "<dl><dt onmouseover=\"javascript:montre('smenu2');\"><img class='icon_nav' src=\"".$HTMLRel."pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>\n";
+		echo "<dl><dt onmouseover=\"javascript:montre('smenu2');\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/maintenance.png\" alt=\"\" title=\"".$lang["title"][24]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["title"][24]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu2\"><ul>";
 		// list menu item 
@@ -216,7 +216,7 @@ function commonHeader($title,$url)
 	// Financial
 	if (count($financial)) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu3');\">";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/gestion.png\" alt=\"\" title=\"".$lang["Menu"][26]."\"><br>\n";
+		echo "<img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/gestion.png\" alt=\"\" title=\"".$lang["Menu"][26]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][26]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu3\"><ul>";
 		// list menu item 
@@ -230,7 +230,7 @@ function commonHeader($title,$url)
 	// Tools
 	if (count($utils)) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu4');\">";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][18]."\"><br>\n";
+		echo "<img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/outils.png\" alt=\"\" title=\"".$lang["Menu"][18]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][18]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu4\"><ul>";
 		// list menu item 
@@ -260,7 +260,7 @@ function commonHeader($title,$url)
 		}
 		asort($list);
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu5');\">";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
+		echo "<img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/plugins.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["common"][29]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu5\"><ul>";
 		// list menu item 
@@ -274,7 +274,7 @@ function commonHeader($title,$url)
 	// Administration 
 	if (count($config)) {
 		echo "<dl><dt onmouseover=\"javascript:montre('smenu6');\">";
-		echo "<img class='icon_nav' src=\"".$HTMLRel."pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
+		echo "<img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/config.png\" alt=\"\" title=\"".$lang["Menu"][15]."\"><br>\n";
 		echo "<span class='menu_title'>-&nbsp;".$lang["Menu"][15]."&nbsp;-</span></dt>\n";
 		echo "<dd id=\"smenu6\"><ul>";
 		// list menu item 
@@ -288,10 +288,10 @@ function commonHeader($title,$url)
 
 	// Display  clock with date, help and a logout-link.
 	//logout
-	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%; margin-right:10px;'><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_glpi["root_doc"]."/logout.php\"><img  class='icon_nav'  src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div>\n";
+	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%; margin-right:10px;'><a  class='icon_nav_move'  style='background: transparent'  href=\"".$cfg_glpi["root_doc"]."/logout.php\"><img  class='icon_nav'  src=\"".$cfg_glpi["root_doc"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div>\n";
 
 	//help
-	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%;'><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$HTMLRel."help/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></div>\n";
+	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%;'><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$cfg_glpi["root_doc"]."/help/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a></div>\n";
 
 
 
@@ -305,7 +305,7 @@ function commonHeader($title,$url)
 
 	//clock
 	echo "<div class='nav_horl' style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:99;'>";
-	echo "<a href='".$HTMLRel."front/user.form.my.php'>";
+	echo "<a href='".$cfg_glpi["root_doc"]."/front/user.form.my.php'>";
 	if (!empty($_SESSION["glpirealname"])) {
 		echo $_SESSION["glpirealname"];
 		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
@@ -348,7 +348,7 @@ function displayMessageAfterRedirect(){
 function helpHeader($title,$url) {
 	// Print a nice HTML-head for help page
 
-	global $cfg_glpi,$lang,$HTMLRel,$phproot, $cfg_glpi,$HEADER_LOADED ;
+	global $cfg_glpi,$lang,$phproot, $cfg_glpi,$HEADER_LOADED ;
 
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
@@ -371,7 +371,7 @@ function helpHeader($title,$url) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	echo "<html><head><title>GLPI Helpdesk - ".$title."</title>";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$cfg_glpi["root_doc"]."/pics/favicon.ico' >";
 	// Send extra expires header if configured
 
 	if ($cfg_glpi["sendexpire"]) {
@@ -382,23 +382,23 @@ function helpHeader($title,$url) {
 
 	// Some Javascript-Functions which we may need later
 
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/script.js'></script>";
 
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
 
 
 	// Appel CSS
 
-	echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."css/print.css' >";
+	echo "<link rel='stylesheet'  href='".$cfg_glpi["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$cfg_glpi["root_doc"]."/css/print.css' >";
 
 	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$HTMLRel."lib/calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar-setup.js\"></script>";
+	echo "<style type=\"text/css\">@import url(".$cfg_glpi["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
 
 	// End of Head
 	echo "</head>\n";
@@ -407,7 +407,7 @@ function helpHeader($title,$url) {
 	echo "<body>";
 
 	// Main Headline
-	echo "<div id='navigation-helpdesk' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
+	echo "<div id='navigation-helpdesk' style='background : url(\"".$cfg_glpi["root_doc"]."/pics/fond.png\") repeat-x top right ;'>";
 
 	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
@@ -415,10 +415,10 @@ function helpHeader($title,$url) {
 	// Logo with link to command center
 	echo "<td align='center' width='20%'>\n";
 	echo "<a class='icon_logo' style='background: transparent' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\">";
-	echo "<img src=\"".$HTMLRel."pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/logo-glpi.png\"  alt=\"".$cfg_glpi["logotxt"]."\" title=\"".$lang["central"][5]."\" >";
 	echo "</a>";
 	echo "<div style='text-align:center;'><p class='nav_horl'><b>";
-	echo "<a href='".$HTMLRel."front/user.form.my.php'>";
+	echo "<a href='".$cfg_glpi["root_doc"]."/front/user.form.my.php'>";
 	if (!empty($_SESSION["glpirealname"])) {
 		echo $_SESSION["glpirealname"];
 		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<30) echo " ".$_SESSION["glpifirstname"];
@@ -449,19 +449,19 @@ function helpHeader($title,$url) {
 	// We tracking or post a new one
 	echo "<td width='100' align='center'>";
 	if (haveRight("create_ticket","1"))
-		echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php\"><img  src=\"".$HTMLRel."pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a>";
+		echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php\"><img  src=\"".$cfg_glpi["root_doc"]."/pics/ajoutinterv.png\" alt=\"".$lang["job"][13]."\" title=\"".$lang["job"][13]."\"></a>";
 	echo "<br><br>";
 	if (haveRight("observe_ticket","1"))
-		echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user\"><img  src=\"".$HTMLRel."pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
+		echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user\"><img  src=\"".$cfg_glpi["root_doc"]."/pics/suivi.png\" alt=\"".$lang["tracking"][0]."\" title=\"".$lang["tracking"][0]."\"></a>";
 	echo "</td>";
 	//reservation
 
 	echo "<td width='100' align='center'>";
 	if (haveRight("reservation_helpdesk","1"))
-		echo "<a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa\"><img  src=\"".$HTMLRel."pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a>";
+		echo "<a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa\"><img  src=\"".$cfg_glpi["root_doc"]."/pics/reservation-2.png\" alt=\"".$lang["Menu"][17]."\" title=\"".$lang["Menu"][17]."\"></a>";
 	echo "<br><br>";
 	if (haveRight("faq","r"))
-		echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=faq\"><img  src=\"".$HTMLRel."pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
+		echo "<a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=faq\"><img  src=\"".$cfg_glpi["root_doc"]."/pics/faq-24.png\" alt=\"".$lang["knowbase"][1]."\" title=\"".$lang["knowbase"][1]."\"></a>";
 
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
@@ -469,10 +469,10 @@ function helpHeader($title,$url) {
 	echo "<td align='right' width='100'><div align='right'>";
 	// HELP	
 	echo "<a class='icon_nav_move'  href='#'
-		onClick=\"window.open('".$HTMLRel."help/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$HTMLRel."pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
+		onClick=\"window.open('".$cfg_glpi["root_doc"]."/help/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$lang["central"][7]."\"></a>";
 
 	echo "<p>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/logout.php\"><img class='icon_nav' src=\"".$HTMLRel."pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
+	echo "</i></p><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/logout.php\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/logout.png\" alt=\"".$lang["central"][6]."\" title=\"".$lang["central"][6]."\"></a></div></td>";
 
 	// End navigation bar
 
@@ -503,12 +503,11 @@ function helpHeader($title,$url) {
  * @param $url not used anymore.
  **/
 function nullHeader($title,$url) {
-	global $cfg_glpi,$HEADER_LOADED;
+	global $cfg_glpi,$HEADER_LOADED,$lang,$phproot ;
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 	// Print a nice HTML-head with no controls
 
-	global $cfg_glpi,$lang,$HTMLRel,$phproot ;
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 
@@ -527,7 +526,7 @@ function nullHeader($title,$url) {
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	echo "<html><head><title>GLPI - ".$title."</title>";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$cfg_glpi["root_doc"]."/pics/favicon.ico' >";
 	// Send extra expires header if configured
 	if (!empty($cft_features["sendexpire"])) {
 		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
@@ -537,22 +536,22 @@ function nullHeader($title,$url) {
 
 	// Some Javascript-Functions which we may need later
 
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/script.js'></script>";
 
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
 
 	// Appel CSS
 
-	echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet'  href='".$cfg_glpi["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
 
 	// Calendar scripts 
 	if (isset($_SESSION["glpilanguage"])){
-		echo "<style type=\"text/css\">@import url(".$HTMLRel."lib/calendar/aqua/theme.css);</style>";
-		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar.js\"></script>";
-		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
-		echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar-setup.js\"></script>";
+		echo "<style type=\"text/css\">@import url(".$cfg_glpi["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
+		echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/calendar.js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
 	}
 
 
@@ -563,14 +562,14 @@ function nullHeader($title,$url) {
 	echo "<body>";
 
 	// Main Headline
-	echo "<div id='navigation' style='background : url(\"".$HTMLRel."pics/fond.png\") repeat-x top right ;'>";
+	echo "<div id='navigation' style='background : url(\"".$cfg_glpi["root_doc"]."/pics/fond.png\") repeat-x top right ;'>";
 
 	echo "<table cellspacing='0' border='0' width='98%'>";
 	echo "<tr>";
 
 	// Logo with link to index
 	echo "<td align='center' width='100%'>\n";
-	echo "<a href=\"".$HTMLRel."index.php\"><img src=\"".$HTMLRel."pics/logo-glpi.png\" alt=\"".$cfg_glpi["logotxt"]."\" title=\"\" ></a>\n";
+	echo "<a href=\"".$cfg_glpi["root_doc"]."/index.php\"><img src=\"".$cfg_glpi["root_doc"]."/pics/logo-glpi.png\" alt=\"".$cfg_glpi["logotxt"]."\" title=\"\" ></a>\n";
 	echo "</td>";
 
 
@@ -586,7 +585,7 @@ function popHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	global $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks,$HEADER_LOADED ;
+	global $cfg_glpi,$lang,$phproot,$plugin_hooks,$HEADER_LOADED ;
 
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
@@ -617,20 +616,20 @@ function popHeader($title,$url)
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
 	//  CSS link
-	echo "<link rel='stylesheet'  href='".$HTMLRel."css/styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."css/print.css' >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
+	echo "<link rel='stylesheet'  href='".$cfg_glpi["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$cfg_glpi["root_doc"]."/css/print.css' >";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$cfg_glpi["root_doc"]."/pics/favicon.ico' >";
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
 	// Some Javascript-Functions which we may need later
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$cfg_glpi["root_doc"]."/script.js'></script>";
 
 	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$HTMLRel."lib/calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/calendar/calendar-setup.js\"></script>";
+	echo "<style type=\"text/css\">@import url(".$cfg_glpi["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/lang/calendar-".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
 
 
 	// End of Head
@@ -919,7 +918,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
  */
 function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$item_type_output_param=0) {
 
-	global $cfg_glpi, $lang, $HTMLRel,$cfg_glpi;
+	global $cfg_glpi, $lang,$cfg_glpi;
 
 	// Forward is the next step forward
 	$forward = $start+$cfg_glpi["list_limit"];
@@ -952,13 +951,13 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 	if (!$start==0) {
 		echo "<th align='left'>";
 		echo "<a href=\"$target?$parameters&amp;start=0\">";
-		echo "<img src=\"".$HTMLRel."pics/first.png\" alt='".$lang["buttons"][33]."' title='".$lang["buttons"][33]."'>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/first.png\" alt='".$lang["buttons"][33]."' title='".$lang["buttons"][33]."'>";
 
 
 		echo "</a></th>\n";
 		echo "<th align='left'>";
 		echo "<a href=\"$target?$parameters&amp;start=$back\">";
-		echo "<img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'>";
 		echo "</a></th>\n";
 	}
 
@@ -992,7 +991,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 		echo "<option value='-2'>".$lang["buttons"][29]."</option>";
 		echo "<option value='-1'>".$lang["buttons"][30]."</option>";
 		echo "</select>";
-		echo "&nbsp;<input type='image' name='export'  src='".$HTMLRel."pics/export.png' title='".$lang["buttons"][31]."' value='".$lang["buttons"][31]."'>";
+		echo "&nbsp;<input type='image' name='export'  src='".$cfg_glpi["root_doc"]."/pics/export.png' title='".$lang["buttons"][31]."' value='".$lang["buttons"][31]."'>";
 		echo "</form>";
 		echo "</td>" ;
 	}
@@ -1006,11 +1005,11 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 	if ($forward<$numrows) {
 		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&amp;start=$forward\">";
-		echo "<img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'>";
 		echo "</a></th>\n";
 		echo "<th align='right'>";
 		echo "<a href=\"$target?$parameters&amp;start=$end\">";
-		echo "<img src=\"".$HTMLRel."pics/last.png\" alt='".$lang["buttons"][32]."' title='".$lang["buttons"][32]."'>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/last.png\" alt='".$lang["buttons"][32]."' title='".$lang["buttons"][32]."'>";
 		echo "</a></th>\n";
 	}
 
@@ -1032,7 +1031,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
  * @return nothing
  */
 function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0){
-	global $HTMLRel,$lang,$cfg_glpi;
+	global $lang,$cfg_glpi;
 	$rand=mt_rand();
 	if (empty($value)) {
 		if ($with_time) $value=date("Y-m-d H:i");
@@ -1045,9 +1044,9 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 	echo "<input id='data$rand' type='hidden' name='$element' size='$size' value=\"".$value."\">";
 
 	if ($withtemplate!=2){
-		echo "&nbsp;<img id='button$rand' src='".$HTMLRel."pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'>";
+		echo "&nbsp;<img id='button$rand' src='".$cfg_glpi["root_doc"]."/pics/calendar.png' class='calendrier' alt='".$lang["buttons"][15]."' title='".$lang["buttons"][15]."'>";
 
-		echo "&nbsp;<img src='".$HTMLRel."pics/reset.png' class='calendrier' onClick=\"document.getElementById('data$rand').value='0000-00-00';document.getElementById('show$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
+		echo "&nbsp;<img src='".$cfg_glpi["root_doc"]."/pics/reset.png' class='calendrier' onClick=\"document.getElementById('data$rand').value='0000-00-00';document.getElementById('show$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
 
 		echo "<script type='text/javascript'>";
 		echo "Calendar.setup(";
@@ -1087,7 +1086,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
  * @return nothing
  */
 function showNotesForm($target,$type,$id){
-	global $HTMLRel,$lang;
+	global $lang;
 
 	if (!haveRight("notes","r")) return false;
 	//new objet
@@ -1149,7 +1148,7 @@ function printCleanArray($tab,$pad=0){
  * @return nothing
  */
 function showCentralOnglets($target,$actif) {
-	global $lang, $HTMLRel,$plugin_hooks;
+	global $lang,$plugin_hooks;
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li ".($actif=="my"?"class='actif'":"")."><a href='$target?onglet=my'>".$lang["central"][12]."</a></li>";
 	if (haveRight("show_ticket","1")||haveRight("logs","r")||haveRight("contract_infocom","r"))

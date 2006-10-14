@@ -35,7 +35,7 @@
 
 
 function showGroupDevice($ID){
-	global $db,$cfg_glpi, $lang, $HTMLRel,$LINK_ID_TABLE,$INFOFORM_PAGES;
+	global $db,$cfg_glpi, $lang,$LINK_ID_TABLE,$INFOFORM_PAGES;
 
 	$ci=new CommonItem();
 	echo "<div align='center'><table class='tab_cadre'><tr><th>".$lang["common"][17]."</th><th>".$lang["common"][16]."</th></tr>";
@@ -59,7 +59,7 @@ function showGroupDevice($ID){
 }
 
 function showGroupUser($target,$ID){
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
 
@@ -136,7 +136,7 @@ function showGroupUser($target,$ID){
 	if ($canedit){
 		echo "<div align='center'>";
 		echo "<table cellpadding='5' width='80%'>";
-		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=all'>".$lang["buttons"][18]."</a></td>";
+		echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=all'>".$lang["buttons"][18]."</a></td>";
 
 		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=none'>".$lang["buttons"][19]."</a>";
 		echo "</td><td align='left' width='80%'>";

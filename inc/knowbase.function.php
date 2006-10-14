@@ -81,10 +81,10 @@ function searchFormKnowbase($target,$contains){
 function titleknowbase(){
 
 
-	global  $lang,$HTMLRel;
+	global  $lang,$cfg_glpi;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td>";
 	if (haveRight("faq","w")||haveRight("knowbase","w")){
 		echo "<td>";
 		echo "<a  class='icon_consol' href=\"knowbase.form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
@@ -110,7 +110,7 @@ function showKbItemForm($target,$ID){
 
 	// show kb item form
 
-	global  $lang,$HTMLRel,$cfg_glpi;
+	global  $lang,$cfg_glpi;
 	if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
 	$ki= new kbitem;	
 
@@ -127,8 +127,7 @@ function showKbItemForm($target,$ID){
 	}	
 	echo "<div align='center'>";
 	echo "<div id='contenukb'>";
-	//echo "<script type='text/javascript' language='javascript' src='".$HTMLRel."toolbar.js'></script>";
-	echo "<script type=\"text/javascript\" src=\"".$HTMLRel."lib/tiny_mce/tiny_mce_gzip.php\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/tiny_mce/tiny_mce_gzip.php\"></script>";
 	echo "<script language=\"javascript\" type=\"text/javascript\">";
 	echo "tinyMCE.init({	language : \"".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][5]."\",  mode : \"exact\",  elements: \"answer\", plugins : \"table\", theme : \"advanced\",  theme_advanced_toolbar_location : \"top\", theme_advanced_toolbar_align : \"left\",   theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent\", theme_advanced_buttons2 : \"forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator\",  theme_advanced_buttons3 : \"\"});";
 	echo "</script>";
@@ -221,7 +220,7 @@ function showKbItemForm($target,$ID){
  **/
 function kbItemMenu($ID)
 {
-	global $lang,$HTMLRel, $cfg_glpi;
+	global $lang, $cfg_glpi;
 
 	if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
 
@@ -250,16 +249,16 @@ function kbItemMenu($ID)
 	if ($editFAQ)
 		if($isFAQ == "yes")
 		{
-			echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqremove.png\" alt='".$lang["knowbase"][7]."' title='".$lang["knowbase"][7]."'></a></td>\n";
+			echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/faqremove.png\" alt='".$lang["knowbase"][7]."' title='".$lang["knowbase"][7]."'></a></td>\n";
 		}
 		else
 		{
-			echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqadd.png\" alt='".$lang["knowbase"][5]."' title='".$lang["knowbase"][5]."'></a></td>\n";
+			echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/faqadd.png\" alt='".$lang["knowbase"][5]."' title='".$lang["knowbase"][5]."'></a></td>\n";
 		}
 
 	if ($edit){
-		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqedit.png\" alt='".$lang["knowbase"][8]."' title='".$lang["knowbase"][8]."'></a></td>\n";
-		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes\"><img class='icon_nav' src=\"".$HTMLRel."pics/faqdelete.png\" alt='".$lang["knowbase"][9]."' title='".$lang["knowbase"][9]."'></a></td>";
+		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/faqedit.png\" alt='".$lang["knowbase"][8]."' title='".$lang["knowbase"][8]."'></a></td>\n";
+		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/faqdelete.png\" alt='".$lang["knowbase"][9]."' title='".$lang["knowbase"][9]."'></a></td>";
 	}
 	echo "</tr>\n";
 	echo "</table></div>\n";
@@ -309,7 +308,7 @@ function showKbCategories($parentID=0,$contains='')
 	// show kb catégories
 	// ok
 
-	global $db,$lang,$HTMLRel;
+	global $db,$lang,$cfg_glpi;
 
 	if (!haveRight("knowbase","r")) return false;
 
@@ -330,13 +329,13 @@ function showKbCategories($parentID=0,$contains='')
 				echo "<li><b>";
 				if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 				if ($_SESSION["kb_show"][$ID]=='Y')
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif' alt='down'></a>";
+					echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$cfg_glpi["root_doc"]."/pics/puce-down.gif' alt='down'></a>";
 				else 
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif' alt='up'></a>";
+					echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$cfg_glpi["root_doc"]."/pics/puce.gif' alt='up'></a>";
 
 				echo " ".$row["name"]."</b>\n";
 				if (!empty($row["comments"])){
-					echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
+					echo "<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
 					echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
 				}
 				if ($_SESSION["kb_show"][$ID]=='Y'){
@@ -648,7 +647,7 @@ function faqShowCategoriesall($target,$contains)
  **/
 function faqShowCategories($target,$parentID=0,$contains='')
 {
-	global $db,$HTMLRel,$lang;
+	global $db,$cfg_glpi,$lang;
 
 	$catNumbers = getFAQCategories();
 
@@ -674,14 +673,14 @@ function faqShowCategories($target,$parentID=0,$contains='')
 					echo "<li><b>";
 					if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 					if ($_SESSION["kb_show"][$ID]=='Y')
-						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
+						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;tohide=$ID\"><img src='".$cfg_glpi["root_doc"]."/pics/puce-down.gif'></a>";
 					else 
-						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
+						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$cfg_glpi["root_doc"]."/pics/puce.gif'></a>";
 
 					echo " ".$row["name"]."</b>\n";
 
 					if (!empty($row["comments"])){
-						echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
+						echo "<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
 						echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
 					}
 

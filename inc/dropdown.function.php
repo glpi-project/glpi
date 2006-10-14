@@ -70,7 +70,7 @@ function dropdown($table,$myname) {
  */
 function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 
-	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
+	global $cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
 
@@ -100,7 +100,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 	$nb=0;
 	if ($cfg_glpi["use_ajax"]){
@@ -148,7 +148,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 	}
 
 	if ($display_comments){
-		echo "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' $comments_display ";
+		echo "<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png' $comments_display ";
 		if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
 		echo ">";
 		echo $comments_display2;
@@ -232,7 +232,7 @@ function dropdownNoValue($table,$myname,$value) {
 function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdesk_ajax=0) {
 	// Make a select box with all glpi users
 
-	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
+	global $cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
 
@@ -250,7 +250,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 	$nb=0;
 	if ($cfg_glpi["use_ajax"])
@@ -272,7 +272,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
 	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
 	if ($display_comments) {
 		$comments_display="<a href='".$user["link"]."'>";
-		$comments_display.="<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
+		$comments_display.="<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
 		$comments_display.="</a>";
 		$comments_display.="<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
 	}
@@ -423,7 +423,7 @@ function getDropdownName($table,$id,$withcomments=0) {
  */
 
 function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
-	global $HTMLRel,$cfg_glpi,$lang,$phproot,$db;
+	global $cfg_glpi,$lang,$phproot,$db;
 
 	$rand=mt_rand();
 
@@ -441,7 +441,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 	$nb=0;
 	if ($cfg_glpi["use_ajax"])
@@ -460,7 +460,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	$default_display="<select name='$myname'><option value='$value'>".substr($user["name"],0,$cfg_glpi["dropdown_limit"])."</option></select>\n";
 	if ($display_comments) {
 		$comments_display="<a href='".$user["link"]."'>";
-		$comments_display.="<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
+		$comments_display.="<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
 		$comments_display.="</a>";
 		$comments_display.="<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
 	}
@@ -501,7 +501,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
  * @return nothing (print out an HTML select box)
  */
 function dropdownIcons($myname,$value,$store_path){
-	global $HTMLRel,$lang;
+	global $lang;
 	if (is_dir($store_path)){
 		if ($dh = opendir($store_path)) {
 			echo "<select name=\"$myname\">";
@@ -577,7 +577,7 @@ function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
  * @return nothing (print out an HTML select box)
  */
 function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
-	global $db,$lang,$HTMLRel,$cfg_glpi;
+	global $db,$lang,$cfg_glpi;
 
 	$items=array(
 			COMPUTER_TYPE=>"glpi_computers",
@@ -624,7 +624,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "</td><td>\n"	;
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 	echo "</td></tr></table>\n";
@@ -709,7 +709,7 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
  * @return nothing (print out an HTML select box)
  */
 function dropdownTrackingDeviceType($myname,$value,$userID=0){
-	global $lang,$HTMLRel,$cfg_glpi,$db,$LINK_ID_TABLE;
+	global $lang,$cfg_glpi,$db,$LINK_ID_TABLE;
 
 	$rand=mt_rand();
 
@@ -891,7 +891,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 			echo "</script>\n";
 
 
-			echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+			echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 			echo "<div align='center'>";
 			echo "<span id='results_$myname$rand'>\n";
@@ -930,7 +930,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 
 
-	global $HTMLRel,$cfg_glpi;
+	global $cfg_glpi;
 
 	$items=array(
 			COMPUTER_TYPE=>"glpi_computers",
@@ -956,7 +956,7 @@ function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
 	$nb=0;
 	if ($cfg_glpi["use_ajax"])
@@ -991,7 +991,7 @@ function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 function dropdownConnectPort($ID,$type,$myname) {
 
 
-	global $db,$lang,$HTMLRel,$cfg_glpi;
+	global $db,$lang,$cfg_glpi;
 
 	$items=array(
 			COMPUTER_TYPE=>"glpi_computers",
@@ -1024,7 +1024,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 
 	return $rand;
@@ -1040,7 +1040,7 @@ function dropdownConnectPort($ID,$type,$myname) {
  * @return nothing (print out an HTML select box)
  */
 function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
-	global $db,$lang,$HTMLRel,$cfg_glpi;
+	global $db,$lang,$cfg_glpi;
 
 	$rand=mt_rand();
 
@@ -1058,7 +1058,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>\n";
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
 
 	$nb=0;
@@ -1094,14 +1094,14 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
  * @return nothing (print out an HTML div)
  */
 function autocompletionTextField($myname,$table,$field,$value='',$size=20,$option=''){
-	global $HTMLRel,$cfg_glpi;
+	global $cfg_glpi;
 
 	if ($cfg_glpi["use_ajax"]&&$cfg_glpi["ajax_autocompletion"]){
 		$rand=mt_rand();
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".ereg_replace("\"","''",$value)."\" size='$size'>\n";
 		echo "<div id='textfieldupdate_$myname$rand' style='display:none;border:1px solid black;background-color:white;'></div>\n";
 		echo "<script type='text/javascript' language='javascript' charset='utf-8'>";
-		echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$HTMLRel."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
+		echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$cfg_glpi["root_doc"]."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
 		echo "</script>";
 	}	else {
 		echo "<input $option type='text' name='$myname' value=\"".ereg_replace("\"","''",$value)."\" size='$size'>\n";
@@ -1119,7 +1119,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
  * @return nothing (print out an HTML select box)
  */
 function device_selecter($target,$cID,$withtemplate='') {
-	global $lang,$HTMLRel,$cfg_glpi;
+	global $lang,$cfg_glpi;
 
 	if (!haveRight("computer","w")) return false;
 
@@ -1163,7 +1163,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "})})\n";
 		echo "</script>\n";
 
-		echo "<div id='search_spinner_device$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+		echo "<div id='search_spinner_device$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 		echo "<span id='showdevice$rand'>&nbsp;</span>\n";
 
 
@@ -1185,7 +1185,7 @@ function displaySearchTextAjaxDropdown($id){
 }
 
 function dropdownMassiveAction($device_type,$deleted){
-	global $lang,$HTMLRel,$cfg_glpi;
+	global $lang,$cfg_glpi;
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
@@ -1219,12 +1219,12 @@ function dropdownMassiveAction($device_type,$deleted){
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 
 function dropdownMassiveActionPorts(){
-	global $lang,$HTMLRel,$cfg_glpi;
+	global $lang,$cfg_glpi;
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
@@ -1245,19 +1245,19 @@ function dropdownMassiveActionPorts(){
 	echo "})})\n";
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 
 function globalManagementDropdown($target,$withtemplate,$ID,$value){
-	global $lang,$HTMLRel;	
+	global $lang;	
 
 	if ($value&&empty($withtemplate)) {
 		echo $lang["peripherals"][31];
 
 		echo "&nbsp;<a title=\"".$lang["common"][39]."\" href=\"javascript:confirmAction('".addslashes($lang["common"][40])."\\n".addslashes($lang["common"][39])."','$target?unglobalize=unglobalize&amp;ID=$ID')\">".$lang["common"][38]."</a>&nbsp;";	
 
-		echo "<img alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" src=\"".$HTMLRel."pics/aide.png\">";
+		echo "<img alt=\"".$lang["common"][39]."\" title=\"".$lang["common"][39]."\" src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\">";
 	} else {
 		echo "<select name='is_global'>";
 		echo "<option value='0' ".(!$value?" selected":"").">".$lang["peripherals"][32]."</option>";
