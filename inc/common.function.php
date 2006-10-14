@@ -246,7 +246,8 @@ function convDate($time) {
 function sendFile($file,$filename){
 	global $DB;
 
-	// Test s�urit�	if (ereg("\.\.",$file)){
+	// Test s�urit�	
+	if (ereg("\.\.",$file)){
 		session_start();
 		echo "Security attack !!!";
 		logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
