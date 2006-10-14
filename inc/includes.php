@@ -53,7 +53,7 @@ include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 include_once (GLPI_ROOT . "/inc/config.class.php");
 include_once (GLPI_ROOT . "/config/config.php");
 
-session_save_path($CFG_GLPI["doc_dir"]."/_sessions");
+session_save_path(GLPI_DOC_DIR."/_sessions");
 if(!session_id()){@session_start();}
 
 

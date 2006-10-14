@@ -223,7 +223,7 @@
 	
 
 
-	if(!file_exists($CFG_GLPI["config_dir"] . "/config_db.php")) {
+	if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 		nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
 		echo "<div align='center'>";
 		echo "<p>Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.</p><p>Please restart the install process.</p>";
@@ -235,13 +235,13 @@
 	else
 	{
 	
-		require_once ($CFG_GLPI["config_dir"] . "/config_db.php");
+		require_once (GLPI_CONFIG_DIR . "/config_db.php");
 		include (GLPI_ROOT."/lib/cache_lite/Lite.php");
 
 		$DB = new DB;
 
 		$cache_cfg_options = array(
-			'cacheDir' => $CFG_GLPI["doc_dir"]."/_cache/",
+			'cacheDir' => GLPI_DOC_DIR."/_cache/",
 			'lifeTime' => DEFAULT_CACHE_LIFETIME,
 			'pearErrorMode' => CACHE_LITE_ERROR_DIE,
 			'automaticSerialization' => true,

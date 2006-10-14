@@ -38,7 +38,7 @@
 define('GLPI_ROOT', '.');
 
 include (GLPI_ROOT . "/config/based_config.php");
-if(!file_exists($CFG_GLPI["config_dir"] . "/config_db.php")) {
+if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 	include (GLPI_ROOT . "/inc/common.function.php");
 	glpi_header("install/install.php");
 	die();
