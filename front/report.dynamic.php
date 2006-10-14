@@ -33,10 +33,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
 
 $NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stat","enterprise","device","state","document");
-include ($phproot . "/inc/includes.php");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
@@ -50,7 +51,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
 	// PDF case
 	if ($_GET["display_type"]==2){
-		include ($phproot . "/lib/ezpdf/class.ezpdf.php");
+		include (GLPI_ROOT . "/lib/ezpdf/class.ezpdf.php");
 	}
 
 	switch ($_GET["item_type"]){

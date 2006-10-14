@@ -33,11 +33,13 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+
 
 
 $NEEDED_ITEMS=array("contract","infocom","computer","printer","monitor","peripheral","networking","software","phone","stat");
-include ($phproot . "/inc/includes.php");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 

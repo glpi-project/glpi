@@ -31,9 +31,10 @@
   \brief affiche les diffents choix de rapports reseaux
 
  */
-include ("_relpos.php");
 
-include ($phproot . "/inc/includes.php");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 
 
