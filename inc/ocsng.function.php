@@ -547,13 +547,22 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
  *
  **/
 function getOcsConf($id) {
-	global $DB;
-	$query = "SELECT * 
-		FROM glpi_ocs_config 
-		WHERE ID='$id'";
-	$result = $DB->query($query);
-	if($result) return $DB->fetch_assoc($result);
-	else return 0;
+
+	
+	global $DB,$CACHE_CFG;
+
+	if ($data= $CACHE_CFG->get("CFG_OCSGLPI_$id","GLPI_CFG")) {
+		return $data;
+	} else {
+		$query = "SELECT * 
+			FROM glpi_ocs_config 
+			WHERE ID='$id'";
+		$result = $DB->query($query);
+		if($result) $data=$DB->fetch_assoc($result);
+		else $data=0;
+		$CACHE_CFG->save($data,"CFG_OCSGLPI_$id","GLPI_CFG");
+		return $data;
+	}
 }
 
 

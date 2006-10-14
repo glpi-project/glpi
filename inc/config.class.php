@@ -101,6 +101,10 @@ class ConfigOCS extends CommonDBTM {
 
 		return $input;
 	}
+	function post_updateItem($input,$updates,$history=1) {
+		global $CACHE_CFG;
+		$CACHE_CFG->remove("CFG_OCSGLPI_".$input["ID"],"GLPI_CFG");
+	}
 
 }
 
