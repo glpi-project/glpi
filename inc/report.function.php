@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')){
 
 
 /**
- * affiche un rapport personalisé a partir d'une requete $query
+ * affiche un rapport personalisï¿½a partir d'une requete $query
  * pour un type de materiel ($item_type)
  * 
  * Print out a report from a query ($query) for an item type ($item_type).
@@ -59,11 +59,11 @@ if (!defined('GLPI_ROOT')){
  * @return nothing (print out a report).
  */
 function report_perso($item_type,$query)
-	//affiche un rapport personalisé a partir d'une requete $query
+	//affiche un rapport personalisï¿½a partir d'une requete $query
 	//pour un type de materiel ($item_type) 
 {
 
-	GLOBAL $db,$cfg_glpi, $lang;
+	global $db,$cfg_glpi, $lang;
 
 	$result = $db->query($query);
 
@@ -358,7 +358,7 @@ function report_perso($item_type,$query)
 			}	
 			echo "</table></div><br><hr><br>";
 			break;
-			// Rapport réseau par lieu
+			// Rapport rï¿½eau par lieu
 		case 'glpi_networking_lieu' :
 			echo "<div align='center'><table class='tab_cadre_report'>";
 			echo "<tr> ";

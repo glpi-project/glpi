@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')){
 
 
 function titleTrackingPlanning(){
-	GLOBAL  $lang,$cfg_glpi;
+	global  $lang,$cfg_glpi;
 
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["planning"][3]."</span>";
@@ -702,7 +702,7 @@ function ShowPlanningCentral($who){
  **/      
 function urlIcal ($who) {
 
-	GLOBAL  $cfg_glpi, $lang;
+	global  $cfg_glpi, $lang;
 
 	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
 	echo "<br>";
@@ -752,7 +752,7 @@ function date_ical($date) {
  **/      
 function debutIcal($name) {
 
-	GLOBAL  $cfg_glpi, $lang;
+	global  $cfg_glpi, $lang;
 
 	$debut_cal = "BEGIN:VCALENDAR\n";
 	$debut_cal .= "VERSION:2.0\n";
@@ -781,7 +781,7 @@ function debutIcal($name) {
  **/      
 function generateIcal($who){
 
-	GLOBAL  $db,$cfg_glpi, $lang;
+	global  $db,$cfg_glpi, $lang;
 
 	// export job
 	$query="SELECT * from glpi_tracking_planning WHERE id_assign=$who";
