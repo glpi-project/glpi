@@ -289,125 +289,122 @@ class Netdevice extends CommonDBTM {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>\n";
 
-
-			echo "<tr><td class='tab_bg_1' valign='top'>\n";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-			echo "<tr><td>".$LANG["common"][16]."*:	</td>\n";
-			echo "<td>";
-			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE);
-			autocompletionTextField("name","glpi_networking","name",$objectName,20);
-			echo "</td></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["common"][15].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-			echo "</td></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["common"][21].":	</td><td>\n";
-			autocompletionTextField("contact_num","glpi_networking","contact_num",$this->fields["contact_num"],20);	
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["common"][18].":	</td><td>\n";
-			autocompletionTextField("contact","glpi_networking","contact",$this->fields["contact"],20);	
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
-			echo "</td></tr>";
-
-			if (!$template){
-				echo "<tr><td>".$LANG["reservation"][24].":</td><td><b>";
-				showReservationForm(NETWORKING_TYPE,$ID);
-				echo "</b></td></tr>";
+			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
+				echo "<tr><td class='tab_bg_1' valign='top'>\n";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+				echo "<tr><td>".$LANG["common"][16]."*:	</td>\n";
+				echo "<td>";
+				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE);
+				autocompletionTextField("name","glpi_networking","name",$objectName,20);
+				echo "</td></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
+				dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["common"][15].": 	</td><td>\n";
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
+				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["common"][21].":	</td><td>\n";
+				autocompletionTextField("contact_num","glpi_networking","contact_num",$this->fields["contact_num"],20);	
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["common"][18].":	</td><td>\n";
+				autocompletionTextField("contact","glpi_networking","contact",$this->fields["contact"],20);	
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
+				dropdownAllUsers("FK_users", $this->fields["FK_users"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
+				dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+				echo "</td></tr>";
+	
+				
+	
+	
+				echo "<tr><td>".$LANG["state"][0].":</td><td>\n";
+				$si=new StateItem();
+				$t=0;
+				if ($template) $t=1;
+				$si->getfromDB(NETWORKING_TYPE,$this->fields["ID"],$t);
+				dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+				echo "</td></tr>\n";
+	
+	
+				echo "</table>\n";
+	
+				echo "</td>\n";	
+				echo "<td class='tab_bg_1' valign='top'>\n";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+				echo "<tr><td>".$LANG["common"][17].": 	</td><td>\n";
+				dropdownValue("glpi_type_networking", "type", $this->fields["type"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
+				dropdownValue("glpi_dropdown_model_networking", "model", $this->fields["model"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["networking"][49].": 	</td><td>\n";
+				dropdownValue("glpi_dropdown_firmware", "firmware", $this->fields["firmware"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["networking"][5].":	</td><td>\n";
+				autocompletionTextField("ram","glpi_networking","ram",$this->fields["ram"],20);	
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["common"][19].":	</td><td>\n";
+				autocompletionTextField("serial","glpi_networking","serial",$this->fields["serial"],20);	
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["common"][20]."*:</td><td>\n";
+				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE);
+				autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,20);
+				//autocompletionTextField("otherserial","glpi_networking","otherserial",$this->fields["otherserial"],20);	
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["setup"][88].": 	</td><td>\n";
+				dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["setup"][89].": 	</td><td>\n";
+				dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["networking"][14].":</td><td>\n";
+				autocompletionTextField("ifaddr","glpi_networking","ifaddr",$this->fields["ifaddr"],20);	
+				echo "</td></tr>\n";
+	
+				echo "<tr><td>".$LANG["networking"][15].":</td><td>\n";
+				autocompletionTextField("ifmac","glpi_networking","ifmac",$this->fields["ifmac"],20);	
+				echo "</td></tr>\n";
+	
+				echo "</table>\n";
+	
+				echo "</td>\n";	
+				echo "</tr>\n";
+				echo "<tr>\n";
+				echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
+	
+				echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
+				echo $LANG["common"][25].":	</td>\n";
+				echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
+				echo "</td></tr></table>\n";
+	
+				echo "</td>";
+				echo "</tr>\n";
+				$CFG_GLPI["cache"]->end();
 			}
-
-
-			echo "<tr><td>".$LANG["state"][0].":</td><td>\n";
-			$si=new StateItem();
-			$t=0;
-			if ($template) $t=1;
-			$si->getfromDB(NETWORKING_TYPE,$this->fields["ID"],$t);
-			dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-			echo "</td></tr>\n";
-
-
-			echo "</table>\n";
-
-			echo "</td>\n";	
-			echo "<td class='tab_bg_1' valign='top'>\n";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-			echo "<tr><td>".$LANG["common"][17].": 	</td><td>\n";
-			dropdownValue("glpi_type_networking", "type", $this->fields["type"]);
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
-			dropdownValue("glpi_dropdown_model_networking", "model", $this->fields["model"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["networking"][49].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_firmware", "firmware", $this->fields["firmware"]);
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["networking"][5].":	</td><td>\n";
-			autocompletionTextField("ram","glpi_networking","ram",$this->fields["ram"],20);	
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["common"][19].":	</td><td>\n";
-			autocompletionTextField("serial","glpi_networking","serial",$this->fields["serial"],20);	
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["common"][20]."*:</td><td>\n";
-			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE);
-			autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,20);
-			//autocompletionTextField("otherserial","glpi_networking","otherserial",$this->fields["otherserial"],20);	
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["setup"][88].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["setup"][89].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["networking"][14].":</td><td>\n";
-			autocompletionTextField("ifaddr","glpi_networking","ifaddr",$this->fields["ifaddr"],20);	
-			echo "</td></tr>\n";
-
-			echo "<tr><td>".$LANG["networking"][15].":</td><td>\n";
-			autocompletionTextField("ifmac","glpi_networking","ifmac",$this->fields["ifmac"],20);	
-			echo "</td></tr>\n";
-
-			echo "</table>\n";
-
-			echo "</td>\n";	
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
-
-			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
-			echo $LANG["common"][25].":	</td>\n";
-			echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
-			echo "</td></tr></table>\n";
-
-			echo "</td>";
-			echo "</tr>\n";
-
 
 			if (haveRight("networking","w")) {
 				echo "<tr>\n";

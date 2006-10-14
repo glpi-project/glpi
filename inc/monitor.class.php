@@ -254,154 +254,149 @@ class Monitor extends CommonDBTM {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>";
 
-
-			echo "<tr><td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-			echo "<tr><td>".$LANG["common"][16]."*:	</td>";
-			echo "<td>";
-			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), MONITOR_TYPE);
-			autocompletionTextField("name","glpi_monitors","name",$objectName,20);
-
-			//autocompletionTextField("name","glpi_monitors","name",$this->fields["name"],20);	
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][15].": 	</td><td>";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
-			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][21].":	</td>";
-			echo "<td>";
-			autocompletionTextField("contact_num","glpi_monitors","contact_num",$this->fields["contact_num"],20);	
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][18].":	</td><td>";
-			autocompletionTextField("contact","glpi_monitors","contact",$this->fields["contact"],20);	
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["state"][0].":</td><td>";
-			$si=new StateItem();
-			$t=0;
-			if ($template) $t=1;
-			$si->getfromDB(MONITOR_TYPE,$this->fields["ID"],$t);
-			dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-			echo "</td></tr>";
-
-			if (!$template){
-				echo "<tr><td>".$LANG["reservation"][24].":</td><td><b>";
-				showReservationForm(MONITOR_TYPE,$ID);
-				echo "</b></td></tr>";
+			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
+				echo "<tr><td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+				echo "<tr><td>".$LANG["common"][16]."*:	</td>";
+				echo "<td>";
+				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), MONITOR_TYPE);
+				autocompletionTextField("name","glpi_monitors","name",$objectName,20);
+	
+				//autocompletionTextField("name","glpi_monitors","name",$this->fields["name"],20);	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][15].": 	</td><td>";
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>";
+				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
+				dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][21].":	</td>";
+				echo "<td>";
+				autocompletionTextField("contact_num","glpi_monitors","contact_num",$this->fields["contact_num"],20);	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][18].":	</td><td>";
+				autocompletionTextField("contact","glpi_monitors","contact",$this->fields["contact"],20);	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
+				dropdownAllUsers("FK_users", $this->fields["FK_users"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
+				dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["state"][0].":</td><td>";
+				$si=new StateItem();
+				$t=0;
+				if ($template) $t=1;
+				$si->getfromDB(MONITOR_TYPE,$this->fields["ID"],$t);
+				dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+				echo "</td></tr>";
+				
+				echo "</table>";
+	
+				echo "</td>\n";	
+				echo "<td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'";
+	
+	
+				echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
+				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
+				dropdownValue("glpi_type_monitors", "type", $this->fields["type"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
+				dropdownValue("glpi_dropdown_model_monitors", "model", $this->fields["model"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][19].":	</td><td>";
+				autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],20);	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
+				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), MONITOR_TYPE);
+				autocompletionTextField("otherserial","glpi_monitors","otherserial",$objectName,20);
+	
+				//autocompletionTextField("otherserial","glpi_monitors","otherserial",$this->fields["otherserial"],20);	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["monitors"][21].":</td>";
+				echo "<td>";
+				autocompletionTextField("size","glpi_monitors","size",$this->fields["size"],2);	
+				echo "\"</td></tr>";
+	
+				echo "<tr><td>".$LANG["monitors"][18].": </td><td>";
+	
+				// micro?
+				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+				echo "<td>".$LANG["monitors"][14]."</td>";
+				echo "<td>";
+				dropdownYesNoInt("flags_micro",$this->fields["flags_micro"]);
+				echo "</td>";
+	
+				// speakers?
+				echo "<td>".$LANG["monitors"][15]."</td>";
+				echo "<td>";
+				dropdownYesNoInt("flags_speaker",$this->fields["flags_speaker"]);
+				echo "</td>";
+				echo "</tr><tr>";
+	
+				// sub-d?
+				echo "<td>".$LANG["monitors"][19]."</td>";
+				echo "<td>";
+				dropdownYesNoInt("flags_subd",$this->fields["flags_subd"]);
+				echo "</td>";
+	
+				// bnc?
+				echo "<td>".$LANG["monitors"][20]."</td>";
+				echo "<td>";
+				dropdownYesNoInt("flags_bnc",$this->fields["flags_bnc"]);
+				echo "</td>";
+	
+				echo "</tr><tr>";
+	
+				// dvi?
+				echo "<td>".$LANG["monitors"][32]."</td>";
+				echo "<td>";
+				dropdownYesNoInt("flags_dvi",$this->fields["flags_dvi"]);
+				echo "</td>";
+	
+				echo "<td>&nbsp;</td><td>&nbsp;</td>";
+				echo "</tr></table>";
+	
+	
+				echo "</td></tr>";
+	
+				echo "</table>";
+				echo "</td>\n";	
+				echo "</tr>";
+				echo "<tr>";
+				echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+	
+				echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr></table>";
+	
+				echo "</td>";
+				echo "</tr>";
+				$CFG_GLPI["cache"]->end();
 			}
-
-			echo "</table>";
-
-			echo "</td>\n";	
-			echo "<td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'";
-
-
-			echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
-			globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
-			dropdownValue("glpi_type_monitors", "type", $this->fields["type"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
-			dropdownValue("glpi_dropdown_model_monitors", "model", $this->fields["model"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][19].":	</td><td>";
-			autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],20);	
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
-			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), MONITOR_TYPE);
-			autocompletionTextField("otherserial","glpi_monitors","otherserial",$objectName,20);
-
-			//autocompletionTextField("otherserial","glpi_monitors","otherserial",$this->fields["otherserial"],20);	
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["monitors"][21].":</td>";
-			echo "<td>";
-			autocompletionTextField("size","glpi_monitors","size",$this->fields["size"],2);	
-			echo "\"</td></tr>";
-
-			echo "<tr><td>".$LANG["monitors"][18].": </td><td>";
-
-			// micro?
-			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
-			echo "<td>".$LANG["monitors"][14]."</td>";
-			echo "<td>";
-			dropdownYesNoInt("flags_micro",$this->fields["flags_micro"]);
-			echo "</td>";
-
-			// speakers?
-			echo "<td>".$LANG["monitors"][15]."</td>";
-			echo "<td>";
-			dropdownYesNoInt("flags_speaker",$this->fields["flags_speaker"]);
-			echo "</td>";
-			echo "</tr><tr>";
-
-			// sub-d?
-			echo "<td>".$LANG["monitors"][19]."</td>";
-			echo "<td>";
-			dropdownYesNoInt("flags_subd",$this->fields["flags_subd"]);
-			echo "</td>";
-
-			// bnc?
-			echo "<td>".$LANG["monitors"][20]."</td>";
-			echo "<td>";
-			dropdownYesNoInt("flags_bnc",$this->fields["flags_bnc"]);
-			echo "</td>";
-
-			echo "</tr><tr>";
-
-			// dvi?
-			echo "<td>".$LANG["monitors"][32]."</td>";
-			echo "<td>";
-			dropdownYesNoInt("flags_dvi",$this->fields["flags_dvi"]);
-			echo "</td>";
-
-			echo "<td>&nbsp;</td><td>&nbsp;</td>";
-			echo "</tr></table>";
-
-
-			echo "</td></tr>";
-
-			echo "</table>";
-			echo "</td>\n";	
-			echo "</tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_1' valign='top' colspan='2'>";
-
-			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-			echo $LANG["common"][25].":	</td>";
-			echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr></table>";
-
-			echo "</td>";
-			echo "</tr>";
-
 
 			if (haveRight("monitor","w")){
 

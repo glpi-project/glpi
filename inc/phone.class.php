@@ -280,6 +280,7 @@ class Phone extends CommonDBTM {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>";
 
+			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
 			echo "<tr><td class='tab_bg_1' valign='top'>";
 
 			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
@@ -316,12 +317,7 @@ class Phone extends CommonDBTM {
 			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
 			echo "</td></tr>";
 
-			if (!$template){
-				echo "<tr><td>".$LANG["reservation"][24].":</td><td><b>";
-				showReservationForm(PHONE_TYPE,$ID);
-				echo "</b></td></tr>";
-			}
-
+			
 
 			echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
 			dropdownValue("glpi_type_phones", "type", $this->fields["type"]);
@@ -420,6 +416,10 @@ class Phone extends CommonDBTM {
 
 			echo "</td>";
 			echo "</tr>";
+
+			$CFG_GLPI["cache"]->end();
+			}
+		
 
 			if (haveRight("phone","w")){
 				echo "<tr>";
