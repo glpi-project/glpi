@@ -34,18 +34,19 @@
 // ----------------------------------------------------------------------
 
 
-include ("_relpos.php");
-$AJAX_INCLUDE=1;
-$NEEDED_ITEMS=array("profile");
-include ($phproot."/inc/includes.php");
+	define('GLPI_ROOT','..');
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-checkRight("profile","r");
-$prof=new Profile();
-if ($_POST["interface"]=="helpdesk")
-$prof->showHelpdeskForm($_POST["ID"]);
-else if ($_POST["interface"]=="central")
-$prof->showCentralForm($_POST["ID"]);
+	$AJAX_INCLUDE=1;
+	$NEEDED_ITEMS=array("profile");
+	include (GLPI_ROOT."/inc/includes.php");
+	
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+	
+	checkRight("profile","r");
+	$prof=new Profile();
+	if ($_POST["interface"]=="helpdesk")
+	$prof->showHelpdeskForm($_POST["ID"]);
+	else if ($_POST["interface"]=="central")
+	$prof->showCentralForm($_POST["ID"]);
 ?>

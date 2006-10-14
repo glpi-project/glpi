@@ -33,18 +33,19 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-$AJAX_INCLUDE=1;
-include ($phproot."/inc/includes.php");
+	define('GLPI_ROOT','..');
 
-// Send UTF8 Headers
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-checkLoginUser();
-
-echo "<textarea rows='".$_POST['rows']."' cols='".$_POST['cols']."' name='".$_POST['name']."'>";
-echo stripslashes(urldecode($_POST["data"]));
-echo "</textarea>";
+	$AJAX_INCLUDE=1;
+	include (GLPI_ROOT."/inc/includes.php");
+	
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+	
+	checkLoginUser();
+	
+	echo "<textarea rows='".$_POST['rows']."' cols='".$_POST['cols']."' name='".$_POST['name']."'>";
+	echo stripslashes(urldecode($_POST["data"]));
+	echo "</textarea>";
 
 ?>

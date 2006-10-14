@@ -35,12 +35,16 @@
 
 // Direct access to file
 if(ereg("dropdownUsers.php",$_SERVER['PHP_SELF'])){
-	include ("_relpos.php");
+	define('GLPI_ROOT','..');
 	$AJAX_INCLUDE=1;
-	include ($phproot."/inc/includes.php");
+	include (GLPI_ROOT."/inc/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 }
+if (!defined('GLPI_ROOT')){
+	die("Can not acces directly to this file");
+	}
+
 checkCentralAccess();
 // Make a select box with all glpi users
 

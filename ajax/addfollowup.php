@@ -34,9 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-if (!defined('GLPI_ROOT')){
-	define('GLPI_ROOT','..');
-	}
+define('GLPI_ROOT','..');
 
 $AJAX_INCLUDE=1;
 $NEEDED_ITEMS=array("tracking");
