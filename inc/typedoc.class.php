@@ -58,9 +58,9 @@ class Typedoc  extends CommonDBTM {
 	}
 
 	function title(){
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td>";
 		if (haveRight("typedoc","w")){
 			echo "<td><a  class='icon_consol' href=\"typedoc.form.php\"><b>".$lang["document"][12]."</b></a>";
 			echo "</td>";
@@ -72,7 +72,7 @@ class Typedoc  extends CommonDBTM {
 
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang,$HTMLRel,$phproot;
+		global $cfg_glpi, $lang,$phproot;
 
 		if (!haveRight("typedoc","r")) return false;
 
@@ -111,8 +111,8 @@ class Typedoc  extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$lang["document"][10].":	</td><td>";
-			dropdownIcons("icon",$this->fields["icon"],$phproot."/".$cfg_glpi["typedoc_icon_dir"]);
-			if (!empty($this->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
+			dropdownIcons("icon",$this->fields["icon"],$cfg_glpi["typedoc_icon_dir"]);
+			if (!empty($this->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$cfg_glpi["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":	</td><td>";

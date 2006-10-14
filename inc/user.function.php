@@ -175,7 +175,7 @@ function useAuthExt(){
  * @return nothing
  */
 function showUsersTitle($target,$actif) {
-	global $lang, $HTMLRel;
+	global $lang;
 
 	echo "<div align='center'><table border='0'><tr>";
 	echo "<td><a  class='icon_consol' href='".$target."&amp;onglet=tracking'><strong>".$lang["title"][24]."</strong></a>";
@@ -185,7 +185,7 @@ function showUsersTitle($target,$actif) {
 }
 
 function showDeviceUser($ID){
-	global $db,$cfg_glpi, $lang, $HTMLRel,$LINK_ID_TABLE,$INFOFORM_PAGES;
+	global $db,$cfg_glpi, $lang, $LINK_ID_TABLE,$INFOFORM_PAGES;
 
 	$group_where="";
 	$groups=array();
@@ -228,7 +228,7 @@ function showDeviceUser($ID){
 }
 
 function showGroupAssociated($target,$ID){
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
 
@@ -293,7 +293,7 @@ function showGroupAssociated($target,$ID){
 	if ($canedit){
 		echo "<div align='center'>";
 		echo "<table cellpadding='5' width='80%'>";
-		echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=all'>".$lang["buttons"][18]."</a></td>";
+		echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=all'>".$lang["buttons"][18]."</a></td>";
 
 		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=none'>".$lang["buttons"][19]."</a>";
 		echo "</td><td align='left' width='80%'>";

@@ -163,14 +163,14 @@ class Software  extends CommonDBTM {
 
 	function title(){
 
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td>\n";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td>\n";
 		if (haveRight("software","w")){
-			echo "<td><a class='icon_consol' href=\"".$HTMLRel."front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
+			echo "<td><a class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
 			echo "</td>";
-			echo "<td><a class='icon_consol'  href='".$HTMLRel."front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+			echo "<td><a class='icon_consol'  href='".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
 		} else 
 			echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][4]."</b></span></td>";
 		echo "</tr></table></div>";

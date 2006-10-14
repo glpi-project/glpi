@@ -38,10 +38,10 @@
 
 
 function titleTracking(){
-	global  $lang,$HTMLRel;
+	global  $lang,$cfg_glpi;
 	// titre
 	echo "<div align='center'><table border='0'><tr><td>\n";
-	echo "<img src=\"".$HTMLRel."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_sous_nav'>".$lang["tracking"][0]."</span>\n";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_sous_nav'>".$lang["tracking"][0]."</span>\n";
 	echo "</td></tr></table>&nbsp;</div>\n";
 
 }
@@ -57,7 +57,7 @@ function titleTracking(){
  *
  **/
 function showTrackingOnglets($target){
-	global $lang,$HTMLRel,$cfg_glpi;
+	global $lang,$cfg_glpi;
 
 	if (preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 		$ID=$ereg[1];
@@ -88,8 +88,8 @@ function showTrackingOnglets($target){
 				$next=getNextItem("glpi_tracking",$ID);
 				$prev=getPreviousItem("glpi_tracking",$ID);
 				$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
+				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
 			}
 		}elseif (haveRight("comment_ticket","1")){
 
@@ -171,7 +171,7 @@ function showCentralJobList($target,$start,$status="process") {
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("show_ticket","1")) return false;
 
@@ -229,7 +229,7 @@ function showCentralJobList($target,$start,$status="process") {
 function showCentralJobCount(){
 	// show a tab with count of jobs in the central and give link	
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("show_ticket","1")) return false;	
 
@@ -279,7 +279,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 	// affiche toutes les vielles intervention pour un $item donn� 
 
 
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("show_ticket","1")) return false;
 	$candelete=haveRight("delete_ticket","1");
@@ -323,7 +323,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 			echo "<br><div align='center'>";
 
 			echo "<table class ='delete-old-job' cellpadding='5' width='950'>";
-			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt='' ></td><td><a  onclick= \"if ( markAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all&amp;ID=$item'>".$lang["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt='' ></td><td><a  onclick= \"if ( markAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all&amp;ID=$item'>".$lang["buttons"][18]."</a></td>";
 
 			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
 			echo "</td><td>";
@@ -416,7 +416,7 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
 
-	global $cfg_glpi, $lang, $HTMLRel;
+	global $cfg_glpi, $lang;
 
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
@@ -438,7 +438,7 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// First column
 		$first_col= "ID: ".$job->fields["ID"];
 		if ($output_type==HTML_OUTPUT)
-			$first_col.="<br><img src=\"".$HTMLRel."pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
+			$first_col.="<br><img src=\"".$cfg_glpi["root_doc"]."/pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
 		else $first_col.=" - ".getStatusName($job->fields["status"]);
 
 		if ($candelete&&$output_type==HTML_OUTPUT&&ereg("old_",$job->fields["status"])){
@@ -853,7 +853,7 @@ function getRealtime($realtime){
 
 function searchSimpleFormTracking($target,$status="all"){
 
-global $cfg_glpi,  $lang,$HTMLRel,$phproot;
+global $cfg_glpi,  $lang,$phproot;
 
 
 	echo "<div align='center' >";
@@ -890,7 +890,7 @@ global $cfg_glpi,  $lang,$HTMLRel,$phproot;
 function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 
-	global $cfg_glpi,  $lang,$HTMLRel,$phproot;
+	global $cfg_glpi,  $lang,$phproot;
 
 	if (!haveRight("show_ticket","1")) {
 		if ($author==0&&$assign==0)
@@ -935,8 +935,8 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 	echo "<tr><th colspan='6' style='vertical-align:middle' ><div style='position: relative'><span><strong>".$lang["search"][0]."</strong></span>";
 	if ($extended)
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=0'><img src=\"".$HTMLRel."pics/deplier_up.png\" alt=''>".$lang["buttons"][36]."</a></span>";
-	else echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$HTMLRel."pics/deplier_down.png\" alt=''>".$lang["buttons"][35]."</a></span>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=0'><img src=\"".$cfg_glpi["root_doc"]."/pics/deplier_up.png\" alt=''>".$lang["buttons"][36]."</a></span>";
+	else echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$cfg_glpi["root_doc"]."/pics/deplier_down.png\" alt=''>".$lang["buttons"][35]."</a></span>";
 	echo "</div></th></tr>";
 
 
@@ -1077,7 +1077,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	// group = -1 : groups of the author if session variable OK
 	// group > 0 : specific group
 
-	global $db,$cfg_glpi, $lang,$HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	$candelete=haveRight("delete_ticket","1");
 	if (!haveRight("show_ticket","1")) {
@@ -1359,7 +1359,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			if ($candelete&&$output_type==HTML_OUTPUT&&($status=="old"||$status=="all"||ereg("old_",$status))){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='900'>";
-				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
 
 				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
 				echo "</td><td>";
@@ -1559,7 +1559,7 @@ function getStatusName($value){
 
 
 function showJobDetails ($target,$ID){
-	global $db,$cfg_glpi,$lang,$HTMLRel;
+	global $db,$cfg_glpi,$lang;
 	$job=new Job();
 
 	$canupdate=haveRight("update_ticket","1");
@@ -1805,7 +1805,7 @@ function showJobDetails ($target,$ID){
 				autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15);
 
 				if (!empty($job->fields["uemail"]))
-					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$HTMLRel."pics/edit.png' alt='Mail'></a>";
+					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$cfg_glpi["root_doc"]."/pics/edit.png' alt='Mail'></a>";
 			} else if (!empty($job->fields["uemail"]))
 				echo "<a href='mailto:".$job->fields["uemail"]."'>".$job->fields["uemail"]."</a>";
 			else echo "&nbsp;";
@@ -1831,7 +1831,7 @@ function showJobDetails ($target,$ID){
 				echo "<tr><td>";
 				echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
 				if (haveRight("document","w"))
-					echo "<a href='".$HTMLRel."front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$HTMLRel."pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
+					echo "<a href='".$cfg_glpi["root_doc"]."/front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$cfg_glpi["root_doc"]."/pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
 				echo "</td></tr>";
 			}
 		}
@@ -1880,7 +1880,7 @@ function showJobDetails ($target,$ID){
 }
 
 function showFollowupsSummary($tID){
-	global $db,$lang,$cfg_glpi,$HTMLRel;
+	global $db,$lang,$cfg_glpi;
 
 
 	if (!haveRight("observe_ticket","1")&&!haveRight("show_full_ticket","1")) return false;
@@ -1969,7 +1969,7 @@ function showFollowupsSummary($tID){
 
 // Formulaire d'ajout de followup
 function showAddFollowupForm($tID){
-	global $db,$lang,$cfg_glpi,$HTMLRel;
+	global $db,$lang,$cfg_glpi;
 
 	$job=new Job;
 	$job->getFromDB($tID);
@@ -2080,7 +2080,7 @@ function showAddFollowupForm($tID){
 
 // Formulaire d'ajout de followup
 function showUpdateFollowupForm($ID){
-	global $db,$lang,$cfg_glpi,$HTMLRel;
+	global $db,$lang,$cfg_glpi;
 
 	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
 
@@ -2169,13 +2169,13 @@ function showUpdateFollowupForm($ID){
 		$result2=$db->query($query2);
 		if ($db->numrows($result2)==0)
 			if ($commentall)
-				echo "<a href='".$HTMLRel."front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$lang["buttons"][8]."</a>";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$lang["buttons"][8]."</a>";
 			else echo $lang["job"][32];	
 		else {
 			$data2=$db->fetch_array($result2);
 			echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
 			if ($commentall)
-				echo "<a href='".$HTMLRel."front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$HTMLRel."pics/edit.png'></a>";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$cfg_glpi["root_doc"]."/pics/edit.png'></a>";
 
 		}
 

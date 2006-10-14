@@ -38,14 +38,14 @@
 
 
 function titleState(){
-	global  $lang,$HTMLRel;
+	global  $lang,$cfg_glpi;
 
 
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/status.png\" alt='' title=''></td><td><b><a class='icon_consol' href='".$HTMLRel."front/state.php?synthese=no'>".$lang["state"][1]."</a>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/status.png\" alt='' title=''></td><td><b><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/state.php?synthese=no'>".$lang["state"][1]."</a>";
 	echo "</b></td>";
-	echo "<td><a class='icon_consol' href='".$HTMLRel."front/state.php?synthese=yes'>".$lang["state"][11]."</a></td>";
+	echo "<td><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/state.php?synthese=yes'>".$lang["state"][11]."</a></td>";
 	echo "</tr></table></div>";
 
 
@@ -101,7 +101,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$state){
 	// Lists Reservation Items
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	$state_type=$cfg_glpi["state_type"];
 

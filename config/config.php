@@ -281,8 +281,6 @@ else
 	{
 		$cfg_glpi=array_merge($cfg_glpi,$config_object->fields);
 
-		// Path for icon of document type
-		$cfg_glpi["typedoc_icon_dir"] = "pics/icones";
 
 
 		if ( !isset($_SERVER['REQUEST_URI']) ) {
@@ -295,6 +293,11 @@ else
 		$globaldir=preg_replace("/\?.*/","",$globaldir);
 		$cfg_glpi["root_doc"]=str_replace($glpidir,"",$globaldir);
 		$cfg_glpi["root_doc"]=preg_replace("/\/$/","",$cfg_glpi["root_doc"]);
+
+
+		// Path for icon of document type
+		$cfg_glpi["typedoc_icon_dir"] = $cfg_glpi["root_doc"]."/pics/icones";
+
 
 		// *************************** Mode NORMAL / TRALATION /DEBUG  **********************
 		// *********************************************************************************

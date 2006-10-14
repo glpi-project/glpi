@@ -38,7 +38,7 @@
 
 function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='',$type='') {
 
-	global $cfg_glpi, $lang, $HTMLRel;
+	global $cfg_glpi, $lang;
 
 	if (!haveRight("dropdown","w")) return false;
 
@@ -56,7 +56,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0);
 		// on ajoute un input text pour entrer la valeur modifier
-		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
+		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"".$cfg_glpi["root_doc"]."/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
 
 		echo "<input type='text' maxlength='100' size='20' name='value' value=\"".$value["name"]."\"><br>";
@@ -124,7 +124,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
-	global $db,$cfg_glpi, $lang, $HTMLRel;
+	global $db,$cfg_glpi, $lang;
 
 	if (!haveRight("dropdown","w")) return false;
 
@@ -139,9 +139,8 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0);
 		// on ajoute un input text pour entrer la valeur modifier
-		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
+		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"".$cfg_glpi["root_doc"]."/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
-		//        echo "<img src=\"".$HTMLRel."pics/puce.gif\" alt='' title=''>";
 		if ($name != "netpoint"){
 			if (!empty($ID)){
 				$value=getDropdownName("glpi_dropdown_".$name,$ID,1);
@@ -238,7 +237,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 function showFormTypeDown ($target,$name,$human,$ID) {
 
-	global $cfg_glpi, $lang, $HTMLRel;
+	global $cfg_glpi, $lang;
 
 	if (!haveRight("dropdown","w")) return false;	
 
@@ -254,7 +253,7 @@ function showFormTypeDown ($target,$name,$human,$ID) {
 
 		dropdownValue("glpi_type_".$name, "ID",$ID,0);
 		// on ajoute un input text pour entrer la valeur modifier
-		echo "&nbsp;&nbsp;<input type='image' class='calendrier' src=\"".$HTMLRel."pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
+		echo "&nbsp;&nbsp;<input type='image' class='calendrier' src=\"".$cfg_glpi["root_doc"]."/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
 		if (!empty($ID))
 			$value=getDropdownName("glpi_type_".$name,$ID,1);
@@ -1015,10 +1014,10 @@ function listTemplates($type,$target,$add=0) {
 
 function titleConfigGen(){
 
-	global  $lang,$HTMLRel;
+	global  $lang,$cfg_glpi;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][70]."</span>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][70]."</span>";
 	echo "</b></td></tr></table>&nbsp;</div>";
 
 
@@ -1026,10 +1025,10 @@ function titleConfigGen(){
 
 function titleConfigDisplay(){
 
-	global  $lang,$HTMLRel;
+	global  $lang,$cfg_glpi;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][119]."</span>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["setup"][119]."</span>";
 	echo "</b></td></tr></table>&nbsp;</div>";
 
 
@@ -1037,7 +1036,7 @@ function titleConfigDisplay(){
 
 function showFormConfigGen($target){
 
-	global  $db,$lang,$HTMLRel,$cfg_glpi;
+	global  $db,$lang,$cfg_glpi;
 
 	if (!haveRight("config","w")) return false;	
 
@@ -1155,7 +1154,7 @@ function showFormConfigGen($target){
 
 function showFormConfigDisplay($target){
 
-	global $db, $lang,$HTMLRel,$cfg_glpi;
+	global $db, $lang,$cfg_glpi;
 
 	if (!haveRight("config","w")) return false;	
 
@@ -1288,9 +1287,9 @@ function showFormConfigDisplay($target){
 function titleExtAuth(){
 	// Un titre pour la gestion des sources externes
 
-	global  $lang,$HTMLRel;
+	global  $lang,$cfg_glpi;
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/authentification.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][150]."</span>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/authentification.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][150]."</span>";
 	echo "</td></tr></table>&nbsp;</div>";
 
 }
@@ -1367,7 +1366,7 @@ function constructIMAPAuthServer($input){
 
 function showFormExtAuth($target) {
 
-	global  $db,$lang,$HTMLRel,$cfg_glpi;
+	global  $db,$lang,$cfg_glpi;
 
 	if (!haveRight("config","w")) return false;	
 
@@ -1491,9 +1490,9 @@ function showFormExtAuth($target) {
 function titleMailing(){
 	// Un titre pour la gestion du suivi par mail
 
-	global  $lang,$HTMLRel;
+	global  $lang,$cfg_glpi;
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$HTMLRel."pics/mail.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][200]."</span>";
+	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/mail.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$lang["setup"][200]."</span>";
 	echo "</td></tr></table></div>";
 }
 

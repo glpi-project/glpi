@@ -109,7 +109,7 @@ function manageGetValuesInSearch($type=0){
  *
  **/
 function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link="",$distinct="Y",$link2="",$contains2="",$field2="",$type2=""){
-	global $lang,$HTMLRel,$SEARCH_OPTION,$cfg_glpi,$LINK_ID_TABLE;
+	global $lang,$SEARCH_OPTION,$cfg_glpi,$LINK_ID_TABLE;
 	$options=$SEARCH_OPTION[$type];
 
 
@@ -136,14 +136,14 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo "<tr><td align='right'>";
 		// First line display add / delete images for normal and meta search items
 		if ($i==0){
-			echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$HTMLRel."pics/plus.png\" alt='+' title='".$lang["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$cfg_glpi["root_doc"]."/pics/plus.png\" alt='+' title='".$lang["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"][$type]>1)
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?delete_search_count=1&amp;type=$type'><img src=\"".$HTMLRel."pics/moins.png\" alt='-' title='".$lang["search"][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?delete_search_count=1&amp;type=$type'><img src=\"".$cfg_glpi["root_doc"]."/pics/moins.png\" alt='-' title='".$lang["search"][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
 			if (isset($names[$type])){
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?add_search_count2=1&amp;type=$type'><img src=\"".$HTMLRel."pics/meta_plus.png\" alt='+' title='".$lang["search"][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?add_search_count2=1&amp;type=$type'><img src=\"".$cfg_glpi["root_doc"]."/pics/meta_plus.png\" alt='+' title='".$lang["search"][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 				if ($_SESSION["glpisearchcount2"][$type]>0)
-					echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?delete_search_count2=1&amp;type=$type'><img src=\"".$HTMLRel."pics/meta_moins.png\" alt='-' title='".$lang["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+					echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?delete_search_count2=1&amp;type=$type'><img src=\"".$cfg_glpi["root_doc"]."/pics/meta_moins.png\" alt='-' title='".$lang["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
 		// Display link item
@@ -326,21 +326,14 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">".$lang["choice"][1]."</option>";
 		echo "<option value='N' ".($deleted=='N'?" selected ":"").">".$lang["choice"][0]."</option>";
 		echo "</select>";
-		echo "<img src=\"".$HTMLRel."pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
 		//echo "</td></tr>";
 	}
 
-	/*	echo "<tr><td><select name='distinct'>";
-		echo "<option value='Y' ".($distinct=='Y'?" selected ":"").">".$lang["choice"][1]."</option>";
-		echo "<option value='N' ".($distinct=='N'?" selected ":"").">".$lang["choice"][0]."</option>";
-		echo "</select>";
-		echo "<img src=\"".$HTMLRel."pics/doublons.png\" alt='".$lang["common"][12]."' title='".$lang["common"][12]."'>";
-		echo "</td></tr></table>";
-	 */
 	echo "</td>";
 	// Display Reset search
 	echo "<td>";
-	echo "<a href='".$HTMLRel."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$HTMLRel."pics/reset.png' class='calendrier'></a>";
+	echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$cfg_glpi["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 	echo "</td>";
 	// Display submit button
 	echo "<td width='80' align='center' class='tab_bg_2'>";
@@ -377,7 +370,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
  *
  **/
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
-	global $db,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$HTMLRel,$cfg_glpi,$lang;
+	global $db,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$cfg_glpi,$lang;
 
 	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor","glpi_tracking");
@@ -938,7 +931,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($isadmin&&$output_type==HTML_OUTPUT){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='80%'>";
-				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all'>".$lang["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all'>".$lang["buttons"][18]."</a></td>";
 
 				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none'>".$lang["buttons"][19]."</a>";
 				echo "</td><td align='left' width='80%'>";
@@ -1366,7 +1359,7 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
  *
  **/
 function giveItem ($type,$field,$data,$num,$linkfield=""){
-	global $cfg_glpi,$INFOFORM_PAGES,$HTMLRel,$cfg_glpi,$lang;
+	global $cfg_glpi,$INFOFORM_PAGES,$cfg_glpi,$lang;
 
 	switch ($field){
 		case "glpi_licenses.serial" :
@@ -1396,7 +1389,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 				$out.= "</a>";
 				$out.= "&nbsp;<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ID"]."\">";
-				$out.= "<img alt='".$lang["common"][25]."' src='".$HTMLRel."pics/aide.png'>";
+				$out.= "<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png'>";
 				$out.= "</a>";
 			} else {
 				$type=USER_TYPE;
@@ -1481,7 +1474,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 				$out.= "</a>";
 				if (!empty($data["ITEM_".$num."_2"]))
-					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$cfg_glpi["root_doc"]."/pics/web.png' alt='website'></a>";
 			} else {
 				$type=ENTERPRISE_TYPE;
 				$out="";
@@ -1492,7 +1485,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($data["ITEM_".$num."_3"]>0)
 					$out.= "</a>";
 				if (!empty($data["ITEM_".$num."_2"]))
-					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$HTMLRel."/pics/web.png' alt='website'></a>";
+					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$cfg_glpi["root_doc"]."/pics/web.png' alt='website'></a>";
 			}
 		return $out;
 		break;	
@@ -1510,7 +1503,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		break;
 		case "glpi_type_docs.icon" :
 			if (!empty($data["ITEM_$num"]))
-				return "<img style='vertical-align:middle;' alt='' src='".$HTMLRel.$cfg_glpi["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
+				return "<img style='vertical-align:middle;' alt='' src='".$cfg_glpi["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
 			else return "&nbsp;";
 			break;	
 

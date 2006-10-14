@@ -229,7 +229,7 @@ class SetupSearchDisplay extends CommonDBTM{
 	}
 
 	function showForm($type){
-		global $SEARCH_OPTION,$cfg_glpi,$lang,$db,$HTMLRel;
+		global $SEARCH_OPTION,$cfg_glpi,$lang,$db;
 
 
 		$is_global=($_SESSION['glpi_searchconfig']==1);
@@ -307,7 +307,7 @@ class SetupSearchDisplay extends CommonDBTM{
 								echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 								echo "<input type='hidden' name='type' value='$type'>";
-								echo "<input type='image' name='up'  value=\"".$lang["buttons"][24]."\"  src=\"".$HTMLRel."pics/puce-up2.png\" alt=\"".$lang["buttons"][24]."\"  title=\"".$lang["buttons"][24]."\" >";	
+								echo "<input type='image' name='up'  value=\"".$lang["buttons"][24]."\"  src=\"".$cfg_glpi["root_doc"]."/pics/puce-up2.png\" alt=\"".$lang["buttons"][24]."\"  title=\"".$lang["buttons"][24]."\" >";	
 								echo "</form>";
 								echo "</td>";
 							} else echo "<td>&nbsp;</td>";
@@ -318,7 +318,7 @@ class SetupSearchDisplay extends CommonDBTM{
 								echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 								echo "<input type='hidden' name='type' value='$type'>";
-								echo "<input type='image' name='down' value=\"".$lang["buttons"][25]."\" src=\"".$HTMLRel."pics/puce-down2.png\" alt=\"".$lang["buttons"][25]."\"  title=\"".$lang["buttons"][25]."\" >";	
+								echo "<input type='image' name='down' value=\"".$lang["buttons"][25]."\" src=\"".$cfg_glpi["root_doc"]."/pics/puce-down2.png\" alt=\"".$lang["buttons"][25]."\"  title=\"".$lang["buttons"][25]."\" >";	
 								echo "</form>";
 								echo "</td>";
 							} else echo "<td>&nbsp;</td>";
@@ -329,7 +329,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 							echo "<input type='hidden' name='type' value='$type'>";
-							echo "<input type='image' name='delete' value=\"".$lang["buttons"][6]."\"src=\"".$HTMLRel."pics/puce-delete2.png\" alt=\"".$lang["buttons"][6]."\"  title=\"".$lang["buttons"][6]."\" >";	
+							echo "<input type='image' name='delete' value=\"".$lang["buttons"][6]."\"src=\"".$cfg_glpi["root_doc"]."/pics/puce-delete2.png\" alt=\"".$lang["buttons"][6]."\"  title=\"".$lang["buttons"][6]."\" >";	
 							echo "</form>";
 							echo "</td>";
 						}
