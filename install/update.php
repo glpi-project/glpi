@@ -37,12 +37,12 @@
 if (!defined('GLPI_ROOT'))
 	define('GLPI_ROOT', '..');
 
-include (GLPI_ROOT . "/inc/dbmysql.class.php");
-include (GLPI_ROOT . "/inc/common.function.php");
-include (GLPI_ROOT . "/inc/db.function.php");
-include (GLPI_ROOT . "/inc/display.function.php");
-include (GLPI_ROOT . "/config/based_config.php");
-include (GLPI_CONFIG_DIR . "/config_db.php");
+include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+include_once (GLPI_ROOT . "/inc/common.function.php");
+include_once (GLPI_ROOT . "/inc/db.function.php");
+include_once (GLPI_ROOT . "/inc/display.function.php");
+include_once (GLPI_ROOT . "/config/based_config.php");
+include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 session_save_path(GLPI_DOC_DIR."/_sessions");
 
