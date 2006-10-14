@@ -39,118 +39,118 @@
 
 
 	// ITEMS TYPE
-	define("GENERAL_TYPE","0");//
-	define("COMPUTER_TYPE","1");//
-	define("NETWORKING_TYPE","2");//
-	define("PRINTER_TYPE","3");//
-	define("MONITOR_TYPE","4");//
-	define("PERIPHERAL_TYPE","5");//
-	define("SOFTWARE_TYPE","6");//
-	define("CONTACT_TYPE","7");//
-	define("ENTERPRISE_TYPE","8");//
-	define("INFOCOM_TYPE","9");//
-	define("CONTRACT_TYPE","10");//
-	define("CARTRIDGE_TYPE","11");//
-	define("TYPEDOC_TYPE","12");
-	define("DOCUMENT_TYPE","13");//
-	define("KNOWBASE_TYPE","14");//
-	define("USER_TYPE","15");//
-	define("TRACKING_TYPE","16");//
-	define("CONSUMABLE_TYPE","17");//
-	define("CONSUMABLE_ITEM_TYPE","18");
-	define("CARTRIDGE_ITEM_TYPE","19");
-	define("LICENSE_TYPE","20");
-	define("LINK_TYPE","21");
-	define("STATE_TYPE","22");
-	define("PHONE_TYPE","23");//
-	define("DEVICE_TYPE","24");
-	define("REMINDER_TYPE","25");
-	define("STAT_TYPE","26");
-	define("GROUP_TYPE","27");
+	define("GENERAL_TYPE",0);//
+	define("COMPUTER_TYPE",1);//
+	define("NETWORKING_TYPE",2);//
+	define("PRINTER_TYPE",3);//
+	define("MONITOR_TYPE",4);//
+	define("PERIPHERAL_TYPE",5);//
+	define("SOFTWARE_TYPE",6);//
+	define("CONTACT_TYPE",7);//
+	define("ENTERPRISE_TYPE",8);//
+	define("INFOCOM_TYPE",9);//
+	define("CONTRACT_TYPE",10);//
+	define("CARTRIDGE_TYPE",11);//
+	define("TYPEDOC_TYPE",12);
+	define("DOCUMENT_TYPE",13);//
+	define("KNOWBASE_TYPE",14);//
+	define("USER_TYPE",15);//
+	define("TRACKING_TYPE",16);//
+	define("CONSUMABLE_TYPE",17);//
+	define("CONSUMABLE_ITEM_TYPE",18);
+	define("CARTRIDGE_ITEM_TYPE",19);
+	define("LICENSE_TYPE",20);
+	define("LINK_TYPE",21);
+	define("STATE_TYPE",22);
+	define("PHONE_TYPE",23);//
+	define("DEVICE_TYPE",24);
+	define("REMINDER_TYPE",25);
+	define("STAT_TYPE",26);
+	define("GROUP_TYPE",27);
 
 
 	// DEVICE TYPE
-	define("MOBOARD_DEVICE","1");
-	define("PROCESSOR_DEVICE","2");
-	define("RAM_DEVICE","3");
-	define("HDD_DEVICE","4");
-	define("NETWORK_DEVICE","5");
-	define("DRIVE_DEVICE","6"); 
-	define("CONTROL_DEVICE","7");
-	define("GFX_DEVICE","8");
-	define("SND_DEVICE","9");
-	define("PCI_DEVICE","10");
-	define("CASE_DEVICE","11");
-	define("POWER_DEVICE","12");
+	define("MOBOARD_DEVICE",1);
+	define("PROCESSOR_DEVICE",2);
+	define("RAM_DEVICE",3);
+	define("HDD_DEVICE",4);
+	define("NETWORK_DEVICE",5);
+	define("DRIVE_DEVICE",6); 
+	define("CONTROL_DEVICE",7);
+	define("GFX_DEVICE",8);
+	define("SND_DEVICE",9);
+	define("PCI_DEVICE",10);
+	define("CASE_DEVICE",11);
+	define("POWER_DEVICE",12);
 
 	// DEVICE INTERNAL ACTION
-	define("HISTORY_ADD_DEVICE","1");
-	define("HISTORY_UPDATE_DEVICE","2");
-	define("HISTORY_DELETE_DEVICE","3");
-	define("HISTORY_INSTALL_SOFTWARE","4");
-	define("HISTORY_UNINSTALL_SOFTWARE","5");
+	define("HISTORY_ADD_DEVICE",1);
+	define("HISTORY_UPDATE_DEVICE",2);
+	define("HISTORY_DELETE_DEVICE",3);
+	define("HISTORY_INSTALL_SOFTWARE",4);
+	define("HISTORY_UNINSTALL_SOFTWARE",5);
 
 	// OCSNG TYPES
-	define("HARDWARE_FL","0");
-	define("BIOS_FL","1");
-	define("MEMORIES_FL","2");
-	define("SLOTS_FL","3");
-	define("REGISTRY_FL","4");
-	define("CONTROLLERS_FL","5");
-	define("MONITORS_FL","6");
-	define("PORTS_FL","7");
-	define("STORAGES_FL","8");
-	define("DRIVES_FL","9");
-	define("INPUTS_FL","10");
-	define("MODEMS_FL","11");
-	define("NETWORKS_FL","12");
-	define("PRINTERS_FL","13");
-	define("SOUNDS_FL","14");
-	define("VIDEOS_FL","15");
-	define("SOFTWARES_FL","16");
+	define("HARDWARE_FL",0);
+	define("BIOS_FL",1);
+	define("MEMORIES_FL",2);
+	define("SLOTS_FL",3);
+	define("REGISTRY_FL",4);
+	define("CONTROLLERS_FL",5);
+	define("MONITORS_FL",6);
+	define("PORTS_FL",7);
+	define("STORAGES_FL",8);
+	define("DRIVES_FL",9);
+	define("INPUTS_FL",10);
+	define("MODEMS_FL",11);
+	define("NETWORKS_FL",12);
+	define("PRINTERS_FL",13);
+	define("SOUNDS_FL",14);
+	define("VIDEOS_FL",15);
+	define("SOFTWARES_FL",16);
 
-	define("MAX_OCS_CHECKSUM","131071");
+	define("MAX_OCS_CHECKSUM",131071);
 
 
 	// GLPI MODE
-	define("NORMAL_MODE","0");
-	define("TRANSLATION_MODE","1");
-	define("DEBUG_MODE","2");
-	define("DEMO_MODE","3");
+	define("NORMAL_MODE",0);
+	define("TRANSLATION_MODE",1);
+	define("DEBUG_MODE",2);
+	define("DEMO_MODE",3);
 
 	// MAILING TYPE
-	define("USER_MAILING_TYPE","1");
-	define("PROFILE_MAILING_TYPE","2");
-	define("GROUP_MAILING_TYPE","3");
+	define("USER_MAILING_TYPE",1);
+	define("PROFILE_MAILING_TYPE",2);
+	define("GROUP_MAILING_TYPE",3);
 
 	// MAILING USERS TYPE
-	define("ADMIN_MAILING","1");
-	define("ASSIGN_MAILING","2");
-	define("AUTHOR_MAILING","3");
-	define("OLD_ASSIGN_MAILING","4");
-	define("TECH_MAILING","5");
-	define("USER_MAILING","6");
+	define("ADMIN_MAILING",1);
+	define("ASSIGN_MAILING",2);
+	define("AUTHOR_MAILING",3);
+	define("OLD_ASSIGN_MAILING",4);
+	define("TECH_MAILING",5);
+	define("USER_MAILING",6);
 
 	// EXPORT TYPE
-	define("HTML_OUTPUT","0");
-	define("SYLK_OUTPUT","1");
-	define("PDF_OUTPUT","2");
+	define("HTML_OUTPUT",0);
+	define("SYLK_OUTPUT",1);
+	define("PDF_OUTPUT",2);
 
 	// HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
-	define("HELPDESK_MY_HARDWARE","0");
-	define("HELPDESK_ALL_HARDWARE","1");
+	define("HELPDESK_MY_HARDWARE",0);
+	define("HELPDESK_ALL_HARDWARE",1);
 
 	// ALERTS TYPE
-	define("ALERT_THRESHOLD","1");
-	define("ALERT_END","2");
-	define("ALERT_NOTICE","3");
+	define("ALERT_THRESHOLD",1);
+	define("ALERT_END",2);
+	define("ALERT_NOTICE",3);
 
 	// TIMES
-	define("MINUTE_TIMESTAMP","60");
-	define("HOUR_TIMESTAMP","3600");
-	define("DAY_TIMESTAMP","86400");
-	define("WEEK_TIMESTAMP","604800");
-	define("MONTH_TIMESTAMP","2592000");
+	define("MINUTE_TIMESTAMP",60);
+	define("HOUR_TIMESTAMP",3600);
+	define("DAY_TIMESTAMP",86400);
+	define("WEEK_TIMESTAMP",604800);
+	define("MONTH_TIMESTAMP",2592000);
 
 	// Current version of GLPI
 	define("GLPI_VERSION","0.68.2");
@@ -240,7 +240,7 @@
 
 		$DB = new DB;
 
-		$cache_cfg_options = array(
+		$cache_options = array(
 			'cacheDir' => GLPI_DOC_DIR."/_cache/",
 			'lifeTime' => DEFAULT_CACHE_LIFETIME,
 			'pearErrorMode' => CACHE_LITE_ERROR_DIE,
@@ -251,7 +251,7 @@
 			//  'writeControl' => false,
 			//'readControl' => false,
 		);
-		$CACHE_CFG = new Cache_Lite($cache_cfg_options);
+		$CACHE_CFG = new Cache_Lite($cache_options);
 
 
 		if ($data = $CACHE_CFG->get("CFG_GLPI_1","GLPI_CFG")) {
@@ -266,7 +266,9 @@
 			// dicts
 			// dictionnaires
 			// Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
-		
+
+			$GLPI_CACHE = new Cache_Lite_Output($cache_options);
+			$CFG_GLPI["cache"]=$GLPI_CACHE;
 			$CFG_GLPI["languages"]=array(   
 					"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","en"),
 					"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),

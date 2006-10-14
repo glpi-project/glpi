@@ -426,7 +426,9 @@ class Cache_Lite
                 return true;
             }
         }
-        return $this->_unlink($this->_file);
+	// modif GLPI
+	if (file_exists($this->_file))
+        	return $this->_unlink($this->_file);
     }
 
     /**
@@ -537,7 +539,7 @@ class Cache_Lite
  //       include_once('PEAR.php');
 //        return PEAR::raiseError($msg, $code, $this->_pearErrorMode);
 	// Modif GLPI
-	trigger_error("Cache_Lite Error", E_USER_ERROR);
+	trigger_error("Cache_Lite Error $msg", E_USER_ERROR);
 
     }
     
