@@ -234,64 +234,63 @@ class Software  extends CommonDBTM {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
-			echo "<td>";
-			autocompletionTextField("name","glpi_software","name",$this->fields["name"],25);
-			echo "</td>";
-
-			echo "<td>".$LANG["software"][5].":		</td>";
-			echo "<td>";
-			autocompletionTextField("version","glpi_software","version",$this->fields["version"],20);
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["software"][3].": 	</td><td>";
-			dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);
-			echo "</td>";
-
-			echo "<td>".$LANG["common"][5].": 	</td><td>";
-			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'>";
-			echo "<td >".$LANG["common"][34].": 	</td>";
-			echo "<td >";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"]);
-			echo "</td>";
-
-
-			echo "<td>".$LANG["common"][35].":</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td>";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
-			echo "</td>";
-
-			echo "<td>".$LANG["common"][15].": 	</td><td colspan='2'>";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-			echo "</td></tr>";
-
-			// UPDATE
-			echo "<tr class='tab_bg_1'><td>".$LANG["software"][29].":</td><td>";
-			echo "<select name='is_update'><option value='Y' ".($ID&&$this->fields['is_update']=='Y'?"selected":"").">".$LANG["choice"][1]."</option><option value='N' ".(!$ID||$this->fields['is_update']=='N'?"selected":"").">".$LANG["choice"][0]."</option></select>";
-			echo "&nbsp;".$LANG["pager"][2]."&nbsp;";
-			dropdownValue("glpi_software","update_software",$this->fields["update_software"]);
-			echo "</td>";
-
-			if (!$template){
-				echo "<td>".$LANG["reservation"][24].":</td><td><b>";
-				showReservationForm(SOFTWARE_TYPE,$ID);
-				echo "</b></td></tr>";
-			} else 
-				echo "<td colspan='2'>&nbsp;</td></tr>";
-
-
-
-			echo "<tr class='tab_bg_1'><td valign='top'>";
-			echo $LANG["common"][25].":	</td>";
-			echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr>";
+			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+				echo "<td>";
+				autocompletionTextField("name","glpi_software","name",$this->fields["name"],25);
+				echo "</td>";
+	
+				echo "<td>".$LANG["software"][5].":		</td>";
+				echo "<td>";
+				autocompletionTextField("version","glpi_software","version",$this->fields["version"],20);
+				echo "</td></tr>";
+	
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["software"][3].": 	</td><td>";
+				dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);
+				echo "</td>";
+	
+				echo "<td>".$LANG["common"][5].": 	</td><td>";
+				dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'>";
+				echo "<td >".$LANG["common"][34].": 	</td>";
+				echo "<td >";
+				dropdownAllUsers("FK_users", $this->fields["FK_users"]);
+				echo "</td>";
+	
+	
+				echo "<td>".$LANG["common"][35].":</td><td>";
+				dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td>";
+				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+				echo "</td>";
+	
+				echo "<td>".$LANG["common"][15].": 	</td><td colspan='2'>";
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+				echo "</td></tr>";
+	
+				// UPDATE
+				echo "<tr class='tab_bg_1'><td>".$LANG["software"][29].":</td><td>";
+				echo "<select name='is_update'><option value='Y' ".($ID&&$this->fields['is_update']=='Y'?"selected":"").">".$LANG["choice"][1]."</option><option value='N' ".(!$ID||$this->fields['is_update']=='N'?"selected":"").">".$LANG["choice"][0]."</option></select>";
+				echo "&nbsp;".$LANG["pager"][2]."&nbsp;";
+				dropdownValue("glpi_software","update_software",$this->fields["update_software"]);
+				echo "</td>";
+	
+				
+					echo "<td colspan='2'>&nbsp;</td></tr>";
+	
+	
+	
+				echo "<tr class='tab_bg_1'><td valign='top'>";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr>";
+				$CFG_GLPI["cache"]->end();
+			}
 
 			if (haveRight("software","w")){
 				echo "<tr>";

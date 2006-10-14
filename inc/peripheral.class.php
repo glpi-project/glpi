@@ -273,109 +273,108 @@ class Peripheral  extends CommonDBTM  {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>";
 
-			echo "<tr><td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-			echo "<tr><td>".$LANG["common"][16]."*:	</td>";
-			echo "<td>";
-			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PERIPHERAL_TYPE);
-			autocompletionTextField("name","glpi_peripherals","name",$objectName,20);
-			//autocompletionTextField("name","glpi_peripherals","name",$this->fields["name"],20);		
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][15].": 	</td><td>";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][21].":	</td><td>";
-			autocompletionTextField("contact_num","glpi_peripherals","contact_num",$this->fields["contact_num"],20);		
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][18].":	</td><td>";
-			autocompletionTextField("contact","glpi_peripherals","contact",$this->fields["contact"],20);		
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
-			echo "</td></tr>";
-
-			if (!$template){
-				echo "<tr><td>".$LANG["reservation"][24].":</td><td><b>";
-				showReservationForm(PERIPHERAL_TYPE,$ID);
-				echo "</b></td></tr>";
+			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
+				echo "<tr><td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+				echo "<tr><td>".$LANG["common"][16]."*:	</td>";
+				echo "<td>";
+				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PERIPHERAL_TYPE);
+				autocompletionTextField("name","glpi_peripherals","name",$objectName,20);
+				//autocompletionTextField("name","glpi_peripherals","name",$this->fields["name"],20);		
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][15].": 	</td><td>";
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>";
+				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][21].":	</td><td>";
+				autocompletionTextField("contact_num","glpi_peripherals","contact_num",$this->fields["contact_num"],20);		
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][18].":	</td><td>";
+				autocompletionTextField("contact","glpi_peripherals","contact",$this->fields["contact"],20);		
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
+				dropdownAllUsers("FK_users", $this->fields["FK_users"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
+				dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+				echo "</td></tr>";
+	
+				
+	
+				echo "</table>";
+	
+				echo "</td>\n";	
+				echo "<td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>";
+	
+				echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
+				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
+				dropdownValue("glpi_type_peripherals", "type", $this->fields["type"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
+				dropdownValue("glpi_dropdown_model_peripherals", "model", $this->fields["model"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
+				dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["peripherals"][18].":</td><td>";
+				autocompletionTextField("brand","glpi_peripherals","brand",$this->fields["brand"],20);		
+				echo "</td></tr>";
+	
+	
+				echo "<tr><td>".$LANG["common"][19].":	</td><td>";
+				autocompletionTextField("serial","glpi_peripherals","serial",$this->fields["serial"],20);		
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
+				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PERIPHERAL_TYPE);
+				autocompletionTextField("otherserial","glpi_peripherals","otherserial",$objectName,20);
+	
+				echo "</td></tr>";
+	
+	
+				echo "<tr><td>".$LANG["state"][0].":</td><td>";
+				$si=new StateItem();
+				$t=0;
+				if ($template) $t=1;
+				$si->getfromDB(PERIPHERAL_TYPE,$this->fields["ID"],$t);
+				dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+				echo "</td></tr>";
+	
+	
+	
+				echo "</table>";
+				echo "</td>\n";	
+				echo "</tr>";
+				echo "<tr>";
+				echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+	
+				echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr></table>";
+	
+				echo "</td>";
+				echo "</tr>";
+				$CFG_GLPI["cache"]->end();
 			}
-
-			echo "</table>";
-
-			echo "</td>\n";	
-			echo "<td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'>";
-
-			echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
-			globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
-			dropdownValue("glpi_type_peripherals", "type", $this->fields["type"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
-			dropdownValue("glpi_dropdown_model_peripherals", "model", $this->fields["model"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
-			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["peripherals"][18].":</td><td>";
-			autocompletionTextField("brand","glpi_peripherals","brand",$this->fields["brand"],20);		
-			echo "</td></tr>";
-
-
-			echo "<tr><td>".$LANG["common"][19].":	</td><td>";
-			autocompletionTextField("serial","glpi_peripherals","serial",$this->fields["serial"],20);		
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
-			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PERIPHERAL_TYPE);
-			autocompletionTextField("otherserial","glpi_peripherals","otherserial",$objectName,20);
-
-			echo "</td></tr>";
-
-
-			echo "<tr><td>".$LANG["state"][0].":</td><td>";
-			$si=new StateItem();
-			$t=0;
-			if ($template) $t=1;
-			$si->getfromDB(PERIPHERAL_TYPE,$this->fields["ID"],$t);
-			dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-			echo "</td></tr>";
-
-
-
-			echo "</table>";
-			echo "</td>\n";	
-			echo "</tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_1' valign='top' colspan='2'>";
-
-			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-			echo $LANG["common"][25].":	</td>";
-			echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr></table>";
-
-			echo "</td>";
-			echo "</tr>";
 
 			if (haveRight("peripheral","w")){
 				echo "<tr>";

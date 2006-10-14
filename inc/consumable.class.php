@@ -135,51 +135,55 @@ class ConsumableType extends CommonDBTM {
 		if ($ct_spotted){
 
 			echo "<form method='post' action=\"$target\"><div align='center'>\n";
-			echo "<table class='tab_cadre_fixe'>\n";
-			echo "<tr><th colspan='3'><b>\n";
-			if (!$ID) {
-				echo $LANG["consumables"][6].":";
-			} else {
-				echo $LANG["consumables"][12]." ID $ID:";
-			}		
-			echo "</b></th></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>\n";
-			echo "<td colspan='2'>";
-			autocompletionTextField("name","glpi_consumables_type","name",$this->fields["name"],25);	
-			echo "</td></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][2].":		</td>\n";
-			echo "<td colspan='2'>";
-			autocompletionTextField("ref","glpi_consumables_type","ref",$this->fields["ref"],25);	
-			echo "</td></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][17].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_dropdown_consumable_type","type",$this->fields["type"]);
-			echo "</td></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
-			echo "</td></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][36].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_dropdown_locations","location",$this->fields["location"]);
-			echo "</td></tr>\n";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][38].":</td><td colspan='2'><select name='alarm'>\n";
-			for ($i=-1;$i<=100;$i++)
-				echo "<option value='$i' ".($i==$this->fields["alarm"]?" selected ":"").">$i</option>";
-			echo "</select></td></tr>\n";
-
-
-			echo "<tr class='tab_bg_1'><td valign='top'>\n";
-			echo $LANG["common"][25].":	</td>";
-			echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr>\n";
+			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
+				echo "<table class='tab_cadre_fixe'>\n";
+				echo "<tr><th colspan='3'><b>\n";
+				if (!$ID) {
+					echo $LANG["consumables"][6].":";
+				} else {
+					echo $LANG["consumables"][12]." ID $ID:";
+				}		
+				echo "</b></th></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>\n";
+				echo "<td colspan='2'>";
+				autocompletionTextField("name","glpi_consumables_type","name",$this->fields["name"],25);	
+				echo "</td></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][2].":		</td>\n";
+				echo "<td colspan='2'>";
+				autocompletionTextField("ref","glpi_consumables_type","ref",$this->fields["ref"],25);	
+				echo "</td></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][17].": 	</td><td colspan='2'>\n";
+				dropdownValue("glpi_dropdown_consumable_type","type",$this->fields["type"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
+				dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
+				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+				echo "</td></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][36].": 	</td><td colspan='2'>\n";
+				dropdownValue("glpi_dropdown_locations","location",$this->fields["location"]);
+				echo "</td></tr>\n";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][38].":</td><td colspan='2'><select name='alarm'>\n";
+				for ($i=-1;$i<=100;$i++)
+					echo "<option value='$i' ".($i==$this->fields["alarm"]?" selected ":"").">$i</option>";
+				echo "</select></td></tr>\n";
+	
+	
+				echo "<tr class='tab_bg_1'><td valign='top'>\n";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr>\n";
+				
+				$CFG_GLPI["cache"]->end();
+			}
 
 			if (haveRight("consumable","w"))
 				if (!$ID) {
