@@ -34,12 +34,12 @@
 // ----------------------------------------------------------------------
 
 //#################### INCLUDE & SESSIONS ############################
-include ("_relpos.php");
-include ($phproot . "/inc/dbmysql.class.php");
-include ($phproot . "/inc/common.function.php");
-include ($phproot . "/inc/display.function.php");
-include ($phproot . "/inc/db.function.php");
-include ($phproot . "/config/based_config.php");
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/dbmysql.class.php");
+include (GLPI_ROOT . "/inc/common.function.php");
+include (GLPI_ROOT . "/inc/display.function.php");
+include (GLPI_ROOT . "/inc/db.function.php");
+include (GLPI_ROOT . "/config/based_config.php");
 include($cfg_glpi["config_dir"] . "/config_db.php");
 
 if(!session_id()){@session_start();}
@@ -58,9 +58,9 @@ function loadLang() {
 		$dict=$_SESSION["dict"];
 	else $dict="en_GB";
 
-	$file = $phproot ."/locales/$dict.php";
+	$file = GLPI_ROOT ."/locales/$dict.php";
 	if (!is_file($file))
-		$file = $phproot ."/locales/en_GB.php";
+		$file = GLPI_ROOT ."/locales/en_GB.php";
 	include($file);
 }
 

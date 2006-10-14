@@ -35,7 +35,7 @@
 
 // Update from 0.68 to 0.68.1
 function update068to0681(){
-	global $db,$lang,$phproot,$cfg_glpi;
+	global $db,$lang,$cfg_glpi;
 
 	if(TableExists("glpi_repair_item")) {
 		$query = "DROP TABLE `glpi_repair_item`;";
@@ -487,7 +487,7 @@ function update068to0681(){
 
 
 	if (countElementsInTable("glpi_ocs_link")){
-		include ($phproot . "/inc/ocsng.class.php");
+		include (GLPI_ROOT . "/inc/ocsng.class.php");
 		$cfg_glpi["ocs_mode"]=1;
 		$dbocs=new DBocs;
 		// Get datas to update

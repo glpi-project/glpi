@@ -678,7 +678,7 @@ function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1)
  * This import a new dropdown if it doesn't exist.
  *
  *@param $dpdTable string : Name of the glpi dropdown table.
- *@param $dpdRow string : Name of the glinclude ($phproot . "/glpi/includes_devices.php");pi dropdown row.
+ *@param $dpdRow string : Name of the glpi dropdown row.
  *@param $value string : Value of the new dropdown.
  *
  *@return integer : dropdown id.

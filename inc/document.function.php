@@ -40,7 +40,7 @@
 
 
 function moveUploadedDocument($filename,$old_file=''){
-	global $cfg_glpi,$phproot,$lang;
+	global $cfg_glpi,$lang;
 
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 
@@ -82,7 +82,7 @@ function moveUploadedDocument($filename,$old_file=''){
 }
 
 function uploadDocument($FILEDESC,$old_file=''){
-	global $cfg_glpi,$phproot,$lang;
+	global $cfg_glpi,$lang;
 
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 	// Is a file uploaded ?

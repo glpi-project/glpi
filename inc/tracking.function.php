@@ -853,7 +853,7 @@ function getRealtime($realtime){
 
 function searchSimpleFormTracking($target,$status="all"){
 
-global $cfg_glpi,  $lang,$phproot;
+global $cfg_glpi,  $lang;
 
 
 	echo "<div align='center' >";
@@ -890,7 +890,7 @@ global $cfg_glpi,  $lang,$phproot;
 function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 
-	global $cfg_glpi,  $lang,$phproot;
+	global $cfg_glpi,  $lang;
 
 	if (!haveRight("show_ticket","1")) {
 		if ($author==0&&$assign==0)

@@ -34,12 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-include ("_relpos.php");
-include ($phproot . "/inc/dbmysql.class.php");
-include ($phproot . "/inc/common.function.php");
-include ($phproot . "/inc/db.function.php");
-include ($phproot . "/inc/display.function.php");
-include ($phproot . "/config/based_config.php");
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/dbmysql.class.php");
+include (GLPI_ROOT . "/inc/common.function.php");
+include (GLPI_ROOT . "/inc/db.function.php");
+include (GLPI_ROOT . "/inc/display.function.php");
+include (GLPI_ROOT . "/config/based_config.php");
 include ($cfg_glpi["config_dir"] . "/config_db.php");
 
 session_save_path($cfg_glpi["doc_dir"]."/_sessions");
@@ -100,7 +100,7 @@ if(!function_exists('loadLang')) {
 		unset($lang);
 		global $lang;
 		include ("_relpos.php");
-		$file = $phproot ."/locales/".$language.".php";
+		$file = GLPI_ROOT ."/locales/".$language.".php";
 		include($file);
 	}
 }
