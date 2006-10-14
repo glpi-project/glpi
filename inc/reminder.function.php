@@ -30,6 +30,10 @@
 
 
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
 
 function showCentralReminder($type="private"){
 	// show reminder that are not planned 

@@ -34,6 +34,9 @@
 // ----------------------------------------------------------------------
 // And Marco Gaiarin for ldap features 
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
 
 
 class User extends CommonDBTM {

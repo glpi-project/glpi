@@ -33,6 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
 require_once(GLPI_ROOT . "/lib/phpmailer/class.phpmailer.php");
 
 /**

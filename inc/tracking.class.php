@@ -34,6 +34,10 @@
 // ----------------------------------------------------------------------
 
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
 // Tracking Classes
 
 class Job extends CommonDBTM{

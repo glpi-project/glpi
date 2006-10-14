@@ -28,9 +28,9 @@
  --------------------------------------------------------------------------
  */
 
-// Original Author of file: Bazile Lebeau
-// Purpose of file:
-// ----------------------------------------------------------------------
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
 
 class DBocs extends DBmysql { 
 

@@ -44,6 +44,10 @@
 
 // FUNCTIONS Reservation
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
+
 
 function titleReservation(){
 	global  $lang,$cfg_glpi;

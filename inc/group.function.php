@@ -33,6 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
 
 function showGroupDevice($ID){
 	global $db,$cfg_glpi, $lang,$LINK_ID_TABLE,$INFOFORM_PAGES;
