@@ -1253,7 +1253,7 @@ function dropdownMassiveActionPorts(){
 }
 
 function globalManagementDropdown($target,$withtemplate,$ID,$value){
-	global $LANG;	
+	global $LANG,$CFG_GLPI;	
 
 	if ($value&&empty($withtemplate)) {
 		echo $LANG["peripherals"][31];
