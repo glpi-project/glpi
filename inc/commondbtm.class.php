@@ -250,7 +250,7 @@ class CommonDBTM {
 	 **/
 	// specific ones : reservationresa, planningtracking
 	function update($input,$history=1) {
-
+		global $CFG_GLPI;
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
 
@@ -277,6 +277,7 @@ class CommonDBTM {
 					$this->post_updateItem($input,$updates,$history);
 					do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 				}
+				$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
 
 			} 
 
@@ -308,6 +309,7 @@ class CommonDBTM {
 	 *
 	 **/
 	function delete($input,$force=0) {
+		global $CFG_GLPI;
 		if ($this->getFromDB($input["ID"])){
 			$this->pre_deleteItem($input["ID"]);
 			$this->deleteFromDB($input["ID"],$force);
@@ -315,6 +317,9 @@ class CommonDBTM {
 				do_hook_function("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
 			else 
 				do_hook_function("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+
+			$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
+
 			return true;
 		} else return false;
 
@@ -354,6 +359,10 @@ class CommonDBTM {
 		echo "<div id='barre_onglets'><ul id='onglet'>";
 
 		if (count($onglets=$this->defineOnglets($withtemplate))){
+			if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
+				$onglets[11]=$LANG["title"][35];
+				ksort($onglets);
+			}
 			foreach ($onglets as $key => $val ) {
 				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template'>".$val."</a></li>";
 			}
@@ -364,6 +373,7 @@ class CommonDBTM {
 			echo "<li class='invisible'>&nbsp;</li>";
 			echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$LANG["title"][29]."</a></li>";
 		}
+
 
 		display_plugin_headings($target,$this->type,$withtemplate,$actif);
 
@@ -376,12 +386,6 @@ class CommonDBTM {
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
 			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
-
-			if (haveRight("reservation_central","r")&&function_exists("isReservable")&&isReservable($this->type,$ID)){
-				echo "<li class='invisible'>&nbsp;</li>";
-				echo "<li".(($actif==11)?" class='actif'":"")."><a href='$target&amp;onglet=11$template'>".$LANG["title"][35]."</a></li>";
-			}
-
 		}
 
 		echo "</ul></div>";

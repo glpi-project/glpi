@@ -706,8 +706,12 @@ function showDeviceReservations($target,$type,$ID){
 
 	if (!haveRight("reservation_central","r")) return false;
 
+	echo "<div align='center'>";
+
+	showReservationForm($type,$ID);
+	echo "<br>";
+
 	if ($resaID=isReservable($type,$ID)){
-		echo "<div align='center'>";
 
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID'>".$LANG["reservation"][21]."</a>";
 		$now=date("Y-m-d H:i:s");
@@ -753,9 +757,10 @@ function showDeviceReservations($target,$type,$ID){
 		echo "</table>";
 		echo "<br>";
 
-		echo "</div>";
 
-	} else echo "<div align='center'><strong>".$LANG["reservation"][34]."</strong></div>";
+	} else echo "<strong>".$LANG["reservation"][34]."</strong>";
+	echo "</div>";
+
 }
 
 function showUserReservations($target,$ID){
