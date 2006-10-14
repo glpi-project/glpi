@@ -99,7 +99,6 @@ if(!function_exists('loadLang')) {
 
 		unset($lang);
 		global $lang;
-		include ("_relpos.php");
 		$file = GLPI_ROOT ."/locales/".$language.".php";
 		include($file);
 	}
@@ -517,7 +516,6 @@ if(empty($_SESSION["dict"])) {
 	else $_SESSION["dict"] = "en_GB";
 }
 loadLang($_SESSION["dict"]);
-include ("_relpos.php");
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");

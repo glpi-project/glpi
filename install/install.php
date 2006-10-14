@@ -112,7 +112,6 @@ function loadLang($language) {
 
 	unset($lang);
 	global $lang;
-	include ("_relpos.php");
 	$file = GLPI_ROOT ."/locales/".$language.".php";
 	include($file);
 }
@@ -896,7 +895,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	{
 		global $lang, $cfg_glpi;		
 
-		include ("_relpos.php");
 		include (GLPI_ROOT . "/inc/dbmysql.class.php");
 		include (GLPI_ROOT . "/inc/common.function.php");
 		include ($cfg_glpi["config_dir"] . "/config_db.php");
@@ -986,7 +984,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	function step7() {
 
 		global $lang,$cfg_glpi;
-		include ("_relpos.php");
 		require_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 		require_once (GLPI_ROOT . "/inc/common.function.php");
 		require_once ($cfg_glpi["config_dir"] . "/config_db.php");
@@ -1018,7 +1015,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	{
 		global $cfg_glpi;
 		$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". $password ."\"; \n var \$dbdefault	= \"". $dbname ."\"; \n } \n ?>";
-		include ("_relpos.php");
 		$fp = fopen($cfg_glpi["config_dir"] . "/config_db.php",'wt');
 		if($fp) {
 			$fw = fwrite($fp,$db_str);
@@ -1031,7 +1027,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	function update1($host,$user,$password,$dbname) {
 
 		global $lang;	
-		include ("_relpos.php");
 		if(create_conn_file($host,$user,$password,$dbname) && !empty($dbname)) {
 
 			$from_install = true;
@@ -1055,7 +1050,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	//------------Start of install script---------------------------
 	if(!session_id()) session_start();
-	include ("_relpos.php");
 	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "en_GB";
 	if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
 
