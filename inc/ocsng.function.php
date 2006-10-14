@@ -424,7 +424,7 @@ function ocsLinkComputer($ocs_id,$glpi_id){
 
 function ocsUpdateComputer($ID,$dohistory,$force=0){
 
-	global $DB,$DBocs;
+	global $DB,$DBocs,$CFG_GLPI;
 
 	$cfg_ocs=getOcsConf(1);
 
@@ -519,7 +519,6 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 					$import_software=importArrayFromDB($line["import_software"]);
 					ocsUpdateSoftware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_software,$dohistory);
 				} 
-
 
 
 				// Update OCS Cheksum 
@@ -716,7 +715,9 @@ function ocsImportDropdown($dpdTable,$dpdRow,$value) {
 				VALUES ('".$value."')";
 		}
 		$DB->query($query3);
-		return $DB->insert_id();
+		$ID=$DB->insert_id();
+		cleanCache();
+		return $ID;
 	} else {
 		$line2 = $DB->fetch_array($result2);
 		return $line2["ID"];

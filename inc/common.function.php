@@ -49,6 +49,20 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 
 
+function cleanCache(){
+
+	include_once (GLPI_ROOT."/lib/cache_lite/Lite.php");
+
+	$cache_options = array(
+		'cacheDir' => GLPI_DOC_DIR."/_cache/",
+		'lifeTime' => 0,
+		'hashedDirectoryLevel' => 2,
+	);
+	$CACHE = new Cache_Lite($cache_options);
+	$CACHE->clean();
+
+}
+
 
 /**
  * Give name of the device
@@ -73,8 +87,6 @@ function getDeviceTypeName($ID){
 		case ENTERPRISE_TYPE : return $LANG["Menu"][23];break;
 		case CONTRACT_TYPE : return $LANG["Menu"][25];break;
 		case CONSUMABLE_TYPE : return $LANG["Menu"][32];break;
-
-
 	}
 
 }

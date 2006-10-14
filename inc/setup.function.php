@@ -329,10 +329,13 @@ function updateDropdown($input) {
 	}
 
 	if ($result=$DB->query($query)) {
-		if (in_array($input["tablename"],$CFG_GLPI["dropdowntree_tables"]))
+		if (in_array($input["tablename"],$CFG_GLPI["dropdowntree_tables"])){
 			regenerateTreeCompleteNameUnderID($input["tablename"],$input["ID"]);
+		}
+		cleanCache();
 		return true;
 	} else {
+		cleanCache();
 		return false;
 	}
 }
@@ -368,10 +371,13 @@ function addDropdown($input) {
 
 		if ($result=$DB->query($query)) {
 
-			if (in_array($input["tablename"],$CFG_GLPI["dropdowntree_tables"]))
+			if (in_array($input["tablename"],$CFG_GLPI["dropdowntree_tables"])){
 				regenerateTreeCompleteNameUnderID($input["tablename"],$DB->insert_id());		
+			}
+			cleanCache();
 			return true;
 		} else {
+			cleanCache();
 			return false;
 		}
 	}
@@ -385,6 +391,7 @@ function deleteDropdown($input) {
 	$send["oldID"] = $input["ID"];
 	$send["newID"] = "NULL";
 	replaceDropDropDown($send);
+	cleanCache();
 }
 
 //replace all entries for a dropdown in each items
