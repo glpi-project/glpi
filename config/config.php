@@ -251,10 +251,10 @@
 			//  'writeControl' => false,
 			//'readControl' => false,
 		);
-		$cache_cfg = new Cache_Lite($cache_cfg_options);
+		$CACHE_CFG = new Cache_Lite($cache_cfg_options);
 
 
-		if ($data = $cache_cfg->get("CFG_GLPI_1","GLPI_CFG")) {
+		if ($data = $CACHE_CFG->get("CFG_GLPI_1","GLPI_CFG")) {
 			$CFG_GLPI=$data;
 		} else {
 
@@ -356,7 +356,7 @@
 						"firstname" => $CFG_GLPI['ldap_field_firstname']
 						);
 			}
-		 $cache_cfg->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
+		 $CACHE_CFG->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
 		}
 		
 	}
