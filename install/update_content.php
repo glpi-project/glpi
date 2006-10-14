@@ -53,7 +53,6 @@ $cfg_glpi["debug"]=0;
 function loadLang() {
 	unset($lang);
 	global $lang;
-	include ("_relpos.php");
 	if (isset($_SESSION["dict"]))
 		$dict=$_SESSION["dict"];
 	else $dict="en_GB";
