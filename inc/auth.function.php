@@ -296,7 +296,7 @@ function loadLanguage() {
 	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
 	 'automaticSerialization' => true,
 	 'caching' => ENABLE_CACHE,
-	 'hashedDirectoryLevel' => 2,
+	 'hashedDirectoryLevel' => 1,
    	 'masterFile' => GLPI_ROOT . $file
 	);
 	$cache = new Cache_Lite_File($options);

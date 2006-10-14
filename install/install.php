@@ -36,11 +36,21 @@
 
 //Ce script g��e ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
-error_reporting(0);
+//error_reporting(0);
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/config/based_config.php");
 
 session_save_path(GLPI_DOC_DIR."/_sessions");
+
+	include_once (GLPI_ROOT."/lib/cache_lite/Lite/File.php");
+
+	$cache_options = array(
+		'cacheDir' => GLPI_DOC_DIR."/_cache/",
+		'lifeTime' => 0,
+	);
+	$CACHE = new Cache_Lite($cache_options);
+	$CACHE->clean(false,false);
+
 
 $CFG_GLPI["debug"]=0;
 //Print a correct  Html header for application
@@ -1014,7 +1024,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	function create_conn_file($host,$user,$password,$DBname)
 	{
 		global $CFG_GLPI;
-		$DB_str = "<?php \n class DB extends DBmysql { \n var \$DBhost	= \"". $host ."\"; \n var \$DBuser 	= \"". $user ."\"; \n var \$DBpassword= \"". $password ."\"; \n var \$DBdefault	= \"". $DBname ."\"; \n } \n ?>";
+		$DB_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". $password ."\"; \n var \$dbdefault	= \"". $DBname ."\"; \n } \n ?>";
 		$fp = fopen(GLPI_CONFIG_DIR . "/config_db.php",'wt');
 		if($fp) {
 			$fw = fwrite($fp,$DB_str);
