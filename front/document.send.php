@@ -127,8 +127,8 @@ if (isset($_GET["file"])){
 		}
 
 
-		if ($send&&file_exists($CFG_GLPI["doc_dir"]."/".$_GET["file"]))
-			sendFile($CFG_GLPI["doc_dir"]."/".$_GET["file"],$splitter[1]);
+		if ($send&&file_exists(GLPI_DOC_DIR."/".$_GET["file"]))
+			sendFile(GLPI_DOC_DIR."/".$_GET["file"],$splitter[1]);
 		else echo $LANG["document"][45];
 	} else echo $LANG["document"][44];
 }

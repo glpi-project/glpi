@@ -63,10 +63,10 @@ class Document extends CommonDBTM {
 
 		// UNLINK DU FICHIER
 		if (!empty($this->fields["filename"]))
-			if(is_file($CFG_GLPI["doc_dir"]."/".$this->fields["filename"])&& !is_dir($CFG_GLPI["doc_dir"]."/".$this->fields["filename"])) {
-				if (unlink($CFG_GLPI["doc_dir"]."/".$this->fields["filename"]))
-					$_SESSION["MESSAGE_AFTER_REDIRECT"]= $LANG["document"][24].$CFG_GLPI["doc_dir"]."/".$this->fields["filename"]."<br>";
-				else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $LANG["document"][25].$CFG_GLPI["doc_dir"]."/".$this->fields["filename"]."<br>";
+			if(is_file(GLPI_DOC_DIR."/".$this->fields["filename"])&& !is_dir(GLPI_DOC_DIR."/".$this->fields["filename"])) {
+				if (unlink(GLPI_DOC_DIR."/".$this->fields["filename"]))
+					$_SESSION["MESSAGE_AFTER_REDIRECT"]= $LANG["document"][24].GLPI_DOC_DIR."/".$this->fields["filename"]."<br>";
+				else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $LANG["document"][25].GLPI_DOC_DIR."/".$this->fields["filename"]."<br>";
 			}
 	}
 

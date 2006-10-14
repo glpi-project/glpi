@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/common.function.php");
 include (GLPI_ROOT . "/inc/display.function.php");
 include (GLPI_ROOT . "/inc/db.function.php");
 include (GLPI_ROOT . "/config/based_config.php");
-include($CFG_GLPI["config_dir"] . "/config_db.php");
+include(GLPI_CONFIG_DIR . "/config_db.php");
 
 if(!session_id()){@session_start();}
 

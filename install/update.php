@@ -40,9 +40,9 @@ include (GLPI_ROOT . "/inc/common.function.php");
 include (GLPI_ROOT . "/inc/db.function.php");
 include (GLPI_ROOT . "/inc/display.function.php");
 include (GLPI_ROOT . "/config/based_config.php");
-include ($CFG_GLPI["config_dir"] . "/config_db.php");
+include (GLPI_CONFIG_DIR . "/config_db.php");
 
-session_save_path($CFG_GLPI["doc_dir"]."/_sessions");
+session_save_path(GLPI_DOC_DIR."/_sessions");
 
 // Init debug variable
 $CFG_GLPI["debug"]=0;
