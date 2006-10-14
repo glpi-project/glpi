@@ -99,6 +99,7 @@ class CommonDBTM {
 			$result=$DB->query($query);
 		}
 		$this->post_updateInDB($updates);
+		$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
 		return true;
 	}
 
@@ -156,6 +157,7 @@ class CommonDBTM {
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
 			$query = "UPDATE ".$this->table." SET deleted='N' WHERE (ID = '$ID')";
 			if ($result = $DB->query($query)) {
+				$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
 				return true;
 			} else {
 				return false;
@@ -174,13 +176,17 @@ class CommonDBTM {
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
+				$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
 				return true;
 			} else {
 				return false;
 			}
 		}else {
 			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ID = '$ID'";		
-			return ($result = $DB->query($query));
+			if ($result = $DB->query($query)){
+				$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
+				return true;
+			} else echo false;
 		}
 	}
 
@@ -250,7 +256,7 @@ class CommonDBTM {
 	 **/
 	// specific ones : reservationresa, planningtracking
 	function update($input,$history=1) {
-		global $CFG_GLPI;
+
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
 
@@ -277,8 +283,6 @@ class CommonDBTM {
 					$this->post_updateItem($input,$updates,$history);
 					do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 				}
-				$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
-
 			} 
 
 
@@ -309,7 +313,7 @@ class CommonDBTM {
 	 *
 	 **/
 	function delete($input,$force=0) {
-		global $CFG_GLPI;
+
 		if ($this->getFromDB($input["ID"])){
 			$this->pre_deleteItem($input["ID"]);
 			$this->deleteFromDB($input["ID"],$force);
@@ -317,8 +321,6 @@ class CommonDBTM {
 				do_hook_function("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
 			else 
 				do_hook_function("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
-
-			$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
 
 			return true;
 		} else return false;
