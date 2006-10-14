@@ -72,7 +72,7 @@ class Typedoc  extends CommonDBTM {
 
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang,$phproot;
+		global $cfg_glpi, $lang;
 
 		if (!haveRight("typedoc","r")) return false;
 

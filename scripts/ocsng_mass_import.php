@@ -36,10 +36,10 @@
 
 // MASS IMPORT for OCSNG
 
-include ("_relpos.php");
+define('GLPI_ROOT', '..');
 $USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise","reservation");
-include ($phproot."/inc/includes.php");
+include (GLPI_ROOT."/inc/includes.php");
 
 
 

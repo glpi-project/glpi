@@ -1779,7 +1779,7 @@ function updateMailNotifications($input){
  **/
 function ocsUpdateDBConfig($input, $id) {
 
-	global $db,$phproot;
+	global $db;
 	if(!empty($input["ocs_db_user"]) && !empty($input["ocs_db_host"])) {
 
 		if(empty($input["ocs_db_passwd"])) $input["ocs_db_passwd"] = "";

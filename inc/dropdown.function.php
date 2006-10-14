@@ -70,7 +70,7 @@ function dropdown($table,$myname) {
  */
 function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 
-	global $cfg_glpi,$lang,$phproot,$db;
+	global $cfg_glpi,$lang,$db;
 
 	$rand=mt_rand();
 
@@ -123,7 +123,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 		$_POST["comments"]=$display_comments;
 		$_POST["limit"]=$limit_length;
 		$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
-		include ($phproot."/ajax/dropdownValue.php");
+		include (GLPI_ROOT."/ajax/dropdownValue.php");
 	} else {
 		echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
 	}
@@ -232,7 +232,7 @@ function dropdownNoValue($table,$myname,$value) {
 function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdesk_ajax=0) {
 	// Make a select box with all glpi users
 
-	global $cfg_glpi,$lang,$phproot,$db;
+	global $cfg_glpi,$lang,$db;
 
 	$rand=mt_rand();
 
@@ -288,7 +288,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
 		$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
 		$_POST["helpdesk_ajax"]=$helpdesk_ajax;
 
-		include ($phproot."/ajax/dropdownUsers.php");
+		include (GLPI_ROOT."/ajax/dropdownUsers.php");
 	} else {
 		if (!empty($value)&&$value>0){
 			echo $default_display;
@@ -423,7 +423,7 @@ function getDropdownName($table,$id,$withcomments=0) {
  */
 
 function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
-	global $cfg_glpi,$lang,$phproot,$db;
+	global $cfg_glpi,$lang,$db;
 
 	$rand=mt_rand();
 
@@ -474,7 +474,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 		$_POST["rand"]=$rand;
 		$_POST["comments"]=$display_comments;
 		$_POST["searchText"]=$cfg_glpi["ajax_wildcard"];
-		include ($phproot."/ajax/dropdownUsersTracking.php");
+		include (GLPI_ROOT."/ajax/dropdownUsersTracking.php");
 
 	}else {
 		if (!empty($value)&&$value>0){

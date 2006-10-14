@@ -52,7 +52,7 @@ function commonHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	global $cfg_glpi,$lang,$phproot,$plugin_hooks,$HEADER_LOADED ;
+	global $cfg_glpi,$lang,$plugin_hooks,$HEADER_LOADED ;
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;;
 	// Override list-limit if choosen
@@ -348,7 +348,7 @@ function displayMessageAfterRedirect(){
 function helpHeader($title,$url) {
 	// Print a nice HTML-head for help page
 
-	global $cfg_glpi,$lang,$phproot, $cfg_glpi,$HEADER_LOADED ;
+	global $cfg_glpi,$lang, $cfg_glpi,$HEADER_LOADED ;
 
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
@@ -503,7 +503,7 @@ function helpHeader($title,$url) {
  * @param $url not used anymore.
  **/
 function nullHeader($title,$url) {
-	global $cfg_glpi,$HEADER_LOADED,$lang,$phproot ;
+	global $cfg_glpi,$HEADER_LOADED,$lang ;
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 	// Print a nice HTML-head with no controls
@@ -585,7 +585,7 @@ function popHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	global $cfg_glpi,$lang,$phproot,$plugin_hooks,$HEADER_LOADED ;
+	global $cfg_glpi,$lang,$plugin_hooks,$HEADER_LOADED ;
 
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;

@@ -37,8 +37,8 @@
 //Ce script g��e ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
 error_reporting(0);
-include ("_relpos.php");
-include ($phproot . "/config/based_config.php");
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/config/based_config.php");
 
 session_save_path($cfg_glpi["doc_dir"]."/_sessions");
 
@@ -113,7 +113,7 @@ function loadLang($language) {
 	unset($lang);
 	global $lang;
 	include ("_relpos.php");
-	$file = $phproot ."/locales/".$language.".php";
+	$file = GLPI_ROOT ."/locales/".$language.".php";
 	include($file);
 }
 
@@ -507,7 +507,7 @@ function step0()
 //Step 1 checking some compatibilty issue and some write tests.
 function step1($update)
 {
-	global $lang,$cfg_glpi,$phproot;
+	global $lang,$cfg_glpi;
 
 	$error = 0;
 	echo "<h3>".$lang["install"][5]."</h3>";
@@ -897,12 +897,12 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		global $lang, $cfg_glpi;		
 
 		include ("_relpos.php");
-		include ($phproot . "/inc/dbmysql.class.php");
-		include ($phproot . "/inc/common.function.php");
+		include (GLPI_ROOT . "/inc/dbmysql.class.php");
+		include (GLPI_ROOT . "/inc/common.function.php");
 		include ($cfg_glpi["config_dir"] . "/config_db.php");
 
 		$db = new DB;
-		$db_file = $phproot ."/install/mysql/glpi-0.68.1-empty.sql";
+		$db_file = GLPI_ROOT ."/install/mysql/glpi-0.68.1-empty.sql";
 		$dbf_handle = fopen($db_file, "rt");
 		$sql_query = fread($dbf_handle, filesize($db_file));
 		fclose($dbf_handle);
@@ -987,8 +987,8 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 		global $lang,$cfg_glpi;
 		include ("_relpos.php");
-		require_once ($phproot . "/inc/dbmysql.class.php");
-		require_once ($phproot . "/inc/common.function.php");
+		require_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+		require_once (GLPI_ROOT . "/inc/common.function.php");
 		require_once ($cfg_glpi["config_dir"] . "/config_db.php");
 		$db = new DB;
 
@@ -1035,7 +1035,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		if(create_conn_file($host,$user,$password,$dbname) && !empty($dbname)) {
 
 			$from_install = true;
-			include($phproot ."/install/update.php");
+			include(GLPI_ROOT ."/install/update.php");
 		}
 		else {
 			echo $lang["install"][70];
@@ -1070,7 +1070,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	if(!isset($_POST["install"])) {
 		$_SESSION = array();
 		if(file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
-			include($phproot ."/index.php");
+			include(GLPI_ROOT ."/index.php");
 			die();
 		}
 		else {

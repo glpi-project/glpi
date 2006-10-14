@@ -53,7 +53,7 @@ class Document extends CommonDBTM {
 	}	
 
 	function cleanDBonPurge($ID) {
-		global $db,$cfg_glpi,$phproot,$lang;
+		global $db,$cfg_glpi,$lang;
 
 		$query3 = "DELETE FROM glpi_doc_device WHERE (FK_doc = '$ID')";
 		$result3 = $db->query($query3);

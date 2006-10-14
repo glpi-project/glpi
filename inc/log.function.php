@@ -81,13 +81,13 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
  **/
 function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 
-	global $SEARCH_OPTION, $LINK_ID_TABLE,$phproot, $lang ;
+	global $SEARCH_OPTION, $LINK_ID_TABLE, $lang ;
 
 	// on ne log que les changements pas la d�inition d'un ��ent vide
 	if (!empty($oldvalues)){
 		$changes=array();
 		// n�essaire pour avoir les $search_option
-		include_once ($phproot . "/inc/search.class.php");
+		include_once (GLPI_ROOT . "/inc/search.class.php");
 
 		// on parse le tableau $search_option, on v�ifie qu'il existe une entr� correspondante �$key
 		foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
@@ -126,10 +126,10 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
  **/
 function showHistory($device_type,$id_device){
 
-	global $db,$SEARCH_OPTION, $LINK_ID_TABLE,$phproot,$lang;	
+	global $db,$SEARCH_OPTION, $LINK_ID_TABLE,$lang;	
 
 	// n�essaire pour avoir les $search_option
-	include_once ($phproot . "/inc/search.class.php");
+	include_once (GLPI_ROOT . "/inc/search.class.php");
 
 	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."' ORDER BY  ID DESC;";
 

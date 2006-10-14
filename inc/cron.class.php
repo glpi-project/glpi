@@ -124,7 +124,7 @@ class Cron {
 
 	function launch() {
 
-		global $cfg_glpi, $phproot,$lang;
+		global $cfg_glpi,$lang;
 
 		$t = time();
 
@@ -174,8 +174,8 @@ class Cron {
 			$fct_trouve=false;
 			if (!function_exists($fonction)){
 				// pas trouvé de fonction -> inclusion de la fonction 
-				if(file_exists($phproot.'/inc/'.$tache.'.function.php')) include_once($phproot.'/inc/'.$tache.'.function.php');
-				if(file_exists($phproot.'/inc/'.$tache.'.class.php')) include_once($phproot.'/inc/'.$tache.'.class.php');
+				if(file_exists(GLPI_ROOT.'/inc/'.$tache.'.function.php')) include_once(GLPI_ROOT.'/inc/'.$tache.'.function.php');
+				if(file_exists(GLPI_ROOT.'/inc/'.$tache.'.class.php')) include_once(GLPI_ROOT.'/inc/'.$tache.'.class.php');
 
 			} else { $fct_trouve=true;}
 

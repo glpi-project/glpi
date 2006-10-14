@@ -272,7 +272,7 @@ function checkAccessToPublicFaq(){
  */
 function loadLanguage() {
 
-	global $lang,$cfg_glpi,$phproot;
+	global $lang,$cfg_glpi;
 	$file="";
 
 	if(empty($_SESSION["glpilanguage"])) {
@@ -282,9 +282,9 @@ function loadLanguage() {
 		if (isset($cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
 			$file = "/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1];
 	}
-	if (empty($file)||!is_file($phproot . $file))
+	if (empty($file)||!is_file(GLPI_ROOT . $file))
 		$file="/locales/en_GB.php";
-	include ($phproot . $file);
+	include (GLPI_ROOT . $file);
 
 	// Debug display lang element with item
 	if ($cfg_glpi["debug"]&&$cfg_glpi["debug_lang"]){

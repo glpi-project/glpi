@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-require_once($phproot . "/lib/phpmailer/class.phpmailer.php");
+require_once(GLPI_ROOT . "/lib/phpmailer/class.phpmailer.php");
 
 /**
  *  glpi_phpmailer class extends 
@@ -347,7 +347,7 @@ class Mailing
 	 */
 	function send()
 	{
-		global $cfg_glpi,$phproot;
+		global $cfg_glpi;
 		if ($cfg_glpi["mailing"])
 		{
 			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($this->type,"new")||strcmp($this->type,"attrib")||strcmp($this->type,"followup")||strcmp($this->type,"finish")))
@@ -580,7 +580,7 @@ class MailingResa{
 	 */
 	function send()
 	{
-		global $cfg_glpi,$phproot;
+		global $cfg_glpi;
 		if ($cfg_glpi["mailing"]&&isValidEmail($cfg_glpi["admin_email"]))
 		{
 			// get users to send mail
@@ -776,7 +776,7 @@ class MailingAlert
 	 */
 	function send()
 	{
-		global $cfg_glpi,$phproot;
+		global $cfg_glpi;
 		if ($cfg_glpi["mailing"])
 		{
 			// get users to send mail

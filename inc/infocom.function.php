@@ -683,7 +683,7 @@ function showDisplayInfocomLink($device_type,$device_id,$update=0){
 
 
 function cron_infocom(){
-	global $db,$cfg_glpi,$lang,$phproot;
+	global $db,$cfg_glpi,$lang;
 
 
 	$message="";
@@ -697,10 +697,10 @@ function cron_infocom(){
 		$ci=new CommonItem();
 		$needed=array("computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","tracking","enterprise");
 		foreach ($needed as $item){
-			if (file_exists($phproot . "/inc/$item.class.php"))
-				include_once ($phproot . "/inc/$item.class.php");
-			if (file_exists($phproot . "/inc/$item.function.php"))
-				include_once ($phproot . "/inc/$item.function.php");
+			if (file_exists(GLPI_ROOT . "/inc/$item.class.php"))
+				include_once (GLPI_ROOT . "/inc/$item.class.php");
+			if (file_exists(GLPI_ROOT . "/inc/$item.function.php"))
+				include_once (GLPI_ROOT . "/inc/$item.function.php");
 		}
 
 		while ($data=$db->fetch_array($result)){

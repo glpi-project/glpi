@@ -43,10 +43,9 @@ global $cfg_glpi_plugins;
 $cfg_glpi_plugins = array();
 
 function initPlugins(){
-	global $phproot;
 
 	$_SESSION["glpi_plugins"]=array();
-	$dirplug=$phproot."/plugins";
+	$dirplug=GLPI_ROOT."/plugins";
 	$dh  = opendir($dirplug);
 	while (false !== ($filename = readdir($dh))) {
 		if ($filename!=".svn"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename)){
@@ -57,9 +56,9 @@ function initPlugins(){
 }
 
 function use_plugin ($name) {
-	global $phproot,$cfg_glpi;
-	if (file_exists($phproot . "/plugins/$name/setup.php")) {
-		include_once($phproot . "/plugins/$name/setup.php");
+	global $cfg_glpi;
+	if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
+		include_once(GLPI_ROOT . "/plugins/$name/setup.php");
 		$function = "plugin_init_$name";
 
 		if (function_exists($function)) {
