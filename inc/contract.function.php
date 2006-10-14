@@ -51,59 +51,59 @@ if (!defined('GLPI_ROOT')){
 
 function showCentralContract(){
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contract_infocom","r")) return false;
 
 	// contrats echus depuis moins de 30j
 	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
-	$result = $db->query($query);
-	$contract0=$db->result($result,0,0);
+	$result = $DB->query($query);
+	$contract0=$DB->result($result,0,0);
 
 
 	// contrats  echeance j-7
 	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
-	$result = $db->query($query);
-	$contract7= $db->result($result,0,0);
+	$result = $DB->query($query);
+	$contract7= $DB->result($result,0,0);
 
 
 	// contrats echeance j -30
 	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
-	$result = $db->query($query);
-	$contract30= $db->result($result,0,0);
+	$result = $DB->query($query);
+	$contract30= $DB->result($result,0,0);
 
 
-	// contrats avec préavis echeance j-7
+	// contrats avec prï¿½vis echeance j-7
 	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
-	$result = $db->query($query);
-	$contractpre7= $db->result($result,0,0);
+	$result = $DB->query($query);
+	$contractpre7= $DB->result($result,0,0);
 
 
-	// contrats avec préavis echeance j -30
+	// contrats avec prï¿½vis echeance j -30
 	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
-	$result = $db->query($query);
-	$contractpre30= $db->result($result,0,0);
+	$result = $DB->query($query);
+	$contractpre30= $DB->result($result,0,0);
 
 
 
 	echo "<table class='tab_cadrehov' style='text-align:center'>";
 
-	echo "<tr><th colspan='2'><b><a href=\"".$cfg_glpi["root_doc"]."/front/contract.php?reset=reset_before\">".$lang["financial"][1]."</a></b></th></tr>";
+	echo "<tr><th colspan='2'><b><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset_before\">".$LANG["financial"][1]."</a></b></th></tr>";
 
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".$lang["financial"][93]."</a> </td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".$LANG["financial"][93]."</a> </td>";
 	echo "<td>$contract0</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=N&amp;start=0\">".$lang["financial"][94]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=N&amp;start=0\">".$LANG["financial"][94]."</a></td>";
 	echo "<td>".$contract7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=N&amp;start=0\">".$lang["financial"][95]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=N&amp;start=0\">".$LANG["financial"][95]."</a></td>";
 	echo "<td>".$contract30."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;deleted=N&amp;start=0\">".$lang["financial"][96]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;deleted=N&amp;start=0\">".$LANG["financial"][96]."</a></td>";
 	echo "<td>".$contractpre7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30\">".$lang["financial"][97]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30\">".$LANG["financial"][97]."</a></td>";
 	echo "<td>".$contractpre30."</td></tr>";
 
 	echo "</table>";
@@ -124,43 +124,43 @@ function showCentralContract(){
  *
  **/
 function showDeviceContract($instID) {
-	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("contract_infocom","r")) return false;
 	$canedit=haveRight("contract_infocom","w");
 
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contract.form.php\">";
+	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='3'>".$lang["financial"][49].":</th></tr>";
-	echo "<tr><th>".$lang["common"][17]."</th>";
-	echo "<th>".$lang["common"][16]."</th>";
+	echo "<tr><th colspan='3'>".$LANG["financial"][49].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][17]."</th>";
+	echo "<th>".$LANG["common"][16]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 	$ci=new CommonItem;
 	while ($i < $number) {
-		$type=$db->result($result, $i, "device_type");
+		$type=$DB->result($result, $i, "device_type");
 		if (haveTypeRight($type,"r")){
 			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD  FROM glpi_contract_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device) WHERE glpi_contract_device.device_type='$type' AND glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".name";
-			$result_linked=$db->query($query);
-			if ($db->numrows($result_linked)){
+			$result_linked=$DB->query($query);
+			if ($DB->numrows($result_linked)){
 				$ci->setType($type);
-				while ($data=$db->fetch_assoc($result_linked)){
+				while ($data=$DB->fetch_assoc($result_linked)){
 					$ID="";
-					if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-					$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+					if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td align='center'>".$ci->getType()."</td>";
 					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td align='center' class='tab_bg_2'>";
 					if ($canedit){
-						echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a>";
+						echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
 					} else echo "&nbsp;";
 					echo "</td></tr>";
 				}
@@ -172,7 +172,7 @@ function showDeviceContract($instID) {
 		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item");
-		echo "</div></td><td><input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "</div></td><td><input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "<input type='hidden' name='ID' value='$instID'>";
 		echo "</td>";
 		echo "</tr>";
@@ -196,12 +196,12 @@ function showDeviceContract($instID) {
  *
  **/
 function addDeviceContract($conID,$type,$ID,$template=0){
-	global $db;
+	global $DB;
 
 	if ($ID>0&&$conID>0){
 
 		$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type, is_template ) VALUES ('$conID','$ID','$type','$template');";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 	}
 }
 
@@ -217,9 +217,9 @@ function addDeviceContract($conID,$type,$ID,$template=0){
  **/
 function deleteDeviceContract($ID){
 
-	global $db;
+	global $DB;
 	$query="DELETE FROM glpi_contract_device WHERE ID= '$ID';";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 }
 
 /**
@@ -233,46 +233,46 @@ function deleteDeviceContract($ID){
  *
  **/
 function showEnterpriseContract($instID) {
-	global $db,$cfg_glpi, $lang,$cfg_glpi;
+	global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
 
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
 	$canedit=haveRight("contract_infocom","w");
 
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID";
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contract.form.php\">";
+	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='5'>".$lang["financial"][65].":</th></tr>";
-	echo "<tr><th>".$lang["financial"][26]."</th>";
-	echo "<th>".$lang["financial"][79]."</th>";
-	echo "<th>".$lang["financial"][29]."</th>";
-	echo "<th>".$lang["financial"][45]."</th>";
+	echo "<tr><th colspan='5'>".$LANG["financial"][65].":</th></tr>";
+	echo "<tr><th>".$LANG["financial"][26]."</th>";
+	echo "<th>".$LANG["financial"][79]."</th>";
+	echo "<th>".$LANG["financial"][29]."</th>";
+	echo "<th>".$LANG["financial"][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
-		$ID=$db->result($result, $i, "ID");
-		$website=$db->result($result, $i, "glpi_enterprises.website");
+		$ID=$DB->result($result, $i, "ID");
+		$website=$DB->result($result, $i, "glpi_enterprises.website");
 		if (!empty($website)){
-			$website=$db->result($result, $i, "website");
+			$website=$DB->result($result, $i, "website");
 			if (!ereg("https*://",$website)) $website="http://".$website;
-			$website="<a target=_blank href='$website'>".$db->result($result, $i, "website")."</a>";
+			$website="<a target=_blank href='$website'>".$DB->result($result, $i, "website")."</a>";
 		}
-		$entID=$db->result($result, $i, "entID");
+		$entID=$DB->result($result, $i, "entID");
 		$entname=getDropdownName("glpi_enterprises",$entID);
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
-		if ($cfg_glpi["view_ID"]||empty($entname)) echo " ($entID)";
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
+		if ($CFG_GLPI["view_ID"]||empty($entname)) echo " ($entID)";
 		echo "</a></td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$db->result($result, $i, "type"))."</td>";
-		echo "<td align='center'>".$db->result($result, $i, "phone")."</td>";
+		echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$DB->result($result, $i, "type"))."</td>";
+		echo "<td align='center'>".$DB->result($result, $i, "phone")."</td>";
 		echo "<td align='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$LANG["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -282,7 +282,7 @@ function showEnterpriseContract($instID) {
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID");
 		echo "</div></td><td align='center'>";
-		echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";
 	}
@@ -303,11 +303,11 @@ function showEnterpriseContract($instID) {
  *
  **/
 function addEnterpriseContract($conID,$ID){
-	global $db;
+	global $DB;
 	if ($conID>0&&$ID>0){
 
 		$query="INSERT INTO glpi_contract_enterprise (FK_contract,FK_enterprise ) VALUES ('$conID','$ID');";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 	}
 }
 
@@ -323,9 +323,9 @@ function addEnterpriseContract($conID,$ID){
  **/
 function deleteEnterpriseContract($ID){
 
-	global $db;
+	global $DB;
 	$query="DELETE FROM glpi_contract_enterprise WHERE ID= '$ID';";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 }
 
 /**
@@ -340,7 +340,7 @@ function deleteEnterpriseContract($ID){
  *
  **/
 function dropdownContractTime($name,$value=0){
-	global $lang;
+	global $LANG;
 
 	echo "<select name='$name'>";
 	for ($i=0;$i<=120;$i+=1)
@@ -360,13 +360,13 @@ function dropdownContractTime($name,$value=0){
  *
  **/
 function dropdownContractPeriodicity($name,$value=0){
-	global $lang;
+	global $LANG;
 	$values=array("1","2","3","6","12","24","36");
 
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
 	foreach ( $values as $val)
-		echo "<option value='$val' ".($value==$val?" selected ":"").">".$val." ".$lang["financial"][57]."</option>";
+		echo "<option value='$val' ".($value==$val?" selected ":"").">".$val." ".$LANG["financial"][57]."</option>";
 	echo "</select>";	
 }
 
@@ -382,20 +382,20 @@ function dropdownContractPeriodicity($name,$value=0){
  *
  **/
 function dropdownContractRenewal($name,$value=0){
-	global $lang;
+	global $LANG;
 
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["financial"][105]."</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["financial"][106]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["financial"][105]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["financial"][106]."</option>";
 	echo "</select>";	
 }
 
 function getContractRenewalName($value){
-	global $lang;
+	global $LANG;
 	switch ($value){
-		case 1: return $lang["financial"][105];break;
-		case 2: return $lang["financial"][106];break;
+		case 1: return $LANG["financial"][105];break;
+		case 2: return $LANG["financial"][106];break;
 		default : return "";
 	}
 }
@@ -411,12 +411,12 @@ function getContractRenewalName($value){
  *
  **/
 function getContractEnterprises($ID){
-	global $db;
+	global $DB;
 
 	$query = "SELECT glpi_enterprises.* FROM glpi_contract_enterprise, glpi_enterprises WHERE glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID AND glpi_contract_enterprise.FK_contract = '$ID'";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 	$out="";
-	while ($data=$db->fetch_array($result)){
+	while ($data=$DB->fetch_array($result)){
 		$out.= getDropdownName("glpi_enterprises",$data['ID'])."<br>";
 
 	}
@@ -435,12 +435,12 @@ function getContractEnterprises($ID){
  **/
 function dropdownContracts($name){
 
-	global $db;
+	global $DB;
 	$query="SELECT * from glpi_contracts WHERE deleted = 'N' order by begin_date DESC";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 	echo "<select name='$name'>";
 	echo "<option value='-1'>-----</option>";
-	while ($data=$db->fetch_array($result)){
+	while ($data=$DB->fetch_array($result)){
 		if ($data["device_countmax"]==0||$data["device_countmax"]>countDeviceForContract($data['ID'])){
 			echo "<option value='".$data["ID"]."'>";
 			echo "#".$data["num"]." - ".convDateTime($data["begin_date"])." - ".$data["name"];
@@ -468,50 +468,50 @@ function dropdownContracts($name){
  **/
 function showContractAssociated($device_type,$ID,$withtemplate=''){
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contract_infocom","r")||!haveTypeRight($device_type,"r"))	return false;
 	$canedit=haveTypeRight($device_type,"w");
 
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
-	if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contract.form.php\">";
+	if ($withtemplate!=2) echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
-	echo "<tr><th>".$lang["common"][16]."</th>";
-	echo "<th>".$lang["financial"][4]."</th>";
-	echo "<th>".$lang["financial"][6]."</th>";
-	echo "<th>".$lang["financial"][26]."</th>";
-	echo "<th>".$lang["search"][8]."</th>";	
-	echo "<th>".$lang["financial"][8]."</th>";	
+	echo "<tr><th colspan='7'>".$LANG["financial"][66].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][16]."</th>";
+	echo "<th>".$LANG["financial"][4]."</th>";
+	echo "<th>".$LANG["financial"][6]."</th>";
+	echo "<th>".$LANG["financial"][26]."</th>";
+	echo "<th>".$LANG["search"][8]."</th>";	
+	echo "<th>".$LANG["financial"][8]."</th>";	
 	if ($withtemplate!=2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 
 	while ($i < $number) {
-		$cID=$db->result($result, $i, "FK_contract");
-		$assocID=$db->result($result, $i, "ID");
+		$cID=$DB->result($result, $i, "FK_contract");
+		$assocID=$DB->result($result, $i, "ID");
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
-		if ($cfg_glpi["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
+		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
 		echo "<td align='center'>".$con->fields["num"]."</td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 		echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
 		echo "<td align='center'>".convDate($con->fields["begin_date"])."</td>";
-		echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];
+		echo "<td align='center'>".$con->fields["duration"]." ".$LANG["financial"][57];
 		if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 		echo "</td>";
 
 		if ($withtemplate!=2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$LANG["buttons"][6]."</b></a>";
 			else echo "&nbsp;";
 			echo "</td>";
 		}
@@ -519,8 +519,8 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$i++;
 	}
 	$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
-	$result = $db->query($q);
-	$nb = $db->numrows($result);
+	$result = $DB->query($q);
+	$nb = $DB->numrows($result);
 
 	if ($canedit)
 		if ($withtemplate!=2&&$nb>0){
@@ -528,7 +528,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 			dropdownContracts("conID");
 			echo "</div></td><td align='center'>";
-			echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 
 			echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
@@ -554,63 +554,63 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
  **/
 function showContractAssociatedEnterprise($ID){
 
-	global $db,$cfg_glpi, $lang,$cfg_glpi;
+	global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r")) return false;
 	$canedit=haveRight("contract_infocom","w");
 
 	$query = "SELECT * FROM glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_enterprise = '$ID'";
 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contract.form.php\">";
+	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='7'>".$lang["financial"][66].":</th></tr>";
-	echo "<tr><th>".$lang["common"][16]."</th>";
-	echo "<th>".$lang["financial"][4]."</th>";
-	echo "<th>".$lang["financial"][6]."</th>";
-	echo "<th>".$lang["financial"][26]."</th>";
-	echo "<th>".$lang["search"][8]."</th>";	
-	echo "<th>".$lang["financial"][8]."</th>";	
+	echo "<tr><th colspan='7'>".$LANG["financial"][66].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][16]."</th>";
+	echo "<th>".$LANG["financial"][4]."</th>";
+	echo "<th>".$LANG["financial"][6]."</th>";
+	echo "<th>".$LANG["financial"][26]."</th>";
+	echo "<th>".$LANG["search"][8]."</th>";	
+	echo "<th>".$LANG["financial"][8]."</th>";	
 	echo "<th>&nbsp;</th>";
 	echo "</tr>";
 
 	while ($i < $number) {
-		$cID=$db->result($result, $i, "FK_contract");
-		$assocID=$db->result($result, $i, "ID");
+		$cID=$DB->result($result, $i, "FK_contract");
+		$assocID=$DB->result($result, $i, "ID");
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
-		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
-		if ($cfg_glpi["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
+		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
 		echo "<td align='center'>".$con->fields["num"]."</td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 		echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
 		echo "<td align='center'>".convDate($con->fields["begin_date"])."</td>";
-		echo "<td align='center'>".$con->fields["duration"]." ".$lang["financial"][57];
+		echo "<td align='center'>".$con->fields["duration"]." ".$LANG["financial"][57];
 		if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 		echo "</td>";
 
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
-			echo "<a href='".$cfg_glpi["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$LANG["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
 	}
 	if (haveRight("contract_infocom","w")){
 		$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
-		$result = $db->query($q);
-		$nb = $db->numrows($result);
+		$result = $DB->query($q);
+		$nb = $DB->numrows($result);
 
 		if ($nb>0){
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
 			dropdownContracts("conID");
 			echo "</div></td><td align='center'>";
-			echo "<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 
 			echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
@@ -622,9 +622,9 @@ function showContractAssociatedEnterprise($ID){
 }
 
 function addContractOptionFieldsToResearch($option){
-	global $lang;
-	$option["glpi_contracts.name"]=$lang["common"][16]." ".$lang["financial"][1];
-	$option["glpi_contracts.num"]=$lang["financial"][4]." ".$lang["financial"][1];
+	global $LANG;
+	$option["glpi_contracts.name"]=$LANG["common"][16]." ".$LANG["financial"][1];
+	$option["glpi_contracts.num"]=$LANG["financial"][4]." ".$LANG["financial"][1];
 	return $option;
 
 }
@@ -639,16 +639,16 @@ function getContractSearchToViewAllRequest($contains){
 }
 
 function countDeviceForContract($ID){
-	global $db;
+	global $DB;
 	$query = "SELECT * FROM glpi_contract_device WHERE FK_contract = '$ID' AND is_template='0'";
 
-	$result = $db->query($query);
-	return $db->numrows($result);
+	$result = $DB->query($query);
+	return $DB->numrows($result);
 
 }
 
 function cron_contract(){
-	global $db,$cfg_glpi,$lang;
+	global $DB,$CFG_GLPI,$LANG;
 
 
 	$message="";
@@ -656,11 +656,11 @@ function cron_contract(){
 	// Check notice
 	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_NOTICE."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 AND glpi_contracts.deleted='N' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND glpi_contracts.notice<>'0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
 
-	$result=$db->query($query);
-	if ($db->numrows($result)>0){
-		while ($data=$db->fetch_array($result)){
+	$result=$DB->query($query);
+	if ($DB->numrows($result)>0){
+		while ($data=$DB->fetch_array($result)){
 			// define message alert
-			$message.=$lang["mailing"][37]." ".$data["name"]."<br>\n";
+			$message.=$LANG["mailing"][37]." ".$data["name"]."<br>\n";
 
 			// Mark alert as done
 			$alert=new Alert();
@@ -678,11 +678,11 @@ function cron_contract(){
 	// Check end
 	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_END."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.deleted='N' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
 
-	$result=$db->query($query);
-	if ($db->numrows($result)>0){
-		while ($data=$db->fetch_array($result)){
+	$result=$DB->query($query);
+	if ($DB->numrows($result)>0){
+		while ($data=$DB->fetch_array($result)){
 			// define message alert
-			$message.=$lang["mailing"][38]." ".$data["name"]."<br>\n";
+			$message.=$LANG["mailing"][38]." ".$data["name"]."<br>\n";
 
 			// Mark alert as done
 			$alert=new Alert();

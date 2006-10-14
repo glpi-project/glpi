@@ -47,31 +47,31 @@ class Contact extends CommonDBTM{
 	}
 
 	function cleanDBonPurge($ID) {
-		global $db;
+		global $DB;
 
 		$query = "DELETE from glpi_contact_enterprise WHERE FK_contact = '$ID'";
-		$db->query($query);
+		$DB->query($query);
 	}
 
 	function defineOnglets($withtemplate){
-		global $lang;
-		$ong[1]=$lang["title"][26];
+		global $LANG;
+		$ong[1]=$LANG["title"][26];
 		if (haveRight("link","r"))	
-			$ong[7]=$lang["title"][34];
+			$ong[7]=$LANG["title"][34];
 		if (haveRight("notes","r"))
-			$ong[10]=$lang["title"][37];
+			$ong[10]=$LANG["title"][37];
 		return $ong;
 	}
 
 
 	function GetAddress() {
-		global $db;
+		global $DB;
 
 		$query = "SELECT  glpi_enterprises.name, glpi_enterprises.address, glpi_enterprises.postcode, glpi_enterprises.town, glpi_enterprises.state, glpi_enterprises.country FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 
-		if ($result = $db->query($query)) 
-			if ($db->numrows($result)){
-				if ($data=$db->fetch_assoc($result))	
+		if ($result = $DB->query($query)) 
+			if ($DB->numrows($result)){
+				if ($data=$DB->fetch_assoc($result))	
 					return $data;
 			} 
 
@@ -80,13 +80,13 @@ class Contact extends CommonDBTM{
 	}
 
 	function GetWebsite() {
-		global $db;
+		global $DB;
 
 		$query = "SELECT  glpi_enterprises.website as website FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 
-		if ($result = $db->query($query)) 
-			if ($db->numrows($result)){
-				return $db->result($result, 0, "website");
+		if ($result = $DB->query($query)) 
+			if ($DB->numrows($result)){
+				return $DB->result($result, 0, "website");
 			} else {
 				return "";
 			}
@@ -102,12 +102,12 @@ class Contact extends CommonDBTM{
 	 *
 	 **/
 	function title(){
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/contacts.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/contacts.png\" alt='".$LANG["financial"][24]."' title='".$LANG["financial"][24]."'></td>";
 		if (haveRight("contact_enterprise","w")){
-			echo "<td><a  class='icon_consol' href=\"contact.form.php?new=1\"><b>".$lang["financial"][24]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][22]."</b></span></td>";
+			echo "<td><a  class='icon_consol' href=\"contact.form.php?new=1\"><b>".$LANG["financial"][24]."</b></a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][22]."</b></span></td>";
 		echo "</tr></table></div>";
 	}
 
@@ -115,7 +115,7 @@ class Contact extends CommonDBTM{
 	 * Print the contact form
 	 *
 	 *
-	 * Print général contact form
+	 * Print gï¿½ï¿½al contact form
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the contact to print
@@ -126,7 +126,7 @@ class Contact extends CommonDBTM{
 	 **/
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		if (!haveRight("contact_enterprise","r")) return false;
 
@@ -144,11 +144,11 @@ class Contact extends CommonDBTM{
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 			echo "<tr><th colspan='2'><b>";
 			if (empty($ID)) {
-				echo $lang["financial"][33].":";
+				echo $LANG["financial"][33].":";
 
 			} else {
-				echo $lang["common"][18]." ID $ID:&nbsp;";
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$lang["common"][46]."</a>";
+				echo $LANG["common"][18]." ID $ID:&nbsp;";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
 			}		
 			echo "</b></th></tr>";
 
@@ -156,38 +156,38 @@ class Contact extends CommonDBTM{
 
 			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$lang["common"][48].":	</td>";
+			echo "<tr><td>".$LANG["common"][48].":	</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],30);	
 			echo "</td></tr>";
 
-			echo "<tr><td>".$lang["common"][43].":	</td>";
+			echo "<tr><td>".$LANG["common"][43].":	</td>";
 			echo "<td>";
 			autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],30);	
 			echo "</td></tr>";
 
-			echo "<tr><td>".$lang["financial"][29].": 	</td>";
+			echo "<tr><td>".$LANG["financial"][29].": 	</td>";
 			echo "<td>";
 			autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],30);	
 
 			echo "</td></tr>";
 
-			echo "<tr><td>".$lang["financial"][29]." 2:	</td><td>";
+			echo "<tr><td>".$LANG["financial"][29]." 2:	</td><td>";
 			autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],30);
 			echo "</td></tr>";
 
-			echo "<tr><td>".$lang["common"][42].":	</td><td>";
+			echo "<tr><td>".$LANG["common"][42].":	</td><td>";
 			autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],30);
 			echo "</td></tr>";
 
 
-			echo "<tr><td>".$lang["financial"][30].":	</td><td>";
+			echo "<tr><td>".$LANG["financial"][30].":	</td><td>";
 			autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],30);
 			echo "</td></tr>";
-			echo "<tr><td>".$lang["setup"][14].":	</td><td>";
+			echo "<tr><td>".$LANG["setup"][14].":	</td><td>";
 			autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],30);
 			echo "</td></tr>";
-			echo "<tr><td>".$lang["common"][17].":	</td>";
+			echo "<tr><td>".$LANG["common"][17].":	</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
 			echo "</td>";
@@ -200,7 +200,7 @@ class Contact extends CommonDBTM{
 			echo "<td class='tab_bg_1' valign='top'>";
 
 			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-			echo $lang["common"][25].":	</td></tr>";
+			echo $LANG["common"][25].":	</td></tr>";
 			echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 			echo "</td></tr></table>";
 
@@ -212,7 +212,7 @@ class Contact extends CommonDBTM{
 
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -222,15 +222,15 @@ class Contact extends CommonDBTM{
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></div>";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2' valign='top'>\n";
 					if ($this->fields["deleted"]=='N')
-						echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+						echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 					else {
-						echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+						echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
 
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
 					}
 					echo "</td>";
 					echo "</tr>";
@@ -239,7 +239,7 @@ class Contact extends CommonDBTM{
 			echo "</table></div></form>";
 
 		} else {
-			echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
+			echo "<div align='center'><b>".$LANG["financial"][38]."</b></div>";
 			return false;
 
 		}

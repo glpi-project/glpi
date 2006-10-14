@@ -59,7 +59,7 @@ $cfg_ocs=getOcsConf(1);
 
 // PREREQUISITE : activate trace_deleted
 $query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
-$dbocs->query($query);
+$DBocs->query($query);
 // Clean links
 ocsManageDeleted();
 ocsCleanLinks();
@@ -85,27 +85,27 @@ $query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG
 INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
 	$WHERE 
 	ORDER BY hardware.NAME";
-	$result_ocs = $dbocs->query($query_ocs);
+	$result_ocs = $DBocs->query($query_ocs);
 
 	// Existing OCS - GLPI link
 	$query_glpi = "SELECT * 
 	FROM glpi_ocs_link";
 	if ($ocs_id) $query_glpi.=" WHERE ocs_id='$ocs_id'";
-	$result_glpi = $db->query($query_glpi);
+	$result_glpi = $DB->query($query_glpi);
 
-	if ($dbocs->numrows($result_ocs)>0){
+	if ($DBocs->numrows($result_ocs)>0){
 
 		// Get all hardware from OCS DB
 		$hardware=array();
-		while($data=$dbocs->fetch_array($result_ocs)){
+		while($data=$DBocs->fetch_array($result_ocs)){
 			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 			$hardware[$data["ID"]]["ID"]=$data["ID"];
 		}
 
 		// Get all links between glpi and OCS
 		$already_linked=array();
-		if ($db->numrows($result_glpi)>0){
-			while($data=$dbocs->fetch_array($result_glpi)){
+		if ($DB->numrows($result_glpi)>0){
+			while($data=$DBocs->fetch_array($result_glpi)){
 				$already_linked[$data["ocs_id"]]=$data["last_update"];
 			}
 		}

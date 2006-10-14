@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("contract_infocom","r");
 
-nullHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
+nullHeader($LANG["title"][21],$_SERVER["PHP_SELF"]);
 
 $ci=new CommonItem();
 
@@ -54,13 +54,13 @@ if (isset($_GET["ID"])){
 }
 
 if(!isset($_GET["device_type"])||!isset($_GET["device_id"])||!$ci->getFromDB($_GET["device_type"],$_GET["device_id"]))
-echo "<div align='center'>".$lang["financial"][85]."</div>";
+echo "<div align='center'>".$LANG["financial"][85]."</div>";
 else {
 
 	echo "<div align='center'><strong>".$ci->getType()." - ".$ci->getLink()."</strong></div>";
 	if (isset($_GET["update"])&&$_GET["update"]==1) $withtemplate=0;
 	else $withtemplate=2;
-	showInfocomForm ($cfg_glpi["root_doc"]."/front/infocom.form.php",$_GET["device_type"],$_GET["device_id"],1,$withtemplate);
+	showInfocomForm ($CFG_GLPI["root_doc"]."/front/infocom.form.php",$_GET["device_type"],$_GET["device_id"],1,$withtemplate);
 }
 
 

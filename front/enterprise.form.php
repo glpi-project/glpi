@@ -52,7 +52,7 @@ if (isset($_POST["add"]))
 	checkRight("contact_enterprise","w");
 
 	$newID=$ent->add($_POST);
-	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -60,45 +60,45 @@ else if (isset($_POST["delete"]))
 	checkRight("contact_enterprise","w");
 
 	$ent->delete($_POST);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/front/enterprise.php");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["restore"]))
 {
 	checkRight("contact_enterprise","w");
 
 	$ent->restore($_POST);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/front/enterprise.php");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["purge"]))
 {
 	checkRight("contact_enterprise","w");
 
 	$ent->delete($_POST,1);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/front/enterprise.php");
+	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["update"]))
 {
 	checkRight("contact_enterprise","w");
 
 	$ent->update($_POST);
-	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["addcontact"])){
 	checkRight("contact_enterprise","w");
 
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
-	logEvent($tab["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][36]);
+	logEvent($tab["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][36]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletecontact"])){
 	checkRight("contact_enterprise","w");
 
 	deleteContactEnterprise($_GET["ID"]);
-	logEvent($_GET["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][37]);
+	logEvent($_GET["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][37]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
@@ -111,7 +111,7 @@ else
 	}
 
 
-	commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][23],$_SERVER["PHP_SELF"]);
 
 
 	if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){

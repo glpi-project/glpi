@@ -40,14 +40,14 @@ include (GLPI_ROOT . "/inc/common.function.php");
 include (GLPI_ROOT . "/inc/db.function.php");
 include (GLPI_ROOT . "/inc/display.function.php");
 include (GLPI_ROOT . "/config/based_config.php");
-include ($cfg_glpi["config_dir"] . "/config_db.php");
+include ($CFG_GLPI["config_dir"] . "/config_db.php");
 
-session_save_path($cfg_glpi["doc_dir"]."/_sessions");
+session_save_path($CFG_GLPI["doc_dir"]."/_sessions");
 
 // Init debug variable
-$cfg_glpi["debug"]=0;
+$CFG_GLPI["debug"]=0;
 
-$db=new DB();
+$DB=new DB();
 
 // ITEMS TYPE
 define("GENERAL_TYPE","0");
@@ -95,11 +95,11 @@ define("POWER_DEVICE","12");
 
 //Load language
 if(!function_exists('loadLang')) {
-	function loadLang($language) {
+	function loadLang($LANGuage) {
 
-		unset($lang);
-		global $lang;
-		$file = GLPI_ROOT ."/locales/".$language.".php";
+		unset($LANG);
+		global $LANG;
+		$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
 		include($file);
 	}
 }
@@ -115,27 +115,27 @@ if(!function_exists('loadLang')) {
  */
 function showContentUpdateForm() {
 
-	global $lang;
+	global $LANG;
 	echo "<div align='center'>";
-	echo "<h3>".$lang["update"][94]."</h3>";
-	echo "<p>".$lang["install"][63]."</p>";
-	echo "<p>".$lang["update"][107]."</p></div>";
-	echo "<p class='submit'> <a href=\"update_content.php\"><span class='button'>".$lang["install"][25]."</span></a>";
+	echo "<h3>".$LANG["update"][94]."</h3>";
+	echo "<p>".$LANG["install"][63]."</p>";
+	echo "<p>".$LANG["update"][107]."</p></div>";
+	echo "<p class='submit'> <a href=\"update_content.php\"><span class='button'>".$LANG["install"][25]."</span></a>";
 }
 
 
 ///// FONCTION POUR UPDATE LOCATION
 
 function validate_new_location(){
-	global $db;
+	global $DB;
 	$query=" DROP TABLE `glpi_dropdown_locations`";	
-	$db->query($query);
+	$DB->query($query);
 	$query=" ALTER TABLE `glpi_dropdown_locations_new` RENAME `glpi_dropdown_locations`";	
-	$db->query($query);
+	$DB->query($query);
 }
 
 function display_new_locations(){
-	global $db;
+	global $DB;
 
 	$MAX_LEVEL=10;
 
@@ -154,7 +154,7 @@ function display_new_locations(){
 	$query="select location0.name AS NAME0, location0.parentID AS PARENT0 $SELECT_ALL FROM glpi_dropdown_locations_new AS location0 $FROM_ALL  WHERE location0.parentID='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
 	//echo $query;
 	//echo "<hr>";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 	$data_old=array();
 	echo "<table><tr>";
 	for ($i=0;$i<=$MAX_LEVEL;$i++){
@@ -162,7 +162,7 @@ function display_new_locations(){
 	}
 	echo "</tr>";
 
-	while ($data =  $db->fetch_array($result)){
+	while ($data =  $DB->fetch_array($result)){
 
 		echo "<tr class=tab_bg_1>";
 		for ($i=0;$i<=$MAX_LEVEL;$i++){
@@ -183,56 +183,56 @@ function display_new_locations(){
 		echo "</tr>";
 		$data_old=$data;
 	}
-	$db->free_result($result);
+	$DB->free_result($result);
 	echo "</table>";
 }
 
 function display_old_locations(){
-	global $db;
+	global $DB;
 	$query="SELECT * from glpi_dropdown_locations order by name;";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
-	while ($data =  $db->fetch_array($result))
+	while ($data =  $DB->fetch_array($result))
 		echo "<b>".$data['name']."</b> - ";
 
-	$db->free_result($result);
+	$DB->free_result($result);
 }
 
 function location_create_new($split_char,$add_first){
 
-	global $db;
+	global $DB;
 
 	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL";
-	$result_auto_inc=$db->query($query_auto_inc);
+	$result_auto_inc=$DB->query($query_auto_inc);
 
 	$query="SELECT MAX(ID) AS MAX from glpi_dropdown_locations;";
 	//echo $query."<br>";
-	$result=$db->query($query);
-	$new_ID=$db->result($result,0,"MAX");
+	$result=$DB->query($query);
+	$new_ID=$DB->result($result,0,"MAX");
 	$new_ID++;
 
 
 
 	$query="SELECT * from glpi_dropdown_locations;";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 	$query_clear_new="TRUNCATE TABLE `glpi_dropdown_locations_new`";
 	//echo $query_clear_new."<br>";
 
-	$result_clear_new=$db->query($query_clear_new); 
+	$result_clear_new=$DB->query($query_clear_new); 
 
 	if (!empty($add_first)){
 		$root_ID=$new_ID;
 		$new_ID++;
 		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','".addslashes($add_first)."',0,'')";
 
-		$result_insert=$db->query($query_insert);
+		$result_insert=$DB->query($query_insert);
 
 	} else {
 		$root_ID=0;
 	}
 
-	while ($data =  $db->fetch_array($result)){
+	while ($data =  $DB->fetch_array($result)){
 
 		if (!empty($split_char))
 			$splitter=split($split_char,$data['name']);
@@ -244,13 +244,13 @@ function location_create_new($split_char,$add_first){
 			// Entr� existe deja ??
 			$query_search="select ID from glpi_dropdown_locations_new WHERE name='".addslashes($splitter[$i])."'  AND parentID='".$up_ID."'";
 			//				echo $query_search."<br>";
-			$result_search=$db->query($query_search);
-			if ($db->numrows($result_search)==1){	// Found
-				$up_ID=$db->result($result_search,0,"ID");
+			$result_search=$DB->query($query_search);
+			if ($DB->numrows($result_search)==1){	// Found
+				$up_ID=$DB->result($result_search,0,"ID");
 			} else { // Not FOUND -> INSERT
 				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".addslashes($splitter[$i])."','$up_ID','')";
 				//					echo $query_insert."<br>";
-				$result_insert=$db->query($query_insert);
+				$result_insert=$DB->query($query_insert);
 				$up_ID=$new_ID++;
 
 			}
@@ -260,19 +260,19 @@ function location_create_new($split_char,$add_first){
 		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".addslashes($splitter[count($splitter)-1])."','$up_ID','')";
 		//			echo $query_insert."<br>";
 
-		$result_insert=$db->query($query_insert);
+		$result_insert=$DB->query($query_insert);
 
 	}
-	$db->free_result($result);
+	$DB->free_result($result);
 	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT";
-	$result_auto_inc=$db->query($query_auto_inc);
+	$result_auto_inc=$DB->query($query_auto_inc);
 
 }
 
 ///// FIN FONCTIONS POUR UPDATE LOCATION
 
 function showLocationUpdateForm(){
-	global $db,$lang;
+	global $DB,$LANG;
 
 
 	if (FieldExists("glpi_dropdown_locations", "parentID")) {
@@ -292,18 +292,18 @@ function showLocationUpdateForm(){
 			PRIMARY KEY (`ID`),
 			UNIQUE KEY (`name`,`parentID`), 
 			KEY(`parentID`)) TYPE=MyISAM;";
-		$db->query($query) or die("LOCATION ".$db->error());
+		$DB->query($query) or die("LOCATION ".$DB->error());
 	}
 
 	if (!isset($_POST["validate_location"])){
 		echo "<div align='center'>";
-		echo "<h4>".$lang["update"][130]."</h4>";
-		echo "<p>".$lang["update"][131]."</p>";
-		echo "<p>".$lang["update"][132]."<br>".$lang["update"][133]."</p>";
+		echo "<h4>".$LANG["update"][130]."</h4>";
+		echo "<p>".$LANG["update"][131]."</p>";
+		echo "<p>".$LANG["update"][132]."<br>".$LANG["update"][133]."</p>";
 		echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
-		echo "<p>".$lang["update"][134].": <input type=\"text\" name=\"car_sep\" value=\"".$_POST['car_sep']."\"/></p>";
-		echo "<p>".$lang["update"][135].": <input type=\"text\" name=\"root\" value=\"".$_POST['root']."\"/></p>";
-		echo "<input type=\"submit\" class='submit' name=\"new_location\" value=\"".$lang["buttons"][2]."\" />";
+		echo "<p>".$LANG["update"][134].": <input type=\"text\" name=\"car_sep\" value=\"".$_POST['car_sep']."\"/></p>";
+		echo "<p>".$LANG["update"][135].": <input type=\"text\" name=\"root\" value=\"".$_POST['root']."\"/></p>";
+		echo "<input type=\"submit\" class='submit' name=\"new_location\" value=\"".$LANG["buttons"][2]."\" />";
 		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\" />";
 		echo "</form>";
 		echo "</div>";
@@ -313,13 +313,13 @@ function showLocationUpdateForm(){
 
 	if (isset($_POST["new_location"])){
 		location_create_new($_POST['car_sep'],$_POST['root']);	
-		echo "<h4>".$lang["update"][138].": </h4>";
+		echo "<h4>".$LANG["update"][138].": </h4>";
 		display_old_locations();	
-		echo "<h4>".$lang["update"][137].": </h4>";
+		echo "<h4>".$LANG["update"][137].": </h4>";
 		display_new_locations();	
-		echo "<p>".$lang["update"][136]."</p>";
+		echo "<p>".$LANG["update"][136]."</p>";
 		echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
-		echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"".$lang["buttons"][2]."\" />";
+		echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"".$LANG["buttons"][2]."\" />";
 		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\" />";
 		echo "</form>";
 	}
@@ -335,8 +335,8 @@ function showLocationUpdateForm(){
 
 //test la connection a la base de donn�.
 function test_connect() {
-	global $db;
-	if($db->error == 0) return true;
+	global $DB;
+	if($DB->error == 0) return true;
 	else return false;
 }
 
@@ -344,27 +344,27 @@ function test_connect() {
 function changeVarcharToID($table1, $table2, $chps)
 {
 
-	global $db,$lang;
+	global $DB,$LANG;
 
 	if(!FieldExists($table2, "ID")) {
 		$query = " ALTER TABLE `". $table2 ."` ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
-		$db->query($query) or die("".$lang["update"][90].$db->error());
+		$DB->query($query) or die("".$LANG["update"][90].$DB->error());
 	}
 	$query = "ALTER TABLE $table1 ADD `temp` INT";
-	$db->query($query) or die($lang["update"][90].$db->error());
+	$DB->query($query) or die($LANG["update"][90].$DB->error());
 
 	$query = "select ". $table1 .".ID as row1, ". $table2 .".ID as row2 from ". $table1 .",". $table2 ." where ". $table2 .".name = ". $table1 .".". $chps." ";
-	$result = $db->query($query) or die($lang["update"][90].$db->error());
-	while($line = $db->fetch_array($result)) {
+	$result = $DB->query($query) or die($LANG["update"][90].$DB->error());
+	while($line = $DB->fetch_array($result)) {
 		$query = "update ". $table1 ." set temp = ". $line["row2"] ." where ID = '". $line["row1"] ."'";
-		$db->query($query) or die($lang["update"][90].$db->error());
+		$DB->query($query) or die($LANG["update"][90].$DB->error());
 	}
-	$db->free_result($result);
+	$DB->free_result($result);
 
 	$query = "ALTER TABLE ". $table1 ." DROP ". $chps."";
-	$db->query($query) or die($lang["update"][90].$db->error());
+	$DB->query($query) or die($LANG["update"][90].$DB->error());
 	$query = "ALTER TABLE ". $table1 ." CHANGE `temp` `". $chps ."` INT";
-	$db->query($query) or die($lang["update"][90].$db->error());
+	$DB->query($query) or die($LANG["update"][90].$DB->error());
 }
 
 
@@ -373,7 +373,7 @@ function changeVarcharToID($table1, $table2, $chps)
 function updatedbUpTo031()
 {
 
-	global $db,$lang;
+	global $DB,$LANG;
 	$ret = array();
 
 
@@ -422,18 +422,18 @@ function updatedbUpTo031()
 			`ldap_field_phone` varchar(200) NOT NULL default '',
 			PRIMARY KEY  (`ID`)
 				) TYPE=MyISAM AUTO_INCREMENT=2 ";
-		$db->query($query) or die($lang["update"][90].$db->error());
+		$DB->query($query) or die($LANG["update"][90].$DB->error());
 
 		$query = "INSERT INTO `glpi_config` VALUES (1, '10', '1', '1', '80', '30', '15', ' 0.31', 'GLPI powered by indepnet', '/glpi', '5', '0', '', '', '', '', '', '', 'admsys@xxxxx.fr', 'SIGNATURE', '1', '1', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0','1', '1', '1', 'uid', 'mail', 'physicaldeliveryofficename', 'cn', 'telephonenumber')";
-		$db->query($query) or die($lang["update"][90].$db->error());
+		$DB->query($query) or die($LANG["update"][90].$DB->error());
 
 		echo "<p class='center'>Version > 0.31  </p>";
 	}
 
 	// Get current version
 	$query="SELECT version FROM glpi_config";
-	$result=$db->query($query) or die("get current version".$db->error());
-	$current_version=trim($db->result($result,0,0));
+	$result=$DB->query($query) or die("get current version".$DB->error());
+	$current_version=trim($DB->result($result,0,0));
 
 	switch ($current_version){
 		case "0.31": 
@@ -476,7 +476,7 @@ function updatedbUpTo031()
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.68.2', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
-	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
+	$DB->query($query) or die("0.6 ".$LANG["update"][90].$DB->error());
 
 	optimize_tables();
 
@@ -492,17 +492,17 @@ function updatedbUpTo031()
 
 
 function updateTreeDropdown(){
-	global $db;
+	global $DB;
 
 	// Update Tree dropdown
 	if(!FieldExists("glpi_dropdown_locations","completename")) {
 		$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
-		$db->query($query) or die("0.6 add completename in dropdown_locations ".$lang["update"][90].$db->error());	
+		$DB->query($query) or die("0.6 add completename in dropdown_locations ".$LANG["update"][90].$DB->error());	
 		regenerateTreeCompleteName("glpi_dropdown_locations");
 	}
 	if(!FieldExists("glpi_dropdown_kbcategories","completename")) {
 		$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
-		$db->query($query) or die("0.6 add completename in dropdown_kbcategories ".$lang["update"][90].$db->error());	
+		$DB->query($query) or die("0.6 add completename in dropdown_kbcategories ".$LANG["update"][90].$DB->error());	
 		regenerateTreeCompleteName("glpi_dropdown_kbcategories");
 	}
 }
@@ -547,23 +547,23 @@ if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
 	if(empty($from_install)&&!isset($_POST["from_update"])) {
 		echo "<div align='center'>";
-		echo "<h3><span class='red'>".$lang["update"][105]."</span>";
-		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$lang["update"][106]."</span></a></p>";
+		echo "<h3><span class='red'>".$LANG["update"][105]."</span>";
+		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG["update"][106]."</span></a></p>";
 		echo "</div>";
 	}
 	else {
 		echo "<div align='center'>";
-		echo "<h3><span class='red'>".$lang["update"][91]."</span>".$lang["update"][92]. $db->dbdefault ."</h3>";
+		echo "<h3><span class='red'>".$LANG["update"][91]."</span>".$LANG["update"][92]. $DB->dbdefault ."</h3>";
 
 		echo "<form action=\"update.php\" method=\"post\">";
-		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$lang["install"][25] ."\" />";
+		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$LANG["install"][25] ."\" />";
 		echo "</form></div>";
 	}
 }
 // Step 2  
 else {
 	if(test_connect()) {
-		echo "<h3>".$lang["update"][93]."</h3>";
+		echo "<h3>".$LANG["update"][93]."</h3>";
 		if (!isset($_POST["update_location"])){
 			$current_verison="0.31";
 			if(!TableExists("glpi_config")) {
@@ -573,15 +573,15 @@ else {
 			} else {
 				// Get current version
 				$query="SELECT version FROM glpi_config";
-				$result=$db->query($query) or die("get current version".$db->error());
-				$current_version=trim($db->result($result,0,0));
+				$result=$DB->query($query) or die("get current version".$DB->error());
+				$current_version=trim($DB->result($result,0,0));
 
 				$tab = updateDbUpTo031();
 			}
 
 			echo "<div align='center'>";
 			if(!empty($tab) && $tab["adminchange"]) {
-				echo "<div align='center'> <h2>". $lang["update"][96] ."<h2></div>";
+				echo "<div align='center'> <h2>". $LANG["update"][96] ."<h2></div>";
 			}
 
 			if (showLocationUpdateForm()){
@@ -596,7 +596,7 @@ else {
 						showContentUpdateForm();
 					break;
 					default:
-					echo "<a href=\"../index.php\"><span class='button'>".$lang["install"][64]."</span></a>";
+					echo "<a href=\"../index.php\"><span class='button'>".$LANG["install"][64]."</span></a>";
 					break;
 				}
 			}
@@ -605,7 +605,7 @@ else {
 	}
 	else {
 		echo "<h3> ";
-		echo $lang["update"][95] ."</h3>";
+		echo $LANG["update"][95] ."</h3>";
 	}
 
 }

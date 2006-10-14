@@ -55,7 +55,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	echo "<script type='text/javascript' >\n";
 	echo " new Form.Element.Observer('search_$rand', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownConnectPortDevice.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('results_$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDevice.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           onComplete:function(request)\n";
 	echo "            {Element.hide('search_spinner_$rand');}, \n";
 	echo "           onLoading:function(request)\n";
@@ -65,7 +65,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>\n";
+	echo "<div id='search_spinner_$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
 	echo "<span id='results_$rand'>\n";
 	echo "<select name='item$rand'><option value='0'>------</option></select>\n";

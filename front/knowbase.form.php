@@ -57,7 +57,7 @@ if ($tab["ID"]=="new"){
 
 	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 
-	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][5],$_SERVER["PHP_SELF"]);
 
 	showKbItemForm($_SERVER["PHP_SELF"],"");
 
@@ -71,9 +71,9 @@ else if (isset($_POST["add"])){
 
 
 	$newID=$kb->add($_POST);
-	logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][20]);
+	logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][20]);
 
-	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.php");
+	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
 }
 
 else if (isset($tab["ID"])  && strcmp($tab["modify"],"yes") == 0){
@@ -82,7 +82,7 @@ else if (isset($tab["ID"])  && strcmp($tab["modify"],"yes") == 0){
 	// modifier un item dans la base de connaissance
 
 	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
-	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][5],$_SERVER["PHP_SELF"]);
 
 	showKbItemForm($_SERVER["PHP_SELF"],$tab["ID"]);
 
@@ -98,9 +98,9 @@ else if (isset($_POST["update"])){
 	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 
 	$kb->update($_POST);
-	logEvent($tab["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][21]);	
+	logEvent($tab["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][21]);	
 
-	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
 }
 
 else if (isset($tab["ID"])  && strcmp($tab["delete"],"yes") == 0){
@@ -111,8 +111,8 @@ else if (isset($tab["ID"])  && strcmp($tab["delete"],"yes") == 0){
 	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 
 	$kb->delete($tab);
-	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$lang["log"][22]);	
-	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.php");
+	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][22]);	
+	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
 }
 
 
@@ -127,7 +127,7 @@ else if (isset($tab["ID"])  && strcmp($tab["addtofaq"],"yes") == 0){
 
 
 
-	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
 }
 
 
@@ -143,17 +143,17 @@ else if (isset($tab["ID"])  && strcmp($tab["removefromfaq"],"yes") == 0){
 
 
 
-	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$tab["ID"]);
 }
 
 else if (empty($tab["ID"])) {
-	glpi_header($cfg_glpi["root_doc"]."/front/knowbase.php");
+	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
 }		
 
 else  {
 	// Affiche un item de la base de connaissances
 	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
-	commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][5],$_SERVER["PHP_SELF"]);
 
 
 	if (ShowKbItemFull($tab["ID"])){

@@ -63,9 +63,9 @@ function report_perso($item_type,$query)
 	//pour un type de materiel ($item_type) 
 {
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 
 
@@ -74,19 +74,19 @@ function report_perso($item_type,$query)
 		case 'glpi_computers' :
 
 
-			echo " <div align='center'><strong>".$lang["reports"][6]."</strong>";
+			echo " <div align='center'><strong>".$LANG["reports"][6]."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr>";
-			echo "<th>".$lang["common"][16]."</th>";
-			echo "<th>".$lang["common"][28]."</th>";
-			echo "<th>".$lang["common"][15]."</th>";
-			echo "<th>".$lang["financial"][14]."</th>";
-			echo "<th>".$lang["financial"][80]."</th>";
-			echo "<th>".$lang["financial"][6]."</th>";
-			echo "<th>".$lang["search"][8]."</th>";
-			echo "<th>".$lang["search"][9]."</th>";
+			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th>".$LANG["common"][28]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["financial"][14]."</th>";
+			echo "<th>".$LANG["financial"][80]."</th>";
+			echo "<th>".$LANG["financial"][6]."</th>";
+			echo "<th>".$LANG["search"][8]."</th>";
+			echo "<th>".$LANG["search"][9]."</th>";
 			echo "</tr>";
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 
 				$name = $ligne['itemname'];
@@ -117,20 +117,20 @@ function report_perso($item_type,$query)
 
 		case 'glpi_printers' :
 
-			echo "<div align='center'><strong>".$lang["reports"][7]."</strong>";
+			echo "<div align='center'><strong>".$LANG["reports"][7]."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$lang["common"][16]."</th>";
-			echo "<th>".$lang["common"][28]."</th>";
-			echo "<th>".$lang["common"][15]."</th>";
-			echo "<th>".$lang["financial"][14]."</th>";
-			echo "<th>".$lang["financial"][80]."</th>";
-			echo "<th>".$lang["financial"][6]."</th>";
-			echo "<th>".$lang["search"][8]."</th>";
-			echo "<th>".$lang["search"][9]."</th>";
+			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th>".$LANG["common"][28]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["financial"][14]."</th>";
+			echo "<th>".$LANG["financial"][80]."</th>";
+			echo "<th>".$LANG["financial"][6]."</th>";
+			echo "<th>".$LANG["search"][8]."</th>";
+			echo "<th>".$LANG["search"][9]."</th>";
 			echo "</tr>";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$name = $ligne['itemname'];
 				$deleted = $ligne['itemdeleted'];
@@ -158,20 +158,20 @@ function report_perso($item_type,$query)
 
 		case 'glpi_monitors' :
 
-			echo " <div align='center'><strong>".$lang["reports"][9]."</strong>";
+			echo " <div align='center'><strong>".$LANG["reports"][9]."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$lang["common"][16]."</th>";
-			echo "<th>".$lang["common"][28]."</th>";
-			echo "<th>".$lang["common"][15]."</th>";
-			echo "<th>".$lang["financial"][14]."</th>";
-			echo "<th>".$lang["financial"][80]."</th>";
-			echo "<th>".$lang["financial"][6]."</th>";
-			echo "<th>".$lang["search"][8]."</th>";
-			echo "<th>".$lang["search"][9]."</th>";
+			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th>".$LANG["common"][28]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["financial"][14]."</th>";
+			echo "<th>".$LANG["financial"][80]."</th>";
+			echo "<th>".$LANG["financial"][6]."</th>";
+			echo "<th>".$LANG["search"][8]."</th>";
+			echo "<th>".$LANG["search"][9]."</th>";
 			echo "</tr>";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$name = $ligne['itemname'];
 				$deleted = $ligne['itemdeleted'];
@@ -199,20 +199,20 @@ function report_perso($item_type,$query)
 
 		case 'glpi_networking' :
 
-			echo "<div align='center'> <strong>".$lang["reports"][8]."</strong>";
+			echo "<div align='center'> <strong>".$LANG["reports"][8]."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$lang["common"][16]."</th>";
-			echo "<th>".$lang["common"][28]."</th>";
-			echo "<th>".$lang["common"][15]."</th>";
-			echo "<th>".$lang["financial"][14]."</th>";
-			echo "<th>".$lang["financial"][80]."</th>";
-			echo "<th>".$lang["financial"][6]."</th>";
-			echo "<th>".$lang["search"][8]."</th>";
-			echo "<th>".$lang["search"][9]."</th>";
+			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th>".$LANG["common"][28]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["financial"][14]."</th>";
+			echo "<th>".$LANG["financial"][80]."</th>";
+			echo "<th>".$LANG["financial"][6]."</th>";
+			echo "<th>".$LANG["search"][8]."</th>";
+			echo "<th>".$LANG["search"][9]."</th>";
 			echo "</tr>";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$name = $ligne['itemname'];
 				$deleted = $ligne['itemdeleted'];
@@ -239,20 +239,20 @@ function report_perso($item_type,$query)
 			break;
 		case 'glpi_peripherals' :
 
-			echo " <div align='center'><strong>".$lang["reports"][29]."</strong>";
+			echo " <div align='center'><strong>".$LANG["reports"][29]."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$lang["common"][16]."</th>";
-			echo "<th>".$lang["common"][28]."</th>";
-			echo "<th>".$lang["common"][15]."</th>";
-			echo "<th>".$lang["financial"][14]."</th>";
-			echo "<th>".$lang["financial"][80]."</th>";
-			echo "<th>".$lang["financial"][6]."</th>";
-			echo "<th>".$lang["search"][8]."</th>";
-			echo "<th>".$lang["search"][9]."</th>";
+			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th>".$LANG["common"][28]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["financial"][14]."</th>";
+			echo "<th>".$LANG["financial"][80]."</th>";
+			echo "<th>".$LANG["financial"][6]."</th>";
+			echo "<th>".$LANG["search"][8]."</th>";
+			echo "<th>".$LANG["search"][9]."</th>";
 			echo "</tr>";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$name = $ligne['itemname'];
 				$deleted = $ligne['itemdeleted'];
@@ -279,20 +279,20 @@ function report_perso($item_type,$query)
 			break;
 		case 'glpi_phones' :
 
-			echo " <b><strong>".$lang["reports"][64]."</strong></b>";
+			echo " <b><strong>".$LANG["reports"][64]."</strong></b>";
 			echo "<table  class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th><div align='center'><b>".$lang["common"][16]."</b></div></th>";
-			echo "<th><div align='center'><b>".$lang["common"][28]."</b></div></th>";
-			echo "<th><div align='center'><b>".$lang["common"][15]."</b></div></th>";
-			echo "<th><div align='center'><b>".$lang["financial"][14]."</b></div></th>";
-			echo "<th><div align='center'><b>".$lang["financial"][80]."</b></div></th>";
-			echo "<th><div align='center'><b>".$lang["financial"][6]."</b></div></th>";
-			echo "<th><div align='center'><b>".$lang["search"][8]."</b></div></th>";
-			echo "<th><div align='center'><b>".$lang["search"][9]."</b></div></th>";
+			echo "<th><div align='center'><b>".$LANG["common"][16]."</b></div></th>";
+			echo "<th><div align='center'><b>".$LANG["common"][28]."</b></div></th>";
+			echo "<th><div align='center'><b>".$LANG["common"][15]."</b></div></th>";
+			echo "<th><div align='center'><b>".$LANG["financial"][14]."</b></div></th>";
+			echo "<th><div align='center'><b>".$LANG["financial"][80]."</b></div></th>";
+			echo "<th><div align='center'><b>".$LANG["financial"][6]."</b></div></th>";
+			echo "<th><div align='center'><b>".$LANG["search"][8]."</b></div></th>";
+			echo "<th><div align='center'><b>".$LANG["search"][9]."</b></div></th>";
 			echo "</tr>";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$name = $ligne['itemname'];
 				$deleted = $ligne['itemdeleted'];
@@ -320,20 +320,20 @@ function report_perso($item_type,$query)
 
 		case 'glpi_software' :
 
-			echo "<div align='center'> <strong>".$lang["reports"][55]."</strong>";
+			echo "<div align='center'> <strong>".$LANG["reports"][55]."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$lang["common"][16]."</th>";
-			echo "<th>".$lang["common"][28]."</th>";
-			echo "<th>".$lang["common"][15]."</th>";
-			echo "<th>".$lang["financial"][14]."</th>";
-			echo "<th>".$lang["financial"][80]."</th>";
-			echo "<th>".$lang["financial"][6]."</th>";
-			echo "<th>".$lang["search"][8]."</th>";
-			echo "<th>".$lang["search"][9]."</th>";
+			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th>".$LANG["common"][28]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["financial"][14]."</th>";
+			echo "<th>".$LANG["financial"][80]."</th>";
+			echo "<th>".$LANG["financial"][6]."</th>";
+			echo "<th>".$LANG["search"][8]."</th>";
+			echo "<th>".$LANG["search"][9]."</th>";
 			echo "</tr>";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$name = $ligne['itemname'];
 				$deleted = $ligne['itemdeleted'];
@@ -362,19 +362,19 @@ function report_perso($item_type,$query)
 		case 'glpi_networking_lieu' :
 			echo "<div align='center'><table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$lang["common"][15]."</th>";
-			echo "<th>".$lang["reports"][37]."</th>";
-			echo "<th>".$lang["reports"][52]."</th>";
-			echo "<th>".$lang["reports"][38]."</th>";
-			echo "<th>".$lang["reports"][46]."</th>";
-			echo "<th>".$lang["reports"][53]."</th>";
-			echo "<th>".$lang["reports"][47]."</th>";
-			echo "<th>".$lang["reports"][38]."</th>";
-			echo "<th>".$lang["reports"][53]."</th>";
-			echo "<th>".$lang["reports"][36]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["reports"][37]."</th>";
+			echo "<th>".$LANG["reports"][52]."</th>";
+			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG["reports"][46]."</th>";
+			echo "<th>".$LANG["reports"][53]."</th>";
+			echo "<th>".$LANG["reports"][47]."</th>";
+			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG["reports"][53]."</th>";
+			echo "<th>".$LANG["reports"][36]."</th>";
 			echo "</tr>";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$lieu=getTreeValueCompleteName("glpi_dropdown_locations",$ligne["location"]);
 				//echo $ligne['location'];
@@ -432,16 +432,16 @@ function report_perso($item_type,$query)
 			echo "<div align='center'><table class='tab_cadre_report'>";
 			echo "<tr> ";
 			echo "<th>&nbsp;</th>";
-			echo "<th>".$lang["reports"][46]."</th>";
-			echo "<th>".$lang["reports"][38]."</th>";
-			echo "<th>".$lang["reports"][53]."</th>";
-			echo "<th>".$lang["reports"][47]."</th>";
-			echo "<th>".$lang["reports"][38]."</th>";
-			echo "<th>".$lang["reports"][53]."</th>";
-			echo "<th>".$lang["reports"][36]."</th>";
+			echo "<th>".$LANG["reports"][46]."</th>";
+			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG["reports"][53]."</th>";
+			echo "<th>".$LANG["reports"][47]."</th>";
+			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG["reports"][53]."</th>";
+			echo "<th>".$LANG["reports"][36]."</th>";
 			echo "</tr>\n";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$switch = $ligne['switch'];
 				//echo $ligne['location'];
@@ -487,18 +487,18 @@ function report_perso($item_type,$query)
 		case 'glpi_networking_prise' :
 			echo "<div align='center'><table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$lang["common"][15]."</th>";
-			echo "<th>".$lang["reports"][52]."</th>";
-			echo "<th>".$lang["reports"][38]."</th>";
-			echo "<th>".$lang["reports"][46]."</th>";
-			echo "<th>".$lang["reports"][53]."</th>";
-			echo "<th>".$lang["reports"][47]."</th>";
-			echo "<th>".$lang["reports"][38]."</th>";
-			echo "<th>".$lang["reports"][53]."</th>";
-			echo "<th>".$lang["reports"][36]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["reports"][52]."</th>";
+			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG["reports"][46]."</th>";
+			echo "<th>".$LANG["reports"][53]."</th>";
+			echo "<th>".$LANG["reports"][47]."</th>";
+			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG["reports"][53]."</th>";
+			echo "<th>".$LANG["reports"][36]."</th>";
 			echo "</tr>";
 
-			while( $ligne = $db->fetch_array($result))
+			while( $ligne = $DB->fetch_array($result))
 			{
 				$prise=$ligne['prise'];
 				$ID=$ligne['ID'];

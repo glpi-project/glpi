@@ -47,29 +47,29 @@ class Group extends CommonDBTM{
 	}
 
 	function cleanDBonPurge($ID) {
-		global $db,$cfg_glpi,$LINK_ID_TABLE;
+		global $DB,$CFG_GLPI,$LINK_ID_TABLE;
 
 		$query = "DELETE from glpi_users_groups WHERE FK_groups = '$ID'";
-		$db->query($query);
+		$DB->query($query);
 
-		foreach ($cfg_glpi["linkuser_type"] as $type){
+		foreach ($CFG_GLPI["linkuser_type"] as $type){
 			$query2="UPDATE ".$LINK_ID_TABLE[$type]." SET FK_groups=0 WHERE FK_groups='$ID';";
-			$db->query($query2);
+			$DB->query($query2);
 		}
 	}
 
 	function post_getEmpty () {
-		global $cfg_glpi;
-		$this->fields["ldap_field"]=$cfg_glpi["ldap_field_group"];
+		global $CFG_GLPI;
+		$this->fields["ldap_field"]=$CFG_GLPI["ldap_field_group"];
 	}
 
 
 	function defineOnglets($withtemplate){
-		global $lang;
+		global $LANG;
 		if (haveRight("user","r"))	
-			$ong[1]=$lang["Menu"][14];
+			$ong[1]=$LANG["Menu"][14];
 
-		$ong[2]=$lang["common"][1];
+		$ong[2]=$LANG["common"][1];
 		return $ong;
 	}
 
@@ -85,12 +85,12 @@ class Group extends CommonDBTM{
 	 *
 	 **/
 	function title(){
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/groupes.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/groupes.png\" alt='".$LANG["financial"][24]."' title='".$LANG["financial"][24]."'></td>";
 		if (haveRight("group","w")){
-			echo "<td><a  class='icon_consol' href=\"group.form.php?new=1\"><b>".$lang["setup"][602]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$lang["setup"][602]."</b></span></td>";
+			echo "<td><a  class='icon_consol' href=\"group.form.php?new=1\"><b>".$LANG["setup"][602]."</b></a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["setup"][602]."</b></span></td>";
 		echo "</tr></table></div>";
 	}
 
@@ -109,7 +109,7 @@ class Group extends CommonDBTM{
 	 **/
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		if (!haveRight("group","r")) return false;
 
@@ -127,10 +127,10 @@ class Group extends CommonDBTM{
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 			echo "<tr><th colspan='2'><b>";
 			if (empty($ID)) {
-				echo $lang["setup"][605].":";
+				echo $LANG["setup"][605].":";
 
 			} else {
-				echo $lang["common"][35]." ID $ID:";
+				echo $LANG["common"][35]." ID $ID:";
 			}		
 			echo "</b></th></tr>";
 
@@ -138,30 +138,30 @@ class Group extends CommonDBTM{
 
 			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$lang["common"][16].":	</td>";
+			echo "<tr><td>".$LANG["common"][16].":	</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_groups","name",$this->fields["name"],30);	
 			echo "</td></tr>";
 
-			if(!empty($cfg_glpi["ldap_host"])){
-				echo "<tr><td colspan='2' align='center'>".$lang["setup"][256].":	</td>";
+			if(!empty($CFG_GLPI["ldap_host"])){
+				echo "<tr><td colspan='2' align='center'>".$LANG["setup"][256].":	</td>";
 				echo "</tr>";
 
-				echo "<tr><td>".$lang["setup"][260].":	</td>";
+				echo "<tr><td>".$LANG["setup"][260].":	</td>";
 				echo "<td>";
 				autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],30);	
 				echo "</td></tr>";
 
-				echo "<tr><td>".$lang["setup"][601].":	</td>";
+				echo "<tr><td>".$LANG["setup"][601].":	</td>";
 				echo "<td>";
 				autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],30);	
 				echo "</td></tr>";
 
-				echo "<tr><td colspan='2' align='center'>".$lang["setup"][257].":	</td>";
+				echo "<tr><td colspan='2' align='center'>".$LANG["setup"][257].":	</td>";
 				echo "</tr>";
 
 
-				echo "<tr><td>".$lang["setup"][261].":	</td>";
+				echo "<tr><td>".$LANG["setup"][261].":	</td>";
 				echo "<td>";
 				autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],30);	
 				echo "</td></tr>";
@@ -174,7 +174,7 @@ class Group extends CommonDBTM{
 			echo "<td class='tab_bg_1' valign='top'>";
 
 			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-			echo $lang["common"][25].":	</td></tr>";
+			echo $LANG["common"][25].":	</td></tr>";
 			echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 			echo "</td></tr></table>";
 
@@ -186,7 +186,7 @@ class Group extends CommonDBTM{
 
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -196,10 +196,10 @@ class Group extends CommonDBTM{
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></div>";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2' valign='top'>\n";
-					echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 
 					echo "</td>";
 					echo "</tr>";
@@ -208,7 +208,7 @@ class Group extends CommonDBTM{
 			echo "</table></div></form>";
 
 		} else {
-			echo "<div align='center'><b>".$lang["financial"][38]."</b></div>";
+			echo "<div align='center'><b>".$LANG["financial"][38]."</b></div>";
 			return false;
 
 		}

@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("peripheral","r");
 
-commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][7],$_SERVER["PHP_SELF"]);
 
 $peripheral=new Peripheral();
 $peripheral->title();

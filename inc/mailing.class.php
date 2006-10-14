@@ -50,21 +50,21 @@ class glpi_phpmailer extends phpmailer {
 
 
 	function glpi_phpmailer(){
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		// Comes from config
 
-		if($cfg_glpi['smtp_mode'] == '1') {
-			$this->Host = $cfg_glpi['smtp_host'];
-			$this->Port = $cfg_glpi['smtp_port'];
+		if($CFG_GLPI['smtp_mode'] == '1') {
+			$this->Host = $CFG_GLPI['smtp_host'];
+			$this->Port = $CFG_GLPI['smtp_port'];
 
-			if($cfg_glpi['smtp_username'] != '') {
+			if($CFG_GLPI['smtp_username'] != '') {
 				$this->SMTPAuth  = true;
-				$this->Username  = $cfg_glpi['smtp_username'];
-				$this->Password  =  $cfg_glpi['smtp_password'];
+				$this->Username  = $CFG_GLPI['smtp_username'];
+				$this->Password  =  $CFG_GLPI['smtp_password'];
 			}
 
-			if($cfg_glpi['debug']=="2"){
+			if($CFG_GLPI['debug']=="2"){
 				$this->SMTPDebug    = TRUE;
 			}
 
@@ -118,29 +118,29 @@ class Mailing
 	 */
 	function get_users_to_send_mail()
 	{
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 
 		$emails=array();
 
 		$query="SELECT * FROM glpi_mailing WHERE type='".$this->type."'";
-		$result=$db->query($query);
-		if ($db->numrows($result)){
-			while ($data=$db->fetch_assoc($result)){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)){
+			while ($data=$DB->fetch_assoc($result)){
 				switch ($data["item_type"]){
 					case USER_MAILING_TYPE :
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
-									$emails[]=$cfg_glpi["admin_email"];
+								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails))
+									$emails[]=$CFG_GLPI["admin_email"];
 								break;
 								// ASSIGN SEND
 							case ASSIGN_MAILING :
 								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
 									$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
-									if ($result2 = $db->query($query2)) {
-										if ($db->numrows($result2)==1){
-											$row = $db->fetch_row($result2);
+									if ($result2 = $DB->query($query2)) {
+										if ($DB->numrows($result2)==1){
+											$row = $DB->fetch_row($result2);
 											if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
 												$emails[]=$row[0];
 											}
@@ -158,9 +158,9 @@ class Mailing
 							case OLD_ASSIGN_MAILING :
 								if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
 									$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["_old_assign"]."')";
-									if ($result2 = $db->query($query2)) {
-										if ($db->numrows($result2)==1){
-											$row = $db->fetch_row($result2);
+									if ($result2 = $DB->query($query2)) {
+										if ($DB->numrows($result2)==1){
+											$row = $DB->fetch_row($result2);
 											if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
 												$emails[]=$row[0];
 											}
@@ -175,9 +175,9 @@ class Mailing
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									if (isset($ci->obj->fields["tech_num"])&&$ci->obj->fields["tech_num"]>0){
 										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->obj->fields["tech_num"]."')";
-										if ($result2 = $db->query($query2)) {
-											if ($db->numrows($result2)==1){
-												$row = $db->fetch_row($result2);
+										if ($result2 = $DB->query($query2)) {
+											if ($DB->numrows($result2)==1){
+												$row = $DB->fetch_row($result2);
 												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
 													$emails[]=$row[0];
 												}
@@ -194,9 +194,9 @@ class Mailing
 									print_r($ci);
 									if (isset($ci->obj->fields["FK_users"])&&$ci->obj->fields["FK_users"]>0){
 										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->obj->fields["FK_users"]."')";
-										if ($result2 = $db->query($query2)) {
-											if ($db->numrows($result2)==1){
-												$row = $db->fetch_row($result2);
+										if ($result2 = $DB->query($query2)) {
+											if ($DB->numrows($result2)==1){
+												$row = $DB->fetch_row($result2);
 												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
 													$emails[]=$row[0];
 												}
@@ -210,9 +210,9 @@ class Mailing
 						break;
 					case PROFILE_MAILING_TYPE :
 						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'";
-						if ($result2= $db->query($query)){
-							if ($db->numrows($result2))
-								while ($data=$db->fetch_assoc($result2)){
+						if ($result2= $DB->query($query)){
+							if ($DB->numrows($result2))
+								while ($data=$DB->fetch_assoc($result2)){
 									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 										$emails[]=$data["EMAIL"];
 									}
@@ -222,9 +222,9 @@ class Mailing
 					case GROUP_MAILING_TYPE :
 						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
 
-						if ($result2= $db->query($query)){
-							if ($db->numrows($result2))
-								while ($data=$db->fetch_assoc($result2)){
+						if ($result2= $DB->query($query)){
+							if ($DB->numrows($result2))
+								while ($data=$DB->fetch_assoc($result2)){
 									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 										$emails[]=$data["EMAIL"];
 									}
@@ -244,35 +244,35 @@ class Mailing
 	 */
 	function get_mail_body($format="text")
 	{
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		// Create message body from Job and type
 		$body="";
 
 		if($format=="html"){
-			if ($cfg_glpi["url_in_mail"]&&!empty($cfg_glpi["url_base"])){
-				$body.="URL :<a href=\" ".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\">".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]." </a><br><br>";
+			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
+				$body.="URL :<a href=\" ".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\">".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]." </a><br><br>";
 
 			}
 
 			$body.=$this->job->textDescription("html");
 			$body.=$this->job->textFollowups("html");
 
-			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+			$body.="<br>-- <br>".$CFG_GLPI["mailing_signature"];
 			$body.="</body></html>";
 			$body=ereg_replace("\n","<br>",$body);
 
 		}else{ // text format
 
-			if ($cfg_glpi["url_in_mail"]&&!empty($cfg_glpi["url_base"])){
-				$body.=$lang["mailing"][1]."\n"; $body.="URL : ".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
+			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
+				$body.=$LANG["mailing"][1]."\n"; $body.="URL : ".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
 
 			}
 
 			$body.=$this->job->textDescription();
 			$body.=$this->job->textFollowups();
 
-			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
+			$body.="\n-- \n".$CFG_GLPI["mailing_signature"];
 			$body=ereg_replace("<br />","\n",$body);
 			$body=ereg_replace("<br>","\n",$body);
 		}
@@ -286,29 +286,29 @@ class Mailing
 	 */
 	function get_mail_subject()
 	{
-		global $lang;
+		global $LANG;
 
 		// Create the message subject 
 		$subject=sprintf("%s%07d%s","[GLPI #",$this->job->fields["ID"],"] ");
 
 		switch ($this->type){
 			case "new":
-				$subject.=$lang["mailing"][9];
+				$subject.=$LANG["mailing"][9];
 			break;
 			case "attrib":
-				$subject.=$lang["mailing"][12];
+				$subject.=$LANG["mailing"][12];
 			break;
 			case "followup":
-				$subject.=$lang["mailing"][10];
+				$subject.=$LANG["mailing"][10];
 			break;
 			case "update":
-				$subject.=$lang["mailing"][30];
+				$subject.=$LANG["mailing"][30];
 			break;
 			case "finish":
-				$subject.=$lang["mailing"][11]." ".convDateTime($this->job->fields["closedate"]);			
+				$subject.=$LANG["mailing"][11]." ".convDateTime($this->job->fields["closedate"]);			
 			break;
 			default :
-			$subject.=$lang["mailing"][13];
+			$subject.=$LANG["mailing"][13];
 			break;
 		}
 
@@ -323,21 +323,21 @@ class Mailing
 	 */
 	function get_reply_to_address ()
 	{
-		global $cfg_glpi;
+		global $CFG_GLPI;
 		$replyto="";
 
 		switch ($this->type){
 			case "new":
 				if (isValidEmail($this->job->fields["uemail"])) $replyto=$this->job->fields["uemail"];
-				else $replyto=$cfg_glpi["admin_email"];
+				else $replyto=$CFG_GLPI["admin_email"];
 				break;
 				case "followup":
 					case "update":
 					if (isValidEmail($this->user->fields["email"])) $replyto=$this->user->fields["email"];
-					else $replyto=$cfg_glpi["admin_email"];
+					else $replyto=$CFG_GLPI["admin_email"];
 					break;
 			default :
-					$replyto=$cfg_glpi["admin_email"];
+					$replyto=$CFG_GLPI["admin_email"];
 					break;
 		}
 		return $replyto;		
@@ -351,8 +351,8 @@ class Mailing
 	 */
 	function send()
 	{
-		global $cfg_glpi;
-		if ($cfg_glpi["mailing"])
+		global $CFG_GLPI;
+		if ($CFG_GLPI["mailing"])
 		{
 			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($this->type,"new")||strcmp($this->type,"attrib")||strcmp($this->type,"followup")||strcmp($this->type,"finish")))
 			{
@@ -361,7 +361,7 @@ class Mailing
 				// get subject OK
 				$subject=$this->get_mail_subject();
 				// get sender :  OK
-				$sender= $cfg_glpi["admin_email"];
+				$sender= $CFG_GLPI["admin_email"];
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
@@ -424,21 +424,21 @@ class MailingResa{
 	 */
 	function get_users_to_send_mail()
 	{
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 
 		$emails=array();
 
 		$query="SELECT * FROM glpi_mailing WHERE type='resa'";
-		$result=$db->query($query);
-		if ($db->numrows($result)){
-			while ($data=$db->fetch_assoc($result)){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)){
+			while ($data=$DB->fetch_assoc($result)){
 				switch ($data["item_type"]){
 					case USER_MAILING_TYPE :
 						switch ($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
-									$emails[]=$cfg_glpi["admin_email"];
+								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails))
+									$emails[]=$CFG_GLPI["admin_email"];
 								break;
 								// AUTHOR SEND
 							case AUTHOR_MAILING :
@@ -454,9 +454,9 @@ class MailingResa{
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
 									if (isset($ri->obj->fields["tech_num"])&&$ri->obj->fields["tech_num"]>0){
 										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ri->obj->fields["tech_num"]."')";
-										if ($result2 = $db->query($query2)) {
-											if ($db->numrows($result2)==1){
-												$row = $db->fetch_row($result2);
+										if ($result2 = $DB->query($query2)) {
+											if ($DB->numrows($result2)==1){
+												$row = $DB->fetch_row($result2);
 												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
 													$emails[]=$row[0];
 												}
@@ -471,9 +471,9 @@ class MailingResa{
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
 									if (isset($ri->obj->fields["FK_users"])&&$ri->obj->fields["FK_users"]>0){
 										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ri->obj->fields["FK_users"]."')";
-										if ($result2 = $db->query($query2)) {
-											if ($db->numrows($result2)==1){
-												$row = $db->fetch_row($result2);
+										if ($result2 = $DB->query($query2)) {
+											if ($DB->numrows($result2)==1){
+												$row = $DB->fetch_row($result2);
 												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
 													$emails[]=$row[0];
 												}
@@ -487,9 +487,9 @@ class MailingResa{
 						break;
 					case PROFILE_MAILING_TYPE :
 						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'";
-						if ($result2= $db->query($query)){
-							if ($db->numrows($result2))
-								while ($data=$db->fetch_assoc($result2)){
+						if ($result2= $DB->query($query)){
+							if ($DB->numrows($result2))
+								while ($data=$DB->fetch_assoc($result2)){
 									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 										$emails[]=$data["EMAIL"];
 									}
@@ -498,9 +498,9 @@ class MailingResa{
 						break;
 					case GROUP_MAILING_TYPE :
 						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
-						if ($result2= $db->query($query)){
-							if ($db->numrows($result2))
-								while ($data=$db->fetch_assoc($result2)){
+						if ($result2= $DB->query($query)){
+							if ($DB->numrows($result2))
+								while ($data=$DB->fetch_assoc($result2)){
 									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 										$emails[]=$data["EMAIL"];
 									}
@@ -520,7 +520,7 @@ class MailingResa{
 	 */
 	function get_mail_body($format="text")
 	{
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		// Create message body from Job and type
 		$body="";
@@ -528,13 +528,13 @@ class MailingResa{
 		if($format=="html"){
 
 			$body.=$this->resa->textDescription("html");
-			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+			$body.="<br>-- <br>".$CFG_GLPI["mailing_signature"];
 			$body.="</body></html>";
 			$body=ereg_replace("\n","<br>",$body);
 		}else{ // text format
 
 			$body.=$this->resa->textDescription();
-			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
+			$body.="\n-- \n".$CFG_GLPI["mailing_signature"];
 			$body=ereg_replace("<br />","\n",$body);
 			$body=ereg_replace("<br>","\n",$body);
 		}
@@ -546,13 +546,13 @@ class MailingResa{
 	 */
 	function get_mail_subject()
 	{
-		global $lang;
+		global $LANG;
 
 		// Create the message subject 
 		if ($this->type=="new")
-			$subject="[GLPI] ".$lang["mailing"][19];
-		else if ($this->type=="update") $subject="[GLPI] ".$lang["mailing"][23];
-		else if ($this->type=="delete") $subject="[GLPI] ".$lang["mailing"][29];
+			$subject="[GLPI] ".$LANG["mailing"][19];
+		else if ($this->type=="update") $subject="[GLPI] ".$LANG["mailing"][23];
+		else if ($this->type=="delete") $subject="[GLPI] ".$LANG["mailing"][29];
 
 		return $subject;
 	}
@@ -563,15 +563,15 @@ class MailingResa{
 	 */
 	function get_reply_to_address ()
 	{
-		global $cfg_glpi;
+		global $CFG_GLPI;
 		$replyto="";
 
 		$user = new User;
 		if ($user->getFromDB($this->resa->fields["id_user"])){
 			if (isValidEmail($user->fields["email"])) $replyto=$user->fields["email"];		
-			else $replyto=$cfg_glpi["admin_email"];
+			else $replyto=$CFG_GLPI["admin_email"];
 		}
-		else $replyto=$cfg_glpi["admin_email"];		
+		else $replyto=$CFG_GLPI["admin_email"];		
 
 		return $replyto;		
 	}
@@ -584,8 +584,8 @@ class MailingResa{
 	 */
 	function send()
 	{
-		global $cfg_glpi;
-		if ($cfg_glpi["mailing"]&&isValidEmail($cfg_glpi["admin_email"]))
+		global $CFG_GLPI;
+		if ($CFG_GLPI["mailing"]&&isValidEmail($CFG_GLPI["admin_email"]))
 		{
 			// get users to send mail
 			$users=$this->get_users_to_send_mail();
@@ -593,7 +593,7 @@ class MailingResa{
 			// get subject OK
 			$subject=$this->get_mail_subject();
 			// get sender :  OK
-			$sender= $cfg_glpi["admin_email"];
+			$sender= $CFG_GLPI["admin_email"];
 			// get reply-to address : user->email ou job_email if not set OK
 			$replyto=$this->get_reply_to_address ();
 
@@ -657,29 +657,29 @@ class MailingAlert
 	 */
 	function get_users_to_send_mail()
 	{
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 
 		$emails=array();
 
 		$query="SELECT * FROM glpi_mailing WHERE type='".$this->type."'";
-		$result=$db->query($query);
-		if ($db->numrows($result)){
-			while ($data=$db->fetch_assoc($result)){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)){
+			while ($data=$DB->fetch_assoc($result)){
 				switch ($data["item_type"]){
 					case USER_MAILING_TYPE :
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($cfg_glpi["admin_email"])&&!in_array($cfg_glpi["admin_email"],$emails))
-									$emails[]=$cfg_glpi["admin_email"];
+								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails))
+									$emails[]=$CFG_GLPI["admin_email"];
 								break;
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
 						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'";
-						if ($result2= $db->query($query)){
-							if ($db->numrows($result2))
-								while ($data=$db->fetch_assoc($result2)){
+						if ($result2= $DB->query($query)){
+							if ($DB->numrows($result2))
+								while ($data=$DB->fetch_assoc($result2)){
 									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 										$emails[]=$data["EMAIL"];
 									}
@@ -689,9 +689,9 @@ class MailingAlert
 					case GROUP_MAILING_TYPE :
 						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
 
-						if ($result2= $db->query($query)){
-							if ($db->numrows($result2))
-								while ($data=$db->fetch_assoc($result2)){
+						if ($result2= $DB->query($query)){
+							if ($DB->numrows($result2))
+								while ($data=$DB->fetch_assoc($result2)){
 									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
 										$emails[]=$data["EMAIL"];
 									}
@@ -711,7 +711,7 @@ class MailingAlert
 	 */
 	function get_mail_body($format="text")
 	{
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		// Create message body from Job and type
 		$body="";
@@ -719,13 +719,13 @@ class MailingAlert
 		if($format=="html"){
 
 			$body.=$this->message;
-			$body.="<br>-- <br>".$cfg_glpi["mailing_signature"];
+			$body.="<br>-- <br>".$CFG_GLPI["mailing_signature"];
 			$body.="</body></html>";
 			$body=ereg_replace("\n","<br>",$body);
 		}else{ // text format
 
 			$body.=$this->message;
-			$body.="\n-- \n".$cfg_glpi["mailing_signature"];
+			$body.="\n-- \n".$CFG_GLPI["mailing_signature"];
 			$body=ereg_replace("<br />","\n",$body);
 			$body=ereg_replace("<br>","\n",$body);
 		}
@@ -738,23 +738,23 @@ class MailingAlert
 	 */
 	function get_mail_subject()
 	{
-		global $lang;
+		global $LANG;
 
 		// Create the message subject 
 		$subject="[GLPI]";
 
 		switch ($this->type){
 			case "alertcartridge":
-				$subject.=" ".$lang["mailing"][33];
+				$subject.=" ".$LANG["mailing"][33];
 			break;
 			case "alertconsumable":
-				$subject.=" ".$lang["mailing"][36];
+				$subject.=" ".$LANG["mailing"][36];
 			break;
 			case "alertcontract":
-				$subject.=" ".$lang["mailing"][39];
+				$subject.=" ".$LANG["mailing"][39];
 			break;
 			case "alertinfocom":
-				$subject.=" ".$lang["mailing"][41];
+				$subject.=" ".$LANG["mailing"][41];
 			break;
 		}
 		return $subject;
@@ -766,8 +766,8 @@ class MailingAlert
 	 */
 	function get_reply_to_address ()
 	{
-		global $cfg_glpi;
-		$replyto=$cfg_glpi["admin_email"];
+		global $CFG_GLPI;
+		$replyto=$CFG_GLPI["admin_email"];
 
 		return $replyto;		
 	}
@@ -780,15 +780,15 @@ class MailingAlert
 	 */
 	function send()
 	{
-		global $cfg_glpi;
-		if ($cfg_glpi["mailing"])
+		global $CFG_GLPI;
+		if ($CFG_GLPI["mailing"])
 		{
 			// get users to send mail
 			$users=$this->get_users_to_send_mail();
 			// get subject OK
 			$subject=$this->get_mail_subject();
 			// get sender :  OK
-			$sender= $cfg_glpi["admin_email"];
+			$sender= $CFG_GLPI["admin_email"];
 			// get reply-to address : user->email ou job_email if not set OK
 			$replyto=$this->get_reply_to_address ();
 			// Send all mails

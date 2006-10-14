@@ -49,37 +49,37 @@ class Enterprise extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 
-		global $db;
+		global $DB;
 
 		$job=new Job;
 
 		// Delete all enterprises associations from infocoms and contract
 		$query3 = "DELETE FROM glpi_contract_enterprise WHERE (FK_enterprise = \"$ID\")";
-		$result3 = $db->query($query3);
+		$result3 = $DB->query($query3);
 
 		// Delete all contact enterprise associations
 		$query2 = "DELETE FROM glpi_contact_enterprise WHERE (FK_enterprise = \"$ID\")";
-		$result2 = $db->query($query2);
+		$result2 = $DB->query($query2);
 
 		/// TODO : UPDATE ALL FK_manufacturer to NULL
 	}
 
 	function defineOnglets($withtemplate){
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 
 		if(haveRight("contact_enterprise","r"))
-			$ong[1] = $lang["title"][26];
+			$ong[1] = $LANG["title"][26];
 		if (haveRight("contract_infocom","r"))	
-			$ong[4] = $lang["Menu"][26];
-		$ong[15] = $lang["financial"][104];
+			$ong[4] = $LANG["Menu"][26];
+		$ong[15] = $LANG["financial"][104];
 		if (haveRight("document","r"))
-			$ong[5] = $lang["title"][25];
+			$ong[5] = $LANG["title"][25];
 		if (haveRight("show_ticket","1"))	
-			$ong[6] = $lang["title"][28];
+			$ong[6] = $LANG["title"][28];
 		if (haveRight("link","r"))
-			$ong[7] = $lang["title"][34];
+			$ong[7] = $LANG["title"][34];
 		if (haveRight("notes","r"))
-			$ong[10] = $lang["title"][37];
+			$ong[10] = $LANG["title"][37];
 
 		return $ong;
 	}
@@ -88,10 +88,10 @@ class Enterprise extends CommonDBTM {
 	// SPECIFIC FUNCTION
 
 	function countContacts() {
-		global $db;
+		global $DB;
 		$query = "SELECT * FROM glpi_contact_enterprise WHERE (FK_enterprise = '".$this->fields["ID"]."')";
-		if ($result = $db->query($query)) {
-			$number = $db->numrows($result);
+		if ($result = $DB->query($query)) {
+			$number = $DB->numrows($result);
 			return $number;
 		} else {
 			return false;
@@ -100,13 +100,13 @@ class Enterprise extends CommonDBTM {
 
 	function title(){
 
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/entreprises.png\" alt='".$lang["financial"][25]."' title='".$lang["financial"][25]."'></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/entreprises.png\" alt='".$LANG["financial"][25]."' title='".$LANG["financial"][25]."'></td>";
 		if (haveRight("contact_enterprise","w")){
-			echo "<td><a  class='icon_consol' href=\"enterprise.form.php\"><b>".$lang["financial"][25]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][23]."</b></span></td>";
+			echo "<td><a  class='icon_consol' href=\"enterprise.form.php\"><b>".$LANG["financial"][25]."</b></a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][23]."</b></span></td>";
 		echo "</tr></table></div>";
 	}
 
@@ -116,7 +116,7 @@ class Enterprise extends CommonDBTM {
 	function showForm ($target,$ID) {
 		// Show Enterprise or blank form
 
-		global $cfg_glpi,$lang;
+		global $CFG_GLPI,$LANG;
 
 		if (!haveRight("contact_enterprise","r")) return false;
 
@@ -132,68 +132,68 @@ class Enterprise extends CommonDBTM {
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'><b>";
 			if (!$ID) {
-				echo $lang["financial"][25].":";
+				echo $LANG["financial"][25].":";
 			} else {
-				echo $lang["financial"][26]." ID $ID:";
+				echo $LANG["financial"][26]." ID $ID:";
 			}		
 			echo "</b></th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],25);
 			echo "</td>";
 
-			echo "<td>".$lang["financial"][79].":		</td><td>";
+			echo "<td>".$LANG["financial"][79].":		</td><td>";
 			dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][29].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][29].":		</td>";
 			echo "<td>";
 			autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],25);	
 			echo "</td>";
 
 			echo "<td valign='top' rowspan='4'>";
-			echo $lang["common"][25].":	</td>";
+			echo $LANG["common"][25].":	</td>";
 			echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 			echo "</td></tr>";
 
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$lang["financial"][30].":		</td><td>";
+			echo "<td>".$LANG["financial"][30].":		</td><td>";
 			autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],25);	
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][45].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
 			echo "<td>";
 			autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],25);	
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$lang["setup"][14].":		</td><td>";
+			echo "<td>".$LANG["setup"][14].":		</td><td>";
 			autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],25);		
 			echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><td  rowspan='4'>".$lang["financial"][44].":		</td>";
+			echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG["financial"][44].":		</td>";
 			echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
-			echo "<td>".$lang["financial"][100]."</td>";
+			echo "<td>".$LANG["financial"][100]."</td>";
 			echo "<td>";
 			autocompletionTextField("postcode","glpi_enterprises","postcode",$this->fields["postcode"],25);		
 			echo "</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$lang["financial"][101].":		</td><td>";
+			echo "<td>".$LANG["financial"][101].":		</td><td>";
 			autocompletionTextField("town","glpi_enterprises","town",$this->fields["town"],25);		
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$lang["financial"][102].":		</td><td>";
+			echo "<td>".$LANG["financial"][102].":		</td><td>";
 			autocompletionTextField("state","glpi_enterprises","state",$this->fields["state"],25);		
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$lang["financial"][103].":		</td><td>";
+			echo "<td>".$LANG["financial"][103].":		</td><td>";
 			autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],25);		
 			echo "</td></tr>";
 
@@ -202,7 +202,7 @@ class Enterprise extends CommonDBTM {
 
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -212,16 +212,16 @@ class Enterprise extends CommonDBTM {
 					echo "<td class='tab_bg_2'></td>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2'>&nbsp;</td><td class='tab_bg_2' valign='top'>\n";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					if ($this->fields["deleted"]=='N')
-						echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+						echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 					else {
-						echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+						echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
 
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
 					}
 
 					echo "</td>";
@@ -232,7 +232,7 @@ class Enterprise extends CommonDBTM {
 
 
 		} else {
-			echo "<div align='center'><b>".$lang["financial"][39]."</b></div>";
+			echo "<div align='center'><b>".$LANG["financial"][39]."</b></div>";
 			return false;
 		}
 

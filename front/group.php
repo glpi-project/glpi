@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("group","r");
 
-commonHeader($lang["Menu"][36],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["Menu"][36],$_SERVER["PHP_SELF"]);
 
 $group=new Group();
 $group->title();

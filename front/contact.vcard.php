@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 // ----------------------------------------------------------------------
-// Original Author of file: Jean-Mathieu Doléans
+// Original Author of file: Jean-Mathieu Dolï¿½ns
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
 
 if (empty($_GET["ID"])) {
 
-	glpi_header($cfg_glpi["root_doc"]."/front/contact.php");
+	glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 
 }else {
 

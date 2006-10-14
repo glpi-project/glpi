@@ -49,16 +49,16 @@ class StateItem  extends CommonDBTM {
 	}
 
 	function getfromDB ($device_type,$id_device,$template=0) {
-		global $db;
+		global $DB;
 
 		$this->fields["state"]=-1;
 		// Make new database object and fill variables
 
 		$query = "SELECT * FROM glpi_state_item WHERE (device_type='$device_type' AND id_device = '$id_device' AND is_template='$template' )";
 
-		if ($result = $db->query($query)) 
-			if ($db->numrows($result)>0){
-				$data = $db->fetch_array($result);
+		if ($result = $DB->query($query)) 
+			if ($DB->numrows($result)>0){
+				$data = $DB->fetch_array($result);
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;
 				}
@@ -94,33 +94,33 @@ class StateItem  extends CommonDBTM {
 			}
 	}
 	function getType (){
-		global $lang;
+		global $LANG;
 
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
-				return $lang["computers"][44];
+				return $LANG["computers"][44];
 				break;
 			case NETWORKING_TYPE :
-				return $lang["networking"][12];
+				return $LANG["networking"][12];
 				break;
 			case PRINTER_TYPE :
-				return $lang["printers"][4];
+				return $LANG["printers"][4];
 				break;
 			case MONITOR_TYPE : 
-				return $lang["monitors"][4];
+				return $LANG["monitors"][4];
 				break;
 			case PERIPHERAL_TYPE : 
-				return $lang["peripherals"][4];
+				return $LANG["peripherals"][4];
 				break;				
 			case PHONE_TYPE : 
-				return $lang["phones"][4];
+				return $LANG["phones"][4];
 				break;				
 		}
 
 	}
 
 	function getItemType (){
-		global $lang;
+		global $LANG;
 
 		switch ($this->fields["device_type"]){
 			case COMPUTER_TYPE :
@@ -153,14 +153,14 @@ class StateItem  extends CommonDBTM {
 
 	function getLink(){
 
-		global $cfg_glpi,$INFOFORM_PAGES;
+		global $CFG_GLPI,$INFOFORM_PAGES;
 
 		$show=$this->getName();
 		// show id if it was configure else nothing
-		if ($cfg_glpi["view_ID"]||empty($show)) $show.=" (".$this->fields["id_device"].")";
+		if ($CFG_GLPI["view_ID"]||empty($show)) $show.=" (".$this->fields["id_device"].")";
 
 
-		return "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$this->fields["device_type"]]."?ID=".$this->fields["id_device"]."\">$show</a>";
+		return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->fields["device_type"]]."?ID=".$this->fields["id_device"]."\">$show</a>";
 	}
 
 }

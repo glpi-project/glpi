@@ -38,7 +38,7 @@
 define('GLPI_ROOT', '.');
 
 include (GLPI_ROOT . "/config/based_config.php");
-if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
+if(!file_exists($CFG_GLPI["config_dir"] . "/config_db.php")) {
 	include (GLPI_ROOT . "/inc/common.function.php");
 	glpi_header("install/install.php");
 	die();
@@ -48,7 +48,7 @@ else
 	include (GLPI_ROOT . "/inc/includes.php");
 
 	// Using CAS server
-	if (!empty($cfg_glpi["cas_host"])&&!isset($_GET["noCAS"])) {
+	if (!empty($CFG_GLPI["cas_host"])&&!isset($_GET["noCAS"])) {
 		glpi_header("login.php");
 	}
 	
@@ -62,10 +62,10 @@ else
 	echo "<head><title>GLPI Login</title>\n";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" />\n";
 	echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$cfg_glpi["root_doc"]."/pics/favicon.ico' />";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' />";
 
 	// Appel CSS
-	echo "<link rel='stylesheet'  href='".$cfg_glpi["root_doc"]."/css/styles.css' type='text/css' media='screen' />";
+	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' />";
 	echo "</head>";
 
 	// Body with configured stuff
@@ -78,11 +78,11 @@ else
 
 	echo "<div id='logo-login'>";
 
-	echo nl2br(unclean_cross_side_scripting_deep($cfg_glpi['text_login']));
+	echo nl2br(unclean_cross_side_scripting_deep($CFG_GLPI['text_login']));
 
 	// Affichage autoris�FAQ
-	if ($cfg_glpi["public_faq"]){
-		echo "<ul><li><a href='front/faq.php'>".$lang["knowbase"][24]."</a></li></ul>";
+	if ($CFG_GLPI["public_faq"]){
+		echo "<ul><li><a href='front/faq.php'>".$LANG["knowbase"][24]."</a></li></ul>";
 	}
 	echo "</div>";
 
@@ -107,23 +107,23 @@ else
 				case "helpdesk" :
 					switch ($type){
 						case "tracking":
-							glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.php?show=user&ID=$ID");
+							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.php?show=user&ID=$ID");
 						break;
 						default:
-						glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.php");
+						glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.php");
 						break;
 					}
 				break;
 				case "central" :
 					switch ($type){
 						case "tracking":
-							glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=$ID");
+							glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID");
 						break;
 						case "computers":
-							glpi_header($cfg_glpi["root_doc"]."/front/computer.form.php?ID=$ID");
+							glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?ID=$ID");
 						break;
 						default:
-						glpi_header($cfg_glpi["root_doc"]."/front/central.php");
+						glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
 						break;
 					}
 				break;
@@ -136,20 +136,20 @@ else
 	}
 
 	echo "<fieldset>";
-	echo "<legend>".$lang["login"][10]."</legend>";
+	echo "<legend>".$LANG["login"][10]."</legend>";
 
 
-	echo "<div class='row'><span class='label'><label>".$lang["login"][6]." :  </label></span><span class='formw'> <input type='text' name='login_name' id='login_name' size='15' /></span></div>";
+	echo "<div class='row'><span class='label'><label>".$LANG["login"][6]." :  </label></span><span class='formw'> <input type='text' name='login_name' id='login_name' size='15' /></span></div>";
 
 
-	echo "<div class='row'><span class='label'><label>".$lang["login"][7]." : </label></span><span class='formw'><input type='password' name='login_password' id='login_password' size='15' /> </span></div>";
+	echo "<div class='row'><span class='label'><label>".$LANG["login"][7]." : </label></span><span class='formw'><input type='password' name='login_password' id='login_password' size='15' /> </span></div>";
 
 
 
 
 
 	echo "</fieldset>";
-	echo "<p ><span> <input type='submit' name='submit' value='".$lang["buttons"][2]."' class='submit' /></span></p>";
+	echo "<p ><span> <input type='submit' name='submit' value='".$LANG["buttons"][2]."' class='submit' /></span></p>";
 	echo "</form>";
 
 	echo "<script type='text/javascript' >\n";
@@ -163,7 +163,7 @@ else
 
 	echo "</div>"; // fin contenu login
 
-	if ($cfg_glpi["debug"]==DEMO_MODE){
+	if ($CFG_GLPI["debug"]==DEMO_MODE){
 		echo "<div align='center'";
 
 		$query="SELECT count(*) 
@@ -175,11 +175,11 @@ else
 			ORDER BY date ASC 
 			LIMIT 1";
 
-		$db=new DB;
-		$result=$db->query($query);
-		$result2=$db->query($query2);
-		$nb_login=$db->result($result,0,0);
-		$date=$db->result($result2,0,0);
+		$DB=new DB;
+		$result=$DB->query($query);
+		$result2=$DB->query($query2);
+		$nb_login=$DB->result($result,0,0);
+		$date=$DB->result($result2,0,0);
 
 		echo "<b>$nb_login</b> logins since $date" ;
 
@@ -189,13 +189,13 @@ else
 
 	echo "<div id='footer-login'>";
 	echo "<a href=\"http://glpi-project.org/\" title=\"Powered By Indepnet\"  >";
-	echo "GLPI version ".$cfg_glpi["version"]." Copyright (C) 2003-".date("Y")." INDEPNET Development Team.";
+	echo "GLPI version ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y")." INDEPNET Development Team.";
 	echo "</a>";
 	echo "</div>";
 
 }
 // Appel de cron
-if ($cfg_glpi["debug"]!=DEMO_MODE)
+if ($CFG_GLPI["debug"]!=DEMO_MODE)
 callCron();
 
 

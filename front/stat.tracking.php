@@ -42,7 +42,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][11],$_SERVER["PHP_SELF"]);
 
 checkRight("statistic","1");
 
@@ -72,35 +72,35 @@ $type=$_POST["type"];
 
 $items=array(
 		"user"=>array(	
-			"title"=>$lang["common"][37],
+			"title"=>$LANG["common"][37],
 			"field"=>"glpi_tracking.author"
 			),
 		"group"=>array(	
-			"title"=>$lang["common"][35],
+			"title"=>$LANG["common"][35],
 			"field"=>"glpi_tracking.FK_group"
 			),
 		"category"=>array(	
-			"title"=>$lang["common"][36],
+			"title"=>$LANG["common"][36],
 			"field"=>"glpi_tracking.category"
 			),
 		"priority"=>array(	
-			"title"=>$lang["joblist"][2],
+			"title"=>$LANG["joblist"][2],
 			"field"=>"glpi_tracking.priority"
 			),
 		"request_type"=>array(	
-			"title"=>$lang["job"][44],
+			"title"=>$LANG["job"][44],
 			"field"=>"glpi_tracking.request_type"
 			),
 		"technicien"=>array(	
-			"title"=>$lang["stats"][2]." ".$lang["stats"][48],
+			"title"=>$LANG["stats"][2]." ".$LANG["stats"][48],
 			"field"=>"glpi_tracking.assign"
 			),
 		"technicien_followup"=>array(	
-				"title"=>$lang["stats"][2]." ".$lang["stats"][49],
+				"title"=>$LANG["stats"][2]." ".$LANG["stats"][49],
 				"field"=>"glpi_followup.author"
 				),
 		"enterprise"=>array(	
-				"title"=>$lang["financial"][26],
+				"title"=>$LANG["financial"][26],
 				"field"=>"glpi_tracking.assign_ent"
 				),
 
@@ -120,10 +120,10 @@ foreach ($items as $key => $val)
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='right'>";
-	echo $lang["search"][8]." :</td><td>";
+	echo $LANG["search"][8]." :</td><td>";
 	showCalendarForm("form","date1",$_POST["date1"]);
-	echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='right'>".$lang["search"][9]." :</td><td>";
+	echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
 	showCalendarForm("form","date2",$_POST["date2"]);
 	echo "</td></tr>";
 	echo "</table></form></div>";

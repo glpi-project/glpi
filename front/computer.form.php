@@ -49,7 +49,7 @@ $computer=new Computer();
 if (isset($tab["add"])) {
 	checkRight("computer","w");
 	$newID=$computer->add($tab);
-	logEvent($newID, "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$tab["name"].".");
+	logEvent($newID, "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$tab["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 // delete a computer
@@ -59,25 +59,25 @@ else if (isset($tab["delete"])) {
 	if (!empty($tab["withtemplate"]))
 		$computer->delete($tab,1);
 	else $computer->delete($tab);
-	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
+		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
-		glpi_header($cfg_glpi["root_doc"]."/front/computer.php");
+		glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 }
 else if (isset($_POST["restore"]))
 {
 	checkRight("computer","w");
 	$computer->restore($_POST);
-	logEvent($tab["ID"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/front/computer.php");
+	logEvent($tab["ID"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 }
 else if (isset($tab["purge"]))
 {
 	checkRight("computer","w");
 	$computer->delete($tab,1);
-	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/front/computer.php");
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 }
 //update a computer
 else if (isset($tab["update"])) {
@@ -85,20 +85,20 @@ else if (isset($tab["update"])) {
 	if(empty($tab["contains"])) $tab["contains"] = "";
 	checkRight("computer","w");
 	$computer->update($tab);
-	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($tab["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //Disconnect a device 
 else if (isset($tab["disconnect"])) {
 	checkRight("computer","w");
 	Disconnect($tab["ID"]);
-	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$lang["log"][26]);
+	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0){
 	checkRight("computer","w");
 	Connect($tab["item"],$tab["cID"],$tab["device_type"],$tab["withtemplate"]);
-	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][27]);
+	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$LANG["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //Update a device specification
@@ -123,7 +123,7 @@ elseif(isset($_POST["update_device"])) {
 			} 
 	}
 
-	logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$lang["log"][28]);
+	logEvent($_POST["ID"],"computers",4,"inventory",$_SESSION["glpiname"] ." ".$LANG["log"][28]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 //add a new device
@@ -141,7 +141,7 @@ elseif(isset($tab["unlock_field"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($tab["force_ocs_resynch"])){
-	$dbocs=new DBocs();
+	$DBocs=new DBocs();
 	checkRight("ocsng","w");
 	ocsUpdateComputer($tab["resynch_id"],1,1);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -156,7 +156,7 @@ elseif(isset($tab["unlock_field"])){
 	}
 
 
-	commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][3],$_SERVER["PHP_SELF"]);
 
 	if ($computer->getFromDB($tab["ID"]))
 		$computer->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
@@ -176,7 +176,7 @@ elseif(isset($tab["unlock_field"])){
 						showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
 						break;					
 					case 4 :
-						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 						showContractAssociated(COMPUTER_TYPE,$tab["ID"],$tab["withtemplate"]);
 						break;
 					case 5 :
@@ -208,7 +208,7 @@ elseif(isset($tab["unlock_field"])){
 					showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
 					showPortsAdd($tab["ID"],COMPUTER_TYPE);
 					showPorts($tab["ID"], COMPUTER_TYPE);
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
 					showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 					showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);
 					showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
@@ -225,7 +225,7 @@ elseif(isset($tab["unlock_field"])){
 					showPorts($tab["ID"], COMPUTER_TYPE);
 					break;
 				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
 					showContractAssociated(COMPUTER_TYPE,$tab["ID"]);
 					break;
 				case 5 :

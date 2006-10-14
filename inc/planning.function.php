@@ -42,33 +42,33 @@ if (!defined('GLPI_ROOT')){
 
 
 function titleTrackingPlanning(){
-	global  $lang,$cfg_glpi;
+	global  $LANG,$CFG_GLPI;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["planning"][3]."</span>";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$LANG["planning"][3]."</span>";
 	echo "</b></td></tr></table>&nbsp;</div>";
 }
 
 
 function showTrackingPlanningForm($device_type,$id_device){
 
-	global $db,$cfg_glpi,$lang;
+	global $DB,$CFG_GLPI,$LANG;
 
 	if (!haveRight("comment_all_ticket","1")) return false;
 
 	$query="select * from glpi_reservation_item where (device_type='$device_type' and id_device='$id_device')";
 
-	if ($result = $db->query($query)) {
-		$numrows =  $db->numrows($result);
-		//echo "<form name='resa_form' method='post' action=".$cfg_glpi["root_doc"]."/front/reservation.php>";
-		echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?";
+	if ($result = $DB->query($query)) {
+		$numrows =  $DB->numrows($result);
+		//echo "<form name='resa_form' method='post' action=".$CFG_GLPI["root_doc"]."/front/reservation.php>";
+		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
 		// Ajouter le mat�iel
 		if ($numrows==0){
-			echo "id_device=$id_device&amp;device_type=$device_type&amp;add=add\">".$lang["reservation"][7]."</a>";
+			echo "id_device=$id_device&amp;device_type=$device_type&amp;add=add\">".$LANG["reservation"][7]."</a>";
 		}
 		// Supprimer le mat�iel
 		else {
-			echo "ID=".$db->result($result,0,"ID")."&amp;delete=delete\">".$lang["reservation"][6]."</a>";
+			echo "ID=".$DB->result($result,0,"ID")."&amp;delete=delete\">".$LANG["reservation"][6]."</a>";
 		}
 
 	}
@@ -76,14 +76,14 @@ function showTrackingPlanningForm($device_type,$id_device){
 
 
 function showAddPlanningTrackingForm($target,$fup,$planID=-1){
-	global $lang,$cfg_glpi;
+	global $LANG,$CFG_GLPI;
 
 	if (!haveRight("comment_all_ticket","1")) return false;
 
-	$split=split(":",$cfg_glpi["planning_begin"]);
+	$split=split(":",$CFG_GLPI["planning_begin"]);
 	$global_begin=intval($split[0]);
 
-	$split=split(":",$cfg_glpi["planning_end"]);
+	$split=split(":",$CFG_GLPI["planning_end"]);
 	$global_end=intval($split[0]);
 
 	$planning= new PlanningTracking;
@@ -124,13 +124,13 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 
 	echo "<table class='tab_cadre' cellpadding='2' width='600'>";
 	echo "<tr><th colspan='2'><b>";
-	echo $lang["planning"][7];
+	echo $LANG["planning"][7];
 	echo "</b></th></tr>";
-	echo "<tr class='tab_bg_1'><td>".$lang["planning"][8].":	</td>";
+	echo "<tr class='tab_bg_1'><td>".$LANG["planning"][8].":	</td>";
 	echo "<td>";
 	echo "<b>".$j->fields['contents']."</b>";
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_1'><td>".$lang["planning"][10].":	</td>";
+	echo "<tr class='tab_bg_1'><td>".$LANG["planning"][10].":	</td>";
 	echo "<td>";
 	echo "<b>".$j->computername."</b>";
 	echo "</td></tr>";
@@ -138,27 +138,27 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	if (!haveRight("comment_all_ticket","1"))
 		echo "<input type='hidden' name='id_assign' value='".$_SESSION["glpiID"]."'>";
 	else {
-		echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":	</td>";
 		echo "<td>";
 		dropdownUsers("id_assign",$planning->fields["id_assign"],"own_ticket",-1);
 		echo "</td></tr>";
 	}
 
 
-	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
 	showCalendarForm("form","begin_date",$begin_date);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][12].":	</td>";
 	echo "<td>";
 	dropdownHours("begin_hour",$begin_hour,1);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
 	showCalendarForm("form","end_date",$end_date);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][13].":	</td>";
 	echo "<td>";
 	dropdownHours("end_hour",$end_hour,1);
 	echo "</td></tr>";
@@ -168,14 +168,14 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	if ($planID==-1){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td colspan='2'  valign='top' align='center'>";
-		echo "<input type='submit' name='add_planning' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='add_planning' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>\n";
 	} else {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td valign='top' align='center'>";
-		echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 		echo "</td><td valign='top' align='center'>";
-		echo "<input type='submit' name='edit_planning' value=\"".$lang["buttons"][14]."\" class='submit'>";
+		echo "<input type='submit' name='edit_planning' value=\"".$LANG["buttons"][14]."\" class='submit'>";
 		echo "</td></tr>\n";
 	}
 
@@ -184,7 +184,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 }
 
 function showPlanning($who,$when,$type){
-	global $lang,$cfg_glpi;
+	global $LANG,$CFG_GLPI;
 
 	if (!haveRight("show_planning","1")&&!haveRight("show_all_planning","1")) return false;
 	$date=split("-",$when);
@@ -200,21 +200,21 @@ function showPlanning($who,$when,$type){
 		switch ($type){
 			case "week":
 				for ($i=1;$i<=7;$i++){
-					echo "<th>".$lang["calendarDay"][$i%7]."</th>";
+					echo "<th>".$LANG["calendarDay"][$i%7]."</th>";
 				}
 
 
 			break;
 			case "day":
-				echo "<th>".$lang["calendarDay"][$dayofweek%7]."</th>";
+				echo "<th>".$LANG["calendarDay"][$dayofweek%7]."</th>";
 			break;
 		}
 		echo "</tr>";
 
 		// Print Calendar by 15 mns
-		$tmp=split(":",$cfg_glpi["planning_begin"]);
+		$tmp=split(":",$CFG_GLPI["planning_begin"]);
 		$hour_begin=$tmp[0];
-		$tmp=split(":",$cfg_glpi["planning_end"]);
+		$tmp=split(":",$CFG_GLPI["planning_end"]);
 		$hour_end=$tmp[0];
 		for ($hour=$hour_begin;$hour<=$hour_end;$hour++){
 			echo "<tr>";
@@ -251,16 +251,16 @@ function showPlanning($who,$when,$type){
 		echo "<div align='center'>";
 
 		echo "<table cellpadding='20' ><tr><td><b>".
-			$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td></tr></table>";
+			$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td></tr></table>";
 
 		echo "<table class='tab_cadre_fixe'><tr>";
-		echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
-		echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
-		echo "<th width='14%'>".$lang["calendarD"][3]."</th>";
-		echo "<th width='14%'>".$lang["calendarD"][4]."</th>";
-		echo "<th width='14%'>".$lang["calendarD"][5]."</th>";
-		echo "<th width='14%'>".$lang["calendarD"][6]."</th>";
-		echo "<th width='14%'>".$lang["calendarD"][0]."</th>";
+		echo "<th width='14%'>".$LANG["calendarD"][1]."</th>";
+		echo "<th width='14%'>".$LANG["calendarD"][2]."</th>";
+		echo "<th width='14%'>".$LANG["calendarD"][3]."</th>";
+		echo "<th width='14%'>".$LANG["calendarD"][4]."</th>";
+		echo "<th width='14%'>".$LANG["calendarD"][5]."</th>";
+		echo "<th width='14%'>".$LANG["calendarD"][6]."</th>";
+		echo "<th width='14%'>".$LANG["calendarD"][0]."</th>";
 		echo "</tr>";
 		echo "<tr class='tab_bg_3' >";
 
@@ -283,7 +283,7 @@ function showPlanning($who,$when,$type){
 			echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 
 			if (!empty($ID)){
-				echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$cfg_glpi["root_doc"]."/pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
+				echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
 			}
 
 			echo "<tr>";
@@ -315,7 +315,7 @@ function showPlanning($who,$when,$type){
 }
 
 function displayplanning($who,$when,$type){
-	global $db,$cfg_glpi,$lang;
+	global $DB,$CFG_GLPI,$LANG;
 
 
 	//echo $when;
@@ -355,15 +355,15 @@ function displayplanning($who,$when,$type){
 	$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
 	//echo $query;
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 	$fup=new Followup();
 	$job=new Job();
 
 	$interv=array();
 	$i=0;
-	if ($db->numrows($result)>0)
-		while ($data=$db->fetch_array($result)){
+	if ($DB->numrows($result)>0)
+		while ($data=$DB->fetch_array($result)){
 			$fup->getFromDB($data["id_followup"]);
 			$job->getFromDBwithData($fup->fields["tracking"],0);
 
@@ -377,7 +377,7 @@ function displayplanning($who,$when,$type){
 			if (strcmp($fin,$data["end"])<0)
 				$interv[$data["begin"]."$$".$i]["end"]=$fin;
 			else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-			$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_glpi["cut"]);
+			$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
 			$interv[$data["begin"]."$$".$i]["status"]=$job->fields["status"];
 			$interv[$data["begin"]."$$".$i]["priority"]=$job->fields["priority"];
@@ -390,13 +390,13 @@ function displayplanning($who,$when,$type){
 
 	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
-	$result2=$db->query($query2);
+	$result2=$DB->query($query2);
 
 
 	$remind=new Reminder();
 
-	if ($db->numrows($result2)>0)
-		while ($data=$db->fetch_array($result2)){
+	if ($DB->numrows($result2)>0)
+		while ($data=$DB->fetch_array($result2)){
 			$remind->getFromDB($data["ID"]);
 
 			$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
@@ -407,8 +407,8 @@ function displayplanning($who,$when,$type){
 				$interv[$data["begin"]."$$".$i]["end"]=$fin;
 			else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 
-			$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_glpi["cut"]);
-			$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_glpi["cut"]);
+			$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
+			$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
 			$interv[$data["begin"]."$$".$i]["type"]=$data["type"];
 
@@ -434,29 +434,29 @@ function displayplanning($who,$when,$type){
 
 				if(isset($val["id_tracking"])){  // show tracking
 
-					echo "<img src='".$cfg_glpi["root_doc"]."/pics/rdv_interv.png' alt=''>&nbsp;";
+					echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>&nbsp;";
 
 
-					echo "<a href='".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 					echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
-					echo "&nbsp;<img src=\"".$cfg_glpi["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+					echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 
 					if ($who==0){
 						echo "<br>";
-						echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+						echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
 					} 
 					echo "</a>";
 					echo "<br>";
-					echo "<strong>".$lang["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
-					echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"];
+					echo "<strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+					echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"];
 				}else{  // show Reminder
 
 					if ($val["type"]=="public"){
-						$author="<br>".$lang["planning"][9]." : ".getUserName($val["author"]);
+						$author="<br>".$LANG["planning"][9]." : ".getUserName($val["author"]);
 						$img="rdv_public.png";
 					} 
-					echo "<img src='".$cfg_glpi["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
-					echo "<a href='".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
+					echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 					echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["title"];
 					echo $author;
 					echo "</a>";
@@ -476,21 +476,21 @@ function displayplanning($who,$when,$type){
 
 					if(isset($val["id_tracking"])){  // show tracking
 						$rand=mt_rand();
-						echo "<div class='planning' ><img src='".$cfg_glpi["root_doc"]."/pics/rdv_interv.png' alt=''>";
-						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
+						echo "<div class='planning' ><img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>";
+						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
-						echo "&nbsp;<img src=\"".$cfg_glpi["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+						echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 						echo "<br>".$val["device"];
 
 						if ($who==0){
 							echo "<br>";
-							echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+							echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
 						} 
 						echo "</a>";
 						echo "</div>";
 
-						echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
-						echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"]."</div>";
+						echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+						echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"]."</div>";
 					}else{ // show reminder
 						if ($val["type"]=="public"){
 							$author="<br>Par ".getUserName($val["author"]);
@@ -498,8 +498,8 @@ function displayplanning($who,$when,$type){
 						} 
 
 						$rand=mt_rand();
-						echo "<div class='planning' ><img src='".$cfg_glpi["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
-						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
+						echo "<div class='planning' ><img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
+						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
 						if ($who!=$val["author"]){
 							$author="<br>Par ".getUserName($val["author"]);
@@ -519,20 +519,20 @@ function displayplanning($who,$when,$type){
 
 					if(isset($val["id_tracking"])){  // show tracking
 						$rand=mt_rand();
-						echo "<div class='planning' ><img src='".$cfg_glpi["root_doc"]."/pics/rdv_interv.png' alt=''>";
-						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
+						echo "<div class='planning' ><img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>";
+						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
-						echo "&nbsp;<img src=\"".$cfg_glpi["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+						echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 						echo "<br>".$val["device"];
 						if ($who==0){
 							echo "<br>";
-							echo $lang["planning"][9]." ".getUserName($val["id_assign"]);
+							echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
 						} 
 						echo "</a>";
 						echo "</div>";
 
-						echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$lang["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
-						echo "<strong>".$lang["joblist"][6].":</strong><br>".$val["content"]."</div>";
+						echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+						echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"]."</div>";
 
 					}else{ // show reminder
 						if ($val["type"]=="public"){
@@ -540,8 +540,8 @@ function displayplanning($who,$when,$type){
 							$img="rdv_public.png";
 						} 
 						$rand=mt_rand();
-						echo "<div class='planning' ><img src='".$cfg_glpi["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
-						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
+						echo "<div class='planning' ><img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
+						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
 						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
 						if ($who!=$val["author"]){
 							$author="<br>Par ".getUserName($val["author"]);
@@ -575,7 +575,7 @@ function display_time($time){
 
 function ShowPlanningCentral($who){
 
-	global $db,$cfg_glpi,$lang;
+	global $DB,$CFG_GLPI,$LANG;
 
 	if (!haveRight("show_planning","1")) return false;
 
@@ -593,22 +593,22 @@ function ShowPlanningCentral($who){
 	$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
 
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 	$fup=new Followup();
 	$job=new Job();
 
 	$interv=array();
 	$i=0;
-	if ($db->numrows($result)>0)
-		while ($data=$db->fetch_array($result)){
+	if ($DB->numrows($result)>0)
+		while ($data=$DB->fetch_array($result)){
 			$fup->getFromDB($data["id_followup"]);
 			$job->getFromDBwithData($fup->fields["tracking"],0);
 
 			$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 			$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-			$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$cfg_glpi["cut"]);
+			$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
 			$i++;
 		}
@@ -620,22 +620,22 @@ function ShowPlanningCentral($who){
 
 	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' $read_public)    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
-	$result2=$db->query($query2);
+	$result2=$DB->query($query2);
 
 
 	$remind=new Reminder();
 
 	$i=0;
-	if ($db->numrows($result2)>0)
-		while ($data=$db->fetch_array($result2)){
+	if ($DB->numrows($result2)>0)
+		while ($data=$DB->fetch_array($result2)){
 			$remind->getFromDB($data["ID"]);
 
 
 			$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 			$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-			$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_glpi["cut"]);
-			$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_glpi["cut"]);
+			$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
+			$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 
 			$i++;
 		}
@@ -644,7 +644,7 @@ function ShowPlanningCentral($who){
 
 	ksort($interv);
 
-	echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$cfg_glpi["root_doc"]."/front/planning.php'>".$lang["planning"][15]."</a></th></tr><tr><th>".$lang["buttons"][33]."</th><th>".$lang["buttons"][32]."</th><th>".$lang["joblist"][6]."</th></tr>";
+	echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG["planning"][15]."</a></th></tr><tr><th>".$LANG["buttons"][33]."</th><th>".$LANG["buttons"][32]."</th><th>".$LANG["joblist"][6]."</th></tr>";
 	if (count($interv)>0){
 		foreach ($interv as $key => $val){
 
@@ -656,10 +656,10 @@ function ShowPlanningCentral($who){
 			echo date("H:i",strtotime($val["end"]));
 			echo "</td>";
 			if(isset($val["id_tracking"])){
-				echo "<td>".$val["device"]."<a href='".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
+				echo "<td>".$val["device"]."<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
 				echo ": ".resume_text($val["content"],125)."</a>";
 			}else{
-				echo "<td><a href='".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
+				echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
 				echo "</a>: ".resume_text($val["text"],125);
 			}
 
@@ -702,13 +702,13 @@ function ShowPlanningCentral($who){
  **/      
 function urlIcal ($who) {
 
-	global  $cfg_glpi, $lang;
+	global  $CFG_GLPI, $LANG;
 
-	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][12]."</span></a>";
+	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$LANG["planning"][12]."</span></a>";
 	echo "<br>";
 
 	// Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-	echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$cfg_glpi["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$lang["planning"][13]."</span></a>";
+	echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$LANG["planning"][13]."</span></a>";
 
 }
 
@@ -752,13 +752,13 @@ function date_ical($date) {
  **/      
 function debutIcal($name) {
 
-	global  $cfg_glpi, $lang;
+	global  $CFG_GLPI, $LANG;
 
 	$debut_cal = "BEGIN:VCALENDAR\n";
 	$debut_cal .= "VERSION:2.0\n";
 
-	if ( ! empty ( $cfg_glpi["version"]) ) {
-		$debut_cal.= "PRODID:-//GLPI-Planning-".$cfg_glpi["version"]."\n";
+	if ( ! empty ( $CFG_GLPI["version"]) ) {
+		$debut_cal.= "PRODID:-//GLPI-Planning-".$CFG_GLPI["version"]."\n";
 	} else {
 		$debut_cal.= "PRODID:-//GLPI-Planning-UnknownVersion\n";
 	}
@@ -781,19 +781,19 @@ function debutIcal($name) {
  **/      
 function generateIcal($who){
 
-	global  $db,$cfg_glpi, $lang;
+	global  $DB,$CFG_GLPI, $LANG;
 
 	// export job
 	$query="SELECT * from glpi_tracking_planning WHERE id_assign=$who";
 
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 	$job=new Job();
 	$fup=new Followup();
 	$interv=array();
 	$i=0;
-	if ($db->numrows($result)>0)
-		while ($data=$db->fetch_array($result)){
+	if ($DB->numrows($result)>0)
+		while ($data=$DB->fetch_array($result)){
 
 			$fup->getFromDB($data["id_followup"]); 
 			$job->getFromDBwithData($fup->fields["tracking"],0);
@@ -803,8 +803,8 @@ function generateIcal($who){
 			$interv[$data["begin"]."$$".$i]["ID"]=$data['ID'];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
 			$interv[$data["begin"]."$$".$i]["end"]=$data['end'];
-			//$interv[$i]["content"]=substr($job->contents,0,$cfg_glpi["cut"]);
-			$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$cfg_glpi["cut"]);
+			//$interv[$i]["content"]=substr($job->contents,0,$CFG_GLPI["cut"]);
+			$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
 			$i++;
 		}
@@ -814,14 +814,14 @@ function generateIcal($who){
 
 	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')";
 
-	$result2=$db->query($query2);
+	$result2=$DB->query($query2);
 
 
 	$remind=new Reminder();
 
 	$i=0;
-	if ($db->numrows($result2)>0)
-		while ($data=$db->fetch_array($result2)){
+	if ($DB->numrows($result2)>0)
+		while ($data=$DB->fetch_array($result2)){
 			$remind->getFromDB($data["ID"]);
 
 
@@ -862,7 +862,7 @@ function generateIcal($who){
 			$event .= "DTEND:".date_ical($val["end"])."\n";
 
 			if(isset($val["id_tracking"])){
-				$event .= "SUMMARY:".$lang["planning"][8]." # ".$val["id_tracking"]." ".$lang["planning"][10]." # ".$val["device"]."\n";
+				$event .= "SUMMARY:".$LANG["planning"][8]." # ".$val["id_tracking"]." ".$LANG["planning"][10]." # ".$val["device"]."\n";
 			}else{
 				$event .= "SUMMARY:".$val["title"]."\n";
 			}
@@ -872,7 +872,7 @@ function generateIcal($who){
 			//todo recup la cat�orie d'intervention.
 			//$event .= "CATEGORIES:".$val["categorie"]."\n";
 			if(isset($val["id_tracking"])){
-				$event .= "URL:".$cfg_glpi["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";
+				$event .= "URL:".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";
 			}
 
 			$event .= "END:VEVENT\n\n";

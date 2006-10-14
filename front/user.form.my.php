@@ -48,13 +48,13 @@ $user=new User();
 
 if (isset($_POST["update"])&&$_POST["ID"]==$_SESSION["glpiID"]) {
 	$user->update($_POST);
-	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$lang["log"][21]."  ".$_POST["name"].".");
+	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG["log"][21]."  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
 	if ($_SESSION["glpiprofile"]["interface"]=="central")
-		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-	else helpHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][13],$_SERVER["PHP_SELF"]);
+	else helpHeader($LANG["title"][13],$_SERVER["PHP_SELF"]);
 	$user->showMyForm($_SERVER["PHP_SELF"],$_SESSION["glpiID"]);
 	if ($_SESSION["glpiprofile"]["interface"]=="central")
 		commonFooter();

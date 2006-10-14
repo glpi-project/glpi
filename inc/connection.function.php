@@ -49,7 +49,7 @@ if (!defined('GLPI_ROOT')){
 function showConnect($target,$ID,$type) {
 	// Prints a direct connection to a computer
 
-	global $lang, $cfg_glpi;
+	global $LANG, $CFG_GLPI;
 
 	$connect = new Connection;
 
@@ -67,28 +67,28 @@ function showConnect($target,$ID,$type) {
 		else $nb=count($computers);
 
 		echo "<br><div align='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
-		echo $lang["connect"][0].": ".$nb;
+		echo $LANG["connect"][0].": ".$nb;
 		echo "</th></tr>";
 
 		if ($computers&&count($computers)>0) {
 			foreach ($computers as $key => $computer){
 				if ($connect->getComputerData($computer)){
-					echo "<tr><td class='tab_bg_1".($connect->deleted=='Y'?"_2":"")."'><b>".$lang["help"][25].": ";
-					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/computer.form.php?ID=".$connect->device_ID."\">";
+					echo "<tr><td class='tab_bg_1".($connect->deleted=='Y'?"_2":"")."'><b>".$LANG["help"][25].": ";
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$connect->device_ID."\">";
 					echo $connect->device_name;
-					if ($cfg_glpi["view_ID"]||empty($connect->device_name)) echo " (".$connect->device_ID.")";
+					if ($CFG_GLPI["view_ID"]||empty($connect->device_name)) echo " (".$connect->device_ID.")";
 					echo "</a>";
 					echo "</b></td>";
 					echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
 					if ($canedit)
-						echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$lang["buttons"][10]."</a>";
+						echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$LANG["buttons"][10]."</a>";
 					else echo "&nbsp;";
 					echo "</b>";
 				}
 			}
 		} else {
-			echo "<tr><td class='tab_bg_1'><b>".$lang["help"][25].": </b>";
-			echo "<i>".$lang["connect"][1]."</i>";
+			echo "<tr><td class='tab_bg_1'><b>".$LANG["help"][25].": </b>";
+			echo "<i>".$LANG["connect"][1]."</i>";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'>";
 			if ($canedit){
@@ -97,7 +97,7 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='device_type' value='$type'>";
 				dropdownConnect(COMPUTER_TYPE,$type,"item");
-				echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 				echo "</form>";
 			} else echo "&nbsp;";
 
@@ -114,7 +114,7 @@ function showConnect($target,$ID,$type) {
 			echo "<input type='hidden' name='sID' value='$ID'>";
 			echo "<input type='hidden' name='device_type' value='$type'>";
 			dropdownConnect(COMPUTER_TYPE,$type,"item");
-			echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+			echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 
 			echo "</form>";
 
@@ -152,7 +152,7 @@ function Disconnect($ID) {
  * @param $type connection type.
  */
 function Connect($sID,$cID,$type) {
-	global $lang;
+	global $LANG;
 	// Makes a direct connection
 
 	$connect = new Connection;
@@ -172,7 +172,7 @@ function Connect($sID,$cID,$type) {
 			$dev->obj->fields['location']=$comp->fields['location'];
 			$dev->obj->updateInDB($updates);
 			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][48];
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][48];
 		}
 		if ($comp->fields['FK_users']!=$dev->obj->fields['FK_users']||$comp->fields['FK_groups']!=$dev->obj->fields['FK_groups']){
 			$updates[0]="FK_users";
@@ -181,7 +181,7 @@ function Connect($sID,$cID,$type) {
 			$dev->obj->fields['FK_groups']=$comp->fields['FK_groups'];
 			$dev->obj->updateInDB($updates);
 			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][50];
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][50];
 		}
 
 		if ($comp->fields['contact']!=$dev->obj->fields['contact']||$comp->fields['contact_num']!=$dev->obj->fields['contact_num']){
@@ -191,26 +191,26 @@ function Connect($sID,$cID,$type) {
 			$dev->obj->fields['contact_num']=$comp->fields['contact_num'];
 			$dev->obj->updateInDB($updates);
 			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["computers"][49];
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][49];
 		}
 	}
 	return $newID;	
 }
 
 function getNumberConnections($type,$ID){
-	global $db;
+	global $DB;
 	$query = "SELECT count(*) FROM glpi_connect_wire INNER JOIN glpi_computers ON ( glpi_connect_wire.end2=glpi_computers.ID ) WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' AND glpi_computers.deleted='N' AND glpi_computers.is_template='0'";
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
-	if ($db->numrows($result)!=0){
-		return $db->result($result,0,0);
+	if ($DB->numrows($result)!=0){
+		return $DB->result($result,0,0);
 	} else return 0;
 
 }
 
 function unglobalizeDevice($device_type,$ID){
-	global $db;
+	global $DB;
 	$ci=new CommonItem();
 	// Update item to unit management :
 	$ci->getFromDB($device_type,$ID);
@@ -220,20 +220,20 @@ function unglobalizeDevice($device_type,$ID){
 
 		// Get connect_wire for this connection
 		$query = "SELECT glpi_connect_wire.ID AS connectID FROM glpi_connect_wire WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$device_type'";
-		$result=$db->query($query);
-		if (($nb=$db->numrows($result))>1){
+		$result=$DB->query($query);
+		if (($nb=$DB->numrows($result))>1){
 			$si=new StateItem();
 			$si->getfromDB($device_type,$ID,0);
 
 			for ($i=1;$i<$nb;$i++){
 				// Get ID of the computer
-				if ($data=$db->fetch_array($result)){
+				if ($data=$DB->fetch_array($result)){
 					// Add new Item
 					unset($ci->obj->fields["ID"]);
 					if ($newID=$ci->obj->add(array("ID"=>$ID,"state"=>$si->fields["state"]))){
 						// Update Connection
 						$query2="UPDATE glpi_connect_wire SET end1='$newID' WHERE ID='".$data["connectID"]."'";
-						$db->query($query2);
+						$DB->query($query2);
 					}
 
 				}

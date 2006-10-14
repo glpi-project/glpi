@@ -59,7 +59,7 @@ if (isset($_POST["add"]))
 
 	$newID=$remind->add($_POST);
 
-	glpi_header($cfg_glpi["root_doc"]."/front/reminder.php");
+	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
 } 
 else if (isset($_POST["delete"]))
 {
@@ -68,7 +68,7 @@ else if (isset($_POST["delete"]))
 	}
 	$remind->delete($_POST);
 
-	glpi_header($cfg_glpi["root_doc"]."/front/reminder.php");
+	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
 }
 else if (isset($_POST["update"]))
 {
@@ -82,7 +82,7 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][40],$_SERVER["PHP_SELF"]);
 	$remind->showForm($_SERVER["PHP_SELF"],$tab["ID"]);
 
 	commonFooter();

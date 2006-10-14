@@ -48,19 +48,19 @@ class InfoCom extends CommonDBTM {
 	}
 
 	function post_getEmpty () {
-		global $cfg_glpi;
-		$this->fields["alert"]=$cfg_glpi["infocom_alerts"];
+		global $CFG_GLPI;
+		$this->fields["alert"]=$CFG_GLPI["infocom_alerts"];
 	}
 
 	// Specific Functions
 	function getFromDBforDevice ($device_type,$ID) {
 
-		global $db;
+		global $DB;
 		$query = "SELECT * FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='$device_type')";
 
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)==1){	
-				$data = $db->fetch_assoc($result);
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)==1){	
+				$data = $DB->fetch_assoc($result);
 
 				foreach ($data as $key => $val) {
 					$this->fields[$key] = $val;

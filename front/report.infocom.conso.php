@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["Menu"][6],$_SERVER["PHP_SELF"]);
 
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
@@ -60,10 +60,10 @@ if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["dat
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
-echo $lang["search"][8]." :</td><td>";
+echo $LANG["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
-echo "<tr class='tab_bg_2'><td align='right'>".$lang["search"][9]." :</td><td>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
+echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
 showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
@@ -78,7 +78,7 @@ $valeurgraphtot=array();
 
 
 function display_infocoms_report($device_type,$begin,$end){
-	global $db,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$lang,$cfg_glpi;
+	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI;
 
 	$query="SELECT * FROM glpi_infocoms WHERE device_type='".$device_type."'";
 
@@ -87,14 +87,14 @@ function display_infocoms_report($device_type,$begin,$end){
 
 	$query .=" ORDER BY buy_date, use_date";
 
-	$result=$db->query($query);
-	if ($db->numrows($result)>0){
+	$result=$DB->query($query);
+	if ($DB->numrows($result)>0){
 		$comp=new CommonItem();
 		$comp->getFromDB($device_type,0);
 
 		echo "<h2>".$comp->getType()."</h2>";
 
-		//		echo "<table class='tab_cadre'><tr><th>".$lang["common"][16]."</th><th>".$lang["financial"][21]."</th><th>".$lang["financial"][81]."</th><th>".$lang["financial"][14]."</th><th>".$lang["financial"][76]."</th><th>".$lang["financial"][80]."</th></tr>";
+		//		echo "<table class='tab_cadre'><tr><th>".$LANG["common"][16]."</th><th>".$LANG["financial"][21]."</th><th>".$LANG["financial"][81]."</th><th>".$LANG["financial"][14]."</th><th>".$LANG["financial"][76]."</th><th>".$LANG["financial"][80]."</th></tr>";
 		echo "<table class='tab_cadre'>";	
 
 		$valeursoustot=0;
@@ -102,7 +102,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		$valeurnettegraph=array();
 		$valeurgraph=array();
 
-		while ($line=$db->fetch_array($result)){
+		while ($line=$DB->fetch_array($result)){
 
 			$comp->getFromDB($device_type,$line["FK_device"]);
 
@@ -111,8 +111,8 @@ function display_infocoms_report($device_type,$begin,$end){
 			}
 			if ($line["value"]>0) $valeursoustot+=$line["value"];	
 
-			$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_glpi["date_fiscale"],"n");
-			$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$cfg_glpi["date_fiscale"],"all");
+			$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"n");
+			$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"all");
 
 			if (is_array($tmp)&&count($tmp)>0)
 				foreach ($tmp["annee"] as $key => $val){
@@ -139,7 +139,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		$valeurtot+=$valeursoustot;
 		$valeurnettetot+=$valeurnettesoustot;
 
-		//	echo "<tr><td colspan='6' align='center'><h1>".$lang["common"][33].": ".$lang["financial"][21]."=$valeursoustot - ".$lang["financial"][81]."=$valeurnettesoustot</h1></td></tr>";
+		//	echo "<tr><td colspan='6' align='center'><h1>".$LANG["common"][33].": ".$LANG["financial"][21]."=$valeursoustot - ".$LANG["financial"][81]."=$valeurnettesoustot</h1></td></tr>";
 
 
 		if (count($valeurnettegraph)>0){
@@ -154,7 +154,7 @@ function display_infocoms_report($device_type,$begin,$end){
 				$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
 			}
 
-			graphBy($valeurnettegraphdisplay,$lang["financial"][81],"",0,"year");
+			graphBy($valeurnettegraphdisplay,$LANG["financial"][81],"",0,"year");
 
 			echo "</td></tr>";
 		}
@@ -171,7 +171,7 @@ function display_infocoms_report($device_type,$begin,$end){
 				$valeurgraphtot[$key]+=$valeurgraph[$key];
 			}
 
-			graphBy($valeurgraphdisplay,$lang["financial"][21],"",0,"year");
+			graphBy($valeurgraphdisplay,$LANG["financial"][21],"",0,"year");
 
 			echo "</td></tr>";
 		}
@@ -195,15 +195,15 @@ echo "</table>";
 
 
 
-echo "<div align='center'><h3>".$lang["common"][33].": ".$lang["financial"][21]."=".number_format($valeurtot,2)." - ".$lang["financial"][81]."=".number_format($valeurnettetot,2)."</h3></div>";
+echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".number_format($valeurtot,2)." - ".$LANG["financial"][81]."=".number_format($valeurnettetot,2)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
-	graphBy($valeurnettegraphtotdisplay,$lang["financial"][81],"",0,"year");
+	graphBy($valeurnettegraphtotdisplay,$LANG["financial"][81],"",0,"year");
 }
 if (count($valeurgraphtot)>0){	
 	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
-	graphBy($valeurgraphtotdisplay,$lang["financial"][21],"",0,"year");
+	graphBy($valeurgraphtotdisplay,$LANG["financial"][21],"",0,"year");
 }
 
 commonFooter();

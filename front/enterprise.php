@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("contact_enterprise","r");
 
-commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][23],$_SERVER["PHP_SELF"]);
 
 
 $ent=new Enterprise();

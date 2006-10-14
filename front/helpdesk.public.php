@@ -45,7 +45,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (isset($_GET['redirect'])){
 	checkHelpdeskAccess();
 	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&ID=$ID");
+	glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=$ID");
 }
 
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
@@ -59,13 +59,13 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		$fup=new Followup();
 		$newID=$fup->add($_POST);
 
-		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$lang["log"][20]." $newID.");
+		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][20]." $newID.");
 		glpi_header($_SERVER['HTTP_REFERER']);
 
 	}	
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	helpHeader($LANG["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 	if (!isset($_GET["ID"])) {
 		if (!isset($_GET["start"])) $_GET["start"]=0;
@@ -88,7 +88,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
 
 	//*******************
-	// Affichage Module réservation 
+	// Affichage Module rï¿½ervation 
 	//******************
 	checkRight("reservation_helpdesk","1");
 	$rr=new ReservationResa();
@@ -97,11 +97,11 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 
 		if ($_SESSION["glpiID"]==$_POST["id_user"]) 
 			if ($rr->update($_POST,$_SERVER["PHP_SELF"],$_POST["id_item"]))
-				glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
+				glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
 			else exit();
 	}
 
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	helpHeader($LANG["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 	if (isset($_POST["clear_resa"])){
 		if ($rr->delete($_POST)){ // delete() need an array !
@@ -153,7 +153,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 	}
 }
 //*******************
-// fin  Affichage Module réservation 
+// fin  Affichage Module rï¿½ervation 
 //*******************
 
 
@@ -166,7 +166,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	$name="";
 	checkRight("faq","r");
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	helpHeader($LANG["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 
 	if (isset($_GET["ID"])){
@@ -202,7 +202,7 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 
 else {
 	checkHelpdeskAccess();
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	helpHeader($LANG["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
 
 	printHelpDesk($_SESSION["glpiID"],1);
 }

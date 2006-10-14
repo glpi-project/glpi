@@ -40,19 +40,19 @@ include (GLPI_ROOT . "/inc/common.function.php");
 include (GLPI_ROOT . "/inc/display.function.php");
 include (GLPI_ROOT . "/inc/db.function.php");
 include (GLPI_ROOT . "/config/based_config.php");
-include($cfg_glpi["config_dir"] . "/config_db.php");
+include($CFG_GLPI["config_dir"] . "/config_db.php");
 
 if(!session_id()){@session_start();}
 
 // Init debug variable
-$cfg_glpi["debug"]=0;
+$CFG_GLPI["debug"]=0;
 
 
 //################################ Functions ################################
 
 function loadLang() {
-	unset($lang);
-	global $lang;
+	unset($LANG);
+	global $LANG;
 	if (isset($_SESSION["dict"]))
 		$dict=$_SESSION["dict"];
 	else $dict="en_GB";
@@ -67,7 +67,7 @@ $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
 if ($max_time>5) {$defaulttimeout=$max_time-2;$defaultrowlimit=1;}
 else {$defaulttimeout=1;$defaultrowlimit=1;}
 
-$db=new DB;
+$DB=new DB;
 
 function init_time() 
 {
@@ -93,24 +93,24 @@ function current_time()
 }
 
 function test_content_ok(){
-	global $db;
+	global $DB;
 
 	$query1="SELECT ID FROM glpi_computers WHERE  comments LIKE '%\\\\\\%';";
 	$query2="SELECT ID FROM glpi_printers WHERE  comments LIKE '%\\\\\\%';";	
 	$query3="SELECT ID FROM glpi_tracking WHERE  contents LIKE '%\\\\\\%';";	
 	$query4="SELECT ID FROM glpi_followups WHERE  contents LIKE '%\\\\\\%';";	
 
-	$result1=$db->query($query1);
-	if ($db->numrows($result1)>0)
+	$result1=$DB->query($query1);
+	if ($DB->numrows($result1)>0)
 		return false;
-	$result4=$db->query($query4);
-	if ($db->numrows($result4)>0)
+	$result4=$DB->query($query4);
+	if ($DB->numrows($result4)>0)
 		return false;	
-	$result3=$db->query($query3);
-	if ($db->numrows($result3)>0)
+	$result3=$DB->query($query3);
+	if ($DB->numrows($result3)>0)
 		return false;
-	$result2=$db->query($query2);
-	if ($db->numrows($result2)>0)
+	$result2=$DB->query($query2);
+	if ($DB->numrows($result2)>0)
 		return false;
 	return true;		
 }
@@ -132,13 +132,13 @@ function seems_utf8($Str) {
 	return true;
 }
 
-function get_update_content($db, $table,$from,$limit,$conv_utf8)
+function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 {
 	$content="";
-	$result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
+	$result = $DB->query("SELECT * FROM $table LIMIT $from,$limit");
 
 	if($result)
-		while($row = $db->fetch_assoc($result)) {
+		while($row = $DB->fetch_assoc($result)) {
 			if (isset($row["ID"])) {
 				if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
 				$row=stripslashes_deep($row);
@@ -149,7 +149,7 @@ function get_update_content($db, $table,$from,$limit,$conv_utf8)
 					if(!isset($val)) $insert .= "NULL,";
 					else if($val != "") {
 						if ($conv_utf8) {
-							// Gestion users AD qui sont déjà en UTF8
+							// Gestion users AD qui sont dï¿½ï¿½en UTF8
 							if ($table!="glpi_users"||!seems_utf8($val))
 								$val=utf8_encode($val);
 						}
@@ -168,10 +168,10 @@ function get_update_content($db, $table,$from,$limit,$conv_utf8)
 }
 
 
-function UpdateContent($db, $duree,$rowlimit,$conv_utf8)
+function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
 {
 	// $dumpFile, fichier source
-	// $database, nom de la base de données cible
+	// $database, nom de la base de donnï¿½s cible
 	// $mysqlUser, login pouyr la connexion au serveur MySql
 	// $mysqlPassword, mot de passe
 	// $histMySql, nom de la machine serveur MySQl
@@ -179,15 +179,15 @@ function UpdateContent($db, $duree,$rowlimit,$conv_utf8)
 
 
 	global $TPSCOUR,$offsettable,$offsetrow,$cpt;
-	if ($db->error)
+	if ($DB->error)
 	{
-		echo "Connexion impossible à $hostMySql pour $mysqlUser";
+		echo "Connexion impossible ï¿½$hostMySql pour $mysqlUser";
 		return FALSE;
 	}
 
-	$result=$db->list_tables();
+	$result=$DB->list_tables();
 	$numtab=0;
-	while ($t=$db->fetch_array($result)){
+	while ($t=$DB->fetch_array($result)){
 		if (ereg("glpi_",$t[0])){
 			$tables[$numtab]=$t[0];
 			$numtab++;
@@ -207,12 +207,12 @@ function UpdateContent($db, $duree,$rowlimit,$conv_utf8)
 
 		$fin=0;
 		while (!$fin){
-			$todump=get_update_content($db,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8);
+			$todump=get_update_content($DB,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8);
 			//	echo $todump."<br>";
 			$rowtodump=substr_count($todump, "UPDATE ");
 			if ($rowtodump>0){
 				//	echo $todump;
-				$result = $db->query($todump);
+				$result = $DB->query($todump);
 				//	if (!$result) echo "ECHEC ".$todump;
 
 				$cpt+=$rowtodump;
@@ -231,8 +231,8 @@ function UpdateContent($db, $duree,$rowlimit,$conv_utf8)
 			return TRUE;
 
 	}
-	if ($db->error())
-		echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
+	if ($DB->error())
+		echo "<hr>ERREUR ï¿½partir de [$formattedQuery]<br>".$DB->error()."<hr>";
 	$offsettable=-1;
 	return TRUE;
 }
@@ -340,8 +340,8 @@ echo "<div class=\"principal\">";
 /*if (!isset($_POST["oui"])&&!isset($_POST["non"])&&!isset($_GET["dump"]))
   if (test_content_ok()) {
   echo "<div align=\"center\">";
-  echo $lang["update"]["108"];
-  echo $lang["update"]["109"];
+  echo $LANG["update"]["108"];
+  echo $LANG["update"]["109"];
   echo "<form action=\"update_content.php\" method=\"post\">";
   echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
   echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
@@ -349,8 +349,8 @@ echo "<div class=\"principal\">";
   }
   else {
   echo "<div align=\"center\">";
-  echo $lang["update"]["110"];
-  echo $lang["update"]["109"];
+  echo $LANG["update"]["110"];
+  echo $LANG["update"]["109"];
   echo "<form action=\"update_content.php\" method=\"post\">";
   echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
   echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
@@ -364,21 +364,21 @@ $time_file=date("Y-m-d-h-i");
 $cur_time=date("Y-m-d H:i");
 
 init_time(); //initialise le temps
-//début de fichier
+//dï¿½ut de fichier
 if (!isset($_GET["offsettable"])) $offsettable=0; 
 else $offsettable=$_GET["offsettable"]; 
-//début de fichier
+//dï¿½ut de fichier
 if (!isset($_GET["offsetrow"])) $offsetrow=-1; 
 else $offsetrow=$_GET["offsetrow"];
-//timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
+//timeout de 5 secondes par dï¿½aut, -1 pour utiliser sans timeout
 if (!isset($_GET["duree"])) $duree=$defaulttimeout; 
 else $duree=$_GET["duree"];
-//Limite de lignes à dumper à chaque fois
+//Limite de lignes ï¿½dumper ï¿½chaque fois
 if (!isset($_GET["rowlimit"])) $rowlimit=$defaultrowlimit; 
 else  $rowlimit=$_GET["rowlimit"];
 
-$tab=$db->list_tables();
-$tot=$db->numrows($tab);
+$tab=$DB->list_tables();
+$tot=$DB->numrows($tab);
 	if(isset($offsettable)){
 		if ($offsettable>=0)
 			$percent=min(100,round(100*$offsettable/$tot,0));
@@ -396,7 +396,7 @@ if(!FieldExists("glpi_config","utf8_conv")) {
 }
 
 	if ($offsettable>=0){
-		if (UpdateContent($db,$duree,$rowlimit,$conv_utf8))
+		if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8))
 		{
 			echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">ici</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
@@ -407,15 +407,15 @@ if(!FieldExists("glpi_config","utf8_conv")) {
 		}
 	}
 else  { 
-	//echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
-	echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+	//echo "<div align='center'><p>Terminï¿½ Nombre de requï¿½es totales traitï¿½s : $cpt</p></div>";
+	echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG["install"][64]."</span></a></p>";
 	echo "</div>";
 
 }
 
 if ($conv_utf8){
 	$query = "ALTER TABLE `glpi_config` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
-	$db->query($query) or die(" 0.6 add utf8_conv to glpi_config".$lang["update"][90].$db->error());
+	$DB->query($query) or die(" 0.6 add utf8_conv to glpi_config".$LANG["update"][90].$DB->error());
 }
 
 ?>

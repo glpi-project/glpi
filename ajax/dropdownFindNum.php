@@ -42,12 +42,12 @@ header_nocache();
 checkRight("create_ticket","1");
 
 $where="WHERE '1'='1' ";
-if (in_array($_POST['table'],$cfg_glpi["deleted_tables"]))
+if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"]))
 $where.=" AND deleted='N' ";
-if (in_array($_POST['table'],$cfg_glpi["template_tables"]))
+if (in_array($_POST['table'],$CFG_GLPI["template_tables"]))
 $where.=" AND is_template='0' ";		
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"]){
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 	$WWHERE="";
 	if ($_POST['table']!="glpi_software"){
 		$WWHERE=" OR contact ".makeTextSearch($_POST['searchText'])." OR serial ".makeTextSearch($_POST['searchText'])." OR otherserial ".makeTextSearch($_POST['searchText']);
@@ -56,21 +56,21 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildca
 }
 
 
-$NBMAX=$cfg_glpi["dropdown_max"];
+$NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
-if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
+if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 $query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
-$result = $db->query($query);
+$result = $DB->query($query);
 
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
-if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 echo "<option value=\"0\">-----</option>";
-if ($db->numrows($result)) {
-	while ($data = $db->fetch_array($result)) {
+if ($DB->numrows($result)) {
+	while ($data = $DB->fetch_array($result)) {
 
 		$output = $data['name']." (".$data['ID'].")";
 		if ($_POST['table']!="glpi_software"){
@@ -79,7 +79,7 @@ if ($db->numrows($result)) {
 		}
 		$ID = $data['ID'];
 		if (empty($output)) $output="($ID)";
-		echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
+		echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

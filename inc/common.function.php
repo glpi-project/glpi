@@ -60,19 +60,19 @@ if (!defined('GLPI_ROOT')){
  *
  */
 function getDeviceTypeName($ID){
-	global $lang;
+	global $LANG;
 	switch ($ID){
-		case COMPUTER_TYPE : return $lang["help"][25];break;
-		case NETWORKING_TYPE : return $lang["help"][26];break;
-		case PRINTER_TYPE : return $lang["help"][27];break;
-		case MONITOR_TYPE : return $lang["help"][28];break;
-		case PERIPHERAL_TYPE : return $lang["help"][29];break;
-		case SOFTWARE_TYPE : return $lang["help"][31];break;
-		case CARTRIDGE_TYPE : return $lang["Menu"][21];break;
-		case CONTACT_TYPE : return $lang["Menu"][22];break;
-		case ENTERPRISE_TYPE : return $lang["Menu"][23];break;
-		case CONTRACT_TYPE : return $lang["Menu"][25];break;
-		case CONSUMABLE_TYPE : return $lang["Menu"][32];break;
+		case COMPUTER_TYPE : return $LANG["help"][25];break;
+		case NETWORKING_TYPE : return $LANG["help"][26];break;
+		case PRINTER_TYPE : return $LANG["help"][27];break;
+		case MONITOR_TYPE : return $LANG["help"][28];break;
+		case PERIPHERAL_TYPE : return $LANG["help"][29];break;
+		case SOFTWARE_TYPE : return $LANG["help"][31];break;
+		case CARTRIDGE_TYPE : return $LANG["Menu"][21];break;
+		case CONTACT_TYPE : return $LANG["Menu"][22];break;
+		case ENTERPRISE_TYPE : return $LANG["Menu"][23];break;
+		case CONTRACT_TYPE : return $LANG["Menu"][25];break;
+		case CONSUMABLE_TYPE : return $LANG["Menu"][32];break;
 
 
 	}
@@ -201,9 +201,9 @@ function resume_text($string,$length=255){
  *
  */
 function convDateTime($time) { 
-	global $cfg_glpi;
+	global $CFG_GLPI;
 	if (is_null($time)) return $time;
-	if ($cfg_glpi["dateformat"]!=0) {
+	if ($CFG_GLPI["dateformat"]!=0) {
 		$date = substr($time,8,2)."-";        // jour 
 		$date = $date.substr($time,5,2)."-";  // mois 
 		$date = $date.substr($time,0,4). " "; // annÃ©e 
@@ -224,9 +224,9 @@ function convDateTime($time) {
  *
  */
 function convDate($time) { 
-	global $cfg_glpi;
+	global $CFG_GLPI;
 	if (is_null($time)) return $time;
-	if ($cfg_glpi["dateformat"]!=0) {
+	if ($CFG_GLPI["dateformat"]!=0) {
 		$date = substr($time,8,2)."-";        // jour 
 		$date = $date.substr($time,5,2)."-";  // mois 
 		$date = $date.substr($time,0,4); // annÃ©e 
@@ -244,10 +244,9 @@ function convDate($time) {
  * @return nothing
  */
 function sendFile($file,$filename){
-	global $db;
+	global $DB;
 
-	// Test sécurité
-	if (ereg("\.\.",$file)){
+	// Test sï¿½uritï¿½	if (ereg("\.\.",$file)){
 		session_start();
 		echo "Security attack !!!";
 		logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
@@ -260,10 +259,10 @@ function sendFile($file,$filename){
 		$splitter=split("/",$file);
 		$filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
 		$query="SELECT mime from glpi_docs WHERE filename LIKE '$filedb'";
-		$result=$db->query($query);
+		$result=$DB->query($query);
 		$mime="application/octetstream";
-		if ($result&&$db->numrows($result)==1){
-			$mime=$db->result($result,0,0);
+		if ($result&&$DB->numrows($result)==1){
+			$mime=$DB->result($result,0,0);
 
 		} else {
 			// fichiers DUMP SQL et XML
@@ -404,17 +403,17 @@ function get_hour_from_sql($time){
  */
 function optimize_tables (){
 
-	global $db;
-	$result=$db->list_tables();
-	while ($line = $db->fetch_array($result))
+	global $DB;
+	$result=$DB->list_tables();
+	while ($line = $DB->fetch_array($result))
 	{
 		if (ereg("glpi_",$line[0])){
 			$table = $line[0];
 			$query = "OPTIMIZE TABLE ".$table." ;";
-			$db->query($query);
+			$DB->query($query);
 		}
 	}
-	$db->free_result($result);
+	$DB->free_result($result);
 }
 
 
@@ -424,14 +423,14 @@ function optimize_tables (){
 
 
 //*************************************************************************************************************
-// De jolies fonctions pour améliorer l'affichage du texte de la FAQ/knowledgbase
-// obsolète since 0.68 but DONT DELETE  THIS SECTION !!
+// De jolies fonctions pour amï¿½iorer l'affichage du texte de la FAQ/knowledgbase
+// obsolï¿½e since 0.68 but DONT DELETE  THIS SECTION !!
 // USED IN THE UPDATE SCRIPT
 //************************************************************************************************************
 
 /**
  *Met en "ordre" une chaine avant affichage
- * Remplace trés AVANTAGEUSEMENT nl2br 
+ * Remplace trï¿½ AVANTAGEUSEMENT nl2br 
  * 
  * @param $pee
  * @param $br
@@ -478,7 +477,7 @@ function clicurl($chaine){
 function split_text($text, $start, $end)
 {
 
-	// Adapté de PunBB 
+	// Adaptï¿½de PunBB 
 	//Copyright (C)  Rickard Andersson (rickard@punbb.org)
 
 	$tokens = explode($start, $text);
@@ -510,7 +509,7 @@ function split_text($text, $start, $end)
  */
 function rembo($string){
 
-	// Adapté de PunBB 
+	// Adaptï¿½de PunBB 
 	//Copyright (C)  Rickard Andersson (rickard@punbb.org)
 
 	// If the message contains a code tag we have to split it up (text within [code][/code] shouldn't be touched)
@@ -609,7 +608,7 @@ function makeTextSearch($val,$not=0){
 }
 
 function checkNewVersionAvailable($auto=1){
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 
 	if (!haveRight("check_update","r")) return false;	
 
@@ -617,12 +616,12 @@ function checkNewVersionAvailable($auto=1){
 	$latest_version = '';
 
 	// Connection directe
-	if (empty($cfg_glpi["proxy_name"])){
+	if (empty($CFG_GLPI["proxy_name"])){
 		if ($fp=@fsockopen("glpi-project.org", 80, $errno, $errstr, 1)){
 
 			$request  = "GET /latest_version HTTP/1.1\r\n";
 			$request .= "Host: glpi-project.org\r\n";
-			$request .= 'User-Agent: GLPICheckUpdate/'.trim($cfg_glpi["version"])."\r\n";
+			$request .= 'User-Agent: GLPICheckUpdate/'.trim($CFG_GLPI["version"])."\r\n";
 			$request .= "Connection: Close\r\n\r\n";
 
 			fwrite($fp, $request);
@@ -636,14 +635,14 @@ function checkNewVersionAvailable($auto=1){
 	} else { // Connection using proxy
 		$proxy_cont = ''; //laissez vide
 
-		$proxy_fp = fsockopen($cfg_glpi["proxy_name"], $cfg_glpi["proxy_port"], $errno, $errstr, 1);
+		$proxy_fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
 		if (!$proxy_fp)    {
-			if (!$auto) echo "<div align='center'>".$lang["setup"][311]." ($errstr)</div>";
+			if (!$auto) echo "<div align='center'>".$LANG["setup"][311]." ($errstr)</div>";
 		} 
 
-		fputs($proxy_fp, "GET http://glpi-project.org/latest_version HTTP/1.0\r\nHost: ".$cfg_glpi["proxy_name"]."\r\n");
-		if (!empty($cfg_glpi["proxy_user"]))
-			fputs($proxy_fp, "Proxy-Authorization: Basic " . base64_encode ($cfg_glpi["proxy_user"].":".$cfg_glpi["proxy_password"]) . "\r\n");    // added
+		fputs($proxy_fp, "GET http://glpi-project.org/latest_version HTTP/1.0\r\nHost: ".$CFG_GLPI["proxy_name"]."\r\n");
+		if (!empty($CFG_GLPI["proxy_user"]))
+			fputs($proxy_fp, "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".$CFG_GLPI["proxy_password"]) . "\r\n");    // added
 		fputs($proxy_fp,"\r\n");
 		while(!feof($proxy_fp)) {
 			$ret = fread($proxy_fp,128);
@@ -654,9 +653,9 @@ function checkNewVersionAvailable($auto=1){
 	}
 
 	if (strlen(trim($latest_version)) == 0){
-		if (!$auto) echo "<div align='center'>".$lang["setup"][304]." ($errstr)</div>";
+		if (!$auto) echo "<div align='center'>".$LANG["setup"][304]." ($errstr)</div>";
 	} else {			
-		$splitted=split("\.",trim($cfg_glpi["version"]));
+		$splitted=split("\.",trim($CFG_GLPI["version"]));
 
 		if ($splitted[0]<10) $splitted[0].="0";
 		if ($splitted[1]<10) $splitted[1].="0";
@@ -679,14 +678,14 @@ function checkNewVersionAvailable($auto=1){
 
 		if ($cur_version < $lat_version){
 			if (!$auto) {
-				echo "<div align='center'>".$lang["setup"][301]." ".$latest_version."</div>";
-				echo "<div align='center'>".$lang["setup"][302]."</div>";
+				echo "<div align='center'>".$LANG["setup"][301]." ".$latest_version."</div>";
+				echo "<div align='center'>".$LANG["setup"][302]."</div>";
 			}
 
 			$query="UPDATE glpi_config SET founded_new_version='".$latest_version."' WHERE ID='1'";
-			$db->query($query);
+			$DB->query($query);
 
-		}  else echo "<div align='center'>".$lang["setup"][303]."</div>";
+		}  else echo "<div align='center'>".$LANG["setup"][303]."</div>";
 	} 
 	return 1;
 }

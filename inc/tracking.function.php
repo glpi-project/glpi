@@ -42,10 +42,10 @@ if (!defined('GLPI_ROOT')){
 
 
 function titleTracking(){
-	global  $lang,$cfg_glpi;
+	global  $LANG,$CFG_GLPI;
 	// titre
 	echo "<div align='center'><table border='0'><tr><td>\n";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_sous_nav'>".$lang["tracking"][0]."</span>\n";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_sous_nav'>".$LANG["tracking"][0]."</span>\n";
 	echo "</td></tr></table>&nbsp;</div>\n";
 
 }
@@ -61,7 +61,7 @@ function titleTracking(){
  *
  **/
 function showTrackingOnglets($target){
-	global $lang,$cfg_glpi;
+	global $LANG,$CFG_GLPI;
 
 	if (preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 		$ID=$ereg[1];
@@ -72,7 +72,7 @@ function showTrackingOnglets($target){
 		echo "<div id='barre_onglets'><ul id='onglet'>";
 
 		if ($_SESSION["glpiprofile"]["interface"]=="central"){
-			echo "<li class='actif'><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=$ID&amp;onglet=1\">".$lang["job"][38]." $ID</a></li>";
+			echo "<li class='actif'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID&amp;onglet=1\">".$LANG["job"][38]." $ID</a></li>";
 
 			if (haveRight("show_ticket","1"))
 				display_plugin_headings($target,TRACKING_TYPE,"","");
@@ -81,7 +81,7 @@ function showTrackingOnglets($target){
 
 			// admin yes  
 			if (haveRight("comment_ticket","1")||haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]){
-				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</a></li>";
+				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$LANG["job"][29]."</a></li>";
 			}
 
 
@@ -92,18 +92,18 @@ function showTrackingOnglets($target){
 				$next=getNextItem("glpi_tracking",$ID);
 				$prev=getPreviousItem("glpi_tracking",$ID);
 				$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
+				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
 			}
 		}elseif (haveRight("comment_ticket","1")){
 
 			// Postonly could post followup in helpdesk area	
-			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$lang["job"][38]." $ID</span></a></li>";
+			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$LANG["job"][38]." $ID</span></a></li>";
 
 			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
 				echo "<li class='invisible'>&nbsp;</li>";
 
-				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$lang["job"][29]."</span></a></li>";
+				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$LANG["job"][29]."</span></a></li>";
 			}
 		}
 
@@ -118,7 +118,7 @@ function showTrackingOnglets($target){
 
 
 function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameters="",$sort="",$order=""){
-	global $lang,$cfg_glpi;
+	global $LANG,$CFG_GLPI;
 
 	// New Line for Header Items Line
 	echo displaySearchNewLine($output_type);
@@ -126,14 +126,14 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	$header_num=1;
 
 	$items=array(
-			$lang["joblist"][0]=>"glpi_tracking.status",
-			$lang["common"][27]=>"glpi_tracking.date",
-			$lang["joblist"][2]=>"glpi_tracking.priority",
-			$lang["common"][37]=>"author.name",
-			$lang["joblist"][4]=>"assign.name",
-			$lang["common"][1]=>"glpi_tracking.device_type,glpi_tracking.computer",
-			$lang["common"][36]=>"glpi_dropdown_tracking_category.completename",
-			$lang["joblist"][6]=>"glpi_tracking.contents",
+			$LANG["joblist"][0]=>"glpi_tracking.status",
+			$LANG["common"][27]=>"glpi_tracking.date",
+			$LANG["joblist"][2]=>"glpi_tracking.priority",
+			$LANG["common"][37]=>"author.name",
+			$LANG["joblist"][4]=>"assign.name",
+			$LANG["common"][1]=>"glpi_tracking.device_type,glpi_tracking.computer",
+			$LANG["common"][36]=>"glpi_dropdown_tracking_category.completename",
+			$LANG["joblist"][6]=>"glpi_tracking.contents",
 		    );
 
 	foreach ($items as $key => $val){
@@ -175,44 +175,44 @@ function showCentralJobList($target,$start,$status="process") {
 	// If $item is given, only jobs for a particular machine
 	// are listed.
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("show_ticket","1")) return false;
 
 	if($status=="waiting"){ // on affiche les tickets en attente
 		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='waiting' ) ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
-		$title=$lang["central"][11];
+		$title=$LANG["central"][11];
 
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
 		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
-		$title=$lang["central"][9];
+		$title=$LANG["central"][9];
 	}
 
-	$lim_query = " LIMIT ".$start.",".$cfg_glpi["list_limit"]."";	
+	$lim_query = " LIMIT ".$start.",".$CFG_GLPI["list_limit"]."";	
 
-	$result = $db->query($query);
-	$numrows = $db->numrows($result);
+	$result = $DB->query($query);
+	$numrows = $DB->numrows($result);
 
 	$query .= $lim_query;
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 	$i = 0;
-	$number = $db->numrows($result);
+	$number = $DB->numrows($result);
 
 	if ($number > 0) {
 		echo "<div align='center'>";
 		echo "<table class='tab_cadrehov'>";
 
-		echo "<tr><th colspan='5'><b><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
+		echo "<tr><th colspan='5'><b><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
 		echo "<tr><th></th>";
-		echo "<th>".$lang["common"][37]."</th>";
-		echo "<th>".$lang["common"][1]."</th>";
-		echo "<th colspan='2'>".$lang["joblist"][6]."</th></tr>";
+		echo "<th>".$LANG["common"][37]."</th>";
+		echo "<th>".$LANG["common"][1]."</th>";
+		echo "<th colspan='2'>".$LANG["joblist"][6]."</th></tr>";
 		while ($i < $number) {
-			$ID = $db->result($result, $i, "ID");
+			$ID = $DB->result($result, $i, "ID");
 			showJobVeryShort($ID);
 			$i++;
 		}
@@ -233,7 +233,7 @@ function showCentralJobList($target,$start,$status="process") {
 function showCentralJobCount(){
 	// show a tab with count of jobs in the central and give link	
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("show_ticket","1")) return false;	
 
@@ -241,32 +241,32 @@ function showCentralJobCount(){
 
 
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 
 	$status=array("new"=>0, "assign"=>0, "plan"=>0, "waiting"=>0);
 
-	if ($db->numrows($result)>0)
-		while ($data=$db->fetch_assoc($result)){
+	if ($DB->numrows($result)>0)
+		while ($data=$DB->fetch_assoc($result)){
 
 			$status[$data["status"]]=$data["COUNT"];
 		}
 
 	echo "<div align='center'><table class='tab_cadrehov' style='text-align:center'>";
 
-	echo "<tr><th colspan='2'><b><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".$lang["tracking"][0]."</a></b></th></tr>";
-	echo "<tr><th ><b>".$lang["tracking"][28]."</b></th><th>".$lang["tracking"][29]."</th></tr>";
+	echo "<tr><th colspan='2'><b><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".$LANG["tracking"][0]."</a></b></th></tr>";
+	echo "<tr><th ><b>".$LANG["tracking"][28]."</b></th><th>".$LANG["tracking"][29]."</th></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=new&amp;reset=reset_before\">".$lang["tracking"][30]."</a> </td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=new&amp;reset=reset_before\">".$LANG["tracking"][30]."</a> </td>";
 	echo "<td>".$status["new"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=assign&amp;reset=reset_before\">".$lang["tracking"][31]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=assign&amp;reset=reset_before\">".$LANG["tracking"][31]."</a></td>";
 	echo "<td>".$status["assign"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=plan&amp;reset=reset_before\">".$lang["tracking"][32]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=plan&amp;reset=reset_before\">".$LANG["tracking"][32]."</a></td>";
 	echo "<td>".$status["plan"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?status=waiting&amp;reset=reset_before\">".$lang["tracking"][33]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=waiting&amp;reset=reset_before\">".$LANG["tracking"][33]."</a></td>";
 	echo "<td>".$status["waiting"]."</td></tr>";
 
 
@@ -283,7 +283,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 	// affiche toutes les vielles intervention pour un $item donn� 
 
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("show_ticket","1")) return false;
 	$candelete=haveRight("delete_ticket","1");
@@ -300,23 +300,23 @@ function showOldJobListForItem($username,$item_type,$item) {
 	$query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 	$i = 0;
-	$number = $db->numrows($result);
+	$number = $DB->numrows($result);
 
 	if ($number > 0)
 	{
 		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan=9>".$number." ".$lang["job"][18]."  ".$lang["job"][17]."";
+		echo "<tr><th colspan=9>".$number." ".$LANG["job"][18]."  ".$LANG["job"][17]."";
 		if ($number > 1) { echo "s"; }
-		echo " ".$lang["job"][16].":</th></tr>";
+		echo " ".$LANG["job"][16].":</th></tr>";
 
 		commonTrackingListHeader();
 
 		while ($i < $number)
 		{
-			$ID = $db->result($result, $i, "ID");
+			$ID = $DB->result($result, $i, "ID");
 			showJobShort($ID, 0);
 			$i++;
 		}
@@ -327,11 +327,11 @@ function showOldJobListForItem($username,$item_type,$item) {
 			echo "<br><div align='center'>";
 
 			echo "<table class ='delete-old-job' cellpadding='5' width='950'>";
-			echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt='' ></td><td><a  onclick= \"if ( markAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all&amp;ID=$item'>".$lang["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt='' ></td><td><a  onclick= \"if ( markAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all&amp;ID=$item'>".$LANG["buttons"][18]."</a></td>";
 
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
+			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$LANG["buttons"][19]."</a>";
 			echo "</td><td>";
-			echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
+			echo "<input type='submit' value=\"".$LANG["buttons"][6]."\" name='delete_inter' class='submit'></td>";
 			echo "<td width='75%'>&nbsp;</td></tr></table></div>";
 		}
 	} 
@@ -339,7 +339,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 	{
 		echo "<br><div align='center'>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$lang["joblist"][22]."</th></tr>";
+		echo "<tr><th>".$LANG["joblist"][22]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
 	}
@@ -354,7 +354,7 @@ function showJobListForItem($username,$item_type,$item) {
 	// $item is required
 	//affiche toutes les vielles intervention pour un $item donn� 
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("show_ticket","1")) return false;
 
@@ -363,23 +363,23 @@ function showJobListForItem($username,$item_type,$item) {
 	$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 	$i = 0;
-	$number = $db->numrows($result);
+	$number = $DB->numrows($result);
 
 	if ($number > 0)
 	{
 		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='9'>".$number." ".$lang["job"][17]."";
+		echo "<tr><th colspan='9'>".$number." ".$LANG["job"][17]."";
 		if ($number > 1) { echo "s"; }
-		echo " ".$lang["job"][16].":</th></tr>";
+		echo " ".$LANG["job"][16].":</th></tr>";
 
 		if ($item)
 		{
 			echo "<tr><td align='center' class='tab_bg_2' colspan='9'>";
-			echo "<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
-			echo $lang["joblist"][7];
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
+			echo $LANG["joblist"][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
 		}
@@ -388,7 +388,7 @@ function showJobListForItem($username,$item_type,$item) {
 
 		while ($i < $number)
 		{
-			$ID = $db->result($result, $i, "ID");
+			$ID = $DB->result($result, $i, "ID");
 			showJobShort($ID, 0);
 			$i++;
 		}
@@ -398,14 +398,14 @@ function showJobListForItem($username,$item_type,$item) {
 	{
 		echo "<br><div align='center'>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$lang["joblist"][8]."</th></tr>";
+		echo "<tr><th>".$LANG["joblist"][8]."</th></tr>";
 
 		if ($item)
 		{
 
 			echo "<tr><td align='center' class='tab_bg_2' colspan='8'>";
-			echo "<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
-			echo $lang["joblist"][7];
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
+			echo $LANG["joblist"][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
 		}
@@ -420,7 +420,7 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
 
-	global $cfg_glpi, $lang;
+	global $CFG_GLPI, $LANG;
 
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
@@ -435,14 +435,14 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	if ($job->getfromDBwithData($ID,0))
 	{
 		$item_num=1;
-		$bgcolor=$cfg_glpi["priority_".$job->fields["priority"]];
+		$bgcolor=$CFG_GLPI["priority_".$job->fields["priority"]];
 
 		echo displaySearchNewLine($output_type);
 
 		// First column
 		$first_col= "ID: ".$job->fields["ID"];
 		if ($output_type==HTML_OUTPUT)
-			$first_col.="<br><img src=\"".$cfg_glpi["root_doc"]."/pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
+			$first_col.="<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
 		else $first_col.=" - ".getStatusName($job->fields["status"]);
 
 		if ($candelete&&$output_type==HTML_OUTPUT&&ereg("old_",$job->fields["status"])){
@@ -457,21 +457,21 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$second_col="";	
 		if (!ereg("old_",$job->fields["status"]))
 		{
-			$second_col.="<small>".$lang["joblist"][11].":";
+			$second_col.="<small>".$LANG["joblist"][11].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
 			$second_col.= "&nbsp;".convDateTime($job->fields["date"])."</small>";
 		}
 		else
 		{
-			$second_col.="<small>".$lang["joblist"][11].":";
+			$second_col.="<small>".$LANG["joblist"][11].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
 			$second_col.="&nbsp;".convDateTime($job->fields["date"]);
 			$second_col.="<br>";
-			$second_col.="<i>".$lang["joblist"][12].":";
+			$second_col.="<i>".$LANG["joblist"][12].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
 			$second_col.="&nbsp;".convDateTime($job->fields["closedate"])."</i>";
 			$second_col.="<br>";
-			if ($job->fields["realtime"]>0) $second_col.=$lang["job"][20].": ";
+			if ($job->fields["realtime"]>0) $second_col.=$LANG["job"][20].": ";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
 			$second_col.="&nbsp;".getRealtime($job->fields["realtime"]);
 			$second_col.="</small>";
@@ -539,7 +539,7 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 						$deleted=1;
 				$sixth_col.=$m->getType();
 				$sixth_col.="<br><strong>".$job->computername;
-				if ($cfg_glpi["view_ID"])
+				if ($CFG_GLPI["view_ID"])
 					$sixth_col.=" (".$job->fields["computer"].")";
 				$sixth_col.="</strong>";
 			}
@@ -551,7 +551,7 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Eigth column
 
 		$stripped_content=resume_text($job->fields["contents"],400);
-		if ($followups){$stripped_content=resume_text($job->fields["contents"],$cfg_glpi["cut"]);}
+		if ($followups){$stripped_content=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);}
 
 		$eigth_column="<strong>".$stripped_content."</strong>";
 		if ($followups&&$output_type==HTML_OUTPUT)
@@ -571,10 +571,10 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]) 
 				$nineth_column.="&nbsp;";
 			else 
-				$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		}
 		else
-			$nineth_column.="<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+			$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
 
 		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$align." width='40'");
 
@@ -583,7 +583,7 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	}
 	else
 	{
-		echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$lang["joblist"][16]."</i></td></tr>";
+		echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$LANG["joblist"][16]."</i></td></tr>";
 	}
 }
 
@@ -592,14 +592,14 @@ function showJobVeryShort($ID) {
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
 
-	global $cfg_glpi, $lang;
+	global $CFG_GLPI, $LANG;
 
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 	$viewusers=haveRight("user","r");
 	if ($job->getfromDBwithData($ID,0))
 	{
-		$bgcolor=$cfg_glpi["priority_".$job->fields["priority"]];
+		$bgcolor=$CFG_GLPI["priority_".$job->fields["priority"]];
 		if ($job->fields["status"] == "new")
 		{
 			echo "<tr class='tab_bg_2'>";
@@ -654,23 +654,23 @@ function showJobVeryShort($ID) {
 		echo "<td width='40' align='center'>";
 
 		if ($_SESSION["glpiprofile"]["interface"]=="central")
-			echo "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$lang["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
-			echo "<a href=\"".$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$lang["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 
 		// Finish Line
 		echo "</tr>";
 	}
 	else
 	{
-		echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$lang["joblist"][16]."</i></td></tr>";
+		echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$LANG["joblist"][16]."</i></td></tr>";
 	}
 }
 
 function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
-	global $cfg_glpi, $lang,$cfg_glpi,$REFERER,$db;
+	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
 	if (!haveRight("create_ticket","1")) return false;
 
 	if (!empty($error)) {
@@ -681,9 +681,9 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	//	if ($device_type!=0){
 	echo "<input type='hidden' name='_referer' value='$REFERER'>";
-	echo "<p><a class='icon_consol' href='$REFERER'>".$lang["buttons"][13]."</a></p>";
+	echo "<p><a class='icon_consol' href='$REFERER'>".$LANG["buttons"][13]."</a></p>";
 	//	}	
-	echo "<table class='tab_cadre'><tr><th><a href='$target'>".$lang["buttons"][16]."</a></th><th colspan='3'>".$lang["job"][13].": <br>";
+	echo "<table class='tab_cadre'><tr><th><a href='$target'>".$LANG["buttons"][16]."</a></th><th colspan='3'>".$LANG["job"][13].": <br>";
 	if ($device_type!=0){
 		$m=new CommonItem;
 		$m->getfromDB($device_type,$ID);
@@ -693,7 +693,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	$author_rand=0;
 	if (haveRight("update_ticket","1")){
-		echo "<tr class='tab_bg_2' align='center'><td>".$lang["common"][37].":</td>";
+		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["common"][37].":</td>";
 		echo "<td align='center' colspan='3'>";
 		$author_rand=dropdownAllUsers("author",$author,1,1);
 
@@ -702,7 +702,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	if ($device_type==0&&$_SESSION["glpiprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align='center'>".$lang["help"][24].": </td>";
+		echo "<td align='center'>".$LANG["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
 		dropdownTrackingDeviceType("device_type",$device_type,$_SESSION["glpiID"]);
 		echo "</td></tr>";
@@ -714,12 +714,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 
 	if (haveRight("update_ticket","1")){
-		echo "<tr class='tab_bg_2'><td align='center'>".$lang["common"][27].":</td>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["common"][27].":</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		showCalendarForm("form_ticket","date",date("Y-m-d H:i"),0,1);	
 		echo "</td>";
 
-		echo "<td align='center'>".$lang["job"][44].":</td>";
+		echo "<td align='center'>".$LANG["job"][44].":</td>";
 		echo "<td align='center'>";
 		$request_type=1;
 		if (isset($_POST["request_type"])) $request_type=$_POST["request_type"];
@@ -732,7 +732,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if (haveRight("comment_all_ticket","1")){
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td align='center'>";
-		echo $lang["job"][20].":</td>";
+		echo $LANG["job"][20].":</td>";
 		echo "<td align='center' colspan='3'><select name='hour'>";
 		for ($i=0;$i<100;$i++){
 			$selected="";
@@ -740,28 +740,28 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 			echo "<option value='$i' $selected>$i</option>";
 		}			
 
-		echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
+		echo "</select>".$LANG["job"][21]."&nbsp;&nbsp;";
 		echo "<select name='minute'>";
 		for ($i=0;$i<60;$i++){
 			$selected="";
 			if (isset($_POST["minute"])&&$_POST["minute"]==$i) $selected="selected";
 			echo "<option value='$i' $selected>$i</option>";
 		}
-		echo "</select>".$lang["job"][22]."&nbsp;&nbsp;";
+		echo "</select>".$LANG["job"][22]."&nbsp;&nbsp;";
 		echo "</td></tr>";
 	}
 
 
 	echo "<tr class='tab_bg_2'>";
 
-	echo "<td class='tab_bg_2' align='center'>".$lang["joblist"][2].":</td>";
+	echo "<td class='tab_bg_2' align='center'>".$LANG["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2'>";
 	$priority=3;
 	if (isset($_POST["priority"])) $priority=$_POST["priority"];
 	dropdownPriority("priority",$priority);
 	echo "</td>";
 
-	echo "<td>".$lang["common"][36].":</td>";
+	echo "<td>".$LANG["common"][36].":</td>";
 	echo "<td align='center'>";
 	$category=0;
 	if (isset($_POST["category"])) $category=$_POST["category"];
@@ -770,12 +770,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 
 	if (haveRight("update_ticket","1")||haveRight("assign_ticket","1")){
-		echo "<tr class='tab_bg_2'><td>".$lang["buttons"][3].":</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG["buttons"][3].":</td>";
 		echo "<td align='center' colspan='3'>";
 		dropdownUsers("assign",$assign,"own_ticket");
 		echo "</td></tr>";
 	} else if (haveRight("steal_ticket","1")) {
-		echo "<tr class='tab_bg_2'><td>".$lang["buttons"][3].":</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG["buttons"][3].":</td>";
 		echo "<td align='center' colspan='3'>";
 		dropdownUsers("assign",$assign,"ID");
 		echo "</td></tr>";
@@ -784,23 +784,23 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 
 
-	if($cfg_glpi["mailing"] == 1){
+	if($CFG_GLPI["mailing"] == 1){
 
 		$query="SELECT email from glpi_users WHERE ID='$author'";
 		
-		$result=$db->query($query);
+		$result=$DB->query($query);
 		$email="";
-		if ($result&&$db->numrows($result))
-			$email=$db->result($result,0,"email");
+		if ($result&&$DB->numrows($result))
+			$email=$DB->result($result,0,"email");
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'>".$lang["help"][8].":</td>";
+		echo "<td align='center'>".$LANG["help"][8].":</td>";
 		echo "<td align='center'>	<select name='emailupdates'>";
-		echo "<option value='no'>".$lang["choice"][0]."";
-		echo "<option value='yes' selected>".$lang["choice"][1]."";
+		echo "<option value='no'>".$LANG["choice"][0]."";
+		echo "<option value='yes' selected>".$LANG["choice"][1]."";
 		echo "</select>";
 		echo "</td>";
-		echo "<td align='center'>".$lang["help"][11].":</td>";
+		echo "<td align='center'>".$LANG["help"][11].":</td>";
 		echo "<td><span id='uemail_result'>";
 		echo "<input type='text' size='30' name='uemail' value='$email'>";
 		echo "</span>";
@@ -809,7 +809,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	}
 
-	echo "<tr><th colspan='4' align='center'>".$lang["job"][11].":";
+	echo "<tr><th colspan='4' align='center'>".$LANG["job"][11].":";
 	if ($device_type!=0){
 		echo "<input type='hidden' name='computer' value=\"$ID\">";
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">";
@@ -823,22 +823,22 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	$max_size/=1024*1024;
 	$max_size=round($max_size,1);
 
-	echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." ".$lang["common"][45]."):	";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+	echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." ".$LANG["common"][45]."):	";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
 	echo "<td colspan='3'><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
-	echo "<input type='submit' name='add' value=\"".$lang["buttons"][2]."\" class='submit'>";
+	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][2]."\" class='submit'>";
 	echo "</td><td colspan='2' align='center'>";
 	if (haveRight("comment_all_ticket","1"))
-		echo "<input type='submit' name='add_close' value=\"".$lang["buttons"][26]."\" class='submit'>";
+		echo "<input type='submit' name='add_close' value=\"".$LANG["buttons"][26]."\" class='submit'>";
 	else echo "&nbsp;";
 	echo "</td></tr>";
 
 	if (haveRight("comment_all_ticket","1")){
-		echo "<tr><th colspan='4' align='center'>".$lang["job"][45].":</th></tr>";
+		echo "<tr><th colspan='4' align='center'>".$LANG["job"][45].":</th></tr>";
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='_followup'></textarea></td></tr>";
 	}
 
@@ -847,17 +847,17 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 }
 
 function getRealtime($realtime){
-	global $lang;	
+	global $LANG;	
 	$output="";
 	$hour=floor($realtime);
-	if ($hour>0) $output.=$hour." ".$lang["job"][21]." ";
-	$output.=round((($realtime-floor($realtime))*60))." ".$lang["job"][22];
+	if ($hour>0) $output.=$hour." ".$LANG["job"][21]." ";
+	$output.=round((($realtime-floor($realtime))*60))." ".$LANG["job"][22];
 	return $output;
 }
 
 function searchSimpleFormTracking($target,$status="all"){
 
-global $cfg_glpi,  $lang;
+global $CFG_GLPI,  $LANG;
 
 
 	echo "<div align='center' >";
@@ -865,20 +865,20 @@ global $cfg_glpi,  $lang;
 	echo "<form method='get' name=\"form\" action=\"".$target."\">";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='1' align='center'>".$lang["joblist"][0].":&nbsp;";
+	echo "<td colspan='1' align='center'>".$LANG["joblist"][0].":&nbsp;";
 	echo "<select name='status'>";
-	echo "<option value='new' ".($status=="new"?" selected ":"").">".$lang["joblist"][9]."</option>";
-	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$lang["joblist"][18]."</option>";
-	echo "<option value='plan' ".($status=="plan"?" selected ":"").">".$lang["joblist"][19]."</option>";
-	echo "<option value='waiting' ".($status=="waiting"?" selected ":"").">".$lang["joblist"][26]."</option>";
-	echo "<option value='old_done' ".($status=="old_done"?" selected ":"").">".$lang["joblist"][10]."</option>";
-	echo "<option value='old_notdone' ".($status=="old_notdone"?" selected ":"").">".$lang["joblist"][17]."</option>";
-	echo "<option value='notold' ".($status=="notold"?"selected":"").">".$lang["joblist"][24]."</option>";	
-	echo "<option value='process' ".($status=="process"?"selected":"").">".$lang["joblist"][21]."</option>";
-	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][25]."</option>";	
-	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][20]."</option>";
+	echo "<option value='new' ".($status=="new"?" selected ":"").">".$LANG["joblist"][9]."</option>";
+	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$LANG["joblist"][18]."</option>";
+	echo "<option value='plan' ".($status=="plan"?" selected ":"").">".$LANG["joblist"][19]."</option>";
+	echo "<option value='waiting' ".($status=="waiting"?" selected ":"").">".$LANG["joblist"][26]."</option>";
+	echo "<option value='old_done' ".($status=="old_done"?" selected ":"").">".$LANG["joblist"][10]."</option>";
+	echo "<option value='old_notdone' ".($status=="old_notdone"?" selected ":"").">".$LANG["joblist"][17]."</option>";
+	echo "<option value='notold' ".($status=="notold"?"selected":"").">".$LANG["joblist"][24]."</option>";	
+	echo "<option value='process' ".($status=="process"?"selected":"").">".$LANG["joblist"][21]."</option>";
+	echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG["joblist"][25]."</option>";	
+	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["joblist"][20]."</option>";
 	echo "</select></td>";
-	echo "<td align='center' colspan='1'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";
+	echo "<td align='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
 	echo "</tr>";
 	echo "</table>";
 	echo "<input type='hidden' name='start' value='0'>";
@@ -894,7 +894,7 @@ global $cfg_glpi,  $lang;
 function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 
-	global $cfg_glpi,  $lang;
+	global $CFG_GLPI,  $LANG;
 
 	if (!haveRight("show_ticket","1")) {
 		if ($author==0&&$assign==0)
@@ -904,30 +904,30 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	}
 
 	if ($extended==1){
-		$option["comp.ID"]				= $lang["common"][2];
-		$option["comp.name"]				= $lang["common"][16];
-		$option["glpi_dropdown_locations.name"]		= $lang["common"][15];
-		$option["glpi_type_computers.name"]		= $lang["common"][17];
-		$option["glpi_dropdown_model.name"]		= $lang["common"][22];
-		$option["glpi_dropdown_os.name"]		= $lang["computers"][9];
-		$option["processor.designation"]		= $lang["computers"][21];
-		$option["comp.serial"]				= $lang["common"][19];
-		$option["comp.otherserial"]			= $lang["common"][20];
-		$option["ram.designation"]			= $lang["computers"][23];
-		$option["iface.designation"]			= $lang["setup"][9];
-		$option["sndcard.designation"]			= $lang["devices"][7];
-		$option["gfxcard.designation"]			= $lang["devices"][2];
-		$option["moboard.designation"]			= $lang["devices"][5];
-		$option["hdd.designation"]			= $lang["computers"][36];
-		$option["comp.comments"]			= $lang["common"][25];
-		$option["comp.contact"]				= $lang["common"][18];
-		$option["comp.contact_num"]		        = $lang["common"][21];
-		$option["comp.date_mod"]			= $lang["common"][26];
-		$option["glpi_networking_ports.ifaddr"] 	= $lang["networking"][14];
-		$option["glpi_networking_ports.ifmac"] 		= $lang["networking"][15];
-		$option["glpi_dropdown_netpoint.name"]		= $lang["networking"][51];
-		$option["glpi_enterprises.name"]		= $lang["common"][5];
-		$option["resptech.name"]			=$lang["common"][10];
+		$option["comp.ID"]				= $LANG["common"][2];
+		$option["comp.name"]				= $LANG["common"][16];
+		$option["glpi_dropdown_locations.name"]		= $LANG["common"][15];
+		$option["glpi_type_computers.name"]		= $LANG["common"][17];
+		$option["glpi_dropdown_model.name"]		= $LANG["common"][22];
+		$option["glpi_dropdown_os.name"]		= $LANG["computers"][9];
+		$option["processor.designation"]		= $LANG["computers"][21];
+		$option["comp.serial"]				= $LANG["common"][19];
+		$option["comp.otherserial"]			= $LANG["common"][20];
+		$option["ram.designation"]			= $LANG["computers"][23];
+		$option["iface.designation"]			= $LANG["setup"][9];
+		$option["sndcard.designation"]			= $LANG["devices"][7];
+		$option["gfxcard.designation"]			= $LANG["devices"][2];
+		$option["moboard.designation"]			= $LANG["devices"][5];
+		$option["hdd.designation"]			= $LANG["computers"][36];
+		$option["comp.comments"]			= $LANG["common"][25];
+		$option["comp.contact"]				= $LANG["common"][18];
+		$option["comp.contact_num"]		        = $LANG["common"][21];
+		$option["comp.date_mod"]			= $LANG["common"][26];
+		$option["glpi_networking_ports.ifaddr"] 	= $LANG["networking"][14];
+		$option["glpi_networking_ports.ifmac"] 		= $LANG["networking"][15];
+		$option["glpi_dropdown_netpoint.name"]		= $LANG["networking"][51];
+		$option["glpi_enterprises.name"]		= $LANG["common"][5];
+		$option["resptech.name"]			=$LANG["common"][10];
 	}
 	echo "<form method='get' name=\"form\" action=\"".$target."\">";
 
@@ -937,41 +937,41 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<table class='tab_cadre_fixe'>";
 
 
-	echo "<tr><th colspan='6' style='vertical-align:middle' ><div style='position: relative'><span><strong>".$lang["search"][0]."</strong></span>";
+	echo "<tr><th colspan='6' style='vertical-align:middle' ><div style='position: relative'><span><strong>".$LANG["search"][0]."</strong></span>";
 	if ($extended)
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=0'><img src=\"".$cfg_glpi["root_doc"]."/pics/deplier_up.png\" alt=''>".$lang["buttons"][36]."</a></span>";
-	else echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$cfg_glpi["root_doc"]."/pics/deplier_down.png\" alt=''>".$lang["buttons"][35]."</a></span>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=0'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''>".$LANG["buttons"][36]."</a></span>";
+	else echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''>".$LANG["buttons"][35]."</a></span>";
 	echo "</div></th></tr>";
 
 
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='1' align='center'>".$lang["joblist"][0].":<br>";
+	echo "<td colspan='1' align='center'>".$LANG["joblist"][0].":<br>";
 	echo "<select name='status'>";
-	echo "<option value='new' ".($status=="new"?" selected ":"").">".$lang["joblist"][9]."</option>";
-	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$lang["joblist"][18]."</option>";
-	echo "<option value='plan' ".($status=="plan"?" selected ":"").">".$lang["joblist"][19]."</option>";
-	echo "<option value='waiting' ".($status=="waiting"?" selected ":"").">".$lang["joblist"][26]."</option>";
-	echo "<option value='old_done' ".($status=="old_done"?" selected ":"").">".$lang["joblist"][10]."</option>";
-	echo "<option value='old_notdone' ".($status=="old_notdone"?" selected ":"").">".$lang["joblist"][17]."</option>";
-	echo "<option value='notold' ".($status=="notold"?"selected":"").">".$lang["joblist"][24]."</option>";	
-	echo "<option value='process' ".($status=="process"?"selected":"").">".$lang["joblist"][21]."</option>";
-	echo "<option value='old' ".($status=="old"?"selected":"").">".$lang["joblist"][25]."</option>";	
-	echo "<option value='all' ".($status=="all"?"selected":"").">".$lang["joblist"][20]."</option>";
+	echo "<option value='new' ".($status=="new"?" selected ":"").">".$LANG["joblist"][9]."</option>";
+	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$LANG["joblist"][18]."</option>";
+	echo "<option value='plan' ".($status=="plan"?" selected ":"").">".$LANG["joblist"][19]."</option>";
+	echo "<option value='waiting' ".($status=="waiting"?" selected ":"").">".$LANG["joblist"][26]."</option>";
+	echo "<option value='old_done' ".($status=="old_done"?" selected ":"").">".$LANG["joblist"][10]."</option>";
+	echo "<option value='old_notdone' ".($status=="old_notdone"?" selected ":"").">".$LANG["joblist"][17]."</option>";
+	echo "<option value='notold' ".($status=="notold"?"selected":"").">".$LANG["joblist"][24]."</option>";	
+	echo "<option value='process' ".($status=="process"?"selected":"").">".$LANG["joblist"][21]."</option>";
+	echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG["joblist"][25]."</option>";	
+	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["joblist"][20]."</option>";
 	echo "</select></td>";
-	echo "<td  colspan='1' align='center'>".$lang["common"][37].":<br>";
+	echo "<td  colspan='1' align='center'>".$LANG["common"][37].":<br>";
 	dropdownUsersTracking("author",$author,"author");
 	echo "</td>";
 
-	echo "<td  colspan='1' align='center'>".$lang["common"][35].":<br>";
+	echo "<td  colspan='1' align='center'>".$LANG["common"][35].":<br>";
 	dropdownValue("glpi_groups","group",$group);
 	echo "</td>";
 
-	echo "<td colspan='1' align='center'>".$lang["joblist"][2].":<br>";
+	echo "<td colspan='1' align='center'>".$LANG["joblist"][2].":<br>";
 	dropdownPriority("priority",$priority,1);
 	echo "</td>";
 
-	echo "<td colspan='2' align='center'>".$lang["common"][36].":<br>";
+	echo "<td colspan='2' align='center'>".$LANG["common"][36].":<br>";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 
@@ -979,20 +979,20 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<tr class='tab_bg_1'>";
 
 	echo "<td align='center' colspan='2'>";
-	echo "<table border='0'><tr><td>".$lang["common"][1].":</td><td>";
+	echo "<table border='0'><tr><td>".$LANG["common"][1].":</td><td>";
 	dropdownAllItems("item",$type,$item);
 	echo "</td></tr></table>";
 	echo "</td>";
-	echo "<td colspan='3' align='center'>".$lang["job"][5].":<br>";
+	echo "<td colspan='3' align='center'>".$LANG["job"][5].":<br>";
 
-	echo $lang["job"][27].":&nbsp;";
+	echo $LANG["job"][27].":&nbsp;";
 	dropdownUsers("assign",$assign,"own_ticket",1);
 	echo "<br>";
-	echo $lang["job"][28].":&nbsp;";
+	echo $LANG["job"][28].":&nbsp;";
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 
 	echo "</td>";
-	echo "<td align='center'>".$lang["job"][44].":<br>";
+	echo "<td align='center'>".$LANG["job"][44].":<br>";
 	dropdownRequestType("request_type",$request_type);
 	echo "</td>";
 	echo "</tr>";
@@ -1002,16 +1002,16 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		echo "<td align='center' colspan='6'>";
 		$selected="";
 		if ($computers_search) $selected="checked";
-		echo "<input type='checkbox' name='only_computers' value='1' $selected>".$lang["reports"][24].":&nbsp;";
+		echo "<input type='checkbox' name='only_computers' value='1' $selected>".$LANG["reports"][24].":&nbsp;";
 
 		echo "<input type='text' size='15' name=\"contains\" value=\"". stripslashes($contains) ."\" >";
 		echo "&nbsp;";
-		echo $lang["search"][10]."&nbsp;";
+		echo $LANG["search"][10]."&nbsp;";
 
 		echo "<select name='field' size='1'>";
 		echo "<option value='all' ";
 		if($field == "all") echo "selected";
-		echo ">".$lang["search"][7]."</option>";
+		echo ">".$LANG["search"][7]."</option>";
 		reset($option);
 		foreach ($option as $key => $val) {
 			echo "<option value=\"".$key."\""; 
@@ -1023,24 +1023,24 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		echo "</td></tr>";
 	}
 	if($extended)	{
-		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$lang["reports"][60].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
+		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$LANG["reports"][60].":</td><td align='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
 		showCalendarForm("form","date1",$date1);
 		echo "</td><td align='center' colspan='2'>";
-		echo $lang["search"][9].":&nbsp;";
+		echo $LANG["search"][9].":&nbsp;";
 		showCalendarForm("form","date2",$date2);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$lang["reports"][61].":</td><td align='center' colspan='2'>".$lang["search"][8].":&nbsp;";
+		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$LANG["reports"][61].":</td><td align='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
 		showCalendarForm("form","enddate1",$enddate1);
 		echo "</td><td align='center' colspan='2'>";
-		echo $lang["search"][9].":&nbsp;";
+		echo $LANG["search"][9].":&nbsp;";
 		showCalendarForm("form","enddate2",$enddate2);
 		echo "</td></tr>";
 	}
 	echo "<tr  class='tab_bg_1'>";
 
 	echo "<td align='center' colspan='2'>";
-	$elts=array("both"=>$lang["joblist"][6]." / ".$lang["job"][7],"contents"=>$lang["joblist"][6],"followup" => $lang["job"][7],"ID"=>"ID");
+	$elts=array("both"=>$LANG["joblist"][6]." / ".$LANG["job"][7],"contents"=>$LANG["joblist"][6],"followup" => $LANG["job"][7],"ID"=>"ID");
 	echo "<select name='field2'>";
 	foreach ($elts as $key => $val){
 		$selected="";
@@ -1051,16 +1051,16 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 
 
-	echo "&nbsp;".$lang["search"][2]."&nbsp;";
+	echo "&nbsp;".$LANG["search"][2]."&nbsp;";
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".stripslashes($contains2)."\">";
 	echo "</td>";
 
-	echo "<td align='center' colspan='1'><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'></td>";
-	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$lang["buttons"][16]."\" class='submit'></td>";
+	echo "<td align='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
+	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$LANG["buttons"][16]."\" class='submit'></td>";
 
-	echo "<td align='center' colspan='2'>".$lang["reports"][59].":<select name='showfollowups'>";
-	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$lang["choice"][1]."</option>";
-	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$lang["choice"][0]."</option>";	
+	echo "<td align='center' colspan='2'>".$LANG["reports"][59].":<select name='showfollowups'>";
+	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$LANG["choice"][1]."</option>";
+	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$LANG["choice"][0]."</option>";	
 	echo "</select></td>";
 	echo "</tr>";
 
@@ -1081,7 +1081,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	// group = -1 : groups of the author if session variable OK
 	// group > 0 : specific group
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	$candelete=haveRight("delete_ticket","1");
 	if (!haveRight("show_ticket","1")) {
@@ -1098,10 +1098,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		if($field == "all") {
 			$wherecomp = " (";
 			$query = "SHOW COLUMNS FROM glpi_computers";
-			$result = $db->query($query);
+			$result = $DB->query($query);
 			$i = 0;
 
-			while($line = $db->fetch_array($result)) {
+			while($line = $DB->fetch_array($result)) {
 				if($i != 0) {
 					$wherecomp .= " OR ";
 				}
@@ -1116,7 +1116,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				}
 				$i++;
 			}
-			foreach($cfg_glpi["devices_tables"] as $key => $val) {
+			foreach($CFG_GLPI["devices_tables"] as $key => $val) {
 				if ($val!="drive"&&$val!="control"&&$val!="pci"&&$val!="case"&&$val!="power")
 					$wherecomp .= " OR ".$val.".designation ".makeTextSearch($contains,0);
 			}
@@ -1276,9 +1276,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	$query.=$where." ORDER BY $sort $order";
 	//echo $query;
 	// Get it from database	
-	if ($result = $db->query($query)) {
+	if ($result = $DB->query($query)) {
 
-		$numrows= $db->numrows($result);
+		$numrows= $DB->numrows($result);
 
 		if ($start<$numrows) {
 
@@ -1312,7 +1312,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			if (isset($_GET['export_all']))
 				$i=0;
 
-			$end_display=$start+$cfg_glpi["list_limit"];
+			$end_display=$start+$CFG_GLPI["list_limit"];
 			if (isset($_GET['export_all']))
 				$end_display=$numrows;
 			// Display List Header
@@ -1322,37 +1322,37 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 
 			while ($i < $numrows && $i<$end_display){
-				$ID = $db->result($result, $i, "ID");
+				$ID = $DB->result($result, $i, "ID");
 				showJobShort($ID, $showfollowups,$output_type,$i-$start+1);
 				$i++;
 			}
 			$title="";
 			// Title for PDF export
 			if ($output_type==PDF_OUTPUT){
-				$title.=$lang["joblist"][0]." = ";
+				$title.=$LANG["joblist"][0]." = ";
 				switch($status){
-					case "new": $title.=$lang["joblist"][9];break;
-					case "assign": $title.=$lang["joblist"][18];break;
-					case "plan": $title.=$lang["joblist"][19];break;
-					case "waiting": $title.=$lang["joblist"][26];break;
-					case "old_done": $title.=$lang["joblist"][10];break;
-					case "old_notdone": $title.=$lang["joblist"][17];break;
-					case "notold": $title.=$lang["joblist"][24];break;
-					case "process": $title.=$lang["joblist"][21];break;
-					case "old": $title.=$lang["joblist"][25];break;
-					case "all": $title.=$lang["joblist"][20];break;
+					case "new": $title.=$LANG["joblist"][9];break;
+					case "assign": $title.=$LANG["joblist"][18];break;
+					case "plan": $title.=$LANG["joblist"][19];break;
+					case "waiting": $title.=$LANG["joblist"][26];break;
+					case "old_done": $title.=$LANG["joblist"][10];break;
+					case "old_notdone": $title.=$LANG["joblist"][17];break;
+					case "notold": $title.=$LANG["joblist"][24];break;
+					case "process": $title.=$LANG["joblist"][21];break;
+					case "old": $title.=$LANG["joblist"][25];break;
+					case "all": $title.=$LANG["joblist"][20];break;
 				}
-				if ($author!=0) $title.=" - ".$lang["common"][37]." = ".getUserName($author);
-				if ($group>0) $title.=" - ".$lang["common"][35]." = ".getDropdownName("glpi_groups",$group);
-				if ($assign!=0) $title.=" - ".$lang["job"][27]." = ".getUserName($assign);
-				if ($request_type!=0) $title.=" - ".$lang["job"][44]." = ".getRequestTypeName($request_type);
-				if ($category!=0) $title.=" - ".$lang["common"][36]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
-				if ($assign_ent!=0) $title.=" - ".$lang["job"][27]." = ".getDropdownName("glpi_enterprises",$assign_ent);
-				if ($priority!=0) $title.=" - ".$lang["joblist"][2]." = ".getPriorityName($priority);
+				if ($author!=0) $title.=" - ".$LANG["common"][37]." = ".getUserName($author);
+				if ($group>0) $title.=" - ".$LANG["common"][35]." = ".getDropdownName("glpi_groups",$group);
+				if ($assign!=0) $title.=" - ".$LANG["job"][27]." = ".getUserName($assign);
+				if ($request_type!=0) $title.=" - ".$LANG["job"][44]." = ".getRequestTypeName($request_type);
+				if ($category!=0) $title.=" - ".$LANG["common"][36]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
+				if ($assign_ent!=0) $title.=" - ".$LANG["job"][27]." = ".getDropdownName("glpi_enterprises",$assign_ent);
+				if ($priority!=0) $title.=" - ".$LANG["joblist"][2]." = ".getPriorityName($priority);
 				if ($type!=0&&$item!=0){
 					$ci=new CommonItem();
 					$ci->getFromDB($type,$item);
-					$title.=" - ".$lang["common"][1]." = ".$ci->getType()." / ".$ci->getNameID();
+					$title.=" - ".$LANG["common"][1]." = ".$ci->getType()." / ".$ci->getNameID();
 
 				}
 			}
@@ -1363,11 +1363,11 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			if ($candelete&&$output_type==HTML_OUTPUT&&($status=="old"||$status=="all"||ereg("old_",$status))){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='900'>";
-				echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
+				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td>";
-				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
+				echo "<input type='submit' value=\"".$LANG["buttons"][6]."\" name='delete_inter' class='submit'></td>";
 				echo "<td width='75%'>&nbsp;</td></table></div>";
 				// End form for delete item
 				echo "</form>";
@@ -1379,7 +1379,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><strong>".$lang["joblist"][8]."</strong></div>";
+			echo "<div align='center'><strong>".$LANG["joblist"][8]."</strong></div>";
 
 		}
 	}
@@ -1388,24 +1388,24 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 function showFollowupsShort($ID) {
 	// Print Followups for a job
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	// Get Number of Followups
 
 	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' ORDER BY date DESC";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 	$out="";
-	if ($db->numrows($result)>0) {
+	if ($DB->numrows($result)>0) {
 		$out.="<div align='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
-		$out.="<tr><th>".$lang["common"][27]."</th><th>".$lang["common"][37]."</th><th>".$lang["joblist"][6]."</th></tr>\n";
+		$out.="<tr><th>".$LANG["common"][27]."</th><th>".$LANG["common"][37]."</th><th>".$LANG["joblist"][6]."</th></tr>\n";
 
-		while ($data=$db->fetch_array($result)) {
+		while ($data=$DB->fetch_array($result)) {
 
 			$out.="<tr class='tab_bg_3'>";
 			$out.="<td align='center'>".convDateTime($data["date"])."</td>";
 			$out.="<td align='center'>".getUserName($data["author"],1)."</td>";
-			$out.="<td width='70%'><strong>".resume_text($data["contents"],$cfg_glpi["cut"])."</strong></td>";
+			$out.="<td width='70%'><strong>".resume_text($data["contents"],$CFG_GLPI["cut"])."</strong></td>";
 			$out.="</tr>";
 		}		
 
@@ -1416,93 +1416,93 @@ function showFollowupsShort($ID) {
 }
 
 function dropdownPriority($name,$value=0,$complete=0){
-	global $lang;
+	global $LANG;
 
 	echo "<select name='$name'>";
 	if ($complete){
-		echo "<option value='0' ".($value==1?" selected ":"").">".$lang["search"][7]."</option>";
-		echo "<option value='-5' ".($value==-5?" selected ":"").">".$lang["search"][16]." ".$lang["help"][3]."</option>";
-		echo "<option value='-4' ".($value==-4?" selected ":"").">".$lang["search"][16]." ".$lang["help"][4]."</option>";
-		echo "<option value='-3' ".($value==-3?" selected ":"").">".$lang["search"][16]." ".$lang["help"][5]."</option>";
-		echo "<option value='-2' ".($value==-2?" selected ":"").">".$lang["search"][16]." ".$lang["help"][6]."</option>";
-		echo "<option value='-1' ".($value==-1?" selected ":"").">".$lang["search"][16]." ".$lang["help"][7]."</option>";
+		echo "<option value='0' ".($value==1?" selected ":"").">".$LANG["search"][7]."</option>";
+		echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][3]."</option>";
+		echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][4]."</option>";
+		echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][5]."</option>";
+		echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][6]."</option>";
+		echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][7]."</option>";
 	}
-	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["help"][3]."</option>";
-	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["help"][4]."</option>";
-	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["help"][5]."</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["help"][6]."</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["help"][7]."</option>";
+	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["help"][3]."</option>";
+	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["help"][4]."</option>";
+	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["help"][5]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["help"][6]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["help"][7]."</option>";
 
 	echo "</select>";	
 }
 
 
 function getPriorityName($value){
-	global $lang;
+	global $LANG;
 
 	switch ($value){
 		case 5 :
-			return $lang["help"][3];
+			return $LANG["help"][3];
 			break;
 		case 4 :
-			return $lang["help"][4];
+			return $LANG["help"][4];
 			break;
 		case 3 :
-			return $lang["help"][5];
+			return $LANG["help"][5];
 			break;
 		case 2 :
-			return $lang["help"][6];
+			return $LANG["help"][6];
 			break;
 		case 1 :
-			return $lang["help"][7];
+			return $LANG["help"][7];
 			break;
 	}	
 }
 
 function getRequestTypeName($value){
-	global $lang;
+	global $LANG;
 
 	switch ($value){
 		case 1 :
-			return $lang["Menu"][31];
+			return $LANG["Menu"][31];
 			break;
 		case 2 :
-			return $lang["setup"][14];
+			return $LANG["setup"][14];
 			break;
 		case 3 :
-			return $lang["title"][41];
+			return $LANG["title"][41];
 			break;
 		case 4 :
-			return $lang["tracking"][34];
+			return $LANG["tracking"][34];
 			break;
 		case 5 :
-			return $lang["tracking"][35];
+			return $LANG["tracking"][35];
 			break;
 		case 6 :
-			return $lang["tracking"][36];
+			return $LANG["tracking"][36];
 			break;
 		default : return "";
 	}	
 }
 
 function dropdownRequestType($name,$value=0){
-	global $lang;
+	global $LANG;
 
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-----</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$lang["Menu"][31]."</option>"; // Helpdesk
-	echo "<option value='2' ".($value==2?" selected ":"").">".$lang["setup"][14]."</option>"; // mail
-	echo "<option value='3' ".($value==3?" selected ":"").">".$lang["title"][41]."</option>"; // phone
-	echo "<option value='4' ".($value==4?" selected ":"").">".$lang["tracking"][34]."</option>"; // direct
-	echo "<option value='5' ".($value==5?" selected ":"").">".$lang["tracking"][35]."</option>"; // writing
-	echo "<option value='6' ".($value==6?" selected ":"").">".$lang["tracking"][36]."</option>"; // other
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["Menu"][31]."</option>"; // Helpdesk
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["setup"][14]."</option>"; // mail
+	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["title"][41]."</option>"; // phone
+	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["tracking"][34]."</option>"; // direct
+	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["tracking"][35]."</option>"; // writing
+	echo "<option value='6' ".($value==6?" selected ":"").">".$LANG["tracking"][36]."</option>"; // other
 
 	echo "</select>";	
 }
 
 
 function getAssignName($ID,$type,$link=0){
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
 	if ($type==USER_TYPE){
 		if ($ID==0) return "[Nobody]";
@@ -1514,7 +1514,7 @@ function getAssignName($ID,$type,$link=0){
 			$before="";
 			$after="";
 			if ($link){
-				$before="<a href=\"".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=".$ID."\">";
+				$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$ID."\">";
 				$after="</a>";
 			}
 
@@ -1524,46 +1524,46 @@ function getAssignName($ID,$type,$link=0){
 
 }
 function dropdownStatus($name,$value=0){
-	global $lang;
+	global $LANG;
 
 	echo "<select name='$name'>";
-	echo "<option value='new' ".($value=="new"?" selected ":"").">".$lang["joblist"][9]."</option>";
-	echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$lang["joblist"][18]."</option>";
-	echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$lang["joblist"][19]."</option>";
-	echo "<option value='waiting' ".($value=="waiting"?" selected ":"").">".$lang["joblist"][26]."</option>";
-	echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$lang["joblist"][10]."</option>";
-	echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".$lang["joblist"][17]."</option>";
+	echo "<option value='new' ".($value=="new"?" selected ":"").">".$LANG["joblist"][9]."</option>";
+	echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$LANG["joblist"][18]."</option>";
+	echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$LANG["joblist"][19]."</option>";
+	echo "<option value='waiting' ".($value=="waiting"?" selected ":"").">".$LANG["joblist"][26]."</option>";
+	echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$LANG["joblist"][10]."</option>";
+	echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".$LANG["joblist"][17]."</option>";
 	echo "</select>";	
 }
 
 function getStatusName($value){
-	global $lang;
+	global $LANG;
 
 	switch ($value){
 		case "new" :
-			return $lang["joblist"][9];
+			return $LANG["joblist"][9];
 		break;
 		case "assign" :
-			return $lang["joblist"][18];
+			return $LANG["joblist"][18];
 		break;
 		case "plan" :
-			return $lang["joblist"][19];
+			return $LANG["joblist"][19];
 		break;
 		case "waiting" :
-			return $lang["joblist"][26];
+			return $LANG["joblist"][26];
 		break;
 		case "old_done" :
-			return $lang["joblist"][10];
+			return $LANG["joblist"][10];
 		break;
 		case "old_notdone" :
-			return $lang["joblist"][17];
+			return $LANG["joblist"][17];
 		break;
 	}	
 }
 
 
 function showJobDetails ($target,$ID){
-	global $db,$cfg_glpi,$lang;
+	global $DB,$CFG_GLPI,$LANG;
 	$job=new Job();
 
 	$canupdate=haveRight("update_ticket","1");
@@ -1593,11 +1593,11 @@ function showJobDetails ($target,$ID){
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// Premi�e ligne
 		echo "<tr ><th colspan='2' style='font-size:10px'>";
-		echo $lang["joblist"][11].": <strong>".convDateTime($job->fields["date"])."</strong>";"</th>";
-		echo "<th style='font-size:10px'>".$lang["joblist"][12].":\n";
+		echo $LANG["joblist"][11].": <strong>".convDateTime($job->fields["date"])."</strong>";"</th>";
+		echo "<th style='font-size:10px'>".$LANG["joblist"][12].":\n";
 		if (!ereg("old_",$job->fields["status"]))
 		{
-			echo "<i>".$lang["job"][1]."</i>\n";
+			echo "<i>".$LANG["job"][1]."</i>\n";
 		}
 		else
 		{
@@ -1609,35 +1609,35 @@ function showJobDetails ($target,$ID){
 		echo "<td valign='top' width='27%'>";
 		echo "<table cellpadding='3'>";
 		echo "<tr class='tab_bg_2'><td align='right'>";
-		echo $lang["joblist"][0].":</td><td>";
+		echo $LANG["joblist"][0].":</td><td>";
 		if ($canupdate)
 			dropdownStatus("status",$job->fields["status"]);
 		else echo getStatusName($job->fields["status"]);
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
-		echo $lang["common"][37].":</td><td>";
+		echo $LANG["common"][37].":</td><td>";
 		if ($canupdate)
 			dropdownAllUsers("author",$job->fields["author"]);
 		else echo $author->getName();
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
-		echo $lang["common"][35].":</td><td>";
+		echo $LANG["common"][35].":</td><td>";
 		if ($canupdate)
 			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"]);
 		else echo getDropdownName("glpi_groups",$job->fields["FK_group"]);
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
-		echo $lang["joblist"][2].":</td><td>";
+		echo $LANG["joblist"][2].":</td><td>";
 		if ($canupdate)
 			dropdownPriority("priority",$job->fields["priority"]);
 		else echo getPriorityName($job->fields["priority"]);
 		echo "</td></tr>";
 
 		echo "<tr><td>";
-		echo $lang["common"][36].":</td><td>";
+		echo $LANG["common"][36].":</td><td>";
 		if ($canupdate)
 			dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
 		else echo getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
@@ -1651,14 +1651,14 @@ function showJobDetails ($target,$ID){
 		echo "<table border='0'>";
 
 		echo "<tr><td align='right'>";
-		echo $lang["job"][44].":</td><td>";
+		echo $LANG["job"][44].":</td><td>";
 		if ($canupdate)
 			dropdownRequestType("request_type",$job->fields["request_type"]);
 		else echo getRequestTypeName($job->fields["request_type"]);
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
-		echo $lang["common"][1].":</td><td>";
+		echo $LANG["common"][1].":</td><td>";
 		if ($canupdate){
 			echo $item->getType()." - ".$item->getLink()."<br>";
 			dropdownAllItems("item",0);
@@ -1669,32 +1669,32 @@ function showJobDetails ($target,$ID){
 
 
 		echo "<tr><td align='right'>";
-		echo $lang["job"][5].":</td><td>&nbsp;</td></tr>";
+		echo $LANG["job"][5].":</td><td>&nbsp;</td></tr>";
 
 		if ($canupdate||haveRight("assign_ticket","1")){
 			echo "<tr><td align='right'>";
-			echo $lang["job"][27].":</td><td>";
+			echo $LANG["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"own_ticket");
 			echo "</td></tr>";
 		} else if (haveRight("steal_ticket","1")) {
 			echo "<tr><td align='right'>";
-			echo $lang["job"][27].":</td><td>";
+			echo $LANG["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"ID");
 			echo "</td></tr>";
 		}else {
 			echo "<tr><td align='right'>";
-			echo $lang["job"][27].":</td><td>";
+			echo $LANG["job"][27].":</td><td>";
 			echo getUserName($job->fields["assign"]);
 			echo "</td></tr>";
 		}
 		if ($canupdate||haveRight("assign_ticket","1")){
 			echo "<tr><td align='right'>";
-			echo $lang["job"][28].":</td><td>";
+			echo $LANG["job"][28].":</td><td>";
 			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"]);
 			echo "</td></tr>";
 		} else {
 			echo "<tr><td align='right'>";
-			echo $lang["job"][28].":</td><td>";
+			echo $LANG["job"][28].":</td><td>";
 			echo getDropdownName("glpi_enterprises",$job->fields["assign_ent"]);
 			echo "</td></tr>";
 
@@ -1718,32 +1718,32 @@ function showJobDetails ($target,$ID){
 			echo "<table border='0'>";
 			if ($job->fields["realtime"]>0){
 				echo "<tr><td align='right'>";
-				echo $lang["job"][20].":</td><td>";
+				echo $LANG["job"][20].":</td><td>";
 				echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
 				echo "</td></tr>";
 			}
 			echo "<tr><td align='right'>";
 			// cout
-			echo $lang["job"][40].": ";
+			echo $LANG["job"][40].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".$job->fields["cost_time"]."\"></td></tr>";
 
 			echo "<tr><td align='right'>";
 
-			echo $lang["job"][41].": ";
+			echo $LANG["job"][41].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".$job->fields["cost_fixed"]."\">";
 
 			echo "</td></tr>\n";
 
 			echo "<tr><td align='right'>";
 
-			echo $lang["job"][42].": ";
+			echo $LANG["job"][42].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".$job->fields["cost_material"]."\">";
 
 			echo "</td></tr>\n";
 
 			echo "<tr><td align='right'>";
 
-			echo $lang["job"][43].": ";
+			echo $LANG["job"][43].": ";
 			echo "</td><td><strong>";
 			echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],$job->fields["cost_fixed"],$job->fields["cost_material"]);
 			echo "</strong></td></tr>\n</table>";
@@ -1756,7 +1756,7 @@ function showJobDetails ($target,$ID){
 		// Colonnes 1 et 2
 		echo "<tr class='tab_bg_1'><td colspan='2'>";
 		echo "<table width='99%' >";
-		echo "<tr  class='tab_bg_2'><td width='15%'>".$lang["joblist"][6]."<br><br></td>";
+		echo "<tr  class='tab_bg_2'><td width='15%'>".$LANG["joblist"][6]."<br><br></td>";
 		echo "<td  width='85%' align='left'>";
 
 		if ($canupdate_descr){ // Admin =oui on autorise la modification de la description
@@ -1764,13 +1764,13 @@ function showJobDetails ($target,$ID){
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
 			echo "Element.hide('desc$rand');";
-			echo "var a=new Ajax.Updater('viewdesc$rand','".$cfg_glpi["root_doc"]."/ajax/textarea.php' , {asynchronous:true, evalScripts:true, method: 'post',parameters: 'rows=6&cols=60&name=contents&data=".urlencode($job->fields["contents"])."'});";
+			echo "var a=new Ajax.Updater('viewdesc$rand','".$CFG_GLPI["root_doc"]."/ajax/textarea.php' , {asynchronous:true, evalScripts:true, method: 'post',parameters: 'rows=6&cols=60&name=contents&data=".urlencode($job->fields["contents"])."'});";
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='desc$rand' class='div_tracking' onClick='showDesc$rand()'>\n";
 			if (!empty($job->fields["contents"]))
 				echo nl2br($job->fields["contents"]);
-			else echo $lang["job"][33];
+			else echo $LANG["job"][33];
 
 			echo "</div>\n";	
 
@@ -1788,28 +1788,28 @@ function showJobDetails ($target,$ID){
 
 		// Mailing ? Y or no ?
 
-		if ($cfg_glpi["mailing"]==1){
+		if ($CFG_GLPI["mailing"]==1){
 			echo "<table><tr><td align='right'>";
-			echo $lang["job"][19].":</td><td>";
+			echo $LANG["job"][19].":</td><td>";
 			if ($canupdate){
 				echo "<select name='emailupdates'>";
-				echo "<option value='no'>".$lang["choice"][0]."</option>";
-				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$lang["choice"][1]."</option>";
+				echo "<option value='no'>".$LANG["choice"][0]."</option>";
+				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$LANG["choice"][1]."</option>";
 				echo "</select>";
 			} else {
-				if ($job->fields["emailupdates"]=="yes") echo $lang["choice"][1];
-				else $lang["choice"][0];
+				if ($job->fields["emailupdates"]=="yes") echo $LANG["choice"][1];
+				else $LANG["choice"][0];
 			}
 			echo "</td></tr>";
 
 			echo "<tr><td align='right'>";
-			echo $lang["joblist"][27].":";
+			echo $LANG["joblist"][27].":";
 			echo "</td><td>";
 			if ($canupdate){
 				autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15);
 
 				if (!empty($job->fields["uemail"]))
-					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$cfg_glpi["root_doc"]."/pics/edit.png' alt='Mail'></a>";
+					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
 			} else if (!empty($job->fields["uemail"]))
 				echo "<a href='mailto:".$job->fields["uemail"]."'>".$job->fields["uemail"]."</a>";
 			else echo "&nbsp;";
@@ -1823,19 +1823,19 @@ function showJobDetails ($target,$ID){
 
 		// File associated ?
 		$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->fields["ID"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
-		$result2 = $db->query($query2);
-		$numfiles=$db->numrows($result2);
-		echo "<table width='100%'><tr><th colspan='2'>".$lang["tracking"][25]."</th></tr>";			
+		$result2 = $DB->query($query2);
+		$numfiles=$DB->numrows($result2);
+		echo "<table width='100%'><tr><th colspan='2'>".$LANG["tracking"][25]."</th></tr>";			
 
 		if ($numfiles>0){
 			$doc=new Document;
-			while ($data=$db->fetch_array($result2)){
+			while ($data=$DB->fetch_array($result2)){
 				$doc->getFromDB($data["FK_doc"]);
 
 				echo "<tr><td>";
 				echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
 				if (haveRight("document","w"))
-					echo "<a href='".$cfg_glpi["root_doc"]."/front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$cfg_glpi["root_doc"]."/pics/delete.png' alt='".$lang["buttons"][6]."'></a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".$LANG["buttons"][6]."'></a>";
 				echo "</td></tr>";
 			}
 		}
@@ -1854,7 +1854,7 @@ function showJobDetails ($target,$ID){
 		// Troisi�e Ligne
 		if ($canupdate||$canupdate_descr||haveRight("comment_all_ticket","1")||haveRight("comment_ticket","1")||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
 			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
-			echo "<input type='submit' class='submit' name='update' value='".$lang["buttons"][14]."'></td></tr>";
+			echo "<input type='submit' class='submit' name='update' value='".$LANG["buttons"][14]."'></td></tr>";
 		}
 
 		echo "</table>";
@@ -1865,11 +1865,11 @@ function showJobDetails ($target,$ID){
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&author=".$job->fields["assign"]."'});";
+		echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&author=".$job->fields["assign"]."'});";
 		echo "};";
 		echo "function showAddFollowup(){\n";
 		echo "Element.hide('viewfollowup');";
-		echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$ID'});";
+		echo "var a=new Ajax.Updater('viewfollowup','".$CFG_GLPI["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$ID'});";
 		echo "};";
 		echo "</script>";
 
@@ -1884,7 +1884,7 @@ function showJobDetails ($target,$ID){
 }
 
 function showFollowupsSummary($tID){
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 
 
 	if (!haveRight("observe_ticket","1")&&!haveRight("show_full_ticket","1")) return false;
@@ -1896,7 +1896,7 @@ function showFollowupsSummary($tID){
 	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
 
 	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 
 
@@ -1904,21 +1904,21 @@ function showFollowupsSummary($tID){
 
 
 	echo "<div align='center'>";
-	echo "<h3>".$lang["job"][37]."</h3>";
+	echo "<h3>".$LANG["job"][37]."</h3>";
 
-	if ($db->numrows($result)==0){
+	if ($DB->numrows($result)==0){
 		echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th>";
-		echo "<strong>".$lang["job"][12]."</strong>";
+		echo "<strong>".$LANG["job"][12]."</strong>";
 		echo "</th></tr></table>";
 	}
 	else {	
 
 		echo "<table class='tab_cadrehov_pointer'>";
-		echo "<tr><th>&nbsp;</th><th>".$lang["common"][27]."</th><th>".$lang["joblist"][6]."</th><th>".$lang["job"][31]."</th><th>".$lang["job"][35]."</th><th>".$lang["common"][37]."</th>";
+		echo "<tr><th>&nbsp;</th><th>".$LANG["common"][27]."</th><th>".$LANG["joblist"][6]."</th><th>".$LANG["job"][31]."</th><th>".$LANG["job"][35]."</th><th>".$LANG["common"][37]."</th>";
 		if ($showprivate)
-			echo "<th>".$lang["job"][30]."</th>";
+			echo "<th>".$LANG["job"][30]."</th>";
 		echo "</tr>";
-		while ($data=$db->fetch_array($result)){
+		while ($data=$DB->fetch_array($result)){
 
 			echo "<tr class='tab_bg_2' onClick=\"viewEditFollowup".$data["ID"]."$rand();\" id='viewfollowup".$data["ID"]."$rand'>";
 			echo "<td>".$data["ID"]."</td>";
@@ -1928,7 +1928,7 @@ function showFollowupsSummary($tID){
 			echo "<script type='text/javascript' >\n";
 			echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
 			//			echo "Element.hide('viewfollowup');";
-			echo "var a=new Ajax.Updater('viewfollowup','".$cfg_glpi["root_doc"]."/ajax/viewfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'ID=".$data["ID"]."'});";
+			echo "var a=new Ajax.Updater('viewfollowup','".$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'ID=".$data["ID"]."'});";
 			echo "};";
 
 			echo "</script>\n";
@@ -1940,17 +1940,17 @@ function showFollowupsSummary($tID){
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);
 			echo "<td>";
-			if ($hour) echo "$hour ".$lang["job"][21]."<br>";
+			if ($hour) echo "$hour ".$LANG["job"][21]."<br>";
 			if ($minute||!$hour)
-				echo "$minute ".$lang["job"][22]."</td>";
+				echo "$minute ".$LANG["job"][22]."</td>";
 
 			echo "<td>";
 			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
-			$result2=$db->query($query2);
-			if ($db->numrows($result2)==0)
-				echo $lang["job"][32];	
+			$result2=$DB->query($query2);
+			if ($DB->numrows($result2)==0)
+				echo $LANG["job"][32];	
 			else {
-				$data2=$db->fetch_array($result2);
+				$data2=$DB->fetch_array($result2);
 				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
 			}
 			echo "</td>";
@@ -1959,8 +1959,8 @@ function showFollowupsSummary($tID){
 			if ($showprivate){
 				echo "<td>";
 				if ($data["private"])
-					echo $lang["choice"][1];
-				else echo $lang["choice"][0];
+					echo $LANG["choice"][1];
+				else echo $LANG["choice"][0];
 				echo "</td>";
 			}
 
@@ -1973,7 +1973,7 @@ function showFollowupsSummary($tID){
 
 // Formulaire d'ajout de followup
 function showAddFollowupForm($tID){
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 
 	$job=new Job;
 	$job->getFromDB($tID);
@@ -1984,16 +1984,16 @@ function showAddFollowupForm($tID){
 	$commentall=(haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]);
 
 	if ($_SESSION["glpiprofile"]["interface"]=="central"){
-		$target=$cfg_glpi["root_doc"]."/front/tracking.form.php";
+		$target=$CFG_GLPI["root_doc"]."/front/tracking.form.php";
 	} else {
-		$target=$cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=user";
+		$target=$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user";
 	}
 	// Display Add Table
 	echo "<div align='center'>";
 	echo "<form name='followups' method='post' action=\"$target\">\n";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>";
-	echo $lang["job"][29];
+	echo $LANG["job"][29];
 	echo "</th></tr>";
 
 	if ($commentall){
@@ -2007,7 +2007,7 @@ function showAddFollowupForm($tID){
 
 	echo "<tr class='tab_bg_2'><td width='$width_left'>";
 	echo "<table width='100%'>";
-	echo "<tr><td>".$lang["joblist"][6]."</td>";
+	echo "<tr><td>".$LANG["joblist"][6]."</td>";
 	echo "<td><textarea name='contents' rows=8 cols=$cols></textarea>";
 	echo "</td></tr>";
 	echo "</table>";
@@ -2018,38 +2018,38 @@ function showAddFollowupForm($tID){
 
 	if ($commentall){
 		echo "<tr>";
-		echo "<td>".$lang["job"][30].":</td>";
+		echo "<td>".$LANG["job"][30].":</td>";
 		echo "<td>";
 		echo "<select name='private'>";
-		echo "<option value='0'>".$lang["choice"][0]."</option>";
-		echo "<option value='1'>".$lang["choice"][1]."</option>";
+		echo "<option value='0'>".$LANG["choice"][0]."</option>";
+		echo "<option value='1'>".$LANG["choice"][1]."</option>";
 		echo "</select>";
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr><td>".$lang["job"][31].":</td><td>";
+		echo "<tr><td>".$LANG["job"][31].":</td><td>";
 
 		echo "<select name='hour'>";
 		for ($i=0;$i<100;$i++){
 			echo "<option value='$i' ";
 			echo " >$i</option>";
 		}
-		echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
+		echo "</select>".$LANG["job"][21]."&nbsp;&nbsp;";
 		echo "<select name='minute'>";
 		for ($i=0;$i<60;$i++){
 			echo "<option value='$i' ";
 			echo " >$i</option>";
 		}
-		echo "</select>".$lang["job"][22];
+		echo "</select>".$LANG["job"][22];
 		echo "</tr>";
 
 		if (haveRight("show_planning","1")){
 			echo "<tr>";
-			echo "<td>".$lang["job"][35]."</td>";
+			echo "<td>".$LANG["job"][35]."</td>";
 
 			echo "<td>";
 			echo "<div id='plan'  onClick='showPlan()'>\n";
-			echo "<span class='showplan'>".$lang["job"][34]."</span>";
+			echo "<span class='showplan'>".$LANG["job"][34]."</span>";
 			echo "</div>\n";	
 
 			echo "<div id='viewplan'>\n";
@@ -2063,11 +2063,11 @@ function showAddFollowupForm($tID){
 	}
 	echo "<tr class='tab_bg_2'>";
 	echo "<td align='center'>";
-	echo "<input type='submit' name='add' value='".$lang["buttons"][8]."' class='submit'>";
+	echo "<input type='submit' name='add' value='".$LANG["buttons"][8]."' class='submit'>";
 	echo "</td>";
 	if ($commentall){
 		echo "<td align='center'>";
-		echo "<input type='submit' name='add_close' value='".$lang["buttons"][26]."' class='submit'>";
+		echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
 		echo "</td>";
 	}
 	echo "</tr>";
@@ -2084,7 +2084,7 @@ function showAddFollowupForm($tID){
 
 // Formulaire d'ajout de followup
 function showUpdateFollowupForm($ID){
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 
 	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
 
@@ -2093,23 +2093,23 @@ function showUpdateFollowupForm($ID){
 	// Display existing Followups
 
 	$query = "SELECT * FROM glpi_followups WHERE (ID = '$ID')";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 
-	if ($db->numrows($result)==1){
+	if ($DB->numrows($result)==1){
 		echo "<div align='center'>";
-		$data=$db->fetch_array($result);
+		$data=$DB->fetch_array($result);
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>";
-		echo $lang["job"][39];
+		echo $LANG["job"][39];
 		echo "</th></tr>";
 		echo "<tr class='tab_bg_2'><td>";
-		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/tracking.form.php\">\n";
+		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php\">\n";
 
 		echo "<table width='100%'>";
 		echo "<tr class='tab_bg_2'><td width='50%'>";
 		echo "<table width='100%' bgcolor='#FFFFFF'>";
-		echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$lang["joblist"][6]."<br><br>".$lang["common"][27].":<br>".convDateTime($data["date"])."</td>";
+		echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$LANG["joblist"][6]."<br><br>".$LANG["common"][27].":<br>".convDateTime($data["date"])."</td>";
 		echo "<td width='90%'>";
 
 		if ($commentall){
@@ -2127,11 +2127,11 @@ function showUpdateFollowupForm($ID){
 
 		if ($commentall){
 			echo "<tr>";
-			echo "<td>".$lang["job"][30].":</td>";
+			echo "<td>".$LANG["job"][30].":</td>";
 			echo "<td>";
 			echo "<select name='private'>";
-			echo "<option value='0' ".(!$data["private"]?" selected":"").">".$lang["choice"][0]."</option>";
-			echo "<option value='1' ".($data["private"]?" selected":"").">".$lang["choice"][1]."</option>";
+			echo "<option value='0' ".(!$data["private"]?" selected":"").">".$LANG["choice"][0]."</option>";
+			echo "<option value='1' ".($data["private"]?" selected":"").">".$LANG["choice"][1]."</option>";
 			echo "</select>";
 			echo "</td>";
 			echo "</tr>";
@@ -2139,7 +2139,7 @@ function showUpdateFollowupForm($ID){
 
 
 
-		echo "<tr><td>".$lang["job"][31].":</td><td>";
+		echo "<tr><td>".$LANG["job"][31].":</td><td>";
 		$hour=floor($data["realtime"]);
 		$minute=round(($data["realtime"]-$hour)*60,0);
 
@@ -2151,35 +2151,35 @@ function showUpdateFollowupForm($ID){
 				if ($hour==$i) echo "selected";
 				echo " >$i</option>";
 			}
-			echo "</select>".$lang["job"][21]."&nbsp;&nbsp;";
+			echo "</select>".$LANG["job"][21]."&nbsp;&nbsp;";
 			echo "<select name='minute'>";
 			for ($i=0;$i<60;$i++){
 				echo "<option value='$i' ";
 				if ($minute==$i) echo "selected";
 				echo " >$i</option>";
 			}
-			echo "</select>".$lang["job"][22];
+			echo "</select>".$LANG["job"][22];
 		} else {
-			echo $hour." ".$lang["job"][21]." ".$minute." ".$lang["job"][22];
+			echo $hour." ".$LANG["job"][21]." ".$minute." ".$LANG["job"][22];
 
 		}
 
 		echo "</tr>";
 
 		echo "<tr>";
-		echo "<td>".$lang["job"][35]."</td>";
+		echo "<td>".$LANG["job"][35]."</td>";
 		echo "<td>";
 		$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
-		$result2=$db->query($query2);
-		if ($db->numrows($result2)==0)
+		$result2=$DB->query($query2);
+		if ($DB->numrows($result2)==0)
 			if ($commentall)
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$lang["buttons"][8]."</a>";
-			else echo $lang["job"][32];	
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$LANG["buttons"][8]."</a>";
+			else echo $LANG["job"][32];	
 		else {
-			$data2=$db->fetch_array($result2);
+			$data2=$DB->fetch_array($result2);
 			echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
 			if ($commentall)
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$cfg_glpi["root_doc"]."/pics/edit.png'></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png'></a>";
 
 		}
 
@@ -2190,9 +2190,9 @@ function showUpdateFollowupForm($ID){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center' colspan='2'>";
 			echo "<table width='100%'><tr><td align='center'>";
-			echo "<input type='submit' name='update_followup' value='".$lang["buttons"][14]."' class='submit'>";
+			echo "<input type='submit' name='update_followup' value='".$LANG["buttons"][14]."' class='submit'>";
 			echo "</td><td align='center'>";
-			echo "<input type='submit' name='delete_followup' value='".$lang["buttons"][6]."' class='submit'>";
+			echo "<input type='submit' name='delete_followup' value='".$LANG["buttons"][6]."' class='submit'>";
 			echo "</td></tr></table>";
 			echo "</td>";
 			echo "</tr>";

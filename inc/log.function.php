@@ -51,7 +51,7 @@ if (!defined('GLPI_ROOT')){
  **/
 function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',$linked_action='0') {
 
-	global $db;
+	global $DB;
 
 	$date_mod=date("Y-m-d H:i:s");
 
@@ -66,7 +66,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes(getUserName($_SESSION["glpiID"],$link=0))."','$date_mod','$id_search_option','$old_value','$new_value');";
 
 
-		$db->query($query)  or die($db->error());
+		$DB->query($query)  or die($DB->error());
 
 	}
 }
@@ -84,7 +84,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
  **/
 function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 
-	global $SEARCH_OPTION, $LINK_ID_TABLE, $lang ;
+	global $SEARCH_OPTION, $LINK_ID_TABLE, $LANG ;
 
 	// on ne log que les changements pas la d�inition d'un ��ent vide
 	if (!empty($oldvalues)){
@@ -129,7 +129,7 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
  **/
 function showHistory($device_type,$id_device){
 
-	global $db,$SEARCH_OPTION, $LINK_ID_TABLE,$lang;	
+	global $DB,$SEARCH_OPTION, $LINK_ID_TABLE,$LANG;	
 
 	// n�essaire pour avoir les $search_option
 	include_once (GLPI_ROOT . "/inc/search.class.php");
@@ -139,16 +139,16 @@ function showHistory($device_type,$id_device){
 	//echo $query;
 
 	// Get results
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 	// Number of results
-	$number = $db->numrows($result);
+	$number = $DB->numrows($result);
 
 	// No Events in database
 	if ($number < 1) {
 		echo "<br><div align='center'>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$lang["event"][20]."</th></tr>";
+		echo "<tr><th>".$LANG["event"][20]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
 		return;
@@ -159,9 +159,9 @@ function showHistory($device_type,$id_device){
 
 
 	echo "<div align='center'><br><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='5'>".$lang["title"][38]."</th></tr>";
-	echo "<tr><th>".$lang["common"][2]."</th><th>".$lang["common"][27]."</th><th>".$lang["event"][17]."</th><th>".$lang["event"][18]."</th><th>".$lang["event"][19]."</th></tr>";
-	while ($data =$db->fetch_array($result)){ 
+	echo "<tr><th colspan='5'>".$LANG["title"][38]."</th></tr>";
+	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][27]."</th><th>".$LANG["event"][17]."</th><th>".$LANG["event"][18]."</th><th>".$LANG["event"][19]."</th></tr>";
+	while ($data =$DB->fetch_array($result)){ 
 		$ID = $data["ID"];
 		$date_mod = $date_mod=convDateTime($data["date_mod"]);
 		$user_name = $data["user_name"];
@@ -174,7 +174,7 @@ function showHistory($device_type,$id_device){
 
 				case HISTORY_ADD_DEVICE :
 					$field=getDeviceTypeLabel($data["device_internal_type"]);
-					$change = $lang["devices"][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
+					$change = $LANG["devices"][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
 					break;
 
 				case HISTORY_UPDATE_DEVICE :
@@ -184,15 +184,15 @@ function showHistory($device_type,$id_device){
 
 				case HISTORY_DELETE_DEVICE :
 					$field=getDeviceTypeLabel($data["device_internal_type"]);
-					$change = $lang["devices"][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					$change = $LANG["devices"][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;
 				case HISTORY_INSTALL_SOFTWARE :
-					$field=$lang["software"][10];
-					$change = $lang["software"][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					$field=$LANG["software"][10];
+					$change = $LANG["software"][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;				
 				case HISTORY_UNINSTALL_SOFTWARE :
-					$field=$lang["software"][10];
-					$change = $lang["software"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					$field=$LANG["software"][10];
+					$change = $LANG["software"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;				
 			}
 
@@ -238,11 +238,11 @@ function showHistory($device_type,$id_device){
 function logEvent ($item, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 
-	global $db,$cfg_glpi, $lang;
-	if ($level <= $cfg_glpi["event_loglevel"]) { 
+	global $DB,$CFG_GLPI, $LANG;
+	if ($level <= $CFG_GLPI["event_loglevel"]) { 
 		$query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', NOW(), '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 
-		$result = $db->query($query);    
+		$result = $DB->query($query);    
 
 	}
 }
@@ -253,44 +253,44 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
  **/
 function logArray(){
 
-	global $lang;
+	global $LANG;
 
-	$logItemtype=array("system"=>$lang["log"][1],
-			"computers"=>$lang["log"][2],
-			"monitors"=>$lang["log"][3],
-			"printers"=>$lang["log"][4],
-			"software"=>$lang["log"][5],
-			"networking"=>$lang["log"][6],
-			"cartridges"=>$lang["log"][7],
-			"peripherals"=>$lang["log"][8],
-			"consumables"=>$lang["log"][9],
-			"tracking"=>$lang["log"][10],
-			"contacts"=>$lang["log"][11],
-			"enterprises"=>$lang["log"][12],
-			"documents"=>$lang["log"][13],
-			"knowbase"=>$lang["log"][14],
-			"users"=>$lang["log"][15],
-			"infocom"=>$lang["log"][19],
-			"devices"=>$lang["log"][18],
-			"links"=>$lang["log"][38],
-			"typedocs"=>$lang["log"][39],
-			"planning"=>$lang["log"][16],
-			"reservation"=>$lang["log"][42],
-			"contracts"=>$lang["log"][17],
-			"phones"=>$lang["log"][43],
-			"dropdown"=>$lang["log"][44],
-			"groups"=>$lang["log"][47]);
+	$logItemtype=array("system"=>$LANG["log"][1],
+			"computers"=>$LANG["log"][2],
+			"monitors"=>$LANG["log"][3],
+			"printers"=>$LANG["log"][4],
+			"software"=>$LANG["log"][5],
+			"networking"=>$LANG["log"][6],
+			"cartridges"=>$LANG["log"][7],
+			"peripherals"=>$LANG["log"][8],
+			"consumables"=>$LANG["log"][9],
+			"tracking"=>$LANG["log"][10],
+			"contacts"=>$LANG["log"][11],
+			"enterprises"=>$LANG["log"][12],
+			"documents"=>$LANG["log"][13],
+			"knowbase"=>$LANG["log"][14],
+			"users"=>$LANG["log"][15],
+			"infocom"=>$LANG["log"][19],
+			"devices"=>$LANG["log"][18],
+			"links"=>$LANG["log"][38],
+			"typedocs"=>$LANG["log"][39],
+			"planning"=>$LANG["log"][16],
+			"reservation"=>$LANG["log"][42],
+			"contracts"=>$LANG["log"][17],
+			"phones"=>$LANG["log"][43],
+			"dropdown"=>$LANG["log"][44],
+			"groups"=>$LANG["log"][47]);
 
-	$logService=array("inventory"=>$lang["log"][50],
-			"tracking"=>$lang["log"][51],
-			"planning"=>$lang["log"][52],
-			"tools"=>$lang["log"][53],
-			"financial"=>$lang["log"][54],
-			"login"=>$lang["log"][55],
-			"setup"=>$lang["log"][57],
-			"reservation"=>$lang["log"][58],
-			"cron"=>$lang["log"][59],
-			"document"=>$lang["log"][56]);
+	$logService=array("inventory"=>$LANG["log"][50],
+			"tracking"=>$LANG["log"][51],
+			"planning"=>$LANG["log"][52],
+			"tools"=>$LANG["log"][53],
+			"financial"=>$LANG["log"][54],
+			"login"=>$LANG["log"][55],
+			"setup"=>$LANG["log"][57],
+			"reservation"=>$LANG["log"][58],
+			"cron"=>$LANG["log"][59],
+			"document"=>$LANG["log"][56]);
 
 	return array($logItemtype,$logService);
 
@@ -311,7 +311,7 @@ function logArray(){
 function showAddEvents($target,$order,$sort,$user="") {
 	// Show events from $result in table form
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	list($logItemtype,$logService)=logArray();
 
@@ -327,20 +327,20 @@ function showAddEvents($target,$order,$sort,$user="") {
 		$usersearch=$user." ";
 
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.addslashes($lang["log"][20])."%' ORDER BY $sort $order LIMIT 0,".$cfg_glpi["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.addslashes($LANG["log"][20])."%' ORDER BY $sort $order LIMIT 0,".$CFG_GLPI["num_of_events"];
 
 	// Get results
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 
 	// Number of results
-	$number = $db->numrows($result);
+	$number = $DB->numrows($result);
 
 	// No Events in database
 	if ($number < 1) {
 		echo "<br><div align='center'>";
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th>".$lang["central"][4]."</th></tr>";
+		echo "<tr><th>".$LANG["central"][4]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
 		return;
@@ -350,45 +350,45 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$i = 0;
 
 	echo "<div align='center'><br><table  class='tab_cadrehov'>";
-	echo "<tr><th colspan='5'><a href=\"".$cfg_glpi["root_doc"]."/front/log.php\">".$lang["central"][2]." ".$cfg_glpi["num_of_events"]." ".$lang["central"][8]."</a></th></tr>";
+	echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG["central"][2]." ".$CFG_GLPI["num_of_events"]." ".$LANG["central"][8]."</a></th></tr>";
 	echo "<tr>";
 
 	echo "<th colspan='2'>";
 	if ($sort=="item") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
+	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["common"][27]."</a></th>";
+	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["common"][27]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
+	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][2]."</a></th>";
 
 	echo "<th width='60%'>";
 	if ($sort=="message") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
+	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][4]."</a></th></tr>";
 
 	while ($i < $number) {
-		$ID = $db->result($result, $i, "ID");
-		$item = $db->result($result, $i, "item");
-		$itemtype = $db->result($result, $i, "itemtype");
-		$date = $db->result($result, $i, "date");
-		$service = $db->result($result, $i, "service");
-		//$level = $db->result($result, $i, "level");
-		$message = $db->result($result, $i, "message");
+		$ID = $DB->result($result, $i, "ID");
+		$item = $DB->result($result, $i, "item");
+		$itemtype = $DB->result($result, $i, "itemtype");
+		$date = $DB->result($result, $i, "date");
+		$service = $DB->result($result, $i, "service");
+		//$level = $DB->result($result, $i, "level");
+		$message = $DB->result($result, $i, "message");
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><b>";
@@ -396,13 +396,13 @@ function showAddEvents($target,$order,$sort,$user="") {
 			echo $item;
 		} else {
 			if ($itemtype=="reservation"){
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
 			} else {
 				if ($itemtype[strlen($itemtype)-1]=='s')
 					$show=substr($itemtype,0,strlen($itemtype)-1);
 				else $show=$itemtype;
 
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$show.".form.php?ID=";
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
 			}
 			echo $item;
 			echo "\">$item</a>";
@@ -430,7 +430,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 function showEvents($target,$order,$sort,$start=0) {
 	// Show events from $result in table form
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	list($logItemtype,$logService)=logArray();
 
@@ -445,19 +445,19 @@ function showEvents($target,$order,$sort,$start=0) {
 	// Query Database
 	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order";
 
-	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$cfg_glpi["list_limit"];
+	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$CFG_GLPI["list_limit"];
 	// Get results
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 
 	// Number of results
-	$numrows = $db->numrows($result);
-	$result = $db->query($query_limit);
-	$number = $db->numrows($result);
+	$numrows = $DB->numrows($result);
+	$result = $DB->query($query_limit);
+	$number = $DB->numrows($result);
 
 	// No Events in database
 	if ($number < 1) {
-		echo "<div align='center'><b>".$lang["central"][4]."</b></div>";
+		echo "<div align='center'><b>".$LANG["central"][4]."</b></div>";
 		return;
 	}
 
@@ -473,47 +473,47 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	echo "<th colspan='2'>";
 	if ($sort=="item") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][0]."</a></th>";
+	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][0]."</a></th>";
 
 	echo "<th>";
 	if ($sort=="date") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["common"][27]."</a></th>";
+	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["common"][27]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="service") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][2]."</a></th>";
+	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][2]."</a></th>";
 
 	echo "<th width='8%'>";
 	if ($sort=="level") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=level&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][3]."</a></th>";
+	echo "<a href=\"$target?sort=level&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][3]."</a></th>";
 
 	echo "<th width='60%'>";
 	if ($sort=="message") {
-		if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 	}
-	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$lang["event"][4]."</a></th></tr>";
+	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][4]."</a></th></tr>";
 
 	while ($i < $number) {
-		$ID = $db->result($result, $i, "ID");
-		$item = $db->result($result, $i, "item");
-		$itemtype = $db->result($result, $i, "itemtype");
-		$date = $db->result($result, $i, "date");
-		$service = $db->result($result, $i, "service");
-		$level = $db->result($result, $i, "level");
-		$message = $db->result($result, $i, "message");
+		$ID = $DB->result($result, $i, "ID");
+		$item = $DB->result($result, $i, "item");
+		$itemtype = $DB->result($result, $i, "itemtype");
+		$date = $DB->result($result, $i, "date");
+		$service = $DB->result($result, $i, "service");
+		$level = $DB->result($result, $i, "level");
+		$message = $DB->result($result, $i, "message");
 
 		echo "<tr class='tab_bg_2'>";
 
@@ -524,16 +524,16 @@ function showEvents($target,$order,$sort,$start=0) {
 			echo "&nbsp;";//$item;
 		} else {
 			if ($itemtype=="infocom"){
-				echo "<a href='#' onClick=\"window.open('".$cfg_glpi["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\">$item</a>";					
+				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\">$item</a>";					
 			} else {
 				if ($itemtype=="reservation"){
-					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
 				} else {
 					if ($itemtype[strlen($itemtype)-1]=='s')
 						$show=substr($itemtype,0,strlen($itemtype)-1);
 					else $show=$itemtype;
 
-					echo "<a href=\"".$cfg_glpi["root_doc"]."/front/".$show.".form.php?ID=";
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
 				}
 				echo $item;
 				echo "\">$item</a>";

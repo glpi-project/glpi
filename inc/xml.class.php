@@ -125,7 +125,7 @@ class XML
 
 	function DoXML()
 	{
-		global $db;
+		global $DB;
 		$fp = fopen($this->FilePath,'wb');
 		fputs($fp, "<?xml version=\"1.0\"?>\n");
 		fputs($fp, "<dataxml>\n");
@@ -136,7 +136,7 @@ class XML
 				$this->ErrorString="Error the query can't be a null string";
 				return -1;
 			}
-			$result = $db->query($strqry);
+			$result = $DB->query($strqry);
 
 			if ($result==FALSE){
 				$this->IsError=1;
@@ -147,8 +147,8 @@ class XML
 			fputs($fp, "	<fields>\n");
 			$i = 0;
 			$FieldsVector=array();
-			while ($i < $db->num_fields ($result)){
-				$name = $db->field_name($result,$i);
+			while ($i < $DB->num_fields ($result)){
+				$name = $DB->field_name($result,$i);
 				fputs($fp, "		<field>".$name."</field>\n");
 				$FieldsVector[]=$name;
 				$i++;
@@ -157,7 +157,7 @@ class XML
 			fputs($fp, "	</fields>\n");
 			// And NOW the Data ...
 			fputs($fp, "	<rows>\n");
-			while ($row = $db->fetch_array ($result)){
+			while ($row = $DB->fetch_array ($result)){
 				fputs($fp, "		<row>\n");
 				for ($j=0; $j<$i; $j++){
 					$FieldName="";			// Name of TAG
@@ -182,7 +182,7 @@ class XML
 			}
 			fputs($fp, "	</rows>\n");
 
-			$db->free_result($result);
+			$DB->free_result($result);
 		}
 		fputs($fp, "</dataxml>");
 		//OK free ...  ;)

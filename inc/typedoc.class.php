@@ -62,11 +62,11 @@ class Typedoc  extends CommonDBTM {
 	}
 
 	function title(){
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/docs.png\" alt='".$lang["document"][12]."' title='".$lang["document"][12]."'></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/docs.png\" alt='".$LANG["document"][12]."' title='".$LANG["document"][12]."'></td>";
 		if (haveRight("typedoc","w")){
-			echo "<td><a  class='icon_consol' href=\"typedoc.form.php\"><b>".$lang["document"][12]."</b></a>";
+			echo "<td><a  class='icon_consol' href=\"typedoc.form.php\"><b>".$LANG["document"][12]."</b></a>";
 			echo "</td>";
 		}
 		echo "</tr></table></div>";
@@ -76,7 +76,7 @@ class Typedoc  extends CommonDBTM {
 
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		if (!haveRight("typedoc","r")) return false;
 
@@ -90,7 +90,7 @@ class Typedoc  extends CommonDBTM {
 
 		if ($spotted){
 			$date = $this->fields["date_mod"];
-			$datestring = $lang["common"][26]." : ";
+			$datestring = $LANG["common"][26]." : ";
 
 			echo "<div align='center'><form method='post' name=form action=\"$target\">";
 
@@ -98,32 +98,32 @@ class Typedoc  extends CommonDBTM {
 
 			echo "<tr><th align='center' >";
 			if (empty($ID))
-				echo $lang["document"][17];
+				echo $LANG["document"][17];
 			else 
-				echo $lang["document"][7].": ".$this->fields["ID"];
+				echo $LANG["document"][7].": ".$this->fields["ID"];
 
 			echo "</th><th  align='center'>".$datestring.$date;
 			echo "</th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":	</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td><td>";
 			autocompletionTextField("name","glpi_type_docs","name",$this->fields["name"],20);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][9].":	</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][9].":	</td><td>";
 			autocompletionTextField("ext","glpi_type_docs","ext",$this->fields["ext"],20);
 
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][10].":	</td><td>";
-			dropdownIcons("icon",$this->fields["icon"],$cfg_glpi["typedoc_icon_dir"]);
-			if (!empty($this->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$cfg_glpi["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][10].":	</td><td>";
+			dropdownIcons("icon",$this->fields["icon"],$CFG_GLPI["typedoc_icon_dir"]);
+			if (!empty($this->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":	</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][4].":	</td><td>";
 			autocompletionTextField("mime","glpi_type_docs","mime",$this->fields["mime"],20);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][11].":	</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][11].":	</td><td>";
 			if (empty($this->fields["upload"])) $this->fields["upload"]='Y';
 			dropdownYesNo("upload",$this->fields["upload"]);
 			echo "</td></tr>";
@@ -133,18 +133,18 @@ class Typedoc  extends CommonDBTM {
 				if(empty($ID)){
 
 					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 
 				} else {
 
 					echo "<td class='tab_bg_2' valign='top' align='center'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top'>\n";
 					echo "<div align='center'>";
-					echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+					echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					echo "</div>";
 					echo "</td>";
 				}
@@ -156,7 +156,7 @@ class Typedoc  extends CommonDBTM {
 			return true;	
 		}
 		else {
-			echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
+			echo "<div align='center'><b>".$LANG["document"][23]."</b></div>";
 			return false;
 		}
 

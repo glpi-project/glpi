@@ -152,71 +152,71 @@ class CommonItem{
 	 * @return String: name of the object type in the current language
 	 */
 	function getType (){
-		global $lang;
+		global $LANG;
 
 		switch ($this->device_type){
 			case GENERAL_TYPE :
-				return $lang["help"][30];
+				return $LANG["help"][30];
 				break;
 			case COMPUTER_TYPE :
-				return $lang["computers"][44];
+				return $LANG["computers"][44];
 				break;
 			case NETWORKING_TYPE :
-				return $lang["networking"][12];
+				return $LANG["networking"][12];
 				break;
 			case PRINTER_TYPE :
-				return $lang["printers"][4];
+				return $LANG["printers"][4];
 				break;
 			case MONITOR_TYPE : 
-				return $lang["monitors"][4];
+				return $LANG["monitors"][4];
 				break;
 			case PERIPHERAL_TYPE : 
-				return $lang["peripherals"][4];
+				return $LANG["peripherals"][4];
 				break;				
 			case PHONE_TYPE : 
-				return $lang["phones"][4];
+				return $LANG["phones"][4];
 				break;				
 			case SOFTWARE_TYPE : 
-				return $lang["software"][10];
+				return $LANG["software"][10];
 				break;				
 			case CONTRACT_TYPE : 
-				return $lang["financial"][1];
+				return $LANG["financial"][1];
 				break;				
 			case ENTERPRISE_TYPE : 
-				return $lang["financial"][26];
+				return $LANG["financial"][26];
 				break;
 			case CONTACT_TYPE : 
-				return $lang["common"][18];
+				return $LANG["common"][18];
 				break;
 			case KNOWBASE_TYPE : 
-				return $lang["knowbase"][0];
+				return $LANG["knowbase"][0];
 				break;	
 			case USER_TYPE : 
-				return $lang["setup"][57];
+				return $LANG["setup"][57];
 				break;	
 			case TRACKING_TYPE : 
-				return $lang["job"][38];
+				return $LANG["job"][38];
 				break;	
 			case CARTRIDGE_TYPE : 
-				return $lang["cartridges"][16];
+				return $LANG["cartridges"][16];
 				break;
 			case CONSUMABLE_TYPE : 
-				return $lang["consumables"][16];
+				return $LANG["consumables"][16];
 				break;					
 			case LICENSE_TYPE : 
-				return $lang["software"][11];
+				return $LANG["software"][11];
 				break;					
 			case CARTRIDGE_ITEM_TYPE : 
-				return $lang["cartridges"][0];
+				return $LANG["cartridges"][0];
 				break;
 			case CONSUMABLE_ITEM_TYPE : 
-				return $lang["consumables"][0];
+				return $LANG["consumables"][0];
 				break;					
 			case DOCUMENT_TYPE : 
-				return $lang["document"][0];
+				return $LANG["document"][0];
 				break;					
 			case GROUP_TYPE : 
-				return $lang["common"][35];
+				return $LANG["common"][35];
 				break;					
 		}
 
@@ -228,7 +228,7 @@ class CommonItem{
 	 * @return String: name of the object in the current language
 	 */
 	function getName(){
-		global $lang;
+		global $LANG;
 
 		if ($this->device_type==0) return "";
 
@@ -248,8 +248,8 @@ class CommonItem{
 			return "N/A";
 	}
 	function getNameID(){
-		global $cfg_glpi;
-		if ($cfg_glpi["view_ID"]){
+		global $CFG_GLPI;
+		if ($CFG_GLPI["view_ID"]){
 			if ($this->device_type==0)
 				return $this->getName();
 			else return $this->getName()." (".$this->id_device.")";
@@ -262,7 +262,7 @@ class CommonItem{
 	 */
 	function getLink(){
 
-		global $cfg_glpi,$INFOFORM_PAGES;
+		global $CFG_GLPI,$INFOFORM_PAGES;
 		$ID="";
 		switch ($this->device_type){
 			case GENERAL_TYPE :
@@ -285,8 +285,8 @@ class CommonItem{
 			case CONSUMABLE_TYPE : 
 			case DOCUMENT_TYPE : 
 			case GROUP_TYPE : 
-				if($cfg_glpi["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
+				if($CFG_GLPI["view_ID"]) $ID= " (".$this->id_device.")";
+				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
 				break;
 			case LICENSE_TYPE : 
 				return $this->getName();

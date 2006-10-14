@@ -38,21 +38,21 @@ if (!defined('GLPI_ROOT')){
 function showCentralReminder($type="private"){
 	// show reminder that are not planned 
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	$author=$_SESSION['glpiID'];	
 	$today=date("Y-m-d H:i:s");
 
 	if($type=="public"){ // show public reminder
 		$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0')";
-		$titre="<a href=\"".$cfg_glpi["root_doc"]."/front/reminder.php\">".$lang["reminder"][1]."</a>";
+		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][1]."</a>";
 	}else{ // show private reminder
 		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (end>='$today' or rv='0') ";
-		$titre="<a href=\"".$cfg_glpi["root_doc"]."/front/reminder.php\">".$lang["reminder"][0]."</a>";
+		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][0]."</a>";
 	}
 
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 
 
@@ -60,20 +60,20 @@ function showCentralReminder($type="private"){
 
 	echo "<tr><th><div style='position: relative'><span><strong>"."$titre"."</strong></span>";
 	if ($type!="public"||haveRight("reminder_public","w"))
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_glpi["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$cfg_glpi["root_doc"]."/pics/plus.png\" alt='+' title='".$lang["buttons"][8]."'></a></span>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 	echo "</div>";
 	echo "</th></tr>";
-	if($db->numrows($result)>0){
-		while ($data =$db->fetch_array($result)){ 
+	if($DB->numrows($result)>0){
+		while ($data =$DB->fetch_array($result)){ 
 
-			echo "<tr class='tab_bg_2'><td><div style='position: relative'><span><a style='margin-left:8px' href=\"".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a></span>";
+			echo "<tr class='tab_bg_2'><td><div style='position: relative'><span><a style='margin-left:8px' href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a></span>";
 
 			if($data["rv"]=="1"){
 
 				$tab=split(" ",$data["begin"]);
 				$date_url=$tab[0];
 
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$cfg_glpi["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$cfg_glpi["root_doc"]."/pics/rdv.png\" alt='".$lang["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
+				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
 
 
 
@@ -93,28 +93,28 @@ function showCentralReminder($type="private"){
 function showListReminder($type="private"){
 	// show reminder that are not planned 
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	$author=$_SESSION['glpiID'];	
 
 	if($type=="public"){ // show public reminder
 		$query="SELECT * FROM glpi_reminder WHERE type='public'";
-		$titre=$lang["reminder"][1];
+		$titre=$LANG["reminder"][1];
 	}else{ // show private reminder
 		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' ";
-		$titre=$lang["reminder"][0];
+		$titre=$LANG["reminder"][0];
 	}
 
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 	$tabremind=array();
 
 	$remind=new Reminder();
 
 	$i=0;
-	if ($db->numrows($result)>0)
-		while ($data=$db->fetch_array($result)){
+	if ($DB->numrows($result)>0)
+		while ($data=$DB->fetch_array($result)){
 			$remind->getFromDB($data["ID"]);
 
 			if($data["rv"]==1){ //Un rdv on va trier sur la date begin
@@ -127,8 +127,8 @@ function showListReminder($type="private"){
 			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["ID"];
 			$tabremind[$sort."$$".$i]["begin"]=($data["rv"]==1?"".$data["begin"]."":"".$data["date"]."");
 			$tabremind[$sort."$$".$i]["end"]=($data["rv"]==1?"".$data["end"]."":"");
-			$tabremind[$sort."$$".$i]["title"]=resume_text($remind->fields["title"],$cfg_glpi["cut"]);
-			$tabremind[$sort."$$".$i]["text"]=resume_text($remind->fields["text"],$cfg_glpi["cut"]);
+			$tabremind[$sort."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
+			$tabremind[$sort."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 			$i++;
 		}
 
@@ -138,19 +138,19 @@ function showListReminder($type="private"){
 
 
 	echo "<div align='center' ><br><table class='tab_cadrehov' style='width:600px'>";
-	echo "<tr><th>"."$titre"."</th><th colspan='2'>".$lang["common"][27]."</th></tr>";
+	echo "<tr><th>"."$titre"."</th><th colspan='2'>".$LANG["common"][27]."</th></tr>";
 
 	if (count($tabremind)>0){
 		foreach ($tabremind as $key => $val){
 
-			echo "<tr class='tab_bg_2'><td width='70%'><a href=\"".$cfg_glpi["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
+			echo "<tr class='tab_bg_2'><td width='70%'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
 
 			if($val["end"]!=""){	
 				echo "<td style='text-align:center;'>";
 
 				$tab=split(" ",$val["begin"]);
 				$date_url=$tab[0];
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$cfg_glpi["root_doc"]."/pics/rdv.png\" alt='".$lang["planning"][3]."' title='".$lang["planning"][3]."'></a>";
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["planning"][3]."' title='".$LANG["planning"][3]."'></a>";
 				echo "</td>";
 				echo "<td style='text-align:center;' ><strong>".convDateTime($val["begin"]);
 				echo "<br>".convDateTime($val["end"])."</strong>";

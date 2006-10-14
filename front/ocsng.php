@@ -42,22 +42,22 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][39],$_SERVER["PHP_SELF"]);
 if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
 if (isset($_SESSION["ocs_link"])) unset($_SESSION["ocs_link"]);
 if (isset($_SESSION["ocs_update"])) unset($_SESSION["ocs_update"]);
 echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/logoOcs.png\" alt='".$lang["ocsng"][0]."' title='".$lang["ocsng"][0]."' ></td>";
+echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/logoOcs.png\" alt='".$LANG["ocsng"][0]."' title='".$LANG["ocsng"][0]."' ></td>";
 echo "</tr></table></div>";
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$lang["ocsng"][0]."</th></tr>";
+echo "<tr><th>".$LANG["ocsng"][0]."</th></tr>";
 
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ocsng.sync.php\"><b>".$lang["ocsng"][1]."</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ocsng.sync.php\"><b>".$LANG["ocsng"][1]."</b></a></td></tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.import.php\"><b>".$lang["ocsng"][2]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.import.php\"><b>".$LANG["ocsng"][2]."</b></a></td> </tr>";
 
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>".$lang["ocsng"][4]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>".$LANG["ocsng"][4]."</b></a></td> </tr>";
 
 echo "</table></div>";
 

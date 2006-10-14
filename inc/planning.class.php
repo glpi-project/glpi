@@ -47,7 +47,7 @@ class PlanningTracking extends CommonDBTM {
 	}
 
 	function update($input,$target,$item){
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 		// Update a Planning Tracking
 
 		$this->getFromDB($input["ID"]);
@@ -118,7 +118,7 @@ class PlanningTracking extends CommonDBTM {
 		if (isset($updates))
 			$this->updateInDB($updates);
 
-		if (count($updates)>0&&$cfg_glpi["mailing"])
+		if (count($updates)>0&&$CFG_GLPI["mailing"])
 		{
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
@@ -130,7 +130,7 @@ class PlanningTracking extends CommonDBTM {
 	}
 
 	function add($input,$target,$nomail=0){
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 
 		// set new date.
 		$this->fields["id_followup"] = $input["id_followup"];
@@ -149,7 +149,7 @@ class PlanningTracking extends CommonDBTM {
 			return false;
 		}
 		/*	} else if ($this->is_alreadyplanned()||!$this->test_valid_date()) {
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["job"][36];
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["job"][36];
 			return false;
 			}
 		 */
@@ -185,7 +185,7 @@ class PlanningTracking extends CommonDBTM {
 			$return=$this->addToDB();
 		else $return = true;
 
-		if ($nomail==0&&$cfg_glpi["mailing"])
+		if ($nomail==0&&$CFG_GLPI["mailing"])
 		{
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
@@ -216,7 +216,7 @@ class PlanningTracking extends CommonDBTM {
 	// SPECIFIC FUNCTIONS
 
 	function is_alreadyplanned(){
-		global $db;
+		global $DB;
 		if (!isset($this->fields["id_assign"])||empty($this->fields["id_assign"]))
 			return true;
 
@@ -231,8 +231,8 @@ class PlanningTracking extends CommonDBTM {
 			" OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) ".
 			" OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' < end))";
 		//		echo $query."<br>";
-		if ($result=$db->query($query)){
-			return ($db->numrows($result)>0);
+		if ($result=$DB->query($query)){
+			return ($DB->numrows($result)>0);
 		}
 		return true;
 	}
@@ -241,21 +241,21 @@ class PlanningTracking extends CommonDBTM {
 	}
 
 	function displayError($type,$ID,$target){
-		global $lang;
+		global $LANG;
 
 		//echo "<br><div align='center'>";
 		switch ($type){
 			case "date":
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["planning"][1]."<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["planning"][1]."<br>";
 			break;
 			case "is_res":
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["planning"][0]."<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["planning"][0]."<br>";
 			break;
 			default :
 			$_SESSION["MESSAGE_AFTER_REDIRECT"].="Erreur Inconnue<br>";
 			break;
 		}
-		//echo "<br><a href='".$target."?job=$ID'>".$lang["buttons"][13]."</a>";
+		//echo "<br><a href='".$target."?job=$ID'>".$LANG["buttons"][13]."</a>";
 		//echo "</div>";
 	}
 

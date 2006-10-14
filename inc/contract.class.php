@@ -48,30 +48,30 @@ class Contract extends CommonDBTM {
 	}
 
 	function post_getEmpty () {
-		global $cfg_glpi;
-		$this->fields["alert"]=$cfg_glpi["contract_alerts"];
+		global $CFG_GLPI;
+		$this->fields["alert"]=$CFG_GLPI["contract_alerts"];
 	}
 
 	function cleanDBonPurge($ID) {
 
-		global $db;
+		global $DB;
 
 		$query2 = "DELETE FROM glpi_contract_enterprise WHERE (FK_contract = '$ID')";
-		$db->query($query2);
+		$DB->query($query2);
 
 		$query3 = "DELETE FROM glpi_contract_device WHERE (FK_contract = '$ID')";
-		$db->query($query3);
+		$DB->query($query3);
 	}
 
 	function defineOnglets($withtemplate){
-		global $lang;
-		$ong[1]=$lang["title"][26];
+		global $LANG;
+		$ong[1]=$LANG["title"][26];
 		if (haveRight("document","r"))	
-			$ong[5]=$lang["title"][25];
+			$ong[5]=$LANG["title"][25];
 		if (haveRight("link","r"))	
-			$ong[7]=$lang["title"][34];
+			$ong[7]=$LANG["title"][34];
 		if (haveRight("notes","r"))
-			$ong[10]=$lang["title"][37];
+			$ong[10]=$LANG["title"][37];
 		return $ong;
 	}
 
@@ -87,13 +87,13 @@ class Contract extends CommonDBTM {
 	 **/
 	function title(){
 
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/contracts.png\" alt='".$lang["financial"][0]."' title='".$lang["financial"][0]."'></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/contracts.png\" alt='".$LANG["financial"][0]."' title='".$LANG["financial"][0]."'></td>";
 		if (haveRight("contract_infocom","w")){
-			echo "<td><a  class='icon_consol' href=\"contract.form.php\"><b>".$lang["financial"][0]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][25]."</b></span></td>";
+			echo "<td><a  class='icon_consol' href=\"contract.form.php\"><b>".$LANG["financial"][0]."</b></a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][25]."</b></span></td>";
 		echo "</tr></table></div>";
 	}
 
@@ -115,7 +115,7 @@ class Contract extends CommonDBTM {
 	function showForm ($target,$ID) {
 		// Show Contract or blank form
 
-		global $cfg_glpi,$lang;
+		global $CFG_GLPI,$LANG;
 
 		if (!haveRight("contract_infocom","r")) return false;
 
@@ -133,66 +133,66 @@ class Contract extends CommonDBTM {
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'><b>";
 			if (!$ID) {
-				echo $lang["financial"][36].":";
+				echo $LANG["financial"][36].":";
 			} else {
 				$this->getfromDB($ID);
-				echo $lang["financial"][1].": $ID";
+				echo $LANG["financial"][1].": $ID";
 			}		
 			echo "</b></th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][6].":		</td><td >";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][6].":		</td><td >";
 			dropdownValue("glpi_dropdown_contract_type","contract_type",$this->fields["contract_type"]);
 			echo "</td>";
 
-			echo "<td>".$lang["common"][16].":		</td><td>";
+			echo "<td>".$LANG["common"][16].":		</td><td>";
 			autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],25);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][4].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][4].":		</td>";
 			echo "<td><input type='text' name='num' value=\"".$this->fields["num"]."\" size='25'></td>";
 
-			echo "<td>".$lang["search"][8].":	</td>";
+			echo "<td>".$LANG["search"][8].":	</td>";
 			echo "<td>";
 			showCalendarForm("form","begin_date",$this->fields["begin_date"]);	
 			echo "</td>";
 			echo "</tr>";
 
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][5].":		</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][5].":		</td><td>";
 			echo "<input type='text' name='cost' value=\"".number_format($this->fields["cost"],2,'.','')."\" size='10'>";
 			echo "</td>";
 
-			echo "<td>".$lang["financial"][13].":		</td><td>";
+			echo "<td>".$LANG["financial"][13].":		</td><td>";
 			autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],25);
 
 			echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][8].":		</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][8].":		</td><td>";
 			dropdownContractTime("duration",$this->fields["duration"]);
-			echo " ".$lang["financial"][57];
+			echo " ".$LANG["financial"][57];
 			if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
 				echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]);
 			echo "</td>";
 
-			echo "<td>".$lang["financial"][10].":		</td><td>";
+			echo "<td>".$LANG["financial"][10].":		</td><td>";
 			dropdownContractTime("notice",$this->fields["notice"]);
-			echo " ".$lang["financial"][57];
+			echo " ".$LANG["financial"][57];
 			if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
 				echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]-$this->fields["notice"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][69].":		</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][69].":		</td><td>";
 			dropdownContractPeriodicity("periodicity",$this->fields["periodicity"]);
 			echo "</td>";
 
 
-			echo "<td>".$lang["financial"][11].":		</td>";
+			echo "<td>".$LANG["financial"][11].":		</td>";
 			echo "<td>";
 			dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][107].":		</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][107].":		</td><td>";
 			dropdownContractRenewal("renewal",$this->fields["renewal"]);
 			echo "</td>";
 
@@ -201,12 +201,12 @@ class Contract extends CommonDBTM {
 			echo "<td>&nbsp;";
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][83].":		</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][83].":		</td><td>";
 			dropdownContractTime("device_countmax",$this->fields["device_countmax"]);
 			echo "</td>";
 
 
-			echo "<td>".$lang["common"][41]."</td>";
+			echo "<td>".$LANG["common"][41]."</td>";
 			echo "<td>";
 			dropdownContractAlerting("alert",$this->fields["alert"]);
 			echo "</td></tr>";
@@ -214,34 +214,34 @@ class Contract extends CommonDBTM {
 
 
 			echo "<tr class='tab_bg_1'><td valign='top'>";
-			echo $lang["common"][25].":	</td>";
+			echo $LANG["common"][25].":	</td>";
 			echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_2'><td>".$lang["financial"][59].":		</td>";
+			echo "<tr class='tab_bg_2'><td>".$LANG["financial"][59].":		</td>";
 			echo "<td colspan='3'>&nbsp;</td>";
 			echo "</tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][60].":		</td><td colspan='3'>";
-			echo $lang["buttons"][33].":";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][60].":		</td><td colspan='3'>";
+			echo $LANG["buttons"][33].":";
 			dropdownHours("week_begin_hour",$this->fields["week_begin_hour"]);	
-			echo $lang["buttons"][32].":";
+			echo $LANG["buttons"][32].":";
 			dropdownHours("week_end_hour",$this->fields["week_end_hour"]);	
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][61].":		</td><td colspan='3'>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][61].":		</td><td colspan='3'>";
 			dropdownYesNo("saturday",$this->fields["saturday"]);
-			echo $lang["buttons"][33].":";
+			echo $LANG["buttons"][33].":";
 			dropdownHours("saturday_begin_hour",$this->fields["saturday_begin_hour"]);	
-			echo $lang["buttons"][32].":";
+			echo $LANG["buttons"][32].":";
 			dropdownHours("saturday_end_hour",$this->fields["saturday_end_hour"]);	
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["financial"][62].":		</td><td colspan='3'>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][62].":		</td><td colspan='3'>";
 			dropdownYesNo("monday",$this->fields["monday"]);
-			echo $lang["buttons"][33].":";
+			echo $LANG["buttons"][33].":";
 			dropdownHours("monday_begin_hour",$this->fields["monday_begin_hour"]);	
-			echo $lang["buttons"][32].":";
+			echo $LANG["buttons"][32].":";
 			dropdownHours("monday_end_hour",$this->fields["monday_end_hour"]);	
 			echo "</td></tr>";
 
@@ -250,7 +250,7 @@ class Contract extends CommonDBTM {
 
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -260,16 +260,16 @@ class Contract extends CommonDBTM {
 					echo "<td class='tab_bg_2'></td>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
 
 					echo "<td class='tab_bg_2' valign='top'  colspan='2'>\n";
 					if ($this->fields["deleted"]=='N')
-						echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+						echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 					else {
-						echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+						echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
 
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
 					}
 
 					echo "</td>";
@@ -279,7 +279,7 @@ class Contract extends CommonDBTM {
 			echo "</table></div></form>";
 
 		} else {
-			echo "<div align='center'><b>".$lang["financial"][40]."</b></div>";
+			echo "<div align='center'><b>".$LANG["financial"][40]."</b></div>";
 			return false;
 
 		}

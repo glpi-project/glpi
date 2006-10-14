@@ -74,8 +74,8 @@ function IsDropdown($field) {
  *
  **/
 function IsDevice($field) {
-	global $cfg_glpi;
-	if(in_array($field,$cfg_glpi["devices_tables"])) {
+	global $CFG_GLPI;
+	if(in_array($field,$CFG_GLPI["devices_tables"])) {
 		return true;
 	}
 	else  {
@@ -99,7 +99,7 @@ function IsDevice($field) {
  *
  **/
 function showDeviceComputerForm($target,$ID,$withtemplate='') {
-	global $lang;
+	global $LANG;
 
 	if (!haveRight("computer","r")) return false;
 	$canedit=haveRight("computer","w");
@@ -118,7 +118,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 		echo "<input type='hidden' name='ID' value='$ID'>";	
 		echo "<input type='hidden' name='device_action' value='$ID'>";			
 		echo "<table class='tab_cadre_fixe' >";
-		echo "<tr><th colspan='65'>".$lang["devices"][10]."</th></tr>";
+		echo "<tr><th colspan='65'>".$LANG["devices"][10]."</th></tr>";
 		foreach($comp->devices as $key => $val) {
 			$device = new Device($val["devType"]);
 			$device->getFromDB($val["devID"]);
@@ -126,7 +126,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 
 		}
 		if ($canedit&&!(!empty($withtemplate) && $withtemplate == 2))
-			echo "<tr><td colspan='65' align='center' class='tab_bg_1'><input type='submit' class='submit' name='update_device' value='".$lang["buttons"][7]."'></td></tr>";
+			echo "<tr><td colspan='65' align='center' class='tab_bg_1'><input type='submit' class='submit' name='update_device' value='".$LANG["buttons"][7]."'></td></tr>";
 		echo "</table>";
 
 		echo "</form>";
@@ -152,13 +152,13 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
  **/
 function showConnections($target,$ID,$withtemplate='') {
 
-	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES;
+	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
 
 	$state=new StateItem();
 	$ci=new CommonItem;
 
-	$items=array(PRINTER_TYPE=>$lang["computers"][39],MONITOR_TYPE=>$lang["computers"][40],PERIPHERAL_TYPE=>$lang["computers"][46],PHONE_TYPE=>$lang["computers"][55]);
+	$items=array(PRINTER_TYPE=>$LANG["computers"][39],MONITOR_TYPE=>$LANG["computers"][40],PERIPHERAL_TYPE=>$LANG["computers"][46],PHONE_TYPE=>$LANG["computers"][55]);
 
 
 	foreach ($items as $type => $title){
@@ -168,7 +168,7 @@ function showConnections($target,$ID,$withtemplate='') {
 	if (count($items)){
 		echo "&nbsp;<div align='center'><table class='tab_cadre_fixe'>";
 
-		echo "<tr><th colspan='".count($items)."'>".$lang["connect"][0].":</th></tr>";
+		echo "<tr><th colspan='".count($items)."'>".$LANG["connect"][0].":</th></tr>";
 
 		echo "<tr>";
 		foreach ($items as $type => $title)
@@ -182,13 +182,13 @@ function showConnections($target,$ID,$withtemplate='') {
 
 			echo "<td align='center'>";
 			$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
-			if ($result=$db->query($query)) {
-				$resultnum = $db->numrows($result);
+			if ($result=$DB->query($query)) {
+				$resultnum = $DB->numrows($result);
 				if ($resultnum>0) {
 					echo "<table width='100%'>";
 					for ($i=0; $i < $resultnum; $i++) {
-						$tID = $db->result($result, $i, "end1");
-						$connID = $db->result($result, $i, "ID");
+						$tID = $DB->result($result, $i, "end1");
+						$connID = $DB->result($result, $i, "ID");
 						$ci->getFromDB($type,$tID);
 
 						echo "<tr ".($ci->obj->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
@@ -200,8 +200,8 @@ function showConnections($target,$ID,$withtemplate='') {
 
 						echo "</td>";
 						if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
-							echo "<td align='center'><a 	href=\"".$cfg_glpi["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
-							echo $lang["buttons"][10];
+							echo "<td align='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
+							echo $LANG["buttons"][10];
 							echo "</b></a></td>";
 						}
 						echo "</tr>";
@@ -210,16 +210,16 @@ function showConnections($target,$ID,$withtemplate='') {
 				} else {
 					switch ($type){
 						case PRINTER_TYPE:
-							echo $lang["computers"][38];
+							echo $LANG["computers"][38];
 							break;
 						case MONITOR_TYPE:
-							echo $lang["computers"][37];
+							echo $LANG["computers"][37];
 							break;
 						case PERIPHERAL_TYPE:
-							echo $lang["computers"][47];
+							echo $LANG["computers"][47];
 							break;
 						case PHONE_TYPE:
-							echo $lang["computers"][54];
+							echo $LANG["computers"][54];
 							break;
 					}
 					echo "<br>";
@@ -231,7 +231,7 @@ function showConnections($target,$ID,$withtemplate='') {
 						echo "<input type='hidden' name='cID' value='$ID'>";
 						echo "<input type='hidden' name='device_type' value='".$type."'>";
 						dropdownConnect($type,COMPUTER_TYPE,"item",$withtemplate);
-						echo "<input type='submit' value=\"".$lang["buttons"][9]."\" class='submit'>";
+						echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 						echo "</form>";
 					}
 			}

@@ -40,9 +40,9 @@ error_reporting(0);
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/config/based_config.php");
 
-session_save_path($cfg_glpi["doc_dir"]."/_sessions");
+session_save_path($CFG_GLPI["doc_dir"]."/_sessions");
 
-$cfg_glpi["debug"]=0;
+$CFG_GLPI["debug"]=0;
 //Print a correct  Html header for application
 function header_html($etape)
 {
@@ -108,17 +108,17 @@ function choose_language()
 
 // load language
 
-function loadLang($language) {
+function loadLang($LANGuage) {
 
-	unset($lang);
-	global $lang;
-	$file = GLPI_ROOT ."/locales/".$language.".php";
+	unset($LANG);
+	global $LANG;
+	$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
 	include($file);
 }
 
 function acceptLicence() {
 
-	global $lang;
+	global $LANG;
 
 	echo "<div align='center'>";
 	echo "<textarea id='license' cols='80' rows='10' readonly='readonly'>";
@@ -468,15 +468,15 @@ function acceptLicence() {
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<p>";
 	echo " <label class=\"block\" for=\"agree\"><input type=\"radio\" name=\"install\" value=\"Licence\" />";
-	echo $lang["install"][93];
+	echo $LANG["install"][93];
 	echo " </label></p>";
 
 
 	echo "<br>";
 	echo "<label class=\"block\" for=\"disagree\"><input type=\"radio\" name=\"install\" value=\"lang_select\" checked=\"checked\" />";
-	echo $lang["install"][94];
+	echo $LANG["install"][94];
 	echo " </label>";
-	echo "<p><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\"  /></p>";
+	echo "<p><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"  /></p>";
 	echo "</form>";
 	echo "</div>";
 }
@@ -487,54 +487,54 @@ function acceptLicence() {
 function step0()
 {
 
-	global $lang;
-	echo "<h3>".$lang["install"][0]."</h3>";
-	echo "<p>".$lang["install"][1]."</p>";
-	echo "<p> ".$lang["install"][2]."</p>";
+	global $LANG;
+	echo "<h3>".$LANG["install"][0]."</h3>";
+	echo "<p>".$LANG["install"][1]."</p>";
+	echo "<p> ".$LANG["install"][2]."</p>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"no\" />";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-	echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][3]."\" /></p>";
+	echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][3]."\" /></p>";
 	echo "</form>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"yes\" />";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-	echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][4]."\" /></p>";
+	echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][4]."\" /></p>";
 	echo "</form>";
 }
 
 //Step 1 checking some compatibilty issue and some write tests.
 function step1($update)
 {
-	global $lang,$cfg_glpi;
+	global $LANG,$CFG_GLPI;
 
 	$error = 0;
-	echo "<h3>".$lang["install"][5]."</h3>";
+	echo "<h3>".$LANG["install"][5]."</h3>";
 	echo "<table>";
-	echo "<tr><th>".$lang["install"][6]."</th><th >".$lang["install"][7]."</th></tr>";
+	echo "<tr><th>".$LANG["install"][6]."</th><th >".$LANG["install"][7]."</th></tr>";
 	// Parser test
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][8]."</b></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][8]."</b></td>";
 	// PHP Version  - exclude PHP3
 	if (substr(phpversion(),0,1) == "3") {
 		$error = 2;
-		echo "<td  class='red'>".$lang["install"][9]."</a>.\n</td>";
+		echo "<td  class='red'>".$LANG["install"][9]."</a>.\n</td>";
 	}
 	elseif (substr(phpversion(),0,3) == "4.0" and ereg("0|1",substr(phpversion(),4,1))) {
-		echo "<td><span class='red'>&nbsp;<td>".$lang["install"][10]."<td>";
+		echo "<td><span class='red'>&nbsp;<td>".$LANG["install"][10]."<td>";
 		if($error != 2) $error = 1;
 	}
 	else {
-		echo "<td>".$lang["install"][11]."</td></tr>";
+		echo "<td>".$LANG["install"][11]."</td></tr>";
 	}
 	// end parser test
 
 	// Check for mysql extension ni php
-	echo "<tr><td><b>".$lang["install"][71]."</b></td>";
+	echo "<tr><td><b>".$LANG["install"][71]."</b></td>";
 	if(!function_exists("mysql_query")) {
-		echo "<td  class='red'>".$lang["install"][72]."</td></tr>";
+		echo "<td  class='red'>".$LANG["install"][72]."</td></tr>";
 		$error = 2;
 	} else {
-		echo "<td>".$lang["install"][73]."</td></tr>";
+		echo "<td>".$LANG["install"][73]."</td></tr>";
 	}
 
 
@@ -543,7 +543,7 @@ function step1($update)
 	// ***********
 
 	// memory test
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][86]."</b></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][86]."</b></td>";
 
 	$mem=ini_get("memory_limit");
 
@@ -566,72 +566,72 @@ function step1($update)
 	}
 
 	if( $mem == "" ){          // memory_limit non compil�-> no memory limit
-		echo "<td>".$lang["install"][95]." - ".$lang["install"][89]."</td></tr>";
+		echo "<td>".$LANG["install"][95]." - ".$LANG["install"][89]."</td></tr>";
 	}
 	else if( $mem == "-1" ){   // memory_limit compil� mais illimit�
-		echo "<td>".$lang["install"][96]." - ".$lang["install"][89]."</td></tr>";
+		echo "<td>".$LANG["install"][96]." - ".$LANG["install"][89]."</td></tr>";
 	}
 	else{	
 		if ($mem<16*1024*1024){ // memoire insuffisante
-			echo "<td  class='red'><b>".$lang["install"][87]." $mem octets</b><br>".$lang["install"][88]."<br>".$lang["install"][90]."</td></tr>";
+			echo "<td  class='red'><b>".$LANG["install"][87]." $mem octets</b><br>".$LANG["install"][88]."<br>".$LANG["install"][90]."</td></tr>";
 		}
 		else{ // on a sufisament de m�oire on passe �la suite
-			echo "<td>".$lang["install"][91]." - ".$lang["install"][89]."</td></tr>";
+			echo "<td>".$LANG["install"][91]." - ".$LANG["install"][89]."</td></tr>";
 		}
 	}
 	// session test
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][12]."</b></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][12]."</b></td>";
 
 
 
 	// check whether session are enabled at all!!
 	if (!extension_loaded('session')) {
 		$error = 2;
-		echo "<td  class='red'><b>".$lang["install"][13]."</b></td></tr>";
+		echo "<td  class='red'><b>".$LANG["install"][13]."</b></td></tr>";
 	} else {
 		if ($_SESSION["Test_session_GLPI"] == 1) {
-			echo "<td><i>".$lang["install"][14]."</i></td></tr>";
+			echo "<td><i>".$LANG["install"][14]."</i></td></tr>";
 		}
 		else {
 			if($error != 2) $error = 1;
-			echo "<td  class='red'>".$lang["install"][15]."</td></tr>";
+			echo "<td  class='red'>".$LANG["install"][15]."</td></tr>";
 		}
 	}
 
 	//Test for option session use trans_id loaded or not.
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][74]."</b></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][74]."</b></td>";
 	//if(ini_get('session.use_trans_sid')) {
 	if (isset($_POST[session_name()])||isset($_GET[session_name()])) {
-		echo "<td class='red'>".$lang["install"][75]."</td></tr>";
+		echo "<td class='red'>".$LANG["install"][75]."</td></tr>";
 		$error = 2;
 	}
 	else {
-		echo "<td>".$lang["install"][76]."</td></tr>";
+		echo "<td>".$LANG["install"][76]."</td></tr>";
 
 	}
 
 
 
 	//Test for sybase extension loaded or not.
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][65]."</b></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][65]."</b></td>";
 	if(ini_get('magic_quotes_sybase')) {
-		echo "<td class='red'>".$lang["install"][66]."</td></tr>";
+		echo "<td class='red'>".$LANG["install"][66]."</td></tr>";
 		$error = 2;
 	}
 	else {
-		echo "<td>".$lang["install"][67]."</td></tr>";
+		echo "<td>".$LANG["install"][67]."</td></tr>";
 
 	}
 
 
 	//Test for utf8_encode function.
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][83]."</b></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][83]."</b></td>";
 	if(!function_exists('utf8_encode')||!function_exists('utf8_decode')) {
-		echo "<td class='red'>".$lang["install"][84]."</td></tr>";
+		echo "<td class='red'>".$LANG["install"][84]."</td></tr>";
 		$error = 2;
 	}
 	else {
-		echo "<td>".$lang["install"][85]."</td></tr>";
+		echo "<td>".$LANG["install"][85]."</td></tr>";
 
 	}
 
@@ -644,103 +644,103 @@ function step1($update)
 
 	// il faut un test dans /files/_dumps  et /files et /config/ et /files/_sessions et /files/_cron
 
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][16]."</b></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][16]."</b></td>";
 
-	$fp = fopen($cfg_glpi["dump_dir"] . "/test_glpi.txt",'w');
+	$fp = fopen($CFG_GLPI["dump_dir"] . "/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]."</p> ".$lang["install"][18]."</td></tr>";
+		echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][18]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($cfg_glpi["dump_dir"] . "/test_glpi.txt");
+		$delete = unlink($CFG_GLPI["dump_dir"] . "/test_glpi.txt");
 		if (!$delete) {
-			echo "<td  class='red'>".$lang["install"][19]."</td></tr>";
+			echo "<td  class='red'>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
 		}
 		else {
-			echo "<td>".$lang["install"][20]."</td></tr>";
+			echo "<td>".$LANG["install"][20]."</td></tr>";
 
 		}
 	}
 
 
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][21]."</b></td>";	
-	$fp = fopen($cfg_glpi['doc_dir'] . "/test_glpi.txt",'w');
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][21]."</b></td>";	
+	$fp = fopen($CFG_GLPI['doc_dir'] . "/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]."</p> ".$lang["install"][22]."</td></tr>";
+		echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][22]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($cfg_glpi['doc_dir'] . "/test_glpi.txt");
+		$delete = unlink($CFG_GLPI['doc_dir'] . "/test_glpi.txt");
 		if (!$delete) {
-			echo "<td  class='red'>".$lang["install"][19]."</td></tr>";
+			echo "<td  class='red'>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
 		}
 		else {
-			echo "<td>".$lang["install"][20]."</td></tr>";
+			echo "<td>".$LANG["install"][20]."</td></tr>";
 
 		}
 	}
 
 
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][23]."</b></td>";
-	$fp = fopen($cfg_glpi["config_dir"] . "/test_glpi.txt",'w');
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][23]."</b></td>";
+	$fp = fopen($CFG_GLPI["config_dir"] . "/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]. " " . $cfg_glpi["config_dir"] . "/test_glpi.txt" ."</p>". $lang["install"][24]."</td></tr>";
+		echo "<td><p class='red'>".$LANG["install"][17]. " " . $CFG_GLPI["config_dir"] . "/test_glpi.txt" ."</p>". $LANG["install"][24]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($cfg_glpi["config_dir"] . "/test_glpi.txt");
+		$delete = unlink($CFG_GLPI["config_dir"] . "/test_glpi.txt");
 		if (!$delete) {
-			echo "<td>".$lang["install"][19]."</td></tr>";
+			echo "<td>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
 		}
 		else {
-			echo "<td>".$lang["install"][20]."</td></tr>";
+			echo "<td>".$LANG["install"][20]."</td></tr>";
 		}
 	}
 
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][50]."</b></td>";
-	$fp = fopen($cfg_glpi["doc_dir"]."/_sessions/test_glpi.txt",'w');
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][50]."</b></td>";
+	$fp = fopen($CFG_GLPI["doc_dir"]."/_sessions/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]. " " . $cfg_glpi["doc_dir"] . "/_sessions/test_glpi.txt" ."</p>". $lang["install"][51]."</td></tr>";
+		echo "<td><p class='red'>".$LANG["install"][17]. " " . $CFG_GLPI["doc_dir"] . "/_sessions/test_glpi.txt" ."</p>". $LANG["install"][51]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($cfg_glpi["doc_dir"] . "/_sessions/test_glpi.txt");
+		$delete = unlink($CFG_GLPI["doc_dir"] . "/_sessions/test_glpi.txt");
 		if (!$delete) {
-			echo "<td>".$lang["install"][19]."</td></tr>";
+			echo "<td>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
 		}
 		else {
-			echo "<td>".$lang["install"][20]."</td></tr>";
+			echo "<td>".$LANG["install"][20]."</td></tr>";
 		}
 	}
 
-	echo "<tr class='tab_bg_1'><td><b>".$lang["install"][52]."</b></td>";
-	$fp = fopen($cfg_glpi["doc_dir"]."/_cron/test_glpi.txt",'w');
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][52]."</b></td>";
+	$fp = fopen($CFG_GLPI["doc_dir"]."/_cron/test_glpi.txt",'w');
 	if (empty($fp)) {
-		echo "<td><p class='red'>".$lang["install"][17]. " " . $cfg_glpi["doc_dir"]."/_cron/test_glpi.txt" ."</p>". $lang["install"][53]."</td></tr>";
+		echo "<td><p class='red'>".$LANG["install"][17]. " " . $CFG_GLPI["doc_dir"]."/_cron/test_glpi.txt" ."</p>". $LANG["install"][53]."</td></tr>";
 		$error = 2;
 	}
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($cfg_glpi["doc_dir"]."/_cron/test_glpi.txt");
+		$delete = unlink($CFG_GLPI["doc_dir"]."/_cron/test_glpi.txt");
 		if (!$delete) {
-			echo "<td>".$lang["install"][19]."</td></tr>";
+			echo "<td>".$LANG["install"][19]."</td></tr>";
 			if($error != 2) $error = 1;
 		}
 		else {
-			echo "<td>".$lang["install"][20]."</td></tr>";
+			echo "<td>".$LANG["install"][20]."</td></tr>";
 		}
 	}
 
@@ -748,32 +748,32 @@ function step1($update)
 	echo "</table>";
 	switch ($error) {
 		case 0 :       
-			echo "<h3>".$lang["install"][25]."</h3>";
+			echo "<h3>".$LANG["install"][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\" />";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
 			echo "</form>";
 			break;
 		case 1 :       
-			echo "<h3>".$lang["install"][25]."</h3>";
+			echo "<h3>".$LANG["install"][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
 			echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\" />";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
 			echo "</form> &nbsp;&nbsp;";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\" />";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][27]."\" /></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][27]."\" /></p>";
 			echo "</form>";
 			break;
 		case 2 :       
-			echo "<h3>".$lang["install"][25]."</h3>";
+			echo "<h3>".$LANG["install"][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\" />";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][27]."\" /></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][27]."\" /></p>";
 			echo "</form>";
 			break;
 	}
@@ -784,16 +784,16 @@ function step1($update)
 //step 2 import mysql settings.
 function step2($update)
 {
-	global $lang;
-	echo "<p>".$lang["install"][28]."</p>";
+	global $LANG;
+	echo "<p>".$LANG["install"][28]."</p>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\" />";
-	echo "<fieldset><legend>".$lang["install"][29]."</legend>";
-	echo "<p><label>".$lang["install"][30] .": <input type=\"text\" name=\"db_host\" /></label></p>";
-	echo "<p ><label>".$lang["install"][31] .": <input type=\"text\" name=\"db_user\" /></label></p>";
-	echo "<p ><label>".$lang["install"][32]." : <input type=\"password\" name=\"db_pass\" /></label></p></fieldset>";
+	echo "<fieldset><legend>".$LANG["install"][29]."</legend>";
+	echo "<p><label>".$LANG["install"][30] .": <input type=\"text\" name=\"db_host\" /></label></p>";
+	echo "<p ><label>".$LANG["install"][31] .": <input type=\"text\" name=\"db_user\" /></label></p>";
+	echo "<p ><label>".$LANG["install"][32]." : <input type=\"password\" name=\"db_pass\" /></label></p></fieldset>";
 	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\" />";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
 	echo "</form>";
 
 }
@@ -802,59 +802,59 @@ function step2($update)
 function step3($host,$user,$password,$update)
 {
 
-	global $lang;
+	global $LANG;
 	error_reporting(16);
-	echo "<h3>".$lang["install"][34]."</h3>";
+	echo "<h3>".$LANG["install"][34]."</h3>";
 	$link = mysql_connect($host,$user,$password);
 	if (!$link || empty($host) || empty($user)) {
-		echo "".$lang["install"][35]." : \n
-			<br />".$lang["install"][36]." : ".mysql_error();
+		echo "".$LANG["install"][35]." : \n
+			<br />".$LANG["install"][36]." : ".mysql_error();
 		if(empty($host) || empty($user)) {
-			echo "<p>".$lang["install"][37]."</p>";
+			echo "<p>".$LANG["install"][37]."</p>";
 		}
 		echo "<form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\" />";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_1\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\"  value=\"".$lang["buttons"][13]."\" /></p>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\"  value=\"".$LANG["buttons"][13]."\" /></p>";
 		echo "</form>";
 
 	}
 	else {
-		echo  "<h3>".$lang["update"][93]."</h3>";
+		echo  "<h3>".$LANG["update"][93]."</h3>";
 
 		if($update == "no") {
 
-			echo "<p>".$lang["install"][38]."</p>";
+			echo "<p>".$LANG["install"][38]."</p>";
 
 			echo "<form action=\"install.php\" method=\"post\">";
 
-			$db_list = mysql_list_dbs($link);
-			while ($row = mysql_fetch_object($db_list)) {
+			$DB_list = mysql_list_dbs($link);
+			while ($row = mysql_fetch_object($DB_list)) {
 				echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\" />$row->Database.</p>";
 			}
-			echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />".$lang["install"][39];
+			echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />".$LANG["install"][39];
 			echo "<input type=\"text\" name=\"newdatabasename\"/></p>";
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
 			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
 			echo "<input type=\"hidden\" name=\"install\" value=\"Etape_3\" />";
-			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
+			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
 			mysql_close($link);
 			echo "</form>";
 		}
 		elseif($update == "yes") {
-			echo "<p>".$lang["install"][40]."</p>";
+			echo "<p>".$LANG["install"][40]."</p>";
 			echo "<form action=\"install.php\" method=\"post\">";
 
-			$db_list = mysql_list_dbs($link);
-			while ($row = mysql_fetch_object($db_list)) {
+			$DB_list = mysql_list_dbs($link);
+			while ($row = mysql_fetch_object($DB_list)) {
 				echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\" />$row->Database.</p>";
 			}
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
 			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
 			echo "<input type=\"hidden\" name=\"install\" value=\"update_1\" />";
-			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
+			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
 			mysql_close($link);
 			echo "</form>";
 
@@ -866,77 +866,77 @@ function step3($host,$user,$password,$update)
 //Step 4 Create and fill database.
 function step4 ($host,$user,$password,$databasename,$newdatabasename)
 {
-	global $lang;
+	global $LANG;
 	//display the form to return to the previous step.
 
 	function prev_form($host,$user,$password) {
-		global $lang;
+		global $LANG;
 		echo "<br /><form action=\"install.php\" method=\"post\">";
-		echo $lang["install"][30] .": <input type=\"hidden\" name=\"db_host\" value=\"". $host ."\"/><br />";
-		echo $lang["install"][31] ." : <input type=\"hidden\" name=\"db_user\" value=\"". $user ."\"/>";
-		echo $lang["install"][32] .": <input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
+		echo $LANG["install"][30] .": <input type=\"hidden\" name=\"db_host\" value=\"". $host ."\"/><br />";
+		echo $LANG["install"][31] ." : <input type=\"hidden\" name=\"db_user\" value=\"". $user ."\"/>";
+		echo $LANG["install"][32] .": <input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["buttons"][13]."\" /></p>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["buttons"][13]."\" /></p>";
 		echo "</form>";
 	}
 	//Display the form to go to the next page
 	function next_form()
 	{
-		global $lang;
+		global $LANG;
 
 		echo "<br /><form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_4\" />";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][26]."\" /></p>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
 		echo "</form>";
 	}
 
 	//Fill the database
 	function fill_db()
 	{
-		global $lang, $cfg_glpi;		
+		global $LANG, $CFG_GLPI;		
 
 		include (GLPI_ROOT . "/inc/dbmysql.class.php");
 		include (GLPI_ROOT . "/inc/common.function.php");
-		include ($cfg_glpi["config_dir"] . "/config_db.php");
+		include ($CFG_GLPI["config_dir"] . "/config_db.php");
 
-		$db = new DB;
-		$db_file = GLPI_ROOT ."/install/mysql/glpi-0.68.1-empty.sql";
-		$dbf_handle = fopen($db_file, "rt");
-		$sql_query = fread($dbf_handle, filesize($db_file));
-		fclose($dbf_handle);
+		$DB = new DB;
+		$DB_file = GLPI_ROOT ."/install/mysql/glpi-0.68.1-empty.sql";
+		$DBf_handle = fopen($DB_file, "rt");
+		$sql_query = fread($DBf_handle, filesize($DB_file));
+		fclose($DBf_handle);
 		foreach ( explode(";\n", "$sql_query") as $sql_line) {
 			if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
-			$db->query($sql_line);
+			$DB->query($sql_line);
 		}
 		// Mise a jour de la langue par defaut
 		$query = "UPDATE `glpi_config` SET default_language='".$_SESSION["dict"]."' ;";
-		$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
+		$DB->query($query) or die("4203 ".$LANG["update"][90].$DB->error());
 		$query = "UPDATE `glpi_users` SET language='".$_SESSION["dict"]."' ;";
-		$db->query($query) or die("4203 ".$lang["update"][90].$db->error());
+		$DB->query($query) or die("4203 ".$LANG["update"][90].$DB->error());
 	}
 
 	$link = mysql_connect($host,$user,$password);
 
 	if(!empty($databasename)) {
-		$db_selected = mysql_select_db($databasename, $link);
+		$DB_selected = mysql_select_db($databasename, $link);
 
-		if (!$db_selected) {
-			echo $lang["install"][41];
+		if (!$DB_selected) {
+			echo $LANG["install"][41];
 			echo "<br />";
-			echo $lang["install"][36]." ". mysql_error();
+			echo $LANG["install"][36]." ". mysql_error();
 			prev_form($host,$user,$password);
 		}
 		else {
 			if (create_conn_file($host,$user,$password,$databasename)) {
 				fill_db();
-				echo "<p>".$lang["install"][43]."</p>";
-				echo "<p>".$lang["install"][44]."</p>";
-				echo "<p>".$lang["install"][45]."</p>";
-				echo "<p>".$lang["install"][46]."</p>";
+				echo "<p>".$LANG["install"][43]."</p>";
+				echo "<p>".$LANG["install"][44]."</p>";
+				echo "<p>".$LANG["install"][45]."</p>";
+				echo "<p>".$LANG["install"][46]."</p>";
 				next_form();
 			}
 			else {
-				echo "<p>".$lang["install"][47]."</p>";
+				echo "<p>".$LANG["install"][47]."</p>";
 				prev_form();
 			}
 		}
@@ -948,31 +948,31 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		// END BUG
 		if (mysql_query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")){
 
-			echo "<p>".$lang["install"][82]."</p>";
+			echo "<p>".$LANG["install"][82]."</p>";
 			mysql_select_db($newdatabasename, $link);
 			if (create_conn_file($host,$user,$password,$newdatabasename)) {
 				fill_db();
-				echo "<p>".$lang["install"][43]."</p>";
-				echo "<p>".$lang["install"][44]."</p>";
-				echo "<p>".$lang["install"][45]."</p>";
-				echo "<p>".$lang["install"][46]."</p>";
+				echo "<p>".$LANG["install"][43]."</p>";
+				echo "<p>".$LANG["install"][44]."</p>";
+				echo "<p>".$LANG["install"][45]."</p>";
+				echo "<p>".$LANG["install"][46]."</p>";
 				next_form();
 
 			}
 			else {
-				echo "<p>".$lang["install"][47]."</p>";
+				echo "<p>".$LANG["install"][47]."</p>";
 				prev_form();
 			}
 		}
 		else {
-			echo $lang["install"][48];
-			echo "<br />".$lang["install"][42] . mysql_error();
+			echo $LANG["install"][48];
+			echo "<br />".$LANG["install"][42] . mysql_error();
 			prev_form();
 		}
 		mysql_close($link);
 	}
 	else {
-		echo "<p>".$lang["install"][49]. "</p>";
+		echo "<p>".$LANG["install"][49]. "</p>";
 		prev_form();
 		mysql_close($link);
 	}
@@ -983,11 +983,11 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	function step7() {
 
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 		require_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 		require_once (GLPI_ROOT . "/inc/common.function.php");
-		require_once ($cfg_glpi["config_dir"] . "/config_db.php");
-		$db = new DB;
+		require_once ($CFG_GLPI["config_dir"] . "/config_db.php");
+		$DB = new DB;
 
 		// hack pour IIS qui ne connait pas $_SERVER['REQUEST_URI']  grrrr
 		if ( !isset($_SERVER['REQUEST_URI']) ) {
@@ -995,50 +995,50 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		}
 
 		$query="UPDATE glpi_config SET url_base='".ereg_replace("/install/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
-		$db->query($query);
+		$DB->query($query);
 
 
-		echo "<h2>".$lang["install"][55]."</h2>";
-		echo "<p>".$lang["install"][57]."</p>";
-		echo "<p><ul><li> ".$lang["install"][58]."</li>";
-		echo "<li>".$lang["install"][59]."</li>";
-		echo "<li>".$lang["install"][60]."</li>";
-		echo "<li>".$lang["install"][61]."</li></ul></p>";
-		echo "<p>".$lang["install"][62]."</p>";
-		echo "<p>".$lang["install"][63]."</p>";
-		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$lang["install"][64]."</span></a></p>";
+		echo "<h2>".$LANG["install"][55]."</h2>";
+		echo "<p>".$LANG["install"][57]."</p>";
+		echo "<p><ul><li> ".$LANG["install"][58]."</li>";
+		echo "<li>".$LANG["install"][59]."</li>";
+		echo "<li>".$LANG["install"][60]."</li>";
+		echo "<li>".$LANG["install"][61]."</li></ul></p>";
+		echo "<p>".$LANG["install"][62]."</p>";
+		echo "<p>".$LANG["install"][63]."</p>";
+		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG["install"][64]."</span></a></p>";
 	}
 
 	//Create the file config_db.php
 	// an fill it with user connections info.
-	function create_conn_file($host,$user,$password,$dbname)
+	function create_conn_file($host,$user,$password,$DBname)
 	{
-		global $cfg_glpi;
-		$db_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". $password ."\"; \n var \$dbdefault	= \"". $dbname ."\"; \n } \n ?>";
-		$fp = fopen($cfg_glpi["config_dir"] . "/config_db.php",'wt');
+		global $CFG_GLPI;
+		$DB_str = "<?php \n class DB extends DBmysql { \n var \$DBhost	= \"". $host ."\"; \n var \$DBuser 	= \"". $user ."\"; \n var \$DBpassword= \"". $password ."\"; \n var \$DBdefault	= \"". $DBname ."\"; \n } \n ?>";
+		$fp = fopen($CFG_GLPI["config_dir"] . "/config_db.php",'wt');
 		if($fp) {
-			$fw = fwrite($fp,$db_str);
+			$fw = fwrite($fp,$DB_str);
 			fclose($fp);
 			return true;
 		}
 		else return false;
 	}
 
-	function update1($host,$user,$password,$dbname) {
+	function update1($host,$user,$password,$DBname) {
 
-		global $lang;	
-		if(create_conn_file($host,$user,$password,$dbname) && !empty($dbname)) {
+		global $LANG;	
+		if(create_conn_file($host,$user,$password,$DBname) && !empty($DBname)) {
 
 			$from_install = true;
 			include(GLPI_ROOT ."/install/update.php");
 		}
 		else {
-			echo $lang["install"][70];
-			echo "<h3>".$lang["install"][25]."</h3>";
+			echo $LANG["install"][70];
+			echo "<h3>".$LANG["install"][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"yes\" />";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\" />";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$lang["install"][25]."\" /></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][25]."\" /></p>";
 			echo "</form>";
 		}
 
@@ -1055,15 +1055,15 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 
 	// If this file exists, it is load, allow to set configdir/dumpdir elsewhere
-	if(file_exists($cfg_glpi["config_dir"] . "/config_path.php")) {
-		include($cfg_glpi["config_dir"] . "/config_path.php");
+	if(file_exists($CFG_GLPI["config_dir"] . "/config_path.php")) {
+		include($CFG_GLPI["config_dir"] . "/config_path.php");
 	}
 
 
 	loadLang($_SESSION["dict"]);
 	if(!isset($_POST["install"])) {
 		$_SESSION = array();
-		if(file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
+		if(file_exists($CFG_GLPI["config_dir"] . "/config_db.php")) {
 			include(GLPI_ROOT ."/index.php");
 			die();
 		}
@@ -1077,36 +1077,36 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		switch ($_POST["install"]) {
 
 			case "lang_select" :
-				header_html("".$lang["install"][92]."");
+				header_html("".$LANG["install"][92]."");
 			acceptLicence();
 			break;
 			case "Licence" :
-				header_html("".$lang["install"][81]."");
+				header_html("".$LANG["install"][81]."");
 			step0();
 			break;
 			case "Etape_0" :
-				header_html($lang["install"][77]." 0");
+				header_html($LANG["install"][77]." 0");
 			$_SESSION["Test_session_GLPI"] = 1;
 			step1($_POST["update"]);
 			break;
 			case "Etape_1" :
-				header_html($lang["install"][77]." 1");
+				header_html($LANG["install"][77]." 1");
 			step2($_POST["update"]);
 			break;
 			case "Etape_2" :
-				header_html($lang["install"][77]." 2");
+				header_html($LANG["install"][77]." 2");
 			step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["update"]);
 			break;
 			case "Etape_3" :
 
-				header_html($lang["install"][77]." 3");
+				header_html($LANG["install"][77]." 3");
 			if(empty($_POST["databasename"])) $_POST["databasename"] ="";
 			if(empty($_POST["newdatabasename"])) $_POST["newdatabasename"] ="";
 
 			step4($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"],$_POST["newdatabasename"]);
 			break;
 			case "Etape_4" :
-				header_html($lang["install"][77]." 4");
+				header_html($LANG["install"][77]." 4");
 			step7();
 			break;
 

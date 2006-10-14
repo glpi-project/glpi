@@ -43,49 +43,49 @@ if (!defined('GLPI_ROOT')){
 
 
 function moveUploadedDocument($filename,$old_file=''){
-	global $cfg_glpi,$lang;
+	global $CFG_GLPI,$LANG;
 
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 
-	if (is_dir($cfg_glpi["doc_dir"]."/_uploads")){
-		if (is_file($cfg_glpi["doc_dir"]."/_uploads/".$filename)){
+	if (is_dir($CFG_GLPI["doc_dir"]."/_uploads")){
+		if (is_file($CFG_GLPI["doc_dir"]."/_uploads/".$filename)){
 			$dir=isValidDoc($filename);
 			$new_path=getUploadFileValidLocationName($dir,$filename,0);
 			if (!empty($new_path)){
 
 				// Delete old file
-				if(!empty($old_file)&& is_file($cfg_glpi["doc_dir"]."/".$old_file)&& !is_dir($cfg_glpi["doc_dir"]."/".$old_file)) {
-					if (unlink($cfg_glpi["doc_dir"]."/".$old_file))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
+				if(!empty($old_file)&& is_file($CFG_GLPI["doc_dir"]."/".$old_file)&& !is_dir($CFG_GLPI["doc_dir"]."/".$old_file)) {
+					if (unlink($CFG_GLPI["doc_dir"]."/".$old_file))
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24].$CFG_GLPI["doc_dir"]."/".$old_file."<br>";
 					else 
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25].$CFG_GLPI["doc_dir"]."/".$old_file."<br>";
 				}
 
-				// Déplacement si droit
-				if (is_writable ($cfg_glpi["doc_dir"]."/_uploads/".$filename)){
-					if (rename($cfg_glpi["doc_dir"]."/_uploads/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][39]."<br>";
+				// Dï¿½lacement si droit
+				if (is_writable ($CFG_GLPI["doc_dir"]."/_uploads/".$filename)){
+					if (rename($CFG_GLPI["doc_dir"]."/_uploads/".$filename,$CFG_GLPI["doc_dir"]."/".$new_path)){
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][39]."<br>";
 						return $new_path;
 					}
-					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][40]."<br>";
+					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][40]."<br>";
 				} else { // Copi sinon
-					if (copy($cfg_glpi["doc_dir"]."/_uploads/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][41]."<br>";
+					if (copy($CFG_GLPI["doc_dir"]."/_uploads/".$filename,$CFG_GLPI["doc_dir"]."/".$new_path)){
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][41]."<br>";
 						return $new_path;
 					}
-					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][40]."<br>";
+					else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][40]."<br>";
 				}
 			}
 
-		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][38].": ".$cfg_glpi["doc_dir"]."/_uploads/".$filename."<br>";
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][38].": ".$CFG_GLPI["doc_dir"]."/_uploads/".$filename."<br>";
 
-	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][35]."<br>";
+	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][35]."<br>";
 
 	return "";	
 }
 
 function uploadDocument($FILEDESC,$old_file=''){
-	global $cfg_glpi,$lang;
+	global $CFG_GLPI,$LANG;
 
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 	// Is a file uploaded ?
@@ -101,19 +101,19 @@ function uploadDocument($FILEDESC,$old_file=''){
 
 		if (!empty($new_path)){
 			// Delete old file
-			if(!empty($old_file)&& is_file($cfg_glpi["doc_dir"]."/".$old_file)&& !is_dir($cfg_glpi["doc_dir"]."/".$old_file)) {
-				if (unlink($cfg_glpi["doc_dir"]."/".$old_file))
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
+			if(!empty($old_file)&& is_file($CFG_GLPI["doc_dir"]."/".$old_file)&& !is_dir($CFG_GLPI["doc_dir"]."/".$old_file)) {
+				if (unlink($CFG_GLPI["doc_dir"]."/".$old_file))
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24].$CFG_GLPI["doc_dir"]."/".$old_file."<br>";
 				else 
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25].$CFG_GLPI["doc_dir"]."/".$old_file."<br>";
 			}
 
 			// Move uploaded file
-			if (move_uploaded_file($FILEDESC['tmp_name'],$cfg_glpi["doc_dir"]."/".$new_path)) {
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][26]."<br>";
+			if (move_uploaded_file($FILEDESC['tmp_name'],$CFG_GLPI["doc_dir"]."/".$new_path)) {
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][26]."<br>";
 				return $new_path;
 			} else {
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][27]."<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][27]."<br>";
 			}
 		}
 
@@ -125,24 +125,24 @@ function uploadDocument($FILEDESC,$old_file=''){
 
 function getUploadFileValidLocationName($dir,$filename,$force){
 
-	global $cfg_glpi,$lang;
+	global $CFG_GLPI,$LANG;
 
 	if (!empty($dir)){
 		// Test existance repertoire DOCS
-		if (is_dir($cfg_glpi["doc_dir"])){
-			// Test existance sous-repertoire type dans DOCS -> sinon création
-			if (!is_dir($cfg_glpi["doc_dir"]."/".$dir)){
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][34]." ".$cfg_glpi["doc_dir"]."/".$dir."<br>";
-				@mkdir($cfg_glpi["doc_dir"]."/".$dir);
+		if (is_dir($CFG_GLPI["doc_dir"])){
+			// Test existance sous-repertoire type dans DOCS -> sinon crï¿½tion
+			if (!is_dir($CFG_GLPI["doc_dir"]."/".$dir)){
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][34]." ".$CFG_GLPI["doc_dir"]."/".$dir."<br>";
+				@mkdir($CFG_GLPI["doc_dir"]."/".$dir);
 			}
-			// Copy du fichier uploadé si répertoire existe
-			if (is_dir($cfg_glpi["doc_dir"]."/".$dir)){
+			// Copy du fichier uploadï¿½si rï¿½ertoire existe
+			if (is_dir($CFG_GLPI["doc_dir"]."/".$dir)){
 				if (!$force){
 					// Rename file if exists
 					$NB_CHAR_MORE=10;
 					$i=0;
 					$tmpfilename=$filename;
-					while ($i<$NB_CHAR_MORE&&is_file($cfg_glpi["doc_dir"]."/".$dir."/".$filename)){
+					while ($i<$NB_CHAR_MORE&&is_file($CFG_GLPI["doc_dir"]."/".$dir."/".$filename)){
 						$filename="_".$filename;
 						$i++;
 					}
@@ -150,70 +150,70 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 					if ($i==$NB_CHAR_MORE){
 						$i=0;
 						$filename=$tmpfilename;
-						while ($i<$NB_CHAR_MORE&&is_file($cfg_glpi["doc_dir"]."/".$dir."/".$filename)){
+						while ($i<$NB_CHAR_MORE&&is_file($CFG_GLPI["doc_dir"]."/".$dir."/".$filename)){
 							$filename="-".$filename;
 							$i++;
 						}
 						if ($i==$NB_CHAR_MORE){
 							$i=0;
 							$filename=$tmpfilename;
-							while ($i<$NB_CHAR_MORE&&is_file($cfg_glpi["doc_dir"]."/".$dir."/".$filename)){
+							while ($i<$NB_CHAR_MORE&&is_file($CFG_GLPI["doc_dir"]."/".$dir."/".$filename)){
 								$filename="0".$filename;
 								$i++;
 							}
 						}
 					}
 				}
-				if ($force||!is_file($cfg_glpi["doc_dir"]."/".$dir."/".$filename)){
+				if ($force||!is_file($CFG_GLPI["doc_dir"]."/".$dir."/".$filename)){
 					return $dir."/".$filename;
-				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][28]."<br>";
+				} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][28]."<br>";
 
-			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][29]." ".$cfg_glpi["doc_dir"]."/".$dir." ".$lang["document"][30]."<br>";
+			} else $_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][29]." ".$CFG_GLPI["doc_dir"]."/".$dir." ".$LANG["document"][30]."<br>";
 
-		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][31]." ".$cfg_glpi["doc_dir"]."<br>";
+		} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][31]." ".$CFG_GLPI["doc_dir"]."<br>";
 
-	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][32]."<br>";
+	} else $_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][32]."<br>";
 
 	return "";
 }
 
 
 function showDeviceDocument($instID,$search='') {
-	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("document","r"))	return false;
 	$canedit=haveRight("document","w");
 
 	$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/document.form.php\">";
+	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
 
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='3'>".$lang["document"][19].":</th></tr>";
-	echo "<tr><th>".$lang["common"][17]."</th>";
-	echo "<th>".$lang["common"][16]."</th>";
+	echo "<tr><th colspan='3'>".$LANG["document"][19].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][17]."</th>";
+	echo "<th>".$LANG["common"][16]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 	$ci=new CommonItem();
 	while ($i < $number) {
-		$type=$db->result($result, $i, "device_type");
+		$type=$DB->result($result, $i, "device_type");
 		if (($type!=TRACKING_TYPE&&haveTypeRight($type,"r"))||($type==TRACKING_TYPE&&haveTypeRight($type,"1"))){
 			$column="name";
 			if ($type==TRACKING_TYPE) $column="ID";
 
 			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".$column";
 
-			if ($result_linked=$db->query($query))
-				if ($db->numrows($result_linked)){
+			if ($result_linked=$DB->query($query))
+				if ($DB->numrows($result_linked)){
 					$ci->setType($type);
-					while ($data=$db->fetch_assoc($result_linked)){
+					while ($data=$DB->fetch_assoc($result_linked)){
 						$ID="";
-						if ($type==TRACKING_TYPE) $data["name"]=$lang["job"][38]." ".$data["ID"];
-						if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-						$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+						if ($type==TRACKING_TYPE) $data["name"]=$LANG["job"][38]." ".$data["ID"];
+						if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+						$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 
 						echo "<tr class='tab_bg_1'>";
@@ -222,7 +222,7 @@ function showDeviceDocument($instID,$search='') {
 						echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
 						echo "<td align='center' class='tab_bg_2'>";
 						if ($canedit){
-							echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a>";
+							echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
 						} else echo "&nbsp;";
 						echo "</td></tr>";
 					}
@@ -236,7 +236,7 @@ function showDeviceDocument($instID,$search='') {
 
 		echo "<input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",0,0,1,1,1,1);
-		echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		echo "</td></tr>";
@@ -248,26 +248,26 @@ function showDeviceDocument($instID,$search='') {
 }
 
 function addDeviceDocument($conID,$type,$ID,$template=0){
-	global $db;
+	global $DB;
 	if ($conID>0&&$ID>0&&$type>0){
 
 		$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type ,is_template) VALUES ('$conID','$ID','$type','$template');";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 	}
 }
 
 function deleteDeviceDocument($ID){
 
-	global $db;
+	global $DB;
 	$query="DELETE FROM glpi_doc_device WHERE ID= '$ID';";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 }
 
 
 // $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if ($device_type!=KNOWBASE_TYPE)
 		if (!haveRight("document","r")||!haveTypeRight($device_type,"r"))	return false;
@@ -279,35 +279,35 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
-	if ($withtemplate!=2) echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
+	if ($withtemplate!=2) echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='7'>".$lang["document"][21].":</th></tr>";
-	echo "<tr><th>".$lang["common"][16]."</th>";
-	echo "<th width='100px'>".$lang["document"][2]."</th>";
-	echo "<th>".$lang["document"][33]."</th>";
-	echo "<th>".$lang["document"][3]."</th>";
-	echo "<th>".$lang["document"][4]."</th>";
+	echo "<tr><th colspan='7'>".$LANG["document"][21].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][16]."</th>";
+	echo "<th width='100px'>".$LANG["document"][2]."</th>";
+	echo "<th>".$LANG["document"][33]."</th>";
+	echo "<th>".$LANG["document"][3]."</th>";
+	echo "<th>".$LANG["document"][4]."</th>";
 	if ($withtemplate<2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 
 	while ($i < $number) {
-		$cID=$db->result($result, $i, "FK_doc");
-		$assocID=$db->result($result, $i, "ID");
+		$cID=$DB->result($result, $i, "FK_doc");
+		$assocID=$DB->result($result, $i, "ID");
 
 		$con=new Document;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
 		if ($withtemplate!=3&&$canread){
-			echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/document.form.php?ID=$cID'><b>".$con->fields["name"];
-			if ($cfg_glpi["view_ID"]) echo " (".$con->fields["ID"].")";
+			echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$cID'><b>".$con->fields["name"];
+			if ($CFG_GLPI["view_ID"]) echo " (".$con->fields["ID"].")";
 			echo "</b></a></td>";
 		} else {
 			echo "<td align='center'><b>".$con->fields["name"];
-			if ($cfg_glpi["view_ID"]) echo " (".$con->fields["ID"].")";
+			if ($CFG_GLPI["view_ID"]) echo " (".$con->fields["ID"].")";
 			echo "</b></td>";
 		}
 
@@ -324,7 +324,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate<2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$lang["buttons"][6]."</b></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$LANG["buttons"][6]."</b></a>";
 			else echo "&nbsp;";
 			echo "</td>";
 		}
@@ -334,8 +334,8 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	if ($canedit){
 		$q="SELECT * FROM glpi_docs WHERE deleted='N'";
-		$result = $db->query($q);
-		$nb = $db->numrows($result);
+		$result = $DB->query($q);
+		$nb = $DB->numrows($result);
 
 		if ($withtemplate<2&&$nb>0){
 
@@ -343,13 +343,13 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "<td align='center' colspan='3'>";
 			echo "<input type='hidden' name='is_template' value='$withtemplate'>";
 			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
-			echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 			echo "<td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 			dropdown("glpi_docs","conID");
 			echo "</div></td><td align='center'>";
-			echo "<input type='submit' name='additem' value=\"".$lang["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 
 			echo "</tr>";
@@ -364,7 +364,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 }
 
 function getDocumentLink($filename,$params=""){
-	global $db,$cfg_glpi;	
+	global $DB,$CFG_GLPI;	
 	if (empty($filename))
 		return "&nbsp;";
 	$out="";
@@ -379,16 +379,16 @@ function getDocumentLink($filename,$params=""){
 
 		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
 
-		if ($result=$db->query($query))
-			if ($db->numrows($result)>0){
-				$icon=$db->result($result,0,'icon');
+		if ($result=$DB->query($query))
+			if ($DB->numrows($result)>0){
+				$icon=$DB->result($result,0,'icon');
 
-				$out="<a href=\"".$cfg_glpi["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$cfg_glpi["typedoc_icon_dir"]."/$icon\" ></a>";				
+				$out="<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$CFG_GLPI["typedoc_icon_dir"]."/$icon\" ></a>";				
 			}
 
 	}
 
-	$out.="<a href=\"".$cfg_glpi["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\"><b>$fileout</b></a>";	
+	$out.="<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\"><b>$fileout</b></a>";	
 
 
 	return $out;
@@ -399,11 +399,11 @@ function cleanFilenameFocument($name){
 }
 
 function showUploadedFilesDropdown($myname){
-	global $cfg_glpi,$lang;
+	global $CFG_GLPI,$LANG;
 
-	if (is_dir($cfg_glpi["doc_dir"]."/_uploads")){
+	if (is_dir($CFG_GLPI["doc_dir"]."/_uploads")){
 		$uploaded_files=array();
-		if ($handle = opendir($cfg_glpi["doc_dir"]."/_uploads")) {
+		if ($handle = opendir($CFG_GLPI["doc_dir"]."/_uploads")) {
 			while (false !== ($file = readdir($handle))) {
 				if ($file != "." && $file != "..") {
 					$dir=isValidDoc($file);
@@ -420,18 +420,18 @@ function showUploadedFilesDropdown($myname){
 			foreach ($uploaded_files as $key => $val)
 				echo "<option value=\"$val\">$val</option>";
 			echo "</select>";
-		} else echo $lang["document"][37];
-	} else echo $lang["document"][35];
+		} else echo $LANG["document"][37];
+	} else echo $LANG["document"][35];
 }
 
 function isValidDoc($filename){
-	global $db;
+	global $DB;
 	$splitter=split("\.",$filename);
 	$ext=end($splitter);
 
 	$query="SELECT * from glpi_type_docs where ext LIKE '$ext' AND upload='Y'";
-	if ($result = $db->query($query))
-		if ($db->numrows($result)>0)
+	if ($result = $DB->query($query))
+		if ($DB->numrows($result)>0)
 			return strtoupper($ext);
 
 	return "";

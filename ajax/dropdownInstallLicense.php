@@ -55,18 +55,18 @@ if ($_POST['sID']>0){
 	$query.= " order by serial ASC";
 
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
 
 	echo "<option value=\"0\">-----</option>";
 
 	if ($number==0&&!isGlobalSoftware($_POST["sID"])&&!isFreeSoftware($_POST["sID"]))
-		echo "<option value=\"-1\">--".$lang["software"][43]."--</option>";
+		echo "<option value=\"-1\">--".$LANG["software"][43]."--</option>";
 
 	$today=date("Y-m-d"); 
-	if ($db->numrows($result)) {
-		while ($data = $db->fetch_assoc($result)) {
+	if ($DB->numrows($result)) {
+		while ($data = $DB->fetch_assoc($result)) {
 
 			$output = $data['serial']." - ";
 
@@ -74,22 +74,22 @@ if ($_POST['sID']>0){
 			if ($data['expire']!=NULL&&$today>$data['expire']) $expirer=1; 
 
 			if ($data['expire']==NULL)
-				$output.= $lang["software"][26];
+				$output.= $LANG["software"][26];
 			else {
-				if ($expirer) $output.= $lang["software"][27];
-				else $output.= $lang["software"][25]."&nbsp;".$data['expire'];
+				if ($expirer) $output.= $LANG["software"][27];
+				else $output.= $LANG["software"][25]."&nbsp;".$data['expire'];
 			}
 
 			if ($data['buy']=='Y')
-				$output.=" - ".$lang["software"][35];
+				$output.=" - ".$LANG["software"][35];
 			else 
-				$output.=" - ".$lang["software"][37];
+				$output.=" - ".$LANG["software"][37];
 
 			if ($data['oem']=='Y'){
 				$comp=new Computer();
 				$comp->getFromDB($data["oem_computer"]);
-				$output.=" - ".$lang["software"][28]. " ".$comp->fields['name'];
-				if ($cfg_glpi["view_ID"]) $output.=" (".$comp->fields['ID'].")";
+				$output.=" - ".$LANG["software"][28]. " ".$comp->fields['name'];
+				if ($CFG_GLPI["view_ID"]) $output.=" (".$comp->fields['ID'].")";
 			}
 
 
@@ -100,7 +100,7 @@ if ($_POST['sID']>0){
 	} 
 	echo "</select>";
 
-	if ($_POST["massiveaction"]) echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][4]."\" >";
+	if ($_POST["massiveaction"]) echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][4]."\" >";
 }
 
 ?>

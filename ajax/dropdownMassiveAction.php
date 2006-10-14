@@ -51,21 +51,21 @@ if (isset($_POST["action"])){
 		case "delete":
 			case "purge":
 			case "restore":
-			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "install":
 			dropdownSoftwareToInstall("lID",0,1);
 		break;
 		case "connect":
 			dropdownConnect(COMPUTER_TYPE,$_POST["type"],"connect_item");
-		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "disconnect":
-			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "add_group":
 			dropdownValue("glpi_groups","group",0);
-		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "update":
 			$first_group=true;
@@ -107,7 +107,7 @@ if (isset($_POST["action"])){
 		echo "<script type='text/javascript' >\n";
 		echo "   new Form.Element.Observer('massiveaction_field', 1, \n";
 		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('show_massiveaction_field','".$cfg_glpi["root_doc"]."/ajax/dropdownMassiveActionField.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+		echo "      	new Ajax.Updater('show_massiveaction_field','".$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 		echo "            {Element.hide('search_spinner_massiveaction_field');}, \n";
 		echo "           onLoading:function(request)\n";
 		echo "            {Element.show('search_spinner_massiveaction_field');},\n";
@@ -115,7 +115,7 @@ if (isset($_POST["action"])){
 		echo "})})\n";
 		echo "</script>\n";
 
-		echo "<div id='search_spinner_massiveaction_field' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+		echo "<div id='search_spinner_massiveaction_field' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 		echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 
 		break;

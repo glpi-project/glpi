@@ -66,12 +66,12 @@ class Connection {
 	 * @return array of ID of connected items
 	 */
 	function getComputerContact ($type,$ID) {
-		global $db;
+		global $DB;
 		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$type')";
-		if ($result=$db->query($query)) {
-			if ($db->numrows($result)==0) return false;
+		if ($result=$DB->query($query)) {
+			if ($DB->numrows($result)==0) return false;
 			$ret=array();
-			while ($data = $db->fetch_array($result)){
+			while ($data = $DB->fetch_array($result)){
 				if (isset($data["end2"])) {
 					$ret[$data["ID"]] = $data["end2"];
 				}
@@ -91,11 +91,11 @@ class Connection {
 	 * @return boolean : computer found
 	 */
 	function getComputerData($ID) {
-		global $db;
+		global $DB;
 		$query = "SELECT * FROM glpi_computers WHERE (ID = '$ID')";
-		if ($result=$db->query($query)) {
-			if ($db->numrows($result)==0) return false;
-			$data = $db->fetch_array($result);
+		if ($result=$DB->query($query)) {
+			if ($DB->numrows($result)==0) return false;
+			$data = $DB->fetch_array($result);
 			$this->device_name = $data["name"];
 			$this->deleted = $data["deleted"];
 			$this->device_ID = $ID;
@@ -113,10 +113,10 @@ class Connection {
 	 */
 	function deleteFromDB($ID) {
 
-		global $db;
+		global $DB;
 
 		$query = "DELETE from glpi_connect_wire WHERE (ID = '$ID')";
-		if ($result = $db->query($query)) {
+		if ($result = $DB->query($query)) {
 			return true;
 		} else {
 			return false;
@@ -131,12 +131,12 @@ class Connection {
 	 * @return integer : ID of added connection
 	 */
 	function addToDB() {
-		global $db;
+		global $DB;
 
 		// Build query
 		$query = "INSERT INTO glpi_connect_wire (end1,end2,type) VALUES ('$this->end1','$this->end2','$this->type')";
-		$result=$db->query($query);
-		return $db->insert_id();
+		$result=$DB->query($query);
+		return $DB->insert_id();
 	}
 
 }

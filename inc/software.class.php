@@ -48,19 +48,19 @@ class Software  extends CommonDBTM {
 	}
 
 	function defineOnglets($withtemplate){
-		global $lang,$cfg_glpi;
-		$ong[1]= $lang["title"][26];
+		global $LANG,$CFG_GLPI;
+		$ong[1]= $LANG["title"][26];
 		if(empty($withtemplate)){
-			$ong[2]= $lang["software"][19];
+			$ong[2]= $LANG["software"][19];
 		}
-		$ong[4] = $lang["Menu"][26];
-		$ong[5] = $lang["title"][25];
+		$ong[4] = $LANG["Menu"][26];
+		$ong[5] = $LANG["title"][25];
 
 		if(empty($withtemplate)){
-			$ong[6]=$lang["title"][28];
-			$ong[7]=$lang["title"][34];
-			$ong[10]=$lang["title"][37];
-			$ong[12]=$lang["title"][38];
+			$ong[6]=$LANG["title"][28];
+			$ong[7]=$LANG["title"][34];
+			$ong[10]=$LANG["title"][37];
+			$ong[12]=$LANG["title"][38];
 
 		}	
 		return $ong;
@@ -89,7 +89,7 @@ class Software  extends CommonDBTM {
 		return $input;
 	}
 	function postAddItem($newID,$input) {
-		global $db;
+		global $DB;
 		// ADD Infocoms
 		$ic= new Infocom();
 		if ($ic->getFromDBforDevice(SOFTWARE_TYPE,$input["_oldID"])){
@@ -101,19 +101,19 @@ class Software  extends CommonDBTM {
 
 		// ADD Contract				
 		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".SOFTWARE_TYPE."';";
-		$result=$db->query($query);
-		if ($db->numrows($result)>0){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
 
-			while ($data=$db->fetch_array($result))
+			while ($data=$DB->fetch_array($result))
 				addDeviceContract($data["FK_contract"],SOFTWARE_TYPE,$newID);
 		}
 
 		// ADD Documents			
 		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".SOFTWARE_TYPE."';";
-		$result=$db->query($query);
-		if ($db->numrows($result)>0){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
 
-			while ($data=$db->fetch_array($result))
+			while ($data=$DB->fetch_array($result))
 				addDeviceDocument($data["FK_doc"],SOFTWARE_TYPE,$newID);
 		}
 
@@ -121,31 +121,31 @@ class Software  extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 
 		$job =new Job();
 		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".SOFTWARE_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
-		if ($db->numrows($result))
-			while ($data=$db->fetch_array($result)) {
-				if ($cfg_glpi["keep_tracking_on_delete"]==1){
+		if ($DB->numrows($result))
+			while ($data=$DB->fetch_array($result)) {
+				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
 					$query = "UPDATE glpi_tracking SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
-					$db->query($query);
+					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".SOFTWARE_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 		$query="select * from glpi_reservation_item where (device_type='".SOFTWARE_TYPE."' and id_device='$ID')";
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)>0){
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
-				$rr->delete(array("ID"=>$db->result($result,0,"ID")));
+				$rr->delete(array("ID"=>$DB->result($result,0,"ID")));
 			}
 		}
 
@@ -153,11 +153,11 @@ class Software  extends CommonDBTM {
 		// Delete all Licenses
 		$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = '$ID')";
 
-		if ($result2 = $db->query($query2)) {
-			if ($db->numrows($result2)){
+		if ($result2 = $DB->query($query2)) {
+			if ($DB->numrows($result2)){
 				$lic = new License;
 
-				while ($data= $db->fetch_array($result2)) {
+				while ($data= $DB->fetch_array($result2)) {
 					$lic->delete(array("ID"=>$data["ID"]));
 				}
 			}
@@ -166,16 +166,16 @@ class Software  extends CommonDBTM {
 
 	function title(){
 
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/logiciels.png\" alt='".$lang["software"][0]."' title='".$lang["software"][0]."'></td>\n";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/logiciels.png\" alt='".$LANG["software"][0]."' title='".$LANG["software"][0]."'></td>\n";
 		if (haveRight("software","w")){
-			echo "<td><a class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$lang["software"][0]."</strong></a>\n";
+			echo "<td><a class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$LANG["software"][0]."</strong></a>\n";
 			echo "</td>";
-			echo "<td><a class='icon_consol'  href='".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+			echo "<td><a class='icon_consol'  href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
 		} else 
-			echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][4]."</b></span></td>";
+			echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][4]."</b></span></td>";
 		echo "</tr></table></div>";
 
 	}
@@ -183,7 +183,7 @@ class Software  extends CommonDBTM {
 	function showForm ($target,$ID,$search_software="",$withtemplate='') {
 		// Show Software or blank form
 
-		global $cfg_glpi,$lang;
+		global $CFG_GLPI,$LANG;
 
 		if (!haveRight("software","r")) return false;
 
@@ -198,14 +198,14 @@ class Software  extends CommonDBTM {
 		if($sw_spotted) {
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
-				$datestring = $lang["computers"][14].": ";
+				$datestring = $LANG["computers"][14].": ";
 				$date = convDateTime(date("Y-m-d H:i:s"));
 			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
 				$template = "newtemplate";
-				$datestring = $lang["computers"][14].": ";
+				$datestring = $LANG["computers"][14].": ";
 				$date = convDateTime(date("Y-m-d H:i:s"));
 			} else {
-				$datestring = $lang["common"][26]." : ";
+				$datestring = $LANG["common"][26]." : ";
 				$date = convDateTime($this->fields["date_mod"]);
 				$template = false;
 			}
@@ -220,67 +220,67 @@ class Software  extends CommonDBTM {
 
 			echo "<tr><th align='center' colspan='2' >";
 			if(!$template) {
-				echo $lang["software"][41].": ".$this->fields["ID"];
+				echo $LANG["software"][41].": ".$this->fields["ID"];
 			}elseif (strcmp($template,"newcomp") === 0) {
-				echo $lang["software"][42].": ".$this->fields["tplname"];
+				echo $LANG["software"][42].": ".$this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 			}elseif (strcmp($template,"newtemplate") === 0) {
-				echo $lang["common"][6]."&nbsp;: ";
+				echo $LANG["common"][6]."&nbsp;: ";
 				autocompletionTextField("tplname","glpi_software","tplname",$this->fields["tplname"],20);
 			}
 
 			echo "</th><th colspan='2' align='center'>".$datestring.$date;
 			if (!$template&&!empty($this->fields['tplname']))
-				echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$this->fields['tplname'].")";
+				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_software","name",$this->fields["name"],25);
 			echo "</td>";
 
-			echo "<td>".$lang["software"][5].":		</td>";
+			echo "<td>".$LANG["software"][5].":		</td>";
 			echo "<td>";
 			autocompletionTextField("version","glpi_software","version",$this->fields["version"],20);
 			echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><td>".$lang["software"][3].": 	</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["software"][3].": 	</td><td>";
 			dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);
 			echo "</td>";
 
-			echo "<td>".$lang["common"][5].": 	</td><td>";
+			echo "<td>".$LANG["common"][5].": 	</td><td>";
 			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td >".$lang["common"][34].": 	</td>";
+			echo "<td >".$LANG["common"][34].": 	</td>";
 			echo "<td >";
 			dropdownAllUsers("FK_users", $this->fields["FK_users"]);
 			echo "</td>";
 
 
-			echo "<td>".$lang["common"][35].":</td><td>";
+			echo "<td>".$LANG["common"][35].":</td><td>";
 			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td>";
 			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
 			echo "</td>";
 
-			echo "<td>".$lang["common"][15].": 	</td><td colspan='2'>";
+			echo "<td>".$LANG["common"][15].": 	</td><td colspan='2'>";
 			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 			echo "</td></tr>";
 
 			// UPDATE
-			echo "<tr class='tab_bg_1'><td>".$lang["software"][29].":</td><td>";
-			echo "<select name='is_update'><option value='Y' ".($ID&&$this->fields['is_update']=='Y'?"selected":"").">".$lang["choice"][1]."</option><option value='N' ".(!$ID||$this->fields['is_update']=='N'?"selected":"").">".$lang["choice"][0]."</option></select>";
-			echo "&nbsp;".$lang["pager"][2]."&nbsp;";
+			echo "<tr class='tab_bg_1'><td>".$LANG["software"][29].":</td><td>";
+			echo "<select name='is_update'><option value='Y' ".($ID&&$this->fields['is_update']=='Y'?"selected":"").">".$LANG["choice"][1]."</option><option value='N' ".(!$ID||$this->fields['is_update']=='N'?"selected":"").">".$LANG["choice"][0]."</option></select>";
+			echo "&nbsp;".$LANG["pager"][2]."&nbsp;";
 			dropdownValue("glpi_software","update_software",$this->fields["update_software"]);
 			echo "</td>";
 
 			if (!$template){
-				echo "<td>".$lang["reservation"][24].":</td><td><b>";
+				echo "<td>".$LANG["reservation"][24].":</td><td><b>";
 				showReservationForm(SOFTWARE_TYPE,$ID);
 				echo "</b></td></tr>";
 			} else 
@@ -289,7 +289,7 @@ class Software  extends CommonDBTM {
 
 
 			echo "<tr class='tab_bg_1'><td valign='top'>";
-			echo $lang["common"][25].":	</td>";
+			echo $LANG["common"][25].":	</td>";
 			echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 			echo "</td></tr>";
 
@@ -301,12 +301,12 @@ class Software  extends CommonDBTM {
 					if (empty($ID)||$withtemplate==2){
 						echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 						echo "<input type='hidden' name='ID' value=$ID>";
-						echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+						echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 						echo "</td>\n";
 					} else {
 						echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 						echo "<input type='hidden' name='ID' value=$ID>";
-						echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+						echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 						echo "</td>\n";
 					}
 				} else {
@@ -314,15 +314,15 @@ class Software  extends CommonDBTM {
 					echo "<td class='tab_bg_2'>&nbsp;</td>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
 					echo "<div align='center'>";
 					if ($this->fields["deleted"]=='N')
-						echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
-						echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>";
 					}
 					echo "</div>";
 					echo "</td>";
@@ -335,7 +335,7 @@ class Software  extends CommonDBTM {
 			return true;	
 		}
 		else {
-			echo "<div align='center'><b>".$lang["software"][22]."</b></div>";
+			echo "<div align='center'><b>".$LANG["software"][22]."</b></div>";
 			return false;
 		}
 
@@ -344,10 +344,10 @@ class Software  extends CommonDBTM {
 
 	// SPECIFIC FUNCTIONS
 	function countInstallations() {
-		global $db;
+		global $DB;
 		$query = "SELECT * FROM glpi_inst_software WHERE (sID = ".$this->fields["ID"].")";
-		if ($result = $db->query($query)) {
-			$number = $db->numrows($result);
+		if ($result = $DB->query($query)) {
+			$number = $DB->numrows($result);
 			return $number;
 		} else {
 			return false;
@@ -403,14 +403,14 @@ class License  extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 
-		global $db;
+		global $DB;
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".LICENSE_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 		// Delete Installations
 		$query2 = "DELETE FROM glpi_inst_software WHERE (license = '$ID')";
-		$db->query($query2);
+		$DB->query($query2);
 	}
 
 

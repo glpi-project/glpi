@@ -49,7 +49,7 @@ if (isset($_POST["add"]))
 {
 	checkRight("networking","w");
 	$newID=$netdevice->add($_POST);
-	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." :  ".$_POST["name"].".");
+	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." :  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
@@ -59,31 +59,31 @@ else if (isset($tab["delete"]))
 		$netdevice->delete($tab,1);
 	else $netdevice->delete($tab);
 
-	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$lang["log"][22]);
+	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$LANG["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
+		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
-		glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
+		glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["restore"]))
 {
 	checkRight("networking","w");
 	$netdevice->restore($_POST);
-	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
+	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
 }
 else if (isset($tab["purge"]))
 {
 	checkRight("networking","w");
 	$netdevice->delete($tab,1);
-	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/front/networking.php");
+	logEvent($tab["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["update"]))
 {
 	checkRight("networking","w");
 	$netdevice->update($_POST);
-	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
@@ -96,7 +96,7 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][6],$_SERVER["PHP_SELF"]);
 
 	if ($netdevice->getFromDB($tab["ID"]))
 		$netdevice->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
@@ -107,7 +107,7 @@ else
 			if (!empty($tab["ID"])){
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
-						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 						showContractAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 						break;
 					case 5 :
@@ -143,7 +143,7 @@ else
 				case -1:
 					showPortsAdd($tab["ID"],NETWORKING_TYPE);
 					showPorts($tab["ID"],NETWORKING_TYPE);
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
 					showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 					showDocumentAssociated(NETWORKING_TYPE,$tab["ID"],$tab["withtemplate"]);
 					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$tab["ID"]);
@@ -152,7 +152,7 @@ else
 					display_plugin_action(NETWORKING_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 					break;
 				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$tab["ID"]);
 					showContractAssociated(NETWORKING_TYPE,$tab["ID"]);
 					break;
 				case 5 :

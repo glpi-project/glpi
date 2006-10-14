@@ -53,28 +53,28 @@ class ConsumableType extends CommonDBTM {
 	}
 
 	function cleanDBonPurge($ID) {
-		global $db;
+		global $DB;
 		// Delete cartridconsumablesges
 		$query = "DELETE FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$ID')";
-		$db->query($query);
+		$DB->query($query);
 	}
 
 	function post_getEmpty () {
-		global $cfg_glpi;
-		$this->fields["alarm"]=$cfg_glpi["cartridges_alarm"];
+		global $CFG_GLPI;
+		$this->fields["alarm"]=$CFG_GLPI["cartridges_alarm"];
 	}
 
 	function defineOnglets($withtemplate){
-		global $lang;
-		$ong[1]=$lang["title"][26];
+		global $LANG;
+		$ong[1]=$LANG["title"][26];
 		if (haveRight("contract_infocom","r"))	
-			$ong[4]=$lang["Menu"][26];
+			$ong[4]=$LANG["Menu"][26];
 		if (haveRight("document","r"))	
-			$ong[5]=$lang["title"][25];
+			$ong[5]=$LANG["title"][25];
 		if (haveRight("link","r"))	
-			$ong[7]=$lang["title"][34];
+			$ong[7]=$LANG["title"][34];
 		if (haveRight("notes","r"))
-			$ong[10]=$lang["title"][37];
+			$ong[10]=$LANG["title"][37];
 		return $ong;
 	}
 
@@ -90,14 +90,14 @@ class ConsumableType extends CommonDBTM {
 	 **/
 	function title(){
 
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<a href='consumable.php'><img src=\"".$cfg_glpi["root_doc"]."/pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></a></td>";
+		echo "<a href='consumable.php'><img src=\"".$CFG_GLPI["root_doc"]."/pics/consommables.png\" alt='".$LANG["consumables"][6]."' title='".$LANG["consumables"][6]."'></a></td>";
 		if (haveRight("consumable","w")){
-			echo "<td><a  class='icon_consol' href=\"consumable.form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][32]."</b></span></td>";
-		echo "<td><a class='icon_consol' href='consumable.php?synthese=yes'>".$lang["state"][11]."</a></td>";
+			echo "<td><a  class='icon_consol' href=\"consumable.form.php\"><b>".$LANG["consumables"][6]."</b></a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][32]."</b></span></td>";
+		echo "<td><a class='icon_consol' href='consumable.php?synthese=yes'>".$LANG["state"][11]."</a></td>";
 		echo "</tr></table></div>";
 	}
 
@@ -118,7 +118,7 @@ class ConsumableType extends CommonDBTM {
 	function showForm ($target,$ID) {
 		// Show ConsumableType or blank form
 
-		global $cfg_glpi,$lang;
+		global $CFG_GLPI,$LANG;
 
 		if (!haveRight("consumable","r")) return false;
 
@@ -138,46 +138,46 @@ class ConsumableType extends CommonDBTM {
 			echo "<table class='tab_cadre_fixe'>\n";
 			echo "<tr><th colspan='3'><b>\n";
 			if (!$ID) {
-				echo $lang["consumables"][6].":";
+				echo $LANG["consumables"][6].":";
 			} else {
-				echo $lang["consumables"][12]." ID $ID:";
+				echo $LANG["consumables"][12]." ID $ID:";
 			}		
 			echo "</b></th></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>\n";
 			echo "<td colspan='2'>";
 			autocompletionTextField("name","glpi_consumables_type","name",$this->fields["name"],25);	
 			echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["consumables"][2].":		</td>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][2].":		</td>\n";
 			echo "<td colspan='2'>";
 			autocompletionTextField("ref","glpi_consumables_type","ref",$this->fields["ref"],25);	
 			echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][17].": 	</td><td colspan='2'>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][17].": 	</td><td colspan='2'>\n";
 			dropdownValue("glpi_dropdown_consumable_type","type",$this->fields["type"]);
 			echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
 			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
 			echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
 			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
 			echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["consumables"][36].": 	</td><td colspan='2'>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][36].": 	</td><td colspan='2'>\n";
 			dropdownValue("glpi_dropdown_locations","location",$this->fields["location"]);
 			echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["consumables"][38].":</td><td colspan='2'><select name='alarm'>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][38].":</td><td colspan='2'><select name='alarm'>\n";
 			for ($i=-1;$i<=100;$i++)
 				echo "<option value='$i' ".($i==$this->fields["alarm"]?" selected ":"").">$i</option>";
 			echo "</select></td></tr>\n";
 
 
 			echo "<tr class='tab_bg_1'><td valign='top'>\n";
-			echo $lang["common"][25].":	</td>";
+			echo $LANG["common"][25].":	</td>";
 			echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 			echo "</td></tr>\n";
 
@@ -186,7 +186,7 @@ class ConsumableType extends CommonDBTM {
 
 					echo "<tr>\n";
 					echo "<td class='tab_bg_2' valign='top' colspan='3'>\n";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>\n";
 
@@ -197,16 +197,16 @@ class ConsumableType extends CommonDBTM {
 					echo "<td class='tab_bg_2'></td>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top'>\n";
 					echo "<div align='center'>";
 					if ($this->fields["deleted"]=='N')
-						echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
-						echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
 
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>\n";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>\n";
 					}
 					echo "</div>";
 					echo "</td>";
@@ -218,7 +218,7 @@ class ConsumableType extends CommonDBTM {
 
 		} else {
 
-			echo "<div align='center'><b>".$lang["consumables"][7]."</b></div>";
+			echo "<div align='center'><b>".$LANG["consumables"][7]."</b></div>";
 			return false;
 		}
 		return true;
@@ -241,9 +241,9 @@ class Consumable extends CommonDBTM {
 
 
 	function cleanDBonPurge($ID) {
-		global $db;
+		global $DB;
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CONSUMABLE_ITEM_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 	}
 
 	function prepareInputForAdd($input) {
@@ -264,10 +264,10 @@ class Consumable extends CommonDBTM {
 	}
 
 	function restore($input){
-		global $db;
+		global $DB;
 		$query = "UPDATE glpi_consumables SET date_out = NULL WHERE ID='".$input["ID"]."'";
 
-		if ($result = $db->query($query)) {
+		if ($result = $DB->query($query)) {
 			return true;
 		} else {
 			return false;
@@ -287,10 +287,10 @@ class Consumable extends CommonDBTM {
 	 **/
 	function out($ID,$id_user=0) {
 
-		global $db;
+		global $DB;
 		$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."', id_user='$id_user' WHERE ID='$ID'";
 
-		if ($result = $db->query($query)) {
+		if ($result = $DB->query($query)) {
 			return true;
 		} else {
 			return false;

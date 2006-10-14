@@ -44,7 +44,7 @@ header_nocache();
 
 checkTypeRight($_POST["device_type"],"w");
 
-commonHeader($lang["title"][42],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][42],$_SERVER["PHP_SELF"]);
 
 
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
@@ -67,7 +67,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					$query="DELETE FROM glpi_connect_wire WHERE type='".$_POST["device_type"]."' AND end1 = '$key'";
-					$db->query($query);
+					$DB->query($query);
 				}
 			}
 		break;
@@ -130,13 +130,13 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		break;
 	}
 
-	echo "<div align='center'><strong>".$lang["common"][23]."<br>";
-	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$lang["buttons"][13]."</a>";
+	echo "<div align='center'><strong>".$LANG["common"][23]."<br>";
+	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
 	echo "</strong></div>";
 
 
 
-} else echo $lang["common"][24];
+} else echo $LANG["common"][24];
 
 commonFooter();
 

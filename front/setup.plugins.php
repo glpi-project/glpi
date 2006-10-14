@@ -47,7 +47,7 @@ $NEEDED_ITEMS=array("setup");
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
 
 if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"])) {
 	foreach ($plugin_hooks["config_page"] as $plug => $page){
@@ -58,20 +58,20 @@ if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"]
 }
 
 echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/configuration.png\" alt='".$lang["Menu"][10]."' title='".$lang["Menu"][10]."'></td>";
+echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/configuration.png\" alt='".$LANG["Menu"][10]."' title='".$LANG["Menu"][10]."'></td>";
 
 // ligne a modifier en fonction de la modification des fichiers de langues 
-echo "<td><span class='icon_sous_nav'><b>".$lang["setup"][700]."</b></span></td>";
+echo "<td><span class='icon_sous_nav'><b>".$LANG["setup"][700]."</b></span></td>";
 echo "</tr></table></div>";
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 
 // ligne a modifier en fonction de la modification des fichiers de langues
-echo "<tr><th colspan='2'>".$lang["setup"][701]."</th></tr>";
+echo "<tr><th colspan='2'>".$LANG["setup"][701]."</th></tr>";
 
 foreach ($names as $key => $val) {
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href='".$cfg_glpi["root_doc"]."/plugins/$key/".$pages[$key]."'><b>".$val["name"]."</b></a></td><td align='center'>#".$val["version"]."</td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key/".$pages[$key]."'><b>".$val["name"]."</b></a></td><td align='center'>#".$val["version"]."</td></tr>";
 }
 
 echo "</table></div>";

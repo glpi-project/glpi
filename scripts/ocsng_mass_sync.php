@@ -64,11 +64,11 @@ $query_ocs = "SELECT *
 FROM hardware 
 WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0
 $WHERE";
-$result_ocs = $dbocs->query($query_ocs);
-if ($dbocs->numrows($result_ocs)>0){
+$result_ocs = $DBocs->query($query_ocs);
+if ($DBocs->numrows($result_ocs)>0){
 
 	$hardware=array();
-	while($data=$dbocs->fetch_array($result_ocs)){
+	while($data=$DBocs->fetch_array($result_ocs)){
 		$hardware[$data["ID"]]["date"]=$data["LASTDATE"];
 		$hardware[$data["ID"]]["name"]=addslashes($data["NAME"]);
 	}
@@ -79,9 +79,9 @@ if ($dbocs->numrows($result_ocs)>0){
 		FROM glpi_ocs_link 
 		$WHERE
 		ORDER BY last_update";
-	$result_glpi = $db->query($query_glpi);
+	$result_glpi = $DB->query($query_glpi);
 	$done=0;
-	while($data=$db->fetch_assoc($result_glpi)){
+	while($data=$DB->fetch_assoc($result_glpi)){
 		$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 
 		if (isset($hardware[$data["ocs_id"]])){ 

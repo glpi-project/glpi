@@ -59,7 +59,7 @@ function haveRight($module,$right){
  * @return String: name of the object type in the current language
  */
 function haveTypeRight ($type,$right){
-	global $lang;
+	global $LANG;
 
 	switch ($type){
 		case GENERAL_TYPE :
@@ -132,17 +132,17 @@ function haveTypeRight ($type,$right){
 
 
 function displayRightError(){
-	global $lang,$cfg_glpi,$HEADER_LOADED;
+	global $LANG,$CFG_GLPI,$HEADER_LOADED;
 	if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($LANG["login"][5],$_SERVER["PHP_SELF"]);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($LANG["login"][5],$_SERVER["PHP_SELF"]);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($LANG["login"][5],$_SERVER["PHP_SELF"]);
 		}
-		echo "<div align='center'><br><br><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-		echo "<b>".$lang["login"][5]."</b></div>";
+		echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+		echo "<b>".$LANG["login"][5]."</b></div>";
 		nullFooter();
 		exit();
 }
@@ -150,12 +150,12 @@ function displayRightError(){
 
 
 function checkRight($module,$right) {
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
 	if (!haveRight($module,$right)){
 		// Gestion timeout session
 		if (!isset($_SESSION["glpiID"])){
-			glpi_header($cfg_glpi["root_doc"]."/index.php");
+			glpi_header($CFG_GLPI["root_doc"]."/index.php");
 			exit();
 		}
 
@@ -164,7 +164,7 @@ function checkRight($module,$right) {
 }
 
 function checkSeveralRightsOr($modules) {
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
 	$valid=false;
 	if (count($modules))
@@ -174,7 +174,7 @@ function checkSeveralRightsOr($modules) {
 	if (!$valid){
 		// Gestion timeout session
 		if (!isset($_SESSION["glpiID"])){
-			glpi_header($cfg_glpi["root_doc"]."/index.php");
+			glpi_header($CFG_GLPI["root_doc"]."/index.php");
 			exit();
 		}
 
@@ -183,7 +183,7 @@ function checkSeveralRightsOr($modules) {
 }
 
 function checkSeveralRightsAnd($modules) {
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
 	$valid=true;
 	if (count($modules))
@@ -193,7 +193,7 @@ function checkSeveralRightsAnd($modules) {
 	if (!$valid){
 		// Gestion timeout session
 		if (!isset($_SESSION["glpiID"])){
-			glpi_header($cfg_glpi["root_doc"]."/index.php");
+			glpi_header($CFG_GLPI["root_doc"]."/index.php");
 			exit();
 		}
 		displayRightError();
@@ -201,12 +201,12 @@ function checkSeveralRightsAnd($modules) {
 }
 
 function checkTypeRight($type,$right) {
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
 	if (!haveTypeRight($type,$right)){
 		// Gestion timeout session
 		if (!isset($_SESSION["glpiID"])){
-			glpi_header($cfg_glpi["root_doc"]."/index.php");
+			glpi_header($CFG_GLPI["root_doc"]."/index.php");
 			exit();
 		}
 		displayRightError();
@@ -215,12 +215,12 @@ function checkTypeRight($type,$right) {
 
 function checkCentralAccess(){
 
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
 	if (!isset($_SESSION["glpiprofile"])||$_SESSION["glpiprofile"]["interface"]!="central"){
 		// Gestion timeout session
 		if (!isset($_SESSION["glpiID"])){
-			glpi_header($cfg_glpi["root_doc"]."/index.php");
+			glpi_header($CFG_GLPI["root_doc"]."/index.php");
 			exit();
 		}
 		displayRightError();
@@ -229,12 +229,12 @@ function checkCentralAccess(){
 
 function checkHelpdeskAccess(){
 
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
 	if (!isset($_SESSION["glpiprofile"])||$_SESSION["glpiprofile"]["interface"]!="helpdesk"){
 		// Gestion timeout session
 		if (!isset($_SESSION["glpiID"])){
-			glpi_header($cfg_glpi["root_doc"]."/index.php");
+			glpi_header($CFG_GLPI["root_doc"]."/index.php");
 			exit();
 		}
 		displayRightError();
@@ -243,12 +243,12 @@ function checkHelpdeskAccess(){
 
 function checkLoginUser(){
 
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
 	if (!isset($_SESSION["glpiname"])){
 		// Gestion timeout session
 		if (!isset($_SESSION["glpiID"])){
-			glpi_header($cfg_glpi["root_doc"]."/index.php");
+			glpi_header($CFG_GLPI["root_doc"]."/index.php");
 			exit();
 		}
 		displayRightError();
@@ -256,9 +256,9 @@ function checkLoginUser(){
 }
 
 function checkAccessToPublicFaq(){
-	global $cfg_glpi;
+	global $CFG_GLPI;
 
-	if ($cfg_glpi["public_faq"] == 0 && !haveRight("faq","r")){
+	if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")){
 		displayRightError();
 	}
 
@@ -276,25 +276,25 @@ function checkAccessToPublicFaq(){
  */
 function loadLanguage() {
 
-	global $lang,$cfg_glpi;
+	global $LANG,$CFG_GLPI;
 	$file="";
 
 	if(empty($_SESSION["glpilanguage"])) {
-		if (isset($cfg_glpi["languages"][$cfg_glpi["default_language"]][1]))
-			$file= "/locales/".$cfg_glpi["languages"][$cfg_glpi["default_language"]][1];
+		if (isset($CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1]))
+			$file= "/locales/".$CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1];
 	} else {
-		if (isset($cfg_glpi["languages"][$_SESSION["glpilanguage"]][1]))
-			$file = "/locales/".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][1];
+		if (isset($CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1]))
+			$file = "/locales/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1];
 	}
 	if (empty($file)||!is_file(GLPI_ROOT . $file))
 		$file="/locales/en_GB.php";
 	include (GLPI_ROOT . $file);
 
 	// Debug display lang element with item
-	if ($cfg_glpi["debug"]&&$cfg_glpi["debug_lang"]){
-		foreach ($lang as $module => $tab)
+	if ($CFG_GLPI["debug"]&&$CFG_GLPI["debug_lang"]){
+		foreach ($LANG as $module => $tab)
 			foreach ($tab as $num => $val){
-				$lang[$module][$num].="<span style='font-size:12px; color:red;'>$module/$num</span>";
+				$LANG[$module][$num].="<span style='font-size:12px; color:red;'>$module/$num</span>";
 
 			}
 	}

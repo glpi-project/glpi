@@ -71,14 +71,14 @@ class Identification
 	 *
 	 */
 	function userExists($name){
-		global $db;
+		global $DB;
 
 		$query = "SELECT * from glpi_users WHERE name='$name'";
-		$result=$db->query($query);
-		if ($db->numrows($result)==0) return 0;
+		$result=$DB->query($query);
+		if ($DB->numrows($result)==0) return 0;
 		else {
-			$pwd=$db->result($result,0,"password");
-			$pwdmd5=$db->result($result,0,"password_md5");
+			$pwd=$DB->result($result,0,"password");
+			$pwdmd5=$DB->result($result,0,"password_md5");
 			if (empty($pwd)&&empty($pwdmd5))
 				return 2;
 			else return 1;
@@ -130,7 +130,7 @@ class Identification
 	 */
 	function connection_ldap($host,$dn,$login,$pass,$condition,$port)
 	{
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		// we prevent some delay...
 		if (empty($host)) {
@@ -138,21 +138,21 @@ class Identification
 		}
 		error_reporting(16);
 
-		//$dn = $cfg_glpi["ldap_login"] ."=" . $login . "," . $basedn;
+		//$dn = $CFG_GLPI["ldap_login"] ."=" . $login . "," . $basedn;
 		$rv = false;
 		if ( $ds=ldap_connect($host,$port) )
 		{
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-			if ($cfg_glpi["ldap_use_tls"]){
+			if ($CFG_GLPI["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
 					$this->err .= ldap_error($ds)."<br>";
 					return false;
 				} 
 			}
 			if (ldap_bind($ds, $dn, $pass) ) {
-				$filter="(".$cfg_glpi["ldap_login"]."=$login)";
+				$filter="(".$CFG_GLPI["ldap_login"]."=$login)";
 				if ($condition!="") $filter="(& $filter $condition)";
 				$thedn=explode(",", $dn);
 				unset($thedn[0]);
@@ -205,14 +205,14 @@ class Identification
 	 */
 	function ldap_get_dn($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
 	{
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		// we prevent some delay...
 		if (empty($host)) {
 			return false;
 		}
 
-		$ldap_login_attr = $cfg_glpi["ldap_login"];
+		$ldap_login_attr = $CFG_GLPI["ldap_login"];
 		$ldap_dn ="";
 		error_reporting(16);
 
@@ -227,7 +227,7 @@ class Identification
 
 		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-		if ($cfg_glpi["ldap_use_tls"]){
+		if ($CFG_GLPI["ldap_use_tls"]){
 			if (!ldap_start_tls($ds)) {
 				$this->err.=ldap_error($ds)."<br>";
 				return false;
@@ -282,7 +282,7 @@ class Identification
 	 */
 	function connection_ldap_active_directory($host,$basedn,$login,$pass,$condition,$port)
 	{
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		// we prevent some delay...
 		if (empty($host)) {
@@ -297,7 +297,7 @@ class Identification
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-			if ($cfg_glpi["ldap_use_tls"]){
+			if ($CFG_GLPI["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
 					$this->err .= ldap_error($ds)."<br>";
 					return false;
@@ -361,7 +361,7 @@ class Identification
 	 */
 	function ldap_get_dn_active_directory($host,$ldap_base_dn,$login,$rdn,$rpass,$port)
 	{
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		// we prevent some delay...
 		if (empty($host)) {
@@ -381,7 +381,7 @@ class Identification
 		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 		ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 
-		if ($cfg_glpi["ldap_use_tls"]){
+		if ($CFG_GLPI["ldap_use_tls"]){
 			if (!ldap_start_tls($ds)) {
 				$this->err .= ldap_error($ds)."<br>";
 				return false;
@@ -431,7 +431,7 @@ class Identification
 	//with an eventual error message
 	function connection_db($name,$password)
 	{
-		global $db;
+		global $DB;
 		// sanity check... we prevent empty passwords...
 		//
 		if ( empty($password) )
@@ -442,16 +442,16 @@ class Identification
 
 
 		$query = "SELECT password, password_md5 from glpi_users where (name = '".$name."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 		if (!$result){
 			$this->err .= "Unknown username<br>";
 			return false;	
 		}
 		if($result)
 		{
-			if($db->numrows($result) == 1)
+			if($DB->numrows($result) == 1)
 			{
-				$password_md5_db=$db->result($result,0,"password_md5");
+				$password_md5_db=$DB->result($result,0,"password_md5");
 				$password_md5_post = md5($password);
 
 				if(strcmp($password_md5_db,$password_md5_post)==0) {
@@ -459,13 +459,13 @@ class Identification
 				} else {
 
 					$query2 = "SELECT PASSWORD('".$password."') as password";
-					$result2 = $db->query($query2);
-					if (!$result2&&$db->numrows($result2) == 1){
+					$result2 = $DB->query($query2);
+					if (!$result2&&$DB->numrows($result2) == 1){
 						$this->err .= "Bad username or password<br>";
 						return false;	
 					}
-					$pass1=$db->result($result,0,"password");
-					$pass2=$db->result($result2,0,"password");
+					$pass1=$DB->result($result,0,"password");
+					$pass2=$DB->result($result2,0,"password");
 
 
 					if (strcmp($pass1,$pass2)==0) 
@@ -473,7 +473,7 @@ class Identification
 						if(empty($password_md5_db)) {
 							$password_md5_db = md5($password);
 							$query3 = "update glpi_users set password_md5 = '".$password_md5_db."' where (name = '".$name."')";
-							$db->query($query3);
+							$DB->query($query3);
 						}
 						return true;
 					}
@@ -488,8 +488,8 @@ class Identification
 			}
 		}
 
-		$this->err .= "Erreur numero : ".$db->errno().": ";
-		$this->err .= $db->error();
+		$this->err .= "Erreur numero : ".$DB->errno().": ";
+		$this->err .= $DB->error();
 		return false;
 
 	} // connection_db()
@@ -498,7 +498,7 @@ class Identification
 	// Init session for this user
 	function initSession()
 	{
-		global $cfg_glpi,$db;
+		global $CFG_GLPI,$DB;
 
 		if(!session_id()) session_start();
 		$_SESSION["glpiID"] = $this->user->fields['ID'];
@@ -511,8 +511,8 @@ class Identification
 		$_SESSION["glpiextauth"] = $this->extauth;
 		$_SESSION["glpisearchcount"] = array();
 		$_SESSION["glpisearchcount2"] = array();
-		$_SESSION["glpiroot"] = $cfg_glpi["root_doc"];
-		$_SESSION["glpilist_limit"] = $cfg_glpi["list_limit"];
+		$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
+		$_SESSION["glpilist_limit"] = $CFG_GLPI["list_limit"];
 		$_SESSION["glpicrontimer"]=time();
 		$prof=new Profile();
 		$prof->getFromDBForUser($_SESSION["glpiID"]);
@@ -520,9 +520,9 @@ class Identification
 		$_SESSION["glpiprofile"]=$prof->fields;
 		$_SESSION["glpigroups"]=array();
 		$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='".$this->user->fields['ID']."'";
-		$result_gp=$db->query($query_gp);
-		if ($db->numrows($result_gp)){
-			while ($data=$db->fetch_array($result_gp)){
+		$result_gp=$DB->query($query_gp);
+		if ($DB->numrows($result_gp)){
+			while ($data=$DB->fetch_array($result_gp)){
 				$_SESSION["glpigroups"][]=$data["FK_groups"];
 			}
 		}

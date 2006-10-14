@@ -49,16 +49,16 @@ if (!defined('GLPI_ROOT')){
 checkLoginUser();
 
 // Make a select box with preselected values
-if (!isset($_POST["limit"])) $_POST["limit"]=$cfg_glpi["dropdown_limit"];
+if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 	$where="";
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 		$where=" WHERE (t1.name ".makeTextSearch($_POST['searchText'])." OR t2.completename ".makeTextSearch($_POST['searchText']).")";
 
-	$NBMAX=$cfg_glpi["dropdown_max"];
+	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
+	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
 	$query = "select t1.comments as comments, t1.ID as ID, t1.name as netpname, t2.completename as loc from glpi_dropdown_netpoint as t1";
@@ -66,12 +66,12 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 	$query.=$where;
 	$query .= " order by t1.name,t2.name $LIMIT"; 
 
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
 	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
-	if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-		echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+	if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+		echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 	else echo "<option value=\"0\">-----</option>";
 
 	$output=getDropdownName($_POST['table'],$_POST['value']);
@@ -79,8 +79,8 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 
 
-	if ($db->numrows($result)) {
-		while ($data =$db->fetch_array($result)) {
+	if ($DB->numrows($result)) {
+		while ($data =$DB->fetch_array($result)) {
 			$output = $data['netpname'];
 			$loc=$data['loc'];
 			$ID = $data['ID'];
@@ -95,26 +95,26 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 } else {
 	$first=true;
 	$where="WHERE ";
-	if (in_array($_POST['table'],$cfg_glpi["deleted_tables"])){
+	if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])){
 		if (!$first) $where.=" AND ";
 		else $first=false;
 		$where.=" deleted='N' ";
 	}
-	if (in_array($_POST['table'],$cfg_glpi["template_tables"])){
+	if (in_array($_POST['table'],$CFG_GLPI["template_tables"])){
 		if (!$first) $where.=" AND ";
 		else $first=false;
 		$where.=" is_template='0' ";
 	}
 
 
-	$NBMAX=$cfg_glpi["dropdown_max"];
+	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
+	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
-	if (in_array($_POST['table'],$cfg_glpi["dropdowntree_tables"])){
+	if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])){
 
-		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]){
+		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 			if (!$first) $where.=" AND ";
 			else $first=false;
 			$where.=" completename ".makeTextSearch($_POST['searchText']);
@@ -124,23 +124,23 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
 
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
-		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-			echo "<option class='tree' value=\"0\">--".$lang["common"][11]."--</option>";
+		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+			echo "<option class='tree' value=\"0\">--".$LANG["common"][11]."--</option>";
 
 		if ($_POST["table"]=="glpi_dropdown_kbcategories")
-			echo "<option class='tree' value=\"0\">--".$lang["knowbase"][12]."--</option>";
+			echo "<option class='tree' value=\"0\">--".$LANG["knowbase"][12]."--</option>";
 		else echo "<option class='tree' value=\"0\">-----</option>";
 
 		$outputval=getDropdownName($_POST['table'],$_POST['value']);
 		if (!empty($outputval)&&$outputval!="&nbsp;")
 			echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
 
-		if ($db->numrows($result)) {
-			while ($data =$db->fetch_array($result)) {
+		if ($DB->numrows($result)) {
+			while ($data =$DB->fetch_array($result)) {
 
 				$ID = $data['ID'];
 				$level = $data['level'];
@@ -177,7 +177,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		$field="name";
 		if (ereg("glpi_device",$_POST['table'])) $field="designation";
 
-		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 			$where.=" AND $field ".makeTextSearch($_POST['searchText']);
 		$where.=")";
 
@@ -193,12 +193,12 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 			break;
 		}
 		
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
-		if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-			echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+			echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 		echo "<option value=\"0\">-----</option>";
 
@@ -206,8 +206,8 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		if (!empty($output)&&$output!="&nbsp;")
 			echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 
-		if ($db->numrows($result)) {
-			while ($data =$db->fetch_array($result)) {
+		if ($DB->numrows($result)) {
+			while ($data =$DB->fetch_array($result)) {
 				$output = $data[$field];
 				$ID = $data['ID'];
 				$addcomment="";
@@ -225,7 +225,7 @@ if (isset($_POST["comments"])&&$_POST["comments"]){
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('dropdown_".$_POST["myname"].$_POST["rand"]."', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$cfg_glpi["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$CFG_GLPI["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           method:'post', parameters:'value='+value+'&table=".$_POST["table"]."'\n";
 	echo "})})\n";
 	echo "</script>\n";

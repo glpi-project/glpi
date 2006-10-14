@@ -39,12 +39,12 @@ include (GLPI_ROOT."/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($lang["title"][0],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][0],$_SERVER["PHP_SELF"]);
 
 // Redirect management
 if (isset($_GET['redirect'])){
 	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=$ID");
+	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID");
 }
 
 // show "my view" in first
@@ -55,7 +55,7 @@ if (!isset($_GET['start'])) $_GET['start']=0;
 if(empty($_GET["start"])) $_GET["start"] = 0;
 // Greet the user
 
-echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$lang["central"][0]." ";
+echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$LANG["central"][0]." ";
 if (empty($_SESSION["glpirealname"]))
 echo $_SESSION["glpiname"];
 else {
@@ -63,7 +63,7 @@ else {
 	if (!empty($_SESSION["glpifirstname"]))
 		echo " ".$_SESSION["glpifirstname"];	
 }
-echo ", ".$lang["central"][1]."</span></b></div>";
+echo ", ".$LANG["central"][1]."</span></b></div>";
 
 echo "<br><br>";
 showCentralOnglets($_SERVER["PHP_SELF"],$_SESSION['glpi_viewcentral']);
@@ -96,7 +96,7 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 		echo "<td align='left' valign='top'>";
 		echo "<table border='0' width='450px'><tr>";
 		echo "<td align='center'>";
-		if ($cfg_glpi["num_of_events"]>0){
+		if ($CFG_GLPI["num_of_events"]>0){
 
 			//Show last add events
 			showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
@@ -112,11 +112,11 @@ if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI
 	echo "</div>";
 
 
-	if ($cfg_glpi["jobs_at_login"]){
+	if ($CFG_GLPI["jobs_at_login"]){
 		echo "<br>";
 
 		echo "<div align='center'><b>";
-		echo $lang["central"][10];
+		echo $LANG["central"][10];
 		echo "</b></div>";
 
 		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"","","new");

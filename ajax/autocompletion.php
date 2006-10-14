@@ -43,10 +43,10 @@ header_nocache();
 checkCentralAccess();
 
 $query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST[$_POST['myname']]."%' AND ".$_POST['field']." <> '".$_POST[$_POST['myname']]."' ORDER BY ".$_POST['field']." LIMIT 0,20";
-if ($result=$db->query($query))
-	if ($db->numrows($result)>0){
+if ($result=$DB->query($query))
+	if ($DB->numrows($result)>0){
 		echo "<ul class='autocomp'>";
-		while ($data=$db->fetch_array($result))
+		while ($data=$DB->fetch_array($result))
 			echo "<li class='autocomp'>".$data["VAL"]."</li>";
 		echo "</ul>";
 	}

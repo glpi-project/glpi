@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 	checkRight("consumable","w");
 
 	$newID=$constype->add($_POST);
-	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -58,31 +58,31 @@ else if (isset($_POST["delete"]))
 	checkRight("consumable","w");
 
 	$constype->delete($_POST);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["restore"]))
 {
 	checkRight("consumable","w");
 
 	$constype->restore($_POST);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["purge"]))
 {
 	checkRight("consumable","w");
 
 	$constype->delete($_POST,1);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/front/consumable.php");
+	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["update"]))
 {
 	checkRight("consumable","w");
 
 	$constype->update($_POST);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
@@ -95,7 +95,7 @@ else
 		//	glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][36],$_SERVER["PHP_SELF"]);
 
 
 	if ($constype->getFromDB($tab["ID"]))
@@ -108,13 +108,13 @@ else
 					showConsumableAdd($tab["ID"]);
 					showConsumables($tab["ID"]);
 					showConsumables($tab["ID"],1);
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
 					showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
 					showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
 					display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
 					break;
 
 				case 5 :

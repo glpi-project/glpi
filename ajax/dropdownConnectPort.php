@@ -58,18 +58,18 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&isset($_POST["item"])){
 	$query.= " WHERE glpi_networking_wire.ID IS NULL AND glpi_networking_ports.ID IS NOT NULL AND glpi_networking_ports.ID <> '".$_POST['current']."' ";
 	$query.= $where;
 	$query.= " ORDER BY glpi_networking_ports.ID";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 	echo "<br>";
 	echo "<select name=\"".$_POST['myname']."[".$_POST["current"]."]\" size='1'>";
 
 	echo "<option value=\"0\">-----</option>";
-	if ($db->numrows($result)) {
-		while ($data = $db->fetch_array($result)) {
+	if ($DB->numrows($result)) {
+		while ($data = $DB->fetch_array($result)) {
 			$output = $data['CNAME'];
 			$output_long="";
 			if (!empty($data['IP'])) $output.= " - ".$data['IP'];
 			if (!empty($data['MAC'])) $output_long.= " - ".$data['MAC'];
-			if (!empty($data['NNAME'])) $output_long.= substr(" - ".$data['NNAME'],0,$cfg_glpi["dropdown_limit"]);
+			if (!empty($data['NNAME'])) $output_long.= substr(" - ".$data['NNAME'],0,$CFG_GLPI["dropdown_limit"]);
 			$ID = $data['DID'];
 			if (empty($data["IP"])) {
 				$output.=$output_long;
@@ -81,7 +81,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&isset($_POST["item"])){
 	}
 	echo "</select>";
 
-	echo "<input type='submit' name='connect' value=\"".$lang["buttons"][9]."\" class='submit'>";
+	echo "<input type='submit' name='connect' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 }
 
 ?>

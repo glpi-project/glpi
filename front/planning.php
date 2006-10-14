@@ -40,7 +40,7 @@ $NEEDED_ITEMS=array("planning","tracking","user","computer","printer","monitor",
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][31],$_SERVER["PHP_SELF"]);
 
 checkSeveralRightsOr(array("show_all_planning"=>"1","show_planning"=>"1"));
 
@@ -93,7 +93,7 @@ titleTrackingPlanning();
 echo "<div align='center'><form method=\"get\" name=\"form\" action=\"planning.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td>";
-echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 echo "</td>";
 echo "<td>";
 if (haveRight("show_all_planning","1"))
@@ -101,20 +101,20 @@ dropdownUsers("uID",$_GET['uID'],"interface",1);
 else echo "&nbsp;";
 echo "</td>";
 echo "<td align='right'>";
-echo $lang["common"][27].":</td><td>";
+echo $LANG["common"][27].":</td><td>";
 echo showCalendarForm("form","date",$_GET["date"]);
 echo "</td>";
 echo "<td><select name='type'>";
-echo "<option value='day' ".($_GET["type"]=="day"?" selected ":"").">".$lang["planning"][5]."</option>";
-echo "<option value='week' ".($_GET["type"]=="week"?" selected ":"").">".$lang["planning"][6]."</option>";
-echo "<option value='month' ".($_GET["type"]=="month"?" selected ":"").">".$lang["planning"][14]."</option>";
+echo "<option value='day' ".($_GET["type"]=="day"?" selected ":"").">".$LANG["planning"][5]."</option>";
+echo "<option value='week' ".($_GET["type"]=="week"?" selected ":"").">".$LANG["planning"][6]."</option>";
+echo "<option value='month' ".($_GET["type"]=="month"?" selected ":"").">".$LANG["planning"][14]."</option>";
 echo "</select></td>";
-echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td>";
+echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td>";
 echo "<td>";
 urlIcal ($_GET['uID']);
 echo "</td>";	
 echo "<td>";
-echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$next\"><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$next\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 echo "</td>";
 
 echo "</tr>";

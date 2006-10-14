@@ -46,40 +46,40 @@ class Document extends CommonDBTM {
 		$this->type=DOCUMENT_TYPE;
 	}
 	function getFromDBbyFilename($filename){
-		global $db;
+		global $DB;
 		$query="SELECT ID FROM glpi_docs WHERE filename='$filename'";
-		$result=$db->query($query);
-		if ($db->numrows($result)==1){
-			return $this->getFromDB($db->result($result,0,0));
+		$result=$DB->query($query);
+		if ($DB->numrows($result)==1){
+			return $this->getFromDB($DB->result($result,0,0));
 		} 
 		return false;
 	}	
 
 	function cleanDBonPurge($ID) {
-		global $db,$cfg_glpi,$lang;
+		global $DB,$CFG_GLPI,$LANG;
 
 		$query3 = "DELETE FROM glpi_doc_device WHERE (FK_doc = '$ID')";
-		$result3 = $db->query($query3);
+		$result3 = $DB->query($query3);
 
 		// UNLINK DU FICHIER
 		if (!empty($this->fields["filename"]))
-			if(is_file($cfg_glpi["doc_dir"]."/".$this->fields["filename"])&& !is_dir($cfg_glpi["doc_dir"]."/".$this->fields["filename"])) {
-				if (unlink($cfg_glpi["doc_dir"]."/".$this->fields["filename"]))
-					$_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$this->fields["filename"]."<br>";
-				else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$this->fields["filename"]."<br>";
+			if(is_file($CFG_GLPI["doc_dir"]."/".$this->fields["filename"])&& !is_dir($CFG_GLPI["doc_dir"]."/".$this->fields["filename"])) {
+				if (unlink($CFG_GLPI["doc_dir"]."/".$this->fields["filename"]))
+					$_SESSION["MESSAGE_AFTER_REDIRECT"]= $LANG["document"][24].$CFG_GLPI["doc_dir"]."/".$this->fields["filename"]."<br>";
+				else $_SESSION["MESSAGE_AFTER_REDIRECT"]= $LANG["document"][25].$CFG_GLPI["doc_dir"]."/".$this->fields["filename"]."<br>";
 			}
 	}
 
 	function defineOnglets($withtemplate){
-		global $lang;
-		$ong[5]=$lang["title"][26];
+		global $LANG;
+		$ong[5]=$LANG["title"][26];
 		if (haveRight("notes","r"))
-			$ong[10]=$lang["title"][37];
+			$ong[10]=$LANG["title"][37];
 		return $ong;
 	}
 
 	function prepareInputForAdd($input) {
-		global $lang;
+		global $LANG;
 		$input["date_mod"] = date("Y-m-d H:i:s");
 		$input["FK_users"] = $_SESSION["glpiID"];
 
@@ -89,7 +89,7 @@ class Document extends CommonDBTM {
 		if (isset($input["item"])&&isset($input["type"])&&$input["type"]>0&&$input["item"]>0){
 			$ci=new CommonItem();
 			$ci->getFromDB($input["type"],$input["item"]);
-			$input["name"]=substr($lang["document"][18]." ".$ci->getType()." - ".$ci->getNameID(),0,255);
+			$input["name"]=substr($LANG["document"][18]." ".$ci->getType()." - ".$ci->getNameID(),0,255);
 		}
 
 		if (isset($input["upload_file"])&&!empty($input["upload_file"])){
@@ -106,13 +106,13 @@ class Document extends CommonDBTM {
 	}
 
 	function postAddItem($newID,$input) {
-		global $lang;
+		global $LANG;
 		if (isset($input["item"])&&isset($input["type"])&&$input["item"]>0&&$input["type"]>0){
 			$template=0;
 			if (isset($_POST["is_template"])) $template=1;
 
 			addDeviceDocument($newID,$input['type'],$input['item'],$template);
-			logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][32]);
+			logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][32]);
 		}
 
 
@@ -138,18 +138,18 @@ class Document extends CommonDBTM {
 
 	function title(){
 
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/docs.png\" alt='".$lang["document"][13]."' title='".$lang["document"][13]."'></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/docs.png\" alt='".$LANG["document"][13]."' title='".$LANG["document"][13]."'></td>";
 		if (haveRight("document","w")){
-			echo "<td><a  class='icon_consol' href=\"document.form.php\"><b>".$lang["document"][13]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][27]."</b></span></td>";
+			echo "<td><a  class='icon_consol' href=\"document.form.php\"><b>".$LANG["document"][13]."</b></a></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][27]."</b></span></td>";
 		echo "</tr></table></div>";
 	}
 
 	function showForm ($target,$ID) {
-		global $cfg_glpi,$lang;
+		global $CFG_GLPI,$LANG;
 
 		if (!haveRight("document","r"))	return false;
 
@@ -167,19 +167,19 @@ class Document extends CommonDBTM {
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='3'><b>";
 			if (!$ID) {
-				echo $lang["document"][16].":";
+				echo $LANG["document"][16].":";
 			} else {
-				echo $lang["document"][18]." ID $ID:";
+				echo $LANG["document"][18]." ID $ID:";
 			}		
 			echo "</b></th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 			echo "<td colspan='2'>";
 			autocompletionTextField("name","glpi_docs","name",$this->fields["name"],25);
 			echo "</td></tr>";
 
 			if (!empty($ID)){
-				echo "<tr class='tab_bg_1'><td>".$lang["document"][22].":		</td>";
+				echo "<tr class='tab_bg_1'><td>".$LANG["document"][22].":		</td>";
 				echo "<td colspan='2'>".getDocumentLink($this->fields["filename"])."";
 				echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
 				echo "</td></tr>";
@@ -188,30 +188,30 @@ class Document extends CommonDBTM {
 			$max_size/=1024*1024;
 			$max_size=round($max_size,1);
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][2]." (".$max_size." Mb max):	</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." Mb max):	</td>";
 			echo "<td colspan='2'><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='25'></td>";
 			echo "</tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][36].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][36].":		</td>";
 			echo "<td colspan='2'>";
 			showUploadedFilesDropdown("upload_file");
 			echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][33].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][33].":		</td>";
 			echo "<td colspan='2'>";
 			autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40);
 			echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][3].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][3].":		</td>";
 			echo "<td colspan='2'>";
 			dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
 			echo "</td></tr>";
 
 
 
-			echo "<tr class='tab_bg_1'><td>".$lang["document"][4].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][4].":		</td>";
 			echo "<td colspan='2'>";
 			autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],25);
 			echo "</td></tr>";
@@ -220,7 +220,7 @@ class Document extends CommonDBTM {
 			echo "<td class='tab_bg_1' valign='top'>";
 
 			// table commentaires
-			echo $lang["common"][25].":	</td>";
+			echo $LANG["common"][25].":	</td>";
 			echo "<td align='center' colspan='2'  class='tab_bg_1'><textarea cols='35' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
 
 			echo "</td>";
@@ -230,7 +230,7 @@ class Document extends CommonDBTM {
 
 				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top' colspan='3'>";
-				echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+				echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
 
@@ -241,22 +241,22 @@ class Document extends CommonDBTM {
 				echo "<tr>";
 				echo "<td class='tab_bg_2'>";
 				if ($this->fields["FK_users"]>0)
-					echo $lang["document"][42]." ".getUserName($this->fields["FK_users"],1);
+					echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
 				else echo "&nbsp;";
 				echo "</td>";
 				echo "<td class='tab_bg_2' valign='top'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'></div>";
+				echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 				echo "</td>\n\n";
 
 				echo "<td class='tab_bg_2' valign='top'>\n";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 				if ($this->fields["deleted"]=='N')
-					echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 				else {
-					echo "<div align='center'><input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+					echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
 
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'></div>";
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
 				}
 
 				echo "</td>";
@@ -268,7 +268,7 @@ class Document extends CommonDBTM {
 
 			}
 		} else {
-			echo "<div align='center'><b>".$lang["document"][23]."</b></div>";
+			echo "<div align='center'><b>".$LANG["document"][23]."</b></div>";
 			return false;
 
 		}

@@ -38,17 +38,17 @@ if (!defined('GLPI_ROOT')){
 	}
 
 function testMail(){
-	global $cfg_glpi,$lang;
+	global $CFG_GLPI,$LANG;
 	$mmail=new glpi_phpmailer();
-	$mmail->From=$cfg_glpi["admin_email"];
-	$mmail->FromName=$cfg_glpi["admin_email"];
-	$mmail->AddAddress($cfg_glpi["admin_email"], "GLPI");
-	$mmail->Subject="[GLPI] ".$lang["mailing"][32];  
-	$mmail->Body=$lang["mailing"][31]."\n-- \n".$cfg_glpi["mailing_signature"];
+	$mmail->From=$CFG_GLPI["admin_email"];
+	$mmail->FromName=$CFG_GLPI["admin_email"];
+	$mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
+	$mmail->Subject="[GLPI] ".$LANG["mailing"][32];  
+	$mmail->Body=$LANG["mailing"][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
 
 	if(!$mmail->Send()){
-		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["setup"][206];
-	} else $_SESSION["MESSAGE_AFTER_REDIRECT"]=$lang["setup"][205];
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["setup"][206];
+	} else $_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["setup"][205];
 }
 
 /**

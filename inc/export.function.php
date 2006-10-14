@@ -47,13 +47,13 @@ if (!defined('GLPI_ROOT')){
  *
  **/
 function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=""){
-	global $cfg_glpi;
+	global $CFG_GLPI;
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
-			global $pdf_header,$pdf_size;
-			$pdf_header[$num]=html_clean(utf8_decode($value));
-			$pdf_size[$num]=strlen($pdf_header[$num]);
+			global $PDF_HEADER,$PDF_SIZE;
+			$PDF_HEADER[$num]=html_clean(utf8_decode($value));
+			$PDF_SIZE[$num]=strlen($PDF_HEADER[$num]);
 			break;
 		case SYLK_OUTPUT : //sylk
 			$out="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
@@ -63,8 +63,8 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 
 			$out="<th>";
 			if ($issort) {
-				if ($order=="DESC") $out.="<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-				else $out.="<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") $out.="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else $out.="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 
 			if (!empty($linkto))
@@ -102,9 +102,9 @@ function displaySearchItem($type,$value,&$num,$row,$deleted=0,$extraparam=''){
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
-			global $pdf_array,$pdf_header,$pdf_size;
-			$pdf_array[$row][$num]=html_clean(utf8_decode($value));
-			$pdf_size[$num]=max($pdf_size[$num],strlen($pdf_array[$row][$num]));
+			global $PDF_ARRAY,$PDF_HEADER,$PDF_SIZE;
+			$PDF_ARRAY[$row][$num]=html_clean(utf8_decode($value));
+			$PDF_SIZE[$num]=max($PDF_SIZE[$num],strlen($PDF_ARRAY[$row][$num]));
 			break;
 		case SYLK_OUTPUT : //sylk
 			$out="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
@@ -131,7 +131,7 @@ function displaySearchItem($type,$value,&$num,$row,$deleted=0,$extraparam=''){
  *
  **/
 function displaySearchError($type){
-	global $lang;
+	global $LANG;
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
@@ -139,7 +139,7 @@ function displaySearchError($type){
 		case SYLK_OUTPUT : //sylk
 			break;
 		default :
-			$out= "<div align='center'><b>".$lang["search"][15]."</b></div>\n";
+			$out= "<div align='center'><b>".$LANG["search"][15]."</b></div>\n";
 			break;
 	}
 	return $out;
@@ -156,18 +156,18 @@ function displaySearchError($type){
  *
  **/
 function displaySearchFooter($type,$title=""){
-	global $lang;
+	global $LANG;
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
-			global $pdf_header,$pdf_array,$pdf_size;
+			global $PDF_HEADER,$PDF_ARRAY,$PDF_SIZE;
 			$pdf= new Cezpdf('a4','landscape');
 			$pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($pdf_array)." ".utf8_decode($lang["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
+			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
 			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800,'titleFontSize'=>8,);
-			//print_r($pdf_size);
+			//print_r($PDF_SIZE);
 
-			$pdf->ezTable($pdf_array,$pdf_header,utf8_decode($title),$options);
+			$pdf->ezTable($PDF_ARRAY,$PDF_HEADER,utf8_decode($title),$options);
 			$pdf->ezStream();
 
 			break;
@@ -196,10 +196,10 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
-			global $pdf_array,$pdf_header;
-			$pdf_array=array();
-			$pdf_header=array();
-			$pdf_size=array();
+			global $PDF_ARRAY,$PDF_HEADER;
+			$PDF_ARRAY=array();
+			$PDF_HEADER=array();
+			$PDF_SIZE=array();
 			break;
 		case SYLK_OUTPUT : // Sylk
 			define("FORMAT_REEL",   1); // #,##0.00
@@ -210,7 +210,7 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			$cfg_formats[FORMAT_REEL]   = "FF2";
 			$cfg_formats[FORMAT_TEXTE]  = "FG0";
 
-			// en-tête HTTP
+			// en-tï¿½e HTTP
 			// --------------------------------------------------------------------
 			header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
 			header('Pragma: private'); /// IE BUG + SSL
@@ -220,7 +220,7 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			header('Content-type: application/octetstream');
 
 
-			// en-tête du fichier
+			// en-tï¿½e du fichier
 			// --------------------------------------------------------------------
 			echo "ID;PGLPI_EXPORT\n"; // ID;Pappli
 			echo "\n";

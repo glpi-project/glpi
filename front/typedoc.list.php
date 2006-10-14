@@ -36,7 +36,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkLoginUser();
 
-nullHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+nullHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
 
 
 

@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 /*!
-  \brief affiche le rapport réseau par switch 
+  \brief affiche le rapport rï¿½eau par switch 
 
  */
 
@@ -49,17 +49,17 @@ if (isset($_POST["prise"])){
 		LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
 		LEFT JOIN glpi_dropdown_locations b ON b.id=a.parentid
 		WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]."";
-	$result = $db->query($query2);
-	if ($db->numrows($result)==1){
-		commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
+	$result = $DB->query($query2);
+	if ($DB->numrows($result)==1){
+		commonHeader($LANG["Menu"][6],$_SERVER["PHP_SELF"]);
 
-		$ligne = $db->fetch_array($result);
+		$ligne = $DB->fetch_array($result);
 		$prise=$ligne['prise'];
 		$stage=$ligne['stage'];
 		$office=$ligne['office'];
 
 		// Titre
-		echo "<div align='center'><h2>".$lang["reports"][51]." $prise  ($office / $stage)</h2></div><br><br>";
+		echo "<div align='center'><h2>".$LANG["reports"][51]." $prise  ($office / $stage)</h2></div><br><br>";
 		$query="SELECT a.name as bureau,a.ID as ID,glpi_dropdown_netpoint.name as prise,c.name as port,c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
 			FROM glpi_dropdown_netpoint
 			LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
@@ -67,7 +67,7 @@ if (isset($_POST["prise"])){
 			WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]." AND c.device_type=".NETWORKING_TYPE.";";
 
 		/*!
-		  on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
+		  on envoie la requï¿½e de selection qui varie selon le choix fait dans la dropdown ï¿½la fonction report perso qui
 		  affiche un rapport en fonction de la prise choisie  
 		 */
 

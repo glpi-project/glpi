@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 /*!
-  \brief affiche le rapport réseau par switch 
+  \brief affiche le rapport rï¿½eau par switch 
 
  */
 
@@ -51,16 +51,16 @@ $item_db_name[0]="glpi_dropdow_location";
 $query2="SELECT glpi_networking.name as switch
 FROM glpi_networking
 WHERE glpi_networking.id=".$_POST["switch"]."";
-$result = $db->query($query2);
+$result = $DB->query($query2);
 
 // Titre
-if ($db->numrows($result)==1){
-	commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
+if ($DB->numrows($result)==1){
+	commonHeader($LANG["Menu"][6],$_SERVER["PHP_SELF"]);
 
-	$ligne = $db->fetch_array($result);
+	$ligne = $DB->fetch_array($result);
 	$switch=$ligne['switch'];
 
-	echo "<div align='center'><h2>".$lang["reports"][49]." $switch </h2></div><br><br>";
+	echo "<div align='center'><h2>".$LANG["reports"][49]." $switch </h2></div><br><br>";
 
 	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networking.name as switch
 		FROM glpi_networking
@@ -68,7 +68,7 @@ if ($db->numrows($result)==1){
 		WHERE glpi_networking.id=".$_POST["switch"]."";
 
 	/*!
-	  on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
+	  on envoie la requï¿½e de selection qui varie selon le choix fait dans la dropdown ï¿½la fonction report perso qui
 	  affiche un rapport en fonction du switch choisi  
 	 */
 
