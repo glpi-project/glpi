@@ -66,7 +66,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpipro
 	echo "})})";
 	echo "</script>";	
 
-	echo "<div id='search_spinner$rand' style=' position:absolute; background-color:white;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$HTMLRel."pics/wait.png\" title='Processing....' alt='' /></div>";	
+	echo "<div id='search_spinner$rand' style=' position:absolute; background-color:white;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>";	
 
 	echo "<span id='results_ID$rand'>";
 	echo "<select name='ID'><option value='0'>------</option></select>";
