@@ -246,7 +246,7 @@
 			'lifeTime' => DEFAULT_CACHE_LIFETIME,
 			'automaticSerialization' => true,
 			'caching' => ENABLE_CACHE,
-			'hashedDirectoryLevel' => 2,
+			'hashedDirectoryLevel' => 1,
 			//  'fileLocking' => false,
 			//  'writeControl' => false,
 			//'readControl' => false,

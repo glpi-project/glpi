@@ -511,6 +511,23 @@ function nullHeader($title,$url) {
 	$HEADER_LOADED=true;
 	// Print a nice HTML-head with no controls
 
+	// Detect root_doc in ase of error
+	if (!isset($CFG_GLPI["root_doc"])){
+		if ( !isset($_SERVER['REQUEST_URI']) ) {
+			$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
+		}
+		$currentdir=getcwd();
+		chdir(GLPI_ROOT);
+		$glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
+		chdir($currentdir);
+			
+		$globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$_SERVER['REQUEST_URI']);
+		$globaldir=preg_replace("/\?.*/","",$globaldir);
+		$CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
+		$CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
+		$CFG_GLPI["logotxt"]="";
+	}
+
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 
