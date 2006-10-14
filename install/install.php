@@ -38,7 +38,8 @@
 //Pas besoin des warnings de PHP
 //error_reporting(0);
 define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/config/based_config.php");
+include_once (GLPI_ROOT . "/config/based_config.php");
+include_once (GLPI_ROOT . "/inc/common.function.php");
 
 session_save_path(GLPI_DOC_DIR."/_sessions");
 
@@ -49,7 +50,7 @@ session_save_path(GLPI_DOC_DIR."/_sessions");
 		'lifeTime' => 0,
 	);
 	$CACHE = new Cache_Lite($cache_options);
-	$CACHE->clean(false,false);
+	$CACHE->clean();
 
 
 $CFG_GLPI["debug"]=0;
@@ -1074,7 +1075,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	if(!isset($_POST["install"])) {
 		$_SESSION = array();
 		if(file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-			include(GLPI_ROOT ."/index.php");
+			glpi_header(GLPI_ROOT ."/index.php");
 			die();
 		}
 		else {
