@@ -236,7 +236,7 @@
 	{
 	
 		require_once (GLPI_CONFIG_DIR . "/config_db.php");
-		include (GLPI_ROOT."/lib/cache_lite/Lite.php");
+		include (GLPI_ROOT."/lib/cache_lite/Lite/Output.php");
 
 		$DB = new DB;
 
