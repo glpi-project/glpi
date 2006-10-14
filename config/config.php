@@ -254,11 +254,7 @@
 		$CACHE_CFG = new Cache_Lite($cache_options);
 
 
-		if ($data = $CACHE_CFG->get("CFG_GLPI_1","GLPI_CFG")) {
-			$CFG_GLPI=$data;
-		} else {
-
-
+		if (!($CFG_GLPI= $CACHE_CFG->get("CFG_GLPI_1","GLPI_CFG"))) {
 			// *************************** Statics config options **********************
 			// ********************options d'installation statiques*********************
 			// ***********************************************************************
