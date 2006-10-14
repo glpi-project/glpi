@@ -79,7 +79,7 @@ class CommonDBTM {
 
 	function updateInDB($updates)  {
 
-		global $DB;
+		global $DB,$CFG_GLPI;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE `".$this->table."` SET `";
