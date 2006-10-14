@@ -87,10 +87,10 @@ class ConsumableType extends CommonDBTM {
 	 **/
 	function title(){
 
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<a href='consumable.php'><img src=\"".$HTMLRel."pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></a></td>";
+		echo "<a href='consumable.php'><img src=\"".$cfg_glpi["root_doc"]."/pics/consommables.png\" alt='".$lang["consumables"][6]."' title='".$lang["consumables"][6]."'></a></td>";
 		if (haveRight("consumable","w")){
 			echo "<td><a  class='icon_consol' href=\"consumable.form.php\"><b>".$lang["consumables"][6]."</b></a></td>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][32]."</b></span></td>";

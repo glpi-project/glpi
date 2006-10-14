@@ -99,9 +99,9 @@ class Contact extends CommonDBTM{
 	 *
 	 **/
 	function title(){
-		global  $lang,$HTMLRel;
+		global  $lang,$cfg_glpi;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$HTMLRel."pics/contacts.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
+		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/contacts.png\" alt='".$lang["financial"][24]."' title='".$lang["financial"][24]."'></td>";
 		if (haveRight("contact_enterprise","w")){
 			echo "<td><a  class='icon_consol' href=\"contact.form.php?new=1\"><b>".$lang["financial"][24]."</b></a></td>";
 		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][22]."</b></span></td>";
@@ -123,7 +123,7 @@ class Contact extends CommonDBTM{
 	 **/
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang,$HTMLRel;
+		global $cfg_glpi, $lang;
 
 		if (!haveRight("contact_enterprise","r")) return false;
 

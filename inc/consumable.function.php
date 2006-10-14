@@ -47,11 +47,11 @@
  **/
 function showConsumableAdd($ID) {
 
-	global $cfg_glpi,$lang,$HTMLRel;
+	global $cfg_glpi,$lang;
 
 	if (!haveRight("consumable","w")) return false;
 
-	echo "<form method='post'  action=\"".$HTMLRel."front/consumable.edit.php\">";
+	echo "<form method='post'  action=\"".$cfg_glpi["root_doc"]."/front/consumable.edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 	echo "<tr><td align='center' class='tab_bg_2'><b>";
 	echo "<a href=\"".$cfg_glpi["root_doc"]."/front/consumable.edit.php?add=add&amp;tID=$ID\">";
@@ -82,7 +82,7 @@ function showConsumableAdd($ID) {
  **/
 function showConsumables ($tID,$show_old=0) {
 
-	global $db,$cfg_glpi,$lang,$HTMLRel;
+	global $db,$cfg_glpi,$lang;
 
 	if (!haveRight("consumable","r")) return false;
 	$canedit=haveRight("consumable","w");
