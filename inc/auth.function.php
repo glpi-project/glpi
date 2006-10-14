@@ -280,15 +280,17 @@ function loadLanguage() {
 	$file="";
 
 	if(empty($_SESSION["glpilanguage"])) {
-		if (isset($CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1]))
+		if (isset($CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1])){
 			$file= "/locales/".$CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1];
+		}
 	} else {
-		if (isset($CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1]))
+		if (isset($CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1])){
 			$file = "/locales/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1];
+		}
 	}
-	if (empty($file)||!is_file(GLPI_ROOT . $file))
+	if (empty($file)||!is_file(GLPI_ROOT . $file)){
 		$file="/locales/en_GB.php";
-	
+	}
 	$options = array(
    	 'cacheDir' => GLPI_DOC_DIR."/_cache/",
 	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
@@ -299,31 +301,22 @@ function loadLanguage() {
 	);
 	$cache = new Cache_Lite_File($options);
 
-	// Set a id for this cache
-	if ($data = $cache->get($file)) {
-
-    	// Cache hit !
-    	// Content is in $data
-   	 $LANG=$data;
-
-	} else { // No valid cache found (you have to make the page)
-
-    	// Cache miss !
-   	 // Put in $data datas to put in cache
-   	
-	include (GLPI_ROOT . $file);
-	
-	 $cache->save($LANG);
+	// Set a id for this cache : $file
+	if (!$LANG = $cache->get($file)) {
+		// Cache miss !
+		// Put in $LANG datas to put in cache
+		include (GLPI_ROOT . $file);
+		$cache->save($LANG);
 	}
 	
 
 	// Debug display lang element with item
 	if ($CFG_GLPI["debug"]&&$CFG_GLPI["debug_lang"]){
-		foreach ($LANG as $module => $tab)
+		foreach ($LANG as $module => $tab){
 			foreach ($tab as $num => $val){
 				$LANG[$module][$num].="<span style='font-size:12px; color:red;'>$module/$num</span>";
-
 			}
+		}
 	}
 
 }
