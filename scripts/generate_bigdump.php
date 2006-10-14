@@ -767,7 +767,8 @@ for ($i=0;$i<$max['type_of_consumables'];$i++){
 		$query="INSERT INTO glpi_infocoms VALUES (NULL,'$ID','".CONSUMABLE_ITEM_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cons $ID','".mt_rand(1,$max['enterprises'])."','commande cons $ID','BL cart $ID','immo cons $ID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cons $ID','facture cons $ID','".mt_rand(1,$max['budget'])."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
-	// Ajout consommable donn�	for ($j=0;$j<mt_rand(0,$max['consumables_given']);$j++){
+	// Ajout consommable donn�	
+	for ($j=0;$j<mt_rand(0,$max['consumables_given']);$j++){
 		$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 		$query="INSERT INTO glpi_consumables VALUES(NULL,'$consID','$date',NOW(),'".mt_rand(2,$max['users_sadmin']+$max['users_admin']+$max['users_normal']+$max['users_postonly'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
