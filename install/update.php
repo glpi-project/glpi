@@ -46,15 +46,7 @@ include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 session_save_path(GLPI_DOC_DIR."/_sessions");
 
-	include_once (GLPI_ROOT."/lib/cache_lite/Lite.php");
-
-	$cache_options = array(
-		'cacheDir' => GLPI_DOC_DIR."/_cache/",
-		'lifeTime' => 0,
-		'hashedDirectoryLevel' => 2,
-	);
-	$CACHE = new Cache_Lite($cache_options);
-	$CACHE->clean();
+cleanCache();
 
 // Init debug variable
 $CFG_GLPI["debug"]=0;

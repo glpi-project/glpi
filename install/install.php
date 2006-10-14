@@ -43,16 +43,7 @@ include_once (GLPI_ROOT . "/inc/common.function.php");
 
 session_save_path(GLPI_DOC_DIR."/_sessions");
 
-	include_once (GLPI_ROOT."/lib/cache_lite/Lite.php");
-
-	$cache_options = array(
-		'cacheDir' => GLPI_DOC_DIR."/_cache/",
-		'lifeTime' => 0,
-		'hashedDirectoryLevel' => 2,
-	);
-	$CACHE = new Cache_Lite($cache_options);
-	$CACHE->clean();
-
+cleanCache();
 
 $CFG_GLPI["debug"]=0;
 //Print a correct  Html header for application
