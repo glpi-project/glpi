@@ -11,7 +11,7 @@
 * @author Fabien MARTY <fab@php.net>
 */
 
-require_once($phproot.'/lib/Cache/Lite.php');
+require_once(GLPI_ROOT.'/lib/cache_lite/Lite.php');
 
 class Cache_Lite_Output extends Cache_Lite
 {
