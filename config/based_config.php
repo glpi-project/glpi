@@ -30,21 +30,22 @@
  */
 
 
-include ("_relpos.php");
-
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
 // Default location for based configuration
-$cfg_glpi["config_dir"] = $phproot . "/config/";
+$cfg_glpi["config_dir"] = GLPI_ROOT . "/config/";
 
 // Default location for backup dump
-$cfg_glpi["dump_dir"] = $phproot . "/files/_dumps/";
+$cfg_glpi["dump_dir"] = GLPI_ROOT . "/files/_dumps/";
 
 // Path for documents storage
-$cfg_glpi["doc_dir"] = $phproot . "/files";
+$cfg_glpi["doc_dir"] = GLPI_ROOT . "/files";
 
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
-if(file_exists($phproot ."/config/config_path.php")) {
-	include($phproot ."/config/config_path.php");
+if(file_exists(GLPI_ROOT ."/config/config_path.php")) {
+	include(GLPI_ROOT ."/config/config_path.php");
 }
 
 ?>

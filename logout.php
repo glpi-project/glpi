@@ -33,14 +33,14 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
+define('GLPI_ROOT', '.');
 $NEEDED_ITEMS=array("user");
-include ($phproot . "/inc/includes.php");
+include (GLPI_ROOT . "/inc/includes.php");
 
 @session_start();
 
 if (!isset($_SESSION["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
-	include ($phproot . "/lib/phpcas/CAS.php");
+	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
 	phpCAS::client(CAS_VERSION_2_0,$cfg_glpi["cas_host"],intval($cfg_glpi["cas_port"]),$cfg_glpi["cas_uri"]);
 	phpCAS::logout();
 }

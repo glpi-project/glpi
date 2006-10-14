@@ -33,9 +33,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
+	}
 
-include ("_relpos.php");
-include ($phproot."/config/based_config.php");
+include (GLPI_ROOT."/config/based_config.php");
 
 // Current version of GLPI
 define("GLPI_VERSION","0.68.2");
@@ -286,9 +288,11 @@ else
 		if ( !isset($_SERVER['REQUEST_URI']) ) {
 			$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
 		}
-
-		$glpidir=str_replace($phproot,"",str_replace('\\', '/',getcwd()));
-
+		$currentdir=getcwd();
+		chdir(GLPI_ROOT);
+		$glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
+		chdir($currentdir);
+		
 		$globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$_SERVER['REQUEST_URI']);
 		$globaldir=preg_replace("/\?.*/","",$globaldir);
 		$cfg_glpi["root_doc"]=str_replace($glpidir,"",$globaldir);
