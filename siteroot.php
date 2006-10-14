@@ -1,3 +1,0 @@
-### NE PAS EFFACER CE FICHIER !!!!! ###
-
-### DO NOT DELETE THIS FILE !!!! ###
