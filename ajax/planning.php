@@ -44,9 +44,9 @@
 	
 	checkCentralAccess();
 	
-	$split=split(":",$cfg_glpi["planning_begin"]);
+	$split=split(":",$CFG_GLPI["planning_begin"]);
 	$global_begin=intval($split[0]);
-	$split=split(":",$cfg_glpi["planning_end"]);
+	$split=split(":",$CFG_GLPI["planning_end"]);
 	$global_end=intval($split[0]);
 	
 	
@@ -64,26 +64,26 @@
 	
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	if (isset($_GET["author"])){
-		echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":	</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":	</td>";
 		echo "<td>";
 		dropdownUsers("plan[id_assign]",$_GET["author"],"own_ticket",-1);
 		echo "</td></tr>";
 	}
 	
-	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
 	showCalendarForm($_GET['form'],"plan[begin_date]",$begin_date);
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][12].":	</td>";
 	echo "<td>";
 	dropdownHours("plan[begin_hour]",$begin_hour,1);
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
 	showCalendarForm($_GET['form'],"plan[end_date]",$end_date);
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][13].":	</td>";
 	echo "<td>";
 	dropdownHours("plan[end_hour]",$end_hour,1);
 	echo "</td></tr>";

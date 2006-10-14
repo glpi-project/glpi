@@ -59,12 +59,12 @@ else if (isset($tab["delete"]))
 
 	$typedoc->delete($tab,1);
 
-	logEvent($tab["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
+	logEvent($tab["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	/*	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
+		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 		else 
 	 */
-	glpi_header($cfg_glpi["root_doc"]."/front/typedoc.php");
+	glpi_header($CFG_GLPI["root_doc"]."/front/typedoc.php");
 
 }
 else if (isset($_POST["update"]))
@@ -72,14 +72,14 @@ else if (isset($_POST["update"]))
 	checkRight("typedoc","w");
 
 	$typedoc->update($_POST);
-	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
 	checkRight("typedoc","r");
 
-	commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
 	$typedoc->showForm($_SERVER["PHP_SELF"],$tab["ID"]);
 	commonFooter();
 }

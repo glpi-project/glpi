@@ -48,13 +48,13 @@ class kbitem extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 
-		global $lang;
+		global $LANG;
 		// set new date.
 		$input["date"] = date("Y-m-d H:i:s");
 		// set author
 
 		// set title for question if empty
-		if(empty($input["question"])) $input["question"]=$lang["common"][30];
+		if(empty($input["question"])) $input["question"]=$LANG["common"][30];
 
 		if (haveRight("faq","w")&&!haveRight("knowbase","w")) $input["faq"]="yes";
 		if (!haveRight("faq","w")&&haveRight("knowbase","w")) $input["faq"]="no";
@@ -66,7 +66,7 @@ class kbitem extends CommonDBTM {
 		// set new date.
 		$input["date_mod"] = date("Y-m-d H:i:s");
 		// set title for question if empty
-		if(empty($input["question"])) $input["question"]=$lang["common"][30];
+		if(empty($input["question"])) $input["question"]=$LANG["common"][30];
 
 		return $input;
 	}

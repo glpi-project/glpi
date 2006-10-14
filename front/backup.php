@@ -43,11 +43,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("backup","w");
 
 // full path 
-$path = $cfg_glpi["dump_dir"] ;
+$path = $CFG_GLPI["dump_dir"] ;
 
 
 
-commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
 
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
@@ -61,24 +61,24 @@ else {$defaulttimeout=max(1,$max_time-2);$defaultrowlimit=2;}
 <script language="JavaScript" type="text/javascript">
 <!--
 function dump(what3){
-	if (confirm("<?php echo $lang["backup"][15];?> " + what3 +  "?")) {
+	if (confirm("<?php echo $LANG["backup"][15];?> " + what3 +  "?")) {
 		window.location = "backup.php?dump=" + what3;
 	}
 }
 function restore(what) {
-	if (confirm("<?php echo $lang["backup"][16];?> " + what +  "?")) {
+	if (confirm("<?php echo $LANG["backup"][16];?> " + what +  "?")) {
 		window.location = "backup.php?file=" + what +"&donotcheckversion=1";
 	}
 }
 
 function erase(what2){
-	if (confirm("<?php echo $lang["backup"][17];?> " + what2 +  "?")) {
+	if (confirm("<?php echo $LANG["backup"][17];?> " + what2 +  "?")) {
 		window.location = "backup.php?delfile=" + what2;
 	}
 }
 
 function xmlnow(what4){
-	if (confirm("<?php echo $lang["backup"][18] ;?> " + what4 +  "?")) {
+	if (confirm("<?php echo $LANG["backup"][18] ;?> " + what4 +  "?")) {
 		window.location = "backup.php?xmlnow=" + what4;
 	}
 }
@@ -92,7 +92,7 @@ function xmlnow(what4){
 
 
 
-// les deux options qui suivent devraient être incluses dans le fichier de config plutot non ?
+// les deux options qui suivent devraient ï¿½re incluses dans le fichier de config plutot non ?
 // 1 only with ZLib support, else change value to 0
 $compression = 0;
 
@@ -101,22 +101,22 @@ $compression = 0;
 if ($compression==1) $filetype = "sql.gz";
 else $filetype = "sql";
 
-// génére un fichier backup.xml a partir de base dbhost connecté avec l'utilisateur dbuser et le mot de passe
+// gï¿½ï¿½e un fichier backup.xml a partir de base dbhost connectï¿½avec l'utilisateur dbuser et le mot de passe
 //dbpassword sur le serveur dbdefault
 function xmlbackup()
 {
-	global $cfg_glpi,$db;
+	global $CFG_GLPI,$DB;
 
 	//on parcoure la DB et on liste tous les noms des tables dans $table
 	//on incremente $query[] de "select * from $table"  pour chaque occurence de $table
 
-	$result = $db->list_tables();
+	$result = $DB->list_tables();
 	$i = 0;
-	while ($line = $db->fetch_array($result))
+	while ($line = $DB->fetch_array($result))
 	{
 
 
-		// on se  limite aux tables préfixées _glpi
+		// on se  limite aux tables prï¿½ixï¿½s _glpi
 		if (ereg("glpi_",$line[0])){
 
 			$table = $line[0];
@@ -128,9 +128,9 @@ function xmlbackup()
 	}
 
 	//le nom du fichier a generer...
-	//Si fichier existe deja il sera remplacé par le nouveau
+	//Si fichier existe deja il sera remplacï¿½par le nouveau
 
-	$chemin = $cfg_glpi["dump_dir"]."/backup.xml";
+	$chemin = $CFG_GLPI["dump_dir"]."/backup.xml";
 
 	// Creation d'une nouvelle instance de la classe
 	// et initialisation des variables
@@ -154,12 +154,12 @@ function xmlbackup()
 		$A->Type=$Type;
 	}
 
-	//appelle de la methode générant le fichier XML
+	//appelle de la methode gï¿½ï¿½ant le fichier XML
 	$A->DoXML();
 
 
 	// Affichage, si erreur affiche erreur
-	//sinon affiche un lien vers le fichier XML généré.
+	//sinon affiche un lien vers le fichier XML gï¿½ï¿½ï¿½
 
 
 	if ($A->IsError==1)
@@ -192,15 +192,15 @@ function current_time()
 	}
 }
 
-function get_content($db, $table,$from,$limit)
+function get_content($DB, $table,$from,$limit)
 {
 	$content="";
-	$result = $db->query("SELECT * FROM $table LIMIT $from,$limit");
+	$result = $DB->query("SELECT * FROM $table LIMIT $from,$limit");
 	if($result)
-		while($row = $db->fetch_row($result)) {
+		while($row = $DB->fetch_row($result)) {
 			if (get_magic_quotes_runtime()) $row=addslashes_deep($row);
 			$insert = "INSERT INTO $table VALUES (";
-			for($j=0; $j<$db->num_fields($result);$j++) {
+			for($j=0; $j<$DB->num_fields($result);$j++) {
 				if(is_null($row[$j])) $insert .= "NULL,";
 				else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
 				else $insert .= "'',";
@@ -213,14 +213,14 @@ function get_content($db, $table,$from,$limit)
 }
 
 
-function get_def($db, $table) {
+function get_def($DB, $table) {
 
 
 	$def = "### Dump table $table\n\n";
 	$def .= "DROP TABLE IF EXISTS `$table`;\n";
 	$query = "SHOW CREATE TABLE $table";
-	$result=$db->query($query);
-	$row=$db->fetch_array($result);
+	$result=$DB->query($query);
+	$row=$DB->fetch_array($result);
 
 	// DELETE charset definition : UNEEDED WHEN UTF8 CONVERSION OF THE DATABASE
 	$def.=preg_replace("/DEFAULT CHARSET.*/i",";",$row[1]);
@@ -228,37 +228,37 @@ function get_def($db, $table) {
 }
 
 
-function restoreMySqlDump($db,$dumpFile , $duree)
+function restoreMySqlDump($DB,$dumpFile , $duree)
 {
 	// $dumpFile, fichier source
-	// $database, nom de la base de données cible
+	// $database, nom de la base de donnï¿½s cible
 	// $mysqlUser, login pouyr la connexion au serveur MySql
 	// $mysqlPassword, mot de passe
 	// $histMySql, nom de la machine serveur MySQl
 	// $duree=timeout pour changement de page (-1 = aucun)
 
 	// Desactivation pour empecher les addslashes au niveau de la creation des tables
-	// En plus, au niveau du dump on considère qu'on est bon
+	// En plus, au niveau du dump on considï¿½e qu'on est bon
 	//set_magic_quotes_runtime(0);
 
-	global $db,$TPSCOUR,$offset,$cpt;
+	global $DB,$TPSCOUR,$offset,$cpt;
 
-	if ($db->error)
+	if ($DB->error)
 	{
-		echo "Connexion impossible à $hostMySql pour $mysqlUser";
+		echo "Connexion impossible ï¿½$hostMySql pour $mysqlUser";
 		return FALSE;
 	}
 
 	if(!file_exists($dumpFile))
 	{
-		echo "$dumpFile non trouvé<br>";
+		echo "$dumpFile non trouvï¿½br>";
 		return FALSE;
 	}
 	$fileHandle = fopen($dumpFile, "rb");
 
 	if(!$fileHandle)
 	{
-		echo "Ouverture de $dumpFile non trouvé<br>";
+		echo "Ouverture de $dumpFile non trouvï¿½br>";
 		return FALSE;
 	}
 
@@ -282,7 +282,7 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 
 		//    echo $TPSCOUR."<br>";
 
-		// on indique le  length pour la fonction fgets pour compatibilité avec les versions <=PHP 4.2
+		// on indique le  length pour la fonction fgets pour compatibilitï¿½avec les versions <=PHP 4.2
 		$buffer=fgets($fileHandle,102400);
 		if (substr($buffer,strlen($buffer),1)==0)
 			$buffer=substr($buffer,0,strlen($buffer)-1);
@@ -292,8 +292,8 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 			$formattedQuery .= $buffer;
 			if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
 			if (substr($formattedQuery,-1)==";"){
-				// Do not use the $db->query 
-				if ($db->query($formattedQuery)) //réussie sinon continue à conca&téner
+				// Do not use the $DB->query 
+				if ($DB->query($formattedQuery)) //rï¿½ssie sinon continue ï¿½conca&tï¿½er
 				{
 
 					$offset=ftell($fileHandle);
@@ -305,18 +305,18 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 
 	}
 
-	if ($db->error)
-		echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
+	if ($DB->error)
+		echo "<hr>ERREUR ï¿½partir de [$formattedQuery]<br>".$DB->error()."<hr>";
 
 	fclose($fileHandle);
 	$offset=-1;
 	return TRUE;
 }
 
-function backupMySql($db,$dumpFile, $duree,$rowlimit)
+function backupMySql($DB,$dumpFile, $duree,$rowlimit)
 {
 	// $dumpFile, fichier source
-	// $database, nom de la base de données cible
+	// $database, nom de la base de donnï¿½s cible
 	// $mysqlUser, login pouyr la connexion au serveur MySql
 	// $mysqlPassword, mot de passe
 	// $histMySql, nom de la machine serveur MySQl
@@ -324,9 +324,9 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 
 	global $TPSCOUR,$offsettable,$offsetrow,$cpt;
 
-	if ($db->error)
+	if ($DB->error)
 	{
-		echo "Connexion impossible à $hostMySql pour $mysqlUser";
+		echo "Connexion impossible ï¿½$hostMySql pour $mysqlUser";
 		return FALSE;
 	}
 
@@ -346,11 +346,11 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 
 	}
 
-	$result=$db->list_tables();
+	$result=$DB->list_tables();
 	$numtab=0;
-	while ($t=$db->fetch_array($result)){
+	while ($t=$DB->fetch_array($result)){
 
-		// on se  limite aux tables préfixées _glpi
+		// on se  limite aux tables prï¿½ixï¿½s _glpi
 		if (ereg("glpi_",$t[0])){
 			$tables[$numtab]=$t[0];
 			$numtab++;
@@ -362,7 +362,7 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 
 		// Dump de la structure table
 		if ($offsetrow==-1){
-			$todump="\n".get_def($db,$tables[$offsettable]);
+			$todump="\n".get_def($DB,$tables[$offsettable]);
 			fwrite ($fileHandle,$todump);
 			$offsetrow++;
 			$cpt++;
@@ -373,7 +373,7 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 
 		$fin=0;
 		while (!$fin){
-			$todump=get_content($db,$tables[$offsettable],$offsetrow,$rowlimit);
+			$todump=get_content($DB,$tables[$offsettable],$offsetrow,$rowlimit);
 			$rowtodump=substr_count($todump, "INSERT INTO");
 			if ($rowtodump>0){
 				fwrite ($fileHandle,$todump);
@@ -393,8 +393,8 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 		if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
 			return TRUE;
 	}
-	if ($db->error())
-		echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
+	if ($DB->error())
+		echo "<hr>ERREUR ï¿½partir de [$formattedQuery]<br>".$DB->error()."<hr>";
 	$offsettable=-1;
 	fclose($fileHandle);
 	return TRUE;
@@ -411,29 +411,29 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 
 	if (!isset($_GET["duree"])&&is_file($filename)){
-		echo "<div align='center'>".$lang["backup"][21]."</div>";
+		echo "<div align='center'>".$LANG["backup"][21]."</div>";
 	} else {
 		init_time(); //initialise le temps
-		//début de fichier
+		//dï¿½ut de fichier
 		if (!isset($_GET["offsettable"])) $offsettable=0; 
 		else $offsettable=$_GET["offsettable"]; 
-		//début de fichier
+		//dï¿½ut de fichier
 		if (!isset($_GET["offsetrow"])) $offsetrow=-1; 
 		else $offsetrow=$_GET["offsetrow"];
-		//timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
+		//timeout de 5 secondes par dï¿½aut, -1 pour utiliser sans timeout
 		if (!isset($_GET["duree"])) $duree=$defaulttimeout; 
 		else $duree=$_GET["duree"];
-		//Limite de lignes à dumper à chaque fois
+		//Limite de lignes ï¿½dumper ï¿½chaque fois
 		if (!isset($_GET["rowlimit"])) $rowlimit=$defaultrowlimit; 
 		else  $rowlimit=$_GET["rowlimit"];
 
-		//si le nom du fichier n'est pas en paramètre le mettre ici
+		//si le nom du fichier n'est pas en paramï¿½re le mettre ici
 		if (!isset($_GET["fichier"])) {
 			$fichier=$filename;
 		} else $fichier=$_GET["fichier"];
 
-		$tab=$db->list_tables();
-		$tot=$db->numrows($tab);
+		$tab=$DB->list_tables();
+		$tot=$DB->numrows($tab);
 		if(isset($offsettable)){
 			if ($offsettable>=0)
 				$percent=min(100,round(100*$offsettable/$tot,0));
@@ -446,7 +446,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 		}
 
 		if ($offsettable>=0){
-			if (backupMySql($db,$fichier,$duree,$rowlimit))
+			if (backupMySql($DB,$fichier,$duree,$rowlimit))
 			{
 				echo "<br>Redirection automatique sinon cliquez <a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
 				echo "<script>window.location=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
@@ -455,7 +455,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 			}
 		}
-		else  { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
+		else  { //echo "<div align='center'><p>Terminï¿½ Nombre de requï¿½es totales traitï¿½s : $cpt</p></div>";
 
 		}
 
@@ -482,10 +482,10 @@ if (isset($_GET["xmlnow"]) && $_GET["xmlnow"] !=""){
 if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 
 	init_time(); //initialise le temps
-	//début de fichier
+	//dï¿½ut de fichier
 	if (!isset($_GET["offset"])) $offset=0;
 	else  $offset=$_GET["offset"];
-	//timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
+	//timeout de 5 secondes par dï¿½aut, -1 pour utiliser sans timeout
 	if (!isset($_GET["duree"])) $duree=$defaulttimeout; 
 	else $duree=$_GET["duree"];
 
@@ -504,14 +504,14 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 	}
 
 	if ($offset!=-1){
-		if (restoreMySqlDump($db,$path.$_GET["file"],$duree))
+		if (restoreMySqlDump($DB,$path.$_GET["file"],$duree))
 		{
 			echo "<br>Redirection automatique sinon cliquez <a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">ici</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"backup.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
 			glpi_flush();
 			exit;
 		}
-	} else   { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
+	} else   { //echo "<div align='center'><p>Terminï¿½ Nombre de requï¿½es totales traitï¿½s : $cpt<p></div>";
 		optimize_tables();
 	}
 
@@ -523,13 +523,13 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 	$filename=$_GET["delfile"];
 	if (is_file($path.$_GET["delfile"])){
 		unlink($path.$_GET["delfile"]);
-		echo "<div align ='center'>".$filename." ".$lang["backup"][9]."</div>";
+		echo "<div align ='center'>".$filename." ".$LANG["backup"][9]."</div>";
 	}
 
 }
 
 // Title backup
-echo " <div align='center'> <table border='0'><tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/sauvegardes.png\" alt='".$lang["backup"][9]."'></td> <td><a href=\"javascript:dump('".$lang["backup"][19]."')\"  class='icon_consol'><b>". $lang["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$lang["backup"][19]."')\" class='icon_consol'><b>". $lang["backup"][1]."</b></a></td></tr></table>";
+echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt='".$LANG["backup"][9]."'></td> <td><a href=\"javascript:dump('".$LANG["backup"][19]."')\"  class='icon_consol'><b>". $LANG["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$LANG["backup"][19]."')\" class='icon_consol'><b>". $LANG["backup"][1]."</b></a></td></tr></table>";
 
 
 ?>
@@ -540,9 +540,9 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"".$cfg_glpi["ro
 <br>
 <table class='tab_cadre'  cellpadding="5">
 <tr align="center"> 
-<th><u><i><?php echo $lang["backup"][10]; ?></i></u></th>
-<th><u><i><?php echo $lang["backup"][11]; ?></i></u></th>
-<th><u><i><?php echo $lang["common"][27]; ?></i></u></th>
+<th><u><i><?php echo $LANG["backup"][10]; ?></i></u></th>
+<th><u><i><?php echo $LANG["backup"][11]; ?></i></u></th>
+<th><u><i><?php echo $LANG["common"][27]; ?></i></u></th>
 <th colspan='3'>&nbsp;</th>
 </tr>
 <?php
@@ -561,10 +561,10 @@ if (count($files)){
 		echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
 			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
-			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["backup"][20]."</a>&nbsp;</td>
 
-			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$lang["backup"][14]."</a>&nbsp;</td>
-			<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$lang["backup"][13]."</a></td></tr>";
+			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$LANG["backup"][14]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG["backup"][13]."</a></td></tr>";
 	}
 }
 closedir($dir);
@@ -586,10 +586,10 @@ if (count($files)){
 			<tr class='tab_bg_2'><td>$file&nbsp;</td>
 			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
-			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$lang["backup"][20]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["backup"][20]."</a>&nbsp;</td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
-			<td>&nbsp;<a  href=\"document.send.php?file=_dumps/$file\">".$lang["backup"][13]."</a></td></tr>";
+			<td>&nbsp;<a  href=\"document.send.php?file=_dumps/$file\">".$LANG["backup"][13]."</a></td></tr>";
 	}
 }
 closedir($dir);

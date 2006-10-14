@@ -51,20 +51,20 @@ if (!defined('GLPI_ROOT')){
  * @return nothing (display the form)
  **/
 function searchFormKnowbase($target,$contains){
-	global $lang,$cfg_glpi;
-	if ($cfg_glpi["public_faq"] == 0&&!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
+	global $LANG,$CFG_GLPI;
+	if ($CFG_GLPI["public_faq"] == 0&&!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
 
 	echo "<form method=post action=\"$target\">";
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe'>";
 
-	echo "<tr ><th colspan='4'><b>".$lang["search"][0].":</b></th></tr>";
-	echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". stripslashes($contains) ."\" ></td><td><input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' ></td>";
+	echo "<tr ><th colspan='4'><b>".$LANG["search"][0].":</b></th></tr>";
+	echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". stripslashes($contains) ."\" ></td><td><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit' ></td>";
 	// From helpdesk or central
 	if (ereg("\?",$target)) $separator="&amp;";
 	else $separator="?";
 
-	echo "<td><a href=\"".$target.$separator."toshow=all\">".$lang["knowbase"][21]."</a> </td>";
-	echo "<td ><a href=\"".$target.$separator."tohide=all\">".$lang["knowbase"][22]."</a>";
+	echo "<td><a href=\"".$target.$separator."toshow=all\">".$LANG["knowbase"][21]."</a> </td>";
+	echo "<td ><a href=\"".$target.$separator."tohide=all\">".$LANG["knowbase"][22]."</a>";
 	echo "</td></tr>";
 
 	echo "</table></div></form>";
@@ -84,15 +84,15 @@ function searchFormKnowbase($target,$contains){
 function titleknowbase(){
 
 
-	global  $lang,$cfg_glpi;
+	global  $LANG,$CFG_GLPI;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/knowbase.png\" alt='".$lang["knowbase"][2]."' title='".$lang["knowbase"][2]."'></td>";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/knowbase.png\" alt='".$LANG["knowbase"][2]."' title='".$LANG["knowbase"][2]."'></td>";
 	if (haveRight("faq","w")||haveRight("knowbase","w")){
 		echo "<td>";
-		echo "<a  class='icon_consol' href=\"knowbase.form.php?ID=new\"><b>".$lang["knowbase"][2]."</b></a>";
+		echo "<a  class='icon_consol' href=\"knowbase.form.php?ID=new\"><b>".$LANG["knowbase"][2]."</b></a>";
 		echo "</td>";
-	} else echo "<td><span class='icon_sous_nav'>".$lang["title"][5]."</span></td>";
+	} else echo "<td><span class='icon_sous_nav'>".$LANG["title"][5]."</span></td>";
 	echo "</tr>";
 	echo "</table></div>";
 
@@ -113,7 +113,7 @@ function showKbItemForm($target,$ID){
 
 	// show kb item form
 
-	global  $lang,$cfg_glpi;
+	global  $LANG,$CFG_GLPI;
 	if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
 	$ki= new kbitem;	
 
@@ -130,9 +130,9 @@ function showKbItemForm($target,$ID){
 	}	
 	echo "<div align='center'>";
 	echo "<div id='contenukb'>";
-	echo "<script type=\"text/javascript\" src=\"".$cfg_glpi["root_doc"]."/lib/tiny_mce/tiny_mce_gzip.php\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce_gzip.php\"></script>";
 	echo "<script language=\"javascript\" type=\"text/javascript\">";
-	echo "tinyMCE.init({	language : \"".$cfg_glpi["languages"][$_SESSION["glpilanguage"]][5]."\",  mode : \"exact\",  elements: \"answer\", plugins : \"table\", theme : \"advanced\",  theme_advanced_toolbar_location : \"top\", theme_advanced_toolbar_align : \"left\",   theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent\", theme_advanced_buttons2 : \"forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator\",  theme_advanced_buttons3 : \"\"});";
+	echo "tinyMCE.init({	language : \"".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][5]."\",  mode : \"exact\",  elements: \"answer\", plugins : \"table\", theme : \"advanced\",  theme_advanced_toolbar_location : \"top\", theme_advanced_toolbar_align : \"left\",   theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent\", theme_advanced_buttons2 : \"forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator\",  theme_advanced_buttons3 : \"\"});";
 	echo "</script>";
 	echo "<form method='post' id='form_kb' name='form_kb' action=\"$target\">";
 
@@ -142,20 +142,20 @@ function showKbItemForm($target,$ID){
 
 
 	echo "<fieldset>";
-	echo "<legend>".$lang["knowbase"][13]."</legend>";
-	echo "<p style='text-align:center'>".$lang["knowbase"][6];
+	echo "<legend>".$LANG["knowbase"][13]."</legend>";
+	echo "<p style='text-align:center'>".$LANG["knowbase"][6];
 	dropdownValue("glpi_dropdown_kbcategories","categoryID",$ki->fields["categoryID"]);
 	echo "</p>";
 	echo "</fieldset>";
 
 	echo "<fieldset>";
-	echo "<legend>".$lang["knowbase"][14]."</legend>";
+	echo "<legend>".$LANG["knowbase"][14]."</legend>";
 	echo "<div align='center'><textarea cols='80' rows='2'  name='question' >".$ki->fields["question"]."</textarea></div>"; 
 	echo "</fieldset>";
 
 
 	echo "<fieldset>";
-	echo "<legend>".$lang["knowbase"][15]."</legend><div align='center'>";
+	echo "<legend>".$LANG["knowbase"][15]."</legend><div align='center'>";
 	echo "<textarea cols='80' rows='30' id='answer'  name='answer' >".$ki->fields["answer"]."</textarea></div>"; 
 
 	echo "</fieldset>";
@@ -167,23 +167,23 @@ function showKbItemForm($target,$ID){
 		echo "<fieldset>";
 		echo "<div style='position: relative; text-align:left;'><span style='font-size:10px; color:#aaaaaa;'>";
 		if ($ki->fields["author"]){
-			echo $lang["common"][37]." : ".getUserName($ki->fields["author"],"1")."      ";
+			echo $LANG["common"][37]." : ".getUserName($ki->fields["author"],"1")."      ";
 		}
 		
 		echo "</span>";
 
 		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
 		if ($ki->fields["date_mod"]){
-			echo $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])."     ";
+			echo $LANG["common"][26]." : ".convDateTime($ki->fields["date_mod"])."     ";
 		}
 		echo "</span><br />";
 		echo "<span style='font-size:10px; color:#aaaaaa;'>";
 		if ($ki->fields["date"]){
-			echo $lang["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
+			echo $LANG["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
 		}
 		echo "</span>";
 		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
-		echo $lang["knowbase"][26]." : ".$ki->fields["view"]."</span></div>";
+		echo $LANG["knowbase"][26]." : ".$ki->fields["view"]."</span></div>";
 		
 
 		echo "</fieldset>";
@@ -196,14 +196,14 @@ function showKbItemForm($target,$ID){
 		} else {
 			echo "<input class='submit' type='checkbox' name='faq' value='yes'>";
 		}
-		echo $lang["knowbase"][5]."<br><br>\n";
+		echo $LANG["knowbase"][5]."<br><br>\n";
 	}
 
 	if (empty($ID)) {
 		echo "<input type='hidden' name='author' value=\"".$_SESSION['glpiID']."\">\n";
-		echo "<input type='submit' class='submit' name='add' value=\"".$lang["buttons"][2]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\">";
+		echo "<input type='submit' class='submit' name='add' value=\"".$LANG["buttons"][2]."\"> <input type='reset' class='submit' value=\"".$LANG["buttons"][16]."\">";
 	} else {
-		echo "<input type='submit' class='submit' name='update' value=\"".$lang["buttons"][7]."\"> <input type='reset' class='submit' value=\"".$lang["buttons"][16]."\">";
+		echo "<input type='submit' class='submit' name='update' value=\"".$LANG["buttons"][7]."\"> <input type='reset' class='submit' value=\"".$LANG["buttons"][16]."\">";
 	}
 
 	echo "</p>";
@@ -223,7 +223,7 @@ function showKbItemForm($target,$ID){
  **/
 function kbItemMenu($ID)
 {
-	global $lang, $cfg_glpi;
+	global $LANG, $CFG_GLPI;
 
 	if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
 
@@ -240,11 +240,11 @@ function kbItemMenu($ID)
 
 	if($isFAQ == "yes")
 	{
-		echo $lang["knowbase"][10]."</th></tr>";
+		echo $LANG["knowbase"][10]."</th></tr>";
 	}
 	else
 	{
-		echo $lang["knowbase"][11]."</th></tr>";
+		echo $LANG["knowbase"][11]."</th></tr>";
 	}
 
 
@@ -252,16 +252,16 @@ function kbItemMenu($ID)
 	if ($editFAQ)
 		if($isFAQ == "yes")
 		{
-			echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/faqremove.png\" alt='".$lang["knowbase"][7]."' title='".$lang["knowbase"][7]."'></a></td>\n";
+			echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".$LANG["knowbase"][7]."' title='".$LANG["knowbase"][7]."'></a></td>\n";
 		}
 		else
 		{
-			echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/faqadd.png\" alt='".$lang["knowbase"][5]."' title='".$lang["knowbase"][5]."'></a></td>\n";
+			echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".$LANG["knowbase"][5]."' title='".$LANG["knowbase"][5]."'></a></td>\n";
 		}
 
 	if ($edit){
-		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/faqedit.png\" alt='".$lang["knowbase"][8]."' title='".$lang["knowbase"][8]."'></a></td>\n";
-		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes\"><img class='icon_nav' src=\"".$cfg_glpi["root_doc"]."/pics/faqdelete.png\" alt='".$lang["knowbase"][9]."' title='".$lang["knowbase"][9]."'></a></td>";
+		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG["knowbase"][8]."' title='".$LANG["knowbase"][8]."'></a></td>\n";
+		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG["knowbase"][9]."' title='".$LANG["knowbase"][9]."'></a></td>";
 	}
 	echo "</tr>\n";
 	echo "</table></div>\n";
@@ -270,24 +270,24 @@ function kbItemMenu($ID)
 
 
 /**
- * Print out all kb catégories
+ * Print out all kb catï¿½ories
  *
  * 
  * 
  *
  * 
- * @return nothing (display all kb catégories)
+ * @return nothing (display all kb catï¿½ories)
  **/
 function showKbCategoriesall($target,$contains='')
 {
 
-	global $lang;	
+	global $LANG;	
 	if (!haveRight("knowbase","r")) return false;
 
 	searchFormKnowbase($target,$contains);
 
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
-	echo "<tr><th align='center' >".$lang["knowbase"][0]."</th></tr><tr><td align='left' class='tab_bg_3'>";	
+	echo "<tr><th align='center' >".$LANG["knowbase"][0]."</th></tr><tr><td align='left' class='tab_bg_3'>";	
 
 	showKbCategories(0,$contains);
 
@@ -296,22 +296,22 @@ function showKbCategoriesall($target,$contains='')
 
 
 /**
- * Print out kb catégories
+ * Print out kb catï¿½ories
  *
  * @param $parentID integer
  * @param $contains
  * 
  *
  * 
- * @return nothing (display kb catégories in a list)
+ * @return nothing (display kb catï¿½ories in a list)
  **/
 
 function showKbCategories($parentID=0,$contains='')
 {
-	// show kb catégories
+	// show kb catï¿½ories
 	// ok
 
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 
 	if (!haveRight("knowbase","r")) return false;
 
@@ -321,24 +321,24 @@ function showKbCategories($parentID=0,$contains='')
 	if ($parentID==0) showKbItemAll($parentID,$contains);
 
 	/// Show category
-	if ($result=$db->query($query)){
+	if ($result=$DB->query($query)){
 
-		if ($db->numrows($result)>0){
+		if ($DB->numrows($result)>0){
 			echo "<ul>";	
-			while ($row=$db->fetch_array($result)){
+			while ($row=$DB->fetch_array($result)){
 
 
 				$ID = $row["ID"];
 				echo "<li><b>";
 				if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 				if ($_SESSION["kb_show"][$ID]=='Y')
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$cfg_glpi["root_doc"]."/pics/puce-down.gif' alt='down'></a>";
+					echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce-down.gif' alt='down'></a>";
 				else 
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$cfg_glpi["root_doc"]."/pics/puce.gif' alt='up'></a>";
+					echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce.gif' alt='up'></a>";
 
 				echo " ".$row["name"]."</b>\n";
 				if (!empty($row["comments"])){
-					echo "<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
+					echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
 					echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
 				}
 				if ($_SESSION["kb_show"][$ID]=='Y'){
@@ -368,7 +368,7 @@ function showKbItemAll($parentID,$contains='')
 {
 	// show kb item in each categories
 
-	global $db;	
+	global $DB;	
 
 	if (!haveRight("knowbase","r")) return false;
 
@@ -382,12 +382,12 @@ function showKbItemAll($parentID,$contains='')
 	$query = "select * from glpi_kbitems where (categoryID = $parentID) $WHERE order by question asc";
 
 
-	if ($result=$db->query($query)){
+	if ($result=$DB->query($query)){
 
-		if ($db->numrows($result)>0){
+		if ($DB->numrows($result)>0){
 			echo "<ul>\n";
 
-			while ($row=$db->fetch_array($result)){
+			while ($row=$DB->fetch_array($result)){
 
 
 				$ID = $row["ID"];
@@ -412,17 +412,17 @@ function showKbItem($ID)
 {
 	// show each kb items
 
-	global $db,$cfg_glpi,  $lang;
+	global $DB,$CFG_GLPI,  $LANG;
 
 	$query = "select * from glpi_kbitems where (ID=$ID)";
 
 
-	if ($result=$db->query($query)){
-		$data = $db->fetch_array($result);
+	if ($result=$DB->query($query)){
+		$data = $DB->fetch_array($result);
 		$question = $data["question"];
 		$class="";
 		if ($data["faq"]=="no") $class=" class='pubfaq' ";
-		echo "<li><a $class href=\"".$cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=$ID\">&nbsp;".$question."&nbsp;</a>\n";
+		echo "<li><a $class href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID\">&nbsp;".$question."&nbsp;</a>\n";
 	}
 }
 
@@ -442,7 +442,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 {
 	// show item : question and answer
 
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 
 	if (!haveRight("user","r")) $linkauthor="no";
 
@@ -450,14 +450,14 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 
 	$ki->getfromDB($ID);
 	if ($ki->fields["faq"]=="yes"){
-		if ($cfg_glpi["public_faq"] == 0&&!haveRight("faq","r")) return false;	
+		if ($CFG_GLPI["public_faq"] == 0&&!haveRight("faq","r")) return false;	
 	}
 	else 
 		if (!haveRight("knowbase","r")) return false;	
 
 	//update counter view
 	$query="UPDATE glpi_kbitems SET view=view+1 WHERE ID = '$ID'";
-	$db->query($query);
+	$DB->query($query);
 
 
 
@@ -466,10 +466,10 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 
 	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 
-	echo "<strong>".$lang["common"][36].": ".$fullcategoryname."</strong></th></tr>";
+	echo "<strong>".$LANG["common"][36].": ".$fullcategoryname."</strong></th></tr>";
 
 	echo "<tr class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
-	echo ($ki->fields["faq"]=="yes") ? "".$lang["knowbase"][3]."" : "".$lang["knowbase"][14]."";
+	echo ($ki->fields["faq"]=="yes") ? "".$LANG["knowbase"][3]."" : "".$LANG["knowbase"][14]."";
 	echo "</h2>";
 
 	$question = $ki->fields["question"];
@@ -477,7 +477,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 	echo $question;
 	echo "</td></tr>\n";
 	echo "<tr  class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
-	echo ($ki->fields["faq"]=="yes") ? "".$lang["knowbase"][4]."" : "".$lang["knowbase"][15]."";
+	echo ($ki->fields["faq"]=="yes") ? "".$LANG["knowbase"][4]."" : "".$LANG["knowbase"][15]."";
 	echo "</h2>\n";
 
 	$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
@@ -487,19 +487,19 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 
 	echo "<tr><th style='text-align:left;font-size:10px; color:#aaaaaa;'>";
 	if($ki->fields["author"]){
-		echo $lang["common"][37]." : ";
+		echo $LANG["common"][37]." : ";
 		echo ($linkauthor=="yes") ? "".getUserName($ki->fields["author"],"1")."" : "".getUserName($ki->fields["author"])."";
 		echo " | ";
 	}
 	if($ki->fields["date"]){
-		echo $lang["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
+		echo $LANG["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
 	}	
 
 	echo "</th><th style='text-align:right;font-size:10px; color:#aaaaaa;'>";
 	if($ki->fields["date_mod"]){
-		echo  $lang["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ";
+		echo  $LANG["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ";
 	}
-	echo $lang["knowbase"][26]." : ".$ki->fields["view"]."</th></tr>";
+	echo $LANG["knowbase"][26]." : ".$ki->fields["view"]."</th></tr>";
 
 	echo "</table></div><br>";
 
@@ -524,8 +524,8 @@ function ShowKbItemFull($ID,$linkauthor="yes")
  **/
 function KbItemaddtofaq($ID)
 {
-	global $db;
-	$db->query("UPDATE glpi_kbitems SET faq='yes' WHERE ID='$ID'");
+	global $DB;
+	$DB->query("UPDATE glpi_kbitems SET faq='yes' WHERE ID='$ID'");
 }
 
 /**
@@ -539,8 +539,8 @@ function KbItemaddtofaq($ID)
  **/
 function KbItemremovefromfaq($ID)
 {
-	global $db;
-	$db->query("UPDATE glpi_kbitems SET faq='no' WHERE ID='$ID'");
+	global $DB;
+	$DB->query("UPDATE glpi_kbitems SET faq='no' WHERE ID='$ID'");
 }
 
 
@@ -556,17 +556,17 @@ function KbItemremovefromfaq($ID)
 function getFAQCategories()
 {
 
-	global $db;	
+	global $DB;	
 
 	$query = "select * from glpi_kbitems where (faq = 'yes')";
 
 	$catNumbers = array();
 
-	if ($result=$db->query($query)){
-		if ($db->numrows($result)>0){
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)>0){
 
 
-			while ($row=$db->fetch_array($result)){
+			while ($row=$DB->fetch_array($result)){
 				$catNumbers=getFAQParentCategories($row["categoryID"], $catNumbers);
 				array_push($catNumbers,$result["categoryID"]);
 			}
@@ -586,14 +586,14 @@ function getFAQCategories()
  **/
 function getFAQParentCategories($ID, $catNumbers)
 {
-	global $db;
+	global $DB;
 
 	$query = "select * from glpi_dropdown_kbcategories where (ID = '$ID')";
 
-	if ($result=$db->query($query)){
-		if ($db->numrows($result)>0){
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)>0){
 
-			$data = $db->fetch_array($result);
+			$data = $DB->fetch_array($result);
 
 			$parentID = $data["parentID"];
 			if(!in_array($parentID, $catNumbers))
@@ -612,24 +612,24 @@ function getFAQParentCategories($ID, $catNumbers)
 
 /**
  * 
- * Print out all FAQ catégories 
+ * Print out all FAQ catï¿½ories 
  * 
  * @param $target
  * @param $contains
  * 
- * @return nothing (display faq catégories)
+ * @return nothing (display faq catï¿½ories)
  **/
 function faqShowCategoriesall($target,$contains)
 {
 
-	global $lang,$cfg_glpi;	
+	global $LANG,$CFG_GLPI;	
 
-	if ($cfg_glpi["public_faq"] == 0 && !haveRight("faq","r")) return false;	
+	if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) return false;	
 
 	searchFormKnowbase($target,$contains);
 
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
-	echo "<tr ><th align='center' >".$lang["knowbase"][1]."</th></tr><tr class='tab_bg_2'><td  align='left'>";	
+	echo "<tr ><th align='center' >".$LANG["knowbase"][1]."</th></tr><tr class='tab_bg_2'><td  align='left'>";	
 
 
 
@@ -650,7 +650,7 @@ function faqShowCategoriesall($target,$contains)
  **/
 function faqShowCategories($target,$parentID=0,$contains='')
 {
-	global $db,$cfg_glpi,$lang;
+	global $DB,$CFG_GLPI,$LANG;
 
 	$catNumbers = getFAQCategories();
 
@@ -659,13 +659,13 @@ function faqShowCategories($target,$parentID=0,$contains='')
 
 	if ($parentID==0) faqShowItems($target,$parentID,$contains);
 
-	if ($result=$db->query($query)){
+	if ($result=$DB->query($query)){
 
 
-		if ($db->numrows($result)>0){
+		if ($DB->numrows($result)>0){
 
 
-			while ($row=$db->fetch_array($result)){
+			while ($row=$DB->fetch_array($result)){
 
 				$ID = $row["ID"];
 
@@ -676,14 +676,14 @@ function faqShowCategories($target,$parentID=0,$contains='')
 					echo "<li><b>";
 					if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 					if ($_SESSION["kb_show"][$ID]=='Y')
-						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;tohide=$ID\"><img src='".$cfg_glpi["root_doc"]."/pics/puce-down.gif'></a>";
+						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;tohide=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce-down.gif'></a>";
 					else 
-						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$cfg_glpi["root_doc"]."/pics/puce.gif'></a>";
+						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce.gif'></a>";
 
 					echo " ".$row["name"]."</b>\n";
 
 					if (!empty($row["comments"])){
-						echo "<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
+						echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$ID')\" onmouseover=\"cleandisplay('comments_$ID')\">";
 						echo "<span class='over_link' id='comments_$ID'>".nl2br($row['comments'])."</span>";
 					}
 
@@ -712,7 +712,7 @@ function faqShowCategories($target,$parentID=0,$contains='')
  **/
 function faqShowItems($target,$parentID,$contains)
 {
-	global $db;
+	global $DB;
 	// ok	
 
 	$WHERE="";
@@ -725,10 +725,10 @@ function faqShowItems($target,$parentID,$contains)
 	$query = "select * from glpi_kbitems where (categoryID = $parentID) and (faq = 'yes') $WHERE order by question asc";
 
 
-	if ($result=$db->query($query)){
-		if ($db->numrows($result)>0){
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)>0){
 			echo "<ul>\n";
-			while ($row=$db->fetch_array($result)){
+			while ($row=$DB->fetch_array($result)){
 				$ID = $row["ID"];
 				faqShowItem($target,$ID);
 			}
@@ -751,13 +751,13 @@ function faqShowItem($target,$ID)
 {
 	// ok
 
-	global $db,$cfg_glpi;
+	global $DB,$CFG_GLPI;
 
 	$query = "select * from glpi_kbitems where (ID=$ID)";
 
 
-	if ($result=$db->query($query)){
-		$data = $db->fetch_array($result);
+	if ($result=$DB->query($query)){
+		$data = $DB->fetch_array($result);
 		$question = $data["question"];
 		if (ereg("\?",$target)) $target.="&amp;";
 		else $target.="?";
@@ -777,13 +777,13 @@ function faqShowItem($target,$ID)
  * @return 
  **/
 function initExpandSessionVar(){
-	global $db;
+	global $DB;
 	if (!isset($_SESSION["kb_show"])){
 		$query = "select ID from glpi_dropdown_kbcategories";
 
 
-		if ($result=$db->query($query)){
-			while ($data=$db->fetch_array($result))
+		if ($result=$DB->query($query)){
+			while ($data=$DB->fetch_array($result))
 				$_SESSION["kb_show"][$data["ID"]]='Y';
 		}
 	}	
@@ -813,13 +813,13 @@ function ExpandSessionVarHide($ID){
  * @return 
  **/
 function ExpandSessionVarShow($ID,$recurse=0){
-	global $db;
+	global $DB;
 	$_SESSION["kb_show"][$ID]='Y';
 	if ($recurse!=0){
 
 		$query="select parentID from glpi_dropdown_kbcategories where ID='$ID'";
-		$result=$db->query($query);
-		$data=$db->fetch_array($result);
+		$result=$DB->query($query);
+		$data=$DB->fetch_array($result);
 		if ($data["parentID"]!=0)
 			ExpandSessionVarShow($data["parentID"],$recurse);
 	}
@@ -836,11 +836,11 @@ function ExpandSessionVarShow($ID,$recurse=0){
  * @return 
  **/
 function ExpandSessionVarHideAll(){
-	global $db;
+	global $DB;
 	$query = "select ID from glpi_dropdown_kbcategories";
 
-	if ($result=$db->query($query)){
-		while ($data=$db->fetch_array($result))
+	if ($result=$DB->query($query)){
+		while ($data=$DB->fetch_array($result))
 			$_SESSION["kb_show"][$data["ID"]]='N';
 	}
 }
@@ -855,11 +855,11 @@ function ExpandSessionVarHideAll(){
  * @return 
  **/
 function ExpandSessionVarShowAll(){
-	global $db;
+	global $DB;
 	$query = "select ID from glpi_dropdown_kbcategories";
 
-	if ($result=$db->query($query)){
-		while ($data=$db->fetch_array($result))
+	if ($result=$DB->query($query)){
+		while ($data=$DB->fetch_array($result))
 			$_SESSION["kb_show"][$data["ID"]]='Y';
 	}
 }
@@ -874,21 +874,21 @@ function ExpandSessionVarShowAll(){
  * @return 
  **/
 function searchLimitSessionVarKnowbase($contains){
-	global $db;
+	global $DB;
 	ExpandSessionVarHideAll();	
 
 	$SEARCH=makeTextSearch($contains);
 
 	// Recherche categories
 	$query = "select ID from glpi_dropdown_kbcategories WHERE name $SEARCH";
-	if ($result=$db->query($query)){
-		while ($data=$db->fetch_array($result))
+	if ($result=$DB->query($query)){
+		while ($data=$DB->fetch_array($result))
 			ExpandSessionVarShow($data["ID"],1);
 	}
 	// Recherche items
 	$query = "select categoryID from glpi_kbitems WHERE question $SEARCH OR answer $SEARCH";
-	if ($result=$db->query($query)){
-		while ($data=$db->fetch_array($result))
+	if ($result=$DB->query($query)){
+		while ($data=$DB->fetch_array($result))
 			ExpandSessionVarShow($data["categoryID"],1);
 	}
 

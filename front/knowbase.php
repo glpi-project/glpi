@@ -43,10 +43,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
 
 if (isset($_GET["ID"]))
-glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
+glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
 
 
-commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][5],$_SERVER["PHP_SELF"]);
 
 initExpandSessionVar();
 

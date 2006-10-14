@@ -44,7 +44,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][16],$_SERVER["PHP_SELF"]);
 
 
 $item_db_name[COMPUTER_TYPE] = "glpi_computers";
@@ -57,7 +57,7 @@ $item_db_name[PHONE_TYPE] = "glpi_phones";
 
 
 # Titre
-echo "<div align='center'><big><strong>".$lang["reports"][57]."</strong></big><br><br>";
+echo "<div align='center'><big><strong>".$LANG["reports"][57]."</strong></big><br><br>";
 
 # Construction  la requete, et appel de la fonction affichant les valeurs.
 if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] != '0')

@@ -115,24 +115,24 @@ function manageGetValuesInSearch($type=0){
  *
  **/
 function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link="",$distinct="Y",$link2="",$contains2="",$field2="",$type2=""){
-	global $lang,$SEARCH_OPTION,$cfg_glpi,$LINK_ID_TABLE;
+	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE;
 	$options=$SEARCH_OPTION[$type];
 
 
 	// Mete search names
 	$names=array(
-			COMPUTER_TYPE => $lang["Menu"][0],
-			//		NETWORKING_TYPE => $lang["Menu"][1],
-			PRINTER_TYPE => $lang["Menu"][2],
-			MONITOR_TYPE => $lang["Menu"][3],
-			PERIPHERAL_TYPE => $lang["Menu"][16],
-			SOFTWARE_TYPE => $lang["Menu"][4],
-			PHONE_TYPE => $lang["Menu"][34],	
+			COMPUTER_TYPE => $LANG["Menu"][0],
+			//		NETWORKING_TYPE => $LANG["Menu"][1],
+			PRINTER_TYPE => $LANG["Menu"][2],
+			MONITOR_TYPE => $LANG["Menu"][3],
+			PERIPHERAL_TYPE => $LANG["Menu"][16],
+			SOFTWARE_TYPE => $LANG["Menu"][4],
+			PHONE_TYPE => $LANG["Menu"][34],	
 		    );
 
 	echo "<form method=get action=\"$target\">";
 	echo "<div align='center'><table border='0'  class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='5'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='5'><b>".$LANG["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<table>";
@@ -142,14 +142,14 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		echo "<tr><td align='right'>";
 		// First line display add / delete images for normal and meta search items
 		if ($i==0){
-			echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$cfg_glpi["root_doc"]."/pics/plus.png\" alt='+' title='".$lang["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"][$type]>1)
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?delete_search_count=1&amp;type=$type'><img src=\"".$cfg_glpi["root_doc"]."/pics/moins.png\" alt='-' title='".$lang["search"][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".$LANG["search"][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
 			if (isset($names[$type])){
-				echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?add_search_count2=1&amp;type=$type'><img src=\"".$cfg_glpi["root_doc"]."/pics/meta_plus.png\" alt='+' title='".$lang["search"][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count2=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".$LANG["search"][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 				if ($_SESSION["glpisearchcount2"][$type]>0)
-					echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?delete_search_count2=1&amp;type=$type'><img src=\"".$cfg_glpi["root_doc"]."/pics/meta_moins.png\" alt='-' title='".$lang["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count2=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title='".$LANG["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
 		// Display link item
@@ -177,13 +177,13 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 		// display search field
 		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
 		echo "&nbsp;";
-		echo $lang["search"][10]."&nbsp;";
+		echo $LANG["search"][10]."&nbsp;";
 
 		// display select box to define serach item
 		echo "<select name=\"field[$i]\" size='1'>";
 		echo "<option value='view' ";
 		if(is_array($field)&&isset($field[$i]) && $field[$i] == "view") echo "selected";
-		echo ">".$lang["search"][11]."</option>";
+		echo ">".$LANG["search"][11]."</option>";
 
 		reset($options);
 		$first_group=true;
@@ -204,7 +204,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 
 		echo "<option value='all' ";
 		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
-		echo ">".$lang["search"][7]."</option>";
+		echo ">".$LANG["search"][7]."</option>";
 
 		echo "</select>&nbsp;";
 
@@ -279,7 +279,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			echo "<script type='text/javascript' >\n";
 			echo "   new Form.Element.Observer('type2_".$type."_".$i."_$rand', 1, \n";
 			echo "      function(element, value) {\n";
-			echo "      	new Ajax.Updater('show_".$type."_".$i."_$rand','".$cfg_glpi["root_doc"]."/ajax/updateSearch.php',{asynchronous:true, evalScripts:true, \n";	
+			echo "      	new Ajax.Updater('show_".$type."_".$i."_$rand','".$CFG_GLPI["root_doc"]."/ajax/updateSearch.php',{asynchronous:true, evalScripts:true, \n";	
 			echo "           method:'post', parameters:'type='+value+'&num=$i&field=".(is_array($field2)&&isset($field2[$i])?$field2[$i]:"")."&val=".(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:"")."'\n";
 			echo "})})\n";
 			echo "</script>\n";
@@ -301,7 +301,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 
 	// Display sort selection
 	echo "<td>";
-	echo $lang["search"][4];
+	echo $LANG["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($options);
 	$first_group=true;
@@ -326,24 +326,24 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	// Display deleted selection
 	echo "<td>";
 	//	echo "<table>";
-	if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["deleted_tables"])){
+	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
 		//echo "<tr><td>";
 		echo "<select name='deleted'>";
-		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">".$lang["choice"][1]."</option>";
-		echo "<option value='N' ".($deleted=='N'?" selected ":"").">".$lang["choice"][0]."</option>";
+		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">".$LANG["choice"][1]."</option>";
+		echo "<option value='N' ".($deleted=='N'?" selected ":"").">".$LANG["choice"][0]."</option>";
 		echo "</select>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/showdeleted.png\" alt='".$lang["common"][3]."' title='".$lang["common"][3]."'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG["common"][3]."' title='".$LANG["common"][3]."'>";
 		//echo "</td></tr>";
 	}
 
 	echo "</td>";
 	// Display Reset search
 	echo "<td>";
-	echo "<a href='".$cfg_glpi["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$lang["buttons"][16]."\" alt=\"".$lang["buttons"][16]."\" src='".$cfg_glpi["root_doc"]."/pics/reset.png' class='calendrier'></a>";
+	echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 	echo "</td>";
 	// Display submit button
 	echo "<td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit' >";
+	echo "<input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit' >";
 	echo "</td></tr></table></div>";
 	// Reset to start when submit new search
 	echo "<input type='hidden' name='start' value='0'>";
@@ -376,18 +376,18 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
  *
  **/
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
-	global $db,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$cfg_glpi,$lang;
+	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG;
 
 	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor","glpi_tracking");
 
 	$names=array(
-			COMPUTER_TYPE => $lang["Menu"][0],
-			//		NETWORKING_TYPE => $lang["Menu"][1],
-			PRINTER_TYPE => $lang["Menu"][2],
-			MONITOR_TYPE => $lang["Menu"][3],
-			PERIPHERAL_TYPE => $lang["Menu"][16],
-			SOFTWARE_TYPE => $lang["Menu"][4],
+			COMPUTER_TYPE => $LANG["Menu"][0],
+			//		NETWORKING_TYPE => $LANG["Menu"][1],
+			PRINTER_TYPE => $LANG["Menu"][2],
+			MONITOR_TYPE => $LANG["Menu"][3],
+			PERIPHERAL_TYPE => $LANG["Menu"][16],
+			SOFTWARE_TYPE => $LANG["Menu"][4],
 		    );	
 
 	// Get the items to display
@@ -396,15 +396,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	array_push($toview,1);
 	// Add default items
 	$query="SELECT * FROM glpi_display WHERE type='$type' AND FK_users='".$_SESSION["glpiID"]."' ORDER by rank";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 	// GET default serach options
-	if ($db->numrows($result)==0){
+	if ($DB->numrows($result)==0){
 		$query="SELECT * FROM glpi_display WHERE type='$type' AND FK_users='0' ORDER by rank";
-		$result=$db->query($query);
+		$result=$DB->query($query);
 	}
 
-	if ($db->numrows($result)>0){
-		while ($data=$db->fetch_array($result))
+	if ($DB->numrows($result)>0){
+		while ($data=$DB->fetch_array($result))
 			if (isset($SEARCH_OPTION[$type][$data["num"]]))
 				array_push($toview,$data["num"]);
 	}
@@ -471,13 +471,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// default string
 	$WHERE = " WHERE ";
 	// Add deleted if item have it
-	if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["deleted_tables"])){
+	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
 	}
 	// Remove template items
-	if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["template_tables"])){
+	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".is_template='0' ";
@@ -699,22 +699,22 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$numrows=0;
 	//No search : count number of items using a simple count(ID) request and LIMIT search
 	if ($nosearch) {
-		$LIMIT= " LIMIT $start, ".$cfg_glpi["list_limit"];
+		$LIMIT= " LIMIT $start, ".$CFG_GLPI["list_limit"];
 		$query_num="SELECT count(ID) FROM ".$LINK_ID_TABLE[$type];
 
 		$first=true;
-		if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["deleted_tables"])){
+		if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
 			$LINK= " AND " ;
 			if ($first) {$LINK=" WHERE ";$first=false;}
 			$query_num.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
 		}
-		if (in_array($LINK_ID_TABLE[$type],$cfg_glpi["template_tables"])){
+		if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 			$LINK= " AND " ;
 			if ($first) {$LINK=" WHERE ";$first=false;}
 			$query_num.= $LINK.$LINK_ID_TABLE[$type].".is_template='0' ";
 		}
-		$result_num = $db->query($query_num);
-		$numrows= $db->result($result_num,0,0);
+		$result_num = $DB->query($query_num);
+		$numrows= $DB->result($result_num,0,0);
 	}
 
 	// If export_all reset LIMIT condition
@@ -724,7 +724,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if ($WHERE == " WHERE ") $WHERE="";
 
 
-	$db->query("SET SESSION group_concat_max_len = 9999999;");
+	$DB->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
 	//echo $QUERY."<br>\n";
@@ -736,10 +736,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 
 	// Get it from database and DISPLAY
-	if ($result = $db->query($QUERY)) {
+	if ($result = $DB->query($QUERY)) {
 		// if real search or complet eexport : get numrows from request 
 		if (!$nosearch||isset($_GET['export_all'])) 
-			$numrows= $db->numrows($result);
+			$numrows= $DB->numrows($result);
 		// If the begin of the view is before the number of items
 		if ($start<$numrows) {
 
@@ -754,7 +754,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$isadmin=haveTypeRight($type,"w");
 
 			if ($isadmin&&$output_type==HTML_OUTPUT){
-				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$cfg_glpi["root_doc"]."/front/massiveaction.php\">";
+				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
 			}
 
 			// Compute number of columns to display
@@ -773,11 +773,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Define begin and end var for loop
 			// Search case
 			$begin_display=$start;
-			$end_display=$start+$cfg_glpi["list_limit"];
+			$end_display=$start+$CFG_GLPI["list_limit"];
 			// No search Case
 			if ($nosearch){
 				$begin_display=0;
-				$end_display=min($numrows-$start,$cfg_glpi["list_limit"]);
+				$end_display=min($numrows-$start,$CFG_GLPI["list_limit"]);
 			}
 			// Export All case
 			if (isset($_GET['export_all'])) {
@@ -812,17 +812,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					}
 			// Add specific column Header
 			if ($type==SOFTWARE_TYPE)
-				echo displaySearchHeaderItem($output_type,$lang["software"][11],$header_num);
+				echo displaySearchHeaderItem($output_type,$LANG["software"][11],$header_num);
 			if ($type==CARTRIDGE_TYPE)
-				echo displaySearchHeaderItem($output_type,$lang["cartridges"][0],$header_num);	
+				echo displaySearchHeaderItem($output_type,$LANG["cartridges"][0],$header_num);	
 			if ($type==CONSUMABLE_TYPE)
-				echo displaySearchHeaderItem($output_type,$lang["consumables"][0],$header_num);
+				echo displaySearchHeaderItem($output_type,$LANG["consumables"][0],$header_num);
 			// End Line for column headers		
 			echo displaySearchEndLine($output_type);
 
 			// if real search seek to begin of items to display (because of complete search)
 			if (!$nosearch)
-				$db->data_seek($result,$start);
+				$DB->data_seek($result,$start);
 
 			// Define begin and end var for loop
 			// Search case
@@ -835,7 +835,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// Column num
 				$item_num=1;
 				// Get data and increment loop variables
-				$data=$db->fetch_assoc($result);
+				$data=$DB->fetch_assoc($result);
 				$i++;
 				$row_num++;
 				// New line
@@ -904,10 +904,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 							if (isset($link[$key])) $title.=" ".$link[$key]." ";
 							switch ($field[$key]){
 								case "all":
-									$title.=$lang["search"][7];
+									$title.=$LANG["search"][7];
 								break;
 								case "view":
-									$title.=$lang["search"][11];
+									$title.=$LANG["search"][11];
 								break;
 								default :
 								$title.=$SEARCH_OPTION[$type][$field[$key]]["name"];
@@ -937,9 +937,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($isadmin&&$output_type==HTML_OUTPUT){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='80%'>";
-				echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all'>".$lang["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none'>".$lang["buttons"][19]."</a>";
+				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td align='left' width='80%'>";
 				dropdownMassiveAction($type,$deleted);
 				echo "</td>";
@@ -958,7 +958,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 		}
 	}
-	else echo $db->error();
+	else echo $DB->error();
 
 }
 
@@ -1188,7 +1188,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
  *
  **/
 function addWhere ($nott,$type,$ID,$val,$meta=0){
-	global $LINK_ID_TABLE,$lang,$SEARCH_OPTION;
+	global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION;
 
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
@@ -1328,13 +1328,13 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 			break;
 			case "glpi_users.active":
 
-				if (!eregi($val,$lang["choice"][1])&&!eregi($val,$lang["choice"][0])&&$val!="NULL")
+				if (!eregi($val,$LANG["choice"][1])&&!eregi($val,$LANG["choice"][0])&&$val!="NULL")
 					return "( 0 = 1 )";
 
 			$ADD="";
 			if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
 
-			if (eregi($val,$lang["choice"][1])||$val==1) $val=1;
+			if (eregi($val,$LANG["choice"][1])||$val==1) $val=1;
 			else $val=0;
 			if ($nott)
 				return " ($table.$field <> $val ".$ADD." ) ";
@@ -1365,7 +1365,7 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
  *
  **/
 function giveItem ($type,$field,$data,$num,$linkfield=""){
-	global $cfg_glpi,$INFOFORM_PAGES,$cfg_glpi,$lang;
+	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG;
 
 	switch ($field){
 		case "glpi_licenses.serial" :
@@ -1385,29 +1385,29 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 
 		break;
 		case "glpi_users.active" :
-			return $lang["choice"][$data["ITEM_$num"]];
+			return $LANG["choice"][$data["ITEM_$num"]];
 		break;
 		case "glpi_users.name" :		
 			// USER search case
 			if (empty($linkfield)){
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
-				if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 				$out.= "</a>";
-				$out.= "&nbsp;<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ID"]."\">";
-				$out.= "<img alt='".$lang["common"][25]."' src='".$cfg_glpi["root_doc"]."/pics/aide.png'>";
+				$out.= "&nbsp;<a href=\"".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["ID"]."\">";
+				$out.= "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
 				$out.= "</a>";
 			} else {
 				$type=USER_TYPE;
 				$out="";
 				if ($data["ITEM_".$num."_3"]>0)
-					$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$data["ITEM_".$num."_3"]."\">";
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["ITEM_".$num."_3"]."\">";
 				// print realname or login name
 				if (!empty($data["ITEM_".$num."_2"])||!empty($data["ITEM_".$num."_4"]))
 					$out .= $data["ITEM_".$num."_2"]." ".$data["ITEM_".$num."_4"];
 				else $out .= $data["ITEM_$num"];
 
-				if ($data["ITEM_".$num."_3"]>0&&($cfg_glpi["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
+				if ($data["ITEM_".$num."_3"]>0&&($CFG_GLPI["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
 
 				if ($data["ITEM_".$num."_3"]>0)
 					$out.= "</a>";
@@ -1429,9 +1429,9 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				return $out;
 			} else {
 				if ($type==GROUP_TYPE){
-					$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 					$out.= $data["ITEM_$num"];
-					if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 					$out.= "</a>";
 				} else {
 					$out= $data["ITEM_$num"];
@@ -1453,9 +1453,9 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			case "glpi_type_docs.name" :
 			case "glpi_links.name" :
 			case "glpi_docs.name" :
-			$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 		$out.= $data["ITEM_$num"];
-		if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+		if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 		$out.= "</a>";
 		return $out;
 		break;
@@ -1463,9 +1463,9 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 
 		case "glpi_contracts.name" :
 			if ($type==CONTRACT_TYPE){
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
-				if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 				$out.= "</a>";
 			} else {
 				$out= $data["ITEM_$num"];
@@ -1475,23 +1475,23 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 
 		case "glpi_enterprises.name" :
 			if (empty($linkfield)){
-				$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
-				if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 				$out.= "</a>";
 				if (!empty($data["ITEM_".$num."_2"]))
-					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$cfg_glpi["root_doc"]."/pics/web.png' alt='website'></a>";
+					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
 			} else {
 				$type=ENTERPRISE_TYPE;
 				$out="";
 				if ($data["ITEM_".$num."_3"]>0)
-					$out= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($data["ITEM_".$num."_3"]>0&&($cfg_glpi["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
+				if ($data["ITEM_".$num."_3"]>0&&($CFG_GLPI["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
 				if ($data["ITEM_".$num."_3"]>0)
 					$out.= "</a>";
 				if (!empty($data["ITEM_".$num."_2"]))
-					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$cfg_glpi["root_doc"]."/pics/web.png' alt='website'></a>";
+					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
 			}
 		return $out;
 		break;	
@@ -1499,9 +1499,9 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			$type=ENTERPRISE_TYPE;
 		$out="";
 		if (!empty($data["ITEM_".$num."_3"])){
-			$out.= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
+			$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
 			$out.= $data["ITEM_$num"];
-			if ($cfg_glpi["view_ID"]||empty($data["ITEM_$num"])) 
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) 
 				$out.= " (".$data["ITEM_".$num."_3"].")";
 			$out.= "</a>";
 		}
@@ -1509,7 +1509,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		break;
 		case "glpi_type_docs.icon" :
 			if (!empty($data["ITEM_$num"]))
-				return "<img style='vertical-align:middle;' alt='' src='".$cfg_glpi["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
+				return "<img style='vertical-align:middle;' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
 			else return "&nbsp;";
 			break;	
 
@@ -1585,7 +1585,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 						case "glpi_contracts.periodicity":
 						case "glpi_contracts.facturation":
 						if (!empty($data["ITEM_$num"]))
-							return $data["ITEM_$num"]." ".$lang["financial"][57];
+							return $data["ITEM_$num"]." ".$LANG["financial"][57];
 						else return "&nbsp;";
 						break;
 						case "glpi_contracts.renewal":
@@ -1619,12 +1619,12 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 						break;
 						case "glpi_infocoms.amort_time":
 							if (!empty($data["ITEM_$num"]))
-								return $data["ITEM_$num"]." ".$lang["financial"][9];
+								return $data["ITEM_$num"]." ".$LANG["financial"][9];
 							else return "&nbsp;";
 							break;
 							case "glpi_infocoms.warranty_duration":
 								if (!empty($data["ITEM_$num"]))
-									return $data["ITEM_$num"]." ".$lang["financial"][57];
+									return $data["ITEM_$num"]." ".$LANG["financial"][57];
 								else return "&nbsp;";
 								break;
 								case "glpi_infocoms.amort_type":
@@ -1632,7 +1632,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 								break;
 								case "glpi_tracking.count":
 									if ($data["ITEM_$num"]>0&&haveRight("show_ticket","1")){
-										$out= "<a href=\"".$cfg_glpi["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
+										$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
 										$out.= $data["ITEM_$num"];
 										$out.="</a>";
 									} else $out= $data["ITEM_$num"];

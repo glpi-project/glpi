@@ -39,10 +39,10 @@ checkRight("link","r");
 if (isset($_GET["lID"])){
 	$query="SELECT glpi_links.ID as ID, glpi_links.link as link,glpi_links.data as data from glpi_links WHERE glpi_links.ID='".$_GET["lID"]."'";
 
-	$result=$db->query($query);
-	if ($db->numrows($result)==1){
-		$file=$db->result($result,0,"data");
-		$link=$db->result($result,0,"link");
+	$result=$DB->query($query);
+	if ($DB->numrows($result)==1){
+		$file=$DB->result($result,0,"data");
+		$link=$DB->result($result,0,"link");
 
 		$ci=new CommonItem;
 
@@ -98,9 +98,9 @@ if (isset($_GET["lID"])){
 		$i=0;
 		if (ereg("\[IP\]",$file)||ereg("\[MAC\]",$file)){
 			$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = ".$_GET["ID"]." AND device_type = ".$_GET["type"].") ORDER BY logical_number";
-			$result2=$db->query($query2);
-			if ($db->numrows($result2)>0){
-				$data2=$db->fetch_array($result2);
+			$result2=$DB->query($query2);
+			if ($DB->numrows($result2)>0){
+				$data2=$DB->fetch_array($result2);
 				$ipmac[$i]['ifaddr']=$data2["ifaddr"];
 				$ipmac[$i]['ifmac']=$data2["ifmac"];
 			}

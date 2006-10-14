@@ -44,7 +44,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 if (isset($_POST["changepw"])) {
-	if ($cfg_glpi["debug"]==DEMO_MODE){
+	if ($CFG_GLPI["debug"]==DEMO_MODE){
 		checkRight("config","w");
 	} else {
 		checkRight("password_update","1");
@@ -55,7 +55,7 @@ if (isset($_POST["changepw"])) {
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["updatesort"])) {
-	if ($cfg_glpi["debug"]==DEMO_MODE){
+	if ($CFG_GLPI["debug"]==DEMO_MODE){
 		checkRight("config","w");
 	} else {
 		checkLoginUser();
@@ -65,7 +65,7 @@ if (isset($_POST["changepw"])) {
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["changelang"])) {
-	if ($cfg_glpi["debug"]==DEMO_MODE){
+	if ($CFG_GLPI["debug"]==DEMO_MODE){
 		checkRight("config","w");
 	} else {
 		checkLoginUser();
@@ -75,15 +75,15 @@ if (isset($_POST["changepw"])) {
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	if ($cfg_glpi["debug"]==DEMO_MODE){
+	if ($CFG_GLPI["debug"]==DEMO_MODE){
 		checkRight("config","w");
 	} else {
 		checkCentralAccess();
 	}
-	commonHeader($lang["title"][17],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][17],$_SERVER["PHP_SELF"]);
 	// titre
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][11]."</b></span>";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/preferences.png\" alt='".$LANG["Menu"][11]."' title='".$LANG["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$LANG["Menu"][11]."</b></span>";
 	echo "</td></tr></table></div>";
 	if ($_SESSION["glpiextauth"]!=1&&haveRight("password_update","1"))
 		showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);

@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("networking","r");
 
-commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][6],$_SERVER["PHP_SELF"]);
 
 $netdevice=new Netdevice();
 $netdevice->title();

@@ -136,7 +136,7 @@ else if (isset($tab["form"]))
 {
 	checkRight("software","w");
 
-	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][12],$_SERVER["PHP_SELF"]);
 	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"]);
 	commonFooter();
 }
@@ -166,8 +166,8 @@ else if (isset($tab["uninstall"]))
 }
 else if (isset($tab["unglobalize"])&&isset($tab["ID"])){
 	unglobalizeLicense($tab["ID"]);
-	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][60]);
-	glpi_header($cfg_glpi["root_doc"]."/front/software.form.php?ID=".$tab["sID"]);
+	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$tab["sID"]);
 }
 else if (isset($tab["back"]))
 {

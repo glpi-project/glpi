@@ -48,14 +48,14 @@ class CommonDBTM {
 	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
-		global $db;
+		global $DB;
 		if (empty($ID)) return false;
 
 		$query = "SELECT * FROM ".$this->table." WHERE (ID = '$ID')";
 
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)==1){
-				$this->fields = $db->fetch_assoc($result);
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)==1){
+				$this->fields = $DB->fetch_assoc($result);
 				return true;
 			} else return false;
 		} else {
@@ -65,8 +65,8 @@ class CommonDBTM {
 
 	function getEmpty () {
 		//make an empty database object
-		global $db;
-		if ($fields = $db->list_fields($this->table)){
+		global $DB;
+		if ($fields = $DB->list_fields($this->table)){
 			foreach ($fields as $key => $val){
 				$this->fields[$key] = "";
 			}
@@ -79,7 +79,7 @@ class CommonDBTM {
 
 	function updateInDB($updates)  {
 
-		global $db;
+		global $DB;
 
 		for ($i=0; $i < count($updates); $i++) {
 			$query  = "UPDATE `".$this->table."` SET `";
@@ -96,7 +96,7 @@ class CommonDBTM {
 			$query .= $this->fields["ID"];	
 			$query .= "'";
 
-			$result=$db->query($query);
+			$result=$DB->query($query);
 		}
 		$this->post_updateInDB($updates);
 		return true;
@@ -108,7 +108,7 @@ class CommonDBTM {
 
 	function addToDB() {
 
-		global $db;
+		global $DB;
 		//unset($this->fields["ID"]);
 		$nb_fields=count($this->fields);
 		if ($nb_fields>0){		
@@ -137,8 +137,8 @@ class CommonDBTM {
 			}
 			$query .= ")";
 
-			if ($result=$db->query($query)) {
-				$this->fields["ID"]=$db->insert_id();
+			if ($result=$DB->query($query)) {
+				$this->fields["ID"]=$DB->insert_id();
 				$this->post_addToDB();
 				return $this->fields["ID"];
 			} else {
@@ -152,10 +152,10 @@ class CommonDBTM {
 	}
 
 	function restoreInDB($ID) {
-		global $db,$cfg_glpi;
-		if (in_array($this->table,$cfg_glpi["deleted_tables"])){
+		global $DB,$CFG_GLPI;
+		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
 			$query = "UPDATE ".$this->table." SET deleted='N' WHERE (ID = '$ID')";
-			if ($result = $db->query($query)) {
+			if ($result = $DB->query($query)) {
 				return true;
 			} else {
 				return false;
@@ -164,15 +164,15 @@ class CommonDBTM {
 	}
 	function deleteFromDB($ID,$force=0) {
 
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 
-		if ($force==1||!in_array($this->table,$cfg_glpi["deleted_tables"])){
+		if ($force==1||!in_array($this->table,$CFG_GLPI["deleted_tables"])){
 
 			$this->cleanDBonPurge($ID);
 
 			$query = "DELETE from ".$this->table." WHERE ID = '$ID'";
 
-			if ($result = $db->query($query)) {
+			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
 				return true;
 			} else {
@@ -180,7 +180,7 @@ class CommonDBTM {
 			}
 		}else {
 			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ID = '$ID'";		
-			return ($result = $db->query($query));
+			return ($result = $DB->query($query));
 		}
 	}
 
@@ -205,13 +205,13 @@ class CommonDBTM {
 	 **/
 	// specific ones : reservationresa , planningtracking
 	function add($input) {
-		global $db;
+		global $DB;
 		// dump status
 		unset($input['add']);
 		$input=$this->prepareInputForAdd($input);
 
 		if ($input&&is_array($input)){
-			$table_fields=$db->list_fields($this->table);
+			$table_fields=$DB->list_fields($this->table);
 			// fill array for udpate
 			foreach ($input as $key => $val) {
 				if ($key[0]!='_'&& isset($table_fields[$key])&&(!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
@@ -344,7 +344,7 @@ class CommonDBTM {
 	}
 
 	function showOnglets($target,$withtemplate,$actif){
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 
 		$template="";
 		if(!empty($withtemplate)){
@@ -362,7 +362,7 @@ class CommonDBTM {
 
 		if(empty($withtemplate)){
 			echo "<li class='invisible'>&nbsp;</li>";
-			echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$lang["title"][29]."</a></li>";
+			echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$LANG["title"][29]."</a></li>";
 		}
 
 		display_plugin_headings($target,$this->type,$withtemplate,$actif);
@@ -374,12 +374,12 @@ class CommonDBTM {
 			$next=getNextItem($this->table,$ID);
 			$prev=getPreviousItem($this->table,$ID);
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></li>";
-			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></li>";
+			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
+			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
 
 			if (haveRight("reservation_central","r")&&function_exists("isReservable")&&isReservable($this->type,$ID)){
 				echo "<li class='invisible'>&nbsp;</li>";
-				echo "<li".(($actif==11)?" class='actif'":"")."><a href='$target&amp;onglet=11$template'>".$lang["title"][35]."</a></li>";
+				echo "<li".(($actif==11)?" class='actif'":"")."><a href='$target&amp;onglet=11$template'>".$LANG["title"][35]."</a></li>";
 			}
 
 		}

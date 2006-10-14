@@ -52,25 +52,25 @@ if (!defined('GLPI_ROOT')){
  *
  **/
 function showLinkDevice($instID) {
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/link.form.php\">";
+	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='2'>".$lang["links"][4].":</th></tr>";
-	echo "<tr><th>".$lang["common"][17]."</th>";
+	echo "<tr><th colspan='2'>".$LANG["links"][4].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
-		$ID=$db->result($result, $i, "ID");
-		$device_type=$db->result($result, $i, "device_type");
+		$ID=$DB->result($result, $i, "ID");
+		$device_type=$DB->result($result, $i, "device_type");
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".getDeviceTypeName($device_type)."</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletedevice=deletedevice&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletedevice=deletedevice&amp;ID=$ID'><b>".$LANG["buttons"][6]."</b></a></td></tr>";
 		$i++;
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
@@ -79,7 +79,7 @@ function showLinkDevice($instID) {
 
 
 
-	echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".$lang["buttons"][8]."\" class='submit'>";
+	echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "</div>";
 	echo "</td>";
 
@@ -91,36 +91,36 @@ function showLinkDevice($instID) {
 
 function deleteLinkDevice($ID){
 
-	global $db;
+	global $DB;
 	$query="DELETE FROM glpi_links_device WHERE ID= '$ID';";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 }
 
 function addLinkDevice($tID,$lID){
-	global $db;
+	global $DB;
 	if ($tID>0&&$lID>0){
 
 		$query="INSERT INTO glpi_links_device (device_type,FK_links ) VALUES ('$tID','$lID');";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 	}
 }
 
 function showLinkOnDevice($type,$ID){
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 
 	if (!haveRight("link","r")) return false;
 
 	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
 
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 	echo "<br>";
 
 	$ci=new CommonItem;
-	if ($db->numrows($result)>0){
-		echo "<div align='center'><table class='tab_cadre'><tr><th>".$lang["title"][33]."</th></tr>";
+	if ($DB->numrows($result)>0){
+		echo "<div align='center'><table class='tab_cadre'><tr><th>".$LANG["title"][33]."</th></tr>";
 
-		while ($data=$db->fetch_assoc($result)){
+		while ($data=$DB->fetch_assoc($result)){
 
 			$name=$data["name"];
 			if (empty($name))
@@ -168,9 +168,9 @@ function showLinkOnDevice($type,$ID){
 				$i=0;
 				if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
 					$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type) ORDER BY logical_number";
-					$result2=$db->query($query2);
-					if ($db->numrows($result2)>0)
-						while ($data2=$db->fetch_array($result2)){
+					$result2=$DB->query($query2);
+					if ($DB->numrows($result2)>0)
+						while ($data2=$DB->fetch_array($result2)){
 							$ipmac[$i]['ifaddr']=$data2["ifaddr"];
 							$ipmac[$i]['ifmac']=$data2["ifmac"];
 							$i++;
@@ -210,13 +210,13 @@ function showLinkOnDevice($type,$ID){
 					$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
 				}
 
-				echo "<tr class='tab_bg_2'><td><a href='".$cfg_glpi["root_doc"]."/front/link.send.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$name."</a></td></tr>";
+				echo "<tr class='tab_bg_2'><td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$name."</a></td></tr>";
 			}
 
 
 		}
 		echo "</table></div>";
-	} else echo "<div align='center'><b>".$lang["links"][7]."</b></div>";
+	} else echo "<div align='center'><b>".$LANG["links"][7]."</b></div>";
 
 }
 

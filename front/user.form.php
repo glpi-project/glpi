@@ -47,7 +47,7 @@ $user=new User();
 if (empty($_GET["ID"])&&isset($_GET["name"])){
 
 	$user->getFromDBbyName($_GET["name"]);
-	glpi_header($cfg_glpi["root_doc"]."/front/user.form.php?ID=".$user->fields['ID']);
+	glpi_header($CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$user->fields['ID']);
 }
 
 if(empty($_GET["name"])) $_GET["name"] = "";
@@ -58,20 +58,20 @@ if (isset($_POST["add"])) {
 	// Pas de nom pas d'ajout	
 	if (!empty($_POST["name"])){
 		$newID=$user->add($_POST);
-		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
+		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
 	checkRight("user","w");
 
 	$user->delete($_POST);
-	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$lang["log"][22]." ".$_POST["ID"].".");
-	glpi_header($cfg_glpi["root_doc"]."/front/user.php");
+	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$LANG["log"][22]." ".$_POST["ID"].".");
+	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 } else if (isset($_POST["update"])) {
 	checkRight("user","w");
 
 	$user->update($_POST);
-	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$lang["log"][21]."  ".$_POST["name"].".");
+	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG["log"][21]."  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["addgroup"]))
 {
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
 
 	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
 
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][48]);
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["deletegroup"]))
@@ -89,7 +89,7 @@ else if (isset($_POST["deletegroup"]))
 		foreach ($_POST["item"] as $key => $val)
 			deleteUserGroup($key);
 
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][49]);
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
@@ -103,7 +103,7 @@ else if (isset($_POST["deletegroup"]))
 	if (!isset($_GET["ext_auth"])){
 		checkRight("user","r");
 
-		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][13],$_SERVER["PHP_SELF"]);
 
 		if ($user->getFromDB($_GET["ID"]))
 			$user->showOnglets($_SERVER["PHP_SELF"]."?ID=".$_GET["ID"], "",$_SESSION['glpi_onglet'] );
@@ -136,12 +136,12 @@ else if (isset($_POST["deletegroup"]))
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
 
 				// LDAP case : get all informations
-				if (!empty($cfg_glpi["ldap_host"])&&!empty($cfg_glpi["ldap_rootdn"])){
+				if (!empty($CFG_GLPI["ldap_host"])&&!empty($CFG_GLPI["ldap_rootdn"])){
 					$succeded=false;
 					$identificat = new Identification();
-					$found_dn=$identificat->ldap_get_dn($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],utf8_decode($_GET['login']),$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
+					$found_dn=$identificat->ldap_get_dn($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_basedn"],utf8_decode($_GET['login']),$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_port"]);
 					if ($found_dn&&!$identificat->user->getFromDBbyName($_GET['login'])){
-						$identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_GET['login']));
+						$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$found_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_GET['login']));
 						$identificat->user->fields["_extauth"]=1;
 						$input=$identificat->user->fields;
 						unset($identificat->user->fields);
@@ -151,9 +151,9 @@ else if (isset($_POST["deletegroup"]))
 					// AD case
 					if (!$succeded) {
 						$found_dn=false;
-						$found_dn=$identificat->ldap_get_dn_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_basedn"],$_POST['login_name'],$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi["ldap_port"]);
+						$found_dn=$identificat->ldap_get_dn_active_directory($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_basedn"],$_POST['login_name'],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_port"]);
 						if ($found_dn!=false&&!$identificat->user->getFromDBbyName($_GET['login'])){ 
-							$identificat->user->getFromLDAP_active_directory($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],utf8_decode($_GET['login']));
+							$identificat->user->getFromLDAP_active_directory($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$found_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_GET['login']));
 							$identificat->user->fields["_extauth"]=1;
 							$input=$identificat->user->fields;
 							unset($identificat->user->fields);
@@ -171,7 +171,7 @@ else if (isset($_POST["deletegroup"]))
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
 		checkRight("user","w");
-		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][13],$_SERVER["PHP_SELF"]);
 		showAddExtAuthUserForm($_SERVER["PHP_SELF"]);
 		commonFooter();
 	}

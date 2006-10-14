@@ -76,19 +76,19 @@ $track=new Job();
 
 if (isset($_POST["priority"]) && empty($_POST["contents"]))
 {
-	$error=$lang["tracking"][8] ;
+	$error=$LANG["tracking"][8] ;
 	addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
 }
 elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
 
 	if ($track->add($_POST)){
-		$error=$lang["tracking"][9];
+		$error=$LANG["tracking"][9];
 		displayMessageAfterRedirect();
 		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}
 	else {
-		$error=$lang["tracking"][10];
+		$error=$LANG["tracking"][10];
 		displayMessageAfterRedirect();
 		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
 	}

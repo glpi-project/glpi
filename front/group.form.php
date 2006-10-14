@@ -49,7 +49,7 @@ if (isset($_POST["add"]))
 	checkRight("group","w");
 
 	$newID=$group->add($_POST);
-	logEvent($newID, "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
@@ -57,15 +57,15 @@ else if (isset($_POST["delete"]))
 	checkRight("group","w");
 
 	$group->delete($_POST);
-	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/front/group.php");
+	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/group.php");
 }
 else if (isset($_POST["update"]))
 {
 	checkRight("group","w");
 
 	$group->update($_POST);
-	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["adduser"]))
@@ -74,7 +74,7 @@ else if (isset($_POST["adduser"]))
 
 	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
 
-	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][48]);
+	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["deleteuser"]))
@@ -85,7 +85,7 @@ else if (isset($_POST["deleteuser"]))
 		foreach ($_POST["item"] as $key => $val)
 			deleteUserGroup($key);
 
-	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$lang["log"][49]);
+	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
@@ -97,7 +97,7 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 	}
 
-	commonHeader($lang["Menu"][36],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["Menu"][36],$_SERVER["PHP_SELF"]);
 
 	if ($group->getFromDB($tab["ID"]))
 		$group->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );

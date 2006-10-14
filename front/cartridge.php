@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("cartridge","r");
 
-commonHeader($lang["title"][19],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][19],$_SERVER["PHP_SELF"]);
 
 $cartridge=new CartridgeType;
 $cartridge->title();

@@ -37,7 +37,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 checkRight("reports","r");
 
-commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][16],$_SERVER["PHP_SELF"]);
 
 
 
@@ -48,27 +48,27 @@ echo "<form name='form' method='post' action='report.year.list.php'>";
 
 echo "<div align='center'>";
 echo "<table class='tab_cadre' >";
-echo "<tr><th align='center' colspan='2' ><big><b>".$lang["reports"][58]."</b></big></th></tr>";
+echo "<tr><th align='center' colspan='2' ><big><b>".$LANG["reports"][58]."</b></big></th></tr>";
 
 # 3. Selection d'affichage pour generer la liste
 
 echo "<tr class='tab_bg_2'>";
 echo "<td width='150'  align='center'>";
-echo "<p><b>".$lang["reports"][12]."</b></p> ";
+echo "<p><b>".$LANG["reports"][12]."</b></p> ";
 echo "<p><select name='item_type[]' size='8'  multiple>";
-echo "<option value='0' selected>".$lang["reports"][16]."</option>";
-echo "<option value='".COMPUTER_TYPE."'>".$lang["reports"][6]."</option>";
-echo "<option value='".PRINTER_TYPE."'>".$lang["reports"][7]."</option>";
-echo "<option value='".NETWORKING_TYPE."'>".$lang["reports"][8]."</option>";
-echo "<option value='".MONITOR_TYPE."'>".$lang["reports"][9]."</option>";
-echo "<option value='".PERIPHERAL_TYPE."'>".$lang["reports"][29]."</option>";
-echo "<option value='".SOFTWARE_TYPE."'>".$lang["reports"][55]."</option>";
-echo "<option value='".PHONE_TYPE."'>".$lang["reports"][64]."</option>";
+echo "<option value='0' selected>".$LANG["reports"][16]."</option>";
+echo "<option value='".COMPUTER_TYPE."'>".$LANG["reports"][6]."</option>";
+echo "<option value='".PRINTER_TYPE."'>".$LANG["reports"][7]."</option>";
+echo "<option value='".NETWORKING_TYPE."'>".$LANG["reports"][8]."</option>";
+echo "<option value='".MONITOR_TYPE."'>".$LANG["reports"][9]."</option>";
+echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["reports"][29]."</option>";
+echo "<option value='".SOFTWARE_TYPE."'>".$LANG["reports"][55]."</option>";
+echo "<option value='".PHONE_TYPE."'>".$LANG["reports"][64]."</option>";
 echo "</select> </p></td>";
 
-echo "<td width='150' align='center'><p><b>".$lang["reports"][23]."</b></p> ";
+echo "<td width='150' align='center'><p><b>".$LANG["reports"][23]."</b></p> ";
 echo "<p> <select name='annee[]'  size='8' multiple>";
-echo " <option value='toutes' selected>".$lang["reports"][16]."</option>";
+echo " <option value='toutes' selected>".$LANG["reports"][16]."</option>";
 $y = date("Y");
 for ($i=$y-10;$i<$y+10;$i++)
 {
@@ -76,7 +76,7 @@ for ($i=$y-10;$i<$y+10;$i++)
 }
 echo "</select></p></td></tr>";
 
-echo "<tr class='tab_bg_2'><td colspan='2'  align='center'><p><input type='submit' value='".$lang["reports"][15]."' class='submit'></p></td></tr>";
+echo "<tr class='tab_bg_2'><td colspan='2'  align='center'><p><input type='submit' value='".$LANG["reports"][15]."' class='submit'></p></td></tr>";
 
 
 echo "</table>";

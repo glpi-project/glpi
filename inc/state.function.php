@@ -41,14 +41,14 @@ if (!defined('GLPI_ROOT')){
 
 
 function titleState(){
-	global  $lang,$cfg_glpi;
+	global  $LANG,$CFG_GLPI;
 
 
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/status.png\" alt='' title=''></td><td><b><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/state.php?synthese=no'>".$lang["state"][1]."</a>";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/status.png\" alt='' title=''></td><td><b><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/state.php?synthese=no'>".$LANG["state"][1]."</a>";
 	echo "</b></td>";
-	echo "<td><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/state.php?synthese=yes'>".$lang["state"][11]."</a></td>";
+	echo "<td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/state.php?synthese=yes'>".$LANG["state"][11]."</a></td>";
 	echo "</tr></table></div>";
 
 
@@ -57,28 +57,28 @@ function titleState(){
 function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$state=""){
 	// Print Search Form
 
-	global $cfg_glpi,  $lang;
+	global $CFG_GLPI,  $LANG;
 
-	$option["glpi_state_item.ID"]				= $lang["common"][2];
-	//	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
-	//	$option["glpi_dropdown_locations.name"]			= $lang["common"][15];
-	//	$option["glpi_software.version"]			= $lang["software"][5];
-	//      $option["glpi_state.comments"]			= $lang["common"][16];
+	$option["glpi_state_item.ID"]				= $LANG["common"][2];
+	//	$option["glpi_reservation_item.device_type"]			= $LANG["reservation"][3];
+	//	$option["glpi_dropdown_locations.name"]			= $LANG["common"][15];
+	//	$option["glpi_software.version"]			= $LANG["software"][5];
+	//      $option["glpi_state.comments"]			= $LANG["common"][16];
 
-	echo "<form method=\"get\" action=\"".$cfg_glpi["root_doc"]."/front/state.php\">";
+	echo "<form method=\"get\" action=\"".$CFG_GLPI["root_doc"]."/front/state.php\">";
 	echo "<div align='center'><table class='tab_cadre' width='750'>";
-	echo "<tr><th colspan='3'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='3'><b>".$LANG["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
-	echo $lang["state"][0]." : &nbsp; &nbsp;";
+	echo $LANG["state"][0]." : &nbsp; &nbsp;";
 	dropdownValue("glpi_dropdown_state","state",$state);
 	echo "</td><td align='center'>";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". stripslashes($contains) ."\" />&nbsp;";
-	echo $lang["search"][10];
+	echo $LANG["search"][10];
 	echo "&nbsp;<select name=\"field\" size='1'>";
 	echo "<option value='all' ";
 	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
+	echo ">".$LANG["search"][7]."</option>";
 	reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=\"".$key."\""; 
@@ -87,7 +87,7 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 	}
 	echo "</select>";
 	echo "&nbsp;";
-	echo $lang["search"][4];
+	echo $LANG["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
 	foreach ($option as $key => $val) {
@@ -97,16 +97,16 @@ function searchFormStateItem($field="",$phrasetype= "",$contains="",$sort= "",$s
 	}
 	echo "</select> ";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "<input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
 
 function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start,$state){
 	// Lists Reservation Items
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
-	$state_type=$cfg_glpi["state_type"];
+	$state_type=$CFG_GLPI["state_type"];
 
 	foreach ($state_type as $key=>$type)
 		if (!haveTypeRight($type,"r")) {
@@ -147,14 +147,14 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 	$query .= " where  $where AND glpi_state_item.is_template='0' ORDER BY $sort $order";
 
 	// Get it from database	
-	if ($result = $db->query($query)) {
-		$numrows =  $db->numrows($result);
+	if ($result = $DB->query($query)) {
+		$numrows =  $DB->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
-		if ($numrows > $cfg_glpi["list_limit"]&&!isset($_GET['export_all'])) {
-			$query_limit = $query ." LIMIT $start,".$cfg_glpi["list_limit"]." ";
-			$result_limit = $db->query($query_limit);
-			$numrows_limit = $db->numrows($result_limit);
+		if ($numrows > $CFG_GLPI["list_limit"]&&!isset($_GET['export_all'])) {
+			$query_limit = $query ." LIMIT $start,".$CFG_GLPI["list_limit"]." ";
+			$result_limit = $DB->query($query_limit);
+			$numrows_limit = $DB->numrows($result_limit);
 		} else {
 			$numrows_limit = $numrows;
 			$result_limit = $result;
@@ -182,20 +182,20 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			$header_num=1;
 
 			$linkto="$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.ID&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start&amp;state=$state";
-			echo displaySearchHeaderItem($output_type,$lang["common"][2],$header_num,$linkto,$sort=="glpi_state_item.ID",$order);
+			echo displaySearchHeaderItem($output_type,$LANG["common"][2],$header_num,$linkto,$sort=="glpi_state_item.ID",$order);
 
 			$linkto="$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_state_item.device_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start&amp;state=$state";
-			echo displaySearchHeaderItem($output_type,$lang["state"][6],$header_num,$linkto,$sort=="glpi_state_item.device_type",$order);
+			echo displaySearchHeaderItem($output_type,$LANG["state"][6],$header_num,$linkto,$sort=="glpi_state_item.device_type",$order);
 
 
-			echo displaySearchHeaderItem($output_type,$lang["common"][16],$header_num,"",0,$order);
+			echo displaySearchHeaderItem($output_type,$LANG["common"][16],$header_num,"",0,$order);
 
-			echo displaySearchHeaderItem($output_type,$lang["common"][17],$header_num,"",0,$order);
+			echo displaySearchHeaderItem($output_type,$LANG["common"][17],$header_num,"",0,$order);
 
-			echo displaySearchHeaderItem($output_type,$lang["common"][15],$header_num,"",0,$order);
+			echo displaySearchHeaderItem($output_type,$LANG["common"][15],$header_num,"",0,$order);
 
 			$linkto="$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_dropdown_state.name&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start&amp;state=$state";
-			echo displaySearchHeaderItem($output_type,$lang["state"][0],$header_num,$linkto,$sort=="glpi_dropdown_state.name",$order);
+			echo displaySearchHeaderItem($output_type,$LANG["state"][0],$header_num,$linkto,$sort=="glpi_dropdown_state.name",$order);
 
 			// End Line for column headers		
 			echo displaySearchEndLine($output_type);
@@ -203,7 +203,7 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 			// Num of the row (1=header_line)
 			$row_num=1;
 			for ($i=0; $i < $numrows_limit; $i++) {
-				$data=$db->fetch_array($result_limit);
+				$data=$DB->fetch_array($result_limit);
 				$ri = new StateItem;
 				$ri->getfromDB($data["d_type"],$data["id_device"]);
 
@@ -239,14 +239,14 @@ function showStateItemList($target,$username,$field,$phrasetype,$contains,$sort,
 				printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["state"][7]."</b></div>";
+			echo "<div align='center'><b>".$LANG["state"][7]."</b></div>";
 		}
 	}
 
 }
 
 function updateState($device_type,$id_device, $state,$template=0,$dohistory=1){
-	global $db;
+	global $DB;
 
 	$si=new StateItem;
 
@@ -258,12 +258,12 @@ function updateState($device_type,$id_device, $state,$template=0,$dohistory=1){
 	if ($state!=$si->fields["state"])
 		if ($si->fields["state"]!=-1){
 			if ($state==0){
-				$db->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device' $where;");
+				$DB->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device' $where;");
 
 
 
 
-			}else{ $db->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device' $where;");
+			}else{ $DB->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device' $where;");
 
 			}
 			if ($dohistory){
@@ -274,9 +274,9 @@ function updateState($device_type,$id_device, $state,$template=0,$dohistory=1){
 		} else {
 			if ($state!=0){
 				if ($template==1)
-					$db->query("INSERT INTO glpi_state_item (device_type,id_device,state,is_template) VALUES ('$device_type','$id_device','$state','1');");
+					$DB->query("INSERT INTO glpi_state_item (device_type,id_device,state,is_template) VALUES ('$device_type','$id_device','$state','1');");
 				else 
-					$db->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
+					$DB->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
 			}
 
 		}
@@ -284,10 +284,10 @@ function updateState($device_type,$id_device, $state,$template=0,$dohistory=1){
 }
 
 function showStateSummary($target){
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 
 
-	$state_type=$cfg_glpi["state_type"];
+	$state_type=$CFG_GLPI["state_type"];
 
 	foreach ($state_type as $key=>$type)
 		if (!haveTypeRight($type,"r")) {
@@ -302,8 +302,8 @@ function showStateSummary($target){
 
 
 
-	if ($result = $db->query($query)) {
-		$numrows =  $db->numrows($result);
+	if ($result = $DB->query($query)) {
+		$numrows =  $DB->numrows($result);
 		if ($numrows>0){
 
 			// Produce headline
@@ -311,7 +311,7 @@ function showStateSummary($target){
 
 			// Type			
 			echo "<th>";
-			echo $lang["state"][0]."</th>";
+			echo $LANG["state"][0]."</th>";
 
 			$ci=new CommonItem;
 			foreach ($state_type as $type){
@@ -319,11 +319,11 @@ function showStateSummary($target){
 				echo "<th>".$ci->getType()."</th>";
 				$total[$type]=0;
 			}
-			echo "<th>".$lang["common"][33]."</th>";
+			echo "<th>".$LANG["common"][33]."</th>";
 			echo "</tr>";
 			$current_state=-1;
 			$states=array();
-			while ($data=$db->fetch_array($result)){
+			while ($data=$DB->fetch_array($result)){
 				$states[$data["id_state"]]["name"]=$data["state"];
 				$states[$data["id_state"]][$data["d_type"]]=$data["cmp"];
 			}
@@ -347,7 +347,7 @@ function showStateSummary($target){
 				echo "<td align='center'><strong>$tot</strong></td>";
 				echo "</tr>";
 			}
-			echo "<tr class='tab_bg_2'><td align='center'><strong><a href='$target?state=0'>".$lang["common"][33]."</a></strong></td>";
+			echo "<tr class='tab_bg_2'><td align='center'><strong><a href='$target?state=0'>".$LANG["common"][33]."</a></strong></td>";
 			$tot=0;
 			foreach ($state_type as $type){
 				echo "<td align='center'><strong>".$total[$type]."</strong></td>";
@@ -359,7 +359,7 @@ function showStateSummary($target){
 
 		}
 		else {
-			echo "<div align='center'><b>".$lang["state"][7]."</b></div>";
+			echo "<div align='center'><b>".$LANG["state"][7]."</b></div>";
 		}
 	}
 

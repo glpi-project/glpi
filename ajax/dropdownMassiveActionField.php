@@ -78,7 +78,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 					break;
 					case "warranty_duration" :
 						dropdownContractTime("warranty_duration");
-					echo " ".$lang["financial"][57]."&nbsp;&nbsp;";
+					echo " ".$LANG["financial"][57]."&nbsp;&nbsp;";
 					break;
 					default :
 					autocompletionTextField($search["field"],$search["table"],$search["field"]);
@@ -110,7 +110,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 		else 
 			echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
 
-	echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+	echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 }
 
 ?>

@@ -43,11 +43,11 @@ $NEEDED_ITEMS=array("setup");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
 
 checkTypeRight($_GET["type"],"w");
 
-listTemplates($_GET["type"],$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
+listTemplates($_GET["type"],$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
 
 commonFooter();
 

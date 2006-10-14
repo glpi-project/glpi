@@ -47,18 +47,18 @@ checkTypeRight($_POST["fromtype"],"w");
 $table=$LINK_ID_TABLE[$_POST["idtable"]];
 
 $where="";		
-if (in_array($table,$cfg_glpi["deleted_tables"]))
+if (in_array($table,$CFG_GLPI["deleted_tables"]))
 $where.=" AND $table.deleted='N' ";
-if (in_array($table,$cfg_glpi["template_tables"]))
+if (in_array($table,$CFG_GLPI["template_tables"]))
 $where.=" AND $table.is_template='0' ";		
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
-$NBMAX=$cfg_glpi["dropdown_max"];
+$NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 
-if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
+if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
 if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
@@ -78,21 +78,21 @@ $query = "SELECT DISTINCT $table.ID as ID,$table.name as name,$table.serial as s
 
 
 
-$result = $db->query($query);
+$result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
-if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 echo "<option value=\"0\">-----</option>";
-if ($db->numrows($result)) {
-	while ($data = $db->fetch_array($result)) {
+if ($DB->numrows($result)) {
+	while ($data = $DB->fetch_array($result)) {
 		$output = $data['name'];
 		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
 		$ID = $data['ID'];
 		if (empty($output)) $output="($ID)";
 
-		echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
+		echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

@@ -39,18 +39,18 @@ if (!defined('GLPI_ROOT')){
 
 function showPasswordForm($target,$name) {
 
-	global $cfg_glpi, $lang;
+	global $CFG_GLPI, $LANG;
 
 	$user = new User();
 	if ($user->getFromDBbyName($name)){
 		echo "<form method='post' action=\"$target\">";
 		echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
-		echo "<tr><th colspan='2'>".$lang["setup"][11]." '".$user->fields["name"]."':</th></tr>";
+		echo "<tr><th colspan='2'>".$LANG["setup"][11]." '".$user->fields["name"]."':</th></tr>";
 		echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 		echo "<input type='password' name='password' size='10'>";
 		echo "</td><td align='center' class='tab_bg_2'>";
 		echo "<input type='hidden' name='name' value=\"".$name."\">";
-		echo "<input type='submit' name='changepw' value=\"".$lang["buttons"][14]."\" class='submit'>";
+		echo "<input type='submit' name='changepw' value=\"".$LANG["buttons"][14]."\" class='submit'>";
 		echo "</td></tr>";
 		echo "</table></div>";
 		echo "</form>";
@@ -65,25 +65,25 @@ function showPasswordForm($target,$name) {
 
 
 function showLangSelect($target) {
-	global $cfg_glpi, $lang;
+	global $CFG_GLPI, $LANG;
 
 	$l = $_SESSION["glpilanguage"]; 
 
 	echo "<form method='post' action=\"$target\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre' cellpadding='5' width='30%'>";
-	echo "<tr><th colspan='2'>".$lang["setup"][41].":</th></tr>";
+	echo "<tr><th colspan='2'>".$LANG["setup"][41].":</th></tr>";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>";
 	echo "<select name='language'>";
 
-	while (list($cle)=each($cfg_glpi["languages"])){
+	while (list($cle)=each($CFG_GLPI["languages"])){
 		echo "<option value=\"".$cle."\"";
 		if ($l==$cle) { echo " selected"; }
-		echo ">".$cfg_glpi["languages"][$cle][0]." ($cle)";
+		echo ">".$CFG_GLPI["languages"][$cle][0]." ($cle)";
 	}
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-	echo "<input type='submit' name='changelang' value=\"".$lang["buttons"][14]."\" class='submit'>";
+	echo "<input type='submit' name='changelang' value=\"".$LANG["buttons"][14]."\" class='submit'>";
 	echo "<input type='hidden' name='ID' value=\"".$_SESSION["glpiID"]."\">";
 	echo "</td></tr>";
 	echo "</table></div>";
@@ -92,7 +92,7 @@ function showLangSelect($target) {
 
 function showSortForm($target) {
 
-	global $cfg_glpi, $lang;
+	global $CFG_GLPI, $LANG;
 
 	$order = $_SESSION["glpitracking_order"];
 
@@ -100,20 +100,20 @@ function showSortForm($target) {
 	echo "<form method='post' action=\"$target\">\n";
 
 	echo "<table class='tab_cadre' cellpadding='5' width='30%'>\n";
-	echo "<tr><th colspan='2'>".$lang["setup"][40]."</th></tr>\n";
+	echo "<tr><th colspan='2'>".$LANG["setup"][40]."</th></tr>\n";
 	echo "<tr><td width='100%' align='center' class='tab_bg_1'>\n";
 	echo "<select name='tracking_order'>\n";
 	echo "<option value=\"yes\"";
 	if ($order=="yes") { echo " selected"; }	
-	echo ">".$lang["choice"][1];
+	echo ">".$LANG["choice"][1];
 	echo "<option value=\"no\"";
 	if ($order=="no") { echo " selected"; }
-	echo ">".$lang["choice"][0];
+	echo ">".$LANG["choice"][0];
 	echo "</select>\n";
 	echo "</td>\n";
 	echo "<td align='center' class='tab_bg_2'>\n";
 	echo "<input type='hidden' name='ID' value=\"".$_SESSION["glpiID"]."\">";
-	echo "<input type='submit' name='updatesort' value=\"".$lang["buttons"][14]."\" class='submit'>\n";
+	echo "<input type='submit' name='updatesort' value=\"".$LANG["buttons"][14]."\" class='submit'>\n";
 	echo "</td></tr>\n";
 	echo "</table>";
 	echo "</form>\n";
@@ -122,7 +122,7 @@ function showSortForm($target) {
 }
 
 function showAddExtAuthUserForm($target){
-	global $lang;
+	global $LANG;
 
 	if (!haveRight("user","w")) return false;
 
@@ -131,14 +131,14 @@ function showAddExtAuthUserForm($target){
 	echo "<form method='get' action=\"$target\">\n";
 
 	echo "<table class='tab_cadre' cellpadding='5'>\n";
-	echo "<tr><th colspan='3'>".$lang["setup"][126]."</th></tr>\n";
-	echo "<tr class='tab_bg_1'><td>".$lang["login"][6]."</td>\n";
+	echo "<tr><th colspan='3'>".$LANG["setup"][126]."</th></tr>\n";
+	echo "<tr class='tab_bg_1'><td>".$LANG["login"][6]."</td>\n";
 	echo "<td>";
 	echo "<input type='text' name='login'>";
 	echo "</td>";
 	echo "<td align='center' class='tab_bg_2' rowspan='2'>\n";
 	echo "<input type='hidden' name='ext_auth' value='1'>\n";
-	echo "<input type='submit' name='add_ext_auth' value=\"".$lang["buttons"][8]."\" class='submit'>\n";
+	echo "<input type='submit' name='add_ext_auth' value=\"".$LANG["buttons"][8]."\" class='submit'>\n";
 	echo "</td></tr>\n";
 
 	echo "</table>";
@@ -167,8 +167,8 @@ function dropdownUserType($myname,$value="post-only"){
 }
 
 function useAuthExt(){
-	global $cfg_glpi;	
-	return (!empty($cfg_glpi["imap_auth_server"])||!empty($cfg_glpi["ldap_host"])||!empty($cfg_glpi["cas_host"]));
+	global $CFG_GLPI;	
+	return (!empty($CFG_GLPI["imap_auth_server"])||!empty($CFG_GLPI["ldap_host"])||!empty($CFG_GLPI["cas_host"]));
 }
 
 /**
@@ -179,24 +179,24 @@ function useAuthExt(){
  * @return nothing
  */
 function showUsersTitle($target,$actif) {
-	global $lang;
+	global $LANG;
 
 	echo "<div align='center'><table border='0'><tr>";
-	echo "<td><a  class='icon_consol' href='".$target."&amp;onglet=tracking'><strong>".$lang["title"][24]."</strong></a>";
+	echo "<td><a  class='icon_consol' href='".$target."&amp;onglet=tracking'><strong>".$LANG["title"][24]."</strong></a>";
 	echo "</td>";
-	echo "<td><a class='icon_consol' href='".$target."&amp;onglet=hardware'><strong>".$lang["common"][1]."</strong></a></td>";
+	echo "<td><a class='icon_consol' href='".$target."&amp;onglet=hardware'><strong>".$LANG["common"][1]."</strong></a></td>";
 	echo "</tr></table></div><br>";
 }
 
 function showDeviceUser($ID){
-	global $db,$cfg_glpi, $lang, $LINK_ID_TABLE,$INFOFORM_PAGES;
+	global $DB,$CFG_GLPI, $LANG, $LINK_ID_TABLE,$INFOFORM_PAGES;
 
 	$group_where="";
 	$groups=array();
 	$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID';";
-	$result=$db->query($query);
-	if ($db->numrows($result)>0){
-		while ($data=$db->fetch_array($result)){
+	$result=$DB->query($query);
+	if ($DB->numrows($result)>0){
+		while ($data=$DB->fetch_array($result)){
 			$group_where=" OR FK_groups = '".$data["FK_groups"]."' ";
 			$groups[$data["FK_groups"]]=$data["name"];
 		}
@@ -204,24 +204,24 @@ function showDeviceUser($ID){
 
 
 	$ci=new CommonItem();
-	echo "<div align='center'><table class='tab_cadre'><tr><th>".$lang["common"][17]."</th><th>".$lang["common"][16]."</th><th>&nbsp;</th></tr>";
+	echo "<div align='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
 
-	foreach ($cfg_glpi["linkuser_type"] as $type){
+	foreach ($CFG_GLPI["linkuser_type"] as $type){
 		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID' $group_where";
-		$result=$db->query($query);
-		if ($db->numrows($result)>0){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
 			$ci->setType($type);
 			$type_name=$ci->getType();
 			$cansee=haveTypeRight($type,"r");
-			while ($data=$db->fetch_array($result)){
+			while ($data=$DB->fetch_array($result)){
 				$link=$data["name"];
-				if ($cansee) $link="<a href='".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</a>";
+				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</a>";
 				$linktype="";
 				if ($data["FK_users"]==$ID)
-					$linktype.=$lang["common"][34];
+					$linktype.=$LANG["common"][34];
 				if (isset($groups[$data["FK_groups"]])){
 					if (!empty($linktype)) $linktype.=" / ";
-					$linktype.=$lang["common"][35]." ".$groups[$data["FK_groups"]];
+					$linktype.=$LANG["common"][35]." ".$groups[$data["FK_groups"]];
 				}
 				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td><td>$linktype</td></tr>";
 			}
@@ -232,7 +232,7 @@ function showDeviceUser($ID){
 }
 
 function showGroupAssociated($target,$ID){
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
 
@@ -248,24 +248,24 @@ function showGroupAssociated($target,$ID){
 		echo "<div align='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
 
-		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["setup"][604]."</tr><tr><td class='tab_bg_2' align='center'>";
+		echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][604]."</tr><tr><td class='tab_bg_2' align='center'>";
 		echo "<input type='hidden' name='FK_users' value='$ID'>";
 		dropdownValue("glpi_groups","FK_groups",0);
 		echo "</td><td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='addgroup' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='addgroup' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
 
 		echo "</table></div><br>";
 	}
 
-	echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$lang["Menu"][36]."</th></tr>";
+	echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][36]."</th></tr>";
 	$query="SELECT glpi_groups.*, glpi_users_groups.ID AS IDD,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID' ORDER BY glpi_groups.name";
 
-	$result=$db->query($query);
-	if ($db->numrows($result)>0){
+	$result=$DB->query($query);
+	if ($DB->numrows($result)>0){
 		$i=0;
 
-		while ($data=$db->fetch_array($result)){
+		while ($data=$DB->fetch_array($result)){
 			if ($i%$nb_per_line==0) {
 				if ($i!=0) echo "</tr>";
 				echo "<tr class='tab_bg_1'>";
@@ -279,7 +279,7 @@ function showGroupAssociated($target,$ID){
 				echo "</td>";
 			}
 
-			echo "<td><a href='".$cfg_glpi["root_doc"]."/front/group.form.php?ID=".$data["ID"]."'>".$data["name"].($cfg_glpi["view_ID"]?" (".$data["ID"].")":"")."</a>";
+			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?ID=".$data["ID"]."'>".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</a>";
 			echo "&nbsp;";
 
 			echo "</td>";
@@ -297,11 +297,11 @@ function showGroupAssociated($target,$ID){
 	if ($canedit){
 		echo "<div align='center'>";
 		echo "<table cellpadding='5' width='80%'>";
-		echo "<tr><td><img src=\"".$cfg_glpi["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=all'>".$lang["buttons"][18]."</a></td>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
-		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=none'>".$lang["buttons"][19]."</a>";
+		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='deletegroup' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "<input type='submit' name='deletegroup' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 		echo "</td></tr>";
 		echo "</table>";
 

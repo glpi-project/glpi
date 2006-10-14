@@ -47,7 +47,7 @@ function is_dropdown_stat($postfromselect) {
 
 
 function getStatsItems($date1,$date2,$type){
-	global $cfg_glpi,$db;
+	global $CFG_GLPI,$DB;
 	$val=array();
 
 	switch ($type){
@@ -59,7 +59,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomTech))
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["assign"];
-				$val[$i]["link"]="<a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$key["assign"]."'>";
+				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$key["assign"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
@@ -79,7 +79,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomTech))
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["author"];
-				$val[$i]["link"]="<a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$key["author"]."'>";
+				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$key["author"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
@@ -98,7 +98,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomEnt))
 			foreach($nomEnt as $key){
 				$val[$i]["ID"]=$key["assign_ent"];
-				$val[$i]["link"]="<a href='".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=".$key["assign_ent"]."'>";
+				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$key["assign_ent"]."'>";
 				$val[$i]["link"].=$key["name"];
 				$val[$i]["link"].="</a>";
 				$i++;
@@ -112,7 +112,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomUsr))
 			foreach($nomUsr as $key){
 				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]="<a href='".$cfg_glpi["root_doc"]."/front/user.info.php?ID=".$key["ID"]."'>";
+				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$key["ID"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
@@ -190,11 +190,11 @@ function getStatsItems($date1,$date2,$type){
 
 		//select devices IDs (table row)
 		$query = "select ID, designation from ".$device_table." order by designation";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
-		if($db->numrows($result) >=1) {
+		if($DB->numrows($result) >=1) {
 			$i = 0;
-			while($line = $db->fetch_assoc($result)) {
+			while($line = $DB->fetch_assoc($result)) {
 				$val[$i]['ID'] = $line['ID'];
 				$val[$i]['link'] = $line['designation'];
 				$i++;
@@ -207,7 +207,7 @@ function getStatsItems($date1,$date2,$type){
 }
 
 function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
-	global $lang,$cfg_glpi;
+	global $LANG,$CFG_GLPI;
 
 	// Set display type for export if define
 	$output_type=HTML_OUTPUT;
@@ -220,7 +220,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 	if (is_array($value)){
 
 
-		$end_display=$start+$cfg_glpi["list_limit"];
+		$end_display=$start+$CFG_GLPI["list_limit"];
 		$numrows=count($value);
 		if (isset($_GET['export_all'])) {
 			$start=0;
@@ -235,12 +235,12 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 		echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
 		if ($output_type==HTML_OUTPUT) // HTML display
 			echo displaySearchHeaderItem($output_type,"",$header_num);
-		echo displaySearchHeaderItem($output_type,$lang["stats"][13],$header_num);
-		echo displaySearchHeaderItem($output_type,$lang["stats"][14],$header_num);
-		echo displaySearchHeaderItem($output_type,$lang["stats"][15],$header_num);
-		echo displaySearchHeaderItem($output_type,$lang["stats"][25],$header_num);
-		echo displaySearchHeaderItem($output_type,$lang["stats"][27],$header_num);
-		echo displaySearchHeaderItem($output_type,$lang["stats"][30],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["stats"][13],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["stats"][14],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["stats"][15],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["stats"][25],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["stats"][27],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["stats"][30],$header_num);
 		// End Line for column headers		
 		echo displaySearchEndLine($output_type);
 		$row_num=1;
@@ -250,7 +250,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			echo displaySearchNewLine($output_type);
 			echo displaySearchItem($output_type,$value[$i]['link'],$item_num,$row_num);
 			if ($output_type==HTML_OUTPUT) // HTML display
-				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$cfg_glpi["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
+				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
 
 			//le nombre d'intervention
 			//the number of intervention
@@ -272,7 +272,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 				$nb=array_sum($data)/$nb_solved;
 			else $nb=0;
 			echo displaySearchItem($output_type,toTimeStr($nb*HOUR_TIMESTAMP,0),$item_num,$row_num);
-			//Le temps moyen de l'intervention réelle
+			//Le temps moyen de l'intervention rï¿½lle
 			//The average realtime to resolv
 			$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
 			foreach ($data as $key2 => $val2){
@@ -283,7 +283,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 				$nb=$total_realtime/$nb_solved;
 			else $nb=0;
 			echo displaySearchItem($output_type,toTimeStr($nb*MINUTE_TIMESTAMP,0),$item_num,$row_num);
-			//Le temps total de l'intervention réelle
+			//Le temps total de l'intervention rï¿½lle
 			//The total realtime to resolv
 			echo displaySearchItem($output_type,toTimeStr($total_realtime*MINUTE_TIMESTAMP,0),$item_num,$row_num);				
 			//Le temps moyen de prise en compte du ticket
@@ -303,7 +303,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 		// Display footer
 		echo displaySearchFooter($output_type);
 	} else {
-		echo $lang["stats"][23];
+		echo $LANG["stats"][23];
 	}
 	if ($output_type==HTML_OUTPUT) // HTML display
 		echo "</div>";
@@ -314,7 +314,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 //it contains the distinct users witch have any intervention assigned to.
 function getNbIntervTech($date1,$date2)
 {
-	global $db;
+	global $DB;
 	$query = "SELECT distinct glpi_tracking.assign as assign, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_tracking.assign) ";
@@ -324,10 +324,10 @@ function getNbIntervTech($date1,$date2)
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " order by realname, firstname, name";
-	$result = $db->query($query);
-	if($db->numrows($result) >=1) {
+	$result = $DB->query($query);
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i] = $line;
 			$i++;
 		}
@@ -340,7 +340,7 @@ function getNbIntervTech($date1,$date2)
 //it contains the distinct users witch have any intervention assigned to.
 function getNbIntervTechFollowup($date1,$date2)
 {
-	global $db;
+	global $DB;
 	$query = "SELECT distinct glpi_followups.author as author, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_followups ON (glpi_tracking.ID = glpi_followups.tracking) ";
@@ -351,10 +351,10 @@ function getNbIntervTechFollowup($date1,$date2)
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " order by firstname, realname, name";
-	$result = $db->query($query);
-	if($db->numrows($result) >=1) {
+	$result = $DB->query($query);
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i] = $line;
 			$i++;
 		}
@@ -368,7 +368,7 @@ function getNbIntervTechFollowup($date1,$date2)
 //it contains the distinct users witch have any intervention assigned to.
 function getNbIntervEnterprise($date1,$date2)
 {
-	global $db;
+	global $DB;
 	$query = "SELECT distinct glpi_tracking.assign_ent as assign_ent, glpi_enterprises.name as name";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_enterprises  ON (glpi_enterprises.ID=glpi_tracking.assign_ent) ";
@@ -379,10 +379,10 @@ function getNbIntervEnterprise($date1,$date2)
 
 	$query.= " order by name";
 
-	$result = $db->query($query);
-	if($db->numrows($result) >=1) {
+	$result = $DB->query($query);
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i] = $line;
 			$i++;
 		}
@@ -395,15 +395,15 @@ function getNbIntervEnterprise($date1,$date2)
 //it contains the distinct location where there is/was an intervention
 function getNbIntervDropdown($dropdown)
 {
-	global $db,$cfg_glpi;
+	global $DB,$CFG_GLPI;
 	$field="name";
-	if (in_array($dropdown,$cfg_glpi["dropdowntree_tables"])) $field="completename";
+	if (in_array($dropdown,$CFG_GLPI["dropdowntree_tables"])) $field="completename";
 	$query = "SELECT * from ". $dropdown ." order by $field";
 
-	$result = $db->query($query);
-	if($db->numrows($result) >=1) {
+	$result = $DB->query($query);
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i]['ID'] = $line['ID'];
 			$tab[$i]['name'] = $line[$field];
 			$i++;
@@ -418,17 +418,17 @@ function getNbIntervDropdown($dropdown)
 //it contains the distinct authors of interventions.
 function getNbIntervAuthor($date1,$date2)
 {	
-	global $db;
+	global $DB;
 	$query = "SELECT DISTINCT glpi_tracking.author as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)";
 	$query.= " WHERE '1'='1' ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " order by realname, firstname, name";
-	$result = $db->query($query);
-	if($db->numrows($result) >=1) {
+	$result = $DB->query($query);
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i] = $line;
 			$i++;
 		}
@@ -442,13 +442,13 @@ function getNbIntervAuthor($date1,$date2)
 //it contains the distinct priority of interventions.
 function getNbIntervPriority()
 {	
-	global $db;
+	global $DB;
 	$query = "SELECT DISTINCT priority FROM glpi_tracking order by priority";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
-	if($db->numrows($result) >=1) {
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i]["ID"] = $line["priority"];
 			$tab[$i]["priority"] = getPriorityName($line["priority"]);
 			$i++;
@@ -462,13 +462,13 @@ function getNbIntervPriority()
 
 function getNbIntervRequestType()
 {	
-	global $db;
+	global $DB;
 	$query = "SELECT DISTINCT request_type FROM glpi_tracking order by request_type";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
-	if($db->numrows($result) >=1) {
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i]["ID"] = $line["request_type"];
 			$tab[$i]["request_type"] = getRequestTypeName($line["request_type"]);
 			$i++;
@@ -484,13 +484,13 @@ function getNbIntervRequestType()
 //it contains the distinct category of interventions.
 function getNbIntervCategory()
 {	
-	global $db;
+	global $DB;
 	$query = "SELECT id as ID, completename as category FROM glpi_dropdown_tracking_category order by completename";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
-	if($db->numrows($result) >=1) {
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i]["ID"] = $line["ID"];
 			$tab[$i]["category"] = $line["category"];
 			$i++;
@@ -506,13 +506,13 @@ function getNbIntervCategory()
 //it contains the distinct group of interventions.
 function getNbIntervGroup()
 {	
-	global $db;
+	global $DB;
 	$query = "SELECT id as ID, name FROM glpi_groups order by name";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 
-	if($db->numrows($result) >=1) {
+	if($DB->numrows($result) >=1) {
 		$i = 0;
-		while($line = $db->fetch_assoc($result)) {
+		while($line = $DB->fetch_assoc($result)) {
 			$tab[$i]["ID"] = $line["ID"];
 			$tab[$i]["name"] = $line["name"];
 			$i++;
@@ -528,28 +528,28 @@ function getNbIntervGroup()
 //
 function toTimeStr($sec,$display_sec=1)
 {
-	global $lang;
+	global $LANG;
 	$sec=floor($sec);
 	if ($sec<0) $sec=0;
 
 	if($sec < MINUTE_TIMESTAMP) {
 
-		return $sec." ".$lang["stats"][34];
+		return $sec." ".$LANG["stats"][34];
 	}
 	elseif($sec < HOUR_TIMESTAMP) {
 		$min = floor($sec/MINUTE_TIMESTAMP);
 		$sec = $sec%MINUTE_TIMESTAMP;
 
-		$out=$min." ".$lang["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$lang["stats"][34];
+		$out=$min." ".$LANG["stats"][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
 		return $out;
 	}
 	elseif($sec <  DAY_TIMESTAMP) {
 		$heure = floor($sec/HOUR_TIMESTAMP);
 		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
 		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$heure." ".$lang["stats"][32]." ".$min." ".$lang["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$lang["stats"][34];
+		$out=$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
 		return $out;
 	}
 	else {
@@ -557,8 +557,8 @@ function toTimeStr($sec,$display_sec=1)
 		$heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
 		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
 		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$jour." ".$lang["stats"][31]." ".$heure." ".$lang["stats"][32]." ".$min." ".$lang["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$lang["stats"][34];
+		$out=$jour." ".$LANG["stats"][31]." ".$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
 		return $out;
 
 	}
@@ -567,7 +567,7 @@ function toTimeStr($sec,$display_sec=1)
 
 
 function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value2=""){
-	global $db;
+	global $DB;
 
 	if (empty($end)) $end=date("Y-m-d");
 	$end.=" 23:59:59";
@@ -612,9 +612,9 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			//select computers IDs that are using this device;
 			$query2 = "SELECT distinct(glpi_computers.ID) as compid FROM glpi_computers INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$value2."' AND glpi_computer_device.FK_device = '".$value."') WHERE glpi_computers.is_template <> '1'";
 
-		$result2 = $db->query($query2);
+		$result2 = $DB->query($query2);
 		$WHERE.=" AND (device_type = '".COMPUTER_TYPE."' AND ('0'='1'";
-		while($line2 = $db->fetch_array($result2)) {
+		while($line2 = $DB->fetch_array($result2)) {
 			$WHERE.=" OR glpi_tracking.computer='".$line2["compid"]."'";
 		}
 		$WHERE.=") )";
@@ -624,9 +624,9 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			//select computers IDs that are using this field;
 			$query2 = "SELECT distinct(ID) as compid FROM glpi_computers WHERE  $value2='$value'";
 
-		$result2 = $db->query($query2);
+		$result2 = $DB->query($query2);
 		$WHERE.=" AND (device_type = '".COMPUTER_TYPE."' AND ('0'='1'";
-		while($line2 = $db->fetch_array($result2)) {
+		while($line2 = $DB->fetch_array($result2)) {
 			$WHERE.=" OR glpi_tracking.computer='".$line2["compid"]."'";
 		}
 		$WHERE.=") )";
@@ -690,9 +690,9 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 	$entrees=array();
 	if (empty($query)) return array();
 
-	$result=$db->query($query);
-	if ($result&&$db->numrows($result)>0)
-		while ($row = $db->fetch_array($result)) {
+	$result=$DB->query($query);
+	if ($result&&$DB->numrows($result)>0)
+		while ($row = $DB->fetch_array($result)) {
 			$date = $row['date_unix'];
 			if ($type=="inter_avgtakeaccount"){
 				$min=$row["OPEN"];	
@@ -755,7 +755,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 // $type = "month" or "year"
 function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 
-	global $db,$cfg_glpi,$lang;
+	global $DB,$CFG_GLPI,$LANG;
 
 	$total="";
 	if ($showtotal==1) $total=array_sum($entrees);
@@ -780,9 +780,9 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 		if ($largeur > 50) $largeur = 50;
 	}
 
-	echo "<table cellpadding='0' cellspacing='0' border='0' ><tr><td style='background-image:url(".$cfg_glpi["root_doc"]."/pics/fond-stats.gif)' >";
+	echo "<table cellpadding='0' cellspacing='0' border='0' ><tr><td style='background-image:url(".$CFG_GLPI["root_doc"]."/pics/fond-stats.gif)' >";
 	echo "<table cellpadding='0' cellspacing='0' border='0'><tr>";
-	echo "<td bgcolor='black'><img src='".$$cfg_glpi["root_doc"]."/pics/noir.png' width='1' height='200' alt=''></td>";
+	echo "<td bgcolor='black'><img src='".$$CFG_GLPI["root_doc"]."/pics/noir.png' width='1' height='200' alt=''></td>";
 
 	// Presentation graphique
 	$n = 0;
@@ -811,19 +811,19 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 		if ($hauteur >= 0){
 			if ($hauteur_moyenne > $hauteur) {
 				$difference = ($hauteur_moyenne - $hauteur) -1;
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/moyenne.png' width=".$largeur." height='1' >";
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/rien.gif' width=".$largeur." height=".$difference." >";
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/noir.png' width=".$largeur." height='1' >";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/moyenne.png' width=".$largeur." height='1' >";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/rien.gif' width=".$largeur." height=".$difference." >";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width=".$largeur." height='1' >";
 				if (ereg("-01",$key)){ // janvier en couleur foncee
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph1.png' width=".$largeur." height=".$hauteur." >";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/fondgraph1.png' width=".$largeur." height=".$hauteur." >";
 				} 
 				else {
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph2.png' width=".$largeur." height=".$hauteur." >";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/fondgraph2.png' width=".$largeur." height=".$hauteur." >";
 				}
 			}
 			else if ($hauteur_moyenne < $hauteur) {
 				$difference = ($hauteur - $hauteur_moyenne) -1;
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/noir.png' width=".$largeur." height='1'>";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width=".$largeur." height='1'>";
 				if (ereg("-01",$key)){ // janvier en couleur foncee
 					$couleur =  "1";
 					$couleur2 =  "2";
@@ -832,33 +832,33 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 					$couleur = "2";
 					$couleur2 = "1";
 				}
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph$couleur.png' width=".$largeur." height=".$difference.">";
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/moyenne.png' width=".$largeur." height='1'>";
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph$couleur.png' width=".$largeur." height=".$hauteur_moyenne.">";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/fondgraph$couleur.png' width=".$largeur." height=".$difference.">";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/moyenne.png' width=".$largeur." height='1'>";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/fondgraph$couleur.png' width=".$largeur." height=".$hauteur_moyenne.">";
 			}
 			else {
-				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/noir.png' width=".$largeur." height='1'>";
+				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width=".$largeur." height='1'>";
 				if (ereg("-01",$key)){ // janvier en couleur foncee
-					echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$cfg_glpi["root_doc"]."/pics/fondgraph1.png' width=".$largeur." height=".$hauteur.">";
+					echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$CFG_GLPI["root_doc"]."/pics/fondgraph1.png' width=".$largeur." height=".$hauteur.">";
 				} 
 				else {
-					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$cfg_glpi["root_doc"]."/pics/fondgraph2.png' width=".$largeur." height=".$hauteur.">";
+					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/fondgraph2.png' width=".$largeur." height=".$hauteur.">";
 				}
 			}
 		}
 
-		echo "<img alt=\"$value\" title=\"$value\"  src='".$cfg_glpi["root_doc"]."/pics/rien.gif' width=".$largeur." height='1'>";
+		echo "<img alt=\"$value\" title=\"$value\"  src='".$CFG_GLPI["root_doc"]."/pics/rien.gif' width=".$largeur." height='1'>";
 		echo "</td>\n";
 
 	}
-	echo "<td bgcolor='black'><img src='".$cfg_glpi["root_doc"]."/pics/noir.png' width='1' height='1' alt=''></td>";
+	echo "<td bgcolor='black'><img src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width='1' height='1' alt=''></td>";
 	echo "</tr>";
 	if ($largeur>10){
 		echo "<tr><td></td>";
 		foreach ($entrees as $key => $val){
 			if ($type=="month"){
 				$splitter=split("-",$key);
-				echo "<td align='center'>".substr($lang["calendarM"][$splitter[1]-1],0,1)."</td>";
+				echo "<td align='center'>".substr($LANG["calendarM"][$splitter[1]-1],0,1)."</td>";
 			} else if ($type=="year"){
 				echo "<td align='center'>".substr($key,2,2)."</td>";
 			}
@@ -871,8 +871,8 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 	else $r=0;
 	echo "</table>";
 	echo "</td>";
-	echo "<td style='background-image:url(".$cfg_glpi["root_doc"]."/pics/fond-stats.gif)' valign='bottom'><img src='".$cfg_glpi["root_doc"]."/pics/rien.gif' style='background-color:black;' width='3' height='1' alt=''></td>";
-	echo "<td><img src='".$cfg_glpi["root_doc"]."/pics/rien.gif' width='5' height='1' alt=''></td>";
+	echo "<td style='background-image:url(".$CFG_GLPI["root_doc"]."/pics/fond-stats.gif)' valign='bottom'><img src='".$CFG_GLPI["root_doc"]."/pics/rien.gif' style='background-color:black;' width='3' height='1' alt=''></td>";
+	echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/rien.gif' width='5' height='1' alt=''></td>";
 	echo "<td valign='top'>";
 	echo "<table cellpadding='0' cellspacing='0' border='0'>";
 	echo "<tr><td height='15' valign='top'>";		
@@ -913,7 +913,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 
 
 function showItemStats($target,$date1,$date2,$start){
-	global $db,$cfg_glpi,$lang;
+	global $DB,$CFG_GLPI,$LANG;
 
 
 	$output_type=HTML_OUTPUT;
@@ -922,8 +922,8 @@ function showItemStats($target,$date1,$date2,$start){
 
 
 	$query="SELECT device_type,computer,COUNT(*) AS NB FROM glpi_tracking WHERE date<= '".$date2."' AND date>= '".$date1."' GROUP BY device_type,computer ORDER BY NB DESC";
-	$result=$db->query($query);
-	$numrows=$db->numrows($result);
+	$result=$DB->query($query);
+	$numrows=$DB->numrows($result);
 
 	if ($numrows>0){
 		if ($output_type==HTML_OUTPUT){
@@ -935,23 +935,23 @@ function showItemStats($target,$date1,$date2,$start){
 		if (isset($_GET['export_all']))
 			$i=0;
 
-		$end_display=$start+$cfg_glpi["list_limit"];
+		$end_display=$start+$CFG_GLPI["list_limit"];
 		if (isset($_GET['export_all']))
 			$end_display=$numrows;
 		echo displaySearchHeader($output_type,$end_display-$start+1,2,1);
 		$header_num=1;
 		echo displaySearchNewLine($output_type);
-		echo displaySearchHeaderItem($output_type,$lang["common"][1],$header_num);
-		echo displaySearchHeaderItem($output_type,$lang["stats"][13],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["common"][1],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["stats"][13],$header_num);
 		echo displaySearchEndLine($output_type);
 
-		$db->data_seek($result,$start);
+		$DB->data_seek($result,$start);
 
 		$ci=new CommonItem();
 		while ($i < $numrows && $i<($end_display)){
 			$item_num=1;
 			// Get data and increment loop variables
-			$data=$db->fetch_assoc($result);
+			$data=$DB->fetch_assoc($result);
 			if ($ci->getFromDB($data["device_type"],$data["computer"])){
 				$del=false;
 				if (isset($ci->obj->fields["deleted"])&&$ci->obj->fields["deleted"]=='Y') $del=true;

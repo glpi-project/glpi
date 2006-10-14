@@ -47,9 +47,9 @@ class Reminder extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		global $lang;
+		global $LANG;
 
-		if(empty($input["title"])) $input["title"]=$lang["reminder"][15];
+		if(empty($input["title"])) $input["title"]=$LANG["reminder"][15];
 
 		$input["begin"] = $input["end"] = "0000-00-00 00:00:00";
 
@@ -69,9 +69,9 @@ class Reminder extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
-		global $lang;
+		global $LANG;
 
-		if(empty($input["title"])) $input["title"]=$lang["reminder"][15];
+		if(empty($input["title"])) $input["title"]=$LANG["reminder"][15];
 
 
 		if (isset($input['plan'])){
@@ -92,10 +92,10 @@ class Reminder extends CommonDBTM {
 
 	function title(){
 
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reminder.png\" alt='".$lang["reminder"][0]."' title='".$lang["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/reminder.form.php\"><b>".$lang["buttons"][8]."</b></a>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reminder.png\" alt='".$LANG["reminder"][0]."' title='".$LANG["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php\"><b>".$LANG["buttons"][8]."</b></a>";
 		echo "</td></tr></table></div>";
 	}
 
@@ -105,7 +105,7 @@ class Reminder extends CommonDBTM {
 	function showForm ($target,$ID) {
 		// Show Reminder or blank form
 
-		global $cfg_glpi,$lang;
+		global $CFG_GLPI,$LANG;
 
 		$issuperadmin=haveRight("reminder_public","w");
 		$author=$_SESSION['glpiID'];
@@ -118,7 +118,7 @@ class Reminder extends CommonDBTM {
 
 			if($this->getEmpty()){
 				$remind_edit = true;
-				$this->fields["title"]=$lang["reminder"][6];
+				$this->fields["title"]=$LANG["reminder"][6];
 				$onfocus="onfocus=\"this.value=''\"";
 			}
 
@@ -142,13 +142,13 @@ class Reminder extends CommonDBTM {
 			echo "<div align='center'><table class='tab_cadre' width='450'>";
 			echo "<tr><th colspan='2' ><b>";
 			if (!$ID) {
-				echo $lang["reminder"][6].":";
+				echo $LANG["reminder"][6].":";
 			} else {
-				echo $lang["reminder"][7]." ID $ID:";
+				echo $LANG["reminder"][7]." ID $ID:";
 			}		
 			echo "</b></th></tr>";
 
-			echo "<tr class='tab_bg_2'><td>".$lang["reminder"][8].":		</td>";
+			echo "<tr class='tab_bg_2'><td>".$LANG["reminder"][8].":		</td>";
 			echo "<td>";
 
 			if($remind_edit) { 
@@ -159,22 +159,22 @@ class Reminder extends CommonDBTM {
 			echo "</td></tr>";
 
 			if($remind_show) { 
-				echo "<tr class='tab_bg_2'><td>".$lang["planning"][9].":		</td>";
+				echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":		</td>";
 				echo "<td>";
 				echo getUserName($this->fields["author"]);
 				echo "</td></tr>";
 			}
 
-			echo "<tr class='tab_bg_2'><td>".$lang["reminder"][10].":		</td>";
+			echo "<tr class='tab_bg_2'><td>".$LANG["reminder"][10].":		</td>";
 			echo "<td>";
 
 			if($remind_edit) { 
 				echo "<select name='type' $read>";
 
-				echo "<option value='private' ". (((isset($_GET["type"])&&$_GET["type"]=="private")||$this->fields["type"]=="private")?"selected='selected'":"") .">".$lang["reminder"][4]."</option>";	
+				echo "<option value='private' ". (((isset($_GET["type"])&&$_GET["type"]=="private")||$this->fields["type"]=="private")?"selected='selected'":"") .">".$LANG["reminder"][4]."</option>";	
 
 				if($issuperadmin){
-					echo "<option value='public' ". ((isset($_GET["type"])&&$_GET["type"]=="public")||($this->fields["type"]=="public")?"selected='selected'":"").">".$lang["reminder"][5]."</option>";	
+					echo "<option value='public' ". ((isset($_GET["type"])&&$_GET["type"]=="public")||($this->fields["type"]=="public")?"selected='selected'":"").">".$LANG["reminder"][5]."</option>";	
 				}		
 				echo "</select>";
 			}else{
@@ -184,7 +184,7 @@ class Reminder extends CommonDBTM {
 			echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_2'><td >".$lang["reminder"][11].":		</td>";
+			echo "<tr class='tab_bg_2'><td >".$LANG["reminder"][11].":		</td>";
 
 
 
@@ -196,7 +196,7 @@ class Reminder extends CommonDBTM {
 				echo "<script type='text/javascript' >\n";
 				echo "function showPlan(){\n";
 				echo "Element.hide('plan');";
-				echo "var a=new Ajax.Updater('viewplan','".$cfg_glpi["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$this->fields["rv"])?"&begin_date=".$this->fields["begin"]."&end_date=".$this->fields["end"]."":"")."'});";
+				echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$this->fields["rv"])?"&begin_date=".$this->fields["begin"]."&end_date=".$this->fields["end"]."":"")."'});";
 				echo "}";
 				echo "</script>\n";
 			}
@@ -204,7 +204,7 @@ class Reminder extends CommonDBTM {
 			if(!$ID||$this->fields["rv"]==0){
 				if($remind_edit) { 
 					echo "<div id='plan'  onClick='showPlan()'>\n";
-					echo "<span style='font-weight: bold;text-decoration: none; color : #009966; cursor:pointer;'>".$lang["reminder"][12]."</span>";
+					echo "<span style='font-weight: bold;text-decoration: none; color : #009966; cursor:pointer;'>".$LANG["reminder"][12]."</span>";
 				}
 			}else{
 				if($remind_edit) {
@@ -227,7 +227,7 @@ class Reminder extends CommonDBTM {
 
 			echo "</tr>";
 
-			echo "<tr class='tab_bg_2'><td>".$lang["reminder"][9].":		</td><td>";
+			echo "<tr class='tab_bg_2'><td>".$LANG["reminder"][9].":		</td><td>";
 			if($remind_edit) { 
 				echo "<textarea cols='80' rows='15' name='text' $read>".$this->fields["text"]."</textarea>";
 			}else{
@@ -240,7 +240,7 @@ class Reminder extends CommonDBTM {
 				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 				echo "<input type='hidden' name='author' value=\"$author\">\n";
-				echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+				echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
 
@@ -253,12 +253,12 @@ class Reminder extends CommonDBTM {
 
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+				echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 				echo "<input type='hidden' name='author' value=\"$author\">\n";
 
-				echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'></div>";
+				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 
 				echo "</td>";
 				echo "</tr>";
@@ -271,7 +271,7 @@ class Reminder extends CommonDBTM {
 			echo "</table></div>";
 			if($remind_edit){echo "</form>";}
 		} else {
-			echo "<div align='center'><b>".$lang["reminder"][13]."</b></div>";
+			echo "<div align='center'><b>".$LANG["reminder"][13]."</b></div>";
 
 		}
 

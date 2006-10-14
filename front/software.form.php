@@ -55,7 +55,7 @@ if (isset($_POST["add"]))
 	unset($_POST["search_software"]);
 
 	$newID=$soft->add($_POST);
-	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["delete"]))
@@ -66,27 +66,27 @@ else if (isset($tab["delete"]))
 		$soft->delete($tab,1);
 	else $soft->delete($tab);
 
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][22]);
+	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	if(!empty($tab["withtemplate"])) 
-		glpi_header($cfg_glpi["root_doc"]."/front/setup.templates.php");
+		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
-		glpi_header($cfg_glpi["root_doc"]."/front/software.php");
+		glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["restore"]))
 {
 	checkRight("software","w");
 
 	$soft->restore($_POST);
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/front/software.php");
+	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($tab["purge"]))
 {
 	checkRight("software","w");
 
 	$soft->delete($tab,1);
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/front/software.php");
+	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["update"]))
 {
@@ -94,7 +94,7 @@ else if (isset($_POST["update"]))
 
 	unset($_POST["search_software"]);
 	$soft->update($_POST);
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
@@ -107,7 +107,7 @@ else
 		//glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][12],$_SERVER["PHP_SELF"]);
 
 	if ($soft->getFromDB($tab["ID"]))
 		$soft->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
@@ -119,7 +119,7 @@ else
 			if (!empty($tab["ID"])){
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
-						showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
+						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
 						showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
 						break;
 					case 5 :
@@ -149,7 +149,7 @@ else
 				case -1:
 					showLicensesAdd($tab["ID"]);
 					showLicenses($tab["ID"]);
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
@@ -162,7 +162,7 @@ else
 					showLicenses($tab["ID"],1);
 					break;
 				case 4 :
-					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
 					break;
 				case 5 :

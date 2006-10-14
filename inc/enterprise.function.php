@@ -50,34 +50,34 @@ if (!defined('GLPI_ROOT')){
  **/
 function showInfocomEnterprise($instID) {
 
-	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("contact_enterprise","r")) return false;
 
 	$query = "SELECT DISTINCT device_type FROM glpi_infocoms WHERE FK_enterprise = '$instID' ORDER BY device_type";
 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
 	echo "<br><br><div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["financial"][32].":</th></tr>";
-	echo "<tr><th>".$lang["common"][17]."</th>";
-	echo "<th>".$lang["common"][16]."</th>";
+	echo "<tr><th colspan='2'>".$LANG["financial"][32].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][17]."</th>";
+	echo "<th>".$LANG["common"][16]."</th>";
 	echo "</tr>";
 	$ci=new CommonItem;
 	$num=0;
 	while ($i < $number) {
-		$type=$db->result($result, $i, "device_type");
+		$type=$DB->result($result, $i, "device_type");
 		if (haveTypeRight($type,"r")&&$type!=CONSUMABLE_ITEM_TYPE&&$type!=CARTRIDGE_ITEM_TYPE&&$type!=LICENSE_TYPE){
 			$query = "SELECT ".$LINK_ID_TABLE[$type].".* FROM glpi_infocoms INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.FK_device) WHERE glpi_infocoms.device_type='$type' AND glpi_infocoms.FK_enterprise = '$instID' order by ".$LINK_ID_TABLE[$type].".name";
-			$result_linked=$db->query($query);
-			if ($db->numrows($result_linked)){
+			$result_linked=$DB->query($query);
+			if ($DB->numrows($result_linked)){
 				$ci->setType($type);
-				while ($data=$db->fetch_assoc($result_linked)){
+				while ($data=$DB->fetch_assoc($result_linked)){
 					$ID="";
-					if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-					$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+					if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td align='center'>".$ci->getType()."</td>";
@@ -107,7 +107,7 @@ function showInfocomEnterprise($instID) {
  *
  **/
 function showDeviceManufacturer($instID) {
-	global $db,$cfg_glpi, $lang,$INFOFORM_PAGES,$LINK_ID_TABLE;
+	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("contract_infocom","r")) return false;
 
@@ -116,22 +116,22 @@ function showDeviceManufacturer($instID) {
 	sort($types);
 
 	echo "<br><br><div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["common"][5].":</th></tr>";
-	echo "<tr><th>".$lang["common"][17]."</th>";
-	echo "<th>".$lang["common"][16]."</th>";
+	echo "<tr><th colspan='2'>".$LANG["common"][5].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][17]."</th>";
+	echo "<th>".$LANG["common"][16]."</th>";
 	echo "</tr>";
 	$ci=new CommonItem;
 	$num=0;
 	foreach ($types as $type){
 		if (haveTypeRight($type,"r")){
 			$query = "SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_glpi_enterprise = '$instID' order by name";
-			$result_linked=$db->query($query);
-			if ($db->numrows($result_linked)){
+			$result_linked=$DB->query($query);
+			if ($DB->numrows($result_linked)){
 				$ci->setType($type);
-				while ($data=$db->fetch_assoc($result_linked)){
+				while ($data=$DB->fetch_assoc($result_linked)){
 					$ID="";
-					if($cfg_glpi["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-					$name= "<a href=\"".$cfg_glpi["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+					if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td align='center'>".$ci->getType()."</td>";
@@ -158,7 +158,7 @@ function showDeviceManufacturer($instID) {
  *
  **/
 function showInternalDeviceManufacturer($instID) {
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contract_infocom","r")) return false;
 	$canview=haveRight("device","w");
@@ -167,23 +167,23 @@ function showInternalDeviceManufacturer($instID) {
 
 
 	echo "<br><br><div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$lang["setup"][222].":</th></tr>";
-	echo "<tr><th>".$lang["common"][17]."</th>";
-	echo "<th>".$lang["common"][16]."</th>";
+	echo "<tr><th colspan='2'>".$LANG["setup"][222].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][17]."</th>";
+	echo "<th>".$LANG["common"][16]."</th>";
 	echo "</tr>";
 
 	$num=0;
 	foreach ($types as $type){
 		$query = "SELECT * FROM ".getDeviceTable($type)." WHERE FK_glpi_enterprise = '$instID' order by designation";
 
-		$result_linked=$db->query($query);
-		if ($db->numrows($result_linked)){
-			while ($data=$db->fetch_assoc($result_linked)){
+		$result_linked=$DB->query($query);
+		if ($DB->numrows($result_linked)){
+			while ($data=$DB->fetch_assoc($result_linked)){
 				$ID="";
 				echo "<tr class='tab_bg_1'>";
 				if ($canview){
-					echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/device.php?device_type=".$type."'>".getDeviceTypeLabel($type)."</a></td>";
-					echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/device.form.php?ID=".$data["ID"]."&amp;device_type=".$type."'>&nbsp;".$data["designation"]."&nbsp;</a></td>";
+					echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$type."'>".getDeviceTypeLabel($type)."</a></td>";
+					echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$data["ID"]."&amp;device_type=".$type."'>&nbsp;".$data["designation"]."&nbsp;</a></td>";
 				} else {
 					echo "<td align='center'>".getDeviceTypeLabel($type)."</td>";
 					echo "<td align='center'>".$data["designation"]."</td>";
@@ -201,39 +201,39 @@ function showInternalDeviceManufacturer($instID) {
 
 
 function showAssociatedContact($instID) {
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contact_enterprise","r")) return false;
 	$canedit=haveRight("contact_enterprise","w");
 
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent FROM glpi_contact_enterprise, glpi_contacts WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' order by glpi_contacts.name";
 
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
 
 	echo "<br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='8'>".$lang["financial"][46].":</th></tr>";
-	echo "<tr><th>".$lang["common"][16]."</th><th>".$lang["financial"][29]."</th>";
-	echo "<th>".$lang["financial"][29]." 2</th><th>".$lang["common"][42]."</th><th>".$lang["financial"][30]."</th>";
-	echo "<th>".$lang["setup"][14]."</th><th>".$lang["common"][17]."</th>";
+	echo "<tr><th colspan='8'>".$LANG["financial"][46].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["financial"][29]."</th>";
+	echo "<th>".$LANG["financial"][29]." 2</th><th>".$LANG["common"][42]."</th><th>".$LANG["financial"][30]."</th>";
+	echo "<th>".$LANG["setup"][14]."</th><th>".$LANG["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	if ($number)
-	while ($data=$db->fetch_array($result)) {
+	while ($data=$DB->fetch_array($result)) {
 		$ID=$data["ID_ent"];
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
 		echo "<td align='center'  width='100'>".$data["mobile"]."</td>";
 		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
-		echo "<td align='center'><a href='mailto:".$data["email"]."'>".$db->result($result, $i, "glpi_contacts.email")."</a></td>";
+		echo "<td align='center'><a href='mailto:".$data["email"]."'>".$DB->result($result, $i, "glpi_contacts.email")."</a></td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$LANG["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -241,14 +241,14 @@ function showAssociatedContact($instID) {
 
 	echo "</table><br>"    ;
 	if ($canedit){
-		echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/enterprise.form.php\">";
+		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/enterprise.form.php\">";
 		echo "<table  class='tab_cadre_fixe'>";
 
-		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
+		echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
 		echo "<input type='hidden' name='eID' value='$instID'>";
 		dropdown("glpi_contacts","cID");
 		echo "</td><td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='addcontact' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='addcontact' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
 
 		echo "</table></form>";
@@ -258,23 +258,23 @@ function showAssociatedContact($instID) {
 }
 
 function addContactEnterprise($eID,$cID){
-	global $db;
+	global $DB;
 	if ($eID>0&&$cID>0){
 
 		$query="INSERT INTO glpi_contact_enterprise (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 	}
 }
 
 function deleteContactEnterprise($ID){
 
-	global $db;
+	global $DB;
 	$query="DELETE FROM glpi_contact_enterprise WHERE ID= '$ID';";
-	$result = $db->query($query);
+	$result = $DB->query($query);
 }
 
 function getEnterpriseLinks($value,$withname=0){
-	global $cfg_glpi,$lang;
+	global $CFG_GLPI,$LANG;
 	$ret="";
 
 	$ent=new Enterprise();
@@ -286,10 +286,10 @@ function getEnterpriseLinks($value,$withname=0){
 			if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
 			else $website=$ent->fields['website'];
 			$ret.= "&nbsp;&nbsp;";
-			$ret.= "<a href='$website' target='_blank'><img src='".$cfg_glpi["root_doc"]."/pics/web.png' style='vertical-align:middle;' alt='".$lang["common"][4]."' title='".$lang["common"][4]."' ></a>";
+			$ret.= "<a href='$website' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' style='vertical-align:middle;' alt='".$LANG["common"][4]."' title='".$LANG["common"][4]."' ></a>";
 		}
 		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
-		$ret.= "<a href='".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$cfg_glpi["root_doc"]."/pics/edit.png' style='vertical-align:middle;' alt='".$lang["buttons"][14]."' title='".$lang["buttons"][14]."'></a>";
+		$ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' style='vertical-align:middle;' alt='".$LANG["buttons"][14]."' title='".$LANG["buttons"][14]."'></a>";
 	}
 
 	return $ret;

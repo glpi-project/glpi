@@ -34,13 +34,13 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 // Default location for based configuration
-$cfg_glpi["config_dir"] = GLPI_ROOT . "/config/";
+$CFG_GLPI["config_dir"] = GLPI_ROOT . "/config/";
 
 // Default location for backup dump
-$cfg_glpi["dump_dir"] = GLPI_ROOT . "/files/_dumps/";
+$CFG_GLPI["dump_dir"] = GLPI_ROOT . "/files/_dumps/";
 
 // Path for documents storage
-$cfg_glpi["doc_dir"] = GLPI_ROOT . "/files";
+$CFG_GLPI["doc_dir"] = GLPI_ROOT . "/files";
 
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere

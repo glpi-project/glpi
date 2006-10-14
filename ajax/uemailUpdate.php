@@ -44,8 +44,8 @@
 	checkCentralAccess();
 	
 	$query="SELECT email from glpi_users WHERE ID='".$_POST["value"]."'";
-	$result=$db->query($query);
-	$email=$db->result($result,0,"email");
+	$result=$DB->query($query);
+	$email=$DB->result($result,0,"email");
 	echo "<input type='text' size='30' name='uemail' value='$email'>";
 
 ?>

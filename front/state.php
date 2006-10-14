@@ -62,7 +62,7 @@ if (isset($tab["deletestate"])) {
 
 checkCentralAccess();
 
-commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][9],$_SERVER["PHP_SELF"]);
 
 titleState();
 

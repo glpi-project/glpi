@@ -40,11 +40,11 @@ $NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","netw
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][11],$_SERVER["PHP_SELF"]);
 
 checkRight("statistic","1");
 
-echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$lang["stats"][46]."</span></b></p></div>";
+echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$LANG["stats"][46]."</span></b></p></div>";
 
 if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
@@ -66,10 +66,10 @@ if(!isset($_GET["start"])) $_GET["start"] = 0;
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.item.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
-echo $lang["search"][8]." :</td><td>";
+echo $LANG["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $lang["buttons"][7] ."\" /></td></tr>";
-echo "<tr class='tab_bg_2'><td align='right'>".$lang["search"][9]." :</td><td>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
+echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
 showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";

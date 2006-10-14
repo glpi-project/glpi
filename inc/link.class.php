@@ -48,10 +48,10 @@ class Link extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 
-		global $db;
+		global $DB;
 
 		$query2="DELETE FROM glpi_links_device WHERE FK_links='$ID'";
-		$db->query($query2);
+		$DB->query($query2);
 	}
 
 	/**
@@ -64,9 +64,9 @@ class Link extends CommonDBTM {
 	 *
 	 **/
 	function title(){
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/links.png\" alt='".$lang["links"][2]."' title='".$lang["links"][2]."'></td><td><a  class='icon_consol' href=\"link.form.php?new=1\"><b>".$lang["links"][2]."</b></a>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/links.png\" alt='".$LANG["links"][2]."' title='".$LANG["links"][2]."'></td><td><a  class='icon_consol' href=\"link.form.php?new=1\"><b>".$LANG["links"][2]."</b></a>";
 		echo "</td></tr></table></div>";
 	}
 
@@ -75,7 +75,7 @@ class Link extends CommonDBTM {
 	 * Print the link form
 	 *
 	 *
-	 * Print général link form
+	 * Print gï¿½ï¿½al link form
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the link to print
@@ -86,7 +86,7 @@ class Link extends CommonDBTM {
 	 **/
 	function showForm ($target,$ID) {
 
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		if (!haveRight("link","r")) return false;
 
@@ -104,29 +104,29 @@ class Link extends CommonDBTM {
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 			echo "<tr><th colspan='2'><b>";
 			if (empty($ID)) {
-				echo $lang["links"][3].":";
+				echo $LANG["links"][3].":";
 
 			} else {
 
-				echo $lang["links"][1]." ID $ID:";
+				echo $LANG["links"][1]." ID $ID:";
 			}		
 			echo "</b></th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["links"][6].":	</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["links"][6].":	</td>";
 			echo "<td>[ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL]</td>";
 			echo "</tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][16].":	</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_links","name",$this->fields["name"],80);		
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["links"][1].":	</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["links"][1].":	</td>";
 			echo "<td>";
 			autocompletionTextField("link","glpi_links","link",$this->fields["link"],80);		
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["links"][9].":	</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["links"][9].":	</td>";
 			echo "<td>";
 			echo "<textarea name='data' rows='10' cols='80'>".$this->fields["data"]."</textarea>";
 			echo "</td></tr>";
@@ -136,7 +136,7 @@ class Link extends CommonDBTM {
 
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'></div>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -145,11 +145,11 @@ class Link extends CommonDBTM {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' ></div>";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2' valign='top'>\n";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' ></div>";
+					echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit' ></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -158,7 +158,7 @@ class Link extends CommonDBTM {
 				}
 			echo "</table></div></form>";
 		}else {
-			echo "<div align='center'><b>".$lang["links"][8]."</b></div>";
+			echo "<div align='center'><b>".$LANG["links"][8]."</b></div>";
 			return false;
 
 		}

@@ -99,35 +99,35 @@ class Cron {
 	var $taches=array(); 
 
 	function Cron($taches=array()){
-		global $cfg_glpi;
+		global $CFG_GLPI;
 		if(count($taches)>0){
 			$this->taches=$taches;
 		}else{
 			// la cle est la tache, la valeur le temps minimal, en secondes, entre
 			// deux memes taches ex $this->taches["test"]=30;
 
-			if ($cfg_glpi["ocs_mode"]){
+			if ($CFG_GLPI["ocs_mode"]){
 				// Every 5 mns
 				$this->taches["ocsng"]=300;
 			}
 			// Mailing alerts if mailing activated
-			if ($cfg_glpi["mailing"]){
-				if ($cfg_glpi["cartridges_alert"]>0)
+			if ($CFG_GLPI["mailing"]){
+				if ($CFG_GLPI["cartridges_alert"]>0)
 					$this->taches["cartridge"]=DAY_TIMESTAMP;
-				if ($cfg_glpi["consumables_alert"]>0)
+				if ($CFG_GLPI["consumables_alert"]>0)
 					$this->taches["consumable"]=DAY_TIMESTAMP;
 			}
 			$this->taches["contract"]=DAY_TIMESTAMP;
 			$this->taches["infocom"]=DAY_TIMESTAMP;
 		}
 		// Auto update check
-		if ($cfg_glpi["auto_update_check"]>0)
-			$this->taches["check_update"]=$cfg_glpi["auto_update_check"]*DAY_TIMESTAMP;
+		if ($CFG_GLPI["auto_update_check"]>0)
+			$this->taches["check_update"]=$CFG_GLPI["auto_update_check"]*DAY_TIMESTAMP;
 	}
 
 	function launch() {
 
-		global $cfg_glpi,$lang;
+		global $CFG_GLPI,$LANG;
 
 		$t = time();
 
@@ -137,7 +137,7 @@ class Cron {
 
 
 		foreach ($this->taches as $nom => $periode) {
-			$lock = $cfg_glpi["doc_dir"].'/_cron/' . $nom . '.lock';
+			$lock = $CFG_GLPI["doc_dir"].'/_cron/' . $nom . '.lock';
 			$date_lock = @filemtime($lock);
 
 			if ($date_lock + $periode < $tmin) {
@@ -167,7 +167,7 @@ class Cron {
 		}
 
 		// Un autre lock dans _DIR_SESSIONS, pour plus de securite
-		$lock = $cfg_glpi["doc_dir"].'/_cron/'. $tache . '.lock';
+		$lock = $CFG_GLPI["doc_dir"].'/_cron/'. $tache . '.lock';
 		if ($this->touch($lock, $this->taches[$tache])) {
 			// preparer la tache
 			$this->timer('tache');
@@ -194,7 +194,7 @@ class Cron {
 
 					if ($code_de_retour < 0) @touch($lock, (0 - $code_de_retour));
 					else // Log Event 
-						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$lang["log"][45] );
+						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$LANG["log"][45] );
 				}# else log("cron $tache a reprendre");
 			} else {echo "Erreur fonction manquante";}
 
@@ -245,7 +245,7 @@ class Cron {
 	// Poser un verrou local 
 	//
 	function get_lock($nom, $timeout = 0) {
-		global $db, $cfg_glpi;
+		global $DB, $CFG_GLPI;
 
 		// Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
 		define('_LOCK_TIME', intval(time()/HOUR_TIMESTAMP-316982));
@@ -253,8 +253,8 @@ class Cron {
 
 		$nom = addslashes($nom);
 		$query = "SELECT GET_LOCK('$nom', $timeout)";
-		$result = $db->query($query);
-		list($lock_ok) = $db->fetch_array($result);
+		$result = $DB->query($query);
+		list($lock_ok) = $DB->fetch_array($result);
 
 		if (!$lock_ok) log("pas de lock sql pour $nom");
 		return $lock_ok;
@@ -262,13 +262,13 @@ class Cron {
 
 
 	function release_lock($nom) {
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 
 		$nom .= _LOCK_TIME;
 
 		$nom = addslashes($nom);
 		$query = "SELECT RELEASE_LOCK('$nom')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 	}
 
 
@@ -286,14 +286,14 @@ class Alert extends CommonDBTM {
 	function getFromDBForDevice ($type,$ID) {
 
 		// Make new database object and fill variables
-		global $db;
+		global $DB;
 		if (empty($ID)) return false;
 
 		$query = "SELECT * FROM ".$this->table." WHERE (device_type='$type' AND FK_device = '$ID')";
 
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)==1){
-				$this->fields = $db->fetch_assoc($result);
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)==1){
+				$this->fields = $DB->fetch_assoc($result);
 				return true;
 			} else return false;
 		} else {

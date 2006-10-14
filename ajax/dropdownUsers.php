@@ -67,28 +67,28 @@ else {
 if (isset($_POST['value']))
 $where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$cfg_glpi["ajax_wildcard"])
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 $where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
 
 
-$NBMAX=$cfg_glpi["dropdown_max"];
+$NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
-if ($_POST['searchText']==$cfg_glpi["ajax_wildcard"]) $LIMIT="";
+if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 $query = "SELECT glpi_users.* FROM glpi_users ";
 if ($joinprofile) $query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users) LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles)";
 $query.= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name $LIMIT";
-$result = $db->query($query);
+$result = $DB->query($query);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
-if ($_POST['searchText']!=$cfg_glpi["ajax_wildcard"]&&$db->numrows($result)==$NBMAX)
-echo "<option value=\"0\">--".$lang["common"][11]."--</option>";
+if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 
 if ($_POST['all']==0)
 echo "<option value=\"0\">[ Nobody ]</option>";
-else if($_POST['all']==1) echo "<option value=\"0\">[ ".$lang["search"][7]." ]</option>";
+else if($_POST['all']==1) echo "<option value=\"0\">[ ".$LANG["search"][7]." ]</option>";
 
 if (isset($_POST['value'])){
 	$output=getUserName($_POST['value']);
@@ -96,8 +96,8 @@ if (isset($_POST['value'])){
 		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 }		
 
-if ($db->numrows($result)) {
-	while ($data=$db->fetch_array($result)) {
+if ($DB->numrows($result)) {
+	while ($data=$DB->fetch_array($result)) {
 		if (!empty($data["realname"])) {
 			$output = $data["realname"];
 			if (!empty($data["firstname"])) {
@@ -105,7 +105,7 @@ if ($db->numrows($result)) {
 			}
 		}
 		else $output = $data["name"];
-		echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";
@@ -114,7 +114,7 @@ if (isset($_POST["comments"])&&$_POST["comments"]){
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('dropdown_".$_POST["myname"].$_POST["rand"]."', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$cfg_glpi["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$CFG_GLPI["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           method:'post', parameters:'value='+value+'&table=glpi_users'\n";
 	echo "})})\n";
 	echo "</script>\n";
@@ -124,7 +124,7 @@ if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('dropdown_author".$_POST["rand"]."', 1, ";
 	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('tracking_device_type_selecter','".$cfg_glpi["root_doc"]."/ajax/updateTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
+	echo "      	new Ajax.Updater('tracking_device_type_selecter','".$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
 	echo "           method:'post', parameters:'userID=' + value+'&device_type=0'";
 	echo "})})";
 	echo "</script>";
@@ -132,7 +132,7 @@ if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('dropdown_author".$_POST["rand"]."', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('uemail_result','".$cfg_glpi["root_doc"]."/ajax/uemailUpdate.php',{asynchronous:true, evalScripts:true, \n";
+	echo "      	new Ajax.Updater('uemail_result','".$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php',{asynchronous:true, evalScripts:true, \n";
 	echo "           method:'post', parameters:'value='+value\n";
 	echo "})})\n";
 	echo "</script>\n";

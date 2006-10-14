@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("printer","r");
 
-commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][8],$_SERVER["PHP_SELF"]);
 
 $print=new Printer();
 $print->title();

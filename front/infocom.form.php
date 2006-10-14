@@ -51,7 +51,7 @@ if (isset($_GET["add"]))
 	checkRight("contract_infocom","w");
 
 	$newID=$ic->add($_GET);
-	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][20]);
+	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -59,7 +59,7 @@ else if (isset($_POST["delete"]))
 	checkRight("contract_infocom","w");
 
 	$ic->delete($_POST);
-	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][22]);
+	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
@@ -67,14 +67,14 @@ else if (isset($_POST["update"]))
 	checkRight("contract_infocom","w");
 
 	$ic->update($_POST);
-	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
 {
 	checkRight("contract_infocom","r");
 
-	commonHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][21],$_SERVER["PHP_SELF"]);
 	showInfocomForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
 
 	commonFooter();

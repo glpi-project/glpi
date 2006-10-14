@@ -43,21 +43,21 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][16],$_SERVER["PHP_SELF"]);
 
 // titre
 echo "<div align='center'><table ><tr><td>";
-echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/rapports.png\" alt='".$lang["Menu"][6]."' title='".$lang["Menu"][6]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][6]."</b></span>";
+echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/rapports.png\" alt='".$LANG["Menu"][6]."' title='".$LANG["Menu"][6]."'></td><td><span class='icon_sous_nav'><b>".$LANG["Menu"][6]."</b></span>";
 echo "</td></tr></table></div>";
 
 
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$lang["reports"][0].":</th></tr>";
+echo "<tr><th>".$LANG["reports"][0].":</th></tr>";
 
 // Report generation
 // Default Report included
-$report_list["default"]["name"] = $lang["reports"][26];
+$report_list["default"]["name"] = $LANG["reports"][26];
 $report_list["default"]["file"] = "report.default.php";
 
 // Vous pouvez faire vos propres rapports :
@@ -68,22 +68,22 @@ $report_list["default"]["file"] = "report.default.php";
 
 
 if (haveRight("contract_infocom","r")){
-	// Rapport ajoutés par GLPI V0.2
-	$report_list["Contrats"]["name"] = $lang["reports"][27];
+	// Rapport ajoutï¿½ par GLPI V0.2
+	$report_list["Contrats"]["name"] = $LANG["reports"][27];
 	$report_list["Contrats"]["file"] = "report.contract.php";
-	$report_list["Par_annee"]["name"] = $lang["reports"][28];
+	$report_list["Par_annee"]["name"] = $LANG["reports"][28];
 	$report_list["Par_annee"]["file"] = "report.year.php";
-	$report_list["Infocoms"]["name"]=$lang["reports"][62];
+	$report_list["Infocoms"]["name"]=$LANG["reports"][62];
 	$report_list["Infocoms"]["file"]="report.infocom.php";
-	$report_list["Infocoms2"]["name"]=$lang["reports"][63];
+	$report_list["Infocoms2"]["name"]=$LANG["reports"][63];
 	$report_list["Infocoms2"]["file"]="report.infocom.conso.php";
 }
 if (haveRight("networking","r")){
-	$report_list["Rapport prises reseau"]["name"]=$lang["reports"][33];
+	$report_list["Rapport prises reseau"]["name"]=$LANG["reports"][33];
 	$report_list["Rapport prises reseau"]["file"]="report.networking.php";
 }
 if (haveRight("reservation_central","r")){
-	$report_list["reservation"]["name"]=$lang["reservation"][24];
+	$report_list["reservation"]["name"]=$LANG["reservation"][24];
 	$report_list["reservation"]["file"]="report.reservation.php";
 }
 

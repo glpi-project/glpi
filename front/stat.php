@@ -41,27 +41,27 @@ $NEEDED_ITEMS=array("stat","tracking");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][11],$_SERVER["PHP_SELF"]);
 
 checkRight("statistic","1");
 
 // titre
 echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/statistiques.png\" alt='".$lang["Menu"][13]."' title='".$lang["Menu"][13]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][13]."</b></span>";
+echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/statistiques.png\" alt='".$LANG["Menu"][13]."' title='".$LANG["Menu"][13]."'></td><td><span class='icon_sous_nav'><b>".$LANG["Menu"][13]."</b></span>";
 echo "</td></tr></table></div>";
 
 
-//Affichage du tableau de présentation des stats
+//Affichage du tableau de prï¿½entation des stats
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$lang["stats"][0].":</th></tr>";
+echo "<tr><th>".$LANG["stats"][0].":</th></tr>";
 
 
-echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.global.php\"><b>".$lang["stats"][1]."</b></a></td></tr>";
-echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.tracking.php\"><b>".$lang["stats"][47]."</b></a></td></tr>";
-echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.location.php\"><b>".$lang["stats"][3]."</b></a><br> (".$lang["common"][15]
-.", ".$lang["common"][17]	= "Type".", ".$lang["computers"][9]	= "OS".", ".$lang["computers"][21].", ".$lang["computers"][36]
-.", ".$lang["devices"][2].", ".$lang["devices"][5].")</td></tr>";
-echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.item.php\"><b>".$lang["stats"][45]."</b></a></td></tr>";
+echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.global.php\"><b>".$LANG["stats"][1]."</b></a></td></tr>";
+echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.tracking.php\"><b>".$LANG["stats"][47]."</b></a></td></tr>";
+echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.location.php\"><b>".$LANG["stats"][3]."</b></a><br> (".$LANG["common"][15]
+.", ".$LANG["common"][17]	= "Type".", ".$LANG["computers"][9]	= "OS".", ".$LANG["computers"][21].", ".$LANG["computers"][36]
+.", ".$LANG["devices"][2].", ".$LANG["devices"][5].")</td></tr>";
+echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.item.php\"><b>".$LANG["stats"][45]."</b></a></td></tr>";
 
 
 echo "</table></div>";

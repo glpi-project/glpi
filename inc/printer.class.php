@@ -50,25 +50,25 @@ class Printer  extends CommonDBTM {
 	}	
 
 	function defineOnglets($withtemplate){
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 
 		if (haveRight("cartridge","r"))	
-			$ong[1]=$lang["title"][26];
+			$ong[1]=$LANG["title"][26];
 		if (haveRight("contract_infocom","r"))	
-			$ong[3]=$lang["title"][27];
+			$ong[3]=$LANG["title"][27];
 		if (haveRight("networking","r")||haveRight("computer","r"))
-			$ong[4]=$lang["Menu"][26];
+			$ong[4]=$LANG["Menu"][26];
 		if (haveRight("document","r"))
-			$ong[5]=$lang["title"][25];
+			$ong[5]=$LANG["title"][25];
 
 		if(empty($withtemplate)){
 			if (haveRight("show_ticket","1"))	
-				$ong[6]=$lang["title"][28];
+				$ong[6]=$LANG["title"][28];
 			if (haveRight("link","r"))
-				$ong[7]=$lang["title"][34];
+				$ong[7]=$LANG["title"][34];
 			if (haveRight("notes","r"))
-				$ong[10]=$lang["title"][37];
-			$ong[12]=$lang["title"][38];
+				$ong[10]=$LANG["title"][37];
+			$ong[12]=$LANG["title"][38];
 
 		}	
 		return $ong;
@@ -113,7 +113,7 @@ class Printer  extends CommonDBTM {
 	}
 
 	function postAddItem($newID,$input) {
-		global $db;
+		global $DB;
 		// Add state
 		if ($input["_state"]>0){
 			if (isset($input["is_template"])&&$input["is_template"]==1)
@@ -135,10 +135,10 @@ class Printer  extends CommonDBTM {
 
 		// ADD Ports
 		$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".PRINTER_TYPE."';";
-		$result=$db->query($query);
-		if ($db->numrows($result)>0){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
 
-			while ($data=$db->fetch_array($result)){
+			while ($data=$DB->fetch_array($result)){
 				$np= new Netport();
 				$np->getFromDB($data["ID"]);
 				unset($np->fields["ID"]);
@@ -152,19 +152,19 @@ class Printer  extends CommonDBTM {
 
 		// ADD Contract				
 		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".PRINTER_TYPE."';";
-		$result=$db->query($query);
-		if ($db->numrows($result)>0){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
 
-			while ($data=$db->fetch_array($result))
+			while ($data=$DB->fetch_array($result))
 				addDeviceContract($data["FK_contract"],PRINTER_TYPE,$newID);
 		}
 
 		// ADD Documents			
 		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".PRINTER_TYPE."';";
-		$result=$db->query($query);
-		if ($db->numrows($result)>0){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
 
-			while ($data=$db->fetch_array($result))
+			while ($data=$DB->fetch_array($result))
 				addDeviceDocument($data["FK_doc"],PRINTER_TYPE,$newID);
 		}
 
@@ -172,75 +172,75 @@ class Printer  extends CommonDBTM {
 
 
 	function cleanDBonPurge($ID) {
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 
 
 		$job =new Job();
 		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".PRINTER_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
-		if ($db->numrows($result))
-			while ($data=$db->fetch_array($result)) {
-				if ($cfg_glpi["keep_tracking_on_delete"]==1){
+		if ($DB->numrows($result))
+			while ($data=$DB->fetch_array($result)) {
+				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
 					$query = "UPDATE glpi_tracking SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
-					$db->query($query);
+					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
 
 		$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".PRINTER_TYPE."')";
-		$result = $db->query($query);
-		while ($data = $db->fetch_array($result)){
+		$result = $DB->query($query);
+		while ($data = $DB->fetch_array($result)){
 			$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
-			$result2 = $db->query($q);					
+			$result2 = $DB->query($q);					
 		}
 
 		$query2 = "DELETE FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = '".PRINTER_TYPE."')";
-		$result2 = $db->query($query2);
+		$result2 = $DB->query($query2);
 
 		$query2 = "DELETE from glpi_connect_wire WHERE (end1 = '$ID' AND type = '".PRINTER_TYPE."')";
-		$result2 = $db->query($query2);
+		$result2 = $DB->query($query2);
 
 
 		$query="select * from glpi_reservation_item where (device_type='".PRINTER_TYPE."' and id_device='$ID')";
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)>0){
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
-				$rr->delete(array("ID"=>$db->result($result,0,"ID")));
+				$rr->delete(array("ID"=>$DB->result($result,0,"ID")));
 			}
 		}
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".PRINTER_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".PRINTER_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".PRINTER_TYPE."')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 		$query = "UPDATE glpi_cartridges  SET FK_glpi_printers = NULL WHERE (FK_glpi_printers='$ID')";
-		$result = $db->query($query);
+		$result = $DB->query($query);
 
 	}
 
 
 	function title(){
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 
 		echo "<div align='center'><table border='0'><tr><td>";
 
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/printer.png\" alt='".$lang["printers"][0]."' title='".$lang["printers"][0]."'></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/printer.png\" alt='".$LANG["printers"][0]."' title='".$LANG["printers"][0]."'></td>";
 		if (haveRight("printer","w")){
-			echo "<td><a  class='icon_consol' href=\"".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=1\"><b>".$lang["printers"][0]."</b></a></td>";
-			echo "<td><a class='icon_consol'  href='".$cfg_glpi["root_doc"]."/front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=0'>".$lang["common"][8]."</a></td>";
+			echo "<td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=1\"><b>".$LANG["printers"][0]."</b></a></td>";
+			echo "<td><a class='icon_consol'  href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
 			echo "</tr></table></div>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$lang["Menu"][2]."</b></span></td>";
+		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][2]."</b></span></td>";
 	}
 
 	function showForm ($target,$ID,$withtemplate='') {
 
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 		if (!haveRight("printer","r")) return false;
 
 
@@ -256,14 +256,14 @@ class Printer  extends CommonDBTM {
 		if($printer_spotted) {
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
-				$datestring = $lang["computers"][14].": ";
+				$datestring = $LANG["computers"][14].": ";
 				$date = convDateTime(date("Y-m-d H:i:s"));
 			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
 				$template = "newtemplate";
-				$datestring = $lang["computers"][14].": ";
+				$datestring = $LANG["computers"][14].": ";
 				$date = convDateTime(date("Y-m-d H:i:s"));
 			} else {
-				$datestring = $lang["common"][26].": ";
+				$datestring = $LANG["common"][26].": ";
 				$date = convDateTime($this->fields["date_mod"]);
 				$template = false;
 			}
@@ -278,18 +278,18 @@ class Printer  extends CommonDBTM {
 
 			echo "<tr><th align='center' >\n";
 			if(!$template) {
-				echo $lang["printers"][29].": ".$this->fields["ID"];
+				echo $LANG["printers"][29].": ".$this->fields["ID"];
 			}elseif (strcmp($template,"newcomp") === 0) {
-				echo $lang["printers"][28].": ".$this->fields["tplname"];
+				echo $LANG["printers"][28].": ".$this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 			}elseif (strcmp($template,"newtemplate") === 0) {
-				echo $lang["common"][6]."&nbsp;: ";
+				echo $LANG["common"][6]."&nbsp;: ";
 				autocompletionTextField("tplname","glpi_printers","tplname",$this->fields["tplname"],20);		
 			}
 
 			echo "</th><th  align='center'>".$datestring.$date;
 			if (!$template&&!empty($this->fields['tplname']))
-				echo "&nbsp;&nbsp;&nbsp;(".$lang["common"][13].": ".$this->fields['tplname'].")";
+				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>\n";
 
 
@@ -297,7 +297,7 @@ class Printer  extends CommonDBTM {
 
 			// table identification
 			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-			echo "<tr><td>".$lang["common"][16]."*:	</td>\n";
+			echo "<tr><td>".$LANG["common"][16]."*:	</td>\n";
 			echo "<td>";
 			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PRINTER_TYPE);
 			autocompletionTextField("name","glpi_printers","name",$objectName,20);
@@ -305,46 +305,46 @@ class Printer  extends CommonDBTM {
 			//		autocompletionTextField("name","glpi_printers","name",$this->fields["name"],20);		
 			echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["common"][15].": 	</td><td>\n";
+			echo "<tr><td>".$LANG["common"][15].": 	</td><td>\n";
 			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 			echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][5].": 	</td><td colspan='2'>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
 			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
 			echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][10].": 	</td><td colspan='2'>\n";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
 			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
 			echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["common"][21].":	</td><td>\n";
+			echo "<tr><td>".$LANG["common"][21].":	</td><td>\n";
 			autocompletionTextField("contact_num","glpi_printers","contact_num",$this->fields["contact_num"],20);			
 			echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["printers"][8].":	</td><td>\n";
+			echo "<tr><td>".$LANG["printers"][8].":	</td><td>\n";
 			autocompletionTextField("contact","glpi_printers","contact",$this->fields["contact"],20);			
 			echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["common"][34].": 	</td><td>";
+			echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
 			dropdownAllUsers("FK_users", $this->fields["FK_users"]);
 			echo "</td></tr>";
 
-			echo "<tr><td>".$lang["common"][35].": 	</td><td>";
+			echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
 			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
 			echo "</td></tr>";
 
 
 			if (!$template){
-				echo "<tr><td>".$lang["reservation"][24].":</td><td><b>\n";
+				echo "<tr><td>".$LANG["reservation"][24].":</td><td><b>\n";
 				showReservationForm(PRINTER_TYPE,$ID);
 				echo "</b></td></tr>\n";
 			}
 
-			echo "<tr><td>".$lang["setup"][88].": 	</td><td>\n";
+			echo "<tr><td>".$LANG["setup"][88].": 	</td><td>\n";
 			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
 			echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["setup"][89].": 	</td><td>\n";
+			echo "<tr><td>".$LANG["setup"][89].": 	</td><td>\n";
 			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
 			echo "</td></tr>\n";
 
@@ -357,7 +357,7 @@ class Printer  extends CommonDBTM {
 			// table type,serial..
 			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$lang["state"][0].":</td><td>\n";
+			echo "<tr><td>".$LANG["state"][0].":</td><td>\n";
 			$si=new StateItem();
 			$t=0;
 			if ($template) $t=1;
@@ -365,29 +365,29 @@ class Printer  extends CommonDBTM {
 			dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
 			echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["common"][17].": 	</td><td>\n";
+			echo "<tr><td>".$LANG["common"][17].": 	</td><td>\n";
 			dropdownValue("glpi_type_printers", "type", $this->fields["type"]);
 			echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["common"][22].": 	</td><td>";
+			echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
 			dropdownValue("glpi_dropdown_model_printers", "model", $this->fields["model"]);
 			echo "</td></tr>";
 
-			echo "<tr><td>".$lang["common"][19].":	</td><td>\n";
+			echo "<tr><td>".$LANG["common"][19].":	</td><td>\n";
 			autocompletionTextField("serial","glpi_printers","serial",$this->fields["serial"],20);	echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["common"][20]."*:</td><td>\n";
+			echo "<tr><td>".$LANG["common"][20]."*:</td><td>\n";
 			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PRINTER_TYPE);
 			autocompletionTextField("otherserial","glpi_printers","otherserial",$objectName,20);
 
 			//autocompletionTextField("otherserial","glpi_printers","otherserial",$this->fields["otherserial"],20);
 			echo "</td></tr>\n";
 
-			echo "<tr><td>".$lang["printers"][18].": </td><td>\n";
+			echo "<tr><td>".$LANG["printers"][18].": </td><td>\n";
 
 			// serial interface?
 			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
-			echo "<td>".$lang["printers"][14]."</td>\n";
+			echo "<td>".$LANG["printers"][14]."</td>\n";
 			echo "<td>";
 			dropdownYesNoInt("flags_serial",$this->fields["flags_serial"]);
 			echo "</td>";
@@ -395,7 +395,7 @@ class Printer  extends CommonDBTM {
 
 			// parallel interface?
 			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
-			echo "<td>".$lang["printers"][15]."</td>\n";
+			echo "<td>".$LANG["printers"][15]."</td>\n";
 			echo "<td>";
 			dropdownYesNoInt("flags_par",$this->fields["flags_par"]);
 			echo "</td>";
@@ -404,7 +404,7 @@ class Printer  extends CommonDBTM {
 
 			// USB ?
 			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
-			echo "<td>".$lang["printers"][27]."</td>\n";
+			echo "<td>".$LANG["printers"][27]."</td>\n";
 			echo "<td>";
 			dropdownYesNoInt("flags_usb",$this->fields["flags_usb"]);
 			echo "</td>";
@@ -412,16 +412,16 @@ class Printer  extends CommonDBTM {
 			echo "</tr></table>\n";
 
 			// Ram ?
-			echo "<tr><td>".$lang["printers"][23].":</td><td>\n";
+			echo "<tr><td>".$LANG["printers"][23].":</td><td>\n";
 			autocompletionTextField("ramSize","glpi_printers","ramSize",$this->fields["ramSize"],20);
 			echo "</td></tr>\n";
 			// Initial count pages ?
-			echo "<tr><td>".$lang["printers"][30].":</td><td>\n";
+			echo "<tr><td>".$LANG["printers"][30].":</td><td>\n";
 			autocompletionTextField("initial_pages","glpi_printers","initial_pages",$this->fields["initial_pages"],20);		
 			echo "</td></tr>\n";
 
 
-			echo "<tr><td>".$lang["printers"][35].":</td><td>";
+			echo "<tr><td>".$LANG["printers"][35].":</td><td>";
 			globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
 			echo "</td></tr>";
 
@@ -434,7 +434,7 @@ class Printer  extends CommonDBTM {
 
 			// table commentaires
 			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
-			echo $lang["common"][25].":	</td>\n";
+			echo $LANG["common"][25].":	</td>\n";
 			echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
 			echo "</td></tr></table>\n";
 
@@ -452,12 +452,12 @@ class Printer  extends CommonDBTM {
 					if (empty($ID)||$withtemplate==2){
 						echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
 						echo "<input type='hidden' name='ID' value=$ID>";
-						echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+						echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 						echo "</td>\n";
 					} else {
 						echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
 						echo "<input type='hidden' name='ID' value=$ID>";
-						echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+						echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 						echo "</td>\n";
 					}
 
@@ -465,16 +465,16 @@ class Printer  extends CommonDBTM {
 
 					echo "<td class='tab_bg_2' valign='top' align='center'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit'>";
+					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2' valign='top' align='center'>\n";
 					echo "<div align='center'>";
 					if ($this->fields["deleted"]=='N')
-						echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit'>";
+						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
-						echo "<input type='submit' name='restore' value=\"".$lang["buttons"][21]."\" class='submit'>";
+						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
 
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$lang["buttons"][22]."\" class='submit'>";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>";
 					}
 					echo "</div>";
 					echo "</td>";
@@ -487,7 +487,7 @@ class Printer  extends CommonDBTM {
 			return true;	
 		}
 		else {
-			echo "<div align='center'><b>".$lang["printers"][17]."</b></div>";
+			echo "<div align='center'><b>".$LANG["printers"][17]."</b></div>";
 			return false;
 		}
 

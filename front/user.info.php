@@ -41,7 +41,7 @@ $NEEDED_ITEMS=array("user","tracking","computer","printer","networking","periphe
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][13],$_SERVER["PHP_SELF"]);
 
 checkRight("user","r");
 

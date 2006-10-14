@@ -44,52 +44,52 @@ class User extends CommonDBTM {
 	var $fields = array();
 
 	function User() {
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		$this->table="glpi_users";
 		$this->type=USER_TYPE;
 
 		$this->fields['tracking_order'] = 'no';
-		if (isset($cfg_glpi["default_language"]))
-			$this->fields['language'] = $cfg_glpi["default_language"];
+		if (isset($CFG_GLPI["default_language"]))
+			$this->fields['language'] = $CFG_GLPI["default_language"];
 		else $this->fields['language'] = "english";
 
 	}
 	function defineOnglets($withtemplate){
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 
-		$ong[1]=$lang["title"][26];
-		$ong[2]=$lang["common"][1];
+		$ong[1]=$LANG["title"][26];
+		$ong[2]=$LANG["common"][1];
 
 		return $ong;
 	}
 	function cleanDBonPurge($ID) {
 
-		global $db,$cfg_glpi,$LINK_ID_TABLE;
+		global $DB,$CFG_GLPI,$LINK_ID_TABLE;
 
 		// Tracking items left?
 		$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
-		$db->query($query3);
+		$DB->query($query3);
 
 		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
-		$db->query($query);
+		$DB->query($query);
 
 		$query = "DELETE from glpi_users_groups WHERE FK_users = '$ID'";
-		$db->query($query);
+		$DB->query($query);
 
-		foreach ($cfg_glpi["linkuser_type"] as $type){
+		foreach ($CFG_GLPI["linkuser_type"] as $type){
 			$query2="UPDATE ".$LINK_ID_TABLE[$type]." SET FK_groups=0 WHERE FK_groups='$ID';";
-			$db->query($query2);
+			$DB->query($query2);
 		}
 
 	}
 
 	function getFromDBbyName($name) {
-		global $db;
+		global $DB;
 		$query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
-		if ($result = $db->query($query)) {
-			if ($db->numrows($result)!=1) return false;
-			$data = $db->fetch_assoc($result);
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)!=1) return false;
+			$data = $DB->fetch_assoc($result);
 			if (empty($data)) {
 				return false;
 			}
@@ -145,10 +145,10 @@ class User extends CommonDBTM {
 	}
 
 	function pre_deleteItem($ID) {
-		global $lang;
+		global $LANG;
 		if ($ID==1){
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-			echo "alert('".addslashes($lang["setup"][220])."');";
+			echo "alert('".addslashes($LANG["setup"][220])."');";
 			echo "</script>";
 			glpi_header($_SERVER['HTTP_REFERER']);
 			exit();
@@ -157,11 +157,11 @@ class User extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
-		global $db,$cfg_glpi,$lang;
+		global $DB,$CFG_GLPI,$LANG;
 
 		if ($input["ID"]==1){
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-			echo "alert('".addslashes($lang["setup"][220])."');";
+			echo "alert('".addslashes($LANG["setup"][220])."');";
 			echo "</script>";
 			glpi_header($_SERVER['HTTP_REFERER']);
 			exit();
@@ -201,14 +201,14 @@ class User extends CommonDBTM {
 			if($_SESSION["glpiID"]==$input['ID']) {
 				$ret=$input;
 				// extauth ldap case
-				if ($_SESSION["glpiextauth"]&&isset($cfg_glpi['ldap_fields'])){
-					if (!empty($cfg_glpi["ldap_host"]))
-					foreach ($cfg_glpi['ldap_fields'] as $key => $val)
+				if ($_SESSION["glpiextauth"]&&isset($CFG_GLPI['ldap_fields'])){
+					if (!empty($CFG_GLPI["ldap_host"]))
+					foreach ($CFG_GLPI['ldap_fields'] as $key => $val)
 						if (!empty($val))
 							unset($ret[$key]);
 				}
 				// extauth imap case
-				if (!empty($cfg_glpi['imap_host']))
+				if (!empty($CFG_GLPI['imap_host']))
 					unset($ret["email"]);	
 
 				unset($ret["active"]);
@@ -227,7 +227,7 @@ class User extends CommonDBTM {
 		
 		if (isset($input["_groups"])&&count($input["_groups"])){
 			$WHERE="";
-			switch ($cfg_glpi["ldap_search_for_groups"]){
+			switch ($CFG_GLPI["ldap_search_for_groups"]){
 				case 0 : // user search
 					$WHERE="AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
 					break;
@@ -246,9 +246,9 @@ class User extends CommonDBTM {
 						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
 						WHERE glpi_users_groups.FK_users='".$input["ID"]."' $WHERE";
 
-			$result=$db->query($query);
-			if ($db->numrows($result)>0){
-				while ($data=$db->fetch_array($result))
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result))
 					if (!in_array($data["FK_groups"],$input["_groups"])){
 						deleteUserGroup($data["ID"]);
 					}
@@ -279,7 +279,7 @@ class User extends CommonDBTM {
 	//
 	function getFromLDAP($host,$port,$basedn,$adm,$pass,$fields,$name)
 	{
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 		// we prevent some delay..
 		if (empty($host)) {
 			return false;
@@ -295,7 +295,7 @@ class User extends CommonDBTM {
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-			if ($cfg_glpi["ldap_use_tls"]){
+			if ($CFG_GLPI["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
 					return false;
 				} 
@@ -303,7 +303,7 @@ class User extends CommonDBTM {
 
 			if ( $adm != "" )
 			{
-				//	 	$dn = $cfg_glpi["ldap_login"]."=" . $adm . "," . $basedn;
+				//	 	$dn = $CFG_GLPI["ldap_login"]."=" . $adm . "," . $basedn;
 				$bv = ldap_bind($ds, $adm, $pass);
 			}
 			else
@@ -313,7 +313,7 @@ class User extends CommonDBTM {
 
 			if ( $bv )
 			{
-				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$cfg_glpi["ldap_login"]."=".$name);
+				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$CFG_GLPI["ldap_login"]."=".$name);
 			}
 		}
 		return false;
@@ -324,7 +324,7 @@ class User extends CommonDBTM {
 	//
 	function getFromLDAP_active_directory($host,$port,$basedn,$adm,$pass,$fields,$name)
 	{
-		global $db;
+		global $DB;
 		// we prevent some delay..
 		if (empty($host)) {
 			unset($this->fields["password"]);
@@ -342,7 +342,7 @@ class User extends CommonDBTM {
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
 
-			if ($cfg_glpi["ldap_use_tls"]){
+			if ($CFG_GLPI["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
 					return false;
 				} 
@@ -383,14 +383,14 @@ class User extends CommonDBTM {
 	//Get all the group a user belongs to
 	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn)
 	{
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		$groups = array();
 
 		//Only retrive cn and member attributes from groups
 		$attrs=array("dn");
 
-		$filter="(&".$cfg_glpi["ldap_group_condition"]."(".$cfg_glpi["ldap_field_group_member"]."=".$user_dn."))";
+		$filter="(&".$CFG_GLPI["ldap_group_condition"]."(".$CFG_GLPI["ldap_field_group_member"]."=".$user_dn."))";
 
 		//Perform the search
 		$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
@@ -407,7 +407,7 @@ class User extends CommonDBTM {
 		}
 
 		//Create an array with the list of groups of the user
-		$groups[0][$cfg_glpi["ldap_field_group_member"]] = $listgroups;
+		$groups[0][$CFG_GLPI["ldap_field_group_member"]] = $listgroups;
 
 		//Return the groups of the user
 		return $groups;
@@ -417,7 +417,7 @@ class User extends CommonDBTM {
 
 
 	function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
-		global $db,$cfg_glpi;
+		global $DB,$CFG_GLPI;
 
 		$fields=array_filter($fields);
 
@@ -442,12 +442,12 @@ class User extends CommonDBTM {
 		// Is location get from LDAP ?
 		if (isset($fields['location'])&&!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
 			$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
-			$result=$db->query($query);
-			if ($db->numrows($result)==0){
-				$db->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
-				$this->fields['location']=$db->insert_id();
+			$result=$DB->query($query);
+			if ($DB->numrows($result)==0){
+				$DB->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
+				$this->fields['location']=$DB->insert_id();
 				regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
-			} else $this->fields['location']=$db->result($result,0,"ID");
+			} else $this->fields['location']=$DB->result($result,0,"ID");
 		}
 
 		// Get group fields
@@ -458,12 +458,12 @@ class User extends CommonDBTM {
 		$groups=array();
 		$v=array();
 		//The groupes are retrived by looking into an ldap user object
-		if ($cfg_glpi["ldap_search_for_groups"]==0||$cfg_glpi["ldap_search_for_groups"]==2){
+		if ($CFG_GLPI["ldap_search_for_groups"]==0||$CFG_GLPI["ldap_search_for_groups"]==2){
 
-			$result=$db->query($query_user);
+			$result=$DB->query($query_user);
 
-			if ($db->numrows($result)>0){
-				while ($data=$db->fetch_assoc($result)){
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_assoc($result)){
 					$group_fields[]=$data["ldap_field"];
 					$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
 				}
@@ -474,15 +474,15 @@ class User extends CommonDBTM {
 		}
 
 		//The groupes are retrived by looking into an ldap group object
-		if ($cfg_glpi["ldap_search_for_groups"]==1||$cfg_glpi["ldap_search_for_groups"]==2){
+		if ($CFG_GLPI["ldap_search_for_groups"]==1||$CFG_GLPI["ldap_search_for_groups"]==2){
 
-			$result=$db->query($query_group);
+			$result=$DB->query($query_group);
 
-			if ($db->numrows($result)>0){
-				while ($data=$db->fetch_assoc($result)){
-					$groups[$cfg_glpi["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_assoc($result)){
+					$groups[$CFG_GLPI["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
 				}
-				$v2 = $this->ldap_get_user_groups($ldapconn,$cfg_glpi["ldap_basedn"],$user_dn);
+				$v2 = $this->ldap_get_user_groups($ldapconn,$CFG_GLPI["ldap_basedn"],$user_dn);
 				$v = array_merge($v,$v2);
 			}
 
@@ -532,11 +532,11 @@ class User extends CommonDBTM {
 
 
 	function blankPassword () {
-		global $db;
+		global $DB;
 		if (!empty($this->fields["name"])){
 
 			$query  = "UPDATE glpi_users SET password='' , password_md5='' WHERE name='".$this->fields["name"]."'";	
-			$db->query($query);
+			$DB->query($query);
 		}
 	}
 
@@ -544,12 +544,12 @@ class User extends CommonDBTM {
 
 		// Un titre pour la gestion des users
 
-		global  $lang,$cfg_glpi;
+		global  $LANG,$CFG_GLPI;
 		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/users.png\" alt='".$lang["setup"][2]."' title='".$lang["setup"][2]."'></td>";
-		echo "<td><a  class='icon_consol' href=\"user.form.php?new=1\"><b>".$lang["setup"][2]."</b></a></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/users.png\" alt='".$LANG["setup"][2]."' title='".$LANG["setup"][2]."'></td>";
+		echo "<td><a  class='icon_consol' href=\"user.form.php?new=1\"><b>".$LANG["setup"][2]."</b></a></td>";
 		if (useAuthExt())
-			echo "<td><a  class='icon_consol' href=\"user.form.php?new=1&ext_auth=1\"><b>".$lang["setup"][125]."</b></a></td>";
+			echo "<td><a  class='icon_consol' href=\"user.form.php?new=1&ext_auth=1\"><b>".$LANG["setup"][125]."</b></a></td>";
 		echo "</tr></table></div>";
 	}
 
@@ -557,7 +557,7 @@ class User extends CommonDBTM {
 
 		// Affiche les infos User
 
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		if (!haveRight("user","r")) return false;
 
@@ -570,28 +570,28 @@ class User extends CommonDBTM {
 
 			echo "<div align='center'>";
 			echo "<table class='tab_cadre'>";
-			echo   "<tr><th colspan='2'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
+			echo   "<tr><th colspan='2'>".$LANG["setup"][57]." : " .$this->fields["name"]."</th></tr>";
 			echo "<tr class='tab_bg_1'>";	
 
-			echo "<td align='center'>".$lang["setup"][18]."</td>";
+			echo "<td align='center'>".$LANG["setup"][18]."</td>";
 
 			echo "<td align='center'><b>".$this->fields["name"]."</b></td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][48]."</td><td>".$this->fields["realname"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][43]."</td><td>".$this->fields["firstname"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>".$this->fields["realname"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][43]."</td><td>".$this->fields["firstname"]."</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>".$this->fields["email"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]."</td><td>".$this->fields["phone"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]." 2</td><td>".$this->fields["phone2"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][42]."</td><td>".$this->fields["mobile"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][15]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][14]."</td><td>".$this->fields["email"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>".$this->fields["phone"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]." 2</td><td>".$this->fields["phone2"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][42]."</td><td>".$this->fields["mobile"]."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
 			echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
 			echo "</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][25]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][25]."</td><td>";
 			echo nl2br($this->fields["comments"]);
 			echo "</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>".($this->fields["active"]?$lang["choice"][1]:$lang["choice"][0])."</td></tr>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>".($this->fields["active"]?$LANG["choice"][1]:$LANG["choice"][0])."</td></tr>";
 			echo "</table></div><br>";
 
 			return true;
@@ -605,7 +605,7 @@ class User extends CommonDBTM {
 	function showForm($target,$ID) {
 
 		// Affiche un formulaire User
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		if ($ID!=$_SESSION["glpiID"]&&!haveRight("user","r")) return false;
 
@@ -616,7 +616,7 @@ class User extends CommonDBTM {
 		// Helpdesk case
 		if($ID == 1) {
 			echo "<div align='center'>";
-			echo $lang["setup"][220];
+			echo $LANG["setup"][220];
 			echo "</div>";
 			return false;
 		}
@@ -631,12 +631,12 @@ class User extends CommonDBTM {
 		if ($spotted) {
 			echo "<div align='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>".$lang["setup"][57]." : " .$this->fields["name"]."&nbsp;";
-			echo "<a href='".$cfg_glpi["root_doc"]."/front/user.vcard.php?ID=$ID'>".$lang["common"][46]."</a>"; 
+			echo "<tr><th colspan='4'>".$LANG["setup"][57]." : " .$this->fields["name"]."&nbsp;";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>"; 
 			echo "</th></tr>";
 			echo "<tr class='tab_bg_1'>";	
-			echo "<td align='center'>".$lang["setup"][18]."</td>";
-			// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
+			echo "<td align='center'>".$LANG["setup"][18]."</td>";
+			// si on est dans le cas d'un ajout , cet input ne doit plus ï¿½re hiden
 			if ($this->fields["name"]=="") {
 				echo "<td><input  name='name' value=\"".$this->fields["name"]."\">";
 				echo "</td>";
@@ -659,50 +659,50 @@ class User extends CommonDBTM {
 			//do some rights verification
 			if(haveRight("user","w")) {
 				if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$this->fields["name"]==""){
-					echo "<td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+					echo "<td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 				} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][48]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
 			autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 			echo "</td>";
-			echo "<td align='center'>".$lang["common"][43]."</td><td>";
+			echo "<td align='center'>".$LANG["common"][43]."</td><td>";
 			autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["profiles"][22]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["profiles"][22]."</td><td>";
 			$prof=new Profile();
 			$prof->getFromDBforUser($this->fields["ID"]);
 			dropdownValue("glpi_profiles","profile",$prof->fields["ID"]);
 			echo "</td>";
-			echo "<td align='center'>".$lang["setup"][14]."</td><td>";
+			echo "<td align='center'>".$LANG["setup"][14]."</td><td>";
 			autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>";
 			autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
 			echo "</td>";
-			echo "<td align='center'>".$lang["financial"][29]." 2</td><td>";
+			echo "<td align='center'>".$LANG["financial"][29]." 2</td><td>";
 			autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][15]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
 			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 			echo "</td>";
-			echo "<td align='center'>".$lang["common"][42]."</td><td>";
+			echo "<td align='center'>".$LANG["common"][42]."</td><td>";
 			autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td>".$lang["common"][25].":</td><td colspan='3' align='center'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][25].":</td><td colspan='3' align='center'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
 			echo "</tr>";
 	
 	
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][400]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
 			$active=0;
 			if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
 			echo "<select name='active'>";
-			echo "<option value='1' ".($active?" selected ":"").">".$lang["choice"][1]."</option>";
-			echo "<option value='0' ".(!$active?" selected ":"").">".$lang["choice"][0]."</option>";
+			echo "<option value='1' ".($active?" selected ":"").">".$LANG["choice"][1]."</option>";
+			echo "<option value='0' ".(!$active?" selected ":"").">".$LANG["choice"][0]."</option>";
 	
 			echo "</select>";
 			echo "</td><td colspan='2'>&nbsp;</td></tr>";
@@ -711,16 +711,16 @@ class User extends CommonDBTM {
 				if ($this->fields["name"]=="") {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";
-					echo "<input type='submit' name='add' value=\"".$lang["buttons"][8]."\" class='submit'>";
+					echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 					echo "</td>";
 					echo "</tr>";	
 				} else {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
-					echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
+					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' >";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
-					echo "<input type='submit' name='delete' value=\"".$lang["buttons"][6]."\" class='submit' >";
+					echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit' >";
 					echo "</td>";
 					echo "</tr>";
 				}
@@ -734,20 +734,20 @@ class User extends CommonDBTM {
 	function showMyForm($target,$ID) {
 
 		// Affiche un formulaire User
-		global $cfg_glpi, $lang;
+		global $CFG_GLPI, $LANG;
 
 		if ($ID!=$_SESSION["glpiID"]) return false;
 
 		if ($this->getfromDB($ID)){
 			$extauth=empty($this->fields["password"])&&empty($this->fields["password_md5"]);
-			$imapauth=!empty($cfg_glpi["imap_host"]);
+			$imapauth=!empty($CFG_GLPI["imap_host"]);
 
 			echo "<div align='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
-			echo "<tr><th colspan='2'>".$lang["setup"][57]." : " .$this->fields["name"]."</th></tr>";
+			echo "<tr><th colspan='2'>".$LANG["setup"][57]." : " .$this->fields["name"]."</th></tr>";
 
 			echo "<tr class='tab_bg_1'>";	
-			echo "<td align='center'>".$lang["setup"][18]."</td>";
+			echo "<td align='center'>".$LANG["setup"][18]."</td>";
 			echo "<td align='center'><b>".$this->fields["name"]."</b>";
 			echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
 			echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
@@ -755,54 +755,54 @@ class User extends CommonDBTM {
 
 			//do some rights verification
 			if (!$extauth&&haveRight("password_update","1")){
-				echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 			} 
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][48]."</td><td>";
-			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["realname"]))) {
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
+			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["realname"]))) {
 				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 			} else echo $this->fields["realname"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][43]."</td><td>";
-			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["firstname"]))){
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][43]."</td><td>";
+			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["firstname"]))){
 				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
 			}  else echo $this->fields["firstname"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["setup"][14]."</td><td>";
-			if (!$extauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["email"]))){
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][14]."</td><td>";
+			if (!$extauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["email"]))){
 				autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
 			} else echo $this->fields["email"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]."</td><td>";
-			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone"]))){
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>";
+			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["phone"]))){
 				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
 			} else echo $this->fields["phone"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["financial"][29]." 2</td><td>";
-			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["phone2"]))){
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]." 2</td><td>";
+			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["phone2"]))){
 				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
 			} else echo $this->fields["phone2"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][42]."</td><td>";
-			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["mobile"]))) {
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][42]."</td><td>";
+			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["mobile"]))) {
 				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
 			} else echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$lang["common"][15]."</td><td>";
-			if (!$extauth||$imapauth||(isset($cfg_glpi['ldap_fields'])&&empty($cfg_glpi['ldap_fields']["location"]))){
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
+			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["location"]))){
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],0);
 			} else echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
 			echo "</td></tr>";
 
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
-			echo "<input type='submit' name='update' value=\"".$lang["buttons"][7]."\" class='submit' >";
+			echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' >";
 			echo "</td>";
 			echo "</tr>";
 

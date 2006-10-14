@@ -56,7 +56,7 @@ class Job extends CommonDBTM{
 
 	function getFromDBwithData ($ID,$purecontent) {
 
-		global $db,$lang;
+		global $DB,$LANG;
 
 		if ($this->getFromDB($ID)){
 
@@ -69,7 +69,7 @@ class Job extends CommonDBTM{
 			} else $this->computername='';
 
 			if ($this->computername==""){
-				if ($this->fields["device_type"]==0) $this->computername = $lang["help"][30];
+				if ($this->fields["device_type"]==0) $this->computername = $LANG["help"][30];
 				else $this->computername = "N/A";
 				$this->computerfound=0;				
 			} else 	$this->computerfound=1;	
@@ -82,22 +82,22 @@ class Job extends CommonDBTM{
 
 
 	function cleanDBonPurge($ID) {
-		global $db;
+		global $DB;
 
 		$query="SELECT ID FROM glpi_followups WHERE tracking = '$ID'";
-		$result=$db->query($query);
-		if ($db->numrows($result)>0)
-			while ($data=$db->fetch_array($result)){
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0)
+			while ($data=$DB->fetch_array($result)){
 				$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '".$data['ID']."'";
-				$db->query($querydel);				
+				$DB->query($querydel);				
 			}
 		$query1="delete from glpi_followups where tracking = '$ID'";
-		$db->query($query1);
+		$DB->query($query1);
 
 	}
 
 	function prepareInputForUpdate($input) {
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 		// Security checks
 		if (!haveRight("update_ticket","1")){
 			if (haveRight("assign_ticket","1")){
@@ -135,7 +135,7 @@ class Job extends CommonDBTM{
 		// add Document if exists
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 			$input2=array();
-			$input2["name"]=$lang["tracking"][24]." ".$input["ID"];
+			$input2["name"]=$LANG["tracking"][24]." ".$input["ID"];
 			$input2["FK_tracking"]=$input["ID"];
 			$input2["_only_if_upload_succeed"]=1;
 			$doc=new Document();
@@ -149,7 +149,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Old values for add followup in change
-		if ($cfg_glpi["followup_on_update_ticket"]){
+		if ($CFG_GLPI["followup_on_update_ticket"]){
 			$this->getFromDB($input["ID"]);
 			$input["_old_assign_name"]=getAssignName($this->fields["assign"],USER_TYPE);
 			$this->fields["_old_assign"]=$this->fields["assign"];
@@ -209,31 +209,31 @@ class Job extends CommonDBTM{
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
-		global $cfg_glpi,$lang;
+		global $CFG_GLPI,$LANG;
 
 		// New values for add followup in change
 		$change_followup_content="";
 		$global_mail_change_count=0;
 
-		if ($cfg_glpi["followup_on_update_ticket"]){
+		if ($CFG_GLPI["followup_on_update_ticket"]){
 			if (in_array("assign",$updates)){
 				$new_assign_name=getAssignName($this->fields["assign"],USER_TYPE);
 				if ($input["_old_assign_name"]=="[Nobody]")
-					$input["_old_assign_name"]=$lang["mailing"][105];
-				$change_followup_content.=$lang["mailing"][12].": ".$input["_old_assign_name"]." -> ".$new_assign_name."\n";
+					$input["_old_assign_name"]=$LANG["mailing"][105];
+				$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_name"]." -> ".$new_assign_name."\n";
 				$global_mail_change_count++;
 			} else unset($this->fields["_old_assign"]);
 
 			if (in_array("assign_ent",$updates)){
 				$new_assign_ent_name=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
-				$change_followup_content.=$lang["mailing"][12].": ".$input["_old_assign_ent_name"]." -> ".$new_assign_ent_name."\n";
+				$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_ent_name"]." -> ".$new_assign_ent_name."\n";
 				$global_mail_change_count++;
 			}
 			if (in_array("category",$updates)){
 				$new_category=$this->fields["category"];
-				$old_category_name=ereg_replace("&nbsp;",$lang["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$input["_old_category"]));
-				$new_category_name=ereg_replace("&nbsp;",$lang["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
-				$change_followup_content.=$lang["mailing"][14].": ".$old_category_name." -> ".$new_category_name."\n";
+				$old_category_name=ereg_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$input["_old_category"]));
+				$new_category_name=ereg_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
+				$change_followup_content.=$LANG["mailing"][14].": ".$old_category_name." -> ".$new_category_name."\n";
 				$global_mail_change_count++;
 			}
 			if (in_array("computer",$updates)||in_array("device_type",$updates)){	
@@ -241,13 +241,13 @@ class Job extends CommonDBTM{
 				$ci->getfromDB($input["_old_item_type"],$input["_old_item"]);
 				$old_item_name=$ci->getName();
 				if ($old_item_name=="N/A"||empty($old_item_name))
-					$old_item_name=$lang["mailing"][107];
+					$old_item_name=$LANG["mailing"][107];
 				$ci->getfromDB($this->fields["device_type"],$this->fields["computer"]);
 				$new_item_name=$ci->getName();
 				if ($new_item_name=="N/A"||empty($new_item_name))
-					$new_item_name=$lang["mailing"][107];
+					$new_item_name=$LANG["mailing"][107];
 
-				$change_followup_content.=$lang["mailing"][17].": $old_item_name -> ".$new_item_name."\n";
+				$change_followup_content.=$LANG["mailing"][17].": $old_item_name -> ".$new_item_name."\n";
 				if (in_array("computer",$updates)) $global_mail_change_count++;
 				if (in_array("device_type",$updates)) $global_mail_change_count++;
 			}
@@ -257,26 +257,26 @@ class Job extends CommonDBTM{
 				$old_author_name=$author->getName();
 				$author->getFromDB($this->fields["author"]);
 				$new_author_name=$author->getName();
-				$change_followup_content.=$lang["mailing"][18].": $old_author_name -> ".$new_author_name."\n";
+				$change_followup_content.=$LANG["mailing"][18].": $old_author_name -> ".$new_author_name."\n";
 
 				$global_mail_change_count++;
 			}
 			if (in_array("FK_group",$updates)){
 				$new_group=$this->fields["FK_group"];
-				$old_group_name=ereg_replace("&nbsp;",$lang["mailing"][109],getDropdownName("glpi_groups",$input["_old_group"]));
-				$new_group_name=ereg_replace("&nbsp;",$lang["mailing"][109],getDropdownName("glpi_groups",$new_group));
-				$change_followup_content.=$lang["mailing"][20].": ".$old_group_name." -> ".$new_group_name."\n";
+				$old_group_name=ereg_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$input["_old_group"]));
+				$new_group_name=ereg_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$new_group));
+				$change_followup_content.=$LANG["mailing"][20].": ".$old_group_name." -> ".$new_group_name."\n";
 				$global_mail_change_count++;
 			}
 
 			if (in_array("priority",$updates)){
 				$new_priority=$this->fields["priority"];
-				$change_followup_content.=$lang["mailing"][15].": ".getPriorityName($input["_old_priority"])." -> ".getPriorityName($new_priority)."\n";
+				$change_followup_content.=$LANG["mailing"][15].": ".getPriorityName($input["_old_priority"])." -> ".getPriorityName($new_priority)."\n";
 				$global_mail_change_count++;		
 			}
 			if (in_array("status",$updates)){
 				$new_status=$this->fields["status"];
-				$change_followup_content.=$lang["mailing"][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
+				$change_followup_content.=$LANG["mailing"][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
 
 				if (ereg("old_",$new_status))
 					$newinput["add_close"]="add_close";
@@ -287,9 +287,9 @@ class Job extends CommonDBTM{
 			}
 			if (in_array("emailupdates",$updates)){
 				if ($this->fields["emailupdates"]=="yes")
-					$change_followup_content.=$lang["mailing"][101]."\n";
+					$change_followup_content.=$LANG["mailing"][101]."\n";
 				else if ($this->fields["emailupdates"]=="no")
-					$change_followup_content.=$lang["mailing"][102]."\n";
+					$change_followup_content.=$LANG["mailing"][102]."\n";
 				$global_mail_change_count++;
 			}
 		}
@@ -316,7 +316,7 @@ class Job extends CommonDBTM{
 		// Clean content to mail
 		$this->fields["contents"]=stripslashes($this->fields["contents"]);
 
-		if (!$mail_send&&count($updates)>$global_mail_change_count&&$cfg_glpi["mailing"]){
+		if (!$mail_send&&count($updates)>$global_mail_change_count&&$CFG_GLPI["mailing"]){
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mailtype="update";
@@ -332,7 +332,7 @@ class Job extends CommonDBTM{
 
 
 	function prepareInputForAdd($input) {
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
@@ -369,7 +369,7 @@ class Job extends CommonDBTM{
 			$input["uemail"]=$user->fields["email"];
 		}
 
-		if ($cfg_glpi["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
+		if ($CFG_GLPI["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
 			$ci=new CommonItem;
 			$ci->getFromDB($input["device_type"],$input["computer"]);
 			if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
@@ -403,12 +403,12 @@ class Job extends CommonDBTM{
 	}
 
 	function postAddItem($newID,$input) {
-		global $lang,$cfg_glpi;
+		global $LANG,$CFG_GLPI;
 
 		// add Document if exists
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 			$input2=array();
-			$input2["name"]=$lang["tracking"][24]." $newID";
+			$input2["name"]=$LANG["tracking"][24]." $newID";
 			$input2["FK_tracking"]=$newID;
 			$input2["_only_if_upload_succeed"]=1;
 			$doc=new Document();
@@ -417,7 +417,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Log this event
-		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$lang["log"][20]);
+		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$LANG["log"][20]);
 
 		$already_mail=false;
 		if ((isset($input["_followup"])&&strlen($input["_followup"]))||(isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0)){
@@ -437,7 +437,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Processing Email
-		if ($cfg_glpi["mailing"]&&!$already_mail)
+		if ($CFG_GLPI["mailing"]&&!$already_mail)
 		{
 			$user=new User();
 			$user->getFromDB($input["author"]);
@@ -454,26 +454,26 @@ class Job extends CommonDBTM{
 	// SPECIFIC FUNCTIONS
 
 	function numberOfFollowups($with_private=1){
-		global $db;
+		global $DB;
 		$RESTRICT="";
 		if ($with_private!=1) $RESTRICT = " AND private='0'";
 		// Set number of followups
 		$query = "SELECT count(*) FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' $RESTRICT";
-		$result = $db->query($query);
-		return $db->result($result,0,0);
+		$result = $DB->query($query);
+		return $DB->result($result,0,0);
 
 	}
 
 	function updateRealTime() {
 		// update Status of Job
 
-		global $db;
+		global $DB;
 		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."'";
-		if ($result = $db->query($query)) {
-			$sum=$db->result($result,0,0);
+		if ($result = $DB->query($query)) {
+			$sum=$DB->result($result,0,0);
 			if (is_null($sum)) $sum=0;
 			$query2="UPDATE glpi_tracking SET realtime='".$sum."' WHERE ID='".$this->fields["ID"]."'";
-			$db->query($query2);
+			$DB->query($query2);
 			return true;
 		} else {
 			return false;
@@ -483,62 +483,62 @@ class Job extends CommonDBTM{
 
 	function textFollowups($format="text") {
 		// get the last followup for this job and give its contents as
-		global $db,$lang;
+		global $DB,$LANG;
 
 		if (isset($this->fields["ID"])){
 			$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' AND private = '0' ORDER by date DESC";
-			$result=$db->query($query);
-			$nbfollow=$db->numrows($result);
+			$result=$DB->query($query);
+			$nbfollow=$DB->numrows($result);
 			if($format=="html"){
-				$message = "<div class='description'><strong>".$lang["mailing"][4]." : $nbfollow<br>"."</div><br>";
+				$message = "<div class='description'><strong>".$LANG["mailing"][4]." : $nbfollow<br>"."</div><br>";
 
 				if ($nbfollow>0){
 					$fup=new Followup();
-					while ($data=$db->fetch_array($result)){
+					while ($data=$DB->fetch_array($result)){
 						$fup->getfromDB($data['ID']);
 						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ]</strong><br>";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][37].":</span> ".$fup->getAuthorName()."<br>";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][3].":</span><br>".nl2br($fup->fields["contents"])."<br>";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][37].":</span> ".$fup->getAuthorName()."<br>";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3].":</span><br>".nl2br($fup->fields["contents"])."<br>";
 						if ($fup->fields["realtime"]>0)
-							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."<br>";
+							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."<br>";
 
-						$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][25].":</span> ";
+						$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][25].":</span> ";
 						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
-						$result2=$db->query($query2);
-						if ($db->numrows($result2)==0)
-							$message.=$lang["job"][32]."<br>";
+						$result2=$DB->query($query2);
+						if ($DB->numrows($result2)==0)
+							$message.=$LANG["job"][32]."<br>";
 						else {
-							$data2=$db->fetch_array($result2);
+							$data2=$DB->fetch_array($result2);
 							$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."<br>";
 						}
 
-						$message.=$lang["mailing"][0]."<br>";	
+						$message.=$LANG["mailing"][0]."<br>";	
 					}	
 				}
 			}else{ // text format
-				$message = $lang["mailing"][1]."\n".$lang["mailing"][4]." : $nbfollow\n".$lang["mailing"][1]."\n";
+				$message = $LANG["mailing"][1]."\n".$LANG["mailing"][4]." : $nbfollow\n".$LANG["mailing"][1]."\n";
 
 				if ($nbfollow>0){
 					$fup=new Followup();
-					while ($data=$db->fetch_array($result)){
+					while ($data=$DB->fetch_array($result)){
 						$fup->getfromDB($data['ID']);
 						$message .= "[ ".convDateTime($fup->fields["date"])." ]\n";
-						$message .= $lang["common"][37].": ".$fup->getAuthorName()."\n";
-						$message .= $lang["mailing"][3]."\n".$fup->fields["contents"]."\n";
+						$message .= $LANG["common"][37].": ".$fup->getAuthorName()."\n";
+						$message .= $LANG["mailing"][3]."\n".$fup->fields["contents"]."\n";
 						if ($fup->fields["realtime"]>0)
-							$message .= $lang["mailing"][104].": ".getRealtime($fup->fields["realtime"])."\n";
+							$message .= $LANG["mailing"][104].": ".getRealtime($fup->fields["realtime"])."\n";
 
-						$message.=$lang["mailing"][25]." ";
+						$message.=$LANG["mailing"][25]." ";
 						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
-						$result2=$db->query($query2);
-						if ($db->numrows($result2)==0)
-							$message.=$lang["job"][32]."\n";
+						$result2=$DB->query($query2);
+						if ($DB->numrows($result2)==0)
+							$message.=$LANG["job"][32]."\n";
 						else {
-							$data2=$db->fetch_array($result2);
+							$data2=$DB->fetch_array($result2);
 							$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
 						}
 
-						$message.=$lang["mailing"][0]."\n";	
+						$message.=$LANG["mailing"][0]."\n";	
 					}	
 				}
 
@@ -549,11 +549,11 @@ class Job extends CommonDBTM{
 	}
 
 	function textDescription($format="text"){
-		global $db,$lang;
+		global $DB,$LANG;
 
 
 		$m= new CommonItem;
-		$name=$lang["help"][30];
+		$name=$LANG["help"][30];
 		$contact=0;
 		$tech=0;
 		if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
@@ -578,68 +578,68 @@ class Job extends CommonDBTM{
 			$message.=".description{ color: inherit; background: #ebebeb; border-style: solid; border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }";
 			$message.=" </style></head><body>";
 
-			$message.="<div class='description'><strong>".$lang["mailing"][5]."</strong></div><br>";
+			$message.="<div class='description'><strong>".$LANG["mailing"][5]."</strong></div><br>";
 			$author=$this->getAuthorName();
-			if (empty($author)) $author=$lang["mailing"][108];
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][37].":</span> ".$author."<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["search"][8].":</span> ".convDateTime($this->fields["date"])."<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["job"][44].":</span> ".getRequestTypeName($this->fields["request_type"])."<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][7]."</span> ".$name."<br>";
+			if (empty($author)) $author=$LANG["mailing"][108];
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][37].":</span> ".$author."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["search"][8].":</span> ".convDateTime($this->fields["date"])."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["job"][44].":</span> ".getRequestTypeName($this->fields["request_type"])."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][7]."</span> ".$name."<br>";
 			if ($tech)
-				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["common"][10].":</span> ".$tech."<br>";
-			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["joblist"][0].":</span> ".getStatusName($this->fields["status"])."<br>";
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["common"][10].":</span> ".$tech."<br>";
+			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][0].":</span> ".getStatusName($this->fields["status"])."<br>";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
 			if ($assign=="[Nobody]")
-				$assign=$lang["mailing"][105];
-			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][8]."</span> ".$assign."<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
+				$assign=$LANG["mailing"][105];
+			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][8]."</span> ".$assign."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&$contact)
-				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][28]."</span> ".$contact."<br>";
+				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][28]."</span> ".$contact."<br>";
 			if ($this->fields["emailupdates"]=="yes"){
-				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][103]."</span> ".$lang["choice"][1]."<br>";
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103]."</span> ".$LANG["choice"][1]."<br>";
 			} else {
-				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["mailing"][103]."</span> ".$lang["choice"][0]."<br>";
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103]."</span> ".$LANG["choice"][0]."<br>";
 			}
 
-			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$lang["common"][36].":</span> ";
+			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][36].":</span> ";
 			if (isset($this->fields["category"])&&$this->fields["category"]){
 				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
-			} else $message.=$lang["mailing"][100];
+			} else $message.=$LANG["mailing"][100];
 			$message.= "<br>";
 
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $lang["mailing"][3]."</span><br>".nl2br($this->fields["contents"])."<br><br>";	
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][3]."</span><br>".nl2br($this->fields["contents"])."<br><br>";	
 
 		}else{ //text format
-			$message = $lang["mailing"][1]."\n*".$lang["mailing"][5]."*\n".$lang["mailing"][1]."\n";
+			$message = $LANG["mailing"][1]."\n*".$LANG["mailing"][5]."*\n".$LANG["mailing"][1]."\n";
 			$author=$this->getAuthorName();
-			if (empty($author)) $author=$lang["mailing"][108];
-			$message.= $lang["common"][37].": ".$author."\n";
-			$message.= $lang["search"][8].": ".convDateTime($this->fields["date"])."\n";
-			$message.= $lang["job"][44].": ".getRequestTypeName($this->fields["request_type"])."\n";
-			$message.= $lang["mailing"][7]." ".$name."\n";
+			if (empty($author)) $author=$LANG["mailing"][108];
+			$message.= $LANG["common"][37].": ".$author."\n";
+			$message.= $LANG["search"][8].": ".convDateTime($this->fields["date"])."\n";
+			$message.= $LANG["job"][44].": ".getRequestTypeName($this->fields["request_type"])."\n";
+			$message.= $LANG["mailing"][7]." ".$name."\n";
 			if ($tech)
-				$message.= $lang["common"][10].": ".$tech."\n";
-			$message.= $lang["joblist"][0].": ".getStatusName($this->fields["status"])."\n";
+				$message.= $LANG["common"][10].": ".$tech."\n";
+			$message.= $LANG["joblist"][0].": ".getStatusName($this->fields["status"])."\n";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
 			if ($assign=="[Nobody]")
-				$assign=$lang["mailing"][105];
-			$message.= $lang["mailing"][8]." ".$assign."\n";
-			$message.= $lang["joblist"][2].": ".getPriorityName($this->fields["priority"])."\n";
+				$assign=$LANG["mailing"][105];
+			$message.= $LANG["mailing"][8]." ".$assign."\n";
+			$message.= $LANG["joblist"][2].": ".getPriorityName($this->fields["priority"])."\n";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&$contact)
-				$message.= $lang["mailing"][28]." ".$contact."\n";
+				$message.= $LANG["mailing"][28]." ".$contact."\n";
 			if ($this->fields["emailupdates"]=="yes"){
-				$message.=$lang["mailing"][103]." ".$lang["choice"][1]."\n";
+				$message.=$LANG["mailing"][103]." ".$LANG["choice"][1]."\n";
 			} else {
-				$message.=$lang["mailing"][103]." ".$lang["choice"][0]."\n";
+				$message.=$LANG["mailing"][103]." ".$LANG["choice"][0]."\n";
 			}
 
-			$message.= $lang["common"][36].": ";
+			$message.= $LANG["common"][36].": ";
 			if (isset($this->fields["category"])&&$this->fields["category"]){
 				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
-			} else $message.=$lang["mailing"][100];
+			} else $message.=$LANG["mailing"][100];
 			$message.= "\n";
 
-			$message.= $lang["mailing"][3]."\n".$this->fields["contents"]."\n";	
+			$message.= $LANG["mailing"][3]."\n".$this->fields["contents"]."\n";	
 			$message.="\n\n";
 
 		}
@@ -685,9 +685,9 @@ class Followup  extends CommonDBTM {
 	}
 
 	function cleanDBonPurge($ID) {
-		global $db;
+		global $DB;
 		$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '$ID'";
-		$db->query($querydel);				
+		$DB->query($querydel);				
 	}
 
 	function post_deleteFromDB($ID){
@@ -705,11 +705,11 @@ class Followup  extends CommonDBTM {
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
-		global $cfg_glpi;
+		global $CFG_GLPI;
 		$job=new Job;
 		$job->getFromDBwithData($input["tracking"],1);
 
-		if (in_array("contents",$updates)&&$cfg_glpi["mailing"]){
+		if (in_array("contents",$updates)&&$CFG_GLPI["mailing"]){
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing("followup",$job,$user);
@@ -763,7 +763,7 @@ class Followup  extends CommonDBTM {
 	}
 
 	function postAddItem($newID,$input) {
-		global $cfg_glpi;
+		global $CFG_GLPI;
 
 		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
 			if (isset($input["_plan"])){
@@ -787,7 +787,7 @@ class Followup  extends CommonDBTM {
 
 		}
 
-		if ($cfg_glpi["mailing"]){
+		if ($CFG_GLPI["mailing"]){
 			if ($input["_close"]) $input["_type"]="finish";
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);

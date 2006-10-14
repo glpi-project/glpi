@@ -50,36 +50,36 @@ if (!defined('GLPI_ROOT')){
 
 
 function titleReservation(){
-	global  $lang,$cfg_glpi;
+	global  $LANG,$CFG_GLPI;
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$lang["reservation"][1]."</span>";
-	echo "</b></td><td><a class='icon_consol' href='".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&amp;ID'>".$lang["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$LANG["reservation"][1]."</span>";
+	echo "</b></td><td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID'>".$LANG["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
 }
 
 function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort= ""){
 	// Print Search Form
 
-	global $cfg_glpi,  $lang;
+	global $CFG_GLPI,  $LANG;
 	if (!haveRight("reservation_central","r")) return false;
 
-	$option["glpi_reservation_item.ID"]				= $lang["common"][2];
-	//	$option["glpi_reservation_item.device_type"]			= $lang["reservation"][3];
-	//	$option["glpi_dropdown_locations.name"]			= $lang["common"][15];
-	//	$option["glpi_software.version"]			= $lang["software"][5];
-	$option["glpi_reservation_item.comments"]			= $lang["common"][25];
+	$option["glpi_reservation_item.ID"]				= $LANG["common"][2];
+	//	$option["glpi_reservation_item.device_type"]			= $LANG["reservation"][3];
+	//	$option["glpi_dropdown_locations.name"]			= $LANG["common"][15];
+	//	$option["glpi_software.version"]			= $LANG["software"][5];
+	$option["glpi_reservation_item.comments"]			= $LANG["common"][25];
 
-	echo "<form method=get action=\"".$cfg_glpi["root_doc"]."/front/reservation.php\">";
+	echo "<form method=get action=\"".$CFG_GLPI["root_doc"]."/front/reservation.php\">";
 	echo "<div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='2'><b>".$lang["search"][0].":</b></th></tr>";
+	echo "<tr><th colspan='2'><b>".$LANG["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td align='center'>";
 	echo "<input type='text' size='15' name=\"contains\" value=\"". stripslashes($contains) ."\" />&nbsp;";
-	echo $lang["search"][10];
+	echo $LANG["search"][10];
 	echo "&nbsp;<select name=\"field\" size='1'>";
 	echo "<option value='all' ";
 	if($field == "all") echo "selected";
-	echo ">".$lang["search"][7]."</option>";
+	echo ">".$LANG["search"][7]."</option>";
 	reset($option);
 	foreach ($option as $key => $val) {
 		echo "<option value=\"".$key."\""; 
@@ -87,7 +87,7 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 		echo ">". $val ."</option>\n";
 	}
 	echo "</select>&nbsp;";
-	echo $lang["search"][4];
+	echo $LANG["search"][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($option);
 	foreach ($option as $key => $val) {
@@ -97,14 +97,14 @@ function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort=
 	}
 	echo "</select> ";
 	echo "</td><td width='80' align='center' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$lang["buttons"][0]."\" class='submit'>";
+	echo "<input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'>";
 	echo "</td></tr></table></div></form>";
 }
 
 function showReservationItemList($target,$username,$field,$phrasetype,$contains,$sort,$order,$start){
 	// Lists Reservation Items
 
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("reservation_central","r")) return false;
 
@@ -127,14 +127,14 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 	$query .= " where  $where ORDER BY $sort $order";
 	//echo $query;
 	// Get it from database	
-	if ($result = $db->query($query)) {
-		$numrows =  $db->numrows($result);
+	if ($result = $DB->query($query)) {
+		$numrows =  $DB->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
-		if ($numrows > $cfg_glpi["list_limit"]) {
-			$query_limit = $query ." LIMIT $start,".$cfg_glpi["list_limit"]." ";
-			$result_limit = $db->query($query_limit);
-			$numrows_limit = $db->numrows($result_limit);
+		if ($numrows > $CFG_GLPI["list_limit"]) {
+			$query_limit = $query ." LIMIT $start,".$CFG_GLPI["list_limit"]." ";
+			$result_limit = $DB->query($query_limit);
+			$numrows_limit = $DB->numrows($result_limit);
 		} else {
 			$numrows_limit = $numrows;
 			$result_limit = $result;
@@ -150,42 +150,42 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			// Name
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.ID") {
-				if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.ID&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["common"][2]."</a></th>";
+			echo $LANG["common"][2]."</a></th>";
 
 			// Device_Type			
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.device_type") {
-				if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.device_type&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["reservation"][3]."</a></th>";
+			echo $LANG["reservation"][3]."</a></th>";
 
 			// device
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.id_device") {
-				if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.id_device&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["reservation"][4]."</a></th>";
+			echo $LANG["reservation"][4]."</a></th>";
 
 			// Lieu
 			echo "<th>";
-			echo $lang["common"][15]."</th>";
+			echo $LANG["common"][15]."</th>";
 
 			// Comments
 			echo "<th>";
 			if ($sort=="glpi_reservation_item.comments") {
-				if ($order=="DESC") echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-				else echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+				if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+				else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			}
 			echo "<a href=\"$target?field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=glpi_reservation_item.comments&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start\">";
-			echo $lang["common"][25]."</a></th>";
+			echo $LANG["common"][25]."</a></th>";
 
 
 
@@ -197,7 +197,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			echo "</tr>";
 
 			for ($i=0; $i < $numrows_limit; $i++) {
-				$ID = $db->result($result_limit, $i, "ID");
+				$ID = $DB->result($result_limit, $i, "ID");
 				$ri = new ReservationItem;
 				$ri->getfromDB($ID);
 				echo "<tr class='tab_bg_2".(isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='Y'?"_2":"")."' align='center'>";
@@ -209,16 +209,16 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				echo "<td><b>". $ri->getLink() ."</b></td>";
 				echo "<td>". $ri->getLocation() ."</td>";
 
-				echo "<td>". nl2br(substr($ri->fields["comments"],0,$cfg_glpi["cut"]))."</td>";
+				echo "<td>". nl2br(substr($ri->fields["comments"],0,$CFG_GLPI["cut"]))."</td>";
 				echo "<td>";
-				echo "<a href='".$target."?comment=$ID'>".$lang["reservation"][22]."</a>";
+				echo "<a href='".$target."?comment=$ID'>".$LANG["reservation"][22]."</a>";
 				echo "</td>";
 
 				echo "<td>";
 				showReservationForm($ri->fields["device_type"],$ri->fields["id_device"]);
 				echo "</td>";
 				echo "<td>";
-				echo "<a href='".$target."?show=resa&amp;ID=$ID'>".$lang["reservation"][21]."</a>";
+				echo "<a href='".$target."?show=resa&amp;ID=$ID'>".$LANG["reservation"][21]."</a>";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -231,7 +231,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 			printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><b>".$lang["reservation"][33]."</b></div>";
+			echo "<div align='center'><b>".$LANG["reservation"][33]."</b></div>";
 		}
 	}
 
@@ -239,23 +239,23 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 
 function showReservationForm($device_type,$id_device){
 
-	global $cfg_glpi,$lang;
+	global $CFG_GLPI,$LANG;
 
 	if (!haveRight("reservation_central","w")) return false;
 
 
 	if ($resaID=isReservable($device_type,$id_device)) {
-		// Supprimer le matériel
-		echo "<a href=\"javascript:confirmAction('".addslashes($lang["reservation"][38])."\\n".addslashes($lang["reservation"][39])."','".$cfg_glpi["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\">".$lang["reservation"][6]."</a>";	
+		// Supprimer le matï¿½iel
+		echo "<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\">".$LANG["reservation"][6]."</a>";	
 
 	}else {
-		echo "<a href=\"".$cfg_glpi["root_doc"]."/front/reservation.php?";
-		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\">".$lang["reservation"][7]."</a>";      
+		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
+		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\">".$LANG["reservation"][7]."</a>";      
 	}
 }
 
 function printCalendrier($target,$ID=""){
-	global $lang, $cfg_glpi;
+	global $LANG, $CFG_GLPI;
 
 	if (!haveRight("reservation_helpdesk","1")) return false;
 
@@ -289,21 +289,21 @@ function printCalendrier($target,$ID=""){
 		$m->getfromDB($ID);
 		$type=$m->getType();
 		$name=$m->getName();
-		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$lang["reservation"][26]."</a>";
+		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG["reservation"][26]."</a>";
 	} else {
 		$type="";
-		$name=$lang["reservation"][25];
+		$name=$LANG["reservation"][25];
 		$all="&nbsp;";
 	}
 
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$cfg_glpi["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$type." - ".$name."</span>";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$type." - ".$name."</span>";
 	echo "</b></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
 
 
-	// on vérifie pour les années bisextiles, on ne sait jamais.
+	// on vï¿½ifie pour les annï¿½s bisextiles, on ne sait jamais.
 	if (($annee_courante%4)==0) $fev=29; else $fev=28;
 	$nb_jour= array(31,$fev,31,30,31,30,31,31,30,31,30,31);
 
@@ -311,12 +311,12 @@ function printCalendrier($target,$ID=""){
 	$jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
 	if ($jour_debut_mois==0) $jour_debut_mois=7;
 	$jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
-	// on n'oublie pas de mettre le mois en français et on n'a plus qu'à mettre les en-têtes
+	// on n'oublie pas de mettre le mois en franï¿½is et on n'a plus qu'ï¿½mettre les en-tï¿½es
 
 	echo "<div align='center'>";
 
-	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a></td><td><b>".
-		$lang["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a></td></tr></table>";
+	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></td><td><b>".
+		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></td></tr></table>";
 	// test
 	echo "<table width='90%'><tr><td valign='top'  width='100'>";
 
@@ -336,25 +336,25 @@ function printCalendrier($target,$ID=""){
 	echo "<div style='text-align:center'><b>$annee_avant</b></div>";
 	for ($i=$mois_courant; $i < 13; $i++) {
 		echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_avant\">".
-			$lang["calendarM"][$i-1]."</a></div>";
+			$LANG["calendarM"][$i-1]."</a></div>";
 	}
 
 	echo "<div style='text-align:center'><b>$annee_courante</b></div>";
 	for ($i=1; $i < 13; $i++) {
 		if ($i == $mois_courant) {
 			echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #666666; background-color: white;'><b>".
-				$lang["calendarM"][$i-1]."</b></div>";
+				$LANG["calendarM"][$i-1]."</b></div>";
 		}
 		else {
 			echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_courante\">".
-				$lang["calendarM"][$i-1]."</a></div>";
+				$LANG["calendarM"][$i-1]."</a></div>";
 		}
 	}
 
 	echo "<div style='text-align:center'><b>$annee_apres</b></div>";
 	for ($i=1; $i < $mois_courant+1; $i++) {
 		echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_apres\">".
-			$lang["calendarM"][$i-1]."</a></div>";
+			$LANG["calendarM"][$i-1]."</a></div>";
 	}
 	echo "</div>";
 
@@ -368,17 +368,17 @@ function printCalendrier($target,$ID=""){
 
 
 	echo "<table class='tab_cadre' width='100%'><tr>";
-	echo "<th width='14%'>".$lang["calendarD"][1]."</th>";
-	echo "<th width='14%'>".$lang["calendarD"][2]."</th>";
-	echo "<th width='14%'>".$lang["calendarD"][3]."</th>";
-	echo "<th width='14%'>".$lang["calendarD"][4]."</th>";
-	echo "<th width='14%'>".$lang["calendarD"][5]."</th>";
-	echo "<th width='14%'>".$lang["calendarD"][6]."</th>";
-	echo "<th width='14%'>".$lang["calendarD"][0]."</th>";
+	echo "<th width='14%'>".$LANG["calendarD"][1]."</th>";
+	echo "<th width='14%'>".$LANG["calendarD"][2]."</th>";
+	echo "<th width='14%'>".$LANG["calendarD"][3]."</th>";
+	echo "<th width='14%'>".$LANG["calendarD"][4]."</th>";
+	echo "<th width='14%'>".$LANG["calendarD"][5]."</th>";
+	echo "<th width='14%'>".$LANG["calendarD"][6]."</th>";
+	echo "<th width='14%'>".$LANG["calendarD"][0]."</th>";
 	echo "</tr>";
 	echo "<tr class='tab_bg_3' >";
 
-	// Il faut insérer des cases vides pour mettre le premier jour du mois
+	// Il faut insï¿½er des cases vides pour mettre le premier jour du mois
 	// en face du jour de la semaine qui lui correspond.
 	for ($i=1;$i<$jour_debut_mois;$i++)
 		echo "<td style='background-color:#ffffff'>&nbsp;</td>";
@@ -395,7 +395,7 @@ function printCalendrier($target,$ID=""){
 		echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 
 		if (!empty($ID)){
-			echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$cfg_glpi["root_doc"]."/pics/addresa.png\" alt='".$lang["reservation"][8]."' title='".$lang["reservation"][8]."'></a></td></tr>";
+			echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
 		}
 		//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 		echo "<tr><td>";
@@ -411,14 +411,14 @@ function printCalendrier($target,$ID=""){
 		echo "</table>";
 		echo "</td>";
 
-		// il ne faut pas oublié d'aller à la ligne suivante enfin de semaine
+		// il ne faut pas oubliï¿½d'aller ï¿½la ligne suivante enfin de semaine
 		if (($i+$jour_debut_mois)%7==1)
 		{echo "</tr>";
 			if ($i!=$nb_jour[$mois_courant-1])echo "<tr class='tab_bg_3'>";
 		}
 	}
 
-	// on recommence pour finir le tableau proprement pour les mêmes raisons
+	// on recommence pour finir le tableau proprement pour les mï¿½es raisons
 
 	if ($jour_fin_mois!=0)
 		for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
@@ -430,7 +430,7 @@ function printCalendrier($target,$ID=""){
 }
 
 function showAddReservationForm($target,$ID,$date,$resaID=-1){
-	global $lang;
+	global $LANG;
 
 	if (!haveRight("reservation_helpdesk","1")) return false;
 
@@ -459,19 +459,19 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr><th colspan='2'><b>";
-	echo $lang["reservation"][9];
+	echo $LANG["reservation"][9];
 	echo "</b></th></tr>";
-	// Ajouter le nom du matériel
+	// Ajouter le nom du matï¿½iel
 	$r=new ReservationItem;
 	$r->getfromDB($ID);
-	echo "<tr class='tab_bg_1'><td>".$lang["reservation"][4].":	</td>";
+	echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
 	echo "<td>";
 	echo "<b>".$r->getType()." - ".$r->getName()."</b>";
 	echo "</td></tr>";
 	if (!haveRight("reservation_central","w"))
 		echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
 	else {
-		echo "<tr class='tab_bg_2'><td>".$lang["reservation"][31].":	</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][31].":	</td>";
 		echo "<td>";
 		if ($resaID==-1)
 			dropdownValue("glpi_users","id_user",$_SESSION["glpiID"]);
@@ -481,31 +481,31 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	}
 
 
-	echo "<tr class='tab_bg_2'><td>".$lang["search"][8].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
 	showCalendarForm("form","begin_date",$begin_date);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][12].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][12].":	</td>";
 	echo "<td>";
 
 	dropdownHours("begin_hour",$begin_hour,1);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["search"][9].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
 	showCalendarForm("form","end_date",$end_date);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$lang["reservation"][13].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][13].":	</td>";
 	echo "<td>";
 	dropdownHours("end_hour",$end_hour,1);
 	echo "</td></tr>";
 
 	if ($resaID==-1){
-		echo "<tr class='tab_bg_2'><td>".$lang["reservation"][27].":	</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][27].":	</td>";
 		echo "<td>";
 		echo "<select name='periodicity'>";
-		echo "<option value='day'>".$lang["reservation"][29]."</option>";	
-		echo "<option value='week'>".$lang["reservation"][28]."</option>";		
+		echo "<option value='day'>".$LANG["reservation"][29]."</option>";	
+		echo "<option value='week'>".$LANG["reservation"][28]."</option>";		
 		echo "</select>";	
 		echo "<select name='periodicity_times'>";
 		for ($i=1;$i<60;$i+=1){
@@ -514,25 +514,25 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 		}
 		echo "</select>";
 
-		echo $lang["reservation"][30];
+		echo $LANG["reservation"][30];
 		echo "</td></tr>";
 	}
 
-	echo "<tr class='tab_bg_2'><td>".$lang["common"][25].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG["common"][25].":	</td>";
 	echo "<td><textarea name='comment'rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
 	echo "</td></tr>";
 
 	if ($resaID==-1){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td colspan='2'  valign='top' align='center'>";
-		echo "<input type='submit' name='add_resa' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='add_resa' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>\n";
 	} else {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td valign='top' align='center'>";
-		echo "<input type='submit' name='clear_resa' value=\"".$lang["buttons"][6]."\" class='submit'>";
+		echo "<input type='submit' name='clear_resa' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 		echo "</td><td valign='top' align='center'>";
-		echo "<input type='submit' name='edit_resa' value=\"".$lang["buttons"][14]."\" class='submit'>";
+		echo "<input type='submit' name='edit_resa' value=\"".$LANG["buttons"][14]."\" class='submit'>";
 		echo "</td></tr>\n";
 	}
 
@@ -541,7 +541,7 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 }
 
 function printReservation($target,$ID,$date){
-	global $db;
+	global $DB;
 	if (!empty($ID))
 		printReservationItem($target,$ID,$date);
 	else  {
@@ -552,12 +552,12 @@ function printReservation($target,$ID,$date){
 		$query = "SELECT DISTINCT glpi_reservation_item.ID FROM glpi_reservation_item INNER JOIN glpi_reservation_resa ON (glpi_reservation_item.ID = glpi_reservation_resa.id_item )".
 			" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) ORDER BY begin";
 		//echo $query;
-		$result=$db->query($query);
+		$result=$DB->query($query);
 
-		if ($db->numrows($result)>0){
+		if ($DB->numrows($result)>0){
 			$m=new ReservationItem;
 
-			while ($data=$db->fetch_array($result)){
+			while ($data=$DB->fetch_array($result)){
 
 				$m->getfromDB($data['ID']);
 
@@ -574,7 +574,7 @@ function printReservation($target,$ID,$date){
 
 
 function printReservationItem($target,$ID,$date){
-	global $db,$lang;
+	global $DB,$LANG;
 
 	$id_user=$_SESSION["glpiID"];
 
@@ -587,10 +587,10 @@ function printReservationItem($target,$ID,$date){
 	$query = "SELECT * FROM glpi_reservation_resa".
 		" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) AND id_item=$ID ORDER BY begin";
 	//		echo $query."<br>";
-	if ($result=$db->query($query)){
-		if ($db->numrows($result)>0){
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)>0){
 			echo "<table width='100%' >";
-			while ($row=$db->fetch_array($result)){
+			while ($row=$DB->fetch_array($result)){
 				echo "<tr>";
 				$user->getfromDB($row["id_user"]);
 				$display="";					
@@ -601,11 +601,11 @@ function printReservationItem($target,$ID,$date){
 				else $heure_fin=get_hour_from_sql($row['end']);
 
 				if (strcmp($heure_debut,"00:00")==0&&strcmp($heure_fin,"24:00")==0)
-					$display=$lang["reservation"][15];
+					$display=$LANG["reservation"][15];
 				else if (strcmp($heure_debut,"00:00")==0) 
-					$display=$lang["reservation"][16]."&nbsp;".$heure_fin;
+					$display=$LANG["reservation"][16]."&nbsp;".$heure_fin;
 				else if (strcmp($heure_fin,"24:00")==0) 
-					$display=$lang["reservation"][17]."&nbsp;".$heure_debut;
+					$display=$LANG["reservation"][17]."&nbsp;".$heure_debut;
 				else $display=$heure_debut."-".$heure_fin;
 
 				$delete="";
@@ -635,7 +635,7 @@ function printReservationItem($target,$ID,$date){
 
 
 function printReservationItems($target){
-	global $db,$lang;
+	global $DB,$LANG;
 
 	if (!haveRight("reservation_helpdesk","1")) return false;
 
@@ -644,10 +644,10 @@ function printReservationItems($target){
 
 	$query="select ID from glpi_reservation_item ORDER BY device_type";
 
-	if ($result = $db->query($query)) {
+	if ($result = $DB->query($query)) {
 		echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-		echo "<tr><th colspan='3'>".$lang["reservation"][1]."</th></tr>";
-		while ($row=$db->fetch_array($result)){
+		echo "<tr><th colspan='3'>".$LANG["reservation"][1]."</th></tr>";
+		while ($row=$DB->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
 			if (isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='N'){
 				echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td>";
@@ -663,7 +663,7 @@ function printReservationItems($target){
 
 
 function showReservationCommentForm($target,$ID){
-	global $lang;
+	global $LANG;
 
 	if (!haveRight("reservation_central","w")) return false;
 
@@ -675,15 +675,15 @@ function showReservationCommentForm($target,$ID){
 
 		echo "<table class='tab_cadre' cellpadding='2'>";
 		echo "<tr><th colspan='2'><b>";
-		echo $lang["reservation"][22];
+		echo $LANG["reservation"][22];
 		echo "</b></th></tr>";
-		// Ajouter le nom du matériel
-		echo "<tr class='tab_bg_1'><td>".$lang["reservation"][4].":	</td>";
+		// Ajouter le nom du matï¿½iel
+		echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
 		echo "<td>";
 		echo "<b>".$r->getType()." - ".$r->getName()."</b>";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$lang["common"][25].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG["common"][25].":	</td>";
 		echo "<td>";
 		echo "<textarea name='comments' cols='30' rows='10' >".$r->fields["comments"]."</textarea>";
 		echo "</td></tr>";
@@ -691,7 +691,7 @@ function showReservationCommentForm($target,$ID){
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td colspan='2'  valign='top' align='center'>";
-		echo "<input type='submit' name='updatecomment' value=\"".$lang["buttons"][14]."\" class='submit'>";
+		echo "<input type='submit' name='updatecomment' value=\"".$LANG["buttons"][14]."\" class='submit'>";
 		echo "</td></tr>\n";
 
 		echo "</table>";
@@ -701,7 +701,7 @@ function showReservationCommentForm($target,$ID){
 }
 
 function showDeviceReservations($target,$type,$ID){
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 	$resaID=0;
 
 	if (!haveRight("reservation_central","r")) return false;
@@ -709,18 +709,18 @@ function showDeviceReservations($target,$type,$ID){
 	if ($resaID=isReservable($type,$ID)){
 		echo "<div align='center'>";
 
-		echo "<a href='".$cfg_glpi["root_doc"]."/front/reservation.php?show=resa&ID=$resaID'>".$lang["reservation"][21]."</a>";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID'>".$LANG["reservation"][21]."</a>";
 		$now=date("Y-m-d H:i:s");
 		// Print reservation in progress
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
-		$result=$db->query($query);
+		$result=$DB->query($query);
 
-		echo "<table class='tab_cadrehov'><tr><th colspan='4'>".$lang["reservation"][35]."</th></tr>";
-		if ($db->numrows($result)==0){	
-			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$lang["reservation"][37]."</td></tr>";
+		echo "<table class='tab_cadrehov'><tr><th colspan='4'>".$LANG["reservation"][35]."</th></tr>";
+		if ($DB->numrows($result)==0){	
+			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$LANG["reservation"][37]."</td></tr>";
 		} else {
-			echo "<tr><th>".$lang["search"][8]."</th><th>".$lang["search"][9]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
-			while ($data=$db->fetch_assoc($result)){
+			echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th></tr>";
+			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
 				echo "<td align='center'>".convDateTime($data["end"])."</td>";
@@ -734,14 +734,14 @@ function showDeviceReservations($target,$type,$ID){
 		// Print old reservations
 
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_item='$resaID' ORDER BY begin DESC";
-		$result=$db->query($query);
+		$result=$DB->query($query);
 
-		echo "<table class='tab_cadrehov'><tr><th colspan='4'>".$lang["reservation"][36]."</th></tr>";
-		if ($db->numrows($result)==0){	
-			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$lang["reservation"][37]."</td></tr>";
+		echo "<table class='tab_cadrehov'><tr><th colspan='4'>".$LANG["reservation"][36]."</th></tr>";
+		if ($DB->numrows($result)==0){	
+			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$LANG["reservation"][37]."</td></tr>";
 		} else {
-			echo "<tr><th>".$lang["search"][8]."</th><th>".$lang["search"][9]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
-			while ($data=$db->fetch_assoc($result)){
+			echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th></tr>";
+			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
 				echo "<td align='center'>".convDateTime($data["end"])."</td>";
@@ -755,11 +755,11 @@ function showDeviceReservations($target,$type,$ID){
 
 		echo "</div>";
 
-	} else echo "<div align='center'><strong>".$lang["reservation"][34]."</strong></div>";
+	} else echo "<div align='center'><strong>".$LANG["reservation"][34]."</strong></div>";
 }
 
 function showUserReservations($target,$ID){
-	global $db,$lang,$cfg_glpi;
+	global $DB,$LANG,$CFG_GLPI;
 	$resaID=0;
 
 	if (!haveRight("reservation_central","r")) return false;
@@ -770,15 +770,15 @@ function showUserReservations($target,$ID){
 
 	// Print reservation in progress
 	$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_user='$ID' ORDER BY begin";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 	$ri=new ReservationItem();
-	echo "<table class='tab_cadrehov'><tr><th colspan='5'>".$lang["reservation"][35]."</th></tr>";
-	if ($db->numrows($result)==0){	
-		echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$lang["reservation"][37]."</td></tr>";
+	echo "<table class='tab_cadrehov'><tr><th colspan='5'>".$LANG["reservation"][35]."</th></tr>";
+	if ($DB->numrows($result)==0){	
+		echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
 	} else {
-		echo "<tr><th>".$lang["search"][8]."</th><th>".$lang["search"][9]."</th><th>".$lang["common"][1]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
+		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th></tr>";
 
-		while ($data=$db->fetch_assoc($result)){
+		while ($data=$DB->fetch_assoc($result)){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center'>".convDateTime($data["begin"])."</td>";
 			echo "<td align='center'>".convDateTime($data["end"])."</td>";
@@ -795,14 +795,14 @@ function showUserReservations($target,$ID){
 	// Print old reservations
 
 	$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_user='$ID' ORDER BY begin DESC";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
-	echo "<table class='tab_cadrehov'><tr><th colspan='5'>".$lang["reservation"][36]."</th></tr>";
-	if ($db->numrows($result)==0){	
-		echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$lang["reservation"][37]."</td></tr>";
+	echo "<table class='tab_cadrehov'><tr><th colspan='5'>".$LANG["reservation"][36]."</th></tr>";
+	if ($DB->numrows($result)==0){	
+		echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
 	} else {
-		echo "<tr><th>".$lang["search"][8]."</th><th>".$lang["search"][9]."</th><th>".$lang["common"][1]."</th><th>".$lang["reservation"][31]."</th><th>".$lang["common"][25]."</th></tr>";
-		while ($data=$db->fetch_assoc($result)){
+		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th></tr>";
+		while ($data=$DB->fetch_assoc($result)){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center'>".convDateTime($data["begin"])."</td>";
 			echo "<td align='center'>".convDateTime($data["end"])."</td>";
@@ -823,12 +823,12 @@ function showUserReservations($target,$ID){
 
 function isReservable($type,$ID){
 
-	global $db;
+	global $DB;
 	$query="SELECT ID FROM glpi_reservation_item WHERE device_type='$type' AND id_device='$ID'";
-	$result=$db->query($query);
-	if ($db->numrows($result)==0){
+	$result=$DB->query($query);
+	if ($DB->numrows($result)==0){
 		return false;
-	} else return $db->result($result,0,0);
+	} else return $DB->result($result,0,0);
 }
 
 ?>

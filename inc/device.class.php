@@ -44,18 +44,18 @@ class Device extends CommonDBTM {
 
 
 	function cleanDBonPurge($ID) {
-		global $db;
+		global $DB;
 		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
-		$db->query($query2);
+		$DB->query($query2);
 	}
 
 	// SPECIFIC FUNCTIONS
 
 	function computer_link($compID,$device_type,$specificity='') {
-		global $db;
+		global $DB;
 		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers,specificity) values ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
-		if($db->query($query)) {
-			return $db->insert_id();
+		if($DB->query($query)) {
+			return $DB->insert_id();
 		} else { 
 			return false;
 		}

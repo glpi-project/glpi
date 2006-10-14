@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config","w");
 $config= new Config();
-if ($cfg_glpi["ocs_mode"]) $ocsconfig=new ConfigOCS();
+if ($CFG_GLPI["ocs_mode"]) $ocsconfig=new ConfigOCS();
 
 if (!isset($_SESSION['glpi_mailconfig'])) $_SESSION['glpi_mailconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_mailconfig']=$_GET['onglet'];
@@ -50,67 +50,67 @@ if (isset($_GET['onglet'])) $_SESSION['glpi_mailconfig']=$_GET['onglet'];
 if(!empty($_GET["next"])) {
 
 	if($_GET["next"] == "extauth") {
-		commonHeader($lang["title"][14],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][14],$_SERVER["PHP_SELF"]);
 		titleExtAuth();
 		showFormExtAuth($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "mailing") {
-		commonHeader($lang["title"][15],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][15],$_SERVER["PHP_SELF"]);
 		titleMailing();
 		showFormMailing($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "confgen") {
-		commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
 		titleConfigGen();
 		showFormConfigGen($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "confdisplay") {
-		commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
 		titleConfigDisplay();
 		showFormConfigDisplay($_SERVER["PHP_SELF"]);
 	}
 	elseif($_GET["next"] == "ocsng") {
-		$dbocs=new DBocs();
-		commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
-		ocsFormDBConfig($_SERVER["PHP_SELF"], $cfg_glpi["ID"]);
+		$DBocs=new DBocs();
+		commonHeader($LANG["title"][39],$_SERVER["PHP_SELF"]);
+		ocsFormDBConfig($_SERVER["PHP_SELF"], $CFG_GLPI["ID"]);
 	}
 
 
 }
 elseif (!empty($_POST["test_smtp_send"])){
 	testMail();
-	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=mailing");
+	glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=mailing");
 }
 elseif(!empty($_POST["update_mailing"])) {
 	$config->update($_POST);
-	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=mailing");
+	glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=mailing");
 }
 elseif(!empty($_POST["update_notifications"])) {
 
 	updateMailNotifications($_POST);
-	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=mailing");
+	glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=mailing");
 }
 elseif(!empty($_POST["update_ext"])) {
 	$config->update($_POST);
-	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=extauth");
+	glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=extauth");
 
 }
 elseif(!empty($_POST["update_confgen"])) {
 	$config->update($_POST);
-	if ($_POST["ocs_mode"]&&!$cfg_glpi["ocs_mode"])
-		glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=ocsng");
+	if ($_POST["ocs_mode"]&&!$CFG_GLPI["ocs_mode"])
+		glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=ocsng");
 	else 
-		glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=confgen");
+		glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=confgen");
 }
 elseif(!empty($_POST["update_confdisplay"])) {
 	$config->update($_POST);
-	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=confdisplay");
+	glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=confdisplay");
 } elseif(!empty($_POST["update_ocs_config"])) {
 	$ocsconfig->update($_POST);
-	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=ocsng");
+	glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=ocsng");
 } elseif(!empty($_POST["update_ocs_dbconfig"])) {
 	$ocsconfig->update($_POST);
-	glpi_header($cfg_glpi["root_doc"]."/front/setup.config.php?next=ocsng");
+	glpi_header($CFG_GLPI["root_doc"]."/front/setup.config.php?next=ocsng");
 }
 commonFooter();
 

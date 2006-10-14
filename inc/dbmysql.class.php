@@ -38,15 +38,15 @@ if (!defined('GLPI_ROOT')){
 class DBmysql {
 
 	//! Database Host
-	var $dbhost	= ""; 
+	var $DBhost	= ""; 
 	//! Database User
-	var $dbuser = "";
+	var $DBuser = "";
 	//! Database Password 
-	var $dbpassword	= "";
+	var $DBpassword	= "";
 	//! Default Database
-	var $dbdefault	= "";
+	var $DBdefault	= "";
 	//! Database Handler
-	var $dbh;
+	var $DBh;
 	//! Database Error
 	var $error = 0;
 
@@ -76,14 +76,14 @@ class DBmysql {
 	 * @return Query result handler
 	 */
 	function query($query) {
-		global $cfg_glpi,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
+		global $CFG_GLPI,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
 
-		if ($cfg_glpi["debug"]) {
-			if ($cfg_glpi["debug_sql"]){		
+		if ($CFG_GLPI["debug"]) {
+			if ($CFG_GLPI["debug_sql"]){		
 				$SQL_TOTAL_REQUEST++;
 				$DEBUG_SQL_STRING.="N&#176; ".$SQL_TOTAL_REQUEST." : <br>".$query;
 
-				if ($cfg_glpi["debug_profile"]){		
+				if ($CFG_GLPI["debug_profile"]){		
 					$TIMER=new Script_Timer;
 					$TIMER->Start_Timer();
 				}
@@ -97,13 +97,13 @@ class DBmysql {
 			$res=mysql_query($query,$this->dbh);
 		}
 
-		if ($cfg_glpi["debug"]) {
-			if ($cfg_glpi["debug_profile"]&&$cfg_glpi["debug_sql"]){		
+		if ($CFG_GLPI["debug"]) {
+			if ($CFG_GLPI["debug_profile"]&&$CFG_GLPI["debug_sql"]){		
 				$TIME=$TIMER->Get_Time();
 				$DEBUG_SQL_STRING.="<br><b>Time: </b>".$TIME."s";
 				$SQL_TOTAL_TIMER+=$TIME;
 			}
-			if ($cfg_glpi["debug_sql"]){
+			if ($CFG_GLPI["debug_sql"]){
 				$DEBUG_SQL_STRING.="<hr>";
 			}
 		}

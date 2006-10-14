@@ -42,8 +42,8 @@ if (!defined('GLPI_ROOT')){
 
 global $plugin_hooks;
 $plugin_hooks = array();
-global $cfg_glpi_plugins;
-$cfg_glpi_plugins = array();
+global $CFG_GLPI_PLUGINS;
+$CFG_GLPI_PLUGINS = array();
 
 function initPlugins(){
 
@@ -59,7 +59,7 @@ function initPlugins(){
 }
 
 function use_plugin ($name) {
-	global $cfg_glpi;
+	global $CFG_GLPI;
 	if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
 		include_once(GLPI_ROOT . "/plugins/$name/setup.php");
 		$function = "plugin_init_$name";
@@ -155,7 +155,7 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 }
 
 function display_plugin_headings($target,$type,$withtemplate,$actif){
-	global $plugin_hooks,$lang;
+	global $plugin_hooks,$LANG;
 
 	$template="";
 	if(!empty($withtemplate)){
@@ -177,7 +177,7 @@ function display_plugin_headings($target,$type,$withtemplate,$actif){
 		if (count($display_onglets)){
 			echo "<li class='invisible'>&nbsp;</li>";
 
-			echo "<li".(ereg($plug,$actif)?" class='actif'":"")." style='position:relative;'  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$lang["common"][29]."</a>";
+			echo "<li".(ereg($plug,$actif)?" class='actif'":"")." style='position:relative;'  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$LANG["common"][29]."</a>";
 
 			echo "<div  id='onglet_plugins' ><dl>";
 			foreach ($display_onglets as $key => $val)

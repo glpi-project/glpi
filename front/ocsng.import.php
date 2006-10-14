@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][39],$_SERVER["PHP_SELF"]);
 
 if (isset($_SESSION["ocs_import"])){
 	if ($count=count($_SESSION["ocs_import"])){
@@ -60,8 +60,8 @@ if (isset($_SESSION["ocs_import"])){
 
 		displayProgressBar(400,100);
 
-		echo "<div align='center'><strong>".$lang["ocsng"][8]."<br>";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>".$lang["buttons"][13]."</a>";
+		echo "<div align='center'><strong>".$LANG["ocsng"][8]."<br>";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>";
 		echo "</strong></div>";
 	}
 }

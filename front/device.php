@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("device","w");
 
-commonHeader($lang["title"][30],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][30],$_SERVER["PHP_SELF"]);
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST; 
@@ -57,9 +57,9 @@ if(!empty($tab["device_type"])) {
 	titleDevices($tab["device_type"]);
 }
 
-echo "<div align='center'><form method='get' action=\"".$cfg_glpi["root_doc"]."/front/device.php\">";
+echo "<div align='center'><form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
 echo "<table class='tab_cadre' cellpadding='3'><tr><th colspan='2'>";
-echo $lang["devices"][17].": </th></tr><tr class='tab_bg_1'><td><select name='device_type'>";
+echo $LANG["devices"][17].": </th></tr><tr class='tab_bg_1'><td><select name='device_type'>";
 
 $dp=getDictDeviceLabel();
 
@@ -69,7 +69,7 @@ foreach ($dp as $key=>$val) {
 	echo "<option value='$key' $sel>".$val."</option>";	
 }
 echo "</select></td>";
-echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
+echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
 echo "</table></form></div>";
 
 if(!empty($tab["device_type"])) {

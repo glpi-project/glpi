@@ -41,7 +41,7 @@ $NEEDED_ITEMS=array("stat","tracking","user","enterprise","device");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][11],$_SERVER["PHP_SELF"]);
 
 checkRight("statistic","1");
 
@@ -78,11 +78,11 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td >";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$lang["stats"][16].": ".getAssignName($_GET["ID"],USER_TYPE,1)."</b></td>";
+	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$LANG["stats"][16].": ".getAssignName($_GET["ID"],USER_TYPE,1)."</b></td>";
 	echo "<td  >";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -98,11 +98,11 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td >";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$lang["stats"][16].": ".getAssignName($_GET["ID"],USER_TYPE,1)."</b></td>";
+	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$LANG["stats"][16].": ".getAssignName($_GET["ID"],USER_TYPE,1)."</b></td>";
 	echo "<td  >";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -118,11 +118,11 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td >";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$lang["stats"][44].": ".getAssignName($_GET["ID"],ENTERPRISE_TYPE,1)."</b></td>";
+	echo "<td style='text-align=center; padding:0px 30px 0px 30px;'><b>".$LANG["stats"][44].": ".getAssignName($_GET["ID"],ENTERPRISE_TYPE,1)."</b></td>";
 	echo "<td  >";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -139,11 +139,11 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["stats"][20].": ".$job->getAuthorName(1)."</b></td>";
+	echo "<td width='400' align='center'><b>".$LANG["stats"][20].": ".$job->getAuthorName(1)."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -160,11 +160,11 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["common"][36].": ".getDropdownName("glpi_dropdown_tracking_category",$_GET["ID"])."</b></td>";
+	echo "<td width='400' align='center'><b>".$LANG["common"][36].": ".getDropdownName("glpi_dropdown_tracking_category",$_GET["ID"])."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -181,11 +181,11 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["common"][35].": ".getDropdownName("glpi_groups",$_GET["ID"])."</b></td>";
+	echo "<td width='400' align='center'><b>".$LANG["common"][35].": ".getDropdownName("glpi_groups",$_GET["ID"])."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -202,11 +202,11 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["joblist"][2].": ".getPriorityName($_GET["ID"])."</b></td>";
+	echo "<td width='400' align='center'><b>".$LANG["joblist"][2].": ".getPriorityName($_GET["ID"])."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -223,11 +223,11 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["job"][44].": ".getRequestTypeName($_GET["ID"])."</b></td>";
+	echo "<td width='400' align='center'><b>".$LANG["job"][44].": ".getRequestTypeName($_GET["ID"])."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -243,17 +243,17 @@ switch($_GET["type"]){
 	$prev=getPreviousItem($device_table,$_GET["ID"]);
 
 	$query = "select  designation from ".$device_table." WHERE ID='".$_GET['ID']."'";
-	$result=$db->query($query);
+	$result=$DB->query($query);
 
 	echo "<div align='center'>";
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
-	echo "<td width='400' align='center'><b>".$lang["stats"][19].": ".$db->result($result,0,"designation")."</b></td>";
+	echo "<td width='400' align='center'><b>".$LANG["stats"][19].": ".$DB->result($result,0,"designation")."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -273,12 +273,12 @@ switch($_GET["type"]){
 	echo "<table class='icon_nav'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$cfg_glpi["root_doc"]."/pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 	echo "</td>";
 
-	echo "<td width='400' align='center'><b>".$lang["stats"][26].": ".getDropdownName($table,$_GET["ID"])."</b></td>";
+	echo "<td width='400' align='center'><b>".$LANG["stats"][26].": ".getDropdownName($table,$_GET["ID"])."</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$cfg_glpi["root_doc"]."/pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 	echo "</td>";
 
 	echo "</tr>";
@@ -291,10 +291,10 @@ $target=preg_replace("/&/","&amp;",$_SERVER["REQUEST_URI"]);
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$target."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
-echo $lang["search"][8]." :</td><td>";
+echo $LANG["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" value=\"". $lang["buttons"][7] ."\" /></td></tr>";
-echo "<tr class='tab_bg_2'><td align='right'>".$lang["search"][9]." :</td><td>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
+echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
 showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
@@ -305,27 +305,27 @@ echo "</table></form></div>";
 // Total des interventions
 $entrees_total=constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_total)>0)
-	graphBy($entrees_total,$lang["stats"][5],$lang["stats"][35],1,"month");
+	graphBy($entrees_total,$LANG["stats"][5],$LANG["stats"][35],1,"month");
 
-	// Total des interventions résolues
+	// Total des interventions rï¿½olues
 	$entrees_solved=constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_solved)>0)
-	graphBy($entrees_solved,$lang["stats"][11],$lang["stats"][35],1,"month");
+	graphBy($entrees_solved,$LANG["stats"][11],$LANG["stats"][35],1,"month");
 
 	//Temps moyen de resolution d'intervention
 	$entrees_avgtime=constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_avgtime)>0)
-	graphBy($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0,"month");
+	graphBy($entrees_avgtime,$LANG["stats"][6],$LANG["stats"][32],0,"month");
 
-	//Temps moyen d'intervention réel
+	//Temps moyen d'intervention rï¿½l
 	$entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_avgtime)>0)
-	graphBy($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0,"month");
+	graphBy($entrees_avgtime,$LANG["stats"][25],$LANG["stats"][33],0,"month");
 
 	//Temps moyen de prise en compte de l'intervention
 	$entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_avgtime)>0)
-	graphBy($entrees_avgtime,$lang["stats"][30],$lang["stats"][32],0,"month");
+	graphBy($entrees_avgtime,$LANG["stats"][30],$LANG["stats"][32],0,"month");
 
 	commonFooter();
 

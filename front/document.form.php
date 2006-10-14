@@ -49,7 +49,7 @@ if (isset($_POST["add"]))
 	checkRight("document","w");
 
 	$newID=$doc->add($_POST);
-	logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -57,24 +57,24 @@ else if (isset($_POST["delete"]))
 	checkRight("document","w");
 
 	$doc->delete($_POST);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][22]);
-	glpi_header($cfg_glpi["root_doc"]."/front/document.php");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 else if (isset($_POST["restore"]))
 {
 	checkRight("document","w");
 
 	$doc->restore($_POST);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][23]);
-	glpi_header($cfg_glpi["root_doc"]."/front/document.php");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 else if (isset($_POST["purge"]))
 {
 	checkRight("document","w");
 
 	$doc->delete($_POST,1);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][24]);
-	glpi_header($cfg_glpi["root_doc"]."/front/document.php");
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 
 else if (isset($_POST["update"]))
@@ -82,7 +82,7 @@ else if (isset($_POST["update"]))
 	checkRight("document","w");
 
 	$doc->update($_POST);
-	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][21]);
+	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["additem"])){
@@ -94,7 +94,7 @@ else if (isset($_POST["additem"])){
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item'],$template);
-		logEvent($tab["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][32]);
+		logEvent($tab["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -103,7 +103,7 @@ else if (isset($_GET["deleteitem"])){
 	checkRight("document","w");
 
 	deleteDeviceDocument($_GET["ID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$lang["log"][33]);
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
@@ -111,16 +111,16 @@ else if (isset($_POST["addenterprise"])){
 	checkRight("document","w");
 
 	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][32]);
-	glpi_header($cfg_glpi["root_doc"]."/front/document.form.php?ID=".$_POST["conID"]);
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$LANG["log"][32]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/document.form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
 
 	checkRight("document","w");
 
 	deleteEnterpriseDocument($_GET["ID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$lang["log"][33]);
-	glpi_header($cfg_glpi["root_doc"]."/front/document.form.php?ID=".$_POST["conID"]);
+	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$LANG["log"][33]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/document.form.php?ID=".$_POST["conID"]);
 }
 else
 {
@@ -132,7 +132,7 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][25],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][25],$_SERVER["PHP_SELF"]);
 
 	if ($doc->getFromDB($tab["ID"]))
 		$doc->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );

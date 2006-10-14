@@ -51,28 +51,28 @@ if (!defined('GLPI_ROOT')){
  *
  **/
 function showEnterpriseContact($instID) {
-	global $db,$cfg_glpi, $lang;
+	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contact_enterprise","r")) return false;
 	$canedit=haveRight("contact_enterprise","w");
 
 	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '$instID' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
-	$result = $db->query($query);
-	$number = $db->numrows($result);
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<form method='post' action=\"".$cfg_glpi["root_doc"]."/front/contact.form.php\">";
+	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='6'>".$lang["financial"][65].":</th></tr>";
-	echo "<tr><th>".$lang["financial"][26]."</th>";
-	echo "<th>".$lang["financial"][79]."</th>";
-	echo "<th>".$lang["financial"][29]."</th>";
-	echo "<th>".$lang["financial"][30]."</th>";
-	echo "<th>".$lang["financial"][45]."</th>";
+	echo "<tr><th colspan='6'>".$LANG["financial"][65].":</th></tr>";
+	echo "<tr><th>".$LANG["financial"][26]."</th>";
+	echo "<th>".$LANG["financial"][79]."</th>";
+	echo "<th>".$LANG["financial"][29]."</th>";
+	echo "<th>".$LANG["financial"][30]."</th>";
+	echo "<th>".$LANG["financial"][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
-	while ($data= $db->fetch_array($result)) {
+	while ($data= $DB->fetch_array($result)) {
 		$ID=$data["ID"];
 		$website=$data["website"];
 		if (!empty($website)){
@@ -81,14 +81,14 @@ function showEnterpriseContact($instID) {
 			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 		}
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><a href='".$cfg_glpi["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
 		echo "<td align='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
-			echo "<a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><b>".$LANG["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 	}
@@ -97,7 +97,7 @@ function showEnterpriseContact($instID) {
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID");
 
-		echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$lang["buttons"][8]."\" class='submit'>";
+		echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</div>";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";

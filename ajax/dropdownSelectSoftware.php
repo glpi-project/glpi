@@ -49,21 +49,21 @@ checkRight("software","w");
 $rand=mt_rand();
 
 $where="";	
-if (strlen($_POST['searchSoft'])>0&&$_POST['searchSoft']!=$cfg_glpi["ajax_wildcard"])
+if (strlen($_POST['searchSoft'])>0&&$_POST['searchSoft']!=$CFG_GLPI["ajax_wildcard"])
 $where.=" AND name ".makeTextSearch($_POST['searchSoft'])." ";
 
 $query = "SELECT * FROM glpi_software WHERE deleted='N' AND is_template='0' $where order by name";
-$result = $db->query($query);
+$result = $DB->query($query);
 
 echo "<select name='sID' id='item_type$rand'>\n";
 echo "<option value='0'>-----</option>\n";
-if ($db->numrows($result))
-	while ($data=$db->fetch_array($result)) {
+if ($DB->numrows($result))
+	while ($data=$DB->fetch_array($result)) {
 		$sID = $data["ID"];
 
 		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID)){
 			$output=$data["name"]." (v. ".$data["version"].")";
-			echo  "<option value='$sID' title=\"$output\">".substr($output,0,$cfg_glpi["dropdown_limit"])."</option>";
+			echo  "<option value='$sID' title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 		}
 	}	
 echo "</select>\n";
@@ -72,7 +72,7 @@ echo "</select>\n";
 echo "<script type='text/javascript' >\n";
 echo "   new Form.Element.Observer('item_type$rand', 1, \n";
 echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('show_".$_POST["myname"]."$rand','".$cfg_glpi["root_doc"]."/ajax/dropdownInstallLicense.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+echo "      	new Ajax.Updater('show_".$_POST["myname"]."$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownInstallLicense.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
 echo "            {Element.hide('search_spinner_".$_POST["myname"]."$rand');}, \n";
 echo "           onLoading:function(request)\n";
 echo "            {Element.show('search_spinner_".$_POST["myname"]."$rand');},\n";
@@ -80,7 +80,7 @@ echo "           method:'post', parameters:'sID='+value+'&myname=".$_POST["mynam
 echo "})})\n";
 echo "</script>\n";
 
-echo "<div id='search_spinner_".$_POST["myname"]."$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$cfg_glpi["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+echo "<div id='search_spinner_".$_POST["myname"]."$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";	
 
 ?>

@@ -39,9 +39,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 @session_start();
 
-if (!isset($_SESSION["noCAS"])&&!empty($cfg_glpi["cas_host"])) {
+if (!isset($_SESSION["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-	phpCAS::client(CAS_VERSION_2_0,$cfg_glpi["cas_host"],intval($cfg_glpi["cas_port"]),$cfg_glpi["cas_uri"]);
+	phpCAS::client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),$CFG_GLPI["cas_uri"]);
 	phpCAS::logout();
 }
 
@@ -57,5 +57,5 @@ $id->destroySession();
 
 // Redirect to the login-page
 
-glpi_header($cfg_glpi["root_doc"]."/".$noCAS);
+glpi_header($CFG_GLPI["root_doc"]."/".$noCAS);
 ?>
