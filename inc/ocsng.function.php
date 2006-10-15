@@ -714,10 +714,11 @@ function ocsImportDropdown($dpdTable,$dpdRow,$value) {
 			$query3 = "INSERT INTO ".$dpdTable." (".$dpdRow.") 
 				VALUES ('".$value."')";
 		}
-		$DB->query($query3);
-		$ID=$DB->insert_id();
-		cleanCache();
-		return $ID;
+		$input["tablename"]=$dpdTable;
+		$input["value"]=$value;
+		$input['type']="first";
+		$input["comments"]="";
+		return addDropdown($input);
 	} else {
 		$line2 = $DB->fetch_array($result2);
 		return $line2["ID"];
