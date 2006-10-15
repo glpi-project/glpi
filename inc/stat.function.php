@@ -64,7 +64,7 @@ function getStatsItems($date1,$date2,$type){
 					$val[$i]["link"].=$key["name"];
 				else {
 					$val[$i]["link"].=$key["realname"];
-					if (empty($key["firstname"]))	
+					if (!empty($key["firstname"]))	
 						$val[$i]["link"].=" ".$key["firstname"];
 				}
 				$val[$i]["link"].="</a>";
@@ -84,7 +84,7 @@ function getStatsItems($date1,$date2,$type){
 					$val[$i]["link"].=$key["name"];
 				else {
 					$val[$i]["link"].=$key["realname"];
-					if (empty($key["firstname"]))	
+					if (!empty($key["firstname"]))	
 						$val[$i]["link"].=" ".$key["firstname"];
 				}
 				$val[$i]["link"].="</a>";
@@ -117,7 +117,7 @@ function getStatsItems($date1,$date2,$type){
 					$val[$i]["link"].=$key["name"];
 				else {
 					$val[$i]["link"].=$key["realname"];
-					if (empty($key["firstname"]))	
+					if (!empty($key["firstname"]))	
 						$val[$i]["link"].=" ".$key["firstname"];
 				}
 				$val[$i]["link"].="</a>";
