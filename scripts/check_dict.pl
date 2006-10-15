@@ -33,10 +33,10 @@ print "USAGE check_dict.pl dico_file [1=count_all_entries]\n Must to be launch i
 exit();
 }
 
-$badwritten=`grep -r "\\\$lang\\\['" * | wc -l`;
+$badwritten=`grep -r --exclude files "\\\$LANG\\\['" * | wc -l`;
 if ($badwritten!=0){
 	print "WRONG dict uses:\n";
-	$badwritten=`grep -r -n "\\\$lang\\\['" *.php`;
+	$badwritten=`grep -r -n "\\\$LANG\\\['" *.php`;
 	print $badwritten;
 	print "\n\n";
 }
@@ -56,8 +56,8 @@ close(INFO);
 
 foreach (@lines)
 {
-	if ($_=~m/\$lang\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]/){
-		print "SEARCH \$lang\[\"$1\"\]\[$2\] : ";
+	if ($_=~m/\$LANG\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]/){
+		print "SEARCH \$LANG\[\"$1\"\]\[$2\] : ";
 		$count=0;
 		do_dir(".",$1,$2);
 		print $count;
@@ -92,7 +92,7 @@ if ($_ ne '..' && $_ ne '.'){
 }
 }
 if ($found_php==1 && ($count_all==1 || $count==0) ){
-	open COUNT, "cat $dir/*.php | grep \'\\\$lang\\\[\\\"$module\\\"\\\]\\\[$i\\\]\' | wc -l |";
+	open COUNT, "cat $dir/*.php | grep \'\\\$LANG\\\[\\\"$module\\\"\\\]\\\[$i\\\]\' | wc -l |";
 	while(<COUNT>) {
            	$count+=$_;
 		#print $_."\n";
