@@ -172,99 +172,101 @@ class Document extends CommonDBTM {
 				echo $LANG["document"][18]." ID $ID:";
 			}		
 			echo "</b></th></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
-			echo "<td colspan='2'>";
-			autocompletionTextField("name","glpi_docs","name",$this->fields["name"],25);
-			echo "</td></tr>";
-
-			if (!empty($ID)){
-				echo "<tr class='tab_bg_1'><td>".$LANG["document"][22].":		</td>";
-				echo "<td colspan='2'>".getDocumentLink($this->fields["filename"])."";
-				echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
+			
+			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+				echo "<td colspan='2'>";
+				autocompletionTextField("name","glpi_docs","name",$this->fields["name"],25);
 				echo "</td></tr>";
-			}
-			$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
-			$max_size/=1024*1024;
-			$max_size=round($max_size,1);
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." Mb max):	</td>";
-			echo "<td colspan='2'><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='25'></td>";
-			echo "</tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][36].":		</td>";
-			echo "<td colspan='2'>";
-			showUploadedFilesDropdown("upload_file");
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][33].":		</td>";
-			echo "<td colspan='2'>";
-			autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40);
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][3].":		</td>";
-			echo "<td colspan='2'>";
-			dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
-			echo "</td></tr>";
-
-
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][4].":		</td>";
-			echo "<td colspan='2'>";
-			autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],25);
-			echo "</td></tr>";
-
-			echo "<tr>";
-			echo "<td class='tab_bg_1' valign='top'>";
-
-			// table commentaires
-			echo $LANG["common"][25].":	</td>";
-			echo "<td align='center' colspan='2'  class='tab_bg_1'><textarea cols='35' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-
-			echo "</td>";
-			echo "</tr>";
-
-			if (!$ID) {
-
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top' colspan='3'>";
-				echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-				echo "</td>";
-				echo "</tr>";
-
-				echo "</table></div></form>";
-
-			} else {
-
-				echo "<tr>";
-				echo "<td class='tab_bg_2'>";
-				if ($this->fields["FK_users"]>0)
-					echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
-				else echo "&nbsp;";
-				echo "</td>";
-				echo "<td class='tab_bg_2' valign='top'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
-				echo "</td>\n\n";
-
-				echo "<td class='tab_bg_2' valign='top'>\n";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				if ($this->fields["deleted"]=='N')
-					echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-				else {
-					echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
-
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
+	
+				if (!empty($ID)){
+					echo "<tr class='tab_bg_1'><td>".$LANG["document"][22].":		</td>";
+					echo "<td colspan='2'>".getDocumentLink($this->fields["filename"])."";
+					echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
+					echo "</td></tr>";
 				}
-
+				$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+				$max_size/=1024*1024;
+				$max_size=round($max_size,1);
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." Mb max):	</td>";
+				echo "<td colspan='2'><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='25'></td>";
+				echo "</tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["document"][36].":		</td>";
+				echo "<td colspan='2'>";
+				showUploadedFilesDropdown("upload_file");
+				echo "</td></tr>";
+	
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["document"][33].":		</td>";
+				echo "<td colspan='2'>";
+				autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40);
+				echo "</td></tr>";
+	
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["document"][3].":		</td>";
+				echo "<td colspan='2'>";
+				dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
+				echo "</td></tr>";
+	
+	
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["document"][4].":		</td>";
+				echo "<td colspan='2'>";
+				autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],25);
+				echo "</td></tr>";
+	
+				echo "<tr>";
+				echo "<td class='tab_bg_1' valign='top'>";
+	
+				// table commentaires
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center' colspan='2'  class='tab_bg_1'><textarea cols='35' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
+	
 				echo "</td>";
 				echo "</tr>";
-
-				echo "</table></div>";
-				echo "</form>";
-
+	
+				if (!$ID) {
+	
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "</td>";
+					echo "</tr>";
+	
+					echo "</table></div></form>";
+	
+				} else {
+	
+					echo "<tr>";
+					echo "<td class='tab_bg_2'>";
+					if ($this->fields["FK_users"]>0)
+						echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
+					else echo "&nbsp;";
+					echo "</td>";
+					echo "<td class='tab_bg_2' valign='top'>";
+					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+					echo "</td>\n\n";
+	
+					echo "<td class='tab_bg_2' valign='top'>\n";
+					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					if ($this->fields["deleted"]=='N')
+						echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+					else {
+						echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+	
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
+					}
+	
+					echo "</td>";
+					echo "</tr>";
+	
+					echo "</table></div>";
+					echo "</form>";
+					$CFG_GLPI["cache"]->end();
+			}
 
 			}
 		} else {

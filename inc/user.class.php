@@ -662,50 +662,54 @@ class User extends CommonDBTM {
 					echo "<td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 				} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
-	
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
-			autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
-			echo "</td>";
-			echo "<td align='center'>".$LANG["common"][43]."</td><td>";
-			autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
-			echo "</td></tr>";
-	
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["profiles"][22]."</td><td>";
-			$prof=new Profile();
-			$prof->getFromDBforUser($this->fields["ID"]);
-			dropdownValue("glpi_profiles","profile",$prof->fields["ID"]);
-			echo "</td>";
-			echo "<td align='center'>".$LANG["setup"][14]."</td><td>";
-			autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
-			echo "</td></tr>";
-	
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>";
-			autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
-			echo "</td>";
-			echo "<td align='center'>".$LANG["financial"][29]." 2</td><td>";
-			autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
-			echo "</td></tr>";
-	
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-			echo "</td>";
-			echo "<td align='center'>".$LANG["common"][42]."</td><td>";
-			autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
-			echo "</td></tr>";
-	
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][25].":</td><td colspan='3' align='center'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
-			echo "</tr>";
-	
-	
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
-			$active=0;
-			if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
-			echo "<select name='active'>";
-			echo "<option value='1' ".($active?" selected ":"").">".$LANG["choice"][1]."</option>";
-			echo "<option value='0' ".(!$active?" selected ":"").">".$LANG["choice"][0]."</option>";
-	
-			echo "</select>";
-			echo "</td><td colspan='2'>&nbsp;</td></tr>";
+			
+			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
+				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
+				echo "</td>";
+				echo "<td align='center'>".$LANG["common"][43]."</td><td>";
+				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
+				echo "</td></tr>";
+		
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["profiles"][22]."</td><td>";
+				$prof=new Profile();
+				$prof->getFromDBforUser($this->fields["ID"]);
+				dropdownValue("glpi_profiles","profile",$prof->fields["ID"]);
+				echo "</td>";
+				echo "<td align='center'>".$LANG["setup"][14]."</td><td>";
+				autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
+				echo "</td></tr>";
+		
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>";
+				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
+				echo "</td>";
+				echo "<td align='center'>".$LANG["financial"][29]." 2</td><td>";
+				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
+				echo "</td></tr>";
+		
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+				echo "</td>";
+				echo "<td align='center'>".$LANG["common"][42]."</td><td>";
+				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
+				echo "</td></tr>";
+		
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][25].":</td><td colspan='3' align='center'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+				echo "</tr>";
+		
+		
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
+				$active=0;
+				if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
+				echo "<select name='active'>";
+				echo "<option value='1' ".($active?" selected ":"").">".$LANG["choice"][1]."</option>";
+				echo "<option value='0' ".(!$active?" selected ":"").">".$LANG["choice"][0]."</option>";
+		
+				echo "</select>";
+				echo "</td><td colspan='2'>&nbsp;</td></tr>";
+			
+			$CFG_GLPI["cache"]->end();
+			}
 	
 			if (haveRight("user","w"))
 				if ($this->fields["name"]=="") {
