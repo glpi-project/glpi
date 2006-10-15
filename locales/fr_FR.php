@@ -594,6 +594,11 @@ $LANG["install"][93]="J'ai lu et ACCEPTE les termes de la licence énoncés ci-d
 $LANG["install"][94]="J'ai lu et N'ACCEPTE PAS les termes de la licence énoncés ci-dessus";
 $LANG["install"][95]="Mémoire non limitée";
 $LANG["install"][96]="Mémoire illimitée";
+$LANG["install"][97]="Vérifiez que PHP a un droit d'écriture pour le répertoire :";
+$LANG["install"][98]="Si vous êtes sous un environnement de Microsoft Windows, contrôlez si celui-ci est en lecture seule.";
+$LANG["install"][99]="Test d'écriture des fichiers de cache";
+
+
 
 $LANG["job"][1]="Ticket toujours ouvert...";
 $LANG["job"][5]="Attribué à";

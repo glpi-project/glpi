@@ -36,7 +36,7 @@
 
 //Ce script g��e ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
-//error_reporting(0);
+error_reporting(0);
 define('GLPI_ROOT', '..');
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
@@ -646,108 +646,8 @@ function step1($update)
 	// file test
 
 	// il faut un test dans /files/_dumps  et /files et /config/ et /files/_sessions et /files/_cron
-
-	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][16]."</b></td>";
-
-	$fp = fopen(GLPI_DUMP_DIR . "/test_glpi.txt",'w');
-	if (empty($fp)) {
-		echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][18]."</td></tr>";
-		$error = 2;
-	}
-	else {
-		$fw = fwrite($fp,"This file was created for testing reasons. ");
-		fclose($fp);
-		$delete = unlink(GLPI_DUMP_DIR . "/test_glpi.txt");
-		if (!$delete) {
-			echo "<td  class='red'>".$LANG["install"][19]."</td></tr>";
-			if($error != 2) $error = 1;
-		}
-		else {
-			echo "<td>".$LANG["install"][20]."</td></tr>";
-
-		}
-	}
-
-
-	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][21]."</b></td>";	
-	$fp = fopen(GLPI_DOC_DIR . "/test_glpi.txt",'w');
-	if (empty($fp)) {
-		echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][22]."</td></tr>";
-		$error = 2;
-	}
-	else {
-		$fw = fwrite($fp,"This file was created for testing reasons. ");
-		fclose($fp);
-		$delete = unlink(GLPI_DOC_DIR . "/test_glpi.txt");
-		if (!$delete) {
-			echo "<td  class='red'>".$LANG["install"][19]."</td></tr>";
-			if($error != 2) $error = 1;
-		}
-		else {
-			echo "<td>".$LANG["install"][20]."</td></tr>";
-
-		}
-	}
-
-
-	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][23]."</b></td>";
-	$fp = fopen(GLPI_CONFIG_DIR . "/test_glpi.txt",'w');
-	if (empty($fp)) {
-		echo "<td><p class='red'>".$LANG["install"][17]. " " . GLPI_CONFIG_DIR . "/test_glpi.txt" ."</p>". $LANG["install"][24]."</td></tr>";
-		$error = 2;
-	}
-	else {
-		$fw = fwrite($fp,"This file was created for testing reasons. ");
-		fclose($fp);
-		$delete = unlink(GLPI_CONFIG_DIR . "/test_glpi.txt");
-		if (!$delete) {
-			echo "<td>".$LANG["install"][19]."</td></tr>";
-			if($error != 2) $error = 1;
-		}
-		else {
-			echo "<td>".$LANG["install"][20]."</td></tr>";
-		}
-	}
-
-	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][50]."</b></td>";
-	$fp = fopen(GLPI_DOC_DIR."/_sessions/test_glpi.txt",'w');
-	if (empty($fp)) {
-		echo "<td><p class='red'>".$LANG["install"][17]. " " . GLPI_DOC_DIR . "/_sessions/test_glpi.txt" ."</p>". $LANG["install"][51]."</td></tr>";
-		$error = 2;
-	}
-	else {
-		$fw = fwrite($fp,"This file was created for testing reasons. ");
-		fclose($fp);
-		$delete = unlink(GLPI_DOC_DIR . "/_sessions/test_glpi.txt");
-		if (!$delete) {
-			echo "<td>".$LANG["install"][19]."</td></tr>";
-			if($error != 2) $error = 1;
-		}
-		else {
-			echo "<td>".$LANG["install"][20]."</td></tr>";
-		}
-	}
-
-	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][52]."</b></td>";
-	$fp = fopen(GLPI_DOC_DIR."/_cron/test_glpi.txt",'w');
-	if (empty($fp)) {
-		echo "<td><p class='red'>".$LANG["install"][17]. " " . GLPI_DOC_DIR."/_cron/test_glpi.txt" ."</p>". $LANG["install"][53]."</td></tr>";
-		$error = 2;
-	}
-	else {
-		$fw = fwrite($fp,"This file was created for testing reasons. ");
-		fclose($fp);
-		$delete = unlink(GLPI_DOC_DIR."/_cron/test_glpi.txt");
-		if (!$delete) {
-			echo "<td>".$LANG["install"][19]."</td></tr>";
-			if($error != 2) $error = 1;
-		}
-		else {
-			echo "<td>".$LANG["install"][20]."</td></tr>";
-		}
-	}
-
-
+	$tmperror=checkWriteAccessToDirs();
+	if ($tmperror) $error=$tmperror;
 	echo "</table>";
 	switch ($error) {
 		case 0 :       
@@ -898,9 +798,8 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	{
 		global $LANG, $CFG_GLPI;		
 
-		include (GLPI_ROOT . "/inc/dbmysql.class.php");
-		include (GLPI_ROOT . "/inc/common.function.php");
-		include (GLPI_CONFIG_DIR . "/config_db.php");
+		include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+		include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 		$DB = new DB;
 		$DB_file = GLPI_ROOT ."/install/mysql/glpi-0.68.1-empty.sql";
