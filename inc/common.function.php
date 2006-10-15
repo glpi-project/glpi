@@ -124,6 +124,56 @@ function getDbRelations(){
 	return $RELATION;
 }
 
+/// Return 2 : creation error 1 : delete error 0: OK
+function testRightAccessToDirectory($dir){
+	$fp = fopen($dir . "/test_glpi.txt",'w');
+
+	if (empty($fp)) {
+		return 2;
+	}
+	else {
+		$fw = fwrite($fp,"This file was created for testing reasons. ");
+		fclose($fp);
+		$delete = unlink($dir . "/test_glpi.txt");
+		if (!$delete) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+function checkWriteAccessToDirs(){
+		global $LANG;
+		$dir_to_check=array(
+			GLPI_DUMP_DIR=>$LANG["install"][16],
+			GLPI_DOC_DIR=>$LANG["install"][21],
+			GLPI_CONFIG_DIR=>$LANG["install"][23],
+			GLPI_DOC_DIR."/_sessions"=>$LANG["install"][50],
+			GLPI_DOC_DIR."/_cron"=>$LANG["install"][52],
+			GLPI_DOC_DIR."/_cache"=>$LANG["install"][99],
+		);
+		$error=0;	
+		foreach ($dir_to_check as $dir => $message){
+			echo "<tr class='tab_bg_1'><td><b>".$message."</b></td>";
+			$tmperror=testRightAccessToDirectory($dir);
+	
+			switch($tmperror){
+				// Error on creation
+				case 2 :
+					echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+					$error=2;
+					break;
+				case 1 :
+					echo "<td><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+					$error=1;
+					break;
+				default :
+					echo "<td>".$LANG["install"][20]."</td></tr>";
+					break;
+			}
+		}
+	return $error;
+}
 
 /**
  * Give name of the device
