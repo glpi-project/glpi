@@ -65,6 +65,18 @@ function cleanCache($group=""){
 
 }
 
+function cleanDropdownCache($table){
+	global $LINK_ID_TABLE;
+	$RELATION=getDbRelations();
+	if (isset($RELATION[$table])){
+		foreach ($RELATION[$table] as $tablename => $field){
+			if ($key=array_search($tablename,$LINK_ID_TABLE)){
+				echo "GLPI_$key";
+				cleanCache("GLPI_$key");
+			}
+		}
+	}
+}
 
 function getSearchOptions(){
 	global $LANG;
