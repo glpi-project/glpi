@@ -49,7 +49,7 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 
 
-function cleanCache(){
+function cleanCache($group=""){
 
 	include_once (GLPI_ROOT."/lib/cache_lite/Lite.php");
 
@@ -59,7 +59,9 @@ function cleanCache(){
 		'hashedDirectoryLevel' => 2,
 	);
 	$CACHE = new Cache_Lite($cache_options);
-	$CACHE->clean();
+	if (empty($group))
+		$CACHE->clean();
+	else $CACHE->clean($group,"ingroup");
 
 }
 
