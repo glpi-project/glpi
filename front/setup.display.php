@@ -37,6 +37,8 @@
 
 $NEEDED_ITEMS=array("search","setup");
 
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_POST["type"]))$type=$_POST["type"];
 elseif (isset($_GET["type"]))$type=$_GET["type"];
