@@ -64,6 +64,14 @@ function commonHeader($title,$url)
 		$CFG_GLPI["list_limit"]=$_POST['list_limit'];
 	}
 
+
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+	// Send extra expires header if configured
+	if ($CFG_GLPI["sendexpire"]) {
+		header_nocache();
+	}
+
 	if (!($CFG_GLPI["cache"]->start($_SESSION["glpiID"],"GLPI_HEADER"))) {
 		//  menu list 	
 		//////// UTILS
@@ -136,12 +144,6 @@ function commonHeader($title,$url)
 		if (haveRight("logs","r"))
 			$config[$LANG["Menu"][30]]=array("log.php","l");
 	
-		// Send UTF8 Headers
-		header("Content-Type: text/html; charset=UTF-8");
-		// Send extra expires header if configured
-		if ($CFG_GLPI["sendexpire"]) {
-			header_nocache();
-		}
 		// Start the page
 		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 		echo "\n<html><head><title>GLPI - ".$title."</title>";
