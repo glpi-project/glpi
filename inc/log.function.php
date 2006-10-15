@@ -132,7 +132,7 @@ function showHistory($device_type,$id_device){
 	global $DB,$SEARCH_OPTION, $LINK_ID_TABLE,$LANG;	
 
 	// n�essaire pour avoir les $search_option
-	include_once (GLPI_ROOT . "/inc/search.class.php");
+	include_once (GLPI_ROOT . "/inc/search.constant.php");
 
 	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."' ORDER BY  ID DESC;";
 
