@@ -263,7 +263,6 @@
 			// dictionnaires
 			// Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
 
-			$CFG_GLPI["cache"]=$GLPI_CACHE;
 			$CFG_GLPI["languages"]=array(   
 					"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","en"),
 					"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
@@ -359,6 +358,7 @@
 	}
 
 	$GLPI_CACHE = new Cache_Lite_Output($cache_options);
+	$CFG_GLPI["cache"]=$GLPI_CACHE;
 
 	// Mode debug activé on affiche un certains nombres d'informations
 	if ($CFG_GLPI["debug"]==DEBUG_MODE){
