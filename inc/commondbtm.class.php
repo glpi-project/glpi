@@ -99,7 +99,7 @@ class CommonDBTM {
 			$result=$DB->query($query);
 		}
 		$this->post_updateInDB($updates);
-		$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
+		$CFG_GLPI["cache"]->remove($this->fields["ID"],"GLPI_".$this->type);
 		return true;
 	}
 
@@ -157,7 +157,6 @@ class CommonDBTM {
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
 			$query = "UPDATE ".$this->table." SET deleted='N' WHERE (ID = '$ID')";
 			if ($result = $DB->query($query)) {
-				$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
 				return true;
 			} else {
 				return false;
@@ -176,7 +175,7 @@ class CommonDBTM {
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
-				$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
+				$CFG_GLPI["cache"]->remove($this->fields["ID"],"GLPI_".$this->type);
 				return true;
 			} else {
 				return false;
@@ -184,7 +183,7 @@ class CommonDBTM {
 		}else {
 			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ID = '$ID'";		
 			if ($result = $DB->query($query)){
-				$CFG_GLPI["cache"]->remove($this->type."_".$this->fields["ID"],"GLPI");
+				$CFG_GLPI["cache"]->remove($this->fields["ID"],"GLPI_".$this->type);
 				return true;
 			} else echo false;
 		}

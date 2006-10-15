@@ -497,7 +497,7 @@ class Computer extends CommonDBTM {
 
 			echo "</th></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
+			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
 
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16]."*:		</td>";
 	

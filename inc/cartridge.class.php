@@ -193,7 +193,7 @@ class CartridgeType extends CommonDBTM {
 
 			echo "<form method='post' action=\"$target\"><div align='center'>\n";
 
-			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
+			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
 				echo "<table class='tab_cadre_fixe'>\n";
 				echo "<tr><th colspan='3'><b>\n";
 				if (!$ID) 

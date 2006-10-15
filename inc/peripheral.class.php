@@ -273,7 +273,7 @@ class Peripheral  extends CommonDBTM  {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($this->type."_".$ID,"GLPI"))) {
+			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
 				echo "<tr><td class='tab_bg_1' valign='top'>";
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
