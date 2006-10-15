@@ -782,7 +782,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 
 	echo "<table cellpadding='0' cellspacing='0' border='0' ><tr><td style='background-image:url(".$CFG_GLPI["root_doc"]."/pics/fond-stats.gif)' >";
 	echo "<table cellpadding='0' cellspacing='0' border='0'><tr>";
-	echo "<td bgcolor='black'><img src='".$$CFG_GLPI["root_doc"]."/pics/noir.png' width='1' height='200' alt=''></td>";
+	echo "<td bgcolor='black'><img src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width='1' height='200' alt=''></td>";
 
 	// Presentation graphique
 	$n = 0;
