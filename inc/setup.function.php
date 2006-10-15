@@ -332,7 +332,7 @@ function updateDropdown($input) {
 		if (in_array($input["tablename"],$CFG_GLPI["dropdowntree_tables"])){
 			regenerateTreeCompleteNameUnderID($input["tablename"],$input["ID"]);
 		}
-		cleanCache();
+		cleanDropdownCache($input["tablename"]);
 		return true;
 	} else {
 		return false;
@@ -373,7 +373,7 @@ function addDropdown($input) {
 			if (in_array($input["tablename"],$CFG_GLPI["dropdowntree_tables"])){
 				regenerateTreeCompleteNameUnderID($input["tablename"],$ID);		
 			}
-			cleanCache();
+			cleanDropdownCache($input["tablename"]);
 			return $ID;
 		} else {
 			return false;
@@ -389,7 +389,7 @@ function deleteDropdown($input) {
 	$send["oldID"] = $input["ID"];
 	$send["newID"] = "NULL";
 	replaceDropDropDown($send);
-	cleanCache();
+	cleanDropdownCache($input["tablename"]);
 }
 
 //replace all entries for a dropdown in each items
