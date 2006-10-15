@@ -35,24 +35,24 @@ if (!defined('GLPI_ROOT')){
 
 $RELATION=array(
 
-	"glpi_dropdown_auto_update" => array(COMPUTER_TYPE);
+	"glpi_dropdown_auto_update" => array("glpi_computers"=>"auto_update"),
 
-	"glpi_dropdown_budget" => array(INFOCOM_TYPE);
+	"glpi_dropdown_budget" => array("glpi_infocoms"=>"budget"),
 	
-	"glpi_dropdown_cartridge_type" => array(CARTRIDGE_TYPE);
+	"glpi_dropdown_cartridge_type" => array("glpi_cartridges_type"=>"type"),
 	
-	"glpi_dropdown_case_type
+	"glpi_dropdown_case_type" => array("glpi_cartridges_type"=>"type"),
 	
-	"glpi_dropdown_consumable_type" => array(CONSUMABLE_TYPE);
+	"glpi_dropdown_consumable_type" => array(CONSUMABLE_TYPE),
 	
 	
-	"glpi_dropdown_contact_type" => array(CONTACT_TYPE);
+	"glpi_dropdown_contact_type" => array(CONTACT_TYPE),
 	
-	"glpi_dropdown_contract_type" => array(CONTRACT_TYPE);
+	"glpi_dropdown_contract_type" => array(CONTRACT_TYPE),
 	
-	"glpi_dropdown_domain
+	"glpi_dropdown_domain" => array("glpi_computers"=>"domain","glpi_printers"=>"domain","glpi_networking"=>"domain"),
 	
-	"glpi_dropdown_enttype" => array(ENTERPRISE_TYPE);
+	"glpi_dropdown_enttype" => array(ENTERPRISE_TYPE),
 	
 	"glpi_dropdown_firmware
 	
