@@ -137,65 +137,68 @@ class Enterprise extends CommonDBTM {
 				echo $LANG["financial"][26]." ID $ID:";
 			}		
 			echo "</b></th></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
-			echo "<td>";
-			autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],25);
-			echo "</td>";
-
-			echo "<td>".$LANG["financial"][79].":		</td><td>";
-			dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][29].":		</td>";
-			echo "<td>";
-			autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],25);	
-			echo "</td>";
-
-			echo "<td valign='top' rowspan='4'>";
-			echo $LANG["common"][25].":	</td>";
-			echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["financial"][30].":		</td><td>";
-			autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],25);	
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
-			echo "<td>";
-			autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],25);	
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["setup"][14].":		</td><td>";
-			autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],25);		
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG["financial"][44].":		</td>";
-			echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
-			echo "<td>".$LANG["financial"][100]."</td>";
-			echo "<td>";
-			autocompletionTextField("postcode","glpi_enterprises","postcode",$this->fields["postcode"],25);		
-			echo "</td>";
-			echo "</tr>";
-
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["financial"][101].":		</td><td>";
-			autocompletionTextField("town","glpi_enterprises","town",$this->fields["town"],25);		
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["financial"][102].":		</td><td>";
-			autocompletionTextField("state","glpi_enterprises","state",$this->fields["state"],25);		
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["financial"][103].":		</td><td>";
-			autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],25);		
-			echo "</td></tr>";
+			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+				echo "<td>";
+				autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],25);
+				echo "</td>";
+	
+				echo "<td>".$LANG["financial"][79].":		</td><td>";
+				dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][29].":		</td>";
+				echo "<td>";
+				autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],25);	
+				echo "</td>";
+	
+				echo "<td valign='top' rowspan='4'>";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr>";
+	
+	
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["financial"][30].":		</td><td>";
+				autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],25);	
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
+				echo "<td>";
+				autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],25);	
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["setup"][14].":		</td><td>";
+				autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],25);		
+				echo "</td></tr>";
+	
+	
+				echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG["financial"][44].":		</td>";
+				echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
+				echo "<td>".$LANG["financial"][100]."</td>";
+				echo "<td>";
+				autocompletionTextField("postcode","glpi_enterprises","postcode",$this->fields["postcode"],25);		
+				echo "</td>";
+				echo "</tr>";
+	
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["financial"][101].":		</td><td>";
+				autocompletionTextField("town","glpi_enterprises","town",$this->fields["town"],25);		
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["financial"][102].":		</td><td>";
+				autocompletionTextField("state","glpi_enterprises","state",$this->fields["state"],25);		
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["financial"][103].":		</td><td>";
+				autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],25);		
+				echo "</td></tr>";
+				
+			$CFG_GLPI["cache"]->end();
+			}
 
 			if (haveRight("contact_enterprise","w"))
 				if (!$ID) {

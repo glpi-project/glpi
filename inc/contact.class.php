@@ -152,60 +152,64 @@ class Contact extends CommonDBTM{
 			}		
 			echo "</b></th></tr>";
 
-			echo "<tr><td class='tab_bg_1' valign='top'>";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-			echo "<tr><td>".$LANG["common"][48].":	</td>";
-			echo "<td>";
-			autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],30);	
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][43].":	</td>";
-			echo "<td>";
-			autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],30);	
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["financial"][29].": 	</td>";
-			echo "<td>";
-			autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],30);	
-
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["financial"][29]." 2:	</td><td>";
-			autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],30);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][42].":	</td><td>";
-			autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],30);
-			echo "</td></tr>";
-
-
-			echo "<tr><td>".$LANG["financial"][30].":	</td><td>";
-			autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],30);
-			echo "</td></tr>";
-			echo "<tr><td>".$LANG["setup"][14].":	</td><td>";
-			autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],30);
-			echo "</td></tr>";
-			echo "<tr><td>".$LANG["common"][17].":	</td>";
-			echo "<td>";
-			dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
-			echo "</td>";
-			echo "</tr>";
-
-			echo "</table>";
-
-			echo "</td>\n";	
-
-			echo "<td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-			echo $LANG["common"][25].":	</td></tr>";
-			echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr></table>";
-
-			echo "</td>";
-			echo "</tr>";
+			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+				echo "<tr><td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+				echo "<tr><td>".$LANG["common"][48].":	</td>";
+				echo "<td>";
+				autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],30);	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][43].":	</td>";
+				echo "<td>";
+				autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],30);	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["financial"][29].": 	</td>";
+				echo "<td>";
+				autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],30);	
+	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["financial"][29]." 2:	</td><td>";
+				autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],30);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][42].":	</td><td>";
+				autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],30);
+				echo "</td></tr>";
+	
+	
+				echo "<tr><td>".$LANG["financial"][30].":	</td><td>";
+				autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],30);
+				echo "</td></tr>";
+				echo "<tr><td>".$LANG["setup"][14].":	</td><td>";
+				autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],30);
+				echo "</td></tr>";
+				echo "<tr><td>".$LANG["common"][17].":	</td>";
+				echo "<td>";
+				dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
+				echo "</td>";
+				echo "</tr>";
+	
+				echo "</table>";
+	
+				echo "</td>\n";	
+	
+				echo "<td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
+				echo $LANG["common"][25].":	</td></tr>";
+				echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr></table>";
+	
+				echo "</td>";
+				echo "</tr>";
+				$CFG_GLPI["cache"]->end();
+			}
 
 			if (haveRight("contact_enterprise","w")) 
 				if ($ID=="") {

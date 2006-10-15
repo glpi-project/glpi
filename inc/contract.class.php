@@ -140,110 +140,115 @@ class Contract extends CommonDBTM {
 			}		
 			echo "</b></th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][6].":		</td><td >";
-			dropdownValue("glpi_dropdown_contract_type","contract_type",$this->fields["contract_type"]);
-			echo "</td>";
+			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
 
-			echo "<td>".$LANG["common"][16].":		</td><td>";
-			autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],25);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][4].":		</td>";
-			echo "<td><input type='text' name='num' value=\"".$this->fields["num"]."\" size='25'></td>";
-
-			echo "<td>".$LANG["search"][8].":	</td>";
-			echo "<td>";
-			showCalendarForm("form","begin_date",$this->fields["begin_date"]);	
-			echo "</td>";
-			echo "</tr>";
-
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][5].":		</td><td>";
-			echo "<input type='text' name='cost' value=\"".number_format($this->fields["cost"],2,'.','')."\" size='10'>";
-			echo "</td>";
-
-			echo "<td>".$LANG["financial"][13].":		</td><td>";
-			autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],25);
-
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][8].":		</td><td>";
-			dropdownContractTime("duration",$this->fields["duration"]);
-			echo " ".$LANG["financial"][57];
-			if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
-				echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]);
-			echo "</td>";
-
-			echo "<td>".$LANG["financial"][10].":		</td><td>";
-			dropdownContractTime("notice",$this->fields["notice"]);
-			echo " ".$LANG["financial"][57];
-			if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
-				echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]-$this->fields["notice"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][69].":		</td><td>";
-			dropdownContractPeriodicity("periodicity",$this->fields["periodicity"]);
-			echo "</td>";
-
-
-			echo "<td>".$LANG["financial"][11].":		</td>";
-			echo "<td>";
-			dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][107].":		</td><td>";
-			dropdownContractRenewal("renewal",$this->fields["renewal"]);
-			echo "</td>";
-
-
-			echo "<td>&nbsp;</td>";
-			echo "<td>&nbsp;";
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][83].":		</td><td>";
-			dropdownContractTime("device_countmax",$this->fields["device_countmax"]);
-			echo "</td>";
-
-
-			echo "<td>".$LANG["common"][41]."</td>";
-			echo "<td>";
-			dropdownContractAlerting("alert",$this->fields["alert"]);
-			echo "</td></tr>";
-
-
-
-			echo "<tr class='tab_bg_1'><td valign='top'>";
-			echo $LANG["common"][25].":	</td>";
-			echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_2'><td>".$LANG["financial"][59].":		</td>";
-			echo "<td colspan='3'>&nbsp;</td>";
-			echo "</tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][60].":		</td><td colspan='3'>";
-			echo $LANG["buttons"][33].":";
-			dropdownHours("week_begin_hour",$this->fields["week_begin_hour"]);	
-			echo $LANG["buttons"][32].":";
-			dropdownHours("week_end_hour",$this->fields["week_end_hour"]);	
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][61].":		</td><td colspan='3'>";
-			dropdownYesNo("saturday",$this->fields["saturday"]);
-			echo $LANG["buttons"][33].":";
-			dropdownHours("saturday_begin_hour",$this->fields["saturday_begin_hour"]);	
-			echo $LANG["buttons"][32].":";
-			dropdownHours("saturday_end_hour",$this->fields["saturday_end_hour"]);	
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][62].":		</td><td colspan='3'>";
-			dropdownYesNo("monday",$this->fields["monday"]);
-			echo $LANG["buttons"][33].":";
-			dropdownHours("monday_begin_hour",$this->fields["monday_begin_hour"]);	
-			echo $LANG["buttons"][32].":";
-			dropdownHours("monday_end_hour",$this->fields["monday_end_hour"]);	
-			echo "</td></tr>";
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][6].":		</td><td >";
+				dropdownValue("glpi_dropdown_contract_type","contract_type",$this->fields["contract_type"]);
+				echo "</td>";
+	
+				echo "<td>".$LANG["common"][16].":		</td><td>";
+				autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],25);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][4].":		</td>";
+				echo "<td><input type='text' name='num' value=\"".$this->fields["num"]."\" size='25'></td>";
+	
+				echo "<td>".$LANG["search"][8].":	</td>";
+				echo "<td>";
+				showCalendarForm("form","begin_date",$this->fields["begin_date"]);	
+				echo "</td>";
+				echo "</tr>";
+	
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][5].":		</td><td>";
+				echo "<input type='text' name='cost' value=\"".number_format($this->fields["cost"],2,'.','')."\" size='10'>";
+				echo "</td>";
+	
+				echo "<td>".$LANG["financial"][13].":		</td><td>";
+				autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],25);
+	
+				echo "</td></tr>";
+	
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][8].":		</td><td>";
+				dropdownContractTime("duration",$this->fields["duration"]);
+				echo " ".$LANG["financial"][57];
+				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
+					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]);
+				echo "</td>";
+	
+				echo "<td>".$LANG["financial"][10].":		</td><td>";
+				dropdownContractTime("notice",$this->fields["notice"]);
+				echo " ".$LANG["financial"][57];
+				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
+					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]-$this->fields["notice"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][69].":		</td><td>";
+				dropdownContractPeriodicity("periodicity",$this->fields["periodicity"]);
+				echo "</td>";
+	
+	
+				echo "<td>".$LANG["financial"][11].":		</td>";
+				echo "<td>";
+				dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][107].":		</td><td>";
+				dropdownContractRenewal("renewal",$this->fields["renewal"]);
+				echo "</td>";
+	
+	
+				echo "<td>&nbsp;</td>";
+				echo "<td>&nbsp;";
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][83].":		</td><td>";
+				dropdownContractTime("device_countmax",$this->fields["device_countmax"]);
+				echo "</td>";
+	
+	
+				echo "<td>".$LANG["common"][41]."</td>";
+				echo "<td>";
+				dropdownContractAlerting("alert",$this->fields["alert"]);
+				echo "</td></tr>";
+	
+	
+	
+				echo "<tr class='tab_bg_1'><td valign='top'>";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_2'><td>".$LANG["financial"][59].":		</td>";
+				echo "<td colspan='3'>&nbsp;</td>";
+				echo "</tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][60].":		</td><td colspan='3'>";
+				echo $LANG["buttons"][33].":";
+				dropdownHours("week_begin_hour",$this->fields["week_begin_hour"]);	
+				echo $LANG["buttons"][32].":";
+				dropdownHours("week_end_hour",$this->fields["week_end_hour"]);	
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][61].":		</td><td colspan='3'>";
+				dropdownYesNo("saturday",$this->fields["saturday"]);
+				echo $LANG["buttons"][33].":";
+				dropdownHours("saturday_begin_hour",$this->fields["saturday_begin_hour"]);	
+				echo $LANG["buttons"][32].":";
+				dropdownHours("saturday_end_hour",$this->fields["saturday_end_hour"]);	
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][62].":		</td><td colspan='3'>";
+				dropdownYesNo("monday",$this->fields["monday"]);
+				echo $LANG["buttons"][33].":";
+				dropdownHours("monday_begin_hour",$this->fields["monday_begin_hour"]);	
+				echo $LANG["buttons"][32].":";
+				dropdownHours("monday_end_hour",$this->fields["monday_end_hour"]);	
+				echo "</td></tr>";
+				
+			$CFG_GLPI["cache"]->end();
+			}
 
 			if (haveRight("contract_infocom","w"))
 				if (!$ID) {
