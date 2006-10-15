@@ -64,260 +64,261 @@ function commonHeader($title,$url)
 		$CFG_GLPI["list_limit"]=$_POST['list_limit'];
 	}
 
-
-	//  menu list 	
-	//////// UTILS
-	$utils=array();
-	if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
-		$utils[$LANG["Menu"][17]]=array("reservation.php","1");
-	if (haveRight("knowbase","r")||haveRight("faq","r")) 
-		$utils[$LANG["Menu"][19]]=array("knowbase.php"," ");
-	if (haveRight("reports","r"))
-		$utils[$LANG["Menu"][6]]=array("report.php"," ");
-	if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")) 
-		$utils[$LANG["Menu"][33]]=array("ocsng.php"," ");
-
-	//////// INVENTORY
-	$inventory=array();
-	if (haveRight("computer","r"))
-		$inventory[$LANG["Menu"][0]]=array("computer.php","c");
-	if (haveRight("monitor","r"))
-		$inventory[$LANG["Menu"][3]]=array("monitor.php","m");
-	if (haveRight("software","r"))
-		$inventory[$LANG["Menu"][4]]=array("software.php","s");  
-	if (haveRight("networking","r"))
-		$inventory[$LANG["Menu"][1]]=array("networking.php","n");
-	if (haveRight("peripheral","r"))
-		$inventory[$LANG["Menu"][16]]=array("peripheral.php","r");
-	if (haveRight("printer","r"))
-		$inventory[$LANG["Menu"][2]]=array("printer.php","p");
-	if (haveRight("cartridge","r"))
-		$inventory[$LANG["Menu"][21]]=array("cartridge.php","c");
-	if (haveRight("consumable","r"))
-		$inventory[$LANG["Menu"][32]]=array("consumable.php","g");
-	if (haveRight("phone","r"))
-		$inventory[$LANG["Menu"][34]]=array("phone.php","n");
-	if (count($inventory))
-		$inventory[$LANG["Menu"][28]]=array("state.php","s");
-
-	//////// FINANCIAL
-	$financial=array();
-	if (haveRight("contact_enterprise","r")){
-		$financial[$LANG["Menu"][22]]=array("contact.php","t");
-		$financial[$LANG["Menu"][23]]=array("enterprise.php","e");
-	}
-	if (haveRight("contract_infocom","r"))
-		$financial[$LANG["Menu"][25]]=array("contract.php","n");
-	if (haveRight("document","r"))
-		$financial[$LANG["Menu"][27]]=array("document.php","d");
-
-	$maintain=array();
-	//////// ASSISTANCE
-	if (haveRight("observe_ticket","1")||haveRight("show_ticket","1")||haveRight("create_ticket","1"))
-		$maintain[$LANG["Menu"][5]]=array("tracking.php","t");
-	if (haveRight("create_ticket","1"))
-		$maintain[$LANG["Menu"][31]]=array("helpdesk.php","h");
-	if (haveRight("show_planning","1")||haveRight("show_all_planning","1"))
-		$maintain[$LANG["Menu"][29]]=array("planning.php","l");
-	if (haveRight("statistic","1"))
-		$maintain[$LANG["Menu"][13]]=array("stat.php","1");
-
-	//////// ADMINISTRATION
-	if (haveRight("user","r"))
-		$config[$LANG["Menu"][14]]=array("user.php","u");
-	if (haveRight("group","r"))
-		$config[$LANG["Menu"][36]]=array("group.php","g");
-	if (haveRight("profile","r"))
-		$config[$LANG["Menu"][35]]=array("profile.php","p");
-	$config[$LANG["Menu"][10]]=array("setup.php","2");
-	$config[$LANG["Menu"][11]]=array("preference.php","p");
-	if (haveRight("backup","w"))
-		$config[$LANG["Menu"][12]]=array("backup.php","b");
-	if (haveRight("logs","r"))
-		$config[$LANG["Menu"][30]]=array("log.php","l");
-
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		header_nocache();
-	}
-	// Start the page
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-	echo "\n<html><head><title>GLPI - ".$title."</title>";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
-		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
-	}
-	//  CSS link
-	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
-	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
-	// Some Javascript-Functions which we may need later
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
-
-	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
-
-
-	// End of Head
-	echo "</head>\n";
-	// Body 
-	echo "<body>";
-
-
-
-	// Main Headline
-	echo "<div id='navigation'>";
-
-	//menu
-	echo "<div id='menu'>";
-	// Logo with link to command center
-
-	echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$CFG_GLPI["root_doc"]."/front/central.php\" accesskey=\"0\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/logo-glpi.png\"  alt=\"".$CFG_GLPI["logotxt"]."\" title=\"".$LANG["central"][5]."\"></a></dt></dl>";
-
-	// Get object-variables and build the navigation-elements
-
-	// Inventory
-	if (count($inventory)) {
-		echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/inventaire.png\" alt=\"\" title=\"".$LANG["setup"][10]."\"><br>\n";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["setup"][10]."&nbsp;-</span></dt>\n";
-		echo "<dd id=\"smenu1\"><ul>";
-		$i=0;
-		// list menu item 
-		foreach ($inventory as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
-			$i++;
+	if (!($CFG_GLPI["cache"]->start($_SESSION["glpiID"],"GLPI_HEADER"))) {
+		//  menu list 	
+		//////// UTILS
+		$utils=array();
+		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
+			$utils[$LANG["Menu"][17]]=array("reservation.php","1");
+		if (haveRight("knowbase","r")||haveRight("faq","r")) 
+			$utils[$LANG["Menu"][19]]=array("knowbase.php"," ");
+		if (haveRight("reports","r"))
+			$utils[$LANG["Menu"][6]]=array("report.php"," ");
+		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")) 
+			$utils[$LANG["Menu"][33]]=array("ocsng.php"," ");
+	
+		//////// INVENTORY
+		$inventory=array();
+		if (haveRight("computer","r"))
+			$inventory[$LANG["Menu"][0]]=array("computer.php","c");
+		if (haveRight("monitor","r"))
+			$inventory[$LANG["Menu"][3]]=array("monitor.php","m");
+		if (haveRight("software","r"))
+			$inventory[$LANG["Menu"][4]]=array("software.php","s");  
+		if (haveRight("networking","r"))
+			$inventory[$LANG["Menu"][1]]=array("networking.php","n");
+		if (haveRight("peripheral","r"))
+			$inventory[$LANG["Menu"][16]]=array("peripheral.php","r");
+		if (haveRight("printer","r"))
+			$inventory[$LANG["Menu"][2]]=array("printer.php","p");
+		if (haveRight("cartridge","r"))
+			$inventory[$LANG["Menu"][21]]=array("cartridge.php","c");
+		if (haveRight("consumable","r"))
+			$inventory[$LANG["Menu"][32]]=array("consumable.php","g");
+		if (haveRight("phone","r"))
+			$inventory[$LANG["Menu"][34]]=array("phone.php","n");
+		if (count($inventory))
+			$inventory[$LANG["Menu"][28]]=array("state.php","s");
+	
+		//////// FINANCIAL
+		$financial=array();
+		if (haveRight("contact_enterprise","r")){
+			$financial[$LANG["Menu"][22]]=array("contact.php","t");
+			$financial[$LANG["Menu"][23]]=array("enterprise.php","e");
 		}
-
-		echo "</ul></dd>\n";
-		echo "</dl>\n";
-	}
-
-	// Maintain / Tracking / ticket
-	if (count($maintain)) {
-
-		echo "<dl><dt onmouseover=\"javascript:montre('smenu2');\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/maintenance.png\" alt=\"\" title=\"".$LANG["title"][24]."\"><br>\n";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["title"][24]."&nbsp;-</span></dt>\n";
-		echo "<dd id=\"smenu2\"><ul>";
-		// list menu item 
-		foreach ($maintain as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+		if (haveRight("contract_infocom","r"))
+			$financial[$LANG["Menu"][25]]=array("contract.php","n");
+		if (haveRight("document","r"))
+			$financial[$LANG["Menu"][27]]=array("document.php","d");
+	
+		$maintain=array();
+		//////// ASSISTANCE
+		if (haveRight("observe_ticket","1")||haveRight("show_ticket","1")||haveRight("create_ticket","1"))
+			$maintain[$LANG["Menu"][5]]=array("tracking.php","t");
+		if (haveRight("create_ticket","1"))
+			$maintain[$LANG["Menu"][31]]=array("helpdesk.php","h");
+		if (haveRight("show_planning","1")||haveRight("show_all_planning","1"))
+			$maintain[$LANG["Menu"][29]]=array("planning.php","l");
+		if (haveRight("statistic","1"))
+			$maintain[$LANG["Menu"][13]]=array("stat.php","1");
+	
+		//////// ADMINISTRATION
+		if (haveRight("user","r"))
+			$config[$LANG["Menu"][14]]=array("user.php","u");
+		if (haveRight("group","r"))
+			$config[$LANG["Menu"][36]]=array("group.php","g");
+		if (haveRight("profile","r"))
+			$config[$LANG["Menu"][35]]=array("profile.php","p");
+		$config[$LANG["Menu"][10]]=array("setup.php","2");
+		$config[$LANG["Menu"][11]]=array("preference.php","p");
+		if (haveRight("backup","w"))
+			$config[$LANG["Menu"][12]]=array("backup.php","b");
+		if (haveRight("logs","r"))
+			$config[$LANG["Menu"][30]]=array("log.php","l");
+	
+		// Send UTF8 Headers
+		header("Content-Type: text/html; charset=UTF-8");
+		// Send extra expires header if configured
+		if ($CFG_GLPI["sendexpire"]) {
+			header_nocache();
 		}
-		echo "</ul></dd>\n";
-		echo "</dl>\n";
-	}
-	// Financial
-	if (count($financial)) {
-		echo "<dl><dt onmouseover=\"javascript:montre('smenu3');\">";
-		echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/gestion.png\" alt=\"\" title=\"".$LANG["Menu"][26]."\"><br>\n";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][26]."&nbsp;-</span></dt>\n";
-		echo "<dd id=\"smenu3\"><ul>";
-		// list menu item 
-		foreach ($financial as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+		// Start the page
+		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+		echo "\n<html><head><title>GLPI - ".$title."</title>";
+		echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
+		// Send extra expires header if configured
+		if ($CFG_GLPI["sendexpire"]) {
+			echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
+			echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+			echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 		}
-		echo "</ul></dd>\n";
-		echo "</dl>\n";
-	}
-
-	// Tools
-	if (count($utils)) {
-		echo "<dl><dt onmouseover=\"javascript:montre('smenu4');\">";
-		echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/outils.png\" alt=\"\" title=\"".$LANG["Menu"][18]."\"><br>\n";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][18]."&nbsp;-</span></dt>\n";
-		echo "<dd id=\"smenu4\"><ul>";
-		// list menu item 
-		foreach ($utils as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
-		}
-		echo "</ul></dd>\n";
-		echo "</dl>\n";
-	}
-
-	// PLUGINS
-	$plugins=array();
-	if (isset($plugin_hooks["menu_entry"])&&count($plugin_hooks["menu_entry"]))
-		foreach  ($plugin_hooks["menu_entry"] as $plugin => $active) {
-			if ($active){
-				$function="plugin_version_$plugin";
-
-				if (function_exists($function))
-					$plugins[$plugin]=$function();
+		//  CSS link
+		echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+		echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
+		echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
+		// AJAX library
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
+		// Some Javascript-Functions which we may need later
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
+	
+		// Calendar scripts 
+		echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][4].".js\"></script>";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
+	
+	
+		// End of Head
+		echo "</head>\n";
+		// Body 
+		echo "<body>";
+	
+	
+	
+		// Main Headline
+		echo "<div id='navigation'>";
+	
+		//menu
+		echo "<div id='menu'>";
+		// Logo with link to command center
+	
+		echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$CFG_GLPI["root_doc"]."/front/central.php\" accesskey=\"0\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/logo-glpi.png\"  alt=\"".$CFG_GLPI["logotxt"]."\" title=\"".$LANG["central"][5]."\"></a></dt></dl>";
+	
+		// Get object-variables and build the navigation-elements
+	
+		// Inventory
+		if (count($inventory)) {
+			echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/inventaire.png\" alt=\"\" title=\"".$LANG["setup"][10]."\"><br>\n";
+			echo "<span class='menu_title'>-&nbsp;".$LANG["setup"][10]."&nbsp;-</span></dt>\n";
+			echo "<dd id=\"smenu1\"><ul>";
+			$i=0;
+			// list menu item 
+			foreach ($inventory as $key => $val) {
+				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+				$i++;
 			}
+	
+			echo "</ul></dd>\n";
+			echo "</dl>\n";
 		}
+	
+		// Maintain / Tracking / ticket
+		if (count($maintain)) {
+	
+			echo "<dl><dt onmouseover=\"javascript:montre('smenu2');\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/maintenance.png\" alt=\"\" title=\"".$LANG["title"][24]."\"><br>\n";
+			echo "<span class='menu_title'>-&nbsp;".$LANG["title"][24]."&nbsp;-</span></dt>\n";
+			echo "<dd id=\"smenu2\"><ul>";
+			// list menu item 
+			foreach ($maintain as $key => $val) {
+				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			}
+			echo "</ul></dd>\n";
+			echo "</dl>\n";
+		}
+		// Financial
+		if (count($financial)) {
+			echo "<dl><dt onmouseover=\"javascript:montre('smenu3');\">";
+			echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/gestion.png\" alt=\"\" title=\"".$LANG["Menu"][26]."\"><br>\n";
+			echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][26]."&nbsp;-</span></dt>\n";
+			echo "<dd id=\"smenu3\"><ul>";
+			// list menu item 
+			foreach ($financial as $key => $val) {
+				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			}
+			echo "</ul></dd>\n";
+			echo "</dl>\n";
+		}
+	
+		// Tools
+		if (count($utils)) {
+			echo "<dl><dt onmouseover=\"javascript:montre('smenu4');\">";
+			echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/outils.png\" alt=\"\" title=\"".$LANG["Menu"][18]."\"><br>\n";
+			echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][18]."&nbsp;-</span></dt>\n";
+			echo "<dd id=\"smenu4\"><ul>";
+			// list menu item 
+			foreach ($utils as $key => $val) {
+				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			}
+			echo "</ul></dd>\n";
+			echo "</dl>\n";
+		}
+	
+		// PLUGINS
+		$plugins=array();
+		if (isset($plugin_hooks["menu_entry"])&&count($plugin_hooks["menu_entry"]))
+			foreach  ($plugin_hooks["menu_entry"] as $plugin => $active) {
+				if ($active){
+					$function="plugin_version_$plugin";
+	
+					if (function_exists($function))
+						$plugins[$plugin]=$function();
+				}
+			}
+	
+		if (isset($plugins)&&count($plugins)>0){
+			$list=array();
+			foreach ($plugins as $key => $val) {
+				$list[$key]=$val["name"];
+			}
+			asort($list);
+			echo "<dl><dt onmouseover=\"javascript:montre('smenu5');\">";
+			echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/plugins.png\" alt=\"\" title=\"".$LANG["Menu"][15]."\"><br>\n";
+			echo "<span class='menu_title'>-&nbsp;".$LANG["common"][29]."&nbsp;-</span></dt>\n";
+			echo "<dd id=\"smenu5\"><ul>";
+			// list menu item 
+			foreach ($list as $key => $val) {
+				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></span></li>\n";
+			}
+			echo "</ul></dd>\n";
+			echo "</dl>\n";
+		}
+	
+		// Administration 
+		if (count($config)) {
+			echo "<dl><dt onmouseover=\"javascript:montre('smenu6');\">";
+			echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/config.png\" alt=\"\" title=\"".$LANG["Menu"][15]."\"><br>\n";
+			echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][15]."&nbsp;-</span></dt>\n";
+			echo "<dd id=\"smenu6\"><ul>";
+			// list menu item 
+			foreach ($config as $key => $val) {
+				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+			}
+			echo "</ul></dd>\n";
+			echo "</dl>\n";
+		}
+	
+	
+		// Display  clock with date, help and a logout-link.
+		//logout
+		echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%; margin-right:10px;'><a  class='icon_nav_move'  style='background: transparent'  href=\"".$CFG_GLPI["root_doc"]."/logout.php\"><img  class='icon_nav'  src=\"".$CFG_GLPI["root_doc"]."/pics/logout.png\" alt=\"".$LANG["central"][6]."\" title=\"".$LANG["central"][6]."\"></a></div>\n";
+	
+		//help
+		echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%;'><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$LANG["central"][7]."\"></a></div>\n";
+	
+	
+	
+	
+		// End navigation bar
+	
+	
+		// End headline
+		//	echo "<hr class='separ'>";
+		echo "</div>\n";
+	
 
-	if (isset($plugins)&&count($plugins)>0){
-		$list=array();
-		foreach ($plugins as $key => $val) {
-			$list[$key]=$val["name"];
+		echo "<div class='nav_horl' style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:99;'>";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.my.php'>";
+		if (!empty($_SESSION["glpirealname"])) {
+			echo $_SESSION["glpirealname"];
+			if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
 		}
-		asort($list);
-		echo "<dl><dt onmouseover=\"javascript:montre('smenu5');\">";
-		echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/plugins.png\" alt=\"\" title=\"".$LANG["Menu"][15]."\"><br>\n";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["common"][29]."&nbsp;-</span></dt>\n";
-		echo "<dd id=\"smenu5\"><ul>";
-		// list menu item 
-		foreach ($list as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></span></li>\n";
-		}
-		echo "</ul></dd>\n";
-		echo "</dl>\n";
+		else echo $_SESSION["glpiname"];
+		echo "</a></div>\n";
+	
+		echo "</div>";
+		$CFG_GLPI["cache"]->end();
 	}
-
-	// Administration 
-	if (count($config)) {
-		echo "<dl><dt onmouseover=\"javascript:montre('smenu6');\">";
-		echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/config.png\" alt=\"\" title=\"".$LANG["Menu"][15]."\"><br>\n";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][15]."&nbsp;-</span></dt>\n";
-		echo "<dd id=\"smenu6\"><ul>";
-		// list menu item 
-		foreach ($config as $key => $val) {
-			echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
-		}
-		echo "</ul></dd>\n";
-		echo "</dl>\n";
-	}
-
-
-	// Display  clock with date, help and a logout-link.
-	//logout
-	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%; margin-right:10px;'><a  class='icon_nav_move'  style='background: transparent'  href=\"".$CFG_GLPI["root_doc"]."/logout.php\"><img  class='icon_nav'  src=\"".$CFG_GLPI["root_doc"]."/pics/logout.png\" alt=\"".$LANG["central"][6]."\" title=\"".$LANG["central"][6]."\"></a></div>\n";
-
-	//help
-	echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%;'><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$LANG["central"][7]."\"></a></div>\n";
-
-
-
-
-	// End navigation bar
-
-
-	// End headline
-	//	echo "<hr class='separ'>";
-	echo "</div>\n";
-
-	//clock
-	echo "<div class='nav_horl' style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:99;'>";
-	echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.my.php'>";
-	if (!empty($_SESSION["glpirealname"])) {
-		echo $_SESSION["glpirealname"];
-		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
-	}
-	else echo $_SESSION["glpiname"];
-	echo "</a></div>\n";
-
-	echo "</div>";
-
 	echo "<div onmouseover=\"javascript:hidemenu();\">";
 
 	// call function callcron() every 5min
