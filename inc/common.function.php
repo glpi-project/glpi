@@ -65,7 +65,7 @@ function cleanCache($group=""){
 
 }
 
-function cleanDropdownCache($table){
+function cleanRelationCache($table){
 	global $LINK_ID_TABLE;
 	$RELATION=getDbRelations();
 	if (isset($RELATION[$table])){

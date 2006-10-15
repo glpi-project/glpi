@@ -249,7 +249,7 @@ $query="UPDATE glpi_display SET FK_users=NULL WHERE FK_users=0;";
 $DB->query($query) or die($query." ".$DB->error());
 
 $query="ALTER TABLE `glpi_display`
-ADD CONSTRAINT `glpi_display_ibfk_1` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users_groups` (`ID`);";
+ADD CONSTRAINT `glpi_display_ibfk_1` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`);";
 $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_docs
@@ -271,7 +271,7 @@ $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_dropdown_locations
 $query="ALTER TABLE `glpi_dropdown_locations`
-ADD CONSTRAINT `glpi_dropdown_locations_ibfk_1` FOREIGN KEY (`parentID`) REFERENCES `glpi_dropdown_kbcategories` (`ID`);";
+ADD CONSTRAINT `glpi_dropdown_locations_ibfk_1` FOREIGN KEY (`parentID`) REFERENCES `glpi_dropdown_locations` (`ID`);";
 $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_dropdown_netpoint

@@ -35,6 +35,24 @@ if (!defined('GLPI_ROOT')){
 
 $RELATION=array(
 
+	"glpi_cartridges_type" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
+							"glpi_cartridges_assoc"=>"FK_glpi_cartridges_type"),
+
+	"glpi_computers" => array("glpi_computer_device"=>"FK_computers",
+						"glpi_connect_wire"=>"end2",
+						"glpi_inst_software"=>"cID",
+						"glpi_licenses"=>"oem_computer",
+						"glpi_ocs_link"=>"glpi_id"),
+
+	"glpi_consumables_type" => array("glpi_consumables"=>"FK_glpi_consumables_type"),
+
+	"glpi_contacts" => array("glpi_contact_enterprise"=>"FK_contact"),
+	
+	"glpi_contracts" => array("glpi_contract_device"=>"FK_contract",
+						"glpi_contract_enterprise"=>"FK_contract"),
+	
+	"glpi_docs" => array("glpi_doc_device"=>"FK_doc"),
+
 	"glpi_dropdown_auto_update" => array("glpi_computers"=>"auto_update"),
 
 	"glpi_dropdown_budget" => array("glpi_infocoms"=>"budget"),
@@ -72,8 +90,10 @@ $RELATION=array(
 															"glpi_software"=>"location",
 															"glpi_networking"=>"location",
 															"glpi_peripherals"=>"location",
+															"glpi_phones"=>"location",
 															"glpi_dropdown_netpoint"=>"location",
 															"glpi_cartridges_type"=>"location",
+															"glpi_consumables_type"=>"location",
 															"glpi_users"=>"location",
 															"glpi_dropdown_locations"=>"parentID"
 													),
@@ -83,14 +103,14 @@ $RELATION=array(
 	
 	"glpi_dropdown_model_monitors" =>array("glpi_monitors"=>"model"),
 	
-	
 	"glpi_dropdown_model_networking" =>array("glpi_networking"=>"model"),
 	
 	"glpi_dropdown_model_peripherals" =>array("glpi_peripherals"=>"model"),
 	
 	"glpi_dropdown_model_phones" =>array("glpi_phones"=>"model"),
 	
-	"glpi_dropdown_model_printers" =>array("glpi_printers"=>"model"),
+	"glpi_dropdown_model_printers" =>array("glpi_printers"=>"model",
+									"glpi_cartridges_assoc" => "FK_glpi_dropdown_model_printers"),
 	
 	"glpi_dropdown_netpoint" =>array("glpi_networking_ports"=>"netpoint"),
 	
@@ -117,6 +137,67 @@ $RELATION=array(
 	
 	"glpi_dropdown_vlan" =>array("glpi_networking_vlan"=>"FK_vlan"),
 	
+	"glpi_enterprises" =>array("glpi_cartridges_type"=>"FK_glpi_enterprise",
+							"glpi_computers"=>"FK_glpi_enterprise",
+							"glpi_consumables_type"=>"FK_glpi_enterprise",
+							"glpi_contact_enterprise"=>"FK_enterprise",
+							"glpi_contract_enterprise"=>"FK_enterprise",
+							"glpi_device_case"=>"FK_glpi_enterprise",
+							"glpi_device_control"=>"FK_glpi_enterprise",
+							"glpi_device_drive"=>"FK_glpi_enterprise",
+							"glpi_device_gfxcard"=>"FK_glpi_enterprise",
+							"glpi_device_hdd"=>"FK_glpi_enterprise",
+							"glpi_device_iface"=>"FK_glpi_enterprise",
+							"glpi_device_moboard"=>"FK_glpi_enterprise",
+							"glpi_device_pci"=>"FK_glpi_enterprise",
+							"glpi_device_power"=>"FK_glpi_enterprise",
+							"glpi_device_processor"=>"FK_glpi_enterprise",
+							"glpi_device_ram"=>"FK_glpi_enterprise",
+							"glpi_device_sndcard"=>"FK_glpi_enterprise",
+							"glpi_infocoms" => "FK_enterprise",
+							"glpi_monitors"=>"FK_glpi_enterprise",
+							"glpi_networking"=>"FK_glpi_enterprise",
+							"glpi_peripherals"=>"FK_glpi_enterprise",
+							"glpi_phones"=>"FK_glpi_enterprise",
+							"glpi_printers"=>"FK_glpi_enterprise",
+							"glpi_software"=>"FK_glpi_enterprise",
+							"glpi_tracking"=>"assign_ent",
+
+	),
+
+	"glpi_followups" =>array("glpi_tracking_planning"=>"id_followup"),
+
+	"glpi_groups" =>array("glpi_computers"=>"FK_groups",
+						"glpi_monitors"=>"FK_groups",
+						"glpi_networking"=>"FK_groups",
+						"glpi_peripherals"=>"FK_groups",
+						"glpi_phones"=>"FK_groups",
+						"glpi_printers"=>"FK_groups",
+						"glpi_software"=>"FK_groups",
+						"glpi_tracking"=>"FK_group",
+						"glpi_users_groups"=>"FK_groups",
+	),
+	
+	"glpi_licenses" =>array("glpi_inst_software"=>"license"),
+
+	"glpi_links" =>array("glpi_links_device"=>"FK_links"),
+	
+	"glpi_networking_ports"=>array("glpi_networking_vlan"=>"FK_port",
+							"glpi_networking_wire"=>"end1",
+							"glpi_networking_wire"=>"end2"),
+
+	"glpi_printers" =>array("glpi_cartridges"=>"FK_glpi_printers"),
+	
+	"glpi_profiles" =>array("glpi_users_profiles"=>"FK_profiles"),
+
+	"glpi_reservation_item" => array("glpi_reservation_resa"=>"id_item"),
+
+	"glpi_software" =>array("glpi_licenses"=>"sID",
+						"glpi_software"=>"update_software"),
+
+	"glpi_tracking" => array("glpi_docs"=>"FK_tracking",
+						"glpi_followups"=>"tracking"),
+
 	"glpi_type_computers"=>array("glpi_computers "=>"type"),
 	
 	"glpi_type_monitors "=>array("glpi_monitors "=>"type"),
@@ -132,6 +213,35 @@ $RELATION=array(
 	"glpi_type_printers"=>array("glpi_printers"=>"type",
 							"glpi_cartridges_assoc"=>"FK_glpi_type_printer"),
 
+	"glpi_users"=> array("glpi_cartridges_type"=>"tech_num",
+					"glpi_computers"=>"tech_num",
+					"glpi_computers"=>"FK_users",
+					"glpi_consumables"=>"id_user",
+					"glpi_consumables_type"=>"tech_num",
+					"glpi_display"=>"FK_users",
+					"glpi_docs"=>"FK_users",
+					"glpi_followups"=>"author",
+					"glpi_kbitems"=>"author",
+					"glpi_monitors"=>"tech_num",
+					"glpi_monitors"=>"FK_users",
+					"glpi_networking"=>"tech_num",
+					"glpi_networking"=>"FK_users",
+					"glpi_peripherals"=>"tech_num",
+					"glpi_peripherals"=>"FK_users",
+					"glpi_phones"=>"tech_num",
+					"glpi_phones"=>"FK_users",
+					"glpi_printers"=>"tech_num",
+					"glpi_printers"=>"FK_users",
+					"glpi_reminder"=>"author",
+					"glpi_reservation_resa"=>"id_user",
+					"glpi_software"=>"tech_num",
+					"glpi_software"=>"FK_users",
+					"glpi_tracking"=>"author",
+					"glpi_tracking"=>"assign",
+					"glpi_tracking_planning"=>"id_assign",
+					"glpi_users_groups"=>"FK_users",
+					"glpi_users_profiles"=>"FK_users",
 
+	),
 	
 );
