@@ -292,12 +292,15 @@ function loadLanguage() {
 		$file="/locales/en_GB.php";
 	}
 	$options = array(
-   	 'cacheDir' => GLPI_DOC_DIR."/_cache/",
-	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
-	 'automaticSerialization' => true,
-	 'caching' => ENABLE_CACHE,
-	 'hashedDirectoryLevel' => 2,
-   	 'masterFile' => GLPI_ROOT . $file
+		'cacheDir' => GLPI_DOC_DIR."/_cache/",
+		'lifeTime' => DEFAULT_CACHE_LIFETIME,
+		'automaticSerialization' => true,
+		'caching' => ENABLE_CACHE,
+		'hashedDirectoryLevel' => 2,
+		'masterFile' => GLPI_ROOT . $file,
+		'fileLocking' => CACHE_FILELOCKINGCONTROL,
+		'writeControl' => CACHE_WRITECONTROL,
+		'readControl' => CACHE_READCONTROL,
 	);
 	$cache = new Cache_Lite_File($options);
 

@@ -47,6 +47,48 @@ if (!defined('GLPI_ROOT')){
 //********************************  Fonctions diverses ************************************
 //******************************************************************************************************
 //******************************************************************************************************
+function cron_cache(){
+	
+	$max_recursion=5;
+	$lifetime=DEFAULT_CACHE_LIFETIME;
+	while ($max_recursion>0&&(($size=filesize_directory(GLPI_DOC_DIR."/_cache"))>MAX_CACHE_SIZE)){
+		$cache_options = array(
+			'cacheDir' => GLPI_DOC_DIR."/_cache/",
+			'lifeTime' => $lifetime,
+			'automaticSerialization' => true,
+			'caching' => ENABLE_CACHE,
+			'hashedDirectoryLevel' => 2,
+			'fileLocking' => CACHE_FILELOCKINGCONTROL,
+			'writeControl' => CACHE_WRITECONTROL,
+			'readControl' => CACHE_READCONTROL,
+		);
+		$cache = new Cache_Lite($cache_options);
+		$cache->clean(false,"old");
+		$lifetime/=2;
+		$max_recursion--;
+	}
+	if ($max_recursion>0)
+		return 1;
+	else return -1;
+}
+
+// From php.net
+function filesize_directory($path)
+   {
+       if(!is_dir($path)) return filesize($path);
+   if ($handle = opendir($path)) {
+       $size = 0;
+       while (false !== ($file = readdir($handle))) {
+           if($file!='.' && $file!='..'){
+                   $size += filesize($path.'/'.$file);
+               $size += filesize_directory($path.'/'.$file);
+           }
+       }
+       closedir($handle);
+       return $size;
+   }
+}
+
 
 
 function cleanCache($group=""){
@@ -57,6 +99,9 @@ function cleanCache($group=""){
 		'cacheDir' => GLPI_DOC_DIR."/_cache/",
 		'lifeTime' => 0,
 		'hashedDirectoryLevel' => 2,
+		'fileLocking' => CACHE_FILELOCKINGCONTROL,
+		'writeControl' => CACHE_WRITECONTROL,
+		'readControl' => CACHE_READCONTROL,
 	);
 	$CACHE = new Cache_Lite($cache_options);
 	if (empty($group))
@@ -81,12 +126,15 @@ function cleanRelationCache($table){
 function getSearchOptions(){
 	global $LANG;
 	$options = array(
-   	 'cacheDir' => GLPI_DOC_DIR."/_cache/",
-	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
-	 'automaticSerialization' => true,
-	 'caching' => ENABLE_CACHE,
-	 'hashedDirectoryLevel' => 2,
-   	 'masterFile' => GLPI_ROOT . "/inc/search.constant.php",
+		'cacheDir' => GLPI_DOC_DIR."/_cache/",
+		'lifeTime' => DEFAULT_CACHE_LIFETIME,
+		'automaticSerialization' => true,
+		'caching' => ENABLE_CACHE,
+		'hashedDirectoryLevel' => 2,
+		'masterFile' => GLPI_ROOT . "/inc/search.constant.php",
+		'fileLocking' => CACHE_FILELOCKINGCONTROL,
+		'writeControl' => CACHE_WRITECONTROL,
+		'readControl' => CACHE_READCONTROL,
 	);
 	$cache = new Cache_Lite_File($options);
 
@@ -104,12 +152,15 @@ function getSearchOptions(){
 function getDbRelations(){
 
 	$options = array(
-   	 'cacheDir' => GLPI_DOC_DIR."/_cache/",
-	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
-	 'automaticSerialization' => true,
-	 'caching' => ENABLE_CACHE,
-	 'hashedDirectoryLevel' => 2,
-   	 'masterFile' => GLPI_ROOT . "/inc/relation.constant.php",
+		'cacheDir' => GLPI_DOC_DIR."/_cache/",
+		'lifeTime' => DEFAULT_CACHE_LIFETIME,
+		'automaticSerialization' => true,
+		'caching' => ENABLE_CACHE,
+		'hashedDirectoryLevel' => 2,
+		'masterFile' => GLPI_ROOT . "/inc/relation.constant.php",
+		'fileLocking' => CACHE_FILELOCKINGCONTROL,
+		'writeControl' => CACHE_WRITECONTROL,
+		'readControl' => CACHE_READCONTROL,
 	);
 	$cache = new Cache_Lite_File($options);
 
