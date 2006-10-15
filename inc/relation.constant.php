@@ -41,63 +41,93 @@ $RELATION=array(
 	
 	"glpi_dropdown_cartridge_type" => array("glpi_cartridges_type"=>"type"),
 	
-	"glpi_dropdown_case_type" => array("glpi_cartridges_type"=>"type"),
+	"glpi_dropdown_case_type" => array("glpi_device_case"=>"type"),
 	
-	"glpi_dropdown_consumable_type" => array(CONSUMABLE_TYPE),
-	
-	
-	"glpi_dropdown_contact_type" => array(CONTACT_TYPE),
-	
-	"glpi_dropdown_contract_type" => array(CONTRACT_TYPE),
-	
-	"glpi_dropdown_domain" => array("glpi_computers"=>"domain","glpi_printers"=>"domain","glpi_networking"=>"domain"),
-	
-	"glpi_dropdown_enttype" => array(ENTERPRISE_TYPE),
-	
-	"glpi_dropdown_firmware
-	
-	"glpi_dropdown_iface
-	
-	"glpi_dropdown_interface
-	
-	"glpi_dropdown_kbcategories
-	
-	"glpi_dropdown_locations
+	"glpi_dropdown_consumable_type" =>array("glpi_consumables_type"=>"type"),
 	
 	
-	"glpi_dropdown_model" => array(COMPUTER_TYPE);
+	"glpi_dropdown_contact_type"=>array("glpi_contacts"=>"type"),
 	
-	"glpi_dropdown_model_monitors" => array(MONITOR_TYPE);
+	"glpi_dropdown_contract_type" =>array("glpi_contracts"=>"type"),
+	
+	"glpi_dropdown_domain" => array("glpi_computers"=>"domain",
+															"glpi_printers"=>"domain",
+															"glpi_networking"=>"domain"),
+	
+	"glpi_dropdown_enttype" =>array("glpi_enterprises"=>"type"),
+	
+	"glpi_dropdown_firmware" =>array("glpi_networking"=>"firmware"),
+	
+	"glpi_dropdown_iface" =>array("glpi_networking_ports"=>"iface"),
+	
+	"glpi_dropdown_interface" =>array("glpi_device_hdd "=>"interface",
+															"glpi_device_drive"=>"interface",
+															"glpi_device_control"=>"interface"),
+	
+	"glpi_dropdown_kbcategories" =>array("glpi_dropdown_kbcategories"=>"parentID"),
+	
+	"glpi_dropdown_locations" =>array("glpi_computers"=>"location",
+															"glpi_monitors"=>"location",	
+															"glpi_printers"=>"location",
+															"glpi_software"=>"location",
+															"glpi_networking"=>"location",
+															"glpi_peripherals"=>"location",
+															"glpi_dropdown_netpoint"=>"location",
+															"glpi_cartridges_type"=>"location",
+															"glpi_users"=>"location",
+													),
 	
 	
-	"glpi_dropdown_model_networkings" => array(NETWORKING_TYPE);
+	"glpi_dropdown_model" =>array("glpi_computers"=>"model"),
 	
-	"glpi_dropdown_model_peripherals" => array(PERIPHERAL_TYPE);
+	"glpi_dropdown_model_monitors" =>array("glpi_monitors"=>"model"),
 	
-	"glpi_dropdown_model_phones" => array(PHONE_TYPE);
 	
-	"glpi_dropdown_model_printers" => array(PRINTER_TYPE);
+	"glpi_dropdown_model_networkings" =>array("glpi_networking"=>"model"),
 	
-	"glpi_dropdown_netpoint
+	"glpi_dropdown_model_peripherals" =>array("glpi_peripherals"=>"model"),
 	
-	"glpi_dropdown_network
+	"glpi_dropdown_model_phones" =>array("glpi_phones"=>"model"),
 	
-	"glpi_dropdown_os" => array(COMPUTER_TYPE);
+	"glpi_dropdown_model_printers" =>array("glpi_printers"=>"model"),
 	
-	"glpi_dropdown_os_sp" => array(COMPUTER_TYPE);
+	"glpi_dropdown_netpoint" =>array("glpi_networking_ports"=>"type"),
 	
-	"glpi_dropdown_os_version" => array(COMPUTER_TYPE);
+	"glpi_dropdown_network" =>array("glpi_networking"=>"type"),
 	
-	"glpi_dropdown_phone_power" => array(PHONE_TYPE);
+	"glpi_dropdown_os" =>array("glpi_computers"=>"os",
+												"glpi_software"=>"platform"),
 	
-	"glpi_dropdown_ram_type
+	"glpi_dropdown_os_sp" =>array("glpi_computers"=>"os_sp"),
 	
-	"glpi_dropdown_rubdocs
+	"glpi_dropdown_os_version" =>array("glpi_computers"=>"os_version"),
 	
-	"glpi_dropdown_state
+	"glpi_dropdown_phone_power" =>array("glpi_phones"=>"power"),
 	
-	"glpi_dropdown_tracking_category
+	"glpi_dropdown_ram_type" =>array("glpi_device_ram"=>"type"),
 	
-	"glpi_dropdown_vlan" => array(NETWORKING_TYPE);
+	"glpi_dropdown_rubdocs" =>array("glpi_docs"=>"rubrique"),
+	
+	"glpi_dropdown_state" =>array("glpi_state_item"=>"state"),
+	
+	"glpi_dropdown_tracking_category" =>array("glpi_tracking"=>"category"),
+	
+	"glpi_dropdown_vlan" =>array("glpi_networking_vlan"=>"FK_vlan"),
+	
+	"glpi_type_computers"=>array("glpi_computers "=>"type"),
+	
+	"glpi_type_monitors "=>array("glpi_monitors "=>"type"),
+	
+	"glpi_type_docs "=>array("glpi_monitors "=>"type"),
+	
+	"glpi_type_networking "=>array("glpi_networking "=>"type"),
+	
+	"glpi_type_peripherals "=>array("glpi_peripherals"=>"type"),
+	
+	"glpi_type_phones "=>array("glpi_phones"=>"type"),
+	
+	"glpi_type_printers"=>array("glpi_printers"=>"type"),
+
+
 	
 );
