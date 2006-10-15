@@ -489,15 +489,16 @@ class Computer extends CommonDBTM {
 			}
 
 
-			echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
-			if (!$template&&!empty($this->fields['tplname']))
-				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
-			if ($this->fields["ocs_import"])
-				echo "&nbsp;&nbsp;&nbsp;(".$LANG["ocsng"][7].")";
-
-			echo "</th></tr>";
-
 			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+
+				echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
+				if (!$template&&!empty($this->fields['tplname']))
+					echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
+				if ($this->fields["ocs_import"])
+					echo "&nbsp;&nbsp;&nbsp;(".$LANG["ocsng"][7].")";
+	
+				echo "</th></tr>";
+
 
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16]."*:		</td>";
 	
