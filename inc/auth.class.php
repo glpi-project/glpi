@@ -526,7 +526,9 @@ class Identification
 				$_SESSION["glpigroups"][]=$data["FK_groups"];
 			}
 		}
+		
 		do_hook("init_session");
+		$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
 	}
 
 	function destroySession()
