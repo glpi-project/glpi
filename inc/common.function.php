@@ -64,6 +64,29 @@ function cleanCache(){
 }
 
 
+function getSearchOptions(){
+	global $LANG;
+	$options = array(
+   	 'cacheDir' => GLPI_DOC_DIR."/_cache/",
+	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
+	 'automaticSerialization' => true,
+	 'caching' => ENABLE_CACHE,
+	 'hashedDirectoryLevel' => 2,
+   	 'masterFile' => GLPI_ROOT . "/inc/search.constant.php",
+	);
+	$cache = new Cache_Lite_File($options);
+
+	// Set a id for this cache : $file
+	if (!($SEARCH_OPTION = $cache->get("OPTIONS","GLPI_SEARCH"))) {
+		// Cache miss !
+		// Put in $SEARCH_OPTION datas to put in cache
+		include (GLPI_ROOT . "/inc/search.constant.php");
+		$cache->save($SEARCH_OPTION,"OPTIONS","GLPI_SEARCH");
+	}
+
+	return $SEARCH_OPTION;
+}
+
 /**
  * Give name of the device
  *
