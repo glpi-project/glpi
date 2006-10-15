@@ -32,6 +32,8 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+// Get search_option array
+$SEARCH_OPTION=getSearchOptions();
 
 /** \file search.function.php
  * Generic functions for Search Engine
