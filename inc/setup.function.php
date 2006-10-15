@@ -335,7 +335,6 @@ function updateDropdown($input) {
 		cleanCache();
 		return true;
 	} else {
-		cleanCache();
 		return false;
 	}
 }
@@ -370,14 +369,13 @@ function addDropdown($input) {
 		}
 
 		if ($result=$DB->query($query)) {
-
+			$ID=$DB->insert_id();
 			if (in_array($input["tablename"],$CFG_GLPI["dropdowntree_tables"])){
-				regenerateTreeCompleteNameUnderID($input["tablename"],$DB->insert_id());		
+				regenerateTreeCompleteNameUnderID($input["tablename"],$ID);		
 			}
 			cleanCache();
-			return true;
+			return $ID;
 		} else {
-			cleanCache();
 			return false;
 		}
 	}
