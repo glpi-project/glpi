@@ -464,45 +464,49 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 	$categoryID = $ki->fields["categoryID"];
 	$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
 
-	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 
-	echo "<strong>".$LANG["common"][36].": ".$fullcategoryname."</strong></th></tr>";
-
-	echo "<tr class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
-	echo ($ki->fields["faq"]=="yes") ? "".$LANG["knowbase"][3]."" : "".$LANG["knowbase"][14]."";
-	echo "</h2>";
-
-	$question = $ki->fields["question"];
-
-	echo $question;
-	echo "</td></tr>\n";
-	echo "<tr  class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
-	echo ($ki->fields["faq"]=="yes") ? "".$LANG["knowbase"][4]."" : "".$LANG["knowbase"][15]."";
-	echo "</h2>\n";
-
-	$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
-
-	echo $answer;
-	echo "</td></tr>";
-
-	echo "<tr><th style='text-align:left;font-size:10px; color:#aaaaaa;'>";
-	if($ki->fields["author"]){
-		echo $LANG["common"][37]." : ";
-		echo ($linkauthor=="yes") ? "".getUserName($ki->fields["author"],"1")."" : "".getUserName($ki->fields["author"])."";
-		echo " | ";
+	if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$ki->type))) {
+		echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
+	
+		echo "<strong>".$LANG["common"][36].": ".$fullcategoryname."</strong></th></tr>";
+	
+		echo "<tr class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
+		echo ($ki->fields["faq"]=="yes") ? "".$LANG["knowbase"][3]."" : "".$LANG["knowbase"][14]."";
+		echo "</h2>";
+	
+		$question = $ki->fields["question"];
+	
+		echo $question;
+		echo "</td></tr>\n";
+		echo "<tr  class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
+		echo ($ki->fields["faq"]=="yes") ? "".$LANG["knowbase"][4]."" : "".$LANG["knowbase"][15]."";
+		echo "</h2>\n";
+	
+		$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
+	
+		echo $answer;
+		echo "</td></tr>";
+	
+		echo "<tr><th style='text-align:left;font-size:10px; color:#aaaaaa;'>";
+		if($ki->fields["author"]){
+			echo $LANG["common"][37]." : ";
+			echo ($linkauthor=="yes") ? "".getUserName($ki->fields["author"],"1")."" : "".getUserName($ki->fields["author"])."";
+			echo " | ";
+		}
+		if($ki->fields["date"]){
+			echo $LANG["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
+		}	
+	
+		echo "</th><th style='text-align:right;font-size:10px; color:#aaaaaa;'>";
+		if($ki->fields["date_mod"]){
+			echo  $LANG["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ";
+		}
+		echo $LANG["knowbase"][26]." : ".$ki->fields["view"]."</th></tr>";
+	
+		echo "</table></div><br>";
+		
+		$CFG_GLPI["cache"]->end();
 	}
-	if($ki->fields["date"]){
-		echo $LANG["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
-	}	
-
-	echo "</th><th style='text-align:right;font-size:10px; color:#aaaaaa;'>";
-	if($ki->fields["date_mod"]){
-		echo  $LANG["common"][26]." : ".convDateTime($ki->fields["date_mod"])." | ";
-	}
-	echo $LANG["knowbase"][26]." : ".$ki->fields["view"]."</th></tr>";
-
-	echo "</table></div><br>";
-
 	return true;	
 }
 
