@@ -45,10 +45,9 @@ $RELATION=array(
 	
 	"glpi_dropdown_consumable_type" =>array("glpi_consumables_type"=>"type"),
 	
-	
 	"glpi_dropdown_contact_type"=>array("glpi_contacts"=>"type"),
 	
-	"glpi_dropdown_contract_type" =>array("glpi_contracts"=>"type"),
+	"glpi_dropdown_contract_type" =>array("glpi_contracts"=>"contract_type"),
 	
 	"glpi_dropdown_domain" => array("glpi_computers"=>"domain",
 															"glpi_printers"=>"domain",
@@ -64,7 +63,8 @@ $RELATION=array(
 															"glpi_device_drive"=>"interface",
 															"glpi_device_control"=>"interface"),
 	
-	"glpi_dropdown_kbcategories" =>array("glpi_dropdown_kbcategories"=>"parentID"),
+	"glpi_dropdown_kbcategories" =>array("glpi_dropdown_kbcategories"=>"parentID",
+									"glpi_kbitems" =>"categoryID"),
 	
 	"glpi_dropdown_locations" =>array("glpi_computers"=>"location",
 															"glpi_monitors"=>"location",	
@@ -75,6 +75,7 @@ $RELATION=array(
 															"glpi_dropdown_netpoint"=>"location",
 															"glpi_cartridges_type"=>"location",
 															"glpi_users"=>"location",
+															"glpi_dropdown_locations"=>"parentID"
 													),
 	
 	
@@ -83,7 +84,7 @@ $RELATION=array(
 	"glpi_dropdown_model_monitors" =>array("glpi_monitors"=>"model"),
 	
 	
-	"glpi_dropdown_model_networkings" =>array("glpi_networking"=>"model"),
+	"glpi_dropdown_model_networking" =>array("glpi_networking"=>"model"),
 	
 	"glpi_dropdown_model_peripherals" =>array("glpi_peripherals"=>"model"),
 	
@@ -91,9 +92,11 @@ $RELATION=array(
 	
 	"glpi_dropdown_model_printers" =>array("glpi_printers"=>"model"),
 	
-	"glpi_dropdown_netpoint" =>array("glpi_networking_ports"=>"type"),
+	"glpi_dropdown_netpoint" =>array("glpi_networking_ports"=>"netpoint"),
 	
-	"glpi_dropdown_network" =>array("glpi_networking"=>"type"),
+	"glpi_dropdown_network" =>array("glpi_computers"=>"network",
+								"glpi_printers"=>"network",
+								"glpi_networking"=>"network",),
 	
 	"glpi_dropdown_os" =>array("glpi_computers"=>"os",
 												"glpi_software"=>"platform"),
@@ -126,7 +129,8 @@ $RELATION=array(
 	
 	"glpi_type_phones "=>array("glpi_phones"=>"type"),
 	
-	"glpi_type_printers"=>array("glpi_printers"=>"type"),
+	"glpi_type_printers"=>array("glpi_printers"=>"type",
+							"glpi_cartridges_assoc"=>"FK_glpi_type_printer"),
 
 
 	

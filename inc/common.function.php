@@ -87,6 +87,30 @@ function getSearchOptions(){
 	return $SEARCH_OPTION;
 }
 
+function getDbRelations(){
+
+	$options = array(
+   	 'cacheDir' => GLPI_DOC_DIR."/_cache/",
+	 'lifeTime' => DEFAULT_CACHE_LIFETIME,
+	 'automaticSerialization' => true,
+	 'caching' => ENABLE_CACHE,
+	 'hashedDirectoryLevel' => 2,
+   	 'masterFile' => GLPI_ROOT . "/inc/relation.constant.php",
+	);
+	$cache = new Cache_Lite_File($options);
+
+	// Set a id for this cache : $file
+	if (!($RELATION = $cache->get("OPTIONS","GLPI_RELATION"))) {
+		// Cache miss !
+		// Put in $SEARCH_OPTION datas to put in cache
+		include (GLPI_ROOT . "/inc/relation.constant.php");
+		$cache->save($RELATION,"OPTIONS","GLPI_RELATION");
+	}
+
+	return $RELATION;
+}
+
+
 /**
  * Give name of the device
  *
