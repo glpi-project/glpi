@@ -189,7 +189,7 @@ class CommonDBTM {
 				$CFG_GLPI["cache"]->remove($this->fields["ID"],"GLPI_".$this->type);
 				cleanRelationCache($this->table);
 				return true;
-			} else echo false;
+			} else return false;
 		}
 	}
 
