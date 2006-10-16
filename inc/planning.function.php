@@ -184,177 +184,78 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 }
 
 function showPlanning($who,$when,$type){
-	global $LANG,$CFG_GLPI;
+	global $LANG,$CFG_GLPI,$DB;
 
 	if (!haveRight("show_planning","1")&&!haveRight("show_all_planning","1")) return false;
+
+	// Define some constants
+
 	$date=split("-",$when);
-	$time=mktime(1,0,0,$date[1],$date[2],$date[0]);
+	$time=mktime(0,0,0,$date[1],$date[2],$date[0]);
+
+	// Check bisextile years
+	list($current_year,$current_month,$current_day)=split("-",$when);
+	if (($current_year%4)==0) $feb=29; else $feb=28;
+	$nb_days= array(31,$feb,31,30,31,30,31,31,30,31,30,31);
+	// Begin of the month
+	$begin_month_day=strftime("%w",mktime(0,0,0,$current_month,1,$current_year));
+	if ($begin_month_day==0) $begin_month_day=7;
+	$end_month_day=strftime("%w",mktime(0,0,0,$current_month,$nb_days[$current_month-1],$current_year));
+	// Day of the week
 	$dayofweek=date("w",$time);
 	// Cas du dimanche
 	if ($dayofweek==0) $dayofweek=7;
 
-	if ($type!="month"){
-		echo "<div align='center'><table class='tab_cadre_fixe'>";
-		// Print Headers
-		echo "<tr>";
-		switch ($type){
-			case "week":
-				for ($i=1;$i<=7;$i++){
-					echo "<th>".$LANG["calendarDay"][$i%7]."</th>";
-				}
 
 
+
+	// Print Headers
+	echo "<div align='center'><table class='tab_cadre_fixe'>";
+	// Print Headers
+	echo "<tr>";
+	switch ($type){
+		case "month":
+		case "week":
+			for ($i=1;$i<=7;$i++){
+				echo "<th width='12%'>".$LANG["calendarDay"][$i%7]."</th>";
+			}
 			break;
-			case "day":
-				echo "<th>".$LANG["calendarDay"][$dayofweek%7]."</th>";
+		case "day":
+			echo "<th width='12%'>".$LANG["calendarDay"][$dayofweek%7]."</th>";
 			break;
-		}
-		echo "</tr>";
+	}
+	echo "</tr>";
 
-		// Print Calendar by 15 mns
-		$tmp=split(":",$CFG_GLPI["planning_begin"]);
-		$hour_begin=$tmp[0];
-		$tmp=split(":",$CFG_GLPI["planning_end"]);
-		$hour_end=$tmp[0];
-		for ($hour=$hour_begin;$hour<=$hour_end;$hour++){
-			echo "<tr>";
+	// Get begin and duration
+	$begin=0;
+	$end=0;
+	switch ($type){
+		case "month":
+			$begin=strtotime($current_year."-".$current_month."-01 00:00:00");
+			$end=$begin+DAY_TIMESTAMP*$nb_days[$current_month-1];
+			break;
+		case "week":
+			$begin=$time+mktime(0,0,0,0,1,0)-mktime(0,0,0,0,$dayofweek,0);
+			$end=$begin+WEEK_TIMESTAMP;
+			break;
+		case "day":
 			$add="";
-			if ($hour<10&&strlen($hour)==1)	$add="0";
-			switch ($type){
-				case "week":
-					for ($i=1;$i<=7;$i++){
-						displayplanning($who,date("Y-m-d",strtotime($when)+mktime(0,0,0,0,$i,0)-mktime(0,0,0,0,$dayofweek,0))." $add$hour:00:00",$type);
-					}
-
-				break;
-				case "day":
-					displayplanning($who,$when." $add$hour:00:00",$type);
-				break;
-			}
-			echo "</tr>\n";
-
-		}
-		echo "</table></div>";
+			$begin=$time;
+			$end=$begin+DAY_TIMESTAMP;
+			break;
 	}
-	else {// Month planning
-		list($annee_courante,$mois_courant,$jour_mois)=split("-",$when);
-		// on v�ifie pour les ann�s bisextiles, on ne sait jamais.
-		if (($annee_courante%4)==0) $fev=29; else $fev=28;
-		$nb_jour= array(31,$fev,31,30,31,30,31,31,30,31,30,31);
+	$begin=date("Y-m-d H:i:s",$begin);
+	$end=date("Y-m-d H:i:s",$end);
 
-		// Ces variables vont nous servir pour mettre les jours dans les bonnes colonnes    
-		$jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
-		if ($jour_debut_mois==0) $jour_debut_mois=7;
-		$jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
-		// on n'oublie pas de mettre le mois en fran�is et on n'a plus qu'�mettre les en-t�es
-
-		echo "<div align='center'>";
-
-		echo "<table cellpadding='20' ><tr><td><b>".
-			$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td></tr></table>";
-
-		echo "<table class='tab_cadre_fixe'><tr>";
-		echo "<th width='14%'>".$LANG["calendarD"][1]."</th>";
-		echo "<th width='14%'>".$LANG["calendarD"][2]."</th>";
-		echo "<th width='14%'>".$LANG["calendarD"][3]."</th>";
-		echo "<th width='14%'>".$LANG["calendarD"][4]."</th>";
-		echo "<th width='14%'>".$LANG["calendarD"][5]."</th>";
-		echo "<th width='14%'>".$LANG["calendarD"][6]."</th>";
-		echo "<th width='14%'>".$LANG["calendarD"][0]."</th>";
-		echo "</tr>";
-		echo "<tr class='tab_bg_3' >";
-
-		$when=$annee_courante."-".$mois_courant."-01";
-		$daytime=mktime(0,0,0,0,2,0)-mktime(0,0,0,0,1,0);
-		// Il faut ins�er des cases vides pour mettre le premier jour du mois
-		// en face du jour de la semaine qui lui correspond.
-		for ($i=1;$i<$jour_debut_mois;$i++)
-			echo "<td style='background-color:#ffffff'>&nbsp;</td>";
-
-
-		// voici le remplissage proprement dit
-		if ($mois_courant<10&&strlen($mois_courant)==1) $mois_courant="0".$mois_courant;
-		for ($i=1;$i<$nb_jour[$mois_courant-1]+1;$i++){
-			if ($i<10) $ii="0".$i;
-			else $ii=$i;
-
-			echo "<td  valign='top' height='100'>";
-
-			echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
-
-			if (!empty($ID)){
-				echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
-			}
-
-			echo "<tr>";
-			displayplanning($who,date("Y-m-d",strtotime($when)+($i-1)*$daytime)." 00:00:00",$type);
-
-			echo "</tr>";
-			echo "</table>";
-			echo "</td>";
-
-			// il ne faut pas oubli�d'aller �la ligne suivante enfin de semaine
-			if (($i+$jour_debut_mois)%7==1)
-			{echo "</tr>";
-				if ($i!=$nb_jour[$mois_courant-1])echo "<tr class='tab_bg_3'>";
-			}
-		}
-
-		// on recommence pour finir le tableau proprement pour les m�es raisons
-
-		if ($jour_fin_mois!=0)
-			for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
-
-		echo "</tr></table>";
-
-		echo "</div>";
-
-
-
-	}
-}
-
-function displayplanning($who,$when,$type){
-	global $DB,$CFG_GLPI,$LANG;
-
-
-	//echo $when;
-	$debut=$when;
-	$tmp=split(" ",$when);
-	$hour=split(":",$tmp[1]);
-	$day=split("-",$tmp[0]);
-
-	$more_day=0;
-	$more_hour=0;
-
-	if ($type=="month"){
-		$INTERVAL=" 1 DAY ";
-		$more_day=1;
-	}
-	else {
-		$INTERVAL=" 59 MINUTE ";
-		$more_hour=1;
-	}
-
-
-	$fin=date("Y-m-d H:i:s",mktime($hour[0]+$more_hour,$hour[1],$hour[2],$day[1],$day[2]+$more_day,$day[0]));
-
-	$author="";  // variable pour l'affichage de l'auteur ou non
-	$img="rdv_private.png"; // variable par defaut pour l'affichage de l'icone du reminder
-
-
+	// Get items to print
 	$ASSIGN="";
 	if ($who!=0)
 		$ASSIGN="id_assign='$who' AND";
 
-
-
-
 	// ---------------Tracking
 
-	$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+	$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
 
-	//echo $query;
 	$result=$DB->query($query);
 
 	$fup=new Followup();
@@ -367,29 +268,27 @@ function displayplanning($who,$when,$type){
 			$fup->getFromDB($data["id_followup"]);
 			$job->getFromDBwithData($fup->fields["tracking"],0);
 
-			$interv[$data["begin"]."$$".$i]["id_followup"]=$data["id_followup"];
-			$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
-			$interv[$data["begin"]."$$".$i]["id_assign"]=$data["id_assign"];
-			$interv[$data["begin"]."$$".$i]["ID"]=$data["ID"];
-			if (strcmp($debut,$data["begin"])>0)
-				$interv[$data["begin"]."$$".$i]["begin"]=$debut;
-			else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
-			if (strcmp($fin,$data["end"])<0)
-				$interv[$data["begin"]."$$".$i]["end"]=$fin;
-			else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-			$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
-			$interv[$data["begin"]."$$".$i]["status"]=$job->fields["status"];
-			$interv[$data["begin"]."$$".$i]["priority"]=$job->fields["priority"];
+			$interv[$data["begin"]."$$$".$i]["id_followup"]=$data["id_followup"];
+			$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tracking"];
+			$interv[$data["begin"]."$$$".$i]["id_assign"]=$data["id_assign"];
+			$interv[$data["begin"]."$$$".$i]["ID"]=$data["ID"];
+			if (strcmp($begin,$data["begin"])>0)
+				$interv[$data["begin"]."$$$".$i]["begin"]=$debut;
+			else $interv[$data["begin"]."$$$".$i]["begin"]=$data["begin"];
+			if (strcmp($end,$data["end"])<0)
+				$interv[$data["begin"]."$$$".$i]["end"]=$fin;
+			else $interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
+			$interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
+			$interv[$data["begin"]."$$$".$i]["device"]=$job->computername;
+			$interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
+			$interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
 			$i++;
 		}
-
-
-
+	
 	// ---------------reminder 
 
-	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
-
+	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
+	
 	$result2=$DB->query($query2);
 
 
@@ -397,172 +296,214 @@ function displayplanning($who,$when,$type){
 
 	if ($DB->numrows($result2)>0)
 		while ($data=$DB->fetch_array($result2)){
-			$remind->getFromDB($data["ID"]);
 
-			$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
-			if (strcmp($debut,$data["begin"])>0)
+			$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["ID"];
+			if (strcmp($begin,$data["begin"])>0)
 				$interv[$data["begin"]."$$".$i]["begin"]=$debut;
 			else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
-			if (strcmp($fin,$data["end"])<0)
+			if (strcmp($end,$data["end"])<0)
 				$interv[$data["begin"]."$$".$i]["end"]=$fin;
 			else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 
-			$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
+			$interv[$data["begin"]."$$".$i]["title"]=resume_text($data["title"],$CFG_GLPI["cut"]);
+			$interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
 			$interv[$data["begin"]."$$".$i]["type"]=$data["type"];
 
 			$i++;
 		}
 
-
-
 	ksort($interv);
 
+	// Display Items
+	$tmp=split(":",$CFG_GLPI["planning_begin"]);
+	$hour_begin=$tmp[0];
+	$tmp=split(":",$CFG_GLPI["planning_end"]);
+	$hour_end=$tmp[0];
 
-	//print_r($interv);
-	echo "<td class='tab_bg_3' width='12%' valign='top' >";
-	if ($type!="month")
-		echo "<b>".display_time($hour[0]).":00</b><br>";
+	switch ($type){
+		case "week":
+			for ($hour=$hour_begin;$hour<=$hour_end;$hour++){
+				echo "<tr>";
+				for ($i=1;$i<=7;$i++){
+					echo "<td class='tab_bg_3' width='12%' valign='top' >";
+					echo "<b>".display_time($hour).":00</b><br>";
+					
+					// From midnight
+					if ($hour==$hour_begin){
+						$begin_time=date("Y-m-d H:i:s",strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP);
+					} else {
+						$begin_time=date("Y-m-d H:i:s",strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+$hour*HOUR_TIMESTAMP);
+					}
+					// To midnight
+					if($hour==$hour_end){
+						$end_time=date("Y-m-d H:i:s",strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+24*HOUR_TIMESTAMP);
+					} else {
+						$end_time=date("Y-m-d H:i:s",strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+($hour+1)*HOUR_TIMESTAMP);
+					}
+					
+					reset($interv);
+					while ($data=current($interv)){
+						if ($data["begin"]<$end_time&&$data["begin"]>=$begin_time){
+							displayPlanningItem($data,$who);
+							unset($interv[key($interv)]);
+						} else {
+							next($interv);
+						}
+					}
+					echo "</td>";
+				}
+	
+				echo "</tr>\n";
+	
+			}
 
+			break;
+		case "day":
+			for ($hour=$hour_begin;$hour<=$hour_end;$hour++){
+				echo "<tr>";
+				$end_time=date("Y-m-d H:i:s",strtotime($when)+($hour+1)*HOUR_TIMESTAMP);
+				echo "<td class='tab_bg_3' width='12%' valign='top' >";
+				echo "<b>".display_time($hour).":00</b><br>";
+				reset($interv);
+				while ($data=current($interv)){
+					if ($data["begin"]<$end_time||$hour==$hour_end){
+						displayPlanningItem($data,$who,1);
+						unset($interv[key($interv)]);
+					} else {
+						next($interv);
+					}
+				}
+				echo "</td>";
+				echo "</tr>";
+			}
+			break;
+		case "month":
+			echo "<tr class='tab_bg_3'>";
+			// Display first day out of the month
+			for ($i=1;$i<$begin_month_day;$i++){
+				echo "<td style='background-color:#ffffff'>&nbsp;</td>";
+			}
+			// Print real days
+			if ($current_month<10&&strlen($current_month)==1) $current_month="0".$current_month;
+			
+			$begin_time=strtotime($begin);
+			$end_time=strtotime($end);
+		
+			for ($time=$begin_time;$time<$end_time;$time+=DAY_TIMESTAMP){
 
-	if (count($interv)>0)
-		foreach ($interv as $key => $val){
-			switch ($type){
-				case "day" :
-					echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
+				// Add 6 hours for midnight problem
+				$day=date("d",$time+6*HOUR_TIMESTAMP);
 
-				if(isset($val["id_tracking"])){  // show tracking
+				echo "<td  valign='top' height='100'  class='tab_bg_3'>";
+				echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$day."</span></td></tr>";
 
-					echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>&nbsp;";
-
-
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
-					echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
-					echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
-
-					if ($who==0){
-						echo "<br>";
-						echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
-					} 
-					echo "</a>";
-					echo "<br>";
-					echo "<strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
-					echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"];
-				}else{  // show Reminder
-
-					if ($val["type"]=="public"){
-						$author="<br>".$LANG["planning"][9]." : ".getUserName($val["author"]);
-						$img="rdv_public.png";
-					} 
-					echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
-					echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["title"];
-					echo $author;
-					echo "</a>";
-					echo "<br>";
-					echo $val["text"];
-					echo "";
-
-
-
+				echo "<tr class='tab_bg_3'>";
+				echo "<td class='tab_bg_3' width='12%' valign='top' >";
+				$begin_day=date("Y-m-d H:i:s",$time);
+				$end_day=date("Y-m-d H:i:s",$time+DAY_TIMESTAMP);
+				reset($interv);
+				while ($data=current($interv)){
+					if ($data["begin"]<$end_day&&$data["begin"]>=$begin_day){
+						displayPlanningItem($data,$who);
+						unset($interv[key($interv)]);
+					} else {
+						next($interv);
+					}
 				}
 
-
-
-				echo "</div><br>";
-				break;
-				case "week" :
-
-					if(isset($val["id_tracking"])){  // show tracking
-						$rand=mt_rand();
-						echo "<div class='planning' ><img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>";
-						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
-						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
-						echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
-						echo "<br>".$val["device"];
-
-						if ($who==0){
-							echo "<br>";
-							echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
-						} 
-						echo "</a>";
-						echo "</div>";
-
-						echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
-						echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"]."</div>";
-					}else{ // show reminder
-						if ($val["type"]=="public"){
-							$author="<br>Par ".getUserName($val["author"]);
-							$img="rdv_public.png";
-						} 
-
-						$rand=mt_rand();
-						echo "<div class='planning' ><img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
-						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
-						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
-						if ($who!=$val["author"]){
-							$author="<br>Par ".getUserName($val["author"]);
-							$img="rdv_public.png";
-						} 
-						echo "</a>";
-						echo "</div>";
-
-						echo "<div class='over_link' id='content_".$val["id_reminder"].$rand."'>".$val["text"]."</div>";
-
-
+				echo "</td>";
+	
+				echo "</tr>";
+				echo "</table>";
+				echo "</td>";
+				
+				// Add break line
+				if (($day+$begin_month_day)%7==1)	{
+					echo "</tr>";
+					if ($day!=$nb_days[$current_month-1]){
+						echo "<tr>";
 					}
+				}
 
-
-				break;
-				case "month" :
-
-					if(isset($val["id_tracking"])){  // show tracking
-						$rand=mt_rand();
-						echo "<div class='planning' ><img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>";
-						echo "<a onmouseout=\"cleanhide('content_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["ID"].$rand."')\" href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
-						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).":";
-						echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
-						echo "<br>".$val["device"];
-						if ($who==0){
-							echo "<br>";
-							echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
-						} 
-						echo "</a>";
-						echo "</div>";
-
-						echo "<div class='over_link' id='content_".$val["ID"].$rand."'><strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
-						echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"]."</div>";
-
-					}else{ // show reminder
-						if ($val["type"]=="public"){
-							$author="<br>Par ".getUserName($val["author"]);
-							$img="rdv_public.png";
-						} 
-						$rand=mt_rand();
-						echo "<div class='planning' ><img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
-						echo "<a onmouseout=\"cleanhide('content_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_".$val["id_reminder"].$rand."')\" href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>";
-						echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": <br>".$val["title"];
-						if ($who!=$val["author"]){
-							$author="<br>Par ".getUserName($val["author"]);
-							$img="rdv_public.png";
-						} 
-						echo "</a>";
-						echo "</div>";
-
-						echo "<div class='over_link' id='content_".$val["id_reminder"].$rand."'>".$val["text"]."</div>";
-
-
-					}
-
-
-				break;
 			}
-		}
+			if ($end_month_day!=0){
+				for ($i=0;$i<7-$end_month_day;$i++) 	{
+					echo "<td style='background-color:#ffffff'>&nbsp;</td>";
+				}
+			}
+			echo "</tr>";
 
-	echo "</td>";
+
+			break;
+
+	}
+	
+	echo "</table></div>";
 
 }
+
+function displayPlanningItem($val,$who,$complete=0){
+	global $CFG_GLPI,$LANG;
+
+	$author="";  // variable pour l'affichage de l'auteur ou non
+	$img="rdv_private.png"; // variable par defaut pour l'affichage de l'icone du reminder
+
+	echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
+	$rand=mt_rand();
+	if(isset($val["id_tracking"])){  // show tracking
+
+		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>&nbsp;";
+
+
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'";
+		if (!$complete){
+			echo "onmouseout=\"cleanhide('content_tracking_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_tracking_".$val["ID"].$rand."')\"";
+		}
+		echo ">";
+		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
+		echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+		if ($who==0){
+			echo "<br>";
+			echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
+		} 
+		echo "</a>";
+		if ($complete){
+			echo "<br>";
+			echo "<strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+			echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"];
+		} else {
+			echo "<div class='over_link' id='content_tracking_".$val["ID"].$rand."'><strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+			echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"]."</div>";
+		}
+
+	}else{  // show Reminder
+		if ($val["type"]=="public"){
+			$author="<br>".$LANG["planning"][9]." : ".getUserName($val["author"]);
+			$img="rdv_public.png";
+		} 
+		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'";
+			if (!$complete){
+			echo "onmouseout=\"cleanhide('content_reminder_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$val["id_reminder"].$rand."')\"";
+		}
+		echo ">";
+		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["title"];
+		echo $author;
+		echo "</a>";
+		if ($complete){
+			echo "<br>";
+			echo $val["text"];
+		} else {
+			echo "<div class='over_link' id='content_reminder_".$val["id_reminder"].$rand."'>".$val["text"]."</div>";
+		}
+
+		echo "";
+	}
+	echo "</div><br>";
+
+}
+
 
 function display_time($time){
 
