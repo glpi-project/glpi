@@ -55,7 +55,7 @@ function commonHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	global $CFG_GLPI,$LANG,$plugin_hooks,$HEADER_LOADED ;
+	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED ;
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;;
 	// Override list-limit if choosen
@@ -248,8 +248,8 @@ function commonHeader($title,$url)
 	
 		// PLUGINS
 		$plugins=array();
-		if (isset($plugin_hooks["menu_entry"])&&count($plugin_hooks["menu_entry"]))
-			foreach  ($plugin_hooks["menu_entry"] as $plugin => $active) {
+		if (isset($PLUGIN_HOOKS["menu_entry"])&&count($PLUGIN_HOOKS["menu_entry"]))
+			foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
 				if ($active){
 					$function="plugin_version_$plugin";
 	
@@ -608,7 +608,7 @@ function popHeader($title,$url)
 {
 	// Print a nice HTML-head for every page
 
-	global $CFG_GLPI,$LANG,$plugin_hooks,$HEADER_LOADED ;
+	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED ;
 
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
@@ -1171,12 +1171,12 @@ function printCleanArray($tab,$pad=0){
  * @return nothing
  */
 function showCentralOnglets($target,$actif) {
-	global $LANG,$plugin_hooks;
+	global $LANG,$PLUGIN_HOOKS;
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li ".($actif=="my"?"class='actif'":"")."><a href='$target?onglet=my'>".$LANG["central"][12]."</a></li>";
 	if (haveRight("show_ticket","1")||haveRight("logs","r")||haveRight("contract_infocom","r"))
 		echo "<li ".($actif=="global"?"class='actif'":"")."><a href='$target?onglet=global'>".$LANG["central"][13]."</a></li>";
-	if (isset($plugin_hooks['central_action'])&&count($plugin_hooks['central_action'])){
+	if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
 		echo "<li ".($actif=="plugins"?"class='actif'":"")."><a href='$target?onglet=plugins'>".$LANG["common"][29]."</a></li>";
 	}
 	echo "</ul></div>";

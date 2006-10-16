@@ -49,8 +49,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
 
-if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"])) {
-	foreach ($plugin_hooks["config_page"] as $plug => $page){
+if (isset($PLUGIN_HOOKS["config_page"]) && is_array($PLUGIN_HOOKS["config_page"])) {
+	foreach ($PLUGIN_HOOKS["config_page"] as $plug => $page){
 		$function="plugin_version_$plug";
 		$names[$plug]=$function();
 		$pages[$plug]=$page;

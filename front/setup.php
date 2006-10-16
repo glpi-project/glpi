@@ -100,7 +100,7 @@ if (count($config)>0){
 
 echo "</tr>";
 
-if (isset($plugin_hooks['config_page'])&&is_array($plugin_hooks['config_page'])&&count($plugin_hooks['config_page']))
+if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>Plugins</b></a></td></tr>";
 if (haveRight("check_update","r"))
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$LANG["setup"][300]."</b></a></td></tr>";

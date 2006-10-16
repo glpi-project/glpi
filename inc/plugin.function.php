@@ -40,8 +40,8 @@ if (!defined('GLPI_ROOT')){
 
 
 
-global $plugin_hooks;
-$plugin_hooks = array();
+global $PLUGIN_HOOKS;
+$PLUGIN_HOOKS = array();
 global $CFG_GLPI_PLUGINS;
 $CFG_GLPI_PLUGINS = array();
 
@@ -76,11 +76,11 @@ function use_plugin ($name) {
  * @return mixed $data
  */
 function do_hook ($name) {
-	global $plugin_hooks;
+	global $PLUGIN_HOOKS;
 	$data = func_get_args();
 
-	if (isset($plugin_hooks[$name]) && is_array($plugin_hooks[$name])) {
-		foreach ($plugin_hooks[$name] as $function) {
+	if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
+		foreach ($PLUGIN_HOOKS[$name] as $function) {
 			if (function_exists($function)) {
 				$function($data);
 			}
@@ -93,12 +93,12 @@ function do_hook ($name) {
 }
 
 function do_hook_function($name,$parm=NULL) {
-	global $plugin_hooks;
+	global $PLUGIN_HOOKS;
 	$ret = $parm;
 
-	if (isset($plugin_hooks[$name])
-			&& is_array($plugin_hooks[$name])) {
-		foreach ($plugin_hooks[$name] as $function) {
+	if (isset($PLUGIN_HOOKS[$name])
+			&& is_array($PLUGIN_HOOKS[$name])) {
+		foreach ($PLUGIN_HOOKS[$name] as $function) {
 			if (function_exists($function)) {
 				$ret = $function($ret);
 			}
@@ -111,11 +111,11 @@ function do_hook_function($name,$parm=NULL) {
 }
 
 function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
-	global $plugin_hooks;
+	global $PLUGIN_HOOKS;
 	// Show all Case
 	if ($onglet==-1){
-		if (isset($plugin_hooks["headings_action"])&&is_array($plugin_hooks["headings_action"])&&count($plugin_hooks["headings_action"]))	
-			foreach ($plugin_hooks["headings_action"] as $plug => $function)
+		if (isset($PLUGIN_HOOKS["headings_action"])&&is_array($PLUGIN_HOOKS["headings_action"])&&count($PLUGIN_HOOKS["headings_action"]))	
+			foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $function)
 				if (function_exists($function)){
 
 					$actions=$function($type);
@@ -135,8 +135,8 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 		$split=split("_",$onglet);
 		if (count($split)==2){
 			list($plug,$ID_onglet)=$split;
-			if (isset($plugin_hooks["headings_action"][$plug])){
-				$function=$plugin_hooks["headings_action"][$plug];
+			if (isset($PLUGIN_HOOKS["headings_action"][$plug])){
+				$function=$PLUGIN_HOOKS["headings_action"][$plug];
 				if (function_exists($function)){
 
 					$actions=$function($type);
@@ -155,15 +155,15 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 }
 
 function display_plugin_headings($target,$type,$withtemplate,$actif){
-	global $plugin_hooks,$LANG;
+	global $PLUGIN_HOOKS,$LANG;
 
 	$template="";
 	if(!empty($withtemplate)){
 		$template="&amp;withtemplate=$withtemplate";
 	}
 	$display_onglets=array();
-	if (isset($plugin_hooks["headings"]) && is_array($plugin_hooks["headings"])) {
-		foreach ($plugin_hooks["headings"] as $plug => $function) {
+	if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
+		foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
 
 			if (function_exists($function)) {
 				$onglet=$function($type,$withtemplate);
