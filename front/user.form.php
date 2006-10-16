@@ -35,13 +35,18 @@
 
 
 
-$NEEDED_ITEMS=array("user","profile","group","setup");
+$NEEDED_ITEMS=array("user","profile","group","setup","tracking","computer","printer","networking","peripheral","monitor","software","enterprise","phone", "reservation");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if(empty($_GET["ID"])) $_GET["ID"] = "";
 
+if (isset($_GET["start"])) {
+						$start=$_GET["start"];
+					}else{
+						$start=0;
+					}
 
 $user=new User();
 if (empty($_GET["ID"])&&isset($_GET["name"])){
@@ -115,6 +120,8 @@ else if (isset($_POST["deletegroup"]))
 				case -1:
 					showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
 					showDeviceUser($_GET["ID"]);
+					showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"],-1);
+					showUserReservations($_SERVER["PHP_SELF"],$_GET["ID"]);
 					display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
@@ -122,6 +129,12 @@ else if (isset($_POST["deletegroup"]))
 					break;
 				case 2 :
 					showDeviceUser($_GET["ID"]);
+					break;
+				case 3 :
+					showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"],-1);
+					break;
+				case 11 :
+					showUserReservations($_SERVER["PHP_SELF"],$_GET["ID"]);
 					break;
 				default : 
 					if (!display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))

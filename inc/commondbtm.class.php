@@ -364,10 +364,10 @@ class CommonDBTM {
 		echo "<div id='barre_onglets'><ul id='onglet'>";
 
 		if (count($onglets=$this->defineOnglets($withtemplate))){
-			if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
-				$onglets[11]=$LANG["title"][35];
-				ksort($onglets);
-			}
+			//if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
+			//	$onglets[11]=$LANG["title"][35];
+			//	ksort($onglets);
+			//}
 			foreach ($onglets as $key => $val ) {
 				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template'>".$val."</a></li>";
 			}

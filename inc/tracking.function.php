@@ -1291,7 +1291,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			// Pager
 			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
 			$parameters=$parameters2."&amp;sort=$sort&amp;order=$order";
-			if (ereg("user.info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
+			if (ereg("user.form.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
 			if (ereg("helpdesk",$target)) 
 				$parameters.="&amp;show=user";
