@@ -732,9 +732,9 @@ function showDeviceReservations($target,$type,$ID){
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
 		$result=$DB->query($query);
 
-		echo "<table class='tab_cadrehov'><tr><th colspan='4'><a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][35]."</a></th><th>&nbsp;</th></tr>";
+		echo "<table class='tab_cadrehov'><tr><th colspan='5'><a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][35]."</a></th></tr>";
 		if ($DB->numrows($result)==0){	
-			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$LANG["reservation"][37]."</td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
 		} else {
 			echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
 			while ($data=$DB->fetch_assoc($result)){
@@ -760,9 +760,9 @@ function showDeviceReservations($target,$type,$ID){
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_item='$resaID' ORDER BY begin DESC";
 		$result=$DB->query($query);
 
-		echo "<table class='tab_cadrehov'><tr><th colspan='4'><a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][36]."</a></th><th>&nbsp;</th></tr>";
+		echo "<table class='tab_cadrehov'><tr><th colspan='5'><a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][36]."</a></th></tr>";
 		if ($DB->numrows($result)==0){	
-			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$LANG["reservation"][37]."</td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
 		} else {
 			echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
 			while ($data=$DB->fetch_assoc($result)){
