@@ -1396,14 +1396,14 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				$out.= $data["ITEM_$num"];
 				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 				$out.= "</a>";
-				$out.= "&nbsp;<a href=\"".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["ID"]."\">";
+				$out.= "&nbsp;<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["ID"]."\">";
 				$out.= "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
 				$out.= "</a>";
 			} else {
 				$type=USER_TYPE;
 				$out="";
 				if ($data["ITEM_".$num."_3"]>0)
-					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["ITEM_".$num."_3"]."\">";
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["ITEM_".$num."_3"]."\">";
 				// print realname or login name
 				if (!empty($data["ITEM_".$num."_2"])||!empty($data["ITEM_".$num."_4"]))
 					$out .= $data["ITEM_".$num."_2"]." ".$data["ITEM_".$num."_4"];

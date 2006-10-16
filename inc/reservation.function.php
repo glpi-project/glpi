@@ -741,7 +741,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
 				echo "<td align='center'>".convDateTime($data["end"])."</td>";
-				echo "<td align='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
+				echo "<td align='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
 				echo "<td align='center'>".nl2br($data["comment"])."</td>";
 				echo "<td align='center'>";
 				
@@ -769,7 +769,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
 				echo "<td align='center'>".convDateTime($data["end"])."</td>";
-				echo "<td align='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
+				echo "<td align='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
 				echo "<td align='center'>".nl2br($data["comment"])."</td>";
 				echo "<td align='center'>";
 				
@@ -803,11 +803,11 @@ function showUserReservations($target,$ID){
 	$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_user='$ID' ORDER BY begin";
 	$result=$DB->query($query);
 	$ri=new ReservationItem();
-	echo "<table class='tab_cadrehov'><tr><th colspan='5'>".$LANG["reservation"][35]."</th></tr>";
+	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG["reservation"][35]."</th></tr>";
 	if ($DB->numrows($result)==0){	
-		echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan='6'>".$LANG["reservation"][37]."</td></tr>";
 	} else {
-		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th></tr>";
+		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
 
 		while ($data=$DB->fetch_assoc($result)){
 			echo "<tr class='tab_bg_2'>";
@@ -818,6 +818,12 @@ function showUserReservations($target,$ID){
 			else echo "<td align='center'>&nbsp;</td>";
 			echo "<td align='center'>".getUserName($data["id_user"])."</td>";
 			echo "<td align='center'>".nl2br($data["comment"])."</td>";
+			echo "<td align='center'>";
+				
+				list($annee,$mois,$jour)=split("-",$data["begin"]);
+				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+				
+				echo "</td>";
 			echo "</tr>";
 		}
 	}
@@ -828,11 +834,11 @@ function showUserReservations($target,$ID){
 	$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_user='$ID' ORDER BY begin DESC";
 	$result=$DB->query($query);
 
-	echo "<table class='tab_cadrehov'><tr><th colspan='5'>".$LANG["reservation"][36]."</th></tr>";
+	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG["reservation"][36]."</th></tr>";
 	if ($DB->numrows($result)==0){	
-		echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan='6'>".$LANG["reservation"][37]."</td></tr>";
 	} else {
-		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th></tr>";
+		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
 		while ($data=$DB->fetch_assoc($result)){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center'>".convDateTime($data["begin"])."</td>";
@@ -842,6 +848,12 @@ function showUserReservations($target,$ID){
 			else echo "<td align='center'>&nbsp;</td>";
 			echo "<td align='center'>".getUserName($data["id_user"])."</td>";
 			echo "<td align='center'>".nl2br($data["comment"])."</td>";
+			echo "<td align='center'>";
+				
+				list($annee,$mois,$jour)=split("-",$data["begin"]);
+				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+				
+				echo "</td>";
 			echo "</tr>";
 		}
 	}

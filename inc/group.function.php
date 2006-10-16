@@ -121,7 +121,7 @@ function showGroupUser($target,$ID){
 				echo "</td>";
 			}
 
-			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["ID"]."'>".$name.($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</a>";
+			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["ID"]."'>".$name.($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</a>";
 
 			echo "</td>";
 			$i++;

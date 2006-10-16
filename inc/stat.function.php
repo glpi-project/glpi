@@ -59,7 +59,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomTech))
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["assign"];
-				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$key["assign"]."'>";
+				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$key["assign"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
@@ -79,7 +79,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomTech))
 			foreach($nomTech as $key){
 				$val[$i]["ID"]=$key["author"];
-				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$key["author"]."'>";
+				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$key["author"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {
@@ -112,7 +112,7 @@ function getStatsItems($date1,$date2,$type){
 		if (is_array($nomUsr))
 			foreach($nomUsr as $key){
 				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$key["ID"]."'>";
+				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$key["ID"]."'>";
 				if (empty($key["realname"]))
 					$val[$i]["link"].=$key["name"];
 				else {

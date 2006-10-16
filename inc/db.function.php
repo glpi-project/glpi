@@ -470,10 +470,10 @@ function getPreviousItem($table,$ID){
 }
 
 /**
- * Get name of the user with ID=$ID (optional with link to user.info.php)
+ * Get name of the user with ID=$ID (optional with link to user.form.php)
  *
  *@param $ID int : ID of the user.
- *@param $link int : 1 = Show link to user.info.php 2 = return array with comments and link
+ *@param $link int : 1 = Show link to user.form.php 2 = return array with comments and link
  *
  *@return string : username string (realname if not empty and name if realname is empty).
  *
@@ -497,7 +497,7 @@ function getUserName($ID,$link=0){
 			$before="";
 			$after="";
 			if ($link==1){
-				$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$ID."\">";
+				$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\">";
 				$after="</a>";
 			}
 			if (strlen($data["realname"])>0) {
@@ -509,7 +509,7 @@ function getUserName($ID,$link=0){
 	
 			if ($link==2){
 				$user["name"]=$username;
-				$user["link"]=$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$ID;
+				$user["link"]=$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID;
 				$user["comments"]=$LANG["common"][16].": ".$username."<br>";
 				if (!empty($data["email"]))
 					$user["comments"].=$LANG["setup"][14].": ".$data["email"]."<br>";

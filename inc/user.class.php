@@ -58,8 +58,11 @@ class User extends CommonDBTM {
 	function defineOnglets($withtemplate){
 		global $LANG,$CFG_GLPI;
 
-		$ong[1]=$LANG["title"][26];
-		$ong[2]=$LANG["common"][1];
+		$ong[1]=$LANG["title"][26]; // principal
+		$ong[2]=$LANG["common"][1]; // materiel
+		$ong[3]=$LANG["title"][28]; // tickets
+		$ong[11]=$LANG["title"][35]; //  resa
+		
 
 		return $ong;
 	}
