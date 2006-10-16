@@ -191,7 +191,7 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 
 
 
-			echo "<th>&nbsp;</th>";
+			//echo "<th>&nbsp;</th>";
 			echo "<th>&nbsp;</th>";
 			echo "<th>&nbsp;</th>";
 			echo "</tr>";
@@ -208,17 +208,28 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 				echo "<td>". $ri->getType()."</td>";
 				echo "<td><b>". $ri->getLink() ."</b></td>";
 				echo "<td>". $ri->getLocation() ."</td>";
+				
+				
+				if ($ri->fields["comments"]==""){
+				
+					echo "<td><a href='".$target."?comment=$ID' title='".$LANG["reservation"][22]."'>".$LANG["common"][49]."</a></td>";
+				}else{
+						
+					echo "<td><a href='".$target."?comment=$ID' title='".$LANG["reservation"][22]."'>". resume_text($ri->fields["comments"])."</a></td>";
+				}
+				
 
-				echo "<td>". nl2br(substr($ri->fields["comments"],0,$CFG_GLPI["cut"]))."</td>";
 				echo "<td>";
-				echo "<a href='".$target."?comment=$ID'>".$LANG["reservation"][22]."</a>";
+				if (haveRight("reservation_central","w")) {
+					// Supprimer le materiel de la reservation
+					echo "<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$ID."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>";	
+				} else {
+					echo "&nbsp;";
+				}
+				
 				echo "</td>";
-
 				echo "<td>";
-				showReservationForm($ri->fields["device_type"],$ri->fields["id_device"]);
-				echo "</td>";
-				echo "<td>";
-				echo "<a href='".$target."?show=resa&amp;ID=$ID'>".$LANG["reservation"][21]."</a>";
+				echo "<a href='".$target."?show=resa&amp;ID=$ID' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -237,6 +248,8 @@ function showReservationItemList($target,$username,$field,$phrasetype,$contains,
 
 }
 
+
+
 function showReservationForm($device_type,$id_device){
 
 	global $CFG_GLPI,$LANG;
@@ -245,12 +258,12 @@ function showReservationForm($device_type,$id_device){
 
 
 	if ($resaID=isReservable($device_type,$id_device)) {
-		// Supprimer le mat�iel
-		echo "<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\">".$LANG["reservation"][6]."</a>";	
+		// Supprimer le materiel
+		echo "<div><a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_sous_nav'>".$LANG["reservation"][6]."</a></div>";	
 
 	}else {
-		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
-		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\">".$LANG["reservation"][7]."</a>";      
+		echo "<div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
+		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\" class='icon_sous_nav' >".$LANG["reservation"][7]."</a></div>";      
 	}
 }
 
@@ -713,13 +726,13 @@ function showDeviceReservations($target,$type,$ID){
 
 	if ($resaID=isReservable($type,$ID)){
 
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID'>".$LANG["reservation"][21]."</a>";
+		//echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][21]."</a>";
 		$now=date("Y-m-d H:i:s");
 		// Print reservation in progress
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
 		$result=$DB->query($query);
 
-		echo "<table class='tab_cadrehov'><tr><th colspan='4'>".$LANG["reservation"][35]."</th></tr>";
+		echo "<table class='tab_cadrehov'><tr><th colspan='4'><a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][35]."</a></th></tr>";
 		if ($DB->numrows($result)==0){	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='4'>".$LANG["reservation"][37]."</td></tr>";
 		} else {
