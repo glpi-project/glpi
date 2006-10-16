@@ -1396,9 +1396,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				$out.= $data["ITEM_$num"];
 				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 				$out.= "</a>";
-				$out.= "&nbsp;<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["ID"]."\">";
-				$out.= "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
-				$out.= "</a>";
 			} else {
 				$type=USER_TYPE;
 				$out="";
