@@ -59,9 +59,13 @@ class User extends CommonDBTM {
 		global $LANG,$CFG_GLPI;
 
 		$ong[1]=$LANG["title"][26]; // principal
+		
 		$ong[2]=$LANG["common"][1]; // materiel
-		$ong[3]=$LANG["title"][28]; // tickets
-		$ong[11]=$LANG["title"][35]; //  resa
+		if (haveRight("show_ticket","1"))	
+				$ong[3]=$LANG["title"][28]; // tickets
+		if (haveRight("reservation_central","r"))
+				$ong[11]=$LANG["title"][35];
+	
 		
 
 		return $ong;
