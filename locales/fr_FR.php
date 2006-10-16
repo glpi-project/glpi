@@ -217,6 +217,7 @@ $LANG["common"][45]="MB maxi";
 $LANG["common"][46]="Vcard";
 $LANG["common"][47]="Progression";
 $LANG["common"][48]="Nom de famille";
+$LANG["common"][49]="Aucun";
 
 
 $LANG["computers"][0]="Ajouter ordinateur...";
