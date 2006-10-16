@@ -66,6 +66,9 @@ class Netdevice extends CommonDBTM {
 				$ong[7]=$LANG["title"][34];
 			if (haveRight("notes","r"))
 				$ong[10]=$LANG["title"][37];
+			if (haveRight("reservation_central","r"))
+				$ong[11]=$LANG["title"][35];
+				
 
 			$ong[12]=$LANG["title"][38];
 		}	

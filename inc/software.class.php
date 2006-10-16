@@ -60,6 +60,9 @@ class Software  extends CommonDBTM {
 			$ong[6]=$LANG["title"][28];
 			$ong[7]=$LANG["title"][34];
 			$ong[10]=$LANG["title"][37];
+			if (haveRight("reservation_central","r"))
+				$ong[11]=$LANG["title"][35];
+				
 			$ong[12]=$LANG["title"][38];
 
 		}	
