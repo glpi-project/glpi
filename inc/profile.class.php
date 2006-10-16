@@ -317,7 +317,7 @@ class Profile extends CommonDBTM{
 				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 
 				echo "</td><td colspan='2' align='center'>";
-				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "<input type='submit' name='delete' onclick=\"return confirm('".$LANG["common"][50]."')\"  value=\"".$LANG["buttons"][6]."\" class='submit'>";
 
 			} else {
 				echo "<td colspan='4' align='center'>";
@@ -577,7 +577,7 @@ class Profile extends CommonDBTM{
 				echo "<input type='hidden' name='ID' value=$ID>";
 				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 				echo "</td><td colspan='3' align='center'>";
-				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "<input type='submit' name='delete'  onclick=\"return confirm('".$LANG["common"][50]."')\"  value=\"".$LANG["buttons"][6]."\" class='submit'>";
 			} else {
 				echo "<td colspan='6' align='center'>";
 				echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";

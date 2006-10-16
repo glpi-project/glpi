@@ -208,7 +208,7 @@ $LANG["common"][36]="Catégorie";
 $LANG["common"][37]="Auteur";
 $LANG["common"][38]="Déglobaliser";
 $LANG["common"][39]="Duplique l'élément autant de fois qu'il y a de connections";
-$LANG["common"][40]="Etes vous sur de vouloir déglobaliser cet élément ?";
+$LANG["common"][40]="Etes vous sûr de vouloir déglobaliser cet élément ?";
 $LANG["common"][41]="Alertes par email";
 $LANG["common"][42]="Portable";
 $LANG["common"][43]="Prénom";
@@ -218,6 +218,7 @@ $LANG["common"][46]="Vcard";
 $LANG["common"][47]="Progression";
 $LANG["common"][48]="Nom de famille";
 $LANG["common"][49]="Aucun";
+$LANG["common"][50]="Confirmer la suppression ?";
 
 
 $LANG["computers"][0]="Ajouter ordinateur...";

@@ -731,7 +731,7 @@ class User extends CommonDBTM {
 					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' >";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
-					echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit' >";
+					echo "<input type='submit' name='delete' onclick=\"return confirm('".$LANG["common"][50]."')\" value=\"".$LANG["buttons"][6]."\" class='submit' >";
 					echo "</td>";
 					echo "</tr>";
 				}
