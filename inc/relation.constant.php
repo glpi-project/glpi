@@ -33,6 +33,8 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+// _ before the link table name => no clean cache on this relation
+
 $RELATION=array(
 
 	"glpi_cartridges_type" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
@@ -195,7 +197,7 @@ $RELATION=array(
 	"glpi_software" =>array("glpi_licenses"=>"sID",
 						"glpi_software"=>"update_software"),
 
-	"glpi_tracking" => array("glpi_docs"=>"FK_tracking",
+	"glpi_tracking" => array("_glpi_docs"=>"FK_tracking",
 						"glpi_followups"=>"tracking"),
 
 	"glpi_type_computers"=>array("glpi_computers "=>"type"),
