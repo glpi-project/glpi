@@ -741,7 +741,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
 				echo "<td align='center'>".convDateTime($data["end"])."</td>";
-				echo "<td align='center'>".getUserName($data["id_user"])."</td>";
+				echo "<td align='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
 				echo "<td align='center'>".nl2br($data["comment"])."</td>";
 				echo "<td align='center'>";
 				
@@ -769,7 +769,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
 				echo "<td align='center'>".convDateTime($data["end"])."</td>";
-				echo "<td align='center'>".getUserName($data["id_user"])."</td>";
+				echo "<td align='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.info.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
 				echo "<td align='center'>".nl2br($data["comment"])."</td>";
 				echo "<td align='center'>";
 				
