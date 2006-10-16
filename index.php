@@ -66,6 +66,8 @@ else
 
 	// Appel CSS
 	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' />";
+	echo "<script type=\"text/javascript\"><!--document.getElementById('var_login_name').focus();--></script>";
+
 	echo "</head>";
 
 	// Body with configured stuff
