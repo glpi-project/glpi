@@ -168,19 +168,16 @@ class Software  extends CommonDBTM {
 	}
 
 	function title(){
-
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/logiciels.png\" alt='".$LANG["software"][0]."' title='".$LANG["software"][0]."'></td>\n";
+		$buttons=array();
+		$title=$LANG["Menu"][4];
 		if (haveRight("software","w")){
-			echo "<td><a class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=1\"><strong>".$LANG["software"][0]."</strong></a>\n";
-			echo "</td>";
-			echo "<td><a class='icon_consol'  href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
-		} else 
-			echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][4]."</b></span></td>";
-		echo "</tr></table></div>";
-
+			$buttons["setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=1"]=$LANG["software"][0];
+			$buttons["setup.templates.php?type=".SOFTWARE_TYPE."&amp;add=0"]=$LANG["common"][8];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/logiciels.png",$LANG["Menu"][4],$title,$buttons);
 	}
 
 	function showForm ($target,$ID,$search_software="",$withtemplate='') {

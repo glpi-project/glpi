@@ -140,12 +140,14 @@ class Document extends CommonDBTM {
 
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/docs.png\" alt='".$LANG["document"][13]."' title='".$LANG["document"][13]."'></td>";
-		if (haveRight("document","w")){
-			echo "<td><a  class='icon_consol' href=\"document.form.php\"><b>".$LANG["document"][13]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][27]."</b></span></td>";
-		echo "</tr></table></div>";
+		$buttons=array();
+		$title=$LANG["Menu"][27];
+		if (haveRight("contact_enterprise","w")){
+			$buttons["document.form.php"]=$LANG["document"][13];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/docs.png",$LANG["Menu"][27],$title,$buttons);
+
 	}
 
 	function showForm ($target,$ID) {

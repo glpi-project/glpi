@@ -149,13 +149,14 @@ class CartridgeType extends CommonDBTM {
 	function title(){
 
 		global  $LANG,$CFG_GLPI;
-
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/cartouches.png\" alt='".$LANG["cartridges"][6]."' title='".$LANG["cartridges"][6]."'></td>";
+		
+		$buttons=array();
+		$title=$LANG["Menu"][21];
 		if (haveRight("cartridge","w")){
-			echo "<td><a  class='icon_consol' href=\"cartridge.form.php\"><b>".$LANG["cartridges"][6]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][21]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["cartridge.form.php"]=$LANG["cartridges"][6];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/cartouches.png",$LANG["Menu"][21],$title,$buttons);
 	}
 
 

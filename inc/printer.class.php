@@ -231,14 +231,14 @@ class Printer  extends CommonDBTM {
 	function title(){
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/printer.png\" alt='".$LANG["printers"][0]."' title='".$LANG["printers"][0]."'></td>";
+		$buttons=array();
+		$title=$LANG["Menu"][2];
 		if (haveRight("printer","w")){
-			echo "<td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=1\"><b>".$LANG["printers"][0]."</b></a></td>";
-			echo "<td><a class='icon_consol'  href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".PRINTER_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
-			echo "</tr></table></div>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][2]."</b></span></td>";
+			$buttons["setup.templates.php?type=".PRINTER_TYPE."&amp;add=1"]=$LANG["printers"][0];
+			$buttons["setup.templates.php?type=".PRINTER_TYPE."&amp;add=0"]=$LANG["common"][8];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/printer.png",$LANG["Menu"][2],$title,$buttons);
 	}
 
 	function showForm ($target,$ID,$withtemplate='') {

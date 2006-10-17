@@ -171,23 +171,6 @@ function useAuthExt(){
 	return (!empty($CFG_GLPI["imap_auth_server"])||!empty($CFG_GLPI["ldap_host"])||!empty($CFG_GLPI["cas_host"]));
 }
 
-/**
- *  show onglet for Users
- *
- * @param $target 
- * @param $actif
- * @return nothing
- */
-function showUsersTitle($target,$actif) {
-	global $LANG;
-
-	echo "<div align='center'><table border='0'><tr>";
-	echo "<td><a  class='icon_consol' href='".$target."&amp;onglet=tracking'><strong>".$LANG["title"][24]."</strong></a>";
-	echo "</td>";
-	echo "<td><a class='icon_consol' href='".$target."&amp;onglet=hardware'><strong>".$LANG["common"][1]."</strong></a></td>";
-	echo "</tr></table></div><br>";
-}
-
 function showDeviceUser($ID){
 	global $DB,$CFG_GLPI, $LANG, $LINK_ID_TABLE,$INFOFORM_PAGES;
 

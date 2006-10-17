@@ -47,11 +47,17 @@ if (!defined('GLPI_ROOT')){
 //********************************  Fonctions diverses ************************************
 //******************************************************************************************************
 //******************************************************************************************************
+
+
+/**
+ * Clean cache cron function
+ *
+ **/
 function cron_cache(){
 	
 	$max_recursion=5;
 	$lifetime=DEFAULT_CACHE_LIFETIME;
-	while ($max_recursion>0&&(($size=filesize_directory(GLPI_DOC_DIR."/_cache"))>MAX_CACHE_SIZE)){
+	while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_DOC_DIR."/_cache"))>MAX_CACHE_SIZE)){
 		$cache_options = array(
 			'cacheDir' => GLPI_DOC_DIR."/_cache/",
 			'lifeTime' => $lifetime,
@@ -72,8 +78,13 @@ function cron_cache(){
 	else return -1;
 }
 
-// From php.net
-function filesize_directory($path)
+/**
+ * Get the filesize of a complete directory (from php.net)
+ *
+ * @param $path directory or file to get size
+ * @return size of the $path
+ **/
+function filesizeDirectory($path)
    {
        if(!is_dir($path)) return filesize($path);
    if ($handle = opendir($path)) {
@@ -81,7 +92,7 @@ function filesize_directory($path)
        while (false !== ($file = readdir($handle))) {
            if($file!='.' && $file!='..'){
                    $size += filesize($path.'/'.$file);
-               $size += filesize_directory($path.'/'.$file);
+               $size += filesizeDirectory($path.'/'.$file);
            }
        }
        closedir($handle);
@@ -90,7 +101,12 @@ function filesize_directory($path)
 }
 
 
-
+/**
+ * Clean cache function
+ *
+ * @param $group group to clean (if not set clean all the cache)
+ * @return nothing
+ **/
 function cleanCache($group=""){
 
 	include_once (GLPI_ROOT."/lib/cache_lite/Lite.php");
@@ -110,6 +126,12 @@ function cleanCache($group=""){
 
 }
 
+/**
+ * Clean cache function for relations using a specific table
+ *
+ * @param $table table used. Need to clean all cache using this table
+ * @return nothing
+ **/
 function cleanRelationCache($table){
 	global $LINK_ID_TABLE;
 	$RELATION=getDbRelations();
@@ -123,6 +145,11 @@ function cleanRelationCache($table){
 	}
 }
 
+/**
+ * Get the SEARCH_OPTION array using cache
+ *
+ * @return the SEARCH_OPTION array
+ **/
 function getSearchOptions(){
 	global $LANG;
 	$options = array(
@@ -149,6 +176,11 @@ function getSearchOptions(){
 	return $SEARCH_OPTION;
 }
 
+/**
+ * Get the $RELATION array using cache. It's defined all relations between tables in the DB.
+ *
+ * @return the $RELATION array
+ **/
 function getDbRelations(){
 
 	$options = array(
@@ -175,8 +207,13 @@ function getDbRelations(){
 	return $RELATION;
 }
 
-/// Return 2 : creation error 1 : delete error 0: OK
-function testRightAccessToDirectory($dir){
+/**
+ * Check Write Access to a directory
+ *
+ * @param $dir directory to check
+ * @return 2 : creation error 1 : delete error 0: OK
+ **/
+function testWriteAccessToDirectory($dir){
 	$fp = fopen($dir . "/test_glpi.txt",'w');
 
 	if (empty($fp)) {
@@ -206,7 +243,7 @@ function checkWriteAccessToDirs(){
 		$error=0;	
 		foreach ($dir_to_check as $dir => $message){
 			echo "<tr class='tab_bg_1'><td><b>".$message."</b></td>";
-			$tmperror=testRightAccessToDirectory($dir);
+			$tmperror=testWriteAccessToDirectory($dir);
 	
 			switch($tmperror){
 				// Error on creation

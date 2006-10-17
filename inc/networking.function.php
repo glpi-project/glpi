@@ -207,9 +207,9 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 				$netport->fields[$key]=$_POST[$key];
 	}
 
+	displayTitle("","","",array($REFERER=>$LANG["buttons"][13]));
 
-	echo "<div align='center'>";
-	echo "<p><a class='icon_consol' href='".$REFERER."'>".$LANG["buttons"][13]."</a></p>";
+	echo "<br><div align='center'>";
 
 	echo "<form method='post' action=\"$target\">";
 
@@ -332,7 +332,9 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 		echo "<input type='hidden' name='referer' value='$REFERER'>";
 		echo "<input type='hidden' name='ID' value='$ID'>";
 
-		echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th>".$LANG["setup"][90]."</th></tr>";
+		echo "<tr class='tab_bg_2'><td>";
 		showPortVLAN($netport->fields["ID"],0,$REFERER);
 		echo "</td></tr>";
 

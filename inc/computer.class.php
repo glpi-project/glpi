@@ -418,14 +418,14 @@ class Computer extends CommonDBTM {
 	function title(){
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/computer.png\" alt='".$LANG["computers"][0]."' title='".$LANG["computers"][0]."'></td>";
+		$buttons=array();
+		$title=$LANG["Menu"][0];
 		if (haveRight("computer","w")){
-			echo "<td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".COMPUTER_TYPE."&amp;add=1\"><b>".$LANG["computers"][0]."</b></a>";
-			echo "</td>";
-			echo "<td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".COMPUTER_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][0]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["setup.templates.php?type=".COMPUTER_TYPE."&amp;add=1"]=$LANG["computers"][0];
+			$buttons["setup.templates.php?type=".COMPUTER_TYPE."&amp;add=0"]=$LANG["common"][8];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/computer.png",$LANG["Menu"][0],$title,$buttons);
 
 	}
 

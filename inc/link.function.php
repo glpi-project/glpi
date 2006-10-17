@@ -54,6 +54,9 @@ if (!defined('GLPI_ROOT')){
 function showLinkDevice($instID) {
 	global $DB,$CFG_GLPI, $LANG;
 
+	if (!haveRight("link","r")) return false;
+	$canedit= haveRight("link","w");
+
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -73,17 +76,17 @@ function showLinkDevice($instID) {
 		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletedevice=deletedevice&amp;ID=$ID'><b>".$LANG["buttons"][6]."</b></a></td></tr>";
 		$i++;
 	}
-	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-	echo "<div class='software-instal'><input type='hidden' name='lID' value='$instID'>";
-	dropdownDeviceType("device_type",0);
-
-
-
-	echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-	echo "</div>";
-	echo "</td>";
-
-	echo "</tr>";
+	if ($canedit){
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<div class='software-instal'><input type='hidden' name='lID' value='$instID'>";
+		dropdownDeviceType("device_type",0);
+	
+		echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "</div>";
+		echo "</td>";
+	
+		echo "</tr>";
+	}
 
 	echo "</table></div></form>"    ;
 

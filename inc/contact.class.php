@@ -103,12 +103,15 @@ class Contact extends CommonDBTM{
 	 **/
 	function title(){
 		global  $LANG,$CFG_GLPI;
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/contacts.png\" alt='".$LANG["financial"][24]."' title='".$LANG["financial"][24]."'></td>";
+
+		$buttons=array();
+		$title=$LANG["Menu"][22];
 		if (haveRight("contact_enterprise","w")){
-			echo "<td><a  class='icon_consol' href=\"contact.form.php?new=1\"><b>".$LANG["financial"][24]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][22]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["contact.form.php"]=$LANG["financial"][24];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/contacts.png",$LANG["Menu"][22],$title,$buttons);
+
 	}
 
 	/**

@@ -102,12 +102,14 @@ class Enterprise extends CommonDBTM {
 
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/entreprises.png\" alt='".$LANG["financial"][25]."' title='".$LANG["financial"][25]."'></td>";
+		$buttons=array();
+		$title=$LANG["Menu"][23];
 		if (haveRight("contact_enterprise","w")){
-			echo "<td><a  class='icon_consol' href=\"enterprise.form.php\"><b>".$LANG["financial"][25]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][23]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["enterprise.form.php"]=$LANG["financial"][25];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/entreprises.png",$LANG["Menu"][23],$title,$buttons);
+
 	}
 
 

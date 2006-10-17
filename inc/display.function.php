@@ -43,6 +43,30 @@ if (!defined('GLPI_ROOT')){
 //***********  Fonctions d'affichage header footer helpdesk pager ***********************
 //******************************************************************************************************
 //******************************************************************************************************
+
+/**
+ * Common Title Function
+ *
+ * @param $ref_pic_link Path to the image to display
+ * @param $ref_pic_text Alt text of the icon
+ * @param $ref_title Title to display
+ * @param $ref_btts Extra items to display array(link=>text...)
+ * @return nothing
+ **/
+function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts="") {
+        echo "<div align='center'><table border='0'><tr>";
+        if ($ref_pic_link!="")
+                echo "<td><img src=\"".$ref_pic_link."\" alt='".$ref_pic_text."'
+title='".$ref_pic_text."' ></td>"; 
+        if ($ref_title!="")
+                echo "<td><span class='icon_sous_nav'><b>".$ref_title."</b></span></td>"; 
+	if (is_array($ref_btts)&&count($ref_btts))
+        foreach ($ref_btts as $key => $val) { 
+                echo "<td><a class='icon_consol' href=\"".$key."\">".$val."</a></td>"; 
+        }        
+        echo "</tr></table></div'>";
+}
+
 /**
  * Print a nice HTML head for every page
  *

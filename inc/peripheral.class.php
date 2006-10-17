@@ -207,14 +207,16 @@ class Peripheral  extends CommonDBTM  {
 
 	function title(){
 		global  $LANG,$CFG_GLPI;
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/periphs.png\" alt='".$LANG["peripherals"][0]."' title='".$LANG["peripherals"][0]."'></td>";
+
+		$buttons=array();
+		$title=$LANG["Menu"][16];
 		if (haveRight("peripheral","w")){
-			echo "<td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".PERIPHERAL_TYPE."&amp;add=1\"><b>".$LANG["peripherals"][0]."</b></a>";
-			echo "</td>";
-			echo "<td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".PERIPHERAL_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][16]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["setup.templates.php?type=".PERIPHERAL_TYPE."&amp;add=1"]=$LANG["peripherals"][0];
+			$buttons["setup.templates.php?type=".PERIPHERAL_TYPE."&amp;add=0"]=$LANG["common"][8];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/periphs.png",$LANG["Menu"][16],$title,$buttons);
+
 	}
 
 	function showForm ($target,$ID,$withtemplate='') {

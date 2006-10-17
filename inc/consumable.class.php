@@ -92,13 +92,15 @@ class ConsumableType extends CommonDBTM {
 
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<a href='consumable.php'><img src=\"".$CFG_GLPI["root_doc"]."/pics/consommables.png\" alt='".$LANG["consumables"][6]."' title='".$LANG["consumables"][6]."'></a></td>";
-		if (haveRight("consumable","w")){
-			echo "<td><a  class='icon_consol' href=\"consumable.form.php\"><b>".$LANG["consumables"][6]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][32]."</b></span></td>";
-		echo "<td><a class='icon_consol' href='consumable.php?synthese=yes'>".$LANG["state"][11]."</a></td>";
-		echo "</tr></table></div>";
+		$buttons=array();
+		$title=$LANG["Menu"][32];
+		if (haveRight("cartridge","w")){
+			$buttons["consumable.form.php"]=$LANG["consumables"][6];
+			$title="";
+		}
+		$buttons["consumable.php?synthese=yes"]=$LANG["state"][11];
+		displayTitle($CFG_GLPI["root_doc"]."/pics/consommables.png",$LANG["Menu"][32],$title,$buttons);
+
 	}
 
 

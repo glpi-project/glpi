@@ -65,9 +65,16 @@ class Link extends CommonDBTM {
 	 **/
 	function title(){
 		global  $LANG,$CFG_GLPI;
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/links.png\" alt='".$LANG["links"][2]."' title='".$LANG["links"][2]."'></td><td><a  class='icon_consol' href=\"link.form.php?new=1\"><b>".$LANG["links"][2]."</b></a>";
-		echo "</td></tr></table></div>";
+
+
+		$buttons=array();
+		$title=$LANG["title"][33];
+		if (haveRight("link","w")){
+			$buttons["link.form.php"]=$LANG["links"][2];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/links.png",$LANG["title"][33],$title,$buttons);
+
 	}
 
 

@@ -548,66 +548,21 @@ class User extends CommonDBTM {
 	}
 
 	function title(){
-
-		// Un titre pour la gestion des users
-
 		global  $LANG,$CFG_GLPI;
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/users.png\" alt='".$LANG["setup"][2]."' title='".$LANG["setup"][2]."'></td>";
-		echo "<td><a  class='icon_consol' href=\"user.form.php?new=1\"><b>".$LANG["setup"][2]."</b></a></td>";
-		if (useAuthExt())
-			echo "<td><a  class='icon_consol' href=\"user.form.php?new=1&ext_auth=1\"><b>".$LANG["setup"][125]."</b></a></td>";
-		echo "</tr></table></div>";
-	}
 
-	function showInfo($target,$ID) {
-
-		// Affiche les infos User
-
-		global $CFG_GLPI, $LANG;
-
-		if (!haveRight("user","r")) return false;
-
-
-		if ($this->getFromDB($ID)){
-			$prof=new Profile();
-			$prof->getFromDBForUser($ID);
-
-			showUsersTitle($target."?ID=$ID",$_SESSION['glpi_viewuser']);
-
-			echo "<div align='center'>";
-			echo "<table class='tab_cadre'>";
-			echo   "<tr><th colspan='2'>".$LANG["setup"][57]." : " .$this->fields["name"]."</th></tr>";
-			echo "<tr class='tab_bg_1'>";	
-
-			echo "<td align='center'>".$LANG["setup"][18]."</td>";
-
-			echo "<td align='center'><b>".$this->fields["name"]."</b></td></tr>";
-
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>".$this->fields["realname"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][43]."</td><td>".$this->fields["firstname"]."</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["profiles"][22]."</td><td>".$prof->fields["name"]."</td></tr>";	
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][14]."</td><td>".$this->fields["email"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>".$this->fields["phone"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]." 2</td><td>".$this->fields["phone2"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][42]."</td><td>".$this->fields["mobile"]."</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
-			echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
-			echo "</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][25]."</td><td>";
-			echo nl2br($this->fields["comments"]);
-			echo "</td></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>".($this->fields["active"]?$LANG["choice"][1]:$LANG["choice"][0])."</td></tr>";
-			echo "</table></div><br>";
-
-			return true;
+		$buttons=array();
+		$title=$LANG["Menu"][14];
+		if (haveRight("user","w")){
+			$buttons["user.form.php?new=1"]=$LANG["setup"][2];
+			$title="";
 		}
-		return false;
+		if (useAuthExt()){
+			$buttons["user.form.php?new=1&ext_auth=1"]=$LANG["setup"][125];
+		}
+
+		displayTitle($CFG_GLPI["root_doc"]."/pics/users.png",$LANG["Menu"][14],$title,$buttons);
+
 	}
-
-
-
 
 	function showForm($target,$ID) {
 
