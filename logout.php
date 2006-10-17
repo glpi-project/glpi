@@ -37,7 +37,7 @@ define('GLPI_ROOT', '.');
 $NEEDED_ITEMS=array("user");
 include (GLPI_ROOT . "/inc/includes.php");
 
-@session_start();
+//@session_start();
 
 if (!isset($_SESSION["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
@@ -54,6 +54,8 @@ if (isset($_SESSION["noCAS"])) $noCAS="?noCAS=1";
 
 $id = new Identification();
 $id->destroySession();
+
+
 
 // Redirect to the login-page
 
