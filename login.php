@@ -51,7 +51,9 @@ $identificat = new Identification();
 
 $auth_succeded=false;
 
-$_POST['login_password']=unclean_cross_side_scripting_deep($_POST['login_password']);
+if (isset($_POST['login_password'])){
+	$_POST['login_password']=unclean_cross_side_scripting_deep($_POST['login_password']);
+}
 
 if (!isset($_POST["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
