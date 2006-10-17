@@ -82,20 +82,15 @@ function searchFormKnowbase($target,$contains){
  * @return nothing (display the title)
  **/
 function titleknowbase(){
-
-
 	global  $LANG,$CFG_GLPI;
 
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/knowbase.png\" alt='".$LANG["knowbase"][2]."' title='".$LANG["knowbase"][2]."'></td>";
+	$buttons=array();
+	$title=$LANG["title"][5];
 	if (haveRight("faq","w")||haveRight("knowbase","w")){
-		echo "<td>";
-		echo "<a  class='icon_consol' href=\"knowbase.form.php?ID=new\"><b>".$LANG["knowbase"][2]."</b></a>";
-		echo "</td>";
-	} else echo "<td><span class='icon_sous_nav'>".$LANG["title"][5]."</span></td>";
-	echo "</tr>";
-	echo "</table></div>";
-
+		$buttons["knowbase.form.php?ID=new"]=$LANG["knowbase"][2];
+		$title="";
+	}
+	displayTitle($CFG_GLPI["root_doc"]."/pics/knowbase.png",$LANG["title"][5],$title,$buttons);
 }
 
 

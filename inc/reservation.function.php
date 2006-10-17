@@ -52,9 +52,8 @@ if (!defined('GLPI_ROOT')){
 function titleReservation(){
 	global  $LANG,$CFG_GLPI;
 
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$LANG["reservation"][1]."</span>";
-	echo "</b></td><td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID'>".$LANG["reservation"][26]."</a></td></tr></table>&nbsp;</div>";
+	displayTitle($CFG_GLPI["root_doc"]."/pics/reservation.png",$LANG["reservation"][1],$LANG["reservation"][1],array("reservation.php?show=resa&amp;ID"=>$LANG["reservation"][26]));
+
 }
 
 function searchFormReservationItem($field="",$phrasetype= "",$contains="",$sort= ""){

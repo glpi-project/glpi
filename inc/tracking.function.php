@@ -43,10 +43,8 @@ if (!defined('GLPI_ROOT')){
 
 function titleTracking(){
 	global  $LANG,$CFG_GLPI;
-	// titre
-	echo "<div align='center'><table border='0'><tr><td>\n";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."pics/suivi-intervention.png\" alt=''></td><td><span class='icon_sous_nav'>".$LANG["tracking"][0]."</span>\n";
-	echo "</td></tr></table>&nbsp;</div>\n";
+
+	displayTitle($CFG_GLPI["root_doc"]."/pics/suivi-intervention.png",$LANG["tracking"][0],$LANG["tracking"][0]);
 
 }
 
