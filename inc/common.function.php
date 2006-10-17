@@ -79,6 +79,28 @@ function cron_cache(){
 }
 
 /**
+ * Garbage collector for expired file session
+ *
+ **/
+function cron_session()
+	{
+		
+		// max time to keep the file session
+		$maxlifetime = session_cache_expire();
+				
+		foreach (glob(GLPI_DOC_DIR."/_sessions/sess_*") as $filename) {
+			if (filemtime($filename) + $maxlifetime < time()) {
+				// Delete session file if not delete before
+				@unlink($filename);
+			}
+		}
+			return true;
+	}
+
+
+
+
+/**
  * Get the filesize of a complete directory (from php.net)
  *
  * @param $path directory or file to get size

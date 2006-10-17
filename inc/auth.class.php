@@ -533,11 +533,17 @@ class Identification
 
 	function destroySession()
 	{
+		if(!session_id()) session_start();
 		$_SESSION = array();
+		
 		session_destroy();
+		
 	}
 
-	function getErr()
+
+	
+	
+		function getErr()
 	{
 		return $this->err;
 	}
