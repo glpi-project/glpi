@@ -43,14 +43,10 @@ if (!defined('GLPI_ROOT')){
 function titleState(){
 	global  $LANG,$CFG_GLPI;
 
+	$buttons["state.php?synthese=no"]=$LANG["state"][1];
+	$buttons["state.php?synthese=yes"]=$LANG["state"][11];
 
-
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/status.png\" alt='' title=''></td><td><b><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/state.php?synthese=no'>".$LANG["state"][1]."</a>";
-	echo "</b></td>";
-	echo "<td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/state.php?synthese=yes'>".$LANG["state"][11]."</a></td>";
-	echo "</tr></table></div>";
-
+	displayTitle($CFG_GLPI["root_doc"]."/pics/status.png",$LANG["state"][1],"",$buttons);
 
 }
 

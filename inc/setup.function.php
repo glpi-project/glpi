@@ -611,10 +611,7 @@ function titleConfigGen(){
 
 	global  $LANG,$CFG_GLPI;
 
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$LANG["setup"][70]."</span>";
-	echo "</b></td></tr></table>&nbsp;</div>";
-
+	displayTitle($CFG_GLPI["root_doc"]."/pics/configuration.png",$LANG["setup"][70],$LANG["setup"][70]);
 
 }
 
@@ -622,10 +619,7 @@ function titleConfigDisplay(){
 
 	global  $LANG,$CFG_GLPI;
 
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/configuration.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$LANG["setup"][119]."</span>";
-	echo "</b></td></tr></table>&nbsp;</div>";
-
+	displayTitle($CFG_GLPI["root_doc"]."/pics/configuration.png",$LANG["setup"][119],$LANG["setup"][119]);
 
 }
 
@@ -883,9 +877,8 @@ function titleExtAuth(){
 	// Un titre pour la gestion des sources externes
 
 	global  $LANG,$CFG_GLPI;
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/authentification.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$LANG["setup"][150]."</span>";
-	echo "</td></tr></table>&nbsp;</div>";
+
+	displayTitle($CFG_GLPI["root_doc"]."/pics/authentification.png",$LANG["setup"][150],$LANG["setup"][150]);
 
 }
 
@@ -1086,9 +1079,9 @@ function titleMailing(){
 	// Un titre pour la gestion du suivi par mail
 
 	global  $LANG,$CFG_GLPI;
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/mail.png\" alt='' title=''></td><td><span class='icon_sous_nav'>".$LANG["setup"][200]."</span>";
-	echo "</td></tr></table></div>";
+
+	displayTitle($CFG_GLPI["root_doc"]."/pics/mail.png",$LANG["setup"][200],$LANG["setup"][200]);
+
 }
 
 
