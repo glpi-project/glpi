@@ -89,14 +89,14 @@ class Contract extends CommonDBTM {
 
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/contracts.png\" alt='".$LANG["financial"][0]."' title='".$LANG["financial"][0]."'></td>";
+		$buttons=array();
+		$title=$LANG["Menu"][25];
 		if (haveRight("contract_infocom","w")){
-			echo "<td><a  class='icon_consol' href=\"contract.form.php\"><b>".$LANG["financial"][0]."</b></a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][25]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["contract.form.php"]=$LANG["financial"][0];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/contracts.png",$LANG["Menu"][25],$title,$buttons);
 	}
-
 
 
 

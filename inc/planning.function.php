@@ -44,9 +44,8 @@ if (!defined('GLPI_ROOT')){
 function titleTrackingPlanning(){
 	global  $LANG,$CFG_GLPI;
 
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$LANG["planning"][3]."</span>";
-	echo "</b></td></tr></table>&nbsp;</div>";
+	displayTitle($CFG_GLPI["root_doc"]."/pics/reservation.png",$LANG["planning"][3],$LANG["planning"][3]);
+
 }
 
 

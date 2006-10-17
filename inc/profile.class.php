@@ -165,17 +165,15 @@ class Profile extends CommonDBTM{
 	 *
 	 **/
 	function title(){
-		//titre
-
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/profils.png\" alt='".$LANG["Menu"][35]."' title='".$LANG["Menu"][35]."'></td><td><span class='icon_sous_nav'><b>".$LANG["Menu"][35]."</b></span>";
-		echo "</td>";
+		$buttons=array();
+		$title=$LANG["Menu"][35];
 		if (haveRight("profile","w")){
-			echo "<td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/profile.php?add=new'>".$LANG["profiles"][0]."</a></td>";
+			$buttons["profile.php?add=new"]=$LANG["profiles"][0];
+			$title="";
 		}
-		echo "</tr></table></div>";
+		displayTitle($CFG_GLPI["root_doc"]."/pics/profils.png",$LANG["Menu"][35],$title,$buttons);
 	}
 
 

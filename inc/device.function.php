@@ -487,11 +487,9 @@ function showDevicesList($device_type,$target) {
 
 function titleDevices($device_type){
 	global  $LANG,$CFG_GLPI;
-	echo "<div align='center'><table border='0'><tr><td>";
-	//TODO : CHANGER LE PICS et le alt.!!!!!!!!!!!
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/periph.png\" alt='".$LANG["devices"][12]."' title='".$LANG["devices"][12]."'></td><td><a  class='icon_consol' href=\"device.form.php?device_type=$device_type\"><b>".$LANG["devices"][12]."</b></a>";
-	echo "</td>";
-	echo "</tr></table></div>";
+
+	displayTitle($CFG_GLPI["root_doc"]."/pics/periph.png",$LANG["devices"][12],"",array("device.form.php?device_type=$device_type"=>$LANG["devices"][12]));
+
 }
 
 function getDictDeviceLabel($device_num=-1) {

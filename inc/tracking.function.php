@@ -676,12 +676,14 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if (!empty($error)) {
 		echo "<div align='center'><strong>$error</strong></div>";
 	}
-	echo "<form name='form_ticket' method='post' action='$target' enctype=\"multipart/form-data\">";
+
+	displayTitle("","","",array($REFERER=>$LANG["buttons"][13]));
+
+	echo "<br><form name='form_ticket' method='post' action='$target' enctype=\"multipart/form-data\">";
 	echo "<div align='center'>";
 
 	//	if ($device_type!=0){
 	echo "<input type='hidden' name='_referer' value='$REFERER'>";
-	echo "<p><a class='icon_consol' href='$REFERER'>".$LANG["buttons"][13]."</a></p>";
 	//	}	
 	echo "<table class='tab_cadre'><tr><th><a href='$target'>".$LANG["buttons"][16]."</a></th><th colspan='3'>".$LANG["job"][13].": <br>";
 	if ($device_type!=0){

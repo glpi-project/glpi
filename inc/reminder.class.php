@@ -94,9 +94,7 @@ class Reminder extends CommonDBTM {
 
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reminder.png\" alt='".$LANG["reminder"][0]."' title='".$LANG["reminder"][0]."'></td><td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php\"><b>".$LANG["buttons"][8]."</b></a>";
-		echo "</td></tr></table></div>";
+		displayTitle($CFG_GLPI["root_doc"]."/pics/reminder.png",$LANG["reminder"][0],"",array("reminder.form.php"=>$LANG["buttons"][8]));
 	}
 
 

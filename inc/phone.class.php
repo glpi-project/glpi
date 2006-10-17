@@ -213,14 +213,16 @@ class Phone extends CommonDBTM {
 
 	function title(){
 		global  $LANG,$CFG_GLPI;
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/phones.png\" alt='".$LANG["phones"][0]."' title='".$LANG["phones"][0]."'></td>";
+
+		$buttons=array();
+		$title=$LANG["Menu"][34];
 		if (haveRight("phone","w")){
-			echo "<td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".PHONE_TYPE."&amp;add=1\"><b>".$LANG["phones"][0]."</b></a>";
-			echo "</td>";
-			echo "<td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".PHONE_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][34]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["setup.templates.php?type=".PHONE_TYPE."&amp;add=1"]=$LANG["phones"][0];
+			$buttons["setup.templates.php?type=".PHONE_TYPE."&amp;add=0"]=$LANG["common"][8];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/phones.png",$LANG["Menu"][34],$title,$buttons);
+
 	}
 
 

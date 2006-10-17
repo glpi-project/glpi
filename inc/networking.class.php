@@ -221,18 +221,16 @@ class Netdevice extends CommonDBTM {
 	}
 
 	function title() {
-		// titre
-
 		global  $LANG,$CFG_GLPI;
 
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/networking.png\" alt='".$LANG["networking"][11]."' title='".$LANG["networking"][11]."'></td>";
+		$buttons=array();
+		$title=$LANG["Menu"][1];
 		if (haveRight("networking","w")){
-			echo "<td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".NETWORKING_TYPE."&amp;add=1\"><b>".$LANG["networking"][11]."</b></a>";
-			echo "</td>";
-			echo "<td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".NETWORKING_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][1]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["setup.templates.php?type=".NETWORKING_TYPE."&amp;add=1"]=$LANG["networking"][11];
+			$buttons["setup.templates.php?type=".NETWORKING_TYPE."&amp;add=0"]=$LANG["common"][8];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/networking.png",$LANG["Menu"][1],$title,$buttons);
 
 	}
 

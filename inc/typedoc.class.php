@@ -63,13 +63,14 @@ class Typedoc  extends CommonDBTM {
 
 	function title(){
 		global  $LANG,$CFG_GLPI;
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/docs.png\" alt='".$LANG["document"][12]."' title='".$LANG["document"][12]."'></td>";
+
+		$buttons=array();
+		$title=$LANG["document"][7];
 		if (haveRight("typedoc","w")){
-			echo "<td><a  class='icon_consol' href=\"typedoc.form.php\"><b>".$LANG["document"][12]."</b></a>";
-			echo "</td>";
+			$buttons["typedoc.form.php"]=$LANG["document"][12];
+			$title="";
 		}
-		echo "</tr></table></div>";
+		displayTitle($CFG_GLPI["root_doc"]."/pics/docs.png",$LANG["document"][7],$title,$buttons);
 	}
 
 

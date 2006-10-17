@@ -193,14 +193,15 @@ class Monitor extends CommonDBTM {
 
 	function title(){
 		global  $LANG,$CFG_GLPI;
-		echo "<div align='center'><table border='0'><tr><td>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/ecran.png\" alt='".$LANG["monitors"][0]."' title='".$LANG["monitors"][0]."'></td>";
+
+		$buttons=array();
+		$title=$LANG["Menu"][3];
 		if (haveRight("monitor","w")){
-			echo "<td><a  class='icon_consol' href=\"".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".MONITOR_TYPE."&amp;add=1\"><b>".$LANG["monitors"][0]."</b></a>";
-			echo "</td>";
-			echo "<td><a class='icon_consol' href='".$CFG_GLPI["root_doc"]."/front/setup.templates.php?type=".MONITOR_TYPE."&amp;add=0'>".$LANG["common"][8]."</a></td>";
-		} else echo "<td><span class='icon_sous_nav'><b>".$LANG["Menu"][3]."</b></span></td>";
-		echo "</tr></table></div>";
+			$buttons["setup.templates.php?type=".MONITOR_TYPE."&amp;add=1"]=$LANG["monitors"][0];
+			$buttons["setup.templates.php?type=".MONITOR_TYPE."&amp;add=0"]=$LANG["common"][8];
+			$title="";
+		}
+		displayTitle($CFG_GLPI["root_doc"]."/pics/ecran.png",$LANG["Menu"][3],$title,$buttons);
 	}
 
 
