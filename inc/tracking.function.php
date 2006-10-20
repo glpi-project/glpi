@@ -201,7 +201,6 @@ function showCentralJobList($target,$start,$status="process") {
 	$number = $DB->numrows($result);
 
 	if ($number > 0) {
-		echo "<div align='center'>";
 		echo "<table class='tab_cadrehov'>";
 
 		echo "<tr><th colspan='5'><b><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
@@ -215,16 +214,13 @@ function showCentralJobList($target,$start,$status="process") {
 			$i++;
 		}
 		echo "</table>";
-		echo "<br><div align='center'>";
 	}
 	else
 	{
-		echo "<br><div align='center'>";
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th>".$title."</th></tr>";
 
 		echo "</table>";
-		echo "</div><br>";
 	}
 }
 
