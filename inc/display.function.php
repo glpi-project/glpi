@@ -81,7 +81,7 @@ function commonHeader($title,$url)
 
 	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED ;
 	if ($HEADER_LOADED) return;
-	$HEADER_LOADED=true;;
+	$HEADER_LOADED=true;
 	// Override list-limit if choosen
 	if (isset($_POST['list_limit'])) {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
