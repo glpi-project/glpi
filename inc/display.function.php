@@ -1203,11 +1203,116 @@ function showCentralOnglets($target,$actif) {
 	if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
 		echo "<li ".($actif=="plugins"?"class='actif'":"")."><a href='$target?onglet=plugins'>".$LANG["common"][29]."</a></li>";
 	}
+	echo "<li class='invisible'>&nbsp;</li>";
+	echo "<li ".($actif=="all"?"class='actif'":"")."><a href='$target?onglet=all'>".$LANG["title"][29]."</a></li>";
+
 	echo "</ul></div>";
 }
 
 
+function showCentralGlobalView(){
 
 
+	echo "<div align='center'>";
+	echo "<table  class='tab_cadre_central' ><tr>";
+
+	echo "<td valign='top'>";
+	echo "<table border='0'>";
+	if ($showticket){
+		echo "<tr><td align='center' valign='top'  width='450px'><br>";
+		showCentralJobCount();
+		echo "</td></tr>";
+	}
+	if (haveRight("contract_infocom","r")){
+		echo "<tr>";
+		echo "<td align='center' valign='top'  width='450px'>";
+		showCentralContract();
+		echo "</td>";	
+		echo "</tr>";
+	}
+	echo "</table>";
+	echo "</td>";
+
+	if (haveRight("logs","r")){
+		echo "<td align='left' valign='top'>";
+		echo "<table border='0' width='450px'><tr>";
+		echo "<td align='center'>";
+		if ($CFG_GLPI["num_of_events"]>0){
+
+			//Show last add events
+			showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+
+		} else {echo "&nbsp";}
+		echo "</td></tr>";
+		echo "</table>";
+		echo "</td>";
+	}
+	echo "</tr>";
+
+	echo "</table>";
+	echo "</div>";
+
+
+	if ($CFG_GLPI["jobs_at_login"]){
+		echo "<br>";
+
+		echo "<div align='center'><b>";
+		echo $LANG["central"][10];
+		echo "</b></div>";
+
+		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"","","new");
+	}
+
+}
+
+function showCentralMyView(){
+
+		$showticket=haveRight("show_ticket","1");
+
+		echo "<div align='center'>";
+		echo "<table class='tab_cadre_central' >";
+		echo "<tr><td valign='top'>";
+		echo "<table border='0'><tr>";
+	
+		if ($showticket){
+			echo "<td align='center' valign='top'  width='450px'>";
+			showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
+			echo "</td>";
+		}
+		echo "</tr><tr>";
+		if ($showticket){
+			echo "<td  align='center' valign='top' width='450px'>";
+			showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
+			echo "</td>";
+		}
+		echo "</tr>"	;
+	
+		echo "</table></td><td valign='top'><table border='0'><tr>";
+	
+		echo "<td align='center' valign='top'  width='450px'><br>";
+		ShowPlanningCentral($_SESSION["glpiID"]);
+		echo "</td></tr>";
+		echo "<tr>";
+	
+	
+		echo "<td  align='center' valign='top' width='450'>";
+		// Show Job count with links
+	
+		showCentralReminder();
+		echo "</td>";
+		echo "</tr>";
+	
+		if (haveRight("reminder_public","r")){
+			echo "<tr><td align='center' valign='top'  width='450px'>";
+			showCentralReminder("public");
+			echo "</td></tr>";
+		}
+	
+	
+		echo "</table></td></tr></table>";
+		echo "</div>";
+
+
+}
 
 ?>
