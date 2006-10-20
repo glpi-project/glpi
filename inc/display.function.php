@@ -1219,7 +1219,7 @@ function showCentralGlobalView(){
 	echo "<td valign='top'>";
 	echo "<table border='0'>";
 	if ($showticket){
-		echo "<tr><td align='center' valign='top'  width='450px'><br>";
+		echo "<tr><td align='center' valign='top'  width='450px'>";
 		showCentralJobCount();
 		echo "</td></tr>";
 	}
@@ -1242,7 +1242,9 @@ function showCentralGlobalView(){
 			//Show last add events
 			showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
 
-		} else {echo "&nbsp";}
+		} else {
+			echo "&nbsp;";
+		}
 		echo "</td></tr>";
 		echo "</table>";
 		echo "</td>";
@@ -1272,20 +1274,16 @@ function showCentralMyView(){
 		echo "<div align='center'>";
 		echo "<table class='tab_cadre_central' >";
 		echo "<tr><td valign='top'>";
-		echo "<table border='0'><tr>";
+		echo "<table border='0'>";
 	
 		if ($showticket){
-			echo "<td align='center' valign='top'  width='450px'>";
+			echo "<tr><td align='center' valign='top'  width='450px'>";
 			showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
-			echo "</td>";
-		}
-		echo "</tr><tr>";
-		if ($showticket){
-			echo "<td  align='center' valign='top' width='450px'>";
+			echo "</td></tr>";
+			echo "<tr><td  align='center' valign='top' width='450px'>";
 			showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
-			echo "</td>";
+			echo "</td></tr>";
 		}
-		echo "</tr>"	;
 	
 		echo "</table></td><td valign='top'><table border='0'><tr>";
 	
@@ -1296,8 +1294,6 @@ function showCentralMyView(){
 	
 	
 		echo "<td  align='center' valign='top' width='450'>";
-		// Show Job count with links
-	
 		showCentralReminder();
 		echo "</td>";
 		echo "</tr>";
