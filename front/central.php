@@ -37,148 +37,73 @@ define('GLPI_ROOT', '..');
 $NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","networking","software","user","setup","planning","phone","reminder","enterprise","contract");
 include (GLPI_ROOT."/inc/includes.php");
 
-checkCentralAccess();
+	checkCentralAccess();
 
-commonHeader($LANG["title"][0],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][0],$_SERVER["PHP_SELF"]);
 
-// Redirect management
-if (isset($_GET['redirect'])){
-	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID");
-}
-
-// show "my view" in first
-if (!isset($_SESSION['glpi_viewcentral'])) $_SESSION['glpi_viewcentral']="my";
-if (isset($_GET['onglet'])) $_SESSION['glpi_viewcentral']=$_GET['onglet'];
-
-if (!isset($_GET['start'])) $_GET['start']=0;
-if(empty($_GET["start"])) $_GET["start"] = 0;
-// Greet the user
-
-echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$LANG["central"][0]." ";
-if (empty($_SESSION["glpirealname"]))
-echo $_SESSION["glpiname"];
-else {
-	echo $_SESSION["glpirealname"];
-	if (!empty($_SESSION["glpifirstname"]))
-		echo " ".$_SESSION["glpifirstname"];	
-}
-echo ", ".$LANG["central"][1]."</span></b></div>";
-
-echo "<br><br>";
-showCentralOnglets($_SERVER["PHP_SELF"],$_SESSION['glpi_viewcentral']);
-
-$showticket=haveRight("show_ticket","1");
-
-if($_SESSION['glpi_viewcentral']=="global"){ //  GLobal view of GLPI 
-
-	echo "<div align='center'>";
-	echo "<table  class='tab_cadre_central' ><tr>";
-
-	echo "<td valign='top'>";
-	echo "<table border='0'>";
-	if ($showticket){
-		echo "<tr><td align='center' valign='top'  width='450px'><br>";
-		showCentralJobCount();
-		echo "</td></tr>";
-	}
-	if (haveRight("contract_infocom","r")){
-		echo "<tr>";
-		echo "<td align='center' valign='top'  width='450px'>";
-		showCentralContract();
-		echo "</td>";	
-		echo "</tr>";
-	}
-	echo "</table>";
-	echo "</td>";
-
-	if (haveRight("logs","r")){
-		echo "<td align='left' valign='top'>";
-		echo "<table border='0' width='450px'><tr>";
-		echo "<td align='center'>";
-		if ($CFG_GLPI["num_of_events"]>0){
-
-			//Show last add events
-			showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
-
-		} else {echo "&nbsp";}
-		echo "</td></tr>";
-		echo "</table>";
-		echo "</td>";
-	}
-	echo "</tr>";
-
-	echo "</table>";
-	echo "</div>";
-
-
-	if ($CFG_GLPI["jobs_at_login"]){
-		echo "<br>";
-
-		echo "<div align='center'><b>";
-		echo $LANG["central"][10];
-		echo "</b></div>";
-
-		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"","","new");
+	// Redirect management
+	if (isset($_GET['redirect'])){
+		list($type,$ID)=split("_",$_GET["redirect"]);
+		glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID");
 	}
 
-}else if($_SESSION['glpi_viewcentral']=="plugins"){
-	echo "<div align='center'>";
-	echo "<table class='tab_cadre_central' ><tr><td>";
+	// show "my view" in first
+	if (!isset($_SESSION['glpi_viewcentral'])) $_SESSION['glpi_viewcentral']="my";
+	if (isset($_GET['onglet'])) $_SESSION['glpi_viewcentral']=$_GET['onglet'];
+	
+	if (!isset($_GET['start'])) $_GET['start']=0;
+	if(empty($_GET["start"])) $_GET["start"] = 0;
+	// Greet the user
 
-	do_hook("central_action");
-	echo "</td></tr>";
-
-
-	echo "</table>";
-	echo "</div>";
-} else{  // show "my view" 
-
-
-	echo "<div align='center'>";
-	echo "<table class='tab_cadre_central' >";
-	echo "<tr><td valign='top'>";
-	echo "<table border='0'><tr>";
-
-	if ($showticket){
-		echo "<td align='center' valign='top'  width='450px'>";
-		showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
-		echo "</td>";
+	echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$LANG["central"][0]." ";
+	if (empty($_SESSION["glpirealname"]))
+	echo $_SESSION["glpiname"];
+	else {
+		echo $_SESSION["glpirealname"];
+		if (!empty($_SESSION["glpifirstname"]))
+			echo " ".$_SESSION["glpifirstname"];	
 	}
-	echo "</tr><tr>";
-	if ($showticket){
-		echo "<td  align='center' valign='top' width='450px'>";
-		showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
-		echo "</td>";
+	echo ", ".$LANG["central"][1]."</span></b></div>";
+
+	echo "<br><br>";
+	showCentralOnglets($_SERVER["PHP_SELF"],$_SESSION['glpi_viewcentral']);
+
+	switch ($_SESSION['glpi_viewcentral']){
+		case "global" :
+			showCentralGlobalView();
+			break;
+		case "plugins" :
+			echo "<div align='center'>";
+			echo "<table class='tab_cadre_central' ><tr><td>";
+		
+			do_hook("central_action");
+			echo "</td></tr>";
+		
+			echo "</table>";
+			echo "</div>";
+			break;
+		case "all":
+			showCentralMyView();
+			echo "<br>";
+
+			showCentralGlobalView();
+			echo "<br>";
+			if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
+				echo "<div align='center'>";
+				echo "<table class='tab_cadre_central' ><tr><td>";
+			
+				do_hook("central_action");
+				echo "</td></tr>";
+			
+				echo "</table>";
+				echo "</div>";
+			}
+
+			break;
+		default :
+			showCentralMyView();
+			break;
 	}
-	echo "</tr>"	;
-
-	echo "</table></td><td valign='top'><table border='0'><tr>";
-
-	echo "<td align='center' valign='top'  width='450px'><br>";
-	ShowPlanningCentral($_SESSION["glpiID"]);
-	echo "</td></tr>";
-	echo "<tr>";
-
-
-	echo "<td  align='center' valign='top' width='450'>";
-	// Show Job count with links
-
-	showCentralReminder();
-	echo "</td>";
-	echo "</tr>";
-
-	if (haveRight("reminder_public","r")){
-		echo "<tr><td align='center' valign='top'  width='450px'>";
-		showCentralReminder("public");
-		echo "</td></tr>";
-	}
-
-
-	echo "</table></td></tr></table>";
-	echo "</div>";
-
-}
 
 
 
