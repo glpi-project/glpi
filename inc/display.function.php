@@ -1212,6 +1212,9 @@ function showCentralOnglets($target,$actif) {
 
 function showCentralGlobalView(){
 
+	global $CFG_GLPI,$LANG;
+
+	$showticket=haveRight("show_ticket","1");
 
 	echo "<div align='center'>";
 	echo "<table  class='tab_cadre_central' ><tr>";
