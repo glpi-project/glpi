@@ -156,7 +156,7 @@ class Contact extends CommonDBTM{
 			echo "</b></th></tr>";
 
 
-			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr><td class='tab_bg_1' valign='top'>";
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";

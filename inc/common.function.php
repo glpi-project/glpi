@@ -168,6 +168,22 @@ function cleanRelationCache($table){
 }
 
 /**
+ * Clean all dict cache
+ *
+ * @param $group cache group
+ * @param $item  remove cache for item
+ * @return nothing
+ **/
+function cleanAllItemCache($item,$group){
+	global $CFG_GLPI;
+
+	foreach ($CFG_GLPI["languages"] as $key => $val){
+		$CFG_GLPI["cache"]->remove($item."_".$key,$group);
+	}
+}
+
+
+/**
  * Get the SEARCH_OPTION array using cache
  *
  * @return the SEARCH_OPTION array

@@ -139,7 +139,7 @@ class Enterprise extends CommonDBTM {
 				echo $LANG["financial"][26]." ID $ID:";
 			}		
 			echo "</b></th></tr>";
-			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 				echo "<td>";
 				autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],25);

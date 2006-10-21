@@ -99,7 +99,7 @@ class CommonDBTM {
 			$result=$DB->query($query);
 		}
 		$this->post_updateInDB($updates);
-		$CFG_GLPI["cache"]->remove($this->fields["ID"],"GLPI_".$this->type);
+		cleanAllItemCache($this->fields["ID"],"GLPI_".$this->type);
 		cleanRelationCache($this->table);
 		return true;
 	}
@@ -177,7 +177,7 @@ class CommonDBTM {
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
-				$CFG_GLPI["cache"]->remove($this->fields["ID"],"GLPI_".$this->type);
+				cleanAllItemCache($this->fields["ID"],"GLPI_".$this->type);
 				cleanRelationCache($this->table);
 				return true;
 			} else {
@@ -186,7 +186,7 @@ class CommonDBTM {
 		}else {
 			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ID = '$ID'";		
 			if ($result = $DB->query($query)){
-				$CFG_GLPI["cache"]->remove($this->fields["ID"],"GLPI_".$this->type);
+				cleanAllItemCache($this->fields["ID"],"GLPI_".$this->type);
 				cleanRelationCache($this->table);
 				return true;
 			} else return false;

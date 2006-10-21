@@ -460,7 +460,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 	$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
 
 
-	if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$ki->type))) {
+	if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$ki->type))) {
 		echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 	
 		echo "<strong>".$LANG["common"][36].": ".$fullcategoryname."</strong></th></tr>";
