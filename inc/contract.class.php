@@ -140,7 +140,7 @@ class Contract extends CommonDBTM {
 			}		
 			echo "</b></th></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][6].":		</td><td >";
 				dropdownValue("glpi_dropdown_contract_type","contract_type",$this->fields["contract_type"]);

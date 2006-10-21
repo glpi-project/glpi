@@ -272,7 +272,13 @@ class User extends CommonDBTM {
 		return $input;
 	}
 
-
+	function post_updateItem($input,$updates,$history){
+		global $CFG_GLPI;
+		// Clean header cache for the user
+		if (in_array("language",$updates)&&isset($input["ID"])){
+			$CFG_GLPI["cache"]->remove($input["ID"],"GLPI_HEADER");
+		}
+	}
 
 	// SPECIFIC FUNCTIONS
 
@@ -625,7 +631,7 @@ class User extends CommonDBTM {
 				} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			
-			if (!($CFG_GLPI["cache"]->start($ID,"GLPI_".$this->type))) {
+			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
 				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 				echo "</td>";
