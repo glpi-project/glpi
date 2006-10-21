@@ -47,6 +47,7 @@ class Device extends CommonDBTM {
 		global $DB;
 		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
 		$DB->query($query2);
+		cleanCache("GLPI_".DEVICE_TYPE);
 	}
 
 	// SPECIFIC FUNCTIONS
