@@ -53,7 +53,7 @@ if ($DB->numrows($result)==1){
 
 	// Titre
 	$name=getDropdownName("glpi_dropdown_locations",$_POST["location"]);
-	echo "<div align='center'><h2>".$LANG["reports"][54]." $name </h2><br><br>";
+	echo "<div align='center'><h2>".$LANG["reports"][54]." $name </h2></div>";
 
 	$query="SELECT glpi_dropdown_netpoint.name AS prise, c.name AS port, c.ifaddr            
 		AS ip, c.ifmac AS mac,c.ID AS IDport, glpi_dropdown_locations.ID as location
