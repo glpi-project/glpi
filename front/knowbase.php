@@ -68,9 +68,9 @@ if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"])
 
 titleknowbase();
 
-if (haveRight("knowbase","r"))
-showKbCategoriesall($_SERVER['PHP_SELF'],$contains);
-else {
+if (haveRight("knowbase","r")){
+	showKbCategoriesall($_SERVER['PHP_SELF'],$contains);
+}else {
 	faqShowCategoriesall($_SERVER['PHP_SELF'],$contains);
 }
 
