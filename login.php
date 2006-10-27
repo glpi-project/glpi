@@ -141,11 +141,9 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 		// we check all the auth sources in turn...
 		// First, we get the dn and then, we try to log in
 		if (!$auth_succeded&&!empty($CFG_GLPI["ldap_host"])) {
-			//echo "AD";
 			$found_dn=false;
 			$auth_succeded=0;
 			$found_dn=$identificat->ldap_get_dn_active_directory($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_basedn"],$_POST['login_name'],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_port"]);
-			//echo $found_dn."---";
 			if ($found_dn!=false&&!empty($_POST['login_password'])){ 
 				$auth_succeded = $identificat->connection_ldap_active_directory($CFG_GLPI["ldap_host"],$found_dn,$_POST['login_name'],$_POST['login_password'],$CFG_GLPI["ldap_condition"],$CFG_GLPI["ldap_port"]);
 				if ($auth_succeded) {
@@ -192,8 +190,8 @@ if ($auth_succeded)
 // we have done at least a good login? No, we exit.
 if ( ! $auth_succeded ) {
 	nullHeader("Login",$_SERVER['PHP_SELF']);
-	echo "<div align='center'><b>".$identificat->getErr().".</b><br><br>";
-	echo "<b><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\">".$LANG["login"][1]."</a></b></div>";
+	echo '<div align="center"><b>'.$identificat->getErr().'.</b><br><br>';
+	echo '<b><a href="'.$CFG_GLPI["root_doc"].'/logout.php">'.$LANG["login"][1].'</a></b></div>';
 	nullFooter();
 	if ($CFG_GLPI["debug"]==DEMO_MODE)
 		logevent(-1, "system", 1, "login", "failed login: ".$_POST['login_name']);
