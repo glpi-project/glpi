@@ -62,10 +62,10 @@ else
 	echo "<head><title>GLPI Login</title>\n";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" />\n";
 	echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' />";
+	echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].'/pics/favicon.ico" />';
 
 	// Appel CSS
-	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' />";
+	echo '<link rel="stylesheet"  href="'.$CFG_GLPI["root_doc"].'/css/styles.css" type="text/css" media="screen" />';
 	echo "<script type=\"text/javascript\"><!--document.getElementById('var_login_name').focus();--></script>";
 
 	echo "</head>";
@@ -84,7 +84,7 @@ else
 
 	// Affichage autoris�FAQ
 	if ($CFG_GLPI["public_faq"]){
-		echo "<ul><li><a href='front/faq.php'>".$LANG["knowbase"][24]."</a></li></ul>";
+		echo '<ul><li><a href="front/faq.php">'.$LANG["knowbase"][24].'</a></li></ul>';
 	}
 	echo "</div>";
 
@@ -133,25 +133,25 @@ else
 		}
 		// Non connect�: connection puis redirection 
 		else {
-			echo "<input type='hidden' name='redirect' value='".$_GET['redirect']."'>";
+			echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
 		}
 	}
 
 	echo "<fieldset>";
-	echo "<legend>".$LANG["login"][10]."</legend>";
+	echo '<legend>'.$LANG["login"][10].'</legend>';
 
 
-	echo "<div class='row'><span class='label'><label>".$LANG["login"][6]." :  </label></span><span class='formw'> <input type='text' name='login_name' id='login_name' size='15' /></span></div>";
+	echo '<div class="row"><span class="label"><label>'.$LANG["login"][6].' :  </label></span><span class="formw"> <input type="text" name="login_name" id="login_name" size="15" /></span></div>';
 
 
-	echo "<div class='row'><span class='label'><label>".$LANG["login"][7]." : </label></span><span class='formw'><input type='password' name='login_password' id='login_password' size='15' /> </span></div>";
+	echo '<div class="row"><span class="label"><label>'.$LANG["login"][7].' : </label></span><span class="formw"><input type="password" name="login_password" id="login_password" size="15" /> </span></div>';
 
 
 
 
 
 	echo "</fieldset>";
-	echo "<p ><span> <input type='submit' name='submit' value='".$LANG["buttons"][2]."' class='submit' /></span></p>";
+	echo '<p ><span> <input type="submit" name="submit" value="'.$LANG["buttons"][2].'" class="submit" /></span></p>';
 	echo "</form>";
 
 	echo "<script type='text/javascript' >\n";
@@ -183,7 +183,7 @@ else
 		$nb_login=$DB->result($result,0,0);
 		$date=$DB->result($result2,0,0);
 
-		echo "<b>$nb_login</b> logins since $date" ;
+		echo '<b>'.$nb_login.'</b> logins since '.$date ;
 
 		echo "</div>";
 	}
@@ -191,14 +191,15 @@ else
 
 	echo "<div id='footer-login'>";
 	echo "<a href=\"http://glpi-project.org/\" title=\"Powered By Indepnet\"  >";
-	echo "GLPI version ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y")." INDEPNET Development Team.";
+	echo 'GLPI version '.$CFG_GLPI["version"].' Copyright (C) 2003-'.date("Y").' INDEPNET Development Team.';
 	echo "</a>";
 	echo "</div>";
 
 }
 // Appel de cron
-if ($CFG_GLPI["debug"]!=DEMO_MODE)
-callCron();
+if ($CFG_GLPI["debug"]!=DEMO_MODE){
+	callCron();
+}
 
 
 echo "</body></html>";
