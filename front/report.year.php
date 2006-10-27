@@ -37,7 +37,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 checkRight("reports","r");
 
-commonHeader($LANG["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][16],$_SERVER['PHP_SELF']);
 
 
 

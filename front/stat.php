@@ -41,7 +41,7 @@ $NEEDED_ITEMS=array("stat","tracking");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][11],$_SERVER['PHP_SELF']);
 
 checkRight("statistic","1");
 

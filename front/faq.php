@@ -29,7 +29,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Jean-François MOREAU
+// Original Author of file: Jean-Franï¿½is MOREAU
 // Purpose of file: Display the knowledge base for anonymous users
 // ----------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ checkAccessToPublicFaq();
 // Affichage Module FAQ
 //*********************
 
-nullHeader("Login",$_SERVER["PHP_SELF"]);
+nullHeader("Login",$_SERVER['PHP_SELF']);
 
 if (isset($_GET["ID"])){
 
@@ -71,7 +71,7 @@ if (isset($_GET["ID"])){
 	if (!empty($contains)) searchLimitSessionVarKnowbase($contains);
 
 
-	faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
+	faqShowCategoriesall($_SERVER['PHP_SELF'],$contains);
 }
 //**************************
 //  fin Affichage Module FAQ

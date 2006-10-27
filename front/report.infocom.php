@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($LANG["Menu"][6],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF']);
 
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {
@@ -58,7 +58,7 @@ if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["dat
 	$_POST["date2"]=$tmp;
 }
 
-echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER["PHP_SELF"]."\">";
+echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER['PHP_SELF']."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $LANG["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);

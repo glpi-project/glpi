@@ -50,29 +50,29 @@ if (isset($_GET['onglet'])) $_SESSION['glpi_mailconfig']=$_GET['onglet'];
 if(!empty($_GET["next"])) {
 
 	if($_GET["next"] == "extauth") {
-		commonHeader($LANG["title"][14],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][14],$_SERVER['PHP_SELF']);
 		titleExtAuth();
-		showFormExtAuth($_SERVER["PHP_SELF"]);
+		showFormExtAuth($_SERVER['PHP_SELF']);
 	}
 	elseif($_GET["next"] == "mailing") {
-		commonHeader($LANG["title"][15],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][15],$_SERVER['PHP_SELF']);
 		titleMailing();
-		showFormMailing($_SERVER["PHP_SELF"]);
+		showFormMailing($_SERVER['PHP_SELF']);
 	}
 	elseif($_GET["next"] == "confgen") {
-		commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 		titleConfigGen();
-		showFormConfigGen($_SERVER["PHP_SELF"]);
+		showFormConfigGen($_SERVER['PHP_SELF']);
 	}
 	elseif($_GET["next"] == "confdisplay") {
-		commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 		titleConfigDisplay();
-		showFormConfigDisplay($_SERVER["PHP_SELF"]);
+		showFormConfigDisplay($_SERVER['PHP_SELF']);
 	}
 	elseif($_GET["next"] == "ocsng") {
 		$DBocs=new DBocs();
-		commonHeader($LANG["title"][39],$_SERVER["PHP_SELF"]);
-		ocsFormDBConfig($_SERVER["PHP_SELF"], $CFG_GLPI["ID"]);
+		commonHeader($LANG["title"][39],$_SERVER['PHP_SELF']);
+		ocsFormDBConfig($_SERVER['PHP_SELF'], $CFG_GLPI["ID"]);
 	}
 
 

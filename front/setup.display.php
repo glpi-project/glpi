@@ -48,7 +48,7 @@ if (!isset($_SESSION['glpi_searchconfig'])) $_SESSION['glpi_searchconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_searchconfig']=$_GET['onglet'];
 
 
-commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 
 checkCentralAccess();
 

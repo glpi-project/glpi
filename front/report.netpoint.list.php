@@ -51,7 +51,7 @@ if (isset($_POST["prise"])){
 		WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]."";
 	$result = $DB->query($query2);
 	if ($DB->numrows($result)==1){
-		commonHeader($LANG["Menu"][6],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF']);
 
 		$ligne = $DB->fetch_array($result);
 		$prise=$ligne['prise'];

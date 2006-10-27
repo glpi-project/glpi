@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("typedoc","r");
 
-commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 
 $typedoc=new Typedoc;
 $typedoc->title();
@@ -52,9 +52,9 @@ $typedoc->title();
 
 manageGetValuesInSearch(TYPEDOC_TYPE);
 
-searchForm(TYPEDOC_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(TYPEDOC_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-showList(TYPEDOC_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(TYPEDOC_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 commonFooter();
 ?>

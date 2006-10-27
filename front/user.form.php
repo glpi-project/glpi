@@ -108,37 +108,37 @@ else if (isset($_POST["deletegroup"]))
 	if (!isset($_GET["ext_auth"])){
 		checkRight("user","r");
 
-		commonHeader($LANG["title"][13],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
 
 		if ($user->getFromDB($_GET["ID"]))
-			$user->showOnglets($_SERVER["PHP_SELF"]."?ID=".$_GET["ID"], "",$_SESSION['glpi_onglet'] );
+			$user->showOnglets($_SERVER['PHP_SELF']."?ID=".$_GET["ID"], "",$_SESSION['glpi_onglet'] );
 
 
-		if ($user->showForm($_SERVER["PHP_SELF"],$_GET["ID"])){
+		if ($user->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			if (!empty($_GET["ID"]))
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showDeviceUser($_GET["ID"]);
-					showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"],-1);
-					showUserReservations($_SERVER["PHP_SELF"],$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",$_GET["ID"],-1);
+					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
 					display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
-					showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				case 2 :
 					showDeviceUser($_GET["ID"]);
 					break;
 				case 3 :
-					showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"],-1);
+					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",$_GET["ID"],-1);
 					break;
 				case 11 :
-					showUserReservations($_SERVER["PHP_SELF"],$_GET["ID"]);
+					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				default : 
 					if (!display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
-						showGroupAssociated($_SERVER["PHP_SELF"],$_GET["ID"]);
+						showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 			}
 			
@@ -184,8 +184,8 @@ else if (isset($_POST["deletegroup"]))
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
 		checkRight("user","w");
-		commonHeader($LANG["title"][13],$_SERVER["PHP_SELF"]);
-		showAddExtAuthUserForm($_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
+		showAddExtAuthUserForm($_SERVER['PHP_SELF']);
 		commonFooter();
 	}
 }

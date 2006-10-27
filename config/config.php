@@ -197,7 +197,7 @@
 	
 		if ((!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])!=GLPI_VERSION)&&!isset($_GET["donotcheckversion"])){
 			loadLanguage();
-			nullHeader("UPDATE NEEDED",$_SERVER["PHP_SELF"]);
+			nullHeader("UPDATE NEEDED",$_SERVER['PHP_SELF']);
 			echo "<div align='center'>";
 	
 	
@@ -225,7 +225,7 @@
 					echo "</table>";
 				}
 			} else {
-				echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
+				echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
 				echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][27]."\" />";
 				echo "</form>";
 			}

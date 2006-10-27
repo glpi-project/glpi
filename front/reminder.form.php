@@ -82,8 +82,8 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	commonHeader($LANG["title"][40],$_SERVER["PHP_SELF"]);
-	$remind->showForm($_SERVER["PHP_SELF"],$tab["ID"]);
+	commonHeader($LANG["title"][40],$_SERVER['PHP_SELF']);
+	$remind->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
 
 	commonFooter();
 }
