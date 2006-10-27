@@ -1077,16 +1077,16 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 							if($line2["DESCRIPTION"]) $ram["designation"] = $line2["DESCRIPTION"];
 							else $ram["designation"] = "Unknown";
 							$ram["specif_default"] =  $line2["CAPACITY"];
-							if (!in_array(RAM_DEVICE."$$$$$".$ram["designation"],$import_device)){
+							if (!in_array(RAM_DEVICE.'$$$$$'.$ram["designation"],$import_device)){
 								$ram["frequence"] =  $line2["SPEED"];
 								$ram["type"] = ocsImportDropdown("glpi_dropdown_ram_type","name",$line2["TYPE"]);
 								$ram_id = ocsAddDevice(RAM_DEVICE,$ram);
 								if ($ram_id){
 									$devID=compdevice_add($glpi_id,RAM_DEVICE,$ram_id,$line2["CAPACITY"],$dohistory);
-									addToOcsArray($glpi_id,array($devID=>RAM_DEVICE."$$$$$".$ram["designation"]),"import_device");
+									addToOcsArray($glpi_id,array($devID=>RAM_DEVICE.'$$$$$'.$ram["designation"]),"import_device");
 								}
 							} else {
-								$id=array_search(RAM_DEVICE."$$$$$".$ram["designation"],$import_device);
+								$id=array_search(RAM_DEVICE.'$$$$$'.$ram["designation"],$import_device);
 								update_device_specif($line2["CAPACITY"],$id,1);
 								unset($import_device[$id]);
 							}
@@ -1114,15 +1114,15 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 							else if($line2["MODEL"]) $dd["designation"] = $line2["MODEL"];
 							else $dd["designation"] = "Unknown";
 							
-							if (!in_array(HDD_DEVICE."$$$$$".$dd["designation"],$import_device)){
+							if (!in_array(HDD_DEVICE.'$$$$$'.$dd["designation"],$import_device)){
 								$dd["specif_default"] =  $line2["DISKSIZE"];
 								$dd_id = ocsAddDevice(HDD_DEVICE,$dd);
 								if ($dd_id){
 									$devID=compdevice_add($glpi_id,HDD_DEVICE,$dd_id,$line2["DISKSIZE"],$dohistory);
-									addToOcsArray($glpi_id,array($devID=>HDD_DEVICE."$$$$$".$dd["designation"]),"import_device");
+									addToOcsArray($glpi_id,array($devID=>HDD_DEVICE.'$$$$$'.$dd["designation"]),"import_device");
 								}
 							} else {
-								$id=array_search(HDD_DEVICE."$$$$$".$dd["designation"],$import_device);
+								$id=array_search(HDD_DEVICE.'$$$$$'.$dd["designation"],$import_device);
 								update_device_specif($line2["DISKSIZE"],$id,1);
 								unset($import_device[$id]);
 							}
@@ -1149,15 +1149,15 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 							if($line2["NAME"]) $stor["designation"] = $line2["NAME"];
 							else if($line2["MODEL"]) $stor["designation"] = $line2["MODEL"];
 							else $stor["designation"] = "Unknown";
-							if (!in_array(DRIVE_DEVICE."$$$$$".$stor["designation"],$import_device)){
+							if (!in_array(DRIVE_DEVICE.'$$$$$'.$stor["designation"],$import_device)){
 								$stor["specif_default"] =  $line2["DISKSIZE"];
 								$stor_id = ocsAddDevice(DRIVE_DEVICE,$stor);
 								if ($stor_id){
 									$devID=compdevice_add($glpi_id,DRIVE_DEVICE,$stor_id,"",$dohistory);
-									addToOcsArray($glpi_id,array($devID=>DRIVE_DEVICE."$$$$$".$stor["designation"]),"import_device");
+									addToOcsArray($glpi_id,array($devID=>DRIVE_DEVICE.'$$$$$'.$stor["designation"]),"import_device");
 								}
 							} else {
-								$id=array_search(DRIVE_DEVICE."$$$$$".$stor["designation"],$import_device);
+								$id=array_search(DRIVE_DEVICE.'$$$$$'.$stor["designation"],$import_device);
 								unset($import_device[$id]);
 							}
 
@@ -1180,15 +1180,15 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 					while($line2 = $DBocs->fetch_array($result2)) {
 						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$mdm["designation"] = $line2["NAME"];
-						if (!in_array(PCI_DEVICE."$$$$$".$mdm["designation"],$import_device)){
+						if (!in_array(PCI_DEVICE.'$$$$$'.$mdm["designation"],$import_device)){
 							if(!empty($line2["DESCRIPTION"])) $mdm["comment"] = $line2["TYPE"]."\r\n".$line2["DESCRIPTION"];
 							$mdm_id = ocsAddDevice(PCI_DEVICE,$mdm);
 							if ($mdm_id){
 								$devID=compdevice_add($glpi_id,PCI_DEVICE,$mdm_id,"",$dohistory);
-								addToOcsArray($glpi_id,array($devID=>PCI_DEVICE."$$$$$".$mdm["designation"]),"import_device");
+								addToOcsArray($glpi_id,array($devID=>PCI_DEVICE.'$$$$$'.$mdm["designation"]),"import_device");
 							}
 						} else {
-							$id=array_search(PCI_DEVICE."$$$$$".$mdm["designation"],$import_device);
+							$id=array_search(PCI_DEVICE.'$$$$$'.$mdm["designation"],$import_device);
 							unset($import_device[$id]);
 						}
 
@@ -1211,15 +1211,15 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 						if ($line2["NAME"]!="Not Specified") $port["designation"] .= " ".$line2["NAME"];
 						else if ($line2["CAPTION"]!="None") $port["designation"] .= " ".$line2["CAPTION"];
 						if (!empty($port["designation"]))
-							if (!in_array(PCI_DEVICE."$$$$$".$port["designation"],$import_device)){
+							if (!in_array(PCI_DEVICE.'$$$$$'.$port["designation"],$import_device)){
 								if(!empty($line2["DESCRIPTION"])&&$line2["DESCRIPTION"]!="None") $port["comment"] = $line2["DESCRIPTION"];
 								$port_id = ocsAddDevice(PCI_DEVICE,$port);
 								if ($port_id){
 									$devID=compdevice_add($glpi_id,PCI_DEVICE,$port_id,"",$dohistory);
-									addToOcsArray($glpi_id,array($devID=>PCI_DEVICE."$$$$$".$port["designation"]),"import_device");
+									addToOcsArray($glpi_id,array($devID=>PCI_DEVICE.'$$$$$'.$port["designation"]),"import_device");
 								}
 							} else {
-								$id=array_search(PCI_DEVICE."$$$$$".$port["designation"],$import_device);
+								$id=array_search(PCI_DEVICE.'$$$$$'.$port["designation"],$import_device);
 								unset($import_device[$id]);
 							}						
 					}
@@ -1242,14 +1242,14 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 						$processor = array();
 						$processor["designation"] = $line["PROCESSORT"];
 						$processor["specif_default"] =  $line["PROCESSORS"];
-						if (!in_array(PROCESSOR_DEVICE."$$$$$".$processor["designation"],$import_device)){
+						if (!in_array(PROCESSOR_DEVICE.'$$$$$'.$processor["designation"],$import_device)){
 							$proc_id = ocsAddDevice(PROCESSOR_DEVICE,$processor);
 							if ($proc_id){
 								$devID=compdevice_add($glpi_id,PROCESSOR_DEVICE,$proc_id,$line["PROCESSORS"],$dohistory);
-								addToOcsArray($glpi_id,array($devID=>PROCESSOR_DEVICE."$$$$$".$processor["designation"]),"import_device");
+								addToOcsArray($glpi_id,array($devID=>PROCESSOR_DEVICE.'$$$$$'.$processor["designation"]),"import_device");
 							}
 						} else {
-							$id=array_search(PROCESSOR_DEVICE."$$$$$".$processor["designation"],$import_device);
+							$id=array_search(PROCESSOR_DEVICE.'$$$$$'.$processor["designation"],$import_device);
 							update_device_specif($line["PROCESSORS"],$id,1);
 							unset($import_device[$id]);
 						}						
@@ -1277,15 +1277,15 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 						if ($cfg_ocs["import_device_iface"]){
 							$do_clean=true;
 							$network["designation"] = $line2["DESCRIPTION"];
-							if (!in_array(NETWORK_DEVICE."$$$$$".$network["designation"],$import_device)){
+							if (!in_array(NETWORK_DEVICE.'$$$$$'.$network["designation"],$import_device)){
 								if(!empty($line2["SPEED"])) $network["bandwidth"] =  $line2["SPEED"];
 								$net_id = ocsAddDevice(NETWORK_DEVICE,$network);
 								if ($net_id){
 									$devID=compdevice_add($glpi_id,NETWORK_DEVICE,$net_id,$line2["MACADDR"],$dohistory);
-									addToOcsArray($glpi_id,array($devID=>NETWORK_DEVICE."$$$$$".$network["designation"]),"import_device");
+									addToOcsArray($glpi_id,array($devID=>NETWORK_DEVICE.'$$$$$'.$network["designation"]),"import_device");
 								}
 							} else {
-								$id=array_search(NETWORK_DEVICE."$$$$$".$network["designation"],$import_device);
+								$id=array_search(NETWORK_DEVICE.'$$$$$'.$network["designation"],$import_device);
 								update_device_specif($line2["MACADDR"],$id,1);
 								unset($import_device[$id]);
 							}						
@@ -1360,16 +1360,16 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 					while($line2 = $DBocs->fetch_array($result2)) {
 						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$video["designation"] = $line2["NAME"];
-						if (!in_array(GFX_DEVICE."$$$$$".$video["designation"],$import_device)){
+						if (!in_array(GFX_DEVICE.'$$$$$'.$video["designation"],$import_device)){
 							$video["ram"]="";
 							if(!empty($line2["MEMORY"])) $video["ram"] =  $line2["MEMORY"];
 							$video_id = ocsAddDevice(GFX_DEVICE,$video);
 							if ($video_id){
 								$devID=compdevice_add($glpi_id,GFX_DEVICE,$video_id,$video["ram"],$dohistory);
-								addToOcsArray($glpi_id,array($devID=>GFX_DEVICE."$$$$$".$video["designation"]),"import_device");
+								addToOcsArray($glpi_id,array($devID=>GFX_DEVICE.'$$$$$'.$video["designation"]),"import_device");
 							}
 						} else {
-							$id=array_search(GFX_DEVICE."$$$$$".$video["designation"],$import_device);
+							$id=array_search(GFX_DEVICE.'$$$$$'.$video["designation"],$import_device);
 							update_device_specif($video["ram"],$id,1);
 							unset($import_device[$id]);
 						}						
@@ -1391,15 +1391,15 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 					while($line2 = $DBocs->fetch_array($result2)) {
 						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$snd["designation"] = $line2["NAME"];
-						if (!in_array(SND_DEVICE."$$$$$".$snd["designation"],$import_device)){
+						if (!in_array(SND_DEVICE.'$$$$$'.$snd["designation"],$import_device)){
 							if(!empty($line2["DESCRIPTION"])) $snd["comment"] =  $line2["DESCRIPTION"];
 							$snd_id = ocsAddDevice(SND_DEVICE,$snd);
 							if ($snd_id){
 								$devID=compdevice_add($glpi_id,SND_DEVICE,$snd_id,"",$dohistory);
-								addToOcsArray($glpi_id,array($devID=>SND_DEVICE."$$$$$".$snd["designation"]),"import_device");
+								addToOcsArray($glpi_id,array($devID=>SND_DEVICE.'$$$$$'.$snd["designation"]),"import_device");
 							}
 						} else {
-							$id=array_search(SND_DEVICE."$$$$$".$snd["designation"],$import_device);
+							$id=array_search(SND_DEVICE.'$$$$$'.$snd["designation"],$import_device);
 							unset($import_device[$id]);
 						}						
 					}
@@ -1411,7 +1411,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 	// Delete Unexisting Items not found in OCS
 	if ($do_clean&&count($import_device)){
 		foreach ($import_device as $key => $val){
-			if (!(strpos($val,$device_type."$$")===false)){
+			if (!(strpos($val,$device_type.'$$')===false)){
 				unlink_device_computer($key,$dohistory);
 				deleteInOcsArray($glpi_id,$key,"import_device");
 			} 
