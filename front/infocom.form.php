@@ -74,8 +74,8 @@ else
 {
 	checkRight("contract_infocom","r");
 
-	commonHeader($LANG["title"][21],$_SERVER["PHP_SELF"]);
-	showInfocomForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["search"]);
+	commonHeader($LANG["title"][21],$_SERVER['PHP_SELF']);
+	showInfocomForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["search"]);
 
 	commonFooter();
 }

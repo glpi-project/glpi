@@ -222,7 +222,7 @@ function showDeviceDocument($instID,$search='') {
 						echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
 						echo "<td align='center' class='tab_bg_2'>";
 						if ($canedit){
-							echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
+							echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
 						} else echo "&nbsp;";
 						echo "</td></tr>";
 					}

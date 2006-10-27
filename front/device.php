@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("device","w");
 
-commonHeader($LANG["title"][30],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][30],$_SERVER['PHP_SELF']);
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST; 
@@ -73,7 +73,7 @@ echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' 
 echo "</table></form></div>";
 
 if(!empty($tab["device_type"])) {
-	showDevicesList($tab["device_type"],$_SERVER["PHP_SELF"]);
+	showDevicesList($tab["device_type"],$_SERVER['PHP_SELF']);
 }
 
 

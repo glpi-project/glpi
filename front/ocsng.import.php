@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($LANG["title"][39],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][39],$_SERVER['PHP_SELF']);
 
 if (isset($_SESSION["ocs_import"])){
 	if ($count=count($_SESSION["ocs_import"])){

@@ -95,13 +95,13 @@ else
 		//	glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($LANG["title"][36],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][36],$_SERVER['PHP_SELF']);
 
 
 	if ($constype->getFromDB($tab["ID"]))
-		$constype->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$constype->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if ($constype->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+	if ($constype->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID']))
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
@@ -126,7 +126,7 @@ else
 					break;
 
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],CONSUMABLE_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],CONSUMABLE_TYPE,$tab["ID"]);
 					break;
 				default :
 					if (!display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){

@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("create_ticket","1");
 
-commonHeader("Helpdesk",$_SERVER["PHP_SELF"]);
+commonHeader("Helpdesk",$_SERVER['PHP_SELF']);
 
 if (!isset($_POST["user"])) $user=$_SESSION["glpiID"];
 else $user=$_POST["user"];
@@ -67,8 +67,8 @@ else $computer=0;
 if(empty($_POST["status"])) $_POST["status"] = "new";
 $error = "";
 $REFERER="";
-if (isset($_SERVER["HTTP_REFERER"]))
-$REFERER=$_SERVER["HTTP_REFERER"];
+if (isset($_SERVER['HTTP_REFERER']))
+$REFERER=$_SERVER['HTTP_REFERER'];
 if (isset($_POST["_referer"])) $REFERER=$_POST["_referer"];
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
@@ -77,7 +77,7 @@ $track=new Job();
 if (isset($_POST["priority"]) && empty($_POST["contents"]))
 {
 	$error=$LANG["tracking"][8] ;
-	addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
+	addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 }
 elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
@@ -85,17 +85,17 @@ elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 	if ($track->add($_POST)){
 		$error=$LANG["tracking"][9];
 		displayMessageAfterRedirect();
-		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
+		addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 	}
 	else {
 		$error=$LANG["tracking"][10];
 		displayMessageAfterRedirect();
-		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
+		addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 	}
 } 
 else
 {
-	addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
+	addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 }
 
 commonFooter();

@@ -47,7 +47,7 @@ if(empty($tab["device_type"])) {
 	glpi_header($CFG_GLPI["root_doc"] . "/front/device.php");
 }
 
-if (isset($_SERVER["HTTP_REFERER"])) $REFERER=$_SERVER["HTTP_REFERER"];
+if (isset($_SERVER['HTTP_REFERER'])) $REFERER=$_SERVER['HTTP_REFERER'];
 if (isset($tab["referer"])) $REFERER=$tab["referer"];
 if (isset($_POST["referer"])) $REFERER=$_POST["referer"];
 
@@ -79,8 +79,8 @@ else if (isset($_POST["update"])) {
 }
 else {
 
-	commonHeader($LANG["title"][30],$_SERVER["PHP_SELF"]);
-	showDevicesForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"]);
+	commonHeader($LANG["title"][30],$_SERVER['PHP_SELF']);
+	showDevicesForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["device_type"]);
 	commonFooter();
 }
 

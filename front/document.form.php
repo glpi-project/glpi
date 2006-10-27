@@ -132,15 +132,15 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($LANG["title"][25],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][25],$_SERVER['PHP_SELF']);
 
 	if ($doc->getFromDB($tab["ID"]))
-		$doc->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$doc->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if ($doc->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
+	if ($doc->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
 		switch ($_SESSION['glpi_onglet']){
 			case 10 :
-				showNotesForm($_SERVER["PHP_SELF"],DOCUMENT_TYPE,$tab["ID"]);
+				showNotesForm($_SERVER['PHP_SELF'],DOCUMENT_TYPE,$tab["ID"]);
 				break;
 			default :
 				if ($tab["ID"]){

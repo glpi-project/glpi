@@ -135,11 +135,11 @@ function displayRightError(){
 	global $LANG,$CFG_GLPI,$HEADER_LOADED;
 	if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($LANG["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($LANG["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($LANG["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($LANG["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($LANG["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($LANG["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$LANG["login"][5]."</b></div>";

@@ -44,8 +44,8 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 
-if (isset($_SERVER["HTTP_REFERER"]))
-$REFERER=$_SERVER["HTTP_REFERER"];
+if (isset($_SERVER['HTTP_REFERER']))
+$REFERER=$_SERVER['HTTP_REFERER'];
 
 if (isset($tab["referer"])) $REFERER=urldecode($tab["referer"]);
 
@@ -53,7 +53,7 @@ $REFERER=preg_replace("/&amp;/","&",$REFERER);
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
 $ADDREFERER="";
-if (!ereg("&referer=",$_SERVER["HTTP_REFERER"]))$ADDREFERER="&referer=".urlencode($REFERER);
+if (!ereg("&referer=",$_SERVER['HTTP_REFERER']))$ADDREFERER="&referer=".urlencode($REFERER);
 
 $np=new Netport();
 if(isset($_POST["add"])){	
@@ -189,15 +189,15 @@ else
 	if(empty($tab["several"])) $tab["several"] ="";
 
 	checkRight("networking","w");
-	commonHeader($LANG["title"][6],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][6],$_SERVER['PHP_SELF']);
 
 	if(isset($tab["ID"]))
 	{
-		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["on_device"],$tab["device_type"],$tab["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["on_device"],$tab["device_type"],$tab["several"]);
 	}
 	else
 	{
-		showNetportForm($_SERVER["PHP_SELF"],"",$tab["on_device"],$tab["device_type"],$tab["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],"",$tab["on_device"],$tab["device_type"],$tab["several"]);
 	}
 	commonFooter();
 }

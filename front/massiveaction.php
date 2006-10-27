@@ -44,7 +44,7 @@ header_nocache();
 
 checkTypeRight($_POST["device_type"],"w");
 
-commonHeader($LANG["title"][42],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][42],$_SERVER['PHP_SELF']);
 
 
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){

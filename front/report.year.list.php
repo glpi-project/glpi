@@ -44,7 +44,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($LANG["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($LANG["title"][16],$_SERVER['PHP_SELF']);
 
 
 $item_db_name[COMPUTER_TYPE] = "glpi_computers";

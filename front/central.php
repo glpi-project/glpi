@@ -39,7 +39,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 	checkCentralAccess();
 
-	commonHeader($LANG["title"][0],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][0],$_SERVER['PHP_SELF']);
 
 	// Redirect management
 	if (isset($_GET['redirect'])){
@@ -66,7 +66,7 @@ include (GLPI_ROOT."/inc/includes.php");
 	echo ", ".$LANG["central"][1]."</span></b></div>";
 
 	echo "<br><br>";
-	showCentralOnglets($_SERVER["PHP_SELF"],$_SESSION['glpi_viewcentral']);
+	showCentralOnglets($_SERVER['PHP_SELF'],$_SESSION['glpi_viewcentral']);
 
 	switch ($_SESSION['glpi_viewcentral']){
 		case "global" :

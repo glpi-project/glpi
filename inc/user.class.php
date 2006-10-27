@@ -204,7 +204,7 @@ class User extends CommonDBTM {
 		}
 
 		// Security system execpt for login update
-		if (!haveRight("user","w")&&!ereg("login.php",$_SERVER["PHP_SELF"])){
+		if (!haveRight("user","w")&&!ereg("login.php",$_SERVER['PHP_SELF'])){
 			if($_SESSION["glpiID"]==$input['ID']) {
 				$ret=$input;
 				// extauth ldap case

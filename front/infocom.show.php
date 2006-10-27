@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("contract_infocom","r");
 
-nullHeader($LANG["title"][21],$_SERVER["PHP_SELF"]);
+nullHeader($LANG["title"][21],$_SERVER['PHP_SELF']);
 
 $ci=new CommonItem();
 

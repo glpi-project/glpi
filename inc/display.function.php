@@ -464,18 +464,18 @@ function helpHeader($title,$url) {
 
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
-	//if (ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+	//if (ereg("tracking-injector",$_SERVER['PHP_SELF']))
 	//		echo "<td width='100%'>&nbsp;</td>";
 	// Just give him a language selector
 	echo "<td width='40%' align='center'>";
-	if ($CFG_GLPI["debug"]!=DEMO_MODE&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+	if ($CFG_GLPI["debug"]!=DEMO_MODE&&!ereg("tracking-injector",$_SERVER['PHP_SELF']))
 		showLangSelect($CFG_GLPI["root_doc"]."/front/preference.php");
 	else echo "&nbsp;";
 	echo "</td>";
 
 	// And he can change his password, thats it
 	echo "<td width='40%' align='center'>";
-	if (haveRight("password_update","1")&&$CFG_GLPI["debug"]!=DEMO_MODE&&$_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER["PHP_SELF"]))
+	if (haveRight("password_update","1")&&$CFG_GLPI["debug"]!=DEMO_MODE&&$_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER['PHP_SELF']))
 		showPasswordForm($CFG_GLPI["root_doc"]."/front/preference.php",$_SESSION["glpiname"]);
 	else echo "&nbsp;";
 	echo "</td>";
@@ -1246,7 +1246,7 @@ function showCentralGlobalView(){
 		if ($CFG_GLPI["num_of_events"]>0){
 
 			//Show last add events
-			showAddEvents($_SERVER["PHP_SELF"],"","",$_SESSION["glpiname"]);
+			showAddEvents($_SERVER['PHP_SELF'],"","",$_SESSION["glpiname"]);
 
 		} else {
 			echo "&nbsp;";
@@ -1268,7 +1268,7 @@ function showCentralGlobalView(){
 		echo $LANG["central"][10];
 		echo "</b></div>";
 
-		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],"","","new");
+		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],"","","new");
 	}
 
 }
@@ -1284,10 +1284,10 @@ function showCentralMyView(){
 	
 		if ($showticket){
 			echo "<tr><td align='center' valign='top'  width='450px'>";
-			showCentralJobList($_SERVER["PHP_SELF"],$_GET['start']);
+			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start']);
 			echo "</td></tr>";
 			echo "<tr><td  align='center' valign='top' width='450px'>";
-			showCentralJobList($_SERVER["PHP_SELF"],$_GET['start'],"waiting");
+			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"waiting");
 			echo "</td></tr>";
 		}
 	

@@ -131,14 +131,14 @@ else
 	}
 
 
-	commonHeader($LANG["title"][41],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][41],$_SERVER['PHP_SELF']);
 
 	if ($phone->getFromDB($tab["ID"]))
-		$phone->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		$phone->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 
 	if (!empty($tab["withtemplate"])) {
 
-		if ($phone->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($phone->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
 			if (!empty($tab["ID"])){
 
 				switch($_SESSION['glpi_onglet']){
@@ -172,10 +172,10 @@ else
 			}
 		}
 
-		if ($phone->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		if ($phone->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PHONE_TYPE);
+					showConnect($_SERVER['PHP_SELF'],$tab["ID"],PHONE_TYPE);
 					showPortsAdd($tab["ID"],PHONE_TYPE);
 					showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$tab["ID"]);
@@ -201,17 +201,17 @@ else
 					showLinkOnDevice(PHONE_TYPE,$tab["ID"]);
 					break;	
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],PHONE_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],PHONE_TYPE,$tab["ID"]);
 					break;	
 				case 11 :
-					showDeviceReservations($_SERVER["PHP_SELF"],PHONE_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],PHONE_TYPE,$tab["ID"]);
 					break;
 				case 12 :
 					showHistory(PHONE_TYPE,$tab["ID"]);
 					break;		
 				default :
 					if (!display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PHONE_TYPE);
+						showConnect($_SERVER['PHP_SELF'],$tab["ID"],PHONE_TYPE);
 						showPortsAdd($tab["ID"],PHONE_TYPE);
 						showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
 					}

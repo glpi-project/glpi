@@ -327,9 +327,9 @@ function showKbCategories($parentID=0,$contains='')
 				echo "<li><b>";
 				if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 				if ($_SESSION["kb_show"][$ID]=='Y')
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce-down.gif' alt='down'></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?tohide=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce-down.gif' alt='down'></a>";
 				else 
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce.gif' alt='up'></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?toshow=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce.gif' alt='up'></a>";
 
 				echo " ".$row["name"]."</b>\n";
 				if (!empty($row["comments"])){
@@ -675,9 +675,9 @@ function faqShowCategories($target,$parentID=0,$contains='')
 					echo "<li><b>";
 					if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 					if ($_SESSION["kb_show"][$ID]=='Y')
-						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;tohide=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce-down.gif'></a>";
+						echo "<a href=\"".$_SERVER['PHP_SELF']."?show=faq&amp;tohide=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce-down.gif'></a>";
 					else 
-						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce.gif'></a>";
+						echo "<a href=\"".$_SERVER['PHP_SELF']."?show=faq&amp;toshow=$ID\"><img src='".$CFG_GLPI["root_doc"]."/pics/puce.gif'></a>";
 
 					echo " ".$row["name"]."</b>\n";
 

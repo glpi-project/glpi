@@ -131,7 +131,7 @@ elseif (isset($_POST["connect_device"])) {
 	checkRight("computer","w");
 	if (isset($_POST["new_device_id"])&&$_POST["new_device_id"]>0)
 		compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
-	glpi_header($_SERVER["PHP_SELF"]."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
+	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 elseif(isset($tab["unlock_field"])){
 	checkRight("ocsng","w");
@@ -156,21 +156,21 @@ elseif(isset($tab["unlock_field"])){
 	}
 
 
-	commonHeader($LANG["title"][3],$_SERVER["PHP_SELF"]);
+	commonHeader($LANG["title"][3],$_SERVER['PHP_SELF']);
 
 	if ($computer->getFromDB($tab["ID"]))
-		$computer->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		$computer->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
 
-		if ($computer->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($computer->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
 			if (!empty($tab["ID"])){
 				switch($_SESSION['glpi_onglet']){
 					case 2 :			
 						showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);
 						break;
 					case 3 :
-						showConnections($_SERVER["PHP_SELF"],$tab["ID"],$tab["withtemplate"]);
+						showConnections($_SERVER['PHP_SELF'],$tab["ID"],$tab["withtemplate"]);
 						if ($tab["withtemplate"]!=2)
 							showPortsAdd($tab["ID"],COMPUTER_TYPE);
 						showPorts($tab["ID"], COMPUTER_TYPE,$tab["withtemplate"]);
@@ -184,7 +184,7 @@ elseif(isset($tab["unlock_field"])){
 						break;
 					default :
 						if (!display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'], $tab["withtemplate"]))
-							showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);	
+							showDeviceComputerForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"]);	
 						break;
 				}
 			}
@@ -200,12 +200,12 @@ elseif(isset($tab["unlock_field"])){
 			}
 		}
 
-		if ($computer->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])) {
+		if ($computer->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])) {
 			switch($_SESSION['glpi_onglet']){
 				case -1 :
-					showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
+					showDeviceComputerForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"]);			
 					showSoftwareInstalled($tab["ID"]);
-					showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
+					showConnections($_SERVER['PHP_SELF'],$tab["ID"]);
 					showPortsAdd($tab["ID"],COMPUTER_TYPE);
 					showPorts($tab["ID"], COMPUTER_TYPE);
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$tab["ID"]);
@@ -220,7 +220,7 @@ elseif(isset($tab["unlock_field"])){
 					showSoftwareInstalled($tab["ID"]);
 					break;
 				case 3 :
-					showConnections($_SERVER["PHP_SELF"],$tab["ID"]);
+					showConnections($_SERVER['PHP_SELF'],$tab["ID"]);
 					showPortsAdd($tab["ID"],COMPUTER_TYPE);
 					showPorts($tab["ID"], COMPUTER_TYPE);
 					break;
@@ -239,20 +239,20 @@ elseif(isset($tab["unlock_field"])){
 					showLinkOnDevice(COMPUTER_TYPE,$tab["ID"]);
 					break;
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],COMPUTER_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],COMPUTER_TYPE,$tab["ID"]);
 					break;
 				case 11 :
-					showDeviceReservations($_SERVER["PHP_SELF"],COMPUTER_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],COMPUTER_TYPE,$tab["ID"]);
 					break;
 				case 12 :
 					showHistory(COMPUTER_TYPE,$tab["ID"]);
 					break;
 				case 13 :
-					ocsEditLock($_SERVER["PHP_SELF"],$tab["ID"]);
+					ocsEditLock($_SERVER['PHP_SELF'],$tab["ID"]);
 					break;
 				default :
 					if (!display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]))
-						showDeviceComputerForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"]);			
+						showDeviceComputerForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"]);			
 					break;
 			}
 

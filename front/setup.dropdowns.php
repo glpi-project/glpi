@@ -89,10 +89,10 @@ if (isset($_POST["several_add"])) {
 } else if (isset($_POST["delete"])) {
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		if (ereg("popup",$_SERVER['PHP_SELF']))
-			popHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
+			popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 		else 	
-			commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
-		showDeleteConfirmForm($_SERVER["PHP_SELF"],$_POST["tablename"], $_POST["ID"]);
+			commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
+		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"]);
 		if (ereg("popup",$_SERVER['PHP_SELF']))
 			popFooter();
 		else 
@@ -114,9 +114,9 @@ if (isset($_POST["several_add"])) {
 }
 else {
 	if (ereg("popup",$_SERVER['PHP_SELF']))
-		popHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
+		popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 	else 
-		commonHeader($LANG["title"][2],$_SERVER["PHP_SELF"]);
+		commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 
 	$optgroup=array(
 			$LANG["setup"][139]=>array(
@@ -218,117 +218,117 @@ else {
 
 	switch ($which){
 		case "tracking_category" :
-			showFormTreeDown($_SERVER["PHP_SELF"],"tracking_category",$LANG["setup"][79],$ID);
+			showFormTreeDown($_SERVER['PHP_SELF'],"tracking_category",$LANG["setup"][79],$ID);
 		break;
 
 		case "kbcategories" :
-			showFormTreeDown($_SERVER["PHP_SELF"],"kbcategories",$LANG["setup"][78],$ID,$value2,$where,$tomove,$type);
+			showFormTreeDown($_SERVER['PHP_SELF'],"kbcategories",$LANG["setup"][78],$ID,$value2,$where,$tomove,$type);
 		break;
 		case "locations" :
-			showFormTreeDown($_SERVER["PHP_SELF"],"locations",$LANG["common"][15],$ID,$value2,$where,$tomove,$type);
+			showFormTreeDown($_SERVER['PHP_SELF'],"locations",$LANG["common"][15],$ID,$value2,$where,$tomove,$type);
 		break;
 		case "computers" :
-			showFormTypeDown($_SERVER["PHP_SELF"],"computers",$LANG["setup"][4],$ID);
+			showFormTypeDown($_SERVER['PHP_SELF'],"computers",$LANG["setup"][4],$ID);
 		break;
 		case "networking" :
-			showFormTypeDown($_SERVER["PHP_SELF"],"networking",$LANG["setup"][42],$ID);
+			showFormTypeDown($_SERVER['PHP_SELF'],"networking",$LANG["setup"][42],$ID);
 		break;
 		case "printers" :
-			showFormTypeDown($_SERVER["PHP_SELF"],"printers",$LANG["setup"][43],$ID);
+			showFormTypeDown($_SERVER['PHP_SELF'],"printers",$LANG["setup"][43],$ID);
 		break;
 		case "monitors" :
-			showFormTypeDown($_SERVER["PHP_SELF"],"monitors",$LANG["setup"][44],$ID);
+			showFormTypeDown($_SERVER['PHP_SELF'],"monitors",$LANG["setup"][44],$ID);
 		break;
 		case "peripherals" :
-			showFormTypeDown($_SERVER["PHP_SELF"],"peripherals",$LANG["setup"][69],$ID);
+			showFormTypeDown($_SERVER['PHP_SELF'],"peripherals",$LANG["setup"][69],$ID);
 		break;
 		case "phones" :
-			showFormTypeDown($_SERVER["PHP_SELF"],"phones",$LANG["setup"][504],$ID);
+			showFormTypeDown($_SERVER['PHP_SELF'],"phones",$LANG["setup"][504],$ID);
 		break;
 		case "os" :
-			showFormDropDown($_SERVER["PHP_SELF"],"os",$LANG["setup"][5],$ID);
+			showFormDropDown($_SERVER['PHP_SELF'],"os",$LANG["setup"][5],$ID);
 		break;
 		case "os_version" :
-			showFormDropDown($_SERVER["PHP_SELF"],"os_version",$LANG["setup"][500],$ID);
+			showFormDropDown($_SERVER['PHP_SELF'],"os_version",$LANG["setup"][500],$ID);
 		break;
 		case "os_sp" :
-			showFormDropDown($_SERVER["PHP_SELF"],"os_sp",$LANG["setup"][501],$ID);
+			showFormDropDown($_SERVER['PHP_SELF'],"os_sp",$LANG["setup"][501],$ID);
 		break;
 		case "enttype" :
-			showFormDropDown($_SERVER["PHP_SELF"],"enttype",$LANG["setup"][80],$ID);
+			showFormDropDown($_SERVER['PHP_SELF'],"enttype",$LANG["setup"][80],$ID);
 		break;
 
 		case "iface" :
-			showFormDropDown($_SERVER["PHP_SELF"],"iface",$LANG["setup"][9],$ID);
+			showFormDropDown($_SERVER['PHP_SELF'],"iface",$LANG["setup"][9],$ID);
 		break;
 		case "firmware" :
-			showFormDropDown($_SERVER["PHP_SELF"],"firmware",$LANG["setup"][71],$ID);
+			showFormDropDown($_SERVER['PHP_SELF'],"firmware",$LANG["setup"][71],$ID);
 		break;
 		case "netpoint" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"netpoint",$LANG["setup"][73],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"netpoint",$LANG["setup"][73],$ID,$value2);
 		break;
 		case "model" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"model",$LANG["setup"][91],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"model",$LANG["setup"][91],$ID,$value2);
 		break;
 		case "model_printers" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"model_printers",$LANG["setup"][96],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"model_printers",$LANG["setup"][96],$ID,$value2);
 		break;
 		case "model_monitors" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"model_monitors",$LANG["setup"][94],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"model_monitors",$LANG["setup"][94],$ID,$value2);
 		break;
 		case "model_networking" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"model_networking",$LANG["setup"][95],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"model_networking",$LANG["setup"][95],$ID,$value2);
 		break;
 		case "model_peripherals" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"model_peripherals",$LANG["setup"][97],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"model_peripherals",$LANG["setup"][97],$ID,$value2);
 		break;
 		case "model_phones" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"model_phones",$LANG["setup"][503],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"model_phones",$LANG["setup"][503],$ID,$value2);
 		break;
 		case "rubdocs" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"rubdocs",$LANG["setup"][81],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"rubdocs",$LANG["setup"][81],$ID,$value2);
 		break;
 		case "contact_type" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"contact_type",$LANG["setup"][82],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"contact_type",$LANG["setup"][82],$ID,$value2);
 		break;
 		case "state" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"state",$LANG["setup"][83],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"state",$LANG["setup"][83],$ID,$value2);
 		break;
 		case "cartridge_type" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"cartridge_type",$LANG["setup"][84],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"cartridge_type",$LANG["setup"][84],$ID,$value2);
 		break;
 		case "consumable_type" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"consumable_type",$LANG["setup"][92],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"consumable_type",$LANG["setup"][92],$ID,$value2);
 		break;
 		case "contract_type" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"contract_type",$LANG["setup"][85],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"contract_type",$LANG["setup"][85],$ID,$value2);
 		break;
 		case "ram_type" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"ram_type",$LANG["setup"][86],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"ram_type",$LANG["setup"][86],$ID,$value2);
 		break;
 		case "case_type" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"case_type",$LANG["setup"][45],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"case_type",$LANG["setup"][45],$ID,$value2);
 		break;
 		case "interface" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"interface",$LANG["setup"][93],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"interface",$LANG["setup"][93],$ID,$value2);
 		break;
 		case "domain" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"domain",$LANG["setup"][89],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"domain",$LANG["setup"][89],$ID,$value2);
 		break;
 		case "network" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"network",$LANG["setup"][88],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"network",$LANG["setup"][88],$ID,$value2);
 		break;
 		case "vlan" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"vlan",$LANG["setup"][90],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"vlan",$LANG["setup"][90],$ID,$value2);
 		break;
 		case "auto_update" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"auto_update",$LANG["setup"][98],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"auto_update",$LANG["setup"][98],$ID,$value2);
 		break;
 		case "budget" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"budget",$LANG["setup"][99],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"budget",$LANG["setup"][99],$ID,$value2);
 		break;
 		case "phone_power" : 
-			showFormDropDown($_SERVER["PHP_SELF"],"phone_power",$LANG["setup"][505],$ID,$value2);
+			showFormDropDown($_SERVER['PHP_SELF'],"phone_power",$LANG["setup"][505],$ID,$value2);
 		break;
 
 		default : break;
