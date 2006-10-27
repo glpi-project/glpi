@@ -90,7 +90,7 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 	if (!empty($oldvalues)){
 		$changes=array();
 		// n�essaire pour avoir les $search_option
-		include_once (GLPI_ROOT . "/inc/search.class.php");
+		$SEARCH_OPTION=getSearchOptions();
 
 		// on parse le tableau $search_option, on v�ifie qu'il existe une entr� correspondante �$key
 		foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
