@@ -363,7 +363,7 @@ function showKbItemAll($parentID,$contains='')
 {
 	// show kb item in each categories
 
-	global $DB;	
+	global $DB,$CFG_GLPI;	
 
 	if (!haveRight("knowbase","r")) return false;
 
@@ -386,41 +386,15 @@ function showKbItemAll($parentID,$contains='')
 
 
 				$ID = $row["ID"];
-				showKbItem($ID);
+				$class="";
+				if ($row["faq"]=="no") $class=" class='pubfaq' ";
+				echo "<li><a $class href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$row["ID"]."\">&nbsp;".$row["question"]."&nbsp;</a>\n";
 			}
 			echo "</ul>\n";
 
 		}
 	}
 }
-
-/**
- * Print out each kb items
- *
- * @param $ID integer
- * 
- *
- * 
- * @return nothing (display kb items in a list)
- **/
-function showKbItem($ID)
-{
-	// show each kb items
-
-	global $DB,$CFG_GLPI,  $LANG;
-
-	$query = "select * from glpi_kbitems where (ID=$ID)";
-
-
-	if ($result=$DB->query($query)){
-		$data = $DB->fetch_array($result);
-		$question = $data["question"];
-		$class="";
-		if ($data["faq"]=="no") $class=" class='pubfaq' ";
-		echo "<li><a $class href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID\">&nbsp;".$question."&nbsp;</a>\n";
-	}
-}
-
 
 
 /**
@@ -557,22 +531,51 @@ function getFAQCategories()
 
 	global $DB;	
 
-	$query = "select * from glpi_kbitems where (faq = 'yes')";
-
+	$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = 'yes')";
+	$toprocess=array();
 	$catNumbers = array();
 
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
-
-
 			while ($row=$DB->fetch_array($result)){
-				$catNumbers=getFAQParentCategories($row["categoryID"], $catNumbers);
-				array_push($catNumbers,$result["categoryID"]);
+				$catNumbers[]=$row["ID"];
+			}
+			$DB->data_seek($result,0);
+			while ($row=$DB->fetch_array($result)){
+				if($row["parentID"]&&!in_array($row["parentID"], $toprocess)){
+					$toprocess[]=$row["parentID"];
+				}
+			}
+
+		}
+	}
+	while (count($toprocess)){
+		$query2="SELECT DISTINCT * FROM glpi_dropdown_kbcategories WHERE '0'='1' ";
+		foreach ($toprocess as $key)
+			$query2.=  " OR ID = '$key' ";
+	
+		$toprocess=array();
+
+		if ($result=$DB->query($query2)){
+			if ($DB->numrows($result)>0){
+				while ($row=$DB->fetch_array($result)){
+					if(!in_array($row["ID"], $catNumbers)){
+						$catNumbers[]=$row["ID"];
+						if($row["parentID"]&&!in_array($row["parentID"], $toprocess)){
+							$toprocess[]=$row["parentID"];
+						}
+					}
+				}
 			}
 		}
-		return($catNumbers);
 	}
-}	
+
+	
+
+	return($catNumbers);
+
+}
+	
 
 /**
  * 
@@ -621,7 +624,7 @@ function getFAQParentCategories($ID, $catNumbers)
 function faqShowCategoriesall($target,$contains)
 {
 
-	global $LANG,$CFG_GLPI;	
+	global $LANG,$CFG_GLPI,$CATNUMBERS;	
 
 	if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) return false;	
 
@@ -630,7 +633,7 @@ function faqShowCategoriesall($target,$contains)
 	echo "<div align='center'><table border='0' class='tab_cadre_fixe' >";
 	echo "<tr ><th align='center' >".$LANG["knowbase"][1]."</th></tr><tr class='tab_bg_2'><td  align='left'>";	
 
-
+	$CATNUMBERS = getFAQCategories();
 
 	faqShowCategories($target,0,$contains);
 
@@ -649,9 +652,7 @@ function faqShowCategoriesall($target,$contains)
  **/
 function faqShowCategories($target,$parentID=0,$contains='')
 {
-	global $DB,$CFG_GLPI,$LANG;
-
-	$catNumbers = getFAQCategories();
+	global $DB,$CFG_GLPI,$LANG,$CATNUMBERS;
 
 	$query = "select * from glpi_dropdown_kbcategories where (parentID = $parentID) order by name asc";
 
@@ -668,7 +669,7 @@ function faqShowCategories($target,$parentID=0,$contains='')
 
 				$ID = $row["ID"];
 
-				if(in_array($ID, $catNumbers))
+				if(in_array($ID, $CATNUMBERS))
 				{
 					echo "<ul>\n";
 
@@ -724,47 +725,20 @@ function faqShowItems($target,$parentID,$contains)
 	$query = "select * from glpi_kbitems where (categoryID = $parentID) and (faq = 'yes') $WHERE order by question asc";
 
 
+	if (ereg("\?",$target)) $target.="&amp;";
+	else $target.="?";
+
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
 			echo "<ul>\n";
 			while ($row=$DB->fetch_array($result)){
-				$ID = $row["ID"];
-				faqShowItem($target,$ID);
+				echo "<li><a href=\"".$target."ID=".$row["ID"]."\">".$row["question"]."</a>\n";
 			}
 			echo "</ul>\n";
 		}
 	}
 }
 
-
-/**
- * 
- * To be commented
- * 
- * @param $ID
- * 
- * 
- * @return 
- **/
-function faqShowItem($target,$ID)
-{
-	// ok
-
-	global $DB,$CFG_GLPI;
-
-	$query = "select * from glpi_kbitems where (ID=$ID)";
-
-
-	if ($result=$DB->query($query)){
-		$data = $DB->fetch_array($result);
-		$question = $data["question"];
-		if (ereg("\?",$target)) $target.="&amp;";
-		else $target.="?";
-
-		echo "<li><a href=\"".$target."ID=$ID\">$question</a>\n";
-	}
-
-}
 
 /**
  * 
