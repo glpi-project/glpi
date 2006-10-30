@@ -56,9 +56,9 @@ function moveUploadedDocument($filename,$old_file=''){
 				// Delete old file
 				if(!empty($old_file)&& is_file(GLPI_DOC_DIR."/".$old_file)&& !is_dir(GLPI_DOC_DIR."/".$old_file)) {
 					if (unlink(GLPI_DOC_DIR."/".$old_file))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24].GLPI_DOC_DIR."/".$old_file."<br>";
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24]." ".GLPI_DOC_DIR."/".$old_file."<br>";
 					else 
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25].GLPI_DOC_DIR."/".$old_file."<br>";
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25]." ".GLPI_DOC_DIR."/".$old_file."<br>";
 				}
 
 				// D�lacement si droit
@@ -103,9 +103,9 @@ function uploadDocument($FILEDESC,$old_file=''){
 			// Delete old file
 			if(!empty($old_file)&& is_file(GLPI_DOC_DIR."/".$old_file)&& !is_dir(GLPI_DOC_DIR."/".$old_file)) {
 				if (unlink(GLPI_DOC_DIR."/".$old_file))
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24].GLPI_DOC_DIR."/".$old_file."<br>";
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][24]." ".GLPI_DOC_DIR."/".$old_file."<br>";
 				else 
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25].GLPI_DOC_DIR."/".$old_file."<br>";
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["document"][25]." ".GLPI_DOC_DIR."/".$old_file."<br>";
 			}
 
 			// Move uploaded file
