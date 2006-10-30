@@ -756,7 +756,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 
 	global $DB,$CFG_GLPI,$LANG;
-
+	ksort($entrees);
 	$total="";
 	if ($showtotal==1) $total=array_sum($entrees);
 
