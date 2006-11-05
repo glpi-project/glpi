@@ -172,17 +172,10 @@ if ($auth_succeded)
 		$identificat->err.=$LANG["login"][11];
 		$auth_succeded=false;	
 	} else if ($user_present) {
-		if (!$identificat->user->fields["active"]){
-			$identificat->err.=$LANG["login"][11];
-			$auth_succeded=false;	
-		} else {
-
-			// update user and Blank PWD to clean old database for the external auth
-			if ($identificat->extauth){
-
-				$identificat->user->update($identificat->user->fields);
-				$identificat->user->blankPassword();
-			}
+		// update user and Blank PWD to clean old database for the external auth
+		if ($identificat->extauth){
+			$identificat->user->update($identificat->user->fields);
+			$identificat->user->blankPassword();
 		}
 	}
 

@@ -514,10 +514,19 @@ class Identification
 		$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
 		$_SESSION["glpilist_limit"] = $CFG_GLPI["list_limit"];
 		$_SESSION["glpicrontimer"]=time();
+		// TODO : load profile depending on entities
+		// glpiactiveprofile -> active profile
+		// glpiactiveentities -> active entities
+		// glpiprofiles -> other available profile with link to the associated entities
+		// Reload glpiactiveprofile when entity switching 
 		$prof=new Profile();
 		$prof->getFromDBForUser($_SESSION["glpiID"]);
 		$prof->cleanProfile();
 		$_SESSION["glpiprofile"]=$prof->fields;
+		// TODO Groups also depends og the entity
+		// glpigroups -> active groups
+		// Reload groups on entity switching
+		
 		$_SESSION["glpigroups"]=array();
 		$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='".$this->user->fields['ID']."'";
 		$result_gp=$DB->query($query_gp);
@@ -526,7 +535,6 @@ class Identification
 				$_SESSION["glpigroups"][]=$data["FK_groups"];
 			}
 		}
-		
 		do_hook("init_session");
 		$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
 	}
