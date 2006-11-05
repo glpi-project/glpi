@@ -402,44 +402,47 @@ function updatedbUpTo031()
 	switch ($current_version){
 		case "0.31": 
 			include("update_031_04.php");
-		update031to04();
+			update031to04();
 		case "0.4": 
-			case "0.41": 
+		case "0.41": 
 			include("update_04_042.php");
-		update04to042();
+			update04to042();
 		case "0.42": 
 			include("update_042_05.php");
-		update042to05();
+			update042to05();
 		case "0.5": 
 			include("update_05_051.php");
-		update05to051();
+			update05to051();
 		case "0.51": 
-			case "0.51a": 
+		case "0.51a": 
 			include("update_051_06.php");
-		update051to06();
+			update051to06();
 		case "0.6": 
 			include("update_06_065.php");
-		update06to065();
+			update06to065();
 		case "0.65": 
 			include("update_065_068.php");
-		update065to068();
+			update065to068();
 		case "0.68":
 			include("update_068_0681.php");
-		update068to0681();
+			update068to0681();
 		case "0.68.1":
 		case "0.68.2":
+			include("update_0681_07.php");
+			update0681to07();
+		case "0.7":
 			break;
 		default:
-		update031to04();
-		update04to042();
-		update042to05();
-		update05to051();
-		update051to06();
-		break;
+			update031to04();
+			update04to042();
+			update042to05();
+			update05to051();
+			update051to06();
+			break;
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.68.2', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.7', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG["update"][90].$DB->error());
 
 	optimize_tables();

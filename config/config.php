@@ -110,7 +110,7 @@
 			$CFG_GLPI["dropdowntree_tables"]=array("glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
 			$CFG_GLPI["state_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 			$CFG_GLPI["linkuser_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-
+			$CFG_GLPI["dropdownentity_tables"]=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
 
 
 			//Options g�� dynamiquement, ne pas toucher cette partie.
