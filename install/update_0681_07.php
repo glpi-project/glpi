@@ -120,6 +120,7 @@ function update0681to07(){
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	// TODO Split Config -> config general + config entity
 	// TODO AUto assignment profile based on rules
+	// TODO Add default profile to user + update data from preference
 
 
 } // fin 0.7 #####################################################################################

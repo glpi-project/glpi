@@ -516,18 +516,19 @@ class Identification
 		$_SESSION["glpicrontimer"]=time();
 		// TODO : load profile depending on entities
 		// glpiprofiles -> other available profile with link to the associated entities
-//		initEntityProfiles();
+		initEntityProfiles($_SESSION["glpiID"]);
 		// glpiactiveprofile -> active profile
 		// glpiactiveentities -> active entities
-		
 		// Reload glpiactiveprofile when entity switching 
+		changeProfile(key($_SESSION['glpiprofiles']));
 		
-		
+/*		
 
 		$prof=new Profile();
 		$prof->getFromDBForUser($_SESSION["glpiID"]);
 		$prof->cleanProfile();
 		$_SESSION["glpiprofile"]=$prof->fields;
+*/
 		// TODO Groups also depends og the entity
 		// glpigroups -> active groups
 		// Reload groups on entity switching
@@ -543,7 +544,7 @@ class Identification
 		do_hook("init_session");
 		$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
 	}
-
+	
 	function destroySession()
 	{
 		if(!session_id()) session_start();
