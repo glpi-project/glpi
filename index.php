@@ -104,8 +104,8 @@ else
 		}
 
 		list($type,$ID)=split("_",$_GET["redirect"]);
-		if (isset($_SESSION["glpiprofile"]["interface"])&&!empty($_SESSION["glpiprofile"]["interface"])){
-			switch ($_SESSION["glpiprofile"]["interface"]){
+		if (isset($_SESSION["glpiactiveprofile"]["interface"])&&!empty($_SESSION["glpiactiveprofile"]["interface"])){
+			switch ($_SESSION["glpiactiveprofile"]["interface"]){
 				case "helpdesk" :
 					switch ($type){
 						case "tracking":

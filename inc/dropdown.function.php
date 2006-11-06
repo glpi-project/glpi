@@ -720,14 +720,14 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 
 	$already_add=array();
 
-	if ($_SESSION["glpiprofile"]["helpdesk_hardware"]==0){
+	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]==0){
 		echo "<input type='hidden' name='$myname' value='0'>";
 		echo "<input type='hidden' name='computer' value='0'>";
 	} else {
 		echo "<div id='tracking_device_type_selecter'>";
 		echo "<table width='100%'>";
 		// View my hardware
-		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
+		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
 			$my_devices="";
 
 			$ci=new CommonItem();
@@ -738,7 +738,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 			// My items
 			$my_devices.="<optgroup label=\"".$LANG["tracking"][1]."\">";
 			foreach ($CFG_GLPI["linkuser_type"] as $type)
-				if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 				{
 					$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."'";
 
@@ -774,7 +774,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 	
 					$my_devices.="<optgroup label=\"".$LANG["tracking"][1]." - ".$LANG["common"][35]."\">";
 					foreach ($CFG_GLPI["linkuser_type"] as $type)
-						if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+						if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 						{
 							$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where";
 	
@@ -812,7 +812,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 				// Direct Connection
 				$types=array(PERIPHERAL_TYPE,MONITOR_TYPE,PRINTER_TYPE,PHONE_TYPE);
 				foreach ($types as $type)
-					if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
 						if (!isset($already_add[$type])) $already_add[$type]=array();
 						$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." ORDER BY ".$LINK_ID_TABLE[$type].".name";
@@ -831,7 +831,7 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 					}
 				$my_devices.= "</optgroup>";
 				// Software
-				if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
+				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 					$query = "SELECT DISTINCT glpi_software.version as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
 					$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." order by glpi_software.name";
 					$result=$DB->query($query);
@@ -853,29 +853,29 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 			}
 
 			echo "<tr><td align='center'>".$LANG["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>--- ".$LANG["help"][30]." ---</option>$my_devices</select>";
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE))
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE))
 				echo "<br>".$LANG["tracking"][2].":&nbsp;";
 			else echo "</td></tr>";
 		}
 
-		if ($_SESSION["glpiprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
+		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
 
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
 
 			echo "<option value='0' ".(($value==0)?" selected":"").">".$LANG["help"][30]."</option>\n";
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))
 				echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$LANG["help"][25]."</option>\n";
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,NETWORKING_TYPE))
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,NETWORKING_TYPE))
 				echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$LANG["help"][26]."</option>\n";
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,PRINTER_TYPE))
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,PRINTER_TYPE))
 				echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$LANG["help"][27]."</option>\n";
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,MONITOR_TYPE))
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,MONITOR_TYPE))
 				echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$LANG["help"][28]."</option>\n";
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,PERIPHERAL_TYPE))
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,PERIPHERAL_TYPE))
 				echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$LANG["help"][29]."</option>\n";
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE))
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE))
 				echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$LANG["help"][31]."</option>\n";
-			if ($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))
 				echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$LANG["help"][35]."</option>\n";
 			echo "</select>\n";
 
