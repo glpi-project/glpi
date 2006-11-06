@@ -333,9 +333,9 @@ function commonHeader($title,$url)
 	
 		// End headline
 		//	echo "<hr class='separ'>";
-		echo "</div>\n";
-	
+		showProfileSelecter();
 
+		echo "</div>\n";
 		echo "<div class='nav_horl' style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:200;'>";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.my.php'>";
 		if (!empty($_SESSION["glpirealname"])) {
@@ -471,6 +471,7 @@ function helpHeader($title,$url) {
 	if ($CFG_GLPI["debug"]!=DEMO_MODE&&!ereg("tracking-injector",$_SERVER['PHP_SELF']))
 		showLangSelect($CFG_GLPI["root_doc"]."/front/preference.php");
 	else echo "&nbsp;";
+	showProfileSelecter();
 	echo "</td>";
 
 	// And he can change his password, thats it
@@ -1316,5 +1317,22 @@ function showCentralMyView(){
 
 
 }
+
+function showProfileSelecter(){
+	global $CFG_GLPI;
+
+	if (count($_SESSION["glpiprofiles"])>1){
+		echo '<form name="form" method="post" action="'.$CFG_GLPI['root_doc'].'/login.php">';
+		echo '<select name="newprofile" onChange="submit()">';
+		foreach ($_SESSION["glpiprofiles"] as $key => $val){
+			echo '<option value="'.$key.'" '.($_SESSION["glpiactiveprofile"]["ID"]==$key?'selected':'').'>'.$val['name'].'</option>';
+		}
+		echo '</select>';
+		echo '</form>';
+
+
+	} else echo "only one profile -> no select to print";
+
+} 
 
 ?>

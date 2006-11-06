@@ -39,7 +39,20 @@ $NEEDED_ITEMS=array("user","profile","setup","group");
 
 include (GLPI_ROOT . "/inc/includes.php");
 
-//$database=$cfg_db["database"];
+if (isset($_POST['newprofile'])){
+	if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])){
+		changeProfile($_POST['newprofile']);
+		// Redirect to Command Central if not post-only
+		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
+			glpi_header("front/helpdesk.public.php");
+		}
+		else{
+			glpi_header("front/central.php");
+		}
+	} else glpi_header($_SERVER['HTTP_REFERER']);
+
+}
+
 
 
 $_POST=array_map('stripslashes',$_POST);
@@ -221,12 +234,10 @@ if (isset($_POST['redirect']))
 $REDIRECT="?redirect=".$_POST['redirect'];
 
 // Redirect to Command Central if not post-only
-if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk")
-{
+if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
 	glpi_header("front/helpdesk.public.php$REDIRECT");
 }
-else
-{
+else{
 	glpi_header("front/central.php$REDIRECT");
 }
 

@@ -360,6 +360,7 @@ function initEntityProfiles($userID){
 
 // Change current active profile
 function changeProfile($ID){
+	global $CFG_GLPI;
 	if (isset($_SESSION['glpiprofiles'][$ID])&&count($_SESSION['glpiprofiles'][$ID]['entities'])){
 		// glpiactiveprofile -> active profile
 		$_SESSION['glpiactiveprofile']=$_SESSION['glpiprofiles'][$ID];
@@ -380,7 +381,7 @@ function changeProfile($ID){
 			}
 		}
 	}
-
+	$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
 }
 
 ?>
