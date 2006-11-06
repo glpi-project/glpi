@@ -515,10 +515,15 @@ class Identification
 		$_SESSION["glpilist_limit"] = $CFG_GLPI["list_limit"];
 		$_SESSION["glpicrontimer"]=time();
 		// TODO : load profile depending on entities
+		// glpiprofiles -> other available profile with link to the associated entities
+//		initEntityProfiles();
 		// glpiactiveprofile -> active profile
 		// glpiactiveentities -> active entities
-		// glpiprofiles -> other available profile with link to the associated entities
+		
 		// Reload glpiactiveprofile when entity switching 
+		
+		
+
 		$prof=new Profile();
 		$prof->getFromDBForUser($_SESSION["glpiID"]);
 		$prof->cleanProfile();

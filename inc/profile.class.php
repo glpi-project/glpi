@@ -144,6 +144,7 @@ class Profile extends CommonDBTM{
 			return $ID_profile;
 		} else return false;
 	}
+
 	// Unset unused rights for helpdesk
 	function cleanProfile(){
 		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket");

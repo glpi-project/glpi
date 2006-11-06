@@ -37,8 +37,8 @@
 function update0681to07(){
 	global $DB,$LANG,$CFG_GLPI;
 
-	if(!TableExists("glpi_entity")) {
-		$query = "CREATE TABLE `glpi_entity` (
+	if(!TableExists("glpi_entities")) {
+		$query = "CREATE TABLE `glpi_entities` (
 		`ID` int(11) NOT NULL auto_increment,
 		`name` varchar(255) NOT NULL,
 		`parentID` int(11) NOT NULL default '0',
@@ -49,12 +49,12 @@ function update0681to07(){
 		UNIQUE KEY `name` (`name`,`parentID`),
 		KEY `parentID` (`parentID`)
 		) ENGINE=MyISAM;";
-		$DB->query($query) or die("0.7 create glpi_entity ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.7 create glpi_entities ".$LANG["update"][90].$DB->error());
 		// TODO : ADD other fields
 	}
 
-	if(!FieldExists("glpi_users_profiles", "FK_entity")) {
-		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entity` INT NOT NULL DEFAULT '0',
+	if(!FieldExists("glpi_users_profiles", "FK_entities")) {
+		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entities` INT NOT NULL DEFAULT '0',
 					ADD `recursive` TINYINT NOT NULL DEFAULT '1',
 					ADD `active` TINYINT NOT NULL DEFAULT '1' ";
 		$DB->query($query) or die("0.7 alter glpi_users_profiles ".$LANG["update"][90].$DB->error());
@@ -80,9 +80,9 @@ function update0681to07(){
 			"glpi_tracking");
 	// ,"glpi_followups","glpi_licenses","glpi_infocoms", "glpi_links","glpi_reminder","glpi_reservation_item", "glpi_state_item" ?
 	foreach ($tables as $tbl){
-		if(!FieldExists($tbl, "ID_entity")) {
-			$query = "ALTER TABLE `".$tbl."` ADD `ID_entity` INT NOT NULL DEFAULT '0' AFTER `ID`";
-			$DB->query($query) or die("0.7 add ID_entity in $tbl ".$LANG["update"][90].$DB->error());
+		if(!FieldExists($tbl, "FK_entities")) {
+			$query = "ALTER TABLE `".$tbl."` ADD `FK_entities` INT NOT NULL DEFAULT '0' AFTER `ID`";
+			$DB->query($query) or die("0.7 add FK_entities in $tbl ".$LANG["update"][90].$DB->error());
 		}
 	}
 	
@@ -91,16 +91,31 @@ function update0681to07(){
 	foreach ($tables as $tbl){
 		if (isIndex($tbl,"name")){
 			$query = "ALTER TABLE `$tbl` DROP INDEX `name`;";
-			$DB->query($query) or die("0.68.1 drop index name in $tbl ".$LANG["update"][90].$DB->error());
+			$DB->query($query) or die("0.7 drop index name in $tbl ".$LANG["update"][90].$DB->error());
 		}
 		if (isIndex($tbl,"parentID_2")){
 			$query = "ALTER TABLE `$tbl` DROP INDEX `parentID_2`;";
-			$DB->query($query) or die("0.68.1 drop index name in $tbl ".$LANG["update"][90].$DB->error());
+			$DB->query($query) or die("0.7 drop index name in $tbl ".$LANG["update"][90].$DB->error());
 		}
-		$query = "ALTER TABLE `$tbl` ADD UNIQUE(`name`,`parentID`,`ID_entity`);";
-		$DB->query($query) or die("0.68.1 add index name in $tbl ".$LANG["update"][90].$DB->error());
+		$query = "ALTER TABLE `$tbl` ADD UNIQUE(`name`,`parentID`,`FK_entities`);";
+		$DB->query($query) or die("0.7 add index name in $tbl ".$LANG["update"][90].$DB->error());
 
 	}
+
+	if (isIndex("glpi_users_profiles","FK_users_profiles")){
+		$query = "ALTER TABLE `glpi_users_profiles` DROP INDEX `FK_users_profiles`;";
+		$DB->query($query) or die("0.7 drop index FK_users_profiles in glpi_users_profiles ".$LANG["update"][90].$DB->error());
+	}
+
+	if (!isIndex("glpi_users_profiles","active")){
+		$query = "ALTER TABLE `glpi_users_profiles` ADD INDEX (`active`);";
+		$DB->query($query) or die("0.7 add index active in glpi_users_profiles ".$LANG["update"][90].$DB->error());
+	}
+	if (!isIndex("glpi_users_profiles","FK_entities")){
+		$query = "ALTER TABLE `glpi_users_profiles` ADD INDEX (`FK_entities`);";
+		$DB->query($query) or die("0.7 add index FK_entities in glpi_users_profiles ".$LANG["update"][90].$DB->error());
+	}
+
 
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	// TODO Split Config -> config general + config entity
