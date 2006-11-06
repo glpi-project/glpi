@@ -69,7 +69,7 @@ function showTrackingOnglets($target){
 
 		echo "<div id='barre_onglets'><ul id='onglet'>";
 
-		if ($_SESSION["glpiprofile"]["interface"]=="central"){
+		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 			echo "<li class='actif'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID&amp;onglet=1\">".$LANG["job"][38]." $ID</a></li>";
 
 			if (haveRight("show_ticket","1"))
@@ -561,7 +561,7 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$nineth_column="";
 		// Job Controls
 
-		if ($_SESSION["glpiprofile"]["interface"]=="central"){
+		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 			if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]) 
 				$nineth_column.="&nbsp;";
 			else 
@@ -647,7 +647,7 @@ function showJobVeryShort($ID) {
 		// Job Controls
 		echo "<td width='40' align='center'>";
 
-		if ($_SESSION["glpiprofile"]["interface"]=="central")
+		if ($_SESSION["glpiactiveprofile"]["interface"]=="central")
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
 		else
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
@@ -696,7 +696,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "</td></tr>";
 	} 
 
-	if ($device_type==0&&$_SESSION["glpiprofile"]["helpdesk_hardware"]!=0){
+	if ($device_type==0&&$_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>".$LANG["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
@@ -1570,7 +1570,7 @@ function showJobDetails ($target,$ID){
 		if (!haveRight("show_ticket","1")
 			&&$job->fields["author"]!=$_SESSION["glpiID"]
 			&&$job->fields["assign"]!=$_SESSION["glpiID"]
-			&&!($_SESSION["glpiprofile"]["show_group_ticket"]&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"])) ){
+			&&!($_SESSION["glpiactiveprofile"]["show_group_ticket"]&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"])) ){
 			return false;
 		}
 
@@ -1979,7 +1979,7 @@ function showAddFollowupForm($tID){
 
 	$commentall=(haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]);
 
-	if ($_SESSION["glpiprofile"]["interface"]=="central"){
+	if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 		$target=$CFG_GLPI["root_doc"]."/front/tracking.form.php";
 	} else {
 		$target=$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user";

@@ -52,11 +52,11 @@ if (isset($_POST["update"])&&$_POST["ID"]==$_SESSION["glpiID"]) {
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
-	if ($_SESSION["glpiprofile"]["interface"]=="central")
+	if ($_SESSION["glpiactiveprofile"]["interface"]=="central")
 		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
 	else helpHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
 	$user->showMyForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
-	if ($_SESSION["glpiprofile"]["interface"]=="central")
+	if ($_SESSION["glpiactiveprofile"]["interface"]=="central")
 		commonFooter();
 	else helpFooter();
 }

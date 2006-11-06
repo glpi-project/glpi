@@ -908,7 +908,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "</td></tr>";
 	}
 
-	if ($_SESSION["glpiprofile"]["helpdesk_hardware"]!=0){
+	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][24].": </td>";
 		echo "<td>";
@@ -1024,7 +1024,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 	echo "</form>\n";
 	echo "</td>\n";
 
-	if ($item_type_output>0&&$_SESSION["glpiprofile"]["interface"]=="central"){
+	if ($item_type_output>0&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
 		echo "<td class='tab_bg_2' width='30%'>" ;
 		echo "<form method='GET' action=\"".$CFG_GLPI["root_doc"]."/front/report.dynamic.php\" target='_blank'>\n";
 		echo "<input type='hidden' name='item_type' value='$item_type_output'>";

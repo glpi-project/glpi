@@ -58,7 +58,7 @@ if (isset($_GET["file"])){
 			if ($founded){
 
 
-				if ($_SESSION["glpiprofile"]["interface"]=="central"){
+				if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 					// My doc Check and Common doc right access
 					if (haveRight("document","r")
 							||$doc->fields["FK_users"]==$_SESSION["glpiID"])

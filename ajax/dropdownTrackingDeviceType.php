@@ -46,7 +46,7 @@ checkLoginUser();
 // Make a select box
 
 
-if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiprofile"]["helpdesk_hardware_type"]&pow(2,$_POST["type"]))){
+if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$_POST["type"]))){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
 
 	echo "<div align='center'>".$LANG["help"][23].":&nbsp;";
