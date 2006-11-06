@@ -324,4 +324,11 @@ function loadLanguage() {
 
 }
 
+// Init glpiprofiles in _SESSION variable
+function initEntityProfiles($userID){
+	global $DB;
+	$query="SELECT * FROM glpi_users_profiles
+		WHERE active='1' AND FK_users='$userID'";
+}
+
 ?>
