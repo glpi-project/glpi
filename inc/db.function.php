@@ -218,6 +218,63 @@ function getRealSearchForTreeItem($table,$search){
 }
 
 
+/**
+ * Get the sons of an item in a tree dropdown
+ *
+ * @param $table
+ * @param $IDf The ID of the father
+ * @return array of IDs of the sons
+ */
+function getSonsOfTreeItem($table,$IDf){
+	global $DB;
+
+	// IDs to be present in the final array
+	$id_found=array($IDf);
+	// current ID found to be added
+	$found=array();
+	// First request init the  varriables
+	$query="SELECT ID 
+		FROM $table 
+		WHERE parentID = '$IDf'";
+
+	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
+		while ($row=$DB->fetch_array($result)){
+			array_push($id_found,$row['ID']);
+			array_push($found,$row['ID']);
+		}
+	} else return $id_found;
+
+	// Get the leafs of previous founded item
+	while (count($found)>0){
+		$first=true;
+		// Get next elements
+		$query="SELECT ID 
+			FROM $table 
+			WHERE ";
+		foreach ($found as $key => $val){
+			if (!$first) $query.=" OR ";
+			else $first=false;
+			$query.= " parentID = '$val' ";
+		}
+
+		// CLear the found array
+		unset($found);
+		$found=array();
+
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			while ($row=$DB->fetch_array($result)){
+				if (!in_array($row['ID'],$id_found)){
+					array_push($id_found,$row['ID']);
+					array_push($found,$row['ID']);
+				}
+			}		
+		}
+	}
+	return $id_found;
+
+}
+
 
 /**
  * Get the equivalent search query using ID of soons that the search of the father's ID argument
@@ -235,46 +292,8 @@ function getRealQueryForTreeItem($table,$IDf,$reallink=""){
 
 	if (empty($reallink)) $reallink=$table.".ID";
 
+	$id_found=getSonsOfTreeItem($table,$IDf);
 
-	// IDs to be present in the final query
-	$id_found=array();
-	// current ID found to be added
-	$found=array();
-
-	// First request init the  varriables
-	$query="SELECT ID 
-		FROM $table 
-		WHERE ID = '$IDf'";
-	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
-		while ($row=$DB->fetch_array($result)){
-			array_push($id_found,$row['ID']);
-			array_push($found,$row['ID']);
-		}
-	} else return " ( $table.ID = '$IDf') ";
-
-	// Get the leafs of previous founded item
-	while (count($found)>0){
-		// Get next elements
-		$query="SELECT ID 
-			FROM $table 
-			WHERE '0'='1' ";
-		foreach ($found as $key => $val)
-			$query.= " OR parentID = '$val' ";
-
-		// CLear the found array
-		unset($found);
-		$found=array();
-
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($row=$DB->fetch_array($result)){
-				if (!in_array($row['ID'],$id_found)){
-					array_push($id_found,$row['ID']);
-					array_push($found,$row['ID']);
-				}
-			}		
-		}
-	}
 
 	// Construct the final request
 	if (count($id_found)>0){
@@ -288,7 +307,7 @@ function getRealQueryForTreeItem($table,$IDf,$reallink=""){
 		$ret.=") ";
 
 		return $ret;
-	}else return " ( $table.ID = '$IDf') ";
+	} else return " ( $reallink = '$IDf') ";
 }
 
 
