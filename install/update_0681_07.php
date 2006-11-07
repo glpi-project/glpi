@@ -71,6 +71,9 @@ function update0681to07(){
 
 		$query="ALTER TABLE `glpi_users` DROP `active` ";
 		$DB->query($query) or die("0.7 drop active from glpi_users ".$LANG["update"][90].$DB->error());
+
+		$query="DELETE FROM glpi_display WHERE type='".USER_TYPE."' AND num='8';";
+		$DB->query($query) or die("0.7 delete active field items for user search ".$LANG["update"][90].$DB->error());
 	}
 
 	// Add entity tags to tables
@@ -116,11 +119,12 @@ function update0681to07(){
 		$DB->query($query) or die("0.7 add index FK_entities in glpi_users_profiles ".$LANG["update"][90].$DB->error());
 	}
 
-
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	// TODO Split Config -> config general + config entity
 	// TODO AUto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference
+
+	
 
 
 } // fin 0.7 #####################################################################################
