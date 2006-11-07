@@ -41,6 +41,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
+
 // Redirect management
 if (isset($_GET['redirect'])){
 	checkHelpdeskAccess();
