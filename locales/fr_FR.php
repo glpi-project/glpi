@@ -673,6 +673,11 @@ $LANG["knowbase"][22]="Tout replier";
 $LANG["knowbase"][24]="Accéder à la FAQ";
 $LANG["knowbase"][26]="Vues";
 $LANG["knowbase"][27]="Le";
+$LANG["knowbase"][28]="Pas d'éléments trouvés";
+$LANG["knowbase"][29]="Sujets les plus récents";
+$LANG["knowbase"][30]="Sujets les plus populaires";
+
+
 
 $LANG["links"][1]="Lien ou Nom du fichier";
 $LANG["links"][2]="Ajouter Lien externe...";

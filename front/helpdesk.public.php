@@ -158,49 +158,6 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 //*******************
 
 
-//*******************
-// Affichage Module FAQ
-//******************
-
-
-
-else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
-	$name="";
-	checkRight("faq","r");
-	helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-
-
-	if (isset($_GET["ID"])){
-
-		if (ShowKbItemFull($_GET["ID"],"no"))
-			showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
-
-	} else {
-		initExpandSessionVar();
-
-		if (isset($_GET["toshow"])) {
-			if ($_GET["toshow"]=="all")
-				ExpandSessionVarShowAll();
-			else ExpandSessionVarShow($_GET["toshow"]);
-		}
-		if (isset($_GET["tohide"])) {
-			if ($_GET["tohide"]=="all")
-				ExpandSessionVarHideAll();
-			else ExpandSessionVarHide($_GET["tohide"]);
-		}
-		if (isset($_POST["contains"])) $contains=$_POST["contains"];
-		else $contains="";
-
-		if (!empty($contains)) searchLimitSessionVarKnowbase($contains);
-
-		faqShowCategoriesall($_SERVER['PHP_SELF']."?show=faq",$contains);
-	}
-}
-//*******************
-//  fin Affichage Module FAQ
-//******************
-
-
 else {
 	checkHelpdeskAccess();
 	helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);

@@ -435,7 +435,45 @@ function resume_text($string,$length=255){
 	return $string;
 }
 
+/**
+ *  Tag suppression
+ *
+ * @param $string
+ * @param rempl
+ * @return clean string
+ *
+ */
+//  Inspired From SPIP
+// Suppression basique et brutale de tous les <...>
+function removeTags($string, $rempl = "") {
+	$string = preg_replace(",<[^>]*>,U", $rempl, $string);
+	// ne pas oublier un < final non ferme
+	// mais qui peut aussi etre un simple signe plus petit que
+	$string = str_replace('<', ' ', $string);
+	return $string;
+}
 
+/**
+ *  convert html text to 
+ *
+ * @param $string
+ * @return clean string
+ *
+ */
+//  Inspired from SPIP
+function textBrut($string) {
+
+	$string = preg_replace("/\s+/u", " ", $string);
+	$string = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n\n", $string);
+	$string = preg_replace("/^\n+/", "", $string);
+	$string = preg_replace("/\n+$/", "", $string);
+	$string = preg_replace("/\n +/", "\n", $string);
+	$string = removeTags($string);
+	$string = preg_replace("/(&nbsp;| )+/", " ", $string);
+	// nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
+	$string = str_replace("&#8217;","'",$string);
+	return $string;
+}
 
 
 

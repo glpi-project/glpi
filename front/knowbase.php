@@ -48,30 +48,35 @@ glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
 
 commonHeader($LANG["title"][5],$_SERVER['PHP_SELF']);
 
-initExpandSessionVar();
 
-if (isset($_GET["toshow"])) {
-	if ($_GET["toshow"]=="all")
-		ExpandSessionVarShowAll();
-	else ExpandSessionVarShow($_GET["toshow"]);
-}
-if (isset($_GET["tohide"])) {
-	if ($_GET["tohide"]=="all")
-		ExpandSessionVarHideAll();
-	else ExpandSessionVarHide($_GET["tohide"]);
-}
-if (isset($_POST["contains"])) $contains=$_POST["contains"];
-else $contains="";
 
-if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"]);
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
+
+
+if(!isset($_GET["start"])) $_GET["start"] = 0;
+if (!isset($_GET["order"])) $_GET["order"] = "ASC";
+if (!isset($_GET["field"])) $_GET["field"] = "all";
+if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "";
+if (!isset($_GET["contains"])) $_GET["contains"] = "";
+if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_kbitems.question";
+if(!isset($_GET["parentID"])) $_GET["parentID"] = "0";
 
 
 titleknowbase();
 
 if (haveRight("knowbase","r")){
-	showKbCategoriesall($_SERVER['PHP_SELF'],$contains);
+	
+	
+	searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],0);
+	showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"],0 );
+	 showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],0);
+	showKbViewGlobal($_SERVER['PHP_SELF'],0) ;
+	
 }else {
-	faqShowCategoriesall($_SERVER['PHP_SELF'],$contains);
+	searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],1);
+	showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"],1);
+	 showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],1);
 }
 
 
