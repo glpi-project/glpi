@@ -91,21 +91,24 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 
 	echo "</table></form>";
 	
-	echo "</td><td>";
+	echo "</td>";
 	
-	echo "<form method=get action=\"".$target."\">";
-	echo "<table border='0' class='tab_cadre'>";
-	echo "<tr ><th colspan='2'><b>Naviguer</b></th></tr>";
-	echo "<tr><td align='center'>";
-	echo $LANG["common"][36]." : &nbsp; &nbsp;";
-	dropdownValue("glpi_dropdown_kbcategories","parentID",$parentID);
-	// ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
+	// Category select not for anonymous FAQ
+	if (isset($_SESSION["glpiID"])){
+		echo "<td><form method=get action=\"".$target."\">";
+		echo "<table border='0' class='tab_cadre'>";
+		echo "<tr ><th colspan='2'><b>Naviguer</b></th></tr>";
+		echo "<tr><td align='center'>";
+		echo $LANG["common"][36]." : &nbsp; &nbsp;";
+		dropdownValue("glpi_dropdown_kbcategories","parentID",$parentID);
+		// ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
+		
+		echo "</td><td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
 	
-	echo "</td><td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
-
-	echo "</table></form>";
+		echo "</table></form></td>";
+	} 
 	
-	echo "</td></tr></table></div>";
+	echo "</tr></table></div>";
 
 
 }
@@ -306,24 +309,21 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
  * @param $faq
  * @return nothing (display table)
  **/
-function showKbViewGlobal($target,$parentID=0,$faq=0){
+function showKbViewGlobal($target,$faq=0){
 	
-	if($parentID==0){
-		echo "<div align='center'>";
-		echo "<table width='950px'><tr><td align='center' valign='middle'>";
+	echo "<div align='center'>";
+	echo "<table width='950px'><tr><td align='center' valign='middle'>";
 			
-		showKbRecentPopular($target,"recent",$faq);
+	showKbRecentPopular($target,"recent",$faq);
 		
-		echo "</td><td align='center' valign='middle'>";
+	echo "</td><td align='center' valign='middle'>";
 		
-		showKbRecentPopular($target,"popular",$faq);
+	showKbRecentPopular($target,"popular",$faq);
 		
-		echo "</td></tr>";
+	echo "</td></tr>";
 				
-		echo "</table>";
-		echo "</div>";
-	}
-		
+	echo "</table>";
+	echo "</div>";
 }
 
 function showKbRecentPopular($target,$order,$faq=0){

@@ -58,9 +58,14 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 
 	$name="";
-	checkRight("faq","r");
-	helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+	checkFaqAccess();
 	
+	if (isset($_SESSION["glpiID"])){
+		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+	} else {
+		// Anonymous FAQ
+		nullHeader($LANG["title"][1],$_SERVER['PHP_SELF']);
+	}
 	
 	if(!isset($_GET["start"])) $_GET["start"] = 0;
 	if (!isset($_GET["order"])) $_GET["order"] = "ASC";
@@ -68,7 +73,7 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 	if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "";
 	if (!isset($_GET["contains"])) $_GET["contains"] = "";
 	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_kbitems.question";
-	if(!isset($_GET["parentID"])) $_GET["parentID"] = "0";
+	if(!isset($_GET["parentID"])) $_GET["parentID"] = 0;
 
 
 	if (isset($_GET["ID"])){
@@ -77,11 +82,12 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 			showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
 
 	} else {
-		
-	searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],1);
-	showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"] ,1);
-	showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],1);
-	showKbViewGlobal($_SERVER['PHP_SELF'],$_GET["parentID"] ,1) ;
+		searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],1);
+		showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"] ,1);
+		showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],1);
+		if (!$_GET["parentID"]&&!strlen($_GET["contains"])){
+			showKbViewGlobal($_SERVER['PHP_SELF'],1) ;
+		}
 		
 	}
 

@@ -84,7 +84,7 @@ else
 
 	// Affichage autoris�FAQ
 	if ($CFG_GLPI["public_faq"]){
-		echo '<ul><li><a href="front/faq.php">'.$LANG["knowbase"][24].'</a></li></ul>';
+		echo '<ul><li><a href="front/helpdesk.faq.php">'.$LANG["knowbase"][24].'</a></li></ul>';
 	}
 	echo "</div>";
 

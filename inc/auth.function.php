@@ -255,7 +255,7 @@ function checkLoginUser(){
 	}
 }
 
-function checkAccessToPublicFaq(){
+function checkFaqAccess(){
 	global $CFG_GLPI;
 
 	if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")){
