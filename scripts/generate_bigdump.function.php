@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: generate_bigdump.php 3981 2006-10-14 21:47:59Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
