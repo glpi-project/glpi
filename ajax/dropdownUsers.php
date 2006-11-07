@@ -63,7 +63,6 @@ else {
 	$joinprofile=true;
 }
 
-$where.=" AND glpi_users.active='1' ";
 
 if (isset($_POST['value']))
 $where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
