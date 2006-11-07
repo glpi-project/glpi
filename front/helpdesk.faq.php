@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: helpdesk.public.php 4050 2006-10-27 15:32:57Z moyo $
+ * @version $Id:$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -81,7 +81,7 @@ if(empty($tab) && isset($_POST)) $tab = $_POST;
 	searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],1);
 	showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"] ,1);
 	showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],1);
-
+	showKbViewGlobal($_SERVER['PHP_SELF'],$_GET["parentID"] ,1) ;
 		
 	}
 
