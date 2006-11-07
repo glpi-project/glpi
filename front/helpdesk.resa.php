@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id:$
+ *  @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -47,7 +47,7 @@ if (isset($_GET['redirect'])){
 }
 
 //*******************
-	// Affichage Module r�ervation 
+	// Affichage Module reservation 
 	//******************
 	checkRight("reservation_helpdesk","1");
 	$rr=new ReservationResa();
@@ -112,7 +112,7 @@ if (isset($_GET['redirect'])){
 	}
 
 //*******************
-// fin  Affichage Module r�ervation 
+// fin  Affichage Module reservation 
 //*******************
 helpFooter();
 
