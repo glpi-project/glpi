@@ -1025,7 +1025,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 	echo "</form>\n";
 	echo "</td>\n";
 
-	if ($item_type_output>0&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
+	if ($item_type_output>0&&isset($_SESSION["glpiactiveprofile"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
 		echo "<td class='tab_bg_2' width='30%'>" ;
 		echo "<form method='GET' action=\"".$CFG_GLPI["root_doc"]."/front/report.dynamic.php\" target='_blank'>\n";
 		echo "<input type='hidden' name='item_type' value='$item_type_output'>";
