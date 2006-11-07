@@ -67,6 +67,7 @@ if (isset($_GET["ID"])){
 	searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],1);
 	showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"],1);
 	 showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],1);
+	showKbViewGlobal($_SERVER['PHP_SELF'],$_GET["parentID"] ,1) ; 
 }
 //**************************
 //  fin Affichage Module FAQ

@@ -492,10 +492,10 @@ function helpHeader($title,$url) {
 
 	echo "<td width='100' align='center'>";
 	if (haveRight("reservation_helpdesk","1"))
-		echo "<a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=resa\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-2.png\" alt=\"".$LANG["Menu"][17]."\" title=\"".$LANG["Menu"][17]."\"></a>";
+		echo "<a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.resa.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-2.png\" alt=\"".$LANG["Menu"][17]."\" title=\"".$LANG["Menu"][17]."\"></a>";
 	echo "<br><br>";
 	if (haveRight("faq","r"))
-		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=faq\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faq-24.png\" alt=\"".$LANG["knowbase"][1]."\" title=\"".$LANG["knowbase"][1]."\"></a>";
+		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faq-24.png\" alt=\"".$LANG["knowbase"][1]."\" title=\"".$LANG["knowbase"][1]."\"></a>";
 
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
