@@ -1328,6 +1328,7 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 				return " ($table.$field <> $val ".$ADD." ) ";
 			else  return " ($table.$field = $val  ".$ADD." ) ";
 			break;
+/*
 			case "glpi_users.active":
 
 				if (!eregi($val,$LANG["choice"][1])&&!eregi($val,$LANG["choice"][0])&&$val!="NULL")
@@ -1342,6 +1343,7 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 				return " ($table.$field <> $val ".$ADD." ) ";
 			else  return " ($table.$field = $val  ".$ADD." ) ";
 			break;
+*/
 
 		default:
 			$ADD="";	
@@ -1386,9 +1388,10 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		return $out;
 
 		break;
-		case "glpi_users.active" :
+/*		case "glpi_users.active" :
 			return $LANG["choice"][$data["ITEM_$num"]];
 		break;
+*/
 		case "glpi_users.name" :		
 			// USER search case
 			if (empty($linkfield)){
