@@ -380,6 +380,9 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
 	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG;
 
+	$itemtable=$LINK_ID_TABLE[$type];
+	$entity_restrict=in_array($itemtable,$CFG_GLPI["specif_entities_tables"]);
+
 	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor","glpi_tracking");
 
@@ -445,26 +448,27 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	// Get specific item for extra column
-	if ($LINK_ID_TABLE[$type]=="glpi_cartridges_type"||$LINK_ID_TABLE[$type]=="glpi_consumables_type")
-		$SELECT.=$LINK_ID_TABLE[$type].".alarm as ALARM, ";
+	if ($itemtable=="glpi_cartridges_type"||$itemtable=="glpi_consumables_type"){
+		$SELECT.=$itemtable.".alarm as ALARM, ";
+	}
 
 	//// 2 - FROM AND LEFT JOIN
 	// Set reference table
-	$FROM = " FROM ".$LINK_ID_TABLE[$type];
+	$FROM = " FROM ".$itemtable;
 	// Init already linked tables array in order not to link a table several times
 	$already_link_tables=array();
 	// Put reference table
-	array_push($already_link_tables,$LINK_ID_TABLE[$type]);
+	array_push($already_link_tables,$itemtable);
 
 	// Add all table for toview items
 	for ($i=1;$i<$toview_count;$i++)
-		$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"],$SEARCH_OPTION[$type][$toview[$i]]["linkfield"]);
+		$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"],$SEARCH_OPTION[$type][$toview[$i]]["linkfield"]);
 
 
 	// Search all case :
 	if (count($SEARCH_ALL)>0)
 		foreach ($SEARCH_OPTION[$type] as $key => $val)
-			$FROM.=addLeftJoin($type,$LINK_ID_TABLE[$type],$already_link_tables,$SEARCH_OPTION[$type][$key]["table"],$SEARCH_OPTION[$type][$key]["linkfield"]);
+			$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$key]["table"],$SEARCH_OPTION[$type][$key]["linkfield"]);
 
 
 	//// 3 - WHERE
@@ -473,16 +477,16 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// default string
 	$WHERE = " WHERE ";
 	// Add deleted if item have it
-	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
+	if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
-		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
+		$WHERE.= $LINK.$itemtable.".deleted='$deleted' ";
 	}
 	// Remove template items
-	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+	if (in_array($itemtable,$CFG_GLPI["template_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
-		$WHERE.= $LINK.$LINK_ID_TABLE[$type].".is_template='0' ";
+		$WHERE.= $LINK.$itemtable.".is_template='0' ";
 	}
 
 	// Add search conditions
@@ -491,7 +495,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$i=0;
 
 		//foreach($contains as $key => $val)
-		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++)
+		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
 			// if real search (strlen >0) and not all and view search
 			if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]!="all"&&$field[$key]!="view"){
 				$LINK=" ";
@@ -568,9 +572,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$WHERE.=")";
 				$i++;
 			} 
-
+		}
 	}
-
+	// Add Restrict to current entities
+	if ($entity_restrict){
+		$WHERE.=getEntitiesRestrictRequest("AND",$itemtable);
+	}
 
 	//// 4 - ORDER
 	// Add order by if order item is a normal item
@@ -619,7 +626,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 6 - Add item ID
 
 	// Add ID to the select
-	$SELECT.=$LINK_ID_TABLE[$type].".ID AS ID ";
+	$SELECT.=$itemtable.".ID AS ID ";
 
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
@@ -702,19 +709,23 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//No search : count number of items using a simple count(ID) request and LIMIT search
 	if ($nosearch) {
 		$LIMIT= " LIMIT $start, ".$CFG_GLPI["list_limit"];
-		$query_num="SELECT count(ID) FROM ".$LINK_ID_TABLE[$type];
+		$query_num="SELECT count(ID) FROM ".$itemtable;
 
 		$first=true;
-		if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
+		if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
 			$LINK= " AND " ;
 			if ($first) {$LINK=" WHERE ";$first=false;}
-			$query_num.= $LINK.$LINK_ID_TABLE[$type].".deleted='$deleted' ";
+			$query_num.= $LINK.$itemtable.".deleted='$deleted' ";
 		}
-		if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+		if (in_array($itemtable,$CFG_GLPI["template_tables"])){
 			$LINK= " AND " ;
 			if ($first) {$LINK=" WHERE ";$first=false;}
-			$query_num.= $LINK.$LINK_ID_TABLE[$type].".is_template='0' ";
+			$query_num.= $LINK.$itemtable.".is_template='0' ";
 		}
+		if ($entity_restrict){
+			$query_num.=getEntitiesRestrictRequest("AND",$itemtable);
+		}
+
 		$result_num = $DB->query($query_num);
 		$numrows= $DB->result($result_num,0,0);
 	}
@@ -729,7 +740,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-	//echo $QUERY."<br>\n";
+//	echo $QUERY."<br>\n";
 
 	// Set display type for export if define
 	$output_type=HTML_OUTPUT;
@@ -739,7 +750,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
-		// if real search or complet eexport : get numrows from request 
+		// if real search or complete export : get numrows from request 
 		if (!$nosearch||isset($_GET['export_all'])) 
 			$numrows= $DB->numrows($result);
 		// If the begin of the view is before the number of items
