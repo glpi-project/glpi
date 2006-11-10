@@ -576,7 +576,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 	// Add Restrict to current entities
 	if ($entity_restrict){
-		$WHERE.=getEntitiesRestrictRequest("AND",$itemtable);
+		$LINK= " AND " ;
+		if ($first) {$LINK=" ";$first=false;}
+
+		$WHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
 	}
 
 	//// 4 - ORDER
@@ -723,7 +726,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$query_num.= $LINK.$itemtable.".is_template='0' ";
 		}
 		if ($entity_restrict){
-			$query_num.=getEntitiesRestrictRequest("AND",$itemtable);
+			$LINK="AND";
+			if ($first) {$LINK=" WHERE ";$first=false;}
+			$query_num.=getEntitiesRestrictRequest($LINK,$itemtable);
 		}
 
 		$result_num = $DB->query($query_num);
@@ -740,7 +745,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
 	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 
-//	echo $QUERY."<br>\n";
+	//echo $QUERY."<br>\n";
 
 	// Set display type for export if define
 	$output_type=HTML_OUTPUT;

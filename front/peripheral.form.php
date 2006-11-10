@@ -130,9 +130,6 @@ else
 
 	commonHeader($LANG["title"][7],$_SERVER['PHP_SELF']);
 
-	if ($peripheral->getFromDB($tab["ID"]))
-		$peripheral->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
-
 	if (!empty($tab["withtemplate"])) {
 
 		if ($peripheral->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){

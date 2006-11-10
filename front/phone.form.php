@@ -133,9 +133,6 @@ else
 
 	commonHeader($LANG["title"][41],$_SERVER['PHP_SELF']);
 
-	if ($phone->getFromDB($tab["ID"]))
-		$phone->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
-
 	if (!empty($tab["withtemplate"])) {
 
 		if ($phone->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){

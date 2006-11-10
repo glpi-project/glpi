@@ -98,9 +98,6 @@ else
 
 	commonHeader($LANG["title"][6],$_SERVER['PHP_SELF']);
 
-	if ($netdevice->getFromDB($tab["ID"]))
-		$netdevice->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
-
 	if (!empty($tab["withtemplate"])) {
 
 		if ($netdevice->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){

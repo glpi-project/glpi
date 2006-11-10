@@ -353,16 +353,18 @@ class CommonDBTM {
 		return array();
 	}
 
-	function showOnglets($target,$withtemplate,$actif){
+	function showOnglets($ID,$withtemplate,$actif){
 		global $LANG,$CFG_GLPI;
 
+		$target=$_SERVER['PHP_SELF']."?ID=".$ID;
+	
 		$template="";
 		if(!empty($withtemplate)){
 			$template="&amp;withtemplate=$withtemplate";
 		}
-
+	
 		echo "<div id='barre_onglets'><ul id='onglet'>";
-
+	
 		if (count($onglets=$this->defineOnglets($withtemplate))){
 			//if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
 			//	$onglets[11]=$LANG["title"][35];
@@ -372,18 +374,18 @@ class CommonDBTM {
 				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template'>".$val."</a></li>";
 			}
 		}
-
-
+	
+	
 		if(empty($withtemplate)){
 			echo "<li class='invisible'>&nbsp;</li>";
 			echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$LANG["title"][29]."</a></li>";
 		}
-
-
+	
+	
 		display_plugin_headings($target,$this->type,$withtemplate,$actif);
-
+	
 		echo "<li class='invisible'>&nbsp;</li>";
-
+	
 		if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 			$ID=$ereg[1];
 			$next=getNextItem($this->table,$ID);
@@ -392,10 +394,9 @@ class CommonDBTM {
 			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
 			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
 		}
-
+	
 		echo "</ul></div>";
-
-	}
+	} 
 
 }
 

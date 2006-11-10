@@ -112,7 +112,7 @@ class Contract extends CommonDBTM {
 	 *@return Nothing (display)
 	 *
 	 **/
-	function showForm ($target,$ID) {
+	function showForm ($target,$ID,$withtemplate='') {
 		// Show Contract or blank form
 
 		global $CFG_GLPI,$LANG;
@@ -125,10 +125,13 @@ class Contract extends CommonDBTM {
 
 			if($this->getEmpty()) $con_spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $con_spotted = true;
+			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
 		}
 
 		if ($con_spotted){
+
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+
 			echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'><b>";

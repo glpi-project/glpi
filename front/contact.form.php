@@ -108,11 +108,8 @@ else
 
 	commonHeader($LANG["title"][22],$_SERVER['PHP_SELF']);
 
-	if ($contact->getFromDB($tab["ID"]))
-		$contact->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
-
 	if ($contact->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
-		if (!empty($tab['ID']))
+		if (!empty($tab['ID'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
 					showEnterpriseContact($tab["ID"]);
@@ -131,6 +128,7 @@ else
 						showEnterpriseContact($tab["ID"]);
 					break;
 			}
+		}
 	}	
 
 	commonFooter();

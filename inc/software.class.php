@@ -192,10 +192,11 @@ class Software  extends CommonDBTM {
 		if(empty($ID) && $withtemplate == 1) {
 			if($this->getEmpty()) $sw_spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $sw_spotted = true;
+			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $sw_spotted = true;
 		}
 
 		if($sw_spotted) {
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14].": ";

@@ -173,7 +173,7 @@ class CartridgeType extends CommonDBTM {
 	 *@return Nothing (display)
 	 *
 	 **/
-	function showForm ($target,$ID) {
+	function showForm ($target,$ID,$withtemplate='') {
 		// Show CartridgeType or blank form
 
 		global $CFG_GLPI,$LANG;
@@ -187,11 +187,11 @@ class CartridgeType extends CommonDBTM {
 
 			if($this->getEmpty()) $ct_spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $ct_spotted = true;
+			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $ct_spotted = true;
 		}		
 
 		if ($ct_spotted){
-
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			echo "<form method='post' action=\"$target\"><div align='center'>\n";
 
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {

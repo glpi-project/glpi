@@ -111,8 +111,6 @@ else
 
 	commonHeader($LANG["title"][19],$_SERVER['PHP_SELF']);
 
-	if ($cartype->getFromDB($tab["ID"]))
-		$cartype->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($cartype->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID']))

@@ -115,7 +115,7 @@ class Enterprise extends CommonDBTM {
 
 
 
-	function showForm ($target,$ID) {
+	function showForm ($target,$ID,$withtemplate='') {
 		// Show Enterprise or blank form
 
 		global $CFG_GLPI,$LANG;
@@ -127,9 +127,10 @@ class Enterprise extends CommonDBTM {
 
 			if($this->getEmpty()) $spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $spotted = true;
+			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
 		}
 		if ($spotted){
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			echo "<form method='post' action=\"$target\"><div align='center'>";
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'><b>";

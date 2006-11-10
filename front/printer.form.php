@@ -123,9 +123,6 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 	}	
 
-	if ($print->getFromDB($tab["ID"]))
-		$print->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
-
 	if (!empty($tab["withtemplate"])) {
 
 		if ($print->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
