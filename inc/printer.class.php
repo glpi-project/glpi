@@ -253,10 +253,13 @@ class Printer  extends CommonDBTM {
 		if(empty($ID) && $withtemplate == 1) {
 			if($this->getEmpty()) $printer_spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $printer_spotted = true;
+			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $printer_spotted = true;
 		}
 
 		if($printer_spotted) {
+
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14].": ";

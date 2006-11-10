@@ -110,10 +110,6 @@ else if (isset($_POST["deletegroup"]))
 
 		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
 
-		if ($user->getFromDB($_GET["ID"]))
-			$user->showOnglets($_SERVER['PHP_SELF']."?ID=".$_GET["ID"], "",$_SESSION['glpi_onglet'] );
-
-
 		if ($user->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			if (!empty($_GET["ID"]))
 			switch($_SESSION['glpi_onglet']){

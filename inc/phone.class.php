@@ -239,10 +239,12 @@ class Phone extends CommonDBTM {
 		if(empty($ID) && $withtemplate == 1) {
 			if($this->getEmpty()) $mon_spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $mon_spotted = true;
+			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $mon_spotted = true;
 		}
 
 		if($mon_spotted) {
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14].": ";

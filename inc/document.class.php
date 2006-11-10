@@ -150,7 +150,7 @@ class Document extends CommonDBTM {
 
 	}
 
-	function showForm ($target,$ID) {
+	function showForm ($target,$ID,$withtemplate='') {
 		global $CFG_GLPI,$LANG;
 
 		if (!haveRight("document","r"))	return false;
@@ -161,10 +161,12 @@ class Document extends CommonDBTM {
 
 			if($this->getEmpty()) $spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $spotted = true;
+			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
 		}
 
 		if ($spotted){
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+
 			echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\"><div align='center'>";
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='3'><b>";

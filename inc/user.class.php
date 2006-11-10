@@ -570,7 +570,7 @@ class User extends CommonDBTM {
 
 	}
 
-	function showForm($target,$ID) {
+	function showForm($target,$ID,$withtemplate='') {
 
 		// Affiche un formulaire User
 		global $CFG_GLPI, $LANG;
@@ -590,13 +590,12 @@ class User extends CommonDBTM {
 		}
 		$spotted=false;
 		if(empty($ID)) {
-			// Partie ajout d'un user
-			// il manque un getEmpty pour les users	
 			$spotted=$this->getEmpty();
 		} else {
 			$spotted=$this->getfromDB($ID);
 		}
 		if ($spotted) {
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			echo "<div align='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>".$LANG["setup"][57]." : " .$this->fields["name"]."&nbsp;";
@@ -666,7 +665,7 @@ class User extends CommonDBTM {
 				echo "</tr>";
 		
 		
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
+/*				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
 				$active=0;
 				if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
 				echo "<select name='active'>";
@@ -675,7 +674,7 @@ class User extends CommonDBTM {
 		
 				echo "</select>";
 				echo "</td><td colspan='2'>&nbsp;</td></tr>";
-			
+*/			
 			$CFG_GLPI["cache"]->end();
 			}
 	

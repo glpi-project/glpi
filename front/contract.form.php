@@ -132,10 +132,6 @@ else
 
 	commonHeader($LANG["title"][20],$_SERVER['PHP_SELF']);
 
-
-	if ($contract->getFromDB($tab["ID"]))
-		$contract->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
-
 	if ($contract->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID']))
 			switch($_SESSION['glpi_onglet']){

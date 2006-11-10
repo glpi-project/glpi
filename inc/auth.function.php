@@ -384,6 +384,14 @@ function changeProfile($ID){
 	$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
 }
 
+// Check if you could access to the entity of id = $ID
+function haveAccessToEntity($ID){
+	if (isset($_SESSION['glpiactiveentities'])){
+		return in_array($ID,$_SESSION['glpiactiveentities']);
+	} else {
+		return false;
+	}
+}
 function getEntitiesRestrictRequest($separator="AND",$table="",$field=""){
 	
 	if (in_array(0,$_SESSION['glpiactiveentities'])){

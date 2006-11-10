@@ -98,8 +98,6 @@ else
 	commonHeader($LANG["title"][36],$_SERVER['PHP_SELF']);
 
 
-	if ($constype->getFromDB($tab["ID"]))
-		$constype->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($constype->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID']))

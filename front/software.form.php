@@ -109,8 +109,6 @@ else
 
 	commonHeader($LANG["title"][12],$_SERVER['PHP_SELF']);
 
-	if ($soft->getFromDB($tab["ID"]))
-		$soft->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 
 	if (!empty($tab["withtemplate"])) {
 

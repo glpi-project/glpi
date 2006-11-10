@@ -248,10 +248,13 @@ class Netdevice extends CommonDBTM {
 		if(empty($ID) && $withtemplate == 1) {
 			if($this->getEmpty()) $spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $spotted = true;
+			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
 		}
 
 		if($spotted) {
+
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14].": ";

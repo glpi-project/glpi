@@ -123,9 +123,6 @@ else
 		}
 	}
 
-	if ($ent->getFromDB($tab["ID"]))
-		$ent->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
-
 	if ($ent->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
 		if (!empty($tab["ID"]))
 			switch($_SESSION['glpi_onglet']){

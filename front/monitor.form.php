@@ -126,8 +126,7 @@ else
 	}
 
 	commonHeader($LANG["title"][18],$_SERVER['PHP_SELF']);
-	if ($monitor->getFromDB($tab["ID"]))
-		$monitor->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+
 	if (!empty($tab["withtemplate"])) {
 
 		if ($monitor->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){

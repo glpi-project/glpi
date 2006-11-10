@@ -134,8 +134,6 @@ else
 
 	commonHeader($LANG["title"][25],$_SERVER['PHP_SELF']);
 
-	if ($doc->getFromDB($tab["ID"]))
-		$doc->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
 	if ($doc->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
 		switch ($_SESSION['glpi_onglet']){

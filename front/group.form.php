@@ -99,9 +99,6 @@ else
 
 	commonHeader($LANG["Menu"][36],$_SERVER['PHP_SELF']);
 
-	if ($group->getFromDB($tab["ID"]))
-		$group->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
-
 	if ($group->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID']))
 			switch($_SESSION['glpi_onglet']){
