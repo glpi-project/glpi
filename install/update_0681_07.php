@@ -87,6 +87,11 @@ function update0681to07(){
 			$query = "ALTER TABLE `".$tbl."` ADD `FK_entities` INT NOT NULL DEFAULT '0' AFTER `ID`";
 			$DB->query($query) or die("0.7 add FK_entities in $tbl ".$LANG["update"][90].$DB->error());
 		}
+
+		if (!isIndex($tbl,"FK_entities")){			
+			$query = "ALTER TABLE `".$tbl."` ADD INDEX (`FK_entities`)";
+			$DB->query($query) or die("0.7 add index FK_entities in $tbl ".$LANG["update"][90].$DB->error());
+		}
 	}
 	
 	// Regenerate Indexes :

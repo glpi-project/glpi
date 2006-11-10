@@ -419,21 +419,27 @@ function getNextItem($table,$ID){
 
 	$query = "SELECT ID 
 		FROM $table 
-		WHERE ".$nextprev_item." > '$search' ";
+		WHERE ( ".$nextprev_item." > '$search' ";
 
 	// Same name case
 	if ($nextprev_item!="ID"){
 		$query .= " OR (".$nextprev_item." = '$search' AND ID > '$ID') ";
 	}
 
+	$query.=" ) ";
+
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
 		$query.=" AND deleted='N' ";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
 		$query.=" AND is_template='0' ";	
 
+	// Restrict to active entities
+	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+		$query.=getEntitiesRestrictRequest("AND",$table);
+	}
+
 	//$query.=" ORDER BY ".$nextprev_item." ASC, ID ASC";
 	$query.=" ORDER BY $nextprev_item ASC, ID ASC";
-
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0)
@@ -466,18 +472,24 @@ function getPreviousItem($table,$ID){
 
 	$query = "SELECT ID 
 		FROM $table 
-		WHERE ".$nextprev_item." < '$search' ";
+		WHERE  (".$nextprev_item." < '$search' ";
 
 	// Same name case
 	if ($nextprev_item!="ID"){
 		$query .= " OR (".$nextprev_item." = '$search' AND ID < '$ID') ";
 	}
 
+	$query.=" ) ";
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
 		$query.="AND deleted='N'";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
 		$query.="AND is_template='0'";	
+
+	// Restrict to active entities
+	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+		$query.=getEntitiesRestrictRequest("AND",$table);
+	}
 
 	$query.=" ORDER BY ".$nextprev_item." DESC, ID DESC";
 
