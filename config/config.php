@@ -113,6 +113,11 @@
 			$CFG_GLPI["dropdownentity_tables"]=array("glpi_dropdown_locations","glpi_dropdown_kbcategories");
 
 
+			$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridges_type","glpi_computers","glpi_consumables_type","glpi_contacts","glpi_contracts","glpi_docs",
+				"glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_enterprises","glpi_groups",
+				"glpi_kbitems","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
+				"glpi_tracking");
+
 			//Options g�� dynamiquement, ne pas toucher cette partie.
 			//Options from DB, do not touch this part.
 			$CFG_GLPI["debug"]=$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_profile"]=$CFG_GLPI["debug_lang"]=0;
