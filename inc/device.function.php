@@ -392,7 +392,7 @@ function unlink_device_computer($compDevID,$dohistory=1){
 
 	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
 	if($db->query($query2)){
-		if ($dohistory==1){
+		if ($dohistory){
 			$device = new Device($data["device_type"]);
 			$device->getFromDB($data["FK_device"]);
 
@@ -414,7 +414,7 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	$device->getfromDB($dID);
 	if (empty($specificity)) $specificity=$device->fields['specif_default'];
 	$newID=$device->computer_link($cID,$device_type,$specificity);
-	if ($dohistory==1){
+	if ($dohistory){
 		$changes[0]='0';
 		$changes[1]="";
 		$changes[2]=addslashes($device->fields["designation"]);

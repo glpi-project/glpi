@@ -518,7 +518,7 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
 		if ($result = $db->query($query)) {
 			$newID=$db->insert_id();
-			if ($dohistory==1){
+			if ($dohistory){
 				$lic=new License();
 				$lic->getFromDB($lID);
 				$soft=new Software();
@@ -544,7 +544,7 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
 		if ($result = $db->query($query)) {
 			$newID=$db->insert_id();
-			if ($dohistory==1){
+			if ($dohistory){
 				$soft=new Software();
 				if ($soft->getFromDB($sID)){
 					$changes[0]='0';
@@ -568,7 +568,7 @@ function uninstallSoftware($ID,$dohistory=1) {
 	global $db;
 
 	// license data for history
-	if ($dohistory==1){
+	if ($dohistory){
 		$query2 = "SELECT * FROM glpi_inst_software WHERE (ID = '$ID')";
 		$result2=$db->query($query2);
 		$data=$db->fetch_array($result2);
@@ -579,7 +579,7 @@ function uninstallSoftware($ID,$dohistory=1) {
 	$query = "DELETE FROM glpi_inst_software WHERE (ID = '$ID')";
 
 	if ($result = $db->query($query)) {
-		if ($dohistory==1){
+		if ($dohistory){
 			$soft=new Software();
 			if ($soft->getFromDB($lic->fields["sID"])){
 				$changes[0]='0';

@@ -255,6 +255,8 @@ class CommonDBTM {
 			$x=0;
 			$updates=array();
 			foreach ($input as $key => $val) {
+				// Secu for null values on history 
+				if (is_null($this->fields[$key])) $this->fields[$key]=0; 
 				if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
 					// Debut logs
 					if ($this->dohistory&&$history)

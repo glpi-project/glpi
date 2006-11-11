@@ -436,7 +436,11 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 			FROM hardware 
 			WHERE ID='".$line['ocs_id']."'";
 		$result_ocs = $dbocs->query($query_ocs);
-
+		
+		// Need do history to be 2 not to lock fields 
+		if (dohistory){
+			$dohistory=2;
+		}
 		if ($dbocs->numrows($result_ocs)==1){
 			$data_ocs=$dbocs->fetch_array($result_ocs);
 			if ($force){
