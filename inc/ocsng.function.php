@@ -440,7 +440,10 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 			FROM hardware 
 			WHERE ID='".$line['ocs_id']."'";
 		$result_ocs = $DBocs->query($query_ocs);
-
+		// Need do history to be 2 not to lock fields
+		if ($dohistory) {
+			$dohistory=2;
+		}
 		if ($DBocs->numrows($result_ocs)==1){
 			$data_ocs=$DBocs->fetch_array($result_ocs);
 			if ($force){
@@ -574,12 +577,12 @@ function getOcsConf($id) {
  *@param $glpi_id integer : ocs computer id.
  *@param $cfg_ocs array : ocs config
  *@param $computer_updates array : already updated fields of the computer
- *@param $dohistory log updates on history ?
+ *@param $dohistory log updates on history ? 
  *
  *@return nothing.
  *
  **/
-function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1) {
+function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=2) {
 	global $DBocs,$LANG,$DB;
 	$query = "SELECT * 
 		FROM hardware 
@@ -646,7 +649,7 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
  *@return nothing.
  *
  **/
-function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=1) {
+function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=2) {
 	global $DBocs;
 	$query = "SELECT * 
 		FROM bios 
@@ -836,7 +839,7 @@ function cron_ocsng(){
 			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 
 			if (isset($hardware[$data["ocs_id"]])){ 
-				ocsUpdateComputer($data["ID"],1);
+				ocsUpdateComputer($data["ID"],2);
 				$done++;
 			}
 		}
@@ -1018,7 +1021,7 @@ function ocsEditLock($target,$ID){
 		echo "<div align='center'>";
 		// Print lock fields for OCSNG
 
-		$lockable_fields=array("name","type","FK_glpi_enterprise","model","serial","comments","contact","domain","os","os_sp","os_version");
+		$lockable_fields=array("name","type","FK_glpi_enterprise","model","serial","comments","contact","domain","os","os_sp","os_version","FK_users");
 		$locked=array_intersect(importArrayFromDB($data["computer_update"]),$lockable_fields);
 
 		if (count($locked)){
