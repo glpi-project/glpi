@@ -113,6 +113,7 @@ class Computer extends CommonDBTM {
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB;
 		// Manage changes for OCS if more than 1 element (date_mod)
+		// Need dohistory==1 if dohistory==2 no locking fields
 		if ($this->fields["ocs_import"]&&$history==1&&count($updates)>1){
 			mergeOcsArray($this->fields["ID"],$updates,"computer_update");
 		}
