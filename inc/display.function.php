@@ -146,26 +146,44 @@ function commonHeader($title,$url)
 	
 		//////// INVENTORY
 		$inventory=array();
-		if (haveRight("computer","r"))
+		$showstate=false;
+		if (haveRight("computer","r")){
 			$inventory[$LANG["Menu"][0]]=array("computer.php","c");
-		if (haveRight("monitor","r"))
+			$showstate=true;
+		}
+		if (haveRight("monitor","r")){
 			$inventory[$LANG["Menu"][3]]=array("monitor.php","m");
-		if (haveRight("software","r"))
+			$showstate=true;
+		}
+		if (haveRight("software","r")){
 			$inventory[$LANG["Menu"][4]]=array("software.php","s");  
-		if (haveRight("networking","r"))
+			$showstate=true;
+		}
+		if (haveRight("networking","r")){
 			$inventory[$LANG["Menu"][1]]=array("networking.php","n");
-		if (haveRight("peripheral","r"))
+			$showstate=true;
+		}
+		if (haveRight("peripheral","r")){
 			$inventory[$LANG["Menu"][16]]=array("peripheral.php","r");
-		if (haveRight("printer","r"))
+			$showstate=true;
+		}
+		if (haveRight("printer","r")){
 			$inventory[$LANG["Menu"][2]]=array("printer.php","p");
-		if (haveRight("cartridge","r"))
+			$showstate=true;
+		}
+		if (haveRight("cartridge","r")){
 			$inventory[$LANG["Menu"][21]]=array("cartridge.php","c");
-		if (haveRight("consumable","r"))
+		}
+		if (haveRight("consumable","r")){
 			$inventory[$LANG["Menu"][32]]=array("consumable.php","g");
-		if (haveRight("phone","r"))
+		}
+		if (haveRight("phone","r")){
 			$inventory[$LANG["Menu"][34]]=array("phone.php","n");
-		if (count($inventory))
+			$showstate=true;
+		}
+		if ($showstate){
 			$inventory[$LANG["Menu"][28]]=array("state.php","s");
+		}
 	
 		//////// FINANCIAL
 		$financial=array();
