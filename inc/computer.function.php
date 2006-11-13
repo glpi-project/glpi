@@ -129,7 +129,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 			}
 			$CFG_GLPI["cache"]->end();
 		}
-		if ($canedit&&!(!empty($withtemplate) && $withtemplate == 2))
+		if ($canedit&&!(!empty($withtemplate) && $withtemplate == 2)&&count($comp->devices))
 			echo "<tr><td colspan='65' align='center' class='tab_bg_1'><input type='submit' class='submit' name='update_device' value='".$LANG["buttons"][7]."'></td></tr>";
 		echo "</table>";
 
