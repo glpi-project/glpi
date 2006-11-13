@@ -1060,6 +1060,7 @@ function showFormExtAuth($target) {
 		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][174]."</td><td><input type=\"text\" name=\"cas_host\" value=\"". $CFG_GLPI["cas_host"] ."\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][175]."</td><td><input type=\"text\" name=\"cas_port\" value=\"". $CFG_GLPI["cas_port"] ."\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][176]."</td><td><input type=\"text\" name=\"cas_uri\" value=\"". $CFG_GLPI["cas_uri"] ."\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][182]."</td><td><input type=\"text\" name=\"cas_logout\" value=\"". $CFG_GLPI["cas_logout"] ."\" ></td></tr>";
 
 		echo "</table>&nbsp;</div>";
 	}

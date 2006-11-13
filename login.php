@@ -78,7 +78,13 @@ if (!isset($_POST["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
 	$auth_succeded=true;
 	$identificat->extauth=1;
 	$user_present = $identificat->user->getFromDBbyName($user);
-	if (!$user_present) $identificat->user->fields["name"]=$user;
+
+        // if LDAP enabled too, get user's infos from LDAP
+	if (!empty($cfg_glpi["ldap_host"])) {
+		$identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$user);
+	}
+	$identificat->user->fields["name"]=$user;
+
 }
 if (isset($_POST["noCAS"])) $_SESSION["noCAS"]=1;
 

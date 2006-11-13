@@ -1265,6 +1265,7 @@ $LANG["setup"][178]="L'extension CURL ou DOMXML de votre parseur PHP n'est pas i
 $LANG["setup"][179]="Impossible d'utiliser CAS comme source de connexion externe";
 $LANG["setup"][180]="Utiliser TLS";
 $LANG["setup"][181]="Fonction ldap_start_tls inexistante";
+$LANG["setup"][182]="Url de retour au logout";
 
 $LANG["setup"][200]="Suivis par emails";
 $LANG["setup"][201]="Configuration de la fonction";
