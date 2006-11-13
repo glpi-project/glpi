@@ -95,9 +95,9 @@ class CommonDBTM {
 			$query .= " WHERE ID='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
-
 			$result=$DB->query($query);
 		}
+
 		$this->post_updateInDB($updates);
 		cleanAllItemCache($this->fields["ID"],"GLPI_".$this->type);
 		cleanRelationCache($this->table);
@@ -269,7 +269,7 @@ class CommonDBTM {
 			$updates=array();
 			foreach ($input as $key => $val) {
 				// Secu for null values on history
-				if (is_null($this->fields[$key])) $this->fields[$key]=0;
+				if (isset($this->fields[$key])&&is_null($this->fields[$key])) $this->fields[$key]=0;
 				if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
 					// Debut logs
 					if ($this->dohistory&&$history)
@@ -284,6 +284,7 @@ class CommonDBTM {
 
 			if(count($updates)){
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
+
 				if ($this->updateInDB($updates)){
 					$this->post_updateItem($input,$updates,$history);
 					do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));

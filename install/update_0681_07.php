@@ -37,6 +37,12 @@
 function update0681to07(){
 	global $DB,$LANG,$CFG_GLPI;
 
+	if(!FieldExists("glpi_config", "cas_logout")) {
+		$query = "ALTER TABLE `glpi_config` ADD `cas_logout` VARCHAR( 255 ) NULL AFTER `cas_uri`;";
+		$DB->query($query) or die("0.7 add cas_logout in glpi_config ".$LANG["update"][90].$DB->error());
+	}
+
+
 	if(!TableExists("glpi_entities")) {
 		$query = "CREATE TABLE `glpi_entities` (
 		`ID` int(11) NOT NULL auto_increment,
@@ -128,9 +134,6 @@ function update0681to07(){
 	// TODO Split Config -> config general + config entity
 	// TODO AUto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference
-
-	
-
 
 } // fin 0.7 #####################################################################################
 
