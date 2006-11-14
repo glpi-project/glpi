@@ -1416,6 +1416,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 		foreach ($import_device as $key => $val){
 			if (!(strpos($val,$device_type.'$$')===false)){
 				// Networking case : Delete ports corresponding to device :
+				// TODO Add a field in the DB to store linked item
 				if ($device_type==NETWORK_DEVICE){
 					$np=new Netport();
 					$np->getFromDB($key);
