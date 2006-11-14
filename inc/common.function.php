@@ -584,9 +584,11 @@ function rembo($string){
 function makeTextSearch($val,$not=0){
 	$NOT="";
 	if ($not) $NOT= " NOT ";
-
+	
 	if ($val=="NULL"||$val=="null") $SEARCH=" IS $NOT NULL ";
 	else {
+		// Unclean to permit < and > search
+		$val=unclean_cross_side_scripting_deep($val);
 		$begin=0;
 		$end=0;
 		if (($length=strlen($val))>0){
