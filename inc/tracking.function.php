@@ -1171,7 +1171,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		$query.= " LEFT JOIN glpi_dropdown_tracking_category ON ( glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
 	}
 
-	$where=" WHERE '1' = '1'";
+	$where=" WHERE '1' = '1' ";
 
 	if ($computers_search)
 		$where.=" AND glpi_tracking.device_type= '1'";
@@ -1261,7 +1261,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 		}
 	}
-
+	$where.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
 
 	if ($sort=="")
