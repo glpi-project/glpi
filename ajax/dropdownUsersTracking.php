@@ -48,13 +48,16 @@ if (!defined('GLPI_ROOT')){
 checkCentralAccess();
 
 // Make a select box with all glpi users
-$where=getEntitiesRestrictRequest("","glpi_tracking");
+$where="'1'='1'";
+$where.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
-if (isset($_POST['value']))
-$where.=" AND  (glpi_users.ID <> '".$_POST['value']."' ";
+if (isset($_POST['value'])){
+	$where.=" AND  (glpi_users.ID <> '".$_POST['value']."' ";
+}
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+	$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
+}
 
 $where.=")";	
 
