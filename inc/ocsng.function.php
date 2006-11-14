@@ -1415,6 +1415,19 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 	if ($do_clean&&count($import_device)){
 		foreach ($import_device as $key => $val){
 			if (!(strpos($val,$device_type.'$$')===false)){
+				// Networking case : Delete ports corresponding to device :
+				if ($device_type==NETWORK_DEVICE){
+					$np=new Netport();
+					$np->getFromDB($key);
+					$query="SELECT specificity FROM glpi_computer_device WHERE ID='$key' ";
+					$result=$DB->query($query);
+					if ($DB->numrows($result)){
+						$macaddr=$DB->result($result,0,0);
+						$query2="DELETE FROM glpi_networking_ports WHERE name='".str_replace($device_type.'$$$$$',"",$val)."' AND ifmac='$macaddr'";
+						$DB->query($query2);
+					}
+				}
+
 				unlink_device_computer($key,$dohistory);
 				deleteInOcsArray($glpi_id,$key,"import_device");
 			} 
