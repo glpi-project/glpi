@@ -291,7 +291,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			if ($parentID!=0) {echo "<div align='center'><b>".$LANG["knowbase"][28]."</b></div>";}
+			if ($parentID!=0) {echo "<div align='center'><b>".$LANG["search"][15]."</b></div>";}
 		}
 	}
 
