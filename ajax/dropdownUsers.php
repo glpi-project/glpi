@@ -60,9 +60,8 @@ else if ($_POST['right']=="all")
 $where=" glpi_users.ID > '1' ";
 else {
 	$where=" glpi_profiles.".$_POST['right']."='1' ";
-	$joinprofile=true;
 }
-
+$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
 
 if (isset($_POST['value']))
 $where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
@@ -75,9 +74,10 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT glpi_users.* FROM glpi_users ";
-if ($joinprofile) $query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users) LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles)";
+$query = "SELECT DISTINCT glpi_users.* FROM glpi_users ";
+$query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users) LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles)";
 $query.= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name $LIMIT";
+
 $result = $DB->query($query);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
