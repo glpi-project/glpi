@@ -381,7 +381,7 @@ function deleteDropdown($input) {
 	$send = array();
 	$send["tablename"] = $input["tablename"];
 	$send["oldID"] = $input["ID"];
-	$send["newID"] = "NULL";
+	$send["newID"] = 0;
 	replaceDropDropDown($send);
 }
 

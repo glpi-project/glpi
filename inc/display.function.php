@@ -54,7 +54,7 @@ function commonHeader($title,$url)
 
 	global $cfg_glpi,$lang,$HTMLRel,$phproot,$plugin_hooks,$HEADER_LOADED ;
 	if ($HEADER_LOADED) return;
-	$HEADER_LOADED=true;;
+	$HEADER_LOADED=true;
 	// Override list-limit if choosen
 	if (isset($_POST['list_limit'])) {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
@@ -76,26 +76,44 @@ function commonHeader($title,$url)
 
 	//////// INVENTORY
 	$inventory=array();
-	if (haveRight("computer","r"))
+	$showstate=false;
+	if (haveRight("computer","r")){
 		$inventory[$lang["Menu"][0]]=array("computer.php","c");
-	if (haveRight("monitor","r"))
+		$showstate=true;
+	}
+	if (haveRight("monitor","r")){
 		$inventory[$lang["Menu"][3]]=array("monitor.php","m");
-	if (haveRight("software","r"))
+		$showstate=true;
+	}
+	if (haveRight("software","r")){
 		$inventory[$lang["Menu"][4]]=array("software.php","s");  
-	if (haveRight("networking","r"))
+		$showstate=true;
+	}
+	if (haveRight("networking","r")){
 		$inventory[$lang["Menu"][1]]=array("networking.php","n");
-	if (haveRight("peripheral","r"))
+		$showstate=true;
+	}
+	if (haveRight("peripheral","r")){
 		$inventory[$lang["Menu"][16]]=array("peripheral.php","r");
-	if (haveRight("printer","r"))
+		$showstate=true;
+	}
+	if (haveRight("printer","r")){
 		$inventory[$lang["Menu"][2]]=array("printer.php","p");
-	if (haveRight("cartridge","r"))
+		$showstate=true;
+	}
+	if (haveRight("cartridge","r")){
 		$inventory[$lang["Menu"][21]]=array("cartridge.php","c");
-	if (haveRight("consumable","r"))
+	}
+	if (haveRight("consumable","r")){
 		$inventory[$lang["Menu"][32]]=array("consumable.php","g");
-	if (haveRight("phone","r"))
+	}
+	if (haveRight("phone","r")){
 		$inventory[$lang["Menu"][34]]=array("phone.php","n");
-	if (count($inventory))
+		$showstate=true;
+	}
+	if ($showstate){
 		$inventory[$lang["Menu"][28]]=array("state.php","s");
+	}
 
 	//////// FINANCIAL
 	$financial=array();

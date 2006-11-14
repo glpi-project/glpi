@@ -116,10 +116,11 @@ class Cron {
 			}
 			$this->taches["contract"]=DAY_TIMESTAMP;
 			$this->taches["infocom"]=DAY_TIMESTAMP;
+		
+			// Auto update check
+			if ($cfg_glpi["auto_update_check"]>0)
+				$this->taches["check_update"]=$cfg_glpi["auto_update_check"]*DAY_TIMESTAMP;
 		}
-		// Auto update check
-		if ($cfg_glpi["auto_update_check"]>0)
-			$this->taches["check_update"]=$cfg_glpi["auto_update_check"]*DAY_TIMESTAMP;
 	}
 
 	function launch() {

@@ -49,7 +49,7 @@ if (isset($_POST["idtable"])){
 
 
 	$rand=mt_rand();
-	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='4'>";	
+	displaySearchTextAjaxDropdown($_POST['myname'].$rand); 
 
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";

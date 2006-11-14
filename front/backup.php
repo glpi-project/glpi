@@ -220,7 +220,8 @@ function get_def($db, $table) {
 	$row=$db->fetch_array($result);
 
 	// DELETE charset definition : UNEEDED WHEN UTF8 CONVERSION OF THE DATABASE
-	$def.=preg_replace("/DEFAULT CHARSET.*/i",";",$row[1]);
+	$def.=preg_replace("/DEFAULT CHARSET=\w+/i","",$row[1]); 
+	$def.=";";
 	return $def."\n\n";
 }
 

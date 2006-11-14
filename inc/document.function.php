@@ -53,9 +53,9 @@ function moveUploadedDocument($filename,$old_file=''){
 				// Delete old file
 				if(!empty($old_file)&& is_file($cfg_glpi["doc_dir"]."/".$old_file)&& !is_dir($cfg_glpi["doc_dir"]."/".$old_file)) {
 					if (unlink($cfg_glpi["doc_dir"]."/".$old_file))
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24]." ".$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 					else 
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25]." ".$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 				}
 
 				// Déplacement si droit
@@ -100,9 +100,9 @@ function uploadDocument($FILEDESC,$old_file=''){
 			// Delete old file
 			if(!empty($old_file)&& is_file($cfg_glpi["doc_dir"]."/".$old_file)&& !is_dir($cfg_glpi["doc_dir"]."/".$old_file)) {
 				if (unlink($cfg_glpi["doc_dir"]."/".$old_file))
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][24]." ".$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 				else 
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25].$cfg_glpi["doc_dir"]."/".$old_file."<br>";
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25]." ".$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 			}
 
 			// Move uploaded file

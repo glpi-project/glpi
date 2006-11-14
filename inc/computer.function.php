@@ -122,7 +122,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 			printDeviceComputer($device,$val["quantity"],$val["specificity"],$comp->fields["ID"],$val["compDevID"],$withtemplate);
 
 		}
-		if ($canedit&&!(!empty($withtemplate) && $withtemplate == 2))
+		if ($canedit&&!(!empty($withtemplate) && $withtemplate == 2)&&count($comp->devices))
 			echo "<tr><td colspan='65' align='center' class='tab_bg_1'><input type='submit' class='submit' name='update_device' value='".$lang["buttons"][7]."'></td></tr>";
 		echo "</table>";
 

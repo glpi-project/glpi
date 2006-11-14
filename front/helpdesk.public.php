@@ -77,6 +77,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		if (isset($_POST["update"])){
 			$track=new Job();
 			$track->update($_POST);
+			glpi_header($_SERVER["PHP_SELF"]."?show=user&ID=".$_POST["ID"]); 
 		}
 
 		if (showJobDetails($_SERVER["PHP_SELF"]."?show=user&ID=".$_GET["ID"],$_GET["ID"]))
