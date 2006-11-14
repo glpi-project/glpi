@@ -1305,6 +1305,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 								WHERE device_type='".COMPUTER_TYPE."' 
 								AND on_device='$glpi_id' 
 								AND ifmac='".$line2["MACADDR"]."' 
+								AND name='".$line2["DESCRIPTION"]."'
 								ORDER BY ID";
 							$glpi_ips=array();
 							$result=$DB->query($query);
@@ -1314,7 +1315,6 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 										$glpi_ips[]=$data["ID"];
 									}
 							}
-							
 							unset($netport);
 							$netport["ifmac"]=$line2["MACADDR"];
 							$netport["iface"]=ocsImportDropdown("glpi_dropdown_iface","name",$line2["TYPE"]);
