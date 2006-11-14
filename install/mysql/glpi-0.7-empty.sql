@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-11-10 18:26
+#GLPI Dump database on 2006-11-14 11:42
 
 ### Dump table glpi_alerts
 
@@ -91,7 +91,8 @@ CREATE TABLE `glpi_computer_device` (
   KEY `device_type` (`device_type`),
   KEY `device_type_2` (`device_type`,`FK_device`),
   KEY `FK_computers` (`FK_computers`),
-  KEY `FK_device` (`FK_device`)
+  KEY `FK_device` (`FK_device`),
+  KEY `specificity` (`specificity`)
 ) ENGINE=MyISAM ;
 
 
@@ -196,6 +197,7 @@ CREATE TABLE `glpi_config` (
   `cas_host` varchar(255) default NULL,
   `cas_port` varchar(255) default NULL,
   `cas_uri` varchar(255) default NULL,
+  `cas_logout` varchar(255) default NULL,
   `planning_begin` time NOT NULL default '08:00:00',
   `planning_end` time NOT NULL default '20:00:00',
   `utf8_conv` int(11) NOT NULL default '0',
@@ -242,7 +244,7 @@ CREATE TABLE `glpi_config` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','','08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -1238,8 +1240,9 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM ;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-10 18:26:38','login','1','connection failed: glpi');
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-11-10 18:26:45','login','3','glpi IP connection : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-14 11:41:39','cron','3','session (0.00s) Réussie');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-11-14 11:41:41','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-11-14 11:42:29','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 

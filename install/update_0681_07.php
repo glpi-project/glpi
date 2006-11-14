@@ -42,6 +42,12 @@ function update0681to07(){
 		$DB->query($query) or die("0.7 add cas_logout in glpi_config ".$LANG["update"][90].$DB->error());
 	}
 
+	if (!isIndex("glpi_computer_device","specificity")){			
+		$query = "ALTER TABLE `glpi_computer_device` ADD INDEX ( `specificity` )";
+		$DB->query($query) or die("0.7 add index specificity in glpi_computer_device ".$LANG["update"][90].$DB->error());
+	}
+
+	
 
 	if(!TableExists("glpi_entities")) {
 		$query = "CREATE TABLE `glpi_entities` (
