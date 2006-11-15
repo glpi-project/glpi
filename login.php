@@ -202,7 +202,7 @@ if ($auth_succeded)
 // we have done at least a good login? No, we exit.
 if ( ! $auth_succeded ) {
 	nullHeader("Login",$_SERVER['PHP_SELF']);
-	echo '<div align="center"><b>'.$identificat->getErr().'.</b><br><br>';
+	echo '<div align="center"><b>'.$identificat->getErr().'</b><br><br>';
 	echo '<b><a href="'.$CFG_GLPI["root_doc"].'/logout.php">'.$LANG["login"][1].'</a></b></div>';
 	nullFooter();
 	if ($CFG_GLPI["debug"]==DEMO_MODE)
