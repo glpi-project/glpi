@@ -756,8 +756,12 @@ $LANG["login"][7]="Mot de passe";
 $LANG["login"][8]="Identifiant ou mot de passe vide";
 $LANG["login"][10]="Authentification";
 $LANG["login"][11]="Utilisateur non autorisé à se connecter";
-
-
+$LANG["login"][12]="Identifiant ou mot de passe érroné";
+$LANG["login"][13]="Mot de passe vide";
+$LANG["login"][14]="Utilisateur inconnu";
+$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilsateurs identiques trouvés";
+$LANG["login"][16]="Echec de l'authentification LDAP";
+$LANG["login"][17]="Echec de l'authentification AD";
 
 $LANG["mailing"][0]="----------------------------------------------------------";
 $LANG["mailing"][1]="======================================================================";
