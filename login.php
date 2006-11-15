@@ -39,6 +39,7 @@ $NEEDED_ITEMS=array("user","profile","setup","group");
 
 include (GLPI_ROOT . "/inc/includes.php");
 
+// Change profile system
 if (isset($_POST['newprofile'])){
 	if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])){
 		changeProfile($_POST['newprofile']);
@@ -50,7 +51,6 @@ if (isset($_POST['newprofile'])){
 			glpi_header($CFG_GLPI['root_doc']."/front/central.php");
 		}
 	} else glpi_header($_SERVER['HTTP_REFERER']);
-
 }
 
 
@@ -179,7 +179,7 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 // are not present on the DB, so we add it.
 // if not, we update it.
 
-if ($auth_succeded)
+if ($auth_succeded){
 	if (!$user_present&&$CFG_GLPI["auto_add_users"]) {
 		if ($identificat->extauth)
 			$identificat->user->fields["_extauth"]=1;
@@ -197,7 +197,7 @@ if ($auth_succeded)
 			$identificat->user->blankPassword();
 		}
 	}
-
+}
 
 // we have done at least a good login? No, we exit.
 if ( ! $auth_succeded ) {
