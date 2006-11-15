@@ -75,8 +75,10 @@ class Identification
 
 		$query = "SELECT * from glpi_users WHERE name='$name'";
 		$result=$DB->query($query);
-		if ($DB->numrows($result)==0) return 0;
-		else {
+		if ($DB->numrows($result)==0) {
+			$this->err .= "Unknown username.<br>";
+			return 0;
+		}else {
 			$pwd=$DB->result($result,0,"password");
 			$pwdmd5=$DB->result($result,0,"password_md5");
 			if (empty($pwd)&&empty($pwdmd5))
@@ -166,7 +168,7 @@ class Identification
 					if (do_hook_function("restrict_ldap_auth",$info))
 						$rv=true;
 					else
-						$this->err .= "Restricted ldap authentication failed<br>\n";
+						$this->err .= "Restricted ldap authentication failed.<br>\n";
 
 				}
 				else
@@ -323,7 +325,7 @@ class Identification
 					if (do_hook_function("restrict_ldap_auth",$info))
 						$rv=true;
 					else
-						$this->err .= "Restricted ldap authentication failed<br>\n";
+						$this->err .= "Restricted ldap authentication failed.<br>\n";
 				}
 				else
 				{
@@ -436,7 +438,7 @@ class Identification
 		//
 		if ( empty($password) )
 		{
-			$this->err .= "Empty Password<br>";
+			$this->err .= "Empty Password.<br>";
 			return false;
 		}
 
@@ -444,7 +446,7 @@ class Identification
 		$query = "SELECT password, password_md5 from glpi_users where (name = '".$name."')";
 		$result = $DB->query($query);
 		if (!$result){
-			$this->err .= "Unknown username<br>";
+			$this->err .= "Unknown username.<br>";
 			return false;	
 		}
 		if($result)
@@ -478,12 +480,12 @@ class Identification
 						return true;
 					}
 				}
-				$this->err .= "Bad username or password<br>";
+				$this->err .= "Bad username or password.<br>";
 				return false;
 			}
 			else
 			{
-				$this->err .= "Bad username or password<br>";
+				$this->err .= "Bad username or password.<br>";
 				return false;
 			}
 		}
