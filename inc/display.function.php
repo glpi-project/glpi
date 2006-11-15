@@ -485,7 +485,7 @@ function helpHeader($title,$url) {
 	//if (ereg("tracking-injector",$_SERVER['PHP_SELF']))
 	//		echo "<td width='100%'>&nbsp;</td>";
 	// Just give him a language selector
-	echo "<td width='40%' align='center'>";
+	echo "<td width='35%' align='center'>";
 	if ($CFG_GLPI["debug"]!=DEMO_MODE&&!ereg("tracking-injector",$_SERVER['PHP_SELF']))
 		showLangSelect($CFG_GLPI["root_doc"]."/front/preference.php");
 	else echo "&nbsp;";
@@ -493,32 +493,40 @@ function helpHeader($title,$url) {
 	echo "</td>";
 
 	// And he can change his password, thats it
-	echo "<td width='40%' align='center'>";
+	echo "<td width='35%' align='center'>";
 	if (haveRight("password_update","1")&&$CFG_GLPI["debug"]!=DEMO_MODE&&$_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER['PHP_SELF']))
 		showPasswordForm($CFG_GLPI["root_doc"]."/front/preference.php",$_SESSION["glpiname"]);
 	else echo "&nbsp;";
 	echo "</td>";
 	// We tracking or post a new one
-	echo "<td width='100' align='center'>";
-	if (haveRight("create_ticket","1"))
-		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/ajoutinterv.png\" alt=\"".$LANG["job"][13]."\" title=\"".$LANG["job"][13]."\"></a>";
-	echo "<br><br>";
-	if (haveRight("observe_ticket","1"))
-		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/suivi.png\" alt=\"".$LANG["tracking"][0]."\" title=\"".$LANG["tracking"][0]."\"></a>";
+	echo "<td align='center' width='10%'>";
+	if (haveRight("create_ticket","1")){
+		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/ajoutinterv.png\" alt=\"".$LANG["job"][13]."\" title=\"".$LANG["job"][13]."\"></a><br>";
+		echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][31]."&nbsp;-</span><br>";
+	}
+	echo "<br>";
+	if (haveRight("observe_ticket","1")){
+		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/suivi.png\" alt=\"".$LANG["tracking"][0]."\" title=\"".$LANG["tracking"][0]."\"></a><br>";
+		echo "<span class='menu_title'>-&nbsp;".$LANG["title"][28]."&nbsp;-</span>";
+	}
 	echo "</td>";
 	//reservation
 
-	echo "<td width='100' align='center'>";
-	if (haveRight("reservation_helpdesk","1"))
-		echo "<a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.resa.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-2.png\" alt=\"".$LANG["Menu"][17]."\" title=\"".$LANG["Menu"][17]."\"></a>";
-	echo "<br><br>";
-	if (haveRight("faq","r"))
-		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faq-24.png\" alt=\"".$LANG["knowbase"][1]."\" title=\"".$LANG["knowbase"][1]."\"></a>";
+	echo "<td align='center' width='10%'>";
+	if (haveRight("reservation_helpdesk","1")){
+		echo "<a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.resa.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-2.png\" alt=\"".$LANG["Menu"][17]."\" title=\"".$LANG["Menu"][17]."\"></a><br>";
+		echo "<span class='menu_title'>-&nbsp;".$LANG["title"][35]."&nbsp;-</span><br>";
+	}
+	echo "<br>";
+	if (haveRight("faq","r")){
+		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faq-24.png\" alt=\"".$LANG["knowbase"][1]."\" title=\"".$LANG["knowbase"][1]."\"></a><br>";
+		echo "<span class='menu_title'>-&nbsp;".$LANG["knowbase"][1]."&nbsp;-</span>";
+	}
 
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
-	echo "<td align='right' width='100'><div align='right'>";
+	echo "<td align='right' ><div align='right'>";
 	// HELP	
 	echo "<a class='icon_nav_move'  href='#'
 		onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$LANG["central"][7]."\"></a>";
