@@ -71,12 +71,12 @@ class Identification
 	 *
 	 */
 	function userExists($name){
-		global $DB;
+		global $DB,$LANG;
 
 		$query = "SELECT * from glpi_users WHERE name='$name'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)==0) {
-			$this->err .= "Unknown username.<br>";
+			$this->err .= $LANG["login"][14]."<br>";
 			return 0;
 		}else {
 			$pwd=$DB->result($result,0,"password");
@@ -168,12 +168,12 @@ class Identification
 					if (do_hook_function("restrict_ldap_auth",$info))
 						$rv=true;
 					else
-						$this->err .= "Restricted ldap authentication failed.<br>\n";
+						$this->err .= $LANG["login"][16]."<br>\n";
 
 				}
 				else
 				{
-					$this->err.="User not found or several users found.<br>\n";
+					$this->err.=$LANG["login"][15]."<br>\n";
 				}
 			}
 			else
@@ -256,7 +256,7 @@ class Identification
 		$info = ldap_get_entries ( $ds, $sr );
 		if ( $info["count"] != 1 )
 		{
-			$this->err.="User not found or several users found.<br>\n";
+			$this->err.=$LANG["login"][15]."<br>\n";
 			ldap_free_result ( $sr );
 			ldap_close ( $ds );
 			return false;
@@ -325,11 +325,11 @@ class Identification
 					if (do_hook_function("restrict_ldap_auth",$info))
 						$rv=true;
 					else
-						$this->err .= "Restricted ldap authentication failed.<br>\n";
+						$this->err .= $LANG["login"][17]."<br>\n";
 				}
 				else
 				{
-					$this->err.="User not found or several users found.<br>\n";
+					$this->err.=$LANG["login"][15]."<br>\n";
 				}
 			}
 			else
@@ -412,7 +412,7 @@ class Identification
 
 		if ( $info["count"] != 1 )
 		{
-			$this->err.="User not found or several users found.<br>\n";
+			$this->err.=$LANG["login"][15]."<br>\n";
 			ldap_free_result ( $sr );
 			ldap_close ( $ds );
 			return false;
@@ -433,12 +433,12 @@ class Identification
 	//with an eventual error message
 	function connection_db($name,$password)
 	{
-		global $DB;
+		global $DB,$LANG;
 		// sanity check... we prevent empty passwords...
 		//
 		if ( empty($password) )
 		{
-			$this->err .= "Empty Password.<br>";
+			$this->err .= $LANG["login"][13]."<br>";
 			return false;
 		}
 
@@ -446,7 +446,7 @@ class Identification
 		$query = "SELECT password, password_md5 from glpi_users where (name = '".$name."')";
 		$result = $DB->query($query);
 		if (!$result){
-			$this->err .= "Unknown username.<br>";
+			$this->err .= $LANG["login"][14]."<br>";
 			return false;	
 		}
 		if($result)
@@ -463,7 +463,7 @@ class Identification
 					$query2 = "SELECT PASSWORD('".$password."') as password";
 					$result2 = $DB->query($query2);
 					if (!$result2&&$DB->numrows($result2) == 1){
-						$this->err .= "Bad username or password<br>";
+						$this->err .= $LANG["login"][12]."<br>";
 						return false;	
 					}
 					$pass1=$DB->result($result,0,"password");
@@ -480,12 +480,12 @@ class Identification
 						return true;
 					}
 				}
-				$this->err .= "Bad username or password.<br>";
+				$this->err .= $LANG["login"][12]."<br>";
 				return false;
 			}
 			else
 			{
-				$this->err .= "Bad username or password.<br>";
+				$this->err .= $LANG["login"][12]."<br>";
 				return false;
 			}
 		}
