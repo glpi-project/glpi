@@ -361,7 +361,11 @@ class Job extends CommonDBTM{
 			if (isset($ci->obj->fields['FK_groups'])&&$ci->obj->fields['FK_groups']!=0){
 				$input["FK_group"] = $ci->obj->fields['FK_groups'];
 			}
+			if (isset($ci->obj->fields['FK_entities'])&&$ci->obj->fields['FK_entities']!=0){
+				$input["FK_entities"] = $ci->obj->fields['FK_entities'];
+			}
 		}
+		// TODO no item selected -> FK_entities of the user profile or make select 
 
 		if (isset($input["emailupdates"])&&$input["emailupdates"]=="yes"&&empty($input["uemail"])){
 			$user=new User();

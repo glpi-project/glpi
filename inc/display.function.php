@@ -938,8 +938,9 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][24].": </td>";
-		echo "<td>";
-		dropdownTrackingDeviceType("device_type",$device_type);
+		echo "<td align='center'>";
+		dropdownMyDevices($_SESSION["glpiID"]);
+		dropdownTrackingAllDevices("device_type",$device_type);
 		echo "</td></tr>";
 	}
 

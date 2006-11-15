@@ -685,6 +685,9 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		$m->getfromDB($device_type,$ID);
 		echo $m->getType()." - ".$m->getNameID();
 	}
+	echo "<input type='hidden' name='computer' value=\"$ID\">";
+	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
+
 	echo "</th></tr>";
 
 	$author_rand=0;
@@ -695,18 +698,15 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 		echo "</td></tr>";
 	} 
-
+	
 	if ($device_type==0&&$_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center'>".$LANG["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
-		dropdownTrackingDeviceType("device_type",$device_type,$_SESSION["glpiID"]);
+		dropdownMyDevices($_SESSION["glpiID"]);
+		dropdownTrackingAllDevices("device_type",$device_type);
 		echo "</td></tr>";
-	} else {
-		echo "<tr class='tab_bg_2'><td colspan='4'>";
-		echo "<input type='hidden' name='device_type' value='0'>";
-		echo "</td></tr>";
-	}
+	} 
 
 
 	if (haveRight("update_ticket","1")){
@@ -766,13 +766,13 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 
 	if (haveRight("update_ticket","1")||haveRight("assign_ticket","1")){
-		echo "<tr class='tab_bg_2'><td>".$LANG["buttons"][3].":</td>";
-		echo "<td align='center' colspan='3'>";
+		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
+		echo "<td colspan='3'>";
 		dropdownUsers("assign",$assign,"own_ticket");
 		echo "</td></tr>";
 	} else if (haveRight("steal_ticket","1")) {
-		echo "<tr class='tab_bg_2'><td>".$LANG["buttons"][3].":</td>";
-		echo "<td align='center' colspan='3'>";
+		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
+		echo "<td colspan='3'>";
 		dropdownUsers("assign",$assign,"ID");
 		echo "</td></tr>";
 	}
@@ -806,11 +806,6 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	}
 
 	echo "<tr><th colspan='4' align='center'>".$LANG["job"][11].":";
-	if ($device_type!=0){
-		echo "<input type='hidden' name='computer' value=\"$ID\">";
-		echo "<input type='hidden' name='device_type' value=\"$device_type\">";
-	}
-
 	echo "</th></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='contents'></textarea></td></tr>";

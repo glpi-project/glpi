@@ -120,11 +120,12 @@ if (isset($_POST["comments"])&&$_POST["comments"]){
 	echo "</script>\n";
 }
 
+// Manage updates others dropdown for helpdesk
 if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('dropdown_author".$_POST["rand"]."', 1, ";
 	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('tracking_device_type_selecter','".$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
+	echo "      	new Ajax.Updater('tracking_my_devices','".$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
 	echo "           method:'post', parameters:'userID=' + value+'&device_type=0'";
 	echo "})})";
 	echo "</script>";

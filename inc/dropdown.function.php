@@ -702,125 +702,76 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 }	
 
 /**
- * Make a select box for Tracking device type
+ * Make a select box for Tracking my devices
  *
  *
- *
- * @param $myname select name
- * @param $value preselected value.
  * @param $userID User ID for my device section
  * @return nothing (print out an HTML select box)
  */
-function dropdownTrackingDeviceType($myname,$value,$userID=0){
-	global $LANG,$CFG_GLPI,$DB,$LINK_ID_TABLE;
-
-	$rand=mt_rand();
+function dropdownMyDevices($userID=0){
+	global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
 	if ($userID==0) $userID=$_SESSION["glpiID"];
 
+	$rand=mt_rand();
+
 	$already_add=array();
 
-	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]==0){
-		echo "<input type='hidden' name='$myname' value='0'>";
-		echo "<input type='hidden' name='computer' value='0'>";
-	} else {
-		echo "<div id='tracking_device_type_selecter'>";
-		echo "<table width='100%'>";
-		// View my hardware
-		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
-			$my_devices="";
+	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
+		$my_devices="";
 
-			$ci=new CommonItem();
-			$my_item="";
+		$ci=new CommonItem();
+		$my_item="";
 
-			if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
+		if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
 
-			// My items
-			$my_devices.="<optgroup label=\"".$LANG["tracking"][1]."\">";
-			foreach ($CFG_GLPI["linkuser_type"] as $type)
-				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
-				{
-					$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."'";
+		// My items
+		$my_devices.="<optgroup label=\"".$LANG["tracking"][1]."\">";
+		foreach ($CFG_GLPI["linkuser_type"] as $type){
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
+				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."'";
 
-					$result=$DB->query($query);
-					if ($DB->numrows($result)>0){
-						$ci->setType($type);
-						$type_name=$ci->getType();
-						while ($data=$DB->fetch_array($result)){
-							$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
-							$already_add[$type][]=$data["ID"];
-						}
-						
-					}
-				}
-			$my_devices.="</optgroup>";
-
-
-			// My group items
-			if (haveRight("show_group_ticket","1")){
-				$group_where="";
-				$groups=array();
-				$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."';";
-	
 				$result=$DB->query($query);
-				$first=true;
 				if ($DB->numrows($result)>0){
+					$ci->setType($type);
+					$type_name=$ci->getType();
 					while ($data=$DB->fetch_array($result)){
-						if ($first) $first=false;
-						else $group_where.=" OR ";
-		
-						$group_where.=" FK_groups = '".$data["FK_groups"]."' ";
+						$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+						$already_add[$type][]=$data["ID"];
 					}
-	
-					$my_devices.="<optgroup label=\"".$LANG["tracking"][1]." - ".$LANG["common"][35]."\">";
-					foreach ($CFG_GLPI["linkuser_type"] as $type)
-						if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
-						{
-							$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where";
-	
-							$result=$DB->query($query);
-							if ($DB->numrows($result)>0){
-								$ci->setType($type);
-								$type_name=$ci->getType();
-								if (!isset($already_add[$type])) $already_add[$type]=array();
-								while ($data=$DB->fetch_array($result)){
-									if (!in_array($data["ID"],$already_add[$type])){
-										$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
-										$already_add[$type][]=$data["ID"];
-									}
-								}
-								
-							}
-						}
-					$my_devices.="</optgroup>";
 				}
 			}
+		}
+		$my_devices.="</optgroup>";
 
-			// Get linked items to computers
-			if (isset($already_add[COMPUTER_TYPE])&&count($already_add[COMPUTER_TYPE])){
 
-				$search_computer=" (";
-				$first=true;
-				foreach ($already_add[COMPUTER_TYPE] as $ID){
+		// My group items
+		if (haveRight("show_group_ticket","1")){
+			$group_where="";
+			$groups=array();
+			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."';";
+	
+			$result=$DB->query($query);
+			$first=true;
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result)){
 					if ($first) $first=false;
-					else $search_computer.= " OR ";
-					$search_computer.= " XXXX='$ID' ";
+					else $group_where.=" OR ";
+	
+					$group_where.=" FK_groups = '".$data["FK_groups"]."' ";
 				}
-				$search_computer.=" )";
 
-				$my_devices.="<optgroup label=\"".$LANG["reports"][36]."\">";
-				// Direct Connection
-				$types=array(PERIPHERAL_TYPE,MONITOR_TYPE,PRINTER_TYPE,PHONE_TYPE);
-				foreach ($types as $type)
+				$my_devices.="<optgroup label=\"".$LANG["tracking"][1]." - ".$LANG["common"][35]."\">";
+				foreach ($CFG_GLPI["linkuser_type"] as $type){
 					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
-						if (!isset($already_add[$type])) $already_add[$type]=array();
-						$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." ORDER BY ".$LINK_ID_TABLE[$type].".name";
+						$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where";
+
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
 							$ci->setType($type);
 							$type_name=$ci->getType();
-
+							if (!isset($already_add[$type])) $already_add[$type]=array();
 							while ($data=$DB->fetch_array($result)){
 								if (!in_array($data["ID"],$already_add[$type])){
 									$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
@@ -829,37 +780,93 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 							}
 						}
 					}
-				$my_devices.= "</optgroup>";
-				// Software
-				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
-					$query = "SELECT DISTINCT glpi_software.version as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
-					$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." order by glpi_software.name";
-					$result=$DB->query($query);
-					if ($DB->numrows($result)>0){
-						$my_devices.= "<optgroup label=\"".ucfirst($LANG["software"][17])."\">";
-						$ci->setType(SOFTWARE_TYPE);
-						$type_name=$ci->getType();
-						if (!isset($already_add[SOFTWARE_TYPE])) $already_add[SOFTWARE_TYPE]=array();
-						while ($data=$DB->fetch_array($result)){
-							if (!in_array($data["ID"],$already_add[SOFTWARE_TYPE])){
-								$my_devices.="<option value='".SOFTWARE_TYPE."_".$data["ID"]."' ".($my_item==SOFTWARE_TYPE."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
-								$already_add[SOFTWARE_TYPE][]=$data["ID"];
-							}
-						}
-						$my_devices.= "</optgroup>";
-					}
 				}
-				
+				$my_devices.="</optgroup>";
 			}
-
-			echo "<tr><td align='center'>".$LANG["tracking"][1].":&nbsp;<select name='_my_items'><option value=''>--- ".$LANG["help"][30]." ---</option>$my_devices</select>";
-			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE))
-				echo "<br>".$LANG["tracking"][2].":&nbsp;";
-			else echo "</td></tr>";
 		}
 
-		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
+		// Get linked items to computers
+		if (isset($already_add[COMPUTER_TYPE])&&count($already_add[COMPUTER_TYPE])){
+			$search_computer=" (";
+			$first=true;
+			foreach ($already_add[COMPUTER_TYPE] as $ID){
+				if ($first) $first=false;
+				else $search_computer.= " OR ";
+				$search_computer.= " XXXX='$ID' ";
+			}
+			$search_computer.=" )";
 
+			$my_devices.="<optgroup label=\"".$LANG["reports"][36]."\">";
+			// Direct Connection
+			$types=array(PERIPHERAL_TYPE,MONITOR_TYPE,PRINTER_TYPE,PHONE_TYPE);
+			foreach ($types as $type){
+				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
+					if (!isset($already_add[$type])) $already_add[$type]=array();
+					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." ORDER BY ".$LINK_ID_TABLE[$type].".name";
+					$result=$DB->query($query);
+					if ($DB->numrows($result)>0){
+						$ci->setType($type);
+						$type_name=$ci->getType();
+							while ($data=$DB->fetch_array($result)){
+							if (!in_array($data["ID"],$already_add[$type])){
+								$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+								$already_add[$type][]=$data["ID"];
+							}
+						}
+					}
+				}
+			}
+
+			$my_devices.= "</optgroup>";
+			// Software
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
+				$query = "SELECT DISTINCT glpi_software.version as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
+				$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." order by glpi_software.name";
+				$result=$DB->query($query);
+				if ($DB->numrows($result)>0){
+					$my_devices.= "<optgroup label=\"".ucfirst($LANG["software"][17])."\">";
+					$ci->setType(SOFTWARE_TYPE);
+					$type_name=$ci->getType();
+					if (!isset($already_add[SOFTWARE_TYPE])) $already_add[SOFTWARE_TYPE]=array();
+					while ($data=$DB->fetch_array($result)){
+						if (!in_array($data["ID"],$already_add[SOFTWARE_TYPE])){
+							$my_devices.="<option value='".SOFTWARE_TYPE."_".$data["ID"]."' ".($my_item==SOFTWARE_TYPE."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+							$already_add[SOFTWARE_TYPE][]=$data["ID"];
+						}
+					}
+					$my_devices.= "</optgroup>";
+				}
+			}
+		}
+		echo "<div id='tracking_my_devices'>";
+		echo $LANG["tracking"][1].":&nbsp;<select id='_my_items' name='_my_items'><option value=''>--- ".$LANG["help"][30]." ---</option>$my_devices</select></div>";
+	}
+
+}
+/**
+ * Make a select box for Tracking All Devices
+ *
+ *
+ *
+ * @param $myname select name
+ * @param $value preselected value.
+ * @return nothing (print out an HTML select box)
+ */
+function dropdownTrackingAllDevices($myname,$value){
+	global $LANG,$CFG_GLPI,$DB,$LINK_ID_TABLE;
+
+	$rand=mt_rand();
+
+	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]==0){
+		echo "<input type='hidden' name='$myname' value='0'>";
+		echo "<input type='hidden' name='computer' value='0'>";
+	} else {
+		echo "<div id='tracking_all_devices'>";
+
+		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
+			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
+				echo $LANG["tracking"][2].":<br>";
+			}
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
 
 			echo "<option value='0' ".(($value==0)?" selected":"").">".$LANG["help"][30]."</option>\n";
@@ -878,8 +885,6 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))
 				echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$LANG["help"][35]."</option>\n";
 			echo "</select>\n";
-
-			echo "</td></tr><tr><td align='center'>";
 
 			echo "<script type='text/javascript' >\n";
 			echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -910,11 +915,8 @@ function dropdownTrackingDeviceType($myname,$value,$userID=0){
 			}
 
 			echo "</span>\n";	
-			echo "</div>";
-			echo "</td></tr>";
 		}
-		echo "</table>";
-		echo "</div";
+		echo "</div>";
 	}		
 	return $rand;
 }

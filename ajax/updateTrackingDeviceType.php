@@ -43,5 +43,5 @@
 	
 	
 	checkRight("update_ticket","1");
-	dropdownTrackingDeviceType("device_type",$_POST["device_type"],$_POST["userID"]);
+	dropdownMyDevices($_POST["userID"]);
 ?>
