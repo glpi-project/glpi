@@ -215,7 +215,6 @@ function commonHeader($title,$url)
 		if (haveRight("profile","r"))
 			$config[$LANG["Menu"][35]]=array("profile.php","p");
 		$config[$LANG["Menu"][10]]=array("setup.php","2");
-		$config[$LANG["Menu"][11]]=array("preference.php","p");
 		if (haveRight("backup","w"))
 			$config[$LANG["Menu"][12]]=array("backup.php","b");
 		if (haveRight("logs","r"))
@@ -482,29 +481,18 @@ function helpHeader($title,$url) {
 
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
-	//if (ereg("tracking-injector",$_SERVER['PHP_SELF']))
-	//		echo "<td width='100%'>&nbsp;</td>";
 	// Just give him a language selector
-	echo "<td width='35%' align='center'>";
-	if ($CFG_GLPI["debug"]!=DEMO_MODE&&!ereg("tracking-injector",$_SERVER['PHP_SELF']))
-		showLangSelect($CFG_GLPI["root_doc"]."/front/preference.php");
-	else echo "&nbsp;";
+	echo "<td width='50%' align='center'>";
 	showProfileSelecter();
 	echo "</td>";
 
-	// And he can change his password, thats it
-	echo "<td width='35%' align='center'>";
-	if (haveRight("password_update","1")&&$CFG_GLPI["debug"]!=DEMO_MODE&&$_SESSION["glpiextauth"]!=1&&!ereg("tracking-injector",$_SERVER['PHP_SELF']))
-		showPasswordForm($CFG_GLPI["root_doc"]."/front/preference.php",$_SESSION["glpiname"]);
-	else echo "&nbsp;";
-	echo "</td>";
 	// We tracking or post a new one
 	echo "<td align='center' width='10%'>";
 	if (haveRight("create_ticket","1")){
 		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/ajoutinterv.png\" alt=\"".$LANG["job"][13]."\" title=\"".$LANG["job"][13]."\"></a><br>";
 		echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][31]."&nbsp;-</span><br>";
 	}
-	echo "<br>";
+	echo "</td><td align='center' width='10%'>";
 	if (haveRight("observe_ticket","1")){
 		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/suivi.png\" alt=\"".$LANG["tracking"][0]."\" title=\"".$LANG["tracking"][0]."\"></a><br>";
 		echo "<span class='menu_title'>-&nbsp;".$LANG["title"][28]."&nbsp;-</span>";
@@ -517,7 +505,7 @@ function helpHeader($title,$url) {
 		echo "<a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.resa.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-2.png\" alt=\"".$LANG["Menu"][17]."\" title=\"".$LANG["Menu"][17]."\"></a><br>";
 		echo "<span class='menu_title'>-&nbsp;".$LANG["title"][35]."&nbsp;-</span><br>";
 	}
-	echo "<br>";
+	echo "</td><td align='center' width='10%'>";
 	if (haveRight("faq","r")){
 		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faq-24.png\" alt=\"".$LANG["knowbase"][1]."\" title=\"".$LANG["knowbase"][1]."\"></a><br>";
 		echo "<span class='menu_title'>-&nbsp;".$LANG["knowbase"][1]."&nbsp;-</span>";
