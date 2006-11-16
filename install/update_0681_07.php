@@ -136,11 +136,19 @@ function update0681to07(){
 		$DB->query($query) or die("0.7 add index FK_entities in glpi_users_profiles ".$LANG["update"][90].$DB->error());
 	}
 
+
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	// TODO Split Config -> config general + config entity
 	// TODO AUto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference
 
+	// Alter INT fields to not null and default 0 :
+	/* #819 -> clean CommonDBTM update(
+	Need to update fields before.
+	ALTER TABLE `glpi_computers` CHANGE `FK_users` `FK_users` INT( 11 ) NOT NULL DEFAULT '0',
+	CHANGE `FK_groups` `FK_groups` INT( 11 ) NOT NULL DEFAULT '0'
+	......
+	*/
 } // fin 0.7 #####################################################################################
 
 ?>
