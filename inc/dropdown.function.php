@@ -1355,4 +1355,17 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 	}
 
 }
+
+function dropdownLanguages($myname,$value){
+	global $CFG_GLPI;
+	echo "<select name='$myname'>";
+
+	while (list($cle)=each($CFG_GLPI["languages"])){
+		echo "<option value=\"".$cle."\"";
+		if ($value==$cle) { echo " selected"; }
+		echo ">".$CFG_GLPI["languages"][$cle][0]." ($cle)";
+	}
+	echo "</select>";
+}
+
 ?>

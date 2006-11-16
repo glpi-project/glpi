@@ -727,18 +727,26 @@ class User extends CommonDBTM {
 
 			//do some rights verification
 			if (!$extauth&&haveRight("password_update","1")){
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
 			} 
+
+			if ($CFG_GLPI["debug"]!=DEMO_MODE||haveRight("config",1)){
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][41]."</td><td>";
+				dropdownLanguages("language",$_SESSION["glpilanguage"]);	
+				echo "</td></tr>";
+			}
+
+
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
 			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["realname"]))) {
-				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
+				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],30);
 			} else echo $this->fields["realname"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][43]."</td><td>";
 			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["firstname"]))){
-				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
+				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],30);
 			}  else echo $this->fields["firstname"];
 			echo "</td></tr>";
 
@@ -750,19 +758,19 @@ class User extends CommonDBTM {
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>";
 			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["phone"]))){
-				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
+				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],30);
 			} else echo $this->fields["phone"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]." 2</td><td>";
 			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["phone2"]))){
-				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
+				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],30);
 			} else echo $this->fields["phone2"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][42]."</td><td>";
 			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["mobile"]))) {
-				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
+				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],30);
 			} else echo $this->fields["mobile"];
 			echo "</td></tr>";
 
@@ -771,6 +779,20 @@ class User extends CommonDBTM {
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],0);
 			} else echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
 			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][40]."</td><td>";
+			echo "<select name='tracking_order'>\n";
+			echo "<option value=\"yes\"";
+			if ($_SESSION["glpitracking_order"]=="yes") { echo " selected"; }	
+			echo ">".$LANG["choice"][1];
+			echo "<option value=\"no\"";
+			if ($_SESSION["glpitracking_order"]=="no") { echo " selected"; }
+			echo ">".$LANG["choice"][0];
+			echo "</select>\n";
+			echo "</td></tr>";
+
+
+
 
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
