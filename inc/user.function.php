@@ -97,7 +97,7 @@ function showDeviceUser($ID){
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
-			$group_where=" OR FK_groups = '".$data["FK_groups"]."' ";
+			$group_where.=" OR FK_groups = '".$data["FK_groups"]."' ";
 			$groups[$data["FK_groups"]]=$data["name"];
 		}
 	}
