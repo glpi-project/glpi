@@ -689,8 +689,9 @@ function generate_entity($ID_entity){
 	$faq=array("yes","no");
 	$k=0;
 	$FIRST["kbitems"]=getMaxItem("glpi_kbitems")+1;
-	for ($i=0;$i<$MAX['kbcategories'];$i++){
+	for ($i=$FIRST["kbcategories"];$i<$LAST['kbcategories'];$i++){
 		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
+		if ($i>0)
 		for ($j=0;$j<$nb;$j++){
 			$k++;
 			$query="INSERT INTO glpi_kbitems VALUES (NULL,'$ID_entity','$i','Question $k','Reponse $k','".$faq[mt_rand(0,1)]."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand(0,1000)."',NOW(),NOW())";
