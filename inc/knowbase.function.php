@@ -125,21 +125,36 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 	
 	
 	if($faq==1){
-			if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) return false;	
+		if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) return false;	
 		
 		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = 'yes') AND  (parentID = $parentID) ORDER  BY name ASC";
-		}else{
-	
+	}else{
 		if (!haveRight("knowbase","r")) return false;
 		$query = "SELECT * FROM glpi_dropdown_kbcategories WHERE  (parentID = $parentID) ORDER  BY name ASC";
-		
 	}
 	
 
 	/// Show category
 	if ($result=$DB->query($query)){
 		echo "<div align='center'><table cellspacing=\"0\" border=\"0\" width=\"750px\" class='tab_cadre'>";
-		echo "<tr><td colspan='3'><a  href=\"".$target."\"<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' hspace=\"5\" ></a>Racine >".getDropdownName("glpi_dropdown_kbcategories",$parentID,"")."</td></tr>";
+		echo "<tr><td colspan='3'><a  href=\"".$target."\"<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' hspace=\"5\" ></a>";
+
+		// Display Category
+		if ($parentID!=0){
+			$tmpID=$parentID;
+			$todisplay="";
+			while ($tmpID!=0){
+				$query2="SELECT * FROM glpi_dropdown_kbcategories where ID='$tmpID'";
+				$result2=$DB->query($query2);
+				if ($DB->numrows($result2)==1){	
+					$data=$DB->fetch_assoc($result2);
+					$tmpID=$data["parentID"];
+					$todisplay="<a href='$target?parentID=".$data["ID"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").$todisplay;
+				} else $tmpID=0;
+//				echo getDropdownName("glpi_dropdown_kbcategories",$parentID,"")."</td></tr>";
+			}
+			echo $todisplay;
+		}
 		
 		if ($DB->numrows($result)>0){
 			
