@@ -122,7 +122,14 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 		if ($where=="WHERE ") $where="";
 
-		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY completename $LIMIT";
+		// Manage multiple Entities dropdowns
+		$add_order="";
+		if (in_array($_POST['table'],$CFG_GLPI["dropdownentity_tables"])){
+			$add_order=" FK_entities, ";
+		}
+
+		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
+		
 
 		$result = $DB->query($query);
 
