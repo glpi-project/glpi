@@ -161,7 +161,6 @@ function cleanRelationCache($table){
 		foreach ($RELATION[$table] as $tablename => $field){
 			if ($key=array_search($tablename,$LINK_ID_TABLE)){
 				cleanCache("GLPI_$key");
-				logEvent(0, "system", 4, "cron", "TODEL ".$table." clean relation to ".$tablename);
 			}
 		}
 	}
