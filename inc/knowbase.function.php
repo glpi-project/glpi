@@ -94,7 +94,7 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	echo "</td>";
 	
 	// Category select not for anonymous FAQ
-	if (isset($_SESSION["glpiID"])){
+	if (isset($_SESSION["glpiID"])&&!$faq){
 		echo "<td><form method=get action=\"".$target."\">";
 		echo "<table border='0' class='tab_cadre'>";
 		echo "<tr ><th colspan='2'><b>Naviguer</b></th></tr>";
