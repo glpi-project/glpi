@@ -166,7 +166,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 					$ID = $row["ID"];
 					echo "<td valign=\"top\" align='left' style='width: 33%; padding: 3px 20px 3px 25px;'>";
 				
-					echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" alt=\"Category Icon\" > <b><a  href=\"".$target."?parentID=".$row["ID"]."\">".$row["name"]."</b></a>\n";
+					echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <b><a  href=\"".$target."?parentID=".$row["ID"]."\">".$row["name"]."</a></b>\n";
 					echo "<div style='font-size: 9px;	line-height: 10px; 	clear: both;	padding: 5px 0 0 25px;'>".resume_text($row['comments'],60)."</div>";
 			
 				if($i%3==2) { echo "</tr>\n"; }
@@ -268,12 +268,12 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 			// Display List Header
 			echo displaySearchHeader($output_type,$numrows_limit+1,$nbcols);
 			// New Line for Header Items Line
-			echo displaySearchNewLine($output_type);
+//			echo displaySearchNewLine($output_type);
 
 			$header_num=1;
 
 			// End Line for column headers		
-			echo displaySearchEndLine($output_type);
+//			echo displaySearchEndLine($output_type);
 
 			// Num of the row (1=header_line)
 			$row_num=1;
