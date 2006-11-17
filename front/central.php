@@ -39,6 +39,14 @@ include (GLPI_ROOT."/inc/includes.php");
 
 	checkCentralAccess();
 
+	// Manage entity change
+	if (isset($_POST["activeentity"])){
+		if (in_array($_POST["activeentity"],$_SESSION["glpiactiveentities"])){
+			$_SESSION["glpiactive_entity"]=$_POST["activeentity"];
+			$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
+		}
+	}
+
 	commonHeader($LANG["title"][0],$_SERVER['PHP_SELF']);
 
 	// Redirect management

@@ -120,16 +120,25 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 			$where.=" completename ".makeTextSearch($_POST['searchText']);
 		}
 
-		if ($where=="WHERE ") $where="";
 
 		// Manage multiple Entities dropdowns
 		$add_order="";
 		if (in_array($_POST['table'],$CFG_GLPI["dropdownentity_tables"])){
 			$add_order=" FK_entities, ";
 		}
+		// Specific mangement for glpi_dropdown_kbcategories
+		if ($_POST['table']=="glpi_dropdown_kbcategories"){
+			if (!$first) $where.=" AND ";
+			else $first=false;
+			$where.=" FK_entities = '".$_SESSION["glpiactive_entity"]."'";
+		}
+
+
+		if ($where=="WHERE ") $where="";
+
 
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
-		
+		//echo $query;
 
 		$result = $DB->query($query);
 
@@ -143,9 +152,9 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		else echo "<option class='tree' value=\"0\">-----</option>";
 
 		$outputval=getDropdownName($_POST['table'],$_POST['value']);
-		if (!empty($outputval)&&$outputval!="&nbsp;")
+/*		if (!empty($outputval)&&$outputval!="&nbsp;")
 			echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
-
+*/
 		if ($DB->numrows($result)) {
 			while ($data =$DB->fetch_array($result)) {
 
@@ -154,22 +163,18 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 				if (empty($data['name'])) $output="($ID)";
 				else $output=$data['name'];
-				if ($ID==$_POST["value"]) {
-					$output=$outputval;
-					echo "<option class='tree' value='".$ID."'>".$output."</option>";
-				} else {
-					$class=" class='tree' ";
-					$raquo="&raquo;";
-					if ($level==1){
-						$class=" class='treeroot' ";
-						$raquo="";
-					}
-					$style=$class;
-					$addcomment="";
-					if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
-					echo "<option value=\"$ID\" $style title=\"".$data['completename']."$addcomment\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,$_POST["limit"])."</option>";
+				$class=" class='tree' ";
+				$raquo="&raquo;";
+				if ($level==1){
+					$class=" class='treeroot' ";
+					$raquo="";
 				}
+				$style=$class;
+				$addcomment="";
+				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
+
+				echo "<option ".($ID==$_POST["value"]?" selected ":"")." value=\"$ID\" $style title=\"".$data['completename']."$addcomment\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,$_POST["limit"])."</option>";
 			}
 
 		}

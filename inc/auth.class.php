@@ -535,14 +535,6 @@ class Identification
 		// glpigroups -> active groups
 		// Reload groups on entity switching
 		
-		$_SESSION["glpigroups"]=array();
-		$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='".$this->user->fields['ID']."'";
-		$result_gp=$DB->query($query_gp);
-		if ($DB->numrows($result_gp)){
-			while ($data=$DB->fetch_array($result_gp)){
-				$_SESSION["glpigroups"][]=$data["FK_groups"];
-			}
-		}
 		do_hook("init_session");
 		$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
 	}
