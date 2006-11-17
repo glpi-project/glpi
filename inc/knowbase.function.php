@@ -354,25 +354,15 @@ function showKbRecentPopular($target,$order,$faq=0){
 		$title=$LANG["knowbase"][29];
 	}
 		
-		
-	if($faq==1){ // FAQ
-		$query = "SELECT  glpi_kbitems.ID  FROM glpi_kbitems WHERE (glpi_kbitems.faq = 'yes') $orderby";
-		
-	}else{ // kb
 
-		$query = "SELECT  glpi_kbitems.ID  FROM glpi_kbitems  $orderby";
-		
+	$faq_limit="";		
+	if($faq==1){ // FAQ
+		$faq_limit="WHERE (glpi_kbitems.faq = 'yes')";
 	}
 
-	$lim_query = " LIMIT 10";	
+	$query = "SELECT  *  FROM glpi_kbitems $faq_limit $orderby LIMIT 10";
 
 	$result = $DB->query($query);
-	$numrows = $DB->numrows($result);
-
-	$query .= $lim_query;
-
-	$result = $DB->query($query);
-	$i = 0;
 	$number = $DB->numrows($result);
 
 	if ($number > 0) {
@@ -380,19 +370,8 @@ function showKbRecentPopular($target,$order,$faq=0){
 
 		echo "<tr><th><b>".$title."</b></th></tr>";
 	
-		while ($i < $number) {
-			$data = $DB->result($result, $i, "ID");
-			
-			
-		//	$data=$DB->fetch_array($result_limit);
-				$ri = new KbItem;
-				$ri->getfromDB($data["ID"]);
-			
-			
-			echo "<tr><td><a  href=\"".$target."?ID=".$data["ID"]."\">".resume_text($ri->fields["question"],80)."</a></td></tr>";
-			
-			
-			$i++;
+		while ($data=$DB->fetch_array($result)) {
+			echo "<tr><td><a  href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
 		}
 		echo "</table>";
 	}
