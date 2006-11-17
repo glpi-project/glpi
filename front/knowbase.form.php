@@ -59,7 +59,7 @@ if ($tab["ID"]=="new"){
 
 	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF']);
 
-	showKbItemForm($_SERVER['PHP_SELF'],"");
+	$kb->showForm($_SERVER['PHP_SELF'],"");
 
 	commonFooter();
 
@@ -84,7 +84,7 @@ else if (isset($tab["ID"])  && strcmp($tab["modify"],"yes") == 0){
 	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
 	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF']);
 
-	showKbItemForm($_SERVER['PHP_SELF'],$tab["ID"]);
+	$kb->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
 
 
 	commonFooter();

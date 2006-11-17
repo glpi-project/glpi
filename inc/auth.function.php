@@ -369,19 +369,39 @@ function changeProfile($ID){
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val){
 			if (!$val['recursive']){
 				if (!array_search($val["ID"],$_SESSION['glpiactiveentities'])){
-					$_SESSION['glpiactiveentities'][]=$val['ID'];
+					$_SESSION['glpiactiveentities'][$val['ID']]=$val['ID'];
 				}
 			} else {
 				$entities=getSonsOfTreeItem("glpi_entities",$val['ID']);
 				if (count($entities)){
 					foreach ($entities as $key2 =>$val2){
-						$_SESSION['glpiactiveentities'][]=$val2;	
+						$_SESSION['glpiactiveentities'][$val2]=$val2;	
 					}
 				}
 			}
 		}
+		changeActiveEntity(key($_SESSION['glpiactiveentities']));
 	}
 	$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
+}
+
+function changeActiveEntity($value){
+	$_SESSION["glpiactive_entity"]=$value;
+	loadGroups();
+
+}
+
+function loadGroups(){
+	global $DB;
+
+	$_SESSION["glpigroups"]=array();
+	$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='".$_SESSION['glpiID']."' AND FK_entities='".$_SESSION["glpiactive_entity"]."'";
+	$result_gp=$DB->query($query_gp);
+	if ($DB->numrows($result_gp)){
+		while ($data=$DB->fetch_array($result_gp)){
+			$_SESSION["glpigroups"][]=$data["FK_groups"];
+		}
+	}
 }
 
 // Check if you could access to the entity of id = $ID

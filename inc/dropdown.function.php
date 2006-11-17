@@ -1368,4 +1368,43 @@ function dropdownLanguages($myname,$value){
 	echo "</select>";
 }
 
+function dropdownActiveEntities($myname){
+	global $DB,$CFG_GLPI;
+
+	$rand=mt_rand();
+
+	$query = "SELECT * FROM glpi_entities WHERE ".getEntitiesRestrictRequest("","glpi_entities","ID")." ORDER BY completename";
+	$result = $DB->query($query);
+
+	echo "<form method='POST' action=\"".$CFG_GLPI['root_doc']."/front/central.php\">";
+	echo "<select onChange='submit()' id='active_entity' name=\"".$myname."\" size='1'>";
+
+/*	$outputval=getDropdownName("glpi_entities",$_SESSION['glpiactive_entity']);
+	if (!empty($outputval)&&$outputval!="&nbsp;"){
+		echo "<option class='tree' selected value='".$_SESSION['active_entity']."'>".$outputval."</option>";
+	}
+*/
+	if ($DB->numrows($result)) {
+		while ($data =$DB->fetch_array($result)) {
+
+			$ID = $data['ID'];
+			$level = $data['level'];
+
+			if (empty($data['name'])) $output="($ID)";
+			else $output=$data['name'];
+
+			$class=" class='tree' ";
+			$raquo="&raquo;";
+			if ($level==1){
+				$class=" class='treeroot' ";
+				$raquo="";
+			}
+			$style=$class;
+			echo "<option ".($ID==$_SESSION['glpiactive_entity']?" selected ":"")."value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", level).$raquo.substr($output,0,50)."</option>";
+		}
+	}
+	echo "</select></form>";
+
+}
+
 ?>
