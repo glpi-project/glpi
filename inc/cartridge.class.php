@@ -193,8 +193,11 @@ class CartridgeType extends CommonDBTM {
 		if ($ct_spotted){
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			echo "<form method='post' action=\"$target\"><div align='center'>\n";
+			if (empty($ID)){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			}
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if ($ID&&!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<table class='tab_cadre_fixe'>\n";
 				echo "<tr><th colspan='3'><b>\n";
 				if (!$ID) 
