@@ -91,9 +91,9 @@ function update0681to07(){
 	// Add entity tags to tables
 	$tables=array("glpi_cartridges_type","glpi_computers","glpi_consumables_type","glpi_contacts","glpi_contracts","glpi_docs",
 			"glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_enterprises","glpi_groups",
-			"glpi_kbitems","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
+			"glpi_kbitems","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_reminder","glpi_software",
 			"glpi_tracking");
-	// ,"glpi_followups","glpi_licenses","glpi_infocoms", "glpi_links","glpi_reminder","glpi_reservation_item", "glpi_state_item" ?
+	// ,"glpi_followups","glpi_licenses","glpi_infocoms", "glpi_links","glpi_reservation_item", "glpi_state_item" ?
 	foreach ($tables as $tbl){
 		if(!FieldExists($tbl, "FK_entities")) {
 			$query = "ALTER TABLE `".$tbl."` ADD `FK_entities` INT NOT NULL DEFAULT '0' AFTER `ID`";

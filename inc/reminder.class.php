@@ -135,7 +135,12 @@ class Reminder extends CommonDBTM {
 		}
 		if ($remind_show||$remind_edit){
 
-			if($remind_edit) echo "<form method='post' name='remind' action=\"$target\">";
+			if($remind_edit) {
+				echo "<form method='post' name='remind' action=\"$target\">";
+				if (empty($ID)){
+					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				}
+			}
 
 			echo "<div align='center'><table class='tab_cadre' width='450'>";
 			echo "<tr><th colspan='2' ><b>";

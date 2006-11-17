@@ -1400,7 +1400,7 @@ function dropdownActiveEntities($myname){
 				$raquo="";
 			}
 			$style=$class;
-			echo "<option ".($ID==$_SESSION['glpiactive_entity']?" selected ":"")."value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", level).$raquo.substr($output,0,50)."</option>";
+			echo "<option ".($ID==$_SESSION['glpiactive_entity']?" selected ":"")."value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,50)."</option>";
 		}
 	}
 	echo "</select></form>";
