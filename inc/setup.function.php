@@ -529,31 +529,31 @@ function listTemplates($type,$target,$add=0) {
 	switch ($type){
 		case COMPUTER_TYPE :
 			$title=$LANG["Menu"][0];
-			$query = "SELECT * FROM glpi_computers where is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_computers WHERE is_template = '1' AND FK_entities='".$_SESSION["glpiactive_entity"]."' ORDER by tplname";
 			break;
 		case NETWORKING_TYPE :
 			$title=$LANG["Menu"][1];
-			$query = "SELECT * FROM glpi_networking where is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_networking WHERE is_template = '1' AND FK_entities='".$_SESSION["glpiactive_entity"]."' ORDER by tplname";
 			break;
 		case MONITOR_TYPE :
 			$title=$LANG["Menu"][3];
-			$query = "SELECT * FROM glpi_monitors where is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_monitors WHERE is_template = '1' AND FK_entities='".$_SESSION["glpiactive_entity"]."' ORDER by tplname";
 			break;	
 		case PRINTER_TYPE :
 			$title=$LANG["Menu"][2];
-			$query = "SELECT * FROM glpi_printers where is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_printers WHERE is_template = '1' AND FK_entities='".$_SESSION["glpiactive_entity"]."' ORDER by tplname";
 			break;	
 		case PERIPHERAL_TYPE :
 			$title=$LANG["Menu"][16];
-			$query = "SELECT * FROM glpi_peripherals where is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_peripherals WHERE is_template = '1' AND FK_entities='".$_SESSION["glpiactive_entity"]."' ORDER by tplname";
 			break;
 		case SOFTWARE_TYPE :
 			$title=$LANG["Menu"][4];
-			$query = "SELECT * FROM glpi_software where is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_software WHERE is_template = '1' AND FK_entities='".$_SESSION["glpiactive_entity"]."' ORDER by tplname";
 			break;
 		case PHONE_TYPE :
 			$title=$LANG["Menu"][34];
-			$query = "SELECT * FROM glpi_phones where is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_phones WHERE is_template = '1' AND FK_entities='".$_SESSION["glpiactive_entity"]."' ORDER by tplname";
 			break;
 
 	}
@@ -565,11 +565,18 @@ function listTemplates($type,$target,$add=0) {
 		else 
 			echo "<tr><th colspan='2'>".$LANG["common"][14]." - $title:</th></tr>";
 
+
+		if ($add){
+
+			echo "<tr>";
+			echo "<td align='center' class='tab_bg_1'>";
+			echo "<a href=\"$target?ID=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;".$LANG["common"][31]."&nbsp;&nbsp;&nbsp;</a></td>";
+			echo "</tr>";		
+		}
+
 		while ($data= $DB->fetch_array($result)) {
 
 			$templname = $data["tplname"];
-			if ($templname=="Blank Template")
-				$templname=$LANG["common"][31];
 
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
