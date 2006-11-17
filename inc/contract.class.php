@@ -133,6 +133,11 @@ class Contract extends CommonDBTM {
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			echo "<form name='form' method='post' action=\"$target\"><div align='center'>";
+
+			if (empty($ID)){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			}
+
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'><b>";
 			if (!$ID) {
@@ -143,7 +148,7 @@ class Contract extends CommonDBTM {
 			}		
 			echo "</b></th></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if ($ID&&!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][6].":		</td><td >";
 				dropdownValue("glpi_dropdown_contract_type","contract_type",$this->fields["contract_type"]);

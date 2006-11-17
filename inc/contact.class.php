@@ -146,6 +146,10 @@ class Contact extends CommonDBTM{
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			echo "<form method='post' name=form action=\"$target\"><div align='center'>";
+			if (empty($ID)){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			}
+
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 			echo "<tr><th colspan='2'><b>";
 			if (empty($ID)) {
@@ -158,7 +162,7 @@ class Contact extends CommonDBTM{
 			echo "</b></th></tr>";
 
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if ($ID&&!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr><td class='tab_bg_1' valign='top'>";
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";

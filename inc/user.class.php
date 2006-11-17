@@ -599,6 +599,10 @@ class User extends CommonDBTM {
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			echo "<div align='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
+			if (empty($ID)){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			}
+
 			echo "<tr><th colspan='4'>".$LANG["setup"][57]." : " .$this->fields["name"]."&nbsp;";
 			echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>"; 
 			echo "</th></tr>";
@@ -631,7 +635,7 @@ class User extends CommonDBTM {
 				} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if ($ID&&!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
 				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 				echo "</td>";

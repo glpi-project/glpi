@@ -111,9 +111,13 @@ class kbitem extends CommonDBTM {
 			echo "</script>";
 			echo "<form method='post' id='form_kb' name='form_kb' action=\"$target\">";
 		
+			if (empty($ID)){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			} 
 		
-			if (!empty($ID))
+			if (!empty($ID)) {
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			}
 		
 		
 			echo "<fieldset>";

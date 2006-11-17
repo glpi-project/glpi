@@ -290,144 +290,144 @@ class Phone extends CommonDBTM {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-			echo "<tr><td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-			echo "<tr><td>".$LANG["common"][16]."*:	</td>";
-			echo "<td>";
-			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PHONE_TYPE);
-			autocompletionTextField("name","glpi_phones","name",$objectName,20);
-
-			//autocompletionTextField("name","glpi_phones","name",$this->fields["name"],20);		
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][15].": 	</td><td>";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][21].":	</td><td>";
-			autocompletionTextField("contact_num","glpi_phones","contact_num",$this->fields["contact_num"],20);		
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][18].":	</td><td>";
-			autocompletionTextField("contact","glpi_phones","contact",$this->fields["contact"],20);		
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
-			echo "</td></tr>";
-
-			
-
-			echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
-			dropdownValue("glpi_type_phones", "type", $this->fields["type"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
-			dropdownValue("glpi_dropdown_model_phones", "model", $this->fields["model"]);
-			echo "</td></tr>";
-
-			echo "</table>";
-
-			echo "</td>\n";	
-			echo "<td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'>";
-
-
-			echo "<tr><td>".$LANG["phones"][33].":</td><td>";
-			globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);	
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["phones"][36].":</td><td>";
-			dropdownValue("glpi_dropdown_phone_power", "power", $this->fields["power"]);
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
-			dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["phones"][18].":</td><td>";
-			autocompletionTextField("brand","glpi_phones","brand",$this->fields["brand"],20);		
-			echo "</td></tr>";
-
-
-			echo "<tr><td>".$LANG["common"][19].":	</td><td>";
-			autocompletionTextField("serial","glpi_phones","serial",$this->fields["serial"],20);		
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
-			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PHONE_TYPE);
-			autocompletionTextField("otherserial","glpi_phones","otherserial",$objectName,20);
-
-			//autocompletionTextField("otherserial","glpi_phones","otherserial",$this->fields["otherserial"],20);		
-			echo "</td></tr>";
-
-
-			echo "<tr><td>".$LANG["phones"][35].":	</td><td>";
-			autocompletionTextField("firmware","glpi_phones","firmware",$this->fields["firmware"],20);		
-			echo "</td></tr>";
-
-
-			echo "<tr><td>".$LANG["state"][0].":</td><td>";
-			$si=new StateItem();
-			$t=0;
-			if ($template) $t=1;
-			$si->getfromDB(PHONE_TYPE,$this->fields["ID"],$t);
-			dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
-			echo "</td></tr>";
-
-			echo "<tr><td>".$LANG["phones"][40].":	</td><td>";
-			autocompletionTextField("number_line","glpi_phones","number_line",$this->fields["number_line"],20);		
-			echo "</td></tr>";
-
-
-			echo "<tr><td>".$LANG["phones"][37].": </td><td>";
-
-			// micro?
-			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
-			echo "<td>".$LANG["phones"][38]."</td>";
-			echo "<td>";
-			dropdownYesNoInt("flags_casque",$this->fields["flags_casque"]);
-			echo "</td>";
-
-			echo "</tr>";
-
-			// hp?
-			echo "<tr>";
-			echo "<td>".$LANG["phones"][39]."</td>";
-			echo "<td>";
-			dropdownYesNoInt("flags_hp",$this->fields["flags_hp"]);
-			echo "</td>";
-
-			echo "</tr></table>";
-			echo "</td></tr>";
-			echo "</table>";
-			echo "</td>\n";	
-			echo "</tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_1' valign='top' colspan='2'>";
-
-			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-			echo $LANG["common"][25].":	</td>";
-			echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr></table>";
-
-			echo "</td>";
-			echo "</tr>";
-
-			$CFG_GLPI["cache"]->end();
+			if ($ID&&!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+				echo "<tr><td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+				echo "<tr><td>".$LANG["common"][16]."*:	</td>";
+				echo "<td>";
+				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PHONE_TYPE);
+				autocompletionTextField("name","glpi_phones","name",$objectName,20);
+	
+				//autocompletionTextField("name","glpi_phones","name",$this->fields["name"],20);		
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][15].": 	</td><td>";
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>";
+				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][21].":	</td><td>";
+				autocompletionTextField("contact_num","glpi_phones","contact_num",$this->fields["contact_num"],20);		
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][18].":	</td><td>";
+				autocompletionTextField("contact","glpi_phones","contact",$this->fields["contact"],20);		
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
+				dropdownAllUsers("FK_users", $this->fields["FK_users"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
+				dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+				echo "</td></tr>";
+	
+				
+	
+				echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
+				dropdownValue("glpi_type_phones", "type", $this->fields["type"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
+				dropdownValue("glpi_dropdown_model_phones", "model", $this->fields["model"]);
+				echo "</td></tr>";
+	
+				echo "</table>";
+	
+				echo "</td>\n";	
+				echo "<td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>";
+	
+	
+				echo "<tr><td>".$LANG["phones"][33].":</td><td>";
+				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);	
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["phones"][36].":</td><td>";
+				dropdownValue("glpi_dropdown_phone_power", "power", $this->fields["power"]);
+				echo "</td></tr>";
+	
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
+				dropdownValue("glpi_enterprises","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["phones"][18].":</td><td>";
+				autocompletionTextField("brand","glpi_phones","brand",$this->fields["brand"],20);		
+				echo "</td></tr>";
+	
+	
+				echo "<tr><td>".$LANG["common"][19].":	</td><td>";
+				autocompletionTextField("serial","glpi_phones","serial",$this->fields["serial"],20);		
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
+				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PHONE_TYPE);
+				autocompletionTextField("otherserial","glpi_phones","otherserial",$objectName,20);
+	
+				//autocompletionTextField("otherserial","glpi_phones","otherserial",$this->fields["otherserial"],20);		
+				echo "</td></tr>";
+	
+	
+				echo "<tr><td>".$LANG["phones"][35].":	</td><td>";
+				autocompletionTextField("firmware","glpi_phones","firmware",$this->fields["firmware"],20);		
+				echo "</td></tr>";
+	
+	
+				echo "<tr><td>".$LANG["state"][0].":</td><td>";
+				$si=new StateItem();
+				$t=0;
+				if ($template) $t=1;
+				$si->getfromDB(PHONE_TYPE,$this->fields["ID"],$t);
+				dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+				echo "</td></tr>";
+	
+				echo "<tr><td>".$LANG["phones"][40].":	</td><td>";
+				autocompletionTextField("number_line","glpi_phones","number_line",$this->fields["number_line"],20);		
+				echo "</td></tr>";
+	
+	
+				echo "<tr><td>".$LANG["phones"][37].": </td><td>";
+	
+				// micro?
+				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+				echo "<td>".$LANG["phones"][38]."</td>";
+				echo "<td>";
+				dropdownYesNoInt("flags_casque",$this->fields["flags_casque"]);
+				echo "</td>";
+	
+				echo "</tr>";
+	
+				// hp?
+				echo "<tr>";
+				echo "<td>".$LANG["phones"][39]."</td>";
+				echo "<td>";
+				dropdownYesNoInt("flags_hp",$this->fields["flags_hp"]);
+				echo "</td>";
+	
+				echo "</tr></table>";
+				echo "</td></tr>";
+				echo "</table>";
+				echo "</td>\n";	
+				echo "</tr>";
+				echo "<tr>";
+				echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+	
+				echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr></table>";
+	
+				echo "</td>";
+				echo "</tr>";
+	
+				$CFG_GLPI["cache"]->end();
 			}
 		
 
