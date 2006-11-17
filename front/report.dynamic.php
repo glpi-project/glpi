@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stat","enterprise","device","state","document");
+$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stat","enterprise","device","state","document","knowbase");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -58,6 +58,9 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
 		case STATE_TYPE :
 			showStateItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
+			break;
+		case KNOWBASE_TYPE :
+			showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],$_GET["faq"]);
 			break;
 		case TRACKING_TYPE :
 			showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["author"],$_GET["group"],$_GET["assign"],$_GET["assign_ent"],$_GET["category"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);		
