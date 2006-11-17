@@ -231,10 +231,10 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 		$order = "ASC";
 	}
 
-	$query = "SELECT  glpi_kbitems.ID  FROM glpi_kbitems";
+	$query = "SELECT  *  FROM glpi_kbitems";
   // $query.= " LEFT JOIN glpi_users  ON (glpi_users.ID = glpi_kbitems.author) ";
 	$query.=" WHERE $where ORDER BY $sort $order";
-	
+	//echo $query;
 	
 
 	// Get it from database	
@@ -260,27 +260,24 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				$output_type=$_GET["display_type"];
 
 			// Pager
-			$parameters="start=$start&amp;parentID=$parentID&amp;field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order";
+			$parameters="start=$start&amp;parentID=$parentID&amp;field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order&amp;faq=$faq";
 			if ($output_type==HTML_OUTPUT)
 				printPager($start,$numrows,$target,$parameters,KNOWBASE_TYPE);
 
 			$nbcols=1;
 			// Display List Header
 			echo displaySearchHeader($output_type,$numrows_limit+1,$nbcols);
-			// New Line for Header Items Line
-//			echo displaySearchNewLine($output_type);
 
-			$header_num=1;
-
-			// End Line for column headers		
-//			echo displaySearchEndLine($output_type);
+			if ($output_type!=HTML_OUTPUT){
+				$header_num=1;
+				echo displaySearchHeaderItem($output_type,$LANG["knowbase"][3],$header_num);
+				echo displaySearchHeaderItem($output_type,$LANG["knowbase"][4],$header_num);
+			}
 
 			// Num of the row (1=header_line)
 			$row_num=1;
 			for ($i=0; $i < $numrows_limit; $i++) {
 				$data=$DB->fetch_array($result_limit);
-				$ri = new KbItem;
-				$ri->getfromDB($data["ID"]);
 
 
 				// Column num
@@ -289,8 +286,12 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 
 				echo displaySearchNewLine($output_type);
 
-				
-				echo displaySearchItem($output_type,"<a  href=\"".$target."?ID=".$data["ID"]."\">".resume_text($ri->fields["question"],80)."</a><div style='font-size: 9px;	line-height: 10px; 	clear: both;	padding: 5px 0 0 45px;'>".resume_text(textBrut(unclean_cross_side_scripting_deep($ri->fields["answer"])),600)."</div>",$item_num,$row_num);
+				if ($output_type==HTML_OUTPUT){
+					echo displaySearchItem($output_type,"<a  href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a><div style='font-size: 9px;	line-height: 10px; 	clear: both;	padding: 5px 0 0 45px;'>".resume_text(textBrut(unclean_cross_side_scripting_deep($data["answer"])),600)."</div>",$item_num,$row_num);
+				} else {
+					echo displaySearchItem($output_type,$data["question"],$item_num,$row_num);
+					echo displaySearchItem($output_type,$data["answer"],$item_num,$row_num);
+				}
 				// le cumul de fonction me plait pas TODO à optimiser.
 				
 						
@@ -300,7 +301,11 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 			}
 
 			// Display footer
-			echo displaySearchFooter($output_type);
+			if ($output_type==PDF_OUTPUT){
+				echo displaySearchFooter($output_type,getDropdownName("glpi_dropdown_kbcategories",$parentID));
+			} else {
+				echo displaySearchFooter($output_type);
+			}
 
 			if ($output_type==HTML_OUTPUT) // In case of HTML display
 				printPager($start,$numrows,$target,$parameters);

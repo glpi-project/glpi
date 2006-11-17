@@ -165,8 +165,6 @@ function displaySearchFooter($type,$title=""){
 			$pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
 			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
 			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800,'titleFontSize'=>8,);
-			//print_r($PDF_SIZE);
-
 			$pdf->ezTable($PDF_ARRAY,$PDF_HEADER,utf8_decode($title),$options);
 			$pdf->ezStream();
 
