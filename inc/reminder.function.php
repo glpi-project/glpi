@@ -44,7 +44,7 @@ function showCentralReminder($type="private"){
 	$today=date("Y-m-d H:i:s");
 
 	if($type=="public"){ // show public reminder
-		$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0')";
+		$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0') ".getEntitiesRestrictRequest("AND","glpi_reminder");
 		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][1]."</a>";
 	}else{ // show private reminder
 		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (end>='$today' or rv='0') ";
@@ -98,7 +98,7 @@ function showListReminder($type="private"){
 	$author=$_SESSION['glpiID'];	
 
 	if($type=="public"){ // show public reminder
-		$query="SELECT * FROM glpi_reminder WHERE type='public'";
+		$query="SELECT * FROM glpi_reminder WHERE type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder");
 		$titre=$LANG["reminder"][1];
 	}else{ // show private reminder
 		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' ";

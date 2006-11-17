@@ -129,6 +129,10 @@ class Group extends CommonDBTM{
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			echo "<form method='post' name=form action=\"$target\"><div align='center'>";
+			if (empty($ID)){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			}
+
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 			echo "<tr><th colspan='2'><b>";
 			if (empty($ID)) {
