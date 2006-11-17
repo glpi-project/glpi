@@ -130,7 +130,7 @@ else
 	if (!empty($tab["withtemplate"])) {
 
 		if ($monitor->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
-			if (!empty($tab["ID"])){
+			if ($tab["ID"]>0){
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
 						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"],1,$tab["withtemplate"]);

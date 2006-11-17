@@ -162,7 +162,7 @@ elseif(isset($tab["unlock_field"])){
 	if (!empty($tab["withtemplate"])) {
 	
 		if ($computer->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
-			if (!empty($tab["ID"])){
+			if ($tab["ID"]>0){
 				switch($_SESSION['glpi_onglet']){
 					case 2 :			
 						showSoftwareInstalled($tab["ID"],$tab["withtemplate"]);

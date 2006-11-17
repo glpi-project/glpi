@@ -127,7 +127,7 @@ else
 
 		if ($print->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
 
-			if (!empty($tab["ID"])){
+			if ($tab["ID"]>0){
 				switch($_SESSION['glpi_onglet']){
 					case 3 :
 						if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PRINTER_TYPE);

@@ -136,7 +136,7 @@ else
 	if (!empty($tab["withtemplate"])) {
 
 		if ($phone->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
-			if (!empty($tab["ID"])){
+			if ($tab["ID"]>0){
 
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
