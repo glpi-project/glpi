@@ -145,14 +145,15 @@ class Identification
 		// Test with login and password of the user
 		if (!$ds) $ds=connect_ldap($host,$port,$login,$password);
 		if ($ds) {
+			$att=$CFG_GLPI["ldap_login"];
 			// Attributs testés pour egalite avec le login
-			$atts = array('uid', 'login', 'userid', 'cn', 'sn', 'samaccountname', 'userprincipalname');
+			//$atts = array('uid', 'login', 'userid', 'cn', 'sn', 'samaccountname', 'userprincipalname');
 			// uid, login, userid n'existent pas dans ActiveDirectory
 			// samaccountname= login et userprincipalname= login@D-Admin.local sont propres à ActiveDirectory
 			$login_search = ereg_replace("[^-@._[:space:][:alnum:]]", "", $login); // securite
 			// Tenter une recherche pour essayer de retrouver le DN
-			reset($atts);
-			while (list(, $att) = each($atts)) {
+			//reset($atts);
+			//while (list(, $att) = each($atts)) {
 				$filter = "($att=$login_search)";
 				if (!empty($condition)) $filter='(& $filter $condition)';
 				$result = @ldap_search($ds, $basedn, $filter, array("dn"));
@@ -172,16 +173,16 @@ class Identification
 						}
 					}
 				}
-			}
+			//}
 			// Si echec, essayer de deviner le DN / Flat LDAP
-			reset($atts);
-			while (list(, $att) = each($atts)) {
+			//reset($atts);
+			//while (list(, $att) = each($atts)) {
 				$dn = "$att=$login_search, ".$CFG_GLPI["ldap_basedn"];
 				if (@ldap_bind($ds, $dn, $password)) {
 					@ldap_unbind($ds);
 					return $dn;
 				}
-			}
+			//}
 			$this->err.=$LANG["login"][15]."<br>\n";
 			return false;
 		} else {
