@@ -1372,18 +1372,22 @@ function dropdownActiveEntities($myname){
 	global $DB,$CFG_GLPI;
 
 	$rand=mt_rand();
-
 	$query = "SELECT * FROM glpi_entities WHERE ".getEntitiesRestrictRequest("","glpi_entities","ID")." ORDER BY completename";
 	$result = $DB->query($query);
-
+	
 	echo "<form method='POST' action=\"".$CFG_GLPI['root_doc']."/front/central.php\">";
 	echo "<select onChange='submit()' id='active_entity' name=\"".$myname."\" size='1'>";
-
-/*	$outputval=getDropdownName("glpi_entities",$_SESSION['glpiactive_entity']);
-	if (!empty($outputval)&&$outputval!="&nbsp;"){
-		echo "<option class='tree' selected value='".$_SESSION['active_entity']."'>".$outputval."</option>";
+	
+	/*	$outputval=getDropdownName("glpi_entities",$_SESSION['glpiactive_entity']);
+		if (!empty($outputval)&&$outputval!="&nbsp;"){
+			echo "<option class='tree' selected value='".$_SESSION['active_entity']."'>".$outputval."</option>";
+		}
+	*/
+	// Manage Root entity
+	if (in_array(0,$_SESSION['glpiactiveentities'])){
+		echo "<option ".($_SESSION['glpiactive_entity']==0?" selected ":"")."value=\"0\" class='tree' >".str_repeat("&nbsp;&nbsp;&nbsp;", $level)."ROOT"."</option>";
 	}
-*/
+
 	if ($DB->numrows($result)) {
 		while ($data =$DB->fetch_array($result)) {
 
@@ -1404,7 +1408,8 @@ function dropdownActiveEntities($myname){
 		}
 	}
 	echo "</select></form>";
-
+	print_r($_SESSION['glpiactiveentities']); 
+	echo " -> ".$_SESSION['glpiactive_entity'];
 }
 
 ?>
