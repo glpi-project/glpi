@@ -196,10 +196,10 @@ class User extends CommonDBTM {
 		} 
 
 
-		if (isset($input["language"])&&$_SESSION["glpiID"]==$input['ID'])	{
+		if (isset($_SESSION["glpiID"])&&isset($input["language"])&&$_SESSION["glpiID"]==$input['ID'])	{
 			$_SESSION["glpilanguage"]=$input["language"];
 		}
-		if (isset($input["tracking_order"])&&$_SESSION["glpiID"]==$input['ID'])	{
+		if (isset($_SESSION["glpiID"])&&isset($input["tracking_order"])&&$_SESSION["glpiID"]==$input['ID'])	{
 			$_SESSION["glpitracking_order"]=$input["tracking_order"];
 		}
 
@@ -287,6 +287,126 @@ class User extends CommonDBTM {
 		else return $this->fields["name"];
 
 	}
+
+	/**
+	 * Function that try to load from LDAP the user information...
+	 *
+	 * @param $host LDAP host to connect
+	 * @param $port LDAP port
+	 * @param $userdn Basedn of the user
+	 * @param $rdn Root dn 
+	 * @param $rpass Root Password
+	 * @param $fields Fields to get
+	 * @param $login User Login
+	 * @param $password User Password
+	 * @param $condition Condition used to restrict login
+	 *
+	 * @return String : basedn of the user / false if not founded
+	 */
+	function getFromLDAP_v2($host,$port,$userdn,$rdn,$rpass,$fields,$login,$password="")
+	{
+		global $DB,$CFG_GLPI;
+
+
+		// we prevent some delay...
+		if (empty($host)) {
+			return false;
+		}
+
+		$ds=connect_ldap($host,$port,$rdn,$rpass);
+		// Test with login and password of the user
+		if (!$ds) $ds=connect_ldap($host,$port,$login,$password);
+		if ($ds) {
+			// some defaults...
+			$this->fields['password'] = "";
+			$this->fields['password_md5'] = "";
+			$this->fields['name'] = $login;
+
+			$fields=array_filter($fields);
+	
+			$f = array_values($fields);
+			$sr = @ldap_read($ds, $userdn, "objectClass=*", $f);
+	
+			$v = ldap_get_entries($ds, $sr);
+			if ( !is_array($v)||count($v)==0 || empty($v[0][$fields['name']][0]) ) {
+				return false;
+			}
+	
+			foreach ($fields as $k => $e)	{
+				if (!empty($v[0][$e][0]))
+					$this->fields[$k] = $v[0][$e][0];
+			}
+	
+			// Is location get from LDAP ?
+			if (isset($fields['location'])&&!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
+				$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
+				$result=$DB->query($query);
+				if ($DB->numrows($result)==0){
+					$DB->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
+					$this->fields['location']=$DB->insert_id();
+					regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
+				} else $this->fields['location']=$DB->result($result,0,"ID");
+			}
+	
+			// Get group fields
+			$query_user="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
+			$query_group="SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
+	
+			$group_fields=array();
+			$groups=array();
+			$v=array();
+			//The groupes are retrived by looking into an ldap user object
+			if ($CFG_GLPI["ldap_search_for_groups"]==0||$CFG_GLPI["ldap_search_for_groups"]==2){
+	
+				$result=$DB->query($query_user);
+	
+				if ($DB->numrows($result)>0){
+					while ($data=$DB->fetch_assoc($result)){
+						$group_fields[]=$data["ldap_field"];
+						$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
+					}
+					$group_fields=array_unique($group_fields);
+					// If the groups must be retrieve from the ldap user object
+					$sr = @ldap_read($ds, $userdn, "objectClass=*", $group_fields);
+					$v = ldap_get_entries($ds, $sr);
+				}
+			}
+			//The groupes are retrived by looking into an ldap group object
+			if ($CFG_GLPI["ldap_search_for_groups"]==1||$CFG_GLPI["ldap_search_for_groups"]==2){
+	
+				$result=$DB->query($query_group);
+	
+				if ($DB->numrows($result)>0){
+					while ($data=$DB->fetch_assoc($result)){
+						$groups[$CFG_GLPI["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
+					}
+					$v2 = $this->ldap_get_user_groups($ds,$CFG_GLPI["ldap_basedn"],$userdn,$CFG_GLPI["ldap_group_condition"],$CFG_GLPI["ldap_field_group_member"]);
+					$v = array_merge($v,$v2);
+				}
+	
+			}
+
+			if ( is_array($v)&&count($v)>0){
+				foreach ($v as $attribute => $valattribute){
+					if (is_array($valattribute))
+					foreach ($valattribute as $key => $val){
+						if (is_array($val))
+							for ($i=0;$i<count($val);$i++){
+								if (isset($val[$i]))
+								if ($group_found= array_search($val[$i],$groups[$key])){
+									$this->fields["_groups"][]=$group_found;
+								}
+							}
+					}
+				}
+			}
+			//Hook to retrieve more informations for ldap
+			$this->fields=do_hook_function("retrieve_more_data_from_ldap",$this->fields);
+		}
+		return false;
+
+	} // getFromLDAP()
+
 
 	// Function that try to load from LDAP the user information...
 	//
@@ -395,7 +515,7 @@ class User extends CommonDBTM {
 
 	
 	//Get all the group a user belongs to
-	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn)
+	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn,$group_condition,$group_field_member)
 	{
 		global $CFG_GLPI;
 
@@ -404,25 +524,23 @@ class User extends CommonDBTM {
 		//Only retrive cn and member attributes from groups
 		$attrs=array("dn");
 
-		$filter="(&".$CFG_GLPI["ldap_group_condition"]."(".$CFG_GLPI["ldap_field_group_member"]."=".$user_dn."))";
+		$filter="(& $group_condition ($group_field_member=$user_dn))";
 
 		//Perform the search
 		$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
 
 		//Get the result of the search as an array
 		$info=ldap_get_entries($ds,$sr);
-
 		//Browse all the groups
 		for ($i=0; $i < count($info); $i++)
 		{
 			//Get the cn of the group and add it to the list of groups
-			if ($info[$i]["dn"] != '')
+			if (isset($info[$i]["dn"])&&$info[$i]["dn"] != '')
 				$listgroups[$i] = $info[$i]["dn"];
 		}
 
 		//Create an array with the list of groups of the user
-		$groups[0][$CFG_GLPI["ldap_field_group_member"]] = $listgroups;
-
+		$groups[0][$group_field_member] = $listgroups;
 		//Return the groups of the user
 		return $groups;
 	}
@@ -496,7 +614,7 @@ class User extends CommonDBTM {
 				while ($data=$DB->fetch_assoc($result)){
 					$groups[$CFG_GLPI["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
 				}
-				$v2 = $this->ldap_get_user_groups($ldapconn,$CFG_GLPI["ldap_basedn"],$user_dn);
+				$v2 = $this->ldap_get_user_groups($ldapconn,$CFG_GLPI["ldap_basedn"],$user_dn,$CFG_GLPI["ldap_group_condition"],$CFG_GLPI["ldap_field_group_member"]);
 				$v = array_merge($v,$v2);
 			}
 

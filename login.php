@@ -126,6 +126,18 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 			}
 		}
 
+		// Third common LDAP Auth
+		if (!$auth_succeded&&!empty($CFG_GLPI["ldap_host"])){
+			$user_dn = $identificat->connection_ldap_v2($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_condition"]);
+			if ($user_dn) {
+				$auth_succeded=true;
+				$identificat->extauth=1;
+				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+				$identificat->user->getFromLDAP_v2($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$user_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
+
+			}
+		}
+/*
 		// Third try LDAP in depth search
 		// we check all the auth sources in turn...
 		// First, we get the dn and then, we try to log in
@@ -172,7 +184,7 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 				}
 			}
 		}
-
+*/
 	} // Fin des tests de connexion
 
 // Ok, we have gathered sufficient data, if the first return false the user
@@ -209,6 +221,7 @@ if ( ! $auth_succeded ) {
 		logevent(-1, "system", 1, "login", "failed login: ".$_POST['login_name']);
 	else 
 		logevent(-1, "system", 1, "login", $LANG["log"][41].": ".$_POST['login_name']);
+
 	exit;
 }
 

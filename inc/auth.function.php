@@ -395,7 +395,8 @@ function loadGroups(){
 	global $DB;
 
 	$_SESSION["glpigroups"]=array();
-	$query_gp="SELECT * FROM glpi_users_groups WHERE FK_users='".$_SESSION['glpiID']."' AND FK_entities='".$_SESSION["glpiactive_entity"]."'";
+	$query_gp="SELECT * FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_users_groups.FK_groups = glpi_groups.ID) WHERE FK_users='".$_SESSION['glpiID']."' AND glpi_groups.FK_entities='".$_SESSION["glpiactive_entity"]."'";
+
 	$result_gp=$DB->query($query_gp);
 	if ($DB->numrows($result_gp)){
 		while ($data=$DB->fetch_array($result_gp)){
@@ -456,6 +457,33 @@ function getEntitiesRestrictRequest($separator="AND",$table="",$field=""){
 	}
 	$query.=" ) ";
 	return $query;
+}
+
+function connect_ldap($host,$port,$login="",$password=""){
+	global $CFG_GLPI;
+
+	$ds = @ldap_connect ($host,$port);
+	if ($ds){
+		@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+		if ($CFG_GLPI["ldap_use_tls"]){
+			if (!@ldap_start_tls($ds)) {
+				return false;
+			} 
+		}
+		// Auth bind
+		if ($login != '') {
+			$b = @ldap_bind($ds, $login, $password);
+		} else { // Anonymous bind
+			$b = @ldap_bind($ds);
+		}
+		if ($b) {
+			return $ds;
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
 }
 
 ?>

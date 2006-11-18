@@ -117,6 +117,83 @@ class Identification
 		return false;
 	}
 
+
+	/**
+	 * Find a user in a LDAP and return is BaseDN
+	 * Based on GRR auth system
+	 *
+	 * @param $host LDAP host to connect
+	 * @param $port LDAP port
+	 * @param $basedn Basedn to use
+	 * @param $rdn Root dn 
+	 * @param $rpass Root Password
+	 * @param $login User Login
+	 * @param $password User Password
+	 * @param $condition Condition used to restrict login
+	 *
+	 * @return String : basedn of the user / false if not founded
+	 */
+	function connection_ldap_v2($host,$port,$basedn,$rdn,$rpass,$login,$password,$condition="")
+	{
+		global $CFG_GLPI,$LANG;
+		// we prevent some delay...
+		if (empty($host)) {
+			return false;
+		}
+
+		$ds=connect_ldap($host,$port,$rdn,$rpass);
+		// Test with login and password of the user
+		if (!$ds) $ds=connect_ldap($host,$port,$login,$password);
+		if ($ds) {
+			// Attributs testés pour egalite avec le login
+			$atts = array('uid', 'login', 'userid', 'cn', 'sn', 'samaccountname', 'userprincipalname');
+			// uid, login, userid n'existent pas dans ActiveDirectory
+			// samaccountname= login et userprincipalname= login@D-Admin.local sont propres à ActiveDirectory
+			$login_search = ereg_replace("[^-@._[:space:][:alnum:]]", "", $login); // securite
+			// Tenter une recherche pour essayer de retrouver le DN
+			reset($atts);
+			while (list(, $att) = each($atts)) {
+				$filter = "($att=$login_search)";
+				if (!empty($condition)) $filter='(& $filter $condition)';
+				$result = @ldap_search($ds, $basedn, $filter, array("dn"));
+				$info = @ldap_get_entries($ds, $result);
+				// Ne pas accepter les resultats si plus d'une entree
+				// (on veut un attribut unique)
+				if (is_array($info) AND $info['count'] == 1) {
+					$dn = $info[0]['dn'];
+					if (@ldap_bind($ds, $dn, $password)) {
+						@ldap_unbind($ds);
+						//Hook to implement to restrict access by checking the ldap directory
+						if (do_hook_function("restrict_ldap_auth",$info)){
+							return $dn;
+						} else {
+							$this->err .= $LANG["login"][16]."<br>\n";
+							return false;
+						}
+					}
+				}
+			}
+			// Si echec, essayer de deviner le DN / Flat LDAP
+			reset($atts);
+			while (list(, $att) = each($atts)) {
+				$dn = "$att=$login_search, ".$CFG_GLPI["ldap_basedn"];
+				if (@ldap_bind($ds, $dn, $password)) {
+					@ldap_unbind($ds);
+					return $dn;
+				}
+			}
+			$this->err.=$LANG["login"][15]."<br>\n";
+			return false;
+		} else {
+			$this->err .= "Can't contact LDAP server<br>";
+			return false;
+		}
+	}
+
+
+
+
+
 	/**
 	 * Try a LDAP connection
 	 *

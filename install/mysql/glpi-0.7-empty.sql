@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-11-14 11:42
+#GLPI Dump database on 2006-11-18 15:59
 
 ### Dump table glpi_alerts
 
@@ -147,7 +147,7 @@ CREATE TABLE `glpi_computers` (
   KEY `auto_update` (`auto_update`),
   KEY `ocs_import` (`ocs_import`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_computers VALUES ('1','0','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','0','0','1','Blank Template','0','N',NULL,'0',NULL,NULL);
 
@@ -157,14 +157,14 @@ DROP TABLE IF EXISTS `glpi_config`;
 CREATE TABLE `glpi_config` (
   `ID` int(11) NOT NULL auto_increment,
   `ldap_port` varchar(10) NOT NULL default '389',
-  `num_of_events` varchar(200) default '',
-  `jobs_at_login` varchar(200) default '',
+  `num_of_events` varchar(200) default NULL,
+  `jobs_at_login` varchar(200) default NULL,
   `sendexpire` varchar(200) default NULL,
   `cut` varchar(200) default NULL,
   `expire_events` varchar(200) default NULL,
   `list_limit` varchar(200) default NULL,
   `version` varchar(200) default NULL,
-  `logotxt` varchar(200) default '',
+  `logotxt` varchar(200) default NULL,
   `event_loglevel` varchar(200) default NULL,
   `mailing` varchar(200) default NULL,
   `imap_auth_server` varchar(200) default NULL,
@@ -235,16 +235,16 @@ CREATE TABLE `glpi_config` (
   `infocom_alerts` tinyint(2) NOT NULL default '0',
   `cartridges_alert` int(11) NOT NULL default '0',
   `consumables_alert` int(11) NOT NULL default '0',
-  `keep_tracking_on_delete` int(11) default NULL,
-  `show_admin_doc` int(11) default NULL,
-  `time_step` int(11) default NULL,
+  `keep_tracking_on_delete` int(11) default '1',
+  `show_admin_doc` int(11) default '0',
+  `time_step` int(11) default '5',
   `ldap_group_condition` varchar(255) default NULL,
   `ldap_search_for_groups` tinyint(4) NOT NULL default '0',
   `ldap_field_group_member` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -636,7 +636,7 @@ CREATE TABLE `glpi_display` (
   KEY `rank` (`rank`),
   KEY `num` (`num`),
   KEY `FK_users` (`FK_users`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=118 ;
 
 INSERT INTO glpi_display VALUES ('32','1','4','4','0');
 INSERT INTO glpi_display VALUES ('34','1','6','6','0');
@@ -816,7 +816,7 @@ CREATE TABLE `glpi_dropdown_case_type` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=4 ;
 
 INSERT INTO glpi_dropdown_case_type VALUES ('1','Grand',NULL);
 INSERT INTO glpi_dropdown_case_type VALUES ('2','Moyen',NULL);
@@ -855,7 +855,7 @@ CREATE TABLE `glpi_dropdown_contract_type` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=8 ;
 
 INSERT INTO glpi_dropdown_contract_type VALUES ('1','Pr&#234;t',NULL);
 INSERT INTO glpi_dropdown_contract_type VALUES ('2','Location',NULL);
@@ -922,7 +922,7 @@ CREATE TABLE `glpi_dropdown_interface` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=5 ;
 
 INSERT INTO glpi_dropdown_interface VALUES ('1','IDE',NULL);
 INSERT INTO glpi_dropdown_interface VALUES ('2','SATA',NULL);
@@ -1120,7 +1120,7 @@ CREATE TABLE `glpi_dropdown_ram_type` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=5 ;
 
 INSERT INTO glpi_dropdown_ram_type VALUES ('1','EDO',NULL);
 INSERT INTO glpi_dropdown_ram_type VALUES ('2','DDR',NULL);
@@ -1238,11 +1238,10 @@ CREATE TABLE `glpi_event_log` (
   KEY `comp` (`item`),
   KEY `date` (`date`),
   KEY `itemtype` (`itemtype`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 ;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-14 11:41:39','cron','3','session (0.00s) Réussie');
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-11-14 11:41:41','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2006-11-14 11:42:29','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-18 15:58:51','cron','3','cache (0.00s) Successfull');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-11-18 15:58:52','login','3','glpi IP connection : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1431,7 +1430,7 @@ CREATE TABLE `glpi_mailing` (
   KEY `FK_item` (`FK_item`),
   KEY `item_type` (`item_type`),
   KEY `items` (`item_type`,`FK_item`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=14 ;
 
 INSERT INTO glpi_mailing VALUES ('1','resa','3','1');
 INSERT INTO glpi_mailing VALUES ('2','resa','1','1');
@@ -1491,7 +1490,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `FK_groups` (`FK_groups`),
   KEY `FK_users` (`FK_users`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_monitors VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template',NULL,NULL,NULL);
 
@@ -1540,7 +1539,7 @@ CREATE TABLE `glpi_networking` (
   KEY `network` (`network`),
   KEY `domain` (`domain`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_networking VALUES ('1','0','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL,NULL,NULL);
 
@@ -1633,7 +1632,7 @@ CREATE TABLE `glpi_ocs_config` (
   `use_soft_dict` char(1) default '1',
   `cron_sync_number` int(11) default '1',
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_ocs_config VALUES ('1','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'1','1');
 
@@ -1701,7 +1700,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `FK_groups` (`FK_groups`),
   KEY `FK_users` (`FK_users`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_peripherals VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','','0','0','0','','0','0','N','1','Blank Template',NULL,NULL,NULL);
 
@@ -1749,7 +1748,7 @@ CREATE TABLE `glpi_phones` (
   KEY `FK_users` (`FK_users`),
   KEY `power` (`power`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_phones VALUES ('1','0',NULL,'0000-00-00 00:00:00',NULL,NULL,'0',NULL,NULL,NULL,NULL,'0','0',NULL,NULL,'0','','0','0','0','0','N','1','Blank Template',NULL,NULL,NULL);
 
@@ -1800,7 +1799,7 @@ CREATE TABLE `glpi_printers` (
   KEY `network` (`network`),
   KEY `domain` (`domain`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_printers VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL,NULL,NULL);
 
@@ -1809,7 +1808,7 @@ INSERT INTO glpi_printers VALUES ('1','0','','0000-00-00 00:00:00','','','0','',
 DROP TABLE IF EXISTS `glpi_profiles`;
 CREATE TABLE `glpi_profiles` (
   `ID` int(11) NOT NULL auto_increment,
-  `name` varchar(255) default '',
+  `name` varchar(255) default NULL,
   `interface` varchar(50) NOT NULL default 'helpdesk',
   `is_default` enum('0','1') NOT NULL default '0',
   `computer` char(1) default NULL,
@@ -1861,10 +1860,10 @@ CREATE TABLE `glpi_profiles` (
   `password_update` char(1) default NULL,
   `helpdesk_hardware` tinyint(2) NOT NULL default '0',
   `helpdesk_hardware_type` int(11) NOT NULL default '0',
-  `show_group_ticket` char(1) default NULL,
+  `show_group_ticket` char(1) default '0',
   PRIMARY KEY  (`ID`),
   KEY `interface` (`interface`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=5 ;
 
 INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,'1','1','8388674','0');
 INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,NULL,NULL,'r','r',NULL,NULL,'r',NULL,'r','r',NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','0','1','1','0','1','1','1','8388674','0');
@@ -1876,6 +1875,7 @@ INSERT INTO glpi_profiles VALUES ('4','super-admin','central','0','w','w','w','w
 DROP TABLE IF EXISTS `glpi_reminder`;
 CREATE TABLE `glpi_reminder` (
   `ID` int(11) NOT NULL auto_increment,
+  `FK_entities` int(11) NOT NULL default '0',
   `date` datetime default NULL,
   `author` int(11) NOT NULL default '0',
   `title` text,
@@ -1891,7 +1891,8 @@ CREATE TABLE `glpi_reminder` (
   KEY `rv` (`rv`),
   KEY `type` (`type`),
   KEY `begin` (`begin`),
-  KEY `end` (`end`)
+  KEY `end` (`end`),
+  KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM ;
 
 
@@ -1962,7 +1963,7 @@ CREATE TABLE `glpi_software` (
   KEY `FK_users` (`FK_users`),
   KEY `update_software` (`update_software`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_software VALUES ('1','0','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL,NULL,NULL);
 
@@ -2052,7 +2053,7 @@ CREATE TABLE `glpi_type_computers` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
 INSERT INTO glpi_type_computers VALUES ('1','Serveur',NULL);
 
@@ -2071,7 +2072,7 @@ CREATE TABLE `glpi_type_docs` (
   UNIQUE KEY `extension` (`ext`),
   KEY `upload` (`upload`),
   KEY `name` (`name`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=68 ;
 
 INSERT INTO glpi_type_docs VALUES ('1','JPEG','jpg','jpg-dist.png','','Y','2004-12-13 19:47:21');
 INSERT INTO glpi_type_docs VALUES ('2','PNG','png','png-dist.png','','Y','2004-12-13 19:47:21');
@@ -2223,7 +2224,7 @@ CREATE TABLE `glpi_users` (
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`),
   KEY `location` (`location`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=6 ;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',NULL);
 INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL);
@@ -2260,7 +2261,7 @@ CREATE TABLE `glpi_users_profiles` (
   KEY `FK_profiles` (`FK_profiles`),
   KEY `active` (`active`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM ;
+) ENGINE=MyISAM AUTO_INCREMENT=6 ;
 
 INSERT INTO glpi_users_profiles VALUES ('1','1','1','0','1','0');
 INSERT INTO glpi_users_profiles VALUES ('2','2','4','0','1','1');
