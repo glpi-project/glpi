@@ -98,7 +98,7 @@ function choose_language()
 	echo "<option value=\"nl_NL\">Dutch (nl_NL)</option>";
 	echo "<option value=\"hu_HU\">Hungarian (hu_HU)</option>";
 	echo "<option value=\"bg_BG\">Bulgarian (bg_BG)</option>";
-	echo "<option value=\"po_PO\">Polish (po_PO)</option>";
+	echo "<option value=\"pl_PL\">Polish (pl_PL)</option>";
 	echo "<option value=\"ro_RO\">Romanian (ro_RO)</option>";
 	echo "<option value=\"ru_RU\">Russian (ru_RU)</option>";
 	echo "<option value=\"zh_CN\">Simplified Chinese (zh_CN)</option>";

@@ -214,6 +214,7 @@ $LANG["common"][47]="Progress";
 $LANG["common"][48]="Surname"; 
 $LANG["common"][49]="None"; 
 $LANG["common"][50]="Confirm the deletion ?"; 
+$LANG["common"][51]="Complete Name"; 
 
 $LANG["computers"][0]="Computer hinzufügen..."; 
 $LANG["computers"][9]="Betriebssystem"; 
@@ -371,6 +372,9 @@ $LANG["document"][42]="Hinzugefügt von";
 $LANG["document"][43]="Unbekannte Datei"; 
 $LANG["document"][44]="Ungültiger Dateiname"; 
 $LANG["document"][45]="Unerlaubter Zugriff auf diese Datei"; 
+
+$LANG["entity"][0]="Entity"; 
+$LANG["entity"][1]="Hierarchy"; 
 
 $LANG["event"][0]="Eintrag (ID)"; 
 $LANG["event"][2]="Service"; 
@@ -742,12 +746,12 @@ $LANG["login"][7]="Passwort";
 $LANG["login"][8]="Benutzername oder Passwort fehlen"; 
 $LANG["login"][10]="Authentifizierung"; 
 $LANG["login"][11]="Benutzer ist nicht für die Verwendung von GLPI authorisiert."; 
-$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
-$LANG["login"][13]="Mot de passe vide"; 
-$LANG["login"][14]="Utilisateur inconnu"; 
-$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
-$LANG["login"][16]="Echec de l'authentification LDAP"; 
-$LANG["login"][17]="Echec de l'authentification AD"; 
+$LANG["login"][12]="Wrong username or password."; 
+$LANG["login"][13]="Password field is empty"; 
+$LANG["login"][14]="unknown user"; 
+$LANG["login"][15]="User not founded or several users founded"; 
+$LANG["login"][16]="unsuccessful authorization in LDAP"; 
+$LANG["login"][17]="Unsuccessfull authorization in AD"; 
 
 $LANG["mailing"][0]="-----------------------"; 
 $LANG["mailing"][1]="======================================="; 
@@ -827,6 +831,7 @@ $LANG["Menu"][33]="OCSNG";
 $LANG["Menu"][34]="Telefone"; 
 $LANG["Menu"][35]="Profile"; 
 $LANG["Menu"][36]="Gruppen"; 
+$LANG["Menu"][37]="Entities"; 
 
 $LANG["monitors"][0]="Monitor hinzufügen..."; 
 $LANG["monitors"][4]="Monitor"; 
@@ -1125,7 +1130,7 @@ $LANG["setup"][18]="Anmeldung";
 $LANG["setup"][19]="Passwort"; 
 $LANG["setup"][35]="MHZ"; 
 $LANG["setup"][40]="Neue Supporttickets auf der Einstiegsseite anzeigen?"; 
-$LANG["setup"][41]="Langue"; 
+$LANG["setup"][41]="Select Language"; 
 $LANG["setup"][42]="Netzwerk Gerätetypen"; 
 $LANG["setup"][43]="Drucker Typ"; 
 $LANG["setup"][44]="Monitor Typ"; 

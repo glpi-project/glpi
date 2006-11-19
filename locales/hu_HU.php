@@ -214,6 +214,7 @@ $LANG["common"][47]="Folyamatban";
 $LANG["common"][48]="Keresztnév"; 
 $LANG["common"][49]="Nincs"; 
 $LANG["common"][50]="Biztosan törölhető ?"; 
+$LANG["common"][51]="Complete Name"; 
 
 $LANG["computers"][0]="Számítógép hozzáadása.."; 
 $LANG["computers"][9]="Operációs rendszer"; 
@@ -371,6 +372,9 @@ $LANG["document"][42]="Létrehozta";
 $LANG["document"][43]="Ismeretlen fájl"; 
 $LANG["document"][44]="Érvénytelen fájlnév"; 
 $LANG["document"][45]="Jogosulatlan fájlhozzáférés"; 
+
+$LANG["entity"][0]="Entity"; 
+$LANG["entity"][1]="Hierarchy"; 
 
 $LANG["event"][0]="Tétel azonosító"; 
 $LANG["event"][2]="Szervíz"; 
@@ -742,12 +746,12 @@ $LANG["login"][7]="Jelszó";
 $LANG["login"][8]="Üres azonosító vagy jelszó"; 
 $LANG["login"][10]="Bejelentkezés"; 
 $LANG["login"][11]="A felhasználó nem jelentkezhet be"; 
-$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
-$LANG["login"][13]="Mot de passe vide"; 
-$LANG["login"][14]="Utilisateur inconnu"; 
-$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
-$LANG["login"][16]="Echec de l'authentification LDAP"; 
-$LANG["login"][17]="Echec de l'authentification AD"; 
+$LANG["login"][12]="Wrong username or password."; 
+$LANG["login"][13]="Password field is empty"; 
+$LANG["login"][14]="unknown user"; 
+$LANG["login"][15]="User not founded or several users founded"; 
+$LANG["login"][16]="unsuccessful authorization in LDAP"; 
+$LANG["login"][17]="Unsuccessfull authorization in AD"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
@@ -827,6 +831,7 @@ $LANG["Menu"][33]="OCSNG";
 $LANG["Menu"][34]="Telefonok"; 
 $LANG["Menu"][35]="Profilok"; 
 $LANG["Menu"][36]="Csoportok"; 
+$LANG["Menu"][37]="Entities"; 
 
 $LANG["monitors"][0]="Monitor hozzáadása"; 
 $LANG["monitors"][4]="Monitor"; 
@@ -1125,7 +1130,7 @@ $LANG["setup"][18]="Bejelentkezés";
 $LANG["setup"][19]="Jelszó"; 
 $LANG["setup"][35]="MHz"; 
 $LANG["setup"][40]="Új bejelentések jelenjenek meg elsőként ?"; 
-$LANG["setup"][41]="Langue"; 
+$LANG["setup"][41]="Select Language"; 
 $LANG["setup"][42]="Hálózat típusok"; 
 $LANG["setup"][43]="Nyomtató típusok"; 
 $LANG["setup"][44]="Monitor típusok"; 

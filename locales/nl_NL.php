@@ -214,6 +214,7 @@ $LANG["common"][47]="Progress";
 $LANG["common"][48]="Surname"; 
 $LANG["common"][49]="None"; 
 $LANG["common"][50]="Confirm the deletion ?"; 
+$LANG["common"][51]="Complete Name"; 
 
 $LANG["computers"][0]="Toevoegen Computer..."; 
 $LANG["computers"][9]="Besturingssysteem"; 
@@ -371,6 +372,9 @@ $LANG["document"][42]="Added by";
 $LANG["document"][43]="Unknown File"; 
 $LANG["document"][44]="Invalid Filename"; 
 $LANG["document"][45]="Unauthorized access to this file"; 
+
+$LANG["entity"][0]="Entity"; 
+$LANG["entity"][1]="Hierarchy"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Dienst"; 
@@ -742,12 +746,12 @@ $LANG["login"][7]="Wachtwoord";
 $LANG["login"][8]="Empty login or password"; 
 $LANG["login"][10]="Authentificatie"; 
 $LANG["login"][11]="Gebruiker heeft geen toelating voor verbinding in GLPI"; 
-$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
-$LANG["login"][13]="Mot de passe vide"; 
-$LANG["login"][14]="Utilisateur inconnu"; 
-$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
-$LANG["login"][16]="Echec de l'authentification LDAP"; 
-$LANG["login"][17]="Echec de l'authentification AD"; 
+$LANG["login"][12]="Wrong username or password."; 
+$LANG["login"][13]="Password field is empty"; 
+$LANG["login"][14]="unknown user"; 
+$LANG["login"][15]="User not founded or several users founded"; 
+$LANG["login"][16]="unsuccessful authorization in LDAP"; 
+$LANG["login"][17]="Unsuccessfull authorization in AD"; 
 
 $LANG["mailing"][0]="-----------------------"; 
 $LANG["mailing"][1]="======================================="; 
@@ -827,6 +831,7 @@ $LANG["Menu"][33]="OCSNG";
 $LANG["Menu"][34]="Telefoons"; 
 $LANG["Menu"][35]="Profiles"; 
 $LANG["Menu"][36]="Groups"; 
+$LANG["Menu"][37]="Entities"; 
 
 $LANG["monitors"][0]="Scherm toevoegen..."; 
 $LANG["monitors"][4]="Scherm"; 
@@ -1125,7 +1130,7 @@ $LANG["setup"][18]="Aanmelden";
 $LANG["setup"][19]="Wachtwoord"; 
 $LANG["setup"][35]="MHZ"; 
 $LANG["setup"][40]="Toon nieuwe taken eerst?"; 
-$LANG["setup"][41]="Langue"; 
+$LANG["setup"][41]="Select Language"; 
 $LANG["setup"][42]="Networking Types"; 
 $LANG["setup"][43]="Printertypes"; 
 $LANG["setup"][44]="Schermtypes"; 

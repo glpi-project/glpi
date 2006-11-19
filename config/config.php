@@ -90,7 +90,7 @@
 					"fr_FR"=>array("Français","fr_FR.php","fr_FR.html","hd-fr_FR.html","fr","fr"),
 					"hu_HU"=>array("Hungarian","hu_HU.php","en_GB.html","hd-en_GB.html","hu","en"),
 					"it_IT"=>array("Italiano","it_IT.php","en_GB.html","hd-it_IT.html","it","en"),
-					"po_PO"=>array("Polish","po_PO.php","en_GB.html","hd-en_GB.html","pl","en"),
+					"pl_PL"=>array("Polish","pl_PL.php","en_GB.html","hd-en_GB.html","pl","en"),
 					"pt_PT"=>array("Português","pt_PT.php","pt_PT.html","hd-en_GB.html","br","en"),
 					"ro_RO"=>array("Romanian","ro_RO.php","en_GB.html","hd-en_GB.html","ro","en"),
 					"ru_RU"=>array("Russian","ru_RU.php","en_GB.html","hd-en_GB.html","ru","en"),

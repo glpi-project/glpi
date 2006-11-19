@@ -214,6 +214,7 @@ $LANG["common"][47]="Progress";
 $LANG["common"][48]="Surname"; 
 $LANG["common"][49]="None"; 
 $LANG["common"][50]="Confirm the deletion ?"; 
+$LANG["common"][51]="Complete Name"; 
 
 $LANG["computers"][0]="Aggiungi un computer..."; 
 $LANG["computers"][9]="SO"; 
@@ -371,6 +372,9 @@ $LANG["document"][42]="Inserito da";
 $LANG["document"][43]="File sconosciuto"; 
 $LANG["document"][44]="Nome file non valido"; 
 $LANG["document"][45]="Accesso non autorizzato"; 
+
+$LANG["entity"][0]="Entity"; 
+$LANG["entity"][1]="Hierarchy"; 
 
 $LANG["event"][0]="Categoria (ID)"; 
 $LANG["event"][2]="Servizio"; 
@@ -742,12 +746,12 @@ $LANG["login"][7]="Password";
 $LANG["login"][8]="Nome utente o password lasciato in bianco"; 
 $LANG["login"][10]="Autenticazione"; 
 $LANG["login"][11]="Accesso non autorizzato"; 
-$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
-$LANG["login"][13]="Mot de passe vide"; 
-$LANG["login"][14]="Utilisateur inconnu"; 
-$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
-$LANG["login"][16]="Echec de l'authentification LDAP"; 
-$LANG["login"][17]="Echec de l'authentification AD"; 
+$LANG["login"][12]="Wrong username or password."; 
+$LANG["login"][13]="Password field is empty"; 
+$LANG["login"][14]="unknown user"; 
+$LANG["login"][15]="User not founded or several users founded"; 
+$LANG["login"][16]="unsuccessful authorization in LDAP"; 
+$LANG["login"][17]="Unsuccessfull authorization in AD"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
@@ -827,6 +831,7 @@ $LANG["Menu"][33]="OCSNG";
 $LANG["Menu"][34]="Telefonia"; 
 $LANG["Menu"][35]="Profili"; 
 $LANG["Menu"][36]="Gruppi"; 
+$LANG["Menu"][37]="Entities"; 
 
 $LANG["monitors"][0]="Aggiungi schermo..."; 
 $LANG["monitors"][4]="Schermo"; 
@@ -1125,7 +1130,7 @@ $LANG["setup"][18]="Login";
 $LANG["setup"][19]="Password"; 
 $LANG["setup"][35]="MHz"; 
 $LANG["setup"][40]="Mosta prima le nuove chiamate?"; 
-$LANG["setup"][41]="Langue"; 
+$LANG["setup"][41]="Select Language"; 
 $LANG["setup"][42]="Tipologie apparecchiature di rete"; 
 $LANG["setup"][43]="Tipologie stampanti"; 
 $LANG["setup"][44]="Tipologie schermi"; 
