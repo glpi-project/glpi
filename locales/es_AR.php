@@ -214,6 +214,7 @@ $LANG["common"][47]="Progresión";
 $LANG["common"][48]="Apellido"; 
 $LANG["common"][49]="Ninguno"; 
 $LANG["common"][50]="¿Confirma la eliminación?"; 
+$LANG["common"][51]="Complete Name"; 
 
 $LANG["computers"][0]="Agregar computador..."; 
 $LANG["computers"][9]="OS"; 
@@ -371,6 +372,9 @@ $LANG["document"][42]="Agregado por";
 $LANG["document"][43]="Archivo desconocido"; 
 $LANG["document"][44]="Nombre de archivo incorrecto"; 
 $LANG["document"][45]="Usted no tiene permiso de acceder a este archivo"; 
+
+$LANG["entity"][0]="Entity"; 
+$LANG["entity"][1]="Hierarchy"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Servicio"; 
@@ -742,12 +746,12 @@ $LANG["login"][7]="Password";
 $LANG["login"][8]="Identificador o contraseña vacíos"; 
 $LANG["login"][10]="Autenticación"; 
 $LANG["login"][11]="Usuario no autorizado a conectarse"; 
-$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
-$LANG["login"][13]="Mot de passe vide"; 
-$LANG["login"][14]="Utilisateur inconnu"; 
-$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
-$LANG["login"][16]="Echec de l'authentification LDAP"; 
-$LANG["login"][17]="Echec de l'authentification AD"; 
+$LANG["login"][12]="Wrong username or password."; 
+$LANG["login"][13]="Password field is empty"; 
+$LANG["login"][14]="unknown user"; 
+$LANG["login"][15]="User not founded or several users founded"; 
+$LANG["login"][16]="unsuccessful authorization in LDAP"; 
+$LANG["login"][17]="Unsuccessfull authorization in AD"; 
 
 $LANG["mailing"][0]="-----------------------"; 
 $LANG["mailing"][1]="======================================="; 
@@ -827,6 +831,7 @@ $LANG["Menu"][33]="OCSNG";
 $LANG["Menu"][34]="Teléfonos"; 
 $LANG["Menu"][35]="Perfiles"; 
 $LANG["Menu"][36]="Grupos"; 
+$LANG["Menu"][37]="Entities"; 
 
 $LANG["monitors"][0]="Agregar monitor..."; 
 $LANG["monitors"][4]="Monitor"; 
@@ -1125,7 +1130,7 @@ $LANG["setup"][18]="Login";
 $LANG["setup"][19]="Password"; 
 $LANG["setup"][35]="MHZ"; 
 $LANG["setup"][40]="Mostrar los nuevos servicios primero"; 
-$LANG["setup"][41]="Langue"; 
+$LANG["setup"][41]="Select Language"; 
 $LANG["setup"][42]="Tipos de material de redes"; 
 $LANG["setup"][43]="Tipos de impresoras"; 
 $LANG["setup"][44]="Tipos de monitores"; 
