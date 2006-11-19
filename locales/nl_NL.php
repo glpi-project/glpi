@@ -212,6 +212,8 @@ $LANG["common"][45]="MB max";
 $LANG["common"][46]="Vcard"; 
 $LANG["common"][47]="Progress"; 
 $LANG["common"][48]="Surname"; 
+$LANG["common"][49]="None"; 
+$LANG["common"][50]="Confirm the deletion ?"; 
 
 $LANG["computers"][0]="Toevoegen Computer..."; 
 $LANG["computers"][9]="Besturingssysteem"; 
@@ -662,6 +664,8 @@ $LANG["knowbase"][22]="Alles verbergen";
 $LANG["knowbase"][24]="FAQ-toegang"; 
 $LANG["knowbase"][26]="Views"; 
 $LANG["knowbase"][27]="On"; 
+$LANG["knowbase"][29]="Recent Entries"; 
+$LANG["knowbase"][30]="Most popular questions"; 
 
 $LANG["links"][1]="Link"; 
 $LANG["links"][2]="Externe link toevoegen ..."; 
@@ -738,6 +742,12 @@ $LANG["login"][7]="Wachtwoord";
 $LANG["login"][8]="Empty login or password"; 
 $LANG["login"][10]="Authentificatie"; 
 $LANG["login"][11]="Gebruiker heeft geen toelating voor verbinding in GLPI"; 
+$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
+$LANG["login"][13]="Mot de passe vide"; 
+$LANG["login"][14]="Utilisateur inconnu"; 
+$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
+$LANG["login"][16]="Echec de l'authentification LDAP"; 
+$LANG["login"][17]="Echec de l'authentification AD"; 
 
 $LANG["mailing"][0]="-----------------------"; 
 $LANG["mailing"][1]="======================================="; 
@@ -888,7 +898,7 @@ $LANG["ocsconfig"][39]="OCS TAG";
 $LANG["ocsconfig"][40]="Number of computers to synchronize using the cron"; 
 
 $LANG["ocsng"][0]="OCS Inventory NG"; 
-$LANG["ocsng"][1]="Synchronization of already imported computers"; 
+$LANG["ocsng"][1]="Synchronize computers already imported"; 
 $LANG["ocsng"][2]="Import of nieuwe computers"; 
 $LANG["ocsng"][4]="Nieuwe OCS-computers linken aan bestaande GLPI-computers"; 
 $LANG["ocsng"][5]="Nieuwe computers importeren"; 
@@ -1115,7 +1125,7 @@ $LANG["setup"][18]="Aanmelden";
 $LANG["setup"][19]="Wachtwoord"; 
 $LANG["setup"][35]="MHZ"; 
 $LANG["setup"][40]="Toon nieuwe taken eerst?"; 
-$LANG["setup"][41]="Kies de taal"; 
+$LANG["setup"][41]="Langue"; 
 $LANG["setup"][42]="Networking Types"; 
 $LANG["setup"][43]="Printertypes"; 
 $LANG["setup"][44]="Schermtypes"; 
@@ -1234,6 +1244,7 @@ $LANG["setup"][178]="Extension CURL or DOMXML of your parser PHP isn't installed
 $LANG["setup"][179]="CAS kan niet gebruikt worden als externe verbindingsbron"; 
 $LANG["setup"][180]="Gebruik TLS"; 
 $LANG["setup"][181]="De start-TLS van LDAP_bestaat niet"; 
+$LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][200]="E-mailopvolgingen"; 
 $LANG["setup"][201]="Functie-instelling"; 
 $LANG["setup"][202]="Gebruik e-mailopvolgingen"; 

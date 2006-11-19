@@ -212,6 +212,8 @@ $LANG["common"][45]="MB max";
 $LANG["common"][46]="Vcard"; 
 $LANG["common"][47]="Progress"; 
 $LANG["common"][48]="Surname"; 
+$LANG["common"][49]="None"; 
+$LANG["common"][50]="Confirm the deletion ?"; 
 
 $LANG["computers"][0]="Добавление компьютера..."; 
 $LANG["computers"][9]="ОС"; 
@@ -662,6 +664,8 @@ $LANG["knowbase"][22]="Скрыть все";
 $LANG["knowbase"][24]="Доступ к ЧаВо"; 
 $LANG["knowbase"][26]="Views"; 
 $LANG["knowbase"][27]="On"; 
+$LANG["knowbase"][29]="Recent Entries"; 
+$LANG["knowbase"][30]="Most popular questions"; 
 
 $LANG["links"][1]="Ссылка или имя файла"; 
 $LANG["links"][2]="Добавить внешнюю ссылку..."; 
@@ -738,6 +742,12 @@ $LANG["login"][7]="Пароль";
 $LANG["login"][8]="Empty login or password"; 
 $LANG["login"][10]="Аутентификация"; 
 $LANG["login"][11]="Пользователю не разрешено входить в GLPI"; 
+$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
+$LANG["login"][13]="Mot de passe vide"; 
+$LANG["login"][14]="Utilisateur inconnu"; 
+$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
+$LANG["login"][16]="Echec de l'authentification LDAP"; 
+$LANG["login"][17]="Echec de l'authentification AD"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
@@ -888,7 +898,7 @@ $LANG["ocsconfig"][39]="OCS TAG";
 $LANG["ocsconfig"][40]="Number of computers to synchronize using the cron"; 
 
 $LANG["ocsng"][0]="OCS Inventory NG"; 
-$LANG["ocsng"][1]="Synchronization of already imported computers"; 
+$LANG["ocsng"][1]="Synchronize computers already imported"; 
 $LANG["ocsng"][2]="Импортирование новых кмопьютеров"; 
 $LANG["ocsng"][4]="Связывание новых компьютеров системы OCS с существующими в системе GLPI"; 
 $LANG["ocsng"][5]="Импорт новых компьютеров"; 
@@ -1115,7 +1125,7 @@ $LANG["setup"][18]="Имя пользователя";
 $LANG["setup"][19]="Пароль"; 
 $LANG["setup"][35]="МГц"; 
 $LANG["setup"][40]="Отображать сначала новые заявки?"; 
-$LANG["setup"][41]="Выберите язык"; 
+$LANG["setup"][41]="Langue"; 
 $LANG["setup"][42]="Networking Types"; 
 $LANG["setup"][43]="Типы принтеров"; 
 $LANG["setup"][44]="Типы мониторов"; 
@@ -1234,6 +1244,7 @@ $LANG["setup"][178]="Extension CURL or DOMXML of your parser PHP isn't installed
 $LANG["setup"][179]="Невозможно использовать CAS как источник внешней аутентификации"; 
 $LANG["setup"][180]="Использовать TLS"; 
 $LANG["setup"][181]="ldap_start_tls не существует"; 
+$LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][200]="Сопровождение по Email"; 
 $LANG["setup"][201]="Общие настройки"; 
 $LANG["setup"][202]="Использовать сопровождение по Email"; 

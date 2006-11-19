@@ -212,6 +212,8 @@ $LANG["common"][45]="MB max";
 $LANG["common"][46]="VCard"; 
 $LANG["common"][47]="Progress"; 
 $LANG["common"][48]="Surname"; 
+$LANG["common"][49]="None"; 
+$LANG["common"][50]="Confirm the deletion ?"; 
 
 $LANG["computers"][0]="Ny dator"; 
 $LANG["computers"][9]="Operativsystem"; 
@@ -662,6 +664,8 @@ $LANG["knowbase"][22]="Göm alla";
 $LANG["knowbase"][24]="FAQ access"; 
 $LANG["knowbase"][26]="Vyer"; 
 $LANG["knowbase"][27]="On"; 
+$LANG["knowbase"][29]="Recent Entries"; 
+$LANG["knowbase"][30]="Most popular questions"; 
 
 $LANG["links"][1]="Länk eller filnamn"; 
 $LANG["links"][2]="Ny extern länk"; 
@@ -738,6 +742,12 @@ $LANG["login"][7]="Lösenord";
 $LANG["login"][8]="Konto eller lösenord saknas"; 
 $LANG["login"][10]="Autenticering"; 
 $LANG["login"][11]="Användaren är ej auktoriserad att ansluta till GLPI"; 
+$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
+$LANG["login"][13]="Mot de passe vide"; 
+$LANG["login"][14]="Utilisateur inconnu"; 
+$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
+$LANG["login"][16]="Echec de l'authentification LDAP"; 
+$LANG["login"][17]="Echec de l'authentification AD"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
@@ -888,7 +898,7 @@ $LANG["ocsconfig"][39]="OCS TAG";
 $LANG["ocsconfig"][40]="Antal datorer som skall synkroniseras via Cron"; 
 
 $LANG["ocsng"][0]="OCS Inventory NG"; 
-$LANG["ocsng"][1]="Synchronization of already imported computers"; 
+$LANG["ocsng"][1]="Synchronize computers already imported"; 
 $LANG["ocsng"][2]="Importera nya datorer"; 
 $LANG["ocsng"][4]="Link new OCS computers to existing GLPI computers"; 
 $LANG["ocsng"][5]="Importera nya datorer"; 
@@ -1115,7 +1125,7 @@ $LANG["setup"][18]="Konto";
 $LANG["setup"][19]="Lösenord"; 
 $LANG["setup"][35]="MHz"; 
 $LANG["setup"][40]="Visa nya ärenden först"; 
-$LANG["setup"][41]="Välj språk"; 
+$LANG["setup"][41]="Langue"; 
 $LANG["setup"][42]="Networking Types"; 
 $LANG["setup"][43]="Skrivare definitioner"; 
 $LANG["setup"][44]="Bildskärmar definitioner"; 
@@ -1234,6 +1244,7 @@ $LANG["setup"][178]="CURL eller DOMXML tillägget i PHP tolken är ej installera
 $LANG["setup"][179]="Det går ej att använda CAS som extern källa för autenticering"; 
 $LANG["setup"][180]="Använd TLS"; 
 $LANG["setup"][181]="ldap_start_tls does not exist"; 
+$LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][200]="E-post uppföljningar"; 
 $LANG["setup"][201]="Function Configuration"; 
 $LANG["setup"][202]="Använd e-post för uppföljningar"; 
@@ -1355,7 +1366,7 @@ $LANG["state"][0]="Status";
 $LANG["state"][1]="Item Status"; 
 $LANG["state"][6]="Item Type"; 
 $LANG["state"][7]="Inga objekt funna"; 
-$LANG["state"][11]="Synthesis"; 
+$LANG["state"][11]="Summary"; 
 
 $LANG["stats"][0]="Vilken statistik skall visas"; 
 $LANG["stats"][1]="Global"; 
