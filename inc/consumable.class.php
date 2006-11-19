@@ -177,7 +177,7 @@ class ConsumableType extends CommonDBTM {
 				echo "</td></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][36].": 	</td><td colspan='2'>\n";
-				dropdownValue("glpi_dropdown_locations","location",$this->fields["location"]);
+				dropdownValue("glpi_dropdown_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][38].":</td><td colspan='2'><select name='alarm'>\n";

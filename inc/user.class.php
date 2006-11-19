@@ -778,6 +778,7 @@ class User extends CommonDBTM {
 				echo "</td></tr>";
 		
 				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
+				// TODO Restrict ??? or delete this field from the user
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 				echo "</td>";
 				echo "<td align='center'>".$LANG["common"][42]."</td><td>";

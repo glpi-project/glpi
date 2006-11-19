@@ -59,17 +59,21 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
-	
-	$link="";
-	if (!empty($where)) $link= " AND ";
-	else $link=" WHERE ";
-	$where.=getEntitiesRestrictRequest($link,"glpi_dropdown_locations");
+	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>0){
+		if (!empty($where)) $where.= " AND glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
+		else $where.=" WHERE glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
+	} else {
+		$link="";
+		if (!empty($where)) $link= " AND ";
+		else $link=" WHERE ";
+		$where.=getEntitiesRestrictRequest($link,"glpi_dropdown_locations");
+	}
 
 	$query = "select glpi_dropdown_netpoint.comments as comments, glpi_dropdown_netpoint.ID as ID, glpi_dropdown_netpoint.name as netpname, glpi_dropdown_locations.completename as loc from glpi_dropdown_netpoint";
 	$query .= " left join glpi_dropdown_locations on (glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID)";
 	$query.=$where;
 	$query .= " order by glpi_dropdown_netpoint.name,glpi_dropdown_locations.completename $LIMIT"; 
-	//echo $query;
+//	echo $query;
 	$result = $DB->query($query);
 
 	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
@@ -137,7 +141,11 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 			if ($_POST['table']=="glpi_dropdown_kbcategories"){
 				$where.=" FK_entities = '".$_SESSION["glpiactive_entity"]."'";
 			} else {
-				$where.=getEntitiesRestrictRequest("",$_POST['table']);
+				if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>0){
+					$where.= $_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
+				} else {
+					$where.=getEntitiesRestrictRequest("",$_POST['table']);
+				}
 			}
 
 
@@ -196,7 +204,11 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		$where .=" (ID <> '".$_POST['value']."' ";
 
 		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
-			$where.=getEntitiesRestrictRequest("AND",$_POST['table']);
+			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>0){
+				$where.= " AND ".$_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
+			} else {
+				$where.=getEntitiesRestrictRequest("AND",$_POST['table']);
+			}
 		}
 
 		$field="name";
@@ -218,7 +230,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 				$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
 			break;
 		}
-		
+		//echo $query;
 		$result = $DB->query($query);
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";

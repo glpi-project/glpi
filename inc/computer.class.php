@@ -565,7 +565,7 @@ class Computer extends CommonDBTM {
 				echo "<tr class='tab_bg_1'>";
 				echo "<td >".$LANG["common"][15].": 	</td>";
 				echo "<td >";
-				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
 				echo "</td>";
 	
 	

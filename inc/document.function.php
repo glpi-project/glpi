@@ -277,8 +277,10 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$canread=haveTypeRight($device_type,"r");
 	$canedit=haveTypeRight($device_type,"w");
 
-	$query = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
-
+	$query = "SELECT glpi_doc_device.ID as assocID, glpi_docs.* FROM glpi_doc_device 
+		LEFT JOIN glpi_docs ON (glpi_doc_device.FK_doc=glpi_docs.ID) 
+		WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
+	//echo $query;
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
@@ -293,33 +295,31 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<th>".$LANG["document"][4]."</th>";
 	if ($withtemplate<2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
+	if ($number)
+	while ($data=$DB->fetch_assoc($result)) {
+		$docID=$data["ID"];
+		$assocID=$data["assocID"];
 
-	while ($i < $number) {
-		$cID=$DB->result($result, $i, "FK_doc");
-		$assocID=$DB->result($result, $i, "ID");
-
-		$con=new Document;
-		$con->getFromDB($cID);
-		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
+		echo "<tr class='tab_bg_1".($data["deleted"]=='Y'?"_2":"")."'>";
 		if ($withtemplate!=3&&$canread){
-			echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$cID'><b>".$con->fields["name"];
-			if ($CFG_GLPI["view_ID"]) echo " (".$con->fields["ID"].")";
+			echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><b>".$data["name"];
+			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
 			echo "</b></a></td>";
 		} else {
-			echo "<td align='center'><b>".$con->fields["name"];
-			if ($CFG_GLPI["view_ID"]) echo " (".$con->fields["ID"].")";
+			echo "<td align='center'><b>".$data["name"];
+			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
 			echo "</b></td>";
 		}
 
-		echo "<td align='center'  width='100px'>".getDocumentLink($con->fields["filename"])."</td>";
+		echo "<td align='center'  width='100px'>".getDocumentLink($data["filename"])."</td>";
 
 		echo "<td align='center'>";
 		if (!empty($con->fields["link"]))
-			echo "<a target=_blank href='".$con->fields["link"]."'>".$con->fields["link"]."</a>";
+			echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
 		else echo "&nbsp;";
 		echo "</td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$con->fields["rubrique"])."</td>";
-		echo "<td align='center'>".$con->fields["mime"]."</td>";
+		echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$data["rubrique"])."</td>";
+		echo "<td align='center'>".$data["mime"]."</td>";
 
 		if ($withtemplate<2) {
 			echo "<td align='center' class='tab_bg_2'>";
@@ -333,26 +333,35 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	}
 
 	if ($canedit){
-		$q="SELECT * FROM glpi_docs WHERE deleted='N'";
-		$result = $DB->query($q);
-		$nb = $DB->numrows($result);
+		// Restrict entity for knowbase
+		$ci=new CommonItem();
+		$ci->getFromDB($device_type,$ID);
+		if (isset($ci->obj->fields["FK_entities"])){
+			$entity=$ci->obj->fields["FK_entities"];
 
-		if ($withtemplate<2&&$nb>0){
-
-			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center' colspan='3'>";
-			echo "<input type='hidden' name='is_template' value='$withtemplate'>";
-			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
-			echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-			echo "</td>";
-			echo "<td align='right' colspan='2'>";
-			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-			dropdown("glpi_docs","conID");
-			echo "</div></td><td align='center'>";
-			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-			echo "</td>";
-
-			echo "</tr>";
+			$q="SELECT count(*) FROM glpi_docs WHERE deleted='N' AND FK_entities='$entity'";
+			
+			$result = $DB->query($q);
+			$nb = $DB->result($result,0,0);
+	
+			if ($withtemplate<2&&$nb>0){
+	
+				echo "<tr class='tab_bg_1'>";
+				echo "<td align='center' colspan='3'>";
+				echo "<input type='hidden' name='is_template' value='$withtemplate'>";
+				echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
+				echo "<input type='hidden' name='FK_entities' value='$entity'>";
+				echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+				echo "</td>";
+				echo "<td align='right' colspan='2'>";
+				echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
+				dropdown("glpi_docs","conID",1,$entity);
+				echo "</div></td><td align='center'>";
+				echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+				echo "</td>";
+	
+				echo "</tr>";
+			}
 		}
 	}
 	if (!empty($withtemplate))

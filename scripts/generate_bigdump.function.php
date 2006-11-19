@@ -871,7 +871,7 @@ function generate_entity($ID_entity){
 		// Link with father 
 		if ($data['parentID']>0){
 			//insert netpoint
-			$query="INSERT INTO glpi_dropdown_netpoint VALUES (NULL,'".$data['ID']."','".getNextNETPOINT()."','comment netpoint')";
+			$query="INSERT INTO glpi_dropdown_netpoint VALUES (NULL,'$ID_entity','".$data['ID']."','".getNextNETPOINT()."','comment netpoint')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$netpointID=$DB->insert_id();
 	
@@ -898,7 +898,7 @@ function generate_entity($ID_entity){
 	
 		// Ajout imprimantes reseaux : 1 par loc + connexion �un matos reseau + ajout de cartouches
 		//insert netpoint
-		$query="INSERT INTO glpi_dropdown_netpoint VALUES (NULL,'".$data['ID']."','".getNextNETPOINT()."','comment netpoint')";
+		$query="INSERT INTO glpi_dropdown_netpoint VALUES (NULL,'$ID_entity','".$data['ID']."','".getNextNETPOINT()."','comment netpoint')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$netpointID=$DB->insert_id();
 	
@@ -1048,7 +1048,7 @@ function generate_entity($ID_entity){
 	
 	
 		//insert netpoint
-		$query="INSERT INTO glpi_dropdown_netpoint VALUES (NULL,'$loc','".getNextNETPOINT()."','comment netpoint')";
+		$query="INSERT INTO glpi_dropdown_netpoint VALUES (NULL,'$ID_entity','$loc','".getNextNETPOINT()."','comment netpoint')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$netpointID=$DB->insert_id();
 	

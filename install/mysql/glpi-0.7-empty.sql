@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-11-18 15:59
+#GLPI Dump database on 2006-11-19 14:26
 
 ### Dump table glpi_alerts
 
@@ -244,7 +244,7 @@ CREATE TABLE `glpi_config` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
+INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -1042,12 +1042,14 @@ CREATE TABLE `glpi_dropdown_model_printers` (
 DROP TABLE IF EXISTS `glpi_dropdown_netpoint`;
 CREATE TABLE `glpi_dropdown_netpoint` (
   `ID` int(11) NOT NULL auto_increment,
+  `FK_entities` int(11) NOT NULL default '0',
   `location` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL,
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `location` (`location`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM ;
 
 
@@ -1238,10 +1240,9 @@ CREATE TABLE `glpi_event_log` (
   KEY `comp` (`item`),
   KEY `date` (`date`),
   KEY `itemtype` (`itemtype`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-18 15:58:51','cron','3','cache (0.00s) Successfull');
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-11-18 15:58:52','login','3','glpi IP connection : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-19 14:26:04','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
