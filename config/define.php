@@ -50,6 +50,7 @@
 	define("REMINDER_TYPE",25);
 	define("STAT_TYPE",26);
 	define("GROUP_TYPE",27);
+	define("ENTITY_TYPE",28);
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -158,6 +159,7 @@
 			REMINDER_TYPE => "glpi_reminder",
 			STAT_TYPE => "???",
 			GROUP_TYPE => "glpi_groups",
+			ENTITY_TYPE => "glpi_entities",
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -188,6 +190,7 @@
 			REMINDER_TYPE => "front/reminder.form.php",
 			STAT_TYPE => "???",
 			GROUP_TYPE => "front/group.form.php",
+			ENTITY_TYPE => "front/entity.form.php",
 			);
 
 

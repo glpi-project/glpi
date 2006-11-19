@@ -130,7 +130,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = 'yes') AND  (parentID = $parentID) ORDER  BY name ASC";
 	}else{
 		if (!haveRight("knowbase","r")) return false;
-		$query = "SELECT * FROM glpi_dropdown_kbcategories WHERE  (parentID = $parentID) AND FK_entities = '".$_SESSION["glpiactive_entity"]."' ORDER  BY name ASC";
+		$query = "SELECT * FROM glpi_dropdown_kbcategories WHERE  (parentID = $parentID) ORDER  BY name ASC";
 	}
 	
 	/// Show category
@@ -232,7 +232,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 
 	$query = "SELECT  *  FROM glpi_kbitems";
   // $query.= " LEFT JOIN glpi_users  ON (glpi_users.ID = glpi_kbitems.author) ";
-	$query.=" WHERE $where AND FK_entities='".$_SESSION["glpiactive_entity"]."' ORDER BY $sort $order";
+	$query.=" WHERE $where ORDER BY $sort $order";
 	//echo $query;
 	
 
@@ -361,10 +361,10 @@ function showKbRecentPopular($target,$order,$faq=0){
 
 	$faq_limit="";		
 	if($faq==1){ // FAQ
-		$faq_limit="AND (glpi_kbitems.faq = 'yes')";
+		$faq_limit=" WHERE (glpi_kbitems.faq = 'yes')";
 	}
 
-	$query = "SELECT  *  FROM glpi_kbitems WHERE FK_entities='".$_SESSION["glpiactive_entity"]."' $faq_limit $orderby LIMIT 10";
+	$query = "SELECT  *  FROM glpi_kbitems $faq_limit $orderby LIMIT 10";
 	//echo $query;
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -464,7 +464,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 
 	$ki= new kbitem;	
 
-	if ($ki->getfromDB($ID)&&haveAccessToEntity($ki->fields["FK_entities"])){
+	if ($ki->getfromDB($ID)){
 		if ($ki->fields["faq"]=="yes"){
 			if ($CFG_GLPI["public_faq"] == 0&&!haveRight("faq","r")) return false;	
 		}

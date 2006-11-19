@@ -120,82 +120,68 @@ else {
 
 	$optgroup=array(
 			$LANG["setup"][139]=>array(
-				"locations"=>$LANG["common"][15],		
-				"state"=>$LANG["setup"][83],
+				"glpi_dropdown_locations"=>$LANG["common"][15],		
+				"glpi_dropdown_state"=>$LANG["setup"][83],
 				),
 
 			$LANG["setup"][140]=>array(
-				"computers"=>$LANG["setup"][4],
-				"networking"=>$LANG["setup"][42],		
-				"printers"=>$LANG["setup"][43],		
-				"monitors"=>$LANG["setup"][44],		
-				"peripherals"=>$LANG["setup"][69],
-				"phones"=>$LANG["setup"][504],
-				"cartridge_type"=>$LANG["setup"][84],
-				"consumable_type"=>$LANG["setup"][92],
-				"contract_type"=>$LANG["setup"][85],
-				"contact_type"=>$LANG["setup"][82],	
-				"ram_type"=>$LANG["setup"][86],	
-				"enttype"=>$LANG["setup"][80],
-				"interface"=>$LANG["setup"][93],
-				"case_type"=>$LANG["setup"][45],
-				"phone_power"=>$LANG["setup"][505],
+				"glpi_type_computers"=>$LANG["setup"][4],
+				"glpi_type_networking"=>$LANG["setup"][42],		
+				"glpi_type_printers"=>$LANG["setup"][43],		
+				"glpi_type_monitors"=>$LANG["setup"][44],		
+				"glpi_type_peripherals"=>$LANG["setup"][69],
+				"glpi_type_phones"=>$LANG["setup"][504],
+				"glpi_dropdown_cartridge_type"=>$LANG["setup"][84],
+				"glpi_dropdown_consumable_type"=>$LANG["setup"][92],
+				"glpi_dropdown_contract_type"=>$LANG["setup"][85],
+				"glpi_dropdown_contact_type"=>$LANG["setup"][82],	
+				"glpi_dropdown_ram_type"=>$LANG["setup"][86],	
+				"glpi_dropdown_enttype"=>$LANG["setup"][80],
+				"glpi_dropdown_interface"=>$LANG["setup"][93],
+				"glpi_dropdown_case_type"=>$LANG["setup"][45],
+				"glpi_dropdown_phone_power"=>$LANG["setup"][505],
 				),
 
 			$LANG["common"][22]=>array(
-					"model"=>$LANG["setup"][91],
-					"model_networking"=>$LANG["setup"][95],
-					"model_printers"=>$LANG["setup"][96],	
-					"model_monitors"=>$LANG["setup"][94],
-					"model_peripherals"=>$LANG["setup"][97],			
-					"model_phones"=>$LANG["setup"][503],
+					"glpi_dropdown_model"=>$LANG["setup"][91],
+					"glpi_dropdown_model_networking"=>$LANG["setup"][95],
+					"glpi_dropdown_model_printers"=>$LANG["setup"][96],	
+					"glpi_dropdown_model_monitors"=>$LANG["setup"][94],
+					"glpi_dropdown_model_peripherals"=>$LANG["setup"][97],			
+					"glpi_dropdown_model_phones"=>$LANG["setup"][503],
 
 					),
 
 			$LANG["setup"][142]=>array(
-					"budget"=>$LANG["setup"][99],
-					"rubdocs"=>$LANG["setup"][81],	
+					"glpi_dropdown_budget"=>$LANG["setup"][99],
+					"glpi_dropdown_rubdocs"=>$LANG["setup"][81],	
 					),
 
 			$LANG["setup"][143]=>array(
-					"tracking_category"=>$LANG["setup"][79],		
+					"glpi_dropdown_tracking_category"=>$LANG["setup"][79],		
 					),
 
 			$LANG["setup"][144]=>array(
-					"kbcategories"=>$LANG["setup"][78],	
+					"glpi_dropdown_kbcategories"=>$LANG["setup"][78],	
 					),
 
 			$LANG["setup"][145]=>array(
-					"os"=>$LANG["setup"][5],	
-					"os_version"=>$LANG["setup"][500],
-					"os_sp"=>$LANG["setup"][501],			
-					"auto_update"=>$LANG["setup"][98],			
+					"glpi_dropdown_os"=>$LANG["setup"][5],	
+					"glpi_dropdown_os_version"=>$LANG["setup"][500],
+					"glpi_dropdown_os_sp"=>$LANG["setup"][501],			
+					"glpi_dropdown_auto_update"=>$LANG["setup"][98],			
 					),
 
 			$LANG["setup"][146]=>array(
-					"iface"=>$LANG["setup"][9],		
-					"firmware"=>$LANG["setup"][71],
-					"netpoint"=>$LANG["setup"][73],
-					"domain"=>$LANG["setup"][89],
-					"network"=>$LANG["setup"][88],
-					"vlan"=>$LANG["setup"][90],	
+					"glpi_dropdown_iface"=>$LANG["setup"][9],		
+					"glpi_dropdown_firmware"=>$LANG["setup"][71],
+					"glpi_dropdown_netpoint"=>$LANG["setup"][73],
+					"glpi_dropdown_domain"=>$LANG["setup"][89],
+					"glpi_dropdown_network"=>$LANG["setup"][88],
+					"glpi_dropdown_vlan"=>$LANG["setup"][90],	
 					),
 
 			); //end $opt
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//	asort($dp);
 
 	echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
@@ -216,122 +202,20 @@ else {
 	echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
 	echo "</table></form></div>";
 
-	switch ($which){
-		case "tracking_category" :
-			showFormTreeDown($_SERVER['PHP_SELF'],"tracking_category",$LANG["setup"][79],$ID);
-		break;
-
-		case "kbcategories" :
-			showFormTreeDown($_SERVER['PHP_SELF'],"kbcategories",$LANG["setup"][78],$ID,$value2,$where,$tomove,$type);
-		break;
-		case "locations" :
-			showFormTreeDown($_SERVER['PHP_SELF'],"locations",$LANG["common"][15],$ID,$value2,$where,$tomove,$type);
-		break;
-		case "computers" :
-			showFormTypeDown($_SERVER['PHP_SELF'],"computers",$LANG["setup"][4],$ID);
-		break;
-		case "networking" :
-			showFormTypeDown($_SERVER['PHP_SELF'],"networking",$LANG["setup"][42],$ID);
-		break;
-		case "printers" :
-			showFormTypeDown($_SERVER['PHP_SELF'],"printers",$LANG["setup"][43],$ID);
-		break;
-		case "monitors" :
-			showFormTypeDown($_SERVER['PHP_SELF'],"monitors",$LANG["setup"][44],$ID);
-		break;
-		case "peripherals" :
-			showFormTypeDown($_SERVER['PHP_SELF'],"peripherals",$LANG["setup"][69],$ID);
-		break;
-		case "phones" :
-			showFormTypeDown($_SERVER['PHP_SELF'],"phones",$LANG["setup"][504],$ID);
-		break;
-		case "os" :
-			showFormDropDown($_SERVER['PHP_SELF'],"os",$LANG["setup"][5],$ID);
-		break;
-		case "os_version" :
-			showFormDropDown($_SERVER['PHP_SELF'],"os_version",$LANG["setup"][500],$ID);
-		break;
-		case "os_sp" :
-			showFormDropDown($_SERVER['PHP_SELF'],"os_sp",$LANG["setup"][501],$ID);
-		break;
-		case "enttype" :
-			showFormDropDown($_SERVER['PHP_SELF'],"enttype",$LANG["setup"][80],$ID);
-		break;
-
-		case "iface" :
-			showFormDropDown($_SERVER['PHP_SELF'],"iface",$LANG["setup"][9],$ID);
-		break;
-		case "firmware" :
-			showFormDropDown($_SERVER['PHP_SELF'],"firmware",$LANG["setup"][71],$ID);
-		break;
-		case "netpoint" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"netpoint",$LANG["setup"][73],$ID,$value2);
-		break;
-		case "model" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"model",$LANG["setup"][91],$ID,$value2);
-		break;
-		case "model_printers" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"model_printers",$LANG["setup"][96],$ID,$value2);
-		break;
-		case "model_monitors" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"model_monitors",$LANG["setup"][94],$ID,$value2);
-		break;
-		case "model_networking" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"model_networking",$LANG["setup"][95],$ID,$value2);
-		break;
-		case "model_peripherals" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"model_peripherals",$LANG["setup"][97],$ID,$value2);
-		break;
-		case "model_phones" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"model_phones",$LANG["setup"][503],$ID,$value2);
-		break;
-		case "rubdocs" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"rubdocs",$LANG["setup"][81],$ID,$value2);
-		break;
-		case "contact_type" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"contact_type",$LANG["setup"][82],$ID,$value2);
-		break;
-		case "state" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"state",$LANG["setup"][83],$ID,$value2);
-		break;
-		case "cartridge_type" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"cartridge_type",$LANG["setup"][84],$ID,$value2);
-		break;
-		case "consumable_type" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"consumable_type",$LANG["setup"][92],$ID,$value2);
-		break;
-		case "contract_type" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"contract_type",$LANG["setup"][85],$ID,$value2);
-		break;
-		case "ram_type" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"ram_type",$LANG["setup"][86],$ID,$value2);
-		break;
-		case "case_type" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"case_type",$LANG["setup"][45],$ID,$value2);
-		break;
-		case "interface" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"interface",$LANG["setup"][93],$ID,$value2);
-		break;
-		case "domain" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"domain",$LANG["setup"][89],$ID,$value2);
-		break;
-		case "network" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"network",$LANG["setup"][88],$ID,$value2);
-		break;
-		case "vlan" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"vlan",$LANG["setup"][90],$ID,$value2);
-		break;
-		case "auto_update" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"auto_update",$LANG["setup"][98],$ID,$value2);
-		break;
-		case "budget" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"budget",$LANG["setup"][99],$ID,$value2);
-		break;
-		case "phone_power" : 
-			showFormDropDown($_SERVER['PHP_SELF'],"phone_power",$LANG["setup"][505],$ID,$value2);
-		break;
-
-		default : break;
+	if ($which){
+		// Search title
+		$title="";
+		foreach ($optgroup as $key => $val){
+			if (isset($val[$which])){
+				$title=$val[$which];
+			}
+		}
+		if (!empty($title))
+		if (in_array($which,$CFG_GLPI["dropdowntree_tables"])){
+			showFormTreeDown($_SERVER['PHP_SELF'],$which,$title,$ID);
+		} else {
+			showFormDropDown($_SERVER['PHP_SELF'],$which,$title,$ID);
+		}
 	}
 
 	if (ereg("popup",$_SERVER['PHP_SELF']))

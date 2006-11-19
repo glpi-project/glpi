@@ -219,6 +219,7 @@ $LANG["common"][47]="Progression";
 $LANG["common"][48]="Nom de famille";
 $LANG["common"][49]="Aucun";
 $LANG["common"][50]="Confirmer la suppression ?";
+$LANG["common"][51]="Nom complet";
 
 
 $LANG["computers"][0]="Ajouter ordinateur...";
@@ -377,6 +378,9 @@ $LANG["document"][42]="Ajouté par";
 $LANG["document"][43]="Fichier inconnu";
 $LANG["document"][44]="Nom de fichier incorrect";
 $LANG["document"][45]="Vous n'avez pas le droit d'accèder à ce fichier";
+
+$LANG["entity"][0]="Entité"; 
+$LANG["entity"][1]="Hierarchie"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Service";
@@ -842,6 +846,7 @@ $LANG["Menu"][33]="OCSNG";
 $LANG["Menu"][34]="Téléphones";
 $LANG["Menu"][35]="Profils";
 $LANG["Menu"][36]="Groupes";
+$LANG["Menu"][37]="Entités";
 
 $LANG["monitors"][0]="Ajouter moniteur...";
 $LANG["monitors"][4]="Moniteur";

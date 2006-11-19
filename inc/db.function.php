@@ -53,6 +53,24 @@ function countElementsInTable($table){
 	return $ligne['cpt'];
 }
 
+
+/**
+ * Count the number of elements in a table for a specific entity
+ *
+ * @param $table table name
+ * @param $entity the entity ID
+ *
+ * return int nb of elements in table
+ */
+function countElementsInTableForEntity($table,$entity){
+	global $DB;
+	$query="SELECT count(*) AS cpt 
+		FROM $table WHERE FK_entities='$entity'";
+	$result=$DB->query($query);
+	$ligne = $DB->fetch_array($result);
+	return $ligne['cpt'];
+}
+
 /**
  * Get the Name of the element of a Dropdown Tree table
  *
