@@ -43,36 +43,71 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-//$item_db_name[0] = "glpi_computers";
-//$item_db_name[1] = "glpi_networking";
-//$item_db_name[2] = "glpi_peripherals";
-$item_db_name[0]="glpi_dropdow_location";
-
-$query2="SELECT glpi_networking.name as switch
-FROM glpi_networking
-WHERE glpi_networking.id=".$_POST["switch"]."";
-$result = $DB->query($query2);
-
 // Titre
-if ($DB->numrows($result)==1){
+if (isset($_POST["switch"])&&$_POST["switch"]){
 	commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF']);
 
-	$ligne = $DB->fetch_array($result);
-	$switch=$ligne['switch'];
-
-	echo "<div align='center'><h2>".$LANG["reports"][49]." $switch </h2></div><br><br>";
+	$name=getDropdownName("glpi_networking",$_POST["switch"]);
+	echo "<div align='center'><h2>".$LANG["reports"][49]." $name </h2></div><br><br>";
 
 	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networking.name as switch
 		FROM glpi_networking
 		LEFT JOIN glpi_networking_ports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networking.ID
 		WHERE glpi_networking.id=".$_POST["switch"]."";
 
-	/*!
-	  on envoie la requ�e de selection qui varie selon le choix fait dans la dropdown �la fonction report perso qui
-	  affiche un rapport en fonction du switch choisi  
-	 */
 
-	report_perso("glpi_networking_switch",$query);
+	$result = $DB->query($query);
+	if ($result&&$DB->numrows($result)){
+		echo "<div align='center'><table class='tab_cadre_report'>";
+		echo "<tr> ";
+		echo "<th>&nbsp;</th>";
+		echo "<th>".$LANG["reports"][46]."</th>";
+		echo "<th>".$LANG["reports"][38]."</th>";
+		echo "<th>".$LANG["reports"][53]."</th>";
+		echo "<th>".$LANG["reports"][47]."</th>";
+		echo "<th>".$LANG["reports"][38]."</th>";
+		echo "<th>".$LANG["reports"][53]."</th>";
+		echo "<th>".$LANG["reports"][36]."</th>";
+		echo "</tr>\n";
+
+		while( $ligne = $DB->fetch_array($result)){
+			$switch = $ligne['switch'];
+			//echo $ligne['location'];
+			//$prise=$ligne['prise'];
+			$port = $ligne['port'];
+			$nw=new NetWire();
+			$end1=$nw->getOppositeContact($ligne['IDport']);
+			$np=new Netport();
+			$ip2="";
+			$mac2="";
+			$portordi="";
+			$ordi="";
+
+			if ($end1){
+				$np->getFromDB($end1);
+				$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+				$ordi=$np->device_name;
+				$ip2=$np->fields['ifaddr'];
+				$mac2=$np->fields['ifmac'];
+				$portordi=$np->fields['name'];
+			} 
+			$ip=$ligne['ip'];
+			$mac=$ligne['mac'];
+			//inserer ces valeures dans un tableau
+			echo "<tr>";	
+			if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";
+			if($port) echo "<td>$port</td>"; else echo "<td> N/A </td>";
+			if($ip) echo "<td>$ip</td>"; else echo "<td> N/A </td>";
+			if($mac) echo "<td>$mac</td>"; else echo "<td> N/A </td>";
+			if($portordi) echo "<td>$portordi</td>"; else echo "<td> N/A </td>";
+			if($ip2) echo "<td>$ip2</td>"; else echo "<td> N/A </td>";
+			if($mac2) echo "<td>$mac2</td>"; else echo "<td> N/A </td>";
+			if($ordi) echo "<td>$ordi</td>"; else echo "<td> N/A </td>";
+			echo "</tr>\n";
+		}	
+		echo "</table></div><br><hr><br>";
+	}
+
 	commonFooter();
 
 } else  glpi_header($_SERVER['HTTP_REFERER']); 

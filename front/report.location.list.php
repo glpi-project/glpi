@@ -41,33 +41,91 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-$query2="SELECT glpi_dropdown_locations.name as stage
-FROM glpi_dropdown_locations
-WHERE glpi_dropdown_locations.id=".$_POST["location"]."";
-$result = $DB->query($query2);
-if ($DB->numrows($result)==1){
+if (isset($_POST["location"])&&$_POST["location"]){
 	commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF']);
-
-	$ligne = $DB->fetch_array($result);
-	$stage=$ligne['stage'];
 
 	// Titre
 	$name=getDropdownName("glpi_dropdown_locations",$_POST["location"]);
 	echo "<div align='center'><h2>".$LANG["reports"][54]." $name </h2></div>";
 
-	$query="SELECT glpi_dropdown_netpoint.name AS prise, c.name AS port, c.ifaddr            
-		AS ip, c.ifmac AS mac,c.ID AS IDport, glpi_dropdown_locations.ID as location
+	$query="SELECT glpi_dropdown_netpoint.name AS prise, glpi_networking_ports.name AS port, glpi_networking_ports.ifaddr  
+		AS ip, glpi_networking_ports.ifmac AS mac,glpi_networking_ports.ID AS IDport, glpi_dropdown_locations.ID as location,glpi_dropdown_locations.completename
 		FROM glpi_dropdown_locations
 		LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.location = 
 		glpi_dropdown_locations.ID
-		LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id 
-		WHERE ".getRealQueryForTreeItem("glpi_dropdown_locations",$_POST["location"])." AND c.device_type=".NETWORKING_TYPE.";";
+		LEFT JOIN glpi_networking_ports c ON glpi_networking_ports.netpoint=glpi_dropdown_netpoint.id 
+		WHERE ".getRealQueryForTreeItem("glpi_dropdown_locations",$_POST["location"])." AND glpi_networking_ports.device_type=".NETWORKING_TYPE."
+		ORDER BY glpi_dropdown_locations.completename, glpi_dropdown_netpoint.name;";
 
-	/*!
-	  on envoie la requ�e de selection qui varie selon le choix fait dans la dropdown �la fonction report perso qui
-	  affiche un rapport en fonction de l'�age choisi  
-	 */
-	report_perso("glpi_networking_lieu",$query);
+
+	$result = $DB->query($query);
+	if ($result&&$DB->numrows($result)){
+
+		echo "<div align='center'><table class='tab_cadre_report'>";
+		echo "<tr> ";
+		echo "<th>".$LANG["common"][15]."</th>";
+		echo "<th>".$LANG["reports"][37]."</th>";
+		echo "<th>".$LANG["reports"][52]."</th>";
+		echo "<th>".$LANG["reports"][38]."</th>";
+		echo "<th>".$LANG["reports"][46]."</th>";
+		echo "<th>".$LANG["reports"][53]."</th>";
+		echo "<th>".$LANG["reports"][47]."</th>";
+		echo "<th>".$LANG["reports"][38]."</th>";
+		echo "<th>".$LANG["reports"][53]."</th>";
+		echo "<th>".$LANG["reports"][36]."</th>";
+		echo "</tr>";
+		while( $ligne = $DB->fetch_array($result)){
+			$lieu=$ligne["completename"];
+			$prise=$ligne['prise'];
+			$port=$ligne['port'];
+			$nw=new NetWire();
+			$end1=$nw->getOppositeContact($ligne['IDport']);
+			$np=new Netport();
+
+			$ordi="";
+			$ip2="";
+			$mac2="";
+			$portordi="";
+
+			if ($end1){
+				$np->getFromDB($end1);
+				$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+				$ordi=$np->device_name;
+				$ip2=$np->fields['ifaddr'];
+				$mac2=$np->fields['ifmac'];
+				$portordi=$np->fields['name'];
+			}
+
+			$ip=$ligne['ip'];
+			$mac=$ligne['mac'];
+
+			$np=new Netport();
+			$np->getFromDB($ligne['IDport']);
+
+			$nd=new Netdevice();
+			$nd->getFromDB($np->fields["on_device"]);
+			$switch=$nd->fields["name"];
+
+
+			//inserer ces valeures dans un tableau
+
+			echo "<tr>";	
+			if($lieu) echo "<td>$lieu</td>"; else echo "<td> N/A </td>";
+			if($prise) echo "<td>$prise</td>"; else echo "<td> N/A </td>";
+			if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";
+			if($ip) echo "<td>$ip</td>"; else echo "<td> N/A </td>";
+			if($port) echo "<td>$port</td>"; else echo "<td> N/A </td>";
+			if($mac) echo "<td>$mac</td>"; else echo "<td> N/A </td>";
+			if($portordi) echo "<td>$portordi</td>"; else echo "<td> N/A </td>";
+			if($ip2) echo "<td>$ip2</td>"; else echo "<td> N/A </td>";
+			if($mac2) echo "<td>$mac2</td>"; else echo "<td> N/A </td>";
+			if($ordi) echo "<td>$ordi</td>"; else echo "<td> N/A </td>";
+			echo "</tr>\n";
+		}	
+		echo "</table></div><br><hr><br>";
+
+	}
+
 	echo "</div>";
 	commonFooter();
 

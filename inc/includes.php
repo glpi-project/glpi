@@ -79,7 +79,6 @@ if (!isset($AJAX_INCLUDE)){
 	include_once (GLPI_ROOT . "/inc/connection.class.php");
 	include_once (GLPI_ROOT . "/inc/mailing.class.php");
 	include_once (GLPI_ROOT . "/inc/mailing.function.php");
-	include_once (GLPI_ROOT . "/inc/report.function.php");
 	include_once (GLPI_ROOT . "/inc/export.function.php");
 	include_once (GLPI_ROOT . "/inc/log.function.php");
 	include_once (GLPI_ROOT . "/inc/connection.function.php");
