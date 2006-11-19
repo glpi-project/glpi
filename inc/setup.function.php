@@ -45,6 +45,13 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 	if (!haveRight("dropdown","w")) return false;
 
+	$entity_restict=0;
+	if (in_array("glpi_dropdown_".$name,$CFG_GLPI["dropdownentity_tables"])){
+		$entity_restict=$_SESSION["glpiactive_entity"];
+		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+	}
+
+
 	echo "<div align='center'>&nbsp;\n";
 	echo "<form method='post' action=\"$target\">";
 
@@ -53,11 +60,11 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 		echo "<tr><td  align='center' valign='middle' class='tab_bg_1'>";
 		echo "<input type='hidden' name='which' value='$name'>";
-
+		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 		$value=getTreeLeafValueName("glpi_dropdown_".$name,$ID,1);
 
-		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0);
+		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0,$entity_restict);
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"".$CFG_GLPI["root_doc"]."/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
@@ -88,6 +95,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
 		echo "<input type='submit' name='move' value=\"".$LANG["buttons"][20]."\" class='submit'>";
+		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 		echo "</td></tr>";	
 
@@ -116,6 +124,8 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'  width='202'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+
 	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 
@@ -131,6 +141,12 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 
 	if (!haveRight("dropdown","w")) return false;
 
+	$entity_restict=0;
+	if (in_array("glpi_dropdown_".$name,$CFG_GLPI["dropdownentity_tables"])){
+		$entity_restict=$_SESSION["glpiactive_entity"];
+		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+	}
+
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
 
@@ -139,8 +155,10 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	if (countElementsInTable("glpi_dropdown_".$name)>0){
 		echo "<tr><td class='tab_bg_1' align='center' valign='top'>";
 		echo "<input type='hidden' name='which' value='$name'>";
+		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
-		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0);
+
+		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0,$entity_restict);
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"".$CFG_GLPI["root_doc"]."/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
@@ -155,15 +173,17 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 			$query = "select * from glpi_dropdown_netpoint where ID = '". $ID ."'";
 			$result = $DB->query($query);
 			$value=$loc=$comments="";
+			$entity=0;
 			if($DB->numrows($result) == 1) {
 				$value = $DB->result($result,0,"name");
 				$loc = $DB->result($result,0,"location");
 				$comments = $DB->result($result,0,"comments");
+				$entity = $DB->result($result,0,"FK_entities");
 			}
 			echo "<br>";
 			echo $LANG["common"][15].": ";		
 
-			dropdownValue("glpi_dropdown_locations", "value2",$loc,0);
+			dropdownValue("glpi_dropdown_locations", "value2",$loc,0,$entity);
 			echo $LANG["networking"][52].": ";
 			echo "<input type='text' maxlength='100' size='10' name='value' value=\"".$value."\"><br>";
 			echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."' >".$comments."</textarea>";
@@ -177,6 +197,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		//
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
+
 		//  on ajoute un bouton modifier
 		echo "<input type='submit' name='update' value='".$LANG["buttons"][14]."' class='submit'>";
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
@@ -192,7 +213,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if($name == "netpoint") {
 		echo $LANG["common"][15].": ";		
-		dropdownValue("glpi_dropdown_locations", "value2",$value2,0);
+		dropdownValue("glpi_dropdown_locations", "value2",$value2,0,$entity_restict);
 		echo $LANG["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'><br>";
 		echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."'></textarea>";
@@ -203,6 +224,8 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	}
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+
 	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 
@@ -216,7 +239,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo "<tr><td align='center'  class='tab_bg_1'>";
 
 		echo $LANG["common"][15].": ";		
-		dropdownValue("glpi_dropdown_locations", "value2",$value2,0);
+		dropdownValue("glpi_dropdown_locations", "value2",$value2,0,$entity_restict);
 		echo $LANG["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='5' name='before'>";
 		echo "<select name='from'>";
@@ -231,6 +254,8 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."'></textarea>";
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+
 		echo "<input type='submit' name='several_add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
 	}
@@ -344,13 +369,20 @@ function addDropdown($input) {
 	global $DB,$CFG_GLPI;
 
 	if (!empty($input["value"])){
+		$add_entity_field="";
+		$add_entity_value="";
+		if (in_array($input["tablename"],$CFG_GLPI["dropdownentity_tables"])){
+			$add_entity_field="FK_entities,";
+			$add_entity_value="'".$input["FK_entities"]."',";
+		}
+
 
 		if($input["tablename"] == "glpi_dropdown_netpoint") {
-			$query = "INSERT INTO ".$input["tablename"]." (name,location,comments) VALUES ('".$input["value"]."', '".$input["value2"]."', '".$input["comments"]."')";
+			$query = "INSERT INTO ".$input["tablename"]." (".$add_entity_field."name,location,comments) VALUES (".$add_entity_value."'".$input["value"]."', '".$input["value2"]."', '".$input["comments"]."')";
 		}
 		else if (in_array($input["tablename"],$CFG_GLPI["dropdowntree_tables"])){
 			if ($input['type']=="first"){
-				$query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '0','','".$input["comments"]."')";		
+				$query = "INSERT INTO ".$input["tablename"]." (".$add_entity_field."name,parentID,completename,comments) VALUES (".$add_entity_value."'".$input["value"]."', '0','','".$input["comments"]."')";		
 			} else {
 				$query="SELECT * from ".$input["tablename"]." where ID='".$input["value2"]."'";
 				$result=$DB->query($query);
@@ -360,12 +392,12 @@ function addDropdown($input) {
 					if ($input["type"]=="under") {
 						$level_up=$data["ID"];
 					} 
-					$query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '$level_up','','".$input["comments"]."')";		
-				} else $query = "INSERT INTO ".$input["tablename"]." (name,parentID,completename,comments) VALUES ('".$input["value"]."', '0','','".$input["comments"]."')";				
+					$query = "INSERT INTO ".$input["tablename"]." (".$add_entity_field."name,parentID,completename,comments) VALUES (".$add_entity_value."'".$input["value"]."', '$level_up','','".$input["comments"]."')";		
+				} else $query = "INSERT INTO ".$input["tablename"]." (".$add_entity_field."name,parentID,completename,comments) VALUES (".$add_entity_value."'".$input["value"]."', '0','','".$input["comments"]."')";				
 			}
 		}
 		else {
-			$query = "INSERT INTO ".$input["tablename"]." (name,comments) VALUES ('".$input["value"]."','".$input["comments"]."')";
+			$query = "INSERT INTO ".$input["tablename"]." (".$add_entity_field."name,comments) VALUES (".$add_entity_value."'".$input["value"]."','".$input["comments"]."')";
 		}
 
 		if ($result=$DB->query($query)) {

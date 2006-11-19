@@ -50,11 +50,13 @@ if (!defined('GLPI_ROOT')){
  *
  * @param $table the dropdown table from witch we want values on the select
  * @param $myname the name of the HTML select
+ * @param $display_comments display the comments near the dropd
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (display the select box)
  **/
-function dropdown($table,$myname) {
+function dropdown($table,$myname,$display_comments=1,$entity_restrict=0) {
 
-	return dropdownValue($table,$myname,0,1);
+	return dropdownValue($table,$myname,0,$display_comments,$entity_restrict);
 }
 
 /**
@@ -68,10 +70,11 @@ function dropdown($table,$myname) {
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
  * @param $display_comments display the comments near the dropdown
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (display the select box)
  *
  */
-function dropdownValue($table,$myname,$value=0,$display_comments=1) {
+function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restrict=0) {
 
 	global $CFG_GLPI,$LANG,$DB;
 
@@ -99,7 +102,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText='+value+'&value=$value&table=$table&myname=$myname&limit=$limit_length&comments=$display_comments&rand=$rand'\n";
+	echo "           method:'post', parameters:'searchText='+value+'&value=$value&table=$table&myname=$myname&limit=$limit_length&comments=$display_comments&rand=$rand&entity_restrict=$entity_restrict'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -124,6 +127,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1) {
 		$_POST["value"]=$value;
 		$_POST["rand"]=$rand;
 		$_POST["comments"]=$display_comments;
+		$_POST["entity_restrict"]=$entity_restrict;
 		$_POST["limit"]=$limit_length;
 		$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
 		include (GLPI_ROOT."/ajax/dropdownValue.php");
@@ -1372,9 +1376,9 @@ function dropdownActiveEntities($myname){
 	global $DB,$CFG_GLPI;
 
 	$rand=mt_rand();
-	$query = "SELECT * FROM glpi_entities WHERE ".getEntitiesRestrictRequest("","glpi_entities","ID")." ORDER BY completename";
+	$query = "SELECT * FROM glpi_entities ".getEntitiesRestrictRequest("WHERE","glpi_entities","ID")." ORDER BY completename";
 	$result = $DB->query($query);
-	
+
 	echo "<form method='POST' action=\"".$CFG_GLPI['root_doc']."/front/central.php\">";
 	echo "<select onChange='submit()' id='active_entity' name=\"".$myname."\" size='1'>";
 	
