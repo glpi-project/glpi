@@ -39,32 +39,35 @@ if (!defined('GLPI_ROOT')){
 
 // FUNCTIONS Setup
 
-function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove='',$type='') {
+function showFormTreeDown ($target,$tablename,$human,$ID,$value2='',$where='',$tomove='',$type='') {
 
 	global $CFG_GLPI, $LANG;
 
 	if (!haveRight("dropdown","w")) return false;
 
 	$entity_restict=0;
-	if (in_array("glpi_dropdown_".$name,$CFG_GLPI["dropdownentity_tables"])){
+	$numberof=0;
+	if (in_array($tablename,$CFG_GLPI["dropdownentity_tables"])){
 		$entity_restict=$_SESSION["glpiactive_entity"];
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+		$numberof=countElementsInTableForEntity($tablename,$entity_restict);
+	} else {
+		$numberof=countElementsInTable($tablename);
 	}
-
 
 	echo "<div align='center'>&nbsp;\n";
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<table class='tab_cadre_fixe'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
-	if (countElementsInTable("glpi_dropdown_".$name)>0){
+	if ($numberof>0){
 		echo "<tr><td  align='center' valign='middle' class='tab_bg_1'>";
-		echo "<input type='hidden' name='which' value='$name'>";
+		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
-		$value=getTreeLeafValueName("glpi_dropdown_".$name,$ID,1);
+		$value=getTreeLeafValueName($tablename,$ID,1);
 
-		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0,$entity_restict);
+		dropdownValue($tablename, "ID",$ID,0,$entity_restict);
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"".$CFG_GLPI["root_doc"]."/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
@@ -73,7 +76,7 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 		echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."' >".$value["comments"]."</textarea>";
 
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
-		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
+		echo "<input type='hidden' name='tablename' value='$tablename'>";
 		//  on ajoute un bouton modifier
 		echo "<input type='submit' name='update' value='".$LANG["buttons"][14]."' class='submit'>";
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
@@ -83,17 +86,17 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 
 		echo "<form method='post' action=\"$target\">";
 
-		echo "<input type='hidden' name='which' value='$name'>";
+		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 
 		echo "<tr><td align='center' class='tab_bg_1'>";
 
-		dropdownValue("glpi_dropdown_".$name, "value_to_move",$tomove,0);
+		dropdownValue($tablename, "value_to_move",$tomove,0);
 		echo "&nbsp;&nbsp;&nbsp;".$LANG["setup"][75]." :&nbsp;&nbsp;&nbsp;";
 
-		dropdownValue("glpi_dropdown_".$name, "value_where",$where,0);
+		dropdownValue($tablename, "value_where",$where,0);
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
-		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+		echo "<input type='hidden' name='tablename' value='$tablename' >";
 		echo "<input type='submit' name='move' value=\"".$LANG["buttons"][20]."\" class='submit'>";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
@@ -103,27 +106,27 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 		echo "</table></form>";	
 
 	echo "<form action=\"$target\" method='post'>";
-	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<input type='hidden' name='which' value='$tablename'>";
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
 	echo "<input type='text' maxlength='100' size='15' name='value'>&nbsp;&nbsp;&nbsp;";
 
 
-	if (countElementsInTable("glpi_dropdown_".$name)>0){
+	if ($numberof>0){
 		echo "<select name='type'>";
 		echo "<option value='under' ".($type=='under'?" selected ":"").">".$LANG["setup"][75]."</option>";
 		echo "<option value='same' ".($type=='same'?" selected ":"").">".$LANG["setup"][76]."</option>";
 		echo "</select>&nbsp;&nbsp;&nbsp;";
 		;
-		dropdownValue("glpi_dropdown_".$name, "value2",$value2,0);
+		dropdownValue($tablename, "value2",$value2,0);
 	}		
 	else echo "<input type='hidden' name='type' value='first'>";
 
 	echo "<br><textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."' ></textarea>";
 
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'  width='202'>";
-	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+	echo "<input type='hidden' name='tablename' value='$tablename' >";
 	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
@@ -135,41 +138,42 @@ function showFormTreeDown ($target,$name,$human,$ID,$value2='',$where='',$tomove
 }
 
 
-function showFormDropDown ($target,$name,$human,$ID,$value2='') {
+function showFormDropDown ($target,$tablename,$human,$ID,$value2='') {
 
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("dropdown","w")) return false;
 
 	$entity_restict=0;
-	if (in_array("glpi_dropdown_".$name,$CFG_GLPI["dropdownentity_tables"])){
+	if (in_array($tablename,$CFG_GLPI["dropdownentity_tables"])){
 		$entity_restict=$_SESSION["glpiactive_entity"];
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+	} else {
+		$numberof=countElementsInTable($tablename);
 	}
 
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
-
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
-	if (countElementsInTable("glpi_dropdown_".$name)>0){
+	if ($numberof>0){
 		echo "<tr><td class='tab_bg_1' align='center' valign='top'>";
-		echo "<input type='hidden' name='which' value='$name'>";
+		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 
-		dropdownValue("glpi_dropdown_".$name, "ID",$ID,0,$entity_restict);
+		dropdownValue($tablename, "ID",$ID,0,$entity_restict);
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"".$CFG_GLPI["root_doc"]."/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
-		if ($name != "netpoint"){
+		if ($tablename != "glpi_dropdown_netpoint"){
 			if (!empty($ID)){
-				$value=getDropdownName("glpi_dropdown_".$name,$ID,1);
+				$value=getDropdownName($tablename,$ID,1);
 			}
 			else $value=array("name"=>"","comments"=>"");
 		} else {$value="";$loc="";}
 
-		if($name == "netpoint") {
+		if($tablename == "glpi_dropdown_netpoint") {
 			$query = "select * from glpi_dropdown_netpoint where ID = '". $ID ."'";
 			$result = $DB->query($query);
 			$value=$loc=$comments="";
@@ -196,7 +200,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		}
 		//
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
-		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."'>";
+		echo "<input type='hidden' name='tablename' value='$tablename'>";
 
 		//  on ajoute un bouton modifier
 		echo "<input type='submit' name='update' value='".$LANG["buttons"][14]."' class='submit'>";
@@ -208,10 +212,10 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	}
 	echo "</table></form>";
 	echo "<form action=\"$target\" method='post'>";
-	echo "<input type='hidden' name='which' value='$name'>";
+	echo "<input type='hidden' name='which' value='$tablename'>";
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
-	if($name == "netpoint") {
+	if($tablename == "glpi_dropdown_netpoint") {
 		echo $LANG["common"][15].": ";		
 		dropdownValue("glpi_dropdown_locations", "value2",$value2,0,$entity_restict);
 		echo $LANG["networking"][52].": ";
@@ -223,18 +227,18 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."'></textarea>";
 	}
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
-	echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+	echo "<input type='hidden' name='tablename' value='$tablename' >";
 	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "</td></tr>";
 
 	// Multiple Add for Netpoint
-	if($name == "netpoint") {
+	if($tablename == "glpi_dropdown_netpoint") {
 		echo "</table></form>";
 
 		echo "<form action=\"$target\" method='post'>";
-		echo "<input type='hidden' name='which' value='$name'>";
+		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 		echo "<tr><td align='center'  class='tab_bg_1'>";
 
@@ -253,7 +257,7 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 		echo "<input type='text' maxlength='100' size='5' name='after'><br>";	
 		echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."'></textarea>";
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
-		echo "<input type='hidden' name='tablename' value='glpi_dropdown_".$name."' >";
+		echo "<input type='hidden' name='tablename' value='$tablename' >";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 		echo "<input type='submit' name='several_add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
@@ -263,58 +267,6 @@ function showFormDropDown ($target,$name,$human,$ID,$value2='') {
 	echo "</table></form></div>";
 }
 
-function showFormTypeDown ($target,$name,$human,$ID) {
-
-	global $CFG_GLPI, $LANG;
-
-	if (!haveRight("dropdown","w")) return false;	
-
-	echo "<div align='center'>&nbsp;";
-
-	echo "<form action=\"$target\" method='post'>";
-
-	echo "<table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='3'>$human:</th></tr>";
-
-	if (countElementsInTable("glpi_type_".$name)>0){
-		echo "<tr><td align='center' valign='middle' class='tab_bg_1'>";
-
-		dropdownValue("glpi_type_".$name, "ID",$ID,0);
-		// on ajoute un input text pour entrer la valeur modifier
-		echo "&nbsp;&nbsp;<input type='image' class='calendrier' src=\"".$CFG_GLPI["root_doc"]."/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
-
-		if (!empty($ID))
-			$value=getDropdownName("glpi_type_".$name,$ID,1);
-		else $value=array("name"=>"","comments"=>"");
-
-		echo "<input type='text' maxlength='100' size='20' name='value'  value=\"".$value["name"]."\"><br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."'>".$value["comments"]."</textarea>";
-
-		echo "</td><td align='center' class='tab_bg_2'>";
-		echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
-		echo "<input type='hidden' name='which' value='$name'>";
-
-		//  on ajoute un bouton modifier
-		echo "<input type='submit' name='update' value='".$LANG["buttons"][14]."' class='submit'>";
-		echo "</td><td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-		echo "</td></tr>";
-	}
-	echo "</table></form>";
-
-	echo "<form action=\"$target\" method='post'>";
-	echo "<table class='tab_cadre_fixe'>";
-	echo "<tr><td align='center' class='tab_bg_1'>";
-	echo "<input type='text' maxlength='100' size='20' name='value'><br>";
-	echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."'></textarea>";
-
-	echo "</td><td align='center' colspan='2' class='tab_bg_2'>";
-	echo "<input type='hidden' name='tablename' value='glpi_type_".$name."'>";
-	echo "<input type='hidden' name='which' value='$name'>";
-	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-	echo "</td></tr>";
-	echo "</table></form></div>";
-}
 function moveTreeUnder($table,$to_move,$where){
 	global $DB;
 	if ($where!=$to_move){

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-11-19 14:26
+#GLPI Dump database on 2006-11-19 19:10
 
 ### Dump table glpi_alerts
 
@@ -934,16 +934,13 @@ INSERT INTO glpi_dropdown_interface VALUES ('4','USB',NULL);
 DROP TABLE IF EXISTS `glpi_dropdown_kbcategories`;
 CREATE TABLE `glpi_dropdown_kbcategories` (
   `ID` int(11) NOT NULL auto_increment,
-  `FK_entities` int(11) NOT NULL default '0',
   `parentID` int(11) NOT NULL default '0',
   `name` varchar(255) NOT NULL,
   `completename` text NOT NULL,
   `comments` text,
   `level` int(11) default NULL,
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `name` (`name`,`parentID`,`FK_entities`),
-  KEY `parentID` (`parentID`),
-  KEY `FK_entities` (`FK_entities`)
+  KEY `parentID` (`parentID`)
 ) ENGINE=MyISAM ;
 
 
@@ -1242,7 +1239,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-19 14:26:04','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-19 19:10:36','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 

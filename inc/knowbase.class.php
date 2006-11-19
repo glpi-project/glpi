@@ -96,7 +96,7 @@ class kbitem extends CommonDBTM {
 	
 	
 		} else {
-			if ($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted=true;
+			if ($this->getFromDB($ID)) $spotted=true;
 			if ($this->fields["faq"]=="yes"&&!haveRight("faq","w")) $spotted=false;
 			if ($this->fields["faq"]!="yes"&&!haveRight("knowbase","w")) $spotted=false;
 	
@@ -111,9 +111,6 @@ class kbitem extends CommonDBTM {
 			echo "</script>";
 			echo "<form method='post' id='form_kb' name='form_kb' action=\"$target\">";
 		
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-			} 
 		
 			if (!empty($ID)) {
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";

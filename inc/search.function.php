@@ -1459,22 +1459,26 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		break;
 
 		case "glpi_computers.name" :
-			case "glpi_printers.name" :
-			case "glpi_networking.name" :
-			case "glpi_phones.name" :
-			case "glpi_monitors.name" :
-			case "glpi_software.name" :
-			case "glpi_peripherals.name" :
-			case "glpi_cartridges_type.name" :
-			case "glpi_consumables_type.name" :
-			case "glpi_contacts.name" :
-			case "glpi_type_docs.name" :
-			case "glpi_links.name" :
-			case "glpi_docs.name" :
+		case "glpi_printers.name" :
+		case "glpi_networking.name" :
+		case "glpi_phones.name" :
+		case "glpi_monitors.name" :
+		case "glpi_software.name" :
+		case "glpi_peripherals.name" :
+		case "glpi_cartridges_type.name" :
+		case "glpi_consumables_type.name" :
+		case "glpi_contacts.name" :
+		case "glpi_type_docs.name" :
+		case "glpi_links.name" :
+		case "glpi_docs.name" :
+		case "glpi_entities.name" :
+		case "glpi_entities.completename" :
 			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-		$out.= $data["ITEM_$num"];
-		if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-		$out.= "</a>";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ID"].")";
+			}
+			$out.= "</a>";
 		return $out;
 		break;
 
