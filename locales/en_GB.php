@@ -212,6 +212,8 @@ $LANG["common"][45]="MB max";
 $LANG["common"][46]="Vcard"; 
 $LANG["common"][47]="Progress"; 
 $LANG["common"][48]="Surname"; 
+$LANG["common"][49]="None"; 
+$LANG["common"][50]="Confirm the deletion ?"; 
 
 $LANG["computers"][0]="Add Computer..."; 
 $LANG["computers"][9]="OS"; 
@@ -662,6 +664,8 @@ $LANG["knowbase"][22]="Hide all";
 $LANG["knowbase"][24]="FAQ access"; 
 $LANG["knowbase"][26]="Views"; 
 $LANG["knowbase"][27]="On"; 
+$LANG["knowbase"][29]="Recent Entries"; 
+$LANG["knowbase"][30]="Most popular questions"; 
 
 $LANG["links"][1]="Link or Filename"; 
 $LANG["links"][2]="Add an external link..."; 
@@ -738,6 +742,12 @@ $LANG["login"][7]="Password";
 $LANG["login"][8]="Empty login or password"; 
 $LANG["login"][10]="Authentication"; 
 $LANG["login"][11]="User not authorized to connect in GLPI"; 
+$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
+$LANG["login"][13]="Mot de passe vide"; 
+$LANG["login"][14]="Utilisateur inconnu"; 
+$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
+$LANG["login"][16]="Echec de l'authentification LDAP"; 
+$LANG["login"][17]="Echec de l'authentification AD"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
@@ -888,8 +898,8 @@ $LANG["ocsconfig"][39]="OCS TAG";
 $LANG["ocsconfig"][40]="Number of computers to synchronize using the cron"; 
 
 $LANG["ocsng"][0]="OCS Inventory NG"; 
-$LANG["ocsng"][1]="Synchronization of already imported computers"; 
-$LANG["ocsng"][2]="Importation of new computers"; 
+$LANG["ocsng"][1]="Synchronize computers already imported"; 
+$LANG["ocsng"][2]="Import new computers"; 
 $LANG["ocsng"][4]="Link new OCS computers to existing GLPI computers"; 
 $LANG["ocsng"][5]="Import new computers"; 
 $LANG["ocsng"][6]="Auto update"; 
@@ -1234,6 +1244,7 @@ $LANG["setup"][178]="Extension CURL or DOMXML of your parser PHP isn't installed
 $LANG["setup"][179]="Impossible to use CAS as external source of connection"; 
 $LANG["setup"][180]="Use TLS"; 
 $LANG["setup"][181]="ldap_start_tls does not exist"; 
+$LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][200]="Email Follow-ups"; 
 $LANG["setup"][201]="Function Configuration"; 
 $LANG["setup"][202]="Use Email Follow-ups"; 
@@ -1354,8 +1365,8 @@ $LANG["software"][45]="Uninstall software";
 $LANG["state"][0]="Status"; 
 $LANG["state"][1]="Item Status"; 
 $LANG["state"][6]="Item Type"; 
-$LANG["state"][7]="No item found"; 
-$LANG["state"][11]="Synthesis"; 
+$LANG["state"][7]="No items found"; 
+$LANG["state"][11]="Summary"; 
 
 $LANG["stats"][0]="Select statistics to be displayed"; 
 $LANG["stats"][1]="Global"; 

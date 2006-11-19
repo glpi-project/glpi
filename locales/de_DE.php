@@ -212,6 +212,8 @@ $LANG["common"][45]="MB max";
 $LANG["common"][46]="Vcard"; 
 $LANG["common"][47]="Progress"; 
 $LANG["common"][48]="Surname"; 
+$LANG["common"][49]="None"; 
+$LANG["common"][50]="Confirm the deletion ?"; 
 
 $LANG["computers"][0]="Computer hinzufügen..."; 
 $LANG["computers"][9]="Betriebssystem"; 
@@ -662,6 +664,8 @@ $LANG["knowbase"][22]="Hide all";
 $LANG["knowbase"][24]="FAQ-Zugang"; 
 $LANG["knowbase"][26]="Ansichten"; 
 $LANG["knowbase"][27]="Ein"; 
+$LANG["knowbase"][29]="Recent Entries"; 
+$LANG["knowbase"][30]="Most popular questions"; 
 
 $LANG["links"][1]="Link"; 
 $LANG["links"][2]="Externen Hyperlink hinzufügen"; 
@@ -738,6 +742,12 @@ $LANG["login"][7]="Passwort";
 $LANG["login"][8]="Benutzername oder Passwort fehlen"; 
 $LANG["login"][10]="Authentifizierung"; 
 $LANG["login"][11]="Benutzer ist nicht für die Verwendung von GLPI authorisiert."; 
+$LANG["login"][12]="Identifiant ou mot de passe érroné"; 
+$LANG["login"][13]="Mot de passe vide"; 
+$LANG["login"][14]="Utilisateur inconnu"; 
+$LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
+$LANG["login"][16]="Echec de l'authentification LDAP"; 
+$LANG["login"][17]="Echec de l'authentification AD"; 
 
 $LANG["mailing"][0]="-----------------------"; 
 $LANG["mailing"][1]="======================================="; 
@@ -1115,7 +1125,7 @@ $LANG["setup"][18]="Anmeldung";
 $LANG["setup"][19]="Passwort"; 
 $LANG["setup"][35]="MHZ"; 
 $LANG["setup"][40]="Neue Supporttickets auf der Einstiegsseite anzeigen?"; 
-$LANG["setup"][41]="Sprache wählen"; 
+$LANG["setup"][41]="Langue"; 
 $LANG["setup"][42]="Netzwerk Gerätetypen"; 
 $LANG["setup"][43]="Drucker Typ"; 
 $LANG["setup"][44]="Monitor Typ"; 
@@ -1234,6 +1244,7 @@ $LANG["setup"][178]="Die PHP-Erweiterungen CURL doer DOMXML sind nicht installie
 $LANG["setup"][179]="Impossible bis use CAS as external source of connection"; 
 $LANG["setup"][180]="Verwenden von TLS"; 
 $LANG["setup"][181]="ldap_start_tls existiert nicht"; 
+$LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][200]="Email zusätzliche Einträge (chronologisch)"; 
 $LANG["setup"][201]="Konfiguration der Funktionen"; 
 $LANG["setup"][202]="Email-Benachrichtigungen benutzen"; 
