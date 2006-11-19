@@ -829,6 +829,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 	// Get saved data from a back system
 	$emailupdates = 'yes';
+	if ($email=="") $emailupdates='no';
 	$device_type = 0;
 	$computer="";
 	$contents="";
@@ -873,7 +874,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$lang["help"][11].":</td>";
-		echo "<td>	<input name='uemail' value=\"$email\" size='20'>";
+		echo "<td>	<input name='uemail' value=\"$email\" size='50' onchange=\"emailupdates.value='yes'\">";
 		echo "</td></tr>";
 	}
 
