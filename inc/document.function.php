@@ -336,32 +336,37 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		// Restrict entity for knowbase
 		$ci=new CommonItem();
 		$ci->getFromDB($device_type,$ID);
+		$entity=0;
+		$limit="";
 		if (isset($ci->obj->fields["FK_entities"])){
 			$entity=$ci->obj->fields["FK_entities"];
+			$limit=" AND FK_entities='$entity' ";
+		}
 
-			$q="SELECT count(*) FROM glpi_docs WHERE deleted='N' AND FK_entities='$entity'";
+		$q="SELECT count(*) FROM glpi_docs WHERE deleted='N' $limit";
 			
-			$result = $DB->query($q);
-			$nb = $DB->result($result,0,0);
+		$result = $DB->query($q);
+		$nb = $DB->result($result,0,0);
 	
-			if ($withtemplate<2&&$nb>0){
+		if ($withtemplate<2&&$nb>0){
 	
-				echo "<tr class='tab_bg_1'>";
-				echo "<td align='center' colspan='3'>";
-				echo "<input type='hidden' name='is_template' value='$withtemplate'>";
-				echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
+			echo "<tr class='tab_bg_1'>";
+			echo "<td align='center' colspan='3'>";
+			echo "<input type='hidden' name='is_template' value='$withtemplate'>";
+			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
+			if ($entity){
 				echo "<input type='hidden' name='FK_entities' value='$entity'>";
-				echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-				echo "</td>";
-				echo "<td align='right' colspan='2'>";
-				echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-				dropdown("glpi_docs","conID",1,$entity);
-				echo "</div></td><td align='center'>";
-				echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-				echo "</td>";
-	
-				echo "</tr>";
 			}
+			echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "</td>";
+			echo "<td align='right' colspan='2'>";
+			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
+			dropdown("glpi_docs","conID",1,$entity);
+			echo "</div></td><td align='center'>";
+			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "</td>";
+	
+			echo "</tr>";
 		}
 	}
 	if (!empty($withtemplate))

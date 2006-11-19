@@ -181,7 +181,7 @@ function addTracking($type,$ID,$ID_entity){
 
 // DROPDOWNS
 function generateGlobalDropdowns(){
-	global $MAX,$DB;
+	global $MAX,$DB,$MAX_KBITEMS_BY_CAT;
 
 //	$FIRST["kbcategories"]=getMaxItem("glpi_dropdown_kbcategories")+1;
 	for ($i=0;$i<max(1,pow($MAX['kbcategories'],1/3));$i++){
@@ -208,9 +208,8 @@ function generateGlobalDropdowns(){
 	$faq=array("yes","no");
 	$k=0;
 //	$FIRST["kbitems"]=getMaxItem("glpi_kbitems")+1;
-	for ($i=0;$i<$MAX['kbcategories'];$i++){
+	for ($i=1;$i<=$MAX['kbcategories'];$i++){
 		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
-		if ($i>0)
 		for ($j=0;$j<$nb;$j++){
 			$k++;
 			$query="INSERT INTO glpi_kbitems VALUES (NULL,'$i','Question $k','Reponse $k','".$faq[mt_rand(0,1)]."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand(0,1000)."',NOW(),NOW())";
@@ -602,7 +601,7 @@ function getMaxItem($table){
 
 function generate_entity($ID_entity){
 
-	global $MAX,$DB,$MAX_KBITEMS_BY_CAT,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST;
+	global $MAX,$DB,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST;
 	$current_year=date("Y");
 
 
