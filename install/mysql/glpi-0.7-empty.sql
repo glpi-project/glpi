@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-11-19 19:10
+#GLPI Dump database on 2006-11-19 19:17
 
 ### Dump table glpi_alerts
 
@@ -940,7 +940,9 @@ CREATE TABLE `glpi_dropdown_kbcategories` (
   `comments` text,
   `level` int(11) default NULL,
   PRIMARY KEY  (`ID`),
-  KEY `parentID` (`parentID`)
+  UNIQUE KEY `parentID_2` (`parentID`,`name`),
+  KEY `parentID` (`parentID`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM ;
 
 
@@ -1239,7 +1241,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-19 19:10:36','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-11-19 19:17:17','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1349,7 +1351,6 @@ CREATE TABLE `glpi_inst_software` (
 DROP TABLE IF EXISTS `glpi_kbitems`;
 CREATE TABLE `glpi_kbitems` (
   `ID` int(11) NOT NULL auto_increment,
-  `FK_entities` int(11) NOT NULL default '0',
   `categoryID` int(11) NOT NULL default '0',
   `question` text,
   `answer` text,
@@ -1361,8 +1362,7 @@ CREATE TABLE `glpi_kbitems` (
   PRIMARY KEY  (`ID`),
   KEY `categoryID` (`categoryID`),
   KEY `author` (`author`),
-  KEY `faq` (`faq`),
-  KEY `FK_entities` (`FK_entities`)
+  KEY `faq` (`faq`)
 ) ENGINE=MyISAM ;
 
 
