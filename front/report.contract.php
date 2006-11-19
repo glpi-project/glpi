@@ -42,40 +42,6 @@ commonHeader($LANG["title"][16],$_SERVER['PHP_SELF']);
 
 
 
-# 1. Recupere le nombre d'ordinateurs, d'imprimantes/scanners, de materiel reseau, et d'ecrans.
-
-$query = "SELECT ID FROM glpi_contract_device where device_type=".COMPUTER_TYPE;
-$result = $DB->query($query);
-$number_of_computers = $DB->numrows($result);
-
-$query = "SELECT ID FROM glpi_contract_device where device_type=".PRINTER_TYPE;
-$result = $DB->query($query);
-$number_of_printers = $DB->numrows($result);
-
-$query = "SELECT ID FROM glpi_contract_device where device_type=".MONITOR_TYPE;
-$result = $DB->query($query);
-$number_of_monitors = $DB->numrows($result);
-
-$query = "SELECT ID FROM glpi_contract_device where device_type=".NETWORKING_TYPE;
-$result = $DB->query($query);
-$number_of_networking = $DB->numrows($result);
-
-$query = "SELECT ID FROM glpi_contract_device where device_type=".PERIPHERAL_TYPE;
-$result = $DB->query($query);
-$number_of_periph = $DB->numrows($result);
-
-$query = "SELECT ID FROM glpi_contract_device where device_type=".SOFTWARE_TYPE;
-$result = $DB->query($query);
-$number_of_soft = $DB->numrows($result);
-
-$query = "SELECT ID FROM glpi_contract_device where device_type=".PHONE_TYPE;
-$result = $DB->query($query);
-$number_of_phone = $DB->numrows($result);
-
-
-# 2. afficher les donn�s dans un tableau
-
-
 # Titre
 
 echo "<form name='form' method='post' action='report.contract.list.php'>";
@@ -83,15 +49,6 @@ echo "<form name='form' method='post' action='report.contract.list.php'>";
 echo "<div align='center'>";
 echo "<table class='tab_cadre' >";
 echo "<tr><th align='center' colspan='2' ><big><b>".$LANG["reports"][11]." </b></big></th></tr>";
-
-echo "<tr><td class='tab_bg_2'  align='center'>".$LANG["reports"][6]." :&nbsp;&nbsp;</td><td class='tab_bg_2' align='center'>$number_of_computers</td></tr>";
-echo "<tr><td class='tab_bg_2'  align='center'>".$LANG["reports"][7]." :&nbsp;&nbsp; </td><td class='tab_bg_2' align='center'>$number_of_printers</td></tr>";
-echo "<tr><td class='tab_bg_2'  align='center'>".$LANG["reports"][9].":&nbsp; &nbsp;</td><td class='tab_bg_2' align='center'> $number_of_monitors</td></tr>";
-echo "<tr><td class='tab_bg_2'  align='center'>".$LANG["reports"][8]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_networking</td></tr>";
-echo "<tr><td class='tab_bg_2'  align='center'>".$LANG["reports"][29]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_periph</td></tr>";
-echo "<tr><td class='tab_bg_2'  align='center'>".$LANG["reports"][55]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_soft</td></tr>";
-echo "<tr><td class='tab_bg_2'  align='center'>".$LANG["reports"][64]." : &nbsp; &nbsp; </td><td class='tab_bg_2' align='center'>$number_of_phone</td></tr>";
-
 # 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
 echo "<td  align='center' width='200' >";

@@ -42,24 +42,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-if (isset($_POST["prise"])){
 
-	$query2="SELECT a.name as office,b.name as stage,glpi_dropdown_netpoint.name as prise
-		FROM glpi_dropdown_netpoint
-		LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
-		LEFT JOIN glpi_dropdown_locations b ON b.id=a.parentid
-		WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]."";
-	$result = $DB->query($query2);
-	if ($DB->numrows($result)==1){
+	if (isset($_POST["prise"])&&$_POST["prise"]){
 		commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF']);
 
-		$ligne = $DB->fetch_array($result);
-		$prise=$ligne['prise'];
-		$stage=$ligne['stage'];
-		$office=$ligne['office'];
+		$name=getDropdownName("glpi_dropdown_netpoint",$_POST["prise"]);
 
 		// Titre
-		echo "<div align='center'><h2>".$LANG["reports"][51]." $prise  ($office / $stage)</h2></div><br><br>";
+		echo "<div align='center'><h2>".$LANG["reports"][51]." $name</h2></div><br><br>";
 		$query="SELECT a.name as bureau,a.ID as ID,glpi_dropdown_netpoint.name as prise,c.name as port,c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
 			FROM glpi_dropdown_netpoint
 			LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
@@ -71,13 +61,75 @@ if (isset($_POST["prise"])){
 		  affiche un rapport en fonction de la prise choisie  
 		 */
 
-		report_perso("glpi_networking_prise",$query);
+		$result = $DB->query($query);
+		if ($result&&$DB->numrows($result)){
+
+			echo "<div align='center'><table class='tab_cadre_report'>";
+			echo "<tr> ";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["reports"][52]."</th>";
+			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG["reports"][46]."</th>";
+			echo "<th>".$LANG["reports"][53]."</th>";
+			echo "<th>".$LANG["reports"][47]."</th>";
+			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG["reports"][53]."</th>";
+			echo "<th>".$LANG["reports"][36]."</th>";
+			echo "</tr>";
+
+			while( $ligne = $DB->fetch_array($result))
+			{
+				$prise=$ligne['prise'];
+				$ID=$ligne['ID'];
+				$lieu=getDropdownName("glpi_dropdown_locations",$ID);
+				//$etage=$ligne['etage'];
+				$nw=new NetWire();
+				$end1=$nw->getOppositeContact($ligne['IDport']);
+				$np=new Netport();
+
+				$ordi="";
+				$ip2="";
+				$mac2="";
+				$portordi="";
+
+				if ($end1){
+					$np->getFromDB($end1);
+					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+					$ordi=$np->device_name;
+					$ip2=$np->fields['ifaddr'];
+					$mac2=$np->fields['ifmac'];
+					$portordi=$np->fields['name'];
+				}
+
+				$ip=$ligne['ip'];
+				$mac=$ligne['mac'];
+				$port=$ligne['port'];
+				$np=new Netport();
+				$np->getFromDB($ligne['IDport']);
+
+				$nd=new Netdevice();
+				$nd->getFromDB($np->fields["on_device"]);
+				$switch=$nd->fields["name"];
+
+
+				//inserer ces valeures dans un tableau
+
+				echo "<tr>";
+				if($lieu) echo "<td>$lieu</td>"; else echo "<td> N/A </td>";	
+				if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";
+				if($ip) echo "<td>$ip</td>"; else echo "<td> N/A </td>";
+				if($port) echo "<td>$port</td>"; else echo "<td> N/A </td>";
+				if($mac) echo "<td>$mac</td>"; else echo "<td> N/A </td>";
+				if($portordi) echo "<td>$portordi</td>"; else echo "<td> N/A </td>";
+				if($ip2) echo "<td>$ip2</td>"; else echo "<td> N/A </td>";
+				if($mac2) echo "<td>$mac2</td>"; else echo "<td> N/A </td>";
+				if($ordi) echo "<td>$ordi</td>"; else echo "<td> N/A </td>";
+				echo "</tr>\n";
+			}	
+			echo "</table></div><br><hr><br>";
+		}
 
 		commonFooter();
 
 	} else  glpi_header($_SERVER['HTTP_REFERER']); 
-
-
-
-} 
 ?>

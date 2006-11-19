@@ -51,19 +51,19 @@ echo "<div align='center'><big><b>GLPI ".$LANG["Menu"][6]."</b></big><br><br>";
 
 # 1. Get some number data
 
-$query = "SELECT count(ID) FROM glpi_computers where deleted ='N' AND is_template = '0' ";
+$query = "SELECT count(ID) FROM glpi_computers where deleted ='N' AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_computers");
 $result = $DB->query($query);
 $number_of_computers = $DB->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_software where deleted ='N'  AND is_template = '0' ";
+$query = "SELECT count(ID) FROM glpi_software where deleted ='N'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_software");
 $result = $DB->query($query);
 $number_of_software = $DB->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_printers where deleted ='N'  AND is_template = '0' AND is_global='0' ";
+$query = "SELECT count(ID) FROM glpi_printers where deleted ='N'  AND is_template = '0' AND is_global='0' ".getEntitiesRestrictRequest("AND","glpi_printers");
 $result = $DB->query($query);
 $number_of_printers = $DB->result($result,0,0);
 
-$query2="SELECT ID FROM glpi_printers where deleted ='N'  AND is_template = '0' AND is_global='1' ";
+$query2="SELECT ID FROM glpi_printers where deleted ='N'  AND is_template = '0' AND is_global='1' ".getEntitiesRestrictRequest("AND","glpi_printers");
 $result = $DB->query($query2);
 if ($DB->numrows($result)){
 	while ($data=$DB->fetch_assoc($result)){
@@ -74,15 +74,15 @@ if ($DB->numrows($result)){
 }
 
 
-$query = "SELECT count(ID) FROM glpi_networking where deleted ='N'  AND is_template = '0' ";
+$query = "SELECT count(ID) FROM glpi_networking where deleted ='N'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networking");
 $result = $DB->query($query);
 $number_of_networking = $DB->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_monitors where deleted ='N'  AND is_template = '0' AND is_global='0'  ";
+$query = "SELECT count(ID) FROM glpi_monitors where deleted ='N'  AND is_template = '0' AND is_global='0' ".getEntitiesRestrictRequest("AND","glpi_monitors");
 $result = $DB->query($query);
 $number_of_monitors = $DB->result($result,0,0);
 
-$query2="SELECT ID FROM glpi_monitors where deleted ='N'  AND is_template = '0' AND is_global='1' ";
+$query2="SELECT ID FROM glpi_monitors where deleted ='N'  AND is_template = '0' AND is_global='1' ".getEntitiesRestrictRequest("AND","glpi_monitors");
 $result = $DB->query($query2);
 if ($DB->numrows($result)){
 	while ($data=$DB->fetch_assoc($result)){
@@ -93,11 +93,11 @@ if ($DB->numrows($result)){
 }
 
 
-$query = "SELECT count(ID) FROM glpi_peripherals where deleted ='N'  AND is_template = '0' AND is_global='0'  ";
+$query = "SELECT count(ID) FROM glpi_peripherals where deleted ='N'  AND is_template = '0' AND is_global='0' ".getEntitiesRestrictRequest("AND","glpi_peripherals");
 $result = $DB->query($query);
 $number_of_peripherals = $DB->result($result,0,0);
 
-$query2="SELECT ID FROM glpi_peripherals where deleted ='N'  AND is_template = '0' AND is_global='1' ";
+$query2="SELECT ID FROM glpi_peripherals where deleted ='N'  AND is_template = '0' AND is_global='1' ".getEntitiesRestrictRequest("AND","glpi_peripherals");
 $result = $DB->query($query2);
 if ($DB->numrows($result)){
 	while ($data=$DB->fetch_assoc($result)){
@@ -107,11 +107,11 @@ if ($DB->numrows($result)){
 	}
 }
 
-$query = "SELECT count(ID) FROM glpi_phones where deleted ='N'  AND is_template = '0' ";
+$query = "SELECT count(ID) FROM glpi_phones where deleted ='N'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_phones");
 $result = $DB->query($query);
 $number_of_phones = $DB->result($result,0,0);
 
-$query2="SELECT ID FROM glpi_phones where deleted ='N'  AND is_template = '0' AND is_global='1' ";
+$query2="SELECT ID FROM glpi_phones where deleted ='N'  AND is_template = '0' AND is_global='1' ".getEntitiesRestrictRequest("AND","glpi_phones");
 $result = $DB->query($query2);
 if ($DB->numrows($result)){
 	while ($data=$DB->fetch_assoc($result)){
@@ -152,10 +152,13 @@ while ($i < $number) {
 		$id= $DB->result($result, $i, "ID");
 		$os_search=" os='$id' ";
 	}
+	$os_search.=getEntitiesRestrictRequest("AND","glpi_computers");
 	$query = "SELECT count(*) FROM glpi_computers WHERE deleted ='N'  AND is_template = '0' AND $os_search";
 	$result2 = $DB->query($query);
 	$counter = $DB->result($result2,0,0);
-	echo "<tr class='tab_bg_2'><td>$os</td><td>$counter</td></tr>";
+	if ($counter>0){
+		echo "<tr class='tab_bg_2'><td>$os</td><td>$counter</td></tr>";
+	}
 	$i++;
 }
 
@@ -165,10 +168,11 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG["Menu"][4].":</b></td></t
 
 # 4. Get some more number data (installed softwares)
 
-$query = "SELECT ID, name,version FROM glpi_software WHERE deleted ='N'  AND is_template = '0' ORDER BY name";
+$query = "SELECT ID, name,version FROM glpi_software WHERE deleted ='N'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_software")." ORDER BY name, version";
 $result = $DB->query($query);
 $i = 0;
 $number = $DB->numrows($result);
+
 while ($i < $number) {
 	$version=$DB->result($result,$i,"version");
 	if (!empty($version))
@@ -198,10 +202,13 @@ while ($i < $number) {
 		$type_search=" type='$type' ";
 		$net = $DB->result($result, $i, "name");
 	}
+	$type_search.=getEntitiesRestrictRequest("AND","glpi_networking");
 	$query = "SELECT count(*) FROM glpi_networking WHERE ($type_search AND deleted ='N'  AND is_template = '0')";
 	$result3 = $DB->query($query);
 	$counter = $DB->result($result3,0,0);
-	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	if ($counter){
+		echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	}
 	$i++;
 }
 
@@ -224,6 +231,7 @@ while ($i < $number) {
 		$type_search=" type='$type' ";
 		$net = $DB->result($result, $i, "name");
 	}
+	$type_search.=getEntitiesRestrictRequest("AND","glpi_monitors");
 	$query = "SELECT count(*) FROM glpi_monitors WHERE $type_search AND deleted ='N'  AND is_template = '0' AND is_global='0'";
 	$result3 = $DB->query($query);
 	$counter = $DB->result($result3,0,0);
@@ -238,8 +246,9 @@ while ($i < $number) {
 		}
 	}
 
-
-	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	if ($counter){
+		echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	}
 	$i++;
 }
 
@@ -262,6 +271,7 @@ while ($i < $number) {
 		$type_search=" type='$type' ";
 		$net = $DB->result($result, $i, "name");
 	}
+	$type_search.=getEntitiesRestrictRequest("AND","glpi_printers");
 	$query = "SELECT count(*) FROM glpi_printers WHERE $type_search AND deleted ='N'  AND is_template = '0'  AND is_global='0'";
 
 	$result3 = $DB->query($query);
@@ -277,8 +287,9 @@ while ($i < $number) {
 		}
 	}
 
-
-	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	if ($counter){
+		echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	}
 	$i++;
 }
 
@@ -301,6 +312,8 @@ while ($i < $number) {
 		$type_search=" type='$type' ";
 		$net = $DB->result($result, $i, "name");
 	}
+	$type_search.=getEntitiesRestrictRequest("AND","glpi_peripherals");
+	
 	$query = "SELECT count(*) FROM glpi_peripherals WHERE $type_search AND deleted ='N'  AND is_template = '0' AND is_global='0'";
 	$result3 = $DB->query($query);
 	$counter = $DB->result($result3,0,0);
@@ -314,8 +327,9 @@ while ($i < $number) {
 			$counter += $DB->result($result3,0,0);
 		}
 	}
-
-	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	if ($counter){
+		echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	}
 	$i++;
 }
 
@@ -338,6 +352,8 @@ while ($i < $number) {
 		$type_search=" type='$type' ";
 		$net = $DB->result($result, $i, "name");
 	}
+	$type_search.=getEntitiesRestrictRequest("AND","glpi_phones");
+	
 	$query = "SELECT count(*) FROM glpi_phones WHERE $type_search AND deleted ='N'  AND is_template = '0'";
 	$result3 = $DB->query($query);
 	$counter = $DB->result($result3,0,0);
@@ -351,8 +367,9 @@ while ($i < $number) {
 			$counter += $DB->result($result3,0,0);
 		}
 	}
-
-	echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	if ($counter){
+		echo "<tr class='tab_bg_2'><td>$net</td><td>$counter</td></tr>";
+	}
 	$i++;
 }
 

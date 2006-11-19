@@ -1351,12 +1351,13 @@ function showProfileSelecter(){
 	if (count($_SESSION['glpiactiveentities'])>1){
 		echo "<br>Working entity :";
 			dropdownActiveEntities("activeentity");
-	}
-
 /*	foreach ($_SESSION["glpiactiveentities"] as $key => $val) {
 		echo $val."-";
 	}
 */
+	} else echo "only one entity -> no select to print";
+
+
 } 
 
 ?>

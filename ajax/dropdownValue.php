@@ -59,13 +59,17 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+	
+	$link="";
+	if (!empty($where)) $link= " AND ";
+	else $link=" WHERE ";
+	$where.=getEntitiesRestrictRequest($link,"glpi_dropdown_locations");
 
-
-	$query = "select t1.comments as comments, t1.ID as ID, t1.name as netpname, t2.completename as loc from glpi_dropdown_netpoint as t1";
-	$query .= " left join glpi_dropdown_locations as t2 on (t1.location = t2.ID)";
+	$query = "select glpi_dropdown_netpoint.comments as comments, glpi_dropdown_netpoint.ID as ID, glpi_dropdown_netpoint.name as netpname, glpi_dropdown_locations.completename as loc from glpi_dropdown_netpoint";
+	$query .= " left join glpi_dropdown_locations on (glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID)";
 	$query.=$where;
-	$query .= " order by t1.name,t2.name $LIMIT"; 
-
+	$query .= " order by glpi_dropdown_netpoint.name,glpi_dropdown_locations.completename $LIMIT"; 
+	//echo $query;
 	$result = $DB->query($query);
 
 	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
@@ -125,12 +129,18 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		$add_order="";
 		if (in_array($_POST['table'],$CFG_GLPI["dropdownentity_tables"])){
 			$add_order=" FK_entities, ";
-		}
-		// Specific mangement for glpi_dropdown_kbcategories
-		if ($_POST['table']=="glpi_dropdown_kbcategories"){
+
 			if (!$first) $where.=" AND ";
 			else $first=false;
-			$where.=" FK_entities = '".$_SESSION["glpiactive_entity"]."'";
+
+			// Specific mangement for glpi_dropdown_kbcategories
+			if ($_POST['table']=="glpi_dropdown_kbcategories"){
+				$where.=" FK_entities = '".$_SESSION["glpiactive_entity"]."'";
+			} else {
+				$where.=getEntitiesRestrictRequest("",$_POST['table']);
+			}
+
+
 		}
 
 
@@ -185,6 +195,9 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		else $first=false;
 		$where .=" (ID <> '".$_POST['value']."' ";
 
+		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
+			$where.=getEntitiesRestrictRequest("AND",$_POST['table']);
+		}
 
 		$field="name";
 		if (ereg("glpi_device",$_POST['table'])) $field="designation";
@@ -192,6 +205,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 			$where.=" AND $field ".makeTextSearch($_POST['searchText']);
 		$where.=")";
+
 
 		switch ($_POST['table']){
 			case "glpi_software":
