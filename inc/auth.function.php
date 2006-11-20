@@ -465,6 +465,7 @@ function connect_ldap($host,$port,$login="",$password=""){
 	$ds = @ldap_connect ($host,$port);
 	if ($ds){
 		@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+		@ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 		if ($CFG_GLPI["ldap_use_tls"]){
 			if (!@ldap_start_tls($ds)) {
 				return false;
