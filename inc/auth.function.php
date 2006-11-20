@@ -488,7 +488,6 @@ function loadGroups(){
 	}
 }
 
-// 
 /**
  * Check if you could access to the entity of id = $ID
  *
@@ -503,6 +502,14 @@ function haveAccessToEntity($ID){
 	}
 }
 
+/**
+ * Get SQL request to restrict to current entities of the user
+ *
+ * @param $separator : separator in the begin of the request
+ * @param $table : table where apply the limit (if needed, multiple tables queries)
+ * @param $field : field where apply the limit (id != FK_entities)
+ * @return String : the WHERE clause to restrict 
+ */
 function getEntitiesRestrictRequest($separator="AND",$table="",$field=""){
 	
 	if (in_array(0,$_SESSION['glpiactiveentities'])){
