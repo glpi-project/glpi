@@ -155,7 +155,7 @@ class Identification
 			//reset($atts);
 			//while (list(, $att) = each($atts)) {
 				$filter = "($att=$login_search)";
-				if (!empty($condition)) $filter='(& $filter $condition)';
+				if (!empty($condition)) $filter="(& $filter $condition)";
 				$result = @ldap_search($ds, $basedn, $filter, array("dn"));
 				$info = @ldap_get_entries($ds, $result);
 				// Ne pas accepter les resultats si plus d'une entree
