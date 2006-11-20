@@ -157,20 +157,21 @@
 	
 	
 				if(!empty($CFG_GLPI["ldap_host"])){
-					$CFG_GLPI["ldap_basedn"] = utf8_decode($CFG_GLPI["ldap_basedn"]);
-					$CFG_GLPI["ldap_rootdn"] = utf8_decode($CFG_GLPI["ldap_rootdn"]);
-					$CFG_GLPI["ldap_pass"] = utf8_decode($CFG_GLPI["ldap_pass"]);
+					$CFG_GLPI["ldap_basedn"] = utf8_decode(strtolower($CFG_GLPI["ldap_basedn"]));
+					$CFG_GLPI["ldap_rootdn"] = utf8_decode(strtolower($CFG_GLPI["ldap_rootdn"]));
+					$CFG_GLPI["ldap_pass"] = utf8_decode(strtolower($CFG_GLPI["ldap_pass"]));
 		
 					//// AJOUTER CA DANS LA CONFIG POST INSTALL
-					$CFG_GLPI['ldap_fields'] = array( "name" => $CFG_GLPI['ldap_login'], 
-							"email" => $CFG_GLPI['ldap_field_email'], 
-							"location" => $CFG_GLPI['ldap_field_location'], 
-							"phone" => $CFG_GLPI['ldap_field_phone'], 
-							"phone2" => $CFG_GLPI['ldap_field_phone2'], 
-							"mobile" => $CFG_GLPI['ldap_field_mobile'], 
-							"realname" => $CFG_GLPI['ldap_field_realname'],
-							"firstname" => $CFG_GLPI['ldap_field_firstname']
+					$CFG_GLPI['ldap_fields'] = array( "name" => strtolower($CFG_GLPI['ldap_login']), 
+							"email" => strtolower($CFG_GLPI['ldap_field_email']), 
+							"location" => strtolower($CFG_GLPI['ldap_field_location']), 
+							"phone" => strtolower($CFG_GLPI['ldap_field_phone']), 
+							"phone2" => strtolower($CFG_GLPI['ldap_field_phone2']), 
+							"mobile" => strtolower($CFG_GLPI['ldap_field_mobile']), 
+							"realname" => strtolower($CFG_GLPI['ldap_field_realname']),
+							"firstname" => strtolower($CFG_GLPI['ldap_field_firstname'])
 							);
+					$CFG_GLPI["ldap_field_group_member"]=strtolower($CFG_GLPI["ldap_field_group_member"]);
 				}
 			$CACHE_CFG->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
 			}

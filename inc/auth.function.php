@@ -37,6 +37,15 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+
+/**
+ * Have I the right $right to module $module (conpare to session variable)
+ *
+ * @param $module Module to check
+ * @param $right Right to check
+ *
+ * @return Boolean : session variable have more than the right specified for the module
+ */
 function haveRight($module,$right){
 
 	$matches=array(
@@ -54,9 +63,12 @@ function haveRight($module,$right){
 
 
 /**
- * Get The Type Name of the Object
+ * Have I the right $right to module type $type (conpare to session variable)
  *
- * @return String: name of the object type in the current language
+ * @param $right Right to check
+ * @param $type Type to check
+ *
+ * @return Boolean : session variable have more than the right specified for the module type
  */
 function haveTypeRight ($type,$right){
 	global $LANG;
@@ -91,7 +103,7 @@ function haveTypeRight ($type,$right){
 			return haveRight("contract_infocom",$right);
 			break;				
 		case ENTERPRISE_TYPE : 
-			return haveRight("contact_enterprise",$right);
+			return haveRight("contafile:///home/dombre/httpd/glpi-test/inc/auth.function.phpct_enterprise",$right);
 			break;
 		case CONTACT_TYPE : 
 			return haveRight("contact_enterprise",$right);
@@ -130,7 +142,11 @@ function haveTypeRight ($type,$right){
 	return false;
 }
 
-
+/**
+ * Display common message for privileges errors
+ *
+ * @return Nothing
+ */
 function displayRightError(){
 	global $LANG,$CFG_GLPI,$HEADER_LOADED;
 	if (!$HEADER_LOADED){
@@ -148,7 +164,14 @@ function displayRightError(){
 }
 
 
-
+/**
+ * Check if I have the right $right to module $module (conpare to session variable)
+ *
+ * @param $module Module to check
+ * @param $right Right to check
+ *
+ * @return Nothing : display error if not permit
+ */
 function checkRight($module,$right) {
 	global $CFG_GLPI;
 
@@ -163,6 +186,13 @@ function checkRight($module,$right) {
 	}
 }
 
+/**
+ * Check if I have one of the right specified
+ *
+ * @param $modules array of modules where keys are modules and value are right
+ *
+ * @return Nothing : display error if not permit
+ */
 function checkSeveralRightsOr($modules) {
 	global $CFG_GLPI;
 
@@ -182,6 +212,13 @@ function checkSeveralRightsOr($modules) {
 	}
 }
 
+/**
+ * Check if I have all the rights specified
+ *
+ * @param $modules array of modules where keys are modules and value are right
+ *
+ * @return Nothing : display error if not permit
+ */
 function checkSeveralRightsAnd($modules) {
 	global $CFG_GLPI;
 
@@ -199,7 +236,14 @@ function checkSeveralRightsAnd($modules) {
 		displayRightError();
 	}
 }
-
+/**
+ * Check if I have the right $right to module type $type (conpare to session variable)
+ *
+ * @param $type Module type to check
+ * @param $right Right to check
+ *
+ * @return Nothing : display error if not permit
+ */
 function checkTypeRight($type,$right) {
 	global $CFG_GLPI;
 
@@ -212,7 +256,11 @@ function checkTypeRight($type,$right) {
 		displayRightError();
 	}
 }
-
+/**
+ * Check if I have access to the central interface
+ *
+ * @return Nothing : display error if not permit
+ */
 function checkCentralAccess(){
 
 	global $CFG_GLPI;
@@ -226,7 +274,11 @@ function checkCentralAccess(){
 		displayRightError();
 	}
 }
-
+/**
+ * Check if I have access to the helpdesk interface
+ *
+ * @return Nothing : display error if not permit
+ */
 function checkHelpdeskAccess(){
 
 	global $CFG_GLPI;
@@ -241,6 +293,11 @@ function checkHelpdeskAccess(){
 	}
 }
 
+/**
+ * Check if I am logged in
+ *
+ * @return Nothing : display error if not permit
+ */
 function checkLoginUser(){
 
 	global $CFG_GLPI;
@@ -255,6 +312,11 @@ function checkLoginUser(){
 	}
 }
 
+/**
+ * Check if I have the right to access to the FAQ (profile or anonymous FAQ)
+ *
+ * @return Nothing : display error if not permit
+ */
 function checkFaqAccess(){
 	global $CFG_GLPI;
 
@@ -324,7 +386,12 @@ function loadLanguage() {
 
 }
 
-// Init glpiprofiles in _SESSION variable
+/**
+ * Set the entities session variable. Load all entities from DB
+ *
+ * @param $userID : ID of the user
+ * @return Nothing 
+ */
 function initEntityProfiles($userID){
 	global $DB;
 
@@ -358,7 +425,12 @@ function initEntityProfiles($userID){
 	}
 }
 
-// Change current active profile
+/**
+ * Change active profile to the $ID one. Update glpiactiveprofile session variable.
+ *
+ * @param $ID : ID of the new profile
+ * @return Nothing 
+ */
 function changeProfile($ID){
 	global $CFG_GLPI;
 	if (isset($_SESSION['glpiprofiles'][$ID])&&count($_SESSION['glpiprofiles'][$ID]['entities'])){
@@ -385,12 +457,23 @@ function changeProfile($ID){
 	$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
 }
 
-function changeActiveEntity($value){
-	$_SESSION["glpiactive_entity"]=$value;
+/**
+ * Change active enity to the $ID one. Update glpiactive_entity session variable.
+ * Reload groups related to this entity.
+ *
+ * @param $ID : ID of the new profile
+ * @return Nothing 
+ */
+function changeActiveEntity($ID){
+	$_SESSION["glpiactive_entity"]=$ID;
 	loadGroups();
-
 }
 
+
+/**
+ * Load groups where I am in the active entity.
+ * @return Nothing 
+ */
 function loadGroups(){
 	global $DB;
 
@@ -405,7 +488,13 @@ function loadGroups(){
 	}
 }
 
-// Check if you could access to the entity of id = $ID
+// 
+/**
+ * Check if you could access to the entity of id = $ID
+ *
+ * @param $ID : ID of the entity
+ * @return Boolean : 
+ */
 function haveAccessToEntity($ID){
 	if (isset($_SESSION['glpiactiveentities'])){
 		return in_array($ID,$_SESSION['glpiactiveentities']);
@@ -413,6 +502,7 @@ function haveAccessToEntity($ID){
 		return false;
 	}
 }
+
 function getEntitiesRestrictRequest($separator="AND",$table="",$field=""){
 	
 	if (in_array(0,$_SESSION['glpiactiveentities'])){
@@ -458,6 +548,7 @@ function getEntitiesRestrictRequest($separator="AND",$table="",$field=""){
 	$query.=" ) ";
 	return $query;
 }
+
 
 function connect_ldap($host,$port,$login="",$password=""){
 	global $CFG_GLPI;
