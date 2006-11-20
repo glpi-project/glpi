@@ -362,8 +362,8 @@ class User extends CommonDBTM {
 	
 				if ($DB->numrows($result)>0){
 					while ($data=$DB->fetch_assoc($result)){
-						$group_fields[]=$data["ldap_field"];
-						$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
+						$group_fields[]=strtolower($data["ldap_field"]);
+						$groups[strtolower($data["ldap_field"])][$data["ID"]]=$data["ldap_value"];
 					}
 					$group_fields=array_unique($group_fields);
 					// If the groups must be retrieve from the ldap user object
