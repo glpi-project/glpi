@@ -293,6 +293,7 @@ class User extends CommonDBTM {
 	 *
 	 * @param $host LDAP host to connect
 	 * @param $port LDAP port
+	 * @param $use_tls use a tls connection
 	 * @param $userdn Basedn of the user
 	 * @param $rdn Root dn 
 	 * @param $rpass Root Password
@@ -303,7 +304,7 @@ class User extends CommonDBTM {
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */
-	function getFromLDAP_v2($host,$port,$userdn,$rdn,$rpass,$fields,$login,$password="")
+	function getFromLDAP($host,$port,$userdn,$rdn,$rpass,$fields,$login,$password="",$use_tls=false)
 	{
 		global $DB,$CFG_GLPI;
 
@@ -313,9 +314,9 @@ class User extends CommonDBTM {
 			return false;
 		}
 
-		$ds=connect_ldap($host,$port,$rdn,$rpass);
+		$ds=connect_ldap($host,$port,$rdn,$rpass,$use_tls);
 		// Test with login and password of the user
-		if (!$ds) $ds=connect_ldap($host,$port,$login,$password);
+		if (!$ds) $ds=connect_ldap($host,$port,$login,$password,$use_tls);
 		if ($ds) {
 			// some defaults...
 			$this->fields['password'] = "";
@@ -408,111 +409,6 @@ class User extends CommonDBTM {
 	} // getFromLDAP()
 
 
-	// Function that try to load from LDAP the user information...
-	//
-	function getFromLDAP($host,$port,$basedn,$adm,$pass,$fields,$name)
-	{
-		global $DB,$CFG_GLPI;
-		// we prevent some delay..
-		if (empty($host)) {
-			return false;
-		}
-
-		// some defaults...
-		$this->fields['password'] = "";
-		$this->fields['password_md5'] = "";
-		$this->fields['name'] = $name;
-
-		if ( $ds = ldap_connect($host,$port) )
-		{
-			// switch to protocol version 3 to make ssl work
-			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
-
-			if ($CFG_GLPI["ldap_use_tls"]){
-				if (!ldap_start_tls($ds)) {
-					return false;
-				} 
-			}
-
-			if ( $adm != "" )
-			{
-				//	 	$dn = $CFG_GLPI["ldap_login"]."=" . $adm . "," . $basedn;
-				$bv = ldap_bind($ds, $adm, $pass);
-			}
-			else
-			{
-				$bv = ldap_bind($ds);
-			}
-
-			if ( $bv )
-			{
-				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$CFG_GLPI["ldap_login"]."=".$name);
-			}
-		}
-		return false;
-
-	} // getFromLDAP()
-
-	// Function that try to load from LDAP the user information...
-	//
-	function getFromLDAP_active_directory($host,$port,$basedn,$adm,$pass,$fields,$name)
-	{
-		global $DB;
-		// we prevent some delay..
-		if (empty($host)) {
-			unset($this->fields["password"]);
-			unset($this->fields["password_md5"]);
-			return false;
-		}
-
-		// some defaults...
-		$this->fields['password'] = "";
-		$this->fields['password_md5'] = "";
-		$this->fields['name'] = $name;		
-
-		if ( $ds = ldap_connect($host,$port) )
-		{
-			// switch to protocol version 3 to make ssl work
-			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
-
-			if ($CFG_GLPI["ldap_use_tls"]){
-				if (!ldap_start_tls($ds)) {
-					return false;
-				} 
-			}
-
-			$dn = $basedn;
-			$findcn=explode(",O",$dn);
-			// Cas ou pas de ,OU
-			if ($dn==$findcn[0]) {
-				$findcn=explode(",C",$dn);
-			}
-			$findcn=explode("=",$findcn[0]);
-			$findcn[1]=str_replace('\,', ',', $findcn[1]);
-			$filter="(CN=".$findcn[1].")";
-
-			if ( $adm != "" )
-			{
-
-				$bv = ldap_bind($ds, $adm, $pass);
-			}
-			else
-			{
-				$bv = ldap_bind($ds);
-			}
-
-			if ( $bv )
-			{
-				return $this->retrieveDataFromLDAP($ds,$basedn,$fields,$filter);
-
-			}
-		}
-
-		return false;
-
-	} // getFromLDAP_active_directory()
-
-
 	
 	//Get all the group a user belongs to
 	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn,$group_condition,$group_field_member)
@@ -543,99 +439,6 @@ class User extends CommonDBTM {
 		$groups[0][$group_field_member] = $listgroups;
 		//Return the groups of the user
 		return $groups;
-	}
-
-
-
-
-	function retrieveDataFromLDAP($ldapconn,$basedn,$fields,$filter){
-		global $DB,$CFG_GLPI;
-
-		$fields=array_filter($fields);
-
-		$f = array_values($fields);
-
-		$sr = ldap_search($ldapconn, $basedn, $filter, $f);
-
-		$v = ldap_get_entries($ldapconn, $sr);
-
-		if ( !is_array($v)||count($v)==0 || empty($v[0][$fields['name']][0]) ) {
-			return false;
-		}
-
-		//Store the dn of the user
-		$user_dn = $v[0]['dn'];
-
-		foreach ($fields as $k => $e)	{
-			if (!empty($v[0][$e][0]))
-				$this->fields[$k] = $v[0][$e][0];
-		}
-
-		// Is location get from LDAP ?
-		if (isset($fields['location'])&&!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
-			$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
-			$result=$DB->query($query);
-			if ($DB->numrows($result)==0){
-				$DB->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
-				$this->fields['location']=$DB->insert_id();
-				regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
-			} else $this->fields['location']=$DB->result($result,0,"ID");
-		}
-
-		// Get group fields
-		$query_user="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
-		$query_group="SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
-
-		$group_fields=array();
-		$groups=array();
-		$v=array();
-		//The groupes are retrived by looking into an ldap user object
-		if ($CFG_GLPI["ldap_search_for_groups"]==0||$CFG_GLPI["ldap_search_for_groups"]==2){
-
-			$result=$DB->query($query_user);
-
-			if ($DB->numrows($result)>0){
-				while ($data=$DB->fetch_assoc($result)){
-					$group_fields[]=$data["ldap_field"];
-					$groups[$data["ldap_field"]][$data["ID"]]=$data["ldap_value"];
-				}
-				//iIf the groups must be retrieve from the ldap user object
-				$sr = ldap_search($ldapconn, $basedn, $filter, $group_fields);
-				$v = ldap_get_entries($ldapconn, $sr);
-			}
-		}
-
-		//The groupes are retrived by looking into an ldap group object
-		if ($CFG_GLPI["ldap_search_for_groups"]==1||$CFG_GLPI["ldap_search_for_groups"]==2){
-
-			$result=$DB->query($query_group);
-
-			if ($DB->numrows($result)>0){
-				while ($data=$DB->fetch_assoc($result)){
-					$groups[$CFG_GLPI["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
-				}
-				$v2 = $this->ldap_get_user_groups($ldapconn,$CFG_GLPI["ldap_basedn"],$user_dn,$CFG_GLPI["ldap_group_condition"],$CFG_GLPI["ldap_field_group_member"]);
-				$v = array_merge($v,$v2);
-			}
-
-		}
-
-		if ( is_array($v)&&count($v)>0){
-			foreach ($v as $attribute => $valattribute){
-				foreach ($valattribute as $key => $val){
-					if (is_array($val))
-						for ($i=0;$i<count($val);$i++){
-							if ($group_found= array_search($val[$i],$groups[$key])){
-								$this->fields["_groups"][]=$group_found;
-							}
-						}
-				}
-			}
-		}
-		//Hook to retrieve more informations for ldap
-		$this->fields=do_hook_function("retrieve_more_data_from_ldap",$this->fields);
-
-		return true;
 	}
 
 	// Function that try to load from IMAP the user information... this is

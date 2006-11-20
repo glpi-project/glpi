@@ -556,15 +556,24 @@ function getEntitiesRestrictRequest($separator="AND",$table="",$field=""){
 	return $query;
 }
 
-
-function connect_ldap($host,$port,$login="",$password=""){
+/**
+ * Connect to a LDAP serveur
+ *
+ * @param $host : LDAP host to connect
+ * @param $port : port to use
+ * @param $login : login to use
+ * @param $password : password to use
+ * @param $use_tls : use a tls connection ?
+ * @return link to the LDAP server : false if connection failed
+ */
+function connect_ldap($host,$port,$login="",$password="",$use_tls=false){
 	global $CFG_GLPI;
 
 	$ds = @ldap_connect ($host,$port);
 	if ($ds){
 		@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 		@ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-		if ($CFG_GLPI["ldap_use_tls"]){
+		if ($use_tls){
 			if (!@ldap_start_tls($ds)) {
 				return false;
 			} 
