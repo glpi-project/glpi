@@ -81,7 +81,14 @@ if (!isset($_POST["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
 
         // if LDAP enabled too, get user's infos from LDAP
 	if (!empty($cfg_glpi["ldap_host"])) {
-		$identificat->user->getFromLDAP($cfg_glpi["ldap_host"],$cfg_glpi["ldap_port"],$found_dn,$cfg_glpi["ldap_rootdn"],$cfg_glpi["ldap_pass"],$cfg_glpi['ldap_fields'],$user);
+		// Get dn without testing login
+		$ds=connect_ldap($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_use_tls"]);
+		if ($ds){
+			$user_dn = ldap_search_user_dn($ds,$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_login"],$user,$CFG_GLPI["ldap_condition"]); 
+			if ($user_dn) {
+				$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$user_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],$user,"",$CFG_GLPI["ldap_use_tls"]);
+			}
+		}
 	}
 	$identificat->user->fields["name"]=$user;
 
@@ -128,7 +135,7 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 
 		// Third common LDAP Auth
 		if (!$auth_succeded&&!empty($CFG_GLPI["ldap_host"])){
-			$user_dn = $identificat->connection_ldap($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_condition"],$CFG_GLPI["ldap_use_tls"]);
+			$user_dn = $identificat->connection_ldap($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_login"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_condition"],$CFG_GLPI["ldap_use_tls"]);
 			if ($user_dn) {
 				$auth_succeded=true;
 				$identificat->extauth=1;

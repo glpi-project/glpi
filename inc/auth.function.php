@@ -594,4 +594,20 @@ function connect_ldap($host,$port,$login="",$password="",$use_tls=false){
 	}
 }
 
+function ldap_search_user_dn($ds,$basedn,$login_attr,$login,$condition){
+
+	$login_search = ereg_replace("[^-@._[:space:][:alnum:]]", "", $login); // securite
+
+	// Tenter une recherche pour essayer de retrouver le DN
+	$filter = "($login_attr=$login_search)";
+	if (!empty($condition)) $filter="(& $filter $condition)";
+	$result = @ldap_search($ds, $basedn, $filter, array("dn"));
+	$info = @ldap_get_entries($ds, $result);
+	if (is_array($info) AND $info['count'] == 1) {
+		return $info[0]['dn'];
+	} else {// Si echec, essayer de deviner le DN / Flat LDAP
+		$dn = "$login_attr=$login_search, ".$basedn;
+	}
+}
+
 ?>

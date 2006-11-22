@@ -42,11 +42,11 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if(empty($_GET["ID"])) $_GET["ID"] = "";
 
+$start=0;
 if (isset($_GET["start"])) {
-						$start=$_GET["start"];
-					}else{
-						$start=0;
-					}
+	$start=$_GET["start"];
+}
+
 
 $user=new User();
 if (empty($_GET["ID"])&&isset($_GET["name"])){
@@ -145,29 +145,19 @@ else if (isset($_POST["deletegroup"]))
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
 
 				// LDAP case : get all informations
-				if (!empty($CFG_GLPI["ldap_host"])&&!empty($CFG_GLPI["ldap_rootdn"])){
-					$succeded=false;
-					$identificat = new Identification();
-					$found_dn=$identificat->ldap_get_dn($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_basedn"],utf8_decode($_GET['login']),$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_port"]);
-					if ($found_dn&&!$identificat->user->getFromDBbyName($_GET['login'])){
-						$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$found_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_GET['login']));
-						$identificat->user->fields["_extauth"]=1;
-						$input=$identificat->user->fields;
-						unset($identificat->user->fields);
-						$identificat->user->add($input);
-						$succeded=true;
-					}
-					// AD case
-					if (!$succeded) {
-						$found_dn=false;
-						$found_dn=$identificat->ldap_get_dn_active_directory($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_basedn"],$_POST['login_name'],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_port"]);
-						if ($found_dn!=false&&!$identificat->user->getFromDBbyName($_GET['login'])){ 
-							$identificat->user->getFromLDAP_active_directory($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$found_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_GET['login']));
+				if (!empty($CFG_GLPI["ldap_host"])){
+
+					// Get dn without testing login
+					$ds=connect_ldap($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_use_tls"]);
+					if ($ds){
+						$user_dn = ldap_search_user_dn($ds,$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_login"],utf8_decode($_GET['login']),$CFG_GLPI["ldap_condition"]); 
+						if ($user_dn) {
+							$identificat = new Identification();
+							$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$user_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_GET['login']),"",$CFG_GLPI["ldap_use_tls"]);
 							$identificat->user->fields["_extauth"]=1;
 							$input=$identificat->user->fields;
 							unset($identificat->user->fields);
 							$identificat->user->add($input);
-							$succeded=true;
 						}
 					}
 				} else {
