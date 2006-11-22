@@ -128,63 +128,15 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 
 		// Third common LDAP Auth
 		if (!$auth_succeded&&!empty($CFG_GLPI["ldap_host"])){
-			$user_dn = $identificat->connection_ldap_v2($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_condition"]);
+			$user_dn = $identificat->connection_ldap($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_condition"],$CFG_GLPI["ldap_use_tls"]);
 			if ($user_dn) {
 				$auth_succeded=true;
 				$identificat->extauth=1;
 				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				$identificat->user->getFromLDAP_v2($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$user_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
+				$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$user_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_use_tls"]);
 
 			}
 		}
-/*
-		// Third try LDAP in depth search
-		// we check all the auth sources in turn...
-		// First, we get the dn and then, we try to log in
-		if (!$auth_succeded&&!empty($CFG_GLPI["ldap_host"])) {
-			$found_dn=false;
-			$auth_succeded=0;
-			$found_dn=$identificat->ldap_get_dn($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_basedn"],utf8_decode($_POST['login_name']),$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_port"]);
-
-			if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-				$auth_succeded = $identificat->connection_ldap($CFG_GLPI["ldap_host"],$found_dn,utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_condition"],$CFG_GLPI["ldap_port"]);
-				if ($auth_succeded) {
-					$identificat->extauth=1;
-					$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-					$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$found_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_POST['login_name']));
-				}
-			}
-		}
-
-		// Fourth try for flat LDAP 
-		// LDAP : Try now with the first base_dn
-		if (!$auth_succeded&&!empty($CFG_GLPI["ldap_host"])) {
-			$auth_succeded = $identificat->connection_ldap($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_basedn"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_condition"],$CFG_GLPI["ldap_port"]);
-			if ($auth_succeded) {
-				$identificat->extauth=1;
-				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_POST['login_name']));
-
-			}
-		}
-
-		// Fifth try Active directory LDAP in depth search
-		// we check all the auth sources in turn...
-		// First, we get the dn and then, we try to log in
-		if (!$auth_succeded&&!empty($CFG_GLPI["ldap_host"])) {
-			$found_dn=false;
-			$auth_succeded=0;
-			$found_dn=$identificat->ldap_get_dn_active_directory($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_basedn"],$_POST['login_name'],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_port"]);
-			if ($found_dn!=false&&!empty($_POST['login_password'])){ 
-				$auth_succeded = $identificat->connection_ldap_active_directory($CFG_GLPI["ldap_host"],$found_dn,$_POST['login_name'],$_POST['login_password'],$CFG_GLPI["ldap_condition"],$CFG_GLPI["ldap_port"]);
-				if ($auth_succeded) {
-					$identificat->extauth=1;
-					$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-					$identificat->user->getFromLDAP_active_directory($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$found_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],$_POST['login_name']);
-				}
-			}
-		}
-*/
 	} // Fin des tests de connexion
 
 // Ok, we have gathered sufficient data, if the first return false the user
