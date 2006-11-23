@@ -95,16 +95,15 @@ class User extends CommonDBTM {
 		global $DB;
 		$query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
 		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)!=1) return false;
-			$data = $DB->fetch_assoc($result);
-			if (empty($data)) {
+			if ($DB->numrows($result)!=1) {
 				return false;
 			}
-			foreach ($data as $key => $val) {
-				$this->fields[$key] = $val;
-				if ($key=="name") $this->fields[$key] = $val;
+			$this->fields = $DB->fetch_assoc($result);
+			if (is_array($this->fields)&&count($this->fields)){
+				return true;
+			} else {
+				return false;
 			}
-			return true;
 		}
 		return false;
 	}
