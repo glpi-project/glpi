@@ -45,9 +45,26 @@ class Device extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 		global $DB;
+		$query="SELECT FK_computers FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)){
+			while ($data=$DB->fetch_assoc($result)){
+				cleanAllItemCache("device".$data["FK_computers"],"GLPI_".DEVICE_TYPE);
+			}
+		}
 		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
 		$DB->query($query2);
-		cleanCache("GLPI_".DEVICE_TYPE);
+	}
+
+	function post_updateItem($input,$updates,$history=1) {
+		global $DB;
+		$query="SELECT FK_computers FROM glpi_computer_device WHERE (FK_device = '".$input["ID"]."' AND device_type='".$input["device_type"]."')";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)){
+			while ($data=$DB->fetch_assoc($result)){
+				cleanAllItemCache("device".$data["FK_computers"],"GLPI_".DEVICE_TYPE);
+			}
+		}
 	}
 
 	// SPECIFIC FUNCTIONS

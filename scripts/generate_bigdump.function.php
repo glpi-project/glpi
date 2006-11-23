@@ -212,7 +212,7 @@ function generateGlobalDropdowns(){
 		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
 		for ($j=0;$j<$nb;$j++){
 			$k++;
-			$query="INSERT INTO glpi_kbitems VALUES (NULL,'$i','Question $k','Reponse $k','".$faq[mt_rand(0,1)]."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand(0,1000)."',NOW(),NOW())";
+			$query="INSERT INTO glpi_kbitems VALUES (NULL,'$i','Question $k','Reponse $k','".$faq[mt_rand(0,1)]."','10','".mt_rand(0,1000)."',NOW(),NOW())";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 	}
