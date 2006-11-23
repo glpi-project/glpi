@@ -186,15 +186,15 @@ class User extends CommonDBTM {
 		} 
 
 
-		if (isset($input["language"])&&$_SESSION["glpiID"]==$input['ID'])	{
+		if (isset($_SESSION["glpiID"])&&isset($input["language"])&&$_SESSION["glpiID"]==$input['ID'])	{
 			$_SESSION["glpilanguage"]=$input["language"];
 		}
-		if (isset($input["tracking_order"])&&$_SESSION["glpiID"]==$input['ID'])	{
+		if (isset($_SESSION["glpiID"])&&isset($input["tracking_order"])&&$_SESSION["glpiID"]==$input['ID'])	{
 			$_SESSION["glpitracking_order"]=$input["tracking_order"];
 		}
 
 		// Security system execpt for login update
-		if (!haveRight("user","w")&&!ereg("login.php",$_SERVER["PHP_SELF"])){
+		if ($_SESSION["glpiID"]&&!haveRight("user","w")&&!ereg("login.php",$_SERVER["PHP_SELF"])){
 			if($_SESSION["glpiID"]==$input['ID']) {
 				$ret=$input;
 				// extauth ldap case
