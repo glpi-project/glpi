@@ -466,7 +466,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 
 	if ($ki->getfromDB($ID)){
 		if ($ki->fields["faq"]=="yes"){
-			if ($CFG_GLPI["public_faq"] == 0&&!haveRight("faq","r")) return false;	
+			if ($CFG_GLPI["public_faq"] == 0&&!haveRight("faq","r")&&!haveRight("knowbase","r")) return false;	
 		}
 		else 
 			if (!haveRight("knowbase","r")) return false;	
