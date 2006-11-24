@@ -214,7 +214,7 @@ $LANG["common"][47]="Progresso";
 $LANG["common"][48]="Sobrenome"; 
 $LANG["common"][49]="Nenhum"; 
 $LANG["common"][50]="Confirma a remoção ?"; 
-$LANG["common"][51]="Complete Name"; 
+$LANG["common"][51]="Nome Completo"; 
 
 $LANG["computers"][0]="Adicionar computador"; 
 $LANG["computers"][9]="Sistema Operativo"; 
@@ -373,8 +373,8 @@ $LANG["document"][43]="Ficheiro desconhecido";
 $LANG["document"][44]="Nome de ficheiro inválido"; 
 $LANG["document"][45]="Acesso não autorizado a este ficheiro"; 
 
-$LANG["entity"][0]="Entity"; 
-$LANG["entity"][1]="Hierarchy"; 
+$LANG["entity"][0]="Entidade"; 
+$LANG["entity"][1]="Hierarquia"; 
 
 $LANG["event"][0]="Artigo (ID)"; 
 $LANG["event"][2]="Serviço"; 
@@ -746,12 +746,12 @@ $LANG["login"][7]="Senha";
 $LANG["login"][8]="Utilizador ou senha vazia"; 
 $LANG["login"][10]="Autenticação"; 
 $LANG["login"][11]="Utilizador não autorizado a ligar-se ao GLPI"; 
-$LANG["login"][12]="Wrong username or password."; 
-$LANG["login"][13]="Password field is empty"; 
-$LANG["login"][14]="unknown user"; 
-$LANG["login"][15]="User not founded or several users founded"; 
-$LANG["login"][16]="unsuccessful authorization in LDAP"; 
-$LANG["login"][17]="Unsuccessfull authorization in AD"; 
+$LANG["login"][12]="utilizador ou senha errado(a)"; 
+$LANG["login"][13]="Campo da senha está vazio"; 
+$LANG["login"][14]="utilizador desconhecido"; 
+$LANG["login"][15]="Utilizador não encontrado ou vários utilizadores encontrados"; 
+$LANG["login"][16]="falha na autenticação LDAP"; 
+$LANG["login"][17]="falha na autenticação AD"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
@@ -831,7 +831,7 @@ $LANG["Menu"][33]="OCSNG";
 $LANG["Menu"][34]="Telefones"; 
 $LANG["Menu"][35]="Perfis"; 
 $LANG["Menu"][36]="Grupos"; 
-$LANG["Menu"][37]="Entities"; 
+$LANG["Menu"][37]="Entidades"; 
 
 $LANG["monitors"][0]="Adicionar Monitor"; 
 $LANG["monitors"][4]="Monitor"; 
@@ -1130,7 +1130,7 @@ $LANG["setup"][18]="Utlizador";
 $LANG["setup"][19]="Palavra-chave"; 
 $LANG["setup"][35]="MHZ"; 
 $LANG["setup"][40]="Visualizar novas senhas primeiro ?"; 
-$LANG["setup"][41]="Select Language"; 
+$LANG["setup"][41]="Seleccione o idioma"; 
 $LANG["setup"][42]="Tipos de rede"; 
 $LANG["setup"][43]="Tipos de impressoras"; 
 $LANG["setup"][44]="Tipos do monitores"; 
