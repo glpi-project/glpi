@@ -81,7 +81,8 @@ class DBmysql {
 		if ($CFG_GLPI["debug"]) {
 			if ($CFG_GLPI["debug_sql"]){		
 				$SQL_TOTAL_REQUEST++;
-				$DEBUG_SQL_STRING.="N&#176; ".$SQL_TOTAL_REQUEST." : <br>".$query;
+				$DEBUG_SQL_STRING.="<tr class='tab_bg_2'>";
+				$DEBUG_SQL_STRING.="<td>".$SQL_TOTAL_REQUEST." </td<td>".$query."</td>";
 
 				if ($CFG_GLPI["debug_profile"]){		
 					$TIMER=new Script_Timer;
@@ -100,11 +101,11 @@ class DBmysql {
 		if ($CFG_GLPI["debug"]) {
 			if ($CFG_GLPI["debug_profile"]&&$CFG_GLPI["debug_sql"]){		
 				$TIME=$TIMER->Get_Time();
-				$DEBUG_SQL_STRING.="<br><b>Time: </b>".$TIME."s";
+				$DEBUG_SQL_STRING.="<td>".$TIME."s </td>";
 				$SQL_TOTAL_TIMER+=$TIME;
 			}
 			if ($CFG_GLPI["debug_sql"]){
-				$DEBUG_SQL_STRING.="<hr>";
+				$DEBUG_SQL_STRING.="<tr>";
 			}
 		}
 

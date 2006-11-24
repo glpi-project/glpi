@@ -746,8 +746,12 @@ function commonFooter() {
 	echo "</div>";
 	echo "<div id='footer' >";
 	echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
-	echo $TIMER_DEBUG->Get_Time()."s</span>";
-	echo "</td>";
+	echo $TIMER_DEBUG->Get_Time()."s - ";
+	if (function_exists("memory_get_usage")){
+		echo memory_get_usage();
+		echo " ";
+	}
+	echo "</span>";
 
 	if (!empty($CFG_GLPI["founded_new_version"]))
 		echo "<td align='center' class='copyright'>".$LANG["setup"][301]." ".$CFG_GLPI["founded_new_version"]."<br>".$LANG["setup"][302]."</td>";
@@ -782,14 +786,33 @@ function commonFooter() {
 
 		echo "<div id='debug'>";
 		echo "<h1><a name='#debug'>GLPI MODE DEBUG</a></h1>";
+		/*
+		// déjà dans le footer
 		if ($CFG_GLPI["debug_profile"]){
-			echo "<h2>TIME</h2>";
+			echo "TIME : ";
 			echo $TIMER_DEBUG->Get_Time()."s";
 			if (function_exists("memory_get_usage")){
-				echo "<h2>MEMORY</h2>";
+				echo "MEMORY : ";
 				echo memory_get_usage();
+				echo "";
 			}
+		}*/
+		
+		if ($CFG_GLPI["debug_sql"]){	
+			echo "<h2>SQL REQUEST : ";
+			
+			echo $SQL_TOTAL_REQUEST." Queries ";
+			if ($CFG_GLPI["debug_profile"]){
+				echo "took  ".$SQL_TOTAL_TIMER."s  </h2>";
+			}
+
+			echo "<table class='tab_cadre' style='width:100%'><tr><th>N&#176; </th><th>Queries</th><th>Time</th></tr>";
+			echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",$DEBUG_SQL_STRING)))));
 		}
+		
+		
+		echo "</table>";
+		
 		if ($CFG_GLPI["debug_vars"]){
 			echo "<h2>POST VARIABLE</h2>";
 			printCleanArray($_POST);
@@ -798,16 +821,9 @@ function commonFooter() {
 			echo "<h2>SESSION VARIABLE</h2>";
 			printCleanArray($_SESSION);
 		}
-
-		if ($CFG_GLPI["debug_sql"]){	
-			echo "<h2>SQL REQUEST</h2>";
-			echo "<p><strong> Number of request:</strong> ".$SQL_TOTAL_REQUEST."</p>";
-			if ($CFG_GLPI["debug_profile"]){
-				echo "<p><strong>Total Time:</strong> ".$SQL_TOTAL_TIMER."s</p><hr>";
-			}
-
-			echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",$DEBUG_SQL_STRING)))));
-		}
+		
+		
+		
 		echo "</div>";
 	}
 	echo "</body></html>";
