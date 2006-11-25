@@ -41,8 +41,7 @@ header_nocache();
 
 checkRight("create_ticket","1");
 
-$where="WHERE '1'='1' ";
-$where.=getEntitiesRestrictRequest("AND",$_POST['table']);
+$where="WHERE FK_entities = '".$_SESSION["glpiactive_entity"]."' ";
 if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"]))
 $where.=" AND deleted='N' ";
 if (in_array($_POST['table'],$CFG_GLPI["template_tables"]))

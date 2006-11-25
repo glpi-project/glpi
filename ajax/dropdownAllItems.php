@@ -58,7 +58,8 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	displaySearchTextAjaxDropdown($_POST['myname'].$rand);
 
 	$moreparam="";
-	if(isset($_POST['value'])) $moreparam="&value=".$_POST['value'];
+	if(isset($_POST['value'])) $moreparam.="&value=".$_POST['value'];
+	if(isset($_POST['entity_restrict'])) $moreparam.="&entity_restrict=".$_POST['entity_restrict'];
 
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";

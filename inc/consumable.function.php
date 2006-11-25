@@ -90,119 +90,126 @@ function showConsumables ($tID,$show_old=0) {
 	if (!haveRight("consumable","r")) return false;
 	$canedit=haveRight("consumable","w");
 
-	$query = "SELECT count(ID) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
+	$cartype=new ConsumableType();
+	
+	
+	if ($cartype->getFromDB($tID)){
 
-	if ($result = $DB->query($query)) {
-		if ($DB->result($result,0,0)!=0) { 
-			$total=$DB->result($result, 0, "COUNT");
-			$unused=getUnusedConsumablesNumber($tID);
-			$old=getOldConsumablesNumber($tID);
-			if (!$show_old&&$canedit){
-				echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php'>";
+		$query = "SELECT count(ID) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
+	
+		if ($result = $DB->query($query)) {
+			if ($DB->result($result,0,0)!=0) { 
+				$total=$DB->result($result, 0, "COUNT");
+				$unused=getUnusedConsumablesNumber($tID);
+				$old=getOldConsumablesNumber($tID);
+				if (!$show_old&&$canedit){
+					echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php'>";
+				}
+				echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
+				if ($show_old==0){
+					echo "<tr><th colspan='7'>";
+					echo $total;
+					echo "&nbsp;".$LANG["consumables"][16]."&nbsp;-&nbsp;$unused&nbsp;".$LANG["consumables"][13]."&nbsp;-&nbsp;$old&nbsp;".$LANG["consumables"][15]."</th></tr>";
+				}
+				else { // Old
+					echo "<tr><th colspan='8'>";
+					echo $LANG["consumables"][35];
+					echo "</th></tr>";
+	
+				}
+				$i=0;
+				echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th>";
+	
+	
+				if ($show_old)
+					echo "<th>".$LANG["setup"][57]."</th>";
+	
+				echo "<th>".$LANG["financial"][3]."</th>";
+	
+				if (!$show_old&&$canedit){
+					echo "<th>";
+					dropdownAllUsers("id_user",0,1,$cartype->fields["FK_entities"]);
+					echo "<input type='submit' name='give' value='".$LANG["consumables"][32]."'>";
+					echo "</th>";
+				} else {echo "<th>&nbsp;</th>";}
+				if ($canedit)
+					echo "<th>&nbsp;</th></tr>";
+			} else {
+	
+				echo "<br>";
+				echo "<div align='center'><b>".$LANG["consumables"][7]."</b></div>";
 			}
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
-			if ($show_old==0){
-				echo "<tr><th colspan='7'>";
-				echo $total;
-				echo "&nbsp;".$LANG["consumables"][16]."&nbsp;-&nbsp;$unused&nbsp;".$LANG["consumables"][13]."&nbsp;-&nbsp;$old&nbsp;".$LANG["consumables"][15]."</th></tr>";
-			}
-			else { // Old
-				echo "<tr><th colspan='8'>";
-				echo $LANG["consumables"][35];
-				echo "</th></tr>";
-
-			}
-			$i=0;
-			echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th>";
-
-
-			if ($show_old)
-				echo "<th>".$LANG["setup"][57]."</th>";
-
-			echo "<th>".$LANG["financial"][3]."</th>";
-
-			if (!$show_old&&$canedit){
-				echo "<th>";
-				dropdownAllUsers("id_user",0);
-				echo "<input type='submit' name='give' value='".$LANG["consumables"][32]."'>";
-				echo "</th>";
-			} else {echo "<th>&nbsp;</th>";}
-			if ($canedit)
-				echo "<th>&nbsp;</th></tr>";
-		} else {
-
-			echo "<br>";
-			echo "<div align='center'><b>".$LANG["consumables"][7]."</b></div>";
+		}
+	
+		$where="";
+		$leftjoin="";
+		$addselect="";
+		if ($show_old==0){ // NEW
+			$where= " AND date_out IS NULL ORDER BY date_in";
+		} else { //OLD
+			$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in";
+			$leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.id_user) ";
+			$addselect= ", glpi_users.realname AS REALNAME, glpi_users.firstname AS FIRSTNAME, glpi_users.name AS USERNAME ";
+		}
+	
+		$query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where ";
+	
+		if ($result = $DB->query($query)) {			
+			$number=$DB->numrows($result);
+			while ($data=$DB->fetch_array($result)) {
+				$date_in=convDate($data["date_in"]);
+				$date_out=convDate($data["date_out"]);
+	
+				echo "<tr  class='tab_bg_1'><td align='center'>";
+				echo $data["ID"]; 
+				echo "</td><td align='center'>";
+				echo getConsumableStatus($data["ID"]);
+				echo "</td><td align='center'>";
+				echo $date_in;
+				echo "</td><td align='center'>";
+				echo $date_out;		
+				echo "</td>";
+	
+				if ($show_old){
+					echo "<td align='center'>";
+					if (!empty($data["REALNAME"])) {
+						echo $data["REALNAME"];
+						if (!empty($data["FIRSTNAME"]))
+							echo " ".$data["FIRSTNAME"];
+					}
+					else echo $data["USERNAME"];
+					echo "</td>";
+				}
+	
+				echo "<td align='center'>";
+				showDisplayInfocomLink(CONSUMABLE_ITEM_TYPE,$data["ID"],1);
+				echo "</td>";
+	
+	
+				if ($show_old==0&&$canedit){
+					echo "<td align='center'>";
+					echo "<input type='checkbox' name='out[".$data["ID"]."]'>";
+					echo "</td>";
+				}
+	
+				if ($show_old!=0&&$canedit){
+					echo "<td align='center'>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";
+					echo "</td>";
+				}						
+	
+				echo "<td align='center'>";
+	
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["buttons"][6]."</a>";
+				echo "</td></tr>";
+	
+			}	
+		}	
+		echo "</table></div>\n\n";
+		if (!$show_old&&$canedit){
+			echo "</form>";
 		}
 	}
-
-	$where="";
-	$leftjoin="";
-	$addselect="";
-	if ($show_old==0){ // NEW
-		$where= " AND date_out IS NULL ORDER BY date_in";
-	} else { //OLD
-		$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in";
-		$leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.id_user) ";
-		$addselect= ", glpi_users.realname AS REALNAME, glpi_users.firstname AS FIRSTNAME, glpi_users.name AS USERNAME ";
-	}
-
-	$query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where ";
-
-	if ($result = $DB->query($query)) {			
-		$number=$DB->numrows($result);
-		while ($data=$DB->fetch_array($result)) {
-			$date_in=convDate($data["date_in"]);
-			$date_out=convDate($data["date_out"]);
-
-			echo "<tr  class='tab_bg_1'><td align='center'>";
-			echo $data["ID"]; 
-			echo "</td><td align='center'>";
-			echo getConsumableStatus($data["ID"]);
-			echo "</td><td align='center'>";
-			echo $date_in;
-			echo "</td><td align='center'>";
-			echo $date_out;		
-			echo "</td>";
-
-			if ($show_old){
-				echo "<td align='center'>";
-				if (!empty($data["REALNAME"])) {
-					echo $data["REALNAME"];
-					if (!empty($data["FIRSTNAME"]))
-						echo " ".$data["FIRSTNAME"];
-				}
-				else echo $data["USERNAME"];
-				echo "</td>";
-			}
-
-			echo "<td align='center'>";
-			showDisplayInfocomLink(CONSUMABLE_ITEM_TYPE,$data["ID"],1);
-			echo "</td>";
-
-
-			if ($show_old==0&&$canedit){
-				echo "<td align='center'>";
-				echo "<input type='checkbox' name='out[".$data["ID"]."]'>";
-				echo "</td>";
-			}
-
-			if ($show_old!=0&&$canedit){
-				echo "<td align='center'>";
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";
-				echo "</td>";
-			}						
-
-			echo "<td align='center'>";
-
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["buttons"][6]."</a>";
-			echo "</td></tr>";
-
-		}	
-	}	
-	echo "</table></div>\n\n";
-	if (!$show_old&&$canedit)
-		echo "</form>";
 }
 
 

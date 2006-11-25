@@ -230,13 +230,14 @@ function dropdownNoValue($table,$myname,$value) {
  * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
  * @param $all Nobody or All display for none selected
  * @param $display_comments display comments near the dropdown
+ * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
  * @return nothing (print out an HTML select box)
  *
  *
  */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
-function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdesk_ajax=0) {
+function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_restrict=0,$helpdesk_ajax=0) {
 	// Make a select box with all glpi users
 
 	global $CFG_GLPI,$LANG,$DB;
@@ -244,7 +245,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
 	$rand=mt_rand();
 
 	displaySearchTextAjaxDropdown($myname.$rand);
-
+	
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 	echo "      function(element, value) {\n";
@@ -253,7 +254,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&myname=$myname&all=$all&right=$right&comments=$display_comments&rand=$rand&helpdesk_ajax=$helpdesk_ajax'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&myname=$myname&all=$all&right=$right&comments=$display_comments&rand=$rand&helpdesk_ajax=$helpdesk_ajax&entity_restrict=$entity_restrict'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -294,6 +295,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
 		$_POST["comments"]=$display_comments;
 		$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
 		$_POST["helpdesk_ajax"]=$helpdesk_ajax;
+		$_POST["entity_restrict"]=$entity_restrict;	
 
 		include (GLPI_ROOT."/ajax/dropdownUsers.php");
 	} else {
@@ -322,12 +324,13 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
 * @param $myname select name
  * @param $value default value
  * @param $display_comments display comments near the dropdown
+ * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
  * @return nothing (print out an HTML select box)
  * 
  */
-function dropdownAllUsers($myname,$value=0,$display_comments=1,$helpdesk_ajax=0) {
-	return dropdownUsers($myname,$value,"all",0,$display_comments,$helpdesk_ajax);
+function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=0,$helpdesk_ajax=0) {
+	return dropdownUsers($myname,$value,"all",0,$display_comments,$entity_restrict,$helpdesk_ajax);
 }
 
 
@@ -339,12 +342,15 @@ function dropdownAllUsers($myname,$value=0,$display_comments=1,$helpdesk_ajax=0)
 * @param $myname select name
  * @param $value default value
  * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
+ * @param $entity_restrict Restrict to a defined entity
+ * @param $display_comments display comments near the dropdown
+ * @param $all Nobody or All display for none selected
  * @return nothing (print out an HTML select box)
  */
-function dropdownUsersID($myname,$value,$right) {
+function dropdownUsersID($myname,$value,$right,$display_comments=1,$entity_restrict=0) {
 	// Make a select box with all glpi users
 
-	return dropdownUsers($myname,$value,$right);
+	return dropdownUsers($myname,$value,$right,0,$display_comments,$entity_restrict);
 }
 
 /**
@@ -581,9 +587,10 @@ function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
  * @param $withcartridge Add cartridges to device type list
  * @param $withconsumable Add consumables to device type list
  * @param $withcontracts Add contracts to device type list
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
+function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
 	global $DB,$LANG,$CFG_GLPI;
 
 	$items=array(
@@ -627,7 +634,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$withenterprise=0,$with
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value'\n";
+	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value&entity_restrict=$entity_restrict'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -733,7 +740,7 @@ function dropdownMyDevices($userID=0){
 		$my_devices.="<optgroup label=\"".$LANG["tracking"][1]."\">";
 		foreach ($CFG_GLPI["linkuser_type"] as $type){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
-				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."'";
+				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='N' ";
 
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
@@ -769,7 +776,7 @@ function dropdownMyDevices($userID=0){
 				foreach ($CFG_GLPI["linkuser_type"] as $type){
 					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
-						$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where";
+						$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where AND deleted='N'";
 
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
@@ -806,7 +813,7 @@ function dropdownMyDevices($userID=0){
 			foreach ($types as $type){
 				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 					if (!isset($already_add[$type])) $already_add[$type]=array();
-					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." ORDER BY ".$LINK_ID_TABLE[$type].".name";
+					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." AND ".$LINK_ID_TABLE[$type].".deleted='N' ORDER BY ".$LINK_ID_TABLE[$type].".name";
 					$result=$DB->query($query);
 					if ($DB->numrows($result)>0){
 						$ci->setType($type);
