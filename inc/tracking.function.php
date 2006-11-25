@@ -694,7 +694,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["common"][37].":</td>";
 		echo "<td align='center' colspan='3'>";
-		$author_rand=dropdownAllUsers("author",$author,1,1);
+		$author_rand=dropdownAllUsers("author",$author,1,$_SESSION["glpiactive_entity"],1);
 
 		echo "</td></tr>";
 	} 
@@ -768,12 +768,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if (haveRight("update_ticket","1")||haveRight("assign_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
 		echo "<td colspan='3'>";
-		dropdownUsers("assign",$assign,"own_ticket");
+		dropdownUsers("assign",$assign,"own_ticket",0,1,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	} else if (haveRight("steal_ticket","1")) {
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
 		echo "<td colspan='3'>";
-		dropdownUsers("assign",$assign,"ID");
+		dropdownUsers("assign",$assign,"ID",0,1,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	}
 
@@ -1609,14 +1609,14 @@ function showJobDetails ($target,$ID){
 		echo "<tr><td align='right'>";
 		echo $LANG["common"][37].":</td><td>";
 		if ($canupdate)
-			dropdownAllUsers("author",$job->fields["author"]);
+			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
 		else echo $author->getName();
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
 		echo $LANG["common"][35].":</td><td>";
 		if ($canupdate)
-			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"]);
+			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"],1,$job->fields["FK_entities"]);
 		else echo getDropdownName("glpi_groups",$job->fields["FK_group"]);
 		echo "</td></tr>";
 
@@ -1665,12 +1665,12 @@ function showJobDetails ($target,$ID){
 		if ($canupdate||haveRight("assign_ticket","1")){
 			echo "<tr><td align='right'>";
 			echo $LANG["job"][27].":</td><td>";
-			dropdownUsers("assign",$job->fields["assign"],"own_ticket");
+			dropdownUsers("assign",$job->fields["assign"],"own_ticket",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else if (haveRight("steal_ticket","1")) {
 			echo "<tr><td align='right'>";
 			echo $LANG["job"][27].":</td><td>";
-			dropdownUsers("assign",$job->fields["assign"],"ID");
+			dropdownUsers("assign",$job->fields["assign"],"ID",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		}else {
 			echo "<tr><td align='right'>";

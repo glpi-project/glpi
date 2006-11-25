@@ -101,8 +101,12 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 	}
 	echo "</select>";
 } else {
+
+
+	
 	$first=true;
 	$where="WHERE ";
+	
 	if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])){
 		if (!$first) $where.=" AND ";
 		else $first=false;

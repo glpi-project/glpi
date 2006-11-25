@@ -540,14 +540,14 @@ class Computer extends CommonDBTM {
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
-				echo "<td >".$LANG["common"][34].": 	</td>";
+				echo "<td >".$LANG["common"][34]."---".$this->fields["FK_entities"].": 	</td>";
 				echo "<td >";
-				dropdownAllUsers("FK_users", $this->fields["FK_users"]);
+				dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
 				echo "</td>";
 	
 	
 				echo "<td>".$LANG["common"][35].":</td><td>";
-				dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"]);
+				dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
@@ -577,7 +577,7 @@ class Computer extends CommonDBTM {
 				echo "<tr class='tab_bg_1'>";
 				echo "<td >".$LANG["common"][10].": 	</td>";
 				echo "<td >";
-				dropdownUsersID("tech_num",$this->fields["tech_num"],"interface");
+				dropdownUsersID("tech_num",$this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
 				echo "</td>";
 	
 				echo "<td>".$LANG["common"][19].":	</td><td>";

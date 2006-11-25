@@ -173,7 +173,7 @@ class ConsumableType extends CommonDBTM {
 				echo "</td></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
-				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface");
+				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][36].": 	</td><td colspan='2'>\n";
