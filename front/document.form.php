@@ -89,7 +89,7 @@ else if (isset($_POST["additem"])){
 	checkRight("document","w");
 
 	$template=0;
-	if (isset($_POST["is_template"])) $template=1;
+	if (isset($_POST["is_template"])&&$_POST["is_template"]) $template=1;
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item'],$template);
