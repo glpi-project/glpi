@@ -74,10 +74,10 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 						dropdownAmortType("amort_type");
 					break;
 					case "amort_time" :
-						dropdownDuration("amort_time");
+						dropdownInteger("amort_time",0,0,15);
 					break;
 					case "warranty_duration" :
-						dropdownContractTime("warranty_duration");
+						dropdownInteger("warranty_duration",0,0,120);
 					echo " ".$LANG["financial"][57]."&nbsp;&nbsp;";
 					break;
 					default :

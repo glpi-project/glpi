@@ -518,14 +518,8 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 		echo "<select name='periodicity'>";
 		echo "<option value='day'>".$LANG["reservation"][29]."</option>";	
 		echo "<option value='week'>".$LANG["reservation"][28]."</option>";		
-		echo "</select>";	
-		echo "<select name='periodicity_times'>";
-		for ($i=1;$i<60;$i+=1){
-			echo "<option value='$i'";
-			echo ">$i</option>";
-		}
 		echo "</select>";
-
+		dropdownInteger('periodicity_times',1,1,60);	
 		echo $LANG["reservation"][30];
 		echo "</td></tr>";
 	}

@@ -64,10 +64,9 @@ function showConsumableAdd($ID) {
 	echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "<input type='hidden' name='tID' value=\"$ID\">\n";
 
-	echo "&nbsp;&nbsp;<select name='to_add'>";
-	for ($i=1;$i<100;$i++)
-		echo "<option value='$i'>$i</option>";
-	echo "</select>&nbsp;&nbsp;";
+	echo "&nbsp;&nbsp;";
+	dropdownInteger('to_add',1,1,100);
+	echo "&nbsp;&nbsp;";
 	echo $LANG["consumables"][16];
 	echo "</td></tr>";
 	echo "</table></div>";
@@ -145,14 +144,14 @@ function showConsumables ($tID,$show_old=0) {
 		$leftjoin="";
 		$addselect="";
 		if ($show_old==0){ // NEW
-			$where= " AND date_out IS NULL ORDER BY date_in";
+			$where= " AND date_out IS NULL ORDER BY date_in, ID";
 		} else { //OLD
-			$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in";
+			$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in, ID";
 			$leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.id_user) ";
 			$addselect= ", glpi_users.realname AS REALNAME, glpi_users.firstname AS FIRSTNAME, glpi_users.name AS USERNAME ";
 		}
 	
-		$query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where ";
+		$query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where";
 	
 		if ($result = $DB->query($query)) {			
 			$number=$DB->numrows($result);

@@ -179,14 +179,14 @@ class Contract extends CommonDBTM {
 	
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][8].":		</td><td>";
-				dropdownContractTime("duration",$this->fields["duration"]);
+				dropdownInteger("duration",$this->fields["duration"],0,120);
 				echo " ".$LANG["financial"][57];
 				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
 					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]);
 				echo "</td>";
 	
 				echo "<td>".$LANG["financial"][10].":		</td><td>";
-				dropdownContractTime("notice",$this->fields["notice"]);
+				dropdownInteger("notice",$this->fields["notice"],0,120);
 				echo " ".$LANG["financial"][57];
 				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
 					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]-$this->fields["notice"]);
@@ -212,7 +212,7 @@ class Contract extends CommonDBTM {
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][83].":		</td><td>";
-				dropdownContractTime("device_countmax",$this->fields["device_countmax"]);
+				dropdownInteger("device_countmax",$this->fields["device_countmax"],0,200);
 				echo "</td>";
 	
 	

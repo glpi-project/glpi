@@ -329,26 +329,6 @@ function deleteEnterpriseContract($ID){
 }
 
 /**
- * Print a select with contract time options
- *
- * Print a select named $name with contract time options and selected value $value
- *
- *@param $name string : HTML select name
- *@param $value integer : HTML select selected value
- *
- *@return Nothing (display)
- *
- **/
-function dropdownContractTime($name,$value=0){
-	global $LANG;
-
-	echo "<select name='$name'>";
-	for ($i=0;$i<=120;$i+=1)
-		echo "<option value='$i' ".($value==$i?" selected ":"").">$i</option>";	
-	echo "</select>";	
-}
-
-/**
  * Print a select with contract priority
  *
  * Print a select named $name with contract periodicty options and selected value $value
