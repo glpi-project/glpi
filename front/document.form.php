@@ -90,7 +90,7 @@ else if (isset($_POST["additem"])){
 	checkRight("document","w");
 
 	$template=0;
-	if (isset($_POST["is_template"])) $template=1;
+	if (isset($_POST["is_template"])&&$_POST["is_template"]) $template=1;
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item'],$template);
@@ -137,6 +137,10 @@ else
 
 	if ($doc->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
 		switch ($_SESSION['glpi_onglet']){
+			case -1 :
+				showDeviceDocument($tab["ID"]);
+				display_plugin_action(DOCUMENT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+				break;
 			case 10 :
 				showNotesForm($_SERVER['PHP_SELF'],DOCUMENT_TYPE,$tab["ID"]);
 				break;
