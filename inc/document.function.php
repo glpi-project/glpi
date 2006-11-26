@@ -184,66 +184,70 @@ function showDeviceDocument($instID,$search='') {
 	if (!haveRight("document","r"))	return false;
 	$canedit=haveRight("document","w");
 
-	$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
+	$doc=new Document();
+	if ($doc->getFromDB($instID)){
 
-	$result = $DB->query($query);
-	$number = $DB->numrows($result);
-	$i = 0;
-
-	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
-
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='3'>".$LANG["document"][19].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][17]."</th>";
-	echo "<th>".$LANG["common"][16]."</th>";
-	echo "<th>&nbsp;</th></tr>";
-	$ci=new CommonItem();
-	while ($i < $number) {
-		$type=$DB->result($result, $i, "device_type");
-		if (($type!=TRACKING_TYPE&&haveTypeRight($type,"r"))||($type==TRACKING_TYPE&&haveTypeRight($type,"1"))){
-			$column="name";
-			if ($type==TRACKING_TYPE) $column="ID";
-
-			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".$column";
-
-			if ($result_linked=$DB->query($query))
-				if ($DB->numrows($result_linked)){
-					$ci->setType($type);
-					while ($data=$DB->fetch_assoc($result_linked)){
-						$ID="";
-						if ($type==TRACKING_TYPE) $data["name"]=$LANG["job"][38]." ".$data["ID"];
-						if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-						$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
-
-
-						echo "<tr class='tab_bg_1'>";
-						echo "<td align='center'>".$ci->getType()."</td>";
-
-						echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
-						echo "<td align='center' class='tab_bg_2'>";
-						if ($canedit){
-							echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
-						} else echo "&nbsp;";
-						echo "</td></tr>";
+		$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
+		
+		$result = $DB->query($query);
+		$number = $DB->numrows($result);
+		$i = 0;
+	
+		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
+	
+		echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='3'>".$LANG["document"][19].":</th></tr>";
+		echo "<tr><th>".$LANG["common"][17]."</th>";
+		echo "<th>".$LANG["common"][16]."</th>";
+		echo "<th>&nbsp;</th></tr>";
+		$ci=new CommonItem();
+		while ($i < $number) {
+			$type=$DB->result($result, $i, "device_type");
+			if (($type!=TRACKING_TYPE&&haveTypeRight($type,"r"))||($type==TRACKING_TYPE&&haveTypeRight($type,"1"))){
+				$column="name";
+				if ($type==TRACKING_TYPE) $column="ID";
+	
+				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".$column";
+	
+				if ($result_linked=$DB->query($query))
+					if ($DB->numrows($result_linked)){
+						$ci->setType($type);
+						while ($data=$DB->fetch_assoc($result_linked)){
+							$ID="";
+							if ($type==TRACKING_TYPE) $data["name"]=$LANG["job"][38]." ".$data["ID"];
+							if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+	
+	
+							echo "<tr class='tab_bg_1'>";
+							echo "<td align='center'>".$ci->getType()."</td>";
+	
+							echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+							echo "<td align='center' class='tab_bg_2'>";
+							if ($canedit){
+								echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
+							} else echo "&nbsp;";
+							echo "</td></tr>";
+						}
 					}
-				}
+			}
+			$i++;
 		}
-		$i++;
+	
+		if (haveRight("document","w"))	{
+			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+	
+			echo "<input type='hidden' name='conID' value='$instID'>";
+			dropdownAllItems("item",0,0,$doc->fields['FK_entities'],1,1,1,1);
+			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "</td>";
+			echo "<td align='center' class='tab_bg_2'>";
+			echo "</td></tr>";
+		}
+	
+		echo "</table></div>"    ;
+		echo "</form>";
 	}
-
-	if (haveRight("document","w"))	{
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
-
-		echo "<input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",0,0,1,1,1,1);
-		echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-		echo "</td>";
-		echo "<td align='center' class='tab_bg_2'>";
-		echo "</td></tr>";
-	}
-
-	echo "</table></div>"    ;
-	echo "</form>";
 
 }
 
@@ -352,6 +356,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center' colspan='3'>";
+			echo $withtemplate;
 			echo "<input type='hidden' name='is_template' value='$withtemplate'>";
 			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
 			if ($entity){
@@ -369,8 +374,6 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "</tr>";
 		}
 	}
-	if (!empty($withtemplate))
-		echo "<input type='hidden' name='is_template' value='1'>";
 
 	echo "</table></div>"    ;
 	echo "</form>";

@@ -50,6 +50,38 @@ function update0681to07(){
 	$query = "UPDATE glpi_users SET language='pl_PL' WHERE language='po_PO'";
 	$DB->query($query) or die("0.7 update polish lang file ".$LANG["update"][90].$DB->error());
 	
+	// Clean doc association
+	$doc_links=array(COMPUTER_TYPE=>"glpi_computers",
+			NETWORKING_TYPE=>"glpi_networking",
+			PRINTER_TYPE=>"glpi_printers",
+			MONITOR_TYPE=>"glpi_monitors",
+			PERIPHERAL_TYPE=>"glpi_peripherals",
+			SOFTWARE_TYPE=>"glpi_software",
+			PHONE_TYPE=>"glpi_phones",
+			ENTERPRISE_TYPE=>"glpi_enterprises",
+			CARTRIDGE_TYPE=>"glpi_cartridges_type",
+			CONSUMABLE_TYPE=>"glpi_consumables_type",
+			CONTRACT_TYPE=>"glpi_contracts",
+		    );
+
+	foreach ($doc_links as $type => $table) {
+		$query="SELECT glpi_doc_device.ID as linkID, $table.*
+			FROM glpi_doc_device 
+			LEFT JOIN $table ON (glpi_doc_device.FK_device = $table.ID AND glpi_doc_device.device_type='$type') WHERE glpi_doc_device.is_template='1'";
+		$result=$DB->query($query) or die("0.7 search wrong data link doc device $table ".$LANG["update"][90].$DB->error());
+		if ($DB->numrows($result)){
+			while($data=$DB->fetch_array($result)){
+				if (!isset($data['is_template'])||$data['is_template']==0){
+					$query2="UPDATE glpi_doc_device SET is_template='0' WHERE ID='".$data['linkID']."'";
+					$DB->query($query) or die("0.7 update link doc device for $table ".$LANG["update"][90].$DB->error());
+				}
+			}
+		}
+		
+	}
+
+	//// ENTITY MANAGEMENT
+
 
 	if(!TableExists("glpi_entities")) {
 		$query = "CREATE TABLE `glpi_entities` (

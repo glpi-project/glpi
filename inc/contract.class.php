@@ -150,13 +150,14 @@ class Contract extends CommonDBTM {
 
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
-				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][6].":		</td><td >";
-				dropdownValue("glpi_dropdown_contract_type","contract_type",$this->fields["contract_type"]);
-				echo "</td>";
-	
-				echo "<td>".$LANG["common"][16].":		</td><td>";
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td><td>";
 				autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],25);
+				echo "</td>";
+
+				echo "<td>".$LANG["financial"][6].":		</td><td >";
+				dropdownValue("glpi_dropdown_contract_type","contract_type",$this->fields["contract_type"]);
 				echo "</td></tr>";
+	
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][4].":		</td>";
 				echo "<td><input type='text' name='num' value=\"".$this->fields["num"]."\" size='25'></td>";
