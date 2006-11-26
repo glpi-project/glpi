@@ -1405,7 +1405,13 @@ function dropdownActiveEntities($myname){
 	$query = "SELECT * FROM glpi_entities ".getEntitiesRestrictRequest("WHERE","glpi_entities","ID")." ORDER BY completename";
 	$result = $DB->query($query);
 
-	echo "<form method='POST' action=\"".$CFG_GLPI['root_doc']."/front/central.php\">";
+	$link="central.php";
+	if ($_SESSION["glpiactiveprofile"]["interface"]!="central"){
+		$link="helpdesk.public.php";
+	}
+	
+
+	echo "<form method='POST' action=\"".$CFG_GLPI['root_doc']."/front/$link\">";
 	echo "<select onChange='submit()' id='active_entity' name=\"".$myname."\" size='1'>";
 	
 	/*	$outputval=getDropdownName("glpi_entities",$_SESSION['glpiactive_entity']);
