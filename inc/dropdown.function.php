@@ -737,7 +737,6 @@ function dropdownMyDevices($userID=0){
 		if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
 
 		// My items
-		$my_devices.="<optgroup label=\"".$LANG["tracking"][1]."\">";
 		foreach ($CFG_GLPI["linkuser_type"] as $type){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='N' ";
@@ -753,7 +752,9 @@ function dropdownMyDevices($userID=0){
 				}
 			}
 		}
-		$my_devices.="</optgroup>";
+		if (!empty($my_devices)){
+			$my_devices="<optgroup label=\"".$LANG["tracking"][1]."\">".$my_devices."</optgroup>";
+		}
 
 
 		// My group items
@@ -772,7 +773,7 @@ function dropdownMyDevices($userID=0){
 					$group_where.=" FK_groups = '".$data["FK_groups"]."' ";
 				}
 
-				$my_devices.="<optgroup label=\"".$LANG["tracking"][1]." - ".$LANG["common"][35]."\">";
+				$tmp_device="";
 				foreach ($CFG_GLPI["linkuser_type"] as $type){
 					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
@@ -785,14 +786,16 @@ function dropdownMyDevices($userID=0){
 							if (!isset($already_add[$type])) $already_add[$type]=array();
 							while ($data=$DB->fetch_array($result)){
 								if (!in_array($data["ID"],$already_add[$type])){
-									$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+									$tmp_device.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
 									$already_add[$type][]=$data["ID"];
 								}
 							}
 						}
 					}
 				}
-				$my_devices.="</optgroup>";
+				if (!empty($tmp_device)){
+					$my_devices.="<optgroup label=\"".$LANG["tracking"][1]." - ".$LANG["common"][35]."\">".$tmp_device."</optgroup>";
+				}
 			}
 		}
 
@@ -807,7 +810,7 @@ function dropdownMyDevices($userID=0){
 			}
 			$search_computer.=" )";
 
-			$my_devices.="<optgroup label=\"".$LANG["reports"][36]."\">";
+			$tmp_device="";
 			// Direct Connection
 			$types=array(PERIPHERAL_TYPE,MONITOR_TYPE,PRINTER_TYPE,PHONE_TYPE);
 			foreach ($types as $type){
@@ -820,37 +823,41 @@ function dropdownMyDevices($userID=0){
 						$type_name=$ci->getType();
 							while ($data=$DB->fetch_array($result)){
 							if (!in_array($data["ID"],$already_add[$type])){
-								$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+								$tmp_device.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
 								$already_add[$type][]=$data["ID"];
 							}
 						}
 					}
 				}
 			}
-
-			$my_devices.= "</optgroup>";
+			if (!empty($tmp_device)){
+				$my_devices.="<optgroup label=\"".$LANG["reports"][36]."\">".$tmp_device."</optgroup>";
+			}
+				
 			// Software
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 				$query = "SELECT DISTINCT glpi_software.version as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
 				$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." order by glpi_software.name";
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
-					$my_devices.= "<optgroup label=\"".ucfirst($LANG["software"][17])."\">";
+					$tmp_device="";
 					$ci->setType(SOFTWARE_TYPE);
 					$type_name=$ci->getType();
 					if (!isset($already_add[SOFTWARE_TYPE])) $already_add[SOFTWARE_TYPE]=array();
 					while ($data=$DB->fetch_array($result)){
 						if (!in_array($data["ID"],$already_add[SOFTWARE_TYPE])){
-							$my_devices.="<option value='".SOFTWARE_TYPE."_".$data["ID"]."' ".($my_item==SOFTWARE_TYPE."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+							$tmp_device.="<option value='".SOFTWARE_TYPE."_".$data["ID"]."' ".($my_item==SOFTWARE_TYPE."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
 							$already_add[SOFTWARE_TYPE][]=$data["ID"];
 						}
 					}
-					$my_devices.= "</optgroup>";
+					if (!empty($tmp_device)){
+						$my_devices.="<optgroup label=\"".ucfirst($LANG["software"][17])."\">".$tmp_device."</optgroup>";
+					}
 				}
 			}
 		}
 		echo "<div id='tracking_my_devices'>";
-		echo $LANG["tracking"][1].":&nbsp;<select id='_my_items' name='_my_items'><option value=''>--- ".$LANG["help"][30]." ---</option>$my_devices</select></div>";
+		echo $LANG["tracking"][1].":&nbsp;<select id='my_items' name='_my_items'><option value=''>--- ".$LANG["help"][30]." ---</option>$my_devices</select></div>";
 	}
 
 }
@@ -1431,8 +1438,8 @@ function dropdownActiveEntities($myname){
 		}
 	}
 	echo "</select></form>";
-	print_r($_SESSION['glpiactiveentities']); 
-	echo " -> ".$_SESSION['glpiactive_entity'];
+	//print_r($_SESSION['glpiactiveentities']); 
+	//echo " -> ".$_SESSION['glpiactive_entity'];
 }
 
 ?>
