@@ -1815,6 +1815,12 @@ $SEARCH_OPTION[CARTRIDGE_TYPE]['7']['linkfield']='tech_num';
 $SEARCH_OPTION[CARTRIDGE_TYPE]['7']['name']=$LANG["common"][10];
 $SEARCH_OPTION[CARTRIDGE_TYPE]['7']['meta']=0;
 
+$SEARCH_OPTION[CARTRIDGE_TYPE]['8']['table']='glpi_cartridges_type';
+$SEARCH_OPTION[CARTRIDGE_TYPE]['8']['field']='alarm';
+$SEARCH_OPTION[CARTRIDGE_TYPE]['8']['linkfield']='alarm';
+$SEARCH_OPTION[CARTRIDGE_TYPE]['8']['name']=$LANG["cartridges"][38];
+$SEARCH_OPTION[CARTRIDGE_TYPE]['8']['meta']=0;
+
 
 //////TYPEDOC_TYPE
 
@@ -2026,6 +2032,12 @@ $SEARCH_OPTION[CONSUMABLE_TYPE]['7']['field']='name';
 $SEARCH_OPTION[CONSUMABLE_TYPE]['7']['linkfield']='tech_num';
 $SEARCH_OPTION[CONSUMABLE_TYPE]['7']['name']=$LANG["common"][10];
 $SEARCH_OPTION[CONSUMABLE_TYPE]['7']['meta']=0;
+
+$SEARCH_OPTION[CONSUMABLE_TYPE]['8']['table']='glpi_consumables_type';
+$SEARCH_OPTION[CONSUMABLE_TYPE]['8']['field']='alarm';
+$SEARCH_OPTION[CONSUMABLE_TYPE]['8']['linkfield']='alarm';
+$SEARCH_OPTION[CONSUMABLE_TYPE]['8']['name']=$LANG["consumables"][38];
+$SEARCH_OPTION[CONSUMABLE_TYPE]['8']['meta']=0;
 
 
 //////LINK_TYPE
