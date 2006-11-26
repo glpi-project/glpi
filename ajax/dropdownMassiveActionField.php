@@ -55,10 +55,15 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 
 	
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
-		if ($search["table"].".".$search["linkfield"]=="glpi_users.active"){
-			dropdownYesNoInt("active",1);
-		} else 
-			autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
+		switch ($search["table"].".".$search["linkfield"]){
+			case "glpi_cartridges_type.alarm":
+			case "glpi_consumables_type.alarm":
+				dropdownInteger('alarm',0,-1,100);
+				break;
+			default :
+				autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
+				break;
+		}
 	} else { 
 
 		switch ($search["table"]){
