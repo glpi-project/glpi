@@ -1408,7 +1408,7 @@ function dropdownActiveEntities($myname){
 	*/
 	// Manage Root entity
 	if (in_array(0,$_SESSION['glpiactiveentities'])){
-		echo "<option ".($_SESSION['glpiactive_entity']==0?" selected ":"")."value=\"0\" class='tree' >".str_repeat("&nbsp;&nbsp;&nbsp;", $level)."ROOT"."</option>";
+		echo "<option ".($_SESSION['glpiactive_entity']==0?" selected ":"")."value=\"0\" class='tree' >ROOT</option>";
 	}
 
 	if ($DB->numrows($result)) {
