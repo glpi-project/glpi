@@ -163,89 +163,90 @@ function showConnections($target,$ID,$withtemplate='') {
 	$ci=new CommonItem;
 
 	$items=array(PRINTER_TYPE=>$LANG["computers"][39],MONITOR_TYPE=>$LANG["computers"][40],PERIPHERAL_TYPE=>$LANG["computers"][46],PHONE_TYPE=>$LANG["computers"][55]);
+	$comp=new Computer();
+	if ($comp->getFromDB($ID)){
 
-
-	foreach ($items as $type => $title){
-		if (!haveTypeRight($type,"r")) unset($items[$type]);
-
-	}
-	if (count($items)){
-		echo "&nbsp;<div align='center'><table class='tab_cadre_fixe'>";
-
-		echo "<tr><th colspan='".count($items)."'>".$LANG["connect"][0].":</th></tr>";
-
-		echo "<tr>";
-		foreach ($items as $type => $title)
-			echo "<th>".$title.":</th>";
-		echo "</tr>";
-
-		echo "<tr class='tab_bg_1'>";
-
-		foreach ($items as $type=>$title){
-			$canedit=haveTypeRight($type,"w");
-
-			echo "<td align='center'>";
-			$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
-			if ($result=$DB->query($query)) {
-				$resultnum = $DB->numrows($result);
-				if ($resultnum>0) {
-					echo "<table width='100%'>";
-					for ($i=0; $i < $resultnum; $i++) {
-						$tID = $DB->result($result, $i, "end1");
-						$connID = $DB->result($result, $i, "ID");
-						$ci->getFromDB($type,$tID);
-
-						echo "<tr ".($ci->obj->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
-						echo "<td align='center'><b>";
-						echo $ci->getLink();
-						echo "</b>";
-						if ($state->getfromDB($type,$tID))
-							echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
-
-						echo "</td>";
-						if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
-							echo "<td align='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
-							echo $LANG["buttons"][10];
-							echo "</b></a></td>";
-						}
-						echo "</tr>";
-					}
-					echo "</table>";
-				} else {
-					switch ($type){
-						case PRINTER_TYPE:
-							echo $LANG["computers"][38];
-							break;
-						case MONITOR_TYPE:
-							echo $LANG["computers"][37];
-							break;
-						case PERIPHERAL_TYPE:
-							echo $LANG["computers"][47];
-							break;
-						case PHONE_TYPE:
-							echo $LANG["computers"][54];
-							break;
-					}
-					echo "<br>";
-				}
-				if ($canedit)
-					if(empty($withtemplate) || $withtemplate != 2) {
-						echo "<form method='post' action=\"$target\">";
-						echo "<input type='hidden' name='connect' value='connect'>";
-						echo "<input type='hidden' name='cID' value='$ID'>";
-						echo "<input type='hidden' name='device_type' value='".$type."'>";
-						dropdownConnect($type,COMPUTER_TYPE,"item",$withtemplate);
-						echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
-						echo "</form>";
-					}
-			}
-			echo "</td>";
+		foreach ($items as $type => $title){
+			if (!haveTypeRight($type,"r")) unset($items[$type]);
+	
 		}
-
-		echo "</tr>";
-		echo "</table></div><br>";
+		if (count($items)){
+			echo "&nbsp;<div align='center'><table class='tab_cadre_fixe'>";
+	
+			echo "<tr><th colspan='".count($items)."'>".$LANG["connect"][0].":</th></tr>";
+	
+			echo "<tr>";
+			foreach ($items as $type => $title)
+				echo "<th>".$title.":</th>";
+			echo "</tr>";
+	
+			echo "<tr class='tab_bg_1'>";
+	
+			foreach ($items as $type=>$title){
+				$canedit=haveTypeRight($type,"w");
+	
+				echo "<td align='center'>";
+				$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
+				if ($result=$DB->query($query)) {
+					$resultnum = $DB->numrows($result);
+					if ($resultnum>0) {
+						echo "<table width='100%'>";
+						for ($i=0; $i < $resultnum; $i++) {
+							$tID = $DB->result($result, $i, "end1");
+							$connID = $DB->result($result, $i, "ID");
+							$ci->getFromDB($type,$tID);
+	
+							echo "<tr ".($ci->obj->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
+							echo "<td align='center'><b>";
+							echo $ci->getLink();
+							echo "</b>";
+							if ($state->getfromDB($type,$tID))
+								echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
+	
+							echo "</td>";
+							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
+								echo "<td align='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
+								echo $LANG["buttons"][10];
+								echo "</b></a></td>";
+							}
+							echo "</tr>";
+						}
+						echo "</table>";
+					} else {
+						switch ($type){
+							case PRINTER_TYPE:
+								echo $LANG["computers"][38];
+								break;
+							case MONITOR_TYPE:
+								echo $LANG["computers"][37];
+								break;
+							case PERIPHERAL_TYPE:
+								echo $LANG["computers"][47];
+								break;
+							case PHONE_TYPE:
+								echo $LANG["computers"][54];
+								break;
+						}
+						echo "<br>";
+					}
+					if ($canedit)
+						if(empty($withtemplate) || $withtemplate != 2) {
+							echo "<form method='post' action=\"$target\">";
+							echo "<input type='hidden' name='connect' value='connect'>";
+							echo "<input type='hidden' name='cID' value='$ID'>";
+							echo "<input type='hidden' name='device_type' value='".$type."'>";
+							dropdownConnect($type,COMPUTER_TYPE,"item",$comp->fields["FK_entities"],$withtemplate);
+							echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
+							echo "</form>";
+						}
+				}
+				echo "</td>";
+			}
+	
+			echo "</tr>";
+			echo "</table></div><br>";
+		}
 	}
-
 }
 
 

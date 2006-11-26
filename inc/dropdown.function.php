@@ -941,9 +941,10 @@ function dropdownTrackingAllDevices($myname,$value){
  * @param $fromtype from where the connection is
  * @param $myname select name
  * @param $onlyglobal display only global devices (used for templates)
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
+function dropdownConnect($type,$fromtype,$myname,$entity_restrict=0,$onlyglobal=0) {
 
 
 	global $CFG_GLPI;
@@ -968,7 +969,7 @@ function dropdownConnect($type,$fromtype,$myname,$onlyglobal=0) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&fromtype=$fromtype&idtable=$type&myname=$myname&onlyglobal=$onlyglobal'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&fromtype=$fromtype&idtable=$type&myname=$myname&onlyglobal=$onlyglobal&entity_restrict=$entity_restrict'\n";
 	echo "})})\n";
 	echo "</script>\n";
 

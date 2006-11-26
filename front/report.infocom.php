@@ -78,9 +78,11 @@ $valeurgraphtot=array();
 
 
 function display_infocoms_report($device_type,$begin,$end){
-	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI;
+	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
-	$query="SELECT * FROM glpi_infocoms WHERE device_type='".$device_type."'";
+	$query="SELECT * FROM glpi_infocoms 
+		INNER JOIN ".$LINK_ID_TABLE[$device_type]." ON (".$LINK_ID_TABLE[$device_type].".ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$device_type."')
+		WHERE ".$LINK_ID_TABLE[$device_type].".is_template='0' ";
 
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
 	if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
@@ -104,41 +106,35 @@ function display_infocoms_report($device_type,$begin,$end){
 
 		while ($line=$DB->fetch_array($result)){
 
-			$comp->getFromDB($device_type,$line["FK_device"]);
-
-			if (isset($comp->obj->fields["is_template"])&&$comp->obj->fields["is_template"]==0){
-
-				if (isset($comp->obj->fields["is_global"])&&$comp->obj->fields["is_global"]){
-
-					$line["value"]*=getNumberConnections($device_type,$line["FK_device"]);
-				}
-
-				if ($line["value"]>0) $valeursoustot+=$line["value"];	
-
-				$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"n");
-				$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"all");
-
-				if (is_array($tmp)&&count($tmp)>0)
-					foreach ($tmp["annee"] as $key => $val){
-						if ($tmp["vcnetfin"][$key]>0){
-							if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
-							$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
-						}
-					}
-				if ($line["buy_date"]!="0000-00-00"){
-					$year=substr($line["buy_date"],0,4);
-					if ($line["value"]>0){
-						if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;
-						$valeurgraph[$year]+=$line["value"];
-					}
-				}
-
-
-				$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
-
-				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td style='text-align:right'>".number_format($line["value"],2,"."," ")."</td><td style='text-align:right'>".number_format($valeurnette,2,"."," ")."</td><td style='text-align:right'>".showTco($device_type,$line["FK_device"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
-
+			if (isset($line["is_global"])&&$line["is_global"]){
+				$line["value"]*=getNumberConnections($device_type,$line["FK_device"]);
 			}
+
+			if ($line["value"]>0) $valeursoustot+=$line["value"];	
+
+			$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"n");
+			$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"all");
+
+			if (is_array($tmp)&&count($tmp)>0)
+				foreach ($tmp["annee"] as $key => $val){
+					if ($tmp["vcnetfin"][$key]>0){
+						if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
+						$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
+					}
+				}
+			if ($line["buy_date"]!="0000-00-00"){
+				$year=substr($line["buy_date"],0,4);
+				if ($line["value"]>0){
+					if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;
+					$valeurgraph[$year]+=$line["value"];
+				}
+			}
+
+
+			$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
+
+			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td><td style='text-align:right'>".number_format($line["value"],2,"."," ")."</td><td style='text-align:right'>".number_format($valeurnette,2,"."," ")."</td><td style='text-align:right'>".showTco($device_type,$line["FK_device"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+
 
 		}	
 
