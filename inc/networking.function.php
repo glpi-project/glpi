@@ -230,15 +230,10 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 		echo "<input type='hidden' name='several' value='yes'>";
 		echo "<input type='hidden' name='logical_number' value=''>";
 		echo "<td>";
-		echo $LANG["networking"][47].":<select name='from_logical_number'>";
-		for ($i=0;$i<100;$i++)
-			echo "<option value='$i'>$i</option>";
-		echo "</select>";
-		echo $LANG["networking"][48].":<select name='to_logical_number'>";
-		for ($i=0;$i<100;$i++)
-			echo "<option value='$i'>$i</option>";
-		echo "</select>";
-
+		echo $LANG["networking"][47].":&nbsp;";
+		dropdownInteger('from_logical_number',0,0,100);
+		echo $LANG["networking"][48].":&nbsp;";
+		dropdownInteger('to_logical_number',0,0,100);
 		echo "</td></tr>";
 	}
 

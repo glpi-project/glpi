@@ -246,13 +246,9 @@ function showFormDropDown ($target,$tablename,$human,$ID,$value2='') {
 		dropdownValue("glpi_dropdown_locations", "value2",$value2,0,$entity_restict);
 		echo $LANG["networking"][52].": ";
 		echo "<input type='text' maxlength='100' size='5' name='before'>";
-		echo "<select name='from'>";
-		for ($i=0;$i<400;$i++) echo "<option value='$i'>$i</option>";
-		echo "</select>";
+		dropdownInteger('from',0,0,400);
 		echo "-->";
-		echo "<select name='to'>";
-		for ($i=0;$i<400;$i++) echo "<option value='$i'>$i</option>";
-		echo "</select>";
+		dropdownInteger('to',0,0,400);
 
 		echo "<input type='text' maxlength='100' size='5' name='after'><br>";	
 		echo "<textarea rows='2' cols='50' name='comments' title='".$LANG["common"][25]."'></textarea>";
@@ -667,10 +663,9 @@ function showFormConfigGen($target){
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$LANG["setup"][10]."</strong></td></tr>";
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][115]."</td><td><select name='cartridges_alarm'>";
-	for ($i=-1;$i<=100;$i++)
-		echo "<option value='$i' ".($i==$CFG_GLPI["cartridges_alarm"]?" selected ":"").">$i</option>";
-	echo "</select></td>";
+	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][115]."</td><td>";
+	dropdownInteger('cartridges_alarm',$CFG_GLPI["cartridges_alarm"],-1,100);
+	echo "</td>";
 
 	echo "<td align='center'>".$LANG["setup"][221]."</td><td>";
 	showCalendarForm("form","date_fiscale",$CFG_GLPI["date_fiscale"],0);	
@@ -750,12 +745,8 @@ function showFormConfigDisplay($target){
 	echo "<td align='center'>".$LANG["setup"][111]."</td><td> <input type=\"text\" name=\"list_limit\" value=\"". $cfg->fields["list_limit"] ."\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][112]."</td><td><input type=\"text\" name=\"cut\" value=\"". $CFG_GLPI["cut"] ."\"></td>";
 
-	$dp_limit=$CFG_GLPI["dropdown_limit"];
 	echo "<td align='center'>".$LANG["setup"][131]."</td><td>";
-	echo "<select name='dropdown_limit'>";
-	for ($i=20;$i<=100;$i++) echo "<option value='$i'".($dp_limit==$i?" selected ":"").">$i</option>";
-	echo "</select>";	
-
+	dropdownInteger('dropdown_limit',$CFG_GLPI["dropdown_limit"],20,100);
 	echo "</td></tr>";
 
 
@@ -781,14 +772,9 @@ function showFormConfigDisplay($target){
 	$plan_begin=split(":",$CFG_GLPI["planning_begin"]);
 	$plan_end=split(":",$CFG_GLPI["planning_end"]);
 	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][223]."</td><td>";
-	echo "<select name='planning_begin'>";
-	for ($i=0;$i<=24;$i++) echo "<option value='$i'".($plan_begin[0]==$i?" selected ":"").">$i</option>";
-	echo "</select>";
+	dropdownInteger('planning_begin',$plan_begin[0],0,24);
 	echo "&nbsp;->&nbsp;";
-	echo "<select name='planning_end'>";
-	for ($i=0;$i<=24;$i++) echo "<option value='$i' ".($plan_end[0]==$i?" selected ":"").">$i</option>";
-	echo "</select>";
-
+	dropdownInteger('planning_end',$plan_end[0],0,24);
 
 	echo "</td><td align='center'>".$LANG["setup"][148]."</td><td>";
 	echo "<select name='time_step'>";
@@ -839,17 +825,11 @@ function showFormConfigDisplay($target){
 	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][121]."</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"". $CFG_GLPI["ajax_wildcard"] ."\"></td>";
 
 	echo "<td align='center'>".$LANG["setup"][122]."</td><td>";
-	echo "<select name='dropdown_max'>";
-	$dropdown_max=$CFG_GLPI["dropdown_max"];
-	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($dropdown_max==$i?" selected ":"").">$i</option>";
-	echo "</select>";
+	dropdownInteger('dropdown_max',$CFG_GLPI["dropdown_max"],0,200);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][123]."</td><td>";
-	echo "<select name='ajax_limit_count'>";
-	$ajax_limit_count=$CFG_GLPI["ajax_limit_count"];
-	for ($i=0;$i<=200;$i++) echo "<option value='$i'".($ajax_limit_count==$i?" selected ":"").">$i</option>";
-	echo "</select>";
+	dropdownInteger('ajax_limit_count',$CFG_GLPI["ajax_limit_count"],0,200);
 	echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
 
@@ -1442,12 +1422,7 @@ function ocsFormConfig($target, $id) {
 	echo "</td></tr>";
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["ocsconfig"][40]." </td><td>";
-	echo "<select name='cron_sync_number'>";
-	for ($i=0;$i<100;$i++){
-		echo "<option value='$i' ".($i==$data["cron_sync_number"]?" selected":"").">$i</option>";
-	}
-	echo "</select>";
-
+	dropdownInteger('cron_sync_number',$data["cron_sync_number"],0,100);
 	echo "</td></tr>";
 
 	echo "</table></div>";

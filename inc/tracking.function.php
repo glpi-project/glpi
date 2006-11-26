@@ -729,21 +729,17 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td align='center'>";
 		echo $LANG["job"][20].":</td>";
-		echo "<td align='center' colspan='3'><select name='hour'>";
-		for ($i=0;$i<100;$i++){
-			$selected="";
-			if (isset($_POST["hour"])&&$_POST["hour"]==$i) $selected="selected";
-			echo "<option value='$i' $selected>$i</option>";
-		}			
+		echo "<td align='center' colspan='3'>";
+		$hour=0;
+		if (isset($_POST["hour"])) $hour=$_POST["hour"];
+		dropdownInteger('hour',$hour,0,100);
 
-		echo "</select>".$LANG["job"][21]."&nbsp;&nbsp;";
-		echo "<select name='minute'>";
-		for ($i=0;$i<60;$i++){
-			$selected="";
-			if (isset($_POST["minute"])&&$_POST["minute"]==$i) $selected="selected";
-			echo "<option value='$i' $selected>$i</option>";
-		}
-		echo "</select>".$LANG["job"][22]."&nbsp;&nbsp;";
+		echo $LANG["job"][21]."&nbsp;&nbsp;";
+		$min=0;
+		if (isset($_POST["minute"])) $min=$_POST["minute"];
+		dropdownInteger('minute',$min,0,59);
+
+		echo $LANG["job"][22]."&nbsp;&nbsp;";
 		echo "</td></tr>";
 	}
 
@@ -2019,19 +2015,10 @@ function showAddFollowupForm($tID){
 		echo "</tr>";
 
 		echo "<tr><td>".$LANG["job"][31].":</td><td>";
-
-		echo "<select name='hour'>";
-		for ($i=0;$i<100;$i++){
-			echo "<option value='$i' ";
-			echo " >$i</option>";
-		}
-		echo "</select>".$LANG["job"][21]."&nbsp;&nbsp;";
-		echo "<select name='minute'>";
-		for ($i=0;$i<60;$i++){
-			echo "<option value='$i' ";
-			echo " >$i</option>";
-		}
-		echo "</select>".$LANG["job"][22];
+		dropdownInteger('hour',0,0,100);
+		echo $LANG["job"][21]."&nbsp;&nbsp;";
+		dropdownInteger('minute',0,0,59);
+		echo $LANG["job"][22];
 		echo "</tr>";
 
 		if (haveRight("show_planning","1")){
@@ -2136,20 +2123,10 @@ function showUpdateFollowupForm($ID){
 
 		if ($commentall){
 
-			echo "<select name='hour'>";
-			for ($i=0;$i<100;$i++){
-				echo "<option value='$i' ";
-				if ($hour==$i) echo "selected";
-				echo " >$i</option>";
-			}
-			echo "</select>".$LANG["job"][21]."&nbsp;&nbsp;";
-			echo "<select name='minute'>";
-			for ($i=0;$i<60;$i++){
-				echo "<option value='$i' ";
-				if ($minute==$i) echo "selected";
-				echo " >$i</option>";
-			}
-			echo "</select>".$LANG["job"][22];
+			dropdownInteger('hour',$hour,0,100);
+			echo $LANG["job"][21]."&nbsp;&nbsp;";
+			dropdownInteger('minute',$minute,0,59);
+			echo $LANG["job"][22];
 		} else {
 			echo $hour." ".$LANG["job"][21]." ".$minute." ".$LANG["job"][22];
 

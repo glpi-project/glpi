@@ -167,9 +167,9 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		else echo "<option class='tree' value=\"0\">-----</option>";
 
 		$outputval=getDropdownName($_POST['table'],$_POST['value']);
-/*		if (!empty($outputval)&&$outputval!="&nbsp;")
+		if (!empty($outputval)&&$outputval!="&nbsp;")
 			echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
-*/
+
 		if ($DB->numrows($result)) {
 			while ($data =$DB->fetch_array($result)) {
 
@@ -189,7 +189,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 				$addcomment="";
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
-				echo "<option ".($ID==$_POST["value"]?" selected ":"")." value=\"$ID\" $style title=\"".$data['completename']."$addcomment\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,$_POST["limit"])."</option>";
+				echo "<option value=\"$ID\" $style title=\"".$data['completename']."$addcomment\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,$_POST["limit"])."</option>";
 			}
 
 		}

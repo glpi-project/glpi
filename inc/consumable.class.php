@@ -180,10 +180,9 @@ class ConsumableType extends CommonDBTM {
 				dropdownValue("glpi_dropdown_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
-				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][38].":</td><td colspan='2'><select name='alarm'>\n";
-				for ($i=-1;$i<=100;$i++)
-					echo "<option value='$i' ".($i==$this->fields["alarm"]?" selected ":"").">$i</option>";
-				echo "</select></td></tr>\n";
+				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][38].":</td><td colspan='2'>";
+				dropdownInteger('alarm',$this->fields["alarm"],-1,100);
+				echo "</td></tr>\n";
 	
 	
 				echo "<tr class='tab_bg_1'><td valign='top'>\n";

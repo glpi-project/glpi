@@ -1367,6 +1367,17 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 
 }
 
+
+function dropdownInteger($myname,$value,$min=0,$max=100,$step=1){
+
+	echo "<select name='$myname'>\n";
+	for ($i=$min;$i<=$max;$i+=$step){
+		echo "<option value='$i' ".($i==$value?" selected ":"").">$i</option>";
+	}
+	echo "</select>";
+
+}
+
 function dropdownLanguages($myname,$value){
 	global $CFG_GLPI;
 	echo "<select name='$myname'>";

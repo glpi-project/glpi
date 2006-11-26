@@ -107,7 +107,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][15].":	</td><td>";
 			if ($withtemplate==2)
 				echo $ic->fields["warranty_duration"];
-			else dropdownContractTime("warranty_duration",$ic->fields["warranty_duration"]);
+			else dropdownInteger("warranty_duration",$ic->fields["warranty_duration"],0,120);
 			echo " ".$LANG["financial"][57];
 			echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG["financial"][88];
 			echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
@@ -163,7 +163,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][23].":		</td><td>";
 			if ($withtemplate==2)
 				echo $ic->fields["amort_time"];
-			else dropdownDuration("amort_time",$ic->fields["amort_time"]);
+			else dropdownInteger("amort_time",$ic->fields["amort_time"],0,15);
 			echo " ".$LANG["financial"][9];
 			echo "</td>";
 
@@ -223,17 +223,6 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 }
 
 
-
-
-
-function dropdownDuration($name,$value=0){
-	global $LANG;
-
-	echo "<select name='$name'>";
-	for ($i=0;$i<=10;$i+=1)
-		echo "<option value='$i' ".($value==$i?" selected ":"").">$i</option>";	
-	echo "</select>";	
-}
 
 function dropdownAmortType($name,$value=0){
 	global $LANG;

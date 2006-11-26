@@ -63,10 +63,9 @@ function showCartridgesAdd($ID) {
 	echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "<input type='hidden' name='tID' value=\"$ID\">\n";
 
-	echo "&nbsp;&nbsp;<select name='to_add'>";
-	for ($i=1;$i<100;$i++)
-		echo "<option value='$i'>$i</option>";
-	echo "</select>&nbsp;&nbsp;";
+	echo "&nbsp;&nbsp;";
+	dropdownInteger('to_add',1,1,100);
+	echo "&nbsp;&nbsp;";
 	echo $LANG["cartridges"][16];
 	echo "</td></tr>";
 	echo "</table></div>";
