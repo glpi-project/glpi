@@ -104,9 +104,9 @@ function display_infocoms_report($device_type,$begin,$end){
 
 		while ($line=$DB->fetch_array($result)){
 
-			$comp->getFromDB($device_type,$line["FK_device"]);
 
 			if ($device_type==LICENSE_TYPE&&$comp->obj->fields["serial"]=="global"){
+				$comp->getFromDB($device_type,$line["FK_device"]);
 				$line["value"]*=getInstallionsForLicense($line["FK_device"]);
 			}
 			if ($line["value"]>0) $valeursoustot+=$line["value"];	
@@ -180,14 +180,14 @@ function display_infocoms_report($device_type,$begin,$end){
 	}
 }
 
-echo "<table>";
-echo "<tr><td>";
-display_infocoms_report(LICENSE_TYPE,$_POST["date1"],$_POST["date2"]);
-echo "</td><td valign='top'>";
+echo "<table width='90%'>";
+echo "<tr><td align='center' valign='top'>";
+display_infocoms_report(CONSUMABLE_ITEM_TYPE,$_POST["date1"],$_POST["date2"]);
+echo "</td><td  align='center' valign='top'>";
 display_infocoms_report(CARTRIDGE_ITEM_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";
 echo "<tr><td>";
-display_infocoms_report(CONSUMABLE_ITEM_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report(LICENSE_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td><td valign='top'>&nbsp;";
 
 echo "</td></tr>";

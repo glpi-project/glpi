@@ -105,7 +105,7 @@ class DBmysql {
 				$SQL_TOTAL_TIMER+=$TIME;
 			}
 			if ($CFG_GLPI["debug_sql"]){
-				$DEBUG_SQL_STRING.="<tr>";
+				$DEBUG_SQL_STRING.="</tr>";
 			}
 		}
 
