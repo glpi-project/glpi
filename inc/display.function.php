@@ -466,19 +466,10 @@ function helpHeader($title,$url) {
 	echo "<tr>";
 
 	// Logo with link to command center
-	echo "<td align='center' width='20%'>\n";
+	echo "<td align='center' width='10%'>\n";
 	echo "<a class='icon_logo' style='background: transparent' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\">";
 	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/logo-glpi.png\"  alt=\"".$CFG_GLPI["logotxt"]."\" title=\"".$LANG["central"][5]."\" >";
 	echo "</a>";
-
-	echo "<div style='text-align:center;'><p class='nav_horl'><b>";
-	echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.my.php'>";
-	if (!empty($_SESSION["glpirealname"])) {
-		echo $_SESSION["glpirealname"];
-		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<30) echo " ".$_SESSION["glpifirstname"];
-	}
-	else echo $_SESSION["glpiname"];
-	echo "</a></b></p></div>";
 	echo "</td>";
 
 	echo "<td valign='middle'>";
@@ -487,6 +478,13 @@ function helpHeader($title,$url) {
 
 	// Just give him a language selector
 	echo "<td width='30%' align='center'>";
+	echo "<p class='nav_horl'><a href='".$CFG_GLPI["root_doc"]."/front/user.form.my.php'>";
+	if (!empty($_SESSION["glpirealname"])) {
+		echo $_SESSION["glpirealname"];
+		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<30) echo " ".$_SESSION["glpifirstname"];
+	}
+	else echo $_SESSION["glpiname"];
+	echo "</a></p>";
 	showProfileSelecter();
 	echo "</td>";
 
@@ -895,9 +893,6 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$query = "SELECT email,realname,firstname,name FROM glpi_users WHERE (ID = '$ID')";
 	$result=$DB->query($query);
 	$email = $DB->result($result,0,"email");
-	$realname = $DB->result($result,0,"realname");
-	$firstname = $DB->result($result,0,"firstname");
-	$name = $DB->result($result,0,"name");
 
 	// Get saved data from a back system
 	$emailupdates = 'yes';
@@ -927,9 +922,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 	echo "<div align='center'><table  class='tab_cadre'>";
 
-	if ($realname!='') $name=$realname." ".$firstname;
-
-	echo "<tr><th colspan='2'>".$LANG["help"][0]." $name, ".$LANG["help"][1].":</th></tr>";
+	echo "<tr><th colspan='2'>".$LANG["help"][1].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$LANG["help"][2].": </td>";
 	echo "<td>";
