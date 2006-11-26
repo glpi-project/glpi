@@ -1214,15 +1214,20 @@ function displayProgressBar($width,$percent){
 }
 
 function printCleanArray($tab,$pad=0){
-	foreach($tab as $key => $val){
-		for ($i=0;$i<$pad*20;$i++)
-			echo "&nbsp;";
-		echo $key." => ";
-		if (is_array($val)){
-			echo "Array<br>";
-			printCleanArray($val,$pad+1);
+	if (count($tab)){
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
+		foreach($tab as $key => $val){
+			echo "<tr class='tab_bg_1'><td valign='top' align='right'>";
+			echo $key;
+			echo "</td><td valign='top'>=></td><td valign='top'  class='tab_bg_1'>";
+			if (is_array($val)){
+				printCleanArray($val,$pad+1);
+			}
+			else echo $val;
+			echo "</td></tr>";
 		}
-		else echo $val."<br>";
+		echo "</table>";
 	}
 }
 
