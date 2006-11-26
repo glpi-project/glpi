@@ -470,6 +470,7 @@ function helpHeader($title,$url) {
 	echo "<a class='icon_logo' style='background: transparent' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\">";
 	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/logo-glpi.png\"  alt=\"".$CFG_GLPI["logotxt"]."\" title=\"".$LANG["central"][5]."\" >";
 	echo "</a>";
+
 	echo "<div style='text-align:center;'><p class='nav_horl'><b>";
 	echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.my.php'>";
 	if (!empty($_SESSION["glpirealname"])) {
@@ -485,7 +486,7 @@ function helpHeader($title,$url) {
 	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
 
 	// Just give him a language selector
-	echo "<td width='50%' align='center'>";
+	echo "<td width='30%' align='center'>";
 	showProfileSelecter();
 	echo "</td>";
 
@@ -517,13 +518,16 @@ function helpHeader($title,$url) {
 	echo "</td>";
 	// On the right side of the navigation bar, we have a clock with
 	// date, help and a logout-link.
-	echo "<td align='right' ><div align='right'>";
+	echo "<td align='center'  width='10%'>";
 	// HELP	
 	echo "<a class='icon_nav_move'  href='#'
-		onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$LANG["central"][7]."\"></a>";
-
-	echo "<p>".date("H").":".date("i")."<br><i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y");
-	echo "</i></p><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/logout.php\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/logout.png\" alt=\"".$LANG["central"][6]."\" title=\"".$LANG["central"][6]."\"></a></div></td>";
+		onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$LANG["central"][7]."\"></a><br>";
+		echo "<span class='menu_title'>-&nbsp;".$LANG["central"][7]."&nbsp;-</span>";
+	echo "</td>";
+	echo "<td align='center' width='10%'> ";
+	echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/logout.php\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/logout.png\" alt=\"".$LANG["central"][6]."\" title=\"".$LANG["central"][6]."\"></a><br>";
+	echo "<span class='menu_title'>-&nbsp;".$LANG["central"][6]."&nbsp;-</span>";
+	echo "</td>";
 
 	// End navigation bar
 
@@ -756,7 +760,7 @@ function commonFooter() {
 	if (!empty($CFG_GLPI["founded_new_version"]))
 		echo "<td align='center' class='copyright'>".$LANG["setup"][301]." ".$CFG_GLPI["founded_new_version"]."<br>".$LANG["setup"][302]."</td>";
 	echo "<td class='copyright'>";
-	echo date("H").":".date("i")."&nbsp;<i>".date("j.")."&nbsp;".date("M")."&nbsp;".date("Y")."</i>";
+	echo date("H:i")."&nbsp;-&nbsp;<i>".date("j. M Y")."</i>";
 	echo "</td>";
 
 	echo "<td align='right'>";
@@ -841,10 +845,13 @@ function helpFooter() {
 	if ($FOOTER_LOADED) return;
 	$FOOTER_LOADED=true;
 
-	echo "<div id='footer'><div align='right'>";
+	echo "<div id='footer'>";
+	echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
+	echo date("H:i")."&nbsp;-&nbsp;<i>".date("j. M Y")."</i></span>";
+	echo "</td><td align='right'>";
 	echo "<a href=\"http://glpi-project.org/\">";
 	echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
-	echo "</a></div>";
+	echo "</a></tr></table>";
 	echo "</div>";
 
 	echo "</body></html>";
