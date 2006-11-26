@@ -40,6 +40,13 @@ $NEEDED_ITEMS=array("user","tracking","reservation","document","knowbase","compu
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+// Manage entity change
+if (isset($_POST["activeentity"])){
+	if (in_array($_POST["activeentity"],$_SESSION["glpiactiveentities"])){
+		$_SESSION["glpiactive_entity"]=$_POST["activeentity"];
+		$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
+	}
+}
 
 // Redirect management
 if (isset($_GET['redirect'])){
