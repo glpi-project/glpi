@@ -318,7 +318,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		echo "<td align='center'  width='100px'>".getDocumentLink($data["filename"])."</td>";
 
 		echo "<td align='center'>";
-		if (!empty($con->fields["link"]))
+		if (!empty($data["link"]))
 			echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
 		else echo "&nbsp;";
 		echo "</td>";
