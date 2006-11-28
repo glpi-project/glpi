@@ -356,7 +356,6 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center' colspan='3'>";
-			echo $withtemplate;
 			echo "<input type='hidden' name='is_template' value='$withtemplate'>";
 			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
 			if ($entity){
