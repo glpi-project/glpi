@@ -41,9 +41,10 @@ include ($phproot."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkTypeRight($_POST["type"],"w");
+if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 
-if (isset($_POST["action"])){
+	checkTypeRight($_POST["type"],"w");
+
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
 	echo "<input type='hidden' name='device_type' value='".$_POST["type"]."'>";
 	switch($_POST["action"]){
