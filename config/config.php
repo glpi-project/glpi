@@ -159,7 +159,7 @@
 				if(!empty($CFG_GLPI["ldap_host"])){
 					$CFG_GLPI["ldap_basedn"] = utf8_decode(strtolower($CFG_GLPI["ldap_basedn"]));
 					$CFG_GLPI["ldap_rootdn"] = utf8_decode(strtolower($CFG_GLPI["ldap_rootdn"]));
-					$CFG_GLPI["ldap_pass"] = utf8_decode(strtolower($CFG_GLPI["ldap_pass"]));
+					$CFG_GLPI["ldap_pass"] = utf8_decode($CFG_GLPI["ldap_pass"]);
 		
 					//// AJOUTER CA DANS LA CONFIG POST INSTALL
 					$CFG_GLPI['ldap_fields'] = array( "name" => strtolower($CFG_GLPI['ldap_login']), 
