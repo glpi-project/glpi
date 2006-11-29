@@ -183,16 +183,18 @@ function addTracking($type,$ID,$ID_entity){
 		$tID=$DB->insert_id();
 		// Add followups
 		$i=0;
+		$fID=0;
 		while (mt_rand(0,100)<$percent['followups']){
 			$query="INSERT INTO glpi_followups VALUES (NULL,'$tID','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[1]."','followup $i ".GetRandomString(15)."','0','".mt_rand(0,3)."');";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$fID=$DB->insert_id();
 			$i++;
-			if ($status=="plan"){
-				$query="INSERT INTO glpi_tracking_planning VALUES (NULL,'$fID','".$users[1]."','".date("Y-m-d H:i:s",$date3)."','".date("Y-m-d H:i:s",$date4)."');";
-				$DB->query($query) or die("PB REQUETE ".$query);
-			}
 		}
+		if ($status=="plan"&&$fID){
+			$query="INSERT INTO glpi_tracking_planning VALUES (NULL,'$fID','".$users[1]."','".date("Y-m-d H:i:s",$date3)."','".date("Y-m-d H:i:s",$date4)."');";
+			$DB->query($query) or die("PB REQUETE ".$query);
+		}
+
 	}
 }
 
