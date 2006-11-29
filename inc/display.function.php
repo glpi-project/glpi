@@ -1371,7 +1371,7 @@ function showProfileSelecter(){
 		echo '</form>';
 
 
-	} else echo "only one profile -> no select to print";
+	} //else echo "only one profile -> no select to print";
 	
 	if (count($_SESSION['glpiactiveentities'])>1){
 		echo "<br>Working entity :";
@@ -1380,7 +1380,7 @@ function showProfileSelecter(){
 		echo $val."-";
 	}
 */
-	} else echo "only one entity -> no select to print";
+	} //else echo "only one entity -> no select to print";
 
 
 } 

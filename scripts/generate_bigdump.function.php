@@ -157,12 +157,17 @@ function addTracking($type,$ID,$ID_entity){
 		} else {
 			$date1=strtotime("$current_year-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));	
 			$date2="";
-			$status="new";
+			if (mt_rand(0,100)<10)
+				$status="new";
+			else $status="assign";
 		}
 		// Author
 		$users[0]=mt_rand($FIRST['users_normal'],$LAST['users_postonly']);
 		// Assign user
-		$users[1]=mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
+		$users[1]=0;
+		if ($status!="new"){
+			$users[1]=mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
+		}
 		$enterprise=0;
 		if (mt_rand(0,100)<20)
 			$enterprise=mt_rand(1,$MAX['enterprises']);
