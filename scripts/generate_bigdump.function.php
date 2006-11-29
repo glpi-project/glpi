@@ -151,7 +151,7 @@ function addTracking($type,$ID,$ID_entity){
 		// tracking closed ?
 		$status="old";
 		if (mt_rand(0,100)<$percent['closed_tracking']){
-			$date1=strtotime(mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
+			$date1=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));
 			$date2=$date1+mt_rand(10800,7776000); // + entre 3 heures et 3 mois
 			$status="old_done";
 		} else {
@@ -748,7 +748,7 @@ function generate_entity($ID_entity){
 	// Ajout contracts
 	$FIRST["contract"]=getMaxItem("glpi_contracts")+1;
 	for ($i=0;$i<$MAX['contract'];$i++){
-		$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);;
+		$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);;
 	
 		$query="INSERT INTO glpi_contracts VALUES (NULL,'$ID_entity','contract $i-$ID_entity','num $i','".mt_rand(100,10000)."','".mt_rand(1,$MAX_CONTRACT_TYPE)."','$date','".mt_rand(1,36)."','".mt_rand(1,3)."','".mt_rand(1,36)."','".mt_rand(1,36)."','".mt_rand(1,6)."','comment $i','compta num $i','N','08:00:00','19:00:00','09:00:00','16:00:00','Y','00:00:00','00:00:00','N','0','notes contract $i','0','1')";
 		$DB->query($query) or die("PB REQUETE ".$query);
@@ -788,14 +788,14 @@ function generate_entity($ID_entity){
 		addDocuments(CONSUMABLE_TYPE,$consID);
 	
 		// AJOUT INFOCOMS
-		$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+		$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 		$query="INSERT INTO glpi_infocoms VALUES (NULL,'$consID','".CONSUMABLE_TYPE."','$date','$date','".mt_rand(12,36)."','infowar constype $consID','".mt_rand(1,$MAX['manufacturer'])."','commande constype $consID','BL cartype $consID','immo constype $consID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments constype $consID','facture constype $consID','".mt_rand(1,$MAX['budget'])."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
 	
 		// Ajout consommable en stock
 		for ($j=0;$j<mt_rand(0,$MAX['consumables_stock']);$j++){
-			$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+			$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 			$query="INSERT INTO glpi_consumables VALUES(NULL,'$consID','$date',NULL,0)";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$ID=$DB->insert_id();
@@ -806,7 +806,7 @@ function generate_entity($ID_entity){
 		}
 		// Ajout consommable donn�	
 		for ($j=0;$j<mt_rand(0,$MAX['consumables_given']);$j++){
-			$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+			$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 			$query="INSERT INTO glpi_consumables VALUES(NULL,'$consID','$date',NOW(),'".mt_rand($FIRST['users_sadmin'],$LAST['users_postonly'])."')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$ID=$DB->insert_id();
@@ -828,7 +828,7 @@ function generate_entity($ID_entity){
 		addDocuments(CARTRIDGE_TYPE,$cartID);
 	
 		// AJOUT INFOCOMS
-		$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+		$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 		$query="INSERT INTO glpi_infocoms VALUES (NULL,'$cartID','".CARTRIDGE_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cartype $cartID','".mt_rand(1,$MAX['manufacturer'])."','commande cartype $cartID','BL cartype $cartID','immo cartype $cartID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cartype $cartID','facture cartype $cartID','".mt_rand(1,$MAX['budget'])."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -840,7 +840,7 @@ function generate_entity($ID_entity){
 			$ID=$DB->insert_id();
 	
 			// AJOUT INFOCOMS
-			$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+			$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 			$query="INSERT INTO glpi_infocoms VALUES (NULL,'$ID','".CARTRIDGE_ITEM_TYPE."','$date','$date','".mt_rand(12,36)."','infowar cart $ID','".mt_rand(1,$MAX['manufacturer'])."','commande cart $ID','BL cart $ID','immo cart $ID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments cart $ID','facture cart $ID','".mt_rand(1,$MAX['budget'])."','0')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -883,7 +883,7 @@ function generate_entity($ID_entity){
 		}
 	
 		// AJOUT INFOCOMS
-		$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+		$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 		$query="INSERT INTO glpi_infocoms VALUES (NULL,'$netwID','".NETWORKING_TYPE."','$date','$date','".mt_rand(12,36)."','infowar netw $netwID','".mt_rand(1,$MAX['manufacturer'])."','commande netw $netwID','BL netw $netwID','immo netw $netwID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments netw $netwID','facture netw $netwID','".mt_rand(1,$MAX['budget'])."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -945,7 +945,7 @@ function generate_entity($ID_entity){
 		}
 	
 		// AJOUT INFOCOMS
-		$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+		$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 		$query="INSERT INTO glpi_infocoms VALUES (NULL,'$printID','".PRINTER_TYPE."','$date','$date','".mt_rand(12,36)."','infowar print $printID','".mt_rand(1,$MAX['enterprises'])."','commande print $printID','BL print $printID','immo print $printID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments print $printID','facture print $printID','".mt_rand(1,$MAX['budget'])."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -958,7 +958,7 @@ function generate_entity($ID_entity){
 			$ctypeID=$DB->result($result2,0,0) or die (" PB RESULT ".$query);
 			$printed=0;
 			$oldnb=mt_rand(1,$MAX['cartridges_by_printer']);
-			$date1=strtotime(mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
+			$date1=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
 			$date2=mktime();
 			$inter=round(($date2-$date1)/$oldnb);
 	
@@ -1026,7 +1026,7 @@ function generate_entity($ID_entity){
 		addReservation(COMPUTER_TYPE,$compID);
 	
 		// AJOUT INFOCOMS
-		$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+		$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 		$query="INSERT INTO glpi_infocoms VALUES (NULL,'$compID','".COMPUTER_TYPE."','$date','$date','".mt_rand(12,36)."','infowar comp $compID','".mt_rand(1,$MAX['manufacturer'])."','commande comp $compID','BL comp $compID','immo comp $compID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments comp $compID','facture comp $compID','".mt_rand(1,$MAX['budget'])."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -1157,7 +1157,7 @@ function generate_entity($ID_entity){
 	
 		// AJOUT INFOCOMS
 		// Use date of the computer
-		//	$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+		//	$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 		$query="INSERT INTO glpi_infocoms VALUES (NULL,'$monID','".MONITOR_TYPE."','$date','$date','".mt_rand(12,36)."','infowar mon $monID','".mt_rand(1,$MAX['enterprises'])."','commande mon $monID','BL mon $monID','immo mon $monID','".mt_rand(0,800)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments mon $monID','facture mon $monID','".mt_rand(1,$MAX['budget'])."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -1183,7 +1183,7 @@ function generate_entity($ID_entity){
 	
 			// AJOUT INFOCOMS
 			// use computer date
-			//$date=mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+			//$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 			$query="INSERT INTO glpi_infocoms VALUES (NULL,'$printID','".PRINTER_TYPE."','$date','$date','".mt_rand(12,36)."','infowar print $printID','".mt_rand(1,$MAX['manufacturer'])."','commande print $printID','BL print $printID','immo print $printID','".mt_rand(0,5000)."','".mt_rand(0,500)."','".mt_rand(1,7)."','".mt_rand(1,2)."','".mt_rand(2,5)."','comments print $printID','facture print $printID','".mt_rand(1,$MAX['budget'])."','0')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -1203,7 +1203,7 @@ function generate_entity($ID_entity){
 				$ctypeID=$DB->result($result,0,0) or die (" PB RESULT ".$query);
 				$printed=0;
 				$oldnb=mt_rand(1,$MAX['cartridges_by_printer']);
-				$date1=strtotime(mt_rand(1995,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
+				$date1=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
 				$date2=mktime();
 				$inter=round(($date2-$date1)/$oldnb);
 				// Add old cartridges
