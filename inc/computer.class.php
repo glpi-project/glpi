@@ -540,7 +540,7 @@ class Computer extends CommonDBTM {
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
-				echo "<td >".$LANG["common"][34]."---".$this->fields["FK_entities"].": 	</td>";
+				echo "<td >".$LANG["common"][34].": 	</td>";
 				echo "<td >";
 				dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
 				echo "</td>";
