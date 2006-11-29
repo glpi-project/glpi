@@ -129,7 +129,7 @@ $MAX['connect_for_peripherals']=2;
 // TRACKING :
 $percent['tracking_on_item']=30;
 $MAX['general_tracking']=100;
-$percent['closed_tracking']=90;
+$percent['closed_tracking']=80;
 $percent['followups']=50;
 // RESERVATION
 $percent['reservation']=1;

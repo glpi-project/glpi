@@ -157,9 +157,16 @@ function addTracking($type,$ID,$ID_entity){
 		} else {
 			$date1=strtotime("$current_year-".mt_rand(1,12)."-".mt_rand(1,28)." ".mt_rand(0,23).":".mt_rand(0,59).":".mt_rand(0,59));	
 			$date2="";
-			if (mt_rand(0,100)<10)
+			$rtype=mt_rand(0,100);
+			if ($rtype<20)
 				$status="new";
-			else $status="assign";
+			else if ($rtype<40)
+				$status="waiting";
+			else if ($rtype<80){
+				$status="plan";
+				$date3=$date1+mt_rand(10800,7776000); // + entre 3 heures et 3 mois
+				$date4=$date3+10800; // + 3 heures
+			} else $status="assign";
 		}
 		// Author
 		$users[0]=mt_rand($FIRST['users_normal'],$LAST['users_postonly']);
@@ -179,7 +186,12 @@ function addTracking($type,$ID,$ID_entity){
 		while (mt_rand(0,100)<$percent['followups']){
 			$query="INSERT INTO glpi_followups VALUES (NULL,'$tID','".date("Y-m-d H:i:s",$date1+mt_rand(3600,7776000))."','".$users[1]."','followup $i ".GetRandomString(15)."','0','".mt_rand(0,3)."');";
 			$DB->query($query) or die("PB REQUETE ".$query);
+			$fID=$DB->insert_id();
 			$i++;
+			if ($status=="plan"){
+				$query="INSERT INTO glpi_tracking_planning VALUES (NULL,'$fID','".$users[1]."','".date("Y-m-d H:i:s",$date3)."','".date("Y-m-d H:i:s",$date4)."');";
+				$DB->query($query) or die("PB REQUETE ".$query);
+			}
 		}
 	}
 }
