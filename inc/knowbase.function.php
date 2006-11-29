@@ -135,7 +135,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 	
 	/// Show category
 	if ($result=$DB->query($query)){
-		echo "<div align='center'><table cellspacing=\"0\" border=\"0\" width=\"750px\" class='tab_cadre'>";
+		echo "<div align='center'><table class='tab_cadre_central'  >";
 		echo "<tr><td colspan='3'><a  href=\"".$target."\"<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' hspace=\"5\" ></a>";
 
 		// Display Category
@@ -216,7 +216,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 			$where = "($field ".makeTextSearch($contains).")";
 			
 		}
-	}else { // Il ne s'agit pas d'une rechercher, on browse by category
+	}else { // Il ne s'agit pas d'une recherche, on browse by category
 	
 		$where=" (glpi_kbitems.categoryID = $parentID) ";
 	
@@ -375,7 +375,7 @@ function showKbRecentPopular($target,$order,$faq=0){
 		echo "<tr><th><b>".$title."</b></th></tr>";
 	
 		while ($data=$DB->fetch_array($result)) {
-			echo "<tr><td><a  href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a  href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
 		}
 		echo "</table>";
 	}
