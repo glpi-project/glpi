@@ -532,13 +532,16 @@ function convDate($time) {
 function sendFile($file,$filename){
 	global $DB;
 
-	// Test s�urit�	
-	if (ereg("\.\.",$file)){
-		session_start();
+	// Test securite : document in DOC_DIR
+
+	
+	$tmpfile=ereg_replace(GLPI_DOC_DIR,"",$file);
+	if (ereg("\.\.",$tmpfile)){
 		echo "Security attack !!!";
 		logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
 		return;
 	}
+
 	if (!file_exists($file)){
 		echo "Error file $file does not exist";
 		return;
