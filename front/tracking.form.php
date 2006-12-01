@@ -73,7 +73,8 @@ if (isset($_POST['update'])){
 	glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$_POST["tracking"]);
 }
 
-if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+// Manage case = -1 which does not exist
+if (!isset($_SESSION['glpi_onglet'])||$_SESSION['glpi_onglet']==-1) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
 }
