@@ -40,7 +40,7 @@ include ($phproot . "/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($lang["title"][40],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][40],$_SERVER['PHP_SELF']);
 
 $remind=new Reminder();
 $remind->title();

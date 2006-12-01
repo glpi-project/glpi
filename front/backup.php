@@ -44,7 +44,7 @@ $path = $cfg_glpi["dump_dir"] ;
 
 
 
-commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][2],$_SERVER['PHP_SELF']);
 
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
@@ -89,7 +89,7 @@ function xmlnow(what4){
 
 
 
-// les deux options qui suivent devraient être incluses dans le fichier de config plutot non ?
+// les deux options qui suivent devraient ï¿½re incluses dans le fichier de config plutot non ?
 // 1 only with ZLib support, else change value to 0
 $compression = 0;
 
@@ -98,7 +98,7 @@ $compression = 0;
 if ($compression==1) $filetype = "sql.gz";
 else $filetype = "sql";
 
-// génére un fichier backup.xml a partir de base dbhost connecté avec l'utilisateur dbuser et le mot de passe
+// gï¿½ï¿½e un fichier backup.xml a partir de base dbhost connectï¿½avec l'utilisateur dbuser et le mot de passe
 //dbpassword sur le serveur dbdefault
 function xmlbackup()
 {
@@ -113,7 +113,7 @@ function xmlbackup()
 	{
 
 
-		// on se  limite aux tables préfixées _glpi
+		// on se  limite aux tables prï¿½ixï¿½s _glpi
 		if (ereg("glpi_",$line[0])){
 
 			$table = $line[0];
@@ -125,7 +125,7 @@ function xmlbackup()
 	}
 
 	//le nom du fichier a generer...
-	//Si fichier existe deja il sera remplacé par le nouveau
+	//Si fichier existe deja il sera remplacï¿½par le nouveau
 
 	$chemin = $cfg_glpi["dump_dir"]."/backup.xml";
 
@@ -151,12 +151,12 @@ function xmlbackup()
 		$A->Type=$Type;
 	}
 
-	//appelle de la methode générant le fichier XML
+	//appelle de la methode gï¿½ï¿½ant le fichier XML
 	$A->DoXML();
 
 
 	// Affichage, si erreur affiche erreur
-	//sinon affiche un lien vers le fichier XML généré.
+	//sinon affiche un lien vers le fichier XML gï¿½ï¿½ï¿½
 
 
 	if ($A->IsError==1)
@@ -229,34 +229,34 @@ function get_def($db, $table) {
 function restoreMySqlDump($db,$dumpFile , $duree)
 {
 	// $dumpFile, fichier source
-	// $database, nom de la base de données cible
+	// $database, nom de la base de donnï¿½s cible
 	// $mysqlUser, login pouyr la connexion au serveur MySql
 	// $mysqlPassword, mot de passe
 	// $histMySql, nom de la machine serveur MySQl
 	// $duree=timeout pour changement de page (-1 = aucun)
 
 	// Desactivation pour empecher les addslashes au niveau de la creation des tables
-	// En plus, au niveau du dump on considère qu'on est bon
+	// En plus, au niveau du dump on considï¿½e qu'on est bon
 	//set_magic_quotes_runtime(0);
 
 	global $db,$TPSCOUR,$offset,$cpt;
 
 	if ($db->error)
 	{
-		echo "Connexion impossible à $hostMySql pour $mysqlUser";
+		echo "Connexion impossible ï¿½$hostMySql pour $mysqlUser";
 		return FALSE;
 	}
 
 	if(!file_exists($dumpFile))
 	{
-		echo "$dumpFile non trouvé<br>";
+		echo "$dumpFile non trouvï¿½br>";
 		return FALSE;
 	}
 	$fileHandle = fopen($dumpFile, "rb");
 
 	if(!$fileHandle)
 	{
-		echo "Ouverture de $dumpFile non trouvé<br>";
+		echo "Ouverture de $dumpFile non trouvï¿½br>";
 		return FALSE;
 	}
 
@@ -280,7 +280,7 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 
 		//    echo $TPSCOUR."<br>";
 
-		// on indique le  length pour la fonction fgets pour compatibilité avec les versions <=PHP 4.2
+		// on indique le  length pour la fonction fgets pour compatibilitï¿½avec les versions <=PHP 4.2
 		$buffer=fgets($fileHandle,102400);
 		if (substr($buffer,strlen($buffer),1)==0)
 			$buffer=substr($buffer,0,strlen($buffer)-1);
@@ -291,7 +291,7 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 			if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
 			if (substr($formattedQuery,-1)==";"){
 				// Do not use the $db->query 
-				if ($db->query($formattedQuery)) //réussie sinon continue à conca&téner
+				if ($db->query($formattedQuery)) //rï¿½ssie sinon continue ï¿½conca&tï¿½er
 				{
 
 					$offset=ftell($fileHandle);
@@ -304,7 +304,7 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 	}
 
 	if ($db->error)
-		echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
+		echo "<hr>ERREUR ï¿½partir de [$formattedQuery]<br>".$db->error()."<hr>";
 
 	fclose($fileHandle);
 	$offset=-1;
@@ -314,7 +314,7 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 function backupMySql($db,$dumpFile, $duree,$rowlimit)
 {
 	// $dumpFile, fichier source
-	// $database, nom de la base de données cible
+	// $database, nom de la base de donnï¿½s cible
 	// $mysqlUser, login pouyr la connexion au serveur MySql
 	// $mysqlPassword, mot de passe
 	// $histMySql, nom de la machine serveur MySQl
@@ -324,7 +324,7 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 
 	if ($db->error)
 	{
-		echo "Connexion impossible à $hostMySql pour $mysqlUser";
+		echo "Connexion impossible ï¿½$hostMySql pour $mysqlUser";
 		return FALSE;
 	}
 
@@ -348,7 +348,7 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 	$numtab=0;
 	while ($t=$db->fetch_array($result)){
 
-		// on se  limite aux tables préfixées _glpi
+		// on se  limite aux tables prï¿½ixï¿½s _glpi
 		if (ereg("glpi_",$t[0])){
 			$tables[$numtab]=$t[0];
 			$numtab++;
@@ -392,7 +392,7 @@ function backupMySql($db,$dumpFile, $duree,$rowlimit)
 			return TRUE;
 	}
 	if ($db->error())
-		echo "<hr>ERREUR à partir de [$formattedQuery]<br>".$db->error()."<hr>";
+		echo "<hr>ERREUR ï¿½partir de [$formattedQuery]<br>".$db->error()."<hr>";
 	$offsettable=-1;
 	fclose($fileHandle);
 	return TRUE;
@@ -412,20 +412,20 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 		echo "<div align='center'>".$lang["backup"][21]."</div>";
 	} else {
 		init_time(); //initialise le temps
-		//début de fichier
+		//dï¿½ut de fichier
 		if (!isset($_GET["offsettable"])) $offsettable=0; 
 		else $offsettable=$_GET["offsettable"]; 
-		//début de fichier
+		//dï¿½ut de fichier
 		if (!isset($_GET["offsetrow"])) $offsetrow=-1; 
 		else $offsetrow=$_GET["offsetrow"];
-		//timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
+		//timeout de 5 secondes par dï¿½aut, -1 pour utiliser sans timeout
 		if (!isset($_GET["duree"])) $duree=$defaulttimeout; 
 		else $duree=$_GET["duree"];
-		//Limite de lignes à dumper à chaque fois
+		//Limite de lignes ï¿½dumper ï¿½chaque fois
 		if (!isset($_GET["rowlimit"])) $rowlimit=$defaultrowlimit; 
 		else  $rowlimit=$_GET["rowlimit"];
 
-		//si le nom du fichier n'est pas en paramètre le mettre ici
+		//si le nom du fichier n'est pas en paramï¿½re le mettre ici
 		if (!isset($_GET["fichier"])) {
 			$fichier=$filename;
 		} else $fichier=$_GET["fichier"];
@@ -453,7 +453,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 			}
 		}
-		else  { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt</p></div>";
+		else  { //echo "<div align='center'><p>Terminï¿½ Nombre de requï¿½es totales traitï¿½s : $cpt</p></div>";
 
 		}
 
@@ -480,10 +480,10 @@ if (isset($_GET["xmlnow"]) && $_GET["xmlnow"] !=""){
 if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 
 	init_time(); //initialise le temps
-	//début de fichier
+	//dï¿½ut de fichier
 	if (!isset($_GET["offset"])) $offset=0;
 	else  $offset=$_GET["offset"];
-	//timeout de 5 secondes par défaut, -1 pour utiliser sans timeout
+	//timeout de 5 secondes par dï¿½aut, -1 pour utiliser sans timeout
 	if (!isset($_GET["duree"])) $duree=$defaulttimeout; 
 	else $duree=$_GET["duree"];
 
@@ -509,7 +509,7 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 			glpi_flush();
 			exit;
 		}
-	} else   { //echo "<div align='center'><p>Terminé. Nombre de requêtes totales traitées : $cpt<p></div>";
+	} else   { //echo "<div align='center'><p>Terminï¿½ Nombre de requï¿½es totales traitï¿½s : $cpt<p></div>";
 		optimize_tables();
 	}
 

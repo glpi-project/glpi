@@ -187,15 +187,15 @@ else
 	if(empty($tab["several"])) $tab["several"] ="";
 
 	checkRight("networking","w");
-	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][6],$_SERVER['PHP_SELF']);
 
 	if(isset($tab["ID"]))
 	{
-		showNetportForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["on_device"],$tab["device_type"],$tab["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["on_device"],$tab["device_type"],$tab["several"]);
 	}
 	else
 	{
-		showNetportForm($_SERVER["PHP_SELF"],"",$tab["on_device"],$tab["device_type"],$tab["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],"",$tab["on_device"],$tab["device_type"],$tab["several"]);
 	}
 	commonFooter();
 }

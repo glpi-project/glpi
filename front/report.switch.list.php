@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 /*!
-  \brief affiche le rapport réseau par switch 
+  \brief affiche le rapport rï¿½eau par switch 
 
  */
 
@@ -53,7 +53,7 @@ $result = $db->query($query2);
 
 // Titre
 if ($db->numrows($result)==1){
-	commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["Menu"][6],$_SERVER['PHP_SELF']);
 
 	$ligne = $db->fetch_array($result);
 	$switch=$ligne['switch'];
@@ -66,7 +66,7 @@ if ($db->numrows($result)==1){
 		WHERE glpi_networking.id=".$_POST["switch"]."";
 
 	/*!
-	  on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
+	  on envoie la requï¿½e de selection qui varie selon le choix fait dans la dropdown ï¿½la fonction report perso qui
 	  affiche un rapport en fonction du switch choisi  
 	 */
 

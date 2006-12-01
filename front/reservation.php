@@ -54,12 +54,12 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 
 		if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) 
-			if ($rr->update($_POST,$_SERVER["PHP_SELF"],$_POST["id_item"]))
+			if ($rr->update($_POST,$_SERVER['PHP_SELF'],$_POST["id_item"]))
 				glpi_header($cfg_glpi["root_doc"]."/front/reservation.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
 	}
 
 
-	commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][35],$_SERVER['PHP_SELF']);
 
 	if (isset($_POST["clear_resa"])){
 
@@ -70,15 +70,15 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
-		printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
+		printCalendrier($_SERVER['PHP_SELF'],$_POST["id_item"]);
 	} else if (isset($_GET["ID"])){
-		printCalendrier($_SERVER["PHP_SELF"],$_GET["ID"]);
+		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
 	}
 	else if (isset($_GET["add"])){
-		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["add"],$_GET["date"]);
+		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["add"],$_GET["date"]);
 	}
 	else if (isset($_GET["edit"])){
-		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["item"],"",$_GET["edit"]);
+		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["item"],"",$_GET["edit"]);
 	}
 	else if (isset($_POST["add_resa"])){
 		$ok=true;
@@ -94,7 +94,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 			if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) {
 				unset($rr->fields["ID"]);
-				$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
+				$ok=$rr->add($_POST,$_SERVER['PHP_SELF'],$ok);
 			}
 
 		}
@@ -104,18 +104,18 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 		if ($ok){
 			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$lang["log"][20]);
-			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
+			printCalendrier($_SERVER['PHP_SELF'],$_POST["id_item"]);
 		}
 	}
 	else {
-		printReservationItems($_SERVER["PHP_SELF"]);
+		printReservationItems($_SERVER['PHP_SELF']);
 	}
 }
 else {
 	checkSeveralRightsOr(array("reservation_central"=>"r","reservation_helpdesk"=>"1"));
 	if (!haveRight("reservation_central","r")){
-		commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
-		printReservationItems($_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][9],$_SERVER['PHP_SELF']);
+		printReservationItems($_SERVER['PHP_SELF']);
 	}
 	else {
 		if (isset($_GET["add"]))
@@ -151,22 +151,22 @@ else {
 
 		checkRight("reservation_central","r");
 
-		commonHeader($lang["title"][35],$_SERVER["PHP_SELF"]);
+		commonHeader($lang["title"][35],$_SERVER['PHP_SELF']);
 		if (isset($_GET["comment"])){
-			if (showReservationCommentForm($_SERVER["PHP_SELF"],$_GET["comment"])){
+			if (showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["comment"])){
 			}
 			else {
 
 				titleReservation();
 				searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-				showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+				showReservationItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 			}
 
 		}else {
 
 			titleReservation();
 			searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-			showReservationItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+			showReservationItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
 		}
 	}
 }

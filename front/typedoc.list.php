@@ -34,12 +34,12 @@ include ($phproot . "/inc/includes.php");
 
 checkLoginUser();
 
-nullHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+nullHeader($lang["title"][2],$_SERVER['PHP_SELF']);
 
 
 
 manageGetValuesInSearch(TYPEDOC_TYPE);
-showList(TYPEDOC_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(TYPEDOC_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 
 ?>

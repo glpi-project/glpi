@@ -78,16 +78,16 @@ if (isset($_POST["changepw"])) {
 	} else {
 		checkCentralAccess();
 	}
-	commonHeader($lang["title"][17],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][17],$_SERVER['PHP_SELF']);
 	// titre
 	echo "<div align='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$HTMLRel."pics/preferences.png\" alt='".$lang["Menu"][11]."' title='".$lang["Menu"][11]."'></td><td><span class='icon_sous_nav'><b>".$lang["Menu"][11]."</b></span>";
 	echo "</td></tr></table></div>";
 	if ($_SESSION["glpiextauth"]!=1&&haveRight("password_update","1"))
-		showPasswordForm($_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		showPasswordForm($_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	if (haveRight("show_ticket","1"))
-		showSortForm($_SERVER["PHP_SELF"]);
-	showLangSelect($_SERVER["PHP_SELF"]);
+		showSortForm($_SERVER['PHP_SELF']);
+	showLangSelect($_SERVER['PHP_SELF']);
 	commonFooter();
 }
 

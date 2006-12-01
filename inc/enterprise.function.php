@@ -229,7 +229,7 @@ function showAssociatedContact($instID) {
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$_SERVER["PHP_SELF"]."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><b>".$lang["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;

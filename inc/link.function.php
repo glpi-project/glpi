@@ -67,7 +67,7 @@ function showLinkDevice($instID) {
 		$device_type=$db->result($result, $i, "device_type");
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".getDeviceTypeName($device_type)."</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletedevice=deletedevice&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 		$i++;
 	}
 	echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";

@@ -52,7 +52,7 @@ if (isset($_POST["add_planning"])){
 
 } else if (isset($_POST["edit_planning"])){
 
-	if ($pt->update($_POST,$_SERVER["PHP_SELF"],$_POST["ID"])){
+	if ($pt->update($_POST,$_SERVER['PHP_SELF'],$_POST["ID"])){
 		logEvent(0, "planning", 4, "planning", $_SESSION["glpiname"]." ".$lang["log"][21]);
 		glpi_header($_POST["referer"]);
 	}
@@ -66,15 +66,15 @@ if (isset($_POST["add_planning"])){
 	glpi_header($cfg_glpi["root_doc"]."/front/tracking.form.php?ID=".$_POST["id_tracking"]);
 
 } else if (isset($_GET["edit"])){
-	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][31],$_SERVER['PHP_SELF']);
 
-	showAddPlanningTrackingForm($_SERVER["PHP_SELF"],$_GET["fup"],$_GET["ID"]);
+	showAddPlanningTrackingForm($_SERVER['PHP_SELF'],$_GET["fup"],$_GET["ID"]);
 
 	commonFooter();
 } else {
-	commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][31],$_SERVER['PHP_SELF']);
 
-	showAddPlanningTrackingForm($_SERVER["PHP_SELF"],$_GET["fup"]);
+	showAddPlanningTrackingForm($_SERVER['PHP_SELF'],$_GET["fup"]);
 
 	commonFooter();
 }

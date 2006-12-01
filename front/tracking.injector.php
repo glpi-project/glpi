@@ -47,7 +47,7 @@ if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($cfg_glpi["permi
 
 $status = "new";
 
-// Sauvegarde des données dans le cas de retours avec des navigateurs pourris style IE
+// Sauvegarde des donnï¿½s dans le cas de retours avec des navigateurs pourris style IE
 $varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents','_my_items','category');
 
 	foreach ($varstosav as $v){
@@ -60,12 +60,12 @@ $track=new Job();
 if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+		nullHeader($lang["title"][10],$_SERVER['PHP_SELF']);
 	}
 	else if ($_POST["_from_helpdesk"]){
-		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	else commonHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $lang["help"][15]."<br><br>";
@@ -78,12 +78,12 @@ if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isset($_POST["uemail"]) && $_POST["uemail"] =="")
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+		nullHeader($lang["title"][10],$_SERVER['PHP_SELF']);
 	}
 	else if ($_POST["_from_helpdesk"]){
-		helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	else commonHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
@@ -110,12 +110,12 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 
 	if ($_POST["device_type"]!=0&&!$ci->getFromDB($_POST["device_type"],$_POST["computer"])){
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+			nullHeader($lang["title"][10],$_SERVER['PHP_SELF']);
 		}
 		else if ($_POST["_from_helpdesk"]){
-			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+			helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 		}
-		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		else commonHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 		echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 		echo $lang["help"][32]."<br>";
@@ -127,30 +127,30 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isse
 	} else if ($track->add($_POST))
 	{
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+			nullHeader($lang["title"][10],$_SERVER['PHP_SELF']);
 		}
 		else if ($_POST["_from_helpdesk"]){
-			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+			helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 		}
-		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		else commonHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 		echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 		echo $lang["help"][18]."<br>";
 		echo $lang["help"][19];
 		echo "</b></div>";
 		nullFooter();
-		// Delete des infos sauvegardées pour les problèmes de retour
+		// Delete des infos sauvegardï¿½s pour les problï¿½es de retour
 		unset($_SESSION["helpdeskSaved"]);
 	}
 	else
 	{
 		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			nullHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+			nullHeader($lang["title"][10],$_SERVER['PHP_SELF']);
 		}
 		else if ($_POST["_from_helpdesk"]){
-			helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+			helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 		}
-		else commonHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+		else commonHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 		echo "<div align='center'><img src=\"".$cfg_glpi["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 		echo $lang["help"][20]."<br>";

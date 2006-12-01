@@ -257,7 +257,7 @@ function showCompatiblePrinters($instID) {
 		$type=$db->result($result, $i, "type");
 		echo "<tr class='tab_bg_1'><td align='center'>$ID</td>";
 		echo "<td align='center'>$type</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER["PHP_SELF"]."?deletetype=deletetype&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletetype=deletetype&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a></td></tr>";
 		$i++;
 	}
 	if (haveRight("cartridge","w")){

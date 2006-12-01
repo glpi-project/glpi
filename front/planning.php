@@ -38,7 +38,7 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("planning","tracking","user","computer","printer","monitor","peripheral","networking","software","enterprise","reminder","phone");
 include ($phproot . "/inc/includes.php");
 
-commonHeader($lang["title"][31],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][31],$_SERVER['PHP_SELF']);
 
 checkSeveralRightsOr(array("show_all_planning"=>"1","show_planning"=>"1"));
 
@@ -91,7 +91,7 @@ titleTrackingPlanning();
 echo "<div align='center'><form method=\"get\" name=\"form\" action=\"planning.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td>";
-echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
+echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$HTMLRel."pics/left.png\" alt='".$lang["buttons"][12]."' title='".$lang["buttons"][12]."'></a>";
 echo "</td>";
 echo "<td>";
 if (haveRight("show_all_planning","1"))
@@ -112,7 +112,7 @@ echo "<td>";
 urlIcal ($_GET['uID']);
 echo "</td>";	
 echo "<td>";
-echo "<a href=\"".$_SERVER["PHP_SELF"]."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$next\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
+echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$next\"><img src=\"".$HTMLRel."pics/right.png\" alt='".$lang["buttons"][11]."' title='".$lang["buttons"][11]."'></a>";
 echo "</td>";
 
 echo "</tr>";

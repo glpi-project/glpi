@@ -50,9 +50,9 @@ if (isset($_POST["update"])&&$_POST["ID"]==$_SESSION["glpiID"]) {
 } else {
 
 	if ($_SESSION["glpiprofile"]["interface"]=="central")
-		commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-	else helpHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
-	$user->showMyForm($_SERVER["PHP_SELF"],$_SESSION["glpiID"]);
+		commonHeader($lang["title"][13],$_SERVER['PHP_SELF']);
+	else helpHeader($lang["title"][13],$_SERVER['PHP_SELF']);
+	$user->showMyForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
 	if ($_SESSION["glpiprofile"]["interface"]=="central")
 		commonFooter();
 	else helpFooter();

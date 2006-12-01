@@ -40,7 +40,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($lang["title"][39],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][39],$_SERVER['PHP_SELF']);
 
 $cfg_glpi["use_ajax"] = 1; 
 

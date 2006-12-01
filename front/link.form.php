@@ -93,9 +93,9 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][33],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][33],$_SERVER['PHP_SELF']);
 
-	if ($link->showForm($_SERVER["PHP_SELF"],$tab["ID"])&&!empty($tab["ID"]))
+	if ($link->showForm($_SERVER['PHP_SELF'],$tab["ID"])&&!empty($tab["ID"]))
 		showLinkDevice($tab["ID"]);
 	commonFooter();
 }

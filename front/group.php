@@ -39,7 +39,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("group","r");
 
-commonHeader($lang["Menu"][36],$_SERVER["PHP_SELF"]);
+commonHeader($lang["Menu"][36],$_SERVER['PHP_SELF']);
 
 $group=new Group();
 $group->title();
@@ -47,9 +47,9 @@ $group->title();
 
 manageGetValuesInSearch(GROUP_TYPE);
 
-searchForm(GROUP_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(GROUP_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-showList(GROUP_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(GROUP_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 commonFooter();
 ?>

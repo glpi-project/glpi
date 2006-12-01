@@ -94,14 +94,14 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][6],$_SERVER['PHP_SELF']);
 
 	if ($netdevice->getFromDB($tab["ID"]))
-		$netdevice->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		$netdevice->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 
 	if (!empty($tab["withtemplate"])) {
 
-		if ($netdevice->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($netdevice->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
 			if (!empty($tab["ID"])){
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
@@ -136,7 +136,7 @@ else
 		}
 
 
-		if ($netdevice->showForm ($_SERVER["PHP_SELF"],$tab["ID"])){
+		if ($netdevice->showForm ($_SERVER['PHP_SELF'],$tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showPortsAdd($tab["ID"],NETWORKING_TYPE);
@@ -164,10 +164,10 @@ else
 					showLinkOnDevice(NETWORKING_TYPE,$tab["ID"]);
 					break;	
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],NETWORKING_TYPE,$tab["ID"]);
 					break;			
 				case 11 :
-					showDeviceReservations($_SERVER["PHP_SELF"],NETWORKING_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],NETWORKING_TYPE,$tab["ID"]);
 					break;
 				case 12 :
 					showHistory(NETWORKING_TYPE,$tab["ID"]);

@@ -77,7 +77,7 @@ function fillidfield(Type,Id){
 
 	echo "<div align='center'>";
 	echo "<p><strong>".$lang["help"][22]."</strong></p>";
-	echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER["PHP_SELF"]."\">"; 
+	echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER['PHP_SELF']."\">"; 
 
 	echo "<table cellspacing='1' width='100%'  class='tab_cadre'>";
 	echo "<tr><th align='center'  width='100%' height='29'>".$lang["help"][23]."</th>";

@@ -42,7 +42,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("logs","r");
 
-commonHeader($lang["title"][32],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][32],$_SERVER['PHP_SELF']);
 
 //echo "<hr noshade>";
 
@@ -50,11 +50,11 @@ commonHeader($lang["title"][32],$_SERVER["PHP_SELF"]);
 if(isset($_GET["order"]))
 {
 	if(!isset($_GET["start"])) $_GET["start"]=0;
-	showEvents($_SERVER["PHP_SELF"],$_GET["order"],$_GET["sort"],$_GET["start"]);
+	showEvents($_SERVER['PHP_SELF'],$_GET["order"],$_GET["sort"],$_GET["start"]);
 }
 else
 {
-	showEvents($_SERVER["PHP_SELF"],"","");
+	showEvents($_SERVER['PHP_SELF'],"","");
 }
 
 

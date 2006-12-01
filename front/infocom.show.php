@@ -40,7 +40,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("contract_infocom","r");
 
-nullHeader($lang["title"][21],$_SERVER["PHP_SELF"]);
+nullHeader($lang["title"][21],$_SERVER['PHP_SELF']);
 
 $ci=new CommonItem();
 

@@ -40,7 +40,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("printer","r");
 
-commonHeader($lang["title"][8],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][8],$_SERVER['PHP_SELF']);
 
 $print=new Printer();
 $print->title();
@@ -48,9 +48,9 @@ $print->title();
 
 manageGetValuesInSearch(PRINTER_TYPE);
 
-searchForm(PRINTER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+searchForm(PRINTER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 
-showList(PRINTER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+showList(PRINTER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 
 commonFooter();
 ?>

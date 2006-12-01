@@ -106,12 +106,12 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 	}
 
-	commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][22],$_SERVER['PHP_SELF']);
 
 	if ($contact->getFromDB($tab["ID"]))
-		$contact->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$contact->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if ($contact->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+	if ($contact->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID']))
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
@@ -124,7 +124,7 @@ else
 					break;
 
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],CONTACT_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],CONTACT_TYPE,$tab["ID"]);
 					break;
 				default :
 					if (!display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))

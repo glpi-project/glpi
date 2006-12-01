@@ -44,7 +44,7 @@ if (isset($_GET["ID"]))
 glpi_header($cfg_glpi["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
 
 
-commonHeader($lang["title"][5],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][5],$_SERVER['PHP_SELF']);
 
 initExpandSessionVar();
 
@@ -67,9 +67,9 @@ if (isset($_POST["contains"])) searchLimitSessionVarKnowbase($_POST["contains"])
 titleknowbase();
 
 if (haveRight("knowbase","r"))
-showKbCategoriesall($_SERVER["PHP_SELF"],$contains);
+showKbCategoriesall($_SERVER['PHP_SELF'],$contains);
 else {
-	faqShowCategoriesall($_SERVER["PHP_SELF"],$contains);
+	faqShowCategoriesall($_SERVER['PHP_SELF'],$contains);
 }
 
 

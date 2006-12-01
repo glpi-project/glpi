@@ -40,7 +40,7 @@ $NEEDED_ITEMS=array("user","tracking","computer","printer","networking","periphe
 include ($phproot . "/inc/includes.php");
 
 
-commonHeader($lang["title"][13],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][13],$_SERVER['PHP_SELF']);
 
 checkRight("user","r");
 
@@ -61,13 +61,13 @@ if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST
 
 $user=new User();
 
-if ($user->showInfo($_SERVER["PHP_SELF"],$_GET["ID"])){
+if ($user->showInfo($_SERVER['PHP_SELF'],$_GET["ID"])){
 
 	if($_SESSION['glpi_viewuser']=="tracking"){
 		if (isset($_GET["start"])) $start=$_GET["start"];
 		else $start=0;
 
-		showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",$_GET["ID"],-1);
+		showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",$_GET["ID"],-1);
 	} else {
 		showDeviceUser($_GET["ID"]);
 	}

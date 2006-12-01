@@ -301,7 +301,7 @@ function showLocationUpdateForm(){
 		echo "<h4>".$lang["update"][130]."</h4>";
 		echo "<p>".$lang["update"][131]."</p>";
 		echo "<p>".$lang["update"][132]."<br>".$lang["update"][133]."</p>";
-		echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
+		echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
 		echo "<p>".$lang["update"][134].": <input type=\"text\" name=\"car_sep\" value=\"".$_POST['car_sep']."\"/></p>";
 		echo "<p>".$lang["update"][135].": <input type=\"text\" name=\"root\" value=\"".$_POST['root']."\"/></p>";
 		echo "<input type=\"submit\" class='submit' name=\"new_location\" value=\"".$lang["buttons"][2]."\" />";
@@ -319,7 +319,7 @@ function showLocationUpdateForm(){
 		echo "<h4>".$lang["update"][137].": </h4>";
 		display_new_locations();	
 		echo "<p>".$lang["update"][136]."</p>";
-		echo "<form action=\"".$_SERVER["PHP_SELF"]."\" method=\"post\">";
+		echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
 		echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"".$lang["buttons"][2]."\" />";
 		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\" />";
 		echo "</form>";

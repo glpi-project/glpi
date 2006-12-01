@@ -39,7 +39,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER['PHP_SELF']);
 
 if (!isset($_GET["ID"])) $_GET["ID"]=0;
 
@@ -52,7 +52,7 @@ echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=
 echo "</table></form></div>";
 
 if ($_GET["ID"]>0)
-showUserReservations($_SERVER["PHP_SELF"],$_GET["ID"]);
+showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
 
 commonFooter();
 

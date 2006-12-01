@@ -39,7 +39,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("create_ticket","1");
 
-commonHeader("Helpdesk",$_SERVER["PHP_SELF"]);
+commonHeader("Helpdesk",$_SERVER['PHP_SELF']);
 
 if (!isset($_POST["user"])) $user=$_SESSION["glpiID"];
 else $user=$_POST["user"];
@@ -76,7 +76,7 @@ $track=new Job();
 if (isset($_POST["priority"]) && empty($_POST["contents"]))
 {
 	$error=$lang["tracking"][8] ;
-	addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
+	addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 }
 elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
@@ -84,17 +84,17 @@ elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 	if ($track->add($_POST)){
 		$error=$lang["tracking"][9];
 		displayMessageAfterRedirect();
-		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
+		addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 	}
 	else {
 		$error=$lang["tracking"][10];
 		displayMessageAfterRedirect();
-		addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
+		addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 	}
 } 
 else
 {
-	addFormTracking($device_type,$computer,$user,$assign,$_SERVER["PHP_SELF"],$error);
+	addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 }
 
 commonFooter();

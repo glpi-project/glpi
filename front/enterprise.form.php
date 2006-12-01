@@ -109,7 +109,7 @@ else
 	}
 
 
-	commonHeader($lang["title"][23],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][23],$_SERVER['PHP_SELF']);
 
 
 	if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
@@ -122,16 +122,16 @@ else
 	}
 
 	if ($ent->getFromDB($tab["ID"]))
-		$ent->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$ent->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if ($ent->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
+	if ($ent->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
 		if (!empty($tab["ID"]))
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showAssociatedContact($tab["ID"]);
 					showContractAssociatedEnterprise($tab["ID"]);
 					showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
-					showTrackingList($_SERVER["PHP_SELF"],$start,"","","all",0,0,0,$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",0,0,0,$_GET["ID"]);
 					showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
 					display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 					break;
@@ -145,13 +145,13 @@ else
 					showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"],0);
 					break;
 				case 6 :
-					showTrackingList($_SERVER["PHP_SELF"]."?ID=".$tab["ID"],$start,"","","all",0,0,0,$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF']."?ID=".$tab["ID"],$start,"","","all",0,0,0,$_GET["ID"]);
 					break;
 				case 7 : 
 					showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
 					break;
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],ENTERPRISE_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],ENTERPRISE_TYPE,$tab["ID"]);
 					break;	
 				case 15 :
 					echo "<div align='center'><table border='0'><tr><td valign='top'>";

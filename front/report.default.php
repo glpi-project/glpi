@@ -41,7 +41,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
+commonHeader($lang["Menu"][6],$_SERVER['PHP_SELF']);
 
 # Title
 

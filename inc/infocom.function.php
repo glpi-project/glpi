@@ -48,7 +48,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 	if ($withtemplate==2)
 		$option=" readonly ";
 
-	if (!ereg("infocoms-show",$_SERVER["PHP_SELF"])&&($device_type==SOFTWARE_TYPE||$device_type==CARTRIDGE_TYPE||$device_type==CONSUMABLE_TYPE)){
+	if (!ereg("infocoms-show",$_SERVER['PHP_SELF'])&&($device_type==SOFTWARE_TYPE||$device_type==CARTRIDGE_TYPE||$device_type==CONSUMABLE_TYPE)){
 		echo "<div align='center'>".$lang["financial"][84]."</div>";
 	}
 
@@ -64,7 +64,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo "<form name='form_ic' method='post' action=\"$target\">";
 
 		echo "<div align='center'>";
-		echo "<table class='tab_cadre".(!ereg("infocoms-show",$_SERVER["PHP_SELF"])?"_fixe":"")."'>";
+		echo "<table class='tab_cadre".(!ereg("infocoms-show",$_SERVER['PHP_SELF'])?"_fixe":"")."'>";
 
 		echo "<tr><th colspan='4'><b>".$lang["financial"][3]."</b></th></tr>";
 

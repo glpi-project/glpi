@@ -41,7 +41,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("networking","r");
 
-commonHeader($lang["title"][6],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][6],$_SERVER['PHP_SELF']);
 
 $netdevice=new Netdevice();
 $netdevice->title();
@@ -49,9 +49,9 @@ $netdevice->title();
 
 manageGetValuesInSearch(NETWORKING_TYPE);
 
-searchForm(NETWORKING_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(NETWORKING_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-showList(NETWORKING_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(NETWORKING_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 commonFooter();
 ?>

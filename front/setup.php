@@ -44,7 +44,7 @@ include ($phproot . "/inc/includes.php");
 checkCentralAccess();
 
 
-commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][2],$_SERVER['PHP_SELF']);
 
 
 // titre

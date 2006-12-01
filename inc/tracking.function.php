@@ -286,7 +286,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 
 	// Form to delete old item
 	if ($candelete){
-		echo "<form method='post' action=\"".$_SERVER["PHP_SELF"]."?ID=$item\" name='oldTrackingForm' id='oldTrackingForm'>";
+		echo "<form method='post' action=\"".$_SERVER['PHP_SELF']."?ID=$item\" name='oldTrackingForm' id='oldTrackingForm'>";
 		echo "<input type='hidden' name='ID' value='$item'>";
 	}
 
@@ -323,9 +323,9 @@ function showOldJobListForItem($username,$item_type,$item) {
 			echo "<br><div align='center'>";
 
 			echo "<table class ='delete-old-job' cellpadding='5' width='950'>";
-			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt='' ></td><td><a  onclick= \"if ( markAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all&amp;ID=$item'>".$lang["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt='' ></td><td><a  onclick= \"if ( markAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all&amp;ID=$item'>".$lang["buttons"][18]."</a></td>";
 
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
+			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none&amp;ID=$item'>".$lang["buttons"][19]."</a>";
 			echo "</td><td>";
 			echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
 			echo "<td width='75%'>&nbsp;</td></tr></table></div>";
@@ -1287,7 +1287,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			// Pager
 			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
 			$parameters=$parameters2."&amp;sort=$sort&amp;order=$order";
-			if (ereg("user.info.php",$_SERVER["PHP_SELF"])) $parameters.="&amp;ID=$author";
+			if (ereg("user.info.php",$_SERVER['PHP_SELF'])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
 			if (ereg("helpdesk",$target)) 
 				$parameters.="&amp;show=user";
@@ -1359,9 +1359,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			if ($candelete&&$output_type==HTML_OUTPUT&&($status=="old"||$status=="all"||ereg("old_",$status))){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='900'>";
-				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$lang["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER["PHP_SELF"]."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
+				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
 				echo "</td><td>";
 				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
 				echo "<td width='75%'>&nbsp;</td></table></div>";
@@ -1582,7 +1582,7 @@ function showJobDetails ($target,$ID){
 		$item=new CommonItem();
 		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
 
-		showTrackingOnglets($_SERVER["PHP_SELF"]."?ID=".$ID);
+		showTrackingOnglets($_SERVER['PHP_SELF']."?ID=".$ID);
 
 		echo "<div align='center'>";
 		echo "<form method='post' action='$target'  enctype=\"multipart/form-data\">\n";

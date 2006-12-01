@@ -41,7 +41,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER['PHP_SELF']);
 
 $item_db_name[COMPUTER_TYPE] = "glpi_computers";
 $item_db_name[PRINTER_TYPE] = "glpi_printers";

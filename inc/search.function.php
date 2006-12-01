@@ -962,9 +962,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($isadmin&&$output_type==HTML_OUTPUT){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='80%'>";
-				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=all'>".$lang["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$HTMLRel."pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$lang["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER["PHP_SELF"]."?select=none'>".$lang["buttons"][19]."</a>";
+				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$lang["buttons"][19]."</a>";
 				echo "</td><td align='left' width='80%'>";
 				dropdownMassiveAction($type,$deleted);
 				echo "</td>";

@@ -43,7 +43,7 @@ checkCentralAccess();
 $fup=new Followup();
 $track=new Job();
 
-commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][10],$_SERVER['PHP_SELF']);
 if (isset($_POST['update'])){
 	checkSeveralRightsOr(array("update_ticket"=>"1","assign_ticket"=>"1","steal_ticket"=>"1","comment_ticket"=>"1","comment_all_ticket"=>"1"));
 
@@ -80,7 +80,7 @@ if (isset($_GET['onglet'])) {
 }
 
 if (isset($_GET["ID"]))
-if (showJobDetails($_SERVER["PHP_SELF"],$_GET["ID"])){
+if (showJobDetails($_SERVER['PHP_SELF'],$_GET["ID"])){
 
 	switch($_SESSION['glpi_onglet']){
 		default :

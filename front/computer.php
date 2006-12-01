@@ -67,15 +67,15 @@ if (isset($_GET["reset_search"])){
 
 checkRight("computer","r");
 
-commonHeader($lang["title"][3],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][3],$_SERVER['PHP_SELF']);
 $computer=new Computer();
 $computer->title();
 
 manageGetValuesInSearch(COMPUTER_TYPE);
 
-searchForm(COMPUTER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+searchForm(COMPUTER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 
-showList(COMPUTER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+showList(COMPUTER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 
 commonFooter();
 ?>

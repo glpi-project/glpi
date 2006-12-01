@@ -38,7 +38,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER['PHP_SELF']);
 
 
 
@@ -73,7 +73,7 @@ $result = $db->query($query);
 $number_of_phone = $db->numrows($result);
 
 
-# 2. afficher les données dans un tableau
+# 2. afficher les donnï¿½s dans un tableau
 
 
 # Titre

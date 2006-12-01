@@ -56,10 +56,10 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 	switch ($_GET["item_type"]){
 
 		case STATE_TYPE :
-			showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
+			showStateItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
 			break;
 		case TRACKING_TYPE :
-			showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["author"],$_GET["group"],$_GET["assign"],$_GET["assign_ent"],$_GET["category"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);		
+			showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["author"],$_GET["group"],$_GET["assign"],$_GET["assign_ent"],$_GET["category"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"],$_GET["showfollowups"],$_GET["field2"],$_GET["contains2"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);		
 			break;
 		case STAT_TYPE :
 
@@ -86,7 +86,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 		default :
 			manageGetValuesInSearch($_GET["item_type"]);
 
-			showList($_GET["item_type"],$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+			showList($_GET["item_type"],$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 			break;
 	}
 }

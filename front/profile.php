@@ -42,7 +42,7 @@ checkRight("profile","r");
 
 $prof=new Profile();
 
-commonHeader($lang["Menu"][35],$_SERVER["PHP_SELF"]);
+commonHeader($lang["Menu"][35],$_SERVER['PHP_SELF']);
 $prof->title();
 
 if(!isset($_POST["ID"])) $ID=0;
@@ -81,9 +81,9 @@ echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' 
 echo "</table></form></div>";
 
 if (isset($_GET["add"])){
-	$prof->showForm($_SERVER["PHP_SELF"],0);
+	$prof->showForm($_SERVER['PHP_SELF'],0);
 } else if ($ID>0){
-	$prof->showForm($_SERVER["PHP_SELF"],$ID);
+	$prof->showForm($_SERVER['PHP_SELF'],$ID);
 } 
 
 commonFooter();

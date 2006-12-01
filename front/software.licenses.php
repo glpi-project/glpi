@@ -134,8 +134,8 @@ else if (isset($tab["form"]))
 {
 	checkRight("software","w");
 
-	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
-	showLicenseForm($_SERVER["PHP_SELF"],$tab['form'],$tab["sID"],$tab["lID"]);
+	commonHeader($lang["title"][12],$_SERVER['PHP_SELF']);
+	showLicenseForm($_SERVER['PHP_SELF'],$tab['form'],$tab["sID"],$tab["lID"]);
 	commonFooter();
 }
 else if (isset($tab["delete"]))

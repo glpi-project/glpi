@@ -115,7 +115,7 @@ function ocsShowNewComputer($check,$start,$tolinked=0){
 		if (($numrows=count($hardware))>0){
 
 			$parameters="check=$check";
-			printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
+			printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters);
 
 			// delete end 
 			array_splice($hardware,$start+$cfg_glpi["list_limit"]);
@@ -123,9 +123,9 @@ function ocsShowNewComputer($check,$start,$tolinked=0){
 			if ($start>0)
 				array_splice($hardware,0,$start);
 			echo "<strong>".$lang["ocsconfig"][18]."</strong><br>";
-			echo "<form method='post' name='ocsng_form' id='ocsng_form' action='".$_SERVER["PHP_SELF"]."'>";
+			echo "<form method='post' name='ocsng_form' id='ocsng_form' action='".$_SERVER['PHP_SELF']."'>";
 			if ($tolinked==0)
-				echo "<a href='".$_SERVER["PHP_SELF"]."?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
+				echo "<a href='".$_SERVER['PHP_SELF']."?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER['PHP_SELF']."?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
 
 
 			echo "<table class='tab_cadre'>";
@@ -156,7 +156,7 @@ function ocsShowNewComputer($check,$start,$tolinked=0){
 			echo "</table>";
 			echo "</form>";
 
-			printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
+			printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters);
 
 		} else echo "<strong>".$lang["ocsng"][9]."</strong>";
 
@@ -888,7 +888,7 @@ function ocsShowUpdateComputer($check,$start){
 		if (($numrows=count($already_linked))>0){
 
 			$parameters="check=$check";
-			printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
+			printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters);
 
 			// delete end 
 			array_splice($already_linked,$start+$cfg_glpi["list_limit"]);
@@ -896,9 +896,9 @@ function ocsShowUpdateComputer($check,$start){
 			if ($start>0)
 				array_splice($already_linked,0,$start);
 
-			echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$_SERVER["PHP_SELF"]."'>";
+			echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$_SERVER['PHP_SELF']."'>";
 
-			echo "<a href='".$_SERVER["PHP_SELF"]."?check=all' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER["PHP_SELF"]."?check=none' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?check=all' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$lang["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER['PHP_SELF']."?check=none' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$lang["buttons"][19]."</a>";
 			echo "<table class='tab_cadre'>";
 			echo "<tr><th>".$lang["ocsng"][11]."</th><th>".$lang["ocsng"][13]."</th><th>".$lang["ocsng"][14]."</th><th>".$lang["ocsng"][6]."</th><th>&nbsp;</th></tr>";
 
@@ -920,7 +920,7 @@ function ocsShowUpdateComputer($check,$start){
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</form>";
-			printPager($start,$numrows,$_SERVER["PHP_SELF"],$parameters);
+			printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters);
 
 		} else echo "<br><strong>".$lang["ocsng"][11]."</strong>";
 

@@ -39,7 +39,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER['PHP_SELF']);
 
 
 

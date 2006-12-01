@@ -70,13 +70,13 @@ function showCentralContract(){
 	$contract30= $db->result($result,0,0);
 
 
-	// contrats avec préavis echeance j-7
+	// contrats avec prï¿½vis echeance j-7
 	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
 	$result = $db->query($query);
 	$contractpre7= $db->result($result,0,0);
 
 
-	// contrats avec préavis echeance j -30
+	// contrats avec prï¿½vis echeance j -30
 	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
 	$result = $db->query($query);
 	$contractpre30= $db->result($result,0,0);
@@ -157,7 +157,7 @@ function showDeviceContract($instID) {
 					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td align='center' class='tab_bg_2'>";
 					if ($canedit){
-						echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a>";
 					} else echo "&nbsp;";
 					echo "</td></tr>";
 				}
@@ -269,7 +269,7 @@ function showEnterpriseContract($instID) {
 		echo "<td align='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$_SERVER["PHP_SELF"]."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$lang["buttons"][6]."</b></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;

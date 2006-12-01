@@ -39,7 +39,7 @@ include ($phproot . "/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($lang["title"][10],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][10],$_SERVER['PHP_SELF']);
 
 titleTracking();
 
@@ -123,19 +123,19 @@ if (isset($_POST["delete_inter"])&&!empty($_POST["todel"])&&haveRight("delete_ti
 }
 
 if (!haveRight("show_ticket","1")){
-	searchSimpleFormTracking($_SERVER["PHP_SELF"],$tab["status"]);
-	showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$_SESSION["glpiID"],-1);
+	searchSimpleFormTracking($_SERVER['PHP_SELF'],$tab["status"]);
+	showTrackingList($_SERVER['PHP_SELF'],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$_SESSION["glpiID"],-1);
 } else {
 
 	if (!$tab["extended"])
-		searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
+		searchFormTracking($tab["extended"],$_SERVER['PHP_SELF'],$tab["start"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 	else 
-		searchFormTracking($tab["extended"],$_SERVER["PHP_SELF"],$tab["start"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
+		searchFormTracking($tab["extended"],$_SERVER['PHP_SELF'],$tab["start"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 
 	if (!$tab["extended"])
-		showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
+		showTrackingList($_SERVER['PHP_SELF'],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"]);
 	else 
-		showTrackingList($_SERVER["PHP_SELF"],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
+		showTrackingList($_SERVER['PHP_SELF'],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$tab["author"],$tab["group"],$tab["assign"],$tab["assign_ent"],$tab["category"],$tab["priority"],$tab["request_type"],$tab["item"],$tab["type"],$tab["showfollowups"],$tab["field2"],$tab["contains2"],$tab["field"],$tab["contains"],$tab["date1"],$tab["date2"],$tab["only_computers"],$tab["enddate1"],$tab["enddate2"]);
 }
 
 commonFooter();

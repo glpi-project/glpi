@@ -268,13 +268,13 @@ function kbItemMenu($ID)
 
 
 /**
- * Print out all kb catégories
+ * Print out all kb catï¿½ories
  *
  * 
  * 
  *
  * 
- * @return nothing (display all kb catégories)
+ * @return nothing (display all kb catï¿½ories)
  **/
 function showKbCategoriesall($target,$contains='')
 {
@@ -294,19 +294,19 @@ function showKbCategoriesall($target,$contains='')
 
 
 /**
- * Print out kb catégories
+ * Print out kb catï¿½ories
  *
  * @param $parentID integer
  * @param $contains
  * 
  *
  * 
- * @return nothing (display kb catégories in a list)
+ * @return nothing (display kb catï¿½ories in a list)
  **/
 
 function showKbCategories($parentID=0,$contains='')
 {
-	// show kb catégories
+	// show kb catï¿½ories
 	// ok
 
 	global $db,$lang,$HTMLRel;
@@ -330,9 +330,9 @@ function showKbCategories($parentID=0,$contains='')
 				echo "<li><b>";
 				if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 				if ($_SESSION["kb_show"][$ID]=='Y')
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif' alt='down'></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif' alt='down'></a>";
 				else 
-					echo "<a href=\"".$_SERVER["PHP_SELF"]."?toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif' alt='up'></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif' alt='up'></a>";
 
 				echo " ".$row["name"]."</b>\n";
 				if (!empty($row["comments"])){
@@ -610,12 +610,12 @@ function getFAQParentCategories($ID, $catNumbers)
 
 /**
  * 
- * Print out all FAQ catégories 
+ * Print out all FAQ catï¿½ories 
  * 
  * @param $target
  * @param $contains
  * 
- * @return nothing (display faq catégories)
+ * @return nothing (display faq catï¿½ories)
  **/
 function faqShowCategoriesall($target,$contains)
 {
@@ -674,9 +674,9 @@ function faqShowCategories($target,$parentID=0,$contains='')
 					echo "<li><b>";
 					if (!isset($_SESSION["kb_show"][$ID])) $_SESSION["kb_show"][$ID]='Y';
 					if ($_SESSION["kb_show"][$ID]=='Y')
-						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
+						echo "<a href=\"".$_SERVER['PHP_SELF']."?show=faq&amp;tohide=$ID\"><img src='".$HTMLRel."pics/puce-down.gif'></a>";
 					else 
-						echo "<a href=\"".$_SERVER["PHP_SELF"]."?show=faq&amp;toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
+						echo "<a href=\"".$_SERVER['PHP_SELF']."?show=faq&amp;toshow=$ID\"><img src='".$HTMLRel."pics/puce.gif'></a>";
 
 					echo " ".$row["name"]."</b>\n";
 

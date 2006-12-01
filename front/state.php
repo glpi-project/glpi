@@ -60,15 +60,15 @@ if (isset($tab["deletestate"])) {
 
 checkCentralAccess();
 
-commonHeader($lang["title"][9],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][9],$_SERVER['PHP_SELF']);
 
 titleState();
 
 if ($_GET["synthese"]=="yes")
-showStateSummary($_SERVER["PHP_SELF"]);
+showStateSummary($_SERVER['PHP_SELF']);
 else {
 	searchFormStateItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["state"]);
-	showStateItemList($_SERVER["PHP_SELF"],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
+	showStateItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
 }
 
 commonFooter();

@@ -39,16 +39,16 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("contract_infocom","r");
 
-commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][20],$_SERVER['PHP_SELF']);
 
 $contract=new Contract();
 $contract->title();
 
 manageGetValuesInSearch(CONTRACT_TYPE);
 
-searchForm(CONTRACT_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(CONTRACT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-showList(CONTRACT_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(CONTRACT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 commonFooter();
 

@@ -63,31 +63,31 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 	}	
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	if (!isset($_GET["ID"])) {
 		if (!isset($_GET["start"])) $_GET["start"]=0;
 		if (!isset($_GET["status"])) $_GET["status"]="all";
 		if (!isset($_GET["sort"])) $_GET["sort"]="";
 		if (!isset($_GET["order"])) $_GET["order"]="DESC";
-		searchSimpleFormTracking($_SERVER["PHP_SELF"],$_GET["status"]);
-		showTrackingList($_SERVER["PHP_SELF"],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_SESSION["glpiID"],-1);
+		searchSimpleFormTracking($_SERVER['PHP_SELF'],$_GET["status"]);
+		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_SESSION["glpiID"],-1);
 	}
 	else {
 		if (isset($_POST["update"])){
 			$track=new Job();
 			$track->update($_POST);
-			glpi_header($_SERVER["PHP_SELF"]."?show=user&ID=".$_POST["ID"]); 
+			glpi_header($_SERVER['PHP_SELF']."?show=user&ID=".$_POST["ID"]); 
 		}
 
-		if (showJobDetails($_SERVER["PHP_SELF"]."?show=user&ID=".$_GET["ID"],$_GET["ID"]))
+		if (showJobDetails($_SERVER['PHP_SELF']."?show=user&ID=".$_GET["ID"],$_GET["ID"]))
 			showFollowupsSummary($_GET["ID"]);
 	}
 }
 elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["add_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
 
 	//*******************
-	// Affichage Module réservation 
+	// Affichage Module rï¿½ervation 
 	//******************
 	checkRight("reservation_helpdesk","1");
 	$rr=new ReservationResa();
@@ -95,12 +95,12 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 
 		if ($_SESSION["glpiID"]==$_POST["id_user"]) 
-			if ($rr->update($_POST,$_SERVER["PHP_SELF"],$_POST["id_item"]))
+			if ($rr->update($_POST,$_SERVER['PHP_SELF'],$_POST["id_item"]))
 				glpi_header($cfg_glpi["root_doc"]."/front/helpdesk.public.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
 			else exit();
 	}
 
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	if (isset($_POST["clear_resa"])){
 		if ($rr->delete($_POST)){ // delete() need an array !
@@ -109,18 +109,18 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
-		printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
+		printCalendrier($_SERVER['PHP_SELF'],$_POST["id_item"]);
 
 	}
 
 	if (isset($_GET["ID"])){
-		printCalendrier($_SERVER["PHP_SELF"],$_GET["ID"]);
+		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
 	}
 	else if (isset($_GET["add"])){
-		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["add"],$_GET["date"]);
+		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["add"],$_GET["date"]);
 	}
 	else if (isset($_GET["edit"])){
-		showAddReservationForm($_SERVER["PHP_SELF"],$_GET["item"],"",$_GET["edit"]);
+		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["item"],"",$_GET["edit"]);
 	}
 	else if (isset($_POST["add_resa"])){
 		$ok=true;
@@ -134,7 +134,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
 			if ($_SESSION["glpiID"]==$_POST["id_user"]) {
 				unset($rr->fields["ID"]);
-				$ok=$rr->add($_POST,$_SERVER["PHP_SELF"],$ok);
+				$ok=$rr->add($_POST,$_SERVER['PHP_SELF'],$ok);
 			}
 
 		}
@@ -144,15 +144,15 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 
 		if ($ok){
 			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." add a reservation.");
-			printCalendrier($_SERVER["PHP_SELF"],$_POST["id_item"]);
+			printCalendrier($_SERVER['PHP_SELF'],$_POST["id_item"]);
 		}
 	}
 	else {
-		printReservationItems($_SERVER["PHP_SELF"]);
+		printReservationItems($_SERVER['PHP_SELF']);
 	}
 }
 //*******************
-// fin  Affichage Module réservation 
+// fin  Affichage Module rï¿½ervation 
 //*******************
 
 
@@ -165,7 +165,7 @@ elseif (isset($_POST["clear_resa"])||isset($_POST["edit_resa"])||isset($_POST["a
 else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 	$name="";
 	checkRight("faq","r");
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 
 	if (isset($_GET["ID"])){
@@ -191,7 +191,7 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 
 		if (!empty($contains)) searchLimitSessionVarKnowbase($contains);
 
-		faqShowCategoriesall($_SERVER["PHP_SELF"]."?show=faq",$contains);
+		faqShowCategoriesall($_SERVER['PHP_SELF']."?show=faq",$contains);
 	}
 }
 //*******************
@@ -201,7 +201,7 @@ else if (isset($_GET["show"]) && strcmp($_GET["show"],"faq") == 0){
 
 else {
 	checkHelpdeskAccess();
-	helpHeader($lang["title"][1],$_SERVER["PHP_SELF"],$_SESSION["glpiname"]);
+	helpHeader($lang["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	printHelpDesk($_SESSION["glpiID"],1);
 }

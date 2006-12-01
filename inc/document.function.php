@@ -58,7 +58,7 @@ function moveUploadedDocument($filename,$old_file=''){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][25]." ".$cfg_glpi["doc_dir"]."/".$old_file."<br>";
 				}
 
-				// Déplacement si droit
+				// Dï¿½lacement si droit
 				if (is_writable ($cfg_glpi["doc_dir"]."/_uploads/".$filename)){
 					if (rename($cfg_glpi["doc_dir"]."/_uploads/".$filename,$cfg_glpi["doc_dir"]."/".$new_path)){
 						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$lang["document"][39]."<br>";
@@ -127,12 +127,12 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 	if (!empty($dir)){
 		// Test existance repertoire DOCS
 		if (is_dir($cfg_glpi["doc_dir"])){
-			// Test existance sous-repertoire type dans DOCS -> sinon création
+			// Test existance sous-repertoire type dans DOCS -> sinon crï¿½tion
 			if (!is_dir($cfg_glpi["doc_dir"]."/".$dir)){
 				$_SESSION["MESSAGE_AFTER_REDIRECT"].= $lang["document"][34]." ".$cfg_glpi["doc_dir"]."/".$dir."<br>";
 				@mkdir($cfg_glpi["doc_dir"]."/".$dir);
 			}
-			// Copy du fichier uploadé si répertoire existe
+			// Copy du fichier uploadï¿½si rï¿½ertoire existe
 			if (is_dir($cfg_glpi["doc_dir"]."/".$dir)){
 				if (!$force){
 					// Rename file if exists
@@ -219,7 +219,7 @@ function showDeviceDocument($instID,$search='') {
 						echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
 						echo "<td align='center' class='tab_bg_2'>";
 						if ($canedit){
-							echo "<a href='".$_SERVER["PHP_SELF"]."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a>";
+							echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$lang["buttons"][6]."</b></a>";
 						} else echo "&nbsp;";
 						echo "</td></tr>";
 					}

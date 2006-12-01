@@ -139,11 +139,11 @@ function checkRight($module,$right) {
 
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
@@ -169,11 +169,11 @@ function checkSeveralRightsOr($modules) {
 
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
@@ -198,11 +198,11 @@ function checkSeveralRightsAnd($modules) {
 		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
@@ -222,11 +222,11 @@ function checkTypeRight($type,$right) {
 		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
@@ -247,11 +247,11 @@ function checkCentralAccess(){
 		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
@@ -272,11 +272,11 @@ function checkHelpdeskAccess(){
 		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
@@ -297,11 +297,11 @@ function checkLoginUser(){
 		}
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";
@@ -316,11 +316,11 @@ function checkAccessToPublicFaq(){
 	if ($cfg_glpi["public_faq"] == 0 && !haveRight("faq","r")){
 		if (!$HEADER_LOADED){
 			if (!isset($_SESSION["glpiprofile"]["interface"]))
-				nullHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				nullHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="central")
-				commonHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				commonHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 			else if ($_SESSION["glpiprofile"]["interface"]=="helpdesk")
-				helpHeader($lang["login"][5],$_SERVER["PHP_SELF"]);
+				helpHeader($lang["login"][5],$_SERVER['PHP_SELF']);
 		}
 		echo "<div align='center'><br><br><img src=\"".$HTMLRel."pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$lang["login"][5]."</b></div>";

@@ -38,7 +38,7 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("stat","tracking","user","enterprise","device");
 include ($phproot . "/inc/includes.php");
 
-commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][11],$_SERVER['PHP_SELF']);
 
 checkRight("statistic","1");
 
@@ -304,7 +304,7 @@ $entrees_total=constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"
 if (count($entrees_total)>0)
 	graphBy($entrees_total,$lang["stats"][5],$lang["stats"][35],1,"month");
 
-	// Total des interventions résolues
+	// Total des interventions rï¿½olues
 	$entrees_solved=constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_solved)>0)
 	graphBy($entrees_solved,$lang["stats"][11],$lang["stats"][35],1,"month");
@@ -314,7 +314,7 @@ if (count($entrees_solved)>0)
 if (count($entrees_avgtime)>0)
 	graphBy($entrees_avgtime,$lang["stats"][6],$lang["stats"][32],0,"month");
 
-	//Temps moyen d'intervention réel
+	//Temps moyen d'intervention rï¿½l
 	$entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_avgtime)>0)
 	graphBy($entrees_avgtime,$lang["stats"][25],$lang["stats"][33],0,"month");

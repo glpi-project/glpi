@@ -348,7 +348,7 @@ else
 
 	if ((!isset($cfg_glpi["version"])||trim($cfg_glpi["version"])!=GLPI_VERSION)&&!isset($_GET["donotcheckversion"])){
 		loadLanguage();
-		nullHeader("UPDATE NEEDED",$_SERVER["PHP_SELF"]);
+		nullHeader("UPDATE NEEDED",$_SERVER['PHP_SELF']);
 		echo "<div align='center'>";
 		if (!isset($cfg_glpi["version"])||trim($cfg_glpi["version"])<GLPI_VERSION){
 			echo "<form method='post' action='".$cfg_glpi["root_doc"]."/install/update.php'>";

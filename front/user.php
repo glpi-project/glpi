@@ -42,7 +42,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("user","r");
 
-commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);	
+commonHeader($lang["title"][2],$_SERVER['PHP_SELF']);	
 
 $user=new User();
 $user->title();
@@ -51,9 +51,9 @@ $user->title();
 
 manageGetValuesInSearch(USER_TYPE);
 
-searchForm(USER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(USER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-showList(USER_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(USER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 commonFooter();
 

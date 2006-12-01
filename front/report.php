@@ -42,7 +42,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($lang["title"][16],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][16],$_SERVER['PHP_SELF']);
 
 // titre
 echo "<div align='center'><table ><tr><td>";
@@ -67,7 +67,7 @@ $report_list["default"]["file"] = "report.default.php";
 
 
 if (haveRight("contract_infocom","r")){
-	// Rapport ajoutés par GLPI V0.2
+	// Rapport ajoutï¿½ par GLPI V0.2
 	$report_list["Contrats"]["name"] = $lang["reports"][27];
 	$report_list["Contrats"]["file"] = "report.contract.php";
 	$report_list["Par_annee"]["name"] = $lang["reports"][28];

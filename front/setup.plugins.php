@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("setup");
 include ($phproot . "/inc/includes.php");
 
 
-commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][2],$_SERVER['PHP_SELF']);
 echo "<div align='center'>";
 if (isset($plugin_hooks["config_page"]) && is_array($plugin_hooks["config_page"])) {
 	foreach ($plugin_hooks["config_page"] as $plug => $page){

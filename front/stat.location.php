@@ -38,7 +38,7 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("stat","tracking","user","setup","device");
 include ($phproot . "/inc/includes.php");
 
-commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][11],$_SERVER['PHP_SELF']);
 
 checkRight("statistic","1");
 

@@ -39,7 +39,7 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("contact_enterprise","r");
 
-commonHeader($lang["title"][22],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][22],$_SERVER['PHP_SELF']);
 
 $contact=new Contact();
 $contact->title();
@@ -47,9 +47,9 @@ $contact->title();
 
 manageGetValuesInSearch(CONTACT_TYPE);
 
-searchForm(CONTACT_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(CONTACT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-showList(CONTACT_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(CONTACT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 commonFooter();
 ?>

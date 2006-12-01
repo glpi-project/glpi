@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 /*!
-  \brief affiche le rapport réseau par switch 
+  \brief affiche le rapport rï¿½eau par switch 
 
  */
 
@@ -49,7 +49,7 @@ if (isset($_POST["prise"])){
 		WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]."";
 	$result = $db->query($query2);
 	if ($db->numrows($result)==1){
-		commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
+		commonHeader($lang["Menu"][6],$_SERVER['PHP_SELF']);
 
 		$ligne = $db->fetch_array($result);
 		$prise=$ligne['prise'];
@@ -65,7 +65,7 @@ if (isset($_POST["prise"])){
 			WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]." AND c.device_type=".NETWORKING_TYPE.";";
 
 		/*!
-		  on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
+		  on envoie la requï¿½e de selection qui varie selon le choix fait dans la dropdown ï¿½la fonction report perso qui
 		  affiche un rapport en fonction de la prise choisie  
 		 */
 

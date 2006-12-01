@@ -129,13 +129,13 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 	}
 
-	commonHeader($lang["title"][20],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][20],$_SERVER['PHP_SELF']);
 
 
 	if ($contract->getFromDB($tab["ID"]))
-		$contract->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
+		$contract->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], "",$_SESSION['glpi_onglet'] );
 
-	if ($contract->showForm($_SERVER["PHP_SELF"],$tab["ID"])) {
+	if ($contract->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID']))
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
@@ -152,7 +152,7 @@ else
 					showLinkOnDevice(CONTRACT_TYPE,$tab["ID"]);
 					break;
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],CONTRACT_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],CONTRACT_TYPE,$tab["ID"]);
 					break;
 				default :
 					if (!display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){

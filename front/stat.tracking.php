@@ -39,7 +39,7 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("user","stat","tracking");
 include ($phproot . "/inc/includes.php");
 
-commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][11],$_SERVER['PHP_SELF']);
 
 checkRight("statistic","1");
 

@@ -41,7 +41,7 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("setup");
 include ($phproot . "/inc/includes.php");
 
-commonHeader($lang["title"][2],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][2],$_SERVER['PHP_SELF']);
 
 checkTypeRight($_GET["type"],"w");
 

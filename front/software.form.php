@@ -105,14 +105,14 @@ else
 		//glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($lang["title"][12],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][12],$_SERVER['PHP_SELF']);
 
 	if ($soft->getFromDB($tab["ID"]))
-		$soft->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		$soft->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 
 	if (!empty($tab["withtemplate"])) {
 
-		if ($soft->showForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'], $tab["withtemplate"])){
+		if ($soft->showForm($_SERVER['PHP_SELF'],$tab["ID"],$tab['search_software'], $tab["withtemplate"])){
 
 			if (!empty($tab["ID"])){
 				switch($_SESSION['glpi_onglet']){
@@ -142,7 +142,7 @@ else
 			}
 		}
 
-		if ($soft->showForm($_SERVER["PHP_SELF"],$tab["ID"],$tab['search_software'])){
+		if ($soft->showForm($_SERVER['PHP_SELF'],$tab["ID"],$tab['search_software'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showLicensesAdd($tab["ID"]);
@@ -174,10 +174,10 @@ else
 					showLinkOnDevice(SOFTWARE_TYPE,$tab["ID"]);
 					break;	
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],SOFTWARE_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],SOFTWARE_TYPE,$tab["ID"]);
 					break;				
 				case 11 :
-					showDeviceReservations($_SERVER["PHP_SELF"],SOFTWARE_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],SOFTWARE_TYPE,$tab["ID"]);
 					break;
 				case 12 :
 					showHistory(SOFTWARE_TYPE,$tab["ID"]);

@@ -194,7 +194,7 @@ class User extends CommonDBTM {
 		}
 
 		// Security system execpt for login update
-		if ($_SESSION["glpiID"]&&!haveRight("user","w")&&!ereg("login.php",$_SERVER["PHP_SELF"])){
+		if ($_SESSION["glpiID"]&&!haveRight("user","w")&&!ereg("login.php",$_SERVER['PHP_SELF'])){
 			if($_SESSION["glpiID"]==$input['ID']) {
 				$ret=$input;
 				// extauth ldap case
@@ -633,7 +633,7 @@ class User extends CommonDBTM {
 			echo "</th></tr>";
 			echo "<tr class='tab_bg_1'>";	
 			echo "<td align='center'>".$lang["setup"][18]."</td>";
-			// si on est dans le cas d'un ajout , cet input ne doit plus être hiden
+			// si on est dans le cas d'un ajout , cet input ne doit plus ï¿½re hiden
 			if ($this->fields["name"]=="") {
 				echo "<td><input  name='name' value=\"".$this->fields["name"]."\">";
 				echo "</td>";

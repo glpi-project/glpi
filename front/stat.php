@@ -38,7 +38,7 @@ include ("_relpos.php");
 $NEEDED_ITEMS=array("stat","tracking");
 include ($phproot . "/inc/includes.php");
 
-commonHeader($lang["title"][11],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][11],$_SERVER['PHP_SELF']);
 
 checkRight("statistic","1");
 
@@ -48,7 +48,7 @@ echo "<img src=\"".$HTMLRel."pics/statistiques.png\" alt='".$lang["Menu"][13]."'
 echo "</td></tr></table></div>";
 
 
-//Affichage du tableau de présentation des stats
+//Affichage du tableau de prï¿½entation des stats
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$lang["stats"][0].":</th></tr>";
 

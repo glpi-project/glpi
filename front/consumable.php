@@ -39,22 +39,22 @@ include ($phproot . "/inc/includes.php");
 
 checkRight("consumable","r");
 
-commonHeader($lang["title"][36],$_SERVER["PHP_SELF"]);
+commonHeader($lang["title"][36],$_SERVER['PHP_SELF']);
 
 $constype=new ConsumableType();
 $constype->title();
 
 
 if (isset($_GET["synthese"])){
-	showConsumableSummary($_SERVER["PHP_SELF"]);
+	showConsumableSummary($_SERVER['PHP_SELF']);
 
 } else {
 
 	manageGetValuesInSearch(CONSUMABLE_TYPE);
 
-	searchForm(CONSUMABLE_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+	searchForm(CONSUMABLE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
-	showList(CONSUMABLE_TYPE,$_SERVER["PHP_SELF"],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+	showList(CONSUMABLE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 
 }
 commonFooter();

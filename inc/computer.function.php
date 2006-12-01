@@ -128,7 +128,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 
 		echo "</form>";
 		//ADD a new device form.
-		device_selecter($_SERVER["PHP_SELF"],$comp->fields["ID"],$withtemplate);
+		device_selecter($_SERVER['PHP_SELF'],$comp->fields["ID"],$withtemplate);
 		echo "</div>";
 	}	
 

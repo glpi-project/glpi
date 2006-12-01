@@ -126,14 +126,14 @@ else
 	}
 
 
-	commonHeader($lang["title"][7],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["title"][7],$_SERVER['PHP_SELF']);
 
 	if ($peripheral->getFromDB($tab["ID"]))
-		$peripheral->showOnglets($_SERVER["PHP_SELF"]."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
+		$peripheral->showOnglets($_SERVER['PHP_SELF']."?ID=".$tab["ID"], $tab["withtemplate"],$_SESSION['glpi_onglet'] );
 
 	if (!empty($tab["withtemplate"])) {
 
-		if ($peripheral->showForm($_SERVER["PHP_SELF"],$tab["ID"], $tab["withtemplate"])){
+		if ($peripheral->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
 			if (!empty($tab["ID"])){
 
 				switch($_SESSION['glpi_onglet']){
@@ -167,10 +167,10 @@ else
 			}
 		}
 
-		if ($peripheral->showForm($_SERVER["PHP_SELF"],$tab["ID"])){
+		if ($peripheral->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
+					showConnect($_SERVER['PHP_SELF'],$tab["ID"],PERIPHERAL_TYPE);
 					showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
 					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
 					showInfocomForm($cfg_glpi["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$tab["ID"]);
@@ -196,17 +196,17 @@ else
 					showLinkOnDevice(PERIPHERAL_TYPE,$tab["ID"]);
 					break;	
 				case 10 :
-					showNotesForm($_SERVER["PHP_SELF"],PERIPHERAL_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],PERIPHERAL_TYPE,$tab["ID"]);
 					break;	
 				case 11 :
-					showDeviceReservations($_SERVER["PHP_SELF"],PERIPHERAL_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],PERIPHERAL_TYPE,$tab["ID"]);
 					break;
 				case 12 :
 					showHistory(PERIPHERAL_TYPE,$tab["ID"]);
 					break;		
 				default :
 					if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-						showConnect($_SERVER["PHP_SELF"],$tab["ID"],PERIPHERAL_TYPE);
+						showConnect($_SERVER['PHP_SELF'],$tab["ID"],PERIPHERAL_TYPE);
 						showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
 						showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
 					}

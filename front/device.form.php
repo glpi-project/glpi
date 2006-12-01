@@ -78,8 +78,8 @@ else if (isset($_POST["update"])) {
 }
 else {
 
-	commonHeader($lang["title"][30],$_SERVER["PHP_SELF"]);
-	showDevicesForm($_SERVER["PHP_SELF"],$tab["ID"],$tab["device_type"]);
+	commonHeader($lang["title"][30],$_SERVER['PHP_SELF']);
+	showDevicesForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["device_type"]);
 	commonFooter();
 }
 

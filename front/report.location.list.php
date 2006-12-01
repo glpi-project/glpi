@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
  */
 /*!
-  \brief affiche le rapport réseau par etage 
+  \brief affiche le rapport rï¿½eau par etage 
 
  */
 
@@ -44,7 +44,7 @@ FROM glpi_dropdown_locations
 WHERE glpi_dropdown_locations.id=".$_POST["location"]."";
 $result = $db->query($query2);
 if ($db->numrows($result)==1){
-	commonHeader($lang["Menu"][6],$_SERVER["PHP_SELF"]);
+	commonHeader($lang["Menu"][6],$_SERVER['PHP_SELF']);
 
 	$ligne = $db->fetch_array($result);
 	$stage=$ligne['stage'];
@@ -62,8 +62,8 @@ if ($db->numrows($result)==1){
 		WHERE ".getRealQueryForTreeItem("glpi_dropdown_locations",$_POST["location"])." AND c.device_type=".NETWORKING_TYPE.";";
 
 	/*!
-	  on envoie la requête de selection qui varie selon le choix fait dans la dropdown à la fonction report perso qui
-	  affiche un rapport en fonction de l'étage choisi  
+	  on envoie la requï¿½e de selection qui varie selon le choix fait dans la dropdown ï¿½la fonction report perso qui
+	  affiche un rapport en fonction de l'ï¿½age choisi  
 	 */
 	report_perso("glpi_networking_lieu",$query);
 	echo "</div>";

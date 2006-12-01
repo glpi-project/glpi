@@ -189,7 +189,7 @@ if ($auth_succeded)
 
 // we have done at least a good login? No, we exit.
 if ( ! $auth_succeded ) {
-	nullHeader("Login",$_SERVER["PHP_SELF"]);
+	nullHeader("Login",$_SERVER['PHP_SELF']);
 	echo "<div align='center'><b>".$identificat->getErr().".</b><br><br>";
 	echo "<b><a href=\"".$cfg_glpi["root_doc"]."/logout.php\">".$lang["login"][1]."</a></b></div>";
 	nullFooter();
