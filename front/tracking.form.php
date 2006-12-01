@@ -73,14 +73,13 @@ if (isset($_POST['update'])){
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["tracking"]);
 }
 
-if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+// Manage All case which does not exist
+if (!isset($_SESSION['glpi_onglet'])||$_SESSION['glpi_onglet']==-1) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_onglet']=$_GET['onglet'];
 }
-
 if (isset($_GET["ID"]))
 if (showJobDetails($_SERVER['PHP_SELF'],$_GET["ID"])){
-
 	switch($_SESSION['glpi_onglet']){
 		default :
 			if (!display_plugin_action(TRACKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
