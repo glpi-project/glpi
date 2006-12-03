@@ -254,7 +254,7 @@ function commonHeader($title,$url)
 	
 		//<!-- Le menu principal -->
 		echo "<div id='c_menu'>";
-		echo "<div id='c_logo' onmouseover=\"javascript:hidemenu('menu');\"><a href='".$CFG_GLPI["root_doc"]."/front/central' title='' lang=''><span class='invisible'>Logo</span></a></div>";
+		echo "<div id='c_logo' onmouseover=\"javascript:hidemenu('menu');\"><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title='' lang=''><span class='invisible'>Logo</span></a></div>";
 		echo "	<ul id='menu'>";
 		
 	
@@ -340,7 +340,7 @@ function commonHeader($title,$url)
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($list as $key => $val) {
-				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
 			}
 			echo "</ul>";
 			echo "</li>";
