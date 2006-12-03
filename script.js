@@ -1,202 +1,153 @@
-
 /**
  * This array is used to remember mark status of rows in browse mode
  */
 var marked_row = new Array;
 
 var timeoutglobalvar;
+
+//modifier la propriété display d'un élement
 function setdisplay (objet, statut) {
-	if (objet.style.display != statut) objet.style.display = statut;
+	var e = objet;
+	if(e.style.display != statut){
+		e.style.display = statut;
+		return true;
+	}
+}
+
+//tester le type de navigateur
+function isIe(){
+	var ie = false;	
+	var appVer = navigator.appVersion.toLowerCase();
+	var iePos = appVer.indexOf('msie');
+	if (iePos != -1) {
+		var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
+		var is_major = parseInt(is_minor);
+	}
+	if (navigator.appName.substring(0,9) == "Microsoft") { 
+		// Check if IE version is 6 or older
+		if (is_major <= 6) {
+			ie = true;
+		}
+	}
+	return ie;
 }
 
 function cleandisplay(id){
-	var e=document.getElementById(id);
-	if (e){
-		var ie=false;
-
-		var appVer = navigator.appVersion.toLowerCase();
-		var iePos = appVer.indexOf('msie');
-		if (iePos !=-1) {
-			var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
-			var is_major = parseInt(is_minor);
-		}
-		if (navigator.appName.substring(0,9) == "Microsoft")
-		{ // Check if IE version is 6 or older
-			if (is_major <= 6) {
-				ie=true;
-			}
-		}
-
+	var e = document.getElementById(id);
+	if(e){
 		setdisplay(e,'block');
-
-		if (ie){
-			var selx=0; var sely=0; var selp;
-			if(e.offsetParent){
-				selp=e;
-				while(selp.offsetParent){
-					selp=selp.offsetParent;
-					selx+=selp.offsetLeft;
-					sely+=selp.offsetTop;
-				}
-			}
-			selx+=e.offsetLeft;
-			sely+=e.offsetTop;
-			selw=e.offsetWidth;
-			selh=e.offsetHeight;
-			hideSelect(selx,sely,selw,selh);
+		if (isIe()){
+			doHideSelect(e);
 		}
 	}
 }
 
 function cleanhide(id){
-	var e=document.getElementById(id);
-	if (e){
-		var ie=false;
-
-		var appVer = navigator.appVersion.toLowerCase();
-		var iePos = appVer.indexOf('msie');
-		if (iePos !=-1) {
-			var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
-			var is_major = parseInt(is_minor);
-		}
-		if (navigator.appName.substring(0,9) == "Microsoft")
-		{ // Check if IE version is 6 or older
-			if (is_major <= 6) {
-				ie=true;
-			}
-		}
-
-		if (ie){
-			var selx=0; var sely=0; var selp;
-			if(e.offsetParent){
-				selp=e;
-				while(selp.offsetParent){
-					selp=selp.offsetParent;
-					selx+=selp.offsetLeft;
-					sely+=selp.offsetTop;
-				}
-			}
-			selx+=e.offsetLeft;
-			sely+=e.offsetTop;
-			selw=e.offsetWidth;
-			selh=e.offsetHeight;
-			showSelect(selx,sely,selw,selh);
+	var e = document.getElementById(id);
+	if(e){
+		if(isIe()){
+			doShowSelect(e);
 		}
 		setdisplay(e,'none');
-
 	}
 }
 
-
-function hidemenu(){
-	var ie=false;
-
-	var appVer = navigator.appVersion.toLowerCase();
-	var iePos = appVer.indexOf('msie');
-	if (iePos !=-1) {
-		var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
-		var is_major = parseInt(is_minor);
-	}
-	if (navigator.appName.substring(0,9) == "Microsoft")
-	{ // Check if IE version is 6 or older
-		if (is_major <= 6) {
-			ie=true;
-		}
-	}
-
-	for (var i = 1; i<=10; i++) {
-		var e=document.getElementById('smenu'+i);
-		if (e) {
-			if (ie){
-				var selx=0; var sely=0; var selp;
-				if(e.offsetParent){
-					selp=e;
-					while(selp.offsetParent){
-						selp=selp.offsetParent;
-						selx+=selp.offsetLeft;
-						sely+=selp.offsetTop;
-					}
-				}
-				selx+=e.offsetLeft;
-				sely+=e.offsetTop;
-				selw=e.offsetWidth;
-				selh=e.offsetHeight;
-				showSelect(selx,sely,selw,selh);
+//effacer tous les smenu du menu principal
+//afficher les selects du document
+function hidemenu(idMenu){
+	var e = document.getElementById(idMenu);
+	var e = e.getElementsByTagName('ul');
+	for(var i = 0; i < e.length; i++) {
+		if (e[i]) {
+			if (isIe()){
+				doShowSelect(e[i]);
 			}
-			setdisplay(e,'none');
+			setdisplay(e[i],'none');
 		}
 	}	
 }
 
-function montre(id) {
+//afficher le smenu demandé
+function montre(id,idMenu) {
+	//récupérer l'élément ciblé
 	var d = document.getElementById(id);
-
-	var ie=false;
-
-	var appVer = navigator.appVersion.toLowerCase();
-	var iePos = appVer.indexOf('msie');
-	if (iePos !=-1) {
-		var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
-		var is_major = parseInt(is_minor);
+	
+	//récupérer toutes les listes du menu principale
+	var m = document.getElementById(idMenu);
+	var m = m.getElementsByTagName('ul');
+		
+	//test pour connaître le navigateur
+	if(isIe()){
+		//masquage des élements select du document
+		if(m){
+			for (var i = 1; i<=m.length; i++) {
+				//listage des éléments li nommés du type smenu + i
+				var e = document.getElementById('menu'+i);
+				var smenu = e.getElementsByTagName('ul');
+				doShowSelect(smenu[0]);
+			}		
+		}	
 	}
-	if (navigator.appName.substring(0,9) == "Microsoft")
-	{ // Check if IE version is 6 or older
-		if (is_major <= 6) {
-			ie=true;
-		}
-	}
-
-	for (var i = 1; i<=10; i++) {
-		var e=document.getElementById('smenu'+i);
-		if (e) {
-			setdisplay(e,'block');
-			if (ie){
-				var selx=0; var sely=0; var selp;
-				if(e.offsetParent){
-					selp=e;
-					while(selp.offsetParent){
-						selp=selp.offsetParent;
-						selx+=selp.offsetLeft;
-						sely+=selp.offsetTop;
-					}
-				}
-				selx+=e.offsetLeft;
-				sely+=e.offsetTop;
-				selw=e.offsetWidth;
-				selh=e.offsetHeight;
-				showSelect(selx,sely,selw,selh);
-			}
-			setdisplay(e,'none');
-		}
-	}
+	
+	//aficher le sous-menu de l'élément
 	if (d) {
-		setdisplay(d,'block'); 
-		clearTimeout(timeoutglobalvar);
-		timeoutglobalvar=setTimeout(function(){setdisplay(d, 'none')},5000);
+		var smenu = d.getElementsByTagName('ul');
+		if (smenu) {
+			//masquer tous les smenu ouverts
+			for(var i = 0; i < m.length; i++){
+				setdisplay(	m[i],'none');
+			}
+			setdisplay(smenu[0],'block');
+			clearTimeout(timeoutglobalvar);
+			timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},5000);
+			if (isIe()) {
+				doHideSelect(smenu[0]);
+			}
+		}
+	}	
+}
 
-		if (ie){
-			var selx=0; var sely=0; var selp;
-			if(d.offsetParent){
-				selp=d;
-				while(selp.offsetParent){
-					selp=selp.offsetParent;
-					selx+=selp.offsetLeft;
-					sely+=selp.offsetTop;
+//masquer le smenu actif par timeout
+function afterView(idMenu){
+	setdisplay(idMenu,'none');
+	if (isIe()) {
+		doShowSelect(idMenu);
+	}
+}
+
+//execute la fonction showSelect
+function doShowSelect(objet){
+	if (objet) {
+		//correction du bugg sur IE
+		if(isIe()){
+			if(setdisplay(objet,'block')){
+				var selx=0; var sely=0; var selp;
+				if(objet.offsetParent){
+					selp = objet;
+					while(selp.offsetParent){
+						selp = selp.offsetParent;
+					    selx += selp.offsetLeft;
+					    sely += selp.offsetTop;
+					}
+					selx += objet.offsetLeft;
+					sely += objet.offsetTop;
+					selw = objet.offsetWidth;
+					selh = objet.offsetHeight;
+					showSelect(selx,sely,selw,selh);
 				}
 			}
-			selx+=d.offsetLeft;
-			sely+=d.offsetTop;
-			selw=d.offsetWidth;
-			selh=d.offsetHeight;
-			hideSelect(selx,sely,selw,selh);
+			if(setdisplay(objet,'none')){
+				return true;
+			}		
 		}
 	}
 }
 
+//affiche les select du document
 function showSelect(x,y,w,h){
-	var selx,sely,selw,selh,i;
-	var sel=document.getElementsByTagName("SELECT");
-	for(i=0;i<sel.length;i++){
+	var selx,sely,selw,selh;
+	var sel = document.getElementsByTagName("SELECT");
+	for(var i=0; i<sel.length; i++){
 		selx=0; sely=0; var selp;
 		if(sel[i].offsetParent){
 			selp=sel[i];
@@ -213,8 +164,33 @@ function showSelect(x,y,w,h){
 		if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
 			sel[i].style.visibility="visible";
 	}
+	return true;
 }
 
+//execute la fonction hideMenu
+function doHideSelect(object){
+	var e = object;
+	if(isIe()){
+		var selx=0; var sely=0; var selp;
+		if(e.offsetParent){
+			selp = e;
+			while(selp.offsetParent){
+				selp = selp.offsetParent;
+				selx += selp.offsetLeft;
+				sely += selp.offsetTop;
+			}
+		}
+		
+		selx += e.offsetLeft;
+		sely += e.offsetTop;
+		selw = e.offsetWidth;
+		selh = e.offsetHeight;
+		hideSelect(selx,sely,selw,selh);
+	}
+	return true;
+}
+
+//masque les select du document
 function hideSelect(x,y,w,h){
 	var selx,sely,selw,selh,i;
 	var sel=document.getElementsByTagName("SELECT");
@@ -235,7 +211,13 @@ function hideSelect(x,y,w,h){
 		if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
 			sel[i].style.visibility="hidden";
 	}
+	return true;
 }
+
+
+
+
+
 
 function jumpTo(URL_List){ var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; }
 
