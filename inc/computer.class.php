@@ -655,6 +655,7 @@ class Computer extends CommonDBTM {
 				}
 				$CFG_GLPI["cache"]->end();
 			}
+			
 
 			if (haveRight("computer","w")) {
 				echo "<tr>\n";

@@ -127,7 +127,7 @@ function commonHeader($title,$url)
 		// End of Head
 		echo "</head>\n";
 
-	if (!($CFG_GLPI["cache"]->start($_SESSION["glpiID"],"GLPI_HEADER"))) {
+	//if (!($CFG_GLPI["cache"]->start($_SESSION["glpiID"],"GLPI_HEADER"))) {
 		// Body 
 		echo "<body>";
 	
@@ -225,72 +225,96 @@ function commonHeader($title,$url)
 
 	
 	
-		// Main Headline
-		echo "<div id='navigation'>";
+		echo "<div id='header'>";
+		// Les préférences + lien déconnexion 
+		echo "<div id='c_preference' onmouseover=\"javascript:hidemenu('menu');\">";
+		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\" alt=\"".$LANG["central"][6]."\" title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
+		echo "(";
+		if (!empty($_SESSION["glpirealname"])) {
+			echo $_SESSION["glpirealname"];
+			if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
+		}
+		else echo $_SESSION["glpiname"];
+		echo ")</li>\n"; 
+
+		echo "	<li><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750')\" alt=\"\" title=\"".$LANG["central"][7]."\" >    ".$LANG["central"][7]."</a></li>\n"; 
+		echo "	<li><a <a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".$LANG["Menu"][11]."\" lang=''>".$LANG["Menu"][11]."   </a></li>\n"; 
+		//echo "<li>".showProfileSelecter()."</li>";			
+		echo "</ul>\n"; 
+		echo "<div class='sep'></div>\n"; 
+		echo "</div>\n"; 
+		//-- Le moteur de recherche -->
+		echo "<div id='c_recherche' onmouseover=\"javascript:hidemenu('menu');\">\n"; 
+		echo "<form id='recherche'>\n"; 
+		echo "	<div id='boutonRecherche'><input type='submit' value='OK' /></div>\n"; 
+		echo "	<div id='champRecherche'><input type='text' value='Recherche' /></div>	\n"; 		
+		echo "</form>\n"; 
+		echo "<div class='sep'></div>\n"; 
+		echo "</div>";
 	
-		//menu
-		echo "<div id='menu'>";
-		// Logo with link to command center
-	
-		echo "<dl><dt onmouseover=\"javascript:hidemenu();\"><a class='icon_logo' style='background: transparent' href=\"".$CFG_GLPI["root_doc"]."/front/central.php\" accesskey=\"0\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/logo-glpi.png\"  alt=\"".$CFG_GLPI["logotxt"]."\" title=\"".$LANG["central"][5]."\"></a></dt></dl>";
+		//<!-- Le menu principal -->
+		echo "<div id='c_menu'>";
+		echo "<div id='c_logo' onmouseover=\"javascript:hidemenu('menu');\"><a href='".$CFG_GLPI["root_doc"]."/front/central' title='' lang=''><span class='invisible'>Logo</span></a></div>";
+		echo "	<ul id='menu'>";
+		
 	
 		// Get object-variables and build the navigation-elements
 	
 		// Inventory
 		if (count($inventory)) {
-			echo "<dl><dt onmouseover=\"javascript:montre('smenu1');\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/inventaire.png\" alt=\"\" title=\"".$LANG["setup"][10]."\"><br>\n";
-			echo "<span class='menu_title'>-&nbsp;".$LANG["setup"][10]."&nbsp;-</span></dt>\n";
-			echo "<dd id=\"smenu1\"><ul>";
+			echo "	<li id='menu1' onmouseover=\"javascript:montre('menu1','menu');\">";
+			echo "<a href='' title=\"".$LANG["setup"][10]."\" lang='' class='itemP'>".$LANG["setup"][10]."</a>";
+			echo "<ul class='ssmenu'>"; 
 			$i=0;
 			// list menu item 
 			foreach ($inventory as $key => $val) {
-				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+				
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
 				$i++;
 			}
 	
-			echo "</ul></dd>\n";
-			echo "</dl>\n";
+			echo "</ul>";
+			echo "</li>";		
 		}
 	
 		// Maintain / Tracking / ticket
 		if (count($maintain)) {
+			echo "	<li id='menu2' onmouseover=\"javascript:montre('menu2','menu');\">";
+			echo "<a href='' title=\"".$LANG["title"][24]."\" lang='' class='itemP'>".$LANG["title"][24]."</a>";
+			echo "<ul class='ssmenu'>";	
 	
-			echo "<dl><dt onmouseover=\"javascript:montre('smenu2');\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/maintenance.png\" alt=\"\" title=\"".$LANG["title"][24]."\"><br>\n";
-			echo "<span class='menu_title'>-&nbsp;".$LANG["title"][24]."&nbsp;-</span></dt>\n";
-			echo "<dd id=\"smenu2\"><ul>";
 			// list menu item 
 			foreach ($maintain as $key => $val) {
-				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
 			}
-			echo "</ul></dd>\n";
-			echo "</dl>\n";
+			echo "</ul>";
+			echo "</li>";
 		}
 		// Financial
 		if (count($financial)) {
-			echo "<dl><dt onmouseover=\"javascript:montre('smenu3');\">";
-			echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/gestion.png\" alt=\"\" title=\"".$LANG["Menu"][26]."\"><br>\n";
-			echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][26]."&nbsp;-</span></dt>\n";
-			echo "<dd id=\"smenu3\"><ul>";
+			echo "	<li id='menu3' onmouseover=\"javascript:montre('menu3','menu');\">";
+			echo "<a href='' title=\"".$LANG["Menu"][26]."\" lang='' class='itemP'>".$LANG["Menu"][26]."</a>";
+			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($financial as $key => $val) {
-				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
 			}
-			echo "</ul></dd>\n";
-			echo "</dl>\n";
+			echo "</ul>";
+			echo "</li>";
 		}
 	
 		// Tools
 		if (count($utils)) {
-			echo "<dl><dt onmouseover=\"javascript:montre('smenu4');\">";
-			echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/outils.png\" alt=\"\" title=\"".$LANG["Menu"][18]."\"><br>\n";
-			echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][18]."&nbsp;-</span></dt>\n";
-			echo "<dd id=\"smenu4\"><ul>";
+			echo "	<li id='menu4' onmouseover=\"javascript:montre('menu4','menu');\">";
+			echo "<a href='' title=\"".$LANG["Menu"][26]."\" lang='' class='itemP'>".$LANG["Menu"][26]."</a>";
+			echo "<ul class='ssmenu'>"; 
+			
 			// list menu item 
 			foreach ($utils as $key => $val) {
-				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
 			}
-			echo "</ul></dd>\n";
-			echo "</dl>\n";
+			echo "</ul>";
+			echo "</li>";
 		}
 	
 		// PLUGINS
@@ -311,65 +335,62 @@ function commonHeader($title,$url)
 				$list[$key]=$val["name"];
 			}
 			asort($list);
-			echo "<dl><dt onmouseover=\"javascript:montre('smenu5');\">";
-			echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/plugins.png\" alt=\"\" title=\"".$LANG["Menu"][15]."\"><br>\n";
-			echo "<span class='menu_title'>-&nbsp;".$LANG["common"][29]."&nbsp;-</span></dt>\n";
-			echo "<dd id=\"smenu5\"><ul>";
+			echo "	<li id='menu5' onmouseover=\"javascript:montre('menu5','menu');\">";
+			echo "<a href='' title=\"".$LANG["common"][29]."\" lang='' class='itemP'>".$LANG["common"][29]."</a>";
+			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($list as $key => $val) {
-				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></span></li>\n";
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
 			}
-			echo "</ul></dd>\n";
-			echo "</dl>\n";
+			echo "</ul>";
+			echo "</li>";
 		}
 	
 		// Administration 
 		if (count($config)) {
-			echo "<dl><dt onmouseover=\"javascript:montre('smenu6');\">";
-			echo "<img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/config.png\" alt=\"\" title=\"".$LANG["Menu"][15]."\"><br>\n";
-			echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][15]."&nbsp;-</span></dt>\n";
-			echo "<dd id=\"smenu6\"><ul>";
+			echo "	<li id='menu6' onmouseover=\"javascript:montre('menu6','menu');\">";
+			echo "<a href='' title=\"".$LANG["Menu"][15]."\" lang='' class='itemP1'>".$LANG["Menu"][15]."</a>";
+			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($config as $key => $val) {
-				echo "<li><span class='menu'><a  href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></span></li>\n";
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
 			}
-			echo "</ul></dd>\n";
-			echo "</dl>\n";
+			echo "</ul>";
+			echo "</li>";
 		}
 	
-	
-		// Display  clock with date, help and a logout-link.
-		//logout
-		echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%; margin-right:10px;'><a  class='icon_nav_move'  style='background: transparent'  href=\"".$CFG_GLPI["root_doc"]."/logout.php\"><img  class='icon_nav'  src=\"".$CFG_GLPI["root_doc"]."/pics/logout.png\" alt=\"".$LANG["central"][6]."\" title=\"".$LANG["central"][6]."\"></a></div>\n";
-	
-		//help
-		echo "<div  onmouseover=\"javascript:hidemenu();\" style='float:right; width:5%;'><a class='icon_nav_move'  style='background: transparent'   href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$LANG["central"][7]."\"></a></div>\n";
-	
-	
-	
+		echo "</ul>";		
+		echo "<div class='sep'></div>";
+		echo "</div>";
 	
 		// End navigation bar
 	
-	
 		// End headline
-		//	echo "<hr class='separ'>";
-		showProfileSelecter();
+		
+		///Le sous menu contextuel 1
+		echo "<div id='c_ssmenu1' onmouseover=\"javascript:hidemenu('menu');\">";
+		echo "<ul>";
+		echo "	<li><a href='' title='' lang=''>Suivi</a></li>";
+		echo "	<li>Planning</li>";
+		echo "	<li>Statistique</li>";
+		echo "	<li>Helpdesk</li>";
+		echo "</ul>";
+		echo "</div>";
+
+		//  Le fil d arianne 
+		echo "<div id='c_ssmenu2' onmouseover=\"javascript:hidemenu('menu');\">";
+		echo "<ul>";
+		echo "	<li><a href='' title='' lang=''>Central > </a></li>";
+		echo "	<li>Helpdesk</li>";
+		echo "</ul>";	
+		echo "	</div>";
+			
+		echo "</div>\n";
 
 		echo "</div>\n";
-		echo "<div class='nav_horl' style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:200;'>";
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.my.php'>";
-		if (!empty($_SESSION["glpirealname"])) {
-			echo $_SESSION["glpirealname"];
-			if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
-		}
-		else echo $_SESSION["glpiname"];
-		echo "</a></div>\n";
+	//	$CFG_GLPI["cache"]->end();
+	//}
 	
-		echo "</div>";
-		$CFG_GLPI["cache"]->end();
-	}
-	echo "<div onmouseover=\"javascript:hidemenu();\">";
-
 	// call function callcron() every 5min
 	if (isset($_SESSION["glpicrontimer"])){
 		if (abs(time()-$_SESSION["glpicrontimer"])>300){
