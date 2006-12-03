@@ -27,18 +27,297 @@
  --------------------------------------------------------------------------
 */
 
-/* ########################Fichier CSS############################# */
-/* ###### general ###### */
-/* #################################### */
+/* ########################    Fichier CSS   ############################# */
+/* #######################     general       ############################# */
+/* ####################################################################### */ 
 
-body{  
-	padding :5px;
-	margin :0;
-	font-size : 12px;
-	background-color : #FFFFFF;
-	color : #000000;
-	font-family: Verdana,Arial,Helvetica,sans-serif;
+
+/* Feuille de style Header GLPI Project - Version 1 nov. 2006 */
+body{
+	font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+	font-size: 12px;
+	margin: 0;
+	padding: 0;
 }
+
+ul, li, dt, dl, dd, form, input{
+	margin: 0;
+	padding: 0;
+}
+
+span.invisible{
+	visibility: hidden;
+}
+
+/* separateur pour rétablir les comportements de block */
+div.sep{
+	font-size: 1px;
+	height: 1px;
+	padding: 0;
+	margin: 0;
+	clear: both;
+}
+
+div#header{
+	background: url(../pics/fd_nav1.png) 0 0 repeat-x;
+	margin-bottom:10px;
+}
+
+div#c_preference{
+	height: 20px;
+	text-align: right;
+	margin-right: 5px;
+	position: relative;
+	top: 4px;
+	font-size: 0.9em;	
+}
+
+div#c_preference ul{
+	list-style: none;
+}
+
+div#c_preference ul li{
+	float: right;
+	margin: 0 10px;
+}
+div#c_preference ul li#deconnexion{
+	margin-left: 25px;
+}
+
+div#c_preference a{
+	color: #000;
+	text-decoration: none;
+	font-size: 0.9em;
+}
+
+div#c_preference a:hover{
+	text-decoration: underline;
+}
+
+div#c_recherche{
+	height: 21px;
+	text-align: right;
+	margin-right: 25px;
+	position: relative;
+	top: 5px;
+	font-size: 0.9em;
+}
+
+div#c_recherche form{
+	height: 15px;
+	position: relative;
+	bottom: 3px;
+}
+
+div#c_recherche form div#champRecherche input{
+	border: 1px solid #000;
+	height: 14px;
+	font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+	font-size: 11px;
+}
+
+div#c_recherche form div#boutonRecherche{
+	float: right;
+	border: 1px solid #000;
+	height: 14px;
+	width: 14px;
+	overflow: hidden;
+}
+
+div#c_recherche form div#boutonRecherche input{
+	font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+	font-size: 0.7em;
+	width: 15px;
+	height: 15px;
+	border: none;
+	background: #D8BE56;
+	position: relative;
+	right: 2px;
+}
+
+div#c_menu{
+	height: 41px;
+	position: absolute;
+	top: 0px;
+	z-index: 10;
+}
+
+div#c_menu ul#menu{
+	position: relative;
+	left: 10px;
+	top: 23px;
+	height: 20px;
+	list-style: none;
+	float: left;
+}
+
+ul#menu a.itemP, ul#menu a.itemP1{
+	display: block;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	text-decoration: none;
+	border-right: 1px solid #9BA563;
+	color: #000;
+}
+
+ul#menu ul.ssmenu{
+	position: relative;
+	top: 5px;
+	width: 120px;
+	border: 1px solid #CC9900;
+	border-bottom: 0px;
+	-moz-border-radius: 4px;
+	background: url(../pics/fd_ssmenu.png) 0 0 repeat;
+}
+
+ul#menu ul li{
+	list-style: none;
+	text-align: center;
+	border-bottom: 1px solid #CC9900;
+	line-height: 20px;
+	font-size: 0.9em;
+}
+
+ul#menu ul li a{
+	color: #000;
+	text-decoration: none;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+ul#menu ul li a:hover{
+	background: url(../pics/fd_nav2.png) 0 0 repeat;
+}
+
+ul#menu li#menu1{
+	float: left;
+	width: 110px;
+}
+
+ul#menu li#menu1 ul.ssmenu{
+	position: relative;
+	display: none;
+}
+
+ul#menu li#menu2{
+	float: left;
+	width: 110px;
+}
+
+ul#menu li#menu2 ul.ssmenu{
+	position: relative;
+	display: none;
+}
+
+ul#menu li#menu3{
+	float: left;
+	width: 110px;
+}
+
+ul#menu li#menu3 ul.ssmenu{
+	position: relative;
+	display: none;
+}
+
+ul#menu li#menu4{
+	float: left;
+	width: 110px;
+}
+
+ul#menu li#menu4 ul.ssmenu{
+	position: relative;
+	display: none;
+}
+
+ul#menu li#menu5{
+	float: left;
+	width: 135px;
+}
+
+ul#menu li#menu5 ul.ssmenu{
+	position: relative;
+	display: none;
+	width: 125px;
+	left: 5px;
+}
+
+ul#menu li#menu6{
+	float: left;
+	width: 135px;
+}
+
+ul#menu li#menu6 ul.ssmenu{
+	position: relative;
+	display: none;
+	width: 125px;
+	left: 5px;
+}
+
+div#c_menu div#c_logo{
+	width: 64px;
+	height: 41px;
+	float: left;
+	background: url(../pics/fd_logo.png) 0 0 repeat-x;
+}
+
+div#c_menu div#c_logo a{
+	display: block;
+	width: 100%;
+	height: 100%;
+	text-decoration: none;
+}
+
+div#c_ssmenu1{
+	background: url(../pics/fd_nav2.png) 0 0 repeat-x;
+	height: 19px;
+	clear: both;
+	font-size: 0.9em;
+}
+
+div#c_ssmenu1 ul{
+	position: relative;
+	top: 3px;
+	left: 20px;
+	list-style: none;
+}
+
+div#c_ssmenu1 ul li{
+	float: left;
+	padding: 0 10px;
+}
+
+div#c_ssmenu1 ul li a{
+	text-decoration: none;
+	color: #000;
+}
+
+div#c_ssmenu2{
+	background: url(../pics/fd_nav3.png) 0 0 repeat-x;
+	height: 23px;
+	clear: both;
+	font-size: 0.9em; 
+	
+}
+div#c_ssmenu2 ul{
+	position: relative;
+	top: 5px;
+	left: 20px;
+	list-style: none;
+}
+
+div#c_ssmenu2 ul li{
+	float: left;
+	padding: 0 10px;
+}
+
+div#c_ssmenu2 ul li a{
+	text-decoration: none;
+	color: #000;
+}
+
+/* ########################################################################### */
 
 img{
 	border: 0;
@@ -536,86 +815,6 @@ td { }
 	padding: 5px;
 	
 	}
-/* #################################### */
-
-#menu  dl, #menu dt, #menu dd, #menu ul, #menu li {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-}
-#menu {
-	position: absolute;
-	top: 10px;
-	left: 0;
-	z-index:100;
-	width: 100%; /* precision for Opera */
-}
-#menu dl {
-	float: left;
-	display: block; /* Precision for Safari */
-	width: 12%;
-}
-#menu dt {
-	cursor: pointer;
-	text-align: center;
-	font-weight: bold;
-	background: transparent;
-	/*border: 1px solid gray; */
-	margin: 1px;
-}
-#menu dd {
-	display: none;
-	-moz-border-radius: 4px;
-	border: 1px solid gray;
-}
-#menu li {
-	text-align: center;
-	padding: 2px;
-	background: transparent url("../pics/fondTR.png") repeat; 
-	border-bottom: 1px outset white;
-}
-#menu li a, #menu dt a {
-	color: #000;
-	text-decoration: none;
-	display: block;
-	/*height: 100%;*/
-	border: 0 none;
-}
-#menu li a:hover, #menu dt a:hover {
-	background: #fccc6f;
-
-}
-
-
-/* #################################### */
-	
-.menu_title {
-	font-size : 9px;
-	color : #000000;
-	font-family: Verdana,Arial,Helvetica,sans-serif;
-	
-}	
-	
-	
-		
-.menu a {
-		font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
-	font-size : 11px;
-	color : #757575;
-	background-color: transparent;
-	text-decoration: none;
-	font-weight: bold;
-}
-
-.menu a:hover {
-	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
-	font-size : 11px;
-	color : #FFFFFF;
-	text-decoration: none;
-	border: none;
-	font-weight:bold;
-	background-color: #339966;
-}
 
 
 a.icon_logo img{
@@ -756,11 +955,13 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 #footer{
 	
 	/* ## background-color: #C5DAC8;*/
-	background-color: #efefe7;
-	-moz-border-radius: 8px;
+	/*background-color: #efefe7;*/
+	/*-moz-border-radius: 8px;*/
 	/*border: 2px outset #009966;*/
-
-	border: 2px outset #FFC65D;
+	background: url(../pics/fd_footer.png) 0 0 repeat-x;
+	/*border: 2px outset #FFC65D;*/
+	font-size: 9px;	
+	color :#757575;
 	padding: 5px;
 	margin-top: 200px;
 	clear:both;
@@ -769,11 +970,11 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	
 	
 .copyright {
-	font-size : 10px;
-	
+	/*font-size: 0.9em;*/	
+	font-size: 9px;	
 	color :#757575;
-	font-family: Verdana,Arial,Helvetica,sans-serif;
-	font-weight: bold;
+	/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+	/*font-weight: bold;*/
 
 
 
@@ -1040,7 +1241,7 @@ p.toolbar a:hover
 
 #debug-float {
 	top: 0px;
-	right: 20px;
+	left: 80px;
 	position: absolute;
 	z-index: 100;
 }
@@ -1076,9 +1277,9 @@ p.toolbar a:hover
 
 #debug h1{
 	font-size:14px; text-align:center; background-color:#efefe7;
-	-moz-border-radius: 8px;
+	/*-moz-border-radius: 8px;*/
 	/*border: 2px outset #009966;*/
-	border: 2px outset #FFC65D;
+	/*border: 2px outset #FFC65D;*/
 	padding: 5px;
 
 }
