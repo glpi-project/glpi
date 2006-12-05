@@ -245,7 +245,7 @@ function commonHeader($title,$url)
 		echo "</div>\n"; 
 		//-- Le moteur de recherche -->
 		echo "<div id='c_recherche' onmouseover=\"javascript:hidemenu('menu');\">\n"; 
-		echo "<form id='recherche' >\n"; 
+		echo "<form id='recherche' action=''>\n"; 
 		echo "	<div id='boutonRecherche'><input type='submit' value='OK' /></div>\n"; 
 		echo "	<div id='champRecherche'><input type='text' value='Recherche' /></div>	\n"; 		
 		echo "</form>\n"; 
@@ -387,7 +387,10 @@ function commonHeader($title,$url)
 			
 		echo "</div>\n";
 
-		echo "</div>\n";
+		//echo "</div>\n";
+		
+		echo "<div  id='page' onmouseover=\"javascript:hidemenu('menu');\">";
+		
 	//	$CFG_GLPI["cache"]->end();
 	//}
 	
@@ -557,6 +560,8 @@ function helpHeader($title,$url) {
 	echo "</td></tr>";	
 	echo "</table>\n";
 	echo "</div>";
+	
+	
 
 	// call function callcron() every 5min
 	if (isset($_SESSION["glpicrontimer"])){
@@ -766,7 +771,8 @@ function commonFooter() {
 	if ($FOOTER_LOADED) return;
 	$FOOTER_LOADED=true;
 
-	echo "</div>";
+	echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
+	
 	echo "<div id='footer' >";
 	echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
 	echo $TIMER_DEBUG->Get_Time()."s - ";
