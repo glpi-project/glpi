@@ -962,9 +962,10 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	/*border: 2px outset #FFC65D;*/
 	font-size: 9px;	
 	color :#757575;
-	padding: 5px;
+	padding: 3px;
 	margin-top: 200px;
 	clear:both;
+	
 	}
 
 	
@@ -975,7 +976,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	color :#757575;
 	/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
 	/*font-weight: bold;*/
-
+	
 
 
 

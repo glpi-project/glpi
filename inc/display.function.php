@@ -227,7 +227,7 @@ function commonHeader($title,$url)
 	
 		echo "<div id='header'>";
 		// Les préférences + lien déconnexion 
-		echo "<div id='c_preference' onmouseover=\"javascript:hidemenu('menu');\">";
+		echo "<div id='c_preference' >";
 		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
 		echo "(";
 		if (!empty($_SESSION["glpirealname"])) {
@@ -244,7 +244,7 @@ function commonHeader($title,$url)
 		echo "<div class='sep'></div>\n"; 
 		echo "</div>\n"; 
 		//-- Le moteur de recherche -->
-		echo "<div id='c_recherche' onmouseover=\"javascript:hidemenu('menu');\">\n"; 
+		echo "<div id='c_recherche' >\n"; 
 		echo "<form id='recherche' action=''>\n"; 
 		echo "	<div id='boutonRecherche'><input type='submit' value='OK' /></div>\n"; 
 		echo "	<div id='champRecherche'><input type='text' value='Recherche' /></div>	\n"; 		
@@ -254,7 +254,7 @@ function commonHeader($title,$url)
 	
 		//<!-- Le menu principal -->
 		echo "<div id='c_menu'>";
-		echo "<div id='c_logo' onmouseover=\"javascript:hidemenu('menu');\"><a href='".$CFG_GLPI["root_doc"]."/front/central.php'  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
+		echo "<div id='c_logo' ><a href='".$CFG_GLPI["root_doc"]."/front/central.php'  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
 		echo "	<ul id='menu'>";
 		
 	
@@ -262,7 +262,7 @@ function commonHeader($title,$url)
 	
 		// Inventory
 		if (count($inventory)) {
-			echo "	<li id='menu1' onmouseover=\"javascript:montre('menu1','menu');\">";
+			echo "	<li id='menu1' onmouseover=\"javascript:montre('menu1','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
 			echo "<a href=''  title=\"".$LANG["setup"][10]."\" class='itemP'>".$LANG["setup"][10]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			$i=0;
@@ -279,7 +279,7 @@ function commonHeader($title,$url)
 	
 		// Maintain / Tracking / ticket
 		if (count($maintain)) {
-			echo "	<li id='menu2' onmouseover=\"javascript:montre('menu2','menu');\">";
+			echo "	<li id='menu2' onmouseover=\"javascript:montre('menu2','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
 			echo "<a href='' title=\"".$LANG["title"][24]."\"   class='itemP'>".$LANG["title"][24]."</a>";
 			echo "<ul class='ssmenu'>";	
 	
@@ -292,7 +292,7 @@ function commonHeader($title,$url)
 		}
 		// Financial
 		if (count($financial)) {
-			echo "	<li id='menu3' onmouseover=\"javascript:montre('menu3','menu');\">";
+			echo "	<li id='menu3' onmouseover=\"javascript:montre('menu3','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
 			echo "<a href='' title=\"".$LANG["Menu"][26]."\" class='itemP'>".$LANG["Menu"][26]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
@@ -305,7 +305,7 @@ function commonHeader($title,$url)
 	
 		// Tools
 		if (count($utils)) {
-			echo "	<li id='menu4' onmouseover=\"javascript:montre('menu4','menu');\">";
+			echo "	<li id='menu4' onmouseover=\"javascript:montre('menu4','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
 			echo "<a href='' title=\"".$LANG["Menu"][18]."\" class='itemP'>".$LANG["Menu"][18]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			
@@ -335,7 +335,7 @@ function commonHeader($title,$url)
 				$list[$key]=$val["name"];
 			}
 			asort($list);
-			echo "	<li id='menu5' onmouseover=\"javascript:montre('menu5','menu');\">";
+			echo "	<li id='menu5' onmouseover=\"javascript:montre('menu5','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
 			echo "<a href='' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
@@ -348,7 +348,7 @@ function commonHeader($title,$url)
 	
 		// Administration 
 		if (count($config)) {
-			echo "	<li id='menu6' onmouseover=\"javascript:montre('menu6','menu');\">";
+			echo "	<li id='menu6' onmouseover=\"javascript:montre('menu6','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
 			echo "<a href='' title=\"".$LANG["Menu"][15]."\"  class='itemP1'>".$LANG["Menu"][15]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
@@ -368,7 +368,7 @@ function commonHeader($title,$url)
 		// End headline
 		
 		///Le sous menu contextuel 1
-		echo "<div id='c_ssmenu1' onmouseover=\"javascript:hidemenu('menu');\">";
+		echo "<div id='c_ssmenu1' >";
 		echo "<ul>";
 		echo "	<li><a href='' title='' >Suivi</a></li>";
 		echo "	<li>Planning</li>";
@@ -378,7 +378,7 @@ function commonHeader($title,$url)
 		echo "</div>";
 
 		//  Le fil d arianne 
-		echo "<div id='c_ssmenu2' onmouseover=\"javascript:hidemenu('menu');\">";
+		echo "<div id='c_ssmenu2' >";
 		echo "<ul>";
 		echo "	<li><a href='' title='' >Central > </a></li>";
 		echo "	<li>Helpdesk</li>";
@@ -389,7 +389,7 @@ function commonHeader($title,$url)
 
 		//echo "</div>\n";
 		
-		echo "<div  id='page' onmouseover=\"javascript:hidemenu('menu');\">";
+		echo "<div  id='page' >";
 		
 	//	$CFG_GLPI["cache"]->end();
 	//}
