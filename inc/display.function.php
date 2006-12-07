@@ -322,7 +322,7 @@ function commonHeader($title,$url)
 	echo "</div>\n";
 
 	//clock
-	echo "<div class='nav_horl' style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:99;'>";
+	echo "<div class='nav_horl' style='font-size:9px; position:absolute; top:60px; right: 15px; text-align:center; z-index:200;'>";
 	echo "<a href='".$HTMLRel."front/user.form.my.php'>";
 	if (!empty($_SESSION["glpirealname"])) {
 		echo $_SESSION["glpirealname"];

@@ -408,7 +408,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		if ($canedit){
 			echo "<td align='right'><b>";
 			if ($withtemplate!=2)
-				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?disconnect=disconnect&ID=$ID\">".$lang["buttons"][10]."</a>";
+				echo "<a href=\"".$cfg_glpi["root_doc"]."/front/networking.port.php?disconnect=disconnect&amp;ID=$ID\">".$lang["buttons"][10]."</a>";
 			else "&nbsp;";
 			echo "</b></td>";
 		}

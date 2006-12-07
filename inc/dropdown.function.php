@@ -319,7 +319,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$helpdes
  * @return nothing (print out an HTML select box)
  * 
  */
-function dropdownAllUsers($myname,$value,$display_comments=1,$helpdesk_ajax=0) {
+function dropdownAllUsers($myname,$value=0,$display_comments=1,$helpdesk_ajax=0) {
 	return dropdownUsers($myname,$value,"all",0,$display_comments,$helpdesk_ajax);
 }
 

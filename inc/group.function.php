@@ -79,7 +79,7 @@ function showGroupUser($target,$ID){
 		echo "<table  class='tab_cadre_fixe'>";
 		echo "<tr class='tab_bg_1'><th colspan='2'>".$lang["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 		echo "<input type='hidden' name='FK_groups' value='$ID'>";
-		dropdownAllUsers("FK_users","glpi_users");
+		dropdownAllUsers("FK_users",0);
 		echo "</td><td align='center' class='tab_bg_2'>";
 		echo "<input type='submit' name='adduser' value=\"".$lang["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";

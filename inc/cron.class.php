@@ -120,6 +120,9 @@ class Cron {
 			// Auto update check
 			if ($cfg_glpi["auto_update_check"]>0)
 				$this->taches["check_update"]=$cfg_glpi["auto_update_check"]*DAY_TIMESTAMP;
+
+			//Garbage collector for expired session file 
+			$this->taches["session"]=DAY_TIMESTAMP;
 		}
 	}
 

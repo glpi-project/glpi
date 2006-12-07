@@ -693,4 +693,25 @@ function checkNewVersionAvailable($auto=1){
 function cron_check_update(){
 	checkNewVersionAvailable(1);
 }
+
+
+/** 
+ * Garbage collector for expired file session 
+ * 
+ **/ 
+function cron_session() { 
+
+	// max time to keep the file session 
+	$maxlifetime = session_cache_expire(); 
+
+	foreach (glob(GLPI_DOC_DIR."/_sessions/sess_*") as $filename) { 
+		if (filemtime($filename) + $maxlifetime < time()) { 
+			// Delete session file if not delete before 
+			@unlink($filename); 
+		} 
+	} 
+	return true; 
+} 
+
+
 ?>
