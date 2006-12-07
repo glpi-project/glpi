@@ -70,7 +70,7 @@ else
 			"de_DE"=>array("Deutch","de_DE.php","en_GB.html","hd-en_GB.html","de","en"),
 			"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","en"),
 			"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
-			"es_AR"=>array("Español (Argentina)","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),
+			"es_AR"=>array("Español (Argentina)","es_AR.php","en_GB.html","hd-en_GB.html","es","en"),
 			"es_ES"=>array("Español (España)","es_ES.php","en_GB.html","hd-en_GB.html","es","en"),
 			"fr_FR"=>array("Français","fr_FR.php","fr_FR.html","hd-fr_FR.html","fr","fr"),
 			"hu_HU"=>array("Hungarian","hu_HU.php","en_GB.html","hd-en_GB.html","hu","en"),
