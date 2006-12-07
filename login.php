@@ -232,11 +232,11 @@ $REDIRECT="?redirect=".$_POST['redirect'];
 // Redirect to Command Central if not post-only
 if ($_SESSION["glpiprofile"]["interface"] == "helpdesk")
 {
-	glpi_header("front/helpdesk.public.php$REDIRECT");
+	glpi_header($cfg_glpi['root_doc']."/front/helpdesk.public.php$REDIRECT");
 }
 else
 {
-	glpi_header("front/central.php$REDIRECT");
+	glpi_header($cfg_glpi['root_doc']."/front/central.php$REDIRECT");
 }
 
 ?>

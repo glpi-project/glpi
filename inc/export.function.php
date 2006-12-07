@@ -245,7 +245,7 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 
 		default :
 			if ($fixed)
-				$out="<div align='center'><table border='0' class='tab_cadre_fixe'>\n";
+				$out="<div align='center'><table border='0' class='tab_cadre_fixehov'>\n";
 			else $out="<div align='center'><table border='0' class='tab_cadrehov'>\n";
 			break;
 	}

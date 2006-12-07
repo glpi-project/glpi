@@ -729,7 +729,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 	if ($max<$end_time) $max=$end_time;
 	if ($min>$begin_time) $min=$begin_time;
 	$current=$min;
-	//print_r($entrees);
+	
 	while ($current<=$max){
 		$curentry=date("Y-m",$current);
 		if (!isset($entrees["$curentry"])) $entrees["$curentry"]=0;
@@ -739,10 +739,6 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		$current=mktime(0,0,0,intval($month)+1,1,intval($year));
 	}
 
-	// Tri pour un affichage correct
-	ksort($entrees);
-
-	//print_r($entrees);
 	return $entrees;
 }
 

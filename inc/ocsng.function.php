@@ -1360,7 +1360,7 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 							}
 						} else {
 							$id=array_search(GFX_DEVICE."$$$$$".$video["designation"],$import_device);
-							update_device_specif($video["ram"],$id,1);
+							update_device_specif($line2["MEMORY"],$id,1);
 							unset($import_device[$id]);
 						}						
 					}

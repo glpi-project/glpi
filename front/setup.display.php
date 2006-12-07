@@ -63,7 +63,8 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
 	$setupdisplay->down($_POST);
 }
-$type=$setupdisplay->title($type);
-$setupdisplay->showForm($type);
+if ($type=$setupdisplay->title($type)){
+	$setupdisplay->showForm($type);
+}
 commonFooter();
 ?>

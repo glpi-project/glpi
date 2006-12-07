@@ -205,27 +205,29 @@ class SetupSearchDisplay extends CommonDBTM{
 			if (!$type)
 				$type=GROUP_TYPE;
 		}
-		asort($dp);
-		echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
-		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
-		echo $lang["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
-
-
-		foreach ($dp as $key => $val){
-			$sel="";
-			if ($type==$key) $sel="selected";
-			echo "<option value='$key' $sel>".$val."</option>";
-		}
-
-		echo "</select></td>";
-		echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
-		echo "</table></form></div>";
-
-		echo "<div id='barre_onglets'><ul id='onglet'>";
-		echo "<li "; if ($_SESSION['glpi_searchconfig']==1){ echo "class='actif'";} echo  "><a href='".$cfg_glpi["root_doc"]."/front/setup.display.php?onglet=1&amp;type=$type'>".$lang["central"][13]."</a></li>";
-		echo "<li "; if ($_SESSION['glpi_searchconfig']==2){ echo "class='actif'";} echo  "><a href='".$cfg_glpi["root_doc"]."/front/setup.display.php?onglet=2&amp;type=$type'>".$lang["central"][12]."</a></li>";
-		echo "</ul></div>";
-		return $type;
+		if (count($dp)){
+			asort($dp);
+			echo "<div align='center'><form method='post' action=\"".$cfg_glpi["root_doc"]."/front/setup.display.php\">";
+			echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
+			echo $lang["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
+	
+	
+			foreach ($dp as $key => $val){
+				$sel="";
+				if ($type==$key) $sel="selected";
+				echo "<option value='$key' $sel>".$val."</option>";
+			}
+	
+			echo "</select></td>";
+			echo "<td><input type='submit' value=\"".$lang["buttons"][2]."\" class='submit' ></td></tr>";
+			echo "</table></form></div>";
+	
+			echo "<div id='barre_onglets'><ul id='onglet'>";
+			echo "<li "; if ($_SESSION['glpi_searchconfig']==1){ echo "class='actif'";} echo  "><a href='".$cfg_glpi["root_doc"]."/front/setup.display.php?onglet=1&amp;type=$type'>".$lang["central"][13]."</a></li>";
+			echo "<li "; if ($_SESSION['glpi_searchconfig']==2){ echo "class='actif'";} echo  "><a href='".$cfg_glpi["root_doc"]."/front/setup.display.php?onglet=2&amp;type=$type'>".$lang["central"][12]."</a></li>";
+			echo "</ul></div>";
+			return $type;
+		} else return false;
 	}
 
 	function showForm($type){

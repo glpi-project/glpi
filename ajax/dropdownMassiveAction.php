@@ -66,7 +66,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		break;
 		case "add_group":
 			dropdownValue("glpi_groups","group",0);
-		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
+		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$lang["buttons"][2]."\" >";
 		break;
 		case "update":
 			$first_group=true;
