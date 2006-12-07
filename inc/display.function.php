@@ -172,7 +172,7 @@ function commonHeader($title,$url)
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."css/print.css' >";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/prototype.js'></script>";
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
@@ -403,7 +403,7 @@ function helpHeader($title,$url) {
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/prototype.js'></script>";
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
 
 
@@ -558,7 +558,7 @@ function nullHeader($title,$url) {
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
 
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/prototype.js'></script>";
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
 
 	// Appel CSS
@@ -639,7 +639,7 @@ function popHeader($title,$url)
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$HTMLRel."css/print.css' >";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$HTMLRel."pics/favicon.ico' >";
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/prototype.js'></script>";
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."lib/scriptaculous/scriptaculous.js'></script>";
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" src='".$HTMLRel."script.js'></script>";
