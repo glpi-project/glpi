@@ -128,11 +128,12 @@ function commonHeader($title,$url)
 		echo "</head>\n";
 
 	//if (!($CFG_GLPI["cache"]->start($_SESSION["glpiID"],"GLPI_HEADER"))) {
-		// Body 
+		
+	// Body 
 		echo "<body>";
 	
 
-		//  menu list 	
+		//  Generatiion des array pour les menus avec check des droits 	
 		//////// UTILS
 		$utils=array();
 		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
@@ -226,6 +227,7 @@ function commonHeader($title,$url)
 	
 	
 		echo "<div id='header'>";
+		
 		// Les préférences + lien déconnexion 
 		echo "<div id='c_preference' >";
 		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
@@ -239,10 +241,10 @@ function commonHeader($title,$url)
 
 		echo "	<li><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750')\" title=\"".$LANG["central"][7]."\" >    ".$LANG["central"][7]."</a></li>\n"; 
 		echo "	<li> <a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".$LANG["Menu"][11]."\" >".$LANG["Menu"][11]."   </a></li>\n"; 
-		//echo "<li>".showProfileSelecter()."</li>";			
 		echo "</ul>\n"; 
 		echo "<div class='sep'></div>\n"; 
 		echo "</div>\n"; 
+		
 		//-- Le moteur de recherche -->
 		echo "<div id='c_recherche' >\n"; 
 		echo "<form id='recherche' action=''>\n"; 
@@ -263,12 +265,11 @@ function commonHeader($title,$url)
 		// Inventory
 		if (count($inventory)) {
 			echo "	<li id='menu1' onmouseover=\"javascript:montre('menu1','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
-			echo "<a href=''  title=\"".$LANG["setup"][10]."\" class='itemP'>".$LANG["setup"][10]."</a>";
+			echo "<a href='#'  title=\"".$LANG["setup"][10]."\" class='itemP'>".$LANG["setup"][10]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			$i=0;
 			// list menu item 
 			foreach ($inventory as $key => $val) {
-				
 				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
 				$i++;
 			}
@@ -280,9 +281,8 @@ function commonHeader($title,$url)
 		// Maintain / Tracking / ticket
 		if (count($maintain)) {
 			echo "	<li id='menu2' onmouseover=\"javascript:montre('menu2','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
-			echo "<a href='' title=\"".$LANG["title"][24]."\"   class='itemP'>".$LANG["title"][24]."</a>";
+			echo "<a href='#' title=\"".$LANG["title"][24]."\"   class='itemP'>".$LANG["title"][24]."</a>";
 			echo "<ul class='ssmenu'>";	
-	
 			// list menu item 
 			foreach ($maintain as $key => $val) {
 				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
@@ -306,9 +306,8 @@ function commonHeader($title,$url)
 		// Tools
 		if (count($utils)) {
 			echo "	<li id='menu4' onmouseover=\"javascript:montre('menu4','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
-			echo "<a href='' title=\"".$LANG["Menu"][18]."\" class='itemP'>".$LANG["Menu"][18]."</a>";
+			echo "<a href='#' title=\"".$LANG["Menu"][18]."\" class='itemP'>".$LANG["Menu"][18]."</a>";
 			echo "<ul class='ssmenu'>"; 
-			
 			// list menu item 
 			foreach ($utils as $key => $val) {
 				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
@@ -336,7 +335,7 @@ function commonHeader($title,$url)
 			}
 			asort($list);
 			echo "	<li id='menu5' onmouseover=\"javascript:montre('menu5','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
-			echo "<a href='' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";
+			echo "<a href='#' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($list as $key => $val) {
@@ -349,7 +348,7 @@ function commonHeader($title,$url)
 		// Administration 
 		if (count($config)) {
 			echo "	<li id='menu6' onmouseover=\"javascript:montre('menu6','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
-			echo "<a href='' title=\"".$LANG["Menu"][15]."\"  class='itemP1'>".$LANG["Menu"][15]."</a>";
+			echo "<a href='#' title=\"".$LANG["Menu"][15]."\"  class='itemP1'>".$LANG["Menu"][15]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($config as $key => $val) {
@@ -383,11 +382,12 @@ function commonHeader($title,$url)
 		echo "	<li><a href='' title='' >Central > </a></li>";
 		echo "	<li>Helpdesk</li>";
 		echo "</ul>";	
+		echo showProfileSelecter();	
 		echo "	</div>";
 			
-		echo "</div>\n";
+		echo "</div>\n"; // fin header
 
-		//echo "</div>\n";
+		
 		
 		echo "<div  id='page' >";
 		
@@ -484,82 +484,107 @@ function helpHeader($title,$url) {
 	echo "<body>";
 
 	// Main Headline
-	echo "<div id='navigation-helpdesk' style='background : url(\"".$CFG_GLPI["root_doc"]."/pics/fond.png\") repeat-x top right ;'>";
+	echo "<div id='header'>";
+		// Les préférences + lien déconnexion 
+		echo "<div id='c_preference' >";
+		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
+		echo "(";
+		if (!empty($_SESSION["glpirealname"])) {
+			echo $_SESSION["glpirealname"];
+			if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
+		}
+		else echo $_SESSION["glpiname"];
+		echo ")</li>\n"; 
 
-	echo "<table cellspacing='0' border='0' width='98%'>";
-	echo "<tr>";
+		echo "	<li><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\">    ".$LANG["central"][7]."</a></li>\n"; 
+		echo "	<li> <a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".$LANG["Menu"][11]."\" >".$LANG["Menu"][11]."   </a></li>\n"; 
+					
+		echo "</ul>\n"; 
+		echo "<div class='sep'></div>\n"; 
+		echo "</div>\n"; 
+		//-- Le moteur de recherche -->
+		echo "<div id='c_recherche' >\n"; 
+		/*
+		echo "<form id='recherche' action=''>\n"; 
+		echo "	<div id='boutonRecherche'><input type='submit' value='OK' /></div>\n"; 
+		echo "	<div id='champRecherche'><input type='text' value='Recherche' /></div>	\n"; 		
+		echo "</form>\n"; 
+		*/
+		echo "<div class='sep'></div>\n"; 
+		echo "</div>";
+	
+		//<!-- Le menu principal -->
+		echo "<div id='c_menu'>";
+		echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
+		echo "	<ul id='menu'>";
+		
+	
+		// Build the navigation-elements
+	
+		// Ticket
+		if (haveRight("create_ticket","1")){
+			echo "	<li id='menu1' >";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\"  title=\"".$LANG["job"][13]."\" class='itemP'>".$LANG["Menu"][31]."</a>";
+			
+			echo "</li>";		
+		}
+	
+		//  Suivi  ticket
+		if (haveRight("observe_ticket","1")){
+			echo "	<li id='menu2' >";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user\" title=\"".$LANG["tracking"][0]."\"   class='itemP'>".$LANG["title"][28]."</a>";
+			
+			echo "</li>";
+		}
+		// Reservation
+		if (haveRight("reservation_helpdesk","1")){
+			echo "	<li id='menu3' >";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.resa.php\"  title=\"".$LANG["Menu"][17]."\" class='itemP'>".$LANG["Menu"][17]."</a>";
+			
+			echo "</li>";
+		}
+	
+		// FAQ
+		if (haveRight("faq","r")){
+			echo "	<li id='menu4' >";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\" title=\"".$LANG["knowbase"][1]."\" class='itemP'>".$LANG["Menu"][20]."</a>";
+			
+			echo "</li>";
+		}
+	
+			
+		echo "</ul>";		
+		echo "<div class='sep'></div>";
+		echo "</div>";
+	
+		// End navigation bar
+	
+		// End headline
+		
+		///Le sous menu contextuel 1
+		echo "<div id='c_ssmenu1' >";
+		//echo "<ul>";
+		//echo "	<li><a href='' title='' >Suivi</a></li>";
+		//echo "	<li>Planning</li>";
+		//echo "	<li>Statistique</li>";
+		//echo "	<li>Helpdesk</li>";
+		//echo "</ul>";
+		echo "</div>";
 
-	// Logo with link to command center
-	echo "<td align='center' width='10%'>\n";
-	echo "<a class='icon_logo' style='background: transparent' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\">";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/logo-glpi.png\"  alt=\"".$CFG_GLPI["logotxt"]."\" title=\"".$LANG["central"][5]."\" >";
-	echo "</a>";
-	echo "</td>";
+		//  Le fil d arianne 
+		echo "<div id='c_ssmenu2' >";
+		echo "<ul>";
+		echo "	<li><a href='#' title='' >Helpdesk > </a></li>";
+		echo "	<li>Helpdesk</li>";
+		echo "</ul>";	
+		echo showProfileSelecter();	
+		echo "	</div>";
+			
+		echo "</div>\n"; // fin header
 
-	echo "<td valign='middle'>";
-
-	echo "<table width='100%' cellspacing='0' cellpadding='0' border='0'><tr>";
-
-	// Just give him a language selector
-	echo "<td width='30%' align='center'>";
-	echo "<p class='nav_horl'><a href='".$CFG_GLPI["root_doc"]."/front/user.form.my.php'>";
-	if (!empty($_SESSION["glpirealname"])) {
-		echo $_SESSION["glpirealname"];
-		if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<30) echo " ".$_SESSION["glpifirstname"];
-	}
-	else echo $_SESSION["glpiname"];
-	echo "</a></p>";
-	showProfileSelecter();
-	echo "</td>";
-
-	// We tracking or post a new one
-	echo "<td align='center' width='10%'>";
-	if (haveRight("create_ticket","1")){
-		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/ajoutinterv.png\" alt=\"".$LANG["job"][13]."\" title=\"".$LANG["job"][13]."\"></a><br>";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["Menu"][31]."&nbsp;-</span><br>";
-	}
-	echo "</td><td align='center' width='10%'>";
-	if (haveRight("observe_ticket","1")){
-		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/suivi.png\" alt=\"".$LANG["tracking"][0]."\" title=\"".$LANG["tracking"][0]."\"></a><br>";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["title"][28]."&nbsp;-</span>";
-	}
-	echo "</td>";
-	//reservation
-
-	echo "<td align='center' width='10%'>";
-	if (haveRight("reservation_helpdesk","1")){
-		echo "<a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.resa.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-2.png\" alt=\"".$LANG["Menu"][17]."\" title=\"".$LANG["Menu"][17]."\"></a><br>";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["title"][35]."&nbsp;-</span><br>";
-	}
-	echo "</td><td align='center' width='10%'>";
-	if (haveRight("faq","r")){
-		echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faq-24.png\" alt=\"".$LANG["knowbase"][1]."\" title=\"".$LANG["knowbase"][1]."\"></a><br>";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["knowbase"][1]."&nbsp;-</span>";
-	}
-
-	echo "</td>";
-	// On the right side of the navigation bar, we have a clock with
-	// date, help and a logout-link.
-	echo "<td align='center'  width='10%'>";
-	// HELP	
-	echo "<a class='icon_nav_move'  href='#'
-		onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/help.png\" alt=\"\" title=\"".$LANG["central"][7]."\"></a><br>";
-		echo "<span class='menu_title'>-&nbsp;".$LANG["central"][7]."&nbsp;-</span>";
-	echo "</td>";
-	echo "<td align='center' width='10%'> ";
-	echo "<a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/logout.php\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/logout.png\" alt=\"".$LANG["central"][6]."\" title=\"".$LANG["central"][6]."\"></a><br>";
-	echo "<span class='menu_title'>-&nbsp;".$LANG["central"][6]."&nbsp;-</span>";
-	echo "</td>";
-
-	// End navigation bar
-
-	echo "</tr></table>";
-
-	// End headline
-
-	echo "</td></tr>";	
-	echo "</table>\n";
-	echo "</div>";
+		echo "<div  id='page' >";
+		
+	
 	
 	
 
@@ -869,6 +894,8 @@ function helpFooter() {
 
 	if ($FOOTER_LOADED) return;
 	$FOOTER_LOADED=true;
+	
+	echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
 	echo "<div id='footer'>";
 	echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
@@ -1401,8 +1428,9 @@ function showProfileSelecter(){
 	} //else echo "only one profile -> no select to print";
 	
 	if (count($_SESSION['glpiactiveentities'])>1){
-		echo "<br>Working entity :";
+		echo "<div style='float:right;'>";
 			dropdownActiveEntities("activeentity");
+		echo "</div>";
 /*	foreach ($_SESSION["glpiactiveentities"] as $key => $val) {
 		echo $val."-";
 	}
