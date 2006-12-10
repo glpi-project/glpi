@@ -69,8 +69,9 @@
 		);
 		$CACHE_CFG = new Cache_Lite($cache_options);
 
+// No cache for update problem... Need to find a good solution
+//		if (!($CFG_GLPI= $CACHE_CFG->get("CFG_GLPI_1","GLPI_CFG"))) {
 
-		if (!($CFG_GLPI= $CACHE_CFG->get("CFG_GLPI_1","GLPI_CFG"))) {
 			// *************************** Statics config options **********************
 			// ********************options d'installation statiques*********************
 			// ***********************************************************************
@@ -173,10 +174,9 @@
 							);
 					$CFG_GLPI["ldap_field_group_member"]=strtolower($CFG_GLPI["ldap_field_group_member"]);
 				}
-			$CACHE_CFG->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
 			}
-			
-		}
+//		$CACHE_CFG->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
+//		}
 
 		$GLPI_CACHE = new Cache_Lite_Output($cache_options);
 		$CFG_GLPI["cache"]=$GLPI_CACHE;
