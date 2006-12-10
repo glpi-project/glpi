@@ -1751,7 +1751,7 @@ function showJobDetails ($target,$ID){
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
 			echo "Element.hide('desc$rand');";
-			echo "var a=new Ajax.Updater('viewdesc$rand','".$CFG_GLPI["root_doc"]."/ajax/textarea.php' , {asynchronous:true, evalScripts:true, method: 'post',parameters: 'rows=6&cols=60&name=contents&data=".urlencode($job->fields["contents"])."'});";
+			echo "var a=new Ajax.Updater('viewdesc$rand','".$CFG_GLPI["root_doc"]."/ajax/textarea.php' , {asynchronous:true, evalScripts:true, method: 'post',parameters: 'rows=6&cols=60&name=contents&data=".rawurlencode($job->fields["contents"])."'});";
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='desc$rand' class='div_tracking' onClick='showDesc$rand()'>\n";
