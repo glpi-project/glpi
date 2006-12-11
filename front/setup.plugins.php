@@ -55,6 +55,7 @@ if (isset($PLUGIN_HOOKS["config_page"]) && is_array($PLUGIN_HOOKS["config_page"]
 		$names[$plug]=$function();
 		$pages[$plug]=$page;
 	}
+	asort($names);
 }
 
 echo "<div align='center'><table border='0'><tr><td>";
