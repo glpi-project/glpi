@@ -123,6 +123,12 @@ class Cron {
 
 			//Garbage collector for expired session file 
 			$this->taches["session"]=DAY_TIMESTAMP;
+
+			//Plugins cron 
+			$cronplug=get_plugins_cron();
+			if (is_array($cronplug)&&count($cronplug)){
+				$this->taches=array_merge($this->taches,$cronplug);
+			}
 		}
 	}
 
