@@ -191,4 +191,15 @@ function display_plugin_headings($target,$type,$withtemplate,$actif){
 
 }
 
+
+function get_plugins_cron(){ 
+	global $PLUGIN_HOOKS; 
+	$tasks=array(); 
+	if (isset($PLUGIN_HOOKS["cron"]) && is_array($PLUGIN_HOOKS["cron"])) { 
+		foreach ($PLUGIN_HOOKS["cron"] as $plug => $time) { 
+			$tasks["plugin_".$plug]=$time; 
+		} 
+	} 
+	return $tasks; 
+} 
 ?>
