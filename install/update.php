@@ -476,7 +476,7 @@ function updatedbUpTo031()
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.68.2', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.68.3', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
 	$db->query($query) or die("0.6 ".$lang["update"][90].$db->error());
 
 	optimize_tables();
