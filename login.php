@@ -1,4 +1,6 @@
 <?php
+
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -33,190 +35,201 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '.');
-$NEEDED_ITEMS=array("user","profile","setup","group");
+$NEEDED_ITEMS = array (
+	"user",
+	"profile",
+	"setup",
+	"group"
+);
 
 include (GLPI_ROOT . "/inc/includes.php");
 
 // Change profile system
-if (isset($_POST['newprofile'])){
-	if (isset($_SESSION["glpiprofiles"][$_POST['newprofile']])){
+if (isset ($_POST['newprofile'])) {
+	if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
 		changeProfile($_POST['newprofile']);
 		// Redirect to Command Central if not post-only
-		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
-			glpi_header($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
+		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+			glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php");
+		} else {
+			glpi_header($CFG_GLPI['root_doc'] . "/front/central.php");
 		}
-		else{
-			glpi_header($CFG_GLPI['root_doc']."/front/central.php");
-		}
-	} else glpi_header($_SERVER['HTTP_REFERER']);
+	} else
+		glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-
-
-$_POST=array_map('stripslashes',$_POST);
+$_POST = array_map('stripslashes', $_POST);
 
 //Do login and checks
-$user_present=1;
-if (!isset($_POST['login_name'])) $_POST['login_name']="";
+$user_present = 1;
+if (!isset ($_POST['login_name']))
+	$_POST['login_name'] = "";
 $identificat = new Identification();
+$identificat->getAuthMethods();
 
-$auth_succeded=false;
+$auth_succeded = false;
 
-if (isset($_POST['login_password'])){
-	$_POST['login_password']=unclean_cross_side_scripting_deep($_POST['login_password']);
+if (isset ($_POST['login_password'])) {
+	$_POST['login_password'] = unclean_cross_side_scripting_deep($_POST['login_password']);
 }
 
-if (!isset($_POST["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
+if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-	phpCAS::client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),$CFG_GLPI["cas_uri"]);
+	phpCAS :: client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]), $CFG_GLPI["cas_uri"]);
 
 	// force CAS authentication
-	phpCAS::forceAuthentication();
-	$user=phpCAS::getUser();
-	$auth_succeded=true;
-	$identificat->extauth=1;
+	phpCAS :: forceAuthentication();
+	$user = phpCAS :: getUser();
+	$auth_succeded = true;
+	$identificat->extauth = 1;
 	$user_present = $identificat->user->getFromDBbyName($user);
 
-        // if LDAP enabled too, get user's infos from LDAP
-	if (!empty($cfg_glpi["ldap_host"])) {
-		// Get dn without testing login
-		$ds=connect_ldap($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_use_tls"]);
-		if ($ds){
-			$user_dn = ldap_search_user_dn($ds,$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_login"],$user,$CFG_GLPI["ldap_condition"]); 
+	// if LDAP enabled too, get user's infos from LDAP
+	//If the user is already in database, let's check if he there's a dictory reported in id_auth, to get his personal informations  
+	if ($user_present && !empty($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
+		$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
+		$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
+		if ($ds) {
+			$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
 			if ($user_dn) {
-				$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$user_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],$user,"",$CFG_GLPI["ldap_use_tls"]);
+				$identificat->user->getFromLDAP($ldap_method["ldap_host"], $ldap_method["ldap_port"], $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method['ldap_fields'], $user, "", $ldap_method["ldap_use_tls"]);
 			}
 		}
 	}
-	$identificat->user->fields["name"]=$user;
+	$identificat->user->fields["name"] = $user;
 
 }
-if (isset($_POST["noCAS"])) $_SESSION["noCAS"]=1;
+if (isset ($_POST["noCAS"]))
+	$_SESSION["noCAS"] = 1;
 
 if (!$auth_succeded) // Pas de tests en configuration CAS
-	if (empty($_POST['login_name'])||empty($_POST['login_password'])){
-		$identificat->err=$LANG["login"][8];
+	if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
+		$identificat->err = $LANG["login"][8];
 	} else {
 
 		// exists=0 -> no exist
 		// exists=1 -> exist with password
 		// exists=2 -> exist without password
-		$exists=$identificat->userExists($_POST['login_name']);
+		$exists = $identificat->userExists($_POST['login_name']);
 
 		// Pas en premier car sinon on ne fait pas le blankpassword
 		// First try to connect via le DATABASE
-		if ($exists==1){
+		if ($exists == 1) {
 
 			// Without UTF8 decoding
-			if (!$auth_succeded) $auth_succeded = $identificat->connection_db($_POST['login_name'],$_POST['login_password']);
+			if (!$auth_succeded)
+				$auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
+
 			if ($auth_succeded) {
+
 				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-			}
-
-			// With UTF8 decoding
-			//if (!$auth_succeded) $auth_succeded = $identificat->connection_db(utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
-			//if ($auth_succeded) $user_present = $identificat->user->getFromDBbyName(utf8_decode($_POST['login_name']));
-
-		}
-
-		// Second try IMAP/POP
-		if (!$auth_succeded&&!empty($CFG_GLPI["imap_auth_server"])) {
-			$auth_succeded = $identificat->connection_imap($CFG_GLPI["imap_auth_server"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']));
-			if ($auth_succeded) {
-				$identificat->extauth=1;
-				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-
-				if ($identificat->user->getFromIMAP($CFG_GLPI["imap_host"],utf8_decode($_POST['login_name']))) {
+				//check if the user has change of authentication method
+				if (($identificat->user->fields["auth_method"] != AUTH_MAIL) || ($identificat->user->fields["id_auth"] != $mail_method["ID"])) {
+					$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
+					$identificat->user->update($identificat->user->fields);
 				}
 			}
 		}
+		elseif ($exists == 2) {
+			//The user is not authenticated on the GLPI DB, but we need to get informations about him
+			//The determine authentication method
+			$identificat->user->getFromDBbyName($_POST['login_name']);
 
-		// Third common LDAP Auth
-		if (!$auth_succeded&&!empty($CFG_GLPI["ldap_host"])){
-			$user_dn = $identificat->connection_ldap($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$CFG_GLPI["ldap_basedn"],$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI["ldap_login"],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_condition"],$CFG_GLPI["ldap_use_tls"]);
-			if ($user_dn) {
-				$auth_succeded=true;
-				$identificat->extauth=1;
-				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				$identificat->user->getFromLDAP($CFG_GLPI["ldap_host"],$CFG_GLPI["ldap_port"],$user_dn,$CFG_GLPI["ldap_rootdn"],$CFG_GLPI["ldap_pass"],$CFG_GLPI['ldap_fields'],utf8_decode($_POST['login_name']),utf8_decode($_POST['login_password']),$CFG_GLPI["ldap_use_tls"]);
-
+			//If the user has already been logged, the method_auth and id_auth are already set
+			//so we test this connection first
+			switch ($identificat->user->fields["auth_method"]) {
+				case AUTH_LDAP :
+					try_ldap_auth(& $identificat, & $auth_succeded, & $user_present, $identificat->user->fields["id_auth"]);
+					break;
+				case AUTH_MAIL :
+					try_mail_auth(& $identificat, & $auth_succeded, & $user_present, $identificat->user->fields["id_auth"]);
+					break;
 			}
 		}
-	} // Fin des tests de connexion
 
-// Ok, we have gathered sufficient data, if the first return false the user
-// are not present on the DB, so we add it.
-// if not, we update it.
+		//If the last good auth method is not valid anymore, we test all the methods !
+		
+		//test all the imap/pop servers
+		if (!$auth_succeded)
+			try_mail_auth(& $identificat, & $auth_succeded, & $user_present);
 
-if ($auth_succeded){
-	if (!$user_present&&$CFG_GLPI["auto_add_users"]) {
-		if ($identificat->extauth)
-			$identificat->user->fields["_extauth"]=1;
-		$input=$identificat->user->fields;
-		unset($identificat->user->fields);
-		$identificat->user->fields["ID"]=$identificat->user->add($input);
+		//test all the ldap servers
+		if (!$auth_succeded)
+			try_ldap_auth(& $identificat, & $auth_succeded, & $user_present, -1);
 
-	} else if (!$user_present){ // Auto add not enable so auth failed
-		$identificat->err.=$LANG["login"][11];
-		$auth_succeded=false;	
-	} else if ($user_present) {
-		// update user and Blank PWD to clean old database for the external auth
-		if ($identificat->extauth){
-			$identificat->user->update($identificat->user->fields);
-			$identificat->user->blankPassword();
+		// Fin des tests de connexion
+
+		// Ok, we have gathered sufficient data, if the first return false the user
+		// are not present on the DB, so we add it.
+		// if not, we update it.
+
+		if ($auth_succeded) {
+			if (!$user_present && $CFG_GLPI["auto_add_users"]) {
+				if ($identificat->extauth)
+					$identificat->user->fields["_extauth"] = 1;
+				$input = $identificat->user->fields;
+				unset ($identificat->user->fields);
+				$identificat->user->fields["ID"] = $identificat->user->add($input);
+
+			} else
+				if (!$user_present) { // Auto add not enable so auth failed
+					$identificat->err .= $LANG["login"][11];
+					$auth_succeded = false;
+				} else
+					if ($user_present) {
+						// update user and Blank PWD to clean old database for the external auth
+						if ($identificat->extauth) {
+							$identificat->user->update($identificat->user->fields);
+							$identificat->user->blankPassword();
+						}
+					}
+		}
+
+		// we have done at least a good login? No, we exit.
+		if (!$auth_succeded) {
+			nullHeader("Login", $_SERVER['PHP_SELF']);
+			echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
+			echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
+			nullFooter();
+			if ($CFG_GLPI["debug"] == DEMO_MODE)
+				logevent(-1, "system", 1, "login", "failed login: " . $_POST['login_name']);
+			else
+				logevent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name']);
+
+			exit;
+		}
+
+		// now we can continue with the process...
+		$identificat->initSession();
+
+		// GET THE IP OF THE CLIENT
+		$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
+
+		// Log Event
+		if ($CFG_GLPI["debug"] == DEMO_MODE)
+			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " logged in." . $LANG["log"][40] . " : " . $ip);
+		else
+			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG["log"][40] . " : " . $ip);
+
+		// Expire Event Log
+		if ($CFG_GLPI["expire_events"] > 0) {
+			$secs = $CFG_GLPI["expire_events"] * 86400;
+			$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+			$result_exp = $DB->query($query_exp);
+		}
+
+		// Redirect management
+		$REDIRECT = "";
+		if (isset ($_POST['redirect']))
+			$REDIRECT = "?redirect=" .
+			$_POST['redirect'];
+
+		// Redirect to Command Central if not post-only
+		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+			glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
+		} else {
+			glpi_header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
 		}
 	}
-}
-
-// we have done at least a good login? No, we exit.
-if ( ! $auth_succeded ) {
-	nullHeader("Login",$_SERVER['PHP_SELF']);
-	echo '<div align="center"><b>'.$identificat->getErr().'</b><br><br>';
-	echo '<b><a href="'.$CFG_GLPI["root_doc"].'/logout.php">'.$LANG["login"][1].'</a></b></div>';
-	nullFooter();
-	if ($CFG_GLPI["debug"]==DEMO_MODE)
-		logevent(-1, "system", 1, "login", "failed login: ".$_POST['login_name']);
-	else 
-		logevent(-1, "system", 1, "login", $LANG["log"][41].": ".$_POST['login_name']);
-
-	exit;
-}
-
-// now we can continue with the process...
-$identificat->initSession();
-
-// GET THE IP OF THE CLIENT
-$ip = (getenv("HTTP_X_FORWARDED_FOR")
-		? getenv("HTTP_X_FORWARDED_FOR")
-		: getenv("REMOTE_ADDR"));
-
-
-// Log Event
-if ($CFG_GLPI["debug"]==DEMO_MODE)
-logEvent("-1", "system", 3, "login", $_POST['login_name']." logged in.".$LANG["log"][40]." : ".$ip);
-else 
-logEvent("-1", "system", 3, "login", $_POST['login_name']." ".$LANG["log"][40]." : ".$ip);
-
-// Expire Event Log
-if ($CFG_GLPI["expire_events"]>0){
-	$secs =  $CFG_GLPI["expire_events"]*86400;
-	$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-	$result_exp = $DB->query($query_exp);
-} 
-
-// Redirect management
-$REDIRECT="";
-if (isset($_POST['redirect']))
-$REDIRECT="?redirect=".$_POST['redirect'];
-
-// Redirect to Command Central if not post-only
-if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
-	glpi_header($CFG_GLPI['root_doc']."/front/helpdesk.public.php$REDIRECT");
-}
-else{
-	glpi_header($CFG_GLPI['root_doc']."/front/central.php$REDIRECT");
-}
-
 ?>

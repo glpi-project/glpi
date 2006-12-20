@@ -65,6 +65,7 @@ class User extends CommonDBTM {
 				$ong[3]=$LANG["title"][28]; // tickets
 		if (haveRight("reservation_central","r"))
 				$ong[11]=$LANG["title"][35];
+		$ong[4]=$LANG["common"][29];		
 	
 		
 
@@ -303,40 +304,46 @@ class User extends CommonDBTM {
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */
-	function getFromLDAP($host,$port,$userdn,$rdn,$rpass,$fields,$login,$password="",$use_tls=false)
+	function getFromLDAP($ldap_method,$userdn,$login,$password="")
 	{
 		global $DB,$CFG_GLPI;
-
-
+		
 		// we prevent some delay...
-		if (empty($host)) {
+		if (empty($ldap_method["ldap_host"])) {
 			return false;
 		}
 
-		$ds=connect_ldap($host,$port,$rdn,$rpass,$use_tls);
+		$ds=connect_ldap($ldap_method["ldap_host"],$ldap_method["ldap_port"],$ldap_method["ldap_rootdn"],$ldap_method["ldap_pass"],$ldap_method["ldap_use_tls"]);
 		// Test with login and password of the user
-		if (!$ds) $ds=connect_ldap($host,$port,$login,$password,$use_tls);
+		if (!$ds) $ds=connect_ldap($ldap_method["ldap_host"],$ldap_method["ldap_port"],$login,$password,$ldap_method["ldap_use_tls"]);
 		if ($ds) {
-			// some defaults...
+			//Set all the search fields
 			$this->fields['password'] = "";
 			$this->fields['password_md5'] = "";
-			$this->fields['name'] = $login;
-
+			$fields['name'] = $ldap_method["ldap_login"];
+			$fields['email'] = $ldap_method["ldap_field_email"];
+			$fields['location'] = $ldap_method["ldap_field_location"];
+			$fields['realname'] = $ldap_method["ldap_field_realname"];
+			$fields['firstname'] = $ldap_method["ldap_field_firstname"];
+			$fields['phone'] = $ldap_method["ldap_field_phone"];
+			$fields['phone2'] = $ldap_method["ldap_field_phone2"];
+			$fields['mobile'] = $ldap_method["ldap_field_mobile"];
+			
 			$fields=array_filter($fields);
-	
 			$f = array_values($fields);
+			 
 			$sr = @ldap_read($ds, $userdn, "objectClass=*", $f);
-	
 			$v = ldap_get_entries($ds, $sr);
-			if ( !is_array($v)||count($v)==0 || empty($v[0][$fields['name']][0]) ) {
+			
+			if ( !is_array($v)||count($v)==0 || empty($v[0][$fields['name']][0]) ) 
 				return false;
-			}
-	
+			
+			
 			foreach ($fields as $k => $e)	{
 				if (!empty($v[0][$e][0]))
 					$this->fields[$k] = $v[0][$e][0];
 			}
-	
+		
 			// Is location get from LDAP ?
 			if (isset($fields['location'])&&!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
 				$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
@@ -356,7 +363,7 @@ class User extends CommonDBTM {
 			$groups=array();
 			$v=array();
 			//The groupes are retrived by looking into an ldap user object
-			if ($CFG_GLPI["ldap_search_for_groups"]==0||$CFG_GLPI["ldap_search_for_groups"]==2){
+			if ($ldap_method["ldap_search_for_groups"]==0||$ldap_method["ldap_search_for_groups"]==2){
 	
 				$result=$DB->query($query_user);
 	
@@ -372,15 +379,15 @@ class User extends CommonDBTM {
 				}
 			}
 			//The groupes are retrived by looking into an ldap group object
-			if ($CFG_GLPI["ldap_search_for_groups"]==1||$CFG_GLPI["ldap_search_for_groups"]==2){
+			if ($ldap_method["ldap_search_for_groups"]==1||$ldap_method["ldap_search_for_groups"]==2){
 	
 				$result=$DB->query($query_group);
-	
+ 
 				if ($DB->numrows($result)>0){
 					while ($data=$DB->fetch_assoc($result)){
-						$groups[$CFG_GLPI["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
+						$groups[$ldap_method["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
 					}
-					$v2 = $this->ldap_get_user_groups($ds,$CFG_GLPI["ldap_basedn"],$userdn,$CFG_GLPI["ldap_group_condition"],$CFG_GLPI["ldap_field_group_member"]);
+					$v2 = $this->ldap_get_user_groups($ds,$ldap_method["ldap_basedn"],$userdn,$ldap_method["ldap_group_condition"],$ldap_method["ldap_field_group_member"]);
 					$v = array_merge($v,$v2);
 				}
 	
@@ -400,14 +407,13 @@ class User extends CommonDBTM {
 					}
 				}
 			}
-			//Hook to retrieve more informations for ldap
+ 
+ 			//Hook to retrieve more informations for ldap
 			$this->fields=do_hook_function("retrieve_more_data_from_ldap",$this->fields);
 		}
 		return false;
 
 	} // getFromLDAP()
-
-
 	
 	//Get all the group a user belongs to
 	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn,$group_condition,$group_field_member)
@@ -415,7 +421,8 @@ class User extends CommonDBTM {
 		global $CFG_GLPI;
 
 		$groups = array();
-
+		$listgroups = array();
+		
 		//Only retrive cn and member attributes from groups
 		$attrs=array("dn");
 
@@ -462,8 +469,6 @@ class User extends CommonDBTM {
 		return true;
 
 	} // getFromIMAP()  	    
-
-
 
 	function blankPassword () {
 		global $DB;
@@ -629,7 +634,7 @@ class User extends CommonDBTM {
 		return false;
 	}
 
-	function showMyForm($target,$ID) {
+	function showMyForm($target,$ID,$withtemplate='') {
 
 		// Affiche un formulaire User
 		global $CFG_GLPI, $LANG;
@@ -637,6 +642,8 @@ class User extends CommonDBTM {
 		if ($ID!=$_SESSION["glpiID"]) return false;
 
 		if ($this->getfromDB($ID)){
+			//$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			
 			$extauth=empty($this->fields["password"])&&empty($this->fields["password_md5"]);
 			$imapauth=!empty($CFG_GLPI["imap_host"]);
 
@@ -731,8 +738,6 @@ class User extends CommonDBTM {
 		}
 		return false;
 	}
-
-
 }
 
 ?>

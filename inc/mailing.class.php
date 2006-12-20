@@ -383,6 +383,8 @@ class Mailing
 					}
 					$mmail->ClearAddresses(); 
 				}
+					do_hook_function("external_notifications",array("mails"=>$users, "subject"=>$this->get_mail_body("text")));
+				
 			} else {
 				echo "Invalid mail type";
 			}
@@ -617,8 +619,9 @@ class MailingResa{
 					return false;
 				}
 				$mmail->ClearAddresses(); 
-
 			}
+				do_hook_function("external_notifications",array("mails"=>$users, "subject"=>$this->get_mail_body("text")));
+			
 		}
 		return true;
 	}
@@ -810,6 +813,8 @@ class MailingAlert
 				}
 				$mmail->ClearAddresses(); 
 			}
+			do_hook_function("external_notifications",array("mails"=>$users, "subject"=>$this->get_mail_body("text")));
+			
 		}
 		return true;
 	}

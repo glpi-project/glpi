@@ -156,7 +156,6 @@ INSERT INTO glpi_computers VALUES ('1','0','','','','','','0','Empty Template',N
 DROP TABLE IF EXISTS `glpi_config`;
 CREATE TABLE `glpi_config` (
   `ID` int(11) NOT NULL auto_increment,
-  `ldap_port` varchar(10) NOT NULL default '389',
   `num_of_events` varchar(200) default NULL,
   `jobs_at_login` varchar(200) default NULL,
   `sendexpire` varchar(200) default NULL,
@@ -167,24 +166,8 @@ CREATE TABLE `glpi_config` (
   `logotxt` varchar(200) default NULL,
   `event_loglevel` varchar(200) default NULL,
   `mailing` varchar(200) default NULL,
-  `imap_auth_server` varchar(200) default NULL,
-  `imap_host` varchar(200) default NULL,
-  `ldap_host` varchar(200) default NULL,
-  `ldap_basedn` varchar(200) default NULL,
-  `ldap_rootdn` varchar(200) default NULL,
-  `ldap_pass` varchar(200) default NULL,
   `admin_email` varchar(200) default NULL,
   `mailing_signature` varchar(200) NOT NULL default '--',
-  `ldap_field_email` varchar(200) default NULL,
-  `ldap_field_location` varchar(200) default NULL,
-  `ldap_field_realname` varchar(200) default NULL,
-  `ldap_field_firstname` varchar(200) default NULL,
-  `ldap_field_phone` varchar(200) default NULL,
-  `ldap_field_phone2` varchar(200) default NULL,
-  `ldap_field_mobile` varchar(200) default NULL,
-  `ldap_condition` varchar(255) default NULL,
-  `ldap_login` varchar(200) NOT NULL default 'uid',
-  `ldap_use_tls` varchar(200) NOT NULL default '0',
   `permit_helpdesk` varchar(200) default NULL,
   `default_language` varchar(255) NOT NULL default 'french',
   `priority_1` varchar(200) NOT NULL default '#fff2f2',
@@ -230,7 +213,6 @@ CREATE TABLE `glpi_config` (
   `proxy_user` varchar(255) default NULL,
   `proxy_password` varchar(255) default NULL,
   `followup_on_update_ticket` tinyint(4) NOT NULL default '1',
-  `ldap_field_group` varchar(255) default NULL,
   `contract_alerts` tinyint(2) NOT NULL default '0',
   `infocom_alerts` tinyint(2) NOT NULL default '0',
   `cartridges_alert` int(11) NOT NULL default '0',
@@ -238,13 +220,11 @@ CREATE TABLE `glpi_config` (
   `keep_tracking_on_delete` int(11) default '1',
   `show_admin_doc` int(11) default '0',
   `time_step` int(11) default '5',
-  `ldap_group_condition` varchar(255) default NULL,
-  `ldap_search_for_groups` tinyint(4) NOT NULL default '0',
-  `ldap_field_group_member` varchar(255) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
+INSERT INTO `glpi_config` VALUES (1, '10', '0', '1', '255', '30', '15', ' 0.7', 'GLPI powered by indepnet', '5', '0', 'admsys@xxxxx.fr', 'SIGNATURE', '0', 'fr_FR', '#fff2f2', '#ffe0e0', '#ffcece', '#ffbfbf', '#ffadad', '2005-12-31', 10, '', '', '', NULL, '08:00:00', '20:00:00', 0, '0', '0', 'http://localhost/glpi', '1', '', 0, '', 100, '*', 0, 50, 1, 1, 0, 'name', 0, 50, 0, 2, 0, NULL, 25, NULL, NULL, NULL, '8080', NULL, NULL, 1, 0, 0, 0, 0, 0, 0, 5);
+#INSERT INTO glpi_config VALUES ('1','389','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','','','','','','','admsys@xxxxx.fr','SIGNATURE','mail','physicaldeliveryofficename','cn',NULL,'telephonenumber',NULL,NULL,'','uid','0','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1',NULL,'0','0','0','0','0','0','5',NULL,'0',NULL);
 
 ### Dump table glpi_connect_wire
 
@@ -2217,6 +2197,8 @@ CREATE TABLE `glpi_users` (
   `location` int(11) default NULL,
   `tracking_order` enum('yes','no') NOT NULL default 'no',
   `language` varchar(255) default NULL,
+   `auth_method` int(11) NOT NULL default '0',
+  `id_auth` int(11) NOT NULL default '0',
   `comments` text,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`name`),
@@ -2224,11 +2206,11 @@ CREATE TABLE `glpi_users` (
   KEY `location` (`location`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 ;
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',NULL);
-INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL);
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','en_GB',NULL);
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL);
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','en_GB',NULL);
+INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',0,0,NULL);
+INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',0,0,NULL);
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','en_GB',0,0,NULL);
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',0,0,NULL);
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','en_GB',0,0,NULL);
 
 ### Dump table glpi_users_groups
 
@@ -2266,3 +2248,40 @@ INSERT INTO glpi_users_profiles VALUES ('2','2','4','0','1','1');
 INSERT INTO glpi_users_profiles VALUES ('3','3','1','0','1','1');
 INSERT INTO glpi_users_profiles VALUES ('4','4','4','0','1','1');
 INSERT INTO glpi_users_profiles VALUES ('5','5','2','0','1','1');
+
+### GLPI_AUTH_LDAP ###
+DROP TABLE IF EXISTS `glpi_auth_ldap`;
+CREATE TABLE `glpi_auth_ldap` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `ldap_host` varchar(200) default NULL,
+  `ldap_basedn` varchar(200) default NULL,
+  `ldap_rootdn` varchar(200) default NULL,
+  `ldap_pass` varchar(200) default NULL,
+  `ldap_port` varchar(200) NOT NULL default '389',
+  `ldap_condition` varchar(255) default NULL,
+  `ldap_login` varchar(200) NOT NULL default 'uid',
+  `ldap_use_tls` varchar(200) NOT NULL default '0',
+  `ldap_field_group` varchar(255) default NULL,
+  `ldap_group_condition` varchar(255) default NULL,
+  `ldap_search_for_groups` tinyint(4) NOT NULL default '0',
+  `  	ldap_field_group_member` varchar(255) default NULL,
+  `ldap_field_email` varchar(200) default NULL,
+  `ldap_field_location` varchar(200) default NULL,
+  `ldap_field_realname` varchar(200) default NULL,
+  `ldap_field_firstname` varchar(200) default NULL,
+  `ldap_field_phone` varchar(200) default NULL,
+  `ldap_field_phone2` varchar(200) default NULL,
+  `ldap_field_mobile` varchar(200) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM;
+
+### GLPI_AUTH_MAIL ###
+DROP TABLE IF EXISTS `glpi_auth_mail`;
+CREATE TABLE `glpi_auth_mail` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) NOT NULL,
+  `imap_auth_server` varchar(200) default NULL,
+  `imap_host` varchar(200) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM;

@@ -193,5 +193,11 @@
 			ENTITY_TYPE => "front/entity.form.php",
 			);
 
+	define("AUTH_CAS",0);
+	define("AUTH_DB_GLPI",0);
+	define("AUTH_MAIL",2);
+	define("AUTH_LDAP",3);
+
+
 
 ?>
