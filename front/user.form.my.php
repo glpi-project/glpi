@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -33,36 +34,40 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
-$NEEDED_ITEMS=array("user","profile");
-
+$NEEDED_ITEMS = array (
+	"user",
+	"profile"
+);
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkLoginUser();
+$user = new User();
 
-$user=new User();
+//==Ajout Walid==
+if (!isset ($_SESSION['glpi_onglet']))
+	$_SESSION['glpi_onglet'] = 1;
+if (isset ($_GET['onglet'])) {
+	$_SESSION['glpi_onglet'] = $_GET['onglet'];
+}
+//==Fin Ajout Walid==
 
-
-if (isset($_POST["update"])&&$_POST["ID"]==$_SESSION["glpiID"]) {
+if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 	$user->update($_POST);
-	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG["log"][21]."  ".$_POST["name"].".");
+	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG["log"][21] . "  " . $_POST["name"] . ".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
-	if ($_SESSION["glpiactiveprofile"]["interface"]=="central")
-		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
-	else helpHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
-	$user->showMyForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
-	if ($_SESSION["glpiactiveprofile"]["interface"]=="central")
-		commonFooter();
-	else helpFooter();
+	if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
+		commonHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
+	else
+		helpHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
+
+$user->showMyForm($_SERVER['PHP_SELF'], $_SESSION["glpiID"]);
+if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
+	commonFooter();
+else
+	helpFooter();
 }
-
-
-
-
-
 ?>

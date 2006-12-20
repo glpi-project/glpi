@@ -156,12 +156,13 @@
 				$CFG_GLPI["debug_lang"]=($CFG_GLPI["debug"]==TRANSLATION_MODE?1:0); // affiche les variables de trads
 		
 	
-	
+				/*
 				if(!empty($CFG_GLPI["ldap_host"])){
 					$CFG_GLPI["ldap_basedn"] = utf8_decode(strtolower($CFG_GLPI["ldap_basedn"]));
 					$CFG_GLPI["ldap_rootdn"] = utf8_decode(strtolower($CFG_GLPI["ldap_rootdn"]));
 					$CFG_GLPI["ldap_pass"] = utf8_decode($CFG_GLPI["ldap_pass"]);
 		
+					
 					//// AJOUTER CA DANS LA CONFIG POST INSTALL
 					$CFG_GLPI['ldap_fields'] = array( "name" => strtolower($CFG_GLPI['ldap_login']), 
 							"email" => strtolower($CFG_GLPI['ldap_field_email']), 
@@ -172,9 +173,10 @@
 							"realname" => strtolower($CFG_GLPI['ldap_field_realname']),
 							"firstname" => strtolower($CFG_GLPI['ldap_field_firstname'])
 							);
-					$CFG_GLPI["ldap_field_group_member"]=strtolower($CFG_GLPI["ldap_field_group_member"]);
-				}
+					$CFG_GLPI["ldap_field_group_member"]=strtolower($CFG_GLPI["ldap_field_group_member"]); 
+				}*/
 			}
+			
 //		$CACHE_CFG->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
 //		}
 
