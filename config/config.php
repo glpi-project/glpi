@@ -38,7 +38,7 @@ include ("_relpos.php");
 include ($phproot."/config/based_config.php");
 
 // Current version of GLPI
-define("GLPI_VERSION","0.68.2");
+define("GLPI_VERSION","0.68.3");
 
 
 if(!file_exists($cfg_glpi["config_dir"] . "/config_db.php")) {
