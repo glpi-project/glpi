@@ -215,6 +215,14 @@ $LANG["common"][48]="Surname";
 $LANG["common"][49]="None"; 
 $LANG["common"][50]="Confirm the deletion ?"; 
 $LANG["common"][51]="Complete Name"; 
+$LANG["common"][52]="Authentication type";
+$LANG["common"][53]="Authentication server";
+$LANG["common"][54]="Last connection date";
+$LANG["common"][55]="LDAP";
+$LANG["common"][56]="IMAP/POP";
+$LANG["common"][57]="CAS";
+$LANG["common"][58]="Not yet authenticated";
+$LANG["common"][59]="GLPI internal database";
 
 $LANG["computers"][0]="Add Computer..."; 
 $LANG["computers"][9]="OS"; 

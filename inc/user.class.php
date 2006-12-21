@@ -555,12 +555,54 @@ class User extends CommonDBTM {
 	
 				echo "</td>";
 			}
+			
 			//do some rights verification
 			if(haveRight("user","w")) {
 				if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$this->fields["name"]==""){
 					echo "<td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 				} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
+
+			//Authentications informations : auth method used and server used
+			//don't display is creation of a new user'
+			if(!empty($ID))  {
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][52]."</td><td>";
+				switch ($this->fields["auth_method"])
+				{
+					case AUTH_LDAP:
+					echo $LANG["common"][55];
+					break;
+					case AUTH_MAIL:
+					echo $LANG["common"][56];
+					break;
+					case AUTH_CAS:
+					echo $LANG["common"][57];
+					break;
+					case AUTH_DB_GLPI:
+					echo $LANG["common"][59];
+					break;
+					case NOT_YET_AUTHENTIFIED:
+					echo $LANG["common"][58];
+					break;
+				}
+				echo "</td>";
+				
+				if ( ($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL ))
+				{
+					echo "<td align='center'>".$LANG["common"][53]."</td>";
+					if ($method = $this->getAuthMethodsByID())					
+						echo "<td>".$method["name"]."</td>";
+					else echo "<td></td>";
+				} else echo "<td colspan=2></td>";
+				
+				echo "</tr>";
+			}
+			
+			
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][54]."</td><td>";
+			if ($this->fields["last_login"] != "0000-00-00")
+				echo $this->fields["last_login"];
+			echo "</td><td colspan=2></td></tr>";
 			
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
@@ -740,7 +782,15 @@ class User extends CommonDBTM {
 		return false;
 	}
 	
-		/* Get all the authentication methods parameters
+	//Get all the authentication method parameters for the current user
+	function getAuthMethodsByID()
+	{
+		return getAuthMethodsByID($this->fields["auth_method"],$this->fields["id_auth"]);
+	}
+	
+	}
+
+/* Get all the authentication methods parameters for a specific auth_method and id_auth
 	* and return it as an array 
 	*/
 	function getAuthMethodsByID($auth_method, $id_auth) {
@@ -767,6 +817,5 @@ class User extends CommonDBTM {
 		//Return all the authentication methods in an array
 		return $auth_methods;
 	}
-}
 
 ?>

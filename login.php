@@ -97,6 +97,7 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 			}
 		}
 	}
+	$identificat->user->fields["last_login"] = date("Y-m-d");
 	$identificat->user->fields["name"] = $user;
 
 }
@@ -127,6 +128,7 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 				//check if the user has change of authentication method
 				if (($identificat->user->fields["auth_method"] != AUTH_MAIL) || ($identificat->user->fields["id_auth"] != $mail_method["ID"])) {
 					$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
+					$identificat->user->fields["last_login"] = date("Y-m-d");
 					$identificat->user->update($identificat->user->fields);
 				}
 			}

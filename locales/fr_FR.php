@@ -220,6 +220,16 @@ $LANG["common"][48]="Nom de famille";
 $LANG["common"][49]="Aucun";
 $LANG["common"][50]="Confirmer la suppression ?";
 $LANG["common"][51]="Nom complet";
+$LANG["common"][52]="Type d'authentification";
+$LANG["common"][53]="Serveur d'authentification";
+$LANG["common"][54]="Date de dernière connexion";
+$LANG["common"][55]="LDAP";
+$LANG["common"][56]="IMAP/POP";
+$LANG["common"][57]="CAS";
+$LANG["common"][58]="Pas encore authentifié";
+$LANG["common"][59]="Base interne GLPI";
+
+
 
 
 $LANG["computers"][0]="Ajouter ordinateur...";
