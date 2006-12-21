@@ -636,30 +636,33 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 /*
  * Try to authentify a user by checking all the directories
  */
-function try_ldap_auth($identificat, $auth_succeded, $user_present, $id_auth = -1,$isCAS=0) {
+function try_ldap_auth($identificat, $id_auth = -1,$isCAS=0) {
 
 	//If no specific source is give, test all ldap directories
 	if ($id_auth == -1) {
-		foreach ($identificat->auth_methods["ldap"] as $ldap_method) {
-			if (!$auth_succeded) {
-				if (ldap_auth(& $identificat, & $auth_succeded, & $user_present, $ldap_method,$isCAS))
-					break;
+		foreach  ($identificat->auth_methods["ldap"] as $ldap_method) {
+			if (!$identificat->auth_succeded) {
+				$identificat = ldap_auth($identificat, $ldap_method,$isCAS);
 			}
+			else break;
 		}
-	} else
+	} else if(array_key_exists($id_auth,$identificat->auth_methods["ldap"])) //Check if the ldap server indicated as the last good one still exists !
 		//A specific ldap directory is given, test it and only this one !
-		ldap_auth(& $identificat, & $auth_succeded, & $user_present, $identificat->auth_methods["ldap"][$id_auth],$isCAS);
+		$identificat = ldap_auth($identificat, $identificat->auth_methods["ldap"][$id_auth],$isCAS);
+		
+		return $identificat;
 }
 
 /*
  * Authentify a user by checking a specific directory
  */
-function ldap_auth($identificat, $auth_succeded, $user_present, $ldap_method,$isCAS) {
+function ldap_auth($identificat, $ldap_method,$isCAS) {
+
 	$user_dn = $identificat->connection_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"], utf8_decode($_POST['login_name']), utf8_decode($_POST['login_password']), $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
 	if ($user_dn) {
-		$auth_succeded = true;
+		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
-		$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+		$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 		$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($_POST['login_name']), utf8_decode($_POST['login_password']));
 
 		//check if the user has change of authentication method 
@@ -670,32 +673,32 @@ function ldap_auth($identificat, $auth_succeded, $user_present, $ldap_method,$is
 			$identificat->user->fields["id_auth"] = $ldap_method["ID"];
 			$identificat->user->update($identificat->user->fields);
 		}
-
-		return true;
 	}
-	return false;
+	return $identificat;
 }
 
-function try_mail_auth($identificat, $auth_succeded, $user_present, $id_auth = -1) {
+function try_mail_auth($identificat, $id_auth = -1) {
 
 	if ($id_auth == -1) {
 		foreach ($identificat->auth_methods["mail"] as $mail_method) {
-			if (!$auth_succeded) {
-				if (mail_auth(& $identificat, & $auth_succeded, & $user_present, $mail_method))
-					break;
+			if (!$identificat->auth_succeded) {
+				$identificat = mail_auth($identificat, $mail_method);
 			}
+			else break;
 		}
-	} else
-		mail_auth(& $identificat, & $auth_succeded, & $user_present, $identificat->auth_methods["mail"][$id_auth], $id_auth);
+	} else if(array_key_exists($id_auth,$identificat->auth_methods["mail"])) //Check if the mail server indicated as the last good one still exists !
+		$identificat = mail_auth($identificat, $id_auth,$identificat->auth_methods["mail"][$id_auth]);
 
+	return $identificat;
 }
 
-function mail_auth($identificat, $auth_succeded, $user_present, $mail_method) {
+function mail_auth($identificat, $mail_method) {
+
 	if (!empty ($mail_method["imap_auth_server"])) {
-		$auth_succeded = $identificat->connection_imap($mail_method["imap_auth_server"], utf8_decode($_POST['login_name']), utf8_decode($_POST['login_password']));
-		if ($auth_succeded) {
+		$identificat->auth_succeded = $identificat->connection_imap($mail_method["imap_auth_server"], utf8_decode($_POST['login_name']), utf8_decode($_POST['login_password']));
+		if ($identificat->auth_succeded) {
 			$identificat->extauth = 1;
-			$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+			$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 			if ($identificat->user->getFromIMAP($mail_method["imap_host"], utf8_decode($_POST['login_name']))) {
 			}
 
@@ -706,9 +709,8 @@ function mail_auth($identificat, $auth_succeded, $user_present, $mail_method) {
 				$identificat->user->fields["id_auth"] = $mail_method["ID"];
 				$identificat->user->update($identificat->user->fields);
 			}
-			return true;
 		}
 	}
-	return false;
+	return $identificat;
 }
 ?>

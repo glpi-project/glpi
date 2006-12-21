@@ -165,7 +165,7 @@ class User extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 		global $DB,$CFG_GLPI,$LANG;
-
+		
 		if ($input["ID"]==1){
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 			echo "alert('".addslashes($LANG["setup"][220])."');";

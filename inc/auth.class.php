@@ -53,6 +53,12 @@ class Identification {
 	//External authentifications methods;
 	var $auth_methods;
 
+	//Indicates if the user is authenticated or not
+	var $auth_succeded = 0;
+	
+	//Indicates if the user is already present in database
+	var $user_present = 0;
+	
 	/**
 	 * Constructor
 	 *
