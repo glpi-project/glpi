@@ -62,13 +62,13 @@ if (isset ($_POST['newprofile'])) {
 $_POST = array_map('stripslashes', $_POST);
 
 //Do login and checks
-$user_present = 1;
+//$user_present = 1;
 if (!isset ($_POST['login_name']))
 	$_POST['login_name'] = "";
 $identificat = new Identification();
 $identificat->getAuthMethods();
-
-$auth_succeded = false;
+$identificat->user_present=1;
+$identificat->auth_succeded = false;
 
 if (isset ($_POST['login_password'])) {
 	$_POST['login_password'] = unclean_cross_side_scripting_deep($_POST['login_password']);
@@ -81,9 +81,9 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 	// force CAS authentication
 	phpCAS :: forceAuthentication();
 	$user = phpCAS :: getUser();
-	$auth_succeded = true;
+	$identificat->auth_succeded = true;
 	$identificat->extauth = 1;
-	$user_present = $identificat->user->getFromDBbyName($user);
+	$identificat->user_present = $identificat->user->getFromDBbyName($user);
 
 	// if LDAP enabled too, get user's infos from LDAP
 	//If the user is already in database, let's check if he there's a dictory reported in id_auth, to get his personal informations  
@@ -103,7 +103,7 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 if (isset ($_POST["noCAS"]))
 	$_SESSION["noCAS"] = 1;
 
-if (!$auth_succeded) // Pas de tests en configuration CAS
+if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 	if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
 		$identificat->err = $LANG["login"][8];
 	} else {
@@ -118,12 +118,12 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 		if ($exists == 1) {
 
 			// Without UTF8 decoding
-			if (!$auth_succeded)
-				$auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
+			if (!$identificat->auth_succeded)
+				$identificat->auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
 
-			if ($auth_succeded) {
+			if ($identificat->auth_succeded) {
 
-				$user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+				$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 				//check if the user has change of authentication method
 				if (($identificat->user->fields["auth_method"] != AUTH_MAIL) || ($identificat->user->fields["id_auth"] != $mail_method["ID"])) {
 					$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
@@ -140,10 +140,12 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 			//so we test this connection first
 			switch ($identificat->user->fields["auth_method"]) {
 				case AUTH_LDAP :
-					try_ldap_auth(& $identificat, & $auth_succeded, & $user_present, $identificat->user->fields["id_auth"]);
+					$identificat = try_ldap_auth($identificat, $identificat->user->fields["id_auth"]);
 					break;
 				case AUTH_MAIL :
-					try_mail_auth(& $identificat, & $auth_succeded, & $user_present, $identificat->user->fields["id_auth"]);
+					$identificat = try_mail_auth($identificat, $identificat->user->fields["id_auth"]);
+					break;
+				case NOT_YET_AUTHENTIFIED:
 					break;
 			}
 		}
@@ -151,12 +153,12 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 		//If the last good auth method is not valid anymore, we test all the methods !
 		
 		//test all the imap/pop servers
-		if (!$auth_succeded)
-			try_mail_auth(& $identificat, & $auth_succeded, & $user_present);
+		if (!$identificat->auth_succeded)
+			$identificat = try_mail_auth($identificat);
 
 		//test all the ldap servers
-		if (!$auth_succeded)
-			try_ldap_auth(& $identificat, & $auth_succeded, & $user_present, -1);
+		if (!$identificat->auth_succeded)
+			$identificat = try_ldap_auth($identificat, -1);
 
 		// Fin des tests de connexion
 
@@ -164,8 +166,8 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 		// are not present on the DB, so we add it.
 		// if not, we update it.
 
-		if ($auth_succeded) {
-			if (!$user_present && $CFG_GLPI["auto_add_users"]) {
+		if ($identificat->auth_succeded) {
+			if (!$identificat->user_present && $CFG_GLPI["auto_add_users"]) {
 				if ($identificat->extauth)
 					$identificat->user->fields["_extauth"] = 1;
 				$input = $identificat->user->fields;
@@ -173,11 +175,11 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 				$identificat->user->fields["ID"] = $identificat->user->add($input);
 
 			} else
-				if (!$user_present) { // Auto add not enable so auth failed
+				if (!$identificat->user_present) { // Auto add not enable so auth failed
 					$identificat->err .= $LANG["login"][11];
-					$auth_succeded = false;
+					$identificat->auth_succeded = false;
 				} else
-					if ($user_present) {
+					if ($identificat->user_present) {
 						// update user and Blank PWD to clean old database for the external auth
 						if ($identificat->extauth) {
 							$identificat->user->update($identificat->user->fields);
@@ -187,7 +189,7 @@ if (!$auth_succeded) // Pas de tests en configuration CAS
 		}
 
 		// we have done at least a good login? No, we exit.
-		if (!$auth_succeded) {
+		if (!$identificat->auth_succeded) {
 			nullHeader("Login", $_SERVER['PHP_SELF']);
 			echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 			echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';

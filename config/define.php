@@ -197,6 +197,7 @@
 	define("AUTH_DB_GLPI",1);
 	define("AUTH_MAIL",2);
 	define("AUTH_LDAP",3);
+	define("NOT_YET_AUTHENTIFIED",-1);
 
 
 
