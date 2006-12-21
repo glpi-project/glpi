@@ -664,7 +664,8 @@ function ldap_auth($identificat, $ldap_method,$isCAS) {
 		$identificat->extauth = 1;
 		$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
 		$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($_POST['login_name']), utf8_decode($_POST['login_password']));
-
+		$identificat->auth_parameters = $ldap_method;
+		
 		//check if the user has change of authentication method 
 		if (( !$isCAS &&$identificat->user->fields["auth_method"] != AUTH_LDAP) || ( $isCAS &&$identificat->user->fields["auth_method"] != AUTH_CAS) || ($identificat->user->fields["id_auth"] != $ldap_method["ID"])) {
 			//Update the authentication method for the current user
@@ -699,6 +700,8 @@ function mail_auth($identificat, $mail_method) {
 		if ($identificat->auth_succeded) {
 			$identificat->extauth = 1;
 			$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+			$identificat->auth_parameters = $mail_method;
+		
 			if ($identificat->user->getFromIMAP($mail_method["imap_host"], utf8_decode($_POST['login_name']))) {
 			}
 

@@ -1,5 +1,6 @@
 <?php
 
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -55,10 +56,12 @@ class Identification {
 
 	//Indicates if the user is authenticated or not
 	var $auth_succeded = 0;
-	
+
 	//Indicates if the user is already present in database
 	var $user_present = 0;
-	
+
+	var $auth_parameters = array ();
+
 	/**
 	 * Constructor
 	 *
@@ -149,8 +152,7 @@ class Identification {
 
 		$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls);
 		// Test with login and password of the user
-		if (!$ds)
-		{
+		if (!$ds) {
 			$ds = connect_ldap($host, $port, $login, $password, $use_tls);
 		}
 		if ($ds) {
@@ -307,7 +309,7 @@ class Identification {
 		$sql = "SELECT * FROM glpi_auth_ldap";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0) {
-			
+
 			//Store in an array all the directories
 			while ($ldap_method = $DB->fetch_array($result))
 				$auth_methods_ldap[$ldap_method["ID"]] = $ldap_method;
@@ -318,7 +320,7 @@ class Identification {
 		$sql = "SELECT * FROM glpi_auth_mail";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0) {
-			
+
 			//Store all in an array
 			while ($mail_method = $DB->fetch_array($result))
 				$auth_methods_mail[$mail_method["ID"]] = $mail_method;

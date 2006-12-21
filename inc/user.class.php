@@ -166,6 +166,8 @@ class User extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		global $DB,$CFG_GLPI,$LANG;
 		
+		$auth_method = $this->getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
+		
 		if ($input["ID"]==1){
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 			echo "alert('".addslashes($LANG["setup"][220])."');";
@@ -209,13 +211,13 @@ class User extends CommonDBTM {
 				$ret=$input;
 				// extauth ldap case
 				if ($_SESSION["glpiextauth"]&&isset($CFG_GLPI['ldap_fields'])){
-					if (!empty($CFG_GLPI["ldap_host"]))
-					foreach ($CFG_GLPI['ldap_fields'] as $key => $val)
+					if ($input["auth_method"] != AUTH_LDAP)
+					foreach ($input['ldap_fields'] as $key => $val)
 						if (!empty($val))
 							unset($ret[$key]);
 				}
 				// extauth imap case
-				if (!empty($CFG_GLPI['imap_host']))
+				if ($input["auth_method"] == AUTH_MAIL)
 					unset($ret["email"]);	
 
 				unset($ret["active"]);
@@ -234,7 +236,7 @@ class User extends CommonDBTM {
 		
 		if (isset($input["_groups"])&&count($input["_groups"])){
 			$WHERE="";
-			switch ($CFG_GLPI["ldap_search_for_groups"]){
+			switch ($auth_method["ldap_search_for_groups"]){
 				case 0 : // user search
 					$WHERE="AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
 					break;
@@ -260,13 +262,12 @@ class User extends CommonDBTM {
 						deleteUserGroup($data["ID"]);
 					}
 			}
-
+			
 			foreach($input["_groups"] as $group){
 				addUserGroup($input["ID"],$group);
 			}
 			unset ($input["_groups"]);
 		}
-
 
 
 		return $input;
@@ -737,6 +738,34 @@ class User extends CommonDBTM {
 			return true;
 		}
 		return false;
+	}
+	
+		/* Get all the authentication methods parameters
+	* and return it as an array 
+	*/
+	function getAuthMethodsByID($auth_method, $id_auth) {
+		global $DB;
+
+		$auth_methods = array ();
+
+		switch ($auth_method) {
+			case AUTH_LDAP :
+				//Get all the ldap directories
+				$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
+				break;
+			case AUTH_MAIL :
+				//Get all the pop/imap servers
+				$sql = "SELECT * FROM glpi_auth_mail WHERE ID=" . $id_auth;
+				break;
+		}
+
+		$result = $DB->query($sql);
+		if ($DB->numrows($result) > 0) {
+			$auth_methods = $DB->fetch_array($result);
+		}
+
+		//Return all the authentication methods in an array
+		return $auth_methods;
 	}
 }
 
