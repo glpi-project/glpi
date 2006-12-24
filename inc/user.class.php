@@ -644,7 +644,7 @@ class User extends CommonDBTM {
 				}
 				
 			if ($this->fields["last_login"] != "0000-00-00 00:00:00")
-				echo "<br>".$LANG["common"][54]. " ".$this->fields["last_login"];
+				echo "<br>".$LANG["common"][54]. " ".convDateTime($this->fields["last_login"]);
 				
 				echo "</td><td colspan=2></td>";
 				echo "</tr>";
