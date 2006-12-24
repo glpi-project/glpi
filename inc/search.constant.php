@@ -2344,11 +2344,11 @@ $SEARCH_OPTION[ENTITY_TYPE]['3']['linkfield']='completename';
 $SEARCH_OPTION[ENTITY_TYPE]['3']['name']=$LANG["common"][51];
 $SEARCH_OPTION[ENTITY_TYPE]['3']['meta']=1;
 
-$SEARCH_OPTION[ENTITY_TYPE]['16']['table']='glpi_entities';
-$SEARCH_OPTION[ENTITY_TYPE]['16']['field']='comments';
-$SEARCH_OPTION[ENTITY_TYPE]['16']['linkfield']='';
-$SEARCH_OPTION[ENTITY_TYPE]['16']['name']=$LANG["common"][25];
-$SEARCH_OPTION[ENTITY_TYPE]['16']['meta']=1;
+$SEARCH_OPTION[ENTITY_TYPE][16]['table']='glpi_entities';
+$SEARCH_OPTION[ENTITY_TYPE][16]['field']='comments';
+$SEARCH_OPTION[ENTITY_TYPE][16]['linkfield']='';
+$SEARCH_OPTION[ENTITY_TYPE][16]['name']=$LANG["common"][25];
+$SEARCH_OPTION[ENTITY_TYPE][16]['meta']=1;
 
 
 ?>

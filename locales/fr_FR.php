@@ -221,14 +221,14 @@ $LANG["common"][49]="Aucun";
 $LANG["common"][50]="Confirmer la suppression ?";
 $LANG["common"][51]="Nom complet";
 $LANG["common"][52]="Authentification";
-$LANG["common"][53]="Serveur : ";
-$LANG["common"][54]="Dernière connexion : ";
+$LANG["common"][53]="Serveur";
+$LANG["common"][54]="Dernière connexion";
 $LANG["common"][55]="LDAP";
 $LANG["common"][56]="IMAP/POP";
 $LANG["common"][57]="CAS";
 $LANG["common"][58]="Pas encore authentifié";
 $LANG["common"][59]="Base interne GLPI";
-$LANG["common"][60]="Type : ";
+$LANG["common"][60]="Type";
 
 
 
@@ -242,7 +242,6 @@ $LANG["computers"][21]="CPU";
 $LANG["computers"][23]="RAM Type";
 $LANG["computers"][24]="Quantité RAM";
 $LANG["computers"][25]="Taille HD";
-$LANG["computers"][28]="Serveur";
 $LANG["computers"][32]="Pas d'ordinateur trouvé"; 
 $LANG["computers"][36]="HD-Type";
 $LANG["computers"][37]="Pas d'écran connecté."; 
