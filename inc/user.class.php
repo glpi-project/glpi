@@ -616,23 +616,23 @@ class User extends CommonDBTM {
 				//Authentications informations : auth method used and server used
 			//don't display is creation of a new user'
 			if(!empty($ID))  {
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][52].":</td><td align='center'>";
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["auth"][0].":</td><td align='center'>";
 				switch ($this->fields["auth_method"])
 				{
 					case AUTH_LDAP:
-					echo $LANG["common"][55];
+					echo $LANG["auth"][2];
 					break;
 					case AUTH_MAIL:
-					echo $LANG["common"][56];
+					echo $LANG["auth"][3];
 					break;
 					case AUTH_CAS:
-					echo $LANG["common"][57];
+					echo $LANG["auth"][4];
 					break;
 					case AUTH_DB_GLPI:
-					echo $LANG["common"][59];
+					echo $LANG["auth"][6];
 					break;
 					case NOT_YET_AUTHENTIFIED:
-					echo $LANG["common"][58];
+					echo $LANG["auth"][5];
 					break;
 				}
 				
@@ -641,7 +641,7 @@ class User extends CommonDBTM {
 					if ($method = $this->getAuthMethodsByID())					
 						echo "&nbsp ".$LANG["common"][53]." ".$method["name"];
 				}
-				echo "</td><td>".$LANG["common"][54].":</td><td>";
+				echo "</td><td>".$LANG["auth"][1].":</td><td>";
 				
 			if ($this->fields["last_login"] != "0000-00-00 00:00:00")
 				echo convDateTime($this->fields["last_login"]);
