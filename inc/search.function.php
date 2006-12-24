@@ -1404,10 +1404,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		return $out;
 
 		break;
-/*		case "glpi_users.active" :
-			return $LANG["choice"][$data["ITEM_$num"]];
-		break;
-*/
 		case "glpi_users.name" :		
 			// USER search case
 			if (empty($linkfield)){
@@ -1456,6 +1452,23 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				}
 			}
 		return $out;
+		break;
+		case "glpi_computers.comments" :
+		case "glpi_networking.comments" :
+		case "glpi_printers.comments" :
+		case "glpi_monitors.comments" :
+		case "glpi_peripherals.comments" :
+		case "glpi_software.comments" :
+		case "glpi_contacts.comments" :
+		case "glpi_enterprises.comments" :
+		case "glpi_users.comments" :
+		case "glpi_phones.comments" :
+		case "glpi_groups.comments" :
+		case "glpi_entities.comments" :
+		case "glpi_consumables_type.comments" :
+		case "glpi_docs.comment" :
+		case "glpi_cartridges_type.comments" :
+			return nl2br($data["ITEM_$num"]);
 		break;
 
 		case "glpi_computers.name" :
@@ -1662,8 +1675,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 								break;
 
 		default:
-								return $data["ITEM_$num"];
-								break;
+			return $data["ITEM_$num"];
+			break;
 	}
 
 }
