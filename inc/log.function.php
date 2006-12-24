@@ -84,26 +84,26 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
  **/
 function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 
-	global $SEARCH_OPTION, $LINK_ID_TABLE, $LANG ;
+	global $LINK_ID_TABLE, $LANG ;
 
-	// on ne log que les changements pas la d�inition d'un ��ent vide
+	// on ne log que les changements pas la définition d'un élément vide
 	if (!empty($oldvalues)){
 		$changes=array();
-		// n�essaire pour avoir les $search_option
+		// nécessaire pour avoir les $search_option
 		$SEARCH_OPTION=getSearchOptions();
 
-		// on parse le tableau $search_option, on v�ifie qu'il existe une entr� correspondante �$key
+		// on parse le tableau $search_option, on vérifie qu'il existe une entrée correspondante à $key
 		foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 
 			if($val2["linkfield"]==$key){
 
-				$id_search_option=$key2; // on r�upere dans $SEARCH_OPTION l'id_search_options
+				$id_search_option=$key2; // on récupere dans $SEARCH_OPTION l'id_search_options
 
 				if($val2["table"]==$LINK_ID_TABLE[$device_type]){
 					// 1er cas $key est un champs normal -> on ne touche pas aux valeurs 
 					$changes=array($id_search_option, addslashes($oldvalues),$newvalues);
 				}else {
-					//2�e cas $key est un champs li� il faut r�up�er les valeurs du dropdown
+					//2ème cas $key est un champs lié il faut récupèrer les valeurs du dropdown
 					$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldvalues)), addslashes(getDropdownName( $val2["table"],$newvalues)));
 				}
 
@@ -129,10 +129,9 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
  **/
 function showHistory($device_type,$id_device){
 
-	global $DB,$SEARCH_OPTION, $LINK_ID_TABLE,$LANG;	
+	global $DB, $LINK_ID_TABLE,$LANG;	
 
-	// n�essaire pour avoir les $search_option
-	include_once (GLPI_ROOT . "/inc/search.constant.php");
+	$SEARCH_OPTION=getSearchOptions();
 
 	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."' ORDER BY  ID DESC;";
 

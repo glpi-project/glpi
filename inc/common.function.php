@@ -203,11 +203,11 @@ function getSearchOptions(){
 	$cache = new Cache_Lite_File($options);
 
 	// Set a id for this cache : $file
-	if (!($SEARCH_OPTION = $cache->get("OPTIONS","GLPI_SEARCH"))) {
+	if (!($SEARCH_OPTION = $cache->get("OPTIONS","GLPI_SEARCH_".$_SESSION["glpilanguage"]))) {
 		// Cache miss !
 		// Put in $SEARCH_OPTION datas to put in cache
 		include (GLPI_ROOT . "/inc/search.constant.php");
-		$cache->save($SEARCH_OPTION,"OPTIONS","GLPI_SEARCH");
+		$cache->save($SEARCH_OPTION,"OPTIONS","GLPI_SEARCH_".$_SESSION["glpilanguage"]);
 	}
 
 	return $SEARCH_OPTION;
