@@ -251,7 +251,7 @@ function updateState($device_type,$id_device, $state,$template=0,$dohistory=1){
 		$where= " AND is_template='1'";
 	$si->getFromDB($device_type,$id_device,$template);
 
-	if ($state!=$si->fields["state"])
+	if ($state!=$si->fields["state"]){
 		if ($si->fields["state"]!=-1){
 			if ($state==0){
 				$DB->query("DELETE FROM glpi_state_item WHERE device_type='$device_type' and id_device='$id_device' $where;");
@@ -262,21 +262,24 @@ function updateState($device_type,$id_device, $state,$template=0,$dohistory=1){
 			}else{ $DB->query("UPDATE glpi_state_item SET state='$state' WHERE device_type='$device_type' and id_device='$id_device' $where;");
 
 			}
-			if ($dohistory){
-				$changes=array(31,addslashes(getDropdownName("glpi_dropdown_state",$si->fields["state"])), addslashes(getDropdownName( "glpi_dropdown_state",$state)));
-				historyLog ($id_device,$device_type,$changes);
-			}
-
 		} else {
 			if ($state!=0){
-				if ($template==1)
+				if ($template==1){
 					$DB->query("INSERT INTO glpi_state_item (device_type,id_device,state,is_template) VALUES ('$device_type','$id_device','$state','1');");
-				else 
+				} else {
 					$DB->query("INSERT INTO glpi_state_item (device_type,id_device,state) VALUES ('$device_type','$id_device','$state');");
+				}
+
+
 			}
 
 		}
+		if ($dohistory){
+			$changes=array(31,addslashes(getDropdownName("glpi_dropdown_state",$si->fields["state"])), addslashes(getDropdownName( "glpi_dropdown_state",$state)));
+			historyLog ($id_device,$device_type,$changes);
+		}
 
+	}
 }
 
 function showStateSummary($target){
