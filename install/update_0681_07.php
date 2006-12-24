@@ -48,6 +48,12 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_computer_device` ADD INDEX ( `specificity` )";
 		$DB->query($query) or die("0.7 add index specificity in glpi_computer_device " . $LANG["update"][90] . $DB->error());
 	}
+
+	if (!FieldExists("glpi_docs", "comments")){
+		$query = "ALTER TABLE `glpi_docs` CHANGE `comment` `comments` TEXT DEFAULT NULL ";
+		$DB->query($query) or die("0.7 alter docs.comment to be comments" . $LANG["update"][90] . $DB->error());
+		
+	}
 	// Update polish langage file
 	$query = "UPDATE glpi_users SET language='pl_PL' WHERE language='po_PO'";
 	$DB->query($query) or die("0.7 update polish lang file " . $LANG["update"][90] . $DB->error());
