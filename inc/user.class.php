@@ -559,39 +559,39 @@ class User extends CommonDBTM {
 			//do some rights verification
 			if(haveRight("user","w")) {
 				if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$this->fields["name"]==""){
-					echo "<td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+					echo "<td align='center'>".$LANG["setup"][19].":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 				} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48].":</td><td>";
 				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
 				echo "</td>";
-				echo "<td align='center'>".$LANG["common"][43]."</td><td>";
+				echo "<td align='center'>".$LANG["common"][43].":</td><td>";
 				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
 				echo "</td></tr>";
 		
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["profiles"][22]."</td><td>";
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["profiles"][22].":</td><td>";
 				$prof=new Profile();
 				$prof->getFromDBforUser($this->fields["ID"]);
 				dropdownValue("glpi_profiles","profile",$prof->fields["ID"]);
 				echo "</td>";
-				echo "<td align='center'>".$LANG["setup"][14]."</td><td>";
+				echo "<td align='center'>".$LANG["setup"][14].":</td><td>";
 				autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
 				echo "</td></tr>";
 		
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>";
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29].":</td><td>";
 				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
 				echo "</td>";
-				echo "<td align='center'>".$LANG["financial"][29]." 2</td><td>";
+				echo "<td align='center'>".$LANG["financial"][29]." 2:</td><td>";
 				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
 				echo "</td></tr>";
 		
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15].":</td><td>";
 				// TODO Restrict ??? or delete this field from the user
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 				echo "</td>";
-				echo "<td align='center'>".$LANG["common"][42]."</td><td>";
+				echo "<td align='center'>".$LANG["common"][42].":</td><td>";
 				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
 				echo "</td></tr>";
 		
@@ -616,7 +616,7 @@ class User extends CommonDBTM {
 				//Authentications informations : auth method used and server used
 			//don't display is creation of a new user'
 			if(!empty($ID))  {
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][52]."</td><td align='center'>".$LANG["common"][60];
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][52].":</td><td align='center'>";
 				switch ($this->fields["auth_method"])
 				{
 					case AUTH_LDAP:
@@ -636,17 +636,17 @@ class User extends CommonDBTM {
 					break;
 				}
 				
-				
 				if ( ($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL ))
 				{
 					if ($method = $this->getAuthMethodsByID())					
 						echo "&nbsp ".$LANG["common"][53]." ".$method["name"];
 				}
+				echo "</td><td>".$LANG["common"][54].":</td><td>";
 				
 			if ($this->fields["last_login"] != "0000-00-00 00:00:00")
-				echo "<br>".$LANG["common"][54]. " ".convDateTime($this->fields["last_login"]);
+				echo convDateTime($this->fields["last_login"]);
 				
-				echo "</td><td colspan=2></td>";
+				echo "</td>";
 				echo "</tr>";
 			}
 			
