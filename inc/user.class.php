@@ -595,7 +595,7 @@ class User extends CommonDBTM {
 				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
 				echo "</td></tr>";
 		
-				echo "<tr class='tab_bg_1'><td>".$LANG["common"][25].":</td><td colspan='3' align='center'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+				echo "<tr class='tab_bg_1' align='center'><td>".$LANG["common"][25].":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
 				echo "</tr>";
 		
 		
@@ -610,46 +610,46 @@ class User extends CommonDBTM {
 				echo "</select>";
 				echo "</td><td colspan='2'>&nbsp;</td></tr>";
 */			
-			$CFG_GLPI["cache"]->end();
-			}
-	
+
 				//Authentications informations : auth method used and server used
-			//don't display is creation of a new user'
-			if(!empty($ID))  {
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["auth"][0].":</td><td align='center'>";
-				switch ($this->fields["auth_method"])
-				{
-					case AUTH_LDAP:
-					echo $LANG["auth"][2];
-					break;
-					case AUTH_MAIL:
-					echo $LANG["auth"][3];
-					break;
-					case AUTH_CAS:
-					echo $LANG["auth"][4];
-					break;
-					case AUTH_DB_GLPI:
-					echo $LANG["auth"][6];
-					break;
-					case NOT_YET_AUTHENTIFIED:
-					echo $LANG["auth"][5];
-					break;
+				//don't display is creation of a new user'
+				if(!empty($ID))  {
+					echo "<tr class='tab_bg_1' align='center'><td>".$LANG["login"][10].":</td><td align='center'>";
+					switch ($this->fields["auth_method"])
+					{
+						case AUTH_LDAP:
+						echo $LANG["login"][2];
+						break;
+						case AUTH_MAIL:
+						echo $LANG["login"][3];
+						break;
+						case AUTH_CAS:
+						echo $LANG["login"][4];
+						break;
+						case AUTH_DB_GLPI:
+						echo $LANG["login"][18];
+						break;
+						case NOT_YET_AUTHENTIFIED:
+						echo $LANG["login"][9];
+						break;
+					}
+					
+					if ( ($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL ))
+					{
+						if ($method = $this->getAuthMethodsByID())					
+							echo "&nbsp ".$LANG["common"][53]." ".$method["name"];
+					}
+					echo "</td><td>".$LANG["login"][0].":</td><td>";
+					
+				if ($this->fields["last_login"] != "0000-00-00 00:00:00")
+					echo convDateTime($this->fields["last_login"]);
+					
+					echo "</td>";
+					echo "</tr>";
 				}
-				
-				if ( ($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL ))
-				{
-					if ($method = $this->getAuthMethodsByID())					
-						echo "&nbsp ".$LANG["common"][53]." ".$method["name"];
-				}
-				echo "</td><td>".$LANG["auth"][1].":</td><td>";
-				
-			if ($this->fields["last_login"] != "0000-00-00 00:00:00")
-				echo convDateTime($this->fields["last_login"]);
-				
-				echo "</td>";
-				echo "</tr>";
+
+				$CFG_GLPI["cache"]->end();
 			}
-			
 			
 			if (haveRight("user","w"))
 				if ($this->fields["name"]=="") {

@@ -874,7 +874,7 @@ function showMailServerConfig($value){
 	}
 	$mailbox=preg_replace("/.*}/","",$value);
 
-	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][163]."</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"". $addr."\" ></td></tr>";	
+	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["common"][52]."</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"". $addr."\" ></td></tr>";	
 	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][168]."</td><td>";
 	echo "<select name='server_type'>";
 	echo "<option value=''>&nbsp;</option>";
@@ -937,7 +937,7 @@ function showFormExtAuth($target) {
 		echo "<p >".$LANG["setup"][160]."</p>";
 		//		echo "<p>".$LANG["setup"][161]."</p>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>".$LANG["setup"][162]."</th></tr>";
+		echo "<tr><th colspan='2'>".$LANG["login"][3]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][164]."</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"". $CFG_GLPI["imap_host"] ."\" ></td></tr>";
 
 		showMailServerConfig($CFG_GLPI["imap_auth_server"]);
@@ -955,9 +955,9 @@ function showFormExtAuth($target) {
 		echo "<div align='center'><p > ".$LANG["setup"][151]."</p>";
 
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='4'>".$LANG["setup"][152]."</th></tr>";
+		echo "<tr><th colspan='4'>".$LANG["login"][2]."</th></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][153]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $CFG_GLPI["ldap_host"] ."\"></td>";
+		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["common"][52]."</td><td><input type=\"text\" name=\"ldap_host\" value=\"". $CFG_GLPI["ldap_host"] ."\"></td>";
 		echo "<td align='center'>".$LANG["setup"][172]."</td><td><input type=\"text\" name=\"ldap_port\" value=\"". $CFG_GLPI["ldap_port"] ."\"></td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["setup"][154]."</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"". $CFG_GLPI["ldap_basedn"] ."\" ></td>";

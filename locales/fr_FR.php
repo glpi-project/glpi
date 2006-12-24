@@ -30,15 +30,6 @@
 	//Français
 
 
-$LANG["auth"][0]="Authentification";
-$LANG["auth"][1]="Dernière connexion";
-$LANG["auth"][2]="LDAP";
-$LANG["auth"][3]="IMAP/POP";
-$LANG["auth"][4]="CAS";
-$LANG["auth"][5]="Pas encore authentifié";
-$LANG["auth"][6]="Base interne GLPI";
-
-
 $LANG["backup"][0]="Sauvegarde SQL";
 $LANG["backup"][1]="Sauvegarde XML";
 $LANG["backup"][9]="Supprimé !"; 
@@ -186,7 +177,6 @@ $LANG["common"][8]="Gérer Gabarits...";
 $LANG["common"][9]="Ajouter un gabarit...";
 $LANG["common"][10]="Responsable technique";
 $LANG["common"][11]="Affichage limité";
-$LANG["common"][12]="Afficher les doublons";
 $LANG["common"][13]="Gabarit";
 $LANG["common"][14]="Gabarits";
 $LANG["common"][15]="Lieu";
@@ -678,8 +668,6 @@ $LANG["knowbase"][12]="Racine";
 $LANG["knowbase"][13]="Nom de la catégorie";
 $LANG["knowbase"][14]="Sujet";
 $LANG["knowbase"][15]="Contenu";
-$LANG["knowbase"][21]="Tout déplier";
-$LANG["knowbase"][22]="Tout replier";
 $LANG["knowbase"][24]="Accéder à la FAQ";
 $LANG["knowbase"][26]="Vues";
 $LANG["knowbase"][27]="Le";
@@ -759,11 +747,17 @@ $LANG["log"][59]="Cron";
 
 $LANG["log"][60]="déglobalisation de l'item";
 
+
+$LANG["login"][0]="Dernière connexion";
 $LANG["login"][1]="Se reconnecter";
+$LANG["login"][2]="LDAP";
+$LANG["login"][3]="IMAP/POP";
+$LANG["login"][4]="CAS";
 $LANG["login"][5]="Accés refusé";
 $LANG["login"][6]="Identifiant";
 $LANG["login"][7]="Mot de passe";
 $LANG["login"][8]="Identifiant ou mot de passe vide";
+$LANG["login"][9]="Pas encore authentifié";
 $LANG["login"][10]="Authentification";
 $LANG["login"][11]="Utilisateur non autorisé à se connecter";
 $LANG["login"][12]="Identifiant ou mot de passe érroné";
@@ -772,6 +766,9 @@ $LANG["login"][14]="Utilisateur inconnu";
 $LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés";
 $LANG["login"][16]="Echec de l'authentification LDAP";
 $LANG["login"][17]="Echec de l'authentification AD";
+$LANG["login"][18]="Base interne GLPI";
+$LANG["login"][19]="Liste des serveurs";
+$LANG["login"][20]="Ajouter un serveur";
 
 $LANG["mailing"][0]="----------------------------------------------------------";
 $LANG["mailing"][1]="======================================================================";
@@ -1151,7 +1148,6 @@ $LANG["setup"][4]="Types d'ordinateurs";
 $LANG["setup"][5]="Système d'exploitation";
 $LANG["setup"][9]="Interface réseau";
 $LANG["setup"][10]="Inventaire";
-$LANG["setup"][11]="changer le mot de passe pour";
 $LANG["setup"][14]="E-Mail";
 $LANG["setup"][18]="Login";
 $LANG["setup"][19]="Password";
@@ -1252,7 +1248,6 @@ $LANG["setup"][148]="Pas pour les horaires";
 $LANG["setup"][150]="Sources d'authentification externes";
 $LANG["setup"][151]="Si vous ne souhaitez pas utiliser LDAP comme source(s) de connexion, laissez les champs vides";
 $LANG["setup"][152]="LDAP configuration";
-$LANG["setup"][153]="Hote LDAP";
 $LANG["setup"][154]="Basedn";
 $LANG["setup"][155]="rootdn (pour les connexions non anonymes)";
 $LANG["setup"][156]="Pass (pour les connexions non anonymes)";
@@ -1261,7 +1256,6 @@ $LANG["setup"][158]="Impossible d'utiliser LDAP comme source de connexion extern
 $LANG["setup"][159]="Filtre de connexion";
 $LANG["setup"][160]="Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connexion laissez les champs vides. Plus d'informations sur <a target='_blank' href='http://www.php.net/manual/fr/function.imap-open.php'>php.net</a>.";
 $LANG["setup"][162]="IMAP/POP configuration"; 
-$LANG["setup"][163]="Serveur IMAP/POP";
 $LANG["setup"][164]="Nom domaine IMAP/POP <br>(email de type login@domaine)";
 $LANG["setup"][165]="Votre parseur PHP a été compilé sans les fonctions de connexion IMAP";
 $LANG["setup"][166]="Impossible d'utiliser IMAP/POP comme source de connexion externe"; 
@@ -1281,10 +1275,6 @@ $LANG["setup"][179]="Impossible d'utiliser CAS comme source de connexion externe
 $LANG["setup"][180]="Utiliser TLS";
 $LANG["setup"][181]="Fonction ldap_start_tls inexistante";
 $LANG["setup"][182]="Url de retour au logout";
-$LANG["setup"][183]="Liste des serveurs IMAP/POP";
-$LANG["setup"][184]="Liste des serveurs LDAP";
-$LANG["setup"][185]="Ajouter un serveur IMAP/POP";
-$LANG["setup"][186]="Ajouter un serveur LDAP";
 
 
 $LANG["setup"][200]="Suivis par emails";
@@ -1465,7 +1455,6 @@ $LANG["title"][13]="Informations Utilisateur";
 $LANG["title"][14]="Sources d'authentification externes";
 $LANG["title"][15]="Mailing";
 $LANG["title"][16]="Rapports";
-$LANG["title"][17]="Préférences";
 $LANG["title"][18]="Moniteurs";
 $LANG["title"][19]="Cartouches";
 $LANG["title"][20]="Contrats";
