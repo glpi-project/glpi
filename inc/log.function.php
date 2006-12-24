@@ -54,20 +54,17 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 	global $DB;
 
 	$date_mod=date("Y-m-d H:i:s");
-
+	
 	if(!empty($changes)){
 
-		// cr�r un query avec l'insertion des ��ents fixes + changements
+		// créate a query to insert history
 		$id_search_option=$changes[0];
 		$old_value=$changes[1];
 		$new_value=$changes[2];
 
 		// Build query
 		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes(getUserName($_SESSION["glpiID"],$link=0))."','$date_mod','$id_search_option','$old_value','$new_value');";
-
-
 		$DB->query($query)  or die($DB->error());
-
 	}
 }
 
@@ -86,34 +83,28 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 
 	global $LINK_ID_TABLE, $LANG ;
 
-	// on ne log que les changements pas la définition d'un élément vide
-	if (!empty($oldvalues)){
-		$changes=array();
-		// nécessaire pour avoir les $search_option
-		$SEARCH_OPTION=getSearchOptions();
+	$changes=array();
+	// needed to have  $SEARCH_OPTION
+	$SEARCH_OPTION=getSearchOptions();
 
-		// on parse le tableau $search_option, on vérifie qu'il existe une entrée correspondante à $key
-		foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+	// Parsing $SEARCH_OPTION, check if an entry exists matching $key
+	foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 
-			if($val2["linkfield"]==$key){
+		if($val2["linkfield"]==$key){
 
-				$id_search_option=$key2; // on récupere dans $SEARCH_OPTION l'id_search_options
+			$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 
-				if($val2["table"]==$LINK_ID_TABLE[$device_type]){
-					// 1er cas $key est un champs normal -> on ne touche pas aux valeurs 
-					$changes=array($id_search_option, addslashes($oldvalues),$newvalues);
-				}else {
-					//2ème cas $key est un champs lié il faut récupèrer les valeurs du dropdown
-					$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldvalues)), addslashes(getDropdownName( $val2["table"],$newvalues)));
-				}
-
+			if($val2["table"]==$LINK_ID_TABLE[$device_type]){
+				// 1st case : text field -> keep datas
+				$changes=array($id_search_option, addslashes($oldvalues),$newvalues);
+			}else {
+				// 2nd case ; link field -> get data from dropdown
+				$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldvalues)), addslashes(getDropdownName( $val2["table"],$newvalues)));
 			}
-		} // fin foreach
-
-		if (count($changes))
-			historyLog ($id_device,$device_type,$changes);
-
-	} // Fin if
+		}
+	} 
+	if (count($changes))
+		historyLog ($id_device,$device_type,$changes);
 
 } // function construct_history
 
