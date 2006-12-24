@@ -562,47 +562,6 @@ class User extends CommonDBTM {
 					echo "<td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 				} else echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else echo "<td colspan='2'>&nbsp;</td></tr>";
-
-			//Authentications informations : auth method used and server used
-			//don't display is creation of a new user'
-			if(!empty($ID))  {
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][52]."</td><td>";
-				switch ($this->fields["auth_method"])
-				{
-					case AUTH_LDAP:
-					echo $LANG["common"][55];
-					break;
-					case AUTH_MAIL:
-					echo $LANG["common"][56];
-					break;
-					case AUTH_CAS:
-					echo $LANG["common"][57];
-					break;
-					case AUTH_DB_GLPI:
-					echo $LANG["common"][59];
-					break;
-					case NOT_YET_AUTHENTIFIED:
-					echo $LANG["common"][58];
-					break;
-				}
-				echo "</td>";
-				
-				if ( ($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL ))
-				{
-					echo "<td align='center'>".$LANG["common"][53]."</td>";
-					if ($method = $this->getAuthMethodsByID())					
-						echo "<td>".$method["name"]."</td>";
-					else echo "<td></td>";
-				} else echo "<td colspan=2></td>";
-				
-				echo "</tr>";
-			}
-			
-			
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][54]."</td><td>";
-			if ($this->fields["last_login"] != "0000-00-00")
-				echo $this->fields["last_login"];
-			echo "</td><td colspan=2></td></tr>";
 			
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
@@ -640,6 +599,7 @@ class User extends CommonDBTM {
 				echo "</tr>";
 		
 		
+		
 /*				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
 				$active=0;
 				if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
@@ -653,6 +613,44 @@ class User extends CommonDBTM {
 			$CFG_GLPI["cache"]->end();
 			}
 	
+				//Authentications informations : auth method used and server used
+			//don't display is creation of a new user'
+			if(!empty($ID))  {
+				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][52]."</td><td align='center'>".$LANG["common"][60];
+				switch ($this->fields["auth_method"])
+				{
+					case AUTH_LDAP:
+					echo $LANG["common"][55];
+					break;
+					case AUTH_MAIL:
+					echo $LANG["common"][56];
+					break;
+					case AUTH_CAS:
+					echo $LANG["common"][57];
+					break;
+					case AUTH_DB_GLPI:
+					echo $LANG["common"][59];
+					break;
+					case NOT_YET_AUTHENTIFIED:
+					echo $LANG["common"][58];
+					break;
+				}
+				
+				
+				if ( ($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL ))
+				{
+					if ($method = $this->getAuthMethodsByID())					
+						echo "&nbsp ".$LANG["common"][53]." ".$method["name"];
+				}
+				
+			if ($this->fields["last_login"] != "0000-00-00 00:00:00")
+				echo "<br>".$LANG["common"][54]. " ".$this->fields["last_login"];
+				
+				echo "</td><td colspan=2></td>";
+				echo "</tr>";
+			}
+			
+			
 			if (haveRight("user","w"))
 				if ($this->fields["name"]=="") {
 					echo "<tr>";

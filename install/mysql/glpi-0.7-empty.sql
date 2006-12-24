@@ -2241,18 +2241,18 @@ CREATE TABLE `glpi_users` (
   `comments` text,
   `id_auth` int(11) NOT NULL default '-1',
   `auth_method` int(11) NOT NULL default '-1',
-  `last_login` date NOT NULL,
+  `last_login` datetime NOT NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`),
   KEY `location` (`location`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 ;
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',NULL,'-1','-1','0000-00-00');
-INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00');
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','fr_FR',NULL,'-1','-1','0000-00-00');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00');
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','fr_FR',NULL,'-1','-1','0000-00-00');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00');
 
 ### Dump table glpi_users_groups
 

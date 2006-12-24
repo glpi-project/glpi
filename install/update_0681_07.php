@@ -71,8 +71,8 @@ function update0681to07() {
 
 	foreach ($doc_links as $type => $table) {
 		$query = "SELECT glpi_doc_device.ID as linkID, $table.*
-							FROM glpi_doc_device 
-							LEFT JOIN $table ON (glpi_doc_device.FK_device = $table.ID AND glpi_doc_device.device_type='$type') WHERE glpi_doc_device.is_template='1'";
+									FROM glpi_doc_device 
+									LEFT JOIN $table ON (glpi_doc_device.FK_device = $table.ID AND glpi_doc_device.device_type='$type') WHERE glpi_doc_device.is_template='1'";
 		$result = $DB->query($query) or die("0.7 search wrong data link doc device $table " . $LANG["update"][90] . $DB->error());
 		if ($DB->numrows($result)) {
 			while ($data = $DB->fetch_array($result)) {
@@ -89,24 +89,24 @@ function update0681to07() {
 
 	if (!TableExists("glpi_entities")) {
 		$query = "CREATE TABLE `glpi_entities` (
-						`ID` int(11) NOT NULL auto_increment,
-						`name` varchar(255) NOT NULL,
-						`parentID` int(11) NOT NULL default '0',
-						`completename` text NOT NULL,
-						`comments` text,
-						`level` int(11) default NULL,
-						PRIMARY KEY  (`ID`),
-						UNIQUE KEY `name` (`name`,`parentID`),
-						KEY `parentID` (`parentID`)
-						) ENGINE=MyISAM;";
+								`ID` int(11) NOT NULL auto_increment,
+								`name` varchar(255) NOT NULL,
+								`parentID` int(11) NOT NULL default '0',
+								`completename` text NOT NULL,
+								`comments` text,
+								`level` int(11) default NULL,
+								PRIMARY KEY  (`ID`),
+								UNIQUE KEY `name` (`name`,`parentID`),
+								KEY `parentID` (`parentID`)
+								) ENGINE=MyISAM;";
 		$DB->query($query) or die("0.7 create glpi_entities " . $LANG["update"][90] . $DB->error());
 		// TODO : ADD other fields
 	}
 
 	if (!FieldExists("glpi_users_profiles", "FK_entities")) {
 		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entities` INT NOT NULL DEFAULT '0',
-									ADD `recursive` TINYINT NOT NULL DEFAULT '1',
-									ADD `active` TINYINT NOT NULL DEFAULT '1' ";
+											ADD `recursive` TINYINT NOT NULL DEFAULT '1',
+											ADD `active` TINYINT NOT NULL DEFAULT '1' ";
 		$DB->query($query) or die("0.7 alter glpi_users_profiles " . $LANG["update"][90] . $DB->error());
 
 		// Manage inactive users
@@ -201,86 +201,85 @@ function update0681to07() {
 
 	if (!TableExists("glpi_auth_ldap")) {
 		$query = "CREATE TABLE `glpi_auth_ldap` (
-				 		 `ID` int(11) NOT NULL auto_increment,
-				 		 `name` varchar(255) NOT NULL,
-				 		 `ldap_host` varchar(200) default NULL,
-				  		`ldap_basedn` varchar(200) default NULL,
-				  		`ldap_rootdn` varchar(200) default NULL,
-				  		`ldap_pass` varchar(200) default NULL,
-				  		`ldap_port` varchar(200) NOT NULL default '389',
-				  		`ldap_condition` varchar(255) default NULL,
-				  		`ldap_login` varchar(200) NOT NULL default 'uid',	
-				  		`ldap_use_tls` varchar(200) NOT NULL default '0',
-				  		`ldap_field_group` varchar(255) default NULL,
-				  		`ldap_group_condition` varchar(255) default NULL,
-				  		`ldap_search_for_groups` tinyint(4) NOT NULL default '0',
-				  		`ldap_field_group_member` varchar(255) default NULL,
-				  		`ldap_field_email` varchar(200) default NULL,
-				  		`ldap_field_location` varchar(200) default NULL,
-				  		`ldap_field_realname` varchar(200) default NULL,
-				  		`ldap_field_firstname` varchar(200) default NULL,
-				  		`ldap_field_phone` varchar(200) default NULL,
-				  		`ldap_field_phone2` varchar(200) default NULL,
-				  		`ldap_field_mobile` varchar(200) default NULL,
-				  		PRIMARY KEY  (`ID`)
-						) ENGINE=MyISAM;";
+						 		 `ID` int(11) NOT NULL auto_increment,
+						 		 `name` varchar(255) NOT NULL,
+						 		 `ldap_host` varchar(200) default NULL,
+						  		`ldap_basedn` varchar(200) default NULL,
+						  		`ldap_rootdn` varchar(200) default NULL,
+						  		`ldap_pass` varchar(200) default NULL,
+						  		`ldap_port` varchar(200) NOT NULL default '389',
+						  		`ldap_condition` varchar(255) default NULL,
+						  		`ldap_login` varchar(200) NOT NULL default 'uid',	
+						  		`ldap_use_tls` varchar(200) NOT NULL default '0',
+						  		`ldap_field_group` varchar(255) default NULL,
+						  		`ldap_group_condition` varchar(255) default NULL,
+						  		`ldap_search_for_groups` tinyint(4) NOT NULL default '0',
+						  		`ldap_field_group_member` varchar(255) default NULL,
+						  		`ldap_field_email` varchar(200) default NULL,
+						  		`ldap_field_location` varchar(200) default NULL,
+						  		`ldap_field_realname` varchar(200) default NULL,
+						  		`ldap_field_firstname` varchar(200) default NULL,
+						  		`ldap_field_phone` varchar(200) default NULL,
+						  		`ldap_field_phone2` varchar(200) default NULL,
+						  		`ldap_field_mobile` varchar(200) default NULL,
+						  		PRIMARY KEY  (`ID`)
+								) ENGINE=MyISAM;";
 		$DB->query($query) or die("0.7 create glpi_auth_ldap " . $LANG["update"][90] . $DB->error());
 		// TODO : ADD other fields
 
 		$query = "select * from glpi_config WHERE ID=1";
-			$result = $DB->query($query);
-			$config = $DB->fetch_array($result);
+		$result = $DB->query($query);
+		$config = $DB->fetch_array($result);
 
 		if (!empty ($config["ldap_host"])) {
 
-	
 			//Transfer ldap informations into the new table
-			
+
 			$query = "INSERT INTO `glpi_auth_ldap` VALUES 
-									(NULL, '" . $config["ldap_host"] . "', '" . $config["ldap_host"] . "', '" . $config["ldap_basedn"] . "', '" . $config["ldap_rootdn"] . "', '" . $config["ldap_pass"] . "', " . $config["ldap_port"] . ", '" . $config["ldap_condition"] . "', '" . $config["ldap_login"] . "', '" . $config["ldap_use_tls"] . "', '" . $config["ldap_field_group"] . "',
-									'" . $config["ldap_condition"] . "', " . $config["ldap_search_for_groups"] . ", '" . $config["ldap_field_group_member"] . "',
-									'" . $config["ldap_field_email"] . "', '" . $config["ldap_field_location"] . "', '" . $config["ldap_field_realname"] . "', '" . $config["ldap_field_realname"] . "',
-									'" . $config["ldap_field_phone"] . "', '" . $config["ldap_field_phone2"] . "', '" . $config["ldap_field_mobile"] . "');";
+												(NULL, '" . $config["ldap_host"] . "', '" . $config["ldap_host"] . "', '" . $config["ldap_basedn"] . "', '" . $config["ldap_rootdn"] . "', '" . $config["ldap_pass"] . "', " . $config["ldap_port"] . ", '" . $config["ldap_condition"] . "', '" . $config["ldap_login"] . "', '" . $config["ldap_use_tls"] . "', '" . $config["ldap_field_group"] . "',
+												'" . $config["ldap_condition"] . "', " . $config["ldap_search_for_groups"] . ", '" . $config["ldap_field_group_member"] . "',
+												'" . $config["ldap_field_email"] . "', '" . $config["ldap_field_location"] . "', '" . $config["ldap_field_realname"] . "', '" . $config["ldap_field_realname"] . "',
+												'" . $config["ldap_field_phone"] . "', '" . $config["ldap_field_phone2"] . "', '" . $config["ldap_field_mobile"] . "');";
 			$DB->query($query) or die("0.7 transfert of ldap parameters into glpi_auth_ldap " . $LANG["update"][90] . $DB->error());
 		}
 
 		$query = "ALTER TABLE `glpi_config`
-				  		DROP `ldap_field_email`,
-				  		DROP `ldap_port`,
-				  		DROP `ldap_host`,
-				  		DROP `ldap_basedn`,
-				  		DROP `ldap_rootdn`,
-				  		DROP `ldap_pass`,
-				  		DROP `ldap_field_location`,
-				  		DROP `ldap_field_realname`,
-				  		DROP `ldap_field_firstname`,
-				  		DROP `ldap_field_phone`,
-				  		DROP `ldap_field_phone2`,
-				  		DROP `ldap_field_mobile`,
-				  		DROP `ldap_condition`,
-				  		DROP `ldap_login`,
-				  		DROP `ldap_use_tls`,
-				  		DROP `ldap_field_group`,
-				  		DROP `ldap_group_condition`,
-				  		DROP `ldap_search_for_groups`,
-				  		DROP `ldap_field_group_member`;";
+						  		DROP `ldap_field_email`,
+						  		DROP `ldap_port`,
+						  		DROP `ldap_host`,
+						  		DROP `ldap_basedn`,
+						  		DROP `ldap_rootdn`,
+						  		DROP `ldap_pass`,
+						  		DROP `ldap_field_location`,
+						  		DROP `ldap_field_realname`,
+						  		DROP `ldap_field_firstname`,
+						  		DROP `ldap_field_phone`,
+						  		DROP `ldap_field_phone2`,
+						  		DROP `ldap_field_mobile`,
+						  		DROP `ldap_condition`,
+						  		DROP `ldap_login`,
+						  		DROP `ldap_use_tls`,
+						  		DROP `ldap_field_group`,
+						  		DROP `ldap_group_condition`,
+						  		DROP `ldap_search_for_groups`,
+						  		DROP `ldap_field_group_member`;";
 		$DB->query($query) or die("0.7 drop ldap fields from glpi_config " . $LANG["update"][90] . $DB->error());
 
 		$query = "ALTER TABLE glpi_users ADD `id_auth` INT NOT NULL DEFAULT '-1',
-						ADD `auth_method` INT NOT NULL DEFAULT '-1',
-						ADD `last_login` DATE NOT NULL";
+								ADD `auth_method` INT NOT NULL DEFAULT '-1',
+								ADD `last_login` DATETIME NOT NULL";
 		$DB->query($query) or die("0.7 add auth_method & id_method in glpi_users " . $LANG["update"][90] . $DB->error());
 
 	}
 
 	if (!TableExists("glpi_auth_mail")) {
 		$query = "CREATE TABLE `glpi_auth_mail` (
-						`ID` int(11) NOT NULL auto_increment,
-						`name` varchar(255) NOT NULL,
-						`imap_auth_server` varchar(200) default NULL,
-						`imap_host` varchar(200) default NULL,
-						PRIMARY KEY  (`ID`)
-						) ENGINE=MyISAM ;";
+								`ID` int(11) NOT NULL auto_increment,
+								`name` varchar(255) NOT NULL,
+								`imap_auth_server` varchar(200) default NULL,
+								`imap_host` varchar(200) default NULL,
+								PRIMARY KEY  (`ID`)
+								) ENGINE=MyISAM ;";
 
 		$DB->query($query) or die("0.7 create glpi_auth_mail " . $LANG["update"][90] . $DB->error());
 		// TODO : ADD other fields
@@ -289,18 +288,20 @@ function update0681to07() {
 		$result = $DB->query($query);
 		$config = $DB->fetch_array($result);
 
-		if (!empty($config["imap_host"])) {
+		if (!empty ($config["imap_host"])) {
 
 			//Transfer ldap informations into the new table
 			$query = "INSERT INTO `glpi_auth_mail` VALUES 
-								(NULL, '" . $config["imap_host"] . "', '" . $config["imap_auth_server"] . "', '" . $config["imap_host"] . "');";
+											(NULL, '" . $config["imap_host"] . "', '" . $config["imap_auth_server"] . "', '" . $config["imap_host"] . "');";
 			$DB->query($query) or die("0.7 transfert of mail parameters into glpi_auth_mail " . $LANG["update"][90] . $DB->error());
 
-			$query = "ALTER TABLE `glpi_config`
-					  		DROP `imap_auth_server`,
-					  		DROP `imap_host`";
-			$DB->query($query) or die("0.7 drop mail fields from glpi_config " . $LANG["update"][90] . $DB->error());
 		}
+
+		$query = "ALTER TABLE `glpi_config`
+							  		DROP `imap_auth_server`,
+							  		DROP `imap_host`";
+		$DB->query($query) or die("0.7 drop mail fields from glpi_config " . $LANG["update"][90] . $DB->error());
+
 	}
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	// TODO Split Config -> config general + config entity
