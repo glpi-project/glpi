@@ -284,9 +284,9 @@ class Software  extends CommonDBTM {
 				dropdownValue("glpi_software","update_software",$this->fields["update_software"]);
 				echo "</td>";
 	
-				
-					echo "<td colspan='2'>&nbsp;</td></tr>";
-	
+				echo "<td>".$LANG["state"][0].":</td><td>";
+				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
+				echo "</td></tr>";	
 	
 	
 				echo "<tr class='tab_bg_1'><td valign='top'>";

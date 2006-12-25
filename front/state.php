@@ -35,30 +35,12 @@
 
 
 
-$NEEDED_ITEMS=array("state","user","computer","printer","monitor","peripheral","networking","phone");
+$NEEDED_ITEMS=array("search","state");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
-
-if(!isset($_GET["start"])) $_GET["start"] = 0;
-if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "glpi_state_item.ID";
-if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-if (!isset($_GET["contains"])) $_GET["contains"] = "";
-if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_dropdown_state.name";
-if (!isset($_GET["state"])) $_GET["state"] = "";
 if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
-
-if (isset($tab["deletestate"])) {
-	checkTypeRight($tab["device_type"],"w");
-	updateState($tab["device_type"],$tab["device_id"],0);
-
-	logEvent(0, "state", 4, "state", $_SESSION["glpiname"]." delete state.");
-}
 
 checkCentralAccess();
 
@@ -66,11 +48,14 @@ commonHeader($LANG["title"][9],$_SERVER['PHP_SELF']);
 
 titleState();
 
-if ($_GET["synthese"]=="yes")
-showStateSummary($_SERVER['PHP_SELF']);
-else {
-	searchFormStateItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["state"]);
-	showStateItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
+if ($_GET["synthese"]=="yes"){
+	showStateSummary($_SERVER['PHP_SELF']);
+} else {
+	manageGetValuesInSearch(STATE_TYPE);
+
+	searchForm(STATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+
+	showList(STATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 }
 
 commonFooter();

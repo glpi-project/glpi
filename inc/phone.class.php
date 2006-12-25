@@ -81,17 +81,6 @@ class Phone extends CommonDBTM {
 		return $input;
 	}
 
-	function post_updateItem($input,$updates,$history=1) {
-
-		if(isset($input["state"])){
-			if (isset($input["is_template"])&&$input["is_template"]==1){
-				updateState(PHONE_TYPE,$input["ID"],$input["state"],1,0);
-			}else {
-				updateState(PHONE_TYPE,$input["ID"],$input["state"],0,$history);
-			}
-		}
-	}
-
 	function prepareInputForAdd($input) {
 		// set new date.
 		$input["date_mod"] = date("Y-m-d H:i:s");
@@ -101,24 +90,11 @@ class Phone extends CommonDBTM {
 		unset($input['withtemplate']);
 		unset($input['ID']);
 
-		// Manage state
-		$input["_state"]=-1;
-		if (isset($input["state"])){
-			$input["_state"]=$input["state"];
-			unset($input["state"]);
-		}
-
 		return $input;
 	}
 
 	function postAddItem($newID,$input) {
 		global $DB;
-		// Add state
-		if ($input["_state"]>0){
-			if (isset($input["is_template"])&&$input["is_template"]==1)
-				updateState(PHONE_TYPE,$newID,$input["_state"],1,0);
-			else updateState(PHONE_TYPE,$newID,$input["_state"],0,0);
-		}
 
 		// ADD Infocoms
 		$ic= new Infocom();
@@ -199,9 +175,6 @@ class Phone extends CommonDBTM {
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".PHONE_TYPE."')";
 		$result = $DB->query($query);
 
-
-		$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".PHONE_TYPE."')";
-		$result = $DB->query($query);
 
 		$query2 = "DELETE from glpi_connect_wire WHERE (end1 = '$ID' AND type = '".PHONE_TYPE."')";
 		$result2 = $DB->query($query2);
@@ -381,11 +354,7 @@ class Phone extends CommonDBTM {
 	
 	
 				echo "<tr><td>".$LANG["state"][0].":</td><td>";
-				$si=new StateItem();
-				$t=0;
-				if ($template) $t=1;
-				$si->getfromDB(PHONE_TYPE,$this->fields["ID"],$t);
-				dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["phones"][40].":	</td><td>";

@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stat","enterprise","device","state","document","knowbase");
+$NEEDED_ITEMS=array("search","user","computer","printer","monitor","peripheral","networking","software","phone","cartridge","consumable","stat","tracking","contract","infocom","stat","enterprise","device","document","knowbase");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -55,10 +55,6 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 	}
 
 	switch ($_GET["item_type"]){
-
-		case STATE_TYPE :
-			showStateItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["state"]);
-			break;
 		case KNOWBASE_TYPE :
 			showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],$_GET["faq"]);
 			break;

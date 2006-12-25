@@ -118,14 +118,6 @@ class Computer extends CommonDBTM {
 			mergeOcsArray($this->fields["ID"],$updates,"computer_update");
 		}
 
-		if(isset($input["state"])){
-			if (isset($input["is_template"])&&$input["is_template"]==1){
-				updateState(COMPUTER_TYPE,$input["ID"],$input["state"],1,0);
-			}else {
-				updateState(COMPUTER_TYPE,$input["ID"],$input["state"],0,$history);
-			}
-		}
-
 		if (isset($input["_auto_update_ocs"])){
 			$query="UPDATE glpi_ocs_link SET auto_update='".$input["_auto_update_ocs"]."' 	WHERE glpi_id='".$input["ID"]."'";
 			$DB->query($query);
@@ -141,24 +133,11 @@ class Computer extends CommonDBTM {
 		unset($input['withtemplate']);
 		unset($input['ID']);
 
-		// Manage state
-		$input["_state"]=-1;
-		if (isset($input["state"])){
-			$input["_state"]=$input["state"];
-			unset($input["state"]);
-		}
-
 		return $input;
 	}
 
 	function postAddItem($newID,$input) {
 		global $DB;
-		// Add state
-		if ($input["_state"]>0){
-			if (isset($input["is_template"])&&$input["is_template"]==1)
-				updateState(COMPUTER_TYPE,$newID,$input["_state"],1,0);
-			else updateState(COMPUTER_TYPE,$newID,$input["_state"],0,0);
-		}
 
 		// ADD Devices
 		$this->getFromDBwithDevices($input["_oldID"]);
@@ -375,9 +354,6 @@ class Computer extends CommonDBTM {
 		$result = $DB->query($query);		
 
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
-		$result = $DB->query($query);
-
-		$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
@@ -602,11 +578,7 @@ class Computer extends CommonDBTM {
 				echo "</td>";
 	
 				echo "<td>".$LANG["state"][0].":</td><td>";
-				$si=new StateItem();
-				$t=0;
-				if ($template) $t=1;
-				$si->getfromDB(COMPUTER_TYPE,$this->fields["ID"],$t);
-				dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";

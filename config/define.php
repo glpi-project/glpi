@@ -153,7 +153,7 @@
 			CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
 			LICENSE_TYPE => "glpi_licenses",
 			LINK_TYPE => "glpi_links",
-			STATE_TYPE => "glpi_state_item",
+			STATE_TYPE => "",
 			PHONE_TYPE => "glpi_phones",
 			DEVICE_TYPE => "???",
 			REMINDER_TYPE => "glpi_reminder",

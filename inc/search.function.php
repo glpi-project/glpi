@@ -380,7 +380,11 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
 	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG;
 
-	$itemtable=$LINK_ID_TABLE[$type];
+	if ($type==STATE_TYPE){
+		$itemtable="STATE_TABLES";
+	} else {
+		$itemtable=$LINK_ID_TABLE[$type];
+	}
 	$entity_restrict=in_array($itemtable,$CFG_GLPI["specif_entities_tables"]);
 
 	// Define meta table where search must be done in HAVING clause
@@ -583,15 +587,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	//// 4 - ORDER
-	// Add order by if order item is a normal item
-	if (!in_array($SEARCH_OPTION[$type][$sort]["table"],$META_SPECIF_TABLE))	
-		$ORDER= addOrderBy($type,$sort,$order);
-	// Add order by if order item must to be treated by the GROUP BY HAVING clause
-	else {
-		foreach($toview as $key => $val)
-			if ($sort==$val)
-				$ORDER= addOrderBy($type,$sort,$order,$key);	
+	foreach($toview as $key => $val){
+		if ($sort==$val){
+			$ORDER= addOrderBy($type,$sort,$order,$key);	
+		}
 	}
+
 
 
 
@@ -629,7 +630,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 6 - Add item ID
 
 	// Add ID to the select
-	$SELECT.=$itemtable.".ID AS ID ";
+	if (!empty($itemtable)){
+		$SELECT.=$itemtable.".ID AS ID ";
+	}
 
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
@@ -730,9 +733,26 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($first) {$LINK=" WHERE ";$first=false;}
 			$query_num.=getEntitiesRestrictRequest($LINK,$itemtable);
 		}
-
-		$result_num = $DB->query($query_num);
-		$numrows= $DB->result($result_num,0,0);
+		if ($type==STATE_TYPE){
+			$first=true;
+			$tmpquery=$query_num;
+			$numrows=0;
+			foreach ($CFG_GLPI["state_type"] as $ctype){
+				if (haveTypeRight($ctype,'r')){
+					if ($first){
+						$first=false;
+					} else {
+						$query_num.=" UNION ";
+					}
+					$query_num=ereg_replace("STATE_TABLES",$LINK_ID_TABLE[$ctype],$tmpquery." AND ".$LINK_ID_TABLE[$ctype].".state > 0 ");
+					$result_num = $DB->query($query_num);
+					$numrows+= $DB->result($result_num,0,0);
+				}
+			}
+		} else {
+			$result_num = $DB->query($query_num);
+			$numrows= $DB->result($result_num,0,0);
+		}
 	}
 
 	// If export_all reset LIMIT condition
@@ -743,7 +763,25 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
-	$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
+
+	// Create QUERY
+	if ($type==STATE_TYPE){
+		$first=true;
+		$QUERY="";
+		foreach ($CFG_GLPI["state_type"] as $ctype){
+			if (haveTypeRight($ctype,'r')){
+				if ($first){
+					$first=false;
+				} else {
+					$QUERY.=" UNION ";
+				}
+				$QUERY.=ereg_replace("STATE_TABLES",$LINK_ID_TABLE[$ctype],$SELECT.", $ctype AS TYPE ".$FROM.$WHERE." AND ".$LINK_ID_TABLE[$ctype].".state > 0 " );
+			}
+		}
+		$QUERY.=ereg_replace("STATE_TABLES.","",$ORDER).$LIMIT;
+	} else {
+		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
+	}
 
 	//echo $QUERY."<br>\n";
 
@@ -835,6 +873,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo displaySearchHeaderItem($output_type,$LANG["cartridges"][0],$header_num);	
 			if ($type==CONSUMABLE_TYPE)
 				echo displaySearchHeaderItem($output_type,$LANG["consumables"][0],$header_num);
+			if ($type==STATE_TYPE){
+				echo displaySearchHeaderItem($output_type,$LANG["state"][6],$header_num);
+				$ci = new CommonItem();
+			}
 			// End Line for column headers		
 			echo displaySearchEndLine($output_type);
 
@@ -909,7 +951,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				}		
 				if ($type==CONSUMABLE_TYPE){
 					echo displaySearchItem($output_type,countConsumables($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
-				}		
+				}	
+				if ($type==STATE_TYPE){
+					$ci->setType($data["TYPE"]);
+					echo displaySearchItem($output_type,$ci->getType(),$item_num,$row_num);
+				}	
 				// End Line
 				echo displaySearchEndLine($output_type);
 			}
@@ -1067,11 +1113,16 @@ function addOrderBy($type,$ID,$order,$key=0){
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
 
+
+	if ($type==STATE_TYPE){
+		return " ORDER BY ITEM_$key $order ";
+	}
+
 	switch($table.".".$field){
 		case "glpi_device_hdd.specif_default" :
-			case "glpi_device_ram.specif_default" :
-			case "glpi_device_processor.specif_default" :
-			case "glpi_tracking.count" :
+		case "glpi_device_ram.specif_default" :
+		case "glpi_device_processor.specif_default" :
+		case "glpi_tracking.count" :
 			return " ORDER BY ITEM_$key $order ";
 		break;
 		case "glpi_contracts.end_date":
@@ -1385,7 +1436,13 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
  *
  **/
 function giveItem ($type,$field,$data,$num,$linkfield=""){
-	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG;
+	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG,$LINK_ID_TABLE;
+
+
+	if ($type==STATE_TYPE){
+		return giveItem ($data["TYPE"],ereg_replace("STATE_TABLES",$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
+	}
+
 
 	switch ($field){
 		case "glpi_licenses.serial" :
@@ -1840,14 +1897,8 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_contract_device":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
 		break;
-		case "glpi_state_item":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.id_device AND $nt.device_type='$type') ";
-		break;
 		case "glpi_dropdown_state":
-			// Link to glpi_state_item before
-			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_state_item",$linkfield);
-
-		return $out." LEFT JOIN $new_table $AS ON (glpi_state_item.state = $nt.ID) ";
+			return " LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID) ";
 		break;
 		case "glpi_users_profiles":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_users) ";

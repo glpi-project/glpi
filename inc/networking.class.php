@@ -82,18 +82,6 @@ class Netdevice extends CommonDBTM {
 		return $input;
 	}
 
-	function post_updateItem($input,$updates,$history=1) {
-
-		if(isset($input["state"])){
-			if (isset($input["is_template"])&&$input["is_template"]==1){
-				updateState(NETWORKING_TYPE,$input["ID"],$input["state"],1,0);
-			}else {
-				updateState(NETWORKING_TYPE,$input["ID"],$input["state"],0,$history);
-			}
-		}
-	}
-
-
 	function prepareInputForAdd($input) {
 		// set new date.
 		$input["date_mod"] = date("Y-m-d H:i:s");
@@ -103,24 +91,11 @@ class Netdevice extends CommonDBTM {
 		unset($input['withtemplate']);
 		unset($input['ID']);
 
-		// Manage state
-		$input["_state"]=-1;
-		if (isset($input["state"])){
-			$input["_state"]=$input["state"];
-			unset($input["state"]);
-		}
-
 		return $input;
 	}
 
 	function postAddItem($newID,$input) {
 		global $DB;
-		// Add state
-		if ($input["_state"]>0){
-			if (isset($input["is_template"])&&$input["is_template"]==1)
-				updateState(NETWORKING_TYPE,$newID,$input["_state"],1,0);
-			else updateState(NETWORKING_TYPE,$newID,$input["_state"],0,0);
-		}
 
 		// ADD Infocoms
 		$ic= new Infocom();
@@ -200,9 +175,6 @@ class Netdevice extends CommonDBTM {
 
 
 		$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".NETWORKING_TYPE."')";
-		$result = $DB->query($query);
-
-		$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".NETWORKING_TYPE."')";
@@ -341,11 +313,7 @@ class Netdevice extends CommonDBTM {
 	
 	
 				echo "<tr><td>".$LANG["state"][0].":</td><td>\n";
-				$si=new StateItem();
-				$t=0;
-				if ($template) $t=1;
-				$si->getfromDB(NETWORKING_TYPE,$this->fields["ID"],$t);
-				dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 				echo "</td></tr>\n";
 	
 	

@@ -159,7 +159,6 @@ function showConnections($target,$ID,$withtemplate='') {
 	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
 
-	$state=new StateItem();
 	$ci=new CommonItem;
 
 	$items=array(PRINTER_TYPE=>$LANG["computers"][39],MONITOR_TYPE=>$LANG["computers"][40],PERIPHERAL_TYPE=>$LANG["computers"][46],PHONE_TYPE=>$LANG["computers"][55]);
@@ -200,8 +199,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "<td align='center'><b>";
 							echo $ci->getLink();
 							echo "</b>";
-							if ($state->getfromDB($type,$tID))
-								echo " - ".getDropdownName("glpi_dropdown_state",$state->fields['state']);
+							echo " - ".getDropdownName("glpi_dropdown_state",$this->fields['state']);
 	
 							echo "</td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {

@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","state","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile");
+$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -130,11 +130,8 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		break;
 	}
 
-	echo "<div align='center'><strong>".$LANG["common"][23]."<br>";
-	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
-	echo "</strong></div>";
-
-
+	$_SESSION['MESSAGE_AFTER_REDIRECT']=$LANG["common"][23];
+	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else echo $LANG["common"][24];
 

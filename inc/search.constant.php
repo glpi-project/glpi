@@ -70,7 +70,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][5]['meta']=2;
 
 $SEARCH_OPTION[COMPUTER_TYPE][31]['table']='glpi_dropdown_state';
 $SEARCH_OPTION[COMPUTER_TYPE][31]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][31]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][31]['linkfield']='state';
 $SEARCH_OPTION[COMPUTER_TYPE][31]['name']=$LANG["state"][0];
 $SEARCH_OPTION[COMPUTER_TYPE][31]['meta']=0;
 
@@ -427,7 +427,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][40]['meta']=2;
 
 $SEARCH_OPTION[NETWORKING_TYPE][31]['table']='glpi_dropdown_state';
 $SEARCH_OPTION[NETWORKING_TYPE][31]['field']='name';
-$SEARCH_OPTION[NETWORKING_TYPE][31]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][31]['linkfield']='state';
 $SEARCH_OPTION[NETWORKING_TYPE][31]['name']=$LANG["state"][0];
 $SEARCH_OPTION[NETWORKING_TYPE][31]['meta']=0;
 
@@ -690,7 +690,7 @@ $SEARCH_OPTION[PRINTER_TYPE][40]['meta']=2;
 
 $SEARCH_OPTION[PRINTER_TYPE][31]['table']='glpi_dropdown_state';
 $SEARCH_OPTION[PRINTER_TYPE][31]['field']='name';
-$SEARCH_OPTION[PRINTER_TYPE][31]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][31]['linkfield']='state';
 $SEARCH_OPTION[PRINTER_TYPE][31]['name']=$LANG["state"][0];
 $SEARCH_OPTION[PRINTER_TYPE][31]['meta']=0;
 
@@ -935,7 +935,7 @@ $SEARCH_OPTION[MONITOR_TYPE][40]['meta']=2;
 
 $SEARCH_OPTION[MONITOR_TYPE][31]['table']='glpi_dropdown_state';
 $SEARCH_OPTION[MONITOR_TYPE][31]['field']='name';
-$SEARCH_OPTION[MONITOR_TYPE][31]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][31]['linkfield']='state';
 $SEARCH_OPTION[MONITOR_TYPE][31]['name']=$LANG["state"][0];
 $SEARCH_OPTION[MONITOR_TYPE][31]['meta']=0;
 
@@ -1154,7 +1154,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][40]['meta']=2;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][31]['table']='glpi_dropdown_state';
 $SEARCH_OPTION[PERIPHERAL_TYPE][31]['field']='name';
-$SEARCH_OPTION[PERIPHERAL_TYPE][31]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][31]['linkfield']='state';
 $SEARCH_OPTION[PERIPHERAL_TYPE][31]['name']=$LANG["state"][0];
 $SEARCH_OPTION[PERIPHERAL_TYPE][31]['meta']=0;
 
@@ -1361,7 +1361,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][3]['meta']=2;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][31]['table']='glpi_dropdown_state';
 $SEARCH_OPTION[SOFTWARE_TYPE][31]['field']='name';
-$SEARCH_OPTION[SOFTWARE_TYPE][31]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][31]['linkfield']='state';
 $SEARCH_OPTION[SOFTWARE_TYPE][31]['name']=$LANG["state"][0];
 $SEARCH_OPTION[SOFTWARE_TYPE][31]['meta']=0;
 
@@ -2116,7 +2116,7 @@ $SEARCH_OPTION[PHONE_TYPE][40]['meta']=2;
 
 $SEARCH_OPTION[PHONE_TYPE][31]['table']='glpi_dropdown_state';
 $SEARCH_OPTION[PHONE_TYPE][31]['field']='name';
-$SEARCH_OPTION[PHONE_TYPE][31]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][31]['linkfield']='state';
 $SEARCH_OPTION[PHONE_TYPE][31]['name']=$LANG["state"][0];
 $SEARCH_OPTION[PHONE_TYPE][31]['meta']=0;
 
@@ -2367,5 +2367,92 @@ $SEARCH_OPTION[ENTITY_TYPE][16]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][16]['name']=$LANG["common"][25];
 $SEARCH_OPTION[ENTITY_TYPE][16]['meta']=1;
 
+//////STATE_TYPE
+
+$SEARCH_OPTION[STATE_TYPE]['common']=$LANG["common"][32];
+
+$SEARCH_OPTION[STATE_TYPE][1]['table']='STATE_TABLES';
+$SEARCH_OPTION[STATE_TYPE][1]['field']='name';
+$SEARCH_OPTION[STATE_TYPE][1]['linkfield']='name';
+$SEARCH_OPTION[STATE_TYPE][1]['name']=$LANG["common"][16];
+$SEARCH_OPTION[STATE_TYPE][1]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][2]['table']='STATE_TABLES';
+$SEARCH_OPTION[STATE_TYPE][2]['field']='ID';
+$SEARCH_OPTION[STATE_TYPE][2]['linkfield']='ID';
+$SEARCH_OPTION[STATE_TYPE][2]['name']=$LANG["common"][2];
+$SEARCH_OPTION[STATE_TYPE][2]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][31]['table']='glpi_dropdown_state';
+$SEARCH_OPTION[STATE_TYPE][31]['field']='name';
+$SEARCH_OPTION[STATE_TYPE][31]['linkfield']='state';
+$SEARCH_OPTION[STATE_TYPE][31]['name']=$LANG["state"][0];
+$SEARCH_OPTION[STATE_TYPE][31]['meta']=0;
+
+$SEARCH_OPTION[STATE_TYPE][3]['table']='glpi_dropdown_locations';
+$SEARCH_OPTION[STATE_TYPE][3]['field']='completename';
+$SEARCH_OPTION[STATE_TYPE][3]['linkfield']='location';
+$SEARCH_OPTION[STATE_TYPE][3]['name']=$LANG["common"][15];
+$SEARCH_OPTION[STATE_TYPE][3]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][8]['table']='STATE_TABLES';
+$SEARCH_OPTION[STATE_TYPE][8]['field']='serial';
+$SEARCH_OPTION[STATE_TYPE][8]['linkfield']='serial';
+$SEARCH_OPTION[STATE_TYPE][8]['name']=$LANG["common"][19];
+$SEARCH_OPTION[STATE_TYPE][8]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][9]['table']='STATE_TABLES';
+$SEARCH_OPTION[STATE_TYPE][9]['field']='otherserial';
+$SEARCH_OPTION[STATE_TYPE][9]['linkfield']='otherserial';
+$SEARCH_OPTION[STATE_TYPE][9]['name']=$LANG["common"][20];
+$SEARCH_OPTION[STATE_TYPE][9]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][16]['table']='STATE_TABLES';
+$SEARCH_OPTION[STATE_TYPE][16]['field']='comments';
+$SEARCH_OPTION[STATE_TYPE][16]['linkfield']='';
+$SEARCH_OPTION[STATE_TYPE][16]['name']=$LANG["common"][25];
+$SEARCH_OPTION[STATE_TYPE][16]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][17]['table']='STATE_TABLES';
+$SEARCH_OPTION[STATE_TYPE][17]['field']='contact';
+$SEARCH_OPTION[STATE_TYPE][17]['linkfield']='contact';
+$SEARCH_OPTION[STATE_TYPE][17]['name']=$LANG["common"][18];
+$SEARCH_OPTION[STATE_TYPE][17]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][18]['table']='STATE_TABLES';
+$SEARCH_OPTION[STATE_TYPE][18]['field']='contact_num';
+$SEARCH_OPTION[STATE_TYPE][18]['linkfield']='contact_num';
+$SEARCH_OPTION[STATE_TYPE][18]['name']=$LANG["common"][21];
+$SEARCH_OPTION[STATE_TYPE][18]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][70]['table']='glpi_users';
+$SEARCH_OPTION[STATE_TYPE][70]['field']='name';
+$SEARCH_OPTION[STATE_TYPE][70]['linkfield']='FK_users';
+$SEARCH_OPTION[STATE_TYPE][70]['name']=$LANG["common"][34];
+$SEARCH_OPTION[STATE_TYPE][70]['meta']=0;
+
+$SEARCH_OPTION[STATE_TYPE][71]['table']='glpi_groups';
+$SEARCH_OPTION[STATE_TYPE][71]['field']='name';
+$SEARCH_OPTION[STATE_TYPE][71]['linkfield']='FK_groups';
+$SEARCH_OPTION[STATE_TYPE][71]['name']=$LANG["common"][35];
+$SEARCH_OPTION[STATE_TYPE][71]['meta']=0;
+
+$SEARCH_OPTION[STATE_TYPE][19]['table']='STATE_TABLES';
+$SEARCH_OPTION[STATE_TYPE][19]['field']='date_mod';
+$SEARCH_OPTION[STATE_TYPE][19]['linkfield']='';
+$SEARCH_OPTION[STATE_TYPE][19]['name']=$LANG["common"][26];
+$SEARCH_OPTION[STATE_TYPE][19]['meta']=1;
+
+$SEARCH_OPTION[STATE_TYPE][23]['table']='glpi_enterprises';
+$SEARCH_OPTION[STATE_TYPE][23]['field']='name';
+$SEARCH_OPTION[STATE_TYPE][23]['linkfield']='FK_glpi_enterprise';
+$SEARCH_OPTION[STATE_TYPE][23]['name']=$LANG["common"][5];
+$SEARCH_OPTION[STATE_TYPE][23]['meta']=2;
+
+$SEARCH_OPTION[STATE_TYPE][24]['table']='glpi_users';
+$SEARCH_OPTION[STATE_TYPE][24]['field']='name';
+$SEARCH_OPTION[STATE_TYPE][24]['linkfield']='tech_num';
+$SEARCH_OPTION[STATE_TYPE][24]['name']=$LANG["common"][10];
+$SEARCH_OPTION[STATE_TYPE][24]['meta']=0;
 
 ?>
