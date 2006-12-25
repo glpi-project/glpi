@@ -614,20 +614,12 @@ function printReservationItem($target,$ID,$date){
 					$display=$LANG["reservation"][17]."&nbsp;".$heure_debut;
 				else $display=$heure_debut."-".$heure_fin;
 
-				$delete="";
-				$modif="";
-				$modif_end="";
-				$comment="";
 				$rand=mt_rand();
-				if ($_SESSION["glpiID"]==$user->fields["ID"]||haveRight("reservation_central","r")){
-					$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;item=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
-					$modif_end="</a>";
-					$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";
-				}
-
+				$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;item=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
+				$modif_end="</a>";
+				$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";
 
 				echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><b>".$user->fields["name"]."</b></span>";
-
 
 				echo $modif_end.$comment."</td></tr>";
 
