@@ -85,17 +85,6 @@ class Printer  extends CommonDBTM {
 		return $input;
 	}
 
-	function post_updateItem($input,$updates,$history=1) {
-
-		if(isset($input["state"])){
-			if (isset($input["is_template"])&&$input["is_template"]==1){
-				updateState(PRINTER_TYPE,$input["ID"],$input["state"],1,0);
-			}else {
-				updateState(PRINTER_TYPE,$input["ID"],$input["state"],0,$history);
-			}
-		}
-	}
-
 	function prepareInputForAdd($input) {
 		// set new date.
 		$input["date_mod"] = date("Y-m-d H:i:s");
@@ -105,24 +94,11 @@ class Printer  extends CommonDBTM {
 		unset($input['withtemplate']);
 		unset($input['ID']);
 
-		// Manage state
-		$input["_state"]=-1;
-		if (isset($input["state"])){
-			$input["_state"]=$input["state"];
-			unset($input["state"]);
-		}
-
 		return $input;
 	}
 
 	function postAddItem($newID,$input) {
 		global $DB;
-		// Add state
-		if ($input["_state"]>0){
-			if (isset($input["is_template"])&&$input["is_template"]==1)
-				updateState(PRINTER_TYPE,$newID,$input["_state"],1,0);
-			else updateState(PRINTER_TYPE,$newID,$input["_state"],0,0);
-		}
 
 		// ADD Infocoms
 		$ic= new Infocom();
@@ -214,9 +190,6 @@ class Printer  extends CommonDBTM {
 		}
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".PRINTER_TYPE."')";
-		$result = $DB->query($query);
-
-		$query = "DELETE FROM glpi_state_item WHERE (id_device = '$ID' AND device_type='".PRINTER_TYPE."')";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".PRINTER_TYPE."')";
@@ -363,11 +336,7 @@ class Printer  extends CommonDBTM {
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	
 				echo "<tr><td>".$LANG["state"][0].":</td><td>\n";
-				$si=new StateItem();
-				$t=0;
-				if ($template) $t=1;
-				$si->getfromDB(PRINTER_TYPE,$this->fields["ID"],$t);
-				dropdownValue("glpi_dropdown_state", "state",$si->fields["state"]);
+				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["common"][17].": 	</td><td>\n";

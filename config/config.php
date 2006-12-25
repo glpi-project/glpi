@@ -38,6 +38,9 @@
 		}
 	include_once (GLPI_ROOT."/config/based_config.php");
 	include (GLPI_ROOT."/config/define.php");
+	session_save_path(GLPI_DOC_DIR."/_sessions");
+	if(!session_id()){@session_start();}
+
 
 
 
@@ -104,9 +107,9 @@
 
 			//DEVICE ARRAY.
 			$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
-			$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones","glpi_consumables_type");
+			$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones","glpi_consumables_type","STATE_TABLES");
 		
-			$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones");
+			$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones","STATE_TABLES");
 		
 			$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
 			$CFG_GLPI["state_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
@@ -117,7 +120,7 @@
 			$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridges_type","glpi_computers","glpi_consumables_type","glpi_contacts","glpi_contracts","glpi_docs",
 				"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
 				"glpi_kbitems","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
-				"glpi_tracking");
+				"glpi_tracking","STATE_TABLES");
 
 			//Options g�� dynamiquement, ne pas toucher cette partie.
 			//Options from DB, do not touch this part.
@@ -202,7 +205,7 @@
 	
 		// Override cfg_features by session value
 		if (isset($_SESSION['glpilist_limit'])) $CFG_GLPI["list_limit"]=$_SESSION['glpilist_limit'];
-	
+
 		if ((!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])!=GLPI_VERSION)&&!isset($_GET["donotcheckversion"])){
 			loadLanguage();
 			nullHeader("UPDATE NEEDED",$_SERVER['PHP_SELF']);

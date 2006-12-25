@@ -117,7 +117,9 @@ $query="UPDATE `glpi_computers` SET
 	ADD CONSTRAINT `glpi_computers_ibfk_30` FOREIGN KEY (`type`) REFERENCES `glpi_type_computers` (`ID`),
 	ADD CONSTRAINT `glpi_computers_ibfk_31` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
 	ADD CONSTRAINT `glpi_computers_ibfk_32` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`),
-	ADD CONSTRAINT `glpi_computers_ibfk_33` FOREIGN KEY (`FK_groups`) REFERENCES `glpi_groups` (`ID`);";
+	ADD CONSTRAINT `glpi_computers_ibfk_33` FOREIGN KEY (`FK_groups`) REFERENCES `glpi_groups` (`ID`),
+	ADD CONSTRAINT `glpi_computers_ibfk_34` FOREIGN KEY (`state`) REFERENCES `glpi_dropdown_state` (`ID`);";
+
 $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_computer_device -> based on DEVICE_TYPE
@@ -345,7 +347,8 @@ $query="UPDATE `glpi_monitors` SET
 	ADD CONSTRAINT `glpi_monitors_ibfk_12` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`),
 	ADD CONSTRAINT `glpi_monitors_ibfk_7` FOREIGN KEY (`tech_num`) REFERENCES `glpi_users` (`ID`),
 	ADD CONSTRAINT `glpi_monitors_ibfk_8` FOREIGN KEY (`location`) REFERENCES `glpi_dropdown_locations` (`ID`),
-	ADD CONSTRAINT `glpi_monitors_ibfk_9` FOREIGN KEY (`type`) REFERENCES `glpi_type_monitors` (`ID`);";
+	ADD CONSTRAINT `glpi_monitors_ibfk_9` FOREIGN KEY (`type`) REFERENCES `glpi_type_monitors` (`ID`),
+	ADD CONSTRAINT `glpi_monitors_ibfk_14` FOREIGN KEY (`state`) REFERENCES `glpi_dropdown_state` (`ID`);";
 $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_networking
@@ -375,7 +378,8 @@ $query="UPDATE `glpi_networking` SET
 	ADD CONSTRAINT `glpi_networking_ibfk_22` FOREIGN KEY (`model`) REFERENCES `glpi_dropdown_model_networking` (`ID`),
 	ADD CONSTRAINT `glpi_networking_ibfk_23` FOREIGN KEY (`firmware`) REFERENCES `glpi_dropdown_firmware` (`ID`),
 	ADD CONSTRAINT `glpi_networking_ibfk_24` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
-	ADD CONSTRAINT `glpi_networking_ibfk_25` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`);";
+	ADD CONSTRAINT `glpi_networking_ibfk_25` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`),
+	ADD CONSTRAINT `glpi_networking_ibfk_27` FOREIGN KEY (`state`) REFERENCES `glpi_dropdown_state` (`ID`);";
 $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_networking_ports -> based on device_type
@@ -423,7 +427,8 @@ $query="UPDATE `glpi_peripherals` SET
 	ADD CONSTRAINT `glpi_peripherals_ibfk_17` FOREIGN KEY (`type`) REFERENCES `glpi_type_peripherals` (`ID`),
 	ADD CONSTRAINT `glpi_peripherals_ibfk_18` FOREIGN KEY (`model`) REFERENCES `glpi_dropdown_model_peripherals` (`ID`),
 	ADD CONSTRAINT `glpi_peripherals_ibfk_19` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
-	ADD CONSTRAINT `glpi_peripherals_ibfk_20` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`);";
+	ADD CONSTRAINT `glpi_peripherals_ibfk_20` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`),
+	ADD CONSTRAINT `glpi_peripherals_ibfk_22` FOREIGN KEY (`state`) REFERENCES `glpi_dropdown_state` (`ID`);";
 $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_phones
@@ -451,7 +456,8 @@ $query="UPDATE `glpi_phones` SET
 	ADD CONSTRAINT `glpi_phones_ibfk_13` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
 	ADD CONSTRAINT `glpi_phones_ibfk_14` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`),
 	ADD CONSTRAINT `glpi_phones_ibfk_8` FOREIGN KEY (`tech_num`) REFERENCES `glpi_users` (`ID`),
-	ADD CONSTRAINT `glpi_phones_ibfk_9` FOREIGN KEY (`location`) REFERENCES `glpi_dropdown_locations` (`ID`);";
+	ADD CONSTRAINT `glpi_phones_ibfk_9` FOREIGN KEY (`location`) REFERENCES `glpi_dropdown_locations` (`ID`),
+	ADD CONSTRAINT `glpi_phones_ibfk_16` FOREIGN KEY (`state`) REFERENCES `glpi_dropdown_state` (`ID`);";
 $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_printers
@@ -481,7 +487,8 @@ $query="UPDATE `glpi_printers` SET
 	ADD CONSTRAINT `glpi_printers_ibfk_14` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
 	ADD CONSTRAINT `glpi_printers_ibfk_15` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`),
 	ADD CONSTRAINT `glpi_printers_ibfk_8` FOREIGN KEY (`tech_num`) REFERENCES `glpi_users` (`ID`),
-	ADD CONSTRAINT `glpi_printers_ibfk_9` FOREIGN KEY (`location`) REFERENCES `glpi_dropdown_locations` (`ID`);";
+	ADD CONSTRAINT `glpi_printers_ibfk_9` FOREIGN KEY (`location`) REFERENCES `glpi_dropdown_locations` (`ID`)
+	ADD CONSTRAINT `glpi_printers_ibfk_17` FOREIGN KEY (`state`) REFERENCES `glpi_dropdown_state` (`ID`);";
 $DB->query($query) or die($query." ".$DB->error());
 
 
@@ -517,12 +524,8 @@ $query="UPDATE `glpi_software` SET
 	ADD CONSTRAINT `glpi_software_ibfk_23` FOREIGN KEY (`platform`) REFERENCES `glpi_dropdown_os` (`ID`),
 	ADD CONSTRAINT `glpi_software_ibfk_24` FOREIGN KEY (`update_software`) REFERENCES `glpi_software` (`ID`),
 	ADD CONSTRAINT `glpi_software_ibfk_25` FOREIGN KEY (`FK_glpi_enterprise`) REFERENCES `glpi_enterprises` (`ID`),
-	ADD CONSTRAINT `glpi_software_ibfk_26` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`);";
-$DB->query($query) or die($query." ".$DB->error());
-
-// glpi_state_item -> based on device_type
-$query="ALTER TABLE `glpi_state_item`
-ADD CONSTRAINT `glpi_state_item_ibfk_1` FOREIGN KEY (`state`) REFERENCES `glpi_dropdown_state` (`ID`);";
+	ADD CONSTRAINT `glpi_software_ibfk_26` FOREIGN KEY (`FK_users`) REFERENCES `glpi_users` (`ID`),
+	ADD CONSTRAINT `glpi_software_ibfk_28` FOREIGN KEY (`state`) REFERENCES `glpi_dropdown_state` (`ID`);";
 $DB->query($query) or die($query." ".$DB->error());
 
 // glpi_tracking -> based on device_type

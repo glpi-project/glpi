@@ -133,7 +133,14 @@ $RELATION=array(
 	
 	"glpi_dropdown_rubdocs" =>array("glpi_docs"=>"rubrique"),
 	
-	"glpi_dropdown_state" =>array("glpi_state_item"=>"state"),
+	"glpi_dropdown_state" =>array("glpi_computers"=>"state",
+					"glpi_monitors"=>"state",
+					"glpi_networking"=>"state",
+					"glpi_peripherals"=>"state",
+					"glpi_phones"=>"state",
+					"glpi_printers"=>"state",
+					"glpi_software"=>"state",
+				),
 	
 	"glpi_dropdown_tracking_category" =>array("glpi_tracking"=>"category"),
 	

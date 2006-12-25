@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("monitor","computer","reservation","tracking","infocom","contract","document","state","user","link","enterprise");
+$NEEDED_ITEMS=array("monitor","computer","reservation","tracking","infocom","contract","document","user","link","enterprise");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 

@@ -44,7 +44,7 @@ class CommonDBTM {
 
 	}
 
-	// Specific ones : StateItem / Reservation Item
+	// Specific ones : Reservation Item
 	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
@@ -286,6 +286,7 @@ class CommonDBTM {
 					}
 				}
 			}
+
 			if(count($updates)){
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
 
@@ -294,8 +295,6 @@ class CommonDBTM {
 					do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 				}
 			} 
-
-
 		}
 	}
 

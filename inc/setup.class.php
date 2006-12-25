@@ -128,35 +128,48 @@ class SetupSearchDisplay extends CommonDBTM{
 		global $LANG,$CFG_GLPI;
 
 		$dp=array();
+		$state=false;
 		if (haveRight("computer","r")){
+			$state=true;
 			$dp[COMPUTER_TYPE]=$LANG["Menu"][0];
 			if (!$type)
 				$type=COMPUTER_TYPE;
 		}
 		if (haveRight("networking","r")){
+			$state=true;
 			$dp[NETWORKING_TYPE]=$LANG["Menu"][1];
 			if (!$type)
 				$type=NETWORKING_TYPE;
 		}
 		if (haveRight("printer","r")){
+			$state=true;
 			$dp[PRINTER_TYPE]=$LANG["Menu"][2];
 			if (!$type)
 				$type=PRINTER_TYPE;
 		}
 		if (haveRight("monitor","r")){
+			$state=true;
 			$dp[MONITOR_TYPE]=$LANG["Menu"][3];
 			if (!$type)
 				$type=MONITOR_TYPE;
 		}
 		if (haveRight("peripheral","r")){
+			$state=true;
 			$dp[PERIPHERAL_TYPE]=$LANG["Menu"][16];
 			if (!$type)
 				$type=PERIPHERAL_TYPE;
 		}
 		if (haveRight("software","r")){
+			$state=true;
 			$dp[SOFTWARE_TYPE]=$LANG["Menu"][4];
 			if (!$type)
 				$type=SOFTWARE_TYPE;
+		}
+		if ($state){
+			$state=true;
+			$dp[STATE_TYPE]=$LANG["Menu"][28];
+			if (!$type)
+				$type=STATE_TYPE;
 		}
 		if (haveRight("contact_enterprise","r")){
 			$dp[CONTACT_TYPE]=$LANG["Menu"][22];

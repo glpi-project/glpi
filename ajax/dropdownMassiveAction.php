@@ -89,7 +89,6 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			} else {
 				if ($key>1){ // No ID
 					if (!empty($val["linkfield"])
-							||$val["table"]=="glpi_dropdown_state"
 							||$val["table"]=="glpi_infocoms"
 							||$val["table"]=="glpi_enterprises_infocoms"
 							||$val["table"]=="glpi_dropdown_budget"
