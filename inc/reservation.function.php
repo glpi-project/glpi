@@ -108,8 +108,10 @@ function printCalendrier($target,$ID=""){
 	if (!empty($ID)){
 		$m=new ReservationItem;
 		$m->getfromDB($ID);
-		$type=$m->getType();
-		$name=$m->getName();
+		$ci=new CommonItem();
+		$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
+		$type=$ci->getType();
+		$name=$ci->getName();
 		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG["reservation"][26]."</a>";
 	} else {
 		$type="";
@@ -124,15 +126,14 @@ function printCalendrier($target,$ID=""){
 
 
 
-	// on v�ifie pour les ann�s bisextiles, on ne sait jamais.
+	// Check bisextile years
 	if (($annee_courante%4)==0) $fev=29; else $fev=28;
 	$nb_jour= array(31,$fev,31,30,31,30,31,31,30,31,30,31);
 
-	// Ces variables vont nous servir pour mettre les jours dans les bonnes colonnes    
+	// Datas used to put right informations in columns
 	$jour_debut_mois=strftime("%w",mktime(0,0,0,$mois_courant,1,$annee_courante));
 	if ($jour_debut_mois==0) $jour_debut_mois=7;
 	$jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
-	// on n'oublie pas de mettre le mois en fran�is et on n'a plus qu'�mettre les en-t�es
 
 	echo "<div align='center'>";
 
@@ -143,7 +144,7 @@ function printCalendrier($target,$ID=""){
 
 	echo "<table><tr><td width='100' valign='top'>";
 
-	// date du jour
+	// today date
 	$today=getdate(time());
 	$mois=$today["mon"];
 	$annee=$today["year"];
@@ -199,8 +200,7 @@ function printCalendrier($target,$ID=""){
 	echo "</tr>";
 	echo "<tr class='tab_bg_3' >";
 
-	// Il faut ins�er des cases vides pour mettre le premier jour du mois
-	// en face du jour de la semaine qui lui correspond.
+	// Insert blank cell before the first day of the month
 	for ($i=1;$i<$jour_debut_mois;$i++)
 		echo "<td style='background-color:#ffffff'>&nbsp;</td>";
 
@@ -282,12 +282,14 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	echo "<tr><th colspan='2'><b>";
 	echo $LANG["reservation"][9];
 	echo "</b></th></tr>";
-	// Ajouter le nom du mat�iel
+	// Add Hardware name
 	$r=new ReservationItem;
 	$r->getfromDB($ID);
+	$ci=new CommonItem();
+	$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
 	echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
 	echo "<td>";
-	echo "<b>".$r->getType()." - ".$r->getName()."</b>";
+	echo "<b>".$ci->getType()." - ".$ci->getName()."</b>";
 	echo "</td></tr>";
 	if (!haveRight("reservation_central","w"))
 		echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
@@ -295,8 +297,8 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 		echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][31].":	</td>";
 		echo "<td>";
 		if ($resaID==-1)
-			dropdownAllUsers("id_user",$_SESSION["glpiID"],1,$r->obj->fields["FK_entities"]);
-		else dropdownAllUsers("id_user",$resa->fields["id_user"],1,$r->obj->fields["FK_entities"]);
+			dropdownAllUsers("id_user",$_SESSION["glpiID"],1,$ci->obj->fields["FK_entities"]);
+		else dropdownAllUsers("id_user",$resa->fields["id_user"],1,$ci->obj->fields["FK_entities"]);
 		echo "</td></tr>";
 
 	}
@@ -375,9 +377,11 @@ function printReservation($target,$ID,$date){
 			while ($data=$DB->fetch_array($result)){
 
 				$m->getfromDB($data['ID']);
+				$ci=new CommonItem();
+				$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
 
 				list($annee,$mois,$jour)=split("-",$date);
-				echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$m->getType()." - ".$m->getName()."</a></td></tr>";
+				echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
 				echo "<tr><td>";
 				printReservationItem($target,$data['ID'],$date);
 				echo "</td></tr>";
@@ -393,8 +397,6 @@ function printReservationItem($target,$ID,$date){
 
 	$id_user=$_SESSION["glpiID"];
 
-	$m=new ReservationItem;
-	$m->getfromDB($ID);
 	$user=new User;
 	list($year,$month,$day)=split("-",$date);
 	$debut=$date." 00:00:00";
@@ -447,6 +449,7 @@ function printReservationItems($target){
 	if (!haveRight("reservation_helpdesk","1")) return false;
 
 	$ri=new ReservationItem;
+	$ci=new CommonItem();
 
 
 	$query="select ID from glpi_reservation_item ORDER BY device_type";
@@ -456,9 +459,11 @@ function printReservationItems($target){
 		echo "<tr><th colspan='3'>".$LANG["reservation"][1]."</th></tr>";
 		while ($row=$DB->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
-			if (isset($ri->obj->fields["deleted"])&&$ri->obj->fields["deleted"]=='N'){
-				echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ri->getType()." - ".$ri->getName()."</a></td>";
-				echo "<td>".$ri->getLocation()."</td>";
+			$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
+
+			if (isset($ci->obj->fields["deleted"])&&$ci->obj->fields["deleted"]=='N'){
+				echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ci->getType()." - ".$ci->getName()."</a></td>";
+				echo "<td>".getDropdownName('glpi_dropdown_locations',$ci->obj->fields["location"])."</td>";
 				echo "<td>".nl2br($ri->fields["comments"])."</td>";
 				echo "</tr>";
 			}
@@ -476,6 +481,8 @@ function showReservationCommentForm($target,$ID){
 
 	$r=new ReservationItem;
 	if ($r->getfromDB($ID)){
+		$ci=new CommonItem();
+		$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
 
 		echo "<div align='center'><form method='post' name=form action=\"$target\">";
 		echo "<input type='hidden' name='ID' value='$ID'>";
@@ -487,7 +494,7 @@ function showReservationCommentForm($target,$ID){
 		// Ajouter le nom du mat�iel
 		echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
 		echo "<td>";
-		echo "<b>".$r->getType()." - ".$r->getName()."</b>";
+		echo "<b>".$ci->getType()." - ".$ci->getName()."</b>";
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["common"][25].":	</td>";

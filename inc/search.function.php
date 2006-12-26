@@ -899,6 +899,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($type==STATE_TYPE||$type==RESERVATION_TYPE){
 				echo displaySearchHeaderItem($output_type,$LANG["state"][6],$header_num);
 				$ci = new CommonItem();
+				
+			}
+			if ($type==RESERVATION_TYPE){
+				if (haveRight("reservation_central","w")){
+					echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
+				}
+				echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
 			}
 			// End Line for column headers		
 			echo displaySearchEndLine($output_type);
@@ -979,6 +986,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					$ci->setType($data["TYPE"]);
 					echo displaySearchItem($output_type,$ci->getType(),$item_num,$row_num);
 				}	
+				if ($type==RESERVATION_TYPE){
+					if (haveRight("reservation_central","w")){
+						echo displaySearchHeaderItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$header_num);
+					}
+					echo displaySearchHeaderItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$header_num);
+				}
 				// End Line
 				echo displaySearchEndLine($output_type);
 			}
