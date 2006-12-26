@@ -113,8 +113,12 @@ class User extends CommonDBTM {
 	function prepareInputForAdd($input) {
 		// Add User, nasty hack until we get PHP4-array-functions
 		if (isset($input["password"])) {
-			$input["password_md5"]=md5(unclean_cross_side_scripting_deep($input["password"]));
-			$input["password"]="";
+			if(empty($input["password"])) {
+				unset($input["password"]);
+			} else {
+				$input["password_md5"]=md5(unclean_cross_side_scripting_deep($input["password"]));
+				$input["password"]="";
+			}
 		}
 		if (isset($input["_extauth"])){
 			$input["password"]="";
@@ -175,7 +179,6 @@ class User extends CommonDBTM {
 			glpi_header($_SERVER['HTTP_REFERER']);
 			exit();
 		}	
-
 		if (isset($input["password"])) {
 			if(empty($input["password"])) {
 				unset($input["password"]);
@@ -184,7 +187,7 @@ class User extends CommonDBTM {
 				$input["password"]="";
 			}
 		}
-
+		
 		// change email_form to email (not to have a problem with preselected email)
 		if (isset($input["email_form"])){
 			$input["email"]=$input["email_form"];

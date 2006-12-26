@@ -271,11 +271,13 @@ function update0681to07() {
 			DROP `ldap_field_group_member`;";
 		$DB->query($query) or die("0.7 drop ldap fields from glpi_config " . $LANG["update"][90] . $DB->error());
 
-		$query = "ALTER TABLE glpi_users ADD `id_auth` INT NOT NULL DEFAULT '-1',
-								ADD `auth_method` INT NOT NULL DEFAULT '-1',
-								ADD `last_login` DATETIME NOT NULL";
-		$DB->query($query) or die("0.7 add auth_method & id_method in glpi_users " . $LANG["update"][90] . $DB->error());
 
+	}
+	if (!FieldExists("glpi_users", "id_auth")) {
+		$query = "ALTER TABLE glpi_users ADD `id_auth` INT NOT NULL DEFAULT '-1',
+				ADD `auth_method` INT NOT NULL DEFAULT '-1',
+				ADD `last_login` DATETIME NOT NULL";
+		$DB->query($query) or die("0.7 add auth_method & id_method in glpi_users " . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!TableExists("glpi_auth_mail")) {
