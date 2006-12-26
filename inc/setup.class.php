@@ -166,10 +166,14 @@ class SetupSearchDisplay extends CommonDBTM{
 				$type=SOFTWARE_TYPE;
 		}
 		if ($state){
-			$state=true;
 			$dp[STATE_TYPE]=$LANG["Menu"][28];
 			if (!$type)
 				$type=STATE_TYPE;
+		}
+		if (haveRight("reservation_central","r")){
+			$dp[RESERVATION_TYPE]=$LANG["Menu"][17];
+			if (!$type)
+				$type=RESERVATION_TYPE;
 		}
 		if (haveRight("contact_enterprise","r")){
 			$dp[CONTACT_TYPE]=$LANG["Menu"][22];
