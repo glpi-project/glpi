@@ -47,8 +47,6 @@ class Config extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
-		if (isset($input['mail_server'])&&!empty($input['mail_server']))
-			$input["imap_auth_server"]=constructIMAPAuthServer($input);
 		if (isset($input["planning_begin"]))
 			$input["planning_begin"]=$input["planning_begin"].":00:00";
 		if (isset($input["planning_end"]))

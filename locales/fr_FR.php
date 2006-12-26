@@ -769,6 +769,9 @@ $LANG["login"][17]="Echec de l'authentification AD";
 $LANG["login"][18]="Base interne GLPI";
 $LANG["login"][19]="Liste des serveurs";
 $LANG["login"][20]="Ajouter un serveur";
+$LANG["login"][21]=$LANG["login"][20]." ".$LANG["login"][3];
+$LANG["login"][22]=$LANG["login"][20]." ".$LANG["login"][2];
+
 
 $LANG["mailing"][0]="----------------------------------------------------------";
 $LANG["mailing"][1]="======================================================================";
