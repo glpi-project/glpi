@@ -380,11 +380,11 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
 	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG;
 
-	if ($type==STATE_TYPE){
-		$itemtable="STATE_TABLES";
-	} else {
-		$itemtable=$LINK_ID_TABLE[$type];
+	$itemtable=$LINK_ID_TABLE[$type];
+	if (isset($CFG_GLPI["union_search_type"][$type])){
+		$itemtable=$CFG_GLPI["union_search_type"][$type];
 	}
+
 	$entity_restrict=in_array($itemtable,$CFG_GLPI["specif_entities_tables"]);
 
 	// Define meta table where search must be done in HAVING clause
@@ -715,7 +715,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//No search : count number of items using a simple count(ID) request and LIMIT search
 	if ($nosearch) {
 		$LIMIT= " LIMIT $start, ".$CFG_GLPI["list_limit"];
-		$query_num="SELECT count(ID) FROM ".$itemtable;
+		
+		$query_num="SELECT count($itemtable.ID) FROM ".$itemtable;
 
 		$first=true;
 		if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
@@ -733,23 +734,30 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($first) {$LINK=" WHERE ";$first=false;}
 			$query_num.=getEntitiesRestrictRequest($LINK,$itemtable);
 		}
-		if ($type==STATE_TYPE){
-			$first=true;
+		// Union Search :
+		if (isset($CFG_GLPI["union_search_type"][$type])){
 			$tmpquery=$query_num;
 			$numrows=0;
-			foreach ($CFG_GLPI["state_type"] as $ctype){
+			foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$type]] as $ctype){
 				if (haveTypeRight($ctype,'r')){
-					if ($first){
-						$first=false;
-					} else {
-						$query_num.=" UNION ";
+					// No ref table case
+					if (empty($LINK_ID_TABLE[$type])){
+						$query_num=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+						// State case :
+						if ($type==STATE_TYPE){
+							$query_num.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
+						}
+					} else {// Ref table case
+						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]." ON (".$LINK_ID_TABLE[$type].".id_device = ".$LINK_ID_TABLE[$ctype].".ID AND ".$LINK_ID_TABLE[$type].".device_type='$ctype')";
+						$query_num=ereg_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
+						$query_num=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$query_num);
 					}
-					$query_num=ereg_replace("STATE_TABLES",$LINK_ID_TABLE[$ctype],$tmpquery." AND ".$LINK_ID_TABLE[$ctype].".state > 0 ");
 					$result_num = $DB->query($query_num);
 					$numrows+= $DB->result($result_num,0,0);
 				}
 			}
 		} else {
+			
 			$result_num = $DB->query($query_num);
 			$numrows= $DB->result($result_num,0,0);
 		}
@@ -763,22 +771,37 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
-
+	
 	// Create QUERY
-	if ($type==STATE_TYPE){
+	if (isset($CFG_GLPI["union_search_type"][$type])){
 		$first=true;
 		$QUERY="";
-		foreach ($CFG_GLPI["state_type"] as $ctype){
+		foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$type]] as $ctype){
 			if (haveTypeRight($ctype,'r')){
 				if ($first){
 					$first=false;
 				} else {
 					$QUERY.=" UNION ";
 				}
-				$QUERY.=ereg_replace("STATE_TABLES",$LINK_ID_TABLE[$ctype],$SELECT.", $ctype AS TYPE ".$FROM.$WHERE." AND ".$LINK_ID_TABLE[$ctype].".state > 0 " );
+				$tmpquery="";
+				// No ref table case
+				if (empty($LINK_ID_TABLE[$type])){
+						$tmpquery=$SELECT.", $ctype AS TYPE ".$FROM.$WHERE;
+						$tmpquery=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+						// State case :
+						if ($type==STATE_TYPE){
+							$tmpquery.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
+						}
+				} else {// Ref table case
+						$tmpquery=$SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$type].".ID AS refID ".$FROM.$WHERE;
+						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]." ON (".$LINK_ID_TABLE[$type].".id_device = ".$LINK_ID_TABLE[$ctype].".ID AND ".$LINK_ID_TABLE[$type].".device_type='$ctype')";
+						$tmpquery=ereg_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
+						$tmpquery=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+				}
+				$QUERY.=$tmpquery;
 			}
 		}
-		$QUERY.=ereg_replace("STATE_TABLES.","",$ORDER).$LIMIT;
+		$QUERY.=ereg_replace($CFG_GLPI["union_search_type"][$type].".","",$ORDER).$LIMIT;
 	} else {
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
@@ -873,7 +896,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo displaySearchHeaderItem($output_type,$LANG["cartridges"][0],$header_num);	
 			if ($type==CONSUMABLE_TYPE)
 				echo displaySearchHeaderItem($output_type,$LANG["consumables"][0],$header_num);
-			if ($type==STATE_TYPE){
+			if ($type==STATE_TYPE||$type==RESERVATION_TYPE){
 				echo displaySearchHeaderItem($output_type,$LANG["state"][6],$header_num);
 				$ci = new CommonItem();
 			}
@@ -952,7 +975,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if ($type==CONSUMABLE_TYPE){
 					echo displaySearchItem($output_type,countConsumables($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}	
-				if ($type==STATE_TYPE){
+				if ($type==STATE_TYPE||$type==RESERVATION_TYPE){
 					$ci->setType($data["TYPE"]);
 					echo displaySearchItem($output_type,$ci->getType(),$item_num,$row_num);
 				}	
@@ -1108,13 +1131,13 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
  *
  **/
 function addOrderBy($type,$ID,$order,$key=0){
-	global $SEARCH_OPTION;
+	global $SEARCH_OPTION,$CFG_GLPI;
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
 
 
-	if ($type==STATE_TYPE){
+	if (isset($CFG_GLPI["union_search_type"][$type])){
 		return " ORDER BY ITEM_$key $order ";
 	}
 
@@ -1439,8 +1462,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG,$LINK_ID_TABLE;
 
 
-	if ($type==STATE_TYPE){
-		return giveItem ($data["TYPE"],ereg_replace("STATE_TABLES",$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
+	if (isset($CFG_GLPI["union_search_type"][$type])){
+		return giveItem ($data["TYPE"],ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
 	}
 
 
@@ -1549,7 +1572,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				$out.= " (".$data["ID"].")";
 			}
 			$out.= "</a>";
-		return $out;
+			return $out;
 		break;
 
 
@@ -1562,7 +1585,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			} else {
 				$out= $data["ITEM_$num"];
 			}
-		return $out;
+			return $out;
 		break;	
 
 		case "glpi_enterprises.name" :
@@ -1585,151 +1608,185 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if (!empty($data["ITEM_".$num."_2"]))
 					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
 			}
-		return $out;
+			return $out;
 		break;	
 		case "glpi_enterprises_infocoms.name" :
 			$type=ENTERPRISE_TYPE;
-		$out="";
-		if (!empty($data["ITEM_".$num."_3"])){
-			$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
-			$out.= $data["ITEM_$num"];
-			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) 
-				$out.= " (".$data["ITEM_".$num."_3"].")";
-			$out.= "</a>";
-		}
-		return $out;
+			$out="";
+			if (!empty($data["ITEM_".$num."_3"])){
+				$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
+				$out.= $data["ITEM_$num"];
+				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) 
+					$out.= " (".$data["ITEM_".$num."_3"].")";
+				$out.= "</a>";
+			}
+			return $out;
 		break;
 		case "glpi_type_docs.icon" :
-			if (!empty($data["ITEM_$num"]))
+			if (!empty($data["ITEM_$num"])){
 				return "<img style='vertical-align:middle;' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
-			else return "&nbsp;";
-			break;	
+			}
+			else {
+				return "&nbsp;";
+			}
+		break;	
 
-			case "glpi_docs.filename" :		
-				return getDocumentLink($data["ITEM_$num"]);
-			break;		
-			case "glpi_docs.link" :
-				case "glpi_enterprises.website" :
-				if (!empty($data["ITEM_$num"])){
-					$link=$data["ITEM_$num"];
-					if (strlen($data["ITEM_$num"])>30){
-						$link=substr($data["ITEM_$num"],0,30)."...";
-					}
-					return "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$link."</a>";
+		case "glpi_docs.filename" :		
+			return getDocumentLink($data["ITEM_$num"]);
+		break;		
+		case "glpi_docs.link" :
+		case "glpi_enterprises.website" :
+			if (!empty($data["ITEM_$num"])){
+				$link=$data["ITEM_$num"];
+				if (strlen($data["ITEM_$num"])>30){
+					$link=substr($data["ITEM_$num"],0,30)."...";
 				}
-				else return "&nbsp;";
-				break;	
-				case "glpi_enterprises.email" :
-					case "glpi_contacts.email" :
-					case "glpi_users.email" :
-					if (!empty($data["ITEM_$num"]))
-						return "<a href='mailto:".$data["ITEM_$num"]."'>".$data["ITEM_$num"]."</a>";
-					else return "&nbsp;";
-					break;	
-					case "glpi_device_hdd.specif_default" :
-						case "glpi_device_ram.specif_default" :
-						case "glpi_device_processor.specif_default" :
-						return $data["ITEM_".$num];
-					break;
-					case "glpi_networking_ports.ifmac" :
-						$out="";
-					if ($type==COMPUTER_TYPE){
-						if (!empty($data["ITEM_".$num."_2"])){
-							$split=explode("$$$$",$data["ITEM_".$num."_2"]);
-							$count_display=0;
-							for ($k=0;$k<count($split);$k++)
-								if (strlen(trim($split[$k]))>0){	
-									if ($count_display) $out.= "<br>";
-									else $out.= "hw=";
-									$count_display++;
-									$out.= $split[$k];
-								}
-
-							if (!empty($data["ITEM_".$num])) $out.= "<br>";
-						}
-
-						if (!empty($data["ITEM_".$num])){
-							$split=explode("$$$$",$data["ITEM_".$num]);
-							$count_display=0;
-							for ($k=0;$k<count($split);$k++)
-								if (strlen(trim($split[$k]))>0){	
-									if ($count_display) $out.= "<br>";
-									else $out.= "port=";
-									$count_display++;
-									$out.= $split[$k];
-								}
-
-						}
-					} else {
-						$split=explode("$$$$",$data["ITEM_".$num]);
-						$count_display=0;
-						for ($k=0;$k<count($split);$k++)
-							if (strlen(trim($split[$k]))>0){	
-								if ($count_display) $out.= "<br>";
-								$count_display++;
-								$out.= $split[$k];
+				return "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$link."</a>";
+			} else return "&nbsp;";
+			break;	
+		case "glpi_enterprises.email" :
+		case "glpi_contacts.email" :
+		case "glpi_users.email" :
+			if (!empty($data["ITEM_$num"])){
+				return "<a href='mailto:".$data["ITEM_$num"]."'>".$data["ITEM_$num"]."</a>";
+			} else {
+				return "&nbsp;";
+			}
+			break;	
+		case "glpi_device_hdd.specif_default" :
+		case "glpi_device_ram.specif_default" :
+		case "glpi_device_processor.specif_default" :
+			return $data["ITEM_".$num];
+			break;
+		case "glpi_networking_ports.ifmac" :
+			$out="";
+			if ($type==COMPUTER_TYPE){
+				if (!empty($data["ITEM_".$num."_2"])){
+					$split=explode("$$$$",$data["ITEM_".$num."_2"]);
+					$count_display=0;
+					for ($k=0;$k<count($split);$k++){
+						if (strlen(trim($split[$k]))>0){	
+							if ($count_display) {
+								$out.= "<br>";
+							} else {
+								$out.= "hw=";
 							}
+							$count_display++;
+							$out.= $split[$k];
+						}
 					}
-					return $out;
-					break;
-					case "glpi_contracts.duration":
-						case "glpi_contracts.notice":
-						case "glpi_contracts.periodicity":
-						case "glpi_contracts.facturation":
-						if (!empty($data["ITEM_$num"]))
-							return $data["ITEM_$num"]." ".$LANG["financial"][57];
-						else return "&nbsp;";
-						break;
-						case "glpi_contracts.renewal":
-							return getContractRenewalName($data["ITEM_$num"]);
-						break;
-						case "glpi_ocs_link.last_update":
-							case "glpi_ocs_link.last_ocs_update":
-							case "glpi_computers.date_mod":
-							case "glpi_printers.date_mod":
-							case "glpi_networking.date_mod":
-							case "glpi_peripherals.date_mod":
-							case "glpi_phones.date_mod":
-							case "glpi_software.date_mod":
-							case "glpi_monitors.date_mod":
-							return convDateTime($data["ITEM_$num"]);
-						break;
-						case "glpi_contracts.end_date":
-							if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
-								return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
-						break;
-						case "glpi_contracts.expire_notice": // ajout jmd
-							if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
-								return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"],$data["ITEM_".$num."_3"]);
-						case "glpi_contracts.expire": // ajout jmd
-							if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00")
-								return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
-						case "glpi_contracts.begin_date":
-							case "glpi_infocoms.buy_date":
-							case "glpi_infocoms.use_date":
-							return convDate($data["ITEM_$num"]);
-						break;
-						case "glpi_infocoms.amort_time":
-							if (!empty($data["ITEM_$num"]))
-								return $data["ITEM_$num"]." ".$LANG["financial"][9];
-							else return "&nbsp;";
-							break;
-							case "glpi_infocoms.warranty_duration":
-								if (!empty($data["ITEM_$num"]))
-									return $data["ITEM_$num"]." ".$LANG["financial"][57];
-								else return "&nbsp;";
-								break;
-								case "glpi_infocoms.amort_type":
-									return getAmortTypeName($data["ITEM_$num"]);
-								break;
-								case "glpi_tracking.count":
-									if ($data["ITEM_$num"]>0&&haveRight("show_ticket","1")){
-										$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
-										$out.= $data["ITEM_$num"];
-										$out.="</a>";
-									} else $out= $data["ITEM_$num"];
-								return $out;
-								break;
+					if (!empty($data["ITEM_".$num])) $out.= "<br>";
+				}
+
+				if (!empty($data["ITEM_".$num])){
+					$split=explode("$$$$",$data["ITEM_".$num]);
+					$count_display=0;
+					for ($k=0;$k<count($split);$k++){
+						if (strlen(trim($split[$k]))>0){	
+							if ($count_display) $out.= "<br>";
+							else $out.= "port=";
+							$count_display++;
+							$out.= $split[$k];
+						}
+					}
+				}
+			} else {
+				$split=explode("$$$$",$data["ITEM_".$num]);
+				$count_display=0;
+				for ($k=0;$k<count($split);$k++){
+					if (strlen(trim($split[$k]))>0){	
+						if ($count_display){
+							$out.= "<br>";
+						}
+						$count_display++;
+						$out.= $split[$k];
+					}
+				}
+			}
+			return $out;
+			break;
+		case "glpi_contracts.duration":
+		case "glpi_contracts.notice":
+		case "glpi_contracts.periodicity":
+		case "glpi_contracts.facturation":
+			if (!empty($data["ITEM_$num"])){
+				return $data["ITEM_$num"]." ".$LANG["financial"][57];
+			} else {
+				return "&nbsp;";
+			}
+			break;
+		case "glpi_contracts.renewal":
+			return getContractRenewalName($data["ITEM_$num"]);
+			break;
+		case "glpi_ocs_link.last_update":
+		case "glpi_ocs_link.last_ocs_update":
+		case "glpi_computers.date_mod":
+		case "glpi_printers.date_mod":
+		case "glpi_networking.date_mod":
+		case "glpi_peripherals.date_mod":
+		case "glpi_phones.date_mod":
+		case "glpi_software.date_mod":
+		case "glpi_monitors.date_mod":
+			return convDateTime($data["ITEM_$num"]);
+			break;
+		case "glpi_contracts.end_date":
+			if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00"){
+				return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
+			} else {
+				return "&nbsp;"; 
+			}
+		break;
+		case "glpi_contracts.expire_notice": // ajout jmd
+			if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00"){
+				return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"],$data["ITEM_".$num."_3"]);
+			} else {
+				return "&nbsp;"; 
+			}
+		case "glpi_contracts.expire": // ajout jmd
+			if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00"){
+				return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
+			} else {
+				return "&nbsp;"; 
+			}
+		case "glpi_contracts.begin_date":
+		case "glpi_infocoms.buy_date":
+		case "glpi_infocoms.use_date":
+			return convDate($data["ITEM_$num"]);
+			break;
+		case "glpi_infocoms.amort_time":
+			if (!empty($data["ITEM_$num"])){
+				return $data["ITEM_$num"]." ".$LANG["financial"][9];
+			} else { 
+				return "&nbsp;";
+			}
+			break;
+		case "glpi_infocoms.warranty_duration":
+			if (!empty($data["ITEM_$num"])){
+				return $data["ITEM_$num"]." ".$LANG["financial"][57];
+			} else {
+				return "&nbsp;";
+			}
+			break;
+		case "glpi_infocoms.amort_type":
+			return getAmortTypeName($data["ITEM_$num"]);
+			break;
+		case "glpi_tracking.count":
+			if ($data["ITEM_$num"]>0&&haveRight("show_ticket","1")){
+				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
+				$out.= $data["ITEM_$num"];
+				$out.="</a>";
+			} else {
+				$out= $data["ITEM_$num"];
+			}
+			return $out;
+			break;
+		case "glpi_reservation_item.comments" :
+			if (empty($data["ITEM_$num"])){
+				return  "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data["refID"]."' title='".$LANG["reservation"][22]."'>".$LANG["common"][49]."</a>";
+			}else{
+				return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data['refID']."' title='".$LANG["reservation"][22]."'>". resume_text($data["ITEM_$num"])."</a>";
+			}
+			break;
 
 		default:
 			return $data["ITEM_$num"];

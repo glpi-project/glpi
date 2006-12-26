@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("reservation","user","computer","printer","monitor","peripheral","networking","software","phone");
+$NEEDED_ITEMS=array("reservation","search","user","computer","printer","monitor","peripheral","networking","software","phone");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -143,32 +143,20 @@ else {
 			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 		} 
 
-		if(!isset($_GET["start"])) $_GET["start"] = 0;
-		if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-		if (!isset($_GET["field"])) $_GET["field"] = "glpi_reservation_item.ID";
-		if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "contains";
-		if (!isset($_GET["contains"])) $_GET["contains"] = "";
-		if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_reservation_item.ID";
-
-
 		checkRight("reservation_central","r");
 
 		commonHeader($LANG["title"][35],$_SERVER['PHP_SELF']);
+
 		if (isset($_GET["comment"])){
-			if (showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["comment"])){
-			}
-			else {
-
-				titleReservation();
-				searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-				showReservationItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
-			}
-
-		}else {
-
+			showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["comment"]);
+		} else {
 			titleReservation();
-			searchFormReservationItem($_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"]);
-			showReservationItemList($_SERVER['PHP_SELF'],$_SESSION["glpiname"],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"]);
+
+			manageGetValuesInSearch(RESERVATION_TYPE);
+	
+			searchForm(RESERVATION_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+	
+			showList(RESERVATION_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 		}
 	}
 }

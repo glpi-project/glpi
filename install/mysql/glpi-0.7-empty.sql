@@ -1,4 +1,4 @@
-#GLPI Dump database on 2006-12-25 20:55
+#GLPI Dump database on 2006-12-26 15:54
 
 ### Dump table glpi_alerts
 
@@ -1261,9 +1261,10 @@ CREATE TABLE `glpi_event_log` (
   KEY `comp` (`item`),
   KEY `date` (`date`),
   KEY `itemtype` (`itemtype`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 ;
 
 INSERT INTO glpi_event_log VALUES ('1','-1','system','2006-12-25 20:54:52','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2006-12-26 15:54:04','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2239,10 +2240,10 @@ CREATE TABLE `glpi_users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=6 ;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('2','glpi','','5dc69c5af717a5eeaa57ccb70397178d','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','1','2006-12-25 20:54:52');
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','1','2006-12-26 15:54:04');
+INSERT INTO glpi_users VALUES ('3','post-only','','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('4','tech','','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('5','normal','','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00');
 
 ### Dump table glpi_users_groups
 

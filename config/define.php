@@ -51,6 +51,7 @@
 	define("STAT_TYPE",26);
 	define("GROUP_TYPE",27);
 	define("ENTITY_TYPE",28);
+	define("RESERVATION_TYPE",29);
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -160,6 +161,7 @@
 			STAT_TYPE => "???",
 			GROUP_TYPE => "glpi_groups",
 			ENTITY_TYPE => "glpi_entities",
+			RESERVATION_TYPE => "glpi_reservation_item",
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -191,6 +193,7 @@
 			STAT_TYPE => "???",
 			GROUP_TYPE => "front/group.form.php",
 			ENTITY_TYPE => "front/entity.form.php",
+			RESERVATION_TYPE => "???",
 			);
 
 	define("AUTH_CAS",0);
