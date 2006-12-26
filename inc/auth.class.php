@@ -326,4 +326,86 @@ class Identification {
 		);
 	}
 }
+
+class AuthMail extends CommonDBTM {
+
+	var $fields = array ();
+
+	function AuthMail() {
+		global $CFG_GLPI;
+
+		$this->table = "glpi_auth_mail";
+		//$this->type=USER_TYPE;
+	}
+
+	function getFromDBbyName($name) {
+		global $DB;
+		$query = "SELECT * FROM glpi_auth_mail WHERE (name = '" . $name . "')";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result) != 1) {
+				return false;
+			}
+			$this->fields = $DB->fetch_assoc($result);
+			if (is_array($this->fields) && count($this->fields)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	function prepareInputForUpdate($input) {
+		global $DB;
+
+		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
+			$input["imap_auth_server"] = constructIMAPAuthServer($input);
+		return $input;
+	}
+
+
+	function prepareInputForAdd($input) {
+
+		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
+			$input["imap_auth_server"] = constructIMAPAuthServer($input);
+		return $input;
+	}
+}
+class AuthLDAP extends CommonDBTM {
+
+	var $fields = array ();
+
+	function AuthLDAP() {
+		global $CFG_GLPI;
+
+		$this->table = "glpi_auth_ldap";
+		//$this->type=USER_TYPE;
+	}
+
+	function getFromDBbyName($name) {
+		global $DB;
+		$query = "SELECT * FROM glpi_auth_ldap WHERE (name = '" . $name . "')";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result) != 1) {
+				return false;
+			}
+			$this->fields = $DB->fetch_assoc($result);
+			if (is_array($this->fields) && count($this->fields)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
+	function prepareInputForUpdate($input) {
+		return $input;
+	}
+
+
+	function prepareInputForAdd($input) {
+		return $input;
+	}	
+}
 ?>
