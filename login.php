@@ -117,20 +117,17 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 		// Pas en premier car sinon on ne fait pas le blankpassword
 		// First try to connect via le DATABASE
 		if ($exists == 1) {
-
+			
 			// Without UTF8 decoding
-			if (!$identificat->auth_succeded)
+			if (!$identificat->auth_succeded){
 				$identificat->auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
+			}
 
 			if ($identificat->auth_succeded) {
-
+				$identificat->extauth=0;
 				$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				//check if the user has change of authentication method
-				if (($identificat->user->fields["auth_method"] != AUTH_MAIL) || ($identificat->user->fields["id_auth"] != $mail_method["ID"])) {
-					$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
-					$identificat->user->fields["last_login"] = date("Y-m-d H:i:s");
-					$identificat->user->update($identificat->user->fields);
-				}
+				$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
+				$identificat->user->fields["password"] = $_POST['login_password'];
 			}
 		}
 		elseif ($exists == 2) {
@@ -142,10 +139,10 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 			//so we test this connection first
 			switch ($identificat->user->fields["auth_method"]) {
 				case AUTH_LDAP :
-					$identificat = try_ldap_auth($identificat, $identificat->user->fields["id_auth"]);
+					$identificat = try_ldap_auth($identificat, $_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
 					break;
 				case AUTH_MAIL :
-					$identificat = try_mail_auth($identificat, $identificat->user->fields["id_auth"]);
+					$identificat = try_mail_auth($identificat,$_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
 					break;
 				case NOT_YET_AUTHENTIFIED:
 					break;
@@ -153,15 +150,15 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 		}
 
 		//If the last good auth method is not valid anymore, we test all the methods !
-		
-		//test all the imap/pop servers
-		if (!$identificat->auth_succeded)
-			$identificat = try_mail_auth($identificat);
-
 		//test all the ldap servers
-		if (!$identificat->auth_succeded)
-			$identificat = try_ldap_auth($identificat, -1);
+		if (!$identificat->auth_succeded){
+			$identificat = try_ldap_auth($identificat,$_POST['login_name'],$_POST['login_password']);
+		}
 
+		//test all the imap/pop servers
+		if (!$identificat->auth_succeded){
+			$identificat = try_mail_auth($identificat,$_POST['login_name'],$_POST['login_password']);
+		}
 		// Fin des tests de connexion
 
 		// Ok, we have gathered sufficient data, if the first return false the user
@@ -169,9 +166,12 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 		// if not, we update it.
 
 		if ($identificat->auth_succeded) {
+			// Prepare data
+			$identificat->user->fields["last_login"]=date("Y-m-d H:i:s");
+			if ($identificat->extauth)
+				$identificat->user->fields["_extauth"] = 1;			
+			// Need auto add user ?
 			if (!$identificat->user_present && $CFG_GLPI["auto_add_users"]) {
-				if ($identificat->extauth)
-					$identificat->user->fields["_extauth"] = 1;
 				$input = $identificat->user->fields;
 				unset ($identificat->user->fields);
 				$identificat->user->fields["ID"] = $identificat->user->add($input);
@@ -182,9 +182,11 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 					$identificat->auth_succeded = false;
 				} else
 					if ($identificat->user_present) {
+						
 						// update user and Blank PWD to clean old database for the external auth
+						$identificat->user->update($identificat->user->fields);
+
 						if ($identificat->extauth) {
-							$identificat->user->update($identificat->user->fields);
 							$identificat->user->blankPassword();
 						}
 					}

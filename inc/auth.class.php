@@ -149,7 +149,6 @@ class Identification {
 		if (empty ($host)) {
 			return false;
 		}
-
 		$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls);
 		// Test with login and password of the user
 		if (!$ds) {
@@ -216,11 +215,6 @@ class Identification {
 					$pass2 = $DB->result($result2, 0, "password");
 
 					if (strcmp($pass1, $pass2) == 0) {
-						if (empty ($password_md5_db)) {
-							$password_md5_db = md5($password);
-							$query3 = "update glpi_users set password_md5 = '" . $password_md5_db . "' where (name = '" . $name . "')";
-							$DB->query($query3);
-						}
 						return true;
 					}
 				}

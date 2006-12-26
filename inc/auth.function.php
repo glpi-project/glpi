@@ -636,19 +636,19 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 /*
  * Try to authentify a user by checking all the directories
  */
-function try_ldap_auth($identificat, $id_auth = -1,$isCAS=0) {
+function try_ldap_auth($identificat,$login,$password, $id_auth = -1,$isCAS=0) {
 
 	//If no specific source is give, test all ldap directories
 	if ($id_auth == -1) {
 		foreach  ($identificat->auth_methods["ldap"] as $ldap_method) {
 			if (!$identificat->auth_succeded) {
-				$identificat = ldap_auth($identificat, $ldap_method,$isCAS);
+				$identificat = ldap_auth($identificat, $login,$password,$ldap_method,$isCAS);
 			}
 			else break;
 		}
 	} else if(array_key_exists($id_auth,$identificat->auth_methods["ldap"])) //Check if the ldap server indicated as the last good one still exists !
 		//A specific ldap directory is given, test it and only this one !
-		$identificat = ldap_auth($identificat, $identificat->auth_methods["ldap"][$id_auth],$isCAS);
+		$identificat = ldap_auth($identificat, $login,$password,$identificat->auth_methods["ldap"][$id_auth],$isCAS);
 		
 		return $identificat;
 }
@@ -656,63 +656,50 @@ function try_ldap_auth($identificat, $id_auth = -1,$isCAS=0) {
 /*
  * Authentify a user by checking a specific directory
  */
-function ldap_auth($identificat, $ldap_method,$isCAS) {
+function ldap_auth($identificat,$login,$password, $ldap_method,$isCAS) {
+	$user_dn = $identificat->connection_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"], utf8_decode($login), utf8_decode($password), $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
 
-	$user_dn = $identificat->connection_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"], utf8_decode($_POST['login_name']), utf8_decode($_POST['login_password']), $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
 	if ($user_dn) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
-		$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-		$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($_POST['login_name']), utf8_decode($_POST['login_password']));
+		$identificat->user_present = $identificat->user->getFromDBbyName($login);
+		$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
 		$identificat->auth_parameters = $ldap_method;
-		$identificat->user->fields["last_login"] = date("Y-m-d H:i:s");
-		//check if the user has change of authentication method 
-		if (( !$isCAS &&$identificat->user->fields["auth_method"] != AUTH_LDAP) || ( $isCAS &&$identificat->user->fields["auth_method"] != AUTH_CAS) || ($identificat->user->fields["id_auth"] != $ldap_method["ID"])) {
-			//Update the authentication method for the current user
-			if (!$isCAS) $identificat->user->fields["auth_method"] = AUTH_LDAP;
-			else $identificat->user->fields["auth_method"] = AUTH_CAS;
-			$identificat->user->fields["id_auth"] = $ldap_method["ID"];
-			$identificat->user->update($identificat->user->fields);
-		}
+		if (!$isCAS) $identificat->user->fields["auth_method"] = AUTH_LDAP;
+		else $identificat->user->fields["auth_method"] = AUTH_CAS;
+		$identificat->user->fields["id_auth"] = $ldap_method["ID"];
 	}
 	return $identificat;
 }
 
-function try_mail_auth($identificat, $id_auth = -1) {
-
-	if ($id_auth == -1) {
+function try_mail_auth($identificat, $login,$password,$id_auth = -1) {
+		if ($id_auth == -1) {
 		foreach ($identificat->auth_methods["mail"] as $mail_method) {
 			if (!$identificat->auth_succeded) {
-				$identificat = mail_auth($identificat, $mail_method);
+				$identificat = mail_auth($identificat, $login,$password,$mail_method);
 			}
 			else break;
 		}
 	} else if(array_key_exists($id_auth,$identificat->auth_methods["mail"])) //Check if the mail server indicated as the last good one still exists !
-		$identificat = mail_auth($identificat, $id_auth,$identificat->auth_methods["mail"][$id_auth]);
+		$identificat = mail_auth($identificat, $login,$password,$identificat->auth_methods["mail"][$id_auth]);
 
 	return $identificat;
 }
 
-function mail_auth($identificat, $mail_method) {
+function mail_auth($identificat, $login,$password,$mail_method) {
 
-	if (!empty ($mail_method["imap_auth_server"])) {
-		$identificat->auth_succeded = $identificat->connection_imap($mail_method["imap_auth_server"], utf8_decode($_POST['login_name']), utf8_decode($_POST['login_password']));
+	if (isset($mail_method["imap_auth_server"])&&!empty ($mail_method["imap_auth_server"])) {
+		$identificat->auth_succeded = $identificat->connection_imap($mail_method["imap_auth_server"], utf8_decode($login), utf8_decode($password));
 		if ($identificat->auth_succeded) {
 			$identificat->extauth = 1;
-			$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+			$identificat->user_present = $identificat->user->getFromDBbyName($login);
 			$identificat->auth_parameters = $mail_method;
-			$identificat->user->fields["last_login"] = date("Y-m-d H:i:s");
 		
-			if ($identificat->user->getFromIMAP($mail_method["imap_host"], utf8_decode($_POST['login_name']))) {
-			}
+			$identificat->user->getFromIMAP($mail_method["imap_host"], utf8_decode($login));
 
-			//check if the user has change of authentication method
-			if (($identificat->user->fields["auth_method"] != AUTH_MAIL) || ($identificat->user->fields["id_auth"] != $mail_method["ID"])) {
-				//Update the authentication method for the current user
-				$identificat->user->fields["auth_method"] = AUTH_MAIL;
-				$identificat->user->fields["id_auth"] = $mail_method["ID"];
-				$identificat->user->update($identificat->user->fields);
-			}
+			//Update the authentication method for the current user
+			$identificat->user->fields["auth_method"] = AUTH_MAIL;
+			$identificat->user->fields["id_auth"] = $mail_method["ID"];
 		}
 	}
 	return $identificat;

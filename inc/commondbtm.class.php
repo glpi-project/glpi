@@ -97,7 +97,7 @@ class CommonDBTM {
 			$query .= "'";
 			$result=$DB->query($query);
 		}
-
+		
 		$this->post_updateInDB($updates);
 		cleanAllItemCache($this->fields["ID"],"GLPI_".$this->type);
 		cleanRelationCache($this->table);
@@ -262,8 +262,8 @@ class CommonDBTM {
 
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
-
 		if ($this->getFromDB($input["ID"])){
+
 			// Fill the update-array with changes
 			$x=0;
 			$updates=array();
@@ -285,8 +285,8 @@ class CommonDBTM {
 						$x++;
 					}
 				}
-			}
-
+			}	
+		
 			if(count($updates)){
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
 
