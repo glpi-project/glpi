@@ -328,11 +328,14 @@ function update0681to07() {
 		}
 		$query="DROP TABLE `glpi_state_item` ";
 		$DB->query($query) or die("0.7 drop table state_item " . $LANG["update"][90] . $DB->error());
-		$query="INSERT INTO `glpi_display` (`ID`, `type`, `num`, `rank`, `FK_users`) VALUES (118, 22, 31, 1, 0);";
-		$DB->query($query) or die("0.7 add defaul search for states " . $LANG["update"][90] . $DB->error());
-		
-
+		$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES (22, 31, 1, 0);";
+		$DB->query($query) or die("0.7 add default search for states " . $LANG["update"][90] . $DB->error());
 	}
+	$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES ( 29, 4, 1, 0);";
+	$DB->query($query) or die("0.7 add defaul search for reservation " . $LANG["update"][90] . $DB->error());
+	$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES ( 29, 3, 2, 0);";
+	$DB->query($query) or die("0.7 add defaul search for reservation " . $LANG["update"][90] . $DB->error());
+
 	
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	// TODO Split Config -> config general + config entity
