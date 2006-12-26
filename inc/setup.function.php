@@ -1580,32 +1580,31 @@ function showFormExtAuthList($target) {
 
 	if (!haveRight("config", "w"))
 		return false;
-
+	echo "<div align='center'>";
 	if (function_exists('imap_open')) {
 		echo "<form name=mail action=\"$target?next=extauth_mail\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"new\" class=\"submit\" value=\"" . $LANG["login"][21] . "\" ></p>";
-
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th colspan='2'>" . $LANG["login"][3] . "</th></tr>";
+		echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
 		$sql = "SELECT * from glpi_auth_mail";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
-			echo "<div align='center'>";
-			echo "<table class='tab_cadre'>";
-			echo "<tr><th colspan='2'>" . $LANG["login"][7] . "</th></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
+			
+
 			while ($mail_method = $DB->fetch_array($result))
 				echo "<tr class='tab_bg_2'><td align='center'><a href='" . $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail&amp;ID=" . $mail_method["ID"] . "' >" . $mail_method["name"] . "</a>" .
 				"</td><td align='center'>" . $mail_method["imap_host"] . "</td></tr>";
-
-			echo "</table>&nbsp;</div>";
 		}
+		echo "<tr><td  align='center' class='tab_bg_1' colspan='2'><input type=\"submit\" name=\"new\" class=\"submit\" value=\"" . $LANG["buttons"][8] . "\" ></td></tr>";
+		echo "</table>";
 		echo "</form>";
 	} else {
 		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
 
-		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>" . $LANG["setup"][162] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table></div>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table>";
 	}
 
 	if (extension_loaded('ldap')) {
@@ -1613,35 +1612,34 @@ function showFormExtAuthList($target) {
 		echo "<form name=ldap action=\"$target?next=extauth_ldap\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
-		echo "<div align='center'>";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"new\" class=\"submit\" value=\"" . $LANG["login"][22] . "\" ></p>";
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th colspan='2'>" . $LANG["login"][2] . "</th></tr>";
+		echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
 
 		$sql = "SELECT * from glpi_auth_ldap";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
-			echo "<div align='center'>";
-			echo "<table class='tab_cadre'>";
-			echo "<tr><th colspan='2'>" . $LANG["login"][2] . "</th></tr>";
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
 			while ($ldap_method = $DB->fetch_array($result))
 				echo "<tr class='tab_bg_2'><td align='center'><a href='" . $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
 				"</td><td align='center'>" . $ldap_method["ldap_host"] . "</td></tr>";
 
-			echo "</table>&nbsp;</div>";
+			
 		}
+		echo "<tr><td  align='center' class='tab_bg_1' colspan='2'><input type=\"submit\" name=\"new\" class=\"submit\" value=\"" . $LANG["buttons"][8] . "\" ></td></tr>";
+		echo "</table>";
 		echo "</form>";
 	} else {
 		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
-		echo "<div align='center'><table class='tab_cadre_fixe'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></th></table></div>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></th></table>";
 	}
 
 	if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {
 		echo "<form name=cas action=\"$target\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
-		echo "<div align='center'><p > " . $LANG["setup"][173] . "</p>";
+		echo "<p> " . $LANG["setup"][173] . "</p>";
 
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
@@ -1649,18 +1647,19 @@ function showFormExtAuthList($target) {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
+		echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update_conf_cas\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></td></tr>";
 
-		echo "</table>&nbsp;</div>";
+		echo "</table>";
+		echo "</form>";
 	} else {
 		echo "<input type=\"hidden\" name=\"CAS_Test\" value=\"1\" >";
 		echo "<div align='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></th></table></div>";
+		echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></th></table>";
 	}
 
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_cas\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></p>";
-	echo "</form>";
 
+	echo "</div>";
 }
 
 function showFormAddAuthMailServer($target) {
