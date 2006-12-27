@@ -49,60 +49,49 @@ $config_mail = new AuthMail();
 $config_ldap = new AuthLDAP();
 
 if (!empty ($_GET["next"])) {
-
+	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF']);
+	titleExtAuth();
 	if ($_GET["next"] == "extauth") {
-		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF']);
-		titleExtAuth();
 		showFormExtAuthList($_SERVER['PHP_SELF']);
 	}
 	if ($_GET["next"] == "extauth_mail") {
-		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF']);
-		titleExtAuth();
-		if (isset ($_POST["new"]))
-			showFormAddAuthMailServer($_SERVER['PHP_SELF']);
-		else
-			showFormEditAuthMailServer($_SERVER['PHP_SELF']);
+		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
 	}
 	if ($_GET["next"] == "extauth_ldap") {
-		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF']);
-		titleExtAuth();
-		if (isset ($_POST["new"]))
-			showFormAddLdapServer($_SERVER['PHP_SELF']);
-		else
-			showFormEditLdapServer($_SERVER['PHP_SELF']);
+		$config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
 	}
 
 }
 
 //Update CAS configuration
-elseif (!empty ($_POST["update_conf_cas"])) {
+elseif (isset ($_POST["update_conf_cas"])) {
 	$config->update($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
 }
 //IMAP/POP Server add/update/delete
-elseif (!empty ($_POST["update_mail"])) {
+elseif (isset ($_POST["update_mail"])) {
 	$config_mail->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif (!empty ($_POST["add_mail"])) {
+elseif (isset ($_POST["add_mail"])) {
 	$config_mail->add($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
 }
-elseif (!empty ($_POST["delete_mail"])) {
+elseif (isset ($_POST["delete_mail"])) {
 	$config_mail->delete($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
 }
 
 //LDAP Server add/update/delete
-elseif (!empty ($_POST["update_ldap"])) {
+elseif (isset ($_POST["update_ldap"])) {
 	$config_ldap->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif (!empty ($_POST["add_ldap"])) {
+elseif (isset ($_POST["add_ldap"])) {
 	$config_ldap->add($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
 }
-elseif (!empty ($_POST["delete_ldap"])) {
+elseif (isset ($_POST["delete_ldap"])) {
 	$config_ldap->delete($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
 }

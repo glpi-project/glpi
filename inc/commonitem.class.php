@@ -125,7 +125,13 @@ class CommonItem{
 				break;					
 			case GROUP_TYPE : 
 				$this->obj= new Group;	
-				break;					
+				break;			
+			case AUTH_MAIL_TYPE:
+				$this->obj = new AuthMail;
+				break;
+			case AUTH_LDAP_TYPE:
+				$this->obj = new AuthLDAP;
+				break;				
 		}
 
 		if ($this->obj!=NULL){

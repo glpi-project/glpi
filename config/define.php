@@ -52,6 +52,9 @@
 	define("GROUP_TYPE",27);
 	define("ENTITY_TYPE",28);
 	define("RESERVATION_TYPE",29);
+	define("AUTH_MAIL_TYPE",30);
+	define("AUTH_LDAP_TYPE",31);
+
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);

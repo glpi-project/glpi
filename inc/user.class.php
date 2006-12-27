@@ -332,6 +332,7 @@ class User extends CommonDBTM {
 			$fields['phone'] = $ldap_method["ldap_field_phone"];
 			$fields['phone2'] = $ldap_method["ldap_field_phone2"];
 			$fields['mobile'] = $ldap_method["ldap_field_mobile"];
+			$fields['comments'] = $ldap_method["ldap_field_comments"];
 			
 			$fields=array_filter($fields);
 			$f = array_values($fields);
@@ -687,10 +688,11 @@ class User extends CommonDBTM {
 
 		if ($this->getfromDB($ID)){
 			//$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$auth_method = $this->getAuthMethodsByID();
 			
 			$extauth=empty($this->fields["password"])&&empty($this->fields["password_md5"]);
-			$imapauth=!empty($CFG_GLPI["imap_host"]);
-
+			$imapauth=!empty($auth_method["imap_host"]);
+			
 			echo "<div align='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
 			echo "<tr><th colspan='2'>".$LANG["setup"][57]." : " .$this->fields["name"]."</th></tr>";
@@ -716,45 +718,57 @@ class User extends CommonDBTM {
 
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
-			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["realname"]))) {
+			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["realname"]))) {
 				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],30);
 			} else echo $this->fields["realname"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][43]."</td><td>";
-			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["firstname"]))){
+			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["firstname"]))){
 				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],30);
 			}  else echo $this->fields["firstname"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][14]."</td><td>";
-			if (!$extauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["email"]))){
+			if (!$extauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["email"]))){
 				autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
 			} else echo $this->fields["email"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>";
-			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["phone"]))){
+			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["phone"]))){
 				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],30);
 			} else echo $this->fields["phone"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]." 2</td><td>";
-			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["phone2"]))){
+			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["phone2"]))){
 				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],30);
 			} else echo $this->fields["phone2"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][42]."</td><td>";
-			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["mobile"]))) {
+			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["mobile"]))) {
 				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],30);
 			} else echo $this->fields["mobile"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
-			if (!$extauth||$imapauth||(isset($CFG_GLPI['ldap_fields'])&&empty($CFG_GLPI['ldap_fields']["location"]))){
+			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["location"]))){
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],0);
 			} else echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][42]."</td><td>";
+			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["mobile"]))) {
+				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],30);
+			} else echo $this->fields["mobile"];
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][25]."</td><td>";
+			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["comments"]))) {
+				autocompletionTextField("comments","glpi_users","comments",$this->fields["comments"],30);
+			} else echo $this->fields["comments"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][40]."</td><td>";
