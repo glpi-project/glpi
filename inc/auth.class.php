@@ -335,41 +335,149 @@ class AuthMail extends CommonDBTM {
 		global $CFG_GLPI;
 
 		$this->table = "glpi_auth_mail";
-		//$this->type=USER_TYPE;
-	}
-
-	function getFromDBbyName($name) {
-		global $DB;
-		$query = "SELECT * FROM glpi_auth_mail WHERE (name = '" . $name . "')";
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result) != 1) {
-				return false;
-			}
-			$this->fields = $DB->fetch_assoc($result);
-			if (is_array($this->fields) && count($this->fields)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
+		$this->type = AUTH_MAIL_TYPE;
 	}
 
 	function prepareInputForUpdate($input) {
 		global $DB;
 
 		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
-			$input["imap_auth_server"] = constructIMAPAuthServer($input);
+			$input["imap_auth_server"] = $this->constructIMAPAuthServer($input);
 		return $input;
 	}
-
 
 	function prepareInputForAdd($input) {
 
 		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
-			$input["imap_auth_server"] = constructIMAPAuthServer($input);
+			$input["imap_auth_server"] = $this->constructIMAPAuthServer($input);
 		return $input;
 	}
+
+	function showForm($target, $ID) {
+
+		global $DB, $LANG;
+
+		if (!haveRight("config", "w"))
+			return false;
+
+		$spotted = false;
+		if (empty ($ID)) {
+
+			if ($this->getEmpty())
+				$spotted = true;
+		} else {
+			if ($this->getfromDB($ID))
+				$spotted = true;
+		}
+
+		if (function_exists('imap_open')) {
+
+			echo "<form action=\"$target\" method=\"post\">";
+			if (!empty ($ID))
+				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+
+			echo "<div align='center'>";
+			echo "<p >" . $LANG["setup"][160] . "</p>";
+			echo "<table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='2'>" . $LANG["login"][3] . "</th></tr>";
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td><input size='30' type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][164] . "</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"" . $this->fields["imap_host"] . "\" ></td></tr>";
+
+			$this->showMailServerConfig($this->fields["imap_auth_server"]);
+
+			if (empty ($ID))
+				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_mail\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+			else {
+				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_mail\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" >";
+				echo "&nbsp<input type=\"submit\" name=\"delete_mail\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+			}
+			echo "</table>&nbsp;</div>";
+		} else {
+			echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
+
+			echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='2'>" . $LANG["setup"][162] . "</th></tr>";
+			echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table></div>";
+		}
+
+		echo "</form>";
+	}
+
+	function showMailServerConfig($value) {
+		global $LANG;
+
+		if (!haveRight("config", "w"))
+			return false;
+
+		if (ereg(":", $value)) {
+			$addr = ereg_replace("{", "", preg_replace("/:.*/", "", $value));
+			$port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
+		} else {
+			if (ereg("/", $value))
+				$addr = ereg_replace("{", "", preg_replace("/\/.*/", "", $value));
+			else
+				$addr = ereg_replace("{", "", preg_replace("/}.*/", "", $value));
+			$port = "";
+		}
+		$mailbox = preg_replace("/.*}/", "", $value);
+
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][52] . "</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][168] . "</td><td>";
+		echo "<select name='server_type'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/imap' " . (ereg("/imap", $value) ? " selected " : "") . ">IMAP</option>";
+		echo "<option value='/pop' " . (ereg("/pop", $value) ? " selected " : "") . ">POP</option>";
+		echo "</select>";
+		echo "<select name='server_ssl'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/ssl' " . (ereg("/ssl", $value) ? " selected " : "") . ">SSL</option>";
+		echo "</select>";
+		echo "<select name='server_cert'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/novalidate-cert' " . (ereg("/novalidate-cert", $value) ? " selected " : "") . ">NO-VALIDATE-CERT</option>";
+		echo "<option value='/validate-cert' " . (ereg("/validate-cert", $value) ? " selected " : "") . ">VALIDATE-CERT</option>";
+		echo "</select>";
+		echo "<select name='server_tls'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/tls' " . (ereg("/tls", $value) ? " selected " : "") . ">TLS</option>";
+		echo "<option value='/notls' " . (ereg("/notls", $value) ? " selected " : "") . ">NO-TLS</option>";
+		echo "</select>";
+
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
+		if (empty ($value))
+			$value = "&nbsp;";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][170] . "</td><td><b>$value</b></td></tr>";
+
+	}
+	function constructIMAPAuthServer($input) {
+
+		$out = "";
+		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
+			$out .= "{" . $input['mail_server'];
+		else
+			return $out;
+		if (isset ($input['server_port']) && !empty ($input['server_port']))
+			$out .= ":" . $input['server_port'];
+		if (isset ($input['server_type']))
+			$out .= $input['server_type'];
+		if (isset ($input['server_ssl']))
+			$out .= $input['server_ssl'];
+		if (isset ($input['server_cert']))
+			$out .= $input['server_cert'];
+		if (isset ($input['server_tls']))
+			$out .= $input['server_tls'];
+
+		$out .= "}";
+		if (isset ($input['server_mailbox']))
+			$out .= $input['server_mailbox'];
+
+		return $out;
+
+	}
+
 }
 class AuthLDAP extends CommonDBTM {
 
@@ -379,33 +487,110 @@ class AuthLDAP extends CommonDBTM {
 		global $CFG_GLPI;
 
 		$this->table = "glpi_auth_ldap";
-		//$this->type=USER_TYPE;
+		$this->type = AUTH_LDAP_TYPE;
+
 	}
 
-	function getFromDBbyName($name) {
-		global $DB;
-		$query = "SELECT * FROM glpi_auth_ldap WHERE (name = '" . $name . "')";
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result) != 1) {
-				return false;
-			}
-			$this->fields = $DB->fetch_assoc($result);
-			if (is_array($this->fields) && count($this->fields)) {
-				return true;
-			} else {
-				return false;
-			}
+	function showForm($target, $ID) {
+
+		global $DB, $LANG;
+
+		if (!haveRight("config", "w"))
+			return false;
+
+		$spotted = false;
+		if (empty ($ID)) {
+
+			if ($this->getEmpty())
+				$spotted = true;
+		} else {
+			if ($this->getfromDB($ID))
+				$spotted = true;
 		}
-		return false;
+
+		if (extension_loaded('ldap')) {
+
+			echo "<form action=\"$target\" method=\"post\">";
+			echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+
+			echo "<div align='center'><p > " . $LANG["setup"][151] . "</p>";
+
+			echo "<table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='4'>" . $LANG["login"][2] . "</th></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td><input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td>";
+			echo "<td align='center' colspan=2></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][52] . "</td><td><input type=\"text\" name=\"ldap_host\" value=\"" . $this->fields["ldap_host"] . "\"></td>";
+			echo "<td align='center'>" . $LANG["setup"][172] . "</td><td><input type=\"text\" name=\"ldap_port\" value=\"" . $this->fields["ldap_port"] . "\"></td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][154] . "</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"" . $this->fields["ldap_basedn"] . "\" ></td>";
+			echo "<td align='center'>" . $LANG["setup"][155] . "</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"" . $this->fields["ldap_rootdn"] . "\" ></td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][156] . "</td><td><input type=\"password\" name=\"ldap_pass\" value=\"" . $this->fields["ldap_pass"] . "\" ></td>";
+			echo "<td align='center'>" . $LANG["setup"][159] . "</td><td><input type=\"text\" name=\"ldap_condition\" value=\"" . $this->fields["ldap_condition"] . "\" ></td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][228] . "</td><td><input type=\"text\" name=\"ldap_login\" value=\"" . $this->fields["ldap_login"] . "\" ></td>";
+			echo "<td align='center'>" . $LANG["setup"][180] . "</td><td>";
+			if (function_exists("ldap_start_tls")) {
+				$ldap_use_tls = $this->fields["ldap_use_tls"];
+				echo "<select name='ldap_use_tls'>\n";
+				echo "<option value='0' " . (!$ldap_use_tls ? " selected " : "") . ">" . $LANG["choice"][0] . "</option>\n";
+				echo "<option value='1' " . ($ldap_use_tls ? " selected " : "") . ">" . $LANG["choice"][1] . "</option>\n";
+				echo "</select>\n";
+			} else {
+				echo "<input type='hidden' name='ldap_use_tls' value='0'>";
+				echo $LANG["setup"][181];
+
+			}
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["setup"][259] . "</td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][254] . "</td><td>";
+			$ldap_search_for_groups = $this->fields["ldap_search_for_groups"];
+
+			echo "<select name='ldap_search_for_groups'>\n";
+			echo "<option value='0' " . (($ldap_search_for_groups == 0) ? " selected " : "") . ">" . $LANG["setup"][256] . "</option>\n";
+			echo "<option value='1' " . (($ldap_search_for_groups == 1) ? " selected " : "") . ">" . $LANG["setup"][257] . "</option>\n";
+			echo "<option value='2' " . (($ldap_search_for_groups == 2) ? " selected " : "") . ">" . $LANG["setup"][258] . "</option>\n";
+			echo "</select>\n";
+			echo "</td>";
+			echo "<td align='center'>" . $LANG["setup"][260] . "</td><td><input type=\"text\" name=\"ldap_field_group\" value=\"" . $this->fields["ldap_field_group"] . "\" ></td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][253] . "</td><td>";
+			echo "<input type=\"text\" name=\"ldap_group_condition\" value=\"" . $this->fields["ldap_group_condition"] . "\" ></td>";
+			echo "<td align='center'>" . $LANG["setup"][255] . "</td><td><input type=\"text\" name=\"ldap_field_group_member\" value=\"" . $this->fields["ldap_field_group_member"] . "\" ></td></tr>";
+
+			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["setup"][167] . "</td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][48] . "</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"" . $this->fields["ldap_field_realname"] . "\" ></td>";
+			echo "<td align='center'>" . $LANG["common"][43] . "</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"" . $this->fields["ldap_field_firstname"] . "\" ></td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][15] . "</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"" . $this->fields["ldap_field_location"] . "\" ></td>";
+			echo "<td align='center'>" . $LANG["setup"][14] . "</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"" . $this->fields["ldap_field_email"] . "\" ></td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["financial"][29] . "</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"" . $this->fields["ldap_field_phone"] . "\" ></td>";
+			echo "<td align='center'>" . $LANG["financial"][29] . " 2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"" . $this->fields["ldap_field_phone2"] . "\" ></td></tr>";
+
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][42] . "</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"" . $this->fields["ldap_field_mobile"] . "\" ></td>";
+			echo "<td align='center'>" . $LANG["common"][25] . "</td><td><input type=\"text\" name=\"ldap_field_comments\" value=\"" . $this->fields["ldap_field_comments"] . "\" ></td></tr>";
+
+			if (empty ($ID))
+				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
+			else {
+				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
+				echo "<td align='center' colspan=2><input type=\"submit\" name=\"delete_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+			}
+			echo "</table>&nbsp;</div></form>";
+		} else {
+			echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
+			echo "<div align='center'><table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
+			echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></th></table></div>";
+		}
+
 	}
 
-	function prepareInputForUpdate($input) {
-		return $input;
-	}
-
-
-	function prepareInputForAdd($input) {
-		return $input;
-	}	
 }
 ?>
