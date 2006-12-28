@@ -45,14 +45,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkLoginUser();
 $user = new User();
 
-//==Ajout Walid==
-if (!isset ($_SESSION['glpi_onglet']))
-	$_SESSION['glpi_onglet'] = 1;
-if (isset ($_GET['onglet'])) {
-	$_SESSION['glpi_onglet'] = $_GET['onglet'];
-}
-//==Fin Ajout Walid==
-
 if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 	$user->update($_POST);
 	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG["log"][21] . "  " . $_POST["name"] . ".");

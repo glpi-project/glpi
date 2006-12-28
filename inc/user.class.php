@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -34,46 +35,44 @@
 // ----------------------------------------------------------------------
 // And Marco Gaiarin for ldap features 
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
-	}
-
+}
 
 class User extends CommonDBTM {
 
-	var $fields = array();
+	var $fields = array ();
 
 	function User() {
 		global $CFG_GLPI;
 
-		$this->table="glpi_users";
-		$this->type=USER_TYPE;
+		$this->table = "glpi_users";
+		$this->type = USER_TYPE;
 
 		$this->fields['tracking_order'] = 'no';
-		if (isset($CFG_GLPI["default_language"]))
+		if (isset ($CFG_GLPI["default_language"]))
 			$this->fields['language'] = $CFG_GLPI["default_language"];
-		else $this->fields['language'] = "english";
+		else
+			$this->fields['language'] = "english";
 
 	}
-	function defineOnglets($withtemplate){
-		global $LANG,$CFG_GLPI;
+	function defineOnglets($withtemplate) {
+		global $LANG, $CFG_GLPI;
 
-		$ong[1]=$LANG["title"][26]; // principal
-		
-		$ong[2]=$LANG["common"][1]; // materiel
-		if (haveRight("show_ticket","1"))	
-				$ong[3]=$LANG["title"][28]; // tickets
-		if (haveRight("reservation_central","r"))
-				$ong[11]=$LANG["title"][35];
-		$ong[4]=$LANG["common"][29];		
-	
-		
+		$ong[1] = $LANG["title"][26]; // principal
+
+		$ong[2] = $LANG["common"][1]; // materiel
+		if (haveRight("show_ticket", "1"))
+			$ong[3] = $LANG["title"][28]; // tickets
+		if (haveRight("reservation_central", "r"))
+			$ong[11] = $LANG["title"][35];
+		$ong[4] = $LANG["common"][29];
 
 		return $ong;
 	}
 	function cleanDBonPurge($ID) {
 
-		global $DB,$CFG_GLPI,$LINK_ID_TABLE;
+		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
 
 		// Tracking items left?
 		$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
@@ -85,8 +84,8 @@ class User extends CommonDBTM {
 		$query = "DELETE from glpi_users_groups WHERE FK_users = '$ID'";
 		$DB->query($query);
 
-		foreach ($CFG_GLPI["linkuser_type"] as $type){
-			$query2="UPDATE ".$LINK_ID_TABLE[$type]." SET FK_groups=0 WHERE FK_groups='$ID';";
+		foreach ($CFG_GLPI["linkuser_type"] as $type) {
+			$query2 = "UPDATE " . $LINK_ID_TABLE[$type] . " SET FK_groups=0 WHERE FK_groups='$ID';";
 			$DB->query($query2);
 		}
 
@@ -94,13 +93,13 @@ class User extends CommonDBTM {
 
 	function getFromDBbyName($name) {
 		global $DB;
-		$query = "SELECT * FROM glpi_users WHERE (name = '".$name."')";
+		$query = "SELECT * FROM glpi_users WHERE (name = '" . $name . "')";
 		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)!=1) {
+			if ($DB->numrows($result) != 1) {
 				return false;
 			}
 			$this->fields = $DB->fetch_assoc($result);
-			if (is_array($this->fields)&&count($this->fields)){
+			if (is_array($this->fields) && count($this->fields)) {
 				return true;
 			} else {
 				return false;
@@ -109,186 +108,183 @@ class User extends CommonDBTM {
 		return false;
 	}
 
-
 	function prepareInputForAdd($input) {
 		// Add User, nasty hack until we get PHP4-array-functions
-		if (isset($input["password"])) {
-			if(empty($input["password"])) {
-				unset($input["password"]);
+		if (isset ($input["password"])) {
+			if (empty ($input["password"])) {
+				unset ($input["password"]);
 			} else {
-				$input["password_md5"]=md5(unclean_cross_side_scripting_deep($input["password"]));
-				$input["password"]="";
+				$input["password_md5"] = md5(unclean_cross_side_scripting_deep($input["password"]));
+				$input["password"] = "";
 			}
 		}
-		if (isset($input["_extauth"])){
-			$input["password"]="";
-			$input["password_md5"]="";
+		if (isset ($input["_extauth"])) {
+			$input["password"] = "";
+			$input["password_md5"] = "";
 		}
 		// change email_form to email (not to have a problem with preselected email)
-		if (isset($input["email_form"])){
-			$input["email"]=$input["email_form"];
-			unset($input["email_form"]);
+		if (isset ($input["email_form"])) {
+			$input["email"] = $input["email_form"];
+			unset ($input["email_form"]);
 		}
 
-		if (isset($input["profile"])){
-			$input["_profile"]=$input["profile"];
-			unset($input["profile"]);
+		if (isset ($input["profile"])) {
+			$input["_profile"] = $input["profile"];
+			unset ($input["profile"]);
 		}
 
 		return $input;
 	}
 
-	function postAddItem($newID,$input) {
-		$prof=new Profile();
-		if (isset($input["_profile"])){
+	function postAddItem($newID, $input) {
+		$prof = new Profile();
+		if (isset ($input["_profile"])) {
 
-			$prof->updateForUser($newID,$input["_profile"]);
+			$prof->updateForUser($newID, $input["_profile"]);
 		} else {
 			$prof->getFromDBForUser($newID);
 		}
 
-
-		if (isset($input["_groups"])){
-			foreach($input["_groups"] as $group){
-				addUserGroup($newID,$group);
+		if (isset ($input["_groups"])) {
+			foreach ($input["_groups"] as $group) {
+				addUserGroup($newID, $group);
 			}
 		}
 	}
 
 	function pre_deleteItem($ID) {
 		global $LANG;
-		if ($ID==1){
+		if ($ID == 1) {
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-			echo "alert('".addslashes($LANG["setup"][220])."');";
+			echo "alert('" . addslashes($LANG["setup"][220]) . "');";
 			echo "</script>";
 			glpi_header($_SERVER['HTTP_REFERER']);
-			exit();
-		}	
+			exit ();
+		}
 
 	}
 
 	function prepareInputForUpdate($input) {
-		global $DB,$CFG_GLPI,$LANG;
-		
+		global $DB, $CFG_GLPI, $LANG;
+
 		$auth_method = $this->getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
-		
-		if ($input["ID"]==1){
+
+		if ($input["ID"] == 1) {
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-			echo "alert('".addslashes($LANG["setup"][220])."');";
+			echo "alert('" . addslashes($LANG["setup"][220]) . "');";
 			echo "</script>";
 			glpi_header($_SERVER['HTTP_REFERER']);
-			exit();
-		}	
-		if (isset($input["password"])) {
-			if(empty($input["password"])) {
-				unset($input["password"]);
+			exit ();
+		}
+		if (isset ($input["password"])) {
+			if (empty ($input["password"])) {
+				unset ($input["password"]);
 			} else {
-				$input["password_md5"]=md5(unclean_cross_side_scripting_deep($input["password"]));
-				$input["password"]="";
+				$input["password_md5"] = md5(unclean_cross_side_scripting_deep($input["password"]));
+				$input["password"] = "";
 			}
 		}
-		
+
 		// change email_form to email (not to have a problem with preselected email)
-		if (isset($input["email_form"])){
-			$input["email"]=$input["email_form"];
-			unset($input["email_form"]);
+		if (isset ($input["email_form"])) {
+			$input["email"] = $input["email_form"];
+			unset ($input["email_form"]);
 		}
 
 		// Update User in the database
-		if (!isset($input["ID"])&&isset($input["name"])){
+		if (!isset ($input["ID"]) && isset ($input["name"])) {
 			if ($this->getFromDBbyName($input["name"]))
-				$input["ID"]=$this->fields["ID"];
-		} 
-
-
-		if (isset($_SESSION["glpiID"])&&isset($input["language"])&&$_SESSION["glpiID"]==$input['ID'])	{
-			$_SESSION["glpilanguage"]=$input["language"];
+				$input["ID"] = $this->fields["ID"];
 		}
-		if (isset($_SESSION["glpiID"])&&isset($input["tracking_order"])&&$_SESSION["glpiID"]==$input['ID'])	{
-			$_SESSION["glpitracking_order"]=$input["tracking_order"];
+
+		if (isset ($_SESSION["glpiID"]) && isset ($input["language"]) && $_SESSION["glpiID"] == $input['ID']) {
+			$_SESSION["glpilanguage"] = $input["language"];
+		}
+		if (isset ($_SESSION["glpiID"]) && isset ($input["tracking_order"]) && $_SESSION["glpiID"] == $input['ID']) {
+			$_SESSION["glpitracking_order"] = $input["tracking_order"];
 		}
 
 		// Security system execpt for login update
-		if (isset($_SESSION["glpiID"])&&!haveRight("user","w")&&!ereg("login.php",$_SERVER['PHP_SELF'])){
-			if($_SESSION["glpiID"]==$input['ID']) {
-				$ret=$input;
+		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !ereg("login.php", $_SERVER['PHP_SELF'])) {
+			if ($_SESSION["glpiID"] == $input['ID']) {
+				$ret = $input;
 				// extauth ldap case
-				if ($_SESSION["glpiextauth"]&&isset($CFG_GLPI['ldap_fields'])){
+				if ($_SESSION["glpiextauth"] && isset ($CFG_GLPI['ldap_fields'])) {
 					if ($input["auth_method"] != AUTH_LDAP)
-					foreach ($input['ldap_fields'] as $key => $val)
-						if (!empty($val))
-							unset($ret[$key]);
+						foreach ($input['ldap_fields'] as $key => $val)
+							if (!empty ($val))
+								unset ($ret[$key]);
 				}
 				// extauth imap case
 				if ($input["auth_method"] == AUTH_MAIL)
-					unset($ret["email"]);	
+					unset ($ret["email"]);
 
-				unset($ret["active"]);
-				unset($ret["comments"]);
+				unset ($ret["active"]);
+				unset ($ret["comments"]);
 				return $ret;
-			} else return array();
+			} else
+				return array ();
 		}
 
-
-		if (isset($input["profile"])){
-			$prof=new Profile();
-			$prof->updateForUser($input["ID"],$input["profile"]);
-			unset($input["profile"]);
+		if (isset ($input["profile"])) {
+			$prof = new Profile();
+			$prof->updateForUser($input["ID"], $input["profile"]);
+			unset ($input["profile"]);
 		}
 
-		
-		if (isset($input["_groups"])&&count($input["_groups"])){
-			$WHERE="";
-			switch ($auth_method["ldap_search_for_groups"]){
+		if (isset ($input["_groups"]) && count($input["_groups"])) {
+			$WHERE = "";
+			switch ($auth_method["ldap_search_for_groups"]) {
 				case 0 : // user search
-					$WHERE="AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
+					$WHERE = "AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
 					break;
 				case 1 : // group search
-					$WHERE="AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
+					$WHERE = "AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
 					break;
 				case 2 : // user+ group search
-					$WHERE="AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
-								OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
+					$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
+													OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
 					break;
 			}
-		
-			// Delete not available groups like to LDAP
-			$query="SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
-						FROM glpi_users_groups 
-						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-						WHERE glpi_users_groups.FK_users='".$input["ID"]."' $WHERE";
 
-			$result=$DB->query($query);
-			if ($DB->numrows($result)>0){
-				while ($data=$DB->fetch_array($result))
-					if (!in_array($data["FK_groups"],$input["_groups"])){
+			// Delete not available groups like to LDAP
+			$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
+									FROM glpi_users_groups 
+									LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+									WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
+
+			$result = $DB->query($query);
+			if ($DB->numrows($result) > 0) {
+				while ($data = $DB->fetch_array($result))
+					if (!in_array($data["FK_groups"], $input["_groups"])) {
 						deleteUserGroup($data["ID"]);
 					}
 			}
-			
-			foreach($input["_groups"] as $group){
-				addUserGroup($input["ID"],$group);
+
+			foreach ($input["_groups"] as $group) {
+				addUserGroup($input["ID"], $group);
 			}
 			unset ($input["_groups"]);
 		}
 
-
 		return $input;
 	}
 
-	function post_updateItem($input,$updates,$history){
+	function post_updateItem($input, $updates, $history) {
 		global $CFG_GLPI;
 		// Clean header cache for the user
-		if (in_array("language",$updates)&&isset($input["ID"])){
-			$CFG_GLPI["cache"]->remove($input["ID"],"GLPI_HEADER");
+		if (in_array("language", $updates) && isset ($input["ID"])) {
+			$CFG_GLPI["cache"]->remove($input["ID"], "GLPI_HEADER");
 		}
 	}
 
 	// SPECIFIC FUNCTIONS
 
-	function getName(){
-		if (strlen($this->fields["realname"])>0) return $this->fields["realname"]." ".$this->fields["firstname"];
-		else return $this->fields["name"];
+	function getName() {
+		if (strlen($this->fields["realname"]) > 0)
+			return $this->fields["realname"] . " " . $this->fields["firstname"];
+		else
+			return $this->fields["name"];
 
 	}
 
@@ -308,18 +304,18 @@ class User extends CommonDBTM {
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */
-	function getFromLDAP($ldap_method,$userdn,$login,$password="")
-	{
-		global $DB,$CFG_GLPI;
-		
+	function getFromLDAP($ldap_method, $userdn, $login, $password = "") {
+		global $DB, $CFG_GLPI;
+
 		// we prevent some delay...
-		if (empty($ldap_method["ldap_host"])) {
+		if (empty ($ldap_method["ldap_host"])) {
 			return false;
 		}
 
-		$ds=connect_ldap($ldap_method["ldap_host"],$ldap_method["ldap_port"],$ldap_method["ldap_rootdn"],$ldap_method["ldap_pass"],$ldap_method["ldap_use_tls"]);
+		$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
 		// Test with login and password of the user
-		if (!$ds) $ds=connect_ldap($ldap_method["ldap_host"],$ldap_method["ldap_port"],$login,$password,$ldap_method["ldap_use_tls"]);
+		if (!$ds)
+			$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $login, $password, $ldap_method["ldap_use_tls"]);
 		if ($ds) {
 			//Set all the search fields
 			$this->fields['password'] = "";
@@ -333,116 +329,116 @@ class User extends CommonDBTM {
 			$fields['phone2'] = $ldap_method["ldap_field_phone2"];
 			$fields['mobile'] = $ldap_method["ldap_field_mobile"];
 			$fields['comments'] = $ldap_method["ldap_field_comments"];
-			
-			$fields=array_filter($fields);
+
+			$fields = array_filter($fields);
 			$f = array_values($fields);
-			 
-			$sr = @ldap_read($ds, $userdn, "objectClass=*", $f);
+
+			$sr = @ ldap_read($ds, $userdn, "objectClass=*", $f);
 			$v = ldap_get_entries($ds, $sr);
-			
-			if ( !is_array($v)||count($v)==0 || empty($v[0][$fields['name']][0]) ) 
+
+			if (!is_array($v) || count($v) == 0 || empty ($v[0][$fields['name']][0]))
 				return false;
-			
-			
-			foreach ($fields as $k => $e)	{
-				if (!empty($v[0][$e][0]))
+
+			foreach ($fields as $k => $e) {
+				if (!empty ($v[0][$e][0]))
 					$this->fields[$k] = $v[0][$e][0];
 			}
-		
+
 			// Is location get from LDAP ?
-			if (isset($fields['location'])&&!empty($v[0][$fields["location"]][0])&&!empty($fields['location'])){
-				$query="SELECT ID FROM glpi_dropdown_locations WHERE completename='".$this->fields['location']."'";
-				$result=$DB->query($query);
-				if ($DB->numrows($result)==0){
-					$DB->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('".$this->fields['location']."')");
-					$this->fields['location']=$DB->insert_id();
-					regenerateTreeCompleteNameUnderID("glpi_dropdown_locations",$this->fields['location']);
-				} else $this->fields['location']=$DB->result($result,0,"ID");
+			if (isset ($fields['location']) && !empty ($v[0][$fields["location"]][0]) && !empty ($fields['location'])) {
+				$query = "SELECT ID FROM glpi_dropdown_locations WHERE completename='" . $this->fields['location'] . "'";
+				$result = $DB->query($query);
+				if ($DB->numrows($result) == 0) {
+					$DB->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('" . $this->fields['location'] . "')");
+					$this->fields['location'] = $DB->insert_id();
+					regenerateTreeCompleteNameUnderID("glpi_dropdown_locations", $this->fields['location']);
+				} else
+					$this->fields['location'] = $DB->result($result, 0, "ID");
 			}
-	
+
 			// Get group fields
-			$query_user="SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
-			$query_group="SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
-	
-			$group_fields=array();
-			$groups=array();
-			$v=array();
+			$query_user = "SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
+			$query_group = "SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
+
+			$group_fields = array ();
+			$groups = array ();
+			$v = array ();
 			//The groupes are retrived by looking into an ldap user object
-			if ($ldap_method["ldap_search_for_groups"]==0||$ldap_method["ldap_search_for_groups"]==2){
-	
-				$result=$DB->query($query_user);
-	
-				if ($DB->numrows($result)>0){
-					while ($data=$DB->fetch_assoc($result)){
-						$group_fields[]=strtolower($data["ldap_field"]);
-						$groups[strtolower($data["ldap_field"])][$data["ID"]]=$data["ldap_value"];
+			if ($ldap_method["ldap_search_for_groups"] == 0 || $ldap_method["ldap_search_for_groups"] == 2) {
+
+				$result = $DB->query($query_user);
+
+				if ($DB->numrows($result) > 0) {
+					while ($data = $DB->fetch_assoc($result)) {
+						$group_fields[] = strtolower($data["ldap_field"]);
+						$groups[strtolower($data["ldap_field"])][$data["ID"]] = $data["ldap_value"];
 					}
-					$group_fields=array_unique($group_fields);
+					$group_fields = array_unique($group_fields);
 					// If the groups must be retrieve from the ldap user object
-					$sr = @ldap_read($ds, $userdn, "objectClass=*", $group_fields);
+					$sr = @ ldap_read($ds, $userdn, "objectClass=*", $group_fields);
 					$v = ldap_get_entries($ds, $sr);
 				}
 			}
 			//The groupes are retrived by looking into an ldap group object
-			if ($ldap_method["ldap_search_for_groups"]==1||$ldap_method["ldap_search_for_groups"]==2){
-	
-				$result=$DB->query($query_group);
- 
-				if ($DB->numrows($result)>0){
-					while ($data=$DB->fetch_assoc($result)){
-						$groups[$ldap_method["ldap_field_group_member"]][$data["ID"]]=$data["ldap_group_dn"];
+			if ($ldap_method["ldap_search_for_groups"] == 1 || $ldap_method["ldap_search_for_groups"] == 2) {
+
+				$result = $DB->query($query_group);
+
+				if ($DB->numrows($result) > 0) {
+					while ($data = $DB->fetch_assoc($result)) {
+						$groups[$ldap_method["ldap_field_group_member"]][$data["ID"]] = $data["ldap_group_dn"];
 					}
-					$v2 = $this->ldap_get_user_groups($ds,$ldap_method["ldap_basedn"],$userdn,$ldap_method["ldap_group_condition"],$ldap_method["ldap_field_group_member"]);
-					$v = array_merge($v,$v2);
+					$v2 = $this->ldap_get_user_groups($ds, $ldap_method["ldap_basedn"], $userdn, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"]);
+					$v = array_merge($v, $v2);
 				}
-	
+
 			}
 
-			if ( is_array($v)&&count($v)>0){
-				foreach ($v as $attribute => $valattribute){
+			if (is_array($v) && count($v) > 0) {
+				foreach ($v as $attribute => $valattribute) {
 					if (is_array($valattribute))
-					foreach ($valattribute as $key => $val){
-						if (is_array($val))
-							for ($i=0;$i<count($val);$i++){
-								if (isset($val[$i]))
-								if ($group_found= array_search($val[$i],$groups[$key])){
-									$this->fields["_groups"][]=$group_found;
+						foreach ($valattribute as $key => $val) {
+							if (is_array($val))
+								for ($i = 0; $i < count($val); $i++) {
+									if (isset ($val[$i]))
+										if ($group_found = array_search($val[$i], $groups[$key])) {
+											$this->fields["_groups"][] = $group_found;
+										}
 								}
-							}
-					}
+						}
 				}
 			}
- 
- 			//Hook to retrieve more informations for ldap
-			$this->fields=do_hook_function("retrieve_more_data_from_ldap",$this->fields);
+
+			//Hook to retrieve more informations for ldap
+			$this->fields = do_hook_function("retrieve_more_data_from_ldap", $this->fields);
 		}
 		return false;
 
 	} // getFromLDAP()
-	
+
 	//Get all the group a user belongs to
-	function ldap_get_user_groups($ds,$ldap_base_dn,$user_dn,$group_condition,$group_field_member)
-	{
+	function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition, $group_field_member) {
 		global $CFG_GLPI;
 
-		$groups = array();
-		$listgroups = array();
-		
-		//Only retrive cn and member attributes from groups
-		$attrs=array("dn");
+		$groups = array ();
+		$listgroups = array ();
 
-		$filter="(& $group_condition ($group_field_member=$user_dn))";
+		//Only retrive cn and member attributes from groups
+		$attrs = array (
+			"dn"
+		);
+
+		$filter = "(& $group_condition ($group_field_member=$user_dn))";
 
 		//Perform the search
-		$sr=ldap_search($ds, $ldap_base_dn, $filter,$attrs);
+		$sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
 		//Get the result of the search as an array
-		$info=ldap_get_entries($ds,$sr);
+		$info = ldap_get_entries($ds, $sr);
 		//Browse all the groups
-		for ($i=0; $i < count($info); $i++)
-		{
+		for ($i = 0; $i < count($info); $i++) {
 			//Get the cn of the group and add it to the list of groups
-			if (isset($info[$i]["dn"])&&$info[$i]["dn"] != '')
+			if (isset ($info[$i]["dn"]) && $info[$i]["dn"] != '')
 				$listgroups[$i] = $info[$i]["dn"];
 		}
 
@@ -454,19 +450,18 @@ class User extends CommonDBTM {
 
 	// Function that try to load from IMAP the user information... this is
 	// a fake one, as you can see...
-	function getFromIMAP($host, $name)
-	{
+	function getFromIMAP($host, $name) {
 		// we prevent some delay..
-		if (empty($host)) {
+		if (empty ($host)) {
 			return false;
 		}
 
 		// some defaults...
 		$this->fields['password'] = "";
 		$this->fields['password_md5'] = "";
-		if (ereg("@",$name))
+		if (ereg("@", $name))
 			$this->fields['email'] = $name;
-		else 
+		else
 			$this->fields['email'] = $name . "@" . $host;
 
 		$this->fields['name'] = $name;
@@ -475,319 +470,317 @@ class User extends CommonDBTM {
 
 	} // getFromIMAP()  	    
 
-	function blankPassword () {
+	function blankPassword() {
 		global $DB;
-		if (!empty($this->fields["name"])){
+		if (!empty ($this->fields["name"])) {
 
-			$query  = "UPDATE glpi_users SET password='' , password_md5='' WHERE name='".$this->fields["name"]."'";	
+			$query = "UPDATE glpi_users SET password='' , password_md5='' WHERE name='" . $this->fields["name"] . "'";
 			$DB->query($query);
 		}
 	}
 
-	function title(){
-		global  $LANG,$CFG_GLPI;
+	function title() {
+		global $LANG, $CFG_GLPI;
 
-		$buttons=array();
-		$title=$LANG["Menu"][14];
-		if (haveRight("user","w")){
-			$buttons["user.form.php?new=1"]=$LANG["setup"][2];
-			$title="";
+		$buttons = array ();
+		$title = $LANG["Menu"][14];
+		if (haveRight("user", "w")) {
+			$buttons["user.form.php?new=1"] = $LANG["setup"][2];
+			$title = "";
 		}
-		if (useAuthExt()){
-			$buttons["user.form.php?new=1&ext_auth=1"]=$LANG["setup"][125];
+		if (useAuthExt()) {
+			$buttons["user.form.php?new=1&ext_auth=1"] = $LANG["setup"][125];
 		}
 
-		displayTitle($CFG_GLPI["root_doc"]."/pics/users.png",$LANG["Menu"][14],$title,$buttons);
+		displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG["Menu"][14], $title, $buttons);
 
 	}
 
-	function showForm($target,$ID,$withtemplate='') {
+	function showForm($target, $ID, $withtemplate = '') {
 
 		// Affiche un formulaire User
 		global $CFG_GLPI, $LANG;
 
-		if ($ID!=$_SESSION["glpiID"]&&!haveRight("user","r")) return false;
+		if ($ID != $_SESSION["glpiID"] && !haveRight("user", "r"))
+			return false;
 
-		$canedit=haveRight("user","w");
-		$canread=haveRight("user","r");
-
+		$canedit = haveRight("user", "w");
+		$canread = haveRight("user", "r");
 
 		// Helpdesk case
-		if($ID == 1) {
+		if ($ID == 1) {
 			echo "<div align='center'>";
 			echo $LANG["setup"][220];
 			echo "</div>";
 			return false;
 		}
-		$spotted=false;
-	
-		if(empty($ID)) {
-			$spotted=$this->getEmpty();
+		$spotted = false;
+
+		if (empty ($ID)) {
+			$spotted = $this->getEmpty();
 		} else {
-			$spotted=$this->getfromDB($ID);
+			$spotted = $this->getfromDB($ID);
 		}
 		if ($spotted) {
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_onglet']);
 			echo "<div align='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			if (empty ($ID)) {
+				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
 			}
 
-			echo "<tr><th colspan='4'>".$LANG["setup"][57]." : " .$this->fields["name"]."&nbsp;";
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>"; 
+			echo "<tr><th colspan='4'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "&nbsp;";
+			echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/user.vcard.php?ID=$ID'>" . $LANG["common"][46] . "</a>";
 			echo "</th></tr>";
-			echo "<tr class='tab_bg_1'>";	
-			echo "<td align='center'>".$LANG["setup"][18]."</td>";
+			echo "<tr class='tab_bg_1'>";
+			echo "<td align='center'>" . $LANG["setup"][18] . "</td>";
 			// si on est dans le cas d'un ajout , cet input ne doit plus �re hiden
-			if ($this->fields["name"]=="") {
-				echo "<td><input  name='name' value=\"".$this->fields["name"]."\">";
+			if ($this->fields["name"] == "") {
+				echo "<td><input  name='name' value=\"" . $this->fields["name"] . "\">";
 				echo "</td>";
 				// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 			} else {
-				if (empty($this->fields["password"])&&empty($this->fields["password_md5"])){
-					echo "<td align='center'><b>".$this->fields["name"]."</b>";
-					echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
-				}
-				else {
+				if (empty ($this->fields["password"]) && empty ($this->fields["password_md5"])) {
+					echo "<td align='center'><b>" . $this->fields["name"] . "</b>";
+					echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
+				} else {
 					echo "<td>";
-					autocompletionTextField("name","glpi_users","name",$this->fields["name"],20);
+					autocompletionTextField("name", "glpi_users", "name", $this->fields["name"], 20);
 				}
-	
-	
-				echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
-	
+
+				echo "<input type='hidden' name='ID' value=\"" . $this->fields["ID"] . "\">";
+
 				echo "</td>";
 			}
-			
+
 			//do some rights verification
-			if(haveRight("user","w")) {
-				if (!empty($this->fields["password"])||!empty($this->fields["password_md5"])||$this->fields["name"]==""){
-					echo "<td align='center'>".$LANG["setup"][19].":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
-				} else echo "<td colspan='2'>&nbsp;</td></tr>";
-			} else echo "<td colspan='2'>&nbsp;</td></tr>";
-			
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48].":</td><td>";
-				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],20);
+			if (haveRight("user", "w")) {
+				if (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"]) || $this->fields["name"] == "") {
+					echo "<td align='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+				} else
+					echo "<td colspan='2'>&nbsp;</td></tr>";
+			} else
+				echo "<td colspan='2'>&nbsp;</td></tr>";
+
+			if (!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][48] . ":</td><td>";
+				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 20);
 				echo "</td>";
-				echo "<td align='center'>".$LANG["common"][43].":</td><td>";
-				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],20);
+				echo "<td align='center'>" . $LANG["common"][43] . ":</td><td>";
+				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 20);
 				echo "</td></tr>";
-		
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["profiles"][22].":</td><td>";
-				$prof=new Profile();
+
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["profiles"][22] . ":</td><td>";
+				$prof = new Profile();
 				$prof->getFromDBforUser($this->fields["ID"]);
-				dropdownValue("glpi_profiles","profile",$prof->fields["ID"]);
+				dropdownValue("glpi_profiles", "profile", $prof->fields["ID"]);
 				echo "</td>";
-				echo "<td align='center'>".$LANG["setup"][14].":</td><td>";
-				autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
+				echo "<td align='center'>" . $LANG["setup"][14] . ":</td><td>";
+				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
 				echo "</td></tr>";
-		
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29].":</td><td>";
-				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],20);
+
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["financial"][29] . ":</td><td>";
+				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 20);
 				echo "</td>";
-				echo "<td align='center'>".$LANG["financial"][29]." 2:</td><td>";
-				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],20);
+				echo "<td align='center'>" . $LANG["financial"][29] . " 2:</td><td>";
+				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 20);
 				echo "</td></tr>";
-		
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15].":</td><td>";
+
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . ":</td><td>";
 				// TODO Restrict ??? or delete this field from the user
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 				echo "</td>";
-				echo "<td align='center'>".$LANG["common"][42].":</td><td>";
-				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],20);
+				echo "<td align='center'>" . $LANG["common"][42] . ":</td><td>";
+				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 20);
 				echo "</td></tr>";
-		
-				echo "<tr class='tab_bg_1' align='center'><td>".$LANG["common"][25].":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+
+				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
 				echo "</tr>";
-		
-		
-		
-/*				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
-				$active=0;
-				if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
-				echo "<select name='active'>";
-				echo "<option value='1' ".($active?" selected ":"").">".$LANG["choice"][1]."</option>";
-				echo "<option value='0' ".(!$active?" selected ":"").">".$LANG["choice"][0]."</option>";
-		
-				echo "</select>";
-				echo "</td><td colspan='2'>&nbsp;</td></tr>";
-*/			
+
+				/*				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
+								$active=0;
+								if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
+								echo "<select name='active'>";
+								echo "<option value='1' ".($active?" selected ":"").">".$LANG["choice"][1]."</option>";
+								echo "<option value='0' ".(!$active?" selected ":"").">".$LANG["choice"][0]."</option>";
+						
+								echo "</select>";
+								echo "</td><td colspan='2'>&nbsp;</td></tr>";
+				*/
 
 				//Authentications informations : auth method used and server used
 				//don't display is creation of a new user'
-				if(!empty($ID))  {
-					echo "<tr class='tab_bg_1' align='center'><td>".$LANG["login"][10].":</td><td align='center'>";
-					switch ($this->fields["auth_method"])
-					{
-						case AUTH_LDAP:
-						echo $LANG["login"][2];
-						break;
-						case AUTH_MAIL:
-						echo $LANG["login"][3];
-						break;
-						case AUTH_CAS:
-						echo $LANG["login"][4];
-						break;
-						case AUTH_DB_GLPI:
-						echo $LANG["login"][18];
-						break;
-						case NOT_YET_AUTHENTIFIED:
-						echo $LANG["login"][9];
-						break;
+				if (!empty ($ID)) {
+					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][10] . ":</td><td align='center'>";
+					switch ($this->fields["auth_method"]) {
+						case AUTH_LDAP :
+							echo $LANG["login"][2];
+							break;
+						case AUTH_MAIL :
+							echo $LANG["login"][3];
+							break;
+						case AUTH_CAS :
+							echo $LANG["login"][4];
+							break;
+						case AUTH_DB_GLPI :
+							echo $LANG["login"][18];
+							break;
+						case NOT_YET_AUTHENTIFIED :
+							echo $LANG["login"][9];
+							break;
 					}
-					
-					if ( ($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL ))
-					{
-						if ($method = $this->getAuthMethodsByID())					
-							echo "&nbsp ".$LANG["common"][53]." ".$method["name"];
+
+					if (($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL)) {
+						if ($method = $this->getAuthMethodsByID())
+							echo "&nbsp " . $LANG["common"][52] . " " . $method["name"];
 					}
-					echo "</td><td>".$LANG["login"][0].":</td><td>";
-					
-				if ($this->fields["last_login"] != "0000-00-00 00:00:00")
-					echo convDateTime($this->fields["last_login"]);
-					
+					echo "</td><td>" . $LANG["login"][0] . ":</td><td>";
+
+					if ($this->fields["last_login"] != "0000-00-00 00:00:00")
+						echo convDateTime($this->fields["last_login"]);
+
 					echo "</td>";
 					echo "</tr>";
 				}
 
 				$CFG_GLPI["cache"]->end();
 			}
-			
-			if (haveRight("user","w"))
-				if ($this->fields["name"]=="") {
+
+			if (haveRight("user", "w"))
+				if ($this->fields["name"] == "") {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";
-					echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+					echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 					echo "</td>";
-					echo "</tr>";	
+					echo "</tr>";
 				} else {
 					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
-					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' >";
+					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
+					echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit' >";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
-					echo "<input type='submit' name='delete' onclick=\"return confirm('".$LANG["common"][50]."')\" value=\"".$LANG["buttons"][6]."\" class='submit' >";
+					echo "<input type='submit' name='delete' onclick=\"return confirm('" . $LANG["common"][50] . "')\" value=\"" . $LANG["buttons"][6] . "\" class='submit' >";
 					echo "</td>";
 					echo "</tr>";
 				}
-	
+
 			echo "</table></form></div>";
 			return true;
-		} 
+		}
 		return false;
 	}
 
-	function showMyForm($target,$ID,$withtemplate='') {
+	function showMyForm($target, $ID, $withtemplate = '') {
 
 		// Affiche un formulaire User
 		global $CFG_GLPI, $LANG;
 
-		if ($ID!=$_SESSION["glpiID"]) return false;
+		if ($ID != $_SESSION["glpiID"])
+			return false;
 
-		if ($this->getfromDB($ID)){
+		if ($this->getfromDB($ID)) {
 			//$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			$auth_method = $this->getAuthMethodsByID();
-			
-			$extauth=empty($this->fields["password"])&&empty($this->fields["password_md5"]);
-			$imapauth=!empty($auth_method["imap_host"]);
-			
+
+			$extauth = empty ($this->fields["password"]) && empty ($this->fields["password_md5"]);
+			$imapauth = !empty ($auth_method["imap_host"]);
+
 			echo "<div align='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
-			echo "<tr><th colspan='2'>".$LANG["setup"][57]." : " .$this->fields["name"]."</th></tr>";
+			echo "<tr><th colspan='2'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "</th></tr>";
 
-			echo "<tr class='tab_bg_1'>";	
-			echo "<td align='center'>".$LANG["setup"][18]."</td>";
-			echo "<td align='center'><b>".$this->fields["name"]."</b>";
-			echo "<input type='hidden' name='name' value=\"".$this->fields["name"]."\">";
-			echo "<input type='hidden' name='ID' value=\"".$this->fields["ID"]."\">";
+			echo "<tr class='tab_bg_1'>";
+			echo "<td align='center'>" . $LANG["setup"][18] . "</td>";
+			echo "<td align='center'><b>" . $this->fields["name"] . "</b>";
+			echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
+			echo "<input type='hidden' name='ID' value=\"" . $this->fields["ID"] . "\">";
 			echo "</td></tr>";
 
 			//do some rights verification
-			if (!$extauth&&haveRight("password_update","1")){
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][19]."</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
-			} 
+			if (!$extauth && haveRight("password_update", "1")) {
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][19] . "</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
+			}
 
-			if ($CFG_GLPI["debug"]!=DEMO_MODE||haveRight("config",1)){
-				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][41]."</td><td>";
-				dropdownLanguages("language",$_SESSION["glpilanguage"]);	
+			if ($CFG_GLPI["debug"] != DEMO_MODE || haveRight("config", 1)) {
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][41] . "</td><td>";
+				dropdownLanguages("language", $_SESSION["glpilanguage"]);
 				echo "</td></tr>";
 			}
 
-
-
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][48]."</td><td>";
-			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["realname"]))) {
-				autocompletionTextField("realname","glpi_users","realname",$this->fields["realname"],30);
-			} else echo $this->fields["realname"];
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][48] . "</td><td>";
+			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["realname"]))) {
+				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 30);
+			} else
+				echo $this->fields["realname"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][43]."</td><td>";
-			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["firstname"]))){
-				autocompletionTextField("firstname","glpi_users","firstname",$this->fields["firstname"],30);
-			}  else echo $this->fields["firstname"];
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][43] . "</td><td>";
+			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["firstname"]))) {
+				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 30);
+			} else
+				echo $this->fields["firstname"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][14]."</td><td>";
-			if (!$extauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["email"]))){
-				autocompletionTextField("email_form","glpi_users","email",$this->fields["email"],30);
-			} else echo $this->fields["email"];
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][14] . "</td><td>";
+			if (!$extauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["email"]))) {
+				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
+			} else
+				echo $this->fields["email"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]."</td><td>";
-			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["phone"]))){
-				autocompletionTextField("phone","glpi_users","phone",$this->fields["phone"],30);
-			} else echo $this->fields["phone"];
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["financial"][29] . "</td><td>";
+			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["phone"]))) {
+				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 30);
+			} else
+				echo $this->fields["phone"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["financial"][29]." 2</td><td>";
-			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["phone2"]))){
-				autocompletionTextField("phone2","glpi_users","phone2",$this->fields["phone2"],30);
-			} else echo $this->fields["phone2"];
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["financial"][29] . " 2</td><td>";
+			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["phone2"]))) {
+				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 30);
+			} else
+				echo $this->fields["phone2"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][42]."</td><td>";
-			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["mobile"]))) {
-				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],30);
-			} else echo $this->fields["mobile"];
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][42] . "</td><td>";
+			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["mobile"]))) {
+				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 30);
+			} else
+				echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][15]."</td><td>";
-			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["location"]))){
-				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],0);
-			} else echo getDropdownName("glpi_dropdown_locations",$this->fields["location"]);
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . "</td><td>";
+			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["location"]))) {
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 0);
+			} else
+				echo getDropdownName("glpi_dropdown_locations", $this->fields["location"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][42]."</td><td>";
-			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["mobile"]))) {
-				autocompletionTextField("mobile","glpi_users","mobile",$this->fields["mobile"],30);
-			} else echo $this->fields["mobile"];
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][42] . "</td><td>";
+			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["mobile"]))) {
+				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 30);
+			} else
+				echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["common"][25]."</td><td>";
-			if (!$extauth||$imapauth||(isset($auth_method['ldap_fields'])&&empty($auth_method['ldap_fields']["comments"]))) {
-				autocompletionTextField("comments","glpi_users","comments",$this->fields["comments"],30);
-			} else echo $this->fields["comments"];
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][40]."</td><td>";
+			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][40] . "</td><td>";
 			echo "<select name='tracking_order'>\n";
 			echo "<option value=\"yes\"";
-			if ($_SESSION["glpitracking_order"]=="yes") { echo " selected"; }	
-			echo ">".$LANG["choice"][1];
+			if ($_SESSION["glpitracking_order"] == "yes") {
+				echo " selected";
+			}
+			echo ">" . $LANG["choice"][1];
 			echo "<option value=\"no\"";
-			if ($_SESSION["glpitracking_order"]=="no") { echo " selected"; }
-			echo ">".$LANG["choice"][0];
+			if ($_SESSION["glpitracking_order"] == "no") {
+				echo " selected";
+			}
+			echo ">" . $LANG["choice"][0];
 			echo "</select>\n";
 			echo "</td></tr>";
 
-
-
-
 			echo "<tr>";
-			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";	
-			echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' >";
+			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
+			echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit' >";
 			echo "</td>";
 			echo "</tr>";
 
@@ -796,41 +789,41 @@ class User extends CommonDBTM {
 		}
 		return false;
 	}
-	
+
 	//Get all the authentication method parameters for the current user
-	function getAuthMethodsByID()
-	{
-		return getAuthMethodsByID($this->fields["auth_method"],$this->fields["id_auth"]);
+	function getAuthMethodsByID() {
+		return getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
 	}
-	
-	}
+
+}
 
 /* Get all the authentication methods parameters for a specific auth_method and id_auth
 	* and return it as an array 
 	*/
-	function getAuthMethodsByID($auth_method, $id_auth) {
-		global $DB;
+function getAuthMethodsByID($auth_method, $id_auth) {
+	global $DB;
 
-		$auth_methods = array ();
+	$auth_methods = array ();
+	$sql = "";
 
-		switch ($auth_method) {
-			case AUTH_LDAP :
-				//Get all the ldap directories
-				$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
-				break;
-			case AUTH_MAIL :
-				//Get all the pop/imap servers
-				$sql = "SELECT * FROM glpi_auth_mail WHERE ID=" . $id_auth;
-				break;
-		}
+	switch ($auth_method) {
+		case AUTH_LDAP :
+			//Get all the ldap directories
+			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
+			break;
+		case AUTH_MAIL :
+			//Get all the pop/imap servers
+			$sql = "SELECT * FROM glpi_auth_mail WHERE ID=" . $id_auth;
+			break;
+	}
 
+	if ($sql != "") {
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0) {
 			$auth_methods = $DB->fetch_array($result);
 		}
-
-		//Return all the authentication methods in an array
-		return $auth_methods;
 	}
-
+	//Return all the authentication methods in an array
+	return $auth_methods;
+}
 ?>
