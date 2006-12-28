@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-function ldapImportUser($login) {
+function ldapImportUser($login, $sync) {
 	global $DB, $LANG;
 
 	$config_ldap = new AuthLDAP();
@@ -50,35 +50,36 @@ function ldapImportUser($login) {
 	if (!$res) {
 		return false;
 	}
-	
+
 	//Connect to the directory
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
 	if ($ds) {
-		
-	//Get the user's dn
-	$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], $login, $config_ldap->fields['ldap_condition']);
-	if ($user_dn)
-	{
-		$user = new User();
-		//Get informations from LDAP
-		$user->getFromLDAP($config_ldap->fields, $user_dn, $login,"");
-		//Add the auth method
-		$user->fields["auth_method"] = AUTH_LDAP;
-		$user->fields["id_auth"] = $_SESSION["ldap_server"];
-		
-		//Save informations in database !
-		$input = $user->fields;
-		unset ($user->fields);
-		$user->fields["ID"] = $user->add($input);
-		
-	}
 
+		//Get the user's dn
+		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], $login, $config_ldap->fields['ldap_condition']);
+		if ($user_dn) {
+			$user = new User();
+			//Get informations from LDAP
+			$user->getFromLDAP($config_ldap->fields, $user_dn, $login, "");
+			//Add the auth method
+			$user->fields["auth_method"] = AUTH_LDAP;
+			$user->fields["id_auth"] = $_SESSION["ldap_server"];
+
+			//Save informations in database !
+			$input = $user->fields;
+			unset ($user->fields);
+
+			if (!$sync)
+				$user->fields["ID"] = $user->add($input);
+			else
+				$user->update($user->fields);
+
+		}
 	} else {
 		$this->err .= "Can't contact LDAP server<br>";
 		return false;
 	}
 
-	
 }
 
 function ldapUpdateUser($ID, $dohistory, $force = 0) {
@@ -92,7 +93,7 @@ function ldapChooseDirectory($target) {
 	echo "<p >" . $LANG["ldap"][5] . "</p>";
 	echo "<table class='tab_cadre'>";
 	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>".$LANG["login"][6]."</td><td align='center'>";
+	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["login"][6] . "</td><td align='center'>";
 	$query = "SELECT * FROM glpi_auth_ldap";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
@@ -108,7 +109,7 @@ function ldapChooseDirectory($target) {
 	echo "</table></div></form>";
 }
 
-function getAllLdapUsers($id_auth) {
+function getAllLdapUsers($id_auth, $sync = 0) {
 	global $DB, $LANG;
 
 	$config_ldap = new AuthLDAP();
@@ -141,45 +142,55 @@ function getAllLdapUsers($id_auth) {
 		while ($user = $DB->fetch_array($result))
 			$glpi_users[] = $user['name'];
 
-	return array_diff($ldap_users, $glpi_users);
-}
-function showLdapUsers($target, $check, $start) {
-	global $DB, $CFG_GLPI, $LANG;
-	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"]);
-	$numrows = sizeof($ldap_users);
-	
-	if ($numrows > 0)
-	{
-	$parameters = "check=$check";
-	printPager($start, $numrows, $target, $parameters);
-
-	// delete end 
-	array_splice($ldap_users, $start + $CFG_GLPI["list_limit"]);
-	// delete begin
-	if ($start > 0)
-		array_splice($ldap_users, 0, $start);
-
-	echo "<div align='center'>";
-	echo "<form method='post' name='ldap_form' action='" . $target . "'>";
-	echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th>" . $LANG["buttons"][37] . "</th><th>" . $LANG["ldap"][4] . "</th>";
-
-	foreach ($ldap_users as $user) {
-
-		echo "<tr align='center' class='tab_bg_2'>";
-		echo "<td><input type='checkbox' name='toimport[" . $user . "]' " . ($check == "all" ? "checked" : "") . ">";
-		echo "<td colspan=4>" . $user . "</td>";
-		echo "</td></tr>";
-	}
-	echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-	echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
-	echo "</td></tr>";
-	echo "</table>";
-	echo "</form></div>";
-	printPager($start, $numrows, $target, $parameters);
-	}
+	if (!$sync)
+		return array_diff($ldap_users, $glpi_users);
 	else
+		return array_intersect($ldap_users, $glpi_users);
+
+}
+function showLdapUsers($target, $check, $start, $sync = 0) {
+	global $DB, $CFG_GLPI, $LANG;
+	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"], $sync);
+	$numrows = sizeof($ldap_users);
+
+	if (!$sync) {
+		$action = "toimport";
+		$form_action = "import_ok";
+	} else {
+		$action = "tosync";
+		$form_action = "sync_ok";
+	}
+
+	if ($numrows > 0) {
+		$parameters = "check=$check";
+		printPager($start, $numrows, $target, $parameters);
+
+		// delete end 
+		array_splice($ldap_users, $start + $CFG_GLPI["list_limit"]);
+		// delete begin
+		if ($start > 0)
+			array_splice($ldap_users, 0, $start);
+
+		echo "<div align='center'>";
+		echo "<form method='post' name='ldap_form' action='" . $target . "'>";
+		echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th>" . $LANG["buttons"][37] . "</th><th>" . $LANG["Menu"][14] . "</th>";
+
+		foreach ($ldap_users as $user) {
+
+			echo "<tr align='center' class='tab_bg_2'>";
+			echo "<td><input type='checkbox' name='" . $action . "[" . $user . "]' " . ($check == "all" ? "checked" : "") . ">";
+			echo "<td colspan=4>" . $user . "</td>";
+			echo "</td></tr>";
+		}
+		echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
+		echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . $LANG["buttons"][37] . "'>";
+		echo "</td></tr>";
+		echo "</table>";
+		echo "</form></div>";
+		printPager($start, $numrows, $target, $parameters);
+	} else
 		echo "<div align='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
 }
 ?>
