@@ -48,7 +48,7 @@ echo "</tr></table></div><br>";
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$LANG["ldap"][0]."</th></tr>";
 
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ldap.sync.php\"><b>".$LANG["ldap"][1]."</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ldap.sync.php?next=listservers\"><b>".$LANG["ldap"][1]."</b></a></td></tr>";
 
 echo "<tr class='tab_bg_1'><td align='center'><a href=\"ldap.import.php?next=listservers\"><b>".$LANG["ldap"][2]."</b></a></td> </tr>";
 

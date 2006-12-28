@@ -209,8 +209,7 @@ class User extends CommonDBTM {
 			if ($_SESSION["glpiID"] == $input['ID']) {
 				$ret = $input;
 				// extauth ldap case
-				if ($_SESSION["glpiextauth"] && isset ($CFG_GLPI['ldap_fields'])) {
-					if ($input["auth_method"] != AUTH_LDAP)
+				if ($_SESSION["glpiextauth"] && $input["auth_method"] != AUTH_LDAP) {
 						foreach ($input['ldap_fields'] as $key => $val)
 							if (!empty ($val))
 								unset ($ret[$key]);

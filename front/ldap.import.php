@@ -57,12 +57,12 @@ if (isset($_SESSION["ldap_import"])){
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ldap_import"]);
-		ldapImportUser($key);
+		ldapImportUser($key,0);
 		glpi_header($_SERVER['PHP_SELF']);
 
 	} else {
 		unset($_SESSION["ldap_import"]);
-
+	   
 		displayProgressBar(400,100);
 
 		echo "<div align='center'><strong>".$LANG["ocsng"][8]."<br>";
@@ -77,7 +77,7 @@ if (!isset($_POST["import_ok"])){
 	
 	if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
 	if (!isset($_SESSION["ldap_server"])) $_SESSION["ldap_server"]=$_POST["ldap_server"];
-	showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start']);
+	showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0);
 } else {
 
 	if (count($_POST['toimport'])>0){
