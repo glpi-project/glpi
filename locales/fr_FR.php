@@ -674,7 +674,12 @@ $LANG["knowbase"][27]="Le";
 $LANG["knowbase"][29]="Sujets les plus récents";
 $LANG["knowbase"][30]="Sujets les plus populaires";
 
-
+$LANG["ldap"][0]="Import en masse d'utilisateurs depuis un annuaire";
+$LANG["ldap"][1]="Synchronisation des utilisateurs déjà importés";
+$LANG["ldap"][2]="Importation de nouveaux utilisateurs";
+$LANG["ldap"][3]="Pas d'utilisateurs à importer";
+$LANG["ldap"][4]="Choix de l'annuaire LDAP";
+$LANG["ldap"][5]="Veuillez choisir l'annuaire LDAP depuis lequel les utilisateurs seront importés";
 
 $LANG["links"][1]="Lien ou Nom du fichier";
 $LANG["links"][2]="Ajouter Lien externe...";
@@ -851,6 +856,7 @@ $LANG["Menu"][34]="Téléphones";
 $LANG["Menu"][35]="Profils";
 $LANG["Menu"][36]="Groupes";
 $LANG["Menu"][37]="Entités";
+$LANG["Menu"][38]="Import en masse";
 
 $LANG["monitors"][0]="Ajouter moniteur...";
 $LANG["monitors"][4]="Moniteur";
