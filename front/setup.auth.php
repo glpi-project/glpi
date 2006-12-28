@@ -48,6 +48,8 @@ $config = new Config();
 $config_mail = new AuthMail();
 $config_ldap = new AuthLDAP();
 
+if (!isset($_GET["ID"])) $_GET["ID"]="";
+ 
 if (!empty ($_GET["next"])) {
 	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF']);
 	titleExtAuth();
