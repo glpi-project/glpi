@@ -48,8 +48,6 @@ CREATE TABLE `glpi_auth_ldap` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_auth_ldap VALUES ('1','localhost','localhost','dc=cnamts, dc=fr','uid=admin,ou=Comptes Techniques, ou=tech,dc=cnamts,dc=fr','secret','9000','(objectclass=inetOrgPerson)','uid','0','o','(objectclass=inetOrgPerson)','2','member','mail','physicaldeliveryofficename','cn','cn','telephonenumber','','',NULL);
-
 ### Dump table glpi_auth_mail
 
 DROP TABLE IF EXISTS `glpi_auth_mail`;
@@ -60,8 +58,6 @@ CREATE TABLE `glpi_auth_mail` (
   `imap_host` varchar(200) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
-
-INSERT INTO glpi_auth_mail VALUES ('1','cnamts.fr','{hermes2.cnamts.fr/imap/novalidate-cert}','cnamts.fr');
 
 ### Dump table glpi_cartridges
 
