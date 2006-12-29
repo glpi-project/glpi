@@ -129,9 +129,9 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 		$sr = ldap_search($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_condition'], $attrs);
 		$info = ldap_get_entries($ds, $sr);
 		for ($ligne = 0; $ligne < $info["count"]; $ligne++)
-			$ldap_users[] = $info[$ligne]["uid"][0];
+			$ldap_users[] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
 	} else {
-		$this->err .= "Can't contact LDAP server<br>";
+		//$this->err .= "Can't contact LDAP server<br>";
 		return false;
 	}
 
@@ -150,6 +150,7 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 }
 function showLdapUsers($target, $check, $start, $sync = 0) {
 	global $DB, $CFG_GLPI, $LANG;
+	
 	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"], $sync);
 	$numrows = sizeof($ldap_users);
 
@@ -192,5 +193,23 @@ function showLdapUsers($target, $check, $start, $sync = 0) {
 		printPager($start, $numrows, $target, $parameters);
 	} else
 		echo "<div align='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+}
+
+//Test a connection to the ldap directory
+function testLDAPConnection($id_auth) {
+	$config_ldap = new AuthLDAP();
+	$res = $config_ldap->getFromDB($id_auth);
+	$ldap_users = array ();
+
+	// we prevent some delay...
+	if (!$res) {
+		return false;
+	}
+
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
+	if ($ds)
+		return true;
+	else
+		return false;
 }
 ?>

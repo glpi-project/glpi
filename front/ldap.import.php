@@ -45,7 +45,6 @@ commonHeader($LANG["title"][39],$_SERVER['PHP_SELF']);
 
 if (isset($_GET['next']))
 {
-	unset ($_SESSION["ldap_server"]);
 	ldapChooseDirectory($_SERVER['PHP_SELF']);
 }
 else
@@ -77,7 +76,16 @@ if (!isset($_POST["import_ok"])){
 	
 	if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
 	if (!isset($_SESSION["ldap_server"])) $_SESSION["ldap_server"]=$_POST["ldap_server"];
-	showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0);
+	
+	if (!testLDAPConnection($_SESSION["ldap_server"]))
+	{
+		unset($_SESSION["ldap_server"]);
+		echo "<div align='center'><strong>".$LANG["ldap"][6]."<br>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".$LANG["buttons"][13]."</a>";
+		echo "</strong></div>";
+	}
+	else
+		showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0);
 } else {
 
 	if (count($_POST['toimport'])>0){

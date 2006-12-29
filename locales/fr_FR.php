@@ -680,6 +680,7 @@ $LANG["ldap"][2]="Importation de nouveaux utilisateurs";
 $LANG["ldap"][3]="Pas d'utilisateurs à importer";
 $LANG["ldap"][4]="Choix de l'annuaire LDAP";
 $LANG["ldap"][5]="Veuillez choisir l'annuaire LDAP depuis lequel les utilisateurs seront importés";
+$LANG["ldap"][6]="Impossible de joindre l'annuaire LDAP'";
 
 $LANG["links"][1]="Lien ou Nom du fichier";
 $LANG["links"][2]="Ajouter Lien externe...";
