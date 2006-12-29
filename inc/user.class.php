@@ -614,9 +614,11 @@ class User extends CommonDBTM {
 					switch ($this->fields["auth_method"]) {
 						case AUTH_LDAP :
 							echo $LANG["login"][2];
+							$url=$CFG_GLPI["root_doc"]."/front/setup.auth.php?next=extauth_ldap&ID=";
 							break;
 						case AUTH_MAIL :
 							echo $LANG["login"][3];
+							$url=$CFG_GLPI["root_doc"]."/front/setup.auth.php?next=extmail_ldap&ID=";
 							break;
 						case AUTH_CAS :
 							echo $LANG["login"][4];
@@ -631,7 +633,13 @@ class User extends CommonDBTM {
 
 					if (($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL)) {
 						if ($method = $this->getAuthMethodsByID())
+						{
+							//If user have right, display a link to the auth server
+							if (haveRight("config","w"))
+							echo "&nbsp ". $LANG["common"][52] . " <a href=\"".$url.$method["ID"]."\">". $method["name"]."</a>";
+							else
 							echo "&nbsp " . $LANG["common"][52] . " " . $method["name"];
+						}
 					}
 					echo "</td><td>" . $LANG["login"][0] . ":</td><td>";
 
