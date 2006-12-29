@@ -66,7 +66,6 @@ class User extends CommonDBTM {
 			$ong[3] = $LANG["title"][28]; // tickets
 		if (haveRight("reservation_central", "r"))
 			$ong[11] = $LANG["title"][35];
-		$ong[4] = $LANG["common"][29];
 
 		return $ong;
 	}
