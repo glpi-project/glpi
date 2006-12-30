@@ -63,7 +63,6 @@ if (isset ($_GET['next'])) {
 
 		} else {
 			unset ($_SESSION["ldap_sync"]);
-			unset ($_POST["sync_ok"]);
 			displayProgressBar(400, 100);
 
 			echo "<div align='center'><strong>" . $LANG["ocsng"][8] . "<br>";
