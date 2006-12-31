@@ -577,12 +577,19 @@ class AuthLDAP extends CommonDBTM {
 			echo "<td align='center'>" . $LANG["common"][25] . "</td><td><input type=\"text\" name=\"ldap_field_comments\" value=\"" . $this->fields["ldap_field_comments"] . "\" ></td></tr>";
 
 			if (empty ($ID))
-				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
+				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
 			else {
 				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
 				echo "<td align='center' colspan=2><input type=\"submit\" name=\"delete_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+				echo "</table>";
+				echo "<br><table class='tab_cadre_fixe'>";
+				echo "<tr><th colspan='4'>" . $LANG["ldap"][9] . "</th></tr>";
+				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"test_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				echo "</table>&nbsp;";
 			}
-			echo "</table>&nbsp;</div></form>";
+
+			echo "</div></form>";
+
 		} else {
 			echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
 			echo "<div align='center'><table class='tab_cadre_fixe'>";
@@ -591,6 +598,5 @@ class AuthLDAP extends CommonDBTM {
 		}
 
 	}
-
 }
 ?>

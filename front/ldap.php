@@ -40,7 +40,7 @@ checkRight("user","w");
 
 commonHeader($LANG["Menu"][38],$_SERVER['PHP_SELF']);
 if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
-if (isset($_SESSION["ldap_update"])) unset($_SESSION["ldap_update"]);
+if (isset($_SESSION["ldap_sync"])) unset($_SESSION["ldap_sync"]);
 if (isset($_SESSION["ldap_server"])) unset($_SESSION["ldap_server"]);
 
 echo "<div align='center'><table border='0'><tr><td>";
