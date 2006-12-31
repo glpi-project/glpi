@@ -37,7 +37,8 @@
 
 $NEEDED_ITEMS = array (
 	"setup",
-	"auth"
+	"auth",
+	"ldap"
 );
 
 define('GLPI_ROOT', '..');
@@ -76,9 +77,10 @@ elseif (isset ($_POST["update_mail"])) {
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset ($_POST["add_mail"])) {
+	//If no name has been given to this configuration, then go back to the page without adding
 	if ($_POST["name"] != "")
 		$config_mail->add($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset ($_POST["delete_mail"])) {
 	$config_mail->delete($_POST);
@@ -91,13 +93,28 @@ elseif (isset ($_POST["update_ldap"])) {
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset ($_POST["add_ldap"])) {
+	//If no name has been given to this configuration, then go back to the page without adding
 	if ($_POST["name"] != "")
 		$config_ldap->add($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset ($_POST["delete_ldap"])) {
 	$config_ldap->delete($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
+}
+elseif (isset ($_POST["test_ldap"])) {
+	
+	//Testing ldap connection
+	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF']);
+	if (testLDAPConnection($_POST["ID"]))
+		$msg =$LANG["ldap"][10];
+	else
+		$msg =$LANG["ldap"][11];	
+	
+	//Display a message and a back link
+	echo "<div align='center'><strong>".$msg."<br>";
+	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+	echo "</strong></div>";	
 }
 
 commonFooter();

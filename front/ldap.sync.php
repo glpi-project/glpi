@@ -79,15 +79,19 @@ if (isset ($_GET['next'])) {
 
 		if (isset ($_SESSION["ldap_sync"]))
 			unset ($_SESSION["ldap_sync"]);
+			
+		//Store in session the ldap server's id, in case of it is not already done	
 		if (!isset ($_SESSION["ldap_server"]))
 			$_SESSION["ldap_server"] = $_POST["ldap_server"];
 
+		//If a connection to the server can not be established, display a page with a back link
 		if (!testLDAPConnection($_SESSION["ldap_server"])) {
 			unset ($_SESSION["ldap_server"]);
 			echo "<div align='center'><strong>" . $LANG["ldap"][6] . "<br>";
 			echo "<a href='" . $_SERVER['PHP_SELF'] . "?next=listservers'>" . $LANG["buttons"][13] . "</a>";
 			echo "</strong></div>";
 		} else
+			//Display users to synchronise
 			showLdapUsers($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 1);
 	} else {
 

@@ -65,25 +65,22 @@ function ldapImportUser($login, $sync) {
 			$user->fields["auth_method"] = AUTH_LDAP;
 			$user->fields["id_auth"] = $_SESSION["ldap_server"];
 
-			//Save informations in database !
-			$input = $user->fields;
-			unset ($user->fields);
+			if (!$sync) {
+				//Save informations in database !
+				$input = $user->fields;
+				unset ($user->fields);
 
-			if (!$sync)
 				$user->fields["ID"] = $user->add($input);
-			else
+			} else
 				$user->update($user->fields);
 
 		}
 	} else {
-		$this->err .= "Can't contact LDAP server<br>";
 		return false;
 	}
 
 }
 
-function ldapUpdateUser($ID, $dohistory, $force = 0) {
-}
 
 function ldapChooseDirectory($target) {
 	global $DB, $LANG;
@@ -93,10 +90,10 @@ function ldapChooseDirectory($target) {
 	echo "<p >" . $LANG["ldap"][5] . "</p>";
 	echo "<table class='tab_cadre'>";
 	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["login"][6] . "</td><td align='center'>";
 	$query = "SELECT * FROM glpi_auth_ldap";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
 		echo "<select name='ldap_server'>";
 		while ($ldap = $DB->fetch_array($result))
 			echo "<option value=" . $ldap["ID"] . ">" . $ldap["name"] . "</option>";
@@ -105,6 +102,8 @@ function ldapChooseDirectory($target) {
 		echo "<tr class='tab_bg_2'><td align='center' colspan=2><input class='submit' type='submit' name='ldap_showusers' value='" . $LANG["buttons"][2] . "'></td></tr>";
 
 	}
+	else
+	echo "<tr class='tab_bg_2'><td align='center' colspan=2>".$LANG["ldap"][7]."</td></tr>";
 
 	echo "</table></div></form>";
 }
@@ -150,7 +149,7 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 }
 function showLdapUsers($target, $check, $start, $sync = 0) {
 	global $DB, $CFG_GLPI, $LANG;
-	
+
 	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"], $sync);
 	$numrows = sizeof($ldap_users);
 
@@ -194,6 +193,7 @@ function showLdapUsers($target, $check, $start, $sync = 0) {
 	} else
 		echo "<div align='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
 }
+
 
 //Test a connection to the ldap directory
 function testLDAPConnection($id_auth) {
