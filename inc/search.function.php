@@ -1740,6 +1740,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_phones.date_mod":
 		case "glpi_software.date_mod":
 		case "glpi_monitors.date_mod":
+		case "glpi_users.last_login":	
 			return convDateTime($data["ITEM_$num"]);
 			break;
 		case "glpi_contracts.end_date":
