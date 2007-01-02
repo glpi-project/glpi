@@ -704,4 +704,11 @@ function mail_auth($identificat, $login,$password,$mail_method) {
 	}
 	return $identificat;
 }
+
+//Test a connexion to the IMAP/POP server
+function test_auth_mail($imap_auth_server,$login,$password)
+{
+	$identificat = new Identification();
+	return $identificat->connection_imap($imap_auth_server, utf8_decode($login), utf8_decode($password));
+}
 ?>

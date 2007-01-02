@@ -38,7 +38,8 @@
 $NEEDED_ITEMS = array (
 	"setup",
 	"auth",
-	"ldap"
+	"ldap",
+	"user"
 );
 
 define('GLPI_ROOT', '..');
@@ -110,6 +111,20 @@ elseif (isset ($_POST["test_ldap"])) {
 		$msg =$LANG["ldap"][10];
 	else
 		$msg =$LANG["ldap"][11];	
+	
+	//Display a message and a back link
+	echo "<div align='center'><strong>".$msg."<br>";
+	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+	echo "</strong></div>";	
+}
+elseif (isset ($_POST["test_mail"])) {
+	
+	//Testing ldap connection
+	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF']);
+	if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"]))
+		$msg =$LANG["login"][22];
+	else
+		$msg =$LANG["login"][23];	
 	
 	//Display a message and a back link
 	echo "<div align='center'><strong>".$msg."<br>";
