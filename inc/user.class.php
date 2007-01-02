@@ -339,7 +339,11 @@ class User extends CommonDBTM {
 
 			foreach ($fields as $k => $e) {
 				if (!empty ($v[0][$e][0]))
+					//The field is present in the ldap directory -> update the glpi user field
 					$this->fields[$k] = $v[0][$e][0];
+				else	
+					//The field was deleted from the ldap directory
+					$this->fields[$k] = "";
 			}
 
 			// Is location get from LDAP ?
