@@ -103,11 +103,12 @@ class Computer extends CommonDBTM {
 		return false;
 	}
 
-	function prepareInputForUpdate($input) {
-		// set new date.
-		$input["date_mod"] = date("Y-m-d H:i:s");
-
-		return $input;
+	function pre_updateInDB($input,$updates) {
+		if (count($updates)){
+			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$updates[]="date_mod";
+		}
+		return array($input,$updates);
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
