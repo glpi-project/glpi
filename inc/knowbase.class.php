@@ -62,9 +62,15 @@ class kbitem extends CommonDBTM {
 		return $input;
 	}
 
+	function pre_updateInDB($input,$updates) {
+		if (count($updates)){
+			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$updates[]="date_mod";
+		}
+		return array($input,$updates);
+	}
+
 	function prepareInputForUpdate($input) {
-		// set new date.
-		$input["date_mod"] = date("Y-m-d H:i:s");
 		// set title for question if empty
 		if(empty($input["question"])) $input["question"]=$LANG["common"][30];
 

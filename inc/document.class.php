@@ -119,8 +119,15 @@ class Document extends CommonDBTM {
 	}
 
 
+	function pre_updateInDB($input,$updates) {
+		if (count($updates)){
+			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$updates[]="date_mod";
+		}
+		return array($input,$updates);
+	}
+
 	function prepareInputForUpdate($input) {
-		$input["date_mod"] = date("Y-m-d H:i:s");
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
 			$input['mime']=$_FILES['filename']['type'];
 
@@ -173,13 +180,14 @@ class Document extends CommonDBTM {
 			}
 
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='3'><b>";
 			if (!$ID) {
-				echo $LANG["document"][16].":";
+				echo "<tr><th colspan='3'><strong>";
+				echo $LANG["document"][16].":</strong></th></tr>";
 			} else {
-				echo $LANG["document"][18]." ID $ID:";
+				echo "<tr><th colspan='1'><strong>";
+				echo $LANG["document"][18]." ID $ID:</strong></th><th colspan='2'>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th></tr>";
 			}		
-			echo "</b></th></tr>";
+
 			
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";

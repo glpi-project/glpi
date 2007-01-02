@@ -1509,7 +1509,6 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 								$mon["FK_glpi_enterprise"] = ocsImportEnterprise($line["MANUFACTURER"]);
 								$mon["comments"] = $line["DESCRIPTION"];
 								$mon["serial"] = $line["SERIAL"];
-								$mon["date_mod"] = date("Y-m-d H:i:s");
 								$id_monitor=0;
 								$found_already_monitor=false;
 								if($cfg_ocs["import_monitor"] == 1) {
@@ -1604,7 +1603,6 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 							if (!in_array($print["name"],$import_periph)){
 								//$print["comments"] = $line["PORT"]."\r\n".$line["NAME"];
 								$print["comments"] = $line["PORT"]."\r\n".$line["DRIVER"];
-								$print["date_mod"] = date("Y-m-d H:i:s");
 								$id_printer=0;
 
 								if($cfg_ocs["import_printer"] == 1) {
@@ -1664,7 +1662,6 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 							if ($line["MANUFACTURER"]!="NULL") $periph["brand"] = $line["MANUFACTURER"];
 							if ($line["INTERFACE"]!="NULL") $periph["comments"] = $line["INTERFACE"];
 							$periph["type"] = ocsImportDropdown("glpi_type_peripherals","name",$line["TYPE"]);
-							$periph["date_mod"] = date("Y-m-d H:i:s");
 
 							$id_periph=0;
 

@@ -68,6 +68,14 @@ class Reminder extends CommonDBTM {
 		return $input;
 	}
 
+	function pre_updateInDB($input,$updates) {
+		if (count($updates)){
+			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$updates[]="date_mod";
+		}
+		return array($input,$updates);
+	}
+
 	function prepareInputForUpdate($input) {
 		global $LANG;
 
@@ -81,10 +89,6 @@ class Reminder extends CommonDBTM {
 			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":00";
 			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
 		}	
-
-
-		// set new date.
-		$input["date_mod"] = date("Y-m-d H:i:s");
 
 		return $input;
 	}
