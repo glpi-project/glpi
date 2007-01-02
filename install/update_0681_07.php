@@ -277,7 +277,8 @@ function update0681to07() {
 	if (!FieldExists("glpi_users", "id_auth")) {
 		$query = "ALTER TABLE glpi_users ADD `id_auth` INT NOT NULL DEFAULT '-1',
 				ADD `auth_method` INT NOT NULL DEFAULT '-1',
-				ADD `last_login` DATETIME NOT NULL";
+				ADD `last_login` DATETIME NOT NULL,
+				ADD `date_mod` DATETIME NOT NULL";
 		$DB->query($query) or die("0.7 add auth_method & id_method in glpi_users " . $LANG["update"][90] . $DB->error());
 	}
 
