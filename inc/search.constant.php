@@ -1997,6 +1997,12 @@ $SEARCH_OPTION[USER_TYPE][13]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][13]['name']=$LANG["common"][35];
 $SEARCH_OPTION[USER_TYPE][13]['meta']=0;
 
+$SEARCH_OPTION[USER_TYPE][14]['table']='glpi_users';
+$SEARCH_OPTION[USER_TYPE][14]['field']='last_login';
+$SEARCH_OPTION[USER_TYPE][14]['linkfield']='';
+$SEARCH_OPTION[USER_TYPE][14]['name']=$LANG["login"][0];
+$SEARCH_OPTION[USER_TYPE][14]['meta']=0;
+
 
 //////CONSUMABLE_TYPE
 
