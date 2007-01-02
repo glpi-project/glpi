@@ -69,9 +69,15 @@ class Software  extends CommonDBTM {
 		return $ong;
 	}
 
+	function pre_updateInDB($input,$updates) {
+		if (count($updates)){
+			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$updates[]="date_mod";
+		}
+		return array($input,$updates);
+	}
+
 	function prepareInputForUpdate($input) {
-		// set new date.
-		$input["date_mod"] = date("Y-m-d H:i:s");
 
 		if (isset($input['is_update'])&&$input['is_update']=='N') $input['update_software']=-1;
 
