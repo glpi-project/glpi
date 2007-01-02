@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("user","profile","group","setup","tracking","computer","printer","networking","peripheral","monitor","software","enterprise","phone", "reservation");
+$NEEDED_ITEMS=array("user","profile","group","setup","tracking","computer","printer","networking","peripheral","monitor","software","enterprise","phone", "reservation","ldap");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -72,6 +72,12 @@ if (isset($_POST["add"])) {
 	$user->delete($_POST);
 	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$LANG["log"][22]." ".$_POST["ID"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+} else if (isset ($_POST["force_ldap_resynch"]))
+{
+	checkRight("user","w");
+	$user->getFromDB($_POST["ID"]);
+	ldapImportUserByServerId($user->fields["name"],1,$user->fields["id_auth"]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["update"])) {
 	checkRight("user","w");
 
@@ -131,6 +137,9 @@ else if (isset($_POST["deletegroup"]))
 					break;
 				case 11 :
 					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
+					break;
+				case 12:
+					showLdapRefreshButton($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				default : 
 					if (!display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))

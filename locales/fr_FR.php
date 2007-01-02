@@ -687,6 +687,7 @@ $LANG["ldap"][8]="Test";
 $LANG["ldap"][9]=$LANG["ldap"][8]." de connexion à l'annuaire LDAP";
 $LANG["ldap"][10]=$LANG["ldap"][9]." réussi";
 $LANG["ldap"][11]=$LANG["ldap"][9]." échoué";
+$LANG["ldap"][12]="Synchronisation";
 
 $LANG["links"][1]="Lien ou Nom du fichier";
 $LANG["links"][2]="Ajouter Lien externe...";
@@ -784,7 +785,7 @@ $LANG["login"][20]="Ajouter un serveur";
 $LANG["login"][21]=$LANG["ldap"][8]." de connexion au serveur ".$LANG["login"][3];
 $LANG["login"][22]=$LANG["login"][21]." réussi";
 $LANG["login"][23]=$LANG["login"][21]." échoué";
-
+$LANG["login"][24]="Date dernière mise à jour";
 
 $LANG["mailing"][0]="----------------------------------------------------------";
 $LANG["mailing"][1]="======================================================================";

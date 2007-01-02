@@ -1,5 +1,6 @@
 <?php
 
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -66,6 +67,8 @@ class User extends CommonDBTM {
 			$ong[3] = $LANG["title"][28]; // tickets
 		if (haveRight("reservation_central", "r"))
 			$ong[11] = $LANG["title"][35];
+		if (haveRight("user", "w"))
+			$ong[12] = $LANG["ldap"][12];
 
 		return $ong;
 	}
@@ -108,6 +111,7 @@ class User extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
+		
 		// Add User, nasty hack until we get PHP4-array-functions
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
@@ -209,9 +213,9 @@ class User extends CommonDBTM {
 				$ret = $input;
 				// extauth ldap case
 				if ($_SESSION["glpiextauth"] && $input["auth_method"] != AUTH_LDAP) {
-						foreach ($input['ldap_fields'] as $key => $val)
-							if (!empty ($val))
-								unset ($ret[$key]);
+					foreach ($input['ldap_fields'] as $key => $val)
+						if (!empty ($val))
+							unset ($ret[$key]);
 				}
 				// extauth imap case
 				if ($input["auth_method"] == AUTH_MAIL)
@@ -241,15 +245,15 @@ class User extends CommonDBTM {
 					break;
 				case 2 : // user+ group search
 					$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
-													OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
+																		OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
 					break;
 			}
 
 			// Delete not available groups like to LDAP
 			$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
-									FROM glpi_users_groups 
-									LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-									WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
+												FROM glpi_users_groups 
+												LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+												WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
 
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
@@ -341,7 +345,7 @@ class User extends CommonDBTM {
 				if (!empty ($v[0][$e][0]))
 					//The field is present in the ldap directory -> update the glpi user field
 					$this->fields[$k] = $v[0][$e][0];
-				else	
+				else
 					//The field was deleted from the ldap directory
 					$this->fields[$k] = "";
 			}
@@ -617,11 +621,11 @@ class User extends CommonDBTM {
 					switch ($this->fields["auth_method"]) {
 						case AUTH_LDAP :
 							echo $LANG["login"][2];
-							$url=$CFG_GLPI["root_doc"]."/front/setup.auth.php?next=extauth_ldap&ID=";
+							$url = $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap&ID=";
 							break;
 						case AUTH_MAIL :
 							echo $LANG["login"][3];
-							$url=$CFG_GLPI["root_doc"]."/front/setup.auth.php?next=extmail_ldap&ID=";
+							$url = $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extmail_mail&ID=";
 							break;
 						case AUTH_CAS :
 							echo $LANG["login"][4];
@@ -635,13 +639,12 @@ class User extends CommonDBTM {
 					}
 
 					if (($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL)) {
-						if ($method = $this->getAuthMethodsByID())
-						{
+						if ($method = $this->getAuthMethodsByID()) {
 							//If user have right, display a link to the auth server
-							if (haveRight("config","w"))
-							echo "&nbsp ". $LANG["common"][52] . " <a href=\"".$url.$method["ID"]."\">". $method["name"]."</a>";
+							if (haveRight("config", "w"))
+								echo "&nbsp " . $LANG["common"][52] . " <a href=\"" . $url . $method["ID"] . "\">" . $method["name"] . "</a>";
 							else
-							echo "&nbsp " . $LANG["common"][52] . " " . $method["name"];
+								echo "&nbsp " . $LANG["common"][52] . " " . $method["name"];
 						}
 					}
 					echo "</td><td>" . $LANG["login"][0] . ":</td><td>";
@@ -650,7 +653,14 @@ class User extends CommonDBTM {
 						echo convDateTime($this->fields["last_login"]);
 
 					echo "</td>";
+
 					echo "</tr>";
+					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td align='center'>";
+					if ($this->fields["date_mod"] != "0000-00-00 00:00:00")
+						echo convDateTime($this->fields["date_mod"]);
+					echo "</td><td align='center' colspan='2''></td>'";
+					echo "</tr>";
+
 				}
 
 				$CFG_GLPI["cache"]->end();
@@ -803,6 +813,14 @@ class User extends CommonDBTM {
 	//Get all the authentication method parameters for the current user
 	function getAuthMethodsByID() {
 		return getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
+	}
+
+	function pre_updateInDB($input,$updates) {
+		if (count($updates)){
+			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$updates[]="date_mod";
+		}
+		return array($input,$updates);
 	}
 
 }
