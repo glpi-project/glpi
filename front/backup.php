@@ -243,24 +243,24 @@ function restoreMySqlDump($DB,$dumpFile , $duree)
 	// En plus, au niveau du dump on consid�e qu'on est bon
 	//set_magic_quotes_runtime(0);
 
-	global $DB,$TPSCOUR,$offset,$cpt;
+	global $DB,$TPSCOUR,$offset,$cpt,$LANG;
 
 	if ($DB->error)
 	{
-		echo "Connexion impossible �$hostMySql pour $mysqlUser";
+		echo $LANG["backup"][22]."$hostMySql ".$LANG["backup"][23]."$mysqlUser";
 		return FALSE;
 	}
 
 	if(!file_exists($dumpFile))
 	{
-		echo "$dumpFile non trouv�br>";
+		echo "$dumpFile".$LANG["backup"][24]."<br>";
 		return FALSE;
 	}
 	$fileHandle = fopen($dumpFile, "rb");
 
 	if(!$fileHandle)
 	{
-		echo "Ouverture de $dumpFile non trouv�br>";
+		echo $LANG["backup"][25]." $dumpFile".$LANG["backup"][24]."<br>";
 		return FALSE;
 	}
 
@@ -268,7 +268,7 @@ function restoreMySqlDump($DB,$dumpFile , $duree)
 	{
 		if (fseek($fileHandle,$offset,SEEK_SET)!=0) //erreur
 		{
-			echo "Impossible de trouver l'octet ".number_format($offset,0,""," ")."<br>";
+			echo $LANG["backup"][26]." ".number_format($offset,0,""," ")."<br>";
 			return FALSE;
 		}
 		glpi_flush();
@@ -308,7 +308,7 @@ function restoreMySqlDump($DB,$dumpFile , $duree)
 	}
 
 	if ($DB->error)
-		echo "<hr>ERREUR �partir de [$formattedQuery]<br>".$DB->error()."<hr>";
+		echo "<hr>".$LANG["backup"][27]." [$formattedQuery]<br>".$DB->error()."<hr>";
 
 	fclose($fileHandle);
 	$offset=-1;
@@ -324,11 +324,11 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit)
 	// $histMySql, nom de la machine serveur MySQl
 	// $duree=timeout pour changement de page (-1 = aucun)
 
-	global $TPSCOUR,$offsettable,$offsetrow,$cpt;
+	global $TPSCOUR,$offsettable,$offsetrow,$cpt,$LANG;
 
 	if ($DB->error)
 	{
-		echo "Connexion impossible �$hostMySql pour $mysqlUser";
+		echo $LANG["backup"][22]."$hostMySql ".$LANG["backup"][23]."$mysqlUser";
 		return FALSE;
 	}
 
@@ -336,7 +336,7 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit)
 
 	if(!$fileHandle)
 	{
-		echo "Ouverture de $dumpFile impossible<br>";
+		echo $LANG["backup"][25]." $dumpFile ".$LANG["backup"][28]."<br>";
 		return FALSE;
 	}
 
@@ -396,7 +396,7 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit)
 			return TRUE;
 	}
 	if ($DB->error())
-		echo "<hr>ERREUR �partir de [$formattedQuery]<br>".$DB->error()."<hr>";
+		echo "<hr>".$LANG["backup"][27]." [$formattedQuery]<br>".$DB->error()."<hr>";
 	$offsettable=-1;
 	fclose($fileHandle);
 	return TRUE;
@@ -450,7 +450,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 		if ($offsettable>=0){
 			if (backupMySql($DB,$fichier,$duree,$rowlimit))
 			{
-				echo "<br>Redirection automatique sinon cliquez <a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
+				echo "<br>".$LANG["backup"][29]."  <a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
 				echo "<script>window.location=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
 				glpi_flush();    
 				exit;
@@ -508,7 +508,7 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 	if ($offset!=-1){
 		if (restoreMySqlDump($DB,$path.$_GET["file"],$duree))
 		{
-			echo "<br>Redirection automatique sinon cliquez <a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">ici</a>";
+			echo "<br>".$LANG["backup"][29]." <a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">ici</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"backup.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
 			glpi_flush();
 			exit;
