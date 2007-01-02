@@ -506,6 +506,7 @@ $LANG["help"][32]="Vous n'avez pas spécifié de numéro de matériel pour une c
 $LANG["help"][33]="Si vous ne trouvez pas votre matériel, vous pouvez utiliser le type Général";
 $LANG["help"][35]="Téléphones";
 
+
 $LANG["install"][0]="Installation ou mise à jour de GLPI";
 $LANG["install"][1]="Choisissez 'Installation' pour  une nouvelle installation complète de GLPI ( les données importées par GLPI seront les données par défaut).";
 $LANG["install"][2]="Choisissez 'Mise à jour' pour mettre à jour GLPI à partir d'une version antérieure";
@@ -687,7 +688,6 @@ $LANG["ldap"][9]=$LANG["ldap"][8]." de connexion à l'annuaire LDAP";
 $LANG["ldap"][10]=$LANG["ldap"][9]." réussi";
 $LANG["ldap"][11]=$LANG["ldap"][9]." échoué";
 
-
 $LANG["links"][1]="Lien ou Nom du fichier";
 $LANG["links"][2]="Ajouter Lien externe...";
 $LANG["links"][3]="Ajouter un lien externe";
@@ -781,6 +781,10 @@ $LANG["login"][17]="Echec de l'authentification AD";
 $LANG["login"][18]="Base interne GLPI";
 $LANG["login"][19]="Liste des serveurs";
 $LANG["login"][20]="Ajouter un serveur";
+$LANG["login"][21]=$LANG["ldap"][8]." de connexion au serveur ".$LANG["login"][3];
+$LANG["login"][22]=$LANG["login"][21]." réussi";
+$LANG["login"][23]=$LANG["login"][21]." échoué";
+
 
 $LANG["mailing"][0]="----------------------------------------------------------";
 $LANG["mailing"][1]="======================================================================";

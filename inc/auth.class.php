@@ -386,12 +386,20 @@ class AuthMail extends CommonDBTM {
 			$this->showMailServerConfig($this->fields["imap_auth_server"]);
 
 			if (empty ($ID))
-				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_mail\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_mail\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
 			else {
 				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_mail\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" >";
-				echo "&nbsp<input type=\"submit\" name=\"delete_mail\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+				echo "&nbsp<input type=\"submit\" name=\"delete_mail\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr></table>";
+				
+				echo "<br><table class='tab_cadre'>";
+				echo "<tr><th colspan='2'>" . $LANG["login"][21] . "</th></tr>";
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["login"][6] . "</td><td><input size='30' type=\"text\" name=\"imap_login\" value=\"\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["login"][7] . "</td><td><input size='30' type=\"password\" name=\"imap_password\" value=\"\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"test_mail\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				echo "</table>&nbsp;";
+	
 			}
-			echo "</table>&nbsp;</div>";
+			echo "</div>";
 		} else {
 			echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
 
@@ -442,7 +450,7 @@ class AuthMail extends CommonDBTM {
 		echo "<option value='/tls' " . (ereg("/tls", $value) ? " selected " : "") . ">TLS</option>";
 		echo "<option value='/notls' " . (ereg("/notls", $value) ? " selected " : "") . ">NO-TLS</option>";
 		echo "</select>";
-
+		echo "<input type=hidden name=imap_string value=".$value.">";
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
