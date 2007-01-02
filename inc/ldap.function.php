@@ -39,11 +39,15 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-function ldapImportUser($login, $sync) {
+function ldapImportUser ($login,$sync)
+{
+	ldapImportUserByServerId($login, $sync,$_SESSION["ldap_server"]);
+}
+function ldapImportUserByServerId($login, $sync,$ldap_server) {
 	global $DB, $LANG;
 
 	$config_ldap = new AuthLDAP();
-	$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
+	$res = $config_ldap->getFromDB($ldap_server);
 	$ldap_users = array ();
 
 	// we prevent some delay...
@@ -63,7 +67,7 @@ function ldapImportUser($login, $sync) {
 			$user->getFromLDAP($config_ldap->fields, $user_dn, $login, "");
 			//Add the auth method
 			$user->fields["auth_method"] = AUTH_LDAP;
-			$user->fields["id_auth"] = $_SESSION["ldap_server"];
+			$user->fields["id_auth"] = $ldap_server;
 
 			if (!$sync) {
 				//Save informations in database !
@@ -80,7 +84,6 @@ function ldapImportUser($login, $sync) {
 	}
 
 }
-
 
 function ldapChooseDirectory($target) {
 	global $DB, $LANG;
@@ -101,9 +104,8 @@ function ldapChooseDirectory($target) {
 		echo "</select></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center' colspan=2><input class='submit' type='submit' name='ldap_showusers' value='" . $LANG["buttons"][2] . "'></td></tr>";
 
-	}
-	else
-	echo "<tr class='tab_bg_2'><td align='center' colspan=2>".$LANG["ldap"][7]."</td></tr>";
+	} else
+		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG["ldap"][7] . "</td></tr>";
 
 	echo "</table></div></form>";
 }
@@ -194,7 +196,6 @@ function showLdapUsers($target, $check, $start, $sync = 0) {
 		echo "<div align='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
 }
 
-
 //Test a connection to the ldap directory
 function testLDAPConnection($id_auth) {
 	$config_ldap = new AuthLDAP();
@@ -211,5 +212,45 @@ function testLDAPConnection($id_auth) {
 		return true;
 	else
 		return false;
+}
+
+//Display refresh button in the user page
+function showLdapRefreshButton($target, $ID) {
+	global $LANG, $DB;
+
+	//Look it the user's auth method is LDAP
+	$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID=" . $ID;
+	$result = $DB->query($sql);
+	if ($DB->numrows($result) > 0) {
+		$data = $DB->fetch_array($result);
+
+		//Look it the auth server still exists !
+		$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
+		$result = $DB->query($sql);
+		if ($DB->numrows($result) > 0) {
+
+			if (haveRight("user", "w") && $data["auth_method"] == AUTH_LDAP) {
+				echo "<div align='center'>";
+				echo "<form method='post' action=\"$target\">";
+				echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+				echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
+				echo "</td><tr></table>";
+				echo "</form>";
+			}
+		}
+	}
+}
+
+//Get authentication method of a user, by looking in database
+function getAuthMethodFromDB($ID) {
+	global $DB;
+	$sql = "SELECT auth_method FROM glpi_users WHERE ID=" . $ID;
+	$result = $DB->query($sql);
+	if ($DB->numrows($result) > 0) {
+		$data = $DB->fetch_array($result);
+		return $data["auth_method"];
+	} else
+		return NOT_YET_AUTHENTIFIED;
 }
 ?>
