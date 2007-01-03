@@ -112,6 +112,9 @@ class User extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		
+		//We add the user, we set the last modification date
+		$input["date_mod"]=date("Y-m-d H:i:s");
+		
 		// Add User, nasty hack until we get PHP4-array-functions
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
@@ -342,12 +345,7 @@ class User extends CommonDBTM {
 				return false;
 
 			foreach ($fields as $k => $e) {
-				if (!empty ($v[0][$e][0]))
-					//The field is present in the ldap directory -> update the glpi user field
 					$this->fields[$k] = $v[0][$e][0];
-				else
-					//The field was deleted from the ldap directory
-					$this->fields[$k] = "";
 			}
 
 			// Is location get from LDAP ?
