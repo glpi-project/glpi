@@ -93,7 +93,7 @@ function ldapChooseDirectory($target) {
 	echo "<p >" . $LANG["ldap"][5] . "</p>";
 	echo "<table class='tab_cadre'>";
 	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
-	$query = "SELECT * FROM glpi_auth_ldap";
+	$query = "SELECT * FROM glpi_auth_ldap ORDER BY name ASC";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
@@ -110,6 +110,7 @@ function ldapChooseDirectory($target) {
 	echo "</table></div></form>";
 }
 
+//Get the list of LDAP users to add/synchronize
 function getAllLdapUsers($id_auth, $sync = 0) {
 	global $DB, $LANG;
 
@@ -124,30 +125,57 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
 	if ($ds) {
+		if (!$sync)
 		$attrs = array (
 			$config_ldap->fields['ldap_login']
 		);
+		else
+		//Search for ldap login AND modifyTimestamp, which indicates the last update of the object in directory
+			$attrs = array (
+			$config_ldap->fields['ldap_login'], "modifyTimestamp"
+		);
+	
 		$sr = ldap_search($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_condition'], $attrs);
 		$info = ldap_get_entries($ds, $sr);
 		for ($ligne = 0; $ligne < $info["count"]; $ligne++)
-			$ldap_users[] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
+		{
+			//If ldap add
+			if (!$sync)
+				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
+			else
+			//If ldap synchronisation
+				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0]);
+
+		}	
 	} else {
-		//$this->err .= "Can't contact LDAP server<br>";
 		return false;
 	}
-
+	
 	$glpi_users = array ();
-	$sql = "SELECT name FROM glpi_users";
+	$sql = "SELECT name, date_mod FROM glpi_users";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0)
 		while ($user = $DB->fetch_array($result))
-			$glpi_users[] = $user['name'];
-
+		{
+			//Ldap add : fill the array with the login of the user 
+			if (!$sync)
+				$glpi_users[$user['name']] = $user['name'];
+			else
+			{
+			//Ldap synchronisation : look if the user exists in the directory and compares the modifications dates (ldap and glpi db)
+				if (!empty ($ldap_users[$user['name']]))
+				{
+					if ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)
+						$glpi_users[] = $user['name'];
+				}		
+		}
+		}
+	
+	//If add, do the difference between ldap users and glpi users
 	if (!$sync)
-		return array_diff($ldap_users, $glpi_users);
+		return array_diff_key($ldap_users,$glpi_users);
 	else
-		return array_intersect($ldap_users, $glpi_users);
-
+		return $glpi_users;
 }
 function showLdapUsers($target, $check, $start, $sync = 0) {
 	global $DB, $CFG_GLPI, $LANG;
@@ -253,4 +281,17 @@ function getAuthMethodFromDB($ID) {
 	} else
 		return NOT_YET_AUTHENTIFIED;
 }
+
+//converts LDAP timestamps over to Unix timestamps
+function ldapStamp2UnixStamp($ldapstamp) {
+   $year=substr($ldapstamp,0,4);
+   $month=substr($ldapstamp,4,2);
+   $day=substr($ldapstamp,6,2);
+   $hour=substr($ldapstamp,8,2);
+   $minute=substr($ldapstamp,10,2);
+   $seconds=substr($ldapstamp,12,2);
+   $stamp=gmmktime($hour,$minute,$seconds,$month,$day,$year);
+   return $stamp;
+}
+
 ?>
