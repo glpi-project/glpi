@@ -175,7 +175,7 @@ class User extends CommonDBTM {
 
 		$auth_method = $this->getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
 
-		if ($input["ID"] == 1) {
+		if (isset ($input["ID"]) && $input["ID"] == 1) {
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 			echo "alert('" . addslashes($LANG["setup"][220]) . "');";
 			echo "</script>";
@@ -345,7 +345,10 @@ class User extends CommonDBTM {
 				return false;
 
 			foreach ($fields as $k => $e) {
+					if (!empty($v[0][$e][0]))
 					$this->fields[$k] = $v[0][$e][0];
+					else
+					$this->fields[$k] = "";
 			}
 
 			// Is location get from LDAP ?
@@ -656,7 +659,7 @@ class User extends CommonDBTM {
 					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td align='center'>";
 					if ($this->fields["date_mod"] != "0000-00-00 00:00:00")
 						echo convDateTime($this->fields["date_mod"]);
-					echo "</td><td align='center' colspan='2''></td>'";
+					echo "</td><td align='center' colspan='2'></td>'";
 					echo "</tr>";
 
 				}
