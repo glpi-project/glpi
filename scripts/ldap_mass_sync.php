@@ -44,6 +44,9 @@ $NEEDED_ITEMS = array (
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+// Default action : synchro (1=synchro 0=import)
+if (!isset($_GET["action"])) $_GET["action"]=1;
+
 //Get the ldap server's id by his name
 $sql = "SELECT ID from glpi_auth_ldap WHERE name='" . $_GET["ldap_server"] . "'";
 $result = $DB->query($sql);
@@ -52,13 +55,10 @@ if ($DB->numrows($result) > 0) {
 
 	//The ldap server id is passed in the script url (parameter ldap_server)
 	$ldap_server = $datas["ID"];
-	$users = getAllLdapUsers($ldap_server, 1);
-
-	//Synchronize accounts
-	$action = 1;
+	$users = getAllLdapUsers($ldap_server, $_GET["action"]);
 
 	foreach ($users as $user) {
-		ldapImportUserByServerId($user, $action, $ldap_server);
+		ldapImportUserByServerId($user, $_GET["action"], $ldap_server);
 		echo ".";
 	}
 } else {
