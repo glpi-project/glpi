@@ -77,7 +77,7 @@ class Netdevice extends CommonDBTM {
 
 	function pre_updateInDB($input,$updates) {
 		if (count($updates)){
-			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 			$updates[]="date_mod";
 		}
 		return array($input,$updates);
@@ -85,7 +85,7 @@ class Netdevice extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		// set new date.
-		$input["date_mod"] = date("Y-m-d H:i:s");
+		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
 		// dump status
 		$input["_oldID"]=$input["ID"];
@@ -232,11 +232,11 @@ class Netdevice extends CommonDBTM {
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14].": ";
-				$date = convDateTime(date("Y-m-d H:i:s"));
+				$date = convDateTime($_SESSION["glpi_currenttime"]);
 			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
 				$template = "newtemplate";
 				$datestring = $LANG["computers"][14].": ";
-				$date = convDateTime(date("Y-m-d H:i:s"));
+				$date = convDateTime($_SESSION["glpi_currenttime"]);
 			} else {
 				$datestring = $LANG["common"][26].": ";
 				$date = convDateTime($this->fields["date_mod"]);

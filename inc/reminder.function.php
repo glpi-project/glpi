@@ -41,7 +41,7 @@ function showCentralReminder($type="private"){
 	global $DB,$CFG_GLPI, $LANG;
 
 	$author=$_SESSION['glpiID'];	
-	$today=date("Y-m-d H:i:s");
+	$today=$_SESSION["glpi_currenttime"];
 
 	if($type=="public"){ // show public reminder
 		$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0') ".getEntitiesRestrictRequest("AND","glpi_reminder");

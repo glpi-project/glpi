@@ -528,7 +528,7 @@ function showDeviceReservations($target,$type,$ID){
 	if ($resaID=isReservable($type,$ID)){
 
 		//echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][21]."</a>";
-		$now=date("Y-m-d H:i:s");
+		$now=$_SESSION["glpi_currenttime"];
 		// Print reservation in progress
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
 		$result=$DB->query($query);
@@ -598,7 +598,7 @@ function showUserReservations($target,$ID){
 
 	echo "<div align='center'>";
 
-	$now=date("Y-m-d H:i:s");
+	$now=$_SESSION["glpi_currenttime"];
 
 	// Print reservation in progress
 	$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_user='$ID' ORDER BY begin";

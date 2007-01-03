@@ -97,7 +97,7 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 			}
 		}
 	}
-	$identificat->user->fields["last_login"] = date("Y-m-d H:i:s");
+	$identificat->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 	$identificat->user->fields["name"] = $user;
 
 }
@@ -167,7 +167,7 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 
 		if ($identificat->auth_succeded) {
 			// Prepare data
-			$identificat->user->fields["last_login"]=date("Y-m-d H:i:s");
+			$identificat->user->fields["last_login"]=$_SESSION["glpi_currenttime"];
 			if ($identificat->extauth)
 				$identificat->user->fields["_extauth"] = 1;			
 			// Need auto add user ?
