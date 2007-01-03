@@ -44,14 +44,9 @@ $LANG["backup"][18]="Etes-vous certain de vouloir sauvegarder la base de donnée
 $LANG["backup"][19]="Maintenant";
 $LANG["backup"][20]="Supp";
 $LANG["backup"][21]="Le fichier existe déjà";
-$LANG["backup"][22]="Connexion impossible à ";
-$LANG["backup"][23]=" pour ";
-$LANG["backup"][24]="non trouvé";
-$LANG["backup"][25]="Ouverture de";
-$LANG["backup"][26]="Impossible de trouver l'octet";
-$LANG["backup"][27]="ERREUR à partir de";
-$LANG["backup"][28]="impossible";
-$LANG["backup"][29]="Redirection automatique sinon cliquez";
+$LANG["backup"][22]="Impossible de trouver l'octet";
+$LANG["backup"][23]="Erreur Mysql à partir de";
+$LANG["backup"][24]="Redirection automatique sinon cliquez";
 
 $LANG["buttons"][0]="Rechercher";
 $LANG["buttons"][2]="Valider";
