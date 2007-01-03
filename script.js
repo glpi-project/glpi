@@ -5,6 +5,7 @@ var marked_row = new Array;
 
 var timeoutglobalvar;
 
+ 
 //modifier la propriété display d'un élement
 function setdisplay (objet, statut) {
 	var e = objet;
@@ -63,46 +64,6 @@ function hidemenu(idMenu){
 				doShowSelect(e[i]);
 			}
 			setdisplay(e[i],'none');
-		}
-	}	
-}
-
-//afficher le smenu demandé
-function montre(id,idMenu) {
-	//récupérer l'élément ciblé
-	var d = document.getElementById(id);
-	
-	//récupérer toutes les listes du menu principale
-	var m = document.getElementById(idMenu);
-	var m = m.getElementsByTagName('ul');
-		
-	//test pour connaître le navigateur
-	if(isIe()){
-		//masquage des élements select du document
-		if(m){
-			for (var i = 1; i<=m.length; i++) {
-				//listage des éléments li nommés du type smenu + i
-				var e = document.getElementById('menu'+i);
-				var smenu = e.getElementsByTagName('ul');
-				doShowSelect(smenu[0]);
-			}		
-		}	
-	}
-	
-	//aficher le sous-menu de l'élément
-	if (d) {
-		var smenu = d.getElementsByTagName('ul');
-		if (smenu) {
-			//masquer tous les smenu ouverts
-			for(var i = 0; i < m.length; i++){
-				setdisplay(	m[i],'none');
-			}
-			setdisplay(smenu[0],'block');
-			clearTimeout(timeoutglobalvar);
-			timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},5000);
-			if (isIe()) {
-				doHideSelect(smenu[0]);
-			}
 		}
 	}	
 }
@@ -214,9 +175,46 @@ function hideSelect(x,y,w,h){
 	return true;
 }
 
-
-
-
+function menuAff(id,idMenu){
+	var m = document.getElementById(idMenu);
+	var item = m.getElementsByTagName('li');
+	for(var i=0; i<item.length; i++){
+		if(item[i].id == id)
+			var ssmenu = item[i];
+	}	
+	var m = m.getElementsByTagName('ul');
+	
+	if(isIe()){
+		//masquage des élements select du document
+		if(m){
+			for (var i=1; i<10 ;i++) { //problème dans le listage et le nomage des menus xhtml
+				//listage des éléments li nommés du type smenu + i
+				var e = document.getElementById('menu'+i);
+				if(e){
+					var smenu = e.getElementsByTagName('ul');
+					doShowSelect(smenu[0]);
+				}
+			}
+		}		
+	}
+	
+	if (ssmenu) {
+		var smenu = ssmenu.getElementsByTagName('ul');
+		if (smenu) {
+			//masquer tous les smenu ouverts
+			for(var i = 0; i < m.length; i++){
+				setdisplay(	m[i],'none');
+			}
+			setdisplay(smenu[0],'block');
+			clearTimeout(timeoutglobalvar);
+			timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},1000);
+			if (isIe()) {
+				doHideSelect(smenu[0]);
+			}
+		}
+	}
+	
+}
 
 
 function jumpTo(URL_List){ var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; }
@@ -306,3 +304,6 @@ function confirmAction(text,where){
 		window.location = where;
 	}
 }
+
+
+

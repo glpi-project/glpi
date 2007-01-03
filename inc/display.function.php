@@ -109,6 +109,8 @@ function commonHeader($title,$url)
 		}
 		//  CSS link
 		echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+		//Surcharge de la feuille de style principale
+		//echo "<link rel=\"stylesheet\" href=\"".$CFG_GLPI["root_doc"]."/css/header_style.css\" type=\"text/css\" media=\"screen\" />\n";
 		echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
 		echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
 		// AJAX library
@@ -266,7 +268,7 @@ function commonHeader($title,$url)
 	
 		// Inventory
 		if (count($inventory)) {
-			echo "	<li id='menu1' onmouseover=\"javascript:montre('menu1','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
+			echo "	<li id='menu1' onmouseover=\"javascript:menuAff('menu1','menu');\" >";
 			echo "<a href='#'  title=\"".$LANG["setup"][10]."\" class='itemP'>".$LANG["setup"][10]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			$i=0;
@@ -282,7 +284,7 @@ function commonHeader($title,$url)
 	
 		// Maintain / Tracking / ticket
 		if (count($maintain)) {
-			echo "	<li id='menu2' onmouseover=\"javascript:montre('menu2','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
+			echo "	<li id='menu2' onmouseover=\"javascript:menuAff('menu2','menu');\" >";
 			echo "<a href='#' title=\"".$LANG["title"][24]."\"   class='itemP'>".$LANG["title"][24]."</a>";
 			echo "<ul class='ssmenu'>";	
 			// list menu item 
@@ -294,8 +296,8 @@ function commonHeader($title,$url)
 		}
 		// Financial
 		if (count($financial)) {
-			echo "	<li id='menu3' onmouseover=\"javascript:montre('menu3','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
-			echo "<a href='' title=\"".$LANG["Menu"][26]."\" class='itemP'>".$LANG["Menu"][26]."</a>";
+			echo "	<li id='menu3' onmouseover=\"javascript:menuAff('menu3','menu');\" >";
+			echo "<a href='#' title=\"".$LANG["Menu"][26]."\" class='itemP'>".$LANG["Menu"][26]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($financial as $key => $val) {
@@ -307,7 +309,7 @@ function commonHeader($title,$url)
 	
 		// Tools
 		if (count($utils)) {
-			echo "	<li id='menu4' onmouseover=\"javascript:montre('menu4','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
+			echo "	<li id='menu4' onmouseover=\"javascript:menuAff('menu4','menu');\" >";
 			echo "<a href='#' title=\"".$LANG["Menu"][18]."\" class='itemP'>".$LANG["Menu"][18]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
@@ -336,7 +338,7 @@ function commonHeader($title,$url)
 				$list[$key]=$val["name"];
 			}
 			asort($list);
-			echo "	<li id='menu5' onmouseover=\"javascript:montre('menu5','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
+			echo "	<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\" >";
 			echo "<a href='#' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
@@ -349,7 +351,7 @@ function commonHeader($title,$url)
 	
 		// Administration 
 		if (count($config)) {
-			echo "	<li id='menu6' onmouseover=\"javascript:montre('menu6','menu');\" onmouseout=\"javascript:hidemenu('menu');\">";
+			echo "	<li id='menu6' onmouseover=\"javascript:menuAff('menu6','menu');\" >";
 			echo "<a href='#' title=\"".$LANG["Menu"][15]."\"  class='itemP1'>".$LANG["Menu"][15]."</a>";
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 

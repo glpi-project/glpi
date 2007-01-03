@@ -164,11 +164,12 @@ ul#menu a.itemP, ul#menu a.itemP1{
 ul#menu ul.ssmenu{
 	position: relative;
 	top: 5px;
-	width: 120px;
+	width: 108px;
 	border: 1px solid #CC9900;
 	border-bottom: 0px;
 	-moz-border-radius: 4px;
 	background: url(../pics/fd_ssmenu.png) 0 0 repeat;
+	display: none;
 }
 
 ul#menu ul li{
@@ -198,7 +199,6 @@ ul#menu li#menu1{
 
 ul#menu li#menu1 ul.ssmenu{
 	position: relative;
-	display: none;
 }
 
 ul#menu li#menu2{
@@ -208,7 +208,6 @@ ul#menu li#menu2{
 
 ul#menu li#menu2 ul.ssmenu{
 	position: relative;
-	display: none;
 }
 
 ul#menu li#menu3{
@@ -218,7 +217,6 @@ ul#menu li#menu3{
 
 ul#menu li#menu3 ul.ssmenu{
 	position: relative;
-	display: none;
 }
 
 ul#menu li#menu4{
@@ -228,7 +226,6 @@ ul#menu li#menu4{
 
 ul#menu li#menu4 ul.ssmenu{
 	position: relative;
-	display: none;
 }
 
 ul#menu li#menu5{
@@ -238,7 +235,6 @@ ul#menu li#menu5{
 
 ul#menu li#menu5 ul.ssmenu{
 	position: relative;
-	display: none;
 	width: 125px;
 	left: 5px;
 }
@@ -250,7 +246,6 @@ ul#menu li#menu6{
 
 ul#menu li#menu6 ul.ssmenu{
 	position: relative;
-	display: none;
 	width: 125px;
 	left: 5px;
 }
@@ -410,7 +405,7 @@ hr{
 
 #page form  {font-size: 12px;
 	margin:0;
-	margin-bottom:10px;
+	margin-bottom:5px;
 	padding:0; 
 
 }
