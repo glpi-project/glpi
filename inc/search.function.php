@@ -1305,152 +1305,139 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 	switch ($table.".".$field){
 		case "glpi_users.name" :
 			$linkfield="";
-		if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
-			$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
-		if (empty($linkfield)){ // glpi_users case / not link table
-			return " ( $table$linkfield.$field $SEARCH ) ";
-		} else {
-			return " ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH ) ";
-		}
-		break;
-		case "glpi_device_hdd.specif_default" :
-			//	$larg=500;
-			//	return " ( DEVICE_".HDD_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".HDD_DEVICE.".specificity > ".($val-$larg)." ) ";
-			return " $table.$field ".makeTextSearch("",$nott);
-		break;
-		case "glpi_device_ram.specif_default" :
-			//	$larg=50;
-			//	return " ( DEVICE_".RAM_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".RAM_DEVICE.".specificity > ".($val-$larg)." ) ";
-			return " $table.$field ".makeTextSearch("",$nott);
-		break;
-		case "glpi_device_processor.specif_default" :
-			//	$larg=50;
-			//	return " ( DEVICE_".RAM_DEVICE.".specificity < ".($val+$larg)." AND DEVICE_".RAM_DEVICE.".specificity > ".($val-$larg)." ) ";
-			return " $table.$field ".makeTextSearch("",$nott);
-		break;
-
-		case "glpi_networking_ports.ifmac" :
-			if ($type==COMPUTER_TYPE)
-				return " (  DEVICE_".NETWORK_DEVICE.".specificity $SEARCH OR $table.$field $SEARCH ) ";
-			else return " $table.$field $SEARCH ";
+			if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"])){
+				$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+			}
+			if (empty($linkfield)){ // glpi_users case / not link table
+				return " ( $table$linkfield.$field $SEARCH ) ";
+			} else {
+				return " ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH ) ";
+			}
 			break;
-			case "glpi_contracts.end_date" :
-
-				$search=array("/\&lt;/","/\&gt;/");
+		case "glpi_device_hdd.specif_default" :
+			return " $table.$field ".makeTextSearch("",$nott);
+			break;
+		case "glpi_device_ram.specif_default" :
+			return " $table.$field ".makeTextSearch("",$nott);
+			break;
+		case "glpi_device_processor.specif_default" :
+			return " $table.$field ".makeTextSearch("",$nott);
+			break;
+		case "glpi_networking_ports.ifmac" :
+			if ($type==COMPUTER_TYPE){
+				return " (  DEVICE_".NETWORK_DEVICE.".specificity $SEARCH OR $table.$field $SEARCH ) ";
+			} else {
+				return " $table.$field $SEARCH ";
+			}
+			break;
+		case "glpi_contracts.end_date" :
+			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
 				return " NOW() ".$regs[1]." ADDDATE(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH), INTERVAL ".$regs[2]." MONTH) ";	
-			}
-			else {
+			} else {
 				return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
 			}
-
-
 			break;
 			// ajout jmd
-			case "glpi_contracts.expire" :
-
-				$search=array("/\&lt;/","/\&gt;/");
+		case "glpi_contracts.expire" :
+			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
 				return " DATEDIFF(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]." ";
-			}
-			else {
+				} else {
 				return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
 			}
-
-
 			break;
-			// ajout jmd
-			case "glpi_contracts.expire_notice" :
-
-				$search=array("/\&lt;/","/\&gt;/");
+		// ajout jmd
+		case "glpi_contracts.expire_notice" :
+			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
-
 				return " $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
-
-			}
-			else {
+			} else {
 				return " ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
 			}
-
-
 			break;
-
-			case "glpi_ocs_link.last_update":
-				case "glpi_ocs_link.last_ocs_update":
-				case "glpi_computers.date_mod":
-				case "glpi_printers.date_mod":
-				case "glpi_networking.date_mod":
-				case "glpi_peripherals.date_mod":
-				case "glpi_software.date_mod":
-				case "glpi_monitors.date_mod":
-				case "glpi_contracts.begin_date":
-				case "glpi_infocoms.buy_date":
-				case "glpi_infocoms.use_date":
-				$search=array("/\&lt;/","/\&gt;/");
+		case "glpi_ocs_link.last_update":
+		case "glpi_ocs_link.last_ocs_update":
+		case "glpi_computers.date_mod":
+		case "glpi_printers.date_mod":
+		case "glpi_networking.date_mod":
+		case "glpi_peripherals.date_mod":
+		case "glpi_software.date_mod":
+		case "glpi_phones.date_mod":
+		case "glpi_monitors.date_mod":
+		case "glpi_contracts.begin_date":
+		case "glpi_infocoms.buy_date":
+		case "glpi_infocoms.use_date":
+		case "state_types.date_mod":
+		case "reservation_types.date_mod":
+		case "glpi_users.last_login":
+			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
 				return " NOW() ".$regs[1]." ADDDATE($table.$field, INTERVAL ".$regs[2]." MONTH) ";	
-			}
-			else {
+			} else {
+				// Date format modification if needed
+				$val=preg_replace('/(\d{1,2})-(\d{1,2})-(\d{4})/','\3-\2-\1',$val);
+				$SEARCH=makeTextSearch($val,$nott);
+
 				$ADD="";	
 				if ($nott) $ADD=" OR $table.$field IS NULL";
 				return " ($table.$field $SEARCH ".$ADD." ) ";
 			}
 			break;
-			case "glpi_infocoms.value":
-				case "glpi_infocoms.warranty_value":
-				$interval=100;
+		case "glpi_infocoms.value":
+		case "glpi_infocoms.warranty_value":
+			$interval=100;
 			$ADD="";
 			if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
-			if ($nott)
+			if ($nott){
 				return " ($table.$field < ".intval($val)."-$interval OR $table.$field > ".intval($val)."+$interval ".$ADD." ) ";
-			else  return " (($table.$field >= ".intval($val)."-$interval AND $table.$field <= ".intval($val)."+$interval) ".$ADD." ) ";
+			} else {
+				 return " (($table.$field >= ".intval($val)."-$interval AND $table.$field <= ".intval($val)."+$interval) ".$ADD." ) ";
+			}
 			break;
-			case "glpi_infocoms.amort_time":
-				case "glpi_infocoms.warranty_duration":
-				$ADD="";
-			if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
-			if ($nott)
-				return " ($table.$field <> ".intval($val)." ".$ADD." ) ";
-			else  return " ($table.$field = ".intval($val)."  ".$ADD." ) ";
-			break;
-			case "glpi_infocoms.amort_type":
-				$ADD="";
-			if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
-			if (eregi($val,getAmortTypeName(1))) $val=1;
-			else if (eregi($val,getAmortTypeName(2))) $val=2;
-			else $val=0;
-			if ($nott)
-				return " ($table.$field <> $val ".$ADD." ) ";
-			else  return " ($table.$field = $val  ".$ADD." ) ";
-			break;
-/*
-			case "glpi_users.active":
-
-				if (!eregi($val,$LANG["choice"][1])&&!eregi($val,$LANG["choice"][0])&&$val!="NULL")
-					return "( 0 = 1 )";
-
+		case "glpi_infocoms.amort_time":
+		case "glpi_infocoms.warranty_duration":
 			$ADD="";
-			if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
-
-			if (eregi($val,$LANG["choice"][1])||$val==1) $val=1;
-			else $val=0;
-			if ($nott)
-				return " ($table.$field <> $val ".$ADD." ) ";
-			else  return " ($table.$field = $val  ".$ADD." ) ";
+			if ($nott&&$val!="NULL") {
+				$ADD=" OR $table.$field IS NULL";
+			}
+			if ($nott){
+				return " ($table.$field <> ".intval($val)." ".$ADD." ) ";
+			} else {
+				return " ($table.$field = ".intval($val)."  ".$ADD." ) ";
+			}
 			break;
-*/
-
+		case "glpi_infocoms.amort_type":
+			$ADD="";
+			if ($nott&&$val!="NULL") {
+				$ADD=" OR $table.$field IS NULL";
+			}
+			if (eregi($val,getAmortTypeName(1))) {
+				$val=1;
+			} else if (eregi($val,getAmortTypeName(2))) {
+				$val=2;
+			} else { 
+				$val=0; 
+			}
+			if ($nott){
+				return " ($table.$field <> $val ".$ADD." ) ";
+			} else {
+				return " ($table.$field = $val  ".$ADD." ) ";
+			}
+			break;
 		default:
 			$ADD="";	
-			if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
+			if ($nott&&$val!="NULL") {
+				$ADD=" OR $table.$field IS NULL";
+			}
 			return " ($table.$field $SEARCH ".$ADD." ) ";
 			break;
 	}
