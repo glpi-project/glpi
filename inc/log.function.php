@@ -53,7 +53,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 
 	global $DB;
 
-	$date_mod=date("Y-m-d H:i:s");
+	$date_mod=$_SESSION["glpi_currenttime"];
 	
 	if(!empty($changes)){
 
@@ -230,7 +230,7 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 
 	global $DB,$CFG_GLPI, $LANG;
 	if ($level <= $CFG_GLPI["event_loglevel"]) { 
-		$query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', NOW(), '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
+		$query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 
 		$result = $DB->query($query);    
 

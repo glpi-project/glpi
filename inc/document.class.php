@@ -80,7 +80,7 @@ class Document extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		global $LANG;
-		$input["date_mod"] = date("Y-m-d H:i:s");
+		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 		$input["FK_users"] = $_SESSION["glpiID"];
 
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
@@ -121,7 +121,7 @@ class Document extends CommonDBTM {
 
 	function pre_updateInDB($input,$updates) {
 		if (count($updates)){
-			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 			$updates[]="date_mod";
 		}
 		return array($input,$updates);

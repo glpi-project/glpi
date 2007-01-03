@@ -192,7 +192,7 @@ function ocsLink($ocs_id,$glpi_computer_id) {
 
 	$query = "INSERT INTO glpi_ocs_link 
 		(glpi_id,ocs_id,ocs_deviceid,last_update) 
-		VALUES ('".$glpi_computer_id."','".$ocs_id."','".$data["DEVICEID"]."',NOW())";
+		VALUES ('".$glpi_computer_id."','".$ocs_id."','".$data["DEVICEID"]."','".$_SESSION["glpi_currenttime"]."')";
 	$result=$DB->query($query);
 
 	if ($result)
@@ -532,7 +532,7 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 				$DBocs->query($query_ocs);
 				// update last_update and and last_ocs_update
 				$query = "UPDATE glpi_ocs_link 
-					SET last_update=NOW(), last_ocs_update='".$data_ocs["LASTCOME"]."' 
+					SET last_update='".$_SESSION["glpi_currenttime"]."', last_ocs_update='".$data_ocs["LASTCOME"]."' 
 					WHERE ID='$ID'";
 				$DB->query($query);
 			}

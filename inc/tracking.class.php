@@ -180,7 +180,7 @@ class Job extends CommonDBTM{
 
 			if (in_array("status",$updates)&&ereg("old_",$input["status"])){
 				$updates[]="closedate";
-				$this->fields["closedate"]=date("Y-m-d H:i:s");
+				$this->fields["closedate"]=$_SESSION["glpi_currenttime"];
 			}
 		}
 
@@ -398,7 +398,7 @@ class Job extends CommonDBTM{
 		}
 
 		if (!isset($input["date"]))
-			$input["date"] = date("Y-m-d H:i:s");
+			$input["date"] = $_SESSION["glpi_currenttime"];
 
 		if (strstr($input["status"],"old_"))
 			$input["closedate"] = $input["date"];
@@ -761,7 +761,7 @@ class Followup  extends CommonDBTM {
 		unset($input["minute"]);
 		unset($input["hour"]);
 
-		$input["date"] = date("Y-m-d H:i:s");
+		$input["date"] = $_SESSION["glpi_currenttime"];
 
 		return $input;
 	}
@@ -785,7 +785,7 @@ class Followup  extends CommonDBTM {
 				$updates[]="status";
 				$updates[]="closedate";
 				$input["_job"]->fields["status"]="old_done";
-				$input["_job"]->fields["closedate"] = date("Y-m-d H:i:s");
+				$input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
 				$input["_job"]->updateInDB($updates);
 			}
 

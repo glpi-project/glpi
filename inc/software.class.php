@@ -71,7 +71,7 @@ class Software  extends CommonDBTM {
 
 	function pre_updateInDB($input,$updates) {
 		if (count($updates)){
-			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 			$updates[]="date_mod";
 		}
 		return array($input,$updates);
@@ -86,7 +86,7 @@ class Software  extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		// set new date.
-		$input["date_mod"] = date("Y-m-d H:i:s");
+		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
 		if (isset($input['is_update'])&&$input['is_update']=='N') $input['update_software']=-1;
 
@@ -207,11 +207,11 @@ class Software  extends CommonDBTM {
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14].": ";
-				$date = convDateTime(date("Y-m-d H:i:s"));
+				$date = convDateTime($_SESSION["glpi_currenttime"]);
 			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
 				$template = "newtemplate";
 				$datestring = $LANG["computers"][14].": ";
-				$date = convDateTime(date("Y-m-d H:i:s"));
+				$date = convDateTime($_SESSION["glpi_currenttime"]);
 			} else {
 				$datestring = $LANG["common"][26]." : ";
 				$date = convDateTime($this->fields["date_mod"]);

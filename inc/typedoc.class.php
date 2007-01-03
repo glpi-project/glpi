@@ -51,7 +51,7 @@ class Typedoc  extends CommonDBTM {
 
 	function pre_updateInDB($input,$updates) {
 		if (count($updates)){
-			$this->fields["date_mod"]=date("Y-m-d H:i:s");
+			$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 			$updates[]="date_mod";
 		}
 		return array($input,$updates);
@@ -59,7 +59,7 @@ class Typedoc  extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		// set new date.
-		$input["date_mod"] = date("Y-m-d H:i:s");
+		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
 		return $input;
 	}
