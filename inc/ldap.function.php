@@ -134,12 +134,18 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 			$attrs = array (
 			$config_ldap->fields['ldap_login'], "modifyTimestamp"
 		);
+
+		// Tenter une recherche pour essayer de retrouver le DN
+		$filter = "(".$config_ldap->fields['ldap_login']."=*)";
+		if (!empty ($config_ldap->fields['ldap_condition']))
+			$filter = "(& $filter ".$config_ldap->fields['ldap_condition'].")";
 	
-		$sr = ldap_search($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_condition'], $attrs);
+		$sr = ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
 		$info = ldap_get_entries($ds, $sr);
 		for ($ligne = 0; $ligne < $info["count"]; $ligne++)
 		{
 			//If ldap add
+//			if (isset($info[$ligne][$config_ldap->fields['ldap_login']]))
 			if (!$sync)
 				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
 			else
@@ -170,12 +176,12 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 				}		
 		}
 		}
-	
 	//If add, do the difference between ldap users and glpi users
 	if (!$sync)
 		return array_diff_key($ldap_users,$glpi_users);
 	else
 		return $glpi_users;
+	
 }
 function showLdapUsers($target, $check, $start, $sync = 0) {
 	global $DB, $CFG_GLPI, $LANG;

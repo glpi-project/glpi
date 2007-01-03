@@ -589,20 +589,20 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 function connect_ldap($host, $port, $login = "", $password = "", $use_tls = false) {
 	global $CFG_GLPI;
 
-	$ds = @ ldap_connect($host, $port);
+	$ds = @ldap_connect($host, $port);
 	if ($ds) {
-		@ ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
-		@ ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+		@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+		@ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 		if ($use_tls) {
-			if (!@ ldap_start_tls($ds)) {
+			if (!@ldap_start_tls($ds)) {
 				return false;
 			}
 		}
 		// Auth bind
 		if ($login != '') {
-			$b = @ ldap_bind($ds, $login, $password);
+			$b = @ldap_bind($ds, $login, $password);
 		} else { // Anonymous bind
-			$b = @ ldap_bind($ds);
+			$b = @ldap_bind($ds);
 		}
 		if ($b) {
 			return $ds;
@@ -622,10 +622,10 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 	$filter = "($login_attr=$login_search)";
 	if (!empty ($condition))
 		$filter = "(& $filter $condition)";
-	$result = @ ldap_search($ds, $basedn, $filter, array (
+	$result = @ldap_search($ds, $basedn, $filter, array (
 		"dn"
 	));
-	$info = @ ldap_get_entries($ds, $result);
+	$info = @ldap_get_entries($ds, $result);
 	if (is_array($info) AND $info['count'] == 1) {
 		return $info[0]['dn'];
 	} else { // Si echec, essayer de deviner le DN / Flat LDAP
