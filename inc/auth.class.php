@@ -606,5 +606,15 @@ class AuthLDAP extends CommonDBTM {
 		}
 
 	}
+	
+	function post_getEmpty () {
+		$this->fields["ldap_port"]="389";
+		$this->fields["ldap_login"]="uid";
+		$this->fields["ldap_field_realname"]="cn";
+		$this->fields["ldap_field_email"]="mail";
+		$this->fields["ldap_field_location"]="physicaldeliveryofficename";
+		$this->fields["ldap_field_phone"]="telephonenumber";
+	}
+	
 }
 ?>
