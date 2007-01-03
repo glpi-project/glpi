@@ -2003,6 +2003,12 @@ $SEARCH_OPTION[USER_TYPE][14]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][14]['name']=$LANG["login"][0];
 $SEARCH_OPTION[USER_TYPE][14]['meta']=0;
 
+$SEARCH_OPTION[USER_TYPE][19]['table']='glpi_users';
+$SEARCH_OPTION[USER_TYPE][19]['field']='date_mod';
+$SEARCH_OPTION[USER_TYPE][19]['linkfield']='';
+$SEARCH_OPTION[USER_TYPE][19]['name']=$LANG["common"][26];
+$SEARCH_OPTION[USER_TYPE][19]['meta']=1;
+
 
 //////CONSUMABLE_TYPE
 
