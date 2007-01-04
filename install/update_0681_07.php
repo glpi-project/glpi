@@ -365,6 +365,10 @@ function update0681to07() {
 			}
 		}
 	}	
+	
+	$query = "ALTER TABLE glpi_software ADD `helpdesk_visible` tinyint(1) NOT NULL default '1'";
+	$DB->query($query) or die("0.7 add helpdesk_visible in glpi_software " . $LANG["update"][90] . $DB->error());
+	
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	// TODO Split Config -> config general + config entity
 	// TODO AUto assignment profile based on rules
