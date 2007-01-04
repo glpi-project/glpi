@@ -140,6 +140,7 @@ class Identification
 		{
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+			ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 
 			if ($cfg_glpi["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
@@ -222,6 +223,7 @@ class Identification
 		}
 
 		ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+		ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 
 		if ($cfg_glpi["ldap_use_tls"]){
 			if (!ldap_start_tls($ds)) {
@@ -292,6 +294,7 @@ class Identification
 		{
 			// switch to protocol version 3 to make ssl work
 			ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3) ;
+			ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 
 			if ($cfg_glpi["ldap_use_tls"]){
 				if (!ldap_start_tls($ds)) {
