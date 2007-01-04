@@ -250,7 +250,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			echo displaySearchNewLine($output_type);
 			echo displaySearchItem($output_type,$value[$i]['link'],$item_num,$row_num);
 			if ($output_type==HTML_OUTPUT) // HTML display
-				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
+				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;date1=$date1&amp;date2=$date2&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
 
 			//le nombre d'intervention
 			//the number of intervention
@@ -587,7 +587,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		break;
 		case "technicien_followup":
 			$WHERE.=" AND glpi_followups.author='$value'";
-		$LEFTJOIN= "LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID)";
+			$LEFTJOIN= "LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID)";
 		break;	
 		case "enterprise":
 			$WHERE.=" AND glpi_tracking.assign_ent='$value'";
@@ -610,46 +610,33 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
 		case "device":
 			//select computers IDs that are using this device;
-			$query2 = "SELECT distinct(glpi_computers.ID) as compid FROM glpi_computers INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$value2."' AND glpi_computer_device.FK_device = '".$value."') WHERE glpi_computers.is_template <> '1'";
 
-		$result2 = $DB->query($query2);
-		$WHERE.=" AND (device_type = '".COMPUTER_TYPE."' AND ('0'='1'";
-		while($line2 = $DB->fetch_array($result2)) {
-			$WHERE.=" OR glpi_tracking.computer='".$line2["compid"]."'";
-		}
-		$WHERE.=") )";
+			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."') INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$value2."' AND glpi_computer_device.FK_device = '".$value."' )";
+
+			$WHERE=" AND glpi_computers.is_template <> '1' ";
 
 		break;
 		case "comp_champ":
-			//select computers IDs that are using this field;
-			$query2 = "SELECT distinct(ID) as compid FROM glpi_computers WHERE  $value2='$value'";
+			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."')";
 
-		$result2 = $DB->query($query2);
-		$WHERE.=" AND (device_type = '".COMPUTER_TYPE."' AND ('0'='1'";
-		while($line2 = $DB->fetch_array($result2)) {
-			$WHERE.=" OR glpi_tracking.computer='".$line2["compid"]."'";
-		}
-		$WHERE.=") )";
-
+			$WHERE=" AND glpi_computers.$value2='$value' AND glpi_computers.is_template <> '1'";
 		break;
 	}
 	switch($type)	{
 
 		case "inter_total": 
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.date >= '$begin' ";
-		if (!empty($end)) $WHERE.= " AND glpi_tracking.date <= '$end' ";
+			if (!empty($end)) $WHERE.= " AND glpi_tracking.date <= '$end' ";
 
-		$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.date),'%Y-%m') AS date_unix, COUNT(glpi_tracking.ID) AS total_visites  FROM glpi_tracking ".$LEFTJOIN.
-			$WHERE.
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.date),'%Y-%m') AS date_unix, COUNT(glpi_tracking.ID) AS total_visites  FROM glpi_tracking ".$LEFTJOIN.$WHERE.
 			" GROUP BY date_unix ORDER BY glpi_tracking.date";
 		break;
 		case "inter_solved": 
 			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
-		if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
-		if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
+			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
+			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
 
-		$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, COUNT(glpi_tracking.ID) AS total_visites  FROM glpi_tracking ".$LEFTJOIN.
-			$WHERE.
+			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, COUNT(glpi_tracking.ID) AS total_visites  FROM glpi_tracking ".$LEFTJOIN.$WHERE.
 			" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 		break;
 		case "inter_avgsolvedtime" :
@@ -673,13 +660,13 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 				$LEFTJOIN.$WHERE.
 				" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 			break;
-			case "inter_avgtakeaccount" :
-				$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
+		case "inter_avgtakeaccount" :
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
 			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
 
 			$query="SELECT glpi_tracking.ID AS ID, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) AS FIRST FROM glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) ".
-				$WHERE.
+				$LEFTJOIN.$WHERE.
 				" GROUP BY glpi_tracking.ID";
 			break;
 
