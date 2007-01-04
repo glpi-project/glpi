@@ -199,7 +199,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "<td align='center'><b>";
 							echo $ci->getLink();
 							echo "</b>";
-							echo " - ".getDropdownName("glpi_dropdown_state",$this->fields['state']);
+							echo " - ".getDropdownName("glpi_dropdown_state",$ci->obj->fields['state']);
 	
 							echo "</td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {

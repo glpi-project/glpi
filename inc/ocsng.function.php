@@ -1517,7 +1517,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 									$mon["is_global"]=1;
 									$query = "SELECT ID 
 										FROM glpi_monitors 
-										WHERE name = '".$mon["name"]."' 
+										WHERE name = '".$mon["name"]."'
 										AND is_global = '1'";
 									$result_search = $DB->query($query);
 									if($DB->numrows($result_search) > 0) {
@@ -1552,22 +1552,51 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 									if ($found_already_monitor&&$id_monitor){
 
 										$m->getFromDB($id_monitor);
+										// Found a non global monitor : good
 										if (!$m->fields["is_global"]){
 											$mon["ID"]=$id_monitor;
 											unset($mon["comments"]);
 
 											$m->update($mon);
-										} else {
+										} else { // Found a global monitor : bad idea. need to add another one
+											$found_already_monitor=false;
+											$id_monitor=0;
+											// Try to find a monitor with the same serial.
+											if (!empty($mon["serial"])){
+												$query = "SELECT ID 
+													FROM glpi_monitors 
+													WHERE serial = '".$mon["serial"]."'";
+												$result_search = $DB->query($query);
+												if($DB->numrows($result_search) == 1) {
+													//Monitor founded
+													$id_monitor = $DB->result($result_search,0,"ID");
+												}
+											} 
+											// Nothing found : add it
+											if (!$id_monitor){
+												$mon["state"] = $cfg_ocs["default_state"];
+												$m->fields=$mon;
+												$id_monitor=$m->addToDB();
+											}
+										}
+									} else {
+										// Try to find a monitor with the same serial.
+										if (!empty($mon["serial"])){
+											$query = "SELECT ID 
+												FROM glpi_monitors 
+												WHERE serial = '".$mon["serial"]."'";
+											$result_search = $DB->query($query);
+											if($DB->numrows($result_search) == 1) {
+												//Monitor founded
+												$id_monitor = $DB->result($result_search,0,"ID");
+											}
+										} 
+										// Nothing found : add it
+										if (!$id_monitor){
 											$mon["state"] = $cfg_ocs["default_state"];
 											$m->fields=$mon;
 											$id_monitor=$m->addToDB();
-											$found_already_monitor=false;
 										}
-									} else {
-										$mon["state"] = $cfg_ocs["default_state"];
-										$m->fields=$mon;
-
-										$id_monitor=$m->addToDB();
 									}
 								}	
 								if ($id_monitor){
