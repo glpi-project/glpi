@@ -42,17 +42,13 @@ if (!defined('GLPI_ROOT')){
 
 class Job extends CommonDBTM{
 
-	var $fields	= array();
-	var $updates	= array();
-	var $computername	= "";
+	var $hardwaredatas	= array();
 	var $computerfound	= 0;
 
 	function Job(){
 		$this->table="glpi_tracking";
 		$this->type=TRACKING_TYPE;
 	}
-
-
 
 	function getFromDBwithData ($ID,$purecontent) {
 
@@ -63,24 +59,24 @@ class Job extends CommonDBTM{
 			if (!$purecontent) {
 				$this->fields["contents"] = nl2br(preg_replace("/\r\n\r\n/","\r\n",$this->fields["contents"]));
 			}
-			$m= new CommonItem;
-			if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
-				$this->computername=$m->getName();
-			} else $this->computername='';
 
-			if ($this->computername==""){
-				if ($this->fields["device_type"]==0) $this->computername = $LANG["help"][30];
-				else $this->computername = "N/A";
-				$this->computerfound=0;				
-			} else 	$this->computerfound=1;	
-
+			$this->getHardwareData();
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-
+	function getHardwareData(){
+		$m= new CommonItem;
+		if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
+			$this->hardwaredatas=$m;
+			$this->computerfound=0;
+		} else {
+			$this->hardwaredatas=$m;
+			$this->computerfound=1;
+		}
+	}
 	function cleanDBonPurge($ID) {
 		global $DB;
 
@@ -323,7 +319,6 @@ class Job extends CommonDBTM{
 			if (in_array("status",$updates)&&ereg("old_",$input["status"]))
 				$mailtype="finish";
 			else $mail_send++;
-
 			$mail = new Mailing($mailtype,$this,$user);
 			$mail->send();
 		}
@@ -556,25 +551,31 @@ class Job extends CommonDBTM{
 		global $DB,$LANG;
 
 
-		$m= new CommonItem;
 		$name=$LANG["help"][30];
 		$contact=0;
 		$tech=0;
-		if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
-			$name=$m->getType()." ".$m->getName();
-			if (isset($m->obj->fields["tech_num"])&&$m->obj->fields["tech_num"]>0){
-					$tech=getUserName($m->obj->fields["tech_num"]);
-			}
-			if (isset($m->obj->fields["contact"]))
-				$contact=$m->obj->fields["contact"];
-			if (isset($m->obj->fields["FK_users"]))
-				$contact=getUserName($m->obj->fields["FK_users"]);
-			if (isset($m->obj->fields["FK_groups"])){
-				if (!empty($contact)) $contact.=" / ";
-					$contact.=getDropdownName("glpi_groups",$m->obj->fields["FK_groups"]);
-			}
-				
-			
+		$name=$this->hardwaredatas->getType()." ".$this->hardwaredatas->getName();
+		if (isset($this->hardwaredatas->obj->fields["serial"])&&!empty($this->hardwaredatas->obj->fields["serial"])){
+			$name.=" - ".$LANG["common"][19].": ".$this->hardwaredatas->obj->fields["serial"];
+		}
+		if (isset($this->hardwaredatas->obj->fields["model"])&&$this->hardwaredatas->obj->fields["model"]>0){
+			$name.=" - ".$LANG["common"][22].": ".getDropdownName("glpi_dropdown_model",$this->hardwaredatas->obj->fields["model"]);
+		}
+		if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
+				$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
+		}
+		if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
+				$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
+		}
+		if (isset($this->hardwaredatas->obj->fields["contact"])){
+			$contact=$this->hardwaredatas->obj->fields["contact"];
+		}
+		if (isset($this->hardwaredatas->obj->fields["FK_users"])){
+			$contact=getUserName($this->hardwaredatas->obj->fields["FK_users"]);
+		}
+		if (isset($this->hardwaredatas->obj->fields["FK_groups"])){
+			if (!empty($contact)) $contact.=" / ";
+				$contact.=getDropdownName("glpi_groups",$this->hardwaredatas->obj->fields["FK_groups"]);
 		}
 
 		if($format=="html"){

@@ -45,7 +45,7 @@ require_once(GLPI_ROOT . "/lib/phpmailer/class.phpmailer.php");
 class glpi_phpmailer extends phpmailer {
 
 	// Set default variables for all new objects
-	var $WordWrap = 50;
+	var $WordWrap = 80;
 	var $CharSet ="utf-8";
 
 
@@ -105,6 +105,9 @@ class Mailing
 	function Mailing ($type="",$job=NULL,$user=NULL)
 	{
 		$this->type=$type;
+		if (!isset($job->hardwaredatas)||!count($job->hardwaredatas)){
+			$job->getHardwareData();
+		}
 		$this->job=$job;
 		$this->user=$user;
 	}

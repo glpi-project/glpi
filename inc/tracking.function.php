@@ -509,34 +509,19 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Sixth Colum
 		$sixth_col="";
 		$deleted=0;
-		$m= new CommonItem;
-		if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
-
+		if (isset($job->hardwaredatas->obj->fields["deleted"])&&$job->hardwaredatas->obj->fields["deleted"]=='Y')
+			$deleted=1;
+		$sixth_col.=$job->hardwaredatas->getType();
+		if ($job->fields["device_type"]>0){
+			$sixth_col.="<br><strong>";
 			if (haveTypeRight($job->fields["device_type"],"r")){
-
-				if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
-					$deleted=1;
-				$sixth_col.=$m->getType();
-
-				if ($job->fields["device_type"]>0){
-					$sixth_col.="<br><strong>";
-					if ($job->computerfound) $sixth_col.=$m->getLink();
-					else $sixth_col.=$m->getNameID();
-					$sixth_col.="</strong>";
-				} 
-
+				$sixth_col.=$job->hardwaredatas->getLink();
+			} else {
+				$sixth_col.=$job->hardwaredatas->getNameID();
 			}
-			else {
-				$m= new CommonItem;
-				if ($m->getfromDB($job->fields["device_type"],$job->fields["computer"]))
-					if (isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
-						$deleted=1;
-				$sixth_col.=$m->getType();
-				$sixth_col.="<br><strong>".$job->computername;
-				if ($CFG_GLPI["view_ID"])
-					$sixth_col.=" (".$job->fields["computer"].")";
-				$sixth_col.="</strong>";
-			}
+			$sixth_col.="</strong>";
+		} 
+
 		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$deleted,$align);
 
 		// Seventh column
@@ -621,25 +606,21 @@ function showJobVeryShort($ID) {
 
 		echo "</td>";
 
-		$m= new CommonItem;
-		$m->getfromDB($job->fields["device_type"],$job->fields["computer"]);
-
 		if (haveTypeRight($job->fields["device_type"],"r")){
 			echo "<td align='center' ";
-			if (isset($m->obj)&&isset($m->obj->fields["deleted"])&&$m->obj->fields["deleted"]=='Y')
+			if (isset($job->hardwaredatas->obj["deleted"])&&$job->hardwaredatas->obj["deleted"]=='Y')
 				echo "class='tab_bg_1_2'";
 			echo ">";
 			echo $m->getType()."<br>";
 			echo "<strong>";
-			if ($job->computerfound) echo $m->getLink();
-			else echo $m->getNameID();
+			echo $job->hardwaredatas->getLink();
 			echo "</strong>";
 
 			echo "</td>";
 		}
-		else
-			echo "<td  align='center' >".$m->getType()."<br><strong>$job->computername (".$job->fields["computer"].")</strong></td>";
-
+		else {
+			echo "<td  align='center' >".$job->hardwaredatas->getType()."<br><strong>".$job->hardwaredatas->getNameID()."</strong></td>";
+		}
 		$stripped_content =resume_text($job->fields["contents"],100);
 		echo "<td ><strong>".$stripped_content."</strong>";
 		echo "</td>";
