@@ -120,6 +120,7 @@
 	define("USER_MAILING",6);
 
 	// EXPORT TYPE
+	define("GLOBAL_SEARCH",-1);
 	define("HTML_OUTPUT",0);
 	define("SYLK_OUTPUT",1);
 	define("PDF_OUTPUT",2);
@@ -133,7 +134,8 @@
 	define("ALERT_END",2);
 	define("ALERT_NOTICE",3);
 
-
+	// Default number of items displayed in global search
+	define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
 
 	$LINK_ID_TABLE=array(
 			COMPUTER_TYPE=> "glpi_computers",

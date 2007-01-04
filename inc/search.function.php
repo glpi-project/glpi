@@ -52,6 +52,20 @@ function manageGetValuesInSearch($type=0){
 	global $_GET;
 	$tab=array();
 
+
+	$default_values["start"]=0;
+	$default_values["order"]="ASC";
+	$default_values["deleted"]="N";
+	$default_values["distinct"]="N";
+	$default_values["link"]=array();
+	$default_values["field"]=array(0=>"view");
+	$default_values["contains"]=array(0=>"");
+	$default_values["link2"]=array();
+	$default_values["field2"]=array(0=>"view");
+	$default_values["contains2"]=array(0=>"");
+	$default_values["type2"]="";
+	$default_values["sort"]=1;
+
 	if (isset($_GET["reset_before"])){
 		unset($_SESSION['glpisearch'][$type]);
 		unset($_SESSION['glpisearchcount'][$type]);
@@ -66,19 +80,6 @@ function manageGetValuesInSearch($type=0){
 			$_SESSION['glpisearch'][$type][$key]=$val;
 		}
 	}
-
-	$default_values["start"]=0;
-	$default_values["order"]="ASC";
-	$default_values["deleted"]="N";
-	$default_values["distinct"]="N";
-	$default_values["link"]=array();
-	$default_values["field"]=array(0=>"view");
-	$default_values["contains"]=array(0=>"");
-	$default_values["link2"]=array();
-	$default_values["field2"]=array(0=>"view");
-	$default_values["contains2"]=array(0=>"");
-	$default_values["type2"]="";
-	$default_values["sort"]=1;
 
 	foreach ($default_values as $key => $val){
 		if (!isset($_GET[$key])){
@@ -121,7 +122,8 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	$options=$SEARCH_OPTION[$type];
 
 
-	// Mete search names
+
+	// Meta search names
 	$names=array(
 			COMPUTER_TYPE => $LANG["Menu"][0],
 			//		NETWORKING_TYPE => $LANG["Menu"][1],
@@ -132,7 +134,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			PHONE_TYPE => $LANG["Menu"][34],	
 		    );
 
-	echo "<form method=get action=\"$target\">";
+	echo "<form method='get' action=\"$target\">";
 	echo "<div align='center'><table border='0'  class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'><b>".$LANG["search"][0].":</b></th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -383,6 +385,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$itemtable=$LINK_ID_TABLE[$type];
 	if (isset($CFG_GLPI["union_search_type"][$type])){
 		$itemtable=$CFG_GLPI["union_search_type"][$type];
+	}
+
+
+	// Set display type for export if define
+	$output_type=HTML_OUTPUT;
+	if (isset($_GET["display_type"])){
+		$output_type=$_GET["display_type"];
+		// Limit to 10 element
+		if ($_GET["display_type"]==GLOBAL_SEARCH){
+			$CFG_GLPI["list_limit"]=GLOBAL_SEARCH_DISPLAY_COUNT;
+		}
 	}
 
 	$entity_restrict=in_array($itemtable,$CFG_GLPI["specif_entities_tables"]);
@@ -808,26 +821,36 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	//echo $QUERY."<br>\n";
 
-	// Set display type for export if define
-	$output_type=HTML_OUTPUT;
-	if (isset($_GET["display_type"]))
-		$output_type=$_GET["display_type"];
-
-
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
 		// if real search or complete export : get numrows from request 
 		if (!$nosearch||isset($_GET['export_all'])) 
 			$numrows= $DB->numrows($result);
+
+		// Contruct Pager parameters
+		$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
+
+
+		if ($output_type==GLOBAL_SEARCH){
+			$ci = new CommonItem();	
+			$ci->setType($type);
+			echo "<div align='center'><h2>".$ci->getType($type);
+			// More items
+			if ($numrows>$start+GLOBAL_SEARCH_DISPLAY_COUNT){
+				echo " <a href='$target?$parameters'>".$LANG["search"][7]."</a>";
+			}
+			echo "</h2></div>";
+		}
+
+
 		// If the begin of the view is before the number of items
 		if ($start<$numrows) {
 
-			// Contruct Pager parameters
-			$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
 
 			// Display pager only for HTML
-			if ($output_type==HTML_OUTPUT) 
+			if ($output_type==HTML_OUTPUT){
 				printPager($start,$numrows,$target,$parameters,$type);
+			}
 
 			// Form to delete old item
 			$isadmin=haveTypeRight($type,"w");
