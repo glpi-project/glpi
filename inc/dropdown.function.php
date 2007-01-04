@@ -758,7 +758,7 @@ function dropdownMyDevices($userID=0){
 
 
 		// My group items
-		if (haveRight("show_group_ticket","1")){
+		if (haveRight("show_group_hardware","1")){
 			$group_where="";
 			$groups=array();
 			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."';";

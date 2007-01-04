@@ -58,6 +58,15 @@ function update0681to07() {
 	$query = "UPDATE glpi_users SET language='pl_PL' WHERE language='po_PO'";
 	$DB->query($query) or die("0.7 update polish lang file " . $LANG["update"][90] . $DB->error());
 
+	// Add show_group_hardware
+	if (!FieldExists("glpi_profiles", "show_group_hardware")){
+		$query = "ALTER TABLE `glpi_profiles` ADD `show_group_hardware` CHAR( 1 ) NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 alter glpi_profiles add show_group_hardware" . $LANG["update"][90] . $DB->error());
+		$query="UPDATE glpi_profiles SET `show_group_hardware`=`show_group_ticket`";
+		$DB->query($query) or die("0.7 alter glpi_profiles add show_group_hardware" . $LANG["update"][90] . $DB->error());
+	}
+	
+
 	// Clean doc association
 	$doc_links = array (
 		COMPUTER_TYPE => "glpi_computers",
@@ -71,8 +80,6 @@ function update0681to07() {
 		CARTRIDGE_TYPE => "glpi_cartridges_type",
 		CONSUMABLE_TYPE => "glpi_consumables_type",
 		CONTRACT_TYPE => "glpi_contracts",
-
-		
 	);
 
 	foreach ($doc_links as $type => $table) {

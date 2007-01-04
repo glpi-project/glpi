@@ -147,7 +147,7 @@ class Profile extends CommonDBTM{
 
 	// Unset unused rights for helpdesk
 	function cleanProfile(){
-		$helpdesk=array("name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","ID");
+		$helpdesk=array("ID","name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware");
 		if ($this->fields["interface"]=="helpdesk"){
 			foreach($this->fields as $key=>$val){
 				if (!in_array($key,$helpdesk))
@@ -269,6 +269,13 @@ class Profile extends CommonDBTM{
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][26].":</td><td>";
 		dropdownYesNoInt("show_group_ticket",$this->fields["show_group_ticket"]);
+		echo "</td>";
+		echo "</tr>";
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$LANG["profiles"][27].":</td><td>";
+		dropdownYesNoInt("show_group_hardware",$this->fields["show_group_hardware"]);
+		echo "</td>";
+		echo "<td>&nbsp;</td><td>&nbsp;";
 		echo "</td>";
 		echo "</tr>";
 
@@ -470,7 +477,11 @@ class Profile extends CommonDBTM{
 
 		echo "<tr class='tab_bg_2'>";
 
-		echo "<td colspan='2'>".$LANG["setup"][350].":</td><td>";
+		echo "<td>".$LANG["profiles"][27]."</td><td>";
+		dropdownYesNoInt("show_group_hardware",$this->fields["show_group_hardware"]);
+		echo "</td>";
+
+		echo "<td colspan='1'>".$LANG["setup"][350].":</td><td>";
 		echo "<select name=\"helpdesk_hardware\">";
 		echo "<option value=\"0\" ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >------</option>";
 		echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".$LANG["tracking"][1]."</option>";
@@ -479,7 +490,7 @@ class Profile extends CommonDBTM{
 		echo "</select>";
 		echo "</td>";
 
-		echo "<td colspan='2'>".$LANG["setup"][352].":</td>";
+		echo "<td colspan='1'>".$LANG["setup"][352].":</td>";
 		echo "<td>";
 		echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
 		echo "<option value='".COMPUTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))?" selected":"").">".$LANG["help"][25]."</option>\n";
