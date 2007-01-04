@@ -55,7 +55,7 @@ function showStateSummary($target){
 	global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
 
-	$state_type=$CFG_GLPI["state_type"];
+	$state_type=$CFG_GLPI["state_types"];
 
 	$states=array();
 	foreach ($state_type as $key=>$type){
