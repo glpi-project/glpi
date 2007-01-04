@@ -428,6 +428,7 @@ function updatedbUpTo031()
 			update068to0681();
 		case "0.68.1":
 		case "0.68.2":
+		case "0.68.3":
 			include("update_0681_07.php");
 			update0681to07();
 		case "0.7":
@@ -438,6 +439,10 @@ function updatedbUpTo031()
 			update042to05();
 			update05to051();
 			update051to06();
+			update06to065();
+			update065to068();
+			update068to0681();
+			update0681to07();
 			break;
 	}
 

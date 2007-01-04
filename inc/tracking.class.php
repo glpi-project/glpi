@@ -211,6 +211,19 @@ class Job extends CommonDBTM{
 		$change_followup_content="";
 		$global_mail_change_count=0;
 
+		// Update Ticket Tco
+		if (in_array("realtime",$updates)||in_array("cost_time",$updates)|| in_array("cost_fixed",$updates)||in_array("cost_material",$updates)){
+			$ci=new CommonItem;
+			if ($ci->getfromDB($this->fields["device_type"],$this->fields["computer"])){
+				$newinput=array();
+				$newinput['ID']=$this->fields["computer"];
+				$newinput['ticket_tco']=computeTicketTco($this->fields["device_type"],$this->fields["computer"]);
+				$ci->obj->update($newinput);
+			}
+		}
+
+
+
 		if ($CFG_GLPI["followup_on_update_ticket"]){
 			if (in_array("assign",$updates)){
 				$new_assign_name=getAssignName($this->fields["assign"],USER_TYPE);
@@ -293,10 +306,11 @@ class Job extends CommonDBTM{
 		$mail_send=false;
 
 		if (!empty($change_followup_content)){ // Add followup if not empty
-
+			$newinput=array();
 			$newinput["contents"]=addslashes($change_followup_content);
 			$newinput["author"]=$_SESSION['glpiID'];
-			$newinput["private"]=$newinput["hour"]=$newinput["minute"]=0;
+			$newinput["private"]=0;
+			$newinput["hour"]=$newinput["minute"]=0;
 			$newinput["tracking"]=$this->fields["ID"];
 			$newinput["type"]="update";
 			// pass _old_assign if assig changed
@@ -309,6 +323,7 @@ class Job extends CommonDBTM{
 			$mail_send=true;
 		}
 
+		
 		// Clean content to mail
 		$this->fields["contents"]=stripslashes($this->fields["contents"]);
 

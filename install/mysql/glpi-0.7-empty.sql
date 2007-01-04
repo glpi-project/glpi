@@ -1,4 +1,4 @@
-#GLPI Dump database on 2007-01-04 17:00
+#GLPI Dump database on 2007-01-04 18:28
 
 ### Dump table glpi_alerts
 
@@ -170,6 +170,7 @@ CREATE TABLE `glpi_computers` (
   `FK_users` int(11) default NULL,
   `FK_groups` int(11) default NULL,
   `state` int(11) NOT NULL default '0',
+  `ticket_tco` float default '0',
   PRIMARY KEY  (`ID`),
   KEY `location` (`location`),
   KEY `os` (`os`),
@@ -192,7 +193,7 @@ CREATE TABLE `glpi_computers` (
   KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_computers VALUES ('1','0','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','0','0','1','Blank Template','0','N',NULL,'0',NULL,NULL,'0');
+INSERT INTO glpi_computers VALUES ('1','0','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','0','0','1','Blank Template','0','N',NULL,'0',NULL,NULL,'0','0');
 
 ### Dump table glpi_config
 
@@ -1266,7 +1267,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-01-04 17:00:46','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-01-04 18:28:05','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1501,6 +1502,7 @@ CREATE TABLE `glpi_monitors` (
   `FK_users` int(11) default NULL,
   `FK_groups` int(11) default NULL,
   `state` int(11) NOT NULL default '0',
+  `ticket_tco` float default '0',
   PRIMARY KEY  (`ID`),
   KEY `ID` (`ID`),
   KEY `location` (`location`),
@@ -1516,7 +1518,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_monitors VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template',NULL,NULL,NULL,'0');
+INSERT INTO glpi_monitors VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','N','1','Blank Template',NULL,NULL,NULL,'0','0');
 
 ### Dump table glpi_networking
 
@@ -1549,6 +1551,7 @@ CREATE TABLE `glpi_networking` (
   `FK_users` int(11) default NULL,
   `FK_groups` int(11) default NULL,
   `state` int(11) NOT NULL default '0',
+  `ticket_tco` float default '0',
   PRIMARY KEY  (`ID`),
   KEY `location` (`location`),
   KEY `firmware` (`firmware`),
@@ -1566,7 +1569,7 @@ CREATE TABLE `glpi_networking` (
   KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_networking VALUES ('1','0','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL,NULL,NULL,'0');
+INSERT INTO glpi_networking VALUES ('1','0','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','N','1','Blank Template','','',NULL,NULL,NULL,'0','0');
 
 ### Dump table glpi_networking_ports
 
@@ -1714,6 +1717,7 @@ CREATE TABLE `glpi_peripherals` (
   `FK_users` int(11) default NULL,
   `FK_groups` int(11) default NULL,
   `state` int(11) NOT NULL default '0',
+  `ticket_tco` float default '0',
   PRIMARY KEY  (`ID`),
   KEY `location` (`location`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
@@ -1728,7 +1732,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_peripherals VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','','0','0','0','','0','0','N','1','Blank Template',NULL,NULL,NULL,'0');
+INSERT INTO glpi_peripherals VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','','0','0','0','','0','0','N','1','Blank Template',NULL,NULL,NULL,'0','0');
 
 ### Dump table glpi_phones
 
@@ -1762,6 +1766,7 @@ CREATE TABLE `glpi_phones` (
   `FK_users` int(11) default NULL,
   `FK_groups` int(11) default NULL,
   `state` int(11) NOT NULL default '0',
+  `ticket_tco` float default '0',
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`),
   KEY `location` (`location`),
@@ -1777,7 +1782,7 @@ CREATE TABLE `glpi_phones` (
   KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_phones VALUES ('1','0',NULL,'0000-00-00 00:00:00',NULL,NULL,'0',NULL,NULL,NULL,NULL,'0','0',NULL,NULL,'0','','0','0','0','0','N','1','Blank Template',NULL,NULL,NULL,'0');
+INSERT INTO glpi_phones VALUES ('1','0',NULL,'0000-00-00 00:00:00',NULL,NULL,'0',NULL,NULL,NULL,NULL,'0','0',NULL,NULL,'0','','0','0','0','0','N','1','Blank Template',NULL,NULL,NULL,'0','0');
 
 ### Dump table glpi_printers
 
@@ -1812,6 +1817,7 @@ CREATE TABLE `glpi_printers` (
   `FK_users` int(11) default NULL,
   `FK_groups` int(11) default NULL,
   `state` int(11) NOT NULL default '0',
+  `ticket_tco` float default '0',
   PRIMARY KEY  (`ID`),
   KEY `id` (`ID`),
   KEY `location` (`location`),
@@ -1829,7 +1835,7 @@ CREATE TABLE `glpi_printers` (
   KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_printers VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL,NULL,NULL,'0');
+INSERT INTO glpi_printers VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','N','1','Blank Template','0',NULL,NULL,NULL,'0','0');
 
 ### Dump table glpi_profiles
 
@@ -1980,6 +1986,7 @@ CREATE TABLE `glpi_software` (
   `FK_users` int(11) default NULL,
   `FK_groups` int(11) default NULL,
   `state` int(11) NOT NULL default '0',
+  `ticket_tco` float default '0',
   PRIMARY KEY  (`ID`),
   KEY `platform` (`platform`),
   KEY `location` (`location`),
@@ -1995,7 +2002,7 @@ CREATE TABLE `glpi_software` (
   KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_software VALUES ('1','0','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL,NULL,NULL,'0');
+INSERT INTO glpi_software VALUES ('1','0','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL,NULL,NULL,'0','0');
 
 ### Dump table glpi_tracking
 
@@ -2244,7 +2251,7 @@ CREATE TABLE `glpi_users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=6 ;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','1','2007-01-04 17:00:46','2007-01-04 17:00:46');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','1','2007-01-04 18:28:05','2007-01-04 18:28:05');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
