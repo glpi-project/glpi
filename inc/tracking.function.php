@@ -2165,8 +2165,39 @@ function showUpdateFollowupForm($ID){
 
 // fonction calcul de cout total d'un ticket
 function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
-	$totalcost=($realtime*$cost_time)+$cost_fixed+$cost_material;
-	return $totalcost;
+	return ($realtime*$cost_time)+$cost_fixed+$cost_material;
 }
 
+/**
+ * Calculate Ticket TCO for a device
+ *
+ * 
+ *
+ *@param $item_type device type
+ *@param $item ID of the device
+ *
+ *@return float
+ *
+ **/
+function computeTicketTco($item_type,$item){
+	global $DB;
+	$totalcost=0;
+
+	$query="SELECT * 
+		FROM glpi_tracking 
+		WHERE (device_type = '$item_type' 
+				AND computer = '$item') 
+			AND (cost_time>0 
+				OR cost_fixed>0
+				OR cost_material>0)";
+	$result = $DB->query($query);
+
+	$i = 0;
+	if ($DB->numrows($result)){
+		while ($data=$DB->fetch_array($result)){
+			$totalcost+=trackingTotalCost($data["realtime"],$data["cost_time"],$data["cost_fixed"],$data["cost_material"]); 
+		}
+	}
+	return $totalcost;
+}
 ?>

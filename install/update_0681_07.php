@@ -68,21 +68,10 @@ function update0681to07() {
 	
 
 	// Clean doc association
-	$doc_links = array (
-		COMPUTER_TYPE => "glpi_computers",
-		NETWORKING_TYPE => "glpi_networking",
-		PRINTER_TYPE => "glpi_printers",
-		MONITOR_TYPE => "glpi_monitors",
-		PERIPHERAL_TYPE => "glpi_peripherals",
-		SOFTWARE_TYPE => "glpi_software",
-		PHONE_TYPE => "glpi_phones",
-		ENTERPRISE_TYPE => "glpi_enterprises",
-		CARTRIDGE_TYPE => "glpi_cartridges_type",
-		CONSUMABLE_TYPE => "glpi_consumables_type",
-		CONTRACT_TYPE => "glpi_contracts",
-	);
+	$doc_links = array (COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE , PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE, ENTERPRISE_TYPE , CARTRIDGE_TYPE, CONSUMABLE_TYPE, CONTRACT_TYPE);
 
-	foreach ($doc_links as $type => $table) {
+	foreach ($doc_links as $type) {
+		$table=$LINK_ID_TABLE[$type];
 		$query = "SELECT glpi_doc_device.ID as linkID, $table.*
 									FROM glpi_doc_device 
 									LEFT JOIN $table ON (glpi_doc_device.FK_device = $table.ID AND glpi_doc_device.device_type='$type') WHERE glpi_doc_device.is_template='1'";
@@ -326,14 +315,16 @@ function update0681to07() {
 		$state_type=array(SOFTWARE_TYPE,COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 		foreach ($state_type as $type){
 			$table=$LINK_ID_TABLE[$type];
-			$query ="ALTER TABLE `$table` ADD `state` INT NOT NULL DEFAULT '0';";
-			$DB->query($query) or die("0.7 add state field to $table " . $LANG["update"][90] . $DB->error());
-			$query2="SELECT * FROM glpi_state_item WHERE device_type='$type'";
-			$result=$DB->query($query2);
-			if ($DB->numrows($result)){
-				while ($data=$DB->fetch_array($result)){
-					$query3="UPDATE $table SET state='".$data["state"]."' WHERE ID ='".$data["id_device"]."'";
-					$DB->query($query3) or die("0.7 update state field value to $table " . $LANG["update"][90] . $DB->error());
+			if (!FieldExists($table, "state")) {
+				$query ="ALTER TABLE `$table` ADD `state` INT NOT NULL DEFAULT '0';";
+				$DB->query($query) or die("0.7 add state field to $table " . $LANG["update"][90] . $DB->error());
+				$query2="SELECT * FROM glpi_state_item WHERE device_type='$type'";
+				$result=$DB->query($query2);
+				if ($DB->numrows($result)){
+					while ($data=$DB->fetch_array($result)){
+						$query3="UPDATE $table SET state='".$data["state"]."' WHERE ID ='".$data["id_device"]."'";
+						$DB->query($query3) or die("0.7 update state field value to $table " . $LANG["update"][90] . $DB->error());
+					}
 				}
 			}
 		}
@@ -341,13 +332,39 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 drop table state_item " . $LANG["update"][90] . $DB->error());
 		$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES (22, 31, 1, 0);";
 		$DB->query($query) or die("0.7 add default search for states " . $LANG["update"][90] . $DB->error());
+		// Add for reservation
+		$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES ( 29, 4, 1, 0);";
+		$DB->query($query) or die("0.7 add defaul search for reservation " . $LANG["update"][90] . $DB->error());
+		$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES ( 29, 3, 2, 0);";
+		$DB->query($query) or die("0.7 add defaul search for reservation " . $LANG["update"][90] . $DB->error());
 	}
-	$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES ( 29, 4, 1, 0);";
-	$DB->query($query) or die("0.7 add defaul search for reservation " . $LANG["update"][90] . $DB->error());
-	$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES ( 29, 3, 2, 0);";
-	$DB->query($query) or die("0.7 add defaul search for reservation " . $LANG["update"][90] . $DB->error());
 
-	
+
+	// Add ticket_tco for hardwares
+	$tco_tbl=array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
+	include (GLPI_ROOT . "/inc/infocom.function.php");
+
+	foreach ($tco_tbl as $type) {
+		$table=$LINK_ID_TABLE[$type];
+		if (!FieldExists($table, "ticket_tco")){
+			$query = "ALTER TABLE `$table` ADD `ticket_tco` FLOAT DEFAULT '0';";
+			$DB->query($query) or die("0.7 alter $table add ticket_tco" . $LANG["update"][90] . $DB->error());
+			// Update values
+			$query="SELECT DISTINCT device_type, computer 
+				FROM glpi_tracking 
+				WHERE device_type = '$type' AND (cost_time>0 
+					OR cost_fixed>0
+					OR cost_material>0)";
+			$result=$DB->query($query) or die("0.7 update ticket_tco" . $LANG["update"][90] . $DB->error());
+			if ($DB->numrows($result)){
+				while ($data=$DB->fetch_array($result)){
+					$query2="UPDATE $table SET ticket_tco='".computeTicketTco($type,$data["computer"])."' 
+						WHERE ID='".$data["computer"]."';";
+					$DB->query($query2) or die("0.7 update ticket_tco" . $LANG["update"][90] . $DB->error());
+				}
+			}
+		}
+	}	
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	// TODO Split Config -> config general + config entity
 	// TODO AUto assignment profile based on rules
