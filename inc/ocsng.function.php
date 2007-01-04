@@ -1781,12 +1781,12 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 
 		if ($cfg_ocs["use_soft_dict"])
 			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, 
-				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER 
+				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
 				FROM softwares 
 				INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
 				WHERE softwares.HARDWARE_ID='$ocs_id'";
 		else $query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME, 
-			softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER 
+			softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
 				FROM softwares 
 				WHERE softwares.HARDWARE_ID='$ocs_id'";
 		$already_imported=array();
@@ -1796,8 +1796,6 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 				$data2=clean_cross_side_scripting_deep(addslashes_deep($data2));
 				$initname =  $data2["INITNAME"];
 				$name= $data2["NAME"];
-				$version = $data2["VERSION"];
-				$publisher = $data2["PUBLISHER"];
 				// Import Software
 				if (!in_array($name,$already_imported)){ // Manage multiple software with the same name = only one install
 					$already_imported[]=$name;
@@ -1817,9 +1815,10 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 						if (!$isNewSoft) {
 							$soft = new Software;
 							$soft->fields["name"] = $name;
-							$soft->fields["version"] = $version;
-							if (!empty($publisher))
-								$soft->fields["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
+							$soft->fields["version"] = $data2["VERSION"];
+							$soft->fields["comments"] = $data2["COMMENTS"];
+							if (!empty($data2["PUBLISHER"]))
+								$soft->fields["FK_glpi_enterprise"] = ocsImportEnterprise($data2["PUBLISHER"]);
 							$isNewSoft = $soft->addToDB();
 						}
 						if ($isNewSoft){
@@ -1842,10 +1841,10 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 							if ($DB->result($result_name,0,"NAME")!=$name){
 								$updates["name"]=$name;
 								// No update version
-								//$updates["version"]=$version;
+								//$updates["version"]=$data2["VERSION"];
 								// No update publisher
-								//if (!empty($publisher))
-								//	$updates["FK_glpi_enterprise"] = ocsImportEnterprise($publisher);
+								//if (!empty($data2["PUBLISHER"]))
+								//	$updates["FK_glpi_enterprise"] = ocsImportEnterprise($data2["PUBLISHER"]);
 								$updates["ID"]=$DB->result($result_name,0,"ID");
 								$soft=new Software();
 								$soft->update($updates);
