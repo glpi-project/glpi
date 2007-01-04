@@ -227,7 +227,6 @@ class CommonItem{
 		}
 
 	}
-
 	/**
 	 * Get The Name of the Object
 	 *
@@ -236,7 +235,9 @@ class CommonItem{
 	function getName(){
 		global $LANG;
 
-		if ($this->device_type==0) return "";
+		if ($this->device_type==0) {
+			return "";
+		}
 
 		if ($this->device_type==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
 			return $this->obj->fields["question"];
@@ -291,8 +292,7 @@ class CommonItem{
 			case CONSUMABLE_TYPE : 
 			case DOCUMENT_TYPE : 
 			case GROUP_TYPE : 
-				if($CFG_GLPI["view_ID"]) $ID= " (".$this->id_device.")";
-				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getName()."$ID</a>";
+				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getNameID()."</a>";
 				break;
 			case LICENSE_TYPE : 
 				return $this->getName();

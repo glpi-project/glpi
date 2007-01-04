@@ -131,7 +131,7 @@ function showAddPlanningTrackingForm($target,$fup,$planID=-1){
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td>".$LANG["planning"][10].":	</td>";
 	echo "<td>";
-	echo "<b>".$j->computername."</b>";
+	echo "<b>".$j->hardwaredatas->getName()."</b>";
 	echo "</td></tr>";
 
 	if (!haveRight("comment_all_ticket","1"))
@@ -278,7 +278,7 @@ function showPlanning($who,$when,$type){
 				$interv[$data["begin"]."$$$".$i]["end"]=$fin;
 			else $interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
 			$interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$$".$i]["device"]=$job->computername;
+			$interv[$data["begin"]."$$$".$i]["device"]=$job->hardwaredatas->getName();
 			$interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
 			$interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
 			$i++;
@@ -549,7 +549,7 @@ function ShowPlanningCentral($who){
 			$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 			$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 			$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
+			$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 			$i++;
 		}
 
@@ -745,7 +745,7 @@ function generateIcal($who){
 			$interv[$data["begin"]."$$".$i]["end"]=$data['end'];
 			//$interv[$i]["content"]=substr($job->contents,0,$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["device"]=$job->computername;
+			$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 			$i++;
 		}
 
