@@ -251,9 +251,9 @@ function commonHeader($title,$url)
 		
 		//-- Le moteur de recherche -->
 		echo "<div id='c_recherche' >\n"; 
-		echo "<form id='recherche' action=''>\n"; 
+		echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n"; 
 		echo "	<div id='boutonRecherche'><input type='submit' value='OK' /></div>\n"; 
-		echo "	<div id='champRecherche'><input type='text' value='Recherche' /></div>	\n"; 		
+		echo "	<div id='champRecherche'><input type='text' name='globalsearch' value='".$LANG["buttons"][0]."' /></div>	\n"; 		
 		echo "</form>\n"; 
 		echo "<div class='sep'></div>\n"; 
 		echo "</div>";
