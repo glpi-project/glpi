@@ -1057,6 +1057,7 @@ $LANG["profiles"][23]="Administration des réservations";
 $LANG["profiles"][24]="Mise à jour de mot de passe";
 $LANG["profiles"][25]="Général";
 $LANG["profiles"][26]="Voir les tickets de mes groupes";
+$LANG["profiles"][27]="Voir les matériels de mes groupes";
 
 $LANG["reminder"][0]="Notes personnelles";
 $LANG["reminder"][1]="Notes publiques";

@@ -88,9 +88,9 @@ $MAX['manufacturer']=5;
 
 // USERS
 $MAX['users_sadmin']=1;
-$MAX['users_admin']=5;
-$MAX['users_normal']=5;
-$MAX['users_postonly']=10;
+$MAX['users_admin']=50;
+$MAX['users_normal']=50;
+$MAX['users_postonly']=1000;
 $MAX['enterprises']=5;
 $MAX['contacts']=10;
 $MAX['groups']=3;
