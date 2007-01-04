@@ -294,6 +294,10 @@ class Software  extends CommonDBTM {
 				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 				echo "</td></tr>";	
 	
+				echo "<tr class='tab_bg_1'><td>".$LANG["software"][46].":</td><td>";
+				echo "<select name='helpdesk_visible'><option value='1' ".($this->fields['helpdesk_visible']==1?"selected":"").">".$LANG["choice"][1]."</option><option value='0' ".($this->fields['helpdesk_visible']==0?"selected":"").">".$LANG["choice"][0]."</option></select>";
+				echo "</td>";
+				echo "<td colspan='2'></td></tr>";	
 	
 				echo "<tr class='tab_bg_1'><td valign='top'>";
 				echo $LANG["common"][25].":	</td>";

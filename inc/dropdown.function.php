@@ -409,7 +409,8 @@ function getDropdownName($table,$id,$withcomments=0) {
 							break;
 						case "glpi_software":
 							$name .= "  (v. ".$data["version"].")";
-							if ($data["platform"]!=0)
+							
+							if ($data["platform"]!=0 && $data["helpdesk_visible"] != 0)
 								$comments.="<br>".$LANG["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
 							break;
 					}
@@ -740,11 +741,12 @@ function dropdownMyDevices($userID=0){
 		foreach ($CFG_GLPI["linkuser_type"] as $type){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='N' ";
-
+				 
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
 					$ci->setType($type);
 					$type_name=$ci->getType();
+					
 					while ($data=$DB->fetch_array($result)){
 						$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
 						$already_add[$type][]=$data["ID"];
@@ -837,7 +839,7 @@ function dropdownMyDevices($userID=0){
 			// Software
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 				$query = "SELECT DISTINCT glpi_software.version as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
-				$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." order by glpi_software.name";
+				$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)."AND  glpi_software.helpdesk_visible=1 order by glpi_software.name";
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
 					$tmp_device="";

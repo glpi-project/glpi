@@ -1987,6 +1987,7 @@ CREATE TABLE `glpi_software` (
   `FK_groups` int(11) default NULL,
   `state` int(11) NOT NULL default '0',
   `ticket_tco` float default '0',
+  `helpdesk_visible` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`ID`),
   KEY `platform` (`platform`),
   KEY `location` (`location`),
@@ -2002,7 +2003,7 @@ CREATE TABLE `glpi_software` (
   KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_software VALUES ('1','0','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL,NULL,NULL,'0','0');
+INSERT INTO glpi_software VALUES ('1','0','','',NULL,NULL,'0',NULL,'N','-1','0','N','1','Blank Template',NULL,NULL,NULL,NULL,'0','0','1');
 
 ### Dump table glpi_tracking
 

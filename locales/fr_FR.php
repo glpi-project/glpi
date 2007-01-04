@@ -1424,6 +1424,7 @@ $LANG["software"][42]="Nouveau logiciel à partir d'un modèle";
 $LANG["software"][43]="Ajouter une licence à acheter";
 $LANG["software"][44]="Installation d'un logiciel";
 $LANG["software"][45]="Désinstallation d'un logiciel";
+$LANG["software"][46]="Visible dans le Helpdesk";
 
 $LANG["state"][0]="Statut";
 $LANG["state"][1]="Statuts des matériels";
