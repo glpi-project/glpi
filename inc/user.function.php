@@ -163,7 +163,7 @@ function showDeviceUser($ID){
 		}
 
 	}
-	echo "</table></div>";
+	echo "</table></div><br>";
 }
 
 function showGroupAssociated($target,$ID){
