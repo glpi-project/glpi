@@ -662,7 +662,7 @@ class User extends CommonDBTM {
 					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td align='center'>";
 					if ($this->fields["date_mod"] != "0000-00-00 00:00:00")
 						echo convDateTime($this->fields["date_mod"]);
-					echo "</td><td align='center' colspan='2'></td>'";
+					echo "</td><td align='center' colspan='2'></td>";
 					echo "</tr>";
 
 				}
