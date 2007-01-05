@@ -667,7 +667,7 @@ function generate_entity($ID_entity){
 	$query = "OPTIMIZE TABLE  glpi_dropdown_locations;";
 	$DB->query($query) or die("PB REQUETE ".$query);
 	
-	
+	regenerateTreeCompleteName("glpi_dropdown_locations");
 	$LAST["locations"]=getMaxItem("glpi_dropdown_locations");
 
 
@@ -1228,7 +1228,7 @@ function generate_entity($ID_entity){
 		$loc=mt_rand(1,$MAX['locations']);
 		$techID=mt_rand(1,$MAX['users_sadmin']+$MAX['users_admin']);
 		$os=mt_rand(1,$MAX['os']);
-		$query="INSERT INTO glpi_software VALUES (NULL,'$ID_entity','$name','$version','comments $i','$loc','$techID','$os','N','-1','".mt_rand(1,$MAX['manufacturer'])."','N','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
+		$query="INSERT INTO glpi_software VALUES (NULL,'$ID_entity','$name','$version','comments $i','$loc','$techID','$os','N','-1','".mt_rand(1,$MAX['manufacturer'])."','N','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0','1')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$softID=$DB->insert_id();
 		addDocuments(SOFTWARE_TYPE,$softID);
