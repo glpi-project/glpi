@@ -537,6 +537,7 @@ class User extends CommonDBTM {
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
 			if (empty ($ID)) {
 				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
+				echo "<input type='hidden' name='auth_method' value='1'>";
 			}
 
 			echo "<tr><th colspan='4'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "&nbsp;";
@@ -550,12 +551,12 @@ class User extends CommonDBTM {
 				echo "</td>";
 				// si on est dans le cas d'un modif on affiche la modif du login si ce n'est pas une auth externe
 			} else {
-				if (empty ($this->fields["password"]) && empty ($this->fields["password_md5"])) {
-					echo "<td align='center'><b>" . $this->fields["name"] . "</b>";
-					echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
-				} else {
+				if (!empty ($this->fields["password_md5"])||$this->fields["auth_method"]==AUTH_DB_GLPI) {
 					echo "<td>";
 					autocompletionTextField("name", "glpi_users", "name", $this->fields["name"], 20);
+				} else {
+					echo "<td align='center'><b>" . $this->fields["name"] . "</b>";
+					echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
 				}
 
 				echo "<input type='hidden' name='ID' value=\"" . $this->fields["ID"] . "\">";
@@ -565,7 +566,7 @@ class User extends CommonDBTM {
 
 			//do some rights verification
 			if (haveRight("user", "w")) {
-				if (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"]) || $this->fields["name"] == "") {
+				if ($this->fields["auth_method"]==AUTH_DB_GLPI||!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"]) || $this->fields["name"] == "") {
 					echo "<td align='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 				} else
 					echo "<td colspan='2'>&nbsp;</td></tr>";
