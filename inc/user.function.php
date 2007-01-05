@@ -83,7 +83,20 @@ function dropdownUserType($myname,$value="post-only"){
 
 }
 
-function useAuthExt(){
+
+function useAuthMail(){
+	global $DB;	
+
+	//Get all the pop/imap servers
+	$sql = "SELECT * FROM glpi_auth_mail";
+	$result = $DB->query($sql);
+	if ($DB->numrows($result) > 0) {
+		return true;
+	}
+	return false;
+}
+
+function useAuthLdap(){
 	global $DB;	
 
 	//Get all the ldap directories
@@ -92,10 +105,19 @@ function useAuthExt(){
 	if ($DB->numrows($result) > 0) {
 		return true;
 	}
-	//Get all the pop/imap servers
-	$sql = "SELECT * FROM glpi_auth_mail";
-	$result = $DB->query($sql);
-	if ($DB->numrows($result) > 0) {
+	return false;
+}
+
+
+function useAuthExt(){
+	global $DB;	
+
+	//Get all the ldap directories
+	if (useAuthLdap()){
+		return true;
+	}
+
+	if (useAuthMail()){
 		return true;
 	}
 	return false;

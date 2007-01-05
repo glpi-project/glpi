@@ -146,8 +146,6 @@ function commonHeader($title,$url)
 			$utils[$LANG["Menu"][6]]=array("report.php"," ");
 		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")) 
 			$utils[$LANG["Menu"][33]]=array("ocsng.php"," ");
-		if (haveRight("user","w")) 
-			$utils[$LANG["Menu"][38]]=array("ldap.php"," ");
 	
 		//////// INVENTORY
 		$inventory=array();

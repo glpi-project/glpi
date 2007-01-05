@@ -152,29 +152,10 @@ else if (isset($_POST["deletegroup"]))
 	} else {
 		if (isset($_GET['add_ext_auth'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
-				$ldap_method = $user->getAuthMethods();
-				// LDAP case : get all informations
-				if (!empty($ldap_method["ldap_host"])){
-
-					// Get dn without testing login
-					$ds=connect_ldap($ldap_method["ldap_host"],$ldap_method["ldap_port"],$ldap_method["ldap_rootdn"],$ldap_method["ldap_pass"],$ldap_method["ldap_use_tls"]);
-					if ($ds){
-						$user_dn = ldap_search_user_dn($ds,$ldap_method["ldap_basedn"],$ldap_method["ldap_login"],utf8_decode($_GET['login']),$ldap_method["ldap_condition"]); 
-						if ($user_dn) {
-							$identificat = new Identification();
-							$identificat->user->getFromLDAP($ldap_method["ldap_host"],$ldap_method["ldap_port"],$user_dn,$ldap_method["ldap_rootdn"],$ldap_method["ldap_pass"],$ldap_method['ldap_fields'],utf8_decode($_GET['login']),"",$CFG_GLPI["ldap_use_tls"]);
-							$identificat->user->fields["_extauth"]=1;
-							$input=$identificat->user->fields;
-							unset($identificat->user->fields);
-							$identificat->user->add($input);
-						}
-					}
-				} else {
-					$user=new User();
-					$input["name"]=$_GET['login'];
-					$input["_extauth"]=1;
-					$user->add($input);
-				}
+				$user=new User();
+				$input["name"]=$_GET['login'];
+				$input["_extauth"]=1;
+				$user->add($input);
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
