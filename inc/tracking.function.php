@@ -608,10 +608,10 @@ function showJobVeryShort($ID) {
 
 		if (haveTypeRight($job->fields["device_type"],"r")){
 			echo "<td align='center' ";
-			if (isset($job->hardwaredatas->obj["deleted"])&&$job->hardwaredatas->obj["deleted"]=='Y')
+			if (isset($job->hardwaredatas->obj->fields["deleted"])&&$job->hardwaredatas->obj->fields["deleted"]=='Y')
 				echo "class='tab_bg_1_2'";
 			echo ">";
-			echo $m->getType()."<br>";
+			echo $job->hardwaredatas->getType()."<br>";
 			echo "<strong>";
 			echo $job->hardwaredatas->getLink();
 			echo "</strong>";
