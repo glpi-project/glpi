@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: HEADER 3795 2006-08-22 03:57:36Z moyo $
+ * @version $Id: uemailUpdate.php 4075 2006-11-07 22:09:56Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
@@ -33,19 +33,23 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-include ("_relpos.php");
-$AJAX_INCLUDE=1;
-include ($phproot."/inc/includes.php");
-
-// Send UTF8 Headers
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-checkCentralAccess();
-
-$query="SELECT email from glpi_users WHERE ID='".$_POST["value"]."'";
-$result=$db->query($query);
-$email=$db->result($result,0,"email");
-echo "<input type='text' size='30' name='uemail' value='$email'>";
+	define('GLPI_ROOT','..');
+	$AJAX_INCLUDE=1;
+	include (GLPI_ROOT."/inc/includes.php");
+	
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+	
+	checkCentralAccess();
+	
+	$query="SELECT email from glpi_users WHERE ID='".$_POST["value"]."'";
+	$email="";
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)){
+			$email=$DB->result($result,0,"email");
+		}
+	}
+	echo "<input type='text' size='30' name='uemail' value='$email'>";
 
 ?>
