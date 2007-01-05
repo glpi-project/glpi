@@ -74,7 +74,7 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=0) {
  * @return nothing (display the select box)
  *
  */
-function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restrict=0) {
+function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restrict=-1) {
 
 	global $CFG_GLPI,$LANG,$DB;
 

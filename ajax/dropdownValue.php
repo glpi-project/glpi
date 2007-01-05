@@ -140,8 +140,8 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 			if (!$first) $where.=" AND ";
 			else $first=false;
-
-			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>0){
+		
+			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 				$where.= $_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
 			} else {
 				$where.=getEntitiesRestrictRequest("",$_POST['table']);
