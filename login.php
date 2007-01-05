@@ -161,81 +161,81 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 		}
 		// Fin des tests de connexion
 
-		// Ok, we have gathered sufficient data, if the first return false the user
-		// are not present on the DB, so we add it.
-		// if not, we update it.
+	}
 
-		if ($identificat->auth_succeded) {
-			// Prepare data
-			$identificat->user->fields["last_login"]=$_SESSION["glpi_currenttime"];
-			if ($identificat->extauth)
-				$identificat->user->fields["_extauth"] = 1;			
-			// Need auto add user ?
-			if (!$identificat->user_present && $CFG_GLPI["auto_add_users"]) {
-				$input = $identificat->user->fields;
-				unset ($identificat->user->fields);
-				$identificat->user->fields["ID"] = $identificat->user->add($input);
 
-			} else
-				if (!$identificat->user_present) { // Auto add not enable so auth failed
-					$identificat->err .= $LANG["login"][11];
-					$identificat->auth_succeded = false;
-				} else
-					if ($identificat->user_present) {
-						
-						// update user and Blank PWD to clean old database for the external auth
-						$identificat->user->update($identificat->user->fields);
+	// Ok, we have gathered sufficient data, if the first return false the user
+	// are not present on the DB, so we add it.
+	// if not, we update it.
 
-						if ($identificat->extauth) {
-							$identificat->user->blankPassword();
-						}
-					}
+	if ($identificat->auth_succeded) {
+		// Prepare data
+		$identificat->user->fields["last_login"]=$_SESSION["glpi_currenttime"];
+		if ($identificat->extauth){
+			$identificat->user->fields["_extauth"] = 1;			
 		}
+		// Need auto add user ?
+		if (!$identificat->user_present && $CFG_GLPI["auto_add_users"]) {
+			$input = $identificat->user->fields;
+			unset ($identificat->user->fields);
+			$identificat->user->fields["ID"] = $identificat->user->add($input);
+		} else	if (!$identificat->user_present) { // Auto add not enable so auth failed
+			$identificat->err .= $LANG["login"][11];
+			$identificat->auth_succeded = false;
+		} else	if ($identificat->user_present) {
+			// update user and Blank PWD to clean old database for the external auth
+			$identificat->user->update($identificat->user->fields);
 
-		// we have done at least a good login? No, we exit.
-		if (!$identificat->auth_succeded) {
-			nullHeader("Login", $_SERVER['PHP_SELF']);
-			echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
-			echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
-			nullFooter();
-			if ($CFG_GLPI["debug"] == DEMO_MODE)
-				logevent(-1, "system", 1, "login", "failed login: " . $_POST['login_name']);
-			else
-				logevent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name']);
-
-			exit;
+			if ($identificat->extauth) {
+				$identificat->user->blankPassword();
+			}
 		}
+	}
 
-		// now we can continue with the process...
-		$identificat->initSession();
-
-		// GET THE IP OF THE CLIENT
-		$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
-
-		// Log Event
-		if ($CFG_GLPI["debug"] == DEMO_MODE)
-			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " logged in." . $LANG["log"][40] . " : " . $ip);
-		else
-			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG["log"][40] . " : " . $ip);
-
-		// Expire Event Log
-		if ($CFG_GLPI["expire_events"] > 0) {
-			$secs = $CFG_GLPI["expire_events"] * 86400;
-			$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-			$result_exp = $DB->query($query_exp);
-		}
-
-		// Redirect management
-		$REDIRECT = "";
-		if (isset ($_POST['redirect']))
-			$REDIRECT = "?redirect=" .
-			$_POST['redirect'];
-
-		// Redirect to Command Central if not post-only
-		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-			glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
+	// we have done at least a good login? No, we exit.
+	if (!$identificat->auth_succeded) {
+		nullHeader("Login", $_SERVER['PHP_SELF']);
+		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
+		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
+		nullFooter();
+		if ($CFG_GLPI["debug"] == DEMO_MODE){
+			logevent(-1, "system", 1, "login", "failed login: " . $_POST['login_name']);
 		} else {
-			glpi_header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
+			logevent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name']);
 		}
+			exit;
+	}
+
+	// now we can continue with the process...
+	$identificat->initSession();
+
+	// GET THE IP OF THE CLIENT
+	$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
+
+	// Log Event
+	if ($CFG_GLPI["debug"] == DEMO_MODE){
+		logEvent("-1", "system", 3, "login", $_POST['login_name'] . " logged in." . $LANG["log"][40] . " : " . $ip);
+	} else {
+		logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG["log"][40] . " : " . $ip);
+	}
+
+	// Expire Event Log
+	if ($CFG_GLPI["expire_events"] > 0) {
+		$secs = $CFG_GLPI["expire_events"] * 86400;
+		$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+		$result_exp = $DB->query($query_exp);
+	}
+
+	// Redirect management
+	$REDIRECT = "";
+	if (isset ($_POST['redirect'])){
+		$REDIRECT = "?redirect=" .$_POST['redirect'];
+	}
+
+	// Redirect to Command Central if not post-only
+	if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+		glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
+	} else {
+		glpi_header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
 	}
 ?>
