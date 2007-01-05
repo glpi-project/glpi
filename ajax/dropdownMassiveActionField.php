@@ -54,6 +54,9 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 	
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
 		switch ($search["table"].".".$search["linkfield"]){
+			case "glpi_software.helpdesk_visible":
+				dropdownYesNoInt("helpdesk_visible");
+				break;
 			case "glpi_cartridges_type.alarm":
 			case "glpi_consumables_type.alarm":
 				dropdownInteger('alarm',0,-1,100);
