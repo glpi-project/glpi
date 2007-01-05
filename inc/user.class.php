@@ -495,12 +495,15 @@ class User extends CommonDBTM {
 			$buttons["user.form.php?new=1"] = $LANG["setup"][2];
 			$title = "";
 		}
-		if (useAuthExt()) {
+		if (useAuthLdap()) {
+			$buttons["user.form.php?new=1&ext_auth=1"] = $LANG["setup"][125];
+			$buttons["ldap.php"] = $LANG["setup"][3];
+			
+		} else if (useAuthExt()) {
 			$buttons["user.form.php?new=1&ext_auth=1"] = $LANG["setup"][125];
 		}
 
 		displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG["Menu"][14], $title, $buttons);
-
 	}
 
 	function showForm($target, $ID, $withtemplate = '') {

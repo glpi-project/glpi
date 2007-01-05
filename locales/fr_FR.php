@@ -871,7 +871,6 @@ $LANG["Menu"][34]="Téléphones";
 $LANG["Menu"][35]="Profils";
 $LANG["Menu"][36]="Groupes";
 $LANG["Menu"][37]="Entités";
-$LANG["Menu"][38]="Liaison LDAP";
 
 $LANG["monitors"][0]="Ajouter moniteur...";
 $LANG["monitors"][4]="Moniteur";
@@ -1166,6 +1165,7 @@ $LANG["search"][20]="Supprimer un critère global de recherche";
 
 $LANG["setup"][0]="Intitulés";
 $LANG["setup"][2]="Ajouter un utilisateur GLPI";
+$LANG["setup"][3]="Liaison LDAP";
 $LANG["setup"][4]="Types d'ordinateurs";
 $LANG["setup"][5]="Système d'exploitation";
 $LANG["setup"][9]="Interface réseau";
@@ -1242,7 +1242,7 @@ $LANG["setup"][121]="Joker Ajax";
 $LANG["setup"][122]="Ajax - Nombre d'élèments maximum affichés ";
 $LANG["setup"][123]="Ne pas utiliser ajax si le nombre d'élèments est inférieur à (0=jamais)";
 $LANG["setup"][124]="Ajout automatique des utilisateurs à partir des sources externes d'authentification";
-$LANG["setup"][125]="... Depuis une source externe";
+$LANG["setup"][125]="... Depuis une source externe (Simple)";
 $LANG["setup"][126]="Ajouter directement un utilisateur d'une source externe";
 $LANG["setup"][127]="Autocomplétion des champs textes avec AJAX";
 $LANG["setup"][128]="Format des dates";
