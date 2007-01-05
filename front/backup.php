@@ -398,7 +398,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 	$time_file=date("Y-m-d-H-i");
 	$cur_time=date("Y-m-d H:i");
-	$filename=$path."$time_file.$filetype";
+	$filename=$path."glpi-".GLPI_VERSION."-$time_file.$filetype";
 
 
 	if (!isset($_GET["duree"])&&is_file($filename)){
