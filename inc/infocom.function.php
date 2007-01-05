@@ -499,27 +499,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 function showTco($ticket_tco,$value,$date_achat=""){
 	// Affiche le TCO ou le TCO mensuel pour un matériel 
 	//		
-	$totalcost=0;
-
-	$query="SELECT * FROM glpi_tracking WHERE (status = 'old_done') and (device_type = '$item_type' and computer = '$item')";
-
-	$result = $DB->query($query);
-
-	$i = 0;
-	$number = $DB->numrows($result);
-
-	if ($number > 0){
-
-		while ($i < $number)
-		{
-			$ID = $DB->result($result, $i, "ID");
-
-			$totalcost+=($DB->result($result, $i, "realtime")*$DB->result($result, $i, "cost_time"))+$DB->result($result, $i, "cost_fixed")+$DB->result($result, $i, "cost_material");
-
-			$i++;
-		}
-
-	}
+	$totalcost=$ticket_tco;
 
 	if ($date_achat){ // on veut donc le TCO mensuel
 

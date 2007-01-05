@@ -122,8 +122,8 @@ else if (isset($_POST["deletegroup"]))
 				case -1:
 					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showDeviceUser($_GET["ID"]);
-					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",$_GET["ID"],-1);
 					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",$_GET["ID"],-1);
 					display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
