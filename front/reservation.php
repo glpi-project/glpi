@@ -54,17 +54,17 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 	if (isset($_POST["edit_resa"])){
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
-
+		$id_item=key($_POST["items"]);
 		if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) 
-			if ($rr->update($_POST,$_SERVER['PHP_SELF'],$_POST["id_item"]))
-				glpi_header($CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=".$_POST["id_item"]."&mois_courant=$begin_month&annee_courante=$begin_year");
+			if ($rr->update($_POST,$_SERVER['PHP_SELF'],$id_item))
+				glpi_header($CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=".$id_item."&mois_courant=$begin_month&annee_courante=$begin_year");
 	}
 
 
 	commonHeader($LANG["title"][35],$_SERVER['PHP_SELF']);
 
 	if (isset($_POST["clear_resa"])){
-
+		$id_item=key($_POST["items"]);
 		if ($rr->delete($_POST)){
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 		}
@@ -72,42 +72,58 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
-		printCalendrier($_SERVER['PHP_SELF'],$_POST["id_item"]);
+		printCalendrier($_SERVER['PHP_SELF'],$id_item);
 	} else if (isset($_GET["ID"])){
 		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
 	}
-	else if (isset($_GET["add"])){
-		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["add"],$_GET["date"]);
+	else if (isset($_GET["add_item"])){
+		if (!isset($_GET["date"])) $_GET["date"]=date("Y-m-d");
+		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["add_item"],$_GET["date"]);
 	}
 	else if (isset($_GET["edit"])){
-		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["item"],"",$_GET["edit"]);
+		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["edit_item"],"",$_GET["edit"]);
 	}
 	else if (isset($_POST["add_resa"])){
-		$ok=true;
-		$times=$_POST["periodicity_times"];
-		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
-		list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
-		$to_add=1;
+		$all_ok=true;
+		$id_item=0;
+		foreach ($_POST['items'] as $id_item){
+			$_POST['id_item']=$id_item;
 
-		if ($_POST["periodicity"]=="week") $to_add=7;
-		for ($i=1;$i<=$times&&$ok;$i++){
-			$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
-			$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
-
-			if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) {
-				unset($rr->fields["ID"]);
-				$ok=$rr->add($_POST,$_SERVER['PHP_SELF'],$ok);
+			$ok=true;
+			$times=$_POST["periodicity_times"];
+			list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
+			list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
+			$to_add=1;
+	
+			if ($_POST["periodicity"]=="week") $to_add=7;
+			for ($i=1;$i<=$times&&$ok;$i++){
+				$_POST["begin_date"]=date("Y-m-d",mktime(0,0,0,$begin_month,$begin_day+($i-1)*$to_add,$begin_year));
+				$_POST["end_date"]=date("Y-m-d",mktime(0,0,0,$end_month,$end_day+($i-1)*$to_add,$end_year));
+	
+				if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]) {
+					unset($rr->fields["ID"]);
+					$ok=$rr->add($_POST,$_SERVER['PHP_SELF'],$ok);
+				}
+	
 			}
+			// Positionnement du calendrier au mois de debut
+			$_GET["mois_courant"]=$begin_month;
+			$_GET["annee_courant"]=$begin_year;
+	
+			if ($ok){
+				logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]);
+			} else $all_ok=false;
 
+			if ($all_ok){
+				// Several reservations
+				if (count($_POST['items'])>1){
+					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&ID=");
+				} else { // Only one reservation
+					glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php?show=resa&ID=$id_item");
+				}
+			}
 		}
-		// Positionnement du calendrier au mois de debut
-		$_GET["mois_courant"]=$begin_month;
-		$_GET["annee_courant"]=$begin_year;
-
-		if ($ok){
-			logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]);
-			printCalendrier($_SERVER['PHP_SELF'],$_POST["id_item"]);
-		}
+		
 	}
 	else {
 		printReservationItems($_SERVER['PHP_SELF']);

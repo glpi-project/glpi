@@ -216,7 +216,7 @@ function printCalendrier($target,$ID=""){
 		echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 
 		if (!empty($ID)){
-			echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
+			echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
 		}
 		//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 		echo "<tr><td>";
@@ -250,10 +250,11 @@ function printCalendrier($target,$ID=""){
 
 }
 
-function showAddReservationForm($target,$ID,$date,$resaID=-1){
+function showAddReservationForm($target,$items,$date,$resaID=-1){
 	global $LANG;
 
 	if (!haveRight("reservation_helpdesk","1")) return false;
+	if (count($items)==0) return false;
 
 	$resa= new ReservationResa;
 	if ($resaID!=-1)
@@ -265,7 +266,6 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	}
 	$begin=strtotime($resa->fields["begin"]);
 	$end=strtotime($resa->fields["end"]);
-
 	$begin_date=date("Y-m-d",$begin);
 	$end_date=date("Y-m-d",$end);
 	$begin_hour=date("H:i",$begin);
@@ -276,20 +276,23 @@ function showAddReservationForm($target,$ID,$date,$resaID=-1){
 	if ($resaID!=-1)
 		echo "<input type='hidden' name='ID' value='$resaID'>";
 
-	echo "<input type='hidden' name='id_item' value='$ID'>";
-
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr><th colspan='2'><b>";
 	echo $LANG["reservation"][9];
 	echo "</b></th></tr>";
+
 	// Add Hardware name
 	$r=new ReservationItem;
-	$r->getfromDB($ID);
 	$ci=new CommonItem();
-	$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
+
 	echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
 	echo "<td>";
-	echo "<b>".$ci->getType()." - ".$ci->getName()."</b>";
+	foreach ($items as $ID){
+		$r->getfromDB($ID);
+		$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
+		echo "<b>".$ci->getType()." - ".$ci->getName()."</b><br>";
+		echo "<input type='hidden' name='items[$ID]' value='$ID'>";
+	}
 	echo "</td></tr>";
 	if (!haveRight("reservation_central","w"))
 		echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
@@ -426,7 +429,7 @@ function printReservationItem($target,$ID,$date){
 				else $display=$heure_debut."-".$heure_fin;
 
 				$rand=mt_rand();
-				$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;item=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
+				$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;edit_item[$ID]=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
 				$modif_end="</a>";
 				$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";
 
@@ -455,20 +458,26 @@ function printReservationItems($target){
 	$query="select ID from glpi_reservation_item ORDER BY device_type";
 
 	if ($result = $DB->query($query)) {
-		echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-		echo "<tr><th colspan='3'>".$LANG["reservation"][1]."</th></tr>";
+		
+		echo "<div align='center'><form method='get' target='$target?show=resa'><table class='tab_cadre' cellpadding='5'>";
+		echo "<tr><th colspan='4'>".$LANG["reservation"][1]."</th></tr>";
 		while ($row=$DB->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
 			$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
 			if (isset($ci->obj->fields["deleted"])&&$ci->obj->fields["deleted"]=='N'){
-				echo "<tr class='tab_bg_2'><td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ci->getType()." - ".$ci->getName()."</a></td>";
+				echo "<tr class='tab_bg_2'>";
+				echo "<td><input type='checkbox' name='add_item[".$row["ID"]."]' value='".$row["ID"]."' ></td>";
+				echo "<td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ci->getType()." - ".$ci->getName()."</a></td>";
 				echo "<td>".getDropdownName('glpi_dropdown_locations',$ci->obj->fields["location"])."</td>";
 				echo "<td>".nl2br($ri->fields["comments"])."</td>";
 				echo "</tr>";
 			}
 		}
-		echo "</table></div>";
+		echo "<tr class='tab_bg_1' align='center'><td colspan='4'><input type='submit' value=\"".$LANG["buttons"][8]."\" class='submit' ></td></tr>";
+		echo "</table>";
+		echo "<input type='hidden' name='show' value='resa'>";
+		echo "</form></div>";
 
 	}
 }
@@ -527,7 +536,6 @@ function showDeviceReservations($target,$type,$ID){
 
 	if ($resaID=isReservable($type,$ID)){
 
-		//echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][21]."</a>";
 		$now=$_SESSION["glpi_currenttime"];
 		// Print reservation in progress
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
