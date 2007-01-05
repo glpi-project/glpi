@@ -48,18 +48,21 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	if (!haveRight("dropdown", "w"))
 		return false;
 
-	$entity_restict = 0;
+	echo "<div align='center'>&nbsp;\n";
+	echo "<form method='post' action=\"$target\">";
+
+
+	$entity_restict = -1;
 	$numberof = 0;
 	if (in_array($tablename, $CFG_GLPI["dropdownentity_tables"])) {
 		$entity_restict = $_SESSION["glpiactive_entity"];
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+
 		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
 	} else {
 		$numberof = countElementsInTable($tablename);
 	}
 
-	echo "<div align='center'>&nbsp;\n";
-	echo "<form method='post' action=\"$target\">";
 
 	echo "<table class='tab_cadre_fixe'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
@@ -93,10 +96,10 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 		echo "<tr><td align='center' class='tab_bg_1'>";
 
-		dropdownValue($tablename, "value_to_move", $tomove, 0);
+		dropdownValue($tablename, "value_to_move", $tomove, 0, $entity_restict);
 		echo "&nbsp;&nbsp;&nbsp;" . $LANG["setup"][75] . " :&nbsp;&nbsp;&nbsp;";
 
-		dropdownValue($tablename, "value_where", $where, 0);
+		dropdownValue($tablename, "value_where", $where, 0, $entity_restict);
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='$tablename' >";
 		echo "<input type='submit' name='move' value=\"" . $LANG["buttons"][20] . "\" class='submit'>";
@@ -120,7 +123,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		echo "<option value='same' " . ($type == 'same' ? " selected " : "") . ">" . $LANG["setup"][76] . "</option>";
 		echo "</select>&nbsp;&nbsp;&nbsp;";
 		;
-		dropdownValue($tablename, "value2", $value2, 0);
+		dropdownValue($tablename, "value2", $value2, 0, $entity_restict);
 	} else
 		echo "<input type='hidden' name='type' value='first'>";
 
@@ -128,7 +131,6 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'  width='202'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
-	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 	echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 	echo "</td></tr>";
@@ -143,10 +145,12 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '') {
 	if (!haveRight("dropdown", "w"))
 		return false;
 
-	$entity_restict = 0;
+	$entity_restict = -1;
+	$numberof=0;
 	if (in_array($tablename, $CFG_GLPI["dropdownentity_tables"])) {
 		$entity_restict = $_SESSION["glpiactive_entity"];
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
 	} else {
 		$numberof = countElementsInTable($tablename);
 	}
@@ -186,12 +190,11 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '') {
 				$value = $DB->result($result, 0, "name");
 				$loc = $DB->result($result, 0, "location");
 				$comments = $DB->result($result, 0, "comments");
-				$entity = $DB->result($result, 0, "FK_entities");
 			}
 			echo "<br>";
 			echo $LANG["common"][15] . ": ";
 
-			dropdownValue("glpi_dropdown_locations", "value2", $loc, 0, $entity);
+			dropdownValue("glpi_dropdown_locations", "value2", $loc, 0, $entity_restict);
 			echo $LANG["networking"][52] . ": ";
 			echo "<input type='text' maxlength='100' size='10' name='value' value=\"" . $value . "\"><br>";
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $comments . "</textarea>";

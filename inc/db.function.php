@@ -65,7 +65,7 @@ function countElementsInTable($table){
 function countElementsInTableForEntity($table,$entity){
 	global $DB;
 	$query="SELECT count(*) AS cpt 
-		FROM $table ".getEntitiesRestrictRequest("WHERE",$table);
+		FROM $table WHERE FK_entities='$entity'";
 	$result=$DB->query($query);
 	$ligne = $DB->fetch_array($result);
 	return $ligne['cpt'];
