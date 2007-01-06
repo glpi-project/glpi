@@ -54,7 +54,7 @@ if (!defined('GLPI_ROOT')){
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (display the select box)
  **/
-function dropdown($table,$myname,$display_comments=1,$entity_restrict=0) {
+function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1) {
 
 	return dropdownValue($table,$myname,0,$display_comments,$entity_restrict);
 }
@@ -237,7 +237,7 @@ function dropdownNoValue($table,$myname,$value) {
  *
  */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
-function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_restrict=0,$helpdesk_ajax=0) {
+function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0) {
 	// Make a select box with all glpi users
 
 	global $CFG_GLPI,$LANG,$DB;
@@ -329,7 +329,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
  * @return nothing (print out an HTML select box)
  * 
  */
-function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=0,$helpdesk_ajax=0) {
+function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0) {
 	return dropdownUsers($myname,$value,"all",0,$display_comments,$entity_restrict,$helpdesk_ajax);
 }
 
@@ -347,7 +347,7 @@ function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=
  * @param $all Nobody or All display for none selected
  * @return nothing (print out an HTML select box)
  */
-function dropdownUsersID($myname,$value,$right,$display_comments=1,$entity_restrict=0) {
+function dropdownUsersID($myname,$value,$right,$display_comments=1,$entity_restrict=-1) {
 	// Make a select box with all glpi users
 
 	return dropdownUsers($myname,$value,$right,0,$display_comments,$entity_restrict);
@@ -591,7 +591,7 @@ function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=0,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
+function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
 	global $DB,$LANG,$CFG_GLPI;
 
 	$items=array(
@@ -953,7 +953,7 @@ function dropdownTrackingAllDevices($myname,$value){
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownConnect($type,$fromtype,$myname,$entity_restrict=0,$onlyglobal=0) {
+function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0) {
 
 
 	global $CFG_GLPI;

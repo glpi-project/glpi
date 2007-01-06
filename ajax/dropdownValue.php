@@ -59,7 +59,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
-	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>0){
+	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 		if (!empty($where)) $where.= " AND glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
 		else $where.=" WHERE glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
 	} else {
@@ -201,7 +201,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		$where .=" (ID <> '".$_POST['value']."' ";
 
 		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
-			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>0){
+			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 				$where.= " AND ".$_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
 			} else {
 				$where.=getEntitiesRestrictRequest("AND",$_POST['table']);

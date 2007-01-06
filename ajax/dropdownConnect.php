@@ -56,7 +56,7 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildca
 $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
 
-if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>0){
+if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 	$where.= " AND $table.FK_entities='".$_POST["entity_restrict"]."'";
 } else {
 	$where.=getEntitiesRestrictRequest("AND",$table);

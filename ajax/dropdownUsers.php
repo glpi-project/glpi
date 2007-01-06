@@ -63,7 +63,7 @@ if ($_POST['right']=="interface"){
 }
 
 
-if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>0){
+if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 	$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
 } else {
 	$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
