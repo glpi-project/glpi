@@ -33,23 +33,22 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-	
-	checkCentralAccess();
-	
-	$query="SELECT email from glpi_users WHERE ID='".$_POST["value"]."'";
+include ("_relpos.php"); 
+	 	$AJAX_INCLUDE=1; 
+	 	include ($phproot."/inc/includes.php"); 
+	 	 
+	 	// Send UTF8 Headers 
+	 	header("Content-Type: text/html; charset=UTF-8"); 
+	 	header_nocache(); 
+	 	 
+ 	checkCentralAccess(); 
+	 	 
+ 	$query="SELECT email from glpi_users WHERE ID='".$_POST["value"]."'"; 
 	$email="";
-	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)){
-			$email=$DB->result($result,0,"email");
-		}
+	if ($result=$db->query($query)){
+	 	if ($db->numrows($result))
+			$email=$db->result($result,0,"email"); 
 	}
-	echo "<input type='text' size='30' name='uemail' value='$email'>";
+	 	echo "<input type='text' size='30' name='uemail' value='$email'>"; 
 
 ?>
