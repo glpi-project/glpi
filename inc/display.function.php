@@ -614,7 +614,7 @@ function nullHeader($title,$url) {
 	$HEADER_LOADED=true;
 	// Print a nice HTML-head with no controls
 
-	// Detect root_doc in ase of error
+	// Detect root_doc in case of error
 	if (!isset($CFG_GLPI["root_doc"])){
 		if ( !isset($_SERVER['REQUEST_URI']) ) {
 			$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
@@ -684,23 +684,14 @@ function nullHeader($title,$url) {
 	// Body with configured stuff
 	echo "<body>";
 
-	// Main Headline
-	echo "<div id='navigation' style='background : url(\"".$CFG_GLPI["root_doc"]."/pics/fond.png\") repeat-x top right ;'>";
+	echo "<div id='contenu-nullHeader'>";
 
-	echo "<table cellspacing='0' border='0' width='98%'>";
-	echo "<tr>";
-
-	// Logo with link to index
-	echo "<td align='center' width='100%'>\n";
-	echo "<a href=\"".$CFG_GLPI["root_doc"]."/index.php\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/logo-glpi.png\" alt=\"".$CFG_GLPI["logotxt"]."\" title=\"\" ></a>\n";
-	echo "</td>";
-
-
-	// End navigation bar
-
-	echo "</tr></table>";
-
-	echo "</div>";
+	echo "<div id='text-nullHeader'>";
+		
+			
+		
+	
+	
 }
 
 
@@ -923,12 +914,17 @@ function nullFooter() {
 	if ($FOOTER_LOADED) return;
 	$FOOTER_LOADED=true;
 
-	echo "<div id='footer'><div align='right'>";
-	echo "<a href=\"http://glpi-project.org/\">";
-	echo "<span class='copyright'>GLPI ".(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"")." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
-	echo "</a>";
-	echo "</div></div>";
+	echo "</div>";  // fin box text-nullHeader ouvert dans le null header
+	echo "</div>"; // fin contenu-nullHeader ouvert dans le null header
+	
 
+	echo "<div id='footer-login'>";
+	echo "<a href=\"http://glpi-project.org/\" title=\"Powered By Indepnet\"  >";
+	echo 'GLPI version '.(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").' Copyright (C) 2003-'.date("Y").' INDEPNET Development Team.';
+	echo "</a>";
+	echo "</div>";
+	
+	
 	echo "</body></html>";
 }
 
