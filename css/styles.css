@@ -40,7 +40,7 @@ body{
 	padding: 0;
 }
 
-ul, li, dt, dl, dd, form, input{
+ul, li, dt, dl, dd, form,img, input{
 	margin: 0;
 	padding: 0;
 }
@@ -130,7 +130,7 @@ div#c_recherche form div#boutonRecherche input{
 	width: 15px;
 	height: 15px;
 	border: none;
-	background: #D8BE56;
+	/*background: #D8BE56;*/
 	position: relative;
 	right: 2px;
 }
