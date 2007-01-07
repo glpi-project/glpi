@@ -268,7 +268,7 @@ div#c_ssmenu1{
 	background: url(../pics/fd_nav2.png) 0 0 repeat-x;
 	height: 19px;
 	clear: both;
-	font-size: 0.9em;
+	font-size: 0.8em;
 }
 
 div#c_ssmenu1 ul{
@@ -280,12 +280,16 @@ div#c_ssmenu1 ul{
 
 div#c_ssmenu1 ul li{
 	float: left;
-	padding: 0 10px;
+	padding: 0 30px;
 }
 
 div#c_ssmenu1 ul li a{
 	text-decoration: none;
-	color: #000;
+	color: #666;
+}
+
+div#c_ssmenu1 ul li a:hover{
+	text-decoration: underline;
 }
 
 div#c_ssmenu2{

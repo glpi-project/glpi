@@ -75,7 +75,7 @@ title=\"".$ref_pic_text."\" ></td>";
  * @param $url not used anymore.
  *
  **/
-function commonHeader($title,$url)
+function commonHeader($title,$url,$sector="none")
 {
 	// Print a nice HTML-head for every page
 
@@ -371,13 +371,40 @@ function commonHeader($title,$url)
 		///Le sous menu contextuel 1
 		echo "<div id='c_ssmenu1' >";
 		echo "<ul>";
-		echo "	<li><a href='' title='' >Suivi</a></li>";
-		echo "	<li>Planning</li>";
-		echo "	<li>Statistique</li>";
-		echo "	<li>Helpdesk</li>";
+		switch ($sector){
+			case "inventory":
+			$sous_menu=$inventory;
+			break;
+			case "utils":
+			$sous_menu=$utils;	
+			break;
+			case "financial":
+			$sous_menu=$financial;
+			break;
+			case "config":
+			$sous_menu=$config;	
+			break;
+			case "maintain":
+			$sous_menu=$maintain;	
+			break;
+			case "plugins":
+			$sous_menu=$list;
+			break;
+		}
+		// list sous-menu item 
+			if ($sector!="none"){
+				foreach ($sous_menu as $key => $val) {
+					if ($sector=="plugins"){
+						echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
+					}else{
+						echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
+					}
+				}
+			}
+		
 		echo "</ul>";
 		echo "</div>";
-
+		
 		//  Le fil d arianne 
 		echo "<div id='c_ssmenu2' >";
 		echo "<ul>";
