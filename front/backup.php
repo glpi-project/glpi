@@ -47,7 +47,7 @@ $path = GLPI_DUMP_DIR ;
 
 
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin");
 
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));

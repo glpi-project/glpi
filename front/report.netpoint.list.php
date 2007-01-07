@@ -44,7 +44,7 @@ checkRight("reports","r");
 
 
 	if (isset($_POST["prise"])&&$_POST["prise"]){
-		commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF']);
+		commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils");
 
 		$name=getDropdownName("glpi_dropdown_netpoint",$_POST["prise"]);
 

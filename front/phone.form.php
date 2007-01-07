@@ -131,7 +131,7 @@ else
 	}
 
 
-	commonHeader($LANG["title"][41],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["title"][41],$_SERVER['PHP_SELF'],"inventory");
 
 	if (!empty($tab["withtemplate"])) {
 

@@ -136,7 +136,7 @@ else if (isset($tab["form"]))
 {
 	checkRight("software","w");
 
-	commonHeader($LANG["title"][12],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["title"][12],$_SERVER['PHP_SELF'],"inventory");
 	showLicenseForm($_SERVER['PHP_SELF'],$tab['form'],$tab["sID"],$tab["lID"]);
 	commonFooter();
 }

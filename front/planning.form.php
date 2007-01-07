@@ -68,7 +68,7 @@ if (isset($_POST["add_planning"])){
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["id_tracking"]);
 
 } else if (isset($_GET["edit"])){
-	commonHeader($LANG["title"][31],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["title"][31],$_SERVER['PHP_SELF'],"maintain");
 
 	showAddPlanningTrackingForm($_SERVER['PHP_SELF'],$_GET["fup"],$_GET["ID"]);
 

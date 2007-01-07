@@ -125,7 +125,7 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($LANG["title"][18],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["title"][18],$_SERVER['PHP_SELF'],"inventory");
 
 	if (!empty($tab["withtemplate"])) {
 

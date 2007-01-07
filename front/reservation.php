@@ -61,7 +61,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	}
 
 
-	commonHeader($LANG["title"][35],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["title"][35],$_SERVER['PHP_SELF'],"utils");
 
 	if (isset($_POST["clear_resa"])){
 		$id_item=key($_POST["items"]);
@@ -161,7 +161,7 @@ else {
 
 		checkRight("reservation_central","r");
 
-		commonHeader($LANG["title"][35],$_SERVER['PHP_SELF']);
+		commonHeader($LANG["title"][35],$_SERVER['PHP_SELF'],"utils");
 
 		if (isset($_GET["comment"])){
 			showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["comment"]);

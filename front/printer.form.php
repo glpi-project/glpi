@@ -116,7 +116,7 @@ else
 {
 	checkRight("printer","r");
 
-	commonHeader($LANG["title"][8],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["title"][8],$_SERVER['PHP_SELF'],"inventory");
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {

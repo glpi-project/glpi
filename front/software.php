@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("software","r");
 
-commonHeader($LANG["title"][12],$_SERVER['PHP_SELF']);
+commonHeader($LANG["title"][12],$_SERVER['PHP_SELF'],"inventory");
 
 $soft=new Software();
 

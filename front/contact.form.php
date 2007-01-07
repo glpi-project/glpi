@@ -106,7 +106,7 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 	}
 
-	commonHeader($LANG["title"][22],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["title"][22],$_SERVER['PHP_SELF'],"financial");
 
 	if ($contact->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID'])){

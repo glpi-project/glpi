@@ -43,7 +43,7 @@ $NEEDED_ITEMS=array("setup");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"inventory");
 
 checkTypeRight($_GET["type"],"w");
 

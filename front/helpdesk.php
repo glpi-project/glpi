@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("create_ticket","1");
 
-commonHeader("Helpdesk",$_SERVER['PHP_SELF']);
+commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain");
 
 if (!isset($_POST["user"])) $user=$_SESSION["glpiID"];
 else $user=$_POST["user"];

@@ -57,29 +57,29 @@ if (isset ($_GET['onglet']))
 if (!empty ($_GET["next"])) {
 
 	if ($_GET["next"] == "extauth") {
-		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF']);
+		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"admin");
 		titleExtAuth();
 		//showFormExtAuth($_SERVER['PHP_SELF']);
 		showFormExtAuthList($_SERVER['PHP_SELF']);
 	}
 	elseif ($_GET["next"] == "mailing") {
-		commonHeader($LANG["title"][15], $_SERVER['PHP_SELF']);
+		commonHeader($LANG["title"][15], $_SERVER['PHP_SELF'],"admin");
 		titleMailing();
 		showFormMailing($_SERVER['PHP_SELF']);
 	}
 	elseif ($_GET["next"] == "confgen") {
-		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF']);
+		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"admin");
 		titleConfigGen();
 		showFormConfigGen($_SERVER['PHP_SELF']);
 	}
 	elseif ($_GET["next"] == "confdisplay") {
-		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF']);
+		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"admin");
 		titleConfigDisplay();
 		showFormConfigDisplay($_SERVER['PHP_SELF']);
 	}
 	elseif ($_GET["next"] == "ocsng") {
 		$DBocs = new DBocs();
-		commonHeader($LANG["title"][39], $_SERVER['PHP_SELF']);
+		commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'],"admin");
 		ocsFormDBConfig($_SERVER['PHP_SELF'], $CFG_GLPI["ID"]);
 	}
 }
