@@ -339,11 +339,6 @@ else
 		if (isset($_SESSION["glpiroot"])&&$cfg_glpi["root_doc"]!=$_SESSION["glpiroot"]) {
 			glpi_header($_SESSION["glpiroot"]);
 		}
-
-		// Override cfg_features by session value
-		if (isset($_SESSION['glpilist_limit'])) $cfg_glpi["list_limit"]=$_SESSION['glpilist_limit'];
-
-
 	}
 
 	if ((!isset($cfg_glpi["version"])||trim($cfg_glpi["version"])!=GLPI_VERSION)&&!isset($_GET["donotcheckversion"])){

@@ -53,6 +53,8 @@ include_once ($phproot . "/config/config.php");
 session_save_path($cfg_glpi["doc_dir"]."/_sessions");
 if(!session_id()){@session_start();}
 
+// Override cfg_features by session value
+if (isset($_SESSION['glpilist_limit'])) $cfg_glpi["list_limit"]=$_SESSION['glpilist_limit'];
 
 
 // Load Language file
