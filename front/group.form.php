@@ -97,7 +97,7 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 	}
 
-	commonHeader($LANG["Menu"][36],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["Menu"][36],$_SERVER['PHP_SELF'],"admin");
 
 	if ($group->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
 		if (!empty($tab['ID']))

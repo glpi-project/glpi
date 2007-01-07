@@ -45,7 +45,7 @@ checkRight("reports","r");
 
 // Titre
 if (isset($_POST["switch"])&&$_POST["switch"]){
-	commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils");
 
 	$name=getDropdownName("glpi_networking",$_POST["switch"]);
 	echo "<div align='center'><h2>".$LANG["reports"][49]." $name </h2></div><br><br>";

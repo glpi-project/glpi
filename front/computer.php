@@ -69,7 +69,7 @@ if (isset($_GET["reset_search"])){
 
 checkRight("computer","r");
 
-commonHeader($LANG["title"][3],$_SERVER['PHP_SELF']);
+commonHeader($LANG["title"][3],$_SERVER['PHP_SELF'],"inventory");
 $computer=new Computer();
 $computer->title();
 

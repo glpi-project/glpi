@@ -381,7 +381,7 @@ function commonHeader($title,$url,$sector="none")
 			case "financial":
 			$sous_menu=$financial;
 			break;
-			case "config":
+			case "admin":
 			$sous_menu=$config;	
 			break;
 			case "maintain":

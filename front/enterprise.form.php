@@ -111,7 +111,7 @@ else
 	}
 
 
-	commonHeader($LANG["title"][23],$_SERVER['PHP_SELF']);
+	commonHeader($LANG["title"][23],$_SERVER['PHP_SELF'],"financial");
 
 
 	if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){

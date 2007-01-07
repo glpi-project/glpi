@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkCentralAccess();
 
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin");
 
 
 // titre
