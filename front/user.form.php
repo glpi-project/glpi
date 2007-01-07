@@ -114,7 +114,7 @@ else if (isset($_POST["deletegroup"]))
 	if (!isset($_GET["ext_auth"])){
 		checkRight("user","r");
 
-		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
+		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF'],"admin");
 
 		if ($user->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			if (!empty($_GET["ID"]))
@@ -160,7 +160,7 @@ else if (isset($_POST["deletegroup"]))
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
 		checkRight("user","w");
-		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF']);
+		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF'],"admin");
 		showAddExtAuthUserForm($_SERVER['PHP_SELF']);
 		commonFooter();
 	}
