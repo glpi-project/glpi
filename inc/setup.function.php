@@ -1513,7 +1513,7 @@ function showFormExtAuthList($target) {
 	if (function_exists('imap_open')) {
 		echo "<form name=mail action=\"$target?next=extauth_mail\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-		echo "<table class='tab_cadre' cellpadding='5'>";
+		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		echo "<tr><th colspan='2'>" . $LANG["login"][3] . "</th></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
 		$sql = "SELECT * from glpi_auth_mail";
@@ -1541,7 +1541,7 @@ function showFormExtAuthList($target) {
 		echo "<form name=ldap action=\"$target?next=extauth_ldap\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
-		echo "<table class='tab_cadre' cellpadding='5'>";
+		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		echo "<tr><th colspan='2'>" . $LANG["login"][2] . "</th></tr>";
 		echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
 
@@ -1570,7 +1570,7 @@ function showFormExtAuthList($target) {
 
 		echo "<p> " . $LANG["setup"][173] . "</p>";
 
-		echo "<table class='tab_cadre' cellpadding='5'>";
+		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";

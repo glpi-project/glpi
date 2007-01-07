@@ -1288,7 +1288,7 @@ $LANG["setup"][170]="Chaîne de connexion obtenue";
 $LANG["setup"][171]="Port (optionnel)";
 $LANG["setup"][172]="LDAP Port (default=389)";
 $LANG["setup"][173]="Si vous ne souhaitez pas utiliser CAS comme source de connexion, laissez les champs vides";
-$LANG["setup"][174]="Hote CAS";
+$LANG["setup"][174]="Hôte CAS";
 $LANG["setup"][175]="Port";
 $LANG["setup"][176]="Répertoire de base (optionnel)";
 $LANG["setup"][177]="CAS configuration";
