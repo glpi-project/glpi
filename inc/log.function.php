@@ -383,19 +383,23 @@ function showAddEvents($target,$order,$sort,$user="") {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><b>";
 		if ($item=="-1" || $item=="0") {
-			echo $item;
+			echo "&nbsp;";//$item;
 		} else {
-			if ($itemtype=="reservation"){
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
+			if ($itemtype=="infocom"){
+				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
 			} else {
-				if ($itemtype[strlen($itemtype)-1]=='s')
-					$show=substr($itemtype,0,strlen($itemtype)-1);
-				else $show=$itemtype;
+				if ($itemtype=="reservation"){
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
+				} else {
+					if ($itemtype[strlen($itemtype)-1]=='s')
+						$show=substr($itemtype,0,strlen($itemtype)-1);
+					else $show=$itemtype;
 
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
+				}
+				echo $item;
+				echo "\">$item</a>";
 			}
-			echo $item;
-			echo "\">$item</a>";
 		}			
 		echo "</b></td><td><span style='font-size:9px;'>".convDateTime($date)."</span></td><td align='center'>".$logService[$service]."</td><td>$message</td>";
 		echo "</tr>";
@@ -514,7 +518,7 @@ function showEvents($target,$order,$sort,$start=0) {
 			echo "&nbsp;";//$item;
 		} else {
 			if ($itemtype=="infocom"){
-				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\">$item</a>";					
+				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
 			} else {
 				if ($itemtype=="reservation"){
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
