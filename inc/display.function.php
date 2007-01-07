@@ -129,7 +129,7 @@ function commonHeader($title,$url,$sector="none")
 		// End of Head
 		echo "</head>\n";
 
-	//if (!($CFG_GLPI["cache"]->start($_SESSION["glpiID"],"GLPI_HEADER"))) {
+	if (!($CFG_GLPI["cache"]->start($_SESSION["glpiID"],"GLPI_HEADER".$sector))) {
 		
 	// Body 
 		echo "<body>";
@@ -420,8 +420,8 @@ function commonHeader($title,$url,$sector="none")
 		
 		echo "<div  id='page' >";
 		
-	//	$CFG_GLPI["cache"]->end();
-	//}
+		$CFG_GLPI["cache"]->end();
+	}
 	
 	// call function callcron() every 5min
 	if (isset($_SESSION["glpicrontimer"])){
