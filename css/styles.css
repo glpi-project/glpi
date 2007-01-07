@@ -274,18 +274,20 @@ div#c_ssmenu1{
 div#c_ssmenu1 ul{
 	position: relative;
 	top: 3px;
-	left: 20px;
+	left: 5px;
 	list-style: none;
+	
 }
 
 div#c_ssmenu1 ul li{
 	float: left;
-	padding: 0 30px;
+	padding: 0 1%;
 }
 
 div#c_ssmenu1 ul li a{
 	text-decoration: none;
 	color: #666;
+	
 }
 
 div#c_ssmenu1 ul li a:hover{
