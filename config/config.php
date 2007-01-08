@@ -215,7 +215,7 @@
 			echo "<div align='center'>";
 	
 	
-			echo "<table class='tab_cadre_fixe'>";
+			echo "<table class='tab_cadre' style='width:500px'>";
 			echo "<tr><th>".$LANG["install"][6]."</th><th >".$LANG["install"][7]."</th></tr>";
 	
 			$error=checkWriteAccessToDirs();
@@ -225,7 +225,7 @@
 			if (!$error){
 				if (!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])<GLPI_VERSION){
 					echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
-					echo "<table class='tab_cadre_fixe'><tr><th>";
+					echo "<table class='tab_cadre' style='width:500px'><tr><th>";
 					echo $LANG["update"][88];
 					echo "</th></tr>";
 					echo "<tr class='tab_bg_1'><td align='center'>";
@@ -233,7 +233,7 @@
 					echo "</td></tr>";
 					echo "</table></form>";
 				} else if (trim($CFG_GLPI["version"])>GLPI_VERSION){
-					echo "<table class='tab_cadre_fixe'><tr><th>";
+					echo "<table class='tab_cadre' style='width:500px'><tr><th>";
 					echo $LANG["update"][89];
 					echo "</th></tr>";
 					echo "</table>";

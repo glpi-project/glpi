@@ -692,8 +692,8 @@ td { }
 }
 
 #contenu-nullHeader {
-	height: 292px;
-	width: 500px;
+	height: 524px;
+	width: 739px;
 	margin-top:100px;
 	margin-left: auto;
 	margin-right: auto;
@@ -703,12 +703,12 @@ td { }
 
 
 #text-nullHeader {
-	float:right;
-	height: 160px;
-	width: 400px;
-	margin-right:50px;
-	margin-left: 50px;
-	margin-top:110px;
+	float:left;
+	height: 400px;
+	width: 739px;
+	margin-right:auto;
+	margin-left: auto;
+	margin-top:150px;
 }
 
 
