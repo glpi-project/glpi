@@ -254,6 +254,17 @@ class CommonItem{
 		else 
 			return "N/A";
 	}
+	function getField($field){
+		if ($this->device_type==0) {
+			return false;
+		} else {
+			if (isset($this->obj->fields[$field])) {
+				return $this->obj->fields[$field];
+			} else {
+				return false;
+			}
+		}
+	}
 	function getNameID(){
 		global $CFG_GLPI;
 		if ($CFG_GLPI["view_ID"]){

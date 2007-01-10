@@ -509,7 +509,7 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Sixth Colum
 		$sixth_col="";
 		$deleted=0;
-		if (isset($job->hardwaredatas->obj->fields["deleted"])&&$job->hardwaredatas->obj->fields["deleted"]=='Y')
+		if (isset($job->hardwaredatas->getField("deleted")=='Y')
 			$deleted=1;
 		$sixth_col.=$job->hardwaredatas->getType();
 		if ($job->fields["device_type"]>0){
@@ -608,8 +608,9 @@ function showJobVeryShort($ID) {
 
 		if (haveTypeRight($job->fields["device_type"],"r")){
 			echo "<td align='center' ";
-			if (isset($job->hardwaredatas->obj->fields["deleted"])&&$job->hardwaredatas->obj->fields["deleted"]=='Y')
+			if ($job->hardwaredatas->getField("deleted")=='Y'){
 				echo "class='tab_bg_1_2'";
+			}
 			echo ">";
 			echo $job->hardwaredatas->getType()."<br>";
 			echo "<strong>";
