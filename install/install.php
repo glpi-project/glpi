@@ -89,6 +89,7 @@ function choose_language()
 	echo "<p style='text-align:center;'><label>Select your language </label><select name=\"language\">";
 	echo "<option value=\"fr_FR\">Fran&ccedil;ais (fr_FR)</option>";
 	echo "<option value=\"en_GB\">English (en_GB)</option>";
+	echo "<option value=\"dk_DK\">Danish (dk_DK)</option>";
 	echo "<option value=\"de_DE\">Deutch (de_DE)</option>";
 	echo "<option value=\"it_IT\">Italiano (it_IT)</option>";
 	echo "<option value=\"es_ES\">Espanol (es_ES)</option>";

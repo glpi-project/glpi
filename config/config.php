@@ -87,6 +87,7 @@
 					"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","pt_br"),
 					"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
 					"de_DE"=>array("Deutch","de_DE.php","en_GB.html","hd-en_GB.html","de","de"),
+					"dk_DK"=>array("Danish","dk_DK.php","en_GB.html","hd-en_GB.html","da","da"),
 					"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","nl"),
 					"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
 					"es_AR"=>array("Español (Argentina)","es_AR.php","en_GB.html","hd-en_GB.html","es","es"),
