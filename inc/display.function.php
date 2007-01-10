@@ -129,7 +129,7 @@ function commonHeader($title,$url,$sector="none")
 		// End of Head
 		echo "</head>\n";
 
-	if (!($CFG_GLPI["cache"]->start($_SESSION["glpiID"],"GLPI_HEADER".$sector))) {
+	if (!($CFG_GLPI["cache"]->start($sector,"GLPI_HEADER_".$_SESSION["glpiID"]))) {
 		
 	// Body 
 		echo "<body>";

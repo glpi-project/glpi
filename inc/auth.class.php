@@ -271,7 +271,7 @@ class Identification {
 		// Reload groups on entity switching
 
 		do_hook("init_session");
-		$CFG_GLPI["cache"]->remove($_SESSION["glpiID"], "GLPI_HEADER");
+		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 	}
 
 	function destroySession() {

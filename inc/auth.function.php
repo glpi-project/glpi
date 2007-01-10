@@ -475,7 +475,7 @@ function changeProfile($ID) {
 		}
 		changeActiveEntity(key($_SESSION['glpiactiveentities']));
 	}
-	$CFG_GLPI["cache"]->remove($_SESSION["glpiID"], "GLPI_HEADER");
+	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 }
 
 /**

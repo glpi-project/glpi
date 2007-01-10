@@ -279,7 +279,7 @@ class User extends CommonDBTM {
 		global $CFG_GLPI;
 		// Clean header cache for the user
 		if (in_array("language", $updates) && isset ($input["ID"])) {
-			$CFG_GLPI["cache"]->remove($input["ID"], "GLPI_HEADER");
+			cleanCache("GLPI_HEADER_".$input["ID"]);
 		}
 	}
 
