@@ -60,7 +60,7 @@ function showConnect($target,$ID,$type) {
 		$canedit=haveTypeRight($type,"w");
 
 		$ci->getFromDB($type,$ID);
-		$global=$ci->obj->fields['is_global'];
+		$global=$ci->getField('is_global');
 
 		$computers = $connect->getComputerContact($type,$ID);
 		if (!$computers) $nb=0;
@@ -96,7 +96,7 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='device_type' value='$type'>";
-				dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->obj->fields['FK_entities']);
+				dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'));
 				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 				echo "</form>";
 			} else echo "&nbsp;";
@@ -113,7 +113,7 @@ function showConnect($target,$ID,$type) {
 			echo "<input type='hidden' name='connect' value='connect'>";
 			echo "<input type='hidden' name='sID' value='$ID'>";
 			echo "<input type='hidden' name='device_type' value='$type'>";
-			dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->obj->fields['FK_entities']);
+			dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'));
 			echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 
 			echo "</form>";
@@ -164,17 +164,17 @@ function Connect($sID,$cID,$type) {
 	$dev=new CommonItem();
 	$dev->getFromDB($type,$sID);
 
-	if (!isset($dev->obj->fields["is_global"])||!$dev->obj->fields["is_global"]){
+	if (!$dev->getField('is_global')){
 		$comp=new Computer();
 		$comp->getFromDB($cID);
-		if ($comp->fields['location']!=$dev->obj->fields['location']){
+		if ($comp->fields['location']!=$dev->getField('location')){
 			$updates[0]="location";
 			$dev->obj->fields['location']=$comp->fields['location'];
 			$dev->obj->updateInDB($updates);
 			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][48];
 		}
-		if ($comp->fields['FK_users']!=$dev->obj->fields['FK_users']||$comp->fields['FK_groups']!=$dev->obj->fields['FK_groups']){
+		if ($comp->fields['FK_users']!=$dev->getField('FK_users')||$comp->fields['FK_groups']!=$dev->getField('FK_groups')){
 			$updates[0]="FK_users";
 			$updates[1]="FK_groups";
 			$dev->obj->fields['FK_users']=$comp->fields['FK_users'];
@@ -184,7 +184,7 @@ function Connect($sID,$cID,$type) {
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][50];
 		}
 
-		if ($comp->fields['contact']!=$dev->obj->fields['contact']||$comp->fields['contact_num']!=$dev->obj->fields['contact_num']){
+		if ($comp->fields['contact']!=$dev->getField('contact')||$comp->fields['contact_num']!=$dev->getField('contact_num')){
 			$updates[0]="contact";
 			$updates[1]="contact_num";
 			$dev->obj->fields['contact']=$comp->fields['contact'];
@@ -214,7 +214,7 @@ function unglobalizeDevice($device_type,$ID){
 	$ci=new CommonItem();
 	// Update item to unit management :
 	$ci->getFromDB($device_type,$ID);
-	if ($ci->obj->fields["is_global"]){
+	if ($ci->getField('is_global')){
 		$input=array("ID"=>$ID,"is_global"=>"0");
 		$ci->obj->update($input);
 
@@ -226,7 +226,7 @@ function unglobalizeDevice($device_type,$ID){
 				// Get ID of the computer
 				if ($data=$DB->fetch_array($result)){
 					// Add new Item
-					unset($ci->obj->fields["ID"]);
+					unset($ci->obj->fields['ID']);
 					if ($newID=$ci->obj->add(array("ID"=>$ID))){
 						// Update Connection
 						$query2="UPDATE glpi_connect_wire SET end1='$newID' WHERE ID='".$data["connectID"]."'";

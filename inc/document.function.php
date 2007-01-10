@@ -342,8 +342,8 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$ci->getFromDB($device_type,$ID);
 		$entity=0;
 		$limit="";
-		if (isset($ci->obj->fields["FK_entities"])){
-			$entity=$ci->obj->fields["FK_entities"];
+		if ($ci->getField('FK_entities')){
+			$entity=$ci->getField('FK_entities');
 			$limit=" AND FK_entities='$entity' ";
 		}
 

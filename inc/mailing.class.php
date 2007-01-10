@@ -176,8 +176,8 @@ class Mailing
 								if (isset($this->job->fields["computer"])&&$this->job->fields["computer"]>0&&isset($this->job->fields["device_type"])&&$this->job->fields["device_type"]>0){
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
-									if (isset($ci->obj->fields["tech_num"])&&$ci->obj->fields["tech_num"]>0){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->obj->fields["tech_num"]."')";
+									if ($ci->getField('tech_num')){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->getField('tech_num')."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -195,8 +195,8 @@ class Mailing
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									print_r($ci);
-									if (isset($ci->obj->fields["FK_users"])&&$ci->obj->fields["FK_users"]>0){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->obj->fields["FK_users"]."')";
+									if ($ci->getField('FK_users')){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->getField('FK_users')."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -456,8 +456,11 @@ class MailingResa{
 							case TECH_MAILING :
 								$ri=new ReservationItem();
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
-									if (isset($ri->obj->fields["tech_num"])&&$ri->obj->fields["tech_num"]>0){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ri->obj->fields["tech_num"]."')";
+									$ci=new CommonItem();
+									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
+
+									if ($ci->getField('tech_num')){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->getField('tech_num')."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -473,8 +476,11 @@ class MailingResa{
 							case USER_MAILING :
 								$ri=new ReservationItem();
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
-									if (isset($ri->obj->fields["FK_users"])&&$ri->obj->fields["FK_users"]>0){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ri->obj->fields["FK_users"]."')";
+									$ci=new CommonItem();
+									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
+
+									if ($ci->getField('FK_users')){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->getField('FK_users')."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);

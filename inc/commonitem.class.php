@@ -255,6 +255,7 @@ class CommonItem{
 			return "N/A";
 	}
 	function getField($field){
+		if ($this->obj==NULL) return false;
 		if ($this->device_type==0) {
 			return false;
 		} else {

@@ -222,8 +222,8 @@ class ReservationResa extends CommonDBTM {
 			$name=$ci->getType()." ".$ci->getName();
 		}
 		$tech=0;
-		if (isset($ci->obj->fields["tech_num"])&&$ci->obj->fields["tech_num"]>0){
-			$tech=getUserName($ci->obj->fields["tech_num"]);
+		if ($ci->getField('tech_num')){
+			$tech=getUserName($ci->getField('tech_num'));
 		}
 
 		

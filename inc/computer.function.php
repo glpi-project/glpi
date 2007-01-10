@@ -195,11 +195,11 @@ function showConnections($target,$ID,$withtemplate='') {
 							$connID = $DB->result($result, $i, "ID");
 							$ci->getFromDB($type,$tID);
 	
-							echo "<tr ".($ci->obj->fields["deleted"]=='Y'?"class='tab_bg_2_2'":"").">";
+							echo "<tr ".($ci->getField('tech_num')=='Y'?"class='tab_bg_2_2'":"").">";
 							echo "<td align='center'><b>";
 							echo $ci->getLink();
 							echo "</b>";
-							echo " - ".getDropdownName("glpi_dropdown_state",$ci->obj->fields['state']);
+							echo " - ".getDropdownName("glpi_dropdown_state",$ci->getField('state'));
 	
 							echo "</td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
