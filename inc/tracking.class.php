@@ -121,8 +121,8 @@ class Job extends CommonDBTM{
 			if ($this->fields['FK_group']){
 				$ci=new CommonItem;
 				$ci->getFromDB($input["device_type"],$input["computer"]);
-				if (isset($ci->obj->fields['FK_groups'])&&$ci->obj->fields['FK_groups']!=0){
-					$input["FK_group"] = $ci->obj->fields['FK_groups'];
+				if ($ci->getField('FK_groups')){
+					$input["FK_group"] = $ci->getField('FK_groups');
 				}
 			}
 		} else if (isset($input["type"])&&$input["type"]!=0)
@@ -368,11 +368,11 @@ class Job extends CommonDBTM{
 		if ($input["computer"]&&$input["device_type"]){
 			$ci=new CommonItem;
 			$ci->getFromDB($input["device_type"],$input["computer"]);
-			if (isset($ci->obj->fields['FK_groups'])&&$ci->obj->fields['FK_groups']!=0){
-				$input["FK_group"] = $ci->obj->fields['FK_groups'];
+			if ($ci->getField('FK_groups')){
+				$input["FK_group"] = $ci->getField('FK_groups');
 			}
-			if (isset($ci->obj->fields['FK_entities'])&&$ci->obj->fields['FK_entities']!=0){
-				$input["FK_entities"] = $ci->obj->fields['FK_entities'];
+			if ($ci->getField('FK_entities')){
+				$input["FK_entities"] = $ci->getField('FK_entities');
 			}
 		}
 		// TODO no item selected -> FK_entities of the user profile or make select 
@@ -386,8 +386,8 @@ class Job extends CommonDBTM{
 		if ($CFG_GLPI["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
 			$ci=new CommonItem;
 			$ci->getFromDB($input["device_type"],$input["computer"]);
-			if (isset($ci->obj->fields['tech_num'])&&$ci->obj->fields['tech_num']!=0){
-				$input["assign"] = $ci->obj->fields['tech_num'];
+			if ($ci->getField('tech_num')){
+				$input["assign"] = $ci->getField('tech_num');
 				if ($input["assign"]>0)
 					$input["status"] = "assign";
 			}

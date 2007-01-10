@@ -142,30 +142,35 @@ function showLinkOnDevice($type,$ID){
 				}
 
 				if (ereg("\[SERIAL\]",$link)){
-					if (isset($ci->obj->fields["serial"]))
-						$link=ereg_replace("\[SERIAL\]",$ci->obj->fields["serial"],$link);
+					if ($ci->getField('serial')){
+						$link=ereg_replace("\[SERIAL\]",$ci->getField('serial'),$link);
+					}
 				}
 				if (ereg("\[OTHERSERIAL\]",$link)){
-					if (isset($ci->obj->fields["otherserial"]))
-						$link=ereg_replace("\[OTHERSERIAL\]",$ci->obj->fields["otherserial"],$link);
+					if ($ci->getField('otherserial')){
+						$link=ereg_replace("\[OTHERSERIAL\]",$ci->getField('otherserial'),$link);
+					}
 				}
 
 				if (ereg("\[LOCATIONID\]",$link)){
-					if (isset($ci->obj->fields["location"]))
-						$link=ereg_replace("\[LOCATIONID\]",$ci->obj->fields["location"],$link);
+					if ($ci->getField('location')){
+						$link=ereg_replace("\[LOCATIONID\]",$ci->getField('location'),$link);
+					}
 				}
 
 				if (ereg("\[LOCATION\]",$link)){
-					if (isset($ci->obj->fields["location"]))
-						$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$link);
+					if ($ci->getField('location')){
+						$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->getField('location')),$link);
+					}
 				}
 				if (ereg("\[NETWORK\]",$link)){
-					if (isset($ci->obj->fields["network"]))
-						$link=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$ci->obj->fields["network"]),$link);
+					if ($ci->getField('network')){
+						$link=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$ci->getField('network')),$link);
+					}
 				}
 				if (ereg("\[DOMAIN\]",$link)){
-					if (isset($ci->obj->fields["domain"]))
-						$link=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$ci->obj->fields["domain"]),$link);
+					if ($ci->getField('domain'))
+						$link=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$ci->getField('domain')),$link);
 				}
 				$ipmac=array();
 				$i=0;
@@ -184,8 +189,8 @@ function showLinkOnDevice($type,$ID){
 					// Add IP/MAC internal switch
 					if ($type==NETWORKING_TYPE){
 						$tmplink=$link;
-						$tmplink=ereg_replace("\[IP\]",$ci->obj->fields["ifaddr"],$tmplink);
-						$tmplink=ereg_replace("\[MAC\]",$ci->obj->fields['ifmac'],$tmplink);
+						$tmplink=ereg_replace("\[IP\]",$ci->getField('ifaddr'),$tmplink);
+						$tmplink=ereg_replace("\[MAC\]",$ci->getField('ifmac'),$tmplink);
 						echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$tmplink</a></td></tr>";
 					}
 

@@ -300,8 +300,8 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 		echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][31].":	</td>";
 		echo "<td>";
 		if ($resaID==-1)
-			dropdownAllUsers("id_user",$_SESSION["glpiID"],1,$ci->obj->fields["FK_entities"]);
-		else dropdownAllUsers("id_user",$resa->fields["id_user"],1,$ci->obj->fields["FK_entities"]);
+			dropdownAllUsers("id_user",$_SESSION["glpiID"],1,$ci->getField('FK_entities'));
+		else dropdownAllUsers("id_user",$resa->fields["id_user"],1,$ci->getField('FK_entities'));
 		echo "</td></tr>";
 
 	}
@@ -465,11 +465,11 @@ function printReservationItems($target){
 			$ri->getfromDB($row['ID']);
 			$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
-			if (isset($ci->obj->fields["deleted"])&&$ci->obj->fields["deleted"]=='N'){
+			if ($ci->getField('deleted')=='N'){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><input type='checkbox' name='add_item[".$row["ID"]."]' value='".$row["ID"]."' ></td>";
 				echo "<td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ci->getType()." - ".$ci->getName()."</a></td>";
-				echo "<td>".getDropdownName('glpi_dropdown_locations',$ci->obj->fields["location"])."</td>";
+				echo "<td>".getDropdownName('glpi_dropdown_locations',$ci->getField('location'))."</td>";
 				echo "<td>".nl2br($ri->fields["comments"])."</td>";
 				echo "</tr>";
 			}

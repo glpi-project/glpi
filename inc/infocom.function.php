@@ -178,9 +178,9 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			if ($ci->getFromDB($device_type,$dev_ID)){
 				echo "<tr class='tab_bg_1'><td>";
 				echo $LANG["financial"][89]." : </td><td>";
-				echo showTco($ci->obj->fields["ticket_tco"],$ic->fields["value"]);
+				echo showTco($ci->getField('ticket_tco'),$ic->fields["value"]);
 				echo "</td><td>".$LANG["financial"][90]." : 	</td><td>";
-				echo showTco($ci->obj->fields["ticket_tco"],$ic->fields["value"],$ic->fields["buy_date"]);
+				echo showTco($ci->getField('ticket_tco'),$ic->fields["value"],$ic->fields["buy_date"]);
 				echo "</td></tr>";
 			}
 		}
@@ -566,7 +566,7 @@ function cron_infocom(){
 		while ($data=$DB->fetch_array($result)){
 			if ($ci->getFromDB($data["device_type"],$data["FK_device"])){
 				// define message alert / Not for template items
-				if (!isset($ci->obj->fields["is_template"])||!$ci->obj->fields["is_template"])
+				if (!$ci->getField('is_template'))
 					$message.=$LANG["mailing"][40]." ".$ci->getType()." - ".$ci->getName()."<br>\n";
 			} 
 

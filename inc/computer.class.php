@@ -231,9 +231,9 @@ class Computer extends CommonDBTM {
 							for ($j=0; $j < $resultnum; $j++) {
 								$tID = $DB->result($result, $j, "end1");
 								$ci->getfromDB($t,$tID);
-								if (!$ci->obj->fields['is_global']){
-									if ($ci->obj->fields['contact']!=$this->fields['contact']||$ci->obj->fields['contact_num']!=$this->fields['contact_num']){
-										$input["ID"]=$ci->obj->fields["ID"];
+								if (!$ci->getField('is_global')){
+									if ($ci->getField('contact')!=$this->fields['contact']||$ci->getField('contact_num')!=$this->fields['contact_num']){
+										$input["ID"]=$ci->getField('ID');
 										$input['contact']=$this->fields['contact'];
 										$input['contact_num']=$this->fields['contact_num'];
 										$ci->obj->update($input);
@@ -271,9 +271,9 @@ class Computer extends CommonDBTM {
 								$tID = $DB->result($result, $j, "end1");
 
 								$ci->getfromDB($t,$tID);
-								if (!$ci->obj->fields['is_global']){
-									if ($ci->obj->fields["FK_users"]!=$this->fields["FK_users"]||$ci->obj->fields["FK_groups"]!=$this->fields["FK_groups"]){
-										$input["ID"]=$ci->obj->fields["ID"];
+								if (!$ci->getField('is_global')){
+									if ($ci->getField('FK_users')!=$this->fields["FK_users"]||$ci->getField('FK_groups')!=$this->fields["FK_groups"]){
+										$input["ID"]=$ci->getField('ID');
 										$input["FK_users"]=$this->fields["FK_users"];
 										$input["FK_groups"]=$this->fields["FK_groups"];
 										$ci->obj->update($input);
@@ -310,9 +310,9 @@ class Computer extends CommonDBTM {
 								$tID = $DB->result($result, $j, "end1");
 
 								$ci->getfromDB($t,$tID);
-								if (!$ci->obj->fields['is_global']){
-									if ($ci->obj->fields["location"]!=$this->fields["location"]){
-										$input["ID"]=$ci->obj->fields["ID"];
+								if (!$ci->getField('is_global')){
+									if ($ci->getField('location')!=$this->fields["location"]){
+										$input["ID"]=$ci->getField('ID');
 										$input["location"]=$this->fields["location"];
 										$ci->obj->update($input);
 										$update_done=true;

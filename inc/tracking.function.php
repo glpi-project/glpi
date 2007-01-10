@@ -509,8 +509,9 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Sixth Colum
 		$sixth_col="";
 		$deleted=0;
-		if (isset($job->hardwaredatas->getField("deleted")=='Y')
+		if ($job->hardwaredatas->getField("deleted")=='Y'){
 			$deleted=1;
+		}
 		$sixth_col.=$job->hardwaredatas->getType();
 		if ($job->fields["device_type"]>0){
 			$sixth_col.="<br><strong>";

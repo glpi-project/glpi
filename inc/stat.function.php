@@ -937,7 +937,7 @@ function showItemStats($target,$date1,$date2,$start){
 			$data=$DB->fetch_assoc($result);
 			if ($ci->getFromDB($data["device_type"],$data["computer"])){
 				$del=false;
-				if (isset($ci->obj->fields["deleted"])&&$ci->obj->fields["deleted"]=='Y') $del=true;
+				if ($ci->getField('deleted')=='Y') $del=true;
 				//echo "<tr class='tab_bg_2$del'><td>".$ci->getLink()."</td><td>".$data["NB"]."</td></tr>";
 				echo displaySearchNewLine($output_type);
 				echo displaySearchItem($output_type,$ci->getLink(),$item_num,$i-$start+1,$del,"align='center'");
