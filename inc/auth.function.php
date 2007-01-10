@@ -93,7 +93,6 @@ function haveTypeRight($type, $right) {
 	switch ($type) {
 		case GENERAL_TYPE :
 			return true;
-			;
 			break;
 		case COMPUTER_TYPE :
 			return haveRight("computer", $right);
