@@ -57,9 +57,6 @@ class Config extends CommonDBTM {
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
 		$CACHE_CFG->remove("CFG_GLPI_1","GLPI_CFG");
-		if (in_array("ocs_mode",$updates)){
-			cleanCache("GLPI_HEADER");
-		}
 	}
 
 }
