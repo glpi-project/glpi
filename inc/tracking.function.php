@@ -825,7 +825,7 @@ function getRealtime($realtime){
 	return $output;
 }
 
-function searchSimpleFormTracking($target,$status="all"){
+function searchSimpleFormTracking($target,$status="all",$group=-1){
 
 global $CFG_GLPI,  $LANG;
 
@@ -848,6 +848,16 @@ global $CFG_GLPI,  $LANG;
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG["joblist"][25]."</option>";	
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["joblist"][20]."</option>";
 	echo "</select></td>";
+
+	if (haveRight("show_group_ticket",1)){
+		echo "<td align='center'>";
+		echo "<select name='group'>";
+		echo "<option value='-1' ".($group==-1?" selected ":"").">".$LANG["search"][7]."</option>";
+		echo "<option value='0' ".($group==0?" selected ":"").">".$LANG["joblist"][1]."</option>";
+		echo "</select>";
+		echo "</td>";
+	}
+
 	echo "<td align='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
 	echo "</tr>";
 	echo "</table>";

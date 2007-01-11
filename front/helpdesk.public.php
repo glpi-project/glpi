@@ -79,8 +79,9 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		if (!isset($_GET["status"])) $_GET["status"]="all";
 		if (!isset($_GET["sort"])) $_GET["sort"]="";
 		if (!isset($_GET["order"])) $_GET["order"]="DESC";
-		searchSimpleFormTracking($_SERVER['PHP_SELF'],$_GET["status"]);
-		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_SESSION["glpiID"],-1);
+		if (!isset($_GET["group"])) $_GET["group"]=0;
+		searchSimpleFormTracking($_SERVER['PHP_SELF'],$_GET["status"],$_GET["group"]);
+		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_SESSION["glpiID"],$_GET["group"]);
 	}
 	else {
 		if (isset($_POST["update"])){
