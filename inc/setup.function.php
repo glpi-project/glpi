@@ -1315,7 +1315,7 @@ function ocsFormDBConfig($target, $id) {
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $data["ocs_db_host"] . "\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $data["ocs_db_name"] . "\"></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][1] . " </td><td> <input type=\"text\" name=\"ocs_db_user\" value=\"" . $data["ocs_db_user"] . "\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"" . $data["ocs_db_passwd"] . "\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\"></td></tr>";
 	echo "</table></div>";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_ocs\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
 	echo "</form>";

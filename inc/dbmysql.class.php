@@ -60,7 +60,7 @@ class DBmysql {
 	 */
 	function DBmysql()
 	{  // Constructor
-		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
+		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, urldecode($this->dbpassword)) or $this->error = 1;
 		if ($this->dbh)
 			mysql_select_db($this->dbdefault) or $this->error = 1;
 		else {

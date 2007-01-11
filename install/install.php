@@ -34,12 +34,13 @@
 // ----------------------------------------------------------------------
 
 
-//Ce script g��e ses propres messages d'erreur 
+//Ce script gère ses propres messages d'erreur 
 //Pas besoin des warnings de PHP
 error_reporting(0);
 define('GLPI_ROOT', '..');
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
+include_once (GLPI_ROOT . "/inc/display.function.php");
 
 session_save_path(GLPI_DOC_DIR."/_sessions");
 
@@ -740,7 +741,7 @@ function step3($host,$user,$password,$update)
 			echo "<input type=\"text\" name=\"newdatabasename\"/></p>";
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
-			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
+			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\" />";
 			echo "<input type=\"hidden\" name=\"install\" value=\"Etape_3\" />";
 			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
 			mysql_close($link);
@@ -756,7 +757,7 @@ function step3($host,$user,$password,$update)
 			}
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
-			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
+			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\" />";
 			echo "<input type=\"hidden\" name=\"install\" value=\"update_1\" />";
 			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
 			mysql_close($link);
@@ -778,7 +779,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		echo "<br /><form action=\"install.php\" method=\"post\">";
 		echo $LANG["install"][30] .": <input type=\"hidden\" name=\"db_host\" value=\"". $host ."\"/><br />";
 		echo $LANG["install"][31] ." : <input type=\"hidden\" name=\"db_user\" value=\"". $user ."\"/>";
-		echo $LANG["install"][32] .": <input type=\"hidden\" name=\"db_pass\" value=\"". $password ."\" />";
+		echo $LANG["install"][32] .": <input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\" />";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["buttons"][13]."\" /></p>";
 		echo "</form>";
@@ -917,7 +918,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	function create_conn_file($host,$user,$password,$DBname)
 	{
 		global $CFG_GLPI;
-		$DB_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". $password ."\"; \n var \$dbdefault	= \"". $DBname ."\"; \n } \n ?>";
+		$DB_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= \"". $host ."\"; \n var \$dbuser 	= \"". $user ."\"; \n var \$dbpassword= \"". urlencode($password) ."\"; \n var \$dbdefault	= \"". $DBname ."\"; \n } \n ?>";
 		$fp = fopen(GLPI_CONFIG_DIR . "/config_db.php",'wt');
 		if($fp) {
 			$fw = fwrite($fp,$DB_str);
@@ -976,7 +977,12 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		}
 	}
 	else {
-
+		// DB clean
+		if (isset($_POST["db_pass"])){
+			$_POST["db_pass"]=stripslashes($_POST["db_pass"]);
+			$_POST["db_pass"]=urldecode($_POST["db_pass"]);
+			$_POST["db_pass"]=stripslashes($_POST["db_pass"]);
+		}
 		switch ($_POST["install"]) {
 
 			case "lang_select" :
