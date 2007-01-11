@@ -123,8 +123,8 @@ if (isset($_POST["delete_inter"])&&!empty($_POST["todel"])&&haveRight("delete_ti
 }
 
 if (!haveRight("show_ticket","1")){
-	searchSimpleFormTracking($_SERVER['PHP_SELF'],$tab["status"]);
-	showTrackingList($_SERVER['PHP_SELF'],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$_SESSION["glpiID"],-1);
+	searchSimpleFormTracking($_SERVER['PHP_SELF'],$tab["status"],$tab["group"]);
+	showTrackingList($_SERVER['PHP_SELF'],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$_SESSION["glpiID"],$tab["group"]);
 } else {
 
 	if (!$tab["extended"])

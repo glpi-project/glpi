@@ -634,6 +634,7 @@ $LANG["job"][45]="Ajouter un suivi";
 
 
 $LANG["joblist"][0]="Statut";
+$LANG["joblist"][1]="Seulement les miens";
 $LANG["joblist"][2]="Priorité";
 $LANG["joblist"][4]="Attribué";
 $LANG["joblist"][6]="Description";
