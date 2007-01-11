@@ -48,6 +48,22 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 //******************************************************************************************************
 
+/**
+ * Clean cache cron function
+ *
+ **/
+function cron_logs(){
+
+	global $CFG_GLPI,$DB;
+
+	// Expire Event Log
+	if ($CFG_GLPI["expire_events"] > 0) {
+		$secs = $CFG_GLPI["expire_events"] * DAY_TIMESTAMP;
+		$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+		$DB->query($query_exp);
+	}
+	
+}
 
 /**
  * Clean cache cron function
