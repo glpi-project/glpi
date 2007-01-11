@@ -219,13 +219,6 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 		logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG["log"][40] . " : " . $ip);
 	}
 
-	// Expire Event Log
-	if ($CFG_GLPI["expire_events"] > 0) {
-		$secs = $CFG_GLPI["expire_events"] * 86400;
-		$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
-		$result_exp = $DB->query($query_exp);
-	}
-
 	// Redirect management
 	$REDIRECT = "";
 	if (isset ($_POST['redirect'])){

@@ -119,6 +119,7 @@ class Cron {
 			}
 			$this->taches["contract"]=DAY_TIMESTAMP;
 			$this->taches["infocom"]=DAY_TIMESTAMP;
+			$this->taches["logs"]=DAY_TIMESTAMP;
 			
 			// Auto update check
 			if ($CFG_GLPI["auto_update_check"]>0)
