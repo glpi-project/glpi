@@ -57,6 +57,9 @@ class Config extends CommonDBTM {
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
 		$CACHE_CFG->remove("CFG_GLPI_1","GLPI_CFG");
+		if (in_array("ocs_mode",$updates)){ 
+			cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]); 
+		}
 	}
 
 }
@@ -69,6 +72,12 @@ class ConfigOCS extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
+		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
+			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
+		} else {
+			unset($input["ocs_db_passwd"]);
+		}
+
 		if (isset($input["import_ip"])){
 			$input["checksum"]=0;
 

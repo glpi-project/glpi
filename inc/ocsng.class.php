@@ -41,7 +41,7 @@ class DBocs extends DBmysql {
 			$data=getOcsConf(1);
 			$this->dbhost = $data["ocs_db_host"];
 			$this->dbuser = $data["ocs_db_user"];
-			$this->dbpassword = $data["ocs_db_passwd"];
+			$this->dbpassword = urldecode($data["ocs_db_passwd"]);
 			$this->dbdefault = $data["ocs_db_name"];
 			$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
 			@mysql_select_db($this->dbdefault) or $this->error = 1;
