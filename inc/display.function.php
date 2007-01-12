@@ -393,11 +393,13 @@ function commonHeader($title,$url,$sector="none")
 		}
 		// list sous-menu item 
 			if ($sector!="none"){
-				foreach ($sous_menu as $key => $val) {
-					if ($sector=="plugins"){
-						echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
-					}else{
-						echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
+				if (isset($sous_menu)&&is_array($sous_menu)){
+					foreach ($sous_menu as $key => $val) {
+						if ($sector=="plugins"){
+							echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
+						}else{
+							echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
+						}
 					}
 				}
 			}
