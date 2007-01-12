@@ -530,7 +530,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				}
 				// Add Where clause if not to be done ine HAVING CLAUSE
 				if (!in_array($SEARCH_OPTION[$type][$field[$key]]["table"],$META_SPECIF_TABLE)){
-					$WHERE.= $LINK.addWhere($NOT,$type,$field[$key],$contains[$key]);
+					$WHERE.= addWhere($LINK,$NOT,$type,$field[$key],$contains[$key]);
 					$i++;
 				}
 				// if real search (strlen >0) and view search
@@ -555,7 +555,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					if (!in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
 						$LINK=" OR ";
 						if ($first2) {$LINK=" ";$first2=false;}
-						$WHERE.= $LINK.addWhere($NOT,$type,$val2,$contains[$key]);
+						$WHERE.= addWhere($LINK,$NOT,$type,$val2,$contains[$key]);
 					}
 				$WHERE.=" ) ";
 				$i++;
@@ -583,7 +583,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						if (!in_array($val2["table"],$META_SPECIF_TABLE)){
 							$LINK=" OR ";
 							if ($first2) {$LINK=" ";$first2=false;}
-							$WHERE.= $LINK.addWhere($NOT,$type,$key2,$contains[$key]);
+							$WHERE.= addWhere($LINK,$NOT,$type,$key2,$contains[$key]);
 						}
 
 				$WHERE.=")";
@@ -711,7 +711,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						else $LINK=" AND ";
 					}
 
-					$WHERE.= $LINK.addWhere($NOT,$type2[$key],$field2[$key],$contains2[$key],1);
+					$WHERE.= addWhere($LINK,$NOT,$type2[$key],$field2[$key],$contains2[$key],1);
 				}
 			}
 
@@ -1308,6 +1308,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
  *
  *@param $val item num in the request
  *@param $nott is it a negative serach ?
+ *@param $link link string
  *@param $type device type
  *@param $ID ID of the item to search
  *@param $meta is a meta search (meta=2 in search.class.php)
@@ -1315,7 +1316,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
  *@return select string
  *
  **/
-function addWhere ($nott,$type,$ID,$val,$meta=0){
+function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 	global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION;
 
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
@@ -1332,25 +1333,25 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 				$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
 			}
 			if (empty($linkfield)){ // glpi_users case / not link table
-				return " ( $table$linkfield.$field $SEARCH ) ";
+				return $link." ( $table$linkfield.$field $SEARCH ) ";
 			} else {
-				return " ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH ) ";
+				return $link." ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH ) ";
 			}
 			break;
 		case "glpi_device_hdd.specif_default" :
-			return " $table.$field ".makeTextSearch("",$nott);
+			return $link." $table.$field ".makeTextSearch("",$nott);
 			break;
 		case "glpi_device_ram.specif_default" :
-			return " $table.$field ".makeTextSearch("",$nott);
+			return $link." $table.$field ".makeTextSearch("",$nott);
 			break;
 		case "glpi_device_processor.specif_default" :
-			return " $table.$field ".makeTextSearch("",$nott);
+			return $link." $table.$field ".makeTextSearch("",$nott);
 			break;
 		case "glpi_networking_ports.ifmac" :
 			if ($type==COMPUTER_TYPE){
-				return " (  DEVICE_".NETWORK_DEVICE.".specificity $SEARCH OR $table.$field $SEARCH ) ";
+				return $link." (  DEVICE_".NETWORK_DEVICE.".specificity $SEARCH OR $table.$field $SEARCH ) ";
 			} else {
-				return " $table.$field $SEARCH ";
+				return $link." $table.$field $SEARCH ";
 			}
 			break;
 		case "glpi_contracts.end_date" :
@@ -1358,9 +1359,13 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
-				return " NOW() ".$regs[1]." ADDDATE(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH), INTERVAL ".$regs[2]." MONTH) ";	
+				if (is_int($regs[2])){
+					return $link." NOW() ".$regs[1]." ADDDATE(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH), INTERVAL ".$regs[2]." MONTH) ";	
+				} else {
+					return "";
+				}
 			} else {
-				return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
+				return $link." ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
 			}
 			break;
 			// ajout jmd
@@ -1369,9 +1374,9 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
-				return " DATEDIFF(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]." ";
+				return $link." DATEDIFF(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]." ";
 				} else {
-				return " ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
+				return $link." ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
 			}
 			break;
 		// ajout jmd
@@ -1380,9 +1385,9 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
-				return " $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
+				return $link." $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
 			} else {
-				return " ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
+				return $link." ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
 			}
 			break;
 		case "glpi_ocs_link.last_update":
@@ -1404,7 +1409,11 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
-				return " NOW() ".$regs[1]." ADDDATE($table.$field, INTERVAL ".$regs[2]." MONTH) ";	
+				if (is_int($regs[2])){
+					return $link." NOW() ".$regs[1]." ADDDATE($table.$field, INTERVAL ".$regs[2]." MONTH) ";	
+				} else {
+					return "";
+				}
 			} else {
 				// Date format modification if needed
 				$val=preg_replace('/(\d{1,2})-(\d{1,2})-(\d{4})/','\3-\2-\1',$val);
@@ -1412,7 +1421,7 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 
 				$ADD="";	
 				if ($nott) $ADD=" OR $table.$field IS NULL";
-				return " ($table.$field $SEARCH ".$ADD." ) ";
+				return $link." ($table.$field $SEARCH ".$ADD." ) ";
 			}
 			break;
 		case "glpi_infocoms.value":
@@ -1421,9 +1430,9 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 			$ADD="";
 			if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
 			if ($nott){
-				return " ($table.$field < ".intval($val)."-$interval OR $table.$field > ".intval($val)."+$interval ".$ADD." ) ";
+				return $link." ($table.$field < ".intval($val)."-$interval OR $table.$field > ".intval($val)."+$interval ".$ADD." ) ";
 			} else {
-				 return " (($table.$field >= ".intval($val)."-$interval AND $table.$field <= ".intval($val)."+$interval) ".$ADD." ) ";
+				 return $link." (($table.$field >= ".intval($val)."-$interval AND $table.$field <= ".intval($val)."+$interval) ".$ADD." ) ";
 			}
 			break;
 		case "glpi_infocoms.amort_time":
@@ -1433,9 +1442,9 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 				$ADD=" OR $table.$field IS NULL";
 			}
 			if ($nott){
-				return " ($table.$field <> ".intval($val)." ".$ADD." ) ";
+				return $link." ($table.$field <> ".intval($val)." ".$ADD." ) ";
 			} else {
-				return " ($table.$field = ".intval($val)."  ".$ADD." ) ";
+				return $link." ($table.$field = ".intval($val)."  ".$ADD." ) ";
 			}
 			break;
 		case "glpi_infocoms.amort_type":
@@ -1451,9 +1460,9 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 				$val=0; 
 			}
 			if ($nott){
-				return " ($table.$field <> $val ".$ADD." ) ";
+				return $link." ($table.$field <> $val ".$ADD." ) ";
 			} else {
-				return " ($table.$field = $val  ".$ADD." ) ";
+				return $link." ($table.$field = $val  ".$ADD." ) ";
 			}
 			break;
 		default:
@@ -1461,7 +1470,7 @@ function addWhere ($nott,$type,$ID,$val,$meta=0){
 			if ($nott&&$val!="NULL") {
 				$ADD=" OR $table.$field IS NULL";
 			}
-			return " ($table.$field $SEARCH ".$ADD." ) ";
+			return $link." ($table.$field $SEARCH ".$ADD." ) ";
 			break;
 	}
 
