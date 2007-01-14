@@ -138,10 +138,10 @@ function commonHeader($title,$url,$sector="none")
 		//  Generatiion des array pour les menus avec check des droits 	
 		//////// UTILS
 		$utils=array();
-		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
-			$utils[$LANG["Menu"][17]]=array("reservation.php","1");
 		if (haveRight("knowbase","r")||haveRight("faq","r")) 
 			$utils[$LANG["Menu"][19]]=array("knowbase.php"," ");
+		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
+			$utils[$LANG["Menu"][17]]=array("reservation.php","1");
 		if (haveRight("reports","r"))
 			$utils[$LANG["Menu"][6]]=array("report.php"," ");
 		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")) 
@@ -411,7 +411,7 @@ function commonHeader($title,$url,$sector="none")
 		echo "<div id='c_ssmenu2' >";
 		echo "<ul>";
 		echo "	<li><a href='' title='' >Central > </a></li>";
-		echo "	<li>Helpdesk</li>";
+		//echo "	<li>Helpdesk</li>";
 		echo "</ul>";	
 		echo showProfileSelecter();	
 		echo "	</div>";
@@ -606,7 +606,7 @@ function helpHeader($title,$url) {
 		echo "<div id='c_ssmenu2' >";
 		echo "<ul>";
 		echo "	<li><a href='#' title='' >Helpdesk > </a></li>";
-		echo "	<li>Helpdesk</li>";
+		//echo "	<li>Helpdesk</li>";
 		echo "</ul>";	
 		echo showProfileSelecter();	
 		echo "	</div>";
