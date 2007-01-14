@@ -267,7 +267,7 @@ function commonHeader($title,$url,$sector="none")
 		// Inventory
 		if (count($inventory)) {
 			echo "	<li id='menu1' onmouseover=\"javascript:menuAff('menu1','menu');\" >";
-			echo "<a href='#'  title=\"".$LANG["setup"][10]."\" class='itemP'>".$LANG["setup"][10]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.php\" title=\"".$LANG["setup"][10]."\" class='itemP'>".$LANG["setup"][10]."</a>"; // default computer
 			echo "<ul class='ssmenu'>"; 
 			$i=0;
 			// list menu item 
@@ -283,7 +283,7 @@ function commonHeader($title,$url,$sector="none")
 		// Maintain / Tracking / ticket
 		if (count($maintain)) {
 			echo "	<li id='menu2' onmouseover=\"javascript:menuAff('menu2','menu');\" >";
-			echo "<a href='#' title=\"".$LANG["title"][24]."\"   class='itemP'>".$LANG["title"][24]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php\" title=\"".$LANG["title"][24]."\"   class='itemP'>".$LANG["title"][24]."</a>"; // default tracking
 			echo "<ul class='ssmenu'>";	
 			// list menu item 
 			foreach ($maintain as $key => $val) {
@@ -295,7 +295,7 @@ function commonHeader($title,$url,$sector="none")
 		// Financial
 		if (count($financial)) {
 			echo "	<li id='menu3' onmouseover=\"javascript:menuAff('menu3','menu');\" >";
-			echo "<a href='#' title=\"".$LANG["Menu"][26]."\" class='itemP'>".$LANG["Menu"][26]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contact.php\" title=\"".$LANG["Menu"][26]."\" class='itemP'>".$LANG["Menu"][26]."</a>"; // default knowbase
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($financial as $key => $val) {
@@ -308,7 +308,7 @@ function commonHeader($title,$url,$sector="none")
 		// Tools
 		if (count($utils)) {
 			echo "	<li id='menu4' onmouseover=\"javascript:menuAff('menu4','menu');\" >";
-			echo "<a href='#' title=\"".$LANG["Menu"][18]."\" class='itemP'>".$LANG["Menu"][18]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.php\" title=\"".$LANG["Menu"][18]."\" class='itemP'>".$LANG["Menu"][18]."</a>"; // default knowbase
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($utils as $key => $val) {
@@ -337,7 +337,7 @@ function commonHeader($title,$url,$sector="none")
 			}
 			asort($list);
 			echo "	<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\" >";
-			echo "<a href='#' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";
+			echo "<a href='#' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";  // default none
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($list as $key => $val) {
@@ -350,7 +350,7 @@ function commonHeader($title,$url,$sector="none")
 		// Administration 
 		if (count($config)) {
 			echo "	<li id='menu6' onmouseover=\"javascript:menuAff('menu6','menu');\" >";
-			echo "<a href='#' title=\"".$LANG["Menu"][15]."\"  class='itemP1'>".$LANG["Menu"][15]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/user.php\" title=\"".$LANG["Menu"][15]."\"  class='itemP1'>".$LANG["Menu"][15]."</a>"; // default user
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($config as $key => $val) {
