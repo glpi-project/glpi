@@ -47,7 +47,7 @@ class CommonItem{
 	//! Device Type ID of the object
 	var $device_type=0;
 	//! Device ID of the object
-	var $id_type=0;
+	var $id_device=0;
 
 
 	/**
