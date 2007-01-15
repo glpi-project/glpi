@@ -58,6 +58,21 @@ function countElementsInTable($table){
  * Count the number of elements in a table for a specific entity
  *
  * @param $table table name
+ *
+ * return int nb of elements in table
+ */
+function countElementsInTableForMyEntities($table){
+	global $DB;
+	$query="SELECT count(*) AS cpt 
+		FROM $table ".getEntitiesRestrictRequest("WHERE",$table,"FK_entities");
+	$result=$DB->query($query);
+	$ligne = $DB->fetch_array($result);
+	return $ligne['cpt'];
+}
+/**
+ * Count the number of elements in a table for a specific entity
+ *
+ * @param $table table name
  * @param $entity the entity ID
  *
  * return int nb of elements in table
