@@ -570,7 +570,7 @@ class Job extends CommonDBTM{
 		$contact='';
 		$tech='';
 		$name=$this->hardwaredatas->getType()." ".$this->hardwaredatas->getName();
-		if (isset($this->hardwaredatas->obj!=NULL){
+		if ($this->hardwaredatas->obj!=NULL){
 			if (isset($this->hardwaredatas->obj->fields["serial"])&&!empty($this->hardwaredatas->obj->fields["serial"])){
 				$name.=" - ".$LANG["common"][19].": ".$this->hardwaredatas->obj->fields["serial"];
 			}
