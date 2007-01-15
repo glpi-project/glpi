@@ -135,7 +135,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 		// Manage multiple Entities dropdowns
 		$add_order="";
-		if (in_array($_POST['table'],$CFG_GLPI["dropdownentity_tables"])){
+		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
 			$add_order=" FK_entities, ";
 
 			if (!$first) $where.=" AND ";

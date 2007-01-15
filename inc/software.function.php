@@ -148,7 +148,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$query_inst .= " ON ( glpi_inst_software.license = glpi_licenses.ID )";
 			$query_inst .= " INNER JOIN glpi_computers ON (glpi_computers.deleted='N' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) ";
 			$query_inst .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='".LICENSE_TYPE."' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
-			$query_inst .= " WHERE $SEARCH_LICENCE ";
+			$query_inst .= " WHERE $SEARCH_LICENCE ORDER BY cname";
 
 			$result_inst = $DB->query($query_inst);
 			$num_inst=$DB->numrows($result_inst);
@@ -601,7 +601,8 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 	global $DB,$CFG_GLPI, $LANG;
 	if (!haveRight("software","r")) return false;
-
+	$comp=new Computer();
+	$comp->getFromDB($instID);
 	$query = "SELECT glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_software.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial, glpi_licenses.buy FROM glpi_inst_software, glpi_software,glpi_licenses ";
 	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.name, glpi_software.version";
 
@@ -686,7 +687,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		echo "<div class='software-instal'>";
 		echo "<input type='hidden' name='cID' value='$instID'>";
-		dropdownSoftwareToInstall("licenseID",$withtemplate);
+		dropdownSoftwareToInstall("licenseID",$withtemplate,$comp->fields["FK_entities"]);
 		echo "<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
 		echo "</div>";
 		echo "</form>";

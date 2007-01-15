@@ -54,7 +54,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	$entity_restict = -1;
 	$numberof = 0;
-	if (in_array($tablename, $CFG_GLPI["dropdownentity_tables"])) {
+	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		$entity_restict = $_SESSION["glpiactive_entity"];
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
@@ -147,7 +147,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '') {
 
 	$entity_restict = -1;
 	$numberof=0;
-	if (in_array($tablename, $CFG_GLPI["dropdownentity_tables"])) {
+	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		$entity_restict = $_SESSION["glpiactive_entity"];
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
@@ -322,7 +322,7 @@ function addDropdown($input) {
 	if (!empty ($input["value"])) {
 		$add_entity_field = "";
 		$add_entity_value = "";
-		if (in_array($input["tablename"], $CFG_GLPI["dropdownentity_tables"])) {
+		if (in_array($input["tablename"], $CFG_GLPI["specif_entities_tables"])) {
 			$add_entity_field = "FK_entities,";
 			$add_entity_value = "'" . $input["FK_entities"] . "',";
 		}

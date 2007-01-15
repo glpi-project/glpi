@@ -46,7 +46,6 @@ checkTypeRight($_POST["device_type"],"w");
 
 commonHeader($LANG["title"][42],$_SERVER['PHP_SELF']);
 
-
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
 
 	switch($_POST["action"]){
@@ -120,7 +119,10 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		break;
 		case "install":
 			foreach ($_POST["item"] as $key => $val){
-				installSoftware($key,$_POST["lID"],$_POST["sID"]);
+				$comp=new Computer;
+				if ($comp->getFromDB($key)&&$comp->fields["FK_entities"]==$_SESSION["glpiactive_entity"]){
+					installSoftware($key,$_POST["lID"],$_POST["sID"]);
+				}
 			}
 		break;
 		case "add_group":

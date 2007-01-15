@@ -1685,7 +1685,7 @@ function showJobDetails ($target,$ID){
 		if ($canupdate||haveRight("assign_ticket","1")){
 			echo "<tr><td align='right'>";
 			echo $LANG["job"][28].":</td><td>";
-			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"]);
+			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else {
 			echo "<tr><td align='right'>";

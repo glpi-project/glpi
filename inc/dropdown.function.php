@@ -110,7 +110,15 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 
 	$nb=0;
 	if ($CFG_GLPI["use_ajax"]){
-		$nb=countElementsInTable($table);
+		if (!in_array($table,$CFG_GLPI["specif_entities_tables"])){
+			$nb=countElementsInTable($table);
+		} else {
+			if ($entity_restrict>=0){
+				$nb=countElementsInTableForEntity($table,$entity_restrict);
+			} else {
+				$nb=countElementsInTableForMyEntities($table);
+			}
+		}
 	}
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
@@ -985,8 +993,13 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>\n";
 
 	$nb=0;
-	if ($CFG_GLPI["use_ajax"])
-		$nb=countElementsInTable($items[$type]);
+	if ($CFG_GLPI["use_ajax"]){
+		if ($entity_restrict>=0){
+			$nb=countElementsInTableForEntity($items[$type],$entity_restrict);
+		} else {
+			$nb=countElementsInTableForMyEntities($items[$type]);
+		}
+	}
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
@@ -1065,7 +1078,7 @@ function dropdownConnectPort($ID,$type,$myname) {
  * @param $massiveaction is it a massiveaction select ?
  * @return nothing (print out an HTML select box)
  */
-function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
+function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massiveaction=0) {
 	global $DB,$LANG,$CFG_GLPI;
 
 	$rand=mt_rand();
@@ -1080,7 +1093,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchSoft=' + value+'&myname=$myname&withtemplate=$withtemplate&massiveaction=$massiveaction'\n";
+	echo "           method:'post', parameters:'searchSoft=' + value+'&myname=$myname&withtemplate=$withtemplate&massiveaction=$massiveaction&entity_restrict=$entity_restrict'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
@@ -1088,8 +1101,10 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$massiveaction=0) {
 
 
 	$nb=0;
-	if ($CFG_GLPI["use_ajax"])
-		$nb=countElementsInTable("glpi_software");
+
+	if ($CFG_GLPI["use_ajax"]){
+		$nb=countElementsInTableForEntity("glpi_software",$entity_restrict);
+	}
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";

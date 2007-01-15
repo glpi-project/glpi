@@ -50,7 +50,9 @@ $rand=mt_rand();
 
 $where="";	
 if (strlen($_POST['searchSoft'])>0&&$_POST['searchSoft']!=$CFG_GLPI["ajax_wildcard"])
-$where.=" AND name ".makeTextSearch($_POST['searchSoft'])." ";
+	$where.=" AND name ".makeTextSearch($_POST['searchSoft'])." ";
+
+$where.=" AND FK_entities='".$_POST["entity_restrict"]."' ";
 
 $query = "SELECT * FROM glpi_software WHERE deleted='N' AND is_template='0' $where order by name";
 $result = $DB->query($query);
