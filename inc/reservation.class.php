@@ -216,16 +216,18 @@ class ReservationResa extends CommonDBTM {
 	function textDescription($format="text"){
 		global $LANG;
 
+		$ri=new ReservationItem();
 		$ci=new CommonItem();
 		$name="";
-		if ($ci->getFromDB($this->fields["id_item"])){
-			$name=$ci->getType()." ".$ci->getName();
+		$tech="";
+		if ($ri->getFromDB($this->fields["id_item"])){
+			if ($ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device'])	){
+				$name=$ci->getType()." ".$ci->getName();
+				if ($ci->getField('tech_num')){
+					$tech=getUserName($ci->getField('tech_num'));
+				}
+			}
 		}
-		$tech=0;
-		if ($ci->getField('tech_num')){
-			$tech=getUserName($ci->getField('tech_num'));
-		}
-
 		
 		$u=new User();
 		$u->getFromDB($this->fields["id_user"]);
@@ -237,9 +239,9 @@ class ReservationResa extends CommonDBTM {
 			$content.=" </style></head><body>";
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][37].":</span> ".$u->getName()."<br>";
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][7]."</span> ".$name."<br>";
-			if ($tech)
+			if (!empty($tech)){
 				$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["common"][10].":</span> ".$tech."<br>";
-
+			}
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["search"][8].":</span> ".convDateTime($this->fields["begin"])."<br>";
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["search"][9].":</span> ".convDateTime($this->fields["end"])."<br>";
 			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][25].":</span> ".nl2br($this->fields["comment"])."<br>";
@@ -247,8 +249,9 @@ class ReservationResa extends CommonDBTM {
 			$content.=$LANG["mailing"][1]."\n";
 			$content.=$LANG["common"][37].": ".$u->getName()."\n";
 			$content.=$LANG["mailing"][7]." ".$name."\n";
-			if ($tech)
+			if (!empty($tech)){
 				$content.= $LANG["common"][10].": ".$tech."\n";
+			}
 
 			$content.=$LANG["search"][8].": ".convDateTime($this->fields["begin"])."\n";
 			$content.=$LANG["search"][9].": ".convDateTime($this->fields["end"])."\n";
