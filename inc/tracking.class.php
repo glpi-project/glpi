@@ -668,11 +668,10 @@ class Job extends CommonDBTM{
 	}
 
 
-	function getAuthorName($link=0){
-
+/*	function getAuthorName($link=0){
 		return getUserName($this->fields["author"],$link);
 	}
-
+*/
 }
 
 
