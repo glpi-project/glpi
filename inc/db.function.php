@@ -518,6 +518,30 @@ function getPreviousItem($table,$ID){
 
 }
 
+
+function formatUserName($ID,$login,$realname,$firstname,$link=0){
+	global $CFG_GLPI;
+	if ($ID>0){
+		$before="";
+		$after="";
+		if ($link==1){
+			$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\">";
+			$after="</a>";
+		}
+		if (strlen($realname)>0) {
+			$temp=$realname;
+			if (strlen($firstname)>0)$temp.=" ".$firstname;
+			$username=$before.$temp.($CFG_GLPI["view_ID"]?"&nbsp;($ID)":"").$after;
+		}
+		else $username=$before.$login.(($CFG_GLPI["view_ID"]||empty($login))?"&nbsp;($ID)":"").$after;
+		return $username;
+	} else {
+		return "";
+	}
+
+
+}
+
 /**
  * Get name of the user with ID=$ID (optional with link to user.form.php)
  *
@@ -543,18 +567,8 @@ function getUserName($ID,$link=0){
 		if ($link==2) $user=array("name"=>"","comments"=>"","link"=>"");
 		if ($DB->numrows($result)==1){
 			$data=$DB->fetch_assoc($result);
-			$before="";
-			$after="";
-			if ($link==1){
-				$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\">";
-				$after="</a>";
-			}
-			if (strlen($data["realname"])>0) {
-				$temp=$data["realname"];
-				if (strlen($data["firstname"])>0)$temp.=" ".$data["firstname"];
-				$username=$before.$temp.$after;
-			}
-			else $username=$before.$data["name"].$after;
+
+			$username=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],$link);
 	
 			if ($link==2){
 				$user["name"]=$username;

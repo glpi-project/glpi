@@ -291,7 +291,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 
 
 	$where = "(status = 'old_done' OR status = 'old_notdone')";	
-	$query = "SELECT ID FROM glpi_tracking WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 
 	$result = $DB->query($query);
@@ -308,10 +308,9 @@ function showOldJobListForItem($username,$item_type,$item) {
 
 		commonTrackingListHeader();
 
-		while ($i < $number)
+		while ($data=$DB->fetch_assoc($result))
 		{
-			$ID = $DB->result($result, $i, "ID");
-			showJobShort($ID, 0);
+			showJobShort($data, 0);
 			$i++;
 		}
 
@@ -354,7 +353,7 @@ function showJobListForItem($username,$item_type,$item) {
 
 
 	$where = "(status = 'new' OR status= 'assign' OR status='plan' OR status='waiting')";	
-	$query = "SELECT ID FROM glpi_tracking WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 
 	$result = $DB->query($query);
@@ -380,10 +379,9 @@ function showJobListForItem($username,$item_type,$item) {
 
 		commonTrackingListHeader();
 
-		while ($i < $number)
+		while ($data=$DB->fetch_assoc($result))
 		{
-			$ID = $DB->result($result, $i, "ID");
-			showJobShort($ID, 0);
+			showJobShort($data, 0);
 			$i++;
 		}
 		echo "</table></div>";
@@ -409,7 +407,7 @@ function showJobListForItem($username,$item_type,$item) {
 }
 
 
-function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
+function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	// Prints a job in short form
 	// Should be called in a <table>-segment
 	// Print links or not in case of user view
@@ -418,7 +416,9 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
+	$job->fields['ID'] = $data['ID'];
 	$candelete=haveRight("delete_ticket","1");
+	$canupdate=haveRight("update_ticket","1");
 	$viewusers=haveRight("user","r");
 	$align="align='center'";
 	$align_desc="align='left'";
@@ -426,99 +426,103 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$align.=" valign='top' ";
 		$align_desc.=" valign='top' ";
 	}
-	if ($job->getfromDBwithData($ID,0))
+	if ($data["ID"])
 	{
 		$item_num=1;
-		$bgcolor=$CFG_GLPI["priority_".$job->fields["priority"]];
+		$bgcolor=$CFG_GLPI["priority_".$data["priority"]];
 
 		echo displaySearchNewLine($output_type);
 
-		// First column
-		$first_col= "ID: ".$job->fields["ID"];
-		if ($output_type==HTML_OUTPUT)
-			$first_col.="<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png\" alt='".getStatusName($job->fields["status"])."' title='".getStatusName($job->fields["status"])."'>";
-		else $first_col.=" - ".getStatusName($job->fields["status"]);
 
-		if ($candelete&&$output_type==HTML_OUTPUT&&ereg("old_",$job->fields["status"])){
+
+		// First column
+		$first_col= "ID: ".$data["ID"];
+		if ($output_type==HTML_OUTPUT)
+			$first_col.="<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data["status"].".png\" alt='".getStatusName($data["status"])."' title='".getStatusName($data["status"])."'>";
+		else $first_col.=" - ".getStatusName($data["status"]);
+		if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
 			$sel="";
 			if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-			$first_col.="<input type='checkbox' name='todel[".$job->fields["ID"]."]' value='1' $sel>";
+			$first_col.="&nbsp;<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
 		}
+
 
 		echo displaySearchItem($output_type,$first_col,$item_num,$row_num,0,$align);
 
 		// Second column
 		$second_col="";	
-		if (!ereg("old_",$job->fields["status"]))
+		if (!ereg("old_",$data["status"]))
 		{
 			$second_col.="<small>".$LANG["joblist"][11].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
-			$second_col.= "&nbsp;".convDateTime($job->fields["date"])."</small>";
+			$second_col.= "&nbsp;".convDateTime($data["date"])."</small>";
 		}
 		else
 		{
 			$second_col.="<small>".$LANG["joblist"][11].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
-			$second_col.="&nbsp;".convDateTime($job->fields["date"]);
+			$second_col.="&nbsp;".convDateTime($data["date"]);
 			$second_col.="<br>";
 			$second_col.="<i>".$LANG["joblist"][12].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
-			$second_col.="&nbsp;".convDateTime($job->fields["closedate"])."</i>";
+			$second_col.="&nbsp;".convDateTime($data["closedate"])."</i>";
 			$second_col.="<br>";
-			if ($job->fields["realtime"]>0) $second_col.=$LANG["job"][20].": ";
+			if ($data["realtime"]>0) $second_col.=$LANG["job"][20].": ";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
-			$second_col.="&nbsp;".getRealtime($job->fields["realtime"]);
+			$second_col.="&nbsp;".getRealtime($data["realtime"]);
 			$second_col.="</small>";
 		}
 
 		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,0,$align." width=130");
 
 		// Third Column
-		echo displaySearchItem($output_type,"<strong>".getPriorityName($job->fields["priority"])."</strong>",$item_num,$row_num,0,"$align bgcolor='$bgcolor'");
+		echo displaySearchItem($output_type,"<strong>".getPriorityName($data["priority"])."</strong>",$item_num,$row_num,0,"$align bgcolor='$bgcolor'");
 
 		// Fourth Column
 
-		if ($viewusers)
-			$fourth_col="<strong>".$job->getAuthorName(1)."</strong>";
-		else
-			$fourth_col="<strong>".$job->getAuthorName()."</strong>";
+		if ($viewusers){
+			$fourth_col="<strong>".formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],1)."</strong>";
+		} else {
+			$fourth_col="<strong>".formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],0)."</strong>";
+		}
 
-		if ($job->fields["FK_group"])
-			$fourth_col.="<br>".getDropdownName("glpi_groups",$job->fields["FK_group"]);
+		if ($data["FK_group"])
+			$fourth_col.="<br>".$data["groupname"];
 
 		echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,0,$align);
 
 		// Fifth column
 		$fifth_col="";
 		if ($viewusers)
-			$fifth_col.=getAssignName($job->fields["assign"],USER_TYPE,1);
+			$fifth_col.=formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],1);
 		else
-			$fifth_col.="<strong>".getAssignName($job->fields["assign"],USER_TYPE)."</strong>";
+			$fifth_col.="<strong>".formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],0)."</strong>";
 
-		if ($job->fields["assign_ent"]>0){
+		if ($data["assign_ent"]>0){
 			$fifth_col.="<br>";
 			if ($viewusers)
-				$fifth_col.=getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE,1);
+				$fifth_col.=getAssignName($data["assign_ent"],ENTERPRISE_TYPE,1);
 			else
-				$fifth_col.="<strong>".getAssignName($job->fields["assign_ent"],ENTERPRISE_TYPE)."</strong>";
+				$fifth_col.="<strong>".getAssignName($data["assign_ent"],ENTERPRISE_TYPE)."</strong>";
 
 		}
 		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,0,$align);
 
-
+		$ci=new CommonItem();
+		$ci->getFromDB($data["device_type"],$data["computer"]);
 		// Sixth Colum
 		$sixth_col="";
 		$deleted=0;
-		if ($job->hardwaredatas->getField("deleted")=='Y'){
+		if ($ci->getField("deleted")=='Y'){
 			$deleted=1;
 		}
-		$sixth_col.=$job->hardwaredatas->getType();
-		if ($job->fields["device_type"]>0){
+		$sixth_col.=$ci->getType();
+		if ($data["device_type"]>0){
 			$sixth_col.="<br><strong>";
-			if (haveTypeRight($job->fields["device_type"],"r")){
-				$sixth_col.=$job->hardwaredatas->getLink();
+			if (haveTypeRight($data["device_type"],"r")){
+				$sixth_col.=$ci->getLink();
 			} else {
-				$sixth_col.=$job->hardwaredatas->getNameID();
+				$sixth_col.=$ci->getNameID();
 			}
 			$sixth_col.="</strong>";
 		} 
@@ -526,17 +530,17 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$deleted,$align);
 
 		// Seventh column
-		echo displaySearchItem($output_type,"<strong>".getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"])."</strong>",$item_num,$row_num,0,$align);
+		echo displaySearchItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,$row_num,0,$align);
 
 		// Eigth column
 
-		$stripped_content=resume_text($job->fields["contents"],400);
-		if ($followups){$stripped_content=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);}
+		$stripped_content=resume_text($data["contents"],400);
+		if ($followups){$stripped_content=resume_text($data["contents"],$CFG_GLPI["cut"]);}
 
 		$eigth_column="<strong>".$stripped_content."</strong>";
 		if ($followups&&$output_type==HTML_OUTPUT)
 		{
-			$eigth_column.=showFollowupsShort($job->fields["ID"]);
+			$eigth_column.=showFollowupsShort($data["ID"]);
 		}
 
 
@@ -548,13 +552,13 @@ function showJobShort($ID, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Job Controls
 
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
-			if (!haveRight("show_ticket","1")&&$job->fields["author"]!=$_SESSION["glpiID"]&&$job->fields["assign"]!=$_SESSION["glpiID"]&&(!haveRight("show_group_ticket",1)||!in_array($job->fields["FK_group"],$_SESSION["glpigroups"]))) 
+			if (!haveRight("show_ticket","1")&&$data["author"]!=$_SESSION["glpiID"]&&$data["assign"]!=$_SESSION["glpiID"]&&(!haveRight("show_group_ticket",1)||!in_array($data["FK_group"],$_SESSION["glpigroups"]))) 
 				$nineth_column.="&nbsp;";
 			else 
-				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 		}
 		else
-			$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+			$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
 
 		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$align." width='40'");
 
@@ -1052,6 +1056,22 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 }
 
 
+function getCommonSelectForTrackingSearch(){
+return " DISTINCT glpi_tracking.*,
+		glpi_tracking.author as authorID, author.name AS authorname, author.realname AS authorrealname, author.firstname AS authorfirstname,	
+		glpi_tracking.assign as assignID, assign.name AS assignname, assign.realname AS assignrealname, assign.firstname AS assignfirstname,
+		glpi_dropdown_tracking_category.completename AS catname,
+		glpi_groups.name as groupname ";
+}
+
+function getCommonLeftJoinForTrackingSearch(){
+	return " LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) "
+	." LEFT JOIN glpi_users as assign ON ( glpi_tracking.assign = assign.ID) "
+	." LEFT JOIN glpi_groups ON ( glpi_tracking.FK_group = glpi_groups.ID) "
+	." LEFT JOIN glpi_dropdown_tracking_category ON ( glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
+}
+
+
 function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
@@ -1064,6 +1084,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	global $DB,$CFG_GLPI, $LANG;
 
 	$candelete=haveRight("delete_ticket","1");
+	$canupdate=haveRight("update_ticket","1");
 	if (!haveRight("show_ticket","1")) {
 		if ($author==0&&$assign==0)
 			if (!haveRight("own_ticket","1"))
@@ -1120,7 +1141,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if (!$start) {
 		$start = 0;
 	}
-	$query = "select DISTINCT glpi_tracking.ID as ID from glpi_tracking";
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch();
+
 	if ($computers_search){
 		$query.= " LEFT JOIN glpi_computers as comp on ( comp.ID=glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."' )";
 		$query.= " LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
@@ -1145,17 +1167,23 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
 	}
 
-	if ($sort=="author.name"){
-		$query.= " LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) ";
-	}
-	if ($sort=="assign.name"){
-		$query.= " LEFT JOIN glpi_users as assign ON ( glpi_tracking.assign = assign.ID) ";
-	}
-	if ($sort=="glpi_dropdown_tracking_category.completename"){
-		$query.= " LEFT JOIN glpi_dropdown_tracking_category ON ( glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
+
+	$where=" WHERE ";
+
+
+	switch ($status){
+		case "new": $where.=" glpi_tracking.status = 'new'"; break;
+		case "notold": $where.=" (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' OR glpi_tracking.status = 'waiting')"; break;
+		case "old": $where.=" ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
+		case "process": $where.=" ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
+		case "waiting": $where.=" ( glpi_tracking.status = 'waiting' )"; break;
+		case "old_done": $where.=" ( glpi_tracking.status = 'old_done' )"; break;
+		case "old_notdone": $where.=" ( glpi_tracking.status = 'old_notdone' )"; break;
+		case "assign": $where.=" ( glpi_tracking.status = 'assign' )"; break;
+		case "plan": $where.=" ( glpi_tracking.status = 'plan' )"; break;
+		default : $where.=" '1' = '1'";break;
 	}
 
-	$where=" WHERE '1' = '1' ";
 
 	if ($computers_search)
 		$where.=" AND glpi_tracking.device_type= '1'";
@@ -1175,18 +1203,6 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 	if ($item!=0&&$type!=0)
 		$where.=" AND glpi_tracking.computer = '$item'";	
-
-	switch ($status){
-		case "new": $where.=" AND glpi_tracking.status = 'new'"; break;
-		case "notold": $where.=" AND (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' OR glpi_tracking.status = 'waiting')"; break;
-		case "old": $where.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
-		case "process": $where.=" AND ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
-		case "waiting": $where.=" AND ( glpi_tracking.status = 'waiting' )"; break;
-		case "old_done": $where.=" AND ( glpi_tracking.status = 'old_done' )"; break;
-		case "old_notdone": $where.=" AND ( glpi_tracking.status = 'old_notdone' )"; break;
-		case "assign": $where.=" AND ( glpi_tracking.status = 'assign' )"; break;
-		case "plan": $where.=" AND ( glpi_tracking.status = 'plan' )"; break;
-	}
 
 	if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
 	if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
@@ -1300,10 +1316,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 			commonTrackingListHeader($output_type,$target,$parameters2,$sort,$order);
 
-
-			while ($i < $numrows && $i<$end_display){
-				$ID = $DB->result($result, $i, "ID");
-				showJobShort($ID, $showfollowups,$output_type,$i-$start+1);
+			while ($i < $numrows && $i<$end_display&&$data=$DB->fetch_array($result)){
+//				$ID = $DB->result($result, $i, "ID");
+				showJobShort($data, $showfollowups,$output_type,$i-$start+1);
 				$i++;
 			}
 			$title="";
@@ -1340,14 +1355,14 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			echo displaySearchFooter($output_type,$title);
 
 			// Delete selected item
-			if ($candelete&&$output_type==HTML_OUTPUT&&($status=="old"||$status=="all"||ereg("old_",$status))){
+			if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
 				echo "<div align='center'>";
 				echo "<table cellpadding='5' width='900'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
 
 				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td>";
-				echo "<input type='submit' value=\"".$LANG["buttons"][6]."\" name='delete_inter' class='submit'></td>";
+				dropdownMassiveAction(TRACKING_TYPE,1);
 				echo "<td width='75%'>&nbsp;</td></table></div>";
 				// End form for delete item
 				echo "</form>";
