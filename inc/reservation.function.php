@@ -459,7 +459,7 @@ function printReservationItems($target){
 
 	if ($result = $DB->query($query)) {
 		
-		echo "<div align='center'><form method='get' target='$target?show=resa'><table class='tab_cadre' cellpadding='5'>";
+		echo "<div align='center'><form name='form' method='get' action='$target'><table class='tab_cadre' cellpadding='5'>";
 		echo "<tr><th colspan='4'>".$LANG["reservation"][1]."</th></tr>";
 		while ($row=$DB->fetch_array($result)){
 			$ri->getfromDB($row['ID']);
