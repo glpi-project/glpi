@@ -567,30 +567,32 @@ class Job extends CommonDBTM{
 
 
 		$name=$LANG["help"][30];
-		$contact=0;
-		$tech=0;
+		$contact='';
+		$tech='';
 		$name=$this->hardwaredatas->getType()." ".$this->hardwaredatas->getName();
-		if (isset($this->hardwaredatas->obj->fields["serial"])&&!empty($this->hardwaredatas->obj->fields["serial"])){
-			$name.=" - ".$LANG["common"][19].": ".$this->hardwaredatas->obj->fields["serial"];
-		}
-		if (isset($this->hardwaredatas->obj->fields["model"])&&$this->hardwaredatas->obj->fields["model"]>0){
-			$name.=" - ".$LANG["common"][22].": ".getDropdownName("glpi_dropdown_model",$this->hardwaredatas->obj->fields["model"]);
-		}
-		if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
-				$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
-		}
-		if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
-				$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
-		}
-		if (isset($this->hardwaredatas->obj->fields["contact"])){
-			$contact=$this->hardwaredatas->obj->fields["contact"];
-		}
-		if (isset($this->hardwaredatas->obj->fields["FK_users"])){
-			$contact=getUserName($this->hardwaredatas->obj->fields["FK_users"]);
-		}
-		if (isset($this->hardwaredatas->obj->fields["FK_groups"])){
-			if (!empty($contact)) $contact.=" / ";
-				$contact.=getDropdownName("glpi_groups",$this->hardwaredatas->obj->fields["FK_groups"]);
+		if (isset($this->hardwaredatas->obj!=NULL){
+			if (isset($this->hardwaredatas->obj->fields["serial"])&&!empty($this->hardwaredatas->obj->fields["serial"])){
+				$name.=" - ".$LANG["common"][19].": ".$this->hardwaredatas->obj->fields["serial"];
+			}
+			if (isset($this->hardwaredatas->obj->fields["model"])&&$this->hardwaredatas->obj->fields["model"]>0){
+				$name.=" - ".$LANG["common"][22].": ".getDropdownName("glpi_dropdown_model",$this->hardwaredatas->obj->fields["model"]);
+			}
+			if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
+					$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
+			}
+			if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
+					$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
+			}
+			if (isset($this->hardwaredatas->obj->fields["contact"])){
+				$contact=$this->hardwaredatas->obj->fields["contact"];
+			}
+			if (isset($this->hardwaredatas->obj->fields["FK_users"])){
+				$contact=getUserName($this->hardwaredatas->obj->fields["FK_users"]);
+			}
+			if (isset($this->hardwaredatas->obj->fields["FK_groups"])){
+				if (!empty($contact)) $contact.=" / ";
+					$contact.=getDropdownName("glpi_groups",$this->hardwaredatas->obj->fields["FK_groups"]);
+			}
 		}
 
 		if($format=="html"){
@@ -605,7 +607,7 @@ class Job extends CommonDBTM{
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["search"][8].":</span> ".convDateTime($this->fields["date"])."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["job"][44].":</span> ".getRequestTypeName($this->fields["request_type"])."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][7]."</span> ".$name."<br>";
-			if ($tech)
+			if (!empty($tech))
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["common"][10].":</span> ".$tech."<br>";
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][0].":</span> ".getStatusName($this->fields["status"])."<br>";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
@@ -613,7 +615,7 @@ class Job extends CommonDBTM{
 				$assign=$LANG["mailing"][105];
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][8]."</span> ".$assign."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
-			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&$contact)
+			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
 				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][28]."</span> ".$contact."<br>";
 			if ($this->fields["emailupdates"]=="yes"){
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103]."</span> ".$LANG["choice"][1]."<br>";
@@ -637,7 +639,7 @@ class Job extends CommonDBTM{
 			$message.= $LANG["search"][8].": ".convDateTime($this->fields["date"])."\n";
 			$message.= $LANG["job"][44].": ".getRequestTypeName($this->fields["request_type"])."\n";
 			$message.= $LANG["mailing"][7]." ".$name."\n";
-			if ($tech)
+			if (!empty($tech))
 				$message.= $LANG["common"][10].": ".$tech."\n";
 			$message.= $LANG["joblist"][0].": ".getStatusName($this->fields["status"])."\n";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
@@ -645,7 +647,7 @@ class Job extends CommonDBTM{
 				$assign=$LANG["mailing"][105];
 			$message.= $LANG["mailing"][8]." ".$assign."\n";
 			$message.= $LANG["joblist"][2].": ".getPriorityName($this->fields["priority"])."\n";
-			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&$contact)
+			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
 				$message.= $LANG["mailing"][28]." ".$contact."\n";
 			if ($this->fields["emailupdates"]=="yes"){
 				$message.=$LANG["mailing"][103]." ".$LANG["choice"][1]."\n";
