@@ -258,7 +258,13 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 
 	$resa= new ReservationResa;
 	if ($resaID!=-1)
-		$resa->getFromDB($resaID);
+		if (!$resa->getFromDB($resaID)){
+			return false;
+		}
+		if (!haveRight("reservation_central","1")&&$resa->fields['id_user']!=$_SESSION['glpiID']) {
+			return false;
+		}
+
 	else {
 		$resa->getEmpty();
 		$resa->fields["begin"]=$date." 12:00:00";
@@ -428,9 +434,12 @@ function printReservationItem($target,$ID,$date){
 					$display=$LANG["reservation"][17]."&nbsp;".$heure_debut;
 				else $display=$heure_debut."-".$heure_fin;
 
-				$rand=mt_rand();
-				$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;edit_item[$ID]=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
-				$modif_end="</a>";
+				$rand=mt_rand();		
+				$modif=$modif_end="";
+				if (haveRight("reservation_central","1")||$row['id_user']==$_SESSION['glpiID']) {
+					$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;edit_item[$ID]=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
+					$modif_end="</a>";
+				}
 				$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";
 
 				echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><b>".$user->fields["name"]."</b></span>";
