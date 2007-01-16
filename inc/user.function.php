@@ -150,7 +150,7 @@ function showDeviceUser($ID){
 			$cansee=haveTypeRight($type,"r");
 			while ($data=$DB->fetch_array($result)){
 				$link=$data["name"];
-				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</a>";
+				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($CFG_GLPI["view_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
 				$linktype="";
 				if ($data["FK_users"]==$ID)
 					$linktype.=$LANG["common"][34];
