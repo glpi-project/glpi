@@ -492,25 +492,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	$first=true;
 	// default string
-	$WHERE = " WHERE ";
-	// Add deleted if item have it
-	if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
-		$LINK= " AND " ;
-		if ($first) {$LINK=" ";$first=false;}
-		$WHERE.= $LINK.$itemtable.".deleted='$deleted' ";
-	}
-	// Remove template items
-	if (in_array($itemtable,$CFG_GLPI["template_tables"])){
-		$LINK= " AND " ;
-		if ($first) {$LINK=" ";$first=false;}
-		$WHERE.= $LINK.$itemtable.".is_template='0' ";
-	}
+	$WHERE = "";
 
 	// Add search conditions
 	// If there is search items
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
 		$i=0;
-
 		//foreach($contains as $key => $val)
 		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
 			// if real search (strlen >0) and not all and view search
@@ -591,6 +578,27 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			} 
 		}
 	}
+
+	if (!empty($WHERE)){
+		$WHERE=' WHERE ( '.$WHERE.' )';
+		$first=false;
+	} else {
+		$WHERE=" WHERE ";
+	}
+
+	// Add deleted if item have it
+	if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
+		$LINK= " AND " ;
+		if ($first) {$LINK=" ";$first=false;}
+		$WHERE.= $LINK.$itemtable.".deleted='$deleted' ";
+	}
+	// Remove template items
+	if (in_array($itemtable,$CFG_GLPI["template_tables"])){
+		$LINK= " AND " ;
+		if ($first) {$LINK=" ";$first=false;}
+		$WHERE.= $LINK.$itemtable.".is_template='0' ";
+	}
+
 	// Add Restrict to current entities
 	if ($entity_restrict){
 		$LINK= " AND " ;
@@ -598,6 +606,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 		$WHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
 	}
+
 
 	//// 4 - ORDER
 	foreach($toview as $key => $val){
