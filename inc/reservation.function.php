@@ -257,15 +257,16 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 	if (count($items)==0) return false;
 
 	$resa= new ReservationResa;
-	if ($resaID!=-1)
+
+	if ($resaID!=-1){
 		if (!$resa->getFromDB($resaID)){
 			return false;
 		}
-		if (!haveRight("reservation_central","1")&&$resa->fields['id_user']!=$_SESSION['glpiID']) {
+		if (!haveRight("reservation_central","w")&&$resa->fields['id_user']!=$_SESSION['glpiID']) {
 			return false;
 		}
 
-	else {
+	} else {
 		$resa->getEmpty();
 		$resa->fields["begin"]=$date." 12:00:00";
 		$resa->fields["end"]=$date." 13:00:00";
@@ -436,7 +437,7 @@ function printReservationItem($target,$ID,$date){
 
 				$rand=mt_rand();		
 				$modif=$modif_end="";
-				if (haveRight("reservation_central","1")||$row['id_user']==$_SESSION['glpiID']) {
+				if (haveRight("reservation_central","w")||$row['id_user']==$_SESSION['glpiID']) {
 					$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;edit_item[$ID]=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
 					$modif_end="</a>";
 				}
