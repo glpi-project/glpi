@@ -67,11 +67,11 @@ function showReservationForm($device_type,$id_device){
 
 	if ($resaID=isReservable($device_type,$id_device)) {
 		// Supprimer le materiel
-		echo "<div><a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_sous_nav'>".$LANG["reservation"][6]."</a></div>";	
+		echo "<div><a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG["reservation"][6]."</a></div>";	
 
 	}else {
 		echo "<div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
-		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\" class='icon_sous_nav' >".$LANG["reservation"][7]."</a></div>";      
+		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\" class='icon_consol' >".$LANG["reservation"][7]."</a></div>";      
 	}
 }
 
@@ -121,7 +121,7 @@ function printCalendrier($target,$ID=""){
 
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_sous_nav'>".$type." - ".$name."</span>";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_consol'>".$type." - ".$name."</span>";
 	echo "</b></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
 
