@@ -481,7 +481,7 @@ input.submit:hover {
 	border: 1px solid #888888;
 	background-color:#eeeeee;
 	vertical-align:middle;
-	background:  url("../pics/fond_ico_sous_nav.png") repeat-x; 
+	background:  url("../pics/fond_ico_cons.png") repeat-x; 
 	}
 	
 .calendrier:hover{
@@ -869,23 +869,6 @@ a.icon_logo:hover img {
 	
 }
 
-
-.icon_sous_nav {
-padding: 4px;
-	margin: 1px;
-	border: 1px solid #aaaaaa;
-	background-color: #ffffff;
-	-moz-border-radius: 5px;
-	font-size : 12px;
-	font-weight: bold;
-	background:  url("../pics/fond_ico_sous_nav.png") repeat-x; 
-
-
-
-
-}
-
-
 a.icon_nav_move img {
 	padding: 4px;
 	margin: 1px;
@@ -943,7 +926,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 /* #################################### */
 
 
-.icon_consol {
+.icon_consol_hov, .icon_consol{
 	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
 	font-size : 12px;
 	font-weight: bold;
@@ -957,11 +940,12 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 
 }
 
-.icon_consol img{
+
+.icon_consol_hov img{
 	padding-bottom: 10px;
 }
 
-.icon_consol:hover {
+.icon_consol_hov:hover {
 	padding: 4px;
 	padding-right: 8px;
 	margin: 1px;

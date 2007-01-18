@@ -108,7 +108,7 @@ $items=array(
 
 		$field=$items[$type]["field"];
 
-		echo "<div align ='center'><p><b><span class='icon_sous_nav'>".$items[$type]["title"]."</span></b></p></div>";
+		echo "<div align ='center'><p><b><span class='icon_consol'>".$items[$type]["title"]."</span></b></p></div>";
 
 
 		echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.tracking.php\">";

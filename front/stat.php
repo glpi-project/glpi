@@ -47,7 +47,7 @@ checkRight("statistic","1");
 
 // titre
 echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/statistiques.png\" alt='".$LANG["Menu"][13]."' title='".$LANG["Menu"][13]."'></td><td><span class='icon_sous_nav'><b>".$LANG["Menu"][13]."</b></span>";
+echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/statistiques.png\" alt='".$LANG["Menu"][13]."' title='".$LANG["Menu"][13]."'></td><td><span class='icon_consol'><b>".$LANG["Menu"][13]."</b></span>";
 echo "</td></tr></table></div>";
 
 

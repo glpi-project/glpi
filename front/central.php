@@ -63,7 +63,7 @@ include (GLPI_ROOT."/inc/includes.php");
 	if(empty($_GET["start"])) $_GET["start"] = 0;
 	// Greet the user
 
-	echo "<br><div align='center' ><b><span class='icon_sous_nav'>".$LANG["central"][0]." ";
+	echo "<br><div align='center' ><b><span class='icon_consol'>".$LANG["central"][0]." ";
 	if (empty($_SESSION["glpirealname"]))
 	echo $_SESSION["glpiname"];
 	else {
