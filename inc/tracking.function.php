@@ -584,20 +584,9 @@ function showJobVeryShort($ID) {
 	if ($job->getfromDBwithData($ID,0))
 	{
 		$bgcolor=$CFG_GLPI["priority_".$job->fields["priority"]];
-		if ($job->fields["status"] == "new")
-		{
-			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["ID"]."</td>";
-
-		}
-		else
-		{
-			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["ID"];
-			echo "</td>";
-		}
-
-
+		
+		echo "<tr class='tab_bg_2'>";
+		echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["ID"]."</td>";
 		echo "<td align='center'>";
 
 		if ($viewusers)
