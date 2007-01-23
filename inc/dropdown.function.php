@@ -155,13 +155,12 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 	$dropdown_right=haveRight("dropdown","w");
 
 	if ($dropdown_right){
-		$which=$table;
-/*		if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
-			$search=array("/glpi_dropdown_/","/glpi_type_/");
-			$replace=array("","");
-			$which=preg_replace($search,$replace,$table);
+		if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
+//			$search=array("/glpi_dropdown_/","/glpi_type_/");
+//			$replace=array("","");
+//			$which=preg_replace($search,$replace,$table);
+			$which=$table;
 		}
-*/
 	}
 
 	if ($display_comments){
