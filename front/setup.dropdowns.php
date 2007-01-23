@@ -122,6 +122,7 @@ else {
 			$LANG["setup"][139]=>array(
 				"glpi_dropdown_locations"=>$LANG["common"][15],		
 				"glpi_dropdown_state"=>$LANG["setup"][83],
+				"glpi_dropdown_manufacturer"=>$LANG["common"][5],
 				),
 
 			$LANG["setup"][140]=>array(
