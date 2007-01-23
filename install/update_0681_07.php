@@ -431,7 +431,6 @@ function update0681to07() {
 						$comments.=$data['notes'];
 					}
 					$query2="INSERT INTO `glpi_dropdown_manufacturer` (ID,name,comments) VALUES ('".$data['ID']."','".$data['name']."','$comments')";
-					echo $query2;
 					$DB->query($query2) or die("0.7 add manufacturer item " . $LANG["update"][90] . $DB->error());
 				}
 			}
