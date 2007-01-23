@@ -2044,7 +2044,7 @@ $SEARCH_OPTION[CONSUMABLE_TYPE][4]['linkfield']='type';
 $SEARCH_OPTION[CONSUMABLE_TYPE][4]['name']=$LANG["common"][17];
 $SEARCH_OPTION[CONSUMABLE_TYPE][4]['meta']=0;
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][5]['table']='glpi_enterprises';
+$SEARCH_OPTION[CONSUMABLE_TYPE][5]['table']='glpi_dropdown_manufacturer';
 $SEARCH_OPTION[CONSUMABLE_TYPE][5]['field']='name';
 $SEARCH_OPTION[CONSUMABLE_TYPE][5]['linkfield']='FK_glpi_enteprise';
 $SEARCH_OPTION[CONSUMABLE_TYPE][5]['name']=$LANG["common"][5];
