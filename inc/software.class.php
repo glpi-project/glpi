@@ -279,7 +279,7 @@ class Software extends CommonDBTM {
 				echo "</td>";
 
 				echo "<td>" . $LANG["common"][5] . ": 	</td><td>";
-				dropdownValue("glpi_enterprises", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
+				dropdownValue("glpi_dropdown_manufacturer", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'>";

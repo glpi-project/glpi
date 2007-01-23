@@ -440,7 +440,7 @@ function showDevicesList($device_type,$target) {
 
 
 	$query = "select DISTINCT device.ID from ".getDeviceTable($device_type)." as device ";
-	$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = device.FK_glpi_enterprise ) ";
+	$query.= " LEFT JOIN glpi_dropdown_manufacturer ON (glpi_dropdown_manufacturer.ID = device.FK_glpi_enterprise ) ";
 	$query .= " ORDER by device.designation ASC";
 
 	// Get it from database	
@@ -474,7 +474,7 @@ function showDevicesList($device_type,$target) {
 				echo $device->fields["designation"];
 				if ($CFG_GLPI["view_ID"]) echo " (".$device->fields["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>". getDropdownName("glpi_enterprises",$device->fields["FK_glpi_enterprise"]) ."</td>";
+				echo "<td>". getDropdownName("glpi_dropdown_manufacturer",$device->fields["FK_glpi_enterprise"]) ."</td>";
 				echo "</tr>";
 			}
 
@@ -550,7 +550,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
-		dropdownValue("glpi_enterprises","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
+		dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
 		echo "</td></tr>";
 		if (getDeviceSpecifityLabel($device_type)!=""){
 			echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$LANG["devices"][24]."</td>";
