@@ -342,7 +342,7 @@ function update0681to07() {
 
 	// Add ticket_tco for hardwares
 	$tco_tbl=array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, SOFTWARE_TYPE, PHONE_TYPE);
-	include (GLPI_ROOT . "/inc/infocom.function.php");
+	include (GLPI_ROOT . "/inc/tracking.function.php");
 
 	foreach ($tco_tbl as $type) {
 		$table=$LINK_ID_TABLE[$type];
@@ -371,6 +371,73 @@ function update0681to07() {
 	}
 	
 	// TODO Enterprises -> dropdown manufacturer + update import OCS
+	if (!TableExists("glpi_dropdown_manufacturer")) {
+	
+		$query="CREATE TABLE `glpi_dropdown_manufacturer` (
+		`ID` int(11) NOT NULL auto_increment,
+		`name` varchar(255) NOT NULL,
+		`comments` text,
+		PRIMARY KEY  (`ID`),
+		KEY `name` (`name`)
+		) ENGINE=MyISAM ;";
+		$DB->query($query) or die("0.7 add dropdown_manufacturer table " . $LANG["update"][90] . $DB->error());
+
+		// Fill table
+		$query="SELECT * FROM glpi_enterprises ORDER BY ID";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)){
+				while ($data=$DB->fetch_assoc($result)){
+					$data=addslashes_deep($data);
+					$comments="";
+					if (!empty($data['address'])){
+						if (!empty($comments)) $comments.="\n";
+						$comments.=$LANG["financial"][44].":\n";
+						$comments.=$data['address'];
+					}
+					if (!empty($data['postcode'])||!empty($data['town'])){
+						if (!empty($comments)) $comments.=$LANG["financial"][44].":\n";
+						$comments.=$data['postcode']." ".$data['town'];
+					}
+					if (!empty($data['state'])||!empty($data['country'])){
+						if (!empty($comments)) $comments.=$LANG["financial"][44].":\n";
+						$comments.=$data['country']." ".$data['state'];
+					}
+					if (!empty($data['website'])){
+						if (!empty($comments)) $comments.="\n";
+						$comments.=$LANG["financial"][45].": ";
+						$comments.=$data['website'];
+					}
+					if (!empty($data['phonenumber'])){
+						if (!empty($comments)) $comments.="\n";
+						$comments.=$LANG["financial"][29].": ";
+						$comments.=$data['phonenumber'];
+					}
+					if (!empty($data['fax'])){
+						if (!empty($comments)) $comments.="\n";
+						$comments.=$LANG["financial"][30].": ";
+						$comments.=$data['fax'];
+					}
+					if (!empty($data['email'])){
+						if (!empty($comments)) $comments.="\n";
+						$comments.=$LANG["setup"][14].": ";
+						$comments.=$data['email'];
+					}
+					if (!empty($data['comments'])){
+						if (!empty($comments)) $comments.="\n";
+						$comments.=$data['comments'];
+					}
+					if (!empty($data['notes'])){
+						if (!empty($comments)) $comments.="\n";
+						$comments.=$data['notes'];
+					}
+					$query2="INSERT INTO `glpi_dropdown_manufacturer` (ID,name,comments) VALUES ('".$data['ID']."','".$data['name']."','$comments')";
+					echo $query2;
+					$DB->query($query2) or die("0.7 add manufacturer item " . $LANG["update"][90] . $DB->error());
+				}
+			}
+		}
+	}
+
 	// TODO Split Config -> config general + config entity
 	// TODO AUto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference
