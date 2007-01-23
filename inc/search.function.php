@@ -1980,8 +1980,12 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 		break;
 		case "glpi_enterprises":
+			return " LEFT JOIN $new_table $AS ON ($rt.FK_enterprise = $nt.ID) ";
+		break;
+		case "glpi_dropdown_manufacturer":
 			return " LEFT JOIN $new_table $AS ON ($rt.FK_glpi_enterprise = $nt.ID) ";
 		break;
+
 		case "glpi_enterprises_infocoms":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
 		return $out." LEFT JOIN glpi_enterprises AS glpi_enterprises_infocoms ON (glpi_infocoms.FK_enterprise = $nt.ID) ";
