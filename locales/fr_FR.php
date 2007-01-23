@@ -1165,7 +1165,7 @@ $LANG["search"][20]="Supprimer un critère global de recherche";
 
 
 $LANG["setup"][0]="Intitulés";
-$LANG["setup"][2]="Ajouter un utilisateur GLPI";
+$LANG["setup"][2]="Ajouter utilisateur...";
 $LANG["setup"][3]="Liaison LDAP";
 $LANG["setup"][4]="Types d'ordinateurs";
 $LANG["setup"][5]="Système d'exploitation";
