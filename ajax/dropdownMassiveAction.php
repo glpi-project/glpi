@@ -47,7 +47,6 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		checkSeveralRightsOr(array("delete_ticket"=>1,"update_ticket"=>1));
 	} else {
 		checkTypeRight($_POST["type"],"w");
-		
 	}
 	
 
