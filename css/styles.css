@@ -381,7 +381,7 @@ a:hover
 .showplan {
 font-weight: bold;
 text-decoration: none; 
-color : #009966; 
+color : #659900; 
 cursor:pointer;
 }
 
@@ -688,7 +688,8 @@ td { }
 	background:url("../pics/login_glpi.png")  no-repeat;
 	font-family : Verdana,Arial,Helvetica,sans-serif;
 	font-size : 12px;
-	color :#009966;
+	color :#659900;
+	font-weight: bold;
 }
 
 #contenu-nullHeader {
@@ -760,12 +761,13 @@ td { }
 	font-size: 16px;
 	font-weight: 700;
 	background-color: transparent;
+	color :#659900;
 }
 
 
 #boxlogin input {
 
-	border: 1px solid #009966;
+	border: 1px solid #659900;
 }
 
 #logo-login {
@@ -776,9 +778,14 @@ td { }
 	margin-right:0px;
 	margin-left:0px;
 	margin-top:80px;
-
-
+	color :#000000;
 }
+
+#logo-login a:hover {
+	color :#659900;
+	text-decoration: underline;
+}
+
 
 .sous_logo {
 	font-family: arial;
@@ -1028,7 +1035,7 @@ ul#onglet li {
 }
 
 ul#onglet li.actif {
-	border-bottom: 1px ridge #009966;
+	border-bottom: 1px ridge #659900;
 	background-color: #fff;
 }
 
