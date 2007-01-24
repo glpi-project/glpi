@@ -42,10 +42,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-checkTypeRight($_POST["device_type"],"w");
+
+if ($_POST["device_type"]==TRACKING_TYPE){
+	checkSeveralRightsOr(array("delete_ticket"=>1,"update_ticket"=>1));
+} else {
+	checkTypeRight($_POST["device_type"],"w");
+}
 
 commonHeader($LANG["title"][42],$_SERVER['PHP_SELF']);
-
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
 
 	switch($_POST["action"]){

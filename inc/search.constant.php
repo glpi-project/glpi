@@ -2520,4 +2520,44 @@ $SEARCH_OPTION[RESERVATION_TYPE][24]['field']='name';
 $SEARCH_OPTION[RESERVATION_TYPE][24]['linkfield']='tech_num';
 $SEARCH_OPTION[RESERVATION_TYPE][24]['name']=$LANG["common"][10];
 $SEARCH_OPTION[RESERVATION_TYPE][24]['meta']=0;
+
+// TRACKING_TYPE
+$SEARCH_OPTION[TRACKING_TYPE]['common']=$LANG["common"][32];
+
+$SEARCH_OPTION[TRACKING_TYPE][2]['table']='glpi_tracking';
+$SEARCH_OPTION[TRACKING_TYPE][2]['field']='status';
+$SEARCH_OPTION[TRACKING_TYPE][2]['linkfield']='status';
+$SEARCH_OPTION[TRACKING_TYPE][2]['name']=$LANG["joblist"][0];
+$SEARCH_OPTION[TRACKING_TYPE][2]['meta']=1;
+
+$SEARCH_OPTION[TRACKING_TYPE][3]['table']='glpi_tracking';
+$SEARCH_OPTION[TRACKING_TYPE][3]['field']='priority';
+$SEARCH_OPTION[TRACKING_TYPE][3]['linkfield']='priority';
+$SEARCH_OPTION[TRACKING_TYPE][3]['name']=$LANG["joblist"][2];
+$SEARCH_OPTION[TRACKING_TYPE][3]['meta']=1;
+
+$SEARCH_OPTION[TRACKING_TYPE][4]['table']='glpi_users';
+$SEARCH_OPTION[TRACKING_TYPE][4]['field']='name';
+$SEARCH_OPTION[TRACKING_TYPE][4]['linkfield']='author';
+$SEARCH_OPTION[TRACKING_TYPE][4]['name']=$LANG["common"][37];
+$SEARCH_OPTION[TRACKING_TYPE][4]['meta']=1;
+
+$SEARCH_OPTION[TRACKING_TYPE][5]['table']='glpi_users';
+$SEARCH_OPTION[TRACKING_TYPE][5]['field']='name';
+$SEARCH_OPTION[TRACKING_TYPE][5]['linkfield']='assign';
+$SEARCH_OPTION[TRACKING_TYPE][5]['name']=$LANG["job"][5]. " - ".$LANG["job"][27];
+$SEARCH_OPTION[TRACKING_TYPE][5]['meta']=1;
+
+$SEARCH_OPTION[TRACKING_TYPE][6]['table']='glpi_enterprises';
+$SEARCH_OPTION[TRACKING_TYPE][6]['field']='name';
+$SEARCH_OPTION[TRACKING_TYPE][6]['linkfield']='assign_ent';
+$SEARCH_OPTION[TRACKING_TYPE][6]['name']=$LANG["job"][5]. " - ".$LANG["job"][28];
+$SEARCH_OPTION[TRACKING_TYPE][6]['meta']=1;
+
+$SEARCH_OPTION[TRACKING_TYPE][7]['table']='glpi_dropdown_tracking_category';
+$SEARCH_OPTION[TRACKING_TYPE][7]['field']='name';
+$SEARCH_OPTION[TRACKING_TYPE][7]['linkfield']='category';
+$SEARCH_OPTION[TRACKING_TYPE][7]['name']=$LANG["common"][36];
+$SEARCH_OPTION[TRACKING_TYPE][7]['meta']=1;
+
 ?>

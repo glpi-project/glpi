@@ -1226,7 +1226,7 @@ function displaySearchTextAjaxDropdown($id){
 
 }
 
-function dropdownMassiveAction($device_type,$deleted){
+function dropdownMassiveAction($device_type,$deleted='N'){
 	global $LANG,$CFG_GLPI;
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
@@ -1464,6 +1464,156 @@ function dropdownActiveEntities($myname){
 	echo "</select></form>";
 	//print_r($_SESSION['glpiactiveentities']); 
 	//echo " -> ".$_SESSION['glpiactive_entity'];
+}
+
+
+function dropdownStatus($name,$value=0){
+	global $LANG;
+
+	echo "<select name='$name'>";
+	echo "<option value='new' ".($value=="new"?" selected ":"").">".$LANG["joblist"][9]."</option>";
+	echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$LANG["joblist"][18]."</option>";
+	echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$LANG["joblist"][19]."</option>";
+	echo "<option value='waiting' ".($value=="waiting"?" selected ":"").">".$LANG["joblist"][26]."</option>";
+	echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$LANG["joblist"][10]."</option>";
+	echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".$LANG["joblist"][17]."</option>";
+	echo "</select>";	
+}
+
+function getStatusName($value){
+	global $LANG;
+
+	switch ($value){
+		case "new" :
+			return $LANG["joblist"][9];
+		break;
+		case "assign" :
+			return $LANG["joblist"][18];
+		break;
+		case "plan" :
+			return $LANG["joblist"][19];
+		break;
+		case "waiting" :
+			return $LANG["joblist"][26];
+		break;
+		case "old_done" :
+			return $LANG["joblist"][10];
+		break;
+		case "old_notdone" :
+			return $LANG["joblist"][17];
+		break;
+	}	
+}
+
+function dropdownPriority($name,$value=0,$complete=0){
+	global $LANG;
+
+	echo "<select name='$name'>";
+	if ($complete){
+		echo "<option value='0' ".($value==1?" selected ":"").">".$LANG["search"][7]."</option>";
+		echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][3]."</option>";
+		echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][4]."</option>";
+		echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][5]."</option>";
+		echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][6]."</option>";
+		echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][7]."</option>";
+	}
+	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["help"][3]."</option>";
+	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["help"][4]."</option>";
+	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["help"][5]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["help"][6]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["help"][7]."</option>";
+
+	echo "</select>";	
+}
+
+
+function getPriorityName($value){
+	global $LANG;
+
+	switch ($value){
+		case 5 :
+			return $LANG["help"][3];
+			break;
+		case 4 :
+			return $LANG["help"][4];
+			break;
+		case 3 :
+			return $LANG["help"][5];
+			break;
+		case 2 :
+			return $LANG["help"][6];
+			break;
+		case 1 :
+			return $LANG["help"][7];
+			break;
+	}	
+}
+
+function getRequestTypeName($value){
+	global $LANG;
+
+	switch ($value){
+		case 1 :
+			return $LANG["Menu"][31];
+			break;
+		case 2 :
+			return $LANG["setup"][14];
+			break;
+		case 3 :
+			return $LANG["title"][41];
+			break;
+		case 4 :
+			return $LANG["tracking"][34];
+			break;
+		case 5 :
+			return $LANG["tracking"][35];
+			break;
+		case 6 :
+			return $LANG["tracking"][36];
+			break;
+		default : return "";
+	}	
+}
+
+function dropdownRequestType($name,$value=0){
+	global $LANG;
+
+	echo "<select name='$name'>";
+	echo "<option value='0' ".($value==0?" selected ":"").">-----</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["Menu"][31]."</option>"; // Helpdesk
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["setup"][14]."</option>"; // mail
+	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["title"][41]."</option>"; // phone
+	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["tracking"][34]."</option>"; // direct
+	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["tracking"][35]."</option>"; // writing
+	echo "<option value='6' ".($value==6?" selected ":"").">".$LANG["tracking"][36]."</option>"; // other
+
+	echo "</select>";	
+}
+
+function dropdownAmortType($name,$value=0){
+	global $LANG;
+
+	echo "<select name='$name'>";
+	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["financial"][47]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["financial"][48]."</option>";
+	echo "</select>";	
+}
+function getAmortTypeName($value){
+	global $LANG;
+
+	switch ($value){
+		case 2 :
+			return $LANG["financial"][47];
+			break;
+		case 1 :
+			return $LANG["financial"][48];
+			break;
+		case 0 :
+			return "";
+			break;
+
+	}	
 }
 
 ?>

@@ -1289,8 +1289,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			$nbcols=9;
 
 			// Form to delete old item
-			if ($candelete&&$output_type==HTML_OUTPUT&&($status=="old"||$status=="all"||ereg("old_",$status))){
-				echo "<form method='post' id='TrackingForm' name='TrackingForm' action=\"$target\">";
+			if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
+				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
+
 			}
 
 			$i=$start;
@@ -1350,9 +1351,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('TrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
 
 				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
-				echo "</td><td>";
-				dropdownMassiveAction(TRACKING_TYPE,1);
-				echo "<td width='75%'>&nbsp;</td></table></div>";
+				echo "</td><td width='80%'>";
+				dropdownMassiveAction(TRACKING_TYPE);
+				echo "</td><td>&nbsp;</td></table></div>";
 				// End form for delete item
 				echo "</form>";
 			}
@@ -1399,90 +1400,7 @@ function showFollowupsShort($ID) {
 	return $out;
 }
 
-function dropdownPriority($name,$value=0,$complete=0){
-	global $LANG;
 
-	echo "<select name='$name'>";
-	if ($complete){
-		echo "<option value='0' ".($value==1?" selected ":"").">".$LANG["search"][7]."</option>";
-		echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][3]."</option>";
-		echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][4]."</option>";
-		echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][5]."</option>";
-		echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][6]."</option>";
-		echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][7]."</option>";
-	}
-	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["help"][3]."</option>";
-	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["help"][4]."</option>";
-	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["help"][5]."</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["help"][6]."</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["help"][7]."</option>";
-
-	echo "</select>";	
-}
-
-
-function getPriorityName($value){
-	global $LANG;
-
-	switch ($value){
-		case 5 :
-			return $LANG["help"][3];
-			break;
-		case 4 :
-			return $LANG["help"][4];
-			break;
-		case 3 :
-			return $LANG["help"][5];
-			break;
-		case 2 :
-			return $LANG["help"][6];
-			break;
-		case 1 :
-			return $LANG["help"][7];
-			break;
-	}	
-}
-
-function getRequestTypeName($value){
-	global $LANG;
-
-	switch ($value){
-		case 1 :
-			return $LANG["Menu"][31];
-			break;
-		case 2 :
-			return $LANG["setup"][14];
-			break;
-		case 3 :
-			return $LANG["title"][41];
-			break;
-		case 4 :
-			return $LANG["tracking"][34];
-			break;
-		case 5 :
-			return $LANG["tracking"][35];
-			break;
-		case 6 :
-			return $LANG["tracking"][36];
-			break;
-		default : return "";
-	}	
-}
-
-function dropdownRequestType($name,$value=0){
-	global $LANG;
-
-	echo "<select name='$name'>";
-	echo "<option value='0' ".($value==0?" selected ":"").">-----</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["Menu"][31]."</option>"; // Helpdesk
-	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["setup"][14]."</option>"; // mail
-	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["title"][41]."</option>"; // phone
-	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["tracking"][34]."</option>"; // direct
-	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["tracking"][35]."</option>"; // writing
-	echo "<option value='6' ".($value==6?" selected ":"").">".$LANG["tracking"][36]."</option>"; // other
-
-	echo "</select>";	
-}
 
 
 function getAssignName($ID,$type,$link=0){
@@ -1507,43 +1425,7 @@ function getAssignName($ID,$type,$link=0){
 	}
 
 }
-function dropdownStatus($name,$value=0){
-	global $LANG;
 
-	echo "<select name='$name'>";
-	echo "<option value='new' ".($value=="new"?" selected ":"").">".$LANG["joblist"][9]."</option>";
-	echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$LANG["joblist"][18]."</option>";
-	echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$LANG["joblist"][19]."</option>";
-	echo "<option value='waiting' ".($value=="waiting"?" selected ":"").">".$LANG["joblist"][26]."</option>";
-	echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$LANG["joblist"][10]."</option>";
-	echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".$LANG["joblist"][17]."</option>";
-	echo "</select>";	
-}
-
-function getStatusName($value){
-	global $LANG;
-
-	switch ($value){
-		case "new" :
-			return $LANG["joblist"][9];
-		break;
-		case "assign" :
-			return $LANG["joblist"][18];
-		break;
-		case "plan" :
-			return $LANG["joblist"][19];
-		break;
-		case "waiting" :
-			return $LANG["joblist"][26];
-		break;
-		case "old_done" :
-			return $LANG["joblist"][10];
-		break;
-		case "old_notdone" :
-			return $LANG["joblist"][17];
-		break;
-	}	
-}
 
 
 function showJobDetails ($target,$ID){
