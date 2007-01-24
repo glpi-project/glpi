@@ -58,7 +58,8 @@ function showLicenses ($sID,$show_computers=0) {
 
 	if (!haveRight("software","r")) return false;
 	$canedit=haveRight("software","w");
-
+	$canshowcomputer=haveRight("computer","r");
+	$ci=new CommonItem();
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
 	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='Y')";
 
@@ -293,10 +294,11 @@ function showLicenses ($sID,$show_computers=0) {
 
 					if ($serial!="free"&&$serial!="global"&&$canedit) 
 						echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
-
-					echo "<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$data_inst["cID"]."\">";
-					echo $data_inst["cname"];
-					echo "</a></strong></td><td align='center'>";
+					$ci->getFromDB(COMPUTER_TYPE,$data_inst["cID"]);
+					
+					echo "&nbsp;<strong>";
+					echo $ci->getLink($canshowcomputer);
+					echo "</strong></td><td align='center'>";
 
 					// Comment
 					if (!empty($data_inst["COMMENT"])) {
