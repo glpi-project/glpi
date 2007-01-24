@@ -142,35 +142,35 @@ function showLinkOnDevice($type,$ID){
 				}
 
 				if (ereg("\[SERIAL\]",$link)){
-					if ($ci->getField('serial')){
-						$link=ereg_replace("\[SERIAL\]",$ci->getField('serial'),$link);
+					if ($tmp=$ci->getField('serial')){
+						$link=ereg_replace("\[SERIAL\]",$tmp,$link);
 					}
 				}
 				if (ereg("\[OTHERSERIAL\]",$link)){
-					if ($ci->getField('otherserial')){
-						$link=ereg_replace("\[OTHERSERIAL\]",$ci->getField('otherserial'),$link);
+					if ($tmp=$ci->getField('otherserial')){
+						$link=ereg_replace("\[OTHERSERIAL\]",$tmp,$link);
 					}
 				}
 
 				if (ereg("\[LOCATIONID\]",$link)){
-					if ($ci->getField('location')){
-						$link=ereg_replace("\[LOCATIONID\]",$ci->getField('location'),$link);
+					if ($tmp=$ci->getField('location')){
+						$link=ereg_replace("\[LOCATIONID\]",$tmp,$link);
 					}
 				}
 
 				if (ereg("\[LOCATION\]",$link)){
-					if ($ci->getField('location')){
-						$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->getField('location')),$link);
+					if ($tmp=$ci->getField('location')){
+						$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$tmp),$link);
 					}
 				}
 				if (ereg("\[NETWORK\]",$link)){
-					if ($ci->getField('network')){
-						$link=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$ci->getField('network')),$link);
+					if ($tmp=$ci->getField('network')){
+						$link=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$tmp),$link);
 					}
 				}
 				if (ereg("\[DOMAIN\]",$link)){
-					if ($ci->getField('domain'))
-						$link=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$ci->getField('domain')),$link);
+					if ($tmp=$ci->getField('domain'))
+						$link=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$tmp),$link);
 				}
 				$ipmac=array();
 				$i=0;
