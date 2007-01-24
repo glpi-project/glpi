@@ -176,8 +176,8 @@ class Mailing
 								if (isset($this->job->fields["computer"])&&$this->job->fields["computer"]>0&&isset($this->job->fields["device_type"])&&$this->job->fields["device_type"]>0){
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
-									if ($ci->getField('tech_num')){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->getField('tech_num')."')";
+									if ($tmp=$ci->getField('tech_num')){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -194,9 +194,8 @@ class Mailing
 								if (isset($this->job->fields["computer"])&&$this->job->fields["computer"]>0&&isset($this->job->fields["device_type"])&&$this->job->fields["device_type"]>0){
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
-									print_r($ci);
-									if ($ci->getField('FK_users')){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->getField('FK_users')."')";
+									if ($tmp=$ci->getField('FK_users')){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -459,8 +458,8 @@ class MailingResa{
 									$ci=new CommonItem();
 									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
-									if ($ci->getField('tech_num')){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->getField('tech_num')."')";
+									if ($tmp=$ci->getField('tech_num')){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -479,8 +478,8 @@ class MailingResa{
 									$ci=new CommonItem();
 									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
-									if ($ci->getField('FK_users')){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->getField('FK_users')."')";
+									if ($tmp=$ci->getField('FK_users')){
+										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
