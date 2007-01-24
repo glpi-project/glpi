@@ -227,33 +227,7 @@ class CommonItem{
 		}
 
 	}
-	/**
-	 * Get The Name of the Object
-	 *
-	 * @return String: name of the object in the current language
-	 */
-	function getName(){
-		global $LANG;
 
-		if ($this->device_type==0) {
-			return "";
-		}
-
-		if ($this->device_type==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
-			return $this->obj->fields["question"];
-		else if ($this->device_type==LICENSE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["serial"])&&$this->obj->fields["serial"]!="")
-			return $this->obj->fields["serial"];
-		else if (($this->device_type==CARTRIDGE_TYPE||$this->device_type==CONSUMABLE_TYPE)&&$this->obj!=NULL&&$this->obj->fields["name"]!=""){
-			$name=$this->obj->fields["name"];
-			if (isset($this->obj->fields["ref"])&&!empty($this->obj->fields["ref"]))			
-				$name.=" - ".$this->obj->fields["ref"];
-			return $name;
-		}
-		else if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
-			return $this->obj->fields["name"];
-		else 
-			return "N/A";
-	}
 	function getField($field){
 		if ($this->obj==NULL) return false;
 		if ($this->device_type==0) {
@@ -266,26 +240,64 @@ class CommonItem{
 			}
 		}
 	}
-	function getNameID(){
+	/**
+	 * Get The Name of the Object
+	 *
+	 * @return String: name of the object in the current language
+	 */
+	function getName($with_comments=0){
+		global $LANG;
+
+
+		if ($this->device_type==0) {
+			return "";
+		}
+
+		$toadd="";
+		if ($with_comments) $toadd="&nbsp;".$this->getComments();
+
+		if ($this->device_type==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
+			return $this->obj->fields["question"];
+		else if ($this->device_type==LICENSE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["serial"])&&$this->obj->fields["serial"]!="")
+			return $this->obj->fields["serial"];
+		else if (($this->device_type==CARTRIDGE_TYPE||$this->device_type==CONSUMABLE_TYPE)&&$this->obj!=NULL&&$this->obj->fields["name"]!=""){
+			$name=$this->obj->fields["name"];
+			if (isset($this->obj->fields["ref"])&&!empty($this->obj->fields["ref"]))			
+				$name.=" - ".$this->obj->fields["ref"];
+			return $name.$toadd;
+		}
+		else if ($this->obj!=NULL&&isset($this->obj->fields["name"])&&$this->obj->fields["name"]!="")
+			return $this->obj->fields["name"].$toadd;
+		else 
+			return "N/A";
+	}
+	/**
+	 * Get The Name of the Object with the ID if the config is set
+	 *
+	 * @return String: name of the object in the current language
+	 */
+	function getNameID($with_comments=0){
 		global $CFG_GLPI;
+		$toadd="";
+		if ($with_comments) $toadd="&nbsp;".$this->getComments();
 		if ($CFG_GLPI["view_ID"]){
 			if ($this->device_type==0)
-				return $this->getName();
-			else return $this->getName()." (".$this->id_device.")";
-		} else return $this->getName();
+				return $this->getName().$toadd;
+			else return $this->getName()." (".$this->id_device.")".$toadd;
+		} else return $this->getName().$toadd;
 	}
 	/**
 	 * Get The link to the Object
-	 *
+	 * @param $with_comments Display comments
 	 * @return String: link to the object type in the current language
 	 */
-	function getLink(){
+	function getLink($with_comments=0){
 
 		global $CFG_GLPI,$INFOFORM_PAGES;
 		$ID="";
 		switch ($this->device_type){
 			case GENERAL_TYPE :
-				return $this->getName();
+				return $this->getName($with_comments);
 				break;
 			case COMPUTER_TYPE :
 			case NETWORKING_TYPE :
@@ -304,22 +316,71 @@ class CommonItem{
 			case CONSUMABLE_TYPE : 
 			case DOCUMENT_TYPE : 
 			case GROUP_TYPE : 
-				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getNameID()."</a>";
+				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getNameID($with_comments)."</a>";
 				break;
 			case LICENSE_TYPE : 
-				return $this->getName();
+				return $this->getName($with_comments);
 				break;						
 			case CARTRIDGE_ITEM_TYPE : 
-				return $this->getName();
+				return $this->getName($with_comments);
 				break;						
 			case CONSUMABLE_ITEM_TYPE : 
-				return $this->getName();
+				return $this->getName($with_comments);
 				break;						
 		}
 
 
 	}
+	function getComments(){
+		global $LANG,$CFG_GLPI;
+		$comment="";
+		if ($tmp=$this->getField('serial')){
+			$comment.=$LANG["common"][19].": ".$tmp."<br>";
+		}
+		
+		if ($tmp=$this->getField('otherserial')){
+			$comment.=$LANG["common"][20].": ".$tmp."<br>";
+		}
+		if ($tmp=$this->getField('location')){
+			$tmp=getDropdownName("glpi_dropdown_locations",$tmp);
+			if (!empty($tmp)&&$tmp!='&nbsp;'){
+				$comment.=$LANG["common"][15].": ".$tmp."<br>";
+			}
+		}
+		if ($tmp=$this->getField('FK_users')){
+			$tmp=getDropdownName("glpi_users",$tmp);
+			if (!empty($tmp)&&$tmp!='&nbsp;'){
+				$comment.=$LANG["common"][34].": ".$tmp."<br>";
+			}
+		}
+		if ($tmp=$this->getField('FK_groups')){
+			$tmp=getDropdownName("glpi_groups",$tmp);
+			if (!empty($tmp)&&$tmp!='&nbsp;'){
+				$comment.=$LANG["common"][35].": ".$tmp."<br>";
+			}
+		}
+		if ($tmp=$this->getField('tech_num')){
+			$tmp=getDropdownName("glpi_users",$tmp);
+			if (!empty($tmp)&&$tmp!='&nbsp;'){
+				$comment.=$LANG["common"][10].": ".$tmp."<br>";
+			}
+		}
+		if ($tmp=$this->getField('contact')){
+			$comment.=$LANG["common"][18].": ".$tmp."<br>";
+		}
+		if ($tmp=$this->getField('contact_num')){
+			$comment.=$LANG["common"][21].": ".$tmp."<br>";
+		}
+		if (!empty($comment)){
+			$rand=mt_rand();
+			$comments_display=" onmouseout=\"cleanhide('comments_commonitem$rand')\" onmouseover=\"cleandisplay('comments_commonitem$rand')\" ";
+			$comments_display2="<span class='over_link' id='comments_commonitem$rand'>".nl2br($comment)."</span>";
 
+			$comment="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display> ";
+			$comment.=$comments_display2;
+		}
+		return $comment;
+	}
 }
 
 

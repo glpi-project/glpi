@@ -517,10 +517,10 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$deleted=1;
 		}
 		$sixth_col.=$ci->getType();
-		if ($data["device_type"]>0){
+		if ($data["device_type"]>0&&$data["computer"]>0){
 			$sixth_col.="<br><strong>";
 			if (haveTypeRight($data["device_type"],"r")){
-				$sixth_col.=$ci->getLink();
+				$sixth_col.=$ci->getLink(1);
 			} else {
 				$sixth_col.=$ci->getNameID();
 			}
