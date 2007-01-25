@@ -671,7 +671,7 @@ function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=2)
 		}	
 
 		if($cfg_ocs["import_general_enterprise"]&&!in_array("FK_glpi_enterprise",$computer_updates)) {
-			$compupdate["FK_glpi_enterprise"] = ocsImportEnterprise($line["SMANUFACTURER"]);
+			$compupdate["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$line["SMANUFACTURER"]);
 		}
 
 		if($cfg_ocs["import_general_type"]&&!empty($line["TYPE"])&&!in_array("type",$computer_updates)) {
@@ -731,32 +731,6 @@ function ocsImportDropdown($dpdTable,$dpdRow,$value) {
 }
 
 
-/**
- * Import general config of a new enterprise
- *
- * This function create a new enterprise in GLPI with some general datas.
- *
- *@param $name : name of the enterprise.
- *
- *@return integer : inserted enterprise id.
- *
- **/
-function ocsImportEnterprise($name) {
-	global $DB;
-	if (empty($name)) return 0;
-	$query = "SELECT ID 
-		FROM glpi_enterprises 
-		WHERE name = '".$name."'";
-	$result = $DB->query($query);
-	if ($DB->numrows($result)>0){
-		$enterprise_id  = $DB->result($result,0,"ID");
-	} else {
-		$entpr = new Enterprise;
-		$entpr->fields["name"] = $name;
-		$enterprise_id = $entpr->addToDB();
-	}
-	return($enterprise_id);
-}
 
 function ocsCleanLinks(){
 	global $DB,$DBocs;
@@ -1513,7 +1487,7 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 						
 						if (!empty($mon["name"]))
 							if (!in_array($mon["name"],$import_periph)){
-								$mon["FK_glpi_enterprise"] = ocsImportEnterprise($line["MANUFACTURER"]);
+								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$line["MANUFACTURER"]);
 								$mon["comments"] = $line["DESCRIPTION"];
 								$mon["serial"] = $line["SERIAL"];
 								$id_monitor=0;
@@ -1853,8 +1827,9 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 							$soft->fields["name"] = $name;
 							$soft->fields["version"] = $data2["VERSION"];
 							$soft->fields["comments"] = $data2["COMMENTS"];
-							if (!empty($data2["PUBLISHER"]))
-								$soft->fields["FK_glpi_enterprise"] = ocsImportEnterprise($data2["PUBLISHER"]);
+							if (!empty($data2["PUBLISHER"])){
+								$soft->fields["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$data2["PUBLISHER"]); 
+							}
 							$isNewSoft = $soft->addToDB();
 						}
 						if ($isNewSoft){
@@ -1880,7 +1855,7 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 								//$updates["version"]=$data2["VERSION"];
 								// No update publisher
 								//if (!empty($data2["PUBLISHER"]))
-								//	$updates["FK_glpi_enterprise"] = ocsImportEnterprise($data2["PUBLISHER"]);
+								//	$updates["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$data2["PUBLISHER"]);
 								$updates["ID"]=$DB->result($result_name,0,"ID");
 								$soft=new Software();
 								$soft->update($updates);
