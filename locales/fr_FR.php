@@ -689,8 +689,6 @@ $LANG["ldap"][6]="Impossible de joindre l'annuaire LDAP";
 $LANG["ldap"][7]="Aucun annuaire LDAP défini dans GLPI";
 $LANG["ldap"][8]="Test";
 $LANG["ldap"][9]="Test de connexion à l'annuaire LDAP";
-$LANG["ldap"][10]="Test réussi";
-$LANG["ldap"][11]="Test échoué";
 $LANG["ldap"][12]="Synchronisation";
 
 $LANG["links"][1]="Lien ou Nom du fichier";
