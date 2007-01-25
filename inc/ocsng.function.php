@@ -1502,8 +1502,15 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 					while($line = $DBocs->fetch_array($result)) {
 						$line=clean_cross_side_scripting_deep(addslashes_deep($line));
 						$mon["name"] = $line["CAPTION"];
-						if (empty($mon["name"])) $mon["name"] = $line["TYPE"];
-						if (empty($mon["name"])) $mon["name"] = $line["MANUFACTURER"];
+						
+						if (empty($line["CAPTION"])&&!empty($line["MANUFACTURER"])){
+							$mon["name"] = $line["MANUFACTURER"];
+						}
+						if (empty($line["CAPTION"])&&!empty($line["TYPE"])){
+							if (!empty($line["MANUFACTURER"])) $mon["name"].=" ";
+							$mon["name"] .= $line["TYPE"];
+						}
+						
 						if (!empty($mon["name"]))
 							if (!in_array($mon["name"],$import_periph)){
 								$mon["FK_glpi_enterprise"] = ocsImportEnterprise($line["MANUFACTURER"]);
