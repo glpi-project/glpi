@@ -688,9 +688,9 @@ $LANG["ldap"][5]="Veuillez choisir l'annuaire LDAP depuis lequel les utilisateur
 $LANG["ldap"][6]="Impossible de joindre l'annuaire LDAP";
 $LANG["ldap"][7]="Aucun annuaire LDAP défini dans GLPI";
 $LANG["ldap"][8]="Test";
-$LANG["ldap"][9]=$LANG["ldap"][8]." de connexion à l'annuaire LDAP";
-$LANG["ldap"][10]=$LANG["ldap"][9]." réussi";
-$LANG["ldap"][11]=$LANG["ldap"][9]." échoué";
+$LANG["ldap"][9]="Test de connexion à l'annuaire LDAP";
+$LANG["ldap"][10]="Test réussi";
+$LANG["ldap"][11]="Test échoué";
 $LANG["ldap"][12]="Synchronisation";
 
 $LANG["links"][1]="Lien ou Nom du fichier";
@@ -786,9 +786,9 @@ $LANG["login"][17]="Echec de l'authentification AD";
 $LANG["login"][18]="Base interne GLPI";
 $LANG["login"][19]="Liste des serveurs";
 $LANG["login"][20]="Ajouter un serveur";
-$LANG["login"][21]=$LANG["ldap"][8]." de connexion au serveur ".$LANG["login"][3];
-$LANG["login"][22]=$LANG["login"][21]." réussi";
-$LANG["login"][23]=$LANG["login"][21]." échoué";
+$LANG["login"][21]="Test de connexion au serveur IMAP/POP";
+$LANG["login"][22]="Test réussi";
+$LANG["login"][23]="Test échoué";
 $LANG["login"][24]="Date dernière mise à jour";
 
 $LANG["mailing"][0]="----------------------------------------------------------";
