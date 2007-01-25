@@ -108,9 +108,9 @@ elseif (isset ($_POST["test_ldap"])) {
 	//Testing ldap connection
 	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"admin");
 	if (testLDAPConnection($_POST["ID"]))
-		$msg =$LANG["ldap"][10];
+		$msg =$LANG["login"][22];
 	else
-		$msg =$LANG["ldap"][11];	
+		$msg =$LANG["login"][23];	
 	
 	//Display a message and a back link
 	echo "<div align='center'><strong>".$msg."<br>";
