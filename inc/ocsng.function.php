@@ -1874,8 +1874,9 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 					FROM glpi_inst_software 
 					WHERE ID = '".$key."'";
 				$result=$DB->query($query);
-				if ($DB->numrows($result)>0)
-					while ($data=$DB->fetch_assoc($result)){
+				if ($DB->numrows($result)>0){
+					if ($data=$DB->fetch_assoc($result)){
+						uninstallSoftware($key,$dohistory);
 						$query2="SELECT COUNT(*) 
 							FROM glpi_inst_software 
 							WHERE license = '".$data['license']."'";
@@ -1894,8 +1895,8 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 							$lic->delete(array("ID"=>$data['license']));
 						}
 					}
+				}
 
-				uninstallSoftware($key,$dohistory);
 				deleteInOcsArray($glpi_id,$key,"import_software");
 			}
 		}
