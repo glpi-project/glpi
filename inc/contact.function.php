@@ -56,7 +56,7 @@ function showEnterpriseContact($instID) {
 	if (!haveRight("contact_enterprise","r")) return false;
 	$canedit=haveRight("contact_enterprise","w");
 
-	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
+	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, glpi_enterprises.deleted as deleted";
 	$query.= " FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '$instID' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -80,7 +80,7 @@ function showEnterpriseContact($instID) {
 			if (!ereg("https*://",$website)) $website="http://".$website;
 			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 		}
-		echo "<tr class='tab_bg_1'>";
+		echo "<tr class='tab_bg_1".($data["deleted"]=='Y'?"_2":"")."'>";
 		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
