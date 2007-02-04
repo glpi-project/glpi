@@ -1023,34 +1023,33 @@ function getExpir($begin,$duration,$notice="0"){
 function manageRedirect($where){
 	global $CFG_GLPI,$PLUGIN_HOOKS;
 	if (!empty($where)){
-		list($type,$ID)=split("_",$where);
-		if (isset($_SESSION["glpiactiveprofile"]["interface"])&&!empty($_SESSION["glpiactiveprofile"]["interface"])){
+		$data=split("_",$where);
+		if (count($data)>=2&&isset($_SESSION["glpiactiveprofile"]["interface"])&&!empty($_SESSION["glpiactiveprofile"]["interface"])){
 			switch ($_SESSION["glpiactiveprofile"]["interface"]){
 				case "helpdesk" :
-					switch ($type){
-						case "tracking":
-							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=$ID");
-						break;
-						default:
-							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
-						break;
+					if ($data[0]=="tracking"&&$data[1]>0){
+						glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=".$data[1]);
+					} else {
+						glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 					}
 				break;
 				case "central" :
-						if (!empty($type)&&$ID>0){
-							if (ereg("plugin",$type)){
-								$plugin=ereg_replace("plugin","",$type);
-								if (isset($PLUGIN_HOOKS['redirect_page'][$plugin])&&!empty($PLUGIN_HOOKS['redirect_page'][$plugin])){
-									glpi_header($CFG_GLPI["root_doc"]."/plugins/".$plugin."/".$PLUGIN_HOOKS['redirect_page'][$plugin]."?ID=$ID");
-								} else {
-									glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
-								}
+					switch ($data[0]){
+						case "plugin":
+							if (isset($data[2])&&$data[2]>0&&isset($PLUGIN_HOOKS['redirect_page'][$data[1]])&&!empty($PLUGIN_HOOKS['redirect_page'][$data[1]])){
+								glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?ID=".$data[2]);
 							} else {
-								glpi_header($CFG_GLPI["root_doc"]."/front/$type.form.php?ID=$ID");
+								glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
+							} 
+						break;
+						default : 
+							if (!empty($data[0])&&$data[1]>0){
+								glpi_header($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?ID=".$data[1]);
+							} else {
+								glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
 							}
-						} else {
-							glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
-						}
+						break;
+					}
 				break;
 			}
 		}
