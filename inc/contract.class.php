@@ -170,7 +170,7 @@ class Contract extends CommonDBTM {
 	
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][5].":		</td><td>";
-				echo "<input type='text' name='cost' value=\"".number_format($this->fields["cost"],2,'.','')."\" size='10'>";
+				echo "<input type='text' name='cost' value=\"".number_format($this->fields["cost"],$CFG_GLPI["decimal_number"],'.','')."\" size='16'>";
 				echo "</td>";
 	
 				echo "<td>".$LANG["financial"][13].":		</td><td>";

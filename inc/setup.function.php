@@ -778,6 +778,13 @@ function showFormConfigDisplay($target) {
 	dropdownYesNoInt("public_faq", $CFG_GLPI["public_faq"]);
 	echo " </td></tr>";
 
+	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][149] . " </td><td>";
+	dropdownInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
+	echo "</td>";
+
+	echo "<td align='center'> &nbsp;</td><td>&nbsp;";
+	echo " </td></tr>";
+
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][129] . " </td><td>";
 	dropdownYesNoInt("view_ID", $CFG_GLPI["view_ID"]);
 	echo "</td>";
