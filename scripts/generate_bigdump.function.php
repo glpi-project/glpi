@@ -501,6 +501,14 @@ function generateGlobalDropdowns(){
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 
+	$items=array("DELL","HP","IIYAMA","CANON","EPSON","LEXMARK","ASUS","MSI");
+	for ($i=0;$i<$MAX['manufacturer'];$i++){
+		if (isset($items[$i])) $val=$items[$i];
+		else $val="manufacturer $i";
+		$query="INSERT INTO glpi_dropdown_manufacturer VALUES (NULL,'$val','comment $val')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+	}
+
 	for ($i=0;$i<max(1,pow($MAX['tracking_category'],1/3));$i++){
 		$query="INSERT INTO glpi_dropdown_tracking_category VALUES (NULL,'0','categorie $i','','comment categorie $i','1')";
 		$DB->query($query) or die("PB REQUETE ".$query);
