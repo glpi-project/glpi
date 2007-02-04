@@ -113,9 +113,9 @@ class Cron {
 			// Mailing alerts if mailing activated
 			if ($CFG_GLPI["mailing"]){
 				if ($CFG_GLPI["cartridges_alert"]>0)
-					$this->taches["cartridge"]=DAY_TIMESTAMP;
+					$this->taches["cartridge"]=$CFG_GLPI["cartridges_alert"];
 				if ($CFG_GLPI["consumables_alert"]>0)
-					$this->taches["consumable"]=DAY_TIMESTAMP;
+					$this->taches["consumable"]=$CFG_GLPI["consumables_alert"];
 			}
 			$this->taches["contract"]=DAY_TIMESTAMP;
 			$this->taches["infocom"]=DAY_TIMESTAMP;
@@ -130,7 +130,6 @@ class Cron {
 			}
 			//Garbage collector for expired session file
 			$this->taches["session"]=DAY_TIMESTAMP;
-
 			//Plugins cron  
 			$cronplug=get_plugins_cron(); 
 			if (is_array($cronplug)&&count($cronplug)){ 
