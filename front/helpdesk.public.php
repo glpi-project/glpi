@@ -49,11 +49,7 @@ if (isset($_POST["activeentity"])){
 }
 
 // Redirect management
-if (isset($_GET['redirect'])){
-	checkHelpdeskAccess();
-	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=$ID");
-}
+manageRedirect($_GET["redirect"]);
 
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 {
