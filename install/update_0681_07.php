@@ -39,6 +39,28 @@
 function update0681to07() {
 	global $DB, $LANG, $CFG_GLPI,$LINK_ID_TABLE;
 
+	// Decimal problem
+	if (FieldExists("glpi_infocoms", "value")) {
+		$query = "ALTER TABLE `glpi_infocoms` CHANGE `value` `value` DECIMAL( 20, 4 ) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 alter value in glpi_infocoms " . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_infocoms", "warranty_value")) {
+		$query = "ALTER TABLE `glpi_infocoms` CHANGE warranty_value warranty_value DECIMAL( 20, 4 ) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 alter warranty_value in glpi_infocoms " . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_tracking", "cost_time")) {
+		$query = "ALTER TABLE `glpi_tracking` CHANGE cost_time cost_time DECIMAL( 20, 4 ) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 alter cost_time in glpi_tracking " . $LANG["update"][90] . $DB->error());
+	}	
+	if (FieldExists("glpi_tracking", "cost_fixed")) {
+		$query = "ALTER TABLE `glpi_tracking` CHANGE cost_fixed cost_fixed DECIMAL( 20, 4 ) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 alter cost_fixed in glpi_tracking " . $LANG["update"][90] . $DB->error());
+	}	
+	if (FieldExists("glpi_tracking", "cost_material")) {
+		$query = "ALTER TABLE `glpi_tracking` CHANGE cost_material cost_material DECIMAL( 20, 4 ) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 alter cost_material in glpi_tracking " . $LANG["update"][90] . $DB->error());
+	}	
+
 	if (!FieldExists("glpi_config", "cas_logout")) {
 		$query = "ALTER TABLE `glpi_config` ADD `cas_logout` VARCHAR( 255 ) NULL AFTER `cas_uri`;";
 		$DB->query($query) or die("0.7 add cas_logout in glpi_config " . $LANG["update"][90] . $DB->error());
@@ -347,7 +369,7 @@ function update0681to07() {
 	foreach ($tco_tbl as $type) {
 		$table=$LINK_ID_TABLE[$type];
 		if (!FieldExists($table, "ticket_tco")){
-			$query = "ALTER TABLE `$table` ADD `ticket_tco` FLOAT DEFAULT '0';";
+			$query = "ALTER TABLE `$table` ADD `ticket_tco` DECIMAL( 20, 4 ) DEFAULT '0';";
 			$DB->query($query) or die("0.7 alter $table add ticket_tco" . $LANG["update"][90] . $DB->error());
 			// Update values
 			$query="SELECT DISTINCT device_type, computer 
