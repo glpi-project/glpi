@@ -55,56 +55,73 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 	switch($_POST["action"]){
 		case "connect":
 			$ci=new CommonItem();
-		if (isset($_POST["connect_item"])&&$_POST["connect_item"])
+			$ci2=new CommonItem();
+
+		if (isset($_POST["connect_item"])&&$_POST["connect_item"]
+			&&$ci->getFromDB($_POST["device_type"],$key)){
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
-					if ($ci->getFromDB($_POST["device_type"],$key))
-						if ($ci->obj->fields["is_global"]||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
-							Connect($key,$_POST["connect_item"],$_POST["device_type"]);
+					// Items exists ?
+					if ($ci2->getFromDB(COMPUTER_TYPE,$_POST["connect_item"])){
+						// Entity security
+						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+							if ($ci->obj->fields["is_global"]
+							||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
+								Connect($key,$_POST["connect_item"],$_POST["device_type"]);
+							}
 						}
+					}
 				}
 			}
+		}
 
 		break;
 		case "disconnect":
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
-					$query="DELETE FROM glpi_connect_wire WHERE type='".$_POST["device_type"]."' AND end1 = '$key'";
-					$DB->query($query);
+					$query="SELECT * FROM glpi_connect_wire WHERE type='".$_POST["device_type"]."' AND end1 = '$key'";
+					$result=$DB->query($query);
+					if ($DB->numrows($result)>0){
+						while ($data=$DB->fetch_assoc($result)){
+							Disconnect($data["ID"]);
+						}
+					}
 				}
 			}
 		break;
 		case "delete":
 			$ci=new CommonItem();
-		$ci->getFromDB($_POST["device_type"],-1);
-		foreach ($_POST["item"] as $key => $val){
-			if ($val==1) {
-				$ci->obj->delete(array("ID"=>$key));
+			$ci->getFromDB($_POST["device_type"],-1);
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					$ci->obj->delete(array("ID"=>$key));
+				}
 			}
-		}
 		break;
 		case "purge":
 			$ci=new CommonItem();
-		$ci->getFromDB($_POST["device_type"],-1);
-		foreach ($_POST["item"] as $key => $val){
-			if ($val==1) {
-				$ci->obj->delete(array("ID"=>$key),1);
+			$ci->getFromDB($_POST["device_type"],-1);
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					$ci->obj->delete(array("ID"=>$key),1);
+				}
 			}
-		}
 		break;
 		case "restore":
 			$ci=new CommonItem();
-		$ci->getFromDB($_POST["device_type"],-1);
-		foreach ($_POST["item"] as $key => $val){
-			if ($val==1) {
-				$ci->obj->restore(array("ID"=>$key));
+			$ci->getFromDB($_POST["device_type"],-1);
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					$ci->obj->restore(array("ID"=>$key));
+				}
 			}
-		}
 		break;
 		case "update":
 
 			// Infocoms case
-			if (($_POST["id_field"]>=25&&$_POST["id_field"]<=28)||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)||($_POST["id_field"]>=50&&$_POST["id_field"]<=58)){
+			if (($_POST["id_field"]>=25&&$_POST["id_field"]<=28)
+			||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)
+			||($_POST["id_field"]>=50&&$_POST["id_field"]<=58)){
 				$ic=new Infocom();
 				foreach ($_POST["item"] as $key => $val)
 					if ($val==1){
@@ -132,6 +149,25 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		case "add_group":
 			foreach ($_POST["item"] as $key => $val){
 				addUserGroup($key,$_POST["group"]);
+			}
+		break;
+		case "add_document":
+			$ci=new CommonItem();
+			$ci2=new CommonItem();
+			if ($ci->getFromDB(DOCUMENT_TYPE,$_POST['docID'])){
+				foreach ($_POST["item"] as $key => $val){
+					// Items exists ?
+					if ($ci2->getFromDB($_POST["device_type"],$key)){
+						// Entity security
+						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+							$template=0;
+							if ($ci2->getField('is_template')){
+								$template=1;
+							}
+							addDeviceDocument($_POST['docID'],$_POST["device_type"],$key,$template);
+						}
+					}
+				}
 			}
 		break;
 	}
