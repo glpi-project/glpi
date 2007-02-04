@@ -40,7 +40,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 // Redirect management
-manageRedirect($_GET["redirect"]);
+if (isset($_GET["redirect"])){
+	manageRedirect($_GET["redirect"]);
+}
 
 //*******************
 	// Affichage Module reservation 

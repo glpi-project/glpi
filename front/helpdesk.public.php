@@ -49,7 +49,9 @@ if (isset($_POST["activeentity"])){
 }
 
 // Redirect management
-manageRedirect($_GET["redirect"]);
+if (isset($_GET["redirect"])){
+	manageRedirect($_GET["redirect"]);
+}
 
 if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 {
