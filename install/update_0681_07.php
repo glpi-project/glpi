@@ -60,6 +60,11 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_tracking` CHANGE cost_material cost_material DECIMAL( 20, 4 ) NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.7 alter cost_material in glpi_tracking " . $LANG["update"][90] . $DB->error());
 	}	
+	if (!FieldExists("glpi_config", "decimal_number")) {
+		$query = "ALTER TABLE `glpi_config` ADD `decimal_number` INT( 11 ) DEFAULT '2';";
+		$DB->query($query) or die("0.7 add decimal_number in glpi_config " . $LANG["update"][90] . $DB->error());
+	}
+
 
 	if (!FieldExists("glpi_config", "cas_logout")) {
 		$query = "ALTER TABLE `glpi_config` ADD `cas_logout` VARCHAR( 255 ) NULL AFTER `cas_uri`;";

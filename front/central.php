@@ -50,7 +50,9 @@ include (GLPI_ROOT."/inc/includes.php");
 	commonHeader($LANG["title"][0],$_SERVER['PHP_SELF']);
 
 	// Redirect management
-	manageRedirect($_GET["redirect"]);
+	if (isset($_GET["redirect"])){
+		manageRedirect($_GET["redirect"]);
+	}
 
 	// show "my view" in first
 	if (!isset($_SESSION['glpi_viewcentral'])) $_SESSION['glpi_viewcentral']="my";
