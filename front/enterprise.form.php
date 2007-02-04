@@ -114,15 +114,6 @@ else
 	commonHeader($LANG["title"][23],$_SERVER['PHP_SELF'],"financial");
 
 
-	if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
-		$job=new Job();
-		foreach ($_POST["todel"] as $key => $val){
-			if ($val==1) {
-				$job->delete(array("ID"=>$key));
-			}
-		}
-	}
-
 	if ($ent->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
 		if (!empty($tab["ID"]))
 			switch($_SESSION['glpi_onglet']){
