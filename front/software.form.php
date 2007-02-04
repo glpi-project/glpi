@@ -133,15 +133,6 @@ else
 
 	} else {
 
-		if (haveRight("delete_ticket","1")&&isset($_POST["delete_inter"])&&!empty($_POST["todel"])){
-			$job=new Job();
-			foreach ($_POST["todel"] as $key => $val){
-				if ($val==1) {
-					$job->delete(array("ID"=>$key));
-				}
-			}
-		}
-
 		if ($soft->showForm($_SERVER['PHP_SELF'],$tab["ID"],$tab['search_software'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:

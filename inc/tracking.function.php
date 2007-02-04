@@ -282,14 +282,6 @@ function showOldJobListForItem($username,$item_type,$item) {
 	if (!haveRight("show_ticket","1")) return false;
 	$candelete=haveRight("delete_ticket","1");
 
-	// Form to delete old item
-	if ($candelete){
-		echo "<form method='post' action=\"".$_SERVER['PHP_SELF']."?ID=$item\" name='oldTrackingForm' id='oldTrackingForm'>";
-		echo "<input type='hidden' name='ID' value='$item'>";
-	}
-
-
-
 	$where = "(status = 'old_done' OR status = 'old_notdone')";	
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
@@ -304,7 +296,10 @@ function showOldJobListForItem($username,$item_type,$item) {
 		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan=9>".$number." ".$LANG["job"][18]."  ".$LANG["job"][17]."";
 		if ($number > 1) { echo "s"; }
-		echo " ".$LANG["job"][16].":</th></tr>";
+		echo " ".$LANG["job"][16].":&nbsp;";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
+
+		echo "</th></tr>";
 
 		commonTrackingListHeader();
 
@@ -315,18 +310,6 @@ function showOldJobListForItem($username,$item_type,$item) {
 		}
 
 		echo "</table></div>";
-
-		if ($candelete){
-			echo "<br><div align='center'>";
-
-			echo "<table class ='delete-old-job' cellpadding='5' width='950'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt='' ></td><td><a  onclick= \"if ( markAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all&amp;ID=$item'>".$LANG["buttons"][18]."</a></td>";
-
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('oldTrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none&amp;ID=$item'>".$LANG["buttons"][19]."</a>";
-			echo "</td><td>";
-			echo "<input type='submit' value=\"".$LANG["buttons"][6]."\" name='delete_inter' class='submit'></td>";
-			echo "<td width='75%'>&nbsp;</td></tr></table></div>";
-		}
 	} 
 	else
 	{
@@ -336,10 +319,6 @@ function showOldJobListForItem($username,$item_type,$item) {
 		echo "</table>";
 		echo "</div><br>";
 	}
-
-	// End form for delete item
-	if ($candelete)
-		echo "</form>";
 
 }
 
@@ -366,7 +345,9 @@ function showJobListForItem($username,$item_type,$item) {
 		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='9'>".$number." ".$LANG["job"][17]."";
 		if ($number > 1) { echo "s"; }
-		echo " ".$LANG["job"][16].":</th></tr>";
+		echo " ".$LANG["job"][16].":&nbsp;";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
+		echo "</th></tr>";
 
 		if ($item)
 		{

@@ -113,15 +113,6 @@ if ($tab["enddate1"]!="0000-00-00"&&$tab["enddate2"]!="0000-00-00"&&strcmp($tab[
 	$tab["enddate2"]=$tmp;
 }
 
-if (isset($_POST["delete_inter"])&&!empty($_POST["todel"])&&haveRight("delete_ticket","1")){
-	$job=new Job();
-	foreach ($_POST["todel"] as $key => $val){
-		if ($val==1) {
-			$job->delete(array("ID"=>$key));
-		}
-	}
-}
-
 if (!haveRight("show_ticket","1")){
 	searchSimpleFormTracking($_SERVER['PHP_SELF'],$tab["status"],$tab["group"]);
 	showTrackingList($_SERVER['PHP_SELF'],$tab["start"],$tab["sort"],$tab["order"],$tab["status"],$_SESSION["glpiID"],$tab["group"]);

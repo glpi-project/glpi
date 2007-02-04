@@ -169,7 +169,8 @@ class Job extends CommonDBTM{
 			$this->fields["status"]="assign";
 		}
 		if (isset($input["status"])){
-			if ($input["assign_ent"]==0&&$input["assign"]==0&&$input["status"]=="assign"){
+			if (isset($input["assign_ent"])&&$input["assign_ent"]==0&&
+			isset($input["assign"])&&$input["assign"]==0&&$input["status"]=="assign"){
 				$updates[]="status";
 				$this->fields["status"]="new";
 			}
