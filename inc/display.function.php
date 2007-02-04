@@ -456,7 +456,7 @@ function displayMessageAfterRedirect(){
 function helpHeader($title,$url) {
 	// Print a nice HTML-head for help page
 
-	global $CFG_GLPI,$LANG, $CFG_GLPI,$HEADER_LOADED ;
+	global $CFG_GLPI,$LANG, $CFG_GLPI,$HEADER_LOADED,$PLUGIN_HOOKS ;
 
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
@@ -580,6 +580,35 @@ function helpHeader($title,$url) {
 			echo "	<li id='menu4' >";
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\" title=\"".$LANG["knowbase"][1]."\" class='itemP'>".$LANG["Menu"][20]."</a>";
 			
+			echo "</li>";
+		}
+
+		// PLUGINS
+		$plugins=array();
+		if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])&&count($PLUGIN_HOOKS["helpdesk_menu_entry"]))
+			foreach  ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
+				if ($active){
+					$function="plugin_version_$plugin";
+	
+					if (function_exists($function))
+						$plugins[$plugin]=$function();
+				}
+			}
+	
+		if (isset($plugins)&&count($plugins)>0){
+			$list=array();
+			foreach ($plugins as $key => $val) {
+				$list[$key]=$val["name"];
+			}
+			asort($list);
+			echo "	<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\" >";
+			echo "<a href='#' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";  // default none
+			echo "<ul class='ssmenu'>"; 
+			// list menu item 
+			foreach ($list as $key => $val) {
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
+			}
+			echo "</ul>";
 			echo "</li>";
 		}
 	
