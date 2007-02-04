@@ -121,7 +121,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][78].":		</td>";
-			echo "<td ><input type='text' $option name='warranty_value' value=\"".number_format($ic->fields["warranty_value"],2,'.','')."\" size='10'></td>";
+			echo "<td ><input type='text' $option name='warranty_value' value=\"".number_format($ic->fields["warranty_value"],$CFG_GLPI["decimal_number"],'.','')."\" size='16'></td>";
 
 
 			echo "<td>".$LANG["financial"][16].":		</td>";
@@ -131,7 +131,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 			echo "</td></tr>";
 		}
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".number_format($ic->fields["value"],2,'.','')."\" size='10'></td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".number_format($ic->fields["value"],$CFG_GLPI["decimal_number"],'.','')."\" size='16'></td>";
 		if ($show_immo==1){
 			echo "<td>".$LANG["financial"][81]." :</td><td>";
 
@@ -247,7 +247,7 @@ function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplat
 
 function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_fiscale,$view="n") {
 	// By Jean-Mathieu Doleans qui s'est un peu pris le chou :p
-
+	global $CFG_GLPI;
 	// $type_amort = "lineaire=2" ou "degressif=1"
 	// $va = valeur d'acquisition
 	// $duree = duree d'amortissement
@@ -411,7 +411,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 			// on prend la valeur residuelle de l'annee n-1
 			$vnc=$tab["vcnetdeb"][array_search(date("Y"),$tab["annee"])];
 		}
-		return number_format($vnc,2,".","");
+		return number_format($vnc,$CFG_GLPI["decimal_number"],".","");
 	}
 }
 
@@ -428,6 +428,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
  *
  **/
 function showTco($ticket_tco,$value,$date_achat=""){
+	global $CFG_GLPI;
 	// Affiche le TCO ou le TCO mensuel pour un matériel 
 	//		
 	$totalcost=$ticket_tco;
@@ -442,11 +443,11 @@ function showTco($ticket_tco,$value,$date_achat=""){
 		$diff = floor(($timestamp - $timestamp2) / (MONTH_TIMESTAMP)); // Mois d'utilisation
 
 		if ($diff)
-			return number_format((($totalcost+$value)/$diff),2,"."," "); // TCO mensuel
+			return number_format((($totalcost+$value)/$diff),$CFG_GLPI["decimal_number"],"."," "); // TCO mensuel
 		else return "";
 
 	}else {
-		return number_format(($totalcost+$value),2,"."," "); // TCO
+		return number_format(($totalcost+$value),$CFG_GLPI["decimal_number"],"."," "); // TCO
 	}
 
 }// fin showTCO	

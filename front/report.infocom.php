@@ -133,7 +133,7 @@ function display_infocoms_report($device_type,$begin,$end){
 
 			$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
 
-			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td><td style='text-align:right'>".number_format($line["value"],2,"."," ")."</td><td style='text-align:right'>".number_format($valeurnette,2,"."," ")."</td><td style='text-align:right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td><td style='text-align:right'>".number_format($line["value"],$CFG_GLPI["decimal_number"],"."," ")."</td><td style='text-align:right'>".number_format($valeurnette,$CFG_GLPI["decimal_number"],"."," ")."</td><td style='text-align:right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 
 
 		}	
@@ -202,7 +202,7 @@ echo "</table>";
 
 
 
-echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".number_format($valeurtot,2)." - ".$LANG["financial"][81]."=".number_format($valeurnettetot,2)."</h3></div>";
+echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".number_format($valeurtot,$CFG_GLPI["decimal_number"])." - ".$LANG["financial"][81]."=".number_format($valeurnettetot,$CFG_GLPI["decimal_number"])."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);

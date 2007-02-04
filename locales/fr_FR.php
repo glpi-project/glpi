@@ -1264,6 +1264,7 @@ $LANG["setup"][145]="Os";
 $LANG["setup"][146]="Réseau";
 $LANG["setup"][147]="Ajax";
 $LANG["setup"][148]="Pas pour les horaires";
+$LANG["setup"][149]="Nombre de décimales pour les montants";
 
 
 $LANG["setup"][150]="Sources d'authentification externes";
