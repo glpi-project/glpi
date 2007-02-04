@@ -50,10 +50,7 @@ include (GLPI_ROOT."/inc/includes.php");
 	commonHeader($LANG["title"][0],$_SERVER['PHP_SELF']);
 
 	// Redirect management
-	if (isset($_GET['redirect'])){
-		list($type,$ID)=split("_",$_GET["redirect"]);
-		glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID");
-	}
+	manageRedirect($_GET["redirect"]);
 
 	// show "my view" in first
 	if (!isset($_SESSION['glpi_viewcentral'])) $_SESSION['glpi_viewcentral']="my";

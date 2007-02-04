@@ -38,10 +38,6 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-
-
-
-
 //******************************************************************************************************
 //******************************************************************************************************
 //********************************  Fonctions diverses ************************************
@@ -1022,6 +1018,43 @@ function getExpir($begin,$duration,$notice="0"){
 		}
 	}
 
+}
+
+function manageRedirect($where){
+	global $CFG_GLPI,$PLUGIN_HOOKS;
+	if (!empty($where)){
+		list($type,$ID)=split("_",$where);
+		if (isset($_SESSION["glpiactiveprofile"]["interface"])&&!empty($_SESSION["glpiactiveprofile"]["interface"])){
+			switch ($_SESSION["glpiactiveprofile"]["interface"]){
+				case "helpdesk" :
+					switch ($type){
+						case "tracking":
+							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=$ID");
+						break;
+						default:
+							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+						break;
+					}
+				break;
+				case "central" :
+						if (!empty($type)&&$ID>0){
+							if (ereg("plugin",$type)){
+								$plugin=ereg_replace("plugin","",$type);
+								if (isset($PLUGIN_HOOKS['redirect_page'][$plugin])&&!empty($PLUGIN_HOOKS['redirect_page'][$plugin])){
+									glpi_header($CFG_GLPI["root_doc"]."/plugins/".$plugin."/".$PLUGIN_HOOKS['redirect_page'][$plugin]."?ID=$ID");
+								} else {
+									glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
+								}
+							} else {
+								glpi_header($CFG_GLPI["root_doc"]."/front/$type.form.php?ID=$ID");
+							}
+						} else {
+							glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
+						}
+				break;
+			}
+		}
+	}
 }
 
 ?>

@@ -43,12 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 // Redirect management
-if (isset($_GET['redirect'])){
-	checkHelpdeskAccess();
-	list($type,$ID)=split("_",$_GET["redirect"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=$ID");
-}
-
+manageRedirect($_GET["redirect"]);
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;

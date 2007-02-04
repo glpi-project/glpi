@@ -102,39 +102,8 @@ else
 		if(!session_id()){
 			@session_start();
 		}
-
-		list($type,$ID)=split("_",$_GET["redirect"]);
-		if (isset($_SESSION["glpiactiveprofile"]["interface"])&&!empty($_SESSION["glpiactiveprofile"]["interface"])){
-			switch ($_SESSION["glpiactiveprofile"]["interface"]){
-				case "helpdesk" :
-					switch ($type){
-						case "tracking":
-							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.php?show=user&ID=$ID");
-						break;
-						default:
-						glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.php");
-						break;
-					}
-				break;
-				case "central" :
-					switch ($type){
-						case "tracking":
-							glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID");
-						break;
-						case "computers":
-							glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?ID=$ID");
-						break;
-						default:
-						glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
-						break;
-					}
-				break;
-			}
-		}
-		// Non connect�: connection puis redirection 
-		else {
-			echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
-		}
+		manageRedirect($_GET["redirect"]);
+		echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
 	}
 
 	echo "<fieldset>";
