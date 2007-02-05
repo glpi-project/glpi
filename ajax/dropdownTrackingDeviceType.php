@@ -49,10 +49,15 @@ checkLoginUser();
 if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$_POST["type"]))){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
 
-	echo "<div align='center'>".$LANG["help"][23].":&nbsp;";
+	if (!isset($_POST["admin"])||$_POST["admin"]==0){
+		echo "<div align='center'>".$LANG["help"][23].":&nbsp;";
+	}
 	$rand=mt_rand();
-	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'></div>";	
 
+	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'></div>";	
+	if (isset($_POST["admin"])&$_POST["admin"]==1){
+		echo "<br>";
+	}
 
 	echo "<script type='text/javascript' >";
 	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
@@ -62,7 +67,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiact
 	echo "            {Element.hide('search_spinner$rand');}, ";
 	echo "           onLoading:function(request)";
 	echo "            {Element.show('search_spinner$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST['myname']."'";
+	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST['myname']."&entity_restrict=".$_POST['entity_restrict']."'";
 	echo "})})";
 	echo "</script>";	
 

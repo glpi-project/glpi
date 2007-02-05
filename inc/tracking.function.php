@@ -1508,7 +1508,7 @@ function showJobDetails ($target,$ID){
 		echo $LANG["common"][1].":</td><td>";
 		if ($canupdate){
 			echo $item->getType()." - ".$item->getLink()."<br>";
-			dropdownAllItems("item",0);
+			dropdownTrackingAllDevices("device_type",0,1,$job->fields["FK_entities"]);
 		}
 		else echo $item->getType()." ".$item->getNameID();
 
