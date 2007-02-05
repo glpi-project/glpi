@@ -59,7 +59,7 @@ if (isset($_POST["add"]))
 
 	$newID=$remind->add($_POST);
 
-	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
+	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {

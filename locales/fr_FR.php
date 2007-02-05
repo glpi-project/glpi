@@ -220,6 +220,7 @@ $LANG["common"][49]="Aucun";
 $LANG["common"][50]="Confirmer la suppression ?";
 $LANG["common"][51]="Nom complet";
 $LANG["common"][52]="Serveur";
+$LANG["common"][53]="Liste";
 
 
 $LANG["computers"][0]="Ajouter ordinateur...";
