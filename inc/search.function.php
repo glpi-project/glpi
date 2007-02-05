@@ -1137,17 +1137,17 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 				$replace=array("<",">");
 				$val=preg_replace($search,$replace,$val);
 		
-				if (ereg("([<>])[[:space:]]*([0-9]*)",$val,$regs)){
+				if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
 					if ($NOT){
 						if ($regs[1]=='<') {
 							$regs[1]='>';
 						} else {
 							$regs[1]='<';
 						}
-					}
-					$GROUPBY.= " ($NAME$num ".$regs[1]." ".$regs[2]." ) ";
+					} 
+					$regs[1].=$regs[2];
+					$GROUPBY.= " ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
 				} else {
-					$larg=100;
 					if (!$NOT){
 						$GROUPBY.=" ( $NAME$num = ".(intval($val)).") ";
 					} else {
@@ -1157,65 +1157,29 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 			break;
 
 			case "glpi_device_ram.specif_default" :
-				$search=array("/\&lt;/","/\&gt;/");
-				$replace=array("<",">");
-				$val=preg_replace($search,$replace,$val);
-		
-				if (ereg("([<>])[[:space:]]*([0-9]*)",$val,$regs)){
-					if ($NOT){
-						if ($regs[1]=='<') {
-							$regs[1]='>';
-						} else {
-							$regs[1]='<';
-						}
-					}
-					$GROUPBY.= " ($NAME$num ".$regs[1]." ".$regs[2]." ) ";
-				} else {
-					$larg=100;
-					if (!$NOT){
-						$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
-					} else {
-						$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
-					}
-				}
-			break;
 			case "glpi_device_processor.specif_default" :
-				$search=array("/\&lt;/","/\&gt;/");
-				$replace=array("<",">");
-				$val=preg_replace($search,$replace,$val);
-				if (ereg("([<>])[[:space:]]*([0-9]*)",$val,$regs)){
-					if ($NOT){
-						if ($regs[1]=='<') {
-							$regs[1]='>';
-						} else {
-							$regs[1]='<';
-						}
-					}
-					$GROUPBY.= " ($NAME$num ".$regs[1]." ".$regs[2]." ) ";
-				} else {
-					$larg=100;
-					if (!$NOT){
-						$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
-					} else {
-						$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
-					}
-				}
-			break;
 			case "glpi_device_hdd.specif_default" :
 				$search=array("/\&lt;/","/\&gt;/");
 				$replace=array("<",">");
 				$val=preg_replace($search,$replace,$val);
-				if (ereg("([<>])[[:space:]]*([0-9]*)",$val,$regs)){
+		
+				if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
 					if ($NOT){
 						if ($regs[1]=='<') {
 							$regs[1]='>';
 						} else {
 							$regs[1]='<';
 						}
-					}
-					$GROUPBY.= " ($NAME$num ".$regs[1]." ".$regs[2]." ) ";
+					} 
+					$regs[1].=$regs[2];
+
+					$GROUPBY.= " ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
 				} else {
-					$larg=1000;
+					if ($field=="glpi_device_hdd.specif_default"){
+						$larg=1000;
+					} else {
+						$larg=100;
+					}
 					if (!$NOT){
 						$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
 					} else {
@@ -1507,15 +1471,17 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])[[:space:]]*([0-9]*)",$val,$regs)){
+			if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
 				if ($nott){
 					if ($regs[1]=='<') {
 						$regs[1]='>';
 					} else {
 						$regs[1]='<';
 					}
-				}
-				return $link." ($table.$field ".$regs[1]." ".$regs[2]." ) ";
+				} 
+					$regs[1].=$regs[2];
+				
+				return $link." ($table.$field ".$regs[1]." ".$regs[3]." ) ";
 			} else {
 
 				$interval=100;
