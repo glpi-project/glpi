@@ -173,12 +173,14 @@ class kbitem extends CommonDBTM {
 			echo "<p align='center'>";
 		
 			if (haveRight("faq","w")&&haveRight("knowbase","w")){
-				if ($this->fields["faq"] == "yes") {
-					echo "<input class='submit' type='checkbox' name='faq' value='yes' checked>";
-				} else {
-					echo "<input class='submit' type='checkbox' name='faq' value='yes'>";
-				}
-				echo $LANG["knowbase"][5]."<br><br>\n";
+				
+				echo $LANG["knowbase"][5].": ";
+					echo "<select name='faq'>\n";
+					echo "<option value='no' ".($this->fields["faq"]=='no'?" selected ":"").">".$LANG["choice"][0]."</option>\n";
+					echo "<option value='yes' ".($this->fields["faq"]=='yes'?" selected ":"").">".$LANG["choice"][1]."</option>\n";
+					echo "</select>\n";	
+
+				echo "<br><br>\n";
 			}
 		
 			if (empty($ID)) {
