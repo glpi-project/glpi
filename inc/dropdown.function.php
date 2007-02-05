@@ -885,9 +885,11 @@ function dropdownMyDevices($userID=0){
  *
  * @param $myname select name
  * @param $value preselected value.
+ * @param $admin is an admin access ? 
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownTrackingAllDevices($myname,$value){
+function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1){
 	global $LANG,$CFG_GLPI,$DB,$LINK_ID_TABLE;
 
 	$rand=mt_rand();
@@ -899,7 +901,7 @@ function dropdownTrackingAllDevices($myname,$value){
 		echo "<div id='tracking_all_devices'>";
 
 		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
-			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
+			if (!$admin&&$_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
 				echo $LANG["tracking"][2].":<br>";
 			}
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
@@ -929,7 +931,7 @@ function dropdownTrackingAllDevices($myname,$value){
 			echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 			echo "           onLoading:function(request)\n";
 			echo "            {Element.show('search_spinner_$myname$rand');},\n";
-			echo "           method:'post', parameters:'type=' + value+'&myname=computer'\n";
+			echo "           method:'post', parameters:'type=' + value+'&myname=computer&entity_restrict=$entity_restrict&admin=$admin'\n";
 			echo "})})\n";
 			echo "</script>\n";
 
@@ -1210,9 +1212,9 @@ function device_selecter($target,$cID,$withtemplate='') {
 }
 
 
-function displaySearchTextAjaxDropdown($id){
+function displaySearchTextAjaxDropdown($id,$size=4){
 	global $CFG_GLPI;
-	echo "<input type='text' ondblclick=\"document.getElementById('search_$id').value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='4'>\n";
+	echo "<input type='text' ondblclick=\"document.getElementById('search_$id').value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
 
 }
 

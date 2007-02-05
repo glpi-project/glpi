@@ -125,8 +125,9 @@ class Job extends CommonDBTM{
 					$input["FK_group"] = $tmp;
 				}
 			}
-		} else if (isset($input["type"])&&$input["type"]!=0)
-			$input["device_type"]=0;
+		} else {
+			$input["computer"]=$input["device_type"]=0;
+		}
 
 		// add Document if exists
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){

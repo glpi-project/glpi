@@ -41,7 +41,13 @@ header_nocache();
 
 checkRight("create_ticket","1");
 
-$where="WHERE FK_entities = '".$_SESSION["glpiactive_entity"]."' ";
+$where="";
+if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+	$where.= "WHERE ".$_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
+} else {
+	$where.=getEntitiesRestrictRequest("WHERE",$_POST['table']);
+}
+
 if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"]))
 $where.=" AND deleted='N' ";
 if (in_array($_POST['table'],$CFG_GLPI["template_tables"]))
@@ -52,10 +58,10 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildca
 	$FWHERE="";
 	if ($_POST['table']!="glpi_software"){
 		$WWHERE=" OR contact ".makeTextSearch($_POST['searchText'])." OR serial ".makeTextSearch($_POST['searchText'])." OR otherserial ".makeTextSearch($_POST['searchText']);
-	}
-	else
+	} else {
 		//If software : filter to display only the softwares that are allowed to be visible in Helpdesk
 	 	$FWHERE=" AND helpdesk_visible=1";
+	}
 	 	
 	$where.=$FWHERE." AND (name ".makeTextSearch($_POST['searchText'])." OR ID = '".$_POST['searchText']."' $WWHERE)";
 }
@@ -66,6 +72,7 @@ $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 $query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
+
 $result = $DB->query($query);
 
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
@@ -77,14 +84,15 @@ echo "<option value=\"0\">-----</option>";
 if ($DB->numrows($result)) {
 	while ($data = $DB->fetch_array($result)) {
 
-		$output = $data['name']." (".$data['ID'].")";
+		$output = $data['name'];
 		if ($_POST['table']!="glpi_software"){
 
 			$output.=" - ".$data['contact']." - ".$data['serial']." - ".$data['otherserial'];
+		} else {
+			$output.=" (v. ".$data['version'].")";
 		}
-		$ID = $data['ID'];
-		if (empty($output)) $output="($ID)";
-		echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
+		echo "<option value=\"".$data['ID']."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";
