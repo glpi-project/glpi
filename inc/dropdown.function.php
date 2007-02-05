@@ -603,37 +603,43 @@ function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
 function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
 	global $DB,$LANG,$CFG_GLPI;
 
-	$items=array(
-			COMPUTER_TYPE=>"glpi_computers",
-			NETWORKING_TYPE=>"glpi_networking",
-			PRINTER_TYPE=>"glpi_printers",
-			MONITOR_TYPE=>"glpi_monitors",
-			PERIPHERAL_TYPE=>"glpi_peripherals",
-			SOFTWARE_TYPE=>"glpi_software",
-			PHONE_TYPE=>"glpi_phones",
-		    );
-
-	if ($withenterprise==1) $items[ENTERPRISE_TYPE]="glpi_enterprises";
-	if ($withcartridge==1) $items[CARTRIDGE_TYPE]="glpi_cartridges_type";
-	if ($withconsumable==1) $items[CONSUMABLE_TYPE]="glpi_consumables_type";
-	if ($withcontracts==1) $items[CONTRACT_TYPE]="glpi_contracts";
-
-
 	$rand=mt_rand();
 	echo "<table border='0'><tr><td>\n";
 	echo "<select name='type' id='item_type$rand'>\n";
 	echo "<option value='0'>-----</option>\n";
-	echo "<option value='".COMPUTER_TYPE."'>".$LANG["Menu"][0]."</option>\n";
-	echo "<option value='".NETWORKING_TYPE."'>".$LANG["Menu"][1]."</option>\n";
-	echo "<option value='".PRINTER_TYPE."'>".$LANG["Menu"][2]."</option>\n";
-	echo "<option value='".MONITOR_TYPE."'>".$LANG["Menu"][3]."</option>\n";
-	echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["Menu"][16]."</option>\n";
-	echo "<option value='".SOFTWARE_TYPE."'>".$LANG["Menu"][4]."</option>\n";
-	echo "<option value='".PHONE_TYPE."'>".$LANG["Menu"][34]."</option>\n";
-	if ($withenterprise==1) echo "<option value='".ENTERPRISE_TYPE."'>".$LANG["Menu"][23]."</option>\n";
-	if ($withcartridge==1) echo "<option value='".CARTRIDGE_TYPE."'>".$LANG["Menu"][21]."</option>\n";
-	if ($withconsumable==1) echo "<option value='".CONSUMABLE_TYPE."'>".$LANG["Menu"][32]."</option>\n";
-	if ($withcontracts==1) echo "<option value='".CONTRACT_TYPE."'>".$LANG["Menu"][25]."</option>\n";
+	if (haveTypeRight(COMPUTER_TYPE,'r')){
+		echo "<option value='".COMPUTER_TYPE."'>".$LANG["Menu"][0]."</option>\n";
+	}
+	if (haveTypeRight(NETWORKING_TYPE,'r')){
+		echo "<option value='".NETWORKING_TYPE."'>".$LANG["Menu"][1]."</option>\n";
+	}
+	if (haveTypeRight(PRINTER_TYPE,'r')){
+		echo "<option value='".PRINTER_TYPE."'>".$LANG["Menu"][2]."</option>\n";
+	}
+	if (haveTypeRight(MONITOR_TYPE,'r')){
+		echo "<option value='".MONITOR_TYPE."'>".$LANG["Menu"][3]."</option>\n";
+	}
+	if (haveTypeRight(PERIPHERAL_TYPE,'r')){
+		echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["Menu"][16]."</option>\n";
+	}
+	if (haveTypeRight(SOFTWARE_TYPE,'r')){
+		echo "<option value='".SOFTWARE_TYPE."'>".$LANG["Menu"][4]."</option>\n";
+	}
+	if (haveTypeRight(PHONE_TYPE,'r')){
+		echo "<option value='".PHONE_TYPE."'>".$LANG["Menu"][34]."</option>\n";
+	}
+	if ($withenterprise==1&&haveTypeRight(ENTERPRISE_TYPE,'r')){
+		echo "<option value='".ENTERPRISE_TYPE."'>".$LANG["Menu"][23]."</option>\n";
+	}
+	if ($withcartridge==1&&haveTypeRight(CARTRIDGE_TYPE,'r')) {
+		echo "<option value='".CARTRIDGE_TYPE."'>".$LANG["Menu"][21]."</option>\n";
+	}
+	if ($withconsumable==1&&haveTypeRight(CONSUMABLE_TYPE,'r')) {
+		echo "<option value='".CONSUMABLE_TYPE."'>".$LANG["Menu"][32]."</option>\n";
+	}
+	if ($withcontracts==1&&haveTypeRight(CONTRACT_TYPE,'r')) {
+		echo "<option value='".CONTRACT_TYPE."'>".$LANG["Menu"][25]."</option>\n";
+	}
 	echo "</select>\n";
 
 
@@ -965,15 +971,7 @@ function dropdownTrackingAllDevices($myname,$value){
 function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0) {
 
 
-	global $CFG_GLPI;
-
-	$items=array(
-			COMPUTER_TYPE=>"glpi_computers",
-			PRINTER_TYPE=>"glpi_printers",
-			MONITOR_TYPE=>"glpi_monitors",
-			PERIPHERAL_TYPE=>"glpi_peripherals",
-			PHONE_TYPE=>"glpi_phones",
-		    );
+	global $CFG_GLPI,$LINK_ID_TABLE;
 
 	$rand=mt_rand();
 
@@ -996,9 +994,9 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 	$nb=0;
 	if ($CFG_GLPI["use_ajax"]){
 		if ($entity_restrict>=0){
-			$nb=countElementsInTableForEntity($items[$type],$entity_restrict);
+			$nb=countElementsInTableForEntity($LINK_ID_TABLE[$type],$entity_restrict);
 		} else {
-			$nb=countElementsInTableForMyEntities($items[$type]);
+			$nb=countElementsInTableForMyEntities($LINK_ID_TABLE[$type]);
 		}
 	}
 
@@ -1032,14 +1030,6 @@ function dropdownConnectPort($ID,$type,$myname) {
 
 
 	global $DB,$LANG,$CFG_GLPI;
-
-	$items=array(
-			COMPUTER_TYPE=>"glpi_computers",
-			NETWORKING_TYPE=>"glpi_networking",
-			PRINTER_TYPE=>"glpi_printers",
-			PERIPHERAL_TYPE=>"glpi_peripherals",
-			PHONE_TYPE=>"glpi_phones",
-		    );
 
 	$rand=mt_rand();
 	echo "<select name='type[$ID]' id='item_type$rand'>\n";
