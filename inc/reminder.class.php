@@ -211,7 +211,7 @@ class Reminder extends CommonDBTM {
 			if(!$ID||$this->fields["rv"]==0){
 				if($remind_edit) { 
 					echo "<div id='plan'  onClick='showPlan()'>\n";
-					echo "<span style='font-weight: bold;text-decoration: none; color : #009966; cursor:pointer;'>".$LANG["reminder"][12]."</span>";
+					echo "<span style='font-weight: bold;text-decoration: none; color : #659900; cursor:pointer;'>".$LANG["reminder"][12]."</span>";
 				}
 			}else{
 				if($remind_edit) {

@@ -1361,7 +1361,7 @@ function dropdownHours($name,$value,$limit_planning=0){
 		$end=(int) $plan_end[0];
 	}
 	echo "<select name=\"$name\">";
-	for ($i=$begin;$i<=$end;$i++){
+	for ($i=$begin;$i<$end;$i++){
 		if ($i<10)
 			$tmp="0".$i;
 		else $tmp=$i;
@@ -1373,6 +1373,9 @@ function dropdownHours($name,$value,$limit_planning=0){
 			echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
 		}
 	}
+	// Last item
+	$val=$end.":00";
+	echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
 	echo "</select>";	
 }	
 
