@@ -101,7 +101,7 @@ elseif (!empty ($_POST["update_confgen"])) {
 	$config->update($_POST);
 	if ($_POST["ocs_mode"] && !$CFG_GLPI["ocs_mode"])
 		glpi_header($CFG_GLPI["root_doc"] .
-		"/front/setup.config.php?next=ocsng");
+		"/front/setup.ocsng.php?next=ocsng");
 	else
 		glpi_header($CFG_GLPI["root_doc"] .
 		"/front/setup.config.php?next=confgen");
