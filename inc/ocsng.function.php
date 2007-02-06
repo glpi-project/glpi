@@ -1,4 +1,5 @@
 <?php
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -33,140 +34,143 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
-	}
+}
 
-function ocsShowNewComputer($check,$start,$tolinked=0){
-	global $DB,$DBocs,$LANG,$CFG_GLPI;
+function ocsShowNewComputer($ocs_server_id,$check, $start, $tolinked = 0) {
+	global $DB, $LANG, $CFG_GLPI;
 
-	if (!haveRight("ocsng","w")) return false;
+	if (!haveRight("ocsng", "w"))
+		return false;
 
-	$cfg_ocs=getOcsConf(1);
+	$DBocs= getDBocs($ocs_server_id);
+	$cfg_ocs = getOcsConf($ocs_server_id);
 
-	$WHERE="";
-	if (!empty($cfg_ocs["tag_limit"])){
-		$splitter=explode("$",$cfg_ocs["tag_limit"]);
-		if (count($splitter)){
-			$WHERE="WHERE TAG='".$splitter[0]."' ";
-			for ($i=1;$i<count($splitter);$i++)
-				$WHERE.=" OR TAG='".$splitter[$i]."' ";
+	$WHERE = "";
+	if (!empty ($cfg_ocs["tag_limit"])) {
+		$splitter = explode("$", $cfg_ocs["tag_limit"]);
+		if (count($splitter)) {
+			$WHERE = "WHERE TAG='" . $splitter[0] . "' ";
+			for ($i = 1; $i < count($splitter); $i++)
+				$WHERE .= " OR TAG='" .
+				$splitter[$i] . "' ";
 		}
 	}
 
 	$query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG 
-		FROM hardware 
-		INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
-		$WHERE 
-		ORDER BY hardware.NAME";
+			FROM hardware 
+			INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
+			$WHERE 
+			ORDER BY hardware.NAME";
 	$result_ocs = $DBocs->query($query_ocs);
 
 	// Existing OCS - GLPI link
 	$query_glpi = "SELECT * 
-		FROM glpi_ocs_link";
+			FROM glpi_ocs_link WHERE ocs_server_id=".$ocs_server_id;
 	$result_glpi = $DB->query($query_glpi);
 
 	// Computers existing in GLPI
 	$query_glpi_comp = "SELECT ID,name 
-		FROM glpi_computers 
-		WHERE deleted = 'N' AND is_template='0'";
+			FROM glpi_computers 
+			WHERE deleted = 'N' AND is_template='0'";
 	$result_glpi_comp = $DB->query($query_glpi_comp);
 
-	if ($DBocs->numrows($result_ocs)>0){
+	if ($DBocs->numrows($result_ocs) > 0) {
 
 		// Get all hardware from OCS DB
-		$hardware=array();
-		while($data=$DBocs->fetch_array($result_ocs)){
-			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
-			$hardware[$data["ID"]]["date"]=$data["LASTDATE"];
-			$hardware[$data["ID"]]["name"]=$data["NAME"];
-			$hardware[$data["ID"]]["TAG"]=$data["TAG"];
-			$hardware[$data["ID"]]["ID"]=$data["ID"];
+		$hardware = array ();
+		while ($data = $DBocs->fetch_array($result_ocs)) {
+			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
+			$hardware[$data["ID"]]["date"] = $data["LASTDATE"];
+			$hardware[$data["ID"]]["name"] = $data["NAME"];
+			$hardware[$data["ID"]]["TAG"] = $data["TAG"];
+			$hardware[$data["ID"]]["ID"] = $data["ID"];
 		}
 
 		// Get all links between glpi and OCS
-		$already_linked=array();
-		if ($DB->numrows($result_glpi)>0){
-			while($data=$DBocs->fetch_array($result_glpi)){
-				$already_linked[$data["ocs_id"]]=$data["last_update"];
+		$already_linked = array ();
+		if ($DB->numrows($result_glpi) > 0) {
+			while ($data = $DBocs->fetch_array($result_glpi)) {
+				$already_linked[$data["ocs_id"]] = $data["last_update"];
 			}
 		}
 
 		// Get all existing computers name in GLPI
-		$computer_names=array();
-		if ($DB->numrows($result_glpi_comp)>0){
-			while($data=$DBocs->fetch_array($result_glpi_comp)){
-				$computer_names[$data["name"]]=$data["ID"];
+		$computer_names = array ();
+		if ($DB->numrows($result_glpi_comp) > 0) {
+			while ($data = $DBocs->fetch_array($result_glpi_comp)) {
+				$computer_names[$data["name"]] = $data["ID"];
 			}
 		}
 
 		// Clean $hardware from already linked element
-		if (count($already_linked)>0){
-			foreach ($already_linked as $ID => $date){
-				if (isset($hardware[$ID])&&isset($already_linked[$ID]))
-					unset($hardware[$ID]);
+		if (count($already_linked) > 0) {
+			foreach ($already_linked as $ID => $date) {
+				if (isset ($hardware[$ID]) && isset ($already_linked[$ID]))
+					unset ($hardware[$ID]);
 			}
 		}
 
-
-
-
-		if ($tolinked&&count($hardware)){
-			echo "<div align='center'><strong>".$LANG["ocsng"][22]."</strong></div>";
+		if ($tolinked && count($hardware)) {
+			echo "<div align='center'><strong>" . $LANG["ocsng"][22] . "</strong></div>";
 		}
 
 		echo "<div align='center'>";
-		if (($numrows=count($hardware))>0){
+		if (($numrows = count($hardware)) > 0) {
 
-			$parameters="check=$check";
-			printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters);
+			$parameters = "check=$check";
+			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
 			// delete end 
-			array_splice($hardware,$start+$CFG_GLPI["list_limit"]);
+			array_splice($hardware, $start + $CFG_GLPI["list_limit"]);
 			// delete begin
-			if ($start>0)
-				array_splice($hardware,0,$start);
-			echo "<strong>".$LANG["ocsconfig"][18]."</strong><br>";
-			echo "<form method='post' name='ocsng_form' id='ocsng_form' action='".$_SERVER['PHP_SELF']."'>";
-			if ($tolinked==0)
-				echo "<a href='".$_SERVER['PHP_SELF']."?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$LANG["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER['PHP_SELF']."?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$LANG["buttons"][19]."</a>";
-
+			if ($start > 0)
+				array_splice($hardware, 0, $start);
+			echo "<strong>" . $LANG["ocsconfig"][18] . "</strong><br>";
+			echo "<form method='post' name='ocsng_form' id='ocsng_form' action='" . $_SERVER['PHP_SELF'] . "'>";
+			if ($tolinked == 0)
+				echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th>".$LANG["ocsng"][5]."</th><th>".$LANG["common"][27]."</th><th>TAG</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>" . $LANG["ocsng"][5] . "</th><th>" . $LANG["common"][27] . "</th><th>TAG</th><th>&nbsp;</th></tr>";
 
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-			echo "<input class='submit' type='submit' name='import_ok' value='".$LANG["buttons"][37]."'>";
+			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
 			echo "</td></tr>";
 
+			foreach ($hardware as $ID => $tab) {
+				echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td><td>" . convDateTime($tab["date"]) . "</td><td>" . $tab["TAG"] . "</td><td>";
 
-			foreach ($hardware as $ID => $tab){
-				echo "<tr class='tab_bg_2'><td>".$tab["name"]."</td><td>".convDateTime($tab["date"])."</td><td>".$tab["TAG"]."</td><td>";
-
-				if ($tolinked==0)
-					echo "<input type='checkbox' name='toimport[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
+				if ($tolinked == 0)
+					echo "<input type='checkbox' name='toimport[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
 				else {
-					if (isset($computer_names[$tab["name"]]))
-						dropdownValue("glpi_computers","tolink[".$tab["ID"]."]",$computer_names[$tab["name"]]);
+					if (isset ($computer_names[$tab["name"]]))
+						dropdownValue("glpi_computers", "tolink[" .
+						$tab["ID"] . "]", $computer_names[$tab["name"]]);
 					else
-						dropdown("glpi_computers","tolink[".$tab["ID"]."]");
+						dropdown("glpi_computers", "tolink[" .
+						$tab["ID"] . "]");
 				}
 				echo "</td></tr>";
 
 			}
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-			echo "<input class='submit' type='submit' name='import_ok' value='".$LANG["buttons"][37]."'>";
+			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
+			echo "<input type=hidden name='ocs_server_id' value='".$ocs_server_id."'>";
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</form>";
 
-			printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters);
+			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
-		} else echo "<strong>".$LANG["ocsng"][9]."</strong>";
+		} else
+			echo "<strong>" . $LANG["ocsng"][9] . "</strong>";
 
 		echo "</div>";
 
-	} else echo "<div align='center'><strong>".$LANG["ocsng"][9]."</strong></div>";
+	} else
+		echo "<div align='center'><strong>" . $LANG["ocsng"][9] . "</strong></div>";
 }
 
 /**
@@ -180,360 +184,372 @@ function ocsShowNewComputer($check,$start,$tolinked=0){
  *@return integer : link id.
  *
  **/
-function ocsLink($ocs_id,$glpi_computer_id) {
-	global $DB,$DBocs;
+function ocsLink($ocs_id, $glpi_computer_id,$ocs_server_id) {
+	global $DB;
+
+$DBocs= getDBocs($ocs_server_id);
 
 	// Need to get device id due to ocs bug on duplicates
-	$query_ocs="SELECT * 
-		FROM hardware
-		WHERE ID = '$ocs_id';";
-	$result_ocs=$DBocs->query($query_ocs);
-	$data=$DBocs->fetch_array($result_ocs);
+	$query_ocs = "SELECT * 
+			FROM hardware
+			WHERE ID = '$ocs_id';";
+	$result_ocs = $DBocs->query($query_ocs);
+	$data = $DBocs->fetch_array($result_ocs);
 
 	$query = "INSERT INTO glpi_ocs_link 
-		(glpi_id,ocs_id,ocs_deviceid,last_update) 
-		VALUES ('".$glpi_computer_id."','".$ocs_id."','".$data["DEVICEID"]."','".$_SESSION["glpi_currenttime"]."')";
-	$result=$DB->query($query);
+			(glpi_id,ocs_id,ocs_deviceid,last_update,ocs_server_id) 
+			VALUES ('" . $glpi_computer_id . "','" . $ocs_id . "','" . $data["DEVICEID"] . "','" . $_SESSION["glpi_currenttime"] . "','".$ocs_server_id."')";
+	$result = $DB->query($query);
 
 	if ($result)
 		return ($DB->insert_id());
-	else return false;
+	else
+		return false;
 }
 
+function ocsManageDeleted($ocs_server_id) {
+	global $DB;
 
-function ocsManageDeleted(){
-	global $DB,$DBocs;
-
+	$DBocs= getDBocs($ocs_server_id);
+	
 	// Activate TRACE_DELETED : ALSO DONE IN THE CONFIG
 	$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
 	$DBocs->query($query);
 
-
-	$query="SELECT * FROM deleted_equiv";
+	$query = "SELECT * FROM deleted_equiv";
 	$result = $DBocs->query($query);
-	if ($DBocs->numrows($result)){
-		$deleted=array();
-		while ($data=$DBocs->fetch_array($result)){
-			$deleted[$data["DELETED"]]=$data["EQUIVALENT"];
+	if ($DBocs->numrows($result)) {
+		$deleted = array ();
+		while ($data = $DBocs->fetch_array($result)) {
+			$deleted[$data["DELETED"]] = $data["EQUIVALENT"];
 		}
 
-		$query="TRUNCATE TABLE deleted_equiv";
+		$query = "TRUNCATE TABLE deleted_equiv";
 		$result = $DBocs->query($query);
 
 		if (count($deleted))
-			foreach ($deleted as $del => $equiv){
-				if (!empty($equiv)){ // New name
+			foreach ($deleted as $del => $equiv) {
+				if (!empty ($equiv)) { // New name
 					// Get hardware due to bug of duplicates management of OCS
-					if (ereg("-",$equiv)){
-						$query_ocs="SELECT * 
-							FROM hardware 
-							WHERE DEVICEID='$equiv'";
-						$result_ocs=$DBocs->query($query_ocs);
-						if ($data=$DBocs->fetch_array($result_ocs));
+					if (ereg("-", $equiv)) {
+						$query_ocs = "SELECT * 
+													FROM hardware 
+													WHERE DEVICEID='$equiv'";
+						$result_ocs = $DBocs->query($query_ocs);
+						if ($data = $DBocs->fetch_array($result_ocs));
 
-						$query="UPDATE glpi_ocs_link 
-							SET ocs_id='".$data["ID"]."', ocs_deviceid='".$data["DEVICEID"]."' 
-							WHERE ocs_deviceid='$del'";
+						$query = "UPDATE glpi_ocs_link 
+													SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
+													WHERE ocs_deviceid='$del'";
 						$DB->query($query);
 
 					} else {
-						$query_ocs="SELECT * 
-							FROM hardware 
-							WHERE ID='$equiv'";
+						$query_ocs = "SELECT * 
+													FROM hardware 
+													WHERE ID='$equiv'";
 
-						$result_ocs=$DBocs->query($query_ocs);
-						if ($data=$DBocs->fetch_array($result_ocs));
+						$result_ocs = $DBocs->query($query_ocs);
+						if ($data = $DBocs->fetch_array($result_ocs));
 
-						$query="UPDATE glpi_ocs_link 
-							SET ocs_id='".$data["ID"]."', ocs_deviceid='".$data["DEVICEID"]."' 
-							WHERE ocs_id='$del'";
+						$query = "UPDATE glpi_ocs_link 
+													SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
+													WHERE ocs_id='$del'";
 						$DB->query($query);
 
 					}
 				} else { // Deleted
-					if (ereg("-",$del))
-						$query="SELECT * 
-							FROM glpi_ocs_link 
-							WHERE ocs_deviceid='$del'";
-					else $query="SELECT * 
-						FROM glpi_ocs_link 
-							WHERE ocs_id='$del'";
-					$result=$DB->query($query);
-					if ($DB->numrows($result)){
-						$del=$DB->fetch_array($result);
-						$comp=new Computer();
-						$comp->delete(array("ID"=>$del["glpi_id"]),0);
+					if (ereg("-", $del))
+						$query = "SELECT * 
+													FROM glpi_ocs_link 
+													WHERE ocs_deviceid='$del'" ;
+					else
+						$query = "SELECT * 
+												FROM glpi_ocs_link 
+													WHERE ocs_id='$del'";
+					$result = $DB->query($query);
+					if ($DB->numrows($result)) {
+						$del = $DB->fetch_array($result);
+						$comp = new Computer();
+						$comp->delete(array (
+							"ID" => $del["glpi_id"]
+						), 0);
 					}
 				}
 			}
 	}
 }
 
+function ocsImportComputer($ocs_id,$ocs_server_id) {
+	//global $DBocs;
 
-function ocsImportComputer($ocs_id){
-	global $DBocs;
-
+	$DBocs= getDBocs($ocs_server_id);
+	
 	// Set OCS checksum to max value
-	$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE ID='$ocs_id'";
+	$query = "UPDATE hardware SET CHECKSUM='" . MAX_OCS_CHECKSUM . "' WHERE ID='$ocs_id'";
 	$DBocs->query($query);
 
 	$query = "SELECT * FROM hardware WHERE ID='$ocs_id'";
 	$result = $DBocs->query($query);
 	$comp = new Computer;
-	if ($result&&$DBocs->numrows($result)==1){
-		$line=$DBocs->fetch_array($result);
-		$line=clean_cross_side_scripting_deep(addslashes_deep($line));
+	
+	if ($result && $DBocs->numrows($result) == 1) {
+		$line = $DBocs->fetch_array($result);
+		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
 		$DBocs->close();
 
-		$cfg_ocs=getOcsConf(1);
+		$cfg_ocs = getOcsConf($ocs_server_id);
 
 		$comp->fields["name"] = $line["NAME"];
 		$comp->fields["ocs_import"] = 1;
 
 		$comp->fields["state"] = $cfg_ocs["default_state"];
-
-		$glpi_id=$comp->addToDB();
-		if ($glpi_id){
-			ocsImportTag($line['ID'],$glpi_id,$cfg_ocs);
+		
+		$glpi_id = $comp->addToDB();
+		if ($glpi_id) {
+			ocsImportTag($line['ID'], $glpi_id, $cfg_ocs,$ocs_server_id);
 		}
 
-		if ($idlink = ocsLink($line['ID'], $glpi_id)){
-			ocsUpdateComputer($idlink,0);
+		if ($idlink = ocsLink($line['ID'], $glpi_id,$ocs_server_id)) {
+			ocsUpdateComputer($ocs_server_id,$idlink, 0);
 		}
 	}
 }
 
-function ocsImportTag($ocs_id,$glpi_id,$cfg_ocs){
-	global $DBocs;
+function ocsImportTag($ocs_id, $glpi_id, $cfg_ocs,$ocs_server_id) {
+	//global $DBocs;
+	
+	$DBocs= getDBocs($ocs_server_id);
+	
 	// Import TAG
-	if (!empty($cfg_ocs["import_tag_field"])){
+	if (!empty ($cfg_ocs["import_tag_field"])) {
 		$query = "SELECT TAG 
-			FROM accountinfo 
-			WHERE HARDWARE_ID='$ocs_id'";
+					FROM accountinfo 
+					WHERE HARDWARE_ID='$ocs_id'";
 
-		$resultocs=$DBocs->query($query);
-		if ($resultocs&&$DBocs->numrows($resultocs)>0){
-			$tag=addslashes($DBocs->result($resultocs,0,0));
-			if (!empty($tag)){
-				$comp=new Computer();
+		$resultocs = $DBocs->query($query);
+		if ($resultocs && $DBocs->numrows($resultocs) > 0) {
+			$tag = addslashes($DBocs->result($resultocs, 0, 0));
+			if (!empty ($tag)) {
+				$comp = new Computer();
 				$input["ID"] = $glpi_id;
-				switch ($cfg_ocs["import_tag_field"]){
-					case "otherserial":
-						case "contact_num":
-						$input[$cfg_ocs["import_tag_field"]]=$tag;
-					break;
-					case "location":
-						$input[$cfg_ocs["import_tag_field"]]=ocsImportDropdown('glpi_dropdown_locations','name',$tag);;
-					break;
-					case "network":
-						$input[$cfg_ocs["import_tag_field"]]=ocsImportDropdown('glpi_dropdown_network','name',$tag);;
-					break;
+				switch ($cfg_ocs["import_tag_field"]) {
+					case "otherserial" :
+					case "contact_num" :
+						$input[$cfg_ocs["import_tag_field"]] = $tag;
+						break;
+					case "location" :
+						$input[$cfg_ocs["import_tag_field"]] = ocsImportDropdown('glpi_dropdown_locations', 'name', $tag);
+						;
+						break;
+					case "network" :
+						$input[$cfg_ocs["import_tag_field"]] = ocsImportDropdown('glpi_dropdown_network', 'name', $tag);
+						;
+						break;
 				}
-				$comp->update($input,0);
+				$comp->update($input, 0);
 			}
 		}
 	}
 }
 
-function ocsLinkComputer($ocs_id,$glpi_id){
-	global $DB,$DBocs,$LANG;
+function ocsLinkComputer($ocs_id, $glpi_id,$ocs_server_id) {
+	global $DB, $LANG;
 
-	$query="SELECT * 
-		FROM glpi_ocs_link 
-		WHERE glpi_id='$glpi_id'";
+	$DBocs= getDBocs($ocs_server_id);
+	
+	$query = "SELECT * 
+			FROM glpi_ocs_link 
+			WHERE glpi_id='$glpi_id'";
 
-	$result=$DB->query($query);
-	$ocs_exists=true;
-	$numrows=$DB->numrows($result);
+	$result = $DB->query($query);
+	$ocs_exists = true;
+	$numrows = $DB->numrows($result);
 	// Already link - check if the OCS computer already exists
-	if ($numrows>0){
-		$data=$DB->fetch_assoc($result);
+	if ($numrows > 0) {
+		$data = $DB->fetch_assoc($result);
 		$query = "SELECT * 
-			FROM hardware 
-			WHERE ID='".$data["ocs_id"]."'";
-		$result_ocs=$DBocs->query($query);
+					FROM hardware 
+					WHERE ID='" . $data["ocs_id"] . "'";
+		$result_ocs = $DBocs->query($query);
 		// Not found
-		if ($DBocs->numrows($result_ocs)==0){
-			$ocs_exists=false;
-			$query="DELETE FROM glpi_ocs_link 
-				WHERE ID='".$data["ID"]."'";
+		if ($DBocs->numrows($result_ocs) == 0) {
+			$ocs_exists = false;
+			$query = "DELETE FROM glpi_ocs_link 
+							WHERE ID='" . $data["ID"] . "'";
 			$DB->query($query);
 		}
-	} 
+	}
 
-	if (!$ocs_exists||$numrows==0){
+	if (!$ocs_exists || $numrows == 0) {
 
 		// Set OCS checksum to max value
 		$query = "UPDATE hardware 
-			SET CHECKSUM='".MAX_OCS_CHECKSUM."' 
-			WHERE ID='$ocs_id'";
+					SET CHECKSUM='" . MAX_OCS_CHECKSUM . "' 
+					WHERE ID='$ocs_id'";
 		$DBocs->query($query);
 
-		if ($idlink = ocsLink($ocs_id, $glpi_id)){
+		if ($idlink = ocsLink($ocs_id, $glpi_id,$ocs_server_id)) {
 
-			$comp=new Computer();
+			$comp = new Computer();
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
 			$comp->update($input);
 
-
 			// Reset using GLPI Config
-			$cfg_ocs=getOcsConf(1);
+			$cfg_ocs = getOcsConf(1);
 			$query = "SELECT * 
-				FROM hardware 
-				WHERE ID='$ocs_id'";
+							FROM hardware 
+							WHERE ID='$ocs_id'";
 			$result = $DBocs->query($query);
-			$line=$DBocs->fetch_array($result);
+			$line = $DBocs->fetch_array($result);
 
-			ocsImportTag($line["ID"],$glpi_id,$cfg_ocs);
+			ocsImportTag($line["ID"], $glpi_id, $cfg_ocs,$ocs_server_id);
 
-			if($cfg_ocs["import_general_os"]) 
-				ocsResetDropdown($glpi_id,"os","glpi_dropdown_os");
-			if($cfg_ocs["import_device_processor"]) 
-				ocsResetDevices($glpi_id,PROCESSOR_DEVICE);
-			if($cfg_ocs["import_device_iface"]) 
-				ocsResetDevices($glpi_id,NETWORK_DEVICE);
-			if($cfg_ocs["import_device_memory"]) 
-				ocsResetDevices($glpi_id,RAM_DEVICE);
-			if($cfg_ocs["import_device_hdd"]) 
-				ocsResetDevices($glpi_id,HDD_DEVICE);
-			if($cfg_ocs["import_device_sound"]) 
-				ocsResetDevices($glpi_id,SND_DEVICE);
-			if($cfg_ocs["import_device_gfxcard"]) 
-				ocsResetDevices($glpi_id,GFX_DEVICE);
-			if($cfg_ocs["import_device_drives"]) 
-				ocsResetDevices($glpi_id,DRIVE_DEVICE);
-			if($cfg_ocs["import_device_modems"] || $cfg_ocs["import_device_ports"]) 
-				ocsResetDevices($glpi_id,PCI_DEVICE);
-			if($cfg_ocs["import_software"]) 
+			if ($cfg_ocs["import_general_os"])
+				ocsResetDropdown($glpi_id, "os", "glpi_dropdown_os");
+			if ($cfg_ocs["import_device_processor"])
+				ocsResetDevices($glpi_id, PROCESSOR_DEVICE);
+			if ($cfg_ocs["import_device_iface"])
+				ocsResetDevices($glpi_id, NETWORK_DEVICE);
+			if ($cfg_ocs["import_device_memory"])
+				ocsResetDevices($glpi_id, RAM_DEVICE);
+			if ($cfg_ocs["import_device_hdd"])
+				ocsResetDevices($glpi_id, HDD_DEVICE);
+			if ($cfg_ocs["import_device_sound"])
+				ocsResetDevices($glpi_id, SND_DEVICE);
+			if ($cfg_ocs["import_device_gfxcard"])
+				ocsResetDevices($glpi_id, GFX_DEVICE);
+			if ($cfg_ocs["import_device_drives"])
+				ocsResetDevices($glpi_id, DRIVE_DEVICE);
+			if ($cfg_ocs["import_device_modems"] || $cfg_ocs["import_device_ports"])
+				ocsResetDevices($glpi_id, PCI_DEVICE);
+			if ($cfg_ocs["import_software"])
 				ocsResetLicenses($glpi_id);
-			if($cfg_ocs["import_periph"]) 
+			if ($cfg_ocs["import_periph"])
 				ocsResetPeriphs($glpi_id);
-			if($cfg_ocs["import_monitor"]==1) // Only reset monitor as global in unit management try to link monitor with existing
+			if ($cfg_ocs["import_monitor"] == 1) // Only reset monitor as global in unit management try to link monitor with existing
 				ocsResetMonitors($glpi_id);
-			if($cfg_ocs["import_printer"]) 
+			if ($cfg_ocs["import_printer"])
 				ocsResetPrinters($glpi_id);
 
-			ocsUpdateComputer($idlink,0);
+			ocsUpdateComputer($ocs_server_id,$idlink, 0);
 		}
 	} else {
-		$_SESSION["MESSAGE_AFTER_REDIRECT"]= $ocs_id." - ".$LANG["ocsng"][23];
+		$_SESSION["MESSAGE_AFTER_REDIRECT"] = $ocs_id . " - " . $LANG["ocsng"][23];
 	}
 
 }
 
+function ocsUpdateComputer($ocs_server_id,$ID, $dohistory, $force = 0) {
 
-function ocsUpdateComputer($ID,$dohistory,$force=0){
+	global $DB, $CFG_GLPI;
+	
+	$DBocs= getDBocs($ocs_server_id);
+	
+	$cfg_ocs = getOcsConf($ocs_server_id);
 
-	global $DB,$DBocs,$CFG_GLPI;
+	$query = "SELECT * 
+			FROM glpi_ocs_link 
+			WHERE ID='$ID' and ocs_server_id=".$ocs_server_id;
+	$result = $DB->query($query);
 
-	$cfg_ocs=getOcsConf(1);
-
-	$query="SELECT * 
-		FROM glpi_ocs_link 
-		WHERE ID='$ID'";
-	$result=$DB->query($query);
-
-	if ($DB->numrows($result)==1){
-		$line=$DB->fetch_assoc($result);
+	if ($DB->numrows($result) == 1) {
+		$line = $DB->fetch_assoc($result);
 		// Get OCS ID 
 		$query_ocs = "SELECT * 
-			FROM hardware 
-			WHERE ID='".$line['ocs_id']."'";
+					FROM hardware 
+					WHERE ID='" . $line['ocs_id'] . "'";
 		$result_ocs = $DBocs->query($query_ocs);
 		// Need do history to be 2 not to lock fields
 		if ($dohistory) {
-			$dohistory=2;
+			$dohistory = 2;
 		}
-		if ($DBocs->numrows($result_ocs)==1){
-			$data_ocs=$DBocs->fetch_array($result_ocs);
-			if ($force){
-				$ocs_checksum=MAX_OCS_CHECKSUM;
-				$query_ocs="UPDATE hardware 
-					SET CHECKSUM= (".MAX_OCS_CHECKSUM.") 
-					WHERE ID='".$line['ocs_id']."'";
-					$DBocs->query($query_ocs);
-			}else 
-				$ocs_checksum=$data_ocs["CHECKSUM"];
+		if ($DBocs->numrows($result_ocs) == 1) {
+			$data_ocs = $DBocs->fetch_array($result_ocs);
+			if ($force) {
+				$ocs_checksum = MAX_OCS_CHECKSUM;
+				$query_ocs = "UPDATE hardware 
+									SET CHECKSUM= (" . MAX_OCS_CHECKSUM . ") 
+									WHERE ID='" . $line['ocs_id'] . "'";
+				$DBocs->query($query_ocs);
+			} else
+				$ocs_checksum = $data_ocs["CHECKSUM"];
 
-
-
-			$mixed_checksum=intval($ocs_checksum) &  intval($cfg_ocs["checksum"]);
-			
-/*			echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
-			  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
-			  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
- */			 	
+			$mixed_checksum = intval($ocs_checksum) & intval($cfg_ocs["checksum"]);
+			echo "mixed_checksum".$mixed_checksum;
+			/*			echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
+						  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
+						  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
+			 */
 			// Is an update to do ?
-			if ($mixed_checksum){
+			if ($mixed_checksum) {
 				// Get updates on computers :
-				$computer_updates=importArrayFromDB($line["computer_update"]);
+				$computer_updates = importArrayFromDB($line["computer_update"]);
 
-				if ($mixed_checksum&pow(2,HARDWARE_FL))
-					ocsUpdateHardware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$computer_updates,$dohistory);
+				if ($mixed_checksum & pow(2, HARDWARE_FL))
+				ocsUpdateHardware($line['glpi_id'], $line['ocs_id'], $cfg_ocs, $computer_updates, $dohistory,$ocs_server_id);
 
-				if ($mixed_checksum&pow(2,BIOS_FL))
-					ocsUpdateBios($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$computer_updates,$dohistory);
+				if ($mixed_checksum & pow(2, BIOS_FL))
+					ocsUpdateBios($line['glpi_id'], $line['ocs_id'], $cfg_ocs, $computer_updates, $dohistory,$ocs_server_id);
 
 				// Get import devices
-				$import_device=importArrayFromDB($line["import_device"]);
-				if ($mixed_checksum&pow(2,MEMORIES_FL))
-					ocsUpdateDevices(RAM_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+				$import_device = importArrayFromDB($line["import_device"]);
+				if ($mixed_checksum & pow(2, MEMORIES_FL))
+					ocsUpdateDevices(RAM_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
 
-				if ($mixed_checksum&pow(2,STORAGES_FL)){
-					ocsUpdateDevices(HDD_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
-					ocsUpdateDevices(DRIVE_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+				if ($mixed_checksum & pow(2, STORAGES_FL)) {
+					ocsUpdateDevices(HDD_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
+					ocsUpdateDevices(DRIVE_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
 				}
 
-				if ($mixed_checksum&pow(2,HARDWARE_FL))
-					ocsUpdateDevices(PROCESSOR_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+				if ($mixed_checksum & pow(2, HARDWARE_FL))
+					ocsUpdateDevices(PROCESSOR_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
 
-				if ($mixed_checksum&pow(2,VIDEOS_FL))
-					ocsUpdateDevices(GFX_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+				if ($mixed_checksum & pow(2, VIDEOS_FL))
+					ocsUpdateDevices(GFX_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
 
-				if ($mixed_checksum&pow(2,SOUNDS_FL))
-					ocsUpdateDevices(SND_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+				if ($mixed_checksum & pow(2, SOUNDS_FL))
+					ocsUpdateDevices(SND_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
 
-				if ($mixed_checksum&pow(2,NETWORKS_FL))
-					ocsUpdateDevices(NETWORK_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+				if ($mixed_checksum & pow(2, NETWORKS_FL))
+					ocsUpdateDevices(NETWORK_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
 
-				if ($mixed_checksum&pow(2,MODEMS_FL)||$mixed_checksum&pow(2,PORTS_FL))
-					ocsUpdateDevices(PCI_DEVICE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_device,$dohistory);
+				if ($mixed_checksum & pow(2, MODEMS_FL) || $mixed_checksum & pow(2, PORTS_FL))
+					ocsUpdateDevices(PCI_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
 
-				if ($mixed_checksum&pow(2,MONITORS_FL)){
+				if ($mixed_checksum & pow(2, MONITORS_FL)) {
 					// Get import monitors
-					$import_monitor=importArrayFromDB($line["import_monitor"]);
-					ocsUpdatePeripherals(MONITOR_TYPE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_monitor,$dohistory);
+					$import_monitor = importArrayFromDB($line["import_monitor"]);
+					ocsUpdatePeripherals(MONITOR_TYPE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_monitor, $dohistory,$ocs_server_id);
 				}
 
-				if ($mixed_checksum&pow(2,PRINTERS_FL)){
+				if ($mixed_checksum & pow(2, PRINTERS_FL)) {
 					// Get import printers
-					$import_printer=importArrayFromDB($line["import_printers"]);
-					ocsUpdatePeripherals(PRINTER_TYPE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_printer,$dohistory);
+					$import_printer = importArrayFromDB($line["import_printers"]);
+					ocsUpdatePeripherals(PRINTER_TYPE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_printer, $dohistory,$ocs_server_id);
 				}
 
-				if ($mixed_checksum&pow(2,INPUTS_FL)){
+				if ($mixed_checksum & pow(2, INPUTS_FL)) {
 					// Get import monitors
-					$import_peripheral=importArrayFromDB($line["import_peripheral"]);
-					ocsUpdatePeripherals(PERIPHERAL_TYPE,$line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_peripheral,$dohistory);
+					$import_peripheral = importArrayFromDB($line["import_peripheral"]);
+					ocsUpdatePeripherals(PERIPHERAL_TYPE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_peripheral, $dohistory,$ocs_server_id);
 				}
 
-				if ($mixed_checksum&pow(2,SOFTWARES_FL)){
+				if ($mixed_checksum & pow(2, SOFTWARES_FL)) {
 					// Get import monitors
-					$import_software=importArrayFromDB($line["import_software"]);
-					ocsUpdateSoftware($line['glpi_id'],$line['ocs_id'],$cfg_ocs,$import_software,$dohistory);
-				} 
-
+					$import_software = importArrayFromDB($line["import_software"]);
+					ocsUpdateSoftware($line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_software, $dohistory,$ocs_server_id);
+				}
 
 				// Update OCS Cheksum 
-				$query_ocs="UPDATE hardware 
-					SET CHECKSUM= (CHECKSUM - $mixed_checksum) 
-					WHERE ID='".$line['ocs_id']."'";
+				$query_ocs = "UPDATE hardware 
+									SET CHECKSUM= (CHECKSUM - $mixed_checksum) 
+									WHERE ID='" . $line['ocs_id'] . "'";
 				$DBocs->query($query_ocs);
 				// update last_update and and last_ocs_update
 				$query = "UPDATE glpi_ocs_link 
-					SET last_update='".$_SESSION["glpi_currenttime"]."', last_ocs_update='".$data_ocs["LASTCOME"]."' 
-					WHERE ID='$ID'";
+									SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTCOME"] . "' 
+									WHERE ID='$ID'";
 				$DB->query($query);
 			}
 		}
@@ -551,23 +567,41 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
  **/
 function getOcsConf($id) {
 
-	
-	global $DB,$CACHE_CFG;
+	global $DB, $CACHE_CFG;
 
-	if ($data= $CACHE_CFG->get("CFG_OCSGLPI_$id","GLPI_CFG")) {
-		return $data;
-	} else {
+	//if ($data = $CACHE_CFG->get("CFG_OCSGLPI_$id", "GLPI_CFG")) {
+	//	return $data;
+	//} else {
 		$query = "SELECT * 
-			FROM glpi_ocs_config 
-			WHERE ID='$id'";
+					FROM glpi_ocs_config 
+					WHERE ID='$id'";
 		$result = $DB->query($query);
-		if($result) $data=$DB->fetch_assoc($result);
-		else $data=0;
-		$CACHE_CFG->save($data,"CFG_OCSGLPI_$id","GLPI_CFG");
+		if ($result)
+			$data = $DB->fetch_assoc($result);
+		else
+			$data = 0;
+	//	$CACHE_CFG->save($data, "CFG_OCSGLPI_$id", "GLPI_CFG");
 		return $data;
-	}
+	//}
 }
 
+/**
+ * Get numbero of OCSNG mode configurations
+ *
+ * Get number of OCS configurations
+ *
+ **/
+
+function getNumberOfOcsConfigs() {
+	global $DB, $CACHE_CFG;
+
+	$sql = "SELECT ID FROM glpi_ocs_config";
+	$result = $DB->query($sql);
+	if ($DB->numrows($result) > 0)
+		return size($DB->fetch_array($result));
+	else
+		return 0;
+}
 
 /**
  * Update the computer hardware configuration
@@ -583,58 +617,62 @@ function getOcsConf($id) {
  *@return nothing.
  *
  **/
-function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=2) {
-	global $DBocs,$LANG,$DB;
+function ocsUpdateHardware($glpi_id, $ocs_id, $cfg_ocs, $computer_updates, $dohistory = 2,$ocs_server_id) {
+	global  $LANG, $DB;
+	echo "dans ocsUpdateHardware";
+	$DBocs= getDBocs($ocs_server_id);
+	
 	$query = "SELECT * 
-		FROM hardware 
-		WHERE ID='".$ocs_id."'";
+			FROM hardware 
+			WHERE ID='" . $ocs_id . "'";
 	$result = $DBocs->query($query);
-	if ($DBocs->numrows($result)==1) {
+	if ($DBocs->numrows($result) == 1) {
 
-		$line=$DBocs->fetch_assoc($result);
-		$line=clean_cross_side_scripting_deep(addslashes_deep($line));
-		$compudate=array();
+		$line = $DBocs->fetch_assoc($result);
+		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
+		$compudate = array ();
 
-		if($cfg_ocs["import_general_os"]&&!in_array("os",$computer_updates)) {
-			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os','name',$line["OSNAME"]);
-			$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version','name',$line["OSVERSION"]);
-			if (!ereg("CEST",$line["OSCOMMENTS"])) // Not linux comment
-				$compupdate["os_sp"] = ocsImportDropdown('glpi_dropdown_os_sp','name',$line["OSCOMMENTS"]);
+		if ($cfg_ocs["import_general_os"] && !in_array("os", $computer_updates)) {
+			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os', 'name', $line["OSNAME"]);
+			$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version', 'name', $line["OSVERSION"]);
+			if (!ereg("CEST", $line["OSCOMMENTS"])) // Not linux comment
+				$compupdate["os_sp"] = ocsImportDropdown('glpi_dropdown_os_sp', 'name', $line["OSCOMMENTS"]);
 		}
 
-		if($cfg_ocs["import_general_domain"]&&!in_array("domain",$computer_updates)) {
-			$compupdate["domain"] = ocsImportDropdown('glpi_dropdown_domain','name',$line["WORKGROUP"]);
+		if ($cfg_ocs["import_general_domain"] && !in_array("domain", $computer_updates)) {
+			$compupdate["domain"] = ocsImportDropdown('glpi_dropdown_domain', 'name', $line["WORKGROUP"]);
 		}
 
-		if($cfg_ocs["import_general_contact"]&&!in_array("contact",$computer_updates)) {
+		if ($cfg_ocs["import_general_contact"] && !in_array("contact", $computer_updates)) {
 			$compupdate["contact"] = $line["USERID"];
-			$query="SELECT ID 
-				FROM glpi_users
-				WHERE name='".$line["USERID"]."';";
-			$result=$DB->query($query);
-			if ($DB->numrows($result)==1&&!in_array("FK_users",$computer_updates)){
-				$compupdate["FK_users"] = $DB->result($result,0,0);
+			$query = "SELECT ID 
+							FROM glpi_users
+							WHERE name='" . $line["USERID"] . "';";
+			$result = $DB->query($query);
+			if ($DB->numrows($result) == 1 && !in_array("FK_users", $computer_updates)) {
+				$compupdate["FK_users"] = $DB->result($result, 0, 0);
 			}
 		}
 
-		if($cfg_ocs["import_general_name"]&&!in_array("name",$computer_updates)) {
+		if ($cfg_ocs["import_general_name"] && !in_array("name", $computer_updates)) {
 			$compupdate["name"] = $line["NAME"];
 		}
 
-		if($cfg_ocs["import_general_comments"]&&!in_array("comments",$computer_updates)) {
-			$compupdate["comments"]="";;
-			if (!empty($line["DESCRIPTION"])&&$line["DESCRIPTION"]!="N/A") $compupdate["comments"] .= $line["DESCRIPTION"]."\r\n";
-			$compupdate["comments"] .= "Swap: ".$line["SWAP"];
+		if ($cfg_ocs["import_general_comments"] && !in_array("comments", $computer_updates)) {
+			$compupdate["comments"] = "";
+			;
+			if (!empty ($line["DESCRIPTION"]) && $line["DESCRIPTION"] != "N/A")
+				$compupdate["comments"] .= $line["DESCRIPTION"] . "\r\n";
+			$compupdate["comments"] .= "Swap: " . $line["SWAP"];
 		}
-		if (count($compupdate)){
+		if (count($compupdate)) {
 			$compupdate["ID"] = $glpi_id;
-			$comp=new Computer();
-			$comp->update($compupdate,$dohistory);
+			$comp = new Computer();
+			$comp->update($compupdate, $dohistory);
 		}
 
 	}
 }
-
 
 /**
  * Update the computer bios configuration
@@ -650,43 +688,45 @@ function ocsUpdateHardware($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistor
  *@return nothing.
  *
  **/
-function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=2) {
-	global $DBocs;
+function ocsUpdateBios($glpi_id, $ocs_id, $cfg_ocs, $computer_updates, $dohistory = 2,$ocs_server_id) {
+	//global $DBocs;
+	
+	$DBocs= getDBocs($ocs_server_id);
+	
 	$query = "SELECT * 
-		FROM bios 
-		WHERE HARDWARE_ID='".$ocs_id."'";
+			FROM bios 
+			WHERE HARDWARE_ID='" . $ocs_id . "'";
 	$result = $DBocs->query($query);
-	$compupdate=array();
-	if ($DBocs->numrows($result)==1) {
-		$line=$DBocs->fetch_assoc($result);
-		$line=clean_cross_side_scripting_deep(addslashes_deep($line));
-		$compudate=array();
+	$compupdate = array ();
+	if ($DBocs->numrows($result) == 1) {
+		$line = $DBocs->fetch_assoc($result);
+		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
+		$compudate = array ();
 
-		if($cfg_ocs["import_general_serial"]&&!in_array("serial",$computer_updates)) {
+		if ($cfg_ocs["import_general_serial"] && !in_array("serial", $computer_updates)) {
 			$compupdate["serial"] = $line["SSN"];
 		}
 
-		if($cfg_ocs["import_general_model"]&&!in_array("model",$computer_updates)) {
-			$compupdate["model"] = ocsImportDropdown('glpi_dropdown_model','name',$line["SMODEL"]);
-		}	
-
-		if($cfg_ocs["import_general_enterprise"]&&!in_array("FK_glpi_enterprise",$computer_updates)) {
-			$compupdate["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$line["SMANUFACTURER"]);
+		if ($cfg_ocs["import_general_model"] && !in_array("model", $computer_updates)) {
+			$compupdate["model"] = ocsImportDropdown('glpi_dropdown_model', 'name', $line["SMODEL"]);
 		}
 
-		if($cfg_ocs["import_general_type"]&&!empty($line["TYPE"])&&!in_array("type",$computer_updates)) {
-			$compupdate["type"] = ocsImportDropdown('glpi_type_computers','name',$line["TYPE"]);
+		if ($cfg_ocs["import_general_enterprise"] && !in_array("FK_glpi_enterprise", $computer_updates)) {
+			$compupdate["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $line["SMANUFACTURER"]);
 		}
 
-		if (count($compupdate)){
+		if ($cfg_ocs["import_general_type"] && !empty ($line["TYPE"]) && !in_array("type", $computer_updates)) {
+			$compupdate["type"] = ocsImportDropdown('glpi_type_computers', 'name', $line["TYPE"]);
+		}
+
+		if (count($compupdate)) {
 			$compupdate["ID"] = $glpi_id;
-			$comp=new Computer();
-			$comp->update($compupdate,$dohistory);
+			$comp = new Computer();
+			$comp->update($compupdate, $dohistory);
 		}
 
 	}
 }
-
 
 /**
  * Import a dropdown from OCS table.
@@ -701,27 +741,28 @@ function ocsUpdateBios($glpi_id,$ocs_id,$cfg_ocs,$computer_updates,$dohistory=2)
  *
  **/
 
-function ocsImportDropdown($dpdTable,$dpdRow,$value) {
-	global $DB,$CFG_GLPI;
+function ocsImportDropdown($dpdTable, $dpdRow, $value) {
+	global $DB, $CFG_GLPI;
 
-	if (empty($value)) return 0;
+	if (empty ($value))
+		return 0;
 
 	$query2 = "SELECT * 
-		FROM ".$dpdTable." 
-		WHERE $dpdRow='".$value."'";
+			FROM " . $dpdTable . " 
+			WHERE $dpdRow='" . $value . "'";
 	$result2 = $DB->query($query2);
-	if($DB->numrows($result2) == 0) {
-		if (in_array($dpdTable,$CFG_GLPI["dropdowntree_tables"])&&$dpdRow=="name"){
-			$query3 = "INSERT INTO ".$dpdTable." (".$dpdRow.",completename) 
-				VALUES ('".$value."','".$value."')";
+	if ($DB->numrows($result2) == 0) {
+		if (in_array($dpdTable, $CFG_GLPI["dropdowntree_tables"]) && $dpdRow == "name") {
+			$query3 = "INSERT INTO " . $dpdTable . " (" . $dpdRow . ",completename) 
+							VALUES ('" . $value . "','" . $value . "')";
 		} else {
-			$query3 = "INSERT INTO ".$dpdTable." (".$dpdRow.") 
-				VALUES ('".$value."')";
+			$query3 = "INSERT INTO " . $dpdTable . " (" . $dpdRow . ") 
+							VALUES ('" . $value . "')";
 		}
-		$input["tablename"]=$dpdTable;
-		$input["value"]=$value;
-		$input['type']="first";
-		$input["comments"]="";
+		$input["tablename"] = $dpdTable;
+		$input["value"] = $value;
+		$input['type'] = "first";
+		$input["comments"] = "";
 		return addDropdown($input);
 	} else {
 		$line2 = $DB->fetch_array($result2);
@@ -730,264 +771,267 @@ function ocsImportDropdown($dpdTable,$dpdRow,$value) {
 
 }
 
+function ocsCleanLinks($ocs_server_id) {
+	global $DB;
 
-
-function ocsCleanLinks(){
-	global $DB,$DBocs;
-
-
+	$DBocs= getDBocs($ocs_server_id);
+	
 	// Delete unexisting GLPI computers
-	$query="SELECT glpi_ocs_link.ID AS ID 
-		FROM glpi_ocs_link 
-		LEFT JOIN glpi_computers ON glpi_computers.ID=glpi_ocs_link.glpi_id 
-		WHERE glpi_computers.ID IS NULL";
+	$query = "SELECT glpi_ocs_link.ID AS ID 
+			FROM glpi_ocs_link 
+			LEFT JOIN glpi_computers ON glpi_computers.ID=glpi_ocs_link.glpi_id 
+			WHERE glpi_computers.ID IS NULL";
 
-	$result=$DB->query($query);
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_array($result)){
-			$query2="DELETE FROM glpi_ocs_link 
-				WHERE ID='".$data['ID']."'";
+	$result = $DB->query($query);
+	if ($DB->numrows($result) > 0) {
+		while ($data = $DB->fetch_array($result)) {
+			$query2 = "DELETE FROM glpi_ocs_link 
+							WHERE ID='" . $data['ID'] . "'";
 			$DB->query($query2);
 		}
 	}
 
 	// Delete unexisting OCS hardware
 	$query_ocs = "SELECT * 
-		FROM hardware";
+			FROM hardware";
 	$result_ocs = $DBocs->query($query_ocs);
 
-	$hardware=array();
-	if ($DBocs->numrows($result_ocs)>0){
-		while($data=$DBocs->fetch_array($result_ocs)){
-			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
-			$hardware[$data["ID"]]=$data["DEVICEID"];
+	$hardware = array ();
+	if ($DBocs->numrows($result_ocs) > 0) {
+		while ($data = $DBocs->fetch_array($result_ocs)) {
+			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
+			$hardware[$data["ID"]] = $data["DEVICEID"];
 		}
 	}
 
-	$query="SELECT *
-		FROM glpi_ocs_link";
+	$query = "SELECT *
+			FROM glpi_ocs_link";
 	$result = $DB->query($query);
 
-	if ($DB->numrows($result)>0){
-		while($data=$DB->fetch_array($result)){
-			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
-			if (!isset($hardware[$data["ocs_id"]])){
-				$query_del="DELETE FROM glpi_ocs_link 
-					WHERE ID='".$data["ID"]."'";
+	if ($DB->numrows($result) > 0) {
+		while ($data = $DB->fetch_array($result)) {
+			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
+			if (!isset ($hardware[$data["ocs_id"]])) {
+				$query_del = "DELETE FROM glpi_ocs_link 
+									WHERE ID='" . $data["ID"] . "'";
 				$DB->query($query_del);
 			}
 		}
 	}
 
-
 }
 
+function cron_ocsng($ocs_server_id) {
 
-function cron_ocsng(){
+	global $DB;
 
-	global $DB,$DBocs;
-
-	$cfg_ocs=getOcsConf(1);
-	ocsManageDeleted();
+	$DBocs= getDBocs($ocs_server_id);
 	
-	if (!$cfg_ocs["cron_sync_number"]) return 0;
-	
+	$cfg_ocs = getOcsConf($ocs_server_id);
+	ocsManageDeleted($ocs_server_id);
+
+	if (!$cfg_ocs["cron_sync_number"])
+		return 0;
+
 	$query_ocs = "SELECT * 
-		FROM hardware 
-		WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0";
+			FROM hardware 
+			WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0";
 	$result_ocs = $DBocs->query($query_ocs);
-	if ($DBocs->numrows($result_ocs)>0){
+	if ($DBocs->numrows($result_ocs) > 0) {
 
-		$hardware=array();
-		while($data=$DBocs->fetch_array($result_ocs)){
-			$hardware[$data["ID"]]["date"]=$data["LASTDATE"];
-			$hardware[$data["ID"]]["name"]=addslashes($data["NAME"]);
+		$hardware = array ();
+		while ($data = $DBocs->fetch_array($result_ocs)) {
+			$hardware[$data["ID"]]["date"] = $data["LASTDATE"];
+			$hardware[$data["ID"]]["name"] = addslashes($data["NAME"]);
 		}
 
 		$query_glpi = "SELECT * 
-			FROM glpi_ocs_link 
-			WHERE auto_update= '1'
-			ORDER BY last_update";
+					FROM glpi_ocs_link 
+					WHERE auto_update= '1'
+					ORDER BY last_update";
 		$result_glpi = $DB->query($query_glpi);
-		$done=0;
-		while($done<$cfg_ocs["cron_sync_number"]&&$data=$DB->fetch_assoc($result_glpi)){
-			$data=clean_cross_side_scripting_deep(addslashes_deep($data));
+		$done = 0;
+		while ($done < $cfg_ocs["cron_sync_number"] && $data = $DB->fetch_assoc($result_glpi)) {
+			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
 
-			if (isset($hardware[$data["ocs_id"]])){ 
-				ocsUpdateComputer($data["ID"],2);
+			if (isset ($hardware[$data["ocs_id"]])) {
+				ocsUpdateComputer($data["ID"], 2);
 				$done++;
 			}
 		}
-		if ($done>0) return 1;
+		if ($done > 0)
+			return 1;
 
-	} 
+	}
 	return 0;
 
 }
 
+function ocsShowUpdateComputer($ocs_server_id,$check, $start) {
+	global $DB,  $LANG, $CFG_GLPI;
 
-function ocsShowUpdateComputer($check,$start){
-	global $DB,$DBocs,$LANG,$CFG_GLPI;
+	$DBocs= getDBocs($ocs_server_id);
+	
+	if (!haveRight("ocsng", "w"))
+		return false;
 
-	if (!haveRight("ocsng","w")) return false;
-
-	$cfg_ocs=getOcsConf(1);
+	$cfg_ocs = getOcsConf($ocs_server_id);
 
 	$query_ocs = "SELECT * 
-		FROM hardware 
-		WHERE (CHECKSUM & ".$cfg_ocs["checksum"].") > 0 
-		ORDER BY LASTDATE";
+			FROM hardware 
+			WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 
+			ORDER BY LASTDATE";
 	$result_ocs = $DBocs->query($query_ocs);
 
 	$query_glpi = "SELECT glpi_ocs_link.last_update as last_update,  glpi_ocs_link.glpi_id as glpi_id, 
-		glpi_ocs_link.ocs_id as ocs_id, glpi_computers.name as name, 
-		glpi_ocs_link.auto_update as auto_update, glpi_ocs_link.ID as ID 
-			FROM glpi_ocs_link 
-			LEFT JOIN glpi_computers ON (glpi_computers.ID = glpi_ocs_link.glpi_id) 
-			ORDER BY glpi_ocs_link.auto_update DESC, glpi_ocs_link.last_update, glpi_computers.name";
+			glpi_ocs_link.ocs_id as ocs_id, glpi_computers.name as name, 
+			glpi_ocs_link.auto_update as auto_update, glpi_ocs_link.ID as ID 
+				FROM glpi_ocs_link WHERE glpi_ocs_link.ocs_server_id=".$ocs_server_id." 
+				LEFT JOIN glpi_computers ON (glpi_computers.ID = glpi_ocs_link.glpi_id) 
+				ORDER BY glpi_ocs_link.auto_update DESC, glpi_ocs_link.last_update, glpi_computers.name";
 
 	$result_glpi = $DB->query($query_glpi);
-	if ($DBocs->numrows($result_ocs)>0){
+	if ($DBocs->numrows($result_ocs) > 0) {
 
 		// Get all hardware from OCS DB
-		$hardware=array();
-		while($data=$DBocs->fetch_array($result_ocs)){
-			$hardware[$data["ID"]]["date"]=$data["LASTDATE"];
-			$hardware[$data["ID"]]["name"]=addslashes($data["NAME"]);
+		$hardware = array ();
+		while ($data = $DBocs->fetch_array($result_ocs)) {
+			$hardware[$data["ID"]]["date"] = $data["LASTDATE"];
+			$hardware[$data["ID"]]["name"] = addslashes($data["NAME"]);
 		}
 
 		// Get all links between glpi and OCS
-		$already_linked=array();
-		if ($DB->numrows($result_glpi)>0){
-			while($data=$DB->fetch_assoc($result_glpi)){
-				$data=clean_cross_side_scripting_deep(addslashes_deep($data));
-				if (isset($hardware[$data["ocs_id"]])){ 
-					$already_linked[$data["ocs_id"]]["date"]=$data["last_update"];
-					$already_linked[$data["ocs_id"]]["name"]=$data["name"];
-					$already_linked[$data["ocs_id"]]["ID"]=$data["ID"];
-					$already_linked[$data["ocs_id"]]["glpi_id"]=$data["glpi_id"];
-					$already_linked[$data["ocs_id"]]["ocs_id"]=$data["ocs_id"];
-					$already_linked[$data["ocs_id"]]["auto_update"]=$data["auto_update"];
+		$already_linked = array ();
+		if ($DB->numrows($result_glpi) > 0) {
+			while ($data = $DB->fetch_assoc($result_glpi)) {
+				$data = clean_cross_side_scripting_deep(addslashes_deep($data));
+				if (isset ($hardware[$data["ocs_id"]])) {
+					$already_linked[$data["ocs_id"]]["date"] = $data["last_update"];
+					$already_linked[$data["ocs_id"]]["name"] = $data["name"];
+					$already_linked[$data["ocs_id"]]["ID"] = $data["ID"];
+					$already_linked[$data["ocs_id"]]["glpi_id"] = $data["glpi_id"];
+					$already_linked[$data["ocs_id"]]["ocs_id"] = $data["ocs_id"];
+					$already_linked[$data["ocs_id"]]["auto_update"] = $data["auto_update"];
 				}
 			}
 		}
 		echo "<div align='center'>";
-		echo "<h2>".$LANG["ocsng"][10]."</h2>";
+		echo "<h2>" . $LANG["ocsng"][10] . "</h2>";
 
-		if (($numrows=count($already_linked))>0){
+		if (($numrows = count($already_linked)) > 0) {
 
-			$parameters="check=$check";
-			printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters);
+			$parameters = "check=$check";
+			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
 			// delete end 
-			array_splice($already_linked,$start+$CFG_GLPI["list_limit"]);
+			array_splice($already_linked, $start + $CFG_GLPI["list_limit"]);
 			// delete begin
-			if ($start>0)
-				array_splice($already_linked,0,$start);
+			if ($start > 0)
+				array_splice($already_linked, 0, $start);
 
-			echo "<form method='post' id='ocsng_form' name='ocsng_form' action='".$_SERVER['PHP_SELF']."'>";
+			echo "<form method='post' id='ocsng_form' name='ocsng_form' action='" . $_SERVER['PHP_SELF'] . "'>";
 
-			echo "<a href='".$_SERVER['PHP_SELF']."?check=all' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">".$LANG["buttons"][18]."</a>&nbsp;/&nbsp;<a href='".$_SERVER['PHP_SELF']."?check=none' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">".$LANG["buttons"][19]."</a>";
+			echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th>".$LANG["ocsng"][11]."</th><th>".$LANG["ocsng"][13]."</th><th>".$LANG["ocsng"][14]."</th><th>".$LANG["ocsng"][6]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>" . $LANG["ocsng"][11] . "</th><th>" . $LANG["ocsng"][13] . "</th><th>" . $LANG["ocsng"][14] . "</th><th>" . $LANG["ocsng"][6] . "</th><th>&nbsp;</th></tr>";
 
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-			echo "<input class='submit' type='submit' name='update_ok' value='".$LANG["buttons"][7]."'>";
+			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG["buttons"][7] . "'>";
 			echo "</td></tr>";
 
-			foreach ($already_linked as $ID => $tab){
+			foreach ($already_linked as $ID => $tab) {
 
 				echo "<tr align='center' class='tab_bg_2'>";
-				echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$tab["glpi_id"]."'>".$tab["name"]."</a></td>";
-				echo "<td>".convDateTime($tab["date"])."</td><td>".convDateTime($hardware[$tab["ocs_id"]]["date"])."</td>";
-				echo "<td>".$LANG["choice"][$tab["auto_update"]]."</td>";
-				echo "<td><input type='checkbox' name='toupdate[".$tab["ID"]."]' ".($check=="all"?"checked":"").">";
+				echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/computer.form.php?ID=" . $tab["glpi_id"] . "'>" . $tab["name"] . "</a></td>";
+				echo "<td>" . convDateTime($tab["date"]) . "</td><td>" . convDateTime($hardware[$tab["ocs_id"]]["date"]) . "</td>";
+				echo "<td>" . $LANG["choice"][$tab["auto_update"]] . "</td>";
+				echo "<td><input type='checkbox' name='toupdate[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
 				echo "</td></tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-			echo "<input class='submit' type='submit' name='update_ok' value='".$LANG["buttons"][7]."'>";
+			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG["buttons"][7] . "'>";
+			echo "<input type=hidden name='ocs_server_id' value='".$ocs_server_id."'>";
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</form>";
-			printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters);
+			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
-		} else echo "<br><strong>".$LANG["ocsng"][11]."</strong>";
+		} else
+			echo "<br><strong>" . $LANG["ocsng"][11] . "</strong>";
 
 		echo "</div>";
 
-	} else echo "<div align='center'><strong>".$LANG["ocsng"][12]."</strong></div>";
+	} else
+		echo "<div align='center'><strong>" . $LANG["ocsng"][12] . "</strong></div>";
 }
 
-
-function mergeOcsArray($glpi_id,$tomerge,$field){
+function mergeOcsArray($glpi_id, $tomerge, $field) {
 	global $DB;
-	$query="SELECT $field 
-		FROM glpi_ocs_link 
-		WHERE glpi_id='$glpi_id'";
-	$result=$DB->query($query);
+	$query = "SELECT $field 
+			FROM glpi_ocs_link 
+			WHERE glpi_id='$glpi_id'";
+	$result = $DB->query($query);
 	if ($DB->numrows($result))
-	if ($result=$DB->query($query)){
-		$tab=importArrayFromDB($DB->result($result,0,0));
-		$newtab=array_merge($tomerge,$tab);
-		$newtab=array_unique($newtab);
-		$query="UPDATE glpi_ocs_link 
-			SET $field='".exportArrayToDB($newtab)."' 
-			WHERE glpi_id='$glpi_id'";
+		if ($result = $DB->query($query)) {
+			$tab = importArrayFromDB($DB->result($result, 0, 0));
+			$newtab = array_merge($tomerge, $tab);
+			$newtab = array_unique($newtab);
+			$query = "UPDATE glpi_ocs_link 
+						SET $field='" . exportArrayToDB($newtab) . "' 
+						WHERE glpi_id='$glpi_id'";
+			$DB->query($query);
+		}
+
+}
+
+function deleteInOcsArray($glpi_id, $todel, $field) {
+	global $DB;
+	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
+	if ($result = $DB->query($query)) {
+		$tab = importArrayFromDB($DB->result($result, 0, 0));
+		unset ($tab[$todel]);
+		$query = "UPDATE glpi_ocs_link 
+					SET $field='" . exportArrayToDB($tab) . "' 
+					WHERE glpi_id='$glpi_id'";
 		$DB->query($query);
 	}
 
 }
 
-function deleteInOcsArray($glpi_id,$todel,$field){
+function addToOcsArray($glpi_id, $toadd, $field) {
 	global $DB;
-	$query="SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
-	if ($result=$DB->query($query)){
-		$tab=importArrayFromDB($DB->result($result,0,0));
-		unset($tab[$todel]);
-		$query="UPDATE glpi_ocs_link 
-			SET $field='".exportArrayToDB($tab)."' 
+	$query = "SELECT $field 
+			FROM glpi_ocs_link 
 			WHERE glpi_id='$glpi_id'";
-		$DB->query($query);
-	}
-
-}
-
-function addToOcsArray($glpi_id,$toadd,$field){
-	global $DB;
-	$query="SELECT $field 
-		FROM glpi_ocs_link 
-		WHERE glpi_id='$glpi_id'";
-	if ($result=$DB->query($query)){
-		$tab=importArrayFromDB($DB->result($result,0,0));
+	if ($result = $DB->query($query)) {
+		$tab = importArrayFromDB($DB->result($result, 0, 0));
 		foreach ($toadd as $key => $val)
-			$tab[$key]=$val;
-		$query="UPDATE glpi_ocs_link 
-			SET $field='".exportArrayToDB($tab)."' 
-			WHERE glpi_id='$glpi_id'";
+			$tab[$key] = $val;
+		$query = "UPDATE glpi_ocs_link 
+					SET $field='" . exportArrayToDB($tab) . "' 
+					WHERE glpi_id='$glpi_id'";
 		$DB->query($query);
 	}
 
 }
 
+function ocsEditLock($target, $ID) {
+	global $DB, $LANG, $SEARCH_OPTION;
 
-function ocsEditLock($target,$ID){
-	global $DB,$LANG,$SEARCH_OPTION;
+	$query = "SELECT * 
+			FROM glpi_ocs_link 
+			WHERE glpi_id='$ID'";
 
-
-	$query="SELECT * 
-		FROM glpi_ocs_link 
-		WHERE glpi_id='$ID'";
-
-	$result=$DB->query($query);
-	if ($DB->numrows($result)==1){
-		$data=$DB->fetch_assoc($result);
+	$result = $DB->query($query);
+	if ($DB->numrows($result) == 1) {
+		$data = $DB->fetch_assoc($result);
 
 		echo "<div align='center'>";
 		echo "<form method='post' action=\"$target\">";
 		echo "<input type='hidden' name='ID' value='$ID'>";
 		echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-		echo "<input type='hidden' name='resynch_id' value='".$data["ID"]."'>";
-		echo "<input class=submit type='submit' name='force_ocs_resynch' value='".$LANG["ocsng"][24]."'>";
+		echo "<input type='hidden' name='resynch_id' value='" . $data["ID"] . "'>";
+		echo "<input class=submit type='submit' name='force_ocs_resynch' value='" . $LANG["ocsng"][24] . "'>";
 		echo "</td><tr></table>";
 		echo "</form>";
 
@@ -996,23 +1040,37 @@ function ocsEditLock($target,$ID){
 		echo "<div align='center'>";
 		// Print lock fields for OCSNG
 
-		$lockable_fields=array("name","type","FK_glpi_enterprise","model","serial","comments","contact","domain","os","os_sp","os_version","FK_users");
-		$locked=array_intersect(importArrayFromDB($data["computer_update"]),$lockable_fields);
+		$lockable_fields = array (
+			"name",
+			"type",
+			"FK_glpi_enterprise",
+			"model",
+			"serial",
+			"comments",
+			"contact",
+			"domain",
+			"os",
+			"os_sp",
+			"os_version",
+			"FK_users"
+		);
+		$locked = array_intersect(importArrayFromDB($data["computer_update"]), $lockable_fields);
 
-		if (count($locked)){
+		if (count($locked)) {
 			echo "<form method='post' action=\"$target\">";
 			echo "<input type='hidden' name='ID' value='$ID'>";
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th colspan='2'>".$LANG["ocsng"][16]."</th></tr>";
-			foreach ($locked as $key => $val){
+			echo "<tr><th colspan='2'>" . $LANG["ocsng"][16] . "</th></tr>";
+			foreach ($locked as $key => $val) {
 				foreach ($SEARCH_OPTION[COMPUTER_TYPE] as $key2 => $val2)
-					if ($val2["linkfield"]==$val||($val2["table"]=="glpi_computers"&&$val2["field"]==$val))
-						echo "<tr class='tab_bg_1'><td>".$val2["name"]."</td><td><input type='checkbox' name='lockfield[".$key."]'></td></tr>";
+					if ($val2["linkfield"] == $val || ($val2["table"] == "glpi_computers" && $val2["field"] == $val))
+						echo "<tr class='tab_bg_1'><td>" . $val2["name"] . "</td><td><input type='checkbox' name='lockfield[" . $key . "]'></td></tr>";
 			}
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_field' value='".$LANG["buttons"][38]."'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_field' value='" . $LANG["buttons"][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
-		} else echo "<strong>".$LANG["ocsng"][15]."</strong>";
+		} else
+			echo "<strong>" . $LANG["ocsng"][15] . "</strong>";
 		echo "</div>";
 	}
 
@@ -1033,76 +1091,88 @@ function ocsEditLock($target,$ID){
  *@return Nothing (void).
  *
  **/
-function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,$dohistory){
-	global $DBocs,$DB;
+function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $cfg_ocs, $import_device, $dohistory,$ocs_server_id) {
+	global  $DB;
 
-	$do_clean=false;
-	switch ($device_type){
-		case RAM_DEVICE:
+	$DBocs= getDBocs($ocs_server_id);
+	
+	$do_clean = false;
+	switch ($device_type) {
+		case RAM_DEVICE :
 			//Memoire
-			if ($cfg_ocs["import_device_memory"]){
-				$do_clean=true;
+			if ($cfg_ocs["import_device_memory"]) {
+				$do_clean = true;
 
 				$query2 = "SELECT * 
-					FROM memories 
-					WHERE HARDWARE_ID = '".$ocs_id."' 
-					ORDER BY ID";
+									FROM memories 
+									WHERE HARDWARE_ID = '" . $ocs_id . "' 
+									ORDER BY ID";
 				$result2 = $DBocs->query($query2);
-				if($DBocs->numrows($result2) > 0) {
-					while($line2 = $DBocs->fetch_array($result2)) {
-						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));			
-						if(!empty($line2["CAPACITY"])&&$line2["CAPACITY"]!="No") {
-							if($line2["DESCRIPTION"]) $ram["designation"] = $line2["DESCRIPTION"];
-							else $ram["designation"] = "Unknown";
-							$ram["specif_default"] =  $line2["CAPACITY"];
-							if (!in_array(RAM_DEVICE.'$$$$$'.$ram["designation"],$import_device)){
-								$ram["frequence"] =  $line2["SPEED"];
-								$ram["type"] = ocsImportDropdown("glpi_dropdown_ram_type","name",$line2["TYPE"]);
-								$ram_id = ocsAddDevice(RAM_DEVICE,$ram);
-								if ($ram_id){
-									$devID=compdevice_add($glpi_id,RAM_DEVICE,$ram_id,$line2["CAPACITY"],$dohistory);
-									addToOcsArray($glpi_id,array($devID=>RAM_DEVICE.'$$$$$'.$ram["designation"]),"import_device");
+				if ($DBocs->numrows($result2) > 0) {
+					while ($line2 = $DBocs->fetch_array($result2)) {
+						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
+						if (!empty ($line2["CAPACITY"]) && $line2["CAPACITY"] != "No") {
+							if ($line2["DESCRIPTION"])
+								$ram["designation"] = $line2["DESCRIPTION"];
+							else
+								$ram["designation"] = "Unknown";
+							$ram["specif_default"] = $line2["CAPACITY"];
+							if (!in_array(RAM_DEVICE . '$$$$$' . $ram["designation"], $import_device)) {
+								$ram["frequence"] = $line2["SPEED"];
+								$ram["type"] = ocsImportDropdown("glpi_dropdown_ram_type", "name", $line2["TYPE"]);
+								$ram_id = ocsAddDevice(RAM_DEVICE, $ram);
+								if ($ram_id) {
+									$devID = compdevice_add($glpi_id, RAM_DEVICE, $ram_id, $line2["CAPACITY"], $dohistory);
+									addToOcsArray($glpi_id, array (
+										$devID => RAM_DEVICE . '$$$$$' . $ram["designation"]
+									), "import_device");
 								}
 							} else {
-								$id=array_search(RAM_DEVICE.'$$$$$'.$ram["designation"],$import_device);
-								update_device_specif($line2["CAPACITY"],$id,1);
-								unset($import_device[$id]);
+								$id = array_search(RAM_DEVICE . '$$$$$' . $ram["designation"], $import_device);
+								update_device_specif($line2["CAPACITY"], $id, 1);
+								unset ($import_device[$id]);
 							}
 						}
 					}
 				}
 			}
 			break;
-		case HDD_DEVICE:
+		case HDD_DEVICE :
 			//Disque Dur
-			if ($cfg_ocs["import_device_hdd"]){
-				$do_clean=true;
+			if ($cfg_ocs["import_device_hdd"]) {
+				$do_clean = true;
 
 				$query2 = "SELECT * 
-					FROM storages 
-					WHERE HARDWARE_ID = '".$ocs_id."' 
-					ORDER BY ID";
+									FROM storages 
+									WHERE HARDWARE_ID = '" . $ocs_id . "' 
+									ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 
-				if($DBocs->numrows($result2) > 0) {
-					while($line2 = $DBocs->fetch_array($result2)) {
-						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
-						if(!empty($line2["DISKSIZE"])&&eregi("disk",$line2["TYPE"])) {
-							if($line2["NAME"]) $dd["designation"] = $line2["NAME"];
-							else if($line2["MODEL"]) $dd["designation"] = $line2["MODEL"];
-							else $dd["designation"] = "Unknown";
-							
-							if (!in_array(HDD_DEVICE.'$$$$$'.$dd["designation"],$import_device)){
-								$dd["specif_default"] =  $line2["DISKSIZE"];
-								$dd_id = ocsAddDevice(HDD_DEVICE,$dd);
-								if ($dd_id){
-									$devID=compdevice_add($glpi_id,HDD_DEVICE,$dd_id,$line2["DISKSIZE"],$dohistory);
-									addToOcsArray($glpi_id,array($devID=>HDD_DEVICE.'$$$$$'.$dd["designation"]),"import_device");
+				if ($DBocs->numrows($result2) > 0) {
+					while ($line2 = $DBocs->fetch_array($result2)) {
+						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
+						if (!empty ($line2["DISKSIZE"]) && eregi("disk", $line2["TYPE"])) {
+							if ($line2["NAME"])
+								$dd["designation"] = $line2["NAME"];
+							else
+								if ($line2["MODEL"])
+									$dd["designation"] = $line2["MODEL"];
+								else
+									$dd["designation"] = "Unknown";
+
+							if (!in_array(HDD_DEVICE . '$$$$$' . $dd["designation"], $import_device)) {
+								$dd["specif_default"] = $line2["DISKSIZE"];
+								$dd_id = ocsAddDevice(HDD_DEVICE, $dd);
+								if ($dd_id) {
+									$devID = compdevice_add($glpi_id, HDD_DEVICE, $dd_id, $line2["DISKSIZE"], $dohistory);
+									addToOcsArray($glpi_id, array (
+										$devID => HDD_DEVICE . '$$$$$' . $dd["designation"]
+									), "import_device");
 								}
 							} else {
-								$id=array_search(HDD_DEVICE.'$$$$$'.$dd["designation"],$import_device);
-								update_device_specif($line2["DISKSIZE"],$id,1);
-								unset($import_device[$id]);
+								$id = array_search(HDD_DEVICE . '$$$$$' . $dd["designation"], $import_device);
+								update_device_specif($line2["DISKSIZE"], $id, 1);
+								unset ($import_device[$id]);
 							}
 
 						}
@@ -1111,32 +1181,38 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 			}
 
 			break;
-		case DRIVE_DEVICE:
+		case DRIVE_DEVICE :
 			//lecteurs
-			if ($cfg_ocs["import_device_drives"]){
-				$do_clean=true;
+			if ($cfg_ocs["import_device_drives"]) {
+				$do_clean = true;
 
 				$query2 = "SELECT * 
-					FROM storages 
-					WHERE HARDWARE_ID = '".$ocs_id."' ORDER BY ID";
+									FROM storages 
+									WHERE HARDWARE_ID = '" . $ocs_id . "' ORDER BY ID";
 				$result2 = $DBocs->query($query2);
-				if($DBocs->numrows($result2) > 0) {
-					while($line2 = $DBocs->fetch_array($result2)) {
-						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
-						if(empty($line2["DISKSIZE"])||!eregi("disk",$line2["TYPE"])) {
-							if($line2["NAME"]) $stor["designation"] = $line2["NAME"];
-							else if($line2["MODEL"]) $stor["designation"] = $line2["MODEL"];
-							else $stor["designation"] = "Unknown";
-							if (!in_array(DRIVE_DEVICE.'$$$$$'.$stor["designation"],$import_device)){
-								$stor["specif_default"] =  $line2["DISKSIZE"];
-								$stor_id = ocsAddDevice(DRIVE_DEVICE,$stor);
-								if ($stor_id){
-									$devID=compdevice_add($glpi_id,DRIVE_DEVICE,$stor_id,"",$dohistory);
-									addToOcsArray($glpi_id,array($devID=>DRIVE_DEVICE.'$$$$$'.$stor["designation"]),"import_device");
+				if ($DBocs->numrows($result2) > 0) {
+					while ($line2 = $DBocs->fetch_array($result2)) {
+						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
+						if (empty ($line2["DISKSIZE"]) || !eregi("disk", $line2["TYPE"])) {
+							if ($line2["NAME"])
+								$stor["designation"] = $line2["NAME"];
+							else
+								if ($line2["MODEL"])
+									$stor["designation"] = $line2["MODEL"];
+								else
+									$stor["designation"] = "Unknown";
+							if (!in_array(DRIVE_DEVICE . '$$$$$' . $stor["designation"], $import_device)) {
+								$stor["specif_default"] = $line2["DISKSIZE"];
+								$stor_id = ocsAddDevice(DRIVE_DEVICE, $stor);
+								if ($stor_id) {
+									$devID = compdevice_add($glpi_id, DRIVE_DEVICE, $stor_id, "", $dohistory);
+									addToOcsArray($glpi_id, array (
+										$devID => DRIVE_DEVICE . '$$$$$' . $stor["designation"]
+									), "import_device");
 								}
 							} else {
-								$id=array_search(DRIVE_DEVICE.'$$$$$'.$stor["designation"],$import_device);
-								unset($import_device[$id]);
+								$id = array_search(DRIVE_DEVICE . '$$$$$' . $stor["designation"], $import_device);
+								unset ($import_device[$id]);
 							}
 
 						}
@@ -1144,177 +1220,192 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 				}
 			}
 			break;
-		case PCI_DEVICE:
+		case PCI_DEVICE :
 			//Modems
-			if ($cfg_ocs["import_device_modems"]){	
-				$do_clean=true;
+			if ($cfg_ocs["import_device_modems"]) {
+				$do_clean = true;
 
 				$query2 = "SELECT * 
-					FROM modems 
-					WHERE HARDWARE_ID = '".$ocs_id."' 
-					ORDER BY ID";
+									FROM modems 
+									WHERE HARDWARE_ID = '" . $ocs_id . "' 
+									ORDER BY ID";
 				$result2 = $DBocs->query($query2);
-				if($DBocs->numrows($result2) > 0) {
-					while($line2 = $DBocs->fetch_array($result2)) {
-						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
+				if ($DBocs->numrows($result2) > 0) {
+					while ($line2 = $DBocs->fetch_array($result2)) {
+						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$mdm["designation"] = $line2["NAME"];
-						if (!in_array(PCI_DEVICE.'$$$$$'.$mdm["designation"],$import_device)){
-							if(!empty($line2["DESCRIPTION"])) $mdm["comment"] = $line2["TYPE"]."\r\n".$line2["DESCRIPTION"];
-							$mdm_id = ocsAddDevice(PCI_DEVICE,$mdm);
-							if ($mdm_id){
-								$devID=compdevice_add($glpi_id,PCI_DEVICE,$mdm_id,"",$dohistory);
-								addToOcsArray($glpi_id,array($devID=>PCI_DEVICE.'$$$$$'.$mdm["designation"]),"import_device");
+						if (!in_array(PCI_DEVICE . '$$$$$' . $mdm["designation"], $import_device)) {
+							if (!empty ($line2["DESCRIPTION"]))
+								$mdm["comment"] = $line2["TYPE"] . "\r\n" . $line2["DESCRIPTION"];
+							$mdm_id = ocsAddDevice(PCI_DEVICE, $mdm);
+							if ($mdm_id) {
+								$devID = compdevice_add($glpi_id, PCI_DEVICE, $mdm_id, "", $dohistory);
+								addToOcsArray($glpi_id, array (
+									$devID => PCI_DEVICE . '$$$$$' . $mdm["designation"]
+								), "import_device");
 							}
 						} else {
-							$id=array_search(PCI_DEVICE.'$$$$$'.$mdm["designation"],$import_device);
-							unset($import_device[$id]);
+							$id = array_search(PCI_DEVICE . '$$$$$' . $mdm["designation"], $import_device);
+							unset ($import_device[$id]);
 						}
 
 					}
 				}
 			}
 			//Ports
-			if ($cfg_ocs["import_device_ports"]){
+			if ($cfg_ocs["import_device_ports"]) {
 
 				$query2 = "SELECT * 
-					FROM ports 
-					WHERE HARDWARE_ID = '".$ocs_id."' 
-					ORDER BY ID";
+									FROM ports 
+									WHERE HARDWARE_ID = '" . $ocs_id . "' 
+									ORDER BY ID";
 				$result2 = $DBocs->query($query2);
-				if($DBocs->numrows($result2) > 0) {
-					while($line2 = $DBocs->fetch_array($result2)) {
-						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
-						$port["designation"]="";	
-						if ($line2["TYPE"]!="Other") $port["designation"] .= $line2["TYPE"];
-						if ($line2["NAME"]!="Not Specified") $port["designation"] .= " ".$line2["NAME"];
-						else if ($line2["CAPTION"]!="None") $port["designation"] .= " ".$line2["CAPTION"];
-						if (!empty($port["designation"]))
-							if (!in_array(PCI_DEVICE.'$$$$$'.$port["designation"],$import_device)){
-								if(!empty($line2["DESCRIPTION"])&&$line2["DESCRIPTION"]!="None") $port["comment"] = $line2["DESCRIPTION"];
-								$port_id = ocsAddDevice(PCI_DEVICE,$port);
-								if ($port_id){
-									$devID=compdevice_add($glpi_id,PCI_DEVICE,$port_id,"",$dohistory);
-									addToOcsArray($glpi_id,array($devID=>PCI_DEVICE.'$$$$$'.$port["designation"]),"import_device");
+				if ($DBocs->numrows($result2) > 0) {
+					while ($line2 = $DBocs->fetch_array($result2)) {
+						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
+						$port["designation"] = "";
+						if ($line2["TYPE"] != "Other")
+							$port["designation"] .= $line2["TYPE"];
+						if ($line2["NAME"] != "Not Specified")
+							$port["designation"] .= " " . $line2["NAME"];
+						else
+							if ($line2["CAPTION"] != "None")
+								$port["designation"] .= " " . $line2["CAPTION"];
+						if (!empty ($port["designation"]))
+							if (!in_array(PCI_DEVICE . '$$$$$' . $port["designation"], $import_device)) {
+								if (!empty ($line2["DESCRIPTION"]) && $line2["DESCRIPTION"] != "None")
+									$port["comment"] = $line2["DESCRIPTION"];
+								$port_id = ocsAddDevice(PCI_DEVICE, $port);
+								if ($port_id) {
+									$devID = compdevice_add($glpi_id, PCI_DEVICE, $port_id, "", $dohistory);
+									addToOcsArray($glpi_id, array (
+										$devID => PCI_DEVICE . '$$$$$' . $port["designation"]
+									), "import_device");
 								}
 							} else {
-								$id=array_search(PCI_DEVICE.'$$$$$'.$port["designation"],$import_device);
-								unset($import_device[$id]);
-							}						
+								$id = array_search(PCI_DEVICE . '$$$$$' . $port["designation"], $import_device);
+								unset ($import_device[$id]);
+							}
 					}
 				}
 			}
 			break;
-		case PROCESSOR_DEVICE:
+		case PROCESSOR_DEVICE :
 			//Processeurs : 
-			if ($cfg_ocs["import_device_processor"]){
-				$do_clean=true;
+			if ($cfg_ocs["import_device_processor"]) {
+				$do_clean = true;
 
 				$query = "SELECT * 
-					FROM hardware 
-					WHERE ID='$ocs_id' ORDER BY ID";
+									FROM hardware 
+									WHERE ID='$ocs_id' ORDER BY ID";
 				$result = $DBocs->query($query);
-				if ($DBocs->numrows($result)==1){
-					$line=$DBocs->fetch_array($result);
-					$line=clean_cross_side_scripting_deep(addslashes_deep($line));
-					for($i = 0;$i < $line["PROCESSORN"]; $i++) {
-						$processor = array();
+				if ($DBocs->numrows($result) == 1) {
+					$line = $DBocs->fetch_array($result);
+					$line = clean_cross_side_scripting_deep(addslashes_deep($line));
+					for ($i = 0; $i < $line["PROCESSORN"]; $i++) {
+						$processor = array ();
 						$processor["designation"] = $line["PROCESSORT"];
-						$processor["specif_default"] =  $line["PROCESSORS"];
-						if (!in_array(PROCESSOR_DEVICE.'$$$$$'.$processor["designation"],$import_device)){
-							$proc_id = ocsAddDevice(PROCESSOR_DEVICE,$processor);
-							if ($proc_id){
-								$devID=compdevice_add($glpi_id,PROCESSOR_DEVICE,$proc_id,$line["PROCESSORS"],$dohistory);
-								addToOcsArray($glpi_id,array($devID=>PROCESSOR_DEVICE.'$$$$$'.$processor["designation"]),"import_device");
+						$processor["specif_default"] = $line["PROCESSORS"];
+						if (!in_array(PROCESSOR_DEVICE . '$$$$$' . $processor["designation"], $import_device)) {
+							$proc_id = ocsAddDevice(PROCESSOR_DEVICE, $processor);
+							if ($proc_id) {
+								$devID = compdevice_add($glpi_id, PROCESSOR_DEVICE, $proc_id, $line["PROCESSORS"], $dohistory);
+								addToOcsArray($glpi_id, array (
+									$devID => PROCESSOR_DEVICE . '$$$$$' . $processor["designation"]
+								), "import_device");
 							}
 						} else {
-							$id=array_search(PROCESSOR_DEVICE.'$$$$$'.$processor["designation"],$import_device);
-							update_device_specif($line["PROCESSORS"],$id,1);
-							unset($import_device[$id]);
-						}						
+							$id = array_search(PROCESSOR_DEVICE . '$$$$$' . $processor["designation"], $import_device);
+							update_device_specif($line["PROCESSORS"], $id, 1);
+							unset ($import_device[$id]);
+						}
 					}
 				}
 			}
 			break;
-		case NETWORK_DEVICE:
+		case NETWORK_DEVICE :
 
 			//Carte reseau
-			if ($cfg_ocs["import_device_iface"]||$cfg_ocs["import_ip"]){
+			if ($cfg_ocs["import_device_iface"] || $cfg_ocs["import_ip"]) {
 
 				$query2 = "SELECT * 
-					FROM networks 
-					WHERE HARDWARE_ID = '".$ocs_id."' 
-					ORDER BY ID";
+									FROM networks 
+									WHERE HARDWARE_ID = '" . $ocs_id . "' 
+									ORDER BY ID";
 
 				$result2 = $DBocs->query($query2);
-				$i=0;
+				$i = 0;
 				// Add network device
-				if($DBocs->numrows($result2) > 0) {
-					$already_used_ip=array();
-					while($line2 = $DBocs->fetch_array($result2)) {
-						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
-						if ($cfg_ocs["import_device_iface"]){
-							$do_clean=true;
+				if ($DBocs->numrows($result2) > 0) {
+					$already_used_ip = array ();
+					while ($line2 = $DBocs->fetch_array($result2)) {
+						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
+						if ($cfg_ocs["import_device_iface"]) {
+							$do_clean = true;
 							$network["designation"] = $line2["DESCRIPTION"];
-							if (!in_array(NETWORK_DEVICE.'$$$$$'.$network["designation"],$import_device)){
-								if(!empty($line2["SPEED"])) $network["bandwidth"] =  $line2["SPEED"];
-								$net_id = ocsAddDevice(NETWORK_DEVICE,$network);
-								if ($net_id){
-									$devID=compdevice_add($glpi_id,NETWORK_DEVICE,$net_id,$line2["MACADDR"],$dohistory);
-									addToOcsArray($glpi_id,array($devID=>NETWORK_DEVICE.'$$$$$'.$network["designation"]),"import_device");
+							if (!in_array(NETWORK_DEVICE . '$$$$$' . $network["designation"], $import_device)) {
+								if (!empty ($line2["SPEED"]))
+									$network["bandwidth"] = $line2["SPEED"];
+								$net_id = ocsAddDevice(NETWORK_DEVICE, $network);
+								if ($net_id) {
+									$devID = compdevice_add($glpi_id, NETWORK_DEVICE, $net_id, $line2["MACADDR"], $dohistory);
+									addToOcsArray($glpi_id, array (
+										$devID => NETWORK_DEVICE . '$$$$$' . $network["designation"]
+									), "import_device");
 								}
 							} else {
-								$id=array_search(NETWORK_DEVICE.'$$$$$'.$network["designation"],$import_device);
-								update_device_specif($line2["MACADDR"],$id,1);
-								unset($import_device[$id]);
-							}						
+								$id = array_search(NETWORK_DEVICE . '$$$$$' . $network["designation"], $import_device);
+								update_device_specif($line2["MACADDR"], $id, 1);
+								unset ($import_device[$id]);
+							}
 						}
 
-						if (!empty($line2["IPADDRESS"])&&$cfg_ocs["import_ip"]){
-							$ocs_ips=split(",",$line2["IPADDRESS"]);
-							$ocs_ips=array_unique($ocs_ips);
+						if (!empty ($line2["IPADDRESS"]) && $cfg_ocs["import_ip"]) {
+							$ocs_ips = split(",", $line2["IPADDRESS"]);
+							$ocs_ips = array_unique($ocs_ips);
 							sort($ocs_ips);
 
 							// Is there an existing networking port ?
-							$query="SELECT * 
-								FROM glpi_networking_ports 
-								WHERE device_type='".COMPUTER_TYPE."' 
-								AND on_device='$glpi_id' 
-								AND ifmac='".$line2["MACADDR"]."' 
-								AND name='".$line2["DESCRIPTION"]."'
-								ORDER BY ID";
-							$glpi_ips=array();
-							$result=$DB->query($query);
-							if ($DB->numrows($result)>0){
-								while ($data=$DB->fetch_array($result))
-									if (!in_array($data["ID"],$already_used_ip)){
-										$glpi_ips[]=$data["ID"];
+							$query = "SELECT * 
+															FROM glpi_networking_ports 
+															WHERE device_type='" . COMPUTER_TYPE . "' 
+															AND on_device='$glpi_id' 
+															AND ifmac='" . $line2["MACADDR"] . "' 
+															AND name='" . $line2["DESCRIPTION"] . "'
+															ORDER BY ID";
+							$glpi_ips = array ();
+							$result = $DB->query($query);
+							if ($DB->numrows($result) > 0) {
+								while ($data = $DB->fetch_array($result))
+									if (!in_array($data["ID"], $already_used_ip)) {
+										$glpi_ips[] = $data["ID"];
 									}
 							}
-							unset($netport);
-							$netport["ifmac"]=$line2["MACADDR"];
-							$netport["iface"]=ocsImportDropdown("glpi_dropdown_iface","name",$line2["TYPE"]);
-							$netport["name"]=$line2["DESCRIPTION"];
-							$netport["on_device"]=$glpi_id;
-							$netport["device_type"]=COMPUTER_TYPE;
+							unset ($netport);
+							$netport["ifmac"] = $line2["MACADDR"];
+							$netport["iface"] = ocsImportDropdown("glpi_dropdown_iface", "name", $line2["TYPE"]);
+							$netport["name"] = $line2["DESCRIPTION"];
+							$netport["on_device"] = $glpi_id;
+							$netport["device_type"] = COMPUTER_TYPE;
 
-							$np=new Netport();
+							$np = new Netport();
 							// Update already in DB
-							for ($j=0;$j<min(count($glpi_ips),count($ocs_ips));$j++){
-									$netport["ifaddr"]=$ocs_ips[$j];
-									$netport["logical_number"]=$i;
-									$netport["ID"]=$glpi_ips[$j];
-									$already_used_ip[]=$glpi_ips[$j];
-									$np->update($netport);
-									$i++;
+							for ($j = 0; $j < min(count($glpi_ips), count($ocs_ips)); $j++) {
+								$netport["ifaddr"] = $ocs_ips[$j];
+								$netport["logical_number"] = $i;
+								$netport["ID"] = $glpi_ips[$j];
+								$already_used_ip[] = $glpi_ips[$j];
+								$np->update($netport);
+								$i++;
 							}
 
 							// If other IP founded
-							if (count($glpi_ips)<count($ocs_ips))
-								for ($j=count($glpi_ips);$j<count($ocs_ips);$j++){
-									unset($netport["ID"]);
-									unset($np->fields["ID"]);
-									$netport["ifaddr"]=$ocs_ips[$j];
-									$netport["logical_number"]=$i;
+							if (count($glpi_ips) < count($ocs_ips))
+								for ($j = count($glpi_ips); $j < count($ocs_ips); $j++) {
+									unset ($netport["ID"]);
+									unset ($np->fields["ID"]);
+									$netport["ifaddr"] = $ocs_ips[$j];
+									$netport["logical_number"] = $i;
 									$np->add($netport);
 									$i++;
 								}
@@ -1324,62 +1415,68 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 
 			}
 			break;
-		case GFX_DEVICE:
+		case GFX_DEVICE :
 			//carte graphique
-			if ($cfg_ocs["import_device_gfxcard"]){
-				$do_clean=true;
+			if ($cfg_ocs["import_device_gfxcard"]) {
+				$do_clean = true;
 
 				$query2 = "SELECT DISTINCT(NAME) as NAME, MEMORY 
-					FROM videos 
-					WHERE HARDWARE_ID = '".$ocs_id."'and NAME != '' 
-					ORDER BY ID";
+									FROM videos 
+									WHERE HARDWARE_ID = '" . $ocs_id . "'and NAME != '' 
+									ORDER BY ID";
 				$result2 = $DBocs->query($query2);
-				if($DBocs->numrows($result2) > 0) {
-					while($line2 = $DBocs->fetch_array($result2)) {
-						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
+				if ($DBocs->numrows($result2) > 0) {
+					while ($line2 = $DBocs->fetch_array($result2)) {
+						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$video["designation"] = $line2["NAME"];
-						if (!in_array(GFX_DEVICE.'$$$$$'.$video["designation"],$import_device)){
-							$video["ram"]="";
-							if(!empty($line2["MEMORY"])) $video["ram"] =  $line2["MEMORY"];
-							$video_id = ocsAddDevice(GFX_DEVICE,$video);
-							if ($video_id){
-								$devID=compdevice_add($glpi_id,GFX_DEVICE,$video_id,$video["ram"],$dohistory);
-								addToOcsArray($glpi_id,array($devID=>GFX_DEVICE.'$$$$$'.$video["designation"]),"import_device");
+						if (!in_array(GFX_DEVICE . '$$$$$' . $video["designation"], $import_device)) {
+							$video["ram"] = "";
+							if (!empty ($line2["MEMORY"]))
+								$video["ram"] = $line2["MEMORY"];
+							$video_id = ocsAddDevice(GFX_DEVICE, $video);
+							if ($video_id) {
+								$devID = compdevice_add($glpi_id, GFX_DEVICE, $video_id, $video["ram"], $dohistory);
+								addToOcsArray($glpi_id, array (
+									$devID => GFX_DEVICE . '$$$$$' . $video["designation"]
+								), "import_device");
 							}
 						} else {
-							$id=array_search(GFX_DEVICE.'$$$$$'.$video["designation"],$import_device);
-							update_device_specif($line2["MEMORY"],$id,1);
-							unset($import_device[$id]);
-						}						
+							$id = array_search(GFX_DEVICE . '$$$$$' . $video["designation"], $import_device);
+							update_device_specif($line2["MEMORY"], $id, 1);
+							unset ($import_device[$id]);
+						}
 					}
 				}
 			}
 			break;
-		case SND_DEVICE:
+		case SND_DEVICE :
 			//carte son
-			if ($cfg_ocs["import_device_sound"]){
-				$do_clean=true;
+			if ($cfg_ocs["import_device_sound"]) {
+				$do_clean = true;
 
 				$query2 = "SELECT DISTINCT(NAME) as NAME, DESCRIPTION 
-					FROM sounds 
-					WHERE HARDWARE_ID = '".$ocs_id."' 
-					AND NAME != '' ORDER BY ID";
+									FROM sounds 
+									WHERE HARDWARE_ID = '" . $ocs_id . "' 
+									AND NAME != '' ORDER BY ID";
 				$result2 = $DBocs->query($query2);
-				if($DBocs->numrows($result2) > 0) {
-					while($line2 = $DBocs->fetch_array($result2)) {
-						$line2=clean_cross_side_scripting_deep(addslashes_deep($line2));
+				if ($DBocs->numrows($result2) > 0) {
+					while ($line2 = $DBocs->fetch_array($result2)) {
+						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$snd["designation"] = $line2["NAME"];
-						if (!in_array(SND_DEVICE.'$$$$$'.$snd["designation"],$import_device)){
-							if(!empty($line2["DESCRIPTION"])) $snd["comment"] =  $line2["DESCRIPTION"];
-							$snd_id = ocsAddDevice(SND_DEVICE,$snd);
-							if ($snd_id){
-								$devID=compdevice_add($glpi_id,SND_DEVICE,$snd_id,"",$dohistory);
-								addToOcsArray($glpi_id,array($devID=>SND_DEVICE.'$$$$$'.$snd["designation"]),"import_device");
+						if (!in_array(SND_DEVICE . '$$$$$' . $snd["designation"], $import_device)) {
+							if (!empty ($line2["DESCRIPTION"]))
+								$snd["comment"] = $line2["DESCRIPTION"];
+							$snd_id = ocsAddDevice(SND_DEVICE, $snd);
+							if ($snd_id) {
+								$devID = compdevice_add($glpi_id, SND_DEVICE, $snd_id, "", $dohistory);
+								addToOcsArray($glpi_id, array (
+									$devID => SND_DEVICE . '$$$$$' . $snd["designation"]
+								), "import_device");
 							}
 						} else {
-							$id=array_search(SND_DEVICE.'$$$$$'.$snd["designation"],$import_device);
-							unset($import_device[$id]);
-						}						
+							$id = array_search(SND_DEVICE . '$$$$$' . $snd["designation"], $import_device);
+							unset ($import_device[$id]);
+						}
 					}
 				}
 			}
@@ -1387,26 +1484,26 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
 	}
 
 	// Delete Unexisting Items not found in OCS
-	if ($do_clean&&count($import_device)){
-		foreach ($import_device as $key => $val){
-			if (!(strpos($val,$device_type.'$$')===false)){
+	if ($do_clean && count($import_device)) {
+		foreach ($import_device as $key => $val) {
+			if (!(strpos($val, $device_type . '$$') === false)) {
 				// Networking case : Delete ports corresponding to device :
 				// TODO Add a field in the DB to store linked item
-				if ($device_type==NETWORK_DEVICE){
-					$np=new Netport();
+				if ($device_type == NETWORK_DEVICE) {
+					$np = new Netport();
 					$np->getFromDB($key);
-					$query="SELECT specificity FROM glpi_computer_device WHERE ID='$key' ";
-					$result=$DB->query($query);
-					if ($DB->numrows($result)){
-						$macaddr=$DB->result($result,0,0);
-						$query2="DELETE FROM glpi_networking_ports WHERE name='".str_replace($device_type.'$$$$$',"",$val)."' AND ifmac='$macaddr'";
+					$query = "SELECT specificity FROM glpi_computer_device WHERE ID='$key' ";
+					$result = $DB->query($query);
+					if ($DB->numrows($result)) {
+						$macaddr = $DB->result($result, 0, 0);
+						$query2 = "DELETE FROM glpi_networking_ports WHERE name='" . str_replace($device_type . '$$$$$', "", $val) . "' AND ifmac='$macaddr'";
 						$DB->query($query2);
 					}
 				}
 
-				unlink_device_computer($key,$dohistory);
-				deleteInOcsArray($glpi_id,$key,"import_device");
-			} 
+				unlink_device_computer($key, $dohistory);
+				deleteInOcsArray($glpi_id, $key, "import_device");
+			}
 		}
 	}
 	//Alimentation
@@ -1424,19 +1521,19 @@ function ocsUpdateDevices($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_device,
  *@return integer : device id.
  *
  **/
-function ocsAddDevice($device_type,$dev_array) {
+function ocsAddDevice($device_type, $dev_array) {
 
 	global $DB;
 	$query = "SELECT * 
-		FROM ".getDeviceTable($device_type)." 
-		WHERE designation='".$dev_array["designation"]."'";
+			FROM " . getDeviceTable($device_type) . " 
+			WHERE designation='" . $dev_array["designation"] . "'";
 	$result = $DB->query($query);
-	if($DB->numrows($result) == 0) {
+	if ($DB->numrows($result) == 0) {
 		$dev = new Device($device_type);
-		foreach($dev_array as $key => $val) {
+		foreach ($dev_array as $key => $val) {
 			$dev->fields[$key] = $val;
 		}
-		return($dev->addToDB());
+		return ($dev->addToDB());
 	} else {
 		$line = $DB->fetch_array($result);
 		return $line["ID"];
@@ -1459,257 +1556,273 @@ function ocsAddDevice($device_type,$dev_array) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_periph,$dohistory){
-	global $DB,$DBocs;
-	$do_clean=false;
-	$connID=0;
-	switch ($device_type){
-		case MONITOR_TYPE:
-			if ($cfg_ocs["import_monitor"]){
-				$do_clean=true;
+function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $cfg_ocs, $import_periph, $dohistory,$ocs_server_id) {
+	global $DB;
+	
+	$DBocs= getDBocs($ocs_server_id);
+	
+	$do_clean = false;
+	$connID = 0;
+	switch ($device_type) {
+		case MONITOR_TYPE :
+			if ($cfg_ocs["import_monitor"]) {
+				$do_clean = true;
 
 				$query = "SELECT DISTINCT CAPTION, MANUFACTURER, DESCRIPTION, SERIAL, TYPE 
-					FROM monitors 
-					WHERE HARDWARE_ID = '".$ocs_id."'";
+									FROM monitors 
+									WHERE HARDWARE_ID = '" . $ocs_id . "'";
 				$result = $DBocs->query($query);
-				if($DBocs->numrows($result) > 0) 
-					while($line = $DBocs->fetch_array($result)) {
-						$line=clean_cross_side_scripting_deep(addslashes_deep($line));
+				if ($DBocs->numrows($result) > 0)
+					while ($line = $DBocs->fetch_array($result)) {
+						$line = clean_cross_side_scripting_deep(addslashes_deep($line));
 						$mon["name"] = $line["CAPTION"];
-						
-						if (empty($line["CAPTION"])&&!empty($line["MANUFACTURER"])){
+
+						if (empty ($line["CAPTION"]) && !empty ($line["MANUFACTURER"])) {
 							$mon["name"] = $line["MANUFACTURER"];
 						}
-						if (empty($line["CAPTION"])&&!empty($line["TYPE"])){
-							if (!empty($line["MANUFACTURER"])) $mon["name"].=" ";
+						if (empty ($line["CAPTION"]) && !empty ($line["TYPE"])) {
+							if (!empty ($line["MANUFACTURER"]))
+								$mon["name"] .= " ";
 							$mon["name"] .= $line["TYPE"];
 						}
-						
-						if (!empty($mon["name"]))
-							if (!in_array($mon["name"],$import_periph)){
-								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$line["MANUFACTURER"]);
+
+						if (!empty ($mon["name"]))
+							if (!in_array($mon["name"], $import_periph)) {
+								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $line["MANUFACTURER"]);
 								$mon["comments"] = $line["DESCRIPTION"];
 								$mon["serial"] = $line["SERIAL"];
-								$id_monitor=0;
-								$found_already_monitor=false;
-								if($cfg_ocs["import_monitor"] == 1) {
+								$id_monitor = 0;
+								$found_already_monitor = false;
+								if ($cfg_ocs["import_monitor"] == 1) {
 									//Config says : manage monitors as global
 									//check if monitors already exists in GLPI
-									$mon["is_global"]=1;
+									$mon["is_global"] = 1;
 									$query = "SELECT ID 
-										FROM glpi_monitors 
-										WHERE name = '".$mon["name"]."'
-										AND is_global = '1'";
+																			FROM glpi_monitors 
+																			WHERE name = '" . $mon["name"] . "'
+																			AND is_global = '1'";
 									$result_search = $DB->query($query);
-									if($DB->numrows($result_search) > 0) {
+									if ($DB->numrows($result_search) > 0) {
 										//Periph is already in GLPI
 										//Do not import anything just get periph ID for link
-										$id_monitor = $DB->result($result_search,0,"ID");
+										$id_monitor = $DB->result($result_search, 0, "ID");
 									} else {
-										$m=new Monitor;
+										$m = new Monitor;
 										$mon["state"] = $cfg_ocs["default_state"];
-										$m->fields=$mon;
-										$id_monitor=$m->addToDB();
+										$m->fields = $mon;
+										$id_monitor = $m->addToDB();
 									}
-								} else if($cfg_ocs["import_monitor"] == 2) {
-									//COnfig says : manage monitors as single units
-									//Import all monitors as non global.
-									$mon["is_global"]=0;
-									$m=new Monitor;
+								} else
+									if ($cfg_ocs["import_monitor"] == 2) {
+										//COnfig says : manage monitors as single units
+										//Import all monitors as non global.
+										$mon["is_global"] = 0;
+										$m = new Monitor;
 
-									// First import - Is there already a monitor ?
-									if (count($import_periph)==0){
-										$query_search="SELECT end1 
-											FROM glpi_connect_wire 
-											WHERE end2='$glpi_id' 
-											AND type='".MONITOR_TYPE."'";
-										$result_search=$DB->query($query_search);
-										if ($DB->numrows($result_search)==1){
-											$id_monitor=$DB->result($result_search,0,0);
-											$found_already_monitor=true;
+										// First import - Is there already a monitor ?
+										if (count($import_periph) == 0) {
+											$query_search = "SELECT end1 
+																						FROM glpi_connect_wire 
+																						WHERE end2='$glpi_id' 
+																						AND type='" . MONITOR_TYPE . "'";
+											$result_search = $DB->query($query_search);
+											if ($DB->numrows($result_search) == 1) {
+												$id_monitor = $DB->result($result_search, 0, 0);
+												$found_already_monitor = true;
+											}
 										}
-									}
 
-									if ($found_already_monitor&&$id_monitor){
+										if ($found_already_monitor && $id_monitor) {
 
-										$m->getFromDB($id_monitor);
-										// Found a non global monitor : good
-										if (!$m->fields["is_global"]){
-											$mon["ID"]=$id_monitor;
-											unset($mon["comments"]);
+											$m->getFromDB($id_monitor);
+											// Found a non global monitor : good
+											if (!$m->fields["is_global"]) {
+												$mon["ID"] = $id_monitor;
+												unset ($mon["comments"]);
 
-											$m->update($mon);
-										} else { // Found a global monitor : bad idea. need to add another one
-											$found_already_monitor=false;
-											$id_monitor=0;
-											// Try to find a monitor with the same serial.
-											if (!empty($mon["serial"])){
-												$query = "SELECT ID 
-													FROM glpi_monitors 
-													WHERE serial = '".$mon["serial"]."'";
-												$result_search = $DB->query($query);
-												if($DB->numrows($result_search) == 1) {
-													//Monitor founded
-													$id_monitor = $DB->result($result_search,0,"ID");
+												$m->update($mon);
+											} else { // Found a global monitor : bad idea. need to add another one
+												$found_already_monitor = false;
+												$id_monitor = 0;
+												// Try to find a monitor with the same serial.
+												if (!empty ($mon["serial"])) {
+													$query = "SELECT ID 
+																										FROM glpi_monitors 
+																										WHERE serial = '" . $mon["serial"] . "'";
+													$result_search = $DB->query($query);
+													if ($DB->numrows($result_search) == 1) {
+														//Monitor founded
+														$id_monitor = $DB->result($result_search, 0, "ID");
+													}
 												}
-											} 
+												// Nothing found : add it
+												if (!$id_monitor) {
+													$mon["state"] = $cfg_ocs["default_state"];
+													$m->fields = $mon;
+													$id_monitor = $m->addToDB();
+												}
+											}
+										} else {
+											// Try to find a monitor with the same serial.
+											if (!empty ($mon["serial"])) {
+												$query = "SELECT ID 
+																								FROM glpi_monitors 
+																								WHERE serial = '" . $mon["serial"] . "'";
+												$result_search = $DB->query($query);
+												if ($DB->numrows($result_search) == 1) {
+													//Monitor founded
+													$id_monitor = $DB->result($result_search, 0, "ID");
+												}
+											}
 											// Nothing found : add it
-											if (!$id_monitor){
+											if (!$id_monitor) {
 												$mon["state"] = $cfg_ocs["default_state"];
-												$m->fields=$mon;
-												$id_monitor=$m->addToDB();
+												$m->fields = $mon;
+												$id_monitor = $m->addToDB();
 											}
-										}
-									} else {
-										// Try to find a monitor with the same serial.
-										if (!empty($mon["serial"])){
-											$query = "SELECT ID 
-												FROM glpi_monitors 
-												WHERE serial = '".$mon["serial"]."'";
-											$result_search = $DB->query($query);
-											if($DB->numrows($result_search) == 1) {
-												//Monitor founded
-												$id_monitor = $DB->result($result_search,0,"ID");
-											}
-										} 
-										// Nothing found : add it
-										if (!$id_monitor){
-											$mon["state"] = $cfg_ocs["default_state"];
-											$m->fields=$mon;
-											$id_monitor=$m->addToDB();
 										}
 									}
-								}	
-								if ($id_monitor){
+								if ($id_monitor) {
 									if (!$found_already_monitor)
-										$connID=Connect($id_monitor,$glpi_id,MONITOR_TYPE);
-									addToOcsArray($glpi_id,array($connID=>$mon["name"]),"import_monitor");
+										$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE);
+									addToOcsArray($glpi_id, array (
+										$connID => $mon["name"]
+									), "import_monitor");
 								}
 							} else {
-								$id=array_search($mon["name"],$import_periph);
-								unset($import_periph[$id]);
+								$id = array_search($mon["name"], $import_periph);
+								unset ($import_periph[$id]);
 							}
 					}
 			}
 			break;
-		case PRINTER_TYPE:
-			if ($cfg_ocs["import_printer"]){
-				$do_clean=true;
+		case PRINTER_TYPE :
+			if ($cfg_ocs["import_printer"]) {
+				$do_clean = true;
 
 				$query = "SELECT * 
-					FROM printers 
-					WHERE HARDWARE_ID = '".$ocs_id."'";
+									FROM printers 
+									WHERE HARDWARE_ID = '" . $ocs_id . "'";
 				$result = $DBocs->query($query);
 
-				if($DBocs->numrows($result) > 0) 
-					while($line = $DBocs->fetch_array($result)) {
-						$line=clean_cross_side_scripting_deep(addslashes_deep($line));
+				if ($DBocs->numrows($result) > 0)
+					while ($line = $DBocs->fetch_array($result)) {
+						$line = clean_cross_side_scripting_deep(addslashes_deep($line));
 
 						// TO TEST : PARSE NAME to have real name.
 						$print["name"] = $line["NAME"];
-						if (empty($print["name"]))	$print["name"] = $line["DRIVER"];
+						if (empty ($print["name"]))
+							$print["name"] = $line["DRIVER"];
 
-						if (!empty($print["name"]))
-							if (!in_array($print["name"],$import_periph)){
+						if (!empty ($print["name"]))
+							if (!in_array($print["name"], $import_periph)) {
 								//$print["comments"] = $line["PORT"]."\r\n".$line["NAME"];
-								$print["comments"] = $line["PORT"]."\r\n".$line["DRIVER"];
-								$id_printer=0;
+								$print["comments"] = $line["PORT"] . "\r\n" . $line["DRIVER"];
+								$id_printer = 0;
 
-								if($cfg_ocs["import_printer"] == 1) {
+								if ($cfg_ocs["import_printer"] == 1) {
 									//Config says : manage printers as global
 									//check if printers already exists in GLPI
-									$print["is_global"]=1;
+									$print["is_global"] = 1;
 									$query = "SELECT ID 
-										FROM glpi_printers 
-										WHERE name = '".$print["name"]."' 
-										AND is_global = '1'";
+																			FROM glpi_printers 
+																			WHERE name = '" . $print["name"] . "' 
+																			AND is_global = '1'";
 									$result_search = $DB->query($query);
-									if($DB->numrows($result_search) > 0) {
+									if ($DB->numrows($result_search) > 0) {
 										//Periph is already in GLPI
 										//Do not import anything just get periph ID for link
-										$id_printer = $DB->result($result_search,0,"ID");
+										$id_printer = $DB->result($result_search, 0, "ID");
 									} else {
-										$p=new Printer;
+										$p = new Printer;
 										$print["state"] = $cfg_ocs["default_state"];
-										$p->fields=$print;
-										$id_printer=$p->addToDB();
+										$p->fields = $print;
+										$id_printer = $p->addToDB();
 									}
-								} else if($cfg_ocs["import_printer"] == 2) {
-									//COnfig says : manage printers as single units
-									//Import all printers as non global.
-									$print["is_global"]=0;
-									$p=new Printer;
-									$print["state"] = $cfg_ocs["default_state"];
-									$p->fields=$print;
-									$id_printer=$p->addToDB();
-								}	
-								if ($id_printer){
-									$connID=Connect($id_printer,$glpi_id,PRINTER_TYPE);
-									addToOcsArray($glpi_id,array($connID=>$print["name"]),"import_printers");
+								} else
+									if ($cfg_ocs["import_printer"] == 2) {
+										//COnfig says : manage printers as single units
+										//Import all printers as non global.
+										$print["is_global"] = 0;
+										$p = new Printer;
+										$print["state"] = $cfg_ocs["default_state"];
+										$p->fields = $print;
+										$id_printer = $p->addToDB();
+									}
+								if ($id_printer) {
+									$connID = Connect($id_printer, $glpi_id, PRINTER_TYPE);
+									addToOcsArray($glpi_id, array (
+										$connID => $print["name"]
+									), "import_printers");
 								}
 							} else {
-								$id=array_search($print["name"],$import_periph);
-								unset($import_periph[$id]);
+								$id = array_search($print["name"], $import_periph);
+								unset ($import_periph[$id]);
 							}
 					}
 			}
 			break;
-		case PERIPHERAL_TYPE:
-			if ($cfg_ocs["import_periph"]){
-				$do_clean=true;
+		case PERIPHERAL_TYPE :
+			if ($cfg_ocs["import_periph"]) {
+				$do_clean = true;
 
 				$query = "SELECT DISTINCT CAPTION, MANUFACTURER, INTERFACE, TYPE 
-					FROM inputs 
-					WHERE HARDWARE_ID = '".$ocs_id."' 
-					AND CAPTION <> ''";
+									FROM inputs 
+									WHERE HARDWARE_ID = '" . $ocs_id . "' 
+									AND CAPTION <> ''";
 				$result = $DBocs->query($query);
-				if($DBocs->numrows($result) > 0) 
-					while($line = $DBocs->fetch_array($result)) {
-						$line=clean_cross_side_scripting_deep(addslashes_deep($line));
+				if ($DBocs->numrows($result) > 0)
+					while ($line = $DBocs->fetch_array($result)) {
+						$line = clean_cross_side_scripting_deep(addslashes_deep($line));
 
 						$periph["name"] = $line["CAPTION"];
-						if (!in_array($periph["name"],$import_periph)){
-							if ($line["MANUFACTURER"]!="NULL") $periph["brand"] = $line["MANUFACTURER"];
-							if ($line["INTERFACE"]!="NULL") $periph["comments"] = $line["INTERFACE"];
-							$periph["type"] = ocsImportDropdown("glpi_type_peripherals","name",$line["TYPE"]);
+						if (!in_array($periph["name"], $import_periph)) {
+							if ($line["MANUFACTURER"] != "NULL")
+								$periph["brand"] = $line["MANUFACTURER"];
+							if ($line["INTERFACE"] != "NULL")
+								$periph["comments"] = $line["INTERFACE"];
+							$periph["type"] = ocsImportDropdown("glpi_type_peripherals", "name", $line["TYPE"]);
 
-							$id_periph=0;
+							$id_periph = 0;
 
-							if($cfg_ocs["import_periph"] == 1) {
+							if ($cfg_ocs["import_periph"] == 1) {
 								//Config says : manage peripherals as global
 								//check if peripherals already exists in GLPI
-								$periph["is_global"]=1;
+								$periph["is_global"] = 1;
 								$query = "SELECT ID 
-									FROM glpi_peripherals 
-									WHERE name = '".$periph["name"]."' 
-									AND is_global = '1'";
+																	FROM glpi_peripherals 
+																	WHERE name = '" . $periph["name"] . "' 
+																	AND is_global = '1'";
 								$result_search = $DB->query($query);
-								if($DB->numrows($result_search) > 0) {
+								if ($DB->numrows($result_search) > 0) {
 									//Periph is already in GLPI
 									//Do not import anything just get periph ID for link
-									$id_periph = $DB->result($result_search,0,"ID");
+									$id_periph = $DB->result($result_search, 0, "ID");
 								} else {
-									$p=new Peripheral;
+									$p = new Peripheral;
 									$periph["state"] = $cfg_ocs["default_state"];
-									$p->fields=$periph;
-									$id_periph=$p->addToDB();
+									$p->fields = $periph;
+									$id_periph = $p->addToDB();
 								}
-							} else if($cfg_ocs["import_periph"] == 2) {
-								//COnfig says : manage peripherals as single units
-								//Import all peripherals as non global.
-								$periph["is_global"]=0;
-								$p=new Peripheral;
-								$periph["state"] = $cfg_ocs["default_state"];
-								$p->fields=$periph;
-								$id_periph=$p->addToDB();
-							}	
-							if ($id_periph){
-								$connID=Connect($id_periph,$glpi_id,PERIPHERAL_TYPE);
-								addToOcsArray($glpi_id,array($connID=>$periph["name"]),"import_peripheral");
+							} else
+								if ($cfg_ocs["import_periph"] == 2) {
+									//COnfig says : manage peripherals as single units
+									//Import all peripherals as non global.
+									$periph["is_global"] = 0;
+									$p = new Peripheral;
+									$periph["state"] = $cfg_ocs["default_state"];
+									$p->fields = $periph;
+									$id_periph = $p->addToDB();
+								}
+							if ($id_periph) {
+								$connID = Connect($id_periph, $glpi_id, PERIPHERAL_TYPE);
+								addToOcsArray($glpi_id, array (
+									$connID => $periph["name"]
+								), "import_peripheral");
 							}
 						} else {
-							$id=array_search($periph["name"],$import_periph);
-							unset($import_periph[$id]);
+							$id = array_search($periph["name"], $import_periph);
+							unset ($import_periph[$id]);
 						}
 					}
 			}
@@ -1717,35 +1830,40 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 	}
 
 	// Disconnect Unexisting Items not found in OCS
-	if ($do_clean&&count($import_periph)){
-		foreach ($import_periph as $key => $val){
-
+	if ($do_clean && count($import_periph)) {
+		foreach ($import_periph as $key => $val) {
 
 			$query = "SELECT * 
-				FROM glpi_connect_wire 
-				WHERE ID = '".$key."'";
-			$result=$DB->query($query);
-			if ($DB->numrows($result)>0){
-				while ($data=$DB->fetch_assoc($result)){
-					$query2="SELECT COUNT(*) 
-						FROM glpi_connect_wire 
-						WHERE end1 = '".$data['end1']."' 
-						AND type = '".$device_type."'";
-					$result2=$DB->query($query2);
-					if ($DB->result($result2,0,0)==1){
-						switch ($device_type){
-							case MONITOR_TYPE:
-								$mon=new Monitor();
-								$mon->delete(array('ID'=>$data['end1']),0);
+							FROM glpi_connect_wire 
+							WHERE ID = '" . $key . "'";
+			$result = $DB->query($query);
+			if ($DB->numrows($result) > 0) {
+				while ($data = $DB->fetch_assoc($result)) {
+					$query2 = "SELECT COUNT(*) 
+											FROM glpi_connect_wire 
+											WHERE end1 = '" . $data['end1'] . "' 
+											AND type = '" . $device_type . "'";
+					$result2 = $DB->query($query2);
+					if ($DB->result($result2, 0, 0) == 1) {
+						switch ($device_type) {
+							case MONITOR_TYPE :
+								$mon = new Monitor();
+								$mon->delete(array (
+									'ID' => $data['end1']
+								), 0);
 								break;
-							case PRINTER_TYPE:
-								$print=new Printer();
-								$print->delete(array('ID'=>$data['end1']),0);
+							case PRINTER_TYPE :
+								$print = new Printer();
+								$print->delete(array (
+									'ID' => $data['end1']
+								), 0);
 
 								break;
-							case PERIPHERAL_TYPE:
-								$per=new Peripheral();
-								$per->delete(array('ID'=>$data['end1']),0);
+							case PERIPHERAL_TYPE :
+								$per = new Peripheral();
+								$per->delete(array (
+									'ID' => $data['end1']
+								), 0);
 								break;
 						}
 					}
@@ -1754,15 +1872,15 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
 
 			Disconnect($key);
 
-			switch ($device_type){
-				case MONITOR_TYPE:
-					deleteInOcsArray($glpi_id,$key,"import_monitor");
+			switch ($device_type) {
+				case MONITOR_TYPE :
+					deleteInOcsArray($glpi_id, $key, "import_monitor");
 					break;
-				case PRINTER_TYPE:
-					deleteInOcsArray($glpi_id,$key,"import_printer");
+				case PRINTER_TYPE :
+					deleteInOcsArray($glpi_id, $key, "import_printer");
 					break;
-				case PERIPHERAL_TYPE:
-					deleteInOcsArray($glpi_id,$key,"import_peripheral");
+				case PERIPHERAL_TYPE :
+					deleteInOcsArray($glpi_id, $key, "import_peripheral");
 					break;
 			}
 		}
@@ -1785,37 +1903,40 @@ function ocsUpdatePeripherals($device_type,$glpi_id,$ocs_id,$cfg_ocs,$import_per
  *@return Nothing (void).
  *
  **/
-function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory) {
-	global $DBocs,$DB;
-	if($cfg_ocs["import_software"]){
+function ocsUpdateSoftware($glpi_id, $ocs_id, $cfg_ocs, $import_software, $dohistory,$ocs_server_id) {
+	global  $DB;
+	
+	$DBocs= getDBocs($ocs_server_id);
+	if ($cfg_ocs["import_software"]) {
 
 		if ($cfg_ocs["use_soft_dict"])
 			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, 
-				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
-				FROM softwares 
-				INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
-				WHERE softwares.HARDWARE_ID='$ocs_id'";
-		else $query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME, 
-			softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
-				FROM softwares 
-				WHERE softwares.HARDWARE_ID='$ocs_id'";
-		$already_imported=array();
+							softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
+							FROM softwares 
+							INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
+							WHERE softwares.HARDWARE_ID='$ocs_id'";
+		else
+			$query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME, 
+						softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
+							FROM softwares 
+							WHERE softwares.HARDWARE_ID='$ocs_id'";
+		$already_imported = array ();
 		$result2 = $DBocs->query($query2);
-		if ($DBocs->numrows($result2)>0)
-			while ($data2 = $DBocs->fetch_array($result2)){
-				$data2=clean_cross_side_scripting_deep(addslashes_deep($data2));
-				$initname =  $data2["INITNAME"];
-				$name= $data2["NAME"];
+		if ($DBocs->numrows($result2) > 0)
+			while ($data2 = $DBocs->fetch_array($result2)) {
+				$data2 = clean_cross_side_scripting_deep(addslashes_deep($data2));
+				$initname = $data2["INITNAME"];
+				$name = $data2["NAME"];
 				// Import Software
-				if (!in_array($name,$already_imported)){ // Manage multiple software with the same name = only one install
-					$already_imported[]=$name;
-					if (!in_array($initname,$import_software)){
+				if (!in_array($name, $already_imported)) { // Manage multiple software with the same name = only one install
+					$already_imported[] = $name;
+					if (!in_array($initname, $import_software)) {
 
 						$query_search = "SELECT ID 
-							FROM glpi_software 
-							WHERE name = '".$name."' ";
+													FROM glpi_software 
+													WHERE name = '" . $name . "' ";
 						$result_search = $DB->query($query_search);
-						if ($DB->numrows($result_search)>0){
+						if ($DB->numrows($result_search) > 0) {
 							$data = $DB->fetch_array($result_search);
 							$isNewSoft = $data["ID"];
 						} else {
@@ -1827,48 +1948,50 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 							$soft->fields["name"] = $name;
 							$soft->fields["version"] = $data2["VERSION"];
 							$soft->fields["comments"] = $data2["COMMENTS"];
-							if (!empty($data2["PUBLISHER"])){
-								$soft->fields["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$data2["PUBLISHER"]); 
+							if (!empty ($data2["PUBLISHER"])) {
+								$soft->fields["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $data2["PUBLISHER"]);
 							}
 							$isNewSoft = $soft->addToDB();
 						}
-						if ($isNewSoft){
-							$instID=installSoftware($glpi_id,ocsImportLicense($isNewSoft),'',$dohistory);
-							addToOcsArray($glpi_id,array($instID=>$initname),"import_software");
+						if ($isNewSoft) {
+							$instID = installSoftware($glpi_id, ocsImportLicense($isNewSoft), '', $dohistory);
+							addToOcsArray($glpi_id, array (
+								$instID => $initname
+							), "import_software");
 						}
 
 					} else { // Check if software always exists with is real name
 
-						$id=array_search($initname,$import_software);
-						unset($import_software[$id]);
+						$id = array_search($initname, $import_software);
+						unset ($import_software[$id]);
 
-						$query_name="SELECT glpi_software.ID as ID , glpi_software.name AS NAME 
-							FROM glpi_inst_software 
-							LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) 
-							LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
-							WHERE glpi_inst_software.ID='$id'";
-						$result_name=$DB->query($query_name);
-						if ($DB->numrows($result_name)==1){
-							if ($DB->result($result_name,0,"NAME")!=$name){
-								$updates["name"]=$name;
+						$query_name = "SELECT glpi_software.ID as ID , glpi_software.name AS NAME 
+													FROM glpi_inst_software 
+													LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) 
+													LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
+													WHERE glpi_inst_software.ID='$id'";
+						$result_name = $DB->query($query_name);
+						if ($DB->numrows($result_name) == 1) {
+							if ($DB->result($result_name, 0, "NAME") != $name) {
+								$updates["name"] = $name;
 								// No update version
 								//$updates["version"]=$data2["VERSION"];
 								// No update publisher
 								//if (!empty($data2["PUBLISHER"]))
 								//	$updates["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$data2["PUBLISHER"]);
-								$updates["ID"]=$DB->result($result_name,0,"ID");
-								$soft=new Software();
+								$updates["ID"] = $DB->result($result_name, 0, "ID");
+								$soft = new Software();
 								$soft->update($updates);
 							}
 						}
 					}
 				}
-			} 
+			}
 
 		// Disconnect Unexisting Items not found in OCS
-		if (count($import_software)){
+		if (count($import_software)) {
 
-			foreach ($import_software as $key => $val){
+			foreach ($import_software as $key => $val) {
 
 				$query = "SELECT * 
 					FROM glpi_inst_software 
@@ -1884,15 +2007,19 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
 						if ($DB->result($result2,0,0)==1){
 							$lic=new License;
 							$lic->getfromDB($data['license']);
-							$query3="SELECT COUNT(*) 
-								FROM glpi_licenses 
-								WHERE sID='".$lic->fields['sID']."'";
-							$result3=$DB->query($query3);
-							if ($DB->result($result3,0,0)==1){
-								$soft=new Software ();
-								$soft->delete(array('ID'=>$lic->fields['sID']),0);
+							$query3 = "SELECT COUNT(*) 
+															FROM glpi_licenses 
+															WHERE sID='" . $lic->fields['sID'] . "'";
+							$result3 = $DB->query($query3);
+							if ($DB->result($result3, 0, 0) == 1) {
+								$soft = new Software();
+								$soft->delete(array (
+									'ID' => $lic->fields['sID']
+								), 0);
 							}
-							$lic->delete(array("ID"=>$data['license']));
+							$lic->delete(array (
+								"ID" => $data['license']
+							));
 						}
 					}
 				}
@@ -1914,14 +2041,14 @@ function ocsUpdateSoftware($glpi_id,$ocs_id,$cfg_ocs,$import_software,$dohistory
  *
  **/
 function ocsImportLicense($software) {
-	global $DB,$LANGOcs;
+	global $DB, $LANGOcs;
 
 	$query = "SELECT ID 
-		FROM glpi_licenses 
-		WHERE sid = '".$software."' 
-		AND serial='global' ";
+			FROM glpi_licenses 
+			WHERE sid = '" . $software . "' 
+			AND serial='global' ";
 	$result = $DB->query($query);
-	if ($DB->numrows($result)>0){
+	if ($DB->numrows($result) > 0) {
 		$data = $DB->fetch_array($result);
 		$isNewLicc = $data["ID"];
 	} else {
@@ -1933,9 +2060,8 @@ function ocsImportLicense($software) {
 		$licc->fields["serial"] = "global";
 		$isNewLicc = $licc->addToDB();
 	}
-	return($isNewLicc);
+	return ($isNewLicc);
 }
-
 
 /**
  * Delete old licenses
@@ -1951,33 +2077,37 @@ function ocsResetLicenses($glpi_computer_id) {
 	global $DB;
 
 	$query = "SELECT * 
-		FROM glpi_inst_software 
-		WHERE cid = '".$glpi_computer_id."'";
-	$result=$DB->query($query);
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_assoc($result)){
-			$query2="SELECT COUNT(*) 
-				FROM glpi_inst_software 
-				WHERE license = '".$data['license']."'";
-			$result2=$DB->query($query2);
-			if ($DB->result($result2,0,0)==1){
-				$lic=new License;
+			FROM glpi_inst_software 
+			WHERE cid = '" . $glpi_computer_id . "'";
+	$result = $DB->query($query);
+	if ($DB->numrows($result) > 0) {
+		while ($data = $DB->fetch_assoc($result)) {
+			$query2 = "SELECT COUNT(*) 
+							FROM glpi_inst_software 
+							WHERE license = '" . $data['license'] . "'";
+			$result2 = $DB->query($query2);
+			if ($DB->result($result2, 0, 0) == 1) {
+				$lic = new License;
 				$lic->getfromDB($data['license']);
-				$query3="SELECT COUNT(*) 
-					FROM glpi_licenses 
-					WHERE sID='".$lic->fields['sID']."'";
-				$result3=$DB->query($query3);
-				if ($DB->result($result3,0,0)==1){
-					$soft=new Software();
-					$soft->delete(array('ID'=>$lic->fields['sID']),1);
+				$query3 = "SELECT COUNT(*) 
+									FROM glpi_licenses 
+									WHERE sID='" . $lic->fields['sID'] . "'";
+				$result3 = $DB->query($query3);
+				if ($DB->result($result3, 0, 0) == 1) {
+					$soft = new Software();
+					$soft->delete(array (
+						'ID' => $lic->fields['sID']
+					), 1);
 				}
-				$lic->delete(array("ID"=>$data['license']));
+				$lic->delete(array (
+					"ID" => $data['license']
+				));
 
 			}
 		}
 
 		$query = "DELETE FROM glpi_inst_software 
-			WHERE cid = '".$glpi_computer_id."'";
+					WHERE cid = '" . $glpi_computer_id . "'";
 		$DB->query($query);
 	}
 
@@ -1997,8 +2127,8 @@ function ocsResetLicenses($glpi_computer_id) {
 function ocsResetDevices($glpi_computer_id, $device_type) {
 	global $DB;
 	$query = "DELETE FROM glpi_computer_device 
-		WHERE device_type = '".$device_type."' 
-		AND FK_computers = '".$glpi_computer_id."'";
+			WHERE device_type = '" . $device_type . "' 
+			AND FK_computers = '" . $glpi_computer_id . "'";
 	$DB->query($query);
 }
 
@@ -2017,26 +2147,28 @@ function ocsResetPeriphs($glpi_computer_id) {
 	global $DB;
 
 	$query = "SELECT * 
-		FROM glpi_connect_wire 
-		WHERE end2 = '".$glpi_computer_id."' 
-		AND type = '".PERIPHERAL_TYPE."'";
-	$result=$DB->query($query);
-	$per=new Peripheral();
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_assoc($result)){
-			$query2="SELECT COUNT(*) 
-				FROM glpi_connect_wire 
-				WHERE end1 = '".$data['end1']."' 
-				AND type = '".PERIPHERAL_TYPE."'";
-			$result2=$DB->query($query2);
-			if ($DB->result($result2,0,0)==1){
-				$per->delete(array('ID'=>$data['end1']),1);
+			FROM glpi_connect_wire 
+			WHERE end2 = '" . $glpi_computer_id . "' 
+			AND type = '" . PERIPHERAL_TYPE . "'";
+	$result = $DB->query($query);
+	$per = new Peripheral();
+	if ($DB->numrows($result) > 0) {
+		while ($data = $DB->fetch_assoc($result)) {
+			$query2 = "SELECT COUNT(*) 
+							FROM glpi_connect_wire 
+							WHERE end1 = '" . $data['end1'] . "' 
+							AND type = '" . PERIPHERAL_TYPE . "'";
+			$result2 = $DB->query($query2);
+			if ($DB->result($result2, 0, 0) == 1) {
+				$per->delete(array (
+					'ID' => $data['end1']
+				), 1);
 			}
 		}
 
 		$query2 = "DELETE FROM glpi_connect_wire 
-			WHERE end2 = '".$glpi_computer_id."' 
-			AND type = '".PERIPHERAL_TYPE."'";
+					WHERE end2 = '" . $glpi_computer_id . "' 
+					AND type = '" . PERIPHERAL_TYPE . "'";
 		$DB->query($query2);
 	}
 
@@ -2055,26 +2187,28 @@ function ocsResetMonitors($glpi_computer_id) {
 
 	global $DB;
 	$query = "SELECT * 
-		FROM glpi_connect_wire 
-		WHERE end2 = '".$glpi_computer_id."' 
-		AND type = '".MONITOR_TYPE."'";
-	$result=$DB->query($query);
-	$mon=new Monitor();
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_assoc($result)){
-			$query2="SELECT COUNT(*) 
-				FROM glpi_connect_wire 
-				WHERE end1 = '".$data['end1']."' 
-				AND type = '".MONITOR_TYPE."'";
-			$result2=$DB->query($query2);
-			if ($DB->result($result2,0,0)==1){
-				$mon->delete(array('ID'=>$data['end1']),1);
+			FROM glpi_connect_wire 
+			WHERE end2 = '" . $glpi_computer_id . "' 
+			AND type = '" . MONITOR_TYPE . "'";
+	$result = $DB->query($query);
+	$mon = new Monitor();
+	if ($DB->numrows($result) > 0) {
+		while ($data = $DB->fetch_assoc($result)) {
+			$query2 = "SELECT COUNT(*) 
+							FROM glpi_connect_wire 
+							WHERE end1 = '" . $data['end1'] . "' 
+							AND type = '" . MONITOR_TYPE . "'";
+			$result2 = $DB->query($query2);
+			if ($DB->result($result2, 0, 0) == 1) {
+				$mon->delete(array (
+					'ID' => $data['end1']
+				), 1);
 			}
 		}
 
 		$query2 = "DELETE FROM glpi_connect_wire 
-			WHERE end2 = '".$glpi_computer_id."' 
-			AND type = '".MONITOR_TYPE."'";
+					WHERE end2 = '" . $glpi_computer_id . "' 
+					AND type = '" . MONITOR_TYPE . "'";
 		$DB->query($query2);
 	}
 
@@ -2094,26 +2228,28 @@ function ocsResetPrinters($glpi_computer_id) {
 	global $DB;
 
 	$query = "SELECT * 
-		FROM glpi_connect_wire 
-		WHERE end2 = '".$glpi_computer_id."' 
-		AND type = '".PRINTER_TYPE."'";
-	$result=$DB->query($query);
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_assoc($result)){
-			$query2="SELECT COUNT(*) 
-				FROM glpi_connect_wire 
-				WHERE end1 = '".$data['end1']."' 
-				AND type = '".PRINTER_TYPE."'";
-			$result2=$DB->query($query2);
-			$printer=new Printer();
-			if ($DB->result($result2,0,0)==1){
-				$printer->delete(array('ID'=>$data['end1']),1);
+			FROM glpi_connect_wire 
+			WHERE end2 = '" . $glpi_computer_id . "' 
+			AND type = '" . PRINTER_TYPE . "'";
+	$result = $DB->query($query);
+	if ($DB->numrows($result) > 0) {
+		while ($data = $DB->fetch_assoc($result)) {
+			$query2 = "SELECT COUNT(*) 
+							FROM glpi_connect_wire 
+							WHERE end1 = '" . $data['end1'] . "' 
+							AND type = '" . PRINTER_TYPE . "'";
+			$result2 = $DB->query($query2);
+			$printer = new Printer();
+			if ($DB->result($result2, 0, 0) == 1) {
+				$printer->delete(array (
+					'ID' => $data['end1']
+				), 1);
 			}
 		}
 
 		$query2 = "DELETE FROM glpi_connect_wire 
-			WHERE end2 = '".$glpi_computer_id."' 
-			AND type = '".PRINTER_TYPE."'";
+					WHERE end2 = '" . $glpi_computer_id . "' 
+					AND type = '" . PRINTER_TYPE . "'";
 		$DB->query($query2);
 	}
 }
@@ -2130,26 +2266,74 @@ function ocsResetPrinters($glpi_computer_id) {
  *@return nothing.
  *
  **/
-function ocsResetDropdown($glpi_computer_id,$field,$table) {
+function ocsResetDropdown($glpi_computer_id, $field, $table) {
 
 	global $DB;
 	$query = "SELECT $field AS VAL 
-		FROM glpi_computers 
-		WHERE ID = '".$glpi_computer_id."'";
-	$result=$DB->query($query);
-	if ($DB->numrows($result)==1){
-		$value=$DB->result($result,0,"VAL");
-		$query = "SELECT COUNT(*) AS CPT 
 			FROM glpi_computers 
-			WHERE $field = '$value'";
-		$result=$DB->query($query);
-		if ($DB->result($result,0,"CPT")==1){
+			WHERE ID = '" . $glpi_computer_id . "'";
+	$result = $DB->query($query);
+	if ($DB->numrows($result) == 1) {
+		$value = $DB->result($result, 0, "VAL");
+		$query = "SELECT COUNT(*) AS CPT 
+					FROM glpi_computers 
+					WHERE $field = '$value'";
+		$result = $DB->query($query);
+		if ($DB->result($result, 0, "CPT") == 1) {
 			$query2 = "DELETE FROM $table 
-				WHERE ID = '$value'";
+							WHERE ID = '$value'";
 			$DB->query($query2);
 		}
 	}
 }
 
+function ocsChooseServer($target) {
+	global $DB, $LANG;
 
+	echo "<form action=\"$target\" method=\"post\">";
+	echo "<div align='center'>";
+	echo "<p >" . $LANG["ocsng"][26] . "</p>";
+	echo "<table class='tab_cadre'>";
+	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
+	$query = "SELECT * FROM glpi_ocs_config ORDER BY name ASC";
+	$result = $DB->query($query);
+	if ($DB->numrows($result) > 0) {
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
+		echo "<select name='ocs_server_id'>";
+		while ($ocs = $DB->fetch_array($result))
+			echo "<option value=" . $ocs["ID"] . ">" . $ocs["name"] . "</option>";
+
+		echo "</select></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan=2><input class='submit' type='submit' name='ocs_showservers' value='" . $LANG["buttons"][2] . "'></td></tr>";
+
+	} else
+		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG["ocsng"][27] . "</td></tr>";
+
+	echo "</table></div></form>";
+}
+
+function getDBocs($ocs_server_id)
+{
+	return new DBocs($ocs_server_id);
+}
+
+function getOCSServerByMachineID($ID)
+{
+	global $DB;
+	$sql = "SELECT ocs_server_id FROM glpi_computers as gc, glpi_ocs_link as gol where gol.glpi_id=gc.ID and gc.ID=".$ID;
+	$result = $DB->query($sql);
+	if ($DB->numrows($result) > 0)
+	{
+		$datas = $DB->fetch_array($result);
+		return $datas["ocs_server_id"];
+	}
+	return -1;
+}
+
+function getOCSServerNameByID($ID)
+{
+	$ocs_server_id = getOCSServerByMachineID($ID);
+	$conf = getOcsConf($ocs_server_id);	
+	return $conf["name"];
+}
 ?>
