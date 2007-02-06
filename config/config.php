@@ -72,6 +72,9 @@
 		);
 		$CACHE_CFG = new Cache_Lite($cache_options);
 
+		$GLPI_CACHE = new Cache_Lite_Output($cache_options);
+		$CFG_GLPI["cache"]=$GLPI_CACHE;
+
 // No cache for update problem... Need to find a good solution
 //		if (!($CFG_GLPI= $CACHE_CFG->get("CFG_GLPI_1","GLPI_CFG"))) {
 
@@ -186,8 +189,6 @@
 //		$CACHE_CFG->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
 //		}
 
-		$GLPI_CACHE = new Cache_Lite_Output($cache_options);
-		$CFG_GLPI["cache"]=$GLPI_CACHE;
 	
 		// Mode debug activé on affiche un certains nombres d'informations
 		if ($CFG_GLPI["debug"]==DEBUG_MODE){
