@@ -48,7 +48,6 @@ if (!defined('GLPI_ROOT')){
 checkCentralAccess();
 
 // Make a select box with all glpi users
-$where=getEntitiesRestrictRequest("","glpi_tracking");
 
 $first=true;
 if (!empty($where)){
@@ -69,7 +68,7 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['field'].")";
+$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_users WHERE ID IN (SELECT DISTINCT ".$_POST['field']." FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
 if (!empty($where)){
 	$query.=" WHERE $where ";
 }

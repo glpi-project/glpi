@@ -198,7 +198,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 	} else {
 		if (!$first) $where.=" AND ";
 		else $first=false;
-		$where .=" (ID <> '".$_POST['value']."' ";
+		$where .=" ID <> '".$_POST['value']."' ";
 
 		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
 			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
@@ -213,7 +213,6 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 			$where.=" AND $field ".makeTextSearch($_POST['searchText']);
-		$where.=")";
 
 
 		switch ($_POST['table']){

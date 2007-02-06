@@ -51,7 +51,7 @@ class CommonDBTM {
 		global $DB;
 		if (empty($ID)) return false;
 
-		$query = "SELECT * FROM ".$this->table." WHERE (ID = '$ID')";
+		$query = "SELECT * FROM ".$this->table." WHERE (ID = $ID)";
 
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
