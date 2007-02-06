@@ -44,23 +44,36 @@ class CommonDBTM {
 
 	}
 
+	function cleanCache($ID){
+		global $CFG_GLPI;
+		cleanAllItemCache($ID,"GLPI_".$this->type);
+		cleanAllItemCache("comments_".$ID,"GLPI_".$this->type);
+		$CFG_GLPI["cache"]->remove("data_".$ID,"GLPI_".$this->type);
+		cleanRelationCache($this->table);
+	}
+
 	// Specific ones : Reservation Item
 	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
-		global $DB;
+		global $DB,$CFG_GLPI;
 		if (empty($ID)) return false;
-
-		$query = "SELECT * FROM ".$this->table." WHERE (ID = $ID)";
-
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)==1){
-				$this->fields = $DB->fetch_assoc($result);
-				return true;
-			} else return false;
-		} else {
-			return false;
+		if ($this->type<=0||!($data = $CFG_GLPI["cache"]->get("data_".$ID,"GLPI_".$this->type))) {
+			$query = "SELECT * FROM ".$this->table." WHERE (ID = $ID)";
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)==1){
+					$data = $DB->fetch_assoc($result);
+					if ($this->type>0&&count($data)){
+						$CFG_GLPI["cache"]->save($data,"data_".$ID,"GLPI_".$this->type);
+					}
+				} else return false;
+			} else {
+				return false;
+			}
 		}
+		$this->fields = $data;
+		return true;
+
 	}
 
 	function getEmpty () {
@@ -99,10 +112,10 @@ class CommonDBTM {
 		}
 		
 		$this->post_updateInDB($updates);
-		cleanAllItemCache($this->fields["ID"],"GLPI_".$this->type);
-		cleanRelationCache($this->table);
+		$this->cleanCache($this->fields["ID"]);
 		return true;
 	}
+
 
 	function post_updateInDB($updates)  {
 
@@ -177,8 +190,7 @@ class CommonDBTM {
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
-				cleanAllItemCache($this->fields["ID"],"GLPI_".$this->type);
-				cleanRelationCache($this->table);
+				$this->cleanCache($ID);
 				return true;
 			} else {
 				return false;
@@ -186,8 +198,7 @@ class CommonDBTM {
 		}else {
 			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ID = '$ID'";		
 			if ($result = $DB->query($query)){
-				cleanAllItemCache($this->fields["ID"],"GLPI_".$this->type);
-				cleanRelationCache($this->table);
+				$this->cleanCache($ID);
 				return true;
 			} else return false;
 		}

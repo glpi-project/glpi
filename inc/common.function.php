@@ -191,8 +191,6 @@ function cleanAllItemCache($item,$group){
 	foreach ($CFG_GLPI["languages"] as $key => $val){
 		// clean main sheet
 		$CFG_GLPI["cache"]->remove($item."_".$key,$group);
-		// clean comments
-		$CFG_GLPI["cache"]->remove("comments_".$item."_".$key,$group);
 	}
 }
 
