@@ -184,7 +184,7 @@ function ocsShowNewComputer($ocs_server_id,$check, $start, $tolinked = 0) {
  *@return integer : link id.
  *
  **/
-function ocsLink($ocs_id, $glpi_computer_id,$ocs_server_id) {
+function ocsLink($ocs_id, $ocs_server_id,$glpi_computer_id) {
 	global $DB;
 
 $DBocs= getDBocs($ocs_server_id);
@@ -306,16 +306,16 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 		
 		$glpi_id = $comp->addToDB();
 		if ($glpi_id) {
-			ocsImportTag($line['ID'], $glpi_id, $cfg_ocs,$ocs_server_id);
+			ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
 		}
 
-		if ($idlink = ocsLink($line['ID'], $glpi_id,$ocs_server_id)) {
-			ocsUpdateComputer($ocs_server_id,$idlink, 0);
+		if ($idlink = ocsLink($ocs_server_id,$line['ID'], $glpi_id)) {
+			ocsUpdateComputer($idlink,$ocs_server_id, 0);
 		}
 	}
 }
 
-function ocsImportTag($ocs_id, $glpi_id, $cfg_ocs,$ocs_server_id) {
+function ocsImportTag($ocs_id, $ocs_server_id, $glpi_id, $cfg_ocs) {
 	//global $DBocs;
 	
 	$DBocs= getDBocs($ocs_server_id);
@@ -352,7 +352,7 @@ function ocsImportTag($ocs_id, $glpi_id, $cfg_ocs,$ocs_server_id) {
 	}
 }
 
-function ocsLinkComputer($ocs_id, $glpi_id,$ocs_server_id) {
+function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 	global $DB, $LANG;
 
 	$DBocs= getDBocs($ocs_server_id);
@@ -388,7 +388,7 @@ function ocsLinkComputer($ocs_id, $glpi_id,$ocs_server_id) {
 					WHERE ID='$ocs_id'";
 		$DBocs->query($query);
 
-		if ($idlink = ocsLink($ocs_id, $glpi_id,$ocs_server_id)) {
+		if ($idlink = ocsLink($ocs_server_id,$ocs_id, $glpi_id)) {
 
 			$comp = new Computer();
 			$input["ID"] = $glpi_id;
@@ -403,7 +403,7 @@ function ocsLinkComputer($ocs_id, $glpi_id,$ocs_server_id) {
 			$result = $DBocs->query($query);
 			$line = $DBocs->fetch_array($result);
 
-			ocsImportTag($line["ID"], $glpi_id, $cfg_ocs,$ocs_server_id);
+			ocsImportTag($line["ID"],$ocs_server_id, $glpi_id, $cfg_ocs);
 
 			if ($cfg_ocs["import_general_os"])
 				ocsResetDropdown($glpi_id, "os", "glpi_dropdown_os");
@@ -432,7 +432,7 @@ function ocsLinkComputer($ocs_id, $glpi_id,$ocs_server_id) {
 			if ($cfg_ocs["import_printer"])
 				ocsResetPrinters($glpi_id);
 
-			ocsUpdateComputer($ocs_server_id,$idlink, 0);
+			ocsUpdateComputer($idlink, $ocs_server_id,0);
 		}
 	} else {
 		$_SESSION["MESSAGE_AFTER_REDIRECT"] = $ocs_id . " - " . $LANG["ocsng"][23];
@@ -440,7 +440,7 @@ function ocsLinkComputer($ocs_id, $glpi_id,$ocs_server_id) {
 
 }
 
-function ocsUpdateComputer($ocs_server_id,$ID, $dohistory, $force = 0) {
+function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 
 	global $DB, $CFG_GLPI;
 	
@@ -487,58 +487,58 @@ function ocsUpdateComputer($ocs_server_id,$ID, $dohistory, $force = 0) {
 				$computer_updates = importArrayFromDB($line["computer_update"]);
 
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
-				ocsUpdateHardware($line['glpi_id'], $line['ocs_id'], $cfg_ocs, $computer_updates, $dohistory,$ocs_server_id);
+				ocsUpdateHardware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
 
 				if ($mixed_checksum & pow(2, BIOS_FL))
-					ocsUpdateBios($line['glpi_id'], $line['ocs_id'], $cfg_ocs, $computer_updates, $dohistory,$ocs_server_id);
+					ocsUpdateBios($line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $computer_updates, $dohistory);
 
 				// Get import devices
 				$import_device = importArrayFromDB($line["import_device"]);
 				if ($mixed_checksum & pow(2, MEMORIES_FL))
-					ocsUpdateDevices(RAM_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
+					ocsUpdateDevices(RAM_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
 
 				if ($mixed_checksum & pow(2, STORAGES_FL)) {
-					ocsUpdateDevices(HDD_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
-					ocsUpdateDevices(DRIVE_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
+					ocsUpdateDevices(HDD_DEVICE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_device, $dohistory);
+					ocsUpdateDevices(DRIVE_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
-					ocsUpdateDevices(PROCESSOR_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
+					ocsUpdateDevices(PROCESSOR_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
 
 				if ($mixed_checksum & pow(2, VIDEOS_FL))
-					ocsUpdateDevices(GFX_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
+					ocsUpdateDevices(GFX_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
 
 				if ($mixed_checksum & pow(2, SOUNDS_FL))
-					ocsUpdateDevices(SND_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
+					ocsUpdateDevices(SND_DEVICE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_device, $dohistory);
 
 				if ($mixed_checksum & pow(2, NETWORKS_FL))
-					ocsUpdateDevices(NETWORK_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
+					ocsUpdateDevices(NETWORK_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
 
 				if ($mixed_checksum & pow(2, MODEMS_FL) || $mixed_checksum & pow(2, PORTS_FL))
-					ocsUpdateDevices(PCI_DEVICE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_device, $dohistory,$ocs_server_id);
+					ocsUpdateDevices(PCI_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
 
 				if ($mixed_checksum & pow(2, MONITORS_FL)) {
 					// Get import monitors
 					$import_monitor = importArrayFromDB($line["import_monitor"]);
-					ocsUpdatePeripherals(MONITOR_TYPE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_monitor, $dohistory,$ocs_server_id);
+					ocsUpdatePeripherals(MONITOR_TYPE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_monitor, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, PRINTERS_FL)) {
 					// Get import printers
 					$import_printer = importArrayFromDB($line["import_printers"]);
-					ocsUpdatePeripherals(PRINTER_TYPE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_printer, $dohistory,$ocs_server_id);
+					ocsUpdatePeripherals(PRINTER_TYPE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_printer, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, INPUTS_FL)) {
 					// Get import monitors
 					$import_peripheral = importArrayFromDB($line["import_peripheral"]);
-					ocsUpdatePeripherals(PERIPHERAL_TYPE, $line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_peripheral, $dohistory,$ocs_server_id);
+					ocsUpdatePeripherals(PERIPHERAL_TYPE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_peripheral, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, SOFTWARES_FL)) {
 					// Get import monitors
 					$import_software = importArrayFromDB($line["import_software"]);
-					ocsUpdateSoftware($line['glpi_id'], $line['ocs_id'], $cfg_ocs, $import_software, $dohistory,$ocs_server_id);
+					ocsUpdateSoftware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_software, $dohistory);
 				}
 
 				// Update OCS Cheksum 
@@ -617,7 +617,7 @@ function getNumberOfOcsConfigs() {
  *@return nothing.
  *
  **/
-function ocsUpdateHardware($glpi_id, $ocs_id, $cfg_ocs, $computer_updates, $dohistory = 2,$ocs_server_id) {
+function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer_updates, $dohistory = 2) {
 	global  $LANG, $DB;
 	echo "dans ocsUpdateHardware";
 	$DBocs= getDBocs($ocs_server_id);
@@ -688,7 +688,7 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $cfg_ocs, $computer_updates, $dohi
  *@return nothing.
  *
  **/
-function ocsUpdateBios($glpi_id, $ocs_id, $cfg_ocs, $computer_updates, $dohistory = 2,$ocs_server_id) {
+function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer_updates, $dohistory = 2) {
 	//global $DBocs;
 	
 	$DBocs= getDBocs($ocs_server_id);
@@ -857,7 +857,7 @@ function cron_ocsng() {
 			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
 
 			if (isset ($hardware[$data["ocs_id"]])) {
-				ocsUpdateComputer($data["ID"], 2);
+				ocsUpdateComputer($data["ID"],$ocs_server_id, 2);
 				$done++;
 			}
 		}
@@ -888,9 +888,9 @@ function ocsShowUpdateComputer($ocs_server_id,$check, $start) {
 	$query_glpi = "SELECT glpi_ocs_link.last_update as last_update,  glpi_ocs_link.glpi_id as glpi_id, 
 			glpi_ocs_link.ocs_id as ocs_id, glpi_computers.name as name, 
 			glpi_ocs_link.auto_update as auto_update, glpi_ocs_link.ID as ID 
-				FROM glpi_ocs_link WHERE glpi_ocs_link.ocs_server_id=".$ocs_server_id." 
+				FROM glpi_ocs_link  
 				LEFT JOIN glpi_computers ON (glpi_computers.ID = glpi_ocs_link.glpi_id) 
-				ORDER BY glpi_ocs_link.auto_update DESC, glpi_ocs_link.last_update, glpi_computers.name";
+				WHERE glpi_ocs_link.ocs_server_id=".$ocs_server_id." ORDER BY glpi_ocs_link.auto_update DESC, glpi_ocs_link.last_update, glpi_computers.name";
 
 	$result_glpi = $DB->query($query_glpi);
 	if ($DBocs->numrows($result_ocs) > 0) {
@@ -1093,7 +1093,7 @@ function ocsEditLock($target, $ID) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $cfg_ocs, $import_device, $dohistory,$ocs_server_id) {
+function ocsUpdateDevices($ocs_server_id,$device_type, $glpi_id, $ocs_id, $cfg_ocs, $import_device, $dohistory) {
 	global  $DB;
 
 	$DBocs= getDBocs($ocs_server_id);
@@ -1558,7 +1558,7 @@ function ocsAddDevice($device_type, $dev_array) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $cfg_ocs, $import_periph, $dohistory,$ocs_server_id) {
+function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_periph, $dohistory) {
 	global $DB;
 	
 	$DBocs= getDBocs($ocs_server_id);
@@ -1905,7 +1905,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $cfg_ocs, $import
  *@return Nothing (void).
  *
  **/
-function ocsUpdateSoftware($glpi_id, $ocs_id, $cfg_ocs, $import_software, $dohistory,$ocs_server_id) {
+function ocsUpdateSoftware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_software, $dohistory) {
 	global  $DB;
 	
 	$DBocs= getDBocs($ocs_server_id);
@@ -2289,6 +2289,9 @@ function ocsResetDropdown($glpi_computer_id, $field, $table) {
 	}
 }
 
+/**
+ * Choose an ocs server
+ */
 function ocsChooseServer($target) {
 	global $DB, $LANG;
 
@@ -2314,11 +2317,21 @@ function ocsChooseServer($target) {
 	echo "</table></div></form>";
 }
 
+/**
+ * Get a connection to the OCS server
+ * @param the ocs server id
+ * @return the connexion to the ocs database
+ */
 function getDBocs($ocs_server_id)
 {
 	return new DBocs($ocs_server_id);
 }
 
+/**
+ * Get the ocs server id of a machine, by giving the machine id
+ * @param $ID the machine ID
+ * @return the ocs server id of the machine 
+ */
 function getOCSServerByMachineID($ID)
 {
 	global $DB;
@@ -2332,6 +2345,10 @@ function getOCSServerByMachineID($ID)
 	return -1;
 }
 
+/**
+ * Get an Ocs Server name, by giving his ID
+ * @return the ocs server name
+ */
 function getOCSServerNameByID($ID)
 {
 	$ocs_server_id = getOCSServerByMachineID($ID);
@@ -2339,6 +2356,10 @@ function getOCSServerNameByID($ID)
 	return $conf["name"];
 }
 
+/**
+ * Get a random ocs_server_id 
+ * @return an ocs server id
+ */
 function getRandomOCSServerID()
 {
 	global $DB;

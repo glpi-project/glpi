@@ -472,17 +472,18 @@ function update0681to07() {
 		}
 	}
 
-
 	if (!FieldExists("glpi_ocs_link", "ocs_server_id")) {
 		$query = "ALTER TABLE glpi_ocs_link ADD `ocs_server_id` int(11) NOT NULL";
 		$DB->query($query) or die("0.7 add ocs_server_id in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
+		$query="update glpi_ocs_link set ocs_server_id=1";
+		$DB->query($query) or die("0.7 update ocs_server_id=1 in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
 	}
 	
 	if (!FieldExists("glpi_ocs_config", "tplname")) {
 		$query = "ALTER TABLE glpi_ocs_config ADD `name` varchar(200) default NULL AFTER `ID`, ADD `is_template` enum('0','1') NOT NULL default '0', ADD `tplname` varchar(200) default NULL, ADD `date_mod` datetime default NULL";
-		$DB->query($query) or die("0.7 add ocs_server_id in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.7 add name, is_template, tplname, date_mod in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
 		$query="update glpi_ocs_config set name=ID";
-		$DB->query($query) or die("0.7 add name in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.7 add name in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
 	}
 	
 	// TODO Split Config -> config general + config entity
