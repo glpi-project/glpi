@@ -821,10 +821,12 @@ function ocsCleanLinks($ocs_server_id) {
 
 }
 
-function cron_ocsng($ocs_server_id) {
+function cron_ocsng() {
 
 	global $DB;
 
+	$ocs_server_id = getRandomOCSServerID();
+	
 	$DBocs= getDBocs($ocs_server_id);
 	
 	$cfg_ocs = getOcsConf($ocs_server_id);
@@ -2335,5 +2337,18 @@ function getOCSServerNameByID($ID)
 	$ocs_server_id = getOCSServerByMachineID($ID);
 	$conf = getOcsConf($ocs_server_id);	
 	return $conf["name"];
+}
+
+function getRandomOCSServerID()
+{
+	global $DB;
+	$sql = "SELECT ID FROM glpi_ocs_config ORDER BY RAND() LIMIT 1";
+	$result = $DB->query($sql);
+	if ($DB->numrows($result) > 0)
+	{
+		$datas = $DB->fetch_array($result);
+		return $datas["ID"];
+	}
+	return -1;
 }
 ?>
