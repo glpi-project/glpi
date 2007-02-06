@@ -1,4 +1,4 @@
-#GLPI Dump database on 2007-02-04 22:12
+#GLPI Dump database on 2007-02-05 23:29
 
 ### Dump table glpi_alerts
 
@@ -268,7 +268,7 @@ CREATE TABLE `glpi_config` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','admsys@xxxxx.fr','SIGNATURE','','en_GB','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5','2');
+INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','admsys@xxxxx.fr','SIGNATURE','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5','2');
 
 ### Dump table glpi_connect_wire
 
@@ -1280,7 +1280,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-02-04 22:12:46','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-02-05 23:29:25','login','3','tech connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1672,10 +1672,13 @@ CREATE TABLE `glpi_ocs_config` (
   `import_tag_field` varchar(255) default NULL,
   `use_soft_dict` char(1) default '1',
   `cron_sync_number` int(11) default '1',
+  `is_template` enum('0','1') NOT NULL default '0',
+  `tplname` varchar(200) default NULL,
+  `date_mod` datetime default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_ocs_config VALUES ('1','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'1','1');
+INSERT INTO glpi_ocs_config VALUES ('1','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'1','1','0',NULL,NULL);
 
 ### Dump table glpi_ocs_link
 
@@ -1694,6 +1697,7 @@ CREATE TABLE `glpi_ocs_link` (
   `import_monitor` longtext,
   `import_peripheral` longtext,
   `import_printers` longtext,
+  `ocs_server_id` int(11) NOT NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `ocs_id_2` (`ocs_deviceid`),
   KEY `ocs_id` (`ocs_deviceid`),
@@ -2265,9 +2269,9 @@ CREATE TABLE `glpi_users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=6 ;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','1','2007-02-04 22:12:46','2007-02-04 22:12:46');
+INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('4','tech','','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','1','2007-02-05 23:29:25','2007-02-05 23:29:25');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 
 ### Dump table glpi_users_groups

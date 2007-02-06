@@ -536,6 +536,10 @@ function listTemplates($type, $target, $add = 0) {
 			$title = $LANG["Menu"][34];
 			$query = "SELECT * FROM glpi_phones WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
+		case OCSNG_TYPE :
+			$title = $LANG["Menu"][33];
+			$query = "SELECT * FROM glpi_ocs_config WHERE is_template = '1' ORDER by tplname";
+			break;
 
 	}
 	if ($result = $DB->query($query)) {
@@ -1305,211 +1309,6 @@ function updateMailNotifications($input) {
 
 }
 
-function ocsFormDBConfig($target, $id) {
-
-	global $DB, $DBocs, $LANG, $CFG_GLPI;
-
-	if (!haveRight("ocsng", "w"))
-		return false;
-
-	$data = getOcsConf($id);
-
-	echo "<form name='formdbconfig' action=\"$target\" method=\"post\">";
-	echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-	echo "<input type='hidden' name='update_ocs_dbconfig' value='1'>";
-	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][0] . "</th></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $data["ocs_db_host"] . "\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $data["ocs_db_name"] . "\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][1] . " </td><td> <input type=\"text\" name=\"ocs_db_user\" value=\"" . $data["ocs_db_user"] . "\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\"></td></tr>";
-	echo "</table></div>";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_ocs\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-	echo "</form>";
-
-	echo "<div align='center'>";
-	if (!$DBocs->error) {
-		echo $LANG["ocsng"][18] . "<br>";
-		$result = $DBocs->query("SELECT TVALUE FROM config WHERE NAME='GUI_VERSION'");
-		if ($DBocs->numrows($result) == 1 && $DBocs->result($result, 0, 0) >= 4020) {
-			$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
-			$DBocs->query($query);
-
-			echo $LANG["ocsng"][19] . "</div>";
-			ocsFormConfig($target, $id);
-		} else
-			echo $LANG["ocsng"][20] . "</div>";
-	} else
-		echo $LANG["ocsng"][21] . "</div>";
-
-}
-
-function ocsFormConfig($target, $id) {
-
-	global $DB, $LANG, $CFG_GLPI;
-
-	if (!haveRight("ocsng", "w"))
-		return false;
-
-	$data = getOcsConf($id);
-
-	echo "<form name='formconfig' action=\"$target\" method=\"post\">";
-	echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-	echo "<input type='hidden' name='update_ocs_config' value='1'>";
-	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][5] . "</th></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][17] . " </td><td> <input type=\"text\" size='30' name=\"tag_limit\" value=\"" . $data["tag_limit"] . "\"></td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][16] . " </td><td>";
-	dropdownValue("glpi_dropdown_state", "default_state", $data["default_state"]);
-	echo "</td></tr>";
-
-	$periph = $data["import_periph"];
-	$monitor = $data["import_monitor"];
-	$printer = $data["import_printer"];
-	$software = $data["import_software"];
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][8] . " </td><td>";
-	echo "<select name='import_periph'>";
-	echo "<option value='0' " . ($periph == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
-	echo "<option value='1' " . ($periph == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][10] . "</option>";
-	echo "<option value='2' " . ($periph == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
-	echo "</select>";
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][7] . " </td><td>";
-	echo "<select name='import_monitor'>";
-	echo "<option value='0' " . ($monitor == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
-	echo "<option value='1' " . ($monitor == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][10] . "</option>";
-	echo "<option value='2' " . ($monitor == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
-	echo "</select>";
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][9] . " </td><td>";
-
-	echo "<select name='import_printer'>";
-	echo "<option value='0' " . ($printer == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
-	echo "<option value='1' " . ($printer == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][10] . "</option>";
-	echo "<option value='2' " . ($printer == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
-	echo "</select>";
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][6] . " </td><td>";
-	echo "<select name='import_software'>";
-	echo "<option value='0' " . ($software == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
-	echo "<option value='1' " . ($software == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
-	echo "</select>";
-
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][38] . " </td><td>";
-	dropdownYesNoInt("use_soft_dict", $data["use_soft_dict"]);
-	echo "</td></tr>";
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][40] . " </td><td>";
-	dropdownInteger('cron_sync_number', $data["cron_sync_number"], 0, 100);
-	echo "</td></tr>";
-
-	echo "</table></div>";
-
-	echo "<div align='center'>" . $LANG["ocsconfig"][15] . "</div>";
-	echo "<div align='center'>" . $LANG["ocsconfig"][14] . "</div>";
-	echo "<div align='center'>" . $LANG["ocsconfig"][13] . "</div>";
-
-	echo "<br />";
-
-	echo "<div align='center'><table class='tab_cadre'>";
-	echo "<tr><th>" . $LANG["ocsconfig"][27] . "</th><th>" . $LANG["ocsconfig"][28] . "</th></tr>";
-	echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][39] . " </td><td>";
-	echo "<select name='import_tag_field'>";
-	echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
-	echo "<option value='otherserial' " . ($data["import_tag_field"] == "otherserial" ? "selected" : "") . ">" . $LANG["common"][20] . "</option>";
-	echo "<option value='contact_num' " . ($data["import_tag_field"] == "contact_num" ? "selected" : "") . ">" . $LANG["common"][21] . "</option>";
-	echo "<option value='location' " . ($data["import_tag_field"] == "location" ? "selected" : "") . ">" . $LANG["common"][15] . "</option>";
-	echo "<option value='network' " . ($data["import_tag_field"] == "network" ? "selected" : "") . ">" . $LANG["setup"][88] . "</option>";
-	echo "</select>";
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . " </td><td>";
-	dropdownYesNoInt("import_general_name", $data["import_general_name"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["computers"][9] . " </td><td>";
-	dropdownYesNoInt("import_general_os", $data["import_general_os"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][19] . " </td><td>";
-	dropdownYesNoInt("import_general_serial", $data["import_general_serial"]);
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][22] . " </td><td>";
-	dropdownYesNoInt("import_general_model", $data["import_general_model"]);
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][5] . " </td><td>";
-	dropdownYesNoInt("import_general_enterprise", $data["import_general_enterprise"]);
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][17] . " </td><td>";
-	dropdownYesNoInt("import_general_type", $data["import_general_type"]);
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][89] . " </td><td>";
-	dropdownYesNoInt("import_general_domain", $data["import_general_domain"]);
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][18] . " </td><td>";
-	dropdownYesNoInt("import_general_contact", $data["import_general_contact"]);
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . " </td><td>";
-	dropdownYesNoInt("import_general_comments", $data["import_general_comments"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;";
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["networking"][14] . " </td><td>";
-	dropdownYesNoInt("import_ip", $data["import_ip"]);
-	echo "</td></tr>";
-
-	echo "</table></td>";
-	echo "<td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][4] . " </td><td>";
-	dropdownYesNoInt("import_device_processor", $data["import_device_processor"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][6] . " </td><td>";
-	dropdownYesNoInt("import_device_memory", $data["import_device_memory"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][1] . " </td><td>";
-	dropdownYesNoInt("import_device_hdd", $data["import_device_hdd"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][3] . " </td><td>";
-	dropdownYesNoInt("import_device_iface", $data["import_device_iface"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][2] . " </td><td>";
-	dropdownYesNoInt("import_device_gfxcard", $data["import_device_gfxcard"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][7] . " </td><td>";
-	dropdownYesNoInt("import_device_sound", $data["import_device_sound"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][19] . " </td><td>";
-	dropdownYesNoInt("import_device_drives", $data["import_device_drives"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][36] . " </td><td>";
-	dropdownYesNoInt("import_device_modems", $data["import_device_modems"]);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][37] . " </td><td>";
-	dropdownYesNoInt("import_device_ports", $data["import_device_ports"]);
-	echo "</td></tr>";
-
-	echo "</table></td></tr>";
-	echo "</table></div>";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"update_conf_ocs\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-	echo "</form>";
-
-}
-
 function showFormExtAuthList($target) {
 
 	global $DB, $LANG, $CFG_GLPI;
@@ -1597,5 +1396,6 @@ function showFormExtAuthList($target) {
 
 	echo "</div>";
 }
+
 
 ?>

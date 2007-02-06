@@ -44,6 +44,12 @@ checkRight("ocsng","w");
 
 commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils");
 
+if ($_GET["ocs_server_id"])
+$ocs_server_id = $_GET["ocs_server_id"];
+elseif ($_POST["ocs_server_id"])
+$ocs_server_id = $_POST["ocs_server_id"];
+
+
 if (isset($_SESSION["ocs_import"])){
 	if ($count=count($_SESSION["ocs_import"])){
 		$percent=min(100,round(100*($_SESSION["ocs_import_count"]-$count)/$_SESSION["ocs_import_count"],0));
@@ -51,9 +57,9 @@ if (isset($_SESSION["ocs_import"])){
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_import"]);
-		ocsImportComputer($key);
+		ocsImportComputer($key,$ocs_server_id);
 
-		glpi_header($_SERVER['PHP_SELF']);
+		glpi_header($_SERVER['PHP_SELF']."?ocs_server_id=".$ocs_server_id);
 
 	} else {
 		unset($_SESSION["ocs_import"]);
@@ -61,7 +67,7 @@ if (isset($_SESSION["ocs_import"])){
 		displayProgressBar(400,100);
 
 		echo "<div align='center'><strong>".$LANG["ocsng"][8]."<br>";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?ocs_server_id=".$ocs_server_id."'>".$LANG["buttons"][13]."</a>";
 		echo "</strong></div>";
 	}
 }
@@ -71,9 +77,9 @@ if (!isset($_POST["import_ok"])){
 	if (!isset($_GET['start'])) $_GET['start']=0;
 
 	if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
-	ocsManageDeleted();
-	ocsCleanLinks();
-	ocsShowNewComputer($_GET['check'],$_GET['start']);
+	ocsManageDeleted($ocs_server_id);
+	ocsCleanLinks($ocs_server_id);
+	ocsShowNewComputer($ocs_server_id,$_GET['check'],$_GET['start']);
 
 } else {
 
@@ -87,7 +93,7 @@ if (!isset($_POST["import_ok"])){
 		}
 	}
 
-	glpi_header($_SERVER['PHP_SELF']);
+	glpi_header($_SERVER['PHP_SELF']."?ocs_server_id=".$ocs_server_id);
 }
 
 

@@ -464,6 +464,17 @@ function update0681to07() {
 		}
 	}
 
+
+	if (!FieldExists("glpi_ocs_link", "ocs_server_id")) {
+		$query = "ALTER TABLE glpi_ocs_link ADD `ocs_server_id` int(11) NOT NULL";
+		$DB->query($query) or die("0.7 add ocs_server_id in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
+	}
+	
+	if (!FieldExists("glpi_ocs_config", "tplname")) {
+		$query = "ALTER TABLE glpi_ocs_config ADD `is_template` enum('0','1') NOT NULL default '0', ADD `tplname` varchar(200) default NULL, ADD `date_mod` datetime default NULL";
+		$DB->query($query) or die("0.7 add ocs_server_id in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
+	}
+	
 	// TODO Split Config -> config general + config entity
 	// TODO AUto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference

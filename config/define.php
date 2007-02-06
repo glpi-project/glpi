@@ -54,7 +54,7 @@
 	define("RESERVATION_TYPE",29);
 	define("AUTH_MAIL_TYPE",30);
 	define("AUTH_LDAP_TYPE",31);
-
+	define("OCSNG_TYPE",32);
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -199,6 +199,7 @@
 			GROUP_TYPE => "front/group.form.php",
 			ENTITY_TYPE => "front/entity.form.php",
 			RESERVATION_TYPE => "???",
+			OCSNG_TYPE => "front/ocsng.form.php",
 			);
 
 	define("AUTH_CAS",0);

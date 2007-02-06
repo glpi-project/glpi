@@ -77,11 +77,6 @@ if (!empty ($_GET["next"])) {
 		titleConfigDisplay();
 		showFormConfigDisplay($_SERVER['PHP_SELF']);
 	}
-	elseif ($_GET["next"] == "ocsng") {
-		$DBocs = new DBocs();
-		commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'],"admin");
-		ocsFormDBConfig($_SERVER['PHP_SELF'], $CFG_GLPI["ID"]);
-	}
 }
 elseif (!empty ($_POST["test_smtp_send"])) {
 	testMail();

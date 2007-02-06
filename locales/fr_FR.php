@@ -938,6 +938,9 @@ $LANG["ocsng"][21]="Echec de connexion à la base de données OCS NG";
 $LANG["ocsng"][22]="Attention ! Les données importées (voir votre configuration) écraseront les données existantes";
 $LANG["ocsng"][23]="Importation impossible, ordinateur de destination de GLPI déjà lié à un élément d'OCS NG";
 $LANG["ocsng"][24]="Forcer la synchronisation";
+$LANG["ocsng"][25]="Ajouter serveur OCS";
+$LANG["ocsng"][26]="Choix d'un serveur OCS";
+$LANG["ocsng"][27]="Aucun serveur OCS n'est défini";
 
 $LANG["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
 $LANG["ocsconfig"][1]="Utilisateur de la base de données OCSweb";

@@ -130,10 +130,12 @@ if (isset($AJAX_INCLUDE))
 				include_once (GLPI_ROOT . "/inc/$item.class.php");
 			if (file_exists(GLPI_ROOT . "/inc/$item.function.php"))
 				include_once (GLPI_ROOT . "/inc/$item.function.php");
-			if ($item=="ocsng"&&$CFG_GLPI["ocs_mode"]&&isset($USE_OCSNGDB))
-				$DBocs=new DBocs;
+			//if ($item=="ocsng"&&$CFG_GLPI["ocs_mode"]&&isset($USE_OCSNGDB))
+				//If the array of ocs connections is not store in session, then do it !
+				//if (!isset($_SESSION["DBocs"])) $_SESSION["DBocs"] = array();
 		}
 	}
+
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 // Define current time for sync of action timing
