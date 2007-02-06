@@ -482,7 +482,7 @@ function update0681to07() {
 	if (!FieldExists("glpi_ocs_config", "tplname")) {
 		$query = "ALTER TABLE glpi_ocs_config ADD `name` varchar(200) default NULL AFTER `ID`, ADD `is_template` enum('0','1') NOT NULL default '0', ADD `tplname` varchar(200) default NULL, ADD `date_mod` datetime default NULL";
 		$DB->query($query) or die("0.7 add name, is_template, tplname, date_mod in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
-		$query="update glpi_ocs_config set name=ID";
+		$query="update glpi_ocs_config set name=ocs_db_host";
 		$DB->query($query) or die("0.7 add name in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
 	}
 	
