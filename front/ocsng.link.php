@@ -58,7 +58,7 @@ if (isset($_SESSION["ocs_link"])){
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_link"]);
-		ocsLinkComputer($key["ocs_id"],$key["glpi_id"],$ocs_server_id);
+		ocsLinkComputer($key["ocs_id"],$ocs_server_id,$key["glpi_id"]);
 		glpi_header($_SERVER['PHP_SELF']."?ocs_server_id=".$ocs_server_id);
 	} else {
 		displayProgressBar(400,100);

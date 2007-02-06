@@ -56,7 +56,7 @@ if (isset($_SESSION["ocs_update"])){
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_update"]);
-		ocsUpdateComputer($ocs_server_id,$key,2);
+		ocsUpdateComputer($key,$ocs_server_id,2);
 		glpi_header($_SERVER['PHP_SELF']."?ocs_server_id=".$ocs_server_id);
 	} else {
 		unset($_SESSION["ocs_update"]);

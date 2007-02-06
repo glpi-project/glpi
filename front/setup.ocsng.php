@@ -67,7 +67,8 @@ elseif ($_GET["next"] == "ocsng_show") {
 }
 elseif (isset ($_POST["update_ocs_server"])) {
 	$ocs->update($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+	//glpi_header($_SERVER['HTTP_REFERER']);
+	$ocs->showForm($_SERVER['PHP_SELF'], $_POST["ID"]);
 }
 elseif (isset ($_POST["add_ocs_server"])) {
 	//If no name has been given to this configuration, then go back to the page without adding
@@ -119,7 +120,7 @@ function showFormOCSNGList($target) {
 	echo "<tr><th colspan='2'>" . $LANG["Menu"][33] . "</th></tr>";
 	echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
 
-	$sql = "SELECT * from glpi_ocs_config";
+	$sql = "SELECT * from glpi_ocs_config ORDER BY name";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result)) {
 		while ($ocs = $DB->fetch_array($result))
