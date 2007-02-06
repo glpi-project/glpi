@@ -334,50 +334,54 @@ class CommonItem{
 	function getComments(){
 		global $LANG,$CFG_GLPI;
 		$comment="";
-		if ($tmp=$this->getField('serial')){
-			$comment.=$LANG["common"][19].": ".$tmp."<br>";
-		}
-		
-		if ($tmp=$this->getField('otherserial')){
-			$comment.=$LANG["common"][20].": ".$tmp."<br>";
-		}
-		if ($tmp=$this->getField('location')){
-			$tmp=getDropdownName("glpi_dropdown_locations",$tmp);
-			if (!empty($tmp)&&$tmp!='&nbsp;'){
-				$comment.=$LANG["common"][15].": ".$tmp."<br>";
-			}
-		}
-		if ($tmp=$this->getField('FK_users')){
-			$tmp=getDropdownName("glpi_users",$tmp);
-			if (!empty($tmp)&&$tmp!='&nbsp;'){
-				$comment.=$LANG["common"][34].": ".$tmp."<br>";
-			}
-		}
-		if ($tmp=$this->getField('FK_groups')){
-			$tmp=getDropdownName("glpi_groups",$tmp);
-			if (!empty($tmp)&&$tmp!='&nbsp;'){
-				$comment.=$LANG["common"][35].": ".$tmp."<br>";
-			}
-		}
-		if ($tmp=$this->getField('tech_num')){
-			$tmp=getDropdownName("glpi_users",$tmp);
-			if (!empty($tmp)&&$tmp!='&nbsp;'){
-				$comment.=$LANG["common"][10].": ".$tmp."<br>";
-			}
-		}
-		if ($tmp=$this->getField('contact')){
-			$comment.=$LANG["common"][18].": ".$tmp."<br>";
-		}
-		if ($tmp=$this->getField('contact_num')){
-			$comment.=$LANG["common"][21].": ".$tmp."<br>";
-		}
-		if (!empty($comment)){
-			$rand=mt_rand();
-			$comments_display=" onmouseout=\"cleanhide('comments_commonitem$rand')\" onmouseover=\"cleandisplay('comments_commonitem$rand')\" ";
-			$comments_display2="<span class='over_link' id='comments_commonitem$rand'>".nl2br($comment)."</span>";
 
-			$comment="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display> ";
-			$comment.=$comments_display2;
+		if (!($comment = $CFG_GLPI["cache"]->get("comments_".$this->id_device."_".$_SESSION["glpilanguage"],"GLPI_".$this->device_type))) {
+			if ($tmp=$this->getField('serial')){
+				$comment.=$LANG["common"][19].": ".$tmp."<br>";
+			}
+			
+			if ($tmp=$this->getField('otherserial')){
+				$comment.=$LANG["common"][20].": ".$tmp."<br>";
+			}
+			if ($tmp=$this->getField('location')){
+				$tmp=getDropdownName("glpi_dropdown_locations",$tmp);
+				if (!empty($tmp)&&$tmp!='&nbsp;'){
+					$comment.=$LANG["common"][15].": ".$tmp."<br>";
+				}
+			}
+			if ($tmp=$this->getField('FK_users')){
+				$tmp=getDropdownName("glpi_users",$tmp);
+				if (!empty($tmp)&&$tmp!='&nbsp;'){
+					$comment.=$LANG["common"][34].": ".$tmp."<br>";
+				}
+			}
+			if ($tmp=$this->getField('FK_groups')){
+				$tmp=getDropdownName("glpi_groups",$tmp);
+				if (!empty($tmp)&&$tmp!='&nbsp;'){
+					$comment.=$LANG["common"][35].": ".$tmp."<br>";
+				}
+			}
+			if ($tmp=$this->getField('tech_num')){
+				$tmp=getDropdownName("glpi_users",$tmp);
+				if (!empty($tmp)&&$tmp!='&nbsp;'){
+					$comment.=$LANG["common"][10].": ".$tmp."<br>";
+				}
+			}
+			if ($tmp=$this->getField('contact')){
+				$comment.=$LANG["common"][18].": ".$tmp."<br>";
+			}
+			if ($tmp=$this->getField('contact_num')){
+				$comment.=$LANG["common"][21].": ".$tmp."<br>";
+			}
+			if (!empty($comment)){
+				$rand=mt_rand();
+				$comments_display=" onmouseout=\"cleanhide('comments_commonitem$rand')\" onmouseover=\"cleandisplay('comments_commonitem$rand')\" ";
+				$comments_display2="<span class='over_link' id='comments_commonitem$rand'>".nl2br($comment)."</span>";
+	
+				$comment="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display> ";
+				$comment.=$comments_display2;
+			}
+			$CFG_GLPI["cache"]->save($comment,"comments_".$this->id_device."_".$_SESSION["glpilanguage"],"GLPI_".$this->device_type);
 		}
 		return $comment;
 	}

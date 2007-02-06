@@ -661,7 +661,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<td align='center'>".$LANG["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
 		dropdownMyDevices($_SESSION["glpiID"]);
-		dropdownTrackingAllDevices("device_type",$device_type);
+		dropdownTrackingAllDevices("device_type",$device_type,0,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	} 
 
@@ -1009,13 +1009,15 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".stripslashes($contains2)."\">";
 	echo "</td>";
 
-	echo "<td align='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
-	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$LANG["buttons"][16]."\" class='submit'></td>";
-
 	echo "<td align='center' colspan='2'>".$LANG["reports"][59].":<select name='showfollowups'>";
 	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$LANG["choice"][1]."</option>";
 	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$LANG["choice"][0]."</option>";	
 	echo "</select></td>";
+
+
+	echo "<td align='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
+	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$LANG["buttons"][16]."\" class='submit'></td>";
+
 	echo "</tr>";
 
 	echo "</table></div>";
@@ -1507,7 +1509,7 @@ function showJobDetails ($target,$ID){
 		echo "<tr><td align='right'>";
 		echo $LANG["common"][1].":</td><td>";
 		if ($canupdate){
-			echo $item->getType()." - ".$item->getLink()."<br>";
+			echo $item->getType()." - ".$item->getLink(1)."<br>";
 			dropdownTrackingAllDevices("device_type",0,1,$job->fields["FK_entities"]);
 		}
 		else echo $item->getType()." ".$item->getNameID();

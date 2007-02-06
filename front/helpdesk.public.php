@@ -44,7 +44,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (isset($_POST["activeentity"])){
 	if (in_array($_POST["activeentity"],$_SESSION["glpiactiveentities"])){
 		$_SESSION["glpiactive_entity"]=$_POST["activeentity"];
-		$CFG_GLPI["cache"]->remove($_SESSION["glpiID"],"GLPI_HEADER");
+		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 	}
 }
 

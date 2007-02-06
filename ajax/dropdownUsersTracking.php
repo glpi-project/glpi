@@ -48,24 +48,32 @@ if (!defined('GLPI_ROOT')){
 checkCentralAccess();
 
 // Make a select box with all glpi users
-$where="'1'='1'";
-$where.=getEntitiesRestrictRequest("AND","glpi_tracking");
+$where=getEntitiesRestrictRequest("","glpi_tracking");
 
-if (isset($_POST['value'])){
-	$where.=" AND  (glpi_users.ID <> '".$_POST['value']."' ";
+$first=true;
+if (!empty($where)){
+$first=false;
 }
 
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-	$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
-}
+	if ($first){ 
+		$first=false;
+	} else {
+		$where.=" AND ";
+	}
 
-$where.=")";	
+	$where.=" (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
+}
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['field']." AND glpi_tracking.".$_POST['field']." <> '') WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name $LIMIT";
+$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.".$_POST['field'].")";
+if (!empty($where)){
+	$query.=" WHERE $where ";
+}
+$query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name $LIMIT";
 
 $result = $DB->query($query);
 

@@ -1487,10 +1487,6 @@ function showProfileSelecter(){
 		echo "<div style='float:right;'>";
 			dropdownActiveEntities("activeentity");
 		echo "</div>";
-/*	foreach ($_SESSION["glpiactiveentities"] as $key => $val) {
-		echo $val."-";
-	}
-*/
 	} //else echo "only one entity -> no select to print";
 
 
