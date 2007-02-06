@@ -38,7 +38,15 @@
 // Update from 0.68.1 to 0.7
 function update0681to07() {
 	global $DB, $LANG, $CFG_GLPI,$LINK_ID_TABLE;
-
+	// Improve user table :
+	if (!isIndex("glpi_users", "firstname")) {
+		$query = "ALTER TABLE `glpi_users` ADD INDEX ( `firstname` )";
+		$DB->query($query) or die("0.7 alter users add indesx on firstname " . $LANG["update"][90] . $DB->error());
+	}
+	if (!isIndex("glpi_users", "realname")) {
+		$query = "ALTER TABLE `glpi_users` ADD INDEX ( `realname` )";
+		$DB->query($query) or die("0.7 alter users add indesx on realname " . $LANG["update"][90] . $DB->error());
+	}
 	// Decimal problem
 	if (FieldExists("glpi_infocoms", "value")) {
 		$query = "ALTER TABLE `glpi_infocoms` CHANGE `value` `value` DECIMAL( 20, 4 ) NOT NULL DEFAULT '0';";
