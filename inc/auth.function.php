@@ -120,7 +120,7 @@ function haveTypeRight($type, $right) {
 			return haveRight("contract_infocom", $right);
 			break;
 		case ENTERPRISE_TYPE :
-			return haveRight("contafile:///home/dombre/httpd/glpi-test/inc/auth.function.phpct_enterprise", $right);
+			return haveRight("contact_enterprise", $right);
 			break;
 		case CONTACT_TYPE :
 			return haveRight("contact_enterprise", $right);
@@ -155,6 +155,9 @@ function haveTypeRight($type, $right) {
 		case GROUP_TYPE :
 			return haveRight("group", $right);
 			break;
+		case OCSNG_TYPE :
+			return haveRight("ocsng",$right);
+			break;	
 	}
 	return false;
 }

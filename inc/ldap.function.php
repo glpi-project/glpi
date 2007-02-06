@@ -39,6 +39,20 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
+   function diff_key() {
+       $argCount  = func_num_args();
+       $diff_arg_prefix = 'diffArg';
+       $diff_arg_names = array();
+       for ($i=0; $i < $argCount; $i++) {
+           $diff_arg_names[$i] = 'diffArg'.$i;
+           $$diff_arg_names[$i] = array_keys((array)func_get_arg($i));
+       }
+       $diffArrString = '';
+       if (!empty($diff_arg_names)) $diffArrString =  '$'.implode(', $', $diff_arg_names);
+       eval("\$result = array_diff(".$diffArrString.");");
+       return $result;
+   }
+
 function ldapImportUser ($login,$sync)
 {
 	ldapImportUserByServerId($login, $sync,$_SESSION["ldap_server"]);
@@ -178,7 +192,7 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 		}
 	//If add, do the difference between ldap users and glpi users
 	if (!$sync)
-		return array_diff_key($ldap_users,$glpi_users);
+		return diff_key($ldap_users,$glpi_users);
 	else
 		return $glpi_users;
 	
