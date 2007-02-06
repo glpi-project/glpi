@@ -42,12 +42,16 @@ header_nocache();
 checkRight("create_ticket","1");
 
 $where="";
+
 if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 	$where.= "WHERE ".$_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
 } else {
 	$where.=getEntitiesRestrictRequest("WHERE",$_POST['table']);
 }
 
+if (empty($where)){
+	$where="WHERE '1'='1' ";
+}
 if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"]))
 $where.=" AND deleted='N' ";
 if (in_array($_POST['table'],$CFG_GLPI["template_tables"]))

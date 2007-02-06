@@ -468,7 +468,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 
 	$nb=0;
 	if ($CFG_GLPI["use_ajax"])
-		$nb=countElementsInTable("glpi_users");
+		$nb=countElementsInTableForMyEntities("glpi_users");
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
@@ -1428,7 +1428,6 @@ function dropdownActiveEntities($myname){
 		$link="helpdesk.public.php";
 	}
 	
-
 	echo "<form method='POST' action=\"".$CFG_GLPI['root_doc']."/front/$link\">";
 	echo "<select onChange='submit()' id='active_entity' name=\"".$myname."\" size='1'>";
 	
@@ -1462,8 +1461,6 @@ function dropdownActiveEntities($myname){
 		}
 	}
 	echo "</select></form>";
-	//print_r($_SESSION['glpiactiveentities']); 
-	//echo " -> ".$_SESSION['glpiactive_entity'];
 }
 
 
