@@ -135,7 +135,8 @@ function getTreeValueCompleteName($table,$ID,$withcomments=0)
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)==1){
 			$name=$DB->result($result,0,"completename");
-			$comments=$DB->result($result,0,"comments");
+			$comments=$name.":<br>";
+			$comments.=$DB->result($result,0,"comments");
 		}
 
 	}
