@@ -73,7 +73,7 @@ function titleOCSNG() {
 
 	global $LANG, $CFG_GLPI;
 
-	displayTitle($CFG_GLPI["root_doc"] . "/pics/logoOcs2.png", $LANG["ocsng"][0], $LANG["ocsng"][0]);
+	displayTitle($CFG_GLPI["root_doc"] . "/pics/logoOcs.png", $LANG["ocsng"][0], $LANG["ocsng"][0]);
 
 }
 	function ocsFormConfig($target, $ID,$withtemplate='') {
@@ -91,16 +91,61 @@ function titleOCSNG() {
 				$spotted = true;
 		}
 
+			if(!empty($withtemplate) && $withtemplate == 2) {
+				$template = "newcomp";
+				$datestring = $LANG["computers"][14].": ";
+				$date = convDateTime($_SESSION["glpi_currenttime"]);
+				
+				//All fields don't belong to the template
+				//--> unset them
+				unset($this->fields["ID"]);
+				unset($this->fields["name"]);
+				unset($this->fields["ocs_db_user"]);
+				unset($this->fields["ocs_db_password"]);
+				unset($this->fields["ocs_db_name"]);
+				unset($this->fields["ocs_db_name"]);
+				
+			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+				$template = "newtemplate";
+				$datestring = $LANG["computers"][14].": ";
+				$date = convDateTime($_SESSION["glpi_currenttime"]);
+			} else {
+				$datestring = $LANG["common"][26].": ";
+				$date = convDateTime($this->fields["date_mod"]);
+				$template = false;
+			}
 
+			
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
-		if (empty ($ID))
-			echo "<input type='hidden' name='add_ocs_server' value='1'>";
-		else
-			echo "<input type='hidden' name='update_ocs_server' value='1'>";
-
 
 		echo "<div align='center'><table class='tab_cadre'>";
+		
+		//This is a new template, name must me supplied
+		if(strcmp($template,"newtemplate") === 0) {
+				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\">";
+				echo "<input type=\"hidden\" name=\"name\" value=\"\">";
+			}
+
+			echo "<tr><th ' align='center' >";
+			if(!$template) {
+				echo $LANG["computers"][13].": ".$this->fields["ID"];
+			}elseif (strcmp($template,"newcomp") === 0) {
+				echo $LANG["computers"][12].": ".$this->fields["tplname"];
+				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
+			}elseif (strcmp($template,"newtemplate") === 0) {
+				echo $LANG["common"][6]."&nbsp;: ";
+				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],20);	
+			}
+		
+				echo "</th><th   align='center'>".$datestring.$date;
+				if (!$template&&!empty($this->fields['tplname']))
+					echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
+/*				if ($this->fields["ocs_import"])
+					echo "&nbsp;&nbsp;&nbsp;(".$LANG["ocsng"][7].")";
+	*/
+				echo "</th></tr><tr></tr>";
+		
 		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][5] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][17] . " </td><td> <input type=\"text\" size='30' name=\"tag_limit\" value=\"" . $this->fields["tag_limit"] . "\"></td></tr>";
 
@@ -248,7 +293,10 @@ function titleOCSNG() {
 
 		echo "</table></td></tr>";
 		echo "</table></div>";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ocs_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+		if(strcmp($template,"newtemplate") === 0)
+			echo "<p class=\"submit\"><input type=\"submit\" name=\"add_ocs_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+		else
+			echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ocs_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
 		echo "</form>";
 
 	}
@@ -268,9 +316,9 @@ function titleOCSNG() {
 				$spotted = true;
 		}
 
-		echo "<form name='formdbconfig' action=\"$target\" method=\"post\">";
+		echo "<br><form name='formdbconfig' action=\"$target\" method=\"post\">";
 		if (!empty ($ID))
-			echo "<input type='hidden' name='ID' value='" . $_GET["ID"] . "'>";
+			echo "<input type='hidden' name='ID' value='" . $ID. "'>";
 
 		echo "<div align='center'><table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][0] . "</th></tr>";

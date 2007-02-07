@@ -65,7 +65,7 @@ if (haveRight("config","w")){
 	$config["setup.config.php?next=mailing"]=$LANG["setup"][68];
 	$config["setup.auth.php?next=extauth"]=$LANG["setup"][67];
 	if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w"))
-		$config["setup.ocsng.php?next=ocsng"]=$LANG["setup"][134];
+		$config["setup.ocsng.php"]=$LANG["setup"][134];
 }
 
 $data=array();

@@ -167,6 +167,7 @@
 			GROUP_TYPE => "glpi_groups",
 			ENTITY_TYPE => "glpi_entities",
 			RESERVATION_TYPE => "glpi_reservation_item",
+			OCSNG_TYPE => "glpi_ocs_config",
 			);
 
 	$INFOFORM_PAGES=array( 
