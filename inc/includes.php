@@ -130,9 +130,8 @@ if (isset($AJAX_INCLUDE))
 				include_once (GLPI_ROOT . "/inc/$item.class.php");
 			if (file_exists(GLPI_ROOT . "/inc/$item.function.php"))
 				include_once (GLPI_ROOT . "/inc/$item.function.php");
-			//if ($item=="ocsng"&&$CFG_GLPI["ocs_mode"]&&isset($USE_OCSNGDB))
-				//If the array of ocs connections is not store in session, then do it !
-				//if (!isset($_SESSION["DBocs"])) $_SESSION["DBocs"] = array();
+			if ($item=="ocsng"&&$CFG_GLPI["ocs_mode"]&&isset($USE_OCSNGDB))
+				if (isset($_SESSION["ocs_server_id"])) $DBocs = getDBocs($_SESSION["ocs_server_id"]);
 		}
 	}
 

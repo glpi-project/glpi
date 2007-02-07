@@ -39,12 +39,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 function ocsShowNewComputer($ocs_server_id,$check, $start, $tolinked = 0) {
-	global $DB, $LANG, $CFG_GLPI;
+	global $DB, $DBocs, $LANG, $CFG_GLPI;
 
 	if (!haveRight("ocsng", "w"))
 		return false;
 
-	$DBocs= getDBocs($ocs_server_id);
+	//$DBocs= getDBocs($ocs_server_id);
 	$cfg_ocs = getOcsConf($ocs_server_id);
 
 	$WHERE = "";
@@ -180,15 +180,16 @@ function ocsShowNewComputer($ocs_server_id,$check, $start, $tolinked = 0) {
  *
  *@param $ocs_item_id integer : ocs item unique id.
  *@param $glpi_computer_id integer : glpi computer id
+ *@param $ocs_server_id integer : ocs server id
  *
  *@return integer : link id.
  *
  **/
 function ocsLink($ocs_id, $ocs_server_id,$glpi_computer_id) {
-	global $DB;
+	global $DB,$DBocs;
 
-$DBocs= getDBocs($ocs_server_id);
-
+	checkOCSconnection($ocs_server_id);
+	
 	// Need to get device id due to ocs bug on duplicates
 	$query_ocs = "SELECT * 
 			FROM hardware
@@ -208,9 +209,9 @@ $DBocs= getDBocs($ocs_server_id);
 }
 
 function ocsManageDeleted($ocs_server_id) {
-	global $DB;
+	global $DB,$DBocs;
 
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	// Activate TRACE_DELETED : ALSO DONE IN THE CONFIG
 	$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
@@ -280,9 +281,9 @@ function ocsManageDeleted($ocs_server_id) {
 }
 
 function ocsImportComputer($ocs_id,$ocs_server_id) {
-	//global $DBocs;
+	global $DBocs;
 
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	// Set OCS checksum to max value
 	$query = "UPDATE hardware SET CHECKSUM='" . MAX_OCS_CHECKSUM . "' WHERE ID='$ocs_id'";
@@ -309,16 +310,16 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 			ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
 		}
 
-		if ($idlink = ocsLink($ocs_server_id,$line['ID'], $glpi_id)) {
+		if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
 			ocsUpdateComputer($idlink,$ocs_server_id, 0);
 		}
 	}
 }
 
 function ocsImportTag($ocs_id, $ocs_server_id, $glpi_id, $cfg_ocs) {
-	//global $DBocs;
+	global $DBocs;
 	
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	// Import TAG
 	if (!empty ($cfg_ocs["import_tag_field"])) {
@@ -353,9 +354,9 @@ function ocsImportTag($ocs_id, $ocs_server_id, $glpi_id, $cfg_ocs) {
 }
 
 function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
-	global $DB, $LANG;
+	global $DB, $DBocs, $LANG;
 
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	$query = "SELECT * 
 			FROM glpi_ocs_link 
@@ -441,10 +442,9 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 }
 
 function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
-
-	global $DB, $CFG_GLPI;
+	global $DB, $DBocs, $CFG_GLPI;
 	
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	$cfg_ocs = getOcsConf($ocs_server_id);
 
@@ -476,7 +476,6 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 				$ocs_checksum = $data_ocs["CHECKSUM"];
 
 			$mixed_checksum = intval($ocs_checksum) & intval($cfg_ocs["checksum"]);
-			echo "mixed_checksum".$mixed_checksum;
 			/*			echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
 						  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 						  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
@@ -487,7 +486,7 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 				$computer_updates = importArrayFromDB($line["computer_update"]);
 
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
-				ocsUpdateHardware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
+					ocsUpdateHardware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
 
 				if ($mixed_checksum & pow(2, BIOS_FL))
 					ocsUpdateBios($line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $computer_updates, $dohistory);
@@ -610,6 +609,7 @@ function getNumberOfOcsConfigs() {
  *
  *@param $ocs_id integer : glpi computer id
  *@param $glpi_id integer : ocs computer id.
+ *@param $ocs_server_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
  *@param $computer_updates array : already updated fields of the computer
  *@param $dohistory log updates on history ? 
@@ -618,9 +618,9 @@ function getNumberOfOcsConfigs() {
  *
  **/
 function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer_updates, $dohistory = 2) {
-	global  $LANG, $DB;
-	echo "dans ocsUpdateHardware";
-	$DBocs= getDBocs($ocs_server_id);
+	global  $LANG, $DB, $DBocs;
+
+	checkOCSconnection($ocs_server_id);
 	
 	$query = "SELECT * 
 			FROM hardware 
@@ -681,6 +681,7 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer
  *
  *@param $ocs_id integer : glpi computer id
  *@param $glpi_id integer : ocs computer id.
+ *@param $ocs_server_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
  *@param $computer_updates array : already updated fields of the computer
  *@param $dohistory boolean : log changes ?
@@ -689,9 +690,9 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer
  *
  **/
 function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer_updates, $dohistory = 2) {
-	//global $DBocs;
+	global $DBocs;
 	
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	$query = "SELECT * 
 			FROM bios 
@@ -772,9 +773,9 @@ function ocsImportDropdown($dpdTable, $dpdRow, $value) {
 }
 
 function ocsCleanLinks($ocs_server_id) {
-	global $DB;
+	global $DB,$DBocs;
 
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	// Delete unexisting GLPI computers
 	$query = "SELECT glpi_ocs_link.ID AS ID 
@@ -825,8 +826,10 @@ function cron_ocsng() {
 
 	global $DB;
 
+	//Get a randon server id
 	$ocs_server_id = getRandomOCSServerID();
 	
+	//Initialize the server connection
 	$DBocs= getDBocs($ocs_server_id);
 	
 	$cfg_ocs = getOcsConf($ocs_server_id);
@@ -870,9 +873,9 @@ function cron_ocsng() {
 }
 
 function ocsShowUpdateComputer($ocs_server_id,$check, $start) {
-	global $DB,  $LANG, $CFG_GLPI;
+	global $DB, $DBocs, $LANG, $CFG_GLPI;
 
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	if (!haveRight("ocsng", "w"))
 		return false;
@@ -1086,6 +1089,7 @@ function ocsEditLock($target, $ID) {
  *@param $device_type integer : device type
  *@param $glpi_id integer : glpi computer id.
  *@param $ocs_id integer : ocs computer id (ID).
+ *@param $ocs_server_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
  *@param $dohistory boolean : log changes ?
  *@param $import_device array : already imported devices
@@ -1093,10 +1097,10 @@ function ocsEditLock($target, $ID) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdateDevices($ocs_server_id,$device_type, $glpi_id, $ocs_id, $cfg_ocs, $import_device, $dohistory) {
-	global  $DB;
+function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_device, $dohistory) {
+	global  $DB, $DBocs;
 
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	$do_clean = false;
 	switch ($device_type) {
@@ -1551,6 +1555,7 @@ function ocsAddDevice($device_type, $dev_array) {
  *@param $device_type integer : device type 
  *@param $glpi_id integer : glpi computer id.
  *@param $ocs_id integer : ocs computer id (ID).
+ *@param $ocs_server_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
  *@param $dohistory boolean : log changes ?
  *@param $import_periph array : already imported periph
@@ -1559,9 +1564,9 @@ function ocsAddDevice($device_type, $dev_array) {
  *
  **/
 function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_periph, $dohistory) {
-	global $DB;
+	global $DB, $DBocs;
 	
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
 	
 	$do_clean = false;
 	$connID = 0;
@@ -1898,6 +1903,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
  *
  *@param $glpi_id integer : glpi computer id.
  *@param $ocs_id integer : ocs computer id (ID).
+ *@param $ocs_server_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
  *@param $dohistory boolean : log changes ?
  *@param $import_software array : already imported softwares
@@ -1906,9 +1912,10 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
  *
  **/
 function ocsUpdateSoftware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_software, $dohistory) {
-	global  $DB;
+	global  $DB, $DBocs;
 	
-	$DBocs= getDBocs($ocs_server_id);
+	checkOCSconnection($ocs_server_id);
+	
 	if ($cfg_ocs["import_software"]) {
 
 		if ($cfg_ocs["use_soft_dict"])
@@ -2291,6 +2298,8 @@ function ocsResetDropdown($glpi_computer_id, $field, $table) {
 
 /**
  * Choose an ocs server
+ *
+ * @return nothing. 
  */
 function ocsChooseServer($target) {
 	global $DB, $LANG;
@@ -2327,6 +2336,21 @@ function getDBocs($ocs_server_id)
 	return new DBocs($ocs_server_id);
 }
 
+/**
+ * Check if OCS connection is always valid
+ * If not, then establish a new connection on the good server
+ * 
+ * @return nothing.
+ */
+function checkOCSconnection($ocs_server_id)
+{
+	global $DBocs;
+	 
+	//If $DBocs is not initialized, or if the connection should be on a different ocs server
+	// --> reinitialize connection to OCS server 
+	if (!$DBocs || $ocs_server_id != $DBocs->getServerID())
+		$DBocs = getDBocs($ocs_server_id);
+}
 /**
  * Get the ocs server id of a machine, by giving the machine id
  * @param $ID the machine ID

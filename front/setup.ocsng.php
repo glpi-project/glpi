@@ -35,12 +35,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"setup",
-	"auth",
-	"ocsng",
-	"user"
-);
+$NEEDED_ITEMS = array ("setup","ocsng","user","search");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -61,7 +56,7 @@ if (isset($_GET["next"])) {
 	if ($_GET["next"] == "ocsng")
 	showFormOCSNGList($_SERVER['PHP_SELF']);
 elseif ($_GET["next"] == "ocsng_show") {
-	titleOCSNG();	
+	$ocs->titleOCSNG();	
 	$ocs->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
 }
 }
@@ -74,7 +69,7 @@ elseif (isset ($_POST["add_ocs_server"])) {
 	//If no name has been given to this configuration, then go back to the page without adding
 	if ($_POST["name"] != "")
 		$newid = $ocs->add($_POST);
-	titleOCSNG();
+	$ocs->titleOCSNG();
 	$ocs->showForm($_SERVER['PHP_SELF'], $newid);
 	//glpi_header($CFG_GLPI["root_doc"] . "/front/setup.ocsng.php?next=ocsng");
 }
@@ -88,15 +83,6 @@ elseif (isset ($_GET["withtemplate"])) {
 
 commonFooter();
 
-function titleOCSNG() {
-	// Un titre pour la gestion des sources externes
-
-	global $LANG, $CFG_GLPI;
-
-	displayTitle($CFG_GLPI["root_doc"] . "/pics/logoOcs2.png", $LANG["ocsng"][0], $LANG["ocsng"][0]);
-
-}
-
 function showFormOCSNGList($target) {
 
 	global $DB, $LANG, $CFG_GLPI;
@@ -109,8 +95,9 @@ function showFormOCSNGList($target) {
 	$buttons["setup.templates.php?type=".OCSNG_TYPE."&amp;add=1"]=$LANG["ocsng"][25];
 	$buttons["setup.templates.php?type=".OCSNG_TYPE."&amp;add=0"]=$LANG["common"][8];
 	$title="";
-	displayTitle($CFG_GLPI["root_doc"]."/pics/logoOcs2.png",$LANG["Menu"][0],$title,$buttons);
+	displayTitle($CFG_GLPI["root_doc"]."/pics/logoOcs.png",$LANG["Menu"][0],$title,$buttons);
 
+	/*
 	echo "<div align='center'>";
 
 	echo "<form name=ldap action=\"$target?next=ocsng_show\" method=\"post\">";
@@ -131,5 +118,13 @@ function showFormOCSNGList($target) {
 	echo "</table>";
 	echo "</form>";
 	echo "</div>";
+	
+	*/
+	manageGetValuesInSearch(OCSNG_TYPE);
+
+	searchForm(OCSNG_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+
+	showList(OCSNG_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+	
 }
 ?>

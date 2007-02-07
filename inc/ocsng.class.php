@@ -36,9 +36,11 @@ if (!defined('GLPI_ROOT')) {
 
 class DBocs extends DBmysql {
 
+	var $ocs_server_id = -1;
 	function DBocs($ID) {
 		global $CFG_GLPI;
-
+			$this->ocs_server_id = $ID;
+			
 			if ($CFG_GLPI["ocs_mode"]) {
 			$data = getOcsConf($ID);
 			$this->dbhost = $data["ocs_db_host"];
@@ -48,6 +50,11 @@ class DBocs extends DBmysql {
 			$this->dbh = @ mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
 			@ mysql_select_db($this->dbdefault) or $this->error = 1;
 			}
+	}
+	
+	function getServerID()
+	{
+		return $this->ocs_server_id;
 	}
 }
 
@@ -61,6 +68,14 @@ class Ocsng extends CommonDBTM {
 		$this->type = OCSNG_TYPE;
 	}
 
+function titleOCSNG() {
+	// Un titre pour la gestion des sources externes
+
+	global $LANG, $CFG_GLPI;
+
+	displayTitle($CFG_GLPI["root_doc"] . "/pics/logoOcs2.png", $LANG["ocsng"][0], $LANG["ocsng"][0]);
+
+}
 	function ocsFormConfig($target, $ID,$withtemplate='') {
 
 		global $DB, $LANG, $CFG_GLPI;
