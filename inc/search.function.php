@@ -672,6 +672,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
 						||($type==USER_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_groups")
+						||($type==CONTACT_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_enterprises")
+						||($type==ENTERPRISE_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_contacts")
 					     )) 
 
 				$GROUPBY=" GROUP BY ID ";
@@ -1281,8 +1283,16 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 
 	switch ($table.".".$field){
 		case "glpi_enterprises.name" :
-			case "glpi_enterprises_infocoms.name" :
-			return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$addtable.".website AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_3, ";
+		case "glpi_enterprises_infocoms.name" :
+			if ($type==CONTACT_TYPE){
+				return " GROUP_CONCAT( DISTINCT LCASE(".$pretable.$table.$addtable.".".$field.") SEPARATOR '$$$$') AS ITEM_$num, ";
+			} else {
+				return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$addtable.".website AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_3, ";
+			}
+		break;
+		// Contact for display in the enterprise item
+		case "glpi_contacts.completename":
+			return " GROUP_CONCAT( DISTINCT LCASE(CONCAT(".$pretable.$table.$addtable.".name, ' ', ".$pretable.$table.$addtable.".firstname)) SEPARATOR '$$$$') AS ITEM_$num, ";
 		break;
 		case "glpi_users.name" :
 			$linkfield="";
@@ -1314,21 +1324,22 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			if ($type==COMPUTER_TYPE)
 				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
 			else return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
-			break;
-			case "glpi_groups.name" :
-				if ($type==USER_TYPE){
-					return " GROUP_CONCAT( DISTINCT LCASE(".$pretable.$table.$addtable.".".$field.") SEPARATOR '$$$$') AS ITEM_$num, ";
-				} else {
-					return $table.$addtable.".".$field." AS ITEM_$num, ";
-				}
-			case "glpi_licenses.serial" :
-				case "glpi_networking_ports.ifaddr" :
-				case "glpi_dropdown_netpoint.name" :
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
-			break;
-			case "glpi_tracking.count" :
-				return " COUNT(glpi_tracking.ID) AS ".$NAME."_".$num.", ";
-			break;
+		break;
+		case "glpi_groups.name" :
+			if ($type==USER_TYPE){
+				return " GROUP_CONCAT( DISTINCT LCASE(".$pretable.$table.$addtable.".".$field.") SEPARATOR '$$$$') AS ITEM_$num, ";
+			} else {
+				return $table.$addtable.".".$field." AS ITEM_$num, ";
+			}
+		break;
+		case "glpi_licenses.serial" :
+		case "glpi_networking_ports.ifaddr" :
+		case "glpi_dropdown_netpoint.name" :
+			return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+		break;
+		case "glpi_tracking.count" :
+			return " COUNT(glpi_tracking.ID) AS ".$NAME."_".$num.", ";
+		break;
 		default:
 			if ($meta){
 
@@ -1680,14 +1691,42 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			return $out;
 		break;	
 
+		case "glpi_contacts.completename":
+				$out="";
+				$split=explode("$$$$",$data["ITEM_$num"]);
+
+				$count_display=0;
+				for ($k=0;$k<count($split);$k++)
+					if (strlen(trim($split[$k]))>0){
+						if ($count_display) $out.= "<br>";
+						$count_display++;
+						$out.= $split[$k];
+					}
+				return $out;
+			break;
 		case "glpi_enterprises.name" :
 			if (empty($linkfield)){
-				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-				$out.= "</a>";
-				if (!empty($data["ITEM_".$num."_2"]))
-					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
+				if ($type==CONTACT_TYPE){
+					$out="";
+					$split=explode("$$$$",$data["ITEM_$num"]);
+	
+					$count_display=0;
+					for ($k=0;$k<count($split);$k++)
+						if (strlen(trim($split[$k]))>0){
+							if ($count_display) $out.= "<br>";
+							$count_display++;
+							$out.= $split[$k];
+						}
+					return $out;
+
+				} else {
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+					$out.= $data["ITEM_$num"];
+					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+					$out.= "</a>";
+					if (!empty($data["ITEM_".$num."_2"]))
+						$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
+				}
 			} else {
 				$type=ENTERPRISE_TYPE;
 				$out="";
@@ -2032,7 +2071,19 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 		break;
 		case "glpi_enterprises":
-			return " LEFT JOIN $new_table $AS ON ($rt.FK_enterprise = $nt.ID) ";
+			if ($type=CONTACT_TYPE){
+				$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contact_enterprise","FK_contact");
+				return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_enterprise = $nt.ID) ";
+			} else {
+				return " LEFT JOIN $new_table $AS ON ($rt.FK_enterprise = $nt.ID) ";
+			}
+		break;
+		case "glpi_contacts":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contact_enterprise","FK_enterprise");
+			return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_contact = $nt.ID) ";
+		break;
+		case "glpi_contact_enterprise":
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.$linkfield) ";
 		break;
 		case "glpi_dropdown_manufacturer":
 			return " LEFT JOIN $new_table $AS ON ($rt.FK_glpi_enterprise = $nt.ID) ";
@@ -2081,7 +2132,6 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 		break;
 		case "glpi_contracts":
-			// Link to glpi_networking_ports before
 			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contract_device",$linkfield);
 
 		return $out." LEFT JOIN $new_table $AS ON (glpi_contract_device.FK_contract = $nt.ID) ";
@@ -2110,7 +2160,6 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				break;	
 				case "glpi_device_processor":
 
-					// Link to glpi_networking_ports before
 					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
 
 				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".FK_device = $nt.ID) ";
@@ -2121,31 +2170,26 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".FK_device = $nt.ID) ";
 				break;		
 				case "glpi_device_iface":
-					// Link to glpi_networking_ports before
 					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
 
 				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".NETWORK_DEVICE.".FK_device = $nt.ID) ";
 				break;	
 				case "glpi_device_sndcard":
-					// Link to glpi_networking_ports before
 					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,SND_DEVICE,$meta,$meta_type);
 
 				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".SND_DEVICE.".FK_device = $nt.ID) ";
 				break;		
 				case "glpi_device_gfxcard":
-					// Link to glpi_networking_ports before
 					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,GFX_DEVICE,$meta,$meta_type);
 
 				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".GFX_DEVICE.".FK_device = $nt.ID) ";
 				break;	
 				case "glpi_device_moboard":
-					// Link to glpi_networking_ports before
 					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,MOBOARD_DEVICE,$meta,$meta_type);
 
 				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".MOBOARD_DEVICE.".FK_device = $nt.ID) ";
 				break;	
 				case "glpi_device_hdd":
-					// Link to glpi_networking_ports before
 					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,HDD_DEVICE,$meta,$meta_type);
 
 				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";

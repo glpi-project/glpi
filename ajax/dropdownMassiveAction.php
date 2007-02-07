@@ -36,7 +36,7 @@
 
 define('GLPI_ROOT','..');
 $AJAX_INCLUDE=1;
-$NEEDED_ITEMS=array("search");
+$NEEDED_ITEMS=array("search","enterprise");
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -77,6 +77,15 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			dropdown("glpi_docs","docID",1);
 		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
+		case "add_contact":
+			dropdown("glpi_contacts","conID",1);
+		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		break;
+		case "add_enterprise":
+			dropdown("glpi_enterprises","entID",1);
+		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		break;
+
 		case "update":
 			$first_group=true;
 		$newgroup="";

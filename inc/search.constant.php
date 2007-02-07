@@ -1596,6 +1596,12 @@ $SEARCH_OPTION[CONTACT_TYPE][9]['linkfield']='type';
 $SEARCH_OPTION[CONTACT_TYPE][9]['name']=$LANG["common"][17];
 $SEARCH_OPTION[CONTACT_TYPE][9]['meta']=0;
 
+$SEARCH_OPTION[CONTACT_TYPE][8]['table']='glpi_enterprises';
+$SEARCH_OPTION[CONTACT_TYPE][8]['field']='name';
+$SEARCH_OPTION[CONTACT_TYPE][8]['linkfield']='';
+$SEARCH_OPTION[CONTACT_TYPE][8]['name']=$LANG["financial"][65];
+$SEARCH_OPTION[CONTACT_TYPE][8]['meta']=0;
+
 $SEARCH_OPTION[CONTACT_TYPE][7]['table']='glpi_contacts';
 $SEARCH_OPTION[CONTACT_TYPE][7]['field']='comments';
 $SEARCH_OPTION[CONTACT_TYPE][7]['linkfield']='';
@@ -1674,6 +1680,12 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][9]['field']='name';
 $SEARCH_OPTION[ENTERPRISE_TYPE][9]['linkfield']='type';
 $SEARCH_OPTION[ENTERPRISE_TYPE][9]['name']=$LANG["financial"][79];
 $SEARCH_OPTION[ENTERPRISE_TYPE][9]['meta']=0;
+
+$SEARCH_OPTION[ENTERPRISE_TYPE][8]['table']='glpi_contacts';
+$SEARCH_OPTION[ENTERPRISE_TYPE][8]['field']='completename';
+$SEARCH_OPTION[ENTERPRISE_TYPE][8]['linkfield']='';
+$SEARCH_OPTION[ENTERPRISE_TYPE][8]['name']=$LANG["financial"][46];
+$SEARCH_OPTION[ENTERPRISE_TYPE][8]['meta']=0;
 
 $SEARCH_OPTION[ENTERPRISE_TYPE][7]['table']='glpi_enterprises';
 $SEARCH_OPTION[ENTERPRISE_TYPE][7]['field']='comments';

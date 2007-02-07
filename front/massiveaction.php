@@ -170,6 +170,38 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 				}
 			}
 		break;
+		case "add_contact":
+			$ci=new CommonItem();
+			$ci2=new CommonItem();
+			if ($ci->getFromDB(CONTACT_TYPE,$_POST['conID'])){
+				foreach ($_POST["item"] as $key => $val){
+					// Items exists ?
+					if ($ci2->getFromDB($_POST["device_type"],$key)){
+						// Entity security
+						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+							addContactEnterprise($key,$_POST["conID"]);
+						}
+					}
+				}
+			}
+		break;
+		case "add_enterprise":
+			$ci=new CommonItem();
+			$ci2=new CommonItem();
+			if ($ci->getFromDB(ENTERPRISE_TYPE,$_POST['entID'])){
+				foreach ($_POST["item"] as $key => $val){
+					// Items exists ?
+					if ($ci2->getFromDB($_POST["device_type"],$key)){
+						// Entity security
+						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+							addContactEnterprise($_POST["entID"],$key);
+						}
+					}
+				}
+			}
+		break;
+
+
 	}
 
 	$_SESSION['MESSAGE_AFTER_REDIRECT']=$LANG["common"][23];

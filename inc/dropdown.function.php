@@ -389,9 +389,9 @@ function getDropdownName($table,$id,$withcomments=0) {
 				if($DB->numrows($result) != 0) {
 					$data=$DB->fetch_assoc($result);
 					$name = $data["name"];
-					if (isset($data["comments"]))
+					if (isset($data["comments"])){
 						$comments = $data["comments"];
-	
+					}
 					switch ($table){
 						case "glpi_contacts" :
 							$name .= " ".$data["firstname"];
@@ -1230,20 +1230,30 @@ function dropdownMassiveAction($device_type,$deleted='N'){
 	} else {
 		echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
 		echo "<option value=\"update\">".$LANG["buttons"][14]."</option>";
-		if ($device_type!=DOCUMENT_TYPE){
-			echo "<option value=\"add_document\">".$LANG["document"][16]."</option>";
-		}
-		if ($device_type==COMPUTER_TYPE){
-			echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
-		}
 		if ($device_type==PHONE_TYPE || $device_type==PRINTER_TYPE
 			|| $device_type==PERIPHERAL_TYPE || $device_type==MONITOR_TYPE){
 			echo "<option value=\"connect\">".$LANG["buttons"][9]."</option>";
 			echo "<option value=\"disconnect\">".$LANG["buttons"][10]."</option>";
 		}
-		if ($device_type==USER_TYPE){
-			echo "<option value=\"add_group\">".$LANG["setup"][604]."</option>";
+
+		switch ($device_type){
+			case DOCUMENT_TYPE :
+				echo "<option value=\"add_document\">".$LANG["document"][16]."</option>";
+				break;
+			case COMPUTER_TYPE :
+				echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
+				break;
+			case ENTERPRISE_TYPE :
+				echo "<option value=\"add_contact\">".$LANG["financial"][24]."</option>";
+				break;
+			case CONTACT_TYPE :
+				echo "<option value=\"add_enterprise\">".$LANG["financial"][25]."</option>";
+				break;
+			case USER_TYPE :
+				echo "<option value=\"add_group\">".$LANG["setup"][604]."</option>";
+				break;
 		}
+
 	}
 	echo "</select>";
 
