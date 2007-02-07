@@ -40,21 +40,46 @@ $NEEDED_ITEMS = array ("setup","ocsng","user","search");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if(empty($tab) && isset($_POST)) $tab = $_POST;
+if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
 checkRight("config", "w");
+$ocs = new Ocsng();
 
-	commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'], "admin");
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
+if(!isset($tab["ID"])) $tab["ID"] = "";
+if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-	$buttons["setup.templates.php?type=".OCSNG_TYPE."&amp;add=1"]=$LANG["ocsng"][25];
-	$buttons["setup.templates.php?type=".OCSNG_TYPE."&amp;add=0"]=$LANG["common"][8];
-	$title="";
+commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'], "admin");
+
+//Delete template
+if (isset ($rab["purge"]) || isset ($tab["delete"])) {
+	$ocs->delete($tab);
+	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.ocsng.php");
+}
+elseif (isset ($tab["update_ocs_server"])) {
+	$ocs->update($tab);
+	$ocs->showForm($_SERVER['PHP_SELF'], $tab["ID"]);
+}
+elseif (isset ($tab["add_ocs_server"])) {
+	$newid = $ocs->add($tab);
 	
-	displayTitle($CFG_GLPI["root_doc"]."/pics/logoOcs.png",$LANG["Menu"][0],$title,$buttons);
-	echo "<br>";
-	
-	manageGetValuesInSearch(OCSNG_TYPE);
-	searchForm(OCSNG_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
-	showList(OCSNG_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
-	
-	commonFooter();
+	$ocs->titleOCSNG();
+	//If template, display the template form
+	if(!$tab["is_template"])
+	$ocs->showForm($_SERVER['PHP_SELF'], $newid);
+	else
+	$ocs->ocsFormConfig($_SERVER['PHP_SELF'],$tab["ID"],1);
+}
+elseif (isset ($_GET["withtemplate"])) {
+	$ocs->ocsFormConfig($_SERVER['PHP_SELF'],$tab["ID"],$tab["withtemplate"]);
+}
+else
+{
+	$ocs->titleOCSNG();	
+	$ocs->showForm($_SERVER['PHP_SELF'], $tab["ID"]);
+}
+
+commonFooter();
 ?>

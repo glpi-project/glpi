@@ -1656,6 +1656,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_links.name" :
 		case "glpi_docs.name" :
 		case "glpi_entities.name" :
+		case "glpi_ocs_config.name" :
 		case "glpi_entities.completename" :
 			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 			$out.= $data["ITEM_$num"];
@@ -1818,6 +1819,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_phones.date_mod":
 		case "glpi_software.date_mod":
 		case "glpi_monitors.date_mod":
+		case "glpi_ocs_config.date_mod" :
 		case "glpi_users.last_login":	
 			return convDateTime($data["ITEM_$num"]);
 			break;

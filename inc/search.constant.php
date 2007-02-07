@@ -2561,11 +2561,16 @@ $SEARCH_OPTION[TRACKING_TYPE][7]['name']=$LANG["common"][36];
 $SEARCH_OPTION[TRACKING_TYPE][7]['meta']=1;
 
 // OCSNG_TYPE
-$SEARCH_OPTION[OCSNG_TYPE]['common']=$LANG["common"][32];
+$SEARCH_OPTION[OCSNG_TYPE]['common']=$LANG["common"][16];
 $SEARCH_OPTION[OCSNG_TYPE][1]['table']='glpi_ocs_config';
 $SEARCH_OPTION[OCSNG_TYPE][1]['field']='name';
 $SEARCH_OPTION[OCSNG_TYPE][1]['linkfield']='';
-$SEARCH_OPTION[OCSNG_TYPE][1]['name']=$LANG["common"][36];
+$SEARCH_OPTION[OCSNG_TYPE][1]['name']=$LANG["common"][16];
 $SEARCH_OPTION[OCSNG_TYPE][1]['meta']=0;
 
+$SEARCH_OPTION[OCSNG_TYPE][2]['table']='glpi_ocs_config';
+$SEARCH_OPTION[OCSNG_TYPE][2]['field']='date_mod';
+$SEARCH_OPTION[OCSNG_TYPE][2]['linkfield']='';
+$SEARCH_OPTION[OCSNG_TYPE][2]['name']=$LANG["common"][26];
+$SEARCH_OPTION[OCSNG_TYPE][2]['meta']=0;
 ?>
