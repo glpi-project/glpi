@@ -114,10 +114,12 @@ class Job extends CommonDBTM{
 
 		}
 
-		if (isset($input["item"])&& $input["item"]!=0){
+		if (isset($input["item"])&& $input["item"]!=0&&isset($input["type"])&& $input["type"]!=0){
 			$input["computer"]=$input["item"];
 			$input["device_type"]=$input["type"];
+		} 
 
+		if (isset($input["computer"])&&$input["computer"]>0){
 			if ($this->fields['FK_group']){
 				$ci=new CommonItem;
 				$ci->getFromDB($input["device_type"],$input["computer"]);
@@ -125,8 +127,6 @@ class Job extends CommonDBTM{
 					$input["FK_group"] = $tmp;
 				}
 			}
-		} else {
-			$input["computer"]=$input["device_type"]=0;
 		}
 
 		// add Document if exists
