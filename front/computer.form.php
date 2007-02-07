@@ -142,7 +142,14 @@ elseif(isset($tab["unlock_field"])){
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($tab["force_ocs_resynch"])){
 	checkRight("ocsng","w");
+	
+	//Get the ocs server id associated with the machine
 	$ocs_server_id = getOCSServerByMachineID($_POST["ID"]);
+	
+	//Initiate a connection to the ocs database
+	$DBocs = getDBocs($ocs_server_id);
+	
+	//Update the computer
 	ocsUpdateComputer($tab["resynch_id"],$ocs_server_id,1,1);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {//print computer informations
