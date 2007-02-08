@@ -336,7 +336,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 		echo "<tr  class='tab_bg_2'><td>";
 		echo $LANG["networking"][55].":&nbsp;";
 		dropdown("glpi_dropdown_vlan","vlan");
-		echo "<input type='submit' name='assign_vlan' value='".$LANG["buttons"][3]."' class='submit'>";
+		echo "&nbsp;<input type='submit' name='assign_vlan' value='".$LANG["buttons"][3]."' class='submit'>";
 		echo "</td></tr>";
 
 		echo "</table>";
