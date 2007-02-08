@@ -46,7 +46,8 @@ class MailCollect  extends receivemail {
 */
 function MailCollect(){
 	
-		$this->receiveMail('glpi@indepnet.org','glpiindepnet','glpi@indepnet.org','oberon.indepnet.net','pop3','110');
+		$this->receiveMail('','','','','pop3','110');
+		//example receiveMail('abc@example.com','XXX','abc@example.com','mail.example.com','pop3','110');
 		//Connect to the Mail Box
 		$this->connect();
 		echo "toto";
