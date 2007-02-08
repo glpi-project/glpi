@@ -1285,14 +1285,14 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_enterprises.name" :
 		case "glpi_enterprises_infocoms.name" :
 			if ($type==CONTACT_TYPE){
-				return " GROUP_CONCAT( DISTINCT LCASE(".$pretable.$table.$addtable.".".$field.") SEPARATOR '$$$$') AS ITEM_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, ";
 			} else {
 				return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$addtable.".website AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_3, ";
 			}
 		break;
 		// Contact for display in the enterprise item
 		case "glpi_contacts.completename":
-			return " GROUP_CONCAT( DISTINCT LCASE(CONCAT(".$pretable.$table.$addtable.".name, ' ', ".$pretable.$table.$addtable.".firstname)) SEPARATOR '$$$$') AS ITEM_$num, ";
+			return " GROUP_CONCAT( DISTINCT CONCAT(".$pretable.$table.$addtable.".name, ' ', ".$pretable.$table.$addtable.".firstname) SEPARATOR '$$$$') AS ITEM_$num, ";
 		break;
 		case "glpi_users.name" :
 			$linkfield="";
@@ -1327,7 +1327,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 		case "glpi_groups.name" :
 			if ($type==USER_TYPE){
-				return " GROUP_CONCAT( DISTINCT LCASE(".$pretable.$table.$addtable.".".$field.") SEPARATOR '$$$$') AS ITEM_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, ";
 			} else {
 				return $table.$addtable.".".$field." AS ITEM_$num, ";
 			}
@@ -1344,8 +1344,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			if ($meta){
 
 				if ($table!=$LINK_ID_TABLE[$type])
-					return " GROUP_CONCAT( DISTINCT LCASE(".$pretable.$table.$addtable.".".$field.") SEPARATOR '$$$$') AS META_$num, ";
-				else return " GROUP_CONCAT( DISTINCT LCASE(".$table.$addtable.".".$field.") SEPARATOR '$$$$') AS META_$num, ";
+					return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
+				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
 
 			}
 			else 
@@ -1535,6 +1535,8 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				return $link." ($table.$field = $val  ".$ADD." ) ";
 			}
 			break;
+		case "glpi_contacts.completename":
+			return $link." ($table.name $SEARCH OR $table.firstname $SEARCH ) ";
 		default:
 			$ADD="";	
 			if ($nott&&$val!="NULL") {
