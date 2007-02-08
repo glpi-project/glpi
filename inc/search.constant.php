@@ -1224,6 +1224,26 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][24]['linkfield']='tech_num';
 $SEARCH_OPTION[PERIPHERAL_TYPE][24]['name']=$LANG["common"][10];
 $SEARCH_OPTION[PERIPHERAL_TYPE][24]['meta']=0;
 
+$SEARCH_OPTION[PERIPHERAL_TYPE]['network']=$LANG["setup"][88];
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['field']='ifaddr';
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['name']=$LANG["networking"][14];
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['field']='ifmac';
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['name']=$LANG["networking"][15];
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['table']='glpi_dropdown_netpoint';
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['field']='name';
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['name']=$LANG["networking"][51];
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['meta']=0;
+
 $SEARCH_OPTION[PERIPHERAL_TYPE]['tracking']=$LANG["setup"][143];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['table']='glpi_tracking';
