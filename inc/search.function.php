@@ -200,7 +200,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			}else {
 				echo "<option value=\"".$key."\""; 
 				if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
-				echo ">". substr($val["name"],0,32) ."</option>\n";
+				echo ">". utf8_substr($val["name"],0,32) ."</option>\n";
 			}
 		}
 		if (!$first_group)
@@ -276,7 +276,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 			echo "<select name='type2[$i]' id='type2_".$type."_".$i."_$rand'>";
 			echo "<option value='-1'>-----</option>";
 			foreach ($linked as $key)
-				echo "<option value='$key'>".substr($names[$key],0,20)."</option>";
+				echo "<option value='$key'>".utf8_substr($names[$key],0,20)."</option>";
 			echo "</select>";
 
 			// Ajax script for display search meat item
@@ -318,7 +318,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 
 			echo "<option value=\"".$key."\"";
 			if($key == $sort) echo " selected";
-			echo ">".substr($val["name"],0,20)."</option>\n";
+			echo ">".utf8_substr($val["name"],0,20)."</option>\n";
 		}
 	}
 	if (!$first_group)
@@ -1770,7 +1770,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_$num"])){
 				$link=$data["ITEM_$num"];
 				if (strlen($data["ITEM_$num"])>30){
-					$link=substr($data["ITEM_$num"],0,30)."...";
+					$link=utf8_substr($data["ITEM_$num"],0,30)."...";
 				}
 				return "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$link."</a>";
 			} else return "&nbsp;";
