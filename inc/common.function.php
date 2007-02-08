@@ -44,6 +44,18 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 //******************************************************************************************************
 
+
+function utf8_substr($str,$start)
+{
+   preg_match_all("/./su", $str, $ar);
+
+   if(func_num_args() >= 3) {
+       $end = func_get_arg(2);
+       return join("",array_slice($ar[0],$start,$end));
+   } else {
+       return join("",array_slice($ar[0],$start));
+   }
+}
 /**
  * Clean cache cron function
  *
