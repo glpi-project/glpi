@@ -2209,6 +2209,25 @@ COMPUTER_TYPE => array(
   ),
 
 	),
-	);
+);
 
+$SEARCH_OPTION[PERIPHERAL_TYPE]['network']=$lang["setup"][88];
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['field']='ifaddr';
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['name']=$lang["networking"][14];
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['field']='ifmac';
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['name']=$lang["networking"][15];
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['table']='glpi_dropdown_netpoint';
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['field']='name';
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['name']=$lang["networking"][51];
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['meta']=0;
 ?>
