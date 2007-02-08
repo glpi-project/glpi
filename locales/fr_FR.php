@@ -1018,7 +1018,6 @@ $LANG["planning"][15]="Votre planning";
 
 $LANG["printers"][0]="Ajouter imprimante...";
 $LANG["printers"][4]="Imprimante";
-$LANG["printers"][8]="Contact Personne";
 $LANG["printers"][14]="Série";
 $LANG["printers"][15]="Parallèle";
 $LANG["printers"][17]="Pas d'imprimante trouvée.";

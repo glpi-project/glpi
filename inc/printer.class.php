@@ -299,13 +299,14 @@ class Printer  extends CommonDBTM {
 				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
-				echo "<tr><td>".$LANG["common"][21].":	</td><td>\n";
-				autocompletionTextField("contact_num","glpi_printers","contact_num",$this->fields["contact_num"],20);			
-				echo "</td></tr>\n";
-	
-				echo "<tr><td>".$LANG["printers"][8].":	</td><td>\n";
+				echo "<tr><td>".$LANG["common"][18].":	</td><td>\n";
 				autocompletionTextField("contact","glpi_printers","contact",$this->fields["contact"],20);			
 				echo "</td></tr>\n";
+
+				echo "<tr><td>".$LANG["common"][21].":	</td><td>\n";
+				autocompletionTextField("contact_num","glpi_printers","contact_num",$this->fields["contact_num"],20);		
+				echo "</td></tr>\n";
+	
 	
 				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
 				dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);

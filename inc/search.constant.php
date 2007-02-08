@@ -709,7 +709,7 @@ $SEARCH_OPTION[PRINTER_TYPE][6]['meta']=1;
 $SEARCH_OPTION[PRINTER_TYPE][7]['table']='glpi_printers';
 $SEARCH_OPTION[PRINTER_TYPE][7]['field']='contact';
 $SEARCH_OPTION[PRINTER_TYPE][7]['linkfield']='contact';
-$SEARCH_OPTION[PRINTER_TYPE][7]['name']=$LANG["printers"][8];
+$SEARCH_OPTION[PRINTER_TYPE][7]['name']=$LANG["common"][18];
 $SEARCH_OPTION[PRINTER_TYPE][7]['meta']=1;
 
 $SEARCH_OPTION[PRINTER_TYPE][8]['table']='glpi_printers';
