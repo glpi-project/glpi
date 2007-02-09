@@ -439,10 +439,10 @@ function showDevicesList($device_type,$target) {
 	global $DB,$CFG_GLPI, $LANG;
 
 
-	$query = "select DISTINCT device.ID from ".getDeviceTable($device_type)." as device ";
+	$query = "select device.ID, device.designation, glpi_dropdown_manufacturer.name as manufacturer FROM ".getDeviceTable($device_type)." as device ";
 	$query.= " LEFT JOIN glpi_dropdown_manufacturer ON (glpi_dropdown_manufacturer.ID = device.FK_glpi_enterprise ) ";
 	$query .= " ORDER by device.designation ASC";
-
+	
 	// Get it from database	
 	if ($result = $DB->query($query)) {
 		$numrows = $DB->numrows($result);
@@ -464,17 +464,15 @@ function showDevicesList($device_type,$target) {
 
 			echo "</tr>";
 
-			for ($i=0; $i < $numrows_limit; $i++) {
-				$ID = $DB->result($result_limit, $i, "ID");
-				$device = new Device(str_replace("glpi_device_", "", $device_type));
-				$device->getFromDB($ID);
+			while ($data=$DB->fetch_array($result)) {
+				$ID = $data["ID"];
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><b>";
 				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=$ID&amp;device_type=$device_type\">";
-				echo $device->fields["designation"];
-				if ($CFG_GLPI["view_ID"]) echo " (".$device->fields["ID"].")";
+				echo $data["designation"];
+				if ($CFG_GLPI["view_ID"]) echo " (".$data["ID"].")";
 				echo "</a></b></td>";
-				echo "<td>". getDropdownName("glpi_dropdown_manufacturer",$device->fields["FK_glpi_enterprise"]) ."</td>";
+				echo "<td>". $data["manufacturer"]."</td>";
 				echo "</tr>";
 			}
 
