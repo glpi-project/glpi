@@ -76,76 +76,111 @@ function titleOCSNG() {
 	displayTitle($CFG_GLPI["root_doc"] . "/pics/logoOcs.png", $LANG["ocsng"][0], $LANG["ocsng"][0]);
 
 }
-	function ocsFormConfig($target, $ID,$withtemplate='') {
 
+function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		global $DB, $LANG, $CFG_GLPI;
 
 		if (!haveRight("ocsng", "w"))
 			return false;
 
-		if (empty ($ID)) {
-			if ($this->getEmpty())
-				$spotted = true;
-		} else {
-			if ($this->getfromDB($ID))
-				$spotted = true;
+		$action ="";
+		if (!isset($withtemplate) || $withtemplate == "")
+			$action = "edit_server";
+		elseif (isset($withtemplate) && $withtemplate ==1)
+		{
+			if ($ID == -1 && $templateid == '')
+				$action = "add_template";
+			else
+				$action = "update_template";	
 		}
-
-			if(!empty($withtemplate) && $withtemplate == 2) {
-				$template = "newcomp";
-				$datestring = $LANG["computers"][14].": ";
-				$date = convDateTime($_SESSION["glpi_currenttime"]);
+		elseif (isset($withtemplate) && $withtemplate ==2)
+		{
+			if ($ID == -1)
+				$action = "add_server_with_template";
+			else
+				$action = "update_server_with_template";	
+		}
+		
+		//Get datas
+		switch($action)
+		{
+			case  "update_server_with_template" :
+							//Get the template configuration
+				$template_config = getOcsConf($templateid);
 				
-				//All fields don't belong to the template
-				//--> unset them
-				unset($this->fields["ID"]);
-				unset($this->fields["name"]);
-				unset($this->fields["ocs_db_user"]);
-				unset($this->fields["ocs_db_password"]);
-				unset($this->fields["ocs_db_name"]);
-				unset($this->fields["ocs_db_name"]);
+				//Unset all the variable which are not in the template
+				unset($template_config["ID"]);
+				unset($template_config["name"]);
+				unset($template_config["ocs_db_user"]);
+				unset($template_config["ocs_db_password"]);
+				unset($template_config["ocs_db_name"]);
+				unset($template_config["ocs_db_host"]);
+				unset($template_config["checksum"]);
 				
-			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
-				$template = "newtemplate";
-				$datestring = $LANG["computers"][14].": ";
-				$date = convDateTime($_SESSION["glpi_currenttime"]);
-			} else {
-				$datestring = $LANG["common"][26].": ";
-				$date = convDateTime($this->fields["date_mod"]);
-				$template = false;
-			}
-
-			
+				//Add all the template's informations to the server's object'
+				foreach ($template_config as $key => $value)
+					if ($value != "") $this->fields[$key] = $value;
+				break; 
+				
+			case "edit_server" :
+				if (empty($ID))
+					$this->getEmpty($ID);
+				else
+					$this->getfromDB($ID);
+				break;
+			case "add_template" :
+					$this->getEmpty($ID);
+					break;
+			case  "update_template" :
+			case "add_server_with_template" :
+				$this->getfromDB($templateid);
+			break;	
+		}
+		
+		$datestring = $LANG["computers"][14].": ";
+		$date = convDateTime($_SESSION["glpi_currenttime"]);
+		
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 
 		echo "<div align='center'><table class='tab_cadre'>";
 		
 		//This is a new template, name must me supplied
-		if(strcmp($template,"newtemplate") === 0) {
+		if($action == "add_template" || $action == "update_template") {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\">";
+				echo "<input type=\"hidden\" name=\"withtemplate\" value=\"1\">";
+				echo "<input type=\"hidden\" name=\"ID\" value=\"".$templateid."\">";
+			}
+		if ($action == "add_template")
 				echo "<input type=\"hidden\" name=\"name\" value=\"\">";
-			}
+		if ($action == "update_server_with_template")
+				echo "<input type=\"hidden\" name=\"tplname\" value=\"".$this->fields["tplname"]."\">";
+	
 
-			echo "<tr><th ' align='center' >";
-			if(!$template) {
-				echo $LANG["computers"][13].": ".$this->fields["ID"];
-			}elseif (strcmp($template,"newcomp") === 0) {
-				echo $LANG["computers"][12].": ".$this->fields["tplname"];
-				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-			}elseif (strcmp($template,"newtemplate") === 0) {
+			//If template, display a textfield to modify name
+		if($action == "add_template" || $action == "update_template") {
+				echo "<tr><th ' align='center'  colspan=2>";
+
 				echo $LANG["common"][6]."&nbsp;: ";
-				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],20);	
-			}
-		
-				echo "</th><th   align='center'>".$datestring.$date;
-				if (!$template&&!empty($this->fields['tplname']))
-					echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
-/*				if ($this->fields["ocs_import"])
-					echo "&nbsp;&nbsp;&nbsp;(".$LANG["ocsng"][7].")";
-	*/
-				echo "</th></tr><tr></tr>";
-		
+				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],20);
+				echo "</th></tr>";
+					
+			//Adding a new machine, just display the name, not editable
+		}
+		elseif($action == "edit_server" || $action == "update_server_with_template") {
+				echo "<tr><th ' align='center'>";
+				
+				echo $LANG["ocsng"][28].": ".$this->fields["tplname"];
+				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
+
+				echo "</th>";
+				
+				echo "<th ' align='center'>".$datestring.$date."</th>";
+				echo "</tr>";
+		}
+
+		echo "</th></tr>";
+
 		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][5] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][17] . " </td><td> <input type=\"text\" size='30' name=\"tag_limit\" value=\"" . $this->fields["tag_limit"] . "\"></td></tr>";
 
@@ -293,33 +328,53 @@ function titleOCSNG() {
 
 		echo "</table></td></tr>";
 		echo "</table></div>";
-		if(strcmp($template,"newtemplate") === 0)
-			echo "<p class=\"submit\"><input type=\"submit\" name=\"add_ocs_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-		else
-			echo "<p class=\"submit\"><input type=\"submit\" name=\"update_ocs_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-		echo "</form>";
 
+		switch($action)
+		{
+			case  "update_server_with_template" :
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server_with_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+					break;
+			case "edit_server" :
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+					break;
+			case "add_template" :
+				echo "<p class=\"submit\"><input type=\"submit\" name=\"add_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+				break;
+			case  "update_template" :
+				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+				break;
+		}
+	echo "</form>";
 	}
 
-	function showForm($target, $ID) {
+function showForm($target, $ID,$withtemplate='',$templateid='') {
 
-		global $DB, $LANG, $CFG_GLPI;
+		global $DB, $DBocs, $LANG, $CFG_GLPI;
 
 		if (!haveRight("ocsng", "w"))
 			return false;
-
-		if (empty ($ID)) {
-			if ($this->getEmpty())
-				$spotted = true;
+			
+		//If no ID provided, or if the server is created using an existing template
+		if (empty ($ID) || $ID == -1 ) {
+			//Create a server using a template
+			if ($templateid != '' && $templateid != -1)
+				$this->getfromDB($templateid);
+			else
+			//Installing without a template	
+			$this->getEmpty();
 		} else {
-			if ($this->getfromDB($ID))
-				$spotted = true;
+			$this->getfromDB($ID);
 		}
 
 		echo "<br><form name='formdbconfig' action=\"$target\" method=\"post\">";
-		if (!empty ($ID))
+		if (!empty ($ID) && $withtemplate!=2)
 			echo "<input type='hidden' name='ID' value='" . $ID. "'>";
-
+		//Creation or modification of a machine, using a template
+		elseif ($withtemplate == 2)
+		{	
+			echo "<input type='hidden' name='withtemplate' value=2>";
+			echo "<input type='hidden' name='templateid' value='" . $templateid. "'>";
+		}
 		echo "<div align='center'><table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][0] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . " </td><td> <input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td></tr>";
@@ -331,12 +386,12 @@ function titleOCSNG() {
 
 		echo "<br><table border='0'>";
 		
-		if (empty ($ID))
-			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add_ocs_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+		if ($ID == -1 || $withtemplate == 2)
+			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 		else
 		{
-			echo "<tr class='tab_bg_2'><td align='center'><input type=\"submit\" name=\"update_ocs_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
-			echo "<td align='center'><input type=\"submit\" name=\"delete_ocs_server\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center'><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
+			echo "<td align='center'><input type=\"submit\" name=\"delete\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
 			
 		}
 		echo "</table></div>";
@@ -345,9 +400,10 @@ function titleOCSNG() {
 
 		echo "<div align='center'>";
 
-		if (!empty ($ID)) {
+		if ($ID != -1) {
 			
-			$DBocs = getDBocs($ID);	
+			checkOCSconnection($ID);
+			
 			if (!$DBocs->error) {
 				echo $LANG["ocsng"][18] . "<br>";
 				$result = $DBocs->query("SELECT TVALUE FROM config WHERE NAME='GUI_VERSION'");
@@ -356,7 +412,10 @@ function titleOCSNG() {
 					$DBocs->query($query);
 
 					echo $LANG["ocsng"][19] . "</div>";
-					$this->ocsFormConfig($target, $ID);
+					if ($withtemplate == 2)
+						$this->ocsFormConfig($target,$ID,$withtemplate,$templateid);
+					else
+						$this->ocsFormConfig($target, $ID,$withtemplate);
 				} else
 					echo $LANG["ocsng"][20] . "</div>";
 			} else

@@ -2308,8 +2308,8 @@ function ocsChooseServer($target) {
 	echo "<div align='center'>";
 	echo "<p >" . $LANG["ocsng"][26] . "</p>";
 	echo "<table class='tab_cadre'>";
-	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
-	$query = "SELECT * FROM glpi_ocs_config ORDER BY name ASC";
+	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
+	$query = "SELECT * FROM glpi_ocs_config WHERE is_template='0' ORDER BY name ASC";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
