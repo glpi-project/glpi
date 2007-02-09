@@ -620,7 +620,7 @@ class Computer extends CommonDBTM {
 						echo "<br>";
 
 						if (haveRight("ocsng","w"))
-							echo $LANG["common"][52]." <a href=".$CFG_GLPI["root_doc"]."/front/setup.ocsng.php?next=ocsng_show&ID=".getOCSServerByMachineID($ID).">".getOCSServerNameByID($ID)."</a>";
+							echo $LANG["common"][52]." <a href=".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID).">".getOCSServerNameByID($ID)."</a>";
 						else
 							echo $LANG["common"][52]." ".getOCSServerNameByID($ID);						
 						echo "</td>";
