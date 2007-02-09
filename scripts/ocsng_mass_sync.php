@@ -46,7 +46,10 @@ include (GLPI_ROOT."/inc/includes.php");
 //// PARAMETERS
 // Just import these ocs computer
 $ocs_id=0;
+$ocs_server_id=0;
 if (isset($_GET["ocs_id"])) $ocs_id=$_GET["ocs_id"];
+if (isset($_GET["ocs_server_id"])) $ocs_server_id=$_GET["ocs_server_id"];
+
 // Limit import
 $limit=0;
 if (isset($_GET["limit"])) $limit=$_GET["limit"];
@@ -55,8 +58,9 @@ $all=0;
 if (isset($_GET["all"])) $all=$_GET["all"];
 
 
-$cfg_ocs=getOcsConf(1);
-ocsManageDeleted();
+$DBocs = new DBocs($ocs_server_id);
+$cfg_ocs=getOcsConf($ocs_server_id);
+ocsManageDeleted($ocs_server_id);
 $WHERE="";
 if ($ocs_id) $WHERE=" AND ID='$ocs_id'";
 
@@ -85,7 +89,7 @@ if ($DBocs->numrows($result_ocs)>0){
 		$data=clean_cross_side_scripting_deep(addslashes_deep($data));
 
 		if (isset($hardware[$data["ocs_id"]])){ 
-			ocsUpdateComputer($data["ID"],1);
+			ocsUpdateComputer($data["ID"],$ocs_server_id,1);
 			if ($limit&&$done>=$limit) exit();
 			echo ".";
 			$done++;

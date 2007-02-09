@@ -49,20 +49,23 @@ $tag="";
 if (isset($_GET["tag"])) $tag=$_GET["tag"];
 // Just import these ocs computer
 $ocs_id=0;
+$ocs_server_id=0;
 if (isset($_GET["ocs_id"])) $ocs_id=$_GET["ocs_id"];
+if (isset($_GET["ocs_server_id"])) $ocs_server_id=$_GET["ocs_server_id"];
+
 // Limit import
 $limit=0;
 if (isset($_GET["limit"])) $limit=$_GET["limit"];
 
-
-$cfg_ocs=getOcsConf(1);
+$DBocs = new DBocs($ocs_server_id);
+$cfg_ocs=getOcsConf($ocs_server_id);
 
 // PREREQUISITE : activate trace_deleted
 $query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
 $DBocs->query($query);
 // Clean links
-ocsManageDeleted();
-ocsCleanLinks();
+ocsManageDeleted($ocs_server_id);
+ocsCleanLinks($ocs_server_id);
 
 
 $WHERE="";
@@ -90,7 +93,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 	// Existing OCS - GLPI link
 	$query_glpi = "SELECT * 
 	FROM glpi_ocs_link";
-	if ($ocs_id) $query_glpi.=" WHERE ocs_id='$ocs_id'";
+	if ($ocs_id) $query_glpi.=" WHERE ocs_id='$ocs_id' and ocs_server_id=".$ocs_server_id;
 	$result_glpi = $DB->query($query_glpi);
 
 	if ($DBocs->numrows($result_ocs)>0){
@@ -123,7 +126,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 			foreach ($hardware as $ID => $tab){
 				echo ".";
 				if ($limit&&$i>=$limit) exit();
-				ocsImportComputer($ID);
+				ocsImportComputer($ID,$ocs_server_id);
 				$i++;
 			}
 		}

@@ -54,7 +54,7 @@ if (isset($_SESSION["ocs_import"])){
 		$key=array_pop($_SESSION["ocs_import"]);
 		ocsImportComputer($key,$_SESSION["ocs_server_id"]);
 
-		//glpi_header($_SERVER['PHP_SELF']);
+		glpi_header($_SERVER['PHP_SELF']);
 
 	} else {
 		unset($_SESSION["ocs_import"]);

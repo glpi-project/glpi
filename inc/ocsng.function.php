@@ -486,36 +486,30 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 				$computer_updates = importArrayFromDB($line["computer_update"]);
 
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
-					ocsUpdateHardware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
-
+					ocsUpdateHardware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);				
 				if ($mixed_checksum & pow(2, BIOS_FL))
 					ocsUpdateBios($line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $computer_updates, $dohistory);
-
 				// Get import devices
 				$import_device = importArrayFromDB($line["import_device"]);
 				if ($mixed_checksum & pow(2, MEMORIES_FL))
 					ocsUpdateDevices(RAM_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
-
 				if ($mixed_checksum & pow(2, STORAGES_FL)) {
 					ocsUpdateDevices(HDD_DEVICE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_device, $dohistory);
 					ocsUpdateDevices(DRIVE_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
 				}
-
+				
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
 					ocsUpdateDevices(PROCESSOR_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
-
 				if ($mixed_checksum & pow(2, VIDEOS_FL))
 					ocsUpdateDevices(GFX_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
-
 				if ($mixed_checksum & pow(2, SOUNDS_FL))
 					ocsUpdateDevices(SND_DEVICE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_device, $dohistory);
-
+				
 				if ($mixed_checksum & pow(2, NETWORKS_FL))
 					ocsUpdateDevices(NETWORK_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
-
 				if ($mixed_checksum & pow(2, MODEMS_FL) || $mixed_checksum & pow(2, PORTS_FL))
 					ocsUpdateDevices(PCI_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
-
+				
 				if ($mixed_checksum & pow(2, MONITORS_FL)) {
 					// Get import monitors
 					$import_monitor = importArrayFromDB($line["import_monitor"]);
@@ -764,6 +758,7 @@ function ocsImportDropdown($dpdTable, $dpdRow, $value) {
 		$input["value"] = $value;
 		$input['type'] = "first";
 		$input["comments"] = "";
+		$input["FK_entities"] = 0;
 		return addDropdown($input);
 	} else {
 		$line2 = $DB->fetch_array($result2);
@@ -1957,6 +1952,7 @@ function ocsUpdateSoftware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_s
 							$soft->fields["name"] = $name;
 							$soft->fields["version"] = $data2["VERSION"];
 							$soft->fields["comments"] = $data2["COMMENTS"];
+							
 							if (!empty ($data2["PUBLISHER"])) {
 								$soft->fields["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $data2["PUBLISHER"]);
 							}
