@@ -1036,10 +1036,22 @@ function manageRedirect($where){
 		if (count($data)>=2&&isset($_SESSION["glpiactiveprofile"]["interface"])&&!empty($_SESSION["glpiactiveprofile"]["interface"])){
 			switch ($_SESSION["glpiactiveprofile"]["interface"]){
 				case "helpdesk" :
-					if ($data[0]=="tracking"&&$data[1]>0){
-						glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=".$data[1]);
-					} else {
-						glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+					switch ($data[0]){
+						case "plugin":
+							if (isset($data[2])&&$data[2]>0&&isset($PLUGIN_HOOKS['redirect_page'][$data[1]])&&!empty($PLUGIN_HOOKS['redirect_page'][$data[1]])){
+								glpi_header($CFG_GLPI["root_doc"]."/plugins/".$data[1]."/".$PLUGIN_HOOKS['redirect_page'][$data[1]]."?ID=".$data[2]);
+							} else {
+								glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+							} 
+						break;
+						case "tracking":
+							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=".$data[1]);
+						break;
+						default:
+							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+						break;
+
+
 					}
 				break;
 				case "central" :
