@@ -131,7 +131,10 @@ class CommonItem{
 				break;
 			case AUTH_LDAP_TYPE:
 				$this->obj = new AuthLDAP;
-				break;				
+				break;
+			case OCSNG_TYPE:
+				$this->obj = new Ocsng;
+				break;					
 		}
 
 		if ($this->obj!=NULL){

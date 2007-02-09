@@ -50,31 +50,64 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
+if ($tab["ID"] == -1) $tab["ID"] = "";
 
 commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'], "admin");
 
-//Delete template
-if (isset ($rab["purge"]) || isset ($tab["delete"])) {
+//Delete template or server
+if (isset ($tab["purge"]) || isset ($tab["delete"])) {
 	$ocs->delete($tab);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.ocsng.php");
 }
-elseif (isset ($tab["update_ocs_server"])) {
+//Update server
+elseif (isset ($tab["update_server"])) {
 	$ocs->update($tab);
 	$ocs->showForm($_SERVER['PHP_SELF'], $tab["ID"]);
 }
-elseif (isset ($tab["add_ocs_server"])) {
+//Add new server
+elseif (isset ($tab["add_server"])) {
 	$newid = $ocs->add($tab);
-	
+	$ocs->titleOCSNG();
+
+	//If template, display the template form
+	$ocs->showForm($_SERVER['PHP_SELF'], $newid,$tab["withtemplate"],$tab["templateid"]);
+}
+
+//Templates
+
+//Add new template
+elseif (isset ($tab["add_template"])) {
+	$newid = $ocs->add($tab);
+	$ocs->titleOCSNG();
+
+	//If template, display the template form
+	$ocs->ocsFormConfig($_SERVER['PHP_SELF'],-1,$tab["withtemplate"],$newid);
+}
+//Update a template
+elseif (isset ($tab["update_template"])) {
 	$ocs->titleOCSNG();
 	//If template, display the template form
-	if(!$tab["is_template"])
-	$ocs->showForm($_SERVER['PHP_SELF'], $newid);
-	else
-	$ocs->ocsFormConfig($_SERVER['PHP_SELF'],$tab["ID"],1);
+	$ocs->update($_POST);
+	$ocs->ocsFormConfig($_SERVER['PHP_SELF'],-1,$tab["withtemplate"],$tab["ID"]);
 }
-elseif (isset ($_GET["withtemplate"])) {
-	$ocs->ocsFormConfig($_SERVER['PHP_SELF'],$tab["ID"],$tab["withtemplate"]);
+//Update a server with template
+elseif (isset ($tab["update_server_with_template"])) {
+	$ocs->update($tab);
+	$ocs->titleOCSNG();
+	$ocs->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
 }
+
+elseif (isset ($tab["withtemplate"]) && $tab["withtemplate"] != '') {
+	//If creation or modification of a template
+	if ($tab["withtemplate"] ==1)
+	$ocs->ocsFormConfig($_SERVER['PHP_SELF'],-1,$tab["withtemplate"],$tab["ID"]);
+	
+	//If creation of a new OCS server
+	elseif ($tab["withtemplate"] ==2)
+	$ocs->showForm($_SERVER['PHP_SELF'],-1,$tab["withtemplate"],$tab["ID"]);
+}
+
+//Other
 else
 {
 	$ocs->titleOCSNG();	
