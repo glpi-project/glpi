@@ -186,6 +186,8 @@ class CommonDBTM {
 
 			$this->cleanDBonPurge($ID);
 
+			$this->cleanRelationData($ID);
+
 			$query = "DELETE from ".$this->table." WHERE ID = '$ID'";
 
 			if ($result = $DB->query($query)) {
@@ -204,6 +206,19 @@ class CommonDBTM {
 		}
 	}
 
+	function cleanRelationData($ID){
+		global $DB;
+		$RELATION=getDbRelations();
+		if (isset($RELATION[$this->table])){
+			foreach ($RELATION[$this->table] as $tablename => $field){
+				$query="UPDATE $tablename SET $field = 0 WHERE $field=$ID ";
+				$DB->query($query);
+			}
+	}
+
+
+
+	}
 	function post_deleteFromDB($ID){
 	}
 

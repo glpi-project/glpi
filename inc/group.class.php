@@ -52,10 +52,6 @@ class Group extends CommonDBTM{
 		$query = "DELETE from glpi_users_groups WHERE FK_groups = '$ID'";
 		$DB->query($query);
 
-		foreach ($CFG_GLPI["linkuser_type"] as $type){
-			$query2="UPDATE ".$LINK_ID_TABLE[$type]." SET FK_groups=0 WHERE FK_groups='$ID';";
-			$DB->query($query2);
-		}
 	}
 
 	function post_getEmpty () {
