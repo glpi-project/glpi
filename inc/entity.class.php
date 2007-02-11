@@ -199,7 +199,7 @@ class Entity extends CommonDBTM{
 			echo "</table></div></form>";
 
 		} else {
-			echo "<div align='center'><b>".$LANG["financial"][38]."</b></div>";
+			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 
 		}
