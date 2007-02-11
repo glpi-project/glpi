@@ -1,4 +1,4 @@
-#GLPI Dump database on 2007-02-06 09:51
+#GLPI Dump database on 2007-02-11 17:50
 
 ### Dump table glpi_alerts
 
@@ -1263,6 +1263,27 @@ CREATE TABLE `glpi_entities` (
 ) ENGINE=MyISAM ;
 
 
+### Dump table glpi_entities_data
+
+DROP TABLE IF EXISTS `glpi_entities_data`;
+CREATE TABLE `glpi_entities_data` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_entities` int(11) NOT NULL default '0',
+  `address` text,
+  `postcode` varchar(255) default NULL,
+  `town` varchar(255) default NULL,
+  `state` varchar(255) default NULL,
+  `country` varchar(255) default NULL,
+  `website` varchar(200) default NULL,
+  `phonenumber` varchar(200) default NULL,
+  `fax` varchar(255) default NULL,
+  `email` varchar(255) default NULL,
+  `notes` longtext,
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `FK_entities` (`FK_entities`)
+) ENGINE=MyISAM ;
+
+
 ### Dump table glpi_event_log
 
 DROP TABLE IF EXISTS `glpi_event_log`;
@@ -1280,7 +1301,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-02-06 09:51:43','login','3','tech connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-02-11 17:49:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1679,7 +1700,7 @@ CREATE TABLE `glpi_ocs_config` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 ;
 
-INSERT INTO glpi_ocs_config VALUES ('1','1','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'1','1','0',NULL,NULL);
+INSERT INTO glpi_ocs_config VALUES ('1','localhost','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'1','1','0',NULL,NULL);
 
 ### Dump table glpi_ocs_link
 
@@ -2266,13 +2287,15 @@ CREATE TABLE `glpi_users` (
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`),
-  KEY `location` (`location`)
+  KEY `location` (`location`),
+  KEY `firstname` (`firstname`),
+  KEY `realname` (`realname`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 ;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'no','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('2','glpi','*64B4BB8F2A8C2F41C639DBC894D2759330199470','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','1','2007-02-11 17:49:58','2007-02-11 17:49:58');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('4','tech','','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','1','2007-02-06 09:51:43','2007-02-06 09:51:43');
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','yes','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','no','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 
 ### Dump table glpi_users_groups

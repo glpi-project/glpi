@@ -140,6 +140,27 @@ function update0681to07() {
 		// TODO : ADD other fields
 	}
 
+	if (!TableExists("glpi_entities_data")) {
+		$query = "CREATE TABLE `glpi_entities_data` (
+				`ID` int(11) NOT NULL auto_increment,
+				`FK_entities` int(11) NOT NULL default '0',
+				`address` text,
+				`postcode` varchar(255) default NULL,
+				`town` varchar(255) default NULL,
+				`state` varchar(255) default NULL,
+				`country` varchar(255) default NULL,
+				`website` varchar(200) default NULL,
+				`phonenumber` varchar(200) default NULL,
+				`fax` varchar(255) default NULL,
+				`email` varchar(255) default NULL,
+				`notes` longtext,
+				PRIMARY KEY  (`ID`),
+				UNIQUE KEY `FK_entities` (`FK_entities`)
+				) ENGINE=MyISAM ;";
+
+		$DB->query($query) or die("0.7 create glpi_entities_data " . $LANG["update"][90] . $DB->error());
+	}	
+
 	if (!FieldExists("glpi_users_profiles", "FK_entities")) {
 		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entities` INT NOT NULL DEFAULT '0',
 											ADD `recursive` TINYINT NOT NULL DEFAULT '1',
@@ -487,7 +508,7 @@ function update0681to07() {
 	}
 	
 	// TODO Split Config -> config general + config entity
-	// TODO AUto assignment profile based on rules
+	// TODO Auto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference
 
 	// Alter INT fields to not null and default 0 :

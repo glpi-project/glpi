@@ -59,7 +59,7 @@ class CommonDBTM {
 		global $DB,$CFG_GLPI;
 		if (empty($ID)) return false;
 		if ($this->type<=0||!($data = $CFG_GLPI["cache"]->get("data_".$ID,"GLPI_".$this->type))) {
-			$query = "SELECT * FROM ".$this->table." WHERE (ID = $ID)";
+			$query = $this->getRequest($ID);
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)==1){
 					$data = $DB->fetch_assoc($result);
@@ -75,7 +75,9 @@ class CommonDBTM {
 		return true;
 
 	}
-
+	function getRequest($ID){
+		return "SELECT * FROM ".$this->table." WHERE (ID = $ID)";
+	}
 	function getEmpty () {
 		//make an empty database object
 		global $DB;
