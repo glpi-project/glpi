@@ -57,9 +57,9 @@ class CommonDBTM {
 
 		// Make new database object and fill variables
 		global $DB,$CFG_GLPI;
-		if (empty($ID)) return false;
+		if (empty($ID)&&$ID!=0) return false;
 		if ($this->type<=0||!($data = $CFG_GLPI["cache"]->get("data_".$ID,"GLPI_".$this->type))) {
-			$query = $this->getRequest($ID);
+			$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = $ID)";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)==1){
 					$data = $DB->fetch_assoc($result);
@@ -75,8 +75,8 @@ class CommonDBTM {
 		return true;
 
 	}
-	function getRequest($ID){
-		return "SELECT * FROM ".$this->table." WHERE (ID = $ID)";
+	function getIndexName(){
+		return "ID";
 	}
 	function getEmpty () {
 		//make an empty database object
@@ -107,7 +107,7 @@ class CommonDBTM {
 				$query .= " = '";
 				$query .= $this->fields[$updates[$i]]."'";
 			}
-			$query .= " WHERE ID='";
+			$query .= " WHERE ".$this->getIndexName()." ='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
 			$result=$DB->query($query);
@@ -172,7 +172,7 @@ class CommonDBTM {
 	function restoreInDB($ID) {
 		global $DB,$CFG_GLPI;
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
-			$query = "UPDATE ".$this->table." SET deleted='N' WHERE (ID = '$ID')";
+			$query = "UPDATE ".$this->table." SET deleted='N' WHERE (".$this->getIndexName()." = '$ID')";
 			if ($result = $DB->query($query)) {
 				return true;
 			} else {
@@ -190,7 +190,7 @@ class CommonDBTM {
 
 			$this->cleanRelationData($ID);
 
-			$query = "DELETE from ".$this->table." WHERE ID = '$ID'";
+			$query = "DELETE from ".$this->table." WHERE ".$this->getIndexName()." = '$ID'";
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
@@ -200,7 +200,7 @@ class CommonDBTM {
 				return false;
 			}
 		}else {
-			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ID = '$ID'";		
+			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ".$this->getIndexName()." = '$ID'";		
 			if ($result = $DB->query($query)){
 				$this->cleanCache($ID);
 				return true;
@@ -291,7 +291,6 @@ class CommonDBTM {
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
 		if ($this->getFromDB($input["ID"])){
-
 			// Fill the update-array with changes
 			$x=0;
 			$updates=array();

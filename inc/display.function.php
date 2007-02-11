@@ -215,7 +215,7 @@ function commonHeader($title,$url,$sector="none")
 			$config[$LANG["Menu"][14]]=array("user.php","u");
 		// TODO SPECIFIC RIGHT TO ENTITY
 		if (haveRight("config","r"))
-			$config["ENTITE"]=array("entity.php","z");
+			$config[$LANG["Menu"][37]]=array("entity.php","z");
 		if (haveRight("group","r"))
 			$config[$LANG["Menu"][36]]=array("group.php","g");
 		if (haveRight("profile","r"))

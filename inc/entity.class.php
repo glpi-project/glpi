@@ -38,24 +38,32 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
+class EntityData extends CommonDBTM{
+
+	function EntityData () {
+		$this->table="glpi_entities_data";
+		$this->type=-1;
+	}
+	function getIndexName(){
+		return "FK_entities";
+	}
+
+}
+
+
 // CLASSES entity
 class Entity extends CommonDBTM{
 
-	function Group () {
+	function Entity () {
 		$this->table="glpi_entities";
 		$this->type=ENTITY_TYPE;
 	}
-
 	function defineOnglets($withtemplate){
 		global $LANG;
-		if (haveRight("user","r"))	
-			$ong[1]=$LANG["Menu"][14];
 
-		$ong[2]=$LANG["common"][1];
+		$ong[1]=$LANG["title"][26];
 		return $ong;
 	}
-
-
 
 	/**
 	 * Print a good title for coontact pages
@@ -71,10 +79,12 @@ class Entity extends CommonDBTM{
 
 		$buttons=array();
 		$title=$LANG["Menu"][37];
-		if (haveRight("group","w")){
+		if (haveRight("config","w")){
 			$buttons["entity.tree.php"]=$LANG["entity"][1];
 			$title="";
 		}
+		$buttons["entity.form.php?ID=0"]=$LANG["entity"][2];
+		
 		displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG["Menu"][37],$title,$buttons);
 	}
 
@@ -95,107 +105,114 @@ class Entity extends CommonDBTM{
 
 		global $CFG_GLPI, $LANG;
 
-		if (!haveRight("group","r")) return false;
+		if (!haveRight("config","r")) return false;
 
 		$con_spotted=false;
 
-		if (empty($ID)) {
-
+		if (empty($ID)&&$ID!=0) {
 			if($this->getEmpty()) $con_spotted = true;
 		} else {
-			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
+			if ($ID==0) {
+				$con_spotted=true;
+				$this->fields["name"]=$LANG["entity"][2];
+				$this->fields["completename"]="";
+			}
+			else if($this->getfromDB($ID)) $con_spotted = true;
 		}
 
 		if ($con_spotted){
+			// Get data
+			$entdata=new EntityData();
+
+			if (!$entdata->getFromDB($ID)){
+				$entdata->add(array("FK_entities"=>$ID));
+				$entdata->getFromDB($ID);	
+			}
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			echo "<form method='post' name=form action=\"$target\"><div align='center'>";
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-			}
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='2'><b>";
-			if (empty($ID)) {
-				echo $LANG["setup"][605].":";
+			echo "<tr><th colspan='4'><b>";
+			echo $LANG["entity"][0]." ID $ID:";
 
-			} else {
-				echo $LANG["common"][35]." ID $ID:";
-			}		
 			echo "</b></th></tr>";
 
-			echo "<tr><td class='tab_bg_1' valign='top'>";
+			echo "<tr class='tab_bg_1'>";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-
-			echo "<tr><td>".$LANG["common"][16].":	</td>";
-			echo "<td>";
-			autocompletionTextField("name","glpi_groups","name",$this->fields["name"],30);	
-			echo "</td></tr>";
-
-			if(!empty($CFG_GLPI["ldap_host"])){
-				echo "<tr><td colspan='2' align='center'>".$LANG["setup"][256].":	</td>";
-				echo "</tr>";
-
-				echo "<tr><td>".$LANG["setup"][260].":	</td>";
-				echo "<td>";
-				autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],30);	
-				echo "</td></tr>";
-
-				echo "<tr><td>".$LANG["setup"][601].":	</td>";
-				echo "<td>";
-				autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],30);	
-				echo "</td></tr>";
-
-				echo "<tr><td colspan='2' align='center'>".$LANG["setup"][257].":	</td>";
-				echo "</tr>";
-
-
-				echo "<tr><td>".$LANG["setup"][261].":	</td>";
-				echo "<td>";
-				autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],30);	
-				echo "</td></tr>";
-			}
-
-			echo "</table>";
-
-			echo "</td>\n";	
-
-			echo "<td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-			echo $LANG["common"][25].":	</td></tr>";
-			echo "<tr><td align='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr></table>";
-
+			echo "<td valign='top'>".$LANG["common"][16].":	</td>";
+			echo "<td valign='top'>";
+			echo $this->fields["name"];
+			if ($ID!=0) echo " (".$this->fields["completename"].")";
 			echo "</td>";
+			if (isset($this->fields["comments"])){
+				echo "<td valign='top'>";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center' valign='top'>".nl2br($this->fields["comments"]);
+				echo "</td>";
+			} else {
+				echo "<td colspan='2'>&nbsp;</td>";
+			}
 			echo "</tr>";
 
-			if (haveRight("group","w")) 
-				if ($ID=="") {
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][29].":		</td>";
+			echo "<td>";
+			autocompletionTextField("phonenumber","glpi_entities_data","phonenumber",$entdata->fields["phonenumber"],25);	
+			echo "</td>";
+			echo "<td>".$LANG["financial"][30].":		</td><td>";
+			autocompletionTextField("fax","glpi_entities_data","fax",$entdata->fields["fax"],25);	
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
+			echo "<td>";
+			autocompletionTextField("website","glpi_entities_data","website",$entdata->fields["website"],25);	
+			echo "</td>";
+	
+			echo "<td>".$LANG["setup"][14].":		</td><td>";
+			autocompletionTextField("email","glpi_entities_data","email",$entdata->fields["email"],25);		
+			echo "</td></tr>";
+	
+	
+			echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG["financial"][44].":		</td>";
+			echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$entdata->fields["address"]."</textarea>";
+			echo "<td>".$LANG["financial"][100]."</td>";
+			echo "<td>";
+			autocompletionTextField("postcode","glpi_entities_data","postcode",$entdata->fields["postcode"],25);		
+			echo "</td>";
+			echo "</tr>";
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["financial"][101].":		</td><td>";
+			autocompletionTextField("town","glpi_entities_data","town",$entdata->fields["town"],25);		
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["financial"][102].":		</td><td>";
+			autocompletionTextField("state","glpi_entities_data","state",$entdata->fields["state"],25);		
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["financial"][103].":		</td><td>";
+			autocompletionTextField("country","glpi_entities_data","country",$entdata->fields["country"],25);		
+			echo "</td></tr>";
 
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
 
 
-				} else {
+			if (haveRight("config","w")) {
+				echo "<tr>";
+				echo "<td class='tab_bg_2' colspan='2' valign='top'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+				echo "</td>\n\n";
+				echo "<td class='tab_bg_2' colspan='2' valign='top'>\n";
+				echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
-					echo "</td>\n\n";
-					echo "<td class='tab_bg_2' valign='top'>\n";
-					echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+				echo "</td>";
+				echo "</tr>";
 
-					echo "</td>";
-					echo "</tr>";
+			}
 
-				}
 			echo "</table></div></form>";
 
 		} else {
