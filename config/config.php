@@ -184,6 +184,9 @@
 							);
 					$CFG_GLPI["ldap_field_group_member"]=strtolower($CFG_GLPI["ldap_field_group_member"]); 
 				}*/
+			} else {
+				echo "Error accessing config table";
+				exit();
 			}
 			
 //		$CACHE_CFG->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
