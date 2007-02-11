@@ -242,7 +242,7 @@ class Enterprise extends CommonDBTM {
 
 
 		} else {
-			echo "<div align='center'><b>".$LANG["financial"][39]."</b></div>";
+			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 

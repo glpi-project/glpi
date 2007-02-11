@@ -679,7 +679,7 @@ class Computer extends CommonDBTM {
 			return true;
 		}
 		else {
-			echo "<div align='center'><b>".$LANG["computers"][32]."</b></div>";
+			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 	}

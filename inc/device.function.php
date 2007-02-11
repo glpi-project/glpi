@@ -729,7 +729,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		}
 		echo "</table></form></div>";
 	} else {
-		echo "<div align='center'><b>".$LANG["devices"][18]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 		return false;
 	}
 }

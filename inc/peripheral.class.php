@@ -399,7 +399,7 @@ class Peripheral  extends CommonDBTM  {
 			return true;	
 		}
 		else {
-			echo "<div align='center'><b>".$LANG["peripherals"][17]."</b></div>";
+			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 

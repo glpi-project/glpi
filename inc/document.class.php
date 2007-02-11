@@ -286,7 +286,7 @@ class Document extends CommonDBTM {
 
 			}
 		} else {
-			echo "<div align='center'><b>".$LANG["document"][23]."</b></div>";
+			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 
 		}

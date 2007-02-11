@@ -427,7 +427,7 @@ class Netdevice extends CommonDBTM {
 			return true;
 		}
 		else {
-			echo "<div align='center'><b>".$LANG["networking"][38]."</b></div>";
+			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 
