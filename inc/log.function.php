@@ -269,7 +269,9 @@ function logArray(){
 			"contracts"=>$LANG["log"][17],
 			"phones"=>$LANG["log"][43],
 			"dropdown"=>$LANG["log"][44],
-			"groups"=>$LANG["log"][47]);
+			"groups"=>$LANG["log"][47],
+			"entity"=>$LANG["log"][63]);
+
 
 	$logService=array("inventory"=>$LANG["log"][50],
 			"tracking"=>$LANG["log"][51],
@@ -508,11 +510,10 @@ function showEvents($target,$order,$sort,$start=0) {
 		$service = $DB->result($result, $i, "service");
 		$level = $DB->result($result, $i, "level");
 		$message = $DB->result($result, $i, "message");
-
+		
 		echo "<tr class='tab_bg_2'>";
 
 		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td align='center'><b>"; 
-
 		//echo "<td>$itemtype:</td><td align='center'><b>";
 		if ($item=="-1" || $item=="0") {
 			echo "&nbsp;";//$item;
@@ -523,10 +524,10 @@ function showEvents($target,$order,$sort,$start=0) {
 				if ($itemtype=="reservation"){
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
 				} else {
-					if ($itemtype[strlen($itemtype)-1]=='s')
+					if ($itemtype[strlen($itemtype)-1]=='s'){
 						$show=substr($itemtype,0,strlen($itemtype)-1);
-					else $show=$itemtype;
-
+					}else $show=$itemtype;
+					
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
 				}
 				echo $item;

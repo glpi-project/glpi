@@ -693,7 +693,7 @@ function generate_entity($ID_entity){
 		$query="INSERT INTO glpi_users VALUES (NULL,'sadmin$i-$ID_entity','',MD5('sadmin$i'),'sadmin$i@tutu.com','tel $i','tel2 $i','mobile $i','sadmin$i name','sadmin$i firstname','".mt_rand($FIRST['locations'],$LAST['locations'])."','no','fr_FR','comments $i','-1','-1','','')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
-		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','4','$ID_entity','1','1');";
+		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','4','$ID_entity','1','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."');";
 		$DB->query($query) or die("PB REQUETE ".$query);
@@ -704,7 +704,7 @@ function generate_entity($ID_entity){
 		$query="INSERT INTO glpi_users VALUES (NULL,'admin$i-$ID_entity','',MD5('admin$i'),'admin$i@tutu.com','tel $i','tel2 $i','mobile $i','admin$i name','admin$i firstname','".mt_rand($FIRST['locations'],$LAST['locations'])."','no','fr_FR','comments $i','-1','-1','','')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
-		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','3','$ID_entity','1','1');";
+		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','3','$ID_entity','1','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."');";
 		$DB->query($query) or die("PB REQUETE ".$query);
@@ -716,7 +716,7 @@ function generate_entity($ID_entity){
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$LAST["users_normal"]=$user_id;
-		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','2','$ID_entity','1','1');";
+		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','2','$ID_entity','1','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."');";
 		$DB->query($query) or die("PB REQUETE ".$query);
@@ -728,7 +728,7 @@ function generate_entity($ID_entity){
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$LAST["users_postonly"]=$user_id;
-		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','1','$ID_entity','1','1');";
+		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','1','$ID_entity','1','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."');";
 		$DB->query($query) or die("PB REQUETE ".$query);
