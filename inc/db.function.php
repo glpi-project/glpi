@@ -447,8 +447,13 @@ function getNextItem($table,$ID){
 		$query="SELECT ".$nextprev_item." 
 			FROM $table 
 			WHERE ID='$ID'";
-		$result=$DB->query($query);
-		$search=addslashes($DB->result($result,0,0));
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)>0){
+				$search=addslashes($DB->result($result,0,0));
+			} else {
+				$nextprev_item="ID";
+			}
+		}
 	}
 
 	$query = "SELECT ID 
@@ -476,7 +481,7 @@ function getNextItem($table,$ID){
 	$query.=" ORDER BY $nextprev_item ASC, ID ASC";
 
 	$result=$DB->query($query);
-	if ($DB->numrows($result)>0)
+	if ($result&&$DB->numrows($result)>0)
 		return $DB->result($result,0,"ID");
 	else return -1;
 
@@ -501,7 +506,11 @@ function getPreviousItem($table,$ID){
 			FROM $table 
 			WHERE ID=$ID";
 		$result=$DB->query($query);
-		$search=addslashes($DB->result($result,0,0));
+		if ($DB->numrows($result)>0){
+			$search=addslashes($DB->result($result,0,0));
+		} else {
+			$nextprev_item="ID";
+		}
 	}
 
 	$query = "SELECT ID 
@@ -528,7 +537,7 @@ function getPreviousItem($table,$ID){
 	$query.=" ORDER BY ".$nextprev_item." DESC, ID DESC";
 
 	$result=$DB->query($query);
-	if ($DB->numrows($result)>0)
+	if ($result&&$DB->numrows($result)>0)
 		return $DB->result($result,0,"ID");
 	else return -1;
 

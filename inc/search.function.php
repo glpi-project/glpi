@@ -1668,8 +1668,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_type_docs.name" :
 		case "glpi_links.name" :
 		case "glpi_docs.name" :
-		case "glpi_entities.name" :
 		case "glpi_ocs_config.name" :
+		case "glpi_entities.name" :
 		case "glpi_entities.completename" :
 			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 			$out.= $data["ITEM_$num"];
@@ -2005,6 +2005,9 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
 
 	switch ($new_table){
+		case "glpi_entities_data":
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_entities) ";
+		break;
 		case "glpi_ocs_link":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
 		break;
