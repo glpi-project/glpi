@@ -62,6 +62,7 @@ class Entity extends CommonDBTM{
 		global $LANG;
 
 		$ong[1]=$LANG["title"][26];
+		$ong[2]=$LANG["Menu"][14];
 		return $ong;
 	}
 

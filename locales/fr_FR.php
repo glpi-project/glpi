@@ -757,6 +757,9 @@ $LANG["log"][58]="Réservation";
 $LANG["log"][59]="Cron";
 
 $LANG["log"][60]="déglobalisation de l'item";
+$LANG["log"][61]="ajout utilisateur à l'entité";
+$LANG["log"][62]="suppression utilisateur à l'entité";
+$LANG["log"][63]="entité";
 
 
 $LANG["login"][0]="Dernière connexion";
@@ -1050,6 +1053,8 @@ $LANG["profiles"][24]="Mise à jour de mot de passe";
 $LANG["profiles"][25]="Général";
 $LANG["profiles"][26]="Voir les tickets de mes groupes";
 $LANG["profiles"][27]="Voir les matériels de mes groupes";
+$LANG["profiles"][28]="Récursif";
+$LANG["profiles"][29]="Dynamique";
 
 $LANG["reminder"][0]="Notes personnelles";
 $LANG["reminder"][1]="Notes publiques";

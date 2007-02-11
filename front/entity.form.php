@@ -45,9 +45,27 @@ $entitydata=new EntityData();
 
 if (isset($_POST["update"]))
 {
-	checkRight("printer","w");
+	checkRight("config","w");
 	$entitydata->update($_POST);
-	logEvent($_POST["ID"], "entities", 4, "config", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["adduser"]))
+{
+	checkRight("config","w");
+
+	addUserProfileEntity($_POST);
+
+	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][61]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["deleteuser"]))
+{
+	checkRight("config","w");
+
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+			deleteUserProfileEntity($key);
+
+	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
@@ -60,7 +78,24 @@ if (isset($_GET['onglet'])) {
 
 
 
-$entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
+	switch($_SESSION['glpi_onglet']){
+		case -1 :	
+			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
+			display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+		break;
+		case 2 : 
+			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
+		break;
+
+		default :
+			if (!display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+				
+			}
+		break;
+	}
+
+}
 
 commonFooter();
 ?>

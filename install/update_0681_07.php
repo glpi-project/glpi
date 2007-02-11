@@ -164,7 +164,8 @@ function update0681to07() {
 	if (!FieldExists("glpi_users_profiles", "FK_entities")) {
 		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entities` INT NOT NULL DEFAULT '0',
 											ADD `recursive` TINYINT NOT NULL DEFAULT '1',
-											ADD `active` TINYINT NOT NULL DEFAULT '1' ";
+											ADD `active` TINYINT NOT NULL DEFAULT '1',
+											ADD `dynamic` TINYINT NOT NULL DEFAULT '0' ";
 		$DB->query($query) or die("0.7 alter glpi_users_profiles " . $LANG["update"][90] . $DB->error());
 
 		// Manage inactive users

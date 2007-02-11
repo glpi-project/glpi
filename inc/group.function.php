@@ -106,14 +106,6 @@ function showGroupUser($target,$ID){
 					if ($i!=0) echo "</tr>";
 					echo "<tr class='tab_bg_1'>";
 				}
-				if (empty($data["realname"]))
-					$name=$data["name"];
-				else {
-					$name=$data["realname"];
-					if (!empty($data["firstname"])){
-						$name.=" ".$data["firstname"];
-					}
-				}
 				if ($canedit){
 					echo "<td width='10'>";
 					$sel="";
@@ -122,8 +114,8 @@ function showGroupUser($target,$ID){
 					echo "</td>";
 				}
 	
-				echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["ID"]."'>".$name.($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</a>";
-	
+				echo "<td>";
+				echo formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1);
 				echo "</td>";
 				$i++;
 			}
