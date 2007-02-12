@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("contact","enterprise","link");
+$NEEDED_ITEMS=array("contact","enterprise","link","document");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -113,13 +113,16 @@ else
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
 					showEnterpriseContact($tab["ID"]);
+					showDocumentAssociated(CONTACT_TYPE,$tab["ID"]);
 					showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
 					display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					break;
+				case 5 : 
+					showDocumentAssociated(CONTACT_TYPE,$tab["ID"]);
 					break;
 				case 7 : 
 					showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
 					break;
-
 				case 10 :
 					showNotesForm($_SERVER['PHP_SELF'],CONTACT_TYPE,$tab["ID"]);
 					break;

@@ -546,23 +546,21 @@ function getPreviousItem($table,$ID){
 
 function formatUserName($ID,$login,$realname,$firstname,$link=0){
 	global $CFG_GLPI;
-	if ($ID>0){
-		$before="";
-		$after="";
-		if ($link==1){
-			$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\">";
-			$after="</a>";
-		}
-		if (strlen($realname)>0) {
-			$temp=$realname;
-			if (strlen($firstname)>0)$temp.=" ".$firstname;
-			$username=$before.$temp.($CFG_GLPI["view_ID"]?"&nbsp;($ID)":"").$after;
-		}
-		else $username=$before.$login.(($CFG_GLPI["view_ID"]||empty($login))?"&nbsp;($ID)":"").$after;
-		return $username;
-	} else {
-		return "";
+	$before="";
+	$after="";
+	if ($link==1&&$ID>0){
+		$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\">";
+		$after="</a>";
 	}
+	if (strlen($realname)>0) {
+		$temp=$realname;
+		if (strlen($firstname)>0)$temp.=" ".$firstname;
+		$username=$before.$temp.($CFG_GLPI["view_ID"]?"&nbsp;($ID)":"").$after;
+	}
+	else {
+		$username=$before.$login.(($ID>0&&($CFG_GLPI["view_ID"]||empty($login)))?"&nbsp;($ID)":"").$after;
+	}
+	return $username;
 
 
 }
