@@ -402,7 +402,7 @@ function commonHeader($title,$url,$sector="none")
 						}
 					}
 				}
-			}
+			} else echo "<li>&nbsp;</li>";
 		
 		echo "</ul>";
 		echo "</div>";
@@ -1472,13 +1472,14 @@ function showProfileSelecter(){
 	global $CFG_GLPI;
 
 	if (count($_SESSION["glpiprofiles"])>1){
-		echo '<form name="form" method="post" action="'.$CFG_GLPI['root_doc'].'/login.php">';
+		echo '<div style=\'float:right;\'><form name="form" method="post" action="'.$CFG_GLPI['root_doc'].'/login.php">';
 		echo '<select name="newprofile" onChange="submit()">';
 		foreach ($_SESSION["glpiprofiles"] as $key => $val){
 			echo '<option value="'.$key.'" '.($_SESSION["glpiactiveprofile"]["ID"]==$key?'selected':'').'>'.$val['name'].'</option>';
 		}
 		echo '</select>';
 		echo '</form>';
+		echo "</div>";
 
 
 	} //else echo "only one profile -> no select to print";
