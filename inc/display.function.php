@@ -234,11 +234,7 @@ function commonHeader($title,$url,$sector="none")
 		echo "<div id='c_preference' >";
 		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
 		echo "(";
-		if (!empty($_SESSION["glpirealname"])) {
-			echo $_SESSION["glpirealname"];
-			if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
-		}
-		else echo $_SESSION["glpiname"];
+		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0);
 		echo ")</li>\n"; 
 
 		echo "	<li><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750')\" title=\"".$LANG["central"][7]."\" >    ".$LANG["central"][7]."</a></li>\n"; 
@@ -520,11 +516,7 @@ function helpHeader($title,$url) {
 		echo "<div id='c_preference' >";
 		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
 		echo "(";
-		if (!empty($_SESSION["glpirealname"])) {
-			echo $_SESSION["glpirealname"];
-			if (strlen($_SESSION["glpirealname"]." ".$_SESSION["glpifirstname"])<20) echo " ".$_SESSION["glpifirstname"];
-		}
-		else echo $_SESSION["glpiname"];
+		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0);
 		echo ")</li>\n"; 
 
 		echo "	<li><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\">    ".$LANG["central"][7]."</a></li>\n"; 

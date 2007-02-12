@@ -1224,6 +1224,8 @@ function dropdownMassiveAction($device_type,$deleted='N'){
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
+	echo "<option value=\"update\">".$LANG["buttons"][14]."</option>";
+
 	if ($deleted=="Y"){
 		echo "<option value=\"purge\">".$LANG["buttons"][22]."</option>";
 		echo "<option value=\"restore\">".$LANG["buttons"][21]."</option>";
@@ -1235,11 +1237,13 @@ function dropdownMassiveAction($device_type,$deleted='N'){
 			echo "<option value=\"connect\">".$LANG["buttons"][9]."</option>";
 			echo "<option value=\"disconnect\">".$LANG["buttons"][10]."</option>";
 		}
-
+		if ($device_type!=DOCUMENT_TYPE){
+			echo "<option value=\"add_document\">".$LANG["document"][16]."</option>";
+		}
+		if (in_array($device_type,$CFG_GLPI["state_types"])){
+			echo "<option value=\"add_contract\">".$LANG["financial"][36]."</option>";
+		}
 		switch ($device_type){
-			case DOCUMENT_TYPE :
-				echo "<option value=\"add_document\">".$LANG["document"][16]."</option>";
-				break;
 			case COMPUTER_TYPE :
 				echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
 				break;
