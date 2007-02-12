@@ -162,6 +162,10 @@ function update0681to07() {
 	}	
 
 	if (!FieldExists("glpi_users_profiles", "FK_entities")) {
+		// Clean Datas
+		$query="DELETE FROM glpi_users_profiles WHERE FK_users='0'";
+		$DB->query($query) or die("0.7 clean datas of glpi_users_profiles " . $LANG["update"][90] . $DB->error());
+		
 		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entities` INT NOT NULL DEFAULT '0',
 											ADD `recursive` TINYINT NOT NULL DEFAULT '1',
 											ADD `active` TINYINT NOT NULL DEFAULT '1',
