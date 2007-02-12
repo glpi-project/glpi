@@ -632,7 +632,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			echo "<tr class='tab_bg_1$expirecss'>";
 
 			echo "<td align='center'><strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
-			echo $sw->fields["name"]." (v. ".$data["version"].")</a>";
+			echo $sw->fields["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data['ID'].")":"")."</a>";
 			echo "</strong>";
 			echo " - ".$data['serial']."</td>";
 			echo "<td align='center'><strong>";
