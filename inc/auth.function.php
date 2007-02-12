@@ -625,8 +625,8 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 	if (!empty ($condition))
 		$filter = "(& $filter $condition)";
 	$result = @ldap_search($ds, $basedn, $filter, array (
-		"dn"
-	));
+		"dn",
+	),0,0);
 	$info = @ldap_get_entries($ds, $result);
 	if (is_array($info) AND $info['count'] == 1) {
 		return $info[0]['dn'];
