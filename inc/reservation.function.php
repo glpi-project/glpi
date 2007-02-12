@@ -67,7 +67,7 @@ function showReservationForm($device_type,$id_device){
 
 	if ($resaID=isReservable($device_type,$id_device)) {
 		// Supprimer le materiel
-		echo "<div><a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG["reservation"][6]."</a></div>";	
+		echo "<br><div><a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG["reservation"][6]."</a></div>";	
 
 	}else {
 		echo "<div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";

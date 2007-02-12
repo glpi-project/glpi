@@ -277,7 +277,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	echo "</select>";
 	echo "</td>";
 	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->type."'>$type</a></td>";
-	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;</a></td>";
+	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
 
 	if (count($entry)>0){
 		$more=0;
