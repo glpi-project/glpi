@@ -266,7 +266,7 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
  *
  **/
 
-function displaySearchNewLine($type){
+function displaySearchNewLine($type,$odd=false){
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
@@ -276,7 +276,11 @@ function displaySearchNewLine($type){
 			break;
 
 		default :
-			$out="<tr class='tab_bg_2'>";
+			$class=" class='tab_bg_2' ";
+			if ($odd){
+				$class=" class='tab_bg_1' ";
+			}
+			$out="<tr $class>";
 			break;
 	}
 	return $out;
