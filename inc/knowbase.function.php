@@ -283,7 +283,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				$item_num=1;
 				$row_num++;
 
-				echo displaySearchNewLine($output_type);
+				echo displaySearchNewLine($output_type,$i%2);
 
 				if ($output_type==HTML_OUTPUT){
 					echo displaySearchItem($output_type,"<a  href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a><div style='font-size: 9px;	line-height: 10px; 	clear: both;	padding: 5px 0 0 45px;'>".resume_text(textBrut(unclean_cross_side_scripting_deep($data["answer"])),600)."</div>",$item_num,$row_num);

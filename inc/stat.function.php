@@ -247,7 +247,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 		for ($i=$start;$i< $numrows && $i<($end_display);$i++){
 			$row_num++;
 			$item_num=1;
-			echo displaySearchNewLine($output_type);
+			echo displaySearchNewLine($output_type,$i%2);
 			echo displaySearchItem($output_type,$value[$i]['link'],$item_num,$row_num);
 			if ($output_type==HTML_OUTPUT) // HTML display
 				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;date1=$date1&amp;date2=$date2&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
@@ -939,7 +939,7 @@ function showItemStats($target,$date1,$date2,$start){
 				$del=false;
 				if ($ci->getField('deleted')=='Y') $del=true;
 				//echo "<tr class='tab_bg_2$del'><td>".$ci->getLink()."</td><td>".$data["NB"]."</td></tr>";
-				echo displaySearchNewLine($output_type);
+				echo displaySearchNewLine($output_type,$i%2);
 				echo displaySearchItem($output_type,$ci->getLink(),$item_num,$i-$start+1,$del,"align='center'");
 				echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,$del,"align='center'");
 			}
