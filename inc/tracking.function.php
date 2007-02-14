@@ -412,7 +412,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$item_num=1;
 		$bgcolor=$CFG_GLPI["priority_".$data["priority"]];
 
-		echo displaySearchNewLine($output_type);
+		echo displaySearchNewLine($output_type,$row_num%2);
 
 
 

@@ -963,7 +963,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$i++;
 				$row_num++;
 				// New line
-				echo displaySearchNewLine($output_type);
+				echo displaySearchNewLine($output_type,($i%2));
 
 
 				if ($output_type==HTML_OUTPUT&&$isadmin){// HTML display - massive modif
