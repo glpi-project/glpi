@@ -248,6 +248,102 @@ function showGroupAssociated($target,$ID){
 
 }
 
+function showUserRights($target,$ID){
+	global $DB,$CFG_GLPI, $LANG;
+
+	if (!haveRight("user","r")||!haveRight("config","r"))	return false;
+
+	$canedit=haveRight("config","w");
+	$headerspan=1;
+	if ($canedit) {
+		$headerspan=2;
+	}
+	echo "<form name='entityuser_form' id='entityuser_form' method='post' action=\"$target\">";
+
+	if ($canedit){
+		echo "<div align='center'>";
+		echo "<table  class='tab_cadre_fixe'>";
+
+		echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG["entity"][3]."</tr><tr class='tab_bg_2'><td align='center'>";
+		echo "<input type='hidden' name='FK_users' value='$ID'>";
+		dropdownValue("glpi_entities","FK_entities",0);
+		echo "</td><td align='center'>";
+
+		echo $LANG["profiles"][22].":";
+		dropdownValue("glpi_profiles","FK_profiles");
+		echo "</td><td align='center'>";
+		echo $LANG["profiles"][28].":";
+		dropdownYesNoInt("recursive",0);
+		echo "</td><td align='center'>";
+		echo "<input type='submit' name='addright' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "</td></tr>";
+
+		echo "</table></div><br>";
+	}
+
+	echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][37]."</th><th>".$LANG["profiles"][22]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
+
+	$query="SELECT DISTINCT glpi_users_profiles.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_users_profiles.recursive,
+			glpi_users_profiles.dynamic, glpi_entities.completename, glpi_users_profiles.FK_entities
+			FROM glpi_users_profiles 
+			LEFT JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
+			LEFT JOIN glpi_entities ON (glpi_users_profiles.FK_entities = glpi_entities.ID)
+			WHERE glpi_users_profiles.FK_users='$ID';";
+
+	$result=$DB->query($query);
+	if ($DB->numrows($result)>0){
+		$i=0;
+
+		while ($data=$DB->fetch_array($result)){
+			echo "<tr class='tab_bg_1'>";
+			if ($canedit){
+				echo "<td width='10'>";
+				$sel="";
+				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+				echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+				echo "</td>";
+			}
+
+			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["ID"]."'>".$data["completename"].($CFG_GLPI["view_ID"]?" (".$data["FK_entities"].")":"")."</a>";
+			echo "&nbsp;";
+			echo "</td>";
+			echo "<td>".$data["name"];
+			if ($data["dynamic"]||$data["recursive"]){
+				echo "<strong>&nbsp;(";
+				if ($data["dynamic"]) echo "D";
+				if ($data["dynamic"]&$data["recursive"]) echo ", ";
+				if ($data["recursive"]) echo "R";
+				echo ")</strong>";
+			}
+
+			echo "</td>";
+			$i++;
+		}
+		echo "</tr>";
+	}
+
+	echo "</table></div>";
+
+	if ($canedit){
+		echo "<div align='center'>";
+		echo "<table cellpadding='5' width='80%'>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+
+		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+		echo "</td><td align='left' width='80%'>";
+		echo "<input type='submit' name='deleteright' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+		echo "</td></tr>";
+		echo "</table>";
+
+		echo "</div>";
+
+	}
+
+	echo "</form>";
+
+}
+
+
 
 function generateUserVcard($ID){
 
