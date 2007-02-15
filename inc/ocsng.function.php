@@ -269,11 +269,13 @@ function ocsManageDeleted($ocs_server_id) {
 													WHERE ocs_id='$del'";
 					$result = $DB->query($query);
 					if ($DB->numrows($result)) {
-						$del = $DB->fetch_array($result);
+						$data = $DB->fetch_array($result);
 						$comp = new Computer();
 						$comp->delete(array (
-							"ID" => $del["glpi_id"]
+							"ID" => $data["glpi_id"]
 						), 0);
+						$query="DELETE FROM glpi_ocs_link WHERE ID ='".$data["ID"]."'";
+						$DB->query($query);
 					}
 				}
 			}
@@ -811,6 +813,11 @@ function ocsCleanLinks($ocs_server_id) {
 				$query_del = "DELETE FROM glpi_ocs_link 
 									WHERE ID='" . $data["ID"] . "'";
 				$DB->query($query_del);
+				$comp = new Computer();
+				$comp->delete(array (
+					"ID" => $data["glpi_id"]
+				), 0);
+
 			}
 		}
 	}
