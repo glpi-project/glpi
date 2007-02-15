@@ -381,6 +381,7 @@ $LANG["document"][45]="Vous n'avez pas le droit d'accèder à ce fichier";
 $LANG["entity"][0]="Entité"; 
 $LANG["entity"][1]="Hierarchie"; 
 $LANG["entity"][2]="Entité Racine"; 
+$LANG["entity"][3]="Associer à une entité"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Service";

@@ -60,7 +60,10 @@ class User extends CommonDBTM {
 	function defineOnglets($withtemplate) {
 		global $LANG, $CFG_GLPI;
 
+
 		$ong[1] = $LANG["title"][26]; // principal
+
+		$ong[4]=$LANG["Menu"][36];
 
 		$ong[2] = $LANG["common"][1]; // materiel
 		if (haveRight("show_ticket", "1"))

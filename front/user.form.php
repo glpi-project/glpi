@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("user","profile","group","setup","tracking","computer","printer","networking","peripheral","monitor","software","enterprise","phone", "reservation","ldap");
+$NEEDED_ITEMS=array("user","profile","group","setup","tracking","computer","printer","networking","peripheral","monitor","software","enterprise","phone", "reservation","ldap","entity");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -102,6 +102,24 @@ else if (isset($_POST["deletegroup"]))
 
 	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["addright"]))
+{
+	checkRight("config","w");
+
+	addUserProfileEntity($_POST);
+
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][61]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["deleteright"]))
+{
+	checkRight("config","w");
+
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+			deleteUserProfileEntity($key);
+
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
 
@@ -127,13 +145,16 @@ else if (isset($_POST["deletegroup"]))
 					display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
-					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
+					showUserRights($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				case 2 :
 					showDeviceUser($_GET["ID"]);
 					break;
 				case 3 :
 					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",$_GET["ID"],-1);
+					break;
+				case 4 :
+					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				case 11 :
 					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
