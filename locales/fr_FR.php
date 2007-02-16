@@ -761,6 +761,7 @@ $LANG["log"][60]="déglobalisation de l'item";
 $LANG["log"][61]="ajout utilisateur à l'entité";
 $LANG["log"][62]="suppression utilisateur à l'entité";
 $LANG["log"][63]="entité";
+$LANG["log"][64]="modification des commentaires";
 
 
 $LANG["login"][0]="Dernière connexion";

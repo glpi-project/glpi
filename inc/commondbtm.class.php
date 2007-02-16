@@ -48,7 +48,7 @@ class CommonDBTM {
 		global $CFG_GLPI;
 		cleanAllItemCache($ID,"GLPI_".$this->type);
 		cleanAllItemCache("comments_".$ID,"GLPI_".$this->type);
-		$CFG_GLPI["cache"]->remove("data_".$ID,"GLPI_".$this->type);
+		$CFG_GLPI["cache"]->remove("data_".$ID,"GLPI_".$this->table);
 		cleanRelationCache($this->table);
 	}
 
@@ -58,19 +58,19 @@ class CommonDBTM {
 		// Make new database object and fill variables
 		global $DB,$CFG_GLPI;
 		if (empty($ID)&&$ID!=0) return false;
-//		if ($this->type<=0||!($data = $CFG_GLPI["cache"]->get("data_".$ID,"GLPI_".$this->type))) {
+		if ($this->type<=0||!($data = $CFG_GLPI["cache"]->get("data_".$ID,"GLPI_".$this->table))) {
 			$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = $ID)";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)==1){
 					$data = $DB->fetch_assoc($result);
-//					if ($this->type>0&&count($data)){
-//						$CFG_GLPI["cache"]->save($data,"data_".$ID,"GLPI_".$this->type);
-//					}
+					if ($this->type>0&&count($data)){
+						$CFG_GLPI["cache"]->save($data,"data_".$ID,"GLPI_".$this->table);
+					}
 				} else return false;
 			} else {
 				return false;
 			}
-//		}
+		}
 		$this->fields = $data;
 		return true;
 
