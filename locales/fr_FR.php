@@ -222,7 +222,7 @@ $LANG["common"][51]="Nom complet";
 $LANG["common"][52]="Serveur";
 $LANG["common"][53]="Liste";
 $LANG["common"][54]="Elément introuvable";
-
+$LANG["common"][55]="Etes-vous certain de vouloir supprimer cet élement ?";
 
 $LANG["computers"][0]="Ajouter ordinateur...";
 $LANG["computers"][9]="OS";

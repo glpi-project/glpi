@@ -434,7 +434,7 @@ function kbItemMenu($ID)
 
 	if ($edit){
 		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG["knowbase"][8]."' title='".$LANG["knowbase"][8]."'></a></td>\n";
-		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG["knowbase"][9]."' title='".$LANG["knowbase"][9]."'></a></td>";
+		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"javascript:confirmAction('".addslashes($LANG["common"][55])."','".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes')\"><img class='icon_nav' src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG["knowbase"][9]."' title='".$LANG["knowbase"][9]."'></a></td>";
 	}
 	echo "</tr>\n";
 	echo "</table></div>\n";
