@@ -36,17 +36,18 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkLoginUser();
 
-if (isset($_GET["popup"])) $_SESSION["glpipopup"]=$_GET["popup"];
+if (isset($_GET["popup"])) $_SESSION["glpipopup"]["name"]=$_GET["popup"];
+if (isset($_GET["rand"])) $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
 
-if (isset($_SESSION["glpipopup"])){
-	switch ($_SESSION["glpipopup"]){
+if (isset($_SESSION["glpipopup"]["name"])){
+	switch ($_SESSION["glpipopup"]["name"]){
 		case "dropdown":
 			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["several_add"])||isset($_POST["move"])||isset($_POST["update"])){
 				echo "<script type='text/javascript' >\n";
-				echo "window.opener.location.reload();";
+				echo "window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value='".$CFG_GLPI["ajax_wildcard"]."'";
 				echo "</script>";
 			}
-
+		
 		include "setup.dropdowns.php";
 		break;
 	}

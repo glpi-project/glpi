@@ -555,10 +555,17 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0){
 	if (strlen($realname)>0) {
 		$temp=$realname;
 		if (strlen($firstname)>0)$temp.=" ".$firstname;
-		$username=$before.$temp.($CFG_GLPI["view_ID"]?"&nbsp;($ID)":"").$after;
+		$viewID="";
+		if (strlen($temp)==0||($CFG_GLPI["view_ID"]&&$ID>0))
+		$viewID="&nbsp;($ID)";
+		$username=$before.$temp.$viewID.$after;
 	}
 	else {
-		$username=$before.$login.(($ID>0&&($CFG_GLPI["view_ID"]||empty($login)))?"&nbsp;($ID)":"").$after;
+		$viewID="";
+		if (strlen($login)==0||($CFG_GLPI["view_ID"]&&$ID>0))
+		$viewID="&nbsp;($ID)";
+
+		$username=$before.$login.$viewID.$after;
 	}
 	return $username;
 
