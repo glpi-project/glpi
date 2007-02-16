@@ -91,7 +91,6 @@ function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
 	foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 
 		if($val2["linkfield"]==$key){
-
 			$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 
 			if($val2["table"]==$LINK_ID_TABLE[$device_type]){
@@ -155,7 +154,7 @@ function showHistory($device_type,$id_device){
 		$ID = $data["ID"];
 		$date_mod = $date_mod=convDateTime($data["date_mod"]);
 		$user_name = $data["user_name"];
-
+		$field="";
 		// This is an internal device ?
 		if($data["linked_action"]){
 			// Yes it is an internal device
@@ -188,15 +187,20 @@ function showHistory($device_type,$id_device){
 
 
 		}else{
+			$fieldname="";
 			// It's not an internal device
 			foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 
 				if($key2==$data["id_search_option"]){
 					$field= $val2["name"];
+					$fieldname=$val2["field"];
 				}
 			}
-
-			$change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";
+			if ($fieldname=="comments"){
+				$change =$LANG["log"][64];
+			} else {
+				$change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";
+			}
 		}// fin du else
 
 		// show line 

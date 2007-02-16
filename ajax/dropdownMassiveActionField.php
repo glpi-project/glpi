@@ -79,7 +79,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				break;
 		}
 	} else { 
-
+	
 		switch ($search["table"]){
 
 			case "glpi_infocoms":  // infocoms case
@@ -123,11 +123,13 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				break;
 		}
 	}
-	if (!$FIELDNAME_PRINTED)
+	if (!$FIELDNAME_PRINTED){
 		if (empty($search["linkfield"]))
 			echo "<input type='hidden' name='field' value='".$search["field"]."'>";
-		else 
+		else {
 			echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
+		}
+	}
 
 	echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 }
