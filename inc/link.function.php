@@ -218,7 +218,7 @@ function showLinkOnDevice($type,$ID){
 					$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
 				}
 
-				echo "<tr class='tab_bg_2'><td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['ID']."&type=$type&ID=$ID' target='_blank'>".$name."</a></td></tr>";
+				echo "<tr class='tab_bg_2'><td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['ID']."&amp;type=$type&amp;ID=$ID' target='_blank'>".$name."</a></td></tr>";
 			}
 
 
