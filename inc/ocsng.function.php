@@ -438,7 +438,7 @@ function ocsUpdateComputer($ID,$dohistory,$force=0){
 		$result_ocs = $dbocs->query($query_ocs);
 		
 		// Need do history to be 2 not to lock fields 
-		if (dohistory){
+		if ($dohistory){
 			$dohistory=2;
 		}
 		if ($dbocs->numrows($result_ocs)==1){
