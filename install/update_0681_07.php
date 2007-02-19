@@ -512,6 +512,22 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add name in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
 	}
 	
+	if(!FieldExists("glpi_ocs_config","import_registry")){		
+		$query = "ALTER TABLE glpi_ocs_config ADD `import_registry` INT(2) NOT NULL default '0' AFTER `import_device_modems`";
+		$DB->query($query) or die("0.7 add import_registry in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
+	}
+	if (!TableExists("glpi_registry")) {
+		$query="CREATE TABLE  `glpi_registry` (
+ 				`ID` int(10) unsigned NOT NULL auto_increment,
+ 				`computer_id` int(10) unsigned NOT NULL,
+ 				`registry_hive` varchar(45) NOT NULL,
+ 				`registry_path` varchar(255) NOT NULL,
+ 				`registry_value` varchar(255) NOT NULL,
+ 				PRIMARY KEY  (`ID`)
+				) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1";
+		$DB->query($query) or die("0.7 add glpi_registry table " . $LANG["update"][90] . $DB->error());
+		
+	}
 	// TODO Split Config -> config general + config entity
 	// TODO Auto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference

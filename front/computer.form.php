@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("computer","device","networking","monitor","printer","tracking","software","peripheral","reservation","infocom","contract","document","user","link","ocsng","phone","enterprise","search");
+$NEEDED_ITEMS=array("computer","device","networking","monitor","printer","tracking","software","peripheral","reservation","infocom","contract","document","user","link","ocsng","phone","enterprise","search","registry");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -148,7 +148,7 @@ elseif(isset($tab["unlock_field"])){
 	
 	//Initiate a connection to the ocs database
 	$DBocs = getDBocs($ocs_server_id);
-	
+		
 	//Update the computer
 	ocsUpdateComputer($tab["resynch_id"],$ocs_server_id,1,1);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -210,6 +210,7 @@ elseif(isset($tab["unlock_field"])){
 					showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 					showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$tab["ID"]);
 					showLinkOnDevice(COMPUTER_TYPE,$tab["ID"]);
+					showRegistry(REGISTRY_TYPE,$tab["ID"]);
 					display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
 					break;
 				case 2 :
@@ -245,6 +246,9 @@ elseif(isset($tab["unlock_field"])){
 					break;
 				case 13 :
 					ocsEditLock($_SERVER['PHP_SELF'],$tab["ID"]);
+					break;
+				case 14:					
+					showRegistry(REGISTRY_TYPE,$tab["ID"]);
 					break;
 				default :
 					if (!display_plugin_action(COMPUTER_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]))

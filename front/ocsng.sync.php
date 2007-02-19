@@ -35,7 +35,7 @@
 
 
 $USE_OCSNGDB=1;
-$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup");
+$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","registry");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -44,7 +44,7 @@ checkRight("ocsng","w");
 
 commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils");
 
-if (isset($_SESSION["ocs_update"])){
+if (isset($_SESSION["ocs_update"])){	
 	if ($count=count($_SESSION["ocs_update"])){
 		$percent=min(100,round(100*($_SESSION["ocs_update_count"]-$count)/$_SESSION["ocs_update_count"],0));
 
@@ -65,7 +65,7 @@ if (isset($_SESSION["ocs_update"])){
 }
 
 
-if (!isset($_POST["update_ok"])){
+if (!isset($_POST["update_ok"])){	
 	if (!isset($_GET['check'])) $_GET['check']='all';
 	if (!isset($_GET['start'])) $_GET['start']=0;
 
@@ -74,7 +74,7 @@ if (!isset($_POST["update_ok"])){
 	ocsShowUpdateComputer($_SESSION["ocs_server_id"],$_GET['check'],$_GET['start']);
 
 } else {
-	if (count($_POST['toupdate'])>0){
+	if (count($_POST['toupdate'])>0){		
 		$_SESSION["ocs_update_count"]=0;
 		foreach ($_POST['toupdate'] as $key => $val){
 			if ($val=="on")	{

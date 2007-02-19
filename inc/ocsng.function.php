@@ -434,6 +434,8 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 				ocsResetMonitors($glpi_id);
 			if ($cfg_ocs["import_printer"])
 				ocsResetPrinters($glpi_id);
+			if ($cfg_ocs["import_registry"])
+				ocsResetRegistry($glpi_id);
 
 			ocsUpdateComputer($idlink, $ocs_server_id,0);
 		}
@@ -469,6 +471,7 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 		if ($DBocs->numrows($result_ocs) == 1) {
 			$data_ocs = $DBocs->fetch_array($result_ocs);
 			if ($force) {
+				
 				$ocs_checksum = MAX_OCS_CHECKSUM;
 				$query_ocs = "UPDATE hardware 
 									SET CHECKSUM= (" . MAX_OCS_CHECKSUM . ") 
@@ -478,6 +481,8 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 				$ocs_checksum = $data_ocs["CHECKSUM"];
 
 			$mixed_checksum = intval($ocs_checksum) & intval($cfg_ocs["checksum"]);
+		
+			
 			/*			echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
 						  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 						  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
@@ -486,7 +491,6 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 			if ($mixed_checksum) {
 				// Get updates on computers :
 				$computer_updates = importArrayFromDB($line["computer_update"]);
-
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
 					ocsUpdateHardware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);				
 				if ($mixed_checksum & pow(2, BIOS_FL))
@@ -534,6 +538,10 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 					// Get import monitors
 					$import_software = importArrayFromDB($line["import_software"]);
 					ocsUpdateSoftware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_software, $dohistory);
+				}				
+				if ($mixed_checksum & pow(2, REGISTRY_FL)) {
+					//import registry entries not needed 			
+					ocsUpdateRegistry($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_registry, $dohistory);
 				}
 
 				// Update OCS Cheksum 
@@ -546,6 +554,7 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 									SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTCOME"] . "' 
 									WHERE ID='$ID'";
 				$DB->query($query);
+				
 			}
 		}
 	}
@@ -883,7 +892,6 @@ function ocsShowUpdateComputer($ocs_server_id,$check, $start) {
 		return false;
 
 	$cfg_ocs = getOcsConf($ocs_server_id);
-
 	$query_ocs = "SELECT * 
 			FROM hardware 
 			WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 
@@ -899,7 +907,6 @@ function ocsShowUpdateComputer($ocs_server_id,$check, $start) {
 
 	$result_glpi = $DB->query($query_glpi);
 	if ($DBocs->numrows($result_ocs) > 0) {
-
 		// Get all hardware from OCS DB
 		$hardware = array ();
 		while ($data = $DBocs->fetch_array($result_ocs)) {
@@ -915,13 +922,14 @@ function ocsShowUpdateComputer($ocs_server_id,$check, $start) {
 				if (isset ($hardware[$data["ocs_id"]])) {
 					$already_linked[$data["ocs_id"]]["date"] = $data["last_update"];
 					$already_linked[$data["ocs_id"]]["name"] = $data["name"];
-					$already_linked[$data["ocs_id"]]["ID"] = $data["ID"];
+					$already_linked[$data["ocs_id"]]["ID"] = $data["ID"];					
 					$already_linked[$data["ocs_id"]]["glpi_id"] = $data["glpi_id"];
 					$already_linked[$data["ocs_id"]]["ocs_id"] = $data["ocs_id"];
 					$already_linked[$data["ocs_id"]]["auto_update"] = $data["auto_update"];
 				}
 			}
 		}
+		
 		echo "<div align='center'>";
 		echo "<h2>" . $LANG["ocsng"][10] . "</h2>";
 
@@ -1896,7 +1904,48 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 	}
 
 }
-
+/**
+ * Update config of the registry
+ *
+ * This function erase old data and import the new ones about registry (Microsoft OS after Windows 95)
+ *
+ *
+ *@param $glpi_id integer : glpi computer id.
+ *@param $ocs_id integer : ocs computer id (ID).
+ *@param $ocs_server_id integer : ocs server id
+ *@param $cfg_ocs array : ocs config
+ *@param $dohistory boolean : log changes ?
+ *@return Nothing (void).
+ *
+ **/
+function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs) {
+	global $DB, $DBocs;
+	
+	checkOCSconnection($ocs_server_id);
+	//before update, delete all entries about $glpi_id
+	$query_delete = "DELETE from glpi_registry WHERE computer_id='".$glpi_id."'";
+	$DB->query($query_delete);	
+	if ($cfg_ocs["import_registry"]) {
+		//Get data from OCS database
+		$query = "SELECT registry.NAME as NAME, registry.REGVALUE as regvalue, registry.HARDWARE_ID as computer_id, regconfig.REGTREE as regtree, regconfig.REGKEY as regkey
+					FROM registry LEFT JOIN regconfig ON (registry.NAME = regconfig.NAME)
+   					WHERE HARDWARE_ID = '" . $ocs_id . "'"; 				
+		$result = $DBocs->query($query);
+		if ($DBocs->numrows($result) > 0) {			
+			//update data	
+			while ($data = $DBocs->fetch_array($result)) {	
+			$data = clean_cross_side_scripting_deep(addslashes_deep($data));					
+			$reg = new Registry();		
+			$reg->fields["computer_id"] = $glpi_id;	
+			$reg->fields["registry_hive"] = $data["regtree"];
+			$reg->fields["registry_value"] = $data["regvalue"];
+			$reg->fields["registry_path"] = $data["regkey"];			
+			$isNewReg = $reg->addToDB();
+			}
+		} 	
+	}
+	return;
+}
 /**
  * Update config of a new software
  *
@@ -2265,7 +2314,38 @@ function ocsResetPrinters($glpi_computer_id) {
 		$DB->query($query2);
 	}
 }
+/**
+ * Delete old registry entries
 
+ *
+ *@param $glpi_computer_id integer : glpi computer id.
+ *
+ *@return nothing.
+ *
+ **/
+function ocsResetRegistry($glpi_computer_id) {
+
+	global $DB;
+
+	$query = "SELECT * 
+			FROM glpi_registry 
+			WHERE computer_id = '" . $glpi_computer_id . "'"; 			
+	$result = $DB->query($query);
+	if ($DB->numrows($result) > 0) {
+		while ($data = $DB2->fetch_assoc($result)) {
+			$query2 = "SELECT COUNT(*) 
+							FROM glpi_registry 
+							WHERE computer_id = '" . $data['computer_id'] . "'";
+			$result2 = $DB->query($query2);
+			$registry = new Registry();
+			if ($DB->result($result2, 0, 0) == 1) {
+				$registry->delete(array (
+					'ID' => $data['computer_id']
+				), 1);
+			}
+		}		
+	}
+}
 /**
  * Delete old dropdown value
  *
