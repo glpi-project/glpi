@@ -35,10 +35,17 @@
 // $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showRegistry($device_type,$ID,$withtemplate=''){
 	
-	global $DB,$CFG_GLPI, $LANG, $REGISTRY_HIVE;
+	global $DB,$CFG_GLPI, $LANG;
 	
 	if (!haveRight("computer","r")) return false;
-	
+	//REGISTRY HIVE
+	$REGISTRY_HIVE=array("HKEY_CLASSES_ROOT",
+	"HKEY_CURRENT_USER",
+	"HKEY_LOCAL_MACHINE",
+	"HKEY_USERS",
+	"HKEY_CURRENT_CONFIG",
+	"HKEY_DYN_DATA");
+
 
 	$query = "SELECT ID FROM glpi_registry WHERE computer_id='".$ID."'";
 	

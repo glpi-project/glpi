@@ -138,14 +138,6 @@
 	// Default number of items displayed in global search
 	define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
 	
-	//REGISTRY HIVE
-	$REGISTRY_HIVE=array("HKEY_CLASSES_ROOT",
-	"HKEY_CURRENT_USER",
-	"HKEY_LOCAL_MACHINE",
-	"HKEY_USERS",
-	"HKEY_CURRENT_CONFIG",
-	"HKEY_DYN_DATA");
-
 	$LINK_ID_TABLE=array(
 			COMPUTER_TYPE=> "glpi_computers",
 			NETWORKING_TYPE => "glpi_networking",
