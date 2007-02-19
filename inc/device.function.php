@@ -322,7 +322,9 @@ function update_device_specif($newValue,$compDevID,$strict=false) {
 	// Check old value for history 
 	global $DB;
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
-	if ($result = $DB->query($query)) 
+	cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
+
+	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
 			$data = addslashes_deep($DB->fetch_array($result));
 			// Is it a real change ?
@@ -337,7 +339,6 @@ function update_device_specif($newValue,$compDevID,$strict=false) {
 					$changes[0]='0';
 					$changes[1]=addslashes($data["specificity"]);
 					$changes[2]=$newValue;
-					cleanAllItemCache("device".$data["FK_computers"],"GLPI_".DEVICE_TYPE);
 					// history log
 					historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_UPDATE_DEVICE);
 					return true;
@@ -346,6 +347,7 @@ function update_device_specif($newValue,$compDevID,$strict=false) {
 				}
 			}
 		}
+	}
 
 }
 
@@ -395,9 +397,11 @@ function unlink_device_computer($compDevID,$dohistory=1){
 		$data = $DB->fetch_array($result);
 	} 
 
+	cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
+
 	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
 	if($DB->query($query2)){
-		cleanAllItemCache("device".$data["FK_computers"],"GLPI_".DEVICE_TYPE);
+		
 		if ($dohistory){
 			$device = new Device($data["device_type"]);
 			$device->getFromDB($data["FK_device"]);
@@ -420,7 +424,7 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	$device->getfromDB($dID);
 	if (empty($specificity)) $specificity=$device->fields['specif_default'];
 	$newID=$device->computer_link($cID,$device_type,$specificity);
-	cleanAllItemCache("device".$cID,"GLPI_".DEVICE_TYPE);
+	cleanAllItemCache("device_".$cID,"GLPI_".COMPUTER_TYPE);
 	if ($dohistory){
 		$changes[0]='0';
 		$changes[1]="";
