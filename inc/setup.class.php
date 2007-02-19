@@ -99,7 +99,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		$rank2=$DB->result($result,0,"rank");
 		$ID2=$DB->result($result,0,"ID");
 		// Update items
-		$query="UPDATE glpi_display SET rank='$rank2' WHERE ID ='".$_POST['ID']."'";
+		$query="UPDATE glpi_display SET rank='$rank2' WHERE ID ='".$input['ID']."'";
 		$DB->query($query);
 		$query="UPDATE glpi_display SET rank='$rank1' WHERE ID ='$ID2'";
 		$DB->query($query);
@@ -109,7 +109,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		global $DB;
 
 		// Get current item
-		$query="SELECT rank FROM glpi_display WHERE ID='".$_POST['ID']."';";
+		$query="SELECT rank FROM glpi_display WHERE ID='".$input['ID']."';";
 		$result=$DB->query($query);
 		$rank1=$DB->result($result,0,0);
 		// Get next item
@@ -118,7 +118,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		$rank2=$DB->result($result,0,"rank");
 		$ID2=$DB->result($result,0,"ID");
 		// Update items
-		$query="UPDATE glpi_display SET rank='$rank2' WHERE ID ='".$_POST['ID']."'";
+		$query="UPDATE glpi_display SET rank='$rank2' WHERE ID ='".$input['ID']."'";
 		$DB->query($query);
 		$query="UPDATE glpi_display SET rank='$rank1' WHERE ID ='$ID2'";
 		$DB->query($query);
