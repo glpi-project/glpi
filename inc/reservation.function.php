@@ -70,7 +70,7 @@ function showReservationForm($device_type,$id_device){
 		echo "<br><div><a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG["reservation"][6]."</a></div>";	
 
 	}else {
-		echo "<div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
+		echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
 		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\" class='icon_consol' >".$LANG["reservation"][7]."</a></div>";      
 	}
 }
