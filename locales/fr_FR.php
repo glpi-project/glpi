@@ -222,7 +222,7 @@ $LANG["common"][51]="Nom complet";
 $LANG["common"][52]="Serveur";
 $LANG["common"][53]="Liste";
 $LANG["common"][54]="Elément introuvable";
-
+$LANG["common"][55]="Etes-vous certain de vouloir supprimer cet élement ?";
 
 $LANG["computers"][0]="Ajouter ordinateur...";
 $LANG["computers"][9]="OS";
@@ -761,7 +761,7 @@ $LANG["log"][60]="déglobalisation de l'item";
 $LANG["log"][61]="ajout utilisateur à l'entité";
 $LANG["log"][62]="suppression utilisateur à l'entité";
 $LANG["log"][63]="entité";
-
+$LANG["log"][64]="modification des commentaires";
 
 $LANG["login"][0]="Dernière connexion";
 $LANG["login"][1]="Se reconnecter";

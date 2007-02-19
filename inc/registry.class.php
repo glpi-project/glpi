@@ -48,22 +48,6 @@ class Registry extends CommonDBTM{
 		$result = $DB->query($query);
 	}
 
-	function prepareInputForAdd($input) {		
-	}
-
-	function postAddItem($newID,$input) {		
-	}
-
-	function restore($input) {
-
-		global $DB;	
-	}
-		
-	function showForm ($target,$ID,$withtemplate='') {	
-
-		global $CFG_GLPI,$LANG;	
-		return true;
-	}
 } 
 
 ?>

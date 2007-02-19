@@ -158,10 +158,6 @@ class Computer extends CommonDBTM {
 			}
 			$ic->addToDB();
 		}
-		// ADD registry
-		$query="SELECT ID from glpi_registry WHERE computer='".$input["_oldID"]."'";
-		$result=$DB->query($query);
-		
 
 		// ADD software
 		$query="SELECT license from glpi_inst_software WHERE cID='".$input["_oldID"]."'";
