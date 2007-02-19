@@ -55,6 +55,7 @@
 	define("AUTH_MAIL_TYPE",30);
 	define("AUTH_LDAP_TYPE",31);
 	define("OCSNG_TYPE",32);
+	define("REGISTRY_TYPE",33);
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -136,6 +137,14 @@
 
 	// Default number of items displayed in global search
 	define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
+	
+	//REGISTRY HIVE
+	$REGISTRY_HIVE=array("HKEY_CLASSES_ROOT",
+	"HKEY_CURRENT_USER",
+	"HKEY_LOCAL_MACHINE",
+	"HKEY_USERS",
+	"HKEY_CURRENT_CONFIG",
+	"HKEY_DYN_DATA");
 
 	$LINK_ID_TABLE=array(
 			COMPUTER_TYPE=> "glpi_computers",
@@ -168,6 +177,7 @@
 			ENTITY_TYPE => "glpi_entities",
 			RESERVATION_TYPE => "glpi_reservation_item",
 			OCSNG_TYPE => "glpi_ocs_config",
+			REGISTRY_TYPE => "glpi_registry",
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -201,6 +211,7 @@
 			ENTITY_TYPE => "front/entity.form.php",
 			RESERVATION_TYPE => "???",
 			OCSNG_TYPE => "front/ocsng.form.php",
+			REGISTRY_TYPE => "???",
 			);
 
 	define("AUTH_CAS",0);

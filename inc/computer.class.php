@@ -64,6 +64,8 @@ class Computer extends CommonDBTM {
 			$ong[4]=$LANG["Menu"][26];
 		if (haveRight("document","r"))	
 			$ong[5]=$LANG["title"][25];
+		if (haveRight("computer","r"))	
+			$ong[14]=$LANG["title"][42];
 
 		if(empty($withtemplate)){
 			if (haveRight("show_ticket","1"))	
@@ -156,6 +158,10 @@ class Computer extends CommonDBTM {
 			}
 			$ic->addToDB();
 		}
+		// ADD registry
+		$query="SELECT ID from glpi_registry WHERE computer='".$input["_oldID"]."'";
+		$result=$DB->query($query);
+		
 
 		// ADD software
 		$query="SELECT license from glpi_inst_software WHERE cID='".$input["_oldID"]."'";

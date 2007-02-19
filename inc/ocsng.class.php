@@ -79,7 +79,7 @@ function titleOCSNG() {
 
 function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		global $DB, $LANG, $CFG_GLPI;
-
+		
 		if (!haveRight("ocsng", "w"))
 			return false;
 
@@ -219,10 +219,12 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<option value='0' " . ($software == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
 		echo "<option value='1' " . ($software == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
 		echo "</select>";
-
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][38] . " </td><td>";
 		dropdownYesNoInt("use_soft_dict", $this->fields["use_soft_dict"]);
+		echo "</td></tr>";		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][41] . " </td><td>";
+		dropdownYesNoInt("import_registry", $this->fields["import_registry"]);
 		echo "</td></tr>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][40] . " </td><td>";
@@ -324,7 +326,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][37] . " </td><td>";
 		dropdownYesNoInt("import_device_ports", $this->fields["import_device_ports"]);
-		echo "</td></tr>";
+		echo "</td></tr>";		
 
 		echo "</table></td></tr>";
 		echo "</table></div>";
@@ -460,6 +462,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 			if ($input["import_software"]) $input["checksum"]|= pow(2,SOFTWARES_FL);
 			if ($input["import_monitor"]) $input["checksum"]|= pow(2,MONITORS_FL);
 			if ($input["import_periph"]) $input["checksum"]|= pow(2,INPUTS_FL);
+			if ($input["import_registry"]) $input["checksum"]|= pow(2,REGISTRY_FL);
 		}
 		
 		return $input;
@@ -501,6 +504,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 			if ($input["import_software"]) $input["checksum"]|= pow(2,SOFTWARES_FL);
 			if ($input["import_monitor"]) $input["checksum"]|= pow(2,MONITORS_FL);
 			if ($input["import_periph"]) $input["checksum"]|= pow(2,INPUTS_FL);
+			if ($input["import_registry"]) $input["checksum"]|= pow(2,REGISTRY_FL);
 		}
 		
 		return $input;

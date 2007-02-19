@@ -222,7 +222,7 @@ $LANG["common"][51]="Nom complet";
 $LANG["common"][52]="Serveur";
 $LANG["common"][53]="Liste";
 $LANG["common"][54]="Elément introuvable";
-$LANG["common"][55]="Etes-vous certain de vouloir supprimer cet élement ?";
+
 
 $LANG["computers"][0]="Ajouter ordinateur...";
 $LANG["computers"][9]="OS";
@@ -761,7 +761,6 @@ $LANG["log"][60]="déglobalisation de l'item";
 $LANG["log"][61]="ajout utilisateur à l'entité";
 $LANG["log"][62]="suppression utilisateur à l'entité";
 $LANG["log"][63]="entité";
-$LANG["log"][64]="modification des commentaires";
 
 
 $LANG["login"][0]="Dernière connexion";
@@ -967,6 +966,7 @@ $LANG["ocsconfig"][37]="Ports";
 $LANG["ocsconfig"][38]="Utiliser le dictionnaire logiciel d'OCS";
 $LANG["ocsconfig"][39]="TAG OCS";
 $LANG["ocsconfig"][40]="Nombre d'élements à synchroniser via le cron";
+$LANG["ocsconfig"][41]="Base de registre";
 
 
 $LANG["pager"][1]="à";
@@ -1057,6 +1057,13 @@ $LANG["profiles"][26]="Voir les tickets de mes groupes";
 $LANG["profiles"][27]="Voir les matériels de mes groupes";
 $LANG["profiles"][28]="Récursif";
 $LANG["profiles"][29]="Dynamique";
+
+$LANG["registry"][0]="Base de registre";
+$LANG["registry"][1]="Ruche";
+$LANG["registry"][2]="Chemin";
+$LANG["registry"][3]="Clé/valeur";
+$LANG["registry"][4]="Clé(s) de registre trouvée(s)";
+$LANG["registry"][5]="Aucune clé de la base de registre trouvée";
 
 $LANG["reminder"][0]="Notes personnelles";
 $LANG["reminder"][1]="Notes publiques";
@@ -1500,6 +1507,7 @@ $LANG["title"][39]="OCS Inventory NG";
 $LANG["title"][40]="Notes personnelles et publiques";
 $LANG["title"][41]="Téléphone";
 $LANG["title"][42]="Modification Massive";
+$LANG["title"][42]="Registre";
 
 $LANG["tracking"][0]="Suivi des tickets";
 $LANG["tracking"][1]="Mes matériels";
