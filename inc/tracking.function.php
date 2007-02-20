@@ -1363,7 +1363,6 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('TrackingForm') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$lang["buttons"][19]."</a>";
 				echo "</td><td>";
-				echo "<input type='submit' value=\"".$lang["buttons"][6]."\" name='delete_inter' class='submit'></td>";
 				echo "<td width='75%'>&nbsp;</td></table></div>";
 				// End form for delete item
 				echo "</form>";

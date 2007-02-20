@@ -147,7 +147,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$query_inst .= " ON ( glpi_inst_software.license = glpi_licenses.ID )";
 			$query_inst .= " INNER JOIN glpi_computers ON (glpi_computers.deleted='N' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) ";
 			$query_inst .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='".LICENSE_TYPE."' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
-			$query_inst .= " WHERE $SEARCH_LICENCE ";
+			$query_inst .= " WHERE $SEARCH_LICENCE ORDER BY cname";
 
 			$result_inst = $db->query($query_inst);
 			$num_inst=$db->numrows($result_inst);
