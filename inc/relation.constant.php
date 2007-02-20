@@ -101,7 +101,7 @@ $RELATION=array(
 	
 	"glpi_dropdown_iface" =>array("glpi_networking_ports"=>"iface"),
 	
-	"glpi_dropdown_interface" =>array("glpi_device_hdd "=>"interface",
+	"glpi_dropdown_interface" =>array("glpi_device_hdd"=>"interface",
 															"glpi_device_drive"=>"interface",
 															"glpi_device_control"=>"interface"),
 	
@@ -134,7 +134,7 @@ $RELATION=array(
 	"glpi_dropdown_model_phones" =>array("glpi_phones"=>"model"),
 	
 	"glpi_dropdown_model_printers" =>array("glpi_printers"=>"model",
-									"glpi_cartridges_assoc" => "FK_glpi_dropdown_model_printers"),
+									"glpi_cartridges_assoc" =>"FK_glpi_dropdown_model_printers"),
 	
 	"glpi_dropdown_netpoint" =>array("glpi_networking_ports"=>"netpoint"),
 	
@@ -170,7 +170,7 @@ $RELATION=array(
 	
 	"glpi_enterprises" =>array("glpi_contact_enterprise"=>"FK_enterprise",
 				"glpi_contract_enterprise"=>"FK_enterprise",
-				"glpi_infocoms" => "FK_enterprise",
+				"glpi_infocoms" =>"FK_enterprise",
 				"glpi_tracking"=>"assign_ent",
 	),
 	"glpi_entities" => array("glpi_cartridges_type"=>"FK_entities", 
@@ -225,17 +225,17 @@ $RELATION=array(
 	"glpi_tracking" => array("_glpi_docs"=>"FK_tracking",
 						"glpi_followups"=>"tracking"),
 
-	"glpi_type_computers"=>array("glpi_computers "=>"type"),
+	"glpi_type_computers"=>array("glpi_computers"=>"type"),
 	
-	"glpi_type_monitors "=>array("glpi_monitors "=>"type"),
+	"glpi_type_monitors"=>array("glpi_monitors"=>"type"),
 	
-	"glpi_type_docs "=>array("glpi_monitors "=>"type"),
+	"glpi_type_docs"=>array("glpi_monitors"=>"type"),
 	
-	"glpi_type_networking "=>array("glpi_networking "=>"type"),
+	"glpi_type_networking"=>array("glpi_networking"=>"type"),
 	
-	"glpi_type_peripherals "=>array("glpi_peripherals"=>"type"),
+	"glpi_type_peripherals"=>array("glpi_peripherals"=>"type"),
 	
-	"glpi_type_phones "=>array("glpi_phones"=>"type"),
+	"glpi_type_phones"=>array("glpi_phones"=>"type"),
 	
 	"glpi_type_printers"=>array("glpi_printers"=>"type",
 							"glpi_cartridges_assoc"=>"FK_glpi_type_printer"),

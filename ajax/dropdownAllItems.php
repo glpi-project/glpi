@@ -85,7 +85,7 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner$rand').style.visibility='hidden';";
+		echo "Element.hide('search_spinner$rand');";
 		echo "Element.hide('search_".$_POST['myname']."$rand');";
 		echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
 		echo "</script>\n";
@@ -94,7 +94,7 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 
 	if(isset($_POST['value'])&&$_POST['value']>0){
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner$rand').style.visibility='hidden';";
+		echo "Element.hide('search_spinner$rand');";
 		echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
 		echo "</script>\n";
 	}

@@ -43,12 +43,20 @@ if (isset($_SESSION["glpipopup"]["name"])){
 	switch ($_SESSION["glpipopup"]["name"]){
 		case "dropdown":
 			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["several_add"])||isset($_POST["move"])||isset($_POST["update"])){
-				echo "<script type='text/javascript' >\n";
-				echo "window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value='".$CFG_GLPI["ajax_wildcard"]."'";
-				echo "</script>";
+				$_SESSION["glpipopup"]["reload"]=1;
 			}
 		
 		include "setup.dropdowns.php";
+		if (isset($_SESSION["glpipopup"]["reload"])&&$_SESSION["glpipopup"]["reload"]){
+			echo "<script type='text/javascript' >\n";
+			echo "if (window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value=='".$CFG_GLPI["ajax_wildcard"]."'){";
+			echo "window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value=''";
+			echo "} else {";
+			echo "window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value='".$CFG_GLPI["ajax_wildcard"]."'";
+			echo '}';
+			echo "</script>";
+			$_SESSION["glpipopup"]["reload"]=0;
+		}
 		break;
 	}
 }
