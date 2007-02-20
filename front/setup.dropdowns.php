@@ -183,25 +183,26 @@ else {
 					),
 
 			); //end $opt
-
-	echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
-	echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
-	echo $LANG["setup"][72].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
-
-	foreach($optgroup as $label=>$dp){
-
-		echo "<optgroup label=\"$label\">";
-
-		foreach ($dp as $key => $val){
-			$sel="";
-			if ($which==$key) $sel="selected";
-			echo "<option value='$key' $sel>".$val."</option>";	
+	if (!ereg("popup",$_SERVER['PHP_SELF'])){
+		echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
+		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
+		echo $LANG["setup"][72].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
+	
+		foreach($optgroup as $label=>$dp){
+	
+			echo "<optgroup label=\"$label\">";
+	
+			foreach ($dp as $key => $val){
+				$sel="";
+				if ($which==$key) $sel="selected";
+				echo "<option value='$key' $sel>".$val."</option>";	
+			}
+			echo "</optgroup>";
 		}
-		echo "</optgroup>";
+		echo "</select></td>";
+		echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
+		echo "</table></form></div>";
 	}
-	echo "</select></td>";
-	echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
-	echo "</table></form></div>";
 
 	if ($which){
 		// Search title
