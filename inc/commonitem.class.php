@@ -376,16 +376,19 @@ class CommonItem{
 			if ($tmp=$this->getField('contact_num')){
 				$comment.=$LANG["common"][21].": ".$tmp."<br>";
 			}
-			if (!empty($comment)){
-				$rand=mt_rand();
-				$comments_display=" onmouseout=\"cleanhide('comments_commonitem$rand')\" onmouseover=\"cleandisplay('comments_commonitem$rand')\" ";
-				$comments_display2="<span class='over_link' id='comments_commonitem$rand'>".nl2br($comment)."</span>";
-	
-				$comment="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display> ";
-				$comment.=$comments_display2;
-			}
 			$CFG_GLPI["cache"]->save($comment,"comments_".$this->id_device."_".$_SESSION["glpilanguage"],"GLPI_".$this->device_type);
 		}
+
+		if (!empty($comment)){
+			$rand=mt_rand();
+			$comments_display=" onmouseout=\"cleanhide('comments_commonitem$rand')\" onmouseover=\"cleandisplay('comments_commonitem$rand')\" ";
+			$comments_display2="<span class='over_link' id='comments_commonitem$rand'>".nl2br($comment)."</span>";
+	
+			$comment="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display> ";
+			$comment.=$comments_display2;
+		}
+
+		
 		return $comment;
 	}
 }
