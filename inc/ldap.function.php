@@ -116,10 +116,10 @@ function ldapChooseDirectory($target) {
 			echo "<option value=" . $ldap["ID"] . ">" . $ldap["name"] . "</option>";
 
 		echo "</select></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center' colspan=2><input class='submit' type='submit' name='ldap_showusers' value='" . $LANG["buttons"][2] . "'></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='ldap_showusers' value='" . $LANG["buttons"][2] . "'></td></tr>";
 
 	} else
-		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG["ldap"][7] . "</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan='2'>" . $LANG["ldap"][7] . "</td></tr>";
 
 	echo "</table></div></form>";
 }
@@ -225,14 +225,14 @@ function showLdapUsers($target, $check, $start, $sync = 0) {
 		echo "<form method='post' name='ldap_form' action='" . $target . "'>";
 		echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th>" . $LANG["buttons"][37] . "</th><th>" . $LANG["Menu"][14] . "</th>";
+		echo "<tr><th>" . $LANG["buttons"][37] . "</th><th>" . $LANG["Menu"][14] . "</th></tr>";
 
 		foreach ($ldap_users as $user) {
 
 			echo "<tr align='center' class='tab_bg_2'>";
-			echo "<td><input type='checkbox' name='" . $action . "[" . $user . "]' " . ($check == "all" ? "checked" : "") . ">";
-			echo "<td colspan=4>" . $user . "</td>";
-			echo "</td></tr>";
+			echo "<td><input type='checkbox' name='" . $action . "[" . $user . "]' " . ($check == "all" ? "checked" : "") ."></td>";
+			echo "<td colspan='4'>" . $user . "</td>";
+			echo "</tr>";
 		}
 		echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
 		echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . $LANG["buttons"][37] . "'>";
