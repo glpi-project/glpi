@@ -123,7 +123,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_spinner_$myname$rand');";
 		echo "Element.hide('search_$myname$rand');";
 		echo "</script>\n";
 	}
@@ -165,7 +165,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 
 	if ($display_comments){
 		echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display ";
-		if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$myname$rand' ,'mywindow', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+		if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$myname$rand' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
 		echo ">";
 		echo $comments_display2;
 	}
@@ -275,7 +275,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_spinner_$myname$rand');";
 		echo "Element.hide('search_$myname$rand');";
 		//echo "document.getElementById('search_$myname$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
 		echo "</script>\n";
@@ -472,7 +472,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_spinner_$myname$rand');";
 		echo "Element.hide('search_$myname$rand');";
 		echo "</script>\n";
 	}
@@ -661,7 +661,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$wi
 
 	if ($value>0){
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_spinner_$myname$rand');";
 		echo "document.getElementById('item_type$rand').value='".$value_type."';";
 		echo "</script>\n";
 	}
@@ -1004,7 +1004,7 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_spinner_$myname$rand');";
 		echo "Element.hide('search_$myname$rand');";
 		echo "document.getElementById('search_$myname$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
 		echo "</script>\n";
@@ -1101,7 +1101,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massi
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_spinner_$myname$rand').style.visibility='hidden';";
+		echo "Element.hide('search_spinner_$myname$rand');";
 		echo "Element.hide('search_$myname$rand');";
 		echo "document.getElementById('search_$myname$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
 		echo "</script>\n";

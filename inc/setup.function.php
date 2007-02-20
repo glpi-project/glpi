@@ -429,7 +429,7 @@ function showDeleteConfirmForm($target, $table, $ID) {
 	echo "<form action=\"" . $target . "\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
 	echo "<input type=\"hidden\" name=\"ID\" value=\"" . $ID . "\"  />";
-	echo "<input type=\"hidden\" name=\"which\" value=\"" . str_replace("glpi_type_", "", str_replace("glpi_dropdown_", "", $table)) . "\"  />";
+	echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
 	echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
 
 	echo "<table class='tab_cadre'><tr><td>";
@@ -440,7 +440,7 @@ function showDeleteConfirmForm($target, $table, $ID) {
 	echo "</form>";
 	echo "<p>" . $LANG["setup"][65] . "</p>";
 	echo "<form action=\" " . $target . "\" method=\"post\">";
-	echo "<input type=\"hidden\" name=\"which\" value=\"" . str_replace("glpi_type_", "", str_replace("glpi_dropdown_", "", $table)) . "\"  />";
+	echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
 	echo "<table class='tab_cadre'><tr><td>";
 	dropdownNoValue($table, "newID", $ID);
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
@@ -488,13 +488,15 @@ function dropdownUsed($table, $ID) {
 	$var1 = true;
 
 	$RELATION = getDbRelations();
-	if (isset ($RELATION[$table]))
+	if (isset ($RELATION[$table])){
+
 		foreach ($RELATION[$table] as $tablename => $field) {
 			$query = "Select count(*) as cpt FROM $tablename where $field = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0)
 				$var1 = false;
 		}
+	}
 
 	return $var1;
 
