@@ -1227,8 +1227,16 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 	}
 
 	$size=10;
-	if ($with_time) $size=17;
-	echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='$size' value=\"".convDate($value)."\">";
+	$dvalue=$value;
+	if ($with_time) {
+		$size=16;
+		$dvalue=convDateTime($value);
+	} else {
+		$dvalue=convDate($value);
+	}
+	
+	
+	echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='$size' value=\"".$dvalue."\">";
 	echo "<input id='data$rand' type='hidden' name='$element' size='$size' value=\"".$value."\">";
 
 	if ($withtemplate!=2){
@@ -1244,7 +1252,9 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 			echo "ifFormat : '%Y-%m-%d %H:%M',"; // the date format
 			echo "showsTime : true,"; 
 		}
-		else echo "ifFormat : '%Y-%m-%d',"; // the datetime format
+		else {
+			echo "ifFormat : '%Y-%m-%d',"; // the datetime format
+		}
 		echo "button : 'button$rand'"; // ID of the button
 		echo "});";
 		echo "</script>";
@@ -1255,8 +1265,13 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 		if (!$CFG_GLPI["dateformat"]){
 			echo "document.getElementById('show$rand').value=value;";
 		} else {
-			echo "var d=Date.parseDate(value,'%Y-%m-%d');";
-			echo "document.getElementById('show$rand').value=d.print('%d-%m-%Y');";
+			if ($with_time){
+				echo "var d=Date.parseDate(value,'%Y-%m-%d %H:%M');";
+				echo "document.getElementById('show$rand').value=d.print('%d-%m-%Y %H:%M');";
+			} else {
+				echo "var d=Date.parseDate(value,'%Y-%m-%d');";
+				echo "document.getElementById('show$rand').value=d.print('%d-%m-%Y');";
+			}
 		}
 		echo "})\n";
 		echo "</script>\n";
