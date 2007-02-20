@@ -474,13 +474,17 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		// Fifth column
 		$fifth_col="";
-		if ($viewusers)
-			$fifth_col.=formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],1);
-		else
-			$fifth_col.="<strong>".formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],0)."</strong>";
+		if ($data["assign"]>0){
+			if ($viewusers)
+				$fifth_col.=formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],1);
+			else
+				$fifth_col.="<strong>".formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],0)."</strong>";
+		}
 
 		if ($data["assign_ent"]>0){
-			$fifth_col.="<br>";
+			if (!empty($fifth_col)){
+				$fifth_col.="<br>";
+			}
 			if ($viewusers)
 				$fifth_col.=getAssignName($data["assign_ent"],ENTERPRISE_TYPE,1);
 			else
