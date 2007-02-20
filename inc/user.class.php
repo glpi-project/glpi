@@ -494,11 +494,11 @@ class User extends CommonDBTM {
 			$title = "";
 		}
 		if (useAuthLdap()) {
-			$buttons["user.form.php?new=1&ext_auth=1"] = $LANG["setup"][125];
+			$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG["setup"][125];
 			$buttons["ldap.php"] = $LANG["setup"][3];
 			
 		} else if (useAuthExt()) {
-			$buttons["user.form.php?new=1&ext_auth=1"] = $LANG["setup"][125];
+			$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG["setup"][125];
 		}
 
 		displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG["Menu"][14], $title, $buttons);
