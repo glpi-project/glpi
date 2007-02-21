@@ -391,7 +391,7 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 					WHERE ID='$ocs_id'";
 		$DBocs->query($query);
 
-		if ($idlink = ocsLink($ocs_server_id,$ocs_id, $glpi_id)) {
+		if ($idlink = ocsLink($ocs_id,$ocs_server_id, $glpi_id)) {
 
 			$comp = new Computer();
 			$input["ID"] = $glpi_id;
@@ -447,7 +447,7 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 
 function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 	global $DB, $DBocs, $CFG_GLPI;
-	
+ 
 	checkOCSconnection($ocs_server_id);
 	
 	$cfg_ocs = getOcsConf($ocs_server_id);
@@ -456,7 +456,6 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 			FROM glpi_ocs_link 
 			WHERE ID='$ID' and ocs_server_id=".$ocs_server_id;
 	$result = $DB->query($query);
-
 	if ($DB->numrows($result) == 1) {
 		$line = $DB->fetch_assoc($result);
 		// Get OCS ID 
@@ -540,8 +539,8 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 					ocsUpdateSoftware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_software, $dohistory);
 				}				
 				if ($mixed_checksum & pow(2, REGISTRY_FL)) {
-					//import registry entries not needed 			
-					ocsUpdateRegistry($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_registry, $dohistory);
+					//import registry entries not needed
+					ocsUpdateRegistry($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs);
 				}
 
 				// Update OCS Cheksum 
