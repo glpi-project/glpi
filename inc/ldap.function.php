@@ -63,16 +63,15 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($ldap_server);
 	$ldap_users = array ();
-
+	
 	// we prevent some delay...
 	if (!$res) {
 		return false;
 	}
-
+	
 	//Connect to the directory
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
 	if ($ds) {
-
 		//Get the user's dn
 		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], $login, $config_ldap->fields['ldap_condition']);
 		if ($user_dn) {
@@ -82,16 +81,15 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 			//Add the auth method
 			$user->fields["auth_method"] = AUTH_LDAP;
 			$user->fields["id_auth"] = $ldap_server;
-
 			if (!$sync) {
 				//Save informations in database !
 				$input = $user->fields;
 				unset ($user->fields);
 
 				$user->fields["ID"] = $user->add($input);
+				return $user->fields["ID"];
 			} else
-				$user->update($user->fields);
-
+					$user->update($user->fields);
 		}
 	} else {
 		return false;
