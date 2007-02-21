@@ -145,10 +145,7 @@ elseif(isset($tab["unlock_field"])){
 	
 	//Get the ocs server id associated with the machine
 	$ocs_server_id = getOCSServerByMachineID($_POST["ID"]);
-	
-	//Initiate a connection to the ocs database
-	$DBocs = getDBocs($ocs_server_id);
-		
+
 	//Update the computer
 	ocsUpdateComputer($tab["resynch_id"],$ocs_server_id,1,1);
 	glpi_header($_SERVER['HTTP_REFERER']);

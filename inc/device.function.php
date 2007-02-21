@@ -322,11 +322,12 @@ function update_device_specif($newValue,$compDevID,$strict=false) {
 	// Check old value for history 
 	global $DB;
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
-	cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
 			$data = addslashes_deep($DB->fetch_array($result));
+			cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
+
 			// Is it a real change ?
 			if($data["specificity"]!=$newValue){
 				// Update specificity 
