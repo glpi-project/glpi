@@ -107,7 +107,8 @@ function ldapChooseDirectory($target) {
 	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
 	$query = "SELECT * FROM glpi_auth_ldap ORDER BY name ASC";
 	$result = $DB->query($query);
-	if ($DB->numrows($result) > 0) {
+	//If more than one ldap server
+	if ($DB->numrows($result) > 1) {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
 		echo "<select name='ldap_server'>";
 		while ($ldap = $DB->fetch_array($result))
@@ -116,7 +117,14 @@ function ldapChooseDirectory($target) {
 		echo "</select></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='ldap_showusers' value='" . $LANG["buttons"][2] . "'></td></tr>";
 
-	} else
+	} elseif ($DB->numrows($result) == 1) {
+		//If only one server, do not show the choose ldap server window
+		$ldap = $DB->fetch_array($result);
+		$_SESSION["ldap_server"]=$ldap["ID"];
+		glpi_header($_SERVER['PHP_SELF']);
+	}
+	else
+		//No ldap server
 		echo "<tr class='tab_bg_2'><td align='center' colspan='2'>" . $LANG["ldap"][7] . "</td></tr>";
 
 	echo "</table></div></form>";
