@@ -553,6 +553,8 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 									SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTCOME"] . "' 
 									WHERE ID='$ID'";
 				$DB->query($query);
+				$comp=new Computer();
+				$comp->cleanCache($line['glpi_id']);
 				
 			}
 		}
