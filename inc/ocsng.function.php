@@ -2395,7 +2395,7 @@ function ocsChooseServer($target) {
 	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
 	$query = "SELECT * FROM glpi_ocs_config WHERE is_template='0' ORDER BY name ASC";
 	$result = $DB->query($query);
-	if ($DB->numrows($result) > 0) {
+	if ($DB->numrows($result) > 1) {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
 		echo "<select name='ocs_server_id'>";
 		while ($ocs = $DB->fetch_array($result))
@@ -2404,7 +2404,12 @@ function ocsChooseServer($target) {
 		echo "</select></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center' colspan=2><input class='submit' type='submit' name='ocs_showservers' value='" . $LANG["buttons"][2] . "'></td></tr>";
 
-	} else
+	} elseif ($DB->numrows($result)  == 1) {
+		$ocs = $DB->fetch_array($result);
+		$_SESSION["ocs_server_id"]=$ocs["ID"];
+		glpi_header($_SERVER['PHP_SELF']."?ocs_showservers=0");
+	}
+	  else
 		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG["ocsng"][27] . "</td></tr>";
 
 	echo "</table></div></form>";
