@@ -640,7 +640,7 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
  */
 function try_ldap_auth($identificat,$login,$password, $id_auth = -1,$isCAS=0) {
 
-	//If no specific source is give, test all ldap directories
+	//If no specific source is given, test all ldap directories
 	if ($id_auth == -1) {
 		foreach  ($identificat->auth_methods["ldap"] as $ldap_method) {
 			if (!$identificat->auth_succeded) {
@@ -712,5 +712,31 @@ function test_auth_mail($imap_auth_server,$login,$password)
 {
 	$identificat = new Identification();
 	return $identificat->connection_imap($imap_auth_server, utf8_decode($login), utf8_decode($password));
+}
+
+/**
+ * Import a user from ldap
+ * Check all the directories. When the user is found, then import it
+ */
+function import_user_from_ldap_servers($login)
+{
+	$identificat = new Identification;
+	$identificat->user_present = $identificat->userExists($login);
+
+	//If the user does not exists
+	if ($identificat->user_present == 0)
+	{
+		$identificat->getAuthMethods();
+		$ldap_methods = $identificat->auth_methods["ldap"];
+		$userid = -1;
+		
+		foreach ($ldap_methods as $ldap_method)
+		{
+			$result=ldapImportUserByServerId($login, 0,$ldap_method["ID"]);
+			if ($result != false)  $userid= $result;
+		}
+		return $userid;		
+	}
+	
 }
 ?>

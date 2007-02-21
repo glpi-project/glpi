@@ -173,10 +173,7 @@ else if (isset($_POST["deletegroup"]))
 	} else {
 		if (isset($_GET['add_ext_auth'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
-				$user=new User();
-				$input["name"]=$_GET['login'];
-				$input["_extauth"]=1;
-				$user->add($input);
+				import_user_from_ldap_servers($_GET['login']);
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
