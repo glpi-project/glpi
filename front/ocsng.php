@@ -64,9 +64,11 @@ if (isset ($_SESSION["ocs_link"]))
 if (isset ($_SESSION["ocs_update"]))
 	unset ($_SESSION["ocs_update"]);
 
-if (isset ($_POST["ocs_showservers"])) {
+if (isset($_GET["ocs_showservers"]) || isset ($_POST["ocs_showservers"])) {
 	$name = "";
-	$_SESSION["ocs_server_id"] = $_POST["ocs_server_id"];
+	if (isset($_POST["ocs_server_id"]))
+		$_SESSION["ocs_server_id"] = $_POST["ocs_server_id"];
+				
 	$sql = "SELECT name from glpi_ocs_config where ID=" . $_SESSION["ocs_server_id"];
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0) {
