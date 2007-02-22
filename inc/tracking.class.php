@@ -509,7 +509,7 @@ class Job extends CommonDBTM{
 			$result=$DB->query($query);
 			$nbfollow=$DB->numrows($result);
 			if($format=="html"){
-				$message = "<div class='description'><strong>".$LANG["mailing"][4]." : $nbfollow<br>"."</div><br>";
+				$message = "<div class='description'><strong>".$LANG["mailing"][4]." : $nbfollow<br></strong></div><br>";
 
 				if ($nbfollow>0){
 					$fup=new Followup();
