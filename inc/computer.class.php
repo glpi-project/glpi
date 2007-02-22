@@ -64,10 +64,10 @@ class Computer extends CommonDBTM {
 			$ong[4]=$LANG["Menu"][26];
 		if (haveRight("document","r"))	
 			$ong[5]=$LANG["title"][25];
-		if (haveRight("computer","r"))	
-			$ong[14]=$LANG["title"][42];
 
 		if(empty($withtemplate)){
+			if ($CFG_GLPI["ocs_mode"])	
+				$ong[14]=$LANG["title"][43];
 			if (haveRight("show_ticket","1"))	
 				$ong[6]=$LANG["title"][28];
 			if (haveRight("link","r"))	
