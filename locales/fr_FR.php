@@ -1507,7 +1507,7 @@ $LANG["title"][39]="OCS Inventory NG";
 $LANG["title"][40]="Notes personnelles et publiques";
 $LANG["title"][41]="Téléphone";
 $LANG["title"][42]="Modification Massive";
-$LANG["title"][42]="Registre";
+$LANG["title"][43]="Registre";
 
 $LANG["tracking"][0]="Suivi des tickets";
 $LANG["tracking"][1]="Mes matériels";
