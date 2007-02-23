@@ -37,7 +37,7 @@
 
 // Update from 0.68.1 to 0.7
 function update0681to07() {
-	global $DB, $LANG,$LINK_ID_TABLE;
+	global $DB, $CFG_GLPI,$LANG,$LINK_ID_TABLE;
 	// Improve user table :
 	if (!isIndex("glpi_users", "firstname")) {
 		$query = "ALTER TABLE `glpi_users` ADD INDEX ( `firstname` )";
@@ -532,14 +532,6 @@ function update0681to07() {
 	//// Enum clean
 	// Enum 0-1
 	$enum01=array();
-	$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones","glpi_consumables_type");
-
-	foreach ($deleted_tables as $table){
-		if (!isset($enum01[$table])){
-			$enum01[$table]=array();
-		}
-		$enum01[$table][]="deleted";
-	}
 	$template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones","state_types","reservation_types","glpi_ocs_config");
 
 	foreach ($template_tables as $table){
@@ -597,6 +589,16 @@ function update0681to07() {
 	$enumYN["N"]["glpi_software"][]="is_update"; // N
 	$enumYN["Y"]["glpi_type_docs"][]="upload"; // Y
 
+	$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones","glpi_consumables_type");
+
+	foreach ($deleted_tables as $table){
+		if (!isset($enum01[$table])){
+			$enum01[$table]=array();
+		}
+		$enumYN["N"][$table][]="deleted";
+	}
+
+
 	foreach ($enumYN as $default => $tmptbl)
 	foreach ($tmptbl as $table => $fields){
 		foreach ($fields as $key => $field){
@@ -611,8 +613,10 @@ function update0681to07() {
 				$DB->query($query) or die("0.7 alter $table add new field tmp_convert_enum " . $LANG["update"][90] . $DB->error());
 
 				$query="UPDATE `$table` SET tmp_convert_enum='1' WHERE $field='Y';" ;
+				echo $query."<br>";
 				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
 				$query="UPDATE `$table` SET tmp_convert_enum='0' WHERE $field='N';" ;
+				echo $query."<br>";
 				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
 
 				$query="ALTER TABLE `$table` DROP `$field` ";
@@ -621,7 +625,7 @@ function update0681to07() {
 				$query="ALTER TABLE `$table` CHANGE `tmp_convert_enum` `$field` SMALLINT NOT NULL DEFAULT '$newdef'";
 				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90]. $DB->error()); 
 
-				if ($table=="glpi_licenses"||$table=="glpi_software"||$table=="glpi_type_docs"){
+				if ($field=="deleted"||$table=="glpi_licenses"||$table=="glpi_software"||$table=="glpi_type_docs"){
 					$query ="ALTER TABLE `$table` ADD KEY (`$field`)";
 					$DB->query($query) or die("0.7 alter $table add deleted key " . $LANG["update"][90] . $DB->error());
 				}
