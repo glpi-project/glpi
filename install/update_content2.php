@@ -159,6 +159,20 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
 	for (;$offsettable<$numtab;$offsettable++){
 		// Dump de la structyre table
 		if ($offsetrow==-1){
+			$DB->query("ALTER TABLE `".$tables[$offsettable]."`  DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
+			$data=$DB->list_fields($tables[$offsettable]);
+			
+			foreach ($data as $key =>$val){
+				if (eregi("varchar",$val["Type"])){
+					$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL");
+				} else if (eregi("longtext",$val["Type"])){
+					$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
+				} else if (eregi("text",$val["Type"])){
+					$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
+				}
+				echo "<br>".$key."<br>";
+				print_r($val);
+			}
 			$offsetrow++;
 			$cpt++;
 		}
@@ -174,7 +188,6 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
 			if ($rowtodump>0){
 				//	echo $todump;
 				$DB->query("SET NAMES utf8");
-				echo $todump;
 				$result = $DB->query($todump);
 				
 				//	if (!$result) echo "ECHEC ".$todump;
@@ -195,6 +208,7 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
 			return TRUE;
 
 	}
+	exit();
 	if ($DB->error())
 		echo "<hr>ERREUR �partir de [$formattedQuery]<br>".$DB->error()."<hr>";
 	$offsettable=-1;
@@ -335,6 +349,7 @@ if ($percent >= 0) {
 
 }
 $conv_utf8=false;
+$DB->query("ALTER DATABASE `".$DB->dbdefault."` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
 if(!FieldExists("glpi_config","utf8_conv")) {
 	$conv_utf8=true;
 }
