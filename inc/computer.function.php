@@ -194,7 +194,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							$connID = $DB->result($result, $i, "ID");
 							$ci->getFromDB($type,$tID);
 	
-							echo "<tr ".($ci->getField('tech_num')=='Y'?"class='tab_bg_2_2'":"").">";
+							echo "<tr ".($ci->getField('deleted')?"class='tab_bg_2_2'":"").">";
 							echo "<td align='center'><b>";
 							echo $ci->getLink();
 							echo "</b>";

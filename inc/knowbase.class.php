@@ -56,8 +56,8 @@ class kbitem extends CommonDBTM {
 		// set title for question if empty
 		if(empty($input["question"])) $input["question"]=$LANG["common"][30];
 
-		if (haveRight("faq","w")&&!haveRight("knowbase","w")) $input["faq"]="yes";
-		if (!haveRight("faq","w")&&haveRight("knowbase","w")) $input["faq"]="no";
+		if (haveRight("faq","w")&&!haveRight("knowbase","w")) $input["faq"]=1;
+		if (!haveRight("faq","w")&&haveRight("knowbase","w")) $input["faq"]=0;
 
 		return $input;
 	}
@@ -103,8 +103,8 @@ class kbitem extends CommonDBTM {
 	
 		} else {
 			if ($this->getFromDB($ID)) $spotted=true;
-			if ($this->fields["faq"]=="yes"&&!haveRight("faq","w")) $spotted=false;
-			if ($this->fields["faq"]!="yes"&&!haveRight("knowbase","w")) $spotted=false;
+			if ($this->fields["faq"]&&!haveRight("faq","w")) $spotted=false;
+			if (!$this->fields["faq"]&&!haveRight("knowbase","w")) $spotted=false;
 	
 		}	
 
@@ -174,11 +174,7 @@ class kbitem extends CommonDBTM {
 			if (haveRight("faq","w")&&haveRight("knowbase","w")){
 				
 				echo $LANG["knowbase"][5].": ";
-					echo "<select name='faq'>\n";
-					echo "<option value='no' ".($this->fields["faq"]=='no'?" selected ":"").">".$LANG["choice"][0]."</option>\n";
-					echo "<option value='yes' ".($this->fields["faq"]=='yes'?" selected ":"").">".$LANG["choice"][1]."</option>\n";
-					echo "</select>\n";	
-
+				dropdownYesNoInt('faq',$this->fields["faq"]);
 				echo "<br><br>\n";
 			}
 		

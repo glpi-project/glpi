@@ -997,8 +997,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$email = $DB->result($result,0,"email");
 
 	// Get saved data from a back system
-	$emailupdates = 'yes';
-	if ($email=="") $emailupdates='no';
+	$emailupdates = 1;
+	if ($email=="") $emailupdates=0;
 	$device_type = 0;
 	$computer="";
 	$contents="";
@@ -1034,14 +1034,12 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	{
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][8].":</td>";
-		echo "<td>	<select name='emailupdates'>";
-		echo "<option value='no' ".(($emailupdates=="no")?" selected":"").">".$LANG["choice"][0]."";
-		echo "<option value='yes' ".(($emailupdates=="yes")?" selected":"").">".$LANG["choice"][1]."";
-		echo "</select>";
+		echo "<td>";
+		dropdownYesNoInt('emailupdates',$emailupdates);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][11].":</td>";
-		echo "<td>	<input name='uemail' value=\"$email\" size='50' onchange=\"emailupdates.value='yes'\">";
+		echo "<td>	<input name='uemail' value=\"$email\" size='50' onchange=\"emailupdates.value='1'\">";
 		echo "</td></tr>";
 	}
 

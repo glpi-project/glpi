@@ -80,12 +80,12 @@ if ($_POST['sID']>0){
 				else $output.= $LANG["software"][25]."&nbsp;".$data['expire'];
 			}
 
-			if ($data['buy']=='Y')
+			if ($data['buy'])
 				$output.=" - ".$LANG["software"][35];
 			else 
 				$output.=" - ".$LANG["software"][37];
 
-			if ($data['oem']=='Y'){
+			if ($data['oem']){
 				$comp=new Computer();
 				$comp->getFromDB($data["oem_computer"]);
 				$output.=" - ".$LANG["software"][28]. " ".$comp->fields['name'];

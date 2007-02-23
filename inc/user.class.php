@@ -50,7 +50,7 @@ class User extends CommonDBTM {
 		$this->table = "glpi_users";
 		$this->type = USER_TYPE;
 
-		$this->fields['tracking_order'] = 'no';
+		$this->fields['tracking_order'] = 0;
 		if (isset ($CFG_GLPI["default_language"]))
 			$this->fields['language'] = $CFG_GLPI["default_language"];
 		else
@@ -787,18 +787,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][40] . "</td><td>";
-			echo "<select name='tracking_order'>\n";
-			echo "<option value=\"yes\"";
-			if ($_SESSION["glpitracking_order"] == "yes") {
-				echo " selected";
-			}
-			echo ">" . $LANG["choice"][1];
-			echo "<option value=\"no\"";
-			if ($_SESSION["glpitracking_order"] == "no") {
-				echo " selected";
-			}
-			echo ">" . $LANG["choice"][0];
-			echo "</select>\n";
+			dropdownYesNoInt('tracking_order',$_SESSION["glpitracking_order"]);
 			echo "</td></tr>";
 
 			echo "<tr>";

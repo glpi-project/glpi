@@ -183,7 +183,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG["devices"][1];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["rpm"]))	$entry[$LANG["device_hdd"][0]]=$device->fields["rpm"];
-			if (!empty($device->fields["interface"]))	$entry[$LANG["device_hdd"][2]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
+			if ($device->fields["interface"])	$entry[$LANG["device_hdd"][2]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 			if (!empty($device->fields["cache"])) $entry[$LANG["device_hdd"][1]]=$device->fields["cache"];
 
 			$specificity_size = 10;
@@ -236,15 +236,15 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case DRIVE_DEVICE : 
 			$type=$LANG["devices"][19];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["is_writer"])) $entry[$LANG["device_drive"][0]]=$device->fields["is_writer"];
+			if ($device->fields["is_writer"]) $entry[$LANG["device_drive"][0]]=getYesNo($device->fields["is_writer"]);
 			if (!empty($device->fields["speed"])) $entry[$LANG["device_drive"][1]]=$device->fields["speed"];
 			if (!empty($device->fields["frequence"])) $entry[$LANG["device_drive"][2]]=$device->fields["frequence"];
 			break;
 		case CONTROL_DEVICE :
 			$type=$LANG["devices"][20];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["raid"])) $entry[$LANG["device_control"][0]]=$device->fields["raid"];
-			if (!empty($device->fields["interface"])) $entry[$LANG["device_control"][1]]=$device->fields["interface"];
+			if ($device->fields["raid"]) $entry[$LANG["device_control"][0]]=getYesNo($device->fields["raid"]);
+			if ($device->fields["interface"]) $entry[$LANG["device_control"][1]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
 			break;
 		case PCI_DEVICE :
@@ -256,7 +256,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG["devices"][23];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["power"])) $entry[$LANG["device_power"][0]]=$device->fields["power"];
-			if (!empty($device->fields["atx"])) $entry[$LANG["device_power"][1]]=$device->fields["atx"];
+			if ($device->fields["atx"]) $entry[$LANG["device_power"][1]]=getYesNo($device->fields["atx"]);
 
 			break;
 		case CASE_DEVICE :
@@ -615,12 +615,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 			case "glpi_device_drive" :
 				echo "</tr>";
 			echo "<tr><td>".$LANG["device_drive"][0].":</td>";
-			echo "<td>".$LANG["choice"][1]."<input type='radio' name='is_writer' value=\"Y\" ";
-			if(strcmp($device->fields["is_writer"],"Y") == 0) echo "checked='checked'";
-			echo "></td>";
-			echo "<td>".$LANG["choice"][0]."<input type='radio' name='is_writer' value=\"N\" ";
-			if(strcmp($device->fields["is_writer"],"N") == 0) echo "checked='checked'";
-			echo "></td>";
+			echo "<td>";
+			dropdownYesNoInt("is_writer",$device->fields["is_writer"]);
+			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$LANG["device_drive"][2].":</td>";
 			echo "<td>";
@@ -638,12 +635,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 			case  "glpi_device_control" :
 				echo "</tr>";
 			echo "<tr><td>".$LANG["device_control"][0].":</td>";
-			echo "<td>".$LANG["choice"][1]."<input type='radio' name='raid' value=\"Y\" ";
-			if(strcmp($device->fields["raid"],"Y") == 0) echo "checked='checked'";
-			echo "></td>";
-			echo "<td>".$LANG["choice"][0]."<input type='radio' name='raid' value=\"N\" ";
-			if(strcmp($device->fields["raid"],"N") == 0) echo "checked='checked'";
-			echo "></td>";
+			echo "<td>";
+			dropdownYesNoInt("raid",$device->fields["raid"]);
+			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$LANG["device_control"][1].":</td>";
 			echo "<td>";
@@ -686,12 +680,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 			autocompletionTextField("power",$table,"power",$device->fields["power"],20);
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["device_power"][1].":</td>";
-			echo "<td>".$LANG["choice"][1]."<input type='radio' name='atx' value=\"Y\" ";
-			if(strcmp($device->fields["atx"],"Y") == 0) echo "checked='checked'";
-			echo "></td>";
-			echo "<td>".$LANG["choice"][0]."<input type='radio' name='atx' value=\"N\" ";
-			if(strcmp($device->fields["atx"],"N") == 0) echo "checked='checked'";
-			echo "></td>";
+			echo "<td>";
+			dropdownYesNoInt("atx",$device->fields["atx"]);
+			echo "</td>";
 			echo "</tr>";
 	
 			break;	

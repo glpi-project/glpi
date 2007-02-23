@@ -84,7 +84,7 @@ class Software extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 
-		if (isset ($input['is_update']) && $input['is_update'] == 'N')
+		if (isset ($input['is_update']) && ! $input['is_update'])
 			$input['update_software'] = -1;
 
 		return $input;
@@ -94,7 +94,7 @@ class Software extends CommonDBTM {
 		// set new date.
 		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
-		if (isset ($input['is_update']) && $input['is_update'] == 'N')
+		if (isset ($input['is_update']) && !$input['is_update'])
 			$input['update_software'] = -1;
 
 		// dump status
@@ -302,7 +302,7 @@ class Software extends CommonDBTM {
 
 				// UPDATE
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][29] . ":</td><td>";
-				echo "<select name='is_update'><option value='Y' " . ($ID && $this->fields['is_update'] == 'Y' ? "selected" : "") . ">" . $LANG["choice"][1] . "</option><option value='N' " . (!$ID || $this->fields['is_update'] == 'N' ? "selected" : "") . ">" . $LANG["choice"][0] . "</option></select>";
+				dropdownYesNoInt("is_update",$this->fields['is_update']);
 				echo "&nbsp;" . $LANG["pager"][2] . "&nbsp;";
 				dropdownValue("glpi_software", "update_software", $this->fields["update_software"]);
 				echo "</td>";
@@ -354,7 +354,7 @@ class Software extends CommonDBTM {
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
 					echo "<div align='center'>";
-					if ($this->fields["deleted"] == 'N')
+					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 					else {
 						echo "<input type='submit' name='restore' value=\"" . $LANG["buttons"][21] . "\" class='submit'>";
@@ -400,7 +400,7 @@ class License extends CommonDBTM {
 			unset ($input['expire']);
 		if (!isset ($input['expire']) || $input['expire'] == "0000-00-00")
 			$input['expire'] = "NULL";
-		if (isset ($input['oem']) && $input['oem'] == 'N')
+		if (isset ($input['oem']) && !$input['oem'])
 			$input['oem_computer'] = -1;
 
 		return $input;
@@ -409,7 +409,7 @@ class License extends CommonDBTM {
 	function prepareInputForAdd($input) {
 		if (empty ($input['expire']) || $input['expire'] == "0000-00-00" || $input['expire'] == "NULL")
 			unset ($input['expire']);
-		if ($input['oem'] == 'N')
+		if (!$input['oem'])
 			$input['oem_computer'] = -1;
 		if ($input['oem_computer'] == 0)
 			$input['oem_computer'] = -1;
@@ -421,7 +421,7 @@ class License extends CommonDBTM {
 
 	function postAddItem($newID, $input) {
 		// Add license but not for unglobalize system
-		if (!isset ($input["_duplicate_license"]) && $input['oem'] == 'Y' && $input['oem_computer'] > 0)
+		if (!isset ($input["_duplicate_license"]) && $input['oem'] && $input['oem_computer'] > 0)
 			installSoftware($input['oem_computer'], $newID);
 
 		$type = SOFTWARE_TYPE;

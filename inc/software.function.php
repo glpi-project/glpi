@@ -61,7 +61,7 @@ function showLicenses ($sID,$show_computers=0) {
 	$canshowcomputer=haveRight("computer","r");
 	$ci=new CommonItem();
 	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
-	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='Y')";
+	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='1')";
 
 	if ($result = $DB->query($query)) {
 		if ($DB->result($result,0,0)!=0) { 
@@ -170,12 +170,12 @@ function showLicenses ($sID,$show_computers=0) {
 
 			echo "</strong></td>";
 			// OEM
-			if ($data["OEM"]=='Y') {
+			if ($data["OEM"]) {
 				$comp=new Computer();
 				$comp->getFromDB($data["OEM_COMPUTER"]);
 			}
-			echo "<td align='center' lass='tab_bg_1".($data["OEM"]=='Y'&&!isset($comp->fields['ID'])?"_2":"")."'>".($data["OEM"]=='Y'?$LANG["choice"][1]:$LANG["choice"][0]);
-			if ($data["OEM"]=='Y') {
+			echo "<td align='center' lass='tab_bg_1".($data["OEM"]&&!isset($comp->fields['ID'])?"_2":"")."'>".($data["OEM"]?$LANG["choice"][1]:$LANG["choice"][0]);
+			if ($data["OEM"]) {
 				echo "<br><strong>";
 				if (isset($comp->fields['ID']))
 					echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
@@ -186,7 +186,7 @@ function showLicenses ($sID,$show_computers=0) {
 
 			if ($serial!="free"){
 				// BUY
-				echo "<td align='center'>".($data["BUY"]=='Y'?$LANG["choice"][1]:$LANG["choice"][0]);
+				echo "<td align='center'>".($data["BUY"]?$LANG["choice"][1]:$LANG["choice"][0]);
 				echo "</td>";
 			} else 
 				echo "<td>&nbsp;</td>";
@@ -290,7 +290,7 @@ function showLicenses ($sID,$show_computers=0) {
 			// Logiciels install�
 			if ($show_computers)
 				while ($data_inst=$DB->fetch_array($result_inst)){
-					echo "<tr class='tab_bg_1".(($data["OEM"]=='Y'&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]?"_2":"")."'><td align='center'>";
+					echo "<tr class='tab_bg_1".(($data["OEM"]&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]?"_2":"")."'><td align='center'>";
 
 					if ($serial!="free"&&$serial!="global"&&$canedit) 
 						echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
@@ -370,10 +370,10 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	// defaults values :
 	$values['serial']='';
 	$values['expire']="0000-00-00";
-	$values['oem']='N';
+	$values['oem']=0;
 	$values["oem_computer"]='';
 	$values["comments"]='';
-	$values['buy']='Y';
+	$values['buy']=1;
 
 
 	if (isset($_POST)&&!empty($_POST)){ // Get from post form
@@ -430,13 +430,13 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 
 	// OEM
 	echo "<tr class='tab_bg_1'><td>".$LANG["software"][28]."</td><td>";
-	echo "<select name='oem'><option value='Y' ".($values['oem']=='Y'?"selected":"").">".$LANG["choice"][1]."</option><option value='N' ".($values['oem']=='N'?"selected":"").">".$LANG["choice"][0]."</option></select>";
+	dropdownYesNoInt("oem",$values['oem']);
 	dropdownValue("glpi_computers","oem_computer",$values["oem_computer"]);
 
 	echo "</td></tr>";
 	// BUY
 	echo "<tr class='tab_bg_1'><td>".$LANG["software"][35]."</td><td>";
-	echo "<select name='buy'><option value='Y' ".($values['buy']=='Y'?"selected":"").">".$LANG["choice"][1]."</option><option value='N' ".($values['buy']=='N'?"selected":"").">".$LANG["choice"][0]."</option></select>";
+	dropdownYesNoInt("buy",$values['buy']);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["common"][25]."</td><td>";
@@ -539,7 +539,7 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 		}
 	} else if ($lID<0&&!empty($sID)){ // Auto Add a license
 		$lic=new License();
-		$lic->fields['buy']='N';
+		$lic->fields['buy']=0;
 		$lic->fields['sID']=$sID;
 		$lic->fields['serial']='Automatic Add';
 		$lID=$lic->addToDB();
@@ -646,12 +646,12 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			echo "</strong></td>";
 			if ($data['serial']!="free"&&$data['serial']!="global"){
 				// OEM
-				if ($data["oem"]=='Y') {
+				if ($data["oem"]) {
 					$comp=new Computer();
 					$comp->getFromDB($data["oem_computer"]);
 				}
-				echo "<td align='center' class='tab_bg_1".($expirer||($data["oem"]=='Y'&&$comp->fields['ID']!=$instID)?"_2":"")."'>".($data["oem"]=='Y'?$LANG["choice"][1]:$LANG["choice"][0]);
-				if ($data["oem"]=='Y') {
+				echo "<td align='center' class='tab_bg_1".($expirer||($data["oem"]&&$comp->fields['ID']!=$instID)?"_2":"")."'>".($data["oem"]?$LANG["choice"][1]:$LANG["choice"][0]);
+				if ($data["oem"]) {
 					echo "<br><strong>";
 					if (isset($comp->fields['ID']))
 						echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
@@ -661,7 +661,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 				echo "</td>";
 
 				// BUY
-				echo "<td align='center'>".($data["buy"]=='Y'?$LANG["choice"][1]:$LANG["choice"][0]);
+				echo "<td align='center'>".($data["buy"]?$LANG["choice"][1]:$LANG["choice"][0]);
 				echo "</td>";								
 			}
 			else echo "<td>&nbsp;</td><td>&nbsp;</td>";
@@ -718,7 +718,7 @@ function unglobalizeLicense($ID){
 
 			// skip first
 			$data=$DB->fetch_array($result);
-			if ($license->fields["oem"]=="Y"){
+			if ($license->fields["oem"]){
 				$input["oem_computer"]=$data["cID"];
 			}
 			$license->update($input);
@@ -731,7 +731,7 @@ function unglobalizeLicense($ID){
 			// Get ID of the inst_software
 			while ($data=$DB->fetch_array($result)){
 				unset($input["oem_computer"]);
-				if ($license->fields["oem"]=="Y")
+				if ($license->fields["oem"])
 					$input["oem_computer"]=$data["cID"];
 
 				// Add new Item
@@ -840,7 +840,7 @@ function getInstalledLicence($sID){
 
 function getLicenceToBuy($sID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID' AND buy ='N')";
+	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID' AND buy ='0')";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }

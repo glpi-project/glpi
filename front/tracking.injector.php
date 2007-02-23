@@ -78,7 +78,7 @@ if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 	nullFooter();
 	exit;
 }
-elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] == "yes" && isset($_POST["uemail"]) && $_POST["uemail"] =="")
+elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST["uemail"]) && $_POST["uemail"] =="")
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);

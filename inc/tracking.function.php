@@ -156,7 +156,7 @@ function getTrackingOrderPrefs ($ID) {
 	// Currently only supports sort order
 
 
-	if($_SESSION["glpitracking_order"] == "yes")
+	if($_SESSION["glpitracking_order"])
 	{
 		return "DESC";
 	} 
@@ -745,10 +745,8 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$LANG["help"][8].":</td>";
-		echo "<td align='center'>	<select name='emailupdates'>";
-		echo "<option value='no'>".$LANG["choice"][0]."";
-		echo "<option value='yes' selected>".$LANG["choice"][1]."";
-		echo "</select>";
+		echo "<td align='center'>";
+		dropdownYesNoInt('emailupdates',1);
 		echo "</td>";
 		echo "<td align='center'>".$LANG["help"][11].":</td>";
 		echo "<td><span id='uemail_result'>";
@@ -1642,12 +1640,9 @@ function showJobDetails ($target,$ID){
 			echo "<table><tr><td align='right'>";
 			echo $LANG["job"][19].":</td><td>";
 			if ($canupdate){
-				echo "<select name='emailupdates'>";
-				echo "<option value='no'>".$LANG["choice"][0]."</option>";
-				echo "<option value='yes' ".($job->fields["emailupdates"]=="yes"?" selected ":"").">".$LANG["choice"][1]."</option>";
-				echo "</select>";
+				dropdownYesNoInt('emailupdates',$job->fields["emailupdates"]);
 			} else {
-				if ($job->fields["emailupdates"]=="yes") echo $LANG["choice"][1];
+				if ($job->fields["emailupdates"]) echo $LANG["choice"][1];
 				else $LANG["choice"][0];
 			}
 			echo "</td></tr>";
