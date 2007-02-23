@@ -390,7 +390,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 	if ($contact->getContact($ID)) {
 		$netport->getfromDB($contact->contact_id);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
-		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($netport->deleted=='Y'?"class='tab_bg_2_2'":"").">";
+		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($netport->deleted?"class='tab_bg_2_2'":"").">";
 		echo "<td><b>";
 		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."\">";
 		if (rtrim($netport->fields["name"])!="")

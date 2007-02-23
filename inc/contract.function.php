@@ -56,31 +56,31 @@ function showCentralContract(){
 	if (!haveRight("contract_infocom","r")) return false;
 
 	// contrats echus depuis moins de 30j
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
 	$result = $DB->query($query);
 	$contract0=$DB->result($result,0,0);
 
 
 	// contrats  echeance j-7
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
 	$result = $DB->query($query);
 	$contract7= $DB->result($result,0,0);
 
 
 	// contrats echeance j -30
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
 	$result = $DB->query($query);
 	$contract30= $DB->result($result,0,0);
 
 
 	// contrats avec pr�vis echeance j-7
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
 	$result = $DB->query($query);
 	$contractpre7= $DB->result($result,0,0);
 
 
 	// contrats avec pr�vis echeance j -30
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='N' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
 	$result = $DB->query($query);
 	$contractpre30= $DB->result($result,0,0);
 
@@ -94,13 +94,13 @@ function showCentralContract(){
 	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".$LANG["financial"][93]."</a> </td>";
 	echo "<td>$contract0</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=N&amp;start=0\">".$LANG["financial"][94]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG["financial"][94]."</a></td>";
 	echo "<td>".$contract7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=N&amp;start=0\">".$LANG["financial"][95]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG["financial"][95]."</a></td>";
 	echo "<td>".$contract30."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;deleted=N&amp;start=0\">".$LANG["financial"][96]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG["financial"][96]."</a></td>";
 	echo "<td>".$contractpre7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
 	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30\">".$LANG["financial"][97]."</a></td>";
@@ -157,7 +157,7 @@ function showDeviceContract($instID) {
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td align='center'>".$ci->getType()."</td>";
-					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td align='center' class='tab_bg_2'>";
 					if ($canedit){
 						echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
@@ -416,7 +416,7 @@ function getContractEnterprises($ID){
 function dropdownContracts($name){
 
 	global $DB;
-	$query="SELECT * from glpi_contracts WHERE deleted = 'N' order by begin_date DESC";
+	$query="SELECT * from glpi_contracts WHERE deleted = '0' order by begin_date DESC";
 	$result=$DB->query($query);
 	echo "<select name='$name'>";
 	echo "<option value='-1'>-----</option>";
@@ -476,7 +476,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$assocID=$DB->result($result, $i, "ID");
 		$con=new Contract;
 		$con->getFromDB($cID);
-		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
+		echo "<tr class='tab_bg_1".($con->fields["deleted"]?"_2":"")."'>";
 		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
 		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
@@ -498,7 +498,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		echo "</tr>";
 		$i++;
 	}
-	$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
+	$q="SELECT * FROM glpi_contracts WHERE deleted='0'";
 	$result = $DB->query($q);
 	$nb = $DB->numrows($result);
 
@@ -561,7 +561,7 @@ function showContractAssociatedEnterprise($ID){
 		$assocID=$DB->result($result, $i, "ID");
 		$con=new Contract;
 		$con->getFromDB($cID);
-		echo "<tr class='tab_bg_1".($con->fields["deleted"]=='Y'?"_2":"")."'>";
+		echo "<tr class='tab_bg_1".($con->fields["deleted"]?"_2":"")."'>";
 		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
 		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</b></a></td>";
@@ -581,7 +581,7 @@ function showContractAssociatedEnterprise($ID){
 		$i++;
 	}
 	if (haveRight("contract_infocom","w")){
-		$q="SELECT * FROM glpi_contracts WHERE deleted='N'";
+		$q="SELECT * FROM glpi_contracts WHERE deleted='0'";
 		$result = $DB->query($q);
 		$nb = $DB->numrows($result);
 
@@ -634,7 +634,7 @@ function cron_contract(){
 	$message="";
 
 	// Check notice
-	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_NOTICE."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 AND glpi_contracts.deleted='N' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND glpi_contracts.notice<>'0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
+	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_NOTICE."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 AND glpi_contracts.deleted='0' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND glpi_contracts.notice<>'0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -656,7 +656,7 @@ function cron_contract(){
 	}
 
 	// Check end
-	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_END."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.deleted='N' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
+	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_END."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.deleted='0' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){

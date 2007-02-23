@@ -409,7 +409,7 @@ class Netdevice extends CommonDBTM {
 					echo "<td class='tab_bg_2' valign='top'>\n";
 
 					echo "<div align='center'>\n";
-					if ($this->fields["deleted"]=='N')
+					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>\n";
 					else {
 						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>\n";

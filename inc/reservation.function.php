@@ -475,7 +475,7 @@ function printReservationItems($target){
 			$ri->getfromDB($row['ID']);
 			$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
-			if ($ci->getField('deleted')=='N'){
+			if (!$ci->getField('deleted')){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><input type='checkbox' name='add_item[".$row["ID"]."]' value='".$row["ID"]."' ></td>";
 				echo "<td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ci->getType()." - ".$ci->getName()."</a></td>";

@@ -172,7 +172,7 @@ class CommonDBTM {
 	function restoreInDB($ID) {
 		global $DB,$CFG_GLPI;
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
-			$query = "UPDATE ".$this->table." SET deleted='N' WHERE (".$this->getIndexName()." = '$ID')";
+			$query = "UPDATE ".$this->table." SET deleted='0' WHERE (".$this->getIndexName()." = '$ID')";
 			if ($result = $DB->query($query)) {
 				return true;
 			} else {
@@ -200,7 +200,7 @@ class CommonDBTM {
 				return false;
 			}
 		}else {
-			$query = "UPDATE ".$this->table." SET deleted='Y' WHERE ".$this->getIndexName()." = '$ID'";		
+			$query = "UPDATE ".$this->table." SET deleted='1' WHERE ".$this->getIndexName()." = '$ID'";		
 			if ($result = $DB->query($query)){
 				$this->cleanCache($ID);
 				return true;

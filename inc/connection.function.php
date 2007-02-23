@@ -73,13 +73,13 @@ function showConnect($target,$ID,$type) {
 		if ($computers&&count($computers)>0) {
 			foreach ($computers as $key => $computer){
 				if ($connect->getComputerData($computer)){
-					echo "<tr><td class='tab_bg_1".($connect->deleted=='Y'?"_2":"")."'><b>".$LANG["help"][25].": ";
+					echo "<tr><td class='tab_bg_1".($connect->deleted?"_2":"")."'><b>".$LANG["help"][25].": ";
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$connect->device_ID."\">";
 					echo $connect->device_name;
 					if ($CFG_GLPI["view_ID"]||empty($connect->device_name)) echo " (".$connect->device_ID.")";
 					echo "</a>";
 					echo "</b></td>";
-					echo "<td class='tab_bg_2".($connect->deleted=='Y'?"_2":"")."' align='center'><b>";
+					echo "<td class='tab_bg_2".($connect->deleted?"_2":"")."' align='center'><b>";
 					if ($canedit)
 						echo "<a href=\"$target?disconnect=1&amp;ID=".$key."\">".$LANG["buttons"][10]."</a>";
 					else echo "&nbsp;";
@@ -199,7 +199,7 @@ function Connect($sID,$cID,$type) {
 
 function getNumberConnections($type,$ID){
 	global $DB;
-	$query = "SELECT count(*) FROM glpi_connect_wire INNER JOIN glpi_computers ON ( glpi_connect_wire.end2=glpi_computers.ID ) WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' AND glpi_computers.deleted='N' AND glpi_computers.is_template='0'";
+	$query = "SELECT count(*) FROM glpi_connect_wire INNER JOIN glpi_computers ON ( glpi_connect_wire.end2=glpi_computers.ID ) WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
 
 	$result = $DB->query($query);
 

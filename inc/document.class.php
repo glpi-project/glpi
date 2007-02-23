@@ -268,7 +268,7 @@ class Document extends CommonDBTM {
 	
 					echo "<td class='tab_bg_2' valign='top'>\n";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					if ($this->fields["deleted"]=='N')
+					if (!$this->fields["deleted"])
 						echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 					else {
 						echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";

@@ -100,7 +100,7 @@ function fillidfield(Type,Id){
 	echo " </tr>";
 
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_computers where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "select name,ID,contact, serial, otherserial from glpi_computers where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -123,7 +123,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_networking where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "select name,ID,contact, serial, otherserial from glpi_networking where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -146,7 +146,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_printers where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "select name,ID,contact, serial, otherserial from glpi_printers where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -169,7 +169,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_monitors where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "select name,ID,contact, serial, otherserial from glpi_monitors where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -192,7 +192,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_peripherals where is_template='0' AND deleted='N' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "select name,ID,contact, serial, otherserial from glpi_peripherals where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -215,7 +215,7 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID from glpi_software where is_template='0' AND deleted='N' AND (name like '%".$_POST["NomContact"]."%' )";
+	$query = "select name,ID from glpi_software where is_template='0' AND deleted='0' AND (name like '%".$_POST["NomContact"]."%' )";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
