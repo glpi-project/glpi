@@ -426,7 +426,7 @@ class Phone extends CommonDBTM {
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top'>\n";
 					echo "<div align='center'>";
-					if ($this->fields["deleted"]=='N')
+					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
 						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";

@@ -659,7 +659,7 @@ class Computer extends CommonDBTM {
 					echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
 					echo "<input type='hidden' name='ID' value=$ID>";
 					echo "<div align='center'>";
-					if ($this->fields["deleted"]=='N')
+					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
 						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";

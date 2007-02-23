@@ -327,7 +327,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		$date_in=convDate($data["date_in"]);
 		$date_use=convDate($data["date_use"]);
 		$date_out=convDate($data["date_out"]);
-		echo "<tr  class='tab_bg_1".($data["deleted"]=='Y'?"_2":"")."'><td align='center'>";
+		echo "<tr  class='tab_bg_1".($data["deleted"]?"_2":"")."'><td align='center'>";
 		echo $data["ID"]; 
 		echo "</td><td align='center'><b>";
 		$ci->getFromDB(CARTRIDGE_TYPE,$data["tID"]);
@@ -631,7 +631,7 @@ function cron_cartridge(){
 
 	// Get cartridges type with alarm activated and last warning > 7 days
 	// TODO -> last warning delay to config
-	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.ref as cartref, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_cartridges_type LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') WHERE glpi_cartridges_type.deleted='N' AND glpi_cartridges_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) ;";
+	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.ref as cartref, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_cartridges_type LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') WHERE glpi_cartridges_type.deleted='0' AND glpi_cartridges_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) ;";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){

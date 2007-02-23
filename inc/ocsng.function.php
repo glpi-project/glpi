@@ -73,7 +73,7 @@ function ocsShowNewComputer($ocs_server_id,$check, $start, $tolinked = 0) {
 	// Computers existing in GLPI
 	$query_glpi_comp = "SELECT ID,name 
 			FROM glpi_computers 
-			WHERE deleted = 'N' AND is_template='0'";
+			WHERE deleted = '0' AND is_template='0'";
 	$result_glpi_comp = $DB->query($query_glpi_comp);
 
 	if ($DBocs->numrows($result_ocs) > 0) {

@@ -72,7 +72,7 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_config` ADD `decimal_number` INT DEFAULT '2';";
 		$DB->query($query) or die("0.7 add decimal_number in glpi_config " . $LANG["update"][90] . $DB->error());
 	}
-
+	$CFG_GLPI["decimal_number"]=2;
 
 	if (!FieldExists("glpi_config", "cas_logout")) {
 		$query = "ALTER TABLE `glpi_config` ADD `cas_logout` VARCHAR( 255 ) NULL AFTER `cas_uri`;";
@@ -565,14 +565,20 @@ function update0681to07() {
 		foreach ($fields as $key => $field){
 			if (FieldExists($table,$field)){
 				
-				$query="ALTER TABLE `$table` CHANGE `$field` `tmp_convert_enum` ENUM( '0', '1' ) NOT NULL DEFAULT '0'";
-				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90] . $DB->error());
-				$query="ALTER TABLE `$table` ADD `$field` SMALLINT NOT NULL DEFAULT '0' AFTER `tmp_convert_enum` ";
-				$DB->query($query) or die("0.7 alter $table add new field $field " . $LANG["update"][90] . $DB->error());
-				$query="UPDATE `$table` SET $field='1' WHERE tmp_convert_enum='1';" ;
+				$query="ALTER TABLE `$table` ADD `tmp_convert_enum` SMALLINT NOT NULL DEFAULT '0' AFTER `$field` ";
+				$DB->query($query) or die("0.7 alter $table add new field tmp_convert_enum " . $LANG["update"][90] . $DB->error());
+
+				$query="UPDATE `$table` SET tmp_convert_enum='1' WHERE $field='1';" ;
 				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
-				$query="ALTER TABLE `$table` DROP `tmp_convert_enum` ";
+				$query="UPDATE `$table` SET tmp_convert_enum='0' WHERE $field='0';" ;
+				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
+
+				$query="ALTER TABLE `$table` DROP `$field` ";
 				$DB->query($query) or die("0.7 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
+
+				$query="ALTER TABLE `$table` CHANGE `tmp_convert_enum` `$field` SMALLINT NOT NULL DEFAULT '0'";
+				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90]. $DB->error()); 
+
 				if ($table!="glpi_config"&&$table!="glpi_profiles"){
 					$query ="ALTER TABLE `$table` ADD KEY (`$field`)";
 					$DB->query($query) or die("0.7 alter $table add deleted key " . $LANG["update"][90] . $DB->error());
@@ -595,20 +601,30 @@ function update0681to07() {
 	foreach ($tmptbl as $table => $fields){
 		foreach ($fields as $key => $field){
 			if (FieldExists($table,$field)){
-				
-				$query="ALTER TABLE `$table` CHANGE `$field` `tmp_convert_enum` ENUM( 'Y', 'N' ) NOT NULL DEFAULT '$default'";
-				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90] . $DB->error());
+
 				$newdef=0;
 				if ($default=="Y"){
 					$newdef=1;
 				}
-				$query="ALTER TABLE `$table` ADD `$field` SMALLINT NOT NULL DEFAULT '$newdef' AFTER `tmp_convert_enum` ";
-				$DB->query($query) or die("0.7 alter $table add new field $field " . $LANG["update"][90] . $DB->error());
-				$query="UPDATE `$table` SET $field='1' WHERE tmp_convert_enum='Y';" ;
-				$query="UPDATE `$table` SET $field='0' WHERE tmp_convert_enum='N';" ;
+
+				$query="ALTER TABLE `$table` ADD `tmp_convert_enum` SMALLINT NOT NULL DEFAULT '$newdef' AFTER `$field` ";
+				$DB->query($query) or die("0.7 alter $table add new field tmp_convert_enum " . $LANG["update"][90] . $DB->error());
+
+				$query="UPDATE `$table` SET tmp_convert_enum='1' WHERE $field='Y';" ;
 				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
-				$query="ALTER TABLE `$table` DROP `tmp_convert_enum` ";
+				$query="UPDATE `$table` SET tmp_convert_enum='0' WHERE $field='N';" ;
+				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
+
+				$query="ALTER TABLE `$table` DROP `$field` ";
 				$DB->query($query) or die("0.7 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
+
+				$query="ALTER TABLE `$table` CHANGE `tmp_convert_enum` `$field` SMALLINT NOT NULL DEFAULT '$newdef'";
+				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90]. $DB->error()); 
+
+				if ($table=="glpi_licenses"||$table=="glpi_software"||$table=="glpi_type_docs"){
+					$query ="ALTER TABLE `$table` ADD KEY (`$field`)";
+					$DB->query($query) or die("0.7 alter $table add deleted key " . $LANG["update"][90] . $DB->error());
+				}
 			}
 		}
 	}
@@ -627,15 +643,26 @@ function update0681to07() {
 	foreach ($enumYesNo as $table => $fields){
 		foreach ($fields as $key => $field){
 			if (FieldExists($table,$field)){
-				
-				$query="ALTER TABLE `$table` CHANGE `$field` `tmp_convert_enum` ENUM( 'yes', 'no' ) NOT NULL DEFAULT 'no'";
-				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90] . $DB->error());
-				$query="ALTER TABLE `$table` ADD `$field` SMALLINT NOT NULL DEFAULT '0' AFTER `tmp_convert_enum` ";
-				$DB->query($query) or die("0.7 alter $table add new field $field " . $LANG["update"][90] . $DB->error());
-				$query="UPDATE `$table` SET $field='1' WHERE tmp_convert_enum='yes';" ;
+
+
+				$query="ALTER TABLE `$table` ADD `tmp_convert_enum` SMALLINT NOT NULL DEFAULT '0' AFTER `$field` ";
+				$DB->query($query) or die("0.7 alter $table add new field tmp_convert_enum " . $LANG["update"][90] . $DB->error());
+
+				$query="UPDATE `$table` SET tmp_convert_enum='1' WHERE $field='yes';" ;
 				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
-				$query="ALTER TABLE `$table` DROP `tmp_convert_enum` ";
+				$query="UPDATE `$table` SET tmp_convert_enum='0' WHERE $field='no';" ;
+				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
+
+				$query="ALTER TABLE `$table` DROP `$field` ";
 				$DB->query($query) or die("0.7 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
+
+				$query="ALTER TABLE `$table` CHANGE `tmp_convert_enum` `$field` SMALLINT NOT NULL DEFAULT '0'";
+				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90]. $DB->error());
+
+				if ($table=="glpi_kbitems"){
+					$query ="ALTER TABLE `$table` ADD KEY (`$field`)";
+					$DB->query($query) or die("0.7 alter $table add deleted key " . $LANG["update"][90] . $DB->error());
+				}
 			}
 		}
 	}

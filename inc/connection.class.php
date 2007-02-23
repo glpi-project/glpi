@@ -55,7 +55,7 @@ class Connection {
 	//! ID of the computer
 	var $device_ID		= 0;
 	//! Is the computer Deleted
-	var $deleted ='N';
+	var $deleted ='0';
 
 	/**
 	 * Get items connected to a computer

@@ -55,7 +55,7 @@ function manageGetValuesInSearch($type=0){
 
 	$default_values["start"]=0;
 	$default_values["order"]="ASC";
-	$default_values["deleted"]="N";
+	$default_values["deleted"]=0;
 	$default_values["distinct"]="N";
 	$default_values["link"]=array();
 	$default_values["field"]=array(0=>"view");
@@ -117,7 +117,7 @@ function manageGetValuesInSearch($type=0){
  *@return nothing (diplays)
  *
  **/
-function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",$link="",$distinct="Y",$link2="",$contains2="",$field2="",$type2=""){
+function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$link="",$distinct="Y",$link2="",$contains2="",$field2="",$type2=""){
 	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE;
 	$options=$SEARCH_OPTION[$type];
 
@@ -332,10 +332,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= "",
 	//	echo "<table>";
 	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
 		//echo "<tr><td>";
-		echo "<select name='deleted'>";
-		echo "<option value='Y' ".($deleted=='Y'?" selected ":"").">".$LANG["choice"][1]."</option>";
-		echo "<option value='N' ".($deleted=='N'?" selected ":"").">".$LANG["choice"][0]."</option>";
-		echo "</select>";
+		dropdownYesNoInt("deleted",$deleted);
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG["common"][3]."' title='".$LANG["common"][3]."'>";
 		//echo "</td></tr>";
 	}
@@ -830,7 +827,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-	//echo $QUERY."<br>\n";
+	echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {

@@ -468,7 +468,7 @@ function getNextItem($table,$ID){
 	$query.=" ) ";
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.=" AND deleted='N' ";
+		$query.=" AND deleted='0' ";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
 		$query.=" AND is_template='0' ";	
 
@@ -525,7 +525,7 @@ function getPreviousItem($table,$ID){
 	$query.=" ) ";
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.="AND deleted='N'";
+		$query.="AND deleted='0'";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
 		$query.="AND is_template='0'";	
 
@@ -726,7 +726,7 @@ function autoName($objectName, $field, $isTemplate, $type){
 						$query .= ($first ? "SELECT " : " UNION SELECT  ")." $field AS code 
 							FROM $table 
 							WHERE $field LIKE '$like' 
-							AND deleted = 'N' 
+							AND deleted = '0' 
 							AND is_template = '0'";
 						$first = 0;
 					}
@@ -739,7 +739,7 @@ function autoName($objectName, $field, $isTemplate, $type){
 					FROM $table 
 					WHERE $field LIKE '$like' ";
 				if ($type != INFOCOM_TYPE)
-					$query .= " AND deleted = 'N' AND is_template = '0'";
+					$query .= " AND deleted = '0' AND is_template = '0'";
 			}
 			$query = "SELECT MAX(Num.no) AS lastNo 
 				FROM (".$query.") AS Num";

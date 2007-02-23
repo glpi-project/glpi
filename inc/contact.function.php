@@ -80,7 +80,7 @@ function showEnterpriseContact($instID) {
 			if (!ereg("https*://",$website)) $website="http://".$website;
 			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 		}
-		echo "<tr class='tab_bg_1".($data["deleted"]=='Y'?"_2":"")."'>";
+		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";

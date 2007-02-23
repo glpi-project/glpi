@@ -196,7 +196,7 @@ function dropdownNoValue($table,$myname,$value) {
 
 	$where="";
 	if (in_array($table,$CFG_GLPI["deleted_tables"])){
-		$where="WHERE deleted='N'";
+		$where="WHERE deleted='0'";
 	}
 	if (in_array($table,$CFG_GLPI["template_tables"])){
 		$where.="AND is_template='0'";
@@ -755,7 +755,7 @@ function dropdownMyDevices($userID=0){
 		// My items
 		foreach ($CFG_GLPI["linkuser_type"] as $type){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
-				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='N' ";
+				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='0' ";
 				 
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
@@ -794,7 +794,7 @@ function dropdownMyDevices($userID=0){
 				foreach ($CFG_GLPI["linkuser_type"] as $type){
 					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
-						$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where AND deleted='N'";
+						$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where AND deleted='0'";
 
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
@@ -833,7 +833,7 @@ function dropdownMyDevices($userID=0){
 			foreach ($types as $type){
 				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 					if (!isset($already_add[$type])) $already_add[$type]=array();
-					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." AND ".$LINK_ID_TABLE[$type].".deleted='N' ORDER BY ".$LINK_ID_TABLE[$type].".name";
+					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." AND ".$LINK_ID_TABLE[$type].".deleted='0' ORDER BY ".$LINK_ID_TABLE[$type].".name";
 					$result=$DB->query($query);
 					if ($DB->numrows($result)>0){
 						$ci->setType($type);
@@ -1218,7 +1218,7 @@ function displaySearchTextAjaxDropdown($id,$size=4){
 
 }
 
-function dropdownMassiveAction($device_type,$deleted='N'){
+function dropdownMassiveAction($device_type,$deleted=0){
 	global $LANG,$CFG_GLPI;
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
@@ -1226,7 +1226,7 @@ function dropdownMassiveAction($device_type,$deleted='N'){
 	echo "<option value=\"-1\" selected>-----</option>";
 	echo "<option value=\"update\">".$LANG["buttons"][14]."</option>";
 
-	if ($deleted=="Y"){
+	if ($deleted){
 		echo "<option value=\"purge\">".$LANG["buttons"][22]."</option>";
 		echo "<option value=\"restore\">".$LANG["buttons"][21]."</option>";
 	} else {

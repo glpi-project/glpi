@@ -497,10 +497,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$ci->getFromDB($data["device_type"],$data["computer"]);
 		// Sixth Colum
 		$sixth_col="";
-		$deleted=0;
-		if ($ci->getField("deleted")=='Y'){
-			$deleted=1;
-		}
+
 		$sixth_col.=$ci->getType();
 		if ($data["device_type"]>0&&$data["computer"]>0){
 			$sixth_col.="<br><strong>";
@@ -512,7 +509,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$sixth_col.="</strong>";
 		} 
 
-		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$deleted,$align);
+		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$ci->getField("deleted"),$align);
 
 		// Seventh column
 		echo displaySearchItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,$row_num,0,$align);
@@ -587,7 +584,7 @@ function showJobVeryShort($ID) {
 
 		if (haveTypeRight($job->fields["device_type"],"r")){
 			echo "<td align='center' ";
-			if ($job->hardwaredatas->getField("deleted")=='Y'){
+			if ($job->hardwaredatas->getField("deleted")){
 				echo "class='tab_bg_1_2'";
 			}
 			echo ">";

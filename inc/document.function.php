@@ -222,7 +222,7 @@ function showDeviceDocument($instID,$search='') {
 							echo "<tr class='tab_bg_1'>";
 							echo "<td align='center'>".$ci->getType()."</td>";
 	
-							echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+							echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 							echo "<td align='center' class='tab_bg_2'>";
 							if ($canedit){
 								echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
@@ -304,7 +304,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$docID=$data["ID"];
 		$assocID=$data["assocID"];
 
-		echo "<tr class='tab_bg_1".($data["deleted"]=='Y'?"_2":"")."'>";
+		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		if ($withtemplate!=3&&$canread){
 			echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><b>".$data["name"];
 			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
@@ -347,7 +347,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			$limit=" AND FK_entities='$entity' ";
 		}
 
-		$q="SELECT count(*) FROM glpi_docs WHERE deleted='N' $limit";
+		$q="SELECT count(*) FROM glpi_docs WHERE deleted='0' $limit";
 			
 		$result = $DB->query($q);
 		$nb = $DB->result($result,0,0);

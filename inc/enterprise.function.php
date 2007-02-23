@@ -81,7 +81,7 @@ function showInfocomEnterprise($instID) {
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td align='center'>".$ci->getType()."</td>";
-					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "</tr>";
 					$num++;
 				}
@@ -135,7 +135,7 @@ function showDeviceManufacturer($instID) {
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td align='center'>".$ci->getType()."</td>";
-					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']=='Y'?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "</tr>";
 					$num++;
 				}

@@ -445,7 +445,7 @@ class Printer  extends CommonDBTM {
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2' valign='top' align='center'>\n";
 					echo "<div align='center'>";
-					if ($this->fields["deleted"]=='N')
+					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
 						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
