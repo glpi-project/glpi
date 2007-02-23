@@ -669,7 +669,15 @@ function update0681to07() {
 		}
 	}
 	// Reste enum : glpi_tracking.status et glpi_device_gfxcard.interface
+	if(FieldExists("glpi_tracking","status")){		
+		$query = "ALTER TABLE `glpi_tracking` CHANGE `status` `status` VARCHAR( 255 ) DEFAULT 'new'";
+		$DB->query($query) or die("0.7 alter status from tracking " . $LANG["update"][90] . $DB->error());
+	}
 
+	if(FieldExists("glpi_device_gfxcard","interface")){		
+		$query = "ALTER TABLE `glpi_device_gfxcard` CHANGE `interface` `interface` VARCHAR( 255 ) NULL DEFAULT 'PCI-X'";
+		$DB->query($query) or die("0.7 alter interface from glpi_device_gfxcard " . $LANG["update"][90] . $DB->error());
+	}
 
 	// TODO Split Config -> config general + config entity
 	// TODO Auto assignment profile based on rules
