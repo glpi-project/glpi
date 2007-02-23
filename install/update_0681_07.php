@@ -613,10 +613,8 @@ function update0681to07() {
 				$DB->query($query) or die("0.7 alter $table add new field tmp_convert_enum " . $LANG["update"][90] . $DB->error());
 
 				$query="UPDATE `$table` SET tmp_convert_enum='1' WHERE $field='Y';" ;
-				echo $query."<br>";
 				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
 				$query="UPDATE `$table` SET tmp_convert_enum='0' WHERE $field='N';" ;
-				echo $query."<br>";
 				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
 
 				$query="ALTER TABLE `$table` DROP `$field` ";
