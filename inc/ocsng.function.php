@@ -234,39 +234,39 @@ function ocsManageDeleted($ocs_server_id) {
 					// Get hardware due to bug of duplicates management of OCS
 					if (ereg("-", $equiv)) {
 						$query_ocs = "SELECT * 
-													FROM hardware 
-													WHERE DEVICEID='$equiv'";
+								FROM hardware 
+								WHERE DEVICEID='$equiv'";
 						$result_ocs = $DBocs->query($query_ocs);
 						if ($data = $DBocs->fetch_array($result_ocs));
 
 						$query = "UPDATE glpi_ocs_link 
-													SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
-													WHERE ocs_deviceid='$del'";
+								SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
+								WHERE ocs_deviceid='$del' AND ocs_server_id='$ocs_server_id'";
 						$DB->query($query);
 
 					} else {
 						$query_ocs = "SELECT * 
-													FROM hardware 
-													WHERE ID='$equiv'";
+								FROM hardware 
+								WHERE ID='$equiv'";
 
 						$result_ocs = $DBocs->query($query_ocs);
 						if ($data = $DBocs->fetch_array($result_ocs));
 
 						$query = "UPDATE glpi_ocs_link 
-													SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
-													WHERE ocs_id='$del'";
+								SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
+								WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
 						$DB->query($query);
 
 					}
 				} else { // Deleted
 					if (ereg("-", $del))
 						$query = "SELECT * 
-													FROM glpi_ocs_link 
-													WHERE ocs_deviceid='$del'" ;
+								FROM glpi_ocs_link 
+								WHERE ocs_deviceid='$del' AND ocs_server_id='$ocs_server_id'" ;
 					else
 						$query = "SELECT * 
-												FROM glpi_ocs_link 
-													WHERE ocs_id='$del'";
+								FROM glpi_ocs_link 
+								WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
 					$result = $DB->query($query);
 					if ($DB->numrows($result)) {
 						$data = $DB->fetch_array($result);
@@ -788,13 +788,13 @@ function ocsCleanLinks($ocs_server_id) {
 	$query = "SELECT glpi_ocs_link.ID AS ID 
 			FROM glpi_ocs_link 
 			LEFT JOIN glpi_computers ON glpi_computers.ID=glpi_ocs_link.glpi_id 
-			WHERE glpi_computers.ID IS NULL";
+			WHERE glpi_computers.ID IS NULL AND ocs_server_id='$ocs_server_id'";
 
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_array($result)) {
 			$query2 = "DELETE FROM glpi_ocs_link 
-							WHERE ID='" . $data['ID'] . "'";
+					WHERE ID='" . $data['ID'] . "'";
 			$DB->query($query2);
 		}
 	}
@@ -813,7 +813,8 @@ function ocsCleanLinks($ocs_server_id) {
 	}
 
 	$query = "SELECT *
-			FROM glpi_ocs_link";
+			FROM glpi_ocs_link
+			WHERE ocs_server_id='$ocs_server_id'";
 	$result = $DB->query($query);
 
 	if ($DB->numrows($result) > 0) {
@@ -821,7 +822,7 @@ function ocsCleanLinks($ocs_server_id) {
 			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
 			if (!isset ($hardware[$data["ocs_id"]])) {
 				$query_del = "DELETE FROM glpi_ocs_link 
-									WHERE ID='" . $data["ID"] . "'";
+						WHERE ID='" . $data["ID"] . "'";
 				$DB->query($query_del);
 				$comp = new Computer();
 				$comp->delete(array (
