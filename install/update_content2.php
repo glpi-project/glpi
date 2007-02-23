@@ -169,7 +169,10 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
 					$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
 				} else if (eregi("text",$val["Type"])){
 					$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
+				} else if (eregi("tinyint",$val["Type"])){
+					$DB->query("ALTER TABLE `glpi_auth_ldap` CHANGE `".$val["Field"]."` `".$val["Field"]."` SMALLINT NOT NULL DEFAULT '".$val["default"]."'");
 				}
+
 				echo "<br>".$key."<br>";
 				print_r($val);
 			}

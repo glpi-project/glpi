@@ -37,7 +37,7 @@
 
 // Update from 0.68.1 to 0.7
 function update0681to07() {
-	global $DB, $LANG, $CFG_GLPI,$LINK_ID_TABLE;
+	global $DB, $LANG,$LINK_ID_TABLE;
 	// Improve user table :
 	if (!isIndex("glpi_users", "firstname")) {
 		$query = "ALTER TABLE `glpi_users` ADD INDEX ( `firstname` )";
@@ -69,7 +69,7 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 alter cost_material in glpi_tracking " . $LANG["update"][90] . $DB->error());
 	}	
 	if (!FieldExists("glpi_config", "decimal_number")) {
-		$query = "ALTER TABLE `glpi_config` ADD `decimal_number` INT( 11 ) DEFAULT '2';";
+		$query = "ALTER TABLE `glpi_config` ADD `decimal_number` INT DEFAULT '2';";
 		$DB->query($query) or die("0.7 add decimal_number in glpi_config " . $LANG["update"][90] . $DB->error());
 	}
 
@@ -167,9 +167,9 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 clean datas of glpi_users_profiles " . $LANG["update"][90] . $DB->error());
 		
 		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entities` INT NOT NULL DEFAULT '0',
-											ADD `recursive` TINYINT NOT NULL DEFAULT '1',
-											ADD `active` TINYINT NOT NULL DEFAULT '1',
-											ADD `dynamic` TINYINT NOT NULL DEFAULT '0' ";
+											ADD `recursive` SMALLINT NOT NULL DEFAULT '1',
+											ADD `active` SMALLINT NOT NULL DEFAULT '1',
+											ADD `dynamic` SMALLINT NOT NULL DEFAULT '0' ";
 		$DB->query($query) or die("0.7 alter glpi_users_profiles " . $LANG["update"][90] . $DB->error());
 
 		// Manage inactive users
@@ -266,25 +266,25 @@ function update0681to07() {
 		$query = "CREATE TABLE `glpi_auth_ldap` (
 			 `ID` int(11) NOT NULL auto_increment,
 			 `name` varchar(255) NOT NULL,
-			 `ldap_host` varchar(200) default NULL,
-			`ldap_basedn` varchar(200) default NULL,
-			`ldap_rootdn` varchar(200) default NULL,
-			`ldap_pass` varchar(200) default NULL,
-			`ldap_port` varchar(200) NOT NULL default '389',
+			 `ldap_host` varchar(255) default NULL,
+			`ldap_basedn` varchar(255) default NULL,
+			`ldap_rootdn` varchar(255) default NULL,
+			`ldap_pass` varchar(255) default NULL,
+			`ldap_port` varchar(255) NOT NULL default '389',
 			`ldap_condition` varchar(255) default NULL,
-			`ldap_login` varchar(200) NOT NULL default 'uid',	
-			`ldap_use_tls` varchar(200) NOT NULL default '0',
+			`ldap_login` varchar(255) NOT NULL default 'uid',	
+			`ldap_use_tls` varchar(255) NOT NULL default '0',
 			`ldap_field_group` varchar(255) default NULL,
 			`ldap_group_condition` varchar(255) default NULL,
-			`ldap_search_for_groups` tinyint(4) NOT NULL default '0',
+			`ldap_search_for_groups` int NOT NULL default '0',
 			`ldap_field_group_member` varchar(255) default NULL,
-			`ldap_field_email` varchar(200) default NULL,
-			`ldap_field_location` varchar(200) default NULL,
-			`ldap_field_realname` varchar(200) default NULL,
-			`ldap_field_firstname` varchar(200) default NULL,
-			`ldap_field_phone` varchar(200) default NULL,
-			`ldap_field_phone2` varchar(200) default NULL,
-			`ldap_field_mobile` varchar(200) default NULL,
+			`ldap_field_email` varchar(255) default NULL,
+			`ldap_field_location` varchar(255) default NULL,
+			`ldap_field_realname` varchar(255) default NULL,
+			`ldap_field_firstname` varchar(255) default NULL,
+			`ldap_field_phone` varchar(255) default NULL,
+			`ldap_field_phone2` varchar(255) default NULL,
+			`ldap_field_mobile` varchar(255) default NULL,
 			`ldap_field_comments` TEXT default NULL,		
 			PRIMARY KEY  (`ID`)
 		) ENGINE=MyISAM;";
@@ -408,7 +408,7 @@ function update0681to07() {
 	foreach ($tco_tbl as $type) {
 		$table=$LINK_ID_TABLE[$type];
 		if (!FieldExists($table, "ticket_tco")){
-			$query = "ALTER TABLE `$table` ADD `ticket_tco` DECIMAL( 20, 4 ) DEFAULT '0';";
+			$query = "ALTER TABLE `$table` ADD `ticket_tco` DECIMAL( 20, 4 ) DEFAULT '0.0000';";
 			$DB->query($query) or die("0.7 alter $table add ticket_tco" . $LANG["update"][90] . $DB->error());
 			// Update values
 			$query="SELECT DISTINCT device_type, computer 
@@ -427,7 +427,7 @@ function update0681to07() {
 		}
 	}	
 	if (!FieldExists("glpi_software", "helpdesk_visible")) {
-		$query = "ALTER TABLE glpi_software ADD `helpdesk_visible` tinyint(1) NOT NULL default '1'";
+		$query = "ALTER TABLE glpi_software ADD `helpdesk_visible` INT NOT NULL default '1'";
 		$DB->query($query) or die("0.7 add helpdesk_visible in glpi_software " . $LANG["update"][90] . $DB->error());
 	}
 	
@@ -513,7 +513,7 @@ function update0681to07() {
 	}
 	
 	if(!FieldExists("glpi_ocs_config","import_registry")){		
-		$query = "ALTER TABLE glpi_ocs_config ADD `import_registry` INT(2) NOT NULL default '0' AFTER `import_device_modems`";
+		$query = "ALTER TABLE glpi_ocs_config ADD `import_registry` INT NOT NULL default '0' AFTER `import_device_modems`";
 		$DB->query($query) or die("0.7 add import_registry in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
 	}
 	if (!TableExists("glpi_registry")) {
@@ -528,6 +528,120 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add glpi_registry table " . $LANG["update"][90] . $DB->error());
 		
 	}
+
+	//// Enum clean
+	// Enum 0-1
+	$enum01=array();
+	$deleted_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones","glpi_consumables_type");
+
+	foreach ($deleted_tables as $table){
+		if (!isset($enum01[$table])){
+			$enum01[$table]=array();
+		}
+		$enum01[$table][]="deleted";
+	}
+	$template_tables=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones","state_types","reservation_types","glpi_ocs_config");
+
+	foreach ($template_tables as $table){
+		if (!isset($enum01[$table])){
+			$enum01[$table]=array();
+		}
+		$enum01[$table][]="is_template";
+	}
+	$enum01["glpi_config"][]="auto_assign";
+	$enum01["glpi_config"][]="public_faq";
+	$enum01["glpi_config"][]="url_in_mail";
+	$enum01["glpi_profiles"][]="is_default";
+
+	$enum01["glpi_monitors"][]="is_global";
+	$enum01["glpi_peripherals"][]="is_global";
+	$enum01["glpi_phones"][]="is_global";
+	$enum01["glpi_printers"][]="is_global";
+	$enum01["glpi_reminder"][]="rv";
+	$enum01["glpi_contract_device"][]="is_template";
+	$enum01["glpi_doc_device"][]="is_template";
+	
+	foreach ($enum01 as $table => $fields){
+		foreach ($fields as $key => $field){
+			if (FieldExists($table,$field)){
+				
+				$query="ALTER TABLE `$table` CHANGE `$field` `tmp_convert_enum` ENUM( '0', '1' ) NOT NULL DEFAULT '0'";
+				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90] . $DB->error());
+				$query="ALTER TABLE `$table` ADD `$field` SMALLINT NOT NULL DEFAULT '0' AFTER `tmp_convert_enum` ";
+				$DB->query($query) or die("0.7 alter $table add new field $field " . $LANG["update"][90] . $DB->error());
+				$query="UPDATE `$table` SET $field='1' WHERE tmp_convert_enum='1';" ;
+				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
+				$query="ALTER TABLE `$table` DROP `tmp_convert_enum` ";
+				$DB->query($query) or die("0.7 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
+				if ($table!="glpi_config"&&$table!="glpi_profiles"){
+					$query ="ALTER TABLE `$table` ADD KEY (`$field`)";
+					$DB->query($query) or die("0.7 alter $table add deleted key " . $LANG["update"][90] . $DB->error());
+				}
+			}
+		}
+	}
+	
+	$enumYN["N"]["glpi_contracts"][]="monday"; // N
+	$enumYN["N"]["glpi_contracts"][]="saturday"; // N
+	$enumYN["Y"]["glpi_device_drive"][]="is_writer"; // Y 
+	$enumYN["N"]["glpi_device_control"][]="raid"; // Y -> N
+	$enumYN["Y"]["glpi_device_power"][]="atx"; // Y
+	$enumYN["N"]["glpi_licenses"][]="oem"; // N
+	$enumYN["Y"]["glpi_licenses"][]="buy"; // Y
+	$enumYN["N"]["glpi_software"][]="is_update"; // N
+	$enumYN["Y"]["glpi_type_docs"][]="upload"; // Y
+
+	foreach ($enumYN as $default => $tmptbl)
+	foreach ($tmptbl as $table => $fields){
+		foreach ($fields as $key => $field){
+			if (FieldExists($table,$field)){
+				
+				$query="ALTER TABLE `$table` CHANGE `$field` `tmp_convert_enum` ENUM( 'Y', 'N' ) NOT NULL DEFAULT '$default'";
+				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90] . $DB->error());
+				$newdef=0;
+				if ($default=="Y"){
+					$newdef=1;
+				}
+				$query="ALTER TABLE `$table` ADD `$field` SMALLINT NOT NULL DEFAULT '$newdef' AFTER `tmp_convert_enum` ";
+				$DB->query($query) or die("0.7 alter $table add new field $field " . $LANG["update"][90] . $DB->error());
+				$query="UPDATE `$table` SET $field='1' WHERE tmp_convert_enum='Y';" ;
+				$query="UPDATE `$table` SET $field='0' WHERE tmp_convert_enum='N';" ;
+				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
+				$query="ALTER TABLE `$table` DROP `tmp_convert_enum` ";
+				$DB->query($query) or die("0.7 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
+			}
+		}
+	}
+
+	if(FieldExists("glpi_tracking","is_group")){		
+		$query = "ALTER TABLE glpi_tracking DROP `is_group`";
+		$DB->query($query) or die("0.7 drop is_group from tracking " . $LANG["update"][90] . $DB->error());
+	}
+	
+
+	$enumYesNo["glpi_kbitems"][]="faq"; 
+	$enumYesNo["glpi_tracking"][]="emailupdates"; 
+	$enumYesNo["glpi_users"][]="tracking_order"; 
+
+
+	foreach ($enumYesNo as $table => $fields){
+		foreach ($fields as $key => $field){
+			if (FieldExists($table,$field)){
+				
+				$query="ALTER TABLE `$table` CHANGE `$field` `tmp_convert_enum` ENUM( 'yes', 'no' ) NOT NULL DEFAULT 'no'";
+				$DB->query($query) or die("0.7 alter $table move enum $field to tmp field " . $LANG["update"][90] . $DB->error());
+				$query="ALTER TABLE `$table` ADD `$field` SMALLINT NOT NULL DEFAULT '0' AFTER `tmp_convert_enum` ";
+				$DB->query($query) or die("0.7 alter $table add new field $field " . $LANG["update"][90] . $DB->error());
+				$query="UPDATE `$table` SET $field='1' WHERE tmp_convert_enum='yes';" ;
+				$DB->query($query) or die("0.7 update $table to set correct values to alod enum01 $field " . $LANG["update"][90] . $DB->error());
+				$query="ALTER TABLE `$table` DROP `tmp_convert_enum` ";
+				$DB->query($query) or die("0.7 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
+			}
+		}
+	}
+	// Reste enum : glpi_tracking.status et glpi_device_gfxcard.interface
+
+
 	// TODO Split Config -> config general + config entity
 	// TODO Auto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference
