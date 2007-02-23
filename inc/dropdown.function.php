@@ -703,7 +703,14 @@ function dropdownYesNoInt($name,$value=0){
 	echo "</select>\n";	
 }	
 
-
+function getYesNo($value){
+	global $LANG;
+	if ($value){
+		return $LANG["choice"][1];
+	} else {
+		return $LANG["choice"][0];
+	}
+}
 /**
  * Make a select box for a None Read Write choice
  *
@@ -1396,9 +1403,9 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 			echo "<option value='".$data["ID"]."'>".$data["serial"];
 			if ($data["expire"]!=NULL) echo " - ".$LANG["software"][25]." ".$data["expire"];
 			else echo " - ".$LANG["software"][26];
-			if ($data["buy"]=='Y') echo " - ".$LANG["software"][35];
+			if ($data["buy"]) echo " - ".$LANG["software"][35];
 			else echo " - ".$LANG["software"][37];
-			if ($data["oem"]=='Y') echo " - ".$LANG["software"][28];
+			if ($data["oem"]) echo " - ".$LANG["software"][28];
 			echo "</option>";
 		}
 		echo "</select>";

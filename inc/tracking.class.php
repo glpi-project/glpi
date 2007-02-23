@@ -300,10 +300,11 @@ class Job extends CommonDBTM{
 				$global_mail_change_count++;
 			}
 			if (in_array("emailupdates",$updates)){
-				if ($this->fields["emailupdates"]=="yes")
+				if ($this->fields["emailupdates"]){
 					$change_followup_content.=$LANG["mailing"][101]."\n";
-				else if ($this->fields["emailupdates"]=="no")
+				} else {
 					$change_followup_content.=$LANG["mailing"][102]."\n";
+				}
 				$global_mail_change_count++;
 			}
 		}
@@ -382,7 +383,7 @@ class Job extends CommonDBTM{
 		}
 		// TODO no item selected -> FK_entities of the user profile or make select 
 
-		if (isset($input["emailupdates"])&&$input["emailupdates"]=="yes"&&empty($input["uemail"])){
+		if (isset($input["emailupdates"])&&$input["emailupdates"]&&empty($input["uemail"])){
 			$user=new User();
 			$user->getFromDB($input["author"]);
 			$input["uemail"]=$user->fields["email"];
@@ -622,7 +623,7 @@ class Job extends CommonDBTM{
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
 				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][28]."</span> ".$contact."<br>";
-			if ($this->fields["emailupdates"]=="yes"){
+			if ($this->fields["emailupdates"]){
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103]."</span> ".$LANG["choice"][1]."<br>";
 			} else {
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103]."</span> ".$LANG["choice"][0]."<br>";
@@ -654,7 +655,7 @@ class Job extends CommonDBTM{
 			$message.= $LANG["joblist"][2].": ".getPriorityName($this->fields["priority"])."\n";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
 				$message.= $LANG["mailing"][28]." ".$contact."\n";
-			if ($this->fields["emailupdates"]=="yes"){
+			if ($this->fields["emailupdates"]){
 				$message.=$LANG["mailing"][103]." ".$LANG["choice"][1]."\n";
 			} else {
 				$message.=$LANG["mailing"][103]." ".$LANG["choice"][0]."\n";

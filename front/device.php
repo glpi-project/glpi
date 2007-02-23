@@ -51,7 +51,6 @@ if(!isset($tab["field"])) $tab["field"] = "all";
 if(!isset($tab["phrasetype"])) $tab["phrasetype"] = "contains";
 if(!isset($tab["contains"])) $tab["contains"] = "";
 if(!isset($tab["sort"])) $tab["sort"] = "device.designation";
-if(!isset($tab["deleted"])) $tab["deleted"] = "N";
 if(!isset($tab["device_type"])) $tab["device_type"] = "0";
 if(!empty($tab["device_type"])) {
 	titleDevices($tab["device_type"]);

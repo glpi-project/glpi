@@ -49,7 +49,7 @@ class Device extends CommonDBTM {
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_assoc($result)){
-				cleanAllItemCache("device".$data["FK_computers"],"GLPI_".DEVICE_TYPE);
+				cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 			}
 		}
 		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
@@ -62,7 +62,7 @@ class Device extends CommonDBTM {
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_assoc($result)){
-				cleanAllItemCache("device".$data["FK_computers"],"GLPI_".DEVICE_TYPE);
+				cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 			}
 		}
 	}
