@@ -1,4 +1,4 @@
-#GLPI Dump database on 2007-02-23 15:49
+#GLPI Dump database on 2007-02-24 15:28
 
 ### Dump table glpi_alerts
 
@@ -191,7 +191,7 @@ CREATE TABLE `glpi_computers` (
   KEY `FK_entities` (`FK_entities`),
   KEY `is_template` (`is_template`),
   KEY `deleted` (`deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_computers VALUES ('1','0','','','','','','0','Empty Template',NULL,'0','0','0','0','0','0','0','0','0','1','Blank Template','0','0',NULL,'0',NULL,NULL,'0',NULL);
 
@@ -266,7 +266,7 @@ CREATE TABLE `glpi_config` (
   `time_step` int(11) default NULL,
   `decimal_number` int(11) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','admsys@xxxxx.fr','SIGNATURE','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','0','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5',NULL);
 
@@ -661,7 +661,7 @@ CREATE TABLE `glpi_display` (
   KEY `rank` (`rank`),
   KEY `num` (`num`),
   KEY `FK_users` (`FK_users`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_display VALUES ('32','1','4','4','0');
 INSERT INTO glpi_display VALUES ('34','1','6','6','0');
@@ -844,7 +844,7 @@ CREATE TABLE `glpi_dropdown_case_type` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_dropdown_case_type VALUES ('1','Grand',NULL);
 INSERT INTO glpi_dropdown_case_type VALUES ('2','Moyen',NULL);
@@ -883,7 +883,7 @@ CREATE TABLE `glpi_dropdown_contract_type` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_dropdown_contract_type VALUES ('1','Pr&#234;t',NULL);
 INSERT INTO glpi_dropdown_contract_type VALUES ('2','Location',NULL);
@@ -950,7 +950,7 @@ CREATE TABLE `glpi_dropdown_interface` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_dropdown_interface VALUES ('1','IDE',NULL);
 INSERT INTO glpi_dropdown_interface VALUES ('2','SATA',NULL);
@@ -1161,7 +1161,7 @@ CREATE TABLE `glpi_dropdown_ram_type` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_dropdown_ram_type VALUES ('1','EDO',NULL);
 INSERT INTO glpi_dropdown_ram_type VALUES ('2','DDR',NULL);
@@ -1300,10 +1300,11 @@ CREATE TABLE `glpi_event_log` (
   KEY `comp` (`item`),
   KEY `date` (`date`),
   KEY `itemtype` (`itemtype`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-02-23 15:49:44','login','1','échec de connexion: glpi');
 INSERT INTO glpi_event_log VALUES ('2','-1','system','2007-02-23 15:49:49','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2007-02-24 15:28:02','login','3','tech connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1490,7 +1491,7 @@ CREATE TABLE `glpi_mailing` (
   KEY `FK_item` (`FK_item`),
   KEY `item_type` (`item_type`),
   KEY `items` (`item_type`,`FK_item`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_mailing VALUES ('1','resa','3','1');
 INSERT INTO glpi_mailing VALUES ('2','resa','1','1');
@@ -1553,7 +1554,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `is_template` (`is_template`),
   KEY `is_global` (`is_global`),
   KEY `deleted` (`deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_monitors VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','','0','0','0','0','0','0','0',NULL,NULL,'0','0','0','1','Blank Template',NULL,NULL,NULL,'0',NULL);
 
@@ -1604,7 +1605,7 @@ CREATE TABLE `glpi_networking` (
   KEY `FK_entities` (`FK_entities`),
   KEY `is_template` (`is_template`),
   KEY `deleted` (`deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_networking VALUES ('1','0','','','','','','','0','0000-00-00 00:00:00','','0','0','0',NULL,NULL,NULL,'0','0','1','Blank Template','','',NULL,NULL,NULL,'0',NULL);
 
@@ -1703,7 +1704,7 @@ CREATE TABLE `glpi_ocs_config` (
   `date_mod` datetime default NULL,
   PRIMARY KEY  (`ID`),
   KEY `is_template` (`is_template`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_ocs_config VALUES ('1','localhost','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','',NULL,'1','1','0',NULL,NULL);
 
@@ -1775,7 +1776,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `is_template` (`is_template`),
   KEY `is_global` (`is_global`),
   KEY `deleted` (`deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_peripherals VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','','0','0','0','','0','0','0','1','Blank Template',NULL,NULL,NULL,'0',NULL);
 
@@ -1826,7 +1827,7 @@ CREATE TABLE `glpi_phones` (
   KEY `is_template` (`is_template`),
   KEY `is_global` (`is_global`),
   KEY `deleted` (`deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_phones VALUES ('1','0',NULL,'0000-00-00 00:00:00',NULL,NULL,'0',NULL,NULL,NULL,NULL,'0','0',NULL,NULL,'0','','0','0','0','0','0','1','Blank Template',NULL,NULL,NULL,'0',NULL);
 
@@ -1880,7 +1881,7 @@ CREATE TABLE `glpi_printers` (
   KEY `is_template` (`is_template`),
   KEY `is_global` (`is_global`),
   KEY `deleted` (`deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_printers VALUES ('1','0','','0000-00-00 00:00:00','','','0','','','0','0','0','','','0','0','0',NULL,NULL,'0','0','0','1','Blank Template','0',NULL,NULL,NULL,'0',NULL);
 
@@ -1945,7 +1946,7 @@ CREATE TABLE `glpi_profiles` (
   `show_group_hardware` char(1) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `interface` (`interface`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,'1','1','8388674','0','0');
 INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,NULL,NULL,'r','r',NULL,NULL,'r',NULL,'r','r',NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','0','1','1','0','1','1','1','8388674','0','0');
@@ -2023,6 +2024,47 @@ CREATE TABLE `glpi_reservation_resa` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
+### Dump table glpi_rules_actions
+
+DROP TABLE IF EXISTS `glpi_rules_actions`;
+CREATE TABLE `glpi_rules_actions` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_rules` int(11) NOT NULL,
+  `action_type` varchar(255) NOT NULL,
+  `field` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+### Dump table glpi_rules_criterias
+
+DROP TABLE IF EXISTS `glpi_rules_criterias`;
+CREATE TABLE `glpi_rules_criterias` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_rules` int(11) NOT NULL,
+  `criteria` varchar(255) NOT NULL,
+  `condition` smallint(4) NOT NULL,
+  `pattern` varchar(255) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+### Dump table glpi_rules_descriptions
+
+DROP TABLE IF EXISTS `glpi_rules_descriptions`;
+CREATE TABLE `glpi_rules_descriptions` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_entities` int(11) NOT NULL default '-1',
+  `rule_type` smallint(4) NOT NULL,
+  `ranking` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `match` varchar(255) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
 ### Dump table glpi_software
 
 DROP TABLE IF EXISTS `glpi_software`;
@@ -2062,7 +2104,7 @@ CREATE TABLE `glpi_software` (
   KEY `is_template` (`is_template`),
   KEY `is_update` (`is_update`),
   KEY `deleted` (`deleted`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_software VALUES ('1','0','','',NULL,NULL,'0',NULL,'0','-1','0','0','1','Blank Template',NULL,NULL,NULL,NULL,'0',NULL,'1');
 
@@ -2134,7 +2176,7 @@ CREATE TABLE `glpi_type_computers` (
   `comments` text,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_type_computers VALUES ('1','Serveur',NULL);
 
@@ -2153,7 +2195,7 @@ CREATE TABLE `glpi_type_docs` (
   UNIQUE KEY `extension` (`ext`),
   KEY `name` (`name`),
   KEY `upload` (`upload`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=68 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_type_docs VALUES ('1','JPEG','jpg','jpg-dist.png','','1','2004-12-13 19:47:21');
 INSERT INTO glpi_type_docs VALUES ('2','PNG','png','png-dist.png','','1','2004-12-13 19:47:21');
@@ -2311,12 +2353,12 @@ CREATE TABLE `glpi_users` (
   KEY `location` (`location`),
   KEY `firstname` (`firstname`),
   KEY `realname` (`realname`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'0','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR',NULL,'-1','1','2007-02-23 15:49:49','2007-02-23 15:49:49');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','0','fr_FR',NULL,'-1','1','2007-02-23 15:49:49','2007-02-23 15:49:49');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('4','tech','','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','0','fr_FR',NULL,'-1','1','2007-02-24 15:28:02','2007-02-24 15:28:02');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 
 ### Dump table glpi_users_groups
@@ -2349,7 +2391,7 @@ CREATE TABLE `glpi_users_profiles` (
   KEY `FK_profiles` (`FK_profiles`),
   KEY `active` (`active`),
   KEY `FK_entities` (`FK_entities`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 INSERT INTO glpi_users_profiles VALUES ('1','1','1','0','1','0','0');
 INSERT INTO glpi_users_profiles VALUES ('2','2','4','0','1','1','0');
