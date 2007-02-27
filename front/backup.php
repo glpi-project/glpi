@@ -280,14 +280,13 @@ function restoreMySqlDump($DB,$dumpFile , $duree)
 
 		// on indique le  length pour la fonction fgets pour compatibilit�avec les versions <=PHP 4.2
 		$buffer=fgets($fileHandle,102400);
-		if (substr($buffer,strlen($buffer),1)==0)
-			$buffer=substr($buffer,0,strlen($buffer)-1);
 
 		if(substr($buffer, 0, 1) != "#")
 		{
 			$formattedQuery .= $buffer;
-			if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
-			if (substr($formattedQuery,-1)==";"){
+//			if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
+			if (substr(rtrim($formattedQuery,-1))==";"){
+
 				// Do not use the $DB->query 
 				if ($DB->query($formattedQuery)) //r�ssie sinon continue �conca&t�er
 				{
@@ -333,6 +332,7 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit)
 		$time_file=date("Y-m-d-H-i");
 		$cur_time=date("Y-m-d H:i");
 		$todump="#GLPI Dump database on $cur_time\n";
+//		$todump.="SET NAMES 'utf8';\n";
 		fwrite ($fileHandle,$todump);
 
 	}
