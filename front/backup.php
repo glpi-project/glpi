@@ -282,14 +282,12 @@ function restoreMySqlDump($db,$dumpFile , $duree)
 
 		// on indique le  length pour la fonction fgets pour compatibilit�avec les versions <=PHP 4.2
 		$buffer=fgets($fileHandle,102400);
-		if (substr($buffer,strlen($buffer),1)==0)
-			$buffer=substr($buffer,0,strlen($buffer)-1);
 
 		if(substr($buffer, 0, 1) != "#")
 		{
 			$formattedQuery .= $buffer;
 			if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
-			if (substr($formattedQuery,-1)==";"){
+			if (substr(rtrim($formattedQuery),-1)==";"){
 				// Do not use the $db->query 
 				if ($db->query($formattedQuery)) //r�ssie sinon continue �conca&t�er
 				{
