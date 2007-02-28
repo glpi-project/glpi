@@ -162,9 +162,17 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
 			echo "<option class='tree' value=\"0\">--".$LANG["common"][11]."--</option>";
 
-		if ($_POST["table"]=="glpi_dropdown_kbcategories")
-			echo "<option class='tree' value=\"0\">--".$LANG["knowbase"][12]."--</option>";
-		else echo "<option class='tree' value=\"0\">-----</option>";
+		switch ($_POST["table"]){
+			case "glpi_dropdown_kbcategories" :
+				echo "<option class='tree' value=\"0\">--".$LANG["knowbase"][12]."--</option>";
+				break;
+			case "glpi_entities" :
+				echo "<option class='tree' value=\"0\">--".$LANG["entity"][2]."--</option>";
+				break;
+			default :
+				echo "<option class='tree' value=\"0\">-----</option>";
+				break;
+		}
 
 		$outputval=getDropdownName($_POST['table'],$_POST['value']);
 		if (!empty($outputval)&&$outputval!="&nbsp;")

@@ -331,8 +331,10 @@ function showUserRights($target,$ID){
 				echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
 				echo "</td>";
 			}
-
-			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["ID"]."'>".$data["completename"].($CFG_GLPI["view_ID"]?" (".$data["FK_entities"].")":"")."</a>";
+			if ($data["FK_entities"]==0) {
+				$data["completename"]=$LANG["entity"][2];
+			}
+			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["FK_entities"]."'>".$data["completename"].($CFG_GLPI["view_ID"]?" (".$data["FK_entities"].")":"")."</a>";
 			echo "&nbsp;";
 			echo "</td>";
 			echo "<td>".$data["name"];
