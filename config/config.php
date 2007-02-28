@@ -38,7 +38,7 @@
 		}
 	include_once (GLPI_ROOT."/config/based_config.php");
 	include (GLPI_ROOT."/config/define.php");
-	session_save_path(GLPI_DOC_DIR."/_sessions");
+	session_save_path(GLPI_SESSION_DIR);
 	if(!session_id()){@session_start();}
 
 
@@ -153,7 +153,7 @@
 
 
 		$cache_options = array(
-			'cacheDir' => GLPI_DOC_DIR."/_cache/",
+			'cacheDir' => GLPI_CACHE_DIR,
 			'lifeTime' => DEFAULT_CACHE_LIFETIME,
 			'automaticSerialization' => true,
 			'caching' => $CFG_GLPI["use_cache"],

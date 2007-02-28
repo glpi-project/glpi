@@ -153,7 +153,7 @@ class Cron {
 
 
 		foreach ($this->taches as $nom => $periode) {
-			$lock = GLPI_DOC_DIR.'/_cron/' . $nom . '.lock';
+			$lock = GLPI_CRON_DIR. '/' . $nom . '.lock';
 			$date_lock = @filemtime($lock);
 
 			if ($date_lock + $periode < $tmin) {
@@ -183,7 +183,7 @@ class Cron {
 		}
 
 		// Un autre lock dans _DIR_SESSIONS, pour plus de securite
-		$lock = GLPI_DOC_DIR.'/_cron/'. $tache . '.lock';
+		$lock = GLPI_CRON_DIR. '/'. $tache . '.lock';
 		if ($this->touch($lock, $this->taches[$tache])) {
 			// preparer la tache
 			$this->timer('tache');

@@ -376,7 +376,7 @@ function loadLanguage() {
 		$file = "/locales/en_GB.php";
 	}
 	$options = array (
-		'cacheDir' => GLPI_DOC_DIR . "/_cache/",
+		'cacheDir' => GLPI_CACHE_DIR,
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
 		'automaticSerialization' => true,
 		'caching' => $CFG_GLPI["use_cache"],

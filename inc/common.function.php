@@ -81,9 +81,9 @@ function cron_cache(){
 	global $CFG_GLPI;
 	$max_recursion=5;
 	$lifetime=DEFAULT_CACHE_LIFETIME;
-	while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_DOC_DIR."/_cache"))>MAX_CACHE_SIZE)){
+	while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_CACHE_DIR))>MAX_CACHE_SIZE)){
 		$cache_options = array(
-			'cacheDir' => GLPI_DOC_DIR."/_cache/",
+			'cacheDir' => GLPI_CACHE_DIR,
 			'lifeTime' => $lifetime,
 			'automaticSerialization' => true,
 			'caching' => $CFG_GLPI["use_cache"],
@@ -112,7 +112,7 @@ function cron_session()
 		// max time to keep the file session
 		$maxlifetime = session_cache_expire();
 				
-		foreach (glob(GLPI_DOC_DIR."/_sessions/sess_*") as $filename) {
+		foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
 			if (filemtime($filename) + $maxlifetime < time()) {
 				// Delete session file if not delete before
 				@unlink($filename);
@@ -158,7 +158,7 @@ function cleanCache($group=""){
 	include_once (GLPI_ROOT."/lib/cache_lite/Lite.php");
 
 	$cache_options = array(
-		'cacheDir' => GLPI_DOC_DIR."/_cache/",
+		'cacheDir' => GLPI_CACHE_DIR,
 		'lifeTime' => 0,
 		'hashedDirectoryLevel' => 2,
 		'fileLocking' => CACHE_FILELOCKINGCONTROL,
@@ -215,7 +215,7 @@ function cleanAllItemCache($item,$group){
 function getSearchOptions(){
 	global $LANG,$CFG_GLPI;
 	$options = array(
-		'cacheDir' => GLPI_DOC_DIR."/_cache/",
+		'cacheDir' => GLPI_CACHE_DIR,
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
 		'automaticSerialization' => true,
 		'caching' => $CFG_GLPI["use_cache"],
@@ -246,7 +246,7 @@ function getSearchOptions(){
 function getDbRelations(){
 	global $CFG_GLPI;
 	$options = array(
-		'cacheDir' => GLPI_DOC_DIR."/_cache/",
+		'cacheDir' => GLPI_CACHE_DIR,
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
 		'automaticSerialization' => true,
 		'caching' => $CFG_GLPI["use_cache"],
@@ -295,12 +295,12 @@ function testWriteAccessToDirectory($dir){
 function checkWriteAccessToDirs(){
 		global $LANG;
 		$dir_to_check=array(
-			GLPI_DUMP_DIR=>$LANG["install"][16],
-			GLPI_DOC_DIR=>$LANG["install"][21],
-			GLPI_CONFIG_DIR=>$LANG["install"][23],
-			GLPI_DOC_DIR."/_sessions"=>$LANG["install"][50],
-			GLPI_DOC_DIR."/_cron"=>$LANG["install"][52],
-			GLPI_DOC_DIR."/_cache"=>$LANG["install"][99],
+			GLPI_DUMP_DIR => $LANG["install"][16],
+			GLPI_DOC_DIR => $LANG["install"][21],
+			GLPI_CONFIG_DIR => $LANG["install"][23],
+			GLPI_SESSION_DIR => $LANG["install"][50],
+			GLPI_CRON_DIR => $LANG["install"][52],
+			GLPI_CACHE_DIR => $LANG["install"][99],
 		);
 		$error=0;	
 		foreach ($dir_to_check as $dir => $message){
