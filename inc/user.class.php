@@ -132,22 +132,11 @@ class User extends CommonDBTM {
 			unset ($input["email_form"]);
 		}
 
-		if (isset ($input["profile"])) {
-			$input["_profile"] = $input["profile"];
-			unset ($input["profile"]);
-		}
-
 		return $input;
 	}
 
 	function postAddItem($newID, $input) {
 		$prof = new Profile();
-		if (isset ($input["_profile"])) {
-
-			$prof->updateForUser($newID, $input["_profile"]);
-		} else {
-			$prof->getFromDBForUser($newID);
-		}
 
 		if (isset ($input["_groups"])) {
 			foreach ($input["_groups"] as $group) {
@@ -227,12 +216,6 @@ class User extends CommonDBTM {
 				return $ret;
 			} else
 				return array ();
-		}
-
-		if (isset ($input["profile"])) {
-			$prof = new Profile();
-			$prof->updateForUser($input["ID"], $input["profile"]);
-			unset ($input["profile"]);
 		}
 
 		if (isset ($input["_groups"]) && count($input["_groups"])) {
@@ -579,10 +562,7 @@ class User extends CommonDBTM {
 				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 20);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["profiles"][22] . ":</td><td>";
-				$prof = new Profile();
-				$prof->getFromDBforUser($this->fields["ID"]);
-				dropdownValue("glpi_profiles", "profile", $prof->fields["ID"]);
+				echo "<tr class='tab_bg_1'><td align='center'>&nbsp;</td><td>&nbsp;";
 				echo "</td>";
 				echo "<td align='center'>" . $LANG["setup"][14] . ":</td><td>";
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);

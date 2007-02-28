@@ -259,13 +259,6 @@ class Identification {
 		// Reload glpiactiveprofile when entity switching 
 		changeProfile(key($_SESSION['glpiprofiles']));
 
-		/*		
-		
-				$prof=new Profile();
-				$prof->getFromDBForUser($_SESSION["glpiID"]);
-				$prof->cleanProfile();
-				$_SESSION["glpiprofile"]=$prof->fields;
-		*/
 		// TODO Groups also depends og the entity
 		// glpigroups -> active groups
 		// Reload groups on entity switching
