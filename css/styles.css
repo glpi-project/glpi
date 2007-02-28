@@ -695,7 +695,7 @@ td { }
 #contenu-nullHeader {
 	height: 524px;
 	width: 739px;
-	margin-top:100px;
+	margin-top:50px;
 	margin-left: auto;
 	margin-right: auto;
 	background:url("../pics/null-header.png")  no-repeat;
@@ -709,7 +709,7 @@ td { }
 	width: 739px;
 	margin-right:auto;
 	margin-left: auto;
-	margin-top:150px;
+	margin-top:100px;
 }
 
 
@@ -774,10 +774,11 @@ td { }
 
 	float:right;
 	height: 160px;
-	width: 240px;
-	margin-right:0px;
+	width: 230px;
+	margin-right:10px;
 	margin-left:0px;
 	margin-top:80px;
+	background-color:red;
 	color :#000000;
 }
 
@@ -796,21 +797,25 @@ td { }
 
 #footer-login
 {
-	text-align:right; 
+	text-align:right;
 	position: fixed !important;
 	left: 0px;
 	right: 10px;
 	bottom: 0px !important;
+	
 	height: 40px;
 	font-size : 10px;
 	color :#757575;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-weight: bold;
-	/* css hack for IE */
+	margin-top:10px;
+	margin:auto;
+	 css hack for IE
 	position: absolute;
 	bottom: auto;
 	top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
 	width: expression(parseInt(document.documentElement.clientWidth)+'px');
+	
 }
 
 
