@@ -60,139 +60,111 @@
 
 		$DB = new DB;
 
+
+		// *************************** Statics config options **********************
+		// ********************options d'installation statiques*********************
+		// ***********************************************************************
+		
+		// dicts
+		// dictionnaires
+		// Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
+		$CFG_GLPI["languages"]=array(   
+			"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","pt_br"),
+			"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
+			"ca_CA"=>array("Catalan","ca_CA.php","en_GB.html","hd-en_GB.html","ca","ca"),
+			"cs_CZ"=>array("Czech","cs_CZ.php","en_GB.html","hd-en_GB.html","cs","cs"),
+			"de_DE"=>array("Deutch","de_DE.php","en_GB.html","hd-en_GB.html","de","de"),
+			"dk_DK"=>array("Danish","dk_DK.php","en_GB.html","hd-en_GB.html","da","da"),
+			"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","nl"),
+			"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
+			"es_AR"=>array("Español (Argentina)","es_AR.php","en_GB.html","hd-en_GB.html","es","es"),
+			"es_ES"=>array("Español (España)","es_ES.php","en_GB.html","hd-en_GB.html","es","es"),
+			"fr_FR"=>array("Français","fr_FR.php","fr_FR.html","hd-fr_FR.html","fr","fr"),
+			"hu_HU"=>array("Hungarian","hu_HU.php","en_GB.html","hd-en_GB.html","hu","hu"),
+			"it_IT"=>array("Italiano","it_IT.php","en_GB.html","hd-it_IT.html","it","it"),
+			"pl_PL"=>array("Polish","pl_PL.php","en_GB.html","hd-en_GB.html","pl","pl"),
+			"pt_PT"=>array("Português","pt_PT.php","pt_PT.html","hd-en_GB.html","br","pt"),
+			"ro_RO"=>array("Romanian","ro_RO.php","en_GB.html","hd-en_GB.html","ro","ro"),
+			"ru_RU"=>array("Russian","ru_RU.php","en_GB.html","hd-en_GB.html","ru","ru"),
+			"zh_CN"=>array("Simplified Chinese","zh_CN.php","en_GB.html","hd-en_GB.html","en","zh_cn_utf8"),
+			"sv_SE"=>array("Swedish","sv_SE.php","en_GB.html","hd-en_GB.html","sv","sv_utf8"),
+			);
+
+
+		//DEVICE ARRAY.
+		$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
+		$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones","glpi_consumables_type","state_types","reservation_types");
+	
+		$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones","state_types","reservation_types","glpi_ocs_config");
+	
+		$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
+		$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+		$CFG_GLPI["reservation_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+		$CFG_GLPI["linkuser_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+		$CFG_GLPI["entity_restrict_type"]=array(KNOWBASE_TYPE);
+
+		$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridges_type","glpi_computers","glpi_consumables_type","glpi_contacts","glpi_contracts","glpi_docs",
+			"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
+			"glpi_kbitems","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
+			"glpi_tracking","state_types","reservation_types");
+
+		$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");
+
+		//Options gerees dynamiquement, ne pas toucher cette partie.
+		//Options from DB, do not touch this part.
+		$CFG_GLPI["debug"]=$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_profile"]=$CFG_GLPI["debug_lang"]=0;
+		$config_object=new Config();
+	
+		if($config_object->getFromDB(1)){
+			$CFG_GLPI=array_merge($CFG_GLPI,$config_object->fields);
+
+			if ( !isset($_SERVER['REQUEST_URI']) ) {
+				$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
+			}
+			$currentdir=getcwd();
+			chdir(GLPI_ROOT);
+			$glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
+			chdir($currentdir);
+			
+			$globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$_SERVER['REQUEST_URI']);
+			$globaldir=preg_replace("/\?.*/","",$globaldir);
+			$CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
+			$CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
+	
+	
+			// Path for icon of document type
+			$CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
+
+
+			// *************************** Mode NORMAL / TRALATION /DEBUG  **********************
+			// *********************************************************************************
+	
+			// Mode debug ou traduction
+			//$CFG_GLPI["debug"]=DEBUG_MODE;
+			$CFG_GLPI["debug_sql"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // affiche les requetes
+			$CFG_GLPI["debug_vars"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // affiche les variables
+			$CFG_GLPI["debug_profile"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // Profile les requetes
+			$CFG_GLPI["debug_lang"]=($CFG_GLPI["debug"]==TRANSLATION_MODE?1:0); // affiche les variables de trads
+	
+		} else {
+			echo "Error accessing config table";
+			exit();
+		}
+
+
 		$cache_options = array(
 			'cacheDir' => GLPI_DOC_DIR."/_cache/",
 			'lifeTime' => DEFAULT_CACHE_LIFETIME,
 			'automaticSerialization' => true,
-			'caching' => ENABLE_CACHE,
+			'caching' => $CFG_GLPI["use_cache"],
 			'hashedDirectoryLevel' => 2,
 			'fileLocking' => CACHE_FILELOCKINGCONTROL,
 			'writeControl' => CACHE_WRITECONTROL,
 			'readControl' => CACHE_READCONTROL,
 		);
-		$CACHE_CFG = new Cache_Lite($cache_options);
 
 		$GLPI_CACHE = new Cache_Lite_Output($cache_options);
 		$CFG_GLPI["cache"]=$GLPI_CACHE;
-
-// No cache for update problem... Need to find a good solution
-//		if (!($CFG_GLPI= $CACHE_CFG->get("CFG_GLPI_1","GLPI_CFG"))) {
-
-			// *************************** Statics config options **********************
-			// ********************options d'installation statiques*********************
-			// ***********************************************************************
-		
-			// dicts
-			// dictionnaires
-			// Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
-
-			$CFG_GLPI["languages"]=array(   
-					"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","pt_br"),
-					"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
-					"ca_CA"=>array("Catalan","ca_CA.php","en_GB.html","hd-en_GB.html","ca","ca"),
-					"cs_CZ"=>array("Czech","cs_CZ.php","en_GB.html","hd-en_GB.html","cs","cs"),
-					"de_DE"=>array("Deutch","de_DE.php","en_GB.html","hd-en_GB.html","de","de"),
-					"dk_DK"=>array("Danish","dk_DK.php","en_GB.html","hd-en_GB.html","da","da"),
-					"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","nl"),
-					"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
-					"es_AR"=>array("Español (Argentina)","es_AR.php","en_GB.html","hd-en_GB.html","es","es"),
-					"es_ES"=>array("Español (España)","es_ES.php","en_GB.html","hd-en_GB.html","es","es"),
-					"fr_FR"=>array("Français","fr_FR.php","fr_FR.html","hd-fr_FR.html","fr","fr"),
-					"hu_HU"=>array("Hungarian","hu_HU.php","en_GB.html","hd-en_GB.html","hu","hu"),
-					"it_IT"=>array("Italiano","it_IT.php","en_GB.html","hd-it_IT.html","it","it"),
-					"pl_PL"=>array("Polish","pl_PL.php","en_GB.html","hd-en_GB.html","pl","pl"),
-					"pt_PT"=>array("Português","pt_PT.php","pt_PT.html","hd-en_GB.html","br","pt"),
-					"ro_RO"=>array("Romanian","ro_RO.php","en_GB.html","hd-en_GB.html","ro","ro"),
-					"ru_RU"=>array("Russian","ru_RU.php","en_GB.html","hd-en_GB.html","ru","ru"),
-					"zh_CN"=>array("Simplified Chinese","zh_CN.php","en_GB.html","hd-en_GB.html","en","zh_cn_utf8"),
-					"sv_SE"=>array("Swedish","sv_SE.php","en_GB.html","hd-en_GB.html","sv","sv_utf8"),
-					);
-
-
-
-
-			//DEVICE ARRAY.
-			$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
-			$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones","glpi_consumables_type","state_types","reservation_types");
-		
-			$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones","state_types","reservation_types","glpi_ocs_config");
-		
-			$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
-			$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-			$CFG_GLPI["reservation_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-			$CFG_GLPI["linkuser_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-			$CFG_GLPI["entity_restrict_type"]=array(KNOWBASE_TYPE);
-
-			$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridges_type","glpi_computers","glpi_consumables_type","glpi_contacts","glpi_contracts","glpi_docs",
-				"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
-				"glpi_kbitems","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
-				"glpi_tracking","state_types","reservation_types");
-
-			$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");
-
-			//Options g�� dynamiquement, ne pas toucher cette partie.
-			//Options from DB, do not touch this part.
-			$CFG_GLPI["debug"]=$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_profile"]=$CFG_GLPI["debug_lang"]=0;
-			$config_object=new Config();
-		
-			if($config_object->getFromDB(1)){
-				$CFG_GLPI=array_merge($CFG_GLPI,$config_object->fields);
-
-				if ( !isset($_SERVER['REQUEST_URI']) ) {
-					$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
-				}
-				$currentdir=getcwd();
-				chdir(GLPI_ROOT);
-				$glpidir=str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
-				chdir($currentdir);
-				
-				$globaldir=preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$_SERVER['REQUEST_URI']);
-				$globaldir=preg_replace("/\?.*/","",$globaldir);
-				$CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
-				$CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
-		
-		
-				// Path for icon of document type
-				$CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
-
-
-				// *************************** Mode NORMAL / TRALATION /DEBUG  **********************
-				// *********************************************************************************
-		
-				// Mode debug ou traduction
-				//$CFG_GLPI["debug"]=DEBUG_MODE;
-				$CFG_GLPI["debug_sql"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // affiche les requetes
-				$CFG_GLPI["debug_vars"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // affiche les variables
-				$CFG_GLPI["debug_profile"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // Profile les requetes
-				$CFG_GLPI["debug_lang"]=($CFG_GLPI["debug"]==TRANSLATION_MODE?1:0); // affiche les variables de trads
-		
-	
-				/*
-				if(!empty($CFG_GLPI["ldap_host"])){
-					$CFG_GLPI["ldap_basedn"] = utf8_decode(strtolower($CFG_GLPI["ldap_basedn"]));
-					$CFG_GLPI["ldap_rootdn"] = utf8_decode(strtolower($CFG_GLPI["ldap_rootdn"]));
-					$CFG_GLPI["ldap_pass"] = utf8_decode($CFG_GLPI["ldap_pass"]);
-		
-					
-					//// AJOUTER CA DANS LA CONFIG POST INSTALL
-					$CFG_GLPI['ldap_fields'] = array( "name" => strtolower($CFG_GLPI['ldap_login']), 
-							"email" => strtolower($CFG_GLPI['ldap_field_email']), 
-							"location" => strtolower($CFG_GLPI['ldap_field_location']), 
-							"phone" => strtolower($CFG_GLPI['ldap_field_phone']), 
-							"phone2" => strtolower($CFG_GLPI['ldap_field_phone2']), 
-							"mobile" => strtolower($CFG_GLPI['ldap_field_mobile']), 
-							"realname" => strtolower($CFG_GLPI['ldap_field_realname']),
-							"firstname" => strtolower($CFG_GLPI['ldap_field_firstname'])
-							);
-					$CFG_GLPI["ldap_field_group_member"]=strtolower($CFG_GLPI["ldap_field_group_member"]); 
-				}*/
-			} else {
-				echo "Error accessing config table";
-				exit();
-			}
-			
-//		$CACHE_CFG->save($CFG_GLPI,"CFG_GLPI_1","GLPI_CFG");
-//		}
 
 	
 		// Mode debug activé on affiche un certains nombres d'informations

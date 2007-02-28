@@ -181,7 +181,7 @@ CREATE TABLE `glpi_config` (
   `ldap_login` varchar(200) NOT NULL default 'uid',
   `ldap_use_tls` varchar(200) NOT NULL default '0',
   `permit_helpdesk` varchar(200) default NULL,
-  `default_language` varchar(255) NOT NULL default 'french',
+  `default_language` varchar(255) NOT NULL default 'en_GB',
   `priority_1` varchar(200) NOT NULL default '#fff2f2',
   `priority_2` varchar(200) NOT NULL default '#ffe0e0',
   `priority_3` varchar(200) NOT NULL default '#ffcece',

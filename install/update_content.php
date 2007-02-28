@@ -163,18 +163,28 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 				$data=$DB->list_fields($tables[$offsettable]);
 				
 				foreach ($data as $key =>$val){
-					if (eregi("varchar",$val["Type"])){
-						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL");
-					} else if (eregi("longtext",$val["Type"])){
+//					echo "<br>".$key."<br>";
+//					print_r($val);
+
+					if (eregi("^char",$val["Type"])){
+						$default="NULL";
+						if (!empty($val["Default"]))
+							$default="'".$val["Default"]."'";
+
+						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` ".$val["Type"]." CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT $default");
+					} else if (eregi("^varchar",$val["Type"])){
+						$default="NULL";
+						if (!empty($val["Default"]))
+							$default="'".$val["Default"]."'";
+						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT $default");
+					} else if (eregi("^longtext",$val["Type"])){
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
-					} else if (eregi("text",$val["Type"])){
+					} else if (eregi("^text",$val["Type"])){
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
-					} else if (eregi("tinyint",$val["Type"])){
-						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` SMALLINT NOT NULL DEFAULT '".$val["default"]."'");
+					} else if (eregi("^tinyint",$val["Type"])){
+						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` SMALLINT NOT NULL DEFAULT '".$val["Default"]."'");
 					}
 	
-				//	echo "<br>".$key."<br>";
-				//	print_r($val);
 				}
 			}
 			$offsetrow++;
@@ -298,7 +308,7 @@ if ($offsettable>=0&&$complete_utf8){
 		if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8,$complete_utf8))
 		{
 			echo "<br><a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">".$LANG["backup"][24]."</a>";
-			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
+//			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
 			echo "<div class='bas'></div></div></div></body></html>";
 
 			glpi_flush();    

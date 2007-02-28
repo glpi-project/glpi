@@ -78,7 +78,7 @@ function cron_logs(){
  *
  **/
 function cron_cache(){
-	
+
 	$max_recursion=5;
 	$lifetime=DEFAULT_CACHE_LIFETIME;
 	while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_DOC_DIR."/_cache"))>MAX_CACHE_SIZE)){
@@ -86,7 +86,7 @@ function cron_cache(){
 			'cacheDir' => GLPI_DOC_DIR."/_cache/",
 			'lifeTime' => $lifetime,
 			'automaticSerialization' => true,
-			'caching' => ENABLE_CACHE,
+			'caching' => $CFG_GLPI["use_cache"],
 			'hashedDirectoryLevel' => 2,
 			'fileLocking' => CACHE_FILELOCKINGCONTROL,
 			'writeControl' => CACHE_WRITECONTROL,
@@ -218,7 +218,7 @@ function getSearchOptions(){
 		'cacheDir' => GLPI_DOC_DIR."/_cache/",
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
 		'automaticSerialization' => true,
-		'caching' => ENABLE_CACHE,
+		'caching' => $CFG_GLPI["use_cache"],
 		'hashedDirectoryLevel' => 2,
 		'masterFile' => GLPI_ROOT . "/inc/search.constant.php",
 		'fileLocking' => CACHE_FILELOCKINGCONTROL,
@@ -249,7 +249,7 @@ function getDbRelations(){
 		'cacheDir' => GLPI_DOC_DIR."/_cache/",
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
 		'automaticSerialization' => true,
-		'caching' => ENABLE_CACHE,
+		'caching' => $CFG_GLPI["use_cache"],
 		'hashedDirectoryLevel' => 2,
 		'masterFile' => GLPI_ROOT . "/inc/relation.constant.php",
 		'fileLocking' => CACHE_FILELOCKINGCONTROL,

@@ -676,12 +676,19 @@ function showFormConfigGen($target) {
 	echo "</td>";
 
 	echo "<td align='center'>" . $LANG["setup"][138] . " </td><td><select name=\"debug\">";
-	$check = $CFG_GLPI["debug"];
 	echo "<option value=\"" . NORMAL_MODE . "\" " . ($CFG_GLPI["debug"] == NORMAL_MODE ? " selected " : "") . " >" . $LANG["setup"][135] . " </option>";
 	echo "<option value=\"" . TRANSLATION_MODE . "\" " . ($CFG_GLPI["debug"] == TRANSLATION_MODE ? " selected " : "") . " >" . $LANG["setup"][136] . " </option>";
 	echo "<option value=\"" . DEBUG_MODE . "\" " . ($CFG_GLPI["debug"] == DEBUG_MODE ? " selected " : "") . " >" . $LANG["setup"][137] . " </option>";
 	echo "<option value=\"" . DEMO_MODE . "\" " . ($CFG_GLPI["debug"] == DEMO_MODE ? " selected " : "") . " >" . $LANG["setup"][141] . " </option>";
 	echo "</select></td></tr>";
+
+	echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][183] . " </td><td>";
+	dropdownYesNo("use_cache", $CFG_GLPI["use_cache"]);
+	echo "</td>";
+
+	echo "<td align='center'>&nbsp;</td><td>";
+
+	echo "&nbsp;</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][10] . "</strong></td></tr>";
 

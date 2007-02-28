@@ -776,6 +776,12 @@ function update0681to07() {
 
 	}
 
+	if (!FieldExists("glpi_config", "use_cache")) {
+		$query = "ALTER TABLE `glpi_config` ADD `use_cache` SMALLINT NOT NULL DEFAULT '1' AFTER `debug` ;";
+		$DB->query($query) or die("0.7 alter config add use_cache " . $LANG["update"][90] . $DB->error());
+	}
+	
+
 	// TODO Split Config -> config general + config entity
 	// TODO Auto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference

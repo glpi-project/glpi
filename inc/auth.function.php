@@ -379,7 +379,7 @@ function loadLanguage() {
 		'cacheDir' => GLPI_DOC_DIR . "/_cache/",
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
 		'automaticSerialization' => true,
-		'caching' => ENABLE_CACHE,
+		'caching' => $CFG_GLPI["use_cache"],
 		'hashedDirectoryLevel' => 2,
 		'masterFile' => GLPI_ROOT . $file,
 		'fileLocking' => CACHE_FILELOCKINGCONTROL,
