@@ -131,8 +131,14 @@ function showDeviceUser($ID){
 	$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
+		$first=true;
 		while ($data=$DB->fetch_array($result)){
-			$group_where.=" OR FK_groups = '".$data["FK_groups"]."' ";
+			if ($first){
+				$first=false;
+			} else {
+				$group_where.=" OR ";
+			}
+			$group_where.=" FK_groups = '".$data["FK_groups"]."' ";
 			$groups[$data["FK_groups"]]=$data["name"];
 		}
 	}
@@ -142,7 +148,7 @@ function showDeviceUser($ID){
 	echo "<div align='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
 
 	foreach ($CFG_GLPI["linkuser_type"] as $type){
-		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID' $group_where";
+		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
 			$ci->setType($type);
@@ -152,11 +158,8 @@ function showDeviceUser($ID){
 				$link=$data["name"];
 				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($CFG_GLPI["view_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
 				$linktype="";
-				if ($data["FK_users"]==$ID)
-					$linktype.=$LANG["common"][34];
-				if (isset($groups[$data["FK_groups"]])){
-					if (!empty($linktype)) $linktype.=" / ";
-					$linktype.=$LANG["common"][35]." ".$groups[$data["FK_groups"]];
+				if ($data["FK_users"]==$ID){
+					$linktype=$LANG["common"][34];
 				}
 				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td><td>$linktype</td></tr>";
 			}
@@ -164,6 +167,31 @@ function showDeviceUser($ID){
 
 	}
 	echo "</table></div><br>";
+
+	if (!empty($group_where)){
+		echo "<div align='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
+	
+		foreach ($CFG_GLPI["linkuser_type"] as $type){
+			$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				$ci->setType($type);
+				$type_name=$ci->getType();
+				$cansee=haveTypeRight($type,"r");
+				while ($data=$DB->fetch_array($result)){
+					$link=$data["name"];
+					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($CFG_GLPI["view_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
+					$linktype="";
+					if (isset($groups[$data["FK_groups"]])){
+						$linktype=$LANG["common"][35]." ".$groups[$data["FK_groups"]];
+					}
+					echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td><td>$linktype</td></tr>";
+				}
+			}
+	
+		}
+		echo "</table></div><br>";
+	}
 }
 
 function showGroupAssociated($target,$ID){
