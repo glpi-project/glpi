@@ -26,23 +26,23 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  ------------------------------------------------------------------------
  */
-//en_GB
+//cs_CZ
 
 
 $LANG["backup"][0]="SQL Dump"; 
 $LANG["backup"][1]="XML Dump"; 
-$LANG["backup"][9]="successfully deleted!"; 
-$LANG["backup"][10]="File"; 
-$LANG["backup"][11]="Size"; 
-$LANG["backup"][13]="View/Download"; 
-$LANG["backup"][14]="Restore"; 
-$LANG["backup"][15]="Are you sure you want to save the database"; 
-$LANG["backup"][16]="Are you sure you want to overwrite the database with the file"; 
-$LANG["backup"][17]="Are you sure you want to delete this file"; 
-$LANG["backup"][18]="Are you sure you want to save the database"; 
+$LANG["backup"][9]="úspěšně odstraněno!"; 
+$LANG["backup"][10]="Soubor"; 
+$LANG["backup"][11]="Velikost"; 
+$LANG["backup"][13]="Zobrazit/Stáhnout"; 
+$LANG["backup"][14]="Obnovit"; 
+$LANG["backup"][15]="Opravdu chcete uložit databázi"; 
+$LANG["backup"][16]="Opravdu chcete přepsat obsah databáze souborem"; 
+$LANG["backup"][17]="Opravdu chcete odstranit tento soubor"; 
+$LANG["backup"][18]="Opravdu chcete uložit databázi"; 
 $LANG["backup"][19]="Now"; 
 $LANG["backup"][20]="Del"; 
-$LANG["backup"][21]="The file already exists"; 
+$LANG["backup"][21]="Soubor již existuje"; 
 $LANG["backup"][22]="Unable to find the byte"; 
 $LANG["backup"][23]="Mysql error starting from"; 
 $LANG["backup"][24]="Automatic redirection, else click"; 
@@ -125,12 +125,12 @@ $LANG["cartridges"][11]="Ink-Jet";
 $LANG["cartridges"][12]="Cartridge Type"; 
 $LANG["cartridges"][13]="New"; 
 $LANG["cartridges"][14]="Used"; 
-$LANG["cartridges"][15]="Old"; 
+$LANG["cartridges"][15]="Usagées(s)"; 
 $LANG["cartridges"][16]="Cartridge(s)"; 
 $LANG["cartridges"][17]="Add Cartridge..."; 
 $LANG["cartridges"][20]="New"; 
 $LANG["cartridges"][21]="Used"; 
-$LANG["cartridges"][22]="Old"; 
+$LANG["cartridges"][22]="Usagée"; 
 $LANG["cartridges"][23]="State"; 
 $LANG["cartridges"][24]="Add Date"; 
 $LANG["cartridges"][25]="Use Date"; 
@@ -139,7 +139,7 @@ $LANG["cartridges"][29]="End of life";
 $LANG["cartridges"][32]="Models of compatible printers"; 
 $LANG["cartridges"][33]="Used Cartridges"; 
 $LANG["cartridges"][34]="No free cartridge"; 
-$LANG["cartridges"][35]="Old Cartridges"; 
+$LANG["cartridges"][35]="Usagée Cartouches"; 
 $LANG["cartridges"][36]="Stock location"; 
 $LANG["cartridges"][37]="Ribbon"; 
 $LANG["cartridges"][38]="Alarm Threshold"; 
@@ -273,7 +273,7 @@ $LANG["consumables"][22]="Used";
 $LANG["consumables"][23]="State"; 
 $LANG["consumables"][26]="Use date"; 
 $LANG["consumables"][32]="Give"; 
-$LANG["consumables"][35]="Old Consumables"; 
+$LANG["consumables"][35]="Consommables usagés"; 
 $LANG["consumables"][36]="Stock location"; 
 $LANG["consumables"][37]="Back to stock"; 
 $LANG["consumables"][38]="Alarm threshold"; 
