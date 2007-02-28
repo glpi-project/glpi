@@ -234,7 +234,7 @@ class Identification {
 
 	// Init session for this user
 	function initSession() {
-		global $CFG_GLPI, $DB;
+		global $CFG_GLPI, $LANG;
 
 		if (!session_id())
 			session_start();
@@ -265,8 +265,12 @@ class Identification {
 
 		do_hook("init_session");
 		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
-	}
 
+		if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
+			$this->auth_succeded=false;
+			$this->err .= $LANG["login"][25] . "<br>";
+		} 
+	}
 	function destroySession() {
 		if (!session_id())
 			session_start();
