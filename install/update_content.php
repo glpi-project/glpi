@@ -308,7 +308,7 @@ if ($offsettable>=0&&$complete_utf8){
 		if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8,$complete_utf8))
 		{
 			echo "<br><a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">".$LANG["backup"][24]."</a>";
-//			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
+			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
 			echo "<div class='bas'></div></div></div></body></html>";
 
 			glpi_flush();    
