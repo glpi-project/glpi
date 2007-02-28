@@ -205,16 +205,16 @@ class Identification {
 					return true;
 				} else {
 
-					$query2 = "SELECT PASSWORD('" . $password . "') as password";
+					$query2 = "SELECT PASSWORD('" . addslashes($password) . "') as password";
 					$result2 = $DB->query($query2);
-					if (!$result2 && $DB->numrows($result2) == 1) {
+					if (!$result2 || $DB->numrows($result2) != 1) {
 						$this->err .= $LANG["login"][12] . "<br>";
 						return false;
 					}
 					$pass1 = $DB->result($result, 0, "password");
 					$pass2 = $DB->result($result2, 0, "password");
 
-					if (strcmp($pass1, $pass2) == 0) {
+					if (!empty($pass1)&&strcmp($pass1, $pass2) == 0) {
 						return true;
 					}
 				}
