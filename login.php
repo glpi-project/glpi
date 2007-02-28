@@ -121,13 +121,13 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 			// Without UTF8 decoding
 			if (!$identificat->auth_succeded){
 				$identificat->auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
-			}
+				if ($identificat->auth_succeded) {
+					$identificat->extauth=0;
+					$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+					$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
+					$identificat->user->fields["password"] = $_POST['login_password'];
+				} 
 
-			if ($identificat->auth_succeded) {
-				$identificat->extauth=0;
-				$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-				$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
-				$identificat->user->fields["password"] = $_POST['login_password'];
 			}
 		}
 		elseif ($exists == 2) {
