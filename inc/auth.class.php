@@ -457,9 +457,9 @@ class Identification
 					return true;
 				} else {
 
-					$query2 = "SELECT PASSWORD('".$password."') as password";
+					$query2 = "SELECT PASSWORD('".addslashes($password)."') as password";
 					$result2 = $db->query($query2);
-					if (!$result2&&$db->numrows($result2) == 1){
+					if (!$result2||$db->numrows($result2) != 1){
 						$this->err .= "Bad username or password<br>";
 						return false;	
 					}
@@ -467,7 +467,7 @@ class Identification
 					$pass2=$db->result($result2,0,"password");
 
 
-					if (strcmp($pass1,$pass2)==0) 
+					if (!empty($pass1)&&strcmp($pass1,$pass2)==0) 
 					{
 						if(empty($password_md5_db)) {
 							$password_md5_db = md5($password);
