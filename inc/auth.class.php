@@ -170,7 +170,7 @@ class Identification {
 			$this->err .= $LANG["login"][15] . "<br>\n";
 			return false;
 		} else {
-			$this->err .= "Can't contact LDAP server<br>";
+			$this->err .= $LANG["ldap"][6]."<br>";
 			return false;
 		}
 	}
@@ -227,7 +227,8 @@ class Identification {
 		}
 
 		$this->err .= "Erreur numero : " . $DB->errno() . ": ";
-		$this->err .= $DB->error();
+		$this->err .= $DB->error()."<br>";
+		
 		return false;
 
 	} // connection_db()
