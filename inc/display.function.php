@@ -1035,7 +1035,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][8].":</td>";
 		echo "<td>";
-		dropdownYesNoInt('emailupdates',$emailupdates);
+		dropdownYesNo('emailupdates',$emailupdates);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][11].":</td>";

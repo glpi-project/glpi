@@ -172,8 +172,8 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` SMALLINT NOT NULL DEFAULT '".$val["default"]."'");
 					}
 	
-					echo "<br>".$key."<br>";
-					print_r($val);
+				//	echo "<br>".$key."<br>";
+				//	print_r($val);
 				}
 			}
 			$offsetrow++;

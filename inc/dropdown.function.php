@@ -668,23 +668,6 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$wi
 	return $rand;
 }
 
-/**
- * Make a select box for a boolean choice (Yes/No)
- *
- *
- *
- * @param $name select name
- * @param $value preselected value.
- * @return nothing (print out an HTML select box)
- */
-function dropdownYesNo($name,$value){
-	global $LANG;
-	echo "<select name='$name'>\n";
-	echo "<option value='N' ".($value=='N'?" selected ":"").">".$LANG["choice"][0]."</option>\n";
-	echo "<option value='Y' ".($value=='Y'?" selected ":"").">".$LANG["choice"][1]."</option>\n";
-	echo "</select>\n";	
-}	
-
 
 /**
  * Make a select box for a boolean choice (Yes/No)
@@ -695,7 +678,7 @@ function dropdownYesNo($name,$value){
  * @param $value preselected value.
  * @return nothing (print out an HTML select box)
  */
-function dropdownYesNoInt($name,$value=0){
+function dropdownYesNo($name,$value=0){
 	global $LANG;
 	echo "<select name='$name'>\n";
 	echo "<option value='0' ".(!$value?" selected ":"").">".$LANG["choice"][0]."</option>\n";

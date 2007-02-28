@@ -302,7 +302,7 @@ class Software extends CommonDBTM {
 
 				// UPDATE
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][29] . ":</td><td>";
-				dropdownYesNoInt("is_update",$this->fields['is_update']);
+				dropdownYesNo("is_update",$this->fields['is_update']);
 				echo "&nbsp;" . $LANG["pager"][2] . "&nbsp;";
 				dropdownValue("glpi_software", "update_software", $this->fields["update_software"]);
 				echo "</td>";

@@ -329,26 +329,26 @@ class Monitor extends CommonDBTM {
 				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
 				echo "<td>".$LANG["monitors"][14]."</td>";
 				echo "<td>";
-				dropdownYesNoInt("flags_micro",$this->fields["flags_micro"]);
+				dropdownYesNo("flags_micro",$this->fields["flags_micro"]);
 				echo "</td>";
 	
 				// speakers?
 				echo "<td>".$LANG["monitors"][15]."</td>";
 				echo "<td>";
-				dropdownYesNoInt("flags_speaker",$this->fields["flags_speaker"]);
+				dropdownYesNo("flags_speaker",$this->fields["flags_speaker"]);
 				echo "</td>";
 				echo "</tr><tr>";
 	
 				// sub-d?
 				echo "<td>".$LANG["monitors"][19]."</td>";
 				echo "<td>";
-				dropdownYesNoInt("flags_subd",$this->fields["flags_subd"]);
+				dropdownYesNo("flags_subd",$this->fields["flags_subd"]);
 				echo "</td>";
 	
 				// bnc?
 				echo "<td>".$LANG["monitors"][20]."</td>";
 				echo "<td>";
-				dropdownYesNoInt("flags_bnc",$this->fields["flags_bnc"]);
+				dropdownYesNo("flags_bnc",$this->fields["flags_bnc"]);
 				echo "</td>";
 	
 				echo "</tr><tr>";
@@ -356,7 +356,7 @@ class Monitor extends CommonDBTM {
 				// dvi?
 				echo "<td>".$LANG["monitors"][32]."</td>";
 				echo "<td>";
-				dropdownYesNoInt("flags_dvi",$this->fields["flags_dvi"]);
+				dropdownYesNo("flags_dvi",$this->fields["flags_dvi"]);
 				echo "</td>";
 	
 				echo "<td>&nbsp;</td><td>&nbsp;</td>";

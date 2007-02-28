@@ -430,13 +430,13 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 
 	// OEM
 	echo "<tr class='tab_bg_1'><td>".$LANG["software"][28]."</td><td>";
-	dropdownYesNoInt("oem",$values['oem']);
+	dropdownYesNo("oem",$values['oem']);
 	dropdownValue("glpi_computers","oem_computer",$values["oem_computer"]);
 
 	echo "</td></tr>";
 	// BUY
 	echo "<tr class='tab_bg_1'><td>".$LANG["software"][35]."</td><td>";
-	dropdownYesNoInt("buy",$values['buy']);
+	dropdownYesNo("buy",$values['buy']);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["common"][25]."</td><td>";

@@ -239,14 +239,14 @@ class Profile extends CommonDBTM{
 
 		echo "<table class='tab_cadre'><tr>";
 		echo "<th colspan='4'>".$LANG["profiles"][3].":&nbsp;&nbsp;".$LANG["profiles"][13].":";
-		dropdownYesNoInt("is_default",$this->fields["is_default"]);
+		dropdownYesNo("is_default",$this->fields["is_default"]);
 		echo "</th></tr>";
 
 		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["profiles"][25]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][24].":</td><td>";
-		dropdownYesNoInt("password_update",$this->fields["password_update"]);
+		dropdownYesNo("password_update",$this->fields["password_update"]);
 		echo "</td>";
 		echo "<td colspan='2'>&nbsp;";
 		echo "</td>";
@@ -257,23 +257,23 @@ class Profile extends CommonDBTM{
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][5].":</td><td>";
-		dropdownYesNoInt("create_ticket",$this->fields["create_ticket"]);
+		dropdownYesNo("create_ticket",$this->fields["create_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][6].":</td><td>";
-		dropdownYesNoInt("comment_ticket",$this->fields["comment_ticket"]);
+		dropdownYesNo("comment_ticket",$this->fields["comment_ticket"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][9].":</td><td>";
-		dropdownYesNoInt("observe_ticket",$this->fields["observe_ticket"]);
+		dropdownYesNo("observe_ticket",$this->fields["observe_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][26].":</td><td>";
-		dropdownYesNoInt("show_group_ticket",$this->fields["show_group_ticket"]);
+		dropdownYesNo("show_group_ticket",$this->fields["show_group_ticket"]);
 		echo "</td>";
 		echo "</tr>";
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][27].":</td><td>";
-		dropdownYesNoInt("show_group_hardware",$this->fields["show_group_hardware"]);
+		dropdownYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
 		echo "</td>";
 		echo "<td>&nbsp;</td><td>&nbsp;";
 		echo "</td>";
@@ -311,7 +311,7 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("faq",$this->fields["faq"],1,1,0);
 		echo "</td>";
 		echo "<td>".$LANG["title"][35].":</td><td>";
-		dropdownYesNoInt("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
+		dropdownYesNo("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
 		echo "</td></tr>";
 
 
@@ -350,7 +350,7 @@ class Profile extends CommonDBTM{
 
 		echo "<table class='tab_cadre'><tr>";
 		echo "<th colspan='6'>".$LANG["profiles"][4].":&nbsp;&nbsp;".$LANG["profiles"][13].":";
-		dropdownYesNoInt("is_default",$this->fields["is_default"]);
+		dropdownYesNo("is_default",$this->fields["is_default"]);
 		echo "</th></tr>";
 
 		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["setup"][10]."</strong></td></tr>";
@@ -397,7 +397,7 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("notes",$this->fields["notes"],1,1,1);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][24].":</td><td>";
-		dropdownYesNoInt("password_update",$this->fields["password_update"]);
+		dropdownYesNo("password_update",$this->fields["password_update"]);
 		echo "</td>";
 		echo "<td>".$LANG["reminder"][1].":</td><td>";
 		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,1,1);
@@ -421,64 +421,64 @@ class Profile extends CommonDBTM{
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][5].":</td><td>";
-		dropdownYesNoInt("create_ticket",$this->fields["create_ticket"]);
+		dropdownYesNo("create_ticket",$this->fields["create_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][14].":</td><td>";
-		dropdownYesNoInt("delete_ticket",$this->fields["delete_ticket"]);
+		dropdownYesNo("delete_ticket",$this->fields["delete_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][6].":</td><td>";
-		dropdownYesNoInt("comment_ticket",$this->fields["comment_ticket"]);
+		dropdownYesNo("comment_ticket",$this->fields["comment_ticket"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][15].":</td><td>";
-		dropdownYesNoInt("comment_all_ticket",$this->fields["comment_all_ticket"]);
+		dropdownYesNo("comment_all_ticket",$this->fields["comment_all_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][18].":</td><td>";
-		dropdownYesNoInt("update_ticket",$this->fields["update_ticket"]);
+		dropdownYesNo("update_ticket",$this->fields["update_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][16].":</td><td>";
-		dropdownYesNoInt("own_ticket",$this->fields["own_ticket"]);
+		dropdownYesNo("own_ticket",$this->fields["own_ticket"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][17].":</td><td>";
-		dropdownYesNoInt("steal_ticket",$this->fields["steal_ticket"]);
+		dropdownYesNo("steal_ticket",$this->fields["steal_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][19].":</td><td>";
-		dropdownYesNoInt("assign_ticket",$this->fields["assign_ticket"]);
+		dropdownYesNo("assign_ticket",$this->fields["assign_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][7].":</td><td>";
-		dropdownYesNoInt("show_ticket",$this->fields["show_ticket"]);
+		dropdownYesNo("show_ticket",$this->fields["show_ticket"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][8].":</td><td>";
-		dropdownYesNoInt("show_full_ticket",$this->fields["show_full_ticket"]);
+		dropdownYesNo("show_full_ticket",$this->fields["show_full_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][9].":</td><td>";
-		dropdownYesNoInt("observe_ticket",$this->fields["observe_ticket"]);
+		dropdownYesNo("observe_ticket",$this->fields["observe_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["stats"][19].":</td><td>";
-		dropdownYesNoInt("statistic",$this->fields["statistic"]);
+		dropdownYesNo("statistic",$this->fields["statistic"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][20].":</td><td>";
-		dropdownYesNoInt("show_planning",$this->fields["show_planning"]);
+		dropdownYesNo("show_planning",$this->fields["show_planning"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][21].":</td><td>";
-		dropdownYesNoInt("show_all_planning",$this->fields["show_all_planning"]);
+		dropdownYesNo("show_all_planning",$this->fields["show_all_planning"]);
 		echo "</td>";
 
 		echo "<td>".$LANG["profiles"][26]."</td><td>";
-		dropdownYesNoInt("show_group_ticket",$this->fields["show_group_ticket"]);
+		dropdownYesNo("show_group_ticket",$this->fields["show_group_ticket"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 
 		echo "<td>".$LANG["profiles"][27]."</td><td>";
-		dropdownYesNoInt("show_group_hardware",$this->fields["show_group_hardware"]);
+		dropdownYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
 		echo "</td>";
 
 		echo "<td colspan='1'>".$LANG["setup"][350].":</td><td>";
@@ -518,7 +518,7 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("knowbase",$this->fields["knowbase"],1,1,1);
 		echo "</td>";
 		echo "<td>".$LANG["title"][35].":</td><td>";
-		dropdownYesNoInt("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
+		dropdownYesNo("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";

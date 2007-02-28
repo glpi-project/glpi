@@ -273,7 +273,7 @@ function showUserRights($target,$ID){
 		dropdownValue("glpi_profiles","FK_profiles");
 		echo "</td><td align='center'>";
 		echo $LANG["profiles"][28].":";
-		dropdownYesNoInt("recursive",0);
+		dropdownYesNo("recursive",0);
 		echo "</td><td align='center'>";
 		echo "<input type='submit' name='addright' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";

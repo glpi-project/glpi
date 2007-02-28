@@ -332,7 +332,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 	//	echo "<table>";
 	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
 		//echo "<tr><td>";
-		dropdownYesNoInt("deleted",$deleted);
+		dropdownYesNo("deleted",$deleted);
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG["common"][3]."' title='".$LANG["common"][3]."'>";
 		//echo "</td></tr>";
 	}

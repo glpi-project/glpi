@@ -787,7 +787,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][40] . "</td><td>";
-			dropdownYesNoInt('tracking_order',$_SESSION["glpitracking_order"]);
+			dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
 			echo "</td></tr>";
 
 			echo "<tr>";

@@ -364,7 +364,7 @@ class Printer  extends CommonDBTM {
 				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
 				echo "<td>".$LANG["printers"][14]."</td>\n";
 				echo "<td>";
-				dropdownYesNoInt("flags_serial",$this->fields["flags_serial"]);
+				dropdownYesNo("flags_serial",$this->fields["flags_serial"]);
 				echo "</td>";
 				echo "</tr></table>\n";
 	
@@ -372,7 +372,7 @@ class Printer  extends CommonDBTM {
 				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
 				echo "<td>".$LANG["printers"][15]."</td>\n";
 				echo "<td>";
-				dropdownYesNoInt("flags_par",$this->fields["flags_par"]);
+				dropdownYesNo("flags_par",$this->fields["flags_par"]);
 				echo "</td>";
 	
 				echo "</tr></table>\n";
@@ -381,7 +381,7 @@ class Printer  extends CommonDBTM {
 				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
 				echo "<td>".$LANG["printers"][27]."</td>\n";
 				echo "<td>";
-				dropdownYesNoInt("flags_usb",$this->fields["flags_usb"]);
+				dropdownYesNo("flags_usb",$this->fields["flags_usb"]);
 				echo "</td>";
 	
 				echo "</tr></table>\n";

@@ -628,7 +628,7 @@ class Computer extends CommonDBTM {
 						echo "</td>";
 						echo "<td >".$LANG["ocsng"][6]." ".$LANG["Menu"][33].": 	</td>";
 						echo "<td >";
-						dropdownYesNoInt("_auto_update_ocs",$data["auto_update"]);
+						dropdownYesNo("_auto_update_ocs",$data["auto_update"]);
 						echo "</td>";
 	
 						echo "</tr>";
