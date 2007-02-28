@@ -250,6 +250,17 @@ ul#menu li#menu6 ul.ssmenu{
 	left: 5px;
 }
 
+ul#menu li#menu7{
+	float: left;
+	width: 135px;
+}
+
+ul#menu li#menu7 ul.ssmenu{
+	position: relative;
+	width: 125px;
+	left: 5px;
+}
+
 div#c_menu div#c_logo{
 	width: 64px;
 	height: 41px;

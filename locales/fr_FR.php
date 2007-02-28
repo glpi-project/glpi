@@ -1307,6 +1307,7 @@ $LANG["setup"][179]="Impossible d'utiliser CAS comme source de connexion externe
 $LANG["setup"][180]="Utiliser TLS";
 $LANG["setup"][181]="Fonction ldap_start_tls inexistante";
 $LANG["setup"][182]="Url de retour à la deconnexion (logout)";
+$LANG["setup"][183]="Utiliser le cache";
 
 
 $LANG["setup"][200]="Suivis par emails";

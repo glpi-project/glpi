@@ -125,7 +125,7 @@ class Cron {
 			if ($CFG_GLPI["auto_update_check"]>0)
 			$this->taches["check_update"]=$CFG_GLPI["auto_update_check"]*DAY_TIMESTAMP;
 			// Garbage collector for expired file cache
-			if (ENABLE_CACHE){
+			if ($CFG_GLPI["use_cache"]){
 				$this->taches["cache"]=DAY_TIMESTAMP;
 			}
 			//Garbage collector for expired session file
