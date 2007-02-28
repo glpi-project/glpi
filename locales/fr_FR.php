@@ -1400,6 +1400,9 @@ $LANG["setup"][605]="Ajouter Groupe";
 
 $LANG["setup"][700]="Configuration des plugins";
 $LANG["setup"][701]="Sélectionnez le plugin à configurer";
+$LANG["setup"][702]="Affichage";
+$LANG["setup"][703]="Générale";
+$LANG["setup"][704]="Notifications";
 
 
 $LANG["software"][0]="Ajouter logiciel...";

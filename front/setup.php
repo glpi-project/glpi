@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkCentralAccess();
 
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin");
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config");
 
 
 // titre
@@ -101,7 +101,7 @@ if (count($config)>0){
 echo "</tr>";
 
 if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))
-echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>Plugins</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>".$LANG["common"][29]."</b></a></td></tr>";
 if (haveRight("check_update","r"))
 echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$LANG["setup"][300]."</b></a></td></tr>";
 

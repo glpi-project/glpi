@@ -57,23 +57,23 @@ if (isset ($_GET['onglet']))
 if (!empty ($_GET["next"])) {
 
 	if ($_GET["next"] == "extauth") {
-		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"admin");
+		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config");
 		titleExtAuth();
 		//showFormExtAuth($_SERVER['PHP_SELF']);
 		showFormExtAuthList($_SERVER['PHP_SELF']);
 	}
 	elseif ($_GET["next"] == "mailing") {
-		commonHeader($LANG["title"][15], $_SERVER['PHP_SELF'],"admin");
+		commonHeader($LANG["title"][15], $_SERVER['PHP_SELF'],"config");
 		titleMailing();
 		showFormMailing($_SERVER['PHP_SELF']);
 	}
 	elseif ($_GET["next"] == "confgen") {
-		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"admin");
+		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"config");
 		titleConfigGen();
 		showFormConfigGen($_SERVER['PHP_SELF']);
 	}
 	elseif ($_GET["next"] == "confdisplay") {
-		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"admin");
+		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"config");
 		titleConfigDisplay();
 		showFormConfigDisplay($_SERVER['PHP_SELF']);
 	}

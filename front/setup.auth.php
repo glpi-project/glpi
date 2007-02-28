@@ -53,7 +53,7 @@ $config_ldap = new AuthLDAP();
 if (!isset($_GET["ID"])) $_GET["ID"]="";
  
 if (!empty ($_GET["next"])) {
-	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"admin");
+	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config");
 	titleExtAuth();
 	if ($_GET["next"] == "extauth") {
 		showFormExtAuthList($_SERVER['PHP_SELF']);
@@ -106,7 +106,7 @@ elseif (isset ($_POST["delete_ldap"])) {
 elseif (isset ($_POST["test_ldap"])) {
 	
 	//Testing ldap connection
-	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"admin");
+	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config");
 	if (testLDAPConnection($_POST["ID"]))
 		$msg =$LANG["login"][22];
 	else
