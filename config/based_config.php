@@ -35,15 +35,28 @@ if (!defined('GLPI_ROOT')){
 	}
 // Default location for based configuration
 if (!defined("GLPI_CONFIG_DIR"))
-	define("GLPI_CONFIG_DIR",GLPI_ROOT . "/config/");
+	define("GLPI_CONFIG_DIR",GLPI_ROOT . "/config");
 
 // Default location for backup dump
 if (!defined("GLPI_DUMP_DIR"))
-	define("GLPI_DUMP_DIR",GLPI_ROOT . "/files/_dumps/");
+	define("GLPI_DUMP_DIR",GLPI_ROOT . "/files/_dumps");
 
 // Path for documents storage
 if (!defined("GLPI_DOC_DIR"))
 	define("GLPI_DOC_DIR",GLPI_ROOT . "/files");
+
+// Path for cache storage
+if (!defined("GLPI_CACHE_DIR"))
+	define("GLPI_CACHE_DIR",GLPI_ROOT . "/files/_cache");
+
+// Path for cron storage
+if (!defined("GLPI_CRON_DIR"))
+	define("GLPI_CRON_DIR",GLPI_ROOT . "/files/_cron");
+
+// Path for sessions storage
+if (!defined("GLPI_SESSION_DIR"))
+	define("GLPI_SESSION_DIR",GLPI_ROOT . "/files/_sessions");
+
 
 // Path for plugins documents storage
 if (!defined("GLPI_PLUGIN_DOC_DIR"))

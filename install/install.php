@@ -42,7 +42,7 @@ include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
 
-session_save_path(GLPI_DOC_DIR."/_sessions");
+session_save_path(GLPI_SESSION_DIR);
 
 cleanCache();
 
@@ -648,7 +648,7 @@ function step1($update)
 
 	// file test
 
-	// il faut un test dans /files/_dumps  et /files et /config/ et /files/_sessions et /files/_cron
+	// Check right permission to specific directories
 	$tmperror=checkWriteAccessToDirs();
 	if ($tmperror) $error=$tmperror;
 	echo "</table>";
