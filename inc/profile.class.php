@@ -85,66 +85,6 @@ class Profile extends CommonDBTM{
 		return $input;
 	}
 
-	function updateForUser($ID,$prof){
-		global $DB;
-		// Get user profile
-		$query = "SELECT glpi_users_profiles.FK_profiles, glpi_users_profiles.ID FROM glpi_users_profiles INNER JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID) WHERE (glpi_users_profiles.FK_users = '$ID')";
-
-		if ($result = $DB->query($query)) {
-			// Profile found
-			if ($DB->numrows($result)){
-				$data=$DB->fetch_array($result);
-				if ($data["FK_profiles"]!=$prof){
-					$query="UPDATE glpi_users_profiles SET FK_profiles='$prof' WHERE ID='".$data["ID"]."';";
-					$DB->query($query);
-				}
-			} else { // Profile not found
-
-				$query="INSERT INTO glpi_users_profiles (FK_users, FK_profiles) VALUES ('$ID','$prof');";
-				$DB->query($query);
-			}
-		}
-
-	}
-
-	function getFromDBForUser($ID){
-
-		// Make new database object and fill variables
-		global $DB;
-		$ID_profile=0;
-		// Get user profile
-		$query = "SELECT FK_profiles FROM glpi_users_profiles WHERE (FK_users = '$ID')";
-
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)){
-				$ID_profile = $DB->result($result,0,0);
-			}
-
-			if (!$ID_profile||!$this->getFromDB($ID_profile)) {
-				$ID_profile=0;
-				// Get default profile
-				$query = "SELECT ID FROM glpi_profiles WHERE (`is_default` = '1')";
-				$result = $DB->query($query);
-				if ($DB->numrows($result)){
-					$ID_profile = $DB->result($result,0,0);
-					$this->updateForUser($ID,$ID_profile);
-				} else {
-					// Get first helpdesk profile
-					$query = "SELECT ID FROM glpi_profiles WHERE (interface = 'helpdesk')";
-					$result = $DB->query($query);
-					if ($DB->numrows($result)){
-						$ID_profile = $DB->result($result,0,0);
-						$this->updateForUser($ID,$ID_profile);
-					}
-				}
-			}
-		}
-		if ($ID_profile){
-			$this->getFromDB($ID_profile);
-			return $ID_profile;
-		} else return false;
-	}
-
 	// Unset unused rights for helpdesk
 	function cleanProfile(){
 		$helpdesk=array("ID","name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware");

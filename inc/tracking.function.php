@@ -1550,13 +1550,6 @@ function showJobDetails ($target,$ID){
 		echo "</table>";
 
 
-
-
-
-
-
-
-
 		echo "</td>";
 
 		// Troisi�e Colonne
