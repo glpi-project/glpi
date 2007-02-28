@@ -92,34 +92,12 @@ function current_time()
 
 }
 
-function test_content_ok(){
-	global $DB;
-
-	$query1="SELECT ID FROM glpi_computers WHERE  comments LIKE '%\\\\\\%';";
-	$query2="SELECT ID FROM glpi_printers WHERE  comments LIKE '%\\\\\\%';";	
-	$query3="SELECT ID FROM glpi_tracking WHERE  contents LIKE '%\\\\\\%';";	
-	$query4="SELECT ID FROM glpi_followups WHERE  contents LIKE '%\\\\\\%';";	
-
-	$result1=$DB->query($query1);
-	if ($DB->numrows($result1)>0)
-		return false;
-	$result4=$DB->query($query4);
-	if ($DB->numrows($result4)>0)
-		return false;	
-	$result3=$DB->query($query3);
-	if ($DB->numrows($result3)>0)
-		return false;
-	$result2=$DB->query($query2);
-	if ($DB->numrows($result2)>0)
-		return false;
-	return true;		
-}
-
-
 
 function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 {
 	$content="";
+	$DB->query("SET NAMES latin1");
+
 	$result = $DB->query("SELECT * FROM $table LIMIT $from,$limit");
 
 	if($result)
@@ -153,10 +131,10 @@ function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 }
 
 
-function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
+function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 {
 	// $dumpFile, fichier source
-	// $database, nom de la base de donn�s cible
+	// $database, nom de la base de données cible
 	// $mysqlUser, login pouyr la connexion au serveur MySql
 	// $mysqlPassword, mot de passe
 	// $histMySql, nom de la machine serveur MySQl
@@ -164,11 +142,6 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
 
 
 	global $TPSCOUR,$offsettable,$offsetrow,$cpt;
-	if ($DB->error)
-	{
-		echo "Connexion impossible �$hostMySql pour $mysqlUser";
-		return FALSE;
-	}
 
 	$result=$DB->list_tables();
 	$numtab=0;
@@ -181,22 +154,43 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
 
 
 	for (;$offsettable<$numtab;$offsettable++){
-		// Dump de la strucutre table
+
+		// Dump de la structyre table
 		if ($offsetrow==-1){
+			if ($complete_utf8){
+				$DB->query("ALTER TABLE `".$tables[$offsettable]."`  DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
+				$data=$DB->list_fields($tables[$offsettable]);
+				
+				foreach ($data as $key =>$val){
+					if (eregi("varchar",$val["Type"])){
+						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL");
+					} else if (eregi("longtext",$val["Type"])){
+						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
+					} else if (eregi("text",$val["Type"])){
+						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
+					} else if (eregi("tinyint",$val["Type"])){
+						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` SMALLINT NOT NULL DEFAULT '".$val["default"]."'");
+					}
+	
+					echo "<br>".$key."<br>";
+					print_r($val);
+				}
+			}
 			$offsetrow++;
 			$cpt++;
 		}
+
 		current_time();
 		if ($duree>0 and $TPSCOUR>=$duree) //on atteint la fin du temps imparti
 			return TRUE;
 
 		$fin=0;
 		while (!$fin){
-			$todump=get_update_content($DB,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8);
+			$todump=get_update_content($DB,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8,$complete_utf8);
 			//	echo $todump."<br>";
 			$rowtodump=substr_count($todump, "UPDATE ");
 			if ($rowtodump>0){
-				//	echo $todump;
+				$DB->query("SET NAMES utf8");
 				$result = $DB->query($todump);
 				//	if (!$result) echo "ECHEC ".$todump;
 
@@ -216,8 +210,9 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8)
 			return TRUE;
 
 	}
-	if ($DB->error())
-		echo "<hr>ERREUR �partir de [$formattedQuery]<br>".$DB->error()."<hr>";
+	if ($DB->error()){
+		echo "<hr>".$LANG["backup"][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+	}
 	$offsettable=-1;
 	return TRUE;
 }
@@ -322,37 +317,17 @@ echo "</head>";
 echo "<body>";
 echo "<div class=\"principal\">";
 //end style and co
-/*if (!isset($_POST["oui"])&&!isset($_POST["non"])&&!isset($_GET["dump"]))
-  if (test_content_ok()) {
-  echo "<div align=\"center\">";
-  echo $LANG["update"]["108"];
-  echo $LANG["update"]["109"];
-  echo "<form action=\"update_content.php\" method=\"post\">";
-  echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
-  echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
-  echo "</form></div>";
-  }
-  else {
-  echo "<div align=\"center\">";
-  echo $LANG["update"]["110"];
-  echo $LANG["update"]["109"];
-  echo "<form action=\"update_content.php\" method=\"post\">";
-  echo "<input type=\"submit\" class='submit' name=\"oui\" value=\"Oui\" />&nbsp;&nbsp;";
-  echo "<input type=\"submit\" class='submit' name=\"non\" value=\"Non\" />";
-  echo "</form></div>";
 
-  }
- */
 // #################" UPDATE CONTENT #################################
 
 $time_file=date("Y-m-d-h-i");
 $cur_time=date("Y-m-d H:i");
 
 init_time(); //initialise le temps
-//d�ut de fichier
+//debut de fichier
 if (!isset($_GET["offsettable"])) $offsettable=0; 
 else $offsettable=$_GET["offsettable"]; 
-//d�ut de fichier
+//debut de fichier
 if (!isset($_GET["offsetrow"])) $offsetrow=-1; 
 else $offsetrow=$_GET["offsetrow"];
 //timeout de 5 secondes par d�aut, -1 pour utiliser sans timeout
@@ -375,15 +350,25 @@ if ($percent >= 0) {
 	displayProgressBar(400,$percent);
 
 }
+
 $conv_utf8=false;
+$complete_utf8=true;
+
 if(!FieldExists("glpi_config","utf8_conv")) {
 	$conv_utf8=true;
+} else {
+	$query="SELECT utf8_conv FROM glpi_config WHERE ID='1'";
+	$result=$DB->query($query);
+	$data=$DB->fetch_assoc($result);
+	if ($data["utf8_conv"]){
+		$complete_utf8=false;
+	}
 }
 
-	if ($offsettable>=0){
-		if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8))
+if ($offsettable>=0&&$complete_utf8){
+		if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8,$complete_utf8))
 		{
-			echo "<br>Redirection automatique sinon cliquez <a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">ici</a>";
+			echo "<br><a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">".$LANG["backup"][24]."</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
 			echo "</div>";
 
@@ -401,6 +386,11 @@ else  {
 if ($conv_utf8){
 	$query = "ALTER TABLE `glpi_config` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
 	$DB->query($query) or die(" 0.6 add utf8_conv to glpi_config".$LANG["update"][90].$DB->error());
+}
+
+if ($complete_utf8){
+	$DB->query("ALTER DATABASE `".$DB->dbdefault."` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
+	$DB->query("UPDATE glpi_config SET utf8_conv='1' WHERE ID='1'");
 }
 
 ?>

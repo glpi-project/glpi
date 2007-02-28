@@ -233,14 +233,10 @@ function get_def($DB, $table) {
 function restoreMySqlDump($DB,$dumpFile , $duree)
 {
 	// $dumpFile, fichier source
-	// $database, nom de la base de donn�s cible
-	// $mysqlUser, login pouyr la connexion au serveur MySql
-	// $mysqlPassword, mot de passe
-	// $histMySql, nom de la machine serveur MySQl
 	// $duree=timeout pour changement de page (-1 = aucun)
 
 	// Desactivation pour empecher les addslashes au niveau de la creation des tables
-	// En plus, au niveau du dump on consid�e qu'on est bon
+	// En plus, au niveau du dump on considere qu'on est bon
 	//set_magic_quotes_runtime(0);
 
 	global $DB,$TPSCOUR,$offset,$cpt,$LANG;
@@ -312,10 +308,6 @@ function restoreMySqlDump($DB,$dumpFile , $duree)
 function backupMySql($DB,$dumpFile, $duree,$rowlimit)
 {
 	// $dumpFile, fichier source
-	// $database, nom de la base de donn�s cible
-	// $mysqlUser, login pouyr la connexion au serveur MySql
-	// $mysqlPassword, mot de passe
-	// $histMySql, nom de la machine serveur MySQl
 	// $duree=timeout pour changement de page (-1 = aucun)
 
 	global $TPSCOUR,$offsettable,$offsetrow,$cpt,$LANG;
@@ -439,7 +431,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 		if ($offsettable>=0){
 			if (backupMySql($DB,$fichier,$duree,$rowlimit))
 			{
-				echo "<br>".$LANG["backup"][24]."  <a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">ici</a>";
+				echo "<br> <a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".$LANG["backup"][24]."</a>";
 				echo "<script>window.location=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
 				glpi_flush();    
 				exit;
@@ -497,7 +489,7 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 	if ($offset!=-1){
 		if (restoreMySqlDump($DB,$path.$_GET["file"],$duree))
 		{
-			echo "<br>".$LANG["backup"][24]." <a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">ici</a>";
+			echo "<br><a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG["backup"][24]."</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"backup.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
 			glpi_flush();
 			exit;

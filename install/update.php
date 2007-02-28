@@ -559,12 +559,18 @@ else {
 			if (showLocationUpdateForm()){
 				switch ($current_version){
 					case "0.31": 
-						case "0.4": 
-						case "0.41": 
-						case "0.42": 
-						case "0.5": 
-						case "0.51": 
-						case "0.51a": 
+					case "0.4": 
+					case "0.41": 
+					case "0.42": 
+					case "0.5": 
+					case "0.51": 
+					case "0.51a": 
+					case "0.6": 
+					case "0.65": 
+					case "0.68":
+					case "0.68.1":
+					case "0.68.2":
+					case "0.68.3":
 						showContentUpdateForm();
 					break;
 					default:
