@@ -78,7 +78,7 @@ function cron_logs(){
  *
  **/
 function cron_cache(){
-
+	global $CFG_GLPI;
 	$max_recursion=5;
 	$lifetime=DEFAULT_CACHE_LIFETIME;
 	while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_DOC_DIR."/_cache"))>MAX_CACHE_SIZE)){
@@ -213,7 +213,7 @@ function cleanAllItemCache($item,$group){
  * @return the SEARCH_OPTION array
  **/
 function getSearchOptions(){
-	global $LANG;
+	global $LANG,$CFG_GLPI;
 	$options = array(
 		'cacheDir' => GLPI_DOC_DIR."/_cache/",
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
@@ -244,7 +244,7 @@ function getSearchOptions(){
  * @return the $RELATION array
  **/
 function getDbRelations(){
-
+	global $CFG_GLPI;
 	$options = array(
 		'cacheDir' => GLPI_DOC_DIR."/_cache/",
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
