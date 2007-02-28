@@ -238,38 +238,40 @@ class Identification {
 
 		if (!session_id())
 			session_start();
-		$_SESSION["glpiID"] = $this->user->fields['ID'];
-		$_SESSION["glpiname"] = $this->user->fields['name'];
-		$_SESSION["glpirealname"] = $this->user->fields['realname'];
-		$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
-		$_SESSION["glpilanguage"] = $this->user->fields['language'];
-		$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
-		$_SESSION["glpiauthorisation"] = true;
-		$_SESSION["glpiextauth"] = $this->extauth;
-		$_SESSION["glpisearchcount"] = array ();
-		$_SESSION["glpisearchcount2"] = array ();
-		$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
-		$_SESSION["glpilist_limit"] = $CFG_GLPI["list_limit"];
-		$_SESSION["glpicrontimer"] = time();
-		// TODO : load profile depending on entities
-		// glpiprofiles -> other available profile with link to the associated entities
-		initEntityProfiles($_SESSION["glpiID"]);
-		// glpiactiveprofile -> active profile
-		// glpiactiveentities -> active entities
-		// Reload glpiactiveprofile when entity switching 
-		changeProfile(key($_SESSION['glpiprofiles']));
+		if (isset($this->user->fields['ID'])){
+			$_SESSION["glpiID"] = $this->user->fields['ID'];
+			$_SESSION["glpiname"] = $this->user->fields['name'];
+			$_SESSION["glpirealname"] = $this->user->fields['realname'];
+			$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
+			$_SESSION["glpilanguage"] = $this->user->fields['language'];
+			$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
+			$_SESSION["glpiauthorisation"] = true;
+			$_SESSION["glpiextauth"] = $this->extauth;
+			$_SESSION["glpisearchcount"] = array ();
+			$_SESSION["glpisearchcount2"] = array ();
+			$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
+			$_SESSION["glpilist_limit"] = $CFG_GLPI["list_limit"];
+			$_SESSION["glpicrontimer"] = time();
+			// TODO : load profile depending on entities
+			// glpiprofiles -> other available profile with link to the associated entities
+			initEntityProfiles($_SESSION["glpiID"]);
+			// glpiactiveprofile -> active profile
+			// glpiactiveentities -> active entities
+			// Reload glpiactiveprofile when entity switching 
+			changeProfile(key($_SESSION['glpiprofiles']));
+	
+			// TODO Groups also depends og the entity
+			// glpigroups -> active groups
+			// Reload groups on entity switching
+	
+			do_hook("init_session");
+			cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 
-		// TODO Groups also depends og the entity
-		// glpigroups -> active groups
-		// Reload groups on entity switching
-
-		do_hook("init_session");
-		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
-
-		if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
-			$this->auth_succeded=false;
-			$this->err .= $LANG["login"][25] . "<br>";
-		} 
+			if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
+				$this->auth_succeded=false;
+				$this->err .= $LANG["login"][25] . "<br>";
+			} 
+		}
 	}
 	function destroySession() {
 		if (!session_id())

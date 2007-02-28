@@ -47,7 +47,7 @@ if (!defined("GLPI_DOC_DIR"))
 
 // Path for cache storage
 if (!defined("GLPI_CACHE_DIR"))
-	define("GLPI_CACHE_DIR",GLPI_ROOT . "/files/_cache");
+	define("GLPI_CACHE_DIR",GLPI_ROOT . "/files/_cache/");
 
 // Path for cron storage
 if (!defined("GLPI_CRON_DIR"))
