@@ -100,14 +100,14 @@ function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 
 	$result = $DB->query("SELECT * FROM $table LIMIT $from,$limit");
 
-	if($result)
+	if($result){
 		while($row = $DB->fetch_assoc($result)) {
 			if (isset($row["ID"])) {
 				if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
 				$row=stripslashes_deep($row);
 				$insert = "UPDATE $table SET ";
 				foreach ($row as $key => $val) {
-					$insert.=" ".$key."=";
+					$insert.=" `".$key."`=";
 
 					if(!isset($val)) $insert .= "NULL,";
 					else if($val != "") {
@@ -126,6 +126,7 @@ function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 				$content .= $insert;
 			}
 		}
+	}
 	//if ($table=="glpi_dropdown_locations") echo $content;
 	return $content;
 }
@@ -154,7 +155,7 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 
 
 	for (;$offsettable<$numtab;$offsettable++){
-
+	//	echo $tables[$offsettable]."<br>\n";
 		// Dump de la structyre table
 		if ($offsetrow==-1){
 			if ($complete_utf8){
@@ -192,7 +193,7 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 			if ($rowtodump>0){
 				$DB->query("SET NAMES utf8");
 				$result = $DB->query($todump);
-				//	if (!$result) echo "ECHEC ".$todump;
+	//			if (!$result) echo "ECHEC ".$todump;
 
 				$cpt+=$rowtodump;
 				$offsetrow+=$rowlimit;

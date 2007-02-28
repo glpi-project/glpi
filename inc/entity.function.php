@@ -65,7 +65,7 @@ function showEntityUser($target,$ID){
 			dropdownValue("glpi_profiles","FK_profiles");
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG["profiles"][28].":";
-			dropdownYesNoInt("recursive",0);
+			dropdownYesNo("recursive",0);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type='submit' name='adduser' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td></tr>";
