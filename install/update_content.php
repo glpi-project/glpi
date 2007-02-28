@@ -221,10 +221,10 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 
 loadLang();
 
+
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 
-//style and co
 echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 echo "<html>";
 echo "<head>";
@@ -235,87 +235,15 @@ echo "<meta http-equiv=\"Content-Language\" content=\"fr\"> ";
 echo "<meta name=\"generator\" content=\"\">";
 echo "<meta name=\"DC.Language\" content=\"fr\" scheme=\"RFC1766\">";
 echo "<title>Setup GLPI</title>";
+// CSS
+echo "<link rel='stylesheet'  href='../css/style_install.css' type='text/css' media='screen' >";
 
-echo "<style type=\"text/css\">";
-echo "<!--
-
-/*  ... Definition des styles ... */
-
-body {
-	background-color:#C5DAC8;
-color:#000000; }
-
-.principal {
-	background-color: #ffffff;
-	font-family: Verdana;font-size:12px;
-	text-align: justify ; 
-	-moz-border-radius: 4px;
-border: 1px solid #FFC65D;
-margin: 40px; 
-padding: 40px 40px 10px 40px;
-}
-
-table {
-	text-align:center;
-border: 0;
-margin: 20px;
-	margin-left: auto;
-	margin-right: auto;
-width: 90%;}
-
-.red { color:red;}
-.green {color:green;}
-
-h2 {
-color:#FFC65D;
-      text-align:center;}
-
-      h3 {
-	      text-align:center;}
-
-	      input {border: 1px solid #ccc;}
-
-	      fieldset {
-padding: 20px;
-border: 1px dotted #ccc;
-	font-size: 12px;
-	font-weight:200;}
-
-	.submit { text-align:center;}
-
-	input.submit {
-border:1px solid #000000;
-       background-color:#eeeeee;
-	}
-
-input.submit:hover {
-border:1px solid #cccccc;
-       background-color:#ffffff;
-}
-
-.button {
-	font-weight:200;
-color:#000000;
-padding:5px;
-	text-decoration:none;
-border:1px solid #009966;
-       background-color:#eeeeee;
-}
-
-.button:hover{
-	font-weight:200;
-color:#000000;
-padding:5px;
-	text-decoration:none;
-border:1px solid #009966;
-       background-color:#ffffff;
-}
-
--->  ";
-echo "</style>";
 echo "</head>";
 echo "<body>";
-echo "<div class=\"principal\">";
+echo "<div id='principal'>";
+echo "<div id='bloc'>";
+echo "<div class='haut'></div>";
+echo "<h2>GLPI SETUP</h2>";
 //end style and co
 
 // #################" UPDATE CONTENT #################################
@@ -345,11 +273,6 @@ $tot=$DB->numrows($tab);
 		else $percent=100;
 	}
 else $percent=0;
-if ($percent >= 0) {
-
-	displayProgressBar(400,$percent);
-
-}
 
 $conv_utf8=false;
 $complete_utf8=true;
@@ -366,20 +289,24 @@ if(!FieldExists("glpi_config","utf8_conv")) {
 }
 
 if ($offsettable>=0&&$complete_utf8){
+		if ($percent >= 0) {
+		
+			displayProgressBar(400,$percent);
+		
+		}
 		if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8,$complete_utf8))
 		{
 			echo "<br><a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">".$LANG["backup"][24]."</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
-			echo "</div>";
+			echo "<div class='bas'></div></div></div></body></html>";
 
 			glpi_flush();    
 			exit;
 		}
 	}
 else  { 
-	//echo "<div align='center'><p>Termin� Nombre de requ�es totales trait�s : $cpt</p></div>";
 	echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG["install"][64]."</span></a></p>";
-	echo "</div>";
+	echo "<div class='bas'></div></div></div></body></html>";
 
 }
 

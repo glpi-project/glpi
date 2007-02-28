@@ -61,7 +61,7 @@ class DBmysql {
 	function DBmysql()
 	{  // Constructor
 		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, urldecode($this->dbpassword)) or $this->error = 1;
-		//@mysql_query("SET NAMES 'utf8'");
+		@mysql_query("SET NAMES 'utf8'");
 		if ($this->dbh)
 			mysql_select_db($this->dbdefault) or $this->error = 1;
 		else {
