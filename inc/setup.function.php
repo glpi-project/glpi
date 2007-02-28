@@ -637,7 +637,7 @@ function showFormConfigGen($target) {
 	echo "</select></td>";
 
 	echo "<td align='center'> " . $LANG["setup"][133] . " </td><td>";
-	dropdownYesNoInt("ocs_mode", $CFG_GLPI["ocs_mode"]);
+	dropdownYesNo("ocs_mode", $CFG_GLPI["ocs_mode"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][102] . " </td><td><select name=\"event_loglevel\">";
@@ -672,7 +672,7 @@ function showFormConfigGen($target) {
 	echo "<td align='center'>" . $LANG["setup"][109] . " </td><td><input type=\"text\" name=\"expire_events\" value=\"" . $CFG_GLPI["expire_events"] . "\"></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][124] . " </td><td>";
-	dropdownYesNoInt("auto_add_users", $CFG_GLPI["auto_add_users"]);
+	dropdownYesNo("auto_add_users", $CFG_GLPI["auto_add_users"]);
 	echo "</td>";
 
 	echo "<td align='center'>" . $LANG["setup"][138] . " </td><td><select name=\"debug\">";
@@ -696,17 +696,17 @@ function showFormConfigGen($target) {
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["title"][24] . "</strong></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][219] . "</td><td>";
-	dropdownYesNoInt("permit_helpdesk", $CFG_GLPI["permit_helpdesk"]);
+	dropdownYesNo("permit_helpdesk", $CFG_GLPI["permit_helpdesk"]);
 	echo "</td>";
 
 	echo "<td align='center'> " . $LANG["setup"][116] . " </td><td>";
-	dropdownYesNoInt("auto_assign", $CFG_GLPI["auto_assign"]);
+	dropdownYesNo("auto_assign", $CFG_GLPI["auto_assign"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][405] . "</td><td>";
-	dropdownYesNoInt("followup_on_update_ticket", $CFG_GLPI["followup_on_update_ticket"]);
+	dropdownYesNo("followup_on_update_ticket", $CFG_GLPI["followup_on_update_ticket"]);
 	echo "</td><td align='center'>" . $LANG["tracking"][37] . "</td><td>";
-	dropdownYesNoInt("keep_tracking_on_delete", $CFG_GLPI["keep_tracking_on_delete"]);
+	dropdownYesNo("keep_tracking_on_delete", $CFG_GLPI["keep_tracking_on_delete"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["common"][41] . "</strong></td></tr>";
@@ -781,7 +781,7 @@ function showFormConfigDisplay($target) {
 	echo "</select></td>";
 
 	echo "<td align='center'> " . $LANG["setup"][117] . " </td><td>";
-	dropdownYesNoInt("public_faq", $CFG_GLPI["public_faq"]);
+	dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
 	echo " </td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][149] . " </td><td>";
@@ -792,7 +792,7 @@ function showFormConfigDisplay($target) {
 	echo " </td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][129] . " </td><td>";
-	dropdownYesNoInt("view_ID", $CFG_GLPI["view_ID"]);
+	dropdownYesNo("view_ID", $CFG_GLPI["view_ID"]);
 	echo "</td>";
 
 	echo "<td align='center'>" . $LANG["setup"][130] . " </td><td><select name=\"nextprev_item\">";
@@ -841,7 +841,7 @@ function showFormConfigDisplay($target) {
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["title"][24] . "</strong></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][110] . " </td><td>";
-	dropdownYesNoInt("jobs_at_login", $CFG_GLPI["jobs_at_login"]);
+	dropdownYesNo("jobs_at_login", $CFG_GLPI["jobs_at_login"]);
 	echo " </td><td colspan='2'>&nbsp;</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][114] . "</td><td colspan='3'>";
@@ -857,11 +857,11 @@ function showFormConfigDisplay($target) {
 	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][147] . "</strong></td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][120] . " </td><td>";
-	dropdownYesNoInt("use_ajax", $CFG_GLPI["use_ajax"]);
+	dropdownYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
 	echo "</td>";
 
 	echo "<td align='center'>" . $LANG["setup"][127] . " </td><td>";
-	dropdownYesNoInt("ajax_autocompletion", $CFG_GLPI["ajax_autocompletion"]);
+	dropdownYesNo("ajax_autocompletion", $CFG_GLPI["ajax_autocompletion"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][121] . "</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" . $CFG_GLPI["ajax_wildcard"] . "\"></td>";
@@ -1050,7 +1050,7 @@ function showFormMailing($target) {
 		echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG["setup"][201] . "</th></tr>";
 
 		echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][202] . "</td><td>";
-		dropdownYesNoInt("mailing", $CFG_GLPI["mailing"]);
+		dropdownYesNo("mailing", $CFG_GLPI["mailing"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][203] . "</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"" . $CFG_GLPI["admin_email"] . "\"> </td></tr>";
@@ -1058,7 +1058,7 @@ function showFormMailing($target) {
 		echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][204] . "</td><td><input type=\"text\" name=\"mailing_signature\" size='40' value=\"" . $CFG_GLPI["mailing_signature"] . "\" ></td></tr>";
 
 		echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][226] . "</td><td>";
-		dropdownYesNoInt("url_in_mail", $CFG_GLPI["url_in_mail"]);
+		dropdownYesNo("url_in_mail", $CFG_GLPI["url_in_mail"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][227] . "</td><td> <input type=\"text\" name=\"url_base\" size='40' value=\"" . $CFG_GLPI["url_base"] . "\"> </td></tr>";
@@ -1072,7 +1072,7 @@ function showFormMailing($target) {
 		if (!function_exists('mail')) { // if mail php disabled we forced SMTP usage 
 			echo $LANG["choice"][1] . "  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"1\" checked >";
 		} else {
-			dropdownYesNoInt("smtp_mode", $CFG_GLPI["smtp_mode"]);
+			dropdownYesNo("smtp_mode", $CFG_GLPI["smtp_mode"]);
 		}
 		echo "</td></tr>";
 

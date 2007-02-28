@@ -241,7 +241,7 @@ class Contract extends CommonDBTM {
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][61].":		</td><td colspan='3'>";
-				dropdownYesNoInt("saturday",$this->fields["saturday"]);
+				dropdownYesNo("saturday",$this->fields["saturday"]);
 				echo $LANG["buttons"][33].":";
 				dropdownHours("saturday_begin_hour",$this->fields["saturday_begin_hour"]);	
 				echo $LANG["buttons"][32].":";
@@ -249,7 +249,7 @@ class Contract extends CommonDBTM {
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][62].":		</td><td colspan='3'>";
-				dropdownYesNoInt("monday",$this->fields["monday"]);
+				dropdownYesNo("monday",$this->fields["monday"]);
 				echo $LANG["buttons"][33].":";
 				dropdownHours("monday_begin_hour",$this->fields["monday_begin_hour"]);	
 				echo $LANG["buttons"][32].":";

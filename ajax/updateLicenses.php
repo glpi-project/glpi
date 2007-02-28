@@ -45,7 +45,7 @@
 	
 	switch ($_POST["type"]){
 		case "update_buy"	:
-			dropdownYesNoInt("buy");
+			dropdownYesNo("buy");
 			echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$LANG["buttons"][14]."' class='submit'>";
 		break;
 		case "update_expire" :

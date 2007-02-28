@@ -616,7 +616,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 				echo "</tr>";
 			echo "<tr><td>".$LANG["device_drive"][0].":</td>";
 			echo "<td>";
-			dropdownYesNoInt("is_writer",$device->fields["is_writer"]);
+			dropdownYesNo("is_writer",$device->fields["is_writer"]);
 			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$LANG["device_drive"][2].":</td>";
@@ -636,7 +636,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 				echo "</tr>";
 			echo "<tr><td>".$LANG["device_control"][0].":</td>";
 			echo "<td>";
-			dropdownYesNoInt("raid",$device->fields["raid"]);
+			dropdownYesNo("raid",$device->fields["raid"]);
 			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$LANG["device_control"][1].":</td>";
@@ -681,7 +681,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["device_power"][1].":</td>";
 			echo "<td>";
-			dropdownYesNoInt("atx",$device->fields["atx"]);
+			dropdownYesNo("atx",$device->fields["atx"]);
 			echo "</td>";
 			echo "</tr>";
 	

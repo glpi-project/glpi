@@ -746,7 +746,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".$LANG["help"][8].":</td>";
 		echo "<td align='center'>";
-		dropdownYesNoInt('emailupdates',1);
+		dropdownYesNo('emailupdates',1);
 		echo "</td>";
 		echo "<td align='center'>".$LANG["help"][11].":</td>";
 		echo "<td><span id='uemail_result'>";
@@ -1640,7 +1640,7 @@ function showJobDetails ($target,$ID){
 			echo "<table><tr><td align='right'>";
 			echo $LANG["job"][19].":</td><td>";
 			if ($canupdate){
-				dropdownYesNoInt('emailupdates',$job->fields["emailupdates"]);
+				dropdownYesNo('emailupdates',$job->fields["emailupdates"]);
 			} else {
 				if ($job->fields["emailupdates"]) echo $LANG["choice"][1];
 				else $LANG["choice"][0];

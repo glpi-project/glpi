@@ -62,7 +62,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
 		switch ($search["table"].".".$search["linkfield"]){
 			case "glpi_software.helpdesk_visible":
-				dropdownYesNoInt($search["linkfield"]);
+				dropdownYesNo($search["linkfield"]);
 				break;
 			case "glpi_cartridges_type.alarm":
 			case "glpi_consumables_type.alarm":
@@ -113,7 +113,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				dropdown("glpi_dropdown_budget","budget");
 			break;
 			case "glpi_ocs_link": // auto_update ocs_link
-				dropdownYesNoInt("_auto_update_ocs");
+				dropdownYesNo("_auto_update_ocs");
 				echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
 				$FIELDNAME_PRINTED=true;
 			break;

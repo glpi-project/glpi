@@ -221,10 +221,10 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "</select>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][38] . " </td><td>";
-		dropdownYesNoInt("use_soft_dict", $this->fields["use_soft_dict"]);
+		dropdownYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
 		echo "</td></tr>";		
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][41] . " </td><td>";
-		dropdownYesNoInt("import_registry", $this->fields["import_registry"]);
+		dropdownYesNo("import_registry", $this->fields["import_registry"]);
 		echo "</td></tr>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][40] . " </td><td>";
@@ -254,78 +254,78 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . " </td><td>";
-		dropdownYesNoInt("import_general_name", $this->fields["import_general_name"]);
+		dropdownYesNo("import_general_name", $this->fields["import_general_name"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["computers"][9] . " </td><td>";
-		dropdownYesNoInt("import_general_os", $this->fields["import_general_os"]);
+		dropdownYesNo("import_general_os", $this->fields["import_general_os"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][19] . " </td><td>";
-		dropdownYesNoInt("import_general_serial", $this->fields["import_general_serial"]);
+		dropdownYesNo("import_general_serial", $this->fields["import_general_serial"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][22] . " </td><td>";
-		dropdownYesNoInt("import_general_model", $this->fields["import_general_model"]);
+		dropdownYesNo("import_general_model", $this->fields["import_general_model"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][5] . " </td><td>";
-		dropdownYesNoInt("import_general_enterprise", $this->fields["import_general_enterprise"]);
+		dropdownYesNo("import_general_enterprise", $this->fields["import_general_enterprise"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][17] . " </td><td>";
-		dropdownYesNoInt("import_general_type", $this->fields["import_general_type"]);
+		dropdownYesNo("import_general_type", $this->fields["import_general_type"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][89] . " </td><td>";
-		dropdownYesNoInt("import_general_domain", $this->fields["import_general_domain"]);
+		dropdownYesNo("import_general_domain", $this->fields["import_general_domain"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][18] . " </td><td>";
-		dropdownYesNoInt("import_general_contact", $this->fields["import_general_contact"]);
+		dropdownYesNo("import_general_contact", $this->fields["import_general_contact"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . " </td><td>";
-		dropdownYesNoInt("import_general_comments", $this->fields["import_general_comments"]);
+		dropdownYesNo("import_general_comments", $this->fields["import_general_comments"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["networking"][14] . " </td><td>";
-		dropdownYesNoInt("import_ip", $this->fields["import_ip"]);
+		dropdownYesNo("import_ip", $this->fields["import_ip"]);
 		echo "</td></tr>";
 
 		echo "</table></td>";
 		echo "<td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][4] . " </td><td>";
-		dropdownYesNoInt("import_device_processor", $this->fields["import_device_processor"]);
+		dropdownYesNo("import_device_processor", $this->fields["import_device_processor"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][6] . " </td><td>";
-		dropdownYesNoInt("import_device_memory", $this->fields["import_device_memory"]);
+		dropdownYesNo("import_device_memory", $this->fields["import_device_memory"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][1] . " </td><td>";
-		dropdownYesNoInt("import_device_hdd", $this->fields["import_device_hdd"]);
+		dropdownYesNo("import_device_hdd", $this->fields["import_device_hdd"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][3] . " </td><td>";
-		dropdownYesNoInt("import_device_iface", $this->fields["import_device_iface"]);
+		dropdownYesNo("import_device_iface", $this->fields["import_device_iface"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][2] . " </td><td>";
-		dropdownYesNoInt("import_device_gfxcard", $this->fields["import_device_gfxcard"]);
+		dropdownYesNo("import_device_gfxcard", $this->fields["import_device_gfxcard"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][7] . " </td><td>";
-		dropdownYesNoInt("import_device_sound", $this->fields["import_device_sound"]);
+		dropdownYesNo("import_device_sound", $this->fields["import_device_sound"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["devices"][19] . " </td><td>";
-		dropdownYesNoInt("import_device_drives", $this->fields["import_device_drives"]);
+		dropdownYesNo("import_device_drives", $this->fields["import_device_drives"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][36] . " </td><td>";
-		dropdownYesNoInt("import_device_modems", $this->fields["import_device_modems"]);
+		dropdownYesNo("import_device_modems", $this->fields["import_device_modems"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][37] . " </td><td>";
-		dropdownYesNoInt("import_device_ports", $this->fields["import_device_ports"]);
+		dropdownYesNo("import_device_ports", $this->fields["import_device_ports"]);
 		echo "</td></tr>";		
 
 		echo "</table></td></tr>";

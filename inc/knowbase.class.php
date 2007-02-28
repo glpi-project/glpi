@@ -174,7 +174,7 @@ class kbitem extends CommonDBTM {
 			if (haveRight("faq","w")&&haveRight("knowbase","w")){
 				
 				echo $LANG["knowbase"][5].": ";
-				dropdownYesNoInt('faq',$this->fields["faq"]);
+				dropdownYesNo('faq',$this->fields["faq"]);
 				echo "<br><br>\n";
 			}
 		
