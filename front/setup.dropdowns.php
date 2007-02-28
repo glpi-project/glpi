@@ -91,7 +91,7 @@ if (isset($_POST["several_add"])) {
 		if (ereg("popup",$_SERVER['PHP_SELF']))
 			popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 		else 	
-			commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin");
+			commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config");
 		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"]);
 		if (ereg("popup",$_SERVER['PHP_SELF']))
 			popFooter();
@@ -116,7 +116,7 @@ else {
 	if (ereg("popup",$_SERVER['PHP_SELF']))
 		popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 	else 
-		commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin");
+		commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config");
 
 	$optgroup=array(
 			$LANG["setup"][139]=>array(

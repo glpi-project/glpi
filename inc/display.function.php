@@ -211,23 +211,50 @@ function commonHeader($title,$url,$sector="none")
 			$maintain[$LANG["Menu"][13]]=array("stat.php","1");
 	
 		//////// ADMINISTRATION
+		$admin=array();
 		if (haveRight("user","r"))
-			$config[$LANG["Menu"][14]]=array("user.php","u");
+			$admin[$LANG["Menu"][14]]=array("user.php","u");
+		if (haveRight("group","r"))
+			$admin[$LANG["Menu"][36]]=array("group.php","g");
 		// TODO SPECIFIC RIGHT TO ENTITY
 		if (haveRight("config","r"))
-			$config[$LANG["Menu"][37]]=array("entity.php","z");
-		if (haveRight("group","r"))
-			$config[$LANG["Menu"][36]]=array("group.php","g");
+			$admin[$LANG["Menu"][37]]=array("entity.php","z");
 		if (haveRight("profile","r"))
-			$config[$LANG["Menu"][35]]=array("profile.php","p");
-		$config[$LANG["Menu"][10]]=array("setup.php","2");
-		if (haveRight("backup","w"))
-			$config[$LANG["Menu"][12]]=array("backup.php","b");
-		if (haveRight("logs","r"))
-			$config[$LANG["Menu"][30]]=array("log.php","l");
+			$admin[$LANG["Menu"][35]]=array("profile.php","p");
 
-	
-	
+//		$config[$LANG["Menu"][10]]=array("setup.php","2");
+		if (haveRight("backup","w"))
+			$admin[$LANG["Menu"][12]]=array("backup.php","b");
+		if (haveRight("logs","r"))
+			$admin[$LANG["Menu"][30]]=array("log.php","l");
+
+		$config=array();
+		$addconfig=array();
+		if (haveRight("config","w")){
+			$config[$LANG["setup"][703]]=array("setup.config.php?next=confgen","");
+			$config[$LANG["setup"][702]]=array("setup.config.php?next=confdisplay","");
+			$config[$LANG["setup"][704]]=array("setup.config.php?next=mailing","");
+			$config[$LANG["login"][10]]=array("setup.auth.php?next=extauth","");
+			if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w"))
+				$config[$LANG["setup"][134]]=array("setup.ocsng.php","");
+		}
+
+		$config[$LANG["search"][0]]=array("setup.display.php","");
+		if (haveRight("dropdown","w")){
+			$config[$LANG["setup"][0]]=array("setup.dropdowns.php","");
+		}
+		if (haveRight("device","w")){
+			$config[$LANG["setup"][222]]=array("device.php","");
+		}
+		if (haveRight("typedoc","r")){
+			$addconfig[$LANG["document"][7]]=array("typedoc.php","");
+		}
+		if (haveRight("link","r")){
+			$addconfig[$LANG["setup"][87]]=array("link.php","");
+		}	
+		if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))	{
+			$config[$LANG["common"][29]]=array("setup.plugins.php","");
+		}
 		echo "<div id='header'>";
 		
 		// Les préférences + lien déconnexion 
@@ -337,16 +364,29 @@ function commonHeader($title,$url,$sector="none")
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($list as $key => $val) {
-				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
+					echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
 			}
 			echo "</ul>";
 			echo "</li>";
 		}
 	
 		// Administration 
-		if (count($config)) {
+		if (count($admin)) {
 			echo "	<li id='menu6' onmouseover=\"javascript:menuAff('menu6','menu');\" >";
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/user.php\" title=\"".$LANG["Menu"][15]."\"  class='itemP1'>".$LANG["Menu"][15]."</a>"; // default user
+			echo "<ul class='ssmenu'>"; 
+			// list menu item 
+			foreach ($admin as $key => $val) {
+				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
+			}
+			echo "</ul>";
+			echo "</li>";
+		}
+
+		// Config 
+		if (count($config)) {
+			echo "	<li id='menu7' onmouseover=\"javascript:menuAff('menu7','menu');\" >";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/setup.php\" title=\"".$LANG["Menu"][10]."\"  class='itemP1'>".$LANG["Menu"][10]."</a>"; // default user
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($config as $key => $val) {
@@ -378,13 +418,17 @@ function commonHeader($title,$url,$sector="none")
 			$sous_menu=$financial;
 			break;
 			case "admin":
+			$sous_menu=$admin;	
+			break;
+			case "config":
 			$sous_menu=$config;	
 			break;
 			case "maintain":
 			$sous_menu=$maintain;	
 			break;
 			case "plugins":
-			$sous_menu=$list;
+			// Keep only 12 plugins for the menu
+			$sous_menu=array_splice ($list, 0,10);
 			break;
 		}
 		// list sous-menu item 
