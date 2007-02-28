@@ -586,17 +586,6 @@ class User extends CommonDBTM {
 				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
 				echo "</tr>";
 
-				/*				echo "<tr class='tab_bg_1'><td align='center'>".$LANG["setup"][400]."</td><td>";
-								$active=0;
-								if ($this->fields["active"]==""||$this->fields["active"]) $active=1;
-								echo "<select name='active'>";
-								echo "<option value='1' ".($active?" selected ":"").">".$LANG["choice"][1]."</option>";
-								echo "<option value='0' ".(!$active?" selected ":"").">".$LANG["choice"][0]."</option>";
-						
-								echo "</select>";
-								echo "</td><td colspan='2'>&nbsp;</td></tr>";
-				*/
-
 				//Authentications informations : auth method used and server used
 				//don't display is creation of a new user'
 				if (!empty ($ID)) {

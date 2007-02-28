@@ -192,6 +192,10 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 		}
 	}
 
+	// now we can continue with the process...
+	$identificat->initSession();
+
+
 	// we have done at least a good login? No, we exit.
 	if (!$identificat->auth_succeded) {
 		nullHeader("Login", $_SERVER['PHP_SELF']);
@@ -206,8 +210,6 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 			exit;
 	}
 
-	// now we can continue with the process...
-	$identificat->initSession();
 
 	// GET THE IP OF THE CLIENT
 	$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));

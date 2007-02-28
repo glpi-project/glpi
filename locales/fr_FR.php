@@ -788,6 +788,7 @@ $LANG["login"][21]="Test de connexion au serveur IMAP/POP";
 $LANG["login"][22]="Test réussi";
 $LANG["login"][23]="Test échoué";
 $LANG["login"][24]="Date dernière mise à jour";
+$LANG["login"][25]="Vous n'avez aucun droit pour vous connecter à cette application";
 
 $LANG["mailing"][0]="----------------------------------------------------------";
 $LANG["mailing"][1]="======================================================================";
