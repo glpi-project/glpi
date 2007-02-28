@@ -89,6 +89,8 @@
 			$CFG_GLPI["languages"]=array(   
 					"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","pt_br"),
 					"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
+					"ca_CA"=>array("Catalan","ca_CA.php","en_GB.html","hd-en_GB.html","ca","ca"),
+					"cs_CZ"=>array("Czech","cs_CZ.php","en_GB.html","hd-en_GB.html","cs","cs"),
 					"de_DE"=>array("Deutch","de_DE.php","en_GB.html","hd-en_GB.html","de","de"),
 					"dk_DK"=>array("Danish","dk_DK.php","en_GB.html","hd-en_GB.html","da","da"),
 					"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","nl"),
