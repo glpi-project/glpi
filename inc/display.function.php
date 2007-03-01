@@ -75,7 +75,7 @@ title=\"".$ref_pic_text."\" ></td>";
  * @param $url not used anymore.
  *
  **/
-function commonHeader($title,$url,$sector="none")
+function commonHeader($title,$url,$sector="none",$item="none")
 {
 	// Print a nice HTML-head for every page
 
@@ -129,7 +129,7 @@ function commonHeader($title,$url,$sector="none")
 		// End of Head
 		echo "</head>\n";
 
-	if (!($CFG_GLPI["cache"]->start($sector,"GLPI_HEADER_".$_SESSION["glpiID"]))) {
+	if (!($CFG_GLPI["cache"]->start($sector.'_'.$item,"GLPI_HEADER_".$_SESSION["glpiID"]))) {
 		
 	// Body 
 		echo "<body>";
@@ -141,222 +141,257 @@ function commonHeader($title,$url,$sector="none")
 		//////// INVENTORY
 		$showstate=false;
 		$menu['inventory']['title']=$LANG["setup"][10];
-		$menu['inventory']['default']='computer.php';
+		$menu['inventory']['default']='/front/computer.php';
 		if (haveRight("computer","r")){
 			$menu['inventory']['content']['computer']['title']=$LANG["Menu"][0];
 			$menu['inventory']['content']['computer']['shortcut']='c';
-			$menu['inventory']['content']['computer']['page']='computer.php';
+			$menu['inventory']['content']['computer']['page']='/front/computer.php';
+			$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=1';
+			$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=0';
+			$menu['inventory']['content']['computer']['links']['Bouhou']='prout';
 			$showstate=true;
 		}
 		if (haveRight("monitor","r")){
 			$menu['inventory']['content']['monitor']['title']=$LANG["Menu"][3];
 			$menu['inventory']['content']['monitor']['shortcut']='m';
-			$menu['inventory']['content']['monitor']['page']='monitor.php';
+			$menu['inventory']['content']['monitor']['page']='/front/monitor.php';
 			$showstate=true;
 		}
 		if (haveRight("software","r")){
 			$menu['inventory']['content']['sofware']['title']=$LANG["Menu"][4];
 			$menu['inventory']['content']['sofware']['shortcut']='s';
-			$menu['inventory']['content']['sofware']['page']='software.php';
+			$menu['inventory']['content']['sofware']['page']='/front/software.php';
 			$showstate=true;
 		}
 		if (haveRight("networking","r")){
 			$menu['inventory']['content']['networking']['title']=$LANG["Menu"][1];
 			$menu['inventory']['content']['networking']['shortcut']='n';
-			$menu['inventory']['content']['networking']['page']='networking.php';
+			$menu['inventory']['content']['networking']['page']='/front/networking.php';
 			$showstate=true;
 		}
 		if (haveRight("peripheral","r")){
 			$menu['inventory']['content']['peripheral']['title']=$LANG["Menu"][16];
 			$menu['inventory']['content']['peripheral']['shortcut']='n';
-			$menu['inventory']['content']['peripheral']['page']='peripheral.php';
+			$menu['inventory']['content']['peripheral']['page']='/front/peripheral.php';
 			$showstate=true;
 		}
 		if (haveRight("printer","r")){
 			$menu['inventory']['content']['printer']['title']=$LANG["Menu"][2];
 			$menu['inventory']['content']['printer']['shortcut']='p';
-			$menu['inventory']['content']['printer']['page']='printer.php';
+			$menu['inventory']['content']['printer']['page']='/front/printer.php';
 			$showstate=true;
 		}
 		if (haveRight("cartridge","r")){
 			$menu['inventory']['content']['cartridge']['title']=$LANG["Menu"][21];
 			$menu['inventory']['content']['cartridge']['shortcut']='c';
-			$menu['inventory']['content']['cartridge']['page']='cartridge.php';
+			$menu['inventory']['content']['cartridge']['page']='/front/cartridge.php';
 		}
 		if (haveRight("consumable","r")){
 			$menu['inventory']['content']['consumable']['title']=$LANG["Menu"][32];
 			$menu['inventory']['content']['consumable']['shortcut']='g';
-			$menu['inventory']['content']['consumable']['page']='consumable.php';
+			$menu['inventory']['content']['consumable']['page']='/front/consumable.php';
 		}
 		if (haveRight("phone","r")){
 			$menu['inventory']['content']['phone']['title']=$LANG["Menu"][1];
 			$menu['inventory']['content']['phone']['shortcut']='t';
-			$menu['inventory']['content']['phone']['page']='phone.php';
-			$inventory[$LANG["Menu"][34]]=array("phone.php","n");
+			$menu['inventory']['content']['phone']['page']='/front/phone.php';
 			$showstate=true;
 		}
 		if ($showstate){
 			$menu['inventory']['content']['state']['title']=$LANG["Menu"][28];
 			$menu['inventory']['content']['state']['shortcut']='n';
-			$menu['inventory']['content']['state']['page']='state.php';
+			$menu['inventory']['content']['state']['page']='/front/state.php';
 		}
 
 
 //////// ASSISTANCE
 		$menu['maintain']['title']=$LANG["title"][24];
-		$menu['maintain']['default']='tracking.php';
+		$menu['maintain']['default']='/front/tracking.php';
 
 		if (haveRight("observe_ticket","1")||haveRight("show_ticket","1")||haveRight("create_ticket","1")){
 			$menu['maintain']['content']['tracking']['title']=$LANG["Menu"][5];
 			$menu['maintain']['content']['tracking']['shortcut']='t';
-			$menu['maintain']['content']['tracking']['page']='tracking.php';
+			$menu['maintain']['content']['tracking']['page']='/front/tracking.php';
 		}
 		if (haveRight("create_ticket","1")){
 			$menu['maintain']['content']['helpdesk']['title']=$LANG["Menu"][31];
 			$menu['maintain']['content']['helpdesk']['shortcut']='h';
-			$menu['maintain']['content']['helpdesk']['page']='helpdesk.php';
+			$menu['maintain']['content']['helpdesk']['page']='/front/helpdesk.php';
 		}
 		if (haveRight("show_planning","1")||haveRight("show_all_planning","1")){
 			$menu['maintain']['content']['planning']['title']=$LANG["Menu"][29];
 			$menu['maintain']['content']['planning']['shortcut']='l';
-			$menu['maintain']['content']['planning']['page']='planning.php';
+			$menu['maintain']['content']['planning']['page']='/front/planning.php';
 		}
 		if (haveRight("statistic","1")){
 			$menu['maintain']['content']['stat']['title']=$LANG["Menu"][13];
 			$menu['maintain']['content']['stat']['shortcut']='1';
-			$menu['maintain']['content']['stat']['page']='stat.php';
+			$menu['maintain']['content']['stat']['page']='/front/stat.php';
 		}
 		
 		
 //////// FINANCIAL
 		$menu['financial']['title']=$LANG["Menu"][26];
-		$menu['financial']['default']='contact.php';
+		$menu['financial']['default']='/front/contact.php';
 		if (haveRight("contact_enterprise","r")){
 			$menu['financial']['content']['contact']['title']=$LANG["Menu"][22];
 			$menu['financial']['content']['contact']['shortcut']='t';
-			$menu['financial']['content']['contact']['page']='contact.php';
+			$menu['financial']['content']['contact']['page']='/front/contact.php';
 			$menu['financial']['content']['enterprise']['title']=$LANG["Menu"][23];
 			$menu['financial']['content']['enterprise']['shortcut']='e';
-			$menu['financial']['content']['enterprise']['page']='enterprise.php';
+			$menu['financial']['content']['enterprise']['page']='/front/enterprise.php';
 		}
 		if (haveRight("contract_infocom","r")){
 			$menu['financial']['content']['contract']['title']=$LANG["Menu"][25];
 			$menu['financial']['content']['contract']['shortcut']='n';
-			$menu['financial']['content']['contract']['page']='contract.php';
+			$menu['financial']['content']['contract']['page']='/front/contract.php';
 		}
 		if (haveRight("document","r")){
 			$menu['financial']['content']['document']['title']=$LANG["Menu"][27];
 			$menu['financial']['content']['document']['shortcut']='d';
-			$menu['financial']['content']['document']['page']='document.php';
+			$menu['financial']['content']['document']['page']='/front/document.php';
 		}
 	
 //////// UTILS
 		$menu['utils']['title']=$LANG["Menu"][18];
-		$menu['utils']['default']='knowbase.php';
+		$menu['utils']['default']='/front/knowbase.php';
 		if (haveRight("knowbase","r")||haveRight("faq","r")) {
 			$menu['utils']['content']['knowbase']['title']=$LANG["Menu"][19];
-			$menu['utils']['content']['knowbase']['page']='knowbase.php';
+			$menu['utils']['content']['knowbase']['page']='/front/knowbase.php';
 			}
 		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")){
 			$menu['utils']['content']['reservation']['title']=$LANG["Menu"][17];
-			$menu['utils']['content']['reservation']['page']='reservation.php';
+			$menu['utils']['content']['reservation']['page']='/front/reservation.php';
 		}
 		if (haveRight("reports","r")){
 			$menu['utils']['content']['report']['title']=$LANG["Menu"][6];
-			$menu['utils']['content']['report']['page']='report.php';
+			$menu['utils']['content']['report']['page']='/front/report.php';
 		}
 		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
 			$menu['utils']['content']['ocsng']['title']=$LANG["Menu"][33];
-			$menu['utils']['content']['ocsng']['page']='ocsng.php';
+			$menu['utils']['content']['ocsng']['page']='/front/ocsng.php';
 			}
 		
+		// PLUGINS
+		if (isset($PLUGIN_HOOKS["menu_entry"])&&count($PLUGIN_HOOKS["menu_entry"])){	
+			$menu['plugins']['title']=$LANG["common"][29];
+			$menu['plugins']['default']='/front/knowbase.php';
+
+			$plugins=array();
+
+			foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
+				if ($active){
+					$function="plugin_version_$plugin";
+	
+					if (function_exists($function))
+						$plugins[$plugin]=$function();
+				}
+			}
+			if (count($plugins)){
+				$list=array();
+				foreach ($plugins as $key => $val) {
+					$list[$key]=$val["name"];
+				}
+				
+				asort($list);
+				foreach ($list as $key => $val) {
+					$menu['plugins']['content'][$key]['title']=$val;
+					$menu['plugins']['content'][$key]['page']='/plugins/'.$key.'/';
+				}
+				
+			}
+
+		}
+
 		//////// ADMINISTRATION
 		$menu['admin']['title']=$LANG["Menu"][15];
-		$menu['admin']['default']='user.php';
+		$menu['admin']['default']='/front/user.php';
 
 		if (haveRight("user","r")){
 			$menu['admin']['content']['user']['title']=$LANG["Menu"][14];
 			$menu['admin']['content']['user']['shortcut']='u';
-			$menu['admin']['content']['user']['page']='user.php';
+			$menu['admin']['content']['user']['page']='/front/user.php';
 		}
 		if (haveRight("group","r")){
 			$menu['admin']['content']['group']['title']=$LANG["Menu"][36];
 			$menu['admin']['content']['group']['shortcut']='g';
-			$menu['admin']['content']['group']['page']='group.php';
+			$menu['admin']['content']['group']['page']='/front/group.php';
 			}
 
 		// TODO SPECIFIC RIGHT TO ENTITY
 		if (haveRight("config","r")){
 			$menu['admin']['content']['entity']['title']=$LANG["Menu"][37];
 			$menu['admin']['content']['entity']['shortcut']='z';
-			$menu['admin']['content']['entity']['page']='entity.php';
+			$menu['admin']['content']['entity']['page']='/front/entity.php';
 		}
 		if (haveRight("profile","r")){
 			$menu['admin']['content']['profile']['title']=$LANG["Menu"][35];
 			$menu['admin']['content']['profile']['shortcut']='p';
-			$menu['admin']['content']['profile']['page']='profile.php';
+			$menu['admin']['content']['profile']['page']='/front/profile.php';
 		}
 
 //		$config[$LANG["Menu"][10]]=array("setup.php","2");
 		if (haveRight("backup","w")){
 			$menu['admin']['content']['backup']['title']=$LANG["Menu"][12];
 			$menu['admin']['content']['backup']['shortcut']='b';
-			$menu['admin']['content']['backup']['page']='backup.php';
+			$menu['admin']['content']['backup']['page']='/front/backup.php';
 		}
 		if (haveRight("logs","r")){
 			$menu['admin']['content']['log']['title']=$LANG["Menu"][30];
 			$menu['admin']['content']['log']['shortcut']='l';
-			$menu['admin']['content']['log']['page']='log.php';
+			$menu['admin']['content']['log']['page']='/front/log.php';
 
 		}
 // CONFIG
 		$config=array();
 		$addconfig=array();
 		$menu['config']['title']=$LANG["Menu"][10];
-		$menu['config']['default']='setup.php';
+		$menu['config']['default']='/front/setup.php';
 
-		if (haveRight("config","w")){
-			$menu['config']['content']['confgen']['title']=$LANG["setup"][703];
-			$menu['config']['content']['confgen']['page']='setup.config.php?next=confgen';
-			
-			$menu['config']['content']['confdisplay']['title']=$LANG["setup"][702];
-			$menu['config']['content']['confdisplay']['page']='setup.config.php?next=confdisplay';
-			
-			$menu['config']['content']['mailing']['title']=$LANG["setup"][704];
-			$menu['config']['content']['mailing']['page']='setup.config.php?next=mailing';
-			
-			$menu['config']['content']['extauth']['title']=$LANG["login"][10];
-			$menu['config']['content']['extauth']['page']='setup.config.php?next=extauth';
-	
-			if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
-			$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
-			$menu['config']['content']['ocsng']['page']='setup.ocsng.php';
-				}
-		}
 
 		$menu['config']['content']['display']['title']=$LANG["search"][0];
-		$menu['config']['content']['display']['page']='setup.display.php';
+		$menu['config']['content']['display']['page']='/front/setup.display.php';
 		
 		if (haveRight("dropdown","w")){
 			$menu['config']['content']['dropdowns']['title']=$LANG["setup"][0];
-			$menu['config']['content']['dropdowns']['page']='setup.dropdowns.php';
+			$menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
 		}
 		if (haveRight("device","w")){
 			$menu['config']['content']['device']['title']=$LANG["setup"][222];
-			$menu['config']['content']['device']['page']='device.php';
+			$menu['config']['content']['device']['page']='/front/device.php';
 		}
-		if (haveRight("typedoc","r")){
+
+		if (haveRight("config","w")){
+			$menu['config']['content']['confgen']['title']=$LANG["setup"][703];
+			$menu['config']['content']['confgen']['page']='/front/setup.config.php?next=confgen';
+			
+			$menu['config']['content']['confdisplay']['title']=$LANG["setup"][702];
+			$menu['config']['content']['confdisplay']['page']='/front/setup.config.php?next=confdisplay';
+			
+			$menu['config']['content']['mailing']['title']=$LANG["setup"][704];
+			$menu['config']['content']['mailing']['page']='/front/setup.config.php?next=mailing';
+			
+			$menu['config']['content']['extauth']['title']=$LANG["login"][10];
+			$menu['config']['content']['extauth']['page']='/front/setup.config.php?next=extauth';
+	
+			if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
+			$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
+			$menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
+				}
+		}
+
+/*		if (haveRight("typedoc","r")){
 			$menu['config']['content']['typedoc']['title']=$LANG["document"][7];
-			$menu['config']['content']['typedoc']['page']='typedoc.php';
+			$menu['config']['content']['typedoc']['page']='/front/typedoc.php';
 		}
 		if (haveRight("link","r")){
 			$menu['config']['content']['link']['title']=$LANG["setup"][87];
-			$menu['config']['content']['link']['page']='link.php';
+			$menu['config']['content']['link']['page']='/front/link.php';
 		}	
+*/
 		if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))	{
 			$menu['config']['content']['plugins']['title']=$LANG["common"][29];
-			$menu['config']['content']['plugins']['page']='setup.plugins.php';
-			$config[$LANG["common"][29]]=array("setup.plugins.php","");
+			$menu['config']['content']['plugins']['page']='/front/setup.plugins.php';
 		}
 		echo "<div id='header'>";
 		
@@ -395,13 +430,13 @@ function commonHeader($title,$url,$sector="none")
 				echo "	<li id='menu$i' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
 				$link="#";
 				if (isset($data['default'])&&!empty($data['default'])){
-					$link=$CFG_GLPI["root_doc"]."/front/".$data['default'];
+					$link=$CFG_GLPI["root_doc"].$data['default'];
 				}
 				echo "<a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>"; 
 				echo "<ul class='ssmenu'>"; 
 				// list menu item 
 				foreach ($data['content'] as $key => $val) {
-					echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val['page']."\"";
+					echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
 					if (isset($data['shortcut'])&&!empty($data['shortcut'])){
 						echo " accesskey=\"".$val['shortcut']."\" ";
 					}
@@ -415,116 +450,7 @@ function commonHeader($title,$url,$sector="none")
 			$i++;	
 			}
 		}
-/*
-		// Inventory
-		if (count($inventory)) {
-			echo "	<li id='menu1' onmouseover=\"javascript:menuAff('menu1','menu');\" >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.php\" title=\"".$LANG["setup"][10]."\" class='itemP'>".$LANG["setup"][10]."</a>"; // default computer
-			echo "<ul class='ssmenu'>"; 
-			$i=0;
-			// list menu item 
-			foreach ($inventory as $key => $val) {
-				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
-				$i++;
-			}
-	
-			echo "</ul>";
-			echo "</li>";		
-		}
-	
-		// Maintain / Tracking / ticket
-		if (count($maintain)) {
-			echo "	<li id='menu2' onmouseover=\"javascript:menuAff('menu2','menu');\" >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php\" title=\"".$LANG["title"][24]."\"   class='itemP'>".$LANG["title"][24]."</a>"; // default tracking
-			echo "<ul class='ssmenu'>";	
-			// list menu item 
-			foreach ($maintain as $key => $val) {
-				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
-			}
-			echo "</ul>";
-			echo "</li>";
-		}
-		// Financial
-		if (count($financial)) {
-			echo "	<li id='menu3' onmouseover=\"javascript:menuAff('menu3','menu');\" >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contact.php\" title=\"".$LANG["Menu"][26]."\" class='itemP'>".$LANG["Menu"][26]."</a>"; // default knowbase
-			echo "<ul class='ssmenu'>"; 
-			// list menu item 
-			foreach ($financial as $key => $val) {
-				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
-			}
-			echo "</ul>";
-			echo "</li>";
-		}
-	
-		// Tools
-		if (count($utils)) {
-			echo "	<li id='menu4' onmouseover=\"javascript:menuAff('menu4','menu');\" >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.php\" title=\"".$LANG["Menu"][18]."\" class='itemP'>".$LANG["Menu"][18]."</a>"; // default knowbase
-			echo "<ul class='ssmenu'>"; 
-			// list menu item 
-			foreach ($utils as $key => $val) {
-				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
-			}
-			echo "</ul>";
-			echo "</li>";
-		}
-	
-		// PLUGINS
-		$plugins=array();
-		if (isset($PLUGIN_HOOKS["menu_entry"])&&count($PLUGIN_HOOKS["menu_entry"]))
-			foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
-				if ($active){
-					$function="plugin_version_$plugin";
-	
-					if (function_exists($function))
-						$plugins[$plugin]=$function();
-				}
-			}
-	
-		if (isset($plugins)&&count($plugins)>0){
-			$list=array();
-			foreach ($plugins as $key => $val) {
-				$list[$key]=$val["name"];
-			}
-			asort($list);
-			echo "	<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\" >";
-			echo "<a href='#' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";  // default none
-			echo "<ul class='ssmenu'>"; 
-			// list menu item 
-			foreach ($list as $key => $val) {
-					echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
-			}
-			echo "</ul>";
-			echo "</li>";
-		}
-	
-		// Administration 
-		if (count($admin)) {
-			echo "	<li id='menu6' onmouseover=\"javascript:menuAff('menu6','menu');\" >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/user.php\" title=\"".$LANG["Menu"][15]."\"  class='itemP1'>".$LANG["Menu"][15]."</a>"; // default user
-			echo "<ul class='ssmenu'>"; 
-			// list menu item 
-			foreach ($admin as $key => $val) {
-				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
-			}
-			echo "</ul>";
-			echo "</li>";
-		}
 
-		// Config 
-		if (count($config)) {
-			echo "	<li id='menu7' onmouseover=\"javascript:menuAff('menu7','menu');\" >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/setup.php\" title=\"".$LANG["Menu"][10]."\"  class='itemP1'>".$LANG["Menu"][10]."</a>"; // default user
-			echo "<ul class='ssmenu'>"; 
-			// list menu item 
-			foreach ($config as $key => $val) {
-				echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
-			}
-			echo "</ul>";
-			echo "</li>";
-		}
-*/
 		echo "</ul>";		
 		echo "<div class='sep'></div>";
 		echo "</div>";
@@ -532,57 +458,61 @@ function commonHeader($title,$url,$sector="none")
 		// End navigation bar
 	
 		// End headline
-		
+
 		// Le sous menu contextuel 1
 		echo "<div id='c_ssmenu1' >";
 		echo "<ul>";
-		switch ($sector){
-			case "inventory":
-			$sous_menu=$inventory;
-			break;
-			case "utils":
-			$sous_menu=$utils;	
-			break;
-			case "financial":
-			$sous_menu=$financial;
-			break;
-			case "admin":
-			$sous_menu=$admin;	
-			break;
-			case "config":
-			$sous_menu=$config;	
-			break;
-			case "maintain":
-			$sous_menu=$maintain;	
-			break;
-			case "plugins":
-			// Keep only 12 plugins for the menu
-			$sous_menu=array_splice ($list, 0,10);
-			break;
-		}
 		// list sous-menu item 
-			if ($sector!="none"){
-				if (isset($sous_menu)&&is_array($sous_menu)){
-					foreach ($sous_menu as $key => $val) {
-						if ($sector=="plugins"){
-							echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/plugins/".$key."/\">".$plugins[$key]["name"]."</a></li>\n";
-						}else{
-							echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val[0]."\" accesskey=\"".$val[1]."\">".$key."</a></li>\n";
-						}
+		if (isset($menu[$sector])){
+			if (isset($menu[$sector]['content'])&&is_array($menu[$sector]['content'])){
+
+				$ssmenu=$menu[$sector]['content'];
+				$ssmenu=array_splice($ssmenu,0,12);
+
+				foreach ($ssmenu as $key => $val) {
+					echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\" ";
+					if (isset($val['shortcut'])&&!empty($val['shortcut'])){
+						echo " accesskey=\"".$val['shortcut']."\"";
 					}
+					echo ">".$val['title']."</a></li>\n";
 				}
 			} else echo "<li>&nbsp;</li>";
-		
+		}
 		echo "</ul>";
 		echo "</div>";
 		
 		//  Le fil d arianne 
 		echo "<div id='c_ssmenu2' >";
 		echo "<ul>";
-		echo "	<li><a href='' title='' >Central > </a></li>";
-		//echo "	<li>Helpdesk</li>";
-		echo "</ul>";	
+
+		// Display item
+		if (isset($menu[$sector]['content'][$item])){
+			// Title
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' >".$menu[$sector]['content'][$item]['title']." ></a></li>";
+			// Links
+			if (isset($menu[$sector]['content'][$item]['links'])&&is_array($menu[$sector]['content'][$item]['links'])){
+				foreach ($menu[$sector]['content'][$item]['links'] as $key => $val) {
+					switch ($key){
+						case "add":
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >!!Ajouter!! </a></li>";
+							break;
+						case "template":
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >!!Gabarits!! </a></li>";
+							break;
+						default :
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >".$key." </a></li>";
+							break;
+					}
+				}
+			}
+		}
+		// Add common items 
+		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".date("H:i")."</li>";
+			
+		echo "<li>";
 		echo showProfileSelecter();	
+		echo "</li>";
+		echo "</ul>";	
 		echo "	</div>";
 			
 		echo "</div>\n"; // fin header
