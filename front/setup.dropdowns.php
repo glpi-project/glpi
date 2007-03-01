@@ -120,23 +120,23 @@ else {
 
 	$optgroup=array(
 			$LANG["setup"][139]=>array(
-				"glpi_dropdown_locations"=>$LANG["common"][15],		
+				"glpi_dropdown_locations"=>$LANG["common"][15],
 				"glpi_dropdown_state"=>$LANG["setup"][83],
 				"glpi_dropdown_manufacturer"=>$LANG["common"][5],
 				),
 
 			$LANG["setup"][140]=>array(
 				"glpi_type_computers"=>$LANG["setup"][4],
-				"glpi_type_networking"=>$LANG["setup"][42],		
-				"glpi_type_printers"=>$LANG["setup"][43],		
-				"glpi_type_monitors"=>$LANG["setup"][44],		
+				"glpi_type_networking"=>$LANG["setup"][42],
+				"glpi_type_printers"=>$LANG["setup"][43],
+				"glpi_type_monitors"=>$LANG["setup"][44],
 				"glpi_type_peripherals"=>$LANG["setup"][69],
 				"glpi_type_phones"=>$LANG["setup"][504],
 				"glpi_dropdown_cartridge_type"=>$LANG["setup"][84],
 				"glpi_dropdown_consumable_type"=>$LANG["setup"][92],
 				"glpi_dropdown_contract_type"=>$LANG["setup"][85],
 				"glpi_dropdown_contact_type"=>$LANG["setup"][82],	
-				"glpi_dropdown_ram_type"=>$LANG["setup"][86],	
+				"glpi_dropdown_ram_type"=>$LANG["setup"][86],
 				"glpi_dropdown_enttype"=>$LANG["setup"][80],
 				"glpi_dropdown_interface"=>$LANG["setup"][93],
 				"glpi_dropdown_case_type"=>$LANG["setup"][45],
@@ -146,20 +146,20 @@ else {
 			$LANG["common"][22]=>array(
 					"glpi_dropdown_model"=>$LANG["setup"][91],
 					"glpi_dropdown_model_networking"=>$LANG["setup"][95],
-					"glpi_dropdown_model_printers"=>$LANG["setup"][96],	
+					"glpi_dropdown_model_printers"=>$LANG["setup"][96],
 					"glpi_dropdown_model_monitors"=>$LANG["setup"][94],
-					"glpi_dropdown_model_peripherals"=>$LANG["setup"][97],			
+					"glpi_dropdown_model_peripherals"=>$LANG["setup"][97],
 					"glpi_dropdown_model_phones"=>$LANG["setup"][503],
 
 					),
 
 			$LANG["setup"][142]=>array(
 					"glpi_dropdown_budget"=>$LANG["setup"][99],
-					"glpi_dropdown_rubdocs"=>$LANG["setup"][81],	
+					"glpi_dropdown_rubdocs"=>$LANG["setup"][81],
 					),
 
 			$LANG["setup"][143]=>array(
-					"glpi_dropdown_tracking_category"=>$LANG["setup"][79],		
+					"glpi_dropdown_tracking_category"=>$LANG["setup"][79],
 					),
 
 			$LANG["setup"][144]=>array(
@@ -169,19 +169,18 @@ else {
 			$LANG["setup"][145]=>array(
 					"glpi_dropdown_os"=>$LANG["setup"][5],	
 					"glpi_dropdown_os_version"=>$LANG["setup"][500],
-					"glpi_dropdown_os_sp"=>$LANG["setup"][501],			
-					"glpi_dropdown_auto_update"=>$LANG["setup"][98],			
+					"glpi_dropdown_os_sp"=>$LANG["setup"][501],
+					"glpi_dropdown_auto_update"=>$LANG["setup"][98],
 					),
 
 			$LANG["setup"][146]=>array(
-					"glpi_dropdown_iface"=>$LANG["setup"][9],		
+					"glpi_dropdown_iface"=>$LANG["setup"][9],
 					"glpi_dropdown_firmware"=>$LANG["setup"][71],
 					"glpi_dropdown_netpoint"=>$LANG["setup"][73],
 					"glpi_dropdown_domain"=>$LANG["setup"][89],
 					"glpi_dropdown_network"=>$LANG["setup"][88],
 					"glpi_dropdown_vlan"=>$LANG["setup"][90],	
 					),
-
 			); //end $opt
 	if (!ereg("popup",$_SERVER['PHP_SELF'])){
 		echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
