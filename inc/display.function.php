@@ -382,15 +382,17 @@ function commonHeader($title,$url,$sector="none",$item="none")
 				}
 		}
 
-/*		if (haveRight("typedoc","r")){
+		if (haveRight("typedoc","r")){
 			$menu['config']['content']['typedoc']['title']=$LANG["document"][7];
 			$menu['config']['content']['typedoc']['page']='/front/typedoc.php';
+			$menu['config']['content']['typedoc']['hide']=true;
 		}
 		if (haveRight("link","r")){
 			$menu['config']['content']['link']['title']=$LANG["setup"][87];
 			$menu['config']['content']['link']['page']='/front/link.php';
+			$menu['config']['content']['link']['hide']=true;
 		}	
-*/
+
 		if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))	{
 			$menu['config']['content']['plugins']['title']=$LANG["common"][29];
 			$menu['config']['content']['plugins']['page']='/front/setup.plugins.php';
@@ -469,7 +471,14 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			if (isset($menu[$sector]['content'])&&is_array($menu[$sector]['content'])){
 
 				$ssmenu=$menu[$sector]['content'];
-				$ssmenu=array_splice($ssmenu,0,12);
+				if (count($ssmenu)>12){
+					foreach ($ssmenu as $key => $val){
+						if (isset($val['hide'])){
+							unset($ssmenu[$key]);
+						}
+					}
+					$ssmenu=array_splice($ssmenu,0,12);
+				}
 
 				foreach ($ssmenu as $key => $val) {
 					echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\" ";

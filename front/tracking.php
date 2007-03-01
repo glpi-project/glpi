@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($LANG["title"][10],$_SERVER['PHP_SELF'],"maintain");
+commonHeader($LANG["title"][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 
 titleTracking();
 
