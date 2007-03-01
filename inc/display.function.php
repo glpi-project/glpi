@@ -356,7 +356,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['plugins']['default']='/front/knowbase.php';
 
 			$plugins=array();
-
+	
 			foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
 				if ($active){
 					$function="plugin_version_$plugin";
@@ -375,6 +375,13 @@ function commonHeader($title,$url,$sector="none",$item="none")
 				foreach ($list as $key => $val) {
 					$menu['plugins']['content'][$key]['title']=$val;
 					$menu['plugins']['content'][$key]['page']='/plugins/'.$key.'/';
+					if ($sector=="plugins"&&$item==$key){
+						if (isset($PLUGIN_HOOKS["submenu_entry"][$key])&&is_array($PLUGIN_HOOKS["submenu_entry"][$key])){
+							foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link){
+								$menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link;
+							}
+						}
+					}
 				}
 				
 			}
