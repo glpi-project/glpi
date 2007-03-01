@@ -509,10 +509,9 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// Add common items 
 		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".date("H:i")."</li>";
 			
-		echo "<li>";
-		echo showProfileSelecter();	
-		echo "</li>";
 		echo "</ul>";	
+		echo showProfileSelecter();	
+
 		echo "	</div>";
 			
 		echo "</div>\n"; // fin header
