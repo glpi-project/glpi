@@ -68,7 +68,7 @@ if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 	else if ($_POST["_from_helpdesk"]){
 		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain");
+	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $LANG["help"][15]."<br><br>";
@@ -86,7 +86,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 	else if ($_POST["_from_helpdesk"]){
 		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain");
+	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
@@ -118,7 +118,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 		else if ($_POST["_from_helpdesk"]){
 			helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 		}
-		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain");
+		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 		echo $LANG["help"][32]."<br>";
@@ -135,7 +135,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 		else if ($_POST["_from_helpdesk"]){
 			helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 		}
-		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain");
+		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 		echo $LANG["help"][18]."<br>";
@@ -153,7 +153,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 		else if ($_POST["_from_helpdesk"]){
 			helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 		}
-		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain");
+		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 		echo $LANG["help"][20]."<br>";

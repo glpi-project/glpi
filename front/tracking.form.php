@@ -43,7 +43,7 @@ checkCentralAccess();
 $fup=new Followup();
 $track=new Job();
 
-commonHeader($LANG["title"][10],$_SERVER['PHP_SELF'],"maintain");
+commonHeader($LANG["title"][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 if (isset($_POST['update'])){
 	checkSeveralRightsOr(array("update_ticket"=>"1","assign_ticket"=>"1","steal_ticket"=>"1","comment_ticket"=>"1","comment_all_ticket"=>"1"));
 
