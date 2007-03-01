@@ -133,7 +133,7 @@
 	
 	
 			// Path for icon of document type
-			$CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
+			$CFG_GLPI["typedoc_icon_dir"] = GLPI_ROOT."/pics/icones";
 
 
 			// *************************** Mode NORMAL / TRALATION /DEBUG  **********************

@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("typedoc","r");
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","typedoc");
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","typedoc");
 
 $typedoc=new Typedoc;
 $typedoc->title();

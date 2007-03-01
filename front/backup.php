@@ -390,7 +390,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 	$time_file=date("Y-m-d-H-i");
 	$cur_time=date("Y-m-d H:i");
-	$filename=$path."glpi-".GLPI_VERSION."-$time_file.$filetype";
+	$filename=$path."/glpi-".GLPI_VERSION."-$time_file.$filetype";
 
 
 	if (!isset($_GET["duree"])&&is_file($filename)){
@@ -462,7 +462,7 @@ if (isset($_GET["xmlnow"]) && $_GET["xmlnow"] !=""){
 
 
 
-if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
+if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path."/".$_GET["file"])) {
 
 	init_time(); //initialise le temps
 	//d�ut de fichier
@@ -472,7 +472,7 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 	if (!isset($_GET["duree"])) $duree=$defaulttimeout; 
 	else $duree=$_GET["duree"];
 
-	$fsize=filesize($path.$_GET["file"]);
+	$fsize=filesize($path."/".$_GET["file"]);
 	if(isset($offset)){
 		if ($offset==-1)
 			$percent=100;
@@ -487,7 +487,7 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 	}
 
 	if ($offset!=-1){
-		if (restoreMySqlDump($DB,$path.$_GET["file"],$duree))
+		if (restoreMySqlDump($DB,$path."/".$_GET["file"],$duree))
 		{
 			echo "<br><a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG["backup"][24]."</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"backup.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
@@ -504,8 +504,8 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path.$_GET["file"])) {
 if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 
 	$filename=$_GET["delfile"];
-	if (is_file($path.$_GET["delfile"])){
-		unlink($path.$_GET["delfile"]);
+	if (is_file($path."/".$_GET["delfile"])){
+		unlink($path."/".$_GET["delfile"]);
 		echo "<div align ='center'>".$filename." ".$LANG["backup"][9]."</div>";
 	}
 
@@ -533,13 +533,13 @@ $dir=opendir($path);
 $files=array();
 while ($file = readdir ($dir)) { 
 	if ($file != "." && $file != ".." && eregi("\.sql",$file)) { 
-		$files[$file]=filemtime($path.$file);
+		$files[$file]=filemtime($path."/".$file);
 	}
 }
 arsort($files);
 if (count($files)){
 	foreach ($files as $file => $date){
-		$taille_fic = filesize($path.$file)/1024;
+		$taille_fic = filesize($path."/".$file)/1024;
 		$taille_fic = (int)$taille_fic;
 		echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
 			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
@@ -556,13 +556,13 @@ unset($files);
 $files=array();
 while ($file = readdir ($dir)) {
 	if ($file != "." && $file != ".." && eregi("\.xml",$file)) {
-		$files[$file]=filemtime($path.$file);
+		$files[$file]=filemtime($path."/".$file);
 	}
 }
 arsort($files);
 if (count($files)){
 	foreach ($files as $file => $date){
-		$taille_fic = filesize($path.$file)/1024;
+		$taille_fic = filesize($path."/".$file)/1024;
 		$taille_fic = (int)$taille_fic;
 		echo "
 			<tr class='tab_bg_1'><td colspan='6' ><hr noshade></td></tr>
