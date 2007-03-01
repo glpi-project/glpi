@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("link","r");
 
-commonHeader($LANG["title"][33],$_SERVER['PHP_SELF'],"admin","link");
+commonHeader($LANG["title"][33],$_SERVER['PHP_SELF'],"config","link");
 
 $link=new Link();
 $link->title();

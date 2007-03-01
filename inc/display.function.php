@@ -366,7 +366,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['user']['shortcut']='u';
 			$menu['admin']['content']['user']['page']='/front/user.php';
 			if (haveRight("user","w")){
-				$menu['admin']['content']['user']['links']['add']=$INFOFORM_PAGES[USER_TYPE];
+				$menu['admin']['content']['user']['links']['add']="/front/user.form.php";
 			}
 
 		}
@@ -375,7 +375,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['group']['shortcut']='g';
 			$menu['admin']['content']['group']['page']='/front/group.php';
 			if (haveRight("group","w")){
-				$menu['admin']['content']['group']['links']['add']=$INFOFORM_PAGES[GROUP_TYPE];
+				$menu['admin']['content']['group']['links']['add']="/front/group.form.php";
 			}
 
 			}
@@ -385,11 +385,17 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['entity']['title']=$LANG["Menu"][37];
 			$menu['admin']['content']['entity']['shortcut']='z';
 			$menu['admin']['content']['entity']['page']='/front/entity.php';
+			$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0";
+			$menu['admin']['content']['entity']['links'][$LANG["entity"][1]]="/front/entity.tree.php";
 		}
 		if (haveRight("profile","r")){
 			$menu['admin']['content']['profile']['title']=$LANG["Menu"][35];
 			$menu['admin']['content']['profile']['shortcut']='p';
 			$menu['admin']['content']['profile']['page']='/front/profile.php';
+			if (haveRight("profile","w")){
+				$menu['admin']['content']['profile']['links']['add']="/front/profile.php?add=new";
+			}
+
 		}
 
 //		$config[$LANG["Menu"][10]]=array("setup.php","2");
@@ -437,20 +443,28 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['config']['content']['extauth']['page']='/front/setup.config.php?next=extauth';
 	
 			if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
-			$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
-			$menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
-				}
+				$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
+				$menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
+			}
 		}
 
 		if (haveRight("typedoc","r")){
 			$menu['config']['content']['typedoc']['title']=$LANG["document"][7];
 			$menu['config']['content']['typedoc']['page']='/front/typedoc.php';
 			$menu['config']['content']['typedoc']['hide']=true;
+			if (haveRight("typedoc","w")){
+				$menu['config']['content']['typedoc']['links']['add']="/front/typedoc.form.php";
+			}
+
 		}
 		if (haveRight("link","r")){
 			$menu['config']['content']['link']['title']=$LANG["setup"][87];
 			$menu['config']['content']['link']['page']='/front/link.php';
 			$menu['config']['content']['link']['hide']=true;
+			if (haveRight("link","w")){
+				$menu['config']['content']['link']['links']['add']="/front/link.form.php";
+			}
+
 		}	
 
 		if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))	{
