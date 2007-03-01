@@ -44,7 +44,7 @@ if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
 
 checkCentralAccess();
 
-commonHeader($LANG["title"][9],$_SERVER['PHP_SELF'],"inventory","stat");
+commonHeader($LANG["title"][9],$_SERVER['PHP_SELF'],"inventory","state");
 
 titleState();
 

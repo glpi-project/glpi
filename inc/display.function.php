@@ -79,7 +79,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 {
 	// Print a nice HTML-head for every page
 
-	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED ;
+	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED,$INFOFORM_PAGES ;
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 	// Override list-limit if choosen
@@ -165,12 +165,12 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$showstate=true;
 		}
 		if (haveRight("software","r")){
-			$menu['inventory']['content']['sofware']['title']=$LANG["Menu"][4];
-			$menu['inventory']['content']['sofware']['shortcut']='s';
-			$menu['inventory']['content']['sofware']['page']='/front/software.php';
-			if (haveRight("sofware","w")){
-				$menu['inventory']['content']['sofware']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=1';
-				$menu['inventory']['content']['sofware']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=0';
+			$menu['inventory']['content']['software']['title']=$LANG["Menu"][4];
+			$menu['inventory']['content']['software']['shortcut']='s';
+			$menu['inventory']['content']['software']['page']='/front/software.php';
+			if (haveRight("software","w")){
+				$menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=1';
+				$menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=0';
 			}
 
 			$showstate=true;
@@ -236,8 +236,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['state']['title']=$LANG["Menu"][28];
 			$menu['inventory']['content']['state']['shortcut']='n';
 			$menu['inventory']['content']['state']['page']='/front/state.php';
-			$menu['inventory']['content']['state']['links'][$LANG["state"][1]]='/front/"state.php?synthese=no"';
-			$menu['inventory']['content']['state']['links'][$LANG["state"][11]]='/front/"state.php?synthese=yes"';
+			$menu['inventory']['content']['state']['links'][$LANG["state"][1]]='/front/state.php?synthese=no';
+			$menu['inventory']['content']['state']['links'][$LANG["state"][11]]='/front/state.php?synthese=yes';
 		}
 
 
@@ -287,11 +287,18 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['financial']['content']['contract']['title']=$LANG["Menu"][25];
 			$menu['financial']['content']['contract']['shortcut']='n';
 			$menu['financial']['content']['contract']['page']='/front/contract.php';
+			if (haveRight("contract_infocom","w")){
+				$menu['financial']['content']['contract']['links']['add']='/front/contract.form.php';
+			}
+
 		}
 		if (haveRight("document","r")){
 			$menu['financial']['content']['document']['title']=$LANG["Menu"][27];
 			$menu['financial']['content']['document']['shortcut']='d';
 			$menu['financial']['content']['document']['page']='/front/document.php';
+			if (haveRight("document","w")){
+				$menu['financial']['content']['document']['links']['add']='/front/document.form.php';
+			}
 		}
 	
 //////// UTILS
@@ -300,10 +307,15 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		if (haveRight("knowbase","r")||haveRight("faq","r")) {
 			$menu['utils']['content']['knowbase']['title']=$LANG["Menu"][19];
 			$menu['utils']['content']['knowbase']['page']='/front/knowbase.php';
+			if (haveRight("knowbase","w")||haveRight("faq","w")){
+				$menu['utils']['content']['knowbase']['links']['add']='/front/knowbase.form.php?ID=new';
 			}
+
+		}
 		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")){
 			$menu['utils']['content']['reservation']['title']=$LANG["Menu"][17];
 			$menu['utils']['content']['reservation']['page']='/front/reservation.php';
+			$menu['utils']['content']['reservation']['links'][$LANG["reservation"][26]]='/front/reservation.php?show=resa&ID';
 		}
 		if (haveRight("reports","r")){
 			$menu['utils']['content']['report']['title']=$LANG["Menu"][6];
@@ -353,11 +365,19 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['user']['title']=$LANG["Menu"][14];
 			$menu['admin']['content']['user']['shortcut']='u';
 			$menu['admin']['content']['user']['page']='/front/user.php';
+			if (haveRight("user","w")){
+				$menu['admin']['content']['user']['links']['add']=$INFOFORM_PAGES[USER_TYPE];
+			}
+
 		}
 		if (haveRight("group","r")){
 			$menu['admin']['content']['group']['title']=$LANG["Menu"][36];
 			$menu['admin']['content']['group']['shortcut']='g';
 			$menu['admin']['content']['group']['page']='/front/group.php';
+			if (haveRight("group","w")){
+				$menu['admin']['content']['group']['links']['add']=$INFOFORM_PAGES[GROUP_TYPE];
+			}
+
 			}
 
 		// TODO SPECIFIC RIGHT TO ENTITY
