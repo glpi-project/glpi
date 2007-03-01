@@ -382,6 +382,8 @@ $LANG["entity"][0]="Entité";
 $LANG["entity"][1]="Hierarchie"; 
 $LANG["entity"][2]="Entité Racine"; 
 $LANG["entity"][3]="Associer à une entité"; 
+$LANG["entity"][4]="Machines"; 
+$LANG["entity"][5]="Affectation automatique des machines"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Service";
@@ -1155,6 +1157,20 @@ $LANG["reservation"][36]="Réservations passées";
 $LANG["reservation"][37]="Pas de réservations";
 $LANG["reservation"][38]="Etes vous sur de vouloir rendre cet élément non réservable ?";
 $LANG["reservation"][39]="Cela supprimera toutes les réservations en cours.";
+
+//Generic rule engine
+$LANG["rulesengine"][0]="est";
+$LANG["rulesengine"][1]="n'est pas";
+$LANG["rulesengine"][2]="contient";
+$LANG["rulesengine"][3]="ne contient pas";
+$LANG["rulesengine"][4]="commence par";
+$LANG["rulesengine"][5]="fini par"; 
+$LANG["rulesengine"][6]="Critères";
+$LANG["rulesengine"][7]="Actions"; 
+$LANG["rulesengine"][8]="Gestion de règles"; 
+
+ 
+
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";
