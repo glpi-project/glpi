@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("device","w");
 
-commonHeader($LANG["title"][30],$_SERVER['PHP_SELF'],"config","device);
+commonHeader($LANG["title"][30],$_SERVER['PHP_SELF'],"config","device");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST; 
