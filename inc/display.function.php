@@ -135,143 +135,227 @@ function commonHeader($title,$url,$sector="none")
 		echo "<body>";
 	
 		
-		//  Generatiion des array pour les menus avec check des droits 	
-		$menu['inventory']['title']=$LANG["setup"][10];
-		$menu['inventory']['default']='computer.php';
+		//  Generate array for menu and check right
+		
 
 		//////// INVENTORY
-		$inventory=array();
 		$showstate=false;
+		$menu['inventory']['title']=$LANG["setup"][10];
+		$menu['inventory']['default']='computer.php';
 		if (haveRight("computer","r")){
 			$menu['inventory']['content']['computer']['title']=$LANG["Menu"][0];
 			$menu['inventory']['content']['computer']['shortcut']='c';
 			$menu['inventory']['content']['computer']['page']='computer.php';
-			
-			$inventory[$LANG["Menu"][0]]=array("computer.php","c");
 			$showstate=true;
 		}
 		if (haveRight("monitor","r")){
 			$menu['inventory']['content']['monitor']['title']=$LANG["Menu"][3];
 			$menu['inventory']['content']['monitor']['shortcut']='m';
 			$menu['inventory']['content']['monitor']['page']='monitor.php';
-
-			$inventory[$LANG["Menu"][3]]=array("monitor.php","m");
 			$showstate=true;
 		}
 		if (haveRight("software","r")){
-			$inventory[$LANG["Menu"][4]]=array("software.php","s");  
+			$menu['inventory']['content']['sofware']['title']=$LANG["Menu"][4];
+			$menu['inventory']['content']['sofware']['shortcut']='s';
+			$menu['inventory']['content']['sofware']['page']='software.php';
 			$showstate=true;
 		}
 		if (haveRight("networking","r")){
-			$inventory[$LANG["Menu"][1]]=array("networking.php","n");
+			$menu['inventory']['content']['networking']['title']=$LANG["Menu"][1];
+			$menu['inventory']['content']['networking']['shortcut']='n';
+			$menu['inventory']['content']['networking']['page']='networking.php';
 			$showstate=true;
 		}
 		if (haveRight("peripheral","r")){
-			$inventory[$LANG["Menu"][16]]=array("peripheral.php","r");
+			$menu['inventory']['content']['peripheral']['title']=$LANG["Menu"][16];
+			$menu['inventory']['content']['peripheral']['shortcut']='n';
+			$menu['inventory']['content']['peripheral']['page']='peripheral.php';
 			$showstate=true;
 		}
 		if (haveRight("printer","r")){
-			$inventory[$LANG["Menu"][2]]=array("printer.php","p");
+			$menu['inventory']['content']['printer']['title']=$LANG["Menu"][2];
+			$menu['inventory']['content']['printer']['shortcut']='p';
+			$menu['inventory']['content']['printer']['page']='printer.php';
 			$showstate=true;
 		}
 		if (haveRight("cartridge","r")){
-			$inventory[$LANG["Menu"][21]]=array("cartridge.php","c");
+			$menu['inventory']['content']['cartridge']['title']=$LANG["Menu"][21];
+			$menu['inventory']['content']['cartridge']['shortcut']='c';
+			$menu['inventory']['content']['cartridge']['page']='cartridge.php';
 		}
 		if (haveRight("consumable","r")){
-			$inventory[$LANG["Menu"][32]]=array("consumable.php","g");
+			$menu['inventory']['content']['consumable']['title']=$LANG["Menu"][32];
+			$menu['inventory']['content']['consumable']['shortcut']='g';
+			$menu['inventory']['content']['consumable']['page']='consumable.php';
 		}
 		if (haveRight("phone","r")){
+			$menu['inventory']['content']['phone']['title']=$LANG["Menu"][1];
+			$menu['inventory']['content']['phone']['shortcut']='t';
+			$menu['inventory']['content']['phone']['page']='phone.php';
 			$inventory[$LANG["Menu"][34]]=array("phone.php","n");
 			$showstate=true;
 		}
 		if ($showstate){
-			$inventory[$LANG["Menu"][28]]=array("state.php","s");
+			$menu['inventory']['content']['state']['title']=$LANG["Menu"][28];
+			$menu['inventory']['content']['state']['shortcut']='n';
+			$menu['inventory']['content']['state']['page']='state.php';
 		}
 
-		//////// UTILS
-		$utils=array();
+
+//////// ASSISTANCE
+		$menu['maintain']['title']=$LANG["title"][24];
+		$menu['maintain']['default']='tracking.php';
+
+		if (haveRight("observe_ticket","1")||haveRight("show_ticket","1")||haveRight("create_ticket","1")){
+			$menu['maintain']['content']['tracking']['title']=$LANG["Menu"][5];
+			$menu['maintain']['content']['tracking']['shortcut']='t';
+			$menu['maintain']['content']['tracking']['page']='tracking.php';
+		}
+		if (haveRight("create_ticket","1")){
+			$menu['maintain']['content']['helpdesk']['title']=$LANG["Menu"][31];
+			$menu['maintain']['content']['helpdesk']['shortcut']='h';
+			$menu['maintain']['content']['helpdesk']['page']='helpdesk.php';
+		}
+		if (haveRight("show_planning","1")||haveRight("show_all_planning","1")){
+			$menu['maintain']['content']['planning']['title']=$LANG["Menu"][29];
+			$menu['maintain']['content']['planning']['shortcut']='l';
+			$menu['maintain']['content']['planning']['page']='planning.php';
+		}
+		if (haveRight("statistic","1")){
+			$menu['maintain']['content']['stat']['title']=$LANG["Menu"][13];
+			$menu['maintain']['content']['stat']['shortcut']='1';
+			$menu['maintain']['content']['stat']['page']='stat.php';
+		}
+		
+		
+//////// FINANCIAL
+		$menu['financial']['title']=$LANG["Menu"][26];
+		$menu['financial']['default']='contact.php';
+		if (haveRight("contact_enterprise","r")){
+			$menu['financial']['content']['contact']['title']=$LANG["Menu"][22];
+			$menu['financial']['content']['contact']['shortcut']='t';
+			$menu['financial']['content']['contact']['page']='contact.php';
+			$menu['financial']['content']['enterprise']['title']=$LANG["Menu"][23];
+			$menu['financial']['content']['enterprise']['shortcut']='e';
+			$menu['financial']['content']['enterprise']['page']='enterprise.php';
+		}
+		if (haveRight("contract_infocom","r")){
+			$menu['financial']['content']['contract']['title']=$LANG["Menu"][25];
+			$menu['financial']['content']['contract']['shortcut']='n';
+			$menu['financial']['content']['contract']['page']='contract.php';
+		}
+		if (haveRight("document","r")){
+			$menu['financial']['content']['document']['title']=$LANG["Menu"][27];
+			$menu['financial']['content']['document']['shortcut']='d';
+			$menu['financial']['content']['document']['page']='document.php';
+		}
+	
+//////// UTILS
 		$menu['utils']['title']=$LANG["Menu"][18];
 		$menu['utils']['default']='knowbase.php';
-
 		if (haveRight("knowbase","r")||haveRight("faq","r")) {
 			$menu['utils']['content']['knowbase']['title']=$LANG["Menu"][19];
 			$menu['utils']['content']['knowbase']['page']='knowbase.php';
-
-			$utils[$LANG["Menu"][19]]=array("knowbase.php"," ");
+			}
+		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")){
+			$menu['utils']['content']['reservation']['title']=$LANG["Menu"][17];
+			$menu['utils']['content']['reservation']['page']='reservation.php';
 		}
-		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
-			$utils[$LANG["Menu"][17]]=array("reservation.php","1");
-		if (haveRight("reports","r"))
-			$utils[$LANG["Menu"][6]]=array("report.php"," ");
-		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")) 
-			$utils[$LANG["Menu"][33]]=array("ocsng.php"," ");
-	
-		//////// FINANCIAL
-		$financial=array();
-		if (haveRight("contact_enterprise","r")){
-			$financial[$LANG["Menu"][22]]=array("contact.php","t");
-			$financial[$LANG["Menu"][23]]=array("enterprise.php","e");
+		if (haveRight("reports","r")){
+			$menu['utils']['content']['report']['title']=$LANG["Menu"][6];
+			$menu['utils']['content']['report']['page']='report.php';
 		}
-		if (haveRight("contract_infocom","r"))
-			$financial[$LANG["Menu"][25]]=array("contract.php","n");
-		if (haveRight("document","r"))
-			$financial[$LANG["Menu"][27]]=array("document.php","d");
-	
-		$maintain=array();
-		//////// ASSISTANCE
-		if (haveRight("observe_ticket","1")||haveRight("show_ticket","1")||haveRight("create_ticket","1"))
-			$maintain[$LANG["Menu"][5]]=array("tracking.php","t");
-		if (haveRight("create_ticket","1"))
-			$maintain[$LANG["Menu"][31]]=array("helpdesk.php","h");
-		if (haveRight("show_planning","1")||haveRight("show_all_planning","1"))
-			$maintain[$LANG["Menu"][29]]=array("planning.php","l");
-		if (haveRight("statistic","1"))
-			$maintain[$LANG["Menu"][13]]=array("stat.php","1");
-	
+		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
+			$menu['utils']['content']['ocsng']['title']=$LANG["Menu"][33];
+			$menu['utils']['content']['ocsng']['page']='ocsng.php';
+			}
+		
 		//////// ADMINISTRATION
-		$admin=array();
-		if (haveRight("user","r"))
-			$admin[$LANG["Menu"][14]]=array("user.php","u");
-		if (haveRight("group","r"))
-			$admin[$LANG["Menu"][36]]=array("group.php","g");
+		$menu['admin']['title']=$LANG["Menu"][15];
+		$menu['admin']['default']='user.php';
+
+		if (haveRight("user","r")){
+			$menu['admin']['content']['user']['title']=$LANG["Menu"][14];
+			$menu['admin']['content']['user']['shortcut']='u';
+			$menu['admin']['content']['user']['page']='user.php';
+		}
+		if (haveRight("group","r")){
+			$menu['admin']['content']['group']['title']=$LANG["Menu"][36];
+			$menu['admin']['content']['group']['shortcut']='g';
+			$menu['admin']['content']['group']['page']='group.php';
+			}
 
 		// TODO SPECIFIC RIGHT TO ENTITY
-		if (haveRight("config","r"))
-			$admin[$LANG["Menu"][37]]=array("entity.php","z");
-		if (haveRight("profile","r"))
-			$admin[$LANG["Menu"][35]]=array("profile.php","p");
+		if (haveRight("config","r")){
+			$menu['admin']['content']['entity']['title']=$LANG["Menu"][37];
+			$menu['admin']['content']['entity']['shortcut']='z';
+			$menu['admin']['content']['entity']['page']='entity.php';
+		}
+		if (haveRight("profile","r")){
+			$menu['admin']['content']['profile']['title']=$LANG["Menu"][35];
+			$menu['admin']['content']['profile']['shortcut']='p';
+			$menu['admin']['content']['profile']['page']='profile.php';
+		}
 
 //		$config[$LANG["Menu"][10]]=array("setup.php","2");
-		if (haveRight("backup","w"))
-			$admin[$LANG["Menu"][12]]=array("backup.php","b");
-		if (haveRight("logs","r"))
-			$admin[$LANG["Menu"][30]]=array("log.php","l");
+		if (haveRight("backup","w")){
+			$menu['admin']['content']['backup']['title']=$LANG["Menu"][12];
+			$menu['admin']['content']['backup']['shortcut']='b';
+			$menu['admin']['content']['backup']['page']='backup.php';
+		}
+		if (haveRight("logs","r")){
+			$menu['admin']['content']['log']['title']=$LANG["Menu"][30];
+			$menu['admin']['content']['log']['shortcut']='l';
+			$menu['admin']['content']['log']['page']='log.php';
 
+		}
+// CONFIG
 		$config=array();
 		$addconfig=array();
+		$menu['config']['title']=$LANG["Menu"][10];
+		$menu['config']['default']='setup.php';
+
 		if (haveRight("config","w")){
-			$config[$LANG["setup"][703]]=array("setup.config.php?next=confgen","");
-			$config[$LANG["setup"][702]]=array("setup.config.php?next=confdisplay","");
-			$config[$LANG["setup"][704]]=array("setup.config.php?next=mailing","");
-			$config[$LANG["login"][10]]=array("setup.auth.php?next=extauth","");
-			if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w"))
-				$config[$LANG["setup"][134]]=array("setup.ocsng.php","");
+			$menu['config']['content']['confgen']['title']=$LANG["setup"][703];
+			$menu['config']['content']['confgen']['page']='setup.config.php?next=confgen';
+			
+			$menu['config']['content']['confdisplay']['title']=$LANG["setup"][702];
+			$menu['config']['content']['confdisplay']['page']='setup.config.php?next=confdisplay';
+			
+			$menu['config']['content']['mailing']['title']=$LANG["setup"][704];
+			$menu['config']['content']['mailing']['page']='setup.config.php?next=mailing';
+			
+			$menu['config']['content']['extauth']['title']=$LANG["login"][10];
+			$menu['config']['content']['extauth']['page']='setup.config.php?next=extauth';
+	
+			if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
+			$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
+			$menu['config']['content']['ocsng']['page']='setup.ocsng.php';
+				}
 		}
 
-		$config[$LANG["search"][0]]=array("setup.display.php","");
+		$menu['config']['content']['display']['title']=$LANG["search"][0];
+		$menu['config']['content']['display']['page']='setup.display.php';
+		
 		if (haveRight("dropdown","w")){
-			$config[$LANG["setup"][0]]=array("setup.dropdowns.php","");
+			$menu['config']['content']['dropdowns']['title']=$LANG["setup"][0];
+			$menu['config']['content']['dropdowns']['page']='setup.dropdowns.php';
 		}
 		if (haveRight("device","w")){
-			$config[$LANG["setup"][222]]=array("device.php","");
+			$menu['config']['content']['device']['title']=$LANG["setup"][222];
+			$menu['config']['content']['device']['page']='device.php';
 		}
 		if (haveRight("typedoc","r")){
-			$addconfig[$LANG["document"][7]]=array("typedoc.php","");
+			$menu['config']['content']['typedoc']['title']=$LANG["document"][7];
+			$menu['config']['content']['typedoc']['page']='typedoc.php';
 		}
 		if (haveRight("link","r")){
-			$addconfig[$LANG["setup"][87]]=array("link.php","");
+			$menu['config']['content']['link']['title']=$LANG["setup"][87];
+			$menu['config']['content']['link']['page']='link.php';
 		}	
 		if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))	{
+			$menu['config']['content']['plugins']['title']=$LANG["common"][29];
+			$menu['config']['content']['plugins']['page']='setup.plugins.php';
 			$config[$LANG["common"][29]]=array("setup.plugins.php","");
 		}
 		echo "<div id='header'>";
@@ -331,7 +415,7 @@ function commonHeader($title,$url,$sector="none")
 			$i++;	
 			}
 		}
-
+/*
 		// Inventory
 		if (count($inventory)) {
 			echo "	<li id='menu1' onmouseover=\"javascript:menuAff('menu1','menu');\" >";
@@ -440,7 +524,7 @@ function commonHeader($title,$url,$sector="none")
 			echo "</ul>";
 			echo "</li>";
 		}
-
+*/
 		echo "</ul>";		
 		echo "<div class='sep'></div>";
 		echo "</div>";
