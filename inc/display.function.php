@@ -134,27 +134,27 @@ function commonHeader($title,$url,$sector="none")
 	// Body 
 		echo "<body>";
 	
-
+		
 		//  Generatiion des array pour les menus avec check des droits 	
-		//////// UTILS
-		$utils=array();
-		if (haveRight("knowbase","r")||haveRight("faq","r")) 
-			$utils[$LANG["Menu"][19]]=array("knowbase.php"," ");
-		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
-			$utils[$LANG["Menu"][17]]=array("reservation.php","1");
-		if (haveRight("reports","r"))
-			$utils[$LANG["Menu"][6]]=array("report.php"," ");
-		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")) 
-			$utils[$LANG["Menu"][33]]=array("ocsng.php"," ");
-	
+		$menu['inventory']['title']=$LANG["setup"][10];
+		$menu['inventory']['default']='computer.php';
+
 		//////// INVENTORY
 		$inventory=array();
 		$showstate=false;
 		if (haveRight("computer","r")){
+			$menu['inventory']['content']['computer']['title']=$LANG["Menu"][0];
+			$menu['inventory']['content']['computer']['shortcut']='c';
+			$menu['inventory']['content']['computer']['page']='computer.php';
+			
 			$inventory[$LANG["Menu"][0]]=array("computer.php","c");
 			$showstate=true;
 		}
 		if (haveRight("monitor","r")){
+			$menu['inventory']['content']['monitor']['title']=$LANG["Menu"][3];
+			$menu['inventory']['content']['monitor']['shortcut']='m';
+			$menu['inventory']['content']['monitor']['page']='monitor.php';
+
 			$inventory[$LANG["Menu"][3]]=array("monitor.php","m");
 			$showstate=true;
 		}
@@ -187,6 +187,24 @@ function commonHeader($title,$url,$sector="none")
 		if ($showstate){
 			$inventory[$LANG["Menu"][28]]=array("state.php","s");
 		}
+
+		//////// UTILS
+		$utils=array();
+		$menu['utils']['title']=$LANG["Menu"][18];
+		$menu['utils']['default']='knowbase.php';
+
+		if (haveRight("knowbase","r")||haveRight("faq","r")) {
+			$menu['utils']['content']['knowbase']['title']=$LANG["Menu"][19];
+			$menu['utils']['content']['knowbase']['page']='knowbase.php';
+
+			$utils[$LANG["Menu"][19]]=array("knowbase.php"," ");
+		}
+		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")) 
+			$utils[$LANG["Menu"][17]]=array("reservation.php","1");
+		if (haveRight("reports","r"))
+			$utils[$LANG["Menu"][6]]=array("report.php"," ");
+		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")) 
+			$utils[$LANG["Menu"][33]]=array("ocsng.php"," ");
 	
 		//////// FINANCIAL
 		$financial=array();
@@ -216,6 +234,7 @@ function commonHeader($title,$url,$sector="none")
 			$admin[$LANG["Menu"][14]]=array("user.php","u");
 		if (haveRight("group","r"))
 			$admin[$LANG["Menu"][36]]=array("group.php","g");
+
 		// TODO SPECIFIC RIGHT TO ENTITY
 		if (haveRight("config","r"))
 			$admin[$LANG["Menu"][37]]=array("entity.php","z");
@@ -286,7 +305,33 @@ function commonHeader($title,$url,$sector="none")
 		
 	
 		// Get object-variables and build the navigation-elements
+		$i=1;
+		foreach ($menu as $part => $data){
+			if (count($data['content'])){
+				echo "	<li id='menu$i' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
+				$link="#";
+				if (isset($data['default'])&&!empty($data['default'])){
+					$link=$CFG_GLPI["root_doc"]."/front/".$data['default'];
+				}
+				echo "<a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>"; 
+				echo "<ul class='ssmenu'>"; 
+				// list menu item 
+				foreach ($data['content'] as $key => $val) {
+					echo "<li><a href=\"".$CFG_GLPI["root_doc"]."/front/".$val['page']."\"";
+					if (isset($data['shortcut'])&&!empty($data['shortcut'])){
+						echo " accesskey=\"".$val['shortcut']."\" ";
+					}
+						
+					 echo ">".$val['title']."</a></li>\n";
+				}
 	
+				echo "</ul>";
+				echo "</li>";		
+			
+			$i++;	
+			}
+		}
+
 		// Inventory
 		if (count($inventory)) {
 			echo "	<li id='menu1' onmouseover=\"javascript:menuAff('menu1','menu');\" >";
@@ -395,7 +440,7 @@ function commonHeader($title,$url,$sector="none")
 			echo "</ul>";
 			echo "</li>";
 		}
-	
+
 		echo "</ul>";		
 		echo "<div class='sep'></div>";
 		echo "</div>";
@@ -404,7 +449,7 @@ function commonHeader($title,$url,$sector="none")
 	
 		// End headline
 		
-		///Le sous menu contextuel 1
+		// Le sous menu contextuel 1
 		echo "<div id='c_ssmenu1' >";
 		echo "<ul>";
 		switch ($sector){
