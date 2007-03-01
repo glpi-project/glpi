@@ -57,7 +57,7 @@ if ($tab["ID"]=="new"){
 
 	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
 
-	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils");
+	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
 	$kb->showForm($_SERVER['PHP_SELF'],"");
 

@@ -53,7 +53,7 @@ $config_ldap = new AuthLDAP();
 if (!isset($_GET["ID"])) $_GET["ID"]="";
  
 if (!empty ($_GET["next"])) {
-	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config");
+	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth");
 	titleExtAuth();
 	if ($_GET["next"] == "extauth") {
 		showFormExtAuthList($_SERVER['PHP_SELF']);

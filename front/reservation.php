@@ -61,7 +61,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	}
 
 
-	commonHeader($LANG["title"][35],$_SERVER['PHP_SELF'],"utils");
+	commonHeader($LANG["title"][35],$_SERVER['PHP_SELF'],"utils","reservation");
 
 	if (isset($_POST["clear_resa"])){
 		$id_item=key($_POST["items"]);
