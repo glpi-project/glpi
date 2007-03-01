@@ -146,17 +146,18 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['computer']['title']=$LANG["Menu"][0];
 			$menu['inventory']['content']['computer']['shortcut']='c';
 			$menu['inventory']['content']['computer']['page']='/front/computer.php';
+			$menu['inventory']['content']['computer']['links']['search']='/front/computer.php';
 			if (haveRight("computer","w")){
 				$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=1';
 				$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=0';
 			}
-			$menu['inventory']['content']['computer']['links']['Bouhou']='prout';
 			$showstate=true;
 		}
 		if (haveRight("monitor","r")){
 			$menu['inventory']['content']['monitor']['title']=$LANG["Menu"][3];
 			$menu['inventory']['content']['monitor']['shortcut']='m';
 			$menu['inventory']['content']['monitor']['page']='/front/monitor.php';
+			$menu['inventory']['content']['monitor']['links']['search']='/front/monitor.php';
 			if (haveRight("monitor","w")){
 				$menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?type='.MONITOR_TYPE.'&add=1';
 				$menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?type='.MONITOR_TYPE.'&add=0';
@@ -168,6 +169,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['software']['title']=$LANG["Menu"][4];
 			$menu['inventory']['content']['software']['shortcut']='s';
 			$menu['inventory']['content']['software']['page']='/front/software.php';
+			$menu['inventory']['content']['software']['links']['search']='/front/software.php';
 			if (haveRight("software","w")){
 				$menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=1';
 				$menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=0';
@@ -179,6 +181,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['networking']['title']=$LANG["Menu"][1];
 			$menu['inventory']['content']['networking']['shortcut']='n';
 			$menu['inventory']['content']['networking']['page']='/front/networking.php';
+			$menu['inventory']['content']['networking']['links']['search']='/front/networking.php';
 			if (haveRight("networking","w")){
 				$menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&add=1';
 				$menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&add=0';
@@ -189,6 +192,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['peripheral']['title']=$LANG["Menu"][16];
 			$menu['inventory']['content']['peripheral']['shortcut']='n';
 			$menu['inventory']['content']['peripheral']['page']='/front/peripheral.php';
+			$menu['inventory']['content']['peripheral']['links']['search']='/front/peripheral.php';
 			if (haveRight("peripheral","w")){
 				$menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&add=1';
 				$menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&add=0';
@@ -199,6 +203,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['printer']['title']=$LANG["Menu"][2];
 			$menu['inventory']['content']['printer']['shortcut']='p';
 			$menu['inventory']['content']['printer']['page']='/front/printer.php';
+			$menu['inventory']['content']['printer']['links']['search']='/front/printer.php';
 			if (haveRight("printer","w")){
 				$menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?type='.PRINTER_TYPE.'&add=1';
 				$menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?type='.PRINTER_TYPE.'&add=0';
@@ -209,6 +214,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['cartridge']['title']=$LANG["Menu"][21];
 			$menu['inventory']['content']['cartridge']['shortcut']='c';
 			$menu['inventory']['content']['cartridge']['page']='/front/cartridge.php';
+			$menu['inventory']['content']['cartridge']['links']['search']='/front/cartridge.php';
 			if (haveRight("cartridge","w")){
 				$menu['inventory']['content']['cartridge']['links']['add']='/front/cartridge.form.php';
 			}
@@ -226,6 +232,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['phone']['title']=$LANG["Menu"][34];
 			$menu['inventory']['content']['phone']['shortcut']='t';
 			$menu['inventory']['content']['phone']['page']='/front/phone.php';
+			$menu['inventory']['content']['phone']['links']['search']='/front/phone.php';
+
 			if (haveRight("phone","w")){
 				$menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?type='.PHONE_TYPE.'&add=1';
 				$menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?type='.PHONE_TYPE.'&add=0';
@@ -236,6 +244,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['state']['title']=$LANG["Menu"][28];
 			$menu['inventory']['content']['state']['shortcut']='n';
 			$menu['inventory']['content']['state']['page']='/front/state.php';
+			$menu['inventory']['content']['state']['links']['search']='/front/state.php';
 			$menu['inventory']['content']['state']['links'][$LANG["state"][1]]='/front/state.php?synthese=no';
 			$menu['inventory']['content']['state']['links'][$LANG["state"][11]]='/front/state.php?synthese=yes';
 		}
@@ -249,6 +258,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['maintain']['content']['tracking']['title']=$LANG["Menu"][5];
 			$menu['maintain']['content']['tracking']['shortcut']='t';
 			$menu['maintain']['content']['tracking']['page']='/front/tracking.php';
+			$menu['maintain']['content']['tracking']['links']['search']='/front/tracking.php';
+
 		}
 		if (haveRight("create_ticket","1")){
 			$menu['maintain']['content']['helpdesk']['title']=$LANG["Menu"][31];
@@ -259,6 +270,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['maintain']['content']['planning']['title']=$LANG["Menu"][29];
 			$menu['maintain']['content']['planning']['shortcut']='l';
 			$menu['maintain']['content']['planning']['page']='/front/planning.php';
+			$menu['maintain']['content']['planning']['links']['search']='/front/planning.php';
+
 		}
 		if (haveRight("statistic","1")){
 			$menu['maintain']['content']['stat']['title']=$LANG["Menu"][13];
@@ -274,9 +287,13 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['financial']['content']['contact']['title']=$LANG["Menu"][22];
 			$menu['financial']['content']['contact']['shortcut']='t';
 			$menu['financial']['content']['contact']['page']='/front/contact.php';
+			$menu['financial']['content']['contact']['links']['search']='/front/contact.php';
+
 			$menu['financial']['content']['enterprise']['title']=$LANG["Menu"][23];
 			$menu['financial']['content']['enterprise']['shortcut']='e';
 			$menu['financial']['content']['enterprise']['page']='/front/enterprise.php';
+			$menu['financial']['content']['enterprise']['links']['search']='/front/enterprise.php';
+
 			if (haveRight("contact_enterprise","w")){
 				$menu['financial']['content']['contact']['links']['add']='/front/contact.form.php';
 				$menu['financial']['content']['enterprise']['links']['add']='/front/enterprise.form.php';
@@ -287,6 +304,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['financial']['content']['contract']['title']=$LANG["Menu"][25];
 			$menu['financial']['content']['contract']['shortcut']='n';
 			$menu['financial']['content']['contract']['page']='/front/contract.php';
+			$menu['financial']['content']['contract']['links']['search']='/front/contract.php';
+
 			if (haveRight("contract_infocom","w")){
 				$menu['financial']['content']['contract']['links']['add']='/front/contract.form.php';
 			}
@@ -296,6 +315,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['financial']['content']['document']['title']=$LANG["Menu"][27];
 			$menu['financial']['content']['document']['shortcut']='d';
 			$menu['financial']['content']['document']['page']='/front/document.php';
+			$menu['financial']['content']['document']['links']['search']='/front/document.php';
+
 			if (haveRight("document","w")){
 				$menu['financial']['content']['document']['links']['add']='/front/document.form.php';
 			}
@@ -307,6 +328,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		if (haveRight("knowbase","r")||haveRight("faq","r")) {
 			$menu['utils']['content']['knowbase']['title']=$LANG["Menu"][19];
 			$menu['utils']['content']['knowbase']['page']='/front/knowbase.php';
+			$menu['utils']['content']['knowbase']['links']['search']='/front/knowbase.php';
+
 			if (haveRight("knowbase","w")||haveRight("faq","w")){
 				$menu['utils']['content']['knowbase']['links']['add']='/front/knowbase.form.php?ID=new';
 			}
@@ -315,6 +338,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")){
 			$menu['utils']['content']['reservation']['title']=$LANG["Menu"][17];
 			$menu['utils']['content']['reservation']['page']='/front/reservation.php';
+			$menu['utils']['content']['reservation']['links']['search']='/front/reservation.php';
 			$menu['utils']['content']['reservation']['links'][$LANG["reservation"][26]]='/front/reservation.php?show=resa&ID';
 		}
 		if (haveRight("reports","r")){
@@ -365,6 +389,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['user']['title']=$LANG["Menu"][14];
 			$menu['admin']['content']['user']['shortcut']='u';
 			$menu['admin']['content']['user']['page']='/front/user.php';
+			$menu['admin']['content']['user']['links']['search']='/front/user.php';
+
 			if (haveRight("user","w")){
 				$menu['admin']['content']['user']['links']['add']="/front/user.form.php";
 			}
@@ -374,6 +400,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['group']['title']=$LANG["Menu"][36];
 			$menu['admin']['content']['group']['shortcut']='g';
 			$menu['admin']['content']['group']['page']='/front/group.php';
+			$menu['admin']['content']['group']['links']['search']='/front/group.php';
+
 			if (haveRight("group","w")){
 				$menu['admin']['content']['group']['links']['add']="/front/group.form.php";
 			}
@@ -385,6 +413,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['entity']['title']=$LANG["Menu"][37];
 			$menu['admin']['content']['entity']['shortcut']='z';
 			$menu['admin']['content']['entity']['page']='/front/entity.php';
+			$menu['admin']['content']['entity']['links']['search']='/front/entity.php';
+
 			$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0";
 			$menu['admin']['content']['entity']['links'][$LANG["entity"][1]]="/front/entity.tree.php";
 		}
@@ -452,6 +482,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['config']['content']['typedoc']['title']=$LANG["document"][7];
 			$menu['config']['content']['typedoc']['page']='/front/typedoc.php';
 			$menu['config']['content']['typedoc']['hide']=true;
+			$menu['config']['content']['typedoc']['links']['search']='/front/typedoc.php';
+
 			if (haveRight("typedoc","w")){
 				$menu['config']['content']['typedoc']['links']['add']="/front/typedoc.form.php";
 			}
@@ -461,6 +493,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['config']['content']['link']['title']=$LANG["setup"][87];
 			$menu['config']['content']['link']['page']='/front/link.php';
 			$menu['config']['content']['link']['hide']=true;
+			$menu['config']['content']['link']['links']['search']='/front/link.php';
+
 			if (haveRight("link","w")){
 				$menu['config']['content']['link']['links']['add']="/front/link.form.php";
 			}
@@ -580,6 +614,9 @@ function commonHeader($title,$url,$sector="none",$item="none")
 					switch ($key){
 						case "add":
 							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >!!Ajouter!! </a></li>";
+							break;
+						case "search":
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >!!Rechercher!! </a></li>";
 							break;
 						case "template":
 							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >!!Gabarits!! </a></li>";
