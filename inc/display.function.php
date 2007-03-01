@@ -157,52 +157,87 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['monitor']['title']=$LANG["Menu"][3];
 			$menu['inventory']['content']['monitor']['shortcut']='m';
 			$menu['inventory']['content']['monitor']['page']='/front/monitor.php';
+			if (haveRight("monitor","w")){
+				$menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?type='.MONITOR_TYPE.'&add=1';
+				$menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?type='.MONITOR_TYPE.'&add=0';
+			}
+
 			$showstate=true;
 		}
 		if (haveRight("software","r")){
 			$menu['inventory']['content']['sofware']['title']=$LANG["Menu"][4];
 			$menu['inventory']['content']['sofware']['shortcut']='s';
 			$menu['inventory']['content']['sofware']['page']='/front/software.php';
+			if (haveRight("sofware","w")){
+				$menu['inventory']['content']['sofware']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=1';
+				$menu['inventory']['content']['sofware']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=0';
+			}
+
 			$showstate=true;
 		}
 		if (haveRight("networking","r")){
 			$menu['inventory']['content']['networking']['title']=$LANG["Menu"][1];
 			$menu['inventory']['content']['networking']['shortcut']='n';
 			$menu['inventory']['content']['networking']['page']='/front/networking.php';
+			if (haveRight("networking","w")){
+				$menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&add=1';
+				$menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&add=0';
+			}
 			$showstate=true;
 		}
 		if (haveRight("peripheral","r")){
 			$menu['inventory']['content']['peripheral']['title']=$LANG["Menu"][16];
 			$menu['inventory']['content']['peripheral']['shortcut']='n';
 			$menu['inventory']['content']['peripheral']['page']='/front/peripheral.php';
+			if (haveRight("peripheral","w")){
+				$menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&add=1';
+				$menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&add=0';
+			}
 			$showstate=true;
 		}
 		if (haveRight("printer","r")){
 			$menu['inventory']['content']['printer']['title']=$LANG["Menu"][2];
 			$menu['inventory']['content']['printer']['shortcut']='p';
 			$menu['inventory']['content']['printer']['page']='/front/printer.php';
+			if (haveRight("printer","w")){
+				$menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?type='.PRINTER_TYPE.'&add=1';
+				$menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?type='.PRINTER_TYPE.'&add=0';
+			}
 			$showstate=true;
 		}
 		if (haveRight("cartridge","r")){
 			$menu['inventory']['content']['cartridge']['title']=$LANG["Menu"][21];
 			$menu['inventory']['content']['cartridge']['shortcut']='c';
 			$menu['inventory']['content']['cartridge']['page']='/front/cartridge.php';
+			if (haveRight("cartridge","w")){
+				$menu['inventory']['content']['cartridge']['links']['add']='/front/cartridge.form.php';
+			}
 		}
 		if (haveRight("consumable","r")){
 			$menu['inventory']['content']['consumable']['title']=$LANG["Menu"][32];
 			$menu['inventory']['content']['consumable']['shortcut']='g';
 			$menu['inventory']['content']['consumable']['page']='/front/consumable.php';
+			if (haveRight("consumable","w")){
+				$menu['inventory']['content']['consumable']['links']['add']='/front/consumable.form.php';
+				$menu['inventory']['content']['consumable']['links'][$LANG["state"][11]]='/front/consumable.php?synthese=yes';
+			}
 		}
 		if (haveRight("phone","r")){
-			$menu['inventory']['content']['phone']['title']=$LANG["Menu"][1];
+			$menu['inventory']['content']['phone']['title']=$LANG["Menu"][34];
 			$menu['inventory']['content']['phone']['shortcut']='t';
 			$menu['inventory']['content']['phone']['page']='/front/phone.php';
+			if (haveRight("phone","w")){
+				$menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?type='.PHONE_TYPE.'&add=1';
+				$menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?type='.PHONE_TYPE.'&add=0';
+			}
 			$showstate=true;
 		}
 		if ($showstate){
 			$menu['inventory']['content']['state']['title']=$LANG["Menu"][28];
 			$menu['inventory']['content']['state']['shortcut']='n';
 			$menu['inventory']['content']['state']['page']='/front/state.php';
+			$menu['inventory']['content']['state']['links'][$LANG["state"][1]]='/front/"state.php?synthese=no"';
+			$menu['inventory']['content']['state']['links'][$LANG["state"][11]]='/front/"state.php?synthese=yes"';
 		}
 
 
@@ -242,6 +277,11 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['financial']['content']['enterprise']['title']=$LANG["Menu"][23];
 			$menu['financial']['content']['enterprise']['shortcut']='e';
 			$menu['financial']['content']['enterprise']['page']='/front/enterprise.php';
+			if (haveRight("contact_enterprise","w")){
+				$menu['financial']['content']['contact']['links']['add']='/front/contact.form.php';
+				$menu['financial']['content']['enterprise']['links']['add']='/front/enterprise.form.php';
+			}
+
 		}
 		if (haveRight("contract_infocom","r")){
 			$menu['financial']['content']['contract']['title']=$LANG["Menu"][25];
@@ -479,7 +519,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 					}
 					$ssmenu=array_splice($ssmenu,0,12);
 				}
-
+			
 				foreach ($ssmenu as $key => $val) {
 					echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\" ";
 					if (isset($val['shortcut'])&&!empty($val['shortcut'])){
