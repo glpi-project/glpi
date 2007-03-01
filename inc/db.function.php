@@ -396,12 +396,14 @@ function getNextItem($table,$ID){
 
 	$query = "SELECT ID 
 		FROM $table 
-		WHERE ".$nextprev_item." > '$search' ";
+		WHERE ( ".$nextprev_item." > '$search' ";
 
 	// Same name case
 	if ($nextprev_item!="ID"){
 		$query .= " OR (".$nextprev_item." = '$search' AND ID > '$ID') ";
 	}
+
+	$query.=" ) ";
 
 	if (in_array($table,$cfg_glpi["deleted_tables"]))
 		$query.=" AND deleted='N' ";
@@ -443,13 +445,14 @@ function getPreviousItem($table,$ID){
 
 	$query = "SELECT ID 
 		FROM $table 
-		WHERE ".$nextprev_item." < '$search' ";
+		WHERE ( ".$nextprev_item." < '$search' ";
 
 	// Same name case
 	if ($nextprev_item!="ID"){
 		$query .= " OR (".$nextprev_item." = '$search' AND ID < '$ID') ";
 	}
 
+	$query.=" ) ";
 
 	if (in_array($table,$cfg_glpi["deleted_tables"]))
 		$query.="AND deleted='N'";
