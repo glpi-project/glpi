@@ -40,7 +40,7 @@ $NEEDED_ITEMS=array("setup");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin");
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config");
 
 checkRight("check_update","r");
 

@@ -132,7 +132,7 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($LANG["title"][25],$_SERVER['PHP_SELF'],"financial");
+	commonHeader($LANG["title"][25],$_SERVER['PHP_SELF'],"financial","document");
 
 
 	if ($doc->showForm($_SERVER['PHP_SELF'],$tab["ID"])){

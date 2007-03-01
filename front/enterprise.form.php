@@ -111,7 +111,7 @@ else
 	}
 
 
-	commonHeader($LANG["title"][23],$_SERVER['PHP_SELF'],"financial");
+	commonHeader($LANG["title"][23],$_SERVER['PHP_SELF'],"financial","enterprise");
 
 
 	if ($ent->showForm($_SERVER['PHP_SELF'],$tab["ID"])){

@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("mailcollect","user","profile","tracking","computer","printe
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][3],$_SERVER['PHP_SELF'],"inventory");
+commonHeader($LANG["title"][3],$_SERVER['PHP_SELF'],"config","collect");
 
 $collect=new MailCollect();
 

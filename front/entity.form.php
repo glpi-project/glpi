@@ -69,7 +69,7 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG["Menu"][37],$_SERVER['PHP_SELF'],"admin");
+commonHeader($LANG["Menu"][37],$_SERVER['PHP_SELF'],"admin","entity");
 
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {

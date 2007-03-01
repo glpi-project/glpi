@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("contract_infocom","r");
 
-commonHeader($LANG["title"][20],$_SERVER['PHP_SELF'],"financial");
+commonHeader($LANG["title"][20],$_SERVER['PHP_SELF'],"financial","contract");
 
 $contract=new Contract();
 $contract->title();

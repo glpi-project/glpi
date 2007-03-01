@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("reports","r");
 
 if (isset($_POST["location"])&&$_POST["location"]){
-	commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils");
+	commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
 
 	// Titre
 	$name=getDropdownName("glpi_dropdown_locations",$_POST["location"]);

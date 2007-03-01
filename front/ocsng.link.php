@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng","w");
 
-commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils");
+commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils","ocsng");
 
 $CFG_GLPI["use_ajax"] = 1; 
 

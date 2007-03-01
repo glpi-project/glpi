@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("contact_enterprise","r");
 
-commonHeader($LANG["title"][22],$_SERVER['PHP_SELF'],"financial");
+commonHeader($LANG["title"][22],$_SERVER['PHP_SELF'],"financial","contact");
 
 $contact=new Contact();
 $contact->title();

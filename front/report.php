@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($LANG["title"][16],$_SERVER['PHP_SELF'],"utils");
+commonHeader($LANG["title"][16],$_SERVER['PHP_SELF'],"utils","report");
 
 // titre
 echo "<div align='center'><table ><tr><td>";

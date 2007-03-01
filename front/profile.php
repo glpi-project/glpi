@@ -44,7 +44,7 @@ checkRight("profile","r");
 
 $prof=new Profile();
 
-commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin");
+commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
 $prof->title();
 
 if(!isset($_POST["ID"])) $ID=0;

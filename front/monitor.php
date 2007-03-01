@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("monitor","r");
 
-commonHeader($LANG["title"][18],$_SERVER['PHP_SELF'],"inventory");
+commonHeader($LANG["title"][18],$_SERVER['PHP_SELF'],"inventory","monitor");
 
 $monitor=new Monitor;
 $monitor->title();

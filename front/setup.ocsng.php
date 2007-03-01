@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 
-	commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'], "admin");
+	commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'], "config","ocsng");
 
 	$buttons["setup.templates.php?type=".OCSNG_TYPE."&amp;add=1"]=$LANG["ocsng"][25];
 	$buttons["setup.templates.php?type=".OCSNG_TYPE."&amp;add=0"]=$LANG["common"][8];
