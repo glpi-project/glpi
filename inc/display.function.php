@@ -146,8 +146,10 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['computer']['title']=$LANG["Menu"][0];
 			$menu['inventory']['content']['computer']['shortcut']='c';
 			$menu['inventory']['content']['computer']['page']='/front/computer.php';
-			$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=1';
-			$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=0';
+			if (haveRight("computer","w")){
+				$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=1';
+				$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=0';
+			}
 			$menu['inventory']['content']['computer']['links']['Bouhou']='prout';
 			$showstate=true;
 		}
