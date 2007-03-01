@@ -212,5 +212,20 @@
 	define("NOT_YET_AUTHENTIFIED",-1);
 
 
+	//Generic rules engine
+	define("PATTERN_IS",0);
+	define("PATTERN_IS_NOT",1);
+	define("PATTERN_CONTAIN",2);
+	define("PATTERN_NOT_CONTAIN",3);
+	define("PATTERN_BEGIN",4);
+	define("PATTERN_END",5);	
 
+	define("RULES_ACTION_ASSIGN",0);	
+	define("RULES_ACTION_STATUS",1);
+	define("RULES_ACTION_CATEGORY",2);
+	define("RULES_ACTION_GROUP",3);
+	define("RULES_ACTION_PRIORITY",4);		
+	
+	define("RULE_OCS_AFFECT_COMPUTER",0);
+	define("RULE_LDAP_AFFECT_RIGHT",1);
 ?>
