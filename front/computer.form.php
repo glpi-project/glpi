@@ -160,7 +160,7 @@ elseif(isset($tab["unlock_field"])){
 	}
 
 
-	commonHeader($LANG["title"][3],$_SERVER['PHP_SELF'],"inventory");
+	commonHeader($LANG["title"][3],$_SERVER['PHP_SELF'],"inventory","computer");
 
 	//show computer form to add
 	if (!empty($tab["withtemplate"])) {
