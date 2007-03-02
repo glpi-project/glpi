@@ -258,12 +258,16 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['maintain']['content']['tracking']['shortcut']='t';
 			$menu['maintain']['content']['tracking']['page']='/front/tracking.php';
 			$menu['maintain']['content']['tracking']['links']['search']='/front/tracking.php';
-
+			$menu['maintain']['content']['tracking']['links']['add']='/front/helpdesk.php';
 		}
 		if (haveRight("create_ticket","1")){
 			$menu['maintain']['content']['helpdesk']['title']=$LANG["Menu"][31];
 			$menu['maintain']['content']['helpdesk']['shortcut']='h';
 			$menu['maintain']['content']['helpdesk']['page']='/front/helpdesk.php';
+			$menu['maintain']['content']['helpdesk']['links']['search']='/front/tracking.php';
+			$menu['maintain']['content']['helpdesk']['links']['add']='/front/helpdesk.php';
+
+			
 		}
 		if (haveRight("show_planning","1")||haveRight("show_all_planning","1")){
 			$menu['maintain']['content']['planning']['title']=$LANG["Menu"][29];
@@ -623,13 +627,13 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 			// Add item
 			if (isset($menu[$sector]['content'][$item]['links']['add'])){
-				echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a></li>";
+				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a></li>";
 			} else {
 				echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' ></li>";
 			}
 			// Search Item
 			if (isset($menu[$sector]['content'][$item]['links']['search'])){
-				echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' ></a></li>";
+				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' ></a></li>";
 			} else {
 				echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_searchf_of.png' ></li>";
 			}
