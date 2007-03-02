@@ -405,8 +405,9 @@ hr{
 .over_link {
 	display: none;
 	position: absolute;
-	border: 1px solid gray;
-	background: transparent url("../pics/fondTR2.png") repeat; 
+	border: 2px solid gray;
+	/*background: transparent url("../pics/fondTR2.png") repeat; */
+	background-color : #f1f4e3;
 	-moz-border-radius: 5px;
 	padding: 5px;
 	font-size: 11px;
