@@ -140,7 +140,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 		//////// INVENTORY
 		$showstate=false;
-		$menu['inventory']['title']=$LANG["setup"][10];
+		$menu['inventory']['title']=$LANG["Menu"][38];
 		$menu['inventory']['default']='/front/computer.php';
 		if (haveRight("computer","r")){
 			$menu['inventory']['content']['computer']['title']=$LANG["Menu"][0];
@@ -535,7 +535,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<div id='c_recherche' >\n"; 
 		echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n"; 
 		echo "	<div id='boutonRecherche'><input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png'  value='OK'   title=\"".$LANG["buttons"][2]."\"  alt=\"".$LANG["buttons"][2]."\"  /></div>\n"; 
-		echo "	<div id='champRecherche'><input type='text' name='globalsearch' value='".$LANG["buttons"][0]."' onfocus=\"this.value='';\" /></div>	\n"; 		
+		echo "	<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".$LANG["buttons"][0]."' onfocus=\"this.value='';\" /></div>	\n"; 		
 		echo "</form>\n"; 
 		echo "<div class='sep'></div>\n"; 
 		echo "</div>";
@@ -556,6 +556,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 				if (isset($data['default'])&&!empty($data['default'])){
 					$link=$CFG_GLPI["root_doc"].$data['default'];
 				}
+
 				echo "<a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>"; 
 				echo "<ul class='ssmenu'>"; 
 				// list menu item 

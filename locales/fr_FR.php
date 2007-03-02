@@ -879,6 +879,7 @@ $LANG["Menu"][34]="Téléphones";
 $LANG["Menu"][35]="Profils";
 $LANG["Menu"][36]="Groupes";
 $LANG["Menu"][37]="Entités";
+$LANG["Menu"][38]="Inventaire";
 
 $LANG["monitors"][0]="Ajouter moniteur...";
 $LANG["monitors"][4]="Moniteur";
