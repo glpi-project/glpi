@@ -614,22 +614,32 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// Display item
 		if (isset($menu[$sector]['content'][$item])){
 			// Title
-			echo "	<li><span style='font-size:14px'><strong>Central ></strong></span></li>";
+			echo "	<li><a  style='font-size:14px' href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." ></a></li>";
 
 			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['default']."' title='".$menu[$sector]['title']."' ><span style='font-size:14px'>".$menu[$sector]['title']." ></span></a></li>";
 
 			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' ><span style='font-size:14px'>".$menu[$sector]['content'][$item]['title']." ></span></a></li>";
 			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
+			// Add item
+			if (isset($menu[$sector]['content'][$item]['links']['add'])){
+				echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a></li>";
+			} else {
+				echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' ></li>";
+			}
+			// Search Item
+			if (isset($menu[$sector]['content'][$item]['links']['search'])){
+				echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' ></a></li>";
+			} else {
+				echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_searchf_of.png' ></li>";
+			}
+			
 			// Links
 			if (isset($menu[$sector]['content'][$item]['links'])&&is_array($menu[$sector]['content'][$item]['links'])){
 				foreach ($menu[$sector]['content'][$item]['links'] as $key => $val) {
 					switch ($key){
 						case "add":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a></li>";
-							break;
 						case "search":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' > </a></li>";
 							break;
 						case "template":
 							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
@@ -706,6 +716,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			timeoutglobalvar = setTimeout(function(){afterView(document.getElementById('show_all_menu'))},5000);
 */
 		echo "</li>";
+
 			
 		echo "</ul>";	
 		echo showProfileSelecter();	
