@@ -636,7 +636,18 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			}
 		}
 		// Add common items 
+		echo "<li width='50px'>&nbsp;</li>";
 		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".date("H:i")."</li>";
+		echo "<li><img id='headercalendar' src='".$CFG_GLPI["root_doc"]."/pics/calendar.png' class='calendrier' alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
+
+		echo "<script type='text/javascript'>";
+		echo "Calendar.setup(";
+		echo "{";
+		echo "ifFormat : '%Y-%m-%d',"; // the datetime format
+		echo "button : 'headercalendar'"; // ID of the button
+		echo "});";
+		echo "</script>";
+		echo "</li>";
 			
 		echo "</ul>";	
 		echo showProfileSelecter();	
