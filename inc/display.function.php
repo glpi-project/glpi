@@ -618,21 +618,25 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<ul>";
 
 		// Display item
+		echo "	<li><a  style='font-size:14px' href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." ></a></li>";
+
+		if (isset($menu[$sector])){
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['default']."' title='".$menu[$sector]['title']."' ><span style='font-size:14px'>".$menu[$sector]['title']." ></span></a></li>";
+		}
+
 		if (isset($menu[$sector]['content'][$item])){
 			// Title
-			echo "	<li><a  style='font-size:14px' href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." ></a></li>";
-
-			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['default']."' title='".$menu[$sector]['title']."' ><span style='font-size:14px'>".$menu[$sector]['title']." ></span></a></li>";
-
 			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' ><span style='font-size:14px'>".$menu[$sector]['content'][$item]['title']." ></span></a></li>";
 			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
 			// Add item
+			echo "<li>";
 			if (isset($menu[$sector]['content'][$item]['links']['add'])){
-				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a></li>";
+				echo "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a>";
 			} else {
-				echo "<li><img title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' ></li>";
+				echo "<img title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' >";
 			}
+			echo "</li>";
 			// Search Item
 			if (isset($menu[$sector]['content'][$item]['links']['search'])){
 				echo "<li><a title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."' href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' ></a></li>";
@@ -668,8 +672,51 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 		}
 		// Add common items 
-		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
-		echo "<li>".date("H:i")."</li>";
+		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+
+		echo "</li>";
+		echo "<li>".date("H:i");
+			// Display MENU ALL
+			echo "<span class='over_link' id='show_all_menu'onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
+			$items_per_columns=15;
+			$i=-1;
+			echo "<table><tr><td valign='top'><table>";
+			foreach ($menu as $part => $data){
+				if (count($data['content'])){
+	
+					if ($i>$items_per_columns){
+						$i=0;
+						echo "</table></td><td valign='top'><table>";
+					}
+					$link="#";
+					if (isset($data['default'])&&!empty($data['default'])){
+						$link=$CFG_GLPI["root_doc"].$data['default'];
+					}
+					echo "<tr><td class='tab_bg_1'><strong><a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a></strong></td></tr>"; 
+					$i++;
+	
+					// list menu item 
+					foreach ($data['content'] as $key => $val) {
+						if ($i>$items_per_columns){
+							$i=0;
+							echo "</table></td><td valign='top'><table>";
+						}
+	
+						echo "<tr><td><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
+						if (isset($data['shortcut'])&&!empty($data['shortcut'])){
+							echo " accesskey=\"".$val['shortcut']."\" ";
+						}
+							
+						echo ">".$val['title']."</a></td></tr>\n";
+						$i++;
+					}			
+				}
+			}
+			echo "</table></td></tr></table>";
+			
+			echo "</span>";
+
+			echo "</li>";
 		echo "<li><img id='headercalendar' src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
 		echo "<script type='text/javascript'>";
@@ -684,44 +731,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 		// MENU ALL
 		echo "<li >";
-		echo "<span class='over_link' id='show_all_menu'onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
-		$items_per_columns=15;
-		$i=-1;
-		echo "<table><tr><td valign='top'><table>";
-		foreach ($menu as $part => $data){
-			if (count($data['content'])){
-
-				if ($i>$items_per_columns){
-					$i=0;
-					echo "</table></td><td valign='top'><table>";
-				}
-				$link="#";
-				if (isset($data['default'])&&!empty($data['default'])){
-					$link=$CFG_GLPI["root_doc"].$data['default'];
-				}
-				echo "<tr><td class='tab_bg_1'><strong><a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a></strong></td></tr>"; 
-				$i++;
-
-				// list menu item 
-				foreach ($data['content'] as $key => $val) {
-					if ($i>$items_per_columns){
-						$i=0;
-						echo "</table></td><td valign='top'><table>";
-					}
-
-					echo "<tr><td><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
-					if (isset($data['shortcut'])&&!empty($data['shortcut'])){
-						echo " accesskey=\"".$val['shortcut']."\" ";
-					}
-						
-					echo ">".$val['title']."</a></td></tr>\n";
-					$i++;
-				}			
-			}
-		}
-		echo "</table></td></tr></table>";
-		
-		echo "</span>";
 		echo "<img  alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' onclick=\"cleandisplay('show_all_menu');
 		\">";
 /*
