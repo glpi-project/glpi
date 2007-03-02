@@ -245,7 +245,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['state']['shortcut']='n';
 			$menu['inventory']['content']['state']['page']='/front/state.php';
 			$menu['inventory']['content']['state']['links']['search']='/front/state.php';
-			$menu['inventory']['content']['state']['links'][$LANG["state"][1]]='/front/state.php?synthese=no';
 			$menu['inventory']['content']['state']['links'][$LANG["state"][11]]='/front/state.php?synthese=yes';
 		}
 
@@ -353,7 +352,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// PLUGINS
 		if (isset($PLUGIN_HOOKS["menu_entry"])&&count($PLUGIN_HOOKS["menu_entry"])){	
 			$menu['plugins']['title']=$LANG["common"][29];
-			$menu['plugins']['default']='/front/knowbase.php';
+			$menu['plugins']['default']='/front/central.php';
 
 			$plugins=array();
 	
