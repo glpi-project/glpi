@@ -649,8 +649,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "</li>";
 
 		echo "<li >";
-		echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseover=\"cleandisplay('show_all_menu')\" >";
-		echo "<span class='over_link' id='show_all_menu'>";
+		echo "<span class='over_link' id='show_all_menu'   width='200'>";
 		$items_per_columns=10;
 		$i=-1;
 		echo "<table><tr><td valign='top'><table>";
@@ -688,7 +687,11 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "</table></td></tr></table>";
 		
 		echo "</span>";
+		echo "<img width='20' alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onclick=\"cleandisplay('show_all_menu');
+			clearTimeout(timeoutglobalvar);
+			timeoutglobalvar = setTimeout(function(){afterView(document.getElementById('show_all_menu'))},5000);
 
+		\">";
 		echo "</li>";
 			
 		echo "</ul>";	
