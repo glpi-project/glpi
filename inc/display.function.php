@@ -390,7 +390,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			}
 
 		}
-
 		//////// ADMINISTRATION
 		$menu['admin']['title']=$LANG["Menu"][15];
 		$menu['admin']['default']='/front/user.php';
@@ -675,10 +674,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 		}
 		// Add common items 
-		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-
-		echo "</li>";
 		echo "<li>";
+
 			// Display MENU ALL
 			echo "<div class='over_link' id='show_all_menu'onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
 			$items_per_columns=15;
@@ -718,8 +715,9 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			echo "</table></td></tr></table>";
 			
 			echo "</div>";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		echo "</li>";
 
-			echo "</li>";
 		echo "<li><img id='headercalendar' src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
 		echo "<script type='text/javascript'>";
@@ -803,7 +801,6 @@ function helpHeader($title,$url) {
 	if ($CFG_GLPI["sendexpire"]) {
 		header_nocache(); 
 	}
-
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 
@@ -1182,7 +1179,6 @@ function commonFooter() {
 	echo $TIMER_DEBUG->Get_Time()."s - ";
 	if (function_exists("memory_get_usage")){
 		echo memory_get_usage();
-		echo " ";
 	}
 	echo "</span>";
 
