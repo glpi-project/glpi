@@ -650,7 +650,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 		echo "<li >";
 		echo "<span class='over_link' id='show_all_menu'   width='200'>";
-		$items_per_columns=10;
+		$items_per_columns=15;
 		$i=-1;
 		echo "<table><tr><td valign='top'><table>";
 		foreach ($menu as $part => $data){
