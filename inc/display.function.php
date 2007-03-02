@@ -752,7 +752,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 		
 		
-		echo "<div  id='page' ><br>";
+		echo "<div  id='page' >";
 		
 		$CFG_GLPI["cache"]->end();
 	}
