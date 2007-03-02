@@ -647,6 +647,49 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "});";
 		echo "</script>";
 		echo "</li>";
+
+		echo "<li >";
+		echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseover=\"cleandisplay('show_all_menu')\" >";
+		echo "<span class='over_link' id='show_all_menu'>";
+		$items_per_columns=10;
+		$i=-1;
+		echo "<table><tr><td valign='top'><table>";
+		foreach ($menu as $part => $data){
+			if (count($data['content'])){
+
+				if ($i>$items_per_columns){
+					$i=0;
+					echo "</table></td><td valign='top'><table>";
+				}
+				$link="#";
+				if (isset($data['default'])&&!empty($data['default'])){
+					$link=$CFG_GLPI["root_doc"].$data['default'];
+				}
+				echo "<tr><td class='tab_bg_1'><strong><a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a></strong></td></tr>"; 
+				$i++;
+
+				// list menu item 
+				foreach ($data['content'] as $key => $val) {
+					if ($i>$items_per_columns){
+						$i=0;
+						echo "</table></td><td valign='top'><table>";
+					}
+
+					echo "<tr><td><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
+					if (isset($data['shortcut'])&&!empty($data['shortcut'])){
+						echo " accesskey=\"".$val['shortcut']."\" ";
+					}
+						
+					echo ">".$val['title']."</a></td></tr>\n";
+					$i++;
+				}			
+			}
+		}
+		echo "</table></td></tr></table>";
+		
+		echo "</span>";
+
+		echo "</li>";
 			
 		echo "</ul>";	
 		echo showProfileSelecter();	
