@@ -245,6 +245,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['state']['shortcut']='n';
 			$menu['inventory']['content']['state']['page']='/front/state.php';
 			$menu['inventory']['content']['state']['links']['search']='/front/state.php';
+			$menu['inventory']['content']['state']['links'][$LANG["state"][1]]='/front/state.php?synthese=no';
 			$menu['inventory']['content']['state']['links'][$LANG["state"][11]]='/front/state.php?synthese=yes';
 		}
 
@@ -352,7 +353,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// PLUGINS
 		if (isset($PLUGIN_HOOKS["menu_entry"])&&count($PLUGIN_HOOKS["menu_entry"])){	
 			$menu['plugins']['title']=$LANG["common"][29];
-			$menu['plugins']['default']='/front/central.php';
+			$menu['plugins']['default']='/front/knowbase.php';
 
 			$plugins=array();
 	
@@ -613,19 +614,19 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// Display item
 		if (isset($menu[$sector]['content'][$item])){
 			// Title
-			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' >".$menu[$sector]['content'][$item]['title']." ></a></li>";
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' ><span style='font-size:12px'>".$menu[$sector]['content'][$item]['title']." ></span></a></li>";
 			// Links
 			if (isset($menu[$sector]['content'][$item]['links'])&&is_array($menu[$sector]['content'][$item]['links'])){
 				foreach ($menu[$sector]['content'][$item]['links'] as $key => $val) {
 					switch ($key){
 						case "add":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >!!Ajouter!! </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a></li>";
 							break;
 						case "search":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >!!Rechercher!! </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' > </a></li>";
 							break;
 						case "template":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >!!Gabarits!! </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
 							break;
 						default :
 							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >".$key." </a></li>";
@@ -637,7 +638,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// Add common items 
 		echo "<li width='50px'>&nbsp;</li>";
 		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".date("H:i")."</li>";
-		echo "<li><img id='headercalendar' src='".$CFG_GLPI["root_doc"]."/pics/calendar.png' class='calendrier' alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
+		echo "<li><img id='headercalendar' src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
 		echo "<script type='text/javascript'>";
 		echo "Calendar.setup(";
@@ -647,52 +648,9 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "});";
 		echo "</script>";
 		echo "</li>";
-
-		echo "<li >";
-		echo "<span class='over_link' id='show_all_menu'   width='200'>";
-		$items_per_columns=15;
-		$i=-1;
-		echo "<table><tr><td valign='top'><table>";
-		foreach ($menu as $part => $data){
-			if (count($data['content'])){
-
-				if ($i>$items_per_columns){
-					$i=0;
-					echo "</table></td><td valign='top'><table>";
-				}
-				$link="#";
-				if (isset($data['default'])&&!empty($data['default'])){
-					$link=$CFG_GLPI["root_doc"].$data['default'];
-				}
-				echo "<tr><td class='tab_bg_1'><strong><a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a></strong></td></tr>"; 
-				$i++;
-
-				// list menu item 
-				foreach ($data['content'] as $key => $val) {
-					if ($i>$items_per_columns){
-						$i=0;
-						echo "</table></td><td valign='top'><table>";
-					}
-
-					echo "<tr><td><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
-					if (isset($data['shortcut'])&&!empty($data['shortcut'])){
-						echo " accesskey=\"".$val['shortcut']."\" ";
-					}
-						
-					echo ">".$val['title']."</a></td></tr>\n";
-					$i++;
-				}			
-			}
-		}
-		echo "</table></td></tr></table>";
 		
-		echo "</span>";
-		echo "<img width='20' alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onclick=\"cleandisplay('show_all_menu');
-			clearTimeout(timeoutglobalvar);
-			timeoutglobalvar = setTimeout(function(){afterView(document.getElementById('show_all_menu'))},5000);
-
-		\">";
-		echo "</li>";
+		echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' ></a></li>";
+		
 			
 		echo "</ul>";	
 		echo showProfileSelecter();	
