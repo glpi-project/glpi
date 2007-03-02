@@ -678,7 +678,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
 		echo "</li>";
-		echo "<li>".date("H:i");
+		echo "<li>";
 			// Display MENU ALL
 			echo "<div class='over_link' id='show_all_menu'onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
 			$items_per_columns=15;
