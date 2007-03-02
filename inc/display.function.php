@@ -545,15 +545,14 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		$i=1;
 		foreach ($menu as $part => $data){
 			if (count($data['content'])){
-				//echo "	<li id='menu$i' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
-				echo "	<li id='menu$i' onmouseover=\"cleandisplay('ssmenu$i');\" onmouseout=\"cleanhide('ssmenu$i');\">";
+				echo "	<li id='menu$i' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
 
 				$link="#";
 				if (isset($data['default'])&&!empty($data['default'])){
 					$link=$CFG_GLPI["root_doc"].$data['default'];
 				}
 				echo "<a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>"; 
-				echo "<ul class='ssmenu' id='ssmenu$i' onmouseover=\"cleandisplay('ssmenu$i');\" onmouseout=\"cleanhide('ssmenu$i');\">"; 
+				echo "<ul class='ssmenu'>"; 
 				// list menu item 
 				foreach ($data['content'] as $key => $val) {
 					echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
