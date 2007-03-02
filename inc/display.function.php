@@ -614,7 +614,13 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// Display item
 		if (isset($menu[$sector]['content'][$item])){
 			// Title
-			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' ><span style='font-size:12px'>".$menu[$sector]['content'][$item]['title']." ></span></a></li>";
+			echo "	<li><span style='font-size:14px'><strong>Central ></strong></span></li>";
+
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['default']."' title='".$menu[$sector]['title']."' ><span style='font-size:14px'>".$menu[$sector]['title']." ></span></a></li>";
+
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' ><span style='font-size:14px'>".$menu[$sector]['content'][$item]['title']." ></span></a></li>";
+			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+
 			// Links
 			if (isset($menu[$sector]['content'][$item]['links'])&&is_array($menu[$sector]['content'][$item]['links'])){
 				foreach ($menu[$sector]['content'][$item]['links'] as $key => $val) {
@@ -634,10 +640,13 @@ function commonHeader($title,$url,$sector="none",$item="none")
 					}
 				}
 			}
+		} else {
+			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 		}
 		// Add common items 
-		echo "<li width='50px'>&nbsp;</li>";
-		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".date("H:i")."</li>";
+		echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+		echo "<li>".date("H:i")."</li>";
 		echo "<li><img id='headercalendar' src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
 		echo "<script type='text/javascript'>";
