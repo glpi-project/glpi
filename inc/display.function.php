@@ -635,7 +635,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			if (isset($menu[$sector]['content'][$item]['links']['search'])){
 				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' ></a></li>";
 			} else {
-				echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_searchf_of.png' ></li>";
+				echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' ></li>";
 			}
 			
 			// Links
