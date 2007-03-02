@@ -245,7 +245,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['state']['shortcut']='n';
 			$menu['inventory']['content']['state']['page']='/front/state.php';
 			$menu['inventory']['content']['state']['links']['search']='/front/state.php';
-			$menu['inventory']['content']['state']['links'][$LANG["state"][1]]='/front/state.php?synthese=no';
 			$menu['inventory']['content']['state']['links'][$LANG["state"][11]]='/front/state.php?synthese=yes';
 		}
 
@@ -353,7 +352,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// PLUGINS
 		if (isset($PLUGIN_HOOKS["menu_entry"])&&count($PLUGIN_HOOKS["menu_entry"])){	
 			$menu['plugins']['title']=$LANG["common"][29];
-			$menu['plugins']['default']='/front/knowbase.php';
+			$menu['plugins']['default']='/front/central.php';
 
 			$plugins=array();
 	
@@ -649,8 +648,53 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "</script>";
 		echo "</li>";
 		
-		echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' ></a></li>";
+
+		// MENU ALL
+		echo "<li >";
+		echo "<span class='over_link' id='show_all_menu'   width='200'>";
+		$items_per_columns=15;
+		$i=-1;
+		echo "<table><tr><td valign='top'><table>";
+		foreach ($menu as $part => $data){
+			if (count($data['content'])){
+
+				if ($i>$items_per_columns){
+					$i=0;
+					echo "</table></td><td valign='top'><table>";
+				}
+				$link="#";
+				if (isset($data['default'])&&!empty($data['default'])){
+					$link=$CFG_GLPI["root_doc"].$data['default'];
+				}
+				echo "<tr><td class='tab_bg_1'><strong><a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a></strong></td></tr>"; 
+				$i++;
+
+				// list menu item 
+				foreach ($data['content'] as $key => $val) {
+					if ($i>$items_per_columns){
+						$i=0;
+						echo "</table></td><td valign='top'><table>";
+					}
+
+					echo "<tr><td><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
+					if (isset($data['shortcut'])&&!empty($data['shortcut'])){
+						echo " accesskey=\"".$val['shortcut']."\" ";
+					}
+						
+					echo ">".$val['title']."</a></td></tr>\n";
+					$i++;
+				}			
+			}
+		}
+		echo "</table></td></tr></table>";
 		
+		echo "</span>";
+		echo "<img  alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' onclick=\"cleandisplay('show_all_menu');
+			clearTimeout(timeoutglobalvar);
+			timeoutglobalvar = setTimeout(function(){afterView(document.getElementById('show_all_menu'))},5000);
+
+		\">";
+		echo "</li>";
 			
 		echo "</ul>";	
 		echo showProfileSelecter();	
