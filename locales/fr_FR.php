@@ -86,6 +86,7 @@ $LANG["buttons"][36]="Basique";
 $LANG["buttons"][37]="Importer";
 $LANG["buttons"][38]="Déverrouiller";
 $LANG["buttons"][39]="Remplacer";
+$LANG["buttons"][40]="Voir Tous";
 
 $LANG["calendarD"][0]="D";
 $LANG["calendarD"][1]="L";

@@ -225,7 +225,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['consumable']['page']='/front/consumable.php';
 			if (haveRight("consumable","w")){
 				$menu['inventory']['content']['consumable']['links']['add']='/front/consumable.form.php';
-				$menu['inventory']['content']['consumable']['links'][$LANG["state"][11]]='/front/consumable.php?synthese=yes';
+				$menu['inventory']['content']['consumable']['links']['summary']='/front/consumable.php?synthese=yes';
 			}
 		}
 		if (haveRight("phone","r")){
@@ -245,7 +245,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['state']['shortcut']='n';
 			$menu['inventory']['content']['state']['page']='/front/state.php';
 			$menu['inventory']['content']['state']['links']['search']='/front/state.php';
-			$menu['inventory']['content']['state']['links'][$LANG["state"][11]]='/front/state.php?synthese=yes';
+			$menu['inventory']['content']['state']['links']['summary']='/front/state.php?synthese=yes';
 		}
 
 
@@ -342,7 +342,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['utils']['content']['reservation']['title']=$LANG["Menu"][17];
 			$menu['utils']['content']['reservation']['page']='/front/reservation.php';
 			$menu['utils']['content']['reservation']['links']['search']='/front/reservation.php';
-			$menu['utils']['content']['reservation']['links'][$LANG["reservation"][26]]='/front/reservation.php?show=resa&ID';
+			$menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&ID';
 		}
 		if (haveRight("reports","r")){
 			$menu['utils']['content']['report']['title']=$LANG["Menu"][6];
@@ -426,12 +426,13 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['entity']['links']['search']='/front/entity.php';
 
 			$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0";
-			$menu['admin']['content']['entity']['links'][$LANG["entity"][1]]="/front/entity.tree.php";
+			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
 		}
 		if (haveRight("profile","r")){
 			$menu['admin']['content']['profile']['title']=$LANG["Menu"][35];
 			$menu['admin']['content']['profile']['shortcut']='p';
 			$menu['admin']['content']['profile']['page']='/front/profile.php';
+			$menu['admin']['content']['profile']['links']['search']="/front/profile.php";
 			if (haveRight("profile","w")){
 				$menu['admin']['content']['profile']['links']['add']="/front/profile.php?add=new";
 			}
@@ -627,15 +628,15 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 			// Add item
 			if (isset($menu[$sector]['content'][$item]['links']['add'])){
-				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a></li>";
+				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a></li>";
 			} else {
-				echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' ></li>";
+				echo "<li><img title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' ></li>";
 			}
 			// Search Item
 			if (isset($menu[$sector]['content'][$item]['links']['search'])){
-				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' ></a></li>";
+				echo "<li><a title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."' href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' ></a></li>";
 			} else {
-				echo "<li><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' ></li>";
+				echo "<li><img title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' ></li>";
 			}
 			
 			// Links
@@ -646,8 +647,15 @@ function commonHeader($title,$url,$sector="none",$item="none")
 						case "search":
 							break;
 						case "template":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
+							echo "<li><a title='".$LANG["common"][8]."' alt='".$LANG["common"][8]."' href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
 							break;
+						case "showall":
+							echo "<li><a title='".$LANG["buttons"][40]."' alt='".$LANG["buttons"][40]."' href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png' > </a></li>";
+							break;
+						case "summary":
+							echo "<li><a title='".$LANG["state"][11]."' alt='".$LANG["state"][11]."' href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' > </a></li>";
+							break;
+
 						default :
 							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >".$key." </a></li>";
 							break;
