@@ -172,7 +172,7 @@ function displaySearchFooter($type,$title=""){
 		case SYLK_OUTPUT : //sylk
 			break;
 		default :
-			$out= "</table></div><br>\n";
+			$out= "</table></div>\n";
 			break;
 	}
 	return $out;
