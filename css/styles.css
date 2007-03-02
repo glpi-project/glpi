@@ -199,6 +199,8 @@ ul#menu li#menu1{
 
 ul#menu li#menu1 ul.ssmenu{
 	position: relative;
+	width: 110px;
+
 }
 
 ul#menu li#menu2{
@@ -208,6 +210,8 @@ ul#menu li#menu2{
 
 ul#menu li#menu2 ul.ssmenu{
 	position: relative;
+	width: 110px;
+
 }
 
 ul#menu li#menu3{
@@ -217,6 +221,7 @@ ul#menu li#menu3{
 
 ul#menu li#menu3 ul.ssmenu{
 	position: relative;
+	width: 110px;
 }
 
 ul#menu li#menu4{
@@ -226,6 +231,7 @@ ul#menu li#menu4{
 
 ul#menu li#menu4 ul.ssmenu{
 	position: relative;
+	width: 110px;
 }
 
 ul#menu li#menu5{
