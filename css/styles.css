@@ -411,6 +411,7 @@ hr{
 	padding: 5px;
 	font-size: 11px;
 	text-align: left;
+	z-index:1000;
 /*	width:200px;*/
 }
 
