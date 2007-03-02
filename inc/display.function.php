@@ -148,8 +148,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['computer']['page']='/front/computer.php';
 			$menu['inventory']['content']['computer']['links']['search']='/front/computer.php';
 			if (haveRight("computer","w")){
-				$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=1';
-				$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&add=0';
+				$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=0';
 			}
 			$showstate=true;
 		}
@@ -159,8 +159,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['monitor']['page']='/front/monitor.php';
 			$menu['inventory']['content']['monitor']['links']['search']='/front/monitor.php';
 			if (haveRight("monitor","w")){
-				$menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?type='.MONITOR_TYPE.'&add=1';
-				$menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?type='.MONITOR_TYPE.'&add=0';
+				$menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?type='.MONITOR_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?type='.MONITOR_TYPE.'&amp;add=0';
 			}
 
 			$showstate=true;
@@ -171,8 +171,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['software']['page']='/front/software.php';
 			$menu['inventory']['content']['software']['links']['search']='/front/software.php';
 			if (haveRight("software","w")){
-				$menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=1';
-				$menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&add=0';
+				$menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&amp;add=0';
 			}
 
 			$showstate=true;
@@ -183,8 +183,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['networking']['page']='/front/networking.php';
 			$menu['inventory']['content']['networking']['links']['search']='/front/networking.php';
 			if (haveRight("networking","w")){
-				$menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&add=1';
-				$menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&add=0';
+				$menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&amp;add=0';
 			}
 			$showstate=true;
 		}
@@ -194,8 +194,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['peripheral']['page']='/front/peripheral.php';
 			$menu['inventory']['content']['peripheral']['links']['search']='/front/peripheral.php';
 			if (haveRight("peripheral","w")){
-				$menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&add=1';
-				$menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&add=0';
+				$menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&amp;add=0';
 			}
 			$showstate=true;
 		}
@@ -205,8 +205,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['printer']['page']='/front/printer.php';
 			$menu['inventory']['content']['printer']['links']['search']='/front/printer.php';
 			if (haveRight("printer","w")){
-				$menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?type='.PRINTER_TYPE.'&add=1';
-				$menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?type='.PRINTER_TYPE.'&add=0';
+				$menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?type='.PRINTER_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?type='.PRINTER_TYPE.'&amp;add=0';
 			}
 			$showstate=true;
 		}
@@ -235,8 +235,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['phone']['links']['search']='/front/phone.php';
 
 			if (haveRight("phone","w")){
-				$menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?type='.PHONE_TYPE.'&add=1';
-				$menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?type='.PHONE_TYPE.'&add=0';
+				$menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?type='.PHONE_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?type='.PHONE_TYPE.'&amp;add=0';
 			}
 			$showstate=true;
 		}
@@ -342,7 +342,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['utils']['content']['reservation']['title']=$LANG["Menu"][17];
 			$menu['utils']['content']['reservation']['page']='/front/reservation.php';
 			$menu['utils']['content']['reservation']['links']['search']='/front/reservation.php';
-			$menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&ID';
+			$menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&amp;ID';
 		}
 		if (haveRight("reports","r")){
 			$menu['utils']['content']['report']['title']=$LANG["Menu"][6];
@@ -635,16 +635,16 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			// Add item
 			echo "<li>";
 			if (isset($menu[$sector]['content'][$item]['links']['add'])){
-				echo "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' ></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'></a>";
 			} else {
-				echo "<img title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' >";
+				echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'>";
 			}
 			echo "</li>";
 			// Search Item
 			if (isset($menu[$sector]['content'][$item]['links']['search'])){
-				echo "<li><a title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."' href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' ></a></li>";
+				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."'></a></li>";
 			} else {
-				echo "<li><img title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' ></li>";
+				echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."'></li>";
 			}
 			
 			// Links
@@ -655,10 +655,10 @@ function commonHeader($title,$url,$sector="none",$item="none")
 						case "search":
 							break;
 						case "template":
-							echo "<li><a title='".$LANG["common"][8]."' alt='".$LANG["common"][8]."' href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["common"][8]."' alt='".$LANG["common"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
 							break;
 						case "showall":
-							echo "<li><a title='".$LANG["buttons"][40]."' alt='".$LANG["buttons"][40]."' href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png' > </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["buttons"][40]."' alt='".$LANG["buttons"][40]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png' > </a></li>";
 							break;
 						case "summary":
 							echo "<li><a title='".$LANG["state"][11]."' alt='".$LANG["state"][11]."' href='".$CFG_GLPI["root_doc"].$val."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' > </a></li>";
@@ -680,7 +680,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "</li>";
 		echo "<li>".date("H:i");
 			// Display MENU ALL
-			echo "<span class='over_link' id='show_all_menu'onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
+			echo "<div class='over_link' id='show_all_menu'onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
 			$items_per_columns=15;
 			$i=-1;
 			echo "<table><tr><td valign='top'><table>";
@@ -717,7 +717,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			}
 			echo "</table></td></tr></table>";
 			
-			echo "</span>";
+			echo "</div>";
 
 			echo "</li>";
 		echo "<li><img id='headercalendar' src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
