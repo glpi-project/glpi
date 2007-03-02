@@ -556,6 +556,9 @@ function commonHeader($title,$url,$sector="none",$item="none")
 				if (isset($data['default'])&&!empty($data['default'])){
 					$link=$CFG_GLPI["root_doc"].$data['default'];
 				}
+				if (strlen($data['title'])>14){
+					$data['title']=utf8_substr($data['title'],0,14)."...";
+				}
 
 				echo "<a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>"; 
 				echo "<ul class='ssmenu'>"; 
