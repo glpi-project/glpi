@@ -58,12 +58,8 @@ if (isset($PLUGIN_HOOKS["config_page"]) && is_array($PLUGIN_HOOKS["config_page"]
 	asort($names);
 }
 
-echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/configuration.png\" alt='".$LANG["Menu"][10]."' title='".$LANG["Menu"][10]."'></td>";
 
-// ligne a modifier en fonction de la modification des fichiers de langues 
-echo "<td><span class='icon_consol'><b>".$LANG["setup"][700]."</b></span></td>";
-echo "</tr></table></div>";
+
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 

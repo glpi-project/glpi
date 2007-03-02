@@ -390,26 +390,6 @@ class Computer extends CommonDBTM {
 	}
 
 	/**
-	 * Print a good title for computer pages
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][0];
-		if (haveRight("computer","w")){
-			$buttons["setup.templates.php?type=".COMPUTER_TYPE."&amp;add=1"]=$LANG["computers"][0];
-			$buttons["setup.templates.php?type=".COMPUTER_TYPE."&amp;add=0"]=$LANG["common"][8];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/computer.png",$LANG["Menu"][0],$title,$buttons);
-
-	}
-
-	/**
 	 * Print the computer form
 	 *
 	 *

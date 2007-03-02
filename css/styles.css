@@ -144,7 +144,6 @@ div#c_menu{
 
 div#c_menu ul#menu{
 	position: relative;
-	left: 10px;
 	top: 23px;
 	height: 20px;
 	list-style: none;
@@ -230,34 +229,34 @@ ul#menu li#menu4 ul.ssmenu{
 
 ul#menu li#menu5{
 	float: left;
-	width: 135px;
+	width: 110px;
 }
 
 ul#menu li#menu5 ul.ssmenu{
 	position: relative;
-	width: 125px;
+	width: 110px;
 	left: 5px;
 }
 
 ul#menu li#menu6{
 	float: left;
-	width: 135px;
+	width: 110px;
 }
 
 ul#menu li#menu6 ul.ssmenu{
 	position: relative;
-	width: 125px;
+	width: 110px;
 	left: 5px;
 }
 
 ul#menu li#menu7{
 	float: left;
-	width: 135px;
+	width: 110px;
 }
 
 ul#menu li#menu7 ul.ssmenu{
 	position: relative;
-	width: 125px;
+	width: 110px;
 	left: 5px;
 }
 
