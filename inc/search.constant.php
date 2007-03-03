@@ -1987,12 +1987,6 @@ $SEARCH_OPTION[USER_TYPE][9]['linkfield']='firstname';
 $SEARCH_OPTION[USER_TYPE][9]['name']=$LANG["common"][43];
 $SEARCH_OPTION[USER_TYPE][9]['meta']=0;
 
-$SEARCH_OPTION[USER_TYPE][4]['table']='glpi_profiles';
-$SEARCH_OPTION[USER_TYPE][4]['field']='name';
-$SEARCH_OPTION[USER_TYPE][4]['linkfield']='profile';
-$SEARCH_OPTION[USER_TYPE][4]['name']=$LANG["profiles"][22];
-$SEARCH_OPTION[USER_TYPE][4]['meta']=0;
-
 $SEARCH_OPTION[USER_TYPE][5]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][5]['field']='email';
 $SEARCH_OPTION[USER_TYPE][5]['linkfield']='email';

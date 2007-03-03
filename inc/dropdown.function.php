@@ -467,8 +467,11 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 	$nb=0;
-	if ($CFG_GLPI["use_ajax"])
-		$nb=countElementsInTableForMyEntities("glpi_users");
+	if ($CFG_GLPI["use_ajax"]){
+		$query="SELECT COUNT(".$field.") FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
+		$result=$DB->query($query);
+		$nb=$DB->result($result,0,0);
+	}
 
 	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
 		echo "<script type='text/javascript' >\n";
