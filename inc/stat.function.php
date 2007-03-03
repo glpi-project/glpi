@@ -322,7 +322,7 @@ function getNbIntervTech($date1,$date2)
 	$query.= " WHERE glpi_tracking.assign != 0 ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-
+	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
 	$query.= " order by realname, firstname, name";
 	$result = $DB->query($query);
 	if($DB->numrows($result) >=1) {
@@ -349,6 +349,7 @@ function getNbIntervTechFollowup($date1,$date2)
 	$query.= " WHERE glpi_followups.author != 0 ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
 	$query.= " order by firstname, realname, name";
 	$result = $DB->query($query);
@@ -376,6 +377,7 @@ function getNbIntervEnterprise($date1,$date2)
 	$query.= " WHERE glpi_tracking.assign_ent != 0 ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
 	$query.= " order by name";
 
@@ -423,6 +425,7 @@ function getNbIntervAuthor($date1,$date2)
 	$query.= " WHERE '1'='1' ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
 	$query.= " order by realname, firstname, name";
 	$result = $DB->query($query);
@@ -443,7 +446,8 @@ function getNbIntervAuthor($date1,$date2)
 function getNbIntervPriority()
 {	
 	global $DB;
-	$query = "SELECT DISTINCT priority FROM glpi_tracking order by priority";
+
+	$query = "SELECT DISTINCT priority FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." order by priority";
 	$result = $DB->query($query);
 
 	if($DB->numrows($result) >=1) {
@@ -463,7 +467,7 @@ function getNbIntervPriority()
 function getNbIntervRequestType()
 {	
 	global $DB;
-	$query = "SELECT DISTINCT request_type FROM glpi_tracking order by request_type";
+	$query = "SELECT DISTINCT request_type FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." order by request_type";
 	$result = $DB->query($query);
 
 	if($DB->numrows($result) >=1) {
@@ -507,7 +511,7 @@ function getNbIntervCategory()
 function getNbIntervGroup()
 {	
 	global $DB;
-	$query = "SELECT id as ID, name FROM glpi_groups order by name";
+	$query = "SELECT id as ID, name FROM glpi_groups ".getEntitiesRestrictRequest("WHERE","glpi_groups")." order by name";
 	$result = $DB->query($query);
 
 	if($DB->numrows($result) >=1) {
@@ -577,8 +581,10 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
 	$query="";
 
-
-	$WHERE=" WHERE '1'='1' ";
+	$WHERE=getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if (empty($WHERE)){
+		$WHERE=" WHERE '1'='1' ";
+	}
 	$LEFTJOIN="";
 	switch ($param){
 
@@ -613,13 +619,13 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
 			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."') INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$value2."' AND glpi_computer_device.FK_device = '".$value."' )";
 
-			$WHERE=" AND glpi_computers.is_template <> '1' ";
+			$WHERE.=" AND glpi_computers.is_template <> '1' ";
 
 		break;
 		case "comp_champ":
 			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."')";
 
-			$WHERE=" AND glpi_computers.$value2='$value' AND glpi_computers.is_template <> '1'";
+			$WHERE.=" AND glpi_computers.$value2='$value' AND glpi_computers.is_template <> '1'";
 		break;
 	}
 	switch($type)	{
@@ -904,7 +910,7 @@ function showItemStats($target,$date1,$date2,$start){
 		$output_type=$_GET["display_type"];
 
 
-	$query="SELECT device_type,computer,COUNT(*) AS NB FROM glpi_tracking WHERE date<= '".$date2."' AND date>= '".$date1."' GROUP BY device_type,computer ORDER BY NB DESC";
+	$query="SELECT device_type,computer,COUNT(*) AS NB FROM glpi_tracking WHERE date<= '".$date2."' AND date>= '".$date1."' ".getEntitiesRestrictRequest("AND","glpi_tracking")." GROUP BY device_type,computer ORDER BY NB DESC";
 	$result=$DB->query($query);
 	$numrows=$DB->numrows($result);
 
