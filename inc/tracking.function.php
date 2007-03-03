@@ -460,11 +460,12 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		echo displaySearchItem($output_type,"<strong>".getPriorityName($data["priority"])."</strong>",$item_num,$row_num,0,"$align bgcolor='$bgcolor'");
 
 		// Fourth Column
-
 		if ($viewusers){
-			$fourth_col="<strong>".formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],1)."</strong>";
+			$fourth_col="<strong>".getUserName($data['author'],1)."</strong>";
+			//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],1)
 		} else {
-			$fourth_col="<strong>".formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],0)."</strong>";
+			$fourth_col="<strong>".getUserName($data['author'],0)."</strong>";
+			//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],0);
 		}
 
 		if ($data["FK_group"])
@@ -476,9 +477,11 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$fifth_col="";
 		if ($data["assign"]>0){
 			if ($viewusers)
-				$fifth_col.=formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],1);
+				$fifth_col.=getUserName($data['assign'],1);
+				//formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],1);
 			else
-				$fifth_col.="<strong>".formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],0)."</strong>";
+				$fifth_col.=getUserName($data['assign'],0);
+				//"<strong>".formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],0)."</strong>";
 		}
 
 		if ($data["assign_ent"]>0){
@@ -1029,16 +1032,17 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 function getCommonSelectForTrackingSearch(){
 return " DISTINCT glpi_tracking.*,
-		glpi_tracking.author as authorID, author.name AS authorname, author.realname AS authorrealname, author.firstname AS authorfirstname,	
-		glpi_tracking.assign as assignID, assign.name AS assignname, assign.realname AS assignrealname, assign.firstname AS assignfirstname,
 		glpi_dropdown_tracking_category.completename AS catname,
 		glpi_groups.name as groupname ";
+
+		//, author.name AS authorname, author.realname AS authorrealname, author.firstname AS authorfirstname,	
+		//glpi_tracking.assign as assignID, assign.name AS assignname, assign.realname AS assignrealname, assign.firstname AS assignfirstname,
 }
 
 function getCommonLeftJoinForTrackingSearch(){
-	return " LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) "
-	." LEFT JOIN glpi_users as assign ON ( glpi_tracking.assign = assign.ID) "
-	." LEFT JOIN glpi_groups ON ( glpi_tracking.FK_group = glpi_groups.ID) "
+	return //" LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) "
+	//." LEFT JOIN glpi_users as assign ON ( glpi_tracking.assign = assign.ID) "
+	" LEFT JOIN glpi_groups ON ( glpi_tracking.FK_group = glpi_groups.ID) "
 	." LEFT JOIN glpi_dropdown_tracking_category ON ( glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
 }
 
@@ -1064,7 +1068,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	}
 
 	// Reduce computer list
-	if ($computers_search){
+	$wherecomp="";
+	if ($computers_search&&!empty($contains)){
 		$SEARCH=makeTextSearch($contains);
 		// Build query
 		if($field == "all") {
@@ -1112,30 +1117,11 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if (!$start) {
 		$start = 0;
 	}
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch();
-
-	if ($computers_search){
-		$query.= " LEFT JOIN glpi_computers as comp on ( comp.ID=glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."' )";
-		$query.= " LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
-		$query.= "LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
-		$query.= "LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
-		$query.= "LEFT JOIN glpi_device_gfxcard as gfxcard ON (gfxcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".GFX_DEVICE."') ";
-		$query.= "LEFT JOIN glpi_device_hdd as hdd ON (hdd.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".HDD_DEVICE."') ";
-		$query.= "LEFT JOIN glpi_device_iface as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
-		$query.= "LEFT JOIN glpi_device_ram as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
-		$query.= "LEFT JOIN glpi_device_sndcard as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
-		$query.= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
-		$query.= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
-		$query.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";
-		$query.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
-		$query.= "LEFT JOIN glpi_dropdown_model on (glpi_dropdown_model.ID = comp.model)";
-		$query.= "LEFT JOIN glpi_type_computers on (glpi_type_computers.ID = comp.type)";
-		$query.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
-		$query.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
-	}
+	$SELECT = "SELECT ".getCommonSelectForTrackingSearch();
+	$FROM = " FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch();
 
 	if ($contains2!=""&&$field2!="contents"&&$field2!="ID") {
-		$query.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
+		$FROM.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
 	}
 
 
@@ -1152,17 +1138,14 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		case "old_notdone": $where.=" ( glpi_tracking.status = 'old_notdone' )"; break;
 		case "assign": $where.=" ( glpi_tracking.status = 'assign' )"; break;
 		case "plan": $where.=" ( glpi_tracking.status = 'plan' )"; break;
-		default : $where.=" '1' = '1'";break;
+		default : $where.=" ( glpi_tracking.status <> '' )";;break;
 	}
 
 
-	if ($computers_search)
-		$where.=" AND glpi_tracking.device_type= '1'";
 	if ($category > 0){
 		$where.=" AND ".getRealQueryForTreeItem("glpi_dropdown_tracking_category",$category,"glpi_tracking.category");
 	}
 
-	if ($computers_search) $where .= " AND $wherecomp";
 	if (!empty($date1)&&$date1!="0000-00-00") $where.=" AND glpi_tracking.date >= '$date1'";
 	if (!empty($date2)&&$date2!="0000-00-00") $where.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	if (!empty($enddate1)&&$enddate1!="0000-00-00") $where.=" AND glpi_tracking.closedate >= '$enddate1'";
@@ -1234,18 +1217,40 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	}
 	$where.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
+	if (!empty($wherecomp)){
+		$where.=" AND glpi_tracking.device_type= '1'";
+		$where.= " AND glpi_tracking.computer IN (SELECT comp.ID FROM glpi_computers as comp ";
+		$where.= " LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
+		$where.= "LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_device_gfxcard as gfxcard ON (gfxcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".GFX_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_device_hdd as hdd ON (hdd.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".HDD_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_device_iface as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_device_ram as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_device_sndcard as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
+		$where.= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
+		$where.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";
+		$where.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
+		$where.= "LEFT JOIN glpi_dropdown_model on (glpi_dropdown_model.ID = comp.model)";
+		$where.= "LEFT JOIN glpi_type_computers on (glpi_type_computers.ID = comp.type)";
+		$where.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
+		$where.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
+		$where.=" WHERE $wherecomp) ";
+	}
 
 	if ($sort=="")
 		$sort="glpi_tracking.date";
 	if ($order=="")
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 
-	$query.=$where." ORDER BY $sort $order";
-	//echo $query;
+
+	$query=$SELECT.$FROM.$where." ORDER BY $sort $order";
+
 	// Get it from database	
 	if ($result = $DB->query($query)) {
 
-		$numrows= $DB->numrows($result);
+		$numrows=$DB->numrows($result);		
 
 		if ($start<$numrows) {
 
