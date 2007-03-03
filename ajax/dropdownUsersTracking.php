@@ -53,7 +53,7 @@ $first=true;
 if (!empty($where)){
 $first=false;
 }
-
+$where="";
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 	if ($first){ 
 		$first=false;
@@ -68,7 +68,7 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT DISTINCT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_users WHERE ID IN (SELECT DISTINCT ".$_POST['field']." FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
+$query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_users WHERE ID IN (SELECT DISTINCT ".$_POST['field']." FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
 if (!empty($where)){
 	$query.=" WHERE $where ";
 }
@@ -90,7 +90,7 @@ if (isset($_POST['value'])){
 }	
 
 if ($DB->numrows($result)) {
-	while ($data=$DB->fetch_array($result)) {
+	while ($data=$DB->fetch_assoc($result)) {
 		if (!empty($data["realname"])) {
 			$output = $data["realname"];
 			if (!empty($data["firstname"])) {

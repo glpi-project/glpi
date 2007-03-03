@@ -340,41 +340,41 @@ class CommonItem{
 
 		if (!($comment = $CFG_GLPI["cache"]->get("comments_".$this->id_device."_".$_SESSION["glpilanguage"],"GLPI_".$this->device_type))) {
 			if ($tmp=$this->getField('serial')){
-				$comment.=$LANG["common"][19].": ".$tmp."<br>";
+				$comment.="<strong>".$LANG["common"][19].": "."</strong>".$tmp."<br>";
 			}
 			
 			if ($tmp=$this->getField('otherserial')){
-				$comment.=$LANG["common"][20].": ".$tmp."<br>";
+				$comment.="<strong>".$LANG["common"][20].": "."</strong>".$tmp."<br>";
 			}
 			if ($tmp=$this->getField('location')){
-				$tmp=getDropdownName("glpi_dropdown_locations",$tmp);
+				$tmp=getDropdownName("glpi_dropdown_locations","</strong>".$tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
-					$comment.=$LANG["common"][15].": ".$tmp."<br>";
+					$comment.="<strong>".$LANG["common"][15].": "."</strong>".$tmp."<br>";
 				}
 			}
 			if ($tmp=$this->getField('FK_users')){
 				$tmp=getDropdownName("glpi_users",$tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
-					$comment.=$LANG["common"][34].": ".$tmp."<br>";
+					$comment.="<strong>".$LANG["common"][34].": "."</strong>".$tmp."<br>";
 				}
 			}
 			if ($tmp=$this->getField('FK_groups')){
 				$tmp=getDropdownName("glpi_groups",$tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
-					$comment.=$LANG["common"][35].": ".$tmp."<br>";
+					$comment.="<strong>".$LANG["common"][35].": "."</strong>".$tmp."<br>";
 				}
 			}
 			if ($tmp=$this->getField('tech_num')){
 				$tmp=getDropdownName("glpi_users",$tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
-					$comment.=$LANG["common"][10].": ".$tmp."<br>";
+					$comment.="<strong>".$LANG["common"][10].": "."</strong>".$tmp."<br>";
 				}
 			}
 			if ($tmp=$this->getField('contact')){
-				$comment.=$LANG["common"][18].": ".$tmp."<br>";
+				$comment.="<strong>".$LANG["common"][18].": "."</strong>".$tmp."<br>";
 			}
 			if ($tmp=$this->getField('contact_num')){
-				$comment.=$LANG["common"][21].": ".$tmp."<br>";
+				$comment.="<strong>".$LANG["common"][21].": "."</strong>".$tmp."<br>";
 			}
 			$CFG_GLPI["cache"]->save($comment,"comments_".$this->id_device."_".$_SESSION["glpilanguage"],"GLPI_".$this->device_type);
 		}
