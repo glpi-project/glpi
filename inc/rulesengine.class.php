@@ -304,7 +304,7 @@ function RuleCollection($rule_type)
 {
 		global $DB;
 		//Select all the rules of a different type
-		$sql = "SELECT ID FROM glpi_rules_descriptions WHERe rule_type=".$rule_type;
+		$sql = "SELECT ID FROM glpi_rules_descriptions WHERe rule_type=".$rule_type." ORDER by rank ASC";
 		 $result = $DB->query($sql);
 		 while ($rule=$DB->fetch_array($result))
 		 {
@@ -491,7 +491,7 @@ class Rule extends CommonDBTM{
 				$result=true;
 			//Put false
 			else
-				$result == false;		
+				$result = false;		
 		}
 		return $result;
 		}

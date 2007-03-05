@@ -44,8 +44,9 @@ define ("RULE_WILDCARD","*");
  * @return true if the field match the rule, false if it doesn't match
  */
 function matchRules($field, $condition, $pattern) {
-	
-	if ($pattern = RULE_WILDCARD)
+	echo "field=".$field." condition=".$condition." pattern=".$pattern."<br>";
+	//If pattern is wildcard, don't check the rule and return true
+	if ($pattern == RULE_WILDCARD)
 		return true;
 		
 	switch ($condition) {
@@ -54,16 +55,39 @@ function matchRules($field, $condition, $pattern) {
 				return true;
 			else
 				return false;
-			break;
 		case PATTERN_IS_NOT :
 			if ($field == $pattern)
 				return false;
 			else
 				return true;
-			break;
-		default :
-			return false;
+		case PATTERN_END:
+			$value = "/".$pattern."$/";
+			if (preg_match($value, $field) > 0)
+				return true;
+			else
+				return false;	
+		case PATTERN_BEGIN:
+			$value = strpos($field,$pattern);
+			if (($value !== false) && $value == 0)
+				return true;
+			else
+				return false;	
+			
+		case PATTERN_CONTAIN:
+			$value = strpos($field,$pattern);
+			if (($value !== false) && $value >= 0)
+				return true;
+			else
+				return false;	
+			
+		case PATTERN_NOT_CONTAIN:
+			$value = strpos($field,$pattern);
+			if ($value === false)
+				return true;
+			else
+				return false;			
 	}
+	return false;
 }
 
 /**
