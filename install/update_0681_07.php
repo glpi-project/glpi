@@ -780,8 +780,25 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_config` ADD `use_cache` SMALLINT NOT NULL DEFAULT '1' AFTER `debug` ;";
 		$DB->query($query) or die("0.7 alter config add use_cache " . $LANG["update"][90] . $DB->error());
 	}
-	
 
+	if (TableExists("glpi_rules_descriptions")) {
+		$query ="INSERT INTO `glpi_rules_descriptions` (`FK_entities`, `rule_type`, `ranking`, `name`, `description`, `match`) VALUES (-1, 0, 0, 'Root', '', 'AND');";
+		$DB->query($query) or die("0.7 add default ocs affectation rule" . $LANG["update"][90] . $DB->error());
+	
+		$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root'";
+		$result = $DB->query($query);
+		//Get the defaut rule's ID
+		$datas = $DB->fetch_array($result);
+
+		$query="INSERT INTO `glpi_rules_criterias` (`FK_rules`, `criteria`, `condition`, `pattern`) VALUES (".$datas["ID"].", 'TAG', 0, '*');";
+		$DB->query($query) or die("0.7 add default ocs criterias" . $LANG["update"][90] . $DB->error());
+
+
+		$query="INSERT INTO `glpi_rules_actions` (`FK_rules`, `action_type`, `field`, `value`) VALUES (".$datas["ID"].", 'assign', 'FK_entities', '0');";
+		$DB->query($query) or die("0.7 add default ocs actions" . $LANG["update"][90] . $DB->error());
+	
+	}
+	
 	// TODO Split Config -> config general + config entity
 	// TODO Auto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference
