@@ -29,6 +29,10 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
+ 
+ // Get rules_option array
+$RULES_CRITERIAS=getRulesOptions();
+ 
 /**
  * Try to match a definied rule
  * 
@@ -38,6 +42,7 @@
  * @return true if the field match the rule, false if it doesn't match
  */
 function matchRules($field, $condition, $pattern) {
+	
 	switch ($condition) {
 		case PATTERN_IS :
 			if ($field == $pattern)
@@ -86,9 +91,9 @@ function showRules($target, $ID, $rule_type) {
 			}
 
 			if ($canedit)
-				echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/affectcomputerrule.form.php?ID=".$ID."\">" . $rule->description->fields["title"] . "</a></td>";
+				echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.form.php?ID=".$rule->description->fields["ID"]."\">" . $rule->description->fields["name"] . "</a></td>";
 			else
-				echo "<td>" . $rule->description->fields["title"] . "</td>";
+				echo "<td>" . $rule->description->fields["name"] . "</td>";
 					
 			echo "<td>" . $rule->description->fields["description"] . "</td>";
 			echo "</tr>";
@@ -135,4 +140,191 @@ function getRulesByID($rule_type, $ID, $withcriterias, $withactions) {
 
 	return $ocs_affect_computer_rules;
 }
+
+/**
+ * Return the condition label by giving his ID
+ * @param condition's ID
+ * @return condition's label
+ */
+function getConditionByID($ID)
+{
+		global $LANG;
+		switch ($ID)
+		{
+			case PATTERN_IS : 
+				return $LANG["rulesengine"][0];
+			case PATTERN_IS_NOT:
+				return $LANG["rulesengine"][1];
+			case PATTERN_CONTAIN:
+				return $LANG["rulesengine"][2];
+			case PATTERN_NOT_CONTAIN:
+				return $LANG["rulesengine"][3];
+			case PATTERN_BEGIN:
+				return $LANG["rulesengine"][4];
+			case PATTERN_END:
+				return $LANG["rulesengine"][5];
+	}
+}
+
+/**
+ * Get a criteria description by his ID and type
+ * @param the criteria's ID
+ * @param the criteria's type
+ * @return the criteria's description
+ */
+function getCriteriaDescriptionByID($ID,$type)
+{
+		global $LANG,$RULES_CRITERIAS;
+		switch ($type)
+		{
+			case RULE_OCS_AFFECT_COMPUTER : 
+				$rule = getCriteriaByID($ID,$type);
+				return $rule["name"];
+			case RULE_LDAP_AFFECT_RIGHT:
+				break;
+			default:
+				break;	
+	}
+}
+
+/**
+ * Get a criteria by his ID and type
+ * @param the criteria's ID
+ * @param the criteria's type
+ * @return the criteria's informations
+  */
+function getCriteriaByID($ID,$type)
+{
+	global $RULES_CRITERIAS;
+	foreach ($RULES_CRITERIAS[$type] as $rule)
+	{
+		if (($rule["type"] == $type ) && ($rule["ID"] == $ID))
+			return $rule;
+	}
+}
+
+/**
+ * Return all the search constants for a type of rules
+ * @param $type the type of rule
+ * @return an array of search constants
+ */
+function getCriteriasByType($type)
+{
+	global $RULES_CRITERIAS;
+	return $RULES_CRITERIAS[$type];
+}
+/**
+ * Return a value associated with a pattern
+ * @param the pattern's value
+ * @param the rule's type
+ * @param the pattern
+ */
+function getCriteriaPatternValue($value,$type,$pattern)
+{
+	switch ($type)
+	{
+		case RULE_OCS_AFFECT_COMPUTER :
+			switch ($pattern)
+			{
+				case "TAG" :
+					return $value;
+				case "DOMAIN" :
+					return $value;
+				case "OCS_SERVER":
+					$ocs_conf = getOcsConf($value);
+					if ($ocs_conf)
+						return $ocs_conf["name"];
+					else
+						return $value;
+			}
+		break;
+		case RULE_LDAP_AFFECT_RIGHT:
+			return $value;
+		default:
+			return $value;
+	}
+}
+
+/**
+ * Display a dropdown with all the rule matching
+ */
+function dropdownRulesMatch($name,$value=''){
+	global $LANG;
+
+	$elements[0]["name"] = AND_MATCHING;
+	$elements[0]["value"] = AND_MATCHING;
+	$elements[1]["name"] = OR_MATCHING;
+	$elements[1]["value"] = OR_MATCHING;
+	dropdownArrayValues($name,$elements,$value);
+}
+
+/**
+ * Display a dropdown with all the criterias
+ */
+function dropdownRulesConditions($name,$value=''){
+	global $LANG;
+
+	$elements[0]["name"] = $LANG["rulesengine"][0];
+	$elements[0]["value"] = PATTERN_IS;
+	$elements[1]["name"] = $LANG["rulesengine"][1];
+	$elements[1]["value"] = PATTERN_IS_NOT;
+	$elements[2]["name"] = $LANG["rulesengine"][2];
+	$elements[2]["value"] = PATTERN_CONTAIN;
+	$elements[3]["name"] = $LANG["rulesengine"][3];
+	$elements[3]["value"] = PATTERN_NOT_CONTAIN;
+	$elements[4]["name"] = $LANG["rulesengine"][4];
+	$elements[4]["value"] = PATTERN_BEGIN;
+	$elements[5]["name"] = $LANG["rulesengine"][5];
+	$elements[5]["value"] = PATTERN_END;
+	
+	dropdownArrayValues($name,$elements,$value);
+}
+
+
+/**
+ * Get the list of all tables to include in the query
+ * @type : the rule's type
+ * @return an array of table names
+ */
+function getTablesForQuery($type)
+{
+	global $RULES_CRITERIAS;
+	$criterias = getCriteriasByType($type);
+	$tables = array();
+	foreach ($criterias as $criteria)
+		if ($criteria['table'] != '' && !array_key_exists($criteria["table"],$tables)) 
+			$tables[]=$criteria['table'];
+			
+	return $tables;		  
+}
+
+function getFieldsForQuery($type)
+{
+	global $RULES_CRITERIAS;
+	$criterias = getCriteriasByType($type);
+	$field = array();
+	foreach ($criterias as $criteria)
+		//If the field name is not null AND a table name is provided
+		if ($criteria['field'] != '')
+			if ( $criteria['table'] != '') 
+				$fields[]=$criteria['table'].".".$criteria['field'];
+			else
+				$fields[]=$criteria['field'];	
+			
+	return $fields;		  
+}
+
+function getFKFieldsForQuery($type)
+{
+	global $RULES_CRITERIAS;
+	$criterias = getCriteriasByType($type);
+	$field = array();
+	foreach ($criterias as $criteria)
+		//If the field name is not null AND a table name is provided
+		if ($criteria['linkfield'] != '')
+				$fields[]=$criteria['table'].".".$criteria['linkfield'];
+			
+	return $fields;		  
+}
+
 ?>

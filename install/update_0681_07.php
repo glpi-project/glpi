@@ -767,7 +767,7 @@ function update0681to07() {
 		  `FK_entities` int(11) NOT NULL default '-1',
 		  `rule_type` smallint(4) NOT NULL,
 		  `ranking` int(11) NOT NULL,
-		  `title` varchar(255) NOT NULL,
+		  `name` varchar(255) NOT NULL,
 		  `description` text NOT NULL,
 		  `match` varchar(255) NOT NULL,
 		  PRIMARY KEY  (`ID`)

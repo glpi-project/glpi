@@ -2055,7 +2055,7 @@ CREATE TABLE `glpi_rules_descriptions` (
   `FK_entities` int(11) NOT NULL default '-1',
   `rule_type` smallint(4) NOT NULL,
   `ranking` int(11) NOT NULL,
-  `title` varchar(255) collate utf8_unicode_ci default NULL,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
   `description` text collate utf8_unicode_ci,
   `match` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`)
