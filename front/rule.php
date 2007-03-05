@@ -43,6 +43,11 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
+if (isset($tab["action"]))
+{
+		$rulecollection = new RuleCollection($tab["type"]);
+		$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
+}
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","Regles");
 $rules_type[0]=RULE_OCS_AFFECT_COMPUTER;
 $rules_type[1]=RULE_LDAP_AFFECT_RIGHT;

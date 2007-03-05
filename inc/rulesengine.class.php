@@ -148,8 +148,8 @@ class RuleDescription extends CommonDBTM {
 						echo "<td class='tab_bg_2'>".$this->fields["name"] . "</td>";
 					
 					echo "<td class='tab_bg_2'>".$this->fields["description"]."</td>";
-					echo "<td class='tab_bg_2'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></td>";
-					echo "<td class='tab_bg_2'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\"></td>";
+					echo "<td class='tab_bg_2'><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.php?type=".$type."&action=up&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></a></td>";
+					echo "<td class='tab_bg_2'><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.php?type=".$type."&action=down&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\"></a></td>";
 			echo "</tr>";
 
 }
@@ -405,6 +405,49 @@ function getRuleTypeTitle()
 				return $LANG["rulesengine"][17];
 	}
 	
+}
+
+/**
+ * Modify rule's ranking and automatically reorder all rules
+ * @param ID the rule ID whose ranking must be modified
+ * @param action up and down
+ */
+function changeRuleOrder($ID,$action)
+{
+	global $DB;
+	$rules = array();
+	$sql ="SELECT ID FROM glpi_rules_descriptions WHERE rule_type =".$this->rule_type." ORDER BY ranking ASC";
+	$result = $DB->query($sql);
+	$i=0;
+	//Reorder rules : we reaffect ranking for each rule of type $type
+	for ($i=0;$rule = $DB->fetch_array($result);$i++)
+	 {
+	 		if ($rule["ID"] == $ID)
+	 		{
+				//If action is up and if the rule is not the fist of the list
+				if ($action == "up" && $i > 0)
+				{
+					$rules[$i] = $rules[$i-1];
+					$rules[$i-1] = $ID;
+				}	
+				//If action is down and if not the last 
+				elseif ($action == "down" && $i < $DB->numrows($result))
+				{
+					$rules[$i] = $rules[$i+1];
+					$rules[$i+1] = $ID;
+				}	
+	 			else
+					$rules[$i]=$rule["ID"];
+	 		}
+	 		else
+				$rules[$i]=$rule["ID"];	
+	 }
+	
+		for ($i=0; $i < sizeof($rules);$i++)
+		{
+			$sql = "UPDATE glpi_rules_descriptions SET ranking=".$i." WHERE ID=".$rules[$i];
+			$DB->query($sql);				
+		}
 }
 }
 
