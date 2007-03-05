@@ -427,6 +427,17 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0";
 			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
 		}
+
+		if (haveRight("config","r")){
+			$menu['admin']['content']['rules']['title']=$LANG["rulesengine"][17];
+			$menu['admin']['content']['rules']['shortcut']='r';
+			$menu['admin']['content']['rules']['page']='/front/rule.php';
+			$menu['admin']['content']['rules']['links']['search']='/front/rule.php';
+
+			$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0";
+			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
+		}
+
 		if (haveRight("profile","r")){
 			$menu['admin']['content']['profile']['title']=$LANG["Menu"][35];
 			$menu['admin']['content']['profile']['shortcut']='p';
