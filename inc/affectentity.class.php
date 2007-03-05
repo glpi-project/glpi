@@ -146,21 +146,19 @@ function processAllRules($computer_id)
 		global $DB;
 
 		//Get all rules to affect computers to an entity
-		$sql = "SELECT ID from glpi_rules_descriptions WHERE rule_type=".RULE_OCS_AFFECT_COMPUTER;
+		$sql = "SELECT ID from glpi_rules_descriptions WHERE rule_type=".RULE_OCS_AFFECT_COMPUTER." ORDER by ranking ASC";
 		$result = $DB->query($sql);
 		while ($rule= $DB->fetch_array($result))
 		{
 			$ocsrule = new OcsAffectEntityRule($this->ocs_server_id);
 			$ocsrule->getRuleWithCriteriasAndActions($rule["ID"],1,1);
+			
+			//We need to provide the current computer id
 			$extra_params["computer_id"] = $computer_id;
 			$rule_infos = $ocsrule->getRulesMatchingAttributes(RULE_OCS_AFFECT_COMPUTER,$extra_params);
 			
 			if ($ocsrule->processRule($rule_infos))
-			{
-				echo "rule==true!!";
 				return $ocsrule;
-			}
-			else echo "rule==false";	
 		}
 		
 		return null;

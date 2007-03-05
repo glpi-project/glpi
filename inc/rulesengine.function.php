@@ -33,6 +33,8 @@
  // Get rules_option array
 $RULES_CRITERIAS=getRulesOptions();
  
+define ("RULE_WILDCARD","*");
+ 
 /**
  * Try to match a definied rule
  * 
@@ -43,6 +45,9 @@ $RULES_CRITERIAS=getRulesOptions();
  */
 function matchRules($field, $condition, $pattern) {
 	
+	if ($pattern = RULE_WILDCARD)
+		return true;
+		
 	switch ($condition) {
 		case PATTERN_IS :
 			if ($field == $pattern)
