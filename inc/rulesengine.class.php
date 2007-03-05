@@ -125,6 +125,35 @@ class RuleDescription extends CommonDBTM {
 		return $ong;
 	}
 
+	function showMinimalForm($type)
+	{
+			global $LANG,$CFG_GLPI;
+			
+			$canedit = haveRight("config","w");
+			
+				echo "<tr class='tab_bg_1'>";
+				
+				if ($canedit) {
+					echo "<td width='10'>";
+					$sel = "";
+					if (isset ($_GET["select"]) && $_GET["select"] == "all")
+						$sel = "checked";
+					echo "<input type='checkbox' name='item[" . $this->fields["ID"] . "]' value='1' $sel>";
+					echo "</td>";
+				}
+			
+				if ($canedit)
+						echo "<td class='tab_bg_2'><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.form.php?ID=".$this->fields["ID"]."\">" . $this->fields["name"] . "</a></td>";
+					else
+						echo "<td class='tab_bg_2'>".$this->fields["name"] . "</td>";
+					
+					echo "<td class='tab_bg_2'>".$this->fields["description"]."</td>";
+					echo "<td class='tab_bg_2'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></td>";
+					echo "<td class='tab_bg_2'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\"></td>";
+			echo "</tr>";
+
+}
+
 }
 
 class RuleAction extends CommonDBTM {
@@ -299,12 +328,15 @@ class RuleCriteria extends CommonDBTM {
 
 class RuleCollection {
 	var $rule_list = array();
+	var $rule_type;
 	
 function RuleCollection($rule_type)
 {
 		global $DB;
+		$this->rule_type = $rule_type;
+		
 		//Select all the rules of a different type
-		$sql = "SELECT ID FROM glpi_rules_descriptions WHERe rule_type=".$rule_type." ORDER by rank ASC";
+		$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$rule_type." ORDER by ranking ASC";
 		 $result = $DB->query($sql);
 		 while ($rule=$DB->fetch_array($result))
 		 {
@@ -314,8 +346,65 @@ function RuleCollection($rule_type)
 			$tempRule->getRuleWithCriteriasAndActions($rule["ID"],1,1);
 			
 			//Add the object to the list of rules
-			$rule_list[] = $tempRule; 	
+			$this->rule_list[] = $tempRule; 	
 		 }	
+}
+
+function showForm($target)
+	{
+			global $CFG_GLPI, $LANG;
+			
+			$canedit = haveRight("config", "w");
+			echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
+			echo "<div align='center'>"; 
+			echo "<table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='6'>" . $this->getRuleTypeTitle() . "</th></tr>";
+			echo "<tr>";
+			echo "<td class='tab_bg_2'></td>";
+			echo "<td class='tab_bg_2'>".$LANG["common"][16]."</td>";
+			echo "<td class='tab_bg_2'>".$LANG["joblist"][6]."</td>";
+			echo "<td class='tab_bg_2' colspan='2'></td>";
+			echo "</tr>";
+						
+			foreach ($this->rule_list as $rule)
+				$rule->description->showMinimalForm($rule->description->fields["rule_type"]);
+				
+		if ($canedit) {
+		echo "<div align='center'>";
+		echo "<table cellpadding='5' width='80%'>";
+		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
+
+		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
+		echo "</td><td align='left' width='80%'>";
+		echo "<input type='submit' name='deleterule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+		echo "</td>";
+		echo "</table>";
+
+		echo "</div>";
+
+	}
+		else
+		{	
+			echo "</table>";
+			echo "</div>";
+			echo "</form>";
+		}
+}
+
+function getRuleTypeTitle()
+{
+	global $LANG;	
+
+	switch ($this->rule_type)
+	{
+			case RULE_OCS_AFFECT_COMPUTER:
+				return $LANG["rulesengine"][17]." ".$LANG["rulesengine"][18];
+			case RULE_LDAP_AFFECT_RIGHT:
+				return $LANG["rulesengine"][17]." ".$LANG["rulesengine"][19];
+			default:
+				return $LANG["rulesengine"][17];
+	}
+	
 }
 }
 

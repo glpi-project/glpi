@@ -68,10 +68,10 @@ class OcsAffectEntityRule extends Rule{
 	}
 
 /**
- * Get the sql request to get all the fields from ocs database needed for processing the rules
+ * Get the attributes needed for processing the rules
  * @param type type of the rule
  * @param extra_params extra parameters given
- * @return an sql query to execute
+ * @return an array of attributes
  */
 function getRulesMatchingAttributes($type,$extra_params)
 {
