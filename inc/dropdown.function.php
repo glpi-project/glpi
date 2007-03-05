@@ -1616,7 +1616,19 @@ function getAmortTypeName($value){
 			return "";
 			break;
 
-	}	
-}
+	}
+}	
+	
+function dropdownArrayValues($name,$elements,$value='')
+{
+	global $LANG;
 
+	echo "<select name='$name'>";
+
+	foreach($elements as $element)
+		echo "<option value='".$element["value"]."'".($value==$element["value"]?" selected ":"").">".$element["name"]."</option>";
+
+	echo "</select>";	
+	
+}
 ?>

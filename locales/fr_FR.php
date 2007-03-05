@@ -945,10 +945,11 @@ $LANG["ocsng"][21]="Echec de connexion à la base de données OCS NG";
 $LANG["ocsng"][22]="Attention ! Les données importées (voir votre configuration) écraseront les données existantes";
 $LANG["ocsng"][23]="Importation impossible, ordinateur de destination de GLPI déjà lié à un élément d'OCS NG";
 $LANG["ocsng"][24]="Forcer la synchronisation";
-$LANG["ocsng"][25]="Ajouter serveur OCS";
+$LANG["ocsng"][25]="Ajouter";
 $LANG["ocsng"][26]="Choix d'un serveur OCS";
 $LANG["ocsng"][27]="Aucun serveur OCS n'est défini";
 $LANG["ocsng"][28]="Nouveau serveur OCS à partir d'un modèle";
+$LANG["ocsng"][29]="Serveur OCS";
 
 $LANG["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
 $LANG["ocsconfig"][1]="Utilisateur de la base de données OCSweb";
@@ -1171,9 +1172,14 @@ $LANG["rulesengine"][5]="fini par";
 $LANG["rulesengine"][6]="Critères";
 $LANG["rulesengine"][7]="Actions"; 
 $LANG["rulesengine"][8]="Gestion de règles"; 
-
- 
-
+$LANG["rulesengine"][9]="Type de matching"; 
+$LANG["rulesengine"][10]="Rang"; 
+$LANG["rulesengine"][11]="Type d'action"; 
+$LANG["rulesengine"][12]="Champs"; 
+$LANG["rulesengine"][13]="Valeur"; 
+$LANG["rulesengine"][14]="Condition"; 
+$LANG["rulesengine"][15]="Motif";
+$LANG["rulesengine"][16]="Critère";
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";
