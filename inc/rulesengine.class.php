@@ -644,6 +644,24 @@ class Rule extends CommonDBTM{
 		return null;
 	}
 
+	/**
+	 * Delete a rule and all associated criterias and actions
+	 */
+	function deleteRule()
+	{
+		foreach ($this->actions as $action)
+		{
+			$tmp["ID"]=$action->fields["ID"];
+			$action->delete($tmp);
+		}
+		foreach ($this->criterias as $criteria)
+		{
+			$tmp["ID"]=$criteria->fields["ID"];
+			$criteria->delete($tmp);
+		}
+		$tmp["ID"]=$this->description->fields["ID"];
+		$this->description->delete($tmp);	
+	}
 }
 	
 ?>

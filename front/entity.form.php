@@ -67,6 +67,23 @@ if (isset($_POST["update"]))
 
 	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
 	glpi_header($_SERVER['HTTP_REFERER']);
+}elseif (isset($_POST["deleterule"]))
+{
+	checkRight("config","w");
+	$rule = new Rule;
+		
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+		{
+			$rule->getRuleWithCriteriasAndActions($key,1,1);
+			$rule->deleteRule();
+		}
+
+	$rulecollection = new RuleCollection($tab["type"]);
+	$rulecollection->changeRuleOrder(-1,"");
+
+	logEvent($_POST["FK_entities"], "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][20]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 commonHeader($LANG["Menu"][37],$_SERVER['PHP_SELF'],"admin","entity");

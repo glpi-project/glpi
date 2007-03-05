@@ -47,8 +47,26 @@ if (isset($tab["action"]))
 {
 		$rulecollection = new RuleCollection($tab["type"]);
 		$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
+}elseif (isset($tab["deleterule"]))
+{
+	checkRight("config","w");
+	$rule = new Rule;
+		
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+		{
+			$rule->getRuleWithCriteriasAndActions($key,1,1);
+			$rule->deleteRule();
+		}
+	
+	$rulecollection = new RuleCollection($tab["type"]);
+	$rulecollection->changeRuleOrder(-1,"");
+		
+	logEvent($_POST["FK_entities"], "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][20]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","Regles");
+
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin",$LANG["rulesengine"][17]);
 $rules_type[0]=RULE_OCS_AFFECT_COMPUTER;
 $rules_type[1]=RULE_LDAP_AFFECT_RIGHT;
 
