@@ -154,6 +154,14 @@ class RuleDescription extends CommonDBTM {
 
 }
 
+	/**
+	 * Before adding, add the ranking of the new rule
+	 */
+	function prepareInputForAdd($input)
+	{
+		$input["ranking"] = getNextRanking($input["rule_type"]);
+		return $input;
+	}
 }
 
 class RuleAction extends CommonDBTM {
@@ -228,6 +236,18 @@ class RuleAction extends CommonDBTM {
 			echo "</tr>";
 	}
 
+	/**
+	 * Add an action
+	 */
+	function addActionByAttributes($action,$ruleid,$field,$value)
+	{
+		$ruleAction = new RuleAction;
+		$input["action_type"]=$action;
+		$input["field"]=$field;
+		$input["value"]=$value;
+		$input["FK_rules"]=$ruleid;
+		$ruleAction->add($input);
+	}
 }
 
 class RuleCriteria extends CommonDBTM {
@@ -455,8 +475,8 @@ function changeRuleOrder($ID,$action)
  * Rule class store all informations about a GLPI rule :
  *   - description
  *   - criterias
- *   - actions */
-
+ *   - actions
+*/
 class Rule extends CommonDBTM{
 
 	//Rule description
@@ -480,7 +500,10 @@ class Rule extends CommonDBTM{
 	 */
 	function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
 		$this->description = new RuleDescription;
-		$this->description->getFromDB($ID);
+		if ($ID != -1)
+			$this->description->getFromDB($ID);
+		else
+			$this->description->getEmpty();
 		
 		if ($withactions)
 		{

@@ -1184,6 +1184,7 @@ $LANG["rulesengine"][17]="Règles";
 $LANG["rulesengine"][18]=" d'affectation d'une machine à une entité";
 $LANG["rulesengine"][19]=" d'affectation de droits à partir de l'annuaire";
 $LANG["rulesengine"][20]="suppression d'une règle";
+$LANG["rulesengine"][21]="Ajout d'une règle";
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";

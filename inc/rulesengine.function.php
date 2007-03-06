@@ -44,7 +44,7 @@ define ("RULE_WILDCARD","*");
  * @return true if the field match the rule, false if it doesn't match
  */
 function matchRules($field, $condition, $pattern) {
-	echo "field=".$field." condition=".$condition." pattern=".$pattern."<br>";
+
 	//If pattern is wildcard, don't check the rule and return true
 	if ($pattern == RULE_WILDCARD)
 		return true;
@@ -67,21 +67,21 @@ function matchRules($field, $condition, $pattern) {
 			else
 				return false;	
 		case PATTERN_BEGIN:
-			$value = strpos($field,$pattern);
+			$value = stripos($field,$pattern);
 			if (($value !== false) && $value == 0)
 				return true;
 			else
 				return false;	
 			
 		case PATTERN_CONTAIN:
-			$value = strpos($field,$pattern);
+			$value = stripos($field,$pattern);
 			if (($value !== false) && $value >= 0)
 				return true;
 			else
 				return false;	
 			
 		case PATTERN_NOT_CONTAIN:
-			$value = strpos($field,$pattern);
+			$value = stripos($field,$pattern);
 			if ($value === false)
 				return true;
 			else
@@ -100,6 +100,32 @@ function showRules($target, $ID, $rule_type) {
 	$canedit = haveRight("config", "w");
 
 	echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
+
+		if ($canedit){
+	
+			echo "<div align='center'>";
+			echo "<table  class='tab_cadre_fixe'>";
+			echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG["rulesengine"][21].$LANG["rulesengine"][18]."</tr><tr><td class='tab_bg_2' align='center'>";
+			echo $LANG["common"][16].":";
+			echo "</td><td align='center' class='tab_bg_2'>";
+			autocompletionTextField("name","glpi_rules_descriptions","name","",30);
+			echo $LANG["joblist"][6].":";
+			autocompletionTextField("description","glpi_rules_descriptions","description","",30);
+			echo "</td><td align='center' class='tab_bg_2'>";
+			echo $LANG["rulesengine"][9].":";
+			dropdownRulesMatch("match","AND");
+			echo "</td><td align='center' class='tab_bg_2'>";
+			echo "<input type=hidden name='rule_type' value=\"".RULE_OCS_AFFECT_COMPUTER."\">";
+			echo "<input type=hidden name='FK_entities' value=\"-1\">";
+			echo "<input type=hidden name='affectentity' value=\"".$ID."\">";
+			echo "<input type='submit' name='addrule' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "</td></tr>";
+	
+			echo "</table></div><br>";
+	
+		}
+
+
 	echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["entity"][5] . "</th></tr>";
 
 	//Get all rules and actions

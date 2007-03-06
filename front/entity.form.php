@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("entity","rulesengine");
+$NEEDED_ITEMS=array("entity","rulesengine","affectentity");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -57,6 +57,15 @@ if (isset($_POST["update"]))
 
 	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][61]);
 	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["addrule"]))
+{
+	checkRight("config","w");
+	
+	addNewAffectationRule($_POST);
+	
+	logEvent($_POST["FK_entities"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][21]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset($_POST["deleteuser"]))
 {
 	checkRight("config","w");
