@@ -109,13 +109,13 @@ if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 		case -1 :	
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
 			display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
-			showRules($_SERVER['PHP_SELF'],$_GET["ID"],RULE_OCS_AFFECT_COMPUTER);
+			showOcsAffectationRules($_SERVER['PHP_SELF'],$_GET["ID"],RULE_OCS_AFFECT_COMPUTER);
 		break;
 		case 2 : 
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
 		break;
 		case 3 :
-			showRules($_SERVER['PHP_SELF'],$_GET["ID"],RULE_OCS_AFFECT_COMPUTER);
+			showOcsAffectationRules($_SERVER['PHP_SELF'],$_GET["ID"],RULE_OCS_AFFECT_COMPUTER);
 			break;
 		default :
 			if (!display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
