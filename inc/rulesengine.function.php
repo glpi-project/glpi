@@ -222,27 +222,6 @@ function getConditionByID($ID)
 }
 
 /**
- * Get a criteria description by his ID and type
- * @param the criteria's ID
- * @param the criteria's type
- * @return the criteria's description
- */
-function getCriteriaDescriptionByID($ID,$type)
-{
-		global $LANG,$RULES_CRITERIAS;
-		switch ($type)
-		{
-			case RULE_OCS_AFFECT_COMPUTER : 
-				$rule = getCriteriaByID($ID,$type);
-				return $rule["name"];
-			case RULE_LDAP_AFFECT_RIGHT:
-				break;
-			default:
-				break;	
-	}
-}
-
-/**
  * Get a criteria by his ID and type
  * @param the criteria's ID
  * @param the criteria's type
@@ -267,37 +246,6 @@ function getCriteriasByType($type)
 {
 	global $RULES_CRITERIAS;
 	return $RULES_CRITERIAS[$type];
-}
-/**
- * Return a value associated with a pattern
- * @param the pattern's value
- * @param the rule's type
- * @param the pattern
- */
-function getCriteriaPatternValue($value,$type,$pattern)
-{
-	switch ($type)
-	{
-		case RULE_OCS_AFFECT_COMPUTER :
-			switch ($pattern)
-			{
-				case "TAG" :
-					return $value;
-				case "DOMAIN" :
-					return $value;
-				case "OCS_SERVER":
-					$ocs_conf = getOcsConf($value);
-					if ($ocs_conf)
-						return $ocs_conf["name"];
-					else
-						return $value;
-			}
-		break;
-		case RULE_LDAP_AFFECT_RIGHT:
-			return $value;
-		default:
-			return $value;
-	}
 }
 
 /**
@@ -386,6 +334,7 @@ function getFieldsForQuery($type)
 
 /**
  * Return all possible criterias for a type of rule
+ * @param type the rule's type
  */
 function getCriteriasByRuleType($type)
 {

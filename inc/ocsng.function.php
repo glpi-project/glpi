@@ -301,17 +301,10 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 	$rule_parameters = $rule->getRulesMatchingAttributes(RULE_OCS_AFFECT_COMPUTER,$extra_params);
 	
 	//Try to match all the rules, return the first good one, or null if not rules matched
-	$ocsrule = $rule->processAllRules($ocs_id);
-	if ($ocsrule != null)
+	
+	if ($rule->processAllRules($ocs_id))
 	{
-		//If actions are defined for this rule : affectation requires one and only one action
-		if (sizeof($ocsrule->actions) > 0)
-		{
-			$action = $ocsrule->actions[0];
-			
-			//Affect entity to the computer
-			$comp->fields["FK_entities"] = $action->fields["value"];
-		}
+		$comp->fields = $rule->executeAction($comp->fields);
 	
 	if ($result && $DBocs->numrows($result) == 1) {
 		$line = $DBocs->fetch_array($result);
