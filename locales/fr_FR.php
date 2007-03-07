@@ -1188,6 +1188,7 @@ $LANG["rulesengine"][21]="Ajout d'une règle";
 $LANG["rulesengine"][22]="Assigner";
 $LANG["rulesengine"][23]="Mettre la valeur";
 $LANG["rulesengine"][23]="Récupérer la valeur";
+$LANG["rulesengine"][24]="Choix du type de règle";
 
 
 $LANG["search"][0]="Recherche"; 

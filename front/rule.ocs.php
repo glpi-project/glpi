@@ -34,25 +34,42 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("rulesengine","affectentity");
+$NEEDED_ITEMS=array("rulesengine","rule.ocs");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if(isset($_GET)) $tab = $_GET;
+if(empty($tab) && isset($_POST)) $tab = $_POST;
+if(!isset($tab["ID"])) $tab["ID"] = "";
+
+if (isset($tab["action"]))
+{
+		$rulecollection = new RuleCollection(RULE_OCS_AFFECT_COMPUTER);
+		$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
+}elseif (isset($tab["deleterule"]))
+{
+	checkRight("config","w");
+	$rule = new Rule;
+		
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+		{
+			$rule->getRuleWithCriteriasAndActions($key,1,1);
+			$input["ID"]=$key;
+			$rule->delete($input);
+		}
+	
+	$rulecollection = new RuleCollection(RULE_OCS_AFFECT_COMPUTER);
+	$rulecollection->changeRuleOrder(-1,"");
+		
+	logEvent($_POST["FK_entities"], "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][20]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulesengine"][17]);
 
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/logoOcs.png\" alt='" . $LANG["ocsng"][0] . "' title='" . $LANG["ocsng"][0] . "' ></td>";
-	echo "</tr></table></div>";
-
-	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-	echo "<tr><th>" . $LANG["rulesengine"][24] . "</th></tr>";
-
-	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.ocs.php\"><b>" . $LANG["rulesengine"][17]." ".$LANG["rulesengine"][18] . "</b></a></td></tr>";
-
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"rule.ldap.php\"><b>" . $LANG["rulesengine"][17]." ".$LANG["rulesengine"][19] . "</b></a></td> </tr>";
-
-	echo "</table></div>";
-
+$rule = new RuleCollection(RULE_OCS_AFFECT_COMPUTER);
+$rule->showForm($_SERVER['PHP_SELF']);
 commonFooter();
 ?>

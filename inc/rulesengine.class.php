@@ -277,6 +277,9 @@ class Rule extends CommonDBTM{
 	//Criterias affected to this rule
 	var $criterias = array();
 
+	//Store the rule that matched the criterias
+	var $matched_rule;
+	
 	function Rule() {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
@@ -358,7 +361,11 @@ class Rule extends CommonDBTM{
 	 *@return nothing (diplays)
 	 *
 	 **/
-	function title(){
+	function title() {
+		global $LANG, $CFG_GLPI;
+
+		$buttons = array ();
+		displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
 	}
 
 	/**
@@ -549,8 +556,8 @@ class Rule extends CommonDBTM{
 						echo "<td class='tab_bg_2'>".$this->fields["name"] . "</td>";
 					
 					echo "<td class='tab_bg_2'>".$this->fields["description"]."</td>";
-					echo "<td class='tab_bg_2'><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.php?type=".$this->fields["rule_type"]."&action=up&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></a></td>";
-					echo "<td class='tab_bg_2'><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.php?type=".$this->fields["rule_type"]."&action=down&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\"></a></td>";
+					echo "<td class='tab_bg_2'><a href=\"".$CFG_GLPI["root_doc"]."/front/".$this->getFormPage()."?type=".$this->fields["rule_type"]."&action=up&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></a></td>";
+					echo "<td class='tab_bg_2'><a href=\"".$CFG_GLPI["root_doc"]."/front/".$this->getFormPage()."?type=".$this->fields["rule_type"]."&action=down&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\"></a></td>";
 			echo "</tr>";
 
 }
@@ -634,6 +641,43 @@ class Rule extends CommonDBTM{
 	{
 		
 	}
+
+	/**
+	 * Get a criteria description by his ID and type
+	 * @param the criteria's ID
+	 * @return the criteria's description
+	 */
+	function getCriteriaDescriptionByID($ID)
+	{
+		return "";
+	}
+	/**
+ 	* Return a value associated with a pattern
+ 	* @param the pattern's value
+ 	* @param the pattern
+ 	*/
+ 	function getCriteriaPatternValue($value,$pattern)
+	{
+		return $value;
+	}
+
+/**
+ * Execute the actions as defined in the rule
+ * @param fields the fields to manipulate
+ * @return the fields modified
+ */
+	function executeAction($fields)
+	{
+		return $fields;
+	}
+	
+	/**
+ * Return the name of the page to display the list of rules
+ */
+function getFormPage()
+{
+	return "rule.php";
+}
 	
 }
 	
