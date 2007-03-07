@@ -94,7 +94,7 @@ function matchRules($field, $condition, $pattern) {
  * Display form to add rules
  * @param rule_type Type of rule (ocs_affectation, ldap_rights)
  */
-function showRules($target, $ID, $rule_type) {
+function showOcsAffectationRules($target, $ID, $rule_type) {
 	global $LANG, $CFG_GLPI;
 
 	$canedit = haveRight("config", "w");
@@ -141,16 +141,16 @@ function showRules($target, $ID, $rule_type) {
 				$sel = "";
 				if (isset ($_GET["select"]) && $_GET["select"] == "all")
 					$sel = "checked";
-				echo "<input type='checkbox' name='item[" . $rule->description->fields["ID"] . "]' value='1' $sel>";
+				echo "<input type='checkbox' name='item[" . $rule->fields["ID"] . "]' value='1' $sel>";
 				echo "</td>";
 			}
 
 			if ($canedit)
-				echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.form.php?ID=".$rule->description->fields["ID"]."\">" . $rule->description->fields["name"] . "</a></td>";
+				echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.form.php?ID=".$rule->fields["ID"]."\">" . $rule->fields["name"] . "</a></td>";
 			else
-				echo "<td>" . $rule->description->fields["name"] . "</td>";
+				echo "<td>" . $rule->fields["name"] . "</td>";
 					
-			echo "<td>" . $rule->description->fields["description"] . "</td>";
+			echo "<td>" . $rule->fields["description"] . "</td>";
 			echo "</tr>";
 		}
 	}
@@ -163,7 +163,7 @@ function showRules($target, $ID, $rule_type) {
 
 		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
 		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='deleterule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+		echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 		echo "</td>";
 		echo "</table>";
 
@@ -253,7 +253,7 @@ function getCriteriaByID($ID,$type)
 	global $RULES_CRITERIAS;
 	foreach ($RULES_CRITERIAS[$type] as $rule)
 	{
-		if (($rule["type"] == $type ) && ($rule["ID"] == $ID))
+		if ($rule["ID"] == $ID)
 			return $rule;
 	}
 }
@@ -335,6 +335,21 @@ function dropdownRulesConditions($name,$value=''){
 	dropdownArrayValues($name,$elements,$value);
 }
 
+/**
+ * Display a dropdown with all the possible actions
+ */
+function dropdownRulesActions($name,$value=''){
+	global $LANG;
+
+	$elements[0]["name"] = $LANG["rulesengine"][22];
+	$elements[0]["value"] = "assign";
+	$elements[1]["name"] = $LANG["rulesengine"][23];
+	$elements[1]["value"] = "set";
+	$elements[2]["name"] = $LANG["rulesengine"][23];
+	$elements[2]["value"] = "get";
+	
+	dropdownArrayValues($name,$elements,$value);
+}
 
 /**
  * Get the list of all tables to include in the query
@@ -369,6 +384,20 @@ function getFieldsForQuery($type)
 	return $fields;		  
 }
 
+/**
+ * Return all possible criterias for a type of rule
+ */
+function getCriteriasByRuleType($type)
+{
+	global $RULES_CRITERIAS;
+	$criterias = getCriteriasByType($type);
+	$field = array();
+	foreach ($criterias as $criteria)
+		$fields[]=array("name"=>$criteria['name'],"value"=>$criteria['ID']);	
+			
+	return $fields;		  
+}
+
 function getFKFieldsForQuery($type)
 {
 	global $RULES_CRITERIAS;
@@ -382,4 +411,23 @@ function getFKFieldsForQuery($type)
 	return $fields;		  
 }
 
+function getRuleByType($type)
+{
+	switch ($type)
+	{
+		case RULE_OCS_AFFECT_COMPUTER :
+			return new OcsAffectEntityRule(-1);
+		
+		default:
+			break;
+	}
+}
+
+function getRuleType($ID)
+{
+	$rule = new Rule;
+	$rule->getRuleWithCriteriasAndActions($ID,0,0);
+	return $rule->fields["rule_type"];
+	
+}
 ?>

@@ -40,8 +40,8 @@ if (!defined('GLPI_ROOT')) {
 
 function addNewAffectationRule($input) {
 	//Add the rule
-	$ruleDescription = new RuleDescription;
-	$ruleid = $ruleDescription->add($input);
+	$rule = new Rule;
+	$ruleid = $rule->add($input);
 	
 	if ($ruleid)
 	{

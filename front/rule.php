@@ -36,6 +36,11 @@
 
 $NEEDED_ITEMS=array("rulesengine","affectentity");
 
+$PLUGIN_HOOKS['submenu_entry']['example']['add'] = 'index.php';
+$PLUGIN_HOOKS['submenu_entry']['example']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png' title='".$LANGEXAMPLE["test"]."' alt='".$LANGEXAMPLE["test"]."'>"] = 'index.php';
+$PLUGIN_HOOKS['submenu_entry']['example'][$LANGEXAMPLE["test"]] = 'index.php';
+
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -56,7 +61,8 @@ if (isset($tab["action"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
 			$rule->getRuleWithCriteriasAndActions($key,1,1);
-			$rule->deleteRule();
+			$input["ID"]=$key;
+			$rule->delete($input);
 		}
 	
 	$rulecollection = new RuleCollection($tab["type"]);
@@ -66,9 +72,9 @@ if (isset($tab["action"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin",$LANG["rulesengine"][17]);
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulesengine"][17]);
 $rules_type[0]=RULE_OCS_AFFECT_COMPUTER;
-$rules_type[1]=RULE_LDAP_AFFECT_RIGHT;
+//$rules_type[1]=RULE_LDAP_AFFECT_RIGHT;
 
 foreach ($rules_type as $rule_type)
 {

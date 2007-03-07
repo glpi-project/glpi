@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("rulesengine","ocsng","affectentity");
+$NEEDED_ITEMS=array("entity","rulesengine","ocsng","affectentity");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -50,52 +50,55 @@ if (isset($_GET['onglet'])) {
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","Regles");
 
-if (isset($tab["action"]))
+if (isset($tab["delete_criteria"]))
 {
-	switch ($tab["action"])
-	{
-		case "edit_action" :
-			$tab["ruleid"]=-1;
-		case "add_action" :
-			$ruleaction = new RuleAction;
-			$ruleaction->showForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["ruleid"]);
-		break;
-		case "update_action":
-			$ruleaction = new RuleAction;
-			$ruleaction->update($tab);
-		 break;
-		case "add_action":
-			$ruleaction = new RuleAction;
-			$ruleaction->add($tab);
-		 break;
-		case "edit_criteria" :
-			$tab["ruleid"]=-1;
-		case "add_criteria" :
-			$ruleaction = new RuleCriteria;
-			$ruleaction->showForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["ruleid"]);
-		break;
-		case "update_criteria":
-			$ruleaction = new RuleCriteria;
-			$ruleaction->update($tab);
-		 break;
-		case "add_criteria":
-			$ruleaction = new RuleCriteria;
-			$ruleaction->add($tab);
-		 break;
-	}
+	
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+		{
+			$rulecriteria = new RuleCriteria;
+			$input["ID"]=$key;
+			$rulecriteria->delete($input);
+		}
+	
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else
+if (isset($tab["delete_action"]))
 {
-	if (isset($tab["update_description"]))
-	{
-	$rule_description = new RuleDescription;
-	$rule_description->update($tab);
-	}
-$rule = new OcsAffectEntityRule(1);
+	
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+		{
+			$ruleaction = new RuleAction;
+			$input["ID"]=$key;
+			$ruleaction->delete($input);
+		}
+	
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+elseif (isset($tab["add_criteria"]))
+{
+	$rulecriteria = new RuleCriteria;
+	$rulecriteria->add($tab);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+elseif (isset($tab["add_action"]))
+{
+	$ruleaction = new RuleAction;
+	$ruleaction->add($tab);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+elseif (isset($tab["update_description"]))
+{
+	$rule = new Rule;
+	$rule->update($tab);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+
+$rule = getRuleByType(getRuleType($tab["ID"]));
 $rule->getRuleWithCriteriasAndActions($tab["ID"],1,1);
 $rule->title();
-$description = $rule->description;
-$description->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
+$rule->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
 switch($_SESSION['glpi_onglet']){
 		case -1 :	
 		case 1 :
@@ -111,7 +114,6 @@ switch($_SESSION['glpi_onglet']){
 			break;
 		default :
 		break;
-}
 }
 commonFooter();
 ?>

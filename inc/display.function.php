@@ -429,13 +429,11 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		}
 
 		if (haveRight("config","r")){
-			$menu['admin']['content']['rules']['title']=$LANG["rulesengine"][17];
-			$menu['admin']['content']['rules']['shortcut']='r';
-			$menu['admin']['content']['rules']['page']='/front/rule.php';
-			$menu['admin']['content']['rules']['links']['search']='/front/rule.php';
-
-			$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0";
-			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
+			$menu['admin']['content']['rule']['title']=$LANG["rulesengine"][17];
+			$menu['admin']['content']['rule']['shortcut']='r';
+			$menu['admin']['content']['rule']['page']='/front/rule.php';
+			if (haveRight("config","r"))
+					$menu['admin']['content']['rule']['links']['add']="/front/rule.form.php";
 		}
 
 		if (haveRight("profile","r")){
@@ -461,6 +459,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['log']['page']='/front/log.php';
 
 		}
+		
+
 // CONFIG
 		$config=array();
 		$addconfig=array();
@@ -521,6 +521,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			}
 
 		}	
+
 
 		if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))	{
 			$menu['config']['content']['plugins']['title']=$LANG["common"][29];
