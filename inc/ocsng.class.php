@@ -243,15 +243,42 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<tr><th>" . $LANG["ocsconfig"][27] . "</th><th>" . $LANG["ocsconfig"][28] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][39] . " </td><td>";
-		echo "<select name='import_tag_field'>";
-		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
-		echo "<option value='otherserial' " . ($this->fields["import_tag_field"] == "otherserial" ? "selected" : "") . ">" . $LANG["common"][20] . "</option>";
-		echo "<option value='contact_num' " . ($this->fields["import_tag_field"] == "contact_num" ? "selected" : "") . ">" . $LANG["common"][21] . "</option>";
-		echo "<option value='location' " . ($this->fields["import_tag_field"] == "location" ? "selected" : "") . ">" . $LANG["common"][15] . "</option>";
-		echo "<option value='network' " . ($this->fields["import_tag_field"] == "network" ? "selected" : "") . ">" . $LANG["setup"][88] . "</option>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][20] . " </td><td>";
+		echo "<select name='import_otherserial'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"otherserial");		
+		echo $listColumnOCS;
 		echo "</select>";
 		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][15] . " </td><td>";
+		echo "<select name='import_location'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"location");
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][35] . " </td><td>";
+		echo "<select name='import_group'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"FK_groups");
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][21] . " </td><td>";
+		echo "<select name='import_contact_num'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"contact_num");
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][88] . " </td><td>";
+		echo "<select name='import_network'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"network");
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+		
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . " </td><td>";
 		dropdownYesNo("import_general_name", $this->fields["import_general_name"]);
@@ -509,6 +536,57 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		
 		return $input;
 	}
-	
+		
+	function updateAdminInfo($tab){
+		$adm = new AdminInfo();	
+		$adm->cleanDBonPurge($tab["ID"]);		
+		if (isset ($tab["import_location"])){
+ 			if($tab["import_location"]!=""){
+				$adm = new AdminInfo();			
+				$adm->fields["ocs_server_id"] = $tab["ID"];							
+				$adm->fields["glpi_column"] = "location";	
+				$adm->fields["ocs_column"] = $tab["import_location"];				
+				$isNewAdm = $adm->addToDB(); 
+ 			}          		
+		}
+		if (isset ($tab["import_otherserial"])){
+			if($tab["import_otherserial"]!=""){
+				$adm = new AdminInfo();			
+				$adm->fields["ocs_server_id"] =  $tab["ID"];			
+				$adm->fields["glpi_column"] = "otherserial";	
+				$adm->fields["ocs_column"] = $tab["import_otherserial"];		
+				$isNewAdm = $adm->addToDB();
+			}				
+		}
+		if (isset ($tab["import_group"])){			
+			if($tab["import_group"]!=""){
+				$adm = new AdminInfo();			
+				$adm->fields["ocs_server_id"] = $tab["ID"];		
+				$adm->fields["glpi_column"] = "FK_groups";	
+				$adm->fields["ocs_column"] = $tab["import_group"];				
+				$isNewAdm = $adm->addToDB();
+			}
+		}
+		if (isset ($tab["import_network"])){
+			if($tab["import_network"]!=""){			
+				$adm = new AdminInfo();			
+				$adm->fields["ocs_server_id"] = $tab["ID"];		
+				$adm->fields["glpi_column"] = "network";	
+				$adm->fields["ocs_column"] = $tab["import_network"];				
+				$isNewAdm = $adm->addToDB();
+			}
+		}
+		if (isset ($tab["import_contact_num"])){
+			if($tab["import_contact_num"]!=""){			
+				$adm = new AdminInfo();			
+				$adm->fields["ocs_server_id"] = $tab["ID"];		
+				$adm->fields["glpi_column"] = "contact_num";	
+				$adm->fields["ocs_column"] = $tab["import_contact_num"];				
+				$isNewAdm = $adm->addToDB(); 
+			}
+		}
+	}	
 }
+
+
 ?>

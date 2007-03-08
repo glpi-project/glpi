@@ -48,7 +48,8 @@ $NEEDED_ITEMS = array (
 	"phone",
 	"tracking",
 	"enterprise",
-	"setup"
+	"setup",
+	"admininfo"
 );
 
 define('GLPI_ROOT', '..');

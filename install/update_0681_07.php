@@ -799,6 +799,16 @@ function update0681to07() {
 	
 	}
 	
+	if (!TableExists("glpi_ocs_admin_link")){
+			$query = "CREATE TABLE `glpi_ocs_admin_link` (
+  			`ID` int(10) unsigned NOT NULL auto_increment,
+  			`glpi_column` varchar(45) NOT NULL,
+  			`ocs_column` varchar(45) NOT NULL,
+  			`ocs_server_id` int(10) unsigned NOT NULL,
+  			PRIMARY KEY  (`ID`)
+			) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
+			$DB->query($query) or die("0.7 add table glpi_ocs_admin_link" . $LANG["update"][90] . $DB->error());
+	}
 	// TODO Split Config -> config general + config entity
 	// TODO Auto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference

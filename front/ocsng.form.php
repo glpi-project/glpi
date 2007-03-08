@@ -35,7 +35,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array ("setup","ocsng","user","search");
+$NEEDED_ITEMS = array ("setup","ocsng","user","search","admininfo");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -62,6 +62,7 @@ if (isset ($tab["purge"]) || isset ($tab["delete"])) {
 //Update server
 elseif (isset ($tab["update_server"])) {
 	$ocs->update($tab);
+	$ocs->updateAdminInfo($tab);
 	$ocs->showForm($_SERVER['PHP_SELF'], $tab["ID"]);
 }
 //Add new server
