@@ -103,8 +103,6 @@ function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 	if($result){
 		while($row = $DB->fetch_assoc($result)) {
 			if (isset($row["ID"])) {
-				if (get_magic_quotes_runtime()) $row=stripslashes_deep($row);
-				$row=stripslashes_deep($row);
 				$insert = "UPDATE $table SET ";
 				foreach ($row as $key => $val) {
 					$insert.=" `".$key."`=";
