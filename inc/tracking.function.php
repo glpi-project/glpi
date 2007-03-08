@@ -1282,8 +1282,13 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			}
 
 			$i=$start;
-			if (isset($_GET['export_all']))
+			if (isset($_GET['export_all'])){
 				$i=0;
+			}
+
+			if ($i>0){
+				$DB->data_seek($result,$i);
+			}
 
 			$end_display=$start+$CFG_GLPI["list_limit"];
 			if (isset($_GET['export_all']))
