@@ -301,11 +301,10 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 	$rule_parameters = $rule->getRulesMatchingAttributes(RULE_OCS_AFFECT_COMPUTER,$extra_params);
 	
 	//Try to match all the rules, return the first good one, or null if not rules matched
-	
-	if ($rule->processAllRules($ocs_id))
+	if ($rule->processAllRules($ocs_server_id))
 	{
 		$comp->fields = $rule->executeAction($comp->fields);
-	
+		
 	if ($result && $DBocs->numrows($result) == 1) {
 		$line = $DBocs->fetch_array($result);
 		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
@@ -498,6 +497,8 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 						  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 						  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
 			 */
+			 // Update Administrative informations
+				ocsUpdateAdministrativeInfo($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs);
 			// Is an update to do ?
 			if ($mixed_checksum) {
 				// Get updates on computers :
@@ -554,7 +555,8 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 					//import registry entries not needed
 					ocsUpdateRegistry($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs);
 				}
-
+				
+				
 				// Update OCS Cheksum 
 				$query_ocs = "UPDATE hardware 
 									SET CHECKSUM= (CHECKSUM - $mixed_checksum) 
@@ -1919,6 +1921,70 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 
 }
 /**
+ * Update the administrative informations
+ *
+ * This function erase old data and import the new ones about administrative informations
+ *
+ *
+ *@param $glpi_id integer : glpi computer id.
+ *@param $ocs_id integer : ocs computer id (ID).
+ *@param $ocs_server_id integer : ocs server id
+ *@return Nothing (void).
+ *
+ **/
+function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id) {
+	global $DB, $DBocs;	
+	//check link between ocs and glpi column
+	$queryListUpdate="SELECT * from glpi_ocs_admin_link where ocs_server_id='$ocs_server_id' ";
+	$result = $DB->query($queryListUpdate);
+	if($DB->numrows($result) > 0){
+		//update data 
+		while ($links_glpi_ocs = $DB->fetch_array($result)) {
+			//get info from ocs
+			$ocs_column = $links_glpi_ocs['ocs_column'];
+			$glpi_column = $links_glpi_ocs['glpi_column'];
+			$queryOCS = "SELECT $ocs_column from accountinfo where HARDWARE_ID='$ocs_id'";
+			$resultOCS = $DBocs->query($queryOCS);
+			if($DBocs->numrows($resultOCS) > 0){
+				$data_ocs = $DBocs->fetch_array($resultOCS); 
+				$var = $data_ocs[$ocs_column];				
+				//check group if exist
+				if(!strcmp("FK_groups",$glpi_column)){
+					$groupID = searchGroupID($var);
+					if($groupID==-1){
+						//create new group
+						$queryinsert="INSERT glpi_groups (name) VALUES ('$var')";	
+						$DB->query($queryinsert);	
+						//get new id			
+						$groupID = searchGroupID($var); 				
+					}
+					$var = $groupID;					
+				}				
+				if(!strcmp("location",$glpi_column)){
+					$locationID = ocsImportDropdown("glpi_dropdown_locations","name",$var);
+					$var = $locationID;
+				}
+				if(!strcmp("network",$glpi_column)){
+					$networkID = ocsImportDropdown("glpi_dropdown_network","name",$var);
+					$var = $networkID;
+				}
+				$queryUpdate ="UPDATE glpi_computers set $glpi_column = '$var' WHERE ID='$glpi_id'";
+				$DB->query($queryUpdate);
+			}
+			//if column in OCS has been deleted, we delete the rules in GLPI
+			else{
+				$queryDelete ="DELETE from glpi_ocs_admin_link where ocs_server_id='$ocs_server_id' and ocs_column='$ocs_column'";
+				$fp = fopen("c:\oai.txt","a+"); 
+				fputs($fp,"$queryDelete\r\n"); 
+				fclose($fp);
+				$DB->query($queryDelete);  
+			}
+			
+		}
+	}
+}
+
+/**
  * Update config of the registry
  *
  * This function erase old data and import the new ones about registry (Microsoft OS after Windows 95)
@@ -1928,7 +1994,6 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
  *@param $ocs_id integer : ocs computer id (ID).
  *@param $ocs_server_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
- *@param $dohistory boolean : log changes ?
  *@return Nothing (void).
  *
  **/
@@ -2452,6 +2517,7 @@ function checkOCSconnection($ocs_server_id)
 	// --> reinitialize connection to OCS server 
 	if (!$DBocs || $ocs_server_id != $DBocs->getServerID())
 		$DBocs = getDBocs($ocs_server_id);
+		
 }
 /**
  * Get the ocs server id of a machine, by giving the machine id
@@ -2498,4 +2564,33 @@ function getRandomOCSServerID()
 	}
 	return -1;
 }
+
+function getColumnListFromAccountInfoTable($ID,$glpi_column){
+		global $DBocs,$DB;
+		$listColumn="";		
+		if ($ID != -1) {					
+			checkOCSconnection($ID);			
+			if (!$DBocs->error) {				 
+				$result = $DBocs->query("SHOW COLUMNS FROM accountinfo");				
+				if ($DBocs->numrows($result) > 0) {
+					while ($data = $DBocs->fetch_array($result)) {
+						//get the selected value in glpi if specified
+						$query="SELECT ocs_column from glpi_ocs_admin_link where ocs_server_id='".$ID."' and glpi_column='".$glpi_column."'";
+						$result_DB = $DB->query($query);
+						$selected=""; 
+						if ($DB->numrows($result_DB) > 0){
+							$data_DB = $DB->fetch_array($result_DB);
+							$selected = $data_DB["ocs_column"]; 
+						}
+						$ocs_column = $data['Field']; 
+						if(!strcmp($ocs_column,$selected))
+						$listColumn .="<option value='$ocs_column' selected>" . $ocs_column . "</option>";
+						else				
+						$listColumn .="<option value='$ocs_column'>" . $ocs_column . "</option>";
+					}
+				}
+			}
+		}
+		return $listColumn;
+	}
 ?>
