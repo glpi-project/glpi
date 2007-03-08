@@ -103,19 +103,20 @@ if (isset($_GET['onglet'])) {
 }	
 
 
+$ocsrule = new OcsAffectEntityRule(-1);
 
 if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 	switch($_SESSION['glpi_onglet']){
 		case -1 :	
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
 			display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
-			showOcsAffectationRules($_SERVER['PHP_SELF'],$_GET["ID"],RULE_OCS_AFFECT_COMPUTER);
+			$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 		break;
 		case 2 : 
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
 		break;
 		case 3 :
-			showOcsAffectationRules($_SERVER['PHP_SELF'],$_GET["ID"],RULE_OCS_AFFECT_COMPUTER);
+			$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 			break;
 		default :
 			if (!display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){

@@ -49,7 +49,6 @@ if (isset($_GET['onglet'])) {
 }	
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","Regles");
-
 if (isset($tab["delete_criteria"]))
 {
 	
@@ -97,6 +96,7 @@ elseif (isset($tab["update_description"]))
 
 $rule = getRuleByType(getRuleType($tab["ID"]));
 $rule->getRuleWithCriteriasAndActions($tab["ID"],1,1);
+
 $rule->title();
 $rule->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
 switch($_SESSION['glpi_onglet']){
@@ -107,10 +107,16 @@ switch($_SESSION['glpi_onglet']){
 			
 		break;
 		case 2 : 
-			$rule->showCriteriasList($_SERVER['PHP_SELF'],true);
+			if ($tab["ID"] != -1) 
+				$rule->showCriteriasList($_SERVER['PHP_SELF'],true);
+			else
+				$rule->showCriteriasList($_SERVER['PHP_SELF'],false);	
 		break;
 		case 3 :
-			$rule->showActionsList($_SERVER['PHP_SELF'],true);
+			if ($tab["ID"] != -1)
+				$rule->showActionsList($_SERVER['PHP_SELF'],true);
+			else
+				$rule->showActionsList($_SERVER['PHP_SELF'],false);	
 			break;
 		default :
 		break;

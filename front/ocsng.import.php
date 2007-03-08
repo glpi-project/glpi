@@ -35,7 +35,7 @@
 
 
 $USE_OCSNGDB=1;
-$NEEDED_ITEMS=array("ocsng","rulesengine","affectentity","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","registry");
+$NEEDED_ITEMS=array("ocsng","rulesengine","rule.ocs","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","registry");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

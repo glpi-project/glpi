@@ -161,6 +161,13 @@ function RuleCollection($rule_type)
 		 }	
 }
 
+function title($addbutton=false) {
+	global $LANG, $CFG_GLPI;
+
+	$buttons = array ();
+	displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
+}
+
 function showForm($target)
 	{
 			global $CFG_GLPI, $LANG;
@@ -202,23 +209,6 @@ function showForm($target)
 		}
 }
 
-/*
-function getRuleTypeTitle()
-{
-	global $LANG;	
-
-	switch ($this->rule_type)
-	{
-			case RULE_OCS_AFFECT_COMPUTER:
-				return $LANG["rulesengine"][17]." ".$LANG["rulesengine"][18];
-			case RULE_LDAP_AFFECT_RIGHT:
-				return $LANG["rulesengine"][17]." ".$LANG["rulesengine"][19];
-			default:
-				return $LANG["rulesengine"][17];
-	}
-	
-}
-*/
 /**
  * Modify rule's ranking and automatically reorder all rules
  * @param ID the rule ID whose ranking must be modified
@@ -285,6 +275,13 @@ class Rule extends CommonDBTM{
 		$this->type = -1;
 	}
 
+	function getEmpty()
+	{
+		$this->getEmpty();
+		$this->actions = array();
+		$this->criterias = array();	
+	}
+	
 	function showForm($target,$ID,$withtemplate='')
 	{
 			global $CFG_GLPI, $LANG;
@@ -342,6 +339,10 @@ class Rule extends CommonDBTM{
 	 * @param withaction  1 to retrive all the actions for a given rule
 	 */
 	function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
+		if ($ID == "")
+			$this->getEmpty();
+		else
+		{	
 		$this->getFromDB($ID);
 		
 		if ($withactions)
@@ -354,6 +355,7 @@ class Rule extends CommonDBTM{
 			$RuleCriterias = new RuleCriteria;
 			$this->criterias = $RuleCriterias->getRuleCriterias($ID);
 		}
+		}
 	}
 	
 	/**
@@ -361,7 +363,7 @@ class Rule extends CommonDBTM{
 	 *@return nothing (diplays)
 	 *
 	 **/
-	function title() {
+	function title($addbutton=false) {
 		global $LANG, $CFG_GLPI;
 
 		$buttons = array ();
@@ -647,9 +649,10 @@ class Rule extends CommonDBTM{
 	 * @param the criteria's ID
 	 * @return the criteria's description
 	 */
-	function getCriteriaDescriptionByID($ID)
+	function getCriteriaDescriptionByID($ID,$type)
 	{
-		return "";
+		$rule = getCriteriaByID($ID,$type); 
+         return $rule["name"];
 	}
 	/**
  	* Return a value associated with a pattern
