@@ -432,8 +432,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['rule']['title']=$LANG["rulesengine"][17];
 			$menu['admin']['content']['rule']['shortcut']='r';
 			$menu['admin']['content']['rule']['page']='/front/rule.php';
-			if (haveRight("config","r"))
-					$menu['admin']['content']['rule']['links']['add']="/front/rule.form.php";
 		}
 
 		if (haveRight("profile","r")){

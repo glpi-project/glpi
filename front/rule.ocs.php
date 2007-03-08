@@ -45,7 +45,7 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 
 if (isset($tab["action"]))
 {
-		$rulecollection = new RuleCollection(RULE_OCS_AFFECT_COMPUTER);
+		$rulecollection = new OcsRuleCollection;
 		$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
 }elseif (isset($tab["deleterule"]))
 {
@@ -60,7 +60,7 @@ if (isset($tab["action"]))
 			$rule->delete($input);
 		}
 	
-	$rulecollection = new RuleCollection(RULE_OCS_AFFECT_COMPUTER);
+	$rulecollection = new OcsRuleCollection;
 	$rulecollection->changeRuleOrder(-1,"");
 		
 	logEvent($_POST["FK_entities"], "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][20]);
@@ -69,7 +69,8 @@ if (isset($tab["action"]))
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulesengine"][17]);
 
-$rule = new RuleCollection(RULE_OCS_AFFECT_COMPUTER);
+$rule = new OcsRuleCollection();
+$rule->title(true);
 $rule->showForm($_SERVER['PHP_SELF']);
 commonFooter();
 ?>
