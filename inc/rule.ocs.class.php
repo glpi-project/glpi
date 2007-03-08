@@ -388,7 +388,8 @@ class OcsRuleCollection extends RuleCollection {
 		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
 		echo "<div align='center'>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='6'>" . getRuleByType($this->rule_type)->getRuleTypeTitle() . "</th></tr>";
+		$tmp = getRuleByType($this->rule_type);
+		echo "<tr><th colspan='6'>" . $tmp->getRuleTypeTitle() . "</th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_2'></td>";
 		echo "<td class='tab_bg_2'>" . $LANG["common"][16] . "</td>";
