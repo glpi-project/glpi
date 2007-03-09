@@ -129,9 +129,12 @@ class RuleCriteria extends CommonDBTM {
 	{
 		//Get all the informations about the condition
 		$criteria_informations = getCriteriaByID($this->fields["criteria"],$type);
-		$field = $criteria_informations["field"];
+		$field = strtoupper($criteria_informations["field"]);
 		if ($field)
-			return (matchRules($informations[$field],$this->fields["condition"],$this->fields["pattern"]));
+		{
+			$res = matchRules($informations[$field],$this->fields["condition"],$this->fields["pattern"]);
+			return ($res);
+		}
 		else
 			return false;	
 	}
@@ -478,21 +481,21 @@ class Rule extends CommonDBTM{
 		$result=false;
 		if (sizeof($this->criterias) > 0)
 		{
-		foreach ($this->criterias as $criteria)
-		{
-			$res = $criteria->processRule($informations,$this->fields["rule_type"]);
-			
-			//If AND -> one false and the rule is not matched
-			if ($this->fields["match"] == AND_MATCHING)
-				$result=$res;
-			//If OR -> if this criteria return false but another criteria already return true -> let true
-			elseif (($res == false && $result==true) || ($res == true)) 
-				$result=true;
-			//Put false
-			else
-				$result = false;		
-		}
-		return $result;
+			foreach ($this->criterias as $criteria)
+			{
+				$res = $criteria->processRule($informations,$this->fields["rule_type"]);
+				
+				//If AND -> one false and the rule is not matched
+				if ($this->fields["match"] == AND_MATCHING)
+					$result=$res;
+				//If OR -> if this criteria return false but another criteria already return true -> let true
+				elseif (($res == false && $result==true) || ($res == true)) 
+					$result=true;
+				//Put false
+				else
+					$result = false;		
+			}
+			return $result;
 		}
 		else
 			return false; 
