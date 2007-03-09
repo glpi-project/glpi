@@ -280,14 +280,14 @@ div#c_menu div#c_logo a{
 
 div#c_ssmenu1{
 	background: url(../pics/fd_nav2.png) 0 0 repeat-x;
-	height: 19px;
+	height: 24px;
 	clear: both;
 	font-size: 0.8em;
 }
 
 div#c_ssmenu1 ul{
 	position: relative;
-	top: 3px;
+	top: 4px;
 	left: 5px;
 	list-style: none;
 	
