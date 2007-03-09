@@ -630,15 +630,15 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<ul>";
 
 		// Display item
-		echo "	<li><a  style='font-size:14px' href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." ></a></li>";
+		echo "	<li><a  style='font-size:12px' href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." ></a></li>";
 
 		if (isset($menu[$sector])){
-			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['default']."' title='".$menu[$sector]['title']."' ><span style='font-size:14px'>".$menu[$sector]['title']." ></span></a></li>";
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['default']."' title='".$menu[$sector]['title']."' ><span style='font-size:12px'>".$menu[$sector]['title']." ></span></a></li>";
 		}
 
 		if (isset($menu[$sector]['content'][$item])){
 			// Title
-			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' ><span style='font-size:14px'>".$menu[$sector]['content'][$item]['title']." ></span></a></li>";
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' ><span style='font-size:14px'>".$menu[$sector]['content'][$item]['title']." </span></a></li>";
 			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
 			// Add item
