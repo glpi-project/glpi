@@ -558,7 +558,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// Get object-variables and build the navigation-elements
 		$i=1;
 		foreach ($menu as $part => $data){
-			if (count($data['content'])){
+			if (isset($data['content'])&&count($data['content'])){
 				echo "	<li id='menu$i' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
 
 				$link="#";
