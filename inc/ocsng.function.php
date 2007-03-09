@@ -297,11 +297,9 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 	
 	//Try to affect computer to an entity
 	$rule = new OcsAffectEntityRule($ocs_server_id);
-	$extra_params["computer_id"]=1;
-	$rule_parameters = $rule->getRulesMatchingAttributes(RULE_OCS_AFFECT_COMPUTER,$extra_params);
-	
+
 	//Try to match all the rules, return the first good one, or null if not rules matched
-	if ($rule->processAllRules($ocs_server_id))
+	if ($rule->processAllRules($ocs_id))
 	{
 		$comp->fields = $rule->executeAction($comp->fields);
 		

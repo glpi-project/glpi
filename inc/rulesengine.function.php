@@ -153,6 +153,7 @@ function getCriteriaByID($ID,$type)
 		if ($rule["ID"] == $ID)
 			return $rule;
 	}
+	return false;
 }
 
 /**

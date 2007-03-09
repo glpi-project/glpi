@@ -76,10 +76,9 @@ class OcsAffectEntityRule extends Rule {
 	 * @param extra_params extra parameters given
 	 * @return an array of attributes
 	 */
-	function getRulesMatchingAttributes($type, $extra_params) {
+	function getRulesMatchingAttributes($type, $computer_id) {
 		global $DBocs;
 
-		$computer_id = $extra_params["computer_id"];
 		$tables = getTablesForQuery($type);
 		$fields = getFieldsForQuery($type);
 		$linked_fields = getFKFieldsForQuery($type);
@@ -94,10 +93,11 @@ class OcsAffectEntityRule extends Rule {
 
 		//Build the select request
 		foreach ($fields as $field) {
-			switch ($field) {
+			switch (strtoupper($field)) {
 				//OCS server ID is provided by extra_params -> get the configuration associated with the ocs server
-				case "ocs_server" :
-					$rule_parameters["ocs_server"] = $this->ocs_server_id;
+				case "OCS_SERVER" :
+					$conf = getOcsConf($this->ocs_server_id);
+					$rule_parameters["OCS_SERVER"] = $conf["name"];
 					break;
 					//TAG and DOMAIN should come from the OCS DB 
 				default :
@@ -127,7 +127,6 @@ class OcsAffectEntityRule extends Rule {
 
 			if ($DBocs->numrows($result) > 0)
 				$ocs_datas = $DBocs->fetch_array($result);
-
 			return array_merge($rule_parameters, $ocs_datas);
 		} else
 			return $rule_parameters;
@@ -139,7 +138,7 @@ class OcsAffectEntityRule extends Rule {
 	 */
 	function processAllRules($computer_id) {
 		global $DB;
-
+		
 		//Get all rules to affect computers to an entity
 		$sql = "SELECT ID from glpi_rules_descriptions WHERE rule_type=" . RULE_OCS_AFFECT_COMPUTER . " ORDER by ranking ASC";
 		$result = $DB->query($sql);
@@ -148,10 +147,8 @@ class OcsAffectEntityRule extends Rule {
 			$ocsrule->getRuleWithCriteriasAndActions($rule["ID"], 1, 1);
 
 			//We need to provide the current computer id
-			$extra_params["computer_id"] = $computer_id;
-			$rule_infos = $ocsrule->getRulesMatchingAttributes(RULE_OCS_AFFECT_COMPUTER, $extra_params);
-
-			if ($ocsrule->processRule($rule_infos))
+			$rule_infos = $ocsrule->getRulesMatchingAttributes(RULE_OCS_AFFECT_COMPUTER, $computer_id);
+			if ($ocsrule->processRule($rule_infos,RULE_OCS_AFFECT_COMPUTER))
 			{
 				$this->matched_rule = $ocsrule;
 				return true;
@@ -361,6 +358,8 @@ class OcsAffectEntityRule extends Rule {
 		return "rule.ocs.php";
 	}
 }
+
+
 class OcsRuleCollection extends RuleCollection {
 
 	function OcsRuleCollection() {

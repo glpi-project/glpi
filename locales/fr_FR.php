@@ -978,7 +978,7 @@ $LANG["ocsconfig"][38]="Utiliser le dictionnaire logiciel d'OCS";
 $LANG["ocsconfig"][39]="TAG OCS";
 $LANG["ocsconfig"][40]="Nombre d'élements à synchroniser via le cron";
 $LANG["ocsconfig"][41]="Base de registre";
-
+$LANG["ocsconfig"][42]="Sous réseau";
 
 $LANG["pager"][1]="à";
 $LANG["pager"][2]="de";
@@ -1189,7 +1189,6 @@ $LANG["rulesengine"][22]="Assigner";
 $LANG["rulesengine"][23]="Mettre la valeur";
 $LANG["rulesengine"][23]="Récupérer la valeur";
 $LANG["rulesengine"][24]="Choix du type de règle";
-
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";
