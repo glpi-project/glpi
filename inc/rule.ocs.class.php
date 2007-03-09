@@ -108,6 +108,8 @@ class OcsAffectEntityRule extends Rule {
 		}
 
 		//Build the FROM part of the request
+		//Remove all the non duplicated table names
+		$tables = array_unique($tables);
 		foreach ($tables as $table) {
 			$from_sql .= ($from_sql != "" ? " , " : "") . $table;
 		}
