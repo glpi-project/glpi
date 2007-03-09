@@ -85,7 +85,17 @@ function matchRules($field, $condition, $pattern) {
 			if ($value === false)
 				return true;
 			else
-				return false;			
+				return false;
+		case REGEX_MATCH:
+			if (preg_match($pattern, $field) > 0)
+				return true;
+			else
+				return false;	
+		case REGEX_NOT_MATCH:
+			if (preg_match($pattern, $field) == 0)
+				return true;
+			else
+				return false;	
 	}
 	return false;
 }
@@ -136,6 +146,10 @@ function getConditionByID($ID)
 				return $LANG["rulesengine"][4];
 			case PATTERN_END:
 				return $LANG["rulesengine"][5];
+			case REGEX_MATCH:
+				return $LANG["rulesengine"][26];
+			case REGEX_NOT_MATCH:
+				return $LANG["rulesengine"][27];
 	}
 }
 
@@ -198,6 +212,10 @@ function dropdownRulesConditions($name,$value=''){
 	$elements[4]["value"] = PATTERN_BEGIN;
 	$elements[5]["name"] = $LANG["rulesengine"][5];
 	$elements[5]["value"] = PATTERN_END;
+	$elements[6]["value"] = REGEX_MATCH;
+	$elements[6]["name"] = $LANG["rulesengine"][26];
+	$elements[7]["value"] = REGEX_NOT_MATCH;
+	$elements[7]["name"] = $LANG["rulesengine"][27];
 	
 	dropdownArrayValues($name,$elements,$value);
 }

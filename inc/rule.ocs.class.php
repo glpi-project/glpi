@@ -166,7 +166,6 @@ class OcsAffectEntityRule extends Rule {
 		echo "<td class='tab_bg_2'>" . $this->getCriteriaDescriptionByID($fields["criteria"], RULE_OCS_AFFECT_COMPUTER) . "</td>";
 		echo "<td class='tab_bg_2'>" . getConditionByID($fields["condition"]) . "</td>";
 		echo "<td class='tab_bg_2'>" . $this->getCriteriaPatternValue($fields["pattern"], RULE_OCS_AFFECT_COMPUTER, $fields["criteria"]) . "</td>";
-
 	}
 
 	function showFormDescriptionHeader() {
@@ -216,6 +215,7 @@ class OcsAffectEntityRule extends Rule {
 			echo $LANG["rulesengine"][15] . ":";
 			autocompletionTextField("pattern", "glpi_rules_criterias", "pattern", "", 30);
 			echo "</td><td align='center' class='tab_bg_2'>";
+			
 			echo "<input type=hidden name='FK_rules' value=\"" . $fields["ID"] . "\">";
 			echo "<input type='submit' name='add_criteria' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 			echo "</td></tr>";

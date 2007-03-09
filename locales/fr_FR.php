@@ -1189,6 +1189,10 @@ $LANG["rulesengine"][22]="Assigner";
 $LANG["rulesengine"][23]="Mettre la valeur";
 $LANG["rulesengine"][23]="Récupérer la valeur";
 $LANG["rulesengine"][24]="Choix du type de règle";
+$LANG["rulesengine"][25]="Nom de la machine";
+$LANG["rulesengine"][26]="Regex vérifie";
+$LANG["rulesengine"][27]="Regex ne vérifie pas";
+
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";
