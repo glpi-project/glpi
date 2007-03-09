@@ -218,6 +218,9 @@
 	define("PATTERN_NOT_CONTAIN",3);
 	define("PATTERN_BEGIN",4);
 	define("PATTERN_END",5);	
+	define("REGEX_MATCH",6);	
+	define("REGEX_NOT_MATCH",7);	
+	
 
 	define("AND_MATCHING","AND");
 	define("OR_MATCHING","OR");	
