@@ -155,7 +155,7 @@ class Reminder extends CommonDBTM {
 			}		
 			echo "</b></th></tr>";
 
-			echo "<tr class='tab_bg_2'><td>".$LANG["reminder"][8].":		</td>";
+			echo "<tr class='tab_bg_2'><td>".$LANG["common"][57].":		</td>";
 			echo "<td>";
 
 			if($remind_edit) { 

@@ -131,7 +131,7 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 			$LANG["joblist"][4]=>"assign.name",
 			$LANG["common"][1]=>"glpi_tracking.device_type,glpi_tracking.computer",
 			$LANG["common"][36]=>"glpi_dropdown_tracking_category.completename",
-			$LANG["joblist"][6]=>"glpi_tracking.contents",
+			$LANG["common"][57]=>"glpi_tracking.name",
 		    );
 
 	foreach ($items as $key => $val){
@@ -519,10 +519,11 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		// Eigth column
 
-		$stripped_content=resume_text($data["contents"],400);
-		if ($followups){$stripped_content=resume_text($data["contents"],$CFG_GLPI["cut"]);}
+		$eigth_column="<strong>".$data["name"]."</strong>";
 
-		$eigth_column="<strong>".$stripped_content."</strong>";
+		$eigth_column.= "<img alt='".$LANG["joblist"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$data["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$data["ID"]."')\" >";
+		$eigth_column.="<span class='over_link' id='comments_tracking".$data["ID"]."'>".nl2br($data['contents'])."</span>";
+		
 		if ($followups&&$output_type==HTML_OUTPUT)
 		{
 			$eigth_column.=showFollowupsShort($data["ID"]);
@@ -601,8 +602,12 @@ function showJobVeryShort($ID) {
 		else {
 			echo "<td  align='center' >".$job->hardwaredatas->getType()."<br><strong>".$job->hardwaredatas->getNameID()."</strong></td>";
 		}
-		$stripped_content =resume_text($job->fields["contents"],100);
-		echo "<td ><strong>".$stripped_content."</strong>";
+
+		echo "<td ><strong>".$job->fields["name"];
+		echo "<img alt='".$LANG["joblist"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$job->fields["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$job->fields["ID"]."')\" >";
+		echo "<span class='over_link' id='comments_tracking".$job->fields["ID"]."'>".nl2br($job->fields['contents'])."</span>";
+
+		echo "</strong>";
 		echo "</td>";
 
 		// Job Controls
@@ -996,7 +1001,12 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<tr  class='tab_bg_1'>";
 
 	echo "<td align='center' colspan='2'>";
-	$elts=array("both"=>$LANG["joblist"][6]." / ".$LANG["job"][7],"contents"=>$LANG["joblist"][6],"followup" => $LANG["job"][7],"ID"=>"ID");
+	$elts=array("name"=>$LANG["common"][57],
+		    "contents"=>$LANG["joblist"][6],
+		    "followup"=>$LANG["job"][7],
+		    "name_contents"=>$LANG["common"][57]." / ".$LANG["joblist"][6],
+		    "name_contents_followup"=>$LANG["common"][57]." / ".$LANG["joblist"][6]." / ".$LANG["job"][7],
+		    "ID"=>"ID");
 	echo "<select name='field2'>";
 	foreach ($elts as $key => $val){
 		$selected="";
@@ -1120,7 +1130,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	$SELECT = "SELECT ".getCommonSelectForTrackingSearch();
 	$FROM = " FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch();
 
-	if ($contains2!=""&&$field2!="contents"&&$field2!="ID") {
+	if ($contains2!=""&&strpos($field2,"followup")!==false) {
 		$FROM.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
 	}
 
@@ -1196,23 +1206,19 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		$where.=" AND glpi_tracking.author = '$author'";
 	}
 
-
 	if ($contains2!=""){
 		$SEARCH2=makeTextSearch($contains2);
-		switch ($field2){
-			case "both" :
-				$where.= " AND (glpi_followups.contents $SEARCH2 OR glpi_tracking.contents $SEARCH2)";
-			break;
-			case "followup" :
-				$where.= " AND (glpi_followups.contents $SEARCH2)";
-			break;
-			case "contents" :
-				$where.= " AND (glpi_tracking.contents $SEARCH2)";
-			break;
-			case "ID" :
-				$where= " WHERE (glpi_tracking.ID = '".$contains2."')";
-			break;
-
+		if ($field2=="ID"){
+			$where= " WHERE (glpi_tracking.ID = '".$contains2."')";
+		}
+		if (strpos($field2,"followup")!== false){
+			$where.= " AND (glpi_followups.contents $SEARCH2)";
+		}
+		if (strpos($field2,"name")!== false){
+			$where.= " AND (glpi_tracking.name $SEARCH2)";
+		}
+		if (strpos($field2,"contents")!== false){
+			$where.= " AND (glpi_tracking.contents $SEARCH2)";
 		}
 	}
 	$where.=getEntitiesRestrictRequest("AND","glpi_tracking");
@@ -1246,7 +1252,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 
 	$query=$SELECT.$FROM.$where." ORDER BY $sort $order";
-
+	
 	// Get it from database	
 	if ($result = $DB->query($query)) {
 
@@ -1503,7 +1509,7 @@ function showJobDetails ($target,$ID){
 
 		echo "</table></td>";
 
-		// Deuxi�e colonne
+		// Deuxieme colonne
 		echo "<td valign='top' width='33%'>";
 
 		echo "<table border='0'>";
@@ -1562,7 +1568,7 @@ function showJobDetails ($target,$ID){
 
 		echo "</td>";
 
-		// Troisi�e Colonne
+		// Troisieme Colonne
 		echo "<td valign='top' width='20%'>";
 
 		if(haveRight("contract_infocom","r")){  // admin = oui on affiche les couts liés à l'interventions
@@ -1603,11 +1609,18 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 
 
-		// Deuxi�e Ligne
+		// Deuxieme Ligne
 		// Colonnes 1 et 2
 		echo "<tr class='tab_bg_1'><td colspan='2'>";
 		echo "<table width='99%' >";
-		echo "<tr  class='tab_bg_2'><td width='15%'>".$LANG["joblist"][6]."<br><br></td>";
+		echo "<tr class='tab_bg_2'><th colspan='2'>";
+		if ($canupdate_descr){
+			echo "<input type='text' maxlength='250' size='80' name='name' value=\"".$job->fields["name"]."\">";
+		} else {
+			echo $job->fields["name"];
+		}
+		echo "</td></tr>";
+		echo "<tr  class='tab_bg_2'><td width='15%'>".$LANG["joblist"][6]."</td>";
 		echo "<td  width='85%' align='left'>";
 
 		if ($canupdate_descr){ // Admin =oui on autorise la modification de la description

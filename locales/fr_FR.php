@@ -225,6 +225,8 @@ $LANG["common"][53]="Liste";
 $LANG["common"][54]="Elément introuvable";
 $LANG["common"][55]="Etes-vous certain de vouloir supprimer cet élement ?";
 $LANG["common"][56]="Central";
+$LANG["common"][57]="Titre";
+
 
 $LANG["computers"][0]="Ajouter ordinateur...";
 $LANG["computers"][9]="OS";
@@ -1082,7 +1084,6 @@ $LANG["reminder"][4]="Note personnelle";
 $LANG["reminder"][5]="Note publique";
 $LANG["reminder"][6]="Nouvelle note";
 $LANG["reminder"][7]="Note";
-$LANG["reminder"][8]="Titre";
 $LANG["reminder"][9]="Texte";
 $LANG["reminder"][10]="Type";
 $LANG["reminder"][11]="Calendrier";
