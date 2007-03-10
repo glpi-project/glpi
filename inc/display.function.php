@@ -1340,6 +1340,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$device_type = 0;
 	$computer="";
 	$contents="";
+	$title="";
 	$category = 0;
 
 
@@ -1353,6 +1354,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		$device_type = stripslashes($_SESSION["helpdeskSaved"]["category"]);
 	if (isset($_SESSION["helpdeskSaved"]["contents"]))
 		$contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
+	if (isset($_SESSION["helpdeskSaved"]["name"]))
+		$title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
 	if (isset($_SESSION["helpdeskSaved"]["category"]))
 		$category = stripslashes($_SESSION["helpdeskSaved"]["category"]);
 
@@ -1400,6 +1403,11 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'>".$LANG["help"][13].":</td>";
 	echo "</tr>";
+	echo "<tr class='tab_bg_1'>";
+	echo "<td align='center'>".$LANG["common"][57].":</td>";
+	echo "<td align='center'><input type='text' maxlength='250' size='80' name='name' value=\"$title\"></td>";
+	echo "</tr>";
+
 	echo "<tr class='tab_bg_1'>";
 	echo "<td colspan='2' align='center'><textarea name='contents' cols='80' rows='14' >$contents</textarea>";
 	echo "</td></tr>";

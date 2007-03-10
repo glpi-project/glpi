@@ -107,8 +107,12 @@ class Job extends CommonDBTM{
 				$input=$ret;
 			} else { // Default case can only update contents if no followups already added
 				$ret["ID"]=$input["ID"];
-				if (isset($input["contents"]))
+				if (isset($input["contents"])){
 					$ret["contents"]=$input["contents"];
+				}
+				if (isset($input["name"])){
+					$ret["name"]=$input["name"];
+				}
 				$input=$ret;
 			}
 
@@ -168,7 +172,6 @@ class Job extends CommonDBTM{
 
 		}
 
-
 		return $input;
 	}
 
@@ -207,7 +210,7 @@ class Job extends CommonDBTM{
 					$updates=array_intersect($updates,array("assign"));
 				else $updates=array();
 			} else if ($this->fields["author"]==$_SESSION["glpiID"]&&$this->numberOfFollowups()==0){ // Helpdesk case
-				$updates=array_intersect($updates,array("contents"));
+				$updates=array_intersect($updates,array("contents","name"));
 			}
 		}
 
@@ -387,6 +390,10 @@ class Job extends CommonDBTM{
 		if (!isset($input["status"])) $input["status"]="new";
 		if (!isset($input["assign"])) $input["assign"]=0;
 
+
+		if (empty($input["name"])) {
+			$input["name"]=substr(ereg_replace('\n',' ',$input['contents']),0,50);
+		}
 		if (!isset($input["author"])){
 			if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
 				$input["author"]=$_SESSION["glpiID"];
