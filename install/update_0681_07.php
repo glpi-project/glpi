@@ -817,7 +817,10 @@ function update0681to07() {
 		$query="UPDATE glpi_tracking SET name=SUBSTRING(REPLACE(contents,'\n',' '),1,50);";
 		$DB->query($query) or die("0.7 update title of glpi_tracking" . $LANG["update"][90] . $DB->error());
 	}
-
+	if (FieldExists("glpi_reminder", "title")) {
+		$query = "ALTER TABLE `glpi_reminder` CHANGE `title` `title` VARCHAR( 255 ) NULL DEFAULT NULL ";
+		$DB->query($query) or die("0.7 alter title in glpi_reminder" . $LANG["update"][90] . $DB->error());
+	}
 
 	// TODO Split Config -> config general + config entity
 	// TODO Auto assignment profile based on rules
