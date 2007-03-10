@@ -765,6 +765,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	}
 
+	echo "<tr><th align='center'>".$LANG["common"][57].":";
+	echo "</th><th colspan='3'>";
+	echo "<input type='text' size='60' name='name' >";
+	echo "</th> </tr>";
+
+	
 	echo "<tr><th colspan='4' align='center'>".$LANG["job"][11].":";
 	echo "</th></tr>";
 
@@ -1619,7 +1625,7 @@ function showJobDetails ($target,$ID){
 		} else {
 			echo $job->fields["name"];
 		}
-		echo "</td></tr>";
+		echo "</th></tr>";
 		echo "<tr  class='tab_bg_2'><td width='15%'>".$LANG["joblist"][6]."</td>";
 		echo "<td  width='85%' align='left'>";
 

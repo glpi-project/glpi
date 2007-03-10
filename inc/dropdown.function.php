@@ -931,7 +931,6 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 
 			echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
-			echo "<div align='center'>";
 			echo "<span id='results_$myname$rand'>\n";
 
 			if (isset($_SESSION["helpdeskSaved"]["computer"])){
