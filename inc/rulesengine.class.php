@@ -289,14 +289,14 @@ class Rule extends CommonDBTM{
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 	}
-
+/*
 	function getEmpty()
 	{
 		$this->getEmpty();
 		$this->actions = array();
 		$this->criterias = array();	
 	}
-	
+	*/
 	function showForm($target,$ID,$withtemplate='')
 	{
 			global $CFG_GLPI, $LANG;
@@ -354,22 +354,19 @@ class Rule extends CommonDBTM{
 	 * @param withaction  1 to retrive all the actions for a given rule
 	 */
 	function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
-		if ($ID == "")
+		if ($ID == ""){
 			$this->getEmpty();
-		else
-		{	
-		$this->getFromDB($ID);
+		} else {
+			$this->getFromDB($ID);
 		
-		if ($withactions)
-		{
-			$RuleAction = new RuleAction;
-			$this->actions = $RuleAction->getRuleActions($ID);
-		}	
-		if ($withcriterias)
-		{
-			$RuleCriterias = new RuleCriteria;
-			$this->criterias = $RuleCriterias->getRuleCriterias($ID);
-		}
+			if ($withactions){
+				$RuleAction = new RuleAction;
+				$this->actions = $RuleAction->getRuleActions($ID);
+			}	
+			if ($withcriterias){
+				$RuleCriterias = new RuleCriteria;
+				$this->criterias = $RuleCriterias->getRuleCriterias($ID);
+			}
 		}
 	}
 	
@@ -385,98 +382,102 @@ class Rule extends CommonDBTM{
 		displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
 	}
 
+
+	function maxActionsCount(){
+		// Unlimited
+		return 0;
+	}
 	/**
 	 * Display all rules actions
 	 */
 	function showActionsList($target,$editable)
 	{
-			global $CFG_GLPI, $LANG;
+		global $CFG_GLPI, $LANG;
 			
-			$canedit = haveRight("config", "w");
-			echo "<form name='entityaffectation_actionform' id='entityaffectation_actionform' method='post' action=\"$target\">";
+		$canedit = haveRight("config", "w");
+		echo "<form name='entityaffectation_actionform' id='entityaffectation_actionform' method='post' action=\"$target\">";
 			
-			//Only one rule is accepted
-			if (sizeof($this->actions) == 0)
-				$this->addActionForm($this->fields,$editable, $canedit);
+		if ($this->maxActionsCount()>0&&sizeof($this->actions) < $this->maxActionsCount()){
+			$this->addActionForm($this->fields,$editable, $canedit);
+		}
 				
-			echo "<div align='center'>"; 
-			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='".($editable=="true"?" 4 ":"3")."'>" . $LANG["rulesengine"][7] . "</th></tr>";
-			echo "<tr>";
-			if ($editable)
-				echo "<td class='tab_bg_2'></td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][11]."</td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][12]."</td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][13]."</td>";
-			echo "</tr>";
+		echo "<div align='center'>"; 
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='".($editable=="true"?" 4 ":"3")."'>" . $LANG["rulesengine"][7] . "</th></tr>";
+		echo "<tr>";
+		if ($editable){
+			echo "<td class='tab_bg_2'></td>";
+		}
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][11]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][12]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][13]."</td>";
+		echo "</tr>";
 						
-			foreach ($this->actions as $action)
-				$this->showMinimalActionForm($action->fields,$editable,$canedit);
+		foreach ($this->actions as $action){
+			$this->showMinimalActionForm($action->fields,$editable,$canedit);
+		}
 				
 		if ($editable && $canedit) {
-		echo "<div align='center'>";
-		echo "<table cellpadding='5' width='80%'>";
-		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<div align='center'>";
+			echo "<table cellpadding='5' width='80%'>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_actionform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
-		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='delete_action' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
-		echo "</td>";
-		echo "</table>";
+			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_actionform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "</td><td align='left' width='80%'>";
+			echo "<input type='submit' name='delete_action' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "</td>";
+			echo "</table>";
 
-		echo "</div>";
+			echo "</div>";
 
-	}
-		else
-		{	
+		} else 	{	
 			echo "</table>";
 			echo "</div>";
 			echo "</form>";
-		}			}
+		}			
+	}
 	
 	/**
 	 * Display all rules actions
 	 */
 	function showCriteriasList($target,$editable)
 	{
-			global $CFG_GLPI, $LANG;
+		global $CFG_GLPI, $LANG;
 			
-			$canedit = haveRight("config", "w");
-			echo "<form name='entityaffectation_criteriasform' id='entityaffectation_criteriasform' method='post' action=\"$target\">";
+		$canedit = haveRight("config", "w");
+		echo "<form name='entityaffectation_criteriasform' id='entityaffectation_criteriasform' method='post' action=\"$target\">";
 			
-			$this->addCriteriaForm($this->fields,$editable, $canedit);
+		$this->addCriteriaForm($this->fields,$editable, $canedit);
 			
-			echo "<div align='center'>"; 
-			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='".($editable=="true"?" 4 ":"3")."'>" . $LANG["rulesengine"][6] . "</th></tr>";
-			echo "<tr>";
-			if ($editable)
-				echo "<td class='tab_bg_2'></td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
-			echo "</tr>";
+		echo "<div align='center'>"; 
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='".($editable=="true"?" 4 ":"3")."'>" . $LANG["rulesengine"][6] . "</th></tr>";
+		echo "<tr>";
+		if ($editable){
+			echo "<td class='tab_bg_2'></td>";
+		}
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
+		echo "</tr>";
 			
-			$maxsize = sizeof($this->criterias);
-			foreach ($this->criterias as $criteria)
-				$this->showMinimalCriteriaForm($criteria->fields,$editable,$canedit);
+		$maxsize = sizeof($this->criterias);
+		foreach ($this->criterias as $criteria)
+			$this->showMinimalCriteriaForm($criteria->fields,$editable,$canedit);
 			
 		if ($editable && $canedit) {
-		echo "<div align='center'>";
-		echo "<table cellpadding='5' width='80%'>";
-		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<div align='center'>";
+			echo "<table cellpadding='5' width='80%'>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-		echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
-		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='delete_criteria' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
-		echo "</td>";
-		echo "</table>";
+			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "</td><td align='left' width='80%'>";
+			echo "<input type='submit' name='delete_criteria' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "</td>";
+			echo "</table>";
 
-		echo "</div>";
-
-	}
-		else
-		{	
+			echo "</div>";
+		} else {	
 			echo "</table>";
 			echo "</div>";
 			echo "</form>";
@@ -488,6 +489,7 @@ class Rule extends CommonDBTM{
 	 */
 	function processRule($informations)
 	{
+		// MOYO : pourquoi ne pas faire directement : CHECK Critères ET ACTIONS si règle valide ?
 		$result=false;
 		if (sizeof($this->criterias) > 0)
 		{
@@ -512,15 +514,17 @@ class Rule extends CommonDBTM{
 	}
 
 	/**
-	 * Function to be implemented to get the attribtes needed to process rule's matching
+	 * Function to be implemented to get the attributes needed to process rule's matching
 	 */
 	function getRequestForAttributes($type)
 	{	
+		// MOYO jamais appelé dans ce fichier -> surement pas à etre ici : utile que dans des cas précis
 		return array();
 	}
 
 	function processAllRules($rule_parameters)
-	{
+	{		
+		// MOYO : plutot dans RuleCollection : appels successif a tous les processRule
 		return null;
 	}
 
@@ -593,79 +597,103 @@ class Rule extends CommonDBTM{
 	 */
 	function prepareInputForAdd($input)
 	{
-		$input["ranking"] = getNextRanking($input["rule_type"]);
+		$input["ranking"] = $this->getNextRanking($input["rule_type"]);
 		return $input;
 	}
+
+	/**
+	 * Get the next ranking for a specified rule
+	 */
+	function getNextRanking($type)
+	{
+		global $DB;
+		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE rule_type=".$this->type;
+		$result = $DB->query($sql);
+		if ($DB->numrows($result) > 0)
+		{
+			$datas = $DB->fetch_array($result);
+			return $datas["rank"] + 1;
+		} else {
+			return 0;
+		}
+	}
+
 	
 	function showMinimalActionForm($fields,$editable,$canedit)
 	{
-			global $LANG,$CFG_GLPI;
+		// MOYO : pourquoi pas dans Action ?
+		global $LANG,$CFG_GLPI;
 			
-			$canedit = haveRight("config","w");
+		$canedit = haveRight("config","w");
 			
-			if (!$editable)
-				echo "<tr>";  
-			else
-			{
-				echo "<tr class='tab_bg_1'>";
+		if (!$editable){
+			echo "<tr>";  
+		} else	{
+			echo "<tr class='tab_bg_1'>";
 				
-				if ($canedit) {
-					echo "<td width='10'>";
-					$sel = "";
-					if (isset ($_GET["select"]) && $_GET["select"] == "all")
-						$sel = "checked";
-					echo "<input type='checkbox' name='item[" . $fields["ID"] . "]' value='1' $sel>";
-					echo "</td>";
-				}
-
+			if ($canedit) {
+				echo "<td width='10'>";
+				$sel = "";
+				if (isset ($_GET["select"]) && $_GET["select"] == "all")
+					$sel = "checked";
+				echo "<input type='checkbox' name='item[" . $fields["ID"] . "]' value='1' $sel>";
+				echo "</td>";
 			}
+		}
 			
-			$this->showMinimalAction($fields,$editable,$canedit);
-			echo "</tr>";
+		$this->showMinimalAction($fields,$editable,$canedit);
+		echo "</tr>";
 	}
 
 	function showMinimalCriteriaForm($fields,$editable,$canedit)
 	{
-			global $LANG,$CFG_GLPI;
-			
-			if (!$editable)
-				echo "<tr>";  
-			else
-			{
-				echo "<tr class='tab_bg_1'>";
-				
-				if ($canedit) {
-					echo "<td width='10'>";
-					$sel = "";
-					if (isset ($_GET["select"]) && $_GET["select"] == "all")
-						$sel = "checked";
-					echo "<input type='checkbox' name='item[" . $fields["ID"] . "]' value='1' $sel>";
-					echo "</td>";
-				}
+		// MOYO : pourquoi pas dans Criteria ?
 
+		global $LANG,$CFG_GLPI;
+			
+		if (!$editable){
+			echo "<tr>";  
+		} else {
+			echo "<tr class='tab_bg_1'>";
+				
+			if ($canedit) {
+				echo "<td width='10'>";
+				$sel = "";
+				if (isset ($_GET["select"]) && $_GET["select"] == "all"){
+					$sel = "checked";
+				}
+				echo "<input type='checkbox' name='item[" . $fields["ID"] . "]' value='1' $sel>";
+				echo "</td>";
 			}
-			$this->showMinimalCriteria($fields,$editable, $canedit);	
-			echo "</tr>";
+
+		}
+		$this->showMinimalCriteria($fields,$editable, $canedit);	
+		echo "</tr>";
 	}
 
-	function showMinimalCriteria($fields,$editable,$canedit)
-	{
-		
+	function showMinimalCriteria($fields,$editable,$canedit){
+		// MOYO ca sert a quoi ?
+		// Ya pas moyen de le rendre générique ?
 	}	
 
 	function showMinimalAction($fields,$editable,$canedit)
 	{
+		// MOYO ca sert a quoi ?
+		// Ya pas moyen de le rendre générique ?
 		
 	}	
 	
 	function addCriteriaForm($fields,$canedit)
 	{
+		// MOYO ca sert a quoi ?
+		// Ya pas moyen de le rendre générique ?
 		
 	}
 
 	function addValueForm($fields,$canedit)
 	{
-		
+		// MOYO ca sert a quoi ?
+		// Ya pas moyen de le rendre générique ?
 	}
 
 	/**
@@ -675,8 +703,9 @@ class Rule extends CommonDBTM{
 	 */
 	function getCriteriaDescriptionByID($ID,$type)
 	{
+		// MOYO : pourquoi il y a un paramètre $type alors qu'on est dans une classe comportant un element type ?
 		$rule = getCriteriaByID($ID,$type); 
-         return $rule["name"];
+         	return $rule["name"];
 	}
 	/**
  	* Return a value associated with a pattern
@@ -695,6 +724,7 @@ class Rule extends CommonDBTM{
  */
 	function executeAction($fields)
 	{
+		// MOYO Ya pas moyen de rendre ca générique comme le check des critères ?
 		return $fields;
 	}
 		

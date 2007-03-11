@@ -108,6 +108,9 @@ function matchRules($field, $condition, $pattern) {
 function getRulesByID($rule_type, $ID, $withcriterias, $withactions) {
 	global $DB;
 	$ocs_affect_computer_rules = array ();
+	// MOYO : quoi donc que ca fout la ca ?
+	// MOYO : ca correspond pas deja à un cas particulier de ca : getRuleWithCriteriasAndActions ?
+
 
 	//Get all the rules whose rule_type is $rule_type and entity is $ID
 	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$rule_type." and gra.value='".$ID."'";
@@ -159,6 +162,7 @@ function getConditionByID($ID)
   */
 function getCriteriaByID($ID,$type)
 {
+	// MOYO : pourquoi ce n'est pas dans la classe ? 
 	global $RULES_CRITERIAS;
 	foreach ($RULES_CRITERIAS[$type] as $rule)
 	{
@@ -175,6 +179,8 @@ function getCriteriaByID($ID,$type)
  */
 function getCriteriasByType($type)
 {
+	// MOYO : pourquoi ce n'est pas dans la classe ? 
+
 	global $RULES_CRITERIAS;
 	return $RULES_CRITERIAS[$type];
 }
@@ -294,6 +300,7 @@ function getFKFieldsForQuery($type)
 			
 	return $fields;		  
 }
+
 
 function getRuleByType($type)
 {

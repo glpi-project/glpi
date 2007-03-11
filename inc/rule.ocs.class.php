@@ -55,18 +55,6 @@ class OcsAffectEntityRule extends Rule {
 		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
 	}
 
-	/**
-	 * Print a good title for computer pages
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title() {
-		global $LANG, $CFG_GLPI;
-
-		$buttons = array ();
-		displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
-	}
 
 	/**
 	 * Get the attributes needed for processing the rules
@@ -157,7 +145,10 @@ class OcsAffectEntityRule extends Rule {
 
 		return false;
 	}
-
+	function maxActionsCount(){
+		// Unlimited
+		return 1;
+	}
 	function showMinimalCriteria($fields, $editable, $canedit) {
 		global $LANG, $CFG_GLPI;
 

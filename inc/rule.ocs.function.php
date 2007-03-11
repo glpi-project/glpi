@@ -50,21 +50,5 @@ function addNewAffectationRule($input) {
 	}
 }
 
-	/**
-	 * Get the next ranking for a specified rule
-	 */
-	function getNextRanking($type)
-	{
-		global $DB;
-		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE rule_type=".$type;
-		$result = $DB->query($sql);
-		if ($DB->numrows($result) > 0)
-		{
-			$datas = $DB->fetch_array($result);
-			return $datas["rank"] + 1;
-		}
-		else
-			return 0;
-	}
 
 ?>

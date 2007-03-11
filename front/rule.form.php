@@ -94,6 +94,10 @@ elseif (isset($tab["update_description"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
+// MOYO : La question la dessus c'est un peu comme pour la page rule.ocs.php -> pourquoi ne pas faire une page par item ?
+// MOYO : Une idée même : faire un include de rule.form.php en redefinissant juste au départ les types de $rule $ruleaction et $rulecriteria ?
+// MOYO : avec le var $rule_class_name="Rule"; de la classe RuleCollection la définition de la RuleCollection doit suffir en plus normalement.
+// MOYO : meme idée pour rule.ocs.php
 $rule = getRuleByType(getRuleType($tab["ID"]));
 $rule->getRuleWithCriteriasAndActions($tab["ID"],1,1);
 
