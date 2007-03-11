@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: ocsng.php 4213 2006-12-25 19:56:49Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
