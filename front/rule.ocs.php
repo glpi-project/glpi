@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: cartridge.form.php 4487 2007-03-01 03:19:20Z jmd $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.

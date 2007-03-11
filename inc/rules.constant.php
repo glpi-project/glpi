@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: rules.constant.php 4415 2007-02-16 13:46:55Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.

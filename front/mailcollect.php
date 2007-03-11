@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: computer.php 4291 2007-01-07 12:31:39Z jmd $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
