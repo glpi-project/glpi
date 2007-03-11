@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: search.function.php 4409 2007-02-14 19:32:10Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.

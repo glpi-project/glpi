@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: profile.class.php 4258 2007-01-04 16:16:18Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
