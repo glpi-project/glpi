@@ -48,9 +48,11 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulese
 	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 	echo "<tr><th>" . $LANG["rulesengine"][24] . "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.ocs.php\"><b>" . $LANG["rulesengine"][17]." ".$LANG["rulesengine"][18] . "</b></a></td></tr>";
+	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.ocs.php\"><strong>" . $LANG["rulesengine"][18] . "</strong></a></td></tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"rule.ldap.php\"><b>" . $LANG["rulesengine"][17]." ".$LANG["rulesengine"][19] . "</b></a></td> </tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"rule.ldap.php\"><strong>" .$LANG["rulesengine"][19] . "</strong></a></td> </tr>";
+
+	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.tracking.php\"><strong>" . $LANG["rulesengine"][28] . "</strong></a></td></tr>";
 
 	echo "</table></div>";
 

@@ -1182,8 +1182,8 @@ $LANG["rulesengine"][14]="Condition";
 $LANG["rulesengine"][15]="Motif";
 $LANG["rulesengine"][16]="Critère";
 $LANG["rulesengine"][17]="Règles";
-$LANG["rulesengine"][18]=" d'affectation d'une machine à une entité";
-$LANG["rulesengine"][19]=" d'affectation de droits à partir de l'annuaire";
+$LANG["rulesengine"][18]="Règles d'affectation d'une machine à une entité";
+$LANG["rulesengine"][19]="Règles d'affectation de droits à partir de l'annuaire";
 $LANG["rulesengine"][20]="suppression d'une règle";
 $LANG["rulesengine"][21]="Ajout d'une règle";
 $LANG["rulesengine"][22]="Assigner";
@@ -1193,6 +1193,8 @@ $LANG["rulesengine"][24]="Choix du type de règle";
 $LANG["rulesengine"][25]="Nom de la machine";
 $LANG["rulesengine"][26]="Regex vérifie";
 $LANG["rulesengine"][27]="Regex ne vérifie pas";
+$LANG["rulesengine"][28]="Règles métier pour le suivi";
+$LANG["rulesengine"][29]="Liste des règles";
 
 
 $LANG["search"][0]="Recherche"; 
