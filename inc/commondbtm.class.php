@@ -86,6 +86,9 @@ class CommonDBTM {
 				$this->fields[$key] = "";
 			}
 		} else return false;
+		if (isset($this->fields['FK_entities'])&&isset($_SESSION["glpiactive_entity"])){
+			$this->fields['FK_entities']=$_SESSION["glpiactive_entity"];
+		}
 		$this->post_getEmpty();
 		return true;
 	}
@@ -111,8 +114,8 @@ class CommonDBTM {
 			$query .= $this->fields["ID"];	
 			$query .= "'";
 			$result=$DB->query($query);
+	
 		}
-		
 		$this->post_updateInDB($updates);
 		$this->cleanCache($this->fields["ID"]);
 		return true;
@@ -313,7 +316,6 @@ class CommonDBTM {
 					}
 				}
 			}	
-		
 			if(count($updates)){
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
 
