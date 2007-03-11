@@ -227,4 +227,5 @@
 	
 	define("RULE_OCS_AFFECT_COMPUTER",0);
 	define("RULE_LDAP_AFFECT_RIGHT",1);
+	define("RULE_TRACKING_AUTO_ACTION",2);
 ?>

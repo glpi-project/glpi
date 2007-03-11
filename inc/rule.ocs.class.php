@@ -50,7 +50,7 @@ class OcsAffectEntityRule extends Rule {
 	//Store the id of the ocs server
 	var $ocs_server_id;
 
-	function OcsAffectEntityRule($ocs_server_id) {
+	function OcsAffectEntityRule($ocs_server_id=-1) {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->ocs_server_id = $ocs_server_id;
@@ -172,11 +172,6 @@ class OcsAffectEntityRule extends Rule {
 		global $LANG;
 		echo "<td class='tab_bg_2'>" . $LANG["rulesengine"][10] . "</td>";
 		echo "<td class='tab_bg_2'>" . $this->fields["ranking"] . "</td>";
-	}
-
-	function getRuleTypeTitle() {
-		global $LANG;
-		return $LANG["rulesengine"][17] . " " . $LANG["rulesengine"][18];
 	}
 
 	function showMinimalAction($fields, $editable, $canedit) {
@@ -355,10 +350,6 @@ class OcsAffectEntityRule extends Rule {
 		$fields[$action->fields["field"]] = $action->fields["value"];
 		return $fields;
 	}
-	function getFormPage()
-	{
-		return "rule.ocs.php";
-	}
 }
 
 
@@ -367,76 +358,13 @@ class OcsRuleCollection extends RuleCollection {
 	function OcsRuleCollection() {
 		global $DB;
 		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
-
-		//Select all the rules of a different type
-		$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=" . $this->rule_type . " ORDER by ranking ASC";
-		$result = $DB->query($sql);
-		while ($rule = $DB->fetch_array($result)) {
-
-			//For each rule, get a Rule object with all the criterias and actions
-			$tempRule = new OcsAffectEntityRule(-1);
-			$tempRule->getRuleWithCriteriasAndActions($rule["ID"], 1, 1);
-
-			//Add the object to the list of rules
-			$this->rule_list[] = $tempRule;
-		}
+		$this->rule_class_name = 'OcsAffectEntityRule';
 	}
 
-	function showForm($target) {
-		global $CFG_GLPI, $LANG;
-
-		$canedit = haveRight("config", "w");
-		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
-		echo "<div align='center'>";
-		echo "<table class='tab_cadre_fixe'>";
-		$tmp = getRuleByType($this->rule_type);
-		echo "<tr><th colspan='6'>" . $tmp->getRuleTypeTitle() . "</th></tr>";
-		echo "<tr>";
-		echo "<td class='tab_bg_2'></td>";
-		echo "<td class='tab_bg_2'>" . $LANG["common"][16] . "</td>";
-		echo "<td class='tab_bg_2'>" . $LANG["joblist"][6] . "</td>";
-		echo "<td class='tab_bg_2' colspan='2'></td>";
-		echo "</tr>";
-
-		foreach ($this->rule_list as $rule)
-			$rule->showMinimalForm();
-
-		if ($canedit) {
-			echo "<div align='center'>";
-			echo "<table cellpadding='5' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
-
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
-			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='deleterule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
-			echo "</td>";
-			echo "</table>";
-
-			echo "</div>";
-
-		} else {
-			echo "</table>";
-			echo "</div>";
-			echo "</form>";
-		}
+	function getTitle() {
+		global $LANG;
+		return $LANG["rulesengine"][18];
 	}
 
-	/**
-	* Print a good title for computer pages
-	*@return nothing (diplays)
-	*
-	**/
-	function title($addbutton = false) {
-		global $LANG, $CFG_GLPI;
-
-		/*
-		if ($addbutton)
-			$buttons["rule.form.php?ruletype=" .
-			$this->rule_type . "&newrule=1"] = $LANG["rulesengine"][21];
-		else
-		*/
-			$buttons = array ();
-		displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
-	}
 }
 ?>
