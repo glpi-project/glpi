@@ -2,7 +2,7 @@
 
 
 /*
- * @version $Id: setup.config.php 4050 2006-10-27 15:32:57Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2006 by the INDEPNET Development Team.
