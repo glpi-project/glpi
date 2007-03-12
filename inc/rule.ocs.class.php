@@ -157,12 +157,6 @@ class OcsAffectEntityRule extends Rule {
 		echo "<td class='tab_bg_2'>" . $this->getCriteriaPatternValue($fields["pattern"], RULE_OCS_AFFECT_COMPUTER, $fields["criteria"]) . "</td>";
 	}
 
-	function showFormDescriptionHeader() {
-		global $LANG;
-		echo "<td class='tab_bg_2'>" . $LANG["rulesengine"][10] . "</td>";
-		echo "<td class='tab_bg_2'>" . $this->fields["ranking"] . "</td>";
-	}
-
 	function showMinimalAction($fields, $editable, $canedit) {
 		global $LANG, $CFG_GLPI;
 
@@ -172,7 +166,7 @@ class OcsAffectEntityRule extends Rule {
 		}
 
 		if ($editable && $canedit)
-			echo "<td class='tab_bg_2'><a href=\"" . $CFG_GLPI["root_doc"] . "/front/ruleaction.form.php?action=edit_action&ID=" . $fields["ID"] . "\">" . $fields["action_type"] . "</a></td>";
+			echo "<td class='tab_bg_2'>". $fields["action_type"] . "</td>";
 		else
 			echo "<td class='tab_bg_2'>" . $fields["action_type"] . "</td>";
 		echo "<td class='tab_bg_2'>" . $LANG["log"][63] . "</td>";
