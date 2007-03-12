@@ -36,121 +36,18 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-class RuleAction extends CommonDBTM {
-	function RuleAction() {
-		$this->table = "glpi_rules_actions";
-		$this->type = -1;
-	}
-	/**
-	 * Get all actions for a given rule
-	 * @param $ID the rule_description ID
-	 * @return an array of RuleAction objects
-	 */
-	function getRuleActions($ID) {
-		$sql = "SELECT * FROM glpi_rules_actions WHERE FK_rules=" . $ID;
-		global $DB;
-
-		$rules_actions = array ();
-		$result = $DB->query($sql);
-		while ($rule = $DB->fetch_array($result))
-		{
-			$tmp = new RuleAction;
-			$tmp->fields = $rule;
-			$rules_actions[] = $tmp;
-		}
-		return $rules_actions;
-	}
-
-	function showForm($target,$ID,$ruleid=-1)
-	{
-		
-	}
-
-
-	/**
-	 * Add an action
-	 */
-	function addActionByAttributes($action,$ruleid,$field,$value)
-	{
-		$ruleAction = new RuleAction;
-		$input["action_type"]=$action;
-		$input["field"]=$field;
-		$input["value"]=$value;
-		$input["FK_rules"]=$ruleid;
-		$ruleAction->add($input);
-	}
-}
-
-class RuleCriteria extends CommonDBTM {
-	function RuleCriteria() {
-		$this->table = "glpi_rules_criterias";
-		$this->type = -1;
-	}
-
-	/**
-	* Get all criterias for a given rule
-	* @param $ID the rule_description ID
-	* @return an array of RuleCriteria objects
-	*/
-	function getRuleCriterias($ID) {
-		global $DB;
-		$sql = "SELECT * FROM glpi_rules_criterias WHERE FK_rules=" . $ID;
-
-		$rules_list = array ();
-		$result = $DB->query($sql);
-		while ($rule = $DB->fetch_array($result))
-		{
-			$tmp = new RuleCriteria;
-			$tmp->fields = $rule;
-			$rules_list[] = $tmp;
-		}
-		return $rules_list;
-	}
-
-	function showForm($target,$ID,$ruleid=-1)
-	{
-			global $LANG,$CFG_GLPI;
-			$canedit = haveRight("config", "w");
-			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
-			echo "<div align='center'>"; 
-			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>" . $LANG["rulesengine"][6] . "</th></tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_2'></td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
-			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
-			echo "</tr>";
-		
-	}
-	
-	function processRule($informations,$type)
-	{
-		//Get all the informations about the condition
-		$criteria_informations = getCriteriaByID($this->fields["criteria"],$type);
-		$field = strtoupper($criteria_informations["field"]);
-		if ($field)
-		{
-			$res = matchRules($informations[$field],$this->fields["condition"],$this->fields["pattern"]);
-			return ($res);
-		}
-		else
-			return false;	
-	}
-}
-
 class RuleCollection {
 	var $rule_list = array();
 	var $rule_type;
 	var $rule_class_name="Rule";
 	
-function RuleCollection($rule_type){
+	function RuleCollection($rule_type){
 		global $DB;
 		$this->rule_type = $rule_type;
-}
+	}
 
 
-function getCollectionDatas($retrieve_criteria=0,$retrieve_action=0){
+	function getCollectionDatas($retrieve_criteria=0,$retrieve_action=0){
 		global $DB;
 		//Select all the rules of a different type
 		$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ranking ASC";
@@ -165,31 +62,32 @@ function getCollectionDatas($retrieve_criteria=0,$retrieve_action=0){
 				$this->rule_list[] = $tempRule; 	
 			}
 		}
-}
+	}
 
-function title($addbutton=false) {
-	global $LANG, $CFG_GLPI;
+	function title($addbutton=false) {
+		global $LANG, $CFG_GLPI;
+	
+		$buttons = array ();
+		displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
+	}
 
-	$buttons = array ();
-	displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
-}
+	function getTitle(){
+		global $LANG;
+		return $LANG["rulesengine"][29];
+	}
 
-function getTitle(){
-	global $LANG;
-	return $LANG["rulesengine"][29];
-}
-
-function showForm($target)
-	{
+	function showForm($target){
 		global $CFG_GLPI, $LANG;
 			
 		$canedit = haveRight("config", "w");
 		$this->getCollectionDatas(0,0);
 		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
 		echo "<div align='center'>"; 
-		echo "<table class='tab_cadre_fixe'>";
-			
-		echo "<tr><th colspan='6'>" . $this->getTitle() . "</th></tr>";
+		echo "<table class='tab_cadrehov'>";
+		echo "<tr><th colspan='6'>" . $this->getTitle();
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"$target\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+
+		echo "</th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_2'></td>";
 		echo "<td class='tab_bg_2'>".$LANG["common"][16]."</td>";
@@ -222,7 +120,7 @@ function showForm($target)
 			echo "</div>";
 			echo "</form>";
 		}
-}
+	}
 
 /**
  * Modify rule's ranking and automatically reorder all rules
@@ -289,20 +187,12 @@ class Rule extends CommonDBTM{
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 	}
-/*
-	function getEmpty()
-	{
-		$this->getEmpty();
-		$this->actions = array();
-		$this->criterias = array();	
-	}
-	*/
-	function showForm($target,$ID,$withtemplate='')
-	{
+
+	function showForm($target,$ID,$withtemplate=''){
 			global $CFG_GLPI, $LANG;
-			
-			$canedit = haveRight("config", "w");
-			
+
+			$canedit=haveRight("config","w");
+
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
 			
@@ -572,21 +462,21 @@ class Rule extends CommonDBTM{
 		}
 			
 		if ($canedit){
-			echo "<td class='tab_bg_2'><a href=\"".$CFG_GLPI["root_doc"]."/front/rule.form.php?ID=".$this->fields["ID"]."\">" . $this->fields["name"] . "</a></td>";
+			echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."\">" . $this->fields["name"] . "</a></td>";
 		} else{
-			echo "<td class='tab_bg_2'>".$this->fields["name"] . "</td>";
+			echo "<td>".$this->fields["name"] . "</td>";
 		}
 					
-		echo "<td class='tab_bg_2'>".$this->fields["description"]."</td>";
+		echo "<td>".$this->fields["description"]."</td>";
 		if (!$first){
 			echo "<td class='tab_bg_2'><a href=\"".$target."?type=".$this->fields["rule_type"]."&action=up&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></a></td>";
 		} else {
-			echo "<td class='tab_bg_2'>&nbsp;</td>";
+			echo "<td>&nbsp;</td>";
 		}
 		if (!$last){
-			echo "<td class='tab_bg_2'><a href=\"".$target."?type=".$this->fields["rule_type"]."&action=down&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\"></a></td>";
+			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&action=down&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\"></a></td>";
 		} else {
-			echo "<td class='tab_bg_2'>&nbsp;</td>";
+			echo "<td>&nbsp;</td>";
 		}
 
 		echo "</tr>";
@@ -728,6 +618,111 @@ class Rule extends CommonDBTM{
 		return $fields;
 	}
 		
+}
+
+
+
+class RuleAction extends CommonDBTM {
+	function RuleAction() {
+		$this->table = "glpi_rules_actions";
+		$this->type = -1;
+	}
+	/**
+	 * Get all actions for a given rule
+	 * @param $ID the rule_description ID
+	 * @return an array of RuleAction objects
+	 */
+	function getRuleActions($ID) {
+		$sql = "SELECT * FROM glpi_rules_actions WHERE FK_rules=" . $ID;
+		global $DB;
+
+		$rules_actions = array ();
+		$result = $DB->query($sql);
+		while ($rule = $DB->fetch_array($result))
+		{
+			$tmp = new RuleAction;
+			$tmp->fields = $rule;
+			$rules_actions[] = $tmp;
+		}
+		return $rules_actions;
+	}
+
+	function showForm($target,$ID,$ruleid=-1)
+	{
+		
+	}
+
+
+	/**
+	 * Add an action
+	 */
+	function addActionByAttributes($action,$ruleid,$field,$value)
+	{
+		$ruleAction = new RuleAction;
+		$input["action_type"]=$action;
+		$input["field"]=$field;
+		$input["value"]=$value;
+		$input["FK_rules"]=$ruleid;
+		$ruleAction->add($input);
+	}
+}
+
+class RuleCriteria extends CommonDBTM {
+	function RuleCriteria() {
+		$this->table = "glpi_rules_criterias";
+		$this->type = -1;
+	}
+
+	/**
+	* Get all criterias for a given rule
+	* @param $ID the rule_description ID
+	* @return an array of RuleCriteria objects
+	*/
+	function getRuleCriterias($ID) {
+		global $DB;
+		$sql = "SELECT * FROM glpi_rules_criterias WHERE FK_rules=" . $ID;
+
+		$rules_list = array ();
+		$result = $DB->query($sql);
+		while ($rule = $DB->fetch_array($result))
+		{
+			$tmp = new RuleCriteria;
+			$tmp->fields = $rule;
+			$rules_list[] = $tmp;
+		}
+		return $rules_list;
+	}
+
+	function showForm($target,$ID,$ruleid=-1)
+	{
+			global $LANG,$CFG_GLPI;
+			$canedit = haveRight("config", "w");
+			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
+			echo "<div align='center'>"; 
+			echo "<table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='4'>" . $LANG["rulesengine"][6] . "</th></tr>";
+			echo "<tr>";
+			echo "<td class='tab_bg_2'></td>";
+			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
+			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
+			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
+			echo "</tr>";
+		
+	}
+	
+	function processRule($informations,$type)
+	{
+		//Get all the informations about the condition
+		$criteria_informations = getCriteriaByID($this->fields["criteria"],$type);
+		$field = strtoupper($criteria_informations["field"]);
+		if ($field)
+		{
+			$res = matchRules($informations[$field],$this->fields["condition"],$this->fields["pattern"]);
+			return ($res);
+		}
+		else
+			return false;	
+	}
 }
 	
 ?>

@@ -59,8 +59,9 @@ function showCentralReminder($type="private"){
 	echo "<div align='center'><br><table class='tab_cadrehov'>";
 
 	echo "<tr><th><div style='position: relative'><span><strong>"."$titre"."</strong></span>";
-	if ($type!="public"||haveRight("reminder_public","w"))
+	if ($type!="public"||haveRight("reminder_public","w")){
 		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+	}
 	echo "</div>";
 	echo "</th></tr>";
 	if($DB->numrows($result)>0){

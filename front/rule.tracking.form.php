@@ -34,13 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("rulesengine","rule.tracking");
+$NEEDED_ITEMS=array("entity","rulesengine","ocsng","rule.ocs");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new TrackingBusinessRuleCollection();
+$rule = new TrackingBusinessRule();
 
-include (GLPI_ROOT . "/front/rule.common.php");
-
+include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>
