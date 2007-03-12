@@ -388,7 +388,7 @@ class CommonDBTM {
 		return array();
 	}
 
-	function showOnglets($ID,$withtemplate,$actif){
+	function showOnglets($ID,$withtemplate,$actif,$nextprevcondition=""){
 		global $LANG,$CFG_GLPI;
 
 		$target=$_SERVER['PHP_SELF']."?ID=".$ID;
@@ -423,8 +423,8 @@ class CommonDBTM {
 	
 		if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
 			$ID=$ereg[1];
-			$next=getNextItem($this->table,$ID);
-			$prev=getPreviousItem($this->table,$ID);
+			$next=getNextItem($this->table,$ID,$nextprevcondition);
+			$prev=getPreviousItem($this->table,$ID,$nextprevcondition);
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
 			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";

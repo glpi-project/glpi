@@ -84,10 +84,11 @@ class RuleCollection {
 		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
 		echo "<div align='center'>"; 
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th colspan='6'>" . $this->getTitle();
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"$target\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 
-		echo "</th></tr>";
+		echo "<tr><th colspan='6'><div style='position: relative'><span><strong>" . $this->getTitle() . "</strong></span>";
+		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".ereg_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+
+		echo "</div></th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_2'></td>";
 		echo "<td class='tab_bg_2'>".$LANG["common"][16]."</td>";
@@ -96,13 +97,14 @@ class RuleCollection {
 		echo "</tr>";
 		
 		$i=0;
-		$nb=count($this->rule_list)-1;
+		$nb=count($this->rule_list);
 		foreach ($this->rule_list as $rule){
-			$rule->showMinimalForm($target,$i==0,$i==$nb);
+			$rule->showMinimalForm($target,$i==0,$i==$nb-1);
 			$i++;
 		}
-				
-		if ($canedit) {
+		echo "</table>";
+		echo "</div>";
+		if ($canedit&&$nb>0) {
 			echo "<div align='center'>";
 			echo "<table cellpadding='5' width='80%'>";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
@@ -112,14 +114,10 @@ class RuleCollection {
 			echo "<input type='submit' name='deleterule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
-
 			echo "</div>";
+		} 
+		echo "</form>";
 
-		} else {	
-			echo "</table>";
-			echo "</div>";
-			echo "</form>";
-		}
 	}
 
 /**
@@ -160,7 +158,7 @@ function changeRuleOrder($ID,$action)
 	
 		for ($i=0; $i < sizeof($rules);$i++)
 		{
-			$sql = "UPDATE glpi_rules_descriptions SET ranking=".$i." WHERE ID=".$rules[$i];
+			$sql = "UPDATE glpi_rules_descriptions SET ranking='".$i."' WHERE ID='".$rules[$i]."'";
 			$DB->query($sql);				
 		}
 }
@@ -193,12 +191,17 @@ class Rule extends CommonDBTM{
 
 			$canedit=haveRight("config","w");
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
-			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
-			
-			if ($ID != -1)
-				echo "<input type=hidden name=ID value='".$ID."''";
-				
+			$new=false;
+			if (!empty($ID)&&$ID>0){
+				$this->getRuleWithCriteriasAndActions($ID,1,1);
+			} else {
+				$this->getEmpty();
+				$new=true;
+			}
+
+			$this->showOnglets($ID, $new,$_SESSION['glpi_onglet'],"rule_type='".$this->rule_type."'");
+			echo "<form name='rule_form'  method='post' action=\"$target\">";
+
 			echo "<div align='center'>"; 
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["entity"][5] . "</th></tr>";
@@ -219,23 +222,34 @@ class Rule extends CommonDBTM{
 			dropdownRulesMatch("match",$this->fields["match"]);
 			echo "</td>";
 			
-			$this->showFormDescriptionHeader();
+
+			echo "<td class='tab_bg_2'>" . $LANG["rulesengine"][10] . "</td>";
+			echo "<td class='tab_bg_2'>" . (isset($this->fields["ranking"])?$this->fields["ranking"]:"") . "</td>";
+
 			echo "</tr>";
 			
 			if ($canedit)
 			{
-				echo "<tr><td class='tab_bg_2' align='center' colspan='2'>";
-				echo "<input type='submit' name='update_description' value=\"" . $LANG["buttons"][7] . "\" class='submit'></td>";
-				echo "<td class='tab_bg_2' align='center' colspan='2'>";
-				echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'></td>";
-				echo "</tr>";
+				if ($new){
+					echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
+					echo "<input type='hidden' name='rule_type' value='".$this->rule_type."''";
+					echo "<input type='submit' name='add_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+					echo "</tr>";
+
+				} else {
+					echo "<tr><td class='tab_bg_2' align='center' colspan='2'>";
+					echo "<input type='hidden' name='ID' value='".$ID."''";
+					echo "<input type='submit' name='update_rule' value=\"" . $LANG["buttons"][7] . "\" class='submit'></td>";
+					echo "<td class='tab_bg_2' align='center' colspan='2'>";
+					echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'></td>";
+					echo "</tr>";
+				}
 			}
 			
 			echo "</table>";
 
 			echo "</div></form>";
 	}
-
 
 	/**
 	 * Get all criterias for a given rule
@@ -292,7 +306,7 @@ class Rule extends CommonDBTM{
 		}
 				
 		echo "<div align='center'>"; 
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th colspan='".($editable=="true"?" 4 ":"3")."'>" . $LANG["rulesengine"][7] . "</th></tr>";
 		echo "<tr>";
 		if ($editable){
@@ -302,12 +316,13 @@ class Rule extends CommonDBTM{
 		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][12]."</td>";
 		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][13]."</td>";
 		echo "</tr>";
-						
+
+		$nb=count($this->actions);
 		foreach ($this->actions as $action){
 			$this->showMinimalActionForm($action->fields,$editable,$canedit);
 		}
 				
-		if ($editable && $canedit) {
+		if ($editable && $canedit&&$nb>0) {
 			echo "<div align='center'>";
 			echo "<table cellpadding='5' width='80%'>";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
@@ -340,7 +355,7 @@ class Rule extends CommonDBTM{
 		$this->addCriteriaForm($this->fields,$editable, $canedit);
 			
 		echo "<div align='center'>"; 
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th colspan='".($editable=="true"?" 4 ":"3")."'>" . $LANG["rulesengine"][6] . "</th></tr>";
 		echo "<tr>";
 		if ($editable){
@@ -355,7 +370,7 @@ class Rule extends CommonDBTM{
 		foreach ($this->criterias as $criteria)
 			$this->showMinimalCriteriaForm($criteria->fields,$editable,$canedit);
 			
-		if ($editable && $canedit) {
+		if ($editable && $canedit&&$maxsize>0) {
 			echo "<div align='center'>";
 			echo "<table cellpadding='5' width='80%'>";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
@@ -436,11 +451,6 @@ class Rule extends CommonDBTM{
 
 		$ong[1]=$LANG["title"][26];
 		
-		if (haveRight("config","w"))
-		{
-			$ong[2]=$LANG["rulesengine"][6];
-			$ong[3]=$LANG["rulesengine"][7];
-		}
 		return $ong;
 	}
 
@@ -469,7 +479,7 @@ class Rule extends CommonDBTM{
 					
 		echo "<td>".$this->fields["description"]."</td>";
 		if (!$first){
-			echo "<td class='tab_bg_2'><a href=\"".$target."?type=".$this->fields["rule_type"]."&action=up&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></a></td>";
+			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&action=up&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
@@ -497,11 +507,11 @@ class Rule extends CommonDBTM{
 	function getNextRanking($type)
 	{
 		global $DB;
-		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE rule_type=".$this->type;
+		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type;
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0)
 		{
-			$datas = $DB->fetch_array($result);
+			$datas = $DB->fetch_assoc($result);
 			return $datas["rank"] + 1;
 		} else {
 			return 0;

@@ -435,7 +435,7 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
  * @param $ID current ID
  * @return the next ID, -1 if not exist
  */
-function getNextItem($table,$ID){
+function getNextItem($table,$ID,$condition=""){
 	global $DB,$CFG_GLPI;
 
 	$nextprev_item=$CFG_GLPI["nextprev_item"];
@@ -467,6 +467,9 @@ function getNextItem($table,$ID){
 
 	$query.=" ) ";
 
+	if (!empty($condition)){
+		$query.=" AND $condition";
+	}
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
 		$query.=" AND deleted='0' ";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
@@ -494,7 +497,7 @@ function getNextItem($table,$ID){
  * @param $ID current ID
  * @return the previous ID, -1 if not exist
  */
-function getPreviousItem($table,$ID){
+function getPreviousItem($table,$ID,$condition=""){
 	global $DB,$CFG_GLPI;
 
 	$nextprev_item=$CFG_GLPI["nextprev_item"];
@@ -523,6 +526,11 @@ function getPreviousItem($table,$ID){
 	}
 
 	$query.=" ) ";
+
+
+	if (!empty($condition)){
+		$query.=" AND $condition";
+	}
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
 		$query.="AND deleted='0'";

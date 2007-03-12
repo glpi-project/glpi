@@ -46,7 +46,8 @@ checkRight("config","w");
 
 
 if (isset($tab["action"])){
-		$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
+	$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($tab["deleterule"])){
 		
 	if (count($_POST["item"]))

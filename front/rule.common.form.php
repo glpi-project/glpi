@@ -86,37 +86,25 @@ elseif (isset($tab["add_action"]))
 	$ruleaction->add($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif (isset($tab["update_description"]))
+elseif (isset($tab["update_rule"]))
 {
 	$rule->update($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
+} elseif (isset($tab["add_rule"]))
+{
+	$rule->add($tab);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-$rule->getRuleWithCriteriasAndActions($tab["ID"],1,1);
 
-$rule->title();
 $rule->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
-switch($_SESSION['glpi_onglet']){
-		case -1 :	
-		case 1 :
-			$rule->showCriteriasList($_SERVER['PHP_SELF'],false);
-			$rule->showActionsList($_SERVER['PHP_SELF'],false);
-			
-		break;
-		case 2 : 
-			if ($tab["ID"] != -1) 
+if (!empty($tab["ID"])&&$tab["ID"] >0) {
+	switch($_SESSION['glpi_onglet']){
+			case 1 :
 				$rule->showCriteriasList($_SERVER['PHP_SELF'],true);
-			else
-				$rule->showCriteriasList($_SERVER['PHP_SELF'],false);	
-		break;
-		case 3 :
-			if ($tab["ID"] != -1)
 				$rule->showActionsList($_SERVER['PHP_SELF'],true);
-			else
-				$rule->showActionsList($_SERVER['PHP_SELF'],false);	
 			break;
-		default :
-		break;
+	}
 }
 commonFooter();
 ?>
