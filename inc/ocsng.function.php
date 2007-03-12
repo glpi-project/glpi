@@ -357,9 +357,6 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 		if ($glpi_id) {
 			ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
 		}
-<<<<<<< .mine
-	} 
-=======
 
 		if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
 			ocsUpdateComputer($idlink,$ocs_server_id, 0);
@@ -367,7 +364,6 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 
 		}
 	}
->>>>>>> .r4576
  }
 }
 
