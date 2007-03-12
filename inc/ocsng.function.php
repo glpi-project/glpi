@@ -202,11 +202,21 @@ function ocsLink($ocs_id, $ocs_server_id,$glpi_computer_id) {
 			VALUES ('" . $glpi_computer_id . "','" . $ocs_id . "','" . $data["DEVICEID"] . "','" . $_SESSION["glpi_currenttime"] . "','".$ocs_server_id."')";
 	$result = $DB->query($query);
 
-	if ($result)
-		return ($DB->insert_id());
-	else
-		return false;
-}
+	if ($result) {
+                return ($DB->insert_id());
+       } else {
+                $query="SELECT ID
+                        FROM glpi_ocs_link
+                        WHERE ocs_id = '$ocs_id' AND ocs_server_id='".$ocs_server_id."';";
+                $result=$DB->query($query);
+                $data=$DB->fetch_array($result);
+                if ($data['ID']) {
+                        return $data['ID'];
+                 } else {
+                        return false;
+                }
+        }
+ }
 
 function ocsManageDeleted($ocs_server_id) {
 	global $DB,$DBocs;
@@ -283,18 +293,31 @@ function ocsManageDeleted($ocs_server_id) {
 }
 
 function ocsImportComputer($ocs_id,$ocs_server_id) {
-	global $DBocs;
+	global $DBocs,$DB;
 
 	checkOCSconnection($ocs_server_id);
 	
+	/*
 	// Set OCS checksum to max value
 	$query = "UPDATE hardware SET CHECKSUM='" . MAX_OCS_CHECKSUM . "' WHERE ID='$ocs_id'";
 	$DBocs->query($query);
 
 	$query = "SELECT * FROM hardware WHERE ID='$ocs_id'";
 	$result = $DBocs->query($query);
+	
+	*/
 	$comp = new Computer;
 	
+	$query = "SELECT ID,glpi_id,ocs_id FROM glpi_ocs_link WHERE ocs_id = '$ocs_id' AND ocs_server_id='".$ocs_server_id."';";
+	$result_glpi_ocs_link = $DB->query($query);
+	if ($result_glpi_ocs_link&&$DB->numrows($result_glpi_ocs_link)) {
+		ocsUpdateComputer($result_glpi_ocs_link["ID"],$ocs_server_id,0);
+	} else {
+	# Machine is not present, I go a head
+		// Set OCS checksum to max value
+		$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE ID='$ocs_id'";
+		$DBocs->query($query);
+
 	//Try to affect computer to an entity
 	$rule = new OcsAffectEntityRule($ocs_server_id);
 
@@ -302,29 +325,45 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 	if ($rule->processAllRules($ocs_id))
 	{
 		$comp->fields = $rule->executeAction($comp->fields);
+
+		$query = "SELECT * FROM hardware WHERE ID='$ocs_id'";
+		$result = $DBocs->query($query);
+		//$comp = new Computer;
+		if ($result&&$DBocs->numrows($result)==1){
 		
-		if ($result && $DBocs->numrows($result) == 1) {
-			$line = $DBocs->fetch_array($result);
-			$line = clean_cross_side_scripting_deep(addslashes_deep($line));
-			$DBocs->close();
-	
-			$cfg_ocs = getOcsConf($ocs_server_id);
-	
-			$comp->fields["name"] = $line["NAME"];
-			$comp->fields["ocs_import"] = 1;
-	
-			$comp->fields["state"] = $cfg_ocs["default_state"];
-			
-			$glpi_id = $comp->addToDB();
-			if ($glpi_id) {
-				ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
-			}
-	
-			if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
-				ocsUpdateComputer($idlink,$ocs_server_id, 0);
-			}
+		//if ($result && $DBocs->numrows($result) == 1) {
+		$line = $DBocs->fetch_array($result);
+		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
+		$DBocs->close();
+
+		//$cfg_ocs = getOcsConf($ocs_server_id);
+
+		//$comp->fields["name"] = $line["NAME"];
+		//$comp->fields["ocs_import"] = 1;
+
+		//$comp->fields["state"] = $cfg_ocs["default_state"];
+		
+		//$glpi_id = $comp->addToDB();
+		$cfg_ocs=getOcsConf($ocs_server_id);
+
+		$comp->fields["name"] = $line["NAME"];
+		$comp->fields["ocs_import"] = 1;
+		
+		$ocs_id = $line['ID'];
+		$comp->fields["state"] = $cfg_ocs["default_state"];
+		$glpi_id=$comp->addToDB();
+
+		if ($glpi_id) {
+			ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
+		}
+
+		if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
+			ocsUpdateComputer($idlink,$ocs_server_id, 0);
+		}
+
 		}
 	}
+ }
 }
 
 function ocsImportTag($ocs_id, $ocs_server_id, $glpi_id, $cfg_ocs) {
