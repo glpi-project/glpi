@@ -57,13 +57,23 @@ if (isset($_POST["update"]))
 
 	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][61]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["addrule"]))
+} else if (isset($_POST["add_rule"]))
 {
 	checkRight("config","w");
+
+
+	$rule = new OcsAffectEntityRule;
+	$ruleid = $rule->add($_POST);
 	
-	addNewAffectationRule($_POST);
-	
-	logEvent($_POST["FK_entities"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][21]);
+	if ($ruleid)
+	{
+		//Add an action associated to the rule
+		$ruleAction = new RuleAction;
+		//Action is : affect computer to this entity
+		$ruleAction->addActionByAttributes("assign", $ruleid, "FK_entities", $_POST["affectentity"]);
+	}
+		
+	logEvent(RULE_OCS_AFFECT_COMPUTER, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][70]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["deleteuser"]))
@@ -76,22 +86,18 @@ if (isset($_POST["update"]))
 
 	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-}elseif (isset($_POST["deleterule"]))
+}elseif (isset($_POST["delete_rule"]))
 {
 	checkRight("config","w");
-	$rule = new Rule;
-		
-	if (count($_POST["item"]))
+	$rule = new OcsAffectEntityRule;		
+	if (count($_POST["item"])){
 		foreach ($_POST["item"] as $key => $val)
-		{
-			$rule->getRuleWithCriteriasAndActions($key,1,1);
-			$rule->deleteRule();
+		{	
+			$rule->delete(array('ID'=>$key));
 		}
+	}
 
-	$rulecollection = new RuleCollection($tab["type"]);
-	$rulecollection->changeRuleOrder(-1,"");
-
-	logEvent($_POST["FK_entities"], "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][20]);
+	logEvent(RULE_OCS_AFFECT_COMPUTER, "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][71]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
@@ -103,7 +109,7 @@ if (isset($_GET['onglet'])) {
 }	
 
 
-$ocsrule = new OcsAffectEntityRule(-1);
+$ocsrule = new OcsAffectEntityRule();
 
 if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 	switch($_SESSION['glpi_onglet']){

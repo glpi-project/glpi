@@ -228,7 +228,6 @@ $LANG["common"][56]="Central";
 $LANG["common"][57]="Titre";
 
 
-$LANG["computers"][0]="Ajouter ordinateur...";
 $LANG["computers"][9]="OS";
 $LANG["computers"][12]="Nouvel ordinateur à partir d'un modèle";
 $LANG["computers"][13]="Ordinateur ID";
@@ -482,7 +481,6 @@ $LANG["financial"][105]="Tacite";
 $LANG["financial"][106]="Express";
 $LANG["financial"][107]="Reconduction";
 
-$LANG["help"][0]="Bienvenue";
 $LANG["help"][1]="Veuillez décrire votre problème";
 $LANG["help"][2]="Priorité de la demande";
 $LANG["help"][3]="Très haute"; 
@@ -768,6 +766,10 @@ $LANG["log"][61]="ajout utilisateur à l'entité";
 $LANG["log"][62]="suppression utilisateur à l'entité";
 $LANG["log"][63]="entité";
 $LANG["log"][64]="modification des commentaires";
+
+$LANG["log"][70]="ajout d'une règle";
+$LANG["log"][71]="suppression d'une règle";
+
 
 $LANG["login"][0]="Dernière connexion";
 $LANG["login"][1]="Se reconnecter";
