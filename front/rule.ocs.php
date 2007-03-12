@@ -39,38 +39,7 @@ $NEEDED_ITEMS=array("rulesengine","rule.ocs");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
+$rulecollection = new OcsRuleCollection();
 
-if (isset($tab["action"]))
-{
-		$rulecollection = new OcsRuleCollection;
-		$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
-}elseif (isset($tab["deleterule"]))
-{
-	checkRight("config","w");
-	$rule = new Rule;
-		
-	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val)
-		{
-			$rule->getRuleWithCriteriasAndActions($key,1,1);
-			$input["ID"]=$key;
-			$rule->delete($input);
-		}
-	
-	$rulecollection = new OcsRuleCollection;
-	$rulecollection->changeRuleOrder(-1,"");
-		
-	logEvent($_POST["FK_entities"], "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][20]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulesengine"][17]);
-
-$rule = new OcsRuleCollection();
-$rule->title(true);
-$rule->showForm($_SERVER['PHP_SELF']);
-commonFooter();
+include (GLPI_ROOT . "/front/rule.common.php");
 ?>

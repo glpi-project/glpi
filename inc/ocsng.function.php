@@ -303,27 +303,27 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 	{
 		$comp->fields = $rule->executeAction($comp->fields);
 		
-	if ($result && $DBocs->numrows($result) == 1) {
-		$line = $DBocs->fetch_array($result);
-		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
-		$DBocs->close();
-
-		$cfg_ocs = getOcsConf($ocs_server_id);
-
-		$comp->fields["name"] = $line["NAME"];
-		$comp->fields["ocs_import"] = 1;
-
-		$comp->fields["state"] = $cfg_ocs["default_state"];
-		
-		$glpi_id = $comp->addToDB();
-		if ($glpi_id) {
-			ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
+		if ($result && $DBocs->numrows($result) == 1) {
+			$line = $DBocs->fetch_array($result);
+			$line = clean_cross_side_scripting_deep(addslashes_deep($line));
+			$DBocs->close();
+	
+			$cfg_ocs = getOcsConf($ocs_server_id);
+	
+			$comp->fields["name"] = $line["NAME"];
+			$comp->fields["ocs_import"] = 1;
+	
+			$comp->fields["state"] = $cfg_ocs["default_state"];
+			
+			$glpi_id = $comp->addToDB();
+			if ($glpi_id) {
+				ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
+			}
+	
+			if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
+				ocsUpdateComputer($idlink,$ocs_server_id, 0);
+			}
 		}
-
-		if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
-			ocsUpdateComputer($idlink,$ocs_server_id, 0);
-		}
-	}
 	}
 }
 
