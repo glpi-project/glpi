@@ -191,10 +191,8 @@ function getCriteriasByType($type)
 function dropdownRulesMatch($name,$value=''){
 	global $LANG;
 
-	$elements[0]["name"] = AND_MATCHING;
-	$elements[0]["value"] = AND_MATCHING;
-	$elements[1]["name"] = OR_MATCHING;
-	$elements[1]["value"] = OR_MATCHING;
+	$elements[AND_MATCHING] = AND_MATCHING;
+	$elements[OR_MATCHING] = OR_MATCHING;
 	dropdownArrayValues($name,$elements,$value);
 }
 
@@ -204,22 +202,14 @@ function dropdownRulesMatch($name,$value=''){
 function dropdownRulesConditions($name,$value=''){
 	global $LANG;
 
-	$elements[0]["name"] = $LANG["rulesengine"][0];
-	$elements[0]["value"] = PATTERN_IS;
-	$elements[1]["name"] = $LANG["rulesengine"][1];
-	$elements[1]["value"] = PATTERN_IS_NOT;
-	$elements[2]["name"] = $LANG["rulesengine"][2];
-	$elements[2]["value"] = PATTERN_CONTAIN;
-	$elements[3]["name"] = $LANG["rulesengine"][3];
-	$elements[3]["value"] = PATTERN_NOT_CONTAIN;
-	$elements[4]["name"] = $LANG["rulesengine"][4];
-	$elements[4]["value"] = PATTERN_BEGIN;
-	$elements[5]["name"] = $LANG["rulesengine"][5];
-	$elements[5]["value"] = PATTERN_END;
-	$elements[6]["value"] = REGEX_MATCH;
-	$elements[6]["name"] = $LANG["rulesengine"][26];
-	$elements[7]["value"] = REGEX_NOT_MATCH;
-	$elements[7]["name"] = $LANG["rulesengine"][27];
+	$elements[PATTERN_IS] = $LANG["rulesengine"][0];
+	$elements[PATTERN_IS_NOT] = $LANG["rulesengine"][1];
+	$elements[PATTERN_CONTAIN] = $LANG["rulesengine"][2];
+	$elements[PATTERN_NOT_CONTAIN] = $LANG["rulesengine"][3];
+	$elements[PATTERN_BEGIN] = $LANG["rulesengine"][4];
+	$elements[PATTERN_END] = $LANG["rulesengine"][5];
+	$elements[REGEX_MATCH] = $LANG["rulesengine"][26];
+	$elements[REGEX_NOT_MATCH] = $LANG["rulesengine"][27];
 	
 	dropdownArrayValues($name,$elements,$value);
 }
@@ -230,12 +220,10 @@ function dropdownRulesConditions($name,$value=''){
 function dropdownRulesActions($name,$value=''){
 	global $LANG;
 
-	$elements[0]["name"] = $LANG["rulesengine"][22];
-	$elements[0]["value"] = "assign";
-	$elements[1]["name"] = $LANG["rulesengine"][23];
-	$elements[1]["value"] = "set";
-	$elements[2]["name"] = $LANG["rulesengine"][23];
-	$elements[2]["value"] = "get";
+	$elements["assign"] = $LANG["rulesengine"][22];
+/*	$elements["set"] = $LANG["rulesengine"][23];
+	$elements["get"] = $LANG["rulesengine"][23];
+*/
 	
 	dropdownArrayValues($name,$elements,$value);
 }
@@ -282,8 +270,8 @@ function getCriteriasByRuleType($type)
 	global $RULES_CRITERIAS;
 	$criterias = getCriteriasByType($type);
 	$field = array();
-	foreach ($criterias as $criteria)
-		$fields[]=array("name"=>$criteria['name'],"value"=>$criteria['ID']);	
+	foreach ($criterias as $ID => $criteria)
+		$fields[]=array("name"=>$criteria['name'],"value"=>$ID);	
 			
 	return $fields;		  
 }

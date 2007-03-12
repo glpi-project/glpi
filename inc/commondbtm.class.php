@@ -351,7 +351,6 @@ class CommonDBTM {
 	 *
 	 **/
 	function delete($input,$force=0) {
-
 		if ($this->getFromDB($input["ID"])){
 			$this->pre_deleteItem($input["ID"]);
 			$this->deleteFromDB($input["ID"],$force);

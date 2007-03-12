@@ -101,8 +101,8 @@ $rule->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
 if (!empty($tab["ID"])&&$tab["ID"] >0) {
 	switch($_SESSION['glpi_onglet']){
 			case 1 :
-				$rule->showCriteriasList($_SERVER['PHP_SELF'],true);
-				$rule->showActionsList($_SERVER['PHP_SELF'],true);
+				$rule->showCriteriasList($_SERVER['PHP_SELF']);
+				$rule->showActionsList($_SERVER['PHP_SELF']);
 			break;
 	}
 }

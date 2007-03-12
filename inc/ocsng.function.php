@@ -324,7 +324,8 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 	//Try to match all the rules, return the first good one, or null if not rules matched
 	if ($rule->processAllRules($ocs_id))
 	{
-		$comp->fields = $rule->executeAction($comp->fields);
+		// MOYO : Pour moi doit etre fait dans le processAllRules
+		$comp->fields = $rule->executeActions($comp->fields);
 
 		$query = "SELECT * FROM hardware WHERE ID='$ocs_id'";
 		$result = $DBocs->query($query);
@@ -356,6 +357,9 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 		if ($glpi_id) {
 			ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
 		}
+<<<<<<< .mine
+	} 
+=======
 
 		if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
 			ocsUpdateComputer($idlink,$ocs_server_id, 0);
@@ -363,6 +367,7 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 
 		}
 	}
+>>>>>>> .r4576
  }
 }
 
