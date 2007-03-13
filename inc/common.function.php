@@ -239,35 +239,6 @@ function getSearchOptions(){
 }
 
 /**
- * Get the RULES_CRITERIAS array using cache
- *
- * @return the RULES_CRITERIAS array
- **/
-function getRulesOptions(){
-	global $LANG,$CFG_GLPI;
-	$options = array(
-	'cacheDir' => GLPI_CACHE_DIR,
-		'lifeTime' => DEFAULT_CACHE_LIFETIME,
-		'automaticSerialization' => true,
-		'caching' => $CFG_GLPI["use_cache"],
-		'hashedDirectoryLevel' => 2,
-		'masterFile' => GLPI_ROOT . "/inc/rules.constant.php",
-		'fileLocking' => CACHE_FILELOCKINGCONTROL,
-		'writeControl' => CACHE_WRITECONTROL,
-		'readControl' => CACHE_READCONTROL,	);
-	$cache = new Cache_Lite_File($options);
-
-	// Set a id for this cache : $file
-	if (!($RULES_CRITERIAS = $cache->get("OPTIONS","GLPI_RULES_".$_SESSION["glpilanguage"]))) {
-		// Cache miss !
-		// Put in $SEARCH_OPTION datas to put in cache
-		include (GLPI_ROOT . "/inc/rules.constant.php");
-		$cache->save($RULES_CRITERIAS,"OPTIONS","GLPI_RULES_".$_SESSION["glpilanguage"]);
-	}
-
-	return $RULES_CRITERIAS;
-}
-/**
  * Get the $RELATION array using cache. It's defined all relations between tables in the DB.
  *
  * @return the $RELATION array

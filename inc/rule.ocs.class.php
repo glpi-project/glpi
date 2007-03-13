@@ -149,29 +149,6 @@ class OcsAffectEntityRule extends Rule {
 		// Unlimited
 		return 1;
 	}
-	function showMinimalCriteria($fields) {
-		global $LANG, $CFG_GLPI;
-
-		echo "<td class='tab_bg_2'>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-		echo "<td class='tab_bg_2'>" . getConditionByID($fields["condition"]) . "</td>";
-		echo "<td class='tab_bg_2'>" . $this->getCriteriaPatternValue($fields["criteria"],$fields["pattern"]) . "</td>";
-	}
-
-	function showMinimalAction($fields,$canedit) {
-		global $LANG, $CFG_GLPI;
-
-
-		echo "<td class='tab_bg_2'>" . $fields["action_type"] . "</td>";
-		echo "<td class='tab_bg_2'>" . $LANG["log"][63] . "</td>";
-
-		if ($fields["value"] == 0){
-			echo "<td class='tab_bg_2'>" . $LANG["entity"][2] . "</td>";
-		} else {
-			echo "<td class='tab_bg_2'>" . getDropdownName("glpi_entities",$fields["value"]). "</td>";
-		}
-			
-	}
-
 	/**
 	 * Display form to add rules
 	 * @param rule_type Type of rule (ocs_affectation, ldap_rights)
