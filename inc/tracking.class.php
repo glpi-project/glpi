@@ -392,7 +392,9 @@ class Job extends CommonDBTM{
 
 
 		if (empty($input["name"])) {
-			$input["name"]=substr(ereg_replace('\n',' ',$input['contents']),0,50);
+			$input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
+			$input["name"]=preg_replace('/\n/',' ',$input['name']);
+			$input["name"]=substr($input['name'],0,70);
 		}
 		if (!isset($input["author"])){
 			if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
