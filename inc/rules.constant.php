@@ -76,6 +76,7 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['table']='glpi_dropdown_
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['field']='name';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['name']=$LANG["common"][36];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['linkfield']='category';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['type']='dropdown';
 
 
 
