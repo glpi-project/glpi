@@ -304,11 +304,11 @@ class Rule extends CommonDBTM{
 		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][7] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
 		if ($canedit){
-			echo "<td></td>";
+			echo "<td class='tab_bg_2'>&nbsp;</td>";
 		}
-		echo "<td>".$LANG["rulesengine"][12]."</td>";
-		echo "<td>".$LANG["rulesengine"][11]."</td>";
-		echo "<td>".$LANG["rulesengine"][13]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][12]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][11]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][13]."</td>";
 		echo "</tr>";
 
 		$nb=count($this->actions);
@@ -434,7 +434,7 @@ class Rule extends CommonDBTM{
 		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][6] . "</th></tr>";
 		echo "<tr>";
 		if ($canedit){
-			echo "<td class='tab_bg_2'></td>";
+			echo "<td class='tab_bg_2'>&nbsp;</td>";
 		}
 		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
 		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
@@ -745,16 +745,16 @@ class Rule extends CommonDBTM{
 	}
 
 	function showMinimalCriteria($fields){
-		echo "<td class='tab_bg_2'>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
-		echo "<td class='tab_bg_2'>" . getConditionByID($fields["condition"]) . "</td>";
-		echo "<td class='tab_bg_2'>" . $this->getCriteriaPatternValue($fields["criteria"],$fields["pattern"]) . "</td>";
+		echo "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
+		echo "<td>" . getConditionByID($fields["condition"]) . "</td>";
+		echo "<td>" . $this->getCriteriaPatternValue($fields["criteria"],$fields["pattern"]) . "</td>";
 	}	
 
 	function showMinimalAction($fields,$canedit)
 	{
-		echo "<td class='tab_bg_2'>" . $this->getActionName($fields["field"]) . "</td>";
-		echo "<td class='tab_bg_2'>" . getActionByID($fields["action_type"]) . "</td>";
-		echo "<td class='tab_bg_2'>" . $this->getActionValue($fields["field"],$fields["value"]) . "</td>";
+		echo "<td>" . $this->getActionName($fields["field"]) . "</td>";
+		echo "<td>" . getActionByID($fields["action_type"]) . "</td>";
+		echo "<td>" . $this->getActionValue($fields["field"],$fields["value"]) . "</td>";
 		
 	}	
 	
