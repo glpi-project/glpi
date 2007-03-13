@@ -199,17 +199,19 @@ function dropdownRulesMatch($name,$value=''){
 /**
  * Display a dropdown with all the criterias
  */
-function dropdownRulesConditions($name,$value=''){
+function dropdownRulesConditions($type,$name,$value=''){
 	global $LANG;
 
 	$elements[PATTERN_IS] = $LANG["rulesengine"][0];
 	$elements[PATTERN_IS_NOT] = $LANG["rulesengine"][1];
-	$elements[PATTERN_CONTAIN] = $LANG["rulesengine"][2];
-	$elements[PATTERN_NOT_CONTAIN] = $LANG["rulesengine"][3];
-	$elements[PATTERN_BEGIN] = $LANG["rulesengine"][4];
-	$elements[PATTERN_END] = $LANG["rulesengine"][5];
-	$elements[REGEX_MATCH] = $LANG["rulesengine"][26];
-	$elements[REGEX_NOT_MATCH] = $LANG["rulesengine"][27];
+	if ($type!="dropdown"){
+		$elements[PATTERN_CONTAIN] = $LANG["rulesengine"][2];
+		$elements[PATTERN_NOT_CONTAIN] = $LANG["rulesengine"][3];
+		$elements[PATTERN_BEGIN] = $LANG["rulesengine"][4];
+		$elements[PATTERN_END] = $LANG["rulesengine"][5];
+		$elements[REGEX_MATCH] = $LANG["rulesengine"][26];
+		$elements[REGEX_NOT_MATCH] = $LANG["rulesengine"][27];
+	}
 	
 	dropdownArrayValues($name,$elements,$value);
 }

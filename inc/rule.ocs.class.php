@@ -154,29 +154,7 @@ class OcsAffectEntityRule extends Rule {
 
 		echo "<td class='tab_bg_2'>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
 		echo "<td class='tab_bg_2'>" . getConditionByID($fields["condition"]) . "</td>";
-		echo "<td class='tab_bg_2'>" . $this->getCriteriaPatternValue($fields["pattern"], RULE_OCS_AFFECT_COMPUTER, $fields["criteria"]) . "</td>";
-	}
-
-	function addCriteriaForm() {
-		global $LANG;
-
-		echo "<div align='center'>";
-		echo "<table  class='tab_cadre_fixe'>";
-		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][16] . ":</tr><tr><td class='tab_bg_2' align='center'>";
-		echo $LANG["rulesengine"][16] . ":";
-		echo "</td><td align='center' class='tab_bg_2'>";
-		$this->getComboTag("criteria");
-		echo "</td><td align='center' class='tab_bg_2'>";
-		dropdownRulesConditions("condition");
-		echo "</td><td align='center' class='tab_bg_2'>";
-		autocompletionTextField("pattern", "glpi_rules_criterias", "pattern", "", 30);
-		echo "</td><td align='center' class='tab_bg_2'>";
-			
-		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
-		echo "<input type='submit' name='add_criteria' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
-		echo "</td></tr>";
-
-		echo "</table></div><br>";
+		echo "<td class='tab_bg_2'>" . $this->getCriteriaPatternValue($fields["criteria"],$fields["pattern"]) . "</td>";
 	}
 
 	function showMinimalAction($fields,$canedit) {
@@ -192,15 +170,6 @@ class OcsAffectEntityRule extends Rule {
 			echo "<td class='tab_bg_2'>" . getDropdownName("glpi_entities",$fields["value"]). "</td>";
 		}
 			
-	}
-	function getComboTag($name, $value = '') {
-		$criterias = getCriteriasByRuleType(RULE_OCS_AFFECT_COMPUTER);
-		$criterias = getCriteriasByType($this->rule_type);
-		$elements = array();
-		foreach ($criterias as $ID => $criteria){
-			$elements[$ID] = $criteria["name"];
-		}
-		dropdownArrayValues($name, $elements, $value);
 	}
 
 	/**

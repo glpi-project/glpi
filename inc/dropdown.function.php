@@ -1620,7 +1620,7 @@ function getAmortTypeName($value){
 	
 function dropdownArrayValues($name,$elements,$value='')
 {
-	echo "<select name='$name'>";
+	echo "<select name='$name' id='$name'>";
 
 	foreach($elements as $key => $val){
 		echo "<option value='".$key."'".($value==$key?" selected ":"").">".$val."</option>";
