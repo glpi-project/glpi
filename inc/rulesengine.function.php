@@ -100,32 +100,6 @@ function matchRules($field, $condition, $pattern) {
 
 
 /**
- * Return all rules from database
- * @param type of rules
- * @param withcriterias import rules criterias too
- * @param withactions import rules actions too
- */
-function getRulesByID($rule_type, $ID, $withcriterias, $withactions) {
-	global $DB;
-	$ocs_affect_computer_rules = array ();
-	// MOYO : quoi donc que ca fout la ca ?
-	// MOYO : ca correspond pas deja à un cas particulier de ca : getRuleWithCriteriasAndActions ?
-
-
-	//Get all the rules whose rule_type is $rule_type and entity is $ID
-	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$rule_type." and gra.value='".$ID."'";
-	
-	$result = $DB->query($sql);
-	while ($rule = $DB->fetch_array($result)) {
-		$affect_rule = new Rule;
-		$affect_rule->getRuleWithCriteriasAndActions($rule["ID"], 0, 1);
-		$ocs_affect_computer_rules[] = $affect_rule;
-	}
-
-	return $ocs_affect_computer_rules;
-}
-
-/**
  * Return the condition label by giving his ID
  * @param condition's ID
  * @return condition's label
@@ -154,36 +128,6 @@ function getConditionByID($ID)
 	}
 }
 
-/**
- * Get a criteria by his ID and type
- * @param the criteria's ID
- * @param the criteria's type
- * @return the criteria's informations
-  */
-function getCriteriaByID($ID,$type)
-{
-	// MOYO : pourquoi ce n'est pas dans la classe ? 
-	global $RULES_CRITERIAS;
-	foreach ($RULES_CRITERIAS[$type] as $rule)
-	{
-		if ($rule["ID"] == $ID)
-			return $rule;
-	}
-	return false;
-}
-
-/**
- * Return all the search constants for a type of rules
- * @param $type the type of rule
- * @return an array of search constants
- */
-function getCriteriasByType($type)
-{
-	// MOYO : pourquoi ce n'est pas dans la classe ? 
-
-	global $RULES_CRITERIAS;
-	return $RULES_CRITERIAS[$type];
-}
 
 /**
  * Display a dropdown with all the rule matching
@@ -249,9 +193,8 @@ function getActionByID($ID)
 function getTablesForQuery($type)
 {
 	global $RULES_CRITERIAS;
-	$criterias = getCriteriasByType($type);
 	$tables = array();
-	foreach ($criterias as $criteria)
+	foreach ($RULES_CRITERIAS[$type] as $criteria)
 		if ($criteria['table'] != '' && !array_key_exists($criteria["table"],$tables)) 
 			$tables[]=$criteria['table'];
 			
@@ -261,9 +204,8 @@ function getTablesForQuery($type)
 function getFieldsForQuery($type)
 {
 	global $RULES_CRITERIAS;
-	$criterias = getCriteriasByType($type);
 	$field = array();
-	foreach ($criterias as $criteria)
+	foreach ($RULES_CRITERIAS[$type] as $criteria)
 		//If the field name is not null AND a table name is provided
 		if ($criteria['field'] != '')
 			if ( $criteria['table'] != '') 
@@ -274,27 +216,12 @@ function getFieldsForQuery($type)
 	return $fields;		  
 }
 
-/**
- * Return all possible criterias for a type of rule
- * @param type the rule's type
- */
-function getCriteriasByRuleType($type)
-{
-	global $RULES_CRITERIAS;
-	$criterias = getCriteriasByType($type);
-	$field = array();
-	foreach ($criterias as $ID => $criteria)
-		$fields[]=array("name"=>$criteria['name'],"value"=>$ID);	
-			
-	return $fields;		  
-}
 
 function getFKFieldsForQuery($type)
 {
 	global $RULES_CRITERIAS;
-	$criterias = getCriteriasByType($type);
 	$field = array();
-	foreach ($criterias as $criteria)
+	foreach ($RULES_CRITERIAS[$type] as $criteria)
 		//If the field name is not null AND a table name is provided
 		if ($criteria['linkfield'] != '')
 				$fields[]=$criteria['table'].".".$criteria['linkfield'];
@@ -303,23 +230,4 @@ function getFKFieldsForQuery($type)
 }
 
 
-function getRuleByType($type)
-{
-	switch ($type)
-	{
-		case RULE_OCS_AFFECT_COMPUTER :
-			return new OcsAffectEntityRule(-1);
-		
-		default:
-			break;
-	}
-}
-
-function getRuleType($ID)
-{
-	$rule = new Rule;
-	$rule->getRuleWithCriteriasAndActions($ID,0,0);
-	return $rule->fields["rule_type"];
-	
-}
 ?>

@@ -187,7 +187,7 @@ class OcsAffectEntityRule extends Rule {
 		echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["entity"][5] . "</th></tr>";
 
 		//Get all rules and actions
-		$rules = getRulesByID($this->rule_type, $ID, 0, 1);
+		$rules = $this->getRulesByID( $ID, 0, 1);
 
 		if (!empty ($rules)) {
 
@@ -204,7 +204,7 @@ class OcsAffectEntityRule extends Rule {
 				}
 
 				if ($canedit)
-					echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.ocs.form.php?ID=" . $rule->fields["ID"] . "\">" . $rule->fields["name"] . "</a></td>";
+					echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.ocs.form.php?ID=" . $rule->fields["ID"] . "&amp;onglet=1\">" . $rule->fields["name"] . "</a></td>";
 				else
 					echo "<td>" . $rule->fields["name"] . "</td>";
 
@@ -230,6 +230,33 @@ class OcsAffectEntityRule extends Rule {
 		}
 		echo "</form>";
 	}
+
+
+/**
+ * Return all rules from database
+ * @param type of rules
+ * @param withcriterias import rules criterias too
+ * @param withactions import rules actions too
+ */
+function getRulesByID($ID, $withcriterias, $withactions) {
+	global $DB;
+	$ocs_affect_computer_rules = array ();
+	// MOYO : quoi donc que ca fout la ca ?
+	// MOYO : ca correspond pas deja à un cas particulier de ca : getRuleWithCriteriasAndActions ?
+
+
+	//Get all the rules whose rule_type is $rule_type and entity is $ID
+	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$this->rule_type." and gra.value='".$ID."'";
+	
+	$result = $DB->query($sql);
+	while ($rule = $DB->fetch_array($result)) {
+		$affect_rule = new Rule;
+		$affect_rule->getRuleWithCriteriasAndActions($rule["ID"], 0, 1);
+		$ocs_affect_computer_rules[] = $affect_rule;
+	}
+
+	return $ocs_affect_computer_rules;
+}
 
 /**
  * Execute the actions as defined in the rule
