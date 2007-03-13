@@ -28,11 +28,11 @@
  --------------------------------------------------------------------------
  */
  
- // Get rules_option array
-$RULES_CRITERIAS=getRulesOptions();
- 
 define ("RULE_WILDCARD","*");
- 
+ // Get rules_option array
+
+include_once (GLPI_ROOT."/inc/rules.constant.php");
+
 /**
  * Try to match a definied rule
  * 
@@ -229,6 +229,17 @@ function dropdownRulesActions($name,$value=''){
 	
 	dropdownArrayValues($name,$elements,$value);
 }
+
+function getActionByID($ID)
+{
+	global $LANG;
+	switch ($ID)
+	{
+		case "assign" : 
+			return $LANG["rulesengine"][22];
+	}
+}
+
 
 /**
  * Get the list of all tables to include in the query

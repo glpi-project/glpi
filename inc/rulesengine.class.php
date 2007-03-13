@@ -302,13 +302,13 @@ class Rule extends CommonDBTM{
 		echo "<div align='center'>"; 
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][7] . "</th></tr>";
-		echo "<tr>";
+		echo "<tr  class='tab_bg_2'>";
 		if ($canedit){
-			echo "<td class='tab_bg_2'></td>";
+			echo "<td></td>";
 		}
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][11]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][12]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][13]."</td>";
+		echo "<td>".$LANG["rulesengine"][12]."</td>";
+		echo "<td>".$LANG["rulesengine"][11]."</td>";
+		echo "<td>".$LANG["rulesengine"][13]."</td>";
 		echo "</tr>";
 
 		$nb=count($this->actions);
@@ -340,17 +340,71 @@ class Rule extends CommonDBTM{
 		global $LANG;
 		echo "<div align='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
-		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][7] . ":</tr><tr><td class='tab_bg_2' align='center'>";
-		echo $LANG["rulesengine"][11] . ":";
-		echo "</td><td align='center' class='tab_bg_2'>";
+		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][7] . ":</tr>";
+		echo "<tr  class='tab_bg_2' align='center'><td>";
+		echo $LANG["rulesengine"][30] . ":";
+		echo "</td><td>";
+		$this->dropdownActionFields();
+		echo "</td><td>";
+
+		echo "<script type='text/javascript' >\n";
+		echo "   new Form.Element.Observer('criteria', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('criteria_span','".$CFG_GLPI["root_doc"]."/ajax/ruleaction.php',{asynchronous:true, evalScripts:true, \n";
+		echo "           method:'post', parameters:'field='+value+'&rule_type=".$this->rule_type."'\n";
+		echo "})})\n";
+		echo "</script>\n";
+		
+		echo "<span id='criteria_span'>\n";
+		$_POST["rule_type"]=$this->rule_type;
+		include (GLPI_ROOT."/ajax/ruleaction.php");
+		echo "</span>\n";	
+
+/*
 		dropdownRulesActions("action_type");
-		echo "</td><td align='center' class='tab_bg_2'>";
 		echo $LANG["rulesengine"][13] . ":";
 		dropdownValue("glpi_entities", "value");
-		echo "</td><td align='center' class='tab_bg_2'>";
-		echo "<input type=hidden name='field' value=\"FK_entities\">";
+*/
+		echo "</td><td>";
 		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
 		echo "<input type='submit' name='add_action' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+		echo "</td></tr>";
+
+		echo "</table></div><br>";
+	}
+
+
+	function addCriteriaForm() {
+		global $LANG,$CFG_GLPI;
+
+		echo "<div align='center'>";
+		echo "<table  class='tab_cadre_fixe'>";
+		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][16] . ":</tr>";
+		echo "<tr class='tab_bg_2' align='center'><td>";
+		echo $LANG["rulesengine"][16] . ":";
+		echo "</td><td>";
+		$this->dropdownCriterias();
+		echo "</td><td>";
+
+		echo "<script type='text/javascript' >\n";
+		echo "   new Form.Element.Observer('criteria', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('criteria_span','".$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php',{asynchronous:true, evalScripts:true, \n";
+		echo "           method:'post', parameters:'criteria='+value+'&rule_type=".$this->rule_type."'\n";
+		echo "})})\n";
+		echo "</script>\n";
+		
+		echo "<span id='criteria_span'>\n";
+		$_POST["rule_type"]=$this->rule_type;
+		include (GLPI_ROOT."/ajax/rulecriteria.php");
+		echo "</span>\n";	
+
+		echo "</td><td>";
+
+
+			
+		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
+		echo "<input type='submit' name='add_criteria' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 		echo "</td></tr>";
 
 		echo "</table></div><br>";
@@ -412,42 +466,6 @@ class Rule extends CommonDBTM{
 	}	
 
 
-	function addCriteriaForm() {
-		global $LANG,$CFG_GLPI;
-
-		echo "<div align='center'>";
-		echo "<table  class='tab_cadre_fixe'>";
-		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][16] . ":</tr>";
-		echo "<tr class='tab_bg_2' align='center'><td>";
-		echo $LANG["rulesengine"][16] . ":";
-		echo "</td><td>";
-		$this->dropdownCriterias();
-		echo "</td><td>";
-
-		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('criteria', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('criteria_span','".$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php',{asynchronous:true, evalScripts:true, \n";
-		echo "           method:'post', parameters:'criteria='+value+'&rule_type=".$this->rule_type."'\n";
-		echo "})})\n";
-		echo "</script>\n";
-		
-		echo "<span id='criteria_span'>\n";
-		$_POST["rule_type"]=$this->rule_type;
-		include (GLPI_ROOT."/ajax/rulecriteria.php");
-		echo "</span>\n";	
-
-		echo "</td><td>";
-
-
-			
-		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
-		echo "<input type='submit' name='add_criteria' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
-		echo "</td></tr>";
-
-		echo "</table></div><br>";
-	}
-
 	function dropdownCriterias(){
 		$items=array();
 		foreach ($this->getCriterias() as $ID => $crit){
@@ -460,6 +478,21 @@ class Rule extends CommonDBTM{
 		echo "</script>\n";
 
 	}
+
+	function dropdownActionFields(){
+		$items=array();
+		foreach ($this->getActions() as $ID => $act){
+			$items[$ID]=$act['name'];
+		}
+
+		dropdownArrayValues("field", $items);
+		// Force set item to default value on reload
+		echo "<script type='text/javascript' >\n";
+		echo "document.getElementById('action').value='".key($items)."';";
+		echo "</script>\n";
+
+	}
+
 	function getCriterias(){
 		global $RULES_CRITERIAS;
 		if (isset($RULES_CRITERIAS[$this->rule_type])){
@@ -469,33 +502,71 @@ class Rule extends CommonDBTM{
 		}
 	}
 
+
+	function getActions(){
+		global $RULES_ACTIONS;
+		if (isset($RULES_ACTIONS[$this->rule_type])){
+			return $RULES_ACTIONS[$this->rule_type];
+		} else {
+			return array();
+		}
+	}
+
 	/**
-	 * Get a criteria description by his ID and type
+	 * Get a criteria description by his ID
+	 * @param $ID the criteria's ID
+	 * @return the criteria array
+	 */
+	function getCriteria($ID)
+	{
+		$criterias=$this->getCriterias();
+		if (isset($criterias[$ID])){
+			return $criterias[$ID];
+		} else {
+			return array();
+		}
+	}
+	/**
+	 * Get a action description by his ID
+	 * @param $ID the action's ID
+	 * @return the action array
+	 */
+	function getAction($ID)
+	{
+		$actions=$this->getActions();
+		if (isset($actions[$ID])){
+			return $actions[$ID];
+		} else {
+			return array();
+		}
+	}
+	/**
+	 * Get a criteria description by his ID
 	 * @param the criteria's ID
 	 * @return the criteria's description
 	 */
 	function getCriteriaName($ID)
 	{
-		global $RULES_CRITERIAS;
-		if (isset($RULES_CRITERIAS[$this->rule_type][$ID]['name'])){
-			return $RULES_CRITERIAS[$this->rule_type][$ID]['name'];
+		$criteria=$this->getCriteria($ID);
+		if (isset($criteria['name'])){
+			return $criteria['name'];
 		} else {
 			return "&nbsp;";
 		}
 	}
 
 	/**
-	 * Get a criteria description by his ID and type
-	 * @param $ID the criteria's ID
-	 * @return the criteria's description
+	 * Get a action description by his ID
+	 * @param the action's ID
+	 * @return the action's description
 	 */
-	function getCriteria($ID)
+	function getActionName($ID)
 	{
-		global $RULES_CRITERIAS;
-		if (isset($RULES_CRITERIAS[$this->rule_type][$ID])){
-			return $RULES_CRITERIAS[$this->rule_type][$ID];
+		$action=$this->getAction($ID);
+		if (isset($action['name'])){
+			return $action['name'];
 		} else {
-			return array();
+			return "&nbsp;";
 		}
 	}
 	
@@ -681,8 +752,9 @@ class Rule extends CommonDBTM{
 
 	function showMinimalAction($fields,$canedit)
 	{
-		// MOYO ca sert a quoi ?
-		// Ya pas moyen de le rendre générique ?
+		echo "<td class='tab_bg_2'>" . $this->getActionName($fields["field"]) . "</td>";
+		echo "<td class='tab_bg_2'>" . getActionByID($fields["action_type"]) . "</td>";
+		echo "<td class='tab_bg_2'>" . $this->getActionValue($fields["field"],$fields["value"]) . "</td>";
 		
 	}	
 	
@@ -694,12 +766,12 @@ class Rule extends CommonDBTM{
 
 	/**
  	* Return a value associated with a pattern associated to a criteria
- 	* @param $criteria the given criteria
+ 	* @param $ID the given criteria
  	* @param $pattern the pattern
  	*/
- 	function getCriteriaPatternValue($criteria,$pattern)
+ 	function getCriteriaPatternValue($ID,$pattern)
 	{
-		$crit=$this->getCriteria($criteria);
+		$crit=$this->getCriteria($ID);
 		
 		if (!isset($crit['type'])){
 			return $pattern;
@@ -711,6 +783,30 @@ class Rule extends CommonDBTM{
 					break;
 				default :
 					return $pattern;
+					break;
+			}
+		}
+	}
+
+	/**
+ 	* Return a value associated with a pattern associated to a criteria
+ 	* @param $ID the given criteria
+ 	* @param $pattern the pattern
+ 	*/
+ 	function getActionValue($ID,$value)
+	{
+		$action=$this->getAction($ID);
+		
+		if (!isset($action['type'])){
+			return $value;
+		} else {
+			
+			switch ($action['type']){
+				case "dropdown":
+					return getDropdownName($action["table"],$value);
+					break;
+				default :
+					return $value;
 					break;
 			}
 		}

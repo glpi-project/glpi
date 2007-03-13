@@ -97,18 +97,23 @@ function countElementsInTableForEntity($table,$entity){
  */
 function getTreeLeafValueName($table,$ID,$withcomments=0)
 {
-	global $DB;
-	$query = "SELECT * 
-		FROM $table 
-		WHERE (ID = '$ID')";
+	global $DB,$LANG;
+
 	$name="";
 	$comments="";
-	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)==1){
-			$name=$DB->result($result,0,"name");
-			$comments=$DB->result($result,0,"comments");
+	if ($ID==0&&$table=="glpi_entities"){
+		$name=$LANG["entity"][2];
+	} else {
+		$query = "SELECT * 
+			FROM $table 
+			WHERE (ID = '$ID')";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)==1){
+				$name=$DB->result($result,0,"name");
+				$comments=$DB->result($result,0,"comments");
+			}
+	
 		}
-
 	}
 	if ($withcomments)
 		return array("name"=>$name,"comments"=>$comments);
@@ -126,19 +131,24 @@ function getTreeLeafValueName($table,$ID,$withcomments=0)
  */
 function getTreeValueCompleteName($table,$ID,$withcomments=0)
 {
-	global $DB;
-	$query = "SELECT * 
-		FROM $table 
-		WHERE (ID = '$ID')";
+	global $DB,$LANG;
 	$name="";
 	$comments="";
-	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)==1){
-			$name=$DB->result($result,0,"completename");
-			$comments=$name.":<br>";
-			$comments.=$DB->result($result,0,"comments");
-		}
 
+	if ($ID==0&&$table=="glpi_entities"){
+		$name=$LANG["entity"][2];
+	} else {
+		$query = "SELECT * 
+			FROM $table 
+			WHERE (ID = '$ID')";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)==1){
+				$name=$DB->result($result,0,"completename");
+				$comments=$name.":<br>";
+				$comments.=$DB->result($result,0,"comments");
+			}
+	
+		}
 	}
 	if (empty($name)) $name="&nbsp;";
 	if ($withcomments) 
