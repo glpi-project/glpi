@@ -59,7 +59,6 @@ if (!empty ($_GET["next"])) {
 	if ($_GET["next"] == "extauth") {
 		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth");
 		titleExtAuth();
-		//showFormExtAuth($_SERVER['PHP_SELF']);
 		showFormExtAuthList($_SERVER['PHP_SELF']);
 	}
 	elseif ($_GET["next"] == "mailing") {

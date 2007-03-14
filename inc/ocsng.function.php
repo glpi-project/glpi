@@ -506,7 +506,12 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 			WHERE ID='$ID' and ocs_server_id=".$ocs_server_id;
 	$result = $DB->query($query);
 	if ($DB->numrows($result) == 1) {
+		
 		$line = $DB->fetch_assoc($result);
+
+		$comp = new Computer;
+		$comp->getFromDB($line["glpi_id"]);
+		echo "entity=".$comp->fields["FK_entities"];
 		// Get OCS ID 
 		$query_ocs = "SELECT * 
 					FROM hardware 
@@ -569,25 +574,25 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 				if ($mixed_checksum & pow(2, MONITORS_FL)) {
 					// Get import monitors
 					$import_monitor = importArrayFromDB($line["import_monitor"]);
-					ocsUpdatePeripherals(MONITOR_TYPE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_monitor, $dohistory);
+					ocsUpdatePeripherals(MONITOR_TYPE, $comp->fields["FK_entities"], $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_monitor, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, PRINTERS_FL)) {
 					// Get import printers
 					$import_printer = importArrayFromDB($line["import_printers"]);
-					ocsUpdatePeripherals(PRINTER_TYPE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_printer, $dohistory);
+					ocsUpdatePeripherals(PRINTER_TYPE, $comp->fields["FK_entities"], $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_printer, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, INPUTS_FL)) {
 					// Get import monitors
 					$import_peripheral = importArrayFromDB($line["import_peripheral"]);
-					ocsUpdatePeripherals(PERIPHERAL_TYPE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_peripheral, $dohistory);
+					ocsUpdatePeripherals(PERIPHERAL_TYPE, $comp->fields["FK_entities"],$line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_peripheral, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, SOFTWARES_FL)) {
 					// Get import monitors
 					$import_software = importArrayFromDB($line["import_software"]);
-					ocsUpdateSoftware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_software, $dohistory);
+					ocsUpdateSoftware($line['glpi_id'], $comp->fields["FK_entities"], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_software, $dohistory);
 				}				
 				if ($mixed_checksum & pow(2, REGISTRY_FL)) {
 					//import registry entries not needed
@@ -1627,7 +1632,7 @@ function ocsAddDevice($device_type, $dev_array) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_periph, $dohistory) {
+function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_periph, $dohistory) {
 	global $DB, $DBocs;
 	
 	checkOCSconnection($ocs_server_id);
@@ -1681,6 +1686,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 										$m = new Monitor;
 										$mon["state"] = $cfg_ocs["default_state"];
 										$m->fields = $mon;
+										$m->fields["FK_entities"]=$entity;
 										$id_monitor = $m->addToDB();
 									}
 								} else
@@ -1730,6 +1736,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 												if (!$id_monitor) {
 													$mon["state"] = $cfg_ocs["default_state"];
 													$m->fields = $mon;
+													$m->fields["FK_entities"]=$entity;
 													$id_monitor = $m->addToDB();
 												}
 											}
@@ -1749,6 +1756,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 											if (!$id_monitor) {
 												$mon["state"] = $cfg_ocs["default_state"];
 												$m->fields = $mon;
+												$p->fields["FK_entities"]=$entity;
 												$id_monitor = $m->addToDB();
 											}
 										}
@@ -1808,6 +1816,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 										$p = new Printer;
 										$print["state"] = $cfg_ocs["default_state"];
 										$p->fields = $print;
+										$p->fields["FK_entities"]=$entity;
 										$id_printer = $p->addToDB();
 									}
 								} else
@@ -1818,6 +1827,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 										$p = new Printer;
 										$print["state"] = $cfg_ocs["default_state"];
 										$p->fields = $print;
+										$p->fields["FK_entities"]=$entity;
 										$id_printer = $p->addToDB();
 									}
 								if ($id_printer) {
@@ -1873,6 +1883,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 									$p = new Peripheral;
 									$periph["state"] = $cfg_ocs["default_state"];
 									$p->fields = $periph;
+									$p->fields["FK_entities"]=$entity;
 									$id_periph = $p->addToDB();
 								}
 							} else
@@ -1883,6 +1894,7 @@ function ocsUpdatePeripherals($device_type, $glpi_id, $ocs_id, $ocs_server_id,$c
 									$p = new Peripheral;
 									$periph["state"] = $cfg_ocs["default_state"];
 									$p->fields = $periph;
+									$p->fields["FK_entities"]=$entity;
 									$id_periph = $p->addToDB();
 								}
 							if ($id_periph) {
@@ -2079,7 +2091,7 @@ function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdateSoftware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_software, $dohistory) {
+function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $import_software, $dohistory) {
 	global  $DB, $DBocs;
 	
 	checkOCSconnection($ocs_server_id);
@@ -2125,6 +2137,7 @@ function ocsUpdateSoftware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_s
 							$soft->fields["name"] = $name;
 							$soft->fields["version"] = $data2["VERSION"];
 							$soft->fields["comments"] = $data2["COMMENTS"];
+							$soft->fields["FK_entities"]=$entity;
 							
 							if (!empty ($data2["PUBLISHER"])) {
 								$soft->fields["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $data2["PUBLISHER"]);
