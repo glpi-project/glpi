@@ -65,21 +65,21 @@ function matchRules($field, $condition, $pattern) {
 			else
 				return false;	
 		case PATTERN_BEGIN:
-			$value = stripos($field,$pattern);
+			$value = strpos($field,$pattern);
 			if (($value !== false) && $value == 0)
 				return true;
 			else
 				return false;	
 			
 		case PATTERN_CONTAIN:
-			$value = stripos($field,$pattern);
+			$value = strpos($field,$pattern);
 			if (($value !== false) && $value >= 0)
 				return true;
 			else
 				return false;	
 			
 		case PATTERN_NOT_CONTAIN:
-			$value = stripos($field,$pattern);
+			$value = strpos($field,$pattern);
 			if ($value === false)
 				return true;
 			else

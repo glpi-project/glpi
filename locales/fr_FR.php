@@ -1198,8 +1198,7 @@ $LANG["rulesengine"][27]="Regex ne vérifie pas";
 $LANG["rulesengine"][28]="Règles métier pour le suivi";
 $LANG["rulesengine"][29]="Liste des règles";
 $LANG["rulesengine"][30]="Action"; 
-
-
+$LANG["rulesengine"][31]="Règles d'affectation d'un utilisateur à une entité";
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";
