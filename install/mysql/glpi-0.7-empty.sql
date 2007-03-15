@@ -1,4 +1,4 @@
-#GLPI Dump database on 2007-03-10 23:34
+#GLPI Dump database on 2007-03-15 23:36
 
 ### Dump table glpi_alerts
 
@@ -213,7 +213,7 @@ CREATE TABLE `glpi_config` (
   `admin_email` varchar(255) collate utf8_unicode_ci default NULL,
   `mailing_signature` varchar(255) collate utf8_unicode_ci default '--',
   `permit_helpdesk` varchar(255) collate utf8_unicode_ci default NULL,
-  `default_language` varchar(255) collate utf8_unicode_ci default 'en_GB',
+  `default_language` varchar(255) collate utf8_unicode_ci default 'french',
   `priority_1` varchar(255) collate utf8_unicode_ci default '#fff2f2',
   `priority_2` varchar(255) collate utf8_unicode_ci default '#ffe0e0',
   `priority_3` varchar(255) collate utf8_unicode_ci default '#ffcece',
@@ -1303,7 +1303,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-03-10 23:34:45','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-03-15 23:36:17','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2079,6 +2079,20 @@ CREATE TABLE `glpi_rules_descriptions` (
 
 INSERT INTO glpi_rules_descriptions VALUES ('1','-1','0','0','Root','','AND');
 
+### Dump table glpi_rules_ldap_parameters
+
+DROP TABLE IF EXISTS `glpi_rules_ldap_parameters`;
+CREATE TABLE `glpi_rules_ldap_parameters` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_type` smallint(6) NOT NULL default '1',
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO glpi_rules_ldap_parameters VALUES ('1','Organizational Unit','ou','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('2','Organization','o','1');
+
 ### Dump table glpi_software
 
 DROP TABLE IF EXISTS `glpi_software`;
@@ -2154,7 +2168,7 @@ CREATE TABLE `glpi_tracking` (
   KEY `assign` (`assign`),
   KEY `date` (`date`),
   KEY `closedate` (`closedate`),
-  KEY `status` (`status`),
+  KEY `status` (`status`(1)),
   KEY `category` (`category`),
   KEY `FK_group` (`FK_group`),
   KEY `assign_ent` (`assign_ent`),
@@ -2371,7 +2385,7 @@ CREATE TABLE `glpi_users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'0','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR',NULL,'-1','1','2007-03-10 23:34:45','2007-03-10 23:34:45');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR',NULL,'-1','1','2007-03-15 23:36:17','2007-03-15 23:36:17');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');

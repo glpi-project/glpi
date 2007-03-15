@@ -65,65 +65,28 @@ class LdapAffectEntityRule extends Rule {
 	 * @param extra_params extra parameters given
 	 * @return an array of attributes
 	 */
-	function getRulesMatchingAttributes($type, $computer_id) {
-		/*	
-		global $DBocs;
-
-		$tables = getTablesForQuery($type);
-		$fields = getFieldsForQuery($type);
-		$linked_fields = getFKFieldsForQuery($type);
-
-		$rule_parameters = array ();
-
-		$sql = "";
-		$begin_sql = "SELECT ";
-		$select_sql = "";
-		$from_sql = "";
-		$where_sql = "";
-
-		//Build the select request
-		foreach ($fields as $field) {
-			switch (strtoupper($field)) {
-				//OCS server ID is provided by extra_params -> get the configuration associated with the ocs server
-				case "OCS_SERVER" :
-					$conf = getOcsConf($this->ocs_server_id);
-					$rule_parameters["OCS_SERVER"] = $conf["name"];
-					break;
-					//TAG and DOMAIN should come from the OCS DB 
-				default :
-					$select_sql .= ($select_sql != "" ? " , " : "") . $field;
-					break;
+	function getRulesMatchingAttributes($type, $ldap_server,$user_fields) {
+		
+		$rule_parameters = array();
+		
+		//Get all the ldap fields
+		$fields = getFieldsForQuery(RULE_LDAP_AFFECT_ENTITY);
+		
+		foreach ($fields as $field)
+			if (isset($user_fields[$field["field"]]))
+			{
+				switch($field["field"])
+				{
+					case "LDAP_SERVER":
+						$rule_parameters["LDAP_SERVER"] = $user_fields[$field["field"]];
+						break;
+					default :
+						$rule_parameters[$field["field"]] = $user_fields[$field["field"]];
+						break;	
+				}
+						
 			}
-
-		}
-
-		//Build the FROM part of the request
-		//Remove all the non duplicated table names
-		$tables = array_unique($tables);
-		foreach ($tables as $table) {
-			$from_sql .= ($from_sql != "" ? " , " : "") . $table;
-		}
-
-		//Build the WHERE part of the request
-		foreach ($linked_fields as $linked_field) {
-			$where_sql .= ($where_sql != "" ? " AND " : "") . $linked_field . "=hardware.ID ";
-		}
-
-		if ($select_sql != "" && $from_sql != "" && $where_sql != "") {
-			//Build the all request
-			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE " . $where_sql . " AND hardware.ID=" . $computer_id;
-
-			checkOCSconnection($this->ocs_server_id);
-			$result = $DBocs->query($sql);
-			$ocs_datas = array ();
-
-			if ($DBocs->numrows($result) > 0)
-				$ocs_datas = $DBocs->fetch_array($result);
-			return array_merge($rule_parameters, $ocs_datas);
-		} else
-			return $rule_parameters;
-		*/
-		return array();	
+		return $rule_parameters;	
 	}
 
 	/**
@@ -153,7 +116,7 @@ class LdapAffectEntityRule extends Rule {
 	}
 	function maxActionsCount(){
 		// Unlimited
-		return 1;
+		return 2;
 	}
 	/**
 	 * Display form to add rules
@@ -243,15 +206,16 @@ class LdapAffectEntityRule extends Rule {
 	function addLdapCriteriasToArray()
 	{
 		global $DB,$RULES_CRITERIAS;
-		$sql = "SELECT name,value,rule_type FROM glpi_rules_ldap_parameters WHERE rule_type=".RULE_LDAP_AFFECT_ENTITY;
-		
-		$result = $DB->query($sql);
-		while ($datas = $DB->fetch_array($result))
-		{
-			$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['name']=$datas["name"];
-			$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['field']=$datas["value"];
-			$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['type']='dropdown';
-		}	
+
+			$sql = "SELECT name,value,rule_type FROM glpi_rules_ldap_parameters WHERE rule_type=".RULE_LDAP_AFFECT_ENTITY;
+			$result = $DB->query($sql);
+			while ($datas = $DB->fetch_array($result))
+			{
+					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['name']=$datas["name"];
+					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['field']=$datas["value"];
+					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['linkfield']='';
+					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['table']='';
+				}
 	}
 	
 /**

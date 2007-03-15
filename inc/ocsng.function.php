@@ -1756,7 +1756,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 											if (!$id_monitor) {
 												$mon["state"] = $cfg_ocs["default_state"];
 												$m->fields = $mon;
-												$p->fields["FK_entities"]=$entity;
+												$m->fields["FK_entities"]=$entity;
 												$id_monitor = $m->addToDB();
 											}
 										}

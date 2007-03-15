@@ -68,6 +68,14 @@ $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['name']=$LANG["entity"][
 $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['type']='dropdown';
 $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['table']='glpi_entities';
 
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_entities']['name']=$LANG["entity"][0];
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_entities']['type']='dropdown';
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_entities']['table']='glpi_entities';
+
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_Profiles']['name']=$LANG["Menu"][35];
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_Profiles']['type']='dropdown';
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_Profiles']['table']='glpi_profiles';
+
 // BUSINESS RULES FOR TRACKING
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['table']='glpi_tracking';
