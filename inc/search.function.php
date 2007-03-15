@@ -1156,7 +1156,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			break;
 			case "glpi_tracking.count" :
-				return " COUNT(glpi_tracking.ID) AS ".$NAME."_".$num.", ";
+				return " COUNT(DISTINCT glpi_tracking.ID) AS ".$NAME."_".$num.", ";
 			break;
 		default:
 			if ($meta){
