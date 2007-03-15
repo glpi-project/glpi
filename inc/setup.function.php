@@ -1326,7 +1326,7 @@ function showFormExtAuthList($target) {
 		return false;
 	echo "<div align='center'>";
 	if (function_exists('imap_open')) {
-		echo "<form name=mail action=\"$target?next=extauth_mail\" method=\"post\">";
+		echo "<form name=mail action=\"".$CFG_GLPI["root_doc"]."/front/setup.auth.php?next=extauth_mail\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		echo "<tr><th colspan='2'>" . $LANG["login"][3] . "</th></tr>";
@@ -1353,7 +1353,7 @@ function showFormExtAuthList($target) {
 
 	if (extension_loaded('ldap')) {
 
-		echo "<form name=ldap action=\"$target?next=extauth_ldap\" method=\"post\">";
+		echo "<form name=ldap action=\"".$CFG_GLPI["root_doc"]."/front/setup.auth.php?next=extauth_ldap\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
