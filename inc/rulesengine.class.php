@@ -337,7 +337,7 @@ class Rule extends CommonDBTM{
 	}
 
 	function addActionForm() {
-		global $LANG;
+		global $LANG,$CFG_GLPI;
 		echo "<div align='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
 		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][7] . ":</tr>";
@@ -375,8 +375,7 @@ class Rule extends CommonDBTM{
 
 
 	function addCriteriaForm() {
-		global $LANG,$CFG_GLPI;
-
+		global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
 		echo "<div align='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
 		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][16] . ":</tr>";

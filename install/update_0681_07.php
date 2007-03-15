@@ -822,6 +822,24 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 alter title in glpi_reminder" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!TableExists("glpi_rules_ldap_parameters")){
+			$query = "CREATE TABLE `glpi_rules_ldap_parameters` (
+			  `ID` int(11) NOT NULL auto_increment,
+  			  `name` varchar(255) NOT NULL,
+  			  `value` varchar(255) NOT NULL,
+  			  `rule_type` smallint(6) NOT NULL default '1',
+  			   PRIMARY KEY  (`ID`)
+			  ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3;";
+			$DB->query($query) or die("0.7 add table glpi_rules_ldap_parameters" . $LANG["update"][90] . $DB->error());
+	
+		$query = "INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES 
+			(1, 'Organizational Unit', 'ou', 1),
+			(2, 'Organization', 'o', 1);
+		";
+		$DB->query($query) or die("0.7 add standard values to glpi_rules_ldap_parameters " . $LANG["update"][90] . $DB->error());
+	
+	}
+
 	// TODO Split Config -> config general + config entity
 	// TODO Auto assignment profile based on rules
 	// TODO Add default profile to user + update data from preference

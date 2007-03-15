@@ -1,3 +1,4 @@
+#!/usr/bin/php -f
 <?php
 /*
  * @version $Id: ocsng_mass_sync.php 4213 2006-12-25 19:56:49Z moyo $
@@ -32,33 +33,70 @@
 // Original Author of file: Julien Dombre
 // Contributor: Goneri Le Bouder <goneri@rulezlan.org>
 // Purpose of file:
+// Installation:
+// Add in your contabl (crontab -e):
+// */2  *  *  *  *  root  /path/glpi/scripts/ocsng_fullsync.php -- ocs_server_id=X -- lockfile='/tmp/lock' >>/dev/null 2>&1
+// lockfile is optional is your user can write in the file/_cron directory
 // ----------------------------------------------------------------------
-
+ini_set("memory_limit","-1");
+ini_set("max_execution_time", "0");
 
 // MASS IMPORT for OCSNG
-
 define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
+include (GLPI_ROOT . "/config/based_config.php");
+
+if (isset($_GET["lockfile"])){
+	$lockfile=$_GET["lockfile"];
+	} else {
+	$lockfile = GLPI_CRON_DIR. '/' . 'ocng_fullsync.lock';
+}
+$lock = fopen($lockfile, "w+",4);
+flock($lock, LOCK_EX|LOCK_NB) or die("Error getting lock!");
+
 $USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","rulesengine","rule.ocs","group");
 include (GLPI_ROOT."/inc/includes.php");
 
-$ocs_server_id=0;
-if (isset($_GET["ocs_server_id"])) $ocs_server_id=$_GET["ocs_server_id"];
-
-
-$cfg_ocs=getOcsConf($ocs_server_id);
-ocsManageDeleted($ocs_server_id);
-
-$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0";
-$result_ocs = $DBocs->query($query_ocs);
-
-# Feed the list of ocs IDs to sync
-$ocsMachinesToSync=array();
-while($data=$DBocs->fetch_array($result_ocs)){
-	$ocsMachinesToSync[$data["ID"]] = 1;
-	ocsImportComputer($data["ID"],$ocs_server_id);
-	echo ".";
+if (isset($_GET["ocs_server_id"])) 
+{
+	echo "import computers from server : ".$_GET["ocs_server_id"]."<br>";
+	importFromOcsServer($_GET["ocs_server_id"]);
 }
-echo "done";
+else
+{
+	$query = "SELECT ID FROM glpi_ocs_config";
+	$result = $DB->query($query);
+	while ($ocs_server = $DB->fetch_array($result))
+		importFromOcsServer($ocs_server["ID"]);
+}
 
+flock($lock, LOCK_UN);
+fclose($lock);
+unlink($lockfile);
+echo "done\n";
+
+function importFromOcsServer($ocs_server_id)
+{
+	global $DBocs;
+	$cfg_ocs=getOcsConf($ocs_server_id);
+	ocsManageDeleted($ocs_server_id);
+
+	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0 LIMIT 20";
+	$result_ocs = $DBocs->query($query_ocs);
+	
+	while ($DBocs->numrows($result_ocs) > 0)
+	{
+			# Feed the list of ocs IDs to sync
+			$ocsMachinesToSync=array();
+			while($data=$DBocs->fetch_array($result_ocs)){
+				$ocsMachinesToSync[$data["ID"]] = 1;
+				ocsImportComputer($data["ID"],$ocs_server_id);
+				echo ".";
+			}
+	
+		$result_ocs = $DBocs->query($query_ocs);
+	}
+	
+}
 ?>
