@@ -390,12 +390,6 @@ class Job extends CommonDBTM{
 		if (!isset($input["status"])) $input["status"]="new";
 		if (!isset($input["assign"])) $input["assign"]=0;
 
-
-		if (empty($input["name"])) {
-			$input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
-			$input["name"]=preg_replace('/\n/',' ',$input['name']);
-			$input["name"]=substr($input['name'],0,70);
-		}
 		if (!isset($input["author"])){
 			if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
 				$input["author"]=$_SESSION["glpiID"];
@@ -409,6 +403,13 @@ class Job extends CommonDBTM{
 
 		if ($input["device_type"]==0)
 			$input["computer"]=0;
+
+		if (!isset($input["date"]))
+			$input["date"] = $_SESSION["glpi_currenttime"];
+
+		if (strstr($input["status"],"old_"))
+			$input["closedate"] = $input["date"];
+
 
 		if ($input["computer"]&&$input["device_type"]){
 			$ci=new CommonItem;
@@ -452,11 +453,15 @@ class Job extends CommonDBTM{
 			unset($input["add_close"]);
 		}
 
-		if (!isset($input["date"]))
-			$input["date"] = $_SESSION["glpi_currenttime"];
+		if (empty($input["name"])) {
+			$input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
+			$input["name"]=preg_replace('/\n/',' ',$input['name']);
+			$input["name"]=substr($input['name'],0,70);
+		}
 
-		if (strstr($input["status"],"old_"))
-			$input["closedate"] = $input["date"];
+		// Process Business Rules
+		$rules=new TrackingBusinessRuleCollection();
+		$input=$rules->processAllRules($input,$input);
 
 		return $input;
 	}

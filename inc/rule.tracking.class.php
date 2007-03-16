@@ -58,7 +58,6 @@ class TrackingBusinessRule extends Rule {
 class TrackingBusinessRuleCollection extends RuleCollection {
 
 	function TrackingBusinessRuleCollection() {
-		global $DB;
 		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
 		$this->rule_class_name="TrackingBusinessRule";
 	}

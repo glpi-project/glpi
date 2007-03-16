@@ -319,14 +319,13 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 		$DBocs->query($query);
 
 	//Try to affect computer to an entity
-	$rule = new OcsAffectEntityRule($ocs_server_id);
-
+	$rule = new OcsRuleCollection($ocs_server_id);
+	$data=array();
+	$data=$rule->processAllRules(array(),array(),$ocs_id);
+	print_r($data);
 	//Try to match all the rules, return the first good one, or null if not rules matched
-	if ($rule->processAllRules($ocs_id))
+	if (isset($data['FK_entities'])&&$data['FK_entities']>=0)
 	{
-		// MOYO : Pour moi doit etre fait dans le processAllRules
-		$comp->fields = $rule->executeActions($comp->fields);
-
 		$query = "SELECT * FROM hardware WHERE ID='$ocs_id'";
 		$result = $DBocs->query($query);
 		//$comp = new Computer;
@@ -346,7 +345,7 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 		
 		//$glpi_id = $comp->addToDB();
 		$cfg_ocs=getOcsConf($ocs_server_id);
-
+		$comp->fields["FK_entities"] = $data['FK_entities'];
 		$comp->fields["name"] = $line["NAME"];
 		$comp->fields["ocs_import"] = 1;
 		

@@ -40,13 +40,24 @@ class RuleCollection {
 	var $rule_list = array();
 	var $rule_type;
 	var $rule_class_name="Rule";
+	var $stop_on_first_match=false;
+
 	
+	/**
+	* Constructor
+	* @param rule_type the rule type used for the collection
+	*/
 	function RuleCollection($rule_type){
-		global $DB;
 		$this->rule_type = $rule_type;
+		echo "ttt";
 	}
 
 
+	/**
+	* Get Collection Datas : retrieve descriptions and rules
+	* @param $retrieve_criteria Retrieve the criterias of the rules ?
+	* @param $retrieve_action Retrieve the action of the rules ?
+	*/
 	function getCollectionDatas($retrieve_criteria=0,$retrieve_action=0){
 		global $DB;
 		//Select all the rules of a different type
@@ -63,14 +74,15 @@ class RuleCollection {
 			}
 		}
 	}
-
+/*
 	function title($addbutton=false) {
 		global $LANG, $CFG_GLPI;
 	
 		$buttons = array ();
 		displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
 	}
-
+*/
+	
 	function getTitle(){
 		global $LANG;
 		return $LANG["rulesengine"][29];
@@ -156,6 +168,31 @@ class RuleCollection {
 			$DB->query($sql);				
 		}
 	}
+
+	function processAllRules($input,$output,$params=array())
+	{	
+		// Get Collection datas
+		$this->getCollectionDatas(1,1);
+		$input=$this->prepareInputDataForProcess($input,$params);
+		if (count($this->rule_list)){
+
+			foreach ($this->rule_list as $rule){
+				$output["_rule_process"]=false;
+				$output=$rule->process($input,$output,$params);
+				if ($output["_rule_process"]&&$this->stop_on_first_match){
+					unset($output["_rule_process"]);
+					return $output;
+				}
+			}
+		}
+		
+		return $output;
+	}
+	function prepareInputDataForProcess($input,$params){
+		return $input;
+	}
+	
+
 }
 
 /**
@@ -172,9 +209,6 @@ class Rule extends CommonDBTM{
 	//Criterias affected to this rule
 	var $criterias = array();
 
-	//Store the rule that matched the criterias
-	var $matched_rule;
-	
 	function Rule() {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
@@ -572,54 +606,69 @@ class Rule extends CommonDBTM{
 	/**
 	 * Try to match all criterias of a rule using the rules engine
 	 */
-	function processRule($informations)
+	function process($input,$output,$params)
 	{
-		// MOYO : pourquoi ne pas faire directement : CHECK Critères ET ACTIONS si règle valide ?
-		$result=false;
-		if (sizeof($this->criterias) > 0)
-		{
-			foreach ($this->criterias as $criteria)
-			{
+		if (count($this->criterias))	{
+			$input=$this->prepareInputDataForProcess($input,$params);
+			$results=array();
 
-				// process Criteria
-				//Get all the informations about the condition
-				$criteria_informations = $this->getCriteria($criteria->fields["criteria"]);
+			foreach ($this->criterias as $criteria){
 
-				$res=false;
-				if (isset($informations[$criteria_informations["field"]])){
-					$res = matchRules($informations[$criteria_informations["field"]],$criteria->fields["condition"],$criteria->fields["pattern"]);
+				// Undefine criteria field : set to blank
+				if (!isset($input[$criteria->fields["criteria"]])){
+					$input[$criteria->fields["criteria"]]='';
 				}
 
-				//If AND -> one false and the rule is not matched
-				if ($this->fields["match"] == AND_MATCHING)
-					$result=$res;
-				//If OR -> if this criteria return false but another criteria already return true -> let true
-				elseif (($res == false && $result==true) || ($res == true)) 
-					$result=true;
-				//Put false
-				else
-					$result = false;		
+				$results[] = matchRules($input[$criteria->fields["criteria"]],$criteria->fields["condition"],$criteria->fields["pattern"]);
 			}
-			return $result;
+			if (count($results)){
+				$doactions=false;
+				if ($this->fields["match"]==AND_MATCHING){
+					$doactions=true;
+					foreach ($results as $res){
+						$doactions&=$res;
+					}
+				} else { // OR MATCHING
+					$doactions=false;
+					foreach ($results as $res){
+						$doactions|=$res;
+					}
+
+				}
+
+				if ($doactions){
+					$output=$this->executeActions($output,$params);
+					$output["_rule_process"]=true;
+				}
+			}
+			
 		}
-		else
-			return false; 
+		return $output; 
+	}
+	function prepareInputDataForProcess($input,$params){
+		return $input;
 	}
 
 	/**
-	 * Function to be implemented to get the attributes needed to process rule's matching
-	 */
-	function getRequestForAttributes($type)
-	{	
-		// MOYO jamais appelé dans ce fichier -> surement pas à etre ici : utile que dans des cas précis
-		return array();
+	* Execute the actions as defined in the rule
+	* @param fields the fields to manipulate
+	* @return the fields modified
+	*/
+	function executeActions($output,$params)
+	{
+		if (count($this->actions)){
+			foreach ($this->actions as $action){
+				switch ($action->fields["action_type"]){
+					case "assign" :
+						$output[$action->fields["field"]] = $action->fields["value"];
+					break;
+				}
+			}
+		}
+
+		return $output;
 	}
 
-	function processAllRules($rule_parameters)
-	{		
-		// MOYO : plutot dans RuleCollection : appels successif a tous les processRule
-		return null;
-	}
 
 	/**
 	 * Delete a rule and all associated criterias and actions
@@ -757,12 +806,6 @@ class Rule extends CommonDBTM{
 		
 	}	
 	
-	function addValueForm($fields,$canedit)
-	{
-		// MOYO ca sert a quoi ?
-		// Ya pas moyen de le rendre générique ?
-	}
-
 	/**
  	* Return a value associated with a pattern associated to a criteria
  	* @param $ID the given criteria
@@ -811,17 +854,6 @@ class Rule extends CommonDBTM{
 		}
 	}
 
-/**
- * Execute the actions as defined in the rule
- * @param fields the fields to manipulate
- * @return the fields modified
- */
-	function executeActions($fields)
-	{
-		// MOYO Ya pas moyen de rendre ca générique comme le check des critères ?
-		return $fields;
-	}
-		
 }
 
 
@@ -888,7 +920,7 @@ class RuleCriteria extends CommonDBTM {
 
 		$rules_list = array ();
 		$result = $DB->query($sql);
-		while ($rule = $DB->fetch_array($result))
+		while ($rule = $DB->fetch_assoc($result))
 		{
 			$tmp = new RuleCriteria;
 			$tmp->fields = $rule;
