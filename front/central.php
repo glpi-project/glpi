@@ -60,6 +60,10 @@ include (GLPI_ROOT."/inc/includes.php");
 	
 	if (!isset($_GET['start'])) $_GET['start']=0;
 	if(empty($_GET["start"])) $_GET["start"] = 0;
+
+	if (!isset($_GET["sort"])) $_GET["sort"]="";
+	if (!isset($_GET["order"])) $_GET["order"]="";
+
 	// Greet the user
 
 	echo "<br><div align='center' ><b><span class='icon_consol'>".$LANG["central"][0]." ";

@@ -43,8 +43,12 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-if (isset($_GET["start"])) $start=$_GET["start"];
-else $start=0;
+if (!isset($_GET["start"])) {
+	$_GET["start"]=0;
+}
+
+if (!isset($_GET["sort"])) $_GET["sort"]="";
+if (!isset($_GET["order"])) $_GET["order"]="";
 
 $ent=new Enterprise();
 if (isset($_POST["add"]))
@@ -121,7 +125,7 @@ else
 					showAssociatedContact($tab["ID"]);
 					showContractAssociatedEnterprise($tab["ID"]);
 					showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
-					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",0,0,0,$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",0,0,0,$_GET["ID"]);
 					showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
 					display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
 					break;
@@ -135,7 +139,7 @@ else
 					showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"],0);
 					break;
 				case 6 :
-					showTrackingList($_SERVER['PHP_SELF']."?ID=".$tab["ID"],$start,"","","all",0,0,0,$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF']."?ID=".$tab["ID"],$_GET["start"],$_GET["sort"],$_GET["order"],"all",0,0,0,$_GET["ID"]);
 					break;
 				case 7 : 
 					showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);

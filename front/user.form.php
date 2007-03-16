@@ -42,10 +42,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if(empty($_GET["ID"])) $_GET["ID"] = "";
 
-$start=0;
-if (isset($_GET["start"])) {
-	$start=$_GET["start"];
+if (!isset($_GET["start"])) {
+	$_GET["start"]=0;
 }
+
+if (!isset($_GET["sort"])) $_GET["sort"]="";
+if (!isset($_GET["order"])) $_GET["order"]="";
+
 
 
 $user=new User();
@@ -141,7 +144,7 @@ else if (isset($_POST["deletegroup"]))
 					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showDeviceUser($_GET["ID"]);
 					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
-					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",$_GET["ID"],-1);
+					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",$_GET["ID"],-1);
 					display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
@@ -151,7 +154,7 @@ else if (isset($_POST["deletegroup"]))
 					showDeviceUser($_GET["ID"]);
 					break;
 				case 3 :
-					showTrackingList($_SERVER['PHP_SELF'],$start,"","","all",$_GET["ID"],-1);
+					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",$_GET["ID"],-1);
 					break;
 				case 4 :
 					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
