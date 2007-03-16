@@ -2090,8 +2090,16 @@ CREATE TABLE `glpi_rules_ldap_parameters` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_rules_ldap_parameters VALUES ('1','Organizational Unit','ou','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('2','Organization','o','1');
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (1, 'Organizational Unit', 'ou', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (2, 'Organization', 'o', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (3, 'Common Name', 'cn', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (4, 'Department Number', 'departmentNumber', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (5, 'Email', 'mail', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (6, 'Object Class', 'objectclass', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (7, 'User ID', 'userid', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (8, 'Telephone Number', 'Phone', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (9, 'Employee Number', 'employeeNumber', 1);
+INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES (10, 'Manager', 'manager', 1);
 
 ### Dump table glpi_software
 
