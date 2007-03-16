@@ -127,8 +127,8 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 			$LANG["joblist"][0]=>"glpi_tracking.status",
 			$LANG["common"][27]=>"glpi_tracking.date",
 			$LANG["joblist"][2]=>"glpi_tracking.priority",
-			$LANG["common"][37]=>"author.name",
-			$LANG["joblist"][4]=>"assign.name",
+			$LANG["common"][37]=>"glpi_tracking.author",
+			$LANG["joblist"][4]=>"glpi_tracking.assign",
 			$LANG["common"][1]=>"glpi_tracking.device_type,glpi_tracking.computer",
 			$LANG["common"][36]=>"glpi_dropdown_tracking_category.completename",
 			$LANG["common"][57]=>"glpi_tracking.name",
@@ -1258,7 +1258,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 
 	$query=$SELECT.$FROM.$where." ORDER BY $sort $order";
-	
+	//echo $query;
 	// Get it from database	
 	if ($result = $DB->query($query)) {
 
@@ -1274,6 +1274,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 			// Pager
 			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
+			
+			// Specific case of showing tracking of an item
+			if (isset($_GET["ID"])){
+				$parameters2.="&amp;ID=".$_GET["ID"];
+			}
+			
 			$parameters=$parameters2."&amp;sort=$sort&amp;order=$order";
 			if (ereg("user.form.php",$_SERVER['PHP_SELF'])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
@@ -1307,7 +1313,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				$end_display=$numrows;
 			// Display List Header
 			echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols,1);
-
+			
 			commonTrackingListHeader($output_type,$target,$parameters2,$sort,$order);
 
 			while ($i < $numrows && $i<$end_display&&$data=$DB->fetch_array($result)){

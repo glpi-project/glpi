@@ -1770,7 +1770,7 @@ function showCentralGlobalView(){
 		echo $LANG["central"][10];
 		echo "</b></div>";
 
-		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],"","","new");
+		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"new");
 	}
 
 }
