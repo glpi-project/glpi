@@ -63,7 +63,6 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		$numberof = countElementsInTable($tablename);
 	}
 
-
 	echo "<table class='tab_cadre_fixe'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if ($numberof > 0) {
@@ -111,6 +110,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "</table></form>";
 
 	echo "<form action=\"$target\" method='post'>";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 	echo "<input type='hidden' name='which' value='$tablename'>";
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
@@ -219,6 +219,8 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '') {
 	echo "</table></form>";
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$tablename'>";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if ($tablename == "glpi_dropdown_netpoint") {
@@ -326,7 +328,6 @@ function addDropdown($input) {
 			$add_entity_field = "FK_entities,";
 			$add_entity_value = "'" . $input["FK_entities"] . "',";
 		}
-
 		if ($input["tablename"] == "glpi_dropdown_netpoint") {
 			$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,location,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
 		} else
@@ -349,7 +350,6 @@ function addDropdown($input) {
 			} else {
 				$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "','" . $input["comments"] . "')";
 			}
-
 		if ($result = $DB->query($query)) {
 			$ID = $DB->insert_id();
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
