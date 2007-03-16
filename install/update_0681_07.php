@@ -782,21 +782,26 @@ function update0681to07() {
 	}
 
 	if (TableExists("glpi_rules_descriptions")) {
-		$query ="INSERT INTO `glpi_rules_descriptions` (`FK_entities`, `rule_type`, `ranking`, `name`, `description`, `match`) VALUES (-1, 0, 0, 'Root', '', 'AND');";
-		$DB->query($query) or die("0.7 add default ocs affectation rule" . $LANG["update"][90] . $DB->error());
-	
-		$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root'";
+		//If no rule exists, then create a default one
+		$query = "SELECT ID from glpi_rules_descriptions";
 		$result = $DB->query($query);
-		//Get the defaut rule's ID
-		$datas = $DB->fetch_array($result);
-
-		$query="INSERT INTO `glpi_rules_criterias` (`FK_rules`, `criteria`, `condition`, `pattern`) VALUES (".$datas["ID"].", 'TAG', 0, '*');";
-		$DB->query($query) or die("0.7 add default ocs criterias" . $LANG["update"][90] . $DB->error());
-
-
-		$query="INSERT INTO `glpi_rules_actions` (`FK_rules`, `action_type`, `field`, `value`) VALUES (".$datas["ID"].", 'assign', 'FK_entities', '0');";
-		$DB->query($query) or die("0.7 add default ocs actions" . $LANG["update"][90] . $DB->error());
+		if ($DB->numrows($result) ==0)
+		{
+			$query ="INSERT INTO `glpi_rules_descriptions` (`FK_entities`, `rule_type`, `ranking`, `name`, `description`, `match`) VALUES (-1, 0, 0, 'Root', '', 'AND');";
+			$DB->query($query) or die("0.7 add default ocs affectation rule" . $LANG["update"][90] . $DB->error());
+		
+			$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root'";
+			$result = $DB->query($query);
+			//Get the defaut rule's ID
+			$datas = $DB->fetch_array($result);
 	
+			$query="INSERT INTO `glpi_rules_criterias` (`FK_rules`, `criteria`, `condition`, `pattern`) VALUES (".$datas["ID"].", 'TAG', 0, '*');";
+			$DB->query($query) or die("0.7 add default ocs criterias" . $LANG["update"][90] . $DB->error());
+	
+	
+			$query="INSERT INTO `glpi_rules_actions` (`FK_rules`, `action_type`, `field`, `value`) VALUES (".$datas["ID"].", 'assign', 'FK_entities', '0');";
+			$DB->query($query) or die("0.7 add default ocs actions" . $LANG["update"][90] . $DB->error());
+		}
 	}
 	
 	if (!TableExists("glpi_ocs_admin_link")){
@@ -833,9 +838,16 @@ function update0681to07() {
 			$DB->query($query) or die("0.7 add table glpi_rules_ldap_parameters" . $LANG["update"][90] . $DB->error());
 	
 		$query = "INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES 
-			(1, 'Organizational Unit', 'ou', 1),
-			(2, 'Organization', 'o', 1);
-		";
+					(1, 'Organizational Unit', 'ou', 1),
+					(2, 'Organization', 'o', 1),
+					(3, 'Common Name', 'cn', 1),
+					(4, 'Department Number', 'departmentNumber', 1),
+					(5, 'Email', 'mail', 1),
+					(6, 'Object Class', 'objectclass', 1),
+					(7, 'User ID', 'userid', 1),
+					(8, 'Telephone Number', 'Phone', 1),
+					(9, 'Employee Number', 'employeeNumber', 1),
+					(10, 'Manager', 'manager', 1);";
 		$DB->query($query) or die("0.7 add standard values to glpi_rules_ldap_parameters " . $LANG["update"][90] . $DB->error());
 	
 	}
