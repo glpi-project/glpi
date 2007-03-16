@@ -244,18 +244,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	return $ocs_affect_computer_rules;
 }
 
-/**
- * Execute the actions as defined in the rule
- * @param fields the fields to manipulate
- * @return the fields modified
- */
-	function executeActions($fields)
-	{
-		// MOYO : Pourquoi stocker les matched rules ? si la regle matche alors on execute les actions
-		$action = $this->matched_rule->actions[0];
-		$fields[$action->fields["field"]] = $action->fields["value"];
-		return $fields;
-	}
+
 
 }
 

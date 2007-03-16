@@ -36,38 +36,34 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-/**
-* Rule class store all informations about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-* 
-**/
-class OcsAffectEntityRule extends Rule {
+
+class OcsRuleCollection extends RuleCollection {
 
 	//Store the id of the ocs server
 	var $ocs_server_id;
 
-	function OcsAffectEntityRule($ocs_server_id=-1) {
-		$this->table = "glpi_rules_descriptions";
-		$this->type = -1;
-		$this->ocs_server_id = $ocs_server_id;
+	function OcsRuleCollection($ocs_server_id) {
 		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
+		$this->rule_class_name = 'OcsAffectEntityRule';
+		$this->ocs_server_id = $ocs_server_id;
+		$this->stop_on_first_match=true;
 	}
 
+	function getTitle() {
+		global $LANG;
+		return $LANG["rulesengine"][18];
+	}
 
 	/**
 	 * Get the attributes needed for processing the rules
-	 * @param type type of the rule
-	 * @param extra_params extra parameters given
 	 * @return an array of attributes
 	 */
-	function getRulesMatchingAttributes($type, $computer_id) {
+	function prepareInputDataForProcess($input,$computer_id){
 		global $DBocs;
+		$tables = $this->getTablesForQuery();
+		$fields = $this->getFieldsForQuery();
+		$linked_fields = $this->getFKFieldsForQuery();
 
-		$tables = getTablesForQuery($type);
-		$fields = getFieldsForQuery($type);
-		$linked_fields = getFKFieldsForQuery($type);
 
 		$rule_parameters = array ();
 
@@ -110,9 +106,10 @@ class OcsAffectEntityRule extends Rule {
 			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE " . $where_sql . " AND hardware.ID=" . $computer_id;
 
 			checkOCSconnection($this->ocs_server_id);
+			
 			$result = $DBocs->query($sql);
 			$ocs_datas = array ();
-
+			
 			if ($DBocs->numrows($result) > 0)
 				$ocs_datas = $DBocs->fetch_array($result);
 			return array_merge($rule_parameters, $ocs_datas);
@@ -120,31 +117,80 @@ class OcsAffectEntityRule extends Rule {
 			return $rule_parameters;
 	}
 
+
+
 	/**
-	 * Try to find which rule is matched
-	 * @return an OcsAffectEntityRule object 
-	 */
-	function processAllRules($computer_id) {
-		global $DB;
-		// MOYO : A faire dans la rule Collection (du style option dans rulecollection : stop on first execution)
-		//Get all rules to affect computers to an entity
-		$sql = "SELECT ID from glpi_rules_descriptions WHERE rule_type=" . RULE_OCS_AFFECT_COMPUTER . " ORDER by ranking ASC";
-		$result = $DB->query($sql);
-		while ($rule = $DB->fetch_array($result)) {
-			$ocsrule = new OcsAffectEntityRule($this->ocs_server_id);
-			$ocsrule->getRuleWithCriteriasAndActions($rule["ID"], 1, 1);
+	* Get the list of all tables to include in the query
+	* @return an array of table names
+	*/
+	function getTablesForQuery()
+	{
+		global $RULES_CRITERIAS;
 
-			//We need to provide the current computer id
-			$rule_infos = $ocsrule->getRulesMatchingAttributes(RULE_OCS_AFFECT_COMPUTER, $computer_id);
-			if ($ocsrule->processRule($rule_infos,RULE_OCS_AFFECT_COMPUTER))
-			{
-				$this->matched_rule = $ocsrule;
-				return true;
-			} 
+		$tables = array();
+		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+			if ($criteria['table'] != '' && !array_key_exists($criteria["table"],$tables)) {
+				$tables[]=$criteria['table'];
+			}
 		}
-
-		return false;
+		return $tables;		  
 	}
+	
+	function getFieldsForQuery()
+	{
+		global $RULES_CRITERIAS;
+
+		$fields = array();
+		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+			//If the field name is not null AND a table name is provided
+			if ($criteria['field'] != ''){
+				if ( $criteria['table'] != '') {
+					$fields[]=$criteria['table'].".".$criteria['field'];
+				} else{
+					$fields[]=$criteria['field'];	
+				}
+			}
+		}
+				
+		return $fields;		  
+	}
+	
+	
+	function getFKFieldsForQuery()
+	{
+		global $RULES_CRITERIAS;
+
+		$fields = array();
+		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+			//If the field name is not null AND a table name is provided
+			if ($criteria['linkfield'] != ''){
+				$fields[]=$criteria['table'].".".$criteria['linkfield'];
+			}
+		}	
+		return $fields;		  
+	}
+
+
+}
+
+/**
+* Rule class store all informations about a GLPI rule :
+*   - description
+*   - criterias
+*   - actions
+* 
+**/
+class OcsAffectEntityRule extends Rule {
+
+
+	function OcsAffectEntityRule($ocs_server_id=-1) {
+		$this->table = "glpi_rules_descriptions";
+		$this->type = -1;
+		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
+	}
+
+
+
 	function maxActionsCount(){
 		// Unlimited
 		return 1;
@@ -258,33 +304,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	return $ocs_affect_computer_rules;
 }
 
-/**
- * Execute the actions as defined in the rule
- * @param fields the fields to manipulate
- * @return the fields modified
- */
-	function executeActions($fields)
-	{
-		// MOYO : Pourquoi stocker les matched rules ? si la regle matche alors on execute les actions
-		$action = $this->matched_rule->actions[0];
-		$fields[$action->fields["field"]] = $action->fields["value"];
-		return $fields;
-	}
 }
 
 
-class OcsRuleCollection extends RuleCollection {
-
-	function OcsRuleCollection() {
-		global $DB;
-		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
-		$this->rule_class_name = 'OcsAffectEntityRule';
-	}
-
-	function getTitle() {
-		global $LANG;
-		return $LANG["rulesengine"][18];
-	}
-
-}
 ?>

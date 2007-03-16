@@ -89,6 +89,11 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['field']='name';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['name']=$LANG["common"][57];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['linkfield']='name';
 
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['table']='glpi_tracking';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['field']='contents';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['name']=$LANG["joblist"][6];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['linkfield']='contents';
+
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['table']='glpi_dropdown_tracking_category';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['field']='name';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['name']=$LANG["common"][36];
