@@ -40,14 +40,6 @@ if (!defined('GLPI_ROOT')){
 
 // FUNCTIONS Tracking System
 
-
-function titleTracking(){
-	global  $LANG,$CFG_GLPI;
-
-	displayTitle($CFG_GLPI["root_doc"]."/pics/suivi-intervention.png",$LANG["tracking"][0],$LANG["tracking"][0]);
-
-}
-
 /**
  * Print "onglets" (on the top of items forms)
  *

@@ -51,26 +51,19 @@ $config_mail = new AuthMail();
 $config_ldap = new AuthLDAP();
 
 if (!isset($_GET["ID"])) $_GET["ID"]="";
- 
-if (!empty ($_GET["next"])) {
-	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth");
-	titleExtAuth();
-	if ($_GET["next"] == "extauth") {
-		showFormExtAuthList($_SERVER['PHP_SELF']);
-	}
-	if ($_GET["next"] == "extauth_mail") {
-		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
-	}
-	if ($_GET["next"] == "extauth_ldap") {
-		$config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
-	}
+if (!isset($_GET["next"])) $_GET["next"]="";
 
-}
+
+if (!isset ($_SESSION['glpi_authconfig']))
+	$_SESSION['glpi_authconfig'] = 1;
+if (isset ($_GET['onglet']))
+	$_SESSION['glpi_authconfig'] = $_GET['onglet'];
+
 
 //Update CAS configuration
 elseif (isset ($_POST["update_conf_cas"])) {
 	$config->update($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
+	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php");
 }
 //IMAP/POP Server add/update/delete
 elseif (isset ($_POST["update_mail"])) {
@@ -85,7 +78,7 @@ elseif (isset ($_POST["add_mail"])) {
 }
 elseif (isset ($_POST["delete_mail"])) {
 	$config_mail->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
+	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail");
 }
 
 //LDAP Server add/update/delete
@@ -101,21 +94,18 @@ elseif (isset ($_POST["add_ldap"])) {
 }
 elseif (isset ($_POST["delete_ldap"])) {
 	$config_ldap->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth");
+	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap");
 }
 elseif (isset ($_POST["test_ldap"])) {
 	
 	//Testing ldap connection
 	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config");
-	if (testLDAPConnection($_POST["ID"]))
-		$msg =$LANG["login"][22];
-	else
-		$msg =$LANG["login"][23];	
-	
-	//Display a message and a back link
-	echo "<div align='center'><strong>".$msg."<br>";
-	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
-	echo "</strong></div>";	
+	if (testLDAPConnection($_POST["ID"])){
+		$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][22];
+	} else{
+		$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][23];	
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset ($_POST["test_mail"])) {
 	
@@ -131,6 +121,20 @@ elseif (isset ($_POST["test_mail"])) {
 	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
 	echo "</strong></div>";	
 }
+
+commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth");
+switch ($_GET["next"]) {
+	case "extauth_mail" :
+		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
+		break;
+	case "extauth_ldap" :
+		$config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
+		break;
+	default :
+		showFormExtAuthList($_SERVER['PHP_SELF']);
+		break;
+}
+
 
 commonFooter();
 ?>

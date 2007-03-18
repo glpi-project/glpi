@@ -166,7 +166,6 @@ else {
 		if (isset($_GET["comment"])){
 			showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["comment"]);
 		} else {
-			titleReservation();
 
 			manageGetValuesInSearch(RESERVATION_TYPE);
 	

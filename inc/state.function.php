@@ -40,17 +40,6 @@ if (!defined('GLPI_ROOT')){
 // FUNCTIONS State
 
 
-function titleState(){
-	global  $LANG,$CFG_GLPI;
-
-	$buttons["state.php?synthese=no"]=$LANG["state"][1];
-	$buttons["state.php?synthese=yes"]=$LANG["state"][11];
-
-	displayTitle($CFG_GLPI["root_doc"]."/pics/status.png",$LANG["state"][1],"",$buttons);
-
-}
-
-
 function showStateSummary($target){
 	global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 

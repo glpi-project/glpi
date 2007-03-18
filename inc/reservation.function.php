@@ -48,16 +48,6 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-
-function titleReservation(){
-	global  $LANG,$CFG_GLPI;
-
-	displayTitle($CFG_GLPI["root_doc"]."/pics/reservation.png",$LANG["reservation"][1],$LANG["reservation"][1],array("reservation.php?show=resa&amp;ID"=>$LANG["reservation"][26]));
-
-}
-
-
-
 function showReservationForm($device_type,$id_device){
 
 	global $CFG_GLPI,$LANG;

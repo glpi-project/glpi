@@ -393,7 +393,7 @@ class Computer extends CommonDBTM {
 	 * Print the computer form
 	 *
 	 *
-	 * Print g��al computer form
+	 * Print general computer form
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the computer or the template to print

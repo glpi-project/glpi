@@ -1,4 +1,6 @@
 <?php
+
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -33,28 +35,44 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
-$NEEDED_ITEMS=array("search","state");
+$NEEDED_ITEMS = array (
+	"setup",
+	"ocsng",
+	"mailing"
+);
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_GET["synthese"])) $_GET["synthese"] = "no";
+checkRight("config", "w");
+$config = new Config();
 
-checkCentralAccess();
+if (!isset ($_SESSION['glpi_mailconfig']))
+	$_SESSION['glpi_mailconfig'] = 1;
+if (isset ($_GET['onglet']))
+	$_SESSION['glpi_mailconfig'] = $_GET['onglet'];
 
-commonHeader($LANG["title"][9],$_SERVER['PHP_SELF'],"inventory","state");
 
-if ($_GET["synthese"]=="yes"){
-	showStateSummary($_SERVER['PHP_SELF']);
-} else {
-	manageGetValuesInSearch(STATE_TYPE);
 
-	searchForm(STATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
-
-	showList(STATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+if (!empty ($_POST["test_smtp_send"])) {
+	testMail();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
+elseif (!empty ($_POST["update_mailing"])) {
+	$config->update($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+elseif (!empty ($_POST["update_notifications"])) {
+
+	updateMailNotifications($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+
+
+
+
+commonHeader($LANG["title"][15], $_SERVER['PHP_SELF'],"config","mailing");
+$config->showFormMailing($_SERVER['PHP_SELF']);
 
 commonFooter();
 ?>

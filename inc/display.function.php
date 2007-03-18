@@ -492,22 +492,24 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		}
 
 		if (haveRight("config","w")){
-			$menu['config']['content']['confgen']['title']=$LANG["setup"][703];
-			$menu['config']['content']['confgen']['page']='/front/setup.config.php?next=confgen';
-			
-			$menu['config']['content']['confdisplay']['title']=$LANG["setup"][702];
-			$menu['config']['content']['confdisplay']['page']='/front/setup.config.php?next=confdisplay';
-			
+			$menu['config']['content']['config']['title']=$LANG["setup"][703];
+			$menu['config']['content']['config']['page']='/front/setup.config.php';
+
 			$menu['config']['content']['mailing']['title']=$LANG["setup"][704];
-			$menu['config']['content']['mailing']['page']='/front/setup.config.php?next=mailing';
+			$menu['config']['content']['mailing']['page']='/front/setup.mailing.php';
 			
 			$menu['config']['content']['extauth']['title']=$LANG["login"][10];
-			$menu['config']['content']['extauth']['page']='/front/setup.config.php?next=extauth';
+			$menu['config']['content']['extauth']['page']='/front/setup.auth.php';
+			$menu['config']['content']['extauth']['links']['search']='/front/setup.auth.php';
 	
-			if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
-				$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
-				$menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
-			}
+		}
+
+		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
+			$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
+			$menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
+			$menu['config']['content']['ocsng']['links']['search']='/front/setup.ocsng.php';
+			$menu['config']['content']['ocsng']['links']['add']='/front/setup.templates.php?type='.OCSNG_TYPE.'&amp;add=1';
+			$menu['config']['content']['ocsng']['links']['template']='/front/setup.templates.php?type='.OCSNG_TYPE.'&amp;add=0';
 		}
 
 		if (haveRight("typedoc","r")){

@@ -128,7 +128,8 @@ function showDeviceContract($instID) {
 
 	if (!haveRight("contract_infocom","r")) return false;
 	$canedit=haveRight("contract_infocom","w");
-
+	$contract=new Contract();
+	$contract->getFromDB($instID);
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
 
 	$result = $DB->query($query);
@@ -171,7 +172,7 @@ function showDeviceContract($instID) {
 	if ($canedit){
 		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item");
+		dropdownAllItems("item",0,0,$contract->fields["FK_entities"]);
 		echo "</div></td><td><input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "<input type='hidden' name='ID' value='$instID'>";
 		echo "</td>";
@@ -237,7 +238,8 @@ function showEnterpriseContract($instID) {
 
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
 	$canedit=haveRight("contract_infocom","w");
-
+	$contract=new Contract();
+	$contract->getFromDB($instID);
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type";
 	$query.= " FROM glpi_enterprises,glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID";
 	$result = $DB->query($query);
@@ -280,7 +282,7 @@ function showEnterpriseContract($instID) {
 	if ($canedit){
 		echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdown("glpi_enterprises","entID");
+		dropdown("glpi_enterprises","entID",1,$contract->fields["FK_entities"]);
 		echo "</div></td><td align='center'>";
 		echo "<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
@@ -413,10 +415,16 @@ function getContractEnterprises($ID){
  *@return Nothing (display)
  *
  **/
-function dropdownContracts($name){
+function dropdownContracts($name,$entity_restrict=-1){
 
 	global $DB;
-	$query="SELECT * from glpi_contracts WHERE deleted = '0' order by begin_date DESC";
+
+	$entrest="";
+	if ($entity_restrict>=0){
+		$entrest=" AND FK_entities='$entity_restrict'";
+
+	}
+	$query="SELECT * from glpi_contracts WHERE deleted = '0' $entrest ORDER BY begin_date DESC";
 	$result=$DB->query($query);
 	echo "<select name='$name'>";
 	echo "<option value='-1'>-----</option>";
@@ -452,6 +460,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 
 	if (!haveRight("contract_infocom","r")||!haveTypeRight($device_type,"r"))	return false;
 	$canedit=haveTypeRight($device_type,"w");
+
+	$ci=new CommonItem();
+	$ci->getFromDB($device_type,$ID);
 
 	$query = "SELECT * FROM glpi_contract_device WHERE glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' ";
 
@@ -506,7 +517,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate!=2&&$nb>0){
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-			dropdownContracts("conID");
+			dropdownContracts("conID",$ci->obj->fields["FK_entities"]);
 			echo "</div></td><td align='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
@@ -537,7 +548,8 @@ function showContractAssociatedEnterprise($ID){
 	global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r")) return false;
 	$canedit=haveRight("contract_infocom","w");
-
+	$ent=new Enterprise();
+	$ent->getFromDB($ID);
 	$query = "SELECT * FROM glpi_contract_enterprise WHERE glpi_contract_enterprise.FK_enterprise = '$ID'";
 
 	$result = $DB->query($query);
@@ -588,7 +600,7 @@ function showContractAssociatedEnterprise($ID){
 		if ($nb>0){
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
-			dropdownContracts("conID");
+			dropdownContracts("conID",$ent->fields['FK_entities']);
 			echo "</div></td><td align='center'>";
 			echo "<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";

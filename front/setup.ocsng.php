@@ -44,13 +44,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("config", "w");
 
 	commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'], "config","ocsng");
-
-	$buttons["setup.templates.php?type=".OCSNG_TYPE."&amp;add=1"]=$LANG["ocsng"][25]." ".$LANG["ocsng"][29];
-	$buttons["setup.templates.php?type=".OCSNG_TYPE."&amp;add=0"]=$LANG["common"][8];
-	$title="";
-	
-	displayTitle($CFG_GLPI["root_doc"]."/pics/logoOcs.png",$LANG["Menu"][0],$title,$buttons);
-	echo "<br>";
 	
 	manageGetValuesInSearch(OCSNG_TYPE);
 	searchForm(OCSNG_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);

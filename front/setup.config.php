@@ -37,8 +37,7 @@
 
 $NEEDED_ITEMS = array (
 	"setup",
-	"ocsng",
-	"mailing"
+	"ocsng"
 );
 
 define('GLPI_ROOT', '..');
@@ -46,77 +45,23 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 $config = new Config();
-if ($CFG_GLPI["ocs_mode"])
-	$ocsconfig = new ConfigOCS();
 
-if (!isset ($_SESSION['glpi_mailconfig']))
-	$_SESSION['glpi_mailconfig'] = 1;
+if (!isset ($_SESSION['glpi_configgen']))
+	$_SESSION['glpi_configgen'] = 1;
 if (isset ($_GET['onglet']))
-	$_SESSION['glpi_mailconfig'] = $_GET['onglet'];
+	$_SESSION['glpi_configgen'] = $_GET['onglet'];
 
-if (!empty ($_GET["next"])) {
 
-	if ($_GET["next"] == "extauth") {
-		commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth");
-		titleExtAuth();
-		showFormExtAuthList($_SERVER['PHP_SELF']);
-	}
-	elseif ($_GET["next"] == "mailing") {
-		commonHeader($LANG["title"][15], $_SERVER['PHP_SELF'],"config","mailing");
-		titleMailing();
-		showFormMailing($_SERVER['PHP_SELF']);
-	}
-	elseif ($_GET["next"] == "confgen") {
-		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"config","confgen");
-		titleConfigGen();
-		showFormConfigGen($_SERVER['PHP_SELF']);
-	}
-	elseif ($_GET["next"] == "confdisplay") {
-		commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"config","display");
-		titleConfigDisplay();
-		showFormConfigDisplay($_SERVER['PHP_SELF']);
-	}
-}
-elseif (!empty ($_POST["test_smtp_send"])) {
-	testMail();
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.config.php?next=mailing");
-}
-elseif (!empty ($_POST["update_mailing"])) {
+if (!empty ($_POST["update"])) {
 	$config->update($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.config.php?next=mailing");
-}
-elseif (!empty ($_POST["update_notifications"])) {
-
-	updateMailNotifications($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.config.php?next=mailing");
-}
-elseif (!empty ($_POST["update_ext"])) {
-	$config->update($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.config.php?next=extauth");
-
-}
-
-elseif (!empty ($_POST["update_confgen"])) {
-	$config->update($_POST);
-	if ($_POST["ocs_mode"] && !$CFG_GLPI["ocs_mode"])
-		glpi_header($CFG_GLPI["root_doc"] .
-		"/front/setup.ocsng.php?next=ocsng");
+	if (isset($_POST["ocs_mode"])&&$_POST["ocs_mode"] && !$CFG_GLPI["ocs_mode"])
+		glpi_header($CFG_GLPI["root_doc"] ."/front/setup.ocsng.php");
 	else
-		glpi_header($CFG_GLPI["root_doc"] .
-		"/front/setup.config.php?next=confgen");
+		glpi_header($CFG_GLPI["root_doc"] ."/front/setup.config.php");
 }
-elseif (!empty ($_POST["update_confdisplay"])) {
-	$config->update($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.config.php?next=confdisplay");
-}
-elseif (!empty ($_POST["update_ocs_config"])) {
-	$ocsconfig->update($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.config.php?next=ocsng");
-}
-elseif (!empty ($_POST["update_ocs_dbconfig"])) {
-	$ocsconfig->update($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.config.php?next=ocsng");
-}
+
+commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"config","config");
+$config->showForm($_SERVER['PHP_SELF']);
 
 commonFooter();
 ?>
