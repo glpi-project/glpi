@@ -60,10 +60,9 @@ echo "<tr><th colspan='2'>".$LANG["setup"][62]."</th></tr>";
 $config=array();
 
 if (haveRight("config","w")){
-	$config["setup.config.php?next=confgen"]=$LANG["setup"][70];
-	$config["setup.config.php?next=confdisplay"]=$LANG["setup"][119];
-	$config["setup.config.php?next=mailing"]=$LANG["setup"][68];
-	$config["setup.auth.php?next=extauth"]=$LANG["setup"][67];
+	$config["setup.config.php"]=$LANG["setup"][70];
+	$config["setup.mailing.php"]=$LANG["setup"][68];
+	$config["setup.auth.php"]=$LANG["setup"][67];
 	if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w"))
 		$config["setup.ocsng.php"]=$LANG["setup"][134];
 }

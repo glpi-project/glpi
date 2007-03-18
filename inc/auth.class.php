@@ -450,7 +450,7 @@ class AuthMail extends CommonDBTM {
 		echo "<option value='/tls' " . (ereg("/tls", $value) ? " selected " : "") . ">TLS</option>";
 		echo "<option value='/notls' " . (ereg("/notls", $value) ? " selected " : "") . ">NO-TLS</option>";
 		echo "</select>";
-		echo "<input type=hidden name=imap_string value=".$value.">";
+		echo "<input type=hidden name=imap_string value='".$value."'>";
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
