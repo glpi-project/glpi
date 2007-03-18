@@ -42,9 +42,6 @@ checkRight("cartridge","r");
 
 commonHeader($LANG["title"][19],$_SERVER['PHP_SELF'],"inventory","cartridge");
 
-$cartridge=new CartridgeType;
-$cartridge->title();
-
 manageGetValuesInSearch(CARTRIDGE_TYPE);
 
 searchForm(CARTRIDGE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);

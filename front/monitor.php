@@ -43,9 +43,6 @@ checkRight("monitor","r");
 
 commonHeader($LANG["title"][18],$_SERVER['PHP_SELF'],"inventory","monitor");
 
-$monitor=new Monitor;
-$monitor->title();
-
 manageGetValuesInSearch(MONITOR_TYPE);
 
 searchForm(MONITOR_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);

@@ -166,20 +166,6 @@ class Monitor extends CommonDBTM {
 		$DB->query($query);
 	}
 
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][3];
-		if (haveRight("monitor","w")){
-			$buttons["setup.templates.php?type=".MONITOR_TYPE."&amp;add=1"]=$LANG["monitors"][0];
-			$buttons["setup.templates.php?type=".MONITOR_TYPE."&amp;add=0"]=$LANG["common"][8];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/ecran.png",$LANG["Menu"][3],$title,$buttons);
-	}
-
-
 	function showForm ($target,$ID,$withtemplate='') {
 
 		global $CFG_GLPI, $LANG;

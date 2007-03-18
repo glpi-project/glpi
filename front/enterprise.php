@@ -43,12 +43,6 @@ checkRight("contact_enterprise","r");
 
 commonHeader($LANG["title"][23],$_SERVER['PHP_SELF'],"financial","enterprise");
 
-
-$ent=new Enterprise();
-$ent->title();
-
-
-
 manageGetValuesInSearch(ENTERPRISE_TYPE);
 
 searchForm(ENTERPRISE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);

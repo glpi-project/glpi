@@ -440,7 +440,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['profile']['page']='/front/profile.php';
 			$menu['admin']['content']['profile']['links']['search']="/front/profile.php";
 			if (haveRight("profile","w")){
-				$menu['admin']['content']['profile']['links']['add']="/front/profile.php?add=new";
+				$menu['admin']['content']['profile']['links']['add']="/front/profile.form.php";
 			}
 
 		}

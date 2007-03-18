@@ -43,7 +43,7 @@ class Profile extends CommonDBTM{
 
 	function Profile () {
 		$this->table="glpi_profiles";
-		$this->type=-1;
+		$this->type=PROFILE_TYPE;
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
@@ -124,7 +124,7 @@ class Profile extends CommonDBTM{
 		if (!haveRight("profile","r")) return false;
 
 		$onfocus="";
-		if ($ID){
+		if (!empty($ID)&&$ID){
 			$this->getFromDB($ID);
 		} else {
 			$this->getEmpty();

@@ -98,23 +98,6 @@ class Enterprise extends CommonDBTM {
 		}
 	}
 
-	function title(){
-
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][23];
-		if (haveRight("contact_enterprise","w")){
-			$buttons["enterprise.form.php"]=$LANG["financial"][25];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/entreprises.png",$LANG["Menu"][23],$title,$buttons);
-
-	}
-
-
-
-
 	function showForm ($target,$ID,$withtemplate='') {
 		// Show Enterprise or blank form
 

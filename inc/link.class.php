@@ -55,30 +55,6 @@ class Link extends CommonDBTM {
 	}
 
 	/**
-	 * Print a good title for links pages
-	 *
-	 *
-	 *
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-
-		$buttons=array();
-		$title=$LANG["title"][33];
-		if (haveRight("link","w")){
-			$buttons["link.form.php"]=$LANG["links"][2];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/links.png",$LANG["title"][33],$title,$buttons);
-
-	}
-
-
-	/**
 	 * Print the link form
 	 *
 	 *

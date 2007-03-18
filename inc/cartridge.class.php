@@ -137,28 +137,6 @@ class CartridgeType extends CommonDBTM {
 	}
 
 
-	/**
-	 * Print a good title for Cartridge pages
-	 *
-	 *
-	 *
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title(){
-
-		global  $LANG,$CFG_GLPI;
-		
-		$buttons=array();
-		$title=$LANG["Menu"][21];
-		if (haveRight("cartridge","w")){
-			$buttons["cartridge.form.php"]=$LANG["cartridges"][6];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/cartouches.png",$LANG["Menu"][21],$title,$buttons);
-	}
-
 
 	/**
 	 * Print the cartridge type form

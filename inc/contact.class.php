@@ -95,28 +95,6 @@ class Contact extends CommonDBTM{
 	}
 
 	/**
-	 * Print a good title for coontact pages
-	 *
-	 *
-	 *
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][22];
-		if (haveRight("contact_enterprise","w")){
-			$buttons["contact.form.php"]=$LANG["financial"][24];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/contacts.png",$LANG["Menu"][22],$title,$buttons);
-
-	}
-
-	/**
 	 * Print the contact form
 	 *
 	 *

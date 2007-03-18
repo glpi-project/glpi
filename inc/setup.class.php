@@ -132,99 +132,70 @@ class SetupSearchDisplay extends CommonDBTM{
 		if (haveRight("computer","r")){
 			$state=true;
 			$dp[COMPUTER_TYPE]=$LANG["Menu"][0];
-			if (!$type)
-				$type=COMPUTER_TYPE;
 		}
 		if (haveRight("networking","r")){
 			$state=true;
 			$dp[NETWORKING_TYPE]=$LANG["Menu"][1];
-			if (!$type)
-				$type=NETWORKING_TYPE;
 		}
 		if (haveRight("printer","r")){
 			$state=true;
 			$dp[PRINTER_TYPE]=$LANG["Menu"][2];
-			if (!$type)
-				$type=PRINTER_TYPE;
 		}
 		if (haveRight("monitor","r")){
 			$state=true;
 			$dp[MONITOR_TYPE]=$LANG["Menu"][3];
-			if (!$type)
-				$type=MONITOR_TYPE;
 		}
 		if (haveRight("peripheral","r")){
 			$state=true;
 			$dp[PERIPHERAL_TYPE]=$LANG["Menu"][16];
-			if (!$type)
-				$type=PERIPHERAL_TYPE;
 		}
 		if (haveRight("software","r")){
 			$state=true;
 			$dp[SOFTWARE_TYPE]=$LANG["Menu"][4];
-			if (!$type)
-				$type=SOFTWARE_TYPE;
 		}
 		if ($state){
 			$dp[STATE_TYPE]=$LANG["Menu"][28];
-			if (!$type)
-				$type=STATE_TYPE;
 		}
 		if (haveRight("reservation_central","r")){
 			$dp[RESERVATION_TYPE]=$LANG["Menu"][17];
-			if (!$type)
-				$type=RESERVATION_TYPE;
 		}
 		if (haveRight("contact_enterprise","r")){
 			$dp[CONTACT_TYPE]=$LANG["Menu"][22];
 			$dp[ENTERPRISE_TYPE]=$LANG["Menu"][23];
-			if (!$type)
-				$type=CONTACT_TYPE;
 		}
 		if (haveRight("contract_infocom","r")){
 			$dp[CONTRACT_TYPE]=$LANG["Menu"][25];
-			if (!$type)
-				$type=CONTRACT_TYPE;
 		}
 		if (haveRight("typedoc","r")){
 			$dp[TYPEDOC_TYPE]=$LANG["document"][7];
-			if (!$type)
-				$type=TYPEDOC_TYPE;
 		}
 		if (haveRight("document","r")){
 			$dp[DOCUMENT_TYPE]=$LANG["Menu"][27];
-			if (!$type)
-				$type=DOCUMENT_TYPE;
 		}
 		if (haveRight("user","r")){
 			$dp[USER_TYPE]=$LANG["Menu"][14];
-			if (!$type)
-				$type=USER_TYPE;
 		}
 		if (haveRight("consumable","r")){
 			$dp[CONSUMABLE_TYPE]=$LANG["Menu"][32];
-			if (!$type)
-				$type=CONSUMABLE_TYPE;
 		}
 		if (haveRight("cartridge","r")){
 			$dp[CARTRIDGE_TYPE]=$LANG["Menu"][21];
-			if (!$type)
-				$type=CARTRIDGE_TYPE;
 		}
 		if (haveRight("link","r")){
 			$dp[LINK_TYPE]=$LANG["setup"][87];
-			if (!$type)
-				$type=LINK_TYPE;
 		}
 		if (haveRight("phone","r")){
 			$dp[PHONE_TYPE]=$LANG["Menu"][34];
-			if (!$type)
-				$type=PHONE_TYPE;
 		}
 		if (haveRight("group","r")){
 			$dp[GROUP_TYPE]=$LANG["Menu"][36];
-			if (!$type)
-				$type=GROUP_TYPE;
+		}
+		if (haveRight("profile","r")){
+			$dp[PROFILE_TYPE]=$LANG["Menu"][35];
+		}
+
+		if (!$type){
+			$type=key($dp);
 		}
 
 		if (count($dp)){
