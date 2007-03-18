@@ -42,9 +42,6 @@ checkRight("contract_infocom","r");
 
 commonHeader($LANG["title"][20],$_SERVER['PHP_SELF'],"financial","contract");
 
-$contract=new Contract();
-$contract->title();
-
 manageGetValuesInSearch(CONTRACT_TYPE);
 
 searchForm(CONTRACT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);

@@ -55,6 +55,7 @@
 	define("AUTH_LDAP_TYPE",31);
 	define("OCSNG_TYPE",32);
 	define("REGISTRY_TYPE",33);
+	define("PROFILE_TYPE",34);
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -169,6 +170,7 @@
 			RESERVATION_TYPE => "glpi_reservation_item",
 			OCSNG_TYPE => "glpi_ocs_config",
 			REGISTRY_TYPE => "glpi_registry",
+			PROFILE_TYPE => "glpi_profiles",
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -203,6 +205,7 @@
 			RESERVATION_TYPE => "???",
 			OCSNG_TYPE => "front/ocsng.form.php",
 			REGISTRY_TYPE => "???",
+			PROFILE_TYPE => "front/profile.form.php",
 			);
 
 	define("AUTH_CAS",0);

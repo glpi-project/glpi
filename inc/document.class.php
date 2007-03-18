@@ -143,20 +143,6 @@ class Document extends CommonDBTM {
 	}
 
 
-	function title(){
-
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][27];
-		if (haveRight("contact_enterprise","w")){
-			$buttons["document.form.php"]=$LANG["document"][13];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/docs.png",$LANG["Menu"][27],$title,$buttons);
-
-	}
-
 	function showForm ($target,$ID,$withtemplate='') {
 		global $CFG_GLPI,$LANG;
 

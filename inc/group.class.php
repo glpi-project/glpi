@@ -69,29 +69,6 @@ class Group extends CommonDBTM{
 		return $ong;
 	}
 
-
-
-	/**
-	 * Print a good title for coontact pages
-	 *
-	 *
-	 *
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][36];
-		if (haveRight("group","w")){
-			$buttons["group.form.php"]=$LANG["setup"][602];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG["Menu"][36],$title,$buttons);
-	}
-
 	/**
 	 * Print the group form
 	 *

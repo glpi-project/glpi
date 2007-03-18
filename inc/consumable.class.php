@@ -78,32 +78,6 @@ class ConsumableType extends CommonDBTM {
 		return $ong;
 	}
 
-
-	/**
-	 * Print a good title for Consumable pages
-	 *
-	 *
-	 *
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title(){
-
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][32];
-		if (haveRight("cartridge","w")){
-			$buttons["consumable.form.php"]=$LANG["consumables"][6];
-			$title="";
-		}
-		$buttons["consumable.php?synthese=yes"]=$LANG["state"][11];
-		displayTitle($CFG_GLPI["root_doc"]."/pics/consommables.png",$LANG["Menu"][32],$title,$buttons);
-
-	}
-
-
 	/**
 	 * Print the consumable type form
 	 *

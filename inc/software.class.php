@@ -187,19 +187,6 @@ class Software extends CommonDBTM {
 		}
 	}
 
-	function title() {
-		global $LANG, $CFG_GLPI;
-
-		$buttons = array ();
-		$title = $LANG["Menu"][4];
-		if (haveRight("software", "w")) {
-			$buttons["setup.templates.php?type=" . SOFTWARE_TYPE . "&amp;add=1"] = $LANG["software"][0];
-			$buttons["setup.templates.php?type=" . SOFTWARE_TYPE . "&amp;add=0"] = $LANG["common"][8];
-			$title = "";
-		}
-		displayTitle($CFG_GLPI["root_doc"] . "/pics/logiciels.png", $LANG["Menu"][4], $title, $buttons);
-	}
-
 	function showForm($target, $ID, $search_software = "", $withtemplate = '') {
 		// Show Software or blank form
 

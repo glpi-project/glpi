@@ -42,9 +42,6 @@ checkRight("link","r");
 
 commonHeader($LANG["title"][33],$_SERVER['PHP_SELF'],"config","link");
 
-$link=new Link();
-$link->title();
-
 manageGetValuesInSearch(LINK_TYPE);
 
 searchForm(LINK_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);

@@ -77,30 +77,6 @@ class Contract extends CommonDBTM {
 
 
 	/**
-	 * Print a good title for contract pages
-	 *
-	 *
-	 *
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title(){
-
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][25];
-		if (haveRight("contract_infocom","w")){
-			$buttons["contract.form.php"]=$LANG["financial"][0];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/contracts.png",$LANG["Menu"][25],$title,$buttons);
-	}
-
-
-
-	/**
 	 * Print the contract form
 	 *
 	 *
