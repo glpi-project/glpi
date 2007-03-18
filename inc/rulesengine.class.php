@@ -49,7 +49,6 @@ class RuleCollection {
 	*/
 	function RuleCollection($rule_type){
 		$this->rule_type = $rule_type;
-		echo "ttt";
 	}
 
 
@@ -74,20 +73,20 @@ class RuleCollection {
 			}
 		}
 	}
-/*
-	function title($addbutton=false) {
-		global $LANG, $CFG_GLPI;
-	
-		$buttons = array ();
-		displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
-	}
-*/
-	
+	/**
+	* Get title used in list of rules
+	* @return Title of the rule collection
+	*/	
 	function getTitle(){
 		global $LANG;
 		return $LANG["rulesengine"][29];
 	}
 
+	/**
+	* Show the list of rules
+	* @param $target  
+	* @return nothing
+	*/
 	function showForm($target){
 		global $CFG_GLPI, $LANG;
 			
@@ -134,8 +133,8 @@ class RuleCollection {
 
 	/**
 	* Modify rule's ranking and automatically reorder all rules
-	* @param ID the rule ID whose ranking must be modified
-	* @param action up and down
+	* @param $ID the rule ID whose ranking must be modified
+	* @param $action up or down
 	*/
 	function changeRuleOrder($ID,$action)
 	{
@@ -168,8 +167,14 @@ class RuleCollection {
 			$DB->query($sql);				
 		}
 	}
-
-	function processAllRules($input,$output,$params=array())
+	/**
+	* Process all the rules collection
+	* @param $input the input data used to check criterias
+	* @param $output the initial ouput array used to be manipulate by actions
+	* @param $params parameters for all internal functions
+	* @return the output array updated by actions
+	*/
+	function processAllRules($input=array(),$output=array(),$params=array())
 	{	
 		// Get Collection datas
 		$this->getCollectionDatas(1,1);
@@ -188,6 +193,13 @@ class RuleCollection {
 		
 		return $output;
 	}
+
+	/**
+	* Prepare input datas for the rules collection
+	* @param $input the input data used to check criterias
+	* @param $params parameters
+	* @return the updated input datas
+	*/
 	function prepareInputDataForProcess($input,$params){
 		return $input;
 	}
@@ -208,12 +220,25 @@ class Rule extends CommonDBTM{
 
 	//Criterias affected to this rule
 	var $criterias = array();
+	// Rule type
+	var $rule_type;
 
-	function Rule() {
+	/**
+	* Constructor
+	* @param rule_type the rule type used for the collection
+	*/
+	function Rule($rule_type=0) {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
+		$this->rule_type=$rule_type;
 	}
 
+	/**
+	* Show the rule
+	* @param $target  
+	* @param $ID ID of the rule  
+	* @return nothing
+	*/
 	function showForm($target,$ID,$withtemplate=''){
 			global $CFG_GLPI, $LANG;
 
@@ -282,8 +307,8 @@ class Rule extends CommonDBTM{
 	/**
 	 * Get all criterias for a given rule
 	 * @param $ID the rule_description ID
-	 * @param withcriterias 1 to retrieve all the criterias for a given rule
-	 * @param withaction  1 to retrive all the actions for a given rule
+	 * @param $withcriterias 1 to retrieve all the criterias for a given rule
+	 * @param $withaction  1 to retrive all the actions for a given rule
 	 */
 	function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
 		if ($ID == ""){
@@ -303,24 +328,16 @@ class Rule extends CommonDBTM{
 	}
 	
 	/**
-	 * Print a good title for computer pages
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title($addbutton=false) {
-		global $LANG, $CFG_GLPI;
-
-		$buttons = array ();
-		displayTitle($CFG_GLPI["root_doc"] . "/pics/computer.png", $LANG["Menu"][0], $LANG["rulesengine"][8], $buttons);
-	}
-
-
+	 * Get maximum number of Actions of the Rule (0 = unlimited)
+	* @return the maximum number of actions
+	 */
 	function maxActionsCount(){
 		// Unlimited
 		return 0;
 	}
 	/**
 	 * Display all rules actions
+	* @param $target  
 	 */
 	function showActionsList($target)
 	{
@@ -369,7 +386,9 @@ class Rule extends CommonDBTM{
 			echo "</form>";
 		}			
 	}
-
+	/**
+	 * Display the add action form
+	 */
 	function addActionForm() {
 		global $LANG,$CFG_GLPI;
 		echo "<div align='center'>";
@@ -407,7 +426,9 @@ class Rule extends CommonDBTM{
 		echo "</table></div><br>";
 	}
 
-
+	/**
+	 * Display the add criteria form
+	 */
 	function addCriteriaForm() {
 		global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
 		echo "<div align='center'>";
@@ -442,14 +463,17 @@ class Rule extends CommonDBTM{
 
 		echo "</table></div><br>";
 	}
-
+	/**
+	 * Get maximum number of criterias of the Rule (0 = unlimited)
+	* @return the maximum number of criterias
+	 */
 	function maxCriteriasCount(){
 		// Unlimited
 		return 0;
 	}
 	
 	/**
-	 * Display all rules actions
+	 * Display all rules criterias
 	 */
 	function showCriteriasList($target)
 	{
@@ -498,7 +522,9 @@ class Rule extends CommonDBTM{
 		}		
 	}	
 
-
+	/**
+	 * Display the dropdown of the criterias for the rule
+	 */
 	function dropdownCriterias(){
 		$items=array();
 		foreach ($this->getCriterias() as $ID => $crit){
@@ -511,7 +537,9 @@ class Rule extends CommonDBTM{
 		echo "</script>\n";
 
 	}
-
+	/**
+	 * Display the dropdown of the actions for the rule
+	 */
 	function dropdownActions(){
 		$items=array();
 		foreach ($this->getActions() as $ID => $act){
@@ -526,6 +554,10 @@ class Rule extends CommonDBTM{
 
 	}
 
+	/**
+	 * Get the criterias array definition
+	 * @return the criterias array
+	 */
 	function getCriterias(){
 		global $RULES_CRITERIAS;
 		if (isset($RULES_CRITERIAS[$this->rule_type])){
@@ -535,7 +567,10 @@ class Rule extends CommonDBTM{
 		}
 	}
 
-
+	/**
+	 * Get the actions array definition
+	 * @return the actions array
+	 */
 	function getActions(){
 		global $RULES_ACTIONS;
 		if (isset($RULES_ACTIONS[$this->rule_type])){
@@ -575,7 +610,7 @@ class Rule extends CommonDBTM{
 	}
 	/**
 	 * Get a criteria description by his ID
-	 * @param the criteria's ID
+	 * @param $ID the criteria's ID
 	 * @return the criteria's description
 	 */
 	function getCriteriaName($ID)
@@ -590,7 +625,7 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Get a action description by his ID
-	 * @param the action's ID
+	 * @param $ID the action's ID
 	 * @return the action's description
 	 */
 	function getActionName($ID)
@@ -604,8 +639,12 @@ class Rule extends CommonDBTM{
 	}
 	
 	/**
-	 * Try to match all criterias of a rule using the rules engine
-	 */
+	* Process the rule
+	* @param $input the input data used to check criterias
+	* @param $output the initial ouput array used to be manipulate by actions
+	* @param $params parameters for all internal functions
+	* @return the output array updated by actions. If rule matched add field _rule_process to return value
+	*/
 	function process($input,$output,$params)
 	{
 		if (count($this->criterias))	{
@@ -645,14 +684,22 @@ class Rule extends CommonDBTM{
 		}
 		return $output; 
 	}
+
+	/**
+	* Specific prepare input datas for the rule
+	* @param $input the input data used to check criterias
+	* @param $params parameters
+	* @return the updated input datas
+	*/
 	function prepareInputDataForProcess($input,$params){
 		return $input;
 	}
 
 	/**
 	* Execute the actions as defined in the rule
-	* @param fields the fields to manipulate
-	* @return the fields modified
+	* @param $output the fields to manipulate
+	* @param $params parameters
+	* @return the $output array modified
 	*/
 	function executeActions($output,$params)
 	{
@@ -682,15 +729,13 @@ class Rule extends CommonDBTM{
 		$sql = "DELETE FROM glpi_rules_criterias WHERE FK_Rules=".$ID;
 		$DB->query($sql);
 	}
-	
-	function defineOnglets($withtemplate=''){
-		global $LANG;
 
-		$ong[1]=$LANG["title"][26];
-		
-		return $ong;
-	}
-
+	/**
+	 * Show the minimal form for the rule
+	* @param $target link to the form page
+	* @param $first is it the first rule ?
+	* @param $last is it the last rule ?
+	 */
 	function showMinimalForm($target,$first=false,$last=false){
 		global $LANG,$CFG_GLPI;
 			
@@ -734,14 +779,14 @@ class Rule extends CommonDBTM{
 	 */
 	function prepareInputForAdd($input)
 	{
-		$input["ranking"] = $this->getNextRanking($input["rule_type"]);
+		$input["ranking"] = $this->getNextRanking();
 		return $input;
 	}
 
 	/**
 	 * Get the next ranking for a specified rule
 	 */
-	function getNextRanking($type)
+	function getNextRanking()
 	{
 		global $DB;
 		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type;
@@ -755,7 +800,11 @@ class Rule extends CommonDBTM{
 		}
 	}
 
-	
+	/**
+	 * Show the minimal form for the action rule
+	* @param $fields datas used to display the action
+	* @param $canedit can edit the actions rule ?
+	 */	
 	function showMinimalActionForm($fields,$canedit)
 	{
 		echo "<tr class='tab_bg_1'>";
@@ -774,7 +823,11 @@ class Rule extends CommonDBTM{
 		echo "</tr>";
 	}
 
-
+	/**
+	 * Show the minimal form for the criteria rule
+	* @param $fields datas used to display the criteria
+	* @param $canedit can edit the criterias rule ?
+	 */	
 	function showMinimalCriteriaForm($fields,$canedit)
 	{
 		echo "<tr class='tab_bg_1'>";
@@ -791,13 +844,19 @@ class Rule extends CommonDBTM{
 		$this->showMinimalCriteria($fields);	
 		echo "</tr>";
 	}
-
+	/**
+	 * Show the minimal infos for the criteria rule
+	* @param $fields datas used to display the criteria
+	 */	
 	function showMinimalCriteria($fields){
 		echo "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
 		echo "<td>" . getConditionByID($fields["condition"]) . "</td>";
 		echo "<td>" . $this->getCriteriaPatternValue($fields["criteria"],$fields["pattern"]) . "</td>";
 	}	
-
+	/**
+	 * Show the minimal infos for the action rule
+	* @param $fields datas used to display the action
+	 */
 	function showMinimalAction($fields,$canedit)
 	{
 		echo "<td>" . $this->getActionName($fields["field"]) . "</td>";
