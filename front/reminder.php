@@ -42,15 +42,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($LANG["title"][40],$_SERVER['PHP_SELF']);
-
-$remind=new Reminder();
-$remind->title();
+commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"utils","reminder");
 
 showListReminder();
 
-if (haveRight("reminder_public","r"))
-showListReminder("public");
+if (haveRight("reminder_public","r")){
+	showListReminder("public");
+}
 
 
 commonFooter();

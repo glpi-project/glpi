@@ -93,17 +93,6 @@ class Reminder extends CommonDBTM {
 		return $input;
 	}
 
-
-	function title(){
-
-		global  $LANG,$CFG_GLPI;
-
-		displayTitle($CFG_GLPI["root_doc"]."/pics/reminder.png",$LANG["reminder"][0],"",array("reminder.form.php"=>$LANG["buttons"][8]));
-	}
-
-
-
-
 	function showForm ($target,$ID) {
 		// Show Reminder or blank form
 

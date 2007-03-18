@@ -1082,6 +1082,7 @@ $LANG["registry"][5]="Aucune clé de la base de registre trouvée";
 
 $LANG["reminder"][0]="Notes personnelles";
 $LANG["reminder"][1]="Notes publiques";
+$LANG["reminder"][2]="Notes";
 $LANG["reminder"][4]="Note personnelle";
 $LANG["reminder"][5]="Note publique";
 $LANG["reminder"][6]="Nouvelle note";

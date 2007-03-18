@@ -193,22 +193,6 @@ class Netdevice extends CommonDBTM {
 		}
 	}
 
-	function title() {
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][1];
-		if (haveRight("networking","w")){
-			$buttons["setup.templates.php?type=".NETWORKING_TYPE."&amp;add=1"]=$LANG["networking"][11];
-			$buttons["setup.templates.php?type=".NETWORKING_TYPE."&amp;add=0"]=$LANG["common"][8];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/networking.png",$LANG["Menu"][1],$title,$buttons);
-
-	}
-
-
-
 	function showForm ($target,$ID,$withtemplate='') {
 		// Show device or blank form
 

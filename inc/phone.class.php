@@ -185,22 +185,6 @@ class Phone extends CommonDBTM {
 		$result = $DB->query($query);
 	}
 
-
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][34];
-		if (haveRight("phone","w")){
-			$buttons["setup.templates.php?type=".PHONE_TYPE."&amp;add=1"]=$LANG["phones"][0];
-			$buttons["setup.templates.php?type=".PHONE_TYPE."&amp;add=0"]=$LANG["common"][8];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/phones.png",$LANG["Menu"][34],$title,$buttons);
-
-	}
-
-
 	function showForm ($target,$ID,$withtemplate='') {
 
 		global $CFG_GLPI, $LANG;

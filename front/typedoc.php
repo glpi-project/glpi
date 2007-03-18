@@ -45,11 +45,6 @@ checkRight("typedoc","r");
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","typedoc");
 
-$typedoc=new Typedoc;
-$typedoc->title();
-
-
-
 manageGetValuesInSearch(TYPEDOC_TYPE);
 
 searchForm(TYPEDOC_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);

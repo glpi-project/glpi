@@ -51,7 +51,6 @@ if (!isset($_GET['ID'])) {
 
 
 $prof=new Profile();
-//$prof->title();
 
 if (isset($_POST["add"])){
 

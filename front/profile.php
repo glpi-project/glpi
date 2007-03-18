@@ -42,63 +42,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("profile","r");
 
-
 commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
-
 
 manageGetValuesInSearch(PROFILE_TYPE);
 
 searchForm(PROFILE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 
 showList(PROFILE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
-
-
-/*
-$prof=new Profile();
-$prof->title();
-
-if(!isset($_POST["ID"])) $ID=0;
-else $ID=$_POST["ID"];
-
-
-if (isset($_POST["add"])){
-
-	checkRight("profile","w");
-	$ID=$prof->add($_POST);
-}else  if (isset($_POST["delete"])){
-	checkRight("profile","w");
-
-	$prof->delete($_POST);
-	$ID=0;
-}
-else  if (isset($_POST["update"])){
-	checkRight("profile","w");
-
-	$prof->update($_POST);
-}
-
-echo "<div align='center'><form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/profile.php\">";
-echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
-echo $LANG["profiles"][1].": </th></tr><tr class='tab_bg_1'><td>";
-
-$query="SELECT ID, name FROM glpi_profiles ORDER BY name";
-$result=$DB->query($query);
-
-echo "<select name='ID'>";
-while ($data=$DB->fetch_assoc($result)){
-	echo "<option value='".$data["ID"]."' ".($ID==$data["ID"]?"selected":"").">".$data['name']."</option>";
-}
-echo "</select>";
-echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
-echo "</table></form></div>";
-
-if (isset($_GET["add"])){
-	$prof->showForm($_SERVER['PHP_SELF'],0);
-} else if ($ID>0){
-	$prof->showForm($_SERVER['PHP_SELF'],$ID);
-} 
-
-*/
 
 commonFooter();
 

@@ -64,20 +64,6 @@ class Typedoc  extends CommonDBTM {
 		return $input;
 	}
 
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["document"][7];
-		if (haveRight("typedoc","w")){
-			$buttons["typedoc.form.php"]=$LANG["document"][12];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/docs.png",$LANG["document"][7],$title,$buttons);
-	}
-
-
-
 	function showForm ($target,$ID) {
 
 		global $CFG_GLPI, $LANG;
