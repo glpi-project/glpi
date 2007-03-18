@@ -36,13 +36,16 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-/**
-* Rule class store all informations about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-* 
-**/
+
+class TrackingBusinessRuleCollection extends RuleCollection {
+
+	function TrackingBusinessRuleCollection() {
+		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
+		$this->rule_class_name="TrackingBusinessRule";
+	}
+
+}
+
 class TrackingBusinessRule extends Rule {
 
 	function TrackingBusinessRule() {
@@ -55,12 +58,5 @@ class TrackingBusinessRule extends Rule {
 }
 
 
-class TrackingBusinessRuleCollection extends RuleCollection {
 
-	function TrackingBusinessRuleCollection() {
-		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
-		$this->rule_class_name="TrackingBusinessRule";
-	}
-
-}
 ?>

@@ -218,7 +218,7 @@ class OcsAffectEntityRule extends Rule {
 			autocompletionTextField("description", "glpi_rules_descriptions", "description", "", 30);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG["rulesengine"][9] . ":";
-			dropdownRulesMatch("match", "AND");
+			$this->dropdownRulesMatch("match", "AND");
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type=hidden name='rule_type' value=\"" . $this->rule_type . "\">";
 			echo "<input type=hidden name='FK_entities' value=\"-1\">";
