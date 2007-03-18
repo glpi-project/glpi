@@ -344,10 +344,23 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['utils']['content']['reservation']['links']['search']='/front/reservation.php';
 			$menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&amp;ID';
 		}
+		if (haveRight("reservation_helpdesk","1")||haveRight("reservation_central","r")){
+			$menu['utils']['content']['reservation']['title']=$LANG["Menu"][17];
+			$menu['utils']['content']['reservation']['page']='/front/reservation.php';
+			$menu['utils']['content']['reservation']['links']['search']='/front/reservation.php';
+			$menu['utils']['content']['reservation']['links']['showall']='/front/reservation.php?show=resa&amp;ID';
+		}
 		if (haveRight("reports","r")){
 			$menu['utils']['content']['report']['title']=$LANG["Menu"][6];
 			$menu['utils']['content']['report']['page']='/front/report.php';
 		}
+
+		$menu['utils']['content']['reminder']['title']=$LANG["reminder"][2];
+		$menu['utils']['content']['reminder']['page']='/front/reminder.php';
+		$menu['utils']['content']['reminder']['links']['search']='/front/reminder.php';
+		$menu['utils']['content']['reminder']['links']['add']='/front/reminder.form.php';
+
+
 		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
 			$menu['utils']['content']['ocsng']['title']=$LANG["Menu"][33];
 			$menu['utils']['content']['ocsng']['page']='/front/ocsng.php';

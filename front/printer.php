@@ -44,10 +44,6 @@ checkRight("printer","r");
 
 commonHeader($LANG["title"][8],$_SERVER['PHP_SELF'],"inventory","printer");
 
-$print=new Printer();
-$print->title();
-
-
 manageGetValuesInSearch(PRINTER_TYPE);
 
 searchForm(PRINTER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);

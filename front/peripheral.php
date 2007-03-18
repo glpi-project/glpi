@@ -43,10 +43,6 @@ checkRight("peripheral","r");
 
 commonHeader($LANG["title"][7],$_SERVER['PHP_SELF'],"inventory","peripheral");
 
-$peripheral=new Peripheral();
-$peripheral->title();
-
-
 manageGetValuesInSearch(PERIPHERAL_TYPE);
 
 searchForm(PERIPHERAL_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);

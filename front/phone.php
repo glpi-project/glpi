@@ -44,10 +44,6 @@ checkRight("phone","r");
 
 commonHeader($LANG["title"][41],$_SERVER['PHP_SELF'],"inventory","phone");
 
-$phone=new Phone();
-$phone->title();
-
-
 manageGetValuesInSearch(PHONE_TYPE);
 
 searchForm(PHONE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);

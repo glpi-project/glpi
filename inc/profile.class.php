@@ -96,28 +96,6 @@ class Profile extends CommonDBTM{
 		}
 	}
 
-	/**
-	 * Print a good title for profiles pages
-	 *
-	 *
-	 *
-	 *
-	 *@return nothing (diplays)
-	 *
-	 **/
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][35];
-		if (haveRight("profile","w")){
-			$buttons["profile.php?add=new"]=$LANG["profiles"][0];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/profils.png",$LANG["Menu"][35],$title,$buttons);
-	}
-
-
 	function showForm($target,$ID){
 		global $LANG,$CFG_GLPI;
 

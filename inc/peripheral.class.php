@@ -178,20 +178,6 @@ class Peripheral  extends CommonDBTM  {
 		$result = $DB->query($query);
 	}
 
-	function title(){
-		global  $LANG,$CFG_GLPI;
-
-		$buttons=array();
-		$title=$LANG["Menu"][16];
-		if (haveRight("peripheral","w")){
-			$buttons["setup.templates.php?type=".PERIPHERAL_TYPE."&amp;add=1"]=$LANG["peripherals"][0];
-			$buttons["setup.templates.php?type=".PERIPHERAL_TYPE."&amp;add=0"]=$LANG["common"][8];
-			$title="";
-		}
-		displayTitle($CFG_GLPI["root_doc"]."/pics/periphs.png",$LANG["Menu"][16],$title,$buttons);
-
-	}
-
 	function showForm ($target,$ID,$withtemplate='') {
 
 		global $CFG_GLPI, $LANG;
