@@ -272,7 +272,7 @@ class Rule extends CommonDBTM{
 			echo "<tr>";
 			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][9]."</td>";
 			echo "<td class='tab_bg_2'>";
-			dropdownRulesMatch("match",$this->fields["match"]);
+			$this->dropdownRulesMatch("match",$this->fields["match"]);
 			echo "</td>";
 			
 
@@ -302,6 +302,16 @@ class Rule extends CommonDBTM{
 			echo "</table>";
 
 			echo "</div></form>";
+	}
+
+	/**
+	* Display a dropdown with all the rule matching
+	*/
+	function dropdownRulesMatch($name,$value=''){
+	
+		$elements[AND_MATCHING] = AND_MATCHING;
+		$elements[OR_MATCHING] = OR_MATCHING;
+		dropdownArrayValues($name,$elements,$value);
 	}
 
 	/**

@@ -129,16 +129,7 @@ function getConditionByID($ID)
 }
 
 
-/**
- * Display a dropdown with all the rule matching
- */
-function dropdownRulesMatch($name,$value=''){
-	global $LANG;
 
-	$elements[AND_MATCHING] = AND_MATCHING;
-	$elements[OR_MATCHING] = OR_MATCHING;
-	dropdownArrayValues($name,$elements,$value);
-}
 
 /**
  * Display a dropdown with all the criterias
