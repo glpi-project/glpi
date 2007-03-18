@@ -41,9 +41,6 @@ checkCentralAccess();
 
 commonHeader($LANG["title"][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 
-titleTracking();
-
-
 if(isset($_GET)) $tab = $_GET;
 //if(empty($tab) && isset($_POST)) $tab = $_POST;
 

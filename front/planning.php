@@ -88,8 +88,6 @@ if ($_GET["type"]!="month"){
 
 }
 
-titleTrackingPlanning();
-
 echo "<div align='center'><form method=\"get\" name=\"form\" action=\"planning.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td>";

@@ -68,15 +68,6 @@ class Ocsng extends CommonDBTM {
 		$this->type = OCSNG_TYPE;
 	}
 
-function titleOCSNG() {
-	// Un titre pour la gestion des sources externes
-
-	global $LANG, $CFG_GLPI;
-
-	displayTitle($CFG_GLPI["root_doc"] . "/pics/logoOcs.png", $LANG["ocsng"][0], $LANG["ocsng"][0]);
-
-}
-
 function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		global $DB, $LANG, $CFG_GLPI;
 		

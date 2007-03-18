@@ -41,14 +41,6 @@ if (!defined('GLPI_ROOT')){
 // FUNCTIONS Planning
 
 
-function titleTrackingPlanning(){
-	global  $LANG,$CFG_GLPI;
-
-	displayTitle($CFG_GLPI["root_doc"]."/pics/reservation.png",$LANG["planning"][3],$LANG["planning"][3]);
-
-}
-
-
 function showTrackingPlanningForm($device_type,$id_device){
 
 	global $DB,$CFG_GLPI,$LANG;
