@@ -69,9 +69,13 @@ function testMail(){
 		echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< " . $LANG["buttons"][6] . "'>";
 		echo "</td>";
 		echo "<td>";
-		echo "<select name='mailing_to_delete_" . $type . "[]' multiple size='5'>";
+
+		$options="";
 		// Get User mailing
-		$query = "SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID FROM glpi_mailing WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='" . USER_MAILING_TYPE . "' ORDER BY glpi_mailing.FK_item;";
+		$query = "SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID 
+				FROM glpi_mailing 
+				WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='" . USER_MAILING_TYPE . "' 
+				ORDER BY glpi_mailing.FK_item;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
@@ -95,25 +99,38 @@ function testMail(){
 						$name = $LANG["common"][10];
 						break;
 				}
-				echo "<option value='" . $data["ID"] . "'>" . $name . "</option>";
+				$options.= "<option value='" . $data["ID"] . "'>" . $name . "</option>";
 			}
 		// Get Profile mailing
-		$query = "SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_profiles.name as prof FROM glpi_mailing LEFT JOIN glpi_profiles ON (glpi_mailing.FK_item = glpi_profiles.ID) WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='" . PROFILE_MAILING_TYPE . "' ORDER BY glpi_profiles.name;";
+		$query = "SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_profiles.name as prof 
+			FROM glpi_mailing 
+			LEFT JOIN glpi_profiles ON (glpi_mailing.FK_item = glpi_profiles.ID) 
+			WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='" . PROFILE_MAILING_TYPE . "' 
+			ORDER BY glpi_profiles.name;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				echo "<option value='" . $data["ID"] . "'>" . $LANG["profiles"][22] . " " . $data["prof"] . "</option>";
+				$options.= "<option value='" . $data["ID"] . "'>" . $LANG["profiles"][22] . " " . $data["prof"] . "</option>";
 			}
 	
 		// Get Group mailing
-		$query = "SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_groups.name as name FROM glpi_mailing LEFT JOIN glpi_groups ON (glpi_mailing.FK_item = glpi_groups.ID) WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='" . GROUP_MAILING_TYPE . "' ORDER BY glpi_groups.name;";
+		$query = "SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_groups.name as name 
+			FROM glpi_mailing 
+			LEFT JOIN glpi_groups ON (glpi_mailing.FK_item = glpi_groups.ID) 
+			WHERE glpi_mailing.type='$type' AND glpi_mailing.item_type='" . GROUP_MAILING_TYPE . "' 
+			ORDER BY glpi_groups.name;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				echo "<option value='" . $data["ID"] . "'>" . $LANG["common"][35] . " " . $data["name"] . "</option>";
+				$options.= "<option value='" . $data["ID"] . "'>" . $LANG["common"][35] . " " . $data["name"] . "</option>";
 			}
-	
-		echo "</select>";
+		if (!empty($options)){
+			echo "<select name='mailing_to_delete_" . $type . "[]' multiple size='5'>";
+			echo $options;
+			echo "</select>";
+		} else {
+			echo "&nbsp;";
+		}
 		echo "</td>";
 	
 	}

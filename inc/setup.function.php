@@ -596,16 +596,6 @@ function listTemplates($type, $target, $add = 0) {
 
 }
 
-function titleMailing() {
-	// Un titre pour la gestion du suivi par mail
-
-	global $LANG, $CFG_GLPI;
-
-	displayTitle($CFG_GLPI["root_doc"] . "/pics/mail.png", $LANG["setup"][200], $LANG["setup"][200]);
-
-}
-
-
 function showFormExtAuthList($target) {
 
 	global $DB, $LANG, $CFG_GLPI;
@@ -613,7 +603,8 @@ function showFormExtAuthList($target) {
 	if (!haveRight("config", "w"))
 		return false;
 	echo "<div align='center'>";
-	echo "<form action=\"$target\" method=\"post\">";
+	echo "<form name=cas action=\"$target\" method=\"post\">";
+	echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li ";
@@ -637,8 +628,6 @@ function showFormExtAuthList($target) {
 	switch ($_SESSION['glpi_authconfig']){
 		case 1 :
 			if (function_exists('imap_open')) {
-				echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-		
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";
 				echo "<div style='position: relative'><span><strong>" . $LANG["login"][3] . "</strong></span>";
@@ -666,10 +655,7 @@ function showFormExtAuthList($target) {
 		break;
 		case 2 :
 			if (extension_loaded('ldap')) {
-		
-				echo "<form name=ldap action=\"".$CFG_GLPI["root_doc"]."/front/setup.auth.php?next=extauth_ldap\" method=\"post\">";
-				echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-		
+				
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";
 				echo "<div style='position: relative'><span><strong>" . $LANG["login"][2] . "</strong></span>";
@@ -697,10 +683,7 @@ function showFormExtAuthList($target) {
 		break;
 
 		case 3 :
-			if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {
-				echo "<form name=cas action=\"$target\" method=\"post\">";
-				echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-		
+			if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {		
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
 				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";

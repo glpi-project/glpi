@@ -459,13 +459,11 @@ function showDevicesList($device_type,$target) {
 
 			// designation
 			echo "<th>";
-			echo "<a href=\"$target?device_type=$device_type\">";
-			echo $LANG["common"][16]."</a></th>";
+			echo $LANG["common"][16]."</th>";
 
 			// Manufacturer		
 			echo "<th>";
-			echo "<a href=\"$target?device_type=$device_type\">";
-			echo $LANG["common"][5]."</a></th>";
+			echo $LANG["common"][5]."</th>";
 
 			echo "</tr>";
 
