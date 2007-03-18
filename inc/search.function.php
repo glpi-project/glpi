@@ -136,9 +136,9 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 
 	echo "<form method='get' action=\"$target\">";
 	echo "<div align='center'><table border='0'  class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='5'><b>".$LANG["search"][0].":</b></th></tr>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>";
+//	echo "<tr><th colspan='5'><b>".$LANG["search"][0].":</b></th></tr>";
+	echo "<tr class='tab_bg_1' align='center'>";
+	echo "<td>";
 	echo "<table>";
 
 	// Display normal search parameters
@@ -176,7 +176,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 			if(is_array($link)&&isset($link[$i]) && $link[$i] == "OR NOT") echo "selected";
 			echo ">OR NOT</option>";
 
-			echo "</select>";
+			echo "</select>&nbsp;";
 		}
 		// display search field
 		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
@@ -1654,6 +1654,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 
 		case "glpi_computers.name" :
 		case "glpi_printers.name" :
+		case "glpi_profiles.name" :
 		case "glpi_networking.name" :
 		case "glpi_phones.name" :
 		case "glpi_monitors.name" :
