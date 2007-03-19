@@ -40,7 +40,10 @@ $NEEDED_ITEMS = array (
 	"user",
 	"profile",
 	"setup",
-	"group"
+	"group",
+	"entity",
+	"rulesengine",
+	"rule.ldap"
 );
 
 include (GLPI_ROOT . "/inc/includes.php");
@@ -162,7 +165,6 @@ if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 		// Fin des tests de connexion
 
 	}
-
 
 	// Ok, we have gathered sufficient data, if the first return false the user
 	// are not present on the DB, so we add it.
