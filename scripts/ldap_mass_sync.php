@@ -31,14 +31,18 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 $NEEDED_ITEMS = array (
 	"ldap",
 	"user",
-	"profile"
+	"profile",
+	"group",
+	"entity",
+	"rulesengine",
+	"rule.ldap"
 );
 
 define('GLPI_ROOT', '..');
@@ -47,12 +51,32 @@ include (GLPI_ROOT . "/inc/includes.php");
 // Default action : synchro (1=synchro 0=import)
 if (!isset($_GET["action"])) $_GET["action"]=1;
 
-//Get the ldap server's id by his name
-$sql = "SELECT ID from glpi_auth_ldap WHERE name='" . $_GET["ldap_server"] . "'";
-$result = $DB->query($sql);
-if ($DB->numrows($result) > 0) {
-	$datas = $DB->fetch_array($result);
+//If no ldap_server ID is given, then use all the available servers
+if (!isset($_GET["ldap_server"])) $_GET["ldap_server"]='';
 
+//Get the ldap server's id by his name
+if ($_GET["ldap_server"] != '')
+	$sql = "SELECT ID from glpi_auth_ldap WHERE name='" . $_GET["ldap_server"] . "'";
+else
+	$sql = "SELECT ID from glpi_auth_ldap";
+
+$result = $DB->query($sql);
+if ($DB->numrows($result) == 0 && $_GET["ldap_server"] != '')
+	echo "LDAP Server not found :".$_GET["ldap_server"];
+else
+{	
+	while ($datas = $DB->fetch_array($result)) 
+		import ($_GET["action"],$datas);
+	
+}
+
+/**
+ * Function to import or synchronise all the users from an ldap directory
+ * @param action the action to perform (add/sync)
+ * @param datas the ldap connection's datas
+ */
+function import($action, $datas)
+{
 	//The ldap server id is passed in the script url (parameter ldap_server)
 	$ldap_server = $datas["ID"];
 	$users = getAllLdapUsers($ldap_server, $_GET["action"]);
@@ -61,7 +85,5 @@ if ($DB->numrows($result) > 0) {
 		ldapImportUserByServerId($user, $_GET["action"], $ldap_server);
 		echo ".";
 	}
-} else {
-	echo "LDAP Server not found :".$_GET["ldap_server"];
 }
 ?>
