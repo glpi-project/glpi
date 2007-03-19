@@ -42,7 +42,6 @@ include_once (GLPI_ROOT."/inc/rules.constant.php");
  * @return true if the field match the rule, false if it doesn't match
  */
 function matchRules($field, $condition, $pattern) {
-	echo "field=".$field." , condition=".$condition." , pattern=".$pattern."<br>";
 	//If pattern is wildcard, don't check the rule and return true
 	if ($pattern == RULE_WILDCARD)
 		return true;
