@@ -49,7 +49,7 @@ include (GLPI_ROOT . "/config/based_config.php");
 if (isset($_GET["lockfile"])){
 	$lockfile=$_GET["lockfile"];
 	} else {
-	$lockfile = GLPI_CRON_DIR. '/' . 'ocng_fullsync.lock';
+	$lockfile = GLPI_CRON_DIR. '/' . 'ocsng_fullsync.lock';
 }
 $lock = fopen($lockfile, "w+",4);
 flock($lock, LOCK_EX|LOCK_NB) or die("Error getting lock!");

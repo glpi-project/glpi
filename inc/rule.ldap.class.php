@@ -45,19 +45,17 @@ if (!defined('GLPI_ROOT')) {
 **/
 class LdapAffectEntityRule extends Rule {
 
-	//Store the id of the ocs server
-	var $ldap_server_id;
-
-	function LdapAffectEntityRule($ldap_server_id=-1) {
+	function LdapAffectEntityRule() {
+		global $RULES_CRITERIAS;	
+	
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
-		$this->ldap_server_id = $ldap_server_id;
 		$this->rule_type = RULE_LDAP_AFFECT_ENTITY;
+		$this->stop_on_first_match = false;
 		
 		//Dynamically add all the ldap criterias to the current list of rule's criterias
 		$this->addLdapCriteriasToArray();
 	}
-
 
 	/**
 	 * Get the attributes needed for processing the rules
@@ -65,55 +63,47 @@ class LdapAffectEntityRule extends Rule {
 	 * @param extra_params extra parameters given
 	 * @return an array of attributes
 	 */
-	function getRulesMatchingAttributes($type, $ldap_server,$user_fields) {
-		
-		$rule_parameters = array();
-		
-		//Get all the ldap fields
-		$fields = getFieldsForQuery(RULE_LDAP_AFFECT_ENTITY);
-		
-		foreach ($fields as $field)
-			if (isset($user_fields[$field["field"]]))
-			{
-				switch($field["field"])
+	function prepareInputDataForProcess($input,$params){
+		global $RULES_CRITERIAS;
+		if (count($input))
+		{
+				$rule_parameters = array();
+				$input = $input[0];
+
+				//Get all the ldap fields
+				$fields = $this->getFieldsForQuery(RULE_LDAP_AFFECT_ENTITY);
+				
+				foreach ($fields as $field)
 				{
-					case "LDAP_SERVER":
-						$rule_parameters["LDAP_SERVER"] = $user_fields[$field["field"]];
-						break;
-					default :
-						$rule_parameters[$field["field"]] = $user_fields[$field["field"]];
-						break;	
+						switch(strtoupper($field))
+						{
+							case "LDAP_SERVER":
+								$rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
+								break;
+							case "GROUPS" :
+									foreach ($params["groups"] as $group)
+										$rule_parameters["GROUPS"][] = $group;
+							break;
+							default :
+								if (isset($input[$field]))
+								{
+									if (!is_array($input[$field]))
+										$rule_parameters[$field] = $input[$field];
+										else
+										{
+												for ($i=0;$i < count($input[$field]) -1;$i++)
+													$rule_parameters[$field][] = $input[$field][$i];
+												break;
+										}	
+								}
+						}
 				}
-						
-			}
-		return $rule_parameters;	
-	}
 
-	/**
-	 * Try to find which rule is matched
-	 * @return an LdapAffectEntityRule object 
-	 */
-	function processAllRules($computer_id) {
-		global $DB;
-		// MOYO : A faire dans la rule Collection (du style option dans rulecollection : stop on first execution)
-		//Get all rules to affect computers to an entity
-		$sql = "SELECT ID from glpi_rules_descriptions WHERE rule_type=" . RULE_LDAP_AFFECT_ENTITY . " ORDER by ranking ASC";
-		$result = $DB->query($sql);
-		while ($rule = $DB->fetch_array($result)) {
-			$ocsrule = new LdapAffectEntityRule($this->ocs_server_id);
-			$ocsrule->getRuleWithCriteriasAndActions($rule["ID"], 1, 1);
-
-			//We need to provide the current computer id
-			$rule_infos = $ocsrule->getRulesMatchingAttributes(RULE_LDAP_AFFECT_ENTITY, $computer_id);
-			if ($ocsrule->processRule($rule_infos,RULE_LD))
-			{
-				$this->matched_rule = $ocsrule;
-				return true;
-			} 
+				return $rule_parameters;
 		}
-
-		return false;
+		else return $input;
 	}
+
 	function maxActionsCount(){
 		// Unlimited
 		return 2;
@@ -217,35 +207,116 @@ class LdapAffectEntityRule extends Rule {
 					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['table']='';
 				}
 	}
-	
-/**
- * Return all rules from database
- * @param type of rules
- * @param withcriterias import rules criterias too
- * @param withactions import rules actions too
- */
-function getRulesByID($ID, $withcriterias, $withactions) {
-	global $DB;
-	$ocs_affect_computer_rules = array ();
-	// MOYO : quoi donc que ca fout la ca ?
-	// MOYO : ca correspond pas deja à un cas particulier de ca : getRuleWithCriteriasAndActions ?
 
+	/**
+	* Execute the actions as defined in the rule
+	* @param fields the fields to manipulate
+	* @return the fields modified
+	*/
+	function executeActions($output,$params)
+	{
+		$entity='';
+		$right='';
+		
+		if (count($this->actions)){
+			foreach ($this->actions as $action){
+				switch ($action->fields["action_type"]){
+					case "assign" :
+						if ($action->fields["field"] == "FK_entities") $entity = $action->fields["value"]; 
+						elseif ($action->fields["field"] == "FK_profiles") $right = $action->fields["value"];
+					break;
+				}
+			}
+		}
 
-	//Get all the rules whose rule_type is $rule_type and entity is $ID
-	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$this->rule_type." and gra.value='".$ID."'";
+		//Nothing to be returned by the function :
+		//Store in session the entity and/or right
+		if ($entity != '' && $right != '')
+			$_SESSION["rules_entities_rights"][]=array($entity=>$right);
+		elseif ($entity != '') 
+			$_SESSION["rules_entities"][]=$entity;
+		elseif ($right != '') 
+			$_SESSION["rules_rights"][]=$right;
+			
+		return $output;
+	}
 	
-	$result = $DB->query($sql);
-	while ($rule = $DB->fetch_array($result)) {
-		$affect_rule = new Rule;
-		$affect_rule->getRuleWithCriteriasAndActions($rule["ID"], 0, 1);
-		$ocs_affect_computer_rules[] = $affect_rule;
+	/**
+	 * Get all the dynamic affectations, and insert it into database
+	 */
+	function processAffectations($userid)
+	{
+		global $DB;
+		//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
+		//and add/update/delete only if it's necessary !
+		if (isset($_SESSION["rules_entities_rights"]))
+			$entities_rules = $_SESSION["rules_entities_rights"];
+		else
+			$entities_rules = array();
+
+		if (isset($_SESSION["rules_entities"]))
+			$entities = $_SESSION["rules_entities"];
+		else 
+			$entities = array();
+			
+		if (isset($_SESSION["rules_rights"]))
+			$rights = $_SESSION["rules_rights"];
+		else
+			$rights = array();
+			
+		//First delete all the dynamic affectations for this user in database
+		$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$userid." AND dynamic=1";
+		$DB->query($sql);
+
+		//For each affectation -> write it in DB		
+		foreach($entities_rules as $value)
+		{
+			$affectation["FK_entities"] = key($value);
+			$affectation["FK_profiles"] = $value[$affectation["FK_entities"]];
+			$affectation["FK_users"] = $userid;
+			
+			$affectation["recursive"] = 0;
+			$affectation["dynamic"] = 1;
+			addUserProfileEntity($affectation);
+		}
+
+		foreach($entities as $entity)
+		{
+				foreach($rights as $right)
+				{
+					$affectation["FK_entities"] = $entity;
+					$affectation["FK_profiles"] = $right;
+					$affectation["FK_users"] = $userid;
+					
+					$affectation["recursive"] = 0;
+					$affectation["dynamic"] = 1;
+					addUserProfileEntity($affectation);
+				}
+		}
+		
+		//Unset all the temporary tables
+		unset($_SESSION["rules_entities_rights"]);
+		unset($_SESSION["rules_rights"]);
+		unset($_SESSION["rules_entities"]);
 	}
 
-	return $ocs_affect_computer_rules;
-}
+	/**
+	 * Get the list of fields to be retreived to process rules
+	 */
+	function getFieldsForQuery()
+	{
+		global $RULES_CRITERIAS;
 
-
-
+		$fields = array();
+		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+				if (isset($criteria['virtual']) && $criteria['virtual'] == "true")
+					$fields[]=$criteria['id'];
+				else	
+				$fields[]=$criteria['field'];	
+		}
+		
+		return $fields;		  
+	}
 }
 
 
@@ -255,12 +326,34 @@ class LdapRuleCollection extends RuleCollection {
 		global $DB;
 		$this->rule_type = RULE_LDAP_AFFECT_ENTITY;
 		$this->rule_class_name = 'LdapAffectEntityRule';
+		$this->stop_on_first_match=false;
 	}
 
 	function getTitle() {
 		global $LANG;
 		return $LANG["rulesengine"][31];
 	}
-
+	
+	/**
+	 * Get all the fields needed to perform the rule
+	 */
+	function getFieldsToLookFor()
+	{
+		global $DB;
+		$params = array();
+		$sql = "SELECT DISTINCT value " .
+				"FROM glpi_rules_descriptions, glpi_rules_criterias, glpi_rules_ldap_parameters " .
+				"WHERE glpi_rules_descriptions.rule_type=".RULE_LDAP_AFFECT_ENTITY." AND glpi_rules_criterias.FK_rules=glpi_rules_descriptions.ID AND glpi_rules_criterias.criteria=glpi_rules_ldap_parameters.value";
+		
+		$result = $DB->query($sql);
+		while ($param = $DB->fetch_array($result))
+		{
+			//Dn is alwsays retreived from ldap : don't need to ask for it !
+			if ($param["value"] != "dn")
+				$params[]=$param["value"];
+		}
+		return $params;
+	}
+	
 }
 ?>
