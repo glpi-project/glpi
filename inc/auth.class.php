@@ -255,11 +255,17 @@ class Identification {
 			$_SESSION["glpicrontimer"] = time();
 			// TODO : load profile depending on entities
 			// glpiprofiles -> other available profile with link to the associated entities
+			$rule = new LdapAffectEntityRule;
+			$rule->processAffectations($_SESSION["glpiID"]);
 			initEntityProfiles($_SESSION["glpiID"]);
+			
+			changeProfile(key($_SESSION['glpiprofiles']));
+
+
 			// glpiactiveprofile -> active profile
 			// glpiactiveentities -> active entities
 			// Reload glpiactiveprofile when entity switching 
-			changeProfile(key($_SESSION['glpiprofiles']));
+			
 	
 			// TODO Groups also depends og the entity
 			// glpigroups -> active groups

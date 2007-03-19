@@ -179,6 +179,7 @@ class RuleCollection {
 		// Get Collection datas
 		$this->getCollectionDatas(1,1);
 		$input=$this->prepareInputDataForProcess($input,$params);
+		
 		if (count($this->rule_list)){
 
 			foreach ($this->rule_list as $rule){
@@ -660,16 +661,28 @@ class Rule extends CommonDBTM{
 		if (count($this->criterias))	{
 			$input=$this->prepareInputDataForProcess($input,$params);
 			$results=array();
-
+			
 			foreach ($this->criterias as $criteria){
 
 				// Undefine criteria field : set to blank
 				if (!isset($input[$criteria->fields["criteria"]])){
 					$input[$criteria->fields["criteria"]]='';
 				}
+				
+				//If the value is not an array
+				if (!is_array($input[$criteria->fields["criteria"]]))
+					$results[] = matchRules($input[$criteria->fields["criteria"]],$criteria->fields["condition"],$criteria->fields["pattern"]);
+				else
+				{
+					//If the value if, in fact, an array of values
+					$res = false;
+					foreach($input[$criteria->fields["criteria"]] as $tmp)
+						$res |= matchRules($tmp,$criteria->fields["condition"],$criteria->fields["pattern"]);
 
-				$results[] = matchRules($input[$criteria->fields["criteria"]],$criteria->fields["condition"],$criteria->fields["pattern"]);
+					$results[] = $res;	
+				}	
 			}
+			
 			if (count($results)){
 				$doactions=false;
 				if ($this->fields["match"]==AND_MATCHING){
