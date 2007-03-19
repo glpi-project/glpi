@@ -51,9 +51,9 @@ class Printer  extends CommonDBTM {
 
 		if (haveRight("cartridge","r"))	
 			$ong[1]=$lang["title"][26];
-		if (haveRight("contract_infocom","r"))	
-			$ong[3]=$lang["title"][27];
 		if (haveRight("networking","r")||haveRight("computer","r"))
+			$ong[3]=$lang["title"][27];
+		if (haveRight("contract_infocom","r"))	
 			$ong[4]=$lang["Menu"][26];
 		if (haveRight("document","r"))
 			$ong[5]=$lang["title"][25];
