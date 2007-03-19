@@ -75,6 +75,9 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 		//Get the user's dn
 		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], $login, $config_ldap->fields['ldap_condition']);
 		if ($user_dn) {
+			
+			$rule = new LdapAffectEntityRule;	
+			
 			$user = new User();
 			//Get informations from LDAP
 			$user->getFromLDAP($config_ldap->fields, $user_dn, $login, "");
@@ -87,9 +90,13 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 				unset ($user->fields);
 
 				$user->fields["ID"] = $user->add($input);
+				$rule->processAffectations($user->fields["ID"]);
 				return $user->fields["ID"];
 			} else
+			{
 					$user->update($user->fields);
+					$rule->processAffectations($user->fields["ID"]);
+			}
 		}
 	} else {
 		return false;
