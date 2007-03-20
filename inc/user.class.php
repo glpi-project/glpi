@@ -161,8 +161,6 @@ class User extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		global  $LANG;
 
-		$auth_method = $this->getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
-
 		if (isset ($input["ID"]) && $input["ID"] == 1) {
 			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
 			echo "alert('" . addslashes($LANG["setup"][220]) . "');";
@@ -294,38 +292,41 @@ class User extends CommonDBTM {
 	function syncLdapGroups($input){
 		global $DB;
 		if (isset ($input["ID"]) && $input["ID"]>0 && isset ($input["_groups"]) && count($input["_groups"])) {
-			$WHERE = "";
-			switch ($auth_method["ldap_search_for_groups"]) {
-				case 0 : // user search
-					$WHERE = "AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
-					break;
-				case 1 : // group search
-					$WHERE = "AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
-					break;
-				case 2 : // user+ group search
-					$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
-																		OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
-					break;
+			$auth_method = $this->getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
+			if (count($auth_method)){
+				$WHERE = "";
+				switch ($auth_method["ldap_search_for_groups"]) {
+					case 0 : // user search
+						$WHERE = "AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
+						break;
+					case 1 : // group search
+						$WHERE = "AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
+						break;
+					case 2 : // user+ group search
+						$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
+																			OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
+						break;
+				}
+	
+				// Delete not available groups like to LDAP
+				$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
+							FROM glpi_users_groups 
+							LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+							WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
+	
+				$result = $DB->query($query);
+				if ($DB->numrows($result) > 0) {
+					while ($data = $DB->fetch_array($result))
+						if (!in_array($data["FK_groups"], $input["_groups"])) {
+							deleteUserGroup($data["ID"]);
+						}
+				}
+	
+				foreach ($input["_groups"] as $group) {
+					addUserGroup($input["ID"], $group);
+				}
+				unset ($input["_groups"]);
 			}
-
-			// Delete not available groups like to LDAP
-			$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
-						FROM glpi_users_groups 
-						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-						WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
-
-			$result = $DB->query($query);
-			if ($DB->numrows($result) > 0) {
-				while ($data = $DB->fetch_array($result))
-					if (!in_array($data["FK_groups"], $input["_groups"])) {
-						deleteUserGroup($data["ID"]);
-					}
-			}
-
-			foreach ($input["_groups"] as $group) {
-				addUserGroup($input["ID"], $group);
-			}
-			unset ($input["_groups"]);
 		}
 	}
 
