@@ -90,21 +90,12 @@ function importFromOcsServer($ocs_server_id)
 	$cfg_ocs=getOcsConf($ocs_server_id);
 	ocsManageDeleted($ocs_server_id);
 
-	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0 LIMIT 20";
+	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0";
 	$result_ocs = $DBocs->query($query_ocs);
 	
-	while ($DBocs->numrows($result_ocs) > 0)
-	{
-			# Feed the list of ocs IDs to sync
-			$ocsMachinesToSync=array();
 			while($data=$DBocs->fetch_array($result_ocs)){
-				$ocsMachinesToSync[$data["ID"]] = 1;
 				ocsImportComputer($data["ID"],$ocs_server_id);
 				echo ".";
 			}
-	
-		$result_ocs = $DBocs->query($query_ocs);
-	}
-	
 }
 ?>
