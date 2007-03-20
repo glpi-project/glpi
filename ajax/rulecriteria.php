@@ -75,6 +75,15 @@ if (!defined('GLPI_ROOT')){
 					dropdownValue($RULES_CRITERIAS[$_POST["rule_type"]][$_POST["criteria"]]['table'],"pattern");
 					$display=true;
 					break;
+				case "dropdown_users":
+					dropdownAllUsers("pattern");
+					$display=true;
+					break;
+				case "dropdown_request_type":
+					include_once (GLPI_ROOT."/inc/tracking.function.php");
+					dropdownRequestType("pattern");
+					$display=true;
+					break;
 			}
 		}
 		if (!$display){

@@ -76,6 +76,14 @@ if (!defined('GLPI_ROOT')){
 					dropdownValue($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['table'],"value");
 					$display=true;
 					break;
+				case "dropdown_assign":
+					dropdownUsers("value",0,"own_ticket");
+					$display=true;
+					break;
+				case "dropdown_users":
+					dropdownAllUsers("value");
+					$display=true;
+					break;
 				case "yesno":
 					dropdownYesNo("value");
 					$display=true;
