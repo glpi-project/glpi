@@ -187,71 +187,15 @@ class LdapAffectEntityRule extends Rule {
 		//Nothing to be returned by the function :
 		//Store in session the entity and/or right
 		if ($entity != '' && $right != '')
-			$_SESSION["rules_entities_rights"][]=array($entity,$right,$recursive);
+			$output["_ldap_rules"]["rules_entities_rights"][]=array($entity,$right,$recursive);
 		elseif ($entity != '') 
-			$_SESSION["rules_entities"][]=array($entity,$recursive);
+			$output["_ldap_rules"]["rules_entities"][]=array($entity,$recursive);
 		elseif ($right != '') 
-			$_SESSION["rules_rights"][]=$right;
+			$output["_ldap_rules"]["rules_rights"][]=$right;
 			
 		return $output;
 	}
-	
-	/**
-	 * Get all the dynamic affectations, and insert it into database
-	 */
-	function processAffectations($userid)
-	{
-		global $DB;
-		//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
-		//and add/update/delete only if it's necessary !
-		if (isset($_SESSION["rules_entities_rights"]))
-			$entities_rules = $_SESSION["rules_entities_rights"];
-		else
-			$entities_rules = array();
 
-		if (isset($_SESSION["rules_entities"]))
-			$entities = $_SESSION["rules_entities"];
-		else 
-			$entities = array();
-			
-		if (isset($_SESSION["rules_rights"]))
-			$rights = $_SESSION["rules_rights"];
-		else
-			$rights = array();
-			
-		//First delete all the dynamic affectations for this user in database
-		$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$userid." AND dynamic=1";
-		$DB->query($sql);
-
-		//For each affectation -> write it in DB		
-		foreach($entities_rules as $entity)
-		{
-			$affectation["FK_entities"] = $entity[0];
-			$affectation["FK_profiles"] = $entity[1];
-			$affectation["recursive"] = $entity[2];
-			$affectation["FK_users"] = $userid;
-			$affectation["dynamic"] = 1;
-			addUserProfileEntity($affectation);
-		}
-
-		foreach($entities as $entity)
-		{
-				foreach($rights as $right)
-				{
-					$affectation["FK_entities"] = $entity[0];
-					$affectation["FK_profiles"] = $right;
-					$affectation["FK_users"] = $userid;
-					$affectation["recursive"] = $entity[1];
-					$affectation["dynamic"] = 1;
-					addUserProfileEntity($affectation);
-				}
-		}
-		
-		//Unset all the temporary tables
-		unset($_SESSION["rules_entities_rights"]);
-		unset($_SESSION["rules_rights"]);
-		unset($_SESSION["rules_entities"]);
-	}
 
 }
 

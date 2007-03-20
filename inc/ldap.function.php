@@ -90,12 +90,10 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 				unset ($user->fields);
 
 				$user->fields["ID"] = $user->add($input);
-				$rule->processAffectations($user->fields["ID"]);
 				return $user->fields["ID"];
 			} else
 			{
 					$user->update($user->fields);
-					$rule->processAffectations($user->fields["ID"]);
 			}
 		}
 	} else {

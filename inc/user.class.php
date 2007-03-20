@@ -58,7 +58,7 @@ class User extends CommonDBTM {
 
 	}
 	function defineOnglets($withtemplate) {
-		global $LANG, $CFG_GLPI;
+		global $LANG;
 
 
 		$ong[1] = $LANG["title"][26]; // principal
@@ -77,7 +77,7 @@ class User extends CommonDBTM {
 	}
 	function cleanDBonPurge($ID) {
 
-		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
+		global $DB;
 
 		// Tracking items left?
 		$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
@@ -138,11 +138,12 @@ class User extends CommonDBTM {
 	function postAddItem($newID, $input) {
 		$prof = new Profile();
 
-		if (isset ($input["_groups"])) {
-			foreach ($input["_groups"] as $group) {
-				addUserGroup($newID, $group);
-			}
+		$input["ID"]=$newID;
+		if ($input["auth_method"]==LDAP_AUTH){
+			$this->syncLdapGroups($input);
+			$this->applyLdapRules($input);
 		}
+
 	}
 
 	function pre_deleteItem($ID) {
@@ -158,7 +159,7 @@ class User extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
-		global $DB, $CFG_GLPI, $LANG;
+		global  $LANG;
 
 		$auth_method = $this->getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
 
@@ -218,7 +219,81 @@ class User extends CommonDBTM {
 				return array ();
 		}
 
-		if (isset ($input["_groups"]) && count($input["_groups"])) {
+		if ($input["auth_method"]==LDAP_AUTH){
+			$this->syncLdapGroups($input);
+			$this->applyLdapRules($input);
+		}
+
+		return $input;
+	}
+
+	
+
+	function post_updateItem($input, $updates, $history) {
+		// Clean header cache for the user
+		if (in_array("language", $updates) && isset ($input["ID"])) {
+			cleanCache("GLPI_HEADER_".$input["ID"]);
+		}
+	}
+
+	// SPECIFIC FUNCTIONS
+	function applyLdapRules($input){
+		global $DB;
+		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
+
+			//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
+			//and add/update/delete only if it's necessary !
+			if (isset($input["_ldap_rules"]["rules_entities_rights"]))
+				$entities_rules = $input["_ldap_rules"]["rules_entities_rights"];
+			else
+				$entities_rules = array();
+	
+			if (isset($input["_ldap_rules"]["rules_entities"]))
+				$entities = $input["_ldap_rules"]["rules_entities"];
+			else 
+				$entities = array();
+				
+			if (isset($input["_ldap_rules"]["rules_rights"]))
+				$rights = $input["_ldap_rules"]["rules_rights"];
+			else
+				$rights = array();
+				
+			//First delete all the dynamic affectations for this user in database
+			$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$input["ID"]." AND dynamic=1";
+			$DB->query($sql);
+	
+			//For each affectation -> write it in DB		
+			foreach($entities_rules as $entity)
+			{
+				$affectation["FK_entities"] = $entity[0];
+				$affectation["FK_profiles"] = $entity[1];
+				$affectation["recursive"] = $entity[2];
+				$affectation["FK_users"] = $userid;
+				$affectation["dynamic"] = 1;
+				addUserProfileEntity($affectation);
+			}
+	
+			foreach($entities as $entity)
+			{
+					foreach($rights as $right)
+					{
+						$affectation["FK_entities"] = $entity[0];
+						$affectation["FK_profiles"] = $right;
+						$affectation["FK_users"] = $userid;
+						$affectation["recursive"] = $entity[1];
+						$affectation["dynamic"] = 1;
+						addUserProfileEntity($affectation);
+					}
+			}
+			
+			//Unset all the temporary tables
+			unset($input["_ldap_rules"]);
+		}
+
+	}
+	function syncLdapGroups($input){
+		global $DB;
+		if (isset ($input["ID"]) && $input["ID"]>0 && isset ($input["_groups"]) && count($input["_groups"])) {
 			$WHERE = "";
 			switch ($auth_method["ldap_search_for_groups"]) {
 				case 0 : // user search
@@ -235,9 +310,9 @@ class User extends CommonDBTM {
 
 			// Delete not available groups like to LDAP
 			$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
-												FROM glpi_users_groups 
-												LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-												WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
+						FROM glpi_users_groups 
+						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+						WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
 
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
@@ -252,19 +327,7 @@ class User extends CommonDBTM {
 			}
 			unset ($input["_groups"]);
 		}
-
-		return $input;
 	}
-
-	function post_updateItem($input, $updates, $history) {
-		global $CFG_GLPI;
-		// Clean header cache for the user
-		if (in_array("language", $updates) && isset ($input["ID"])) {
-			cleanCache("GLPI_HEADER_".$input["ID"]);
-		}
-	}
-
-	// SPECIFIC FUNCTIONS
 
 	function getName() {
 		if (strlen($this->fields["realname"]) > 0)
@@ -291,7 +354,7 @@ class User extends CommonDBTM {
 	 * @return String : basedn of the user / false if not founded
 	 */
 	function getFromLDAP($ldap_method, $userdn, $login, $password = "") {
-		global $DB, $CFG_GLPI;
+		global $DB;
 
 		// we prevent some delay...
 		if (empty ($ldap_method["ldap_host"])) {
@@ -402,7 +465,7 @@ class User extends CommonDBTM {
 			
 		//Process affectation rules :
 		//we don't care about the function's return because all the datas are stored in session temporary
-		$rule->processAllRules($this->fields["_groups"],array(),array("ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
+		$this->fields=$rule->processAllRules($this->fields["_groups"],$this->fields,array("ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
 		
 		//Hook to retrieve more informations for ldap
 		$this->fields = do_hook_function("retrieve_more_data_from_ldap", $this->fields);
@@ -413,7 +476,6 @@ class User extends CommonDBTM {
 
 	//Get all the group a user belongs to
 	function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition, $group_field_member) {
-		global $CFG_GLPI;
 
 		$groups = array ();
 		$listgroups = array ();
