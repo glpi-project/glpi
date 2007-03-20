@@ -76,6 +76,10 @@ if (!defined('GLPI_ROOT')){
 					dropdownValue($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['table'],"value");
 					$display=true;
 					break;
+				case "yesno":
+					dropdownYesNo("value");
+					$display=true;
+					break;	
 			}
 		}
 		if (!$display){

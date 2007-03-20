@@ -1,4 +1,3 @@
-#!/usr/bin/php -f
 <?php
 /*
  * @version $Id: ocsng_mass_sync.php 4213 2006-12-25 19:56:49Z moyo $
@@ -46,6 +45,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/config/based_config.php");
 
+/*
 if (isset($_GET["lockfile"])){
 	$lockfile=$_GET["lockfile"];
 	} else {
@@ -53,6 +53,7 @@ if (isset($_GET["lockfile"])){
 }
 $lock = fopen($lockfile, "w+",4);
 flock($lock, LOCK_EX|LOCK_NB) or die("Error getting lock!");
+*/
 
 $USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","rulesengine","rule.ocs","group");
@@ -60,20 +61,27 @@ include (GLPI_ROOT."/inc/includes.php");
 
 if (isset($_GET["ocs_server_id"])) 
 {
-	echo "import computers from server : ".$_GET["ocs_server_id"]."<br>";
+	checkOCSconnection($_GET["ocs_server_id"]);
+	echo "import computers from server : ".$_GET["ocs_server_id"]."\n";
 	importFromOcsServer($_GET["ocs_server_id"]);
 }
 else
 {
-	$query = "SELECT ID FROM glpi_ocs_config";
+	$query = "SELECT ID, name FROM glpi_ocs_config";
 	$result = $DB->query($query);
 	while ($ocs_server = $DB->fetch_array($result))
+	{
+		checkOCSconnection($ocs_server["ID"]);
+		echo "import computers from server : ".$ocs_server["name"]."\n";
 		importFromOcsServer($ocs_server["ID"]);
+	}
 }
 
+/*
 flock($lock, LOCK_UN);
 fclose($lock);
 unlink($lockfile);
+*/
 echo "done\n";
 
 function importFromOcsServer($ocs_server_id)

@@ -919,6 +919,7 @@ class Rule extends CommonDBTM{
  	*/
  	function getActionValue($ID,$value)
 	{
+		global $LANG;
 		$action=$this->getAction($ID);
 		
 		if (!isset($action['type'])){
@@ -929,6 +930,11 @@ class Rule extends CommonDBTM{
 				case "dropdown":
 					return getDropdownName($action["table"],$value);
 					break;
+				case "yesno":
+					if ($value) 
+						return $LANG["choice"][1];
+					else
+						$LANG["choice"][0];	
 				default :
 					return $value;
 					break;

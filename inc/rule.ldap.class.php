@@ -51,62 +51,15 @@ class LdapAffectEntityRule extends Rule {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type = RULE_LDAP_AFFECT_ENTITY;
-		$this->stop_on_first_match = false;
 		
 		//Dynamically add all the ldap criterias to the current list of rule's criterias
 		$this->addLdapCriteriasToArray();
 	}
 
-	/**
-	 * Get the attributes needed for processing the rules
-	 * @param type type of the rule
-	 * @param extra_params extra parameters given
-	 * @return an array of attributes
-	 */
-	function prepareInputDataForProcess($input,$params){
-		global $RULES_CRITERIAS;
-		if (count($input))
-		{
-				$rule_parameters = array();
-				$input = $input[0];
-
-				//Get all the ldap fields
-				$fields = $this->getFieldsForQuery(RULE_LDAP_AFFECT_ENTITY);
-				
-				foreach ($fields as $field)
-				{
-						switch(strtoupper($field))
-						{
-							case "LDAP_SERVER":
-								$rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
-								break;
-							case "GROUPS" :
-									foreach ($params["groups"] as $group)
-										$rule_parameters["GROUPS"][] = $group;
-							break;
-							default :
-								if (isset($input[$field]))
-								{
-									if (!is_array($input[$field]))
-										$rule_parameters[$field] = $input[$field];
-										else
-										{
-												for ($i=0;$i < count($input[$field]) -1;$i++)
-													$rule_parameters[$field][] = $input[$field][$i];
-												break;
-										}	
-								}
-						}
-				}
-
-				return $rule_parameters;
-		}
-		else return $input;
-	}
 
 	function maxActionsCount(){
 		// Unlimited
-		return 2;
+		return 3;
 	}
 	/**
 	 * Display form to add rules
@@ -217,6 +170,7 @@ class LdapAffectEntityRule extends Rule {
 	{
 		$entity='';
 		$right='';
+		$recursive = 0;
 		
 		if (count($this->actions)){
 			foreach ($this->actions as $action){
@@ -224,6 +178,7 @@ class LdapAffectEntityRule extends Rule {
 					case "assign" :
 						if ($action->fields["field"] == "FK_entities") $entity = $action->fields["value"]; 
 						elseif ($action->fields["field"] == "FK_profiles") $right = $action->fields["value"];
+						elseif ($action->fields["field"] == "recursive") $recursive = $action->fields["value"];
 					break;
 				}
 			}
@@ -232,9 +187,9 @@ class LdapAffectEntityRule extends Rule {
 		//Nothing to be returned by the function :
 		//Store in session the entity and/or right
 		if ($entity != '' && $right != '')
-			$_SESSION["rules_entities_rights"][]=array($entity=>$right);
+			$_SESSION["rules_entities_rights"][]=array($entity,$right,$recursive);
 		elseif ($entity != '') 
-			$_SESSION["rules_entities"][]=$entity;
+			$_SESSION["rules_entities"][]=array($entity,$recursive);
 		elseif ($right != '') 
 			$_SESSION["rules_rights"][]=$right;
 			
@@ -269,13 +224,12 @@ class LdapAffectEntityRule extends Rule {
 		$DB->query($sql);
 
 		//For each affectation -> write it in DB		
-		foreach($entities_rules as $value)
+		foreach($entities_rules as $entity)
 		{
-			$affectation["FK_entities"] = key($value);
-			$affectation["FK_profiles"] = $value[$affectation["FK_entities"]];
+			$affectation["FK_entities"] = $entity[0];
+			$affectation["FK_profiles"] = $entity[1];
+			$affectation["recursive"] = $entity[2];
 			$affectation["FK_users"] = $userid;
-			
-			$affectation["recursive"] = 0;
 			$affectation["dynamic"] = 1;
 			addUserProfileEntity($affectation);
 		}
@@ -284,11 +238,10 @@ class LdapAffectEntityRule extends Rule {
 		{
 				foreach($rights as $right)
 				{
-					$affectation["FK_entities"] = $entity;
+					$affectation["FK_entities"] = $entity[0];
 					$affectation["FK_profiles"] = $right;
 					$affectation["FK_users"] = $userid;
-					
-					$affectation["recursive"] = 0;
+					$affectation["recursive"] = $entity[1];
 					$affectation["dynamic"] = 1;
 					addUserProfileEntity($affectation);
 				}
@@ -300,28 +253,15 @@ class LdapAffectEntityRule extends Rule {
 		unset($_SESSION["rules_entities"]);
 	}
 
-	/**
-	 * Get the list of fields to be retreived to process rules
-	 */
-	function getFieldsForQuery()
-	{
-		global $RULES_CRITERIAS;
-
-		$fields = array();
-		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
-				if (isset($criteria['virtual']) && $criteria['virtual'] == "true")
-					$fields[]=$criteria['id'];
-				else	
-				$fields[]=$criteria['field'];	
-		}
-		
-		return $fields;		  
-	}
 }
 
 
 class LdapRuleCollection extends RuleCollection {
 
+	var $rules_entity_rights = array();
+	var $rules_entity = array();
+	var $rules_rights = array();
+	
 	function LdapRuleCollection() {
 		global $DB;
 		$this->rule_type = RULE_LDAP_AFFECT_ENTITY;
@@ -355,5 +295,83 @@ class LdapRuleCollection extends RuleCollection {
 		return $params;
 	}
 	
+		/**
+	 * Get the attributes needed for processing the rules
+	 * @param type type of the rule
+	 * @param extra_params extra parameters given
+	 * @return an array of attributes
+	 */
+	function prepareInputDataForProcess($input,$params){
+		global $RULES_CRITERIAS;
+		
+		//Get all the field to retrieve to be able to process rule matching
+		$rule_fields = $this->getFieldsToLookFor();
+			
+		//Get all the datas we need from ldap to process the rules
+		$sz = @ ldap_read($params["connection"], $params["userdn"], "objectClass=*", $rule_fields);
+		$rule_input = ldap_get_entries($params["connection"], $sz);
+		if (count($rule_input))
+		{
+
+			if (isset($input)) 
+				$groups = $input;
+			else
+				$groups = array();
+				
+				
+				$rule_parameters = array();
+				$rule_input = $rule_input[0];
+
+				//Get all the ldap fields
+				$fields = $this->getFieldsForQuery(RULE_LDAP_AFFECT_ENTITY);
+				
+				foreach ($fields as $field)
+				{
+						switch(strtoupper($field))
+						{
+							case "LDAP_SERVER":
+								$rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
+								break;
+							case "GROUPS" :
+									foreach ($groups as $group)
+										$rule_parameters["GROUPS"][] = $group;
+							break;
+							default :
+								if (isset($rule_input[$field]))
+								{
+									if (!is_array($rule_input[$field]))
+										$rule_parameters[$field] = $rule_input[$field];
+										else
+										{
+												for ($i=0;$i < count($rule_input[$field]) -1;$i++)
+													$rule_parameters[$field][] = $rule_input[$field][$i];
+												break;
+										}	
+								}
+						}
+				}
+
+				return $rule_parameters;
+		}
+		else return $rule_input;
+	}
+	
+		/**
+	 * Get the list of fields to be retreived to process rules
+	 */
+	function getFieldsForQuery()
+	{
+		global $RULES_CRITERIAS;
+
+		$fields = array();
+		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+				if (isset($criteria['virtual']) && $criteria['virtual'] == "true")
+					$fields[]=$criteria['id'];
+				else	
+				$fields[]=$criteria['field'];	
+		}
+		
+		return $fields;		  
+	}
 }
 ?>
