@@ -99,7 +99,7 @@ else if(isset($_POST["delete"]))
 	checkRight("networking","w");
 	$np->delete($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted networking port.");
-	glpi_header($_POST["referer"]);
+	glpi_header(preg_replace("/&amp;/","&",urldecode($_POST["referer"])));
 }
 else if(isset($_POST["delete_several"]))
 {

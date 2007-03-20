@@ -428,6 +428,7 @@ class Netport extends CommonDBTM {
 	var $device_name	= "";
 	var $device_ID		= 0;
 	var $device_type		= 0;
+	var $FK_entities		= -1;
 
 	function Netport () {
 		$this->table="glpi_networking_ports";
@@ -484,6 +485,7 @@ class Netport extends CommonDBTM {
 			$data = $DB->fetch_array($result);
 			$this->device_name = $data["name"];
 			$this->deleted = $data["deleted"];
+			$this->FK_entities = $data["FK_entities"];
 			$this->device_ID = $ID;
 			$this->device_type = $type;
 			return true;
