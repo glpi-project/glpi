@@ -217,7 +217,7 @@ class User extends CommonDBTM {
 				return array ();
 		}
 
-		if ($input["auth_method"]==LDAP_AUTH){
+		if ($input["auth_method"]==AUTH_LDAP){
 			$this->syncLdapGroups($input);
 			$this->applyLdapRules($input);
 		}
@@ -466,7 +466,11 @@ class User extends CommonDBTM {
 			
 		//Process affectation rules :
 		//we don't care about the function's return because all the datas are stored in session temporary
-		$this->fields=$rule->processAllRules($this->fields["_groups"],$this->fields,array("ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
+		if (isset($this->fields["_groups"]))
+			$groups = $this->fields["_groups"];
+		else
+			$groups = array();	
+		$this->fields=$rule->processAllRules($groups,$this->fields,array("ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
 		
 		//Hook to retrieve more informations for ldap
 		$this->fields = do_hook_function("retrieve_more_data_from_ldap", $this->fields);
