@@ -43,8 +43,6 @@
 	header_nocache();
 	
 	checkLoginUser();
-	echo "<textarea ".(isset($_POST['rows'])?" rows='".$_POST['rows']."' ":"")." ".(isset($_POST['cols'])?" cols='".$_POST['cols']."' ":"")."  name='".$_POST['name']."'>";
-	echo rawurldecode(stripslashes($_POST["data"]));
-	echo "</textarea>";
+	echo "<input type='text' ".(isset($_POST["size"])?" size='".$_POST["size"]."' ":"")." ".(isset($_POST["maxlength"])?"maxlength='".$_POST["maxlength"]."' ":"")." name='".$_POST['name']."' value=\"".rawurldecode(stripslashes($_POST["data"]))."\">";
 
 ?>

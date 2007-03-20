@@ -1619,7 +1619,20 @@ function showJobDetails ($target,$ID){
 		echo "<table width='99%' >";
 		echo "<tr class='tab_bg_2'><th colspan='2'>";
 		if ($canupdate_descr){
-			echo "<input type='text' maxlength='250' size='80' name='name' value=\"".$job->fields["name"]."\">";
+			$rand=mt_rand();
+			echo "<script type='text/javascript' >\n";
+			echo "function showName$rand(){\n";
+			echo "Element.hide('name$rand');";
+			echo "var a=new Ajax.Updater('viewname$rand','".$CFG_GLPI["root_doc"]."/ajax/inputtext.php' , {asynchronous:true, evalScripts:true, method: 'post',parameters: 'maxlength=250&size=80&name=name&data=".rawurlencode($job->fields["name"])."'});";
+			echo "}";
+			echo "</script>\n";
+			echo "<div id='name$rand' class='div_tracking' onClick='showName$rand()'>\n";
+			echo $job->fields["name"];
+			echo "</div>\n";	
+
+			echo "<div id='viewname$rand'>\n";
+			echo "</div>\n";
+			//echo "<input type='text' maxlength='250' size='80' name='name' value=\"".$job->fields["name"]."\">";
 		} else {
 			echo $job->fields["name"];
 		}

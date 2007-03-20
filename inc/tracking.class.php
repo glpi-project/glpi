@@ -239,6 +239,16 @@ class Job extends CommonDBTM{
 
 		if ($CFG_GLPI["followup_on_update_ticket"]){
 
+
+			if (in_array("name",$updates)){
+				$change_followup_content.=$LANG["mailing"][45]."\n";
+				$global_mail_change_count++;
+			}
+			if (in_array("contents",$updates)){
+				$change_followup_content.=$LANG["mailing"][46]."\n";
+				$global_mail_change_count++;
+			}
+
 			if (in_array("status",$updates)){
 				$new_status=$this->fields["status"];
 				$change_followup_content.=$LANG["mailing"][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
