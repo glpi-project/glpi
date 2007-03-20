@@ -93,6 +93,10 @@ $RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_profiles']['name']=$LANG["Menu"][35]
 $RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_profiles']['type']='dropdown';
 $RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['FK_profiles']['table']='glpi_profiles';
 
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['recursive']['name']=$LANG["profiles"][28];
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['recursive']['type']='yesno';
+$RULES_ACTIONS[RULE_LDAP_AFFECT_ENTITY]['recursive']['table']='';
+
 // BUSINESS RULES FOR TRACKING
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['table']='glpi_tracking';

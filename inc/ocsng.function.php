@@ -491,7 +491,7 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 
 		$comp = new Computer;
 		$comp->getFromDB($line["glpi_id"]);
-		echo "entity=".$comp->fields["FK_entities"];
+
 		// Get OCS ID 
 		$query_ocs = "SELECT * 
 					FROM hardware 

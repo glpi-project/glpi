@@ -48,6 +48,7 @@ class DBocs extends DBmysql {
 			$this->dbpassword = urldecode($data["ocs_db_passwd"]);
 			$this->dbdefault = $data["ocs_db_name"];
 			$this->dbh = @ mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
+			@mysql_query("SET NAMES 'utf8'");
 			@ mysql_select_db($this->dbdefault) or $this->error = 1;
 			}
 	}
