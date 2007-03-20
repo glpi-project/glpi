@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 
 // FUNCTIONS Setup
 
-function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where = '', $tomove = '', $type = '') {
+function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where = '', $tomove = '', $type = '',$FK_entities='') {
 
 	global $CFG_GLPI, $LANG;
 
@@ -55,7 +55,11 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	$entity_restict = -1;
 	$numberof = 0;
 	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
-		$entity_restict = $_SESSION["glpiactive_entity"];
+		if (!empty($FK_entities)&&$FK_entities>=0){
+			$entity_restict = $FK_entities;
+		} else {	
+			$entity_restict = $_SESSION["glpiactive_entity"];
+		}
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
@@ -138,7 +142,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "</table></form></div>";
 }
 
-function showFormDropDown($target, $tablename, $human, $ID, $value2 = '') {
+function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_entities='') {
 
 	global $DB, $CFG_GLPI, $LANG;
 
@@ -148,7 +152,11 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '') {
 	$entity_restict = -1;
 	$numberof=0;
 	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
-		$entity_restict = $_SESSION["glpiactive_entity"];
+		if (!empty($FK_entities)&&$FK_entities>=0){
+			$entity_restict = $FK_entities;
+		} else {	
+			$entity_restict = $_SESSION["glpiactive_entity"];
+		}
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
 	} else {

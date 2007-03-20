@@ -97,7 +97,7 @@ if (isset($_POST["move"])) {
 else {
 	commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","entity");
 
-	showFormTreeDown($_SERVER['PHP_SELF'],"glpi_entities",$LANG["entity"][1],$ID);
+	showFormTreeDown($_SERVER['PHP_SELF'],"glpi_entities",$LANG["entity"][1],$ID,$value2,$where,$tomove,$type);
 	commonFooter();
 }
 

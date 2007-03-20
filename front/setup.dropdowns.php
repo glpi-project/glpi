@@ -67,6 +67,10 @@ if (isset($_POST["ID"])) $ID=$_POST["ID"];
 elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
 else $ID="";
 
+if (isset($_POST["FK_entities"])) $FK_entities=$_POST["FK_entities"];
+elseif (isset($_GET["FK_entities"])) $FK_entities=$_GET["FK_entities"];
+else $FK_entities="";
+
 if (isset($_POST["several_add"])) {
 
 	for ($i=$_POST["from"];$i<=$_POST["to"];$i++){
@@ -74,7 +78,6 @@ if (isset($_POST["several_add"])) {
 		addDropdown($_POST);
 	}
 
-	// logEvent ($item, $itemtype, $level, $service, $event)
 
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
@@ -213,9 +216,9 @@ else {
 		}
 		if (!empty($title))
 		if (in_array($which,$CFG_GLPI["dropdowntree_tables"])){
-			showFormTreeDown($_SERVER['PHP_SELF'],$which,$title,$ID);
+			showFormTreeDown($_SERVER['PHP_SELF'],$which,$title,$ID,$value2,$where,$tomove,$type,$FK_entities);
 		} else {
-			showFormDropDown($_SERVER['PHP_SELF'],$which,$title,$ID);
+			showFormDropDown($_SERVER['PHP_SELF'],$which,$title,$ID,$value2,$FK_entities);
 		}
 	}
 
