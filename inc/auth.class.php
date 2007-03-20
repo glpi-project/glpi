@@ -255,8 +255,7 @@ class Identification {
 			$_SESSION["glpicrontimer"] = time();
 			// TODO : load profile depending on entities
 			// glpiprofiles -> other available profile with link to the associated entities
-			$rule = new LdapAffectEntityRule;
-			$rule->processAffectations($_SESSION["glpiID"]);
+
 			initEntityProfiles($_SESSION["glpiID"]);
 			
 			changeProfile(key($_SESSION['glpiprofiles']));
