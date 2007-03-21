@@ -174,10 +174,8 @@ class Monitor extends CommonDBTM {
 
 
 		$mon_spotted = false;
-		$unknown_device=false;	
 		if((empty($ID) && $withtemplate == 1)||$ID==-1) {
 			if($this->getEmpty()) $mon_spotted = true;
-			 $unknown_device=true;
 
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $mon_spotted = true;
@@ -205,9 +203,7 @@ class Monitor extends CommonDBTM {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 			}
 
-			if ($unknown_device){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-			}
+			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
 			echo "<table  class='tab_cadre_fixe' cellpadding='2'>";
 

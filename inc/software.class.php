@@ -196,11 +196,9 @@ class Software extends CommonDBTM {
 			return false;
 
 		$sw_spotted = false;
-		$unknown_device = false;
 		if ((empty ($ID) && $withtemplate == 1) || $ID == -1) {
 			if ($this->getEmpty())
 				$sw_spotted = true;
-			$unknown_device = true;
 		} else {
 			if ($this->getfromDB($ID) && haveAccessToEntity($this->fields["FK_entities"]))
 				$sw_spotted = true;
@@ -227,9 +225,9 @@ class Software extends CommonDBTM {
 			if (strcmp($template, "newtemplate") === 0) {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 			}
-			if ($unknown_device) {
-				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
-			}
+
+			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+
 			echo "<table class='tab_cadre_fixe'>";
 
 			echo "<tr><th align='center' colspan='2' >";
