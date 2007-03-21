@@ -76,7 +76,7 @@ class LdapAffectEntityRule extends Rule {
 
 			echo "<div align='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][21] . $LANG["rulesengine"][18] . "</tr><tr><td class='tab_bg_2' align='center'>";
+			echo "<tr class='tab_bg_1'><th colspan='5'>" .$LANG["rulesengine"][19] . "</tr><tr><td class='tab_bg_2' align='center'>";
 			echo $LANG["common"][16] . ":";
 			echo "</td><td align='center' class='tab_bg_2'>";
 			autocompletionTextField("name", "glpi_rules_descriptions", "name", "", 30);
@@ -86,17 +86,27 @@ class LdapAffectEntityRule extends Rule {
 			echo $LANG["rulesengine"][9] . ":";
 			$this->dropdownRulesMatch("match", "AND");
 			echo "</td><td align='center' class='tab_bg_2'>";
+			echo "</td></tr>";
+
+			echo "<tr><td align='center' class='tab_bg_2'>";
+			echo "</td><td align='center' class='tab_bg_2'>";
+			echo $LANG["profiles"][22].":";
+			dropdownValue("glpi_profiles","FK_profiles");
+			echo "</td><td align='center' class='tab_bg_2'>";
+			echo $LANG["profiles"][28].":";
+			dropdownYesNo("recursive",0);
+			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type=hidden name='rule_type' value=\"" . $this->rule_type . "\">";
 			echo "<input type=hidden name='FK_entities' value=\"-1\">";
 			echo "<input type=hidden name='affectentity' value=\"" . $ID . "\">";
-			echo "<input type='submit' name='add_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+			echo "<input type='submit' name='add_user_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 			echo "</td></tr>";
-
+			
 			echo "</table></div><br>";
 
 		}
 
-		echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["entity"][5] . "</th></tr>";
+		echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["entity"][6] . "</th></tr>";
 
 		//Get all rules and actions
 		$rules = $this->getRulesByID( $ID, 0, 1);
@@ -133,7 +143,7 @@ class LdapAffectEntityRule extends Rule {
 
 			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "<input type='submit' name='delete_user_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
 
@@ -195,6 +205,32 @@ class LdapAffectEntityRule extends Rule {
 			
 		return $output;
 	}
+
+/**
+ * Return all rules from database
+ * @param type of rules
+ * @param withcriterias import rules criterias too
+ * @param withactions import rules actions too
+ */
+function getRulesByID($ID, $withcriterias, $withactions) {
+	global $DB;
+	$ocs_affect_computer_rules = array ();
+	// MOYO : quoi donc que ca fout la ca ?
+	// MOYO : ca correspond pas deja à un cas particulier de ca : getRuleWithCriteriasAndActions ?
+
+
+	//Get all the rules whose rule_type is $rule_type and entity is $ID
+	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$this->rule_type." and gra.value='".$ID."'";
+	
+	$result = $DB->query($sql);
+	while ($rule = $DB->fetch_array($result)) {
+		$affect_rule = new Rule;
+		$affect_rule->getRuleWithCriteriasAndActions($rule["ID"], 0, 1);
+		$ocs_affect_computer_rules[] = $affect_rule;
+	}
+
+	return $ocs_affect_computer_rules;
+}
 
 
 }
