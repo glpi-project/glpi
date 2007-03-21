@@ -31,11 +31,11 @@
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
 // Contributor: Goneri Le Bouder <goneri@rulezlan.org>
+// Contributor: Walid Nouh <walid.nouh@gmail.com>
 // Purpose of file:
 // Installation:
 // Add in your contabl (crontab -e):
-// */2  *  *  *  *  root  /path/glpi/scripts/ocsng_fullsync.php -- ocs_server_id=X -- lockfile='/tmp/lock' >>/dev/null 2>&1
-// lockfile is optional is your user can write in the file/_cron directory
+// */2  *  *  *  *  root  /path/glpi/scripts/ocsng_fullsync.php -- ocs_server_id=X >>/dev/null 2>&1
 // ----------------------------------------------------------------------
 ini_set("memory_limit","-1");
 ini_set("max_execution_time", "0");
@@ -45,16 +45,6 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/config/based_config.php");
 
-/*
-if (isset($_GET["lockfile"])){
-	$lockfile=$_GET["lockfile"];
-	} else {
-	$lockfile = GLPI_CRON_DIR. '/' . 'ocsng_fullsync.lock';
-}
-$lock = fopen($lockfile, "w+",4);
-flock($lock, LOCK_EX|LOCK_NB) or die("Error getting lock!");
-*/
-
 $USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","rulesengine","rule.ocs","group");
 include (GLPI_ROOT."/inc/includes.php");
@@ -63,7 +53,9 @@ if (isset($_GET["ocs_server_id"]))
 {
 	checkOCSconnection($_GET["ocs_server_id"]);
 	echo "import computers from server : ".$_GET["ocs_server_id"]."\n";
-	importFromOcsServer($_GET["ocs_server_id"]);
+	$cfg_ocs=getOcsConf($_GET["ocs_server_id"]);
+	ocsManageDeleted($_GET["ocs_server_id"]);
+	importFromOcsServer($cfg_ocs);
 }
 else
 {
@@ -73,29 +65,23 @@ else
 	{
 		checkOCSconnection($ocs_server["ID"]);
 		echo "import computers from server : ".$ocs_server["name"]."\n";
-		importFromOcsServer($ocs_server["ID"]);
+		$cfg_ocs=getOcsConf($ocs_server["ID"]);
+		ocsManageDeleted($ocs_server["ID"]);
+		importFromOcsServer($cfg_ocs);
 	}
 }
 
-/*
-flock($lock, LOCK_UN);
-fclose($lock);
-unlink($lockfile);
-*/
 echo "done\n";
 
-function importFromOcsServer($ocs_server_id)
+function importFromOcsServer($cfg_ocs)
 {
 	global $DBocs;
-	$cfg_ocs=getOcsConf($ocs_server_id);
-	ocsManageDeleted($ocs_server_id);
-
+	
 	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0";
 	$result_ocs = $DBocs->query($query_ocs);
-	
-			while($data=$DBocs->fetch_array($result_ocs)){
-				ocsImportComputer($data["ID"],$ocs_server_id);
-				echo ".";
-			}
+	while($data=$DBocs->fetch_array($result_ocs)){
+		ocsImportComputer($data["ID"],$cfg_ocs["ID"]);
+		echo ".";
+	}
 }
 ?>

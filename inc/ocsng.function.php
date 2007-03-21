@@ -301,8 +301,9 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 	
 	$query = "SELECT ID,glpi_id,ocs_id FROM glpi_ocs_link WHERE ocs_id = '$ocs_id' AND ocs_server_id='".$ocs_server_id."';";
 	$result_glpi_ocs_link = $DB->query($query);
-	if ($result_glpi_ocs_link&&$DB->numrows($result_glpi_ocs_link)) {
-		ocsUpdateComputer($result_glpi_ocs_link["ID"],$ocs_server_id,0);
+	if ($DB->numrows($result_glpi_ocs_link)) {
+		$datas = $DB->fetch_array($result_glpi_ocs_link);
+		ocsUpdateComputer($datas["ID"],$ocs_server_id,1,0);
 	} else {
 	# Machine is not present, I go a head
 		// Set OCS checksum to max value
