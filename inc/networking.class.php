@@ -201,10 +201,8 @@ class Netdevice extends CommonDBTM {
 		if (!haveRight("networking","r")) return false;
 
 		$spotted = false;
-		$unknown_device=false;
 		if((empty($ID) && $withtemplate == 1)||$ID==-1) {
 			if($this->getEmpty()) $spotted = true;
-			$unknown_device=true;
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
 		}
@@ -234,9 +232,7 @@ class Netdevice extends CommonDBTM {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
 			}
 
-			if ($unknown_device){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-			}
+			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
 			echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
