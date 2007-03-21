@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("entity","rulesengine","rule.ocs");
+$NEEDED_ITEMS=array("entity","rulesengine","rule.ocs","rule.ldap");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -75,6 +75,27 @@ if (isset($_POST["update"]))
 		
 	logEvent(RULE_OCS_AFFECT_COMPUTER, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][70]);
 	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["add_user_rule"]))
+{
+	checkRight("config","w");
+
+
+	$rule = new LdapAffectEntityRule;
+	$ruleid = $rule->add($_POST);
+	
+	if ($ruleid)
+	{
+		//Add an action associated to the rule
+		$ruleAction = new RuleAction;
+		//Action is : affect computer to this entity
+		$ruleAction->addActionByAttributes("assign", $ruleid, "FK_entities", $_POST["affectentity"]);
+		if ($_POST["FK_profiles"])
+			$ruleAction->addActionByAttributes("assign", $ruleid, "FK_profiles", $_POST["FK_profiles"]);
+		$ruleAction->addActionByAttributes("assign", $ruleid, "recursive", $_POST["recursive"]);
+	}
+		
+	logEvent(RULE_OCS_AFFECT_COMPUTER, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][70]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["deleteuser"]))
 {
@@ -86,10 +107,14 @@ if (isset($_POST["update"]))
 
 	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-}elseif (isset($_POST["delete_rule"]))
+}elseif (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"]))
 {
 	checkRight("config","w");
-	$rule = new OcsAffectEntityRule;		
+	if (isset($_POST["delete_computer_rule"]))
+		$rule = new OcsAffectEntityRule;		
+	else
+		$rule = new LdapAffectEntityRule;
+		
 	if (count($_POST["item"])){
 		foreach ($_POST["item"] as $key => $val)
 		{	
@@ -109,7 +134,8 @@ if (isset($_GET['onglet'])) {
 }	
 
 
-$ocsrule = new OcsAffectEntityRule();
+$ocsrule = new OcsAffectEntityRule;
+$ldaprule = new LdapAffectEntityRule;
 
 if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 	switch($_SESSION['glpi_onglet']){
@@ -117,9 +143,11 @@ if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
 			display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 			$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+			$ldaprule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 		break;
 		case 2 : 
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
+			$ldaprule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 		break;
 		case 3 :
 			$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
