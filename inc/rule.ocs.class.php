@@ -267,7 +267,7 @@ class OcsAffectEntityRule extends Rule {
 
 			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "<input type='submit' name='delete_computer_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
 
