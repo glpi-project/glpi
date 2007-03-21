@@ -387,6 +387,7 @@ $LANG["entity"][2]="Entité Racine";
 $LANG["entity"][3]="Associer à une entité"; 
 $LANG["entity"][4]="Machines"; 
 $LANG["entity"][5]="Affectation automatique des machines"; 
+$LANG["entity"][6]="Affectation automatique des utilisateurs"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Service";
@@ -1188,7 +1189,7 @@ $LANG["rulesengine"][15]="Motif";
 $LANG["rulesengine"][16]="Critère";
 $LANG["rulesengine"][17]="Règles";
 $LANG["rulesengine"][18]="Règles d'affectation d'une machine à une entité";
-$LANG["rulesengine"][19]="Règles d'affectation de droits à partir de l'annuaire";
+$LANG["rulesengine"][19]="Règles d'affectation d'entité et de droits à partir de l'annuaire";
 $LANG["rulesengine"][20]="suppression d'une règle";
 $LANG["rulesengine"][21]="Ajout d'une règle";
 $LANG["rulesengine"][22]="Assigner";
