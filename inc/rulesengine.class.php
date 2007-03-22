@@ -234,6 +234,17 @@ class Rule extends CommonDBTM{
 		$this->rule_type=$rule_type;
 	}
 
+	function getTitle()
+	{
+		$this->getExtendedTitle();
+	}
+	
+	function getExtendedTitle()
+	{
+		return "";
+	}
+	
+	
 	/**
 	* Show the rule
 	* @param $target  
@@ -252,6 +263,8 @@ class Rule extends CommonDBTM{
 				$this->getEmpty();
 				$new=true;
 			}
+			
+			$this->getTitle();
 
 			$this->showOnglets($ID, $new,$_SESSION['glpi_onglet'],"rule_type='".$this->rule_type."'");
 			echo "<form name='rule_form'  method='post' action=\"$target\">";
@@ -292,7 +305,7 @@ class Rule extends CommonDBTM{
 
 				} else {
 					echo "<tr><td class='tab_bg_2' align='center' colspan='2'>";
-					echo "<input type='hidden' name='ID' value='".$ID."''";
+					echo "<input type='hidden' name='ID' value='".$ID."'>";
 					echo "<input type='submit' name='update_rule' value=\"" . $LANG["buttons"][7] . "\" class='submit'></td>";
 					echo "<td class='tab_bg_2' align='center' colspan='2'>";
 					echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'></td>";
@@ -934,7 +947,7 @@ class Rule extends CommonDBTM{
 					if ($value) 
 						return $LANG["choice"][1];
 					else
-						$LANG["choice"][0];	
+						return $LANG["choice"][0];	
 				default :
 					return $value;
 					break;
