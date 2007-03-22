@@ -827,7 +827,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-	//echo $QUERY."<br>\n";
+//	echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
@@ -1668,7 +1668,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_docs.name" :
 		case "glpi_ocs_config.name" :
 		case "glpi_entities.name" :
-		case "glpi_entities.completename" :
 			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 			$out.= $data["ITEM_$num"];
 			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
@@ -1679,11 +1678,24 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		break;
 
 
+		case "glpi_entities.completename" :
+			if ($type==ENTITY_TYPE){
+				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+				$out.= $data["ITEM_$num"];
+				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+					$out.= " (".$data["ID"].")";
+				}
+				$out.= "</a>";
+			} else {
+				$out= $data["ITEM_$num"];
+			}
 		case "glpi_contracts.name" :
 			if ($type==CONTRACT_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+					$out.= " (".$data["ID"].")";
+				}
 				$out.= "</a>";
 			} else {
 				$out= $data["ITEM_$num"];
@@ -2003,6 +2015,10 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
 
 	switch ($new_table){
+		case "glpi_entities":
+			return " LEFT JOIN $new_table $AS ON ($rt.FK_entities = $nt.ID) ";
+		break;
+
 		case "glpi_entities_data":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_entities) ";
 		break;

@@ -112,6 +112,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 							||$val["table"]=="glpi_infocoms"
 							||$val["table"]=="glpi_enterprises_infocoms"
 							||$val["table"]=="glpi_dropdown_budget"
+							||$val["table"]=="glpi_entities"
 							||($val["table"]=="glpi_ocs_link"&&$key==101 // auto_update_ocs
 							  )){
 						$newgroup.= "<option value='$key'>".$val["name"]."</option>";
