@@ -56,6 +56,10 @@ class LdapAffectEntityRule extends Rule {
 		$this->addLdapCriteriasToArray();
 	}
 
+	function getExtendedTitle()
+	{
+		return "<br>aaa<br>";
+	}
 
 	function maxActionsCount(){
 		// Unlimited

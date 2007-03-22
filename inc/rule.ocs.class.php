@@ -76,10 +76,10 @@ class OcsRuleCollection extends RuleCollection {
 		//Build the select request
 		foreach ($fields as $field) {
 			switch (strtoupper($field)) {
+				
 				//OCS server ID is provided by extra_params -> get the configuration associated with the ocs server
 				case "OCS_SERVER" :
-					$conf = getOcsConf($this->ocs_server_id);
-					$rule_parameters["OCS_SERVER"] = $conf["name"];
+					$rule_parameters["OCS_SERVER"] = $this->ocs_server_id;
 					break;
 					//TAG and DOMAIN should come from the OCS DB 
 				default :
@@ -104,9 +104,8 @@ class OcsRuleCollection extends RuleCollection {
 		if ($select_sql != "" && $from_sql != "" && $where_sql != "") {
 			//Build the all request
 			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE " . $where_sql . " AND hardware.ID=" . $computer_id;
-
+		
 			checkOCSconnection($this->ocs_server_id);
-			
 			$result = $DBocs->query($sql);
 			$ocs_datas = array ();
 			
@@ -129,7 +128,7 @@ class OcsRuleCollection extends RuleCollection {
 
 		$tables = array();
 		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
-			if ($criteria['table'] != '' && !array_key_exists($criteria["table"],$tables)) {
+			if ((!isset($criteria['virtual']) || !$criteria['virtual']) && $criteria['table'] != '' && !array_key_exists($criteria["table"],$tables)) {
 				$tables[]=$criteria['table'];
 			}
 		}
@@ -141,15 +140,24 @@ class OcsRuleCollection extends RuleCollection {
 		global $RULES_CRITERIAS;
 
 		$fields = array();
-		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+		foreach ($RULES_CRITERIAS[$this->rule_type] as $key => $criteria){
+
+			//If the field is different from the key
+			if (strcasecmp($key,$criteria['field']) != 0)
+				$as = " AS ".$key;
+			else
+				$as ="";
+				
 			//If the field name is not null AND a table name is provided
-			if ($criteria['field'] != ''){
+			if ($criteria['field'] != '' && (!isset($criteria['virtual']) || !$criteria['virtual'])){
 				if ( $criteria['table'] != '') {
-					$fields[]=$criteria['table'].".".$criteria['field'];
+					$fields[]=$criteria['table'].".".$criteria['field'].$as;
 				} else{
-					$fields[]=$criteria['field'];	
+					$fields[]=$criteria['field'].$as;	
 				}
 			}
+			else
+			$fields[]=$criteria['id'];
 		}
 				
 		return $fields;		  
@@ -163,7 +171,7 @@ class OcsRuleCollection extends RuleCollection {
 		$fields = array();
 		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
 			//If the field name is not null AND a table name is provided
-			if ($criteria['linkfield'] != ''){
+			if ( (!isset($criteria['virtual']) || !$criteria['virtual']) && $criteria['linkfield'] != ''){
 				$fields[]=$criteria['table'].".".$criteria['linkfield'];
 			}
 		}	
