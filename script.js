@@ -6,13 +6,13 @@ var marked_row = new Array;
 var timeoutglobalvar;
 
  
-//modifier la propriété display d'un élement
+//modifier la propriï¿½ï¿½display d'un ï¿½ement
 function setdisplay (objet, statut) {
 	var e = objet;
 	if(e.style.display != statut){
 		e.style.display = statut;
-		return true;
 	}
+	return true;
 }
 
 //tester le type de navigateur
@@ -185,10 +185,10 @@ function menuAff(id,idMenu){
 	var m = m.getElementsByTagName('ul');
 	
 	if(isIe()){
-		//masquage des élements select du document
+		//masquage des ï¿½ements select du document
 		if(m){
-			for (var i=1; i<10 ;i++) { //problème dans le listage et le nomage des menus xhtml
-				//listage des éléments li nommés du type smenu + i
+			for (var i=1; i<10 ;i++) { //problï¿½e dans le listage et le nomage des menus xhtml
+				//listage des ï¿½ï¿½ents li nommï¿½ du type smenu + i
 				var e = document.getElementById('menu'+i);
 				if(e){
 					var smenu = e.getElementsByTagName('ul');
