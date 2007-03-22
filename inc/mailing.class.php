@@ -187,7 +187,6 @@ class Mailing
 								if (isset($this->job->fields["computer"])&&$this->job->fields["computer"]>0&&isset($this->job->fields["device_type"])&&$this->job->fields["device_type"]>0){
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
-									print_r($ci);
 									if (isset($ci->obj->fields["FK_users"])&&$ci->obj->fields["FK_users"]>0){
 										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$ci->obj->fields["FK_users"]."')";
 										if ($result2 = $db->query($query2)) {
