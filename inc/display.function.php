@@ -549,7 +549,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0);
 		echo ")</li>\n"; 
 
-		echo "	<li><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2]."','helpdesk','width=750')\" title=\"".$LANG["central"][7]."\" >    ".$LANG["central"][7]."</a></li>\n"; 
+		echo "	<li><a href='http://glpi-project.org/help-central' target='_blank' title=\"".$LANG["central"][7]."\" >    ".$LANG["central"][7]."</a></li>\n"; 
 		echo "	<li> <a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".$LANG["Menu"][11]."\" >".$LANG["Menu"][11]."   </a></li>\n"; 
 		echo "</ul>\n"; 
 		echo "<div class='sep'></div>\n"; 
@@ -877,7 +877,7 @@ function helpHeader($title,$url) {
 		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0);
 		echo ")</li>\n"; 
 
-		echo "	<li><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/help/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."','helpdesk','width=400,height=600,scrollbars=yes')\">    ".$LANG["central"][7]."</a></li>\n"; 
+		echo "	<li><a href='http://glpi-project.org/help-helpdesk' target='_blank' title='".$LANG["central"][7]."'>    ".$LANG["central"][7]."</a></li>\n"; 
 		echo "	<li> <a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".$LANG["Menu"][11]."\" >".$LANG["Menu"][11]."   </a></li>\n"; 
 					
 		echo "</ul>\n"; 
