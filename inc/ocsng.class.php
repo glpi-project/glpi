@@ -232,45 +232,8 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<br />";
 
 		echo "<div align='center'><table class='tab_cadre'>";
-		echo "<tr><th>" . $LANG["ocsconfig"][27] . "</th><th>" . $LANG["ocsconfig"][28] . "</th></tr>";
+		echo "<tr><th>" . $LANG["ocsconfig"][27] . "</th><th>" . $LANG["ocsconfig"][28] . "</th><th>" . $LANG["ocsconfig"][43] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
-
-		
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][20] . " </td><td>";
-		echo "<select name='import_otherserial'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
-		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"otherserial");		
-		echo $listColumnOCS;
-		echo "</select>";
-		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][15] . " </td><td>";
-		echo "<select name='import_location'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
-		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"location");
-		echo $listColumnOCS;
-		echo "</select>";
-		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][35] . " </td><td>";
-		echo "<select name='import_group'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
-		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"FK_groups");
-		echo $listColumnOCS;
-		echo "</select>";
-		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][21] . " </td><td>";
-		echo "<select name='import_contact_num'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
-		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"contact_num");
-		echo $listColumnOCS;
-		echo "</select>";
-		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][88] . " </td><td>";
-		echo "<select name='import_network'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
-		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"network");
-		echo $listColumnOCS;
-		echo "</select>";
-		echo "</td></tr>";
-		
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . " </td><td>";
 		dropdownYesNo("import_general_name", $this->fields["import_general_name"]);
@@ -346,6 +309,44 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][37] . " </td><td>";
 		dropdownYesNo("import_device_ports", $this->fields["import_device_ports"]);
 		echo "</td></tr>";		
+
+		echo "</table></td><td  class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
+
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][20] . " </td><td>";
+		echo "<select name='import_otherserial'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"otherserial");		
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][15] . " </td><td>";
+		echo "<select name='import_location'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"location");
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][35] . " </td><td>";
+		echo "<select name='import_group'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"FK_groups");
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][21] . " </td><td>";
+		echo "<select name='import_contact_num'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"contact_num");
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][88] . " </td><td>";
+		echo "<select name='import_network'>";		echo "<option value=''>" . $LANG["ocsconfig"][11] . "</option>";
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"network");
+		echo $listColumnOCS;
+		echo "</select>";
+		echo "</td></tr>";
+
 
 		echo "</table></td></tr>";
 		echo "</table></div>";

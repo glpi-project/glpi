@@ -986,6 +986,7 @@ $LANG["ocsconfig"][39]="TAG OCS";
 $LANG["ocsconfig"][40]="Nombre d'élements à synchroniser via le cron";
 $LANG["ocsconfig"][41]="Base de registre";
 $LANG["ocsconfig"][42]="Sous réseau";
+$LANG["ocsconfig"][43]="Informations Administratives OCS";
 
 $LANG["pager"][1]="à";
 $LANG["pager"][2]="de";
