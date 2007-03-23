@@ -1204,6 +1204,10 @@ $LANG["rulesengine"][29]="Liste des règles";
 $LANG["rulesengine"][30]="Action"; 
 $LANG["rulesengine"][31]="Règles d'affectation d'un utilisateur à une entité";
 
+$LANG["ruleldap"][1]="des critères LDAP";
+$LANG["ruleldap"][2]="Aucun critère défini";
+$LANG["ruleldap"][3]="Ajout d'un critère LDAP";
+
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";
 $LANG["search"][4]="trié par";

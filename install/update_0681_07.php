@@ -838,16 +838,19 @@ function update0681to07() {
 			$DB->query($query) or die("0.7 add table glpi_rules_ldap_parameters" . $LANG["update"][90] . $DB->error());
 	
 		$query = "INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES 
-					(1, 'Organizational Unit', 'ou', 1),
-					(2, 'Organization', 'o', 1),
-					(3, 'Common Name', 'cn', 1),
-					(4, 'Department Number', 'departmentNumber', 1),
-					(5, 'Email', 'mail', 1),
-					(6, 'Object Class', 'objectclass', 1),
-					(7, 'User ID', 'userid', 1),
-					(8, 'Telephone Number', 'Phone', 1),
-					(9, 'Employee Number', 'employeeNumber', 1),
-					(10, 'Manager', 'manager', 1);";
+					(1, '(LDAP)Organization', 'o', 1),
+					(2, '(LDAP)Common Name', 'cn', 1),
+					(3, '(LDAP)Department Number', 'departmentNumber', 1),
+					(4, '(LDAP)Email', 'mail', 1),
+					(5, 'Object Class', 'objectclass', 1),		
+					(6, '(LDAP)User ID', 'userid', 1),
+					(7, '(LDAP)Telephone Number', 'Phone', 1),
+					(8, '(LDAP)Employee Number', 'employeeNumber', 1),
+					(9, '(LDAP)Manager', 'manager', 1),
+					(10, '(LDAP)DistinguishedName', 'dn', 1),
+					(11, '(AD)DistinguishedName', 'distinguishedName', 1),
+					(12, '(AD)User ID', 'sAMAccountName', 1);";
+					
 		$DB->query($query) or die("0.7 add standard values to glpi_rules_ldap_parameters " . $LANG["update"][90] . $DB->error());
 	
 	}
