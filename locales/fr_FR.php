@@ -1439,6 +1439,9 @@ $LANG["setup"][402]="Port Proxy";
 $LANG["setup"][403]="Utilisateur Proxy";
 $LANG["setup"][404]="Mot de Passe Proxy";
 $LANG["setup"][405]="Logguer les modifications des tickets en ajoutant des suivis";
+$LANG["setup"][406]="Personnalisation";
+$LANG["setup"][407]="Lien Aide Helpdesk";
+$LANG["setup"][408]="Lien Aide Central";
 
 $LANG["setup"][500]="OS Version";
 $LANG["setup"][501]="Service Pack";

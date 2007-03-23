@@ -855,16 +855,16 @@ function update0681to07() {
 	
 	}
 
-	// TODO Split Config -> config general + config entity
-	// TODO Auto assignment profile based on rules
-	// TODO Add default profile to user + update data from preference
+	if (!FieldExists("glpi_config", "helpdeskhelp_url")) {
+		$query = "ALTER TABLE `glpi_config` ADD `helpdeskhelp_url` VARCHAR( 255 ) NULL DEFAULT NULL ";
+		$DB->query($query) or die("0.7 add helpdeskhelp_url in glpi_config" . $LANG["update"][90] . $DB->error());
+	}	
+	if (!FieldExists("glpi_config", "centralhelp_url")) {
+		$query = "ALTER TABLE `glpi_config` ADD `centralhelp_url` VARCHAR( 255 ) NULL DEFAULT NULL ";
+		$DB->query($query) or die("0.7 add centralhelp_url in glpi_config" . $LANG["update"][90] . $DB->error());
+	}	
 
-	// Alter INT fields to not null and default 0 :
-	/* #819 -> clean CommonDBTM update(
-	Need to update fields before.
-	ALTER TABLE `glpi_computers` CHANGE `FK_users` `FK_users` INT( 11 ) NOT NULL DEFAULT '0',
-	CHANGE `FK_groups` `FK_groups` INT( 11 ) NOT NULL DEFAULT '0'
-	......
-	*/
+	// TODO Split Config -> config general + config entity
+	
 } // fin 0.7 #####################################################################################
 ?>
