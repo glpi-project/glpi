@@ -56,11 +56,6 @@ class LdapAffectEntityRule extends Rule {
 		$this->addLdapCriteriasToArray();
 	}
 
-	function getExtendedTitle()
-	{
-		return "<br>aaa<br>";
-	}
-
 	function maxActionsCount(){
 		// Unlimited
 		return 3;
@@ -236,6 +231,20 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	return $ocs_affect_computer_rules;
 }
 
+	function getTitleCriteria($target) {
+		global $LANG,$CFG_GLPI;
+		echo "<div align='center'>"; 
+		echo "<table class='tab_cadrehov'>";
+		echo "<tr  class='tab_bg_2'>";
+		echo "<td width=100%>";
+		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ldap.parameters.php\">".$LANG["setup"][142]." ".$LANG["ruleldap"][1]."</a>";
+		echo "</td></tr>";
+		echo "</table></div><br>";
+
+	}
+
+	function getTitleRule($target) {
+	}
 
 }
 
@@ -253,10 +262,6 @@ class LdapRuleCollection extends RuleCollection {
 		$this->stop_on_first_match=false;
 	}
 
-	function getTitle() {
-		global $LANG;
-		return $LANG["rulesengine"][31];
-	}
 	
 	/**
 	 * Get all the fields needed to perform the rule

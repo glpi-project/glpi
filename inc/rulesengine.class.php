@@ -234,14 +234,8 @@ class Rule extends CommonDBTM{
 		$this->rule_type=$rule_type;
 	}
 
-	function getTitle()
+	function getTitleRule($target)
 	{
-		$this->getExtendedTitle();
-	}
-	
-	function getExtendedTitle()
-	{
-		return "";
 	}
 	
 	
@@ -264,7 +258,7 @@ class Rule extends CommonDBTM{
 				$new=true;
 			}
 			
-			$this->getTitle();
+			$this->getTitleRule($target);
 
 			$this->showOnglets($ID, $new,$_SESSION['glpi_onglet'],"rule_type='".$this->rule_type."'");
 			echo "<form name='rule_form'  method='post' action=\"$target\">";
@@ -351,6 +345,14 @@ class Rule extends CommonDBTM{
 		}
 	}
 	
+	function getTitleAction($target)
+	{
+	}
+
+	function getTitleCriteria($target)
+	{
+	}
+
 	/**
 	 * Get maximum number of Actions of the Rule (0 = unlimited)
 	* @return the maximum number of actions
@@ -369,7 +371,7 @@ class Rule extends CommonDBTM{
 			
 		$canedit = haveRight("config", "w");
 		echo "<form name='actionsform' id='actionsform' method='post' action=\"$target\">";
-			
+		$this->getTitleAction($target);	
 		if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount()) && $canedit){
 			$this->addActionForm();
 		}
@@ -506,6 +508,8 @@ class Rule extends CommonDBTM{
 		$canedit = haveRight("config", "w");
 
 		echo "<form name='criteriasform' id='criteriasform' method='post' action=\"$target\">";
+		
+		$this->getTitleCriteria($target);
 		if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount()) && $canedit){
 			$this->addCriteriaForm();
 		}
