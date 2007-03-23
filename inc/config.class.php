@@ -221,9 +221,10 @@ class Config extends CommonDBTM {
 				echo "<div align='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='4'>" . $LANG["setup"][119] . "</th></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][108] . "</td><td> <input type=\"text\" name=\"num_of_events\" value=\"" . $CFG_GLPI["num_of_events"] . "\"></td>";
-				echo "<td align='center'>" . $LANG["setup"][111] . "</td><td> <input type=\"text\" name=\"list_limit\" value=\"" . $cfg->fields["list_limit"] . "\"></td></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][112] . "</td><td><input type=\"text\" name=\"cut\" value=\"" . $CFG_GLPI["cut"] . "\"></td>";
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][108] . "</td><td> <input size='10' type=\"text\" name=\"num_of_events\" value=\"" . $CFG_GLPI["num_of_events"] . "\"></td>";
+				echo "<td align='center'>" . $LANG["setup"][111] . "</td><td> <input size='10' type=\"text\" name=\"list_limit\" value=\"" . $cfg->fields["list_limit"] . "\"></td></tr>";
+
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][112] . "</td><td><input size='10' type=\"text\" name=\"cut\" value=\"" . $CFG_GLPI["cut"] . "\"></td>";
 			
 				echo "<td align='center'>" . $LANG["setup"][131] . "</td><td>";
 				dropdownInteger('dropdown_limit', $CFG_GLPI["dropdown_limit"], 20, 100);
@@ -294,11 +295,16 @@ class Config extends CommonDBTM {
 				echo "</select>&nbsp;" . $LANG["job"][22];
 				echo "</td></tr>";
 			
+				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][406] . "</strong></td></tr>";
+
 				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][118] . " </td><td colspan='3' align='center'>";
 				echo "<textarea cols='70' rows='4' name='text_login' >";
 				echo $CFG_GLPI["text_login"];
 				echo "</textarea>";
 				echo "</td></tr>";
+
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][407] . "</td><td> <input size='30' type=\"text\" name=\"helpdeskhelp_url\" value=\"" . $CFG_GLPI["helpdeskhelp_url"] . "\"></td>";
+				echo "<td align='center'>" . $LANG["setup"][408] . "</td><td> <input size='30' type=\"text\" name=\"centralhelp_url\" value=\"" . $CFG_GLPI["centralhelp_url"] . "\"></td></tr>";
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["title"][24] . "</strong></td></tr>";
 			
