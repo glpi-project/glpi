@@ -1070,6 +1070,7 @@ function addToOcsArray($glpi_id, $toadd, $field) {
 
 }
 
+
 function ocsEditLock($target, $ID) {
 	global $DB, $LANG, $SEARCH_OPTION;
 
@@ -2081,17 +2082,18 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 
 		if ($cfg_ocs["use_soft_dict"])
 			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, 
-							softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
-							FROM softwares 
-							INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
-							WHERE softwares.HARDWARE_ID='$ocs_id'";
+				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
+				FROM softwares 
+				INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
+				WHERE softwares.HARDWARE_ID='$ocs_id'";
 		else
 			$query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME, 
-						softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
-							FROM softwares 
-							WHERE softwares.HARDWARE_ID='$ocs_id'";
+					softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
+					FROM softwares 
+					WHERE softwares.HARDWARE_ID='$ocs_id'";
 		$already_imported = array ();
 		$result2 = $DBocs->query($query2);
+		$to_add_to_ocs_array=array();
 		if ($DBocs->numrows($result2) > 0)
 			while ($data2 = $DBocs->fetch_array($result2)) {
 				$data2 = clean_cross_side_scripting_deep(addslashes_deep($data2));
@@ -2103,8 +2105,8 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 					if (!in_array($initname, $import_software)) {
 
 						$query_search = "SELECT ID 
-													FROM glpi_software 
-													WHERE name = '" . $name . "' AND FK_entities=".$entity;
+							FROM glpi_software 
+							WHERE name = '" . $name . "' AND FK_entities=".$entity;
 						$result_search = $DB->query($query_search);
 						if ($DB->numrows($result_search) > 0) {
 							$data = $DB->fetch_array($result_search);
@@ -2127,9 +2129,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 						}
 						if ($isNewSoft) {
 							$instID = installSoftware($glpi_id, ocsImportLicense($isNewSoft), '', $dohistory);
-							addToOcsArray($glpi_id, array (
-								$instID => $initname
-							), "import_software");
+							$to_add_to_ocs_array[$instID]=$initname;
 						}
 
 					} else { // Check if software always exists with is real name
@@ -2138,10 +2138,10 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 						unset ($import_software[$id]);
 
 						$query_name = "SELECT glpi_software.ID as ID , glpi_software.name AS NAME 
-													FROM glpi_inst_software 
-													LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) 
-													LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
-													WHERE glpi_inst_software.ID='$id' AND glpi_software.FK_entity=".$entity;
+								FROM glpi_inst_software 
+								LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) 
+								LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
+								WHERE glpi_inst_software.ID='$id' AND glpi_software.FK_entity=".$entity;
 						$result_name = $DB->query($query_name);
 						if ($DB->numrows($result_name) == 1) {
 							if ($DB->result($result_name, 0, "NAME") != $name) {
@@ -2159,6 +2159,11 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 					}
 				}
 			}
+
+
+		if (count($to_add_to_ocs_array)){
+			addToOcsArray($glpi_id, $to_add_to_ocs_array, "import_software");
+		}
 
 		// Disconnect Unexisting Items not found in OCS
 		if (count($import_software)) {
@@ -2180,8 +2185,8 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 							$lic=new License;
 							$lic->getfromDB($data['license']);
 							$query3 = "SELECT COUNT(*) 
-															FROM glpi_licenses 
-															WHERE sID='" . $lic->fields['sID'] . "'";
+									FROM glpi_licenses 
+									WHERE sID='" . $lic->fields['sID'] . "'";
 							$result3 = $DB->query($query3);
 							if ($DB->result($result3, 0, 0) == 1) {
 								$soft = new Software();
