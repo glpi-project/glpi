@@ -104,7 +104,7 @@ class Software extends CommonDBTM {
 
 		return $input;
 	}
-	function postAddItem($newID, $input) {
+	function post_addItem($newID, $input) {
 		global $DB;
 		// ADD Infocoms
 		$ic = new Infocom();
@@ -404,7 +404,7 @@ class License extends CommonDBTM {
 		return $input;
 	}
 
-	function postAddItem($newID, $input) {
+	function post_addItem($newID, $input) {
 		// Add license but not for unglobalize system
 		if (!isset ($input["_duplicate_license"]) && $input['oem'] && $input['oem_computer'] > 0)
 			installSoftware($input['oem_computer'], $newID);

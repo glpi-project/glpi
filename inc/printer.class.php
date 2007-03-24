@@ -97,7 +97,7 @@ class Printer  extends CommonDBTM {
 		return $input;
 	}
 
-	function postAddItem($newID,$input) {
+	function post_addItem($newID,$input) {
 		global $DB;
 
 		// ADD Infocoms

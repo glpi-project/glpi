@@ -97,7 +97,7 @@ class Monitor extends CommonDBTM {
 	}
 
 
-	function postAddItem($newID,$input) {
+	function post_addItem($newID,$input) {
 		global $DB;
 
 		// ADD Infocoms

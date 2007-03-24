@@ -114,7 +114,7 @@ class Computer extends CommonDBTM {
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
-		global $DB;
+		global $DB,$LANG;
 		// Manage changes for OCS if more than 1 element (date_mod)
 		// Need dohistory==1 if dohistory==2 no locking fields
 		if ($this->fields["ocs_import"]&&$history==1&&count($updates)>1){
@@ -125,95 +125,6 @@ class Computer extends CommonDBTM {
 			$query="UPDATE glpi_ocs_link SET auto_update='".$input["_auto_update_ocs"]."' 	WHERE glpi_id='".$input["ID"]."'";
 			$DB->query($query);
 		}
-	}
-
-	function prepareInputForAdd($input) {
-		// set new date.
-		$input["date_mod"] = $_SESSION["glpi_currenttime"];
-
-		// dump status
-		$input["_oldID"]=$input["ID"];
-		unset($input['withtemplate']);
-		unset($input['ID']);
-
-		return $input;
-	}
-
-	function postAddItem($newID,$input) {
-		global $DB;
-
-		// ADD Devices
-		$this->getFromDBwithDevices($input["_oldID"]);
-		foreach($this->devices as $key => $val) {
-			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
-		}
-
-		// ADD Infocoms
-		$ic= new Infocom();
-		if ($ic->getFromDBforDevice(COMPUTER_TYPE,$input["_oldID"])){
-			$ic->fields["FK_device"]=$newID;
-			unset ($ic->fields["ID"]);
-			if (isset($ic->fields["num_immo"])) {
-				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
-			}
-			$ic->addToDB();
-		}
-
-		// ADD software
-		$query="SELECT license from glpi_inst_software WHERE cID='".$input["_oldID"]."'";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result))
-				installSoftware($newID,$data['license']);
-		}
-
-		// ADD Contract				
-		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result))
-				addDeviceContract($data["FK_contract"],COMPUTER_TYPE,$newID);
-		}
-
-		// ADD Documents			
-		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result))
-				addDeviceDocument($data["FK_doc"],COMPUTER_TYPE,$newID);
-		}
-
-		// ADD Ports
-		$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result)){
-				$np= new Netport();
-				$np->getFromDB($data["ID"]);
-				unset($np->fields["ID"]);
-				unset($np->fields["ifaddr"]);
-				unset($np->fields["ifmac"]);
-				unset($np->fields["netpoint"]);
-				$np->fields["on_device"]=$newID;
-				$np->addToDB();
-			}
-		}
-
-		// Add connected devices
-		$query="SELECT * from glpi_connect_wire WHERE end2='".$input["_oldID"]."';";
-
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result)){
-				Connect($data["end1"],$newID,$data["type"]);
-			}
-		}
-
-	}
-
-	function post_updateInDB($updates)  {
-		global $DB,$LANG;
-
 
 		for ($i=0; $i < count($updates); $i++) {
 
@@ -334,8 +245,92 @@ class Computer extends CommonDBTM {
 		}
 
 
+
 	}
 
+	function prepareInputForAdd($input) {
+		// set new date.
+		$input["date_mod"] = $_SESSION["glpi_currenttime"];
+
+		// dump status
+		$input["_oldID"]=$input["ID"];
+		unset($input['withtemplate']);
+		unset($input['ID']);
+
+		return $input;
+	}
+
+	function post_addItem($newID,$input) {
+		global $DB;
+
+		// ADD Devices
+		$this->getFromDBwithDevices($input["_oldID"]);
+		foreach($this->devices as $key => $val) {
+			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
+		}
+
+		// ADD Infocoms
+		$ic= new Infocom();
+		if ($ic->getFromDBforDevice(COMPUTER_TYPE,$input["_oldID"])){
+			$ic->fields["FK_device"]=$newID;
+			unset ($ic->fields["ID"]);
+			if (isset($ic->fields["num_immo"])) {
+				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+			}
+			$ic->addToDB();
+		}
+
+		// ADD software
+		$query="SELECT license from glpi_inst_software WHERE cID='".$input["_oldID"]."'";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			while ($data=$DB->fetch_array($result))
+				installSoftware($newID,$data['license']);
+		}
+
+		// ADD Contract				
+		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			while ($data=$DB->fetch_array($result))
+				addDeviceContract($data["FK_contract"],COMPUTER_TYPE,$newID);
+		}
+
+		// ADD Documents			
+		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			while ($data=$DB->fetch_array($result))
+				addDeviceDocument($data["FK_doc"],COMPUTER_TYPE,$newID);
+		}
+
+		// ADD Ports
+		$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			while ($data=$DB->fetch_array($result)){
+				$np= new Netport();
+				$np->getFromDB($data["ID"]);
+				unset($np->fields["ID"]);
+				unset($np->fields["ifaddr"]);
+				unset($np->fields["ifmac"]);
+				unset($np->fields["netpoint"]);
+				$np->fields["on_device"]=$newID;
+				$np->addToDB();
+			}
+		}
+
+		// Add connected devices
+		$query="SELECT * from glpi_connect_wire WHERE end2='".$input["_oldID"]."';";
+
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			while ($data=$DB->fetch_array($result)){
+				Connect($data["end1"],$newID,$data["type"]);
+			}
+		}
+
+	}
 
 	function cleanDBonPurge($ID) {
 		global $DB,$CFG_GLPI;
@@ -640,9 +635,9 @@ class Computer extends CommonDBTM {
 					echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
 					echo "<input type='hidden' name='ID' value=$ID>";
 					echo "<div align='center'>";
-					if (!$this->fields["deleted"])
+					if (!$this->fields["deleted"]){
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-					else {
+					 }else {
 						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
 
 						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>";

@@ -75,6 +75,15 @@ class User extends CommonDBTM {
 
 		return $ong;
 	}
+	function cleanDBonMarkDeleted($ID) {
+
+		global $DB;
+
+		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
+		$DB->query($query);
+
+	}
+
 	function cleanDBonPurge($ID) {
 
 		global $DB;
@@ -82,9 +91,6 @@ class User extends CommonDBTM {
 		// Tracking items left?
 		$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
 		$DB->query($query3);
-
-		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
-		$DB->query($query);
 
 		$query = "DELETE from glpi_users_groups WHERE FK_users = '$ID'";
 		$DB->query($query);
@@ -135,7 +141,7 @@ class User extends CommonDBTM {
 		return $input;
 	}
 
-	function postAddItem($newID, $input) {
+	function post_addItem($newID, $input) {
 		$prof = new Profile();
 
 		$input["ID"]=$newID;
@@ -725,7 +731,14 @@ class User extends CommonDBTM {
 					echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit' >";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
-					echo "<input type='submit' name='delete' onclick=\"return confirm('" . $LANG["common"][50] . "')\" value=\"" . $LANG["buttons"][6] . "\" class='submit' >";
+					if (!$this->fields["deleted"]){
+						echo "<input type='submit' name='delete' onclick=\"return confirm('" . $LANG["common"][50] . "')\" value=\"".$LANG["buttons"][6]."\" class='submit'>";
+					 }else {
+						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>";
+					}
+
 					echo "</td>";
 					echo "</tr>";
 				}

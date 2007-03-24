@@ -476,7 +476,7 @@ class Job extends CommonDBTM{
 		return $input;
 	}
 
-	function postAddItem($newID,$input) {
+	function post_addItem($newID,$input) {
 		global $LANG,$CFG_GLPI;
 
 		// add Document if exists
@@ -744,27 +744,6 @@ class Followup  extends CommonDBTM {
 		$this->type=-1;
 	}
 
-
-	function post_addToDB(){
-
-		if (isset($this->fields["realtime"])&&$this->fields["realtime"]>0) {
-			$job=new Job();
-			$job->getfromDB($this->fields["tracking"]);
-			$job->updateRealTime();
-		}
-	}
-
-	function post_updateInDB($updates)  {
-
-		for ($i=0; $i < count($updates); $i++) {
-			if ($updates[$i]=="realtime") {
-				$job=new Job();
-				$job->getFromDB($this->fields["tracking"]);
-				$job->updateRealTime();
-			}
-		}
-	}
-
 	function cleanDBonPurge($ID) {
 		global $DB;
 		$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '$ID'";
@@ -796,6 +775,11 @@ class Followup  extends CommonDBTM {
 			$mail = new Mailing("followup",$job,$user);
 			$mail->send();
 		}
+
+		if (in_array("realtime",$updates)) {
+			$job->updateRealTime();
+		}
+
 	}
 
 	function prepareInputForAdd($input) {
@@ -843,8 +827,15 @@ class Followup  extends CommonDBTM {
 		return $input;
 	}
 
-	function postAddItem($newID,$input) {
+	function post_addItem($newID,$input) {
 		global $CFG_GLPI;
+
+		if (isset($input["realtime"])&$input["realtime"]>0) {
+			$job=new Job();
+			$job->getfromDB($input["tracking"]);
+			$job->updateRealTime();
+		}
+
 
 		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
 			if (isset($input["_plan"])){
