@@ -8,6 +8,6 @@ then
   exit 1
 fi
 
-php -d -f ocsng_fullsync.php >> ocsng_full.log 
+php -d -f ocsng_fullsync.php >> ocsng_fullsync.log 
 
 rm -f $LOCK_ROOT/ocsng_full.lock

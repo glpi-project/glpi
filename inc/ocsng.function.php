@@ -2099,6 +2099,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 				$data2 = clean_cross_side_scripting_deep(addslashes_deep($data2));
 				$initname = $data2["INITNAME"];
 				$name = $data2["NAME"];
+				$version = $data2["VERSION"];
 				// Import Software
 				if (!in_array($name, $already_imported)) { // Manage multiple software with the same name = only one install
 					$already_imported[] = $name;
@@ -2106,7 +2107,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 
 						$query_search = "SELECT ID 
 							FROM glpi_software 
-							WHERE name = '" . $name . "' AND FK_entities=".$entity;
+							WHERE name = '" . $name . "' AND version='".$version."' AND FK_entities=".$entity;
 						$result_search = $DB->query($query_search);
 						if ($DB->numrows($result_search) > 0) {
 							$data = $DB->fetch_array($result_search);
@@ -2141,7 +2142,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 								FROM glpi_inst_software 
 								LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) 
 								LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
-								WHERE glpi_inst_software.ID='$id' AND glpi_software.FK_entity=".$entity;
+								WHERE glpi_inst_software.ID='$id' AND glpi_software.FK_entities=".$entity;
 						$result_name = $DB->query($query_name);
 						if ($DB->numrows($result_name) == 1) {
 							if ($DB->result($result_name, 0, "NAME") != $name) {
@@ -2554,7 +2555,11 @@ function checkOCSconnection($ocs_server_id)
 	// --> reinitialize connection to OCS server 
 	if (!$DBocs || $ocs_server_id != $DBocs->getServerID())
 		$DBocs = getDBocs($ocs_server_id);
-		
+	
+	if ($DBocs->error)
+		return false;
+	else
+		return true;		
 }
 /**
  * Get the ocs server id of a machine, by giving the machine id

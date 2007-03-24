@@ -51,11 +51,14 @@ include (GLPI_ROOT."/inc/includes.php");
 
 if (isset($_GET["ocs_server_id"])) 
 {
-	checkOCSconnection($_GET["ocs_server_id"]);
-	echo "import computers from server : ".$_GET["ocs_server_id"]."\n";
-	$cfg_ocs=getOcsConf($_GET["ocs_server_id"]);
-	ocsManageDeleted($_GET["ocs_server_id"]);
-	importFromOcsServer($cfg_ocs);
+	if (checkOCSconnection($_GET["ocs_server_id"]))
+	{
+			echo "import computers from server : ".$_GET["ocs_server_id"]."\n";
+			$cfg_ocs=getOcsConf($_GET["ocs_server_id"]);
+			ocsManageDeleted($_GET["ocs_server_id"]);
+			importFromOcsServer($cfg_ocs,$start,$stop);
+	}
+		echo "cannot contact server\n";
 }
 else
 {
@@ -63,21 +66,26 @@ else
 	$result = $DB->query($query);
 	while ($ocs_server = $DB->fetch_array($result))
 	{
-		checkOCSconnection($ocs_server["ID"]);
-		echo "import computers from server : ".$ocs_server["name"]."\n";
-		$cfg_ocs=getOcsConf($ocs_server["ID"]);
-		ocsManageDeleted($ocs_server["ID"]);
-		importFromOcsServer($cfg_ocs);
+		if (checkOCSconnection($ocs_server["ID"]))
+		{
+			echo "import computers from server : ".$ocs_server["name"]."\n";
+			$cfg_ocs=getOcsConf($ocs_server["ID"]);
+			ocsManageDeleted($ocs_server["ID"]);
+			importFromOcsServer($cfg_ocs);
+			echo "done\n";
+		}
+		else
+			echo "cannot contact server : ".$ocs_server["name"]."\n";
 	}
 }
 
-echo "done\n";
+echo "done !!\n";
 
 function importFromOcsServer($cfg_ocs)
 {
 	global $DBocs;
-	
 	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0";
+	
 	$result_ocs = $DBocs->query($query_ocs);
 	while($data=$DBocs->fetch_array($result_ocs)){
 		ocsImportComputer($data["ID"],$cfg_ocs["ID"]);

@@ -603,11 +603,15 @@ class Computer extends CommonDBTM {
 						else
 							echo $LANG["common"][52]." ".getOCSServerNameByID($ID);						
 						echo "</td>";
-						echo "<td >".$LANG["ocsng"][6]." ".$LANG["Menu"][33].": 	</td>";
-						echo "<td >";
-						dropdownYesNo("_auto_update_ocs",$data["auto_update"]);
-						echo "</td>";
-	
+						if (haveRight("ocsng","w"))
+						{
+							echo "<td >".$LANG["ocsng"][6]." ".$LANG["Menu"][33].": 	</td>";
+							echo "<td >";
+							dropdownYesNo("_auto_update_ocs",$data["auto_update"]);
+							echo "</td>";
+						}
+						else
+								echo "<td colspan=2></td>";
 						echo "</tr>";
 					}
 				}
