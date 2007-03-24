@@ -75,6 +75,21 @@ if (isset($_POST["add"])) {
 	$user->delete($_POST);
 	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$LANG["log"][22]." ".$_POST["ID"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+} else if (isset($_POST["restore"]))
+{
+	checkRight("user","w");
+	$user->restore($_POST);
+	logEvent($tab["ID"],"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+}
+else if (isset($_POST["purge"]))
+{
+	checkRight("user","w");
+	$user->delete($_POST,1);
+	
+	logEvent($tab["ID"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
+
 } else if (isset ($_POST["force_ldap_resynch"]))
 {
 	checkRight("user","w");

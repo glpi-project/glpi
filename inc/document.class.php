@@ -105,7 +105,7 @@ class Document extends CommonDBTM {
 		}
 	}
 
-	function postAddItem($newID,$input) {
+	function post_addItem($newID,$input) {
 		global $LANG;
 		if (isset($input["item"])&&isset($input["type"])&&$input["item"]>0&&$input["type"]>0){
 			$template=0;

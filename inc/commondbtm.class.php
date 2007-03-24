@@ -35,15 +35,32 @@ if (!defined('GLPI_ROOT')){
 // Common DataBase Table Manager Class
 class CommonDBTM {
 
+	// Data of the Item
 	var $fields	= array();
+	// Table name
 	var $table="";
+	// GLPI Item type
 	var $type=-1;
+	// Make an history of the changes
 	var $dohistory=false;
 
+	/**
+	 * Constructor
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function CommonDBTM () {
 
 	}
 
+	/**
+	 * Clean cache used by the item $ID
+	 *
+	 *@param $ID ID of the item
+	 *@return nothing
+	 *
+	 **/
 	function cleanCache($ID){
 		global $CFG_GLPI;
 		cleanAllItemCache($ID,"GLPI_".$this->type);
@@ -52,6 +69,13 @@ class CommonDBTM {
 		cleanRelationCache($this->table);
 	}
 
+	/**
+	 * Retrieve an item from the database
+	 *
+	 *@param $ID ID of the item to get
+	 *@return true if succeed else false
+	 *
+	 **/
 	// Specific ones : Reservation Item
 	function getFromDB ($ID) {
 
@@ -75,9 +99,21 @@ class CommonDBTM {
 		return true;
 
 	}
+	/**
+	 * Get the name of the index field
+	 *
+	 *@return name of the index field
+	 *
+	 **/
 	function getIndexName(){
 		return "ID";
 	}
+	/**
+	 * Get an empty item
+	 *
+	 *@return true if succeed else false
+	 *
+	 **/
 	function getEmpty () {
 		//make an empty database object
 		global $DB;
@@ -92,9 +128,20 @@ class CommonDBTM {
 		$this->post_getEmpty();
 		return true;
 	}
+	/**
+	 * Actions done at the end of the getEmpty function
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function post_getEmpty () {
 	}
-
+	/**
+	 * Update the item in the database
+	 * 
+	 *@return nothing
+	 *
+	 **/
 	function updateInDB($updates)  {
 
 		global $DB,$CFG_GLPI;
@@ -116,16 +163,16 @@ class CommonDBTM {
 			$result=$DB->query($query);
 	
 		}
-		$this->post_updateInDB($updates);
 		$this->cleanCache($this->fields["ID"]);
 		return true;
 	}
 
-
-	function post_updateInDB($updates)  {
-
-	}
-
+	/**
+	 * Add an item to the database
+	 *
+	 *@return new ID of the item is insert successfull else false
+	 *
+	 **/
 	function addToDB() {
 
 		global $DB;
@@ -159,7 +206,6 @@ class CommonDBTM {
 
 			if ($result=$DB->query($query)) {
 				$this->fields["ID"]=$DB->insert_id();
-				$this->post_addToDB();
 				cleanRelationCache($this->table);
 				return $this->fields["ID"];
 			} else {
@@ -168,10 +214,15 @@ class CommonDBTM {
 		} else return false;
 	}
 
-	function post_addToDB(){
-
-	}
-
+	/**
+	 * Restore item = set deleted flag to 0
+	 *
+	 *@param $ID ID of the item
+	 *
+	 *
+	 *@return true if succeed else false
+	 *
+	 **/
 	function restoreInDB($ID) {
 		global $DB,$CFG_GLPI;
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
@@ -183,6 +234,16 @@ class CommonDBTM {
 			}
 		} else return false;
 	}
+	/**
+	 * Mark deleted or purge an item in the database
+	 *
+	 *@param $ID ID of the item
+	 *@param $force force the purge of the item (not used if the table do not have a deleted field)
+	 *
+	 *@return true if succeed else false
+	 *
+	 **/
+
 	function deleteFromDB($ID,$force=0) {
 
 		global $DB,$CFG_GLPI;
@@ -204,6 +265,8 @@ class CommonDBTM {
 			}
 		}else {
 			$query = "UPDATE ".$this->table." SET deleted='1' WHERE ".$this->getIndexName()." = '$ID'";		
+			$this->cleanDBonMarkDeleted($ID);
+
 			if ($result = $DB->query($query)){
 				$this->cleanCache($ID);
 				return true;
@@ -211,6 +274,15 @@ class CommonDBTM {
 		}
 	}
 
+	/**
+	 * Clean data in the tables which have linked the deleted item
+	 *
+	 *@param $ID ID of the item
+	 *
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function cleanRelationData($ID){
 		global $DB;
 		$RELATION=getDbRelations();
@@ -219,17 +291,40 @@ class CommonDBTM {
 				$query="UPDATE $tablename SET $field = 0 WHERE $field=$ID ";
 				$DB->query($query);
 			}
+		}
 	}
-
-
-
-	}
+	/**
+	 * Actions done after the DELETE of the item in the database
+	 *
+	 *@param $ID ID of the item
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function post_deleteFromDB($ID){
 	}
 
+	/**
+	 * Actions done when item is deleted from the database
+	 *
+	 *@param $ID ID of the item
+	 *
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function cleanDBonPurge($ID) {
 	}
-
+	/**
+	 * Actions done when item flag deleted is set to an item
+	 *
+	 *@param $ID ID of the item
+	 *
+	 *@return nothing
+	 *
+	 **/
+	function cleanDBonMarkDeleted($ID) {
+	}
 	// Common functions
 
 	/**
@@ -260,7 +355,7 @@ class CommonDBTM {
 			}
 
 			if ($newID= $this->addToDB()){
-				$this->postAddItem($newID,$input);
+				$this->post_addItem($newID,$input);
 				do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
 				return $newID;
 			} else return false;
@@ -268,11 +363,19 @@ class CommonDBTM {
 		} else return false;
 	}
 
+	/**
+	 * Prepare input datas for adding the item
+	 *
+	 *@param $input datas used to add the item
+	 *
+	 *@return the modified $input array
+	 *
+	 **/
 	function prepareInputForAdd($input) {
 		return $input;
 	}
 
-	function postAddItem($newID,$input) {
+	function post_addItem($newID,$input) {
 	}
 
 

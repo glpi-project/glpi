@@ -1,4 +1,4 @@
-#GLPI Dump database on 2007-03-23 19:13
+#GLPI Dump database on 2007-03-24 19:03
 
 ### Dump table glpi_alerts
 
@@ -1305,7 +1305,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`(200))
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-03-23 19:13:30','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-03-24 19:03:28','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2388,6 +2388,7 @@ CREATE TABLE `glpi_users` (
   `auth_method` int(11) NOT NULL default '-1',
   `last_login` datetime NOT NULL default '0000-00-00 00:00:00',
   `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `deleted` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`name`(80)),
   KEY `name_2` (`name`(80)),
@@ -2396,11 +2397,11 @@ CREATE TABLE `glpi_users` (
   KEY `realname` (`realname`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'0','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR',NULL,'-1','1','2007-03-23 19:13:30','2007-03-23 19:13:30');
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00');
+INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'0','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR',NULL,'-1','1','2007-03-24 19:03:28','2007-03-24 19:03:28','0');
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
 
 ### Dump table glpi_users_groups
 

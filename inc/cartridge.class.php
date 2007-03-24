@@ -291,7 +291,7 @@ class Cartridge extends CommonDBTM {
 				"date_in"=>date("Y-m-d"));
 	}
 
-	function postAddItem($newID,$input) {
+	function post_addItem($newID,$input) {
 		// Add infocoms if exists for the licence
 		$ic=new Infocom();
 
