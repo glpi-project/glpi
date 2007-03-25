@@ -56,8 +56,17 @@ function showReservationForm($device_type,$id_device){
 
 
 	if ($resaID=isReservable($device_type,$id_device)) {
-		// Supprimer le materiel
-		echo "<br><div><a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG["reservation"][6]."</a></div>";	
+		$ri=new ReservationItem;
+		$ri->getFromDB($resaID);
+		
+		// Supprimer le materiel$LANG["reservation"][3]
+		echo "<br><div>";
+		if ($ri->fields["active"]){
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;active=0\" class='icon_consol'>".$LANG["reservation"][3]."</a>";
+		} else {
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;active=1\" class='icon_consol'>".$LANG["reservation"][5]."</a>";
+		}
+		echo "&nbsp;&nbsp;&nbsp;<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG["reservation"][6]."</a></div>";	
 
 	}else {
 		echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
@@ -98,8 +107,21 @@ function printCalendrier($target,$ID=""){
 	if (!empty($ID)){
 		$m=new ReservationItem;
 		$m->getfromDB($ID);
+		if (!$m->fields['active']){
+			echo "<div align='center'><strong>";
+			echo $LANG["reservation"][2]."<br><a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+			echo "</strong></div>";
+			return false;
+		}
 		$ci=new CommonItem();
 		$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
+		
+		if (!haveAccessToEntity($ci->getField('FK_entities'))){
+			echo "<div align='center'><strong>";
+			echo $LANG["common"][54]."<br><a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+			echo "</strong></div>";
+			return false;
+		}
 		$type=$ci->getType();
 		$name=$ci->getName();
 		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG["reservation"][26]."</a>";
@@ -367,7 +389,7 @@ function printReservation($target,$ID,$date){
 		$fin=$date." 23:59:59";
 
 		$query = "SELECT DISTINCT glpi_reservation_item.ID FROM glpi_reservation_item INNER JOIN glpi_reservation_resa ON (glpi_reservation_item.ID = glpi_reservation_resa.id_item )".
-			" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) ORDER BY begin";
+			" WHERE active='1' AND (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) ORDER BY begin";
 		//echo $query;
 		$result=$DB->query($query);
 
@@ -447,39 +469,55 @@ function printReservationItem($target,$ID,$date){
 
 
 function printReservationItems($target){
-	global $DB,$LANG;
+	global $DB,$LANG,$LINK_ID_TABLE,$CFG_GLPI;
 
 	if (!haveRight("reservation_helpdesk","1")) return false;
 
 	$ri=new ReservationItem;
 	$ci=new CommonItem();
+	$ok=false;
+	$showentity=false;
+	if (count($_SESSION['glpiactiveentities'])>1){
+		$showentity=true;
+	}
+	echo "<div align='center'><form name='form' method='get' action='$target'><table class='tab_cadre' cellpadding='5'>";
+	echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG["reservation"][1]."</th></tr>";
+
+	
+	foreach ($CFG_GLPI["reservation_types"] as $type){
+		$ci->setType($type);
+		$query="SELECT glpi_reservation_item.ID as ID, glpi_reservation_item.comments as comments, 
+				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".FK_entities as FK_entities, glpi_dropdown_locations.completename as location	
+			FROM glpi_reservation_item 
+			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservation_item.device_type='$type' AND glpi_reservation_item.id_device=".$LINK_ID_TABLE[$type].".ID)
+			LEFT JOIN glpi_dropdown_locations ON (".$LINK_ID_TABLE[$type].".location = glpi_dropdown_locations.ID)
+			WHERE glpi_reservation_item.active='1' AND ".$LINK_ID_TABLE[$type].".deleted ='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type])." ORDER BY ".$LINK_ID_TABLE[$type].".FK_entities, ".$LINK_ID_TABLE[$type].".name";
 
 
-	$query="select ID from glpi_reservation_item ORDER BY device_type";
-
-	if ($result = $DB->query($query)) {
+		if ($result = $DB->query($query)) {
 		
-		echo "<div align='center'><form name='form' method='get' action='$target'><table class='tab_cadre' cellpadding='5'>";
-		echo "<tr><th colspan='4'>".$LANG["reservation"][1]."</th></tr>";
-		while ($row=$DB->fetch_array($result)){
-			$ri->getfromDB($row['ID']);
-			$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
-
-			if (!$ci->getField('deleted')){
+			while ($row=$DB->fetch_array($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><input type='checkbox' name='add_item[".$row["ID"]."]' value='".$row["ID"]."' ></td>";
-				echo "<td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ci->getType()." - ".$ci->getName()."</a></td>";
-				echo "<td>".getDropdownName('glpi_dropdown_locations',$ci->getField('location'))."</td>";
-				echo "<td>".nl2br($ri->fields["comments"])."</td>";
+				echo "<td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ci->getType()." - ".$row["name"]."</a></td>";
+				echo "<td>".$row["location"]."</td>";
+				echo "<td>".nl2br($row["comments"])."</td>";
+				if ($showentity){
+					echo "<td>".getDropdownName("glpi_entities",$row["FK_entities"])."</td>";
+				}
 				echo "</tr>";
+				$ok=true;
 			}
 		}
-		echo "<tr class='tab_bg_1' align='center'><td colspan='4'><input type='submit' value=\"".$LANG["buttons"][8]."\" class='submit' ></td></tr>";
+	}
+	if ($ok){
+		echo "<tr class='tab_bg_1' align='center'><td colspan='".($showentity?"5":"4")."'><input type='submit' value=\"".$LANG["buttons"][8]."\" class='submit' ></td></tr>";
+	}
 		echo "</table>";
 		echo "<input type='hidden' name='show' value='resa'>";
 		echo "</form></div>";
 
-	}
+	
 }
 
 
@@ -535,13 +573,21 @@ function showDeviceReservations($target,$type,$ID){
 	echo "<br>";
 
 	if ($resaID=isReservable($type,$ID)){
+		$ri=new ReservationItem;
+		$ri->getFromDB($resaID);
 
 		$now=$_SESSION["glpi_currenttime"];
 		// Print reservation in progress
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
 		$result=$DB->query($query);
 
-		echo "<table class='tab_cadrehov'><tr><th colspan='5'><a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][35]."</a></th></tr>";
+		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
+		if ($ri->fields["active"]){
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][35]."</a>";
+		} else {
+			echo $LANG["reservation"][35];
+		}
+		echo "</th></tr>";
 		if ($DB->numrows($result)==0){	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
 		} else {
@@ -569,7 +615,15 @@ function showDeviceReservations($target,$type,$ID){
 		$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_item='$resaID' ORDER BY begin DESC";
 		$result=$DB->query($query);
 
-		echo "<table class='tab_cadrehov'><tr><th colspan='5'><a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][36]."</a></th></tr>";
+		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
+
+		if ($ri->fields["active"]){
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][36]."</a>";
+		} else {
+			echo $LANG["reservation"][36];
+		}
+
+		echo "</th></tr>";
 		if ($DB->numrows($result)==0){	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
 		} else {

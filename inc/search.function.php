@@ -465,6 +465,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if ($itemtable=="glpi_cartridges_type"||$itemtable=="glpi_consumables_type"){
 		$SELECT.=$itemtable.".alarm as ALARM, ";
 	}
+	if ($type==RESERVATION_TYPE){
+		$SELECT.="glpi_reservation_item.active as ACTIVE, ";
+	}
 
 	//// 2 - FROM AND LEFT JOIN
 	// Set reference table
@@ -792,7 +795,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
-	
+
 	// Create QUERY
 	if (isset($CFG_GLPI["union_search_type"][$type])){
 		$first=true;
@@ -827,7 +830,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-//	echo $QUERY."<br>\n";
+	//echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
@@ -935,6 +938,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($type==RESERVATION_TYPE){
 				if (haveRight("reservation_central","w")){
 					echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
+					echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
 				}
 				echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
 			}
@@ -1019,9 +1023,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				}	
 				if ($type==RESERVATION_TYPE){
 					if (haveRight("reservation_central","w")){
-						echo displaySearchHeaderItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$header_num);
+						if ($data["ACTIVE"]){
+							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=0\"  title='".$LANG["buttons"][42]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
+						} else {
+							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=1\"  title='".$LANG["buttons"][41]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
+						}
+
+						echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
 					}
-					echo displaySearchHeaderItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$header_num);
+					if ($data["ACTIVE"]){
+						echo displaySearchItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
+					} else {
+						echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
+					}
 				}
 				// End Line
 				echo displaySearchEndLine($output_type);

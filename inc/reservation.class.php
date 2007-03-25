@@ -56,7 +56,10 @@ class ReservationItem extends CommonDBTM {
 		$query2 = "DELETE FROM glpi_reservation_resa WHERE (id_item = '$ID')";
 		$result2 = $DB->query($query2);
 	}
-
+	function prepareInputForAdd($input) {
+		$input['active']=1;
+		return $input;
+	}
 }
 
 class ReservationResa extends CommonDBTM {
