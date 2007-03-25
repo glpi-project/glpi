@@ -89,7 +89,7 @@ class LdapCriteria extends CommonDBTM {
 		else
 		{
 		echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["common"][53]." ".$LANG["ruleldap"][1] . "</th></tr>";
-
+		echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" .  $LANG["common"][16]."</td><td class='tab_bg_2'>".$LANG["setup"][601] . "</td></tr>";
 
 			foreach ($parameters as $parameter) {
 				echo "<tr class='tab_bg_1'>";

@@ -94,6 +94,10 @@ elseif (isset($tab["update_rule"]))
 {
 	$rule->add($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
+} elseif (isset($tab["delete_rule"]))
+{
+	$rule->delete($tab);
+	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");
 }
 
 
