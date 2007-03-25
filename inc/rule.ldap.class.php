@@ -246,6 +246,11 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	function getTitleRule($target) {
 	}
 
+	function getTitle()
+	{
+		global $LANG;
+		return $LANG["entity"][6];
+	}
 }
 
 
@@ -339,7 +344,7 @@ class LdapRuleCollection extends RuleCollection {
 								}
 						}
 				}
-
+				print_r($rule_parameters);
 				return $rule_parameters;
 		}
 		else return $rule_input;

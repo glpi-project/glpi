@@ -41,10 +41,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulesengine"][17]);
 
-	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/logoOcs.png\" alt='" . $LANG["ocsng"][0] . "' title='" . $LANG["ocsng"][0] . "' ></td>";
-	echo "</tr></table></div>";
-
 	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 	echo "<tr><th>" . $LANG["rulesengine"][24] . "</th></tr>";
 
