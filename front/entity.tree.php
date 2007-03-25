@@ -55,6 +55,9 @@ else $tomove="";
 if (isset($_GET["type"]))$type=$_GET["type"];
 else if (isset($_POST["type"]))$type=$_POST["type"];
 else $type="";
+if (isset($_GET["value2"]))$value2=$_GET["value2"];
+else if (isset($_POST["value2"]))$value2=$_POST["value2"];
+else $value2="";
 // Selected Item
 if (isset($_POST["ID"])) $ID=$_POST["ID"];
 elseif (isset($_GET["ID"])) $ID=$_GET["ID"];
