@@ -49,11 +49,6 @@ checkCentralAccess();
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config");
 
 
-// titre
-echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/configuration.png\" alt='".$LANG["Menu"][10]."' title='".$LANG["Menu"][10]."' ></td><td><span class='icon_consol'><b>".$LANG["Menu"][10]."</b></span>";
-echo "</td></tr></table></div>";
-
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th colspan='2'>".$LANG["setup"][62]."</th></tr>";
 

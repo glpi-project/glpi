@@ -428,7 +428,7 @@ class Rule extends CommonDBTM{
 		echo "<tr  class='tab_bg_2' align='center'><td>";
 		echo $LANG["rulesengine"][30] . ":";
 		echo "</td><td>";
-		$this->dropdownActions();
+		$val=$this->dropdownActions();
 		echo "</td><td>";
 
 		echo "<script type='text/javascript' >\n";
@@ -441,6 +441,7 @@ class Rule extends CommonDBTM{
 		
 		echo "<span id='action_span'>\n";
 		$_POST["rule_type"]=$this->rule_type;
+		$_POST["field"]=$val;
 		include (GLPI_ROOT."/ajax/ruleaction.php");
 		echo "</span>\n";	
 
@@ -468,7 +469,7 @@ class Rule extends CommonDBTM{
 		echo "<tr class='tab_bg_2' align='center'><td>";
 		echo $LANG["rulesengine"][16] . ":";
 		echo "</td><td>";
-		$this->dropdownCriterias();
+		$val=$this->dropdownCriterias();
 		echo "</td><td>";
 
 		echo "<script type='text/javascript' >\n";
@@ -481,6 +482,7 @@ class Rule extends CommonDBTM{
 		
 		echo "<span id='criteria_span'>\n";
 		$_POST["rule_type"]=$this->rule_type;
+		$_POST["criteria"]=$val;
 		include (GLPI_ROOT."/ajax/rulecriteria.php");
 		echo "</span>\n";	
 
@@ -568,7 +570,7 @@ class Rule extends CommonDBTM{
 		echo "<script type='text/javascript' >\n";
 		echo "document.getElementById('criteria').value='".key($items)."';";
 		echo "</script>\n";
-
+		return key($items);
 	}
 	/**
 	 * Display the dropdown of the actions for the rule

@@ -43,10 +43,6 @@ if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
 if (isset($_SESSION["ldap_sync"])) unset($_SESSION["ldap_sync"]);
 if (isset($_SESSION["ldap_server"])) unset($_SESSION["ldap_server"]);
 
-echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/ldap.png\" alt=\"".$LANG["ldap"][0]."\" title=\"".$LANG["ldap"][0]."\" ><span class='icon_consol'>".$LANG["ldap"][0]."</span></td>";
-echo "</tr></table></div><br>";
-
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$LANG["ldap"][0]."</th></tr>";
 

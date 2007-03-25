@@ -41,24 +41,6 @@ if (!defined('GLPI_ROOT')){
 // FUNCTIONS knowledgebase
 
 
-/**
- * Print out a title  for knowbase module
- *
- * @return nothing (display the title)
- **/
-function titleknowbase(){
-	global  $LANG,$CFG_GLPI;
-
-	$buttons=array();
-	$title=$LANG["title"][5];
-	
-	if (haveRight("faq","w")||haveRight("knowbase","w")){
-		$buttons["knowbase.php"]=$LANG["knowbase"][0];
-		$buttons["knowbase.form.php?ID=new"]=$LANG["knowbase"][2];
-		$title="";
-	}
-	displayTitle($CFG_GLPI["root_doc"]."/pics/knowbase.png",$LANG["title"][5],$title,$buttons);
-}
 
 /**
  * Print out an HTML "<form>" for Search knowbase item

@@ -60,13 +60,9 @@ if (!defined('GLPI_ROOT')){
 		if (!isset($_POST["field"])){
 			$_POST["field"]=key($RULES_ACTIONS[$_POST["rule_type"]]);
 		}
-		$type="";
-		if (isset($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type'])){
-			$type=$RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type'];
-		}
+
 		dropdownRulesActions("action_type");
 
-		//dropdownRulesConditions($type,"condition");
 		echo "&nbsp;&nbsp;";
 		$display=false;
 		
