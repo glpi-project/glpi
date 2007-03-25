@@ -174,6 +174,12 @@ function showPlanning($who,$when,$type){
 			$i++;
 		}
 
+	$data=do_hook_function("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
+
+	if (isset($data["items"])&&count($data["items"])){
+		$interv=array_merge($data["items"],$interv);
+	}
+
 	ksort($interv);
 
 	// Display Items
@@ -305,7 +311,7 @@ function showPlanning($who,$when,$type){
 }
 
 function displayPlanningItem($val,$who,$complete=0){
-	global $CFG_GLPI,$LANG;
+	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
 	$author="";  // variable pour l'affichage de l'auteur ou non
 	$img="rdv_private.png"; // variable par defaut pour l'affichage de l'icone du reminder
@@ -326,8 +332,15 @@ function displayPlanningItem($val,$who,$complete=0){
 	}
 	
 	echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: $color; font-size:9px; width:80%;'>";
-	$rand=mt_rand();
-	if(isset($val["id_tracking"])){  // show tracking
+	$rand=mt_rand(); 
+
+	// Plugins case
+	if (isset($val["plugin"])&&isset($PLUGIN_HOOKS['display_planning'][$val["plugin"]])){
+			$function=$PLUGIN_HOOKS['display_planning'][$val["plugin"]];
+		if (function_exists($function)) {
+			$function($val);
+		}
+	} else if(isset($val["id_tracking"])){  // show tracking
 
 		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>&nbsp;";
 
@@ -660,7 +673,6 @@ function generateIcal($who){
 	$debutcal="";
 	$event="";
 	$fincal="";
-
 
 	ksort($interv);
 
