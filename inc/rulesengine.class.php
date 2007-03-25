@@ -238,6 +238,11 @@ class Rule extends CommonDBTM{
 	{
 	}
 	
+	function getTitle()
+	{
+		global $LANG;
+		return $LANG["rulesengine"][8];	
+	}
 	
 	/**
 	* Show the rule
@@ -265,7 +270,7 @@ class Rule extends CommonDBTM{
 
 			echo "<div align='center'>"; 
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>" . $LANG["entity"][5] . "</th></tr>";
+			echo "<tr><th colspan='4'>" . $this->getTitle() . "</th></tr>";
 			echo "<tr>";
 			echo "<td class='tab_bg_2'>".$LANG["common"][16]."</td>";
 			echo "<td class='tab_bg_2'>";

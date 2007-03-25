@@ -145,7 +145,7 @@ class User extends CommonDBTM {
 		$prof = new Profile();
 
 		$input["ID"]=$newID;
-		if ($input["auth_method"]==LDAP_AUTH){
+		if ($input["auth_method"]==AUTH_LDAP){
 			$this->syncLdapGroups($input);
 			$this->applyLdapRules($input);
 		}

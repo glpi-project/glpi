@@ -197,7 +197,10 @@ class OcsAffectEntityRule extends Rule {
 		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
 	}
 
-
+	function getTitle() {
+		global $LANG;
+		return $LANG["rulesengine"][18];
+	}
 
 	function maxActionsCount(){
 		// Unlimited
