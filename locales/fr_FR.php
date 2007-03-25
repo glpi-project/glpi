@@ -87,6 +87,8 @@ $LANG["buttons"][37]="Importer";
 $LANG["buttons"][38]="Déverrouiller";
 $LANG["buttons"][39]="Remplacer";
 $LANG["buttons"][40]="Voir Tous";
+$LANG["buttons"][41]="Activer";
+$LANG["buttons"][42]="Désactiver";
 
 $LANG["calendarD"][0]="D";
 $LANG["calendarD"][1]="L";
@@ -1140,7 +1142,10 @@ $LANG["reports"][63]="Informations financières autres (licences, consommables, 
 $LANG["reports"][64]="Téléphones";
 
 $LANG["reservation"][1]="Matériel réservable";
+$LANG["reservation"][2]="Matériel temporairement indisponible";
+$LANG["reservation"][3]="Cliquez pour rendre indisponible";
 $LANG["reservation"][4]="Matériel en prêt";
+$LANG["reservation"][5]="Cliquez pour rendre disponible";
 $LANG["reservation"][6]="Cliquez pour ne pas autoriser le prêt";
 $LANG["reservation"][7]="Cliquez pour autoriser le prêt";
 $LANG["reservation"][8]="Réserver";

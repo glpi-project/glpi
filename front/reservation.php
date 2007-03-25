@@ -126,7 +126,13 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		
 	}
 	else {
-		printReservationItems($_SERVER['PHP_SELF']);
+		manageGetValuesInSearch(RESERVATION_TYPE);
+
+		searchForm(RESERVATION_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+
+		showList(RESERVATION_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+
+//		printReservationItems($_SERVER['PHP_SELF']);
 	}
 }
 else {
@@ -149,8 +155,13 @@ else {
 			$ri->delete($_GET);
 			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 			glpi_header($_SERVER['HTTP_REFERER']);
+		} else if (isset($_GET["active"]))
+		{
+			checkRight("reservation_central","w");
+			$ri->update($_GET);
+			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+			glpi_header($_SERVER['HTTP_REFERER']);
 		}
-
 
 		if (isset($_POST["updatecomment"]))
 		{

@@ -112,7 +112,7 @@ function GetRandomString($length) {
 function addReservation($type,$ID){
 	global $percent,$DB;
 	if (mt_rand(0,100)<$percent['reservation']){
-		$query="INSERT INTO glpi_reservation_item VALUES (NULL,'$type','$ID','')";
+		$query="INSERT INTO glpi_reservation_item VALUES (NULL,'$type','$ID','comments $ID $type','1')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		// TODO add elements in reservation planning
 	}

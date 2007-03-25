@@ -876,7 +876,10 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add key deleted in glpi_users" . $LANG["update"][90] . $DB->error());
 	}	
 
-	
+	if (!FieldExists("glpi_reservation_item", "active")) {
+		$query = "ALTER TABLE `glpi_reservation_item` ADD `active` smallint(6) NOT NULL default '1' ";
+		$DB->query($query) or die("0.7 add active in glpi_reservation_item" . $LANG["update"][90] . $DB->error());
+	}
 
 	// TODO Split Config -> config general + config entity
 	
