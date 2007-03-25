@@ -1451,6 +1451,8 @@ function showJobDetails ($target,$ID){
 		$author->getFromDB($job->fields["author"]);
 		$assign=new User();
 		$assign->getFromDB($job->fields["assign"]);
+		$recipient=new User();
+		$recipient->getFromDB($job->fields["recipient"]);
 		$item=new CommonItem();
 		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
 
@@ -1461,7 +1463,7 @@ function showJobDetails ($target,$ID){
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// Premi�e ligne
 		echo "<tr ><th colspan='2' style='font-size:10px'>";
-		echo $LANG["joblist"][11].": <strong>".convDateTime($job->fields["date"])."</strong>";"</th>";
+		echo $LANG["joblist"][11].": <strong>".convDateTime($job->fields["date"])." ".$LANG["job"][2]." ".$recipient->getName()."</strong>";"</th>";
 		echo "<th style='font-size:10px'>".$LANG["joblist"][12].":\n";
 		if (!ereg("old_",$job->fields["status"]))
 		{
@@ -1752,7 +1754,7 @@ function showJobDetails ($target,$ID){
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&author=".$job->fields["assign"]."'});";
+		echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&state=1&author=".$job->fields["assign"]."&entity=".$job->fields["FK_entities"]."'});";
 		echo "};";
 		echo "function showAddFollowup(){\n";
 		echo "Element.hide('viewfollowup');";
@@ -1776,9 +1778,11 @@ function showFollowupsSummary($tID){
 
 	if (!haveRight("observe_ticket","1")&&!haveRight("show_full_ticket","1")) return false;
 
+	$job=new Job;
+	$job->getFromDB($tID);
 	// Display existing Followups
 	$showprivate=haveRight("show_full_ticket","1");
-
+	
 	$RESTRICT="";
 	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
 
@@ -1838,7 +1842,14 @@ function showFollowupsSummary($tID){
 				echo $LANG["job"][32];	
 			else {
 				$data2=$DB->fetch_array($result2);
-				echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
+				echo "<script type='text/javascript' >\n";
+				echo "function showPlan".$data['ID']."(){\n";
+				echo "Element.hide('plan');";
+				echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&author=".$data2["id_assign"]."&ID=".$data2["ID"]."&state=".$data2["state"]."&begin_date=".$data2["begin"]."&end_date=".$data2["end"]."&entity=".$job->fields["FK_entities"]."'});";
+				echo "}";
+				echo "</script>\n";
+
+				echo getPlanningState($data2["state"])."<br>".convDateTime($data2["begin"])."<br>->".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
 			}
 			echo "</td>";
 
@@ -1926,6 +1937,8 @@ function showAddFollowupForm($tID){
 			echo "<td>".$LANG["job"][35]."</td>";
 
 			echo "<td>";
+
+
 			echo "<div id='plan'  onClick='showPlan()'>\n";
 			echo "<span class='showplan'>".$LANG["job"][34]."</span>";
 			echo "</div>\n";	
@@ -1975,8 +1988,12 @@ function showUpdateFollowupForm($ID){
 
 
 	if ($DB->numrows($result)==1){
-		echo "<div align='center'>";
 		$data=$DB->fetch_array($result);
+
+		$job=new Job();
+		$job->getFromDB($data["tracking"]);
+
+		echo "<div align='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>";
 		echo $LANG["job"][39];
@@ -2037,18 +2054,32 @@ function showUpdateFollowupForm($ID){
 		echo "<tr>";
 		echo "<td>".$LANG["job"][35]."</td>";
 		echo "<td>";
+
 		$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 		$result2=$DB->query($query2);
-		if ($DB->numrows($result2)==0)
-			if ($commentall)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=-1'>".$LANG["buttons"][8]."</a>";
-			else echo $LANG["job"][32];	
-		else {
-			$data2=$DB->fetch_array($result2);
-			echo convDateTime($data2["begin"])."<br>".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
-			if ($commentall)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.form.php?edit=edit&amp;fup=".$data["ID"]."&amp;ID=".$data2["ID"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png'></a>";
+		if ($DB->numrows($result2)==0){
+			if ($commentall){
 
+				echo "<div id='plan'  onClick='showPlan()'>\n";
+				echo "<span class='showplan'>".$LANG["job"][34]."</span>";
+				echo "</div>\n";	
+				echo "<div id='viewplan'></div>\n";
+			} else {
+				echo $LANG["job"][32];	
+			}
+		 } else {
+			$data2=$DB->fetch_array($result2);
+			if ($commentall){
+
+				echo "<div id='plan'  onClick='showPlan".$ID."()'>\n";
+				echo "<span class='showplan'>";
+			}
+			echo getPlanningState($data2["state"])."<br>".convDateTime($data2["begin"])."<br>->".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
+			if ($commentall){
+				echo "</span>";
+				echo "</div>\n";	
+				echo "<div id='viewplan'></div>\n";
+			}
 		}
 
 		echo "</td>";
@@ -2079,6 +2110,8 @@ function showUpdateFollowupForm($ID){
 		echo "</td></tr>";
 		echo "</table>";
 		echo "</div>";
+
+
 	}
 }
 

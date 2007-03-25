@@ -88,6 +88,7 @@ class Reminder extends CommonDBTM {
 			$input['rv']="1";
 			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":00";
 			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
+			$input["state"] = $input['_plan']["state"];
 		}	
 
 		return $input;
@@ -192,7 +193,7 @@ class Reminder extends CommonDBTM {
 				echo "<script type='text/javascript' >\n";
 				echo "function showPlan(){\n";
 				echo "Element.hide('plan');";
-				echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$this->fields["rv"])?"&begin_date=".$this->fields["begin"]."&end_date=".$this->fields["end"]."":"")."'});";
+				echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$this->fields["rv"])?"&state=".$this->fields["state"]."&begin_date=".$this->fields["begin"]."&end_date=".$this->fields["end"]."":"")."'});";
 				echo "}";
 				echo "</script>\n";
 			}
@@ -207,7 +208,7 @@ class Reminder extends CommonDBTM {
 					echo "<div id='plan'  onClick='showPlan()'>\n";
 					echo "<span style='font-weight: bold;text-decoration: none; color : #009966;cursor:pointer;'>";
 				}
-				echo convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"]);
+				echo getPlanningState($this->fields["state"]).": ".convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"]);
 				if($remind_edit){
 					echo "</span>";
 				}

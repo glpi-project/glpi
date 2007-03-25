@@ -606,6 +606,8 @@ $LANG["install"][99]="Test d'écriture des fichiers de cache";
 
 
 $LANG["job"][1]="Ticket toujours ouvert...";
+$LANG["job"][2]="par";
+$LANG["job"][3]="Receveur";
 $LANG["job"][5]="Attribué à";
 $LANG["job"][7]="Suivi";
 $LANG["job"][11]="Décrivez le problème/action";
@@ -1032,6 +1034,9 @@ $LANG["planning"][12]="Télécharger calendrier format Ical";
 $LANG["planning"][13]="Synchronisation Webcal://";
 $LANG["planning"][14]="Mois";
 $LANG["planning"][15]="Votre planning";
+$LANG["planning"][16]="Information";
+$LANG["planning"][17]="A faire";
+$LANG["planning"][18]="Fait";
 
 
 $LANG["printers"][0]="Ajouter imprimante...";

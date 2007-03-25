@@ -125,6 +125,26 @@ function getStatsItems($date1,$date2,$type){
 			}
 
 		break;
+		case "recipient":
+			$nomUsr = getNbIntervRecipient($date1,$date2);
+
+		$i=0;
+		if (is_array($nomUsr))
+			foreach($nomUsr as $key){
+				$val[$i]["ID"]=$key["ID"];
+				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$key["ID"]."'>";
+				if (empty($key["realname"]))
+					$val[$i]["link"].=$key["name"];
+				else {
+					$val[$i]["link"].=$key["realname"];
+					if (!empty($key["firstname"]))	
+						$val[$i]["link"].=" ".$key["firstname"];
+				}
+				$val[$i]["link"].="</a>";
+				$i++;
+			}
+
+		break;
 		case "category":
 			$nomUsr = getNbIntervCategory();
 		$i=0;
@@ -442,6 +462,30 @@ function getNbIntervAuthor($date1,$date2)
 }
 
 //return an array from tracking
+//it contains the distinct recipient of interventions.
+function getNbIntervRecipient($date1,$date2)
+{	
+	global $DB;
+	$query = "SELECT DISTINCT glpi_tracking.recipient as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.recipient)";
+	$query.= " WHERE '1'='1' ";
+	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
+
+	$query.= " order by realname, firstname, name";
+	$result = $DB->query($query);
+	if($DB->numrows($result) >=1) {
+		$i = 0;
+		while($line = $DB->fetch_assoc($result)) {
+			$tab[$i] = $line;
+			$i++;
+		}
+		return $tab;
+	}
+	else return 0;	
+
+}
+//return an array from tracking
 //it contains the distinct priority of interventions.
 function getNbIntervPriority()
 {	
@@ -600,6 +644,9 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		break;
 		case "user":
 			$WHERE.=" AND glpi_tracking.author='$value'";
+		break;
+		case "recipient":
+			$WHERE.=" AND glpi_tracking.recipient='$value'";
 		break;
 		case "category":
 			$WHERE.=" AND glpi_tracking.category='$value'";
