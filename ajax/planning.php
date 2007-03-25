@@ -49,13 +49,25 @@
 	$split=split(":",$CFG_GLPI["planning_end"]);
 	$global_end=intval($split[0]);
 	
-	
-	if (isset($_GET["begin_date"])&&!empty($_GET["begin_date"]))
-	$begin=strtotime($_GET["begin_date"]);
-	else $begin=strtotime(date("Y-m-d")." 12:00:00");
-	if (isset($_GET["end_date"])&&!empty($_GET["end_date"]))
-	$end=strtotime($_GET["end_date"]);
-	else $end=strtotime(date("Y-m-d")." 13:00:00");
+	if (isset($_GET["ID"])&&$_GET["ID"]>0){
+		echo "<input type='hidden' name='plan[ID]' value='".$_GET["ID"]."'>";
+	}
+
+	if (isset($_GET["begin_date"])&&!empty($_GET["begin_date"])){
+		$begin=strtotime($_GET["begin_date"]);
+	} else {
+		$begin=strtotime(date("Y-m-d")." 12:00:00");
+	}
+	if (isset($_GET["end_date"])&&!empty($_GET["end_date"])){
+		$end=strtotime($_GET["end_date"]);
+	} else {
+		$end=strtotime(date("Y-m-d")." 13:00:00");
+	}
+
+	$state=0;
+	if (isset($_GET["state"])){
+		$state=$_GET["state"];
+	} 
 	
 	$begin_date=date("Y-m-d",$begin);
 	$end_date=date("Y-m-d",$end);
@@ -63,10 +75,10 @@
 	$end_hour=date("H:i",$end);
 	
 	echo "<table class='tab_cadre' cellpadding='2'>";
-	if (isset($_GET["author"])){
+	if (isset($_GET["author"])&&isset($_GET["entity"])){
 		echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":	</td>";
 		echo "<td>";
-		dropdownUsers("plan[id_assign]",$_GET["author"],"own_ticket",-1);
+		dropdownUsers("plan[id_assign]",$_GET["author"],"own_ticket",-1,1,$_GET["entity"]);
 		echo "</td></tr>";
 	}
 	
@@ -86,6 +98,11 @@
 	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][13].":	</td>";
 	echo "<td>";
 	dropdownHours("plan[end_hour]",$end_hour,1);
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td>".$LANG["state"][0].":	</td>";
+	echo "<td>";
+	dropdownPlanningState("plan[state]",$state);
 	echo "</td></tr>";
 	
 	echo "</table>";

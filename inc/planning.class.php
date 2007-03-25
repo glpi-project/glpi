@@ -243,7 +243,6 @@ class PlanningTracking extends CommonDBTM {
 	function displayError($type,$ID,$target){
 		global $LANG;
 
-		//echo "<br><div align='center'>";
 		switch ($type){
 			case "date":
 				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["planning"][1]."<br>";
@@ -252,11 +251,9 @@ class PlanningTracking extends CommonDBTM {
 				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["planning"][0]."<br>";
 			break;
 			default :
-			$_SESSION["MESSAGE_AFTER_REDIRECT"].="Erreur Inconnue<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].="Erreur Inconnue<br>";
 			break;
 		}
-		//echo "<br><a href='".$target."?job=$ID'>".$LANG["buttons"][13]."</a>";
-		//echo "</div>";
 	}
 
 }

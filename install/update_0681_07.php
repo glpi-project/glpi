@@ -881,6 +881,26 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add active in glpi_reservation_item" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_tracking_planning", "state")) {
+		$query = "ALTER TABLE `glpi_tracking_planning` ADD `state` smallint(6) NOT NULL default '1' ";
+		$DB->query($query) or die("0.7 add state in glpi_tracking_planning" . $LANG["update"][90] . $DB->error());
+		$query="UPDATE `glpi_tracking_planning` SET state='2' WHERE end < NOW()";
+		$DB->query($query) or die("0.7 update values of state in glpi_tracking_planning" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_reminder", "state")) {
+		$query = "ALTER TABLE `glpi_reminder` ADD `state` smallint(6) NOT NULL default '0' ";
+		$DB->query($query) or die("0.7 add state in glpi_reminder" . $LANG["update"][90] . $DB->error());
+	}
+
+
+	if (!FieldExists("glpi_tracking", "recipient")) {
+		$query = "ALTER TABLE `glpi_tracking` ADD `recipient` INT NOT NULL DEFAULT '0' AFTER `author` ";
+		$DB->query($query) or die("0.7 add recipient in glpi_tracking" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_tracking` SET recipient = author";
+		$DB->query($query) or die("0.7 update recipient in glpi_tracking" . $LANG["update"][90] . $DB->error());
+	}
+
 	// TODO Split Config -> config general + config entity
 	
 } // fin 0.7 #####################################################################################

@@ -397,6 +397,9 @@ class Job extends CommonDBTM{
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
+		if (isset($_SESSION["glpiID"])) $input["recipient"]=$_SESSION["glpiID"];
+		else if ($input["author"]) $input["recipient"]=$input["author"];
+
 		if (!isset($input["request_type"])) $input["request_type"]=1;
 		if (!isset($input["status"])) $input["status"]="new";
 		if (!isset($input["assign"])) $input["assign"]=0;
@@ -762,7 +765,29 @@ class Followup  extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		$input["realtime"]=$input["hour"]+$input["minute"]/60;
 		$input["author"]=$_SESSION["glpiID"];
+		if (isset($input["plan"])){
+			// Update case
+			if (isset($input["plan"]["ID"])){
+				$input["plan"]['id_followup']=$input["ID"];
+				$input["plan"]['id_tracking']=$input['tracking'];
+				$pt=new PlanningTracking();
 
+				if (!$pt->update($input["plan"],"",1)){
+					return false;
+				}
+				unset($input["plan"]);
+			// Add case
+			} else {
+				$input["plan"]['id_followup']=$input["ID"];
+				$input["plan"]['id_tracking']=$input['tracking'];
+				$pt=new PlanningTracking();
+
+				if (!$pt->add($input["plan"],"",1)){
+					return false;
+				}
+				unset($input["plan"]);
+			}
+		}
 		return $input;
 	}
 

@@ -41,139 +41,6 @@ if (!defined('GLPI_ROOT')){
 // FUNCTIONS Planning
 
 
-function showTrackingPlanningForm($device_type,$id_device){
-
-	global $DB,$CFG_GLPI,$LANG;
-
-	if (!haveRight("comment_all_ticket","1")) return false;
-
-	$query="select * from glpi_reservation_item where (device_type='$device_type' and id_device='$id_device')";
-
-	if ($result = $DB->query($query)) {
-		$numrows =  $DB->numrows($result);
-		//echo "<form name='resa_form' method='post' action=".$CFG_GLPI["root_doc"]."/front/reservation.php>";
-		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
-		// Ajouter le mat�iel
-		if ($numrows==0){
-			echo "id_device=$id_device&amp;device_type=$device_type&amp;add=add\">".$LANG["reservation"][7]."</a>";
-		}
-		// Supprimer le mat�iel
-		else {
-			echo "ID=".$DB->result($result,0,"ID")."&amp;delete=delete\">".$LANG["reservation"][6]."</a>";
-		}
-
-	}
-}
-
-
-function showAddPlanningTrackingForm($target,$fup,$planID=-1){
-	global $LANG,$CFG_GLPI;
-
-	if (!haveRight("comment_all_ticket","1")) return false;
-
-	$split=split(":",$CFG_GLPI["planning_begin"]);
-	$global_begin=intval($split[0]);
-
-	$split=split(":",$CFG_GLPI["planning_end"]);
-	$global_end=intval($split[0]);
-
-	$planning= new PlanningTracking;
-
-	if ($planID!=-1)
-		$planning->getFromDB($planID);
-	else {
-		$planning->getEmpty();
-		$planning->fields["begin"]=date("Y-m-d")." 12:00:00";
-		$planning->fields["end"]=date("Y-m-d")." 13:00:00";
-	}
-
-
-	$begin=strtotime($planning->fields["begin"]);
-	$end=strtotime($planning->fields["end"]);
-
-	$begin_date=date("Y-m-d",$begin);
-	$end_date=date("Y-m-d",$end);
-	$begin_hour=date("H:i",$begin);
-	$end_hour=date("H:i",$end);
-
-	echo "<div align='center'><form method='post' name='form' action=\"$target\">";
-	if ($planID!=-1)
-		echo "<input type='hidden' name='ID' value='$planID'>";
-	echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."'>";
-	// Ajouter le job
-	$followup=new Followup;
-	$followup->getfromDB($fup);
-	$j=new Job();
-	$j->getFromDBwithData($followup->fields['tracking'],0);
-	if ($planID==-1){
-		if ($j->fields["assign"])
-			$planning->fields["id_assign"]=$j->fields["assign"];
-	}
-
-	echo "<input type='hidden' name='id_followup' value='$fup'>";
-	echo "<input type='hidden' name='id_tracking' value='".$followup->fields['tracking']."'>";
-
-	echo "<table class='tab_cadre' cellpadding='2' width='600'>";
-	echo "<tr><th colspan='2'><b>";
-	echo $LANG["planning"][7];
-	echo "</b></th></tr>";
-	echo "<tr class='tab_bg_1'><td>".$LANG["planning"][8].":	</td>";
-	echo "<td>";
-	echo "<b>".$j->fields['contents']."</b>";
-	echo "</td></tr>";
-	echo "<tr class='tab_bg_1'><td>".$LANG["planning"][10].":	</td>";
-	echo "<td>";
-	echo "<b>".$j->hardwaredatas->getName()."</b>";
-	echo "</td></tr>";
-
-	if (!haveRight("comment_all_ticket","1"))
-		echo "<input type='hidden' name='id_assign' value='".$_SESSION["glpiID"]."'>";
-	else {
-		echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":	</td>";
-		echo "<td>";
-		dropdownUsers("id_assign",$planning->fields["id_assign"],"own_ticket",-1);
-		echo "</td></tr>";
-	}
-
-
-	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
-	showCalendarForm("form","begin_date",$begin_date);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][12].":	</td>";
-	echo "<td>";
-	dropdownHours("begin_hour",$begin_hour,1);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
-	showCalendarForm("form","end_date",$end_date);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][13].":	</td>";
-	echo "<td>";
-	dropdownHours("end_hour",$end_hour,1);
-	echo "</td></tr>";
-
-
-
-	if ($planID==-1){
-		echo "<tr class='tab_bg_2'>";
-		echo "<td colspan='2'  valign='top' align='center'>";
-		echo "<input type='submit' name='add_planning' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-		echo "</td></tr>\n";
-	} else {
-		echo "<tr class='tab_bg_2'>";
-		echo "<td valign='top' align='center'>";
-		echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-		echo "</td><td valign='top' align='center'>";
-		echo "<input type='submit' name='edit_planning' value=\"".$LANG["buttons"][14]."\" class='submit'>";
-		echo "</td></tr>\n";
-	}
-
-	echo "</table>";
-	echo "</form></div>";
-}
-
 function showPlanning($who,$when,$type){
 	global $LANG,$CFG_GLPI,$DB;
 
@@ -260,6 +127,7 @@ function showPlanning($who,$when,$type){
 			$job->getFromDBwithData($fup->fields["tracking"],0);
 
 			$interv[$data["begin"]."$$$".$i]["id_followup"]=$data["id_followup"];
+			$interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
 			$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tracking"];
 			$interv[$data["begin"]."$$$".$i]["id_assign"]=$data["id_assign"];
 			$interv[$data["begin"]."$$$".$i]["ID"]=$data["ID"];
@@ -269,6 +137,7 @@ function showPlanning($who,$when,$type){
 			if (strcmp($end,$data["end"])<0)
 				$interv[$data["begin"]."$$$".$i]["end"]=$fin;
 			else $interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
+			$interv[$data["begin"]."$$$".$i]["name"]=$job->fields["name"];
 			$interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$$".$i]["device"]=$job->hardwaredatas->getName();
 			$interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
@@ -300,6 +169,7 @@ function showPlanning($who,$when,$type){
 			$interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
 			$interv[$data["begin"]."$$".$i]["type"]=$data["type"];
+			$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
 
 			$i++;
 		}
@@ -439,8 +309,23 @@ function displayPlanningItem($val,$who,$complete=0){
 
 	$author="";  // variable pour l'affichage de l'auteur ou non
 	$img="rdv_private.png"; // variable par defaut pour l'affichage de l'icone du reminder
-
-	echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: #d7d7d2; font-size:9px; width:80%;'>";
+	$color="#d7d7d2";
+	if (isset($val["state"])){
+		switch ($val["state"]){
+			case 0:
+				$color="#d7d7d2";
+				break;
+			case 1:
+				$color="#e4e4e4";
+				break;
+			case 2:
+				$color="#efefe7";
+				break;
+			
+		}
+	}
+	
+	echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: $color; font-size:9px; width:80%;'>";
 	$rand=mt_rand();
 	if(isset($val["id_tracking"])){  // show tracking
 
@@ -452,7 +337,10 @@ function displayPlanningItem($val,$who,$complete=0){
 			echo "onmouseout=\"cleanhide('content_tracking_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_tracking_".$val["ID"].$rand."')\"";
 		}
 		echo ">";
-		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["device"];
+		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["name"];
+		if (!empty($val["device"])){
+			echo "<br>".$val["device"];
+		}
 		echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
 		if ($who==0){
 			echo "<br>";
@@ -461,10 +349,13 @@ function displayPlanningItem($val,$who,$complete=0){
 		echo "</a>";
 		if ($complete){
 			echo "<br>";
+			echo "<strong>".getPlanningState($val["state"])."</strong><br>";
 			echo "<strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
 			echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"];
 		} else {
-			echo "<div class='over_link' id='content_tracking_".$val["ID"].$rand."'><strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+			echo "<div class='over_link' id='content_tracking_".$val["ID"].$rand."'>";
+			echo "<strong>".getPlanningState($val["state"])."</strong><br>";
+			echo "<strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
 			echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"]."</div>";
 		}
 
@@ -483,10 +374,10 @@ function displayPlanningItem($val,$who,$complete=0){
 		echo $author;
 		echo "</a>";
 		if ($complete){
-			echo "<br>";
+			echo "<strong>".getPlanningState($val["state"])."</strong><br>";
 			echo $val["text"];
 		} else {
-			echo "<div class='over_link' id='content_reminder_".$val["id_reminder"].$rand."'>".$val["text"]."</div>";
+			echo "<div class='over_link' id='content_reminder_".$val["id_reminder"].$rand."'><strong>".getPlanningState($val["state"])."</strong><br>".$val["text"]."</div>";
 		}
 
 		echo "";
