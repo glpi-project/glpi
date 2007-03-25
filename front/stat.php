@@ -45,12 +45,6 @@ commonHeader($LANG["title"][11],$_SERVER['PHP_SELF'],"maintain","stat");
 
 checkRight("statistic","1");
 
-// titre
-echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/statistiques.png\" alt='".$LANG["Menu"][13]."' title='".$LANG["Menu"][13]."'></td><td><span class='icon_consol'><b>".$LANG["Menu"][13]."</b></span>";
-echo "</td></tr></table></div>";
-
-
 //Affichage du tableau de pr�entation des stats
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$LANG["stats"][0].":</th></tr>";

@@ -45,12 +45,6 @@ checkRight("reports","r");
 
 commonHeader($LANG["title"][16],$_SERVER['PHP_SELF'],"utils","report");
 
-// titre
-echo "<div align='center'><table ><tr><td>";
-echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/rapports.png\" alt='".$LANG["Menu"][6]."' title='".$LANG["Menu"][6]."'></td><td><span class='icon_consol'><b>".$LANG["Menu"][6]."</b></span>";
-echo "</td></tr></table></div>";
-
-
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$LANG["reports"][0].":</th></tr>";

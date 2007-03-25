@@ -63,7 +63,6 @@ if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_kbitems.question";
 if(!isset($_GET["parentID"])) $_GET["parentID"] = "0";
 
 
-titleknowbase();
 
 	$faq=!haveRight("knowbase","r");
 

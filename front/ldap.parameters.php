@@ -61,10 +61,6 @@ checkRight("user","w");
 
 commonHeader($LANG["setup"][142]." ".$LANG["ruleldap"][1],$_SERVER['PHP_SELF'],"admin","ldap");
 
-echo "<div align='center'><table border='0'><tr><td>";
-echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/ldap.png\" alt=\"".$LANG["setup"][142]." ".$LANG["ruleldap"][1]."\" title=\"".$LANG["setup"][142]." ".$LANG["ruleldap"][1]."\" ><span class='icon_consol'>".$LANG["setup"][142]." ".$LANG["ruleldap"][1]."</span></td>";
-echo "</tr></table></div><br>";
-
 $params = new LdapCriteria;
 $params->showForm($_SERVER['PHP_SELF']);
 echo "</table></div>";
