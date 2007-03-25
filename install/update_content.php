@@ -166,14 +166,16 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 
 					if (eregi("^char",$val["Type"])){
 						$default="NULL";
-						if (!empty($val["Default"]))
+						if (!empty($val["Default"])&&!is_null($val["Default"])){
 							$default="'".$val["Default"]."'";
+						}
 
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` ".$val["Type"]." CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT $default");
 					} else if (eregi("^varchar",$val["Type"])){
 						$default="NULL";
-						if (!empty($val["Default"]))
+						if (!empty($val["Default"])&&!is_null($val["Default"])){
 							$default="'".$val["Default"]."'";
+						}
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT $default");
 					} else if (eregi("^longtext",$val["Type"])){
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");

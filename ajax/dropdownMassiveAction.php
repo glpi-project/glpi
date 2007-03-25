@@ -74,7 +74,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "add_document":
-			dropdown("glpi_docs","docID",1);
+			dropdownDocument("docID");
 		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "add_contract":

@@ -50,7 +50,7 @@ if (!defined('GLPI_ROOT')){
  *
  * @param $table the dropdown table from witch we want values on the select
  * @param $myname the name of the HTML select
- * @param $display_comments display the comments near the dropd
+ * @param $display_comments display the comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (display the select box)
  **/
@@ -76,7 +76,7 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1) {
  */
 function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restrict=-1) {
 
-	global $CFG_GLPI,$LANG,$DB;
+	global $DB,$CFG_GLPI,$LANG;
 
 	$rand=mt_rand();
 
@@ -249,7 +249,7 @@ function dropdownNoValue($table,$myname,$value) {
 function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0) {
 	// Make a select box with all glpi users
 
-	global $CFG_GLPI,$LANG,$DB;
+	global $DB,$CFG_GLPI,$LANG;
 
 	$rand=mt_rand();
 
@@ -604,7 +604,7 @@ function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
  * @return nothing (print out an HTML select box)
  */
 function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
-	global $DB,$LANG,$CFG_GLPI;
+	global $LANG,$CFG_GLPI;
 
 	$rand=mt_rand();
 	echo "<table border='0'><tr><td>\n";
@@ -1023,7 +1023,7 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 function dropdownConnectPort($ID,$type,$myname) {
 
 
-	global $DB,$LANG,$CFG_GLPI;
+	global $LANG,$CFG_GLPI;
 
 	$rand=mt_rand();
 	echo "<select name='type[$ID]' id='item_type$rand'>\n";
@@ -1055,6 +1055,66 @@ function dropdownConnectPort($ID,$type,$myname) {
 }
 
 /**
+ * Make a select box for link document
+ *
+ * @param $myname name of the select box
+ * @param $entity_restrict restrict multi entity
+ * @return nothing (print out an HTML select box)
+ */
+function dropdownDocument($myname,$entity_restrict=-1) {
+
+
+	global $DB,$LANG,$CFG_GLPI;
+
+	$rand=mt_rand();
+
+	$where="";
+	if ($entity_restrict>=0){
+		$where=" WHERE FK_entities='".$entity_restrict."'";
+	} else {
+		$where.=getEntitiesRestrictRequest(" WHERE ","glpi_docs");
+	}
+
+
+	$query="SELECT * FROM glpi_dropdown_rubdocs WHERE ID IN (SELECT DISTINCT rubrique FROM glpi_docs $where) ORDER BY name";
+	//echo $query;
+	$result=$DB->query($query);
+
+	echo "<select name='_rubdoc' id='_rubdoc'>\n";
+	echo "<option value='0'>------</option>\n";
+	while ($data=$DB->fetch_assoc($result)){
+		echo "<option value='".$data['ID']."'>".$data['name']."</option>\n";
+	}
+	echo "</select>\n";
+
+
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('_rubdoc', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('show_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownDocument.php',{asynchronous:true, evalScripts:true, \n";	
+	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'rand=$rand&entity_restrict=$entity_restrict&rubdoc='+value+'&myname=$myname'\n";
+	echo "})})\n";
+	echo "</script>\n";
+
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+
+	echo "<span id='show_$myname$rand'>";
+	$_POST["entity_restrict"]=$entity_restrict;
+	$_POST["rubdoc"]=0;
+	$_POST["myname"]=$myname;
+	$_POST["rand"]=$rand;
+	include (GLPI_ROOT."/ajax/dropdownDocument.php");
+	echo "</span>\n";
+
+	return $rand;
+}
+
+
+/**
  * Make a select box for  software to install
  *
  *
@@ -1064,7 +1124,7 @@ function dropdownConnectPort($ID,$type,$myname) {
  * @return nothing (print out an HTML select box)
  */
 function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massiveaction=0) {
-	global $DB,$LANG,$CFG_GLPI;
+	global $CFG_GLPI;
 
 	$rand=mt_rand();
 

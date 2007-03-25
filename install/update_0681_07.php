@@ -864,12 +864,19 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add centralhelp_url in glpi_config" . $LANG["update"][90] . $DB->error());
 	}	
 
+	if (!FieldExists("glpi_config", "default_rubdoc_tracking")) {
+		$query = "ALTER TABLE `glpi_config` ADD `default_rubdoc_tracking` int(11) default '0' ";
+		$DB->query($query) or die("0.7 add default_rubdoc_tracking in glpi_config" . $LANG["update"][90] . $DB->error());
+	}	
+
 	if (!FieldExists("glpi_users", "deleted")) {
 		$query = "ALTER TABLE `glpi_users` ADD `deleted` SMALLINT NOT NULL DEFAULT 0 ";
 		$DB->query($query) or die("0.7 add deleted in glpi_users" . $LANG["update"][90] . $DB->error());
 		$query = "ALTER TABLE `glpi_users` ADD KEY (`deleted`)";
 		$DB->query($query) or die("0.7 add key deleted in glpi_users" . $LANG["update"][90] . $DB->error());
 	}	
+
+	
 
 	// TODO Split Config -> config general + config entity
 	
