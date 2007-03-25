@@ -179,6 +179,12 @@ class Config extends CommonDBTM {
 				echo "</td><td align='center'>" . $LANG["tracking"][37] . "</td><td>";
 				dropdownYesNo("keep_tracking_on_delete", $CFG_GLPI["keep_tracking_on_delete"]);
 				echo "</td></tr>";
+
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][409] . "</td><td>";
+				dropdownValue("glpi_dropdown_rubdocs","default_rubdoc_tracking",$CFG_GLPI["default_rubdoc_tracking"]);
+				echo "</td><td align='center'>&nbsp;</td><td>&nbsp;";
+				echo "</td></tr>";
+
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["common"][41] . "</strong></td></tr>";
 			

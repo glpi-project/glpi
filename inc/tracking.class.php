@@ -141,6 +141,7 @@ class Job extends CommonDBTM{
 			$input2=array();
 			$input2["name"]=$LANG["tracking"][24]." ".$input["ID"];
 			$input2["FK_tracking"]=$input["ID"];
+			$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
 			$input2["_only_if_upload_succeed"]=1;
 			$doc=new Document();
 			if ($docID=$doc->add($input2)){
@@ -484,6 +485,7 @@ class Job extends CommonDBTM{
 			$input2=array();
 			$input2["name"]=$LANG["tracking"][24]." $newID";
 			$input2["FK_tracking"]=$newID;
+			$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
 			$input2["_only_if_upload_succeed"]=1;
 			$doc=new Document();
 			if ($docID=$doc->add($input2))

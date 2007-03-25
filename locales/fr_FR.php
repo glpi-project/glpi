@@ -1442,6 +1442,7 @@ $LANG["setup"][405]="Logguer les modifications des tickets en ajoutant des suivi
 $LANG["setup"][406]="Personnalisation";
 $LANG["setup"][407]="Lien Aide Helpdesk";
 $LANG["setup"][408]="Lien Aide Central";
+$LANG["setup"][409]="Rubrique par défaut pour les documents liés au suivi";
 
 $LANG["setup"][500]="OS Version";
 $LANG["setup"][501]="Service Pack";

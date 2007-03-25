@@ -340,7 +340,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		// Restrict entity for knowbase
 		$ci=new CommonItem();
 		$ci->getFromDB($device_type,$ID);
-		$entity=0;
+		$entity=-1;
 		$limit="";
 		if ($ci->getField('FK_entities')){
 			$entity=$ci->getField('FK_entities');
@@ -363,9 +363,10 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			}
 			echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
-			echo "<td align='right' colspan='2'>";
+			echo "<td align='left' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-			dropdown("glpi_docs","conID",1,$entity);
+			dropdownDocument("conID",$entity);
+			//dropdown("glpi_docs","conID",1,$entity);
 			echo "</div></td><td align='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";

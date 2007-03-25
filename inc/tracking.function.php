@@ -1709,9 +1709,18 @@ function showJobDetails ($target,$ID){
 			$doc=new Document;
 			while ($data=$DB->fetch_array($result2)){
 				$doc->getFromDB($data["FK_doc"]);
-
+				
 				echo "<tr><td>";
-				echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
+				
+				if (empty($doc->fields["filename"])){
+					if (haveRight("document","r")){
+						echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=".$data["FK_doc"]."'>".$doc->fields["name"]."</a>";
+					} else {
+						echo $LANG["document"][37];
+					}
+				} else {
+					echo getDocumentLink($doc->fields["filename"],"&tracking=$ID");
+				}
 				if (haveRight("document","w"))
 					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=delete&amp;ID=".$data["ID"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".$LANG["buttons"][6]."'></a>";
 				echo "</td></tr>";
@@ -1722,7 +1731,7 @@ function showJobDetails ($target,$ID){
 			echo "<input type='file' name='filename' size='20'>";
 			if ($canupdate&&haveRight("document","r")){
 				echo "<br>";
-				dropdown("glpi_docs","document");
+				dropdownDocument("document",$job->fields["FK_entities"]);
 			}
 			echo "</td></tr>";
 		}
