@@ -1290,6 +1290,6 @@ function generate_entity($ID_entity){
 	$query="UPDATE `glpi_tracking_planning` SET state='2' WHERE end < NOW()";
 	$DB->query($query) or die("PB REQUETE ".$query);
 
-
+}
 
 ?>
