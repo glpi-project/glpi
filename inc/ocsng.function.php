@@ -2077,8 +2077,10 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 	global  $DB, $DBocs;
 	
 	checkOCSconnection($ocs_server_id);
-	
+
 	if ($cfg_ocs["import_software"]) {
+		$import_software_licensetype = $cfg_ocs["import_software_licensetype"];
+		$import_software_buy = $cfg_ocs["import_software_buy"];
 
 		if ($cfg_ocs["use_soft_dict"])
 			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, 
@@ -2129,7 +2131,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 							$isNewSoft = $soft->addToDB();
 						}
 						if ($isNewSoft) {
-							$instID = installSoftware($glpi_id, ocsImportLicense($isNewSoft), '', $dohistory);
+							$instID = installSoftware($glpi_id, ocsImportLicense($isNewSoft, $import_software_licensetype, $import_software_buy), '', $dohistory);
 							$to_add_to_ocs_array[$instID]=$initname;
 						}
 
@@ -2214,17 +2216,19 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
  * This function create a new license in GLPI with some general datas.
  *
  *@param $software : id of a software.
+ *@param $serial : default serial (used to identify global and freelicenses).
  *
  *@return integer : inserted license id.
  *
  **/
-function ocsImportLicense($software) {
+function ocsImportLicense($software, $serial="global", $buy="0") {
 	global $DB, $LANGOcs;
 
 	$query = "SELECT ID 
 			FROM glpi_licenses 
 			WHERE sid = '" . $software . "' 
-			AND serial='global' ";
+			AND serial='".$serial."' 
+			AND buy='".$buy."'"; #TODO serial => type
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		$data = $DB->fetch_array($result);
@@ -2235,7 +2239,8 @@ function ocsImportLicense($software) {
 	if (!$isNewLicc) {
 		$licc = new License;
 		$licc->fields["sid"] = $software;
-		$licc->fields["serial"] = "global";
+		$licc->fields["serial"] = $serial;
+		$licc->fields["buy"] = $buy;
 		$isNewLicc = $licc->addToDB();
 	}
 	return ($isNewLicc);

@@ -550,6 +550,17 @@ function update0681to07() {
 		$query = "ALTER TABLE glpi_ocs_config ADD `import_registry` INT NOT NULL default '0' AFTER `import_device_modems`";
 		$DB->query($query) or die("0.7 add import_registry in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
 	}
+
+	if (!FieldExists("glpi_ocs_config", "import_software_licensetype")) {
+		$query = "ALTER TABLE glpi_ocs_config ADD `import_software_licensetype` VARCHAR(255) DEFAULT '' AFTER `import_software`";
+		$DB->query($query) or die("0.7 add import_software_licensetype in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_ocs_config", "import_software_buy")) {
+		$query = "ALTER TABLE glpi_ocs_config ADD `import_software_buy` INT NOT NULL DEFAULT '1' AFTER `import_software`";
+		$DB->query($query) or die("0.7 add import_software_buy in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
+	}
+
 	if (!TableExists("glpi_registry")) {
 		$query = "CREATE TABLE  `glpi_registry` (
 						 				`ID` int(10) unsigned NOT NULL auto_increment,
@@ -843,7 +854,7 @@ function update0681to07() {
 					(3, '(LDAP)Department Number', 'departmentNumber', 1),
 					(4, '(LDAP)Email', 'mail', 1),
 					(5, 'Object Class', 'objectclass', 1),		
-					(6, '(LDAP)User ID', 'userid', 1),
+					(6, '(LDAP)User ID', 'uid', 1),
 					(7, '(LDAP)Telephone Number', 'Phone', 1),
 					(8, '(LDAP)Employee Number', 'employeeNumber', 1),
 					(9, '(LDAP)Manager', 'manager', 1),
