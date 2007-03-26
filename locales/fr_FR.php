@@ -351,8 +351,6 @@ $LANG["document"][7]="Type de document";
 $LANG["document"][9]="Extension";
 $LANG["document"][10]="Icône";
 $LANG["document"][11]="Téléchargement autorisé"; 
-$LANG["document"][12]="Ajouter Type de Document..."; 
-$LANG["document"][13]="Ajouter Document...";
 $LANG["document"][15]="Téléchargement";
 $LANG["document"][16]="Ajouter un Document";
 $LANG["document"][17]="Ajouter un Type de Document";
@@ -400,7 +398,6 @@ $LANG["event"][18]="Champ";
 $LANG["event"][19]="Changement";
 $LANG["event"][20]="Pas d'historique";
 
-$LANG["financial"][0]="Ajouter Contrat...";
 $LANG["financial"][1]="Contrat";
 $LANG["financial"][3]="Informations financières";
 $LANG["financial"][4]="Numéro";
@@ -667,7 +664,6 @@ $LANG["joblist"][27]="Email pour le suivi";
 
 $LANG["knowbase"][0]="Base de connaissances";
 $LANG["knowbase"][1]="Foire aux questions";
-$LANG["knowbase"][2]="Ajouter un item à la base de connaissances";
 $LANG["knowbase"][3]="Question";
 $LANG["knowbase"][4]="Réponse";
 $LANG["knowbase"][5]="Placer cet item dans la FAQ publique";
@@ -699,7 +695,6 @@ $LANG["ldap"][9]="Test de connexion à l'annuaire LDAP";
 $LANG["ldap"][12]="Synchronisation";
 
 $LANG["links"][1]="Lien ou Nom du fichier";
-$LANG["links"][2]="Ajouter Lien externe...";
 $LANG["links"][3]="Ajouter un lien externe";
 $LANG["links"][4]="Types de matériel associés";
 $LANG["links"][6]="Tags valides";
@@ -793,10 +788,7 @@ $LANG["login"][13]="Mot de passe vide";
 $LANG["login"][14]="Utilisateur inconnu";
 $LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés";
 $LANG["login"][16]="Echec de l'authentification LDAP";
-$LANG["login"][17]="Echec de l'authentification AD";
 $LANG["login"][18]="Base interne GLPI";
-$LANG["login"][19]="Liste des serveurs";
-$LANG["login"][20]="Ajouter un serveur";
 $LANG["login"][21]="Test de connexion au serveur IMAP/POP";
 $LANG["login"][22]="Test réussi";
 $LANG["login"][23]="Test échoué";
@@ -892,7 +884,6 @@ $LANG["Menu"][36]="Groupes";
 $LANG["Menu"][37]="Entités";
 $LANG["Menu"][38]="Inventaire";
 
-$LANG["monitors"][0]="Ajouter moniteur...";
 $LANG["monitors"][4]="Moniteur";
 $LANG["monitors"][14]="Microphone";
 $LANG["monitors"][15]="Enceintes";
@@ -905,7 +896,6 @@ $LANG["monitors"][30]="Nouvel écran à partir d'un modèle";
 $LANG["monitors"][32]="DVI";
 
 $LANG["networking"][5]="RAM (MB)";
-$LANG["networking"][11]="Ajouter Materiel réseau...";
 $LANG["networking"][12]="Materiel réseau";
 $LANG["networking"][13]="port(s) réseau trouvé(s)";
 $LANG["networking"][14]="IP";
@@ -956,7 +946,6 @@ $LANG["ocsng"][21]="Echec de connexion à la base de données OCS NG";
 $LANG["ocsng"][22]="Attention ! Les données importées (voir votre configuration) écraseront les données existantes";
 $LANG["ocsng"][23]="Importation impossible, ordinateur de destination de GLPI déjà lié à un élément d'OCS NG";
 $LANG["ocsng"][24]="Forcer la synchronisation";
-$LANG["ocsng"][25]="Ajouter";
 $LANG["ocsng"][26]="Choix d'un serveur OCS";
 $LANG["ocsng"][27]="Aucun serveur OCS n'est défini";
 $LANG["ocsng"][28]="Nouveau serveur OCS à partir d'un modèle";
@@ -1012,7 +1001,6 @@ $LANG["pager"][3]="sur";
 $LANG["pager"][4]="Afficher";
 $LANG["pager"][5]="éléments";
 
-$LANG["peripherals"][0]="Ajouter périphérique...";
 $LANG["peripherals"][4]="Périphérique";
 $LANG["peripherals"][18]="Marque";
 $LANG["peripherals"][29]="Périphérique ID";
@@ -1021,7 +1009,6 @@ $LANG["peripherals"][31]="Gestion globale";
 $LANG["peripherals"][32]="Gestion unitaire";
 $LANG["peripherals"][33]="Type de gestion";
 
-$LANG["phones"][0]="Ajouter téléphone...";
 $LANG["phones"][4]="Téléphone";
 $LANG["phones"][18]="Marque";
 $LANG["phones"][29]="Téléphone ID";
@@ -1040,7 +1027,6 @@ $LANG["planning"][1]="Erreur dans l'entrée de vos dates. La date de début est 
 $LANG["planning"][3]="Planning";
 $LANG["planning"][5]="Journée";
 $LANG["planning"][6]="Semaine";
-$LANG["planning"][7]="Ajouter un horaire d'intervention";
 $LANG["planning"][8]="Intervention";
 $LANG["planning"][9]="Par";
 $LANG["planning"][10]="Matériel";
@@ -1053,7 +1039,6 @@ $LANG["planning"][17]="A faire";
 $LANG["planning"][18]="Fait";
 
 
-$LANG["printers"][0]="Ajouter imprimante...";
 $LANG["printers"][4]="Imprimante";
 $LANG["printers"][14]="Série";
 $LANG["printers"][15]="Parallèle";
@@ -1067,8 +1052,6 @@ $LANG["printers"][30]="Compteur de page initial";
 $LANG["printers"][31]="Pages imprimées";
 $LANG["printers"][35]="Type de gestion";
 
-$LANG["profiles"][0]="Ajouter un profil...";
-$LANG["profiles"][1]="Sélectionnez un profil...";
 $LANG["profiles"][2]="Interface";
 $LANG["profiles"][3]="Droits de l'interface Helpdesk";
 $LANG["profiles"][4]="Droits de l'interface Central";
@@ -1098,7 +1081,6 @@ $LANG["profiles"][27]="Voir les matériels de mes groupes";
 $LANG["profiles"][28]="Récursif";
 $LANG["profiles"][29]="Dynamique";
 
-$LANG["registry"][0]="Base de registre";
 $LANG["registry"][1]="Ruche";
 $LANG["registry"][2]="Chemin";
 $LANG["registry"][3]="Clé/valeur";
@@ -1216,7 +1198,6 @@ $LANG["rulesengine"][17]="Règles";
 $LANG["rulesengine"][18]="Règles d'affectation d'une machine à une entité";
 $LANG["rulesengine"][19]="Règles d'affectation d'entité et de droits à partir de l'annuaire";
 $LANG["rulesengine"][20]="suppression d'une règle";
-$LANG["rulesengine"][21]="Ajout d'une règle";
 $LANG["rulesengine"][22]="Assigner";
 $LANG["rulesengine"][23]="Mettre la valeur";
 $LANG["rulesengine"][23]="Récupérer la valeur";
@@ -1227,7 +1208,6 @@ $LANG["rulesengine"][27]="Regex ne vérifie pas";
 $LANG["rulesengine"][28]="Règles métier pour le suivi";
 $LANG["rulesengine"][29]="Liste des règles";
 $LANG["rulesengine"][30]="Action"; 
-$LANG["rulesengine"][31]="Règles d'affectation d'un utilisateur à une entité";
 
 $LANG["ruleldap"][1]="des critères LDAP";
 $LANG["ruleldap"][2]="Aucun critère défini";
@@ -1354,7 +1334,6 @@ $LANG["setup"][148]="Pas pour les horaires";
 $LANG["setup"][149]="Nombre de décimales pour les montants";
 
 
-$LANG["setup"][150]="Sources d'authentification externes";
 $LANG["setup"][151]="Si vous ne souhaitez pas utiliser LDAP comme source(s) de connexion, laissez les champs vides";
 $LANG["setup"][152]="LDAP configuration";
 $LANG["setup"][154]="Basedn";
@@ -1387,7 +1366,6 @@ $LANG["setup"][182]="Url de retour à la deconnexion (logout)";
 $LANG["setup"][183]="Utiliser le cache";
 
 
-$LANG["setup"][200]="Suivis par emails";
 $LANG["setup"][201]="Configuration de la fonction";
 $LANG["setup"][202]="Utiliser le suivi par mail";
 $LANG["setup"][203]="Mail de l'administrateur";
@@ -1457,7 +1435,6 @@ $LANG["setup"][350]="Liaison avec les matériels pour la création de tickets";
 $LANG["setup"][351]="Tous les matériels";
 $LANG["setup"][352]="Matériels associables avec un ticket";
 
-$LANG["setup"][400]="Actif";
 $LANG["setup"][401]="Adresse Proxy";
 $LANG["setup"][402]="Port Proxy";
 $LANG["setup"][403]="Utilisateur Proxy";
@@ -1475,19 +1452,15 @@ $LANG["setup"][504]="Types de téléphones";
 $LANG["setup"][505]="Types d'alimentation téléphone";
 
 $LANG["setup"][601]="Valeur LDAP";
-$LANG["setup"][602]="Ajouter Groupe...";
 $LANG["setup"][603]="Ajouter un Utilisateur";
 $LANG["setup"][604]="Associer à un groupe";
 $LANG["setup"][605]="Ajouter Groupe";
 
-$LANG["setup"][700]="Configuration des plugins";
 $LANG["setup"][701]="Sélectionnez le plugin à configurer";
-$LANG["setup"][702]="Affichage";
 $LANG["setup"][703]="Générale";
 $LANG["setup"][704]="Notifications";
 
 
-$LANG["software"][0]="Ajouter logiciel...";
 $LANG["software"][3]="Plateforme";
 $LANG["software"][5]="Version";
 $LANG["software"][10]="Logiciel";
@@ -1521,7 +1494,6 @@ $LANG["software"][45]="Désinstallation d'un logiciel";
 $LANG["software"][46]="Visible dans le Helpdesk";
 
 $LANG["state"][0]="Statut";
-$LANG["state"][1]="Statuts des matériels";
 $LANG["state"][6]="Type de matériel";
 $LANG["state"][7]="Pas de matériel trouvé";
 $LANG["state"][11]="Synthèse"; 
