@@ -184,6 +184,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		$monitor = $this->fields["import_monitor"];
 		$printer = $this->fields["import_printer"];
 		$software = $this->fields["import_software"];
+		$license = $this->fields["import_software_licensetype"];
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][8] . " </td><td>";
 		echo "<select name='import_periph'>";
 		echo "<option value='0' " . ($periph == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
@@ -212,6 +213,18 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<option value='1' " . ($software == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
 		echo "</select>";
 		echo "</td></tr>";
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][44] . " </td><td>";
+		echo "<select name='import_software_licensetype'>";
+		echo "<option value='global' " . ($license == 'global' ? " selected " : "") . ">" . $LANG["ocsconfig"][45] . "</option>";
+		echo "<option value='free' " . ($license == 'free' ? " selected " : "") . ">" . $LANG["ocsconfig"][46] . "</option>";
+		echo "</select>";
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][47] . " </td><td>";
+		dropdownYesNo("import_software_buy", $this->fields["import_software_buy"]);
+		echo "</select>";
+		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][38] . " </td><td>";
 		dropdownYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
 		echo "</td></tr>";		
@@ -448,9 +461,9 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 	
 	function prepareInputForUpdate($input)
 	{
-		$input["date_mod"]=$_SESSION["glpi_currenttime"];
+			$input["date_mod"]=$_SESSION["glpi_currenttime"];
 		
-				if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
+		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
 			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
 		} else {
 			unset($input["ocs_db_passwd"]);
@@ -498,7 +511,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 			unset($input["ocs_db_passwd"]);
 		}
 
-		if (isset($input["import_ip"])){
+		if (isset($input["import_ip"])){ # are inputs defined
 			$input["checksum"]=0;
 
 			if ($input["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
