@@ -81,7 +81,7 @@ class Entity extends CommonDBTM{
 
 		$buttons=array();
 		$title=$LANG["Menu"][37];
-		if (haveRight("config","w")){
+		if (haveRight("entity","w")){
 			$buttons["entity.tree.php"]=$LANG["entity"][1];
 			$title="";
 		}
@@ -107,7 +107,7 @@ class Entity extends CommonDBTM{
 
 		global $CFG_GLPI, $LANG;
 
-		if (!haveRight("config","r")) return false;
+		if (!haveRight("entity","r")) return false;
 
 		$con_spotted=false;
 
@@ -201,7 +201,7 @@ class Entity extends CommonDBTM{
 
 
 
-			if (haveRight("config","w")) {
+			if (haveRight("entity","w")) {
 				echo "<tr>";
 				echo "<td class='tab_bg_2' colspan='2' valign='top'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";

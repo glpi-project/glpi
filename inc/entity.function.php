@@ -40,10 +40,10 @@ if (!defined('GLPI_ROOT')){
 function showEntityUser($target,$ID){
 	global $DB,$CFG_GLPI, $LANG;
 	
-	if (!haveRight("config","r")||!haveRight("user","r"))	return false;
+	if (!haveRight("entity","r")||!haveRight("user","r"))	return false;
 
-	$canedit=haveRight("config","w");
-
+	$canedit=haveRight("entity","w");
+	$canshowuser=haveRight("user","r");
 	$nb_per_line=3;
 	if ($canedit) $headerspan=$nb_per_line*2;
 	else $headerspan=$nb_per_line;
@@ -115,7 +115,8 @@ function showEntityUser($target,$ID){
 						}
 			
 						echo "<td>";
-						echo formatUserName($data2["ID"],$data2["name"],$data2["realname"],$data2["firstname"],1);
+			
+						echo formatUserName($data2["ID"],$data2["name"],$data2["realname"],$data2["firstname"],$canshowuser);
 						if ($data2["dynamic"]||$data2["recursive"]){
 							echo "<strong>&nbsp;(";
 							if ($data2["dynamic"]) echo "D";

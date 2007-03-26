@@ -266,12 +266,17 @@ class Profile extends CommonDBTM{
 			$this->getEmpty();
 		}
 
-		echo "<table class='tab_cadre'><tr>";
+		echo "<table class='tab_cadre'>";
+		echo "<tr class='tab_bg_1'>";
+		echo "<td colspan='2' align='center'><strong>".$LANG["profiles"][0]."</strong></td><td  class='tab_bg_2' colspan='2' align='center'><strong>".$LANG["profiles"][1]."</strong>";
+		echo "</td><td colspan='2'>&nbsp;</td></tr>";
+
+		echo "<tr>";
 		echo "<th colspan='6'>".$LANG["profiles"][4].":&nbsp;&nbsp;".$LANG["profiles"][13].":";
 		dropdownYesNo("is_default",$this->fields["is_default"]);
 		echo "</th></tr>";
 
-		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["setup"][10]."</strong></td></tr>";
+		echo "<tr'><th colspan='6' align='center'><strong>".$LANG["setup"][10]."</strong></th></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["Menu"][0].":</td><td>";
@@ -307,7 +312,7 @@ class Profile extends CommonDBTM{
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["profiles"][25]."</strong></td></tr>";
+		echo "<tr><th colspan='6' align='center'><strong>".$LANG["profiles"][25]."</strong></th></tr>";
 
 
 		echo "<tr class='tab_bg_2'>";
@@ -321,7 +326,7 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,1,1);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["Menu"][26]."</strong></td></tr>";
+		echo "<tr><th colspan='6' align='center'><strong>".$LANG["Menu"][26]."</strong></th></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["Menu"][22]." / ".$LANG["Menu"][23].":</td><td>";
@@ -335,7 +340,7 @@ class Profile extends CommonDBTM{
 		echo "</td></tr>";
 
 
-		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["title"][24]."</strong></td></tr>";
+		echo "<tr><th colspan='6' align='center'><strong>".$LANG["title"][24]."</strong></th></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][5].":</td><td>";
@@ -399,7 +404,7 @@ class Profile extends CommonDBTM{
 		dropdownYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
 		echo "</td>";
 
-		echo "<td colspan='1'>".$LANG["setup"][350].":</td><td>";
+		echo "<td>".$LANG["setup"][350].":</td><td>";
 		echo "<select name=\"helpdesk_hardware\">";
 		echo "<option value=\"0\" ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >------</option>";
 		echo "<option value=\"".pow(2,HELPDESK_MY_HARDWARE)."\" ".($this->fields["helpdesk_hardware"]==pow(2,HELPDESK_MY_HARDWARE)?"selected":"")." >".$LANG["tracking"][1]."</option>";
@@ -408,7 +413,7 @@ class Profile extends CommonDBTM{
 		echo "</select>";
 		echo "</td>";
 
-		echo "<td colspan='1'>".$LANG["setup"][352].":</td>";
+		echo "<td>".$LANG["setup"][352].":</td>";
 		echo "<td>";
 		echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
 		echo "<option value='".COMPUTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))?" selected":"").">".$LANG["help"][25]."</option>\n";
@@ -425,81 +430,128 @@ class Profile extends CommonDBTM{
 
 
 
-		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["Menu"][18]."</strong></td>";
+		echo "<tr><th colspan='6' align='center'><strong>".$LANG["Menu"][18]."</strong></th>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG["knowbase"][1].":</td><td>";
+		echo "<td class='tab_bg_1'>".$LANG["knowbase"][1].":</td><td class='tab_bg_1'>";
 		dropdownNoneReadWrite("faq",$this->fields["faq"],1,1,1);
 		echo "</td>";
-		echo "<td>".$LANG["knowbase"][0].":</td><td>";
-		dropdownNoneReadWrite("knowbase",$this->fields["knowbase"],1,1,1);
+		echo "<td>".$LANG["Menu"][6].":</td><td>";
+		dropdownNoneReadWrite("reports",$this->fields["reports"],1,1,0);
 		echo "</td>";
 		echo "<td>".$LANG["title"][35].":</td><td>";
 		dropdownYesNo("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG["Menu"][6].":</td><td>";
-		dropdownNoneReadWrite("reports",$this->fields["reports"],1,1,0);
-		echo "</td>";
-		echo "<td>".$LANG["Menu"][33].":</td><td>";
-		dropdownNoneReadWrite("ocsng",$this->fields["ocsng"],1,0,1);
+		echo "<td class='tab_bg_1'>".$LANG["knowbase"][0].":</td><td class='tab_bg_1'>";
+		dropdownNoneReadWrite("knowbase",$this->fields["knowbase"],1,1,1);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][23].":</td><td>";
 		dropdownNoneReadWrite("reservation_central",$this->fields["reservation_central"],1,1,1);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["Menu"][15]."</strong></td>";
+		echo "</td>";
+		echo "<td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG["setup"][0].":</td><td>";
-		dropdownNoneReadWrite("dropdown",$this->fields["dropdown"],1,0,1);
+		echo "<td  class='tab_bg_1'>".$LANG["Menu"][33].":</td><td class='tab_bg_1'>";
+		dropdownNoneReadWrite("ocsng",$this->fields["ocsng"],1,0,1);
 		echo "</td>";
-		echo "<td>".$LANG["setup"][222].":</td><td>";
-		dropdownNoneReadWrite("device",$this->fields["device"],1,0,1);
+		echo "<td>".$LANG["profiles"][31].":</td><td>";
+		dropdownNoneReadWrite("sync_ocsng",$this->fields["sync_ocsng"],1,0,1);
 		echo "</td>";
-		echo "<td>".$LANG["document"][7].":</td><td>";
-		dropdownNoneReadWrite("typedoc",$this->fields["typedoc"],1,1,1);
-		echo "</td></tr>";
+		echo "<td>".$LANG["profiles"][30].":</td><td>";
+		dropdownNoneReadWrite("view_ocsng",$this->fields["view_ocsng"],1,1,0);
+		echo "</td>";
+		echo "</tr>";
+
+
+		echo "<tr><th colspan='6' align='center'><strong>".$LANG["Menu"][15]."</strong></th>";
+		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG["setup"][87].":</td><td>";
-		dropdownNoneReadWrite("link",$this->fields["link"],1,1,1);
-		echo "</td>";
-		echo "<td>".$LANG["title"][2].":</td><td>";
-		dropdownNoneReadWrite("config",$this->fields["config"],1,0,1);
-		echo "</td>";
-		echo "<td>".$LANG["setup"][250].":</td><td>";
-		dropdownNoneReadWrite("search_config",$this->fields["search_config"],1,0,1);
-		echo "</td></tr>";
-
-
-		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG["setup"][306].":</td><td>";
-		dropdownNoneReadWrite("check_update",$this->fields["check_update"],1,1,0);
-		echo "</td>";
-		echo "<td>".$LANG["Menu"][14].":</td><td>";
+		echo "<td class='tab_bg_1'>".$LANG["Menu"][14].":</td><td>";
 		dropdownNoneReadWrite("user",$this->fields["user"],1,1,1);
 		echo "</td>";
-		echo "<td>".$LANG["Menu"][35].":</td><td>";
-		dropdownNoneReadWrite("profile",$this->fields["profile"],1,1,1);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["Menu"][36].":</td><td>";
 		dropdownNoneReadWrite("group",$this->fields["group"],1,1,1);
 		echo "</td>";
-		echo "<td>".$LANG["Menu"][12].":</td><td>";
+		echo "<td class='tab_bg_1'>".$LANG["Menu"][37].":</td><td class='tab_bg_1'>";
+		dropdownNoneReadWrite("entity",$this->fields["entity"],1,1,1);
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_1'>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][19].":</td><td>";
+		dropdownNoneReadWrite("rule_ldap",$this->fields["rule_ldap"],1,1,1);
+		echo "</td>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][18].":</td><td>";
+		dropdownNoneReadWrite("rule_ocs",$this->fields["rule_ocs"],1,1,1);
+		echo "</td>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][28].":</td><td>";
+		dropdownNoneReadWrite("rule_tracking",$this->fields["rule_tracking"],1,1,1);
+		echo "</td>";
+		echo "</tr>";
+
+
+		echo "<tr class='tab_bg_1'>";
+		echo "<td class='tab_bg_1'>".$LANG["Menu"][35].":</td><td>";
+		dropdownNoneReadWrite("profile",$this->fields["profile"],1,1,1);
+		echo "</td>";
+
+		echo "<td class='tab_bg_1'>".$LANG["Menu"][12].":</td><td>";
 		dropdownNoneReadWrite("backup",$this->fields["backup"],1,0,1);
 		echo "</td>";
-		echo "<td>".$LANG["Menu"][30].":</td><td>";
+		echo "<td class='tab_bg_1'>".$LANG["Menu"][30].":</td><td>";
 		dropdownNoneReadWrite("logs",$this->fields["logs"],1,1,0);
 		echo "</td></tr>";
 
+		echo "<tr><th colspan='6' align='center'><strong>".$LANG["title"][2]."</strong></th>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td  class='tab_bg_1'>".$LANG["title"][2].":</td><td class='tab_bg_1'>";
+		dropdownNoneReadWrite("config",$this->fields["config"],1,0,1);
+		echo "</td>";
+		echo "<td class='tab_bg_1'>".$LANG["setup"][250].":</td><td class='tab_bg_1'>";
+		dropdownNoneReadWrite("search_config_global",$this->fields["search_config_global"],1,0,1);
+		echo "</td>";
+		echo "<td>".$LANG["setup"][250]." (".$LANG["common"][34]."):</td><td>";
+		dropdownNoneReadWrite("search_config",$this->fields["search_config"],1,0,1);
+		echo "</td>";
+		echo "</tr>";
+
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td class='tab_bg_1'>".$LANG["setup"][222].":</td><td class='tab_bg_1'>";
+		dropdownNoneReadWrite("device",$this->fields["device"],1,0,1);
+		echo "</td>";
+		echo "<td  class='tab_bg_1'>".$LANG["setup"][0].":</td><td class='tab_bg_1'>";
+		dropdownNoneReadWrite("dropdown",$this->fields["dropdown"],1,0,1);
+		echo "</td>";
+		echo "<td>".$LANG["setup"][0]." (".$LANG["entity"][0]."):</td><td>";
+		dropdownNoneReadWrite("entity_dropdown",$this->fields["entity_dropdown"],1,0,1);
+		echo "</td>";
+		echo "</tr>";
+
+
+
+		echo "<tr class='tab_bg_1'>";
+		echo "<td class='tab_bg_1'>".$LANG["document"][7].":</td><td>";
+		dropdownNoneReadWrite("typedoc",$this->fields["typedoc"],1,1,1);
+		echo "</td>";
+		echo "<td class='tab_bg_1'>".$LANG["setup"][87].":</td><td>";
+		dropdownNoneReadWrite("link",$this->fields["link"],1,1,1);
+		echo "</td>";
+		echo "<td class='tab_bg_1'>".$LANG["setup"][306].":</td><td>";
+		dropdownNoneReadWrite("check_update",$this->fields["check_update"],1,1,0);
+		echo "</td>";
+		echo "</tr>";
+
+
 		if ($canedit){
-			echo "<tr class='tab_bg_1'>";
+			echo "<tr class='tab_bg_2'>";
 			if ($ID){
 				echo "<td colspan='3' align='center'>";
 				echo "<input type='hidden' name='ID' value=$ID>";

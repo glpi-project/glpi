@@ -917,7 +917,59 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add state in glpi_reminder" . $LANG["update"][90] . $DB->error());
 	}
 
-	// TODO Split Config -> config general + config entity
+	// Rights
+	if (!FieldExists("glpi_profiles", "search_config_global")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `search_config_global` char(1) default NULL AFTER `search_config`";
+		$DB->query($query) or die("0.7 add search_config_global in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `search_config_global` = search_config";
+		$DB->query($query) or die("0.7 update search_config_global values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `search_config` = 'w' WHERE interface='central'";
+		$DB->query($query) or die("0.7 update search_confi values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}	
+	if (!FieldExists("glpi_profiles", "entity")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `entity` char(1) default NULL AFTER `group`";
+		$DB->query($query) or die("0.7 add entity in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `entity` = config";
+		$DB->query($query) or die("0.7 update entity values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_profiles", "entity_dropdown")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `entity_dropdown` char(1) default NULL AFTER `dropdown`";
+		$DB->query($query) or die("0.7 add entity_dropdown in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `entity_dropdown` = dropdown";
+		$DB->query($query) or die("0.7 update entity_dropdown values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_profiles", "sync_ocsng")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `sync_ocsng` char(1) default NULL AFTER `ocsng`";
+		$DB->query($query) or die("0.7 add sync_ocsng in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `sync_ocsng` = ocsng";
+		$DB->query($query) or die("0.7 update sync_ocsng values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_profiles", "view_ocsng")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `view_ocsng` char(1) default NULL AFTER `ocsng`";
+		$DB->query($query) or die("0.7 add view_ocsng in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `view_ocsng` = 'r' WHERE interface='central'";
+		$DB->query($query) or die("0.7 update view_ocsng values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_profiles", "rule_ldap")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `rule_ldap` char(1) default NULL AFTER `config`";
+		$DB->query($query) or die("0.7 add rule_ldap in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `rule_ldap` = config";
+		$DB->query($query) or die("0.7 update rule_ldap values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_profiles", "rule_ocs")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `rule_ocs` char(1) default NULL AFTER `config`";
+		$DB->query($query) or die("0.7 add rule_ocs in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `rule_ocs` = config";
+		$DB->query($query) or die("0.7 update rule_ocs values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_profiles", "rule_tracking")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `rule_tracking` char(1) default NULL AFTER `config`";
+		$DB->query($query) or die("0.7 add rule_tracking in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `rule_tracking` = config";
+		$DB->query($query) or die("0.7 update rule_tracking values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+
 	
+
 } // fin 0.7 #####################################################################################
 ?>

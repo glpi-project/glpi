@@ -42,14 +42,16 @@ if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["ID"])) $tab["ID"] = "";
 
-checkRight("config","w");
+checkRight($rulecollection->right,"r");
 
 
 if (isset($tab["action"])){
+	checkRight($rulecollection->right,"w");
+
 	$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($tab["deleterule"])){
-		
+	checkRight($rulecollection->right,"w");	
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{

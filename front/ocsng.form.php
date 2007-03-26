@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 if(empty($tab) && isset($_POST)) $tab = $_POST;
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 
-checkRight("config", "w");
+checkRight("ocsng", "w");
 $ocs = new Ocsng();
 
 if(isset($_GET)) $tab = $_GET;

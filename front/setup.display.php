@@ -50,7 +50,7 @@ if (isset($_GET['onglet'])) $_SESSION['glpi_searchconfig']=$_GET['onglet'];
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","display");
 
-checkCentralAccess();
+checkSeveralRightsOr(array("search_config_global"=>"w","search_config"=>"w"));
 
 $setupdisplay=new SetupSearchDisplay();
 

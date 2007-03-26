@@ -55,6 +55,9 @@ class SetupSearchDisplay extends CommonDBTM{
 
 	function activatePerso($input){
 		global $DB,$SEARCH_OPTION;
+
+		if (!haveRight("search_config","w")) return false;
+
 		$query="SELECT * FROM glpi_display WHERE type='".$input["type"]."' AND FK_users='0'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
@@ -217,7 +220,9 @@ class SetupSearchDisplay extends CommonDBTM{
 	
 			echo "<div id='barre_onglets'><ul id='onglet'>";
 			echo "<li "; if ($_SESSION['glpi_searchconfig']==1){ echo "class='actif'";} echo  "><a href='".$CFG_GLPI["root_doc"]."/front/setup.display.php?onglet=1&amp;type=$type'>".$LANG["central"][13]."</a></li>";
-			echo "<li "; if ($_SESSION['glpi_searchconfig']==2){ echo "class='actif'";} echo  "><a href='".$CFG_GLPI["root_doc"]."/front/setup.display.php?onglet=2&amp;type=$type'>".$LANG["central"][12]."</a></li>";
+			if (haveRight("search_config","w")){
+				echo "<li "; if ($_SESSION['glpi_searchconfig']==2){ echo "class='actif'";} echo  "><a href='".$CFG_GLPI["root_doc"]."/front/setup.display.php?onglet=2&amp;type=$type'>".$LANG["central"][12]."</a></li>";
+			}
 			echo "</ul></div>";
 			return $type;
 		} else return false;
@@ -230,7 +235,8 @@ class SetupSearchDisplay extends CommonDBTM{
 		$is_global=($_SESSION['glpi_searchconfig']==1);
 		if ($is_global) $IDuser=0;
 		else $IDuser=$_SESSION["glpiID"];
-		$global_write=haveRight("search_config","w");
+
+		$global_write=haveRight("search_config_global","w");
 
 		echo "<div align='center'>";
 		// Defined items
@@ -240,7 +246,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		$numrows=0;
 		$numrows=$DB->numrows($result);
 		if ($numrows==0&&!$is_global){
-
+			checkRight("search_config","w");
 			echo "<table class='tab_cadre_fixe' cellpadding='2' ><tr><th colspan='4'>";
 			echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/setup.display.php\">";
 			echo "<input type='hidden' name='type' value='$type'>";

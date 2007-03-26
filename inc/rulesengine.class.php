@@ -41,6 +41,7 @@ class RuleCollection {
 	var $rule_type;
 	var $rule_class_name="Rule";
 	var $stop_on_first_match=false;
+	var $right="config";
 
 	
 	/**
@@ -90,14 +91,16 @@ class RuleCollection {
 	function showForm($target){
 		global $CFG_GLPI, $LANG;
 			
-		$canedit = haveRight("config", "w");
+		$canedit = haveRight($this->right, "w");
 		$this->getCollectionDatas(0,0);
 		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
 		echo "<div align='center'>"; 
 		echo "<table class='tab_cadrehov'>";
 
 		echo "<tr><th colspan='6'><div style='position: relative'><span><strong>" . $this->getTitle() . "</strong></span>";
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".ereg_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+		if ($canedit){
+			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".ereg_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+		}
 
 		echo "</div></th></tr>";
 		echo "<tr>";
@@ -223,6 +226,7 @@ class Rule extends CommonDBTM{
 	var $criterias = array();
 	// Rule type
 	var $rule_type;
+	var $right="config";
 
 	/**
 	* Constructor
@@ -253,7 +257,7 @@ class Rule extends CommonDBTM{
 	function showForm($target,$ID,$withtemplate=''){
 			global $CFG_GLPI, $LANG;
 
-			$canedit=haveRight("config","w");
+			$canedit=haveRight($this->right,"w");
 
 			$new=false;
 			if (!empty($ID)&&$ID>0){
@@ -374,7 +378,7 @@ class Rule extends CommonDBTM{
 	{
 		global $CFG_GLPI, $LANG;
 			
-		$canedit = haveRight("config", "w");
+		$canedit = haveRight($this->right, "w");
 		echo "<form name='actionsform' id='actionsform' method='post' action=\"$target\">";
 		$this->getTitleAction($target);	
 		if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount()) && $canedit){
@@ -512,7 +516,7 @@ class Rule extends CommonDBTM{
 	{
 		global $CFG_GLPI, $LANG;
 			
-		$canedit = haveRight("config", "w");
+		$canedit = haveRight($this->right, "w");
 
 		echo "<form name='criteriasform' id='criteriasform' method='post' action=\"$target\">";
 		
@@ -786,7 +790,7 @@ class Rule extends CommonDBTM{
 	function showMinimalForm($target,$first=false,$last=false){
 		global $LANG,$CFG_GLPI;
 			
-		$canedit = haveRight("config","w");
+		$canedit = haveRight($this->right,"w");
 			
 		echo "<tr class='tab_bg_1'>";
 				
@@ -1044,7 +1048,6 @@ class RuleCriteria extends CommonDBTM {
 	function showForm($target,$ID,$ruleid=-1)
 	{
 			global $LANG,$CFG_GLPI;
-			$canedit = haveRight("config", "w");
 			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
 			echo "<div align='center'>"; 
 			echo "<table class='tab_cadre_fixe'>";

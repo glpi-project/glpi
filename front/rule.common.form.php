@@ -36,7 +36,8 @@
 if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
-
+echo $rule->right;
+checkRight($rule->right,"r");
 
 if(isset($_GET)) $tab = $_GET;
 if(empty($tab) && isset($_POST)) $tab = $_POST;
@@ -50,11 +51,10 @@ if (isset($_GET['onglet'])) {
 $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
 
-
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rules");
 if (isset($tab["delete_criteria"]))
 {
-	
+	checkRight($rulecollection->right,"w");
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
@@ -66,7 +66,7 @@ if (isset($tab["delete_criteria"]))
 }
 if (isset($tab["delete_action"]))
 {
-	
+	checkRight($rulecollection->right,"w");
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
@@ -78,24 +78,29 @@ if (isset($tab["delete_action"]))
 }
 elseif (isset($tab["add_criteria"]))
 {
+	checkRight($rulecollection->right,"w");
 	$rulecriteria->add($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($tab["add_action"]))
 {
+	checkRight($rulecollection->right,"w");
 	$ruleaction->add($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($tab["update_rule"]))
 {
+	checkRight($rulecollection->right,"w");
 	$rule->update($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($tab["add_rule"]))
 {
+	checkRight($rulecollection->right,"w");
 	$rule->add($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($tab["delete_rule"]))
 {
+	checkRight($rulecollection->right,"w");
 	$rule->delete($tab);
 	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");
 }

@@ -38,7 +38,7 @@ $NEEDED_ITEMS=array("entity","user","search");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config","r");
+checkRight("entity","r");
 
 commonHeader($LANG["Menu"][37],$_SERVER['PHP_SELF'],"admin","entity");
 
