@@ -42,7 +42,7 @@ if(!defined('GLPI_ROOT')){
 }
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("dropdown","w");
+checkSeveralRightsOr(array("dropdown"=>"w","entity_dropdown"=>"w"));
 
 //if(isset($_SERVER['HTTP_REFERER']))
 //$httpreferer=preg_replace("/\?which=\w*/","",$_SERVER['HTTP_REFERER']);
@@ -185,6 +185,36 @@ else {
 					"glpi_dropdown_vlan"=>$LANG["setup"][90],	
 					),
 			); //end $opt
+
+
+	if (!haveRight("dropdown","w")){
+		foreach($optgroup as $label=>$dp){
+			foreach ($dp as $key => $val){
+				if (!in_array($key,$CFG_GLPI["specif_entities_tables"])){
+					unset($optgroup[$label][$key]);
+				}
+				
+			}
+			if (count($optgroup[$label])==0){
+				unset($optgroup[$label]);
+			}
+		}
+	}
+
+	if (!haveRight("entity_dropdown","w")){
+		foreach($optgroup as $label=>$dp){
+			foreach ($dp as $key => $val){
+				if (in_array($key,$CFG_GLPI["specif_entities_tables"])){
+					unset($optgroup[$label][$key]);
+				}
+				
+			}
+			if (count($optgroup[$label])==0){
+				unset($optgroup[$label]);
+			}
+		}
+	}
+
 	if (!ereg("popup",$_SERVER['PHP_SELF'])){
 		echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";

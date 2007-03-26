@@ -42,7 +42,7 @@ if(!defined('GLPI_ROOT')){
 }
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config","w");
+checkRight("entity","w");
 
 $which=ENTITY_TYPE;
 

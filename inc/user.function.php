@@ -279,9 +279,10 @@ function showGroupAssociated($target,$ID){
 function showUserRights($target,$ID){
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("user","r")||!haveRight("config","r"))	return false;
+	if (!haveRight("user","r")||!haveRight("entity","r"))	return false;
 
-	$canedit=haveRight("config","w");
+	$canedit=haveRight("entity","w");
+	$canshowentity=haveRight("entity","r");
 	$headerspan=1;
 	if ($canedit) {
 		$headerspan=2;
@@ -334,8 +335,14 @@ function showUserRights($target,$ID){
 			if ($data["FK_entities"]==0) {
 				$data["completename"]=$LANG["entity"][2];
 			}
-			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["FK_entities"]."'>".$data["completename"].($CFG_GLPI["view_ID"]?" (".$data["FK_entities"].")":"")."</a>";
-			echo "&nbsp;";
+			echo "<td>";
+			if ($canshowentity){
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["FK_entities"]."'>";
+			}
+			echo $data["completename"].($CFG_GLPI["view_ID"]?" (".$data["FK_entities"].")":"");
+			if ($canshowentity){
+				echo "</a>";
+			}
 			echo "</td>";
 			echo "<td>".$data["name"];
 			if ($data["dynamic"]||$data["recursive"]){

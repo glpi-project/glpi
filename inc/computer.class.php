@@ -79,7 +79,7 @@ class Computer extends CommonDBTM {
 				
 			$ong[12]=$LANG["title"][38];
 
-			if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w"))
+			if ($CFG_GLPI["ocs_mode"]&&haveRight("sync_ocsng","w"))
 				$ong[13]=$LANG["Menu"][33];
 		}	
 		return $ong;
@@ -578,7 +578,7 @@ class Computer extends CommonDBTM {
 				echo "</td>";
 				echo "</tr>";
 	
-				if (!empty($ID)&&$this->fields["ocs_import"]){
+				if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
 					$query="SELECT * 
 						FROM glpi_ocs_link 
 						WHERE glpi_id='$ID'";

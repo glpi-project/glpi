@@ -42,6 +42,7 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 	function TrackingBusinessRuleCollection() {
 		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
 		$this->rule_class_name="TrackingBusinessRule";
+		$this->right="rule_tracking";
 	}
 
 }
@@ -52,6 +53,8 @@ class TrackingBusinessRule extends Rule {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
+		$this->right="rule_tracking";
+
 	}
 
 

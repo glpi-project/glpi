@@ -54,6 +54,8 @@ class LdapAffectEntityRule extends Rule {
 		
 		//Dynamically add all the ldap criterias to the current list of rule's criterias
 		$this->addLdapCriteriasToArray();
+		$this->right="rule_ldap";
+
 	}
 
 	function maxActionsCount(){
@@ -67,7 +69,7 @@ class LdapAffectEntityRule extends Rule {
 	function showAndAddRuleForm($target, $ID) {
 		global $LANG, $CFG_GLPI;
 
-		$canedit = haveRight("config", "w");
+		$canedit = haveRight($this->right, "w");
 
 		echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
 
@@ -259,12 +261,13 @@ class LdapRuleCollection extends RuleCollection {
 	var $rules_entity_rights = array();
 	var $rules_entity = array();
 	var $rules_rights = array();
-	
+
 	function LdapRuleCollection() {
 		global $DB;
 		$this->rule_type = RULE_LDAP_AFFECT_ENTITY;
 		$this->rule_class_name = 'LdapAffectEntityRule';
 		$this->stop_on_first_match=false;
+		$this->right="rule_ldap";
 	}
 
 	

@@ -38,20 +38,20 @@ $NEEDED_ITEMS=array("entity","rulesengine","rule.ocs","rule.ldap");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("config","r");
+checkRight("entity","r");
 
 $entity=new Entity();
 $entitydata=new EntityData();
 
 if (isset($_POST["update"]))
 {
-	checkRight("config","w");
+	checkRight("entity","w");
 	$entitydata->update($_POST);
 	logEvent($_POST["ID"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["adduser"]))
 {
-	checkRight("config","w");
+	checkRight("entity","w");
 
 	addUserProfileEntity($_POST);
 
@@ -59,7 +59,7 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["add_rule"]))
 {
-	checkRight("config","w");
+	checkRight("entity","w");
 
 
 	$rule = new OcsAffectEntityRule;
@@ -77,7 +77,7 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["add_user_rule"]))
 {
-	checkRight("config","w");
+	checkRight("entity","w");
 
 
 	$rule = new LdapAffectEntityRule;
@@ -99,7 +99,7 @@ if (isset($_POST["update"]))
 
 } else if (isset($_POST["deleteuser"]))
 {
-	checkRight("config","w");
+	checkRight("entity","w");
 
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
@@ -109,7 +109,7 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"]))
 {
-	checkRight("config","w");
+	checkRight("entity","w");
 	if (isset($_POST["delete_computer_rule"]))
 		$rule = new OcsAffectEntityRule;		
 	else

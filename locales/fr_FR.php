@@ -1054,6 +1054,8 @@ $LANG["printers"][30]="Compteur de page initial";
 $LANG["printers"][31]="Pages imprimées";
 $LANG["printers"][35]="Type de gestion";
 
+$LANG["profiles"][0]="Droit global";
+$LANG["profiles"][1]="Droit local";
 $LANG["profiles"][2]="Interface";
 $LANG["profiles"][3]="Droits de l'interface Helpdesk";
 $LANG["profiles"][4]="Droits de l'interface Central";
@@ -1082,6 +1084,8 @@ $LANG["profiles"][26]="Voir les tickets de mes groupes";
 $LANG["profiles"][27]="Voir les matériels de mes groupes";
 $LANG["profiles"][28]="Récursif";
 $LANG["profiles"][29]="Dynamique";
+$LANG["profiles"][30]="Voir les informatiosn OCSNG";
+$LANG["profiles"][31]="Synchronisation OCSNG manuellement";
 
 $LANG["registry"][1]="Ruche";
 $LANG["registry"][2]="Chemin";

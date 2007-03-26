@@ -431,7 +431,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			}
 
 		// TODO SPECIFIC RIGHT TO ENTITY
-		if (haveRight("config","r")){
+		if (haveRight("entity","r")){
 			$menu['admin']['content']['entity']['title']=$LANG["Menu"][37];
 			$menu['admin']['content']['entity']['shortcut']='z';
 			$menu['admin']['content']['entity']['page']='/front/entity.php';
@@ -441,7 +441,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
 		}
 
-		if (haveRight("config","r")){
+		if (haveRight("rule_ldap","r")||haveRight("rule_ocs","r")||haveRight("rule_tracking","r")){
 			$menu['admin']['content']['rule']['title']=$LANG["rulesengine"][17];
 			$menu['admin']['content']['rule']['shortcut']='r';
 			$menu['admin']['content']['rule']['page']='/front/rule.php';
@@ -479,10 +479,12 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		$menu['config']['default']='/front/setup.php';
 
 
-		$menu['config']['content']['display']['title']=$LANG["search"][0];
-		$menu['config']['content']['display']['page']='/front/setup.display.php';
+		if (haveRight("search_config","w")||haveRight("search_config_global","w")){
+			$menu['config']['content']['display']['title']=$LANG["search"][0];
+			$menu['config']['content']['display']['page']='/front/setup.display.php';
+		}
 		
-		if (haveRight("dropdown","w")){
+		if (haveRight("dropdown","w")||haveRight("entity_dropdown","w")){
 			$menu['config']['content']['dropdowns']['title']=$LANG["setup"][0];
 			$menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
 		}

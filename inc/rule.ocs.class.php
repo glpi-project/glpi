@@ -47,6 +47,7 @@ class OcsRuleCollection extends RuleCollection {
 		$this->rule_class_name = 'OcsAffectEntityRule';
 		$this->ocs_server_id = $ocs_server_id;
 		$this->stop_on_first_match=true;
+		$this->right="rule_ocs";
 	}
 
 	function getTitle() {
@@ -195,6 +196,7 @@ class OcsAffectEntityRule extends Rule {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
+		$this->right="rule_ocs";
 	}
 
 	function getTitle() {
@@ -213,7 +215,7 @@ class OcsAffectEntityRule extends Rule {
 	function showAndAddRuleForm($target, $ID) {
 		global $LANG, $CFG_GLPI;
 
-		$canedit = haveRight("config", "w");
+		$canedit = haveRight($this->right, "w");
 
 		echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
 
