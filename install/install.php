@@ -99,6 +99,7 @@ function choose_language()
 	echo "<option value=\"es_AR\">Argentino (es_AR)</option>";
 	echo "<option value=\"pt_PT\">Portuguese (pt_PT)</option>";
 	echo "<option value=\"nl_NL\">Dutch (nl_NL)</option>";
+	echo "<option value=\"nl_BE\">Dutch (Belgium)(nl_BE)</option>";
 	echo "<option value=\"hu_HU\">Hungarian (hu_HU)</option>";
 	echo "<option value=\"bg_BG\">Bulgarian (bg_BG)</option>";
 	echo "<option value=\"pl_PL\">Polish (pl_PL)</option>";
