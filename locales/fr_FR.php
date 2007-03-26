@@ -961,6 +961,12 @@ $LANG["ocsng"][26]="Choix d'un serveur OCS";
 $LANG["ocsng"][27]="Aucun serveur OCS n'est défini";
 $LANG["ocsng"][28]="Nouveau serveur OCS à partir d'un modèle";
 $LANG["ocsng"][29]="Serveur OCS";
+$LANG["ocsng"][30]="Moniteur(s) verrouillé(s)";
+$LANG["ocsng"][31]="Aucun moniteur verrouillé";
+$LANG["ocsng"][32]="Périphérique(s) verouillé(s)";
+$LANG["ocsng"][33]="Aucun périphérique verrouillé";
+$LANG["ocsng"][34]="Imprimante(s) verrouillé(s)";
+$LANG["ocsng"][35]="Aucune imprimante verrouillé";
 
 $LANG["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
 $LANG["ocsconfig"][1]="Utilisateur de la base de données OCSweb";
@@ -995,6 +1001,10 @@ $LANG["ocsconfig"][44]="Type de license par défaut";
 $LANG["ocsconfig"][45]="License site (global)";
 $LANG["ocsconfig"][46]="License libre (free)";
 $LANG["ocsconfig"][47]="License « en règle » par défaut";
+$LANG["ocsconfig"][48]="Comportement lors de la déconnection";
+$LANG["ocsconfig"][49]="Corbeille";
+$LANG["ocsconfig"][50]="Suppression";
+$LANG["ocsconfig"][51]="Deconnection avec état";
 
 $LANG["pager"][1]="à";
 $LANG["pager"][2]="de";
