@@ -1128,6 +1128,96 @@ function ocsEditLock($target, $ID) {
 		} else
 			echo "<strong>" . $LANG["ocsng"][15] . "</strong>";
 		echo "</div>";
+		
+		//Search locked monitors
+		$header = false;
+		echo "<br>";
+		echo "<div align='center'>";
+		$locked_monitor = importArrayFromDB($data["import_monitor"]);	
+		foreach($locked_monitor as $key => $val){
+			if($val!="_version_070_"){				
+				$querySearchLockedMonitor = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";		
+				$resultSearch = $DB->query($querySearchLockedMonitor);
+				if($DB->numrows($resultSearch) == 0){
+					//$header = true;
+					if(!$header){
+						$header = true;
+						echo "<form method='post' action=\"$target\">";
+						echo "<input type='hidden' name='ID' value='$ID'>";
+						echo "<table class='tab_cadre'>";
+						echo "<tr><th colspan='2'>" . $LANG["ocsng"][30] . "</th></tr>";
+					}
+					echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockmonitor[" . $key . "]'></td></tr>";
+				}
+			}
+		}
+		if($header){
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_monitor' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "</table>";
+			echo "</form>";
+		}
+		else
+			echo "<strong>" . $LANG["ocsng"][31] . "</strong>";
+		echo "</div>";
+		
+		//Search locked printers
+		$header = false;
+		echo "<br>";
+		echo "<div align='center'>";
+		$locked_printer = importArrayFromDB($data["import_printers"]);	
+		foreach($locked_printer as $key => $val){
+			$querySearchLockedPrinter = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";			
+			$resultSearchPrinter = $DB->query($querySearchLockedPrinter);
+			if($DB->numrows($resultSearchPrinter) == 0){
+				//$header = true;
+				if(!($header)){
+					$header = true;
+					echo "<form method='post' action=\"$target\">";
+					echo "<input type='hidden' name='ID' value='$ID'>";
+					echo "<table class='tab_cadre'>";
+					echo "<tr><th colspan='2'>" . $LANG["ocsng"][34] . "</th></tr>";
+				}
+				echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockprinter[" . $key . "]'></td></tr>";
+			} 
+		}
+		if($header){
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_printer' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "</table>";
+			echo "</form>";
+		}
+		else
+			echo "<strong>" . $LANG["ocsng"][35] . "</strong>";
+		echo "</div>";
+		
+		//Search locked peripherals
+		$header = false;
+		echo "<br>";
+		echo "<div align='center'>";
+		$locked_printer = importArrayFromDB($data["import_peripheral"]);	
+		foreach($locked_printer as $key => $val){
+			$querySearchLockedPeriph = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";			
+			$resultSearchPrinter = $DB->query($querySearchLockedPeriph);
+			if($DB->numrows($resultSearchPrinter) == 0){
+				//$header = true;
+				if(!($header)){
+					$header = true;
+					echo "<form method='post' action=\"$target\">";
+					echo "<input type='hidden' name='ID' value='$ID'>";
+					echo "<table class='tab_cadre'>";
+					echo "<tr><th colspan='2'>" . $LANG["ocsng"][32] . "</th></tr>";
+				}
+				echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockperiph[" . $key . "]'></td></tr>";
+			} 
+		}
+		if($header){
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_periph' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "</table>";
+			echo "</form>";
+		}
+		else
+			echo "<strong>" . $LANG["ocsng"][33] . "</strong>";
+		echo "</div>";	
+		
 	}
 
 }
@@ -1621,6 +1711,10 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 	
 	$do_clean = false;
 	$connID = 0;
+	//Tag for data since 0.70 for the import_monitor array.
+	$tagVersionInArray = "_version_070_";
+	
+	$count_monitor = count($import_periph);
 	switch ($device_type) {
 		case MONITOR_TYPE :
 			if ($cfg_ocs["import_monitor"]) {
@@ -1644,21 +1738,37 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 							$mon["name"] .= $line["TYPE"];
 						}
 
+						$mon["serial"] = $line["SERIAL"];
+						$checkMonitor = "";	
+						if(!empty($mon["serial"])){
+							$checkMonitor = $mon["name"];
+							$checkMonitor .= $mon["serial"];											
+						}
+						else
+							$checkMonitor = $mon["name"];	
+						//Update data in import_monitor array for 0.70
+						if(!in_array($tagVersionInArray, $import_periph)){								
+								foreach ($import_periph as $key => $val) {
+									//delete old value									
+									deleteInOcsArray($glpi_id, $key, "import_monitor");
+									//add new value (serial + name when its possible)
+								    addToOcsArray($glpi_id, array ($key => $checkMonitor), "import_monitor");			
+								}
+								//add the tag for the array version's
+								 addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
+						}						
 						if (!empty ($mon["name"]))
-							if (!in_array($mon["name"], $import_periph)) {
+							if (!in_array($checkMonitor, $import_periph)){
 								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $line["MANUFACTURER"]);
-								$mon["comments"] = $line["DESCRIPTION"];
-								$mon["serial"] = $line["SERIAL"];
+								$mon["comments"] = $line["DESCRIPTION"];								
 								$id_monitor = 0;
 								$found_already_monitor = false;
 								if ($cfg_ocs["import_monitor"] == 1) {
 									//Config says : manage monitors as global
 									//check if monitors already exists in GLPI
 									$mon["is_global"] = 1;
-									$query = "SELECT ID 
-																			FROM glpi_monitors 
-																			WHERE name = '" . $mon["name"] . "'
-																			AND is_global = '1' AND FK_entities=".$entity;
+									$query = "SELECT ID FROM glpi_monitors WHERE name = '" . $mon["name"] . "'
+											AND is_global = '1' AND FK_entities=".$entity;
 									$result_search = $DB->query($query);
 									if ($DB->numrows($result_search) > 0) {
 										//Periph is already in GLPI
@@ -1672,18 +1782,15 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										$id_monitor = $m->addToDB();
 									}
 								} else
-									if ($cfg_ocs["import_monitor"] == 2) {
+									if ($cfg_ocs["import_monitor"] == 2) {										
 										//COnfig says : manage monitors as single units
 										//Import all monitors as non global.
 										$mon["is_global"] = 0;
-										$m = new Monitor;
-
+										$m = new Monitor;										
 										// First import - Is there already a monitor ?
-										if (count($import_periph) == 0) {
-											$query_search = "SELECT end1 
-																						FROM glpi_connect_wire 
-																						WHERE end2='$glpi_id' 
-																						AND type='" . MONITOR_TYPE . "'";
+										if ($count_monitor == 0) {											
+											$query_search = "SELECT ID FROM glpi_monitors WHERE name = '" . $mon["name"] . "'
+															 AND is_global = '1' AND FK_entities=".$entity;
 											$result_search = $DB->query($query_search);
 											if ($DB->numrows($result_search) == 1) {
 												$id_monitor = $DB->result($result_search, 0, 0);
@@ -1705,13 +1812,27 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 												$id_monitor = 0;
 												// Try to find a monitor with the same serial.
 												if (!empty ($mon["serial"])) {
-													$query = "SELECT ID 
-																										FROM glpi_monitors 
-																										WHERE serial = '" . $mon["serial"] . "' AND FK_entities=".$entity;
+													$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND FK_entities=".$entity;
 													$result_search = $DB->query($query);
 													if ($DB->numrows($result_search) == 1) {
 														//Monitor founded
 														$id_monitor = $DB->result($result_search, 0, "ID");
+													}
+												}
+												//Search by serial failed, search by name
+												if (!$id_monitor) {
+													//Try to find a monitor with the same name.
+													if (!empty ($mon["name"])) {
+														$query = "SELECT ID,serial FROM glpi_monitors WHERE name = '" . $mon["name"] . "' AND FK_entities=".$entity;
+														$result_search = $DB->query($query);
+														if ($DB->numrows($result_search) == 1) {
+															//Monitor founded
+															$serial_monitor = "";
+															$serial_monitor = $DB->result($result_search, 0, "serial");
+															//Verify if serial are equals (for monitor with the same name and different serial)
+															if($serial_monitor==$mon['serial'])
+															$id_monitor = $DB->result($result_search, 0, "ID");
+														}
 													}
 												}
 												// Nothing found : add it
@@ -1725,35 +1846,71 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										} else {
 											// Try to find a monitor with the same serial.
 											if (!empty ($mon["serial"])) {
-												$query = "SELECT ID 
-																								FROM glpi_monitors 
-																								WHERE serial = '" . $mon["serial"] . "' AND FK_entity=".$entity;
+												$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND FK_entities=".$entity;
 												$result_search = $DB->query($query);
 												if ($DB->numrows($result_search) == 1) {
-													//Monitor founded
-													$id_monitor = $DB->result($result_search, 0, "ID");
+													//Monitor founded												
+													$id_monitor = $DB->result($result_search, 0, "ID");																									
 												}
 											}
-											// Nothing found : add it
+											//Search by serial failed, search by name
+											if (!$id_monitor) {
+											//Try to find a monitor with the same name.
+												if (!empty ($mon["name"])) {
+													$query = "SELECT ID,serial FROM glpi_monitors WHERE name = '" . $mon["name"] . "' AND FK_entities=".$entity;
+													$result_search = $DB->query($query);
+													if ($DB->numrows($result_search) == 1) {
+														//Monitor founded
+														$serial_monitor="";
+														$serial_monitor = $DB->result($result_search, 0, "serial");
+														//Verify if serial are equals (for dual monitor with the same name)
+														if($serial_monitor!="" && !empty ($mon['serial']))
+														if($serial_monitor==$mon['serial'])
+														$id_monitor = $DB->result($result_search, 0, "ID");																							
+													}
+												}
+											}
 											if (!$id_monitor) {
 												$mon["state"] = $cfg_ocs["default_state"];
 												$m->fields = $mon;
 												$m->fields["FK_entities"]=$entity;
-												$id_monitor = $m->addToDB();
+												$id_monitor = $m->addToDB();												
 											}
 										}
 									}
 								if ($id_monitor) {
 									if (!$found_already_monitor)
 										$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE);
-									addToOcsArray($glpi_id, array (
-										$connID => $mon["name"]
-									), "import_monitor");
+									if(!empty($mon["serial"])){
+										$addValuetoDB = $mon["name"];
+										$addValuetoDB .= $mon["serial"];											
+									}
+									else 
+										$addValuetoDB = $mon["name"];										
+									if(!in_array($tagVersionInArray, $import_periph)){
+										addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
+									}
+									addToOcsArray($glpi_id, array ($connID => $addValuetoDB), "import_monitor");											
+									$count_monitor++;																		
+									//Update column "deleted" set value to 0
+									$queryUpdate = "UPDATE glpi_monitors SET deleted='0' WHERE ID='$id_monitor'";
+									$DB->query($queryUpdate);
 								}
-							} else {
-								$id = array_search($mon["name"], $import_periph);
+							} else {								
+								$searchDBValue = "";	
+								if(!empty($mon["serial"])){
+									$searchDBValue = $mon["name"];
+									$searchDBValue .= $mon["serial"];											
+								}
+								else
+									$searchDBValue = $mon["name"];	
+								$id = array_search($searchDBValue, $import_periph);
 								unset ($import_periph[$id]);
 							}
+					}
+					if(in_array($tagVersionInArray, $import_periph)){
+						//unset the version Tag
+						unset ($import_periph[0]);
 					}
 			}
 			break;
@@ -2078,6 +2235,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 	
 	checkOCSconnection($ocs_server_id);
 
+	
 	if ($cfg_ocs["import_software"]) {
 		$import_software_licensetype = $cfg_ocs["import_software_licensetype"];
 		$import_software_buy = $cfg_ocs["import_software_buy"];
@@ -2131,7 +2289,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 							$isNewSoft = $soft->addToDB();
 						}
 						if ($isNewSoft) {
-							$instID = installSoftware($glpi_id, ocsImportLicense($isNewSoft, $import_software_licensetype, $import_software_buy), '', $dohistory);
+							$instID = installSoftware($glpi_id, ocsImportLicense($isNewSoft), '', $dohistory);
 							$to_add_to_ocs_array[$instID]=$initname;
 						}
 
@@ -2639,5 +2797,36 @@ function getColumnListFromAccountInfoTable($ID,$glpi_column){
 			}
 		}
 		return $listColumn;
+}
+	
+function getListState($ocs_server_id){
+	global $DB,$LANG;
+	$listState ="";
+	$queryStateSelected = "SELECT deconnection_behavior from glpi_ocs_config WHERE ID='$ocs_server_id'";
+	$resultSelected = $DB->query($queryStateSelected);
+	if($DB->numrows($resultSelected)>0){
+		$res = $DB->fetch_array($resultSelected);
+		$selected = $res["deconnection_behavior"]; 
 	}
+	if($selected == "trash")
+	$listState .= "<option value='trash' selected>" . $LANG["ocsconfig"][49] . "</option>";
+	else
+	$listState .= "<option value='trash'>" . $LANG["ocsconfig"][49] . "</option>";
+	if($selected == "delete")
+	$listState .= "<option value='delete' selected>" . $LANG["ocsconfig"][50] . "</option>";
+	else
+	$listState .= "<option value='delete'>" . $LANG["ocsconfig"][50] . "</option>";
+	$queryStateList = "SELECT name from glpi_dropdown_state";	
+	$result = $DB->query($queryStateList);
+	if($DB->numrows($result)>0){
+		while(($data = $DB->fetch_array($result))){
+			$state = $data["name"];
+			if($state == $selected)
+			$listState .="<option value='$state' selected>" .$LANG["ocsconfig"][51]." ".$state . "</option>";
+			else
+			$listState .="<option value='$state'>" .$LANG["ocsconfig"][51]." ".$state . "</option>";
+		}
+	}
+	return $listState;
+}
 ?>

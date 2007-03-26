@@ -104,7 +104,9 @@ else if (isset($tab["disconnect"]))
 {
 	checkRight("peripheral","w");
 
-	Disconnect($tab["ID"]);
+	//Get the ocs server id associated with the machine
+	$ocs_server_id = getOCSServerByMachineID($tab["cID"]);
+	Disconnect($tab["ID"],$ocs_server_id);
 	logEvent(0, "peripherals", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

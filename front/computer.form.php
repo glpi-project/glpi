@@ -91,7 +91,9 @@ else if (isset($tab["update"])) {
 //Disconnect a device 
 else if (isset($tab["disconnect"])) {
 	checkRight("computer","w");
-	Disconnect($tab["ID"]);
+	//Get the ocs server id associated with the machine
+	$ocs_server_id = getOCSServerByMachineID($tab["cID"]);
+	Disconnect($tab["ID"],$ocs_server_id);
 	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -132,6 +134,30 @@ elseif (isset($_POST["connect_device"])) {
 	if (isset($_POST["new_device_id"])&&$_POST["new_device_id"]>0)
 		compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
 	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
+}
+elseif(isset($tab["unlock_monitor"])){
+	checkRight("ocsng","w");
+	if (isset($tab["lockmonitor"])&&count($tab["lockmonitor"])){
+		foreach ($tab["lockmonitor"] as $key => $val)
+			deleteInOcsArray($tab["ID"],$key,"import_monitor");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);	
+}
+elseif(isset($tab["unlock_printer"])){
+	checkRight("ocsng","w");
+	if (isset($tab["lockprinter"])&&count($tab["lockprinter"])){
+		foreach ($tab["lockprinter"] as $key => $val)
+			deleteInOcsArray($tab["ID"],$key,"import_printers");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);	
+}
+elseif(isset($tab["unlock_periph"])){
+	checkRight("ocsng","w");
+	if (isset($tab["lockperiph"])&&count($tab["lockperiph"])){
+		foreach ($tab["lockperiph"] as $key => $val)
+			deleteInOcsArray($tab["ID"],$key,"import_peripheral");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 elseif(isset($tab["unlock_field"])){
 	checkRight("ocsng","w");

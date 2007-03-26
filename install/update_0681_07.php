@@ -911,6 +911,11 @@ function update0681to07() {
 		$query = "UPDATE `glpi_tracking` SET recipient = author";
 		$DB->query($query) or die("0.7 update recipient in glpi_tracking" . $LANG["update"][90] . $DB->error());
 	}
+	
+	if (!FieldExists("glpi_ocs_config", "deconnection_behavior")) {
+		$query = "ALTER TABLE `glpi_ocs_config` ADD COLUMN `deconnection_behavior` VARCHAR(45)";
+		$DB->query($query) or die("0.7 add state in glpi_reminder" . $LANG["update"][90] . $DB->error());
+	}
 
 	// TODO Split Config -> config general + config entity
 	

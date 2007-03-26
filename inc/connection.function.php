@@ -131,9 +131,48 @@ function showConnect($target,$ID,$type) {
  * 
  *
  * @param $ID the connection ID to disconnect.
+ * @param $ocs_server_id the ocs server ID .
  * @return nothing
  */
-function Disconnect($ID) {
+function Disconnect($ID,$ocs_server_id) {
+	global $DB,$LINK_ID_TABLE;
+    
+    $decoConf = "";
+    
+    //Get config from ocs
+	$queryConfigDeconnection = "SELECT deconnection_behavior FROM glpi_ocs_config WHERE ID='$ocs_server_id'";
+	$result = $DB->query($queryConfigDeconnection);
+	if($DB->numrows($result)>0){
+		$data = $DB->fetch_array($result);
+		$decoConf= $data["deconnection_behavior"]; 
+	}	
+	//Get info about the periph
+	if(strlen($decoConf)>0){
+		$queryIdAndType = "SELECT end1,type FROM glpi_connect_wire WHERE ID='$ID'";		
+		$res = $DB->query($queryIdAndType);
+		if($DB->numrows($res)>0){
+			$res = $DB->fetch_array($res);
+			$type_elem= $res["type"]; 
+			$id_elem= $res["end1"]; 
+			$table = $LINK_ID_TABLE[$type_elem];
+			//Delete periph from glpi
+			if($decoConf == "delete")$query = "DELETE FROM $table WHERE ID='$id_elem'";							
+			//Put periph in trash
+			elseif($decoConf == "trash")$query = "UPDATE $table SET deleted='1' WHERE ID='$id_elem'";				
+			//Change status
+			else {
+				//get id status
+				$queryIDStatus = "SELECT ID from glpi_dropdown_state WHERE name='$decoConf'";			
+				$resul = $DB->query($queryIDStatus );
+				if($DB->numrows($resul)>0){
+					$id_res = $DB->fetch_array($resul);
+					$id_status= $id_res["ID"]; 
+					$query = "UPDATE $table SET state='$id_status' WHERE ID='$id_elem'";
+				}				
+			}			
+			$DB->query($query);						
+		}		
+	}
 	// Disconnects a direct connection
 
 	$connect = new Connection;

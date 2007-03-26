@@ -179,6 +179,13 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][16] . " </td><td>";
 		dropdownValue("glpi_dropdown_state", "default_state", $this->fields["default_state"]);
 		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][48] . " </td><td>";
+		echo "<select name='deconnection_behavior'>";			
+		$listState = getListState($ID);
+		echo $listState;
+		echo "</select>";
+		echo "</td></tr>";
 
 		$periph = $this->fields["import_periph"];
 		$monitor = $this->fields["import_monitor"];
