@@ -1366,8 +1366,6 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		$email = stripslashes($_SESSION["helpdeskSaved"]["uemail"]);
 	if (isset($_SESSION["helpdeskSaved"]["device_type"]))
 		$device_type = stripslashes($_SESSION["helpdeskSaved"]["device_type"]);
-	if (isset($_SESSION["helpdeskSaved"]["category"]))
-		$device_type = stripslashes($_SESSION["helpdeskSaved"]["category"]);
 	if (isset($_SESSION["helpdeskSaved"]["contents"]))
 		$contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
 	if (isset($_SESSION["helpdeskSaved"]["name"]))
