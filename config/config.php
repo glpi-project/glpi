@@ -67,27 +67,28 @@
 		
 		// dicts
 		// dictionnaires
-		// Name - lang file - central help file - helpdesk help file - calendar dico - toolbar dico
+		// 0 Name - 1 lang file -  2calendar dico - 3toolbar dico
 		$CFG_GLPI["languages"]=array(   
-			"pt_BR"=>array("Brazilian","pt_BR.php","pt_PT.html","hd-en_GB.html","br","pt_br"),
-			"bg_BG"=>array("Bulgarian","bg_BG.php","en_GB.html","hd-en_GB.html","en","en"),
-			"ca_CA"=>array("Catalan","ca_CA.php","en_GB.html","hd-en_GB.html","ca","ca"),
-			"cs_CZ"=>array("Czech","cs_CZ.php","en_GB.html","hd-en_GB.html","cs","cs"),
-			"de_DE"=>array("Deutch","de_DE.php","en_GB.html","hd-en_GB.html","de","de"),
-			"dk_DK"=>array("Danish","dk_DK.php","en_GB.html","hd-en_GB.html","da","da"),
-			"nl_NL"=>array("Dutch","nl_NL.php","en_GB.html","hd-en_GB.html","nl","nl"),
-			"en_GB"=>array("English","en_GB.php","en_GB.html","en_GB.html","en","en"),
-			"es_AR"=>array("Español (Argentina)","es_AR.php","en_GB.html","hd-en_GB.html","es","es"),
-			"es_ES"=>array("Español (España)","es_ES.php","en_GB.html","hd-en_GB.html","es","es"),
-			"fr_FR"=>array("Français","fr_FR.php","fr_FR.html","hd-fr_FR.html","fr","fr"),
-			"hu_HU"=>array("Hungarian","hu_HU.php","en_GB.html","hd-en_GB.html","hu","hu"),
-			"it_IT"=>array("Italiano","it_IT.php","en_GB.html","hd-it_IT.html","it","it"),
-			"pl_PL"=>array("Polish","pl_PL.php","en_GB.html","hd-en_GB.html","pl","pl"),
-			"pt_PT"=>array("Português","pt_PT.php","pt_PT.html","hd-en_GB.html","br","pt"),
-			"ro_RO"=>array("Romanian","ro_RO.php","en_GB.html","hd-en_GB.html","ro","ro"),
-			"ru_RU"=>array("Russian","ru_RU.php","en_GB.html","hd-en_GB.html","ru","ru"),
-			"zh_CN"=>array("Simplified Chinese","zh_CN.php","en_GB.html","hd-en_GB.html","en","zh_cn_utf8"),
-			"sv_SE"=>array("Swedish","sv_SE.php","en_GB.html","hd-en_GB.html","sv","sv_utf8"),
+			"pt_BR"=>array("Brazilian","pt_BR.php","br","pt_br"),
+			"bg_BG"=>array("Bulgarian","bg_BG.php","en","en"),
+			"ca_CA"=>array("Catalan","ca_CA.php","ca","ca"),
+			"cs_CZ"=>array("Czech","cs_CZ.php","cs","cs"),
+			"de_DE"=>array("Deutch","de_DE.php","de","de"),
+			"dk_DK"=>array("Danish","dk_DK.php","da","da"),
+			"nl_NL"=>array("Dutch","nl_NL.php","nl","nl"),
+			"nl_BE"=>array("Dutch (Belgium)","nl_BE.php","nl","nl"),
+			"en_GB"=>array("English","en_GB.php","en","en"),
+			"es_AR"=>array("Español (Argentina)","es_AR.php","es","es"),
+			"es_ES"=>array("Español (España)","es_ES.php","es","es"),
+			"fr_FR"=>array("Français","fr_FR.php","fr","fr"),
+			"hu_HU"=>array("Hungarian","hu_HU.php","hu","hu"),
+			"it_IT"=>array("Italiano","it_IT.php","it","it"),
+			"pl_PL"=>array("Polish","pl_PL.php","pl","pl"),
+			"pt_PT"=>array("Português","pt_PT.php","br","pt"),
+			"ro_RO"=>array("Romanian","ro_RO.php","ro","ro"),
+			"ru_RU"=>array("Russian","ru_RU.php","ru","ru"),
+			"zh_CN"=>array("Simplified Chinese","zh_CN.php","en","zh_cn_utf8"),
+			"sv_SE"=>array("Swedish","sv_SE.php","sv","sv_utf8"),
 			);
 
 
