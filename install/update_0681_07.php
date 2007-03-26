@@ -552,7 +552,7 @@ function update0681to07() {
 	}
 
 	if (!FieldExists("glpi_ocs_config", "import_software_licensetype")) {
-		$query = "ALTER TABLE glpi_ocs_config ADD `import_software_licensetype` VARCHAR(255) DEFAULT '' AFTER `import_software`";
+		$query = "ALTER TABLE glpi_ocs_config ADD `import_software_licensetype` VARCHAR(255) DEFAULT 'global' AFTER `import_software`";
 		$DB->query($query) or die("0.7 add import_software_licensetype in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
 	}
 

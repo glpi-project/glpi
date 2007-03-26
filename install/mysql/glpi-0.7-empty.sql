@@ -1688,7 +1688,7 @@ CREATE TABLE `glpi_ocs_config` (
   `import_monitor` int(2) NOT NULL default '0',
   `import_software` int(2) NOT NULL default '0',
   `import_software_buy` int(11) NOT NULL default '1',
-  `import_software_licensetype` varchar(255) collate utf8_unicode_ci default NULL,
+  `import_software_licensetype` varchar(255) collate utf8_unicode_ci default 'global' NULL,
   `import_printer` int(2) NOT NULL default '0',
   `import_general_name` int(2) NOT NULL default '0',
   `import_general_os` int(2) NOT NULL default '0',
