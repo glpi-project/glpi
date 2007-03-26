@@ -131,12 +131,16 @@ function showPlanning($who,$when,$type){
 			$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tracking"];
 			$interv[$data["begin"]."$$$".$i]["id_assign"]=$data["id_assign"];
 			$interv[$data["begin"]."$$$".$i]["ID"]=$data["ID"];
-			if (strcmp($begin,$data["begin"])>0)
-				$interv[$data["begin"]."$$$".$i]["begin"]=$debut;
-			else $interv[$data["begin"]."$$$".$i]["begin"]=$data["begin"];
-			if (strcmp($end,$data["end"])<0)
-				$interv[$data["begin"]."$$$".$i]["end"]=$fin;
-			else $interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
+			if (strcmp($begin,$data["begin"])>0){
+				$interv[$data["begin"]."$$$".$i]["begin"]=$begin;
+			} else {
+				$interv[$data["begin"]."$$$".$i]["begin"]=$data["begin"];
+			}
+			if (strcmp($end,$data["end"])<0){
+				$interv[$data["begin"]."$$$".$i]["end"]=$end;
+			} else {
+				$interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
+			}
 			$interv[$data["begin"]."$$$".$i]["name"]=$job->fields["name"];
 			$interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$$".$i]["device"]=$job->hardwaredatas->getName();
@@ -144,7 +148,6 @@ function showPlanning($who,$when,$type){
 			$interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
 			$i++;
 		}
-	
 	// ---------------reminder 
 
 	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
@@ -159,10 +162,10 @@ function showPlanning($who,$when,$type){
 
 			$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["ID"];
 			if (strcmp($begin,$data["begin"])>0)
-				$interv[$data["begin"]."$$".$i]["begin"]=$debut;
+				$interv[$data["begin"]."$$".$i]["begin"]=$begin;
 			else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 			if (strcmp($end,$data["end"])<0)
-				$interv[$data["begin"]."$$".$i]["end"]=$fin;
+				$interv[$data["begin"]."$$".$i]["end"]=$end;
 			else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 
 			$interv[$data["begin"]."$$".$i]["title"]=resume_text($data["title"],$CFG_GLPI["cut"]);
@@ -181,7 +184,7 @@ function showPlanning($who,$when,$type){
 	}
 
 	ksort($interv);
-
+	
 	// Display Items
 	$tmp=split(":",$CFG_GLPI["planning_begin"]);
 	$hour_begin=$tmp[0];
@@ -211,11 +214,27 @@ function showPlanning($who,$when,$type){
 					
 					reset($interv);
 					while ($data=current($interv)){
-						if ($data["begin"]<$end_time&&$data["begin"]>=$begin_time){
-							displayPlanningItem($data,$who);
-							unset($interv[key($interv)]);
-						} else {
+						$type="";
+
+						if ($data["begin"]>=$begin_time&&$data["end"]<=$end_time){
+							$type="in";
+						} else if ($data["begin"]<$begin_time&&$data["end"]>$end_time){
+							$type="from";
+						} else if ($data["begin"]>=$begin_time&&$data["begin"]<$end_time){
+							$type="begin";
+						} else if ($data["end"]>$begin_time&&$data["end"]<=$end_time){
+							$type="end";
+						} 
+						
+						if (empty($type)){
 							next($interv);
+						} else {
+							displayPlanningItem($data,$who,$type);
+							if ($type=="in"){
+								unset($interv[key($interv)]);
+							} else {
+								next($interv);
+							}
 						}
 					}
 					echo "</td>";
@@ -229,16 +248,32 @@ function showPlanning($who,$when,$type){
 		case "day":
 			for ($hour=$hour_begin;$hour<=$hour_end;$hour++){
 				echo "<tr>";
+				$begin_time=date("Y-m-d H:i:s",strtotime($when)+($hour)*HOUR_TIMESTAMP);
 				$end_time=date("Y-m-d H:i:s",strtotime($when)+($hour+1)*HOUR_TIMESTAMP);
 				echo "<td class='tab_bg_3' width='12%' valign='top' >";
 				echo "<b>".display_time($hour).":00</b><br>";
 				reset($interv);
 				while ($data=current($interv)){
-					if ($data["begin"]<$end_time||$hour==$hour_end){
-						displayPlanningItem($data,$who,1);
-						unset($interv[key($interv)]);
-					} else {
+					$type="";
+					if ($data["begin"]>=$begin_time&&$data["end"]<=$end_time){
+						$type="in";
+					} else if ($data["begin"]<$begin_time&&$data["end"]>$end_time){
+						$type="from";
+					} else if ($data["begin"]>=$begin_time&&$data["begin"]<$end_time){
+						$type="begin";
+					} else if ($data["end"]>$begin_time&&$data["end"]<=$end_time){
+						$type="end";
+					} 
+						
+					if (empty($type)){
 						next($interv);
+					} else {
+						displayPlanningItem($data,$who,$type,1);
+						if ($type=="in"){
+							unset($interv[key($interv)]);
+						} else {
+							next($interv);
+						}
 					}
 				}
 				echo "</td>";
@@ -271,11 +306,27 @@ function showPlanning($who,$when,$type){
 				$end_day=date("Y-m-d H:i:s",$time+DAY_TIMESTAMP);
 				reset($interv);
 				while ($data=current($interv)){
-					if ($data["begin"]<$end_day&&$data["begin"]>=$begin_day){
-						displayPlanningItem($data,$who);
-						unset($interv[key($interv)]);
-					} else {
+					$type="";
+
+					if ($data["begin"]>=$begin_day&&$data["end"]<=$end_day){
+						$type="in";
+					} else if ($data["begin"]<$begin_day&&$data["end"]>$end_day){
+						$type="from";
+					} else if ($data["begin"]>=$begin_day&&$data["begin"]<$end_day){
+						$type="begin";
+					} else if ($data["end"]>$begin_day&&$data["end"]<=$end_day){
+						$type="end";
+					} 
+
+					if (empty($type)){
 						next($interv);
+					} else {
+						displayPlanningItem($data,$who,$type);
+						if ($type=="in"){
+							unset($interv[key($interv)]);
+						} else {
+							next($interv);
+						}
 					}
 				}
 
@@ -310,7 +361,7 @@ function showPlanning($who,$when,$type){
 
 }
 
-function displayPlanningItem($val,$who,$complete=0){
+function displayPlanningItem($val,$who,$type="",$complete=0){
 	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
 	$author="";  // variable pour l'affichage de l'auteur ou non
@@ -338,6 +389,7 @@ function displayPlanningItem($val,$who,$complete=0){
 	if (isset($val["plugin"])&&isset($PLUGIN_HOOKS['display_planning'][$val["plugin"]])){
 			$function=$PLUGIN_HOOKS['display_planning'][$val["plugin"]];
 		if (function_exists($function)) {
+			$val["type"]=$type;
 			$function($val);
 		}
 	} else if(isset($val["id_tracking"])){  // show tracking
@@ -350,7 +402,21 @@ function displayPlanningItem($val,$who,$complete=0){
 			echo "onmouseout=\"cleanhide('content_tracking_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_tracking_".$val["ID"].$rand."')\"";
 		}
 		echo ">";
-		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["name"];
+		switch ($type){
+			case "in":
+				echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ";
+				break;
+			case "from":
+				break;
+			case "begin";
+				echo $LANG["planning"][19]." ".date("H:i",strtotime($val["begin"])).": ";
+				break;
+			case "end";
+				echo $LANG["planning"][20]." ".date("H:i",strtotime($val["end"])).": ";
+				break;
+
+		}
+		echo $val["name"];
 		if (!empty($val["device"])){
 			echo "<br>".$val["device"];
 		}
@@ -383,11 +449,26 @@ function displayPlanningItem($val,$who,$complete=0){
 			echo "onmouseout=\"cleanhide('content_reminder_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$val["id_reminder"].$rand."')\"";
 		}
 		echo ">";
-		echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ".$val["title"];
+
+		switch ($type){
+			case "in":
+				echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ";
+				break;
+			case "from":
+				break;
+			case "begin";
+				echo $LANG["planning"][19]." ".date("H:i",strtotime($val["begin"])).": ";
+				break;
+			case "end";
+				echo $LANG["planning"][20]." ".date("H:i",strtotime($val["end"])).": ";
+				break;
+
+		}
+		echo $val["title"];
 		echo $author;
 		echo "</a>";
 		if ($complete){
-			echo "<strong>".getPlanningState($val["state"])."</strong><br>";
+			echo "<br><strong>".getPlanningState($val["state"])."</strong><br>";
 			echo $val["text"];
 		} else {
 			echo "<div class='over_link' id='content_reminder_".$val["id_reminder"].$rand."'><strong>".getPlanningState($val["state"])."</strong><br>".$val["text"]."</div>";

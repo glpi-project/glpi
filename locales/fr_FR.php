@@ -1037,6 +1037,8 @@ $LANG["planning"][15]="Votre planning";
 $LANG["planning"][16]="Information";
 $LANG["planning"][17]="A faire";
 $LANG["planning"][18]="Fait";
+$LANG["planning"][19]="à partir de";
+$LANG["planning"][20]="jusqu'à";
 
 
 $LANG["printers"][4]="Imprimante";
