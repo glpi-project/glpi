@@ -884,10 +884,12 @@ function cron_ocsng() {
 	$DBocs= getDBocs($ocs_server_id);
 	
 	$cfg_ocs = getOcsConf($ocs_server_id);
-	ocsManageDeleted($ocs_server_id);
+	
 
 	if (!$cfg_ocs["cron_sync_number"])
 		return 0;
+
+	ocsManageDeleted($ocs_server_id);
 
 	$query_ocs = "SELECT * 
 			FROM hardware 
