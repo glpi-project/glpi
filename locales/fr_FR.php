@@ -1084,7 +1084,7 @@ $LANG["profiles"][26]="Voir les tickets de mes groupes";
 $LANG["profiles"][27]="Voir les matériels de mes groupes";
 $LANG["profiles"][28]="Récursif";
 $LANG["profiles"][29]="Dynamique";
-$LANG["profiles"][30]="Voir les informatiosn OCSNG";
+$LANG["profiles"][30]="Voir les informations OCSNG";
 $LANG["profiles"][31]="Synchronisation OCSNG manuellement";
 
 $LANG["registry"][1]="Ruche";
