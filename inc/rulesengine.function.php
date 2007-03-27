@@ -45,6 +45,9 @@ function matchRules($field, $condition, $pattern) {
 	//If pattern is wildcard, don't check the rule and return true
 	if ($pattern == RULE_WILDCARD)
 		return true;
+	
+	$field = strtoupper($field);
+	$pattern = strtoupper($pattern);
 		
 	switch ($condition) {
 		case PATTERN_IS :
