@@ -2810,6 +2810,7 @@ function getListState($ocs_server_id){
 		$res = $DB->fetch_array($resultSelected);
 		$selected = $res["deconnection_behavior"]; 
 	}
+	$listState .= "<option value=''>-----</option>";
 	if($selected == "trash")
 	$listState .= "<option value='trash' selected>" . $LANG["ocsconfig"][49] . "</option>";
 	else
