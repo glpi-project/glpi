@@ -127,6 +127,14 @@ class LdapCriteria extends CommonDBTM {
 		}
 
 	}
+	
+	//LDAP parameters MUST be in lower case
+	//because the are retieved in lower case  from the directory
+	function prepareInputForAdd($input)
+	{
+		$input["value"] = strtolower($input["value"]);
+		return $input;
+	}
 }
 
 ?>

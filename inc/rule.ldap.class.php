@@ -55,7 +55,6 @@ class LdapAffectEntityRule extends Rule {
 		//Dynamically add all the ldap criterias to the current list of rule's criterias
 		$this->addLdapCriteriasToArray();
 		$this->right="rule_ldap";
-
 	}
 
 	function maxActionsCount(){
@@ -215,7 +214,7 @@ class LdapAffectEntityRule extends Rule {
  */
 function getRulesByID($ID, $withcriterias, $withactions) {
 	global $DB;
-	$ocs_affect_computer_rules = array ();
+	$ldap_affect_user_rules = array ();
 	// MOYO : quoi donc que ca fout la ca ?
 	// MOYO : ca correspond pas deja à un cas particulier de ca : getRuleWithCriteriasAndActions ?
 
@@ -227,10 +226,10 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	while ($rule = $DB->fetch_array($result)) {
 		$affect_rule = new Rule;
 		$affect_rule->getRuleWithCriteriasAndActions($rule["ID"], 0, 1);
-		$ocs_affect_computer_rules[] = $affect_rule;
+		$ldap_affect_user_rules[] = $affect_rule;
 	}
 
-	return $ocs_affect_computer_rules;
+	return $ldap_affect_user_rules;
 }
 
 	function getTitleCriteria($target) {
@@ -287,7 +286,7 @@ class LdapRuleCollection extends RuleCollection {
 		{
 			//Dn is alwsays retreived from ldap : don't need to ask for it !
 			if ($param["value"] != "dn")
-				$params[]=$param["value"];
+				$params[]=strtolower($param["value"]);
 		}
 		return $params;
 	}
@@ -307,6 +306,7 @@ class LdapRuleCollection extends RuleCollection {
 		//Get all the datas we need from ldap to process the rules
 		$sz = @ ldap_read($params["connection"], $params["userdn"], "objectClass=*", $rule_fields);
 		$rule_input = ldap_get_entries($params["connection"], $sz);
+
 		if (count($rule_input))
 		{
 
@@ -347,7 +347,7 @@ class LdapRuleCollection extends RuleCollection {
 								}
 						}
 				}
-				print_r($rule_parameters);
+				
 				return $rule_parameters;
 		}
 		else return $rule_input;
