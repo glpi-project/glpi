@@ -36,7 +36,6 @@
 if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
-echo $rule->right;
 checkRight($rule->right,"r");
 
 if(isset($_GET)) $tab = $_GET;

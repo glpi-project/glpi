@@ -50,7 +50,7 @@ if (isset($tab["action"])){
 
 	$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-}elseif (isset($tab["deleterule"])){
+}elseif (isset($tab["delete_rule"])){
 	checkRight($rulecollection->right,"w");	
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)

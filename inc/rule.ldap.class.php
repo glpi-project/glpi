@@ -127,7 +127,7 @@ class LdapAffectEntityRule extends Rule {
 				}
 
 				if ($canedit)
-					echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.ocs.form.php?ID=" . $rule->fields["ID"] . "&amp;onglet=1\">" . $rule->fields["name"] . "</a></td>";
+					echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.ldap.form.php?ID=" . $rule->fields["ID"] . "&amp;onglet=1\">" . $rule->fields["name"] . "</a></td>";
 				else
 					echo "<td>" . $rule->fields["name"] . "</td>";
 
