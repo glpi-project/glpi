@@ -136,7 +136,8 @@ elseif (isset($_POST["connect_device"])) {
 	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["cID"]."&withtemplate=".$tab["withtemplate"]);
 }
 elseif(isset($tab["unlock_monitor"])){
-	checkRight("ocsng","w");
+	//checkRight("ocsng","w");
+	checkRight("sync_ocsng","w");
 	if (isset($tab["lockmonitor"])&&count($tab["lockmonitor"])){
 		foreach ($tab["lockmonitor"] as $key => $val)
 			deleteInOcsArray($tab["ID"],$key,"import_monitor");
@@ -144,7 +145,8 @@ elseif(isset($tab["unlock_monitor"])){
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 elseif(isset($tab["unlock_printer"])){
-	checkRight("ocsng","w");
+	//checkRight("ocsng","w");
+	checkRight("sync_ocsng","w");
 	if (isset($tab["lockprinter"])&&count($tab["lockprinter"])){
 		foreach ($tab["lockprinter"] as $key => $val)
 			deleteInOcsArray($tab["ID"],$key,"import_printers");
@@ -152,7 +154,8 @@ elseif(isset($tab["unlock_printer"])){
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 elseif(isset($tab["unlock_periph"])){
-	checkRight("ocsng","w");
+	//checkRight("ocsng","w");
+	checkRight("sync_ocsng","w");
 	if (isset($tab["lockperiph"])&&count($tab["lockperiph"])){
 		foreach ($tab["lockperiph"] as $key => $val)
 			deleteInOcsArray($tab["ID"],$key,"import_peripheral");
@@ -160,14 +163,16 @@ elseif(isset($tab["unlock_periph"])){
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 elseif(isset($tab["unlock_field"])){
-	checkRight("ocsng","w");
+	//checkRight("ocsng","w");
+	checkRight("sync_ocsng","w");
 	if (isset($tab["lockfield"])&&count($tab["lockfield"])){
 		foreach ($tab["lockfield"] as $key => $val)
 			deleteInOcsArray($tab["ID"],$key,"computer_update");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($tab["force_ocs_resynch"])){
-	checkRight("ocsng","w");
+	//checkRight("ocsng","w");
+	checkRight("sync_ocsng","w");
 	
 	//Get the ocs server id associated with the machine
 	$ocs_server_id = getOCSServerByMachineID($_POST["ID"]);
