@@ -46,9 +46,10 @@ function matchRules($field, $condition, $pattern) {
 	if ($pattern == RULE_WILDCARD)
 		return true;
 	
-	$field = strtoupper($field);
-	$pattern = strtoupper($pattern);
-		
+	//Perform comparison with fields in lower case
+	$field = strtolower($field);
+	$pattern = strtolower($pattern);
+	
 	switch ($condition) {
 		case PATTERN_IS :
 			if ($field == $pattern)
