@@ -931,6 +931,12 @@ class Rule extends CommonDBTM{
 				case "dropdown":
 					return getDropdownName($crit["table"],$pattern);
 					break;
+				case "dropdown_users":
+					return getUserName($pattern);
+					break;
+				case "dropdown_request_type":
+					return getRequestTypeName($pattern);
+					break;
 				default :
 					return $pattern;
 					break;
@@ -955,6 +961,10 @@ class Rule extends CommonDBTM{
 			switch ($action['type']){
 				case "dropdown":
 					return getDropdownName($action["table"],$value);
+					break;
+				case "dropdown_assign":
+				case "dropdown_users":
+					return getUserName($value);
 					break;
 				case "yesno":
 					if ($value) 
