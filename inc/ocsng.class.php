@@ -151,7 +151,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 
 			//If template, display a textfield to modify name
 		if($action == "add_template" || $action == "update_template") {
-				echo "<tr><th ' align='center'  colspan=2>";
+				echo "<tr><th align='center'  colspan=2>";
 
 				echo $LANG["common"][6]."&nbsp;: ";
 				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],20);
@@ -160,18 +160,17 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 			//Adding a new machine, just display the name, not editable
 		}
 		elseif($action == "edit_server" || $action == "update_server_with_template") {
-				echo "<tr><th ' align='center'>";
+				echo "<tr><th align='center'>";
 				
 				echo $LANG["ocsng"][28].": ".$this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 
 				echo "</th>";
 				
-				echo "<th ' align='center'>".$datestring.$date."</th>";
+				echo "<th align='center'>".$datestring.$date."</th>";
 				echo "</tr>";
 		}
 
-		echo "</th></tr>";
 
 		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][5] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][17] . " </td><td> <input type=\"text\" size='30' name=\"tag_limit\" value=\"" . $this->fields["tag_limit"] . "\"></td></tr>";
@@ -199,6 +198,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<option value='2' " . ($periph == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
 		echo "</select>";
 		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][7] . " </td><td>";
 		echo "<select name='import_monitor'>";
 		echo "<option value='0' " . ($monitor == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
@@ -206,39 +206,41 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<option value='2' " . ($monitor == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
 		echo "</select>";
 		echo "</td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][9] . " </td><td>";
 
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][9] . " </td><td>";
 		echo "<select name='import_printer'>";
 		echo "<option value='0' " . ($printer == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
 		echo "<option value='1' " . ($printer == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][10] . "</option>";
 		echo "<option value='2' " . ($printer == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
 		echo "</select>";
 		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][6] . " </td><td>";
 		echo "<select name='import_software'>";
 		echo "<option value='0' " . ($software == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
 		echo "<option value='1' " . ($software == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
 		echo "</select>";
 		echo "</td></tr>";
-		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][44] . " </td><td>";
 		echo "<select name='import_software_licensetype'>";
 		echo "<option value='global' " . ($license == 'global' ? " selected " : "") . ">" . $LANG["ocsconfig"][45] . "</option>";
 		echo "<option value='free' " . ($license == 'free' ? " selected " : "") . ">" . $LANG["ocsconfig"][46] . "</option>";
 		echo "</select>";
 		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][47] . " </td><td>";
 		dropdownYesNo("import_software_buy", $this->fields["import_software_buy"]);
-		echo "</select>";
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][38] . " </td><td>";
 		dropdownYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
 		echo "</td></tr>";		
+
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][41] . " </td><td>";
 		dropdownYesNo("import_registry", $this->fields["import_registry"]);
 		echo "</td></tr>";
-		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][40] . " </td><td>";
 		dropdownInteger('cron_sync_number', $this->fields["cron_sync_number"], 0, 100);
 		echo "</td></tr>";

@@ -53,7 +53,7 @@ $ruleaction = new RuleAction();
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rules");
 if (isset($tab["delete_criteria"]))
 {
-	checkRight($rulecollection->right,"w");
+	checkRight($rule->right,"w");
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
@@ -65,7 +65,7 @@ if (isset($tab["delete_criteria"]))
 }
 if (isset($tab["delete_action"]))
 {
-	checkRight($rulecollection->right,"w");
+	checkRight($rule->right,"w");
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
@@ -77,29 +77,29 @@ if (isset($tab["delete_action"]))
 }
 elseif (isset($tab["add_criteria"]))
 {
-	checkRight($rulecollection->right,"w");
+	checkRight($rule->right,"w");
 	$rulecriteria->add($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($tab["add_action"]))
 {
-	checkRight($rulecollection->right,"w");
+	checkRight($rule->right,"w");
 	$ruleaction->add($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($tab["update_rule"]))
 {
-	checkRight($rulecollection->right,"w");
+	checkRight($rule->right,"w");
 	$rule->update($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($tab["add_rule"]))
 {
-	checkRight($rulecollection->right,"w");
+	checkRight($rule->right,"w");
 	$rule->add($tab);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($tab["delete_rule"]))
 {
-	checkRight($rulecollection->right,"w");
+	checkRight($rule->right,"w");
 	$rule->delete($tab);
 	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");
 }

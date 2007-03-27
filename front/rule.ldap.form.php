@@ -40,6 +40,6 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 $rule = new LdapAffectEntityRule();
-$rulecollection = new LdapRuleCollection;
+
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>
