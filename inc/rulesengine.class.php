@@ -148,21 +148,19 @@ class RuleCollection {
 		$i=0;
 		//Reorder rules : we reaffect ranking for each rule of type $type
 		for ($i=0;$rule = $DB->fetch_array($result);$i++){
-			if ($rule["ID"] == $ID){
 				//If action is up and if the rule is not the fist of the list
-				if ($action == "up" && $i > 0){
+				if ($action == "up" && $i > 0 && $rule["ID"] == $ID){
 					$rules[$i] = $rules[$i-1];
 					$rules[$i-1] = $ID;
-				} elseif ($action == "down" && $i < $DB->numrows($result)){
+					$action ="";
+				} elseif ($action == "down" && $i < $DB->numrows($result) && $ID == $rules[$i-1]){
 				//If action is down and if not the last 
-					$rules[$i] = $rules[$i+1];
-					$rules[$i+1] = $ID;
+					$rules[$i] = $ID;
+					$rules[$i-1] = $rule["ID"];
+					$action = "";
 				} else {
 					$rules[$i]=$rule["ID"];
 				}
-			} else {
-				$rules[$i]=$rule["ID"];	
-			}
 		}
 		
 		for ($i=0; $i < sizeof($rules);$i++){
