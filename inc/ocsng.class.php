@@ -285,7 +285,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		dropdownYesNo("import_general_comments", $this->fields["import_general_comments"]);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;";
+		echo "<tr class='tab_bg_2'><td colspan='2'>";
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["networking"][14] . " </td><td>";
 		dropdownYesNo("import_ip", $this->fields["import_ip"]);
