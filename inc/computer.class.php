@@ -593,12 +593,12 @@ class Computer extends CommonDBTM {
 						echo $LANG["ocsng"][13].": ".convDateTime($data["last_update"]);
 						echo "<br>";
 
-						if (haveRight("ocsng","w"))
+						if (haveRight("ocsng","r"))
 							echo $LANG["common"][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
 						else
 							echo $LANG["common"][52]." ".getOCSServerNameByID($ID);						
 						echo "</td>";
-						if (haveRight("ocsng","w"))
+						if (haveRight("sync_ocsng","w"))
 						{
 							echo "<td >".$LANG["ocsng"][6]." ".$LANG["Menu"][33].": 	</td>";
 							echo "<td >";
