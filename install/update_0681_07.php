@@ -851,16 +851,16 @@ function update0681to07() {
 		$query = "INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES 
 					(1, '(LDAP)Organization', 'o', 1),
 					(2, '(LDAP)Common Name', 'cn', 1),
-					(3, '(LDAP)Department Number', 'departmentNumber', 1),
+					(3, '(LDAP)Department Number', 'departmentnumber', 1),
 					(4, '(LDAP)Email', 'mail', 1),
 					(5, 'Object Class', 'objectclass', 1),		
 					(6, '(LDAP)User ID', 'uid', 1),
-					(7, '(LDAP)Telephone Number', 'Phone', 1),
-					(8, '(LDAP)Employee Number', 'employeeNumber', 1),
+					(7, '(LDAP)Telephone Number', 'phone', 1),
+					(8, '(LDAP)Employee Number', 'employeenNumber', 1),
 					(9, '(LDAP)Manager', 'manager', 1),
 					(10, '(LDAP)DistinguishedName', 'dn', 1),
-					(11, '(AD)DistinguishedName', 'distinguishedName', 1),
-					(12, '(AD)User ID', 'sAMAccountName', 1);";
+					(11, '(AD)DistinguishedName', 'distinguishedname', 1),
+					(12, '(AD)User ID', 'samaccountname', 1);";
 					
 		$DB->query($query) or die("0.7 add standard values to glpi_rules_ldap_parameters " . $LANG["update"][90] . $DB->error());
 	
