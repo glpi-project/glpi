@@ -2108,16 +2108,16 @@ CREATE TABLE `glpi_rules_ldap_parameters` (
 
 INSERT INTO glpi_rules_ldap_parameters VALUES ('1','(LDAP)Organization','o','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('2','(LDAP)Common Name','cn','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('3','(LDAP)Department Number','departmentNumber','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('3','(LDAP)Department Number','departmentnumber','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('4','(LDAP)Email','mail','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('5','Object Class','objectclass','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('6','(LDAP)User ID','uid','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('7','(LDAP)Telephone Number','Phone','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('8','(LDAP)Employee Number','employeeNumber','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('7','(LDAP)Telephone Number','phone','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('8','(LDAP)Employee Number','employeenumber','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('9','(LDAP)Manager','manager','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('10','(LDAP)DistinguishedName','dn','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('11','(AD)DistinguishedName','distinguishedName','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('12','(AD)User ID','sAMAccountName','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('11','(AD)DistinguishedName','distinguishedname','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('12','(AD)User ID','samaccountname','1');
 
 ### Dump table glpi_software
 
