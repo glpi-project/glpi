@@ -1707,7 +1707,7 @@ function ocsAddDevice($device_type, $dev_array) {
  *
  **/
 function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_periph, $dohistory) {
-	global $DB, $DBocs;
+	global $DB, $DBocs, $LINK_ID_TABLE;
 	
 	checkOCSconnection($ocs_server_id);
 	
@@ -1894,9 +1894,10 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									}
 									addToOcsArray($glpi_id, array ($connID => $addValuetoDB), "import_monitor");											
 									$count_monitor++;																		
-									//Update column "deleted" set value to 0
-									$queryUpdate = "UPDATE glpi_monitors SET deleted='0' WHERE ID='$id_monitor'";
-									$DB->query($queryUpdate);
+									//Update column "deleted" set value to 0 and set status to default
+									$default_state = $cfg_ocs["default_state"];
+									$queryUpdate = "UPDATE glpi_monitors SET deleted='0', state='$default_state' WHERE ID='$id_monitor'";
+									$DB->query($queryUpdate);									
 								}
 							} else {								
 								$searchDBValue = "";	
@@ -1976,6 +1977,10 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									addToOcsArray($glpi_id, array (
 										$connID => $print["name"]
 									), "import_printers");
+									//Update column "deleted" set value to 0 and set status to default
+									$default_state = $cfg_ocs["default_state"];
+									$queryUpdate = "UPDATE glpi_printers SET deleted='0', state='$default_state' WHERE ID='$id_printer'";
+									$DB->query($queryUpdate);
 								}
 							} else {
 								$id = array_search($print["name"], $import_periph);
@@ -2043,6 +2048,10 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 								addToOcsArray($glpi_id, array (
 									$connID => $periph["name"]
 								), "import_peripheral");
+								//Update column "deleted" set value to 0 and set status to default
+								$default_state = $cfg_ocs["default_state"];
+								$queryUpdate = "UPDATE glpi_peripherals SET deleted='0', state='$default_state' WHERE ID='$id_periph'";
+								$DB->query($queryUpdate);
 							}
 						} else {
 							$id = array_search($periph["name"], $import_periph);
@@ -2068,28 +2077,25 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 											WHERE end1 = '" . $data['end1'] . "' 
 											AND type = '" . $device_type . "'";
 					$result2 = $DB->query($query2);
-					if ($DB->result($result2, 0, 0) == 1) {
-						switch ($device_type) {
-							case MONITOR_TYPE :
-								$mon = new Monitor();
-								$mon->delete(array (
-									'ID' => $data['end1']
-								), 0);
-								break;
-							case PRINTER_TYPE :
-								$print = new Printer();
-								$print->delete(array (
-									'ID' => $data['end1']
-								), 0);
-
-								break;
-							case PERIPHERAL_TYPE :
-								$per = new Peripheral();
-								$per->delete(array (
-									'ID' => $data['end1']
-								), 0);
-								break;
-						}
+					$deconnection_behavior = $cfg_ocs["deconnection_behavior"];					
+					if ($DB->result($result2, 0, 0)== 1 && strlen($deconnection_behavior)>0) {
+						$table = $LINK_ID_TABLE[$device_type];
+						//Delete periph from glpi
+						if($deconnection_behavior == "delete")$query = "DELETE FROM $table WHERE ID='".$data['end1']."'";							
+						//Put periph in trash
+						elseif($deconnection_behavior == "trash")$query = "UPDATE $table SET deleted='1' WHERE ID='".$data['end1']."'";				
+						//Change status
+						else {
+							//get id status
+							$queryIDStatus = "SELECT ID from glpi_dropdown_state WHERE name='$deconnection_behavior'";			
+							$resul = $DB->query($queryIDStatus );							
+							if($DB->numrows($resul)>0){
+								$id_res = $DB->fetch_array($resul);
+								$id_status= $id_res["ID"]; 
+								$query = "UPDATE $table SET state='$id_status' WHERE ID='".$data['end1']."'";
+							}				
+						}									
+						$DB->query($query);							
 					}
 				}
 			}
