@@ -1428,7 +1428,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_licenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['field']='version';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['linkfield']='version';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['name']=$LANG["software"][5];
-$SEARCH_OPTION[SOFTWARE_TYPE][5]['meta']=1;
+$SEARCH_OPTION[SOFTWARE_TYPE][5]['meta']=0;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][6]['table']='glpi_software';
 $SEARCH_OPTION[SOFTWARE_TYPE][6]['field']='comments';
