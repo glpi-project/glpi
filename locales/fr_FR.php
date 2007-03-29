@@ -1208,7 +1208,6 @@ $LANG["rulesengine"][19]="Règles d'affectation d'entité et de droits à partir
 $LANG["rulesengine"][20]="suppression d'une règle";
 $LANG["rulesengine"][22]="Assigner";
 $LANG["rulesengine"][23]="Mettre la valeur";
-$LANG["rulesengine"][23]="Récupérer la valeur";
 $LANG["rulesengine"][24]="Choix du type de règle";
 $LANG["rulesengine"][25]="Nom de la machine";
 $LANG["rulesengine"][26]="Regex vérifie";
@@ -1216,6 +1215,8 @@ $LANG["rulesengine"][27]="Regex ne vérifie pas";
 $LANG["rulesengine"][28]="Règles métier pour le suivi";
 $LANG["rulesengine"][29]="Liste des règles";
 $LANG["rulesengine"][30]="Action"; 
+$LANG["rulesengine"][31]="Récupérer la valeur";
+
 
 $LANG["ruleldap"][1]="des critères LDAP";
 $LANG["ruleldap"][2]="Aucun critère défini";
@@ -1451,7 +1452,7 @@ $LANG["setup"][405]="Logguer les modifications des tickets en ajoutant des suivi
 $LANG["setup"][406]="Personnalisation";
 $LANG["setup"][407]="Lien Aide Helpdesk";
 $LANG["setup"][408]="Lien Aide Central";
-$LANG["setup"][409]="Rubrique par défaut pour les documents liés au suivi";
+$LANG["setup"][409]="Rubrique par défaut pour les documents liés aux tickets";
 
 $LANG["setup"][500]="OS Version";
 $LANG["setup"][501]="Service Pack";
