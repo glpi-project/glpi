@@ -187,7 +187,7 @@ function showDeviceDocument($instID,$search='') {
 	$doc=new Document();
 	if ($doc->getFromDB($instID)){
 
-		$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by device_type, FK_device";
+		$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' order by device_type";
 		
 		$result = $DB->query($query);
 		$number = $DB->numrows($result);
@@ -207,8 +207,12 @@ function showDeviceDocument($instID,$search='') {
 				$column="name";
 				if ($type==TRACKING_TYPE) $column="ID";
 	
-				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".$column";
-	
+				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' ";
+				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
+				}
+				$query.=" order by ".$LINK_ID_TABLE[$type].".$column";
+
 				if ($result_linked=$DB->query($query))
 					if ($DB->numrows($result_linked)){
 						$ci->setType($type);
@@ -251,11 +255,11 @@ function showDeviceDocument($instID,$search='') {
 
 }
 
-function addDeviceDocument($conID,$type,$ID,$template=0){
+function addDeviceDocument($conID,$type,$ID){
 	global $DB;
 	if ($conID>0&&$ID>0&&$type>0){
 
-		$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type ,is_template) VALUES ('$conID','$ID','$type','$template');";
+		$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type) VALUES ('$conID','$ID','$type');";
 		$result = $DB->query($query);
 	}
 }
@@ -342,7 +346,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$ci->getFromDB($device_type,$ID);
 		$entity=-1;
 		$limit="";
-		if ($ci->getField('FK_entities')){
+		if ($ci->getField('FK_entities')>=0){
 			$entity=$ci->getField('FK_entities');
 			$limit=" AND FK_entities='$entity' ";
 		}
@@ -352,11 +356,10 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$result = $DB->query($q);
 		$nb = $DB->result($result,0,0);
 	
-		if ($withtemplate<2&&$nb>0){
+		if ($withtemplate<2){
 	
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center' colspan='3'>";
-			echo "<input type='hidden' name='is_template' value='$withtemplate'>";
 			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
 			if ($entity){
 				echo "<input type='hidden' name='FK_entities' value='$entity'>";

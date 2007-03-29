@@ -102,36 +102,12 @@ function update0681to07() {
 	}
 
 	// Clean doc association
-	$doc_links = array (
-		COMPUTER_TYPE,
-		NETWORKING_TYPE,
-		PRINTER_TYPE,
-		MONITOR_TYPE,
-		PERIPHERAL_TYPE,
-		SOFTWARE_TYPE,
-		PHONE_TYPE,
-		ENTERPRISE_TYPE,
-		CARTRIDGE_TYPE,
-		CONSUMABLE_TYPE,
-		CONTRACT_TYPE
-	);
-
-	foreach ($doc_links as $type) {
-		$table = $LINK_ID_TABLE[$type];
-		$query = "SELECT glpi_doc_device.ID as linkID, $table.*
-															FROM glpi_doc_device 
-															LEFT JOIN $table ON (glpi_doc_device.FK_device = $table.ID AND glpi_doc_device.device_type='$type') WHERE glpi_doc_device.is_template='1'";
-		$result = $DB->query($query) or die("0.7 search wrong data link doc device $table " . $LANG["update"][90] . $DB->error());
-		if ($DB->numrows($result)) {
-			while ($data = $DB->fetch_array($result)) {
-				if (!isset ($data['is_template']) || $data['is_template'] == 0) {
-					$query2 = "UPDATE glpi_doc_device SET is_template='0' WHERE ID='" . $data['linkID'] . "'";
-					$DB->query($query) or die("0.7 update link doc device for $table " . $LANG["update"][90] . $DB->error());
-				}
-			}
-		}
-
+	if (FieldExists("glpi_doc_device", "is_template")) {
+		$query = "ALTER TABLE `glpi_doc_device` DROP `is_template`";
+		$DB->query($query) or die("0.7 delete is_template from glpi_doc_device" . $LANG["update"][90] . $DB->error());
 	}
+	 
+
 
 	//// ENTITY MANAGEMENT
 

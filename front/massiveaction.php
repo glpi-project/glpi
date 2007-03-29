@@ -160,11 +160,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 					if ($ci2->getFromDB($_POST["device_type"],$key)){
 						// Entity security
 						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
-							$template=0;
-							if ($ci2->getField('is_template')){
-								$template=1;
-							}
-							addDeviceDocument($_POST['docID'],$_POST["device_type"],$key,$template);
+							addDeviceDocument($_POST['docID'],$_POST["device_type"],$key);
 						}
 					}
 				}
