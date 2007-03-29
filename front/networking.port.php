@@ -189,7 +189,7 @@ else
 	if(empty($tab["several"])) $tab["several"] ="";
 
 	checkRight("networking","w");
-	commonHeader($LANG["title"][6],$_SERVER['PHP_SELF'],"inventory","networking");
+	commonHeader($LANG["title"][6],$_SERVER['PHP_SELF'],"inventory");
 
 	if(isset($tab["ID"]))
 	{
