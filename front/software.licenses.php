@@ -103,7 +103,6 @@ else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
 			$input["ID"]=$ereg[1];
 			$lic->update($input);
 		}
-
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($tab["move"])||isset($tab["move"])){
@@ -127,7 +126,7 @@ else if (isset($tab["update"]))
 	checkRight("software","w");
 
 	unset($tab["search_software"]);
-
+	
 	$lic->update($tab);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");

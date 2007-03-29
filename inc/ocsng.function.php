@@ -1896,8 +1896,11 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									$count_monitor++;																		
 									//Update column "deleted" set value to 0 and set status to default
 									$default_state = $cfg_ocs["default_state"];
-									$queryUpdate = "UPDATE glpi_monitors SET deleted='0', state='$default_state' WHERE ID='$id_monitor'";
-									$DB->query($queryUpdate);									
+									$mon = new Monitor;
+									$input["ID"] = $id_monitor;
+									$input["deleted"]=0;
+									$input["state"]=$default_state;
+									$mon->update($input);									
 								}
 							} else {								
 								$searchDBValue = "";	
@@ -1979,8 +1982,12 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									), "import_printers");
 									//Update column "deleted" set value to 0 and set status to default
 									$default_state = $cfg_ocs["default_state"];
-									$queryUpdate = "UPDATE glpi_printers SET deleted='0', state='$default_state' WHERE ID='$id_printer'";
-									$DB->query($queryUpdate);
+									
+									$input["ID"] = $id_monitor;
+									$input["deleted"]=0;
+									$input["state"]=$default_state;
+									$p = new Printer;
+									$p->update($input);
 								}
 							} else {
 								$id = array_search($print["name"], $import_periph);
@@ -2050,8 +2057,13 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 								), "import_peripheral");
 								//Update column "deleted" set value to 0 and set status to default
 								$default_state = $cfg_ocs["default_state"];
-								$queryUpdate = "UPDATE glpi_peripherals SET deleted='0', state='$default_state' WHERE ID='$id_periph'";
-								$DB->query($queryUpdate);
+								$input["ID"] = $id_monitor;
+								$input["deleted"]=0;
+								$input["state"]=$default_state;
+								$periph = new Peripheral;
+								$periph->update($input);
+								//$queryUpdate = "UPDATE glpi_peripherals SET deleted='0', state='$default_state' WHERE ID='$id_periph'";
+								//$DB->query($queryUpdate);
 							}
 						} else {
 							$id = array_search($periph["name"], $import_periph);
@@ -2081,7 +2093,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 					if ($DB->result($result2, 0, 0)== 1 && strlen($deconnection_behavior)>0) {
 						$table = $LINK_ID_TABLE[$device_type];
 						//Delete periph from glpi
-						if($deconnection_behavior == "delete")$query = "DELETE FROM $table WHERE ID='".$data['end1']."'";							
+						if($deconnection_behavior == "delete") $query = "DELETE FROM $table WHERE ID='".$data['end1']."'";							
 						//Put periph in trash
 						elseif($deconnection_behavior == "trash")$query = "UPDATE $table SET deleted='1' WHERE ID='".$data['end1']."'";				
 						//Change status
@@ -2275,7 +2287,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 
 						$query_search = "SELECT ID 
 							FROM glpi_software 
-							WHERE name = '" . $name . "' AND version='".$version."' AND FK_entities=".$entity;
+							WHERE name = '" . $name . "' AND FK_entities=".$entity;
 						$result_search = $DB->query($query_search);
 						if ($DB->numrows($result_search) > 0) {
 							$data = $DB->fetch_array($result_search);
@@ -2287,7 +2299,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 						if (!$isNewSoft) {
 							$soft = new Software;
 							$soft->fields["name"] = $name;
-							$soft->fields["version"] = $data2["VERSION"];
+							//$soft->fields["version"] = $data2["VERSION"];
 							$soft->fields["comments"] = $data2["COMMENTS"];
 							$soft->fields["FK_entities"]=$entity;
 							
@@ -2296,10 +2308,13 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 							}
 							$isNewSoft = $soft->addToDB();
 						}
-						if ($isNewSoft) {
-							$instID = installSoftware($glpi_id, ocsImportLicense($isNewSoft), '', $dohistory);
+
+						$licenseID = ocsImportLicense($isNewSoft,$version);
+
+						//if ($isNewSoft) {
+							$instID = installSoftware($glpi_id, $licenseID, '', $dohistory);
 							$to_add_to_ocs_array[$instID]=$initname;
-						}
+						//}
 
 					} else { // Check if software always exists with is real name
 
@@ -2308,7 +2323,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 
 						$query_name = "SELECT glpi_software.ID as ID , glpi_software.name AS NAME 
 								FROM glpi_inst_software 
-								LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID) 
+								LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID and glpi_licenses.version=".$version.") 
 								LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
 								WHERE glpi_inst_software.ID='$id' AND glpi_software.FK_entities=".$entity;
 						$result_name = $DB->query($query_name);
@@ -2387,12 +2402,13 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
  *@return integer : inserted license id.
  *
  **/
-function ocsImportLicense($software, $serial="global", $buy="0") {
+function ocsImportLicense($software, $version, $serial="global", $buy="0") {
 	global $DB, $LANGOcs;
 
 	$query = "SELECT ID 
 			FROM glpi_licenses 
 			WHERE sid = '" . $software . "' 
+			AND version='".$version."'
 			AND serial='".$serial."' 
 			AND buy='".$buy."'"; #TODO serial => type
 	$result = $DB->query($query);
@@ -2407,6 +2423,7 @@ function ocsImportLicense($software, $serial="global", $buy="0") {
 		$licc->fields["sid"] = $software;
 		$licc->fields["serial"] = $serial;
 		$licc->fields["buy"] = $buy;
+		$licc->fields["version"]=$version;
 		$isNewLicc = $licc->addToDB();
 	}
 	return ($isNewLicc);

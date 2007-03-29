@@ -254,10 +254,11 @@ class Software extends CommonDBTM {
 				autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 25);
 				echo "</td>";
 
-				echo "<td>" . $LANG["software"][5] . ":		</td>";
-				echo "<td>";
-				autocompletionTextField("version", "glpi_software", "version", $this->fields["version"], 20);
-				echo "</td></tr>";
+				echo "<td colspan='2'></td>";
+				//echo "<td>" . $LANG["software"][5] . ":		</td>";
+				//echo "<td>";
+				//autocompletionTextField("version", "glpi_software", "version", $this->fields["version"], 20);
+				//echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][3] . ": 	</td><td>";
 				dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);

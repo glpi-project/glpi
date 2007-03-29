@@ -786,7 +786,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$numrows= $DB->result($result_num,0,0);
 		}
 	}
-
+	
 	// If export_all reset LIMIT condition
 	if (isset($_GET['export_all'])) $LIMIT="";
 
@@ -1200,6 +1200,7 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 					}
 				}
 			break;
+			break;
 			default :
 			$GROUPBY.= $NAME.$num.makeTextSearch($val,$NOT);
 			break;
@@ -1553,6 +1554,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			if ($nott&&$val!="NULL") {
 				$ADD=" OR $table.$field IS NULL";
 			}
+			
 			return $link." ($table.$field $SEARCH ".$ADD." ) ";
 			break;
 	}
@@ -2293,7 +2295,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
 					return " $LINK glpi_inst_software as META_inst_$num ON (META_inst_$num.cID = glpi_computers.ID) ".
 						" $LINK glpi_licenses as META_glpi_licenses_$num ON ( META_inst_$num.license=META_glpi_licenses_$num.ID ) ".
-						" $LINK glpi_software ON (META_glpi_licenses_$num.sID = glpi_software.ID) "; 
+						" $LINK glpi_software ON (META_glpi_licenses_$num.sID = glpi_software.ID)"; 
 					break;
 			}
 			break;
@@ -2343,7 +2345,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
 					return " $LINK glpi_licenses as META_glpi_licenses_$num ON ( META_glpi_licenses_$num.sID = glpi_software.ID ) ".
 						" $LINK glpi_inst_software as META_inst_$num ON (META_inst_$num.license = META_glpi_licenses_$num.ID) ".
-						" $LINK glpi_computers ON (META_inst_$num.cID = glpi_computers.ID) ";
+						" $LINK glpi_computers ON (META_inst_$num.cID = glpi_computers.ID)";
 
 					break;
 			}

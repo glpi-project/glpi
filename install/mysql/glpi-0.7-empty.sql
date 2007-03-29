@@ -1437,6 +1437,7 @@ DROP TABLE IF EXISTS `glpi_licenses`;
 CREATE TABLE `glpi_licenses` (
   `ID` int(15) NOT NULL auto_increment,
   `sID` int(15) NOT NULL default '0',
+  `version` varchar(255) collate utf8_unicode_ci default NULL,  
   `serial` varchar(255) collate utf8_unicode_ci default NULL,
   `expire` date default NULL,
   `oem` smallint(6) NOT NULL default '0',
@@ -2126,7 +2127,6 @@ CREATE TABLE `glpi_software` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `version` varchar(255) collate utf8_unicode_ci default NULL,
   `comments` text collate utf8_unicode_ci,
   `location` int(11) default NULL,
   `tech_num` int(11) NOT NULL default '0',
