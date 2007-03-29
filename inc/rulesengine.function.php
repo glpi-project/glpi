@@ -162,7 +162,7 @@ function dropdownRulesActions($name,$value=''){
 
 	$elements["assign"] = $LANG["rulesengine"][22];
 /*	$elements["set"] = $LANG["rulesengine"][23];
-	$elements["get"] = $LANG["rulesengine"][23];
+	$elements["get"] = $LANG["rulesengine"][31];
 */
 	
 	dropdownArrayValues($name,$elements,$value);
