@@ -81,7 +81,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo "<th>".$LANG["networking"][14]."<br>".$LANG["networking"][15]."</th>";
 			echo "<th>".$LANG["networking"][60]."&nbsp;/&nbsp;".$LANG["networking"][61];
 
-			echo "<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\">".$LANG["networking"][59]."</th>";
+			echo "<br>".$LANG["networking"][59]."</th>";
 
 			echo "<th>".$LANG["networking"][56]."</th>";
 			echo "<th>".$LANG["networking"][16]."</th>";
@@ -105,7 +105,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "<td>".$netport->fields["ifaddr"]."<br>";
 				echo $netport->fields["ifmac"]."</td>";
 				echo "<td>".$netport->fields["netmask"]."&nbsp;/&nbsp;";
-				echo $netport->fields["subnet"]."<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\">";
+				echo $netport->fields["subnet"]."<br>";
 				echo $netport->fields["gateway"]."</td>";
 				// VLANs
 				echo "<td>";
