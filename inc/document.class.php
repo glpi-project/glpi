@@ -108,10 +108,8 @@ class Document extends CommonDBTM {
 	function post_addItem($newID,$input) {
 		global $LANG;
 		if (isset($input["item"])&&isset($input["type"])&&$input["item"]>0&&$input["type"]>0){
-			$template=0;
-			if (isset($_POST["is_template"])) $template=1;
 
-			addDeviceDocument($newID,$input['type'],$input['item'],$template);
+			addDeviceDocument($newID,$input['type'],$input['item']);
 			logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][32]);
 		}
 
