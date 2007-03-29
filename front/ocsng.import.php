@@ -73,7 +73,6 @@ if (!isset($_POST["import_ok"])){
 
 	if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
 	ocsManageDeleted($_SESSION["ocs_server_id"]);
-	ocsCleanLinks($_SESSION["ocs_server_id"]);
 	ocsShowNewComputer($_SESSION["ocs_server_id"],$_GET['check'],$_GET['start']);
 
 } else {
