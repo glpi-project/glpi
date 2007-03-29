@@ -78,13 +78,13 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "<form name='lic_form' method='get' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='5' $pb >";
+			echo "<tr><th colspan='6' $pb >";
 			echo $nb_licences;
 			echo "&nbsp;".$LANG["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$LANG["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$LANG["software"][19]."&nbsp;-&nbsp;$tobuy&nbsp;".$LANG["software"][37]."</th>";
 			echo "<th colspan='1'>";
 			echo " ".$LANG["software"][19]." :</th></tr>";
 			$i=0;
-			echo "<tr><th>".$LANG["common"][19]."</th><th>".$LANG["common"][33]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th>";
+			echo "<tr><th>".$LANG["software"][5]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][33]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th>";
 			echo "<th>";
 
 			if ($show_computers&&$canedit){
@@ -118,11 +118,11 @@ function showLicenses ($sID,$show_computers=0) {
 		}
 	}
 
-	$query = "SELECT count(ID) AS COUNT , serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY  FROM glpi_licenses WHERE (sID = '$sID') GROUP BY serial, expire, oem, oem_computer, buy ORDER BY serial,oem, oem_computer";
+	$query = "SELECT count(ID) AS COUNT , version as VERSION, serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY  FROM glpi_licenses WHERE (sID = '$sID') GROUP BY version, serial, expire, oem, oem_computer, buy ORDER BY version, serial,oem, oem_computer";
 	//echo $query;
 	if ($result = $DB->query($query)) {			
 		while ($data=$DB->fetch_array($result)) {
-
+			$version=$data["VERSION"];
 			$serial=$data["SERIAL"];
 			$num_tot=$data["COUNT"];
 			$expire=$data["EXPIRE"];
@@ -130,7 +130,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$oem_computer=$data["OEM_COMPUTER"];
 			$buy=$data["BUY"];
 
-			$SEARCH_LICENCE="(glpi_licenses.sID = $sID AND glpi_licenses.serial = '".$serial."'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer'  AND glpi_licenses.buy = '$buy' ";
+			$SEARCH_LICENCE="(glpi_licenses.version='$version' AND glpi_licenses.sID = $sID AND glpi_licenses.serial = '".$serial."'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer'  AND glpi_licenses.buy = '$buy' ";
 			if ($expire=="")
 				$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL)";
 			else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '$expire')";
@@ -155,6 +155,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$num_inst=$DB->numrows($result_inst);
 
 			echo "<tr class='tab_bg_1' valign='top'>";
+			echo "<td align='center'><strong>".$version."</strong></td>";
 			echo "<td align='center'><strong>".$serial."</strong></td>";
 			echo "<td align='center'><strong>";
 			echo $num_tot;
@@ -401,6 +402,11 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 
 	echo "<table class='tab_cadre'><tr><th colspan='3'>$title</th></tr>";
 
+
+	echo "<tr class='tab_bg_1'><td>".$LANG["software"][5]."</td>";
+	echo "<td>";
+	dropdownSoftwareVersions("version",$sID);
+	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["software"][16]."</td>";
 	echo "<td>";
