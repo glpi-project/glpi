@@ -921,7 +921,7 @@ $LANG["networking"][55]="Associer un VLAN";
 $LANG["networking"][56]="VLAN";
 $LANG["networking"][57]="Choisissez une adresse MAC dans la liste ou spécifiez-la ci-dessous.";
 $LANG["networking"][58]="Supprimer un VLAN";
-
+$LANG["networking"][59]="Passerelle";
 
 $LANG["ocsng"][0]="OCS Inventory NG";
 $LANG["ocsng"][1]="Synchronisation des ordinateurs déjà importés";

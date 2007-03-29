@@ -54,7 +54,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)!=0) { 
-			$colspan=8;
+			$colspan=10;
 			if (empty($withtemplate)){
 				echo "<form id='networking_ports' name='networking_ports' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php\">";
 				if ($canedit)
@@ -80,7 +80,11 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo "<th>#</th><th>".$LANG["common"][16]."</th><th>".$LANG["networking"][51]."</th>";
 			echo "<th>".$LANG["networking"][14]."</th><th>".$LANG["networking"][15]."</th>";
 			echo "<th>".$LANG["networking"][56]."</th>";
-			echo "<th>".$LANG["networking"][16]."</th><th>".$LANG["networking"][17].":</th></tr>\n";
+			echo "<th>".$LANG["networking"][16]."</th>";
+			echo "<th>".$LANG["ocsconfig"][42]."</th>";
+			echo "<th>".$LANG["networking"][59]."</th>";
+			
+			echo"<th>".$LANG["networking"][17].":</th></tr>\n";
 			$i=0;
 			while ($devid=$DB->fetch_row($result)) {
 				$netport = new Netport;
@@ -102,6 +106,8 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "<td>";
 				showPortVLAN($netport->fields["ID"],$withtemplate);
 				echo "</td>";
+				echo "<td>".$netport->fields["netmask"]."</td>";
+				echo "<td>".$netport->fields["gateway"]."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
 				echo "<td width='300'>";
 				showConnection($netport->fields["ID"],$withtemplate,$device_type);

@@ -1625,6 +1625,8 @@ CREATE TABLE `glpi_networking_ports` (
   `ifmac` char(200) collate utf8_unicode_ci default NULL,
   `iface` int(11) default NULL,
   `netpoint` int(11) default NULL,
+  `netmask` char(16) collate utf8_unicode_ci default NULL,
+  `gateway` char(16) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `on_device` (`on_device`,`device_type`),
   KEY `netpoint` (`netpoint`),
@@ -2114,7 +2116,7 @@ INSERT INTO glpi_rules_ldap_parameters VALUES ('4','(LDAP)Email','mail','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('5','Object Class','objectclass','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('6','(LDAP)User ID','uid','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('7','(LDAP)Telephone Number','phone','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('8','(LDAP)Employee Number','employeenNumber','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('8','(LDAP)Employee Number','employeenumber','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('9','(LDAP)Manager','manager','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('10','(LDAP)DistinguishedName','dn','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('11','(AD)DistinguishedName','distinguishedname','1');

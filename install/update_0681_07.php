@@ -856,7 +856,7 @@ function update0681to07() {
 					(5, 'Object Class', 'objectclass', 1),		
 					(6, '(LDAP)User ID', 'uid', 1),
 					(7, '(LDAP)Telephone Number', 'phone', 1),
-					(8, '(LDAP)Employee Number', 'employeennumber', 1),
+					(8, '(LDAP)Employee Number', 'employeenumber', 1),
 					(9, '(LDAP)Manager', 'manager', 1),
 					(10, '(LDAP)DistinguishedName', 'dn', 1),
 					(11, '(AD)DistinguishedName', 'distinguishedname', 1),
@@ -993,6 +993,16 @@ function update0681to07() {
 	if (FieldExists("glpi_software", "version")) {
 		$query = "ALTER TABLE `glpi_software` DROP `version`";
 		$DB->query($query) or die("0.7 delete version in glpi_software" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_networking_ports", "netmask")) {
+		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN `netmask` char(16) default NULL";
+		$DB->query($query) or die("0.7 add netmask in glpi_networking_ports" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_networking_ports", "gateway")) {
+		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN `gateway` char(16) default NULL";
+		$DB->query($query) or die("0.7 add gateway in glpi_networking_ports" . $LANG["update"][90] . $DB->error());
 	}
 
 } // fin 0.7 #####################################################################################

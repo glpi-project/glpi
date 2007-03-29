@@ -1536,7 +1536,9 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 							$netport["name"] = $line2["DESCRIPTION"];
 							$netport["on_device"] = $glpi_id;
 							$netport["device_type"] = COMPUTER_TYPE;
-
+							$netport["netmask"] = $line2["IPMASK"];
+							$netport["gateway"] = $line2["IPGATEWAY"];
+							
 							$np = new Netport();
 							// Update already in DB
 							for ($j = 0; $j < min(count($glpi_ips), count($ocs_ips)); $j++) {
