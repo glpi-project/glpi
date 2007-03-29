@@ -633,7 +633,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	echo "<br><form name='form_ticket' method='post' action='$target' enctype=\"multipart/form-data\">";
 	echo "<div align='center'>";
-
+	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 	//	if ($device_type!=0){
 	echo "<input type='hidden' name='_referer' value='$REFERER'>";
 	//	}	

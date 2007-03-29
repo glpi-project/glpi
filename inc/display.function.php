@@ -1378,7 +1378,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$CFG_GLPI["root_doc"]."/front/tracking.injector.php\"  enctype=\"multipart/form-data\">";
 	echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
 	echo "<input type='hidden' name='request_type' value='1'>";
-
+	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 	echo "<div align='center'><table  class='tab_cadre'>";
 
 	echo "<tr><th colspan='2'>".$LANG["help"][1].":</th></tr>";
@@ -1405,7 +1405,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "<td>".$LANG["help"][24].": </td>";
 		echo "<td align='center'>";
 		dropdownMyDevices($_SESSION["glpiID"]);
-		dropdownTrackingAllDevices("device_type",$device_type);
+		
+		dropdownTrackingAllDevices("device_type",$device_type,0,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	}
 

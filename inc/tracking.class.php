@@ -135,19 +135,21 @@ class Job extends CommonDBTM{
 			unset($input["computer"]);
 			unset($input["device_type"]);
 		}	
-
 		// add Document if exists
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 			$input2=array();
 			$input2["name"]=$LANG["tracking"][24]." ".$input["ID"];
 			$input2["FK_tracking"]=$input["ID"];
 			$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
+			$this->getFromDB($input["ID"]);
+			$input2["FK_entities"]=$this->fields["FK_entities"];
 			$input2["_only_if_upload_succeed"]=1;
 			$doc=new Document();
 			if ($docID=$doc->add($input2)){
 				addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 			}
 		}
+
 		if (isset($input["document"])&&$input["document"]>0){
 			addDeviceDocument($input["document"],TRACKING_TYPE,$input["ID"]);
 			unset($input["document"]);
@@ -177,6 +179,7 @@ class Job extends CommonDBTM{
 	}
 
 	function pre_updateInDB($input,$updates) {
+
 		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0))&&$this->fields["status"]=="new"){
 			$updates[]="status";
 			$this->fields["status"]="assign";
@@ -224,6 +227,9 @@ class Job extends CommonDBTM{
 		// New values for add followup in change
 		$change_followup_content="";
 		$global_mail_change_count=0;
+
+
+
 
 		// Update Ticket Tco
 		if (in_array("realtime",$updates)||in_array("cost_time",$updates)|| in_array("cost_fixed",$updates)||in_array("cost_material",$updates)){
@@ -431,11 +437,7 @@ class Job extends CommonDBTM{
 			if ($tmp=$ci->getField('FK_groups')){
 				$input["FK_group"] = $tmp;
 			}
-			if ($tmp=$ci->getField('FK_entities')){
-				$input["FK_entities"] = $tmp;
-			}
 		}
-		// TODO no item selected -> FK_entities of the user profile or make select 
 
 		if (isset($input["emailupdates"])&&$input["emailupdates"]&&empty($input["uemail"])){
 			$user=new User();
@@ -488,6 +490,7 @@ class Job extends CommonDBTM{
 			$input2=array();
 			$input2["name"]=$LANG["tracking"][24]." $newID";
 			$input2["FK_tracking"]=$newID;
+			$input2["FK_entities"]=$input["FK_entities"];
 			$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
 			$input2["_only_if_upload_succeed"]=1;
 			$doc=new Document();
