@@ -973,23 +973,25 @@ function update0681to07() {
 	//Software version's modifications
 	//First add the version field to the licenses table	
 	if (!FieldExists("glpi_licenses", "version")) {
-		$query = "ALTER TABLE `glpi_licenses` ADD COLUMN `version` char(255) default NULL AFTER `sID`";
+		$query = "ALTER TABLE `glpi_licenses` ADD COLUMN `version` varchar(255) default NULL AFTER `sID`";
 		$DB->query($query) or die("0.7 add version in glpi_licenses" . $LANG["update"][90] . $DB->error());
+
+		$sql = "SELECT ID, version FROM glpi_software";
+		$result = $DB->query($sql);
+		if ($DB->numrows($result)>0)
+		{
+			while ($soft = $DB->fetch_array($result))
+			{
+				$sql = "UPDATE glpi_licenses SET version=".$soft["version"]." WHERE sID=".$soft["ID"]; 
+				$DB->query($sql);
+			}
+		}
+
 	}
 	
-	$sql = "SELECT ID, version FROM glpi_software";
-	$result = $DB->query($sql);
-	if ($DB->numrows($result)>0)
-	{
-		while ($soft = $DB->fetch_array($result))
-		{
-			$sql = "UPDATE glpi_licenses SET version=".$soft["version"]." WHERE sID=".$soft["ID"]; 
-			$DB->query($sql);
-		}
-	}
 	
 	if (FieldExists("glpi_software", "version")) {
-		$query = "ALTER TABLE `glpi_profiles` DROP `version`";
+		$query = "ALTER TABLE `glpi_software` DROP `version`";
 		$DB->query($query) or die("0.7 delete version in glpi_software" . $LANG["update"][90] . $DB->error());
 	}
 
