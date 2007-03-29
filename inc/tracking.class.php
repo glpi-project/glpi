@@ -857,7 +857,7 @@ class Followup  extends CommonDBTM {
 	function post_addItem($newID,$input) {
 		global $CFG_GLPI;
 
-		if (isset($input["realtime"])&$input["realtime"]>0) {
+		if (isset($input["realtime"])&&$input["realtime"]>0) {
 			$job=new Job();
 			$job->getfromDB($input["tracking"]);
 			$job->updateRealTime();

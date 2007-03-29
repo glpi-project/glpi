@@ -856,7 +856,7 @@ function update0681to07() {
 					(5, 'Object Class', 'objectclass', 1),		
 					(6, '(LDAP)User ID', 'uid', 1),
 					(7, '(LDAP)Telephone Number', 'phone', 1),
-					(8, '(LDAP)Employee Number', 'employeenNumber', 1),
+					(8, '(LDAP)Employee Number', 'employeennumber', 1),
 					(9, '(LDAP)Manager', 'manager', 1),
 					(10, '(LDAP)DistinguishedName', 'dn', 1),
 					(11, '(AD)DistinguishedName', 'distinguishedname', 1),
