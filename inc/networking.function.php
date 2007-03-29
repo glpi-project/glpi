@@ -54,7 +54,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)!=0) { 
-			$colspan=10;
+			$colspan=9;
 			if (empty($withtemplate)){
 				echo "<form id='networking_ports' name='networking_ports' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php\">";
 				if ($canedit)
@@ -78,11 +78,13 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "<th>&nbsp;</th>";
 			}
 			echo "<th>#</th><th>".$LANG["common"][16]."</th><th>".$LANG["networking"][51]."</th>";
-			echo "<th>".$LANG["networking"][14]."</th><th>".$LANG["networking"][15]."</th>";
+			echo "<th>".$LANG["networking"][14]."<br>".$LANG["networking"][15]."</th>";
+			echo "<th>".$LANG["networking"][60]."&nbsp;/&nbsp;".$LANG["networking"][61];
+
+			echo "<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\">".$LANG["networking"][59]."</th>";
+
 			echo "<th>".$LANG["networking"][56]."</th>";
 			echo "<th>".$LANG["networking"][16]."</th>";
-			echo "<th>".$LANG["ocsconfig"][42]."</th>";
-			echo "<th>".$LANG["networking"][59]."</th>";
 			
 			echo"<th>".$LANG["networking"][17].":</th></tr>\n";
 			$i=0;
@@ -100,14 +102,15 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "</b></td>";
 				echo "<td>".$netport->fields["name"]."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_netpoint",$netport->fields["netpoint"])."</td>";
-				echo "<td>".$netport->fields["ifaddr"]."</td>";
-				echo "<td>".$netport->fields["ifmac"]."</td>";
+				echo "<td>".$netport->fields["ifaddr"]."<br>";
+				echo $netport->fields["ifmac"]."</td>";
+				echo "<td>".$netport->fields["netmask"]."&nbsp;/&nbsp;";
+				echo $netport->fields["subnet"]."<br><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\">";
+				echo $netport->fields["gateway"]."</td>";
 				// VLANs
 				echo "<td>";
 				showPortVLAN($netport->fields["ID"],$withtemplate);
 				echo "</td>";
-				echo "<td>".$netport->fields["netmask"]."</td>";
-				echo "<td>".$netport->fields["gateway"]."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
 				echo "<td width='300'>";
 				showConnection($netport->fields["ID"],$withtemplate,$device_type);
@@ -294,7 +297,18 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][15].":</td><td>";
 	autocompletionTextField("ifmac","glpi_networking_ports","ifmac",$netport->fields["ifmac"],25);	
+	echo "</td></tr>\n";
 
+	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][60].":</td><td>";
+	autocompletionTextField("netmask","glpi_networking_ports","netmask",$netport->fields["netmask"],25);	
+	echo "</td></tr>\n";
+
+	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][59].":</td><td>";
+	autocompletionTextField("gateway","glpi_networking_ports","gateway",$netport->fields["gateway"],25);	
+	echo "</td></tr>\n";
+
+	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][61].":</td><td>";
+	autocompletionTextField("subnet","glpi_networking_ports","subnet",$netport->fields["subnet"],25);	
 	echo "</td></tr>\n";
 
 	if ($several!="yes"){

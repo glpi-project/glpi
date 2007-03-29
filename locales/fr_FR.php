@@ -922,6 +922,8 @@ $LANG["networking"][56]="VLAN";
 $LANG["networking"][57]="Choisissez une adresse MAC dans la liste ou spécifiez-la ci-dessous.";
 $LANG["networking"][58]="Supprimer un VLAN";
 $LANG["networking"][59]="Passerelle";
+$LANG["networking"][60]="Masque";
+$LANG["networking"][61]="Sous-réseau";
 
 $LANG["ocsng"][0]="OCS Inventory NG";
 $LANG["ocsng"][1]="Synchronisation des ordinateurs déjà importés";
@@ -984,7 +986,6 @@ $LANG["ocsconfig"][38]="Utiliser le dictionnaire logiciel d'OCS";
 $LANG["ocsconfig"][39]="TAG OCS";
 $LANG["ocsconfig"][40]="Nombre d'élements à synchroniser via le cron";
 $LANG["ocsconfig"][41]="Base de registre";
-$LANG["ocsconfig"][42]="Sous réseau";
 $LANG["ocsconfig"][43]="Informations Administratives OCS";
 $LANG["ocsconfig"][44]="Type de license par défaut";
 $LANG["ocsconfig"][45]="License site (global)";

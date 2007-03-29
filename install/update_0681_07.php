@@ -996,13 +996,23 @@ function update0681to07() {
 	}
 
 	if (!FieldExists("glpi_networking_ports", "netmask")) {
-		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN `netmask` char(16) default NULL";
+		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN `netmask` VARCHAR( 255 ) NULL DEFAULT NULL";
 		$DB->query($query) or die("0.7 add netmask in glpi_networking_ports" . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_networking_ports", "gateway")) {
-		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN `gateway` char(16) default NULL";
+		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN `gateway` VARCHAR( 255 ) NULL DEFAULT NULL";
 		$DB->query($query) or die("0.7 add gateway in glpi_networking_ports" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_networking_ports", "subnet")) {
+		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN subnet VARCHAR( 255 ) NULL DEFAULT NULL";
+		$DB->query($query) or die("0.7 add subnet in glpi_networking_ports" . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_networking_ports", "name")) {
+		$query = "ALTER TABLE `glpi_networking_ports` CHANGE `name` `name` VARCHAR( 255 ) NULL DEFAULT NULL ,
+				CHANGE `ifaddr` `ifaddr` VARCHAR( 255 ) NULL DEFAULT NULL ,
+				CHANGE `ifmac` `ifmac` VARCHAR( 255 ) NULL DEFAULT NULL ";
+		$DB->query($query) or die("0.7 alter networking_ports fields" . $LANG["update"][90] . $DB->error());
 	}
 
 } // fin 0.7 #####################################################################################
