@@ -1723,21 +1723,4 @@ function dropdownArrayValues($name,$elements,$value='')
 	
 }
 
-function dropdownSoftwareVersions($myname,$sID) {
-	global $DB,$LANG;
-
-	$query="SELECT ID, version from glpi_licenses WHERE sID='$sID' GROUP BY version ORDER BY version";
-	//echo $query;
-	$result=$DB->query($query);
-	if ($DB->numrows($result)){
-		echo "<select name='$myname'>";
-		while ($data=$DB->fetch_array($result)){
-			echo "<option value='".$data["version"]."'>".$data["version"];
-			echo "</option>";
-		}
-		echo "</select>";
-	}
-
-}
-
 ?>

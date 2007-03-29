@@ -369,13 +369,13 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	// Get previous values or defaults values
 	$values=array();
 	// defaults values :
+	$values['version']='';
 	$values['serial']='';
 	$values['expire']="0000-00-00";
 	$values['oem']=0;
 	$values["oem_computer"]='';
 	$values["comments"]='';
 	$values['buy']=1;
-
 
 	if (isset($_POST)&&!empty($_POST)){ // Get from post form
 		foreach ($values as $key => $val)
@@ -387,10 +387,9 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 		$lic=new License();
 		$lic->getfromDB($lID);
 		$values=$lic->fields;
-	} 
-
+	}
+	
 	if (empty($values['expire'])) $values['expire']="0000-00-00";
-
 
 
 	echo "<div align='center'><strong>";
@@ -405,7 +404,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["software"][5]."</td>";
 	echo "<td>";
-	dropdownSoftwareVersions("version",$sID);
+	autocompletionTextField("version","glpi_licenses","version",$values["version"],20);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["software"][16]."</td>";
