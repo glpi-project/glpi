@@ -556,6 +556,19 @@ $SEARCH_OPTION[NETWORKING_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[NETWORKING_TYPE][22]['meta']=0;
 
+$SEARCH_OPTION[NETWORKING_TYPE][23]['table']='glpi_dropdown_ports';
+$SEARCH_OPTION[NETWORKING_TYPE][23]['field']='netmask';
+$SEARCH_OPTION[NETWORKING_TYPE][23]['linkfield']='netmask';
+$SEARCH_OPTION[NETWORKING_TYPE][23]['name']=$LANG["ocsconfig"][42];
+$SEARCH_OPTION[NETWORKING_TYPE][23]['meta']=1;
+
+
+$SEARCH_OPTION[NETWORKING_TYPE][24]['table']='glpi_dropdown_ports';
+$SEARCH_OPTION[NETWORKING_TYPE][24]['field']='gateway';
+$SEARCH_OPTION[NETWORKING_TYPE][24]['linkfield']='gateway';
+$SEARCH_OPTION[NETWORKING_TYPE][24]['name']=$LANG["networking"][59];
+$SEARCH_OPTION[NETWORKING_TYPE][24]['meta']=1;
+
 $SEARCH_OPTION[NETWORKING_TYPE]['tracking']=$LANG["setup"][143];
 
 $SEARCH_OPTION[NETWORKING_TYPE][60]['table']='glpi_tracking';
