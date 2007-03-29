@@ -1226,16 +1226,17 @@ function generate_entity($ID_entity){
 	
 
 	$FIRST["software"]=getMaxItem("glpi_software")+1;
-	// Ajout logiciels + licences associ� a divers PCs
-	$items=array("OpenOffice - 1.1.4","OpenOffice - 2.0","Microsoft Office - 2003","Microsoft Office - 2000","Acrobat Reader - 6.0","Acrobat Reader - 7.0","Gimp - 2.0","Gimp - 2.2","InkScape - 0.4","Microsoft Office - 95","Microsoft Office - 97");
+	// Ajout logiciels + licences associees a divers PCs
+	$items=array(array("OpenOffice","1.1.4","2.0","2.0.1"),array("Microsoft Office","95","97","XP","2000","2003",2007),array("Acrobat Reader","6.0","7.0","7.04"),array("Gimp","2.0","2.2"),array("InkScape","0.4"));
 	for ($i=0;$i<$MAX['software'];$i++){
-		if (isset($items[$i])) list($name,$version)=split(" - ",$items[$i]);
-		else {$name="software $i";$version="version $i";}
+
+		if (isset($items[$i])) $name=$items[$i][0];
+		else {$name="software $i";}
 	
 		$loc=mt_rand(1,$MAX['locations']);
 		$techID=mt_rand(1,$MAX['users_sadmin']+$MAX['users_admin']);
 		$os=mt_rand(1,$MAX['os']);
-		$query="INSERT INTO glpi_software VALUES (NULL,'$ID_entity','$name','$version','comments $i','$loc','$techID','$os','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0','1')";
+		$query="INSERT INTO glpi_software VALUES (NULL,'$ID_entity','$name','comments $i','$loc','$techID','$os','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0','1')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$softID=$DB->insert_id();
 		addDocuments(SOFTWARE_TYPE,$softID);
@@ -1246,9 +1247,13 @@ function generate_entity($ID_entity){
 	
 		// Add licenses depending of license type
 		$val=mt_rand(0,100);
+		$j=0;
 		// Free software
 		if ($val<$percent['free_software']){
-			$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','free',NULL,'0','-1','1','');";
+			if (isset($items[$i])) $version=$items[$i][mt_rand(1,count($items[$i])-1)];
+			else $version="1.0";
+
+			$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','$version','free',NULL,'0','-1','1','');";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$licID=$DB->insert_id();
 			$val2=mt_rand(0,$MAX['free_licenses_per_software']);
@@ -1258,7 +1263,10 @@ function generate_entity($ID_entity){
 			}
 		} // Global software
 		else if ($val<$percent['global_software']+$percent['free_software']){
-			$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','global',NULL,'0','-1','1','');";
+			if (isset($items[$i])) $version=$items[$i][mt_rand(1,count($items[$i])-1)];
+			else $version="1.0";
+
+			$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','$version','global',NULL,'0','-1','1','');";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$licID=$DB->insert_id();
 			$val2=mt_rand(0,$MAX['global_licenses_per_software']);
@@ -1270,7 +1278,9 @@ function generate_entity($ID_entity){
 		else {
 			$val2=mt_rand(0,$MAX['normal_licenses_per_software']);
 			for ($j=0;$j<$val2;$j++){
-				$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','".GetRandomString(10)."',NULL,'0','-1','1','');";
+				if (isset($items[$i])) $version=$items[$i][mt_rand(1,count($items[$i])-1)];
+				else {$version=mt_rand(1,2).".0";}
+				$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','$version','".GetRandomString(10)."',NULL,'0','-1','1','');";
 				$DB->query($query) or die("PB REQUETE ".$query);
 				$licID=$DB->insert_id();
 				$query="INSERT INTO glpi_inst_software VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$licID')";
@@ -1279,7 +1289,9 @@ function generate_entity($ID_entity){
 			// Add more licenses
 			$val2=mt_rand(0,$MAX['more_licenses']);
 			for ($j=0;$j<$val2;$j++){
-				$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','".GetRandomString(10)."',NULL,'0','-1','1','');";
+				if (isset($items[$i])) $version=$items[$i][mt_rand(1,count($items[$i])-1)];
+				else {$version=mt_rand(1,2).".0";}
+				$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','$version','".GetRandomString(10)."',NULL,'0','-1','1','');";
 				$DB->query($query) or die("PB REQUETE ".$query);
 			}
 		}

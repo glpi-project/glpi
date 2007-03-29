@@ -45,7 +45,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	global $CFG_GLPI, $LANG;
 
-	if (!haveRight("dropdown", "w"))
+	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
 		return false;
 
 	echo "<div align='center'>&nbsp;\n";
@@ -146,7 +146,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 
 	global $DB, $CFG_GLPI, $LANG;
 
-	if (!haveRight("dropdown", "w"))
+	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
 		return false;
 
 	$entity_restict = -1;

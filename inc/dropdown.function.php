@@ -152,10 +152,18 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 	}
 
 	$which="";
-	$dropdown_right=haveRight("dropdown","w");
 
-	if ($dropdown_right){
-		if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
+	$dropdown_right=false;
+
+	if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
+		if (!in_array($table,$CFG_GLPI["specif_entities_tables"])){
+			$dropdown_right=haveRight("dropdown","w");
+		} else {
+			$dropdown_right=haveRight("entity_dropdown","w");
+		}
+
+		if ($dropdown_right){
+
 //			$search=array("/glpi_dropdown_/","/glpi_type_/");
 //			$replace=array("","");
 //			$which=preg_replace($search,$replace,$table);
