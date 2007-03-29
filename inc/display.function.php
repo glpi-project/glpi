@@ -364,6 +364,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
 			$menu['utils']['content']['ocsng']['title']=$LANG["Menu"][33];
 			$menu['utils']['content']['ocsng']['page']='/front/ocsng.php';
+			$menu['utils']['content']['ocsng']['links']['search']='/front/ocsng.php';
 			}
 		
 		// PLUGINS

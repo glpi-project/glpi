@@ -2695,7 +2695,7 @@ function ocsResetDropdown($glpi_computer_id, $field, $table) {
 function ocsChooseServer($target) {
 	global $DB, $LANG;
 
-	echo "<form action=\"$target\" method=\"post\">";
+	echo "<form action=\"$target\" method=\"get\">";
 	echo "<div align='center'>";
 	echo "<p >" . $LANG["ocsng"][26] . "</p>";
 	echo "<table class='tab_cadre'>";
@@ -2713,8 +2713,7 @@ function ocsChooseServer($target) {
 
 	} elseif ($DB->numrows($result)  == 1) {
 		$ocs = $DB->fetch_array($result);
-		$_SESSION["ocs_server_id"]=$ocs["ID"];
-		glpi_header($_SERVER['PHP_SELF']."?ocs_showservers=0");
+		glpi_header($_SERVER['PHP_SELF']."?ocs_server_id=".$ocs["ID"]);
 	}
 	  else
 		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG["ocsng"][27] . "</td></tr>";

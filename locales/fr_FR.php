@@ -928,6 +928,7 @@ $LANG["networking"][61]="Sous-réseau";
 $LANG["ocsng"][0]="OCS Inventory NG";
 $LANG["ocsng"][1]="Synchronisation des ordinateurs déjà importés";
 $LANG["ocsng"][2]="Importation de nouveaux ordinateurs";
+$LANG["ocsng"][3]="Nettoyage des liens GLPI / OCS ";
 $LANG["ocsng"][4]="Lier de nouveaux ordinateurs à des ordinateurs existants";
 $LANG["ocsng"][5]="Importer nouveaux ordinateurs";
 $LANG["ocsng"][6]="Mise à jour automatique";

@@ -65,10 +65,10 @@ if (isset ($_SESSION["ocs_link"]))
 if (isset ($_SESSION["ocs_update"]))
 	unset ($_SESSION["ocs_update"]);
 
-if (isset($_GET["ocs_showservers"]) || isset ($_POST["ocs_showservers"])) {
+if (isset($_GET["ocs_server_id"]) && $_GET["ocs_server_id"]) {
 	$name = "";
-	if (isset($_POST["ocs_server_id"]))
-		$_SESSION["ocs_server_id"] = $_POST["ocs_server_id"];
+	if (isset($_GET["ocs_server_id"]))
+		$_SESSION["ocs_server_id"] = $_GET["ocs_server_id"];
 				
 	$sql = "SELECT name from glpi_ocs_config where ID=" . $_SESSION["ocs_server_id"];
 	$result = $DB->query($sql);
@@ -89,10 +89,11 @@ if (isset($_GET["ocs_showservers"]) || isset ($_POST["ocs_showservers"])) {
 
 	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>" . $LANG["ocsng"][4] . "</b></a></td> </tr>";
 
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.clean.php\"><b>" . $LANG["ocsng"][3] . "</b></a></td> </tr>";
+
 	echo "</table></div>";
 
 	ocsManageDeleted($_SESSION["ocs_server_id"]);
-	ocsCleanLinks($_SESSION["ocs_server_id"]);
 } else {
 	ocsChooseServer($_SERVER['PHP_SELF']);
 }
