@@ -157,7 +157,9 @@ class Computer extends CommonDBTM {
 		// ADD Devices
 		$this->getFromDBwithDevices($input["_oldID"]);
 		foreach($this->devices as $key => $val) {
-			compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
+			for ($i=0;$i<$val["quantity"];$i++){
+				compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
+			}
 		}
 
 		// ADD Infocoms
