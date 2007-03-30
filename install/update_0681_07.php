@@ -550,6 +550,12 @@ function update0681to07() {
 
 	}
 
+	if (!FieldExists("glpi_ocs_link", "import_ip")) {
+		$query = "ALTER TABLE `glpi_ocs_link` ADD COLUMN `import_ip` LONGTEXT";
+		$DB->query($query) or die("0.7 add import_ip in glpi_ocs_link" . $LANG["update"][90] . $DB->error());
+	}
+
+
 	//// Enum clean
 	// Enum 0-1
 	$enum01 = array ();

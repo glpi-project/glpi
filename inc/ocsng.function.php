@@ -534,23 +534,25 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 				// Get import devices
 				$import_device = importArrayFromDB($line["import_device"]);
 				if ($mixed_checksum & pow(2, MEMORIES_FL))
-					ocsUpdateDevices(RAM_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
+					ocsUpdateDevices(RAM_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, '',$dohistory);
 				if ($mixed_checksum & pow(2, STORAGES_FL)) {
-					ocsUpdateDevices(HDD_DEVICE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_device, $dohistory);
-					ocsUpdateDevices(DRIVE_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
+					ocsUpdateDevices(HDD_DEVICE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_device, '',$dohistory);
+					ocsUpdateDevices(DRIVE_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, '',$dohistory);
 				}
 				
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
-					ocsUpdateDevices(PROCESSOR_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
+					ocsUpdateDevices(PROCESSOR_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, '',$dohistory);
 				if ($mixed_checksum & pow(2, VIDEOS_FL))
-					ocsUpdateDevices(GFX_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
+					ocsUpdateDevices(GFX_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, '',$dohistory);
 				if ($mixed_checksum & pow(2, SOUNDS_FL))
-					ocsUpdateDevices(SND_DEVICE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_device, $dohistory);
+					ocsUpdateDevices(SND_DEVICE, $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_device, '',$dohistory);
 				
-				if ($mixed_checksum & pow(2, NETWORKS_FL))
-					ocsUpdateDevices(NETWORK_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
+				if ($mixed_checksum & pow(2, NETWORKS_FL)){					
+					$import_ip= importArrayFromDB($line["import_ip"]);
+					ocsUpdateDevices(NETWORK_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $import_ip, $dohistory);
+				}
 				if ($mixed_checksum & pow(2, MODEMS_FL) || $mixed_checksum & pow(2, PORTS_FL))
-					ocsUpdateDevices(PCI_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, $dohistory);
+					ocsUpdateDevices(PCI_DEVICE, $line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_device, '',$dohistory);
 				
 				if ($mixed_checksum & pow(2, MONITORS_FL)) {
 					// Get import monitors
@@ -560,16 +562,15 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 
 				if ($mixed_checksum & pow(2, PRINTERS_FL)) {
 					// Get import printers
-					$import_printer = importArrayFromDB($line["import_printers"]);
+					$import_printer = importArrayFromDB($line["import_printers"]);					
 					ocsUpdatePeripherals(PRINTER_TYPE, $comp->fields["FK_entities"], $line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $import_printer, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, INPUTS_FL)) {
 					// Get import monitors
-					$import_peripheral = importArrayFromDB($line["import_peripheral"]);
+					$import_peripheral = importArrayFromDB($line["import_peripheral"]);					
 					ocsUpdatePeripherals(PERIPHERAL_TYPE, $comp->fields["FK_entities"],$line['glpi_id'], $line['ocs_id'], $ocs_server_id,$cfg_ocs, $import_peripheral, $dohistory);
 				}
-
 				if ($mixed_checksum & pow(2, SOFTWARES_FL)) {
 					// Get import monitors
 					$import_software = importArrayFromDB($line["import_software"]);
@@ -1240,7 +1241,7 @@ function ocsEditLock($target, $ID) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_device, $dohistory) {
+function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $import_device, $import_ip, $dohistory) {
 	global  $DB, $DBocs;
 
 	checkOCSconnection($ocs_server_id);
@@ -1473,7 +1474,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 			}
 			break;
 		case NETWORK_DEVICE :
-
+			
 			//Carte reseau
 			if ($cfg_ocs["import_device_iface"] || $cfg_ocs["import_ip"]) {
 
@@ -1486,7 +1487,6 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 				$i = 0;
 				// Add network device
 				if ($DBocs->numrows($result2) > 0) {
-					$already_used_ip = array ();
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						if ($cfg_ocs["import_device_iface"]) {
@@ -1510,25 +1510,27 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 						}
 
 						if (!empty ($line2["IPADDRESS"]) && $cfg_ocs["import_ip"]) {
+							$do_clean = true;
 							$ocs_ips = split(",", $line2["IPADDRESS"]);
 							$ocs_ips = array_unique($ocs_ips);
 							sort($ocs_ips);
 
-							// Is there an existing networking port ?
-							$query = "SELECT * 
-															FROM glpi_networking_ports 
-															WHERE device_type='" . COMPUTER_TYPE . "' 
-															AND on_device='$glpi_id' 
-															AND ifmac='" . $line2["MACADDR"] . "' 
-															AND name='" . $line2["DESCRIPTION"] . "'
-															ORDER BY ID";
-							$glpi_ips = array ();
-							$result = $DB->query($query);
-							if ($DB->numrows($result) > 0) {
-								while ($data = $DB->fetch_array($result))
-									if (!in_array($data["ID"], $already_used_ip)) {
-										$glpi_ips[] = $data["ID"];
+							//if never imported in 0.70, insert id in the array
+							if(count($import_ip)==0){	
+								//get old IP in DB							
+								$querySelectIDandIP = "SELECT ID,ifaddr FROM glpi_networking_ports 
+											WHERE device_type='" . COMPUTER_TYPE . "' 
+											AND on_device='$glpi_id' 
+											AND ifmac='" . $line2["MACADDR"] . "'" ."
+											AND name='" . $line2["DESCRIPTION"] . "'";
+								$result = $DB->query($querySelectIDandIP);
+								if ($DB->numrows($result) > 0) {
+									while ($data = $DB->fetch_array($result)){
+										//Upate import_ip column and import_ip array
+										addToOcsArray($glpi_id, array ($data["ID"] => $data["ifaddr"]), "import_ip");
+										$import_ip[$data["ID"]] = $data["ifaddr"];
 									}
+								}															
 							}
 							unset ($netport);
 							$netport["ifmac"] = $line2["MACADDR"];
@@ -1540,31 +1542,33 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 							$netport["gateway"] = $line2["IPGATEWAY"];
 							$netport["subnet"] = $line2["IPSUBNET"];
 							
-							$np = new Netport();
-							// Update already in DB
-							for ($j = 0; $j < min(count($glpi_ips), count($ocs_ips)); $j++) {
-								$netport["ifaddr"] = $ocs_ips[$j];
-								$netport["logical_number"] = $i;
-								$netport["ID"] = $glpi_ips[$j];
-								$already_used_ip[] = $glpi_ips[$j];
-								$np->update($netport);
-								$i++;
-							}
+							$np = new Netport();							
 
-							// If other IP founded
-							if (count($glpi_ips) < count($ocs_ips))
-								for ($j = count($glpi_ips); $j < count($ocs_ips); $j++) {
+							for ($j = 0; $j < count($ocs_ips); $j++) {
+								$id_ip = array_search($ocs_ips[$j], $import_ip);
+								//Update already in DB
+								if($id_ip){
+									$netport["ifaddr"] = $ocs_ips[$j];
+									$netport["logical_number"] = $j;
+									$netport["ID"] = $id_ip;
+									$np->update($netport);
+									unset ($import_ip[$id_ip]);
+								}
+								//If new IP found
+								else{
+									unset ($np->fields["netpoint"]);
 									unset ($netport["ID"]);
 									unset ($np->fields["ID"]);
 									$netport["ifaddr"] = $ocs_ips[$j];
-									$netport["logical_number"] = $i;
-									$np->add($netport);
-									$i++;
-								}
+									$netport["logical_number"] = $j;
+									$newID = $np->add($netport);
+									//ADD to array
+									addToOcsArray($glpi_id, array ($newID => $ocs_ips[$j]), "import_ip");
+								}								
+							}
 						}
 					}
 				}
-
 			}
 			break;
 		case GFX_DEVICE :
@@ -1639,23 +1643,17 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 	if ($do_clean && count($import_device)) {
 		foreach ($import_device as $key => $val) {
 			if (!(strpos($val, $device_type . '$$') === false)) {
-				// Networking case : Delete ports corresponding to device :
-				// TODO Add a field in the DB to store linked item
-				if ($device_type == NETWORK_DEVICE) {
-					$np = new Netport();
-					$np->getFromDB($key);
-					$query = "SELECT specificity FROM glpi_computer_device WHERE ID='$key' ";
-					$result = $DB->query($query);
-					if ($DB->numrows($result)) {
-						$macaddr = $DB->result($result, 0, 0);
-						$query2 = "DELETE FROM glpi_networking_ports WHERE name='" . str_replace($device_type . '$$$$$', "", $val) . "' AND ifmac='$macaddr'";
-						$DB->query($query2);
-					}
-				}
-
 				unlink_device_computer($key, $dohistory);
 				deleteInOcsArray($glpi_id, $key, "import_device");
 			}
+		}
+		
+	}
+	if ($do_clean && count($import_ip) && $device_type == NETWORK_DEVICE){
+		foreach ($import_ip as $key => $val) {			
+			$query2 = "DELETE FROM glpi_networking_ports WHERE on_device='$glpi_id' AND ifaddr='$val'";
+			$DB->query($query2);
+			deleteInOcsArray($glpi_id, $key, "import_ip");
 		}
 	}
 	//Alimentation
@@ -2080,7 +2078,6 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 	// Disconnect Unexisting Items not found in OCS
 	if ($do_clean && count($import_periph)) {
 		foreach ($import_periph as $key => $val) {
-
 			$query = "SELECT * 
 							FROM glpi_connect_wire 
 							WHERE ID = '" . $key . "'";
@@ -2186,9 +2183,6 @@ function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id) {
 			//if column in OCS has been deleted, we delete the rules in GLPI
 			else{
 				$queryDelete ="DELETE from glpi_ocs_admin_link where ocs_server_id='$ocs_server_id' and ocs_column='$ocs_column'";
-				$fp = fopen("c:\oai.txt","a+"); 
-				fputs($fp,"$queryDelete\r\n"); 
-				fclose($fp);
 				$DB->query($queryDelete);  
 			}
 			
