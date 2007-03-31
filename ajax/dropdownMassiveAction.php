@@ -107,14 +107,15 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 				if (!$first_group) $newgroup.="</optgroup>";
 				$newgroup.="<optgroup label=\"$val\">";
 			} else {
-				if ($key>1){ // No ID
+				if ($key>1
+					&&$key!=80 // No FK_entities massive action
+				){ // No ID
 					if (!empty($val["linkfield"])
 							||$val["table"]=="glpi_infocoms"
 							||$val["table"]=="glpi_enterprises_infocoms"
 							||$val["table"]=="glpi_dropdown_budget"
-							||$val["table"]=="glpi_entities"
-							||($val["table"]=="glpi_ocs_link"&&$key==101 // auto_update_ocs
-							  )){
+							||($val["table"]=="glpi_ocs_link"&&$key==101) // auto_update_ocs
+							  ){
 						$newgroup.= "<option value='$key'>".$val["name"]."</option>";
 						$items_in_group++;
 					}

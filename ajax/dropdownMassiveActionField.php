@@ -117,6 +117,22 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
 				$FIELDNAME_PRINTED=true;
 			break;
+			case "glpi_users": // users
+				switch ($search["linkfield"]){
+					case "assign":
+						dropdownUsers($search["linkfield"],0,"own_ticket",0,1,$_SESSION["glpiactive_entity"]);
+						break;
+					case "tech_num":
+						dropdownUsersID($search["linkfield"],0,"interface",1,$_SESSION["glpiactive_entity"]);
+						break;
+					default:
+						dropdownAllUsers($search["linkfield"],0,1,$_SESSION["glpiactive_entity"]);
+						break;
+			
+				}
+				break;
+			break;
+
 
 			default :// dropdown case
 				dropdown($search["table"],$search["linkfield"],1,$_SESSION["glpiactive_entity"]);

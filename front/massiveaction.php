@@ -154,12 +154,14 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 
 				$link_entity_type=-1;
 				// Specific entity item
+				
 				if ($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["device_type"]]
 				&& in_array($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
 				&& in_array($LINK_ID_TABLE[$_POST["device_type"]],$CFG_GLPI["specif_entities_tables"])){
+					
 					$ci2=new CommonDBTM();
 					$ci2->table=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"];
-					
+
 					if ($ci2->getFromDB($_POST[$_POST["field"]])){
 						if (isset($ci2->fields["FK_entities"])&&$ci2->fields["FK_entities"]>=0){
 							$link_entity_type=$ci2->fields["FK_entities"];
