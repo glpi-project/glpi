@@ -1,4 +1,6 @@
 <?php
+
+
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -29,56 +31,23 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
-$NEEDED_ITEMS=array("reminder","tracking","user");
+$NEEDED_ITEMS = array ("setup","ocsng","user","search");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-$remind=new Reminder();
-checkCentralAccess();
-if (isset($_POST["add"]))
-{
-	if (isset($_POST["add"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
+checkRight("config", "w");
 
-
-	$newID=$remind->add($_POST);
-	logEvent($newID, "reminder", 4, "utils", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
-} 
-else if (isset($_POST["delete"]))
-{
-	if (isset($_POST["delete"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
-	$remind->delete($_POST);
-	logEvent($_POST["ID"], "reminder", 4, "utils", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
-}
-else if (isset($_POST["update"]))
-{
-	if (isset($_POST["update"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
-
-	$remind->update($_POST);
-	logEvent($_POST["ID"], "reminder", 4, "utils", $_SESSION["glpiname"]." ".$LANG["log"][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"utils","reminder");
-	$remind->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
-
+	commonHeader($LANG["Menu"][39], $_SERVER['PHP_SELF'], "config","mailgate");
+	
+	manageGetValuesInSearch(MAILGATE_TYPE);
+	searchForm(MAILGATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+	showList(MAILGATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+	
 	commonFooter();
-}
-
 ?>

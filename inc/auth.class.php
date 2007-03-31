@@ -337,30 +337,27 @@ class AuthMail extends CommonDBTM {
 	var $fields = array ();
 
 	function AuthMail() {
-		global $CFG_GLPI;
 
 		$this->table = "glpi_auth_mail";
 		$this->type = AUTH_MAIL_TYPE;
 	}
 
 	function prepareInputForUpdate($input) {
-		global $DB;
-
 		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
-			$input["imap_auth_server"] = $this->constructIMAPAuthServer($input);
+			$input["imap_auth_server"] = constructMailServerConfig($input);
 		return $input;
 	}
 
 	function prepareInputForAdd($input) {
 
 		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
-			$input["imap_auth_server"] = $this->constructIMAPAuthServer($input);
+			$input["imap_auth_server"] = constructMailServerConfig($input);
 		return $input;
 	}
 
 	function showForm($target, $ID) {
 
-		global $DB, $LANG;
+		global $LANG;
 
 		if (!haveRight("config", "w"))
 			return false;
@@ -388,7 +385,7 @@ class AuthMail extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td><input size='30' type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\" ></td></tr>";
 			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][164] . "</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"" . $this->fields["imap_host"] . "\" ></td></tr>";
 
-			$this->showMailServerConfig($this->fields["imap_auth_server"]);
+			showMailServerConfig($this->fields["imap_auth_server"]);
 
 			if (empty ($ID))
 				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_mail\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
@@ -416,80 +413,6 @@ class AuthMail extends CommonDBTM {
 		echo "</form>";
 	}
 
-	function showMailServerConfig($value) {
-		global $LANG;
-
-		if (!haveRight("config", "w"))
-			return false;
-
-		if (ereg(":", $value)) {
-			$addr = ereg_replace("{", "", preg_replace("/:.*/", "", $value));
-			$port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
-		} else {
-			if (ereg("/", $value))
-				$addr = ereg_replace("{", "", preg_replace("/\/.*/", "", $value));
-			else
-				$addr = ereg_replace("{", "", preg_replace("/}.*/", "", $value));
-			$port = "";
-		}
-		$mailbox = preg_replace("/.*}/", "", $value);
-
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][52] . "</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][168] . "</td><td>";
-		echo "<select name='server_type'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/imap' " . (ereg("/imap", $value) ? " selected " : "") . ">IMAP</option>";
-		echo "<option value='/pop' " . (ereg("/pop", $value) ? " selected " : "") . ">POP</option>";
-		echo "</select>";
-		echo "<select name='server_ssl'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/ssl' " . (ereg("/ssl", $value) ? " selected " : "") . ">SSL</option>";
-		echo "</select>";
-		echo "<select name='server_cert'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/novalidate-cert' " . (ereg("/novalidate-cert", $value) ? " selected " : "") . ">NO-VALIDATE-CERT</option>";
-		echo "<option value='/validate-cert' " . (ereg("/validate-cert", $value) ? " selected " : "") . ">VALIDATE-CERT</option>";
-		echo "</select>";
-		echo "<select name='server_tls'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/tls' " . (ereg("/tls", $value) ? " selected " : "") . ">TLS</option>";
-		echo "<option value='/notls' " . (ereg("/notls", $value) ? " selected " : "") . ">NO-TLS</option>";
-		echo "</select>";
-		echo "<input type=hidden name=imap_string value='".$value."'>";
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
-		if (empty ($value))
-			$value = "&nbsp;";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][170] . "</td><td><b>$value</b></td></tr>";
-
-	}
-	function constructIMAPAuthServer($input) {
-
-		$out = "";
-		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
-			$out .= "{" . $input['mail_server'];
-		else
-			return $out;
-		if (isset ($input['server_port']) && !empty ($input['server_port']))
-			$out .= ":" . $input['server_port'];
-		if (isset ($input['server_type']))
-			$out .= $input['server_type'];
-		if (isset ($input['server_ssl']))
-			$out .= $input['server_ssl'];
-		if (isset ($input['server_cert']))
-			$out .= $input['server_cert'];
-		if (isset ($input['server_tls']))
-			$out .= $input['server_tls'];
-
-		$out .= "}";
-		if (isset ($input['server_mailbox']))
-			$out .= $input['server_mailbox'];
-
-		return $out;
-
-	}
 
 }
 class AuthLDAP extends CommonDBTM {
@@ -506,7 +429,7 @@ class AuthLDAP extends CommonDBTM {
 
 	function showForm($target, $ID) {
 
-		global $DB, $LANG;
+		global $LANG;
 
 		if (!haveRight("config", "w"))
 			return false;

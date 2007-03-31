@@ -795,6 +795,11 @@ $LANG["login"][23]="Test échoué";
 $LANG["login"][24]="Date dernière mise à jour";
 $LANG["login"][25]="Vous n'avez aucun droit pour vous connecter à cette application";
 
+$LANG["mailgate"][0]="Passerelle Mail";
+$LANG["mailgate"][1]="Ajouter une passerelle mail";
+$LANG["mailgate"][2]="Récupérer maintenant";
+$LANG["mailgate"][3]="Nombre de messages disponibles et récupérés";
+
 $LANG["mailing"][0]="----------------------------------------------------------";
 $LANG["mailing"][1]="======================================================================";
 $LANG["mailing"][3]="Contenu :";
@@ -883,6 +888,7 @@ $LANG["Menu"][35]="Profils";
 $LANG["Menu"][36]="Groupes";
 $LANG["Menu"][37]="Entités";
 $LANG["Menu"][38]="Inventaire";
+$LANG["Menu"][39]="Passerelles Mails";
 
 $LANG["monitors"][4]="Moniteur";
 $LANG["monitors"][14]="Microphone";

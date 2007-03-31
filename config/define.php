@@ -56,6 +56,7 @@
 	define("OCSNG_TYPE",32);
 	define("REGISTRY_TYPE",33);
 	define("PROFILE_TYPE",34);
+	define("MAILGATE_TYPE",35);
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -171,6 +172,7 @@
 			OCSNG_TYPE => "glpi_ocs_config",
 			REGISTRY_TYPE => "glpi_registry",
 			PROFILE_TYPE => "glpi_profiles",
+			MAILGATE_TYPE => "glpi_mailgate",
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -206,6 +208,7 @@
 			OCSNG_TYPE => "front/ocsng.form.php",
 			REGISTRY_TYPE => "???",
 			PROFILE_TYPE => "front/profile.form.php",
+			MAILGATE_TYPE => "front/mailgate.form.php",
 			);
 
 	define("AUTH_CAS",0);

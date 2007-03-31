@@ -29,56 +29,28 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 
-
-$NEEDED_ITEMS=array("reminder","tracking","user");
+$USE_OCSNGDB=1;
+$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","admininfo");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkRight("ocsng","w");
 
-$remind=new Reminder();
-checkCentralAccess();
-if (isset($_POST["add"]))
-{
-	if (isset($_POST["add"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
+commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils","ocsng");
 
 
-	$newID=$remind->add($_POST);
-	logEvent($newID, "reminder", 4, "utils", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
-} 
-else if (isset($_POST["delete"]))
-{
-	if (isset($_POST["delete"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
-	$remind->delete($_POST);
-	logEvent($_POST["ID"], "reminder", 4, "utils", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
-}
-else if (isset($_POST["update"]))
-{
-	if (isset($_POST["update"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
+ocsCleanLinks($_SESSION["ocs_server_id"]);
 
-	$remind->update($_POST);
-	logEvent($_POST["ID"], "reminder", 4, "utils", $_SESSION["glpiname"]." ".$LANG["log"][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"utils","reminder");
-	$remind->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+echo "<div align='center'><strong>".$LANG["ocsng"][3]." - ".$LANG["log"][45]."<br>";
+echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+echo "</strong></div>";
 
-	commonFooter();
-}
+commonFooter();
 
 ?>

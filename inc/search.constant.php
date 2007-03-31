@@ -2821,7 +2821,7 @@ $SEARCH_OPTION[OCSNG_TYPE][2]['linkfield']='date_mod';
 $SEARCH_OPTION[OCSNG_TYPE][2]['name']=$LANG["common"][26];
 $SEARCH_OPTION[OCSNG_TYPE][2]['meta']=0;
 
-// OCSNG_TYPE
+// PROFILE_TYPE
 $SEARCH_OPTION[PROFILE_TYPE]['common']=$LANG["common"][16];
 $SEARCH_OPTION[PROFILE_TYPE][1]['table']='glpi_profiles';
 $SEARCH_OPTION[PROFILE_TYPE][1]['field']='name';
@@ -2834,5 +2834,20 @@ $SEARCH_OPTION[PROFILE_TYPE][2]['field']='interface';
 $SEARCH_OPTION[PROFILE_TYPE][2]['linkfield']='interface';
 $SEARCH_OPTION[PROFILE_TYPE][2]['name']=$LANG["profiles"][2];
 $SEARCH_OPTION[PROFILE_TYPE][2]['meta']=0;
+
+
+// MAILGATE_TYPE
+$SEARCH_OPTION[MAILGATE_TYPE]['common']=$LANG["common"][16];
+$SEARCH_OPTION[MAILGATE_TYPE][1]['table']='glpi_mailgate';
+$SEARCH_OPTION[MAILGATE_TYPE][1]['field']='name';
+$SEARCH_OPTION[MAILGATE_TYPE][1]['linkfield']='name';
+$SEARCH_OPTION[MAILGATE_TYPE][1]['name']=$LANG["common"][16];
+$SEARCH_OPTION[MAILGATE_TYPE][1]['meta']=0;
+
+$SEARCH_OPTION[MAILGATE_TYPE][80]['table']='glpi_entities';
+$SEARCH_OPTION[MAILGATE_TYPE][80]['field']='completename';
+$SEARCH_OPTION[MAILGATE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[MAILGATE_TYPE][80]['name']=$LANG["entity"][0];
+$SEARCH_OPTION[MAILGATE_TYPE][80]['meta']=0;
 
 ?>

@@ -29,21 +29,54 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file:
+// Original Author of file: Julien Dombre
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("mailcollect","user","profile","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document");
+
+$NEEDED_ITEMS=array("mailgate","setup","tracking","rulesengine","rule.tracking");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][3],$_SERVER['PHP_SELF'],"config","collect");
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
-$collect=new MailCollect();
+$mailgate=new Mailgate();
+checkRight("config", "w");
+if (isset($_POST["add"]))
+{
 
+	$mailgate->add($_POST);
+	logEvent($newID, "mailgate", 4, "config", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	glpi_header($_SERVER['HTTP_REFERER']);
+} 
+else if (isset($_POST["delete"]))
+{
+	$mailgate->delete($_POST);
+	logEvent($_POST["ID"], "mailgate", 4, "config", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/mailgate.php");
+}
+else if (isset($_POST["update"]))
+{
 
+	$mailgate->update($_POST);
+	logEvent($_POST["ID"], "mailgate", 4, "config", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["get_mails"]))
+{
+	$mc=new MailCollect();
+	if ($mailgate->getFromDB($_POST["ID"])){
+		$mc->collect($mailgate->fields["host"],$mailgate->fields["login"],$mailgate->fields["password"],$mailgate->fields["FK_entities"],1);
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else
+{
+	commonHeader($LANG["Menu"][39],$_SERVER['PHP_SELF'],"config","mailgate");
+	$mailgate->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+	commonFooter();
+}
 
-commonFooter();
 ?>

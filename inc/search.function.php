@@ -1322,7 +1322,9 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_contracts.expire" : // ajout jmd
 			return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 		break;
-
+		case "glpi_entities.completename" : // ajout jmd
+			return $pretable.$table.$addtable.".completename AS ".$NAME."_$num, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
+		break;
 		case "glpi_device_hdd.specif_default" :
 			return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
 		break;
@@ -1694,6 +1696,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_docs.name" :
 		case "glpi_ocs_config.name" :
 		case "glpi_entities.name" :
+		case "glpi_mailgate.name" :
 			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 			$out.= $data["ITEM_$num"];
 			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
@@ -1703,7 +1706,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			return $out;
 		break;
 
-
 		case "glpi_entities.completename" :
 			if ($type==ENTITY_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
@@ -1712,9 +1714,15 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 					$out.= " (".$data["ID"].")";
 				}
 				$out.= "</a>";
-			} else {
-				$out= $data["ITEM_$num"];
+			} else {	
+				if ($data["ITEM_".$num."_2"]==0){
+					$out=$LANG["entity"][2];
+				} else {
+					$out= $data["ITEM_$num"];
+				}
 			}
+			return $out;
+			break;
 		case "glpi_contracts.name" :
 		case "glpi_contracts.num" :
 			if (empty($linkfield)){
@@ -1741,19 +1749,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			}
 		return $out;
 		break;
-
-			if ($type==CONTRACT_TYPE){
-				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
-					$out.= " (".$data["ID"].")";
-				}
-				$out.= "</a>";
-			} else {
-				$out= $data["ITEM_$num"];
-			}
-			return $out;
-		break;	
 
 		case "glpi_contacts.completename":
 				$out="";
