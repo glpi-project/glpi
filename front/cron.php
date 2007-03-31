@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 $USE_OCSNGDB=1;
-$NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","ocsng");
+$NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","ocsng","mailgate","rulesengine","rule.tracking");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -42,7 +42,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 //The advantage of using background-image is that cron is called in a separate
 //request and thus does not slow down output of the main page as it would if called
 //from there.
-
 $image = pack("H*", "47494638396118001800800000ffffff00000021f90401000000002c0000000018001800000216848fa9cbed0fa39cb4da8bb3debcfb0f86e248965301003b");
 header("Content-Type: image/gif");
 header("Content-Length: ".strlen($image));

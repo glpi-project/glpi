@@ -1002,6 +1002,20 @@ function update0681to07() {
 				CHANGE `ifmac` `ifmac` VARCHAR( 255 ) NULL DEFAULT NULL ";
 		$DB->query($query) or die("0.7 alter networking_ports fields" . $LANG["update"][90] . $DB->error());
 	}
-
+	// mailgate
+	if (!TableExists("glpi_mailgate")) {
+		$query = "CREATE TABLE `glpi_mailgate` (
+		`ID` int(11) NOT NULL auto_increment,
+		`name` varchar(255) collate utf8_unicode_ci default NULL,
+		`FK_entities` int(11) NOT NULL default '0',
+		`host` varchar(255) collate utf8_unicode_ci NOT NULL,
+		`login` varchar(255) collate utf8_unicode_ci NOT NULL,
+		`password` varchar(255) collate utf8_unicode_ci NOT NULL,
+		PRIMARY KEY  (`ID`)
+		) ENGINE=MyISAM ;";
+		$DB->query($query) or die("0.7 add glpi_mailgate" . $LANG["update"][90] . $DB->error());
+		$query = "INSERT INTO `glpi_display` (`ID`, `type`, `num`, `rank`, `FK_users`) VALUES (121, 35, 80, 1, 0);";
+		$DB->query($query) or die("0.7 add glpi_mailgate display values" . $LANG["update"][90] . $DB->error());
+	}
 } // fin 0.7 #####################################################################################
 ?>

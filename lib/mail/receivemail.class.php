@@ -61,7 +61,7 @@ class receiveMail
  * $servertype              = if this server is imap or pop default is pop
  * $port                    = Server port for pop or imap Default is 110 for pop and 143 for imap
 */
-	function receiveMail($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop',$port='110') //Constructure
+/*	function receiveMail($username,$password,$EmailAddress,$mailserver='localhost',$servertype='pop',$port='110') //Constructure
 	{
 		if($servertype=='imap')
 		{
@@ -77,6 +77,15 @@ class receiveMail
 		$this->password			=	$password;
 		$this->email			=	$EmailAddress;
 	}
+*/
+	// Special adding for GLPI
+	function set($username,$password,$server) //Constructure
+	{
+		$this->server			=	$server;
+		$this->username			=	$username;
+		$this->password			=	$password;
+	}
+
 	function connect() //Connect To the Mail Box
 	{
 		$this->marubox=imap_open($this->server,$this->username,$this->password);

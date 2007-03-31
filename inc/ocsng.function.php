@@ -880,49 +880,51 @@ function cron_ocsng() {
 
 	//Get a randon server id
 	$ocs_server_id = getRandomOCSServerID();
+	if ($ocs_server_id>0){
+		//Initialize the server connection
+		$DBocs= getDBocs($ocs_server_id);
+		
+		$cfg_ocs = getOcsConf($ocs_server_id);
+		
 	
-	//Initialize the server connection
-	$DBocs= getDBocs($ocs_server_id);
+		if (!$cfg_ocs["cron_sync_number"])
+			return 0;
 	
-	$cfg_ocs = getOcsConf($ocs_server_id);
+		ocsManageDeleted($ocs_server_id);
 	
-
-	if (!$cfg_ocs["cron_sync_number"])
-		return 0;
-
-	ocsManageDeleted($ocs_server_id);
-
-	$query_ocs = "SELECT * 
-			FROM hardware 
-			WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0";
-	$result_ocs = $DBocs->query($query_ocs);
-	if ($DBocs->numrows($result_ocs) > 0) {
-
-		$hardware = array ();
-		while ($data = $DBocs->fetch_array($result_ocs)) {
-			$hardware[$data["ID"]]["date"] = $data["LASTDATE"];
-			$hardware[$data["ID"]]["name"] = addslashes($data["NAME"]);
-		}
-
-		$query_glpi = "SELECT * 
-					FROM glpi_ocs_link 
-					WHERE auto_update= '1'
-					ORDER BY last_update";
-		$result_glpi = $DB->query($query_glpi);
-		$done = 0;
-		while ($done < $cfg_ocs["cron_sync_number"] && $data = $DB->fetch_assoc($result_glpi)) {
-			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
-
-			if (isset ($hardware[$data["ocs_id"]])) {
-				ocsUpdateComputer($data["ID"],$ocs_server_id, 2);
-				$done++;
+		$query_ocs = "SELECT * 
+				FROM hardware 
+				WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0";
+		$result_ocs = $DBocs->query($query_ocs);
+		if ($DBocs->numrows($result_ocs) > 0) {
+	
+			$hardware = array ();
+			while ($data = $DBocs->fetch_array($result_ocs)) {
+				$hardware[$data["ID"]]["date"] = $data["LASTDATE"];
+				$hardware[$data["ID"]]["name"] = addslashes($data["NAME"]);
 			}
+	
+			$query_glpi = "SELECT * 
+						FROM glpi_ocs_link 
+						WHERE auto_update= '1'
+						ORDER BY last_update";
+			$result_glpi = $DB->query($query_glpi);
+			$done = 0;
+			while ($done < $cfg_ocs["cron_sync_number"] && $data = $DB->fetch_assoc($result_glpi)) {
+				$data = clean_cross_side_scripting_deep(addslashes_deep($data));
+	
+				if (isset ($hardware[$data["ocs_id"]])) {
+					ocsUpdateComputer($data["ID"],$ocs_server_id, 2);
+					$done++;
+				}
+			}
+			if ($done > 0)
+				return 1;
+	
 		}
-		if ($done > 0)
-			return 1;
-
-	}
-	return 0;
+			return 0;
+	} 
+	return 1;
 
 }
 

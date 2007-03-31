@@ -504,7 +504,12 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['config']['content']['extauth']['title']=$LANG["login"][10];
 			$menu['config']['content']['extauth']['page']='/front/setup.auth.php';
 			$menu['config']['content']['extauth']['links']['search']='/front/setup.auth.php';
-	
+
+			$menu['config']['content']['mailgate']['title']=$LANG["Menu"][39];
+			$menu['config']['content']['mailgate']['page']='/front/mailgate.php';
+			$menu['config']['content']['mailgate']['links']['search']='/front/mailgate.php';
+			$menu['config']['content']['mailgate']['links']['add']='/front/mailgate.form.php';
+
 		}
 
 		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){

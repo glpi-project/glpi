@@ -196,7 +196,9 @@ class SetupSearchDisplay extends CommonDBTM{
 		if (haveRight("profile","r")){
 			$dp[PROFILE_TYPE]=$LANG["Menu"][35];
 		}
-
+		if (haveRight("config","r")){
+			$dp[MAILGATE_TYPE]=$LANG["Menu"][39];
+		}
 		if (!$type){
 			$type=key($dp);
 		}

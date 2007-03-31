@@ -619,12 +619,13 @@ function showFormExtAuthList($target) {
 	if ($_SESSION['glpi_authconfig'] == 1) {
 		echo "class='actif'";
 	}
-	echo "><a href='$target?onglet=1'>" . $LANG["login"][3] . "</a></li>";
+	echo "><a href='$target?onglet=1'>" . $LANG["login"][2] . "</a></li>";
 	echo "<li ";
 	if ($_SESSION['glpi_authconfig'] == 2) {
 		echo "class='actif'";
 	}
-	echo "><a href='$target?onglet=2'>" . $LANG["login"][2] . "</a></li>";
+	echo "><a href='$target?onglet=2'>" . $LANG["login"][3] . "</a></li>";
+
 	echo "<li ";
 	if ($_SESSION['glpi_authconfig'] == 3) {
 		echo "class='actif'";
@@ -634,7 +635,7 @@ function showFormExtAuthList($target) {
 
 
 	switch ($_SESSION['glpi_authconfig']){
-		case 1 :
+		case 2 :
 			if (function_exists('imap_open')) {
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";
@@ -648,9 +649,10 @@ function showFormExtAuthList($target) {
 				if ($DB->numrows($result)) {
 					
 		
-					while ($mail_method = $DB->fetch_array($result))
+					while ($mail_method = $DB->fetch_array($result)){
 						echo "<tr class='tab_bg_2'><td align='center'><a href='$target?next=extauth_mail&amp;ID=" . $mail_method["ID"] . "' >" . $mail_method["name"] . "</a>" .
 						"</td><td align='center'>" . $mail_method["imap_host"] . "</td></tr>";
+					}
 				}
 				echo "</table>";
 			} else {
@@ -661,7 +663,7 @@ function showFormExtAuthList($target) {
 				echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table>";
 			}
 		break;
-		case 2 :
+		case 1 :
 			if (extension_loaded('ldap')) {
 				
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
@@ -675,11 +677,10 @@ function showFormExtAuthList($target) {
 				$sql = "SELECT * from glpi_auth_ldap";
 				$result = $DB->query($sql);
 				if ($DB->numrows($result)) {
-					while ($ldap_method = $DB->fetch_array($result))
+					while ($ldap_method = $DB->fetch_array($result)){
 						echo "<tr class='tab_bg_2'><td align='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
 						"</td><td align='center'>" . $ldap_method["ldap_host"] . "</td></tr>";
-		
-					
+					}
 				}
 				echo "</table>";
 			} else {
@@ -715,5 +716,80 @@ function showFormExtAuthList($target) {
 	echo "</div>";
 }
 
+
+	function showMailServerConfig($value) {
+		global $LANG;
+
+		if (!haveRight("config", "w"))
+			return false;
+
+		if (ereg(":", $value)) {
+			$addr = ereg_replace("{", "", preg_replace("/:.*/", "", $value));
+			$port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
+		} else {
+			if (ereg("/", $value))
+				$addr = ereg_replace("{", "", preg_replace("/\/.*/", "", $value));
+			else
+				$addr = ereg_replace("{", "", preg_replace("/}.*/", "", $value));
+			$port = "";
+		}
+		$mailbox = preg_replace("/.*}/", "", $value);
+
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][52] . "</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][168] . "</td><td>";
+		echo "<select name='server_type'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/imap' " . (ereg("/imap", $value) ? " selected " : "") . ">IMAP</option>";
+		echo "<option value='/pop' " . (ereg("/pop", $value) ? " selected " : "") . ">POP</option>";
+		echo "</select>";
+		echo "<select name='server_ssl'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/ssl' " . (ereg("/ssl", $value) ? " selected " : "") . ">SSL</option>";
+		echo "</select>";
+		echo "<select name='server_cert'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/novalidate-cert' " . (ereg("/novalidate-cert", $value) ? " selected " : "") . ">NO-VALIDATE-CERT</option>";
+		echo "<option value='/validate-cert' " . (ereg("/validate-cert", $value) ? " selected " : "") . ">VALIDATE-CERT</option>";
+		echo "</select>";
+		echo "<select name='server_tls'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/tls' " . (ereg("/tls", $value) ? " selected " : "") . ">TLS</option>";
+		echo "<option value='/notls' " . (ereg("/notls", $value) ? " selected " : "") . ">NO-TLS</option>";
+		echo "</select>";
+		echo "<input type=hidden name=imap_string value='".$value."'>";
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
+		if (empty ($value))
+			$value = "&nbsp;";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][170] . "</td><td><b>$value</b></td></tr>";
+
+	}
+	function constructMailServerConfig($input) {
+
+		$out = "";
+		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
+			$out .= "{" . $input['mail_server'];
+		else
+			return $out;
+		if (isset ($input['server_port']) && !empty ($input['server_port']))
+			$out .= ":" . $input['server_port'];
+		if (isset ($input['server_type']))
+			$out .= $input['server_type'];
+		if (isset ($input['server_ssl']))
+			$out .= $input['server_ssl'];
+		if (isset ($input['server_cert']))
+			$out .= $input['server_cert'];
+		if (isset ($input['server_tls']))
+			$out .= $input['server_tls'];
+
+		$out .= "}";
+		if (isset ($input['server_mailbox']))
+			$out .= $input['server_mailbox'];
+
+		return $out;
+
+	}
 
 ?>

@@ -29,56 +29,26 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
-
-$NEEDED_ITEMS=array("reminder","tracking","user");
-
-define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-
-$remind=new Reminder();
-checkCentralAccess();
-if (isset($_POST["add"]))
-{
-	if (isset($_POST["add"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
-
-
-	$newID=$remind->add($_POST);
-	logEvent($newID, "reminder", 4, "utils", $_SESSION["glpiname"]." added ".$_POST["name"].".");
-	glpi_header($_SERVER['HTTP_REFERER']);
-} 
-else if (isset($_POST["delete"]))
-{
-	if (isset($_POST["delete"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
-	$remind->delete($_POST);
-	logEvent($_POST["ID"], "reminder", 4, "utils", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
-}
-else if (isset($_POST["update"]))
-{
-	if (isset($_POST["update"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
-
-	$remind->update($_POST);
-	logEvent($_POST["ID"], "reminder", 4, "utils", $_SESSION["glpiname"]." ".$LANG["log"][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"utils","reminder");
-	$remind->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
-
-	commonFooter();
+if (!defined('GLPI_ROOT')){
+	die("Sorry. You can't access directly to this file");
 }
 
+function cron_mailgate(){
+	global $DB;
+	
+	$query="SELECT * FROM glpi_mailgate";
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)>0){
+			$mc=new MailCollect();
+			while ($data=$DB->fetch_assoc($result)){
+				$mc->collect($data["host"],$data["login"],$data["password"],$data["FK_entities"]);
+			}
+		}
+	}
+
+}
 ?>
