@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","ocsng");
+$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","ocsng","search");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -123,17 +123,59 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)
 			||($_POST["id_field"]>=50&&$_POST["id_field"]<=58)){
 				$ic=new Infocom();
-				foreach ($_POST["item"] as $key => $val)
-					if ($val==1){
-						unset($ic->fields);
-						$ic->update(array("device_type"=>$_POST["device_type"],"FK_device"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+				$ci=new CommonItem();
+				$ci->getFromDB($_POST["device_type"],-1);
+
+				$link_entity_type=-1;
+				// Specific entity item
+				if ($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"]=="glpi_enterprises_infocoms"){
+					$ent=new Enterprise();
+					echo $_POST[$_POST["field"]];
+					if ($ent->getFromDB($_POST[$_POST["field"]])){
+						$link_entity_type=$ent->fields["FK_entities"];
 					}
+					
+				}
+				
+				foreach ($_POST["item"] as $key => $val){
+					if ($val==1){
+						if ($ci->getFromDB($_POST["device_type"],$key)){
+							if ($link_entity_type<0
+							||$link_entity_type==$ci->obj->fields["FK_entities"]){
+								unset($ic->fields);
+								$ic->update(array("device_type"=>$_POST["device_type"],"FK_device"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+							}
+						}
+					}
+				}
 			} else {
 				$ci=new CommonItem();
 				$ci->getFromDB($_POST["device_type"],-1);
+
+				$link_entity_type=-1;
+				// Specific entity item
+				if ($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["device_type"]]
+				&& in_array($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
+				&& in_array($LINK_ID_TABLE[$_POST["device_type"]],$CFG_GLPI["specif_entities_tables"])){
+					$ci2=new CommonDBTM();
+					$ci2->table=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"];
+					
+					if ($ci2->getFromDB($_POST[$_POST["field"]])){
+						if (isset($ci2->fields["FK_entities"])&&$ci2->fields["FK_entities"]>=0){
+							$link_entity_type=$ci2->fields["FK_entities"];
+						}
+
+					}
+					
+				}
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+						if ($ci->getFromDB($_POST["device_type"],$key)){
+							if ($link_entity_type<0
+							||$link_entity_type==$ci->obj->fields["FK_entities"]){
+								$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+							}
+						}
 					}
 				}
 			}
@@ -190,15 +232,12 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 					if ($ci2->getFromDB($_POST["device_type"],$key)){
 						// Entity security
 						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
-							$template=0;
-							if ($ci2->getField('is_template')){
-								$template=1;
-							}
-							addDeviceContract($_POST['conID'],$_POST["device_type"],$key,$template);
+							addDeviceContract($_POST['conID'],$_POST["device_type"],$key);
 						}
 					}
 				}
 			}
+
 		break;
 		case "add_enterprise":
 			$ci=new CommonItem();

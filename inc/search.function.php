@@ -668,7 +668,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if (empty($GROUPBY)&&(($val2=="all")
 						||($type==COMPUTER_TYPE&&ereg("glpi_device",$SEARCH_OPTION[$type][$val2]["table"]))
 						||(ereg("glpi_contracts",$SEARCH_OPTION[$type][$val2]["table"]))
-						||($SEARCH_OPTION[$type][$val2]["table"].".".$SEARCH_OPTION[$type][$val2]["field"]=="glpi_licenses.serial")
+						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_licenses")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
 						||($type==USER_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_groups")
@@ -1344,7 +1344,16 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				return $table.$addtable.".".$field." AS ITEM_$num, ";
 			}
 		break;
+		case "glpi_contracts.name" :
+		case "glpi_contracts.num" :
+			if ($type!=CONTRACT_TYPE){
+				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, ";
+			} else {
+				return $table.$addtable.".".$field." AS ITEM_$num, ";
+			}
+		break;
 		case "glpi_licenses.serial" :
+		case "glpi_licenses.version" :
 		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
 			return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
@@ -1585,10 +1594,11 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 
 
 	switch ($field){
+		case "glpi_licenses.version" :
 		case "glpi_licenses.serial" :
-			case "glpi_networking_ports.ifaddr" :
-			case "glpi_dropdown_netpoint.name" :
-			$out="";
+		case "glpi_networking_ports.ifaddr" :
+		case "glpi_dropdown_netpoint.name" :
+		$out="";
 		$split=explode("$$$$",$data["ITEM_$num"]);
 
 		$count_display=0;
@@ -1706,6 +1716,32 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				$out= $data["ITEM_$num"];
 			}
 		case "glpi_contracts.name" :
+		case "glpi_contracts.num" :
+			if (empty($linkfield)){
+				$out="";
+				$split=explode("$$$$",$data["ITEM_$num"]);
+
+				$count_display=0;
+				for ($k=0;$k<count($split);$k++)
+					if (strlen(trim($split[$k]))>0){
+						if ($count_display) $out.= "<br>";
+						$count_display++;
+						$out.= $split[$k];
+					}
+				return $out;
+			} else {
+				if ($type==CONTRACT_TYPE){
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+					$out.= $data["ITEM_$num"];
+					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+					$out.= "</a>";
+				} else {
+					$out= $data["ITEM_$num"];
+				}
+			}
+		return $out;
+		break;
+
 			if ($type==CONTRACT_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];

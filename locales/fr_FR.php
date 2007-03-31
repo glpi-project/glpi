@@ -1471,7 +1471,7 @@ $LANG["setup"][704]="Notifications";
 
 
 $LANG["software"][3]="Plateforme";
-$LANG["software"][5]="Version";
+$LANG["software"][5]="Versions";
 $LANG["software"][10]="Logiciel";
 $LANG["software"][11]="Licences";
 $LANG["software"][12]="Ajouter licence...";

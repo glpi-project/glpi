@@ -130,7 +130,7 @@ function showDeviceContract($instID) {
 	$canedit=haveRight("contract_infocom","w");
 	$contract=new Contract();
 	$contract->getFromDB($instID);
-	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by device_type, FK_device";
+	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' order by device_type";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -146,8 +146,14 @@ function showDeviceContract($instID) {
 	$ci=new CommonItem;
 	while ($i < $number) {
 		$type=$DB->result($result, $i, "device_type");
+
 		if (haveTypeRight($type,"r")){
-			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD  FROM glpi_contract_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device) WHERE glpi_contract_device.device_type='$type' AND glpi_contract_device.FK_contract = '$instID' AND glpi_contract_device.is_template='0' order by ".$LINK_ID_TABLE[$type].".name";
+			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD  FROM glpi_contract_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device) WHERE glpi_contract_device.device_type='$type' AND glpi_contract_device.FK_contract = '$instID'";
+			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+				$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
+			}			
+			$query.=" order by ".$LINK_ID_TABLE[$type].".name";
+
 			$result_linked=$DB->query($query);
 			if ($DB->numrows($result_linked)){
 				$ci->setType($type);
@@ -191,17 +197,16 @@ function showDeviceContract($instID) {
  *@param $conID integer : contract identifier.
  *@param $type integer : device type identifier.
  *@param $ID integer : device identifier.
- *@param $template integer : device to link is a template.
  *
  *@return Nothing ()
  *
  **/
-function addDeviceContract($conID,$type,$ID,$template=0){
+function addDeviceContract($conID,$type,$ID){
 	global $DB;
 
 	if ($ID>0&&$conID>0){
 
-		$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type, is_template ) VALUES ('$conID','$ID','$type','$template');";
+		$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type ) VALUES ('$conID','$ID','$type');";
 		$result = $DB->query($query);
 	}
 }
@@ -513,7 +518,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$result = $DB->query($q);
 	$nb = $DB->numrows($result);
 
-	if ($canedit)
+	if ($canedit){
 		if ($withtemplate!=2&&$nb>0){
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
@@ -524,10 +529,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 
 			echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 		}
+	}
 	echo "</table></div>"    ;
 
-	if (!empty($withtemplate))
-		echo "<input type='hidden' name='is_template' value='1'>";
 	if ($withtemplate!=2) echo "</form>";
 
 }
@@ -632,7 +636,7 @@ function getContractSearchToViewAllRequest($contains){
 
 function countDeviceForContract($ID){
 	global $DB;
-	$query = "SELECT * FROM glpi_contract_device WHERE FK_contract = '$ID' AND is_template='0'";
+	$query = "SELECT * FROM glpi_contract_device WHERE FK_contract = '$ID'";
 
 	$result = $DB->query($query);
 	return $DB->numrows($result);

@@ -88,11 +88,8 @@ else if (isset($_POST["additem"])){
 
 	checkRight("contract_infocom","w");
 
-	$template=0;
-	if (isset($_POST["is_template"])) $template=1;
-
 	if ($_POST['type']>0&&$_POST['item']>0){
-		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item'],$template);
+		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item']);
 		logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
