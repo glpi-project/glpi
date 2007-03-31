@@ -82,7 +82,7 @@ else if (isset($tab["ID"])  && strcmp($tab["modify"],"yes") == 0){
 	// modifier un item dans la base de connaissance
 
 	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
-	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils");
+	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
 	$kb->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
 
@@ -153,7 +153,7 @@ else if (empty($tab["ID"])) {
 else  {
 	// Affiche un item de la base de connaissances
 	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
-	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils");
+	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
 
 	if (ShowKbItemFull($tab["ID"])){

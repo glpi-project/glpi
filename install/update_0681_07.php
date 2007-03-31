@@ -106,6 +106,12 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_doc_device` DROP `is_template`";
 		$DB->query($query) or die("0.7 delete is_template from glpi_doc_device" . $LANG["update"][90] . $DB->error());
 	}
+
+	// Clean contract association
+	if (FieldExists("glpi_contract_device", "is_template")) {
+		$query = "ALTER TABLE `glpi_contract_device` DROP `is_template`";
+		$DB->query($query) or die("0.7 delete is_template from glpi_contract_device" . $LANG["update"][90] . $DB->error());
+	}
 	 
 
 

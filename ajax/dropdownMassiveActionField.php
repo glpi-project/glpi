@@ -85,9 +85,9 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			case "glpi_infocoms":  // infocoms case
 				switch ($search["field"]){
 					case "buy_date" :
-						case "use_date" :
+					case "use_date" :
 						showCalendarForm("massiveaction_form",$search["field"]);
-					echo "&nbsp;&nbsp;";
+						echo "&nbsp;&nbsp;";
 					break;
 					case "amort_type" :
 						dropdownAmortType("amort_type");
@@ -97,15 +97,15 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 					break;
 					case "warranty_duration" :
 						dropdownInteger("warranty_duration",0,0,120);
-					echo " ".$LANG["financial"][57]."&nbsp;&nbsp;";
+						echo " ".$LANG["financial"][57]."&nbsp;&nbsp;";
 					break;
 					default :
-					autocompletionTextField($search["field"],$search["table"],$search["field"]);
+						autocompletionTextField($search["field"],$search["table"],$search["field"]);
 					break;
 				}
 			break;
 			case "glpi_enterprises_infocoms": // Infocoms enterprises
-				dropdown("glpi_enterprises","FK_enterprise");
+				dropdown("glpi_enterprises","FK_enterprise",1,$_SESSION["glpiactive_entity"]);
 				echo "<input type='hidden' name='field' value='FK_enterprise'>";
 				$FIELDNAME_PRINTED=true;
 			break;
@@ -119,7 +119,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			break;
 
 			default :// dropdown case
-				dropdown($search["table"],$search["linkfield"]);
+				dropdown($search["table"],$search["linkfield"],1,$_SESSION["glpiactive_entity"]);
 				break;
 		}
 	}

@@ -1499,7 +1499,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][4]['meta']=2;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_licenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['field']='version';
-$SEARCH_OPTION[SOFTWARE_TYPE][5]['linkfield']='version';
+$SEARCH_OPTION[SOFTWARE_TYPE][5]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['name']=$LANG["software"][5];
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['meta']=0;
 

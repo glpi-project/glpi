@@ -130,10 +130,16 @@ function showLicenses ($sID,$show_computers=0) {
 			$oem_computer=$data["OEM_COMPUTER"];
 			$buy=$data["BUY"];
 
-			$SEARCH_LICENCE="(glpi_licenses.version='$version' AND glpi_licenses.sID = $sID AND glpi_licenses.serial = '".$serial."'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer'  AND glpi_licenses.buy = '$buy' ";
+			$SEARCH_LICENCE="(glpi_licenses.sID = $sID AND glpi_licenses.serial = '".$serial."'  AND glpi_licenses.oem = '$oem' AND glpi_licenses.oem_computer = '$oem_computer'  AND glpi_licenses.buy = '$buy' ";
 			if ($expire=="")
-				$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL)";
-			else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '$expire')";
+				$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL";
+			else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '$expire'";
+
+			if ($version=="")
+				$SEARCH_LICENCE.=" AND glpi_licenses.version IS NULL)";
+			else $SEARCH_LICENCE.=" AND glpi_licenses.version = '$version')";
+
+
 
 			$today=date("Y-m-d"); 
 			$expirer=0;
@@ -150,7 +156,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$query_inst .= " INNER JOIN glpi_computers ON (glpi_computers.deleted='0' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) ";
 			$query_inst .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='".LICENSE_TYPE."' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
 			$query_inst .= " WHERE $SEARCH_LICENCE ORDER BY cname";
-
+			//echo $query_inst;
 			$result_inst = $DB->query($query_inst);
 			$num_inst=$DB->numrows($result_inst);
 
@@ -208,8 +214,10 @@ function showLicenses ($sID,$show_computers=0) {
 
 
 			$restant=$num_tot-$num_inst;
-			$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";		
-			if ($result_new = $DB->query($query_new)) {			
+			$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";	
+			//echo $query_new;	
+			if ($result_new = $DB->query($query_new)) 
+			if ($DB->numrows($result_new)>0){			
 				$IDdup=$DB->result($result_new,0,0);
 
 				if ($serial!="free"&&$serial!="global"&&$canedit) {
