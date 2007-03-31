@@ -2763,8 +2763,8 @@ $SEARCH_OPTION[RESERVATION_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[RESERVATION_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[RESERVATION_TYPE][80]['meta']=0;
 
-// TRACKING_TYPE
-/*
+// TRACKING_TYPE - used for massive actions
+
 $SEARCH_OPTION[TRACKING_TYPE]['common']=$LANG["common"][32];
 
 $SEARCH_OPTION[TRACKING_TYPE][2]['table']='glpi_tracking';
@@ -2802,7 +2802,7 @@ $SEARCH_OPTION[TRACKING_TYPE][7]['field']='name';
 $SEARCH_OPTION[TRACKING_TYPE][7]['linkfield']='category';
 $SEARCH_OPTION[TRACKING_TYPE][7]['name']=$LANG["common"][36];
 $SEARCH_OPTION[TRACKING_TYPE][7]['meta']=1;
-*/
+
 // OCSNG_TYPE
 $SEARCH_OPTION[OCSNG_TYPE]['common']=$LANG["common"][16];
 $SEARCH_OPTION[OCSNG_TYPE][1]['table']='glpi_ocs_config';

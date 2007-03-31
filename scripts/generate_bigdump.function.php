@@ -62,7 +62,7 @@ function getNextNETPOINT(){
 function getNextIP(){
 	global $IP;
 
-	$IP[3]=max(1,($IP[3]+1)%255);
+	$IP[3]=max(1,($IP[3]+1)%254);
 	if ($IP[3]==1) {
 		$IP[2]=max(1,($IP[2]+1)%255);
 		if ($IP[2]==0) {
@@ -72,7 +72,10 @@ function getNextIP(){
 			}
 		}
 	}
-	return $IP[0].".".$IP[1].".".$IP[2].".".$IP[3];
+	return array( "ip"=>$IP[0].".".$IP[1].".".$IP[2].".".$IP[3],
+		"gateway"=>$IP[0].".".$IP[1].".".$IP[2].".254",
+		"subnet"=>$IP[0].".".$IP[1].".".$IP[2].".0",
+		"netwmask"=>"255.255.255.0");
 }
 
 function getNextMAC(){
@@ -127,7 +130,7 @@ function addDocuments($type,$ID){
 		$docs[]=mt_rand($FIRST["document"],$LAST["document"]);
 	$docs=array_unique($docs);
 	foreach ($docs as $val){
-		$query="INSERT INTO glpi_doc_device VALUES (NULL,'$val','$ID','$type','0')";
+		$query="INSERT INTO glpi_doc_device VALUES (NULL,'$val','$ID','$type')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 }
@@ -884,7 +887,8 @@ function generate_entity($ID_entity){
 		$i=$data["ID"];
 		$vlan_loc[$data['ID']]=$vlanID;
 		$netname="networking $i-$ID_entity";
-		$query="INSERT INTO glpi_networking VALUES (NULL,'$ID_entity','$netname','".mt_rand(32,256)."','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".mt_rand(1,$MAX['type_networking'])."','".mt_rand(1,$MAX['model_networking'])."','".mt_rand(1,$MAX['firmware'])."','".mt_rand(1,$MAX['enterprises'])."','0','0','','".getNextMAC()."','".getNextIP()."','notes networking $i','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
+		$infoIP=getNextIP();
+		$query="INSERT INTO glpi_networking VALUES (NULL,'$ID_entity','$netname','".mt_rand(32,256)."','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID',NOW(),'comment $i','".$data['ID']."','$domainID','$networkID','".mt_rand(1,$MAX['type_networking'])."','".mt_rand(1,$MAX['model_networking'])."','".mt_rand(1,$MAX['firmware'])."','".mt_rand(1,$MAX['enterprises'])."','0','0','','".getNextMAC()."','".$infoIP["ip"]."','notes networking $i','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$netwID=$DB->insert_id();
 		addDocuments(NETWORKING_TYPE,$netwID);
@@ -910,10 +914,10 @@ function generate_entity($ID_entity){
 			// Add networking ports 
 			$newIP=getNextIP();
 			$newMAC=getNextMAC();
-			$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$netwID','".NETWORKING_TYPE."','".$net_port[NETWORKING_TYPE][$netwID]++."','link port to netw ".$net_loc[$data['parentID']]."','$newIP','$newMAC','$iface','$netpointID')";
+			$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$netwID','".NETWORKING_TYPE."','".$net_port[NETWORKING_TYPE][$netwID]++."','link port to netw ".$net_loc[$data['parentID']]."','".$newIP['ip']."','$newMAC','$iface','$netpointID','".$newIP['netwmask']."','".$newIP['gateway']."','".$newIP['subnet']."')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$port1ID=$DB->insert_id();
-			$query="INSERT INTO glpi_networking_ports VALUES (NULL,'".$net_loc[$data['parentID']]."','".NETWORKING_TYPE."','".$net_port[NETWORKING_TYPE][$net_loc[$data['parentID']]]++."','link port to netw $netwID','$newIP','$newMAC','$iface','$netpointID')";
+			$query="INSERT INTO glpi_networking_ports VALUES (NULL,'".$net_loc[$data['parentID']]."','".NETWORKING_TYPE."','".$net_port[NETWORKING_TYPE][$net_loc[$data['parentID']]]++."','link port to netw $netwID','".$newIP['ip']."','$newMAC','$iface','$netpointID','".$newIP['netwmask']."','".$newIP['gateway']."','".$newIP['subnet']."')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$port2ID=$DB->insert_id();
 	
@@ -981,10 +985,11 @@ function generate_entity($ID_entity){
 		// Add networking ports 
 		$newIP=getNextIP();
 		$newMAC=getNextMAC();
-		$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$netwID','".NETWORKING_TYPE."','".$net_port[NETWORKING_TYPE][$netwID]++."','link port to printer of loc ".$data["ID"]."','$newIP','$newMAC','$iface','$netpointID')";
+		$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$netwID','".NETWORKING_TYPE."','".$net_port[NETWORKING_TYPE][$netwID]++."','link port to printer of loc ".$data["ID"]."','".$newIP['ip']."','$newMAC','$iface','$netpointID','".$newIP['netwmask']."','".$newIP['gateway']."','".$newIP['subnet']."');";
+
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$port1ID=$DB->insert_id();
-		$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$printID','".PRINTER_TYPE."','".$net_port[PRINTER_TYPE][$printID]++."','link port to netw $netwID','$newIP','$newMAC','$iface','$netpointID')";
+		$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$printID','".PRINTER_TYPE."','".$net_port[PRINTER_TYPE][$printID]++."','link port to netw $netwID','".$newIP['ip']."','$newMAC','$iface','$netpointID','".$newIP['netwmask']."','".$newIP['gateway']."','".$newIP['subnet']."');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$port2ID=$DB->insert_id();
 		$query="INSERT INTO glpi_networking_wire VALUES (NULL,'$port1ID','$port2ID')";
@@ -1077,10 +1082,10 @@ function generate_entity($ID_entity){
 			// Add networking ports 
 			$newIP=getNextIP();
 			$newMAC=getNextMAC();
-			$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$compID','".COMPUTER_TYPE."','".$net_port[COMPUTER_TYPE][$compID]++."','link port to netw $netwID','$newIP','$newMAC','$iface','$netpointID')";
+			$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$compID','".COMPUTER_TYPE."','".$net_port[COMPUTER_TYPE][$compID]++."','link port to netw $netwID','".$newIP['ip']."','$newMAC','$iface','$netpointID','".$newIP['netwmask']."','".$newIP['gateway']."','".$newIP['subnet']."')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$port1ID=$DB->insert_id();
-			$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$netwID','".NETWORKING_TYPE."','".$net_port[NETWORKING_TYPE][$netwID]++."','link port to computer $i','$newIP','$newMAC','$iface','$netpointID')";
+			$query="INSERT INTO glpi_networking_ports VALUES (NULL,'$netwID','".NETWORKING_TYPE."','".$net_port[NETWORKING_TYPE][$netwID]++."','link port to computer $i','".$newIP['ip']."','$newMAC','$iface','$netpointID','".$newIP['netwmask']."','".$newIP['gateway']."','".$newIP['subnet']."')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$port2ID=$DB->insert_id();
 	
