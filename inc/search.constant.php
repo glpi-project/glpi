@@ -37,6 +37,10 @@
 // meta = 1 : meta search using GROUP BY HAVING -> field of the table
 // meta = 2 : meta search using WHERE -> field in a liked table
 
+// Conventions :
+// ID 80 : FK_entities link -> no massive action
+// ID 101 : glpi_ocs_link -> no linkfield but massive action on it
+
 //////COMPUTER_TYPE
 
 $SEARCH_OPTION[COMPUTER_TYPE]['common']=$LANG["common"][32];
