@@ -143,7 +143,7 @@ function addContracts($type,$ID){
 		$con[]=mt_rand($FIRST["contract"],$LAST["contract"]);
 	$con=array_unique($con);
 	foreach ($con as $val){
-		$query="INSERT INTO glpi_contract_device VALUES (NULL,'$val','$ID','$type','0')";
+		$query="INSERT INTO glpi_contract_device VALUES (NULL,'$val','$ID','$type')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 }
