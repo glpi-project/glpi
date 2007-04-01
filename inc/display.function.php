@@ -1714,11 +1714,13 @@ function printCleanArray($tab,$pad=0){
 		echo "</table>";
 	}
 }
-
+// Display a Link to the last page using http_referer if available else use history.back
 function displayBackLink(){
 	global $LANG;
 	if (isset($_SERVER['HTTP_REFERER'])){
 		echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+	} else {
+		echo "<a href='javascript:history.back();'>".$LANG["buttons"][13]."</a>";
 	}
 }
 /**
