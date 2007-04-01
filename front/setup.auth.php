@@ -118,7 +118,7 @@ elseif (isset ($_POST["test_mail"])) {
 	
 	//Display a message and a back link
 	echo "<div align='center'><strong>".$msg."<br>";
-	echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+	displayBackLink();
 	echo "</strong></div>";	
 }
 
