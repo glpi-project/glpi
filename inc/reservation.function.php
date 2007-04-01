@@ -403,12 +403,13 @@ function printReservation($target,$ID,$date){
 				$m->getfromDB($data['ID']);
 				$ci=new CommonItem();
 				$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
-
-				list($annee,$mois,$jour)=split("-",$date);
-				echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
-				echo "<tr><td>";
-				printReservationItem($target,$data['ID'],$date);
-				echo "</td></tr>";
+				if ($ci->obj->fields["FK_entities"]==$_SESSION["glpiactive_entity"]){
+					list($annee,$mois,$jour)=split("-",$date);
+					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
+					echo "<tr><td>";
+					printReservationItem($target,$data['ID'],$date);
+					echo "</td></tr>";
+				}
 			}
 		}
 	}
