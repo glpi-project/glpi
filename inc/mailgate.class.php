@@ -241,9 +241,9 @@ class MailCollect  extends receiveMail {
 		$tkt['device_type']="0";
 		$tkt['request_type']="2";
 			if (!seems_utf8($this->getBody($i))){
-			$tkt['contents']= utf8_encode($this->getBody($i));	
+			$tkt['contents']= textBrut(utf8_encode($this->getBody($i)));	
 			}else{
-			$tkt['contents']= $this->getBody($i);
+			$tkt['contents']= textBrut($this->getBody($i));
 			}
 		
 		$tkt=addslashes_deep($tkt);
