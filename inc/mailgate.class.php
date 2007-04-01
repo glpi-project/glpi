@@ -178,7 +178,7 @@ class MailCollect  extends receiveMail {
 						$track=new job;
 						$track->add($tkt);
 					}
-							
+					imap_expunge($this->marubox);
 //				}
 				if ($display){
 					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailgate"][3].": $tot<br>";
