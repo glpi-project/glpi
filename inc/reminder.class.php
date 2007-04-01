@@ -206,7 +206,7 @@ class Reminder extends CommonDBTM {
 			}else{
 				if($remind_edit) {
 					echo "<div id='plan'  onClick='showPlan()'>\n";
-					echo "<span style='font-weight: bold;text-decoration: none; color : #009966;cursor:pointer;'>";
+					echo "<span style='font-weight: bold;text-decoration: none; color : #659900;cursor:pointer;'>";
 				}
 				echo getPlanningState($this->fields["state"]).": ".convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"]);
 				if($remind_edit){

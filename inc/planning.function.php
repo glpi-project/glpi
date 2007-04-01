@@ -158,13 +158,14 @@ function showPlanning($who,$who_group,$when,$type){
 	// ---------------reminder 
 
 	$ASSIGN="";
-	if ($who>0)
-		$ASSIGN="author='$who' OR";
-	if ($who_group>0)
-		$ASSIGN="author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') OR";
-
-	$query2="SELECT * from glpi_reminder WHERE FK_entities= '".$_SESSION["glpiactive_entity"]."' AND rv='1' AND ($ASSIGN type='public')  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
-
+	if ($who>0){
+		$ASSIGN=" AND ( author='$who' OR type='public' )";
+	}
+	if ($who_group>0){
+		$ASSIGN=" AND ( type='public' OR author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
+	}
+	$query2="SELECT * from glpi_reminder WHERE FK_entities= '".$_SESSION["glpiactive_entity"]."' AND rv='1' $ASSIGN  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
+	echo $query2;
 	$result2=$DB->query($query2);
 
 
