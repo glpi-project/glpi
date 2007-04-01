@@ -40,6 +40,7 @@ $NEEDED_ITEMS=array("reminder","tracking","user");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 $remind=new Reminder();
 checkCentralAccess();

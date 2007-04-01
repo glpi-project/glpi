@@ -35,7 +35,7 @@
 
 $USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor",
-"software","infocom","phone","tracking","enterprise","ocsng","mailgate","rulesengine","rule.tracking","user");
+"software","infocom","phone","tracking","enterprise","ocsng","mailgate","rulesengine","rule.tracking","user","reservation","reminder");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
