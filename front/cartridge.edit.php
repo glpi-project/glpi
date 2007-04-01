@@ -39,10 +39,8 @@ $NEEDED_ITEMS=array("cartridge","infocom");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["tID"])) $tab["tID"] = "";
-if(!isset($tab["cID"])) $tab["cID"] = "";
+if(!isset($_GET["tID"])) $_GET["tID"] = "";
+if(!isset($_GET["cID"])) $_GET["cID"] = "";
 
 //print_r($_POST);
 
@@ -61,7 +59,7 @@ else if (isset($_GET["add"]))
 
 	checkRight("cartridge","w");
 	$cart->add($_GET);
-	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
+	logEvent($_GET["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -72,43 +70,40 @@ else if (isset($_POST["add_several"]))
 		unset($cart->fields["ID"]);
 		$cart->add($_POST);
 	}
-	logEvent($tab["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." cartridge.");
+	logEvent($_POST["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." cartridge.");
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["delete"]))
+else if (isset($_GET["delete"]))
 {
 	checkRight("cartridge","w");
-	$cart->delete($tab);
+	$cart->delete($_GET);
 	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted a cartridge.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["restore"]))
+else if (isset($_GET["restore"]))
 {
 	checkRight("cartridge","w");
-	$cart->restore($tab);
-	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." restore cartridge.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+	$cart->restore($_GET);
+	logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." restore cartridge.");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["install"]))
+else if (isset($_POST["install"]))
 {
 	checkRight("cartridge","w");
-	$cart->install($tab["pID"],$tab["tID"]);
-	logEvent($tab["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
+	$cart->install($_POST["pID"],$_POST["tID"]);
+	logEvent($_POST["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
 
-	glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$tab["pID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$_POST["pID"]);
 }
-else if (isset($tab["uninstall"]))
+else if (isset($_GET["uninstall"]))
 {
 	checkRight("cartridge","w");
-	$cart->uninstall($tab["ID"]);
+	$cart->uninstall($_GET["ID"]);
 	logEvent(0, "cartridges", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["back"]))
-{
-	glpi_header($tab["back"]." ");
-}
+glpi_header($_SERVER['HTTP_REFERER']);
 
 
 ?>

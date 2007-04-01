@@ -37,9 +37,7 @@ $NEEDED_ITEMS=array("contact","enterprise","link","document");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(empty($tab["ID"])) $tab["ID"] = "";
+if(empty($_GET["ID"])) $_GET["ID"] = "";
 
 $contact=new Contact;
 if (isset($_POST["add"]))
@@ -63,7 +61,7 @@ else if (isset($_POST["restore"]))
 	checkRight("contact_enterprise","w");
 
 	$contact->restore($_POST);
-	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 }
 else if (isset($_POST["purge"]))
@@ -71,7 +69,7 @@ else if (isset($_POST["purge"]))
 	checkRight("contact_enterprise","w");
 
 	$contact->delete($_POST,1);
-	logEvent($tab["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contact.php");
 }
 else if (isset($_POST["update"]))
@@ -86,7 +84,7 @@ else if (isset($_POST["addenterprise"])){
 	checkRight("contact_enterprise","w");
 
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
-	logEvent($tab["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG["log"][34]);
+	logEvent($_POST["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG["log"][34]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$_POST["conID"]);
 }
 else if (isset($_GET["deleteenterprise"])){
@@ -108,27 +106,27 @@ else
 
 	commonHeader($LANG["title"][22],$_SERVER['PHP_SELF'],"financial","contact");
 
-	if ($contact->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
-		if (!empty($tab['ID'])){
+	if ($contact->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
+		if (!empty($_GET['ID'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
-					showEnterpriseContact($tab["ID"]);
-					showDocumentAssociated(CONTACT_TYPE,$tab["ID"]);
-					showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
-					display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					showEnterpriseContact($_GET["ID"]);
+					showDocumentAssociated(CONTACT_TYPE,$_GET["ID"]);
+					showLinkOnDevice(CONTACT_TYPE,$_GET["ID"]);
+					display_plugin_action(CONTACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 5 : 
-					showDocumentAssociated(CONTACT_TYPE,$tab["ID"]);
+					showDocumentAssociated(CONTACT_TYPE,$_GET["ID"]);
 					break;
 				case 7 : 
-					showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
+					showLinkOnDevice(CONTACT_TYPE,$_GET["ID"]);
 					break;
 				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],CONTACT_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],CONTACT_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(CONTACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
-						showEnterpriseContact($tab["ID"]);
+					if (!display_plugin_action(CONTACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
+						showEnterpriseContact($_GET["ID"]);
 					break;
 			}
 		}

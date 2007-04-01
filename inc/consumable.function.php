@@ -120,19 +120,23 @@ function showConsumables ($tID,$show_old=0) {
 				echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th>";
 	
 	
-				if ($show_old)
+				if ($show_old){
 					echo "<th>".$LANG["setup"][57]."</th>";
+				}
 	
 				echo "<th>".$LANG["financial"][3]."</th>";
 	
 				if (!$show_old&&$canedit){
 					echo "<th>";
 					dropdownAllUsers("id_user",0,1,$cartype->fields["FK_entities"]);
-					echo "<input type='submit' name='give' value='".$LANG["consumables"][32]."'>";
+					echo "&nbsp;<input type='submit' name='give' value='".$LANG["consumables"][32]."'>";
 					echo "</th>";
 				} else {echo "<th>&nbsp;</th>";}
-				if ($canedit)
-					echo "<th>&nbsp;</th></tr>";
+
+				if ($canedit){
+					echo "<th>&nbsp;</th>";
+				}
+				echo "</tr>";
 			} else {
 	
 				echo "<br>";

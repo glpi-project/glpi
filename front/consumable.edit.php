@@ -38,10 +38,8 @@ $NEEDED_ITEMS=array("consumable","infocom");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["tID"])) $tab["tID"] = "";
-if(!isset($tab["cID"])) $tab["cID"] = "";
+if(!isset($_GET["tID"])) $_GET["tID"] = "";
+if(!isset($_GET["cID"])) $_GET["cID"] = "";
 
 $con=new Consumable();
 if (isset($_GET["add"]))
@@ -49,7 +47,7 @@ if (isset($_GET["add"]))
 	checkRight("consumable","w");
 
 	$con->add($_GET);
-	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added a consumable.");
+	logEvent($_GET["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added a consumable.");
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -61,42 +59,40 @@ else if (isset($_POST["add_several"]))
 		unset($con->fields["ID"]);
 		$con->add($_POST);
 	}
-	logEvent($tab["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." consumable.");
+	logEvent($_POST["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." consumable.");
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["delete"]))
+else if (isset($_GET["delete"]))
 {
 	checkRight("consumable","w");
 
-	$con->delete($tab);
+	$con->delete($_GET);
 	logEvent(0, "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["give"]))
+else if (isset($_POST["give"]))
 {	
 	checkRight("consumable","w");
-
-	if (isset($tab["out"]))
-		foreach ($tab["out"] as $key => $val)
-			$con->out($key,$tab["id_user"]);
-
-	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." user ".$tab["id_user"]." take out a consummable.");
+	if ($_POST["id_user"]>0){
+		if (isset($_POST["out"]))
+			foreach ($_POST["out"] as $key => $val)
+				$con->out($key,$_POST["id_user"]);
+	
+		logEvent($_POST["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." user ".$_POST["id_user"]." take out a consummable.");
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["restore"]))
+else if (isset($_GET["restore"]))
 {
 	checkRight("consumable","w");
 
-	$con->restore($tab);
-	logEvent($tab["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." restore a consummable.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+	$con->restore($_GET);
+	logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." restore a consummable.");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["back"]))
-{
 
-	glpi_header($tab["back"]." ");
-}
+glpi_header($_SERVER['HTTP_REFERER']);
 
 
 ?>
