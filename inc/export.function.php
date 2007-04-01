@@ -320,7 +320,7 @@ function displaySearchEndLine($type){
  **/
 function sylk_clean($value){
 
-	$value=utf8_decode($value);
+//	$value=utf8_decode($value);
 	if (get_magic_quotes_runtime()) $value=stripslashes($value);
 	$value=preg_replace('/\x0A/',' ',$value);
 	$value=preg_replace('/\x0D/',NULL,$value);
