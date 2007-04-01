@@ -101,7 +101,6 @@ if (haveRight("show_all_planning","1")){
 	echo "<hr>";
 	echo "<input type='radio' id='radio_group' name='usertype' value='group' ".($_GET["usertype"]=="group"?"checked":"").">";
 	$rand_group=dropdownValue("glpi_groups","gID",$_GET['gID'],1,$_SESSION["glpiactive_entity"]);
-	echo $rand_group;
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('dropdown_uID".$rand_user."', 1, \n";
 	echo "      function(element, value) {\n";
