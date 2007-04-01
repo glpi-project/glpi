@@ -111,11 +111,16 @@ function showPlanning($who,$who_group,$when,$type){
 		$ASSIGN="id_assign='$who' AND";
 	if ($who_group>0)
 		$ASSIGN="id_assign IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') AND";
-
+	if (empty($ASSIGN)){
+		$ASSIGN=" id_assign IN (SELECT DISTINCT glpi_users_profiles.FK_users 
+					FROM glpi_profiles 
+					LEFT JOIN glpi_users_profiles ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles)
+					WHERE glpi_profiles.interface='central' AND glpi_users_profiles.FK_entities='".$_SESSION["glpiactive_entity"]."') AND";
+	}
 	// ---------------Tracking
 
 	$query="SELECT * FROM glpi_tracking_planning WHERE $ASSIGN (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
-//	echo $query;
+	
 	$result=$DB->query($query);
 
 	$fup=new Followup();
@@ -152,8 +157,14 @@ function showPlanning($who,$who_group,$when,$type){
 		}
 	// ---------------reminder 
 
-	$query2="SELECT * from glpi_reminder WHERE rv='1' AND (author='$who' OR type='public')  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
-	
+	$ASSIGN="";
+	if ($who>0)
+		$ASSIGN="author='$who' OR";
+	if ($who_group>0)
+		$ASSIGN="author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') OR";
+
+	$query2="SELECT * from glpi_reminder WHERE FK_entities= '".$_SESSION["glpiactive_entity"]."' AND rv='1' AND ($ASSIGN type='public')  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
+
 	$result2=$DB->query($query2);
 
 
