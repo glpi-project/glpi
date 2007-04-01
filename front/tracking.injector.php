@@ -72,7 +72,7 @@ if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 	echo $LANG["help"][15]."<br><br>";
-	echo "<a href=\"".$_SERVER['HTTP_REFERER']."\">".$LANG["buttons"][13]."</a>";
+	displayBackLink();
 	echo "</b></div>";
 
 	nullFooter();
@@ -91,7 +91,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
 	echo $LANG["help"][16]."<br><br>";
-	echo "<a href=\"".$_SERVER['HTTP_REFERER']."\">".$LANG["buttons"][13]."</a>";
+	displayBackLink();
 	echo "</b></div>";
 	nullFooter();
 	exit;

@@ -1715,6 +1715,12 @@ function printCleanArray($tab,$pad=0){
 	}
 }
 
+function displayBackLink(){
+	global $LANG;
+	if (isset($_SERVER['HTTP_REFERER'])){
+		echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+	}
+}
 /**
  *  show onglet for central
  *

@@ -103,13 +103,13 @@ function printCalendrier($target,$ID=""){
 	$str_suivant="?show=resa&amp;ID=$ID&amp;mois_courant=$mois_suivant&amp;annee_courante=$annee_suivante";
 	$str_precedent="?show=resa&amp;ID=$ID&amp;mois_courant=$mois_precedent&amp;annee_courante=$annee_precedente";
 
-
 	if (!empty($ID)){
 		$m=new ReservationItem;
 		$m->getfromDB($ID);
 		if (!$m->fields['active']){
 			echo "<div align='center'><strong>";
-			echo $LANG["reservation"][2]."<br><a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+			echo $LANG["reservation"][2]."<br>";
+			displayBackLink();
 			echo "</strong></div>";
 			return false;
 		}
@@ -118,7 +118,9 @@ function printCalendrier($target,$ID=""){
 		
 		if (!haveAccessToEntity($ci->getField('FK_entities'))){
 			echo "<div align='center'><strong>";
-			echo $LANG["common"][54]."<br><a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+
+			echo $LANG["common"][54]."<br>";
+			displayBackLink();
 			echo "</strong></div>";
 			return false;
 		}
