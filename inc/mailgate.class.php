@@ -231,7 +231,9 @@ class MailCollect  extends receiveMail {
 			if ($result&&$DB->numrows($result))
 				$glpiID=$DB->result($result,0,"ID");
 		$tkt['author']=$glpiID;
-		
+		// Mail followup
+		$tkt['uemail']=$head['from'];
+		$tkt['emailupdates']=1;
 		// Which entity ?
 		$tkt['FK_entities']=$this->entity;
 	
