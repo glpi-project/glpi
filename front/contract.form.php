@@ -38,9 +38,7 @@ $NEEDED_ITEMS=array("contract","enterprise","computer","printer","monitor","peri
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 $contract=new Contract();
 
@@ -57,7 +55,7 @@ else if (isset($_POST["delete"]))
 	checkRight("contract_infocom","w");
 
 	$contract->delete($_POST);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
 }
 else if (isset($_POST["restore"]))
@@ -65,7 +63,7 @@ else if (isset($_POST["restore"]))
 	checkRight("contract_infocom","w");
 
 	$contract->restore($_POST);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
 }
 else if (isset($_POST["purge"]))
@@ -73,7 +71,7 @@ else if (isset($_POST["purge"]))
 	checkRight("contract_infocom","w");
 
 	$contract->delete($_POST,1);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
 }
 else if (isset($_POST["update"]))
@@ -90,7 +88,7 @@ else if (isset($_POST["additem"])){
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item']);
-		logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][32]);
+		logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -99,7 +97,7 @@ else if (isset($_GET["deleteitem"])){
 	checkRight("contract_infocom","w");
 
 	deleteDeviceContract($_GET["ID"]);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
@@ -107,7 +105,7 @@ else if (isset($_POST["addenterprise"])){
 	checkRight("contract_infocom","w");
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteenterprise"])){
@@ -115,7 +113,7 @@ else if (isset($_GET["deleteenterprise"])){
 	checkRight("contract_infocom","w");
 
 	deleteEnterpriseContract($_GET["ID"]);
-	logEvent($tab["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);
+	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
@@ -129,29 +127,29 @@ else
 
 	commonHeader($LANG["title"][20],$_SERVER['PHP_SELF'],"financial","contract");
 
-	if ($contract->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
-		if (!empty($tab['ID']))
+	if ($contract->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
+		if (!empty($_GET['ID']))
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
-					showEnterpriseContract($tab["ID"]);
-					showDeviceContract($tab["ID"]);
-					showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
-					showLinkOnDevice(CONTACT_TYPE,$tab["ID"]);
-					display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					showEnterpriseContract($_GET["ID"]);
+					showDeviceContract($_GET["ID"]);
+					showDocumentAssociated(CONTRACT_TYPE,$_GET["ID"]);
+					showLinkOnDevice(CONTACT_TYPE,$_GET["ID"]);
+					display_plugin_action(CONTRACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 5 : 
-					showDocumentAssociated(CONTRACT_TYPE,$tab["ID"]);
+					showDocumentAssociated(CONTRACT_TYPE,$_GET["ID"]);
 					break;
 				case 7 : 
-					showLinkOnDevice(CONTRACT_TYPE,$tab["ID"]);
+					showLinkOnDevice(CONTRACT_TYPE,$_GET["ID"]);
 					break;
 				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],CONTRACT_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],CONTRACT_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(CONTRACT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
-						showEnterpriseContract($tab["ID"]);
-						showDeviceContract($tab["ID"]);
+					if (!display_plugin_action(CONTRACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+						showEnterpriseContract($_GET["ID"]);
+						showDeviceContract($_GET["ID"]);
 					}
 					break;
 			}

@@ -1986,7 +1986,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									//Update column "deleted" set value to 0 and set status to default
 									$default_state = $cfg_ocs["default_state"];
 									
-									$input["ID"] = $id_monitor;
+									$input["ID"] = $id_printer;
 									$input["deleted"]=0;
 									$input["state"]=$default_state;
 									$p = new Printer;
@@ -2060,11 +2060,11 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 								), "import_peripheral");
 								//Update column "deleted" set value to 0 and set status to default
 								$default_state = $cfg_ocs["default_state"];
-								$input["ID"] = $id_monitor;
+								$input["ID"] = $id_periph;
 								$input["deleted"]=0;
 								$input["state"]=$default_state;
-								$periph = new Peripheral;
-								$periph->update($input);
+								$p = new Peripheral;
+								$p->update($input);
 								//$queryUpdate = "UPDATE glpi_peripherals SET deleted='0', state='$default_state' WHERE ID='$id_periph'";
 								//$DB->query($queryUpdate);
 							}

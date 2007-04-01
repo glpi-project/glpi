@@ -39,9 +39,7 @@ $NEEDED_ITEMS=array("consumable","printer","infocom","link","document","enterpri
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 $constype=new ConsumableType();
 
@@ -58,7 +56,7 @@ else if (isset($_POST["delete"]))
 	checkRight("consumable","w");
 
 	$constype->delete($_POST);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["restore"]))
@@ -66,7 +64,7 @@ else if (isset($_POST["restore"]))
 	checkRight("consumable","w");
 
 	$constype->restore($_POST);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["purge"]))
@@ -74,7 +72,7 @@ else if (isset($_POST["purge"]))
 	checkRight("consumable","w");
 
 	$constype->delete($_POST,1);
-	logEvent($tab["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["update"]))
@@ -99,38 +97,38 @@ else
 
 
 
-	if ($constype->showForm($_SERVER['PHP_SELF'],$tab["ID"])) {
-		if (!empty($tab['ID']))
+	if ($constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
+		if (!empty($_GET['ID']))
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
-					showConsumableAdd($tab["ID"]);
-					showConsumables($tab["ID"]);
-					showConsumables($tab["ID"],1);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
-					showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
-					showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
-					display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					showConsumableAdd($_GET["ID"]);
+					showConsumables($_GET["ID"]);
+					showConsumables($_GET["ID"],1);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_GET["ID"],1);
+					showDocumentAssociated(CONSUMABLE_TYPE,$_GET["ID"]);
+					showLinkOnDevice(CONSUMABLE_TYPE,$_GET["ID"]);
+					display_plugin_action(CONSUMABLE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$tab["ID"],1);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_GET["ID"],1);
 					break;
 
 				case 5 :
-					showDocumentAssociated(CONSUMABLE_TYPE,$tab["ID"]);
+					showDocumentAssociated(CONSUMABLE_TYPE,$_GET["ID"]);
 					break;
 
 				case 7 : 
-					showLinkOnDevice(CONSUMABLE_TYPE,$tab["ID"]);
+					showLinkOnDevice(CONSUMABLE_TYPE,$_GET["ID"]);
 					break;
 
 				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],CONSUMABLE_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],CONSUMABLE_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(CONSUMABLE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
-						showConsumableAdd($tab["ID"]);
-						showConsumables($tab["ID"]);
-						showConsumables($tab["ID"],1);
+					if (!display_plugin_action(CONSUMABLE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+						showConsumableAdd($_GET["ID"]);
+						showConsumables($_GET["ID"]);
+						showConsumables($_GET["ID"],1);
 					}
 					break;
 			}
