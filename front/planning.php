@@ -47,7 +47,8 @@ checkSeveralRightsOr(array("show_all_planning"=>"1","show_planning"=>"1"));
 if (!isset($_GET["date"])||$_GET["date"]=="0000-00-00") $_GET["date"]=strftime("%Y-%m-%d");
 if (!isset($_GET["type"])) $_GET["type"]="week";
 if (!isset($_GET["uID"])||!haveRight("show_all_planning","1")) $_GET["uID"]=$_SESSION["glpiID"];
-
+if (!isset($_GET["gID"])) $_GET["gID"]=0;
+if (!isset($_GET["usertype"])) $_GET["usertype"]="user";
 
 if ($_GET["type"]!="month"){
 	$time=strtotime($_GET["date"]);
@@ -94,9 +95,27 @@ echo "<td>";
 echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$prev\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 echo "</td>";
 echo "<td>";
-if (haveRight("show_all_planning","1"))
-dropdownUsers("uID",$_GET['uID'],"interface",1);
-else echo "&nbsp;";
+if (haveRight("show_all_planning","1")){
+	echo "<input type='radio' id='radio_user' name='usertype' value='user' ".($_GET["usertype"]=="user"?"checked":"").">";
+	$rand_user=dropdownUsers("uID",$_GET['uID'],"interface",1,1,$_SESSION["glpiactive_entity"]);
+	echo "<hr>";
+	echo "<input type='radio' id='radio_group' name='usertype' value='group' ".($_GET["usertype"]=="group"?"checked":"").">";
+	$rand_group=dropdownValue("glpi_groups","gID",$_GET['gID'],1,$_SESSION["glpiactive_entity"]);
+	echo $rand_group;
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('dropdown_uID".$rand_user."', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "document.getElementById('radio_user').checked=true;";
+	echo "});\n";
+	echo "   new Form.Element.Observer('dropdown_gID".$rand_group."', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "document.getElementById('radio_group').checked=true;";
+	echo "});\n";
+
+	echo "</script>\n";
+} else {
+	echo "&nbsp;";
+}
 echo "</td>";
 echo "<td align='right'>";
 echo $LANG["common"][27].":</td><td>";
@@ -118,7 +137,12 @@ echo "</td>";
 echo "</tr>";
 echo "</table></form></div>";
 
-showPlanning($_GET['uID'],$_GET["date"],$_GET["type"]);
+if ($_GET["usertype"]=="user"){
+	$_GET['gID']=-1;
+} else {
+	$_GET['uID']=-1;
+}
+showPlanning($_GET['uID'],$_GET['gID'],$_GET["date"],$_GET["type"]);
 
 
 

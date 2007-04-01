@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')){
 // FUNCTIONS Planning
 
 
-function showPlanning($who,$when,$type){
+function showPlanning($who,$who_group,$when,$type){
 	global $LANG,$CFG_GLPI,$DB;
 
 	if (!haveRight("show_planning","1")&&!haveRight("show_all_planning","1")) return false;
@@ -107,13 +107,15 @@ function showPlanning($who,$when,$type){
 
 	// Get items to print
 	$ASSIGN="";
-	if ($who!=0)
+	if ($who>0)
 		$ASSIGN="id_assign='$who' AND";
+	if ($who_group>0)
+		$ASSIGN="id_assign IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') AND";
 
 	// ---------------Tracking
 
-	$query="SELECT * from glpi_tracking_planning WHERE $ASSIGN (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
-
+	$query="SELECT * FROM glpi_tracking_planning WHERE $ASSIGN (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
+//	echo $query;
 	$result=$DB->query($query);
 
 	$fup=new Followup();
@@ -382,7 +384,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 		}
 	}
 	
-	echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: $color; font-size:9px; width:80%;'>";
+	echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: $color; font-size:9px; width:98%;'>";
 	$rand=mt_rand(); 
 
 	// Plugins case
