@@ -1014,7 +1014,7 @@ function update0681to07() {
 		PRIMARY KEY  (`ID`)
 		) ENGINE=MyISAM ;";
 		$DB->query($query) or die("0.7 add glpi_mailgate" . $LANG["update"][90] . $DB->error());
-		$query = "INSERT INTO `glpi_display` (`ID`, `type`, `num`, `rank`, `FK_users`) VALUES (121, 35, 80, 1, 0);";
+		$query = "INSERT INTO `glpi_display` ( `type`, `num`, `rank`, `FK_users`) VALUES (35, 80, 1, 0);";
 		$DB->query($query) or die("0.7 add glpi_mailgate display values" . $LANG["update"][90] . $DB->error());
 	}
 } // fin 0.7 #####################################################################################
