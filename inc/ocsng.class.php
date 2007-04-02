@@ -87,7 +87,9 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		}
 		elseif (isset($withtemplate) && $withtemplate ==2)
 		{
-			if ($ID == -1)
+			if ($templateid== '')
+				$action = "edit_server";
+			elseif ($ID == -1)
 				$action = "add_server_with_template";
 			else
 				$action = "update_server_with_template";	
@@ -97,23 +99,23 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		switch($action)
 		{
 			case  "update_server_with_template" :
-							//Get the template configuration
-				$template_config = getOcsConf($templateid);
 				
-				//Unset all the variable which are not in the template
-				unset($template_config["ID"]);
-				unset($template_config["name"]);
-				unset($template_config["ocs_db_user"]);
-				unset($template_config["ocs_db_password"]);
-				unset($template_config["ocs_db_name"]);
-				unset($template_config["ocs_db_host"]);
-				unset($template_config["checksum"]);
-				
-				//Add all the template's informations to the server's object'
-				foreach ($template_config as $key => $value)
-					if ($value != "") $this->fields[$key] = $value;
-				break; 
-				
+					//Get the template configuration
+					$template_config = getOcsConf($templateid);
+					
+					//Unset all the variable which are not in the template
+					unset($template_config["ID"]);
+					unset($template_config["name"]);
+					unset($template_config["ocs_db_user"]);
+					unset($template_config["ocs_db_password"]);
+					unset($template_config["ocs_db_name"]);
+					unset($template_config["ocs_db_host"]);
+					unset($template_config["checksum"]);
+					
+					//Add all the template's informations to the server's object'
+					foreach ($template_config as $key => $value)
+						if ($value != "") $this->fields[$key] = $value;
+					break; 
 			case "edit_server" :
 				if (empty($ID))
 					$this->getEmpty($ID);
