@@ -1487,13 +1487,16 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 
 				$result2 = $DBocs->query($query2);
 				$i = 0;
+				
+				//Count old ip in GLPI
+				$count_ip = count($import_ip);
 				// Add network device
 				if ($DBocs->numrows($result2) > 0) {
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						if ($cfg_ocs["import_device_iface"]) {
 							$do_clean = true;
-							$network["designation"] = $line2["DESCRIPTION"];
+							$network["designation"] = $line2["DESCRIPTION"];							
 							if (!in_array(NETWORK_DEVICE . '$$$$$' . $network["designation"], $import_device)) {
 								if (!empty ($line2["SPEED"]))
 									$network["bandwidth"] = $line2["SPEED"];
@@ -1518,7 +1521,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 							sort($ocs_ips);
 
 							//if never imported in 0.70, insert id in the array
-							if(count($import_ip)==0){	
+							if($count_ip==0){								
 								//get old IP in DB							
 								$querySelectIDandIP = "SELECT ID,ifaddr FROM glpi_networking_ports 
 											WHERE device_type='" . COMPUTER_TYPE . "' 
@@ -1528,7 +1531,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 								$result = $DB->query($querySelectIDandIP);
 								if ($DB->numrows($result) > 0) {
 									while ($data = $DB->fetch_array($result)){
-										//Upate import_ip column and import_ip array
+										//Upate import_ip column and import_ip array										
 										addToOcsArray($glpi_id, array ($data["ID"] => $data["ifaddr"]), "import_ip");
 										$import_ip[$data["ID"]] = $data["ifaddr"];
 									}
@@ -1554,7 +1557,8 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 									$netport["logical_number"] = $j;
 									$netport["ID"] = $id_ip;
 									$np->update($netport);
-									unset ($import_ip[$id_ip]);
+									unset ($import_ip[$id_ip]);									
+									$count_ip++;
 								}
 								//If new IP found
 								else{
@@ -1565,7 +1569,8 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 									$netport["logical_number"] = $j;
 									$newID = $np->add($netport);
 									//ADD to array
-									addToOcsArray($glpi_id, array ($newID => $ocs_ips[$j]), "import_ip");
+									addToOcsArray($glpi_id, array ($newID => $ocs_ips[$j]), "import_ip");									
+									$count_ip++;
 								}								
 							}
 						}
