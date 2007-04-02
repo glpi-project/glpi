@@ -378,7 +378,7 @@ class User extends CommonDBTM {
 			$this->fields['password_md5'] = "";
 			$fields['name'] = $ldap_method["ldap_login"];
 			$fields['email'] = $ldap_method["ldap_field_email"];
-			$fields['location'] = $ldap_method["ldap_field_location"];
+//			$fields['location'] = $ldap_method["ldap_field_location"];
 			$fields['realname'] = $ldap_method["ldap_field_realname"];
 			$fields['firstname'] = $ldap_method["ldap_field_firstname"];
 			$fields['phone'] = $ldap_method["ldap_field_phone"];
@@ -403,6 +403,7 @@ class User extends CommonDBTM {
 			}
 
 			// Is location get from LDAP ?
+			/*
 			if (isset ($fields['location']) && !empty ($v[0][$fields["location"]][0]) && !empty ($fields['location'])) {
 				$query = "SELECT ID FROM glpi_dropdown_locations WHERE completename='" . $this->fields['location'] . "'";
 				$result = $DB->query($query);
@@ -410,10 +411,11 @@ class User extends CommonDBTM {
 					$DB->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('" . $this->fields['location'] . "')");
 					$this->fields['location'] = $DB->insert_id();
 					regenerateTreeCompleteNameUnderID("glpi_dropdown_locations", $this->fields['location']);
-				} else
+				} else {
 					$this->fields['location'] = $DB->result($result, 0, "ID");
+				}
 			}
-
+			*/
 			// Get group fields
 			$query_user = "SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
 			$query_group = "SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
@@ -642,7 +644,8 @@ class User extends CommonDBTM {
 				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 20);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td align='center'>&nbsp;</td><td>&nbsp;";
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][42] . ":</td><td>";
+				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 20);
 				echo "</td>";
 				echo "<td align='center'>" . $LANG["setup"][14] . ":</td><td>";
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
@@ -655,14 +658,14 @@ class User extends CommonDBTM {
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 20);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . ":</td><td>";
+/*				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . ":</td><td>";
 				// TODO Restrict ??? or delete this field from the user
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
 				echo "</td>";
 				echo "<td align='center'>" . $LANG["common"][42] . ":</td><td>";
 				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 20);
 				echo "</td></tr>";
-
+*/
 				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
 				echo "</tr>";
 
@@ -828,13 +831,13 @@ class User extends CommonDBTM {
 				echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . "</td><td>";
+/*			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . "</td><td>";
 			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["location"]))) {
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 0);
 			} else
 				echo getDropdownName("glpi_dropdown_locations", $this->fields["location"]);
 			echo "</td></tr>";
-
+*/
 			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][42] . "</td><td>";
 			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["mobile"]))) {
 				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 30);
