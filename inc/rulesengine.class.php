@@ -300,7 +300,7 @@ class Rule extends CommonDBTM{
 			{
 				if ($new){
 					echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
-					echo "<input type='hidden' name='rule_type' value=\'".$this->rule_type."\''>";
+					echo "<input type='hidden' name='rule_type' value='".$this->rule_type."'>";
 					echo "<input type='submit' name='add_rule' value=\"" . $LANG["buttons"][8] . "\"' class='submit'>";
 					echo "</td></tr>";
 
