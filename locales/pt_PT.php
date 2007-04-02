@@ -87,7 +87,7 @@ $LANG["buttons"][38]="Desbloquear";
 $LANG["buttons"][39]="Substituir"; 
 $LANG["buttons"][40]="Show all"; 
 $LANG["buttons"][41]="Activate"; 
-$LANG["buttons"][42]="Unactivate"; 
+$LANG["buttons"][42]="Deactivate"; 
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="S"; 
@@ -783,6 +783,11 @@ $LANG["login"][23]="Test failed";
 $LANG["login"][24]="Last login date"; 
 $LANG["login"][25]="You don't have right to connect"; 
 
+$LANG["mailgate"][0]="Mail Gateway"; 
+$LANG["mailgate"][1]="Add a mail gateway"; 
+$LANG["mailgate"][2]="Get mail tickets now"; 
+$LANG["mailgate"][3]="Number of available and retrieved mails"; 
+
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
 $LANG["mailing"][3]="Conteúdo :"; 
@@ -870,6 +875,7 @@ $LANG["Menu"][35]="Perfis";
 $LANG["Menu"][36]="Grupos"; 
 $LANG["Menu"][37]="Entidades"; 
 $LANG["Menu"][38]="Inventory"; 
+$LANG["Menu"][39]="Mail Gateways"; 
 
 $LANG["monitors"][4]="Monitor"; 
 $LANG["monitors"][14]="Microfone"; 
@@ -1438,7 +1444,7 @@ $LANG["setup"][703]="General";
 $LANG["setup"][704]="Notifications"; 
 
 $LANG["software"][3]="Plataforma"; 
-$LANG["software"][5]="Versão"; 
+$LANG["software"][5]="Versions"; 
 $LANG["software"][10]="Software"; 
 $LANG["software"][11]="Licenças"; 
 $LANG["software"][12]="Adicionar licença..."; 

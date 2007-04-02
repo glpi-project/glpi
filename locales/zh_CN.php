@@ -87,7 +87,7 @@ $LANG["buttons"][38]="解锁";
 $LANG["buttons"][39]="Replace"; 
 $LANG["buttons"][40]="Show all"; 
 $LANG["buttons"][41]="Activate"; 
-$LANG["buttons"][42]="Unactivate"; 
+$LANG["buttons"][42]="Deactivate"; 
 
 $LANG["calendarD"][0]="一"; 
 $LANG["calendarD"][1]="二"; 
@@ -783,6 +783,11 @@ $LANG["login"][23]="Test failed";
 $LANG["login"][24]="Last login date"; 
 $LANG["login"][25]="You don't have right to connect"; 
 
+$LANG["mailgate"][0]="Mail Gateway"; 
+$LANG["mailgate"][1]="Add a mail gateway"; 
+$LANG["mailgate"][2]="Get mail tickets now"; 
+$LANG["mailgate"][3]="Number of available and retrieved mails"; 
+
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="=====================================================================]="; 
 $LANG["mailing"][3]="内容："; 
@@ -870,6 +875,7 @@ $LANG["Menu"][35]="个人配置";
 $LANG["Menu"][36]="组"; 
 $LANG["Menu"][37]="Entities"; 
 $LANG["Menu"][38]="Inventory"; 
+$LANG["Menu"][39]="Mail Gateways"; 
 
 $LANG["monitors"][4]="显示器"; 
 $LANG["monitors"][14]="话筒"; 
@@ -1438,7 +1444,7 @@ $LANG["setup"][703]="General";
 $LANG["setup"][704]="Notifications"; 
 
 $LANG["software"][3]="平台"; 
-$LANG["software"][5]="版本"; 
+$LANG["software"][5]="Versions"; 
 $LANG["software"][10]="软件"; 
 $LANG["software"][11]="使用许可"; 
 $LANG["software"][12]="添加使用许可…"; 
