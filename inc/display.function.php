@@ -431,7 +431,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 			}
 
-		// TODO SPECIFIC RIGHT TO ENTITY
 		if (haveRight("entity","r")){
 			$menu['admin']['content']['entity']['title']=$LANG["Menu"][37];
 			$menu['admin']['content']['entity']['shortcut']='z';

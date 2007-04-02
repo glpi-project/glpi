@@ -42,8 +42,7 @@ include (GLPI_ROOT."/inc/includes.php");
 	// Manage entity change
 	if (isset($_POST["activeentity"])){
 		if (in_array($_POST["activeentity"],$_SESSION["glpiactiveentities"])){
-			$_SESSION["glpiactive_entity"]=$_POST["activeentity"];
-			cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+			changeActiveEntity($_POST["activeentity"]);
 		}
 	}
 
