@@ -347,7 +347,7 @@ class CommonItem{
 				$comment.="<strong>".$LANG["common"][20].": "."</strong>".$tmp."<br>";
 			}
 			if ($tmp=$this->getField('location')){
-				$tmp=getDropdownName("glpi_dropdown_locations","</strong>".$tmp);
+				$tmp=getDropdownName("glpi_dropdown_locations",$tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
 					$comment.="<strong>".$LANG["common"][15].": "."</strong>".$tmp."<br>";
 				}
