@@ -783,6 +783,11 @@ $LANG["login"][23]="Prueba fallida";
 $LANG["login"][24]="Fecha de la última actualización"; 
 $LANG["login"][25]="No tiene permisos para conectarse a esta aplicación"; 
 
+$LANG["mailgate"][0]="Mail Gateway"; 
+$LANG["mailgate"][1]="Add a mail gateway"; 
+$LANG["mailgate"][2]="Get mail tickets now"; 
+$LANG["mailgate"][3]="Number of available and retrieved mails"; 
+
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
 $LANG["mailing"][3]="Contenido:"; 
@@ -870,6 +875,7 @@ $LANG["Menu"][35]="Perfiles";
 $LANG["Menu"][36]="Grupos"; 
 $LANG["Menu"][37]="Entidades"; 
 $LANG["Menu"][38]="Inventario"; 
+$LANG["Menu"][39]="Mail Gateways"; 
 
 $LANG["monitors"][4]="Monitor"; 
 $LANG["monitors"][14]="Micrófono"; 
@@ -1438,7 +1444,7 @@ $LANG["setup"][703]="General";
 $LANG["setup"][704]="Notificaciones"; 
 
 $LANG["software"][3]="Plataforma"; 
-$LANG["software"][5]="Versión"; 
+$LANG["software"][5]="Versions"; 
 $LANG["software"][10]="Software"; 
 $LANG["software"][11]="Licencias"; 
 $LANG["software"][12]="Añadir licencia..."; 
