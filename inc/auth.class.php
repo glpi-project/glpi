@@ -253,9 +253,8 @@ class Identification {
 			$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
 			$_SESSION["glpilist_limit"] = $CFG_GLPI["list_limit"];
 			$_SESSION["glpicrontimer"] = time();
-			// TODO : load profile depending on entities
+			
 			// glpiprofiles -> other available profile with link to the associated entities
-
 			initEntityProfiles($_SESSION["glpiID"]);
 			
 			changeProfile(key($_SESSION['glpiprofiles']));
@@ -263,12 +262,6 @@ class Identification {
 
 			// glpiactiveprofile -> active profile
 			// glpiactiveentities -> active entities
-			// Reload glpiactiveprofile when entity switching 
-			
-	
-			// TODO Groups also depends og the entity
-			// glpigroups -> active groups
-			// Reload groups on entity switching
 	
 			do_hook("init_session");
 			cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);

@@ -490,6 +490,7 @@ function changeProfile($ID) {
 function changeActiveEntity($ID) {
 	$_SESSION["glpiactive_entity"] = $ID;
 	loadGroups();
+	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 }
 
 /**

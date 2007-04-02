@@ -119,18 +119,17 @@ function update0681to07() {
 
 	if (!TableExists("glpi_entities")) {
 		$query = "CREATE TABLE `glpi_entities` (
-														`ID` int(11) NOT NULL auto_increment,
-														`name` varchar(255) NOT NULL,
-														`parentID` int(11) NOT NULL default '0',
-														`completename` text NOT NULL,
-														`comments` text,
-														`level` int(11) default NULL,
-														PRIMARY KEY  (`ID`),
-														UNIQUE KEY `name` (`name`,`parentID`),
-														KEY `parentID` (`parentID`)
-														) ENGINE=MyISAM;";
+					`ID` int(11) NOT NULL auto_increment,
+					`name` varchar(255) NOT NULL,
+					`parentID` int(11) NOT NULL default '0',
+					`completename` text NOT NULL,
+					`comments` text,
+					`level` int(11) default NULL,
+					PRIMARY KEY  (`ID`),
+					UNIQUE KEY `name` (`name`,`parentID`),
+					KEY `parentID` (`parentID`)
+			) ENGINE=MyISAM;";
 		$DB->query($query) or die("0.7 create glpi_entities " . $LANG["update"][90] . $DB->error());
-		// TODO : ADD other fields
 	}
 
 	if (!TableExists("glpi_entities_data")) {
@@ -282,7 +281,6 @@ function update0681to07() {
 									PRIMARY KEY  (`ID`)
 								) ENGINE=MyISAM;";
 		$DB->query($query) or die("0.7 create glpi_auth_ldap " . $LANG["update"][90] . $DB->error());
-		// TODO : ADD other fields
 
 		$query = "select * from glpi_config WHERE ID=1";
 		$result = $DB->query($query);
@@ -341,7 +339,6 @@ function update0681to07() {
 										) ENGINE=MyISAM ;";
 
 		$DB->query($query) or die("0.7 create glpi_auth_mail " . $LANG["update"][90] . $DB->error());
-		// TODO : ADD other fields
 
 		$query = "select * from glpi_config WHERE ID=1";
 		$result = $DB->query($query);
@@ -438,7 +435,6 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add helpdesk_visible in glpi_software " . $LANG["update"][90] . $DB->error());
 	}
 
-	// TODO Enterprises -> dropdown manufacturer + update import OCS
 	if (!TableExists("glpi_dropdown_manufacturer")) {
 
 		$query = "CREATE TABLE `glpi_dropdown_manufacturer` (
