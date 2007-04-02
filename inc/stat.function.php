@@ -956,8 +956,15 @@ function showItemStats($target,$date1,$date2,$start){
 	if (isset($_GET["display_type"]))
 		$output_type=$_GET["display_type"];
 
+	if (empty($date2)) $date2=date("Y-m-d");
+	$date2.=" 23:59:59";
+	// 1 an par defaut
+	if (empty($date1)) $date1=date("Y-m-d",mktime(0,0,0,date("m"),date("d"),date("Y")-1));
+	$date1.=" 00:00:00";
+
 
 	$query="SELECT device_type,computer,COUNT(*) AS NB FROM glpi_tracking WHERE date<= '".$date2."' AND date>= '".$date1."' ".getEntitiesRestrictRequest("AND","glpi_tracking")." GROUP BY device_type,computer ORDER BY NB DESC";
+	
 	$result=$DB->query($query);
 	$numrows=$DB->numrows($result);
 
