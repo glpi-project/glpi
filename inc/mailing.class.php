@@ -688,7 +688,7 @@ class MailingAlert
 						break;
 					case PROFILE_MAILING_TYPE :
 						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'
-						AND glpi_users_profiles.FK_profiles='".$this->entity."'";
+						AND glpi_users_profiles.FK_entities='".$this->entity."'";
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($data=$DB->fetch_assoc($result2)){
