@@ -2153,13 +2153,13 @@ $SEARCH_OPTION[USER_TYPE][11]['field']='mobile';
 $SEARCH_OPTION[USER_TYPE][11]['linkfield']='mobile';
 $SEARCH_OPTION[USER_TYPE][11]['name']=$LANG["common"][42];
 $SEARCH_OPTION[USER_TYPE][11]['meta']=0;
-
+/*
 $SEARCH_OPTION[USER_TYPE][7]['table']='glpi_dropdown_locations';
 $SEARCH_OPTION[USER_TYPE][7]['field']='completename';
 $SEARCH_OPTION[USER_TYPE][7]['linkfield']='location';
 $SEARCH_OPTION[USER_TYPE][7]['name']=$LANG["common"][15];
 $SEARCH_OPTION[USER_TYPE][7]['meta']=0;
-
+*/
 $SEARCH_OPTION[USER_TYPE][12]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][12]['field']='comments';
 $SEARCH_OPTION[USER_TYPE][12]['linkfield']='comments';
@@ -2182,8 +2182,13 @@ $SEARCH_OPTION[USER_TYPE][19]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][19]['field']='date_mod';
 $SEARCH_OPTION[USER_TYPE][19]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][19]['name']=$LANG["common"][26];
-$SEARCH_OPTION[USER_TYPE][19]['meta']=1;
+$SEARCH_OPTION[USER_TYPE][19]['meta']=0;
 
+$SEARCH_OPTION[USER_TYPE][20]['table']='glpi_profiles';
+$SEARCH_OPTION[USER_TYPE][20]['field']='name';
+$SEARCH_OPTION[USER_TYPE][20]['linkfield']='';
+$SEARCH_OPTION[USER_TYPE][20]['name']=$LANG["Menu"][35];
+$SEARCH_OPTION[USER_TYPE][20]['meta']=0;
 
 //////CONSUMABLE_TYPE
 
