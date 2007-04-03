@@ -671,7 +671,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_licenses")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
-						||($type==USER_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_groups")
+						||($type==USER_TYPE&&($SEARCH_OPTION[$type][$val2]["table"]=="glpi_groups"
+								||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_entities"
+								||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_profiles"
+						))
 						||($type==CONTACT_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_enterprises")
 						||($type==ENTERPRISE_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_contacts")
 					     )) 
@@ -830,10 +833,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-	//echo $QUERY."<br>\n";
+//	echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
+
 		// if real search or complete export : get numrows from request 
 		if (!$nosearch||isset($_GET['export_all'])) 
 			$numrows= $DB->numrows($result);
@@ -1322,9 +1326,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_contracts.expire" : // ajout jmd
 			return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 		break;
-		case "glpi_entities.completename" : // ajout jmd
-			return $pretable.$table.$addtable.".completename AS ".$NAME."_$num, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
-		break;
 		case "glpi_device_hdd.specif_default" :
 			return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
 		break;
@@ -1339,6 +1340,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
 			else return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
+		case "glpi_profiles.name" :
 		case "glpi_groups.name" :
 			if ($type==USER_TYPE){
 				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, ";
@@ -1346,6 +1348,10 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				return $table.$addtable.".".$field." AS ITEM_$num, ";
 			}
 		break;
+		case "glpi_entities.completename" : // ajout jmd
+			return $pretable.$table.$addtable.".completename AS ".$NAME."_$num, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
+		break;
+
 		case "glpi_contracts.name" :
 		case "glpi_contracts.num" :
 			if ($type!=CONTRACT_TYPE){
@@ -1682,7 +1688,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 
 		case "glpi_computers.name" :
 		case "glpi_printers.name" :
-		case "glpi_profiles.name" :
 		case "glpi_networking.name" :
 		case "glpi_phones.name" :
 		case "glpi_monitors.name" :
@@ -1705,7 +1710,31 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			$out.= "</a>";
 			return $out;
 		break;
+		case "glpi_profiles.name" :
+		if ($type==PROFILE_TYPE){
+				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+				$out.= $data["ITEM_$num"];
+				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+					$out.= " (".$data["ID"].")";
+				}
+				$out.= "</a>";
+			} else if ($type=USER_TYPE){	
+				$out="";
+				$split=explode("$$$$",$data["ITEM_$num"]);
 
+				$count_display=0;
+				for ($k=0;$k<count($split);$k++)
+					if (strlen(trim($split[$k]))>0){
+						if ($count_display) $out.= "<br>";
+						$count_display++;
+						$out.= $split[$k];
+					}
+				return $out;
+			} else {
+				$out= $data["ITEM_$num"];
+			}
+			return $out;
+			break;
 		case "glpi_entities.completename" :
 			if ($type==ENTITY_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
@@ -1714,7 +1743,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 					$out.= " (".$data["ID"].")";
 				}
 				$out.= "</a>";
-			} else {	
+			} else {
 				if ($data["ITEM_".$num."_2"]==0){
 					$out=$LANG["entity"][2];
 				} else {
