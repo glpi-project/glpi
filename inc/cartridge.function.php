@@ -593,15 +593,18 @@ function cron_cartridge(){
 
 	// Get cartridges type with alarm activated and last warning > 7 days
 	// TODO -> last warning delay to config
-	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.ref as cartref, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_cartridges_type LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') WHERE glpi_cartridges_type.deleted='0' AND glpi_cartridges_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) ;";
+	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.FK_entities as entity, glpi_cartridges_type.ref as cartref, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_cartridges_type LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') WHERE glpi_cartridges_type.deleted='0' AND glpi_cartridges_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) ORDER BY glpi_cartridges_type.name;";
 
 	$result=$DB->query($query);
+	$message=array();
 	if ($DB->numrows($result)>0){
-		$message="";
 		while ($data=$DB->fetch_array($result)){
 			if (($unused=getUnusedCartridgesNumber($data["cartID"]))<=$data["threshold"]){
+				if (!isset($message[$data["entity"]])){
+					$message[$data["entity"]]="";
+				}
 				// define message alert
-				$message.=$LANG["mailing"][34]." ".$data["cartname"]." - ".$LANG["cartridges"][2].": ".$data["cartref"]." - ".$LANG["software"][20].": ".$unused."<br>\n";
+				$message[$data["entity"]].=$LANG["mailing"][34]." ".$data["cartname"]." - ".$LANG["cartridges"][2].": ".$data["cartref"]." - ".$LANG["software"][20].": ".$unused."<br>\n";
 
 				// Mark alert as done
 				$alert=new Alert();
@@ -620,9 +623,11 @@ function cron_cartridge(){
 			}
 		}
 
-		if (!empty($message)){
-			$mail=new MailingAlert("alertcartridge",$message);
-			$mail->send();
+		if (count($message)>0){
+			foreach ($message as $entity => $msg){
+				$mail=new MailingAlert("alertcartridge",$msg,$entity);
+				$mail->send();
+			}
 			return 1;
 		}
 	}
