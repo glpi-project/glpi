@@ -756,17 +756,17 @@ class MailingAlert
 		$subject="[GLPI]";
 
 		switch ($this->type){
-			case "alertcartridge":
-				$subject.=" ".$LANG["mailing"][33];
+			case "alertcartridge" :
+				$subject.=" ".$LANG["mailing"][33]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 			case "alertconsumable":
-				$subject.=" ".$LANG["mailing"][36];
+				$subject.=" ".$LANG["mailing"][36]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 			case "alertcontract":
-				$subject.=" ".$LANG["mailing"][39];
+				$subject.=" ".$LANG["mailing"][39]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 			case "alertinfocom":
-				$subject.=" ".$LANG["mailing"][41];
+				$subject.=" ".$LANG["mailing"][41]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 		}
 		return $subject;
