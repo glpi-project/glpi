@@ -479,7 +479,7 @@ function cron_infocom(){
 	global $DB,$CFG_GLPI,$LANG;
 
 
-	$message="";
+	$message=array();
 
 	// Check notice
 	$query="SELECT glpi_infocoms.* FROM glpi_infocoms LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".INFOCOM_TYPE."' AND glpi_alerts.type='".ALERT_END."') WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 AND glpi_infocoms.warranty_duration<>0 AND glpi_infocoms.buy_date<>'0000-00-00' AND DATEDIFF( ADDDATE(glpi_infocoms.buy_date, INTERVAL (glpi_infocoms.warranty_duration) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
@@ -498,9 +498,14 @@ function cron_infocom(){
 
 		while ($data=$DB->fetch_array($result)){
 			if ($ci->getFromDB($data["device_type"],$data["FK_device"])){
+				$entity=$ci->getField('FK_entities');
+				if (!isset($message[$entity])){
+					$message[$entity]="";
+				}
 				// define message alert / Not for template items
-				if (!$ci->getField('is_template'))
-					$message.=$LANG["mailing"][40]." ".$ci->getType()." - ".$ci->getName()."<br>\n";
+				if (!$ci->getField('is_template')){
+					$message[$entity].=$LANG["mailing"][40]." ".$ci->getType()." - ".$ci->getName()."<br>\n";
+				}
 			} 
 
 			// Mark alert as done
@@ -513,10 +518,11 @@ function cron_infocom(){
 			$alert->add($input);
 
 		}
-
-		if (!empty($message)){
-			$mail=new MailingAlert("alertinfocom",$message);
-			$mail->send();
+		if (count($message)>0){
+			foreach ($message as $entity => $msg){
+				$mail=new MailingAlert("alertinfocom",$msg,$entity);
+				$mail->send();
+			}
 			return 1;
 		}
 

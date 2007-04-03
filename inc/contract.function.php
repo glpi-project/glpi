@@ -647,16 +647,19 @@ function cron_contract(){
 	global $DB,$CFG_GLPI,$LANG;
 
 
-	$message="";
+	$message=array();
 
 	// Check notice
 	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_NOTICE."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 AND glpi_contracts.deleted='0' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND glpi_contracts.notice<>'0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
-
+	
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
+			if (!isset($message[$data["FK_entities"]])){
+				$message[$data["FK_entities"]]="";
+			}
 			// define message alert
-			$message.=$LANG["mailing"][37]." ".$data["name"]."<br>\n";
+			$message[$data["FK_entities"]].=$LANG["mailing"][37]." ".$data["name"]."<br>\n";
 
 			// Mark alert as done
 			$alert=new Alert();
@@ -677,8 +680,11 @@ function cron_contract(){
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
+			if (!isset($message[$data["FK_entities"]])){
+				$message[$data["FK_entities"]]="";
+			}
 			// define message alert
-			$message.=$LANG["mailing"][38]." ".$data["name"]."<br>\n";
+			$message[$data["FK_entities"]].=$LANG["mailing"][38]." ".$data["name"]."<br>\n";
 
 			// Mark alert as done
 			$alert=new Alert();
@@ -693,10 +699,11 @@ function cron_contract(){
 
 	}
 
-
-	if (!empty($message)){
-		$mail=new MailingAlert("alertcontract",$message);
-		$mail->send();
+	if (count($message)>0){
+		foreach ($message as $entity => $msg){
+			$mail=new MailingAlert("alertcontract",$msg,$entity);
+			$mail->send();
+		}
 		return 1;
 	}
 
