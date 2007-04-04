@@ -1737,6 +1737,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 				if ($DBocs->numrows($result) > 0)
 					while ($line = $DBocs->fetch_array($result)) {
 						$line = clean_cross_side_scripting_deep(addslashes_deep($line));
+						$mon = array();
 						$mon["name"] = $line["CAPTION"];
 
 						if (empty ($line["CAPTION"]) && !empty ($line["MANUFACTURER"])) {

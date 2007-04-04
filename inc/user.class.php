@@ -845,10 +845,13 @@ class User extends CommonDBTM {
 				echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][40] . "</td><td>";
-			dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
-			echo "</td></tr>";
-
+			if (haveRight("show_ticket","w"))
+			{
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][40] . "</td><td>";
+				dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
+				echo "</td></tr>";
+			}
+			
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
 			echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit' >";

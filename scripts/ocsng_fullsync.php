@@ -40,25 +40,52 @@
 ini_set("memory_limit","-1");
 ini_set("max_execution_time", "0");
 
+# Converts cli parameter to web parameter for compatibility
+if ($argv) {
+	for ($i=1;$i<count($argv);$i++)
+	{
+		$it = split("=",$argv[$i]);
+		$it[0] = eregi_replace('^--','',$it[0]);
+		$_GET[$it[0]] = $it[1];
+	}
+}
+
 // MASS IMPORT for OCSNG
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/config/based_config.php");
 
 $USE_OCSNGDB=1;
+$thread_nbr='';
+$thread_id='';
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","rulesengine","rule.ocs","group");
 include (GLPI_ROOT."/inc/includes.php");
+
+if (isset($_GET["thread_nbr"]) || isset($_GET["thread_id"])) {
+	if (!isset($_GET["thread_id"]) || $_GET["thread_id"] > $_GET["thread_nbr"] || $_GET["thread_id"] < 0) {
+		echo ("thread_id invalid: thread_id must be between 0 and thread_nbr\n");
+		exit (1);
+	}
+	$thread_nbr=$_GET["thread_nbr"];
+	$thread_id=$_GET["thread_id"];
+	echo "thread ($thread_id/$thread_nbr)> ";
+}
+else
+{
+	$thread_nbr=-1;
+	$thread_id=-1;
+}
 
 if (isset($_GET["ocs_server_id"])) 
 {
 	if (checkOCSconnection($_GET["ocs_server_id"]))
 	{
-			echo "import computers from server : ".$_GET["ocs_server_id"]."\n";
 			$cfg_ocs=getOcsConf($_GET["ocs_server_id"]);
+			//echo "thread=".$thread_id. ", import computers from server: `".$cfg_ocs["name"]."'\n";
 			ocsManageDeleted($_GET["ocs_server_id"]);
-			importFromOcsServer($cfg_ocs,$start,$stop);
+			importFromOcsServer($cfg_ocs,$thread_nbr, $thread_id);
 	}
-		echo "cannot contact server\n";
+		echo "thread=".$thread_id. ", cannot contact server\n";
 }
 else
 {
@@ -68,28 +95,32 @@ else
 	{
 		if (checkOCSconnection($ocs_server["ID"]))
 		{
-			echo "import computers from server : ".$ocs_server["name"]."\n";
 			$cfg_ocs=getOcsConf($ocs_server["ID"]);
+			//echo "thread=".$thread_id. ", import computers from OCS server: `".$ocs_server["name"]."'\n";
 			ocsManageDeleted($ocs_server["ID"]);
-			importFromOcsServer($cfg_ocs);
-			echo "done\n";
+			importFromOcsServer($cfg_ocs,$thread_nbr, $thread_id);
 		}
 		else
-			echo "cannot contact server : ".$ocs_server["name"]."\n";
+			echo "thread=".$thread_id. ", cannot contact server : ".$ocs_server["name"]."\n";
 	}
 }
 
-echo "done !!\n";
+echo "thread=".$thread_id." : done !!\n";
 
-function importFromOcsServer($cfg_ocs)
+function importFromOcsServer($cfg_ocs, $thread_nbr, $thread_id)
 {
 	global $DBocs;
-	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0";
-	
+ 
+	$where_multi_thread = '';
+	if ($thread_nbr != -1 && $thread_id != -1) {
+		$where_multi_thread = " AND ID % $thread_nbr = ".($thread_id-1);
+	}
+	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0 $where_multi_thread";
+	//echo "thread=".$thread_id.", query=".$query_ocs."\n";
 	$result_ocs = $DBocs->query($query_ocs);
 	while($data=$DBocs->fetch_array($result_ocs)){
+		echo "thread=".$thread_id.". machine=".$data['ID']."\n";
 		ocsImportComputer($data["ID"],$cfg_ocs["ID"]);
-		echo ".";
 	}
 }
 ?>

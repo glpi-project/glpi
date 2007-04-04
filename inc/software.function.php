@@ -541,7 +541,7 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 				if ($soft->getFromDB($lic->fields["sID"])){
 					$changes[0]='0';
 					$changes[1]="";
-					$changes[2]=$soft->fields["name"]." (v. ".$soft->fields["version"].")";
+					$changes[2]=$soft->fields["name"]." (v. ".$lic->fields["version"].")";
 					// history log
 					historyLog ($cID,COMPUTER_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
 				}
@@ -565,7 +565,7 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 				if ($soft->getFromDB($sID)){
 					$changes[0]='0';
 					$changes[1]="";
-					$changes[2]=$soft->fields["name"]." (v. ".$soft->fields["version"].")";
+					$changes[2]=$soft->fields["name"]." (v. ".$lic->fields["version"].")";
 					// history log
 					historyLog ($cID,COMPUTER_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
 				}
