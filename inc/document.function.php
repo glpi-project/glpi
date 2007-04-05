@@ -247,7 +247,6 @@ function showDeviceDocument($instID,$search='') {
 			$types[]=CARTRIDGE_TYPE;
 			$types[]=CONSUMABLE_TYPE;
 			$types[]=CONTRACT_TYPE;
-			$types[]=USER_TYPE;
 			dropdownAllItems("item",0,0,$doc->fields['FK_entities'],$types);
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
