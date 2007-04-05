@@ -170,13 +170,13 @@ function showCentralJobList($target,$start,$status="process") {
 	if (!haveRight("show_ticket","1")) return false;
 
 	if($status=="waiting"){ // on affiche les tickets en attente
-		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='waiting' ) ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+		$query = "SELECT ID FROM glpi_tracking WHERE assign = '".$_SESSION["glpiID"]."' AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 		$title=$LANG["central"][11];
 
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
-		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 		$title=$LANG["central"][9];
 	}
@@ -223,7 +223,7 @@ function showCentralJobCount(){
 
 	if (!haveRight("show_ticket","1")) return false;	
 
-	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking GROUP BY status";
+	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." GROUP BY status";
 
 
 

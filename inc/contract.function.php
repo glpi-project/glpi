@@ -56,31 +56,31 @@ function showCentralContract(){
 	if (!haveRight("contract_infocom","r")) return false;
 
 	// contrats echus depuis moins de 30j
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
 	$result = $DB->query($query);
 	$contract0=$DB->result($result,0,0);
 
 
 	// contrats  echeance j-7
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
 	$result = $DB->query($query);
 	$contract7= $DB->result($result,0,0);
 
 
 	// contrats echeance j -30
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
 	$result = $DB->query($query);
 	$contract30= $DB->result($result,0,0);
 
 
 	// contrats avec pr�vis echeance j-7
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
 	$result = $DB->query($query);
 	$contractpre7= $DB->result($result,0,0);
 
 
 	// contrats avec pr�vis echeance j -30
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
+	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0'".getEntitiesRestrictRequest("AND","glpi_contracts")."  AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
 	$result = $DB->query($query);
 	$contractpre30= $DB->result($result,0,0);
 
