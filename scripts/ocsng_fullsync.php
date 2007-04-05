@@ -68,7 +68,7 @@ if (isset($_GET["thread_nbr"]) || isset($_GET["thread_id"])) {
 	}
 	$thread_nbr=$_GET["thread_nbr"];
 	$thread_id=$_GET["thread_id"];
-	echo "thread ($thread_id/$thread_nbr)> ";
+	echo "Starting thread ($thread_id/$thread_nbr)> ";
 }
 else
 {
@@ -81,10 +81,11 @@ if (isset($_GET["ocs_server_id"]))
 	if (checkOCSconnection($_GET["ocs_server_id"]))
 	{
 			$cfg_ocs=getOcsConf($_GET["ocs_server_id"]);
-			//echo "thread=".$thread_id. ", import computers from server: `".$cfg_ocs["name"]."'\n";
+			echo "thread=".$thread_id. ", import computers from server: '".$cfg_ocs["name"]."'\n";
 			ocsManageDeleted($_GET["ocs_server_id"]);
 			importFromOcsServer($cfg_ocs,$thread_nbr, $thread_id);
 	}
+	else
 		echo "thread=".$thread_id. ", cannot contact server\n";
 }
 else
@@ -96,7 +97,7 @@ else
 		if (checkOCSconnection($ocs_server["ID"]))
 		{
 			$cfg_ocs=getOcsConf($ocs_server["ID"]);
-			//echo "thread=".$thread_id. ", import computers from OCS server: `".$ocs_server["name"]."'\n";
+			echo "thread=".$thread_id. ", import computers from OCS server: '".$ocs_server["name"]."'\n";
 			ocsManageDeleted($ocs_server["ID"]);
 			importFromOcsServer($cfg_ocs,$thread_nbr, $thread_id);
 		}
@@ -112,11 +113,10 @@ function importFromOcsServer($cfg_ocs, $thread_nbr, $thread_id)
 	global $DBocs;
  
 	$where_multi_thread = '';
-	if ($thread_nbr != -1 && $thread_id != -1) {
+	if ($thread_nbr != -1 && $thread_id != -1 && $thread_nbr > 1) {
 		$where_multi_thread = " AND ID % $thread_nbr = ".($thread_id-1);
 	}
 	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0 $where_multi_thread";
-	//echo "thread=".$thread_id.", query=".$query_ocs."\n";
 	$result_ocs = $DBocs->query($query_ocs);
 	while($data=$DBocs->fetch_array($result_ocs)){
 		echo "thread=".$thread_id.". machine=".$data['ID']."\n";
