@@ -81,21 +81,27 @@ class CommonItem{
 			case PERIPHERAL_TYPE : 
 				$this->obj= new Peripheral;	
 				break;				
-			case PHONE_TYPE : 
-				$this->obj= new Phone;	
-				break;		
 			case SOFTWARE_TYPE : 
 				$this->obj= new Software;	
 				break;				
-			case CONTRACT_TYPE : 
-				$this->obj= new Contract;	
-				break;				
-			case ENTERPRISE_TYPE : 
-				$this->obj= new Enterprise;	
-				break;	
 			case CONTACT_TYPE : 
 				$this->obj= new Contact;	
 				break;	
+			case ENTERPRISE_TYPE : 
+				$this->obj= new Enterprise;	
+				break;	
+			case CONTRACT_TYPE : 
+				$this->obj= new Contract;	
+				break;				
+			case CARTRIDGE_TYPE : 
+				$this->obj= new CartridgeType;	
+				break;					
+			case TYPEDOC_TYPE : 
+				$this->obj= new TypeDoc;	
+				break;		
+			case DOCUMENT_TYPE : 
+				$this->obj= new Document;	
+				break;					
 			case KNOWBASE_TYPE : 
 				$this->obj= new kbitem;	
 				break;					
@@ -105,9 +111,6 @@ class CommonItem{
 			case TRACKING_TYPE : 
 				$this->obj= new Job;	
 				break;
-			case CARTRIDGE_TYPE : 
-				$this->obj= new CartridgeType;	
-				break;					
 			case CONSUMABLE_TYPE : 
 				$this->obj= new ConsumableType;	
 				break;					
@@ -120,11 +123,20 @@ class CommonItem{
 			case LICENSE_TYPE : 
 				$this->obj= new License;	
 				break;					
-			case DOCUMENT_TYPE : 
-				$this->obj= new Document;	
-				break;					
+			case LINK_TYPE : 
+				$this->obj= new Link;	
+				break;	
+			case PHONE_TYPE : 
+				$this->obj= new Phone;	
+				break;		
+			case REMINDER_TYPE : 
+				$this->obj= new Reminder;	
+				break;			
 			case GROUP_TYPE : 
 				$this->obj= new Group;	
+				break;			
+			case ENTITY_TYPE : 
+				$this->obj= new Entity;	
 				break;			
 			case AUTH_MAIL_TYPE:
 				$this->obj = new AuthMail;
@@ -134,6 +146,15 @@ class CommonItem{
 				break;
 			case OCSNG_TYPE:
 				$this->obj = new Ocsng;
+				break;					
+			case REGISTRY_TYPE:
+				$this->obj = new Registry;
+				break;					
+			case PROFILE_TYPE:
+				$this->obj = new Profile;
+				break;					
+			case MAILGATE_TYPE:
+				$this->obj = new Mailgate;
 				break;					
 		}
 
@@ -182,21 +203,27 @@ class CommonItem{
 			case PERIPHERAL_TYPE : 
 				return $LANG["peripherals"][4];
 				break;				
-			case PHONE_TYPE : 
-				return $LANG["phones"][4];
-				break;				
 			case SOFTWARE_TYPE : 
 				return $LANG["software"][10];
 				break;				
-			case CONTRACT_TYPE : 
-				return $LANG["financial"][1];
-				break;				
-			case ENTERPRISE_TYPE : 
-				return $LANG["financial"][26];
-				break;
 			case CONTACT_TYPE : 
 				return $LANG["common"][18];
 				break;
+			case ENTERPRISE_TYPE : 
+				return $LANG["financial"][26];
+				break;
+			case CONTRACT_TYPE : 
+				return $LANG["financial"][1];
+				break;	
+			case CARTRIDGE_TYPE : 
+				return $LANG["cartridges"][16];
+				break;
+			case TYPEDOC_TYPE : 
+				return $LANG["document"][7];
+				break;
+			case DOCUMENT_TYPE : 
+				return $LANG["document"][0];
+				break;					
 			case KNOWBASE_TYPE : 
 				return $LANG["knowbase"][0];
 				break;	
@@ -206,14 +233,8 @@ class CommonItem{
 			case TRACKING_TYPE : 
 				return $LANG["job"][38];
 				break;	
-			case CARTRIDGE_TYPE : 
-				return $LANG["cartridges"][16];
-				break;
 			case CONSUMABLE_TYPE : 
 				return $LANG["consumables"][16];
-				break;					
-			case LICENSE_TYPE : 
-				return $LANG["software"][11];
 				break;					
 			case CARTRIDGE_ITEM_TYPE : 
 				return $LANG["cartridges"][0];
@@ -221,12 +242,43 @@ class CommonItem{
 			case CONSUMABLE_ITEM_TYPE : 
 				return $LANG["consumables"][0];
 				break;					
-			case DOCUMENT_TYPE : 
-				return $LANG["document"][0];
+			case LICENSE_TYPE : 
+				return $LANG["software"][11];
 				break;					
+			case LINK_TYPE : 
+				return $LANG["setup"][87];
+				break;					
+			case PHONE_TYPE : 
+				return $LANG["phones"][4];
+				break;				
+			case REMINDER_TYPE : 
+				return $LANG["title"][37];
+				break;	
 			case GROUP_TYPE : 
 				return $LANG["common"][35];
+				break;	
+			case ENTITY_TYPE : 
+				return $LANG["Menu"][37];
+				break;			
+			case AUTH_MAIL_TYPE:
+				return $LANG["login"][3];
+				break;
+			case AUTH_LDAP_TYPE:
+				return $LANG["login"][2];
+				break;
+			case OCSNG_TYPE:
+				return $LANG["ocsng"][29];
 				break;					
+			case REGISTRY_TYPE:
+				return $LANG["title"][43];
+				break;					
+			case PROFILE_TYPE:
+				return $LANG["Menu"][35];
+				break;					
+			case MAILGATE_TYPE:
+				return $LANG["Menu"][39];
+				break;					
+
 		}
 
 	}
@@ -302,25 +354,6 @@ class CommonItem{
 			case GENERAL_TYPE :
 				return $this->getName($with_comments);
 				break;
-			case COMPUTER_TYPE :
-			case NETWORKING_TYPE :
-			case PRINTER_TYPE :
-			case MONITOR_TYPE : 
-			case PERIPHERAL_TYPE : 
-			case PHONE_TYPE : 
-			case SOFTWARE_TYPE : 
-			case CONTRACT_TYPE : 
-			case ENTERPRISE_TYPE : 
-			case CONTACT_TYPE : 
-			case KNOWBASE_TYPE : 
-			case USER_TYPE : 
-			case TRACKING_TYPE : 			
-			case CARTRIDGE_TYPE : 
-			case CONSUMABLE_TYPE : 
-			case DOCUMENT_TYPE : 
-			case GROUP_TYPE : 
-				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getNameID($with_comments)."</a>";
-				break;
 			case LICENSE_TYPE : 
 				return $this->getName($with_comments);
 				break;						
@@ -330,6 +363,9 @@ class CommonItem{
 			case CONSUMABLE_ITEM_TYPE : 
 				return $this->getName($with_comments);
 				break;						
+			default :
+				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getNameID($with_comments)."</a>";
+				break;
 		}
 
 

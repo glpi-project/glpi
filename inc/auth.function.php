@@ -109,21 +109,26 @@ function haveTypeRight($type, $right) {
 		case PERIPHERAL_TYPE :
 			return haveRight("peripheral", $right);
 			break;
-		case PHONE_TYPE :
-			return haveRight("phone", $right);
-			break;
 		case SOFTWARE_TYPE :
-		case LICENSE_TYPE :
 			return haveRight("software", $right);
 			break;
-		case CONTRACT_TYPE :
-			return haveRight("contract_infocom", $right);
+		case CONTACT_TYPE :
+			return haveRight("contact_enterprise", $right);
 			break;
 		case ENTERPRISE_TYPE :
 			return haveRight("contact_enterprise", $right);
 			break;
-		case CONTACT_TYPE :
-			return haveRight("contact_enterprise", $right);
+		case CONTRACT_TYPE :
+			return haveRight("contract_infocom", $right);
+			break;
+		case CARTRIDGE_TYPE :
+			return haveRight("cartridge", $right);
+			break;
+		case TYPEDOC_TYPE :
+			return haveRight("typedoc", $right);
+			break;
+		case DOCUMENT_TYPE :
+			return haveRight("document", $right);
 			break;
 		case KNOWBASE_TYPE :
 			return haveRight("knowbase", $right);
@@ -134,14 +139,8 @@ function haveTypeRight($type, $right) {
 		case TRACKING_TYPE :
 			return haveRight("show_ticket", $right);
 			break;
-		case CARTRIDGE_TYPE :
-			return haveRight("cartridge", $right);
-			break;
 		case CONSUMABLE_TYPE :
 			return haveRight("consumable", $right);
-			break;
-		case LICENSE_TYPE :
-			return haveRight("software", $right);
 			break;
 		case CARTRIDGE_ITEM_TYPE :
 			return haveRight("cartridge", $right);
@@ -149,15 +148,43 @@ function haveTypeRight($type, $right) {
 		case CONSUMABLE_ITEM_TYPE :
 			return haveRight("consumable", $right);
 			break;
-		case DOCUMENT_TYPE :
-			return haveRight("document", $right);
+		case LICENSE_TYPE :
+			return haveRight("software", $right);
+			break;
+		case LINK_TYPE :
+			return haveRight("link", $right);
+			break;
+		case PHONE_TYPE :
+			return haveRight("phone", $right);
+			break;
+		case REMINDER_TYPE :
+			return haveRight("reminder_public", $right);
 			break;
 		case GROUP_TYPE :
 			return haveRight("group", $right);
 			break;
+		case ENTITY_TYPE :
+			return haveRight("entity", $right);
+			break;
+		case AUTH_MAIL_TYPE :
+			return haveRight("config",$right);
+			break;	
+		case AUTH_LDAP_TYPE :
+			return haveRight("config",$right);
+			break;	
 		case OCSNG_TYPE :
 			return haveRight("ocsng",$right);
 			break;	
+		case REGISTRY_TYPE :
+			return haveRight("ocsng",$right);
+			break;	
+		case PROFILE_TYPE :
+			return haveRight("profile",$right);
+			break;	
+		case MAILGATE_TYPE :
+			return haveRight("config",$right);
+			break;	
+
 	}
 	return false;
 }
