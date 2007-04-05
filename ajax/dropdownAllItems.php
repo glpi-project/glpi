@@ -50,8 +50,9 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 
 	// Link to user for search only > normal users
 	$link="dropdownValue.php";
-	if ($_POST["idtable"]==USER_TYPE)
+	if ($_POST["idtable"]==USER_TYPE){
 		$link="dropdownUsers.php";
+	}
 
 	$rand=mt_rand();
 
