@@ -96,7 +96,7 @@ cpt=0
 
 while [ $cpt -lt $thread_nbr ]; do 
   cpt=$(($cpt+1))
-  cmd="php -d -f	ocsng_fullsync.php --server_id=$server_id --thread_nbr=$thread_nbr --thread_id=$cpt >> ocsng_fullsync.log"
+  cmd="php -d -f	ocsng_fullsync.php --ocs_server_id=$server_id --thread_nbr=$thread_nbr --thread_id=$cpt >> ocsng_fullsync.log"
   sh -c "$cmd"&
   runningpid="$runningpid $!"
   sleep 1
