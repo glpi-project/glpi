@@ -2148,6 +2148,8 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
  **/
 function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs,$computer_updates,$entity,$dohistory) {
 	global $DB, $DBocs;	
+	checkOCSconnection($ocs_server_id);
+
 	//check link between ocs and glpi column
 	$queryListUpdate="SELECT * from glpi_ocs_admin_link where ocs_server_id='$ocs_server_id' ";
 	$result = $DB->query($queryListUpdate);
@@ -2209,10 +2211,12 @@ function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs) {
 	global $DB, $DBocs;
 	
 	checkOCSconnection($ocs_server_id);
-	//before update, delete all entries about $glpi_id
-	$query_delete = "DELETE from glpi_registry WHERE computer_id='".$glpi_id."'";
-	$DB->query($query_delete);	
+
 	if ($cfg_ocs["import_registry"]) {
+		//before update, delete all entries about $glpi_id
+		$query_delete = "DELETE from glpi_registry WHERE computer_id='".$glpi_id."'";
+		$DB->query($query_delete);	
+
 		//Get data from OCS database
 		$query = "SELECT registry.NAME as NAME, registry.REGVALUE as regvalue, registry.HARDWARE_ID as computer_id, regconfig.REGTREE as regtree, regconfig.REGKEY as regkey
 					FROM registry LEFT JOIN regconfig ON (registry.NAME = regconfig.NAME)
