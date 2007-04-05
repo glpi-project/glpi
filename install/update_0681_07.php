@@ -528,6 +528,10 @@ function update0681to07() {
 		$query = "ALTER TABLE glpi_ocs_config ADD `import_registry` INT NOT NULL default '0' AFTER `import_device_modems`";
 		$DB->query($query) or die("0.7 add import_registry in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
 	}
+	if (FieldExists("glpi_ocs_config", "import_tag_field")) {
+		$query = "ALTER TABLE glpi_ocs_config DROP `import_tag_field`;";
+		$DB->query($query) or die("0.7 drop import_tag_field in glpi_ocs_config " . $LANG["update"][90] . $DB->error());
+	}
 
 	if (!FieldExists("glpi_ocs_config", "import_software_licensetype")) {
 		$query = "ALTER TABLE glpi_ocs_config ADD `import_software_licensetype` VARCHAR(255) DEFAULT 'global' AFTER `import_software`";

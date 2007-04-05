@@ -174,15 +174,15 @@ function isLdapConfigured()
 	else
 		return false;	
 }
-function searchGroupID($name){
+function searchGroupID($name,$FK_entities){
 	global $DB;
-	$query ="SELECT ID from glpi_groups where name='$name'";
+	$query ="SELECT ID from glpi_groups where name='$name' AND FK_entities='$FK_entities'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0){
 		$data= $DB->fetch_array($result);
 		$groupID = $data['ID'];
 		return $groupID;
-	}
+	} 
 	else return -1;
 }
 ?>
