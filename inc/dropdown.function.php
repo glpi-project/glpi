@@ -604,77 +604,56 @@ function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
 * @param $myname select name
  * @param $value default value
  * @param $value_type default value for the device type
- * @param $withenterprise Add enterprises to device type list
- * @param $withcartridge Add cartridges to device type list
- * @param $withconsumable Add consumables to device type list
- * @param $withcontracts Add contracts to device type list
  * @param $entity_restrict Restrict to a defined entity
+* @param $types Types used
  * @return nothing (print out an HTML select box)
  */
-function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$withenterprise=0,$withcartridge=0,$withconsumable=0,$withcontracts=0) {
+function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$types='') {
 	global $LANG,$CFG_GLPI;
-
+	if (!is_array($types)){
+		$types=$CFG_GLPI["state_types"];
+	}
 	$rand=mt_rand();
-	echo "<table border='0'><tr><td>\n";
-	echo "<select name='type' id='item_type$rand'>\n";
-	echo "<option value='0'>-----</option>\n";
-	if (haveTypeRight(COMPUTER_TYPE,'r')){
-		echo "<option value='".COMPUTER_TYPE."'>".$LANG["Menu"][0]."</option>\n";
+	$ci=new CommonItem();
+	$options=array();
+	
+	foreach ($types as $type){
+		$ci->setType($type);
+		$options[$type]=$ci->getType();
 	}
-	if (haveTypeRight(NETWORKING_TYPE,'r')){
-		echo "<option value='".NETWORKING_TYPE."'>".$LANG["Menu"][1]."</option>\n";
-	}
-	if (haveTypeRight(PRINTER_TYPE,'r')){
-		echo "<option value='".PRINTER_TYPE."'>".$LANG["Menu"][2]."</option>\n";
-	}
-	if (haveTypeRight(MONITOR_TYPE,'r')){
-		echo "<option value='".MONITOR_TYPE."'>".$LANG["Menu"][3]."</option>\n";
-	}
-	if (haveTypeRight(PERIPHERAL_TYPE,'r')){
-		echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["Menu"][16]."</option>\n";
-	}
-	if (haveTypeRight(SOFTWARE_TYPE,'r')){
-		echo "<option value='".SOFTWARE_TYPE."'>".$LANG["Menu"][4]."</option>\n";
-	}
-	if (haveTypeRight(PHONE_TYPE,'r')){
-		echo "<option value='".PHONE_TYPE."'>".$LANG["Menu"][34]."</option>\n";
-	}
-	if ($withenterprise==1&&haveTypeRight(ENTERPRISE_TYPE,'r')){
-		echo "<option value='".ENTERPRISE_TYPE."'>".$LANG["Menu"][23]."</option>\n";
-	}
-	if ($withcartridge==1&&haveTypeRight(CARTRIDGE_TYPE,'r')) {
-		echo "<option value='".CARTRIDGE_TYPE."'>".$LANG["Menu"][21]."</option>\n";
-	}
-	if ($withconsumable==1&&haveTypeRight(CONSUMABLE_TYPE,'r')) {
-		echo "<option value='".CONSUMABLE_TYPE."'>".$LANG["Menu"][32]."</option>\n";
-	}
-	if ($withcontracts==1&&haveTypeRight(CONTRACT_TYPE,'r')) {
-		echo "<option value='".CONTRACT_TYPE."'>".$LANG["Menu"][25]."</option>\n";
-	}
-	echo "</select>\n";
-
-
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value&entity_restrict=$entity_restrict'\n";
-	echo "})})\n";
-	echo "</script>\n";
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-	echo "</td><td>\n"	;
-	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
-	echo "</td></tr></table>\n";
-
-	if ($value>0){
+	asort($options);
+	if (count($options)){
+		echo "<table border='0'><tr><td>\n";
+	
+		echo "<select name='type' id='item_type$rand'>\n";
+			echo "<option value='0'>-----</option>\n";
+		foreach ($options as $key => $val){
+			echo "<option value='".$key."'>".$val."</option>\n";
+		}
+		echo "</select>";
+	
 		echo "<script type='text/javascript' >\n";
-		echo "Element.hide('search_spinner_$myname$rand');";
-		echo "document.getElementById('item_type$rand').value='".$value_type."';";
+		echo "   new Form.Element.Observer('item_type$rand', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('show_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
+		echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+		echo "           onLoading:function(request)\n";
+		echo "            {Element.show('search_spinner_$myname$rand');},\n";
+		echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value&entity_restrict=$entity_restrict'\n";
+		echo "})})\n";
 		echo "</script>\n";
+	
+		echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+		echo "</td><td>\n"	;
+		echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
+		echo "</td></tr></table>\n";
+	
+		if ($value>0){
+			echo "<script type='text/javascript' >\n";
+			echo "Element.hide('search_spinner_$myname$rand');";
+			echo "document.getElementById('item_type$rand').value='".$value_type."';";
+			echo "</script>\n";
+		}
 	}
 	return $rand;
 }

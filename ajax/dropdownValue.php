@@ -224,9 +224,6 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 
 
 		switch ($_POST['table']){
-			case "glpi_software":
-				$query = "SELECT CONCAT(name,' (v. ',version,')') as $field, ".$_POST['table'].".comments, ".$_POST['table'].".ID FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
-			break;
 			case "glpi_contacts":
 				$query = "SELECT CONCAT(name,' ',firstname) as $field, ".$_POST['table'].".comments, ".$_POST['table'].".ID FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
 			break;
@@ -234,7 +231,7 @@ if($_POST['table'] == "glpi_dropdown_netpoint") {
 				$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
 			break;
 		}
-		//echo $query;
+//		echo $query;
 		$result = $DB->query($query);
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";

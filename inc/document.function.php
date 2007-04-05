@@ -242,7 +242,13 @@ function showDeviceDocument($instID,$search='') {
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
-			dropdownAllItems("item",0,0,$doc->fields['FK_entities'],1,1,1,1);
+			$types=$CFG_GLPI["state_types"];
+			$types[]=ENTERPRISE_TYPE;
+			$types[]=CARTRIDGE_TYPE;
+			$types[]=CONSUMABLE_TYPE;
+			$types[]=CONTRACT_TYPE;
+			$types[]=USER_TYPE;
+			dropdownAllItems("item",0,0,$doc->fields['FK_entities'],$types);
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 			echo "<td align='center' class='tab_bg_2'>";
