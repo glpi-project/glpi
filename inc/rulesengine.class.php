@@ -93,7 +93,7 @@ class RuleCollection {
 			
 		$canedit = haveRight($this->right, "w");
 		$this->getCollectionDatas(0,0);
-		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">";
+		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">\n";
 		echo "<div align='center'>"; 
 		echo "<table class='tab_cadrehov'>";
 
@@ -268,7 +268,7 @@ class Rule extends CommonDBTM{
 			$this->getTitleRule($target);
 
 			$this->showOnglets($ID, $new,$_SESSION['glpi_onglet'],"rule_type='".$this->rule_type."'");
-			echo "<form name='rule_form'  method='post' action=\"$target\">";
+			echo "<form name='rule_form'  method='post' action=\"$target\">\n";
 
 			echo "<div align='center'>"; 
 			echo "<table class='tab_cadre_fixe'>";
@@ -377,11 +377,15 @@ class Rule extends CommonDBTM{
 		global $CFG_GLPI, $LANG;
 			
 		$canedit = haveRight($this->right, "w");
-		echo "<form name='actionsform' id='actionsform' method='post' action=\"$target\">";
+		
 		$this->getTitleAction($target);	
 		if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount()) && $canedit){
+			echo "<form name='actionsaddform' method='post' action=\"$target\">\n";
 			$this->addActionForm();
+			echo "</form>";
 		}
+		
+		echo "<form name='actionsform' id='actionsform' method='post' action=\"$target\">\n";
 				
 		echo "<div align='center'>"; 
 		echo "<table class='tab_cadrehov'>";
@@ -399,25 +403,21 @@ class Rule extends CommonDBTM{
 		foreach ($this->actions as $action){
 			$this->showMinimalActionForm($action->fields,$canedit);
 		}
+		echo "</table></div>";
 				
 		if ($canedit&&$nb>0) {
 			echo "<div align='center'>";
 			echo "<table cellpadding='5' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_action' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
-			echo "</td>";
-			echo "</table>";
-
+			echo "</td></tr></table>";
 			echo "</div>";
+		} 			
+		echo "</form>";
 
-		} else 	{	
-			echo "</table>";
-			echo "</div>";
-			echo "</form>";
-		}			
 	}
 	/**
 	 * Display the add action form
@@ -516,47 +516,47 @@ class Rule extends CommonDBTM{
 			
 		$canedit = haveRight($this->right, "w");
 
-		echo "<form name='criteriasform' id='criteriasform' method='post' action=\"$target\">";
+		
 		
 		$this->getTitleCriteria($target);
 		if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount()) && $canedit){
+			echo "<form name='criteriasaddform'method='post' action=\"$target\">\n";
 			$this->addCriteriaForm();
+			echo "</form>";	
 		}
-			
+		
+		echo "<form name='criteriasform' id='criteriasform' method='post' action=\"$target\">\n";
 		echo "<div align='center'>"; 
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][6] . "</th></tr>";
+		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][6] . "</th></tr>\n";
 		echo "<tr>";
 		if ($canedit){
 			echo "<td class='tab_bg_2'>&nbsp;</td>";
 		}
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>\n";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>\n";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>\n";
 		echo "</tr>";
 			
 		$maxsize = sizeof($this->criterias);
 		foreach ($this->criterias as $criteria){
 			$this->showMinimalCriteriaForm($criteria->fields,$canedit);
 		}
-			
+		echo "</table></div>";
 		if ($canedit&&$maxsize>0) {
-			echo "<div align='center'>";
-			echo "<table cellpadding='5' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<div align='center'>\n";
+			echo "<table cellpadding='5' width='80%'>\n";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID='".$this->fields["ID"]."'&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_criteria' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
-			echo "</td>";
+			echo "</td></tr>";
 			echo "</table>";
+			echo "</div>";
+		} 		
+		echo "</form>";
 
-			echo "</div>";
-		} else {	
-			echo "</table>";
-			echo "</div>";
-			echo "</form>";
-		}		
 	}	
 
 	/**
@@ -1056,7 +1056,7 @@ class RuleCriteria extends CommonDBTM {
 	function showForm($target,$ID,$ruleid=-1)
 	{
 			global $LANG,$CFG_GLPI;
-			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
+			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">\n";
 			echo "<div align='center'>"; 
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["rulesengine"][6] . "</th></tr>";

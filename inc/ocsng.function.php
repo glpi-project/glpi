@@ -335,10 +335,6 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 		$comp->fields["state"] = $cfg_ocs["default_state"];
 		$glpi_id=$comp->addToDB();
 
-		if ($glpi_id) {
-			ocsImportTag($line['ID'], $ocs_server_id,$glpi_id, $cfg_ocs);
-		}
-
 		if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
 			ocsUpdateComputer($idlink,$ocs_server_id, 0);
 		}
@@ -346,43 +342,6 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 		}
 	}
  }
-}
-
-function ocsImportTag($ocs_id, $ocs_server_id, $glpi_id, $cfg_ocs) {
-	global $DBocs;
-	
-	checkOCSconnection($ocs_server_id);
-	
-	// Import TAG
-	if (!empty ($cfg_ocs["import_tag_field"])) {
-		$query = "SELECT TAG 
-					FROM accountinfo 
-					WHERE HARDWARE_ID='$ocs_id'";
-
-		$resultocs = $DBocs->query($query);
-		if ($resultocs && $DBocs->numrows($resultocs) > 0) {
-			$tag = addslashes($DBocs->result($resultocs, 0, 0));
-			if (!empty ($tag)) {
-				$comp = new Computer();
-				$input["ID"] = $glpi_id;
-				switch ($cfg_ocs["import_tag_field"]) {
-					case "otherserial" :
-					case "contact_num" :
-						$input[$cfg_ocs["import_tag_field"]] = $tag;
-						break;
-					case "location" :
-						$input[$cfg_ocs["import_tag_field"]] = ocsImportDropdown('glpi_dropdown_locations', 'name', $tag);
-						;
-						break;
-					case "network" :
-						$input[$cfg_ocs["import_tag_field"]] = ocsImportDropdown('glpi_dropdown_network', 'name', $tag);
-						;
-						break;
-				}
-				$comp->update($input, 0);
-			}
-		}
-	}
 }
 
 function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
@@ -435,8 +394,6 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 							WHERE ID='$ocs_id'";
 			$result = $DBocs->query($query);
 			$line = $DBocs->fetch_array($result);
-
-			ocsImportTag($line["ID"],$ocs_server_id, $glpi_id, $cfg_ocs);
 
 			if ($cfg_ocs["import_general_os"])
 				ocsResetDropdown($glpi_id, "os", "glpi_dropdown_os");
@@ -521,12 +478,14 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 						  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 						  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
 			 */
-			 // Update Administrative informations
-				ocsUpdateAdministrativeInfo($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs);
 			// Is an update to do ?
 			if ($mixed_checksum) {
 				// Get updates on computers :
 				$computer_updates = importArrayFromDB($line["computer_update"]);
+
+				 // Update Administrative informations
+				ocsUpdateAdministrativeInfo($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $computer_updates,$comp->fields['FK_entities'],$dohistory);
+
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
 					ocsUpdateHardware($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);				
 				if ($mixed_checksum & pow(2, BIOS_FL))
@@ -678,14 +637,14 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer
 		$compudate = array ();
 
 		if ($cfg_ocs["import_general_os"] && !in_array("os", $computer_updates)) {
-			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os', 'name', $line["OSNAME"]);
-			$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version', 'name', $line["OSVERSION"]);
+			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os',  $line["OSNAME"]);
+			$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version', $line["OSVERSION"]);
 			if (!ereg("CEST", $line["OSCOMMENTS"])) // Not linux comment
-				$compupdate["os_sp"] = ocsImportDropdown('glpi_dropdown_os_sp', 'name', $line["OSCOMMENTS"]);
+				$compupdate["os_sp"] = ocsImportDropdown('glpi_dropdown_os_sp', $line["OSCOMMENTS"]);
 		}
 
 		if ($cfg_ocs["import_general_domain"] && !in_array("domain", $computer_updates)) {
-			$compupdate["domain"] = ocsImportDropdown('glpi_dropdown_domain', 'name', $line["WORKGROUP"]);
+			$compupdate["domain"] = ocsImportDropdown('glpi_dropdown_domain', $line["WORKGROUP"]);
 		}
 
 		if ($cfg_ocs["import_general_contact"] && !in_array("contact", $computer_updates)) {
@@ -754,15 +713,15 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer_upd
 		}
 
 		if ($cfg_ocs["import_general_model"] && !in_array("model", $computer_updates)) {
-			$compupdate["model"] = ocsImportDropdown('glpi_dropdown_model', 'name', $line["SMODEL"]);
+			$compupdate["model"] = ocsImportDropdown('glpi_dropdown_model', $line["SMODEL"]);
 		}
 
 		if ($cfg_ocs["import_general_enterprise"] && !in_array("FK_glpi_enterprise", $computer_updates)) {
-			$compupdate["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $line["SMANUFACTURER"]);
+			$compupdate["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $line["SMANUFACTURER"]);
 		}
 
 		if ($cfg_ocs["import_general_type"] && !empty ($line["TYPE"]) && !in_array("type", $computer_updates)) {
-			$compupdate["type"] = ocsImportDropdown('glpi_type_computers', 'name', $line["TYPE"]);
+			$compupdate["type"] = ocsImportDropdown('glpi_type_computers', $line["TYPE"]);
 		}
 
 		if (count($compupdate)) {
@@ -782,35 +741,69 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer_upd
  *@param $dpdTable string : Name of the glpi dropdown table.
  *@param $dpdRow string : Name of the glpi dropdown row.
  *@param $value string : Value of the new dropdown.
+ *@param $FK_entities int : entity in case of specific dropdown
  *
  *@return integer : dropdown id.
  *
  **/
 
-function ocsImportDropdown($dpdTable, $dpdRow, $value) {
+function ocsImportDropdown($dpdTable, $value,$FK_entities=-1) {
 	global $DB, $CFG_GLPI;
 
 	if (empty ($value))
 		return 0;
 
+	$entity_restrict="";
+	$addfield="";
+	$addvalue="";
+	if (in_array($dpdTable, $CFG_GLPI["specif_entities_tables"])){
+		$entity_restrict=" AND FK_entities='$FK_entities'";
+		$addfield=",FK_entities";
+		$addvalue=",'$FK_entities'";
+	}
 	$query2 = "SELECT * 
 			FROM " . $dpdTable . " 
-			WHERE $dpdRow='" . $value . "'";
+			WHERE name='" . $value . "' $entity_restrict";
 	$result2 = $DB->query($query2);
 	if ($DB->numrows($result2) == 0) {
-		if (in_array($dpdTable, $CFG_GLPI["dropdowntree_tables"]) && $dpdRow == "name") {
-			$query3 = "INSERT INTO " . $dpdTable . " (" . $dpdRow . ",completename) 
-							VALUES ('" . $value . "','" . $value . "')";
-		} else {
-			$query3 = "INSERT INTO " . $dpdTable . " (" . $dpdRow . ") 
-							VALUES ('" . $value . "')";
-		}
 		$input["tablename"] = $dpdTable;
 		$input["value"] = $value;
 		$input['type'] = "first";
 		$input["comments"] = "";
-		$input["FK_entities"] = 0;
+		$input["FK_entities"] = $FK_entities;
 		return addDropdown($input);
+	} else {
+		$line2 = $DB->fetch_array($result2);
+		return $line2["ID"];
+	}
+
+}
+
+/**
+ * Import a group from OCS table.
+ *
+ *@param $value string : Value of the new dropdown.
+ *@param $FK_entities int : entity in case of specific dropdown
+ *
+ *@return integer : dropdown id.
+ *
+ **/
+
+function ocsImportGroup($value,$FK_entities) {
+	global $DB, $CFG_GLPI;
+
+	if (empty ($value))
+		return 0;
+
+	$query2 = "SELECT ID
+			FROM glpi_groups
+			WHERE name='" . $value . "' AND FK_entities='$FK_entities'";
+	$result2 = $DB->query($query2);
+	if ($DB->numrows($result2) == 0) {
+		$group=new Group;
+		$input["name"] = $value;
+		$input["FK_entities"] = $FK_entities;
+		return $group->add($input);
 	} else {
 		$line2 = $DB->fetch_array($result2);
 		return $line2["ID"];
@@ -1271,7 +1264,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 							$ram["specif_default"] = $line2["CAPACITY"];
 							if (!in_array(RAM_DEVICE . '$$$$$' . $ram["designation"], $import_device)) {
 								$ram["frequence"] = $line2["SPEED"];
-								$ram["type"] = ocsImportDropdown("glpi_dropdown_ram_type", "name", $line2["TYPE"]);
+								$ram["type"] = ocsImportDropdown("glpi_dropdown_ram_type", $line2["TYPE"]);
 								$ram_id = ocsAddDevice(RAM_DEVICE, $ram);
 								if ($ram_id) {
 									$devID = compdevice_add($glpi_id, RAM_DEVICE, $ram_id, $line2["CAPACITY"], $dohistory);
@@ -1539,7 +1532,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 							}
 							unset ($netport);
 							$netport["ifmac"] = $line2["MACADDR"];
-							$netport["iface"] = ocsImportDropdown("glpi_dropdown_iface", "name", $line2["TYPE"]);
+							$netport["iface"] = ocsImportDropdown("glpi_dropdown_iface", $line2["TYPE"]);
 							$netport["name"] = $line2["DESCRIPTION"];
 							$netport["on_device"] = $glpi_id;
 							$netport["device_type"] = COMPUTER_TYPE;
@@ -1770,7 +1763,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 						}						
 						if (!empty ($mon["name"]))
 							if (!in_array($checkMonitor, $import_periph)){
-								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $line["MANUFACTURER"]);
+								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $line["MANUFACTURER"]);
 								$mon["comments"] = $line["DESCRIPTION"];								
 								$id_monitor = 0;
 								$found_already_monitor = false;
@@ -2024,7 +2017,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 								$periph["brand"] = $line["MANUFACTURER"];
 							if ($line["INTERFACE"] != "NULL")
 								$periph["comments"] = $line["INTERFACE"];
-							$periph["type"] = ocsImportDropdown("glpi_type_peripherals", "name", $line["TYPE"]);
+							$periph["type"] = ocsImportDropdown("glpi_type_peripherals", $line["TYPE"]);
 
 							$id_periph = 0;
 
@@ -2146,56 +2139,57 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
  *@param $glpi_id integer : glpi computer id.
  *@param $ocs_id integer : ocs computer id (ID).
  *@param $ocs_server_id integer : ocs server id
+ *@param $computer_updates array : already updated fields of the computer
+ *@param $entity integer : entity of the computer
+*@param $dohistory boolean : log changes ?
+ 
  *@return Nothing (void).
  *
  **/
-function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id) {
+function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs,$computer_updates,$entity,$dohistory) {
 	global $DB, $DBocs;	
 	//check link between ocs and glpi column
 	$queryListUpdate="SELECT * from glpi_ocs_admin_link where ocs_server_id='$ocs_server_id' ";
 	$result = $DB->query($queryListUpdate);
 	if($DB->numrows($result) > 0){
-		//update data 
-		while ($links_glpi_ocs = $DB->fetch_array($result)) {
-			//get info from ocs
-			$ocs_column = $links_glpi_ocs['ocs_column'];
-			$glpi_column = $links_glpi_ocs['glpi_column'];
-			$queryOCS = "SELECT $ocs_column from accountinfo where HARDWARE_ID='$ocs_id'";
-			$resultOCS = $DBocs->query($queryOCS);
-			if($DBocs->numrows($resultOCS) > 0){
-				$data_ocs = $DBocs->fetch_array($resultOCS); 
-				$var = $data_ocs[$ocs_column];				
-				//check group if exist
-				if(!strcmp("FK_groups",$glpi_column)){
-					$groupID = searchGroupID($var);
-					if($groupID==-1){
-						//create new group
-						$queryinsert="INSERT glpi_groups (name) VALUES ('$var')";	
-						$DB->query($queryinsert);	
-						//get new id			
-						$groupID = searchGroupID($var); 				
+		$queryOCS = "SELECT * from accountinfo where HARDWARE_ID='$ocs_id'";
+		$resultOCS = $DBocs->query($queryOCS);
+		if($DBocs->numrows($resultOCS) > 0){
+			$data_ocs = $DBocs->fetch_array($resultOCS); 
+			$comp = new Computer();
+
+			//update data 
+			while ($links_glpi_ocs = $DB->fetch_array($result)) {
+				//get info from ocs
+				$ocs_column = $links_glpi_ocs['ocs_column'];
+				$glpi_column = $links_glpi_ocs['glpi_column'];
+				if (isset($data_ocs[$ocs_column])&& !in_array($glpi_column, $computer_updates)){
+					$var = $data_ocs[$ocs_column];	
+					switch ($glpi_column){
+						case "FK_groups":
+							$var=ocsImportGroup($var,$entity);
+						break;
+						case "location":
+							$var=ocsImportDropdown("glpi_dropdown_locations",$var,$entity);
+						break;
+						case "network":
+							$var=ocsImportDropdown("glpi_dropdown_network",$var);
+						break;
 					}
-					$var = $groupID;					
-				}				
-				if(!strcmp("location",$glpi_column)){
-					$locationID = ocsImportDropdown("glpi_dropdown_locations","name",$var);
-					$var = $locationID;
+					$input=array();
+					$input[$glpi_column]=$var;
+					$input["ID"] = $glpi_id;
+					$comp->update($input, $dohistory);
 				}
-				if(!strcmp("network",$glpi_column)){
-					$networkID = ocsImportDropdown("glpi_dropdown_network","name",$var);
-					$var = $networkID;
-				}
-				$queryUpdate ="UPDATE glpi_computers set $glpi_column = '$var' WHERE ID='$glpi_id'";
-				$DB->query($queryUpdate);
 			}
-			//if column in OCS has been deleted, we delete the rules in GLPI
-			else{
-				$queryDelete ="DELETE from glpi_ocs_admin_link where ocs_server_id='$ocs_server_id' and ocs_column='$ocs_column'";
-				$DB->query($queryDelete);  
-			}
-			
 		}
 	}
+			//if column in OCS has been deleted, we delete the rules in GLPI
+/*			else{
+				$queryDelete ="DELETE from glpi_ocs_admin_link where ocs_server_id='$ocs_server_id' and ocs_column='$ocs_column'";
+				$DB->query($queryDelete);  
+			}*/
+		
 }
 
 /**
@@ -2309,7 +2303,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 							$soft->fields["FK_entities"]=$entity;
 							
 							if (!empty ($data2["PUBLISHER"])) {
-								$soft->fields["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", "name", $data2["PUBLISHER"]);
+								$soft->fields["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $data2["PUBLISHER"]);
 							}
 							$isNewSoft = $soft->addToDB();
 						}
@@ -2339,7 +2333,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 								//$updates["version"]=$data2["VERSION"];
 								// No update publisher
 								//if (!empty($data2["PUBLISHER"]))
-								//	$updates["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer","name",$data2["PUBLISHER"]);
+								//	$updates["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer",$data2["PUBLISHER"]);
 								$updates["ID"] = $DB->result($result_name, 0, "ID");
 								$soft = new Software();
 								$soft->update($updates);

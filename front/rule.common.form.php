@@ -38,9 +38,7 @@ if (!defined('GLPI_ROOT')){
 	}
 checkRight($rule->right,"r");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {
@@ -51,7 +49,7 @@ $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rules");
-if (isset($tab["delete_criteria"]))
+if (isset($_POST["delete_criteria"]))
 {
 	checkRight($rule->right,"w");
 	if (count($_POST["item"]))
@@ -63,7 +61,7 @@ if (isset($tab["delete_criteria"]))
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-if (isset($tab["delete_action"]))
+if (isset($_POST["delete_action"]))
 {
 	checkRight($rule->right,"w");
 	if (count($_POST["item"]))
@@ -75,38 +73,38 @@ if (isset($tab["delete_action"]))
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif (isset($tab["add_criteria"]))
+elseif (isset($_POST["add_criteria"]))
 {
 	checkRight($rule->right,"w");
-	$rulecriteria->add($tab);
+	$rulecriteria->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif (isset($tab["add_action"]))
+elseif (isset($_POST["add_action"]))
 {
 	checkRight($rule->right,"w");
-	$ruleaction->add($tab);
+	$ruleaction->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-elseif (isset($tab["update_rule"]))
+elseif (isset($_POST["update_rule"]))
 {
 	checkRight($rule->right,"w");
-	$rule->update($tab);
+	$rule->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} elseif (isset($tab["add_rule"]))
+} elseif (isset($_POST["add_rule"]))
 {
 	checkRight($rule->right,"w");
-	$rule->add($tab);
+	$rule->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
-} elseif (isset($tab["delete_rule"]))
+} elseif (isset($_POST["delete_rule"]))
 {
 	checkRight($rule->right,"w");
-	$rule->delete($tab);
+	$rule->delete($_POST);
 	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");
 }
 
 
-$rule->showForm($_SERVER['PHP_SELF'],$tab["ID"]);
-if (!empty($tab["ID"])&&$tab["ID"] >0) {
+$rule->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+if (!empty($_GET["ID"])&&$_GET["ID"] >0) {
 	switch($_SESSION['glpi_onglet']){
 			case 1 :
 				$rule->showCriteriasList($_SERVER['PHP_SELF']);
