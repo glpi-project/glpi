@@ -563,8 +563,10 @@ class Computer extends CommonDBTM {
 				echo "<td>".$LANG["computers"][52].":</td><td>";
 				dropdownValue("glpi_dropdown_os_version", "os_version", $this->fields["os_version"]);
 				echo "</td>";
-	
-				echo "<td>&nbsp;</td><td>&nbsp;</td>";
+				
+				echo "<td>".$LANG["computers"][10]."</td><td>";
+				autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],30);
+				echo"</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";

@@ -1017,5 +1017,11 @@ function update0681to07() {
 		$query = "INSERT INTO `glpi_display` ( `type`, `num`, `rank`, `FK_users`) VALUES (35, 80, 1, 0);";
 		$DB->query($query) or die("0.7 add glpi_mailgate display values" . $LANG["update"][90] . $DB->error());
 	}
+
+	if (!FieldExists("glpi_computers", "os_license_number")) {
+		$query = "ALTER TABLE `glpi_computers` ADD COLUMN `os_license_number` VARCHAR( 255 ) NULL DEFAULT NULL ;";
+		$DB->query($query) or die("0.7 alter glpi_computers field" . $LANG["computers"][10] . $DB->error());
+	}
+
 } // fin 0.7 #####################################################################################
 ?>

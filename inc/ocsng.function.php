@@ -635,7 +635,9 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer
 		$line = $DBocs->fetch_assoc($result);
 		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
 		$compudate = array ();
-
+		
+		$compupdate["os_license_number"] = $line["WINPRODID"];
+		
 		if ($cfg_ocs["import_general_os"] && !in_array("os", $computer_updates)) {
 			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os',  $line["OSNAME"]);
 			$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version', $line["OSVERSION"]);

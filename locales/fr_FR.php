@@ -231,6 +231,7 @@ $LANG["common"][57]="Titre";
 
 
 $LANG["computers"][9]="OS";
+$LANG["computers"][10]="OS Numéro de série";
 $LANG["computers"][12]="Nouvel ordinateur à partir d'un modèle";
 $LANG["computers"][13]="Ordinateur ID";
 $LANG["computers"][14]="Inseré";
@@ -254,6 +255,7 @@ $LANG["computers"][52]="OS Version";
 $LANG["computers"][53]="Service Pack";
 $LANG["computers"][54]="Pas de téléphone connecté";
 $LANG["computers"][55]="Téléphone(s)";
+
 
 $LANG["connect"][0]="Connexion(s) directe(s)";
 $LANG["connect"][1]="Non connecté.";
