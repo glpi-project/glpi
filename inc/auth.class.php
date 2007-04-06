@@ -368,8 +368,9 @@ class AuthMail extends CommonDBTM {
 		if (function_exists('imap_open')) {
 
 			echo "<form action=\"$target\" method=\"post\">";
-			if (!empty ($ID))
+			if (!empty ($ID)){
 				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+			}
 
 			echo "<div align='center'>";
 			echo "<p >" . $LANG["setup"][160] . "</p>";
@@ -440,7 +441,9 @@ class AuthLDAP extends CommonDBTM {
 		if (extension_loaded('ldap')) {
 
 			echo "<form action=\"$target\" method=\"post\">";
-			echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+			if (!empty($ID)){
+				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+			}
 
 			echo "<div align='center'><p > " . $LANG["setup"][151] . "</p>";
 
