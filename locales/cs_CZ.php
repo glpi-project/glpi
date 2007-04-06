@@ -783,10 +783,10 @@ $LANG["login"][23]="Test selhal";
 $LANG["login"][24]="Datum posledního přihlášení"; 
 $LANG["login"][25]="Nemáte oprávnění pro připojení"; 
 
-$LANG["mailgate"][0]="Mail Gateway"; 
-$LANG["mailgate"][1]="Add a mail gateway"; 
-$LANG["mailgate"][2]="Get mail tickets now"; 
-$LANG["mailgate"][3]="Number of available and retrieved mails"; 
+$LANG["mailgate"][0]="Emailová brána"; 
+$LANG["mailgate"][1]="Přidat emailovou bránu"; 
+$LANG["mailgate"][2]="Získat úkoly emailem"; 
+$LANG["mailgate"][3]="Počet dostupných a získaných zpráv"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
@@ -875,7 +875,7 @@ $LANG["Menu"][35]="Profily";
 $LANG["Menu"][36]="Skupiny"; 
 $LANG["Menu"][37]="Objekty"; 
 $LANG["Menu"][38]="Inventář"; 
-$LANG["Menu"][39]="Mail Gateways"; 
+$LANG["Menu"][39]="Emailové brány"; 
 
 $LANG["monitors"][4]="Monitor"; 
 $LANG["monitors"][14]="Mikrofón"; 
@@ -1444,7 +1444,7 @@ $LANG["setup"][703]="Obecné";
 $LANG["setup"][704]="Upozornění"; 
 
 $LANG["software"][3]="Platforma"; 
-$LANG["software"][5]="Versions"; 
+$LANG["software"][5]="Verze"; 
 $LANG["software"][10]="Software"; 
 $LANG["software"][11]="Licence"; 
 $LANG["software"][12]="Přidat licenci..."; 
