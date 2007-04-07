@@ -213,7 +213,19 @@ function showGroupAssociated($target,$ID){
 
 		echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][604]."</tr><tr><td class='tab_bg_2' align='center'>";
 		echo "<input type='hidden' name='FK_users' value='$ID'>";
-		dropdownValue("glpi_groups","FK_groups",0);
+		$query="SELECT glpi_groups.ID, glpi_groups.name, glpi_entities.completename FROM glpi_groups LEFT JOIN glpi_entities ON (glpi_groups.FK_entities=glpi_entities.ID) WHERE glpi_groups.FK_entities IN (SELECT FK_entities FROM glpi_users_profiles WHERE FK_users = '$ID')";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			$groups=array();
+			while ($data=$DB->fetch_array($result)){
+				$groups[$data['ID']]=$data['name'];
+				if (!empty($data['completename'])){
+					$groups[$data['ID']].= ' - '.$data['completename'];
+				}
+			}
+			dropdownArrayValues("FK_groups",$groups);
+
+		}
 		echo "</td><td align='center' class='tab_bg_2'>";
 		echo "<input type='submit' name='addgroup' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";
