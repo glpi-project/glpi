@@ -572,7 +572,9 @@ function listTemplates($type, $target, $add = 0) {
 		while ($data = $DB->fetch_array($result)) {
 
 			$templname = $data["tplname"];
-			if (empty($templname)) $templname="(".$data["ID"].")";
+			if ($CFG_GLPI["view_ID"]||empty($data["tplname"])){
+            			$templname.= "(".$data["ID"].")";
+			}
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
 			if (!$add) {
