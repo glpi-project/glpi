@@ -105,6 +105,12 @@ $SEARCH_OPTION[COMPUTER_TYPE][42]['linkfield']='auto_update';
 $SEARCH_OPTION[COMPUTER_TYPE][42]['name']=$LANG["computers"][51];
 $SEARCH_OPTION[COMPUTER_TYPE][42]['meta']=2;
 
+$SEARCH_OPTION[COMPUTER_TYPE][43]['table']='glpi_computers';
+$SEARCH_OPTION[COMPUTER_TYPE][43]['field']='os_license_number';
+$SEARCH_OPTION[COMPUTER_TYPE][43]['linkfield']='os_license_number';
+$SEARCH_OPTION[COMPUTER_TYPE][43]['name']=$LANG["computers"][10];
+$SEARCH_OPTION[COMPUTER_TYPE][43]['meta']=0;
+
 $SEARCH_OPTION[COMPUTER_TYPE][8]['table']='glpi_computers';
 $SEARCH_OPTION[COMPUTER_TYPE][8]['field']='serial';
 $SEARCH_OPTION[COMPUTER_TYPE][8]['linkfield']='serial';

@@ -1023,5 +1023,11 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 alter glpi_computers field" . $LANG["computers"][10] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_ocs_config", "import_os_serial")) {
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_os_serial` INT( 2 ) NULL AFTER `import_registry` ;";
+		$DB->query($query) or die("0.7 alter glpi_computers field import_ocs_serial " . $DB->error());
+	}
+
+
 } // fin 0.7 #####################################################################################
 ?>

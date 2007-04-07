@@ -267,6 +267,12 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		dropdownYesNo("import_general_os", $this->fields["import_general_os"]);
 		echo "</td></tr>";
 
+		echo "<tr class='tab_bg_2'><td colspan='2'>";
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["computers"][10] . " </td><td>";
+		dropdownYesNo("import_os_serial", $this->fields["import_os_serial"]);
+		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][19] . " </td><td>";
 		dropdownYesNo("import_general_serial", $this->fields["import_general_serial"]);
 		echo "</td></tr>";
