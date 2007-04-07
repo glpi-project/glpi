@@ -555,10 +555,11 @@ function listTemplates($type, $target, $add = 0) {
 	if ($result = $DB->query($query)) {
 
 		echo "<div align='center'><table class='tab_cadre' width='50%'>";
-		if ($add)
+		if ($add) {
 			echo "<tr><th>" . $LANG["common"][7] . " - $title:</th></tr>";
-		else
+		} else {
 			echo "<tr><th colspan='2'>" . $LANG["common"][14] . " - $title:</th></tr>";
+		}
 
 		if ($add) {
 
@@ -571,7 +572,7 @@ function listTemplates($type, $target, $add = 0) {
 		while ($data = $DB->fetch_array($result)) {
 
 			$templname = $data["tplname"];
-
+			if (empty($templname)) $templname="(".$data["ID"].")";
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
 			if (!$add) {
