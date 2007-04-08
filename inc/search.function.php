@@ -1083,20 +1083,24 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 
 			// Delete selected item
-			if ($isadmin&&$output_type==HTML_OUTPUT){
-				echo "<div align='center'>";
-				echo "<table width='80%'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all' >".$LANG["buttons"][18]."</a></td>";
-
-				echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
-				echo "</td><td align='left' width='80%'>";
-				dropdownMassiveAction($type,$deleted);
-				echo "</td>";
-				echo "</table>";
-
-				echo "</div>";
-				// End form for delete item
-				echo "</form>";
+			if ($output_type==HTML_OUTPUT){
+				if ($isadmin){
+					echo "<div align='center'>";
+					echo "<table width='80%'>";
+					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all' >".$LANG["buttons"][18]."</a></td>";
+	
+					echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+					echo "</td><td align='left' width='80%'>";
+					dropdownMassiveAction($type,$deleted);
+					echo "</td>";
+					echo "</table>";
+	
+					echo "</div>";
+					// End form for delete item
+					echo "</form>";
+				} else {
+					echo "<br>";
+				}
 			}
 
 			if ($output_type==HTML_OUTPUT) // In case of HTML display
