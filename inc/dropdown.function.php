@@ -1067,7 +1067,7 @@ function dropdownDocument($myname,$entity_restrict=-1) {
 	$query="SELECT * FROM glpi_dropdown_rubdocs WHERE ID IN (SELECT DISTINCT rubrique FROM glpi_docs $where) ORDER BY name";
 	$result=$DB->query($query);
 
-	echo "<select name='_rubdoc' id='_rubdoc'>\n";
+	echo "<select name='_rubdoc' id='rubdoc'>\n";
 	echo "<option value='0'>------</option>\n";
 	while ($data=$DB->fetch_assoc($result)){
 		echo "<option value='".$data['ID']."'>".$data['name']."</option>\n";
@@ -1076,7 +1076,7 @@ function dropdownDocument($myname,$entity_restrict=-1) {
 
 
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('_rubdoc', 1, \n";
+	echo "   new Form.Element.Observer('rubdoc', 1, \n";
 	echo "      function(element, value) {\n";
 	echo "      	new Ajax.Updater('show_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownDocument.php',{asynchronous:true, evalScripts:true, \n";	
 	echo "           onComplete:function(request)\n";
