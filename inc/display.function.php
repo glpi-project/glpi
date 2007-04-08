@@ -644,7 +644,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 					echo ">".$val['title']."</a></li>\n";
 				}
 			} else echo "<li>&nbsp;</li>";
-		}
+		} else echo "<li>&nbsp;</li>";
 		echo "</ul>";
 		echo "</div>";
 		
