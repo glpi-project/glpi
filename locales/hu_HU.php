@@ -228,6 +228,7 @@ $LANG["common"][56]="Cserél";
 $LANG["common"][57]="Cím"; 
 
 $LANG["computers"][9]="Operációs rendszer"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Új számítógép sablonból"; 
 $LANG["computers"][13]="Számítógép azonosító"; 
 $LANG["computers"][14]="Hozzáadva"; 

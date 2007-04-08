@@ -228,6 +228,7 @@ $LANG["common"][56]="Central";
 $LANG["common"][57]="Título"; 
 
 $LANG["computers"][9]="S.O."; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Nuevo ordenador a partir de un modelo"; 
 $LANG["computers"][13]="ID ordenador"; 
 $LANG["computers"][14]="Agregado"; 

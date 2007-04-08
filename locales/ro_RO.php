@@ -228,6 +228,7 @@ $LANG["common"][56]="Exchange";
 $LANG["common"][57]="Title"; 
 
 $LANG["computers"][9]="OS"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Calculator nou din template"; 
 $LANG["computers"][13]="ID calculator"; 
 $LANG["computers"][14]="Introdus"; 

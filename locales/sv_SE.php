@@ -228,6 +228,7 @@ $LANG["common"][56]="Exchange";
 $LANG["common"][57]="Title"; 
 
 $LANG["computers"][9]="Operativsystem"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Ny dator från mall"; 
 $LANG["computers"][13]="Dator ID"; 
 $LANG["computers"][14]="Inserted"; 

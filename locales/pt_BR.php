@@ -228,6 +228,7 @@ $LANG["common"][56]="Exchange";
 $LANG["common"][57]="Title"; 
 
 $LANG["computers"][9]="OS"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Novo computador usando o padrão"; 
 $LANG["computers"][13]="Identificação do computador"; 
 $LANG["computers"][14]="Inserindo"; 

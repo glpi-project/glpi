@@ -228,6 +228,7 @@ $LANG["common"][56]="Wymiana";
 $LANG["common"][57]="Tytuł"; 
 
 $LANG["computers"][9]="OS"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Nowy komputer z szablonu"; 
 $LANG["computers"][13]="ID Komputera"; 
 $LANG["computers"][14]="Wstawione"; 

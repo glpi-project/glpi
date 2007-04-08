@@ -228,6 +228,7 @@ $LANG["common"][56]="Exchange";
 $LANG["common"][57]="Title"; 
 
 $LANG["computers"][9]="操作系统"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="从模板添加新计算机"; 
 $LANG["computers"][13]="计算机ID"; 
 $LANG["computers"][14]="插件了"; 
