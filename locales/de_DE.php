@@ -228,6 +228,7 @@ $LANG["common"][56]="Austausch";
 $LANG["common"][57]="Titel"; 
 
 $LANG["computers"][9]="Betriebssystem"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="neuen Computer von Vorlage erstellen"; 
 $LANG["computers"][13]="Computer ID"; 
 $LANG["computers"][14]="Eingetragen"; 

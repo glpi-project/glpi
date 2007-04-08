@@ -228,6 +228,7 @@ $LANG["common"][56]="Exchange";
 $LANG["common"][57]="Title"; 
 
 $LANG["computers"][9]="Besturingssysteem"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Nieuwe computer van sjabloon"; 
 $LANG["computers"][13]="Computer-ID"; 
 $LANG["computers"][14]="Toegevoegd"; 

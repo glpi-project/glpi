@@ -228,6 +228,7 @@ $LANG["common"][56]="Výměna";
 $LANG["common"][57]="Název"; 
 
 $LANG["computers"][9]="OS"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Nový počítač ze šablony"; 
 $LANG["computers"][13]="ID počítače"; 
 $LANG["computers"][14]="Vloženo"; 

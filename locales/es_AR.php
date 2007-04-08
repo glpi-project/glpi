@@ -228,6 +228,7 @@ $LANG["common"][56]="Central";
 $LANG["common"][57]="Título"; 
 
 $LANG["computers"][9]="OS"; 
+$LANG["computers"][10]="OS serial"; 
 $LANG["computers"][12]="Nuevo computador a partir de un modelo"; 
 $LANG["computers"][13]="ID computador"; 
 $LANG["computers"][14]="Agregado"; 
@@ -949,7 +950,7 @@ $LANG["ocsconfig"][43]="Información administrativa OCS";
 $LANG["ocsconfig"][44]="Tipo de licencia por defecto"; 
 $LANG["ocsconfig"][45]="Licencia de sitio (global)"; 
 $LANG["ocsconfig"][46]="Licencia libre (free)"; 
-$LANG["ocsconfig"][47]="Licencia \"en regla\" por defecto"; 
+$LANG["ocsconfig"][47]="Licencia 'en regla' por defecto"; 
 $LANG["ocsconfig"][48]="Comportamiento a la desconexión"; 
 $LANG["ocsconfig"][49]="Papelera"; 
 $LANG["ocsconfig"][50]="Eliminación"; 
