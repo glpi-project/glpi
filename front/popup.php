@@ -46,7 +46,6 @@ if (isset($_SESSION["glpipopup"]["name"])){
 				$_SESSION["glpipopup"]["reload"]=1;
 			}
 		
-		include "setup.dropdowns.php";
 		if (isset($_SESSION["glpipopup"]["reload"])&&$_SESSION["glpipopup"]["reload"]){
 			echo "<script type='text/javascript' >\n";
 			echo "if (window.opener.document.getElementById('search_".$_SESSION["glpipopup"]["rand"]."').value=='".$CFG_GLPI["ajax_wildcard"]."'){";
@@ -57,6 +56,7 @@ if (isset($_SESSION["glpipopup"]["name"])){
 			echo "</script>";
 			$_SESSION["glpipopup"]["reload"]=0;
 		}
+		include "setup.dropdowns.php";
 		break;
 	}
 }
