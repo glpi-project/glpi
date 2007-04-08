@@ -38,6 +38,9 @@
 // Update from 0.68.1 to 0.7
 function update0681to07() {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
+
+	@mysql_query("SET NAMES 'latin1'",$DB->dbh);
+
 	// Improve user table :
 	if (!isIndex("glpi_users", "firstname")) {
 		$query = "ALTER TABLE `glpi_users` ADD INDEX ( `firstname` )";
@@ -451,7 +454,7 @@ function update0681to07() {
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)) {
 				while ($data = $DB->fetch_assoc($result)) {
-					$data = addslashes_deep(utf8_decode_deep($data));
+					$data = addslashes_deep($data);
 					
 					$comments = "";
 					if (!empty ($data['address'])) {
@@ -506,7 +509,6 @@ function update0681to07() {
 					}
 
 					$query2 = "INSERT INTO `glpi_dropdown_manufacturer` (ID,name,comments) VALUES ('" . $data['ID'] . "','" . $data['name'] . "','".$comments."')";
-					echo $query2."<br>";
 					$DB->query($query2) or die("0.7 add manufacturer item " . $LANG["update"][90] . $DB->error());
 				}
 			}

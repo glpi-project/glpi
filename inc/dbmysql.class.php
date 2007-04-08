@@ -61,10 +61,10 @@ class DBmysql {
 	function DBmysql()
 	{  // Constructor
 		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, urldecode($this->dbpassword)) or $this->error = 1;
-		@mysql_query("SET NAMES 'utf8'");
-		if ($this->dbh)
+		if ($this->dbh){
+			@mysql_query("SET NAMES 'utf8'",$this->dbh);
 			mysql_select_db($this->dbdefault) or $this->error = 1;
-		else {
+		} else {
 			nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
 			echo "<div align='center'><p><strong>A link to the Mysql server could not be established. Please Check your configuration.</strong></p><p><strong>Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</strong></p></div>";
 			nullFooter("Mysql Error",$_SERVER['PHP_SELF']);
