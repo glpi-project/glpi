@@ -1260,10 +1260,14 @@ function displaySearchTextAjaxDropdown($id,$size=4){
 function dropdownMassiveAction($device_type,$deleted=0){
 	global $LANG,$CFG_GLPI;
 
+	
+
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
-	echo "<option value=\"update\">".$LANG["buttons"][14]."</option>";
+	if ($device_type!=MAILGATE_TYPE){
+		echo "<option value=\"update\">".$LANG["buttons"][14]."</option>";
+	}
 
 	if ($deleted){
 		echo "<option value=\"purge\">".$LANG["buttons"][22]."</option>";
@@ -1275,7 +1279,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 			echo "<option value=\"connect\">".$LANG["buttons"][9]."</option>";
 			echo "<option value=\"disconnect\">".$LANG["buttons"][10]."</option>";
 		}
-		if ($device_type!=DOCUMENT_TYPE){
+		if ($device_type!=DOCUMENT_TYPE&&$device_type!=MAILGATE_TYPE){
 			echo "<option value=\"add_document\">".$LANG["document"][16]."</option>";
 		}
 		if (in_array($device_type,$CFG_GLPI["state_types"])){
