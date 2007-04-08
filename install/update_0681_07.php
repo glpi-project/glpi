@@ -289,12 +289,12 @@ function update0681to07() {
 		if (!empty ($config["ldap_host"])) {
 
 			//Transfer ldap informations into the new table
-
+			
 			$query = "INSERT INTO `glpi_auth_ldap` VALUES 
-												(NULL, '" . $config["ldap_host"] . "', '" . $config["ldap_host"] . "', '" . $config["ldap_basedn"] . "', '" . $config["ldap_rootdn"] . "', '" . $config["ldap_pass"] . "', " . $config["ldap_port"] . ", '" . $config["ldap_condition"] . "', '" . $config["ldap_login"] . "', '" . $config["ldap_use_tls"] . "', '" . $config["ldap_field_group"] . "',
-												'" . $config["ldap_condition"] . "', " . $config["ldap_search_for_groups"] . ", '" . $config["ldap_field_group_member"] . "',
-												'" . $config["ldap_field_email"] . "', '" . $config["ldap_field_location"] . "', '" . $config["ldap_field_realname"] . "', '" . $config["ldap_field_firstname"] . "',
-												'" . $config["ldap_field_phone"] . "', '" . $config["ldap_field_phone2"] . "', '" . $config["ldap_field_mobile"] . "',NULL);";
+			(NULL, '" . $config["ldap_host"] . "', '" . $config["ldap_host"] . "', '" . $config["ldap_basedn"] . "', '" . $config["ldap_rootdn"] . "', '" . $config["ldap_pass"] . "', " . $config["ldap_port"] . ", '" . $config["ldap_condition"] . "', '" . $config["ldap_login"] . "', '" . $config["ldap_use_tls"] . "', '" . $config["ldap_field_group"] . "',
+			'" . $config["ldap_condition"] . "', " . $config["ldap_search_for_groups"] . ", '" . $config["ldap_field_group_member"] . "',
+			'" . $config["ldap_field_email"] . "', '" . $config["ldap_field_location"] . "', '" . $config["ldap_field_realname"] . "', '" . $config["ldap_field_firstname"] . "',
+			'" . $config["ldap_field_phone"] . "', '" . $config["ldap_field_phone2"] . "', '" . $config["ldap_field_mobile"] . "',NULL);";
 			$DB->query($query) or die("0.7 transfert of ldap parameters into glpi_auth_ldap " . $LANG["update"][90] . $DB->error());
 		}
 
@@ -451,7 +451,8 @@ function update0681to07() {
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)) {
 				while ($data = $DB->fetch_assoc($result)) {
-					$data = addslashes_deep($data);
+					$data = addslashes_deep(utf8_decode_deep($data));
+					
 					$comments = "";
 					if (!empty ($data['address'])) {
 						if (!empty ($comments))
@@ -503,7 +504,9 @@ function update0681to07() {
 							$comments .= "\n";
 						$comments .= $data['notes'];
 					}
-					$query2 = "INSERT INTO `glpi_dropdown_manufacturer` (ID,name,comments) VALUES ('" . $data['ID'] . "','" . $data['name'] . "','$comments')";
+
+					$query2 = "INSERT INTO `glpi_dropdown_manufacturer` (ID,name,comments) VALUES ('" . $data['ID'] . "','" . $data['name'] . "','".$comments."')";
+					echo $query2."<br>";
 					$DB->query($query2) or die("0.7 add manufacturer item " . $LANG["update"][90] . $DB->error());
 				}
 			}
