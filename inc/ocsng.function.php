@@ -2117,7 +2117,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 				}
 			}
 
-			Disconnect($key);
+			Disconnect($key,$ocs_server_id);
 
 			switch ($device_type) {
 				case MONITOR_TYPE :
