@@ -106,7 +106,7 @@ running=1
 while [ $running = 1 ]; do
        running=0
        for pid in $runningpid; do
-               [ -d proc$pid ] && running=1
+               [ -d "/proc/$pid" ] && running=1
        done
        sleep 1
 done

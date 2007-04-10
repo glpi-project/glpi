@@ -119,7 +119,8 @@ function importFromOcsServer($cfg_ocs, $thread_nbr, $thread_id)
 	$query_ocs = "SELECT ID FROM hardware WHERE CHECKSUM&".intval($cfg_ocs["checksum"])." >0 $where_multi_thread";
 	$result_ocs = $DBocs->query($query_ocs);
 	while($data=$DBocs->fetch_array($result_ocs)){
-		echo "thread=".$thread_id.". machine=".$data['ID']."\n";
+		//echo "thread=".$thread_id.". machine=".$data['ID']."\n";
+		echo ".";
 		ocsImportComputer($data["ID"],$cfg_ocs["ID"]);
 	}
 }
