@@ -60,7 +60,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	echo "            {Element.hide('search_spinner_$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&type=".$_POST['type']."&myname=".$_POST['myname']."&current=".$_POST['current']."'\n";
+	echo "           method:'post', parameters:'searchText=' + value+'&type=".$_POST['type']."&myname=".$_POST['myname']."&current=".$_POST['current']."&entity_restrict=".$_POST['entity_restrict']."'\n";
 	echo "})});\n";
 
 	echo "</script>\n";

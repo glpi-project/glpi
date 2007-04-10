@@ -439,7 +439,9 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		if ($canedit){
 			echo "<td align='left'>";
 			if ($withtemplate!=2&&$withtemplate!=1){
-				dropdownConnectPort($ID,$type,"dport",$_SESSION["glpiactive_entity"]);
+				if ($netport->getDeviceData($ID,$type)){
+					dropdownConnectPort($ID,$type,"dport",$netport->FK_entities);
+				}
 			}
 			else echo "&nbsp;";
 			echo "</td>";
