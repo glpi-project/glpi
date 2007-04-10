@@ -1008,7 +1008,7 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
  * @param $myname select name
  * @return nothing (print out an HTML select box)
  */
-function dropdownConnectPort($ID,$type,$myname) {
+function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
 
 
 	global $LANG,$CFG_GLPI;
@@ -1032,7 +1032,7 @@ function dropdownConnectPort($ID,$type,$myname) {
 	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
 	echo "           onLoading:function(request)\n";
 	echo "            {Element.show('search_spinner_$myname$rand');Element.hide('not_connected_display$ID');},\n";
-	echo "           method:'post', parameters:'current=$ID&type='+value+'&myname=$myname'\n";
+	echo "           method:'post', parameters:'current=$ID&type='+value+'&myname=$myname&entity_restrict=$entity_restrict'\n";
 	echo "})})\n";
 	echo "</script>\n";
 
