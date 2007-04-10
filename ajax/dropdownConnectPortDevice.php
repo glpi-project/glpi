@@ -53,6 +53,12 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$where.=" AND deleted='N' ";
 	$where.=" AND is_template='0' ";		
 
+	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+		$where.= " AND $table.FK_entities='".$_POST["entity_restrict"]."'";
+	} else {
+		$where.=getEntitiesRestrictRequest("AND",$table);
+	}
+
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 		$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
 
@@ -62,7 +68,6 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 	$query = "SELECT * FROM ".$table." $where ORDER BY name $LIMIT";
-
 	$result = $DB->query($query);
 
 	echo "<select id='item$rand' name=\"item\" size='1'>";
