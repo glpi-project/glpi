@@ -439,6 +439,8 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		if ($canedit){
 			echo "<td align='left'>";
 			if ($withtemplate!=2&&$withtemplate!=1){
+				$netport->getfromDB($ID);
+
 				if ($netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"])){
 					dropdownConnectPort($ID,$type,"dport",$netport->FK_entities);
 				}
