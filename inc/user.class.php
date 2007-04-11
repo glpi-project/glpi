@@ -448,7 +448,13 @@ class User extends CommonDBTM {
 					while ($data = $DB->fetch_assoc($result)) {
 						$groups[$ldap_method["ldap_field_group_member"]][$data["ID"]] = $data["ldap_group_dn"];
 					}
-					$v2 = $this->ldap_get_user_groups($ds, $ldap_method["ldap_basedn"], $userdn, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"]);
+					if ($ldap_method["use_dn"])
+						$user_tmp = $userdn;
+					else
+						$user_tmp = $ldap_method["ldap_login"]."=".$login;
+						
+					$v2 = $this->ldap_get_user_groups($ds, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"]);
+					
 					$v = array_merge($v, $v2);
 				}
 
@@ -499,7 +505,7 @@ class User extends CommonDBTM {
 		);
 
 		$filter = "(& $group_condition ($group_field_member=$user_dn))";
-
+	echo $filter;
 		//Perform the search
 		$sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
