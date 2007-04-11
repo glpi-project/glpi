@@ -2306,7 +2306,6 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 						if (!$isNewSoft) {
 							$soft = new Software;
 							$soft->fields["name"] = $name;
-							//$soft->fields["version"] = $data2["VERSION"];
 							$soft->fields["comments"] = $data2["COMMENTS"];
 							$soft->fields["FK_entities"]=$entity;
 							
@@ -2330,7 +2329,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 
 						$query_name = "SELECT glpi_software.ID as ID , glpi_software.name AS NAME 
 								FROM glpi_inst_software 
-								LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID and glpi_licenses.version=".$version.") 
+								LEFT JOIN glpi_licenses ON (glpi_inst_software.license=glpi_licenses.ID and glpi_licenses.version='".$version."') 
 								LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
 								WHERE glpi_inst_software.ID='$id' AND glpi_software.FK_entities=".$entity;
 						$result_name = $DB->query($query_name);
@@ -2363,7 +2362,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 
 				$query = "SELECT * 
 					FROM glpi_inst_software 
-					WHERE ID = '".$key."' AND FK_entity=".$entity;
+					WHERE ID = '".$key."'";
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
 					if ($data=$DB->fetch_assoc($result)){

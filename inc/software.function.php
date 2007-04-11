@@ -599,7 +599,7 @@ function uninstallSoftware($ID,$dohistory=1) {
 			$soft=new Software();
 			if ($soft->getFromDB($lic->fields["sID"])){
 				$changes[0]='0';
-				$changes[1]=$soft->fields["name"]." (v. ".$soft->fields["version"].")";
+				$changes[1]=$soft->fields["name"]." (v. ".$lic->fields["version"].")";
 				$changes[2]="";
 				// history log
 				historyLog ($data["cID"],COMPUTER_TYPE,$changes,0,HISTORY_UNINSTALL_SOFTWARE);
