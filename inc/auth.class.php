@@ -494,6 +494,12 @@ class AuthLDAP extends CommonDBTM {
 			echo "<input type=\"text\" name=\"ldap_group_condition\" value=\"" . $this->fields["ldap_group_condition"] . "\" ></td>";
 			echo "<td align='center'>" . $LANG["setup"][255] . "</td><td><input type=\"text\" name=\"ldap_field_group_member\" value=\"" . $this->fields["ldap_field_group_member"] . "\" ></td></tr>";
 
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][262] . "</td>";
+			echo "<td>";
+			dropdownYesNo("use_dn",$this->fields["use_dn"]);
+			echo"</td>";
+			echo "<td align='center' colspan='2'></td></tr>";
+
 			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["setup"][167] . "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][48] . "</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"" . $this->fields["ldap_field_realname"] . "\" ></td>";

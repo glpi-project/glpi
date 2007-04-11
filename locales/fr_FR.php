@@ -1436,6 +1436,7 @@ $LANG["setup"][258]="Utilisateurs & groupes";
 $LANG["setup"][259]="Appartenance à des groupes";
 $LANG["setup"][260]="Attribut utilisateur indiquant ses groupes";
 $LANG["setup"][261]="DN du groupe";
+$LANG["setup"][262]="Utiliser le DN pour la recherche";
 
 $LANG["setup"][300]="Vérifier si une nouvelle version est disponible";
 $LANG["setup"][301]="Une nouvelle version est disponible :";
