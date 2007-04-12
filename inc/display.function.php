@@ -553,7 +553,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<div id='c_preference' >";
 		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
 		echo "(";
-		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0);
+		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0,15);
 		echo ")</li>\n"; 
 
 		echo "	<li><a href='".(empty($CFG_GLPI["centralhelp_url"])?"http://glpi-project.org/help-central":$CFG_GLPI["centralhelp_url"])."' target='_blank' title='".$LANG["central"][7]."'>    ".$LANG["central"][7]."</a></li>\n"; 
@@ -882,7 +882,7 @@ function helpHeader($title,$url) {
 		echo "<div id='c_preference' >";
 		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
 		echo "(";
-		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0);
+		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0,15);
 		echo ")</li>\n"; 
 
 		echo "	<li><a href='".(empty($CFG_GLPI["helpdeskhelp_url"])?"http://glpi-project.org/help-helpdesk":$CFG_GLPI["helpdeskhelp_url"])."' target='_blank' title='".$LANG["central"][7]."'>    ".$LANG["central"][7]."</a></li>\n"; 
