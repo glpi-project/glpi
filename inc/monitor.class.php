@@ -276,10 +276,10 @@ class Monitor extends CommonDBTM {
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'";
 	
-				if(haveRight("view_ocsng","r"))
+				if(haveRight("ocsng","w") || haveRight("sync_ocsng","w") || haveRight("view_ocsng","r"))
 				{
 					echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
-					if(haveRight("sync_ocsng","w"))
+					if(haveRight("ocsng","w") || haveRight("sync_ocsng","w"))
 						globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
 					else
 					{
