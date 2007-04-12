@@ -115,6 +115,7 @@ class Computer extends CommonDBTM {
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB,$LANG;
+		
 		// Manage changes for OCS if more than 1 element (date_mod)
 		// Need dohistory==1 if dohistory==2 no locking fields
 		if ($this->fields["ocs_import"]&&$history==1&&count($updates)>1){
@@ -146,10 +147,10 @@ class Computer extends CommonDBTM {
 								$ci->getfromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('contact')!=$this->fields['contact']||$ci->getField('contact_num')!=$this->fields['contact_num']){
-										$input["ID"]=$ci->getField('ID');
-										$input['contact']=$this->fields['contact'];
-										$input['contact_num']=$this->fields['contact_num'];
-										$ci->obj->update($input);
+										$tmp["ID"]=$ci->getField('ID');
+										$tmp['contact']=$this->fields['contact'];
+										$tmp['contact_num']=$this->fields['contact_num'];
+										$ci->obj->update($tmp);
 										$update_done=true;
 									}
 								}
@@ -186,10 +187,10 @@ class Computer extends CommonDBTM {
 								$ci->getfromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('FK_users')!=$this->fields["FK_users"]||$ci->getField('FK_groups')!=$this->fields["FK_groups"]){
-										$input["ID"]=$ci->getField('ID');
-										$input["FK_users"]=$this->fields["FK_users"];
-										$input["FK_groups"]=$this->fields["FK_groups"];
-										$ci->obj->update($input);
+										$tmp["ID"]=$ci->getField('ID');
+										$tmp["FK_users"]=$this->fields["FK_users"];
+										$tmp["FK_groups"]=$this->fields["FK_groups"];
+										$ci->obj->update($tmp);
 										$update_done=true;
 									}
 								}
@@ -225,9 +226,9 @@ class Computer extends CommonDBTM {
 								$ci->getfromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('location')!=$this->fields["location"]){
-										$input["ID"]=$ci->getField('ID');
-										$input["location"]=$this->fields["location"];
-										$ci->obj->update($input);
+										$tmp["ID"]=$ci->getField('ID');
+										$tmp["location"]=$this->fields["location"];
+										$ci->obj->update($tmp);
 										$update_done=true;
 									}
 								}
