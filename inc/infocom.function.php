@@ -460,7 +460,7 @@ function showDisplayInfocomLink($device_type,$device_id,$update=0){
 
 	if (!haveRight("contract_infocom","r")) return false;
 
-	$query="SELECT COUNT(ID) FROM glpi_infocoms WHERE FK_device='$device_id' AND device_type='$device_type'";
+	$query="SELECT COUNT(*) FROM glpi_infocoms WHERE FK_device='$device_id' AND device_type='$device_type'";
 
 	$add="add";
 	$text=$LANG["buttons"][8];
