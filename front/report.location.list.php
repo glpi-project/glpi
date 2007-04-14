@@ -27,11 +27,6 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
  */
-/*!
-  \brief affiche le rapport r�eau par etage 
-
- */
-
 
 
 $NEEDED_ITEMS=array("networking");
@@ -53,10 +48,9 @@ if (isset($_POST["location"])&&$_POST["location"]){
 		FROM glpi_dropdown_locations
 		LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.location = 
 		glpi_dropdown_locations.ID
-		LEFT JOIN glpi_networking_ports c ON glpi_networking_ports.netpoint=glpi_dropdown_netpoint.id 
+		LEFT JOIN glpi_networking_ports ON glpi_networking_ports.netpoint=glpi_dropdown_netpoint.id 
 		WHERE ".getRealQueryForTreeItem("glpi_dropdown_locations",$_POST["location"])." AND glpi_networking_ports.device_type=".NETWORKING_TYPE."
-		ORDER BY glpi_dropdown_locations.completename, glpi_dropdown_netpoint.name;";
-
+		ORDER BY glpi_dropdown_locations.completename, glpi_networking_ports.name;";
 
 	$result = $DB->query($query);
 	if ($result&&$DB->numrows($result)){
