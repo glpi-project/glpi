@@ -425,7 +425,8 @@ function getDropdownName($table,$id,$withcomments=0) {
 							$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
 							break;
 						case "glpi_software":
-							$name .= "  (v. ".$data["version"].")";
+							//$name .= "  (v. ".$data["version"].")";
+							$name .= "  (v)";
 							
 							if ($data["platform"]!=0 && $data["helpdesk_visible"] != 0)
 								$comments.="<br>".$LANG["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
@@ -1346,9 +1347,8 @@ function dropdownMassiveActionPorts(){
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 
-function globalManagementDropdown($target,$withtemplate,$ID,$value){
+function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_restrict=0){
 	global $LANG,$CFG_GLPI;	
-
 	if ($value&&empty($withtemplate)) {
 		echo $LANG["peripherals"][31];
 
@@ -1356,10 +1356,28 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value){
 
 		echo "<img alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\">";
 	} else {
-		echo "<select name='is_global'>";
-		echo "<option value='0' ".(!$value?" selected":"").">".$LANG["peripherals"][32]."</option>";
-		echo "<option value='1' ".($value?" selected":"").">".$LANG["peripherals"][31]."</option>";
-		echo "</select>";
+		//Add
+		if ($ID == -1 || $ID == '')
+		{
+			//If no restrictions
+			if ($management_restrict == 2)
+			{
+				echo "<select name='is_global'>";
+				echo "<option value='0' ".(!$value?" selected":"").">".$LANG["peripherals"][32]."</option>";
+				echo "<option value='1' ".($value?" selected":"").">".$LANG["peripherals"][31]."</option>";
+				echo "</select>";
+			}
+			else
+			{
+				echo "<input type='hidden' name='is_global' value=\"".$management_restrict."\">";
+				echo (!$management_restrict?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
+			}
+		}
+		else
+		{
+			echo "<input type='hidden' name='is_global' value=\"".$value."\">";
+			echo (!$value?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
+		}
 	}
 }
 
@@ -1715,4 +1733,29 @@ function dropdownArrayValues($name,$elements,$value='')
 	
 }
 
+function adminManagementDropdown($name,$label,$restrict)
+{
+	global $LANG;
+	echo "<td align='center'> " . $label . " </td><td><select name=\"".$name."\">";
+
+	echo "<option value=\"2\"";
+	if ($restrict == 2) {
+		echo " selected";
+	}
+	echo ">".$LANG["choice"][0]."</option>";
+	
+	echo "<option value=\"0\"";
+	if ($restrict == 0) {
+		echo " selected";
+	}
+	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ".  $LANG["peripherals"][32] . "</option>";
+
+	echo "<option value=\"1\"";
+	if ($restrict == 1) {
+		echo " selected";
+	}
+	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ". $LANG["peripherals"][31] . " </option>";
+				
+	echo "</select></td>";
+}
 ?>
