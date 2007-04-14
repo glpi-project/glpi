@@ -636,14 +636,18 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer
 		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
 		$compudate = array ();
 		
-		if ($cfg_ocs["import_os_serial"] && !in_array("os_serial", $computer_updates)) {
+		if ($cfg_ocs["import_os_serial"] && !in_array("os_license_number", $computer_updates)) {
 			$compupdate["os_license_number"] = $line["WINPRODID"];
 		}
 		
-		if ($cfg_ocs["import_general_os"] && !in_array("os", $computer_updates)) {
-			$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os',  $line["OSNAME"]);
-			$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version', $line["OSVERSION"]);
-			if (!ereg("CEST", $line["OSCOMMENTS"])) // Not linux comment
+		if ($cfg_ocs["import_general_os"]) {
+			if (!in_array("os", $computer_updates)){
+				$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os',  $line["OSNAME"]);
+			}
+			if (!in_array("os_version", $computer_updates)){
+				$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version', $line["OSVERSION"]);
+			}
+			if (!ereg("CEST", $line["OSCOMMENTS"])&&!in_array("os_sp", $computer_updates)) // Not linux comment
 				$compupdate["os_sp"] = ocsImportDropdown('glpi_dropdown_os_sp', $line["OSCOMMENTS"]);
 		}
 
@@ -1110,6 +1114,7 @@ function ocsEditLock($target, $ID) {
 			"os",
 			"os_sp",
 			"os_version",
+			"os_license_number",
 			"FK_users"
 		);
 		$locked = array_intersect(importArrayFromDB($data["computer_update"]), $lockable_fields);
