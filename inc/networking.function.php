@@ -315,7 +315,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 		echo "<tr class='tab_bg_1'><td>".$LANG["networking"][51].":</td>";
 
 		echo "<td align='center' >";
-		dropdownValue("glpi_dropdown_netpoint","netpoint", $netport->fields["netpoint"],1,$netport->FK_entities);		
+		dropdownNetpoint("netpoint", $netport->fields["netpoint"],$netport->location,1,$netport->FK_entities);		
 		echo "</td></tr>";
 	}
 	if ($ID) {
