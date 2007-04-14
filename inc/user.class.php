@@ -837,20 +837,6 @@ class User extends CommonDBTM {
 				echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-/*			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . "</td><td>";
-			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["location"]))) {
-				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 0);
-			} else
-				echo getDropdownName("glpi_dropdown_locations", $this->fields["location"]);
-			echo "</td></tr>";
-*/
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][42] . "</td><td>";
-			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["mobile"]))) {
-				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 30);
-			} else
-				echo $this->fields["mobile"];
-			echo "</td></tr>";
-
 			if (haveRight("show_ticket","w"))
 			{
 				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][40] . "</td><td>";
