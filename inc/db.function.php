@@ -566,34 +566,32 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 	global $CFG_GLPI;
 	$before="";
 	$after="";
-	if ($link==1&&$ID>0){
-		$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\" title=".$temp.">";
-		$after="</a>";
-	}
+	$viewID="";
 	if (strlen($realname)>0) {
 		$temp=$realname;
 		
 		if (strlen($firstname)>0)$temp.=" ".$firstname;
 
 		if($cut>0&&strlen($temp) > $cut){
-			
 			$temp=substr($temp,0,$cut);
 			$temp.=" ..."; 
 		}
-
-
-		$viewID="";
-		if (strlen($temp)==0||($CFG_GLPI["view_ID"]&&$ID>0))
-		$viewID="&nbsp;($ID)";
-		$username=$before.$temp.$viewID.$after;
 	}
 	else {
-		$viewID="";
-		if (strlen($login)==0||($CFG_GLPI["view_ID"]&&$ID>0))
-		$viewID="&nbsp;($ID)";
-
-		$username=$before.$login.$viewID.$after;
+		$temp=$login;
 	}
+
+	if (strlen($temp)==0||($CFG_GLPI["view_ID"]&&$ID>0)){
+		$viewID="&nbsp;($ID)";
+	}
+
+	if ($link==1&&$ID>0){
+		$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\" title=".$temp.">";
+		$after="</a>";
+	}
+
+	$username=$before.$temp.$viewID.$after;
+
 	return $username;
 
 
