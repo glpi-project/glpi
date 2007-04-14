@@ -60,7 +60,7 @@ function showLicenses ($sID,$show_computers=0) {
 	$canedit=haveRight("software","w");
 	$canshowcomputer=haveRight("computer","r");
 	$ci=new CommonItem();
-	$query = "SELECT count(ID) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
+	$query = "SELECT count(*) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
 	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='1')";
 
 	if ($result = $DB->query($query)) {

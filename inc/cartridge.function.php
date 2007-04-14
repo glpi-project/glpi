@@ -88,7 +88,7 @@ function showCartridges ($tID,$show_old=0) {
 	if (!haveRight("cartridge","r")) return false;
 	$canedit=haveRight("cartridge","w");
 
-	$query = "SELECT count(ID) AS COUNT  FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')";
+	$query = "SELECT count(*) AS COUNT  FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$tID')";
 
 	if ($result = $DB->query($query)) {
 		if ($DB->result($result,0,0)!=0) { 

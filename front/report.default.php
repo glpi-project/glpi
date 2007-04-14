@@ -51,13 +51,13 @@ echo "<div align='center'><big><b>GLPI ".$LANG["Menu"][6]."</b></big><br><br>";
 
 # 1. Get some number data
 
-$query = "SELECT count(ID) 
+$query = "SELECT count(*) 
 	FROM glpi_computers 
 	WHERE deleted ='0' AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_computers");
 $result = $DB->query($query);
 $number_of_computers = $DB->result($result,0,0);
 
-$query = "SELECT count(ID) 
+$query = "SELECT count(*) 
 	FROM glpi_software 
 	WHERE deleted ='0'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_software");
 $result = $DB->query($query);
@@ -70,7 +70,7 @@ $query = "SELECT count(*)
 $result = $DB->query($query);
 $number_of_printers = $DB->result($result,0,0);
 
-$query = "SELECT count(ID) FROM glpi_networking where deleted ='0'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networking");
+$query = "SELECT count(*) FROM glpi_networking where deleted ='0'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networking");
 $result = $DB->query($query);
 $number_of_networking = $DB->result($result,0,0);
 
