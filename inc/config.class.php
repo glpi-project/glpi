@@ -82,7 +82,7 @@ class Config extends CommonDBTM {
 		echo "><a href='$target?onglet=2'>" . $LANG["setup"][119] . "</a></li>";
 
 		echo "<li ";
-		if ($_SESSION['glpi_configgen'] == 2) {
+		if ($_SESSION['glpi_configgen'] == 3) {
 			echo "class='actif'";
 		}
 		echo "><a href='$target?onglet=3'>" . $LANG["setup"][184] . "</a></li>";
