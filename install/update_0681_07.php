@@ -550,8 +550,8 @@ function update0681to07() {
 
 	if (!TableExists("glpi_registry")) {
 		$query = "CREATE TABLE  `glpi_registry` (
-						 				`ID` int(10) unsigned NOT NULL auto_increment,
-						 				`computer_id` int(10) unsigned NOT NULL,
+						 				`ID` int(10) NOT NULL auto_increment,
+						 				`computer_id` int(10) NOT NULL DEFAULT '0',
 						 				`registry_hive` varchar(45) NOT NULL,
 						 				`registry_path` varchar(255) NOT NULL,
 						 				`registry_value` varchar(255) NOT NULL,
@@ -741,7 +741,7 @@ function update0681to07() {
 	if (!TableExists("glpi_rules_actions")) {
 		$query = "CREATE TABLE `glpi_rules_actions` (
 						  `ID` int(11) NOT NULL auto_increment,
-						  `FK_rules` int(11) NOT NULL,
+						  `FK_rules` int(11) NOT NULL DEFAULT '0',
 						  `action_type` varchar(255) NOT NULL,
 						  `field` varchar(255) NOT NULL,
 						  `value` varchar(255) NOT NULL,
@@ -755,9 +755,9 @@ function update0681to07() {
 	if (!TableExists("glpi_rules_criterias")) {
 		$query = "CREATE TABLE `glpi_rules_criterias` (
 				  `ID` int(11) NOT NULL auto_increment,
-				  `FK_rules` int(11) NOT NULL,
+				  `FK_rules` int(11) NOT NULL DEFAULT '0',
 				  `criteria` varchar(255) NOT NULL,
-				  `condition` smallint(4) NOT NULL,
+				  `condition` smallint(4) NOT NULL DEFAULT '0',
 				  `pattern` varchar(255) NOT NULL,
 				  PRIMARY KEY  (`ID`)
 				) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
@@ -769,8 +769,8 @@ function update0681to07() {
 		$query = "CREATE TABLE `glpi_rules_descriptions` (
 		  `ID` int(11) NOT NULL auto_increment,
 		  `FK_entities` int(11) NOT NULL default '-1',
-		  `rule_type` smallint(4) NOT NULL,
-		  `ranking` int(11) NOT NULL,
+		  `rule_type` smallint(4) NOT NULL DEFAULT '0',
+		  `ranking` int(11) NOT NULL DEFAULT '0',
 		  `name` varchar(255) NOT NULL,
 		  `description` text NOT NULL,
 		  `match` varchar(255) NOT NULL,
@@ -1039,6 +1039,43 @@ function update0681to07() {
 	}
 
 
+	if (FieldExists("glpi_users", "location")) {
+		$query = "ALTER TABLE `glpi_users` DROP `location`;";
+		$DB->query($query) or die("0.7 drop location from glpi_users " . $DB->error());
+	}
+	$intnull=array("glpi_alerts" => array("device_type","FK_device","type"),
+		"glpi_cartridges_type"=>array("tech_num"),
+		"glpi_computers"=>array("FK_users","FK_groups"),
+		"glpi_consumables_type"=>array("tech_num"),
+		"glpi_contacts"=>array("type"),
+		"glpi_device_case"=>array("type"),
+		"glpi_device_control"=>array("interface"),
+		"glpi_device_drive"=>array("interface"),
+		"glpi_dropdown_kbcategories"=>array("level"),
+		"glpi_dropdown_locations"=>array("level"),
+		"glpi_dropdown_tracking_category"=>array("level"),
+		"glpi_entities"=>array("level"),
+		"glpi_infocoms"=>array("FK_enterprise","budget"),
+		"glpi_monitors"=>array("type","model","FK_users","FK_groups"),
+		"glpi_networking"=>array("type","model","firmware","FK_users","FK_groups"),
+		"glpi_networking_ports"=>array("iface","netpoint"),
+		"glpi_ocs_link"=>array("ocs_server_id"),
+		"glpi_peripherals"=>array("model","FK_users","FK_groups"),
+		"glpi_phones"=>array("model","FK_users","FK_groups"),
+		"glpi_printers"=>array("type","model","FK_users","FK_groups"),
+		"glpi_software"=>array("location","platform","FK_users","FK_groups"),
+		"glpi_tracking"=>array("computer"),
+		"glpi_users_groups"=>array("FK_users","FK_groups"),
+		);
+
+	foreach ($intnull as $table => $fields){
+		foreach ($fields as $field){
+			$query = "UPDATE `$table` SET `$field`=0 WHERE $field IS NULL;";
+			$DB->query($query) or die("0.7 update datas in $table for NULL values " . $DB->error());
+			$query = "ALTER TABLE `$table` CHANGE `$field` `$field` INT NOT NULL DEFAULT '0'";
+			$DB->query($query) or die("0.7 alter $field in $table" . $DB->error());
+		}
+	}
 
 } // fin 0.7 #####################################################################################
 ?>
