@@ -153,7 +153,7 @@ class Mailing
 								break;
 								// AUTHOR SEND
 							case AUTHOR_MAILING :
-								if ($this->job->fields["emailupdates"]=="yes"&&isValidEmail($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
+								if ($this->job->fields["emailupdates"]&&isValidEmail($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
 									$emails[]=$this->job->fields["uemail"];
 								}
 								break;
