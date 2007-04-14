@@ -94,7 +94,7 @@ function showConsumables ($tID,$show_old=0) {
 	
 	if ($cartype->getFromDB($tID)){
 
-		$query = "SELECT count(ID) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
+		$query = "SELECT count(*) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
 	
 		if ($result = $DB->query($query)) {
 			if ($DB->result($result,0,0)!=0) { 
@@ -364,7 +364,7 @@ function showConsumableSummary($target){
 
 	if (!haveRight("consumable","r")) return false;
 
-	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type, id_user FROM glpi_consumables WHERE date_out IS NOT NULL GROUP BY id_user,FK_glpi_consumables_type";
+	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type, id_user FROM glpi_consumables WHERE date_out IS NOT NULL GROUP BY id_user,FK_glpi_consumables_type";
 	$used=array();
 
 	if ($result=$DB->query($query)){
@@ -373,7 +373,7 @@ function showConsumableSummary($target){
 				$used[$data["id_user"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
 	}
 
-	$query = "SELECT COUNT(ID) AS COUNT, FK_glpi_consumables_type FROM glpi_consumables WHERE date_out IS NULL GROUP BY FK_glpi_consumables_type";
+	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type FROM glpi_consumables WHERE date_out IS NULL GROUP BY FK_glpi_consumables_type";
 	$new=array();
 
 	if ($result=$DB->query($query)){
