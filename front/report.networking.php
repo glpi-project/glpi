@@ -76,12 +76,12 @@ echo "</table>";
 echo "</form>";
 
 
-if (countElementsInTable("glpi_dropdown_netpoint")>0){
+if (countElementsInTableForMyEntities("glpi_dropdown_netpoint")>0){
 	echo "<form name='form3' method='post' action='report.netpoint.list.php'>";
 	echo "<table class='tab_cadre'  width='500'>";
 	echo "<tr class='tab_bg_1'><td>".$LANG["reports"][42]."</td>";
 	echo "<td>";
-	dropdownValue("glpi_dropdown_netpoint", "prise", "");
+	dropdownNetpoint("prise");	
 	echo "</td><td align='center' width='120'>";
 	echo "<input type='submit' value='".$LANG["reports"][15]."' class='submit'>";
 	echo "</td></tr>";
