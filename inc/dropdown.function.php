@@ -63,9 +63,6 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1) {
  * Print out an HTML "<select>" for a dropdown with preselected value
  *
  *
- *
- *
- *
  * @param $table the dropdown table from witch we want values on the select
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
@@ -180,6 +177,99 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 
 	if ($table=="glpi_enterprises"){
 		echo getEnterpriseLinks($value);	
+	}
+
+	return $rand;
+}
+
+/**
+ * Print out an HTML "<select>" for a dropdown with preselected value
+ *
+ *
+ * @param $table the dropdown table from witch we want values on the select
+ * @param $myname the name of the HTML select
+ * @param $value the preselected value we want
+ * @param $location default location for search
+ * @param $display_comments display the comments near the dropdown
+ * @param $entity_restrict Restrict to a defined entity
+ * @return nothing (display the select box)
+ *
+ */
+function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$entity_restrict=-1) {
+
+	global $DB,$CFG_GLPI,$LANG;
+
+	$rand=mt_rand();
+
+	displaySearchTextAjaxDropdown($myname.$rand);
+	$name="------";
+	$comments="";
+	$limit_length=$CFG_GLPI["dropdown_limit"];
+	if (empty($value)) $value=0;
+	if ($value>0){
+		$tmpname=getDropdownName("glpi_dropdown_netpoint",$value,1);
+		if ($tmpname["name"]!="&nbsp;"){
+			$name=$tmpname["name"];
+			$comments=$tmpname["comments"];
+			$limit_length=max(strlen($name),$CFG_GLPI["dropdown_limit"]);
+		}
+	}
+
+	echo "<script type='text/javascript' >\n";
+	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
+	echo "      function(element, value) {\n";
+	echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownNetpoint.php',{asynchronous:true, evalScripts:true, \n";
+	echo "           onComplete:function(request)\n";
+	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
+	echo "           onLoading:function(request)\n";
+	echo "            {Element.show('search_spinner_$myname$rand');},\n";
+	echo "           method:'post', parameters:'searchText='+value+'&value=$value&myname=$myname&limit=$limit_length&comments=$display_comments&rand=$rand&location=$location&entity_restrict=$entity_restrict'\n";
+	echo "})})\n";
+	echo "</script>\n";
+
+	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+
+	$nb=0;
+	if ($CFG_GLPI["use_ajax"]){
+		$nb=countElementsInTableForEntity("glpi_dropdown_netpoint",$entity_restrict);
+	}
+	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
+		echo "<script type='text/javascript' >\n";
+		echo "Element.hide('search_spinner_$myname$rand');";
+		echo "Element.hide('search_$myname$rand');";
+		echo "</script>\n";
+	}
+
+	echo "<span id='results_$myname$rand'>\n";
+
+	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
+		$_POST["myname"]=$myname;
+		$_POST["value"]=$value;
+		$_POST["rand"]=$rand;
+		$_POST["comments"]=$display_comments;
+		$_POST["entity_restrict"]=$entity_restrict;
+		$_POST["limit"]=$limit_length;
+		$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
+		include (GLPI_ROOT."/ajax/dropdownNetpoint.php");
+	} else {
+		echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
+	}
+	echo "</span>\n";	
+
+	$comments_display="";
+	$comments_display2="";
+	if ($display_comments) {
+		$comments_display=" onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
+		$comments_display2="<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
+	}
+
+	$which="";
+
+	if ($display_comments){
+		echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display ";
+		if (haveRight("entity_dropdown","w")) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$myname$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+		echo ">";
+		echo $comments_display2;
 	}
 
 	return $rand;
