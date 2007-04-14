@@ -396,15 +396,20 @@ function replaceDropDropDown($input) {
 
 	$query = "delete from " . $input["tablename"] . " where ID = '" . $input["oldID"] . "'";
 	$DB->query($query);
+	// Need to be done on entity class
+	if ($input["tablename"]=="glpi_entities"){
+		$query = "delete from glpi_entities_data where FK_entities = '" . $input["oldID"] . "'";
+		$DB->query($query);
+	}
 }
 
 function showDeleteConfirmForm($target, $table, $ID) {
-	global $DB, $LANG;
+	global $DB, $LANG,$CFG_GLPI;
 
 	if (!haveRight("dropdown", "w"))
 		return false;
 
-	if ($table == "glpi_dropdown_locations") {
+	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
 
 		$query = "Select count(*) as cpt FROM $table where parentID = '" . $ID . "'";
 		$result = $DB->query($query);
@@ -412,15 +417,8 @@ function showDeleteConfirmForm($target, $table, $ID) {
 			echo "<div align='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
 			return;
 		}
-	}
 
-	if ($table == "glpi_dropdown_kbcategories") {
-		$query = "Select count(*) as cpt FROM $table where parentID = '" . $ID . "'";
-		$result = $DB->query($query);
-		if ($DB->result($result, 0, "cpt") > 0) {
-			echo "<div align='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
-			return;
-		} else {
+		if ($table == "glpi_dropdown_kbcategories") {
 			$query = "Select count(*) as cpt FROM glpi_kbitems where categoryID = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0) {
@@ -430,22 +428,25 @@ function showDeleteConfirmForm($target, $table, $ID) {
 		}
 	}
 
+
+
 	echo "<div align='center'>";
 	echo "<p style='color:red'>" . $LANG["setup"][63] . "</p>";
-	echo "<p>" . $LANG["setup"][64] . "</p>";
 
-	echo "<form action=\"" . $target . "\" method=\"post\">";
-	echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
-	echo "<input type=\"hidden\" name=\"ID\" value=\"" . $ID . "\"  />";
-	echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
-	echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
-
-	echo "<table class='tab_cadre'><tr><td>";
-	echo "<input class='button' type=\"submit\" name=\"delete\" value=\"" . $LANG["buttons"][2] . "\" /></td>";
-
-	echo "<form action=\" " . $target . "\" method=\"post\">";
-	echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG["buttons"][34] . "\" /></td></tr></table>";
-	echo "</form>";
+	if ($table!="glpi_entities"){
+		echo "<p>" . $LANG["setup"][64] . "</p>";
+		echo "<form action=\"" . $target . "\" method=\"post\">";
+		echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
+		echo "<input type=\"hidden\" name=\"ID\" value=\"" . $ID . "\"  />";
+		echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
+		echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
+	
+		echo "<table class='tab_cadre'><tr><td>";
+		echo "<input class='button' type=\"submit\" name=\"delete\" value=\"" . $LANG["buttons"][2] . "\" /></td>";
+	
+		echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG["buttons"][34] . "\" /></td></tr></table>";
+		echo "</form>";
+	}
 	echo "<p>" . $LANG["setup"][65] . "</p>";
 	echo "<form action=\" " . $target . "\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
@@ -453,7 +454,8 @@ function showDeleteConfirmForm($target, $table, $ID) {
 	dropdownNoValue($table, "newID", $ID);
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
 	echo "<input type=\"hidden\" name=\"oldID\" value=\"" . $ID . "\"  />";
-	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"" . $LANG["buttons"][39] . "\" /></td></tr></table>";
+	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"" . $LANG["buttons"][39] . "\" /></td><td>";
+	echo "<input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG["buttons"][34] . "\" /></td></tr></table>";
 	echo "</form>";
 
 	echo "</div>";

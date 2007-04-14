@@ -1273,7 +1273,9 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		echo "<option value=\"purge\">".$LANG["buttons"][22]."</option>";
 		echo "<option value=\"restore\">".$LANG["buttons"][21]."</option>";
 	} else {
-		echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
+		if ($device_type!=ENTITY_TYPE){
+			echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
+		}
 		if ($device_type==PHONE_TYPE || $device_type==PRINTER_TYPE
 			|| $device_type==PERIPHERAL_TYPE || $device_type==MONITOR_TYPE){
 			echo "<option value=\"connect\">".$LANG["buttons"][9]."</option>";
