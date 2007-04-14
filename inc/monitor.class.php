@@ -276,20 +276,9 @@ class Monitor extends CommonDBTM {
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'";
 	
-				if(haveRight("ocsng","w") || haveRight("sync_ocsng","w") || haveRight("view_ocsng","r"))
-				{
-					echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
-					if(haveRight("ocsng","w") || haveRight("sync_ocsng","w"))
-						globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
-					else
-					{
-							if (!$this->fields["is_global"]) 
-								echo $LANG["peripherals"][32];
-							else  
-								echo$LANG["peripherals"][31];
-					}
-					echo "</td></tr>";
-				}
+				echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
+				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["monitors_management_restrict"]);
+				echo "</td></tr>";
 					
 				echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
 				dropdownValue("glpi_type_monitors", "type", $this->fields["type"]);

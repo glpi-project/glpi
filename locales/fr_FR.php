@@ -1381,7 +1381,7 @@ $LANG["setup"][180]="Utiliser TLS";
 $LANG["setup"][181]="Fonction ldap_start_tls inexistante";
 $LANG["setup"][182]="Url de retour à la deconnexion (logout)";
 $LANG["setup"][183]="Utiliser le cache";
-
+$LANG["setup"][184]="Restrictions";
 
 $LANG["setup"][201]="Configuration de la fonction";
 $LANG["setup"][202]="Utiliser le suivi par mail";
@@ -1437,6 +1437,14 @@ $LANG["setup"][259]="Appartenance à des groupes";
 $LANG["setup"][260]="Attribut utilisateur indiquant ses groupes";
 $LANG["setup"][261]="DN du groupe";
 $LANG["setup"][262]="Utiliser le DN pour la recherche";
+
+$LANG["setup"][270]="Restrictions sur la gestion manuelle des élèments";
+$LANG["setup"][271]="Restreindre la gestion des moniteurs";
+$LANG["setup"][272]="Restreindre la gestion des périphériques";
+$LANG["setup"][273]="Restreindre la gestion des téléphones";
+$LANG["setup"][274]="pour ajout manuel";
+$LANG["setup"][275]="Restreindre la gestion des imprimantes";
+
 
 $LANG["setup"][300]="Vérifier si une nouvelle version est disponible";
 $LANG["setup"][301]="Une nouvelle version est disponible :";

@@ -1038,11 +1038,31 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 alter glpi_computers field use_dn " . $DB->error());
 	}
 
+	if (!FieldExists("glpi_config", "monitors_management_restrict")) {
+		$query = "ALTER TABLE `glpi_config` ADD `monitors_management_restrict` INT( 1 ) NOT NULL DEFAULT '2';";
+		$DB->query($query) or die("0.7 alter glpi_computers field monitors_management_restrict " . $DB->error());
+	}
 
+	if (!FieldExists("glpi_config", "phones_management_restrict")) {
+		$query = "ALTER TABLE `glpi_config` ADD `phones_management_restrict` INT( 1 ) NOT NULL DEFAULT '2';";
+		$DB->query($query) or die("0.7 alter glpi_computers field phones_management_restrict " . $DB->error());
+	}
+
+	if (!FieldExists("glpi_config", "peripherals_management_restrict")) {
+		$query = "ALTER TABLE `glpi_config` ADD `peripherals_management_restrict` INT( 1 ) NOT NULL DEFAULT '2';";
+		$DB->query($query) or die("0.7 alter glpi_computers field peripherals_management_restrict " . $DB->error());
+	}
+	
+	if (!FieldExists("glpi_config", "printers_management_restrict")) {
+		$query = "ALTER TABLE `glpi_config` ADD `printers_management_restrict` INT( 1 ) NOT NULL DEFAULT '2';";
+		$DB->query($query) or die("0.7 alter glpi_computers field printers_management_restrict " . $DB->error());
+	}
+	
 	if (FieldExists("glpi_users", "location")) {
 		$query = "ALTER TABLE `glpi_users` DROP `location`;";
 		$DB->query($query) or die("0.7 drop location from glpi_users " . $DB->error());
 	}
+	
 	$intnull=array("glpi_alerts" => array("device_type","FK_device","type"),
 		"glpi_cartridges_type"=>array("tech_num"),
 		"glpi_computers"=>array("FK_users","FK_groups"),

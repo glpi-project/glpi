@@ -286,7 +286,7 @@ class Peripheral  extends CommonDBTM  {
 				echo "<table cellpadding='1' cellspacing='0' border='0'>";
 	
 				echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
-				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"]);
+				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["peripherals_management_restrict"]);
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][17].": 	</td><td>";
