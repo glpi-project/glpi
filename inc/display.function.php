@@ -1869,6 +1869,7 @@ function showProfileSelecter(){
 	} //else echo "only one entity -> no select to print";
 	
 
+/*
 	echo "<li>";
 	echo "<div>";
 	echo "<span onclick=\"cleandisplay('show_entities');\">".$_SESSION["glpiactive_entity_name"]."</span>";
@@ -1878,7 +1879,7 @@ function showProfileSelecter(){
 	displayActiveEntities($_SESSION['glpi_entities_tree'],"activeentity");
 	echo "</div>";
 	echo "</li>";
-
+*/
 
 
 } 
