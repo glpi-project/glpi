@@ -1437,6 +1437,7 @@ $LANG["setup"][259]="Appartenance à des groupes";
 $LANG["setup"][260]="Attribut utilisateur indiquant ses groupes";
 $LANG["setup"][261]="DN du groupe";
 $LANG["setup"][262]="Utiliser le DN pour la recherche";
+$LANG["setup"][263]="Filtre de recherche des utilisateurs";
 
 $LANG["setup"][270]="Restrictions sur la gestion manuelle des élèments";
 $LANG["setup"][271]="Restreindre la gestion des moniteurs";
