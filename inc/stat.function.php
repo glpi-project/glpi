@@ -52,148 +52,41 @@ function getStatsItems($date1,$date2,$type){
 
 	switch ($type){
 		case "technicien":
-			$nomTech = getNbIntervTech($date1,$date2);
-
-
-		$i=0;
-		if (is_array($nomTech))
-			foreach($nomTech as $key){
-				$val[$i]["ID"]=$key["assign"];
-				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$key["assign"]."'>";
-				if (empty($key["realname"]))
-					$val[$i]["link"].=$key["name"];
-				else {
-					$val[$i]["link"].=$key["realname"];
-					if (!empty($key["firstname"]))	
-						$val[$i]["link"].=" ".$key["firstname"];
-				}
-				$val[$i]["link"].="</a>";
-				$i++;
-			}
+			$val = getNbIntervTech($date1,$date2);
 		break;
 		case "technicien_followup":
-			$nomTech = getNbIntervTechFollowup($date1,$date2);
-
-
-		$i=0;
-		if (is_array($nomTech))
-			foreach($nomTech as $key){
-				$val[$i]["ID"]=$key["author"];
-				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$key["author"]."'>";
-				if (empty($key["realname"]))
-					$val[$i]["link"].=$key["name"];
-				else {
-					$val[$i]["link"].=$key["realname"];
-					if (!empty($key["firstname"]))	
-						$val[$i]["link"].=" ".$key["firstname"];
-				}
-				$val[$i]["link"].="</a>";
-				$i++;
-			}
+			$val = getNbIntervTechFollowup($date1,$date2);
 		break;
 		case "enterprise":
-			$nomEnt = getNbIntervEnterprise($date1,$date2);
-
-		$i=0;
-		if (is_array($nomEnt))
-			foreach($nomEnt as $key){
-				$val[$i]["ID"]=$key["assign_ent"];
-				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$key["assign_ent"]."'>";
-				$val[$i]["link"].=$key["name"];
-				$val[$i]["link"].="</a>";
-				$i++;
-			}
+			$val = getNbIntervEnterprise($date1,$date2);
 
 		break;
 		case "user":
-			$nomUsr = getNbIntervAuthor($date1,$date2);
-
-		$i=0;
-		if (is_array($nomUsr))
-			foreach($nomUsr as $key){
-				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$key["ID"]."'>";
-				if (empty($key["realname"]))
-					$val[$i]["link"].=$key["name"];
-				else {
-					$val[$i]["link"].=$key["realname"];
-					if (!empty($key["firstname"]))	
-						$val[$i]["link"].=" ".$key["firstname"];
-				}
-				$val[$i]["link"].="</a>";
-				$i++;
-			}
-
+			$val = getNbIntervAuthor($date1,$date2);
 		break;
 		case "recipient":
-			$nomUsr = getNbIntervRecipient($date1,$date2);
-
-		$i=0;
-		if (is_array($nomUsr))
-			foreach($nomUsr as $key){
-				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$key["ID"]."'>";
-				if (empty($key["realname"]))
-					$val[$i]["link"].=$key["name"];
-				else {
-					$val[$i]["link"].=$key["realname"];
-					if (!empty($key["firstname"]))	
-						$val[$i]["link"].=" ".$key["firstname"];
-				}
-				$val[$i]["link"].="</a>";
-				$i++;
-			}
-
+			$val = getNbIntervRecipient($date1,$date2);
 		break;
 		case "category":
-			$nomUsr = getNbIntervCategory();
-		$i=0;
-		if (is_array($nomUsr))
-			foreach($nomUsr as $key){
-				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]=$key["category"];
-				$i++;
-			}
-
+			$val = getNbIntervCategory();
 		break;
 		case "group":
-			$nomUsr = getNbIntervGroup();
-		$i=0;
-		if (is_array($nomUsr))
-			foreach($nomUsr as $key){
-				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]=$key["name"];
-				$i++;
-			}
+			$val = getNbIntervGroup();
 
 		break;
 
 		case "priority":
-			$nomUsr = getNbIntervPriority();
-		$i=0;
-		if (is_array($nomUsr))
-			foreach($nomUsr as $key){
-				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]=$key["priority"];
-				$i++;
-			}
+			$val = getNbIntervPriority();
 
 		break;
 		case "request_type":
-			$nomUsr = getNbIntervRequestType();
-		$i=0;
-		if (is_array($nomUsr))
-			foreach($nomUsr as $key){
-				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]=$key["request_type"];
-				$i++;
-			}
+			$val = getNbIntervRequestType();
 
 		break;
 		case "glpi_type_computers":
-			case "glpi_dropdown_model":
-			case "glpi_dropdown_os":
-			case "glpi_dropdown_locations":
+		case "glpi_dropdown_model":
+		case "glpi_dropdown_os":
+		case "glpi_dropdown_locations":
 			$nomUsr = getNbIntervDropdown($type);
 
 		$i=0;
@@ -345,15 +238,16 @@ function getNbIntervTech($date1,$date2)
 	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
 	$query.= " order by realname, firstname, name";
 	$result = $DB->query($query);
+	$tab=array();
+
 	if($DB->numrows($result) >=1) {
-		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i] = $line;
-			$i++;
+			$tmp['ID']= $line["assign"];
+			$tmp['link']=formatUserName($line["assign"],$line["name"],$line["realname"],$line["firstname"],1);
+			$tab[]=$tmp;
 		}
-		return $tab;
 	}
-	else return 0;	
+	return $tab;
 }
 
 //return an array from tracking
@@ -371,17 +265,18 @@ function getNbIntervTechFollowup($date1,$date2)
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
-	$query.= " order by firstname, realname, name";
+	$query.= " order by realname,firstname, name";
 	$result = $DB->query($query);
+	$tab=array();
+
 	if($DB->numrows($result) >=1) {
-		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i] = $line;
-			$i++;
+			$tmp['ID']= $line["author"];
+			$tmp['link']=formatUserName($line["author"],$line["name"],$line["realname"],$line["firstname"],1);
+			$tab[]=$tmp;
 		}
-		return $tab;
 	}
-	else return 0;	
+	return $tab;
 }
 
 
@@ -389,28 +284,31 @@ function getNbIntervTechFollowup($date1,$date2)
 //it contains the distinct users witch have any intervention assigned to.
 function getNbIntervEnterprise($date1,$date2)
 {
-	global $DB;
+	global $DB,$CFG_GLPI;
 	$query = "SELECT distinct glpi_tracking.assign_ent as assign_ent, glpi_enterprises.name as name";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_enterprises  ON (glpi_enterprises.ID=glpi_tracking.assign_ent) ";
 
-	$query.= " WHERE glpi_tracking.assign_ent != 0 ";
+	$query.= " WHERE '1'='1' ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
-	$query.= " order by name";
-
+	$query.= " ORDER BY name";
+	$tab=array();
 	$result = $DB->query($query);
-	if($DB->numrows($result) >=1) {
-		$i = 0;
+	if($DB->numrows($result) >0) {
+
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i] = $line;
-			$i++;
+			$tmp["ID"]=$line["assign_ent"];
+			$tmp["link"]="<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$line["assign_ent"]."'>";
+			$tmp["link"].=$line["name"];
+			$tmp["link"].="</a>";
+			$tab[]=$tmp;
 		}
-		return $tab;
+		
 	}
-	else return 0;	
+	return $tab;
 }
 
 //return an array from tracking
@@ -420,19 +318,18 @@ function getNbIntervDropdown($dropdown)
 	global $DB,$CFG_GLPI;
 	$field="name";
 	if (in_array($dropdown,$CFG_GLPI["dropdowntree_tables"])) $field="completename";
-	$query = "SELECT * from ". $dropdown ." order by $field";
-
+	$query = "SELECT * FROM ". $dropdown ." ORDER BY $field";
+	$tab=array();
 	$result = $DB->query($query);
-	if($DB->numrows($result) >=1) {
-		$i = 0;
+	if($DB->numrows($result) >0) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i]['ID'] = $line['ID'];
-			$tab[$i]['name'] = $line[$field];
-			$i++;
+			$tmp['ID']= $line["ID"];
+			$tmp['link']=$line[$field];
+			$tab[]=$tmp;
 		}
-		return $tab;
+		
 	}
-	else return 0;
+	return $tab;
 
 }
 
@@ -449,15 +346,15 @@ function getNbIntervAuthor($date1,$date2)
 
 	$query.= " order by realname, firstname, name";
 	$result = $DB->query($query);
+	$tab=array();
 	if($DB->numrows($result) >=1) {
-		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i] = $line;
-			$i++;
+			$tmp['ID']= $line["ID"];
+			$tmp['link']=formatUserName($line["ID"],$line["name"],$line["realname"],$line["firstname"],1);
+			$tab[]=$tmp;
 		}
-		return $tab;
 	}
-	else return 0;	
+	return $tab;
 
 }
 
@@ -466,23 +363,23 @@ function getNbIntervAuthor($date1,$date2)
 function getNbIntervRecipient($date1,$date2)
 {	
 	global $DB;
-	$query = "SELECT DISTINCT glpi_tracking.recipient as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.recipient)";
+	$query = "SELECT DISTINCT glpi_tracking.recipient as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking LEFT JOIN glpi_users ON (glpi_users.ID=glpi_tracking.recipient)";
 	$query.= " WHERE '1'='1' ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
 
-	$query.= " order by realname, firstname, name";
+	$query.= " ORDER BY realname, firstname, name";
 	$result = $DB->query($query);
+	$tab=array();
 	if($DB->numrows($result) >=1) {
-		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i] = $line;
-			$i++;
+			$tmp['ID']= $line["ID"];
+			$tmp['link']=formatUserName($line["ID"],$line["name"],$line["realname"],$line["firstname"],1);
+			$tab[]=$tmp;
 		}
-		return $tab;
 	}
-	else return 0;	
+	return $tab;
 
 }
 //return an array from tracking
@@ -493,18 +390,16 @@ function getNbIntervPriority()
 
 	$query = "SELECT DISTINCT priority FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." order by priority";
 	$result = $DB->query($query);
-
+	$tab=array();
 	if($DB->numrows($result) >=1) {
 		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i]["ID"] = $line["priority"];
-			$tab[$i]["priority"] = getPriorityName($line["priority"]);
-			$i++;
+			$tmp['ID']= $line["priority"];
+			$tmp['link']=getPriorityName($line["priority"]);
+			$tab[]=$tmp;
 		}
-
-		return $tab;
 	}
-	else return 0;	
+	return $tab;	
 
 }
 
@@ -513,19 +408,16 @@ function getNbIntervRequestType()
 	global $DB;
 	$query = "SELECT DISTINCT request_type FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." order by request_type";
 	$result = $DB->query($query);
-
+	$tab=array();
 	if($DB->numrows($result) >=1) {
-		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i]["ID"] = $line["request_type"];
-			$tab[$i]["request_type"] = getRequestTypeName($line["request_type"]);
-			$i++;
+			$tmp['ID']= $line["request_type"];
+			$tmp['link']=getRequestTypeName($line["request_type"]);
+			$tab[]=$tmp;
 		}
-
-		return $tab;
 	}
-	else return 0;	
 
+	return $tab;
 }
 
 //return an array from tracking
@@ -535,19 +427,21 @@ function getNbIntervCategory()
 	global $DB;
 	$query = "SELECT id as ID, completename as category FROM glpi_dropdown_tracking_category order by completename";
 	$result = $DB->query($query);
+	$tab=array();
+	$tmp["ID"] = 0;
+	$tmp["link"] = '';
+	$tab[]=$tmp;
 
 	if($DB->numrows($result) >=1) {
-		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i]["ID"] = $line["ID"];
-			$tab[$i]["category"] = $line["category"];
-			$i++;
+			$tmp['ID']= $line["ID"];
+			$tmp['link']=$line["category"];
+			$tab[]=$tmp;
 		}
 
-		return $tab;
+		
 	}
-	else return 0;	
-
+	return $tab;
 }
 
 //return an array from tracking
@@ -555,21 +449,22 @@ function getNbIntervCategory()
 function getNbIntervGroup()
 {	
 	global $DB;
-	$query = "SELECT id as ID, name FROM glpi_groups ".getEntitiesRestrictRequest("WHERE","glpi_groups")." order by name";
+	$query = "SELECT id AS ID, name FROM glpi_groups ".getEntitiesRestrictRequest("WHERE","glpi_groups")." ORDER BY name";
 	$result = $DB->query($query);
+	$tab=array();
+	$tmp["ID"] = 0;
+	$tmp["link"] = '';
+	$tab[]=$tmp;
 
 	if($DB->numrows($result) >=1) {
-		$i = 0;
 		while($line = $DB->fetch_assoc($result)) {
-			$tab[$i]["ID"] = $line["ID"];
-			$tab[$i]["name"] = $line["name"];
-			$i++;
+			$tmp['ID']= $line["ID"];
+			$tmp['link']=$line["name"];
+			
+			$tab[]=$tmp;
 		}
-
-		return $tab;
 	}
-	else return 0;	
-
+	return $tab;
 }
 
 //Make a good string from the unix timestamp $sec
