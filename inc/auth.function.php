@@ -494,10 +494,12 @@ function changeProfile($ID) {
 					$_SESSION['glpiactiveentities'][$val['ID']] = $val['ID'];
 				}
 			} else {
-				$entities = getSonsOfTreeItem("glpi_entities", $val['ID']);
+				$entitytree = getTreeForItem("glpi_entities", $val['ID']);
+				$_SESSION['glpi_entities_tree'][$val['ID']]=$entitytree;
+				$entities = contructListFromTree($entitytree);
 				if (count($entities)) {
 					foreach ($entities as $key2 => $val2) {
-						$_SESSION['glpiactiveentities'][$val2] = $val2;
+						$_SESSION['glpiactiveentities'][$key2] = $key2;
 					}
 				}
 			}
