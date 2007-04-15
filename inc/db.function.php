@@ -319,6 +319,101 @@ function getSonsOfTreeItem($table,$IDf){
 
 }
 
+/**
+ * Get the sons of an item in a tree dropdown
+ *
+ * @param $table
+ * @param $IDf The ID of the father
+ * @return array of IDs of the sons
+ */
+function getTreeForItem($table,$IDf){
+	global $DB;
+
+	// IDs to be present in the final array
+	$id_found=array();
+
+	// current ID found to be added
+	$found=array();
+	// First request init the  varriables
+	$query="SELECT * 
+		FROM $table 
+		WHERE parentID = '$IDf'";
+
+	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
+		while ($row=$DB->fetch_array($result)){
+			$id_found[$row['ID']]['parent']=$IDf;
+			$id_found[$row['ID']]['name']=$row['name'];
+			array_push($found,$row['ID']);
+		}
+	} else return $id_found;
+
+	// Get the leafs of previous founded item
+	while (count($found)>0){
+		$first=true;
+		// Get next elements
+		$query="SELECT * 
+			FROM $table 
+			WHERE ";
+		foreach ($found as $key => $val){
+			if (!$first) $query.=" OR ";
+			else $first=false;
+			$query.= " parentID = '$val' ";
+		}
+
+		// CLear the found array
+		unset($found);
+		$found=array();
+
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			while ($row=$DB->fetch_array($result)){
+				if (!in_array($row['ID'],$id_found)){
+					$id_found[$row['ID']]['parent']=$val;
+					$id_found[$row['ID']]['name']=$row['name'];
+					array_push($found,$row['ID']);
+				}
+			}		
+		}
+	}
+	$tree[$IDf]['name']=getDropdownName($table,$IDf);
+	$tree[$IDf]['tree']=contructTreeFromList($id_found,$IDf);
+	return $tree;
+
+}
+
+
+function contructTreeFromList($list,$root){
+	$tree=array();
+	
+
+	foreach ($list as $ID => $data){
+		if ($data['parent']==$root){
+			unset($list[$ID]);
+			$tree[$ID]['name']=$data['name'];
+			$tree[$ID]['tree']=contructTreeFromList($list,$ID);
+		}
+	}
+	return $tree;
+
+}
+
+function contructListFromTree($tree,$parent=0){
+	$list=array();
+
+	foreach ($tree as $root => $data){
+		$list[$root]=$parent;
+		if (is_array($data['tree'])&&count($data['tree'])){
+			foreach ($data['tree'] as $ID => $underdata){
+				$list[$ID]=$root;
+				if (is_array($underdata['tree'])&&count($underdata['tree'])){
+					$list=array_merge($list,contructListFromTree($underdata['tree'],$ID));
+				}
+			}
+		}
+	}
+	return $list;
+
+}
 
 /**
  * Get the equivalent search query using ID of soons that the search of the father's ID argument
