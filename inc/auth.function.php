@@ -482,7 +482,7 @@ function initEntityProfiles($userID) {
  * @return Nothing 
  */
 function changeProfile($ID) {
-	global $CFG_GLPI;
+	global $CFG_GLPI,$LANG;
 	if (isset ($_SESSION['glpiprofiles'][$ID]) && count($_SESSION['glpiprofiles'][$ID]['entities'])) {
 		// glpiactiveprofile -> active profile
 		$_SESSION['glpiactiveprofile'] = $_SESSION['glpiprofiles'][$ID];
@@ -492,6 +492,12 @@ function changeProfile($ID) {
 			if (!$val['recursive']) {
 				if (!array_search($val["ID"], $_SESSION['glpiactiveentities'])) {
 					$_SESSION['glpiactiveentities'][$val['ID']] = $val['ID'];
+					$_SESSION['glpi_entities_tree'][$val['ID']]['tree'] = array();
+					if ($val['ID']==0){
+						$_SESSION['glpi_entities_tree'][$val['ID']]['name'] = $LANG["entity"][2];
+					} else {
+						$_SESSION['glpi_entities_tree'][$val['ID']]['name'] = $val['name'];
+					}
 				}
 			} else {
 				$entitytree = getTreeForItem("glpi_entities", $val['ID']);
@@ -518,6 +524,7 @@ function changeProfile($ID) {
  */
 function changeActiveEntity($ID) {
 	$_SESSION["glpiactive_entity"] = $ID;
+	$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$ID);
 	loadGroups();
 	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 }
