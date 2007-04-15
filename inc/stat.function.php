@@ -232,7 +232,7 @@ function getNbIntervTech($date1,$date2)
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_tracking.assign) ";
 
-	$query.= " WHERE glpi_tracking.assign != 0 ";
+	$query.= " WHERE '1'='1' ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
@@ -260,7 +260,7 @@ function getNbIntervTechFollowup($date1,$date2)
 	$query.= " LEFT JOIN glpi_followups ON (glpi_tracking.ID = glpi_followups.tracking) ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_followups.author) ";
 
-	$query.= " WHERE glpi_followups.author != 0 ";
+	$query.= " WHERE '1'='1' ";
 	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");

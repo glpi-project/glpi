@@ -581,7 +581,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 		$temp=$login;
 	}
 
-	if (strlen($temp)==0||($CFG_GLPI["view_ID"]&&$ID>0)){
+	if ($ID>0&&(strlen($temp)==0||$CFG_GLPI["view_ID"])){
 		$viewID="&nbsp;($ID)";
 	}
 
