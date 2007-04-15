@@ -86,7 +86,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 			}
 
-		};
+		}
 
 	}
 
