@@ -710,7 +710,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<li>";
 
 			// Display MENU ALL
-			echo "<div class='over_link' id='show_all_menu'onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
+			echo "<div class='over_link' id='show_all_menu' onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
 			$items_per_columns=15;
 			$i=-1;
 			echo "<table><tr><td valign='top'><table>";
@@ -772,10 +772,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			timeoutglobalvar = setTimeout(function(){afterView(document.getElementById('show_all_menu'))},5000);
 */
 		echo "</li>";
-
-			
+		showProfileSelecter();	
 		echo "</ul>";	
-		echo showProfileSelecter();	
 
 		echo "	</div>";
 			
@@ -993,9 +991,8 @@ function helpHeader($title,$url) {
 		echo "<div id='c_ssmenu2' >";
 		echo "<ul>";
 		echo "	<li><a href='#' title='' >Helpdesk > </a></li>";
-		//echo "	<li>Helpdesk</li>";
+		showProfileSelecter();	
 		echo "</ul>";	
-		echo showProfileSelecter();	
 		echo "	</div>";
 			
 		echo "</div>\n"; // fin header
@@ -1853,23 +1850,35 @@ function showProfileSelecter(){
 	global $CFG_GLPI;
 
 	if (count($_SESSION["glpiprofiles"])>1){
-		echo '<div style=\'float:right;\'><form name="form" method="post" action="'.$CFG_GLPI['root_doc'].'/login.php">';
+		echo '<li><form name="form" method="post" action="'.$CFG_GLPI['root_doc'].'/login.php">';
 		echo '<select name="newprofile" onChange="submit()">';
 		foreach ($_SESSION["glpiprofiles"] as $key => $val){
 			echo '<option value="'.$key.'" '.($_SESSION["glpiactiveprofile"]["ID"]==$key?'selected':'').'>'.$val['name'].'</option>';
 		}
 		echo '</select>';
 		echo '</form>';
-		echo "</div>";
+		echo "</li>";
 
 
 	} //else echo "only one profile -> no select to print";
 	
 	if (count($_SESSION['glpiactiveentities'])>1){
-		echo "<div style='float:right;'>";
+		echo "<li>";
 			dropdownActiveEntities("activeentity");
-		echo "</div>";
+		echo "</li>";
 	} //else echo "only one entity -> no select to print";
+	
+
+	echo "<li>";
+	echo "<div>";
+	echo "<span onclick=\"cleandisplay('show_entities');\">".$_SESSION["glpiactive_entity_name"]."</span>";
+	echo "</div>";
+
+	echo "<div class='over_link' id='show_entities' onMouseOver=\"cleandisplay('show_entities');\" onMouseOut=\"cleanhide('show_entities');\">";
+	displayActiveEntities($_SESSION['glpi_entities_tree'],"activeentity");
+	echo "</div>";
+	echo "</li>";
+
 
 
 } 

@@ -1581,6 +1581,39 @@ function dropdownLanguages($myname,$value){
 	echo "</select>";
 }
 
+function displayActiveEntities($myname){
+	
+	if (is_array($_SESSION['glpi_entities_tree'])&&count($_SESSION['glpi_entities_tree'])){
+		foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
+			echo "<ul>";
+			displayEntityTree($myname,$tree);
+			echo "</ul>";
+		}
+	} 
+}
+
+function displayEntityTree($myname,$tree){
+
+	if (count($tree)){
+		foreach ($tree as $ID => $data){
+			if (isset($data['name'])){
+				echo "<li>".$data['name'];
+				if (isset($data['tree'])&&count($data['tree'])){
+					echo "<ul>";
+					displayEntityTree($myname,$data['tree']);
+					echo "</ul>";
+				}
+				echo "</li>";
+				
+			}
+		}
+
+
+	}
+}
+
+	
+
 function dropdownActiveEntities($myname){
 	global $DB,$CFG_GLPI;
 
