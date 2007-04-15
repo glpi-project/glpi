@@ -71,7 +71,12 @@ if (isset ($_GET['next'])) {
 		}
 	}
 
-	if (!isset ($_POST["sync_ok"])) {
+if (isset($_POST["change_ldap_filter"]))
+{
+	$_SESSION["ldap_filter"] = $_POST["ldap_filter"];
+	glpi_header($_SERVER['PHP_SELF']);
+}
+elseif (!isset ($_POST["sync_ok"])) {
 		if (!isset ($_GET['check']))
 			$_GET['check'] = 'all';
 		if (!isset ($_GET['start']))
@@ -92,7 +97,7 @@ if (isset ($_GET['next'])) {
 			echo "</strong></div>";
 		} else
 			//Display users to synchronise
-			showLdapUsers($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 1);
+			showLdapUsers($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 1,$_SESSION["ldap_filter"]);
 	} else {
 
 		if (count($_POST['tosync']) > 0) {

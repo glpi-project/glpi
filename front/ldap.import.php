@@ -69,8 +69,12 @@ if (isset($_SESSION["ldap_import"])){
 		echo "</strong></div>";
 	}
 }
-
-if (!isset($_POST["import_ok"])){
+if (isset($_POST["change_ldap_filter"]))
+{
+	$_SESSION["ldap_filter"] = $_POST["ldap_filter"];
+	glpi_header($_SERVER['PHP_SELF']);
+}
+elseif (!isset($_POST["import_ok"])){
 	if (!isset($_GET['check'])) $_GET['check']='all';
 	if (!isset($_GET['start'])) $_GET['start']=0;
 	
@@ -85,7 +89,7 @@ if (!isset($_POST["import_ok"])){
 		echo "</strong></div>";
 	}
 	else
-		showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0);
+		showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_filter"]);
 } else {
 
 	if (count($_POST['toimport'])>0){

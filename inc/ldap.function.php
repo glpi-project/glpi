@@ -136,7 +136,7 @@ function ldapChooseDirectory($target) {
 }
 
 //Get the list of LDAP users to add/synchronize
-function getAllLdapUsers($id_auth, $sync = 0) {
+function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 	global $DB, $LANG;
 
 	$config_ldap = new AuthLDAP();
@@ -161,7 +161,11 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 		);
 
 		// Tenter une recherche pour essayer de retrouver le DN
-		$filter = "(".$config_ldap->fields['ldap_login']."=*)";
+		if ($myfilter == '')
+			$filter = "(".$config_ldap->fields['ldap_login']."=*)";
+		else
+			$filter = $myfilter;
+				
 		if (!empty ($config_ldap->fields['ldap_condition']))
 			$filter = "(& $filter ".$config_ldap->fields['ldap_condition'].")";
 	
@@ -208,10 +212,12 @@ function getAllLdapUsers($id_auth, $sync = 0) {
 		return $glpi_users;
 	
 }
-function showLdapUsers($target, $check, $start, $sync = 0) {
+function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 	global $DB, $CFG_GLPI, $LANG;
 
-	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"], $sync);
+	displayLdapFilter($target);
+	echo "<br>";	
+	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"], $sync,$filter);
 	$numrows = sizeof($ldap_users);
 
 	if (!$sync) {
@@ -325,4 +331,25 @@ function ldapStamp2UnixStamp($ldapstamp) {
    return $stamp;
 }
 
+function displayLdapFilter($target)
+{
+	global $LANG;
+	
+	if (!isset($_SESSION["ldap_filter"]) || $_SESSION["ldap_filter"] == '')
+	{
+			$config_ldap = new AuthLDAP();
+			$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
+			$_SESSION["ldap_filter"]="(".$config_ldap->fields['ldap_login']."=*)";
+	}
+	
+	echo "<div align='center'>";
+	echo "<form method='post' action=\"$target\">";
+	echo "<table class='tab_cadre'>"; 
+	echo "<tr><th colspan='2'>" . $LANG["setup"][263] . "</th></tr>";
+	echo"<tr class='tab_bg_2'><td>";
+	echo "<input type='text' name='ldap_filter' value='" . $_SESSION["ldap_filter"] . "'>";
+	echo "<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
+	echo "</td><tr></table>";
+	echo "</form></div>";	
+}
 ?>
