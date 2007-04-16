@@ -89,7 +89,11 @@ elseif (!isset($_POST["import_ok"])){
 		echo "</strong></div>";
 	}
 	else
-		showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_filter"]);
+	{
+			if (!isset($_SESSION["ldap_filter"]))
+					$_SESSION["ldap_filter"]='';
+			showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_filter"]);
+	}
 } else {
 
 	if (count($_POST['toimport'])>0){
