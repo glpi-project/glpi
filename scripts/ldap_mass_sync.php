@@ -35,6 +35,14 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+if ($argv) {
+	for ($i=1;$i<count($argv);$i++)
+	{
+		$it = split("=",$argv[$i]);
+		$it[0] = eregi_replace('^--','',$it[0]);
+		$_GET[$it[0]] = $it[1];
+	}
+}
 $NEEDED_ITEMS = array (
 	"ldap",
 	"user",
@@ -54,6 +62,10 @@ if (!isset($_GET["action"])) $_GET["action"]=1;
 //If no ldap_server ID is given, then use all the available servers
 if (!isset($_GET["ldap_server"])) $_GET["ldap_server"]='';
 
+if (!isset($_GET["ldap_filter"])) $_GET["ldap_filter"]='';
+else
+	$_GET["ldap_filter"]=str_replace("#","=",$_GET["ldap_filter"]);
+	
 //Get the ldap server's id by his name
 if ($_GET["ldap_server"] != '')
 	$sql = "SELECT ID from glpi_auth_ldap WHERE name='" . $_GET["ldap_server"] . "'";
@@ -66,7 +78,7 @@ if ($DB->numrows($result) == 0 && $_GET["ldap_server"] != '')
 else
 {	
 	while ($datas = $DB->fetch_array($result)) 
-		import ($_GET["action"],$datas);
+		import ($_GET["action"],$datas,$_GET["ldap_filter"]);
 	
 }
 
@@ -75,12 +87,12 @@ else
  * @param action the action to perform (add/sync)
  * @param datas the ldap connection's datas
  */
-function import($action, $datas)
+function import($action, $datas,$filter='')
 {
 	//The ldap server id is passed in the script url (parameter ldap_server)
 	$ldap_server = $datas["ID"];
-	$users = getAllLdapUsers($ldap_server, $_GET["action"]);
-
+	$users = getAllLdapUsers($ldap_server, $_GET["action"],$filter);
+	
 	foreach ($users as $user) {
 		ldapImportUserByServerId($user, $_GET["action"], $ldap_server);
 		echo ".";
