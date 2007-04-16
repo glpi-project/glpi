@@ -38,15 +38,15 @@ if (!defined('GLPI_ROOT')){
 class DBmysql {
 
 	//! Database Host
-	var $DBhost	= ""; 
+	var $dbhost	= ""; 
 	//! Database User
-	var $DBuser = "";
+	var $dbuser = "";
 	//! Database Password 
-	var $DBpassword	= "";
+	var $dbpassword	= "";
 	//! Default Database
-	var $DBdefault	= "";
+	var $dbdefault	= "";
 	//! Database Handler
-	var $DBh;
+	var $dbh;
 	//! Database Error
 	var $error = 0;
 
@@ -94,6 +94,7 @@ class DBmysql {
 
 		//mysql_ping($this->dbh);
 		$res=@mysql_query($query,$this->dbh);
+		
 		if (!$res) {
 			$this->DBmysql();
 			$res=mysql_query($query,$this->dbh);
@@ -236,6 +237,5 @@ class DBmysql {
 	}
 
 }
-
 
 ?>
