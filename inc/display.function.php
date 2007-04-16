@@ -1283,6 +1283,7 @@ function commonFooter() {
 		echo "</div>";
 	}
 	echo "</body></html>";
+	closeDBConnections();
 }
 
 /**
@@ -1308,6 +1309,7 @@ function helpFooter() {
 	echo "</div>";
 
 	echo "</body></html>";
+	closeDBConnections();
 }
 
 /**
@@ -1334,6 +1336,7 @@ function nullFooter() {
 	
 	
 	echo "</body></html>";
+	closeDBConnections();
 }
 
 

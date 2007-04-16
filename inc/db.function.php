@@ -871,4 +871,13 @@ function autoName($objectName, $field, $isTemplate, $type){
 	return $objectName;
 }
 
+function closeDBConnections(){
+	global $DB, $DBocs;
+
+	$DB->close();
+	if (isset($DBocs)){
+		$DB->close();
+	}
+}
+
 ?>
