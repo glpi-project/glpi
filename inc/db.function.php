@@ -338,14 +338,13 @@ function getTreeForItem($table,$IDf){
 	$query="SELECT * 
 		FROM $table 
 		WHERE parentID = '$IDf'";
-
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
 		while ($row=$DB->fetch_array($result)){
 			$id_found[$row['ID']]['parent']=$IDf;
 			$id_found[$row['ID']]['name']=$row['name'];
 			array_push($found,$row['ID']);
 		}
-	} else return $id_found;
+	} 
 
 	// Get the leafs of previous founded item
 	while (count($found)>0){
@@ -359,7 +358,6 @@ function getTreeForItem($table,$IDf){
 			else $first=false;
 			$query.= " parentID = '$val' ";
 		}
-
 		// CLear the found array
 		unset($found);
 		$found=array();
