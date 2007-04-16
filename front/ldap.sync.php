@@ -97,6 +97,9 @@ elseif (!isset ($_POST["sync_ok"])) {
 			echo "</strong></div>";
 		} else
 			//Display users to synchronise
+			if (!isset($_SESSION["ldap_filter"]))
+				$_SESSION["ldap_filter"]='';
+				
 			showLdapUsers($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 1,$_SESSION["ldap_filter"]);
 	} else {
 
