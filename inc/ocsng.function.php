@@ -2751,8 +2751,9 @@ function checkOCSconnection($ocs_server_id)
 	 
 	//If $DBocs is not initialized, or if the connection should be on a different ocs server
 	// --> reinitialize connection to OCS server 
-	if (!$DBocs || $ocs_server_id != $DBocs->getServerID())
+	if (!$DBocs || $ocs_server_id != $DBocs->getServerID()){
 		$DBocs = getDBocs($ocs_server_id);
+	}
 	
 	if ($DBocs->error)
 		return false;
