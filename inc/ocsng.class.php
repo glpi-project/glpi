@@ -47,6 +47,7 @@ class DBocs extends DBmysql {
 			$this->dbuser = $data["ocs_db_user"];
 			$this->dbpassword = urldecode($data["ocs_db_passwd"]);
 			$this->dbdefault = $data["ocs_db_name"];
+			$this->dbenc="latin1";
 			$this->dbh = @ mysql_connect($this->dbhost, $this->dbuser, $this->dbpassword) or $this->error = 1;
 			@mysql_query("SET NAMES 'latin1'");
 			@ mysql_select_db($this->dbdefault) or $this->error = 1;
