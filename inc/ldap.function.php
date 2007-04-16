@@ -280,30 +280,104 @@ function testLDAPConnection($id_auth) {
 }
 
 //Display refresh button in the user page
-function showLdapRefreshButton($target, $ID) {
+function showSynchronizationForm($target, $ID) {
 	global $LANG, $DB;
 
+	if (haveRight("user", "w"))
+	{
 	//Look it the user's auth method is LDAP
 	$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID=" . $ID;
 	$result = $DB->query($sql);
+	
 	if ($DB->numrows($result) > 0) {
 		$data = $DB->fetch_array($result);
+		
+		switch($data["auth_method"])
+		{
+			case AUTH_LDAP :
+			$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
+			$result = $DB->query($sql);
+			if ($DB->numrows($result) > 0) {
+				//Look it the auth server still exists !
+					echo "<div align='center'>";
+					echo "<form method='post' action=\"$target\">";
+					echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+					echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+					echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
+					echo "</td><tr></table>";
 
-		//Look it the auth server still exists !
-		$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
-		$result = $DB->query($sql);
-		if ($DB->numrows($result) > 0) {
-
-			if (haveRight("user", "w") && $data["auth_method"] == AUTH_LDAP) {
+					formChangeAuthMethodToDB($ID);
+					echo "<br>";
+					formChangeAuthMethodToMail($ID);
+							
+					echo "</form></div>";
+			}
+			break;	
+			case AUTH_DB_GLPI :
 				echo "<div align='center'>";
 				echo "<form method='post' action=\"$target\">";
-				echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
-				echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
-				echo "</td><tr></table>";
-				echo "</form>";
-			}
-		}
+				formChangeAuthMethodToLDAP($ID);
+				echo "<br>";
+				formChangeAuthMethodToMail($ID);
+				echo "</form></div>";
+			break;
+			case AUTH_MAIL :
+				echo "<div align='center'>";
+				echo "<form method='post' action=\"$target\">";
+				formChangeAuthMethodToDB($ID);
+				echo "<br>";
+				formChangeAuthMethodToLDAP($ID);
+				echo "</form></div>";
+			break;
+		} 
+	}
+	}
+}
+
+function formChangeAuthMethodToDB($ID)
+{
+	global $LANG;
+	echo "<br><table class='tab_cadre'>";
+	echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]."</th></tr>";
+	echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+	echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_internal' value='" . $LANG["login"][32] . "'>";
+	echo "</td><tr></table>";
+}
+
+function formChangeAuthMethodToLDAP($ID)
+{
+	global $LANG,$DB;
+	
+	$sql = "SELECT ID FROM glpi_auth_ldap";
+	$result = $DB->query($sql);
+	if ($DB->numrows($result) > 0)
+	{
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]." : ".$LANG["login"][2]."</th></tr>";
+		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
+		echo $LANG["login"][31]."</td><td>";
+		dropdownValue("glpi_auth_ldap","id_auth");
+		echo "</td>";
+		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_ldap' value='" . $LANG["buttons"][2] . "'>";
+		echo "</td><tr></table>";
+	}
+}
+
+function formChangeAuthMethodToMail($ID)
+{
+	global $LANG,$DB;
+	$sql = "SELECT ID FROM glpi_auth_mail";
+	$result = $DB->query($sql);
+	if ($DB->numrows($result) > 0)
+	{
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]." : ".$LANG["login"][3]."</th></tr>";
+		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
+		echo $LANG["login"][33]."</td><td>";
+		dropdownValue("glpi_auth_mail","id_auth");
+		echo "</td>";
+		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_mail' value='" . $LANG["buttons"][2] . "'>";
+		echo "</td><tr></table>";
 	}
 }
 
