@@ -404,9 +404,10 @@ class CommonDBTM {
 				if (array_key_exists($key,$this->fields)){
 					// Secu for null values on history
 					// TODO : Int with NULL default value in DB -> default value 0
-					if (is_null($this->fields[$key])){
+/*					if (is_null($this->fields[$key])){
 						if (is_int($input[$key])||$input[$key]=='0') 	$this->fields[$key]=0;
 					}
+*/
 					if ($this->fields[$key] != $input[$key]) {
 						// Do logs
 						if ($this->dohistory&&$history){

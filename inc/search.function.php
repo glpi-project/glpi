@@ -1445,7 +1445,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
-				if (is_int($regs[2])){
+				if (is_numeric($regs[2])){
 					return $link." NOW() ".$regs[1]." ADDDATE(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH), INTERVAL ".$regs[2]." MONTH) ";	
 				} else {
 					return "";
@@ -1495,7 +1495,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 			if (ereg("([<>])(.*)",$val,$regs)){
-				if (is_int($regs[2])){
+				if (is_numeric($regs[2])){
 					return $link." NOW() ".$regs[1]." ADDDATE($table.$field, INTERVAL ".$regs[2]." MONTH) ";	
 				} else {
 					return "";
@@ -1544,10 +1544,13 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			if ($nott&&$val!="NULL") {
 				$ADD=" OR $table.$field IS NULL";
 			}
-			if ($nott){
-				return $link." ($table.$field <> ".intval($val)." ".$ADD." ) ";
-			} else {
-				return $link." ($table.$field = ".intval($val)."  ".$ADD." ) ";
+			if (is_numeric($val))
+			{
+				if ($nott){
+					return $link." ($table.$field <> ".intval($val)." ".$ADD." ) ";
+				} else {
+					return $link." ($table.$field = ".intval($val)."  ".$ADD." ) ";
+				}
 			}
 			break;
 		case "glpi_infocoms.amort_type":
