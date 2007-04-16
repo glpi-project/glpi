@@ -797,6 +797,11 @@ $LANG["login"][23]="Test échoué";
 $LANG["login"][24]="Date dernière mise à jour";
 $LANG["login"][25]="Vous n'avez aucun droit pour vous connecter à cette application";
 
+$LANG["login"][30]="Changement de la méthode d'authentification";
+$LANG["login"][31]="Authentification sur l'annuaire";
+$LANG["login"][32]="Authentification sur la base GLPI";
+$LANG["login"][33]="Authentification sur le serveur POP/IMAP";
+
 $LANG["mailgate"][0]="Passerelle Mail";
 $LANG["mailgate"][1]="Ajouter une passerelle mail";
 $LANG["mailgate"][2]="Récupérer maintenant";

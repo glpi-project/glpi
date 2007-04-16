@@ -138,6 +138,30 @@ else if (isset($_POST["deletegroup"]))
 
 	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
 	glpi_header($_SERVER['HTTP_REFERER']);
+}elseif (isset($_POST["switch_auth_internal"]))
+{
+	$user = new User;
+	$input["ID"]=$_POST["ID"];
+	$input["auth_method"]=AUTH_DB_GLPI;
+	$input["id_auth"]='';
+	$user->update($input);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}elseif (isset($_POST["switch_auth_ldap"]))
+{
+	$user = new User;
+	$input["ID"]=$_POST["ID"];
+	$input["auth_method"]=AUTH_LDAP;
+	$input["id_auth"]=$_POST["id_auth"];
+	$user->update($input);
+	glpi_header($_SERVER['HTTP_REFERER']);	
+}elseif (isset($_POST["switch_auth_mail"]))
+{
+	$user = new User;
+	$input["ID"]=$_POST["ID"];
+	$input["auth_method"]=AUTH_MAIL;
+	$input["id_auth"]=$_POST["id_auth"];
+	$user->update($input);
+	glpi_header($_SERVER['HTTP_REFERER']);	
 } else {
 
 
@@ -178,7 +202,7 @@ else if (isset($_POST["deletegroup"]))
 					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				case 12:
-					showLdapRefreshButton($_SERVER['PHP_SELF'],$_GET["ID"]);
+					showSynchronizationForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				default : 
 					if (!display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
