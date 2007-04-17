@@ -404,7 +404,7 @@ function contructListFromTree($tree,$parent=0){
 			foreach ($data['tree'] as $ID => $underdata){
 				$list[$ID]=$root;
 				if (is_array($underdata['tree'])&&count($underdata['tree'])){
-					$list=array_merge($list,contructListFromTree($underdata['tree'],$ID));
+					$list+=contructListFromTree($underdata['tree'],$ID);
 				}
 			}
 		}
