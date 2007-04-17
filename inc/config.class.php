@@ -366,7 +366,7 @@ class Config extends CommonDBTM {
 				echo "<tr><th colspan='4'>" . $LANG["setup"][270] . "</th></tr>";
 			
 				echo "<tr class='tab_bg_2'>";
-				adminManagementDropdown("monitors_management_restrict",$LANG["setup"][274],$CFG_GLPI["monitors_management_restrict"]);											
+				adminManagementDropdown("monitors_management_restrict",$LANG["setup"][271],$CFG_GLPI["monitors_management_restrict"]);											
 				adminManagementDropdown("peripherals_management_restrict",$LANG["setup"][272],$CFG_GLPI["peripherals_management_restrict"]);				
 				echo "</tr>";
 				
