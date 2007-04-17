@@ -1597,8 +1597,9 @@ function displayEntityTree($myname,$tree){
 	if (count($tree)){
 		foreach ($tree as $ID => $data){
 			if (isset($data['name'])){
-				echo "<li>".$data['name'];
+				echo "<li><a href='lienversselectionunique'>".$data['name']."</a>";
 				if (isset($data['tree'])&&count($data['tree'])){
+					echo "<a href='lien vers selection du sous arbre'>Tous</a>";
 					echo "<ul>";
 					displayEntityTree($myname,$data['tree']);
 					echo "</ul>";
