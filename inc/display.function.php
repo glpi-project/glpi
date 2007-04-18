@@ -1871,15 +1871,16 @@ function showProfileSelecter(){
 		echo "</li>";
 	} //else echo "only one entity -> no select to print";
 	
-
 /*
-	echo "<li>";
-	echo "<div>";
-	echo "<span onclick=\"cleandisplay('show_entities');\">".$_SESSION["glpiactive_entity_name"]."</span>";
-	echo "</div>";
 
-	echo "<div class='over_link' id='show_entities' onMouseOver=\"cleandisplay('show_entities');\" onMouseOut=\"cleanhide('show_entities');\">";
+	echo "<li>";
+	echo "<a href='#' onClick=\"cleandisplay('show_entities');\">".$_SESSION["glpiactive_entity_name"]."</a>";
+	
+
+	echo "<div  id='show_entities' onMouseOver=\"cleandisplay('show_entities');\" onMouseOut=\"cleanhide('show_entities');\">";
+	
 	displayActiveEntities($_SESSION['glpi_entities_tree'],"activeentity");
+	echo "<div style='clear:both'></div>";
 	echo "</div>";
 	echo "</li>";
 */

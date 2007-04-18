@@ -1585,9 +1585,12 @@ function displayActiveEntities($myname){
 	
 	if (is_array($_SESSION['glpi_entities_tree'])&&count($_SESSION['glpi_entities_tree'])){
 		foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
-			echo "<ul>";
+			echo "<ul class='entities'>";
 			displayEntityTree($myname,$tree);
+			
 			echo "</ul>";
+			echo "<div style='clear:both'></div>";
+			
 		}
 	} 
 }
