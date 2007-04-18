@@ -77,7 +77,7 @@ else
 
 
 	echo "<div id='contenulogin'>";
-
+	
 	echo "<div id='logo-login'>";
 
 	echo nl2br(unclean_cross_side_scripting_deep($CFG_GLPI['text_login']));
@@ -130,6 +130,11 @@ else
 
 	echo "</div>";  // fin box login
 
+	echo "<div style='color: red; margin-top:20px; text-align:center;'>";
+	echo "<noscript>";
+	echo $lang["login"][26];
+	echo "</noscript>";
+	echo "</div>";
 
 
 	echo "</div>"; // fin contenu login
