@@ -796,7 +796,7 @@ $LANG["login"][22]="Test réussi";
 $LANG["login"][23]="Test échoué";
 $LANG["login"][24]="Date dernière mise à jour";
 $LANG["login"][25]="Vous n'avez aucun droit pour vous connecter à cette application";
-$LANG["login"][26]="Vous devez activé la fonction JavaScript de votre navigateur";
+$LANG["login"][26]="Vous devez activer la fonction JavaScript de votre navigateur";
 $LANG["login"][27]="Vous devez autoriser les cookies pour accèder à cette application";
 
 $LANG["login"][30]="Changement de la méthode d'authentification";
