@@ -1057,7 +1057,17 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_config` ADD `printers_management_restrict` INT( 1 ) NOT NULL DEFAULT '2';";
 		$DB->query($query) or die("0.7 alter glpi_computers field printers_management_restrict " . $DB->error());
 	}
-	
+
+	if (!FieldExists("glpi_config", "licenses_management_restrict")) {
+		$query = "ALTER TABLE `glpi_config` ADD `licenses_management_restrict` INT( 1 ) NOT NULL DEFAULT '2';";
+		$DB->query($query) or die("0.7 alter glpi_computers field licenses_management_restrict " . $DB->error());
+	}
+
+	if (!FieldExists("glpi_config", "license_deglobalisation")) {
+		$query = "ALTER TABLE `glpi_config` ADD `license_deglobalisation` INT( 1 ) NOT NULL DEFAULT '1';";
+		$DB->query($query) or die("0.7 alter glpi_computers field license_deglobalisation " . $DB->error());
+	}
+
 	if (FieldExists("glpi_users", "location")) {
 		$query = "ALTER TABLE `glpi_users` DROP `location`;";
 		$DB->query($query) or die("0.7 drop location from glpi_users " . $DB->error());

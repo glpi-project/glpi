@@ -1860,11 +1860,22 @@ function dropdownArrayValues($name,$elements,$value='')
 	
 }
 
-function adminManagementDropdown($name,$label,$restrict)
+function adminManagementDropdown($name,$label,$restrict,$software=0)
 {
 	global $LANG;
 	echo "<td align='center'> " . $label . " </td><td><select name=\"".$name."\">";
 
+	if (!$software)
+	{
+		$yesUnit = $LANG["peripherals"][32];
+		$yesGlobal = $LANG["peripherals"][31];
+	}
+	else
+	{
+		$yesUnit = $LANG["ocsconfig"][46];
+		$yesGlobal = $LANG["ocsconfig"][45];
+	}
+	
 	echo "<option value=\"2\"";
 	if ($restrict == 2) {
 		echo " selected";
@@ -1875,13 +1886,13 @@ function adminManagementDropdown($name,$label,$restrict)
 	if ($restrict == 0) {
 		echo " selected";
 	}
-	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ".  $LANG["peripherals"][32] . "</option>";
+	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ".  $yesUnit . "</option>";
 
 	echo "<option value=\"1\"";
 	if ($restrict == 1) {
 		echo " selected";
 	}
-	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ". $LANG["peripherals"][31] . " </option>";
+	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ". $yesGlobal . " </option>";
 				
 	echo "</select></td>";
 }

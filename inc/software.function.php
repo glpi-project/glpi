@@ -259,10 +259,11 @@ function showLicenses ($sID,$show_computers=0) {
 								echo "<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?delete=delete&amp;ID=$ID\">";
 								echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='".$LANG["buttons"][6]."' title='".$LANG["buttons"][6]."'>";
 								echo "</a></strong>";
-
-								echo "&nbsp;&nbsp;<a alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','".$CFG_GLPI["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&sID=$sID&ID=$ID')\">".$LANG["common"][38]."</a>&nbsp;";	
-
-								echo "<img alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" src='".$CFG_GLPI["root_doc"]."/pics/aide.png'\">";
+								if ($CFG_GLPI["license_deglobalisation"])
+								{
+									echo "&nbsp;&nbsp;<a alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','".$CFG_GLPI["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&sID=$sID&ID=$ID')\">".$LANG["common"][38]."</a>&nbsp;";	
+									echo "<img alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" src='".$CFG_GLPI["root_doc"]."/pics/aide.png'\">";
+								}
 							}
 							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
 							echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/edit.png\" alt='".$LANG["buttons"][14]."' title='".$LANG["buttons"][14]."'>";
@@ -417,8 +418,28 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["software"][16]."</td>";
 	echo "<td>";
+
 	$readonly="";
-	if ($values["serial"]=="free"||$values["serial"]=="global") $readonly="readonly";
+
+	if ($action == "add")
+	{
+		switch ($CFG_GLPI["licenses_management_restrict"])
+		{
+			case 2 :
+				$readonly="";
+			break;
+			case 1 : 
+				$values["serial"]="global";
+				$readonly="readonly";
+			break;
+			case 0 :
+				$values["serial"]="free";
+				$readonly="readonly";
+			break;	
+		}	
+	}
+	elseif ($values["serial"]=="free"||$values["serial"]=="global") $readonly="readonly";	
+
 	autocompletionTextField("serial","glpi_licenses","serial",$values["serial"],20,$readonly);
 	echo "</td></tr>";
 

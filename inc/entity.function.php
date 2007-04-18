@@ -120,7 +120,7 @@ function showEntityUser($target,$ID){
 						if ($data2["dynamic"]||$data2["recursive"]){
 							echo "<strong>&nbsp;(";
 							if ($data2["dynamic"]) echo "D";
-							if ($data2["dynamic"]&$data2["recursive"]) echo ", ";
+							if ($data2["dynamic"]&&$data2["recursive"]) echo ", ";
 							if ($data2["recursive"]) echo "R";
 							echo ")</strong>";
 						}
