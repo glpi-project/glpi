@@ -83,6 +83,7 @@
 			"fr_FR"=>array("Français","fr_FR.php","fr","fr"),
 			"hu_HU"=>array("Hungarian","hu_HU.php","hu","hu"),
 			"it_IT"=>array("Italiano","it_IT.php","it","it"),
+			"ja_JP"=>array("Japanese","ja_JP.php","ja","ja_utf-8"),
 			"pl_PL"=>array("Polish","pl_PL.php","pl","pl"),
 			"pt_PT"=>array("Português","pt_PT.php","br","pt"),
 			"ro_RO"=>array("Romanian","ro_RO.php","ro","ro"),
