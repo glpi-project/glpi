@@ -342,25 +342,7 @@ display: none;
 	font-size: 11px;
 	text-align: left;
 	z-index:1000;
-	width:400px;
-}
-
-.entities ul{
-
-   list-style: none;
-   margin: 0;
-   padding: 0;
-
-}
-
-.entities li{
-	text-decoration: underline;
-	color:red;
-	margin: 0;
-	padding:0;
-	width:100%;
 	
-
 }
 
 
