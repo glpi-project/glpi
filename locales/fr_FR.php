@@ -1450,7 +1450,8 @@ $LANG["setup"][272]="Restreindre la gestion des périphériques";
 $LANG["setup"][273]="Restreindre la gestion des téléphones";
 $LANG["setup"][274]="pour ajout manuel";
 $LANG["setup"][275]="Restreindre la gestion des imprimantes";
-
+$LANG["setup"][276]="Restreindre la gestion des licenses";
+$LANG["setup"][277]="Déglobalisation possible des licenses";
 
 $LANG["setup"][300]="Vérifier si une nouvelle version est disponible";
 $LANG["setup"][301]="Une nouvelle version est disponible :";
