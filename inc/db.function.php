@@ -366,7 +366,7 @@ function getTreeForItem($table,$IDf){
 		if ($DB->numrows($result)>0){
 			while ($row=$DB->fetch_array($result)){
 				if (!in_array($row['ID'],$id_found)){
-					$id_found[$row['ID']]['parent']=$val;
+					$id_found[$row['ID']]['parent']=$row['parentID'];
 					$id_found[$row['ID']]['name']=$row['name'];
 					array_push($found,$row['ID']);
 				}
