@@ -132,7 +132,7 @@ else
 
 	echo "<div style='color: red; margin-top:20px; text-align:center;'>";
 	echo "<noscript>";
-	echo $lang["login"][26];
+	echo $LANG["login"][26];
 	echo "</noscript>";
 	echo "</div>";
 
