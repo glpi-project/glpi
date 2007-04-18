@@ -332,6 +332,39 @@ div#c_ssmenu2 ul li a{
 	color: #000;
 }
 
+div#show_entities{
+display: none;
+	position: absolute;
+	border: 2px solid gray;
+	background-color : #f1f4e3;
+	-moz-border-radius: 5px;
+	padding: 5px;
+	font-size: 11px;
+	text-align: left;
+	z-index:1000;
+	width:400px;
+}
+
+.entities ul{
+
+   list-style: none;
+   margin: 0;
+   padding: 0;
+
+}
+
+.entities li{
+	text-decoration: underline;
+	color:red;
+	margin: 0;
+	padding:0;
+	width:100%;
+	
+
+}
+
+
+
 /* ########################################################################### */
 
 img{
@@ -432,7 +465,8 @@ hr{
 }
 
 #page {
-	margin-top:25px;}
+	margin-top:25px;
+	}
 
 option {border:1px solid #ccc;
 	background-color:#ffffff;}
