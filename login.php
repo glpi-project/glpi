@@ -58,8 +58,14 @@ if (isset ($_POST['newprofile'])) {
 		} else {
 			glpi_header($CFG_GLPI['root_doc'] . "/front/central.php");
 		}
-	} else
+	} else {
 		glpi_header($_SERVER['HTTP_REFERER']);
+	}
+}
+
+if (!isset($_SESSION["glpitest"])||$_SESSION["glpitest"]!='testcookie'){
+	echo $LANG["login"][27];
+	glpi_header($CFG_GLPI['root_doc'] . "/index.php?cookie_error=1");
 }
 
 $_POST = array_map('stripslashes', $_POST);
@@ -107,7 +113,7 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 if (isset ($_POST["noCAS"]))
 	$_SESSION["noCAS"] = 1;
 
-if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
+	if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 	if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
 		$identificat->err = $LANG["login"][8];
 	} else {

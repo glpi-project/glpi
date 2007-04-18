@@ -46,7 +46,7 @@ if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 else
 {
 	include (GLPI_ROOT . "/inc/includes.php");
-
+	$_SESSION["glpitest"]='testcookie';
 	// Using CAS server
 	if (!empty($CFG_GLPI["cas_host"])&&!isset($_GET["noCAS"])) {
 		glpi_header("login.php");
@@ -82,7 +82,7 @@ else
 
 	echo nl2br(unclean_cross_side_scripting_deep($CFG_GLPI['text_login']));
 
-	// Affichage autoris�FAQ
+	// Affichage autorisee FAQ
 	if ($CFG_GLPI["public_faq"]){
 		echo '<ul><li><a href="front/helpdesk.faq.php">'.$LANG["knowbase"][24].'</a></li></ul>';
 	}
@@ -99,9 +99,6 @@ else
 
 	// redirect to tracking
 	if (isset($_GET["redirect"])){
-		if(!session_id()){
-			@session_start();
-		}
 		manageRedirect($_GET["redirect"]);
 		echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
 	}
@@ -134,8 +131,12 @@ else
 	echo "<noscript>";
 	echo $LANG["login"][26];
 	echo "</noscript>";
+	if (isset($_GET['cookie_error'])){
+		echo $LANG["login"][27];
+	}
 	echo "</div>";
 
+	
 
 	echo "</div>"; // fin contenu login
 
