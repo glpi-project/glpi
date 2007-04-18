@@ -1585,30 +1585,23 @@ function displayActiveEntities($myname){
 	
 	if (is_array($_SESSION['glpi_entities_tree'])&&count($_SESSION['glpi_entities_tree'])){
 		foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
-			echo "<ul class='entities'>";
+			echo "TOUTES DE CHEZ TOUTES";
 			displayEntityTree($myname,$tree);
-			
-			echo "</ul>";
-			echo "<div style='clear:both'></div>";
-			
 		}
 	} 
 }
 
-function displayEntityTree($myname,$tree){
+function displayEntityTree($myname,$tree,$tab=''){
 
 	if (count($tree)){
 		foreach ($tree as $ID => $data){
 			if (isset($data['name'])){
-				echo "<li><a href='lienversselectionunique'>".$data['name']."</a>";
+				echo "<br>";
+				echo $tab."&raquo;<a href='lienversselectionunique'>".$data['name']."</a>";
 				if (isset($data['tree'])&&count($data['tree'])){
 					echo "<a href='lien vers selection du sous arbre'>Tous</a>";
-					echo "<ul>";
-					displayEntityTree($myname,$data['tree']);
-					echo "</ul>";
+					displayEntityTree($myname,$data['tree'],$tab."&nbsp;&nbsp;&nbsp;&nbsp;");
 				}
-				echo "</li>";
-				
 			}
 		}
 
