@@ -1068,6 +1068,11 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 alter glpi_computers field license_deglobalisation " . $DB->error());
 	}
 
+	if (!FieldExists("glpi_registry", "registry_ocs_name")) {
+		$query = "ALTER TABLE `glpi_registry` ADD COLUMN `registry_ocs_name` char(255) NOT NULL default ''";
+		$DB->query($query) or die("0.7 add registry_ocs_name in glpi_registry" . $LANG["update"][90] . $DB->error());
+	}
+
 	if (FieldExists("glpi_users", "location")) {
 		$query = "ALTER TABLE `glpi_users` DROP `location`;";
 		$DB->query($query) or die("0.7 drop location from glpi_users " . $DB->error());

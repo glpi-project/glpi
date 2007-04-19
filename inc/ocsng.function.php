@@ -292,7 +292,7 @@ function ocsManageDeleted($ocs_server_id) {
 	}
 }
 
-function ocsImportComputer($ocs_id,$ocs_server_id) {
+function ocsImportComputer($ocs_id,$ocs_server_id,$lock=0) {
 	global $DBocs,$DB;
 
 	checkOCSconnection($ocs_server_id);
@@ -318,6 +318,13 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 	//Try to match all the rules, return the first good one, or null if not rules matched
 	if (isset($data['FK_entities'])&&$data['FK_entities']>=0)
 	{
+		
+		if ($lock)
+		{
+			while (!$fp = setEntityLock($data['FK_entities']))
+				sleep(2);
+		}
+
 		$query = "SELECT * FROM hardware WHERE ID='$ocs_id'";
 		$result = $DBocs->query($query);
 		if ($result&&$DBocs->numrows($result)==1){
@@ -340,6 +347,9 @@ function ocsImportComputer($ocs_id,$ocs_server_id) {
 		}
 
 		}
+
+		if ($lock)
+			removeEntityLock($data['FK_entities'],$fp);
 	}
  }
 }
@@ -2239,7 +2249,8 @@ function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs) {
 			$reg->fields["computer_id"] = $glpi_id;	
 			$reg->fields["registry_hive"] = $data["regtree"];
 			$reg->fields["registry_value"] = $data["regvalue"];
-			$reg->fields["registry_path"] = $data["regkey"];			
+			$reg->fields["registry_path"] = $data["regkey"];		
+			$reg->fields["registry_ocs_name"] = $data["NAME"];	
 			$isNewReg = $reg->addToDB();
 			}
 		} 	
@@ -2866,4 +2877,25 @@ function getListState($ocs_server_id){
 	}
 	return $listState;
 }
+
+function setEntityLock($entity)
+{
+	global $CFG_GLPI;
+	$fp = fopen(GLPI_CACHE_DIR."lock_entity_".$entity, "w+");
+
+	if (flock($fp, LOCK_EX)) {
+	    return $fp;
+	} else {
+	    return false;
+	}
+}
+
+function removeEntityLock($entity,$fp)
+{
+	flock($fp, LOCK_UN);
+	fclose($fp);
+	unlink(GLPI_CACHE_DIR."lock_entity_".$entity);
+}
+
+
 ?>

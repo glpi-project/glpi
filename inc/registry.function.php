@@ -55,7 +55,7 @@ function showRegistry($device_type,$ID,$withtemplate=''){
 			
 			echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 			echo "<tr>";
-			echo "<th colspan='3'>";
+			echo "<th colspan='4'>";
 			echo $DB->numrows($result)." ";
 			echo $LANG["registry"][4];
 			
@@ -63,12 +63,14 @@ function showRegistry($device_type,$ID,$withtemplate=''){
 
 			echo "</tr>";        
 			echo "<tr>";			
+			echo "<th>".$LANG["registry"][6]."</th>";
 			echo "<th>".$LANG["registry"][1]."</th><th>".$LANG["registry"][2]."</th>";
 			echo "<th>".$LANG["registry"][3]."</th></tr>\n";	
 			while ($regid=$DB->fetch_row($result)) {
 				$reg = new Registry;
 				$reg->getfromDB(current($regid));	
 				echo "<tr class='tab_bg_1'>";								
+				echo "<td>".$reg->fields["registry_ocs_name"]."</td>";
 				echo "<td>".$REGISTRY_HIVE[$reg->fields["registry_hive"]]."</td>";
 				echo "<td>".$reg->fields["registry_path"]."</td>";
 				echo "<td>".$reg->fields["registry_value"]."</td>";		

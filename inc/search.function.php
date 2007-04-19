@@ -471,6 +471,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	//// 2 - FROM AND LEFT JOIN
 	// Set reference table
+	
 	$FROM = " FROM ".$itemtable;
 	// Init already linked tables array in order not to link a table several times
 	$already_link_tables=array();

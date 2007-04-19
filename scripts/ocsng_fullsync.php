@@ -121,7 +121,7 @@ function importFromOcsServer($cfg_ocs, $thread_nbr, $thread_id)
 	while($data=$DBocs->fetch_array($result_ocs)){
 		//echo "thread=".$thread_id.". machine=".$data['ID']."\n";
 		echo ".";
-		ocsImportComputer($data["ID"],$cfg_ocs["ID"]);
+		ocsImportComputer($data["ID"],$cfg_ocs["ID"],1);
 	}
 }
 ?>
