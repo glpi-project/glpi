@@ -51,6 +51,7 @@ cleanup()
   #  echo "kill pids: $runningpid"
   for pid in $runningpid; do kill $pid 2>/dev/null; done
   rm -f $pidfile
+  rm -f $glpiroot"/_cache_lock_entity*"
   echo "Done cleanup ... quitting."
   exit 0
 }
@@ -92,6 +93,7 @@ echo $$ > $pidfile
 
 [ -d "$glpiroot/scripts" ] && cd "$glpiroot/scripts"
 
+rm -f $glpiroot"/_cache_lock_entity*"
 cpt=0
 
 while [ $cpt -lt $thread_nbr ]; do 

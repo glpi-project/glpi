@@ -401,6 +401,18 @@ $SEARCH_OPTION[COMPUTER_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][58]['name']=$LANG["financial"][77];
 $SEARCH_OPTION[COMPUTER_TYPE][58]['meta']=0;
 
+$SEARCH_OPTION[COMPUTER_TYPE][102]['table']='glpi_ocs_link';
+$SEARCH_OPTION[COMPUTER_TYPE][102]['field']='last_update';
+$SEARCH_OPTION[COMPUTER_TYPE][102]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][102]['name']=$LANG["ocsng"][13];
+$SEARCH_OPTION[COMPUTER_TYPE][102]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][103]['table']='glpi_ocs_link';
+$SEARCH_OPTION[COMPUTER_TYPE][103]['field']='last_ocs_update';
+$SEARCH_OPTION[COMPUTER_TYPE][103]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][103]['name']=$LANG["ocsng"][14];
+$SEARCH_OPTION[COMPUTER_TYPE][103]['meta']=0;
+
 $SEARCH_OPTION[COMPUTER_TYPE]['ocsng']=$LANG["Menu"][33];
 
 $SEARCH_OPTION[COMPUTER_TYPE][100]['table']='glpi_computers';
@@ -415,21 +427,22 @@ $SEARCH_OPTION[COMPUTER_TYPE][101]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][101]['name']=$LANG["ocsng"][6]." ".$LANG["Menu"][33];
 $SEARCH_OPTION[COMPUTER_TYPE][101]['meta']=0;
 
-$SEARCH_OPTION[COMPUTER_TYPE][102]['table']='glpi_ocs_link';
-$SEARCH_OPTION[COMPUTER_TYPE][102]['field']='last_update';
-$SEARCH_OPTION[COMPUTER_TYPE][102]['linkfield']='';
-$SEARCH_OPTION[COMPUTER_TYPE][102]['name']=$LANG["ocsng"][13];
-$SEARCH_OPTION[COMPUTER_TYPE][102]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE]['registry']=$LANG["title"][43];
 
-$SEARCH_OPTION[COMPUTER_TYPE][103]['table']='glpi_ocs_link';
-$SEARCH_OPTION[COMPUTER_TYPE][103]['field']='last_ocs_update';
-$SEARCH_OPTION[COMPUTER_TYPE][103]['linkfield']='';
-$SEARCH_OPTION[COMPUTER_TYPE][103]['name']=$LANG["ocsng"][14];
-$SEARCH_OPTION[COMPUTER_TYPE][103]['meta']=0;
+// REGISTRY_TYPE
+$SEARCH_OPTION[COMPUTER_TYPE][110]['table']='glpi_registry';
+$SEARCH_OPTION[COMPUTER_TYPE][110]['field']='registry_value';
+$SEARCH_OPTION[COMPUTER_TYPE][110]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][110]['name']=$LANG["title"][43]." : ".$LANG["registry"][3];
+$SEARCH_OPTION[COMPUTER_TYPE][110]['meta']=0;
 
+$SEARCH_OPTION[COMPUTER_TYPE][111]['table']='glpi_registry';
+$SEARCH_OPTION[COMPUTER_TYPE][111]['field']='registry_ocs_value';
+$SEARCH_OPTION[COMPUTER_TYPE][111]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][111]['name']=$LANG["title"][43]." : ".$LANG["registry"][6];
+$SEARCH_OPTION[COMPUTER_TYPE][111]['meta']=0;
 
 //////NETWORKING_TYPE
-
 $SEARCH_OPTION[NETWORKING_TYPE]['common']=$LANG["common"][32];
 
 $SEARCH_OPTION[NETWORKING_TYPE][1]['table']='glpi_networking';

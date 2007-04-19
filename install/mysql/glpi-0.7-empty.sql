@@ -2005,6 +2005,7 @@ CREATE TABLE `glpi_registry` (
   `registry_hive` varchar(255) collate utf8_unicode_ci default NULL,
   `registry_path` varchar(255) collate utf8_unicode_ci default NULL,
   `registry_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `registry_ocs_name` char(255) collate utf8_unicode_ci default NULL, 
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

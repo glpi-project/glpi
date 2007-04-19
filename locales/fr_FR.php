@@ -1109,6 +1109,7 @@ $LANG["registry"][2]="Chemin";
 $LANG["registry"][3]="Clé/valeur";
 $LANG["registry"][4]="Clé(s) de registre trouvée(s)";
 $LANG["registry"][5]="Aucune clé de la base de registre trouvée";
+$LANG["registry"][6]="Nom OCS";
 
 $LANG["reminder"][0]="Notes personnelles";
 $LANG["reminder"][1]="Notes publiques";
