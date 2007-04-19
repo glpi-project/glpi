@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$USE_OCSNGDB=1;
+
 $NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor",
 "software","infocom","phone","tracking","enterprise","ocsng","mailgate","rulesengine","rule.tracking","user","reservation","reminder");
 define('GLPI_ROOT', '..');

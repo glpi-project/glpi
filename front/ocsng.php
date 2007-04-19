@@ -34,7 +34,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$USE_OCSNGDB = 1;
 $NEEDED_ITEMS = array (
 	"ocsng",
 	"computer",
