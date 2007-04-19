@@ -437,7 +437,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][110]['name']=$LANG["title"][43]." : ".$LANG["regis
 $SEARCH_OPTION[COMPUTER_TYPE][110]['meta']=0;
 
 $SEARCH_OPTION[COMPUTER_TYPE][111]['table']='glpi_registry';
-$SEARCH_OPTION[COMPUTER_TYPE][111]['field']='registry_ocs_value';
+$SEARCH_OPTION[COMPUTER_TYPE][111]['field']='registry_ocs_name';
 $SEARCH_OPTION[COMPUTER_TYPE][111]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][111]['name']=$LANG["title"][43]." : ".$LANG["registry"][6];
 $SEARCH_OPTION[COMPUTER_TYPE][111]['meta']=0;

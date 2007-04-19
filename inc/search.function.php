@@ -672,6 +672,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_licenses")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
+						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_registry")
 						||($type==USER_TYPE&&($SEARCH_OPTION[$type][$val2]["table"]=="glpi_groups"
 								||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_entities"
 								||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_profiles"
@@ -1369,6 +1370,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_licenses.version" :
 		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
+		case "glpi_registry.registry_ocs_name" :
+		case "glpi_registry.registry_value" :
 			return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_tracking.count" :
@@ -1614,6 +1617,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_licenses.serial" :
 		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
+		case "glpi_registry.registry_ocs_name" :
+		case "glpi_registry.registry_value" :
 		$out="";
 		$split=explode("$$$$",$data["ITEM_$num"]);
 
@@ -2108,6 +2113,12 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		break;
 		case "glpi_ocs_link":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
+		break;
+		case "glpi_ocs_link":
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
+		break;
+		case "glpi_registry":
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computer_id) ";
 		break;
 		case "glpi_dropdown_locations":
 			return " LEFT JOIN $new_table $AS ON ($rt.location = $nt.ID) ";
