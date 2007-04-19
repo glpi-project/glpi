@@ -52,7 +52,6 @@ include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 include_once (GLPI_ROOT . "/inc/config.class.php");
 include_once (GLPI_ROOT . "/config/config.php");
-
 // Load Language file
 loadLanguage();
 
@@ -123,19 +122,23 @@ if (!isset($AJAX_INCLUDE)){
 // Mark if Header is loaded or not :
 $HEADER_LOADED=false;
 $FOOTER_LOADED=false;
-if (isset($AJAX_INCLUDE))
-	$HEADER_LOADED=true;;
+if (isset($AJAX_INCLUDE)){
+	$HEADER_LOADED=true;
+}
 
-	if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
-		foreach ($NEEDED_ITEMS as $item){
-			if (file_exists(GLPI_ROOT . "/inc/$item.class.php"))
-				include_once (GLPI_ROOT . "/inc/$item.class.php");
-			if (file_exists(GLPI_ROOT . "/inc/$item.function.php"))
-				include_once (GLPI_ROOT . "/inc/$item.function.php");
-			if ($item=="ocsng"&&$CFG_GLPI["ocs_mode"]&&isset($USE_OCSNGDB))
-				if (isset($_SESSION["ocs_server_id"])) $DBocs = getDBocs($_SESSION["ocs_server_id"]);
+if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
+	foreach ($NEEDED_ITEMS as $item){
+		if (file_exists(GLPI_ROOT . "/inc/$item.class.php")){
+			include_once (GLPI_ROOT . "/inc/$item.class.php");
+		}
+		if (file_exists(GLPI_ROOT . "/inc/$item.function.php")){
+			include_once (GLPI_ROOT . "/inc/$item.function.php");
+		}
+		if ($item=="ocsng"&&$CFG_GLPI["ocs_mode"]&&isset($USE_OCSNGDB)){
+			if (isset($_SESSION["ocs_server_id"])) $DBocs = getDBocs($_SESSION["ocs_server_id"]);
 		}
 	}
+}
 
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
