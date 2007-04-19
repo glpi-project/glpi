@@ -134,9 +134,12 @@ if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
 		if (file_exists(GLPI_ROOT . "/inc/$item.function.php")){
 			include_once (GLPI_ROOT . "/inc/$item.function.php");
 		}
-		if ($item=="ocsng"&&$CFG_GLPI["ocs_mode"]&&isset($USE_OCSNGDB)){
+		
+/*		if ($item=="ocsng"&&$CFG_GLPI["ocs_mode"]&&isset($USE_OCSNGDB)){
+			
 			if (isset($_SESSION["ocs_server_id"])) $DBocs = getDBocs($_SESSION["ocs_server_id"]);
 		}
+*/
 	}
 }
 

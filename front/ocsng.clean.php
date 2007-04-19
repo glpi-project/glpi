@@ -34,7 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-$USE_OCSNGDB=1;
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","admininfo");
 
 define('GLPI_ROOT', '..');
