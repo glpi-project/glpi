@@ -109,9 +109,21 @@ class OcsRuleCollection extends RuleCollection {
 			checkOCSconnection($this->ocs_server_id);
 			$result = $DBocs->query($sql);
 			$ocs_datas = array ();
-			
+
+			$fields = $this->getFieldsForQuery(1);
+
+			//May have more than one line : for example in case of multiple network cards
 			if ($DBocs->numrows($result) > 0)
-				$ocs_datas = $DBocs->fetch_array($result);
+			{
+				while ($datas = $DBocs->fetch_array($result))
+				{
+					foreach ($fields as $field) {
+						if ($field != "OCS_SERVER" && isset($datas[$field]))
+							$ocs_datas[$field][] = $datas[$field];
+					}
+				}
+			}
+
 			return array_merge($rule_parameters, $ocs_datas);
 		} else
 			return $rule_parameters;
@@ -136,29 +148,34 @@ class OcsRuleCollection extends RuleCollection {
 		return $tables;		  
 	}
 	
-	function getFieldsForQuery()
+	function getFieldsForQuery($withouttable=0)
 	{
 		global $RULES_CRITERIAS;
 
 		$fields = array();
 		foreach ($RULES_CRITERIAS[$this->rule_type] as $key => $criteria){
 
-			//If the field is different from the key
-			if (strcasecmp($key,$criteria['field']) != 0)
-				$as = " AS ".$key;
+			if ($withouttable)
+				$fields[]=$criteria['field'];
 			else
-				$as ="";
-				
-			//If the field name is not null AND a table name is provided
-			if ($criteria['field'] != '' && (!isset($criteria['virtual']) || !$criteria['virtual'])){
-				if ( $criteria['table'] != '') {
-					$fields[]=$criteria['table'].".".$criteria['field'].$as;
-				} else{
-					$fields[]=$criteria['field'].$as;	
+			{	
+				//If the field is different from the key
+				if (strcasecmp($key,$criteria['field']) != 0)
+					$as = " AS ".$key;
+				else
+					$as ="";
+					
+				//If the field name is not null AND a table name is provided
+				if (($criteria['field'] != '' && (!isset($criteria['virtual']) || !$criteria['virtual']))){
+					if ( $criteria['table'] != '') {
+						$fields[]=$criteria['table'].".".$criteria['field'].$as;
+					} else{
+						$fields[]=$criteria['field'].$as;	
+					}
 				}
+				else
+				$fields[]=$criteria['id'];
 			}
-			else
-			$fields[]=$criteria['id'];
 		}
 				
 		return $fields;		  
