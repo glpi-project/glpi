@@ -505,16 +505,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]!="all"&&$field[$key]!="view"){
 				$LINK=" ";
 				$NOT=0;
+				if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
+					$link[$key]=" ".ereg_replace(" NOT","",$link[$key]);
+					$NOT=1;
+				}
+
+			
 				// Manage Link if not first item
 				if (!$first||$i>0) {
-					if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
-						$LINK=" ".ereg_replace(" NOT","",$link[$key]);
-						$NOT=1;
-					}
-					else if (is_array($link)&&isset($link[$key]))
+					if (is_array($link)&&isset($link[$key])){
 						$LINK=" ".$link[$key];
-					else 
+					} else {
 						$LINK=" AND ";
+					}
 				}
 				// Add Where clause if not to be done ine HAVING CLAUSE
 				if (!in_array($SEARCH_OPTION[$type][$field[$key]]["table"],$META_SPECIF_TABLE)){
@@ -524,13 +527,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				// if real search (strlen >0) and view search
 			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="view"){
 
-				$NOT=0;
 				// Manage Link if not first item
 				if (!$first||$i>0) {
-					if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
-						$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
-						$NOT=1;
-					} else if (is_array($link)&&isset($link[$key]))
+					if (is_array($link)&&isset($link[$key]))
 						$WHERE.=" ".$link[$key];
 					else 
 						$WHERE.=" AND ";
@@ -543,20 +542,16 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					if (!in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
 						$LINK=" OR ";
 						if ($first2) {$LINK=" ";$first2=false;}
-						$WHERE.= addWhere($LINK,$NOT,$type,$val2,$contains[$key]);
+						$WHERE.= addWhere($LINK,0,$type,$val2,$contains[$key]);
 					}
 				$WHERE.=" ) ";
 				$i++;
 				// if real search (strlen >0) and all search
 			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="all"){
 
-				$NOT=0;
 				// Manage Link if not first item
 				if (!$first||$i>0) {
-					if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
-						$WHERE.=" ".ereg_replace(" NOT","",$link[$key]);
-						$NOT=1;
-					} else if (is_array($link)&&isset($link[$key]))
+					if (is_array($link)&&isset($link[$key]))
 						$WHERE.=" ".$link[$key];
 					else 
 						$WHERE.=" AND ";
@@ -571,7 +566,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						if (!in_array($val2["table"],$META_SPECIF_TABLE)){
 							$LINK=" OR ";
 							if ($first2) {$LINK=" ";$first2=false;}
-							$WHERE.= addWhere($LINK,$NOT,$type,$key2,$contains[$key]);
+							$WHERE.= addWhere($LINK,0,$type,$key2,$contains[$key]);
 						}
 
 				$WHERE.=")";
@@ -1411,7 +1406,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
-
+	
 	if ($meta&&$LINK_ID_TABLE[$type]!=$table) $table.="_".$type;
 
 	$SEARCH=makeTextSearch($val,$nott);
