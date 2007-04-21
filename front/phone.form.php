@@ -40,10 +40,11 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(empty($tab["ID"])) $tab["ID"] = "";
-if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
+if(empty($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["sort"])) $_GET["sort"] = "";
+if(!isset($_GET["order"])) $_GET["order"] = "";
+
+if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $phone=new Phone();
 
@@ -55,16 +56,16 @@ if (isset($_POST["add"]))
 	logEvent($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["delete"]))
+else if (isset($_POST["delete"]))
 {
 	checkRight("phone","w");
 
-	if (!empty($tab["withtemplate"]))
-		$phone->delete($tab,1);
-	else $phone->delete($tab);
+	if (!empty($_POST["withtemplate"]))
+		$phone->delete($_POST,1);
+	else $phone->delete($_POST);
 
-	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	if(!empty($tab["withtemplate"])) 
+	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	if(!empty($_POST["withtemplate"])) 
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
 		glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
@@ -74,15 +75,15 @@ else if (isset($_POST["restore"]))
 	checkRight("phone","w");
 
 	$phone->restore($_POST);
-	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 }
-else if (isset($tab["purge"]))
+else if (isset($_POST["purge"]))
 {
 	checkRight("phone","w");
 
-	$phone->delete($tab,1);
-	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	$phone->delete($_POST,1);
+	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/phone.php");
 }
 else if (isset($_POST["update"]))
@@ -93,30 +94,30 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["unglobalize"]))
+else if (isset($_GET["unglobalize"]))
 {
 	checkRight("phone","w");
 
-	unglobalizeDevice(PHONE_TYPE,$tab["ID"]);
-	logEvent($tab["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
+	unglobalizeDevice(PHONE_TYPE,$_GET["ID"]);
+	logEvent($_GET["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["disconnect"]))
+else if (isset($_GET["disconnect"]))
 {
 	checkRight("phone","w");
 
-	Disconnect($tab["ID"]);
+	Disconnect($_GET["ID"]);
 	logEvent(0, "phones", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
+else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 {
 
 	checkRight("phone","w");
 
-	Connect($tab["sID"],$tab["item"],PHONE_TYPE);
-	logEvent($tab["sID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/phone.form.php?ID=".$tab["sID"]);
+	Connect($_POST["sID"],$_POST["item"],PHONE_TYPE);
+	logEvent($_POST["sID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/phone.form.php?ID=".$_POST["sID"]);
 
 
 }
@@ -133,24 +134,24 @@ else
 
 	commonHeader($LANG["title"][41],$_SERVER['PHP_SELF'],"inventory","phone");
 
-	if (!empty($tab["withtemplate"])) {
+	if (!empty($_GET["withtemplate"])) {
 
-		if ($phone->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
-			if ($tab["ID"]>0){
+		if ($phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])){
+			if ($_GET["ID"]>0){
 
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-						showContractAssociated(PHONE_TYPE,$tab["ID"],$tab["withtemplate"]);
+						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_GET["ID"],1,$_GET["withtemplate"]);
+						showContractAssociated(PHONE_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					case 5 :
-						showDocumentAssociated(PHONE_TYPE,$tab["ID"],$tab["withtemplate"]);
+						showDocumentAssociated(PHONE_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 
 					default :
-						if (!display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-							if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PHONE_TYPE);
-							showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
+						if (!display_plugin_action(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+							if ($_GET["withtemplate"]!=2)	showPortsAdd($_GET["ID"],PHONE_TYPE);
+							showPorts($_GET["ID"], PHONE_TYPE,$_GET["withtemplate"]);
 						}
 
 						break;
@@ -160,48 +161,48 @@ else
 
 	} else {
 
-		if ($phone->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
+		if ($phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showConnect($_SERVER['PHP_SELF'],$tab["ID"],PHONE_TYPE);
-					showPortsAdd($tab["ID"],PHONE_TYPE);
-					showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$tab["ID"]);
-					showContractAssociated(PHONE_TYPE,$tab["ID"]);
-					showDocumentAssociated(PHONE_TYPE,$tab["ID"]);
-					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$tab["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$tab["ID"]);
-					showLinkOnDevice(PHONE_TYPE,$tab["ID"]);
-					display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+					showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PHONE_TYPE);
+					showPortsAdd($_GET["ID"],PHONE_TYPE);
+					showPorts($_GET["ID"], PHONE_TYPE,$_GET["withtemplate"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_GET["ID"]);
+					showContractAssociated(PHONE_TYPE,$_GET["ID"]);
+					showDocumentAssociated(PHONE_TYPE,$_GET["ID"]);
+					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showLinkOnDevice(PHONE_TYPE,$_GET["ID"]);
+					display_plugin_action(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$tab["ID"]);
-					showContractAssociated(PHONE_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_GET["ID"]);
+					showContractAssociated(PHONE_TYPE,$_GET["ID"]);
 					break;
 				case 5 :
-					showDocumentAssociated(PHONE_TYPE,$tab["ID"]);
+					showDocumentAssociated(PHONE_TYPE,$_GET["ID"]);
 					break;
 				case 6 :
-					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$tab["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$tab["ID"]);
+					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					break;
 				case 7 :
-					showLinkOnDevice(PHONE_TYPE,$tab["ID"]);
+					showLinkOnDevice(PHONE_TYPE,$_GET["ID"]);
 					break;	
 				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],PHONE_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],PHONE_TYPE,$_GET["ID"]);
 					break;	
 				case 11 :
-					showDeviceReservations($_SERVER['PHP_SELF'],PHONE_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],PHONE_TYPE,$_GET["ID"]);
 					break;
 				case 12 :
-					showHistory(PHONE_TYPE,$tab["ID"]);
+					showHistory(PHONE_TYPE,$_GET["ID"]);
 					break;		
 				default :
-					if (!display_plugin_action(PHONE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-						showConnect($_SERVER['PHP_SELF'],$tab["ID"],PHONE_TYPE);
-						showPortsAdd($tab["ID"],PHONE_TYPE);
-						showPorts($tab["ID"], PHONE_TYPE,$tab["withtemplate"]);
+					if (!display_plugin_action(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+						showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PHONE_TYPE);
+						showPortsAdd($_GET["ID"],PHONE_TYPE);
+						showPorts($_GET["ID"], PHONE_TYPE,$_GET["withtemplate"]);
 					}
 					break;
 			}

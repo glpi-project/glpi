@@ -40,6 +40,8 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["sort"])) $_GET["sort"] = "";
+if(!isset($_GET["order"])) $_GET["order"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $computer=new Computer();
@@ -229,8 +231,8 @@ elseif(isset($_POST["unlock_field"])){
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",COMPUTER_TYPE,$_GET["ID"]);
 					showContractAssociated(COMPUTER_TYPE,$_GET["ID"]);
 					showDocumentAssociated(COMPUTER_TYPE,$_GET["ID"]);
-					showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"]);
+					showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showLinkOnDevice(COMPUTER_TYPE,$_GET["ID"]);
 					showRegistry(REGISTRY_TYPE,$_GET["ID"]);
 					display_plugin_action(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
@@ -251,8 +253,8 @@ elseif(isset($_POST["unlock_field"])){
 					showDocumentAssociated(COMPUTER_TYPE,$_GET["ID"]);
 					break;
 				case 6 :
-					showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"]);
+					showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					break;
 				case 7 :
 					showLinkOnDevice(COMPUTER_TYPE,$_GET["ID"]);
