@@ -61,11 +61,6 @@ include (GLPI_ROOT."/inc/includes.php");
 
 	commonHeader($LANG["title"][0],$_SERVER['PHP_SELF']);
 
-/*	$entitytree = getTreeForItem("glpi_entities",$_SESSION["glpiactive_entity"]);
-	printCleanArray($entitytree);
-	$list=contructListFromTree($entitytree);
-	printCleanArray($list);
-*/
 	// Redirect management
 	if (isset($_GET["redirect"])){
 		manageRedirect($_GET["redirect"]);
