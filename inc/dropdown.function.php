@@ -827,7 +827,12 @@ function dropdownMyDevices($userID=0){
 		foreach ($CFG_GLPI["linkuser_type"] as $type){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='0' ";
+				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+					$query.=" AND is_template='0' ";
+				}
 				$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type]);
+				$query.=" ORDER BY name ";
+
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
 					$ci->setType($type);
@@ -904,7 +909,12 @@ function dropdownMyDevices($userID=0){
 			foreach ($types as $type){
 				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 					if (!isset($already_add[$type])) $already_add[$type]=array();
-					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." AND ".$LINK_ID_TABLE[$type].".deleted='0' ORDER BY ".$LINK_ID_TABLE[$type].".name";
+					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." AND ".$LINK_ID_TABLE[$type].".deleted='0' ";
+					if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+						$query.=" AND is_template='0' ";
+					}
+					$query.=" ORDER BY ".$LINK_ID_TABLE[$type].".name";
+
 					$result=$DB->query($query);
 					if ($DB->numrows($result)>0){
 						$ci->setType($type);
