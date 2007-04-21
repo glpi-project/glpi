@@ -177,8 +177,8 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	$entry=array();
 	$type="";
 	$name="";
-	$specificity_label = getDeviceSpecifityLabel($device->type);
-	switch($device->type) {
+	$specificity_label = getDeviceSpecifityLabel($device->devtype);
+	switch($device->devtype) {
 		case HDD_DEVICE :
 			$type=$LANG["devices"][1];
 			$name=$device->fields["designation"];
@@ -276,8 +276,8 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		echo "<option value='$i' ".($quantity==$i?"selected":"").">".$i."x</option>";
 	echo "</select>";
 	echo "</td>";
-	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->type."'>$type</a></td>";
-	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->type."'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
+	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->devtype."'>$type</a></td>";
+	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->devtype."'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
 
 	if (count($entry)>0){
 		$more=0;

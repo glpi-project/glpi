@@ -1549,7 +1549,7 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 	if ($DB->numrows($result)){
 		echo "<select name='$myname'>";
 		while ($data=$DB->fetch_array($result)){
-			echo "<option value='".$data["ID"]."'>".$data["serial"];
+			echo "<option value='".$data["ID"]."'>".$data["version"]." - ".$data["serial"];
 			if ($data["expire"]!=NULL) echo " - ".$LANG["software"][25]." ".$data["expire"];
 			else echo " - ".$LANG["software"][26];
 			if ($data["buy"]) echo " - ".$LANG["software"][35];

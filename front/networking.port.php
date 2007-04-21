@@ -40,14 +40,15 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 //print_r($_POST);
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 
 if (isset($_SERVER['HTTP_REFERER']))
 $REFERER=$_SERVER['HTTP_REFERER'];
 
-if (isset($tab["referer"])) $REFERER=urldecode($tab["referer"]);
+if (isset($_GET["referer"])) $REFERER=$_GET["referer"];
+else if (isset($_POST["referer"])) $REFERER=$_POST["referer"];
+
+$REFERER=urldecode($REFERER);
 
 $REFERER=preg_replace("/&amp;/","&",$REFERER);
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
@@ -60,34 +61,33 @@ if(isset($_POST["add"])){
 	checkRight("networking","w");
 
 	unset($_POST["referer"]);
-	unset($tab["referer"]);
 
 	// Is a preselected mac adress selected ?
 	if (isset($_POST['pre_mac'])){
 		if (!empty($_POST['pre_mac']))
 			$_POST['ifmac']=$_POST['pre_mac'];
 		unset($_POST['pre_mac']);
-		unset($tab['pre_mac']);
 
 	}
 
 
-	if (!isset($tab["several"])){
+	if (!isset($_POST["several"])){
 		$np->add($_POST);
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
 		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 	}
 	else {
-		unset($tab['several']);
-		unset($tab['from_logical_number']);
-		unset($tab['to_logical_number']);	
+		$input=$_POST;
+		unset($input['several']);
+		unset($input['from_logical_number']);
+		unset($input['to_logical_number']);	
 		for ($i=$_POST["from_logical_number"];$i<=$_POST["to_logical_number"];$i++){
 			$add="";
 			if ($i<10)	$add="0";
-			$tab["logical_number"]=$i;
-			$tab["name"]=$_POST["name"].$add.$i;
+			$input["logical_number"]=$i;
+			$input["name"]=$_POST["name"].$add.$i;
 			unset($np->fields["ID"]);
-			$np->add($tab);	
+			$np->add($input);	
 		}
 		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
 		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
@@ -128,7 +128,7 @@ else if (isset($_POST["connect"])){
 		}
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
-else if (isset($tab["disconnect"])){
+else if (isset($_GET["disconnect"])){
 	checkRight("networking","w");
 	if (isset($_GET["ID"])){
 		removeConnector($_GET["ID"]);
@@ -184,20 +184,20 @@ else if (isset($_GET['unassign_vlan'])){
 }
 else 
 {
-	if(empty($tab["on_device"])) $tab["on_device"] ="";
-	if(empty($tab["device_type"])) $tab["device_type"] ="";
-	if(empty($tab["several"])) $tab["several"] ="";
+	if(empty($_GET["on_device"])) $_GET["on_device"] ="";
+	if(empty($_GET["device_type"])) $_GET["device_type"] ="";
+	if(empty($_GET["several"])) $_GET["several"] ="";
 
 	checkRight("networking","w");
 	commonHeader($LANG["title"][6],$_SERVER['PHP_SELF'],"inventory");
 
-	if(isset($tab["ID"]))
+	if(isset($_GET["ID"]))
 	{
-		showNetportForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["on_device"],$tab["device_type"],$tab["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["on_device"],$_GET["device_type"],$_GET["several"]);
 	}
 	else
 	{
-		showNetportForm($_SERVER['PHP_SELF'],"",$tab["on_device"],$tab["device_type"],$tab["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],"",$_GET["on_device"],$_GET["device_type"],$_GET["several"]);
 	}
 	commonFooter();
 }

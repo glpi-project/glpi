@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-function showInfocomForm ($target,$device_type,$dev_ID,$show_immo=1,$withtemplate='') {
+function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate='') {
 	// Show Infocom or blank form
 
 	global $CFG_GLPI,$LANG;

@@ -43,17 +43,9 @@ checkRight("device","w");
 
 commonHeader($LANG["title"][30],$_SERVER['PHP_SELF'],"config","device");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST; 
-if(!isset($tab["start"])) $tab["start"] = 0;
-if(!isset($tab["order"])) $tab["order"] = "ASC";
-if(!isset($tab["field"])) $tab["field"] = "all";
-if(!isset($tab["phrasetype"])) $tab["phrasetype"] = "contains";
-if(!isset($tab["contains"])) $tab["contains"] = "";
-if(!isset($tab["sort"])) $tab["sort"] = "device.designation";
-if(!isset($tab["device_type"])) $tab["device_type"] = "0";
-if(!empty($tab["device_type"])) {
-	titleDevices($tab["device_type"]);
+if(!isset($_GET["device_type"])) $_GET["device_type"] = "0";
+if(!empty($_GET["device_type"])) {
+	titleDevices($_GET["device_type"]);
 }
 
 echo "<div align='center'><form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
@@ -64,15 +56,15 @@ $dp=getDictDeviceLabel();
 
 foreach ($dp as $key=>$val) {
 	$sel="";
-	if ($tab["device_type"]==$key) $sel="selected";
+	if ($_GET["device_type"]==$key) $sel="selected";
 	echo "<option value='$key' $sel>".$val."</option>";	
 }
 echo "</select></td>";
 echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
 echo "</table></form></div>";
 
-if(!empty($tab["device_type"])) {
-	showDevicesList($tab["device_type"],$_SERVER['PHP_SELF']);
+if(!empty($_GET["device_type"])) {
+	showDevicesList($_GET["device_type"],$_SERVER['PHP_SELF']);
 }
 
 

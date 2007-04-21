@@ -47,8 +47,6 @@ if (isset($_GET["redirect"])){
 	manageRedirect($_GET["redirect"]);
 }
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
 //*******************
 // Affichage Module FAQ
 //******************
