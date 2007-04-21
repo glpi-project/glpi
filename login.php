@@ -48,21 +48,6 @@ $NEEDED_ITEMS = array (
 
 include (GLPI_ROOT . "/inc/includes.php");
 
-// Change profile system
-if (isset ($_POST['newprofile'])) {
-	if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
-		changeProfile($_POST['newprofile']);
-		// Redirect to Command Central if not post-only
-		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-			glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php");
-		} else {
-			glpi_header($CFG_GLPI['root_doc'] . "/front/central.php");
-		}
-	} else {
-		glpi_header($_SERVER['HTTP_REFERER']);
-	}
-}
-
 if (!isset($_SESSION["glpitest"])||$_SESSION["glpitest"]!='testcookie'){
 	echo $LANG["login"][27];
 	glpi_header($CFG_GLPI['root_doc'] . "/index.php?cookie_error=1");
