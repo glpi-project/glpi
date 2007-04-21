@@ -38,13 +38,26 @@ $NEEDED_ITEMS=array("tracking","computer","printer","monitor","peripheral","netw
 include (GLPI_ROOT."/inc/includes.php");
 
 	checkCentralAccess();
-
-	// Manage entity change
-	if (isset($_POST["activeentity"])){
-		if (in_array($_POST["activeentity"],$_SESSION["glpiactiveentities"])){
-			changeActiveEntity($_POST["activeentity"]);
+	// Change profile system
+	if (isset ($_POST['newprofile'])) {
+		if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
+			changeProfile($_POST['newprofile']);
+		} else {
+			glpi_header($_SERVER['HTTP_REFERER']);
 		}
 	}
+
+	// Manage entity change
+	if (isset($_GET["active_entity"])){
+		if (!isset($_GET["recursive"])) {
+			$_GET["recursive"]=0;
+		}
+		changeActiveEntities($_GET["active_entity"],$_GET["recursive"]);
+		if ($_GET["active_entity"]==$_SESSION["glpiactive_entity"]){
+			glpi_header($_SERVER['HTTP_REFERER']);
+		}
+	}
+
 
 	commonHeader($LANG["title"][0],$_SERVER['PHP_SELF']);
 

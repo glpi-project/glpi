@@ -1585,31 +1585,35 @@ function dropdownLanguages($myname,$value){
 	echo "</select>";
 }
 
-function displayActiveEntities($myname){
-	
+function displayActiveEntities($target,$myname){
+	global $CFG_GLPI,$LANG;
 	if (is_array($_SESSION['glpi_entities_tree'])&&count($_SESSION['glpi_entities_tree'])){
 		foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
-			echo "TOUTES DE CHEZ TOUTES";
-			displayEntityTree($myname,$tree);
+			echo "<div><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'>&nbsp;".$LANG["buttons"][40]."&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'></a></div><br>";
+			displayEntityTree($target,$myname,$tree);
 		}
 	} 
 }
 
-function displayEntityTree($myname,$tree,$tab=''){
-
+function displayEntityTree($target,$myname,$tree,$level=0){
+	global $CFG_GLPI,$LANG;
 	if (count($tree)){
 		foreach ($tree as $ID => $data){
 			if (isset($data['name'])){
-				echo "<br>";
-				echo $tab."&raquo;<a href='lienversselectionunique'>".$data['name']."</a>";
-				if (isset($data['tree'])&&count($data['tree'])){
-					echo "<a href='lien vers selection du sous arbre'>Tous</a>";
-					displayEntityTree($myname,$data['tree'],$tab."&nbsp;&nbsp;&nbsp;&nbsp;");
+				$class=" class='tree' ";
+				$raquo="&raquo;";
+				if ($level==0){
+					$class=" class='treeroot' ";
+					$raquo="";
 				}
+
+				echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;", $level+1).$raquo."&nbsp;<a title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".$data['name']."</a>";
+				if (isset($data['tree'])&&count($data['tree'])){
+					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&recursive=1'><img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'></a></div>";
+					displayEntityTree($target,$myname,$data['tree'],$level+1);
+				} else echo "</div>";
 			}
 		}
-
-
 	}
 }
 

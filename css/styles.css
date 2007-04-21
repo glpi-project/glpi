@@ -333,7 +333,7 @@ div#c_ssmenu2 ul li a{
 }
 
 div#show_entities{
-display: none;
+	display: none;
 	position: absolute;
 	border: 2px solid gray;
 	background-color : #f1f4e3;
@@ -342,7 +342,7 @@ display: none;
 	font-size: 11px;
 	text-align: left;
 	z-index:1000;
-	
+	overflow: auto;	
 }
 
 
@@ -460,13 +460,13 @@ select {
 	border: 1px solid #888888;
 }
 
-option.tree {
+.tree {
 
 	border:0;
 	border-bottom:1px solid #C0CAD4;
 }
 
-option.treeroot {
+.treeroot {
 	
 	background: url("../pics/treeroot.png") 0 2px no-repeat;
 	background-color:#eeeeee;

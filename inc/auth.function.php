@@ -510,23 +510,60 @@ function changeProfile($ID) {
 				}
 			}
 		}
-		changeActiveEntity(key($_SESSION['glpiactiveentities']));
+		changeActiveEntities("all");
 	}
 	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 }
 
+
 /**
- * Change active enity to the $ID one. Update glpiactive_entity session variable.
+ * Change active entity to the $ID one. Update glpiactiveentities session variable.
  * Reload groups related to this entity.
  *
- * @param $ID : ID of the new profile
+ * @param $ID : ID of the new active entity ("all"=>load all possible entities)
+ * @param $recursive : also display sub entities of the active entity ?
  * @return Nothing 
  */
-function changeActiveEntity($ID) {
-	$_SESSION["glpiactive_entity"] = $ID;
-	$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$ID);
-	loadGroups();
-	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+function changeActiveEntities($ID="all",$recursive=false) {
+	$newentities=array();
+	if ($ID=="all"){
+		foreach ($_SESSION['glpi_entities_tree'] as $key => $tree){
+			$entities = contructListFromTree($tree);
+			if (count($entities)) {
+				foreach ($entities as $key2 => $val2) {
+					$newentities[$key2] = $key2;
+				}
+			}		
+		}
+	} else {
+		$newentities[$ID] = $ID;
+		if ($recursive){
+			foreach ($_SESSION['glpi_entities_tree'] as $key => $tree){
+				$entities = contructListFromTree($tree);
+				$tofind=array($ID);
+				while (count($tofind)){
+					$founded=array();
+					foreach ($entities as $key2 => $val2){
+						if (in_array($val2,$tofind)){
+							$newentities[$key2] = $key2;
+							$founded[]=$key2;
+							unset($entities[$key2]);
+						}
+					}
+					$tofind=$founded;
+				}
+			}
+		}
+	}
+	if (count($newentities)){
+		$_SESSION['glpiactiveentities']=$newentities;
+		// Active entity loading
+		$active=key($_SESSION['glpiactiveentities']);
+		$_SESSION["glpiactive_entity"] = $active;
+		$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
+		loadGroups();
+		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+	}
 }
 
 /**

@@ -40,13 +40,25 @@ $NEEDED_ITEMS=array("user","tracking","reservation","document","knowbase","compu
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-// Manage entity change
-if (isset($_POST["activeentity"])){
-	if (in_array($_POST["activeentity"],$_SESSION["glpiactiveentities"])){
-		$_SESSION["glpiactive_entity"]=$_POST["activeentity"];
-		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+	// Change profile system
+	if (isset ($_POST['newprofile'])) {
+		if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
+			changeProfile($_POST['newprofile']);
+		} else {
+			glpi_header($_SERVER['HTTP_REFERER']);
+		}
 	}
-}
+
+	// Manage entity change
+	if (isset($_GET["active_entity"])){
+		if (!isset($_GET["recursive"])) {
+			$_GET["recursive"]=0;
+		}
+		changeActiveEntities($_GET["active_entity"],$_GET["recursive"]);
+		if ($_GET["active_entity"]==$_SESSION["glpiactive_entity"]){
+			glpi_header($_SERVER['HTTP_REFERER']);
+		}
+	}
 
 // Redirect management
 if (isset($_GET["redirect"])){

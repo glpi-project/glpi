@@ -772,7 +772,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			timeoutglobalvar = setTimeout(function(){afterView(document.getElementById('show_all_menu'))},5000);
 */
 		echo "</li>";
-		showProfileSelecter();	
+		showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");	
 		echo "</ul>";	
 
 		echo "	</div>";
@@ -991,7 +991,7 @@ function helpHeader($title,$url) {
 		echo "<div id='c_ssmenu2' >";
 		echo "<ul>";
 		echo "	<li><a href='#' title='' >Helpdesk > </a></li>";
-		showProfileSelecter();	
+		showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");	
 		echo "</ul>";	
 		echo "	</div>";
 			
@@ -1849,11 +1849,11 @@ function showCentralMyView(){
 
 }
 
-function showProfileSelecter(){
+function showProfileSelecter($target){
 	global $CFG_GLPI;
 
 	if (count($_SESSION["glpiprofiles"])>1){
-		echo '<li><form name="form" method="post" action="'.$CFG_GLPI['root_doc'].'/login.php">';
+		echo '<li><form name="form" method="post" action="'.$target.'">';
 		echo '<select name="newprofile" onChange="submit()">';
 		foreach ($_SESSION["glpiprofiles"] as $key => $val){
 			echo '<option value="'.$key.'" '.($_SESSION["glpiactiveprofile"]["ID"]==$key?'selected':'').'>'.$val['name'].'</option>';
@@ -1865,25 +1865,24 @@ function showProfileSelecter(){
 
 	} //else echo "only one profile -> no select to print";
 	
-	if (count($_SESSION['glpiactiveentities'])>1){
+/*	if (count($_SESSION['glpiactiveentities'])>1){
 		echo "<li>";
 			dropdownActiveEntities("activeentity");
 		echo "</li>";
 	} //else echo "only one entity -> no select to print";
-	
-/*
+*/	
+
 
 	echo "<li>";
 	echo "<a href='#' onClick=\"cleandisplay('show_entities');\">".$_SESSION["glpiactive_entity_name"]."</a>";
 	
 
 	echo "<div  id='show_entities' onMouseOver=\"cleandisplay('show_entities');\" onMouseOut=\"cleanhide('show_entities');\">";
-	
-	displayActiveEntities($_SESSION['glpi_entities_tree'],"activeentity");
+	displayActiveEntities($target,$_SESSION['glpi_entities_tree'],"activeentity");
 	echo "<div style='clear:both'></div>";
 	echo "</div>";
 	echo "</li>";
-*/
+
 
 
 } 
