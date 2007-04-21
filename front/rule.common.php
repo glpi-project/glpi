@@ -38,19 +38,17 @@ if (!defined('GLPI_ROOT')){
 	}
 $rule = new $rulecollection->rule_class_name();
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 checkRight($rulecollection->right,"r");
 
 
-if (isset($tab["action"])){
+if (isset($_GET["action"])){
 	checkRight($rulecollection->right,"w");
 
-	$rulecollection->changeRuleOrder($tab["ID"],$tab["action"]);
+	$rulecollection->changeRuleOrder($_GET["ID"],$_GET["action"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-}elseif (isset($tab["delete_rule"])){
+}elseif (isset($_POST["delete_rule"])){
 	checkRight($rulecollection->right,"w");	
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)

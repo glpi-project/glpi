@@ -39,9 +39,7 @@ $NEEDED_ITEMS=array("enterprise","contact","document","contract","tracking","use
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 if (!isset($_GET["start"])) {
 	$_GET["start"]=0;
@@ -64,7 +62,7 @@ else if (isset($_POST["delete"]))
 	checkRight("contact_enterprise","w");
 
 	$ent->delete($_POST);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["restore"]))
@@ -72,7 +70,7 @@ else if (isset($_POST["restore"]))
 	checkRight("contact_enterprise","w");
 
 	$ent->restore($_POST);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["purge"]))
@@ -80,7 +78,7 @@ else if (isset($_POST["purge"]))
 	checkRight("contact_enterprise","w");
 
 	$ent->delete($_POST,1);
-	logEvent($tab["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/enterprise.php");
 }
 else if (isset($_POST["update"]))
@@ -95,7 +93,7 @@ else if (isset($_POST["addcontact"])){
 	checkRight("contact_enterprise","w");
 
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
-	logEvent($tab["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][36]);
+	logEvent($_POST["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][36]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletecontact"])){
@@ -118,47 +116,47 @@ else
 	commonHeader($LANG["title"][23],$_SERVER['PHP_SELF'],"financial","enterprise");
 
 
-	if ($ent->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
-		if (!empty($tab["ID"]))
+	if ($ent->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
+		if (!empty($_GET["ID"]))
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showAssociatedContact($tab["ID"]);
-					showContractAssociatedEnterprise($tab["ID"]);
-					showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"]);
+					showAssociatedContact($_GET["ID"]);
+					showContractAssociatedEnterprise($_GET["ID"]);
+					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"]);
 					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",0,0,0,$_GET["ID"]);
-					showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
-					display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+					showLinkOnDevice(ENTERPRISE_TYPE,$_GET["ID"]);
+					display_plugin_action(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
-					showAssociatedContact($tab["ID"]);
+					showAssociatedContact($_GET["ID"]);
 					break;
 				case 4 :
-					showContractAssociatedEnterprise($tab["ID"]);
+					showContractAssociatedEnterprise($_GET$_GET["ID"]);
 					break;
 				case 5 :
-					showDocumentAssociated(ENTERPRISE_TYPE,$tab["ID"],0);
+					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"],0);
 					break;
 				case 6 :
-					showTrackingList($_SERVER['PHP_SELF']."?ID=".$tab["ID"],$_GET["start"],$_GET["sort"],$_GET["order"],"all",0,0,0,$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF']."?ID=".$_GET["ID"],$_GET["start"],$_GET["sort"],$_GET["order"],"all",0,0,0,$_GET["ID"]);
 					break;
 				case 7 : 
-					showLinkOnDevice(ENTERPRISE_TYPE,$tab["ID"]);
+					showLinkOnDevice(ENTERPRISE_TYPE,$_GET["ID"]);
 					break;
 				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],ENTERPRISE_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],ENTERPRISE_TYPE,$_GET["ID"]);
 					break;	
 				case 15 :
 					echo "<div align='center'><table border='0'><tr><td valign='top'>";
-					showDeviceManufacturer($tab["ID"]);
+					showDeviceManufacturer($_GET["ID"]);
 					echo "</td><td valign='top'>";
-					showInternalDeviceManufacturer($tab["ID"]);
+					showInternalDeviceManufacturer($_GET["ID"]);
 					echo "</td><td valign='top'>";
-					showInfocomEnterprise($tab["ID"]);
+					showInfocomEnterprise($_GET["ID"]);
 					echo "</td></tr></table></div>";
 					break;	
 				default : 
-					if (!display_plugin_action(ENTERPRISE_TYPE,$tab["ID"],$_SESSION['glpi_onglet']))
-						showAssociatedContact($tab["ID"]);
+					if (!display_plugin_action(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
+						showAssociatedContact($_GET["ID"]);
 
 					break;
 			}

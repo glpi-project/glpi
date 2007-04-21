@@ -38,9 +38,7 @@ $NEEDED_ITEMS=array("document","computer","printer","monitor","peripheral","netw
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 $doc= new Document();
 
@@ -57,7 +55,7 @@ else if (isset($_POST["delete"]))
 	checkRight("document","w");
 
 	$doc->delete($_POST);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 else if (isset($_POST["restore"]))
@@ -65,7 +63,7 @@ else if (isset($_POST["restore"]))
 	checkRight("document","w");
 
 	$doc->restore($_POST);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 else if (isset($_POST["purge"]))
@@ -73,7 +71,7 @@ else if (isset($_POST["purge"]))
 	checkRight("document","w");
 
 	$doc->delete($_POST,1);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/document.php");
 }
 
@@ -91,7 +89,7 @@ else if (isset($_POST["additem"])){
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item']);
-		logEvent($tab["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][32]);
+		logEvent($_POST["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -100,7 +98,7 @@ else if (isset($_GET["deleteitem"])){
 	checkRight("document","w");
 
 	deleteDeviceDocument($_GET["ID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	logEvent($_GET["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"])){
@@ -108,16 +106,16 @@ else if (isset($_POST["addenterprise"])){
 	checkRight("document","w");
 
 	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$LANG["log"][32]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/document.form.php?ID=".$_POST["conID"]);
+	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$LANG["log"][32]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteenterprise"])){
 
 	checkRight("document","w");
 
 	deleteEnterpriseDocument($_GET["ID"]);
-	logEvent($tab["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$LANG["log"][33]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/document.form.php?ID=".$_POST["conID"]);
+	logEvent($_GET["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$LANG["log"][33]);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
@@ -132,19 +130,19 @@ else
 	commonHeader($LANG["title"][25],$_SERVER['PHP_SELF'],"financial","document");
 
 
-	if ($doc->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
+	if ($doc->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 		switch ($_SESSION['glpi_onglet']){
 			case -1 :
-				showDeviceDocument($tab["ID"]);
-				display_plugin_action(DOCUMENT_TYPE,$tab["ID"],$_SESSION['glpi_onglet']);
+				showDeviceDocument($_GET["ID"]);
+				display_plugin_action(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 				break;
 			case 10 :
-				showNotesForm($_SERVER['PHP_SELF'],DOCUMENT_TYPE,$tab["ID"]);
+				showNotesForm($_SERVER['PHP_SELF'],DOCUMENT_TYPE,$_GET["ID"]);
 				break;
 			default :
-				if ($tab["ID"]){
-					if (!display_plugin_action(DOCUMENT_TYPE,$tab["ID"],$_SESSION['glpi_onglet'])){
-						showDeviceDocument($tab["ID"]);
+				if ($_GET["ID"]){
+					if (!display_plugin_action(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+						showDeviceDocument($_GET["ID"]);
 					}
 				}
 				break;

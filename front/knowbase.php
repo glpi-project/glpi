@@ -42,16 +42,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
 
-if (isset($_GET["ID"]))
-glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
+if (isset($_GET["ID"])){
+	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
+}
 
 
 commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
-
-
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
 
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;

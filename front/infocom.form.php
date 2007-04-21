@@ -39,10 +39,8 @@ $NEEDED_ITEMS=array("infocom","computer","printer","monitor","peripheral","netwo
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
-if(!isset($tab["search"])) $tab["search"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["search"])) $_GET["search"] = "";
 
 $ic=new Infocom();
 
@@ -59,7 +57,7 @@ else if (isset($_POST["delete"]))
 	checkRight("contract_infocom","w");
 
 	$ic->delete($_POST);
-	logEvent($tab["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_GET["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
@@ -70,14 +68,7 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
-else
-{
-	checkRight("contract_infocom","r");
 
-	commonHeader($LANG["title"][21],$_SERVER['PHP_SELF'],"financial","infocom");
-	showInfocomForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["search"]);
-
-	commonFooter();
-}
+glpi_header($_SERVER['HTTP_REFERER']);
 
 ?>

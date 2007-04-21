@@ -35,24 +35,24 @@ if (!defined('GLPI_ROOT')){
 
 //Class Devices
 class Device extends CommonDBTM {
-	var $type=0;
+	var $devtype=0;
 
 	function Device($dev_type) {
-		$this->type=$dev_type;
+		$this->devtype=$dev_type;
 		$this->table=getDeviceTable($dev_type);
 	}
 
 
 	function cleanDBonPurge($ID) {
 		global $DB;
-		$query="SELECT FK_computers FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+		$query="SELECT FK_computers FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->devtype."')";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_assoc($result)){
 				cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 			}
 		}
-		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->type."')";
+		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->devtype."')";
 		$DB->query($query2);
 	}
 

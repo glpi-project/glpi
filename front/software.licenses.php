@@ -43,11 +43,9 @@ $NEEDED_ITEMS=array("computer","software","infocom","contract");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["lID"])) $tab["lID"] = "";
-if(!isset($tab["sID"])) $tab["sID"] = "";
-if(!isset($tab["withtemplate"])) $tab["withtemplate"] = 0;
+if(!isset($_GET["lID"])) $_GET["lID"] = "";
+if(!isset($_GET["sID"])) $_GET["sID"] = "";
+if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = 0;
 
 $lic=new License;
 
@@ -57,35 +55,35 @@ if (isset($_POST["add"]))
 
 	if ($_POST["serial"]=="free")$number=1;
 	else $number=$_POST["number"];
-	unset($tab["number"]);
+	unset($_POST["number"]);
 
 
 	for ($i=1;$i<=$number;$i++){
 		unset($lic->fields["ID"]);
-		$lic->add($tab);
+		$lic->add($_POST);
 	}
 
-	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
+	logEvent($_POST["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." added a license.");
 
-	glpi_header($_SERVER['PHP_SELF']."?form=add&sID=".$tab["sID"]);
+	glpi_header($_SERVER['PHP_SELF']."?form=add&sID=".$_POST["sID"]);
 }
-else if (isset($tab["update_stock_licenses"])||isset($tab["update_stock_licenses_x"])){
+else if (isset($_POST["update_stock_licenses"])||isset($_POST["update_stock_licenses_x"])){
 	checkRight("software","w");
 
-	foreach ($tab as $key => $val)
+	foreach ($_POST as $key => $val)
 		if (ereg("stock_licenses_([0-9]+)",$key,$regs))
-			if ($val!=$tab["nb_licenses_".$regs[1]])
-				updateNumberLicenses($regs[1],$tab["nb_licenses_".$regs[1]],$val);
+			if ($val!=$_POST["nb_licenses_".$regs[1]])
+				updateNumberLicenses($regs[1],$_POST["nb_licenses_".$regs[1]],$val);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 }	
-else if (isset($tab["update_expire"])||isset($tab["update_expire_x"])){
+else if (isset($_POST["update_expire"])||isset($_POST["update_expire_x"])){
 	checkRight("software","w");
 
 	$lic=new License;
-	$input["expire"]=$tab["expire"];
+	$input["expire"]=$_POST["expire"];
 
-	foreach ($tab as $key => $val)
+	foreach ($_POST as $key => $val)
 		if (ereg("license_([0-9]+)",$key,$ereg)){
 			$input["ID"]=$ereg[1];
 			$lic->update($input);
@@ -93,25 +91,25 @@ else if (isset($tab["update_expire"])||isset($tab["update_expire_x"])){
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["update_buy"])||isset($tab["update_buy_x"])){
+else if (isset($_POST["update_buy"])||isset($_POST["update_buy_x"])){
 	checkRight("software","w");
 
-	$input["buy"]=$tab["buy"];	
+	$input["buy"]=$_POST["buy"];	
 
-	foreach ($tab as $key => $val)
+	foreach ($_POST as $key => $val)
 		if (ereg("license_([0-9]+)",$key,$ereg)){
 			$input["ID"]=$ereg[1];
 			$lic->update($input);
 		}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["move"])||isset($tab["move"])){
-	if ($tab["lID"]&&$lic->getFromDB($tab["lID"])){
+else if (isset($_POST["move"])||isset($_POST["move"])){
+	if ($_POST["lID"]&&$lic->getFromDB($_POST["lID"])){
 		unset($lic->fields["ID"]);
 		unset($lic->fields["comments"]);
 
 		$lic2=new License();
-		foreach ($tab as $key => $val)
+		foreach ($_POST as $key => $val)
 			if (ereg("license_([0-9]+)",$key,$ereg)){
 				$input=$lic->fields;
 				$input["ID"]=$ereg[1];
@@ -121,56 +119,56 @@ else if (isset($tab["move"])||isset($tab["move"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["update"]))
+else if (isset($_POST["update"]))
 {
 	checkRight("software","w");
 
-	unset($tab["search_software"]);
+	unset($_POST["search_software"]);
 	
-	$lic->update($tab);
+	$lic->update($_POST);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update a license.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["form"]))
+else if (isset($_GET["form"]))
 {
 	checkRight("software","w");
 
 	commonHeader($LANG["title"][12],$_SERVER['PHP_SELF'],"inventory","software");
-	showLicenseForm($_SERVER['PHP_SELF'],$tab['form'],$tab["sID"],$tab["lID"]);
+	showLicenseForm($_SERVER['PHP_SELF'],$_GET['form'],$_GET["sID"],$_GET["lID"]);
 	commonFooter();
 }
-else if (isset($tab["delete"]))
+else if (isset($_POST["delete"]))
 {
 	checkRight("software","w");
 
-	$lic->delete(array("ID"=>$tab["ID"]));
+	$lic->delete(array("ID"=>$_POST["ID"]));
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
-else if (isset($tab["install"]))
+else if (isset($_POST["install"]))
 {
 	checkRight("software","w");
 
-	installSoftware($tab["cID"],$tab["licenseID"],$tab["sID"]);
-	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+	installSoftware($_POST["cID"],$_POST["licenseID"],$_POST["sID"]);
+	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["uninstall"]))
+else if (isset($_GET["uninstall"]))
 {
 	checkRight("software","w");
 
-	uninstallSoftware($tab["ID"]);
-	logEvent($tab["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
-	glpi_header($_SERVER['HTTP_REFERER']." ");
+	uninstallSoftware($_GET["ID"]);
+	logEvent($_GET["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["unglobalize"])&&isset($tab["ID"])){
-	unglobalizeLicense($tab["ID"]);
-	logEvent($tab["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$tab["sID"]);
+else if (isset($_GET["unglobalize"])&&isset($_GET["ID"])){
+	unglobalizeLicense($_GET["ID"]);
+	logEvent($_GET["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$_GET["sID"]);
 }
-else if (isset($tab["back"]))
+else if (isset($_GET["back"]))
 {
-	glpi_header($tab["back"]." ");
+	glpi_header($_GET["back"]);
 }
 
 

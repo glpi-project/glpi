@@ -40,9 +40,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(empty($tab["ID"])) $tab["ID"] = "";
+if(empty($_GET["ID"])) $_GET["ID"] = "";
 
 $link=new Link();
 
@@ -74,7 +72,7 @@ else if (isset($_POST["adddevice"])){
 	checkRight("link","w");
 
 	addLinkDevice($_POST["device_type"],$_POST["lID"]);
-	logEvent($tab["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][32]);
+	logEvent($_POST["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][32]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?ID=".$_POST["lID"]);
 }
 else if (isset($_GET["deletedevice"])){
@@ -97,8 +95,8 @@ else
 
 	commonHeader($LANG["title"][33],$_SERVER['PHP_SELF'],"config","link");
 
-	if ($link->showForm($_SERVER['PHP_SELF'],$tab["ID"])&&!empty($tab["ID"]))
-		showLinkDevice($tab["ID"]);
+	if ($link->showForm($_SERVER['PHP_SELF'],$_GET["ID"])&&!empty($_GET["ID"]))
+		showLinkDevice($_GET["ID"]);
 	commonFooter();
 }
 

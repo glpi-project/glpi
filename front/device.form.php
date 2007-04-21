@@ -40,21 +40,18 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
-if(empty($tab["device_type"])) {
-	glpi_header($CFG_GLPI["root_doc"] . "/front/device.php");
-}
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 if (isset($_SERVER['HTTP_REFERER'])) $REFERER=$_SERVER['HTTP_REFERER'];
-if (isset($tab["referer"])) $REFERER=$tab["referer"];
-if (isset($_POST["referer"])) $REFERER=$_POST["referer"];
+if (isset($_GET["referer"])) $REFERER=$_GET["referer"];
+else if (isset($_POST["referer"])) {
+	$REFERER=$_POST["referer"];
+	unset($_POST["referer"]);
+}
 
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
-unset($_POST["referer"]);
-unset($tab["referer"]);
+
 
 checkRight("device","w");
 
@@ -65,11 +62,11 @@ if (isset($_POST["add"])) {
 	logEvent($newID, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]." ".$_POST["designation"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?device_type=".$_POST["device_type"]);
 }
-else if (isset($tab["delete"])) {
-	$device=new Device($tab["device_type"]);	
-	$device->delete($tab);
-	logEvent($tab["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?device_type=".$tab["device_type"]);
+else if (isset($_POST["delete"])) {
+	$device=new Device($_POST["device_type"]);	
+	$device->delete($_POST);
+	logEvent($_POST["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?device_type=".$_POST["device_type"]);
 }
 else if (isset($_POST["update"])) {
 	$device=new Device($_POST["device_type"]);	
@@ -80,7 +77,7 @@ else if (isset($_POST["update"])) {
 else {
 
 	commonHeader($LANG["title"][30],$_SERVER['PHP_SELF'],"inventory","device");
-	showDevicesForm($_SERVER['PHP_SELF'],$tab["ID"],$tab["device_type"]);
+	showDevicesForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["device_type"]);
 	commonFooter();
 }
 
