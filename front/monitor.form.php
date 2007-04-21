@@ -38,10 +38,10 @@ $NEEDED_ITEMS=array("monitor","computer","reservation","tracking","infocom","con
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(empty($tab["ID"])) $tab["ID"] = "";
-if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
+if(empty($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["sort"])) $_GET["sort"] = "";
+if(!isset($_GET["order"])) $_GET["order"] = "";
+if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $monitor=new Monitor();
 if (isset($_POST["add"]))
@@ -52,16 +52,16 @@ if (isset($_POST["add"]))
 	logEvent($newID, "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["delete"]))
+else if (isset($_POST["delete"]))
 {
 	checkRight("monitor","w");
 
-	if (!empty($tab["withtemplate"]))
-		$monitor->delete($tab,1);
-	else $monitor->delete($tab);
+	if (!empty($_POST["withtemplate"]))
+		$monitor->delete($_POST,1);
+	else $monitor->delete($_POST);
 
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	if(!empty($tab["withtemplate"])) 
+	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	if(!empty($_POST["withtemplate"])) 
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
 		glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
@@ -71,15 +71,15 @@ else if (isset($_POST["restore"]))
 	checkRight("monitor","w");
 
 	$monitor->restore($_POST);
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
 }
-else if (isset($tab["purge"]))
+else if (isset($_POST["purge"]))
 {
 	checkRight("monitor","w");
 
-	$monitor->delete($tab,1);
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	$monitor->delete($_POST,1);
+	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
 }
 else if (isset($_POST["update"]))
@@ -90,31 +90,31 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["unglobalize"]))
+else if (isset($_GET["unglobalize"]))
 {
 	checkRight("monitor","w");
 
-	unglobalizeDevice(MONITOR_TYPE,$tab["ID"]);
-	logEvent($tab["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
+	unglobalizeDevice(MONITOR_TYPE,$_GET["ID"]);
+	logEvent($_GET["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["disconnect"]))
+else if (isset($_GET["disconnect"]))
 {
 	checkRight("monitor","w");
 
 	//Get the ocs server id associated with the machine
-	$ocs_server_id = getOCSServerByMachineID($tab["cID"]);
-	Disconnect($tab["ID"],$ocs_server_id);
+	$ocs_server_id = getOCSServerByMachineID($_GET["cID"]);
+	Disconnect($_GET["ID"],$ocs_server_id);
 	logEvent(0, "monitors", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
+else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 {
 	checkRight("monitor","w");
 
-	Connect($tab["sID"],$tab["item"],MONITOR_TYPE);
-	logEvent($tab["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/monitor.form.php?ID=".$tab["sID"]);
+	Connect($_POST["sID"],$_POST["item"],MONITOR_TYPE);
+	logEvent($_POST["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/monitor.form.php?ID=".$_POST["sID"]);
 
 }
 else
@@ -129,20 +129,20 @@ else
 
 	commonHeader($LANG["title"][18],$_SERVER['PHP_SELF'],"inventory","monitor");
 
-	if (!empty($tab["withtemplate"])) {
+	if (!empty($_GET["withtemplate"])) {
 
-		if ($monitor->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
-			if ($tab["ID"]>0){
+		if ($monitor->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])){
+			if ($_GET["ID"]>0){
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-						showContractAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
+						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_GET["ID"],1,$_GET["withtemplate"]);
+						showContractAssociated(MONITOR_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					case 5 :			
-						showDocumentAssociated(MONITOR_TYPE,$tab["ID"],$tab["withtemplate"]);
+						showDocumentAssociated(MONITOR_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					default :
-						display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+						display_plugin_action(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 						break;
 				}
 
@@ -152,44 +152,44 @@ else
 
 	} else {
 
-		if ($monitor->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
+		if ($monitor->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showConnect($_SERVER['PHP_SELF'],$tab['ID'],MONITOR_TYPE);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"]);
-					showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
-					showDocumentAssociated(COMPUTER_TYPE,$tab["ID"]);	
-					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
-					showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
-					display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+					showConnect($_SERVER['PHP_SELF'],$_GET['ID'],MONITOR_TYPE);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_GET["ID"]);
+					showContractAssociated(MONITOR_TYPE,$_GET["ID"]);			
+					showDocumentAssociated(COMPUTER_TYPE,$_GET["ID"]);	
+					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);	
+					showLinkOnDevice(MONITOR_TYPE,$_GET["ID"]);
+					display_plugin_action(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 4 :			
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$tab["ID"]);
-					showContractAssociated(MONITOR_TYPE,$tab["ID"]);			
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_GET["ID"]);
+					showContractAssociated(MONITOR_TYPE,$_GET["ID"]);			
 					break;
 				case 5 :			
-					showDocumentAssociated(MONITOR_TYPE,$tab["ID"]);	
+					showDocumentAssociated(MONITOR_TYPE,$_GET["ID"]);	
 					break;
 				case 6 :			
-					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$tab["ID"]);	
+					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);	
 					break;
 				case 7 :
-					showLinkOnDevice(MONITOR_TYPE,$tab["ID"]);
+					showLinkOnDevice(MONITOR_TYPE,$_GET["ID"]);
 					break;	
 				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],MONITOR_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],MONITOR_TYPE,$_GET["ID"]);
 					break;	
 				case 11 :
-					showDeviceReservations($_SERVER['PHP_SELF'],MONITOR_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],MONITOR_TYPE,$_GET["ID"]);
 					break;
 				case 12 :
-					showHistory(MONITOR_TYPE,$tab["ID"]);
+					showHistory(MONITOR_TYPE,$_GET["ID"]);
 					break;	
 				default :
-					if (!display_plugin_action(MONITOR_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]))
-						showConnect($_SERVER['PHP_SELF'],$tab['ID'],MONITOR_TYPE);
+					if (!display_plugin_action(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]))
+						showConnect($_SERVER['PHP_SELF'],$_GET['ID'],MONITOR_TYPE);
 					break;	
 			}
 

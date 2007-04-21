@@ -39,10 +39,11 @@ $NEEDED_ITEMS=array("peripheral","infocom","contract","user","link","networking"
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(empty($tab["ID"])) $tab["ID"] = "";
-if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
+if(empty($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["sort"])) $_GET["sort"] = "";
+if(!isset($_GET["order"])) $_GET["order"] = "";
+
+if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $peripheral=new Peripheral();
 
@@ -54,16 +55,16 @@ if (isset($_POST["add"]))
 	logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["delete"]))
+else if (isset($_POST["delete"]))
 {
 	checkRight("peripheral","w");
 
-	if (!empty($tab["withtemplate"]))
-		$peripheral->delete($tab,1);
-	else $peripheral->delete($tab);
+	if (!empty($_POST["withtemplate"]))
+		$peripheral->delete($_POST,1);
+	else $peripheral->delete($_POST);
 
-	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	if(!empty($tab["withtemplate"])) 
+	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	if(!empty($_POST["withtemplate"])) 
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
 		glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
@@ -73,15 +74,15 @@ else if (isset($_POST["restore"]))
 	checkRight("peripheral","w");
 
 	$peripheral->restore($_POST);
-	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
 }
-else if (isset($tab["purge"]))
+else if (isset($_POST["purge"]))
 {
 	checkRight("peripheral","w");
 
-	$peripheral->delete($tab,1);
-	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	$peripheral->delete($_POST,1);
+	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.php");
 }
 else if (isset($_POST["update"]))
@@ -92,32 +93,32 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["unglobalize"]))
+else if (isset($_GET["unglobalize"]))
 {
 	checkRight("peripheral","w");
 
-	unglobalizeDevice(PERIPHERAL_TYPE,$tab["ID"]);
-	logEvent($tab["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
+	unglobalizeDevice(PERIPHERAL_TYPE,$_GET["ID"]);
+	logEvent($_GET["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["disconnect"]))
+else if (isset($_GET["disconnect"]))
 {
 	checkRight("peripheral","w");
 
 	//Get the ocs server id associated with the machine
-	$ocs_server_id = getOCSServerByMachineID($tab["cID"]);
-	Disconnect($tab["ID"],$ocs_server_id);
+	$ocs_server_id = getOCSServerByMachineID($_GET["cID"]);
+	Disconnect($_GET["ID"],$ocs_server_id);
 	logEvent(0, "peripherals", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if(isset($tab["connect"])&&isset($tab["item"])&&$tab["item"]>0)
+else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 {
 
 	checkRight("peripheral","w");
 
-	Connect($tab["sID"],$tab["item"],PERIPHERAL_TYPE);
-	logEvent($tab["sID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.form.php?ID=".$tab["sID"]);
+	Connect($_POST["sID"],$_POST["item"],PERIPHERAL_TYPE);
+	logEvent($_POST["sID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.form.php?ID=".$_POST["sID"]);
 }
 else
 {
@@ -132,24 +133,24 @@ else
 
 	commonHeader($LANG["title"][7],$_SERVER['PHP_SELF'],"inventory","peripheral");
 
-	if (!empty($tab["withtemplate"])) {
+	if (!empty($_GET["withtemplate"])) {
 
-		if ($peripheral->showForm($_SERVER['PHP_SELF'],$tab["ID"], $tab["withtemplate"])){
-			if ($tab["ID"]>0){
+		if ($peripheral->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])){
+			if ($_GET["ID"]>0){
 
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-						showContractAssociated(PERIPHERAL_TYPE,$tab["ID"],$tab["withtemplate"]);
+						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_GET["ID"],1,$_GET["withtemplate"]);
+						showContractAssociated(PERIPHERAL_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					case 5 :
-						showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"],$tab["withtemplate"]);
+						showDocumentAssociated(PERIPHERAL_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 
 					default :
-						if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-							if ($tab["withtemplate"]!=2)	showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
-							showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
+						if (!display_plugin_action(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+							if ($_GET["withtemplate"]!=2)	showPortsAdd($_GET["ID"],PERIPHERAL_TYPE);
+							showPorts($_GET["ID"], PERIPHERAL_TYPE,$_GET["withtemplate"]);
 						}
 
 						break;
@@ -159,48 +160,48 @@ else
 
 	} else {
 
-		if ($peripheral->showForm($_SERVER['PHP_SELF'],$tab["ID"])){
+		if ($peripheral->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showConnect($_SERVER['PHP_SELF'],$tab["ID"],PERIPHERAL_TYPE);
-					showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
-					showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$tab["ID"]);
-					showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
-					showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"]);
-					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
-					showLinkOnDevice(PERIPHERAL_TYPE,$tab["ID"]);
-					display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+					showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PERIPHERAL_TYPE);
+					showPortsAdd($_GET["ID"],PERIPHERAL_TYPE);
+					showPorts($_GET["ID"], PERIPHERAL_TYPE,$_GET["withtemplate"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_GET["ID"]);
+					showContractAssociated(PERIPHERAL_TYPE,$_GET["ID"]);
+					showDocumentAssociated(PERIPHERAL_TYPE,$_GET["ID"]);
+					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showLinkOnDevice(PERIPHERAL_TYPE,$_GET["ID"]);
+					display_plugin_action(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$tab["ID"]);
-					showContractAssociated(PERIPHERAL_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_GET["ID"]);
+					showContractAssociated(PERIPHERAL_TYPE,$_GET["ID"]);
 					break;
 				case 5 :
-					showDocumentAssociated(PERIPHERAL_TYPE,$tab["ID"]);
+					showDocumentAssociated(PERIPHERAL_TYPE,$_GET["ID"]);
 					break;
 				case 6 :
-					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$tab["ID"]);
+					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					break;
 				case 7 :
-					showLinkOnDevice(PERIPHERAL_TYPE,$tab["ID"]);
+					showLinkOnDevice(PERIPHERAL_TYPE,$_GET["ID"]);
 					break;	
 				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],PERIPHERAL_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],PERIPHERAL_TYPE,$_GET["ID"]);
 					break;	
 				case 11 :
-					showDeviceReservations($_SERVER['PHP_SELF'],PERIPHERAL_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],PERIPHERAL_TYPE,$_GET["ID"]);
 					break;
 				case 12 :
-					showHistory(PERIPHERAL_TYPE,$tab["ID"]);
+					showHistory(PERIPHERAL_TYPE,$_GET["ID"]);
 					break;		
 				default :
-					if (!display_plugin_action(PERIPHERAL_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-						showConnect($_SERVER['PHP_SELF'],$tab["ID"],PERIPHERAL_TYPE);
-						showPortsAdd($tab["ID"],PERIPHERAL_TYPE);
-						showPorts($tab["ID"], PERIPHERAL_TYPE,$tab["withtemplate"]);
+					if (!display_plugin_action(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+						showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PERIPHERAL_TYPE);
+						showPortsAdd($_GET["ID"],PERIPHERAL_TYPE);
+						showPorts($_GET["ID"], PERIPHERAL_TYPE,$_GET["withtemplate"]);
 					}
 					break;
 			}

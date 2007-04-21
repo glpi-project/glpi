@@ -1446,28 +1446,22 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
 
 		echo "<img alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\">";
 	} else {
-		//Add
-		if ($ID == -1 || $ID == '')
-		{
-			//If no restrictions
-			if ($management_restrict == 2)
-			{
-				echo "<select name='is_global'>";
-				echo "<option value='0' ".(!$value?" selected":"").">".$LANG["peripherals"][32]."</option>";
-				echo "<option value='1' ".($value?" selected":"").">".$LANG["peripherals"][31]."</option>";
-				echo "</select>";
-			}
-			else
-			{
-				echo "<input type='hidden' name='is_global' value=\"".$management_restrict."\">";
+
+		if ($management_restrict == 2){
+			echo "<select name='is_global'>";
+			echo "<option value='0' ".(!$value?" selected":"").">".$LANG["peripherals"][32]."</option>";
+			echo "<option value='1' ".($value?" selected":"").">".$LANG["peripherals"][31]."</option>";
+			echo "</select>";
+		} else {
+			//Add -> set value
+			if ($ID == -1 || $ID == ''){
+				echo "<input type='hidden' name='is_global' value=\"".$value."\">";
+				echo (!$value?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
+			} else {
 				echo (!$management_restrict?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
 			}
 		}
-		else
-		{
-			echo "<input type='hidden' name='is_global' value=\"".$value."\">";
-			echo (!$value?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
-		}
+
 	}
 }
 

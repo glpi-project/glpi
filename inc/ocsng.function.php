@@ -2779,7 +2779,7 @@ function checkOCSconnection($ocs_server_id)
 function getOCSServerByMachineID($ID)
 {
 	global $DB;
-	$sql = "SELECT ocs_server_id FROM glpi_computers as gc, glpi_ocs_link as gol where gol.glpi_id=gc.ID and gc.ID=".$ID;
+	$sql = "SELECT ocs_server_id FROM glpi_ocs_link WHERE glpi_ocs_link.glpi_id='".$ID."'";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0)
 	{

@@ -202,7 +202,7 @@ function showConnections($target,$ID,$withtemplate='') {
 	
 							echo "</td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
-								echo "<td align='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1amp;withtemplate=".$withtemplate."\"><b>";
+								echo "<td align='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><b>";
 								echo $LANG["buttons"][10];
 								echo "</b></a></td>";
 							}

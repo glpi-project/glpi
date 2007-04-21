@@ -264,7 +264,7 @@ function showCentralJobCount(){
 
 
 
-function showOldJobListForItem($username,$item_type,$item) {
+function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	// $item is required
 	// affiche toutes les vielles intervention pour un $item donn� 
 
@@ -272,10 +272,16 @@ function showOldJobListForItem($username,$item_type,$item) {
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("show_ticket","1")) return false;
-	$candelete=haveRight("delete_ticket","1");
+
+	if ($sort==""){
+		$sort="glpi_tracking.date";
+	}
+	if ($order==""){
+		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
+	}
 
 	$where = "(status = 'old_done' OR status = 'old_notdone')";	
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY $sort $order";
 
 
 	$result = $DB->query($query);
@@ -293,7 +299,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 
 		echo "</th></tr>";
 
-		commonTrackingListHeader();
+		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item",$sort,$order);
 
 		while ($data=$DB->fetch_assoc($result))
 		{
@@ -314,7 +320,7 @@ function showOldJobListForItem($username,$item_type,$item) {
 
 }
 
-function showJobListForItem($username,$item_type,$item) {
+function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	// $item is required
 	//affiche toutes les vielles intervention pour un $item donn� 
 
@@ -322,10 +328,17 @@ function showJobListForItem($username,$item_type,$item) {
 
 	if (!haveRight("show_ticket","1")) return false;
 
+	if ($sort==""){
+		$sort="glpi_tracking.date";
+	}
+	if ($order==""){
+		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
+	}
+
 
 	$where = "(status = 'new' OR status= 'assign' OR status='plan' OR status='waiting')";	
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY $sort $order";
 
 	$result = $DB->query($query);
 
@@ -349,8 +362,8 @@ function showJobListForItem($username,$item_type,$item) {
 			echo "</strong></a>";
 			echo "</td></tr>";
 		}
-
-		commonTrackingListHeader();
+		
+		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item",$sort,$order);
 
 		while ($data=$DB->fetch_assoc($result))
 		{

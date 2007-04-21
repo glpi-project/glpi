@@ -41,11 +41,11 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
-if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
-if(!isset($tab["search_software"])) $tab["search_software"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["sort"])) $_GET["sort"] = "";
+if(!isset($_GET["order"])) $_GET["order"] = "";
+if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
+if(!isset($_GET["search_software"])) $_GET["search_software"] = "";
 
 $soft=new Software();
 if (isset($_POST["add"]))
@@ -58,16 +58,16 @@ if (isset($_POST["add"]))
 	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($tab["delete"]))
+else if (isset($_POST["delete"]))
 {
 	checkRight("software","w");
 
-	if (!empty($tab["withtemplate"]))
-		$soft->delete($tab,1);
-	else $soft->delete($tab);
+	if (!empty($_POST["withtemplate"]))
+		$soft->delete($_POST,1);
+	else $soft->delete($_POST);
 
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	if(!empty($tab["withtemplate"])) 
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	if(!empty($_POST["withtemplate"])) 
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
 		glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
@@ -77,15 +77,15 @@ else if (isset($_POST["restore"]))
 	checkRight("software","w");
 
 	$soft->restore($_POST);
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
-else if (isset($tab["purge"]))
+else if (isset($_POST["purge"]))
 {
 	checkRight("software","w");
 
-	$soft->delete($tab,1);
-	logEvent($tab["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	$soft->delete($_POST,1);
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["update"]))
@@ -110,21 +110,21 @@ else
 	commonHeader($LANG["title"][12],$_SERVER['PHP_SELF'],"inventory","software");
 
 
-	if (!empty($tab["withtemplate"])) {
+	if (!empty($_GET["withtemplate"])) {
 
-		if ($soft->showForm($_SERVER['PHP_SELF'],$tab["ID"],$tab['search_software'], $tab["withtemplate"])){
+		if ($soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET['search_software'], $_GET["withtemplate"])){
 
-			if ($tab["ID"]>0){
+			if ($_GET["ID"]>0){
 				switch($_SESSION['glpi_onglet']){
 					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"],1,$tab["withtemplate"]);
-						showContractAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
+						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_GET["ID"],1,$_GET["withtemplate"]);
+						showContractAssociated(SOFTWARE_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					case 5 :
-						showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"],$tab["withtemplate"]);
+						showDocumentAssociated(SOFTWARE_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					default :
-						display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'], $tab["withtemplate"]);
+						display_plugin_action(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'], $_GET["withtemplate"]);
 						break;
 				}
 			}
@@ -133,50 +133,50 @@ else
 
 	} else {
 
-		if ($soft->showForm($_SERVER['PHP_SELF'],$tab["ID"],$tab['search_software'])){
+		if ($soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET['search_software'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showLicensesAdd($tab["ID"]);
-					showLicenses($tab["ID"]);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"]);
-					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
-					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
-					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
-					showLinkOnDevice(SOFTWARE_TYPE,$tab["ID"]);
-					display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"]);
+					showLicensesAdd($_GET["ID"]);
+					showLicenses($_GET["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_GET["ID"]);
+					showContractAssociated(SOFTWARE_TYPE,$_GET["ID"]);
+					showDocumentAssociated(SOFTWARE_TYPE,$_GET["ID"]);
+					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showLinkOnDevice(SOFTWARE_TYPE,$_GET["ID"]);
+					display_plugin_action(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 2 :
-					showLicensesAdd($tab["ID"]);
-					showLicenses($tab["ID"],1);
+					showLicensesAdd($_GET["ID"]);
+					showLicenses($_GET["ID"],1);
 					break;
 				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$tab["ID"]);
-					showContractAssociated(SOFTWARE_TYPE,$tab["ID"]);
+					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_GET["ID"]);
+					showContractAssociated(SOFTWARE_TYPE,$_GET["ID"]);
 					break;
 				case 5 :
-					showDocumentAssociated(SOFTWARE_TYPE,$tab["ID"]);
+					showDocumentAssociated(SOFTWARE_TYPE,$_GET["ID"]);
 					break;
 				case 6 :
-					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
-					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$tab["ID"]);
+					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
+					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					break;
 				case 7 :
-					showLinkOnDevice(SOFTWARE_TYPE,$tab["ID"]);
+					showLinkOnDevice(SOFTWARE_TYPE,$_GET["ID"]);
 					break;	
 				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],SOFTWARE_TYPE,$tab["ID"]);
+					showNotesForm($_SERVER['PHP_SELF'],SOFTWARE_TYPE,$_GET["ID"]);
 					break;				
 				case 11 :
-					showDeviceReservations($_SERVER['PHP_SELF'],SOFTWARE_TYPE,$tab["ID"]);
+					showDeviceReservations($_SERVER['PHP_SELF'],SOFTWARE_TYPE,$_GET["ID"]);
 					break;
 				case 12 :
-					showHistory(SOFTWARE_TYPE,$tab["ID"]);
+					showHistory(SOFTWARE_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(SOFTWARE_TYPE,$tab["ID"],$_SESSION['glpi_onglet'],$tab["withtemplate"])){
-						showLicensesAdd($tab["ID"]);
-						showLicenses($tab["ID"]);
+					if (!display_plugin_action(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+						showLicensesAdd($_GET["ID"]);
+						showLicenses($_GET["ID"]);
 					}
 					break;
 			}
