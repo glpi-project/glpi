@@ -1453,12 +1453,12 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
 			echo "<option value='1' ".($value?" selected":"").">".$LANG["peripherals"][31]."</option>";
 			echo "</select>";
 		} else {
-			//Add -> set value
-			if ($ID == -1 || $ID == ''){
-				echo "<input type='hidden' name='is_global' value=\"".$value."\">";
-				echo (!$value?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
-			} else {
+			// Templates edition
+			if (!empty($withtemplate)){
+				echo "<input type='hidden' name='is_global' value=\"".$management_restrict."\">";
 				echo (!$management_restrict?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
+			} else {
+				echo (!$value?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
 			}
 		}
 
