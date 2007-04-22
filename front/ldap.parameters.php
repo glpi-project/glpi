@@ -37,13 +37,9 @@ $NEEDED_ITEMS=array("ldap.parameters");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET)) $tab = $_GET;
-if(empty($tab) && isset($_POST)) $tab = $_POST;
-if(!isset($tab["ID"])) $tab["ID"] = "";
-
 $criteria = new LdapCriteria;
 
-if (isset($tab["delete"])){
+if (isset($_POST["delete"])){
 		
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
@@ -52,9 +48,9 @@ if (isset($tab["delete"])){
 			$criteria->delete($input);
 		}
 	glpi_header($_SERVER['HTTP_REFERER']);
-}elseif (isset($tab["add"]))
+}elseif (isset($_POST["add"]))
 {
-	$criteria->add($tab);
+	$criteria->add($_POST);
 }
 
 checkRight("user","w");
@@ -63,7 +59,6 @@ commonHeader($LANG["setup"][142]." ".$LANG["ruleldap"][1],$_SERVER['PHP_SELF'],"
 
 $params = new LdapCriteria;
 $params->showForm($_SERVER['PHP_SELF']);
-echo "</table></div>";
 
 commonFooter();
 

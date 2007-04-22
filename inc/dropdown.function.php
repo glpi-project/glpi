@@ -1589,7 +1589,7 @@ function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
 	if (is_array($_SESSION['glpi_entities_tree'])&&count($_SESSION['glpi_entities_tree'])){
 		foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
-			echo "<div><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'>&nbsp;".$LANG["buttons"][40]."&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'></a></div><br>";
+			echo "<div><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\"><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'>&nbsp;".$LANG["buttons"][40]."&nbsp;<img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'></a></div><br>";
 			displayEntityTree($target,$myname,$tree);
 		}
 	} 
@@ -1609,7 +1609,7 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 
 				echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;", $level+1).$raquo."&nbsp;<a title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".$data['name']."</a>";
 				if (isset($data['tree'])&&count($data['tree'])){
-					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&recursive=1'><img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'></a></div>";
+					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png'></a></div>";
 					displayEntityTree($target,$myname,$data['tree'],$level+1);
 				} else echo "</div>";
 			}

@@ -84,12 +84,11 @@ class LdapCriteria extends CommonDBTM {
 			echo "</table></div><br>";
 		}
 
-		if (!count($parameters))
+		if (!count($parameters)){
 			echo "<center>".$LANG["ruleldap"][2]."</center>";
-		else
-		{
-		echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["common"][53]." ".$LANG["ruleldap"][1] . "</th></tr>";
-		echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" .  $LANG["common"][16]."</td><td class='tab_bg_2'>".$LANG["setup"][601] . "</td></tr>";
+		} else {
+			echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["common"][53]." ".$LANG["ruleldap"][1] . "</th></tr>";
+			echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" .  $LANG["common"][16]."</td><td class='tab_bg_2'>".$LANG["setup"][601] . "</td></tr>";
 
 			foreach ($parameters as $parameter) {
 				echo "<tr class='tab_bg_1'>";
@@ -107,25 +106,24 @@ class LdapCriteria extends CommonDBTM {
 				echo "<td>" . $parameter["value"] . "</td>";
 				echo "</tr>";
 			}
-		echo "<table>";
+			echo "</table></div>";
 
-		if ($canedit) {
-			echo "<div align='center'>";
-			echo "<table cellpadding='5' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
-
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
-			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
-			echo "</td>";
-			echo "</table>";
-
-			echo "</div>";
-
+			if ($canedit) {
+				echo "<div align='center'>";
+				echo "<table cellpadding='5' width='80%'>";
+				echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+	
+				echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+				echo "</td><td align='left' width='80%'>";
+				echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+				echo "</td>";
+				echo "</table>";
+	
+				echo "</div>";
+	
+			}
 		}
 		echo "</form>";
-		}
-
 	}
 	
 	//LDAP parameters MUST be in lower case
