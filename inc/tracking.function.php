@@ -1642,14 +1642,22 @@ function showJobDetails ($target,$ID){
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='name$rand' class='div_tracking' onClick='showName$rand()'>\n";
-			echo $job->fields["name"];
+			if (empty($job->fields["name"])){
+				echo $LANG["reminder"][15];
+			} else {
+				echo $job->fields["name"];
+			}
 			echo "</div>\n";	
 
 			echo "<div id='viewname$rand'>\n";
 			echo "</div>\n";
 			//echo "<input type='text' maxlength='250' size='80' name='name' value=\"".$job->fields["name"]."\">";
 		} else {
-			echo $job->fields["name"];
+			if (empty($job->fields["name"])){
+				echo $LANG["reminder"][15];
+			} else {
+				echo $job->fields["name"];
+			}
 		}
 		echo "</th></tr>";
 		echo "<tr  class='tab_bg_2'><td width='15%'>".$LANG["joblist"][6]."</td>";
