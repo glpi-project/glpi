@@ -83,10 +83,11 @@ class Mailgate  extends CommonDBTM {
 			echo "<table class='tab_cadre' cellpadding='2'>";
 
 			echo "<tr><th align='center' colspan='2'>";
-			if (empty($ID))
+			if (empty($ID)){
 				echo $LANG["mailgate"][1];
-			else 
+			} else {
 				echo $LANG["mailgate"][0].": ".$this->fields["ID"];
+			}
 
 			echo "</th></tr>";
 

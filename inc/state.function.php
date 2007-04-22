@@ -110,7 +110,7 @@ function showStateSummary($target){
 		echo "</table></div>";
 
 	}else {
-		echo "<div align='center'><b>".$LANG["state"][7]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["state"][7]."</strong></div>";
 	}
 
 

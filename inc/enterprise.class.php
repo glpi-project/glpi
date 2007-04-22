@@ -120,13 +120,15 @@ class Enterprise extends CommonDBTM {
 			}
 
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'><b>";
+			echo "<tr><th colspan='4'>";
 			if (!$ID) {
-				echo $LANG["financial"][25].":";
+				echo $LANG["financial"][25];
 			} else {
-				echo $LANG["financial"][26]." ID $ID:";
+				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}		
-			echo "</b></th></tr>";
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+
+			echo "</th></tr>";
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 				echo "<td>";

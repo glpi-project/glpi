@@ -238,7 +238,7 @@ class Netdevice extends CommonDBTM {
 
 			echo "<tr><th align='center' >\n";
 			if(!$template) {
-				echo $LANG["networking"][54].": ".$this->fields["ID"];
+				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}elseif (strcmp($template,"newcomp") === 0) {
 				echo $LANG["networking"][53].": ".$this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
@@ -246,6 +246,8 @@ class Netdevice extends CommonDBTM {
 				echo $LANG["common"][6].": ";
 				autocompletionTextField("tplname","glpi_networking","tplname",$this->fields["tplname"],20);	
 			}
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+
 			echo "</th><th  align='center'>".$datestring.$date;
 			if (!$template&&!empty($this->fields['tplname']))
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";

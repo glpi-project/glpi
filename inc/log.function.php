@@ -387,7 +387,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 		$message = $DB->result($result, $i, "message");
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><b>";
+		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><strong>";
 		if ($item=="-1" || $item=="0") {
 			echo "&nbsp;";//$item;
 		} else {
@@ -407,7 +407,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 				echo "\">$item</a>";
 			}
 		}			
-		echo "</b></td><td><span style='font-size:9px;'>".convDateTime($date)."</span></td><td align='center'>".$logService[$service]."</td><td>$message</td>";
+		echo "</strong></td><td><span style='font-size:9px;'>".convDateTime($date)."</span></td><td align='center'>".$logService[$service]."</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
@@ -457,7 +457,7 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	// No Events in database
 	if ($number < 1) {
-		echo "<div align='center'><b>".$LANG["central"][4]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["central"][4]."</strong></div>";
 		return;
 	}
 
@@ -517,8 +517,8 @@ function showEvents($target,$order,$sort,$start=0) {
 		
 		echo "<tr class='tab_bg_2'>";
 
-		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td align='center'><b>"; 
-		//echo "<td>$itemtype:</td><td align='center'><b>";
+		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td align='center'><strong>"; 
+		//echo "<td>$itemtype:</td><td align='center'><strong>";
 		if ($item=="-1" || $item=="0") {
 			echo "&nbsp;";//$item;
 		} else {
@@ -538,7 +538,7 @@ function showEvents($target,$order,$sort,$start=0) {
 				echo "\">$item</a>";
 			}
 		}			
-		echo "</b></td><td>".convDateTime($date)."</td><td align='center'>".$logService[$service]."</td><td align='center'>$level</td><td>$message</td>";
+		echo "</strong></td><td>".convDateTime($date)."</td><td align='center'>".$logService[$service]."</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 

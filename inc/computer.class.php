@@ -445,7 +445,7 @@ class Computer extends CommonDBTM {
 
 			echo "<tr><th colspan ='2' align='center' >";
 			if(!$template) {
-				echo $LANG["computers"][13].": ".$this->fields["ID"];
+				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}elseif (strcmp($template,"newcomp") === 0) {
 				echo $LANG["computers"][12].": ".$this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
@@ -453,7 +453,7 @@ class Computer extends CommonDBTM {
 				echo $LANG["common"][6]."&nbsp;: ";
 				autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],20);	
 			}
-
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 

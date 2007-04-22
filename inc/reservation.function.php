@@ -135,8 +135,8 @@ function printCalendrier($target,$ID=""){
 
 
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><b><span class='icon_consol'>".$type." - ".$name."</span>";
-	echo "</b></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><strong><span class='icon_consol'>".$type." - ".$name."</span>";
+	echo "</strong></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
 
 
@@ -151,8 +151,8 @@ function printCalendrier($target,$ID=""){
 
 	echo "<div align='center'>";
 
-	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></td><td><b>".
-		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</b></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></td></tr></table>";
+	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></td><td><strong>".
+		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></td></tr></table>";
 	// test
 	echo "<table width='90%'><tr><td valign='top'  width='100'>";
 
@@ -169,17 +169,17 @@ function printCalendrier($target,$ID=""){
 
 
 	echo "<div class='verdana1'>";
-	echo "<div style='text-align:center'><b>$annee_avant</b></div>";
+	echo "<div style='text-align:center'><strong>$annee_avant</strong></div>";
 	for ($i=$mois_courant; $i < 13; $i++) {
 		echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_avant\">".
 			$LANG["calendarM"][$i-1]."</a></div>";
 	}
 
-	echo "<div style='text-align:center'><b>$annee_courante</b></div>";
+	echo "<div style='text-align:center'><strong>$annee_courante</strong></div>";
 	for ($i=1; $i < 13; $i++) {
 		if ($i == $mois_courant) {
-			echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #666666; background-color: white;'><b>".
-				$LANG["calendarM"][$i-1]."</b></div>";
+			echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #666666; background-color: white;'><strong>".
+				$LANG["calendarM"][$i-1]."</strong></div>";
 		}
 		else {
 			echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_courante\">".
@@ -187,7 +187,7 @@ function printCalendrier($target,$ID=""){
 		}
 	}
 
-	echo "<div style='text-align:center'><b>$annee_apres</b></div>";
+	echo "<div style='text-align:center'><strong>$annee_apres</strong></div>";
 	for ($i=1; $i < $mois_courant+1; $i++) {
 		echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_apres\">".
 			$LANG["calendarM"][$i-1]."</a></div>";
@@ -298,9 +298,9 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 		echo "<input type='hidden' name='ID' value='$resaID'>";
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
-	echo "<tr><th colspan='2'><b>";
+	echo "<tr><th colspan='2'>";
 	echo $LANG["reservation"][9];
-	echo "</b></th></tr>";
+	echo "</th></tr>";
 
 	// Add Hardware name
 	$r=new ReservationItem;
@@ -311,7 +311,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 	foreach ($items as $ID){
 		$r->getfromDB($ID);
 		$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
-		echo "<b>".$ci->getType()." - ".$ci->getName()."</b><br>";
+		echo "<strong>".$ci->getType()." - ".$ci->getName()."</strong><br>";
 		echo "<input type='hidden' name='items[$ID]' value='$ID'>";
 	}
 	echo "</td></tr>";
@@ -458,7 +458,7 @@ function printReservationItem($target,$ID,$date){
 				}
 				$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";
 
-				echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><b>".$user->fields["name"]."</b></span>";
+				echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><strong>".$user->fields["name"]."</strong></span>";
 
 				echo $modif_end.$comment."</td></tr>";
 
@@ -538,13 +538,13 @@ function showReservationCommentForm($target,$ID){
 		echo "<input type='hidden' name='ID' value='$ID'>";
 
 		echo "<table class='tab_cadre' cellpadding='2'>";
-		echo "<tr><th colspan='2'><b>";
+		echo "<tr><th colspan='2'>";
 		echo $LANG["reservation"][22];
-		echo "</b></th></tr>";
+		echo "</th></tr>";
 		// Ajouter le nom du mat�iel
 		echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
 		echo "<td>";
-		echo "<b>".$ci->getType()." - ".$ci->getName()."</b>";
+		echo "<strong>".$ci->getType()." - ".$ci->getName()."</strong>";
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["common"][25].":	</td>";

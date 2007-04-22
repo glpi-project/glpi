@@ -139,7 +139,7 @@ function displaySearchError($type){
 		case SYLK_OUTPUT : //sylk
 			break;
 		default :
-			$out= "<div align='center'><b>".$LANG["search"][15]."</b></div>\n";
+			$out= "<div align='center'><strong>".$LANG["search"][15]."</strong></div>\n";
 			break;
 	}
 	return $out;

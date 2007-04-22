@@ -88,7 +88,7 @@ function showEnterpriseContact($instID) {
 		echo "<td align='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
-			echo "<a href='".$_SERVER['PHP_SELF']."?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><b>".$LANG["buttons"][6]."</b></a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 	}

@@ -624,7 +624,7 @@ class User extends CommonDBTM {
 					echo "<td>";
 					autocompletionTextField("name", "glpi_users", "name", $this->fields["name"], 20);
 				} else {
-					echo "<td align='center'><b>" . $this->fields["name"] . "</b>";
+					echo "<td align='center'><strong>" . $this->fields["name"] . "</strong>";
 					echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
 				}
 
@@ -779,7 +779,7 @@ class User extends CommonDBTM {
 
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'>" . $LANG["setup"][18] . "</td>";
-			echo "<td align='center'><b>" . $this->fields["name"] . "</b>";
+			echo "<td align='center'><strong>" . $this->fields["name"] . "</strong>";
 			echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
 			echo "<input type='hidden' name='ID' value=\"" . $this->fields["ID"] . "\">";
 			echo "</td></tr>";

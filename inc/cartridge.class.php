@@ -177,12 +177,17 @@ class CartridgeType extends CommonDBTM {
 
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<table class='tab_cadre_fixe'>\n";
-				echo "<tr><th colspan='3'><b>\n";
-				if (!$ID) 
-					echo $LANG["cartridges"][6].":";
-				else echo $LANG["cartridges"][12]." ID $ID:";
+				echo "<tr><th colspan='3'>\n";
+				if (!$ID) {
+					echo $LANG["cartridges"][6];
+				} else { 
+					echo $LANG["common"][2]." $ID";
+				}
+
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			
 	
-				echo "</b></th></tr>\n";
+				echo "</th></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>\n";
 				echo "<td colspan='2'>";

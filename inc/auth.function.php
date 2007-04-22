@@ -207,7 +207,7 @@ function displayRightError() {
 					helpHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
 	}
 	echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<b>" . $LANG["login"][5] . "</b></div>";
+	echo "<strong>" . $LANG["login"][5] . "</strong></div>";
 	nullFooter();
 	exit ();
 }
@@ -555,11 +555,12 @@ function changeActiveEntities($ID="all",$recursive=false) {
 			}
 		}
 	}
-	if (count($newentities)){
+	if (count($newentities)>0){
 		$_SESSION['glpiactiveentities']=$newentities;
 		// Active entity loading
 		$active=key($_SESSION['glpiactiveentities']);
 		$_SESSION["glpiactive_entity"] = $active;
+		echo $active;
 		$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
 		loadGroups();
 		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);

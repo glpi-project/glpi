@@ -88,7 +88,7 @@ function showCentralContract(){
 
 	echo "<table class='tab_cadrehov' style='text-align:center'>";
 
-	echo "<tr><th colspan='2'><b><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset_before\">".$LANG["financial"][1]."</a></b></th></tr>";
+	echo "<tr><th colspan='2'><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset_before\">".$LANG["financial"][1]."</a></th></tr>";
 
 	echo "<tr class='tab_bg_2'>";
 	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".$LANG["financial"][93]."</a> </td>";
@@ -167,7 +167,7 @@ function showDeviceContract($instID) {
 					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td align='center' class='tab_bg_2'>";
 					if ($canedit){
-						echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><strong>".$LANG["buttons"][6]."</strong></a>";
 					} else echo "&nbsp;";
 					echo "</td></tr>";
 				}
@@ -279,7 +279,7 @@ function showEnterpriseContract($instID) {
 		echo "<td align='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$_SERVER['PHP_SELF']."?deleteenterprise=deleteenterprise&amp;ID=$ID'><b>".$LANG["buttons"][6]."</b></a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?deleteenterprise=deleteenterprise&amp;ID=$ID'><strong>".$LANG["buttons"][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -493,9 +493,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]?"_2":"")."'>";
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
 		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
-		echo "</b></a></td>";
+		echo "</strong></a></td>";
 		echo "<td align='center'>".$con->fields["num"]."</td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 		echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
@@ -507,7 +507,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate!=2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$LANG["buttons"][6]."</b></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID'><strong>".$LANG["buttons"][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td>";
 		}
@@ -578,9 +578,9 @@ function showContractAssociatedEnterprise($ID){
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]?"_2":"")."'>";
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><b>".$con->fields["name"];
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
 		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
-		echo "</b></a></td>";
+		echo "</strong></a></td>";
 		echo "<td align='center'>".$con->fields["num"]."</td>";
 		echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 		echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
@@ -591,7 +591,7 @@ function showContractAssociatedEnterprise($ID){
 
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><b>".$LANG["buttons"][6]."</b></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$assocID'><strong>".$LANG["buttons"][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;

@@ -59,7 +59,7 @@ function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts=
                 echo "<td><img src=\"".$ref_pic_link."\" alt=\"".$ref_pic_text."\"
 title=\"".$ref_pic_text."\" ></td>"; 
         if ($ref_title!="")
-                echo "<td><span class='icon_consol'><b>".$ref_title."</b></span></td>"; 
+                echo "<td><span class='icon_consol'><strong>".$ref_title."</strong></span></td>"; 
 	if (is_array($ref_btts)&&count($ref_btts))
         foreach ($ref_btts as $key => $val) { 
                 echo "<td><a class='icon_consol_hov' href=\"".$key."\">".$val."</a></td>"; 
@@ -801,7 +801,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 function displayMessageAfterRedirect(){
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
-		echo "<div align='center'><b>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</b></div>";
+		echo "<div align='center'><strong>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</strong></div>";
 		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
 	} else $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
@@ -1550,10 +1550,10 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 		echo "</td>" ;
 	}
 
-	echo "<td  width='50%' align='center' class='tab_bg_2'><b>";
+	echo "<td  width='50%' align='center' class='tab_bg_2'><strong>";
 
 	echo $LANG["pager"][2]."&nbsp;".$current_start."&nbsp;".$LANG["pager"][1]."&nbsp;".$current_end."&nbsp;".$LANG["pager"][3]."&nbsp;".$numrows."&nbsp;";
-	echo "</b></td>\n";
+	echo "</strong></td>\n";
 
 	// Forward and fast forward button
 	if ($forward<$numrows) {
@@ -1796,9 +1796,9 @@ function showCentralGlobalView(){
 	if ($CFG_GLPI["jobs_at_login"]){
 		echo "<br>";
 
-		echo "<div align='center'><b>";
+		echo "<div align='center'><strong>";
 		echo $LANG["central"][10];
-		echo "</b></div>";
+		echo "</strong></div>";
 
 		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"new");
 	}

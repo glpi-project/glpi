@@ -165,13 +165,16 @@ class Document extends CommonDBTM {
 
 			echo "<table class='tab_cadre_fixe'>";
 			if (!$ID) {
-				echo "<tr><th colspan='3'><strong>";
-				echo $LANG["document"][16].":</strong></th></tr>";
+				echo "<tr><th colspan='3'>";
+				echo $LANG["document"][16];
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				echo "</th></tr>";
 			} else {
-				echo "<tr><th colspan='1'><strong>";
-				echo $LANG["document"][18]." ID $ID:</strong></th><th colspan='2'>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th></tr>";
+				echo "<tr><th colspan='1'>";
+				echo $LANG["common"][2]." $ID";
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				echo "</th><th colspan='2'>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th></tr>";
 			}		
-
 			
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";

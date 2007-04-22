@@ -136,10 +136,10 @@ class Entity extends CommonDBTM{
 			echo "<form method='post' name=form action=\"$target\"><div align='center'>";
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='4'><b>";
+			echo "<tr><th colspan='4'>";
 			echo $LANG["entity"][0]." ID $ID:";
 
-			echo "</b></th></tr>";
+			echo "</th></tr>";
 
 			echo "<tr class='tab_bg_1'>";
 

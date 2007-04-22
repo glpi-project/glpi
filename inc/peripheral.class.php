@@ -226,7 +226,7 @@ class Peripheral  extends CommonDBTM  {
 
 
 			if(!$template) {
-				echo $LANG["peripherals"][29].": ".$this->fields["ID"];
+				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}elseif (strcmp($template,"newcomp") === 0) {
 				echo $LANG["peripherals"][30].": ".$this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
@@ -234,6 +234,7 @@ class Peripheral  extends CommonDBTM  {
 				echo $LANG["common"][6]."&nbsp;: ";
 				autocompletionTextField("tplname","glpi_peripherals","tplname",$this->fields["tplname"],20);	
 			}
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 
 			echo "</th><th  align='center'>".$datestring.$date;
 			if (!$template&&!empty($this->fields['tplname']))

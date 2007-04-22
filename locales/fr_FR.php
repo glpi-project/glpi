@@ -89,6 +89,7 @@ $LANG["buttons"][39]="Remplacer";
 $LANG["buttons"][40]="Voir Tous";
 $LANG["buttons"][41]="Activer";
 $LANG["buttons"][42]="Désactiver";
+$LANG["buttons"][43]="Naviguer";
 
 $LANG["calendarD"][0]="D";
 $LANG["calendarD"][1]="L";

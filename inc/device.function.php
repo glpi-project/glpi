@@ -470,11 +470,11 @@ function showDevicesList($device_type,$target) {
 			while ($data=$DB->fetch_array($result)) {
 				$ID = $data["ID"];
 				echo "<tr class='tab_bg_2'>";
-				echo "<td><b>";
+				echo "<td><strong>";
 				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=$ID&amp;device_type=$device_type\">";
 				echo $data["designation"];
 				if ($CFG_GLPI["view_ID"]) echo " (".$data["ID"].")";
-				echo "</a></b></td>";
+				echo "</a></strong></td>";
 				echo "<td>". $data["manufacturer"]."</td>";
 				echo "</tr>";
 			}
@@ -482,8 +482,7 @@ function showDevicesList($device_type,$target) {
 			// Close Table
 			echo "</table></div>";
 		} else {
-			echo "<div align='center'><b>".$LANG["devices"][18]."</b></div>";
-			echo "<hr noshade>";
+			echo "<div align='center'><strong>".$LANG["devices"][18]."</strong></div>";
 		}
 	}
 }

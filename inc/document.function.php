@@ -229,7 +229,7 @@ function showDeviceDocument($instID,$search='') {
 							echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 							echo "<td align='center' class='tab_bg_2'>";
 							if ($canedit){
-								echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><b>".$LANG["buttons"][6]."</b></a>";
+								echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><strong>".$LANG["buttons"][6]."</strong></a>";
 							} else echo "&nbsp;";
 							echo "</td></tr>";
 						}
@@ -315,13 +315,13 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		if ($withtemplate!=3&&$canread){
-			echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><b>".$data["name"];
+			echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
 			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
-			echo "</b></a></td>";
+			echo "</strong></a></td>";
 		} else {
-			echo "<td align='center'><b>".$data["name"];
+			echo "<td align='center'><strong>".$data["name"];
 			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
-			echo "</b></td>";
+			echo "</strong></td>";
 		}
 
 		echo "<td align='center'  width='100px'>".getDocumentLink($data["filename"])."</td>";
@@ -337,7 +337,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate<2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><b>".$LANG["buttons"][6]."</b></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><strong>".$LANG["buttons"][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td>";
 		}
@@ -413,7 +413,7 @@ function getDocumentLink($filename,$params=""){
 
 	}
 
-	$out.="<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\"><b>$fileout</b></a>";	
+	$out.="<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\"><strong>$fileout</strong></a>";	
 
 
 	return $out;

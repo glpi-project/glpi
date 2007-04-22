@@ -584,7 +584,7 @@ function listTemplates($type, $target, $add = 0) {
 
 				echo "<td align='center' class='tab_bg_2'>";
 				if ($data["tplname"] != "Blank Template")
-					echo "<b><a href=\"$target?ID=" . $data["ID"] . "&amp;purge=purge&amp;withtemplate=1\">" . $LANG["buttons"][6] . "</a></b>";
+					echo "<strong><a href=\"$target?ID=" . $data["ID"] . "&amp;purge=purge&amp;withtemplate=1\">" . $LANG["buttons"][6] . "</a></strong>";
 				else
 					echo "&nbsp;";
 				echo "</td>";
@@ -599,7 +599,7 @@ function listTemplates($type, $target, $add = 0) {
 		if (!$add) {
 			echo "<tr>";
 			echo "<td colspan='2' align='center' class='tab_bg_2'>";
-			echo "<b><a href=\"$target?withtemplate=1\">" . $LANG["common"][9] . "</a></b>";
+			echo "<strong><a href=\"$target?withtemplate=1\">" . $LANG["common"][9] . "</a></strong>";
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -768,7 +768,7 @@ function showFormExtAuthList($target) {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
 		if (empty ($value))
 			$value = "&nbsp;";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][170] . "</td><td><b>$value</b></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][170] . "</td><td><strong>$value</strong></td></tr>";
 
 	}
 	function constructMailServerConfig($input) {
