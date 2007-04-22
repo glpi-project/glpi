@@ -131,7 +131,7 @@ else
 					showAssociatedContact($_GET["ID"]);
 					break;
 				case 4 :
-					showContractAssociatedEnterprise($_GET$_GET["ID"]);
+					showContractAssociatedEnterprise($_GET["ID"]);
 					break;
 				case 5 :
 					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"],0);

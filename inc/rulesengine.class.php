@@ -803,7 +803,7 @@ class Rule extends CommonDBTM{
 		}
 			
 		if ($canedit){
-			echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&onglet=1\">" . $this->fields["name"] . "</a></td>";
+			echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a></td>";
 		} else{
 			echo "<td>".$this->fields["name"] . "</td>";
 		}

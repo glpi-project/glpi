@@ -181,7 +181,7 @@ function showLicenses ($sID,$show_computers=0) {
 				$comp=new Computer();
 				$comp->getFromDB($data["OEM_COMPUTER"]);
 			}
-			echo "<td align='center' lass='tab_bg_1".($data["OEM"]&&!isset($comp->fields['ID'])?"_2":"")."'>".($data["OEM"]?$LANG["choice"][1]:$LANG["choice"][0]);
+			echo "<td align='center' class='tab_bg_1".($data["OEM"]&&!isset($comp->fields['ID'])?"_2":"")."'>".($data["OEM"]?$LANG["choice"][1]:$LANG["choice"][0]);
 			if ($data["OEM"]) {
 				echo "<br><strong>";
 				if (isset($comp->fields['ID']))
