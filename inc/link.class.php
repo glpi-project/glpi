@@ -88,7 +88,7 @@ class Link extends CommonDBTM {
 			}
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='2'><b>";
+			echo "<tr><th colspan='2'>";
 			if (empty($ID)) {
 				echo $LANG["links"][3].":";
 
@@ -96,7 +96,7 @@ class Link extends CommonDBTM {
 
 				echo $LANG["links"][1]." ID $ID:";
 			}		
-			echo "</b></th></tr>";
+			echo "</th></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["links"][6].":	</td>";
 			echo "<td>[ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL]</td>";

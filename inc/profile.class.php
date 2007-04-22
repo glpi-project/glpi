@@ -276,7 +276,7 @@ class Profile extends CommonDBTM{
 		dropdownYesNo("is_default",$this->fields["is_default"]);
 		echo "</th></tr>";
 
-		echo "<tr'><th colspan='6' align='center'><strong>".$LANG["setup"][10]."</strong></th></tr>";
+		echo "<tr'><th colspan='6' align='center'>".$LANG["setup"][10]."</th></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["Menu"][0].":</td><td>";
@@ -312,7 +312,7 @@ class Profile extends CommonDBTM{
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr><th colspan='6' align='center'><strong>".$LANG["profiles"][25]."</strong></th></tr>";
+		echo "<tr><th colspan='6' align='center'>".$LANG["profiles"][25]."</th></tr>";
 
 
 		echo "<tr class='tab_bg_2'>";
@@ -326,7 +326,7 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,1,1);
 		echo "</td></tr>";
 
-		echo "<tr><th colspan='6' align='center'><strong>".$LANG["Menu"][26]."</strong></th></tr>";
+		echo "<tr><th colspan='6' align='center'>".$LANG["Menu"][26]."</th></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["Menu"][22]." / ".$LANG["Menu"][23].":</td><td>";
@@ -340,7 +340,7 @@ class Profile extends CommonDBTM{
 		echo "</td></tr>";
 
 
-		echo "<tr><th colspan='6' align='center'><strong>".$LANG["title"][24]."</strong></th></tr>";
+		echo "<tr><th colspan='6' align='center'>".$LANG["title"][24]."</th></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][5].":</td><td>";
@@ -430,7 +430,7 @@ class Profile extends CommonDBTM{
 
 
 
-		echo "<tr><th colspan='6' align='center'><strong>".$LANG["Menu"][18]."</strong></th>";
+		echo "<tr><th colspan='6' align='center'>".$LANG["Menu"][18]."</th>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";
@@ -467,7 +467,7 @@ class Profile extends CommonDBTM{
 		echo "</tr>";
 
 
-		echo "<tr><th colspan='6' align='center'><strong>".$LANG["Menu"][15]."</strong></th>";
+		echo "<tr><th colspan='6' align='center'>".$LANG["Menu"][15]."</th>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";
@@ -507,7 +507,7 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("logs",$this->fields["logs"],1,1,0);
 		echo "</td></tr>";
 
-		echo "<tr><th colspan='6' align='center'><strong>".$LANG["title"][2]."</strong></th>";
+		echo "<tr><th colspan='6' align='center'>".$LANG["title"][2]."</th>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";

@@ -107,14 +107,16 @@ class Group extends CommonDBTM{
 			}
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='2'><b>";
+			echo "<tr><th colspan='2'>";
 			if (empty($ID)) {
-				echo $LANG["setup"][605].":";
+				echo $LANG["setup"][605];
 
 			} else {
-				echo $LANG["common"][35]." ID $ID:";
+				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}		
-			echo "</b></th></tr>";
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+
+			echo "</th></tr>";
 
 			echo "<tr><td class='tab_bg_1' valign='top'>";
 

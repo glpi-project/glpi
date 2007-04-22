@@ -73,7 +73,7 @@ function showLinkDevice($instID) {
 		$device_type=$DB->result($result, $i, "device_type");
 		echo "<tr class='tab_bg_1'>";
 		echo "<td align='center'>".getDeviceTypeName($device_type)."</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID'><b>".$LANG["buttons"][6]."</b></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
 		$i++;
 	}
 	if ($canedit){
@@ -224,7 +224,7 @@ function showLinkOnDevice($type,$ID){
 
 		}
 		echo "</table></div>";
-	} else echo "<div align='center'><b>".$LANG["links"][7]."</b></div>";
+	} else echo "<div align='center'><strong>strong>".$LANG["links"][7]."</strong></div>";
 
 }
 

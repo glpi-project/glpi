@@ -131,15 +131,16 @@ class Contact extends CommonDBTM{
 			}
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='2'><b>";
+			echo "<tr><th colspan='2'>";
 			if (empty($ID)) {
-				echo $LANG["financial"][33].":";
-
+				echo $LANG["financial"][33];
 			} else {
-				echo $LANG["common"][18]." ID $ID:&nbsp;";
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
+				echo $LANG["common"][2]." $ID";
+				echo "&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
 			}		
-			echo "</b></th></tr>";
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+
+			echo "</th></tr>";
 
 
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {

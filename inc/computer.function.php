@@ -195,16 +195,16 @@ function showConnections($target,$ID,$withtemplate='') {
 							$ci->getFromDB($type,$tID);
 	
 							echo "<tr ".($ci->getField('deleted')?"class='tab_bg_2_2'":"").">";
-							echo "<td align='center'><b>";
+							echo "<td align='center'><strong>";
 							echo $ci->getLink();
-							echo "</b>";
+							echo "</strong>";
 							echo " - ".getDropdownName("glpi_dropdown_state",$ci->getField('state'));
 	
 							echo "</td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
-								echo "<td align='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><b>";
+								echo "<td align='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
 								echo $LANG["buttons"][10];
-								echo "</b></a></td>";
+								echo "</strong></a></td>";
 							}
 							echo "</tr>";
 						}

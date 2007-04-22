@@ -80,7 +80,7 @@ class Contract extends CommonDBTM {
 	 * Print the contract form
 	 *
 	 *
-	 * Print g��al contract form
+	 * Print general contract form
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the contact to print
@@ -115,14 +115,15 @@ class Contract extends CommonDBTM {
 			}
 
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'><b>";
+			echo "<tr><th colspan='4'>";
 			if (!$ID) {
-				echo $LANG["financial"][36].":";
+				echo $LANG["financial"][36];
 			} else {
-				$this->getfromDB($ID);
-				echo $LANG["financial"][1].": $ID";
+				echo $LANG["common"][2]." $ID";
 			}		
-			echo "</b></th></tr>";
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+
+			echo "</th></tr>";
 
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 

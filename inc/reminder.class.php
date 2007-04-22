@@ -137,13 +137,13 @@ class Reminder extends CommonDBTM {
 			}
 
 			echo "<div align='center'><table class='tab_cadre' width='450'>";
-			echo "<tr><th><a href='".$CFG_GLPI['root_doc']."/front/reminder.php'>".$LANG["common"][53]."</a></th><th><b>";
+			echo "<tr><th><a href='".$CFG_GLPI['root_doc']."/front/reminder.php'>".$LANG["common"][53]."</a></th><th>";
 			if (!$ID) {
 				echo $LANG["reminder"][6].":";
 			} else {
 				echo $LANG["reminder"][7]." ID $ID:";
 			}		
-			echo "</b></th></tr>";
+			echo "</th></tr>";
 
 			echo "<tr class='tab_bg_2'><td>".$LANG["common"][57].":		</td>";
 			echo "<td>";

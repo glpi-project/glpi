@@ -56,10 +56,10 @@ function showConsumableAdd($ID) {
 
 	echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/consumable.edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
-	echo "<tr><td align='center' class='tab_bg_2'><b>";
+	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?add=add&amp;tID=$ID\">";
 	echo $LANG["consumables"][17];
-	echo "</a></b></td>";
+	echo "</a></strong></td>";
 	echo "<td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "<input type='hidden' name='tID' value=\"$ID\">\n";
@@ -140,7 +140,7 @@ function showConsumables ($tID,$show_old=0) {
 			} else {
 	
 				echo "<br>";
-				echo "<div align='center'><b>".$LANG["consumables"][7]."</b></div>";
+				echo "<div align='center'><strong>".$LANG["consumables"][7]."</strong></div>";
 			}
 		}
 	
@@ -442,7 +442,7 @@ function showConsumableSummary($target){
 		echo "</table></div>";
 
 	} else {
-		echo "<div align='center'><b>".$LANG["consumables"][7]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["consumables"][7]."</strong></div>";
 	}
 
 }

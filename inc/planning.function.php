@@ -211,7 +211,7 @@ function showPlanning($who,$who_group,$when,$type){
 				echo "<tr>";
 				for ($i=1;$i<=7;$i++){
 					echo "<td class='tab_bg_3' width='12%' valign='top' >";
-					echo "<b>".display_time($hour).":00</b><br>";
+					echo "<strong>".display_time($hour).":00</strong><br>";
 					
 					// From midnight
 					if ($hour==$hour_begin){
@@ -265,7 +265,7 @@ function showPlanning($who,$who_group,$when,$type){
 				$begin_time=date("Y-m-d H:i:s",strtotime($when)+($hour)*HOUR_TIMESTAMP);
 				$end_time=date("Y-m-d H:i:s",strtotime($when)+($hour+1)*HOUR_TIMESTAMP);
 				echo "<td class='tab_bg_3' width='12%' valign='top' >";
-				echo "<b>".display_time($hour).":00</b><br>";
+				echo "<strong>".display_time($hour).":00</strong><br>";
 				reset($interv);
 				while ($data=current($interv)){
 					$type="";

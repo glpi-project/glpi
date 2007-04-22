@@ -106,7 +106,7 @@
 
 		$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridges_type","glpi_computers","glpi_consumables_type","glpi_contacts","glpi_contracts","glpi_docs",
 			"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
-			"glpi_kbitems","glpi_mailgate","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
+			"glpi_mailgate","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
 			"glpi_tracking","state_types","reservation_types");
 
 		$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");

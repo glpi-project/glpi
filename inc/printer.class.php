@@ -244,7 +244,7 @@ class Printer  extends CommonDBTM {
 
 			echo "<tr><th align='center' >\n";
 			if(!$template) {
-				echo $LANG["printers"][29].": ".$this->fields["ID"];
+				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}elseif (strcmp($template,"newcomp") === 0) {
 				echo $LANG["printers"][28].": ".$this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
@@ -252,6 +252,7 @@ class Printer  extends CommonDBTM {
 				echo $LANG["common"][6]."&nbsp;: ";
 				autocompletionTextField("tplname","glpi_printers","tplname",$this->fields["tplname"],20);		
 			}
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 
 			echo "</th><th  align='center'>".$datestring.$date;
 			if (!$template&&!empty($this->fields['tplname']))

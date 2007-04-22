@@ -64,7 +64,7 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	echo "<form method=get action=\"".$target."\">";
 	echo "<table border='0' class='tab_cadre'>";
 
-	echo "<tr ><th colspan='2'><b>".$LANG["search"][0].":</b></th></tr>";
+	echo "<tr ><th colspan='2'>".$LANG["search"][0].":</th></tr>";
 	echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". stripslashes($contains) ."\" ></td>";
 	
 	//autocompletionTextField("contains","glpi_kbitems","question",$contains,20);
@@ -79,7 +79,7 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	if (isset($_SESSION["glpiID"])&&!$faq){
 		echo "<td><form method=get action=\"".$target."\">";
 		echo "<table border='0' class='tab_cadre'>";
-		echo "<tr ><th colspan='2'><b>Naviguer</b></th></tr>";
+		echo "<tr ><th colspan='2'>".$LANG["buttons"][43]."</th></tr>";
 		echo "<tr><td align='center'>";
 		echo $LANG["common"][36]." : &nbsp; &nbsp;";
 		dropdownValue("glpi_dropdown_kbcategories","parentID",$parentID);
@@ -147,7 +147,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 					$ID = $row["ID"];
 					echo "<td valign=\"top\" align='left' style='width: 33%; padding: 3px 20px 3px 25px;'>";
 				
-					echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <b><a  href=\"".$target."?parentID=".$row["ID"]."\">".$row["name"]."</a></b>\n";
+					echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <strong><a  href=\"".$target."?parentID=".$row["ID"]."\">".$row["name"]."</a></strong>\n";
 					echo "<div style='font-size: 9px;	line-height: 10px; 	clear: both;	padding: 5px 0 0 25px;'>".resume_text($row['comments'],60)."</div>";
 			
 				if($i%3==2) { echo "</tr>\n"; }
@@ -292,7 +292,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			if ($parentID!=0) {echo "<div align='center'><b>".$LANG["search"][15]."</b></div>";}
+			if ($parentID!=0) {echo "<div align='center'><strong>".$LANG["search"][15]."</strong></div>";}
 		}
 	}
 
@@ -354,7 +354,7 @@ function showKbRecentPopular($target,$order,$faq=0){
 	if ($number > 0) {
 		echo "<table class='tab_cadrehov'>";
 
-		echo "<tr><th><b>".$title."</b></th></tr>";
+		echo "<tr><th>".$title."</th></tr>";
 	
 		while ($data=$DB->fetch_array($result)) {
 			echo "<tr class='tab_bg_2'><td><a  href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
@@ -466,7 +466,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 		if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$ki->type))) {
 			echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 		
-			echo "<strong>".$LANG["common"][36].": ".$fullcategoryname."</strong></th></tr>";
+			echo $LANG["common"][36].": ".$fullcategoryname."</th></tr>";
 		
 			echo "<tr class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
 			echo ($ki->fields["faq"]) ? "".$LANG["knowbase"][3]."" : "".$LANG["knowbase"][14]."";

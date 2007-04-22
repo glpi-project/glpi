@@ -304,7 +304,7 @@ function checkWriteAccessToDirs(){
 		);
 		$error=0;	
 		foreach ($dir_to_check as $dir => $message){
-			echo "<tr class='tab_bg_1'><td><b>".$message."</b></td>";
+			echo "<tr class='tab_bg_1'><td><strong>".$message."</strong></td>";
 			$tmperror=testWriteAccessToDirectory($dir);
 	
 			switch($tmperror){
@@ -896,7 +896,7 @@ function rembo($string){
 				{
 					$string .= $outside[$i];
 					if (isset($inside[$i]))
-						$string .= '<br><br><table  class="code" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><b>Code:</b><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
+						$string .= '<br><br><table  class="code" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><strong>Code:</strong><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
 				}
 			}
 

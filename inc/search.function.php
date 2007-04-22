@@ -136,7 +136,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 
 	echo "<form method='get' action=\"$target\">";
 	echo "<div align='center'><table border='0'  class='tab_cadre_fixe'>";
-//	echo "<tr><th colspan='5'><b>".$LANG["search"][0].":</b></th></tr>";
+//	echo "<tr><th colspan='5'>".$LANG["search"][0].":</th></tr>";
 	echo "<tr class='tab_bg_1' align='center'>";
 	echo "<td>";
 	echo "<table>";

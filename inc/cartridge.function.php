@@ -55,10 +55,10 @@ function showCartridgesAdd($ID) {
 
 	echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
 	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
-	echo "<tr><td align='center' class='tab_bg_2'><b>";
+	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?add=add&amp;tID=$ID\">";
 	echo $LANG["cartridges"][17];
-	echo "</a></b></td>";
+	echo "</a></strong></td>";
 	echo "<td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "<input type='hidden' name='tID' value=\"$ID\">\n";
@@ -266,7 +266,7 @@ function showCompatiblePrinters($instID) {
 		$type=$DB->result($result, $i, "type");
 		echo "<tr class='tab_bg_1'><td align='center'>$ID</td>";
 		echo "<td align='center'>$type</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletetype=deletetype&amp;ID=$ID'><b>".$LANG["buttons"][6]."</b></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletetype=deletetype&amp;ID=$ID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
 		$i++;
 	}
 	if (haveRight("cartridge","w")){
@@ -335,11 +335,11 @@ function showCartridgeInstalled($instID,$old=0) {
 		$date_out=convDate($data["date_out"]);
 		echo "<tr  class='tab_bg_1".($data["deleted"]?"_2":"")."'><td align='center'>";
 		echo $data["ID"]; 
-		echo "</td><td align='center'><b>";
+		echo "</td><td align='center'><strong>";
 		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?ID=".$data["tID"]."\">";
 		echo $data["type"]." - ".$data["ref"];
 		echo "</a>";
-		echo "</b></td><td align='center'>";
+		echo "</strong></td><td align='center'>";
 		echo getCartridgeStatus($data["date_use"],$data["date_out"]);
 		echo "</td><td align='center'>";
 		echo $date_in;

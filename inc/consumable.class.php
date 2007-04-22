@@ -120,13 +120,15 @@ class ConsumableType extends CommonDBTM {
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
 				echo "<table class='tab_cadre_fixe'>\n";
-				echo "<tr><th colspan='3'><b>\n";
+				echo "<tr><th colspan='3'>\n";
 				if (!$ID) {
-					echo $LANG["consumables"][6].":";
+					echo $LANG["consumables"][6];
 				} else {
-					echo $LANG["consumables"][12]." ID $ID:";
+					echo $LANG["common"][2]." $ID";
 				}		
-				echo "</b></th></tr>\n";
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+
+				echo "</th></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>\n";
 				echo "<td colspan='2'>";

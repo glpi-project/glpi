@@ -195,7 +195,7 @@ function showCentralJobList($target,$start,$status="process") {
 	if ($number > 0) {
 		echo "<table class='tab_cadrehov'>";
 
-		echo "<tr><th colspan='5'><b><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></b></th></tr>";
+		echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$LANG["common"][37]."</th>";
 		echo "<th>".$LANG["common"][1]."</th>";
@@ -240,8 +240,8 @@ function showCentralJobCount(){
 
 	echo "<div align='center'><table class='tab_cadrehov' style='text-align:center'>";
 
-	echo "<tr><th colspan='2'><b><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".$LANG["tracking"][0]."</a></b></th></tr>";
-	echo "<tr><th ><b>".$LANG["tracking"][28]."</b></th><th>".$LANG["tracking"][29]."</th></tr>";
+	echo "<tr><th colspan='2'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".$LANG["tracking"][0]."</a></th></tr>";
+	echo "<tr><th>".$LANG["tracking"][28]."</th><th>".$LANG["tracking"][29]."</th></tr>";
 	echo "<tr class='tab_bg_2'>";
 	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=new&amp;reset=reset_before\">".$LANG["tracking"][30]."</a> </td>";
 	echo "<td>".$status["new"]."</td></tr>";
@@ -481,23 +481,24 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Fifth column
 		$fifth_col="";
 		if ($data["assign"]>0){
-			if ($viewusers)
+			if ($viewusers){
 				$fifth_col.=getUserName($data['assign'],1);
 				//formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],1);
-			else
+			} else{
 				$fifth_col.=getUserName($data['assign'],0);
 				//"<strong>".formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],0)."</strong>";
+			}
 		}
 
 		if ($data["assign_ent"]>0){
 			if (!empty($fifth_col)){
 				$fifth_col.="<br>";
 			}
-			if ($viewusers)
+			if ($viewusers){
 				$fifth_col.=getAssignName($data["assign_ent"],ENTERPRISE_TYPE,1);
-			else
+			} else {
 				$fifth_col.="<strong>".getAssignName($data["assign_ent"],ENTERPRISE_TYPE)."</strong>";
-
+			}
 		}
 		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,0,$align);
 
@@ -909,10 +910,12 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<table class='tab_cadre_fixe'>";
 
 
-	echo "<tr><th colspan='6' style='vertical-align:middle' ><div style='position: relative'><span><strong>".$LANG["search"][0]."</strong></span>";
-	if ($extended)
+	echo "<tr><th colspan='6' style='vertical-align:middle' ><div style='position: relative'><span>".$LANG["search"][0]."</span>";
+	if ($extended){
 		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=0'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''>".$LANG["buttons"][36]."</a></span>";
-	else echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''>".$LANG["buttons"][35]."</a></span>";
+	} else {
+		echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''>".$LANG["buttons"][35]."</a></span>";
+	}
 	echo "</div></th></tr>";
 
 
@@ -1474,9 +1477,11 @@ function showJobDetails ($target,$ID){
 		echo "<div align='center'>";
 		echo "<form method='post' action='$target'  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-		// Premi�e ligne
+		// First line
 		echo "<tr ><th colspan='2' style='font-size:10px'>";
-		echo $LANG["joblist"][11].": <strong>".convDateTime($job->fields["date"])." ".$LANG["job"][2]." ".$recipient->getName()."</strong>";"</th>";
+		echo $LANG["joblist"][11].": ".convDateTime($job->fields["date"])." ".$LANG["job"][2]." ".$recipient->getName();
+		echo "&nbsp;(".getDropdownName("glpi_entities",$job->fields["FK_entities"]).")";
+		echo "</th>";
 		echo "<th style='font-size:10px'>".$LANG["joblist"][12].":\n";
 		if (!ereg("old_",$job->fields["status"]))
 		{

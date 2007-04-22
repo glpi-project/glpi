@@ -692,7 +692,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 	if ($showtotal==1) $total=array_sum($entrees);
 
 	echo "<p align='center'>";
-	echo "<font face='verdana,arial,helvetica,sans-serif' size='2'><b>$titre - $total $unit</b></font>";
+	echo "<font face='verdana,arial,helvetica,sans-serif' size='2'><strong>$titre - $total $unit</strong></font>";
 
 	echo "<div align='center'>";
 
@@ -807,7 +807,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 	echo "<td valign='top'>";
 	echo "<table cellpadding='0' cellspacing='0' border='0'>";
 	echo "<tr><td height='15' valign='top'>";		
-	echo "<font face='arial,helvetica,sans-serif' size='1'><b>".round($maxgraph,$r)."</b></font>";
+	echo "<font face='arial,helvetica,sans-serif' size='1'><strong>".round($maxgraph,$r)."</strong></font>";
 	echo "</td></tr>";
 	echo "<tr><td height='25' valign='middle'>";		
 	echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".round(7*($maxgraph/8),$r)."</font>";
@@ -819,7 +819,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 	echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".round(5*($maxgraph/8),$r)."</font>";
 	echo "</td></tr>";
 	echo "<tr><td height='25' valign='middle'>";		
-	echo "<font face='arial,helvetica,sans-serif' size='1'><b>".round($maxgraph/2,$r)."</b></font>";
+	echo "<font face='arial,helvetica,sans-serif' size='1'><strong>".round($maxgraph/2,$r)."</strong></font>";
 	echo "</td></tr>";
 	echo "<tr><td height='25' valign='middle'>";		
 	echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".round(3*($maxgraph/8),$r)."</font>";
@@ -831,7 +831,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 	echo "<font face='arial,helvetica,sans-serif' size='1' color='#999999'>".round(1*($maxgraph/8),$r)."</font>";
 	echo "</td></tr>";
 	echo "<tr><td height='10' valign='bottom'>";		
-	echo "<font face='arial,helvetica,sans-serif' size='1'><b>0</b></font>";
+	echo "<font face='arial,helvetica,sans-serif' size='1'><strong>0</strong></font>";
 	echo "</td>";
 
 	echo "</tr></table>";

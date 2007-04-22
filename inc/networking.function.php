@@ -95,11 +95,11 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				if ($withtemplate!=2&&$canedit){
 					echo "<td align='center' width='20'><input type='checkbox' name='del_port[".$netport->fields["ID"]."]' value='1'></td>";
 				}
-				echo "<td align='center'><b>";
+				echo "<td align='center'><strong>";
 				if ($withtemplate!=2) echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."\">";
 				echo $netport->fields["logical_number"];
 				if ($withtemplate!=2) echo "</a>";
-				echo "</b></td>";
+				echo "</strong></td>";
 				echo "<td>".$netport->fields["name"]."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_netpoint",$netport->fields["netpoint"])."</td>";
 				echo "<td>".$netport->fields["ifaddr"]."<br>";
@@ -385,13 +385,13 @@ function showPortsAdd($ID,$devtype) {
 	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
-	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype\"><b>";
+	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype\"><strong>";
 	echo $LANG["networking"][19];
-	echo "</b></a></td>";
+	echo "</strong></a></td>";
 	echo "<td align='center' class='tab_bg_2' width='50%'>";
-	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype&amp;several=yes\"><b>";
+	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype&amp;several=yes\"><strong>";
 	echo $LANG["networking"][46];
-	echo "</b></a></td>";
+	echo "</strong></a></td>";
 
 	echo "</tr>";
 	echo "</table></div><br>";
@@ -411,26 +411,26 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		$netport->getfromDB($contact->contact_id);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
 		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($netport->deleted?"class='tab_bg_2_2'":"").">";
-		echo "<td><b>";
+		echo "<td><strong>";
 		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."\">";
 		if (rtrim($netport->fields["name"])!="")
 			echo $netport->fields["name"];
 		else echo $LANG["common"][0];
-		echo "</a></b>";
-		echo " ".$LANG["networking"][25]." <b>";
+		echo "</a></strong>";
+		echo " ".$LANG["networking"][25]." <strong>";
 
 		echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$netport->fields["device_type"]]."?ID=".$netport->device_ID."\">";
 
 		echo $netport->device_name;
 		if ($CFG_GLPI["view_ID"]) echo " (".$netport->device_ID.")";
 		echo "</a>";
-		echo "</b></td>";
+		echo "</strong></td>";
 		if ($canedit){
-			echo "<td align='right'><b>";
+			echo "<td align='right'><strong>";
 			if ($withtemplate!=2)
 				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?disconnect=disconnect&amp;ID=$ID\">".$LANG["buttons"][10]."</a>";
 			else "&nbsp;";
-			echo "</b></td>";
+			echo "</strong></td>";
 		}
 		echo "</tr></table>";
 
@@ -493,45 +493,45 @@ function makeConnector($sport,$dport) {
 	if (empty($ips)&&!empty($ipd)){
 		$ps->fields["ifaddr"]=$ipd;
 		$ps->updateInDB($updates);
-		echo "<div align='center'><b>".$LANG["connect"][19]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][19]."</strong></div>";
 	}
 	else if (!empty($ips)&&empty($ipd)){
 		$pd->fields["ifaddr"]=$ips;		
 		$pd->updateInDB($updates);
-		echo "<div align='center'><b>".$LANG["connect"][19]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][19]."</strong></div>";
 	}
 	else if ($ips!=$ipd){
-		echo "<div align='center'><b>".$LANG["connect"][20]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][20]."</strong></div>";
 	}
 	// Update unknown MAC
 	$updates[0]="ifmac";
 	if (empty($macs)&&!empty($macd)){
 		$ps->fields["ifmac"]=$macd;
 		$ps->updateInDB($updates);
-		echo "<div align='center'><b>".$LANG["connect"][21]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][21]."</strong></div>";
 	}
 	else if (!empty($macs)&&empty($macd)){
 		$pd->fields["ifmac"]=$macs;		
 		$pd->updateInDB($updates);
-		echo "<div align='center'><b>".$LANG["connect"][21]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][21]."</strong></div>";
 	}
 	else if ($macs!=$macd){
-		echo "<div align='center'><b>".$LANG["connect"][22]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][22]."</strong></div>";
 	}
 	// Update unknown netpoint
 	$updates[0]="netpoint";
 	if (empty($nps)&&!empty($npd)){
 		$ps->fields["netpoint"]=$npd;
 		$ps->updateInDB($updates);
-		echo "<div align='center'><b>".$LANG["connect"][17]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][17]."</strong></div>";
 	}
 	else if (!empty($nps)&&empty($npd)){
 		$pd->fields["netpoint"]=$nps;		
 		$pd->updateInDB($updates);
-		echo "<div align='center'><b>".$LANG["connect"][17]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][17]."</strong></div>";
 	}
 	else if ($nps!=$npd){
-		echo "<div align='center'><b>".$LANG["connect"][18]."</b></div>";
+		echo "<div align='center'><strong>".$LANG["connect"][18]."</strong></div>";
 	}
 
 	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
@@ -540,7 +540,7 @@ function makeConnector($sport,$dport) {
 		$source->getFromDB($ps->fields['device_type'],$ps->fields['on_device']);
 		$dest=new CommonItem;
 		$dest->getFromDB($pd->fields['device_type'],$pd->fields['on_device']);
-		echo "<br><div align='center'><b>".$LANG["networking"][44]." ".$source->getName()." - ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$LANG["networking"][45]." ".$dest->getName()." - ".$pd->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </b></div>";
+		echo "<br><div align='center'><strong>".$LANG["networking"][44]." ".$source->getName()." - ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$LANG["networking"][45]." ".$dest->getName()." - ".$pd->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </strong></div>";
 		return true;
 	} else {
 		return false;

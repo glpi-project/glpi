@@ -232,16 +232,15 @@ class Software extends CommonDBTM {
 
 			echo "<tr><th align='center' colspan='2' >";
 			if (!$template) {
-				echo $LANG["software"][41] . ": " . $this->fields["ID"];
-			}
-			elseif (strcmp($template, "newcomp") === 0) {
+				echo $LANG["common"][2]." ".$this->fields["ID"];
+			} elseif (strcmp($template, "newcomp") === 0) {
 				echo $LANG["software"][42] . ": " . $this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='" . $this->fields["tplname"] . "'>";
-			}
-			elseif (strcmp($template, "newtemplate") === 0) {
+			} elseif (strcmp($template, "newtemplate") === 0) {
 				echo $LANG["common"][6] . "&nbsp;: ";
 				autocompletionTextField("tplname", "glpi_software", "tplname", $this->fields["tplname"], 20);
 			}
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 
 			echo "</th><th colspan='2' align='center'>" . $datestring . $date;
 			if (!$template && !empty ($this->fields['tplname']))

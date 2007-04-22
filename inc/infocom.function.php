@@ -59,8 +59,8 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 	if (!$ic->getfromDBforDevice($device_type,$dev_ID)){
 		if (haveRight("contract_infocom","w")&&$withtemplate!=2){
 			echo "<div align='center'>";
-			echo "<b><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></b><br>";
-			echo "</div>";
+			echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></strong>";
+			echo "</div><br>";
 		}
 	} else {
 		if ($withtemplate!=2)
@@ -69,7 +69,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		echo "<div align='center'>";
 		echo "<table class='tab_cadre".(!ereg("infocoms-show",$_SERVER['PHP_SELF'])?"_fixe":"")."'>";
 
-		echo "<tr><th colspan='4'><b>".$LANG["financial"][3]."</b></th></tr>";
+		echo "<tr><th colspan='4'>".$LANG["financial"][3]."</th></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][26].":		</td>";
 		echo "<td align='center'>";

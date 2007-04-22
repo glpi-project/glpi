@@ -81,7 +81,7 @@ function showRegistry($device_type,$ID,$withtemplate=''){
 			echo "</div>\n\n";
 	
 		}
-		else echo "<div align='center'><b>".$LANG["registry"][5]."</b></div>";
+		else echo "<div align='center'><strong>".$LANG["registry"][5]."</strong></div>";
 	}
 	
 }
