@@ -397,7 +397,6 @@ function contructTreeFromList($list,$root){
 
 function contructListFromTree($tree,$parent=0){
 	$list=array();
-
 	foreach ($tree as $root => $data){
 		$list[$root]=$parent;
 		if (is_array($data['tree'])&&count($data['tree'])){
@@ -679,7 +678,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 	}
 
 	if ($link==1&&$ID>0){
-		$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\" title=".$temp.">";
+		$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID."\" title=\"".$temp."\">";
 		$after="</a>";
 	}
 
