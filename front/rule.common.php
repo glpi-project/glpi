@@ -60,7 +60,7 @@ if (isset($_GET["action"])){
 	
 	$rulecollection->changeRuleOrder(-1,"");
 		
-	logEvent($_POST["FK_entities"], "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["rulesengine"][20]);
+	logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 

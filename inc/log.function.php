@@ -274,7 +274,8 @@ function logArray(){
 			"phones"=>$LANG["log"][43],
 			"dropdown"=>$LANG["log"][44],
 			"groups"=>$LANG["log"][47],
-			"entity"=>$LANG["log"][63]);
+			"entity"=>$LANG["log"][63],
+			"rules"=>$LANG["log"][65]);
 
 
 	$logService=array("inventory"=>$LANG["log"][50],
@@ -522,7 +523,9 @@ function showEvents($target,$order,$sort,$start=0) {
 		if ($item=="-1" || $item=="0") {
 			echo "&nbsp;";//$item;
 		} else {
-			if ($itemtype=="infocom"){
+			if ($itemtype=="rules"){
+				echo $item;
+			} else if ($itemtype=="infocom"){
 				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
 			} else {
 				if ($itemtype=="reservation"){

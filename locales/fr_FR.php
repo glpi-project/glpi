@@ -751,7 +751,6 @@ $LANG["log"][46]="Echouée";
 $LANG["log"][47]="groupe";
 $LANG["log"][48]="ajout utilisateur au groupe";
 $LANG["log"][49]="suppression utilisateur au groupe";
-
 $LANG["log"][50]="Inventaire";
 $LANG["log"][51]="Suivi";
 $LANG["log"][52]="Planning";
@@ -762,16 +761,12 @@ $LANG["log"][56]="Documents";
 $LANG["log"][57]="Configuration";
 $LANG["log"][58]="Réservation";
 $LANG["log"][59]="Cron";
-
 $LANG["log"][60]="déglobalisation de l'item";
 $LANG["log"][61]="ajout utilisateur à l'entité";
 $LANG["log"][62]="suppression utilisateur à l'entité";
 $LANG["log"][63]="entité";
 $LANG["log"][64]="modification des commentaires";
-
-$LANG["log"][70]="ajout d'une règle";
-$LANG["log"][71]="suppression d'une règle";
-
+$LANG["log"][65]="règle";
 
 $LANG["login"][0]="Dernière connexion";
 $LANG["login"][1]="Se reconnecter";
@@ -1216,7 +1211,6 @@ $LANG["rulesengine"][16]="Critère";
 $LANG["rulesengine"][17]="Règles";
 $LANG["rulesengine"][18]="Règles d'affectation d'une machine à une entité";
 $LANG["rulesengine"][19]="Règles d'affectation d'entité et de droits à partir de l'annuaire";
-$LANG["rulesengine"][20]="suppression d'une règle";
 $LANG["rulesengine"][22]="Assigner";
 $LANG["rulesengine"][23]="Mettre la valeur";
 $LANG["rulesengine"][24]="Choix du type de règle";
