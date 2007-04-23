@@ -44,7 +44,8 @@ $RELATION=array(
 						"glpi_connect_wire"=>"end2",
 						"glpi_inst_software"=>"cID",
 						"glpi_licenses"=>"oem_computer",
-						"glpi_ocs_link"=>"glpi_id"),
+						"glpi_ocs_link"=>"glpi_id",
+						"glpi_registry"=>"computer_id"),
 
 	"glpi_consumables_type" => array("glpi_consumables"=>"FK_glpi_consumables_type"),
 
@@ -118,7 +119,6 @@ $RELATION=array(
 															"glpi_dropdown_netpoint"=>"location",
 															"glpi_cartridges_type"=>"location",
 															"glpi_consumables_type"=>"location",
-															"glpi_users"=>"location",
 															"glpi_dropdown_locations"=>"parentID"
 													),
 	
@@ -182,6 +182,8 @@ $RELATION=array(
 				"glpi_dropdown_locations"=>"FK_entities",
 				"glpi_dropdown_netpoint"=>"FK_entities",
 				"glpi_enterprises"=>"FK_entities",
+				"glpi_entities"=>"parentID",
+				"glpi_entities_data"=>"FK_entities",
 				"glpi_groups"=>"FK_entities",
 				"glpi_mailgate"=>"FK_entities",
 				"glpi_monitors"=>"FK_entities",
@@ -221,6 +223,9 @@ $RELATION=array(
 
 	"glpi_reservation_item" => array("glpi_reservation_resa"=>"id_item"),
 
+	"glpi_rules_descriptions" => array("glpi_rules_actions"=>"FK_rules",
+						"glpi_rules_criterias"=>"FK_rules"),
+
 	"glpi_software" =>array("glpi_licenses"=>"sID",
 						"glpi_software"=>"update_software"),
 
@@ -239,8 +244,7 @@ $RELATION=array(
 	
 	"glpi_type_phones"=>array("glpi_phones"=>"type"),
 	
-	"glpi_type_printers"=>array("glpi_printers"=>"type",
-							"glpi_cartridges_assoc"=>"FK_glpi_type_printer"),
+	"glpi_type_printers"=>array("glpi_printers"=>"type"),
 
 	"glpi_users"=> array("glpi_cartridges_type"=>"tech_num",
 					"glpi_computers"=>"tech_num",
@@ -267,6 +271,7 @@ $RELATION=array(
 					"glpi_software"=>"FK_users",
 					"glpi_tracking"=>"author",
 					"glpi_tracking"=>"assign",
+					"glpi_tracking"=>"recipient",
 					"glpi_tracking_planning"=>"id_assign",
 					"glpi_users_groups"=>"FK_users",
 					"glpi_users_profiles"=>"FK_users",
