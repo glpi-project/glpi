@@ -137,7 +137,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 		$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
 		include (GLPI_ROOT."/ajax/dropdownValue.php");
 	} else {
-		echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
+		echo "<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";
 	}
 	echo "</span>\n";	
 
@@ -1852,14 +1852,15 @@ function dropdownPlanningState($name,$value='')
 	
 function dropdownArrayValues($name,$elements,$value='')
 {
-	echo "<select name='$name' id='$name'>";
+	$rand=mt_rand();
+	echo "<select name='$name' id='dropdown_".$name.$rand."'>";
 
 	foreach($elements as $key => $val){
 		echo "<option value='".$key."'".($value==$key?" selected ":"").">".$val."</option>";
 	}
 
 	echo "</select>";	
-	
+	return $rand;
 }
 
 function adminManagementDropdown($name,$label,$restrict,$software=0)

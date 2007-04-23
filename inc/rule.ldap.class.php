@@ -70,7 +70,7 @@ class LdapAffectEntityRule extends Rule {
 
 		$canedit = haveRight($this->right, "w");
 
-		echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">";
+		echo "<form name='ldapaffectation_form' id='ldapaffectation_form' method='post' action=\"$target\">";
 
 		if ($canedit) {
 
@@ -134,14 +134,14 @@ class LdapAffectEntityRule extends Rule {
 				echo "</tr>";
 			}
 		}
-		echo "<table>";
+		echo "</table></div>";
 
 		if ($canedit) {
 			echo "<div align='center'>";
 			echo "<table cellpadding='5' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_user_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 			echo "</td>";

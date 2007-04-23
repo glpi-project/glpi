@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("entity","rulesengine","rule.ocs","rule.ldap");
+$NEEDED_ITEMS=array("entity","rulesengine","rule.ocs","rule.ldap","user");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -150,9 +150,9 @@ if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 		break;
 		case 2 : 
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
-			$ldaprule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 		break;
 		case 3 :
+			$ldaprule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 			$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 			break;
 		default :
