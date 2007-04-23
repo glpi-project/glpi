@@ -62,6 +62,10 @@ if (!defined("GLPI_SESSION_DIR"))
 if (!defined("GLPI_PLUGIN_DOC_DIR"))
 	define("GLPI_PLUGIN_DOC_DIR",GLPI_ROOT . "/files/_plugins");
 
+// Path for cache storage
+if (!defined("GLPI_LOCK_DIR"))
+	define("GLPI_LOCK_DIR",GLPI_ROOT . "/files/_lock/");
+
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 if(file_exists(GLPI_ROOT ."/config/config_path.php")) {
