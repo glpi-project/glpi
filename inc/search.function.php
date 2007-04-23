@@ -830,7 +830,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-//	echo $QUERY."<br>\n";
+	//echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
@@ -2145,10 +2145,11 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return " LEFT JOIN $new_table $AS ON ($rt.model = $nt.ID) ";
 		break;
 		case "glpi_dropdown_os":
-			if ($type==SOFTWARE_TYPE)
+			if ($type==SOFTWARE_TYPE){
 				return " LEFT JOIN $new_table $AS ON ($rt.platform = $nt.ID) ";
-			else 
+			} else  {
 				return " LEFT JOIN $new_table $AS ON ($rt.os = $nt.ID) ";
+			}
 		break;
 		case "glpi_dropdown_os_version":
 			return " LEFT JOIN $new_table $AS ON ($rt.os_version = $nt.ID) ";
@@ -2162,8 +2163,9 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_networking_ports":
 			$out="";
 		// Add networking device for computers
-		if ($type==COMPUTER_TYPE)
+		if ($type==COMPUTER_TYPE){
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
+		}
 
 		return $out." LEFT JOIN $new_table $AS ON ($rt.ID = $nt.on_device AND $nt.device_type='$type') ";
 		break;

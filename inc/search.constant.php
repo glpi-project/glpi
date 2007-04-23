@@ -2591,49 +2591,49 @@ $SEARCH_OPTION[ENTITY_TYPE][16]['meta']=1;
 
 $SEARCH_OPTION[ENTITY_TYPE][3]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][3]['field']='address';
-$SEARCH_OPTION[ENTITY_TYPE][3]['linkfield']='address';
+$SEARCH_OPTION[ENTITY_TYPE][3]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][3]['name']=$LANG["financial"][44];
 $SEARCH_OPTION[ENTITY_TYPE][3]['meta']=0;
 
 $SEARCH_OPTION[ENTITY_TYPE][10]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][10]['field']='fax';
-$SEARCH_OPTION[ENTITY_TYPE][10]['linkfield']='fax';
+$SEARCH_OPTION[ENTITY_TYPE][10]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][10]['name']=$LANG["financial"][30];
 $SEARCH_OPTION[ENTITY_TYPE][10]['meta']=0;
 
 $SEARCH_OPTION[ENTITY_TYPE][11]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][11]['field']='town';
-$SEARCH_OPTION[ENTITY_TYPE][11]['linkfield']='town';
+$SEARCH_OPTION[ENTITY_TYPE][11]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][11]['name']=$LANG["financial"][101];
 $SEARCH_OPTION[ENTITY_TYPE][11]['meta']=0;
 
 $SEARCH_OPTION[ENTITY_TYPE][12]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][12]['field']='state';
-$SEARCH_OPTION[ENTITY_TYPE][12]['linkfield']='state';
+$SEARCH_OPTION[ENTITY_TYPE][12]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][12]['name']=$LANG["financial"][102];
 $SEARCH_OPTION[ENTITY_TYPE][12]['meta']=0;
 
 $SEARCH_OPTION[ENTITY_TYPE][13]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][13]['field']='country';
-$SEARCH_OPTION[ENTITY_TYPE][13]['linkfield']='country';
+$SEARCH_OPTION[ENTITY_TYPE][13]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][13]['name']=$LANG["financial"][103];
 $SEARCH_OPTION[ENTITY_TYPE][13]['meta']=0;
 
 $SEARCH_OPTION[ENTITY_TYPE][4]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][4]['field']='website';
-$SEARCH_OPTION[ENTITY_TYPE][4]['linkfield']='website';
+$SEARCH_OPTION[ENTITY_TYPE][4]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][4]['name']=$LANG["financial"][45];
 $SEARCH_OPTION[ENTITY_TYPE][4]['meta']=0;
 
 $SEARCH_OPTION[ENTITY_TYPE][5]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][5]['field']='phonenumber';
-$SEARCH_OPTION[ENTITY_TYPE][5]['linkfield']='phonenumber';
+$SEARCH_OPTION[ENTITY_TYPE][5]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][5]['name']=$LANG["financial"][29];
 $SEARCH_OPTION[ENTITY_TYPE][5]['meta']=0;
 
 $SEARCH_OPTION[ENTITY_TYPE][6]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][6]['field']='email';
-$SEARCH_OPTION[ENTITY_TYPE][6]['linkfield']='email';
+$SEARCH_OPTION[ENTITY_TYPE][6]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][6]['name']=$LANG["setup"][14];
 $SEARCH_OPTION[ENTITY_TYPE][6]['meta']=0;
 
