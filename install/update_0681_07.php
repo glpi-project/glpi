@@ -1111,6 +1111,10 @@ function update0681to07() {
 			$DB->query($query) or die("0.7 alter $field in $table" . $DB->error());
 		}
 	}
+	// Clean history
+	$query = "DELETE FROM `glpi_history` WHERE `old_value`=`new_value` AND `old_value` IS NOT NULL AND `old_value`!='';";
+	$DB->query($query) or die("0.7 clean glpi_history " . $DB->error());
+	
 
 } // fin 0.7 #####################################################################################
 ?>

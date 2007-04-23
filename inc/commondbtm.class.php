@@ -408,7 +408,7 @@ class CommonDBTM {
 						if (is_int($input[$key])||$input[$key]=='0') 	$this->fields[$key]=0;
 					}
 */
-					if ($this->fields[$key] != $input[$key]) {
+					if ($this->fields[$key] != stripslashes($input[$key])) {
 						// Do logs
 						if ($this->dohistory&&$history){
 							constructHistory($input["ID"],$this->type,$key,$this->fields[$key],$input[$key]);

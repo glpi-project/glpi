@@ -1092,4 +1092,8 @@ function manageRedirect($where){
 	}
 }
 
+function cleanInputText($string){
+	return preg_replace('/\"/','&quot;',$string);
+} 
+
 ?>

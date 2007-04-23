@@ -47,7 +47,7 @@ if ($result=$DB->query($query))
 	if ($DB->numrows($result)>0){
 		echo "<ul class='autocomp'>";
 		while ($data=$DB->fetch_array($result))
-			echo "<li class='autocomp'>".$data["VAL"]."</li>";
+			echo "<li class='autocomp'>".cleanInputText($data["VAL"])."</li>";
 		echo "</ul>";
 	}
 

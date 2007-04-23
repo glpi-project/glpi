@@ -1272,13 +1272,13 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 
 	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["ajax_autocompletion"]){
 		$rand=mt_rand();
-		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".preg_replace("/\"/","''",$value)."\" size='$size'>\n";
+		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
 		echo "<div id='textfieldupdate_$myname$rand' style='display:none;border:1px solid black;background-color:white;'></div>\n";
 		echo "<script type='text/javascript' language='javascript' charset='utf-8'>";
 		echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
 		echo "</script>";
 	}	else {
-		echo "<input $option type='text' name='$myname' value=\"".ereg_replace("\"","''",$value)."\" size='$size'>\n";
+		echo "<input $option type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
 	}
 }
 
