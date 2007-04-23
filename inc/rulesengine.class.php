@@ -120,10 +120,10 @@ class RuleCollection {
 		echo "</div>";
 		if ($canedit&&$nb>0) {
 			echo "<div align='center'>";
-			echo "<table cellpadding='5' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<table width='80%'>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 			echo "</td>";
@@ -301,7 +301,7 @@ class Rule extends CommonDBTM{
 				if ($new){
 					echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
 					echo "<input type='hidden' name='rule_type' value='".$this->rule_type."'>";
-					echo "<input type='submit' name='add_rule' value=\"" . $LANG["buttons"][8] . "\"' class='submit'>";
+					echo "<input type='submit' name='add_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 					echo "</td></tr>";
 
 				} else {
@@ -407,10 +407,10 @@ class Rule extends CommonDBTM{
 				
 		if ($canedit&&$nb>0) {
 			echo "<div align='center'>";
-			echo "<table cellpadding='5' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<table  width='80%'>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_action' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 			echo "</td></tr></table>";
@@ -545,10 +545,10 @@ class Rule extends CommonDBTM{
 		echo "</table></div>";
 		if ($canedit&&$maxsize>0) {
 			echo "<div align='center'>\n";
-			echo "<table cellpadding='5' width='80%'>\n";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<table width='80%'>\n";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-			echo "<td>/</td><td><a onclick= \"if ( unMarkAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_criteria' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
 			echo "</td></tr>";
@@ -810,12 +810,12 @@ class Rule extends CommonDBTM{
 					
 		echo "<td>".$this->fields["description"]."</td>";
 		if (!$first){
-			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&action=up&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\"></a></td>";
+			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
 		if (!$last){
-			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&action=down&ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\"></a></td>";
+			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=down&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
