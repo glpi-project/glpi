@@ -162,9 +162,9 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 clean datas of glpi_users_profiles " . $LANG["update"][90] . $DB->error());
 
 		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entities` INT NOT NULL DEFAULT '0',
-																	ADD `recursive` SMALLINT NOT NULL DEFAULT '1',
-																	ADD `active` SMALLINT NOT NULL DEFAULT '1',
-																	ADD `dynamic` SMALLINT NOT NULL DEFAULT '0' ";
+						ADD `recursive` SMALLINT NOT NULL DEFAULT '1',
+						ADD `active` SMALLINT NOT NULL DEFAULT '1',
+						ADD `dynamic` SMALLINT NOT NULL DEFAULT '0' ";
 		$DB->query($query) or die("0.7 alter glpi_users_profiles " . $LANG["update"][90] . $DB->error());
 
 		// Manage inactive users
@@ -253,6 +253,11 @@ function update0681to07() {
 	if (!isIndex("glpi_users_profiles", "FK_entities")) {
 		$query = "ALTER TABLE `glpi_users_profiles` ADD INDEX (`FK_entities`);";
 		$DB->query($query) or die("0.7 add index FK_entities in glpi_users_profiles " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!isIndex("glpi_users_profiles", "recursive")) {
+		$query = "ALTER TABLE `glpi_users_profiles` ADD INDEX (`recursive`);";
+		$DB->query($query) or die("0.7 add index recursive in glpi_users_profiles " . $LANG["update"][90] . $DB->error());
 	}
 
 	//// MULTIAUTH MANAGEMENT
@@ -555,7 +560,8 @@ function update0681to07() {
 						 				`registry_hive` varchar(45) NOT NULL,
 						 				`registry_path` varchar(255) NOT NULL,
 						 				`registry_value` varchar(255) NOT NULL,
-						 				PRIMARY KEY  (`ID`)
+						 				PRIMARY KEY  (`ID`),
+										KEY `computer_id` (`computer_id`)
 										) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1";
 		$DB->query($query) or die("0.7 add glpi_registry table " . $LANG["update"][90] . $DB->error());
 
@@ -745,7 +751,8 @@ function update0681to07() {
 						  `action_type` varchar(255) NOT NULL,
 						  `field` varchar(255) NOT NULL,
 						  `value` varchar(255) NOT NULL,
-						  PRIMARY KEY  (`ID`)
+						  PRIMARY KEY  (`ID`),
+						  KEY `FK_rules` (`FK_rules`)
 						) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 						";
 		$DB->query($query) or die("0.7 add table glpi_rules_descriptions" . $LANG["update"][90] . $DB->error());
@@ -759,7 +766,8 @@ function update0681to07() {
 				  `criteria` varchar(255) NOT NULL,
 				  `condition` smallint(4) NOT NULL DEFAULT '0',
 				  `pattern` varchar(255) NOT NULL,
-				  PRIMARY KEY  (`ID`)
+				  PRIMARY KEY  (`ID`),
+				KEY `FK_rules` (`FK_rules`)
 				) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
 		$DB->query($query) or die("0.7 add table glpi_rules_criterias" . $LANG["update"][90] . $DB->error());
 
@@ -903,6 +911,11 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add recipient in glpi_tracking" . $LANG["update"][90] . $DB->error());
 		$query = "UPDATE `glpi_tracking` SET recipient = author";
 		$DB->query($query) or die("0.7 update recipient in glpi_tracking" . $LANG["update"][90] . $DB->error());
+		
+	}
+	if (!isIndex("glpi_tracking","recipient")){
+		$query="ALTER TABLE `glpi_tracking` ADD INDEX ( `recipient` ) ";
+		$DB->query($query) or die("0.7 add recipient index in glpi_tracking" . $LANG["update"][90] . $DB->error());
 	}
 	
 	if (!FieldExists("glpi_ocs_config", "deconnection_behavior")) {
