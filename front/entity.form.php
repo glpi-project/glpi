@@ -73,7 +73,7 @@ if (isset($_POST["update"]))
 		$ruleAction->addActionByAttributes("assign", $ruleid, "FK_entities", $_POST["affectentity"]);
 	}
 		
-	logEvent(RULE_OCS_AFFECT_COMPUTER, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][70]);
+	logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["add_user_rule"]))
 {
@@ -89,40 +89,43 @@ if (isset($_POST["update"]))
 		$ruleAction = new RuleAction;
 		//Action is : affect computer to this entity
 		$ruleAction->addActionByAttributes("assign", $ruleid, "FK_entities", $_POST["affectentity"]);
-		if ($_POST["FK_profiles"])
+		if ($_POST["FK_profiles"]){
 			$ruleAction->addActionByAttributes("assign", $ruleid, "FK_profiles", $_POST["FK_profiles"]);
+		}
 		$ruleAction->addActionByAttributes("assign", $ruleid, "recursive", $_POST["recursive"]);
 	}
 		
-	logEvent(RULE_OCS_AFFECT_COMPUTER, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][70]);
+	logEvent($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_POST["deleteuser"]))
 {
 	checkRight("entity","w");
 
-	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val)
+	if (count($_POST["item"])){
+		foreach ($_POST["item"] as $key => $val){
 			deleteUserProfileEntity($key);
+		}
+	}
 
 	logEvent($_POST["FK_entities"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"]))
 {
 	checkRight("entity","w");
-	if (isset($_POST["delete_computer_rule"]))
+	if (isset($_POST["delete_computer_rule"])){
 		$rule = new OcsAffectEntityRule;		
-	else
+	} else {
 		$rule = new LdapAffectEntityRule;
+	}
 		
 	if (count($_POST["item"])){
-		foreach ($_POST["item"] as $key => $val)
-		{	
+		foreach ($_POST["item"] as $key => $val){	
 			$rule->delete(array('ID'=>$key));
 		}
 	}
 
-	logEvent(RULE_OCS_AFFECT_COMPUTER, "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][71]);
+	logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
