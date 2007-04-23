@@ -461,17 +461,19 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 					$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
 					$DBocs->query($query);
 
-					echo $LANG["ocsng"][19] . "</div>";
+					echo $LANG["ocsng"][19];
 					if ($withtemplate == 2)
 						$this->ocsFormConfig($target,$ID,$withtemplate,$templateid);
 					else
 						$this->ocsFormConfig($target, $ID,$withtemplate);
 				} else
-					echo $LANG["ocsng"][20] . "</div>";
-			} else
-				echo $LANG["ocsng"][21] . "</div>";
+					echo $LANG["ocsng"][20];
+			} else {
+				echo $LANG["ocsng"][21];
+			}
 
 		}
+		echo "</div>";
 	}
 	
 	function prepareInputForUpdate($input)
