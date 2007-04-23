@@ -233,7 +233,7 @@ class DBmysql {
 	}
 	function close()
 	{
-		return mysql_close($this->dbh);
+		return @mysql_close($this->dbh);
 	}
 
 }
