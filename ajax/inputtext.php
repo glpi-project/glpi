@@ -43,6 +43,6 @@
 	header_nocache();
 	
 	checkLoginUser();
-	echo "<input type='text' ".(isset($_POST["size"])?" size='".$_POST["size"]."' ":"")." ".(isset($_POST["maxlength"])?"maxlength='".$_POST["maxlength"]."' ":"")." name='".$_POST['name']."' value=\"".preg_replace("/\"/","''",rawurldecode(stripslashes($_POST["data"])))."\">";
+	echo "<input type='text' ".(isset($_POST["size"])?" size='".$_POST["size"]."' ":"")." ".(isset($_POST["maxlength"])?"maxlength='".$_POST["maxlength"]."' ":"")." name='".$_POST['name']."' value=\"".cleanInputText(rawurldecode(stripslashes($_POST["data"])))."\">";
 
 ?>

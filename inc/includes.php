@@ -81,13 +81,15 @@ if (!isset($AJAX_INCLUDE)){
 
 // Security system
 	if (isset($_POST)){
-		if (!get_magic_quotes_gpc())
+		if (!get_magic_quotes_gpc()){
 			$_POST = array_map('addslashes_deep', $_POST);
+		}
 		$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
 	}
 	if (isset($_GET)){
-		if (!get_magic_quotes_gpc())
+		if (!get_magic_quotes_gpc()){
 			$_GET = array_map('addslashes_deep', $_GET);
+		}
 		$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
 	}
 
@@ -101,7 +103,7 @@ if (!isset($AJAX_INCLUDE)){
 	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
 		do_hook("config");
 
-		if (count($_SESSION["glpi_plugins"]))
+		if (count($_SESSION["glpi_plugins"])){
 			foreach ($_SESSION["glpi_plugins"] as $name) {
 
 				if (isset($_SESSION["glpilanguage"])&&file_exists(GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1]))
@@ -116,6 +118,7 @@ if (!isset($AJAX_INCLUDE)){
 				use_plugin($name);
 
 			}
+		}
 	}
 }
 

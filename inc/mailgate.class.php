@@ -260,7 +260,7 @@ class MailCollect  extends receiveMail {
 	{
 		//$text= str_replace("'", "", $text);
 		$text= str_replace("=20", "\n", $text);
-		return preg_replace("/\"/","''",$text);
+		return $text;
 	}
 
 
