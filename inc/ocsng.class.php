@@ -433,9 +433,9 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $this->fields["ocs_db_name"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][1] . " </td><td> <input type=\"text\" name=\"ocs_db_user\" value=\"" . $this->fields["ocs_db_user"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"" . $this->fields["ocs_db_passwd"] . "\"></td></tr>";
-		echo "</table>";
+		echo "</table></div>";
 
-		echo "<br><table border='0'>";
+		echo "<br><div align='center'><table border='0'>";
 		
 		if ($ID == -1 || $withtemplate == 2)
 			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
