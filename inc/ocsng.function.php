@@ -2894,7 +2894,11 @@ function removeEntityLock($entity,$fp)
 {
 	flock($fp, LOCK_UN);
 	fclose($fp);
-	unlink(GLPI_CACHE_DIR."lock_entity_".$entity);
+	
+	//Test if the lock file still exists before removing it
+	// (sometimes another thread already already removed the file)
+	if (file_exists(GLPI_CACHE_DIR."lock_entity_".$entity))
+		unlink(GLPI_CACHE_DIR."lock_entity_".$entity);
 }
 
 
