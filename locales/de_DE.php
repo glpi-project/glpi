@@ -757,8 +757,7 @@ $LANG["log"][61]="Benutzer zum Eintrag hinzufügen";
 $LANG["log"][62]="Benutzer komplett entfernen"; 
 $LANG["log"][63]="Einheit"; 
 $LANG["log"][64]="Änderung in Kommentaren"; 
-$LANG["log"][70]="Regel hinzufügen"; 
-$LANG["log"][71]="Regelunterdrückung"; 
+$LANG["log"][65]="rule"; 
 
 $LANG["login"][0]="Letzter Login"; 
 $LANG["login"][1]="Erneut einloggen"; 
@@ -1202,7 +1201,6 @@ $LANG["rulesengine"][16]="Kriterien";
 $LANG["rulesengine"][17]="Regeln"; 
 $LANG["rulesengine"][18]="Regeln, die einen Computer in einer Entität betreffen"; 
 $LANG["rulesengine"][19]="Regeln für Entitäten und Berechtigungen von hier an"; 
-$LANG["rulesengine"][20]="Regelunterdrückung"; 
 $LANG["rulesengine"][22]="Zuweisen"; 
 $LANG["rulesengine"][23]="Wert setzen"; 
 $LANG["rulesengine"][24]="Regeltyp"; 

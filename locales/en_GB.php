@@ -757,8 +757,7 @@ $LANG["log"][61]="add user to entity";
 $LANG["log"][62]="remove this user completely"; 
 $LANG["log"][63]="entity"; 
 $LANG["log"][64]="change of comments"; 
-$LANG["log"][70]="add a rule"; 
-$LANG["log"][71]="rule supression"; 
+$LANG["log"][65]="rule"; 
 
 $LANG["login"][0]="Last login"; 
 $LANG["login"][1]="Log in again"; 
@@ -1202,7 +1201,6 @@ $LANG["rulesengine"][16]="Criteria";
 $LANG["rulesengine"][17]="Rules"; 
 $LANG["rulesengine"][18]="Rules to affect a computer to an entity"; 
 $LANG["rulesengine"][19]="Entity and rights assigment rules starting from here"; 
-$LANG["rulesengine"][20]="rule supression"; 
 $LANG["rulesengine"][22]="Assign"; 
 $LANG["rulesengine"][23]="Set the value"; 
 $LANG["rulesengine"][24]="Rule type"; 

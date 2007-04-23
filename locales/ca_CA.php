@@ -757,8 +757,7 @@ $LANG["log"][61]="afegit un usuari a l'entitat";
 $LANG["log"][62]="esborrat d'un usuari de la entitat"; 
 $LANG["log"][63]="entitat"; 
 $LANG["log"][64]="modificació dels comentaris"; 
-$LANG["log"][70]="afegir una regla"; 
-$LANG["log"][71]="eliminat d'una regla"; 
+$LANG["log"][65]="rule"; 
 
 $LANG["login"][0]="Última connexió"; 
 $LANG["login"][1]="Log in again"; 
@@ -1202,7 +1201,6 @@ $LANG["rulesengine"][16]="Criteri";
 $LANG["rulesengine"][17]="Regles"; 
 $LANG["rulesengine"][18]="Regles d'assignació d'un ordinador a una entitat"; 
 $LANG["rulesengine"][19]="Regles d'assignació d'entitat i permisos a partir del directori"; 
-$LANG["rulesengine"][20]="eliminat d'una regla"; 
 $LANG["rulesengine"][22]="Assignar"; 
 $LANG["rulesengine"][23]="Posar el valor"; 
 $LANG["rulesengine"][24]="Elecció del tipus de regla"; 

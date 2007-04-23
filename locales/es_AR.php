@@ -757,8 +757,7 @@ $LANG["log"][61]="agregar usuario a la entidad";
 $LANG["log"][62]="suprimir el usuario en la entidad"; 
 $LANG["log"][63]="entidad"; 
 $LANG["log"][64]="modificación de comentarios"; 
-$LANG["log"][70]="agregar una regla"; 
-$LANG["log"][71]="eliminación de una regla"; 
+$LANG["log"][65]="rule"; 
 
 $LANG["login"][0]="Última conexión"; 
 $LANG["login"][1]="Volver a ingresar"; 
@@ -1202,7 +1201,6 @@ $LANG["rulesengine"][16]="Criterio";
 $LANG["rulesengine"][17]="Reglas"; 
 $LANG["rulesengine"][18]="Reglas de afectación de un equipo a una entidad"; 
 $LANG["rulesengine"][19]="Reglas de afectación de entidad y de derechos a partir del directorio"; 
-$LANG["rulesengine"][20]="eliminación de una regla"; 
 $LANG["rulesengine"][22]="Asignar"; 
 $LANG["rulesengine"][23]="Poner el valor"; 
 $LANG["rulesengine"][24]="Selección del tipo de regla"; 

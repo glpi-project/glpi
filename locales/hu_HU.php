@@ -757,8 +757,7 @@ $LANG["log"][61]="felhasználó hozzáadása az entitáshoz";
 $LANG["log"][62]="felhasználó törlése"; 
 $LANG["log"][63]="entitás"; 
 $LANG["log"][64]="megjegyzések módosítása"; 
-$LANG["log"][70]="új szabály"; 
-$LANG["log"][71]="szabály elnyomás"; 
+$LANG["log"][65]="rule"; 
 
 $LANG["login"][0]="Utolsó kapcsolat"; 
 $LANG["login"][1]="Belépés újra"; 
@@ -1202,7 +1201,6 @@ $LANG["rulesengine"][16]="Kritérium";
 $LANG["rulesengine"][17]="Szabályok"; 
 $LANG["rulesengine"][18]="Számítógép entitáshoz rendelésének szabályai"; 
 $LANG["rulesengine"][19]="Entitások és jogok összerendelése"; 
-$LANG["rulesengine"][20]="szabály kikapcsolás"; 
 $LANG["rulesengine"][22]="Hozzárendel"; 
 $LANG["rulesengine"][23]="Érték megadása"; 
 $LANG["rulesengine"][24]="Szabály típusa"; 
