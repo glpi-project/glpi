@@ -757,8 +757,7 @@ $LANG["log"][61]="Přidat uživatele do objektu";
 $LANG["log"][62]="kompletní odstranění tohoto uživatele"; 
 $LANG["log"][63]="Objekt"; 
 $LANG["log"][64]="změnit komentáře"; 
-$LANG["log"][70]="přidat pravidlo"; 
-$LANG["log"][71]="potlačení pravidla"; 
+$LANG["log"][65]="rule"; 
 
 $LANG["login"][0]="Poslední přihlášení"; 
 $LANG["login"][1]="Znovu se přihlásit"; 
@@ -1202,7 +1201,6 @@ $LANG["rulesengine"][16]="Kritérium";
 $LANG["rulesengine"][17]="Pravidla"; 
 $LANG["rulesengine"][18]="Pravidla pro převod počítače na objekt"; 
 $LANG["rulesengine"][19]="Objekt a přiřazení pravidel začíná zde"; 
-$LANG["rulesengine"][20]="potlačení pravidla"; 
 $LANG["rulesengine"][22]="Přiřadit"; 
 $LANG["rulesengine"][23]="Nastavit hodnotu"; 
 $LANG["rulesengine"][24]="Typ pravidla"; 
