@@ -242,22 +242,7 @@ class Config extends CommonDBTM {
 				}
 				echo ">DD-MM-YYYY</option>";
 				echo "</select></td>";
-			
-				echo "<td align='center'> " . $LANG["setup"][117] . " </td><td>";
-				dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
-				echo " </td></tr>";
-			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][149] . " </td><td>";
-				dropdownInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
-				echo "</td>";
-			
-				echo "<td align='center'> &nbsp;</td><td>&nbsp;";
-				echo " </td></tr>";
-			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][129] . " </td><td>";
-				dropdownYesNo("view_ID", $CFG_GLPI["view_ID"]);
-				echo "</td>";
-			
+				
 				echo "<td align='center'>" . $LANG["setup"][130] . " </td><td><select name=\"nextprev_item\">";
 				$nextprev_item = $CFG_GLPI["nextprev_item"];
 				echo "<option value=\"ID\"";
@@ -271,15 +256,12 @@ class Config extends CommonDBTM {
 				}
 				echo ">" . $LANG["common"][16] . "</option>";
 				echo "</select></td></tr>";
-			
-				$plan_begin = split(":", $CFG_GLPI["planning_begin"]);
-				$plan_end = split(":", $CFG_GLPI["planning_end"]);
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][223] . "</td><td>";
-				dropdownInteger('planning_begin', $plan_begin[0], 0, 24);
-				echo "&nbsp;->&nbsp;";
-				dropdownInteger('planning_end', $plan_end[0], 0, 24);
-			
-				echo "</td><td align='center'>" . $LANG["setup"][148] . "</td><td>";
+				
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][149] . " </td><td>";
+				dropdownInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
+				echo "</td>";
+				
+				echo "<td align='center'>" . $LANG["setup"][148] . "</td><td>";
 				echo "<select name='time_step'>";
 				$steps = array (
 					5,
@@ -294,6 +276,18 @@ class Config extends CommonDBTM {
 				}
 				echo "</select>&nbsp;" . $LANG["job"][22];
 				echo "</td></tr>";
+			
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][129] . " </td><td>";
+				dropdownYesNo("view_ID", $CFG_GLPI["view_ID"]);
+				echo "</td>";
+				
+				$plan_begin = split(":", $CFG_GLPI["planning_begin"]);
+				$plan_end = split(":", $CFG_GLPI["planning_end"]);
+				echo "<td align='center'>" . $LANG["setup"][223] . "</td><td>";
+				dropdownInteger('planning_begin', $plan_begin[0], 0, 24);
+				echo "&nbsp;->&nbsp;";
+				dropdownInteger('planning_end', $plan_end[0], 0, 24);
+				echo " </td></tr>";
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][406] . "</strong></td></tr>";
 
@@ -341,10 +335,11 @@ class Config extends CommonDBTM {
 				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][123] . "</td><td>";
 				dropdownInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 0, 200);
 				echo "</td><td colspan='2'>&nbsp;</td></tr>";
-			
-				echo "</table>&nbsp;</div>";
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-			
+				
+				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				
+				echo "</table></div>";
+				
 			break;
 			case 3:
 				echo "<div align='center'><table class='tab_cadre_fixe'>";
@@ -375,14 +370,19 @@ class Config extends CommonDBTM {
 				dropdownYesNo("permit_helpdesk", $CFG_GLPI["permit_helpdesk"]);
 				echo "</td></tr>";
 
-				echo "<tr><th colspan='2'>" . $LANG["login"][10] . "</th><th colspan='2'></th></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][124] . " </td><td colspan='3'>";
+				echo "<tr><th colspan='2'>" . $LANG["login"][10] . "</th><th colspan='2'>".$LANG["Menu"][20]."</th></tr>";
+				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][124] . " </td><td>";
 				dropdownYesNo("auto_add_users", $CFG_GLPI["auto_add_users"]);
-				echo "</td></tr>";
+				echo "</td>";
+				
+				echo "<td align='center'> " . $LANG["setup"][117] . " </td><td>";
+				dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
+				echo " </td></tr>";
+				
+				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 									
-				echo "</table>&nbsp;</div>";
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-			
+				echo "</table></div>";
+				
 			break;
 		}
 		echo "</form>";
