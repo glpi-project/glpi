@@ -2881,7 +2881,7 @@ function getListState($ocs_server_id){
 function setEntityLock($entity)
 {
 	global $CFG_GLPI;
-	$fp = fopen(GLPI_CACHE_DIR."lock_entity_".$entity, "w+");
+	$fp = fopen(GLPI_LOCK_DIR."lock_entity_".$entity, "w+");
 
 	if (flock($fp, LOCK_EX)) {
 	    return $fp;
@@ -2897,8 +2897,8 @@ function removeEntityLock($entity,$fp)
 	
 	//Test if the lock file still exists before removing it
 	// (sometimes another thread already already removed the file)
-	if (file_exists(GLPI_CACHE_DIR."lock_entity_".$entity))
-		unlink(GLPI_CACHE_DIR."lock_entity_".$entity);
+	if (file_exists(GLPI_LOCK_DIR."lock_entity_".$entity))
+		unlink(GLPI_LOCK_DIR."lock_entity_".$entity);
 }
 
 
