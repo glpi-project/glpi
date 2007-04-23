@@ -1320,7 +1320,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			if (isset($_GET['export_all']))
 				$end_display=$numrows;
 			// Display List Header
-			echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols,1);
+			echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols);
 			
 			commonTrackingListHeader($output_type,$target,$parameters2,$sort,$order);
 
@@ -1365,13 +1365,13 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			// Delete selected item
 			if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
 				echo "<div align='center'>";
-				echo "<table cellpadding='5' width='900'>";
+				echo "<table cellpadding='5' width='80%'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
 
 				echo "<td>/</td><td><a onclick=\"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td width='80%'>";
 				dropdownMassiveAction(TRACKING_TYPE);
-				echo "</td><td>&nbsp;</td></table></div>";
+				echo "</td></table></div>";
 				// End form for delete item
 				echo "</form>";
 			}
