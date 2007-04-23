@@ -326,7 +326,7 @@ class Rule extends CommonDBTM{
 	
 		$elements[AND_MATCHING] = AND_MATCHING;
 		$elements[OR_MATCHING] = OR_MATCHING;
-		dropdownArrayValues($name,$elements,$value);
+		return dropdownArrayValues($name,$elements,$value);
 	}
 
 	/**
@@ -432,14 +432,6 @@ class Rule extends CommonDBTM{
 		echo "</td><td>";
 		$val=$this->dropdownActions();
 		echo "</td><td>";
-
-		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('field', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('action_span','".$CFG_GLPI["root_doc"]."/ajax/ruleaction.php',{asynchronous:true, evalScripts:true, \n";
-		echo "           method:'post', parameters:'field='+value+'&rule_type=".$this->rule_type."'\n";
-		echo "})})\n";
-		echo "</script>\n";
 		
 		echo "<span id='action_span'>\n";
 		$_POST["rule_type"]=$this->rule_type;
@@ -473,14 +465,6 @@ class Rule extends CommonDBTM{
 		echo "</td><td>";
 		$val=$this->dropdownCriterias();
 		echo "</td><td>";
-
-		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('criteria', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('criteria_span','".$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php',{asynchronous:true, evalScripts:true, \n";
-		echo "           method:'post', parameters:'criteria='+value+'&rule_type=".$this->rule_type."'\n";
-		echo "})})\n";
-		echo "</script>\n";
 		
 		echo "<span id='criteria_span'>\n";
 		$_POST["rule_type"]=$this->rule_type;
@@ -563,30 +547,48 @@ class Rule extends CommonDBTM{
 	 * Display the dropdown of the criterias for the rule
 	 */
 	function dropdownCriterias(){
+		global $CFG_GLPI;
 		$items=array();
 		foreach ($this->getCriterias() as $ID => $crit){
 			$items[$ID]=$crit['name'];
 		}
-		dropdownArrayValues("criteria", $items);
+		$rand=dropdownArrayValues("criteria", $items);
+
 		// Force set item to default value on reload
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('criteria').value='".key($items)."';";
+		echo "document.getElementById('dropdown_criteria$rand').value='".key($items)."';";
+
+		echo "   new Form.Element.Observer('dropdown_criteria$rand', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('criteria_span','".$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php',{asynchronous:true, evalScripts:true, \n";
+		echo "           method:'post', parameters:'criteria='+value+'&rule_type=".$this->rule_type."'\n";
+		echo "})})\n";
 		echo "</script>\n";
+
 		return key($items);
 	}
 	/**
 	 * Display the dropdown of the actions for the rule
 	 */
 	function dropdownActions(){
+		global $CFG_GLPI;
 		$items=array();
 		foreach ($this->getActions() as $ID => $act){
 			$items[$ID]=$act['name'];
 		}
 
-		dropdownArrayValues("field", $items);
+		$rand=dropdownArrayValues("field", $items);
 		// Force set item to default value on reload
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('field').value='".key($items)."';";
+		echo "document.getElementById('dropdown_field$rand').value='".key($items)."';";
+		echo "</script>\n";
+
+		echo "<script type='text/javascript' >\n";
+		echo "   new Form.Element.Observer('dropdown_field$rand', 1, \n";
+		echo "      function(element, value) {\n";
+		echo "      	new Ajax.Updater('action_span','".$CFG_GLPI["root_doc"]."/ajax/ruleaction.php',{asynchronous:true, evalScripts:true, \n";
+		echo "           method:'post', parameters:'field='+value+'&rule_type=".$this->rule_type."'\n";
+		echo "})})\n";
 		echo "</script>\n";
 
 	}

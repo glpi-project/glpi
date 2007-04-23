@@ -63,7 +63,7 @@ class Entity extends CommonDBTM{
 
 		$ong[1]=$LANG["title"][26];
 		$ong[2]=$LANG["Menu"][14];
-		$ong[3]=$LANG["entity"][4];
+		$ong[3]=$LANG["rulesengine"][17];
 		return $ong;
 	}
 

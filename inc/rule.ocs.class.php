@@ -288,7 +288,7 @@ class OcsAffectEntityRule extends Rule {
 				echo "</tr>";
 			}
 		}
-		echo "<table>";
+		echo "</table></div>";
 
 		if ($canedit) {
 			echo "<div align='center'>";

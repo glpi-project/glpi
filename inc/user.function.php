@@ -88,9 +88,9 @@ function useAuthMail(){
 	global $DB;	
 
 	//Get all the pop/imap servers
-	$sql = "SELECT * FROM glpi_auth_mail";
+	$sql = "SELECT count(*) FROM glpi_auth_mail";
 	$result = $DB->query($sql);
-	if ($DB->numrows($result) > 0) {
+	if ($DB->result($result,0,0) > 0) {
 		return true;
 	}
 	return false;
@@ -100,9 +100,9 @@ function useAuthLdap(){
 	global $DB;	
 
 	//Get all the ldap directories
-	$sql = "SELECT * FROM glpi_auth_ldap";
+	$sql = "SELECT count(*) FROM glpi_auth_ldap";
 	$result = $DB->query($sql);
-	if ($DB->numrows($result) > 0) {
+	if ($DB->result($result,0,0) > 0) {
 		return true;
 	}
 	return false;
