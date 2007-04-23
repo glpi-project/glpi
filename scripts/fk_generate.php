@@ -51,15 +51,39 @@ while ($t=$DB->fetch_array($result)){
 
 $relations = getDbRelations();
 
+$query=array();
 foreach ( $relations as $totable => $rels){
 	foreach ($rels as $fromtable => $fromfield){
 		if ($fromtable[0]=="_"){
 			$fromtable=substr($fromtable,1);
 		}
-		$query="ALTER TABLE `$fromtable` ADD CONSTRAINT FOREIGN KEY (`$fromfield`) REFERENCES `$totable` (`ID`);";
-		$DB->query($query) or die($query." ".$DB->error());
+		if (!is_array($fromfield)){
+			$query[$fromtable][]=" ADD CONSTRAINT `".$fromtable."_".$fromfield."` FOREIGN KEY (`$fromfield`) REFERENCES `$totable` (`ID`) ";
+		} else {
+			foreach ($fromfield as $f){
+				$query[$fromtable][]=" ADD CONSTRAINT `".$fromtable."_".$f."` FOREIGN KEY (`$f`) REFERENCES `$totable` (`ID`) ";
+			}
+		}
 	}
 	
+}
+
+
+foreach ($query as $table => $constraints){
+
+	$q="ALTER TABLE `$table` ";
+	$first=true;
+	foreach ($constraints as $c){
+		if ($first){
+			$first=false;
+		} else {
+			$q.=", ";
+		}	
+		$q.=$c;
+	}
+	echo $q."<br><br>";
+	$DB->query($q) or die($q." ".$DB->error());
+
 }
 
 $DB->query("SET FOREIGN_KEY_CHECKS = 1;");

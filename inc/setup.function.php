@@ -390,15 +390,22 @@ function replaceDropDropDown($input) {
 
 	if (isset ($RELATION[$input["tablename"]]))
 		foreach ($RELATION[$input["tablename"]] as $table => $field) {
-			$query = "update $table set $field = '" . $input["newID"] . "'  where $field = '" . $input["oldID"] . "'";
-			$DB->query($query);
+			if (!is_array($field)){
+				$query = "UPDATE `$table` SET `$field` = '" . $input["newID"] . "'  WHERE `$field` = '" . $input["oldID"] . "'";
+				$DB->query($query);
+			} else {
+				foreach ($field as $f){
+					$query = "UPDATE `$table` SET `$f` = '" . $input["newID"] . "'  WHERE `$f` = '" . $input["oldID"] . "'";
+					$DB->query($query);
+				}
+			}
 		}
 
-	$query = "delete from " . $input["tablename"] . " where ID = '" . $input["oldID"] . "'";
+	$query = "DELETE  FROM `".$input["tablename"]."` WHERE `ID` = '" . $input["oldID"] . "'";
 	$DB->query($query);
 	// Need to be done on entity class
 	if ($input["tablename"]=="glpi_entities"){
-		$query = "delete from glpi_entities_data where FK_entities = '" . $input["oldID"] . "'";
+		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
 	}
 }
@@ -411,7 +418,7 @@ function showDeleteConfirmForm($target, $table, $ID) {
 
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
 
-		$query = "Select count(*) as cpt FROM $table where parentID = '" . $ID . "'";
+		$query = "SELECT COUNT(*) AS cpt FROM `$table` WHERE `parentID` = '" . $ID . "'";
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "cpt") > 0) {
 			echo "<div align='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
@@ -419,7 +426,7 @@ function showDeleteConfirmForm($target, $table, $ID) {
 		}
 
 		if ($table == "glpi_dropdown_kbcategories") {
-			$query = "Select count(*) as cpt FROM glpi_kbitems where categoryID = '" . $ID . "'";
+			$query = "SELECT COUNT(*) AS cpt FROM `glpi_kbitems` WHERE `categoryID` = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0) {
 				echo "<div align='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
@@ -501,7 +508,7 @@ function dropdownUsed($table, $ID) {
 	if (isset ($RELATION[$table])){
 
 		foreach ($RELATION[$table] as $tablename => $field) {
-			$query = "Select count(*) as cpt FROM $tablename where $field = '" . $ID . "'";
+			$query = "SELECT COUNT(*) AS cpt FROM `$tablename` WHERE `$field` = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0)
 				$var1 = false;
