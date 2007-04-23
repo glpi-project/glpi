@@ -48,20 +48,20 @@ if (isset($_POST["add"]))
 {
 
 	$mailgate->add($_POST);
-	logEvent($newID, "mailgate", 4, "config", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+	logEvent($newID, "mailgate", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
 	$mailgate->delete($_POST);
-	logEvent($_POST["ID"], "mailgate", 4, "config", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/mailgate.php");
 }
 else if (isset($_POST["update"]))
 {
 
 	$mailgate->update($_POST);
-	logEvent($_POST["ID"], "mailgate", 4, "config", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["get_mails"]))
