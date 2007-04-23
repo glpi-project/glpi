@@ -288,8 +288,15 @@ class CommonDBTM {
 		$RELATION=getDbRelations();
 		if (isset($RELATION[$this->table])){
 			foreach ($RELATION[$this->table] as $tablename => $field){
-				$query="UPDATE $tablename SET $field = 0 WHERE $field=$ID ";
-				$DB->query($query);
+				if (!is_array($field)){
+					$query="UPDATE `$tablename` SET `$field` = NULL WHERE `$field`='$ID' ";
+					$DB->query($query);
+				} else {
+					foreach ($field as $f){
+						$query="UPDATE `$tablename` SET `$f` = NULL WHERE `$f`='$ID' ";
+						$DB->query($query);
+					}
+				}
 			}
 		}
 	}
