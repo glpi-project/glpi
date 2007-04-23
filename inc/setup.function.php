@@ -699,7 +699,7 @@ function showFormExtAuthList($target) {
 				echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
 				echo "<table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></th></table>";
+				echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table>";
 			}
 		break;
 
@@ -719,7 +719,7 @@ function showFormExtAuthList($target) {
 				echo "<input type=\"hidden\" name=\"CAS_Test\" value=\"1\" >";
 				echo "<div align='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></th></table>";
+				echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr></table></div>";
 			}
 		}
 

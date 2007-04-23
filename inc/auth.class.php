@@ -532,7 +532,7 @@ class AuthLDAP extends CommonDBTM {
 			echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
 			echo "<div align='center'><table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
-			echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></th></table></div>";
+			echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table></div>";
 		}
 
 	}
