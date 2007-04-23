@@ -178,6 +178,9 @@ class SetupSearchDisplay extends CommonDBTM{
 		if (haveRight("user","r")){
 			$dp[USER_TYPE]=$LANG["Menu"][14];
 		}
+		if (haveRight("entity","r")){
+			$dp[ENTITY_TYPE]=$LANG["Menu"][37];
+		}
 		if (haveRight("consumable","r")){
 			$dp[CONSUMABLE_TYPE]=$LANG["Menu"][32];
 		}
