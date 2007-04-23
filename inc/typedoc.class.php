@@ -79,20 +79,19 @@ class Typedoc  extends CommonDBTM {
 		}
 
 		if ($spotted){
-			$date = $this->fields["date_mod"];
-			$datestring = $LANG["common"][26]." : ";
 
 			echo "<div align='center'><form method='post' name=form action=\"$target\">";
 
 			echo "<table class='tab_cadre' cellpadding='2'>";
 
 			echo "<tr><th align='center' >";
-			if (empty($ID))
+			if (empty($ID)){
 				echo $LANG["document"][17];
-			else 
-				echo $LANG["document"][7].": ".$this->fields["ID"];
+			} else {
+				echo $LANG["common"][2]." ".$this->fields["ID"];
+			}
 
-			echo "</th><th  align='center'>".$datestring.$date;
+			echo "</th><th  align='center'>".$LANG["common"][26]." : ".convDateTime($this->fields["date_mod"]);
 			echo "</th></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td><td>";
