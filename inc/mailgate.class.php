@@ -258,9 +258,9 @@ class MailCollect  extends receiveMail {
 	/* function textCleaner - Strip out unwanted/unprintable characters from the subject. */
 	function textCleaner($text)
 	{
-		$text= str_replace("'", "", $text);
+		//$text= str_replace("'", "", $text);
 		$text= str_replace("=20", "\n", $text);
-		return $text;
+		return preg_replace("/\"/","''",$text);
 	}
 
 
