@@ -224,7 +224,7 @@ function showLinkOnDevice($type,$ID){
 
 		}
 		echo "</table></div>";
-	} else echo "<div align='center'><strong>strong>".$LANG["links"][7]."</strong></div>";
+	} else echo "<div align='center'><strong>".$LANG["links"][7]."</strong></div>";
 
 }
 
