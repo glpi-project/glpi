@@ -261,8 +261,8 @@ function showLicenses ($sID,$show_computers=0) {
 								echo "</a></strong>";
 								if ($CFG_GLPI["license_deglobalisation"])
 								{
-									echo "&nbsp;&nbsp;<a alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','".$CFG_GLPI["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&sID=$sID&ID=$ID')\">".$LANG["common"][38]."</a>&nbsp;";	
-									echo "<img alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" src='".$CFG_GLPI["root_doc"]."/pics/aide.png'\">";
+									echo "&nbsp;&nbsp;<a href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','".$CFG_GLPI["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&amp;sID=$sID&amp;ID=$ID')\" title=\"".$LANG["common"][39]."\">".$LANG["common"][38]."</a>&nbsp;";	
+									echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\">";
 								}
 							}
 							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
