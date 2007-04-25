@@ -166,9 +166,11 @@ function cleanCache($group=""){
 		'readControl' => CACHE_READCONTROL,
 	);
 	$CACHE = new Cache_Lite($cache_options);
-	if (empty($group))
+	if (empty($group)){
 		$CACHE->clean();
-	else $CACHE->clean($group,"ingroup");
+	} else {
+		$CACHE->clean($group,"ingroup");
+	}
 
 }
 

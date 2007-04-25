@@ -188,8 +188,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		echo "<option value=\"0\">-----</option>";
 
 		$output=getDropdownName($_POST['table'],$_POST['value']);
-		if (!empty($output)&&$output!="&nbsp;")
+		if (!empty($output)&&$output!="&nbsp;"){
 			echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+		}
 
 		if ($DB->numrows($result)) {
 			while ($data =$DB->fetch_array($result)) {
@@ -199,7 +200,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
 				if (empty($output)) $output="($ID)";
-				echo "<option value=\"$ID\" title=\"$output$addcomment\">".substr($output,0,$_POST["limit"])."</option>";
+ 				echo "<option value=\"$ID\" title=\"$output$addcomment\">".substr($output,0,$_POST["limit"])."</option>";
 			}
 		}
 		echo "</select>";

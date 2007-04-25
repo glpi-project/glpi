@@ -287,21 +287,19 @@ function moveTreeUnder($table, $to_move, $where) {
 		$current_ID = $where;
 		while ($current_ID != 0 && $impossible_move == false) {
 
-			$query = "select * from $table WHERE ID='$current_ID'";
+			$query = "SELECT * FROM $table WHERE ID='$current_ID'";
 			$result = $DB->query($query);
 			$current_ID = $DB->result($result, 0, "parentID");
-			if ($current_ID == $to_move)
+			if ($current_ID == $to_move){
 				$impossible_move = true;
-
+			}
 		}
 		if (!$impossible_move) {
-
 			// Move Location
 			$query = "UPDATE $table SET parentID='$where' where ID='$to_move'";
 			$result = $DB->query($query);
 			regenerateTreeCompleteNameUnderID($table, $to_move);
 		}
-
 	}
 }
 
@@ -384,13 +382,28 @@ function deleteDropdown($input) {
 
 //replace all entries for a dropdown in each items
 function replaceDropDropDown($input) {
-	global $DB;
+	global $DB,$CFG_GLPI;
 	$name = getDropdownNameFromTable($input["tablename"]);
 	$RELATION = getDbRelations();
+	// Man
 
 	if (isset ($RELATION[$input["tablename"]]))
 		foreach ($RELATION[$input["tablename"]] as $table => $field) {
+
 			if (!is_array($field)){
+
+				// Manage OCS lock for items - no need for array case
+				if ($table=="glpi_computers"&&$CFG_GLPI['ocs_mode']){
+					$query="SELECT ID FROM `glpi_computers` WHERE ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
+					$result=$DB->query($query);
+					if ($DB->numrows($result)){
+						while ($data=$DB->fetch_array($result)){
+							addToOcsArray($data['ID'],array($field),"computer_update");
+						}
+					}
+				}
+
+
 				$query = "UPDATE `$table` SET `$field` = '" . $input["newID"] . "'  WHERE `$field` = '" . $input["oldID"] . "'";
 				$DB->query($query);
 			} else {
@@ -408,7 +421,8 @@ function replaceDropDropDown($input) {
 		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
 	}
-	cleanRelationCache($input["tablename"]);
+		cleanRelationCache($input["tablename"]);
+	
 }
 
 function showDeleteConfirmForm($target, $table, $ID) {
