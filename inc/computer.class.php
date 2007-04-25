@@ -629,7 +629,7 @@ class Computer extends CommonDBTM {
 				}
 				else
 				{
-						echo "<td></td>";
+						echo "<td></td><td></td>";
 						echo "</tr>";
 				}			
 				$CFG_GLPI["cache"]->end();
