@@ -157,6 +157,7 @@ CREATE TABLE `glpi_computers` (
   `os_version` int(11) NOT NULL default '0',
   `os_sp` int(11) NOT NULL default '0',
   `os_license_number` varchar(255) collate utf8_unicode_ci default NULL,
+  `os_license_id` varchar(255) collate utf8_unicode_ci default NULL,
   `auto_update` int(11) NOT NULL default '0',
   `location` int(11) NOT NULL default '0',
   `domain` int(11) NOT NULL default '0',
