@@ -554,45 +554,43 @@ class Computer extends CommonDBTM {
 				echo "<td>".$LANG["computers"][9].":</td><td>";
 				dropdownValue("glpi_dropdown_os", "os", $this->fields["os"]);
 				echo "</td>";
-	
+
 				echo "<td>".$LANG["state"][0].":</td><td>";
 				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
-				echo "</td></tr>";
-	
+				echo "</td>";
+
 				echo "<tr class='tab_bg_1'>";
-	
+
 				echo "<td>".$LANG["computers"][52].":</td><td>";
 				dropdownValue("glpi_dropdown_os_version", "os_version", $this->fields["os_version"]);
 				echo "</td>";
-				
-				echo "<td>".$LANG["computers"][10]."</td><td>";
-				autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],35);
-				echo"</td>";
+
+				echo "<td>".$LANG["computers"][51].":</td><td>";
+				dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
+				echo "</td>";
+
 				echo "</tr>";
-
-				echo "<tr class='tab_bg_1'>";
-	
-				echo "<td></td><td></td>";
-				
-				echo "<td>".$LANG["computers"][11]."</td><td>";
-				autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],35);
-				echo"</td>";
-				echo "</tr>";
-
-
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["computers"][53].":</td><td>";
 				dropdownValue("glpi_dropdown_os_sp", "os_sp", $this->fields["os_sp"]);
 				echo "</td>";
-	
 				echo "<td valign='middle' rowspan='2'>".$LANG["common"][25].":</td><td valign='middle' rowspan='2'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
 				echo "</tr>";
+
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["computers"][51].":</td><td>";
-				dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
-				echo "</td>";
+				
+				echo "<td>".$LANG["computers"][10]."</td><td>";
+				autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],35);
+				echo"</td>";
+				echo "<td></td><td></td>";
 				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+
+				echo "<td>".$LANG["computers"][11]."</td><td>";
+				autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],35);
+				echo"</td>";
 	
 				if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
 					$query="SELECT * 
@@ -602,18 +600,6 @@ class Computer extends CommonDBTM {
 					$result=$DB->query($query);
 					if ($DB->numrows($result)==1){
 						$data=$DB->fetch_array($result);
-						echo "<tr class='tab_bg_1'>";
-						echo "<td colspan='2' align='center'>";
-						echo $LANG["ocsng"][14].": ".convDateTime($data["last_ocs_update"]);
-						echo "<br>";
-						echo $LANG["ocsng"][13].": ".convDateTime($data["last_update"]);
-						echo "<br>";
-
-						if (haveRight("ocsng","r"))
-							echo $LANG["common"][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
-						else
-							echo $LANG["common"][52]." ".getOCSServerNameByID($ID);						
-						echo "</td>";
 						if (haveRight("sync_ocsng","w"))
 						{
 							echo "<td >".$LANG["ocsng"][6]." ".$LANG["Menu"][33].": 	</td>";
@@ -624,8 +610,28 @@ class Computer extends CommonDBTM {
 						else
 								echo "<td colspan=2></td>";
 						echo "</tr>";
+
+						echo "<tr class='tab_bg_1'>";
+						echo "<td colspan='4' align='center'>";
+						echo $LANG["ocsng"][14].": ".convDateTime($data["last_ocs_update"]);
+						echo "<br>";
+						echo $LANG["ocsng"][13].": ".convDateTime($data["last_update"]);
+						echo "<br>";
+
+						if (haveRight("ocsng","r"))
+							echo $LANG["common"][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
+						else
+							echo $LANG["common"][52]." ".getOCSServerNameByID($ID);						
+						echo "</td>";
+						echo "<td></td>";
+						echo "</tr>";
 					}
 				}
+				else
+				{
+						echo "<td></td>";
+						echo "</tr>";
+				}			
 				$CFG_GLPI["cache"]->end();
 			}
 			
