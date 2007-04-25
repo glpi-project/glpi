@@ -31,15 +31,21 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh
+// Original Author of file: Walid Nouh (walid.nouh@atosorigin.com)
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 if ($argv) {
 	for ($i=1;$i<count($argv);$i++)
 	{
-		$it = split("=",$argv[$i]);
+		//To be able to use = in search filters, enter \= instead in command line
+		//Replace the \= by ° not to match the split function
+		$arg=str_replace('\=','°',$argv[$i]);
+		$it = split("=",$arg);
 		$it[0] = eregi_replace('^--','',$it[0]);
+		
+		//Replace the ° by = the find the good filter 
+		$it=str_replace('°','=',$it);
 		$_GET[$it[0]] = $it[1];
 	}
 }
@@ -60,25 +66,24 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!isset($_GET["action"])) $_GET["action"]=1;
 
 //If no ldap_server ID is given, then use all the available servers
-if (!isset($_GET["ldap_server"])) $_GET["ldap_server"]='';
+if (!isset($_GET["server_id"])) $_GET["server_id"]='';
 
-if (!isset($_GET["ldap_filter"])) $_GET["ldap_filter"]='';
-else
-	$_GET["ldap_filter"]=str_replace("#","=",$_GET["ldap_filter"]);
-	
+//If not filter given
+if (!isset($_GET["filter"])) $_GET["filter"]='';
+
 //Get the ldap server's id by his name
-if ($_GET["ldap_server"] != '')
-	$sql = "SELECT ID from glpi_auth_ldap WHERE name='" . $_GET["ldap_server"] . "'";
+if ($_GET["server_id"] != '')
+	$sql = "SELECT ID, name from glpi_auth_ldap WHERE ID=" . $_GET["server_id"];
 else
-	$sql = "SELECT ID from glpi_auth_ldap";
+	$sql = "SELECT ID, name from glpi_auth_ldap";
 
 $result = $DB->query($sql);
-if ($DB->numrows($result) == 0 && $_GET["ldap_server"] != '')
-	echo "LDAP Server not found :".$_GET["ldap_server"];
+if ($DB->numrows($result) == 0 && $_GET["server_id"] != '')
+	echo "LDAP Server not found";
 else
 {	
 	while ($datas = $DB->fetch_array($result)) 
-		import ($_GET["action"],$datas,$_GET["ldap_filter"]);
+		import ($_GET["action"],$datas,$_GET["filter"]);
 	
 }
 
@@ -89,12 +94,12 @@ else
  */
 function import($action, $datas,$filter='')
 {
-	//The ldap server id is passed in the script url (parameter ldap_server)
-	$ldap_server = $datas["ID"];
-	$users = getAllLdapUsers($ldap_server, $_GET["action"],$filter);
+	//The ldap server id is passed in the script url (parameter server_id)
+	$server_id = $datas["ID"];
+	$users = getAllLdapUsers($server_id, $action,$filter);
 	
 	foreach ($users as $user) {
-		ldapImportUserByServerId($user, $_GET["action"], $ldap_server);
+		ldapImportUserByServerId($user, $action, $server_id);
 		echo ".";
 	}
 }
