@@ -408,6 +408,7 @@ function replaceDropDropDown($input) {
 		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
 	}
+	cleanRelationCache($input["tablename"]);
 }
 
 function showDeleteConfirmForm($target, $table, $ID) {
