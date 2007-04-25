@@ -505,7 +505,7 @@ class User extends CommonDBTM {
 		);
 
 		$filter = "(& $group_condition ($group_field_member=$user_dn))";
-	echo $filter;
+	
 		//Perform the search
 		$sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
