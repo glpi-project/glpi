@@ -179,7 +179,7 @@ class Document extends CommonDBTM {
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 				echo "<td colspan='2'>";
-				autocompletionTextField("name","glpi_docs","name",$this->fields["name"],25);
+				autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80);
 				echo "</td></tr>";
 	
 				if (!empty($ID)){

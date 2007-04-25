@@ -248,7 +248,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":</td>";
 	echo "<td>";
-	autocompletionTextField("name","glpi_networking_ports","name",$netport->fields["name"],20);	
+	autocompletionTextField("name","glpi_networking_ports","name",$netport->fields["name"],80);	
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][16].":</td><td>";
