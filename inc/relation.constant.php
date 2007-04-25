@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 $RELATION=array(
 
 	"glpi_cartridges_type" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
-							"glpi_cartridges_assoc"=>"FK_glpi_cartridges_type"),
+				"glpi_cartridges_assoc"=>"FK_glpi_cartridges_type"),
 
 	"glpi_computers" => array("glpi_computer_device"=>"FK_computers",
 						"glpi_connect_wire"=>"end2",
@@ -71,8 +71,8 @@ $RELATION=array(
 	"glpi_dropdown_contract_type" =>array("glpi_contracts"=>"contract_type"),
 	
 	"glpi_dropdown_domain" => array("glpi_computers"=>"domain",
-															"glpi_printers"=>"domain",
-															"glpi_networking"=>"domain"),
+						"glpi_printers"=>"domain",
+						"glpi_networking"=>"domain"),
 	"glpi_dropdown_manufacturer" =>array("glpi_cartridges_type"=>"FK_glpi_enterprise",
 							"glpi_computers"=>"FK_glpi_enterprise",
 							"glpi_consumables_type"=>"FK_glpi_enterprise",

@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("setup");
+$NEEDED_ITEMS=array("setup","ocsng");
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
@@ -116,10 +116,9 @@ if (isset($_POST["several_add"])) {
 	glpi_header($_SERVER['PHP_SELF']."?which=$which");
 }
 else {
-	if (ereg("popup",$_SERVER['PHP_SELF']))
-		popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
-	else 
+	if (!ereg("popup",$_SERVER['PHP_SELF'])){
 		commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","dropdowns");
+	}
 
 	$optgroup=array(
 			$LANG["setup"][139]=>array(
@@ -252,10 +251,9 @@ else {
 		}
 	}
 
-	if (ereg("popup",$_SERVER['PHP_SELF']))
-		popFooter();
-	else 
+	if (!ereg("popup",$_SERVER['PHP_SELF'])){
 		commonFooter();
+	}
 }
 
 
