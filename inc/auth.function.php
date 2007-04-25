@@ -486,6 +486,7 @@ function changeProfile($ID) {
 	if (isset ($_SESSION['glpiprofiles'][$ID]) && count($_SESSION['glpiprofiles'][$ID]['entities'])) {
 		// glpiactiveprofile -> active profile
 		$_SESSION['glpiactiveprofile'] = $_SESSION['glpiprofiles'][$ID];
+		$_SESSION['glpi_entities_tree']=array();
 		$_SESSION['glpiactiveentities'] = array ();
 		// glpiactiveentities -> active entities
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
