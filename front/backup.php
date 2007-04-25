@@ -281,7 +281,7 @@ function restoreMySqlDump($DB,$dumpFile , $duree)
 		{
 			$formattedQuery .= $buffer;
 			if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
-			if (substr(rtrim($formattedQuery,-1))==";"){
+			if (substr(rtrim($formattedQuery),-1)==";"){
 
 				// Do not use the $DB->query 
 				if ($DB->query($formattedQuery)) //r�ssie sinon continue �conca&t�er
