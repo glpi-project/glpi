@@ -647,7 +647,10 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer
 		$compudate = array ();
 		
 		if ($cfg_ocs["import_os_serial"] && !in_array("os_license_number", $computer_updates)) {
-			$compupdate["os_license_number"] = $line["WINPRODID"];
+			if (!empty($line["WINPRODKEY"]))
+				$compupdate["os_license_number"] = $line["WINPRODKEY"];
+			if (!empty($line["WINPRODID"]))
+				$compupdate["os_license_id"] = $line["WINPRODID"];
 		}
 		
 		if ($cfg_ocs["import_general_os"]) {
