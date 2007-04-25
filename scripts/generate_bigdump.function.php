@@ -1020,7 +1020,7 @@ function generate_entity($ID_entity){
 		$groupID=mt_rand($FIRST["groups"],$LAST["groups"]);
 		$domainID=mt_rand(1,$MAX['domain']);
 		$networkID=mt_rand(1,$MAX['network']);
-		$query="INSERT INTO glpi_computers VALUES (NULL,'$ID_entity','computers $i-$ID_entity','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID','',NOW(),'".mt_rand(1,$MAX['os'])."','".mt_rand(1,$MAX['os_version'])."','".mt_rand(1,$MAX['os_sp'])."','os sn $i','".mt_rand(1,$MAX['auto_update'])."','".$loc."','$domainID','$networkID','".mt_rand(1,$MAX['model'])."','".mt_rand(1,$MAX['type_computers'])."','0','','".mt_rand(1,$MAX['manufacturer'])."','0','note computer $i','0','".$userID."','".$groupID."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
+		$query="INSERT INTO glpi_computers VALUES (NULL,'$ID_entity','computers $i-$ID_entity','".GetRandomString(10)."','".GetRandomString(10)."','contact $i','num $i','$techID','',NOW(),'".mt_rand(1,$MAX['os'])."','".mt_rand(1,$MAX['os_version'])."','".mt_rand(1,$MAX['os_sp'])."','os sn $i','os id $i','".mt_rand(1,$MAX['auto_update'])."','".$loc."','$domainID','$networkID','".mt_rand(1,$MAX['model'])."','".mt_rand(1,$MAX['type_computers'])."','0','','".mt_rand(1,$MAX['manufacturer'])."','0','note computer $i','0','".$userID."','".$groupID."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$compID=$DB->insert_id();
 		addDocuments(COMPUTER_TYPE,$compID);
