@@ -566,7 +566,7 @@ class Computer extends CommonDBTM {
 				echo "</td>";
 				
 				echo "<td>".$LANG["computers"][10]."</td><td>";
-				autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],30);
+				autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],35);
 				echo"</td>";
 				echo "</tr>";
 
@@ -575,7 +575,7 @@ class Computer extends CommonDBTM {
 				echo "<td></td><td></td>";
 				
 				echo "<td>".$LANG["computers"][11]."</td><td>";
-				autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],30);
+				autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],35);
 				echo"</td>";
 				echo "</tr>";
 
