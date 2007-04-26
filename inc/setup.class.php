@@ -127,7 +127,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		$DB->query($query);
 	}
 
-	function title($type){
+	function title($target,$type){
 		global $LANG,$CFG_GLPI;
 
 		$dp=array();
@@ -208,7 +208,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 		if (count($dp)){
 			asort($dp);
-			echo "<div align='center'><form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/setup.display.php\">";
+			echo "<div align='center'><form method='post' action=\"$target\">";
 			echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 			echo $LANG["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
 	
@@ -223,17 +223,11 @@ class SetupSearchDisplay extends CommonDBTM{
 			echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
 			echo "</table></form></div>";
 	
-			echo "<div id='barre_onglets'><ul id='onglet'>";
-			echo "<li "; if ($_SESSION['glpi_searchconfig']==1){ echo "class='actif'";} echo  "><a href='".$CFG_GLPI["root_doc"]."/front/setup.display.php?onglet=1&amp;type=$type'>".$LANG["central"][13]."</a></li>";
-			if (haveRight("search_config","w")){
-				echo "<li "; if ($_SESSION['glpi_searchconfig']==2){ echo "class='actif'";} echo  "><a href='".$CFG_GLPI["root_doc"]."/front/setup.display.php?onglet=2&amp;type=$type'>".$LANG["central"][12]."</a></li>";
-			}
-			echo "</ul></div>";
 			return $type;
 		} else return false;
 	}
 
-	function showForm($type){
+	function showForm($target,$type){
 		global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
 
 
@@ -242,6 +236,13 @@ class SetupSearchDisplay extends CommonDBTM{
 		else $IDuser=$_SESSION["glpiID"];
 
 		$global_write=haveRight("search_config_global","w");
+
+		echo "<div id='barre_onglets'><ul id='onglet'>";
+		echo "<li "; if ($_SESSION['glpi_searchconfig']==1){ echo "class='actif'";} echo  "><a href='$target?onglet=1&amp;type=$type'>".$LANG["central"][13]."</a></li>";
+		if (haveRight("search_config","w")){
+			echo "<li "; if ($_SESSION['glpi_searchconfig']==2){ echo "class='actif'";} echo  "><a href='$target?onglet=2&amp;type=$type'>".$LANG["central"][12]."</a></li>";
+		}
+		echo "</ul></div>";
 
 		echo "<div align='center'>";
 		// Defined items
@@ -253,7 +254,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		if ($numrows==0&&!$is_global){
 			checkRight("search_config","w");
 			echo "<table class='tab_cadre_fixe' cellpadding='2' ><tr><th colspan='4'>";
-			echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/setup.display.php\">";
+			echo "<form method='post' action=\"$target\">";
 			echo "<input type='hidden' name='type' value='$type'>";
 			echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
@@ -267,7 +268,7 @@ class SetupSearchDisplay extends CommonDBTM{
 			echo $LANG["setup"][252].": </th></tr>";
 			if (!$is_global||$global_write){
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-				echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/setup.display.php\">";
+				echo "<form method='post' action=\"$target\">";
 				echo "<input type='hidden' name='type' value='$type'>";
 				echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
@@ -308,7 +309,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						if (!$is_global||$global_write){
 							if ($i!=0){
 								echo "<td align='center' valign='middle'>";
-								echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/setup.display.php\">";
+								echo "<form method='post' action=\"$target\">";
 								echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 								echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
@@ -319,7 +320,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							} else echo "<td>&nbsp;</td>";
 							if ($i!=$numrows-1){
 								echo "<td align='center' valign='middle'>";
-								echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/setup.display.php\">";
+								echo "<form method='post' action=\"$target\">";
 								echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 								echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
@@ -330,7 +331,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							} else echo "<td>&nbsp;</td>";
 
 							echo "<td align='center' valign='middle'>";
-							echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/setup.display.php\">";
+							echo "<form method='post' action=\"$target\">";
 							echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
 							echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
