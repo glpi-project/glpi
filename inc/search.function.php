@@ -905,7 +905,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			echo displaySearchNewLine($output_type);
 			$header_num=1;
 
-			if ($output_type==HTML_OUTPUT/*&&$isadmin*/){// HTML display - massive modif
+			if ($output_type==HTML_OUTPUT){// HTML display - massive modif
 				$search_config="";
 				if (haveRight("search_config","w")){
 					$tmp= " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;type=$type' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
@@ -978,10 +978,16 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo displaySearchNewLine($output_type,($i%2));
 
 
-				if ($output_type==HTML_OUTPUT&&$isadmin){// HTML display - massive modif
-					$sel="";
-					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-					echo displaySearchItem($output_type,"<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>",$item_num,$row_num,0,"width='10'");
+				if ($output_type==HTML_OUTPUT){// HTML display - massive modif
+					$tmpcheck="";
+					if ($isadmin){
+						$sel="";
+						if (isset($_GET["select"])&&$_GET["select"]=="all") {
+							$sel="checked";
+						}
+						$tmpcheck="<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
+					}
+					echo displaySearchItem($output_type,$tmpcheck,$item_num,$row_num,0,"width='10'");
 				}
 
 				// Print first element - specific case for user 

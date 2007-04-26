@@ -58,7 +58,6 @@ if (isset($_SESSION["glpipopup"]["name"])){
 		break;
 		case "search_config":
 			popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
-			// TODO : Manage reload
 			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["up"])||isset($_POST["down"])){
 				echo "<script type='text/javascript' >\n";
 				echo "window.opener.location.reload();";
