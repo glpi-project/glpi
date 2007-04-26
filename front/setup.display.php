@@ -37,7 +37,9 @@
 
 $NEEDED_ITEMS=array("search","setup");
 
-define('GLPI_ROOT', '..');
+if(!defined('GLPI_ROOT')){
+	define('GLPI_ROOT', '..');
+}
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_POST["type"]))$type=$_POST["type"];
@@ -47,8 +49,9 @@ else $type=0;
 if (!isset($_SESSION['glpi_searchconfig'])) $_SESSION['glpi_searchconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_searchconfig']=$_GET['onglet'];
 
-
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","display");
+if (!ereg("popup",$_SERVER['PHP_SELF'])){
+	commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","display");
+}
 
 checkSeveralRightsOr(array("search_config_global"=>"w","search_config"=>"w"));
 
@@ -65,8 +68,10 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
 	$setupdisplay->down($_POST);
 }
-if ($type=$setupdisplay->title($type)){
-	$setupdisplay->showForm($type);
+if ((ereg("popup",$_SERVER['PHP_SELF'])&&$type>0)||$type=$setupdisplay->title($_SERVER['PHP_SELF'],$type)){
+	$setupdisplay->showForm($_SERVER['PHP_SELF'],$type);
 }
-commonFooter();
+if (!ereg("popup",$_SERVER['PHP_SELF'])){
+	commonFooter();
+}
 ?>

@@ -91,15 +91,13 @@ if (isset($_POST["several_add"])) {
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["delete"])) {
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
-		if (ereg("popup",$_SERVER['PHP_SELF']))
-			popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
-		else 	
+		if (!ereg("popup",$_SERVER['PHP_SELF'])){
 			commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","dropdowns");
+		}
 		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"]);
-		if (ereg("popup",$_SERVER['PHP_SELF']))
-			popFooter();
-		else 
+		if (!ereg("popup",$_SERVER['PHP_SELF'])){
 			commonFooter();
+		}
 	} else {
 		deleteDropdown($_POST);
 		logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);

@@ -858,7 +858,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		// If the begin of the view is before the number of items
 		if ($start<$numrows) {
 
-
 			// Display pager only for HTML
 			if ($output_type==HTML_OUTPUT){
 				printPager($start,$numrows,$target,$parameters,$type);
@@ -906,8 +905,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			echo displaySearchNewLine($output_type);
 			$header_num=1;
 
-			if ($output_type==HTML_OUTPUT&&$isadmin)// HTML display - massive modif
-				echo displaySearchHeaderItem($output_type,"",$header_num,"",0,$order);
+			if ($output_type==HTML_OUTPUT/*&&$isadmin*/){// HTML display - massive modif
+				$search_config="";
+				if (haveRight("search_config","w")){
+					$tmp= " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;type=$type' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+
+					$search_config= "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/plus.png' ";
+					$search_config.=$tmp.">";
+					$search_config.= "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/moins.png' ";
+					$search_config.=$tmp.">";
+				}
+
+				echo displaySearchHeaderItem($output_type,$search_config,$header_num,"",0,$order);
+			}
 
 			// Display column Headers for toview items
 			for ($i=0;$i<$toview_count;$i++){
