@@ -58,11 +58,13 @@ class Device extends CommonDBTM {
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB;
-		$query="SELECT FK_computers FROM glpi_computer_device WHERE (FK_device = '".$input["ID"]."' AND device_type='".$input["device_type"]."')";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)){
-			while ($data=$DB->fetch_assoc($result)){
-				cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
+		if (count($updates)){
+			$query="SELECT FK_computers FROM glpi_computer_device WHERE (FK_device = '".$input["ID"]."' AND device_type='".$input["device_type"]."')";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)){
+				while ($data=$DB->fetch_assoc($result)){
+					cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
+				}
 			}
 		}
 	}

@@ -38,7 +38,6 @@ CREATE TABLE `glpi_auth_ldap` (
   `ldap_search_for_groups` int(11) NOT NULL default '0',
   `ldap_field_group_member` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_field_email` varchar(255) collate utf8_unicode_ci default NULL,
-  `ldap_field_location` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_field_realname` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_field_firstname` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_field_phone` varchar(255) collate utf8_unicode_ci default NULL,

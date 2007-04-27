@@ -279,7 +279,6 @@ function update0681to07() {
 									`ldap_search_for_groups` int NOT NULL default '0',
 									`ldap_field_group_member` varchar(255) default NULL,
 									`ldap_field_email` varchar(255) default NULL,
-									`ldap_field_location` varchar(255) default NULL,
 									`ldap_field_realname` varchar(255) default NULL,
 									`ldap_field_firstname` varchar(255) default NULL,
 									`ldap_field_phone` varchar(255) default NULL,
@@ -301,7 +300,7 @@ function update0681to07() {
 			$query = "INSERT INTO `glpi_auth_ldap` VALUES 
 			(NULL, '" . $config["ldap_host"] . "', '" . $config["ldap_host"] . "', '" . $config["ldap_basedn"] . "', '" . $config["ldap_rootdn"] . "', '" . $config["ldap_pass"] . "', " . $config["ldap_port"] . ", '" . $config["ldap_condition"] . "', '" . $config["ldap_login"] . "', '" . $config["ldap_use_tls"] . "', '" . $config["ldap_field_group"] . "',
 			'" . $config["ldap_condition"] . "', " . $config["ldap_search_for_groups"] . ", '" . $config["ldap_field_group_member"] . "',
-			'" . $config["ldap_field_email"] . "', '" . $config["ldap_field_location"] . "', '" . $config["ldap_field_realname"] . "', '" . $config["ldap_field_firstname"] . "',
+			'" . $config["ldap_field_email"] . "', '" . $config["ldap_field_realname"] . "', '" . $config["ldap_field_firstname"] . "',
 			'" . $config["ldap_field_phone"] . "', '" . $config["ldap_field_phone2"] . "', '" . $config["ldap_field_mobile"] . "',NULL);";
 			$DB->query($query) or die("0.7 transfert of ldap parameters into glpi_auth_ldap " . $LANG["update"][90] . $DB->error());
 		}

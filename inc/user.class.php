@@ -378,7 +378,6 @@ class User extends CommonDBTM {
 			$this->fields['password_md5'] = "";
 			$fields['name'] = $ldap_method["ldap_login"];
 			$fields['email'] = $ldap_method["ldap_field_email"];
-//			$fields['location'] = $ldap_method["ldap_field_location"];
 			$fields['realname'] = $ldap_method["ldap_field_realname"];
 			$fields['firstname'] = $ldap_method["ldap_field_firstname"];
 			$fields['phone'] = $ldap_method["ldap_field_phone"];
@@ -402,20 +401,6 @@ class User extends CommonDBTM {
 					$this->fields[$k] = "";
 			}
 
-			// Is location get from LDAP ?
-			/*
-			if (isset ($fields['location']) && !empty ($v[0][$fields["location"]][0]) && !empty ($fields['location'])) {
-				$query = "SELECT ID FROM glpi_dropdown_locations WHERE completename='" . $this->fields['location'] . "'";
-				$result = $DB->query($query);
-				if ($DB->numrows($result) == 0) {
-					$DB->query("INSERT INTO glpi_dropdown_locations (name) VALUES ('" . $this->fields['location'] . "')");
-					$this->fields['location'] = $DB->insert_id();
-					regenerateTreeCompleteNameUnderID("glpi_dropdown_locations", $this->fields['location']);
-				} else {
-					$this->fields['location'] = $DB->result($result, 0, "ID");
-				}
-			}
-			*/
 			// Get group fields
 			$query_user = "SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
 			$query_group = "SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
@@ -664,14 +649,6 @@ class User extends CommonDBTM {
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 20);
 				echo "</td></tr>";
 
-/*				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . ":</td><td>";
-				// TODO Restrict ??? or delete this field from the user
-				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"]);
-				echo "</td>";
-				echo "<td align='center'>" . $LANG["common"][42] . ":</td><td>";
-				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 20);
-				echo "</td></tr>";
-*/
 				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
 				echo "</tr>";
 

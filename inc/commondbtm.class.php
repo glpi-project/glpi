@@ -431,10 +431,10 @@ class CommonDBTM {
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
 
 				if ($this->updateInDB($updates)){
-					$this->post_updateItem($input,$updates,$history);
 					do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 				}
 			} 
+			$this->post_updateItem($input,$updates,$history);
 		}
 	}
 
