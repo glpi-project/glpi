@@ -1079,8 +1079,9 @@ function addToOcsArray($glpi_id, $toadd, $field) {
 			WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
 		$tab = importArrayFromDB($DB->result($result, 0, 0));
-		foreach ($toadd as $key => $val)
+		foreach ($toadd as $key => $val){
 			$tab[$key] = $val;
+		}
 		$query = "UPDATE glpi_ocs_link 
 					SET $field='" . exportArrayToDB($tab) . "' 
 					WHERE glpi_id='$glpi_id'";

@@ -130,7 +130,6 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 				// Specific entity item
 				if ($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"]=="glpi_enterprises_infocoms"){
 					$ent=new Enterprise();
-					echo $_POST[$_POST["field"]];
 					if ($ent->getFromDB($_POST[$_POST["field"]])){
 						$link_entity_type=$ent->fields["FK_entities"];
 					}
@@ -172,6 +171,7 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 				}
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
+						
 						if ($ci->getFromDB($_POST["device_type"],$key)){
 							if ($link_entity_type<0
 							||$link_entity_type==$ci->obj->fields["FK_entities"]){

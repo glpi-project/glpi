@@ -505,18 +505,18 @@ class AuthLDAP extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][48] . "</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"" . $this->fields["ldap_field_realname"] . "\" ></td>";
 			echo "<td align='center'>" . $LANG["common"][43] . "</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"" . $this->fields["ldap_field_firstname"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][15] . "</td><td><input type=\"text\" name=\"ldap_field_location\" value=\"" . $this->fields["ldap_field_location"] . "\" ></td>";
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . "</td><td><input type=\"text\" name=\"ldap_field_comments\" value=\"" . $this->fields["ldap_field_comments"] . "\" ></td>";
 			echo "<td align='center'>" . $LANG["setup"][14] . "</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"" . $this->fields["ldap_field_email"] . "\" ></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["financial"][29] . "</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"" . $this->fields["ldap_field_phone"] . "\" ></td>";
 			echo "<td align='center'>" . $LANG["financial"][29] . " 2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"" . $this->fields["ldap_field_phone2"] . "\" ></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][42] . "</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"" . $this->fields["ldap_field_mobile"] . "\" ></td>";
-			echo "<td align='center'>" . $LANG["common"][25] . "</td><td><input type=\"text\" name=\"ldap_field_comments\" value=\"" . $this->fields["ldap_field_comments"] . "\" ></td></tr>";
+			echo "<td align='center'>&nbsp;</td><td>&nbsp;</td></tr>";
 
-			if (empty ($ID))
+			if (empty ($ID)){
 				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
-			else {
+			} else {
 				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
 				echo "<td align='center' colspan=2><input type=\"submit\" name=\"delete_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
 				echo "</table>";
@@ -542,7 +542,6 @@ class AuthLDAP extends CommonDBTM {
 		$this->fields["ldap_login"]="uid";
 		$this->fields["ldap_field_realname"]="cn";
 		$this->fields["ldap_field_email"]="mail";
-		$this->fields["ldap_field_location"]="physicaldeliveryofficename";
 		$this->fields["ldap_field_phone"]="telephonenumber";
 	}
 	

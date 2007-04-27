@@ -56,7 +56,9 @@ class Config extends CommonDBTM {
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
-		cleanCache(); 
+		if (count($updates)){
+			cleanCache(); 
+		}
 	}
 	
 	function showForm($target) {
@@ -632,7 +634,9 @@ class ConfigOCS extends CommonDBTM {
 	}
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
-		$CACHE_CFG->remove("CFG_OCSGLPI_".$input["ID"],"GLPI_CFG");
+		if (count($updates)){
+			$CACHE_CFG->remove("CFG_OCSGLPI_".$input["ID"],"GLPI_CFG");
+		}
 	}
 
 }

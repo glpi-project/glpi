@@ -398,7 +398,7 @@ function replaceDropDropDown($input) {
 					$result=$DB->query($query);
 					if ($DB->numrows($result)){
 						while ($data=$DB->fetch_array($result)){
-							addToOcsArray($data['ID'],array($field),"computer_update");
+							mergeOcsArray($data['ID'],array($field),"computer_update");
 						}
 					}
 				}

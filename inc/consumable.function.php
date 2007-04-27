@@ -141,6 +141,7 @@ function showConsumables ($tID,$show_old=0) {
 	
 				echo "<br>";
 				echo "<div align='center'><strong>".$LANG["consumables"][7]."</strong></div>";
+				return;
 			}
 		}
 	
