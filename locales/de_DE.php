@@ -230,6 +230,7 @@ $LANG["common"][57]="Titel";
 
 $LANG["computers"][9]="Betriebssystem"; 
 $LANG["computers"][10]="OS-Seriennummer"; 
+$LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="neuen Computer von Vorlage erstellen"; 
 $LANG["computers"][14]="Eingetragen"; 
 $LANG["computers"][21]="CPU"; 

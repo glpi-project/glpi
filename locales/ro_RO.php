@@ -230,6 +230,7 @@ $LANG["common"][57]="Title";
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS serial"; 
+$LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="Calculator nou din template"; 
 $LANG["computers"][14]="Introdus"; 
 $LANG["computers"][21]="CPU"; 

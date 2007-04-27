@@ -230,6 +230,7 @@ $LANG["common"][57]="Title";
 
 $LANG["computers"][9]="Операционна система"; 
 $LANG["computers"][10]="OS serial"; 
+$LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="Нов компютър по шаблон"; 
 $LANG["computers"][14]="Добавен"; 
 $LANG["computers"][21]="CPU"; 
