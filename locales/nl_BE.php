@@ -230,6 +230,7 @@ $LANG["common"][57]="Title";
 
 $LANG["computers"][9]="Besturingssysteem"; 
 $LANG["computers"][10]="OS serial"; 
+$LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="Nieuwe computer van sjabloon"; 
 $LANG["computers"][14]="Toegevoegd"; 
 $LANG["computers"][21]="CPU"; 
@@ -1456,7 +1457,7 @@ $LANG["setup"][703]="General";
 $LANG["setup"][704]="Notifications"; 
 
 $LANG["software"][3]="Platform"; 
-$LANG["software"][5]="Versions"; 
+$LANG["software"][5]="versie"; 
 $LANG["software"][10]="Software"; 
 $LANG["software"][11]="Licenties"; 
 $LANG["software"][12]="Licentie toevoegen ..."; 

@@ -230,6 +230,7 @@ $LANG["common"][57]="Título";
 
 $LANG["computers"][9]="S.O."; 
 $LANG["computers"][10]="Número de serie del S.O."; 
+$LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="Nuevo ordenador a partir de un modelo"; 
 $LANG["computers"][14]="Agregado"; 
 $LANG["computers"][21]="CPU"; 
@@ -757,7 +758,7 @@ $LANG["log"][61]="añadido un usuario a la entidad";
 $LANG["log"][62]="borrado de un usuario de la entidad"; 
 $LANG["log"][63]="entidad"; 
 $LANG["log"][64]="modificación de los comentarios"; 
-$LANG["log"][65]="rule"; 
+$LANG["log"][65]="regla"; 
 
 $LANG["login"][0]="Última conexión"; 
 $LANG["login"][1]="Volver a ingresar"; 
