@@ -1001,10 +1001,10 @@ $LANG["ocsconfig"][44]="Type de licence par défaut";
 $LANG["ocsconfig"][45]="Licence site (global)";
 $LANG["ocsconfig"][46]="Licence libre (free)";
 $LANG["ocsconfig"][47]="Licence « en règle » par défaut";
-$LANG["ocsconfig"][48]="Comportement lors de la déconnection";
+$LANG["ocsconfig"][48]="Comportement lors de la déconnexion";
 $LANG["ocsconfig"][49]="Corbeille";
 $LANG["ocsconfig"][50]="Suppression";
-$LANG["ocsconfig"][51]="Deconnection avec état";
+$LANG["ocsconfig"][51]="Déconnexion avec état";
 
 $LANG["pager"][1]="à";
 $LANG["pager"][2]="de";
