@@ -257,7 +257,16 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			}
 		break;
 
-
+		case "force_update":
+			foreach ($_POST["item"] as $key => $val){
+				//Try to get the OCS server whose machine belongs
+				$ocs_server_id = getOCSServerByMachineID($key);
+				//If the machine was imported by OCS
+				if ($ocs_server_id != -1)
+					//Force update of the machine
+					ocsUpdateComputer($key,$ocs_server_id,1,1);
+			}
+		break;
 	}
 
 	$_SESSION['MESSAGE_AFTER_REDIRECT']=$LANG["common"][23];
