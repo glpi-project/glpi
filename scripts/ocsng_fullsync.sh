@@ -1,9 +1,11 @@
 #!/bin/sh
+cd $(dirname $0)
+
 pid_dir="/tmp"
 pidfile="$pid_dir/ocsng_fullsync.pid"
 runningpid=""
 scriptname="ocsng_fullsync.sh"
-glpiroot="/home/walid/sources/svn-glpi/glpi"
+glpiroot=".."
 
 # Predefined settings
 thread_nbr=4
@@ -51,7 +53,7 @@ cleanup()
   #  echo "kill pids: $runningpid"
   for pid in $runningpid; do kill $pid 2>/dev/null; done
   rm -f $pidfile
-  rm -f $glpiroot"/_cache_lock_entity*"
+  rm -f $glpiroot"/files/_lock/_cache_lock_entity*"
   echo "Done cleanup ... quitting."
   exit 0
 }
@@ -93,7 +95,7 @@ echo $$ > $pidfile
 
 [ -d "$glpiroot/scripts" ] && cd "$glpiroot/scripts"
 
-rm -f $glpiroot"/_cache_lock_entity*"
+rm -f $glpiroot"/files/_lock/_cache_lock_entity*"
 cpt=0
 
 while [ $cpt -lt $thread_nbr ]; do 
