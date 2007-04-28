@@ -56,6 +56,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 
 		case "delete":
 		case "purge":
+		case "force_update":
 		case "restore":
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
@@ -89,7 +90,6 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			dropdown("glpi_enterprises","entID",1);
 		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
-
 		case "update":
 			$first_group=true;
 		$newgroup="";

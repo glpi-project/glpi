@@ -1392,6 +1392,8 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		switch ($device_type){
 			case COMPUTER_TYPE :
 				echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
+				if (haveRight("ocsng","w") || haveRight("sync_ocsng","w"))
+					echo "<option value=\"force_update\">".$LANG["ocsng"][24]."</option>";
 				break;
 			case ENTERPRISE_TYPE :
 				echo "<option value=\"add_contact\">".$LANG["financial"][24]."</option>";
