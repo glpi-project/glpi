@@ -571,7 +571,8 @@ class Computer extends CommonDBTM {
 				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 				echo "</td>";
 
-				echo "<tr class='tab_bg_1'>";
+				// Get OCS Datas :
+				$dataocs=array();
 				if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
 					$query="SELECT * 
 						FROM glpi_ocs_link 
@@ -579,21 +580,19 @@ class Computer extends CommonDBTM {
 	
 					$result=$DB->query($query);
 					if ($DB->numrows($result)==1){
-						$data=$DB->fetch_array($result);
-						if (haveRight("sync_ocsng","w"))
-						{
-							echo "<td >".$LANG["ocsng"][6]." ".$LANG["Menu"][33].":</td>";
-							echo "<td >";
-							dropdownYesNo("_auto_update_ocs",$data["auto_update"]);
-							echo "</td>";
-						}
-						else
-								echo "<td colspan=2></td>";
-				
-					}else
-						{
-						echo "<td colspan=2></td>";
-						}
+						$dataocs=$DB->fetch_array($result);
+					}
+
+				}
+
+				echo "<tr class='tab_bg_1'>";
+				if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&haveRight("sync_ocsng","w")&&count($dataocs)){
+					echo "<td >".$LANG["ocsng"][6]." ".$LANG["Menu"][33].":</td>";
+					echo "<td >";
+					dropdownYesNo("_auto_update_ocs",$dataocs["auto_update"]);
+					echo "</td>";
+				} else	{
+					echo "<td colspan=2></td>";
 				}
 				echo "<td>".$LANG["computers"][51].":</td><td>";
 				dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
@@ -603,31 +602,20 @@ class Computer extends CommonDBTM {
 				
 				echo "<tr class='tab_bg_1'>";
 				
-				if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
-					$query="SELECT * 
-						FROM glpi_ocs_link 
-						WHERE glpi_id='$ID'";
-	
-					$result=$DB->query($query);
-					if ($DB->numrows($result)==1){
-						$data=$DB->fetch_array($result);
-
-						echo "<td colspan='2' align='center'>";
-						echo $LANG["ocsng"][14].": ".convDateTime($data["last_ocs_update"]);
-						echo "<br>";
-						echo $LANG["ocsng"][13].": ".convDateTime($data["last_update"]);
-						echo "<br>";
-
-						if (haveRight("ocsng","r"))
-							echo $LANG["common"][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
-						else
-							echo $LANG["common"][52]." ".getOCSServerNameByID($ID);						
+				if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
+					echo "<td colspan='2' align='center'>";
+					echo $LANG["ocsng"][14].": ".convDateTime($dataocs["last_ocs_update"]);
+					echo "<br>";
+					echo $LANG["ocsng"][13].": ".convDateTime($dataocs["last_update"]);
+					echo "<br>";
+					if (haveRight("ocsng","r")){
+						echo $LANG["common"][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
+					} else {
+						echo $LANG["common"][52]." ".getOCSServerNameByID($ID);	
 						echo "</td>";
 					}
-				}
-				else
-				{
-						echo "<td colspan=2></td>";	
+				} else	{
+					echo "<td colspan=2></td>";	
 				}
 				echo "<td valign='middle'>".$LANG["common"][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
 				echo "</tr>";
