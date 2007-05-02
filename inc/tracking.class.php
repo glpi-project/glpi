@@ -509,8 +509,6 @@ class Job extends CommonDBTM{
 			if (isset($input["_hour"])) $toadd["hour"]=$input["_hour"];
 			if (isset($input["_minute"])) $toadd["minute"]=$input["_minute"];
 			if (isset($input["_followup"])&&strlen($input["_followup"])) $toadd["contents"]=$input["_followup"];
-			if ($input["assign"]>0)
-				$toadd["author"]=$input["assign"];
 
 			$fup->add($toadd);
 			$already_mail=true;
