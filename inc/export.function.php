@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')){
  * Print generic Header Column
  *
  *
- *@param $type display type (0=HTML, 1=Sylk,2=PDF)
+ *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
  *@param $value value to display
  *@param $num column number
  *@param $linkto link display element (HTML specific)
@@ -61,6 +61,9 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 
 //			$out="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
 //			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
+			break;
+		case CSV_OUTPUT : //CSV
+			$out="\"".csv_clean($value)."\";";
 			break;
 		default :
 
@@ -91,7 +94,7 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
  * Print generic normal Item Cell
  *
  *
- *@param $type display type (0=HTML, 1=Sylk,2=PDF)
+ *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
  *@param $value value to display
  *@param $num column number
  *@param $row  row number
@@ -116,6 +119,9 @@ function displaySearchItem($type,$value,&$num,$row,$deleted=0,$extraparam=''){
 //			$out="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
 //			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
 			break;
+      		case CSV_OUTPUT : //csv
+            		$out="\"".csv_clean($value)."\";";
+            		break;
 		default :
 			$class="";
 			if ($deleted) $class=" class='tab_bg_2_2' ";
@@ -131,7 +137,7 @@ function displaySearchItem($type,$value,&$num,$row,$deleted=0,$extraparam=''){
  * Print generic error
  *
  *
- *@param $type display type (0=HTML, 1=Sylk,2=PDF)
+ *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
  *
  *@return string to display
  *
@@ -144,6 +150,8 @@ function displaySearchError($type){
 			break;
 		case SYLK_OUTPUT : //sylk
 			break;
+        	case CSV_OUTPUT : //csv
+            		break;
 		default :
 			$out= "<div align='center'><strong>".$LANG["search"][15]."</strong></div>\n";
 			break;
@@ -155,7 +163,7 @@ function displaySearchError($type){
  * Print generic footer
  *
  *
- *@param $type display type (0=HTML, 1=Sylk,2=PDF)
+ *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
  *@param $title title of file : used for PDF
  *
  *@return string to display
@@ -199,6 +207,8 @@ function displaySearchFooter($type,$title=""){
 
 			$out.= "E\n";
 			break;
+        	case CSV_OUTPUT : //csv
+            		break;
 		default :
 			$out= "</table></div>\n";
 			break;
@@ -210,7 +220,7 @@ function displaySearchFooter($type,$title=""){
  * Print generic footer
  *
  *
- *@param $type display type (0=HTML, 1=Sylk,2=PDF)
+ *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
  *@param $cols number of columns
  *@param $rows  number of rows
  *@param $fixed  used tab_cadre_fixe table for HTML export ?  
@@ -272,7 +282,13 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			echo "\n";
 
 			break;
-
+		case CSV_OUTPUT : // csv
+			header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+			header('Pragma: private'); /// IE BUG + SSL
+			header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
+			header("Content-disposition: filename=glpi.csv");
+			header('Content-type: application/octetstream');
+			break;
 		default :
 			if ($fixed){
 				$out="<div align='center'><table border='0' class='tab_cadre_fixehov'>\n";
@@ -289,7 +305,7 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
  * Print generic new line
  *
  *
- *@param $type display type (0=HTML, 1=Sylk,2=PDF)
+ *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
  *
  *@return string to display
  *
@@ -303,7 +319,9 @@ function displaySearchNewLine($type,$odd=false){
 		case SYLK_OUTPUT : //sylk
 //			$out="\n";
 			break;
-
+        	case CSV_OUTPUT : //csv
+            		$out="\n";
+            		break;
 		default :
 			$class=" class='tab_bg_2' ";
 			if ($odd){
@@ -318,7 +336,7 @@ function displaySearchNewLine($type,$odd=false){
  * Print generic end line
  *
  *
- *@param $type display type (0=HTML, 1=Sylk,2=PDF)
+ *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
  *
  *@return string to display
  *
@@ -330,12 +348,35 @@ function displaySearchEndLine($type){
 			break;
 		case SYLK_OUTPUT : //sylk
 			break;
-
+        	case CSV_OUTPUT : //csv
+            		break;
 		default :
 			$out="</tr>";
 			break;
 	}
 	return $out;
+}
+
+/**
+ * Clean display value for csv export
+ *
+ *
+ *@param $value string value
+ *
+ *@return clean value
+ *
+ **/
+function csv_clean($value){
+
+//	$value=utf8_decode($value);
+	if (get_magic_quotes_runtime()) $value=stripslashes($value);
+//	$value=preg_replace('/\x0A/',' ',$value);
+//	$value=preg_replace('/\x0D/',NULL,$value);
+	$value=ereg_replace("\"","''",$value);
+//	$value=str_replace(';', ',', $value);
+	$value=html_clean($value);
+
+	return $value;
 }
 
 /**
