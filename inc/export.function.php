@@ -170,6 +170,7 @@ function displaySearchFooter($type,$title=""){
 
 			break;
 		case SYLK_OUTPUT : //sylk
+			echo "E\n";
 			break;
 		default :
 			$out= "</table></div>\n";
@@ -208,7 +209,7 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			$cfg_formats[FORMAT_REEL]   = "FF2";
 			$cfg_formats[FORMAT_TEXTE]  = "FG0";
 
-			// en-t�e HTTP
+			// entetes HTTP
 			// --------------------------------------------------------------------
 			header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
 			header('Pragma: private'); /// IE BUG + SSL
@@ -218,23 +219,23 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			header('Content-type: application/octetstream');
 
 
-			// en-t�e du fichier
+			// entete du fichier
 			// --------------------------------------------------------------------
 			echo "ID;PGLPI_EXPORT\n"; // ID;Pappli
 			echo "\n";
 			// formats
-			//        		echo "P;PGeneral\n";      
-			//        		echo "P;P#,##0.00\n";       // P;Pformat_1 (reels)
-			//        		echo "P;P#,##0\n";          // P;Pformat_2 (entiers)
-			//        		echo "P;P@\n";              // P;Pformat_3 (textes)
-			//        		echo "\n";
+        		echo "P;PGeneral\n";      
+        		echo "P;P#,##0.00\n";       // P;Pformat_1 (reels)
+			echo "P;P#,##0\n";          // P;Pformat_2 (entiers)
+			echo "P;P@\n";              // P;Pformat_3 (textes)
+			echo "\n";
 			// polices
-			/*        		echo "P;EArial;M200\n";
-						echo "P;EArial;M200\n";
-						echo "P;EArial;M200\n";
-						echo "P;FArial;M200;SB\n";
-						echo "\n";
-			 */        		// nb lignes * nb colonnes
+        		echo "P;EArial;M200\n";
+			echo "P;EArial;M200\n";
+			echo "P;EArial;M200\n";
+			echo "P;FArial;M200;SB\n";
+			echo "\n";
+        		// nb lignes * nb colonnes
 			echo "B;Y".$rows;
 			echo ";X".$cols."\n"; // B;Yligmax;Xcolmax
 			echo "\n";
