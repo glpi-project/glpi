@@ -57,11 +57,12 @@ loadLanguage();
 
 if ($CFG_GLPI["debug"]){
 	if ($CFG_GLPI["debug_profile"]){		
-		$SQL_TOTAL_TIMER=0;
 		$SQL_TOTAL_REQUEST=0;
 	}
 	if ($CFG_GLPI["debug_sql"]){		
-		$DEBUG_SQL_STRING="";
+		$DEBUG_SQL["queries"]=array();
+		$DEBUG_SQL["errors"]=array();
+		$DEBUG_SQL["times"]=array();
 	}
 }
 
