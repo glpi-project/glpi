@@ -51,13 +51,16 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
-			global $PDF_HEADER,$PDF_SIZE;
+			global $PDF_HEADER;
 			$PDF_HEADER[$num]=html_clean(utf8_decode($value));
-			$PDF_SIZE[$num]=strlen($PDF_HEADER[$num]);
 			break;
 		case SYLK_OUTPUT : //sylk
-			$out="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
-			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
+			global $SYLK_HEADER,$SYLK_SIZE;
+			$SYLK_HEADER[$num]=sylk_clean($value);
+			$SYLK_SIZE[$num]=strlen($SYLK_HEADER[$num]);
+
+//			$out="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
+//			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
 			break;
 		default :
 
@@ -102,13 +105,16 @@ function displaySearchItem($type,$value,&$num,$row,$deleted=0,$extraparam=''){
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
-			global $PDF_ARRAY,$PDF_HEADER,$PDF_SIZE;
+			global $PDF_ARRAY,$PDF_HEADER;
 			$PDF_ARRAY[$row][$num]=html_clean(utf8_decode($value));
-			$PDF_SIZE[$num]=max($PDF_SIZE[$num],strlen($PDF_ARRAY[$row][$num]));
 			break;
 		case SYLK_OUTPUT : //sylk
-			$out="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
-			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
+			global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
+			$SYLK_ARRAY[$row][$num]=sylk_clean($value);
+			$SYLK_SIZE[$num]=max($SYLK_SIZE[$num],strlen($SYLK_ARRAY[$row][$num]));
+
+//			$out="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
+//			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
 			break;
 		default :
 			$class="";
@@ -160,7 +166,7 @@ function displaySearchFooter($type,$title=""){
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
-			global $PDF_HEADER,$PDF_ARRAY,$PDF_SIZE;
+			global $PDF_HEADER,$PDF_ARRAY;
 			$pdf= new Cezpdf('a4','landscape');
 			$pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
 			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
@@ -170,7 +176,28 @@ function displaySearchFooter($type,$title=""){
 
 			break;
 		case SYLK_OUTPUT : //sylk
-			echo "E\n";
+
+			global $SYLK_HEADER,$SYLK_ARRAY,$SYLK_SIZE;
+			// largeurs des colonnes
+			foreach ($SYLK_SIZE as $num => $val) {
+				$out.= "F;W".$num." ".$num." ".min(50,$val)."\n";
+			}
+			$out.="\n";
+			// Header
+			foreach ($SYLK_HEADER as $num => $val){
+				$out.="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
+				$out.= "C;N;K\"".sylk_clean($val)."\"\n"; 
+				$out.="\n";
+			}
+			// Datas
+			foreach ($SYLK_ARRAY as $row => $tab){
+				foreach ($tab as $num => $val){
+					$out.="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
+					$out.= "C;N;K\"".sylk_clean($val)."\"\n"; 
+				}
+			}
+
+			$out.= "E\n";
 			break;
 		default :
 			$out= "</table></div>\n";
@@ -198,16 +225,20 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			global $PDF_ARRAY,$PDF_HEADER;
 			$PDF_ARRAY=array();
 			$PDF_HEADER=array();
-			$PDF_SIZE=array();
 			break;
 		case SYLK_OUTPUT : // Sylk
-			define("FORMAT_REEL",   1); // #,##0.00
-			define("FORMAT_ENTIER", 2); // #,##0
-			define("FORMAT_TEXTE",  3); // @
+			global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
+			$SYLK_ARRAY=array();
+			$SYLK_HEADER=array();
+			$SYLK_SIZE=array();
 
-			$cfg_formats[FORMAT_ENTIER] = "FF0";
-			$cfg_formats[FORMAT_REEL]   = "FF2";
-			$cfg_formats[FORMAT_TEXTE]  = "FG0";
+//			define("FORMAT_REEL",   1); // #,##0.00
+//			define("FORMAT_ENTIER", 2); // #,##0
+//			define("FORMAT_TEXTE",  3); // @
+
+//			$cfg_formats[FORMAT_ENTIER] = "FF0";
+//			$cfg_formats[FORMAT_REEL]   = "FF2";
+//			$cfg_formats[FORMAT_TEXTE]  = "FG0";
 
 			// entetes HTTP
 			// --------------------------------------------------------------------
@@ -240,10 +271,6 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			echo ";X".$cols."\n"; // B;Yligmax;Xcolmax
 			echo "\n";
 
-			// largeurs des colonnes
-			//			for ($i=1;$i<=$cols;$i++)
-			//				echo "F;W".$i." ".$i." 20\n";
-
 			break;
 
 		default :
@@ -274,7 +301,7 @@ function displaySearchNewLine($type,$odd=false){
 		case PDF_OUTPUT : //pdf
 			break;
 		case SYLK_OUTPUT : //sylk
-			$out="\n";
+//			$out="\n";
 			break;
 
 		default :
@@ -329,6 +356,7 @@ function sylk_clean($value){
 	$value=ereg_replace("\"","''",$value);
 	$value=str_replace(';', ';;', $value);
 	$value=html_clean($value);
+
 	return $value;
 }
 
@@ -373,11 +401,14 @@ function html_clean($value){
 			"",
 			"",
 			", ",
-			"\n",
+			"",
 			" ",
 			" ",
 		      );
+	
 	$value=preg_replace($search,$replace,$value);
+	$value=preg_replace('/\x0A/',' ',$value);
+	$value=preg_replace('/\x0D/',"\n",$value);
 	return trim($value);
 }
 /*
