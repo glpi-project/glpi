@@ -77,13 +77,12 @@ class DBmysql {
 	 * @return Query result handler
 	 */
 	function query($query) {
-		global $CFG_GLPI,$DEBUG_SQL_STRING,$SQL_TOTAL_TIMER, $SQL_TOTAL_REQUEST;
+		global $CFG_GLPI,$DEBUG_SQL,$SQL_TOTAL_REQUEST;
 
 		if ($CFG_GLPI["debug"]) {
 			if ($CFG_GLPI["debug_sql"]){		
 				$SQL_TOTAL_REQUEST++;
-				$DEBUG_SQL_STRING.="<tr class='tab_bg_2'>";
-				$DEBUG_SQL_STRING.="<td>".$SQL_TOTAL_REQUEST." </td<td>".$query."</td>";
+				$DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST]=$query;
 
 				if ($CFG_GLPI["debug_profile"]){		
 					$TIMER=new Script_Timer;
@@ -98,16 +97,15 @@ class DBmysql {
 		if (!$res) {
 			$this->DBmysql();
 			$res=mysql_query($query,$this->dbh);
+			if (!$res&&$CFG_GLPI["debug"]&&$CFG_GLPI["debug_sql"]){
+				$DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST]=$this->error();
+			}
 		}
 
 		if ($CFG_GLPI["debug"]) {
 			if ($CFG_GLPI["debug_profile"]&&$CFG_GLPI["debug_sql"]){		
 				$TIME=$TIMER->Get_Time();
-				$DEBUG_SQL_STRING.="<td>".$TIME."s </td>";
-				$SQL_TOTAL_TIMER+=$TIME;
-			}
-			if ($CFG_GLPI["debug_sql"]){
-				$DEBUG_SQL_STRING.="</tr>";
+				$DEBUG_SQL["times"][$SQL_TOTAL_REQUEST]=$TIME;
 			}
 		}
 

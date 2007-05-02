@@ -1197,7 +1197,7 @@ function popFooter() {
 function commonFooter() {
 	// Print foot for every page
 
-	global $LANG,$CFG_GLPI,$DEBUG_SQL_STRING,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST,$FOOTER_LOADED;
+	global $LANG,$CFG_GLPI,$DEBUG_SQL,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST,$FOOTER_LOADED;
 
 	if ($FOOTER_LOADED) return;
 	$FOOTER_LOADED=true;
@@ -1259,15 +1259,28 @@ function commonFooter() {
 			
 			echo $SQL_TOTAL_REQUEST." Queries ";
 			if ($CFG_GLPI["debug_profile"]){
-				echo "took  ".$SQL_TOTAL_TIMER."s  </h2>";
+				echo "took  ".array_sum($DEBUG_SQL['times'])."s  </h2>";
 			}
 
-			echo "<table class='tab_cadre' style='width:100%'><tr><th>N&#176; </th><th>Queries</th><th>Time</th></tr>";
-			echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",$DEBUG_SQL_STRING)))));
+			echo "<table class='tab_cadre' style='width:100%'><tr><th>N&#176; </th><th>Queries</th><th>Time</th><th>Errors</th></tr>";
+
+			foreach ($DEBUG_SQL['queries'] as $num => $query){
+				echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
+				echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",$query)))));
+				echo "</td><td>";
+				echo $DEBUG_SQL['times'][$num];
+				echo "</td><td>";
+				if (isset($DEBUG_SQL['errors'][$num])){
+					echo $DEBUG_SQL['errors'][$num];
+				} else {
+					echo "&nbsp;";
+				}
+				echo "</td></tr>";
+			}
+			echo "</table>";
 		}
 		
 		
-		echo "</table>";
 		
 		if ($CFG_GLPI["debug_vars"]){
 			echo "<h2>POST VARIABLE</h2>";
