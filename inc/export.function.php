@@ -320,7 +320,6 @@ function displaySearchNewLine($type,$odd=false){
 //			$out="\n";
 			break;
         	case CSV_OUTPUT : //csv
-            		$out="\n";
             		break;
 		default :
 			$class=" class='tab_bg_2' ";
@@ -349,6 +348,7 @@ function displaySearchEndLine($type){
 		case SYLK_OUTPUT : //sylk
 			break;
         	case CSV_OUTPUT : //csv
+            		$out="\n";
             		break;
 		default :
 			$out="</tr>";
