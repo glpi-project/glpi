@@ -1580,10 +1580,12 @@ function dropdownLanguages($myname,$value){
 	global $CFG_GLPI;
 	echo "<select name='$myname'>";
 
-	while (list($cle)=each($CFG_GLPI["languages"])){
-		echo "<option value=\"".$cle."\"";
-		if ($value==$cle) { echo " selected"; }
-		echo ">".$CFG_GLPI["languages"][$cle][0]." ($cle)";
+	foreach ($CFG_GLPI["languages"] as $key => $val){
+		if (isset($val[1])&&is_file(GLPI_ROOT ."/locales/".$val[1])){
+			echo "<option value=\"".$key."\"";
+			if ($value==$key) { echo " selected"; }
+			echo ">".$val[0]." ($key)";
+		}
 	}
 	echo "</select>";
 }

@@ -98,16 +98,10 @@ class Config extends CommonDBTM {
 				echo "<tr><th colspan='4'>" . $LANG["setup"][70] . "</th></tr>";
 			
 				$default_language = $CFG_GLPI["default_language"];
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][113] . " </td><td><select name=\"default_language\">";
-				foreach ($CFG_GLPI["languages"] as $key => $val) {
-					echo "<option value=\"" . $key . "\"";
-					if ($default_language == $key) {
-						echo " selected";
-					}
-					echo ">" . $val[0] . " (" . $key . ")";
-				}
+				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][113] . " </td><td>";
+				dropdownLanguages("default_language", $CFG_GLPI["default_language"]);
 			
-				echo "</select></td>"; 
+				echo "</td>"; 
 				
 				echo "<td align='center'> " . $LANG["setup"][183] . " </td><td>";
 				dropdownYesNo("use_cache", $CFG_GLPI["use_cache"]);

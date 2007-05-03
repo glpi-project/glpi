@@ -63,53 +63,7 @@
 
 		// *************************** Statics config options **********************
 		// ********************options d'installation statiques*********************
-		// ***********************************************************************
-		
-		// dicts
-		// dictionnaires
-		// 0 Name - 1 lang file -  2calendar dico - 3toolbar dico
-		$CFG_GLPI["languages"]=array(   
-			"pt_BR"=>array("Brazilian","pt_BR.php","br","pt_br"),
-			"bg_BG"=>array("Bulgarian","bg_BG.php","en","en"),
-			"ca_CA"=>array("Catalan","ca_CA.php","ca","ca"),
-			"cs_CZ"=>array("Czech","cs_CZ.php","cs","cs"),
-			"de_DE"=>array("Deutch","de_DE.php","de","de"),
-			"dk_DK"=>array("Danish","dk_DK.php","da","da"),
-			"nl_NL"=>array("Dutch","nl_NL.php","nl","nl"),
-			"nl_BE"=>array("Dutch (Belgium)","nl_BE.php","nl","nl"),
-			"en_GB"=>array("English","en_GB.php","en","en"),
-			"es_AR"=>array("Español (Argentina)","es_AR.php","es","es"),
-			"es_ES"=>array("Español (España)","es_ES.php","es","es"),
-			"fr_FR"=>array("Français","fr_FR.php","fr","fr"),
-			"hu_HU"=>array("Hungarian","hu_HU.php","hu","hu"),
-			"it_IT"=>array("Italiano","it_IT.php","it","it"),
-			"ja_JP"=>array("Japanese","ja_JP.php","ja","ja_utf-8"),
-			"pl_PL"=>array("Polish","pl_PL.php","pl","pl"),
-			"pt_PT"=>array("Português","pt_PT.php","br","pt"),
-			"ro_RO"=>array("Romanian","ro_RO.php","ro","ro"),
-			"ru_RU"=>array("Russian","ru_RU.php","ru","ru"),
-			"zh_CN"=>array("Simplified Chinese","zh_CN.php","en","zh_cn_utf8"),
-			"sv_SE"=>array("Swedish","sv_SE.php","sv","sv_utf8"),
-			);
-
-
-		//DEVICE ARRAY.
-		$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
-		$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones","glpi_consumables_type","glpi_users","state_types","reservation_types");
-	
-		$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software","glpi_phones","state_types","reservation_types","glpi_ocs_config");
-	
-		$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
-		$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-		$CFG_GLPI["reservation_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-		$CFG_GLPI["linkuser_type"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-
-		$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridges_type","glpi_computers","glpi_consumables_type","glpi_contacts","glpi_contracts","glpi_docs",
-			"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
-			"glpi_mailgate","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
-			"glpi_tracking","state_types","reservation_types");
-
-		$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");
+		// ***********************************************************************		
 
 		//Options gerees dynamiquement, ne pas toucher cette partie.
 		//Options from DB, do not touch this part.
