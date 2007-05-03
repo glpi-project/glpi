@@ -665,7 +665,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 		if (strlen($firstname)>0)$temp.=" ".$firstname;
 
 		if($cut>0&&strlen($temp) > $cut){
-			$temp=substr($temp,0,$cut);
+			$temp=utf8_substr($temp,0,$cut);
 			$temp.=" ..."; 
 		}
 	}
