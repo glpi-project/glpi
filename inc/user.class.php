@@ -51,10 +51,11 @@ class User extends CommonDBTM {
 		$this->type = USER_TYPE;
 
 		$this->fields['tracking_order'] = 0;
-		if (isset ($CFG_GLPI["default_language"]))
+		if (isset ($CFG_GLPI["default_language"])){
 			$this->fields['language'] = $CFG_GLPI["default_language"];
-		else
-			$this->fields['language'] = "english";
+		} else {
+			$this->fields['language'] = "en_GB";
+		}
 
 	}
 	function defineOnglets($withtemplate) {

@@ -39,9 +39,11 @@
 error_reporting(0);
 define('GLPI_ROOT', '..');
 include_once (GLPI_ROOT . "/config/based_config.php");
+include_once (GLPI_ROOT . "/config/define.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
+include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 
 session_save_path(GLPI_SESSION_DIR);
 
@@ -88,7 +90,9 @@ function choose_language()
 {
 
 	echo "<form action=\"install.php\" method=\"post\">";
-	echo "<p style='text-align:center;'><label>Select your language </label><select name=\"language\">";
+	echo "<p style='text-align:center;'><label>Select your language </label>";
+/*
+	echo "<select name=\"language\">";
 	echo "<option value=\"fr_FR\">Fran&ccedil;ais (fr_FR)</option>";
 	echo "<option value=\"en_GB\">English (en_GB)</option>";
 	echo "<option value=\"es_AR\">Argentino (es_AR)</option>";
@@ -109,7 +113,10 @@ function choose_language()
 	echo "<option value=\"ru_RU\">Russian (ru_RU)</option>";
 	echo "<option value=\"zh_CN\">Simplified Chinese (zh_CN)</option>";
 	echo "<option value=\"sv_SE\">Swedish (sv_SE)</option>";
-	echo "</select></p>"; 
+	echo "</select>";
+*/
+	dropdownLanguages("language", "en_GB");
+	echo "</p>"; 
 	echo "";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"lang_select\" /><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"OK\" /></p>";
 	echo "</form>";

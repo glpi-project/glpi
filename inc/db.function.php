@@ -873,9 +873,12 @@ function autoName($objectName, $field, $isTemplate, $type){
 function closeDBConnections(){
 	global $DB, $DBocs;
 
-	$DB->close();
-	if (isset($DBocs)){
+	// Case of not init $DB object
+	if (method_exists($DB,"close")){
 		$DB->close();
+		if (isset($DBocs)){
+			$DB->close();
+		}
 	}
 }
 
