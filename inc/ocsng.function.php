@@ -2872,5 +2872,19 @@ function removeEntityLock($entity,$fp)
 		unlink(GLPI_LOCK_DIR."lock_entity_".$entity);
 }
 
-
+function getMaterialManagementMode($ocs_config,$device_type)
+{
+		global $LANG;
+		switch ($device_type){
+		case MONITOR_TYPE :
+			return $ocs_config["import_monitor"];
+			break;
+		case PRINTER_TYPE :
+			return $ocs_config["import_printer"];
+			break;
+		case PERIPHERAL_TYPE :
+			return $ocs_config["import_periph"];
+			break;
+		}
+}
 ?>

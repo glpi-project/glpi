@@ -189,11 +189,15 @@ function showHistory($device_type,$id_device){
 					$change = $LANG["software"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;	
 				case HISTORY_DISCONNECT_DEVICE:
-					$field=getPeripheralsTypeLabel($data["device_internal_type"]);
+					$ci=new CommonItem();
+					$ci->setType($data["device_internal_type"]);
+					$field=$ci->getType();
 					$change = $LANG["central"][6]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;	
 				case HISTORY_CONNECT_DEVICE:
-					$field=getPeripheralsTypeLabel($data["device_internal_type"]);
+					$ci=new CommonItem();
+					$ci->setType($data["device_internal_type"]);
+					$field=$ci->getType();
 					$change = $LANG["log"][55]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;	
 

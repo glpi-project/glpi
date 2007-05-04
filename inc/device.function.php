@@ -165,46 +165,6 @@ function getDeviceTypeLabel($dev_type){
 
 }
 
-function getPeripheralsTypeLabel($peripheral_type){
-	global $LANG;
-
-	switch ($peripheral_type){
-		case COMPUTER_TYPE :
-			return $LANG["help"][25];
-			break;
-		case MONITOR_TYPE :
-			return $LANG["help"][28];
-			break;
-		case PRINTER_TYPE :
-			return $LANG["help"][27];
-			break;
-		case PERIPHERAL_TYPE :
-			return  $LANG["help"][29];
-			break;
-		case PHONE_TYPE :
-			return  $LANG["financial"][29];
-			break;
-		}
-}
-
-function getMaterialManagementMode($ocs_config,$device_type)
-{
-		global $LANG;
-		switch ($device_type){
-		case MONITOR_TYPE :
-			return $ocs_config["import_monitor"];
-			break;
-		case PRINTER_TYPE :
-			return $ocs_config["import_printer"];
-			break;
-		case PERIPHERAL_TYPE :
-			return $ocs_config["import_periph"];
-			break;
-		case PHONE_TYPE :
-			return  0;
-			break;
-		}
-}
 //print form/tab for a device linked to a computer
 function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$withtemplate='') {
 	global $LANG,$CFG_GLPI;
@@ -763,7 +723,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	} else {
 		echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 		return false;
-	}
+	}	
 }
 
 ?>
