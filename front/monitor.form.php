@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("monitor","computer","reservation","tracking","infocom","contract","document","user","link","enterprise","ocsng");
+$NEEDED_ITEMS=array("monitor","computer","reservation","tracking","infocom","contract","document","user","link","enterprise","ocsng","device");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -104,7 +104,7 @@ else if (isset($_GET["disconnect"]))
 
 	//Get the ocs server id associated with the machine
 	$ocs_server_id = getOCSServerByMachineID($_GET["cID"]);
-	Disconnect($_GET["ID"],$ocs_server_id);
+	Disconnect($_GET["ID"],$ocs_server_id,1);
 	logEvent(0, "monitors", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
