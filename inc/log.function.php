@@ -62,8 +62,13 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 		$old_value=$changes[1];
 		$new_value=$changes[2];
 
+		if (isset($_SESSION["glpiID"]))
+			$username = getUserName($_SESSION["glpiID"],$link=0);
+		else
+			$username="";
+			
 		// Build query
-		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes(getUserName($_SESSION["glpiID"],$link=0))."','$date_mod','$id_search_option','$old_value','$new_value');";
+		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes($username)."','$date_mod','$id_search_option','$old_value','$new_value');";
 		$DB->query($query)  or die($DB->error());
 	}
 }
@@ -182,7 +187,16 @@ function showHistory($device_type,$id_device){
 				case HISTORY_UNINSTALL_SOFTWARE :
 					$field=$LANG["software"][10];
 					$change = $LANG["software"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
-					break;				
+					break;	
+				case HISTORY_DISCONNECT_DEVICE:
+					$field=getPeripheralsTypeLabel($data["device_internal_type"]);
+					$change = $LANG["central"][6]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					break;	
+				case HISTORY_CONNECT_DEVICE:
+					$field=getPeripheralsTypeLabel($data["device_internal_type"]);
+					$change = $LANG["log"][55]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					break;	
+
 			}
 
 

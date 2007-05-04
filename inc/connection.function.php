@@ -134,32 +134,72 @@ function showConnect($target,$ID,$type) {
  * @param $ocs_server_id the ocs server ID .
  * @return nothing
  */
-function Disconnect($ID,$ocs_server_id) {
-	global $DB,$LINK_ID_TABLE;
+function Disconnect($ID,$ocs_server_id,$dohistory) {
+	global $DB,$LINK_ID_TABLE,$LANG,$CFG_GLPI;
     
 	if ($ocs_server_id>0){
 		$decoConf = "";
-	
-		//Get config from ocs
-		$queryConfigDeconnection = "SELECT deconnection_behavior FROM glpi_ocs_config WHERE ID='$ocs_server_id'";
-		$result = $DB->query($queryConfigDeconnection);
-		if($DB->numrows($result)>0){
-			$data = $DB->fetch_array($result);
-			$decoConf= $data["deconnection_behavior"]; 
-		}	
+		
 		//Get info about the periph
-		if(strlen($decoConf)>0){
-			$queryIdAndType = "SELECT end1,type FROM glpi_connect_wire WHERE ID='$ID'";		
-			$res = $DB->query($queryIdAndType);
-			if($DB->numrows($res)>0){
+		$queryIdAndType = "SELECT end1,end2, type FROM glpi_connect_wire WHERE ID='$ID'";		
+		$res = $DB->query($queryIdAndType);
+		if($DB->numrows($res)>0){
 				$res = $DB->fetch_array($res);
 				$type_elem= $res["type"]; 
 				$id_elem= $res["end1"]; 
+				$id_parent= $res["end2"]; 
 				$table = $LINK_ID_TABLE[$type_elem];
+
+				//Get OCS configuration
+				$ocs_config = getOcsConf($ocs_server_id);
+				
+				//Get the management mode for this device
+				$mode = getMaterialManagementMode($ocs_config,$type_elem);
+				$decoConf= $ocs_config["deconnection_behavior"];
+
+				//Get the computer name
+				$computer = new Computer;
+				$computer->getFromDB($id_parent);
+
+				//Get device fields
+				$device=new CommonItem();
+				$device->getFromDB($type_elem,$id_elem);
+				$device->obj->dohistory=$dohistory;
+				
+				if ($dohistory)
+				{
+					//History log
+					//Log deconnection in the computer's history
+					$changes[0]='0';
+					if ($device->getField("serial"))
+						$changes[1]=addslashes($device->getField("name")." -- ".$device->getField("serial"));
+					else
+						$changes[1]=addslashes($device->getField("name"));
+						
+					$changes[2]="";
+	
+					historyLog ($id_parent,COMPUTER_TYPE,$changes,$type_elem,HISTORY_DISCONNECT_DEVICE);
+					
+					//Log deconnection in the device's history
+					$changes[1]=addslashes($computer->fields["name"]);
+					historyLog ($id_elem,$type_elem,$changes,COMPUTER_TYPE,HISTORY_DISCONNECT_DEVICE);
+				}
+			//Change status if : 
+			// 1 : the management mode IS NOT global
+			// 2 : a deconnection's status have been defined 
+			if($mode == 2 && strlen($decoConf)>0){
+
 				//Delete periph from glpi
-				if($decoConf == "delete")$query = "DELETE FROM $table WHERE ID='$id_elem'";							
+				if($decoConf == "delete")
+					$device->obj->delete($id_elem);
+						
 				//Put periph in trash
-				elseif($decoConf == "trash")$query = "UPDATE $table SET deleted='1' WHERE ID='$id_elem'";				
+				elseif($decoConf == "trash")
+				{
+					$tmp["ID"]=$id_elem;
+					$tmp["deleted"]=1;
+					$device->obj->update($tmp,$dohistory);
+				}
 				//Change status
 				else {
 					//get id status
@@ -168,10 +208,13 @@ function Disconnect($ID,$ocs_server_id) {
 					if($DB->numrows($resul)>0){
 						$id_res = $DB->fetch_array($resul);
 						$id_status= $id_res["ID"]; 
-						$query = "UPDATE $table SET state='$id_status' WHERE ID='$id_elem'";
+	
+						$tmp["ID"]=$id_elem;
+						$tmp["state"]=$id_status;
+						
+						$device->obj->update($tmp,$dohistory);
 					}				
 				}			
-				$DB->query($query);						
 			}		
 		}
 	}
@@ -192,7 +235,7 @@ function Disconnect($ID,$ocs_server_id) {
  * @param $cID computer ID (where the sID would be connected).
  * @param $type connection type.
  */
-function Connect($sID,$cID,$type) {
+function Connect($sID,$cID,$type,$dohistory) {
 	global $LANG;
 	// Makes a direct connection
 
@@ -205,9 +248,30 @@ function Connect($sID,$cID,$type) {
 	$dev=new CommonItem();
 	$dev->getFromDB($type,$sID);
 
+	if ($dohistory)
+	{
+		$changes[0]='0';
+		$changes[1]="";
+		if ($dev->getField("serial"))
+				$changes[2]=addslashes($dev->getField("name")." -- ".$dev->getField("serial"));
+		else
+				$changes[2]=addslashes($dev->getField("name"));
+	
+					
+		//Log connection in the device's history
+		historyLog ($cID,COMPUTER_TYPE,$changes,$type,HISTORY_CONNECT_DEVICE);
+	}
+
 	if (!$dev->getField('is_global')){
 		$comp=new Computer();
 		$comp->getFromDB($cID);
+
+		if ($dohistory)
+		{
+			$changes[2]=addslashes($comp->fields["name"]);
+			historyLog ($sID,$type,$changes,COMPUTER_TYPE,HISTORY_CONNECT_DEVICE);
+		}
+		
 		if ($comp->fields['location']!=$dev->getField('location')){
 			$updates[0]="location";
 			$dev->obj->fields['location']=$comp->fields['location'];

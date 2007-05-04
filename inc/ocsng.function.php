@@ -1907,7 +1907,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									}
 								if ($id_monitor) {
 									if (!$found_already_monitor)
-										$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE);
+										$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE,$dohistory);
 									if(!empty($mon["serial"])){
 										$addValuetoDB = $mon["name"];
 										$addValuetoDB .= $mon["serial"];											
@@ -2001,7 +2001,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										$id_printer = $p->addToDB();
 									}
 								if ($id_printer) {
-									$connID = Connect($id_printer, $glpi_id, PRINTER_TYPE);
+									$connID = Connect($id_printer, $glpi_id, PRINTER_TYPE,$dohistory);
 									addToOcsArray($glpi_id, array (
 										$connID => $print["name"]
 									), "import_printers");
@@ -2076,7 +2076,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									$id_periph = $p->addToDB();
 								}
 							if ($id_periph) {
-								$connID = Connect($id_periph, $glpi_id, PERIPHERAL_TYPE);
+								$connID = Connect($id_periph, $glpi_id, PERIPHERAL_TYPE,$dohistory);
 								addToOcsArray($glpi_id, array (
 									$connID => $periph["name"]
 								), "import_peripheral");
@@ -2102,41 +2102,8 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 	// Disconnect Unexisting Items not found in OCS
 	if ($do_clean && count($import_periph)) {
 		foreach ($import_periph as $key => $val) {
-			$query = "SELECT * 
-							FROM glpi_connect_wire 
-							WHERE ID = '" . $key . "'";
-			$result = $DB->query($query);
-			if ($DB->numrows($result) > 0) {
-				while ($data = $DB->fetch_assoc($result)) {
-					$query2 = "SELECT COUNT(*) 
-											FROM glpi_connect_wire 
-											WHERE end1 = '" . $data['end1'] . "' 
-											AND type = '" . $device_type . "'";
-					$result2 = $DB->query($query2);
-					$deconnection_behavior = $cfg_ocs["deconnection_behavior"];					
-					if ($DB->result($result2, 0, 0)== 1 && strlen($deconnection_behavior)>0) {
-						$table = $LINK_ID_TABLE[$device_type];
-						//Delete periph from glpi
-						if($deconnection_behavior == "delete") $query = "DELETE FROM $table WHERE ID='".$data['end1']."'";							
-						//Put periph in trash
-						elseif($deconnection_behavior == "trash")$query = "UPDATE $table SET deleted='1' WHERE ID='".$data['end1']."'";				
-						//Change status
-						else {
-							//get id status
-							$queryIDStatus = "SELECT ID from glpi_dropdown_state WHERE name='$deconnection_behavior'";			
-							$resul = $DB->query($queryIDStatus );							
-							if($DB->numrows($resul)>0){
-								$id_res = $DB->fetch_array($resul);
-								$id_status= $id_res["ID"]; 
-								$query = "UPDATE $table SET state='$id_status' WHERE ID='".$data['end1']."'";
-							}				
-						}									
-						$DB->query($query);							
-					}
-				}
-			}
-
-			Disconnect($key,$ocs_server_id);
+			
+			Disconnect($key,$ocs_server_id,$dohistory);
 
 			switch ($device_type) {
 				case MONITOR_TYPE :
