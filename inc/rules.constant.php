@@ -156,4 +156,7 @@ $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['author']['type']='dropdown_users';
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['FK_group']['name']=$LANG["common"][35];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['FK_group']['type']='dropdown';
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['FK_group']['table']='glpi_groups';
+
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['name']=$LANG["joblist"][2];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['type']='dropdown_priority';
 ?>

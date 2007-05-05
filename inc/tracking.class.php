@@ -401,6 +401,10 @@ class Job extends CommonDBTM{
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
+		// Process Business Rules
+		$rules=new TrackingBusinessRuleCollection();
+		$input=$rules->processAllRules($input,$input);
+
 		if (isset($_SESSION["glpiID"])) $input["recipient"]=$_SESSION["glpiID"];
 		else if ($input["author"]) $input["recipient"]=$input["author"];
 
@@ -472,10 +476,6 @@ class Job extends CommonDBTM{
 			$input["name"]=preg_replace('/\n/',' ',$input['name']);
 			$input["name"]=substr($input['name'],0,70);
 		}
-
-		// Process Business Rules
-		$rules=new TrackingBusinessRuleCollection();
-		$input=$rules->processAllRules($input,$input);
 
 		return $input;
 	}

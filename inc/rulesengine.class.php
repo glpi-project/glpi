@@ -939,6 +939,9 @@ class Rule extends CommonDBTM{
 				case "dropdown_request_type":
 					return getRequestTypeName($pattern);
 					break;
+				case "dropdown_priority":
+					return getPriorityName($pattern);
+					break;
 				default :
 					return $pattern;
 					break;
@@ -973,6 +976,10 @@ class Rule extends CommonDBTM{
 						return $LANG["choice"][1];
 					else
 						return $LANG["choice"][0];	
+					break;
+				case "dropdown_priority":
+					return getPriorityName($value);
+					break;
 				default :
 					return $value;
 					break;
