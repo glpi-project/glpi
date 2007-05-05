@@ -49,29 +49,17 @@ checkCentralAccess();
 
 // Make a select box with all glpi users
 
-$first=true;
-if (!empty($where)){
-$first=false;
-}
-$where="";
+$where=" glpi_users.deleted='0' ";
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-	if ($first){ 
-		$first=false;
-	} else {
-		$where.=" AND ";
-	}
-
-	$where.=" (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
+	$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
 }
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_users WHERE ID IN (SELECT DISTINCT ".$_POST['field']." FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
-if (!empty($where)){
-	$query.=" WHERE $where ";
-}
+$query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_users WHERE $where AND ID IN (SELECT DISTINCT ".$_POST['field']." FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
+
 $query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name $LIMIT";
 
 $result = $DB->query($query);
@@ -91,19 +79,10 @@ if (isset($_POST['value'])){
 
 if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_assoc($result)) {
-		if (!empty($data["realname"])) {
-			$output = $data["realname"];
-			if (!empty($data["firstname"])) {
-				$output .= " ".$data["firstname"];
-			}
-		}
-		else $output = $data["name"];
+		$output=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
 
-		if ($data["ID"] == $value) {
-			echo "<option value=\"".$data["ID"]."\" selected title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
-		} else {
-			echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
-		}
+
+		echo "<option value=\"".$data["ID"]."\" ".($data["ID"] == $value?"selected":"")." title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";
