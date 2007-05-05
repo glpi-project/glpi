@@ -62,7 +62,7 @@ if ($_POST['right']=="interface"){
 	$where=" glpi_profiles.".$_POST['right']."='1' ";
 }
 
-
+$where.=" AND glpi_users.deleted='0' ";
 if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 	$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
 } else {
@@ -73,8 +73,9 @@ if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 if (isset($_POST['value']))
 $where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+	$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
+}
 
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
@@ -108,14 +109,11 @@ if (isset($_POST['value'])){
 
 if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_array($result)) {
-		if (!empty($data["realname"])) {
-			$output = $data["realname"];
-			if (!empty($data["firstname"])) {
-				$output .= " ".$data["firstname"];
-			}
-		}
-		else $output = $data["name"];
-		echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+			
+		$output=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
+		
+	
+		echo "<option value=\"".$data["ID"]."\" title=\"$output - ".$data["name"]."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";
