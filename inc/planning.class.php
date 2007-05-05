@@ -115,14 +115,14 @@ class PlanningTracking extends CommonDBTM {
 		$fup->fields["realtime"]=$dateDiff/60/60;
 		$fup->updateInDB($updates2);
 
-		if (isset($updates))
+		if (isset($updates)){
 			$this->updateInDB($updates);
+		}
 
-		if (count($updates)>0&&$CFG_GLPI["mailing"])
-		{
+		if (count($updates)>0&&$CFG_GLPI["mailing"]){
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
-			$mail = new Mailing("followup",$job,$user);
+			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
 			$mail->send();
 		}
 
@@ -189,7 +189,7 @@ class PlanningTracking extends CommonDBTM {
 		{
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
-			$mail = new Mailing("followup",$job,$user);
+			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
 			$mail->send();
 		}
 
