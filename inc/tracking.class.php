@@ -385,9 +385,9 @@ class Job extends CommonDBTM{
 				$user=new User;
 				$user->getfromDBbyName($_SESSION["glpiname"]);
 				$mailtype="update";
-				if (in_array("status",$updates)&&ereg("old_",$input["status"]))
+				if (in_array("status",$updates)&&ereg("old_",$input["status"])){
 					$mailtype="finish";
-				else $mail_send++;
+				} 
 				$mail = new Mailing($mailtype,$this,$user);
 				$mail->send();
 			}
@@ -558,13 +558,18 @@ class Job extends CommonDBTM{
 		}
 	}
 
-
-	function textFollowups($format="text") {
+	/**
+	 * Get text describing Followups
+	 * 
+	* @param $format text or html
+	* @param $sendprivate true if both public and private followups have to be printed in the email
+	 */
+	function textFollowups($format="text", $sendprivate=false) {
 		// get the last followup for this job and give its contents as
 		global $DB,$LANG;
 
 		if (isset($this->fields["ID"])){
-			$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' AND private = '0' ORDER by date DESC";
+			$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' ".($sendprivate?"":" AND private = '0' ")." ORDER by date DESC";
 			$result=$DB->query($query);
 			$nbfollow=$DB->numrows($result);
 			if($format=="html"){
@@ -574,7 +579,7 @@ class Job extends CommonDBTM{
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
 						$fup->getfromDB($data['ID']);
-						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ]</strong><br>";
+						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["job"][30]."</i>":"")."</strong><br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][37].":</span> ".$fup->getAuthorName()."<br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3].":</span><br>".nl2br($fup->fields["contents"])."<br>";
 						if ($fup->fields["realtime"]>0)
@@ -600,7 +605,7 @@ class Job extends CommonDBTM{
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
 						$fup->getfromDB($data['ID']);
-						$message .= "[ ".convDateTime($fup->fields["date"])." ]\n";
+						$message .= "[ ".convDateTime($fup->fields["date"])." ]".($fup->fields["private"]?"\t".$LANG["job"][30]:"")."\n";
 						$message .= $LANG["common"][37].": ".$fup->getAuthorName()."\n";
 						$message .= $LANG["mailing"][3]."\n".$fup->fields["contents"]."\n";
 						if ($fup->fields["realtime"]>0)
@@ -785,6 +790,7 @@ class Followup  extends CommonDBTM {
 					return false;
 				}
 				unset($input["plan"]);
+				$input['_need_send_mail']=true;
 			}
 		}
 		return $input;
@@ -796,10 +802,11 @@ class Followup  extends CommonDBTM {
 			$job=new Job;
 			$job->getFromDBwithData($input["tracking"],1);
 	
-			if (in_array("contents",$updates)&&$CFG_GLPI["mailing"]){
+			if ($CFG_GLPI["mailing"]&&
+			 (in_array("contents",$updates)||isset($input['_need_send_mail']))){
 				$user=new User;
 				$user->getfromDBbyName($_SESSION["glpiname"]);
-				$mail = new Mailing("followup",$job,$user);
+				$mail = new Mailing("followup",$job,$user,(isset($input["private"]) && $input["private"]));
 				$mail->send();
 			}
 	
@@ -890,7 +897,8 @@ class Followup  extends CommonDBTM {
 			if ($input["_close"]) $input["_type"]="finish";
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
-			$mail = new Mailing($input["_type"],$input["_job"],$user);
+			$mail = new Mailing($input["_type"],$input["_job"],$user,
+						(isset($input["private"])&&$input["private"]));
 			$mail->send();
 		}
 	}

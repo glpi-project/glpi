@@ -94,15 +94,19 @@ class Mailing
 	 * @see User
 	 */
 	var $user=NULL;
+	/// Is the followupadded private ? 
+	var $followupisprivate=NULL;
+
 
 	/**
 	 * Constructor
 	 * @param $type mailing type (new,attrib,followup,finish)
 	 * @param $job Job to mail
 	 * @param $user User who made change
+	 * @param $followupisprivate true if the currently added/modified followup is private
 	 * @return nothing 
 	 */
-	function Mailing ($type="",$job=NULL,$user=NULL)
+	function Mailing ($type="",$job=NULL,$user=NULL,$followupisprivate=false)
 	{
 		$this->type=$type;
 		if (!isset($job->hardwaredatas)||!count($job->hardwaredatas)){
@@ -110,16 +114,18 @@ class Mailing
 		}
 		$this->job=$job;
 		$this->user=$user;
+		$this->followupisprivate=$followupisprivate;
 	}
 
 	/**
 	 * Give mails to send the mail
 	 * 
 	 * Determine email to send mail using global config and Mailing type
+	 * @param $sendprivate false : all users; true : only users who have the right to see private followups 
 	 *
 	 * @return array containing email
 	 */
-	function get_users_to_send_mail()
+	function get_users_to_send_mail($sendprivate=false)
 	{
 		global $DB,$CFG_GLPI;
 
@@ -128,6 +134,21 @@ class Mailing
 		$query="SELECT * FROM glpi_mailing WHERE type='".$this->type."'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
+
+			$select ="";
+			$join="";
+			// If send private is the user can see private followups ?
+			if ($sendprivate){
+				$join=" INNER JOIN glpi_users_profiles 
+					ON (glpi_users_profiles.FK_users = glpi_users.ID 
+						AND glpi_users_profiles.FK_entities='".$this->job->fields['FK_entities']."')
+					INNER JOIN glpi_profiles 
+					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.show_full_ticket = '1') ";
+				$joinprofile=	"INNER JOIN glpi_profiles 
+					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.show_full_ticket = '1') ";
+
+			}
+
 			while ($data=$DB->fetch_assoc($result)){
 				switch ($data["item_type"]){
 					case USER_MAILING_TYPE :
@@ -140,12 +161,12 @@ class Mailing
 								// ASSIGN SEND
 							case ASSIGN_MAILING :
 								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
-									$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["assign"]."')";
+									$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["assign"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
-											$row = $DB->fetch_row($result2);
-											if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
-												$emails[]=$row[0];
+											$row = $DB->fetch_array($result2);
+											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+												$emails[]=$row['EMAIL'];
 											}
 										}
 									}
@@ -154,18 +175,39 @@ class Mailing
 								// AUTHOR SEND
 							case AUTHOR_MAILING :
 								if ($this->job->fields["emailupdates"]&&isValidEmail($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
-									$emails[]=$this->job->fields["uemail"];
+
+									// Uemail = mail of the author ? -> use right of the author to see private followups
+									// Else not see private
+									$authorsend=false;
+									if (!$sendprivate){
+										$authorsend=true;
+									} else {
+										// Is the user have the same mail that uemail ?
+										$query2 = "SELECT DISTINCT email AS EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["author"]."')";
+										if ($result2 = $DB->query($query2)) {
+											if ($DB->numrows($result2)==1){
+												$row = $DB->fetch_array($result2);
+												if ($row['EMAIL']==$this->job->fields["uemail"]){
+													$authorsend=true;
+												}
+											}
+										}
+
+									}
+									if ($authorsend){
+										$emails[]=$this->job->fields["uemail"];
+									}
 								}
 								break;
 								// OLD ASSIGN SEND
 							case OLD_ASSIGN_MAILING :
 								if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
-									$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$this->job->fields["_old_assign"]."')";
+									$query2 = "SELECT DISTINCT email AS EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["_old_assign"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
-											$row = $DB->fetch_row($result2);
-											if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
-												$emails[]=$row[0];
+											$row = $DB->fetch_array($result2);
+											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+												$emails[]=$row['EMAIL'];
 											}
 										}
 									}
@@ -177,12 +219,12 @@ class Mailing
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									if ($tmp=$ci->getField('tech_num')){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$tmp."')";
+										$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_users $join WHERE (ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
-												$row = $DB->fetch_row($result2);
-												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
-													$emails[]=$row[0];
+												$row = $DB->fetch_array($result2);
+												if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+													$emails[]=$row['EMAIL'];
 												}
 											}
 										}
@@ -195,12 +237,12 @@ class Mailing
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									if ($tmp=$ci->getField('FK_users')){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$tmp."')";
+										$query2 = "SELECT DISTINCT email AS EMAIL FROM glpi_users $join WHERE (ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
-												$row = $DB->fetch_row($result2);
-												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
-													$emails[]=$row[0];
+												$row = $DB->fetch_array($result2);
+												if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+													$emails[]=$row['EMAIL'];
 												}
 											}
 										}
@@ -211,7 +253,7 @@ class Mailing
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
-						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' AND glpi_users_profiles.FK_entities='".$this->job->fields["FK_entities"]."'";
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) $joinprofile WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' AND glpi_users_profiles.FK_entities='".$this->job->fields["FK_entities"]."'";
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($data=$DB->fetch_assoc($result2)){
@@ -222,7 +264,7 @@ class Mailing
 						}
 						break;
 					case GROUP_MAILING_TYPE :
-						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) $join WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -242,9 +284,11 @@ class Mailing
 
 	/**
 	 * Format the mail body to send
+	* @param $format text or html
+	 * @param $sendprivate true if the email contains private followups
 	 * @return mail body string
 	 */
-	function get_mail_body($format="text")
+	function get_mail_body($format="text", $sendprivate=false)
 	{
 		global $CFG_GLPI, $LANG;
 
@@ -257,8 +301,8 @@ class Mailing
 
 			}
 
-			$body.=$this->job->textDescription("html");
-			$body.=$this->job->textFollowups("html");
+			$body.=$this->job->textDescription($format);
+			$body.=$this->job->textFollowups($format, $sendprivate);
 
 			$body.="<br>-- <br>".$CFG_GLPI["mailing_signature"];
 			$body.="</body></html>";
@@ -271,8 +315,8 @@ class Mailing
 
 			}
 
-			$body.=$this->job->textDescription();
-			$body.=$this->job->textFollowups();
+			$body.=$this->job->textDescription($format);
+			$body.=$this->job->textFollowups($format, $sendprivate);
 
 			$body.="\n-- \n".$CFG_GLPI["mailing_signature"];
 			$body=ereg_replace("<br />","\n",$body);
@@ -326,21 +370,24 @@ class Mailing
 	function get_reply_to_address ()
 	{
 		global $CFG_GLPI;
-		$replyto="";
+		$replyto=$CFG_GLPI["admin_email"];
 
 		switch ($this->type){
 			case "new":
-				if (isValidEmail($this->job->fields["uemail"])) $replyto=$this->job->fields["uemail"];
-				else $replyto=$CFG_GLPI["admin_email"];
+				if (isValidEmail($this->job->fields["uemail"])) {
+					$replyto=$this->job->fields["uemail"];
+				} else {
+					$replyto=$CFG_GLPI["admin_email"];
+				}
 				break;
 				case "followup":
-					case "update":
-					if (isValidEmail($this->user->fields["email"])) $replyto=$this->user->fields["email"];
-					else $replyto=$CFG_GLPI["admin_email"];
-					break;
-			default :
+				case "update":
+				if (isValidEmail($this->user->fields["email"])) {
+					$replyto=$this->user->fields["email"];
+				} else {
 					$replyto=$CFG_GLPI["admin_email"];
-					break;
+				}
+				break;
 		}
 		return $replyto;		
 	}
@@ -356,34 +403,52 @@ class Mailing
 		global $CFG_GLPI;
 		if ($CFG_GLPI["mailing"])
 		{
-			if (!is_null($this->job)&&!is_null($this->user)&&(strcmp($this->type,"new")||strcmp($this->type,"attrib")||strcmp($this->type,"followup")||strcmp($this->type,"finish")))
+			if (!is_null($this->job)&&!is_null($this->user)&&in_array($this->type,array("new","attrib","followup","finish")))
 			{
 				// get users to send mail
-				$users=$this->get_users_to_send_mail();
-				// get subject OK
+				$users=array();
+				// All users
+				$users[0]=$this->get_users_to_send_mail(0);
+				// Users who could see private followups
+				$users[1]=$this->get_users_to_send_mail(1);
+				// Delete users who can see private followups to all users list
+				$users[0]=array_diff($users[0],$users[1]);
+				
+				// New Followup is private : do not send to common users
+				if ($this->followupisprivate){
+					unset($users[0]);
+				}
+
+				// get subject
 				$subject=$this->get_mail_subject();
-				// get sender :  OK
+				// get sender
 				$sender= $CFG_GLPI["admin_email"];
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ();
 				// Send all mails
-				for ($i=0;$i<count($users);$i++)
-				{
-					$mmail=new glpi_phpmailer();
-					$mmail->From=$sender;
-					$mmail->AddReplyTo("$replyto", ''); 
-					$mmail->FromName=$sender;
-
-					$mmail->AddAddress($users[$i], "");
-					$mmail->Subject=$subject	;  
-					$mmail->Body=$this->get_mail_body("html");
-					$mmail->isHTML(true);
-					$mmail->AltBody=$this->get_mail_body("text");
-					if(!$mmail->Send()){
-						$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
-						return false;
+				foreach ($users as $private=>$someusers) {
+					if (count($someusers)){
+						$htmlbody=$this->get_mail_body("html",$private);
+						$textbody=$this->get_mail_body("text",$private);
+					
+						foreach ($someusers as $email){
+							$mmail=new glpi_phpmailer();
+							$mmail->From=$sender;
+							$mmail->AddReplyTo("$replyto", ''); 
+							$mmail->FromName=$sender;
+	
+							$mmail->AddAddress($email, "");
+							$mmail->Subject=$subject	;  
+							$mmail->Body=$htmlbody;
+							$mmail->isHTML(true);
+							$mmail->AltBody=$textbody;
+							if(!$mmail->Send()){
+								$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
+								return false;
+							}
+							$mmail->ClearAddresses(); 
+						}
 					}
-					$mmail->ClearAddresses(); 
 				}
 				
 			} else {
