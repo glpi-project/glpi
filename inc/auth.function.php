@@ -611,47 +611,29 @@ function haveAccessToEntity($ID) {
  */
 function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "") {
 
-	if (in_array(0, $_SESSION['glpiactiveentities'])) {
-		return "";
+	$query = $separator ." ";
+
+
+	if (!empty ($table)) {
+		$query .= $table . ".";
 	}
 
-	$query = $separator . " ( ";
-
-	if (count($_SESSION['glpiactiveentities']) == 1) {
-
-		if (!empty ($table)) {
-			$query .= $table . ".";
-		}
-
-		if (!empty ($field)) {
-			$query .= $field;
-		} else {
-			$query .= "FK_entities";
-		}
-		$query .= "=" . current($_SESSION['glpiactiveentities']);
+	if (!empty ($field)) {
+		$query .= $field;
 	} else {
-		$first = true;
-		foreach ($_SESSION['glpiactiveentities'] as $key => $val) {
-			if (!$first) {
-				$query .= " OR ";
-			} else {
-				$first = false;
-			}
-
-			if (!empty ($table)) {
-				$query .= $table . ".";
-			}
-
-			if (!empty ($field)) {
-				$query .= $field;
-			} else {
-				$query .= "FK_entities";
-			}
-			$query .= "=" . $val;
-
-		}
+		$query .= "FK_entities";
 	}
-	$query .= " ) ";
+	$query.=" IN (";
+	$first=true;
+	foreach ($_SESSION['glpiactiveentities'] as $val){
+		if (!$first){
+			$query.=",";
+		} else {
+			$first=false;
+		}
+		$query.=$val;
+	}
+	$query.=") ";
 	return $query;
 }
 
