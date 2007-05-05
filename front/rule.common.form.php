@@ -96,7 +96,7 @@ elseif (isset($_POST["update_rule"]))
 	checkRight($rule->right,"w");
 	$newID=$rule->add($_POST);
 	logEvent($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($_SERVER['HTTP_REFERER']."?ID=$newID");
 } elseif (isset($_POST["delete_rule"]))
 {
 	checkRight($rule->right,"w");
