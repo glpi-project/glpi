@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","ocsng","search","mailgate","typedoc");
+$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup","admininfo");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -48,7 +48,6 @@ if ($_POST["device_type"]==TRACKING_TYPE){
 } else {
 	checkTypeRight($_POST["device_type"],"w");
 }
-
 commonHeader($LANG["title"][42],$_SERVER['PHP_SELF']);
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
 
@@ -257,14 +256,15 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			}
 		break;
 
-		case "force_update":
+		case "force_ocsng_update":
 			foreach ($_POST["item"] as $key => $val){
 				//Try to get the OCS server whose machine belongs
 				$ocs_server_id = getOCSServerByMachineID($key);
 				//If the machine was imported by OCS
-				if ($ocs_server_id != -1)
+				if ($ocs_server_id != -1){
 					//Force update of the machine
 					ocsUpdateComputer($key,$ocs_server_id,1,1);
+				}
 			}
 		break;
 	}
