@@ -89,6 +89,8 @@ $LANG["buttons"][40]="Zobrazit všechny";
 $LANG["buttons"][41]="Aktivovat"; 
 $LANG["buttons"][42]="Deaktivovat"; 
 $LANG["buttons"][43]="Procházet"; 
+$LANG["buttons"][44]="View CSV export"; 
+$LANG["buttons"][45]="All CSV export"; 
 
 $LANG["calendarD"][0]="Ne"; 
 $LANG["calendarD"][1]="Po"; 

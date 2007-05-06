@@ -89,6 +89,8 @@ $LANG["buttons"][40]="Alle zeigen";
 $LANG["buttons"][41]="Aktivieren"; 
 $LANG["buttons"][42]="Deaktivieren"; 
 $LANG["buttons"][43]="Browse"; 
+$LANG["buttons"][44]="View CSV export"; 
+$LANG["buttons"][45]="All CSV export"; 
 
 $LANG["calendarD"][0]="S"; 
 $LANG["calendarD"][1]="M"; 

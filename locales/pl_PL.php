@@ -89,6 +89,8 @@ $LANG["buttons"][40]="Pokaż wsz.";
 $LANG["buttons"][41]="Aktywuj"; 
 $LANG["buttons"][42]="Deaktywuj"; 
 $LANG["buttons"][43]="Browse"; 
+$LANG["buttons"][44]="View CSV export"; 
+$LANG["buttons"][45]="All CSV export"; 
 
 $LANG["calendarD"][0]="Niedz."; 
 $LANG["calendarD"][1]="Pon."; 

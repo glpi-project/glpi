@@ -89,6 +89,8 @@ $LANG["buttons"][40]="Ver todos";
 $LANG["buttons"][41]="Activar"; 
 $LANG["buttons"][42]="Desactivar"; 
 $LANG["buttons"][43]="Examinar"; 
+$LANG["buttons"][44]="View CSV export"; 
+$LANG["buttons"][45]="All CSV export"; 
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="L"; 
@@ -230,7 +232,7 @@ $LANG["common"][57]="Título";
 
 $LANG["computers"][9]="S.O."; 
 $LANG["computers"][10]="Número de serie del S.O."; 
-$LANG["computers"][11]="OS Product ID"; 
+$LANG["computers"][11]="Id. de producto del S.O."; 
 $LANG["computers"][12]="Nuevo ordenador a partir de un modelo"; 
 $LANG["computers"][14]="Agregado"; 
 $LANG["computers"][21]="CPU"; 
