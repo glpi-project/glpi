@@ -75,7 +75,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$pb="";
 			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)&&!isGlobalSoftware($sID)) $pb="class='tab_bg_1_2'";
 
-			echo "<form name='lic_form' method='get' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+			echo "<form name='lic_form' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 
 			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='6' $pb >";
