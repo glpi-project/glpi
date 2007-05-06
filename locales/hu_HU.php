@@ -89,6 +89,8 @@ $LANG["buttons"][40]="Mindent mutat";
 $LANG["buttons"][41]="Bekapcsol"; 
 $LANG["buttons"][42]="Kikapcsol"; 
 $LANG["buttons"][43]="Böngészés"; 
+$LANG["buttons"][44]="View CSV export"; 
+$LANG["buttons"][45]="All CSV export"; 
 
 $LANG["calendarD"][0]="V"; 
 $LANG["calendarD"][1]="H"; 
@@ -230,7 +232,7 @@ $LANG["common"][57]="Cím";
 
 $LANG["computers"][9]="Operációs rendszer"; 
 $LANG["computers"][10]="OP.rsz. szériaszám"; 
-$LANG["computers"][11]="OS Product ID"; 
+$LANG["computers"][11]="OP.rsz termékkód"; 
 $LANG["computers"][12]="Új számítógép sablonból"; 
 $LANG["computers"][14]="Hozzáadva"; 
 $LANG["computers"][21]="CPU"; 
