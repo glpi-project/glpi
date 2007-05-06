@@ -1,26 +1,32 @@
 <?php
 
 /**
-* Fast, light and safe Cache Class
-*
-* Cache_Lite is a fast, light and safe cache system. It's optimized
-* for file containers. It is fast and safe (because it uses file
-* locking and/or anti-corruption tests).
-*
-* There are some examples in the 'docs/examples' file
-* Technical choices are described in the 'docs/technical' file
-*
-* Memory Caching is from an original idea of
-* Mike BENOIT <ipso@snappymail.ca>
-*
-* Nota : A chinese documentation (thanks to RainX <china_1982@163.com>) is
-* available at :
-* http://rainx.phpmore.com/manual/cache_lite.html
-*
-* @package Cache_Lite
-* @category Caching
-* @version $Id: Lite.php,v 1.45 2006/06/03 08:10:33 fab Exp $
-* @author Fabien MARTY <fab@php.net>
+ * @version $Id: HEADER 3795 2006-08-22 03:57:36Z moyo $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2007 by the INDEPNET Development Team.
+
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
 */
 
 define('CACHE_LITE_ERROR_RETURN', 1);
