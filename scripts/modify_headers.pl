@@ -39,7 +39,7 @@ opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n";
 foreach (readdir(DIRHANDLE)){ 
 	if ($_ ne '..' && $_ ne '.'){
 		if (-d "$dir/$_"){
-			if ($_ !~ m/.svn/i && $_ !~ m/CVS/i && $_ !~ m/CAS/i && $_ !~ m/ezpdf/i  && $_ !~ m/tiny_mce/i  && $_ !~ m/vcardclass/i  && $_ !~ m/phpmailer/i  && $_ !~ m/calendar/i){
+			if ($_ !~ m/.svn/i && $_ !~ m/CVS/i && $_ !~ m/lib/i){
 				
 				do_dir("$dir/$_");
 			}
