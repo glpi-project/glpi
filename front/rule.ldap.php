@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id: rule.ocs.php 4574 2007-03-12 18:34:27Z moyo $
+ * @version $Id: HEADER 3795 2006-08-22 03:57:36Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2006 by the INDEPNET Development Team.
+ Copyright (C) 2003-2007 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------

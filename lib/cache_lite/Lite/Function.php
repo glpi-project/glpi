@@ -1,19 +1,32 @@
 <?php
 
 /**
-* This class extends Cache_Lite and can be used to cache the result and output of functions/methods
-*
-* This class is completly inspired from Sebastian Bergmann's
-* PEAR/Cache_Function class. This is only an adaptation to
-* Cache_Lite
-*
-* There are some examples in the 'docs/examples' file
-* Technical choices are described in the 'docs/technical' file
-*
-* @package Cache_Lite
-* @version $Id: Function.php,v 1.10 2006/02/04 18:36:36 fab Exp $
-* @author Sebastian BERGMANN <sb@sebastian-bergmann.de>
-* @author Fabien MARTY <fab@php.net>
+ * @version $Id: HEADER 3795 2006-08-22 03:57:36Z moyo $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2007 by the INDEPNET Development Team.
+
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
 */
  
 require_once('Cache/Lite.php');
