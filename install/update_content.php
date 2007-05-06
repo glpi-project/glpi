@@ -197,7 +197,7 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 
 		$fin=0;
 		while (!$fin){
-			$todump=get_update_content($DB,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8,$complete_utf8);
+			$todump=get_update_content($DB,$tables[$offsettable],$offsetrow,$rowlimit,$conv_utf8);
 			//	echo $todump."<br>";
 			$rowtodump=substr_count($todump, "UPDATE ");
 			if ($rowtodump>0){
