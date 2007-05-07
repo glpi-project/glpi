@@ -320,8 +320,6 @@ class LdapRuleCollection extends RuleCollection {
 				else
 					$groups = array();
 					
-					
-					
 					$rule_input = $rule_input[0];
 	
 					//Get all the ldap fields
@@ -333,9 +331,6 @@ class LdapRuleCollection extends RuleCollection {
 							{
 								case "LDAP_SERVER":
 									$rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
-									break;
-								case "MAIL_SERVER":
-									$rule_parameters["MAIL_SERVER"] = $params["name"];
 									break;
 								case "GROUPS" :
 										foreach ($groups as $group)

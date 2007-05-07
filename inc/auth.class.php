@@ -82,7 +82,7 @@ class Identification {
 	function userExists($name) {
 		global $DB, $LANG;
 
-		$query = "SELECT * from glpi_users WHERE name='$name'";
+		$query = "SELECT * from glpi_users WHERE name='".addslashes($name)."'";
 		$result = $DB->query($query);
 		if ($DB->numrows($result) == 0) {
 			$this->err .= $LANG["login"][14] . "<br>";
@@ -156,7 +156,6 @@ class Identification {
 		}
 		if ($ds) {
 			$dn = ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition);
-
 			if (@ ldap_bind($ds, $dn, $password)) {
 				@ ldap_unbind($ds);
 				//Hook to implement to restrict access by checking the ldap directory
