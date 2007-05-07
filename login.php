@@ -127,8 +127,8 @@ if (isset ($_POST["noCAS"]))
 		elseif ($exists == 2) {
 			//The user is not authenticated on the GLPI DB, but we need to get informations about him
 			//The determine authentication method
-			$identificat->user->getFromDBbyName($_POST['login_name']);
-
+			$identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
+			
 			//If the user has already been logged, the method_auth and id_auth are already set
 			//so we test this connection first
 			switch ($identificat->user->fields["auth_method"]) {
@@ -142,7 +142,7 @@ if (isset ($_POST["noCAS"]))
 					break;
 			}
 		}
-
+		
 		//If the last good auth method is not valid anymore, we test all the methods !
 		//test all the ldap servers
 		if (!$identificat->auth_succeded){

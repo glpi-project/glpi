@@ -399,7 +399,7 @@ class User extends CommonDBTM {
 
 			foreach ($fields as $k => $e) {
 					if (!empty($v[0][$e][0]))
-					$this->fields[$k] = $v[0][$e][0];
+					$this->fields[$k] = addslashes($v[0][$e][0]);
 					else
 					$this->fields[$k] = "";
 			}
@@ -472,6 +472,7 @@ class User extends CommonDBTM {
 			$groups = $this->fields["_groups"];
 		else
 			$groups = array();	
+
 		$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
 		
 		//Hook to retrieve more informations for ldap
