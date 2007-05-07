@@ -59,7 +59,7 @@ div.sep{
 }
 
 div#header{
-	background: url(../pics/fd_nav1.png) 0 0 repeat-x;
+	background: url("../pics/fd_nav1.png") 0 0 repeat-x;
 	margin-bottom:10px;
 }
 
@@ -168,7 +168,7 @@ ul#menu ul.ssmenu{
 	border: 1px solid #CC9900;
 	border-bottom: 0px;
 	-moz-border-radius: 4px;
-	background: url(../pics/fd_ssmenu.png) 0 0 repeat;
+	background: url("../pics/fd_ssmenu.png") 0 0 repeat;
 	display: none;
 }
 
@@ -189,7 +189,7 @@ ul#menu ul li a{
 }
 
 ul#menu ul li a:hover{
-	background: url(../pics/fd_nav2.png) 0 0 repeat;
+	background: url("../pics/fd_nav2.png") 0 0 repeat;
 }
 
 ul#menu li#menu1{
@@ -268,7 +268,7 @@ div#c_menu div#c_logo{
 	width: 64px;
 	height: 41px;
 	float: left;
-	background: url(../pics/fd_logo.png) 0 0 repeat-x;
+	background: url("../pics/fd_logo.png") 0 0 repeat-x;
 }
 
 div#c_menu div#c_logo a{
@@ -279,7 +279,7 @@ div#c_menu div#c_logo a{
 }
 
 div#c_ssmenu1{
-	background: url(../pics/fd_nav2.png) 0 0 repeat-x;
+	background: url("../pics/fd_nav2.png") 0 0 repeat-x;
 	height: 24px;
 	clear: both;
 	font-size: 0.8em;
@@ -309,7 +309,8 @@ div#c_ssmenu1 ul li a:hover{
 }
 
 div#c_ssmenu2{
-	background: url(../pics/fd_nav3.png) 0 0 repeat-x;
+	position: relative;
+	background: url("../pics/fd_nav3.png") 0 0 repeat-x;
 	height: 28px;
 	clear: both;
 	font-size: 0.9em; 
@@ -323,6 +324,7 @@ div#c_ssmenu2 ul{
 }
 
 div#c_ssmenu2 ul li{
+	position:relative;
 	float: left;
 	padding: 0 10px;
 }
@@ -335,6 +337,8 @@ div#c_ssmenu2 ul li a{
 div#show_entities{
 	display: none;
 	position: absolute;
+	top:1px;
+	left:1px;
 	border: 2px solid gray;
 	background-color : #f1f4e3;
 	-moz-border-radius: 5px;
@@ -342,9 +346,22 @@ div#show_entities{
 	font-size: 11px;
 	text-align: left;
 	z-index:1000;
-	overflow: auto;	
 }
 
+.show_menu{
+        display: none;
+        position: absolute;
+        top:1px; 
+        left:1px;
+        border: 2px solid gray;
+        background-color : #f1f4e3;
+        -moz-border-radius: 5px;
+        padding: 5px;
+        font-size: 11px;
+        text-align: left;
+        z-index:1000;
+         
+}
 
 
 /* ########################################################################### */
@@ -1010,7 +1027,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	/*background-color: #efefe7;*/
 	/*-moz-border-radius: 8px;*/
 	/*border: 2px outset #659900;*/
-	background: url(../pics/fd_footer.png) 0 0 repeat-x;
+	background: url("../pics/fd_footer.png") 0 0 repeat-x;
 	/*border: 2px outset #FFC65D;*/
 	font-size: 9px;	
 	color :#757575;
