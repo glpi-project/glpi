@@ -171,10 +171,10 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 	
 		$sr = ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
 		$info = ldap_get_entries($ds, $sr);
+		
 		for ($ligne = 0; $ligne < $info["count"]; $ligne++)
 		{
 			//If ldap add
-//			if (isset($info[$ligne][$config_ldap->fields['ldap_login']]))
 			if (!$sync)
 				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
 			else
