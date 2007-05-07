@@ -710,7 +710,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<li>";
 
 			// Display MENU ALL
-			echo "<div class='over_link' id='show_all_menu' onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
+			echo "<div class='show_menu' id='show_all_menu' onMouseOver=\"cleandisplay('show_all_menu');\" onMouseOut=\"cleanhide('show_all_menu');\">";
 			$items_per_columns=15;
 			$i=-1;
 			echo "<table><tr><td valign='top'><table>";
@@ -1890,11 +1890,10 @@ function showProfileSelecter($target){
 
 	echo "<li>";
 	echo "<a href='#' onClick=\"cleandisplay('show_entities');\">".$_SESSION["glpiactive_entity_name"]."</a>";
-	
 
-	echo "<div  id='show_entities' onMouseOver=\"cleandisplay('show_entities');\" onMouseOut=\"cleanhide('show_entities');\">";
+	echo "<div id='show_entities' onMouseOver=\"cleandisplay('show_entities');\" onMouseOut=\"cleanhide('show_entities');\">";
 	displayActiveEntities($target,$_SESSION['glpi_entities_tree'],"activeentity");
-	echo "<div style='clear:both'></div>";
+	//echo "<div style='clear:both'></div>";
 	echo "</div>";
 	echo "</li>";
 
