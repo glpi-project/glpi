@@ -148,9 +148,10 @@ class User extends CommonDBTM {
 		$input["ID"]=$newID;
 		if ($input["auth_method"]==AUTH_LDAP){
 			$this->syncLdapGroups($input);
-			$this->applyLdapRules($input);
 		}
-
+		
+		if ($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL)
+			$this->applyLdapRules($input);
 	}
 
 	function pre_deleteItem($ID) {
@@ -224,10 +225,11 @@ class User extends CommonDBTM {
 				return array ();
 		}
 
-		if ($input["auth_method"]==AUTH_LDAP){
+		if ($input["auth_method"]==AUTH_LDAP)
 			$this->syncLdapGroups($input);
+
+		if ($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL)
 			$this->applyLdapRules($input);
-		}
 
 		return $input;
 	}
@@ -470,7 +472,7 @@ class User extends CommonDBTM {
 			$groups = $this->fields["_groups"];
 		else
 			$groups = array();	
-		$this->fields=$rule->processAllRules($groups,$this->fields,array("ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
+		$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
 		
 		//Hook to retrieve more informations for ldap
 		$this->fields = do_hook_function("retrieve_more_data_from_ldap", $this->fields);
@@ -512,9 +514,9 @@ class User extends CommonDBTM {
 
 	// Function that try to load from IMAP the user information... this is
 	// a fake one, as you can see...
-	function getFromIMAP($host, $name) {
+	function getFromIMAP($mail_method, $name) {
 		// we prevent some delay..
-		if (empty ($host)) {
+		if (empty ($mail_method["imap_host"])) {
 			return false;
 		}
 
@@ -524,10 +526,21 @@ class User extends CommonDBTM {
 		if (ereg("@", $name))
 			$this->fields['email'] = $name;
 		else
-			$this->fields['email'] = $name . "@" . $host;
+			$this->fields['email'] = $name . "@" . $mail_method["imap_host"];
 
 		$this->fields['name'] = $name;
 
+		//Instanciate the affectation's rule
+		$rule = new LdapRuleCollection();
+			
+		//Process affectation rules :
+		//we don't care about the function's return because all the datas are stored in session temporary
+		if (isset($this->fields["_groups"]))
+			$groups = $this->fields["_groups"];
+		else
+			$groups = array();	
+		$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"MAIL","mail_server"=>$mail_method["ID"],"email"=>$this->fields["email"]));
+		
 		return true;
 
 	} // getFromIMAP()  	    
@@ -664,7 +677,7 @@ class User extends CommonDBTM {
 							break;
 						case AUTH_MAIL :
 							echo $LANG["login"][3];
-							$url = $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extmail_mail&ID=";
+							$url = $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail&ID=";
 							break;
 						case AUTH_CAS :
 							echo $LANG["login"][4];

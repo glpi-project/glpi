@@ -760,7 +760,7 @@ function mail_auth($identificat, $login,$password,$mail_method) {
 			$identificat->user_present = $identificat->user->getFromDBbyName($login);
 			$identificat->auth_parameters = $mail_method;
 		
-			$identificat->user->getFromIMAP($mail_method["imap_host"], utf8_decode($login));
+			$identificat->user->getFromIMAP($mail_method, utf8_decode($login));
 
 			//Update the authentication method for the current user
 			$identificat->user->fields["auth_method"] = AUTH_MAIL;
