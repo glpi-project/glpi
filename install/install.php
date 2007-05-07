@@ -787,10 +787,12 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	function prev_form($host,$user,$password) {
 		global $LANG;
+		
 		echo "<br /><form action=\"install.php\" method=\"post\">";
-		echo $LANG["install"][30] .": <input type=\"hidden\" name=\"db_host\" value=\"". $host ."\"/><br />";
-		echo $LANG["install"][31] ." : <input type=\"hidden\" name=\"db_user\" value=\"". $user ."\"/>";
-		echo $LANG["install"][32] .": <input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\" />";
+		echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
+		echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
+		echo " <input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\" />";
+		echo "<input type=\"hidden\" name=\"update\" value=\"no\" />";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["buttons"][13]."\" /></p>";
 		echo "</form>";
@@ -799,7 +801,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	function next_form()
 	{
 		global $LANG;
-
+	
 		echo "<br /><form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_4\" />";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" /></p>";
@@ -832,10 +834,11 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	$link = mysql_connect($host,$user,$password);
 
-	if(!empty($databasename)) {
+	if(!empty($databasename)) { // use db already created 
 		$DB_selected = mysql_select_db($databasename, $link);
 
 		if (!$DB_selected) {
+			
 			echo $LANG["install"][41];
 			echo "<br />";
 			echo $LANG["install"][36]." ". mysql_error();
@@ -850,14 +853,14 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				echo "<p>".$LANG["install"][46]."</p>";
 				next_form();
 			}
-			else {
+			else { // can't create config_db file
 				echo "<p>".$LANG["install"][47]."</p>";
-				prev_form();
+				prev_form($host,$user,$password);
 			}
 		}
 		mysql_close($link);
 	}
-	elseif(!empty($newdatabasename)) {
+	elseif(!empty($newdatabasename)) { // create new db
 		// BUG cette fonction est obsol�e je l'ai remplac�par la nouvelle
 		//if (mysql_create_db($newdatabasename)) {
 		// END BUG
@@ -874,21 +877,22 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				next_form();
 
 			}
-			else {
+			else { // can't create config_db file
 				echo "<p>".$LANG["install"][47]."</p>";
-				prev_form();
+				prev_form($host,$user,$password);
 			}
 		}
-		else {
+		else { // can't create database
 			echo $LANG["install"][48];
 			echo "<br />".$LANG["install"][42] . mysql_error();
-			prev_form();
+			prev_form($host,$user,$password);
 		}
 		mysql_close($link);
 	}
-	else {
+	else { // no db selected
 		echo "<p>".$LANG["install"][49]. "</p>";
-		prev_form();
+		//prev_form();
+		prev_form($host,$user,$password);
 		mysql_close($link);
 	}
 
@@ -947,7 +951,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			$from_install = true;
 			include(GLPI_ROOT ."/install/update.php");
 		}
-		else {
+		else { // can't create config_db file
 			echo $LANG["install"][70];
 			echo "<h3>".$LANG["install"][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
