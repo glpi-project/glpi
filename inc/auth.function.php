@@ -677,12 +677,15 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
 
 function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 
-	$login_search = ereg_replace("[^-@._[:space:][:alnum:]]", "", $login); // securite
+	//$login_search = ereg_replace("[^-@._[:space:][:alnum:]]", "", $login); // securite
 
 	// Tenter une recherche pour essayer de retrouver le DN
-	$filter = "($login_attr=$login_search)";
+	//$filter = "($login_attr=$login_search)";
+	$filter = "($login_attr=$login)";
+	
 	if (!empty ($condition))
 		$filter = "(& $filter $condition)";
+	
 	$result = @ldap_search($ds, $basedn, $filter, array (
 		"dn",
 	),0,0);
@@ -690,7 +693,7 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 	if (is_array($info) AND $info['count'] == 1) {
 		return $info[0]['dn'];
 	} else { // Si echec, essayer de deviner le DN / Flat LDAP
-		$dn = "$login_attr=$login_search, " . $basedn;
+		$dn = "$login_attr=$login, " . $basedn;
 	}
 }
 
@@ -718,13 +721,14 @@ function try_ldap_auth($identificat,$login,$password, $id_auth = -1,$isCAS=0) {
  * Authentify a user by checking a specific directory
  */
 function ldap_auth($identificat,$login,$password, $ldap_method,$isCAS) {
-	$user_dn = $identificat->connection_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"], utf8_decode($login), utf8_decode($password), $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
-
+	//$user_dn = $identificat->connection_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"], utf8_decode($login), utf8_decode($password), $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
+	$user_dn = $identificat->connection_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
 	if ($user_dn) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
 		$identificat->user_present = $identificat->user->getFromDBbyName($login);
-		$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
+		//$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
+		$identificat->user->getFromLDAP($ldap_method, $user_dn, $login, $password);
 		$identificat->auth_parameters = $ldap_method;
 		if (!$isCAS) $identificat->user->fields["auth_method"] = AUTH_LDAP;
 		else $identificat->user->fields["auth_method"] = AUTH_CAS;
