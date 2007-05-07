@@ -33,7 +33,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-;
 $NEEDED_ITEMS=array("group","user");
 
 define('GLPI_ROOT', '..');
