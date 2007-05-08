@@ -73,14 +73,14 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
 	if ($ds) {
 		//Get the user's dn
-		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], $login, $config_ldap->fields['ldap_condition']);
+		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], stripslashes($login), $config_ldap->fields['ldap_condition']);
 		if ($user_dn) {
 			
 			$rule = new LdapAffectEntityRule;	
 			
 			$user = new User();
 			//Get informations from LDAP
-			$user->getFromLDAP($config_ldap->fields, $user_dn, $login, "");
+			$user->getFromLDAP($config_ldap->fields, $user_dn, addslashes($login), "");
 			//Add the auth method
 			$user->fields["auth_method"] = AUTH_LDAP;
 			$user->fields["id_auth"] = $ldap_server;
@@ -247,7 +247,8 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 		foreach ($ldap_users as $user) {
 
 			echo "<tr align='center' class='tab_bg_2'>";
-			echo "<td><input type='checkbox' name='" . $action . "[" . $user . "]' " . ($check == "all" ? "checked" : "") ."></td>";
+			//Need to use " instead of ' because it doesn't work with names with ' inside !
+			echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\" " . ($check == "all" ? "checked" : "") ."></td>";
 			echo "<td colspan='4'>" . $user . "</td>";
 			echo "</tr>";
 		}
