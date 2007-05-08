@@ -48,25 +48,24 @@
 	$global_begin=intval($split[0]);
 	$split=split(":",$CFG_GLPI["planning_end"]);
 	$global_end=intval($split[0]);
-	
-	if (isset($_GET["ID"])&&$_GET["ID"]>0){
-		echo "<input type='hidden' name='plan[ID]' value='".$_GET["ID"]."'>";
+	if (isset($_POST["ID"])&&$_POST["ID"]>0){
+		echo "<input type='hidden' name='plan[ID]' value='".$_POST["ID"]."'>";
 	}
 
-	if (isset($_GET["begin_date"])&&!empty($_GET["begin_date"])){
-		$begin=strtotime($_GET["begin_date"]);
+	if (isset($_POST["begin_date"])&&!empty($_POST["begin_date"])){
+		$begin=strtotime($_POST["begin_date"]);
 	} else {
 		$begin=strtotime(date("Y-m-d")." 12:00:00");
 	}
-	if (isset($_GET["end_date"])&&!empty($_GET["end_date"])){
-		$end=strtotime($_GET["end_date"]);
+	if (isset($_POST["end_date"])&&!empty($_POST["end_date"])){
+		$end=strtotime($_POST["end_date"]);
 	} else {
 		$end=strtotime(date("Y-m-d")." 13:00:00");
 	}
 
 	$state=0;
-	if (isset($_GET["state"])){
-		$state=$_GET["state"];
+	if (isset($_POST["state"])){
+		$state=$_POST["state"];
 	} 
 	
 	$begin_date=date("Y-m-d",$begin);
@@ -75,15 +74,15 @@
 	$end_hour=date("H:i",$end);
 	
 	echo "<table class='tab_cadre' cellpadding='2'>";
-	if (isset($_GET["author"])&&isset($_GET["entity"])){
+	if (isset($_POST["author"])&&isset($_POST["entity"])){
 		echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":	</td>";
 		echo "<td>";
-		dropdownUsers("plan[id_assign]",$_GET["author"],"own_ticket",-1,1,$_GET["entity"]);
+		dropdownUsers("plan[id_assign]",$_POST["author"],"own_ticket",-1,1,$_POST["entity"]);
 		echo "</td></tr>";
 	}
 	
 	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
-	showCalendarForm($_GET['form'],"plan[begin_date]",$begin_date);
+	showCalendarForm($_POST['form'],"plan[begin_date]",$begin_date);
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][12].":	</td>";
@@ -92,7 +91,7 @@
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
-	showCalendarForm($_GET['form'],"plan[end_date]",$end_date);
+	showCalendarForm($_POST['form'],"plan[end_date]",$end_date);
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][13].":	</td>";

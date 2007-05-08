@@ -554,15 +554,13 @@ class Rule extends CommonDBTM{
 		}
 		$rand=dropdownArrayValues("criteria", $items);
 
-		// Force set item to default value on reload
-		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('dropdown_criteria$rand').value='".key($items)."';";
 
-		echo "   new Form.Element.Observer('dropdown_criteria$rand', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('criteria_span','".$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php',{asynchronous:true, evalScripts:true, \n";
-		echo "           method:'post', parameters:'criteria='+value+'&rule_type=".$this->rule_type."'\n";
-		echo "})})\n";
+		echo "<script type='text/javascript' >\n";
+		$params=array('criteria'=>'__VALUE__',
+				'rule_type'=>$this->rule_type,
+		);
+		ajaxUpdateItemOnSelectEvent("dropdown_criteria$rand","criteria_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false);
+		ajaxUpdateItem("criteria_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false,"dropdown_criteria$rand");
 		echo "</script>\n";
 
 		return key($items);
@@ -578,19 +576,15 @@ class Rule extends CommonDBTM{
 		}
 
 		$rand=dropdownArrayValues("field", $items);
-		// Force set item to default value on reload
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('dropdown_field$rand').value='".key($items)."';";
-		echo "</script>\n";
 
-		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('dropdown_field$rand', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('action_span','".$CFG_GLPI["root_doc"]."/ajax/ruleaction.php',{asynchronous:true, evalScripts:true, \n";
-		echo "           method:'post', parameters:'field='+value+'&rule_type=".$this->rule_type."'\n";
-		echo "})})\n";
-		echo "</script>\n";
+		$params=array('field'=>'__VALUE__',
+				'rule_type'=>$this->rule_type,
+		);
+		ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
+		ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false,"dropdown_field$rand");
 
+		echo "</script>\n";
 	}
 
 	/**

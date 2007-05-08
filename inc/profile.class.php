@@ -120,19 +120,18 @@ class Profile extends CommonDBTM{
 		echo "<th><input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></th>";
 		echo "<th>".$LANG["profiles"][2].":</th>";
 		echo "<th><select name='interface' id='profile_interface'>";
-		echo "<option value='helpdesk' ".($this->fields["interface"]!="helpdesk"?"selected":"").">".$LANG["Menu"][31]."</option>";
-		echo "<option value='central' ".($this->fields["interface"]!="central"?"selected":"").">".$LANG["title"][0]."</option>";
+		echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".$LANG["Menu"][31]."</option>";
+		echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".$LANG["title"][0]."</option>";
 		echo "</select></th>";
 		echo "</tr></table>";
 		echo "</div>";
 
 		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('profile_interface', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('profile_form','".$CFG_GLPI["root_doc"]."/ajax/profiles.php',{asynchronous:true, evalScripts:true, \n";
-		echo "           method:'post', parameters:'interface=' + value+'&ID=$ID'\n";
-		echo "})});\n";
-		echo "document.getElementById('profile_interface').value='".$this->fields["interface"]."';";
+		$params=array('interface'=>'__VALUE__',
+				'ID'=>$ID,
+			);
+		ajaxUpdateItemOnSelectEvent("profile_interface","profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
+		ajaxUpdateItem("profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,'profile_interface');
 		echo "</script>\n";
 		echo "<br>";
 
