@@ -280,22 +280,56 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 			echo "</select>";
 
 			// Ajax script for display search meat item
+/*			// JQuery version
 			echo "<script type='text/javascript' >\n";
-			echo "   new Form.Element.Observer('type2_".$type."_".$i."_$rand', 1, \n";
-			echo "      function(element, value) {\n";
-			echo "      	new Ajax.Updater('show_".$type."_".$i."_$rand','".$CFG_GLPI["root_doc"]."/ajax/updateSearch.php',{asynchronous:true, evalScripts:true, \n";	
-			echo "           method:'post', parameters:'type='+value+'&num=$i&field=".(is_array($field2)&&isset($field2[$i])?$field2[$i]:"")."&val=".(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:"")."'\n";
-			echo "})})\n";
+			 echo "$(\"#type2_".$type."_".$i."_$rand\").change(function(){
+   				 	$.post( '".$CFG_GLPI["root_doc"]."/ajax/updateSearch.php', 
+							{ type: $(this).val(), num: \"$i\", 
+								field:\"".(is_array($field2)&&isset($field2[$i])?$field2[$i]:"")."\" ,
+								val: \"".(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:"")."\"},
+							function(data){
+								$(\"#show_".$type."_".$i."_$rand\").html(data);
+							}
+						);
+					});";
+			
+		 	echo "
+					$(\"#type2_".$type."_".$i."_$rand\").val('".$type2[$i]."');
+   				 	$.post( '".$CFG_GLPI["root_doc"]."/ajax/updateSearch.php', 
+							{ type: ".$type2[$i].", num: \"$i\", 
+								field:\"".(is_array($field2)&&isset($field2[$i])?$field2[$i]:"")."\" ,
+								val: \"".(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:"")."\"},
+							function(data){
+								$(\"#show_".$type."_".$i."_$rand\").html(data);
+							}
+						);";
+			echo "</script>\n";
+			echo "<span id='show_".$type."_".$i."_$rand'>----</span>";
+*/
+
+			echo "<span id='show_".$type."_".$i."_$rand'>&nbsp;</span>\n";	
+
+			 // Prototype Version
+			echo "<script type='text/javascript' >";
+				echo "$('type2_".$type."_".$i."_$rand').observe('change', function(event){
+				      	new Ajax.Updater('show_".$type."_".$i."_$rand', 
+					'".$CFG_GLPI["root_doc"]."/ajax/updateSearch.php', 
+					{asynchronous:true, evalScripts:true, 
+					method:'post', parameters:'type='+Event.element(event).value+'&num=$i&field=".(is_array($field2)&&isset($field2[$i])?$field2[$i]:"")."&val=".(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:"")."'
+					});
+ 				});";
+			if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
+
+				echo "document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
+				echo "	new Ajax.Updater('show_".$type."_".$i."_$rand', 
+					'".$CFG_GLPI["root_doc"]."/ajax/updateSearch.php', 
+					{asynchronous:true, evalScripts:true, 
+					method:'post', parameters:'type=".$type2[$i]."&num=$i&field=".(is_array($field2)&&isset($field2[$i])?$field2[$i]:"")."&val=".(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:"")."'
+					});";
+			}
+
 			echo "</script>\n";
 
-			echo "<span id='show_".$type."_".$i."_$rand'>&nbsp;</span>\n";
-
-			// Display already selected values
-			if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
-				echo "<script type='text/javascript' >\n";
-				echo "document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
-				echo "</script>\n";
-			}
 
 			echo "</td></tr>";
 		}
@@ -407,6 +441,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			MONITOR_TYPE => $LANG["Menu"][3],
 			PERIPHERAL_TYPE => $LANG["Menu"][16],
 			SOFTWARE_TYPE => $LANG["Menu"][4],
+			PHONE_TYPE => $LANG["Menu"][34],
 		    );	
 
 	// Get the items to display
