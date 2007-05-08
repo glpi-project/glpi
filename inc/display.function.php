@@ -116,6 +116,8 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// AJAX library
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
+
+//		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/jquery-latest.pack.js'></script>";
 		// Some Javascript-Functions which we may need later
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
 	
