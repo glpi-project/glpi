@@ -120,30 +120,24 @@ echo "</select>";
 
 if (isset($_POST["comments"])&&$_POST["comments"]){
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('dropdown_".$_POST["myname"].$_POST["rand"]."', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$CFG_GLPI["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           method:'post', parameters:'value='+value+'&table=glpi_users'\n";
-	echo "})})\n";
+	$params=array('value'=>'__VALUE__','table'=>"glpi_users");
+	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$params,false);
 	echo "</script>\n";
 }
 
 // Manage updates others dropdown for helpdesk
 if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
-	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('dropdown_author".$_POST["rand"]."', 1, ";
-	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('tracking_my_devices','".$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php',{asynchronous:true, evalScripts:true, ";
-	echo "           method:'post', parameters:'userID=' + value+'&device_type=0'";
-	echo "})})";
-	echo "</script>";
 
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('dropdown_author".$_POST["rand"]."', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('uemail_result','".$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           method:'post', parameters:'value='+value\n";
-	echo "})})\n";
+	$params=array('userID'=>'__VALUE__',
+			'device_type'=>0
+	);
+	ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"tracking_my_devices",$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$params,false);
+
+	$params=array('value'=>'__VALUE__'
+	);
+	ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"uemail_result",$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$params,false);
+
 	echo "</script>\n";
 }
 

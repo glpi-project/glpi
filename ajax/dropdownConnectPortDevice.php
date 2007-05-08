@@ -86,18 +86,16 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	}
 	echo "</select>";
 
-	echo "<script type='text/javascript' >\n";
-	echo " new Form.Element.Observer('item$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_item_$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$rand');},\n";
-	echo "           method:'post', parameters:'item=' + value+'&type=".$_POST['type']."&myname=".$_POST['myname']."&current=".$_POST['current']."'\n";
-	echo "})});\n";
-	echo "</script>\n";
 
+        $params=array('item'=>'__VALUE__',
+                        'type'=>$_POST['type'],
+                        'current'=>$_POST['current'],
+                        'myname'=>$_POST["myname"],
+                        );
+
+	echo "<script type='text/javascript' >\n";
+	ajaxUpdateItemOnSelectEvent("item$rand","results_item_$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php",$params);
+	echo "</script>\n";
 
 	echo "<span id='results_item_$rand'>\n";
 	echo "</span>\n";	

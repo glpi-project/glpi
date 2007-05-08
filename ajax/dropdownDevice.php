@@ -50,36 +50,23 @@ if (isset($_POST["idtable"])){
 
 	$rand=mt_rand();
 
-	ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand);
-
-	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
-	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_ID$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, ";
-	echo "           onComplete:function(request)";
-	echo "            {Element.hide('search_spinner$rand');}, ";
-	echo "           onLoading:function(request)";
-	echo "            {Element.show('search_spinner$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST["myname"]."&value=0&rand=$rand'";
-	echo "})})";
-	echo "</script>";	
-
-	echo "<div id='search_spinner$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>";	
-
-	$nb=0;
-	if ($CFG_GLPI["use_ajax"])
-		$nb=countElementsInTable($table);
-
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		echo "<script type='text/javascript' >\n";
-		echo "Element.hide('search_spinner$rand');";
-		echo "Element.hide('search_".$_POST['myname']."$rand');";
-		echo "document.getElementById('search_".$_POST['myname']."$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
-		echo "</script>\n";
+	$use_ajax=false;
+	if ($CFG_GLPI["use_ajax"]){
+		if(countElementsInTable($table)>$CFG_GLPI["ajax_limit_count"]){
+			$use_ajax=true;
+		}
 	}
 
-	echo "<span id='results_ID$rand'>";
-	echo "<select name='ID'><option value='0'>------</option></select>";
-	echo "</span>";	
+
+
+        $params=array('searchText'=>'__VALUE__',
+                        'table'=>$table,
+                        'value'=>0,
+                        'myname'=>$_POST["myname"],
+			'rand'=>$rand,
+                        );
+
+	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
+	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
 }		
 ?>

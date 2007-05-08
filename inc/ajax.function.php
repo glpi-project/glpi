@@ -56,7 +56,7 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 			$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
 			include (GLPI_ROOT.$relativeurl);
 		} else {
-			echo ereg_replace("__RAND__",$rand,$default);
+			echo $default;
 		}
 	echo "</span>\n";
 }

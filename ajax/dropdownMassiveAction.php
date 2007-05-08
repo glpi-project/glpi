@@ -128,18 +128,14 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 
 		echo "</select>";
 
+
+		$params=array('id_field'=>'__VALUE__',
+			'device_type'=>$_POST["type"],
+			);
 		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('massiveaction_field', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('show_massiveaction_field','".$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
-		echo "            {Element.hide('search_spinner_massiveaction_field');}, \n";
-		echo "           onLoading:function(request)\n";
-		echo "            {Element.show('search_spinner_massiveaction_field');},\n";
-		echo "           method:'post', parameters:'id_field='+value+'&device_type=".$_POST["type"]."'\n";
-		echo "})})\n";
+		ajaxUpdateItemOnSelectEvent("massiveaction_field","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",$params);
 		echo "</script>\n";
 
-		echo "<div id='search_spinner_massiveaction_field' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 		echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 
 		break;
