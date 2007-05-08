@@ -91,30 +91,19 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 		}
 	}
 
-	// JQUERY
-/*	echo "<script type='text/javascript' >\n";
-		echo "function update$myname$rand(){
-   				 	$.ajax({ url :\"".$CFG_GLPI["root_doc"]."/ajax/dropdownValue.php\", 
-						type: \"POST\",
-						data: 	{ searchText: $(\"#search_$myname$rand\").val(), 
-							value: \"$value\", table: \"$table\",myname: \"$myname\",
-							limit: \"$limit_length\",comments: \"$display_comments\",rand: \"$rand\",
-							entity_restrict: \"$entity_restrict\" },
-						success: function(data){
-								$(\"#search_spinner_$myname$rand\").hide();
-								$(\"#results_$myname$rand\").html(data);
-							},
-						beforeSend: function(){
-							$(\"#search_spinner_$myname$rand\").show();
-						},
-						});
-					}";
-		echo "$(\"#search_$myname$rand\").dblclick(update$myname$rand);";
-		echo "$(\"#search_$myname$rand\").keyup(update$myname$rand);";
-	echo "</script>\n";
-*/
 
-	echo "<script type='text/javascript' >\n";
+	$params=array('searchText'=>'__VALUE__',
+			'value'=>$value,
+			'table'=>$table,
+			'myname'=>$myname,
+			'limit'=>$limit_length,
+			'comments'=>$display_comments,
+			'rand'=>$rand,
+			'entity_restrict'=>$entity_restrict,
+			);
+	ajaxUpdateOnInputTextEvent("search_$myname$rand","results_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownValue.php",$params,"search_spinner_$myname$rand");
+
+/*	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
 	echo "      function(element, value) {\n";
 	echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, \n";
@@ -125,7 +114,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 	echo "           method:'post', parameters:'searchText='+value+'&value=$value&table=$table&myname=$myname&limit=$limit_length&comments=$display_comments&rand=$rand&entity_restrict=$entity_restrict'\n";
 	echo "})})\n";
 	echo "</script>\n";
-
+*/
 	
 
 	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
