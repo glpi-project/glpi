@@ -118,6 +118,9 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
 
 //		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/jquery-latest.pack.js'></script>";
+//		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/jquery.autocomplete.js'></script>";
+//		echo "<link rel='stylesheet' type='text/css' href='".$CFG_GLPI["root_doc"]."/jquery.autocomplete.css' >";
+
 		// Some Javascript-Functions which we may need later
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
 	
