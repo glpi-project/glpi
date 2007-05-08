@@ -34,6 +34,7 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
+
 if(ereg("dropdownValue.php",$_SERVER['PHP_SELF'])){
 	define('GLPI_ROOT','..');
 	$AJAX_INCLUDE=1;
@@ -47,7 +48,6 @@ if (!defined('GLPI_ROOT')){
 	}
 
 checkLoginUser();
-
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	$first=true;
@@ -69,7 +69,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-
+	
 	if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])){
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
@@ -208,11 +208,8 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 if (isset($_POST["comments"])&&$_POST["comments"]){
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('dropdown_".$_POST["myname"].$_POST["rand"]."', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$CFG_GLPI["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           method:'post', parameters:'value='+value+'&table=".$_POST["table"]."'\n";
-	echo "})})\n";
+	$params=array('value'=>'__VALUE__','table'=>$_POST["table"]);
+	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$params,false);
 	echo "</script>\n";
 }
 
