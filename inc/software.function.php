@@ -97,11 +97,10 @@ function showLicenses ($sID,$show_computers=0) {
 				echo "</select>";
 
 				echo "<script type='text/javascript' >\n";
-				echo "   new Form.Element.Observer('update_licenses_choice', 1, \n";
-				echo "      function(element, value) {\n";
-				echo "      	new Ajax.Updater('update_licenses_view','".$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php',{asynchronous:true, evalScripts:true, \n";
-				echo "           method:'post', parameters:'type=' + value+'&sID=$sID'\n";
-				echo "})})\n";
+				$params=array('type'=>'__VALUE__',
+						'sID'=>$sID,
+				);
+				ajaxUpdateItemOnSelectEvent("update_licenses_choice","update_licenses_view",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
 				echo "</script>\n";
 
 				echo "<span id='update_licenses_view'>\n";

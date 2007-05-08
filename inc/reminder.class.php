@@ -192,9 +192,16 @@ class Reminder extends CommonDBTM {
 			if($remind_edit) { 
 				echo "<script type='text/javascript' >\n";
 				echo "function showPlan(){\n";
-				echo "Element.hide('plan');";
-				echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=remind".(($ID&&$this->fields["rv"])?"&state=".$this->fields["state"]."&begin_date=".$this->fields["begin"]."&end_date=".$this->fields["end"]."":"")."'});";
+					echo "document.getElementById('plan').style.display='none';";
+					$params=array('form'=>'remind');
+					if ($ID&&$this->fields["rv"]){
+						$params['state']=$this->fields["state"];
+						$params['begin_date']=$this->fields["begin"];
+						$params['end_date']=$this->fields["end"];
+					}
+					ajaxUpdateItem('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 				echo "}";
+				
 				echo "</script>\n";
 			}
 			

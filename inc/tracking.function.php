@@ -1642,8 +1642,13 @@ function showJobDetails ($target,$ID){
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showName$rand(){\n";
-			echo "Element.hide('name$rand');";
-			echo "var a=new Ajax.Updater('viewname$rand','".$CFG_GLPI["root_doc"]."/ajax/inputtext.php' , {asynchronous:true, evalScripts:true, method: 'post',parameters: 'maxlength=250&size=80&name=name&data=".rawurlencode($job->fields["name"])."'});";
+				echo "document.getElementById('name$rand').style.display='none';";
+				$params=array('maxlength'=>250,
+					'size'=>80,
+					'name'=>'name',
+					'data'=>rawurlencode($job->fields["name"]),
+				);
+				ajaxUpdateItem("viewname$rand",$CFG_GLPI["root_doc"]."/ajax/inputtext.php",$params,false);
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='name$rand' class='div_tracking' onClick='showName$rand()'>\n";
@@ -1672,8 +1677,15 @@ function showJobDetails ($target,$ID){
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
-			echo "Element.hide('desc$rand');";
-			echo "var a=new Ajax.Updater('viewdesc$rand','".$CFG_GLPI["root_doc"]."/ajax/textarea.php' , {asynchronous:true, evalScripts:true, method: 'post',parameters: 'rows=6&cols=60&name=contents&data=".rawurlencode($job->fields["contents"])."'});";
+
+				echo "document.getElementById('desc$rand').style.display='none';";
+				$params=array('rows'=>6,
+					'cols'=>60,
+					'name'=>'contents',
+					'data'=>rawurlencode($job->fields["contents"]),
+				);
+				ajaxUpdateItem("viewdesc$rand",$CFG_GLPI["root_doc"]."/ajax/textarea.php",$params,false);
+
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='desc$rand' class='div_tracking' onClick='showDesc$rand()'>\n";
@@ -1779,13 +1791,24 @@ function showJobDetails ($target,$ID){
 
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
-		echo "Element.hide('plan');";
-		echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&state=1&author=".$job->fields["assign"]."&entity=".$job->fields["FK_entities"]."'});";
+
+			echo "document.getElementById('plan').style.display='none';";
+			$params=array('form'=>'followups',
+				'state'=>1,
+				'author'=>$job->fields["assign"],
+				'entity'=>$job->fields["FK_entities"],
+			);
+			ajaxUpdateItem('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+
 		echo "};";
 		echo "function showAddFollowup(){\n";
-		echo "Element.hide('viewfollowup');";
-		echo "var a=new Ajax.Updater('viewfollowup','".$CFG_GLPI["root_doc"]."/ajax/addfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'tID=$ID'});";
+
+			echo "document.getElementById('viewfollowup').style.display='none';";
+			$params=array('tID'=>$ID,
+			);
+			ajaxUpdateItem('viewfollowup',$CFG_GLPI["root_doc"]."/ajax/addfollowup.php",$params,false);
 		echo "};";
+
 		echo "</script>";
 
 		echo "<div id='viewfollowup'>\n";
@@ -1844,8 +1867,11 @@ function showFollowupsSummary($tID){
 
 			echo "<script type='text/javascript' >\n";
 			echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
-			//			echo "Element.hide('viewfollowup');";
-			echo "var a=new Ajax.Updater('viewfollowup','".$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'ID=".$data["ID"]."'});";
+
+				//echo "document.getElementById('viewfollowup').style.display='none';";
+				$params=array('ID'=>$data["ID"],
+				);
+				ajaxUpdateItem("viewfollowup",$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php",$params,false);
 			echo "};";
 
 			echo "</script>\n";
@@ -1864,15 +1890,24 @@ function showFollowupsSummary($tID){
 			echo "<td>";
 			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 			$result2=$DB->query($query2);
-			if ($DB->numrows($result2)==0)
+			if ($DB->numrows($result2)==0){
 				echo $LANG["job"][32];	
-			else {
+			} else {
 				$data2=$DB->fetch_array($result2);
 				echo "<script type='text/javascript' >\n";
 				echo "function showPlan".$data['ID']."(){\n";
-				echo "Element.hide('plan');";
-				echo "var a=new Ajax.Updater('viewplan','".$CFG_GLPI["root_doc"]."/ajax/planning.php' , {asynchronous:true, evalScripts:true, method: 'get',parameters: 'form=followups&author=".$data2["id_assign"]."&ID=".$data2["ID"]."&state=".$data2["state"]."&begin_date=".$data2["begin"]."&end_date=".$data2["end"]."&entity=".$job->fields["FK_entities"]."'});";
-				echo "}";
+
+					echo "document.getElementById('plan').style.display='none';";
+					$params=array('form'=>'followups',
+						'author'=>$data2["id_assign"],
+						'ID'=>$data2["ID"],
+						'state'=>$data2["state"],
+						'begin_date'=>$data2["begin"],
+						'end_date'=>$data2["end"],
+						'entity'=>$job->fields["FK_entities"],
+						);
+					ajaxUpdateItem('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+					echo "}";
 				echo "</script>\n";
 
 				echo getPlanningState($data2["state"])."<br>".convDateTime($data2["begin"])."<br>->".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);

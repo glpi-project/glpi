@@ -42,8 +42,8 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 	
-	if (isset($_GET["ID"])){
-		showUpdateFollowupForm($_GET["ID"]);
+	if (isset($_POST["ID"])){
+		showUpdateFollowupForm($_POST["ID"]);
 	}
 
 ?>
