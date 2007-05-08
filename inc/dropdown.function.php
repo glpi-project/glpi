@@ -919,20 +919,15 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 				echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$LANG["help"][35]."</option>\n";
 			echo "</select>\n";
 
+			$params=array('type'=>'__VALUE__',
+					'entity_restrict'=>$entity_restrict,
+					'admin'=>$admin,
+					'myname'=>"computer",
+					);
+
 			echo "<script type='text/javascript' >\n";
-			echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-			echo "      function(element, value) {\n";
-			echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php',{asynchronous:true, evalScripts:true, \n";
-			echo "           onComplete:function(request)\n";
-			echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-			echo "           onLoading:function(request)\n";
-			echo "            {Element.show('search_spinner_$myname$rand');},\n";
-			echo "           method:'post', parameters:'type=' + value+'&myname=computer&entity_restrict=$entity_restrict&admin=$admin'\n";
-			echo "})})\n";
+			ajaxUpdateItemOnSelectEvent("search_$myname$rand","results_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",$params);
 			echo "</script>\n";
-
-
-			echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 			echo "<span id='results_$myname$rand'>\n";
 
@@ -972,43 +967,29 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 
 	$rand=mt_rand();
 
-	ajaxDisplaySearchTextForDropdown($myname.$rand);
-
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownConnect.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&fromtype=$fromtype&idtable=$type&myname=$myname&onlyglobal=$onlyglobal&entity_restrict=$entity_restrict'\n";
-	echo "})})\n";
-	echo "</script>\n";
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>\n";
-
-	$nb=0;
+	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
+		$nb=0;
 		if ($entity_restrict>=0){
 			$nb=countElementsInTableForEntity($LINK_ID_TABLE[$type],$entity_restrict);
 		} else {
 			$nb=countElementsInTableForMyEntities($LINK_ID_TABLE[$type]);
 		}
+		if ($nb>$CFG_GLPI["ajax_limit_count"]){
+			$use_ajax=true;
+		}
 	}
 
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		echo "<script type='text/javascript' >\n";
-		echo "Element.hide('search_spinner_$myname$rand');";
-		echo "Element.hide('search_$myname$rand');";
-		echo "document.getElementById('search_$myname$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
-		echo "</script>\n";
-	}
-
-
-	echo "<span id='results_$myname$rand'>\n";
-	echo "<select name='$myname'><option value='0'>------</option></select>\n";
-	echo "</span>\n";	
+        $params=array('searchText'=>'__VALUE__',
+                        'fromtype'=>$fromtype,
+                        'idtable'=>$type,
+                        'myname'=>$myname,
+                        'onlyglobal'=>$onlyglobal,
+                        'entity_restrict'=>$entity_restrict,
+                        );
+	
+	$default="<select name='$myname'><option value='0'>------</option></select>\n";
+	ajaxDropdown($use_ajax,"/ajax/dropdownConnect.php",$params,$default,$rand);
 
 	return $rand;
 }
@@ -1039,19 +1020,16 @@ function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
 	echo "</select>\n";
 
 
+	$params=array('type'=>'__VALUE__',
+			'entity_restrict'=>$entity_restrict,
+			'current'=>$ID,
+			'myname'=>$myname,
+			);
+
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('item_type$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php',{asynchronous:true, evalScripts:true, \n";	
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');Element.hide('not_connected_display$ID');},\n";
-	echo "           method:'post', parameters:'current=$ID&type='+value+'&myname=$myname&entity_restrict=$entity_restrict'\n";
-	echo "})})\n";
+	ajaxUpdateItemOnSelectEvent("item_type$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php",$params);
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 
 	return $rand;
@@ -1089,20 +1067,15 @@ function dropdownDocument($myname,$entity_restrict=-1) {
 	}
 	echo "</select>\n";
 
+	$params=array('rubdoc'=>'__VALUE__',
+			'entity_restrict'=>$entity_restrict,
+			'rand'=>$rand,
+			'myname'=>$myname,
+			);
 
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('rubdoc', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownDocument.php',{asynchronous:true, evalScripts:true, \n";	
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'rand=$rand&entity_restrict=$entity_restrict&rubdoc='+value+'&myname=$myname'\n";
-	echo "})})\n";
+	ajaxUpdateItemOnSelectEvent("rubdoc","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownDocument.php",$params);
 	echo "</script>\n";
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 
 	echo "<span id='show_$myname$rand'>";
 	$_POST["entity_restrict"]=$entity_restrict;
@@ -1130,42 +1103,24 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massi
 
 	$rand=mt_rand();
 
-	ajaxDisplaySearchTextForDropdown($myname.$rand);
-
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownSelectSoftware.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchSoft=' + value+'&myname=$myname&withtemplate=$withtemplate&massiveaction=$massiveaction&entity_restrict=$entity_restrict'\n";
-	echo "})})\n";
-	echo "</script>\n";
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>\n";
-
-
-	$nb=0;
+	$use_ajax=false;
 
 	if ($CFG_GLPI["use_ajax"]){
-		$nb=countElementsInTableForEntity("glpi_software",$entity_restrict);
-	}
-
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		echo "<script type='text/javascript' >\n";
-		echo "Element.hide('search_spinner_$myname$rand');";
-		echo "Element.hide('search_$myname$rand');";
-		echo "document.getElementById('search_$myname$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
-		echo "</script>\n";
+		if(countElementsInTableForEntity("glpi_software",$entity_restrict)>$CFG_GLPI["ajax_limit_count"]){
+			$use_ajax=true;
+		}
 	}
 
 
-	echo "<span id='results_$myname$rand'>\n";
-	echo "<select name='$myname'><option value='0'>------</option></select>\n";
-	echo "</span>\n";	
-
+        $params=array('searchText'=>'__VALUE__',
+                        'withtemplate'=>$withtemplate,
+                        'massiveaction'=>$massiveaction,
+                        'myname'=>$myname,
+                        'entity_restrict'=>$entity_restrict,
+                        );
+	
+	$default="<select name='$myname'><option value='0'>------</option></select>\n";
+	ajaxDropdown($use_ajax,"/ajax/dropdownSelectSoftware.php",$params,$default,$rand);
 
 	return $rand;
 }
@@ -1243,20 +1198,15 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<option value=\"".POWER_DEVICE."\">".getDictDeviceLabel(POWER_DEVICE)."</option>";
 		echo "</select>";
 
+		$params=array('idtable'=>'__VALUE__',
+				'myname'=>'new_device_id',
+				);
+	
 		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('device$rand', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('showdevice$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownDevice.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
-		echo "            {Element.hide('search_spinner_device$rand');}, \n";
-		echo "           onLoading:function(request)\n";
-		echo "            {Element.show('search_spinner_device$rand');},\n";
-		echo "           method:'post', parameters:'idtable='+value+'&myname=new_device_id'\n";
-		echo "})})\n";
+		ajaxUpdateItemOnSelectEvent("device$rand","showdevice$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownDevice.php",$params);
 		echo "</script>\n";
 
-		echo "<div id='search_spinner_device$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 		echo "<span id='showdevice$rand'>&nbsp;</span>\n";
-
 
 		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
@@ -1320,18 +1270,15 @@ function dropdownMassiveAction($device_type,$deleted=0){
 	}
 	echo "</select>";
 
+	$params=array('action'=>'__VALUE__',
+			'deleted'=>$deleted,
+			'type'=>$device_type,
+			);
+	
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('massiveaction', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_massiveaction','".$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_massiveaction');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_massiveaction');},\n";
-	echo "           method:'post', parameters:'deleted=$deleted&action='+value+'&type=$device_type'\n";
-	echo "})})\n";
+	ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",$params);
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 
@@ -1346,18 +1293,14 @@ function dropdownMassiveActionPorts(){
 	echo "<option value=\"unassign_vlan\">".$LANG["networking"][58]."</option>";
 	echo "</select>";
 
+
+	$params=array('action'=>'__VALUE__',
+			);
+	
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('massiveaction', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('show_massiveaction','".$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_massiveaction');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_massiveaction');},\n";
-	echo "           method:'post', parameters:'action='+value\n";
-	echo "})})\n";
+	ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",$params);
 	echo "</script>\n";
 
-	echo "<div id='search_spinner_massiveaction' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 

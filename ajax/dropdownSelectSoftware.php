@@ -34,13 +34,14 @@
 // ----------------------------------------------------------------------
 
 
-define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
-$NEEDED_ITEMS=array("software");
-include (GLPI_ROOT."/inc/includes.php");
+if(ereg("dropdownSelectSoftware.php",$_SERVER['PHP_SELF'])){
+	define('GLPI_ROOT','..');
+	$AJAX_INCLUDE=1;
+	include (GLPI_ROOT."/inc/includes.php");
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+};
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
 checkRight("software","w");
 
@@ -49,8 +50,8 @@ checkRight("software","w");
 $rand=mt_rand();
 
 $where="";	
-if (strlen($_POST['searchSoft'])>0&&$_POST['searchSoft']!=$CFG_GLPI["ajax_wildcard"])
-	$where.=" AND name ".makeTextSearch($_POST['searchSoft'])." ";
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
+	$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
 
 $where.=" AND FK_entities='".$_POST["entity_restrict"]."' ";
 
