@@ -736,7 +736,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// Specific search for others item linked  (META search)
 	if (is_array($type2))
 		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++)
-			if (isset($type2[$key])&&isset($contains2[$key])&&strlen($contains2[$key]))
+			if (isset($type2[$key])&&$type2[$key]>0&&isset($contains2[$key])&&strlen($contains2[$key]))
 			{
 				$LINK="";
 				if (isset($link2[$key])) $LINK=$link2[$key];
