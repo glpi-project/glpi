@@ -50,7 +50,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$rand=mt_rand();
 
 
-	displaySearchTextAjaxDropdown($rand);
+	ajaxDisplaySearchTextForDropdown($rand);
 
 	echo "<script type='text/javascript' >\n";
 	echo " new Form.Element.Observer('search_$rand', 1, \n";

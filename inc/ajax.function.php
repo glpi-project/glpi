@@ -28,23 +28,84 @@
  --------------------------------------------------------------------------
  */
 
-function ajaxUpdateOnInputTextEvent($inputtexttoobserve,$toupdate,$url,$parameters=array(),$search_spinner=""){
+function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$rand=0){
+	global $CFG_GLPI,$DB;
+	
+	if ($rand==0){
+		$rand=mt_rand();
+	}
+	if ($use_ajax){
+		
+		ajaxDisplaySearchTextForDropdown($rand);
+		echo "<script type='text/javascript' >\n";
+		ajaxUpdateItemOnInputTextEvent("search_$rand","results_$rand",$CFG_GLPI["root_doc"].$relativeurl,$params);
+		echo "</script>\n";
+	}
+	echo "<span id='results_$rand'>\n";
+		if (!$use_ajax){
+			$_POST=$params;
+			$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
+			include (GLPI_ROOT.$relativeurl);
+		} else {
+			echo ereg_replace("__RAND__",$rand,$default);
+		}
+	echo "</span>\n";
+	return $rand;
+}
 
+function ajaxDisplaySearchTextForDropdown($id,$size=4){
+	global $CFG_GLPI;
+	echo "<input type='text' ondblclick=\"document.getElementById('search_$id').value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+
+}
+
+function ajaxUpdateItemOnInputTextEvent($toobserve,$toupdate,$url,$parameters=array(),$spinner=true){
+	ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters,array("dblclick","keyup"),$spinner);
+}
+
+function ajaxUpdateItemOnSelectEvent($toobserve,$toupdate,$url,$parameters=array(),$spinner=true){
+	ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters,array("change"),$spinner);
+}
+
+
+function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$events=array("change"),$spinner=true){
+	global $CFG_GLPI;
 
 	// Prototype
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('$inputtexttoobserve', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('$toupdate','$url',{asynchronous:true, evalScripts:true, \n";
-	if (!empty($search_spinner)){
-		echo "           onComplete:function(request)\n";
-		echo "            {Element.hide('$search_spinner');}, \n";
-		echo "           onLoading:function(request)\n";
-		echo "            {Element.show('$search_spinner');},\n";
+	foreach ($events as $evt){
+		echo "$('$toobserve').observe('$evt', function(event){\n";
+			ajaxUpdateItem($toupdate,$url,$parameters,$spinner,$toobserve);
+		echo "});\n";
+ 	}
+
+	// JQUERY
+/*
+		echo "function update$toupdate(){\n";
+		ajaxUpdateItem($toupdate,$url,$parameters,$spinner,$toobserve);
+		echo "};";
+		foreach ($events as $evt){
+			echo "$(\"#$toobserve\").$evt(update$toupdate);\n";
+		}
+*/
+	if ($spinner){
+		echo "<div id='spinner_$toobserve' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 	}
-	echo "           method:'post'";
+	
+}
+
+function ajaxUpdateItem($toupdate,$url,$parameters=array(),$spinner=true,$toobserve=""){
+	global $CFG_GLPI;
+
+	// Prototype
+	echo "new Ajax.Updater('$toupdate', '$url', {asynchronous:true, evalScripts:true, method:'post', ";
+		if ($spinner){
+		echo "           onComplete:function(request)\n";
+		echo "            {Element.hide('spinner_$toupdate');}, \n";
+		echo "           onLoading:function(request)\n";
+		echo "            {Element.show('spinner_$toupdate');},\n";
+	}
 	if (count($parameters)){
-		echo ", parameters:'";
+		echo "parameters:'";
 		$first=true;
 		foreach ($parameters as $key => $val){
 			if ($first){
@@ -53,51 +114,51 @@ function ajaxUpdateOnInputTextEvent($inputtexttoobserve,$toupdate,$url,$paramete
 				echo "&";
 			}
 			echo $key."=";
-			if ($val=="__VALUE__"){
-				echo "'+value+'";
+			if ($val==="__VALUE__"){
+				echo "'+\$F('$toobserve')+'";
 			} else {
 				echo $val;
 			}
+
 		}
 		echo "'";
 	}
-	echo "})})\n";
-	echo "</script>\n";
+	echo "});";
 
 	// JQUERY
-/*	echo "<script type='text/javascript' >\n";
-		echo "function update$toupdate(){\n";
-		echo "$.ajax({ url :\"$url\", \n";
+/*
+		echo "$.ajax({ url : \"$url\", \n";
 		echo "type: \"POST\",\n";
 		echo "success: function(data){\n";
-			if (!empty($search_spinner)){
-				echo "$(\"#$search_spinner\").hide();\n";
+			if ($spinner){
+				echo "$(\"#spinner_$toupdate\").hide();\n";
 			}
 			echo "$(\"#$toupdate\").html(data);\n";
 		echo "},\n";
-		if (!empty($search_spinner)){
+		if ($spinner){
 			echo "beforeSend: function(){\n";
-			echo "$(\"#$search_spinner\").show();\n";
+			echo "$(\"#spinner_$toupdate\").show();\n";
 			echo "},\n";
 		}
 		if (count($parameters)){
 			echo "data: 	{\n";
 			foreach ($parameters as $key => $val){
 				echo "$key: ";
-				if ($val=="__VALUE__"){
-					echo "$(\"#$inputtexttoobserve\").val()";
-				} else {
-					echo "\"".$val."\"";
-				}
+				 if ($val==="__VALUE__"){
+                                        echo "$(\"#$toobserve\").val()";
+                                } else {
+                                        echo "\"".$val."\"";
+                                }
 				echo ",\n";
 			}
 			echo "}";
 		}
-		echo "})};";
-		echo "$(\"#$inputtexttoobserve\").dblclick(update$toupdate);\n";
-		echo "$(\"#$inputtexttoobserve\").keyup(update$toupdate);\n";
-	echo "</script>\n";
+		echo "});";
 */
-	
+	if ($spinner){
+		echo "<div id='spinner_$toupdate' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+	}
+
 }
+
 ?>

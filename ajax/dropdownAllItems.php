@@ -56,7 +56,7 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 
 	$rand=mt_rand();
 
-	displaySearchTextAjaxDropdown($_POST['myname'].$rand);
+	ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand);
 
 	$moreparam="";
 	if(isset($_POST['value'])) $moreparam.="&value=".$_POST['value'];

@@ -77,7 +77,6 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 
 	$rand=mt_rand();
 
-	displaySearchTextAjaxDropdown($myname.$rand);
 	$name="------";
 	$comments="";
 	$limit_length=$CFG_GLPI["dropdown_limit"];
@@ -91,36 +90,9 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 		}
 	}
 
-
-	$params=array('searchText'=>'__VALUE__',
-			'value'=>$value,
-			'table'=>$table,
-			'myname'=>$myname,
-			'limit'=>$limit_length,
-			'comments'=>$display_comments,
-			'rand'=>$rand,
-			'entity_restrict'=>$entity_restrict,
-			);
-	ajaxUpdateOnInputTextEvent("search_$myname$rand","results_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownValue.php",$params,"search_spinner_$myname$rand");
-
-/*	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownValue.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText='+value+'&value=$value&table=$table&myname=$myname&limit=$limit_length&comments=$display_comments&rand=$rand&entity_restrict=$entity_restrict'\n";
-	echo "})})\n";
-	echo "</script>\n";
-*/
-	
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-
-	$nb=0;
+	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
+		$nb=0;
 		if (!in_array($table,$CFG_GLPI["specif_entities_tables"])){
 			$nb=countElementsInTable($table);
 		} else {
@@ -130,31 +102,25 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 				$nb=countElementsInTableForMyEntities($table);
 			}
 		}
+		if ($nb>$CFG_GLPI["ajax_limit_count"]){
+			$use_ajax=true;
+		}
 	}
+	
+        $params=array('searchText'=>'__VALUE__',
+                        'value'=>$value,
+                        'table'=>$table,
+                        'myname'=>$myname,
+                        'limit'=>$limit_length,
+                        'comments'=>$display_comments,
+                        'rand'=>$rand,
+                        'entity_restrict'=>$entity_restrict,
+                        );
+	
+	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";
+	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
 
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		echo "<script type='text/javascript' >\n";
-		echo "Element.hide('search_spinner_$myname$rand');";
-		echo "Element.hide('search_$myname$rand');";
-		echo "</script>\n";
-	}
-
-	echo "<span id='results_$myname$rand'>\n";
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		$_POST["myname"]=$myname;
-		$_POST["table"]=$table;
-		$_POST["value"]=$value;
-		$_POST["rand"]=$rand;
-		$_POST["comments"]=$display_comments;
-		$_POST["entity_restrict"]=$entity_restrict;
-		$_POST["limit"]=$limit_length;
-		$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
-		include (GLPI_ROOT."/ajax/dropdownValue.php");
-	} else {
-		echo "<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";
-	}
-	echo "</span>\n";	
-
+	// Display comments
 	$comments_display="";
 	$comments_display2="";
 	if ($display_comments) {
@@ -174,10 +140,6 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 		}
 
 		if ($dropdown_right){
-
-//			$search=array("/glpi_dropdown_/","/glpi_type_/");
-//			$replace=array("","");
-//			$which=preg_replace($search,$replace,$table);
 			$which=$table;
 		}
 	}
@@ -188,7 +150,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 		echo ">";
 		echo $comments_display2;
 	}
-
+	// Display specific Links
 	if ($table=="glpi_enterprises"){
 		echo getEnterpriseLinks($value);	
 	}
@@ -215,7 +177,6 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 
 	$rand=mt_rand();
 
-	displaySearchTextAjaxDropdown($myname.$rand);
 	$name="------";
 	$comments="";
 	$limit_length=$CFG_GLPI["dropdown_limit"];
@@ -228,47 +189,29 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 			$limit_length=max(strlen($name),$CFG_GLPI["dropdown_limit"]);
 		}
 	}
-
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownNetpoint.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText='+value+'&value=$value&myname=$myname&limit=$limit_length&comments=$display_comments&rand=$rand&location=$location&entity_restrict=$entity_restrict'\n";
-	echo "})})\n";
-	echo "</script>\n";
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-
-	$nb=0;
+	
+	$use_ajax=false;	
 	if ($CFG_GLPI["use_ajax"]){
 		$nb=countElementsInTableForEntity("glpi_dropdown_netpoint",$entity_restrict);
-	}
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		echo "<script type='text/javascript' >\n";
-		echo "Element.hide('search_spinner_$myname$rand');";
-		echo "Element.hide('search_$myname$rand');";
-		echo "</script>\n";
+		if ($nb>$CFG_GLPI["ajax_limit_count"]){
+			$use_ajax=true;
+		}
 	}
 
-	echo "<span id='results_$myname$rand'>\n";
+	$params=array('searchText'=>'__VALUE__',
+			'value'=>$value,
+			'location'=>$location,
+			'myname'=>$myname,
+			'limit'=>$limit_length,
+			'comments'=>$display_comments,
+			'rand'=>$rand,
+			'entity_restrict'=>$entity_restrict,
+			);
 
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		$_POST["myname"]=$myname;
-		$_POST["value"]=$value;
-		$_POST["rand"]=$rand;
-		$_POST["comments"]=$display_comments;
-		$_POST["entity_restrict"]=$entity_restrict;
-		$_POST["limit"]=$limit_length;
-		$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
-		include (GLPI_ROOT."/ajax/dropdownNetpoint.php");
-	} else {
-		echo "<select name='$myname'><option value='$value'>$name</option></select>\n";
-	}
-	echo "</span>\n";	
+	$default="<select name='$myname'><option value='$value'>$name</option></select>\n";
+	ajaxDropdown($use_ajax,"/ajax/dropdownNetpoint.php",$params,$default,$rand);
+
+	// Display comments 
 
 	$comments_display="";
 	$comments_display2="";
@@ -365,72 +308,52 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	$rand=mt_rand();
 
-	displaySearchTextAjaxDropdown($myname.$rand);
-	
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownUsers.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&myname=$myname&all=$all&right=$right&comments=$display_comments&rand=$rand&helpdesk_ajax=$helpdesk_ajax&entity_restrict=$entity_restrict'\n";
-	echo "})})\n";
-	echo "</script>\n";
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-
-	$nb=0;
-	if ($CFG_GLPI["use_ajax"])
-		$nb=countElementsInTable("glpi_users");
-
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		echo "<script type='text/javascript' >\n";
-		echo "Element.hide('search_spinner_$myname$rand');";
-		echo "Element.hide('search_$myname$rand');";
-		//echo "document.getElementById('search_$myname$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
-		echo "</script>\n";
+	$use_ajax=false;
+	if ($CFG_GLPI["use_ajax"]){
+		if (countElementsInTable("glpi_users")>$CFG_GLPI["ajax_limit_count"]){
+			$use_ajax=true;
+		}
 	}
-
-	$default_display="";
-	$comments_display="";
-
 	$user=getUserName($value,2);
+	$default_display="";
 
 	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
+
+
+	$params=array('searchText'=>'__VALUE__',
+			'value'=>$value,
+			'myname'=>$myname,
+			'all'=>$all,
+			'right'=>$right,
+			'comments'=>$display_comments,
+			'rand'=>$rand,
+			'helpdesk_ajax'=>$helpdesk_ajax,
+			'entity_restrict'=>$entity_restrict,
+			);
+
+	$default="";
+	if (!empty($value)&&$value>0){
+		$default=$default_display;
+	} else {
+		if ($all){
+			$default="<select name='$myname'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
+		} else {
+			$default="<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+		}
+	}
+
+	ajaxDropdown($use_ajax,"/ajax/dropdownUsers.php",$params,$default,$rand);
+
+	// Display comments
+
+	$comments_display="";
+
 	if ($display_comments) {
 		$comments_display="<a href='".$user["link"]."'>";
 		$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
 		$comments_display.="</a>";
 		$comments_display.="<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
 	}
-
-	echo "<span id='results_$myname$rand'>\n";
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		$_POST["myname"]=$myname;
-		$_POST["all"]=$all;
-		$_POST["value"]=$value;
-		$_POST["right"]=$right;
-		$_POST["rand"]=$rand;
-		$_POST["comments"]=$display_comments;
-		$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
-		$_POST["helpdesk_ajax"]=$helpdesk_ajax;
-		$_POST["entity_restrict"]=$entity_restrict;	
-
-		include (GLPI_ROOT."/ajax/dropdownUsers.php");
-	} else {
-		if (!empty($value)&&$value>0){
-			echo $default_display;
-		} else {
-			if ($all)
-				echo "<select name='$myname'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
-			else 
-				echo "<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
-		}
-	}
-
-	echo "</span>\n";
 
 	echo $comments_display;
 
@@ -563,66 +486,46 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 
 	$rand=mt_rand();
 
-	displaySearchTextAjaxDropdown($myname.$rand);
-
-	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownUsersTracking.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$myname$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&value=$value&field=$field&myname=$myname&comments=$display_comments&rand=$rand'\n";
-	echo "})})\n";
-	echo "</script>\n";
-
-	echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-
-	$nb=0;
+	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
-		$query="SELECT COUNT(".$field.") FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
-		$result=$DB->query($query);
-		$nb=$DB->result($result,0,0);
+		if ($CFG_GLPI["ajax_limit_count"]==0){
+			$use_ajax=true;
+		} else {
+			$query="SELECT COUNT(".$field.") FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
+			$result=$DB->query($query);
+			$nb=$DB->result($result,0,0);
+			if ($nb>$CFG_GLPI["ajax_limit_count"]){
+				$use_ajax=true;
+			}
+		}
 	}
 
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		echo "<script type='text/javascript' >\n";
-		echo "Element.hide('search_spinner_$myname$rand');";
-		echo "Element.hide('search_$myname$rand');";
-		echo "</script>\n";
-	}
-
-	$default_display="";
-	$comments_display="";
+	$default="";
 	$user=getUserName($value,2);
-	$default_display="<select name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
+	$default="<select name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
+	if (empty($value)||$value==0){
+			$default= "<select name='$myname'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
+	}
+
+	$params=array('searchText'=>'__VALUE__',
+			'value'=>$value,
+			'field'=>$field,
+			'myname'=>$myname,
+			'comments'=>$display_comments,
+			'rand'=>$rand
+			);
+
+	ajaxDropdown($use_ajax,"/ajax/dropdownUsersTracking.php",$params,$default,$rand);
+
+	// Display comments 
+
+	$comments_display="";
 	if ($display_comments) {
 		$comments_display="<a href='".$user["link"]."'>";
 		$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
 		$comments_display.="</a>";
 		$comments_display.="<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
 	}
-
-
-	echo "<span id='results_$myname$rand'>\n";
-	if (!$CFG_GLPI["use_ajax"]||$nb<$CFG_GLPI["ajax_limit_count"]){
-		$_POST["myname"]=$myname;
-		$_POST["value"]=$value;
-		$_POST["field"]=$field;
-		$_POST["rand"]=$rand;
-		$_POST["comments"]=$display_comments;
-		$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
-		include (GLPI_ROOT."/ajax/dropdownUsersTracking.php");
-
-	}else {
-		if (!empty($value)&&$value>0){
-			echo $default_display;
-		} else {
-			echo "<select name='$myname'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
-		}
-	}
-	echo "</span>\n";	
 
 	echo $comments_display;	
 
@@ -736,27 +639,24 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 			echo "<option value='".$key."'>".$val."</option>\n";
 		}
 		echo "</select>";
-	
+			$params=array('idtable'=>'__VALUE__',
+			'value'=>$value,
+			'myname'=>$myname,
+			'entity_restrict'=>$entity_restrict,
+			);
 		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('item_type$rand', 1, \n";
-		echo "      function(element, value) {\n";
-		echo "      	new Ajax.Updater('show_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
-		echo "            {Element.hide('search_spinner_$myname$rand');}, \n";
-		echo "           onLoading:function(request)\n";
-		echo "            {Element.show('search_spinner_$myname$rand');},\n";
-		echo "           method:'post', parameters:'idtable='+value+'&myname=$myname&value=$value&entity_restrict=$entity_restrict'\n";
-		echo "})})\n";
+		ajaxUpdateItemOnSelectEvent("item_type$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
 		echo "</script>\n";
-	
-		echo "<div id='search_spinner_$myname$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+
 		echo "</td><td>\n"	;
 		echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 		echo "</td></tr></table>\n";
-	
+
 		if ($value>0){
 			echo "<script type='text/javascript' >\n";
-			echo "Element.hide('search_spinner_$myname$rand');";
 			echo "document.getElementById('item_type$rand').value='".$value_type."';";
+			$params["idtable"]=$value_type;
+			ajaxUpdateItem("show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
 			echo "</script>\n";
 		}
 	}
@@ -1072,7 +972,7 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 
 	$rand=mt_rand();
 
-	displaySearchTextAjaxDropdown($myname.$rand);
+	ajaxDisplaySearchTextForDropdown($myname.$rand);
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -1230,7 +1130,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massi
 
 	$rand=mt_rand();
 
-	displaySearchTextAjaxDropdown($myname.$rand);
+	ajaxDisplaySearchTextForDropdown($myname.$rand);
 
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('search_$myname$rand', 1, \n";
@@ -1366,13 +1266,6 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "</td>";
 		echo "</tr></table>";
 	}
-}
-
-
-function displaySearchTextAjaxDropdown($id,$size=4){
-	global $CFG_GLPI;
-	echo "<input type='text' ondblclick=\"document.getElementById('search_$id').value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
-
 }
 
 function dropdownMassiveAction($device_type,$deleted=0){
