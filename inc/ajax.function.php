@@ -28,6 +28,15 @@
  --------------------------------------------------------------------------
  */
 
+/**
+ * Complete Dropdown system using ajax to get datas
+ *
+ * @param $use_ajax Use ajax search system (if not display a standard dropdown)
+ * @param $relativeurl Relative URL to the root directory of GLPI
+ * @param $params Parameters to send to ajax URL
+ * @param $default Default datas t print in case of $use_ajax
+ * @param $rand Random parameter used
+ **/
 function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$rand=0){
 	global $CFG_GLPI,$DB;
 	
@@ -50,7 +59,6 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 			echo ereg_replace("__RAND__",$rand,$default);
 		}
 	echo "</span>\n";
-	return $rand;
 }
 
 function ajaxDisplaySearchTextForDropdown($id,$size=4){
@@ -59,15 +67,42 @@ function ajaxDisplaySearchTextForDropdown($id,$size=4){
 
 }
 
+/**
+ * Javascript code for update an item when a Input text item changed
+ *
+ * @param $toobserve id of the Input text to observe
+ * @param $toupdate id of the item to update
+ * @param $url Url to get datas to update the item
+ * @param $parameters Parameters to send to ajax URL
+ * @param $spinner is a spinner displayed when loading ?
+ **/
 function ajaxUpdateItemOnInputTextEvent($toobserve,$toupdate,$url,$parameters=array(),$spinner=true){
 	ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters,array("dblclick","keyup"),$spinner);
 }
 
+/**
+ * Javascript code for update an item when a select item changed
+ *
+ * @param $toobserve id of the select to observe
+ * @param $toupdate id of the item to update
+ * @param $url Url to get datas to update the item
+ * @param $parameters Parameters to send to ajax URL
+ * @param $spinner is a spinner displayed when loading ?
+ **/
 function ajaxUpdateItemOnSelectEvent($toobserve,$toupdate,$url,$parameters=array(),$spinner=true){
 	ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters,array("change"),$spinner);
 }
 
-
+/**
+ * Javascript code for update an item when another item changed
+ *
+ * @param $toobserve id of the select to observe
+ * @param $toupdate id of the item to update
+ * @param $url Url to get datas to update the item
+ * @param $parameters Parameters to send to ajax URL
+ * @param $events array of the observed events 
+ * @param $spinner is a spinner displayed when loading ?
+ **/
 function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$events=array("change"),$spinner=true){
 	global $CFG_GLPI;
 
@@ -93,6 +128,15 @@ function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$ev
 	
 }
 
+/**
+ * Javascript code for update an item
+ *
+ * @param $toupdate id of the item to update
+ * @param $url Url to get datas to update the item
+ * @param $parameters Parameters to send to ajax URL
+ * @param $spinner is a spinner displayed when loading ?
+ * @param $toobserve id of another item used to get value in case of __VALUE__ used
+ **/
 function ajaxUpdateItem($toupdate,$url,$parameters=array(),$spinner=true,$toobserve=""){
 	global $CFG_GLPI;
 
