@@ -452,6 +452,8 @@ function update0681to07() {
 								KEY `name` (`name`)
 								) ENGINE=MyISAM ;";
 		$DB->query($query) or die("0.7 add dropdown_manufacturer table " . $LANG["update"][90] . $DB->error());
+	}
+	if (countElementsInTable("glpi_dropdown_manufacturer")==0){
 
 		// Fill table
 		$query = "SELECT * FROM glpi_enterprises ORDER BY ID";
