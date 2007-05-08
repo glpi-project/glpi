@@ -65,7 +65,7 @@ if ($DB->numrows($result))
 		$sID = $data["ID"];
 
 		if (empty($withtemplate)||isGlobalSoftware($sID)||isFreeSoftware($sID)){
-			$output=$data["name"]." (v. ".$data["version"].")";
+			$output=$data["name"];
 			echo  "<option value='$sID' title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 		}
 	}	
@@ -73,17 +73,15 @@ echo "</select>\n";
 
 
 echo "<script type='text/javascript' >\n";
-echo "   new Form.Element.Observer('item_type$rand', 1, \n";
-echo "      function(element, value) {\n";
-echo "      	new Ajax.Updater('show_".$_POST["myname"]."$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownInstallLicense.php',{asynchronous:true, evalScripts:true, \n";	echo "           onComplete:function(request)\n";
-echo "            {Element.hide('search_spinner_".$_POST["myname"]."$rand');}, \n";
-echo "           onLoading:function(request)\n";
-echo "            {Element.show('search_spinner_".$_POST["myname"]."$rand');},\n";
-echo "           method:'post', parameters:'sID='+value+'&myname=".$_POST["myname"]."&massiveaction=".$_POST["massiveaction"]."'\n";
-echo "})})\n";
+$params=array('sID'=>'__VALUE__',
+		'myname'=>$_POST["myname"],
+		'massiveaction'=>$_POST["massiveaction"],
+);
+ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"]."/ajax/dropdownInstallLicense.php",$params,false);
 echo "</script>\n";
 
-echo "<div id='search_spinner_".$_POST["myname"]."$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";	
 
 ?>
+
+	

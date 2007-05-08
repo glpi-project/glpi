@@ -639,7 +639,8 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 			echo "<option value='".$key."'>".$val."</option>\n";
 		}
 		echo "</select>";
-			$params=array('idtable'=>'__VALUE__',
+
+		$params=array('idtable'=>'__VALUE__',
 			'value'=>$value,
 			'myname'=>$myname,
 			'entity_restrict'=>$entity_restrict,

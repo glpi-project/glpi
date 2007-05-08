@@ -54,27 +54,24 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiact
 	}
 	$rand=mt_rand();
 
-	echo "<input id='search_".$_POST['myname']."$rand' name='____data_".$_POST['myname']."$rand' size='15'></div>";	
+	ajaxDisplaySearchTextForDropdown($_POST['myname'].$rand,15);
+	echo "</div>";
 	if (isset($_POST["admin"])&$_POST["admin"]==1){
 		echo "<br>";
 	}
 
-	echo "<script type='text/javascript' >";
-	echo "   new Form.Element.Observer('search_".$_POST['myname']."$rand', 1, ";
-	echo "      function(element, value) {";
-	echo "      	new Ajax.Updater('results_ID$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php',{asynchronous:true, evalScripts:true, ";
-	echo "           onComplete:function(request)";
-	echo "            {Element.hide('search_spinner$rand');}, ";
-	echo "           onLoading:function(request)";
-	echo "            {Element.show('search_spinner$rand');},";
-	echo "           method:'post', parameters:'searchText=' + value+'&table=$table&myname=".$_POST['myname']."&entity_restrict=".$_POST['entity_restrict']."'";
-	echo "})})";
-	echo "</script>";	
-
-	echo "<div id='search_spinner$rand' style=' position:absolute; background-color:white;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>";	
+	echo "<script type='text/javascript' >\n";
+	$params=array('searchText'=>'__VALUE__',
+			'myname'=>$_POST["myname"],
+			'table'=>$table,
+			'entity_restrict'=>$_POST['entity_restrict'],
+	);
+	ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand,"results_ID$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",$params,false);
+	echo "</script>\n";
 
 	echo "<span id='results_ID$rand'>";
 	echo "<select name='ID'><option value='0'>------</option></select>";
 	echo "</span>";	
 }		
 ?>
+

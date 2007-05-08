@@ -49,29 +49,21 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 
 	$rand=mt_rand();
 
+	$use_ajax=true;
 
-	ajaxDisplaySearchTextForDropdown($rand);
 
-	echo "<script type='text/javascript' >\n";
-	echo " new Form.Element.Observer('search_$rand', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('results_$rand','".$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDevice.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           onComplete:function(request)\n";
-	echo "            {Element.hide('search_spinner_$rand');}, \n";
-	echo "           onLoading:function(request)\n";
-	echo "            {Element.show('search_spinner_$rand');},\n";
-	echo "           method:'post', parameters:'searchText=' + value+'&type=".$_POST['type']."&myname=".$_POST['myname']."&current=".$_POST['current']."&entity_restrict=".$_POST['entity_restrict']."'\n";
-	echo "})});\n";
+        $params=array('searchText'=>'__VALUE__',
+                        'type'=>$_POST['type'],
+                        'current'=>$_POST['current'],
+                        'myname'=>$_POST["myname"],
+			'entity_restrict'=>$_POST["entity_restrict"],
+                        );
 
-	echo "</script>\n";
-
-	echo "<div id='search_spinner_$rand' style=' position:absolute;   filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='' /></div>\n";
-
-	echo "<span id='results_$rand'>\n";
-	echo "<select name='item$rand'><option value='0'>------</option></select>\n";
-	echo "</span>\n";	
-
+	
+	$default="<select name='item$rand'><option value='0'>------</option></select>\n";
+	ajaxDropdown($use_ajax,"/ajax/dropdownConnectPortDevice.php",$params,$default,$rand);
 
 }		
 
 ?>
+

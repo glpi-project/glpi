@@ -109,11 +109,10 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 if (isset($_POST["comments"])&&$_POST["comments"]){
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('dropdown_".$_POST["myname"].$_POST["rand"]."', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "      	new Ajax.Updater('comments_".$_POST["myname"].$_POST["rand"]."','".$CFG_GLPI["root_doc"]."/ajax/comments.php',{asynchronous:true, evalScripts:true, \n";
-	echo "           method:'post', parameters:'value='+value+'&table=glpi_dropdown_netpoint'\n";
-	echo "})})\n";
+
+	$params=array('value'=>'__VALUE__','table'=>"glpi_dropdown_netpoint");
+	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$params,false);
+
 	echo "</script>\n";
 }
 
