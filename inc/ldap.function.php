@@ -305,7 +305,7 @@ function showSynchronizationForm($target, $ID) {
 					echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
 					echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 					echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
-					echo "</td><tr></table>";
+					echo "</td></tr></table>";
 
 					formChangeAuthMethodToDB($ID);
 					echo "<br>";
@@ -342,7 +342,7 @@ function formChangeAuthMethodToDB($ID)
 	echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]."</th></tr>";
 	echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 	echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_internal' value='" . $LANG["login"][32] . "'>";
-	echo "</td><tr></table>";
+	echo "</td></tr></table>";
 }
 
 function formChangeAuthMethodToLDAP($ID)
@@ -360,7 +360,7 @@ function formChangeAuthMethodToLDAP($ID)
 		dropdownValue("glpi_auth_ldap","id_auth");
 		echo "</td>";
 		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_ldap' value='" . $LANG["buttons"][2] . "'>";
-		echo "</td><tr></table>";
+		echo "</td></tr></table>";
 	}
 }
 
@@ -378,7 +378,7 @@ function formChangeAuthMethodToMail($ID)
 		dropdownValue("glpi_auth_mail","id_auth");
 		echo "</td>";
 		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_mail' value='" . $LANG["buttons"][2] . "'>";
-		echo "</td><tr></table>";
+		echo "</td></tr></table>";
 	}
 }
 
@@ -424,7 +424,7 @@ function displayLdapFilter($target)
 	echo"<tr class='tab_bg_2'><td>";
 	echo "<input type='text' name='ldap_filter' value='" . $_SESSION["ldap_filter"] . "'>";
 	echo "<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
-	echo "</td><tr></table>";
+	echo "</td></tr></table>";
 	echo "</form></div>";	
 }
 ?>
