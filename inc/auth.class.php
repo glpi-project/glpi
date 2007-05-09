@@ -252,10 +252,7 @@ class Identification {
 			$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
 			$_SESSION["glpilist_limit"] = $CFG_GLPI["list_limit"];
 			$_SESSION["glpicrontimer"] = time();
-			
-			//Purge all dynamic profiles
-			$this->user->purgeDynamicProfiles();
-			
+						
 			// glpiprofiles -> other available profile with link to the associated entities
 			initEntityProfiles($_SESSION["glpiID"]);
 			
