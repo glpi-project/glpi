@@ -272,7 +272,12 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 	$_SESSION['MESSAGE_AFTER_REDIRECT']=$LANG["common"][23];
 	glpi_header($_SERVER['HTTP_REFERER']);
 
-} else echo $LANG["common"][24];
+} else {
+	
+	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+	echo "<b>".$LANG["common"][24]."</b></div>";
+	
+}
 
 commonFooter();
 
