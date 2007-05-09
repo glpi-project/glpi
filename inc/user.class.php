@@ -264,11 +264,7 @@ class User extends CommonDBTM {
 				$rights = $input["_ldap_rules"]["rules_rights"];
 			else
 				$rights = array();
-				
-			//First delete all the dynamic affectations for this user in database
-			$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$input["ID"]." AND dynamic=1";
-			$DB->query($sql);
-	
+			
 			//For each affectation -> write it in DB		
 			foreach($entities_rules as $entity)
 			{
@@ -861,6 +857,12 @@ class User extends CommonDBTM {
 		return array($input,$updates);
 	}
 
+function purgeDynamicProfiles()
+{
+	global $DB;
+	$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$this->fields["ID"]." AND dynamic=1";
+	$DB->query($sql);
+}
 }
 
 /* Get all the authentication methods parameters for a specific auth_method and id_auth
