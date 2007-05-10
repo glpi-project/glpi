@@ -102,7 +102,7 @@ class DBmysql {
 				if ($CFG_GLPI["use_errorlog"])
 				{
 					$error = "*** MySQL query error : ".convDateTime($_SESSION["glpi_currenttime"])."***\nScript: " . $_SERVER["SCRIPT_NAME"]."\nSQL: ".addslashes($query)."\nError: ". mysql_error()."\n";
-					error_log($error,3,GLPI_LOG_DIR."/sql-errors.log");
+					error_log($error,3,GLPI_LOG_DIR."/sql_errors.log");
 				}
 		
 				if ($CFG_GLPI["debug"]&&$CFG_GLPI["debug_sql"]){
