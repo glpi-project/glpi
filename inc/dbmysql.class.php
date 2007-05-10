@@ -97,8 +97,17 @@ class DBmysql {
 		if (!$res) {
 			$this->DBmysql();
 			$res=mysql_query($query,$this->dbh);
-			if (!$res&&$CFG_GLPI["debug"]&&$CFG_GLPI["debug_sql"]){
-				$DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST]=$this->error();
+			
+			if (!$res) {
+				if ($CFG_GLPI["use_errorlog"])
+				{
+					$error = "*** MySQL query error : ".convDateTime($_SESSION["glpi_currenttime"])."***\nScript: " . $_SERVER["SCRIPT_NAME"]."\nSQL: ".addslashes($query)."\nError: ". mysql_error()."\n";
+					error_log($error,3,GLPI_ROOT."/files/_log/sql_errors.log");
+				}
+		
+				if ($CFG_GLPI["debug"]&&$CFG_GLPI["debug_sql"]){
+					$DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST]=$this->error();
+				}
 			}
 		}
 

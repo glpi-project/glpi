@@ -1382,6 +1382,7 @@ $LANG["setup"][181]="Fonction ldap_start_tls inexistante";
 $LANG["setup"][182]="Url de retour à la deconnexion (logout)";
 $LANG["setup"][183]="Utiliser le cache";
 $LANG["setup"][184]="Restrictions";
+$LANG["setup"][185]="Erreurs SQL dans un fichier séparé";
 
 $LANG["setup"][201]="Configuration de la fonction";
 $LANG["setup"][202]="Utiliser le suivi par mail";
