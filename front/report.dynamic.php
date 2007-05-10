@@ -62,7 +62,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-
 if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
 
@@ -72,7 +71,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 	}
 
 	// PDF case
-	if ($_GET["display_type"]==2){
+	if ($_GET["display_type"]==PDF_OUTPUT){
 		include (GLPI_ROOT . "/lib/ezpdf/class.ezpdf.php");
 	}
 
