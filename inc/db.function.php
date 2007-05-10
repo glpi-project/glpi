@@ -743,12 +743,13 @@ function TableExists($tablename) {
 
 	global $DB;
 	// Get a list of tables contained within the database.
-	$result = $DB->list_tables($DB);
-	$rcount = $DB->numrows($result);
-
-	// Check each in list for a match.
-	for ($i=0;$i<$rcount;$i++) {
-		if ($DB->table_name($result, $i)==$tablename) return true;
+	$result = $DB->list_tables("%".$tablename."%");
+	if ($rcount = $DB->numrows($result)){
+		while ($data=$DB->fetch_row($result)){
+			if ($data[0]===$tablename){
+				return true;
+			}
+		}
 	}
 	$DB->free_result($result);
 	return false;
