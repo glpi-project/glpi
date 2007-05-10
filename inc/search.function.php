@@ -450,7 +450,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 	}
 
-
 	// Clean toview array
 	$toview=array_unique($toview);
 	$toview_count=count($toview);
@@ -508,19 +507,21 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]!="all"&&$field[$key]!="view"){
 				$LINK=" ";
 				$NOT=0;
-				if (is_array($link)&&isset($link[$key])&&ereg("NOT",$link[$key])){
-					$link[$key]=" ".ereg_replace(" NOT","",$link[$key]);
-					$NOT=1;
+				$tmplink="";
+				if (is_array($link)&&isset($link[$key])){
+					if (ereg("NOT",$link[$key])){
+						$tmplink=" ".ereg_replace(" NOT","",$link[$key]);
+						$NOT=1;
+					} else {
+						$tmplink=" ".$link[$key];
+					}
+				} else {
+					$tmplink=" AND ";
 				}
-
 			
 				// Manage Link if not first item
 				if (!$first||$i>0) {
-					if (is_array($link)&&isset($link[$key])){
-						$LINK=" ".$link[$key];
-					} else {
-						$LINK=" AND ";
-					}
+					$LINK=$tmplink;
 				}
 				// Add Where clause if not to be done ine HAVING CLAUSE
 				if (!in_array($SEARCH_OPTION[$type][$field[$key]]["table"],$META_SPECIF_TABLE)){
@@ -843,7 +844,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$numrows= $DB->numrows($result);
 
 		// Contruct Pager parameters
-		$parameters="sort=$sort&amp;order=$order".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
+		$globallinkto=getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
+
+		$parameters="sort=$sort&amp;order=$order".$globallinkto;
 
 
 		if ($output_type==GLOBAL_SEARCH){
@@ -925,7 +928,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Display column Headers for toview items
 			for ($i=0;$i<$toview_count;$i++){
 
-				$linkto="$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
+				$linkto="$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".$globallinkto;
 
 				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$toview[$i]]["name"],$header_num,$linkto,$sort==$toview[$i],$order);
 			}
@@ -2467,13 +2470,14 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
  *
  */
 function getMultiSearchItemForLink($name,$array){
-
 	$out="";
-	if (is_array($array)&&count($array)>0)
+	
+	if (is_array($array)&&count($array)>0){
 		foreach($array as $key => $val){
 			//		if ($name!="link"||$key!=0)
 			$out.="&amp;".$name."[$key]=".$val;
 		}
+	}
 	return $out;
 
 }
