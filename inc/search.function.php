@@ -1515,6 +1515,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 		case "state_types.date_mod":
 		case "reservation_types.date_mod":
 		case "glpi_users.last_login":
+		case "glpi_users.date_mod":
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
@@ -1980,7 +1981,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_software.date_mod":
 		case "glpi_monitors.date_mod":
 		case "glpi_ocs_config.date_mod" :
-		case "glpi_users.last_login":	
+		case "glpi_users.last_login":
+		case "glpi_users.date_mod":	
 			return convDateTime($data["ITEM_$num"]);
 			break;
 		case "glpi_contracts.end_date":
