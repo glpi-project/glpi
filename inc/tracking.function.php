@@ -292,8 +292,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	if ($number > 0)
 	{
 		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan=9>".$number." ".$LANG["job"][18]."  ".$LANG["job"][17]."";
-		if ($number > 1) { echo "s"; }
+		echo "<tr><th colspan=9>".$number." ".$LANG["job"][18]."  ".$LANG["job"][17];
 		echo " ".$LANG["job"][16].":&nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
 
