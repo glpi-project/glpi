@@ -39,12 +39,12 @@ $NEEDED_ITEMS=array("entity","rulesengine","rule.ldap","rule.ocs","rule.tracking
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight($rule->right,"r");
-
 if (isset($_GET["ID"]))
 {
 	$generic_rule = new Rule;
 	$generic_rule->getFromDB($_GET["ID"]);
+	checkRight($generic_rule->right,"r");
+	
 	switch ($generic_rule->fields["rule_type"])
 	{
 		case RULE_OCS_AFFECT_COMPUTER :
