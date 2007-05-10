@@ -126,13 +126,11 @@ class Profile extends CommonDBTM{
 		echo "</tr></table>";
 		echo "</div>";
 
-		echo "<script type='text/javascript' >\n";
 		$params=array('interface'=>'__VALUE__',
 				'ID'=>$ID,
 			);
 		ajaxUpdateItemOnSelectEvent("profile_interface","profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
 		ajaxUpdateItem("profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,'profile_interface');
-		echo "</script>\n";
 		echo "<br>";
 
 		echo "<div align='center' id='profile_form'>";

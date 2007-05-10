@@ -207,10 +207,8 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	}
 
 if (isset($_POST["comments"])&&$_POST["comments"]){
-	echo "<script type='text/javascript' >\n";
 	$params=array('value'=>'__VALUE__','table'=>$_POST["table"]);
 	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$params,false);
-	echo "</script>\n";
 }
 
 ?>

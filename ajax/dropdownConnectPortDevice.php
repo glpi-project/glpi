@@ -93,9 +93,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
                         'myname'=>$_POST["myname"],
                         );
 
-	echo "<script type='text/javascript' >\n";
 	ajaxUpdateItemOnSelectEvent("item$rand","results_item_$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php",$params);
-	echo "</script>\n";
 
 	echo "<span id='results_item_$rand'>\n";
 	echo "</span>\n";	

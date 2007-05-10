@@ -132,9 +132,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		$params=array('id_field'=>'__VALUE__',
 			'device_type'=>$_POST["type"],
 			);
-		echo "<script type='text/javascript' >\n";
 		ajaxUpdateItemOnSelectEvent("massiveaction_field","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",$params);
-		echo "</script>\n";
 
 		echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 

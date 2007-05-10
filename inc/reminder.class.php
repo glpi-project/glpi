@@ -199,7 +199,7 @@ class Reminder extends CommonDBTM {
 						$params['begin_date']=$this->fields["begin"];
 						$params['end_date']=$this->fields["end"];
 					}
-					ajaxUpdateItem('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+					ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 				echo "}";
 				
 				echo "</script>\n";

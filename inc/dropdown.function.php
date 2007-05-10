@@ -146,7 +146,7 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 
 	if ($display_comments){
 		echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display ";
-		if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$myname$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+		if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
 		echo ">";
 		echo $comments_display2;
 	}
@@ -224,7 +224,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 
 	if ($display_comments){
 		echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display ";
-		if (haveRight("entity_dropdown","w")) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$myname$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+		if (haveRight("entity_dropdown","w")) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
 		echo ">";
 		echo $comments_display2;
 	}
@@ -645,9 +645,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 			'myname'=>$myname,
 			'entity_restrict'=>$entity_restrict,
 			);
-		echo "<script type='text/javascript' >\n";
 		ajaxUpdateItemOnSelectEvent("item_type$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
-		echo "</script>\n";
 
 		echo "</td><td>\n"	;
 		echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
@@ -656,9 +654,11 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 		if ($value>0){
 			echo "<script type='text/javascript' >\n";
 			echo "document.getElementById('item_type$rand').value='".$value_type."';";
+			echo "</script>\n";
+
 			$params["idtable"]=$value_type;
 			ajaxUpdateItem("show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
-			echo "</script>\n";
+			
 		}
 	}
 	return $rand;
@@ -926,9 +926,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 					'myname'=>"computer",
 					);
 
-			echo "<script type='text/javascript' >\n";
 			ajaxUpdateItemOnSelectEvent("search_$myname$rand","results_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",$params);
-			echo "</script>\n";
 
 			echo "<span id='results_$myname$rand'>\n";
 
@@ -1027,9 +1025,7 @@ function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
 			'myname'=>$myname,
 			);
 
-	echo "<script type='text/javascript' >\n";
 	ajaxUpdateItemOnSelectEvent("item_type$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPortDeviceType.php",$params);
-	echo "</script>\n";
 
 	echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
 
@@ -1074,9 +1070,7 @@ function dropdownDocument($myname,$entity_restrict=-1) {
 			'myname'=>$myname,
 			);
 
-	echo "<script type='text/javascript' >\n";
 	ajaxUpdateItemOnSelectEvent("rubdoc","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownDocument.php",$params);
-	echo "</script>\n";
 
 	echo "<span id='show_$myname$rand'>";
 	$_POST["entity_restrict"]=$entity_restrict;
@@ -1203,9 +1197,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 				'myname'=>'new_device_id',
 				);
 	
-		echo "<script type='text/javascript' >\n";
 		ajaxUpdateItemOnSelectEvent("device$rand","showdevice$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownDevice.php",$params);
-		echo "</script>\n";
 
 		echo "<span id='showdevice$rand'>&nbsp;</span>\n";
 
@@ -1276,9 +1268,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 			'type'=>$device_type,
 			);
 	
-	echo "<script type='text/javascript' >\n";
 	ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",$params);
-	echo "</script>\n";
 
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
@@ -1298,9 +1288,7 @@ function dropdownMassiveActionPorts(){
 	$params=array('action'=>'__VALUE__',
 			);
 	
-	echo "<script type='text/javascript' >\n";
 	ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",$params);
-	echo "</script>\n";
 
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }

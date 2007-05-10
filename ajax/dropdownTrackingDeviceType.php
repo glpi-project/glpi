@@ -60,14 +60,12 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiact
 		echo "<br>";
 	}
 
-	echo "<script type='text/javascript' >\n";
 	$params=array('searchText'=>'__VALUE__',
 			'myname'=>$_POST["myname"],
 			'table'=>$table,
 			'entity_restrict'=>$_POST['entity_restrict'],
 	);
 	ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand,"results_ID$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",$params,false);
-	echo "</script>\n";
 
 	echo "<span id='results_ID$rand'>";
 	echo "<select name='ID'><option value='0'>------</option></select>";

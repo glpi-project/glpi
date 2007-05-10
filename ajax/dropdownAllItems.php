@@ -81,8 +81,8 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 		$params['searchText']=$CFG_GLPI["ajax_wildcard"];
 		echo "<script type='text/javascript' >\n";
 		echo "document.getElementById('search_$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
-		ajaxUpdateItem("results_$rand",$CFG_GLPI["root_doc"]."/ajax/$link",$params);
 		echo "</script>\n";
+		ajaxUpdateItem("results_$rand",$CFG_GLPI["root_doc"]."/ajax/$link",$params);
 	}
 
 }		
