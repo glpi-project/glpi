@@ -1080,9 +1080,9 @@ function getExpir($begin,$duration,$notice="0"){
 		$diff=strtotime("$begin+$duration month -$notice month")-time();
 		$diff_days=floor($diff/60/60/24);
 		if($diff_days>0){
-			return $diff_days." Jours";
+			return $diff_days." ".$LANG["stats"][31];
 		}else{
-			return "<span class='red'>".$diff_days." Jours</span>";
+			return "<span class='red'>".$diff_days." ".$LANG["stats"][31]."</span>";
 		}
 	}
 
