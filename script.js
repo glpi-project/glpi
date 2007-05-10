@@ -53,6 +53,27 @@ function cleanhide(id){
 	}
 }
 
+
+function completecleandisplay(id){
+	var e = document.getElementById(id);
+	if(e){
+		setdisplay(e,'block');
+		if (isIe()){
+			hideSelect(0,0,	document.documentElement.clientWidth,document.documentElement.clientHeight);
+		}
+	}
+}
+
+function completecleanhide(id){
+	var e = document.getElementById(id);
+	if(e){
+		if(isIe()){
+			showSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
+		}
+		setdisplay(e,'none');
+	}
+}
+
 //effacer tous les smenu du menu principal
 //afficher les selects du document
 function hidemenu(idMenu){
