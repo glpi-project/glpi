@@ -204,8 +204,8 @@ class DBmysql {
 	{
 		return mysql_field_flags($result,$field);
 	}
-	function list_tables() {
-		return mysql_list_tables($this->dbdefault,$this->dbh);
+	function list_tables($table="glpi_") {
+		return $this->fetch_row( $this->query("SHOW TABLES LIKE '".$table."'",$this->dbh));
 	}
 	function table_name($result,$nb) {
 		return mysql_tablename($result,$nb);
