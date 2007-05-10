@@ -276,6 +276,7 @@ CREATE TABLE `glpi_config` (
   `printers_management_restrict` int(1) NOT NULL default '2',
   `licenses_management_restrict` int(1) NOT NULL default '2',
   `license_deglobalisation` int(1) NOT NULL default '1',
+  `use_errorlog` int(1) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
