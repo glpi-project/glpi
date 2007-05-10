@@ -1648,7 +1648,7 @@ function showJobDetails ($target,$ID){
 					'name'=>'name',
 					'data'=>rawurlencode($job->fields["name"]),
 				);
-				ajaxUpdateItem("viewname$rand",$CFG_GLPI["root_doc"]."/ajax/inputtext.php",$params,false);
+				ajaxUpdateItemJsCode("viewname$rand",$CFG_GLPI["root_doc"]."/ajax/inputtext.php",$params,false);
 			echo "}";
 			echo "</script>\n";
 			echo "<div id='name$rand' class='div_tracking' onClick='showName$rand()'>\n";
@@ -1684,7 +1684,7 @@ function showJobDetails ($target,$ID){
 					'name'=>'contents',
 					'data'=>rawurlencode($job->fields["contents"]),
 				);
-				ajaxUpdateItem("viewdesc$rand",$CFG_GLPI["root_doc"]."/ajax/textarea.php",$params,false);
+				ajaxUpdateItemJsCode("viewdesc$rand",$CFG_GLPI["root_doc"]."/ajax/textarea.php",$params,false);
 
 			echo "}";
 			echo "</script>\n";
@@ -1798,7 +1798,7 @@ function showJobDetails ($target,$ID){
 				'author'=>$job->fields["assign"],
 				'entity'=>$job->fields["FK_entities"],
 			);
-			ajaxUpdateItem('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+			ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 
 		echo "};";
 		echo "function showAddFollowup(){\n";
@@ -1806,7 +1806,7 @@ function showJobDetails ($target,$ID){
 			echo "document.getElementById('viewfollowup').style.display='none';";
 			$params=array('tID'=>$ID,
 			);
-			ajaxUpdateItem('viewfollowup',$CFG_GLPI["root_doc"]."/ajax/addfollowup.php",$params,false);
+			ajaxUpdateItemJsCode('viewfollowup',$CFG_GLPI["root_doc"]."/ajax/addfollowup.php",$params,false);
 		echo "};";
 
 		echo "</script>";
@@ -1871,7 +1871,7 @@ function showFollowupsSummary($tID){
 				//echo "document.getElementById('viewfollowup').style.display='none';";
 				$params=array('ID'=>$data["ID"],
 				);
-				ajaxUpdateItem("viewfollowup",$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php",$params,false);
+				ajaxUpdateItemJsCode("viewfollowup",$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php",$params,false);
 			echo "};";
 
 			echo "</script>\n";
@@ -1906,7 +1906,7 @@ function showFollowupsSummary($tID){
 						'end_date'=>$data2["end"],
 						'entity'=>$job->fields["FK_entities"],
 						);
-					ajaxUpdateItem('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+					ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 					echo "}";
 				echo "</script>\n";
 

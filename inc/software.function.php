@@ -96,12 +96,10 @@ function showLicenses ($sID,$show_computers=0) {
 				echo "<option value='move'>".$LANG["buttons"][20]."</option>";
 				echo "</select>";
 
-				echo "<script type='text/javascript' >\n";
 				$params=array('type'=>'__VALUE__',
 						'sID'=>$sID,
 				);
 				ajaxUpdateItemOnSelectEvent("update_licenses_choice","update_licenses_view",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
-				echo "</script>\n";
 
 				echo "<span id='update_licenses_view'>\n";
 				echo "&nbsp;";

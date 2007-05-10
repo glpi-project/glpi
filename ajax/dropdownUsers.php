@@ -119,16 +119,13 @@ if ($DB->numrows($result)) {
 echo "</select>";
 
 if (isset($_POST["comments"])&&$_POST["comments"]){
-	echo "<script type='text/javascript' >\n";
 	$params=array('value'=>'__VALUE__','table'=>"glpi_users");
 	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$params,false);
-	echo "</script>\n";
 }
 
 // Manage updates others dropdown for helpdesk
 if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
 
-	echo "<script type='text/javascript' >\n";
 	$params=array('userID'=>'__VALUE__',
 			'device_type'=>0
 	);
@@ -138,7 +135,6 @@ if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
 	);
 	ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"uemail_result",$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$params,false);
 
-	echo "</script>\n";
 }
 
 

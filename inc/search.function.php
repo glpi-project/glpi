@@ -282,8 +282,6 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 			// Ajax script for display search meat item
 			echo "<span id='show_".$type."_".$i."_$rand'>&nbsp;</span>\n";	
 
-			 // Prototype Version
-			echo "<script type='text/javascript' >";
 			$params=array('type'=>'__VALUE__',
 					'num'=>$i,
 					'field'=>(is_array($field2)&&isset($field2[$i])?$field2[$i]:""),
@@ -292,16 +290,15 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 			);
 			ajaxUpdateItemOnSelectEvent("type2_".$type."_".$i."_$rand","show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateSearch.php",$params,false);
 
+			
 			if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
-
+				echo "<script type='text/javascript' >";
 				echo "document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
+				echo "</script>\n";
+
 				$params['type']=$type2[$i];
 				ajaxUpdateItem("show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateSearch.php",$params,false);
 			}
-
-			echo "</script>\n";
-
-
 			echo "</td></tr>";
 		}
 

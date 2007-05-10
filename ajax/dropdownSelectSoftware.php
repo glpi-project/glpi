@@ -72,13 +72,11 @@ if ($DB->numrows($result))
 echo "</select>\n";
 
 
-echo "<script type='text/javascript' >\n";
 $params=array('sID'=>'__VALUE__',
 		'myname'=>$_POST["myname"],
 		'massiveaction'=>$_POST["massiveaction"],
 );
 ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"]."/ajax/dropdownInstallLicense.php",$params,false);
-echo "</script>\n";
 
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";	
 

@@ -82,7 +82,7 @@ if (!defined('GLPI_ROOT')){
 		// sauvegarde de l'erreur, et mail si c'est critique
 		error_log($err, 3, GLPI_LOG_DIR."/php-errors.log");
 		echo '<div style="position:fload-left; background-color:red; z-index:10000">PHP ERROR : ';
-		echo $errmsg;
+		echo $errmsg." in ".$filename." at line ".$linenum;
 		echo '</div>';
 	}
 
