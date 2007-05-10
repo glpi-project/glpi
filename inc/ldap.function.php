@@ -84,6 +84,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 			//Add the auth method
 			$user->fields["auth_method"] = AUTH_LDAP;
 			$user->fields["id_auth"] = $ldap_server;
+			$user->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 			if (!$sync) {
 				//Save informations in database !
 				$input = $user->fields;
@@ -179,7 +180,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
 			else
 			//If ldap synchronisation
-				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0]);
+				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone']);
 
 		}	
 	} else {
@@ -395,7 +396,7 @@ function getAuthMethodFromDB($ID) {
 }
 
 //converts LDAP timestamps over to Unix timestamps
-function ldapStamp2UnixStamp($ldapstamp) {
+function ldapStamp2UnixStamp($ldapstamp,$timezone=0) {
    $year=substr($ldapstamp,0,4);
    $month=substr($ldapstamp,4,2);
    $day=substr($ldapstamp,6,2);
@@ -403,6 +404,11 @@ function ldapStamp2UnixStamp($ldapstamp) {
    $minute=substr($ldapstamp,10,2);
    $seconds=substr($ldapstamp,12,2);
    $stamp=gmmktime($hour,$minute,$seconds,$month,$day,$year);
+   
+   //If there's a timezone defined
+   if ($timezone !=0)
+   		$stamp+= $timezone * 3600;
+   
    return $stamp;
 }
 

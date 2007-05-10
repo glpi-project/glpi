@@ -1101,6 +1101,11 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_config` ADD COLUMN `use_errorlog` INT( 1 ) NOT NULL default 0";
 		$DB->query($query) or die("0.7 add use_errorlog in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
+
+	if (!FieldExists("glpi_auth_ldap", "timezone")) {
+		$query = "ALTER TABLE `glpi_auth_ldap` ADD COLUMN `timezone` VARCHAR( 4 ) NOT NULL default 0";
+		$DB->query($query) or die("0.7 add timezone in glpi_auth_ldap" . $LANG["update"][90] . $DB->error());
+	}
 		
 	$intnull=array("glpi_alerts" => array("device_type","FK_device","type"),
 		"glpi_cartridges_type"=>array("tech_num"),
