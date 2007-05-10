@@ -68,7 +68,9 @@ function completecleanhide(id){
 	var e = document.getElementById(id);
 	if(e){
 		if(isIe()){
-			showSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
+			if(setdisplay(objet,'block')){
+				showSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
+			}
 		}
 		setdisplay(e,'none');
 	}
