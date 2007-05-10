@@ -249,11 +249,10 @@ function showHistory($device_type,$id_device){
  **/
 function logEvent ($item, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
-
+	
 	global $DB,$CFG_GLPI, $LANG;
 	if ($level <= $CFG_GLPI["event_loglevel"]) { 
 		$query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
-
 		$result = $DB->query($query);    
 
 	}
@@ -422,7 +421,6 @@ function showAddEvents($target,$order,$sort,$user="") {
 
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
 				}
-				echo $item;
 				echo "\">$item</a>";
 			}
 		}			
@@ -535,14 +533,14 @@ function showEvents($target,$order,$sort,$start=0) {
 		$message = $DB->result($result, $i, "message");
 		
 		echo "<tr class='tab_bg_2'>";
-
 		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td align='center'><strong>"; 
 		//echo "<td>$itemtype:</td><td align='center'><strong>";
 		if ($item=="-1" || $item=="0") {
 			echo "&nbsp;";//$item;
 		} else {
 			if ($itemtype=="rules"){
-				echo $item;
+				//echo $item;
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?ID=".$item."\">".$item."</a>";
 			} else if ($itemtype=="infocom"){
 				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
 			} else {
