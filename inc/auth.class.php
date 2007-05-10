@@ -476,6 +476,12 @@ class AuthLDAP extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
+			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][186] . "</td>";
+			echo "<td>";
+			dropdownGMT("timezone",$this->fields["timezone"]);
+			echo"</td>";
+			echo "<td align='center' colspan='2'></td></tr>";
+
 			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["setup"][259] . "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][254] . "</td><td>";
@@ -512,14 +518,6 @@ class AuthLDAP extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][42] . "</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"" . $this->fields["ldap_field_mobile"] . "\" ></td>";
 			echo "<td align='center'>&nbsp;</td><td>&nbsp;</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["reports"][13] . "</td></tr>";
-			echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][186] . "</td>";
-			echo "<td>";
-			dropdownGMT("timezone",$this->fields["timezone"]);
-			echo"</td>";
-			echo "<td align='center' colspan='2'></td></tr>";
-
 
 			if (empty ($ID)){
 				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
