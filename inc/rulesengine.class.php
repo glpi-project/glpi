@@ -582,7 +582,7 @@ class Rule extends CommonDBTM{
 				'rule_type'=>$this->rule_type,
 		);
 		ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
-		ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false,"dropdown_field$rand");
+		ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false,"dropdown_field$rand");
 
 		echo "</script>\n";
 	}
