@@ -486,6 +486,9 @@ $LANG["financial"][105]="Tacite";
 $LANG["financial"][106]="Express";
 $LANG["financial"][107]="Reconduction";
 
+$LANG["gmt"][0]="GMT";
+$LANG["gmt"][1]="heure(s)";
+
 $LANG["help"][1]="Veuillez décrire votre problème";
 $LANG["help"][2]="Priorité de la demande";
 $LANG["help"][3]="Très haute"; 
@@ -1383,6 +1386,7 @@ $LANG["setup"][182]="Url de retour à la deconnexion (logout)";
 $LANG["setup"][183]="Utiliser le cache";
 $LANG["setup"][184]="Restrictions";
 $LANG["setup"][185]="Erreurs dans des fichiers séparés";
+$LANG["setup"][186]="Fuseau horaire";
 
 $LANG["setup"][201]="Configuration de la fonction";
 $LANG["setup"][202]="Utiliser le suivi par mail";

@@ -45,6 +45,7 @@ CREATE TABLE `glpi_auth_ldap` (
   `ldap_field_mobile` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_field_comments` text collate utf8_unicode_ci,
   `use_dn` int(1) NOT NULL default '1',
+  `timezone` varchar(4) collate utf8_unicode_ci NOT NULL default '0',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
