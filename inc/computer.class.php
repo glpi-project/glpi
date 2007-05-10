@@ -406,7 +406,6 @@ class Computer extends CommonDBTM {
 
 		if (!haveRight("computer","r")) return false;
 
-
 		$computer_spotted = false;
 		if((empty($ID) && $withtemplate == 1)||$ID==-1) {
 			if($this->getEmpty()) $computer_spotted = true;

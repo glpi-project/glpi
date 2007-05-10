@@ -162,6 +162,9 @@ if (isset ($_POST["noCAS"]))
 	// if not, we update it.
 
 	if ($identificat->auth_succeded) {
+		//Purge all dynamic profiles
+		$identificat->user->purgeDynamicProfiles();
+		
 		// Prepare data
 		$identificat->user->fields["last_login"]=$_SESSION["glpi_currenttime"];
 		if ($identificat->extauth){

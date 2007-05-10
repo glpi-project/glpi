@@ -89,7 +89,7 @@ elseif (isset($_POST["update_rule"]))
 {
 	checkRight($rule->right,"w");
 	$rule->update($_POST);
-	logEvent($_POST['ID'], "rule", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST['ID'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["add_rule"]))
 {
