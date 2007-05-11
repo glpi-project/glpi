@@ -67,8 +67,8 @@ function completecleandisplay(id){
 function completecleanhide(id){
 	var e = document.getElementById(id);
 	if(e){
-		if(isIe()){
-			if (!setdisplay(e,'none')){
+		if (!setdisplay(e,'none')){
+			if(isIe()){
 				showSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
 			}
 		}
