@@ -151,11 +151,13 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
 	if ($ds) {
+		/*
 		if (!$sync)
 		$attrs = array (
 			$config_ldap->fields['ldap_login']
 		);
 		else
+		*/
 		//Search for ldap login AND modifyTimestamp, which indicates the last update of the object in directory
 			$attrs = array (
 			$config_ldap->fields['ldap_login'], "modifyTimestamp"
@@ -172,16 +174,22 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 	
 		$sr = ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
 		$info = ldap_get_entries($ds, $sr);
+		$user_infos = array();
 		
 		for ($ligne = 0; $ligne < $info["count"]; $ligne++)
 		{
 			//If ldap add
 			if (!$sync)
+			{
 				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
+				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=$info[$ligne]['modifytimestamp'][0];
+			}
 			else
+			{
 			//If ldap synchronisation
 				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone']);
-
+				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=$info[$ligne]['modifytimestamp'][0];
+			}
 		}	
 	} else {
 		return false;
@@ -202,13 +210,25 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 				if (!empty ($ldap_users[$user['name']]))
 				{
 					if ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)
-						$glpi_users[] = $user['name'];
+					{
+						$glpi_users[] = array("user" => $user['name'], "timestamp"=>$user_infos[$user['name']]['timestamp'],"date_mod"=>$user['date_mod']);
+					}
 				}		
 		}
 		}
+		
 	//If add, do the difference between ldap users and glpi users
 	if (!$sync)
-		return diff_key($ldap_users,$glpi_users);
+	{
+		$diff = 	diff_key($ldap_users,$glpi_users);
+		$list = array();
+		
+		foreach ($diff as $user)
+			$list[] = array("user" => $user, "timestamp" => $user_infos[$user]["timestamp"], "date_mod"=> "-----");
+		
+		return $list;	
+		//return diff_key($ldap_users,$glpi_users);
+	}
 	else
 		return $glpi_users;
 	
@@ -243,14 +263,34 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 		echo "<form method='post' name='ldap_form' action='" . $target . "'>";
 		echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th>" . $LANG["buttons"][37] . "</th><th>" . $LANG["Menu"][14] . "</th></tr>";
+		echo "<tr><th>" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "</th><th colspan='2'>" . $LANG["Menu"][14] . "</th><th>".$LANG["common"][26]." ".$LANG["ldap"][13]."</th><th>".$LANG["common"][26]." ".$LANG["ldap"][14]."</th></tr>";
 
-		foreach ($ldap_users as $user) {
-
+		foreach ($ldap_users as $userinfos) {
+			$user = $userinfos["user"];
+			if (isset($userinfos["timestamp"]))
+				$stamp = $userinfos["timestamp"];
+			else
+				$stamp='';
+			
+			if (isset($userinfos["date_mod"]))	
+				$date_mod = $userinfos["date_mod"];
+			else
+				$date_mod='';
+				
 			echo "<tr align='center' class='tab_bg_2'>";
 			//Need to use " instead of ' because it doesn't work with names with ' inside !
 			echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\" " . ($check == "all" ? "checked" : "") ."></td>";
-			echo "<td colspan='4'>" . $user . "</td>";
+			echo "<td colspan='2'>" . $user . "</td>";
+			
+			if ($stamp != '')
+				echo "<td>" .convUnixTimeStampToDate($stamp) . "</td>";
+			else
+				echo "<td></td>";
+			if ($date_mod != '')
+				echo "<td>" . convDateTime($date_mod) . "</td>";
+			else
+				echo "<td></td>";
+				
 			echo "</tr>";
 		}
 		echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
@@ -396,7 +436,7 @@ function getAuthMethodFromDB($ID) {
 }
 
 //converts LDAP timestamps over to Unix timestamps
-function ldapStamp2UnixStamp($ldapstamp,$timezone=0) {
+function ldapStamp2UnixStamp($ldapstamp,$timezone=0,$addtimezone=1) {
    global $CFG_GLPI;
    
    $year=substr($ldapstamp,0,4);
@@ -407,7 +447,8 @@ function ldapStamp2UnixStamp($ldapstamp,$timezone=0) {
    $seconds=substr($ldapstamp,12,2);
    $stamp=gmmktime($hour,$minute,$seconds,$month,$day,$year);
    //Add timezone delay
-   $stamp+= computeTimeZoneDelay($CFG_GLPI["glpi_timezone"],$timezone);
+   if ($addtimezone)
+   		$stamp+= computeTimeZoneDelay($CFG_GLPI["glpi_timezone"],$timezone);
    
    return $stamp;
 }
