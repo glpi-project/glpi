@@ -58,8 +58,11 @@ function completecleandisplay(id){
 	var e = document.getElementById(id);
 	if(e){
 		setdisplay(e,'block');
-		if (isIe()){
+		if (isIe()) {
+			ssmenu.onmouseleave = function(){ timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},300); };
 			hideSelect(0,0,	document.documentElement.clientWidth,document.documentElement.clientHeight);
+		} else {
+			ssmenu.onmouseout = function(){ timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},300); };
 		}
 	}
 }
@@ -68,7 +71,7 @@ function completecleanhide(id){
 	var e = document.getElementById(id);
 	if(e){
 		if(isIe()){
-			if(setdisplay(objet,'block')){
+			if(setdisplay(e,'block')){
 				showSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
 			}
 		}
@@ -230,9 +233,12 @@ function menuAff(id,idMenu){
 			}
 			setdisplay(smenu[0],'block');
 			clearTimeout(timeoutglobalvar);
-			timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},1000);
+			//timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},1000);
 			if (isIe()) {
+				ssmenu.onmouseleave = function(){ timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},300); };
 				doHideSelect(smenu[0]);
+			} else {
+				ssmenu.onmouseout = function(){ timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},300); };
 			}
 		}
 	}
