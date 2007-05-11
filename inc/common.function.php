@@ -1074,6 +1074,7 @@ function getWarrantyExpir($from,$addwarranty){
 }
 
 function getExpir($begin,$duration,$notice="0"){
+	global $LANG;
 	if ($begin==NULL || $begin=='0000-00-00'){
 		return "";
 	} else {
