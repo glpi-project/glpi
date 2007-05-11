@@ -345,6 +345,7 @@ function checkWriteAccessToDirs(){
 			GLPI_SESSION_DIR => $LANG["install"][50],
 			GLPI_CRON_DIR => $LANG["install"][52],
 			GLPI_CACHE_DIR => $LANG["install"][99],
+			GLPI_LOG_DIR => $LANG["install"][53]
 		);
 		$error=0;	
 		foreach ($dir_to_check as $dir => $message){
