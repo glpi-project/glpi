@@ -715,7 +715,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<li>";
 
 			// Display MENU ALL
-			echo "<div class='show_menu' id='show_all_menu' onMouseOver=\"completecleandisplay('show_all_menu');\" onMouseOut=\"completecleanhide('show_all_menu');\">";
+			echo "<div  id='show_all_menu' onMouseOver=\"completecleandisplay('show_all_menu');\" onMouseOut=\"completecleanhide('show_all_menu');\">";
 			$items_per_columns=15;
 			$i=-1;
 			echo "<table><tr><td valign='top'><table>";
