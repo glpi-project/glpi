@@ -116,9 +116,13 @@ class User extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		
+		global $CFG_GLPI;
 		//We add the user, we set the last modification date
 		$input["date_mod"]=$_SESSION["glpi_currenttime"];
+		// Preferences
+		if (!isset($input["language"])){
+			$input["language"]=$CFG_GLPI["default_language"];
+		}
 		
 		// Add User, nasty hack until we get PHP4-array-functions
 		if (isset ($input["password"])) {

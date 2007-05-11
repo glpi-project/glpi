@@ -34,11 +34,17 @@
 // ----------------------------------------------------------------------
 
 
-define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+if(ereg("dropdownConnect.php",$_SERVER['PHP_SELF'])){
+	define('GLPI_ROOT','..');
+	$AJAX_INCLUDE=1;
+	include (GLPI_ROOT."/inc/includes.php");
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+};
+
+if (!defined('GLPI_ROOT')){
+	die("Can not acces directly to this file");
+	}
 
 checkTypeRight($_POST["fromtype"],"w");
 
