@@ -397,6 +397,8 @@ function getAuthMethodFromDB($ID) {
 
 //converts LDAP timestamps over to Unix timestamps
 function ldapStamp2UnixStamp($ldapstamp,$timezone=0) {
+   global $CFG_GLPI;
+   
    $year=substr($ldapstamp,0,4);
    $month=substr($ldapstamp,4,2);
    $day=substr($ldapstamp,6,2);
@@ -404,12 +406,15 @@ function ldapStamp2UnixStamp($ldapstamp,$timezone=0) {
    $minute=substr($ldapstamp,10,2);
    $seconds=substr($ldapstamp,12,2);
    $stamp=gmmktime($hour,$minute,$seconds,$month,$day,$year);
-   
-   //If there's a timezone defined
-   if ($timezone !=0)
-   		$stamp+= $timezone * 3600;
+   //Add timezone delay
+   $stamp+= computeTimeZoneDelay($CFG_GLPI["glpi_timezone"],$timezone);
    
    return $stamp;
+}
+
+function computeTimeZoneDelay($first,$second)
+{
+	return ($first + $second) * 3600; 
 }
 
 function displayLdapFilter($target)
