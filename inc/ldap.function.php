@@ -187,7 +187,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 			else
 			{
 			//If ldap synchronisation
-				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone']);
+				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
 				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=$info[$ligne]['modifytimestamp'][0];
 			}
 		}	
@@ -283,13 +283,13 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 			echo "<td colspan='2'>" . $user . "</td>";
 			
 			if ($stamp != '')
-				echo "<td>" .convUnixTimeStampToDate($stamp) . "</td>";
+				echo "<td>" .convDateTime(date("Y-m-d h:m:s",ldapStamp2UnixStamp($stamp))). "</td>";
 			else
-				echo "<td></td>";
+				echo "<td>&nbsp;</td>";
 			if ($date_mod != '')
 				echo "<td>" . convDateTime($date_mod) . "</td>";
-			else
-				echo "<td></td>";
+			else 
+				echo "<td>&nbsp;</td>";
 				
 			echo "</tr>";
 		}
@@ -436,7 +436,7 @@ function getAuthMethodFromDB($ID) {
 }
 
 //converts LDAP timestamps over to Unix timestamps
-function ldapStamp2UnixStamp($ldapstamp,$timezone=0,$addtimezone=1) {
+function ldapStamp2UnixStamp($ldapstamp,$timezone=0,$addtimezone=false) {
    global $CFG_GLPI;
    
    $year=substr($ldapstamp,0,4);
@@ -447,15 +447,16 @@ function ldapStamp2UnixStamp($ldapstamp,$timezone=0,$addtimezone=1) {
    $seconds=substr($ldapstamp,12,2);
    $stamp=gmmktime($hour,$minute,$seconds,$month,$day,$year);
    //Add timezone delay
-   if ($addtimezone)
+   if ($addtimezone){
    		$stamp+= computeTimeZoneDelay($CFG_GLPI["glpi_timezone"],$timezone);
+   }
    
    return $stamp;
 }
 
 function computeTimeZoneDelay($first,$second)
 {
-	return ($first - $second) * 3600; 
+	return ($first - $second) * HOUR_TIMESTAMP; 
 }
 
 function displayLdapFilter($target)

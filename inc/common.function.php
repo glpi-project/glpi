@@ -1,3 +1,4 @@
+
 <?php
 /*
  * @version $Id$
@@ -588,20 +589,6 @@ function convDate($time) {
 	}
 }
 
-/**
- * Convert LDAP Timestamp to readable date
- * @param $timestamp
- * @return $date
- */
-function convUnixTimeStampToDate($timestamp)
-{
-	global $CFG_GLPI;
-	
-	if ($CFG_GLPI["dateformat"]!=0)
-		return convDateTime(date("Y-m-d h:m:s",ldapStamp2UnixStamp($timestamp,0,0)));
-	else
-		return date("Y-m-d h:m:s",ldapStamp2UnixStamp($timestamp,0,0));
-}
 /**
  *  Send a file to the navigator
  *
