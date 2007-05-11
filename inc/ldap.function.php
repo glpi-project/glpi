@@ -414,7 +414,7 @@ function ldapStamp2UnixStamp($ldapstamp,$timezone=0) {
 
 function computeTimeZoneDelay($first,$second)
 {
-	return ($first + $second) * 3600; 
+	return ($first - $second) * 3600; 
 }
 
 function displayLdapFilter($target)
