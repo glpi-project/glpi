@@ -568,6 +568,7 @@ $LANG["install"][48]="Erreur lors de la création de la base !";
 $LANG["install"][49]="Vous n'avez pas sélectionné de base de données !";
 $LANG["install"][50]="Test d'écriture des fichiers de sessions";
 $LANG["install"][52]="Test d'écriture des fichiers de cron";
+$LANG["install"][53]="Test d'écriture des fichiers de log";
 $LANG["install"][55]="L'installation est terminée";
 $LANG["install"][57]="Les logins mots de passes par défauts sont :";
 $LANG["install"][58]="glpi/glpi pour le compte administrateur";
