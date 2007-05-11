@@ -151,6 +151,11 @@ class Config extends CommonDBTM {
 				echo "<td align='center'> " . $LANG["setup"][185] . " </td><td>";
 				dropdownYesNo("use_errorlog", $CFG_GLPI["use_errorlog"]);
 				echo "</td></tr>";								
+	
+				echo "<tr class='tab_bg_2'>";
+				echo "<td align='center'> " . $LANG["setup"][186] . " </td><td>";
+				dropdownGMT("glpi_timezone", $CFG_GLPI["glpi_timezone"]);
+				echo "</td><td colspan='2'></td></tr>";								
 									
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][10] . "</strong></td></tr>";
 			
