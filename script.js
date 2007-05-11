@@ -59,11 +59,8 @@ function completecleandisplay(id){
 	if(e){
 		setdisplay(e,'block');
 		if (isIe()) {
-			ssmenu.onmouseleave = function(){ timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},300); };
 			hideSelect(0,0,	document.documentElement.clientWidth,document.documentElement.clientHeight);
-		} else {
-			ssmenu.onmouseout = function(){ timeoutglobalvar = setTimeout(function(){afterView(smenu[0])},300); };
-		}
+		} 
 	}
 }
 
@@ -71,11 +68,11 @@ function completecleanhide(id){
 	var e = document.getElementById(id);
 	if(e){
 		if(isIe()){
-			if(setdisplay(e,'block')){
+			if (!setdisplay(e,'none')){
 				showSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
 			}
 		}
-		setdisplay(e,'none');
+		
 	}
 }
 
