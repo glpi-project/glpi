@@ -715,7 +715,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<li>";
 
 			// Display MENU ALL
-			echo "<div  id='show_all_menu' onMouseOver=\"completecleandisplay('show_all_menu');\" onMouseOut=\"completecleanhide('show_all_menu');\">";
+			echo "<div id='show_all_menu' onMouseOver=\"completecleandisplay('show_all_menu');\" onMouseOut=\"completecleanhide('show_all_menu');\">";
 			$items_per_columns=15;
 			$i=-1;
 			echo "<table><tr><td valign='top'><table>";
@@ -1243,17 +1243,6 @@ function commonFooter() {
 
 		echo "<div id='debug'>";
 		echo "<h1><a name='#debug'>GLPI MODE DEBUG</a></h1>";
-		/*
-		// déjà dans le footer
-		if ($CFG_GLPI["debug_profile"]){
-			echo "TIME : ";
-			echo $TIMER_DEBUG->Get_Time()."s";
-			if (function_exists("memory_get_usage")){
-				echo "MEMORY : ";
-				echo memory_get_usage();
-				echo "";
-			}
-		}*/
 		
 		if ($CFG_GLPI["debug_sql"]){	
 			echo "<h2>SQL REQUEST : ";

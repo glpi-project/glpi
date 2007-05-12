@@ -33,46 +33,55 @@
 if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
-// Default location for based configuration
-if (!defined("GLPI_CONFIG_DIR"))
-	define("GLPI_CONFIG_DIR",GLPI_ROOT . "/config");
-
-// Default location for backup dump
-if (!defined("GLPI_DUMP_DIR"))
-	define("GLPI_DUMP_DIR",GLPI_ROOT . "/files/_dumps");
-
-// Path for documents storage
-if (!defined("GLPI_DOC_DIR"))
-	define("GLPI_DOC_DIR",GLPI_ROOT . "/files");
-
-// Path for cache storage
-if (!defined("GLPI_CACHE_DIR"))
-	define("GLPI_CACHE_DIR",GLPI_ROOT . "/files/_cache/");
-
-// Path for cron storage
-if (!defined("GLPI_CRON_DIR"))
-	define("GLPI_CRON_DIR",GLPI_ROOT . "/files/_cron");
-
-// Path for sessions storage
-if (!defined("GLPI_SESSION_DIR"))
-	define("GLPI_SESSION_DIR",GLPI_ROOT . "/files/_sessions");
-
-
-// Path for plugins documents storage
-if (!defined("GLPI_PLUGIN_DOC_DIR"))
-	define("GLPI_PLUGIN_DOC_DIR",GLPI_ROOT . "/files/_plugins");
-
-// Path for cache storage
-if (!defined("GLPI_LOCK_DIR"))
-	define("GLPI_LOCK_DIR",GLPI_ROOT . "/files/_lock/");
-
-// Path for log storage
-if (!defined("GLPI_LOG_DIR"))
-	define("GLPI_LOG_DIR",GLPI_ROOT . "/files/_log");
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 if(file_exists(GLPI_ROOT ."/config/config_path.php")) {
 	include(GLPI_ROOT ."/config/config_path.php");
 }
+
+// Default location for database configuration : config_db.php
+if (!defined("GLPI_CONFIG_DIR")){
+	define("GLPI_CONFIG_DIR",GLPI_ROOT . "/config");
+}
+
+// Default location for backup dump
+if (!defined("GLPI_DUMP_DIR")){
+	define("GLPI_DUMP_DIR",GLPI_ROOT . "/files/_dumps");
+}
+
+// Path for documents storage
+if (!defined("GLPI_DOC_DIR")){
+	define("GLPI_DOC_DIR",GLPI_ROOT . "/files");
+}
+
+// Path for cache storage
+if (!defined("GLPI_CACHE_DIR")){
+	define("GLPI_CACHE_DIR",GLPI_ROOT . "/files/_cache/");
+}
+
+// Path for cron storage
+if (!defined("GLPI_CRON_DIR")){
+	define("GLPI_CRON_DIR",GLPI_ROOT . "/files/_cron");
+}
+
+// Path for sessions storage
+if (!defined("GLPI_SESSION_DIR")){
+	define("GLPI_SESSION_DIR",GLPI_ROOT . "/files/_sessions");
+}
+
+// Path for plugins documents storage
+if (!defined("GLPI_PLUGIN_DOC_DIR")){
+	define("GLPI_PLUGIN_DOC_DIR",GLPI_ROOT . "/files/_plugins");
+}
+// Path for cache storage
+if (!defined("GLPI_LOCK_DIR")){
+	define("GLPI_LOCK_DIR",GLPI_ROOT . "/files/_lock/");
+}
+
+// Path for log storage
+if (!defined("GLPI_LOG_DIR")){
+	define("GLPI_LOG_DIR",GLPI_ROOT . "/files/_log");
+}
+
 
 ?>

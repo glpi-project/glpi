@@ -974,8 +974,8 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 
 	// If this file exists, it is load, allow to set configdir/dumpdir elsewhere
-	if(file_exists(GLPI_CONFIG_DIR . "/config_path.php")) {
-		include(GLPI_CONFIG_DIR . "/config_path.php");
+	if(file_exists(GLPI_ROOT . "/config/config_path.php")) {
+		include(GLPI_ROOT . "/config/config_path.php");
 	}
 
 
