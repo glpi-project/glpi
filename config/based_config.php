@@ -83,5 +83,8 @@ if (!defined("GLPI_LOG_DIR")){
 	define("GLPI_LOG_DIR",GLPI_ROOT . "/files/_log");
 }
 
-
+// Path for log storage
+if (!defined("GLPI_SCRIPT_DIR")){
+	define("GLPI_SCRIPT_DIR",GLPI_ROOT . "/scripts");
+}
 ?>

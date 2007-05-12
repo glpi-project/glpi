@@ -1,15 +1,26 @@
 #!/bin/sh
 cd $(dirname $0)
 
+eval $(cat  <<EOF | php 
+<?php 
+define ("GLPI_ROOT","..");
+include GLPI_ROOT."/config/based_config.php";
+echo "GLPI_LOG_DIR=".GLPI_LOG_DIR."\n";
+echo "GLPI_LOCK_DIR=".GLPI_LOCK_DIR."\n";
+echo "GLPI_SCRIPT_DIR=".GLPI_SCRIPT_DIR."\n";
+?>
+EOF)
+
 pid_dir="/tmp"
 pidfile="$pid_dir/ocsng_fullsync.pid"
 runningpid=""
 scriptname="ocsng_fullsync.sh"
-glpiroot=".."
+logfilename="ocsng_fullsync.log"
+
 
 # Predefined settings
 thread_nbr=4
-server_id=
+server_id=1
 
 trap cleanup 1 2 3 6
 
@@ -53,7 +64,7 @@ cleanup()
   #  echo "kill pids: $runningpid"
   for pid in $runningpid; do kill $pid 2>/dev/null; done
   rm -f $pidfile
-  rm -f $glpiroot"/files/_lock/lock_entity*"
+  rm -f "$GLPI_LOCK_DIR/lock_entity*"
   echo "Done cleanup ... quitting."
   exit 0
 }
@@ -93,14 +104,14 @@ read_argv "$@"
 
 echo $$ > $pidfile 
 
-[ -d "$glpiroot/scripts" ] && cd "$glpiroot/scripts"
+[ -d "$GLPI_SCRIPT_DIR" ] && cd "$GLPI_SCRIPT_DIR"
 
-rm -f $glpiroot"/files/_lock/lock_entity*"
+rm -f "$GLPI_LOCK_DIR/lock_entity*"
 cpt=0
 
 while [ $cpt -lt $thread_nbr ]; do 
   cpt=$(($cpt+1))
-  cmd="php -d -f $glpiroot/scripts/ocsng_fullsync.php --ocs_server_id=$server_id --thread_nbr=$thread_nbr --thread_id=$cpt >> $glpiroot/scripts/ocsng_fullsync.log"
+  cmd="php -d -f $GLPI_SCRIPT_DIR/ocsng_fullsync.php --ocs_server_id=$server_id --thread_nbr=$thread_nbr --thread_id=$cpt >> $GLPI_LOG_DIR/$logfilename"
   sh -c "$cmd"&
   runningpid="$runningpid $!"
   sleep 1
