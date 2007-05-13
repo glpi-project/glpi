@@ -76,7 +76,7 @@ else if (isset($_POST["update"])) {
 }
 else {
 
-	commonHeader($LANG["title"][30],$_SERVER['PHP_SELF'],"inventory","device");
+	commonHeader($LANG["title"][30],$_SERVER['PHP_SELF'],"config","device");
 	showDevicesForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["device_type"]);
 	commonFooter();
 }
