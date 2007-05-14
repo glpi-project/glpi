@@ -87,15 +87,8 @@ function getStatsItems($date1,$date2,$type){
 		case "glpi_dropdown_model":
 		case "glpi_dropdown_os":
 		case "glpi_dropdown_locations":
-			$nomUsr = getNbIntervDropdown($type);
+			$val = getNbIntervDropdown($type);
 
-		$i=0;
-		if (is_array($nomUsr))
-			foreach($nomUsr as $key){
-				$val[$i]["ID"]=$key["ID"];
-				$val[$i]["link"]=$key["name"];
-				$i++;
-			}
 		break;
 		// DEVICE CASE
 		default :
@@ -317,8 +310,17 @@ function getNbIntervDropdown($dropdown)
 {
 	global $DB,$CFG_GLPI;
 	$field="name";
-	if (in_array($dropdown,$CFG_GLPI["dropdowntree_tables"])) $field="completename";
-	$query = "SELECT * FROM ". $dropdown ." ORDER BY $field";
+	if (in_array($dropdown,$CFG_GLPI["dropdowntree_tables"])) {
+		$field="completename";
+	}
+	$where=" ";
+	$order=" ORDER BY $field";
+	if (in_array($dropdown,$CFG_GLPI["specif_entities_tables"])){
+		$where=getEntitiesRestrictRequest(" WHERE",$dropdown);
+		$order=" ORDER BY FK_entities, $field";	
+	}
+
+	$query = "SELECT * FROM ". $dropdown.$where.$order;
 	$tab=array();
 	$result = $DB->query($query);
 	if($DB->numrows($result) >0) {

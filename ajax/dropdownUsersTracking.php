@@ -82,7 +82,7 @@ if ($DB->numrows($result)) {
 		$output=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
 
 
-		echo "<option value=\"".$data["ID"]."\" ".($data["ID"] == $value?"selected":"")." title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data["ID"]."\" ".($data["ID"] == $_POST['value']?"selected":"")." title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

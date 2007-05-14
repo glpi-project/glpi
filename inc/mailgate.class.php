@@ -106,7 +106,7 @@ class Mailgate  extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>".$LANG["login"][7].":	</td><td>";
-			autocompletionTextField("password","glpi_mailgate","password",$this->fields["password"],20);
+			echo "<input type='password' name='password' value='".$this->fields["password"]."' size='20' />";
 			echo "</td></tr>";
 
 

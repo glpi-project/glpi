@@ -966,7 +966,7 @@ function generate_entity($ID_entity){
 			$printed=0;
 			$oldnb=mt_rand(1,$MAX['cartridges_by_printer']);
 			$date1=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
-			$date2=mktime();
+			$date2=time();
 			$inter=abs(round(($date2-$date1)/$oldnb));
 	
 			// Add old cartridges
@@ -1183,7 +1183,7 @@ function generate_entity($ID_entity){
 				$printed=0;
 				$oldnb=mt_rand(1,$MAX['cartridges_by_printer']);
 				$date1=strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
-				$date2=mktime();
+				$date2=time();
 				$inter=round(($date2-$date1)/$oldnb);
 				// Add old cartridges
 				for ($j=0;$j<$oldnb;$j++){
