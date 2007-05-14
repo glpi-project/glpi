@@ -96,11 +96,13 @@ elseif (!isset ($_POST["sync_ok"])) {
 			echo "<a href='" . $_SERVER['PHP_SELF'] . "?next=listservers'>" . $LANG["buttons"][13] . "</a>";
 			echo "</strong></div>";
 		} else
+		{
 			//Display users to synchronise
 			if (!isset($_SESSION["ldap_filter"]))
 				$_SESSION["ldap_filter"]='';
 				
 			showLdapUsers($_SERVER['PHP_SELF'], $_GET['check'], $_GET['start'], 1,$_SESSION["ldap_filter"]);
+		}
 	} else {
 
 		if (count($_POST['tosync']) > 0) {
