@@ -47,7 +47,7 @@ checkRight("config", "w");
 if (isset($_POST["add"]))
 {
 
-	$mailgate->add($_POST);
+	$newID=$mailgate->add($_POST);
 	logEvent($newID, "mailgate", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
