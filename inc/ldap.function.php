@@ -76,6 +76,9 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], stripslashes($login), $config_ldap->fields['ldap_condition']);
 		if ($user_dn) {
 			
+			$rule = new LdapRuleCollection;
+			$groups = array();
+			
 			$user = new User();
 			//Get informations from LDAP
 			$user->getFromLDAP($config_ldap->fields, $user_dn, addslashes($login), "");
@@ -83,15 +86,19 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 			$user->fields["auth_method"] = AUTH_LDAP;
 			$user->fields["id_auth"] = $ldap_server;
 			$user->fields["date_mod"]=$_SESSION["glpi_currenttime"];
+			
+			$rule->processAllRules($groups,$user->fields,array("type"=>"LDAP","ldap_server"=>$ldap_server,"connection"=>$ds,"userdn"=>$user_dn));
 			if (!$sync) {
 				//Save informations in database !
 				$input = $user->fields;
 				unset ($user->fields);
 
 				$user->fields["ID"] = $user->add($input);
+				$user->applyLdapRules($groups);
 				return $user->fields["ID"];
 			} else
 			{
+					$user->applyLdapRules($groups);
 					$user->update($user->fields);
 			}
 		}
