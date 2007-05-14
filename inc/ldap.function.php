@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
        $diff_arg_names = array();
        for ($i=0; $i < $argCount; $i++) {
            $diff_arg_names[$i] = 'diffArg'.$i;
-           $diff_arg_names[$i] = array_keys((array)func_get_arg($i));
+           $$diff_arg_names[$i] = array_keys((array)func_get_arg($i));
        }
        $diffArrString = '';
        if (!empty($diff_arg_names)) $diffArrString =  '$'.implode(', $', $diff_arg_names);
@@ -174,7 +174,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 			if (!$sync)
 			{
 				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
-				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=$info[$ligne]['modifytimestamp'][0];
+				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
 			}
 			else
 			{
@@ -453,6 +453,7 @@ function computeTimeZoneDelay($first,$second)
 function displayLdapFilter($target)
 {
 	global $LANG;
+
 	
 	if (!isset($_SESSION["ldap_filter"]) || $_SESSION["ldap_filter"] == '')
 	{
@@ -460,7 +461,7 @@ function displayLdapFilter($target)
 			$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
 			$_SESSION["ldap_filter"]="(".$config_ldap->fields['ldap_login']."=*)";
 	}
-	
+		
 	echo "<div align='center'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>"; 
