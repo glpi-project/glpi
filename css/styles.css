@@ -70,6 +70,7 @@ div#c_preference{
 	position: relative;
 	top: 4px;
 	font-size: 0.9em;	
+	z-index:1000;
 }
 
 div#c_preference ul{
