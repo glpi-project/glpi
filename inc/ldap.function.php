@@ -283,7 +283,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 			echo "<td colspan='2'>" . $user . "</td>";
 			
 			if ($stamp != '')
-				echo "<td>" .convDateTime(date("Y-m-d G:m:s",ldapStamp2UnixStamp($stamp))). "</td>";
+				echo "<td>" .convDateTime(date("Y-m-d H:i:s",ldapStamp2UnixStamp($stamp))). "</td>";
 			else
 				echo "<td>&nbsp;</td>";
 			if ($date_mod != '')
