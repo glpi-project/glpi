@@ -285,7 +285,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 			echo "</tr>";
 		}
 		echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-		echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . $LANG["buttons"][37] . "'>";
+		echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "'>";
 		echo "</td></tr>";
 		echo "</table>";
 		echo "</form></div>";
