@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
        $diff_arg_names = array();
        for ($i=0; $i < $argCount; $i++) {
            $diff_arg_names[$i] = 'diffArg'.$i;
-           $$diff_arg_names[$i] = array_keys((array)func_get_arg($i));
+           $diff_arg_names[$i] = array_keys((array)func_get_arg($i));
        }
        $diffArrString = '';
        if (!empty($diff_arg_names)) $diffArrString =  '$'.implode(', $', $diff_arg_names);
@@ -75,8 +75,6 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 		//Get the user's dn
 		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], stripslashes($login), $config_ldap->fields['ldap_condition']);
 		if ($user_dn) {
-			
-			$rule = new LdapAffectEntityRule;	
 			
 			$user = new User();
 			//Get informations from LDAP
@@ -151,13 +149,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
 	if ($ds) {
-		/*
-		if (!$sync)
-		$attrs = array (
-			$config_ldap->fields['ldap_login']
-		);
-		else
-		*/
+
 		//Search for ldap login AND modifyTimestamp, which indicates the last update of the object in directory
 			$attrs = array (
 			$config_ldap->fields['ldap_login'], "modifyTimestamp"
@@ -188,7 +180,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 			{
 			//If ldap synchronisation
 				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
-				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=$info[$ligne]['modifytimestamp'][0];
+				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
 			}
 		}	
 	} else {
@@ -227,7 +219,6 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 			$list[] = array("user" => $user, "timestamp" => $user_infos[$user]["timestamp"], "date_mod"=> "-----");
 		
 		return $list;	
-		//return diff_key($ldap_users,$glpi_users);
 	}
 	else
 		return $glpi_users;
@@ -283,7 +274,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 			echo "<td colspan='2'>" . $user . "</td>";
 			
 			if ($stamp != '')
-				echo "<td>" .convDateTime(date("Y-m-d H:i:s",ldapStamp2UnixStamp($stamp))). "</td>";
+				echo "<td>" .convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
 			else
 				echo "<td>&nbsp;</td>";
 			if ($date_mod != '')
