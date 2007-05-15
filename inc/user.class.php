@@ -154,8 +154,9 @@ class User extends CommonDBTM {
 			$this->syncLdapGroups($input);
 		}
 		
-		if ($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL)
+		if ($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL){
 			$this->applyLdapRules($input);
+		}
 	}
 
 	function pre_deleteItem($ID) {
@@ -214,26 +215,32 @@ class User extends CommonDBTM {
 				$ret = $input;
 				// extauth ldap case
 				if ($_SESSION["glpiextauth"] && $input["auth_method"] != AUTH_LDAP) {
-					foreach ($input['ldap_fields'] as $key => $val)
-						if (!empty ($val))
+					foreach ($input['ldap_fields'] as $key => $val){
+						if (!empty ($val)){
 							unset ($ret[$key]);
+						}
+					}
 				}
 				// extauth imap case
-				if ($input["auth_method"] == AUTH_MAIL)
+				if (isset($input["auth_method"])&&$input["auth_method"] == AUTH_MAIL){
 					unset ($ret["email"]);
+					}
 
 				unset ($ret["active"]);
 				unset ($ret["comments"]);
 				return $ret;
-			} else
+			} else {
 				return array ();
+			}
 		}
 
-		if ($input["auth_method"]==AUTH_LDAP)
+		if ($input["auth_method"]==AUTH_LDAP){
 			$this->syncLdapGroups($input);
+		}
 
-		if ($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL)
+		if ($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL){
 			$this->applyLdapRules($input);
+		}
 
 		return $input;
 	}

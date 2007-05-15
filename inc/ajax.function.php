@@ -52,9 +52,18 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 	}
 	echo "<span id='results_$rand'>\n";
 		if (!$use_ajax){
+			// Save post datas if exists
+			$oldpost=array();
+			if (isset($_POST)&&count($_POST)){
+				$oldpost=$_POST;
+			}
 			$_POST=$params;
 			$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
 			include (GLPI_ROOT.$relativeurl);
+			// Restore $_POST datas
+			if (count($oldpost)){
+				$_POST=$oldpost;
+			}
 		} else {
 			echo $default;
 		}
