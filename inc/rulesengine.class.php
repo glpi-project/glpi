@@ -714,6 +714,7 @@ class Rule extends CommonDBTM{
 					//Hook
 					$hook_params["rule_type"]=$this->rule_type;
 					$hook_params["ruleid"]=$this->fields["ID"];
+					$hook_params["input"]=$input;
 					$hook_params["output"]=$output;
 					
 					do_hook_function("rule_matched",$hook_params);
