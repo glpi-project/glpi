@@ -56,7 +56,7 @@ $NEEDED_ITEMS = array (
 	"group",
 	"entity",
 	"rulesengine",
-	"rule.ldap"
+	"rule.right"
 );
 
 define('GLPI_ROOT', '..');

@@ -48,7 +48,7 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulese
  "</strong></a></td></tr>";
 	}
 	if (haveRight("rule_ldap","r")){
-		echo "<tr class='tab_bg_1'><td align='center'><a href=\"rule.ldap.php\"><strong>" .$LANG["rulesengine"][19] . "</strong></a></td> </tr>";
+		echo "<tr class='tab_bg_1'><td align='center'><a href=\"rule.right.php\"><strong>" .$LANG["rulesengine"][19] . "</strong></a></td> </tr>";
 	}
 	if (haveRight("rule_tracking","r")){
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.tracking.php\"><strong>" . $LANG["rulesengine"][28] . "</strong></a></td></tr>";
