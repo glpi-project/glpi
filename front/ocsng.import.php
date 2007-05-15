@@ -43,15 +43,31 @@ checkRight("ocsng","w");
 
 commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils","ocsng");
 
+//First time this screen is displayed : set the import mode to 'basic'
+if (!isset($_SESSION["change_import_mode"]))
+	$_SESSION["change_import_mode"] = false;
 
-if (isset($_SESSION["ocs_import"])){
-	if ($count=count($_SESSION["ocs_import"])){
+//Changing the import mode	
+if (isset($_GET["change_import_mode"])){
+	if ($_GET["change_import_mode"] == "false")
+		$_SESSION["change_import_mode"]=false;
+	else
+		$_SESSION["change_import_mode"]=true;
+}
+
+if (isset($_SESSION["ocs_import"]["ID"])){
+	if ($count=count($_SESSION["ocs_import"]["ID"])){
 		$percent=min(100,round(100*($_SESSION["ocs_import_count"]-$count)/$_SESSION["ocs_import_count"],0));
 
 		displayProgressBar(400,$percent);
 
-		$key=array_pop($_SESSION["ocs_import"]);
-		ocsImportComputer($key,$_SESSION["ocs_server_id"]);
+		$key=array_pop($_SESSION["ocs_import"]["ID"]);
+		if (isset($_SESSION["ocs_import"]["FK_entities"][$key]))
+			$entity=$_SESSION["ocs_import"]["FK_entities"][$key];
+		else
+			$entity=-1;	
+
+		ocsImportComputer($key,$_SESSION["ocs_server_id"],0,$entity);
 
 		glpi_header($_SERVER['PHP_SELF']);
 
@@ -72,21 +88,23 @@ if (!isset($_POST["import_ok"])){
 
 	if (isset($_SESSION["ocs_import"])) unset($_SESSION["ocs_import"]);
 	ocsManageDeleted($_SESSION["ocs_server_id"]);
-	ocsShowNewComputer($_SESSION["ocs_server_id"],$_GET['check'],$_GET['start']);
+	ocsShowNewComputer($_SESSION["ocs_server_id"],$_SESSION["change_import_mode"],$_GET['check'],$_GET['start']);
 
 } else {
-
 	if (count($_POST['toimport'])>0){
 		$_SESSION["ocs_import_count"]=0;
-		foreach ($_POST['toimport'] as $key => $val){
+		foreach ($_POST['toimport'] as $key=>$val){
 			if ($val=="on")	{
-				$_SESSION["ocs_import"][]=$key;
+				$_SESSION["ocs_import"]["ID"][]=$key;
+				if (isset($_POST['toimport_entities']))
+					$_SESSION["ocs_import"]["FK_entities"][$key]=$_POST['toimport_entities'][$key];
 				$_SESSION["ocs_import_count"]++;
 			}
 		}
 	}
-
+	
 	glpi_header($_SERVER['PHP_SELF']);
+	
 }
 
 

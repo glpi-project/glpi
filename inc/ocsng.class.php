@@ -181,10 +181,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][48] . " </td><td>";
-		echo "<select name='deconnection_behavior'>";			
-		$listState = getListState($ID);
-		echo $listState;
-		echo "</select>";
+		getListState($ID);
 		echo "</td></tr>";
 
 		$periph = $this->fields["import_periph"];
