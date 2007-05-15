@@ -51,7 +51,7 @@ class LdapCriteria extends CommonDBTM {
 
 	function getParametersList() {
 		global $DB;
-		$sql = "SELECT * from " . $this->table . " WHERE rule_type=".RULE_LDAP_AFFECT_ENTITY." ORDER by name ASC";
+		$sql = "SELECT * from " . $this->table . " WHERE rule_type=".RULE_AFFECT_RIGHTS." ORDER by name ASC";
 		$result = $DB->query($sql);
 		$parameters = array ();
 
@@ -78,7 +78,7 @@ class LdapCriteria extends CommonDBTM {
 			autocompletionTextField("name", $this->table, "name", "", 30);
 			echo $LANG["setup"][601] . ":";
 			autocompletionTextField("value", $this->table, "value", "", 30);
-			echo "<input type=hidden name='rule_type' value=\"" . RULE_LDAP_AFFECT_ENTITY . "\">";
+			echo "<input type=hidden name='rule_type' value=\"" . RULE_AFFECT_RIGHTS . "\">";
 			echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 			echo "</td></tr>";
 			

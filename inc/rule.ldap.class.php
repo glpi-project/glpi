@@ -43,14 +43,14 @@ if (!defined('GLPI_ROOT')) {
 *   - actions
 * 
 **/
-class LdapAffectEntityRule extends Rule {
+class RightAffectRule extends Rule {
 
-	function LdapAffectEntityRule() {
+	function RightAffectRule() {
 		global $RULES_CRITERIAS;	
 	
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
-		$this->rule_type = RULE_LDAP_AFFECT_ENTITY;
+		$this->rule_type = RULE_AFFECT_RIGHTS;
 		
 		//Dynamically add all the ldap criterias to the current list of rule's criterias
 		$this->addLdapCriteriasToArray();
@@ -160,14 +160,14 @@ class LdapAffectEntityRule extends Rule {
 	{
 		global $DB,$RULES_CRITERIAS;
 
-			$sql = "SELECT name,value,rule_type FROM glpi_rules_ldap_parameters WHERE rule_type=".RULE_LDAP_AFFECT_ENTITY;
+			$sql = "SELECT name,value,rule_type FROM glpi_rules_ldap_parameters WHERE rule_type=".$this->rule_type;
 			$result = $DB->query($sql);
 			while ($datas = $DB->fetch_array($result))
 			{
-					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['name']=$datas["name"];
-					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['field']=$datas["value"];
-					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['linkfield']='';
-					$RULES_CRITERIAS[RULE_LDAP_AFFECT_ENTITY][$datas["value"]]['table']='';
+					$RULES_CRITERIAS[$this->rule_type][$datas["value"]]['name']=$datas["name"];
+					$RULES_CRITERIAS[$this->rule_type][$datas["value"]]['field']=$datas["value"];
+					$RULES_CRITERIAS[$this->rule_type][$datas["value"]]['linkfield']='';
+					$RULES_CRITERIAS[$this->rule_type][$datas["value"]]['table']='';
 				}
 	}
 
@@ -255,16 +255,16 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 }
 
 
-class LdapRuleCollection extends RuleCollection {
+class RightRuleCollection extends RuleCollection {
 
 	var $rules_entity_rights = array();
 	var $rules_entity = array();
 	var $rules_rights = array();
 
-	function LdapRuleCollection() {
+	function RightRuleCollection() {
 		global $DB;
-		$this->rule_type = RULE_LDAP_AFFECT_ENTITY;
-		$this->rule_class_name = 'LdapAffectEntityRule';
+		$this->rule_type = RULE_AFFECT_RIGHTS;
+		$this->rule_class_name = 'RightAffectRule';
 		$this->stop_on_first_match=false;
 		$this->right="rule_ldap";
 	}
@@ -279,7 +279,7 @@ class LdapRuleCollection extends RuleCollection {
 		$params = array();
 		$sql = "SELECT DISTINCT value " .
 				"FROM glpi_rules_descriptions, glpi_rules_criterias, glpi_rules_ldap_parameters " .
-				"WHERE glpi_rules_descriptions.rule_type=".RULE_LDAP_AFFECT_ENTITY." AND glpi_rules_criterias.FK_rules=glpi_rules_descriptions.ID AND glpi_rules_criterias.criteria=glpi_rules_ldap_parameters.value";
+				"WHERE glpi_rules_descriptions.rule_type=".$this->rule_type." AND glpi_rules_criterias.FK_rules=glpi_rules_descriptions.ID AND glpi_rules_criterias.criteria=glpi_rules_ldap_parameters.value";
 		
 		$result = $DB->query($sql);
 		while ($param = $DB->fetch_array($result))
@@ -323,7 +323,7 @@ class LdapRuleCollection extends RuleCollection {
 					$rule_input = $rule_input[0];
 	
 					//Get all the ldap fields
-					$fields = $this->getFieldsForQuery(RULE_LDAP_AFFECT_ENTITY);
+					$fields = $this->getFieldsForQuery();
 					
 					foreach ($fields as $field)
 					{

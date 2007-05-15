@@ -150,13 +150,9 @@ class User extends CommonDBTM {
 		$prof = new Profile();
 
 		$input["ID"]=$newID;
-		if ($input["auth_method"]==AUTH_LDAP){
-			$this->syncLdapGroups($input);
-		}
-		
-		if ($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL){
-			$this->applyLdapRules($input);
-		}
+
+		$this->syncLdapGroups($input);
+		$this->applyRightRules($input);
 	}
 
 	function pre_deleteItem($ID) {
@@ -234,13 +230,9 @@ class User extends CommonDBTM {
 			}
 		}
 
-		if ($input["auth_method"]==AUTH_LDAP){
-			$this->syncLdapGroups($input);
-		}
+		$this->syncLdapGroups($input);
 
-		if ($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL){
-			$this->applyLdapRules($input);
-		}
+		$this->applyRightRules($input);
 
 		return $input;
 	}
@@ -255,8 +247,9 @@ class User extends CommonDBTM {
 	}
 
 	// SPECIFIC FUNCTIONS
-	function applyLdapRules($input){
+	function applyRightRules($input){
 		global $DB;
+		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL))
 		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 
 			//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
@@ -310,6 +303,7 @@ class User extends CommonDBTM {
 	}
 	function syncLdapGroups($input){
 		global $DB;
+		if (isset($input["auth_method"])&&$input["auth_method"]==AUTH_LDAP)
 		if (isset ($input["ID"]) && $input["ID"]>0 && isset ($input["_groups"]) && count($input["_groups"])) {
 			$auth_method = $this->getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
 			if (count($auth_method)){
@@ -474,7 +468,7 @@ class User extends CommonDBTM {
 			}
 
 		//Instanciate the affectation's rule
-		$rule = new LdapRuleCollection();
+		$rule = new RightRuleCollection();
 			
 		//Process affectation rules :
 		//we don't care about the function's return because all the datas are stored in session temporary
@@ -542,7 +536,7 @@ class User extends CommonDBTM {
 		$this->fields['name'] = $name;
 
 		//Instanciate the affectation's rule
-		$rule = new LdapRuleCollection();
+		$rule = new RightRuleCollection();
 			
 		//Process affectation rules :
 		//we don't care about the function's return because all the datas are stored in session temporary
