@@ -417,20 +417,25 @@ class Job extends CommonDBTM{
 				$input["author"]=$_SESSION["glpiID"];
 			else $input["author"]=1; // Helpdesk injector
 		}
-		if ($input["assign"]>0&&$input["status"]=="new")
+		if ($input["assign"]>0&&$input["status"]=="new"){
 			$input["status"] = "assign";
+		}
 
-		if (isset($input["computer"])&&$input["computer"]==0)
+		if (isset($input["computer"])&&$input["computer"]==0){
 			$input["device_type"]=0;	
+		}
 
-		if ($input["device_type"]==0)
+		if ($input["device_type"]==0){
 			$input["computer"]=0;
+		}
 
-		if (!isset($input["date"]))
+		if (!isset($input["date"])){
 			$input["date"] = $_SESSION["glpi_currenttime"];
+		}
 
-		if (strstr($input["status"],"old_"))
+		if (strstr($input["status"],"old_")){
 			$input["closedate"] = $input["date"];
+		}
 
 
 		if ($input["computer"]&&$input["device_type"]){
@@ -469,6 +474,11 @@ class Job extends CommonDBTM{
 		if (isset($input["add_close"])){
 			$input["status"]="old_done";
 			unset($input["add_close"]);
+			if (isset($input["date"])){
+				$input["closedate"]=$input["date"];
+			} else {
+				$input["closedate"]=$_SESSION["glpi_currenttime"];
+			}
 		}
 
 		if (empty($input["name"])) {
