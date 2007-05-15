@@ -2370,10 +2370,10 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 							$instID = installSoftware($glpi_id, $licenseID, '', $dohistory);
 							$to_add_to_ocs_array[$instID]=$initname;
 						//}
-
+                   
 					} else { // Check if software always exists with is real name
-
-						$id = array_search($initname, $import_software);
+					
+						$id = array_search($initname, $import_software);					
 						unset ($import_software[$id]);
 
 						$query_name = "SELECT glpi_software.ID as ID , glpi_software.name AS NAME 
@@ -2383,7 +2383,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 								WHERE glpi_inst_software.ID='$id' AND glpi_software.FK_entities=".$entity;
 						$result_name = $DB->query($query_name);
 						if ($DB->numrows($result_name) == 1) {
-							if ($DB->result($result_name, 0, "NAME") != $name) {
+							if ( strtolower($name)!= strtolower($DB->result($result_name, 0, "NAME"))) {
 								$updates["name"] = $name;
 								// No update version
 								//$updates["version"]=$data2["VERSION"];
