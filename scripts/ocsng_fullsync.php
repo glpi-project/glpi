@@ -58,7 +58,7 @@ include (GLPI_ROOT . "/config/based_config.php");
 
 $thread_nbr='';
 $thread_id='';
-$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","rulesengine","rule.ocs","group");
+$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","rulesengine","rule.ocs","group","registry");
 include (GLPI_ROOT."/inc/includes.php");
 
 if (isset($_GET["thread_nbr"]) || isset($_GET["thread_id"])) {
