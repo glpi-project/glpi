@@ -979,6 +979,12 @@ $LANG["ocsng"][32]="Périphérique(s) verouillé(s)";
 $LANG["ocsng"][33]="Aucun périphérique verrouillé";
 $LANG["ocsng"][34]="Imprimante(s) verrouillé(s)";
 $LANG["ocsng"][35]="Aucune imprimante verrouillé";
+$LANG["ocsng"][36]="Entité de destination";
+$LANG["ocsng"][37]="Activer la prévisualisation";
+$LANG["ocsng"][38]="Désactiver la prévisualisation";
+$LANG["ocsng"][40]="Match règle ?";
+$LANG["ocsng"][41]="Mode d'import manuel";
+
 
 $LANG["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
 $LANG["ocsconfig"][1]="Utilisateur de la base de données OCSweb";

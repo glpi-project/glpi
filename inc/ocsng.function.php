@@ -38,13 +38,12 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-function ocsShowNewComputer($ocs_server_id,$check, $start, $tolinked = 0) {
+function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked = 0) {
 	global $DB, $DBocs, $LANG, $CFG_GLPI;
 
 	if (!haveRight("ocsng", "w"))
 		return false;
 
-	//$DBocs= getDBocs($ocs_server_id);
 	$cfg_ocs = getOcsConf($ocs_server_id);
 
 	$WHERE = "";
@@ -127,21 +126,75 @@ function ocsShowNewComputer($ocs_server_id,$check, $start, $tolinked = 0) {
 			// delete begin
 			if ($start > 0)
 				array_splice($hardware, 0, $start);
+
+			echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode' action='" . $_SERVER['PHP_SELF'] . "'>";
+
+			echo "<table class='tab_cadre'>";
+			echo "<tr><th>" . $LANG["ocsng"][41] . "</th></tr>";
+			echo "<tr class='tab_bg_1'>"; 
+			echo "<td align='center'>";
+			
+			if($advanced)
+				$status="false";
+				else
+				$status="true";
+
+			echo "<a href='" . $_SERVER['PHP_SELF'] . "?change_import_mode=".$status."'>";
+			if($advanced)
+				echo $LANG["ocsng"][38];
+			else
+				echo $LANG["ocsng"][37];
+			echo "</a></td>"; 
+			echo "</tr></table></form><br>";
+
+
 			echo "<strong>" . $LANG["ocsconfig"][18] . "</strong><br>";
 			echo "<form method='post' name='ocsng_form' id='ocsng_form' action='" . $_SERVER['PHP_SELF'] . "'>";
 			if ($tolinked == 0)
 				echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th>" . $LANG["ocsng"][5] . "</th><th>" . $LANG["common"][27] . "</th><th>TAG</th><th>&nbsp;</th></tr>";
+	
+			echo "<tr><th>" . $LANG["ocsng"][5] . "</th><th>" . $LANG["common"][27] . "</th><th>TAG</th>";
+			if ($advanced)
+			{	
+				echo "<th>".$LANG["ocsng"][40]."</th>";
+				echo "<th>".$LANG["ocsng"][36]."</th>";
+			}
+			echo "<th>&nbsp;</th></tr>";
 
-			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='".($advanced?6:4)."' align='center'>";
 			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
 			echo "</td></tr>";
 
-			foreach ($hardware as $ID => $tab) {
-				echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td><td>" . convDateTime($tab["date"]) . "</td><td>" . $tab["TAG"] . "</td><td>";
+			$rule = new OcsRuleCollection($ocs_server_id);
 
+			foreach ($hardware as $ID => $tab) {
+				$comp = new Computer;
+				$comp->fields["ID"]=$tab["ID"];
+				
+				$data=array();
+				if ($advanced)
+					$data=$rule->processAllRules(array(),array(),$tab["ID"]);
+
+				echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td><td>" . convDateTime($tab["date"]) . "</td><td>" . $tab["TAG"] . "</td>";
+
+				if ($advanced)
+				{
+					if (!isset($data['FK_entities'])) 
+					{
+						echo "<td align='center'><img src=\"".GLPI_ROOT."/pics/redbutton.png\"></td>";
+						$data['FK_entities'] = -1;
+					}
+					else
+						echo "<td align='center'><img src=\"".GLPI_ROOT."/pics/export.png\"></td>";
+						
+					echo "<td>";
+					dropdownValue("glpi_entities","toimport_entities[".$tab["ID"]."]=" . $data['FK_entities'],$data['FK_entities'],0);
+					echo"</td>";
+				}	
+				
+				echo "<td>";
 				if ($tolinked == 0)
 					echo "<input type='checkbox' name='toimport[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
 				else {
@@ -152,10 +205,12 @@ function ocsShowNewComputer($ocs_server_id,$check, $start, $tolinked = 0) {
 						dropdown("glpi_computers", "tolink[" .
 						$tab["ID"] . "]");
 				}
-				echo "</td></tr>";
+				echo "</td>";
 
+	
+				echo "</tr>";	
 			}
-			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='".($advanced?6:4)."' align='center'>";
 			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
 			echo "<input type=hidden name='ocs_server_id' value='".$ocs_server_id."'>";
 			echo "</td></tr>";
@@ -292,7 +347,7 @@ function ocsManageDeleted($ocs_server_id) {
 	}
 }
 
-function ocsImportComputer($ocs_id,$ocs_server_id,$lock=0) {
+function ocsImportComputer($ocs_id,$ocs_server_id,$lock=0,$defaultentity=-1) {
 	global $DBocs,$DB;
 
 	checkOCSconnection($ocs_server_id);
@@ -310,11 +365,18 @@ function ocsImportComputer($ocs_id,$ocs_server_id,$lock=0) {
 		$query = "UPDATE hardware SET CHECKSUM='".MAX_OCS_CHECKSUM."' WHERE ID='$ocs_id'";
 		$DBocs->query($query);
 
-	//Try to affect computer to an entity
-	$rule = new OcsRuleCollection($ocs_server_id);
-	$data=array();
-	$data=$rule->processAllRules(array(),array(),$ocs_id);
-	
+	//No entity predefined, check rules
+	if ($defaultentity == -1)
+	{
+		//Try to affect computer to an entity
+		$rule = new OcsRuleCollection($ocs_server_id);
+		$data=array();
+		$data=$rule->processAllRules(array(),array(),$ocs_id);
+	}
+	else
+		//An entity has already been defined via the web interface
+		$data['FK_entities']=$defaultentity;		
+
 	//Try to match all the rules, return the first good one, or null if not rules matched
 	if (isset($data['FK_entities'])&&$data['FK_entities']>=0)
 	{
@@ -331,7 +393,7 @@ function ocsImportComputer($ocs_id,$ocs_server_id,$lock=0) {
 		
 		$line = $DBocs->fetch_array($result);
 		$line = clean_cross_side_scripting_deep(addslashes_deep($line));
-		$DBocs->close();
+		//$DBocs->close();
 
 		$cfg_ocs=getOcsConf($ocs_server_id);
 		$comp->fields["FK_entities"] = $data['FK_entities'];
@@ -2819,34 +2881,25 @@ function getColumnListFromAccountInfoTable($ID,$glpi_column){
 	
 function getListState($ocs_server_id){
 	global $DB,$LANG;
-	$listState ="";
 	$queryStateSelected = "SELECT deconnection_behavior from glpi_ocs_config WHERE ID='$ocs_server_id'";
 	$resultSelected = $DB->query($queryStateSelected);
 	if($DB->numrows($resultSelected)>0){
 		$res = $DB->fetch_array($resultSelected);
 		$selected = $res["deconnection_behavior"]; 
 	}
-	$listState .= "<option value=''>-----</option>";
-	if($selected == "trash")
-	$listState .= "<option value='trash' selected>" . $LANG["ocsconfig"][49] . "</option>";
-	else
-	$listState .= "<option value='trash'>" . $LANG["ocsconfig"][49] . "</option>";
-	if($selected == "delete")
-	$listState .= "<option value='delete' selected>" . $LANG["ocsconfig"][50] . "</option>";
-	else
-	$listState .= "<option value='delete'>" . $LANG["ocsconfig"][50] . "</option>";
+	
+	$values['']="-----";
+	$values["trash"]=$LANG["ocsconfig"][49];
+	$values["delete"]=$LANG["ocsconfig"][50];
+	
 	$queryStateList = "SELECT name from glpi_dropdown_state";	
 	$result = $DB->query($queryStateList);
 	if($DB->numrows($result)>0){
-		while(($data = $DB->fetch_array($result))){
-			$state = $data["name"];
-			if($state == $selected)
-			$listState .="<option value='$state' selected>" .$LANG["ocsconfig"][51]." ".$state . "</option>";
-			else
-			$listState .="<option value='$state'>" .$LANG["ocsconfig"][51]." ".$state . "</option>";
-		}
+		while(($data = $DB->fetch_array($result)))
+			$values[$data["name"]]=$LANG["ocsconfig"][51]." ".$data["name"];	
+		
 	}
-	return $listState;
+	dropdownArrayValues("deconnection_behavior",$values,$selected);
 }
 
 function setEntityLock($entity)

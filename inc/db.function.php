@@ -878,7 +878,7 @@ function closeDBConnections(){
 	if (method_exists($DB,"close")){
 		$DB->close();
 		if (isset($DBocs)){
-			$DB->close();
+			$DBocs->close();
 		}
 	}
 }

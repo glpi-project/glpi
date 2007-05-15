@@ -439,11 +439,6 @@ class Rule extends CommonDBTM{
 		include (GLPI_ROOT."/ajax/ruleaction.php");
 		echo "</span>\n";	
 
-/*
-		dropdownRulesActions("action_type");
-		echo $LANG["rulesengine"][13] . ":";
-		dropdownValue("glpi_entities", "value");
-*/
 		echo "</td><td>";
 		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
 		echo "<input type='submit' name='add_action' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
@@ -715,6 +710,13 @@ class Rule extends CommonDBTM{
 
 				if ($doactions){
 					$output=$this->executeActions($output,$params);
+					
+					//Hook
+					$hook_params["rule_type"]=$this->rule_type;
+					$hook_params["ruleid"]=$this->fields["ID"];
+					$hook_params["output"]=$output;
+					
+					do_hook_function("rule_matched",$hook_params);
 					$output["_rule_process"]=true;
 				}
 			}
@@ -790,20 +792,24 @@ class Rule extends CommonDBTM{
 			echo "<input type='checkbox' name='item[" . $this->fields["ID"] . "]' value='1' $sel>";
 			echo "</td>";
 		}
-			
-		if ($canedit){
+		else
+			echo "<td></td>";
+				
+		//if ($canedit){
 			echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a></td>";
+	/*
 		} else{
 			echo "<td>".$this->fields["name"] . "</td>";
 		}
+		*/
 					
 		echo "<td>".$this->fields["description"]."</td>";
-		if (!$first){
+		if (!$first && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
-		if (!$last){
+		if (!$last && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=down&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
