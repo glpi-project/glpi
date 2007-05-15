@@ -80,7 +80,7 @@ if (isset($_POST["update"]))
 	checkRight("entity","w");
 
 
-	$rule = new LdapAffectEntityRule;
+	$rule = new RightAffectRule;
 	$ruleid = $rule->add($_POST);
 	
 	if ($ruleid)
@@ -116,7 +116,7 @@ if (isset($_POST["update"]))
 	if (isset($_POST["delete_computer_rule"])){
 		$rule = new OcsAffectEntityRule;		
 	} else {
-		$rule = new LdapAffectEntityRule;
+		$rule = new RightAffectRule;
 	}
 		
 	if (count($_POST["item"])){
@@ -138,7 +138,7 @@ if (isset($_GET['onglet'])) {
 
 
 $ocsrule = new OcsAffectEntityRule;
-$ldaprule = new LdapAffectEntityRule;
+$ldaprule = new RightAffectRule;
 
 if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 	switch($_SESSION['glpi_onglet']){

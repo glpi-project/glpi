@@ -263,9 +263,8 @@
 	define("OR_MATCHING","OR");	
 	
 	define("RULE_OCS_AFFECT_COMPUTER",0);
-	define("RULE_LDAP_AFFECT_RIGHT",1);
+	define("RULE_AFFECT_RIGHTS",1);
 	define("RULE_TRACKING_AUTO_ACTION",2);
-	define("RULE_LDAP_AFFECT_ENTITY",1);
 
 		//DEVICE ARRAY.
 	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");

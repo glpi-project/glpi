@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("rulesengine","rule.ldap");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new LdapRuleCollection();
+$rulecollection = new RightRuleCollection();
 
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>

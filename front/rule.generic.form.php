@@ -50,8 +50,8 @@ if (isset($_GET["ID"]))
 		case RULE_OCS_AFFECT_COMPUTER :
 			$rule = new OcsAffectEntityRule();
 		break;		
-		case RULE_LDAP_AFFECT_ENTITY :
-			$rule = new LdapAffectEntityRule();
+		case RULE_AFFECT_RIGHTS :
+			$rule = new RightAffectRule();
 		break;
 		case RULE_TRACKING_AUTO_ACTION:
 			$rule = new TrackingBusinessRule();

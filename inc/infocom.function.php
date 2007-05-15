@@ -46,7 +46,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 	$date_fiscale=$CFG_GLPI["date_fiscale"];
 
 	$ic = new Infocom;
-
+	$ci=new CommonItem();
 	$option="";
 	if ($withtemplate==2)
 		$option=" readonly ";
@@ -56,6 +56,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 	}
 
 	echo "<br>";
+	if ($ci->getFromDB($device_type,$dev_ID))
 	if (!$ic->getfromDBforDevice($device_type,$dev_ID)){
 		if (haveRight("contract_infocom","w")&&$withtemplate!=2){
 			echo "<div align='center'>";
@@ -75,7 +76,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		echo "<td align='center'>";
 		if ($withtemplate==2) 
 			echo getDropdownName("glpi_enterprises",$ic->fields["FK_enterprise"]);
-		else dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"]);
+		else dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('FK_entities'));
 
 		echo "</td>";
 		echo "<td>".$LANG["financial"][82].":		</td>";
@@ -174,15 +175,12 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		}
 		//TCO
 		if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE&&$device_type!=CONSUMABLE_ITEM_TYPE&&$device_type!=LICENSE_TYPE&&$device_type!=CARTRIDGE_ITEM_TYPE){
-			$ci=new CommonItem();
-			if ($ci->getFromDB($device_type,$dev_ID)){
-				echo "<tr class='tab_bg_1'><td>";
-				echo $LANG["financial"][89]." : </td><td>";
-				echo showTco($ci->getField('ticket_tco'),$ic->fields["value"]);
-				echo "</td><td>".$LANG["financial"][90]." : 	</td><td>";
-				echo showTco($ci->getField('ticket_tco'),$ic->fields["value"],$ic->fields["buy_date"]);
-				echo "</td></tr>";
-			}
+			echo "<tr class='tab_bg_1'><td>";
+			echo $LANG["financial"][89]." : </td><td>";
+			echo showTco($ci->getField('ticket_tco'),$ic->fields["value"]);
+			echo "</td><td>".$LANG["financial"][90]." : 	</td><td>";
+			echo showTco($ci->getField('ticket_tco'),$ic->fields["value"],$ic->fields["buy_date"]);
+			echo "</td></tr>";
 		}
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["setup"][247].":		</td>";

@@ -76,7 +76,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], stripslashes($login), $config_ldap->fields['ldap_condition']);
 		if ($user_dn) {
 			
-			$rule = new LdapRuleCollection;
+			$rule = new RightRuleCollection;
 			$groups = array();
 			
 			$user = new User();
@@ -94,11 +94,11 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 				unset ($user->fields);
 
 				$user->fields["ID"] = $user->add($input);
-				$user->applyLdapRules($groups);
+				$user->applyRightRules($groups);
 				return $user->fields["ID"];
 			} else
 			{
-					$user->applyLdapRules($groups);
+					$user->applyRightRules($groups);
 					$user->update($user->fields);
 			}
 		}
