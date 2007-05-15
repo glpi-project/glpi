@@ -43,7 +43,7 @@ $NEEDED_ITEMS = array (
 	"group",
 	"entity",
 	"rulesengine",
-	"rule.ldap"
+	"rule.right"
 );
 
 include (GLPI_ROOT . "/inc/includes.php");

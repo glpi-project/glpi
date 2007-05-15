@@ -38,7 +38,7 @@
 $NEEDED_ITEMS = array (
 	"ldap",
 	"user",
-	"profile","entity","group","rulesengine","rule.ldap"
+	"profile","entity","group","rulesengine","rule.right"
 );
 
 define('GLPI_ROOT', '..');
