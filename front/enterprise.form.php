@@ -146,13 +146,7 @@ else
 					showNotesForm($_SERVER['PHP_SELF'],ENTERPRISE_TYPE,$_GET["ID"]);
 					break;	
 				case 15 :
-					echo "<div align='center'><table border='0'><tr><td valign='top'>";
-					showDeviceManufacturer($_GET["ID"]);
-					echo "</td><td valign='top'>";
-					showInternalDeviceManufacturer($_GET["ID"]);
-					echo "</td><td valign='top'>";
 					showInfocomEnterprise($_GET["ID"]);
-					echo "</td></tr></table></div>";
 					break;	
 				default : 
 					if (!display_plugin_action(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
