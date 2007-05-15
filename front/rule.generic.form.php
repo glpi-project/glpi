@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: rule.ldap.form.php 4895 2007-05-06 23:53:00Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
