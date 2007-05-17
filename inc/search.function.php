@@ -952,7 +952,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$ci = new CommonItem();
 				
 			}
-			if ($type==RESERVATION_TYPE){
+			if ($type==RESERVATION_TYPE&&$output_type==HTML_OUTPUT){
 				if (haveRight("reservation_central","w")){
 					echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
 					echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
@@ -1044,7 +1044,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					$ci->setType($data["TYPE"]);
 					echo displaySearchItem($output_type,$ci->getType(),$item_num,$row_num);
 				}	
-				if ($type==RESERVATION_TYPE){
+				if ($type==RESERVATION_TYPE&&$output_type==HTML_OUTPUT){
 					if (haveRight("reservation_central","w")){
 						if ($data["ACTIVE"]){
 							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=0\"  title='".$LANG["buttons"][42]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
