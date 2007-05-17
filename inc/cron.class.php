@@ -156,13 +156,15 @@ class Cron {
 
 		foreach ($this->taches as $nom => $periode) {
 			$lock = GLPI_CRON_DIR. '/' . $nom . '.lock';
-			$date_lock = @filemtime($lock);
-
+			if (file_exists($lock)){
+				$date_lock = @filemtime($lock);
+			} else {
+				$date_lock=0;
+			}
 			if ($date_lock + $periode < $tmin) {
 				$tmin = $date_lock + $periode;
 				$tache = $nom;
 				$last = $date_lock;
-
 			}
 			// debug : si la date du fichier est superieure a l'heure actuelle,
 			// c'est que le serveur a (ou a eu) des problemes de reglage horaire
