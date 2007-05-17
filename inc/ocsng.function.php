@@ -2883,6 +2883,7 @@ function getListState($ocs_server_id){
 	global $DB,$LANG;
 	$queryStateSelected = "SELECT deconnection_behavior from glpi_ocs_config WHERE ID='$ocs_server_id'";
 	$resultSelected = $DB->query($queryStateSelected);
+	$selected=0;
 	if($DB->numrows($resultSelected)>0){
 		$res = $DB->fetch_array($resultSelected);
 		$selected = $res["deconnection_behavior"]; 
