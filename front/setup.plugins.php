@@ -68,7 +68,7 @@ echo "<tr><th colspan='2'>".$LANG["setup"][701]."</th></tr>";
 
 foreach ($names as $key => $val) {
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key/".$pages[$key]."'><b>".$val["name"]."</b></a></td><td align='center'>#".$val["version"]."</td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key/".$pages[$key]."'><strong>".$val["name"]."</strong></a></td><td align='center'>#".$val["version"]."</td></tr>";
 }
 
 echo "</table></div>";
