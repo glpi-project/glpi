@@ -108,28 +108,40 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 		}
 		//  CSS link
-		echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+		echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
 		//Surcharge de la feuille de style principale
 		//echo "<link rel=\"stylesheet\" href=\"".$CFG_GLPI["root_doc"]."/css/header_style.css\" type=\"text/css\" media=\"screen\" />\n";
-		echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
-		echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
+		echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >\n";
+		echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 		// AJAX library
-		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
-		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>\n";
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>\n";
 
-//		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/jquery-latest.pack.js'></script>";
-//		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/jquery.autocomplete.js'></script>";
-//		echo "<link rel='stylesheet' type='text/css' href='".$CFG_GLPI["root_doc"]."/jquery.autocomplete.css' >";
+//		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/jquery-latest.pack.js'></script>\n";
+//		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/jquery.autocomplete.js'></script>\n";
+//		echo "<link rel='stylesheet' type='text/css' href='".$CFG_GLPI["root_doc"]."/jquery.autocomplete.css' >\n";
 
 		// Some Javascript-Functions which we may need later
-		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
 	
 		// Calendar scripts 
-		echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
+		echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>\n";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>\n";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>\n";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>\n";
 	
+		// Add specific javascript for plugins
+		if (isset($PLUGIN_HOOKS['add_javascript'])&&count($PLUGIN_HOOKS['add_javascript'])){
+			foreach  ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
+				echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'></script>\n";
+			}
+		}
+		// Add specific css for plugins
+		if (isset($PLUGIN_HOOKS['add_css'])&&count($PLUGIN_HOOKS['add_css'])){
+			foreach  ($PLUGIN_HOOKS["add_css"] as $plugin => $file) {
+				echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
+			}
+		}
 	
 		// End of Head
 		echo "</head>\n";
@@ -863,11 +875,26 @@ function helpHeader($title,$url) {
 	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
 
+
 	// Calendar scripts 
 	echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
 	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
 	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>";
 	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
+
+
+	// Add specific javascript for plugins
+	if (isset($PLUGIN_HOOKS['add_javascript'])&&count($PLUGIN_HOOKS['add_javascript'])){
+		foreach  ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
+			echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'></script>\n";
+		}
+	}
+	// Add specific css for plugins
+	if (isset($PLUGIN_HOOKS['add_css'])&&count($PLUGIN_HOOKS['add_css'])){
+		foreach  ($PLUGIN_HOOKS["add_css"] as $plugin => $file) {
+			echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
+		}
+	}
 
 	// End of Head
 	echo "</head>\n";
