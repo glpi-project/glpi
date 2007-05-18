@@ -127,7 +127,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		$DB->query($query);
 	}
 
-	function title($target,$type){
+/*	function title($target,$type){
 		global $LANG,$CFG_GLPI;
 
 		$dp=array();
@@ -226,7 +226,7 @@ class SetupSearchDisplay extends CommonDBTM{
 			return $type;
 		} else return false;
 	}
-
+*/
 	function showForm($target,$type){
 		global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
 
