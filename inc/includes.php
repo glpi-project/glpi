@@ -101,7 +101,10 @@ if (!isset($AJAX_INCLUDE)){
 
 
 /* On startup, register all plugins configured for use. */
-if (!isset($AJAX_INCLUDE)&&!isset($SKIP_PLUGIN_INCLUDE)){
+if (!isset($AJAX_INCLUDE)&&!isset($PLUGINS_INCLUDED)){
+	// PLugin already included
+	$PLUGINS_INCLUDED=1;
+
 	if (!isset($_SESSION["glpi_plugins"])) {
 		initPlugins();
 	}

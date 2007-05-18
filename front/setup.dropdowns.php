@@ -40,6 +40,7 @@ $NEEDED_ITEMS=array("setup","ocsng");
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
 }
+
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkSeveralRightsOr(array("dropdown"=>"w","entity_dropdown"=>"w"));
