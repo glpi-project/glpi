@@ -210,7 +210,9 @@ function get_plugins_dropdown(){
 	if (isset($PLUGIN_HOOKS["dropdown"]) && is_array($PLUGIN_HOOKS["dropdown"])) { 
 		foreach ($PLUGIN_HOOKS["dropdown"] as $plug => $tables) { 
 			if (count($tables)){
-				$dps=array_merge($dps,$tables);
+				$function="plugin_version_$plug";
+				$name=$function();
+				$dps=array_merge($dps,array($name['name']=>$tables));
 			}
 		} 
 	} 
