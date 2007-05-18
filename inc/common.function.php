@@ -313,7 +313,7 @@ function getDbRelations(){
 	// Add plugins relations
 	$plug_rel=get_plugins_database_relations();
 	if (count($plug_rel)>0){
-		$RELATION=array_merge($RELATION,$plug_rel);
+		$RELATION=array_merge_recursive($RELATION,$plug_rel);
 	}
 	
 	return $RELATION;
