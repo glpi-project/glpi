@@ -119,9 +119,8 @@ function manageGetValuesInSearch($type=0){
  **/
 function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$link="",$distinct="Y",$link2="",$contains2="",$field2="",$type2=""){
 	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE;
+
 	$options=$SEARCH_OPTION[$type];
-
-
 
 	// Meta search names
 	$names=array(
@@ -834,7 +833,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-	//echo $QUERY."<br>\n";
+	echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
@@ -2126,10 +2125,6 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
 
 	switch ($new_table){
-		case "glpi_entities":
-			return " LEFT JOIN $new_table $AS ON ($rt.FK_entities = $nt.ID) ";
-		break;
-
 		case "glpi_entities_data":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_entities) ";
 		break;
@@ -2142,35 +2137,6 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_registry":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computer_id) ";
 		break;
-		case "glpi_dropdown_locations":
-			return " LEFT JOIN $new_table $AS ON ($rt.location = $nt.ID) ";
-		break;
-		case "glpi_dropdown_contract_type":
-			return " LEFT JOIN $new_table $AS ON ($rt.contract_type = $nt.ID) ";
-		break;
-		case "glpi_type_computers":
-			case "glpi_type_networking":
-			case "glpi_type_printers":
-			case "glpi_type_monitors":
-			case "glpi_type_phones":
-			case "glpi_dropdown_contact_type":
-			case "glpi_dropdown_consumable_type":
-			case "glpi_dropdown_cartridge_type":
-			case "glpi_dropdown_enttype":
-			case "glpi_type_peripherals":
-			return " LEFT JOIN $new_table $AS ON ($rt.type = $nt.ID) ";
-		break;
-		case "glpi_dropdown_phone_power":
-			return " LEFT JOIN $new_table $AS ON ($rt.power = $nt.ID) ";
-		break;
-		case "glpi_dropdown_model":
-			case "glpi_dropdown_model_printers":
-			case "glpi_dropdown_model_monitors":
-			case "glpi_dropdown_model_peripherals":
-			case "glpi_dropdown_model_phones":
-			case "glpi_dropdown_model_networking":
-			return " LEFT JOIN $new_table $AS ON ($rt.model = $nt.ID) ";
-		break;
 		case "glpi_dropdown_os":
 			if ($type==SOFTWARE_TYPE){
 				return " LEFT JOIN $new_table $AS ON ($rt.platform = $nt.ID) ";
@@ -2178,28 +2144,17 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				return " LEFT JOIN $new_table $AS ON ($rt.os = $nt.ID) ";
 			}
 		break;
-		case "glpi_dropdown_os_version":
-			return " LEFT JOIN $new_table $AS ON ($rt.os_version = $nt.ID) ";
-		break;
-		case "glpi_dropdown_auto_update":
-			return " LEFT JOIN $new_table $AS ON ($rt.auto_update = $nt.ID) ";
-		break;
-		case "glpi_dropdown_os_sp":
-			return " LEFT JOIN $new_table $AS ON ($rt.os_sp = $nt.ID) ";
-		break;
 		case "glpi_networking_ports":
 			$out="";
 		// Add networking device for computers
 		if ($type==COMPUTER_TYPE){
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
 		}
-
 		return $out." LEFT JOIN $new_table $AS ON ($rt.ID = $nt.on_device AND $nt.device_type='$type') ";
 		break;
 		case "glpi_dropdown_netpoint":
 			// Link to glpi_networking_ports before
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_networking_ports",$linkfield);
-
 		return $out." LEFT JOIN $new_table $AS ON (glpi_networking_ports.netpoint = $nt.ID) ";
 		break;
 		case "glpi_tracking":
@@ -2241,9 +2196,6 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_contract_device":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
 		break;
-		case "glpi_dropdown_state":
-			return " LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID) ";
-		break;
 		case "glpi_users_profiles":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_users) ";
 		break;
@@ -2271,70 +2223,63 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		break;
 		case "glpi_contracts":
 			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contract_device",$linkfield);
-
 		return $out." LEFT JOIN $new_table $AS ON (glpi_contract_device.FK_contract = $nt.ID) ";
 		break;
-		case "glpi_dropdown_network":
-			return " LEFT JOIN $new_table $AS ON ($rt.network = $nt.ID) ";
-		break;			
-		case "glpi_dropdown_domain":
-			return " LEFT JOIN $new_table $AS ON ($rt.domain = $nt.ID) ";
-		break;			
-		case "glpi_dropdown_firmware":
-			return " LEFT JOIN $new_table $AS ON ($rt.firmware = $nt.ID) ";
-		break;			
-		case "glpi_dropdown_rubdocs":
-			return " LEFT JOIN $new_table $AS ON ($rt.rubrique = $nt.ID) ";
-		break;
 		case "glpi_licenses":
-			if (!$meta)
+			if (!$meta){
 				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.sID) ";
-			else return "";
-			break;	
-			case "glpi_computer_device":
-				if ($device_type==0)
-					return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_computers ) ";
-				else return " LEFT JOIN $new_table AS DEVICE_".$device_type." ON ($rt.ID = DEVICE_".$device_type.".FK_computers AND DEVICE_".$device_type.".device_type='$device_type') ";
-				break;	
-				case "glpi_device_processor":
-
-					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
-
-				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".FK_device = $nt.ID) ";
-				break;		
-				case "glpi_device_ram":
-					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,RAM_DEVICE,$meta,$meta_type);
-
-				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".FK_device = $nt.ID) ";
-				break;		
-				case "glpi_device_iface":
-					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
-
-				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".NETWORK_DEVICE.".FK_device = $nt.ID) ";
-				break;	
-				case "glpi_device_sndcard":
-					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,SND_DEVICE,$meta,$meta_type);
-
-				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".SND_DEVICE.".FK_device = $nt.ID) ";
-				break;		
-				case "glpi_device_gfxcard":
-					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,GFX_DEVICE,$meta,$meta_type);
-
-				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".GFX_DEVICE.".FK_device = $nt.ID) ";
-				break;	
-				case "glpi_device_moboard":
-					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,MOBOARD_DEVICE,$meta,$meta_type);
-
-				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".MOBOARD_DEVICE.".FK_device = $nt.ID) ";
-				break;	
-				case "glpi_device_hdd":
-					$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,HDD_DEVICE,$meta,$meta_type);
-
-				return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";
-				break;
-		default :
+			} else {
 				return "";
-				break;
+			}
+		break;	
+		case "glpi_computer_device":
+			if ($device_type==0){
+				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_computers ) ";
+			} else {
+				return " LEFT JOIN $new_table AS DEVICE_".$device_type." ON ($rt.ID = DEVICE_".$device_type.".FK_computers AND DEVICE_".$device_type.".device_type='$device_type') ";
+			}
+		break;	
+		case "glpi_device_processor":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
+			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".FK_device = $nt.ID) ";
+		break;		
+		case "glpi_device_ram":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,RAM_DEVICE,$meta,$meta_type);
+			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".FK_device = $nt.ID) ";
+		break;		
+		case "glpi_device_iface":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
+			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".NETWORK_DEVICE.".FK_device = $nt.ID) ";
+		break;	
+		case "glpi_device_sndcard":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,SND_DEVICE,$meta,$meta_type);
+			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".SND_DEVICE.".FK_device = $nt.ID) ";
+		break;		
+		case "glpi_device_gfxcard":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,GFX_DEVICE,$meta,$meta_type);
+			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".GFX_DEVICE.".FK_device = $nt.ID) ";
+		break;	
+		case "glpi_device_moboard":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,MOBOARD_DEVICE,$meta,$meta_type);
+			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".MOBOARD_DEVICE.".FK_device = $nt.ID) ";
+		break;	
+		case "glpi_device_hdd":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,HDD_DEVICE,$meta,$meta_type);
+			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";
+		break;
+		default :
+			// Plugin case
+			if ($type>1000){
+				// TODO Add specific rules to use
+				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
+			} else {
+				if (!empty($linkfield)){
+					return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
+				} else {
+					return "";
+				}
+			}
+			break;
 	}
 }
 

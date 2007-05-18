@@ -110,7 +110,7 @@ function do_hook_function($name,$parm=NULL) {
 	return $ret;
 }
 
-function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
+function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 	global $PLUGIN_HOOKS;
 	// Show all Case
 	if ($onglet==-1){
@@ -154,7 +154,7 @@ function display_plugin_action($type,$ID,$onglet,$withtemplate=0){
 	return false;
 }
 
-function display_plugin_headings($target,$type,$withtemplate,$actif){
+function displayPluginHeadings($target,$type,$withtemplate,$actif){
 	global $PLUGIN_HOOKS,$LANG;
 
 	$template="";
@@ -192,7 +192,7 @@ function display_plugin_headings($target,$type,$withtemplate,$actif){
 }
 
 
-function get_plugins_cron(){ 
+function getPluginsCronJobs(){ 
 	global $PLUGIN_HOOKS; 
 	$tasks=array(); 
 	if (isset($PLUGIN_HOOKS["cron"]) && is_array($PLUGIN_HOOKS["cron"])) { 
@@ -204,7 +204,7 @@ function get_plugins_cron(){
 }
 
 
-function get_plugins_dropdown(){ 
+function getPluginsDropdowns(){ 
 	global $PLUGIN_HOOKS; 
 	$dps=array();
 	if (isset($PLUGIN_HOOKS["dropdown"]) && is_array($PLUGIN_HOOKS["dropdown"])) { 
@@ -219,7 +219,7 @@ function get_plugins_dropdown(){
 	return $dps;
 } 
 
-function get_plugins_database_relations(){ 
+function getPluginsDatabaseRelations(){ 
 	global $PLUGIN_HOOKS; 
 	$dps=array();
 	if (isset($PLUGIN_HOOKS["database_relations"]) && is_array($PLUGIN_HOOKS["database_relations"])) { 
@@ -230,5 +230,14 @@ function get_plugins_database_relations(){
 		} 
 	} 
 	return $dps;
+}
+
+function pluginNewType($plugin,$name,$ID,$table,$formpage){
+	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES; 
+
+	define($name,$ID);
+	$LINK_ID_TABLE[$ID]=$table;
+	$INFOFORM_PAGES[$ID]="plugin/$plugin/$formpage";
+	$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
 }
 ?>

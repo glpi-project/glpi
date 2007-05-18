@@ -98,7 +98,7 @@ else
 
 
 	if ($constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
-		if (!empty($_GET['ID']))
+		if (!empty($_GET['ID'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
 					showConsumableAdd($_GET["ID"]);
@@ -107,12 +107,11 @@ else
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_GET["ID"],1);
 					showDocumentAssociated(CONSUMABLE_TYPE,$_GET["ID"]);
 					showLinkOnDevice(CONSUMABLE_TYPE,$_GET["ID"]);
-					display_plugin_action(CONSUMABLE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					displayPluginAction(CONSUMABLE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_GET["ID"],1);
 					break;
-
 				case 5 :
 					showDocumentAssociated(CONSUMABLE_TYPE,$_GET["ID"]);
 					break;
@@ -125,15 +124,15 @@ else
 					showNotesForm($_SERVER['PHP_SELF'],CONSUMABLE_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(CONSUMABLE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+					if (!displayPluginAction(CONSUMABLE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
 						showConsumableAdd($_GET["ID"]);
 						showConsumables($_GET["ID"]);
 						showConsumables($_GET["ID"],1);
 					}
 					break;
 			}
+		}
 	}
-
 	commonFooter();
 }
 

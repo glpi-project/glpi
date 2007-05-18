@@ -184,7 +184,7 @@ else if (isset($_POST["deletegroup"]))
 					showDeviceUser($_GET["ID"]);
 					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",$_GET["ID"],-1);
-					display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					displayPluginAction(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
 					showUserRights($_SERVER['PHP_SELF'],$_GET["ID"]);
@@ -205,7 +205,7 @@ else if (isset($_POST["deletegroup"]))
 					showSynchronizationForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				default : 
-					if (!display_plugin_action(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
+					if (!displayPluginAction(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
 						showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 			}

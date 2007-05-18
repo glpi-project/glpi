@@ -144,7 +144,7 @@ if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 	switch($_SESSION['glpi_onglet']){
 		case -1 :	
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
-			display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+			displayPluginAction(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 			$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 			$ldaprule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 		break;
@@ -156,12 +156,11 @@ if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 			break;
 		default :
-			if (!display_plugin_action(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+			if (!displayPluginAction(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
 				
 			}
 		break;
 	}
-
 }
 
 commonFooter();

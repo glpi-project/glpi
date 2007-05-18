@@ -134,14 +134,14 @@ else
 		switch ($_SESSION['glpi_onglet']){
 			case -1 :
 				showDeviceDocument($_GET["ID"]);
-				display_plugin_action(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+				displayPluginAction(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 				break;
 			case 10 :
 				showNotesForm($_SERVER['PHP_SELF'],DOCUMENT_TYPE,$_GET["ID"]);
 				break;
 			default :
 				if ($_GET["ID"]){
-					if (!display_plugin_action(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+					if (!displayPluginAction(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
 						showDeviceDocument($_GET["ID"]);
 					}
 				}

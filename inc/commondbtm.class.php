@@ -526,7 +526,7 @@ class CommonDBTM {
 	
 	
 	
-		display_plugin_headings($target,$this->type,$withtemplate,$actif);
+		displayPluginHeadings($target,$this->type,$withtemplate,$actif);
 	
 		echo "<li class='invisible'>&nbsp;</li>";
 	

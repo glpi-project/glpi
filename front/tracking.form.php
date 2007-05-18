@@ -82,8 +82,9 @@ if (isset($_GET["ID"]))
 if (showJobDetails($_SERVER['PHP_SELF'],$_GET["ID"])){
 	switch($_SESSION['glpi_onglet']){
 		default :
-			if (!display_plugin_action(TRACKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
+			if (!displayPluginAction(TRACKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
 				showFollowupsSummary($_GET["ID"]);
+			}
 	}
 }
 commonFooter();

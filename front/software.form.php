@@ -124,7 +124,7 @@ else
 						showDocumentAssociated(SOFTWARE_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					default :
-						display_plugin_action(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'], $_GET["withtemplate"]);
+						displayPluginAction(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'], $_GET["withtemplate"]);
 						break;
 				}
 			}
@@ -144,7 +144,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showLinkOnDevice(SOFTWARE_TYPE,$_GET["ID"]);
-					display_plugin_action(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+					displayPluginAction(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 2 :
 					showLicensesAdd($_GET["ID"]);
@@ -174,7 +174,7 @@ else
 					showHistory(SOFTWARE_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+					if (!displayPluginAction(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
 						showLicensesAdd($_GET["ID"]);
 						showLicenses($_GET["ID"]);
 					}

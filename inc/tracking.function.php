@@ -64,8 +64,9 @@ function showTrackingOnglets($target){
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 			echo "<li class='actif'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID&amp;onglet=1\">".$LANG["job"][38]." $ID</a></li>";
 
-			if (haveRight("show_ticket","1"))
-				display_plugin_headings($target,TRACKING_TYPE,"","");
+			if (haveRight("show_ticket","1")){
+				displayPluginHeadings($target,TRACKING_TYPE,"","");
+			}
 
 			echo "<li class='invisible'>&nbsp;</li>";
 

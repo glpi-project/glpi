@@ -112,7 +112,7 @@ else
 						break;
 
 					default :
-						if (!display_plugin_action(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+						if (!displayPluginAction(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
 							showPorts($_GET["ID"], NETWORKING_TYPE,$_GET["withtemplate"]);
 							if ($_GET["withtemplate"]!=2) showPortsAdd($_GET["ID"],NETWORKING_TYPE);
 						}
@@ -137,7 +137,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showLinkOnDevice(NETWORKING_TYPE,$_GET["ID"]);
-					display_plugin_action(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+					displayPluginAction(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_GET["ID"]);
@@ -163,14 +163,12 @@ else
 					showHistory(NETWORKING_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+					if (!displayPluginAction(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
 						showPortsAdd($_GET["ID"],NETWORKING_TYPE);
 						showPorts($_GET["ID"],NETWORKING_TYPE);
 					}
 					break;
 			}
-
-
 		}
 	}
 	commonFooter();

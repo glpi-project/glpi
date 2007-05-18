@@ -128,14 +128,14 @@ else
 	commonHeader($LANG["title"][20],$_SERVER['PHP_SELF'],"financial","contract");
 
 	if ($contract->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
-		if (!empty($_GET['ID']))
+		if (!empty($_GET['ID'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
 					showEnterpriseContract($_GET["ID"]);
 					showDeviceContract($_GET["ID"]);
 					showDocumentAssociated(CONTRACT_TYPE,$_GET["ID"]);
 					showLinkOnDevice(CONTACT_TYPE,$_GET["ID"]);
-					display_plugin_action(CONTRACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					displayPluginAction(CONTRACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 5 : 
 					showDocumentAssociated(CONTRACT_TYPE,$_GET["ID"]);
@@ -147,15 +147,14 @@ else
 					showNotesForm($_SERVER['PHP_SELF'],CONTRACT_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(CONTRACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+					if (!displayPluginAction(CONTRACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
 						showEnterpriseContract($_GET["ID"]);
 						showDeviceContract($_GET["ID"]);
 					}
 					break;
 			}
+		}
 	}	
-
-
 	commonFooter();
 }
 

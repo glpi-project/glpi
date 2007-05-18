@@ -212,7 +212,7 @@ elseif(isset($_POST["unlock_field"])){
 						showDocumentAssociated(COMPUTER_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					default :
-						if (!display_plugin_action(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'], $_GET["withtemplate"]))
+						if (!displayPluginAction(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'], $_GET["withtemplate"]))
 							showDeviceComputerForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);	
 						break;
 				}
@@ -235,7 +235,7 @@ elseif(isset($_POST["unlock_field"])){
 					showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showLinkOnDevice(COMPUTER_TYPE,$_GET["ID"]);
 					showRegistry(REGISTRY_TYPE,$_GET["ID"]);
-					display_plugin_action(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+					displayPluginAction(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 2 :
 					showSoftwareInstalled($_GET["ID"]);
@@ -275,7 +275,7 @@ elseif(isset($_POST["unlock_field"])){
 					showRegistry(REGISTRY_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]))
+					if (!displayPluginAction(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]))
 						showDeviceComputerForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);			
 					break;
 			}
