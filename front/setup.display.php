@@ -41,11 +41,6 @@ if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
 }
 
-// Do not redifine plugin use
-if (ereg("popup",$_SERVER['PHP_SELF'])){
-	$SKIP_PLUGIN_INCLUDE=1;
-}
-
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_POST["type"]))$type=$_POST["type"];
