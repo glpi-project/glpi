@@ -2189,6 +2189,10 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
 
 	switch ($new_table){
+		// No link
+		case "glpi_reservation_item":
+			return "";
+		break;
 		case "glpi_entities_data":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_entities) ";
 		break;
