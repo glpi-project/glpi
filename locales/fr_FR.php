@@ -46,7 +46,7 @@ $LANG["backup"][20]="Supp";
 $LANG["backup"][21]="Le fichier existe déjà";
 $LANG["backup"][22]="Impossible de trouver l'octet";
 $LANG["backup"][23]="Erreur Mysql à partir de";
-$LANG["backup"][24]="Redirection automatique sinon cliquez";
+$LANG["backup"][24]="Redirection automatique, sinon cliquez";
 
 $LANG["buttons"][0]="Rechercher";
 $LANG["buttons"][2]="Valider";
@@ -237,7 +237,7 @@ $LANG["computers"][9]="OS";
 $LANG["computers"][10]="OS Numéro de série";
 $LANG["computers"][11]="OS Product ID";
 $LANG["computers"][12]="Nouvel ordinateur à partir d'un modèle";
-$LANG["computers"][14]="Inseré";
+$LANG["computers"][14]="Inséré";
 $LANG["computers"][21]="CPU";
 $LANG["computers"][23]="RAM Type";
 $LANG["computers"][24]="Quantité RAM";

@@ -51,15 +51,4 @@ if ($result=$DB->query($query))
 		echo "</ul>";
 	}
 
-/*
-// Jquery
-$query="SELECT DISTINCT ".$_GET['field']." AS VAL FROM ".$_GET['table']." WHERE ".$_GET['field']." LIKE '".$_GET['q']."%' AND ".$_GET['field']." <> '".$_GET['q']."' ORDER BY ".$_GET['field']." LIMIT 0,20";
-
-if ($result=$DB->query($query))
-	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_array($result)){
-			echo cleanInputText($data["VAL"])."\n";
-		}
-	}
-*/
 ?>

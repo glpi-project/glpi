@@ -138,24 +138,11 @@ function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$ev
 function ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters=array(),$events=array("change"),$spinner=true){
 	global $CFG_GLPI;
 
-	// Prototype
-//	foreach ($events as $evt){
-//		echo "$('$toobserve').observe('$evt', function(event){\n";
 		echo "   new Form.Element.Observer('$toobserve', 1, \n";
 		echo "      function(element, value) {\n";
 			ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
 		echo "});\n";
-// 	}
 
-	// JQUERY
-/*
-		echo "function update$toupdate(){\n";
-		ajaxUpdateItem($toupdate,$url,$parameters,$spinner,$toobserve);
-		echo "};";
-		foreach ($events as $evt){
-			echo "$(\"#$toobserve\").$evt(update$toupdate);\n";
-		}
-*/
 
 	
 }
@@ -194,7 +181,6 @@ function ajaxUpdateItem($toupdate,$url,$parameters=array(),$spinner=true,$toobse
 function ajaxUpdateItemJsCode($toupdate,$url,$parameters=array(),$spinner=true,$toobserve=""){
 	global $CFG_GLPI;
 
-	// Prototype
 	echo "new Ajax.Updater('$toupdate', '$url', {asynchronous:true, evalScripts:true, method:'post' ";
 		if ($spinner){
 		echo "           ,onComplete:function(request)\n";
@@ -223,36 +209,6 @@ function ajaxUpdateItemJsCode($toupdate,$url,$parameters=array(),$spinner=true,$
 	}
 	echo "});\n";
 
-	// JQUERY
-/*
-		echo "$.ajax({ url : \"$url\", \n";
-		echo "type: \"POST\",\n";
-		echo "success: function(data){\n";
-			if ($spinner){
-				echo "$(\"#spinner_$toupdate\").hide();\n";
-			}
-			echo "$(\"#$toupdate\").html(data);\n";
-		echo "},\n";
-		if ($spinner){
-			echo "beforeSend: function(){\n";
-			echo "$(\"#spinner_$toupdate\").show();\n";
-			echo "},\n";
-		}
-		if (count($parameters)){
-			echo "data: 	{\n";
-			foreach ($parameters as $key => $val){
-				echo "$key: ";
-				 if ($val==="__VALUE__"){
-                                        echo "$(\"#$toobserve\").val()";
-                                } else {
-                                        echo "\"".$val."\"";
-                                }
-				echo ",\n";
-			}
-			echo "}";
-		}
-		echo "});";
-*/
 
 }
 
