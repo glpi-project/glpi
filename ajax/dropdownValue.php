@@ -37,7 +37,10 @@
 
 if(ereg("dropdownValue.php",$_SERVER['PHP_SELF'])){
 	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
+	// Include plugin if it is a plugin table
+	if (ereg("plugin",$_POST['table'])){
+		$AJAX_INCLUDE=1;
+	}
 	include (GLPI_ROOT."/inc/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
@@ -69,9 +72,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-	
 	if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])){
-
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 			if (!$first) $where.=" AND ";
 			else $first=false;
