@@ -480,14 +480,19 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	array_push($already_link_tables,$itemtable);
 
 	// Add all table for toview items
-	for ($i=1;$i<$toview_count;$i++)
+	for ($i=1;$i<$toview_count;$i++){
 		$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"],$SEARCH_OPTION[$type][$toview[$i]]["linkfield"]);
+	}
 
 
 	// Search all case :
 	if (count($SEARCH_ALL)>0)
-		foreach ($SEARCH_OPTION[$type] as $key => $val)
-			$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$key]["table"],$SEARCH_OPTION[$type][$key]["linkfield"]);
+		foreach ($SEARCH_OPTION[$type] as $key => $val){
+			// Do not search on Group Name
+			if (is_array($val)){
+				$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$key]["table"],$SEARCH_OPTION[$type][$key]["linkfield"]);
+			}
+		}
 
 
 	//// 3 - WHERE
