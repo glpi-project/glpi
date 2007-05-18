@@ -57,6 +57,7 @@ include_once (GLPI_ROOT . "/inc/ajax.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 include_once (GLPI_ROOT . "/inc/config.class.php");
 include_once (GLPI_ROOT . "/config/config.php");
+include_once (GLPI_ROOT . "/inc/plugin.function.php");
 
 // Load Language file
 loadLanguage();
@@ -82,7 +83,6 @@ if (!isset($AJAX_INCLUDE)){
 	include_once (GLPI_ROOT . "/inc/mailing.function.php");
 	include_once (GLPI_ROOT . "/inc/export.function.php");
 	include_once (GLPI_ROOT . "/inc/log.function.php");
-	include_once (GLPI_ROOT . "/inc/plugin.function.php");
 }
 
 // Security system
