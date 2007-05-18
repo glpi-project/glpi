@@ -69,7 +69,7 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
 	$setupdisplay->down($_POST);
 }
-if ((ereg("popup",$_SERVER['PHP_SELF'])&&$type>0)||$type=$setupdisplay->title($_SERVER['PHP_SELF'],$type)){
+if ((ereg("popup",$_SERVER['PHP_SELF'])&&$type>0)/*||$type=$setupdisplay->title($_SERVER['PHP_SELF'],$type)*/){
 	$setupdisplay->showForm($_SERVER['PHP_SELF'],$type);
 }
 if (!ereg("popup",$_SERVER['PHP_SELF'])){

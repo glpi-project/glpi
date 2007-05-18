@@ -492,10 +492,10 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		$menu['config']['default']='/front/setup.php';
 
 
-		if (haveRight("search_config","w")||haveRight("search_config_global","w")){
-			$menu['config']['content']['display']['title']=$LANG["search"][0];
-			$menu['config']['content']['display']['page']='/front/setup.display.php';
-		}
+//		if (haveRight("search_config","w")||haveRight("search_config_global","w")){
+//			$menu['config']['content']['display']['title']=$LANG["search"][0];
+//			$menu['config']['content']['display']['page']='/front/setup.display.php';
+//		}
 		
 		if (haveRight("dropdown","w")||haveRight("entity_dropdown","w")){
 			$menu['config']['content']['dropdowns']['title']=$LANG["setup"][0];
