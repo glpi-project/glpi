@@ -182,7 +182,8 @@ else {
 					"glpi_dropdown_vlan"=>$LANG["setup"][90],	
 					),
 			); //end $opt
-	$plugdrop=get_plugins_dropdown();
+
+	$plugdrop=getPluginsDropdowns();
 	if (count($plugdrop)){
 		$optgroup=array_merge($optgroup,$plugdrop);
 	}

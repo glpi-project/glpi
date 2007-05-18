@@ -117,7 +117,7 @@ else
 
 
 	if ($ent->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-		if (!empty($_GET["ID"]))
+		if (!empty($_GET["ID"])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showAssociatedContact($_GET["ID"]);
@@ -125,7 +125,7 @@ else
 					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"]);
 					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",0,0,0,$_GET["ID"]);
 					showLinkOnDevice(ENTERPRISE_TYPE,$_GET["ID"]);
-					display_plugin_action(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 1 :
 					showAssociatedContact($_GET["ID"]);
@@ -149,13 +149,13 @@ else
 					showInfocomEnterprise($_GET["ID"]);
 					break;	
 				default : 
-					if (!display_plugin_action(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
+					if (!displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
 						showAssociatedContact($_GET["ID"]);
-
+					}
 					break;
 			}
+		}
 	}
-
 	commonFooter();
 }
 

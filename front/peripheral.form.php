@@ -148,7 +148,7 @@ else
 						break;
 
 					default :
-						if (!display_plugin_action(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+						if (!displayPluginAction(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
 							if ($_GET["withtemplate"]!=2)	showPortsAdd($_GET["ID"],PERIPHERAL_TYPE);
 							showPorts($_GET["ID"], PERIPHERAL_TYPE,$_GET["withtemplate"]);
 						}
@@ -172,7 +172,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showLinkOnDevice(PERIPHERAL_TYPE,$_GET["ID"]);
-					display_plugin_action(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+					displayPluginAction(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_GET["ID"]);
@@ -198,18 +198,13 @@ else
 					showHistory(PERIPHERAL_TYPE,$_GET["ID"]);
 					break;		
 				default :
-					if (!display_plugin_action(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+					if (!displayPluginAction(PERIPHERAL_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
 						showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PERIPHERAL_TYPE);
 						showPortsAdd($_GET["ID"],PERIPHERAL_TYPE);
 						showPorts($_GET["ID"], PERIPHERAL_TYPE,$_GET["withtemplate"]);
 					}
 					break;
 			}
-
-
-
-
-
 		}
 	}
 	commonFooter();

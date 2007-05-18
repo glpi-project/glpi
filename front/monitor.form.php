@@ -142,11 +142,9 @@ else
 						showDocumentAssociated(MONITOR_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
 					default :
-						display_plugin_action(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+						displayPluginAction(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 						break;
 				}
-
-
 			}
 		}
 
@@ -162,7 +160,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);	
 					showLinkOnDevice(MONITOR_TYPE,$_GET["ID"]);
-					display_plugin_action(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+					displayPluginAction(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 4 :			
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_GET["ID"]);
@@ -188,14 +186,10 @@ else
 					showHistory(MONITOR_TYPE,$_GET["ID"]);
 					break;	
 				default :
-					if (!display_plugin_action(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]))
+					if (!displayPluginAction(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]))
 						showConnect($_SERVER['PHP_SELF'],$_GET['ID'],MONITOR_TYPE);
 					break;	
 			}
-
-
-
-
 		}
 	}
 	commonFooter();

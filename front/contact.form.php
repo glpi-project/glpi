@@ -113,7 +113,7 @@ else
 					showEnterpriseContact($_GET["ID"]);
 					showDocumentAssociated(CONTACT_TYPE,$_GET["ID"]);
 					showLinkOnDevice(CONTACT_TYPE,$_GET["ID"]);
-					display_plugin_action(CONTACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					displayPluginAction(CONTACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 5 : 
 					showDocumentAssociated(CONTACT_TYPE,$_GET["ID"]);
@@ -125,8 +125,9 @@ else
 					showNotesForm($_SERVER['PHP_SELF'],CONTACT_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(CONTACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']))
+					if (!displayPluginAction(CONTACT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
 						showEnterpriseContact($_GET["ID"]);
+					}
 					break;
 			}
 		}

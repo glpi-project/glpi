@@ -145,14 +145,9 @@ else
 						showDocumentAssociated(PRINTER_TYPE,$_GET["ID"],$_GET["withtemplate"]);	
 						break;
 					default :
-						display_plugin_action(PRINTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+						displayPluginAction(PRINTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 						break;
 				}	
-
-
-
-
-
 			}
 		}
 
@@ -173,7 +168,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);		
 					showLinkOnDevice(PRINTER_TYPE,$_GET["ID"]);
-					display_plugin_action(PRINTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+					displayPluginAction(PRINTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 3 :			
 					showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PRINTER_TYPE);
@@ -205,7 +200,7 @@ else
 					showHistory(PRINTER_TYPE,$_GET["ID"]);
 					break;
 				default :
-					if (!display_plugin_action(PRINTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+					if (!displayPluginAction(PRINTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
 						showCartridgeInstalled($_GET["ID"]);		
 						showCartridgeInstalled($_GET["ID"],1);
 					}

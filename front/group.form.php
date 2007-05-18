@@ -97,24 +97,24 @@ else
 	commonHeader($LANG["Menu"][36],$_SERVER['PHP_SELF'],"admin","group");
 
 	if ($group->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
-		if (!empty($_GET['ID']))
+		if (!empty($_GET['ID'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
 					showGroupUser($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showGroupDevice($_GET["ID"]);
-					display_plugin_action(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
 				case 2 : 
 					showGroupDevice($_GET["ID"]);
 					break;
 
 				default :
-					if (!display_plugin_action(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+					if (!displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
 						showGroupUser($_SERVER['PHP_SELF'],$_GET["ID"]);
 					}
-
 					break;
 			}
+		}
 	}	
 
 	commonFooter();

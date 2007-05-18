@@ -257,7 +257,7 @@ function cleanAllItemCache($item,$group){
  * @return the SEARCH_OPTION array
  **/
 function getSearchOptions(){
-	global $LANG,$CFG_GLPI;
+	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 	$options = array(
 		'cacheDir' => GLPI_CACHE_DIR,
 		'lifeTime' => DEFAULT_CACHE_LIFETIME,
@@ -278,7 +278,10 @@ function getSearchOptions(){
 		include (GLPI_ROOT . "/inc/search.constant.php");
 		$cache->save($SEARCH_OPTION,"OPTIONS","GLPI_SEARCH_".$_SESSION["glpilanguage"]);
 	}
-
+	
+	if (isset($PLUGIN_HOOKS['search_option'])&&count($PLUGIN_HOOKS['search_option'])){
+		$SEARCH_OPTION+=$PLUGIN_HOOKS['search_option'];
+	}
 	return $SEARCH_OPTION;
 }
 
@@ -311,7 +314,7 @@ function getDbRelations(){
 	}
 
 	// Add plugins relations
-	$plug_rel=get_plugins_database_relations();
+	$plug_rel=getPluginsDatabaseRelations();
 	if (count($plug_rel)>0){
 		$RELATION=array_merge_recursive($RELATION,$plug_rel);
 	}

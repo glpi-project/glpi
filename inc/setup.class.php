@@ -271,7 +271,6 @@ class SetupSearchDisplay extends CommonDBTM{
 				echo "<form method='post' action=\"$target\">";
 				echo "<input type='hidden' name='type' value='$type'>";
 				echo "<input type='hidden' name='FK_users' value='$IDuser'>";
-
 				echo "<select name='num'>";
 				$first_group=true;
 				foreach ($SEARCH_OPTION[$type] as $key => $val)
