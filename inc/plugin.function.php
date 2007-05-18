@@ -216,4 +216,17 @@ function get_plugins_dropdown(){
 	} 
 	return $dps;
 } 
+
+function get_plugins_database_relations(){ 
+	global $PLUGIN_HOOKS; 
+	$dps=array();
+	if (isset($PLUGIN_HOOKS["database_relations"]) && is_array($PLUGIN_HOOKS["database_relations"])) { 
+		foreach ($PLUGIN_HOOKS["database_relations"] as $plug => $tables) { 
+			if (count($tables)){
+				$dps=array_merge($dps,$tables);
+			}
+		} 
+	} 
+	return $dps;
+}
 ?>
