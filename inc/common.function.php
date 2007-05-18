@@ -279,8 +279,9 @@ function getSearchOptions(){
 		$cache->save($SEARCH_OPTION,"OPTIONS","GLPI_SEARCH_".$_SESSION["glpilanguage"]);
 	}
 	
-	if (isset($PLUGIN_HOOKS['search_option'])&&count($PLUGIN_HOOKS['search_option'])){
-		$SEARCH_OPTION+=$PLUGIN_HOOKS['search_option'];
+	$plugsearch=getPluginSearchOption();
+	if (count($plugsearch)){
+		$SEARCH_OPTION+=$plugsearch;
 	}
 	return $SEARCH_OPTION;
 }

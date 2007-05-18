@@ -709,9 +709,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$LINK="";
 				if (isset($link2[$key])) $LINK=$link2[$key];
 
-				if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1)			
+				if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1){		
 					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
-				else { // Meta Where Search
+				} else { // Meta Where Search
 					$LINK=" ";
 					$NOT=0;
 					// Manage Link if not first item
@@ -833,7 +833,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-	echo $QUERY."<br>\n";
+	//echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
@@ -1249,7 +1249,8 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
  *
  **/
 function addOrderBy($type,$ID,$order,$key=0){
-	global $SEARCH_OPTION,$CFG_GLPI;
+	global $SEARCH_OPTION,$CFG_GLPI,$PLUGIN_HOOKS;
+
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
@@ -1287,6 +1288,19 @@ function addOrderBy($type,$ID,$order,$key=0){
             		return " ORDER BY INET_ATON($table.$field) $order ";
             	break;
 		default:
+			// Plugin case
+			if ($type>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addOrderBy';
+					if (function_exists($function)){
+						$out=$function($type,$ID,$order,$key);
+						if (!empty($out)){
+							return $out;
+						}
+					} 
+				} 
+			}
+
 			return " ORDER BY $table.$field $order ";
 		break;
 	}
@@ -1308,7 +1322,7 @@ function addOrderBy($type,$ID,$order,$key=0){
  *
  **/
 function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
-	global $LINK_ID_TABLE,$SEARCH_OPTION;
+	global $LINK_ID_TABLE,$SEARCH_OPTION,$PLUGIN_HOOKS;
 
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
@@ -1397,6 +1411,21 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			return " COUNT(DISTINCT glpi_tracking.ID) AS ".$NAME."_".$num.", ";
 		break;
 		default:
+
+			// Plugin case
+			if ($type>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addSelect';
+					if (function_exists($function)){
+						$out=$function($type,$ID,$num);
+						if (!empty($out)){
+							return $out;
+						}
+					} 
+				} 
+			}
+
+
 			if ($meta){
 
 				if ($table!=$LINK_ID_TABLE[$type])
@@ -1404,8 +1433,9 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
 
 			}
-			else 
+			else {
 				return $table.$addtable.".".$field." AS ITEM_$num, ";
+			}
 			break;
 	}
 
@@ -1426,7 +1456,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
  *
  **/
 function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
-	global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION;
+	global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION,$PLUGIN_HOOKS;
 
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
@@ -1598,6 +1628,21 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 		case "glpi_contacts.completename":
 			return $link." ($table.name $SEARCH OR $table.firstname $SEARCH ) ";
 		default:
+
+			
+			// Plugin case
+			if ($type>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addWhere';
+					if (function_exists($function)){
+						$out=$function($link,$nott,$type,$ID,$val);
+						if (!empty($out)){
+							return $out;
+						}
+					} 
+				} 
+			}
+
 			$ADD="";	
 			if ($nott&&$val!="NULL") {
 				$ADD=" OR $table.$field IS NULL";
@@ -1624,7 +1669,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
  *
  **/
 function giveItem ($type,$field,$data,$num,$linkfield=""){
-	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG,$LINK_ID_TABLE;
+	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG,$LINK_ID_TABLE,$PLUGIN_HOOKS;
 
 
 	if (isset($CFG_GLPI["union_search_type"][$type])){
@@ -2044,6 +2089,19 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			break;
 
 		default:
+			// Plugin case
+			if ($type>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_giveItem';
+					if (function_exists($function)){
+						$out=$function($type,$field,$data,$num,$linkfield);
+						if (!empty($out)){
+							return $out;
+						}
+					} 
+				} 
+			}
+
 			return $data["ITEM_$num"];
 			break;
 	}
@@ -2099,6 +2157,7 @@ function translate_table($table,$device_type=0,$meta_type=0){
  **/
 function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfield,$device_type=0,$meta=0,$meta_type=0){
 
+	global $PLUGIN_HOOKS;
 
 	// Rename table for meta left join
 	$AS="";
@@ -2270,15 +2329,22 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		default :
 			// Plugin case
 			if ($type>1000){
-				// TODO Add specific rules to use
+				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addLeftJoin';
+					if (function_exists($function)){
+						$out=$function($type,$ref_table,$new_table,$linkfield);
+						if (!empty($out)){
+							return $out;
+						}
+					} 
+				} 
+			}
+			if (!empty($linkfield)){
 				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 			} else {
-				if (!empty($linkfield)){
-					return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
-				} else {
-					return "";
-				}
+				return "";
 			}
+
 			break;
 	}
 }
@@ -2300,6 +2366,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
  **/
 function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 	global $LINK_ID_TABLE;
+
 
 	$LINK=" INNER JOIN ";
 	if ($null)

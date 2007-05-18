@@ -205,14 +205,14 @@ function getPluginsCronJobs(){
 
 
 function getPluginsDropdowns(){ 
-	global $PLUGIN_HOOKS; 
 	$dps=array();
-	if (isset($PLUGIN_HOOKS["dropdown"]) && is_array($PLUGIN_HOOKS["dropdown"])) { 
-		foreach ($PLUGIN_HOOKS["dropdown"] as $plug => $tables) { 
-			if (count($tables)){
-				$function="plugin_version_$plug";
+	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
+		foreach ($_SESSION["glpi_plugins"] as  $plug) { 
+			$function="plugin_version_$plug";
+			$function2="plugin_".$plug."_getDropdown";
+			if (function_exists($function2)) {
 				$name=$function();
-				$dps=array_merge($dps,array($name['name']=>$tables));
+				$dps=array_merge($dps,array($name['name']=>$function2()));
 			}
 		} 
 	} 
@@ -220,16 +220,30 @@ function getPluginsDropdowns(){
 } 
 
 function getPluginsDatabaseRelations(){ 
-	global $PLUGIN_HOOKS; 
 	$dps=array();
-	if (isset($PLUGIN_HOOKS["database_relations"]) && is_array($PLUGIN_HOOKS["database_relations"])) { 
-		foreach ($PLUGIN_HOOKS["database_relations"] as $plug => $tables) { 
-			if (count($tables)){
-				$dps=array_merge($dps,$tables);
+	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
+		foreach ($_SESSION["glpi_plugins"] as $plug) { 
+			$function2="plugin_".$plug."_getDatabaseRelations";
+			if (function_exists($function2)) {
+				$dps=array_merge($dps,$function2());
 			}
 		} 
 	} 
 	return $dps;
+}
+
+function getPluginSearchOption(){ 
+	global $PLUGIN_HOOKS; 
+	$sopt=array();
+	if (count($PLUGIN_HOOKS['plugin_types'])){
+		foreach ($PLUGIN_HOOKS['plugin_types'] as $type => $plug){
+			$function="plugin_".$plug."_getSearchOption";
+			if (function_exists($function)) {
+				$sopt+=$function();
+			}
+		}
+	}
+	return $sopt;
 }
 
 function pluginNewType($plugin,$name,$ID,$table,$formpage){
