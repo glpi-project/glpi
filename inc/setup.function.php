@@ -425,7 +425,7 @@ function replaceDropDropDown($input) {
 	
 }
 
-function showDeleteConfirmForm($target, $table, $ID) {
+function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 	global $DB, $LANG,$CFG_GLPI;
 
 	if (!haveRight("dropdown", "w"))
@@ -462,6 +462,7 @@ function showDeleteConfirmForm($target, $table, $ID) {
 		echo "<input type=\"hidden\" name=\"ID\" value=\"" . $ID . "\"  />";
 		echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
 		echo "<input type=\"hidden\" name=\"forcedelete\" value=\"1\" />";
+		echo "<input type=\"hidden\" name=\"FK_entities\" value=\"$FK_entities\" />";
 	
 		echo "<table class='tab_cadre'><tr><td>";
 		echo "<input class='button' type=\"submit\" name=\"delete\" value=\"" . $LANG["buttons"][2] . "\" /></td>";
@@ -476,6 +477,7 @@ function showDeleteConfirmForm($target, $table, $ID) {
 	dropdownNoValue($table, "newID", $ID);
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
 	echo "<input type=\"hidden\" name=\"oldID\" value=\"" . $ID . "\"  />";
+	echo "<input type=\"hidden\" name=\"FK_entities\" value=\"$FK_entities\" />";
 	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"" . $LANG["buttons"][39] . "\" /></td><td>";
 	echo "<input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG["buttons"][34] . "\" /></td></tr></table>";
 	echo "</form>";

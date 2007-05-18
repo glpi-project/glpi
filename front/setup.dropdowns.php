@@ -80,38 +80,38 @@ if (isset($_POST["several_add"])) {
 
 
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
 }else if (isset($_POST["move"])) {
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]."".$LANG["log"][21]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
 }else if (isset($_POST["add"])) {
 	addDropdown($_POST);
 	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
 } else if (isset($_POST["delete"])) {
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		if (!ereg("popup",$_SERVER['PHP_SELF'])){
 			commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","dropdowns");
 		}
-		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"]);
+		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
 		if (!ereg("popup",$_SERVER['PHP_SELF'])){
 			commonFooter();
 		}
 	} else {
 		deleteDropdown($_POST);
 		logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-		glpi_header($_SERVER['PHP_SELF']."?which=$which");
+		glpi_header($_SERVER['PHP_SELF']."?which=$which&FK_entities=$FK_entities");
 	}
 
 } else if (isset($_POST["update"])) {
 	updateDropdown($_POST);
 	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which&ID=$ID");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&ID=$ID&FK_entities=$FK_entities");
 } else if (isset($_POST["replace"])) {
 	replaceDropDropDown($_POST);
 	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
-	glpi_header($_SERVER['PHP_SELF']."?which=$which");
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&FK_entities=$FK_entities");
 }
 else {
 	if (!ereg("popup",$_SERVER['PHP_SELF'])){
