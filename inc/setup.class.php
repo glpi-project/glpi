@@ -230,7 +230,9 @@ class SetupSearchDisplay extends CommonDBTM{
 	function showForm($target,$type){
 		global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
 
-
+		if (!isset($SEARCH_OPTION[$type])) {
+			return false;
+		}
 		$is_global=($_SESSION['glpi_searchconfig']==1);
 		if ($is_global) $IDuser=0;
 		else $IDuser=$_SESSION["glpiID"];
