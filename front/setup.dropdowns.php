@@ -182,8 +182,10 @@ else {
 					"glpi_dropdown_vlan"=>$LANG["setup"][90],	
 					),
 			); //end $opt
-
-
+	$plugdrop=get_plugins_dropdown();
+	if (count($plugdrop)){
+		$optgroup[$LANG["common"][29]]=$plugdrop;
+	}
 	if (!haveRight("dropdown","w")){
 		foreach($optgroup as $label=>$dp){
 			foreach ($dp as $key => $val){
