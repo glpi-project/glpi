@@ -201,5 +201,19 @@ function get_plugins_cron(){
 		} 
 	} 
 	return $tasks; 
+}
+
+
+function get_plugins_dropdown(){ 
+	global $PLUGIN_HOOKS; 
+	$dps=array();
+	if (isset($PLUGIN_HOOKS["dropdown"]) && is_array($PLUGIN_HOOKS["dropdown"])) { 
+		foreach ($PLUGIN_HOOKS["dropdown"] as $plug => $tables) { 
+			if (count($tables)){
+				$dps=array_merge($dps,$tables);
+			}
+		} 
+	} 
+	return $dps;
 } 
 ?>
