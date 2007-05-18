@@ -363,7 +363,7 @@ class CommonDBTM {
 
 			if ($newID= $this->addToDB()){
 				$this->post_addItem($newID,$input);
-				do_hook_function("item_add",array("type"=>$this->type, "ID" => $newID));
+				doHookFunction("item_add",array("type"=>$this->type, "ID" => $newID));
 				return $newID;
 			} else return false;
 
@@ -431,7 +431,7 @@ class CommonDBTM {
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
 
 				if ($this->updateInDB($updates)){
-					do_hook_function("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
+					doHookFunction("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 				}
 			} 
 			$this->post_updateItem($input,$updates,$history);
@@ -465,10 +465,11 @@ class CommonDBTM {
 		if ($this->getFromDB($input["ID"])){
 			$this->pre_deleteItem($input["ID"]);
 			$this->deleteFromDB($input["ID"],$force);
-			if ($force)
-				do_hook_function("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
-			else 
-				do_hook_function("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+			if ($force){
+				doHookFunction("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
+			} else {
+				doHookFunction("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+			}
 
 			return true;
 		} else return false;
@@ -491,7 +492,7 @@ class CommonDBTM {
 	function restore($input) {
 
 		$this->restoreInDB($input["ID"]);
-		do_hook_function("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
+		doHookFunction("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
 	}
 
 	function defineOnglets($withtemplate){

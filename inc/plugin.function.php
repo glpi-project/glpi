@@ -58,7 +58,7 @@ function initPlugins(){
 
 }
 
-function use_plugin ($name) {
+function usePlugin ($name) {
 	global $CFG_GLPI;
 	if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
 		include_once(GLPI_ROOT . "/plugins/$name/setup.php");
@@ -75,7 +75,7 @@ function use_plugin ($name) {
  * @param $name Name of hook to fire
  * @return mixed $data
  */
-function do_hook ($name) {
+function doHook ($name) {
 	global $PLUGIN_HOOKS;
 	$data = func_get_args();
 
@@ -92,7 +92,7 @@ function do_hook ($name) {
 	return $data;
 }
 
-function do_hook_function($name,$parm=NULL) {
+function doHookFunction($name,$parm=NULL) {
 	global $PLUGIN_HOOKS;
 	$ret = $parm;
 
