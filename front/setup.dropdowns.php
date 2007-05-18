@@ -184,7 +184,7 @@ else {
 			); //end $opt
 	$plugdrop=get_plugins_dropdown();
 	if (count($plugdrop)){
-		$optgroup[$LANG["common"][29]]=$plugdrop;
+		$optgroup=array_merge($optgroup,$plugdrop);
 	}
 	if (!haveRight("dropdown","w")){
 		foreach($optgroup as $label=>$dp){
