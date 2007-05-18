@@ -60,7 +60,6 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		} else {	
 			$entity_restict = $_SESSION["glpiactive_entity"];
 		}
-		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
 		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
 	} else {
@@ -157,7 +156,6 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		} else {	
 			$entity_restict = $_SESSION["glpiactive_entity"];
 		}
-		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
 	} else {
 		$numberof = countElementsInTable($tablename);
