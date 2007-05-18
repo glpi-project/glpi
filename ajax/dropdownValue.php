@@ -38,7 +38,7 @@
 if(ereg("dropdownValue.php",$_SERVER['PHP_SELF'])){
 	define('GLPI_ROOT','..');
 	// Include plugin if it is a plugin table
-	if (ereg("plugin",$_POST['table'])){
+	if (!ereg("plugin",$_POST['table'])){
 		$AJAX_INCLUDE=1;
 	}
 	include (GLPI_ROOT."/inc/includes.php");
@@ -51,6 +51,7 @@ if (!defined('GLPI_ROOT')){
 	}
 
 checkLoginUser();
+
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	$first=true;
