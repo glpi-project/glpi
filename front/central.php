@@ -99,7 +99,7 @@ include (GLPI_ROOT."/inc/includes.php");
 			echo "<div align='center'>";
 			echo "<table class='tab_cadre_central' ><tr><td>";
 		
-			do_hook("central_action");
+			doHook("central_action");
 			echo "</td></tr>";
 		
 			echo "</table>";
@@ -115,7 +115,7 @@ include (GLPI_ROOT."/inc/includes.php");
 				echo "<div align='center'>";
 				echo "<table class='tab_cadre_central' ><tr><td>";
 			
-				do_hook("central_action");
+				doHook("central_action");
 				echo "</td></tr>";
 			
 				echo "</table>";

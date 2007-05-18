@@ -191,7 +191,7 @@ function showPlanning($who,$who_group,$when,$type){
 			$i++;
 		}
 
-	$data=do_hook_function("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
+	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
 
 	if (isset($data["items"])&&count($data["items"])){
 		$interv=array_merge($data["items"],$interv);

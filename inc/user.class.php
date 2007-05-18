@@ -480,7 +480,7 @@ class User extends CommonDBTM {
 		$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
 		
 		//Hook to retrieve more informations for ldap
-		$this->fields = do_hook_function("retrieve_more_data_from_ldap", $this->fields);
+		$this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
 		}
 		return false;
 

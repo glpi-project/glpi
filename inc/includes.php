@@ -107,7 +107,7 @@ if (!isset($AJAX_INCLUDE)&&!isset($SKIP_PLUGIN_INCLUDE)){
 	}
 
 	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
-		//do_hook("config");
+		//doHook("config");
 
 		if (count($_SESSION["glpi_plugins"])){
 			foreach ($_SESSION["glpi_plugins"] as $name) {
@@ -121,7 +121,7 @@ if (!isset($AJAX_INCLUDE)&&!isset($SKIP_PLUGIN_INCLUDE)){
 				else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/fr_FR.php"))
 					include_once (GLPI_ROOT . "/plugins/$name/locales/fr_FR.php");
 
-				use_plugin($name);
+				usePlugin($name);
 
 			}
 		}

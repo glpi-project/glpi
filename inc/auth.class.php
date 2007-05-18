@@ -159,7 +159,7 @@ class Identification {
 			if (@ ldap_bind($ds, $dn, $password)) {
 				@ ldap_unbind($ds);
 				//Hook to implement to restrict access by checking the ldap directory
-				if (do_hook_function("restrict_ldap_auth", $dn)) {
+				if (doHookFunction("restrict_ldap_auth", $dn)) {
 					return $dn;
 				} else {
 					$this->err .= $LANG["login"][16] . "<br>\n";
@@ -262,7 +262,7 @@ class Identification {
 			// glpiactiveprofile -> active profile
 			// glpiactiveentities -> active entities
 	
-			do_hook("init_session");
+			doHook("init_session");
 			cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 
 			if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
