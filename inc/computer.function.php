@@ -232,6 +232,11 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "<input type='hidden' name='connect' value='connect'>";
 							echo "<input type='hidden' name='cID' value='$ID'>";
 							echo "<input type='hidden' name='device_type' value='".$type."'>";
+							if (empty($withtemplate)){
+								echo "<input type='hidden' name='dohistory' value='1'>";
+							} else { // No history for template
+								echo "<input type='hidden' name='dohistory' value='0'>";
+							}
 							dropdownConnect($type,COMPUTER_TYPE,"item",$comp->fields["FK_entities"],$withtemplate);
 							echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 							echo "</form>";
