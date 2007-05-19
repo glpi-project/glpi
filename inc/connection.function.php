@@ -226,8 +226,6 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 		}
 	}
 	// Disconnects a direct connection
-	exit();
-
 	$connect = new Connection;
 	$connect->deletefromDB($ID);
 }
