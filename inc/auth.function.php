@@ -308,7 +308,6 @@ function checkSeveralRightsAnd($modules) {
  */
 function checkTypeRight($type, $right) {
 	global $CFG_GLPI;
-
 	if (!haveTypeRight($type, $right)) {
 		// Gestion timeout session
 		if (!isset ($_SESSION["glpiID"])) {

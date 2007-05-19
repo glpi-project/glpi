@@ -415,7 +415,8 @@ function getContractEnterprises($ID){
  *
  * Print a select named $name with contracts options and selected value $value
  *
- *@param $name string : HTML select name
+ * @param $name string : HTML select name
+ * @param $entity_restrict Restrict to a defined entity
  *
  *@return Nothing (display)
  *

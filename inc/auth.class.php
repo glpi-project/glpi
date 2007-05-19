@@ -130,13 +130,13 @@ class Identification {
 	 * Find a user in a LDAP and return is BaseDN
 	 * Based on GRR auth system
 	 *
-	 * @param $login_check boolean login check if true / only search dn of he user if false
 	 * @param $host LDAP host to connect
 	 * @param $port LDAP port
 	 * @param $use_tls use a tls connection
 	 * @param $basedn Basedn to use
 	 * @param $rdn Root dn 
 	 * @param $rpass Root Password
+	 * @param $login_attr login attribute
 	 * @param $login User Login
 	 * @param $password User Password
 	 * @param $condition Condition used to restrict login

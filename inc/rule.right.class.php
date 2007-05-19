@@ -63,7 +63,6 @@ class RightAffectRule extends Rule {
 	}
 	/**
 	 * Display form to add rules
-	 * @param rule_type Type of rule (ocs_affectation, ldap_rights)
 	 */
 	function showAndAddRuleForm($target, $ID) {
 		global $LANG, $CFG_GLPI;
@@ -173,7 +172,8 @@ class RightAffectRule extends Rule {
 
 	/**
 	* Execute the actions as defined in the rule
-	* @param fields the fields to manipulate
+	* @param $output the result of the actions
+	* @param $params the parameters
 	* @return the fields modified
 	*/
 	function executeActions($output,$params)
@@ -208,9 +208,9 @@ class RightAffectRule extends Rule {
 
 /**
  * Return all rules from database
- * @param type of rules
- * @param withcriterias import rules criterias too
- * @param withactions import rules actions too
+ * @param $ID of rules
+ * @param $withcriterias import rules criterias too
+ * @param $withactions import rules actions too
  */
 function getRulesByID($ID, $withcriterias, $withactions) {
 	global $DB;
@@ -293,8 +293,8 @@ class RightRuleCollection extends RuleCollection {
 	
 		/**
 	 * Get the attributes needed for processing the rules
-	 * @param type type of the rule
-	 * @param extra_params extra parameters given
+	 * @param $input input datas
+	 * @param $params extra parameters given
 	 * @return an array of attributes
 	 */
 	function prepareInputDataForProcess($input,$params){

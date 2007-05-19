@@ -73,6 +73,8 @@ title=\"".$ref_pic_text."\" ></td>";
  *
  * @param $title title of the page
  * @param $url not used anymore.
+ * @param $sector sector in which the page displayed is
+ * @param $item item corresponding to the page displayed
  *
  **/
 function commonHeader($title,$url,$sector="none",$item="none")

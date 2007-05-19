@@ -250,6 +250,7 @@ class Rule extends CommonDBTM{
 	* Show the rule
 	* @param $target  
 	* @param $ID ID of the rule  
+	* @param $withtemplate 
 	* @return nothing
 	*/
 	function showForm($target,$ID,$withtemplate=''){
@@ -333,7 +334,7 @@ class Rule extends CommonDBTM{
 	 * Get all criterias for a given rule
 	 * @param $ID the rule_description ID
 	 * @param $withcriterias 1 to retrieve all the criterias for a given rule
-	 * @param $withaction  1 to retrive all the actions for a given rule
+	 * @param $withactions  1 to retrive all the actions for a given rule
 	 */
 	function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
 		if ($ID == ""){
@@ -901,6 +902,7 @@ class Rule extends CommonDBTM{
 	/**
 	 * Show the minimal infos for the action rule
 	* @param $fields datas used to display the action
+	* @param $canedit right to edit ?
 	 */
 	function showMinimalAction($fields,$canedit)
 	{
@@ -945,8 +947,8 @@ class Rule extends CommonDBTM{
 
 	/**
  	* Return a value associated with a pattern associated to a criteria
- 	* @param $ID the given criteria
- 	* @param $pattern the pattern
+ 	* @param $ID the given action
+ 	* @param $value the value
  	*/
  	function getActionValue($ID,$value)
 	{
