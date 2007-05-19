@@ -89,15 +89,13 @@ else if (isset($_POST["update"])) {
 //Disconnect a device 
 else if (isset($_GET["disconnect"])) {
 	checkRight("computer","w");
-	//Get the ocs server id associated with the machine
-	$ocs_server_id = getOCSServerByMachineID($_GET["cID"]);
-	Disconnect($_GET["ID"],$ocs_server_id,1);
+	Disconnect($_GET["ID"]);
 	logEvent($_GET["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0){
 	checkRight("computer","w");
-	Connect($_POST["item"],$_POST["cID"],$_POST["device_type"],$_POST["withtemplate"]);
+	Connect($_POST["item"],$_POST["cID"],$_POST["device_type"],$_POST["dohistory"]);
 	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$LANG["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

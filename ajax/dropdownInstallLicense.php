@@ -56,7 +56,7 @@ if ($_POST['sID']>0){
 
 
 	$result = $DB->query($query);
-	$number = $DB->numrows($result);
+	$number=$DB->numrows($result);
 	echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
 
@@ -99,7 +99,7 @@ if ($_POST['sID']>0){
 			echo "<option value=\"$ID\" title=\"$output\">".$output."</option>";
 		}
 	} 
-	echo "</select>&nbsp;";
+	echo "</select>";
 
 	if ($_POST["massiveaction"]) echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][4]."\" >";
 }

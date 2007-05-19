@@ -2165,7 +2165,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 	if ($do_clean && count($import_periph)) {
 		foreach ($import_periph as $key => $val) {
 			
-			Disconnect($key,$ocs_server_id,$dohistory);
+			Disconnect($key,$dohistory,$ocs_server_id);
 
 			switch ($device_type) {
 				case MONITOR_TYPE :

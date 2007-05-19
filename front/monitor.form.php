@@ -101,10 +101,7 @@ else if (isset($_GET["unglobalize"]))
 else if (isset($_GET["disconnect"]))
 {
 	checkRight("monitor","w");
-
-	//Get the ocs server id associated with the machine
-	$ocs_server_id = getOCSServerByMachineID($_GET["cID"]);
-	Disconnect($_GET["ID"],$ocs_server_id,1);
+	Disconnect($_GET["ID"]);
 	logEvent(0, "monitors", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
