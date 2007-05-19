@@ -49,7 +49,14 @@ checkCentralAccess();
 // Make a select box with all glpi users
 
 $joinprofile=false;
-if (!isset($_POST['right'])) $_POST['right']="all";
+if (!isset($_POST['right'])) {
+	$_POST['right']="all";
+}
+// Default view : Nobody
+if (!isset($_POST['all'])) {
+	$_POST['all']=0;
+}
+
 if ($_POST['right']=="interface"){
 	$where=" glpi_profiles.".$_POST['right']."='central' ";
 	$joinprofile=true;
@@ -97,9 +104,11 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NB
 echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 
-if ($_POST['all']==0)
+if ($_POST['all']==0){
 echo "<option value=\"0\">[ Nobody ]</option>";
-else if($_POST['all']==1) echo "<option value=\"0\">[ ".$LANG["search"][7]." ]</option>";
+} else if($_POST['all']==1) {
+	echo "<option value=\"0\">[ ".$LANG["search"][7]." ]</option>";
+}
 
 if (isset($_POST['value'])){
 	$output=getUserName($_POST['value']);
