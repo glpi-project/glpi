@@ -71,7 +71,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
 		printCalendrier($_SERVER['PHP_SELF'],$id_item);
-	} else if (isset($_GET["ID"])){
+	} else if (!empty($_GET["ID"])){
 		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
 	}
 	else if (isset($_GET["add_item"])){
