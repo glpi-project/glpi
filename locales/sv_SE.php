@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //sv_SE
 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Entity";
 $LANG["entity"][1]="Hierarchy"; 
 $LANG["entity"][2]="Root entity"; 
 $LANG["entity"][3]="Associate to an entity"; 
-$LANG["entity"][4]="Computers"; 
 $LANG["entity"][5]="Automatic computer assignment"; 
 $LANG["entity"][6]="Automatic user assigment"; 
 
@@ -483,6 +481,9 @@ $LANG["financial"][105]="Tacit";
 $LANG["financial"][106]="Express"; 
 $LANG["financial"][107]="Renewal"; 
 
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
+
 $LANG["help"][1]="Beskriv ditt problem"; 
 $LANG["help"][2]="Priority"; 
 $LANG["help"][3]="Väldigt hög"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="Skapande av databasen misslyckades";
 $LANG["install"][49]="Du har ej valt en databas"; 
 $LANG["install"][50]="Kontrollera skrivrättigheterna för sessionsfilerna"; 
 $LANG["install"][52]="Kontrollera skrivrättigheterna för CRON-filerna"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="Installationen avslutad"; 
 $LANG["install"][57]="Standard konton och lösenord:"; 
 $LANG["install"][58]="glpi/glpi för administratörens konto"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="Beskrivning av ärendet";
 $LANG["job"][12]="Inga uppföljningar registrerade för detta ärende"; 
 $LANG["job"][13]="Nytt ärende"; 
 $LANG["job"][16]="found"; 
-$LANG["job"][17]="ärende"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="old"; 
 $LANG["job"][19]="E-post uppföljningar"; 
 $LANG["job"][20]="Total tidsåtgång"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Unable to connect to the LDAP directory";
 $LANG["ldap"][7]="No LDAP directory defined in GLPI"; 
 $LANG["ldap"][9]="Test of connection to LDAP directory"; 
 $LANG["ldap"][12]="Synchronisation"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="Länk eller filnamn"; 
 $LANG["links"][3]="Ny extern länk"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Locked devices";
 $LANG["ocsng"][33]="No device locked"; 
 $LANG["ocsng"][34]="Locked printers"; 
 $LANG["ocsng"][35]="No printer locked"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="till"; 
 $LANG["pager"][2]="från"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Reason";
 $LANG["rulesengine"][16]="Criteria"; 
 $LANG["rulesengine"][17]="Rules"; 
 $LANG["rulesengine"][18]="Rules to affect a computer to an entity"; 
-$LANG["rulesengine"][19]="Entity and rights assigment rules starting from here"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Assign"; 
 $LANG["rulesengine"][23]="Set the value"; 
 $LANG["rulesengine"][24]="Rule type"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="ldap_start_tls does not exist";
 $LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][183]="Use cache"; 
 $LANG["setup"][184]="Restrictions"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="Function Configuration"; 
 $LANG["setup"][202]="Använd e-post för uppföljningar"; 
 $LANG["setup"][203]="E-post till administratör"; 

@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //cs_CZ
 
@@ -46,7 +45,7 @@ $LANG["backup"][20]="Smaz";
 $LANG["backup"][21]="Soubor již existuje"; 
 $LANG["backup"][22]="Nemohu nalézt data"; 
 $LANG["backup"][23]="Chyba Mysql začíná na"; 
-$LANG["backup"][24]="Automatické přesměrování, jinak klikněte"; 
+$LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["buttons"][0]="Hledat"; 
 $LANG["buttons"][2]="Poslat"; 
@@ -90,8 +89,8 @@ $LANG["buttons"][40]="Zobrazit všechny";
 $LANG["buttons"][41]="Aktivovat"; 
 $LANG["buttons"][42]="Deaktivovat"; 
 $LANG["buttons"][43]="Procházet"; 
-$LANG["buttons"][44]="View CSV export"; 
-$LANG["buttons"][45]="All CSV export"; 
+$LANG["buttons"][44]="Prohlédnout export CSV"; 
+$LANG["buttons"][45]="Export všeho do CSV"; 
 
 $LANG["calendarD"][0]="Ne"; 
 $LANG["calendarD"][1]="Po"; 
@@ -233,9 +232,9 @@ $LANG["common"][57]="Název";
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="Sériové číslo OS"; 
-$LANG["computers"][11]="OS Product ID"; 
+$LANG["computers"][11]="ID OS"; 
 $LANG["computers"][12]="Nový počítač ze šablony"; 
-$LANG["computers"][14]="Vloženo"; 
+$LANG["computers"][14]="Inserted"; 
 $LANG["computers"][21]="CPU"; 
 $LANG["computers"][23]="Typ RAM"; 
 $LANG["computers"][24]="Velikost RAM"; 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Objekt";
 $LANG["entity"][1]="Hierarchie"; 
 $LANG["entity"][2]="Osoba root"; 
 $LANG["entity"][3]="Přiřadit objektu"; 
-$LANG["entity"][4]="Počítače"; 
 $LANG["entity"][5]="Automatické přiřazení počítače"; 
 $LANG["entity"][6]="Automatické přiřazení uživatele"; 
 
@@ -483,6 +481,9 @@ $LANG["financial"][105]="nevyslovený";
 $LANG["financial"][106]="Spěšně"; 
 $LANG["financial"][107]="Obnova"; 
 
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
+
 $LANG["help"][1]="Popište prosím váš problém"; 
 $LANG["help"][2]="Priorita"; 
 $LANG["help"][3]="Velmi velká"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="Chyba při vytváření databáze !";
 $LANG["install"][49]="Nezvolili jste databázi !"; 
 $LANG["install"][50]="Kontroluji oprávnění zápisu pro soubory sezení"; 
 $LANG["install"][52]="Kontroluji oprávnění zápisu pro soubory cronu"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="Instalace byla dokončena"; 
 $LANG["install"][57]="Výchozí přihlášení / hesla jsou:"; 
 $LANG["install"][58]="glpi/glpi (pro účet administrátora)"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="Popište problém/akci";
 $LANG["job"][12]="Žádný následovník tohoto požadavku."; 
 $LANG["job"][13]="Přidat nové oznámení"; 
 $LANG["job"][16]="nalezeno"; 
-$LANG["job"][17]="úkol"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="starý"; 
 $LANG["job"][19]="Následovníci emailu"; 
 $LANG["job"][20]="Doba trvání celkem"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Nemohu se připojit k adresáři LDAP";
 $LANG["ldap"][7]="V GLPI nebyl definován žádný adresář LDAP"; 
 $LANG["ldap"][9]="Test připojení k adresáři LDAP"; 
 $LANG["ldap"][12]="Synchronizace"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="Odkaz nebo jméno souboru"; 
 $LANG["links"][3]="Přidat externí odkaz"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Uzamčená zařízení";
 $LANG["ocsng"][33]="Žádné zařízení není uzamčeno"; 
 $LANG["ocsng"][34]="Uzamknuté tiskárny"; 
 $LANG["ocsng"][35]="Žádná tiskárna není uzamčena"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="do"; 
 $LANG["pager"][2]="od"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Důvod";
 $LANG["rulesengine"][16]="Kritérium"; 
 $LANG["rulesengine"][17]="Pravidla"; 
 $LANG["rulesengine"][18]="Pravidla pro převod počítače na objekt"; 
-$LANG["rulesengine"][19]="Objekt a přiřazení pravidel začíná zde"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Přiřadit"; 
 $LANG["rulesengine"][23]="Nastavit hodnotu"; 
 $LANG["rulesengine"][24]="Typ pravidla"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="ldap_start_tls neexistuje";
 $LANG["setup"][182]="Odhlásit při tlačítku zpět"; 
 $LANG["setup"][183]="Používat cache"; 
 $LANG["setup"][184]="Omezení"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="Konfigurace činností"; 
 $LANG["setup"][202]="Použít sledování emailem"; 
 $LANG["setup"][203]="Email správce"; 

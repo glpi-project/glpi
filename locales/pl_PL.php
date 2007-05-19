@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //pl_PL
 
@@ -46,7 +45,7 @@ $LANG["backup"][20]="Usuń";
 $LANG["backup"][21]="Ten plik już istnieje"; 
 $LANG["backup"][22]="nie znaleziono bajtu"; 
 $LANG["backup"][23]="Bład uruchomienia Mysql"; 
-$LANG["backup"][24]="Automatyczne przekierowanie, przeciwnie kliknij"; 
+$LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["buttons"][0]="Szukaj"; 
 $LANG["buttons"][2]="Wyślij"; 
@@ -235,7 +234,7 @@ $LANG["computers"][9]="OS";
 $LANG["computers"][10]="Serial OS"; 
 $LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="Nowy komputer z szablonu"; 
-$LANG["computers"][14]="Wstawione"; 
+$LANG["computers"][14]="Inserted"; 
 $LANG["computers"][21]="CPU"; 
 $LANG["computers"][23]="Typ pamięci RAM"; 
 $LANG["computers"][24]="RAM (MB)"; 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Wejście";
 $LANG["entity"][1]="Hierarchia"; 
 $LANG["entity"][2]="Root entity"; 
 $LANG["entity"][3]="Połącz z obiektem"; 
-$LANG["entity"][4]="Komputery"; 
 $LANG["entity"][5]="Automatyczne przydzielanie komputerów"; 
 $LANG["entity"][6]="Automatyczne przydzielanie użytkowników"; 
 
@@ -483,6 +481,9 @@ $LANG["financial"][105]="Cichy";
 $LANG["financial"][106]="Ekspres"; 
 $LANG["financial"][107]="Odnowienie"; 
 
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
+
 $LANG["help"][1]="Proszę opisz Twój problem"; 
 $LANG["help"][2]="Problem do rozwiązania"; 
 $LANG["help"][3]="Bardzo Wysoki"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="Błąd przy tworzeniu nowej bazy danych!";
 $LANG["install"][49]="Nie wybrałeś bazy danych !"; 
 $LANG["install"][50]="Sprawdzanie praw zapisu dla plików sesyjnych"; 
 $LANG["install"][52]="Sprawdzanie praw zapisu dla plików cron'a"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="Instalacja zakończona"; 
 $LANG["install"][57]="Domyślne nazwa użytkowanika / hasło to:"; 
 $LANG["install"][58]="glpi/glpi dla konta administratora"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="Opisz Problem / Akcje";
 $LANG["job"][12]="Brak śledzenia dla tego biletu"; 
 $LANG["job"][13]="Dodaj nowe zgloszenie"; 
 $LANG["job"][16]="znaleziono"; 
-$LANG["job"][17]="zgłoszenie"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="stary"; 
 $LANG["job"][19]="Wysyłaj email-em śledzenia"; 
 $LANG["job"][20]="Sumaryczny czas trwania"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Nieudane połączenie do katalogu LDAP";
 $LANG["ldap"][7]="Brak katalogu LDAP zdefiniowanego w GLPI"; 
 $LANG["ldap"][9]="Testowanie połączenia do katalogu LDAP"; 
 $LANG["ldap"][12]="Synchronizacja"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="Link albo nazwa pliku"; 
 $LANG["links"][3]="Dodaj zewnętrzny link"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Zablokowane urządzenia";
 $LANG["ocsng"][33]="No device locked"; 
 $LANG["ocsng"][34]="Locked printers"; 
 $LANG["ocsng"][35]="No printer locked"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="do"; 
 $LANG["pager"][2]="od"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Reason";
 $LANG["rulesengine"][16]="Kryteria"; 
 $LANG["rulesengine"][17]="Rules"; 
 $LANG["rulesengine"][18]="Rules to affect a computer to an entity"; 
-$LANG["rulesengine"][19]="Obiekt i prawa przydzielone tutaj"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Przypisz"; 
 $LANG["rulesengine"][23]="Set the value"; 
 $LANG["rulesengine"][24]="Rule type"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="nie istnieje ldap_start_tls";
 $LANG["setup"][182]="Adres URL przekierowania po wylogowaniu"; 
 $LANG["setup"][183]="Użyj cache"; 
 $LANG["setup"][184]="Restrictions"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="Konfiguracja funkcji"; 
 $LANG["setup"][202]="Użyj Śledzenia Email"; 
 $LANG["setup"][203]="Email Administratora"; 

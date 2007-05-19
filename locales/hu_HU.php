@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //hu_HU
 
@@ -46,7 +45,7 @@ $LANG["backup"][20]="Törlés";
 $LANG["backup"][21]="A fájl már létezik."; 
 $LANG["backup"][22]="Az oktet nem található"; 
 $LANG["backup"][23]="Mysql hiba"; 
-$LANG["backup"][24]="Automatikus átirányítás"; 
+$LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["buttons"][0]="Keresés"; 
 $LANG["buttons"][2]="Elküld"; 
@@ -90,8 +89,8 @@ $LANG["buttons"][40]="Mindent mutat";
 $LANG["buttons"][41]="Bekapcsol"; 
 $LANG["buttons"][42]="Kikapcsol"; 
 $LANG["buttons"][43]="Böngészés"; 
-$LANG["buttons"][44]="View CSV export"; 
-$LANG["buttons"][45]="All CSV export"; 
+$LANG["buttons"][44]="CSV export megnézése"; 
+$LANG["buttons"][45]="CSV-be ment mindent"; 
 
 $LANG["calendarD"][0]="V"; 
 $LANG["calendarD"][1]="H"; 
@@ -235,7 +234,7 @@ $LANG["computers"][9]="Operációs rendszer";
 $LANG["computers"][10]="OP.rsz. szériaszám"; 
 $LANG["computers"][11]="OP.rsz termékkód"; 
 $LANG["computers"][12]="Új számítógép sablonból"; 
-$LANG["computers"][14]="Hozzáadva"; 
+$LANG["computers"][14]="Inserted"; 
 $LANG["computers"][21]="CPU"; 
 $LANG["computers"][23]="RAM típusa"; 
 $LANG["computers"][24]="RAM mérete"; 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Entitás";
 $LANG["entity"][1]="Hierarchia"; 
 $LANG["entity"][2]="Gyökér entitás"; 
 $LANG["entity"][3]="Entitáshoz rendelés"; 
-$LANG["entity"][4]="Számítógépek"; 
 $LANG["entity"][5]="Automatikus számítógép hozzárendelés"; 
 $LANG["entity"][6]="Automatikus felhasználó hozzárendelés"; 
 
@@ -483,6 +481,9 @@ $LANG["financial"][105]="Hallgatólagos";
 $LANG["financial"][106]="Expressz"; 
 $LANG["financial"][107]="Megújítás"; 
 
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
+
 $LANG["help"][1]="írja le a problémáját"; 
 $LANG["help"][2]="A megoldás"; 
 $LANG["help"][3]="Nagyon fontos"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="Hiba az adatbázis létrehozása közben !";
 $LANG["install"][49]="Nem választott adatbázist !"; 
 $LANG["install"][50]="Munkamenetek írhatóságának ellenőrzése"; 
 $LANG["install"][52]="Ütemező (cron) írhatóságának ellenőrzése"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="A telepítés kész"; 
 $LANG["install"][57]="Az alapértelmezett felhasználónevek/jelszavak:"; 
 $LANG["install"][58]="glpi/glpi-vel az admin jogokhoz"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="A probléma/művelet leírása";
 $LANG["job"][12]="Nincs intézkedés a bejelentéshez"; 
 $LANG["job"][13]="Új bejelentés"; 
 $LANG["job"][16]="találtam"; 
-$LANG["job"][17]="bejelentés"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="régi"; 
 $LANG["job"][19]="Email értesítések"; 
 $LANG["job"][20]="Össz. idő"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Az LDAP könyvtárhoz kapcsolódás sikertelen";
 $LANG["ldap"][7]="Nincs LDAP könyvtár definiálva"; 
 $LANG["ldap"][9]="LDAP kapcsolat tesztelése"; 
 $LANG["ldap"][12]="Szinkronizálás"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="Hivatkozás vagy fájlnév"; 
 $LANG["links"][3]="Új külső hivatkozás"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Zárolt eszközök";
 $LANG["ocsng"][33]="Nincs zárolt eszköz"; 
 $LANG["ocsng"][34]="Zárolt nyomtatók"; 
 $LANG["ocsng"][35]="Nincs zárolt nyomtató"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="vége"; 
 $LANG["pager"][2]="kezdet"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Ok";
 $LANG["rulesengine"][16]="Kritérium"; 
 $LANG["rulesengine"][17]="Szabályok"; 
 $LANG["rulesengine"][18]="Számítógép entitáshoz rendelésének szabályai"; 
-$LANG["rulesengine"][19]="Entitások és jogok összerendelése"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Hozzárendel"; 
 $LANG["rulesengine"][23]="Érték megadása"; 
 $LANG["rulesengine"][24]="Szabály típusa"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="ldap_start_tls nem létezik";
 $LANG["setup"][182]="Kilépéskori URL"; 
 $LANG["setup"][183]="Cache használata"; 
 $LANG["setup"][184]="Korlátozások"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="Funkció beállítások"; 
 $LANG["setup"][202]="Email intézkedés"; 
 $LANG["setup"][203]="Karbantartó email címe"; 

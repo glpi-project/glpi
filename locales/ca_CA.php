@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //ca_CA
 
@@ -46,7 +45,7 @@ $LANG["backup"][20]="Supr";
 $LANG["backup"][21]="El fitxer ja existeix"; 
 $LANG["backup"][22]="No es troba el byte"; 
 $LANG["backup"][23]="Error MySQL començant a"; 
-$LANG["backup"][24]="Redirecció automàtica. Si no és així, fes clic"; 
+$LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["buttons"][0]="Buscar"; 
 $LANG["buttons"][2]="Validar"; 
@@ -235,7 +234,7 @@ $LANG["computers"][9]="S.O.";
 $LANG["computers"][10]="Número de serie del S.O."; 
 $LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="Nou ordinador a partir d'un model"; 
-$LANG["computers"][14]="Agregat"; 
+$LANG["computers"][14]="Inserted"; 
 $LANG["computers"][21]="CPU"; 
 $LANG["computers"][23]="Tipus de RAM"; 
 $LANG["computers"][24]="Quantitat de RAM"; 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Entitat";
 $LANG["entity"][1]="Jerarquia"; 
 $LANG["entity"][2]="Entitat arrel"; 
 $LANG["entity"][3]="Associar a una entitat"; 
-$LANG["entity"][4]="Ordinadors"; 
 $LANG["entity"][5]="Assignació automàtica d'ordinadors"; 
 $LANG["entity"][6]="Assignació automàtica d'ordinadors"; 
 
@@ -483,6 +481,9 @@ $LANG["financial"][105]="Tàcit";
 $LANG["financial"][106]="Expressa"; 
 $LANG["financial"][107]="Renovació"; 
 
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
+
 $LANG["help"][1]="Si us plau, descriu el teu problema"; 
 $LANG["help"][2]="Prioritat de la demanda"; 
 $LANG["help"][3]="Molt urgent"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="Error en la creació de la base!";
 $LANG["install"][49]="No ha seleccionat base de dades!"; 
 $LANG["install"][50]="Prova d'escriptura d'arxius de sessions"; 
 $LANG["install"][52]="Prova d'escriptura d'arxius de cron"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="La instal.lació ha acabat"; 
 $LANG["install"][57]="Els logins i claus predeterminades son:"; 
 $LANG["install"][58]="glpi/glpi per al compte administrador"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="Descrigui el problema/acció";
 $LANG["job"][12]="No hi ha seguiment per aquesta incidència"; 
 $LANG["job"][13]="Obrir una incidència nova"; 
 $LANG["job"][16]="Trobada(es)"; 
-$LANG["job"][17]="incidència"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="arxivada(s)"; 
 $LANG["job"][19]="Seguiment per email"; 
 $LANG["job"][20]="Duració total"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Impossible connectar amb el servidor LDAP";
 $LANG["ldap"][7]="No hi ha cap servidor LDAP definit a GLPI"; 
 $LANG["ldap"][9]="Prova de connexió amb el servidor LDAP"; 
 $LANG["ldap"][12]="Sincronització"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="Enllaç o nom de fitxer"; 
 $LANG["links"][3]="Afegir un enllaç extern"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Perifèrics bloquejats";
 $LANG["ocsng"][33]="No hi ha perifèrics bloquejats"; 
 $LANG["ocsng"][34]="Impressores bloquejades"; 
 $LANG["ocsng"][35]="No hi ha impressores bloquejades"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="fins a"; 
 $LANG["pager"][2]="des de"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Motiu";
 $LANG["rulesengine"][16]="Criteri"; 
 $LANG["rulesengine"][17]="Regles"; 
 $LANG["rulesengine"][18]="Regles d'assignació d'un ordinador a una entitat"; 
-$LANG["rulesengine"][19]="Regles d'assignació d'entitat i permisos a partir del directori"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Assignar"; 
 $LANG["rulesengine"][23]="Posar el valor"; 
 $LANG["rulesengine"][24]="Elecció del tipus de regla"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="Funció ldap_start_tls inexistent";
 $LANG["setup"][182]="URL de retorn al sortir de l'aplicació (logout)"; 
 $LANG["setup"][183]="Utilitzat la caché"; 
 $LANG["setup"][184]="Restriccions"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="Configuració de la funció"; 
 $LANG["setup"][202]="Utilitzar el seguiment per email"; 
 $LANG["setup"][203]="Mail de l'administrador"; 

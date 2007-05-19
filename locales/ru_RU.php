@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //ru_RU
 
@@ -235,7 +234,7 @@ $LANG["computers"][9]="ОС";
 $LANG["computers"][10]="OS serial"; 
 $LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="Новый компьютер по шаблону"; 
-$LANG["computers"][14]="Добавлен"; 
+$LANG["computers"][14]="Inserted"; 
 $LANG["computers"][21]="CPU"; 
 $LANG["computers"][23]="Тип ОЗУ"; 
 $LANG["computers"][24]="Размер RAM"; 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Организация";
 $LANG["entity"][1]="Структура"; 
 $LANG["entity"][2]="Основная организация"; 
 $LANG["entity"][3]="Относится к организации"; 
-$LANG["entity"][4]="Компьютеры"; 
 $LANG["entity"][5]="Автоматическое присвоение компьютеров"; 
 $LANG["entity"][6]="Автоматическое присвоение"; 
 
@@ -424,7 +422,7 @@ $LANG["financial"][25]="Добавить поставщика";
 $LANG["financial"][26]="Поставщик"; 
 $LANG["financial"][29]="Телефон"; 
 $LANG["financial"][30]="Факс"; 
-$LANG["financial"][32]="Supplier"; 
+$LANG["financial"][32]="Поставщик"; 
 $LANG["financial"][33]="Добавление контакта"; 
 $LANG["financial"][36]="Добавление основания"; 
 $LANG["financial"][42]="Коммерческий"; 
@@ -478,10 +476,13 @@ $LANG["financial"][100]="Почтовый индекс:";
 $LANG["financial"][101]="Город"; 
 $LANG["financial"][102]="Область"; 
 $LANG["financial"][103]="Государство"; 
-$LANG["financial"][104]="Associated Items"; 
+$LANG["financial"][104]="Связанные элементы"; 
 $LANG["financial"][105]="автоматом"; 
 $LANG["financial"][106]="необходима"; 
 $LANG["financial"][107]="Пролонгация"; 
+
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
 
 $LANG["help"][1]="Опишите Вашу проблему"; 
 $LANG["help"][2]="Эта проблема должна быть решена"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="Ошибка при создании базы данных
 $LANG["install"][49]="Вы не выбрали базу данных !"; 
 $LANG["install"][50]="Проверьте режим записи для файлов сессий"; 
 $LANG["install"][52]="Проверьте режим записи для файлов планировщика (cron)"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="Установка завершена"; 
 $LANG["install"][57]="Стандартные имена пользователей / пароли:"; 
 $LANG["install"][58]="glpi/glpi для административной учетной записи"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="Опишите проблему/действие";
 $LANG["job"][12]="Ответов нет."; 
 $LANG["job"][13]="Добавить новую заявку"; 
 $LANG["job"][16]="найдено"; 
-$LANG["job"][17]="заявка"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="старая"; 
 $LANG["job"][19]="Ответы на Email"; 
 $LANG["job"][20]="Общее время"; 
@@ -628,7 +630,7 @@ $LANG["job"][35]="Планирование";
 $LANG["job"][36]="Планирование невозможно. Ошибка в дате или нет доступного техника на этот период"; 
 $LANG["job"][37]="Сводная информация"; 
 $LANG["job"][38]="Заявка"; 
-$LANG["job"][39]="Update followup"; 
+$LANG["job"][39]="Обновить ответ"; 
 $LANG["job"][40]="Затрачено времени"; 
 $LANG["job"][41]="Стоимость ремонта"; 
 $LANG["job"][42]="Стоимость материалов"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Unable to connect to the LDAP directory";
 $LANG["ldap"][7]="No LDAP directory defined in GLPI"; 
 $LANG["ldap"][9]="Тест подключения к LDAP"; 
 $LANG["ldap"][12]="Синхронизация данных"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="Ссылка или имя файла"; 
 $LANG["links"][3]="Добавление внешней ссылки"; 
@@ -839,7 +844,7 @@ $LANG["mailing"][43]="Change in fixed costs";
 $LANG["mailing"][44]="Change in material costs"; 
 $LANG["mailing"][45]="Change ticket title"; 
 $LANG["mailing"][46]="Изменение описания заявки"; 
-$LANG["mailing"][100]="Нет объявленой категории"; 
+$LANG["mailing"][100]="Категория не выбрана"; 
 $LANG["mailing"][101]="Email followup have been enabled"; 
 $LANG["mailing"][102]="Email followup have been disabled"; 
 $LANG["mailing"][103]="Ответ на Email:"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Locked devices";
 $LANG["ocsng"][33]="No device locked"; 
 $LANG["ocsng"][34]="Locked printers"; 
 $LANG["ocsng"][35]="No printer locked"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="по"; 
 $LANG["pager"][2]="С"; 
@@ -1052,34 +1062,34 @@ $LANG["printers"][30]="Начальное значение счетчика ст
 $LANG["printers"][31]="Напечатано страниц"; 
 $LANG["printers"][35]="Тип управления"; 
 
-$LANG["profiles"][0]="Global right"; 
-$LANG["profiles"][1]="Entity Right"; 
+$LANG["profiles"][0]="Глобальные права"; 
+$LANG["profiles"][1]="Права по организациям"; 
 $LANG["profiles"][2]="Интерфейс"; 
-$LANG["profiles"][3]="Helpdesk Rights"; 
+$LANG["profiles"][3]="Права поддержки"; 
 $LANG["profiles"][4]="Central Rights"; 
 $LANG["profiles"][5]="Создать заявку"; 
-$LANG["profiles"][6]="Add follow-ups to my tickets"; 
-$LANG["profiles"][7]="Show tickets"; 
-$LANG["profiles"][8]="View all follow-ups (public and private)"; 
-$LANG["profiles"][9]="Show public follow-ups"; 
-$LANG["profiles"][10]="Read"; 
-$LANG["profiles"][11]="Write"; 
-$LANG["profiles"][12]="No Access"; 
+$LANG["profiles"][6]="Добавлять ответы в свои заявки"; 
+$LANG["profiles"][7]="Показывать заявки"; 
+$LANG["profiles"][8]="Показывать все ответы(включая приватные)"; 
+$LANG["profiles"][9]="Показывать публичные ответы"; 
+$LANG["profiles"][10]="Чтение"; 
+$LANG["profiles"][11]="Запись"; 
+$LANG["profiles"][12]="Нет доступа"; 
 $LANG["profiles"][13]="Профиль по умолчанию"; 
 $LANG["profiles"][14]="Удалить заявку"; 
-$LANG["profiles"][15]="Add follow-ups to all tickets"; 
+$LANG["profiles"][15]="Добавить ответ всем заявкам"; 
 $LANG["profiles"][16]="Own a ticket"; 
-$LANG["profiles"][17]="Steal a ticket"; 
-$LANG["profiles"][18]="Update a ticket"; 
-$LANG["profiles"][19]="Assign a ticket"; 
-$LANG["profiles"][20]="View his planning"; 
-$LANG["profiles"][21]="View all planning"; 
+$LANG["profiles"][17]="Присвоить заявку"; 
+$LANG["profiles"][18]="Обновить заявку"; 
+$LANG["profiles"][19]="Назначить заявку"; 
+$LANG["profiles"][20]="Показывать его запланированное"; 
+$LANG["profiles"][21]="Показывать всё планирование"; 
 $LANG["profiles"][22]="Профиль"; 
-$LANG["profiles"][23]="Reservation Administration"; 
-$LANG["profiles"][24]="Update Password"; 
-$LANG["profiles"][25]="Common"; 
-$LANG["profiles"][26]="Show tickets of my groups"; 
-$LANG["profiles"][27]="See items in my groups"; 
+$LANG["profiles"][23]="Управление выдачей в пользование"; 
+$LANG["profiles"][24]="Смена пароля"; 
+$LANG["profiles"][25]="Основное"; 
+$LANG["profiles"][26]="Показывать заявки своей группы"; 
+$LANG["profiles"][27]="Показывать элементы из своей группы"; 
 $LANG["profiles"][28]="Наследование"; 
 $LANG["profiles"][29]="Dynamic"; 
 $LANG["profiles"][30]="View OCSNG information"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Значение";
 $LANG["rulesengine"][16]="Критерий"; 
 $LANG["rulesengine"][17]="Правила"; 
 $LANG["rulesengine"][18]="Правила присвоения компьютера организации"; 
-$LANG["rulesengine"][19]="Назначение прав и организации для пользователей"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Назначить"; 
 $LANG["rulesengine"][23]="Set the value"; 
 $LANG["rulesengine"][24]="Тип правила"; 
@@ -1216,7 +1226,7 @@ $LANG["rulesengine"][29]="Список правил";
 $LANG["rulesengine"][30]="Действие"; 
 $LANG["rulesengine"][31]="Get the value"; 
 
-$LANG["search"][0]="Поиск"; 
+$LANG["search"][0]="Параметры отбора"; 
 $LANG["search"][2]="содержит"; 
 $LANG["search"][4]="сортировать по"; 
 $LANG["search"][7]="Bce"; 
@@ -1321,7 +1331,7 @@ $LANG["setup"][135]="Нормальный";
 $LANG["setup"][136]="Перевод интерфейса"; 
 $LANG["setup"][137]="Отладка"; 
 $LANG["setup"][138]="Использовать GLPI в режиме"; 
-$LANG["setup"][139]="Common"; 
+$LANG["setup"][139]="Общее"; 
 $LANG["setup"][140]="Типы"; 
 $LANG["setup"][141]="Демонстрация"; 
 $LANG["setup"][142]="Управление"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="ldap_start_tls не существует";
 $LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][183]="Использовать кэш"; 
 $LANG["setup"][184]="Ограничения"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="Общие настройки"; 
 $LANG["setup"][202]="Использовать сопровождение по Email"; 
 $LANG["setup"][203]="Email администратора системы"; 
@@ -1393,9 +1405,9 @@ $LANG["setup"][235]="SMTP пароль";
 $LANG["setup"][236]="Бывший оператор, ответственный за билет"; 
 $LANG["setup"][237]="Администратор"; 
 $LANG["setup"][238]="Автор заявки"; 
-$LANG["setup"][239]="Оператор изменявший заявку"; 
+$LANG["setup"][239]="Назначенному оператору"; 
 $LANG["setup"][240]="Настройка уведомлений"; 
-$LANG["setup"][241]="No personal criterion. Create personal parameters?"; 
+$LANG["setup"][241]="Нет персональных настроек. Создать?"; 
 $LANG["setup"][242]="Настройка сигналов"; 
 $LANG["setup"][243]="Сигнал о расходниках"; 
 $LANG["setup"][244]="Сигнал о картриджах"; 
@@ -1434,9 +1446,9 @@ $LANG["setup"][307]="Никогда";
 $LANG["setup"][308]="Еженедельно"; 
 $LANG["setup"][309]="Ежемесячно"; 
 $LANG["setup"][311]="Не удалось подключиться к proxy-серверу"; 
-$LANG["setup"][350]="Link with the items for the creation of tickets"; 
+$LANG["setup"][350]="Связывать элементы при создании заявки"; 
 $LANG["setup"][351]="Все элементы"; 
-$LANG["setup"][352]="Linkable items with a ticket"; 
+$LANG["setup"][352]="Связывать элементы с заявкой"; 
 $LANG["setup"][401]="Адрес proxy-сервера"; 
 $LANG["setup"][402]="Порт proxy-сервера"; 
 $LANG["setup"][403]="Имя пользователя proxy-сервера"; 
@@ -1520,7 +1532,7 @@ $LANG["stats"][34]="Секунд";
 $LANG["stats"][35]="Заявок"; 
 $LANG["stats"][44]="Supplier Name"; 
 $LANG["stats"][45]="По оборудованию"; 
-$LANG["stats"][46]="Statistics by hardware"; 
+$LANG["stats"][46]="Статистика по оборудованию"; 
 $LANG["stats"][47]="По заявкам"; 
 $LANG["stats"][48]="(назначено)"; 
 $LANG["stats"][49]="(ответов)"; 
