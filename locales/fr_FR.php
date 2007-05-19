@@ -390,7 +390,6 @@ $LANG["entity"][0]="Entité";
 $LANG["entity"][1]="Hierarchie"; 
 $LANG["entity"][2]="Entité Racine"; 
 $LANG["entity"][3]="Associer à une entité"; 
-$LANG["entity"][4]="Machines"; 
 $LANG["entity"][5]="Affectation automatique des machines"; 
 $LANG["entity"][6]="Affectation automatique des utilisateurs"; 
 

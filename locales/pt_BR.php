@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //pt_BR
 
@@ -46,7 +45,7 @@ $LANG["backup"][20]="Deletar";
 $LANG["backup"][21]="Este arquivo já existe"; 
 $LANG["backup"][22]="Não foi possível encontrar o byte"; 
 $LANG["backup"][23]="Erro do Mysql iniciando de"; 
-$LANG["backup"][24]="Redirecionamento automático, ou clique"; 
+$LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["buttons"][0]="Pesquisar"; 
 $LANG["buttons"][2]="Enviar"; 
@@ -90,8 +89,8 @@ $LANG["buttons"][40]="Mostrar tudo";
 $LANG["buttons"][41]="Ativar"; 
 $LANG["buttons"][42]="Desativar"; 
 $LANG["buttons"][43]="Navegar"; 
-$LANG["buttons"][44]="View CSV export"; 
-$LANG["buttons"][45]="All CSV export"; 
+$LANG["buttons"][44]="Visualizar exportação em CSV"; 
+$LANG["buttons"][45]="Exportar tudo em CSV"; 
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="S"; 
@@ -235,7 +234,7 @@ $LANG["computers"][9]="OS";
 $LANG["computers"][10]="Número serial do Sistema Operacional"; 
 $LANG["computers"][11]="ID do Sistema Operacional"; 
 $LANG["computers"][12]="Novo computador usando o padrão"; 
-$LANG["computers"][14]="Inserindo"; 
+$LANG["computers"][14]="Inserted"; 
 $LANG["computers"][21]="Processador"; 
 $LANG["computers"][23]="Tipo de RAM"; 
 $LANG["computers"][24]="Memória"; 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Entidade";
 $LANG["entity"][1]="Hierarquia"; 
 $LANG["entity"][2]="Entidade raiz"; 
 $LANG["entity"][3]="Associar a uma entidade"; 
-$LANG["entity"][4]="Computadores"; 
 $LANG["entity"][5]="Designação automática de computador"; 
 $LANG["entity"][6]="Designação automática de usuário"; 
 
@@ -483,6 +481,9 @@ $LANG["financial"][105]="Tácito";
 $LANG["financial"][106]="Expresso"; 
 $LANG["financial"][107]="Renovação"; 
 
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
+
 $LANG["help"][1]="Por favor descreva seu problema"; 
 $LANG["help"][2]="O problema a ser resolvido"; 
 $LANG["help"][3]="Muito Alta"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="Erro em criar base de dados!";
 $LANG["install"][49]="Você não selecionou uma base de dados!"; 
 $LANG["install"][50]="Checando permissão de gravação para arquivos de sessão"; 
 $LANG["install"][52]="Checando permissão de gravação para arquivos da cron"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="A instalação foi finalizada"; 
 $LANG["install"][57]="Logins / passwords padrão são:"; 
 $LANG["install"][58]="glpi/glpi para administrador"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="Descreva o Problema/Ação";
 $LANG["job"][12]="No follow-ups for this ticket."; 
 $LANG["job"][13]="Adiciona um novo ticket"; 
 $LANG["job"][16]="Encontrado"; 
-$LANG["job"][17]="seguir"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="velho"; 
 $LANG["job"][19]="E-mail Follow-ups"; 
 $LANG["job"][20]="Duração total"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Impossibilitado de conectar ao diretório LDAP";
 $LANG["ldap"][7]="Nenhum diretório LDAP definido no GLPI"; 
 $LANG["ldap"][9]="Teste de conexão ao diretório LDAP"; 
 $LANG["ldap"][12]="Sincronização"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="Link ou nome de arquivo"; 
 $LANG["links"][3]="Adicionar um link externo"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Dispositivos bloqueados";
 $LANG["ocsng"][33]="Nenhum dispositivo bloqueado"; 
 $LANG["ocsng"][34]="Impressoras bloqueadas"; 
 $LANG["ocsng"][35]="Nenhuma impressora bloqueada"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="para"; 
 $LANG["pager"][2]="de"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Razão";
 $LANG["rulesengine"][16]="Critério"; 
 $LANG["rulesengine"][17]="Regras"; 
 $LANG["rulesengine"][18]="Regras para associar um computador a uma entidade"; 
-$LANG["rulesengine"][19]="Associação de entidade e direitos iniciam aqui"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Associar"; 
 $LANG["rulesengine"][23]="Estabeleça o valor"; 
 $LANG["rulesengine"][24]="Tipo de regra"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="ldap_start_tls não existe";
 $LANG["setup"][182]="URL de retorno de fim de sessão"; 
 $LANG["setup"][183]="Usar o cache"; 
 $LANG["setup"][184]="Restrições"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="Configuração das Funções"; 
 $LANG["setup"][202]="Usa e-mail follow-up"; 
 $LANG["setup"][203]="Email do Administrador"; 

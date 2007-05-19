@@ -91,7 +91,12 @@ function doHook ($name) {
 	/* passing values by reference. Pity. This is a workaround.  */
 	return $data;
 }
-
+/**
+ * This function executes a hook.
+ * @param $name Name of hook to fire
+ * @param $parm Parameters
+ * @return mixed $data
+ */
 function doHookFunction($name,$parm=NULL) {
 	global $PLUGIN_HOOKS;
 	$ret = $parm;
@@ -110,6 +115,14 @@ function doHookFunction($name,$parm=NULL) {
 	return $ret;
 }
 
+/**
+ * Display plugin actions for a device type
+ * @param $type ID of the device type
+ * @param $ID ID of the item
+ * @param $onglet Heading corresponding of the datas to display
+ * @param $withtemplate is the item display like a template ?
+ * @return true if display have been done
+ */
 function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 	global $PLUGIN_HOOKS;
 	// Show all Case
@@ -153,10 +166,16 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 	}
 	return false;
 }
-
+/**
+ * Display plugin headgsin for a device type
+ * @param $target page to link including ID
+ * @param $type ID of the device type
+ * @param $withtemplate is the item display like a template ?
+ * @param $actif active onglet
+ * @return true if display have been done
+ */
 function displayPluginHeadings($target,$type,$withtemplate,$actif){
 	global $PLUGIN_HOOKS,$LANG;
-
 	$template="";
 	if(!empty($withtemplate)){
 		$template="&amp;withtemplate=$withtemplate";
@@ -180,8 +199,9 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 			echo "<li".(ereg($plug,$actif)?" class='actif'":"")." style='position:relative;'  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$LANG["common"][29]."</a>";
 
 			echo "<div  id='onglet_plugins' ><dl>";
-			foreach ($display_onglets as $key => $val)
+			foreach ($display_onglets as $key => $val){
 				echo "<dt><a href='$target&amp;onglet=".$key.$template."'>".$val."</a></dt>";
+			}
 			echo "</dl></div>";
 			echo "</li>";
 
@@ -191,7 +211,11 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 
 }
 
-
+/**
+ * Get cron jobs for plugins
+ *
+ * @return Array containing plugin cron jobs
+ */
 function getPluginsCronJobs(){ 
 	global $PLUGIN_HOOKS; 
 	$tasks=array(); 
@@ -203,7 +227,11 @@ function getPluginsCronJobs(){
 	return $tasks; 
 }
 
-
+/**
+ * Get dropdowns for plugins
+ *
+ * @return Array containing plugin dropdowns
+ */
 function getPluginsDropdowns(){ 
 	$dps=array();
 	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
@@ -218,7 +246,11 @@ function getPluginsDropdowns(){
 	} 
 	return $dps;
 } 
-
+/**
+ * Get database relations for plugins
+ *
+ * @return Array containing plugin database relations
+ */
 function getPluginsDatabaseRelations(){ 
 	$dps=array();
 	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
@@ -232,6 +264,11 @@ function getPluginsDatabaseRelations(){
 	return $dps;
 }
 
+/**
+ * Get search options for plugins
+ *
+ * @return Array containing plugin search options
+ */
 function getPluginSearchOption(){ 
 	global $PLUGIN_HOOKS; 
 	$sopt=array();
@@ -247,6 +284,15 @@ function getPluginSearchOption(){
 
 	return $sopt;
 }
+/**
+ * Define a new device type used in a plugin
+ * @param $plugin plugin of the device type
+ * @param $name name of the device_type to define the constant
+ * @param $class class defined for manipulate this device type
+ * @param $table table describing the device
+ * @param $formpage Form page for the item
+ * @return nothing
+ */
 
 function pluginNewType($plugin,$name,$ID,$class,$table,$formpage){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES; 

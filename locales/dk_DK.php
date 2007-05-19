@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //dk_DK
 
@@ -46,7 +45,7 @@ $LANG["backup"][20]="Slet";
 $LANG["backup"][21]="Filen eksisterer allerede"; 
 $LANG["backup"][22]="Kan ikke finde byte"; 
 $LANG["backup"][23]="MySQL fejl startende ved"; 
-$LANG["backup"][24]="Automatisk viderestilling, ellers klik"; 
+$LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["buttons"][0]="Søg"; 
 $LANG["buttons"][2]="Post"; 
@@ -235,7 +234,7 @@ $LANG["computers"][9]="OS";
 $LANG["computers"][10]="OS serial"; 
 $LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="Ny computer fra skabelon"; 
-$LANG["computers"][14]="Indsat"; 
+$LANG["computers"][14]="Inserted"; 
 $LANG["computers"][21]="CPU"; 
 $LANG["computers"][23]="RAM Type"; 
 $LANG["computers"][24]="RAM mængde"; 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Entity";
 $LANG["entity"][1]="Hiraki"; 
 $LANG["entity"][2]="Root entity"; 
 $LANG["entity"][3]="Associér med en enhed"; 
-$LANG["entity"][4]="Computers"; 
 $LANG["entity"][5]="Automatic computer assignment"; 
 $LANG["entity"][6]="Automatic user assigment"; 
 
@@ -483,6 +481,9 @@ $LANG["financial"][105]="Tacit";
 $LANG["financial"][106]="Ekspress"; 
 $LANG["financial"][107]="Fornyelse"; 
 
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
+
 $LANG["help"][1]="Vær venlilg og beskriv problemet."; 
 $LANG["help"][2]="Problemet der skal løses"; 
 $LANG["help"][3]="Meget høj"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="Fejl ved oprettelse af database !";
 $LANG["install"][49]="Du har ikke valgt en database"; 
 $LANG["install"][50]="Checker skriverettigheder for session filer"; 
 $LANG["install"][52]="Checker skrive rettigheder for cron filer"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="Installationen er færdig"; 
 $LANG["install"][57]="Standard login / Password er:"; 
 $LANG["install"][58]="glpi/glpi for administrator kontoen"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="Beskriv problemet/løsningen";
 $LANG["job"][12]="Ingen opfølgning for dette projekt."; 
 $LANG["job"][13]="Tilføj en ny bilet."; 
 $LANG["job"][16]="Fundet"; 
-$LANG["job"][17]="projekt"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="Gammel"; 
 $LANG["job"][19]="E-mail opfølgninger"; 
 $LANG["job"][20]="Samlet varighed"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Kan ikke forbinde til LDAP katalog";
 $LANG["ldap"][7]="Intet LDAP directory defineret i GLPI"; 
 $LANG["ldap"][9]="Test af forbindelse til LDAP katalog"; 
 $LANG["ldap"][12]="Synkronering"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="Link eller filnavn"; 
 $LANG["links"][3]="Tilføj et eksternt link"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Locked devices";
 $LANG["ocsng"][33]="No device locked"; 
 $LANG["ocsng"][34]="Locked printers"; 
 $LANG["ocsng"][35]="No printer locked"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="til"; 
 $LANG["pager"][2]="fra"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Reason";
 $LANG["rulesengine"][16]="Criteria"; 
 $LANG["rulesengine"][17]="Rules"; 
 $LANG["rulesengine"][18]="Rules to affect a computer to an entity"; 
-$LANG["rulesengine"][19]="Entity and rights assigment rules starting from here"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Assign"; 
 $LANG["rulesengine"][23]="Set the value"; 
 $LANG["rulesengine"][24]="Rule type"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="ldap_start_tls eksisterer ikke";
 $LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][183]="Use cache"; 
 $LANG["setup"][184]="Restrictions"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="Funktions opsætning"; 
 $LANG["setup"][202]="Brug email opfølgning"; 
 $LANG["setup"][203]="Administrator E-mail"; 

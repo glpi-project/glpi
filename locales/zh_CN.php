@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //zh_CN
 
@@ -235,7 +234,7 @@ $LANG["computers"][9]="操作系统";
 $LANG["computers"][10]="OS serial"; 
 $LANG["computers"][11]="OS Product ID"; 
 $LANG["computers"][12]="从模板添加新计算机"; 
-$LANG["computers"][14]="插件了"; 
+$LANG["computers"][14]="Inserted"; 
 $LANG["computers"][21]="CPU"; 
 $LANG["computers"][23]="內存类型"; 
 $LANG["computers"][24]="內存大小"; 
@@ -387,7 +386,6 @@ $LANG["entity"][0]="Entity";
 $LANG["entity"][1]="Hierarchy"; 
 $LANG["entity"][2]="Root entity"; 
 $LANG["entity"][3]="Associate to an entity"; 
-$LANG["entity"][4]="Computers"; 
 $LANG["entity"][5]="Automatic computer assignment"; 
 $LANG["entity"][6]="Automatic user assigment"; 
 
@@ -483,6 +481,9 @@ $LANG["financial"][105]="心照不宣";
 $LANG["financial"][106]="表达"; 
 $LANG["financial"][107]="更新"; 
 
+$LANG["gmt"][0]="GMT"; 
+$LANG["gmt"][1]="heure(s)"; 
+
 $LANG["help"][1]="请描述您的问题"; 
 $LANG["help"][2]="问题必须解决"; 
 $LANG["help"][3]="非常高"; 
@@ -561,6 +562,7 @@ $LANG["install"][48]="错误在创建数据库!";
 $LANG["install"][49]="您没有选项一个数据库!"; 
 $LANG["install"][50]="预订写支case方式为会议归档"; 
 $LANG["install"][52]="预订写支case方式为cron归档"; 
+$LANG["install"][53]="Test d'écriture des fichiers de log"; 
 $LANG["install"][55]="设施完成"; 
 $LANG["install"][57]="缺省登录/密码是："; 
 $LANG["install"][58]="GLPI/GLPI为管理员帐户"; 
@@ -610,7 +612,7 @@ $LANG["job"][11]="描述问题/行动";
 $LANG["job"][12]="没有后续为这张case。"; 
 $LANG["job"][13]="添加一张添加新case"; 
 $LANG["job"][16]="发现了"; 
-$LANG["job"][17]="case"; 
+$LANG["job"][17]="ticket(s)"; 
 $LANG["job"][18]="旧的"; 
 $LANG["job"][19]="邮件后续"; 
 $LANG["job"][20]="总期间"; 
@@ -691,6 +693,9 @@ $LANG["ldap"][6]="Unable to connect to the LDAP directory";
 $LANG["ldap"][7]="No LDAP directory defined in GLPI"; 
 $LANG["ldap"][9]="Test of connection to LDAP directory"; 
 $LANG["ldap"][12]="Synchronisation"; 
+$LANG["ldap"][13]="dans LDAP"; 
+$LANG["ldap"][14]="dans GLPI"; 
+$LANG["ldap"][15]="Synchroniser"; 
 
 $LANG["links"][1]="链接或文件名"; 
 $LANG["links"][3]="添加一个外部链接"; 
@@ -997,6 +1002,11 @@ $LANG["ocsng"][32]="Locked devices";
 $LANG["ocsng"][33]="No device locked"; 
 $LANG["ocsng"][34]="Locked printers"; 
 $LANG["ocsng"][35]="No printer locked"; 
+$LANG["ocsng"][36]="Entité de destination"; 
+$LANG["ocsng"][37]="Activer la prévisualisation"; 
+$LANG["ocsng"][38]="Désactiver la prévisualisation"; 
+$LANG["ocsng"][40]="Match règle ?"; 
+$LANG["ocsng"][41]="Mode d'import manuel"; 
 
 $LANG["pager"][1]="到"; 
 $LANG["pager"][2]="从"; 
@@ -1204,7 +1214,7 @@ $LANG["rulesengine"][15]="Reason";
 $LANG["rulesengine"][16]="Criteria"; 
 $LANG["rulesengine"][17]="Rules"; 
 $LANG["rulesengine"][18]="Rules to affect a computer to an entity"; 
-$LANG["rulesengine"][19]="Entity and rights assigment rules starting from here"; 
+$LANG["rulesengine"][19]="Entity and rights assigment rules"; 
 $LANG["rulesengine"][22]="Assign"; 
 $LANG["rulesengine"][23]="Set the value"; 
 $LANG["rulesengine"][24]="Rule type"; 
@@ -1363,6 +1373,8 @@ $LANG["setup"][181]="ldap_start_tls不存在";
 $LANG["setup"][182]="Logout fallback URL"; 
 $LANG["setup"][183]="Use cache"; 
 $LANG["setup"][184]="Restrictions"; 
+$LANG["setup"][185]="Erreurs dans des fichiers séparés"; 
+$LANG["setup"][186]="Fuseau horaire"; 
 $LANG["setup"][201]="功能配置"; 
 $LANG["setup"][202]="使用邮件后续"; 
 $LANG["setup"][203]="管理员邮件"; 
