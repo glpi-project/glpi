@@ -873,7 +873,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				printPager($start,$numrows,$target,$parameters,$type);
 			}
 
-			// Form to delete old item
+			// Form to massive actions
 			$isadmin=haveTypeRight($type,"w");
 
 			if ($isadmin&&$output_type==HTML_OUTPUT){
