@@ -56,10 +56,9 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			$ci=new CommonItem();
 			$ci2=new CommonItem();
 
-		if (isset($_POST["connect_item"])&&$_POST["connect_item"]
-			&&$ci->getFromDB($_POST["device_type"],$key)){
+		if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
 			foreach ($_POST["item"] as $key => $val){
-				if ($val==1) {
+				if ($val==1&&$ci->getFromDB($_POST["device_type"],$key)) {
 					// Items exists ?
 					if ($ci2->getFromDB(COMPUTER_TYPE,$_POST["connect_item"])){
 						// Entity security
