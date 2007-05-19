@@ -117,9 +117,10 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		case "update":
 
 			// Infocoms case
-			if (($_POST["id_field"]>=25&&$_POST["id_field"]<=28)
+			if ($_POST["device_type"]<1000&&
+			(($_POST["id_field"]>=25&&$_POST["id_field"]<=28)
 			||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)
-			||($_POST["id_field"]>=50&&$_POST["id_field"]<=58)){
+			||($_POST["id_field"]>=50&&$_POST["id_field"]<=58))){
 				$ic=new Infocom();
 				$ci=new CommonItem();
 				$ci->getFromDB($_POST["device_type"],-1);
@@ -148,7 +149,6 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			} else {
 				$ci=new CommonItem();
 				$ci->getFromDB($_POST["device_type"],-1);
-
 				$link_entity_type=-1;
 				// Specific entity item
 				
@@ -169,13 +169,12 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 				}
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						
 						if ($ci->getFromDB($_POST["device_type"],$key)){
 							if ($link_entity_type<0
 							||$link_entity_type==$ci->obj->fields["FK_entities"]){
 								$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 							}
-						}
+						} 
 					}
 				}
 			}
