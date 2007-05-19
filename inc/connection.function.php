@@ -240,6 +240,7 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
  * @param $sID connection source ID.
  * @param $cID computer ID (where the sID would be connected).
  * @param $type connection type.
+ * @param $dohistory store chaneg in history ?
  */
 function Connect($sID,$cID,$type,$dohistory=1) {
 	global $LANG;

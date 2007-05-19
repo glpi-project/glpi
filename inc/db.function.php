@@ -535,6 +535,7 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
  *
  * @param $table table to search next item
  * @param $ID current ID
+ * @param $condition condition to add to the search
  * @return the next ID, -1 if not exist
  */
 function getNextItem($table,$ID,$condition=""){
@@ -597,6 +598,7 @@ function getNextItem($table,$ID,$condition=""){
  *
  * @param $table table to search next item
  * @param $ID current ID
+ * @param $condition condition to add to the search
  * @return the previous ID, -1 if not exist
  */
 function getPreviousItem($table,$ID,$condition=""){

@@ -86,6 +86,7 @@ class ConsumableType extends CommonDBTM {
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the consumable type
+	 *@param $withtemplate='' boolean : template or basic item
 	 *
 	 *
 	 *@return Nothing (display)

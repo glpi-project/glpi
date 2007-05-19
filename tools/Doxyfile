@@ -81,7 +81,8 @@ EXCLUDE_PATTERNS       = */_relpos.php \
                          */lib/* \
                          */plugins/* \
                          */DOCUMENTATION/* \
-                         */files/*
+                         */files/* \
+                         */locales/*
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = YES
@@ -201,7 +202,7 @@ PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
 CLASS_DIAGRAMS         = YES
 HIDE_UNDOC_RELATIONS   = NO
-HAVE_DOT               = YES
+HAVE_DOT               = NO
 CLASS_GRAPH            = NO
 COLLABORATION_GRAPH    = NO
 GROUP_GRAPHS           = NO

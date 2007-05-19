@@ -98,6 +98,7 @@ class Entity extends CommonDBTM{
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the contact to print
+	 *@param $withtemplate='' boolean : template or basic item
 	 *
 	 *
 	 *@return Nothing (display)

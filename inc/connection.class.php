@@ -63,6 +63,7 @@ class Connection {
 	 * $type must set before
 	 *
 	 * @param $ID ID of the computer
+         * @param $type type of the items searched
 	 * @return array of ID of connected items
 	 */
 	function getComputerContact ($type,$ID) {

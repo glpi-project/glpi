@@ -162,7 +162,6 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
  * Print out an HTML "<select>" for a dropdown with preselected value
  *
  *
- * @param $table the dropdown table from witch we want values on the select
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
  * @param $location default location for search
@@ -241,6 +240,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 * @param $table the dropdown table from witch we want values on the select
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  * 
  */
@@ -406,7 +406,6 @@ function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=
  * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
  * @param $entity_restrict Restrict to a defined entity
  * @param $display_comments display comments near the dropdown
- * @param $all Nobody or All display for none selected
  * @return nothing (print out an HTML select box)
  */
 function dropdownUsersID($myname,$value,$right,$display_comments=1,$entity_restrict=-1) {
@@ -1019,6 +1018,7 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
  * @param $ID ID of the current port to connect
  * @param $type type of device where to search ports
  * @param $myname select name
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
 function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
@@ -1109,6 +1109,7 @@ function dropdownDocument($myname,$entity_restrict=-1) {
  * @param $myname select name
  * @param $withtemplate is it a template computer ?
  * @param $massiveaction is it a massiveaction select ?
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
 function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massiveaction=0) {
@@ -1375,6 +1376,7 @@ function dropdownContractAlerting($myname,$value){
  *
  *@param $name string : HTML select name
  *@param $value integer : HTML select selected value
+ *@param $limit_planning limit planning to the configuration range
  *
  *@return Nothing (display)
  *

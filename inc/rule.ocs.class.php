@@ -227,7 +227,8 @@ class OcsAffectEntityRule extends Rule {
 	}
 	/**
 	 * Display form to add rules
-	 * @param rule_type Type of rule (ocs_affectation, ldap_rights)
+	 * @param $target 
+	 * @param $ID
 	 */
 	function showAndAddRuleForm($target, $ID) {
 		global $LANG, $CFG_GLPI;
@@ -310,15 +311,13 @@ class OcsAffectEntityRule extends Rule {
 
 /**
  * Return all rules from database
- * @param type of rules
+ * @param $ID ID of the rules
  * @param withcriterias import rules criterias too
  * @param withactions import rules actions too
  */
 function getRulesByID($ID, $withcriterias, $withactions) {
 	global $DB;
 	$ocs_affect_computer_rules = array ();
-	// MOYO : quoi donc que ca fout la ca ?
-	// MOYO : ca correspond pas deja à un cas particulier de ca : getRuleWithCriteriasAndActions ?
 
 
 	//Get all the rules whose rule_type is $rule_type and entity is $ID

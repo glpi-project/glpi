@@ -714,6 +714,7 @@ class MailingAlert
 	 * Constructor
 	 * @param $type mailing type (new,attrib,followup,finish)
 	 * @param $message Message to send
+	 * @param $entity Restrict to a defined entity
 	 * @return nothing 
 	 */
 	function MailingAlert ($type,$message,$entity=-1)

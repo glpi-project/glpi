@@ -354,16 +354,10 @@ class User extends CommonDBTM {
 	/**
 	 * Function that try to load from LDAP the user information...
 	 *
-	 * @param $host LDAP host to connect
-	 * @param $port LDAP port
-	 * @param $use_tls use a tls connection
+	 * @param $ldap_method LDAP method
 	 * @param $userdn Basedn of the user
-	 * @param $rdn Root dn 
-	 * @param $rpass Root Password
-	 * @param $fields Fields to get
 	 * @param $login User Login
 	 * @param $password User Password
-	 * @param $condition Condition used to restrict login
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */

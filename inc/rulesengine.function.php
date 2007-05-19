@@ -104,7 +104,7 @@ function matchRules($field, $condition, $pattern) {
 
 /**
  * Return the condition label by giving his ID
- * @param condition's ID
+ * @param $ID condition's ID
  * @return condition's label
  */
 function getConditionByID($ID)

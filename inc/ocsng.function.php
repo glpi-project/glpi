@@ -233,7 +233,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
  *
  * This make the database link between ocs and glpi databases
  *
- *@param $ocs_item_id integer : ocs item unique id.
+ *@param $ocs_id integer : ocs item unique id.
  *@param $glpi_computer_id integer : glpi computer id
  *@param $ocs_server_id integer : ocs server id
  *
@@ -822,7 +822,6 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer_upd
  * This import a new dropdown if it doesn't exist.
  *
  *@param $dpdTable string : Name of the glpi dropdown table.
- *@param $dpdRow string : Name of the glpi dropdown row.
  *@param $value string : Value of the new dropdown.
  *@param $FK_entities int : entity in case of specific dropdown
  *
@@ -1317,6 +1316,7 @@ function ocsEditLock($target, $ID) {
  *@param $cfg_ocs array : ocs config
  *@param $dohistory boolean : log changes ?
  *@param $import_device array : already imported devices
+ *@param $import_ip array : already imported ip
  *
  *@return Nothing (void).
  *
@@ -1786,6 +1786,7 @@ function ocsAddDevice($device_type, $dev_array) {
  *@param $ocs_id integer : ocs computer id (ID).
  *@param $ocs_server_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
+ *@param $entity integer : entity of the computer
  *@param $dohistory boolean : log changes ?
  *@param $import_periph array : already imported periph
  *
@@ -2193,7 +2194,8 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
  *@param $ocs_server_id integer : ocs server id
  *@param $computer_updates array : already updated fields of the computer
  *@param $entity integer : entity of the computer
-*@param $dohistory boolean : log changes ?
+ *@param $dohistory boolean : log changes ?
+ *@param $cfg_ocs array : configuration ocs of the server
  
  *@return Nothing (void).
  *
@@ -2300,6 +2302,7 @@ function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs) {
  *@param $ocs_id integer : ocs computer id (ID).
  *@param $ocs_server_id integer : ocs server id
  *@param $cfg_ocs array : ocs config
+ *@param $entity integer : entity of the computer
  *@param $dohistory boolean : log changes ?
  *@param $import_software array : already imported softwares
  *
@@ -2452,7 +2455,9 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
  * This function create a new license in GLPI with some general datas.
  *
  *@param $software : id of a software.
+ *@param $version : version of the software
  *@param $serial : default serial (used to identify global and freelicenses).
+ *@param $buy : is the license buyed ?
  *
  *@return integer : inserted license id.
  *
@@ -2775,7 +2780,7 @@ function ocsChooseServer($target) {
 
 /**
  * Get a connection to the OCS server
- * @param the ocs server id
+ * @param $ocs_server_id the ocs server id
  * @return the connexion to the ocs database
  */
 function getDBocs($ocs_server_id)

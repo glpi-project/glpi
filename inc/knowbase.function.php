@@ -45,11 +45,10 @@ if (!defined('GLPI_ROOT')){
 /**
  * Print out an HTML "<form>" for Search knowbase item
  *
- * 
- * 
- *
  * @param $target 
  * @param $contains 
+ * @param $parentID 
+ * @param $faq 
  * @return nothing (display the form)
  **/
 function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){

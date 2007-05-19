@@ -306,6 +306,7 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
  *
  *
  *@param $type display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+ *@param $odd is it a new odd line ?
  *
  *@return string to display
  *
