@@ -74,11 +74,23 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				dropdownPriority($search["linkfield"]);
 				break;
 			default :
-				autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
+				// Specific plugin Type case
+				$plugdisplay=false;
+				if ($_POST["device_type"]>1000){
+					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
+						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]].'_MassiveActionsFieldsDisplay';
+						if (function_exists($function)){
+							$plugdisplay=$function($_POST["device_type"],$search["table"],$search["field"],$search["linkfield"]);
+						} 
+					} 
+				} 
+				if (!$plugdisplay){
+					autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
+				}
+				
 				break;
 		}
 	} else { 
-	
 		switch ($search["table"]){
 
 			case "glpi_infocoms":  // infocoms case
@@ -127,14 +139,25 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 					default:
 						dropdownAllUsers($search["linkfield"],0,1,$_SESSION["glpiactive_entity"]);
 						break;
-			
 				}
 				break;
 			break;
 
 
-			default :// dropdown case
-				dropdown($search["table"],$search["linkfield"],1,$_SESSION["glpiactive_entity"]);
+			default : // dropdown case
+				// Specific plugin Type case
+				$plugdisplay=false;
+				if ($_POST["device_type"]>1000){
+					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
+						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]].'_MassiveActionsFieldsDisplay';
+						if (function_exists($function)){
+							$plugdisplay=$function($_POST["device_type"],$search["table"],$search["field"],$search["linkfield"]);
+						} 
+					} 
+				} 
+				if (!$plugdisplay){
+					dropdown($search["table"],$search["linkfield"],1,$_SESSION["glpiactive_entity"]);
+				}
 				break;
 		}
 	}

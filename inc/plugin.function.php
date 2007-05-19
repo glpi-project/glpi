@@ -236,13 +236,15 @@ function getPluginSearchOption(){
 	global $PLUGIN_HOOKS; 
 	$sopt=array();
 	if (isset($PLUGIN_HOOKS['plugin_types'])&&count($PLUGIN_HOOKS['plugin_types'])){
-		foreach ($PLUGIN_HOOKS['plugin_types'] as $type => $plug){
+		$tab=array_unique($PLUGIN_HOOKS['plugin_types']);
+		foreach ($tab as $plug){
 			$function="plugin_".$plug."_getSearchOption";
 			if (function_exists($function)) {
 				$sopt+=$function();
 			}
 		}
 	}
+
 	return $sopt;
 }
 

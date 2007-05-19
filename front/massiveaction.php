@@ -181,15 +181,19 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 		break;
 		case "install":
 			foreach ($_POST["item"] as $key => $val){
-				$comp=new Computer;
-				if ($comp->getFromDB($key)&&$comp->fields["FK_entities"]==$_SESSION["glpiactive_entity"]){
-					installSoftware($key,$_POST["lID"],$_POST["sID"]);
+				if ($val==1) {
+					$comp=new Computer;
+					if ($comp->getFromDB($key)&&$comp->fields["FK_entities"]==$_SESSION["glpiactive_entity"]){
+						installSoftware($key,$_POST["lID"],$_POST["sID"]);
+					}
 				}
 			}
 		break;
 		case "add_group":
 			foreach ($_POST["item"] as $key => $val){
-				addUserGroup($key,$_POST["group"]);
+				if ($val==1) {
+					addUserGroup($key,$_POST["group"]);
+				}
 			}
 		break;
 		case "add_document":
@@ -197,11 +201,14 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			$ci2=new CommonItem();
 			if ($ci->getFromDB(DOCUMENT_TYPE,$_POST['docID'])){
 				foreach ($_POST["item"] as $key => $val){
-					// Items exists ?
-					if ($ci2->getFromDB($_POST["device_type"],$key)){
-						// Entity security
-						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
-							addDeviceDocument($_POST['docID'],$_POST["device_type"],$key);
+					if ($val==1) {
+						// Items exists ?
+						if ($ci2->getFromDB($_POST["device_type"],$key)){
+							// Entity security
+							if (!isset($ci2->obj->fields["FK_entities"])
+							||$ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+								addDeviceDocument($_POST['docID'],$_POST["device_type"],$key);
+							}
 						}
 					}
 				}
@@ -212,11 +219,14 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			$ci2=new CommonItem();
 			if ($ci->getFromDB(CONTACT_TYPE,$_POST['conID'])){
 				foreach ($_POST["item"] as $key => $val){
-					// Items exists ?
-					if ($ci2->getFromDB($_POST["device_type"],$key)){
-						// Entity security
-						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
-							addContactEnterprise($key,$_POST["conID"]);
+					if ($val==1) {
+						// Items exists ?
+						if ($ci2->getFromDB($_POST["device_type"],$key)){
+							// Entity security
+							if (!isset($ci2->obj->fields["FK_entities"])
+							||$ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+								addContactEnterprise($key,$_POST["conID"]);
+							}
 						}
 					}
 				}
@@ -227,11 +237,14 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			$ci2=new CommonItem();
 			if ($ci->getFromDB(CONTRACT_TYPE,$_POST['conID'])){
 				foreach ($_POST["item"] as $key => $val){
-					// Items exists ?
-					if ($ci2->getFromDB($_POST["device_type"],$key)){
-						// Entity security
-						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
-							addDeviceContract($_POST['conID'],$_POST["device_type"],$key);
+					if ($val==1) {
+						// Items exists ?
+						if ($ci2->getFromDB($_POST["device_type"],$key)){
+							// Entity security
+							if (!isset($ci2->obj->fields["FK_entities"])
+							||$ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+								addDeviceContract($_POST['conID'],$_POST["device_type"],$key);
+							}
 						}
 					}
 				}
@@ -243,11 +256,14 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 			$ci2=new CommonItem();
 			if ($ci->getFromDB(ENTERPRISE_TYPE,$_POST['entID'])){
 				foreach ($_POST["item"] as $key => $val){
-					// Items exists ?
-					if ($ci2->getFromDB($_POST["device_type"],$key)){
-						// Entity security
-						if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
-							addContactEnterprise($_POST["entID"],$key);
+					if ($val==1) {
+						// Items exists ?
+						if ($ci2->getFromDB($_POST["device_type"],$key)){
+							// Entity security
+							if (!isset($ci2->obj->fields["FK_entities"])
+							||$ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+								addContactEnterprise($_POST["entID"],$key);
+							}
 						}
 					}
 				}
@@ -256,18 +272,32 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 
 		case "force_ocsng_update":
 			foreach ($_POST["item"] as $key => $val){
-				//Try to get the OCS server whose machine belongs
-				$ocs_server_id = getOCSServerByMachineID($key);
-				//If the machine was imported by OCS
-				if ($ocs_server_id != -1){
-					//Force update of the machine
-					ocsUpdateComputer($key,$ocs_server_id,1,1);
+				if ($val==1) {
+					//Try to get the OCS server whose machine belongs
+					$ocs_server_id = getOCSServerByMachineID($key);
+					//If the machine was imported by OCS
+					if ($ocs_server_id != -1){
+						//Force update of the machine
+						ocsUpdateComputer($key,$ocs_server_id,1,1);
+					}
 				}
 			}
 		break;
+		default :
+			// Plugin specific actions
+			if ($_POST["device_type"]>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]].'_MassiveActionsProcess';
+					if (function_exists($function)){
+						$function($_POST);
+					} 
+				} 
+			}
+
+		break;
 	}
 
-	$_SESSION['MESSAGE_AFTER_REDIRECT']=$LANG["common"][23];
+	$_SESSION['MESSAGE_AFTER_REDIRECT'].=$LANG["common"][23];
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {

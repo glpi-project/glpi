@@ -91,51 +91,62 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		break;
 		case "update":
 			$first_group=true;
-		$newgroup="";
-		$items_in_group=0;
-		echo "<select name='id_field' id='massiveaction_field'>";
-		echo "<option value='0' selected>------</option>";
-		foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val){
-			if (!is_array($val)){
-				if (!empty($newgroup)&&$items_in_group>0) {
-					echo $newgroup;
-					$first_group=false;
-				}
-				$items_in_group=0;
-				$newgroup="";
-				if (!$first_group) $newgroup.="</optgroup>";
-				$newgroup.="<optgroup label=\"$val\">";
-			} else {
-				if ($key>1
-					&&$key!=80 // No FK_entities massive action
-				){ // No ID
-					if (!empty($val["linkfield"])
-							||$val["table"]=="glpi_infocoms"
-							||$val["table"]=="glpi_enterprises_infocoms"
-							||$val["table"]=="glpi_dropdown_budget"
-							||($val["table"]=="glpi_ocs_link"&&$key==101) // auto_update_ocs
-							  ){
-						$newgroup.= "<option value='$key'>".$val["name"]."</option>";
-						$items_in_group++;
+			$newgroup="";
+			$items_in_group=0;
+			echo "<select name='id_field' id='massiveaction_field'>";
+			echo "<option value='0' selected>------</option>";
+			foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val){
+				if (!is_array($val)){
+					if (!empty($newgroup)&&$items_in_group>0) {
+						echo $newgroup;
+						$first_group=false;
+					}
+					$items_in_group=0;
+					$newgroup="";
+					if (!$first_group) $newgroup.="</optgroup>";
+					$newgroup.="<optgroup label=\"$val\">";
+				} else {
+					if ($key>1
+						&&$key!=80 // No FK_entities massive action
+					){ // No ID
+						if (!empty($val["linkfield"])
+								||$val["table"]=="glpi_infocoms"
+								||$val["table"]=="glpi_enterprises_infocoms"
+								||$val["table"]=="glpi_dropdown_budget"
+								||($val["table"]=="glpi_ocs_link"&&$key==101) // auto_update_ocs
+								){
+							$newgroup.= "<option value='$key'>".$val["name"]."</option>";
+							$items_in_group++;
+						}
 					}
 				}
 			}
-		}
-		if (!empty($newgroup)&&$items_in_group>0) echo $newgroup;
-		if (!$first_group)
-			echo "</optgroup>";
-
-		echo "</select>";
-
-
-		$params=array('id_field'=>'__VALUE__',
-			'device_type'=>$_POST["type"],
-			);
-		ajaxUpdateItemOnSelectEvent("massiveaction_field","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",$params);
-
-		echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
+			if (!empty($newgroup)&&$items_in_group>0) echo $newgroup;
+			if (!$first_group)
+				echo "</optgroup>";
+	
+			echo "</select>";
+	
+	
+			$params=array('id_field'=>'__VALUE__',
+				'device_type'=>$_POST["type"],
+				);
+			ajaxUpdateItemOnSelectEvent("massiveaction_field","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",$params);
+	
+			echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 
 		break;
+		default :
+			// Plugin specific actions
+			if ($_POST["type"]>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["type"]])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["type"]].'_MassiveActionsDisplay';
+					if (function_exists($function)){
+						$function($_POST["type"],$_POST["action"]);
+					} 
+				} 
+			}
+			break;
 
 	}
 }
