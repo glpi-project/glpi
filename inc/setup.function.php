@@ -472,7 +472,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 	echo "<form action=\" " . $target . "\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
 	echo "<table class='tab_cadre'><tr><td>";
-	dropdownNoValue($table, "newID", $ID);
+	dropdownNoValue($table, "newID", $ID,$FK_entities);
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
 	echo "<input type=\"hidden\" name=\"oldID\" value=\"" . $ID . "\"  />";
 	echo "<input type=\"hidden\" name=\"FK_entities\" value=\"$FK_entities\" />";

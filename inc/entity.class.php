@@ -203,14 +203,10 @@ class Entity extends CommonDBTM{
 
 			if (haveRight("entity","w")) {
 				echo "<tr>";
-				echo "<td class='tab_bg_2' colspan='2' valign='top'>";
+				echo "<td class='tab_bg_2' colspan='4' valign='top' align='center'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' >";
 				echo "</td>\n\n";
-				echo "<td class='tab_bg_2' colspan='2' valign='top'>\n";
-				echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-
-				echo "</td>";
 				echo "</tr>";
 
 			}

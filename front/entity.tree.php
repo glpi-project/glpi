@@ -77,7 +77,7 @@ if (isset($_POST["move"])) {
 			popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
 		else 	
 			commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
-		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"]);
+		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
 		if (ereg("popup",$_SERVER['PHP_SELF']))
 			popFooter();
 		else 
