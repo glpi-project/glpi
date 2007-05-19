@@ -60,7 +60,9 @@ class CommonItem{
 	 *
 	 * @return boolean : object founded and loaded
 	 */
-	function getfromDB ($device_type,$id_device) {
+	function getFromDB ($device_type,$id_device) {
+		global $PLUGIN_HOOKS;
+
 		$this->id_device=$id_device;
 		$this->device_type=$device_type;
 		// Make new database object and fill variables
@@ -156,8 +158,17 @@ class CommonItem{
 			case MAILGATE_TYPE:
 				$this->obj = new Mailgate;
 				break;					
+			default :
+				if ($device_type>1000){
+					if (isset($PLUGIN_HOOKS['plugin_classes'][$device_type])){
+						$class=$PLUGIN_HOOKS['plugin_classes'][$device_type];
+						if (class_exists($class)){
+							$this->obj = new $class();
+						} 
+					} 
+				}
+				break;
 		}
-
 		if ($this->obj!=NULL){
 			// Do not load devices
 			return $this->obj->getfromDB($id_device);
@@ -278,7 +289,6 @@ class CommonItem{
 			case MAILGATE_TYPE:
 				return $LANG["Menu"][39];
 				break;					
-
 		}
 
 	}

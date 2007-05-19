@@ -246,12 +246,13 @@ function getPluginSearchOption(){
 	return $sopt;
 }
 
-function pluginNewType($plugin,$name,$ID,$table,$formpage){
+function pluginNewType($plugin,$name,$ID,$class,$table,$formpage){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES; 
 
 	define($name,$ID);
 	$LINK_ID_TABLE[$ID]=$table;
 	$INFOFORM_PAGES[$ID]="plugins/$plugin/$formpage";
 	$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
+	$PLUGIN_HOOKS['plugin_classes'][$ID]=$class;
 }
 ?>
