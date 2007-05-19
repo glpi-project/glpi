@@ -142,7 +142,7 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 	//Get info about the periph
 	$query = "SELECT end1,end2, type FROM glpi_connect_wire WHERE ID='$ID'";		
 	$res = $DB->query($query);
-	echo $query;
+
 	if($DB->numrows($res)>0){
 		$data = $DB->fetch_array($res);
 
