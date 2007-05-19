@@ -244,39 +244,57 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
  * @return nothing (print out an HTML select box)
  * 
  */
-function dropdownNoValue($table,$myname,$value) {
+function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 	// Make a select box without parameters value
 
-	global $DB,$CFG_GLPI;
+	global $DB,$CFG_GLPI,$LANG;
 
 	$where="";
+	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+		$where.= "WHERE ".$table.".FK_entities='".$entity_restrict."'";
+	} 
+
 	if (in_array($table,$CFG_GLPI["deleted_tables"])){
-		$where="WHERE deleted='0'";
+		if (empty($where)){
+			$where=" WHERE ";
+		} else {
+			$where.=" AND ";
+		}
+		$where=" WHERE deleted='0'";
 	}
 	if (in_array($table,$CFG_GLPI["template_tables"])){
-		$where.="AND is_template='0'";
+		if (empty($where)){
+			$where=" WHERE ";
+		} else {
+			$where.=" AND ";
+		}
+		$where.=" is_template='0'";
 	}
 
+	if (empty($where)){
+		$where=" WHERE ";
+	} else {
+		$where.=" AND ";
+	}
+	$where.=" ID<>'$value' ";
+	
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])){
-		$query = "SELECT ID FROM $table $where ORDER BY completename";
+		$query = "SELECT ID, completename as name FROM $table $where  ORDER BY completename";
 	}
 	else {
-		$query = "SELECT ID FROM $table $where ORDER BY name";
+		$query = "SELECT ID, name FROM $table $where AND ID<>'$value' ORDER BY name";
 	}
-
 	$result = $DB->query($query);
 
+	
 	echo "<select name=\"$myname\" size='1'>";
-	$i = 0;
-	$number = $DB->numrows($result);
-	if ($number > 0) {
-		while ($i < $number) {
-			$ID = $DB->result($result, $i, "ID");
-			if ($ID === $value) {
-			} else {
-				echo "<option value=\"$ID\">".getDropdownName($table,$ID)."</option>";
-			}
-			$i++;
+	if ($table=="glpi_entities"){
+		echo "<option value=\"0\">".$LANG["entity"][2]."</option>";
+	}
+
+	if ($DB->numrows($result) > 0) {
+		while ($data=$DB->fetch_array($result)) {
+			echo "<option value=\"".$data['ID']."\">".$data['name']."</option>";
 		}
 	}
 	echo "</select>";
