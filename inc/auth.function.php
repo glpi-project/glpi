@@ -88,7 +88,7 @@ function haveRight($module, $right) {
  * @return Boolean : session variable have more than the right specified for the module type
  */
 function haveTypeRight($type, $right) {
-	global $LANG;
+	global $LANG,$PLUGIN_HOOKS;
 
 	switch ($type) {
 		case GENERAL_TYPE :
@@ -184,6 +184,18 @@ function haveTypeRight($type, $right) {
 		case MAILGATE_TYPE :
 			return haveRight("config",$right);
 			break;	
+		default :
+			// Plugin case
+			if ($type>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_haveTypeRight';
+					if (function_exists($function)){
+						return $function($type,$right);
+					} 
+				} 
+			}
+			
+			break;
 
 	}
 	return false;
