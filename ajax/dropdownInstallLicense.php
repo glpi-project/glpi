@@ -66,7 +66,7 @@ if ($_POST['sID']>0){
 		echo "<option value=\"-1\">--".$LANG["software"][43]."--</option>";
 
 	$today=date("Y-m-d"); 
-	if ($DB->numrows($result)) {
+	if ($number) {
 		while ($data = $DB->fetch_assoc($result)) {
 
 			$output = $data['serial']." - ";
