@@ -1230,7 +1230,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 }
 
 function dropdownMassiveAction($device_type,$deleted=0){
-	global $LANG,$CFG_GLPI;
+	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
 	
 
@@ -1275,6 +1275,23 @@ function dropdownMassiveAction($device_type,$deleted=0){
 				break;
 			case USER_TYPE :
 				echo "<option value=\"add_group\">".$LANG["setup"][604]."</option>";
+				break;
+			default :
+				// Plugin Specific actions
+				if ($device_type>1000){
+					if (isset($PLUGIN_HOOKS['plugin_types'][$device_type])){
+						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$device_type].'_MassiveActions';
+						if (function_exists($function)){
+							$actions=$function($device_type);
+							if (count($actions)){
+								foreach ($actions as $key => $val){
+									echo "<option value=\"$key\">$val</option>";
+								}
+							}
+						} 
+					} 
+				}
+
 				break;
 		}
 

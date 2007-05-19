@@ -105,7 +105,6 @@ else if (isset($_GET["unglobalize"]))
 else if (isset($_GET["disconnect"]))
 {
 	checkRight("phone","w");
-
 	Disconnect($_GET["ID"]);
 	logEvent(0, "phones", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
