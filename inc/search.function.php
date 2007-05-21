@@ -2232,7 +2232,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 		break;
 		case "glpi_enterprises":
-			if ($type=CONTACT_TYPE){
+			if ($type==CONTACT_TYPE){
 				$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contact_enterprise","FK_contact");
 				return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_enterprise = $nt.ID) ";
 			} else {
