@@ -2813,6 +2813,12 @@ $SEARCH_OPTION[TRACKING_TYPE][4]['linkfield']='author';
 $SEARCH_OPTION[TRACKING_TYPE][4]['name']=$LANG["common"][37];
 $SEARCH_OPTION[TRACKING_TYPE][4]['meta']=1;
 
+$SEARCH_OPTION[TRACKING_TYPE][71]['table']='glpi_groups';
+$SEARCH_OPTION[TRACKING_TYPE][71]['field']='name';
+$SEARCH_OPTION[TRACKING_TYPE][71]['linkfield']='FK_group';
+$SEARCH_OPTION[TRACKING_TYPE][71]['name']=$LANG["common"][35];
+$SEARCH_OPTION[TRACKING_TYPE][71]['meta']=0;
+
 $SEARCH_OPTION[TRACKING_TYPE][5]['table']='glpi_users';
 $SEARCH_OPTION[TRACKING_TYPE][5]['field']='name';
 $SEARCH_OPTION[TRACKING_TYPE][5]['linkfield']='assign';

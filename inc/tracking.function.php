@@ -465,19 +465,23 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		echo displaySearchItem($output_type,"<strong>".getPriorityName($data["priority"])."</strong>",$item_num,$row_num,0,"$align bgcolor='$bgcolor'");
 
 		// Fourth Column
-		if ($viewusers){
-			$userdata=getUserName($data['author'],2);
-
-			$comments_display="<a href='".$userdata["link"]."'>";
-			$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
-			$comments_display.="</a>";
-			$comments_display.="<span class='over_link' id='comments_trackauthor".$data['ID']."'>".$userdata["comments"]."</span>";
-
-			$fourth_col="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
-			//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],1)
-		} else {
-			$fourth_col="<strong>".getUserName($data['author'],0)."</strong>";
-			//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],0);
+		$fourth_col="";
+		if ($data['author']){
+			if ($viewusers){
+				$userdata=getUserName($data['author'],2);
+	
+				$comments_display="";
+				$comments_display="<a href='".$userdata["link"]."'>";
+				$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
+				$comments_display.="</a>";
+				$comments_display.="<span class='over_link' id='comments_trackauthor".$data['ID']."'>".$userdata["comments"]."</span>";
+	
+				$fourth_col.="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
+				//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],1)
+			} else {
+				$fourth_col.="<strong>".getUserName($data['author'],0)."</strong>";
+				//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],0);
+			}
 		}
 
 		if ($data["FK_group"])
@@ -490,7 +494,8 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		if ($data["assign"]>0){
 			if ($viewusers){
 				$userdata=getUserName($data['assign'],2);
-	
+
+				$comments_display="";
 				$comments_display="<a href='".$userdata["link"]."'>";
 				$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
 				$comments_display.="</a>";
