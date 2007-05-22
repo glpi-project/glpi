@@ -45,6 +45,19 @@ commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils","ocsng");
 
 $CFG_GLPI["use_ajax"] = 1; 
 
+//First time this screen is displayed : set the import mode to 'basic'
+if (!isset($_SESSION["change_import_mode"])){
+	$_SESSION["change_import_mode"] = false;
+}
+
+//Changing the import mode	
+if (isset($_GET["change_import_mode"])){
+	if ($_GET["change_import_mode"] == "false"){
+		$_SESSION["change_import_mode"]=false;
+	} else {
+		$_SESSION["change_import_mode"]=true;
+	}
+}
 
 if (isset($_SESSION["ocs_link"])){
 	if ($count=count($_SESSION["ocs_link"])){
@@ -72,7 +85,7 @@ if (!isset($_POST["import_ok"])){
 	if (!isset($_GET['start'])) $_GET['start']=0;
 
 	ocsManageDeleted($_SESSION["ocs_server_id"]);
-	ocsShowNewComputer($_SESSION["ocs_server_id"],$_GET['check'],$_GET['start'],1);
+	ocsShowNewComputer($_SESSION["ocs_server_id"],$_SESSION["change_import_mode"],$_GET['check'],$_GET['start'],1);
 
 } else {
 	if (count($_POST['tolink'])>0){
