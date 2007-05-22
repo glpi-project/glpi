@@ -359,6 +359,9 @@ function ocsImportComputer($ocs_id,$ocs_server_id,$lock=0,$defaultentity=-1) {
 	if ($DB->numrows($result_glpi_ocs_link)) {
 		$datas = $DB->fetch_array($result_glpi_ocs_link);
 		ocsUpdateComputer($datas["ID"],$ocs_server_id,1,0);
+		
+		//Return code to indicates that the machine was synchronized
+		return 0;
 	} else {
 	# Machine is not present, I go a head
 		// Set OCS checksum to max value
@@ -413,6 +416,9 @@ function ocsImportComputer($ocs_id,$ocs_server_id,$lock=0,$defaultentity=-1) {
 		if ($lock)
 			removeEntityLock($data['FK_entities'],$fp);
 	}
+ 	
+ 	//Return code to indicates that the machine was synchronized
+	return 1;
  }
 }
 
