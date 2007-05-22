@@ -64,7 +64,6 @@ if (haveRight("config","w")){
 }
 
 $data=array();
-$data["setup.display.php"]=$LANG["setup"][250];
 if (haveRight("dropdown","w")||haveRight("entity_dropdown","w")){
 	$data["setup.dropdowns.php"]=$LANG["setup"][0];
 }
