@@ -466,7 +466,14 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		// Fourth Column
 		if ($viewusers){
-			$fourth_col="<strong>".getUserName($data['author'],1)."</strong>";
+			$userdata=getUserName($data['author'],2);
+
+			$comments_display="<a href='".$userdata["link"]."'>";
+			$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
+			$comments_display.="</a>";
+			$comments_display.="<span class='over_link' id='comments_trackauthor".$data['ID']."'>".$userdata["comments"]."</span>";
+
+			$fourth_col="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
 			//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],1)
 		} else {
 			$fourth_col="<strong>".getUserName($data['author'],0)."</strong>";
@@ -482,7 +489,16 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$fifth_col="";
 		if ($data["assign"]>0){
 			if ($viewusers){
-				$fifth_col.=getUserName($data['assign'],1);
+				$userdata=getUserName($data['assign'],2);
+	
+				$comments_display="<a href='".$userdata["link"]."'>";
+				$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
+				$comments_display.="</a>";
+				$comments_display.="<span class='over_link' id='comments_trackassign".$data['ID']."'>".$userdata["comments"]."</span>";
+	
+				$fifth_col="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
+
+				//$fifth_col.=getUserName($data['assign'],1);
 				//formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],1);
 			} else{
 				$fifth_col.=getUserName($data['assign'],0);
@@ -525,7 +541,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		// Eigth column
 
-		$eigth_column="<strong>".$data["name"]."</strong>";
+		$eigth_column="<strong>".$data["name"]."</strong>&nbsp;";
 
 		$eigth_column.= "<img alt='".$LANG["joblist"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$data["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$data["ID"]."')\" >";
 		$eigth_column.="<span class='over_link' id='comments_tracking".$data["ID"]."'>".nl2br($data['contents'])."</span>";
