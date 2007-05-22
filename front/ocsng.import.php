@@ -44,15 +44,17 @@ checkRight("ocsng","w");
 commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils","ocsng");
 
 //First time this screen is displayed : set the import mode to 'basic'
-if (!isset($_SESSION["change_import_mode"]))
+if (!isset($_SESSION["change_import_mode"])){
 	$_SESSION["change_import_mode"] = false;
+}
 
 //Changing the import mode	
 if (isset($_GET["change_import_mode"])){
-	if ($_GET["change_import_mode"] == "false")
+	if ($_GET["change_import_mode"] == "false"){
 		$_SESSION["change_import_mode"]=false;
-	else
+	} else {
 		$_SESSION["change_import_mode"]=true;
+	}
 }
 
 if (isset($_SESSION["ocs_import"]["ID"])){
