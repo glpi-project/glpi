@@ -43,7 +43,18 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 
+
 	commonHeader($LANG["Menu"][39], $_SERVER['PHP_SELF'], "config","mailgate");
+
+if (function_exists('imap_open')) {
+	echo "<div align='center'>";
+	echo "<table class='tab_cadre_fixe'>";
+	echo "<tr><th colspan='2'>" . $LANG["Menu"][39] . "</th></tr>";
+	echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][165] . "</p></td></tr></table>";
+	echo "</div>";
+	commonFooter();
+	exit();
+}
 	
 	manageGetValuesInSearch(MAILGATE_TYPE);
 	searchForm(MAILGATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);

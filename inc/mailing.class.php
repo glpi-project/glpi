@@ -400,7 +400,7 @@ class Mailing
 	 */
 	function send()
 	{
-		global $CFG_GLPI;
+		global $CFG_GLPI,$LANG;
 		if ($CFG_GLPI["mailing"])
 		{
 			if (!is_null($this->job)&&!is_null($this->user)&&in_array($this->type,array("new","attrib","followup","finish")))
@@ -443,7 +443,7 @@ class Mailing
 							$mmail->isHTML(true);
 							$mmail->AltBody=$textbody;
 							if(!$mmail->Send()){
-								$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
+								$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailing"][47];
 								return false;
 							}
 							$mmail->ClearAddresses(); 

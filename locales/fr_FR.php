@@ -856,6 +856,7 @@ $LANG["mailing"][43]="Changement du coût fixe";
 $LANG["mailing"][44]="Changement du coût matériel";
 $LANG["mailing"][45]="Changement du titre du ticket";
 $LANG["mailing"][46]="Changement de la description du ticket";
+$LANG["mailing"][47]="Erreur dans l'envoi de l'email";
 $LANG["mailing"][100]="Pas de catégorie attribuée";
 $LANG["mailing"][101]="Le suivi par email a été activé";
 $LANG["mailing"][102]="Le suivi par email a été désactivé";
