@@ -67,7 +67,7 @@ if (isset($_SESSION["ocs_link"])){
 
 		$key=array_pop($_SESSION["ocs_link"]);
 		ocsLinkComputer($key["ocs_id"],$_SESSION["ocs_server_id"],$key["glpi_id"]);
-		glpi_header($_SERVER['PHP_SELF']."?ocs_server_id=".$ocs_server_id);
+		glpi_header($_SERVER['PHP_SELF']);
 	} else {
 		displayProgressBar(400,100);
 
