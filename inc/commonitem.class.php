@@ -193,7 +193,7 @@ class CommonItem{
 	 * @return String: name of the object type in the current language
 	 */
 	function getType (){
-		global $LANG;
+		global $LANG,$PLUGIN_HOOKS;
 
 		switch ($this->device_type){
 			case GENERAL_TYPE :
@@ -288,7 +288,20 @@ class CommonItem{
 				break;					
 			case MAILGATE_TYPE:
 				return $LANG["Menu"][39];
-				break;					
+				break;	
+			default :
+				if ($this->device_type>1000){
+					if (isset($PLUGIN_HOOKS['plugin_types'][$this->device_type])){
+						$function="plugin_version_".$PLUGIN_HOOKS['plugin_types'][$this->device_type];
+						if (function_exists($function)){
+							$data=$function();
+							if (isset($data['name'])){
+								return $data['name'];
+							}
+						} 
+					} 
+				}
+				break;
 		}
 
 	}
