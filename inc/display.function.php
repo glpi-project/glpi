@@ -1281,7 +1281,7 @@ function commonFooter() {
 
 			foreach ($DEBUG_SQL['queries'] as $num => $query){
 				echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
-				echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",$query)))));
+				echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",eregi_replace("UNION","<br>UNION<br>",$query))))));
 				echo "</td><td>";
 				echo $DEBUG_SQL['times'][$num];
 				echo "</td><td>";
