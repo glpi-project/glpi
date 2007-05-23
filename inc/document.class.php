@@ -83,8 +83,9 @@ class Document extends CommonDBTM {
 		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 		$input["FK_users"] = $_SESSION["glpiID"];
 
-		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type']))
+		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type'])){
 			$input['mime']=$_FILES['filename']['type'];
+		}
 
 		if (isset($input["item"])&&isset($input["type"])&&$input["type"]>0&&$input["item"]>0){
 			$ci=new CommonItem();
@@ -94,7 +95,13 @@ class Document extends CommonDBTM {
 
 		if (isset($input["upload_file"])&&!empty($input["upload_file"])){
 			$input['filename']=moveUploadedDocument($input["upload_file"]);
-		} else 	$input['filename']= uploadDocument($_FILES['filename']);
+		} else 	{
+			$input['filename']= uploadDocument($_FILES['filename']);
+		}
+
+		if (!isset($input['name'])&&isset($input['filename'])){
+			$input['name']=$input['filename'];
+		}
 
 		unset($input["upload_file"]);
 		if (!isset($input["_only_if_upload_succeed"])||!$input["_only_if_upload_succeed"]||!empty($input['filename'])) {
