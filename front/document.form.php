@@ -47,7 +47,15 @@ if (isset($_POST["add"]))
 	checkRight("document","w");
 
 	$newID=$doc->add($_POST);
-	logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
+	$name="";
+	if (isset($_POST["name"])){
+		$name=$_POST["name"];
+	} else if (isset($_FILES['filename'])){
+		if (isset($_FILES['filename']['name'])){
+			$name=$_FILES['filename']['name'];
+		}
+	}
+	logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$name.".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
