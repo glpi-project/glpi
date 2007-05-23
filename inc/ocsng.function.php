@@ -127,26 +127,28 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			if ($start > 0)
 				array_splice($hardware, 0, $start);
 
-			echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode' action='" . $_SERVER['PHP_SELF'] . "'>";
-
-			echo "<table class='tab_cadre'>";
-			echo "<tr><th>" . $LANG["ocsng"][41] . "</th></tr>";
-			echo "<tr class='tab_bg_1'>"; 
-			echo "<td align='center'>";
-			
-			if($advanced)
-				$status="false";
+			if (!$tolinked)
+			{
+				echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode' action='" . $_SERVER['PHP_SELF'] . "'>";
+	
+				echo "<table class='tab_cadre'>";
+				echo "<tr><th>" . $LANG["ocsng"][41] . "</th></tr>";
+				echo "<tr class='tab_bg_1'>"; 
+				echo "<td align='center'>";
+				
+				if($advanced)
+					$status="false";
+					else
+					$status="true";
+	
+				echo "<a href='" . $_SERVER['PHP_SELF'] . "?change_import_mode=".$status."'>";
+				if($advanced)
+					echo $LANG["ocsng"][38];
 				else
-				$status="true";
-
-			echo "<a href='" . $_SERVER['PHP_SELF'] . "?change_import_mode=".$status."'>";
-			if($advanced)
-				echo $LANG["ocsng"][38];
-			else
-				echo $LANG["ocsng"][37];
-			echo "</a></td>"; 
-			echo "</tr></table></form><br>";
-
+					echo $LANG["ocsng"][37];
+				echo "</a></td>"; 
+				echo "</tr></table></form><br>";
+			}
 
 			echo "<strong>" . $LANG["ocsconfig"][18] . "</strong><br>";
 			echo "<form method='post' name='ocsng_form' id='ocsng_form' action='" . $_SERVER['PHP_SELF'] . "'>";
@@ -156,7 +158,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			echo "<table class='tab_cadre'>";
 	
 			echo "<tr><th>" . $LANG["ocsng"][5] . "</th><th>" . $LANG["common"][27] . "</th><th>TAG</th>";
-			if ($advanced)
+			if ($advanced && !$tolinked)
 			{	
 				echo "<th>".$LANG["ocsng"][40]."</th>";
 				echo "<th>".$LANG["ocsng"][36]."</th>";
@@ -174,12 +176,12 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				$comp->fields["ID"]=$tab["ID"];
 				
 				$data=array();
-				if ($advanced)
+				if ($advanced && !$tolinked)
 					$data=$rule->processAllRules(array(),array(),$tab["ID"]);
 
 				echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td><td>" . convDateTime($tab["date"]) . "</td><td>" . $tab["TAG"] . "</td>";
 
-				if ($advanced)
+				if ($advanced && !$tolinked)
 				{
 					if (!isset($data['FK_entities'])) 
 					{
