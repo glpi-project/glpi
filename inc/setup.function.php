@@ -161,6 +161,8 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		$numberof = countElementsInTable($tablename);
 	}
 
+	
+
 	echo "<div align='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
@@ -170,22 +172,26 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
 
-		dropdownValue($tablename, "ID", $ID, 0, $entity_restict);
-		// on ajoute un input text pour entrer la valeur modifier
-		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
-
 		if ($tablename != "glpi_dropdown_netpoint") {
 			if (!empty ($ID)) {
 				$value = getDropdownName($tablename, $ID, 1);
-			} else
+			} else {
 				$value = array (
 					"name" => "",
 					"comments" => ""
 				);
+			}
+			dropdownValue($tablename, "ID", $ID, 0, $entity_restict);
+
 		} else {
 			$value = "";
 			$loc = "";
+			dropdownNetpoint("ID", $ID, 0, $entity_restict);
 		}
+
+		// on ajoute un input text pour entrer la valeur modifier
+		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
+
 
 		if ($tablename == "glpi_dropdown_netpoint") {
 			$query = "select * from glpi_dropdown_netpoint where ID = '" . $ID . "'";
