@@ -2703,7 +2703,7 @@ function ocsResetRegistry($glpi_computer_id) {
 			WHERE computer_id = '" . $glpi_computer_id . "'"; 			
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
-		while ($data = $DB2->fetch_assoc($result)) {
+		while ($data = $DB->fetch_assoc($result)) {
 			$query2 = "SELECT COUNT(*) 
 							FROM glpi_registry 
 							WHERE computer_id = '" . $data['computer_id'] . "'";
