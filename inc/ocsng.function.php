@@ -1977,8 +1977,18 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										}
 									}
 								if ($id_monitor) {
-									if (!$found_already_monitor)
+                                   if (!$found_already_monitor){
+                                        //Import unique : Disconnect monitor on other computer
+                                        if ($cfg_ocs["import_monitor"] == 2){
+                                            $queryGetConnectionID = "SELECT * FROM glpi_connect_wire WHERE end1=$id_monitor";
+                                            $result_search_id = $DB->query($queryGetConnectionID);
+                                            if ($DB->numrows($result_search_id) == 1) {
+                                                $id_conn = $DB->result($result_search_id, 0, "ID");
+                                               Disconnect($id_conn,$dohistory,$ocs_server_id);
+                                            }
+                                        }
 										$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE,$dohistory);
+                                   }
 									if(!empty($mon["serial"])){
 										$addValuetoDB = $mon["name"];
 										$addValuetoDB .= $mon["serial"];											
