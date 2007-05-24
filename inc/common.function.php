@@ -60,8 +60,10 @@ if (!defined('GLPI_ROOT')){
 			E_USER_ERROR         => 'User Error',
 			E_USER_WARNING       => 'User Warning',
 			E_USER_NOTICE        => 'User Notice',
-			E_STRICT             => 'Runtime Notice',
-			E_RECOVERABLE_ERROR  => 'Catchable Fatal Error'
+			// Need php 5.0
+			2048 	/*E_STRICT*/             => 'Runtime Notice',
+			// Need php 5.2.0
+			4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error'
 			);			
 		// Les niveaux qui seront enregistrés
 		$user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
