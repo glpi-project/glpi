@@ -1476,7 +1476,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"])){
 				$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
 			}
-			if (empty($linkfield)){ // glpi_users case / not link table
+			if ($type==USER_TYPE){ // glpi_users case / not link table
 				return $link." ( $table$linkfield.$field $SEARCH ) ";
 			} else {
 				return $link." ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH OR CONCAT($table$linkfield.realname,' ',$table$linkfield.firstname) $SEARCH ) ";
