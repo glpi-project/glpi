@@ -407,6 +407,8 @@ $SEARCH_OPTION[COMPUTER_TYPE][58]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][58]['name']=$LANG["financial"][77];
 $SEARCH_OPTION[COMPUTER_TYPE][58]['meta']=0;
 
+$SEARCH_OPTION[COMPUTER_TYPE]['ocsng']=$LANG["Menu"][33];
+
 $SEARCH_OPTION[COMPUTER_TYPE][102]['table']='glpi_ocs_link';
 $SEARCH_OPTION[COMPUTER_TYPE][102]['field']='last_update';
 $SEARCH_OPTION[COMPUTER_TYPE][102]['linkfield']='';
@@ -418,8 +420,6 @@ $SEARCH_OPTION[COMPUTER_TYPE][103]['field']='last_ocs_update';
 $SEARCH_OPTION[COMPUTER_TYPE][103]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][103]['name']=$LANG["ocsng"][14];
 $SEARCH_OPTION[COMPUTER_TYPE][103]['meta']=0;
-
-$SEARCH_OPTION[COMPUTER_TYPE]['ocsng']=$LANG["Menu"][33];
 
 $SEARCH_OPTION[COMPUTER_TYPE][100]['table']='glpi_computers';
 $SEARCH_OPTION[COMPUTER_TYPE][100]['field']='ocs_import';
