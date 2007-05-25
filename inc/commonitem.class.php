@@ -412,7 +412,7 @@ class CommonItem{
 				}
 			}
 			if ($tmp=$this->getField('FK_users')){
-				$tmp=getDropdownName("glpi_users",$tmp);
+				$tmp=getUserName($tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
 					$comment.="<strong>".$LANG["common"][34].": "."</strong>".$tmp."<br>";
 				}
@@ -424,7 +424,7 @@ class CommonItem{
 				}
 			}
 			if ($tmp=$this->getField('tech_num')){
-				$tmp=getDropdownName("glpi_users",$tmp);
+				$tmp=getUserName($tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
 					$comment.="<strong>".$LANG["common"][10].": "."</strong>".$tmp."<br>";
 				}
