@@ -563,6 +563,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['config']['content']['plugins']['page']='/front/setup.plugins.php';
 		}
 		echo "<div id='header'>";
+		echo "<div id='c_logo' ><a href='".$CFG_GLPI["root_doc"]."/front/central.php'  title=\"".$LANG["central"][5]."\"></a></div>";
 		
 		// Les préférences + lien déconnexion 
 		echo "<div id='c_preference' >";
@@ -580,6 +581,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		
 		//-- Le moteur de recherche -->
 		echo "<div id='c_recherche' >\n"; 
+
 		echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n"; 
 		echo "	<div id='boutonRecherche'><input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png'  value='OK'   title=\"".$LANG["buttons"][2]."\"  alt=\"".$LANG["buttons"][2]."\"  /></div>\n"; 
 		echo "	<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".$LANG["buttons"][0]."' onfocus=\"this.value='';\" /></div>	\n"; 		
@@ -589,7 +591,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 	
 		//<!-- Le menu principal -->
 		echo "<div id='c_menu'>";
-		echo "<div id='c_logo' ><a href='".$CFG_GLPI["root_doc"]."/front/central.php'  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
 		echo "	<ul id='menu'>";
 		
 	

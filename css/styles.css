@@ -70,7 +70,7 @@ div#c_preference{
 	position: relative;
 	top: 4px;
 	font-size: 0.9em;	
-	z-index:1000;
+	z-index:900;
 }
 
 div#c_preference ul{
@@ -141,6 +141,7 @@ div#c_menu{
 	position: absolute;
 	top: 0px;
 	z-index: 10;
+	margin-left: 45px;
 }
 
 div#c_menu ul#menu{
@@ -265,14 +266,16 @@ ul#menu li#menu7 ul.ssmenu{
 	width: 110px;
 }
 
-div#c_menu div#c_logo{
+div#header div#c_logo{
+	position: absolute;
+	z-index: 1000;
 	width: 64px;
 	height: 41px;
 	float: left;
 	background: url("../pics/fd_logo.png") 0 0 repeat-x;
 }
 
-div#c_menu div#c_logo a{
+div#header div#c_logo a{
 	display: block;
 	width: 100%;
 	height: 100%;
