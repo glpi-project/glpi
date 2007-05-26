@@ -602,10 +602,19 @@ function showJobVeryShort($ID) {
 		echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["ID"]."</td>";
 		echo "<td align='center'>";
 
-		if ($viewusers)
-			echo "<strong>".$job->getAuthorName(1)."</strong>";
-		else
+		if ($viewusers){
+				$userdata=getUserName($job->fields['author'],2);
+	
+				$comments_display="";
+				$comments_display="<a href='".$userdata["link"]."'>";
+				$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$ID."')\" onmouseover=\"cleandisplay('comments_trackauthor".$ID."')\">";
+				$comments_display.="</a>";
+				$comments_display.="<span class='over_link' id='comments_trackauthor".$ID."'>".$userdata["comments"]."</span>";
+	
+				echo "<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
+		} else {
 			echo "<strong>".$job->getAuthorName()."</strong>";
+		}
 
 		if ($job->fields["FK_group"])
 			echo "<br>".getDropdownName("glpi_groups",$job->fields["FK_group"]);
