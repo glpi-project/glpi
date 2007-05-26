@@ -959,7 +959,7 @@ function ocsCleanLinks($ocs_server_id) {
 
 function cron_ocsng() {
 
-	global $DB;
+	global $DB,$CFG_GLPI;
 
 	//Get a randon server id
 	$ocs_server_id = getRandomOCSServerID();
@@ -968,7 +968,9 @@ function cron_ocsng() {
 		$DBocs= getDBocs($ocs_server_id);
 		
 		$cfg_ocs = getOcsConf($ocs_server_id);
-		
+		if ($CFG_GLPI["use_errorlog"]){
+			logInFile("cron","Check updates from server ".$cfg_ocs['name']."\n");
+		}
 	
 		if (!$cfg_ocs["cron_sync_number"])
 			return 0;
@@ -998,17 +1000,19 @@ function cron_ocsng() {
 	
 				if (isset ($hardware[$data["ocs_id"]])) {
 					ocsUpdateComputer($data["ID"],$ocs_server_id, 2);
+					if ($CFG_GLPI["use_errorlog"]){
+						logInFile("cron","Update computer ".$data["ID"]."\n");
+					}
 					$done++;
 				}
 			}
-			if ($done > 0)
+			if ($done > 0){
 				return 1;
-	
-		}
-			return 0;
+			}
+		} 
+		return 0;
 	} 
 	return 1;
-
 }
 
 function ocsShowUpdateComputer($ocs_server_id,$check, $start) {
