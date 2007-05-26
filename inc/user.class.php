@@ -332,6 +332,9 @@ class User extends CommonDBTM {
 					while ($data = $DB->fetch_array($result))
 						if (!in_array($data["FK_groups"], $input["_groups"])) {
 							deleteUserGroup($data["ID"]);
+						} else {
+							// Delete found item in order not to add it again
+							unset($input["_groups"][array_search($data["FK_groups"], $input["_groups"])]);
 						}
 				}
 	

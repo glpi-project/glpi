@@ -1053,7 +1053,7 @@ function checkNewVersionAvailable($auto=1){
 	if (strlen(trim($latest_version)) == 0){
 		if (!$auto) {
 			echo "<div align='center'>".$LANG["setup"][304]." ($errstr)</div>";
-		} else return {
+		} else {
 			return $LANG["setup"][304];
 		}
 	} else {			
