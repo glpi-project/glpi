@@ -46,8 +46,9 @@ if (!defined('GLPI_ROOT')){
 
 	// Fonction spéciale de gestion des erreurs
 	function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
+		global $CFG_GLPI;
 		// Date et heure de l'erreur
-		$dt = date("Y-m-d H:i:s (T)");
+		//$dt = date("Y-m-d H:i:s (T)");
 		$errortype = array (
 			E_ERROR              => 'Error',
 			E_WARNING            => 'Warning',
@@ -69,7 +70,7 @@ if (!defined('GLPI_ROOT')){
 		$user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
 			
 		$err = "<errorentry>\n";
-		$err .= "\t<datetime>" . $dt . "</datetime>\n";
+		//$err .= "\t<datetime>" . $dt . "</datetime>\n";
 		$err .= "\t<errornum>" . $errno . "</errornum>\n";
 		$err .= "\t<errortype>" . $errortype[$errno] . "</errortype>\n";
 		$err .= "\t<errormsg>" . $errmsg . "</errormsg>\n";
@@ -82,7 +83,9 @@ if (!defined('GLPI_ROOT')){
 		$err .= "</errorentry>\n\n";
 		
 		// sauvegarde de l'erreur, et mail si c'est critique
-		error_log($err, 3, GLPI_LOG_DIR."/php-errors.log");
+		if ($CFG_GLPI["use_errorlog"]){
+			logInFile("php-errors",$err);
+		}
 		echo '<div style="position:fload-left; background-color:red; z-index:10000">PHP ERROR : ';
 		echo $errmsg." in ".$filename." at line ".$linenum;
 		echo '</div>';
@@ -113,8 +116,10 @@ function cron_logs(){
 		$secs = $CFG_GLPI["expire_events"] * DAY_TIMESTAMP;
 		$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 		$DB->query($query_exp);
+		if ($CFG_GLPI["use_errorlog"]){
+			logInFile("cron","Cleaning log events passed from more than ".$CFG_GLPI["expire_events"]." days\n");
+		}
 	}
-	
 }
 
 /**
@@ -138,32 +143,40 @@ function cron_cache(){
 		);
 		$cache = new Cache_Lite($cache_options);
 		$cache->clean(false,"old");
+		if ($CFG_GLPI["use_errorlog"]){
+			logInFile("cron","Clean cache created since more than $lifetime seconds\n");
+		}
 		$lifetime/=2;
 		$max_recursion--;
 	}
-	if ($max_recursion>0)
+	if ($max_recursion>0){
 		return 1;
-	else return -1;
+	} else {
+		return -1;
+	}
 }
 
 /**
  * Garbage collector for expired file session
  *
  **/
-function cron_session()
-	{
-		
-		// max time to keep the file session
-		$maxlifetime = session_cache_expire();
-				
-		foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
-			if (filemtime($filename) + $maxlifetime < time()) {
-				// Delete session file if not delete before
-				@unlink($filename);
-			}
+function cron_session(){
+	global $CFG_GLPI;
+	// max time to keep the file session
+	$maxlifetime = session_cache_expire();
+	$do=false;			
+	foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
+		if (filemtime($filename) + $maxlifetime < time()) {
+			// Delete session file if not delete before
+			@unlink($filename);
+			$do=true;
 		}
-			return true;
 	}
+	if ($do&&$CFG_GLPI["use_errorlog"]){
+		logInFile("cron","Clean session files created since more than $maxlifetime seconds\n");
+	}
+	return true;
+}
 
 
 
@@ -1038,7 +1051,11 @@ function checkNewVersionAvailable($auto=1){
 	}
 
 	if (strlen(trim($latest_version)) == 0){
-		if (!$auto) echo "<div align='center'>".$LANG["setup"][304]." ($errstr)</div>";
+		if (!$auto) {
+			echo "<div align='center'>".$LANG["setup"][304]." ($errstr)</div>";
+		} else return {
+			return $LANG["setup"][304];
+		}
 	} else {			
 		$splitted=split("\.",trim($CFG_GLPI["version"]));
 
@@ -1062,22 +1079,33 @@ function checkNewVersionAvailable($auto=1){
 		}
 
 		if ($cur_version < $lat_version){
-			if (!$auto) {
-				echo "<div align='center'>".$LANG["setup"][301]." ".$latest_version."</div>";
-				echo "<div align='center'>".$LANG["setup"][302]."</div>";
-			}
-
 			$config_object=new Config();
 			$input["ID"]=1;
 			$input["founded_new_version"]=$latest_version;
 			$config_object->update($input);
-		}  else echo "<div align='center'>".$LANG["setup"][303]."</div>";
+			if (!$auto) {
+				echo "<div align='center'>".$LANG["setup"][301]." ".$latest_version."</div>";
+				echo "<div align='center'>".$LANG["setup"][302]."</div>";
+			} else {
+				return $LANG["setup"][301]." ".$latest_version;
+			}
+		}  else {
+			if (!$auto){
+				echo "<div align='center'>".$LANG["setup"][303]."</div>";
+			} else {
+				return $LANG["setup"][303];
+			}
+		}
 	} 
 	return 1;
 }
 
 function cron_check_update(){
-	checkNewVersionAvailable(1);
+	global $CFG_GLPI;
+	$result=checkNewVersionAvailable(1);
+	if ($CFG_GLPI["use_errorlog"]){
+		logInFile("cron",$result."\n");
+	}
 }
 
 function getWarrantyExpir($from,$addwarranty){

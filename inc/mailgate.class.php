@@ -181,19 +181,23 @@ class MailCollect  extends receiveMail {
 					}
 					imap_expunge($this->marubox);
 //				}
+				$this->close_mailbox();   //Close Mail Box
+
 				if ($display){
 					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailgate"][3].": $tot<br>";
+				} else {
+					return $LANG["mailgate"][3].": $tot";
 				}
 				
-				$this->close_mailbox();   //Close Mail Box
 			}
 			else
 			{
 				if ($display){
 					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["log"][41]."<br>";
+				} else {
+					return $LANG["log"][41];
 				}
-
-				return 0;
+//				return 0;
 			}
 	} // end function MailCollect
 	

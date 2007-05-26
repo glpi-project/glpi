@@ -258,6 +258,10 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 	}
 }
 
+function logInFile($name,$text){
+	error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
+}
+
 /**
  * Return arrays for function showEvent et lastEvent
  *

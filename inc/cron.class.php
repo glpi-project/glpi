@@ -205,6 +205,10 @@ class Cron {
 			if ($fct_trouve||function_exists($fonction)){
 				// la fonction a été inclus ou la fonction existe
 				// l'appeler
+				if ($CFG_GLPI["use_errorlog"]){
+					logInFile("cron","Launch $tache\n");
+				}
+
 				$code_de_retour = $fonction($last);
 
 				// si la tache a eu un effet : log
@@ -212,9 +216,14 @@ class Cron {
 					//echo "cron: $tache (" . $this->timer('tache') . ")";
 					// eventuellement modifier la date du fichier
 
-					if ($code_de_retour < 0) @touch($lock, (0 - $code_de_retour));
-					else // Log Event 
-						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$LANG["log"][45] );
+					if ($code_de_retour < 0) {
+							@touch($lock, (0 - $code_de_retour));
+					} else {// Log Event 
+//						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$LANG["log"][45] );
+						if ($CFG_GLPI["use_errorlog"]){
+							logInFile("cron","$tache Successfull (" . $this->timer('tache') . ")\n");
+						}
+					}
 				}# else log("cron $tache a reprendre");
 			} else {echo "Erreur fonction manquante";}
 

@@ -38,14 +38,17 @@ if (!defined('GLPI_ROOT')){
 }
 
 function cron_mailgate(){
-	global $DB;
+	global $DB,$CFG_GLPI;
 	
 	$query="SELECT * FROM glpi_mailgate";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
 			$mc=new MailCollect();
 			while ($data=$DB->fetch_assoc($result)){
-				$mc->collect($data["host"],$data["login"],$data["password"],$data["FK_entities"]);
+				$result=$mc->collect($data["host"],$data["login"],$data["password"],$data["FK_entities"]);
+				if ($CFG_GLPI["use_errorlog"]){
+					logInFile("cron","Collect mails from ".$data["host"]." for entity ".$data["FK_entities"]."\n$result\n");
+				}
 			}
 		}
 	}
