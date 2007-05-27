@@ -43,7 +43,7 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulese
 
 	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 	echo "<tr><th>" . $LANG["rulesengine"][24] . "</th></tr>";
-	if (haveRight("rule_ocs","r")){
+	if ($CFG_GLPI["ocs_mode"]&&haveRight("rule_ocs","r")){
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.ocs.php\"><strong>" . $LANG["rulesengine"][18] .
  "</strong></a></td></tr>";
 	}
