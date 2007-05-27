@@ -44,6 +44,11 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 		$this->right="rule_tracking";
 	}
 
+	function getTitle() {
+		global $LANG;
+		return $LANG["rulesengine"][28];
+	}
+
 }
 
 class TrackingBusinessRule extends Rule {

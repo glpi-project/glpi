@@ -154,6 +154,9 @@ generateGlobalDropdowns();
 
 optimize_tables ();
 
+// Root entity
+generate_entity(0);
+
 // Entite
 $added=0;
 for ($i=0;$i<max(1,pow($entity_number,1/2))&&$added<$entity_number;$i++){

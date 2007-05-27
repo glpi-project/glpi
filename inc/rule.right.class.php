@@ -269,6 +269,11 @@ class RightRuleCollection extends RuleCollection {
 		$this->right="rule_ldap";
 	}
 
+	function getTitle() {
+		global $LANG;
+		return $LANG["rulesengine"][19];
+	}
+
 	
 	/**
 	 * Get all the fields needed to perform the rule
