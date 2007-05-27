@@ -608,7 +608,7 @@ $LANG["install"][97]="Vérifiez que PHP a un droit d'écriture pour le répertoi
 $LANG["install"][98]="Si vous êtes sous un environnement de Microsoft Windows, contrôlez si celui-ci est en lecture seule.";
 $LANG["install"][99]="Test d'écriture des fichiers de cache";
 $LANG["install"][100]="Le dossier n'a pas pu être créé.";
-$LANG["install"][101]="Le soddier a été créé mais n'a pas pu être supprimé.";
+$LANG["install"][101]="Le dossier a été créé mais n'a pas pu être supprimé.";
 
 
 
