@@ -429,8 +429,8 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 
 	checkOCSconnection($ocs_server_id);
 	
-	$query = "SELECT * 
-			FROM glpi_ocs_link 
+	$query = "SELECT *  
+			FROM glpi_ocs_link
 			WHERE glpi_id='$glpi_id'";
 
 	$result = $DB->query($query);
@@ -461,14 +461,16 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 		$DBocs->query($query);
 
 		if ($idlink = ocsLink($ocs_id,$ocs_server_id, $glpi_id)) {
-
-			$comp = new Computer();
+			
+			$comp = new Computer;
+			$comp->getFromDB($glpi_id);
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
+			$input["FK_entities"]= $comp->fields["FK_entities"];;
 			$comp->update($input);
 
 			// Reset using GLPI Config
-			$cfg_ocs = getOcsConf(1);
+			$cfg_ocs = getOcsConf($ocs_server_id);
 			$query = "SELECT * 
 							FROM hardware 
 							WHERE ID='$ocs_id'";
