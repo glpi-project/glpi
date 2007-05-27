@@ -463,10 +463,8 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 		if ($idlink = ocsLink($ocs_id,$ocs_server_id, $glpi_id)) {
 			
 			$comp = new Computer;
-			$comp->getFromDB($glpi_id);
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
-			$input["FK_entities"]= $comp->fields["FK_entities"];;
 			$comp->update($input);
 
 			// Reset using GLPI Config
