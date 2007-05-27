@@ -345,7 +345,19 @@ function getDbRelations(){
  * @return 2 : creation error 1 : delete error 0: OK
  **/
 function testWriteAccessToDirectory($dir){
-	$path = sprintf("%s/test_glpi_%08x.txt", $dir, rand());
+
+	$rand=rand();
+	// Check directory creation which can be denied by SElinux
+	$sdir = sprintf("%s/test_glpi_%08x", $dir, $rand);
+	if (!mkdir($sdir)) {
+		return 4;
+	}
+	else if (!rmdir($sdir)) {
+		return 3;
+	}
+
+	// Check file creation
+	$path = sprintf("%s/test_glpi_%08x.txt", $dir, $rand);
 	$fp = fopen($path,'w');
 
 	if (empty($fp)) {
@@ -379,6 +391,15 @@ function checkWriteAccessToDirs(){
 			$tmperror=testWriteAccessToDirectory($dir);
 	
 			switch($tmperror){
+				// Error on creation
+				case 4 :
+					echo "<td><p class='red'>".$LANG["install"][100]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+					$error=2;
+					break;
+				case 3 :
+					echo "<td><p class='red'>".$LANG["install"][101]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+					$error=1;
+					break;
 				// Error on creation
 				case 2 :
 					echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
