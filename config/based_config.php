@@ -56,6 +56,7 @@ if (!defined("GLPI_DOC_DIR")){
 
 // Path for cache storage
 if (!defined("GLPI_CACHE_DIR")){
+	// Need / at the end for Cache Lite compatibility
 	define("GLPI_CACHE_DIR",GLPI_ROOT . "/files/_cache/");
 }
 
@@ -75,7 +76,7 @@ if (!defined("GLPI_PLUGIN_DOC_DIR")){
 }
 // Path for cache storage
 if (!defined("GLPI_LOCK_DIR")){
-	define("GLPI_LOCK_DIR",GLPI_ROOT . "/files/_lock/");
+	define("GLPI_LOCK_DIR",GLPI_ROOT . "/files/_lock");
 }
 
 // Path for log storage
