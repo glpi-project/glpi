@@ -345,7 +345,8 @@ function getDbRelations(){
  * @return 2 : creation error 1 : delete error 0: OK
  **/
 function testWriteAccessToDirectory($dir){
-	$fp = fopen($dir . "/test_glpi.txt",'w');
+	$path = sprintf("%s/test_glpi_%08x.txt", $dir, rand());
+	$fp = fopen($path,'w');
 
 	if (empty($fp)) {
 		return 2;
@@ -353,7 +354,7 @@ function testWriteAccessToDirectory($dir){
 	else {
 		$fw = fwrite($fp,"This file was created for testing reasons. ");
 		fclose($fp);
-		$delete = unlink($dir . "/test_glpi.txt");
+		$delete = unlink($path);
 		if (!$delete) {
 			return 1;
 		}
