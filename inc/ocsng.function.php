@@ -401,13 +401,15 @@ function ocsImportComputer($ocs_id,$ocs_server_id,$lock=0,$defaultentity=-1) {
 		//$DBocs->close();
 
 		$cfg_ocs=getOcsConf($ocs_server_id);
-		$comp->fields["FK_entities"] = $data['FK_entities'];
-		$comp->fields["name"] = $line["NAME"];
-		$comp->fields["ocs_import"] = 1;
-		
+		$input=array();
+		$input["FK_entities"] = $data['FK_entities'];
+		$input["name"] = $line["NAME"];
+		$input["ocs_import"] = 1;
+		$input["state"] = $cfg_ocs["default_state"];
+		$input["_from_ocs"]=1;
+		$glpi_id=$comp->add($input);
+
 		$ocs_id = $line['ID'];
-		$comp->fields["state"] = $cfg_ocs["default_state"];
-		$glpi_id=$comp->addToDB();
 
 		if ($idlink = ocsLink($line['ID'], $ocs_server_id,$glpi_id)) {
 			ocsUpdateComputer($idlink,$ocs_server_id, 0);
@@ -1777,10 +1779,11 @@ function ocsAddDevice($device_type, $dev_array) {
 	$result = $DB->query($query);
 	if ($DB->numrows($result) == 0) {
 		$dev = new Device($device_type);
+		$input=array();
 		foreach ($dev_array as $key => $val) {
-			$dev->fields[$key] = $val;
+			$input[$key] = $val;
 		}
-		return ($dev->addToDB());
+		return $dev->add($input);
 	} else {
 		$line = $DB->fetch_array($result);
 		return $line["ID"];
@@ -1820,6 +1823,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 		case MONITOR_TYPE :
 			if ($cfg_ocs["import_monitor"]) {
 				$do_clean = true;
+				$m = new Monitor;
 
 				$query = "SELECT DISTINCT CAPTION, MANUFACTURER, DESCRIPTION, SERIAL, TYPE 
 									FROM monitors 
@@ -1861,6 +1865,9 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 						}						
 						if (!empty ($mon["name"]))
 							if (!in_array($checkMonitor, $import_periph)){
+								// Clean monitor object
+								$m->reset();
+
 								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $line["MANUFACTURER"]);
 								$mon["comments"] = $line["DESCRIPTION"];								
 								$id_monitor = 0;
@@ -1877,18 +1884,16 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										//Do not import anything just get periph ID for link
 										$id_monitor = $DB->result($result_search, 0, "ID");
 									} else {
-										$m = new Monitor;
-										$mon["state"] = $cfg_ocs["default_state"];
-										$m->fields = $mon;
-										$m->fields["FK_entities"]=$entity;
-										$id_monitor = $m->addToDB();
+										$input = $mon;
+										$input["state"] = $cfg_ocs["default_state"];
+										$input["FK_entities"]=$entity;
+										$id_monitor = $m->add($input);
 									}
 								} else
 									if ($cfg_ocs["import_monitor"] == 2) {										
 										//COnfig says : manage monitors as single units
 										//Import all monitors as non global.
 										$mon["is_global"] = 0;
-										$m = new Monitor;										
 										// First import - Is there already a monitor ?
 										if ($count_monitor == 0) {											
 											$query_search = "SELECT ID FROM glpi_monitors WHERE name = '" . $mon["name"] . "'
@@ -1939,10 +1944,10 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 												}
 												// Nothing found : add it
 												if (!$id_monitor) {
-													$mon["state"] = $cfg_ocs["default_state"];
-													$m->fields = $mon;
-													$m->fields["FK_entities"]=$entity;
-													$id_monitor = $m->addToDB();
+													$input = $mon;
+													$input["state"] = $cfg_ocs["default_state"];
+													$input["FK_entities"]=$entity;
+													$id_monitor = $m->add($input);
 												}
 											}
 										} else {
@@ -1973,10 +1978,10 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 												}
 											}
 											if (!$id_monitor) {
-												$mon["state"] = $cfg_ocs["default_state"];
-												$m->fields = $mon;
-												$m->fields["FK_entities"]=$entity;
-												$id_monitor = $m->addToDB();												
+												$input = $mon;
+												$input["state"] = $cfg_ocs["default_state"];
+												$input["FK_entities"]=$entity;
+												$id_monitor = $m->add($input);												
 											}
 										}
 									}
@@ -2005,12 +2010,11 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									addToOcsArray($glpi_id, array ($connID => $addValuetoDB), "import_monitor");											
 									$count_monitor++;																		
 									//Update column "deleted" set value to 0 and set status to default
-									$default_state = $cfg_ocs["default_state"];
-									$mon = new Monitor;
+									$input=array();
 									$input["ID"] = $id_monitor;
 									$input["deleted"]=0;
-									$input["state"]=$default_state;
-									$mon->update($input);									
+									$input["state"]=$cfg_ocs["default_state"];
+									$m->update($input);									
 								}
 							} else {								
 								$searchDBValue = "";	
@@ -2038,11 +2042,11 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									FROM printers 
 									WHERE HARDWARE_ID = '" . $ocs_id . "'";
 				$result = $DBocs->query($query);
+				$p = new Printer;
 
 				if ($DBocs->numrows($result) > 0)
 					while ($line = $DBocs->fetch_array($result)) {
 						$line = clean_cross_side_scripting_deep(addslashes_deep($line));
-
 						// TO TEST : PARSE NAME to have real name.
 						$print["name"] = $line["NAME"];
 						if (empty ($print["name"]))
@@ -2050,6 +2054,9 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 
 						if (!empty ($print["name"]))
 							if (!in_array($print["name"], $import_periph)) {
+								// Clean printer object
+								$p->reset();
+
 								//$print["comments"] = $line["PORT"]."\r\n".$line["NAME"];
 								$print["comments"] = $line["PORT"] . "\r\n" . $line["DRIVER"];
 								$id_printer = 0;
@@ -2068,22 +2075,20 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										//Do not import anything just get periph ID for link
 										$id_printer = $DB->result($result_search, 0, "ID");
 									} else {
-										$p = new Printer;
-										$print["state"] = $cfg_ocs["default_state"];
-										$p->fields = $print;
-										$p->fields["FK_entities"]=$entity;
-										$id_printer = $p->addToDB();
+										$input = $print;
+										$input["state"] = $cfg_ocs["default_state"];
+										$input["FK_entities"]=$entity;
+										$id_printer = $p->add($input);
 									}
 								} else
 									if ($cfg_ocs["import_printer"] == 2) {
 										//COnfig says : manage printers as single units
 										//Import all printers as non global.
-										$print["is_global"] = 0;
-										$p = new Printer;
-										$print["state"] = $cfg_ocs["default_state"];
-										$p->fields = $print;
-										$p->fields["FK_entities"]=$entity;
-										$id_printer = $p->addToDB();
+										$input = $print;
+										$input["is_global"] = 0;
+										$input["state"] = $cfg_ocs["default_state"];
+										$input["FK_entities"]=$entity;
+										$id_printer = $p->add($input);
 									}
 								if ($id_printer) {
 									$connID = Connect($id_printer, $glpi_id, PRINTER_TYPE,$dohistory);
@@ -2091,12 +2096,10 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										$connID => $print["name"]
 									), "import_printers");
 									//Update column "deleted" set value to 0 and set status to default
-									$default_state = $cfg_ocs["default_state"];
-									
+									$input=array();
 									$input["ID"] = $id_printer;
 									$input["deleted"]=0;
-									$input["state"]=$default_state;
-									$p = new Printer;
+									$input["state"]=$cfg_ocs["default_state"];
 									$p->update($input);
 								}
 							} else {
@@ -2109,6 +2112,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 		case PERIPHERAL_TYPE :
 			if ($cfg_ocs["import_periph"]) {
 				$do_clean = true;
+				$p = new Peripheral;
 
 				$query = "SELECT DISTINCT CAPTION, MANUFACTURER, INTERFACE, TYPE 
 									FROM inputs 
@@ -2121,6 +2125,9 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 
 						$periph["name"] = $line["CAPTION"];
 						if (!in_array($periph["name"], $import_periph)) {
+							// Clean peripheral object
+							$p->reset();
+
 							if ($line["MANUFACTURER"] != "NULL")
 								$periph["brand"] = $line["MANUFACTURER"];
 							if ($line["INTERFACE"] != "NULL")
@@ -2143,22 +2150,20 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									//Do not import anything just get periph ID for link
 									$id_periph = $DB->result($result_search, 0, "ID");
 								} else {
-									$p = new Peripheral;
-									$periph["state"] = $cfg_ocs["default_state"];
-									$p->fields = $periph;
-									$p->fields["FK_entities"]=$entity;
-									$id_periph = $p->addToDB();
+									$input = $periph;
+									$input["state"] = $cfg_ocs["default_state"];
+									$input["FK_entities"]=$entity;
+									$id_periph = $p->add($input);
 								}
 							} else
 								if ($cfg_ocs["import_periph"] == 2) {
 									//COnfig says : manage peripherals as single units
 									//Import all peripherals as non global.
-									$periph["is_global"] = 0;
-									$p = new Peripheral;
-									$periph["state"] = $cfg_ocs["default_state"];
-									$p->fields = $periph;
-									$p->fields["FK_entities"]=$entity;
-									$id_periph = $p->addToDB();
+									$input = $periph;
+									$input["is_global"] = 0;
+									$input["state"] = $cfg_ocs["default_state"];
+									$input["FK_entities"]=$entity;
+									$id_periph = $p->add($input);
 								}
 							if ($id_periph) {
 								$connID = Connect($id_periph, $glpi_id, PERIPHERAL_TYPE,$dohistory);
@@ -2167,10 +2172,10 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 								), "import_peripheral");
 								//Update column "deleted" set value to 0 and set status to default
 								$default_state = $cfg_ocs["default_state"];
+								$input=array();
 								$input["ID"] = $id_periph;
 								$input["deleted"]=0;
 								$input["state"]=$default_state;
-								$p = new Peripheral;
 								$p->update($input);
 								//$queryUpdate = "UPDATE glpi_peripherals SET deleted='0', state='$default_state' WHERE ID='$id_periph'";
 								//$DB->query($queryUpdate);
@@ -2299,16 +2304,18 @@ function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs) {
    					WHERE HARDWARE_ID = '" . $ocs_id . "'"; 				
 		$result = $DBocs->query($query);
 		if ($DBocs->numrows($result) > 0) {			
+			$reg = new Registry();		
+
 			//update data	
 			while ($data = $DBocs->fetch_array($result)) {	
-			$data = clean_cross_side_scripting_deep(addslashes_deep($data));					
-			$reg = new Registry();		
-			$reg->fields["computer_id"] = $glpi_id;	
-			$reg->fields["registry_hive"] = $data["regtree"];
-			$reg->fields["registry_value"] = $data["regvalue"];
-			$reg->fields["registry_path"] = $data["regkey"];		
-			$reg->fields["registry_ocs_name"] = $data["NAME"];	
-			$isNewReg = $reg->addToDB();
+				$data = clean_cross_side_scripting_deep(addslashes_deep($data));					
+				$input=array();
+				$input["computer_id"] = $glpi_id;	
+				$input["registry_hive"] = $data["regtree"];
+				$input["registry_value"] = $data["regvalue"];
+				$input["registry_path"] = $data["regkey"];		
+				$input["registry_ocs_name"] = $data["NAME"];	
+				$isNewReg = $reg->add($input);
 			}
 		} 	
 	}
@@ -2355,6 +2362,8 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 		$already_imported = array ();
 		$result2 = $DBocs->query($query2);
 		$to_add_to_ocs_array=array();
+		$soft = new Software;
+
 		if ($DBocs->numrows($result2) > 0)
 			while ($data2 = $DBocs->fetch_array($result2)) {
 				$data2 = clean_cross_side_scripting_deep(addslashes_deep($data2));
@@ -2363,6 +2372,9 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 				$version = $data2["VERSION"];
 				// Import Software
 				if (!in_array($name, $already_imported)) { // Manage multiple software with the same name = only one install
+					// Clean software object
+					$soft->reset();
+
 					$already_imported[] = $name;
 					if (!in_array($initname, $import_software)) {
 
@@ -2378,15 +2390,15 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 						}
 
 						if (!$isNewSoft) {
-							$soft = new Software;
-							$soft->fields["name"] = $name;
-							$soft->fields["comments"] = $data2["COMMENTS"];
-							$soft->fields["FK_entities"]=$entity;
+							$input=array();
+							$input["name"] = $name;
+							$input["comments"] = $data2["COMMENTS"];
+							$input["FK_entities"]=$entity;
 							
 							if (!empty ($data2["PUBLISHER"])) {
-								$soft->fields["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $data2["PUBLISHER"]);
+								$input["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $data2["PUBLISHER"]);
 							}
-							$isNewSoft = $soft->addToDB();
+							$isNewSoft = $soft->add($input);
 						}
 
 						$licenseID = ocsImportLicense($isNewSoft,$version);
@@ -2409,6 +2421,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 						$result_name = $DB->query($query_name);
 						if ($DB->numrows($result_name) == 1) {
 							if ( strtolower($name)!= strtolower($DB->result($result_name, 0, "NAME"))) {
+								$updates=array();
 								$updates["name"] = $name;
 								// No update version
 								//$updates["version"]=$data2["VERSION"];
@@ -2416,7 +2429,6 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 								//if (!empty($data2["PUBLISHER"]))
 								//	$updates["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer",$data2["PUBLISHER"]);
 								$updates["ID"] = $DB->result($result_name, 0, "ID");
-								$soft = new Software();
 								$soft->update($updates);
 							}
 						}
@@ -2502,11 +2514,11 @@ function ocsImportLicense($software, $version, $serial="global", $buy="0") {
 	}
 	if (!$isNewLicc) {
 		$licc = new License;
-		$licc->fields["sid"] = $software;
-		$licc->fields["serial"] = $serial;
-		$licc->fields["buy"] = $buy;
-		$licc->fields["version"]=$version;
-		$isNewLicc = $licc->addToDB();
+		$input["sid"] = $software;
+		$input["serial"] = $serial;
+		$input["buy"] = $buy;
+		$input["version"]=$version;
+		$isNewLicc = $licc->add($input);
 	}
 	return ($isNewLicc);
 }

@@ -88,10 +88,11 @@ class Monitor extends CommonDBTM {
 		// set new date.
 		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
-		// dump status
-		$input["_oldID"]=$input["ID"];
+		if (isset($input["ID"])&&$input["ID"]>0){
+			$input["_oldID"]=$input["ID"];
+			unset($input['ID']);
+		}
 		unset($input['withtemplate']);
-		unset($input['ID']);
 
 		return $input;
 	}
@@ -100,34 +101,37 @@ class Monitor extends CommonDBTM {
 	function post_addItem($newID,$input) {
 		global $DB;
 
-		// ADD Infocoms
-		$ic= new Infocom();
-		if ($ic->getFromDBforDevice(MONITOR_TYPE,$input["_oldID"])){
-			$ic->fields["FK_device"]=$newID;
-			unset ($ic->fields["ID"]);
-			if (isset($ic->fields["num_immo"])) {
-				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+		// Manage add from template
+		if (isset($input["_oldID"])){
+			// ADD Infocoms
+			$ic= new Infocom();
+			if ($ic->getFromDBforDevice(MONITOR_TYPE,$input["_oldID"])){
+				$ic->fields["FK_device"]=$newID;
+				unset ($ic->fields["ID"]);
+				if (isset($ic->fields["num_immo"])) {
+					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+				}
+	
+				$ic->addToDB();
 			}
-
-			$ic->addToDB();
-		}
-
-		// ADD Contract				
-		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".MONITOR_TYPE."';";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-
-			while ($data=$DB->fetch_array($result))
-				addDeviceContract($data["FK_contract"],MONITOR_TYPE,$newID);
-		}
-
-		// ADD Documents			
-		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".MONITOR_TYPE."';";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-
-			while ($data=$DB->fetch_array($result))
-				addDeviceDocument($data["FK_doc"],MONITOR_TYPE,$newID);
+	
+			// ADD Contract				
+			$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".MONITOR_TYPE."';";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+	
+				while ($data=$DB->fetch_array($result))
+					addDeviceContract($data["FK_contract"],MONITOR_TYPE,$newID);
+			}
+	
+			// ADD Documents			
+			$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".MONITOR_TYPE."';";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+	
+				while ($data=$DB->fetch_array($result))
+					addDeviceDocument($data["FK_doc"],MONITOR_TYPE,$newID);
+			}
 		}
 
 	}

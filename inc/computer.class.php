@@ -253,10 +253,11 @@ class Computer extends CommonDBTM {
 		// set new date.
 		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
-		// dump status
-		$input["_oldID"]=$input["ID"];
+		if (isset($input["ID"])&&$input["ID"]>0){
+			$input["_oldID"]=$input["ID"];
+			unset($input['ID']);
+		}
 		unset($input['withtemplate']);
-		unset($input['ID']);
 
 		return $input;
 	}
@@ -264,72 +265,75 @@ class Computer extends CommonDBTM {
 	function post_addItem($newID,$input) {
 		global $DB;
 
-		// ADD Devices
-		$this->getFromDBwithDevices($input["_oldID"]);
-		foreach($this->devices as $key => $val) {
-			for ($i=0;$i<$val["quantity"];$i++){
-				compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
+		// Manage add from template
+		if (isset($input["_oldID"])){
+			// ADD Devices
+			$this->getFromDBwithDevices($input["_oldID"]);
+			foreach($this->devices as $key => $val) {
+				for ($i=0;$i<$val["quantity"];$i++){
+					compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
+				}
 			}
-		}
-
-		// ADD Infocoms
-		$ic= new Infocom();
-		if ($ic->getFromDBforDevice(COMPUTER_TYPE,$input["_oldID"])){
-			$ic->fields["FK_device"]=$newID;
-			unset ($ic->fields["ID"]);
-			if (isset($ic->fields["num_immo"])) {
-				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+	
+			// ADD Infocoms
+			$ic= new Infocom();
+			if ($ic->getFromDBforDevice(COMPUTER_TYPE,$input["_oldID"])){
+				$ic->fields["FK_device"]=$newID;
+				unset ($ic->fields["ID"]);
+				if (isset($ic->fields["num_immo"])) {
+					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+				}
+				$ic->addToDB();
 			}
-			$ic->addToDB();
-		}
-
-		// ADD software
-		$query="SELECT license from glpi_inst_software WHERE cID='".$input["_oldID"]."'";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result))
-				installSoftware($newID,$data['license']);
-		}
-
-		// ADD Contract				
-		$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result))
-				addDeviceContract($data["FK_contract"],COMPUTER_TYPE,$newID);
-		}
-
-		// ADD Documents			
-		$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result))
-				addDeviceDocument($data["FK_doc"],COMPUTER_TYPE,$newID);
-		}
-
-		// ADD Ports
-		$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result)){
-				$np= new Netport();
-				$np->getFromDB($data["ID"]);
-				unset($np->fields["ID"]);
-				unset($np->fields["ifaddr"]);
-				unset($np->fields["ifmac"]);
-				unset($np->fields["netpoint"]);
-				$np->fields["on_device"]=$newID;
-				$np->addToDB();
+	
+			// ADD software
+			$query="SELECT license from glpi_inst_software WHERE cID='".$input["_oldID"]."'";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result))
+					installSoftware($newID,$data['license']);
 			}
-		}
-
-		// Add connected devices
-		$query="SELECT * from glpi_connect_wire WHERE end2='".$input["_oldID"]."';";
-
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($data=$DB->fetch_array($result)){
-				Connect($data["end1"],$newID,$data["type"]);
+	
+			// ADD Contract				
+			$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result))
+					addDeviceContract($data["FK_contract"],COMPUTER_TYPE,$newID);
+			}
+	
+			// ADD Documents			
+			$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result))
+					addDeviceDocument($data["FK_doc"],COMPUTER_TYPE,$newID);
+			}
+	
+			// ADD Ports
+			$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result)){
+					$np= new Netport();
+					$np->getFromDB($data["ID"]);
+					unset($np->fields["ID"]);
+					unset($np->fields["ifaddr"]);
+					unset($np->fields["ifmac"]);
+					unset($np->fields["netpoint"]);
+					$np->fields["on_device"]=$newID;
+					$np->addToDB();
+				}
+			}
+	
+			// Add connected devices
+			$query="SELECT * from glpi_connect_wire WHERE end2='".$input["_oldID"]."';";
+	
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result)){
+					Connect($data["end1"],$newID,$data["type"]);
+				}
 			}
 		}
 
