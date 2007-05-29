@@ -339,7 +339,8 @@ function ocsManageDeleted($ocs_server_id) {
 						$data = $DB->fetch_array($result);
 						$comp = new Computer();
 						$comp->delete(array (
-							"ID" => $data["glpi_id"]
+							"ID" => $data["glpi_id"],
+							"_from_ocs" => 1
 						), 0);
 						$query="DELETE FROM glpi_ocs_link WHERE ID ='".$data["ID"]."'";
 						$DB->query($query);
@@ -467,6 +468,7 @@ function ocsLinkComputer($ocs_id,$ocs_server_id, $glpi_id) {
 			$comp = new Computer;
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
+			$input["_from_ocs"]=1;
 			$comp->update($input);
 
 			// Reset using GLPI Config
@@ -765,6 +767,7 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer
 		if (count($compupdate)) {
 			$compupdate["ID"] = $glpi_id;
 			$comp = new Computer();
+			$compupdate["_from_ocs"]=1;
 			$comp->update($compupdate, $dohistory);
 		}
 
@@ -820,6 +823,7 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs, $computer_upd
 		if (count($compupdate)) {
 			$compupdate["ID"] = $glpi_id;
 			$comp = new Computer();
+			$compupdate["_from_ocs"]=1;
 			$comp->update($compupdate, $dohistory);
 		}
 
@@ -895,6 +899,7 @@ function ocsImportGroup($value,$FK_entities) {
 		$group=new Group;
 		$input["name"] = $value;
 		$input["FK_entities"] = $FK_entities;
+		$input["_from_ocs"]=1;
 		return $group->add($input);
 	} else {
 		$line2 = $DB->fetch_array($result2);
@@ -950,7 +955,8 @@ function ocsCleanLinks($ocs_server_id) {
 				$DB->query($query_del);
 				$comp = new Computer();
 				$comp->delete(array (
-					"ID" => $data["glpi_id"]
+					"ID" => $data["glpi_id"],
+					"_from_ocs" => 1
 				), 0);
 
 			}
@@ -1648,6 +1654,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 									$netport["ifaddr"] = $ocs_ips[$j];
 									$netport["logical_number"] = $j;
 									$netport["ID"] = $id_ip;
+									$netport["_from_ocs"]=1;
 									$np->update($netport);
 									unset ($import_ip[$id_ip]);									
 									$count_ip++;
@@ -1659,6 +1666,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id,$cfg_o
 									unset ($np->fields["ID"]);
 									$netport["ifaddr"] = $ocs_ips[$j];
 									$netport["logical_number"] = $j;
+									$netport["_from_ocs"]=1;
 									$newID = $np->add($netport);
 									//ADD to array
 									addToOcsArray($glpi_id, array ($newID => $ocs_ips[$j]), "import_ip");									
@@ -1783,6 +1791,7 @@ function ocsAddDevice($device_type, $dev_array) {
 		foreach ($dev_array as $key => $val) {
 			$input[$key] = $val;
 		}
+		$input["_from_ocs"]=1;
 		return $dev->add($input);
 	} else {
 		$line = $DB->fetch_array($result);
@@ -1887,6 +1896,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										$input = $mon;
 										$input["state"] = $cfg_ocs["default_state"];
 										$input["FK_entities"]=$entity;
+										$input["_from_ocs"]=1;
 										$id_monitor = $m->add($input);
 									}
 								} else
@@ -1912,7 +1922,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 											if (!$m->fields["is_global"]) {
 												$mon["ID"] = $id_monitor;
 												unset ($mon["comments"]);
-
+												$mon["_from_ocs"]=1;
 												$m->update($mon);
 											} else { // Found a global monitor : bad idea. need to add another one
 												$found_already_monitor = false;
@@ -1947,6 +1957,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 													$input = $mon;
 													$input["state"] = $cfg_ocs["default_state"];
 													$input["FK_entities"]=$entity;
+													$input["_from_ocs"]=1;
 													$id_monitor = $m->add($input);
 												}
 											}
@@ -1981,6 +1992,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 												$input = $mon;
 												$input["state"] = $cfg_ocs["default_state"];
 												$input["FK_entities"]=$entity;
+												$input["_from_ocs"]=1;
 												$id_monitor = $m->add($input);												
 											}
 										}
@@ -2014,6 +2026,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									$input["ID"] = $id_monitor;
 									$input["deleted"]=0;
 									$input["state"]=$cfg_ocs["default_state"];
+									$input["_from_ocs"]=1;
 									$m->update($input);									
 								}
 							} else {								
@@ -2078,6 +2091,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										$input = $print;
 										$input["state"] = $cfg_ocs["default_state"];
 										$input["FK_entities"]=$entity;
+										$input["_from_ocs"]=1;
 										$id_printer = $p->add($input);
 									}
 								} else
@@ -2088,6 +2102,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										$input["is_global"] = 0;
 										$input["state"] = $cfg_ocs["default_state"];
 										$input["FK_entities"]=$entity;
+										$input["_from_ocs"]=1;
 										$id_printer = $p->add($input);
 									}
 								if ($id_printer) {
@@ -2100,6 +2115,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									$input["ID"] = $id_printer;
 									$input["deleted"]=0;
 									$input["state"]=$cfg_ocs["default_state"];
+									$input["_from_ocs"]=1;
 									$p->update($input);
 								}
 							} else {
@@ -2153,6 +2169,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									$input = $periph;
 									$input["state"] = $cfg_ocs["default_state"];
 									$input["FK_entities"]=$entity;
+									$input["_from_ocs"]=1;
 									$id_periph = $p->add($input);
 								}
 							} else
@@ -2163,6 +2180,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 									$input["is_global"] = 0;
 									$input["state"] = $cfg_ocs["default_state"];
 									$input["FK_entities"]=$entity;
+									$input["_from_ocs"]=1;
 									$id_periph = $p->add($input);
 								}
 							if ($id_periph) {
@@ -2176,6 +2194,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 								$input["ID"] = $id_periph;
 								$input["deleted"]=0;
 								$input["state"]=$default_state;
+								$input["_from_ocs"]=1;
 								$p->update($input);
 								//$queryUpdate = "UPDATE glpi_peripherals SET deleted='0', state='$default_state' WHERE ID='$id_periph'";
 								//$DB->query($queryUpdate);
@@ -2262,6 +2281,7 @@ function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs,
 					$input=array();
 					$input[$glpi_column]=$var;
 					$input["ID"] = $glpi_id;
+					$input["_from_ocs"]=1;
 					$comp->update($input, $dohistory);
 				}
 			}
@@ -2315,6 +2335,7 @@ function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id,$cfg_ocs) {
 				$input["registry_value"] = $data["regvalue"];
 				$input["registry_path"] = $data["regkey"];		
 				$input["registry_ocs_name"] = $data["NAME"];	
+				$input["_from_ocs"]=1;
 				$isNewReg = $reg->add($input);
 			}
 		} 	
@@ -2398,6 +2419,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 							if (!empty ($data2["PUBLISHER"])) {
 								$input["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $data2["PUBLISHER"]);
 							}
+							$input["_from_ocs"]=1;
 							$isNewSoft = $soft->add($input);
 						}
 
@@ -2429,6 +2451,7 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 								//if (!empty($data2["PUBLISHER"]))
 								//	$updates["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer",$data2["PUBLISHER"]);
 								$updates["ID"] = $DB->result($result_name, 0, "ID");
+								$updates["_from_ocs"]=1;
 								$soft->update($updates);
 							}
 						}
@@ -2467,11 +2490,13 @@ function ocsUpdateSoftware($glpi_id, $entity,$ocs_id, $ocs_server_id,$cfg_ocs, $
 							if ($DB->result($result3, 0, 0) == 1) {
 								$soft = new Software();
 								$soft->delete(array (
-									'ID' => $lic->fields['sID']
+									'ID' => $lic->fields['sID'],
+									"_from_ocs" => 1
 								), 0);
 							}
 							$lic->delete(array (
-								"ID" => $data['license']
+								"ID" => $data['license'],
+								"_from_ocs" => 1
 							));
 						}
 					}
@@ -2518,6 +2543,7 @@ function ocsImportLicense($software, $version, $serial="global", $buy="0") {
 		$input["serial"] = $serial;
 		$input["buy"] = $buy;
 		$input["version"]=$version;
+		$input["_from_ocs"]=1;
 		$isNewLicc = $licc->add($input);
 	}
 	return ($isNewLicc);
@@ -2556,11 +2582,13 @@ function ocsResetLicenses($glpi_computer_id) {
 				if ($DB->result($result3, 0, 0) == 1) {
 					$soft = new Software();
 					$soft->delete(array (
-						'ID' => $lic->fields['sID']
+						'ID' => $lic->fields['sID'],
+						"_from_ocs" => 1
 					), 1);
 				}
 				$lic->delete(array (
-					"ID" => $data['license']
+					"ID" => $data['license'],
+					"_from_ocs" => 1
 				));
 
 			}
@@ -2621,7 +2649,8 @@ function ocsResetPeriphs($glpi_computer_id) {
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$per->delete(array (
-					'ID' => $data['end1']
+					'ID' => $data['end1'],
+					"_from_ocs" => 1
 				), 1);
 			}
 		}
@@ -2661,7 +2690,8 @@ function ocsResetMonitors($glpi_computer_id) {
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$mon->delete(array (
-					'ID' => $data['end1']
+					'ID' => $data['end1'],
+					"_from_ocs" => 1
 				), 1);
 			}
 		}
@@ -2702,7 +2732,8 @@ function ocsResetPrinters($glpi_computer_id) {
 			$printer = new Printer();
 			if ($DB->result($result2, 0, 0) == 1) {
 				$printer->delete(array (
-					'ID' => $data['end1']
+					'ID' => $data['end1'],
+					"_from_ocs" => 1
 				), 1);
 			}
 		}
@@ -2739,7 +2770,8 @@ function ocsResetRegistry($glpi_computer_id) {
 			$registry = new Registry();
 			if ($DB->result($result2, 0, 0) == 1) {
 				$registry->delete(array (
-					'ID' => $data['computer_id']
+					'ID' => $data['computer_id'],
+					"_from_ocs" => 1
 				), 1);
 			}
 		}		
