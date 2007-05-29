@@ -348,7 +348,9 @@ class CommonDBTM {
 	// specific ones : reservationresa , planningtracking
 	function add($input) {
 		global $DB;
-		// dump status
+		$input['_item_type_']=$this->type;
+		$input=doHookFunction("pre_item_add",$input);
+
 		unset($input['add']);
 		$input=$this->prepareInputForAdd($input);
 
@@ -400,6 +402,9 @@ class CommonDBTM {
 	 **/
 	// specific ones : reservationresa, planningtracking
 	function update($input,$history=1) {
+
+		$input['_item_type_']=$this->type;
+		$input=doHookFunction("pre_item_update",$input);
 
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
@@ -462,13 +467,21 @@ class CommonDBTM {
 	 *
 	 **/
 	function delete($input,$force=0) {
+		$input['_item_type_']=$this->type;
+		if ($force){
+			$input=doHookFunction("pre_item_purge",$input);
+		} else {
+			$input=doHookFunction("pre_item_delete",$input);
+		}
+
 		if ($this->getFromDB($input["ID"])){
 			$this->pre_deleteItem($input["ID"]);
-			$this->deleteFromDB($input["ID"],$force);
-			if ($force){
-				doHookFunction("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
-			} else {
-				doHookFunction("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+			if ($this->deleteFromDB($input["ID"],$force)){
+				if ($force){
+					doHookFunction("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
+				} else {
+					doHookFunction("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+				}
 			}
 
 			return true;
@@ -490,9 +503,12 @@ class CommonDBTM {
 	 **/
 	// specific ones : cartridges / consumables
 	function restore($input) {
+		$input['_item_type_']=$this->type;
+		$input=doHookFunction("pre_item_restore",$input);
 
-		$this->restoreInDB($input["ID"]);
-		doHookFunction("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
+		if ($this->restoreInDB($input["ID"])){
+			doHookFunction("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
+		}
 	}
 
 	function defineOnglets($withtemplate){
