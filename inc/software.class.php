@@ -97,39 +97,45 @@ class Software extends CommonDBTM {
 		if (isset ($input['is_update']) && !$input['is_update'])
 			$input['update_software'] = -1;
 
-		// dump status
-		$input["_oldID"] = $input["ID"];
-		unset ($input['withtemplate']);
-		unset ($input['ID']);
+		if (isset($input["ID"])&&$input["ID"]>0){
+			$input["_oldID"]=$input["ID"];
+			unset($input['ID']);
+		}
+		unset($input['withtemplate']);
 
 		return $input;
 	}
 	function post_addItem($newID, $input) {
 		global $DB;
-		// ADD Infocoms
-		$ic = new Infocom();
-		if ($ic->getFromDBforDevice(SOFTWARE_TYPE, $input["_oldID"])) {
-			$ic->fields["FK_device"] = $newID;
-			unset ($ic->fields["ID"]);
-			$ic->addToDB();
-		}
 
-		// ADD Contract				
-		$query = "SELECT FK_contract from glpi_contract_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
-		$result = $DB->query($query);
-		if ($DB->numrows($result) > 0) {
 
-			while ($data = $DB->fetch_array($result))
-				addDeviceContract($data["FK_contract"], SOFTWARE_TYPE, $newID);
-		}
-
-		// ADD Documents			
-		$query = "SELECT FK_doc from glpi_doc_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
-		$result = $DB->query($query);
-		if ($DB->numrows($result) > 0) {
-
-			while ($data = $DB->fetch_array($result))
-				addDeviceDocument($data["FK_doc"], SOFTWARE_TYPE, $newID);
+		// Manage add from template
+		if (isset($input["_oldID"])){
+			// ADD Infocoms
+			$ic = new Infocom();
+			if ($ic->getFromDBforDevice(SOFTWARE_TYPE, $input["_oldID"])) {
+				$ic->fields["FK_device"] = $newID;
+				unset ($ic->fields["ID"]);
+				$ic->addToDB();
+			}
+	
+			// ADD Contract				
+			$query = "SELECT FK_contract from glpi_contract_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
+			$result = $DB->query($query);
+			if ($DB->numrows($result) > 0) {
+	
+				while ($data = $DB->fetch_array($result))
+					addDeviceContract($data["FK_contract"], SOFTWARE_TYPE, $newID);
+			}
+	
+			// ADD Documents			
+			$query = "SELECT FK_doc from glpi_doc_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
+			$result = $DB->query($query);
+			if ($DB->numrows($result) > 0) {
+	
+				while ($data = $DB->fetch_array($result))
+					addDeviceDocument($data["FK_doc"], SOFTWARE_TYPE, $newID);
+			}
 		}
 
 	}

@@ -511,6 +511,11 @@ class CommonDBTM {
 		}
 	}
 
+	function reset(){
+		$this->fields=array();
+
+	}
+
 	function defineOnglets($withtemplate){
 		return array();
 	}
