@@ -1894,17 +1894,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 						else {
 							$checkMonitor = $mon["name"];	
 						}
-						//Update data in import_monitor array for 0.70
-						if(!in_array($tagVersionInArray, $import_periph)){								
-							foreach ($import_periph as $key => $val) {
-								//delete old value									
-								deleteInOcsArray($glpi_id, $key, "import_monitor");
-								//add new value (serial + name when its possible)
-								addToOcsArray($glpi_id, array ($key => $checkMonitor), "import_monitor");			
-							}
-							//add the tag for the array version's
-							 addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
-						}						
+
 						if (!empty ($mon["name"])){
 							if (!in_array($checkMonitor, $import_periph)){
 								// Clean monitor object
