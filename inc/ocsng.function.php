@@ -624,7 +624,6 @@ function ocsUpdateComputer($ID, $ocs_server_id,$dohistory, $force = 0) {
 					ocsUpdateRegistry($line['glpi_id'], $line['ocs_id'],$ocs_server_id, $cfg_ocs);
 				}
 				
-				
 				// Update OCS Cheksum 
 				$query_ocs = "UPDATE hardware 
 									SET CHECKSUM= (CHECKSUM - $mixed_checksum) 
@@ -1831,6 +1830,38 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 	switch ($device_type) {
 		case MONITOR_TYPE :
 			if ($cfg_ocs["import_monitor"]) {
+				
+				//Update data in import_monitor array for 0.70
+				if(!in_array($tagVersionInArray, $import_periph)){								
+						foreach ($import_periph as $key => $val) {
+							$monitor_tag = $val;
+							//delete old value									
+							deleteInOcsArray($glpi_id, $key, "import_monitor");
+							//search serial when it exists	
+							$monitor_serial="";						 
+							$query_monitor_id =  "SELECT end1 FROM glpi_connect_wire WHERE ID=$key";
+							$result_monitor_id = $DB->query($query_monitor_id);
+							if ($DB->numrows($result_monitor_id) == 1) {
+									//get monitor Id
+                                    $id_monitor = $DB->result($result_monitor_id, 0, "end1");
+                                    $query_monitor_serial =  "SELECT serial FROM glpi_monitors WHERE ID = $id_monitor"; 
+                                    $result_monitor_serial = $DB->query($query_monitor_serial);
+                                    //get serial
+                                    if ($DB->numrows($result_monitor_serial) == 1)$monitor_serial = $DB->result($result_monitor_serial, 0, "serial");
+                             }
+                             //concat name + serial
+                             $monitor_tag.= $monitor_serial;
+							//add new value (serial + name when its possible)							
+						    addToOcsArray($glpi_id, array ($key => $monitor_tag), "import_monitor");
+						    
+						    //Update the array with the new value of the monitor
+						    $import_periph[$key] = $monitor_tag;			
+						}
+						//add the tag for the array version's
+						 addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
+						 
+				}			
+
 				$do_clean = true;
 				$m = new Monitor;
 
