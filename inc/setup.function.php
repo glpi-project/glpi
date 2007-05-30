@@ -544,7 +544,8 @@ function listTemplates($type, $target, $add = 0) {
 
 	global $DB, $CFG_GLPI, $LANG;
 
-	if (!haveTypeRight($type, "w"))
+	//Check is user have minimum right r
+	if (!haveTypeRight($type, "r") && !haveTypeRight($type, "w"))
 		return false;
 
 	switch ($type) {
@@ -598,7 +599,7 @@ function listTemplates($type, $target, $add = 0) {
 			echo "<a href=\"$target?ID=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" . $LANG["common"][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
 			echo "</tr>";
 		}
-
+	
 		while ($data = $DB->fetch_array($result)) {
 
 			$templname = $data["tplname"];
@@ -607,7 +608,8 @@ function listTemplates($type, $target, $add = 0) {
 			}
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
-			if (!$add) {
+			
+			if (haveTypeRight($type, "w") && !$add) {
 				echo "<a href=\"$target?ID=" . $data["ID"] . "&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 
 				echo "<td align='center' class='tab_bg_2'>";
@@ -624,7 +626,7 @@ function listTemplates($type, $target, $add = 0) {
 
 		}
 
-		if (!$add) {
+		if (haveTypeRight($type, "w") &&!$add) {
 			echo "<tr>";
 			echo "<td colspan='2' align='center' class='tab_bg_2'>";
 			echo "<strong><a href=\"$target?withtemplate=1\">" . $LANG["common"][9] . "</a></strong>";

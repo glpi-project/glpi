@@ -51,8 +51,6 @@ $item=ereg_replace(".form.php","",$INFOFORM_PAGES[$_GET["type"]]);
 $item=ereg_replace("front/","",$item);
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],$type,$item);
 
-checkTypeRight($_GET["type"],"w");
-
 listTemplates($_GET["type"],$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
 
 commonFooter();
