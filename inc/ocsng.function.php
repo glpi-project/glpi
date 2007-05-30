@@ -1848,8 +1848,9 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 							$mon["name"] = $line["MANUFACTURER"];
 						}
 						if (empty ($line["CAPTION"]) && !empty ($line["TYPE"])) {
-							if (!empty ($line["MANUFACTURER"]))
+							if (!empty ($line["MANUFACTURER"])){
 								$mon["name"] .= " ";
+							}
 							$mon["name"] .= $line["TYPE"];
 						}
 
@@ -1859,20 +1860,21 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 							$checkMonitor = $mon["name"];
 							$checkMonitor .= $mon["serial"];											
 						}
-						else
+						else {
 							$checkMonitor = $mon["name"];	
+						}
 						//Update data in import_monitor array for 0.70
 						if(!in_array($tagVersionInArray, $import_periph)){								
-								foreach ($import_periph as $key => $val) {
-									//delete old value									
-									deleteInOcsArray($glpi_id, $key, "import_monitor");
-									//add new value (serial + name when its possible)
-								    addToOcsArray($glpi_id, array ($key => $checkMonitor), "import_monitor");			
-								}
-								//add the tag for the array version's
-								 addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
+							foreach ($import_periph as $key => $val) {
+								//delete old value									
+								deleteInOcsArray($glpi_id, $key, "import_monitor");
+								//add new value (serial + name when its possible)
+								addToOcsArray($glpi_id, array ($key => $checkMonitor), "import_monitor");			
+							}
+							//add the tag for the array version's
+							 addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
 						}						
-						if (!empty ($mon["name"]))
+						if (!empty ($mon["name"])){
 							if (!in_array($checkMonitor, $import_periph)){
 								// Clean monitor object
 								$m->reset();
@@ -1899,7 +1901,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 										$input["_from_ocs"]=1;
 										$id_monitor = $m->add($input);
 									}
-								} else
+								} else {
 									if ($cfg_ocs["import_monitor"] == 2) {										
 										//COnfig says : manage monitors as single units
 										//Import all monitors as non global.
@@ -1997,30 +1999,32 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 											}
 										}
 									}
+								}
 								if ($id_monitor) {
-                                   if (!$found_already_monitor){
-                                        //Import unique : Disconnect monitor on other computer
-                                        if ($cfg_ocs["import_monitor"] == 2){
-                                            $queryGetConnectionID = "SELECT * FROM glpi_connect_wire WHERE end1=$id_monitor";
-                                            $result_search_id = $DB->query($queryGetConnectionID);
-                                            if ($DB->numrows($result_search_id) == 1) {
-                                                $id_conn = $DB->result($result_search_id, 0, "ID");
-                                               Disconnect($id_conn,$dohistory,$ocs_server_id);
-                                            }
-                                        }
+                                   					if (!$found_already_monitor){
+                                        					//Import unique : Disconnect monitor on other computer
+                                        					if ($cfg_ocs["import_monitor"] == 2){
+                                            						$queryGetConnectionID = "SELECT * FROM glpi_connect_wire WHERE end1=$id_monitor";
+                                            						$result_search_id = $DB->query($queryGetConnectionID);
+                                            						if ($DB->numrows($result_search_id) == 1) {
+                                                						$id_conn = $DB->result($result_search_id, 0, "ID");
+                                               							Disconnect($id_conn,$dohistory,$ocs_server_id);
+                                            						}
+                                        					}
 										$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE,$dohistory);
-                                   }
+                                   					}
 									if(!empty($mon["serial"])){
 										$addValuetoDB = $mon["name"];
-										$addValuetoDB .= $mon["serial"];											
+										$addValuetoDB .= $mon["serial"];
 									}
-									else 
-										$addValuetoDB = $mon["name"];										
+									else {
+										$addValuetoDB = $mon["name"];
+									}
 									if(!in_array($tagVersionInArray, $import_periph)){
 										addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
 									}
-									addToOcsArray($glpi_id, array ($connID => $addValuetoDB), "import_monitor");											
-									$count_monitor++;																		
+									addToOcsArray($glpi_id, array ($connID => $addValuetoDB), "import_monitor");	
+									$count_monitor++;	
 									//Update column "deleted" set value to 0 and set status to default
 									$input=array();
 									$input["ID"] = $id_monitor;
@@ -2040,6 +2044,7 @@ function ocsUpdatePeripherals($device_type, $entity,$glpi_id, $ocs_id, $ocs_serv
 								$id = array_search($searchDBValue, $import_periph);
 								unset ($import_periph[$id]);
 							}
+						}
 					}
 					if(in_array($tagVersionInArray, $import_periph)){
 						//unset the version Tag
