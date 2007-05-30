@@ -903,6 +903,8 @@ function helpHeader($title,$url) {
 
 	// Main Headline
 	echo "<div id='header'>";
+		echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
+
 		// Les préférences + lien déconnexion 
 		echo "<div id='c_preference' >";
 		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
@@ -929,7 +931,6 @@ function helpHeader($title,$url) {
 	
 		//<!-- Le menu principal -->
 		echo "<div id='c_menu'>";
-		echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
 		echo "	<ul id='menu'>";
 		
 	
