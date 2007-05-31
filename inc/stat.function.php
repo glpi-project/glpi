@@ -622,9 +622,11 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
 			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
 
-			$query="SELECT glpi_tracking.ID AS ID, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) AS FIRST FROM glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) ".
-				$LEFTJOIN.$WHERE.
-				" GROUP BY glpi_tracking.ID";
+			$query="SELECT glpi_tracking.ID AS ID, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) AS FIRST FROM glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) ";
+			if (!ereg("glpi_followups",$LEFTJOIN)){
+				$query.=$LEFTJOIN;
+			}
+				$query.=$WHERE." GROUP BY glpi_tracking.ID";
 			break;
 
 			//		$query = " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";	
