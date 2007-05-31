@@ -716,7 +716,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$i=-1;
 			echo "<table><tr><td valign='top'><table>";
 			foreach ($menu as $part => $data){
-				if (count($data['content'])){
+				if (isset($data['content'])&&count($data['content'])){
 	
 					if ($i>$items_per_columns){
 						$i=0;
