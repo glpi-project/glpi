@@ -501,6 +501,27 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// default string
 	$WHERE = "";
 
+	// Add deleted if item have it
+	if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
+		$LINK= " AND " ;
+		if ($first) {$LINK=" ";$first=false;}
+		$WHERE.= $LINK.$itemtable.".deleted='$deleted' ";
+	}
+	// Remove template items
+	if (in_array($itemtable,$CFG_GLPI["template_tables"])){
+		$LINK= " AND " ;
+		if ($first) {$LINK=" ";$first=false;}
+		$WHERE.= $LINK.$itemtable.".is_template='0' ";
+	}
+
+	// Add Restrict to current entities
+	if ($entity_restrict){
+		$LINK= " AND " ;
+		if ($first) {$LINK=" ";$first=false;}
+
+		$WHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
+	}
+
 	// Add search conditions
 	// If there is search items
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
@@ -541,6 +562,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						$WHERE.=" ".$link[$key];
 					else 
 						$WHERE.=" AND ";
+				} else {
+					if (ereg("NOT",$link[$key])){
+						$WHERE.=" NOT ";
+					}
 				}
 
 				$WHERE.= " ( ";
@@ -563,6 +588,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						$WHERE.=" ".$link[$key];
 					else 
 						$WHERE.=" AND ";
+				} else {
+					if (ereg("NOT",$link[$key])){
+						$WHERE.=" NOT ";
+					}
 				}
 
 				$WHERE.= " ( ";
@@ -584,33 +613,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	if (!empty($WHERE)){
-		$WHERE=' WHERE ( '.$WHERE.' )';
+		$WHERE=' WHERE  '.$WHERE.' ';
 		$first=false;
 	} else {
 		$WHERE=" WHERE ";
 	}
-
-	// Add deleted if item have it
-	if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
-		$LINK= " AND " ;
-		if ($first) {$LINK=" ";$first=false;}
-		$WHERE.= $LINK.$itemtable.".deleted='$deleted' ";
-	}
-	// Remove template items
-	if (in_array($itemtable,$CFG_GLPI["template_tables"])){
-		$LINK= " AND " ;
-		if ($first) {$LINK=" ";$first=false;}
-		$WHERE.= $LINK.$itemtable.".is_template='0' ";
-	}
-
-	// Add Restrict to current entities
-	if ($entity_restrict){
-		$LINK= " AND " ;
-		if ($first) {$LINK=" ";$first=false;}
-
-		$WHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
-	}
-
 
 	//// 4 - ORDER
 	foreach($toview as $key => $val){
@@ -1574,29 +1581,31 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			break;
 		case "glpi_infocoms.value":
 		case "glpi_infocoms.warranty_value":
-			$search=array("/\&lt;/","/\&gt;/");
-			$replace=array("<",">");
-			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
-				if ($nott){
-					if ($regs[1]=='<') {
-						$regs[1]='>';
-					} else {
-						$regs[1]='<';
-					}
-				} 
-					$regs[1].=$regs[2];
-				
-				return $link." ($table.$field ".$regs[1]." ".$regs[3]." ) ";
-			} else {
-
-				$interval=100;
-				$ADD="";
-				if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
-				if ($nott){
-					return $link." ($table.$field < ".intval($val)."-$interval OR $table.$field > ".intval($val)."+$interval ".$ADD." ) ";
+			if (is_numeric($val)){
+				$search=array("/\&lt;/","/\&gt;/");
+				$replace=array("<",">");
+				$val=preg_replace($search,$replace,$val);
+				if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
+					if ($nott){
+						if ($regs[1]=='<') {
+							$regs[1]='>';
+						} else {
+							$regs[1]='<';
+						}
+					} 
+						$regs[1].=$regs[2];
+					
+					return $link." ($table.$field ".$regs[1]." ".$regs[3]." ) ";
 				} else {
-					return $link." (($table.$field >= ".intval($val)."-$interval AND $table.$field <= ".intval($val)."+$interval) ".$ADD." ) ";
+	
+					$interval=100;
+					$ADD="";
+					if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
+					if ($nott){
+						return $link." ($table.$field < ".intval($val)."-$interval OR $table.$field > ".intval($val)."+$interval ".$ADD." ) ";
+					} else {
+						return $link." (($table.$field >= ".intval($val)."-$interval AND $table.$field <= ".intval($val)."+$interval) ".$ADD." ) ";
+					}
 				}
 			}
 			break;
@@ -1624,13 +1633,13 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				$val=1;
 			} else if (eregi($val,getAmortTypeName(2))) {
 				$val=2;
-			} else { 
-				$val=0; 
-			}
-			if ($nott){
-				return $link." ($table.$field <> $val ".$ADD." ) ";
-			} else {
-				return $link." ($table.$field = $val  ".$ADD." ) ";
+			} 
+			if ($val>0){
+				if ($nott){
+					return $link." ($table.$field <> $val ".$ADD." ) ";
+				} else {
+					return $link." ($table.$field = $val  ".$ADD." ) ";
+				}
 			}
 			break;
 		case "glpi_contacts.completename":
