@@ -132,7 +132,7 @@ elseif (isset($_POST["connect_device"])) {
 	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["cID"]."&withtemplate=".$_GET["withtemplate"]);
 }
 elseif(isset($_POST["unlock_monitor"])){
-	checkRight("sync_ocsng","w");
+	checkRight("computer","w");
 	if (isset($_POST["lockmonitor"])&&count($_POST["lockmonitor"])){
 		foreach ($_POST["lockmonitor"] as $key => $val)
 			deleteInOcsArray($_POST["ID"],$key,"import_monitor");
@@ -140,7 +140,7 @@ elseif(isset($_POST["unlock_monitor"])){
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 elseif(isset($_POST["unlock_printer"])){
-	checkRight("sync_ocsng","w");
+	checkRight("computer","w");
 	if (isset($_POST["lockprinter"])&&count($_POST["lockprinter"])){
 		foreach ($_POST["lockprinter"] as $key => $val)
 			deleteInOcsArray($_POST["ID"],$key,"import_printers");
@@ -148,8 +148,7 @@ elseif(isset($_POST["unlock_printer"])){
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 elseif(isset($_POST["unlock_periph"])){
-	//checkRight("ocsng","w");
-	checkRight("sync_ocsng","w");
+	checkRight("computer","w");
 	if (isset($_POST["lockperiph"])&&count($_POST["lockperiph"])){
 		foreach ($_POST["lockperiph"] as $key => $val)
 			deleteInOcsArray($_POST["ID"],$key,"import_peripheral");
@@ -157,8 +156,7 @@ elseif(isset($_POST["unlock_periph"])){
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 elseif(isset($_POST["unlock_field"])){
-	//checkRight("ocsng","w");
-	checkRight("sync_ocsng","w");
+	checkRight("computer","w");
 	if (isset($_POST["lockfield"])&&count($_POST["lockfield"])){
 		foreach ($_POST["lockfield"] as $key => $val)
 			deleteInOcsArray($_POST["ID"],$key,"computer_update");

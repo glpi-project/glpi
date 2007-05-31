@@ -79,8 +79,9 @@ class Computer extends CommonDBTM {
 				
 			$ong[12]=$LANG["title"][38];
 
-			if ($CFG_GLPI["ocs_mode"]&&haveRight("sync_ocsng","w"))
+			if ($CFG_GLPI["ocs_mode"]&&(haveRight("sync_ocsng","w")||haveRight("computer","w"))){
 				$ong[13]=$LANG["Menu"][33];
+			}
 		}	
 		return $ong;
 	}

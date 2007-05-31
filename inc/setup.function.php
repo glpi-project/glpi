@@ -365,6 +365,12 @@ function addDropdown($input) {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 				regenerateTreeCompleteNameUnderID($input["tablename"], $ID);
 			}
+			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
+				$activeprof=$_SESSION['glpiactiveprofile']['ID'];
+				initEntityProfiles($_SESSION["glpiID"]);
+				changeProfile($activeprof);
+			}
+
 			cleanRelationCache($input["tablename"]);
 			return $ID;
 		} else {

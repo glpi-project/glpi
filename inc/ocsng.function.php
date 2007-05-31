@@ -1174,6 +1174,9 @@ function addToOcsArray($glpi_id, $toadd, $field) {
 function ocsEditLock($target, $ID) {
 	global $DB, $LANG, $SEARCH_OPTION;
 
+	if (!haveRight("computer","w")) {
+		return false;
+	}
 	$query = "SELECT * 
 			FROM glpi_ocs_link 
 			WHERE glpi_id='$ID'";
@@ -1181,17 +1184,17 @@ function ocsEditLock($target, $ID) {
 	$result = $DB->query($query);
 	if ($DB->numrows($result) == 1) {
 		$data = $DB->fetch_assoc($result);
-
-		echo "<div align='center'>";
-		echo "<form method='post' action=\"$target\">";
-		echo "<input type='hidden' name='ID' value='$ID'>";
-		echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-		echo "<input type='hidden' name='resynch_id' value='" . $data["ID"] . "'>";
-		echo "<input class=submit type='submit' name='force_ocs_resynch' value='" . $LANG["ocsng"][24] . "'>";
-		echo "</td><tr></table>";
-		echo "</form>";
-
-		echo "</div>";
+		if (haveRight("sync_ocsng","w")){
+			echo "<div align='center'>";
+			echo "<form method='post' action=\"$target\">";
+			echo "<input type='hidden' name='ID' value='$ID'>";
+			echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+			echo "<input type='hidden' name='resynch_id' value='" . $data["ID"] . "'>";
+			echo "<input class=submit type='submit' name='force_ocs_resynch' value='" . $LANG["ocsng"][24] . "'>";
+			echo "</td><tr></table>";
+			echo "</form>";
+			echo "</div>";
+		}
 
 		echo "<div align='center'>";
 		// Print lock fields for OCSNG
