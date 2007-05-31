@@ -555,17 +555,37 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				}
 				// if real search (strlen >0) and view search
 			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="view"){
+				$LINK=" OR ";
+				$NOT=0;
+				$globallink="";
+				if (is_array($link)&&isset($link[$key])){
+					switch ($link[$key]){
+						case "AND";
+							$LINK=" OR ";
+							$globallink=" AND ";
+							break;
+						case "AND NOT";
+							$LINK=" AND ";
+							$NOT=1;
+							$globallink=" AND ";
+							break;
+						case "OR";
+							$LINK=" OR ";
+							$globallink=" OR ";
+							break;
+						case "OR NOT";
+							$LINK=" AND ";
+							$NOT=1;
+							$globallink=" OR ";
+							break;
+					}
+				} else {
+					$tmplink=" AND ";
+				}
 
 				// Manage Link if not first item
 				if (!$first||$i>0) {
-					if (is_array($link)&&isset($link[$key]))
-						$WHERE.=" ".$link[$key];
-					else 
-						$WHERE.=" AND ";
-				} else {
-					if (ereg("NOT",$link[$key])){
-						$WHERE.=" NOT ";
-					}
+					$WHERE.=$globallink;
 				}
 
 				$WHERE.= " ( ";
@@ -573,38 +593,67 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				foreach ($toview as $key2 => $val2)
 					// Add Where clause if not to be done ine HAVING CLAUSE
 					if (!in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
-						$LINK=" OR ";
-						if ($first2) {$LINK=" ";$first2=false;}
-						$WHERE.= addWhere($LINK,0,$type,$val2,$contains[$key]);
+						$tmplink=$LINK;
+						if ($first2) {
+							$tmplink=" ";
+							$first2=false;
+						}
+						$WHERE.= addWhere($tmplink,$NOT,$type,$val2,$contains[$key]);
 					}
 				$WHERE.=" ) ";
 				$i++;
 				// if real search (strlen >0) and all search
 			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="all"){
 
+				$LINK=" OR ";
+				$NOT=0;
+				$globallink="";
+				if (is_array($link)&&isset($link[$key])){
+					switch ($link[$key]){
+						case "AND";
+							$LINK=" OR ";
+							$globallink=" AND ";
+							break;
+						case "AND NOT";
+							$LINK=" AND ";
+							$NOT=1;
+							$globallink=" AND ";
+							break;
+						case "OR";
+							$LINK=" OR ";
+							$globallink=" OR ";
+							break;
+						case "OR NOT";
+							$LINK=" AND ";
+							$NOT=1;
+							$globallink=" OR ";
+							break;
+					}
+				} else {
+					$tmplink=" AND ";
+				}
+
 				// Manage Link if not first item
 				if (!$first||$i>0) {
-					if (is_array($link)&&isset($link[$key]))
-						$WHERE.=" ".$link[$key];
-					else 
-						$WHERE.=" AND ";
-				} else {
-					if (ereg("NOT",$link[$key])){
-						$WHERE.=" NOT ";
-					}
+					$WHERE.=$globallink;
 				}
+
 
 				$WHERE.= " ( ";
 				$first2=true;
 
 				foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
-					if (is_array($val2))
+					if (is_array($val2)){
 						// Add Where clause if not to be done ine HAVING CLAUSE
 						if (!in_array($val2["table"],$META_SPECIF_TABLE)){
-							$LINK=" OR ";
-							if ($first2) {$LINK=" ";$first2=false;}
-							$WHERE.= addWhere($LINK,0,$type,$key2,$contains[$key]);
+							$tmplink=$LINK;
+							if ($first2) {
+								$tmplink=" ";
+								$first2=false;
+							}
+							$WHERE.= addWhere($tmplink,$NOT,$type,$key2,$contains[$key]);
 						}
+					}
 
 				$WHERE.=")";
 				$i++;
@@ -845,7 +894,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-	//echo $QUERY."<br>\n";
+//	echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
@@ -1489,7 +1538,11 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			if ($type==USER_TYPE){ // glpi_users case / not link table
 				return $link." ( $table$linkfield.$field $SEARCH ) ";
 			} else {
-				return $link." ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH OR CONCAT($table$linkfield.realname,' ',$table$linkfield.firstname) $SEARCH ) ";
+				$ADD="";
+				if ($nott) {
+					$ADD=" OR $table$linkfield.$field IS NULL";
+				}
+				return $link." ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH OR CONCAT($table$linkfield.realname,' ',$table$linkfield.firstname) $SEARCH $ADD) ";
 			}
 			break;
 		case "glpi_device_hdd.specif_default" :
@@ -1503,9 +1556,18 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			break;
 		case "glpi_networking_ports.ifmac" :
 			if ($type==COMPUTER_TYPE){
-				return $link." (  DEVICE_".NETWORK_DEVICE.".specificity $SEARCH OR $table.$field $SEARCH ) ";
+				$ADD="";
+				if ($nott) {
+					$ADD=" OR $table.$field IS NULL";
+				}
+
+				return $link." (  DEVICE_".NETWORK_DEVICE.".specificity $SEARCH OR $table.$field $SEARCH $ADD ) ";
 			} else {
-				return $link." $table.$field $SEARCH ";
+				if ($nott) {
+					$ADD=" OR $table.$field IS NULL";
+				}
+
+				return $link." $table.$field $SEARCH $ADD";
 			}
 			break;
 		case "glpi_contracts.end_date" :
@@ -1575,7 +1637,9 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				$SEARCH=makeTextSearch($val,$nott);
 
 				$ADD="";	
-				if ($nott) $ADD=" OR $table.$field IS NULL";
+				if ($nott) {
+					$ADD=" OR $table.$field IS NULL";
+				}
 				return $link." ($table.$field $SEARCH ".$ADD." ) ";
 			}
 			break;
