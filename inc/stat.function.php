@@ -139,8 +139,9 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 		echo displaySearchNewLine($output_type);
 		$header_num=1;
 		echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
-		if ($output_type==HTML_OUTPUT) // HTML display
+		if ($output_type==HTML_OUTPUT){ // HTML display
 			echo displaySearchHeaderItem($output_type,"",$header_num);
+		}
 		echo displaySearchHeaderItem($output_type,$LANG["stats"][13],$header_num);
 		echo displaySearchHeaderItem($output_type,$LANG["stats"][14],$header_num);
 		echo displaySearchHeaderItem($output_type,$LANG["stats"][15],$header_num);
@@ -155,8 +156,14 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			$item_num=1;
 			echo displaySearchNewLine($output_type,$i%2);
 			echo displaySearchItem($output_type,$value[$i]['link'],$item_num,$row_num);
-			if ($output_type==HTML_OUTPUT) // HTML display
-				echo displaySearchItem($output_type,"<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;date1=$date1&amp;date2=$date2&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>",$item_num,$row_num);
+			if ($output_type==HTML_OUTPUT){ // HTML display
+				
+				$link="";
+				if ($value[$i]['ID']>0){
+					$link="<a href='stat.graph.php?ID=".$value[$i]['ID']."&amp;date1=$date1&amp;date2=$date2&amp;type=$type".(!empty($value2)?"&amp;champ=$value2":"")."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/stats_item.png\" alt='' title=''></a>";
+				}
+				echo displaySearchItem($output_type,$link,$item_num,$row_num);
+			}
 
 			//le nombre d'intervention
 			//the number of intervention

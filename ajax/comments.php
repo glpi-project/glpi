@@ -48,6 +48,11 @@ if (isset($_POST["table"])&&isset($_POST["value"])&&$_POST["value"]>0){
 		case "glpi_users":
 			$tmpname=getUserName($_POST["value"],2);
 			echo $tmpname["comments"];
+			if (isset($_POST['withlink'])){
+				echo "<script type='text/javascript' >\n";
+				echo "\$('".$_POST['withlink']."').href='".$tmpname['link']."';";
+				echo "</script>\n";
+			}
 			break;
 		default :
 			$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
@@ -55,5 +60,4 @@ if (isset($_POST["table"])&&isset($_POST["value"])&&$_POST["value"]>0){
 			break;
 	}
 }
-
 ?>
