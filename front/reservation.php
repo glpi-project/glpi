@@ -60,7 +60,6 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 
 	commonHeader($LANG["title"][35],$_SERVER['PHP_SELF'],"utils","reservation");
-
 	if (isset($_POST["clear_resa"])){
 		$id_item=key($_POST["items"]);
 		if ($rr->delete($_POST)){
@@ -71,10 +70,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
 		printCalendrier($_SERVER['PHP_SELF'],$id_item);
-	} else if (!empty($_GET["ID"])){
-		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
-	}
-	else if (isset($_GET["add_item"])){
+	} else if (isset($_GET["add_item"])){
 		if (!isset($_GET["date"])) $_GET["date"]=date("Y-m-d");
 		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["add_item"],$_GET["date"]);
 	}
@@ -122,7 +118,10 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			}
 		}
 		
+	} else if (isset($_GET["ID"])){
+		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
 	}
+
 	else {
 		manageGetValuesInSearch(RESERVATION_TYPE);
 
