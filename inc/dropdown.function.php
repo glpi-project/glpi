@@ -367,7 +367,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 	$comments_display="";
 
 	if ($display_comments) {
-		$comments_display="<a href='".$user["link"]."'>";
+		$comments_display="<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
 		$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
 		$comments_display.="</a>";
 		$comments_display.="<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
