@@ -58,7 +58,7 @@ if (isset($_SESSION["glpipopup"]["name"])){
 		break;
 		case "search_config":
 			popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
-			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["up"])||isset($_POST["down"])){
+			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["delete_x"])||isset($_POST["up"])||isset($_POST["up_x"])||isset($_POST["down"])||isset($_POST["down_x"])){
 				echo "<script type='text/javascript' >\n";
 				echo "window.opener.location.reload();";
 				echo "</script>";
