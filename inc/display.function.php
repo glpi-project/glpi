@@ -656,7 +656,11 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "	<li><a  style='font-size:12px' href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." ></a></li>";
 
 		if (isset($menu[$sector])){
-			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['default']."' title='".$menu[$sector]['title']."' ><span style='font-size:12px'>".$menu[$sector]['title']." ></span></a></li>";
+			$link="/front/central.php";
+			if (isset($menu[$sector]['default'])){
+				$link=$menu[$sector]['default'];
+			}
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$link."' title='".$menu[$sector]['title']."' ><span style='font-size:12px'>".$menu[$sector]['title']." ></span></a></li>";
 		}
 
 		if (isset($menu[$sector]['content'][$item])){
