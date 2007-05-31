@@ -295,7 +295,7 @@ function showCompatiblePrinters($instID) {
 function showCartridgeInstalled($instID,$old=0) {
 
 	global $DB,$CFG_GLPI, $LANG;
-
+	
 	if (!haveRight("cartridge","r")) return false;
 	$canedit=haveRight("cartridge","w");
 
@@ -547,6 +547,7 @@ function dropdownCompatibleCartridges($pID) {
 		INNER JOIN glpi_cartridges ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridges_type.ID 
 						AND glpi_cartridges.date_use IS NULL)
 		WHERE  glpi_cartridges_assoc.FK_glpi_dropdown_model_printers = '".$p->fields["model"]."' 
+		AND glpi_cartridges_type.FK_entities='".$p->fields["model"]."' 
 		GROUP BY glpi_cartridges_type.ID 
 		ORDER BY glpi_cartridges_type.name, glpi_cartridges_type.ref";
 	if ($result = $DB->query($query)){
