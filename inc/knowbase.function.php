@@ -104,16 +104,16 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 
 	global $DB,$LANG,$CFG_GLPI;
 	
-	
 	if($faq){
 		if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) return false;	
 		
 		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = '1') AND  (parentID = $parentID) ORDER  BY name ASC";
 	}else{
+
 		if (!haveRight("knowbase","r")) return false;
 		$query = "SELECT * FROM glpi_dropdown_kbcategories WHERE  (parentID = $parentID) ORDER  BY name ASC";
 	}
-	
+
 	/// Show category
 	if ($result=$DB->query($query)){
 		echo "<div align='center'><table class='tab_cadre_central'  >";
@@ -180,7 +180,6 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 
 	// Build query
 	if ($faq){ // helpdesk
-		
 		$where="(glpi_kbitems.faq = '1') AND";
 	
 	}
@@ -194,12 +193,12 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 			$where.=" (glpi_kbitems.question $search OR glpi_kbitems.answer $search) ";
 			
 		} else {
-			$where = "($field ".makeTextSearch($contains).")";
+			$where.= "($field ".makeTextSearch($contains).")";
 			
 		}
 	}else { // Il ne s'agit pas d'une recherche, on browse by category
 	
-		$where=" (glpi_kbitems.categoryID = $parentID) ";
+		$where.=" (glpi_kbitems.categoryID = $parentID) ";
 	
 	}
 	
@@ -232,7 +231,6 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 		}
 
 		if ($numrows_limit>0) {
-
 
 			// Set display type for export if define
 			$output_type=HTML_OUTPUT;
@@ -286,9 +284,10 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 			} else {
 				echo displaySearchFooter($output_type);
 			}
-
-			if ($output_type==HTML_OUTPUT) // In case of HTML display
+			echo "<br>";
+			if ($output_type==HTML_OUTPUT) {// In case of HTML display
 				printPager($start,$numrows,$target,$parameters);
+			}
 
 		} else {
 			if ($parentID!=0) {echo "<div align='center'><strong>".$LANG["search"][15]."</strong></div>";}
@@ -465,7 +464,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 		if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$ki->type))) {
 			echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 		
-			echo $LANG["common"][36].": ".$fullcategoryname."</th></tr>";
+			echo $LANG["common"][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".($_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
 		
 			echo "<tr class='tab_bg_3'><td style='text-align:left' colspan='2'><h2>";
 			echo ($ki->fields["faq"]) ? "".$LANG["knowbase"][3]."" : "".$LANG["knowbase"][14]."";
