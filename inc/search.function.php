@@ -1286,9 +1286,12 @@ function addOrderBy($type,$ID,$order,$key=0){
 			if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"])){
 				$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
 			}
-
-			return " ORDER BY ".$table.$linkfield.".".$field." $order ";
-		break;
+			if ($type==USER_TYPE){
+				return " ORDER BY ".$table.$linkfield.".$field $order";
+			} else {
+				return " ORDER BY ".$table.$linkfield.".realname $order, ".$table.$linkfield.".firstname $order, ".$table.$linkfield.".name $order";
+			}
+			break;
 		case "glpi_networking_ports.ifaddr" :
             		return " ORDER BY INET_ATON($table.$field) $order ";
             	break;
