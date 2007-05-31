@@ -380,14 +380,14 @@ class Mailing
 					$replyto=$CFG_GLPI["admin_email"];
 				}
 				break;
-				case "followup":
-				case "update":
+			case "followup":
+			case "update":
 				if (isValidEmail($this->user->fields["email"])) {
 					$replyto=$this->user->fields["email"];
 				} else {
 					$replyto=$CFG_GLPI["admin_email"];
 				}
-				break;
+			break;
 		}
 		return $replyto;		
 	}
@@ -402,8 +402,8 @@ class Mailing
 	{
 		global $CFG_GLPI,$LANG;
 		if ($CFG_GLPI["mailing"])
-		{
-			if (!is_null($this->job)&&!is_null($this->user)&&in_array($this->type,array("new","attrib","followup","finish")))
+		{	echo $this->type;
+			if (!is_null($this->job)&&!is_null($this->user)&&in_array($this->type,array("new","update","followup","finish")))
 			{
 				// get users to send mail
 				$users=array();
@@ -452,7 +452,7 @@ class Mailing
 				}
 				
 			} else {
-				echo "Invalid mail type";
+				$_SESSION['MESSAGE_AFTER_REDIRECT'].="Invalid mail type";
 			}
 		}
 		return true;

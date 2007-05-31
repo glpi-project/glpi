@@ -159,7 +159,7 @@ class Job extends CommonDBTM{
 		if ($CFG_GLPI["followup_on_update_ticket"]){
 			$this->getFromDB($input["ID"]);
 			$input["_old_assign_name"]=getAssignName($this->fields["assign"],USER_TYPE);
-			$this->fields["_old_assign"]=$this->fields["assign"];
+			$input["_old_assign"]=$this->fields["assign"];
 			$input["_old_assign_ent_name"]=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
 			$input["_old_category"]=$this->fields["category"];
 			$input["_old_item"]=$this->fields["computer"];
@@ -172,7 +172,6 @@ class Job extends CommonDBTM{
 			$input["_old_cost_time"]=$this->fields["cost_time"];
 			$input["_old_cost_fixed"]=$this->fields["cost_fixed"];
 			$input["_old_cost_material"]=$this->fields["cost_material"];
-
 		}
 
 		return $input;
@@ -323,11 +322,15 @@ class Job extends CommonDBTM{
 	
 				if (in_array("assign",$updates)){
 					$new_assign_name=getAssignName($this->fields["assign"],USER_TYPE);
-					if ($input["_old_assign_name"]=="[Nobody]")
+					if ($input["_old_assign"]==0){
 						$input["_old_assign_name"]=$LANG["mailing"][105];
+					}
 					$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_name"]." -> ".$new_assign_name."\n";
 					$global_mail_change_count++;
-				} else unset($this->fields["_old_assign"]);
+					
+				} else {
+					unset($input["_old_assign"]);
+				}
 	
 				if (in_array("assign_ent",$updates)){
 					$new_assign_ent_name=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
@@ -368,10 +371,12 @@ class Job extends CommonDBTM{
 				$newinput["tracking"]=$this->fields["ID"];
 				$newinput["type"]="update";
 				// pass _old_assign if assig changed
-				if (isset($this->fields["_old_assign"]))
-					$newinput["_old_assign"]=$this->fields["_old_assign"];
-				if (in_array("status",$updates)&&ereg("old_",$input["status"]))
+				if (isset($input["_old_assign"])){
+					$newinput["_old_assign"]=$input["_old_assign"];
+				} 
+				if (in_array("status",$updates)&&ereg("old_",$input["status"])){
 					$newinput["type"]="finish";
+				}
 				$fup=new Followup();
 				$fup->add($newinput);
 				$mail_send=true;
@@ -387,6 +392,9 @@ class Job extends CommonDBTM{
 				$mailtype="update";
 				if (in_array("status",$updates)&&ereg("old_",$input["status"])){
 					$mailtype="finish";
+				} 
+				if (isset($input["_old_assign"])){
+					$this->fields["_old_assign"]=$input["_old_assign"];
 				} 
 				$mail = new Mailing($mailtype,$this,$user);
 				$mail->send();
@@ -837,8 +845,9 @@ class Followup  extends CommonDBTM {
 		if (!$input["_isadmin"]&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]) return false;
 
 		// Pass old assign From Job in case of assign change
-		if (isset($input["_old_assign"]))
+		if (isset($input["_old_assign"])){
 			$input["_job"]->fields["_old_assign"]=$input["_old_assign"];
+		}
 
 
 		if (!isset($input["type"])) $input["type"]="followup";
