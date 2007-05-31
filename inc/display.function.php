@@ -1810,7 +1810,7 @@ function showCentralGlobalView(){
 	echo "</div>";
 
 
-	if ($CFG_GLPI["jobs_at_login"]){
+	if ($CFG_GLPI["jobs_at_login"]&&$showticket){
 		echo "<br>";
 
 		echo "<div align='center'><strong>";
