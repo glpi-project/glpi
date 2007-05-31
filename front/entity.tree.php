@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("setup");
+$NEEDED_ITEMS=array("setup","profile");
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');

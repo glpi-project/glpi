@@ -279,7 +279,8 @@ function getSonsOfTreeItem($table,$IDf){
 	// First request init the  varriables
 	$query="SELECT ID 
 		FROM $table 
-		WHERE parentID = '$IDf'";
+		WHERE parentID = '$IDf'
+		ORDER BY name";
 
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
 		while ($row=$DB->fetch_array($result)){
@@ -300,6 +301,7 @@ function getSonsOfTreeItem($table,$IDf){
 			else $first=false;
 			$query.= " parentID = '$val' ";
 		}
+			
 
 		// CLear the found array
 		unset($found);
@@ -337,7 +339,7 @@ function getTreeForItem($table,$IDf){
 	// First request init the  varriables
 	$query="SELECT * 
 		FROM $table 
-		WHERE parentID = '$IDf'";
+		WHERE parentID = '$IDf' ORDER BY name";
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
 		while ($row=$DB->fetch_array($result)){
 			$id_found[$row['ID']]['parent']=$IDf;
