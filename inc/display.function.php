@@ -370,7 +370,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		// PLUGINS
 		if (isset($PLUGIN_HOOKS["menu_entry"])&&count($PLUGIN_HOOKS["menu_entry"])){	
 			$menu['plugins']['title']=$LANG["common"][29];
-			$menu['plugins']['default']='/front/setup.plugins.php';
 
 			$plugins=array();
 	
