@@ -96,6 +96,8 @@ function showListReminder($type="private"){
 
 	global $DB,$CFG_GLPI, $LANG;
 
+	$planningRight=haveRight("show_planning","1");
+
 	$author=$_SESSION['glpiID'];	
 
 	if($type=="public"){ // show public reminder
@@ -144,14 +146,22 @@ function showListReminder($type="private"){
 	if (count($tabremind)>0){
 		foreach ($tabremind as $key => $val){
 
-			echo "<tr class='tab_bg_2'><td width='70%'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a></td>";
+			echo "<tr class='tab_bg_2'><td width='70%'>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a>";
+			echo "</td>";
 
 			if($val["end"]!=""){	
 				echo "<td style='text-align:center;'>";
 
 				$tab=split(" ",$val["begin"]);
 				$date_url=$tab[0];
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["planning"][3]."' title='".$LANG["planning"][3]."'></a>";
+				if ($planningRight){
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\">";
+				}
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["planning"][3]."' title='".$LANG["planning"][3]."'>";
+				if ($planningRight){
+					echo "</a>";
+				}
 				echo "</td>";
 				echo "<td style='text-align:center;' ><strong>".convDateTime($val["begin"]);
 				echo "<br>".convDateTime($val["end"])."</strong>";
