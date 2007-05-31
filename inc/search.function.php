@@ -557,7 +557,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="view"){
 				$LINK=" OR ";
 				$NOT=0;
-				$globallink="";
+				$globallink=" AND ";
 				if (is_array($link)&&isset($link[$key])){
 					switch ($link[$key]){
 						case "AND";
@@ -607,7 +607,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 				$LINK=" OR ";
 				$NOT=0;
-				$globallink="";
+				$globallink=" AND ";
 				if (is_array($link)&&isset($link[$key])){
 					switch ($link[$key]){
 						case "AND";
@@ -894,7 +894,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-//	echo $QUERY."<br>\n";
+	//echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {
