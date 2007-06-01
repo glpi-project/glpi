@@ -104,12 +104,12 @@ class Link extends CommonDBTM {
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td>";
 			echo "<td>";
-			autocompletionTextField("name","glpi_links","name",$this->fields["name"],80);		
+			autocompletionTextField("name","glpi_links","name",$this->fields["name"],80,$this->fields["FK_entities"]);		
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["links"][1].":	</td>";
 			echo "<td>";
-			autocompletionTextField("link","glpi_links","link",$this->fields["link"],80);		
+			autocompletionTextField("link","glpi_links","link",$this->fields["link"],80,$this->fields["FK_entities"]);		
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["links"][9].":	</td>";

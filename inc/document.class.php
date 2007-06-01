@@ -186,7 +186,7 @@ class Document extends CommonDBTM {
 			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 				echo "<td colspan='2'>";
-				autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80);
+				autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				if (!empty($ID)){
@@ -211,7 +211,7 @@ class Document extends CommonDBTM {
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["document"][33].":		</td>";
 				echo "<td colspan='2'>";
-				autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40);
+				autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 	
@@ -224,7 +224,7 @@ class Document extends CommonDBTM {
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["document"][4].":		</td>";
 				echo "<td colspan='2'>";
-				autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],25);
+				autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],25,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr>";

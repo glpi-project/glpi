@@ -1754,7 +1754,7 @@ function showJobDetails ($target,$ID){
 			echo $LANG["joblist"][27].":";
 			echo "</td><td>";
 			if ($canupdate){
-				autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15);
+				autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15,$job->fields["FK_entities"]);
 
 				if (!empty($job->fields["uemail"]))
 					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";

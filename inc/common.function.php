@@ -44,6 +44,11 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 //******************************************************************************************************
 
+	function logInFile($name,$text){
+		error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
+	}
+
+
 	// Fonction spéciale de gestion des erreurs
 	function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
 		global $CFG_GLPI;

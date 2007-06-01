@@ -66,8 +66,6 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	echo "<tr ><th colspan='2'>".$LANG["search"][0].":</th></tr>";
 	echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". stripslashes($contains) ."\" ></td>";
 	
-	//autocompletionTextField("contains","glpi_kbitems","question",$contains,20);
-	
 	echo "<td><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit' ></td></tr>";
 
 	echo "</table></form>";

@@ -46,7 +46,7 @@ checkRight("config", "w");
 
 	commonHeader($LANG["Menu"][39], $_SERVER['PHP_SELF'], "config","mailgate");
 
-if (function_exists('imap_open')) {
+if (!function_exists('imap_open')) {
 	echo "<div align='center'>";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>" . $LANG["Menu"][39] . "</th></tr>";

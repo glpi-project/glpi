@@ -41,8 +41,12 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkLoginUser();
+$entity="";
+if (isset($_POST['entity_restrict'])&&$_POST['entity_restrict']>=0&&in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
+	$entity=" AND FK_entities='".$_POST['entity_restrict']."' ";
+}
 
-$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST[$_POST['myname']]."%' AND ".$_POST['field']." <> '".$_POST[$_POST['myname']]."' ORDER BY ".$_POST['field']." LIMIT 0,20";
+$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST[$_POST['myname']]."%' AND ".$_POST['field']." <> '".$_POST[$_POST['myname']]."' $entity ORDER BY ".$_POST['field']." LIMIT 0,20";
 if ($result=$DB->query($query))
 	if ($DB->numrows($result)>0){
 		echo "<ul class='autocomp'>";
