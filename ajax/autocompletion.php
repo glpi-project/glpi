@@ -39,7 +39,6 @@ define('GLPI_ROOT','..');
 if (!ereg("plugin",$_POST['table'])){
 	$AJAX_INCLUDE=1;
 }
-$AJAX_INCLUDE=1;
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
