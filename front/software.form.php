@@ -80,12 +80,17 @@ else if (isset($_POST["restore"]))
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
-else if (isset($_POST["purge"]))
+else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
 	checkRight("software","w");
 
-	$soft->delete($_POST,1);
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	if (isset($_POST["purge"]))
+		$input["ID"]=$_POST["ID"];
+	else
+		$input["ID"] = $_GET["ID"];	
+
+	$soft->delete($input,1);
+	logEvent($input["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["update"]))

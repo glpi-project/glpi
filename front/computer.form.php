@@ -72,11 +72,17 @@ else if (isset($_POST["restore"]))
 	logEvent($_POST["ID"],"computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 }
-else if (isset($_POST["purge"]))
+else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
 	checkRight("computer","w");
-	$computer->delete($_POST,1);
-	logEvent($_POST["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+
+	if (isset($_POST["purge"]))
+		$input["ID"]=$_POST["ID"];
+	else
+		$input["ID"] = $_GET["ID"];	
+
+	$computer->delete($input,1);
+	logEvent($input["ID"], "computers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/computer.php");
 }
 //update a computer
