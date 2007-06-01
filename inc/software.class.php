@@ -202,12 +202,16 @@ class Software extends CommonDBTM {
 			return false;
 
 		$sw_spotted = false;
+		$use_cache=true;
 		if ((empty ($ID) && $withtemplate == 1) || $ID == -1) {
-			if ($this->getEmpty())
+			$use_cache=false;
+			if ($this->getEmpty()){
 				$sw_spotted = true;
+			}
 		} else {
-			if ($this->getfromDB($ID) && haveAccessToEntity($this->fields["FK_entities"]))
+			if ($this->getfromDB($ID) && haveAccessToEntity($this->fields["FK_entities"])){
 				$sw_spotted = true;
+			}
 		}
 
 		if ($sw_spotted) {
@@ -253,7 +257,7 @@ class Software extends CommonDBTM {
 				echo "&nbsp;&nbsp;&nbsp;(" . $LANG["common"][13] . ": " . $this->fields['tplname'] . ")";
 			echo "</th></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
 				echo "<tr class='tab_bg_1'><td>" . $LANG["common"][16] . ":		</td>";
 				echo "<td>";
 				autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 25,$this->fields["FK_entities"]);
@@ -299,13 +303,14 @@ class Software extends CommonDBTM {
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][46] . ":</td><td>";
-				if (haveRight("software", "w"))
+				if (haveRight("software", "w")){
 					echo "<select name='helpdesk_visible'><option value='1' " . ($this->fields['helpdesk_visible'] == 1 ? "selected" : "") . ">" . $LANG["choice"][1] . "</option><option value='0' " . ($this->fields['helpdesk_visible'] == 0 ? "selected" : "") . ">" . $LANG["choice"][0] . "</option></select>";
-				else
+				} else {
 					if ($this->fields['helpdesk_visible'] == 1)
 						echo $LANG["choice"][1];
 					else
 						echo $LANG["choice"][0];
+				}
 				echo "</td>";
 				echo "<td colspan='2'></td></tr>";
 
@@ -313,7 +318,9 @@ class Software extends CommonDBTM {
 				echo $LANG["common"][25] . ":	</td>";
 				echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >" . $this->fields["comments"] . "</textarea>";
 				echo "</td></tr>";
-				$CFG_GLPI["cache"]->end();
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 
 			if (haveRight("software", "w")) {

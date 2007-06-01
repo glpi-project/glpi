@@ -97,9 +97,9 @@ class Contract extends CommonDBTM {
 		if (!haveRight("contract_infocom","r")) return false;
 
 		$con_spotted=false;
-
+		$use_cache=true;
 		if (!$ID) {
-
+			$use_cache=false;
 			if($this->getEmpty()) $con_spotted = true;
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
@@ -126,7 +126,7 @@ class Contract extends CommonDBTM {
 
 			echo "</th></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td><td>";
 				autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],25,$this->fields["FK_entities"]);
@@ -233,8 +233,9 @@ class Contract extends CommonDBTM {
 				echo $LANG["buttons"][32].":";
 				dropdownHours("monday_end_hour",$this->fields["monday_end_hour"]);	
 				echo "</td></tr>";
-				
-			$CFG_GLPI["cache"]->end();
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 
 			if (haveRight("contract_infocom","w"))

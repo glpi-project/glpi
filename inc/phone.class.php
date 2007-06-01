@@ -198,7 +198,9 @@ class Phone extends CommonDBTM {
 
 
 		$mon_spotted = false;
+		$use_cache=true;
 		if((empty($ID) && $withtemplate == 1)||$ID==-1) {
+			$use_cache=false;
 			if($this->getEmpty()) $mon_spotted = true;
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $mon_spotted = true;
@@ -252,7 +254,7 @@ class Phone extends CommonDBTM {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr><td class='tab_bg_1' valign='top'>";
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
@@ -379,8 +381,9 @@ class Phone extends CommonDBTM {
 	
 				echo "</td>";
 				echo "</tr>";
-	
-				$CFG_GLPI["cache"]->end();
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 		
 

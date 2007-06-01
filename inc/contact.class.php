@@ -115,10 +115,10 @@ class Contact extends CommonDBTM{
 		if (!haveRight("contact_enterprise","r")) return false;
 
 		$con_spotted=false;
-
+		$use_cache=true;
 		if (empty($ID)) {
-
 			if($this->getEmpty()) $con_spotted = true;
+			$use_cache=false;
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
 		}
@@ -143,8 +143,8 @@ class Contact extends CommonDBTM{
 
 			echo "</th></tr>";
 
-
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr><td class='tab_bg_1' valign='top'>";
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
@@ -199,7 +199,9 @@ class Contact extends CommonDBTM{
 	
 				echo "</td>";
 				echo "</tr>";
-				$CFG_GLPI["cache"]->end();
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 
 			if (haveRight("contact_enterprise","w")) 

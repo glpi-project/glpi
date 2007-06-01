@@ -106,8 +106,9 @@ class Enterprise extends CommonDBTM {
 		if (!haveRight("contact_enterprise","r")) return false;
 
 		$spotted=false;
+		$use_cache=true;
 		if (!$ID) {
-
+			$use_cache=false;
 			if($this->getEmpty()) $spotted = true;
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
@@ -129,7 +130,7 @@ class Enterprise extends CommonDBTM {
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 
 			echo "</th></tr>";
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 				echo "<td>";
 				autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],25,$this->fields["FK_entities"]);
@@ -188,11 +189,13 @@ class Enterprise extends CommonDBTM {
 				echo "<td>".$LANG["financial"][103].":		</td><td>";
 				autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],25,$this->fields["FK_entities"]);
 				echo "</td></tr>";
-				
-			$CFG_GLPI["cache"]->end();
+		
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 
-			if (haveRight("contact_enterprise","w"))
+			if (haveRight("contact_enterprise","w")){
 				if (!$ID) {
 
 					echo "<tr>";
@@ -222,7 +225,7 @@ class Enterprise extends CommonDBTM {
 					echo "</td>";
 					echo "</tr>";
 				}
-
+			}
 			echo "</table></div></form>";
 
 

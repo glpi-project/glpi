@@ -209,10 +209,10 @@ class Printer  extends CommonDBTM {
 		global $CFG_GLPI, $LANG;
 		if (!haveRight("printer","r")) return false;
 
-
-
 		$printer_spotted = false;
+		$use_cache=true;
 		if((empty($ID) && $withtemplate == 1)||$ID==-1) {
+			$use_cache=false;
 			if($this->getEmpty()) $printer_spotted = true;
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $printer_spotted = true;
@@ -263,7 +263,7 @@ class Printer  extends CommonDBTM {
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 			echo "</th></tr>\n";
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr><td class='tab_bg_1' valign='top'>\n";
 	
 				// table identification
@@ -401,7 +401,9 @@ class Printer  extends CommonDBTM {
 	
 				echo "</td>\n";
 				echo "</tr>\n";
-				$CFG_GLPI["cache"]->end();
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 
 

@@ -595,8 +595,9 @@ class User extends CommonDBTM {
 			return false;
 		}
 		$spotted = false;
-
+		$use_cache=true;
 		if (empty ($ID)) {
+			$use_cache=false;
 			$spotted = $this->getEmpty();
 		} else {
 			$spotted = $this->getfromDB($ID);
@@ -643,7 +644,7 @@ class User extends CommonDBTM {
 			} else
 				echo "<td colspan='2'>&nbsp;</td></tr>";
 
-			if (!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
 				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][48] . ":</td><td>";
 				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 20);
 				echo "</td>";
@@ -716,8 +717,9 @@ class User extends CommonDBTM {
 					echo "</tr>";
 
 				}
-
-				$CFG_GLPI["cache"]->end();
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 
 			if (haveRight("user", "w"))
