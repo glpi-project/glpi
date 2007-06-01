@@ -989,7 +989,7 @@ function update0681to07() {
 		{
 			while ($soft = $DB->fetch_array($result))
 			{
-				$sql = "UPDATE glpi_licenses SET version=".$soft["version"]." WHERE sID=".$soft["ID"]; 
+				$sql = "UPDATE glpi_licenses SET version='".$soft["version"]."' WHERE sID=".$soft["ID"]; 
 				$DB->query($sql);
 			}
 		}

@@ -74,7 +74,7 @@ else if (isset($_POST["restore"]))
 	logEvent($_POST["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/monitor.php");
 }
-else if (isset($_POST["purge"]))
+else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
 	checkRight("monitor","w");
 
