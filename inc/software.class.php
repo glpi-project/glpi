@@ -244,7 +244,7 @@ class Software extends CommonDBTM {
 				echo "<input type='hidden' name='tplname' value='" . $this->fields["tplname"] . "'>";
 			} elseif (strcmp($template, "newtemplate") === 0) {
 				echo $LANG["common"][6] . "&nbsp;: ";
-				autocompletionTextField("tplname", "glpi_software", "tplname", $this->fields["tplname"], 20);
+				autocompletionTextField("tplname", "glpi_software", "tplname", $this->fields["tplname"], 20,$this->fields["FK_entities"]);
 			}
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 
@@ -256,14 +256,10 @@ class Software extends CommonDBTM {
 			if (!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
 				echo "<tr class='tab_bg_1'><td>" . $LANG["common"][16] . ":		</td>";
 				echo "<td>";
-				autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 25);
+				autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 25,$this->fields["FK_entities"]);
 				echo "</td>";
 
-				echo "<td colspan='2'></td>";
-				//echo "<td>" . $LANG["software"][5] . ":		</td>";
-				//echo "<td>";
-				//autocompletionTextField("version", "glpi_software", "version", $this->fields["version"], 20);
-				//echo "</td></tr>";
+				echo "<td colspan='2'>&nbsp;</td>";
 
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][3] . ": 	</td><td>";
 				dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);

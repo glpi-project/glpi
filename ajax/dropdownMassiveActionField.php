@@ -85,7 +85,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 					} 
 				} 
 				if (!$plugdisplay){
-					autocompletionTextField($search["linkfield"],$search["table"],$search["field"]);
+					autocompletionTextField($search["linkfield"],$search["table"],$search["field"],'',30,$_SESSION["glpiactive_entity"]);
 				}
 				
 				break;
@@ -111,7 +111,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 						echo " ".$LANG["financial"][57]."&nbsp;&nbsp;";
 					break;
 					default :
-						autocompletionTextField($search["field"],$search["table"],$search["field"]);
+						autocompletionTextField($search["field"],$search["table"],$search["field"],'',30,$_SESSION["glpiactive_entity"]);
 					break;
 				}
 			break;

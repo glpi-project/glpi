@@ -81,16 +81,16 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		echo "</td>";
 		echo "<td>".$LANG["financial"][82].":		</td>";
 		echo "<td >";
-		autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],25,$option);	
+		autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],25,-1,$option);	
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][18].":		</td>";
 		echo "<td >";
-		autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],25,$option);	
+		autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],25,-1,$option);	
 		echo "</td>";
 
 		echo "<td>".$LANG["financial"][19].":		</td><td>";
-		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],25,$option);	
+		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],25,-1,$option);	
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][14].":	</td><td>";
@@ -106,9 +106,11 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		if ($show_immo==1){
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][15].":	</td><td>";
-			if ($withtemplate==2)
+			if ($withtemplate==2){
 				echo $ic->fields["warranty_duration"];
-			else dropdownInteger("warranty_duration",$ic->fields["warranty_duration"],0,120);
+			} else {
+				dropdownInteger("warranty_duration",$ic->fields["warranty_duration"],0,120);
+			}
 			echo " ".$LANG["financial"][57];
 			echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG["financial"][88];
 			echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
@@ -127,7 +129,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 
 			echo "<td>".$LANG["financial"][16].":		</td>";
 			echo "<td >";
-			autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],25,$option);	
+			autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],25,-1,$option);	
 
 			echo "</td></tr>";
 		}
@@ -146,8 +148,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][20]."*:		</td>";
 			echo "<td >";
 			$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE);
-			autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,25,$option); 
-			//autocompletionTextField("num_immo","glpi_infocoms","num_immo",$ic->fields["num_immo"],25,$option);	
+			autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,25,-1,$option); 
 
 			echo "</td>";
 
@@ -155,22 +156,26 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 
 
 			echo "<td>".$LANG["financial"][22].":		</td><td >";
-			if ($withtemplate==2)
+			if ($withtemplate==2){
 				echo getAmortTypeName($ic->fields["amort_type"]);
-			else dropdownAmortType("amort_type",$ic->fields["amort_type"]);
+			} else {
+				dropdownAmortType("amort_type",$ic->fields["amort_type"]);
+			}
 
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][23].":		</td><td>";
-			if ($withtemplate==2)
+			if ($withtemplate==2){
 				echo $ic->fields["amort_time"];
-			else dropdownInteger("amort_time",$ic->fields["amort_time"],0,15);
+			} else {
+				dropdownInteger("amort_time",$ic->fields["amort_time"],0,15);
+			}
 			echo " ".$LANG["financial"][9];
 			echo "</td>";
 
 			echo "<td>".$LANG["financial"][77].":		</td>";
 			echo "<td >";
-			autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,$option);	
+			autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,-1,$option);	
 			echo "</td></tr>";
 		}
 		//TCO

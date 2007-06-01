@@ -384,12 +384,13 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	$values['buy']=1;
 
 	if (isset($_POST)&&!empty($_POST)){ // Get from post form
-		foreach ($values as $key => $val)
-			if (isset($_POST[$key]))
+		foreach ($values as $key => $val){
+			if (isset($_POST[$key])){
 				$values[$key]=$_POST[$key];
+			}
+		}
 
-	}
-	else if (!empty($lID)){ // Get from DB
+	} else if (!empty($lID)){ // Get from DB
 		$lic=new License();
 		$lic->getfromDB($lID);
 		$values=$lic->fields;

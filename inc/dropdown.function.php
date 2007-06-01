@@ -1148,9 +1148,10 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massi
  * @param $value value to fill text field
  * @param $size size of the text field
  * @param $option option of the textfield
+ * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML div)
  */
-function autocompletionTextField($myname,$table,$field,$value='',$size=20,$option=''){
+function autocompletionTextField($myname,$table,$field,$value='',$size=20,$entity_restrict=-1,$option=''){
 	global $CFG_GLPI;
 
 	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["ajax_autocompletion"]){
@@ -1158,10 +1159,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$optio
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
 		echo "<div id='textfieldupdate_$myname$rand' style='display:none;border:1px solid black;background-color:white;'></div>\n";
 		echo "<script type='text/javascript' language='javascript' charset='utf-8'>";
-		// JQuery
-		//echo "$(\"#textfield_$myname$rand\").autocomplete(\"".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php\",{extraParams:{table:\"$table\",field: \"$field\",myname:\"$myname\"}});";
-		// Prototype
-		echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname'});";
+		echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname&entity_restrict=".$entity_restrict."'});";
 		echo "</script>";
 	}	else {
 		echo "<input $option type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
