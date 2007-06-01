@@ -101,9 +101,9 @@ class ConsumableType extends CommonDBTM {
 
 
 		$ct_spotted=false;
-
+		$use_cache=true;
 		if (!$ID) {
-
+			$use_cache=false;
 			if($this->getEmpty()) $ct_spotted = true;
 		} else {
 			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $ct_spotted = true;
@@ -118,7 +118,7 @@ class ConsumableType extends CommonDBTM {
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
 				echo "<table class='tab_cadre_fixe'>\n";
 				echo "<tr><th colspan='3'>\n";
@@ -166,8 +166,9 @@ class ConsumableType extends CommonDBTM {
 				echo $LANG["common"][25].":	</td>";
 				echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 				echo "</td></tr>\n";
-				
-				$CFG_GLPI["cache"]->end();
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 
 			if (haveRight("consumable","w"))

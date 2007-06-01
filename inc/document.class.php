@@ -155,8 +155,9 @@ class Document extends CommonDBTM {
 
 
 		$spotted=false;
+		$use_cache=true;
 		if (!$ID) {
-
+			$use_cache=false;
 			if($this->getEmpty()) $spotted = true;
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
@@ -183,7 +184,7 @@ class Document extends CommonDBTM {
 				echo "</th><th colspan='2'>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th></tr>";
 			}		
 			
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 				echo "<td colspan='2'>";
 				autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);
@@ -236,49 +237,54 @@ class Document extends CommonDBTM {
 	
 				echo "</td>";
 				echo "</tr>";
-	
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
+			}
+
+			if (haveRight("document","w")){
 				if (!$ID) {
-	
+		
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
 					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
-	
+		
 					echo "</table></div></form>";
-	
+		
 				} else {
-	
+		
 					echo "<tr>";
 					echo "<td class='tab_bg_2'>";
-					if ($this->fields["FK_users"]>0)
+					if ($this->fields["FK_users"]>0){
 						echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
-					else echo "&nbsp;";
+					} else {
+						echo "&nbsp;";
+					}
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
-	
+		
 					echo "<td class='tab_bg_2' valign='top'>\n";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					if (!$this->fields["deleted"])
 						echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 					else {
 						echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
-	
+		
 						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
 					}
-	
+		
 					echo "</td>";
 					echo "</tr>";
+				}
+			}
 	
-					echo "</table></div>";
-					echo "</form>";
-					$CFG_GLPI["cache"]->end();
-			}
-
-			}
+			echo "</table></div>";
+			echo "</form>";
 		} else {
 			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;

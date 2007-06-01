@@ -412,7 +412,9 @@ class Computer extends CommonDBTM {
 		if (!haveRight("computer","r")) return false;
 
 		$computer_spotted = false;
+		$use_cache=true;
 		if((empty($ID) && $withtemplate == 1)||$ID==-1) {
+			$use_cache=false;
 			if($this->getEmpty()) $computer_spotted = true;
 		} else {
 			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $computer_spotted = true;
@@ -459,7 +461,7 @@ class Computer extends CommonDBTM {
 			}
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 
-			if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
 				echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
 				if (!$template&&!empty($this->fields['tplname']))
@@ -623,8 +625,9 @@ class Computer extends CommonDBTM {
 				}
 				echo "<td valign='middle'>".$LANG["common"][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
 				echo "</tr>";
-					
-				$CFG_GLPI["cache"]->end();
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
 			}
 			
 
