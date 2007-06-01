@@ -76,7 +76,7 @@ else if (isset($_POST["restore"]))
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/printer.php");
 }
-else if (isset($_POST["purge"]))
+else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
 	checkRight("printer","w");
 	$print->delete($_POST,1);
@@ -86,8 +86,14 @@ else if (isset($_POST["purge"]))
 else if (isset($_POST["update"]))
 {
 	checkRight("printer","w");
-	$print->update($_POST);
-	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+
+	if (isset($_POST["purge"]))
+		$input["ID"]=$_POST["ID"];
+	else
+		$input["ID"] = $_GET["ID"];	
+
+	$print->update($input);
+	logEvent($input["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["unglobalize"]))
