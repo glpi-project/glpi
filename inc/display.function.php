@@ -156,8 +156,9 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		//////// INVENTORY
 		$showstate=false;
 		$menu['inventory']['title']=$LANG["Menu"][38];
-		$menu['inventory']['default']='/front/computer.php';
 		if (haveRight("computer","r")){
+			$menu['inventory']['default']='/front/computer.php';
+
 			$menu['inventory']['content']['computer']['title']=$LANG["Menu"][0];
 			$menu['inventory']['content']['computer']['shortcut']='c';
 			$menu['inventory']['content']['computer']['page']='/front/computer.php';
@@ -251,23 +252,25 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 //////// ASSISTANCE
 		$menu['maintain']['title']=$LANG["title"][24];
-		$menu['maintain']['default']='/front/tracking.php';
 
 		if (haveRight("observe_ticket","1")||haveRight("show_ticket","1")||haveRight("create_ticket","1")){
+			$menu['maintain']['default']='/front/tracking.php';
+
 			$menu['maintain']['content']['tracking']['title']=$LANG["Menu"][5];
 			$menu['maintain']['content']['tracking']['shortcut']='t';
 			$menu['maintain']['content']['tracking']['page']='/front/tracking.php';
 			$menu['maintain']['content']['tracking']['links']['search']='/front/tracking.php';
-			$menu['maintain']['content']['tracking']['links']['add']='/front/helpdesk.php';
+
+			$menu['maintain']['content']['helpdesk']['links']['search']='/front/tracking.php';
+
 		}
 		if (haveRight("create_ticket","1")){
 			$menu['maintain']['content']['helpdesk']['title']=$LANG["Menu"][31];
 			$menu['maintain']['content']['helpdesk']['shortcut']='h';
 			$menu['maintain']['content']['helpdesk']['page']='/front/helpdesk.php';
-			$menu['maintain']['content']['helpdesk']['links']['search']='/front/tracking.php';
 			$menu['maintain']['content']['helpdesk']['links']['add']='/front/helpdesk.php';
 
-			
+			$menu['maintain']['content']['tracking']['links']['add']='/front/helpdesk.php';
 		}
 		if (haveRight("show_planning","1")||haveRight("show_all_planning","1")){
 			$menu['maintain']['content']['planning']['title']=$LANG["Menu"][29];
@@ -285,8 +288,9 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		
 //////// FINANCIAL
 		$menu['financial']['title']=$LANG["Menu"][26];
-		$menu['financial']['default']='/front/contact.php';
 		if (haveRight("contact_enterprise","r")){
+			$menu['financial']['default']='/front/contact.php';
+
 			$menu['financial']['content']['contact']['title']=$LANG["Menu"][22];
 			$menu['financial']['content']['contact']['shortcut']='t';
 			$menu['financial']['content']['contact']['page']='/front/contact.php';
@@ -327,8 +331,15 @@ function commonHeader($title,$url,$sector="none",$item="none")
 	
 //////// UTILS
 		$menu['utils']['title']=$LANG["Menu"][18];
-		$menu['utils']['default']='/front/knowbase.php';
+		$menu['utils']['default']='/front/reminder.php';
+
+		$menu['utils']['content']['reminder']['title']=$LANG["reminder"][2];
+		$menu['utils']['content']['reminder']['page']='/front/reminder.php';
+		$menu['utils']['content']['reminder']['links']['search']='/front/reminder.php';
+		$menu['utils']['content']['reminder']['links']['add']='/front/reminder.form.php';
+
 		if (haveRight("knowbase","r")||haveRight("faq","r")) {
+
 			$menu['utils']['content']['knowbase']['title']=$LANG["Menu"][19];
 			$menu['utils']['content']['knowbase']['page']='/front/knowbase.php';
 			$menu['utils']['content']['knowbase']['links']['search']='/front/knowbase.php';
@@ -354,12 +365,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['utils']['content']['report']['title']=$LANG["Menu"][6];
 			$menu['utils']['content']['report']['page']='/front/report.php';
 		}
-
-		$menu['utils']['content']['reminder']['title']=$LANG["reminder"][2];
-		$menu['utils']['content']['reminder']['page']='/front/reminder.php';
-		$menu['utils']['content']['reminder']['links']['search']='/front/reminder.php';
-		$menu['utils']['content']['reminder']['links']['add']='/front/reminder.form.php';
-
 
 		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
 			$menu['utils']['content']['ocsng']['title']=$LANG["Menu"][33];
@@ -405,9 +410,10 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		}
 		//////// ADMINISTRATION
 		$menu['admin']['title']=$LANG["Menu"][15];
-		$menu['admin']['default']='/front/user.php';
 
 		if (haveRight("user","r")){
+			$menu['admin']['default']='/front/user.php';
+
 			$menu['admin']['content']['user']['title']=$LANG["Menu"][14];
 			$menu['admin']['content']['user']['shortcut']='u';
 			$menu['admin']['content']['user']['page']='/front/user.php';
