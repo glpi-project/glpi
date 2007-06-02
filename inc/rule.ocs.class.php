@@ -156,7 +156,12 @@ class OcsRuleCollection extends RuleCollection {
 		foreach ($RULES_CRITERIAS[$this->rule_type] as $key => $criteria){
 
 			if ($withouttable)
-				$fields[]=$criteria['field'];
+			{
+				if (strcasecmp($key,$criteria['field']) != 0)
+					$fields[]=$key;
+				else	
+					$fields[]=$criteria['field'];
+			}
 			else
 			{	
 				//If the field is different from the key
@@ -177,7 +182,6 @@ class OcsRuleCollection extends RuleCollection {
 				$fields[]=$criteria['id'];
 			}
 		}
-				
 		return $fields;		  
 	}
 	
