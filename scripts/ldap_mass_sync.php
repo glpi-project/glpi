@@ -99,7 +99,7 @@ function import($action, $datas,$filter='')
 	$users = getAllLdapUsers($server_id, $action,$filter);
 	
 	foreach ($users as $user) {
-		ldapImportUserByServerId($user, $action, $server_id);
+		ldapImportUserByServerId($user["user"], $action, $server_id);
 		echo ".";
 	}
 }
