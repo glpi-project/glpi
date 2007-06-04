@@ -521,11 +521,27 @@ function update0681to07() {
 		}
 	}
 
+	if (isIndex("glpi_ocs_link", "ocs_id_2")) {
+		$query = "ALTER TABLE `glpi_ocs_link` DROP INDEX `ocs_id_2` ";
+		$DB->query($query) or die("0.7 alter ocs_link clean index ocs_id  " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (isIndex("glpi_ocs_link", "ocs_id")) {
+		$query = "ALTER TABLE `glpi_ocs_link` DROP INDEX `ocs_id` ";
+		$DB->query($query) or die("0.7 alter ocs_link clean index ocs_id  " . $LANG["update"][90] . $DB->error());
+	}
+
+
 	if (!FieldExists("glpi_ocs_link", "ocs_server_id")) {
 		$query = "ALTER TABLE glpi_ocs_link ADD `ocs_server_id` int(11) NOT NULL";
 		$DB->query($query) or die("0.7 add ocs_server_id in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
 		$query = "update glpi_ocs_link set ocs_server_id=1";
 		$DB->query($query) or die("0.7 update ocs_server_id=1 in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!isIndex("glpi_ocs_link", "ocs_server_id")) {
+		$query = "ALTER TABLE `glpi_ocs_link` ADD UNIQUE `ocs_server_id` (`ocs_id` ,`ocs_server_id`);";
+		$DB->query($query) or die("0.7 alter ocs_link add index " . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_ocs_config", "tplname")) {
