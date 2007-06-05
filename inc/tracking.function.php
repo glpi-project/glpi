@@ -548,7 +548,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		$eigth_column="<strong>".$data["name"]."</strong>&nbsp;";
 
-		$eigth_column.= "<img alt='".$LANG["joblist"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$data["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$data["ID"]."')\" >";
+		$eigth_column.= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$data["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$data["ID"]."')\" >";
 		$eigth_column.="<span class='over_link' id='comments_tracking".$data["ID"]."'>".nl2br($data['contents'])."</span>";
 		
 		if ($followups&&$output_type==HTML_OUTPUT)
