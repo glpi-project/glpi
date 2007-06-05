@@ -598,7 +598,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 					$data['title']=utf8_substr($data['title'],0,14)."...";
 				}
 
-				echo "<a href=\"$link\" title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>"; 
+				echo "<a href=\"$link\" class='itemP'>".$data['title']."</a>"; 
 				echo "<ul class='ssmenu'>"; 
 				// list menu item 
 				foreach ($data['content'] as $key => $val) {
