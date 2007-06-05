@@ -115,7 +115,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 	/// Show category
 	if ($result=$DB->query($query)){
 		echo "<div align='center'><table class='tab_cadre_central'  >";
-		echo "<tr><td colspan='3'><a  href=\"".$target."\"<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' hspace=\"5\" ></a>";
+		echo "<tr><td colspan='3'><a  href=\"".$target."\"<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' hspace=\"5\" ></a>";
 
 		// Display Category
 		if ($parentID!=0){
@@ -144,7 +144,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 					$ID = $row["ID"];
 					echo "<td valign=\"top\" align='left' style='width: 33%; padding: 3px 20px 3px 25px;'>";
 				
-					echo "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <strong><a  href=\"".$target."?parentID=".$row["ID"]."\">".$row["name"]."</a></strong>\n";
+					echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <strong><a  href=\"".$target."?parentID=".$row["ID"]."\">".$row["name"]."</a></strong>\n";
 					echo "<div style='font-size: 9px;	line-height: 10px; 	clear: both;	padding: 5px 0 0 25px;'>".resume_text($row['comments'],60)."</div>";
 			
 				if($i%3==2) { echo "</tr>\n"; }

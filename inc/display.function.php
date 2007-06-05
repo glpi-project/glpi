@@ -775,7 +775,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 		// MENU ALL
 		echo "<li >";
-		echo "<img  alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' onclick=\"completecleandisplay('show_all_menu');
+		echo "<img  alt='' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' onclick=\"completecleandisplay('show_all_menu');
 		\">";
 		echo "</li>";
 		showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");	

@@ -472,7 +472,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	
 				$comments_display="";
 				$comments_display="<a href='".$userdata["link"]."'>";
-				$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
+				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
 				$comments_display.="</a>";
 				$comments_display.="<span class='over_link' id='comments_trackauthor".$data['ID']."'>".$userdata["comments"]."</span>";
 	
@@ -497,7 +497,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 				$comments_display="";
 				$comments_display="<a href='".$userdata["link"]."'>";
-				$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
+				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
 				$comments_display.="</a>";
 				$comments_display.="<span class='over_link' id='comments_trackassign".$data['ID']."'>".$userdata["comments"]."</span>";
 	
@@ -607,7 +607,7 @@ function showJobVeryShort($ID) {
 	
 				$comments_display="";
 				$comments_display="<a href='".$userdata["link"]."'>";
-				$comments_display.="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$ID."')\" onmouseover=\"cleandisplay('comments_trackauthor".$ID."')\">";
+				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$ID."')\" onmouseover=\"cleandisplay('comments_trackauthor".$ID."')\">";
 				$comments_display.="</a>";
 				$comments_display.="<span class='over_link' id='comments_trackauthor".$ID."'>".$userdata["comments"]."</span>";
 	

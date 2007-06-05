@@ -443,7 +443,7 @@ class CommonItem{
 			$comments_display=" onmouseout=\"cleanhide('comments_commonitem$rand')\" onmouseover=\"cleandisplay('comments_commonitem$rand')\" ";
 			$comments_display2="<span class='over_link' id='comments_commonitem$rand'>".nl2br($comment)."</span>";
 	
-			$comment="<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display> ";
+			$comment="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display> ";
 			$comment.=$comments_display2;
 		}
 
