@@ -976,9 +976,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if (haveRight("search_config","w")||haveRight("search_config_global","w")){
 					$tmp= " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;type=$type' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
 
-					$search_config= "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/plus.png' ";
+					$search_config= "<img alt='".$LANG["buttons"][8]."' title='".$LANG["buttons"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/plus.png' ";
 					$search_config.=$tmp.">";
-					$search_config.= "<img alt='".$LANG["common"][25]."' src='".$CFG_GLPI["root_doc"]."/pics/moins.png' ";
+					$search_config.= "<img alt='".$LANG["buttons"][6]."' title='".$LANG["buttons"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/moins.png' ";
 					$search_config.=$tmp.">";
 				}
 
