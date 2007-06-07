@@ -540,7 +540,7 @@ function update0681to07() {
 	}
 
 	if (!isIndex("glpi_ocs_link", "ocs_server_id")) {
-		$query = "ALTER TABLE `glpi_ocs_link` ADD UNIQUE `ocs_server_id` (`ocs_id` ,`ocs_server_id`);";
+		$query = "ALTER TABLE `glpi_ocs_link` ADD UNIQUE `ocs_server_id` (`ocs_server_id` ,`ocs_id`);";
 		$DB->query($query) or die("0.7 alter ocs_link add index " . $LANG["update"][90] . $DB->error());
 	}
 

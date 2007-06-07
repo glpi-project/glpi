@@ -1766,7 +1766,7 @@ CREATE TABLE `glpi_ocs_link` (
   `ocs_server_id` int(11) NOT NULL default '0',
   `import_ip` longtext collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `ocs_server_id` (`ocs_id`,`ocs_server_id`),
+  UNIQUE KEY `ocs_server_id` (`ocs_server_id`,`ocs_id`),
   KEY `glpi_id` (`glpi_id`),
   KEY `auto_update` (`auto_update`),
   KEY `last_update` (`last_update`)
