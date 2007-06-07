@@ -231,7 +231,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
  * This make the database link between ocs and glpi databases
  *
  *@param $ocs_id integer : ocs item unique id.
- *@param $glpi_computer_id integer : glpi computer id
+ *param $glpi_computer_id integer : glpi computer id
  *@param $ocs_server_id integer : ocs server id
  *
  *@return integer : link id.
@@ -350,7 +350,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 
 	checkOCSconnection($ocs_server_id);
 
-	$comp = new Computer;
+	/*
 
 	$query = "SELECT ID,glpi_id,ocs_id FROM glpi_ocs_link WHERE ocs_id = '$ocs_id' AND ocs_server_id='" . $ocs_server_id . "';";
 	$result_glpi_ocs_link = $DB->query($query);
@@ -361,7 +361,10 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 		//Return code to indicates that the machine was synchronized
 		return 0;
 	} else {
-		# Machine is not present, I go a head
+	*/
+
+		$comp = new Computer;
+
 		// Set OCS checksum to max value
 		$query = "UPDATE hardware SET CHECKSUM='" . MAX_OCS_CHECKSUM . "' WHERE ID='$ocs_id'";
 		$DBocs->query($query);
@@ -390,7 +393,6 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 
 				$line = $DBocs->fetch_array($result);
 				$line = clean_cross_side_scripting_deep(addslashes_deep($line));
-				//$DBocs->close();
 
 				$cfg_ocs = getOcsConf($ocs_server_id);
 				$input = array ();
@@ -411,11 +413,16 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 
 			if ($lock)
 				removeEntityLock($data['FK_entities'], $fp);
-		}
 
-		//Return code to indicates that the machine was synchronized
-		return 1;
-	}
+			//Return code to indicates that the machine was imported
+			return 1;	
+		}
+		else
+			//Return code to indicates that the machine was not imported because it doesn't matched rules
+			return 2;
+
+//		return 1;
+	//}
 }
 
 function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
@@ -505,6 +512,27 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 		$_SESSION["MESSAGE_AFTER_REDIRECT"] = $ocs_id . " - " . $LANG["ocsng"][23];
 	}
 
+}
+
+
+function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = -1) {
+	global $DBocs, $DB;
+
+	checkOCSconnection($ocs_server_id);
+
+	$comp = new Computer;
+
+	$query = "SELECT ID,glpi_id,ocs_id FROM glpi_ocs_link WHERE ocs_id = '$ocs_id' AND ocs_server_id='" . $ocs_server_id . "';";
+	$result_glpi_ocs_link = $DB->query($query);
+	if ($DB->numrows($result_glpi_ocs_link)) {
+		$datas = $DB->fetch_array($result_glpi_ocs_link);
+		ocsUpdateComputer($datas["ID"], $ocs_server_id, 1, 0);
+
+		//Return code to indicates that the machine was synchronized
+		return 0;
+	} else {
+		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity);
+	}
 }
 
 function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
@@ -1144,6 +1172,9 @@ function deleteInOcsArray($glpi_id, $todel, $field) {
 
 function replaceOcsArray($glpi_id, $newArray, $field) {
 	global $DB;
+	
+	$newArray = exportArrayToDB($newArray);
+
 	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
 		$query = "UPDATE glpi_ocs_link 
@@ -2411,7 +2442,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 		if (!in_array($tagVersionInArray, $import_software)) {
 			
 			//Add the tag of the version at the beginning of the array
-			$softs_array = "0=>" . $tagVersionInArray . " ";
+			$softs_array[0] = $tagVersionInArray;
 			
 			//For each element of the table, add instID=>name.version
 			foreach ($import_software as $key => $value)
@@ -2421,7 +2452,8 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 				WHERE glpi_inst_software.license=glpi_licenses.ID AND glpi_inst_software.cID=".$glpi_id." AND glpi_inst_software.ID=".$key;
 				$result_softs = $DB->query($query_softs);
 				$softs = $DB->fetch_array($result_softs);
-				$softs_array .= $key . "=>" . str_replace(' ','+',$value) . $softs["VERSION"] . " ";
+				//$softs_array .= $key . "=>" . str_replace(' ','+',$value) . $softs["VERSION"] . " ";
+				$softs_array[$key] =  $value . $softs["VERSION"];
 			}
 			
 			//Replace in GLPI database the import_software by the new one
@@ -2476,7 +2508,6 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 				//If name+version not in present for this computer in glpi, add it 
 				if (!in_array(stripslashes($initname) . $version, $import_software)) 
 				{
-				
 						//------------------------------------------------------------------------------------------------------------------//
 						//---- The software doesn't exists in this version for this computer -----//
 						//----------------------------------------------------------------------------------------------------------------//
