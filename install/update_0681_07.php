@@ -1172,7 +1172,24 @@ function update0681to07() {
 
 	$query = "DELETE FROM `glpi_display` WHERE `type`=".USER_TYPE." AND (`num`=4 OR `num`=7);";
 	$DB->query($query) or die("0.7 clean glpi_display for glpi_users " . $DB->error());
-	
+
+	// Add fields to block auto updates on linked items
+	if (!FieldExists("glpi_config", "autoupdate_link_contact")) {
+		$query = "ALTER TABLE `glpi_config` ADD COLUMN `autoupdate_link_contact` smallint(6) NOT NULL default '1'";
+		$DB->query($query) or die("0.7 add autoupdate_link_contact in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_config", "autoupdate_link_user")) {
+		$query = "ALTER TABLE `glpi_config` ADD COLUMN `autoupdate_link_user` smallint(6) NOT NULL default '1'";
+		$DB->query($query) or die("0.7 add autoupdate_link_user in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_config", "autoupdate_link_group")) {
+		$query = "ALTER TABLE `glpi_config` ADD COLUMN `autoupdate_link_group` smallint(6) NOT NULL default '1'";
+		$DB->query($query) or die("0.7 add autoupdate_link_group in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_config", "autoupdate_link_location")) {
+		$query = "ALTER TABLE `glpi_config` ADD COLUMN `autoupdate_link_location` smallint(6) NOT NULL default '1'";
+		$DB->query($query) or die("0.7 add autoupdate_link_location in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.7 #####################################################################################
 ?>
