@@ -598,7 +598,7 @@ class Job extends CommonDBTM{
 					while ($data=$DB->fetch_array($result)){
 						$fup->getfromDB($data['ID']);
 						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["job"][30]."</i>":"")."</strong><br>";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][37].":</span> ".$fup->getAuthorName()."<br>";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$fup->getAuthorName()."<br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3].":</span><br>".nl2br($fup->fields["contents"])."<br>";
 						if ($fup->fields["realtime"]>0)
 							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."<br>";
@@ -624,7 +624,7 @@ class Job extends CommonDBTM{
 					while ($data=$DB->fetch_array($result)){
 						$fup->getfromDB($data['ID']);
 						$message .= "[ ".convDateTime($fup->fields["date"])." ]".($fup->fields["private"]?"\t".$LANG["job"][30]:"")."\n";
-						$message .= $LANG["common"][37].": ".$fup->getAuthorName()."\n";
+						$message .= $LANG["job"][4].": ".$fup->getAuthorName()."\n";
 						$message .= $LANG["mailing"][3]."\n".$fup->fields["contents"]."\n";
 						if ($fup->fields["realtime"]>0)
 							$message .= $LANG["mailing"][104].": ".getRealtime($fup->fields["realtime"])."\n";
@@ -690,7 +690,7 @@ class Job extends CommonDBTM{
 			$message.="<div class='description'><strong>".$LANG["mailing"][5]."</strong></div><br>";
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$LANG["mailing"][108];
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][37].":</span> ".$author."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$author."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["search"][8].":</span> ".convDateTime($this->fields["date"])."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["job"][44].":</span> ".getRequestTypeName($this->fields["request_type"])."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][7]."</span> ".$name."<br>";
@@ -722,7 +722,7 @@ class Job extends CommonDBTM{
 			$message = $LANG["mailing"][1]."\n*".$LANG["mailing"][5]."*\n".$LANG["mailing"][1]."\n";
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$LANG["mailing"][108];
-			$message.= $LANG["common"][37].": ".$author."\n";
+			$message.= $LANG["job"][4].": ".$author."\n";
 			$message.= $LANG["search"][8].": ".convDateTime($this->fields["date"])."\n";
 			$message.= $LANG["job"][44].": ".getRequestTypeName($this->fields["request_type"])."\n";
 			$message.= $LANG["mailing"][7]." ".$name."\n";

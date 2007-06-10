@@ -354,9 +354,9 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 		$default=$default_display;
 	} else {
 		if ($all){
-			$default="<select name='$myname'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
+			$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
 		} else {
-			$default="<select name='$myname'><option value='0'>[ Nobody ]</option></select>\n";
+			$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>[ Nobody ]</option></select>\n";
 		}
 	}
 

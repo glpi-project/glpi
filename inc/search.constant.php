@@ -2810,7 +2810,7 @@ $SEARCH_OPTION[TRACKING_TYPE][3]['meta']=1;
 $SEARCH_OPTION[TRACKING_TYPE][4]['table']='glpi_users';
 $SEARCH_OPTION[TRACKING_TYPE][4]['field']='name';
 $SEARCH_OPTION[TRACKING_TYPE][4]['linkfield']='author';
-$SEARCH_OPTION[TRACKING_TYPE][4]['name']=$LANG["common"][37];
+$SEARCH_OPTION[TRACKING_TYPE][4]['name']=$LANG["job"][4];
 $SEARCH_OPTION[TRACKING_TYPE][4]['meta']=1;
 
 $SEARCH_OPTION[TRACKING_TYPE][71]['table']='glpi_groups';

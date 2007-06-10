@@ -150,6 +150,7 @@
 	define("OLD_ASSIGN_MAILING",4);
 	define("TECH_MAILING",5);
 	define("USER_MAILING",6);
+	define("RECIPIENT_MAILING",7);
 
 	// EXPORT TYPE
 	define("GLOBAL_SEARCH",-1);

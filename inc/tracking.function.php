@@ -120,7 +120,7 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 			$LANG["joblist"][0]=>"glpi_tracking.status",
 			$LANG["common"][27]=>"glpi_tracking.date",
 			$LANG["joblist"][2]=>"glpi_tracking.priority",
-			$LANG["common"][37]=>"glpi_tracking.author",
+			$LANG["job"][4]=>"glpi_tracking.author",
 			$LANG["joblist"][4]=>"glpi_tracking.assign",
 			$LANG["common"][1]=>"glpi_tracking.device_type,glpi_tracking.computer",
 			$LANG["common"][36]=>"glpi_dropdown_tracking_category.completename",
@@ -198,7 +198,7 @@ function showCentralJobList($target,$start,$status="process") {
 
 		echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></th></tr>";
 		echo "<tr><th></th>";
-		echo "<th>".$LANG["common"][37]."</th>";
+		echo "<th>".$LANG["job"][4]."</th>";
 		echo "<th>".$LANG["common"][1]."</th>";
 		echo "<th colspan='2'>".$LANG["joblist"][6]."</th></tr>";
 		while ($i < $number) {
@@ -694,7 +694,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 	$author_rand=0;
 	if (haveRight("update_ticket","1")){
-		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["common"][37].":</td>";
+		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["job"][4].":</td>";
 		echo "<td align='center' colspan='3'>";
 		$author_rand=dropdownAllUsers("author",$author,1,$_SESSION["glpiactive_entity"],1);
 
@@ -964,7 +964,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG["joblist"][25]."</option>";	
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["joblist"][20]."</option>";
 	echo "</select></td>";
-	echo "<td  colspan='1' align='center'>".$LANG["common"][37].":<br>";
+	echo "<td  colspan='1' align='center'>".$LANG["job"][4].":<br>";
 	dropdownUsersTracking("author",$author,"author");
 	echo "</td>";
 
@@ -1375,7 +1375,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 					case "old": $title.=$LANG["joblist"][25];break;
 					case "all": $title.=$LANG["joblist"][20];break;
 				}
-				if ($author!=0) $title.=" - ".$LANG["common"][37]." = ".getUserName($author);
+				if ($author!=0) $title.=" - ".$LANG["job"][4]." = ".getUserName($author);
 				if ($group>0) $title.=" - ".$LANG["common"][35]." = ".getDropdownName("glpi_groups",$group);
 				if ($assign!=0) $title.=" - ".$LANG["job"][27]." = ".getUserName($assign);
 				if ($request_type!=0) $title.=" - ".$LANG["job"][44]." = ".getRequestTypeName($request_type);
@@ -1431,7 +1431,7 @@ function showFollowupsShort($ID) {
 	$out="";
 	if ($DB->numrows($result)>0) {
 		$out.="<div align='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
-		$out.="<tr><th>".$LANG["common"][27]."</th><th>".$LANG["common"][37]."</th><th>".$LANG["joblist"][6]."</th></tr>\n";
+		$out.="<tr><th>".$LANG["common"][27]."</th><th>".$LANG["job"][4]."</th><th>".$LANG["joblist"][6]."</th></tr>\n";
 
 		while ($data=$DB->fetch_array($result)) {
 
@@ -1509,16 +1509,21 @@ function showJobDetails ($target,$ID){
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// First line
 		echo "<tr ><th colspan='2' style='font-size:10px'>";
-		echo $LANG["joblist"][11].": ".convDateTime($job->fields["date"])." ".$LANG["job"][2]." ".$recipient->getName();
+		echo $LANG["joblist"][11].": ".convDateTime($job->fields["date"])." ".$LANG["job"][2]." ";
+		if ($canupdate){
+			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
+		} else {
+			echo $recipient->getName();
+		}
+
+		
 		echo "&nbsp;(".getDropdownName("glpi_entities",$job->fields["FK_entities"]).")";
 		echo "</th>";
 		echo "<th style='font-size:10px'>".$LANG["joblist"][12].":\n";
-		if (!ereg("old_",$job->fields["status"]))
-		{
+		if (!ereg("old_",$job->fields["status"])){
 			echo "<i>".$LANG["job"][1]."</i>\n";
 		}
-		else
-		{
+		else{
 			echo "<strong>".convDateTime($job->fields["closedate"])."</strong>\n";
 		}
 		echo "</th></tr>";
@@ -1528,23 +1533,29 @@ function showJobDetails ($target,$ID){
 		echo "<table cellpadding='3'>";
 		echo "<tr class='tab_bg_2'><td align='right'>";
 		echo $LANG["joblist"][0].":</td><td>";
-		if ($canupdate)
+		if ($canupdate){
 			dropdownStatus("status",$job->fields["status"]);
-		else echo getStatusName($job->fields["status"]);
+		} else {
+			echo getStatusName($job->fields["status"]);
+		}
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
-		echo $LANG["common"][37].":</td><td>";
-		if ($canupdate)
+		echo $LANG["job"][4].":</td><td>";
+		if ($canupdate){
 			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
-		else echo $author->getName();
+		} else {
+			echo $author->getName();
+		}
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
 		echo $LANG["common"][35].":</td><td>";
-		if ($canupdate)
+		if ($canupdate){
 			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"],1,$job->fields["FK_entities"]);
-		else echo getDropdownName("glpi_groups",$job->fields["FK_group"]);
+		} else {
+			echo getDropdownName("glpi_groups",$job->fields["FK_group"]);
+		}
 		echo "</td></tr>";
 
 		echo "<tr><td align='right'>";
