@@ -868,7 +868,7 @@ td { }
 	font-weight: bold;
 	margin-top:10px;
 	margin:auto;
-	 css hack for IE
+	 /*css hack for IE*/
 	position: absolute;
 	bottom: auto;
 	top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
