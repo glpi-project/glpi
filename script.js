@@ -106,19 +106,12 @@ function doShowSelect(objet){
 		if(isIe()){
 			if(setdisplay(objet,'block')){
 				var selx=0; var sely=0; var selp;
-				if(objet.offsetParent){
-					selp = objet;
-					while(selp.offsetParent){
-						selp = selp.offsetParent;
-					    selx += selp.offsetLeft;
-					    sely += selp.offsetTop;
-					}
-					selx += objet.offsetLeft;
-					sely += objet.offsetTop;
-					selw = objet.offsetWidth;
-					selh = objet.offsetHeight;
-					showSelect(selx,sely,selw,selh);
-				}
+				selx=getLeft(objet);
+				sely=getTop(objet);
+
+				selw = objet.offsetWidth;
+				selh = objet.offsetHeight;
+				showSelect(selx,sely,selw,selh);
 			}
 			if(setdisplay(objet,'none')){
 				return true;
@@ -133,16 +126,8 @@ function showSelect(x,y,w,h){
 	var sel = document.getElementsByTagName("SELECT");
 	for(var i=0; i<sel.length; i++){
 		selx=0; sely=0; var selp;
-		if(sel[i].offsetParent){
-			selp=sel[i];
-			while(selp.offsetParent){
-				selp=selp.offsetParent;
-				selx+=selp.offsetLeft;
-				sely+=selp.offsetTop;
-			}
-		}
-		selx+=sel[i].offsetLeft;
-		sely+=sel[i].offsetTop;
+		selx=getLeft(sel[i]);
+		sely=getTop(sel[i]);
 		selw=sel[i].offsetWidth;
 		selh=sel[i].offsetHeight;
 		if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
@@ -156,17 +141,10 @@ function doHideSelect(object){
 	var e = object;
 	if(isIe()){
 		var selx=0; var sely=0; var selp;
-		if(e.offsetParent){
-			selp = e;
-			while(selp.offsetParent){
-				selp = selp.offsetParent;
-				selx += selp.offsetLeft;
-				sely += selp.offsetTop;
-			}
-		}
-		
-		selx += e.offsetLeft;
-		sely += e.offsetTop;
+
+		selx=getLeft(e);
+		sely=getTop(e);
+
 		selw = e.offsetWidth;
 		selh = e.offsetHeight;
 		hideSelect(selx,sely,selw,selh);
@@ -180,16 +158,8 @@ function hideSelect(x,y,w,h){
 	var sel=document.getElementsByTagName("SELECT");
 	for(i=0;i<sel.length;i++){
 		selx=0; sely=0; var selp;
-		if(sel[i].offsetParent){
-			selp=sel[i];
-			while(selp.offsetParent){
-				selp=selp.offsetParent;
-				selx+=selp.offsetLeft;
-				sely+=selp.offsetTop;
-			}
-		}
-		selx+=sel[i].offsetLeft;
-		sely+=sel[i].offsetTop;
+		selx=getLeft(sel[i]);
+		sely=getTop(sel[i]);
 		selw=sel[i].offsetWidth;
 		selh=sel[i].offsetHeight;
 		if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
@@ -331,5 +301,23 @@ function confirmAction(text,where){
 	}
 }
 
+function getLeft(MyObject){
+//Fonction permettant de connaître la position d'un objet
+//par rapport au bord gauche de la page.
+//Cet objet peut être à l'intérieur d'un autre objet.
+    if (MyObject.offsetParent)
+        return (MyObject.offsetLeft + getLeft(MyObject.offsetParent));
+    else
+        return (MyObject.offsetLeft);
+} 
 
+function getTop(MyObject){
+//Fonction permettant de connaître la position d'un objet
+//par rapport au bord haut de la page.
+//Cet objet peut être à l'intérieur d'un autre objet.
+    if (MyObject.offsetParent)
+        return (MyObject.offsetTop + getTop(MyObject.offsetParent));
+    else
+        return (MyObject.offsetTop);
+}
 
