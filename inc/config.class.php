@@ -92,6 +92,7 @@ class Config extends CommonDBTM {
 		echo "</ul></div>";
 
 		switch ($_SESSION['glpi_configgen']){
+			// MAIN CONFIG
 			case 1 :
 
 				echo "<div align='center'><table class='tab_cadre_fixe'>";
@@ -216,8 +217,8 @@ class Config extends CommonDBTM {
 				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 			
 				echo "</table></div>";
-			
 				break;
+			// DISPLAY CONFIG
 			case 2 :
 				$cfg = new Config();
 				$cfg->getFromDB(1);
@@ -346,6 +347,7 @@ class Config extends CommonDBTM {
 				echo "</table></div>";
 				
 			break;
+			// RESTRICTIONS CONFIG
 			case 3:
 				echo "<div align='center'><table class='tab_cadre_fixe'>";
 								
@@ -367,7 +369,7 @@ class Config extends CommonDBTM {
 				dropdownYesNo("license_deglobalisation",$CFG_GLPI["license_deglobalisation"]);
 				echo"</td></tr>";
 
-				echo "<tr><th colspan='2'>" . $LANG["setup"][134]. "</th><th colspan='4'>" . $LANG["Menu"][31] . "</th></tr>";
+				echo "<tr><th colspan='2'>" . $LANG["setup"][134]. "</th><th colspan='2'>" . $LANG["Menu"][31] . "</th></tr>";
 
 				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][133] . " </td><td>";
 				dropdownYesNo("ocs_mode", $CFG_GLPI["ocs_mode"]);
@@ -383,8 +385,28 @@ class Config extends CommonDBTM {
 				echo "<td align='center'> " . $LANG["setup"][117] . " </td><td>";
 				dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
 				echo " </td></tr>";
+
+				echo "<tr><th colspan='4'>" . $LANG["setup"][280]. "</th></tr>";
+
+				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["common"][18] . " </td><td>";
+				dropdownYesNo("autoupdate_link_contact", $CFG_GLPI["autoupdate_link_contact"]);
+				echo "</td>";
+				
+				echo "<td align='center'> " . $LANG["common"][34] . " </td><td>";
+				dropdownYesNo("autoupdate_link_user", $CFG_GLPI["autoupdate_link_user"]);
+				echo " </td></tr>";
+
+				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["common"][35] . " </td><td>";
+				dropdownYesNo("autoupdate_link_group", $CFG_GLPI["autoupdate_link_group"]);
+				echo "</td>";
+				
+				echo "<td align='center'> " . $LANG["common"][15] . " </td><td>";
+				dropdownYesNo("autoupdate_link_location", $CFG_GLPI["autoupdate_link_location"]);
+				echo " </td></tr>";
+
 				
 				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+
 									
 				echo "</table></div>";
 				

@@ -115,7 +115,7 @@ class Computer extends CommonDBTM {
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
-		global $DB,$LANG;
+		global $DB,$LANG,$CFG_GLPI;
 		
 		// Manage changes for OCS if more than 1 element (date_mod)
 		// Need dohistory==1 if dohistory==2 no locking fields
@@ -130,8 +130,9 @@ class Computer extends CommonDBTM {
 
 		for ($i=0; $i < count($updates); $i++) {
 
-			// Mise a jour du contact des ��ents rattach�
-			if ($updates[$i]=="contact" ||$updates[$i]=="contact_num"){
+			// Update contact of attached items
+			
+			if (($updates[$i]=="contact" ||$updates[$i]=="contact_num")&&$CFG_GLPI["autoupdate_link_contact"]){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
@@ -167,8 +168,8 @@ class Computer extends CommonDBTM {
 
 			}
 
-			// Mise a jour des users et groupes des ��ents rattach�
-			if (($updates[$i]=="FK_users" && $this->fields["FK_users"]!=0)||($updates[$i]=="FK_groups" && $this->fields["FK_groups"]!=0)){
+			// Update users and groups of attached items
+			if (($updates[$i]=="FK_users" && $this->fields["FK_users"]!=0 && $CFG_GLPI["autoupdate_link_user"])||($updates[$i]=="FK_groups" && $this->fields["FK_groups"]!=0 && $CFG_GLPI["autoupdate_link_group"])){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
@@ -189,8 +190,12 @@ class Computer extends CommonDBTM {
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('FK_users')!=$this->fields["FK_users"]||$ci->getField('FK_groups')!=$this->fields["FK_groups"]){
 										$tmp["ID"]=$ci->getField('ID');
-										$tmp["FK_users"]=$this->fields["FK_users"];
-										$tmp["FK_groups"]=$this->fields["FK_groups"];
+										if ($CFG_GLPI["autoupdate_link_user"]){
+											$tmp["FK_users"]=$this->fields["FK_users"];
+										}
+										if ($CFG_GLPI["autoupdate_link_group"]){
+											$tmp["FK_groups"]=$this->fields["FK_groups"];
+										}
 										$ci->obj->update($tmp);
 										$update_done=true;
 									}
@@ -207,8 +212,8 @@ class Computer extends CommonDBTM {
 			}
 
 
-			// Mise a jour des lieux des ��ents rattach�
-			if ($updates[$i]=="location" && $this->fields["location"]!=0){
+			// Update loction of attached items
+			if ($updates[$i]=="location" && $this->fields["location"]!=0 && $CFG_GLPI["autoupdate_link_location"]){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;

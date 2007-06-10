@@ -1467,6 +1467,9 @@ $LANG["setup"][275]="Restreindre la gestion des imprimantes";
 $LANG["setup"][276]="Restreindre la gestion des licences";
 $LANG["setup"][277]="Déglobalisation possible des licences";
 
+$LANG["setup"][280]="Mise à jour automatique des éléments liés aux ordinateurs";
+
+
 $LANG["setup"][300]="Vérifier si une nouvelle version est disponible";
 $LANG["setup"][301]="Une nouvelle version est disponible :";
 $LANG["setup"][302]="Elle est disponible sur le site de GLPI : <a href='http://glpi-project.org' target='_blank'>http://glpi-project.org</a>";

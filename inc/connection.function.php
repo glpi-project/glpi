@@ -243,7 +243,7 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
  * @param $dohistory store chaneg in history ?
  */
 function Connect($sID,$cID,$type,$dohistory=1) {
-	global $LANG;
+	global $LANG,$CFG_GLPI;
 	// Makes a direct connection
 
 	$connect = new Connection;
@@ -277,24 +277,30 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			historyLog ($sID,$type,$changes,COMPUTER_TYPE,HISTORY_CONNECT_DEVICE);
 		}
 		
-		if ($comp->fields['location']!=$dev->getField('location')){
+		if ($CFG_GLPI["autoupdate_link_location"]&&$comp->fields['location']!=$dev->getField('location')){
 			$updates[0]="location";
 			$dev->obj->fields['location']=$comp->fields['location'];
 			$dev->obj->updateInDB($updates);
 			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][48];
 		}
-		if ($comp->fields['FK_users']!=$dev->getField('FK_users')||$comp->fields['FK_groups']!=$dev->getField('FK_groups')){
-			$updates[0]="FK_users";
-			$updates[1]="FK_groups";
-			$dev->obj->fields['FK_users']=$comp->fields['FK_users'];
-			$dev->obj->fields['FK_groups']=$comp->fields['FK_groups'];
+		if (($CFG_GLPI["autoupdate_link_user"]&&$comp->fields['FK_users']!=$dev->getField('FK_users'))
+		||($CFG_GLPI["autoupdate_link_group"]&&$comp->fields['FK_groups']!=$dev->getField('FK_groups'))){
+			if ($CFG_GLPI["autoupdate_link_user"]){
+				$updates[]="FK_users";
+				$dev->obj->fields['FK_users']=$comp->fields['FK_users'];
+			}
+			if ($CFG_GLPI["autoupdate_link_group"]){
+				$updates[]="FK_groups";
+				$dev->obj->fields['FK_groups']=$comp->fields['FK_groups'];
+			}
 			$dev->obj->updateInDB($updates);
 			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
 			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][50];
 		}
 
-		if ($comp->fields['contact']!=$dev->getField('contact')||$comp->fields['contact_num']!=$dev->getField('contact_num')){
+		if ($CFG_GLPI["autoupdate_link_contact"]
+		&&($comp->fields['contact']!=$dev->getField('contact')||$comp->fields['contact_num']!=$dev->getField('contact_num'))){
 			$updates[0]="contact";
 			$updates[1]="contact_num";
 			$dev->obj->fields['contact']=$comp->fields['contact'];
