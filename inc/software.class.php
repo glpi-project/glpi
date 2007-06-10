@@ -403,10 +403,12 @@ class License extends CommonDBTM {
 	function prepareInputForAdd($input) {
 		if (empty ($input['expire']) || $input['expire'] == "0000-00-00" || $input['expire'] == "NULL")
 			unset ($input['expire']);
-		if (!$input['oem'])
+		if (isset($input['oem']) && !$input['oem']){
 			$input['oem_computer'] = -1;
-		if ($input['oem_computer'] == 0)
+		}
+		if (isset($input['oem_computer']) && $input['oem_computer'] == 0){
 			$input['oem_computer'] = -1;
+		}
 		unset ($input["form"]);
 		unset ($input["withtemplate"]);
 		unset ($input["lID"]);
@@ -415,8 +417,9 @@ class License extends CommonDBTM {
 
 	function post_addItem($newID, $input) {
 		// Add license but not for unglobalize system
-		if (!isset ($input["_duplicate_license"]) && $input['oem'] && $input['oem_computer'] > 0)
+		if (!isset ($input["_duplicate_license"]) && isset($input['oem']) && isset($input['oem_computer']) && $input['oem'] && $input['oem_computer'] > 0){
 			installSoftware($input['oem_computer'], $newID);
+		}
 
 		$type = SOFTWARE_TYPE;
 		$dupid = $this->fields["sID"];

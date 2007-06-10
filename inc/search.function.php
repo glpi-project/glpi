@@ -2151,6 +2151,10 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_infocoms.amort_type":
 			return getAmortTypeName($data["ITEM_$num"]);
 			break;
+		case "glpi_infocoms.value":
+		case "glpi_infocoms.warranty_value":
+			return number_format($data["ITEM_$num"],$CFG_GLPI["decimal_number"],'.','');
+			break;
 		case "glpi_tracking.count":
 			if ($data["ITEM_$num"]>0&&haveRight("show_ticket","1")){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";

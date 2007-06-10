@@ -771,7 +771,15 @@ function dropdownMyDevices($userID=0){
 					$type_name=$ci->getType();
 					
 					while ($data=$DB->fetch_array($result)){
-						$my_devices.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+						$output=$data["name"];
+						if ($type!=SOFTWARE_TYPE){
+						$output.=" - ".$data['serial']." - ".$data['otherserial'];
+						}
+						if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
+						$my_devices.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
+						$my_devices.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
+						$my_devices.="</option>";
+
 						$already_add[$type][]=$data["ID"];
 					}
 				}
@@ -811,7 +819,15 @@ function dropdownMyDevices($userID=0){
 							if (!isset($already_add[$type])) $already_add[$type]=array();
 							while ($data=$DB->fetch_array($result)){
 								if (!in_array($data["ID"],$already_add[$type])){
-									$tmp_device.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+									$output=$data["name"];
+									if ($type!=SOFTWARE_TYPE){
+										$output.=" - ".$data['serial']." - ".$data['otherserial'];
+									}
+
+									if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
+									$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
+									$tmp_device.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
+									$tmp_device.="</option>";
 									$already_add[$type][]=$data["ID"];
 								}
 							}
@@ -853,7 +869,15 @@ function dropdownMyDevices($userID=0){
 						$type_name=$ci->getType();
 							while ($data=$DB->fetch_array($result)){
 							if (!in_array($data["ID"],$already_add[$type])){
-								$tmp_device.="<option value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+								$output=$data["name"];
+								if ($type!=SOFTWARE_TYPE){
+									$output.=" - ".$data['serial']." - ".$data['otherserial'];
+								}
+								if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
+								$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
+								$tmp_device.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
+								$tmp_device.="</option>";
+
 								$already_add[$type][]=$data["ID"];
 							}
 						}
