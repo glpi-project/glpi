@@ -761,13 +761,13 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "</li>";
 
-		echo "<li><img id='headercalendar' src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
+		echo "<li  id='headercalendar'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
 		echo "<script type='text/javascript'>";
 		echo "Calendar.setup(";
 		echo "{";
 		echo "ifFormat : '%Y-%m-%d',"; // the datetime format
-		echo "button : 'headercalendar'"; // ID of the button
+		echo "button : 'headercalendar' "; // ID of the button
 		echo "});";
 		echo "</script>";
 		echo "</li>";

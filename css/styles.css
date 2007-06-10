@@ -342,7 +342,7 @@ div#c_ssmenu2 ul li a{
 div#show_entities{
 	display: none;
 	position: absolute;
-	top:1px;
+	top:20px;
 	left:1px;
 	border: 1px solid  #CC9900;
 	/*background: transparent url("../pics/fondTR2.png") repeat; */
@@ -357,8 +357,8 @@ div#show_entities{
 div#show_all_menu{
         display: none;
         position: absolute;
-        top:1px; 
-        left:1px;
+        top:20px; 
+        left:5px;
         border: 1px solid  #CC9900;
 		/*background: transparent url("../pics/fondTR2.png") repeat; */
 		background: url("../pics/fd_hoverlink.png") 0 0 repeat;
@@ -369,6 +369,7 @@ div#show_all_menu{
         z-index:1000;
          
 }
+
 
 
 /* ########################################################################### */
