@@ -402,7 +402,7 @@ class Mailing
 	{
 		global $CFG_GLPI,$LANG;
 		if ($CFG_GLPI["mailing"])
-		{	echo $this->type;
+		{	
 			if (!is_null($this->job)&&!is_null($this->user)&&in_array($this->type,array("new","update","followup","finish")))
 			{
 				// get users to send mail
@@ -418,7 +418,6 @@ class Mailing
 				if ($this->followupisprivate){
 					unset($users[0]);
 				}
-
 				// get subject
 				$subject=$this->get_mail_subject();
 				// get sender
@@ -430,20 +429,19 @@ class Mailing
 					if (count($someusers)){
 						$htmlbody=$this->get_mail_body("html",$private);
 						$textbody=$this->get_mail_body("text",$private);
-					
+
 						foreach ($someusers as $email){
 							$mmail=new glpi_phpmailer();
 							$mmail->From=$sender;
 							$mmail->AddReplyTo("$replyto", ''); 
 							$mmail->FromName=$sender;
-	
 							$mmail->AddAddress($email, "");
 							$mmail->Subject=$subject	;  
 							$mmail->Body=$htmlbody;
 							$mmail->isHTML(true);
 							$mmail->AltBody=$textbody;
 							if(!$mmail->Send()){
-								$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailing"][47];
+								$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailing"][47]."<br>".$mmail->ErrorInfo;
 								return false;
 							}
 							$mmail->ClearAddresses(); 
