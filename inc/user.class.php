@@ -666,6 +666,19 @@ class User extends CommonDBTM {
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 20);
 				echo "</td></tr>";
 
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["financial"][29] . ":</td><td>";
+				if (!empty($ID)){
+					$entities=getUserEntities($ID);
+					if (count($entities)>0){
+						dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$entities);
+					} else {
+						echo "&nbsp;";
+					}
+				}
+				echo "</td>";
+				echo "<td align='center'>&nbsp;</td><td>&nbsp;";
+				echo "</td></tr>";
+
 				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
 				echo "</tr>";
 
@@ -704,15 +717,17 @@ class User extends CommonDBTM {
 					}
 					echo "</td><td>" . $LANG["login"][0] . ":</td><td>";
 
-					if ($this->fields["last_login"] != "0000-00-00 00:00:00")
+					if ($this->fields["last_login"] != "0000-00-00 00:00:00"){
 						echo convDateTime($this->fields["last_login"]);
+					}
 
 					echo "</td>";
 
 					echo "</tr>";
 					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td align='center'>";
-					if ($this->fields["date_mod"] != "0000-00-00 00:00:00")
+					if ($this->fields["date_mod"] != "0000-00-00 00:00:00"){
 						echo convDateTime($this->fields["date_mod"]);
+					}
 					echo "</td><td align='center' colspan='2'></td>";
 					echo "</tr>";
 

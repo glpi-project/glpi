@@ -620,7 +620,7 @@ function haveAccessToEntity($ID) {
  * @param $field : field where apply the limit (id != FK_entities)
  * @return String : the WHERE clause to restrict 
  */
-function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "") {
+function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='') {
 
 	$query = $separator ." ";
 
@@ -634,17 +634,27 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 	} else {
 		$query .= "FK_entities";
 	}
-	$query.=" IN (";
-	$first=true;
-	foreach ($_SESSION['glpiactiveentities'] as $val){
-		if (!$first){
-			$query.=",";
-		} else {
-			$first=false;
-		}
-		$query.=$val;
+	
+	if (empty($value)){
+		$value=$_SESSION['glpiactiveentities'];
 	}
-	$query.=") ";
+
+	if (is_array($value)){
+		$query.=" IN (";
+		$first=true;
+		
+		foreach ($value as $val){
+			if (!$first){
+				$query.=",";
+			} else {
+				$first=false;
+			}
+			$query.=$val;
+		}
+		$query.=") ";
+	} else {
+		$query.= " = '$value' ";
+	}
 	return $query;
 }
 
