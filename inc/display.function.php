@@ -761,7 +761,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "</li>";
 
-		echo "<li  id='headercalendar'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
+/*		echo "<li  id='headercalendar'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
 		echo "<script type='text/javascript'>";
 		echo "Calendar.setup(";
@@ -771,7 +771,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "});";
 		echo "</script>";
 		echo "</li>";
-		
+*/		
 
 		// MENU ALL
 		echo "<li >";
