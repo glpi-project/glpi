@@ -172,6 +172,21 @@ class Mailing
 									}
 								}
 								break;
+								// RECIPIENT SEND
+							case RECIPIENT_MAILING :
+								if (isset($this->job->fields["recipient"])&&$this->job->fields["recipient"]>0){
+									$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["recipient"]."')";
+									if ($result2 = $DB->query($query2)) {
+										if ($DB->numrows($result2)==1){
+											$row = $DB->fetch_array($result2);
+											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+												$emails[]=$row['EMAIL'];
+											}
+										}
+									}
+								}
+								break;
+
 								// AUTHOR SEND
 							case AUTHOR_MAILING :
 								if ($this->job->fields["emailupdates"]&&isValidEmail($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){

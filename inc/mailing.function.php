@@ -87,7 +87,7 @@ function testMail(){
 						$name = $LANG["setup"][239];
 						break;
 					case AUTHOR_MAILING :
-						$name = $LANG["setup"][238];
+						$name = $LANG["job"][4];
 						break;
 					case USER_MAILING :
 						$name = $LANG["common"][34] . " " . $LANG["common"][1];
@@ -98,6 +98,10 @@ function testMail(){
 					case TECH_MAILING :
 						$name = $LANG["common"][10];
 						break;
+					case RECIPIENT_MAILING :
+						$name = $LANG["job"][3];
+						break;
+
 				}
 				$options.= "<option value='" . $data["ID"] . "'>" . $name . "</option>";
 			}
