@@ -1186,5 +1186,12 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add autoupdate_link_location in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
 
+	// Flat dropdowntree
+	if (!FieldExists("glpi_config", "flat_dropdowntree")) {
+		$query = "ALTER TABLE `glpi_config` ADD COLUMN `flat_dropdowntree` smallint(6) NOT NULL default '0'";
+		$DB->query($query) or die("0.7 add flat_dropdowntree in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
+
+
 } // fin 0.7 #####################################################################################
 ?>

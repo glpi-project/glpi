@@ -131,9 +131,8 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 				$ID = $data['ID'];
 				$level = $data['level'];
-
-				if (empty($data['name'])) $output="($ID)";
-				else $output=$data['name'];
+	
+				$output=$data['name'];
 
 				$class=" class='tree' ";
 				$raquo="&raquo;";
@@ -141,6 +140,20 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 					$class=" class='treeroot' ";
 					$raquo="";
 				}
+
+				if ($CFG_GLPI['flat_dropdowntree']){
+					$output=$data['completename'];
+					if ($level>1){
+						$class="";
+						$raquo="";
+						$level=0;
+					}
+				}
+				
+				if (empty($output)) {
+					$output="($ID)";
+				}
+
 				$style=$class;
 				$addcomment="";
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
