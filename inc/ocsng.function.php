@@ -564,6 +564,13 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 		}
 		if ($DBocs->numrows($result_ocs) == 1) {
 			$data_ocs = $DBocs->fetch_array($result_ocs);
+
+			// update last_update and and last_ocs_update
+			$query = "UPDATE glpi_ocs_link 
+					SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTCOME"] . "' 
+					WHERE ID='$ID'";
+			$DB->query($query);
+
 			if ($force) {
 
 				$ocs_checksum = MAX_OCS_CHECKSUM;
@@ -571,8 +578,9 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 													SET CHECKSUM= (" . MAX_OCS_CHECKSUM . ") 
 													WHERE ID='" . $line['ocs_id'] . "'";
 				$DBocs->query($query_ocs);
-			} else
+			} else {
 				$ocs_checksum = $data_ocs["CHECKSUM"];
+			}
 
 			$mixed_checksum = intval($ocs_checksum) & intval($cfg_ocs["checksum"]);
 
@@ -647,15 +655,10 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 													SET CHECKSUM= (CHECKSUM - $mixed_checksum) 
 													WHERE ID='" . $line['ocs_id'] . "'";
 				$DBocs->query($query_ocs);
-				// update last_update and and last_ocs_update
-				$query = "UPDATE glpi_ocs_link 
-													SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTCOME"] . "' 
-													WHERE ID='$ID'";
-				$DB->query($query);
 				$comp = new Computer();
 				$comp->cleanCache($line['glpi_id']);
-
 			}
+
 		}
 	}
 }
