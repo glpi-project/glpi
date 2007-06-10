@@ -1113,11 +1113,6 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add registry_ocs_name in glpi_registry" . $LANG["update"][90] . $DB->error());
 	}
 
-	if (FieldExists("glpi_users", "location")) {
-		$query = "ALTER TABLE `glpi_users` DROP `location`;";
-		$DB->query($query) or die("0.7 drop location from glpi_users " . $DB->error());
-	}
-
 	if (!FieldExists("glpi_config", "use_errorlog")) {
 		$query = "ALTER TABLE `glpi_config` ADD COLUMN `use_errorlog` INT( 1 ) NOT NULL default 0";
 		$DB->query($query) or die("0.7 add use_errorlog in glpi_config" . $LANG["update"][90] . $DB->error());

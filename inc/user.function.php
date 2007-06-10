@@ -432,5 +432,22 @@ function generateUserVcard($ID){
 
 }
 
+function getUserEntities($ID){
+	global $DB;
+
+	$query="SELECT DISTINCT FK_entities
+			FROM glpi_users_profiles 
+			WHERE FK_users='$ID';";
+	$result=$DB->query($query);
+	if ($DB->numrows($result)>0){
+		$entities=array();
+		while ($data=$DB->fetch_assoc($result)){
+			$entities[]=$data['FK_entities'];
+		}
+		return $entities;
+	} 
+
+	return array();
+}
 
 ?>

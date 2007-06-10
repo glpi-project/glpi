@@ -88,9 +88,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 			if (!$first) $where.=" AND ";
 			else $first=false;
-		
+
 			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-				$where.= $_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
+				$where.=getEntitiesRestrictRequest("",$_POST['table'],"FK_entities",$_POST["entity_restrict"]);
 			} else {
 				$where.=getEntitiesRestrictRequest("",$_POST['table']);
 			}
@@ -101,7 +101,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
-		//echo $query;
+//		echo $query;
 
 		$result = $DB->query($query);
 
@@ -157,8 +157,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		$where .=" ID <> '".$_POST['value']."' ";
 
 		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
+
 			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-				$where.= " AND ".$_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
+				$where.=getEntitiesRestrictRequest("AND",$_POST['table'],"FK_entities",$_POST["entity_restrict"]);
 			} else {
 				$where.=getEntitiesRestrictRequest("AND",$_POST['table']);
 			}
