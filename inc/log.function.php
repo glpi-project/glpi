@@ -310,6 +310,41 @@ function logArray(){
 
 }
 
+function displayItemLogID($itemtype,$item){
+	global $CFG_GLPI;
+
+	if ($item=="-1" || $item=="0") {
+		echo "&nbsp;";//$item;
+	} else {
+		if ($itemtype=="infocom"){
+			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
+		} else {
+			if ($item=="-1" || $item=="0") {
+				echo "&nbsp;";//$item;
+			} else {
+				if ($itemtype=="rules"){
+					//echo $item;
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?ID=".$item."\">".$item."</a>";
+				} else if ($itemtype=="infocom"){
+					echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
+				} else {
+					if ($itemtype=="reservation"){
+						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
+					} else {
+						if ($itemtype[strlen($itemtype)-1]=='s'){
+							$show=substr($itemtype,0,strlen($itemtype)-1);
+						}else $show=$itemtype;
+						
+						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
+					}
+					echo $item;
+					echo "\">$item</a>";
+				}
+			}			
+		}
+	}			
+}
+
 
 /**
  * Print a nice tab for last event from inventory section
@@ -406,24 +441,8 @@ function showAddEvents($target,$order,$sort,$user="") {
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><strong>";
-		if ($item=="-1" || $item=="0") {
-			echo "&nbsp;";//$item;
-		} else {
-			if ($itemtype=="infocom"){
-				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
-			} else {
-				if ($itemtype=="reservation"){
-					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
-				} else {
-					if ($itemtype[strlen($itemtype)-1]=='s')
-						$show=substr($itemtype,0,strlen($itemtype)-1);
-					else $show=$itemtype;
 
-					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
-				}
-				echo "\">$item</a>";
-			}
-		}			
+		displayItemLogID($itemtype,$item);
 		echo "</strong></td><td><span style='font-size:9px;'>".convDateTime($date)."</span></td><td align='center'>".$logService[$service]."</td><td>$message</td>";
 		echo "</tr>";
 
@@ -534,29 +553,7 @@ function showEvents($target,$order,$sort,$start=0) {
 		
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td align='center'><strong>"; 
-		//echo "<td>$itemtype:</td><td align='center'><strong>";
-		if ($item=="-1" || $item=="0") {
-			echo "&nbsp;";//$item;
-		} else {
-			if ($itemtype=="rules"){
-				//echo $item;
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/rule.generic.form.php?ID=".$item."\">".$item."</a>";
-			} else if ($itemtype=="infocom"){
-				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?ID=$item','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\">$item</a>";					
-			} else {
-				if ($itemtype=="reservation"){
-					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=";
-				} else {
-					if ($itemtype[strlen($itemtype)-1]=='s'){
-						$show=substr($itemtype,0,strlen($itemtype)-1);
-					}else $show=$itemtype;
-					
-					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/".$show.".form.php?ID=";
-				}
-				echo $item;
-				echo "\">$item</a>";
-			}
-		}			
+		displayItemLogID($itemtype,$item);	
 		echo "</strong></td><td>".convDateTime($date)."</td><td align='center'>".$logService[$service]."</td><td align='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
