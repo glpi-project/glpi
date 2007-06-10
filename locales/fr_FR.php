@@ -27,8 +27,7 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
 */
-	//Français
-
+//Français
 
 $LANG["backup"][0]="Sauvegarde SQL";
 $LANG["backup"][1]="Sauvegarde XML";
@@ -1350,6 +1349,7 @@ $LANG["setup"][128]="Format des dates";
 $LANG["setup"][129]="Afficher les ID GLPI";
 $LANG["setup"][130]="Utiliser pour Onglets Suivant/Précédent";
 $LANG["setup"][131]="Nombre de caractères limite pour les listes déroulantes";
+$LANG["setup"][132]="Liste déroulantes arborescentes à plat";
 $LANG["setup"][133]="Activer le mode OCSNG";
 $LANG["setup"][134]="Mode OCSNG";
 $LANG["setup"][135]="Normal";
