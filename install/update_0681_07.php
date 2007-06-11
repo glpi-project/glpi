@@ -584,7 +584,7 @@ function update0681to07() {
 						 				`registry_value` varchar(255) NOT NULL,
 						 				PRIMARY KEY  (`ID`),
 										KEY `computer_id` (`computer_id`)
-										) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1";
+										) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
 		$DB->query($query) or die("0.7 add glpi_registry table " . $LANG["update"][90] . $DB->error());
 
 	}
@@ -775,7 +775,7 @@ function update0681to07() {
 						  `value` varchar(255) NOT NULL,
 						  PRIMARY KEY  (`ID`),
 						  KEY `FK_rules` (`FK_rules`)
-						) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+						) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 						";
 		$DB->query($query) or die("0.7 add table glpi_rules_descriptions" . $LANG["update"][90] . $DB->error());
 
@@ -790,7 +790,7 @@ function update0681to07() {
 				  `pattern` varchar(255) NOT NULL,
 				  PRIMARY KEY  (`ID`),
 				KEY `FK_rules` (`FK_rules`)
-				) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
+				) ENGINE=MyISAM  DEFAULT CHARSET=utf8;";
 		$DB->query($query) or die("0.7 add table glpi_rules_criterias" . $LANG["update"][90] . $DB->error());
 
 	}
@@ -805,7 +805,7 @@ function update0681to07() {
 		  `description` text NOT NULL,
 		  `match` varchar(255) NOT NULL,
 		  PRIMARY KEY  (`ID`)
-		) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
+		) ENGINE=MyISAM  DEFAULT CHARSET=utf8;";
 		$DB->query($query) or die("0.7 add table glpi_rules_actions" . $LANG["update"][90] . $DB->error());
 
 	}
@@ -845,7 +845,7 @@ function update0681to07() {
   			`ocs_column` varchar(255) NULL,
   			`ocs_server_id` int(11) NOT NULL,
   			PRIMARY KEY  (`ID`)
-			) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;";
+			) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;";
 			$DB->query($query) or die("0.7 add table glpi_ocs_admin_link" . $LANG["update"][90] . $DB->error());
 	}
 
@@ -868,7 +868,7 @@ function update0681to07() {
   			  `value` varchar(255) NOT NULL,
   			  `rule_type` smallint(6) NOT NULL default '1',
   			   PRIMARY KEY  (`ID`)
-			  ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3;";
+			  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;";
 			$DB->query($query) or die("0.7 add table glpi_rules_ldap_parameters" . $LANG["update"][90] . $DB->error());
 	
 		$query = "INSERT INTO `glpi_rules_ldap_parameters` (`ID`, `name`, `value`, `rule_type`) VALUES 
