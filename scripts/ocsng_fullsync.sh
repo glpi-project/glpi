@@ -1,7 +1,7 @@
 #!/bin/sh
 cd $(dirname $0)
 
-eval $(cat  <<EOF | php 
+eval $(cat  <<EOF | php -q 
 <?php 
 define ("GLPI_ROOT","..");
 include GLPI_ROOT."/config/based_config.php";
