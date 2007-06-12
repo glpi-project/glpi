@@ -2455,8 +2455,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 				WHERE glpi_inst_software.license=glpi_licenses.ID AND glpi_inst_software.cID=".$glpi_id." AND glpi_inst_software.ID=".$key;
 				$result_softs = $DB->query($query_softs);
 				$softs = $DB->fetch_array($result_softs);
-				//$softs_array .= $key . "=>" . str_replace(' ','+',$value) . $softs["VERSION"] . " ";
-				$softs_array[$key] =  $value . $softs["VERSION"];
+				$softs_array[$key] =  $value . '$$$$$'. $softs["VERSION"];
 			}
 			
 			//Replace in GLPI database the import_software by the new one
@@ -2504,12 +2503,12 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 				$initname = $data2["INITNAME"];
 				$name = $data2["NAME"];
 				$version = $data2["VERSION"];
-				
+
 				// Clean software object
 				$soft->reset();
-				
+
 				//If name+version not in present for this computer in glpi, add it 
-				if (!in_array(stripslashes($initname) . $version, $import_software)) 
+				if (!in_array($initname . '$$$$$'. $version, $import_software)) 
 				{
 						//------------------------------------------------------------------------------------------------------------------//
 						//---- The software doesn't exists in this version for this computer -----//
@@ -2518,7 +2517,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						//Look for the software by his name and version in GLPI for a specific entity
 						$query_search = "SELECT glpi_software.ID as ID  
 												FROM glpi_software, glpi_licenses 
-												WHERE name = '" . stripslashes($name) . "' AND FK_entities=" . $entity . " AND glpi_licenses.sID = glpi_software.ID AND glpi_licenses.version='" . $version . "'";
+												WHERE name = '" . $name . "' AND FK_entities=" . $entity . " AND glpi_licenses.sID = glpi_software.ID AND glpi_licenses.version='" . $version . "'";
 						$result_search = $DB->query($query_search);
 						if ($DB->numrows($result_search) > 0) {
 							//Software already exists for this entity, get his ID
@@ -2526,7 +2525,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 							$isNewSoft = $data["ID"];
 						} else
 						$isNewSoft = 0;
-
+						
 						if (!$isNewSoft) {
 							$input = array ();
 							$input["name"] = $name;
@@ -2548,7 +2547,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						$instID = installSoftware($glpi_id, $licenseID, '', $dohistory);
 						
 						//Add the software to the table of softwares for this computer to add in database
-						$to_add_to_ocs_array[$instID] = $initname . $version;
+						$to_add_to_ocs_array[$instID] = $initname . '$$$$$'. $version;
 
 				} else {
 					$instID = -1;
@@ -2558,7 +2557,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 					//----------------------------------------------------------------------------------------------------------------//
 
 					//Get the name of the software in GLPI to know if the software's name have already been changed by the OCS dictionnary
-					$instID = array_search(stripslashes($initname) . $version, $import_software);
+					$instID = array_search($initname . '$$$$$'. $version, $import_software);
 					$query_soft = "SELECT glpi_software.ID, glpi_software.name FROM glpi_software, glpi_inst_software, glpi_licenses".
 					" WHERE glpi_inst_software.ID=".$instID." AND glpi_inst_software.license=glpi_licenses.ID AND glpi_licenses.sID=glpi_software.ID";
 
