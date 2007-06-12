@@ -137,6 +137,7 @@ class Mailing
 
 			$select ="";
 			$join="";
+			$joinprofile="";
 			// If send private is the user can see private followups ?
 			if ($sendprivate){
 				$join=" INNER JOIN glpi_users_profiles 
