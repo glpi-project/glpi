@@ -2161,6 +2161,12 @@ $SEARCH_OPTION[USER_TYPE][5]['linkfield']='email';
 $SEARCH_OPTION[USER_TYPE][5]['name']=$LANG["setup"][14];
 $SEARCH_OPTION[USER_TYPE][5]['meta']=0;
 
+$SEARCH_OPTION[USER_TYPE][7]['table']='glpi_dropdown_locations';
+$SEARCH_OPTION[USER_TYPE][7]['field']='completename';
+$SEARCH_OPTION[USER_TYPE][7]['linkfield']='location';
+$SEARCH_OPTION[USER_TYPE][7]['name']=$LANG["common"][15];
+$SEARCH_OPTION[USER_TYPE][7]['meta']=2;
+
 $SEARCH_OPTION[USER_TYPE][6]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][6]['field']='phone';
 $SEARCH_OPTION[USER_TYPE][6]['linkfield']='phone';

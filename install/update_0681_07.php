@@ -1165,7 +1165,7 @@ function update0681to07() {
 	$query = "DELETE FROM `glpi_history` WHERE `linked_action`=0 AND `device_internal_type`=0 AND `old_value`=`new_value` AND `old_value` IS NOT NULL AND `old_value`!='';";
 	$DB->query($query) or die("0.7 clean glpi_history " . $DB->error());
 
-	$query = "DELETE FROM `glpi_display` WHERE `type`=".USER_TYPE." AND (`num`=4 OR `num`=7);";
+	$query = "DELETE FROM `glpi_display` WHERE `type`=".USER_TYPE." AND (`num`=4 );";
 	$DB->query($query) or die("0.7 clean glpi_display for glpi_users " . $DB->error());
 
 	// Add fields to block auto updates on linked items
