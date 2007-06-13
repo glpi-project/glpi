@@ -599,11 +599,11 @@ class Job extends CommonDBTM{
 						$fup->getfromDB($data['ID']);
 						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["job"][30]."</i>":"")."</strong><br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$fup->getAuthorName()."<br>";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3].":</span><br>".nl2br($fup->fields["contents"])."<br>";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3]."</span><br>".nl2br($fup->fields["contents"])."<br>";
 						if ($fup->fields["realtime"]>0)
 							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."<br>";
 
-						$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][25].":</span> ";
+						$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][25]."</span> ";
 						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 						$result2=$DB->query($query2);
 						if ($DB->numrows($result2)==0)
@@ -688,6 +688,7 @@ class Job extends CommonDBTM{
 			$message.=" </style></head><body>";
 
 			$message.="<div class='description'><strong>".$LANG["mailing"][5]."</strong></div><br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][57].":</span> ".$this->fields["name"]."<br>";
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$LANG["mailing"][108];
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$author."<br>";
@@ -720,6 +721,7 @@ class Job extends CommonDBTM{
 
 		}else{ //text format
 			$message = $LANG["mailing"][1]."\n*".$LANG["mailing"][5]."*\n".$LANG["mailing"][1]."\n";
+			$message.= $LANG["common"][57].": ".$this->fields["name"]."\n";
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$LANG["mailing"][108];
 			$message.= $LANG["job"][4].": ".$author."\n";

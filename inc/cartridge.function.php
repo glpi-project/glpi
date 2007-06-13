@@ -392,7 +392,7 @@ function showCartridgeInstalled($instID,$old=0) {
 
 	}	
 	if ($old==0&&$canedit){
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center' colspan='5'>";
 		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
 
 		echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
@@ -401,7 +401,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		}
 
 		echo "</div></form></td><td align='center' class='tab_bg_2'>&nbsp;";
-		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		echo "</td>";
 		echo "</tr>";
 	} else { // Print average
 		if ($number>0){
@@ -541,11 +541,12 @@ function dropdownCompatibleCartridges($pID) {
 	$p=new Printer;
 	$p->getFromDB($pID);
 
-	$query = "SELECT COUNT(*) AS cpt, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as name, glpi_cartridges_type.ID as tID 
+	$query = "SELECT COUNT(*) AS cpt, glpi_dropdown_locations.completename as location, glpi_cartridges_type.ref as ref, glpi_cartridges_type.name as name, glpi_cartridges_type.ID as tID 
 		FROM glpi_cartridges_type 
 		INNER JOIN glpi_cartridges_assoc ON (glpi_cartridges_type.ID = glpi_cartridges_assoc.FK_glpi_cartridges_type )
 		INNER JOIN glpi_cartridges ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridges_type.ID 
 						AND glpi_cartridges.date_use IS NULL)
+		LEFT JOIN glpi_dropdown_locations ON (glpi_dropdown_locations.ID = glpi_cartridges_type.location)
 		WHERE  glpi_cartridges_assoc.FK_glpi_dropdown_model_printers = '".$p->fields["model"]."' 
 		AND glpi_cartridges_type.FK_entities='".$p->fields["model"]."' 
 		GROUP BY glpi_cartridges_type.ID 
@@ -555,7 +556,7 @@ function dropdownCompatibleCartridges($pID) {
 
 			echo "<select name='tID' size=1>";
 			while ($data= $DB->fetch_assoc($result)) {
-				echo  "<option value='".$data["tID"]."'>".$data["name"]." - ".$data["ref"]." (".$data["cpt"]." ".$LANG["cartridges"][13].")</option>";
+				echo  "<option value='".$data["tID"]."'>".$data["name"]." - ".$data["ref"]." (".$data["cpt"]." ".$LANG["cartridges"][13].") - ".$data["location"]."</option>";
 			}
 			echo "</select>";
 			return true;
