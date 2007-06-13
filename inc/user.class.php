@@ -666,7 +666,7 @@ class User extends CommonDBTM {
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 20);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["financial"][29] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . ":</td><td>";
 				if (!empty($ID)){
 					$entities=getUserEntities($ID);
 					if (count($entities)>0){
