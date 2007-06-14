@@ -299,12 +299,12 @@ function ocsManageDeleted($ocs_server_id) {
 														FROM hardware 
 														WHERE DEVICEID='$equiv'";
 						$result_ocs = $DBocs->query($query_ocs);
-						if ($data = $DBocs->fetch_array($result_ocs));
-
-						$query = "UPDATE glpi_ocs_link 
+						if ($data = $DBocs->fetch_array($result_ocs)) {
+						    $query = "UPDATE glpi_ocs_link 
 														SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
 														WHERE ocs_deviceid='$del' AND ocs_server_id='$ocs_server_id'";
-						$DB->query($query);
+						    $DB->query($query);
+						}
 
 					} else {
 						$query_ocs = "SELECT * 
@@ -312,12 +312,13 @@ function ocsManageDeleted($ocs_server_id) {
 														WHERE ID='$equiv'";
 
 						$result_ocs = $DBocs->query($query_ocs);
-						if ($data = $DBocs->fetch_array($result_ocs));
-
-						$query = "UPDATE glpi_ocs_link 
+						if ($data = $DBocs->fetch_array($result_ocs))
+						{
+						    $query = "UPDATE glpi_ocs_link 
 														SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
 														WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
-						$DB->query($query);
+						    $DB->query($query);
+						}
 
 					}
 				} else { // Deleted
