@@ -2514,10 +2514,10 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						//---- The software doesn't exists in this version for this computer -----//
 						//----------------------------------------------------------------------------------------------------------------//
 
-						//Look for the software by his name and version in GLPI for a specific entity
+						//Look for the software by his name in GLPI for a specific entity
 						$query_search = "SELECT glpi_software.ID as ID  
-												FROM glpi_software, glpi_licenses 
-												WHERE name = '" . $name . "' AND FK_entities=" . $entity . " AND glpi_licenses.sID = glpi_software.ID AND glpi_licenses.version='" . $version . "'";
+												FROM glpi_software 
+												WHERE name = '" . $name . "' AND FK_entities=" . $entity;
 						$result_search = $DB->query($query_search);
 						if ($DB->numrows($result_search) > 0) {
 							//Software already exists for this entity, get his ID
