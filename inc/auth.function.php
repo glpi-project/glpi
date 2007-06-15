@@ -636,7 +636,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		$query .= "FK_entities";
 	}
 	
-	if (empty($value)){
+	if (!is_array($value)&&strlen($value)==0){
 		$value=$_SESSION['glpiactiveentities'];
 	}
 

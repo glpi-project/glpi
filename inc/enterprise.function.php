@@ -61,7 +61,7 @@ function showInfocomEnterprise($instID) {
 	$i = 0;
 
 	echo "<br><br><div align='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$LANG["financial"][32].":</th></tr>";
+	echo "<tr><th colspan='2'>".$LANG["financial"][26].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>".$LANG["common"][16]."</th>";
 	echo "</tr>";
