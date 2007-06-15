@@ -504,6 +504,7 @@ function changeProfile($ID) {
 			if (!$val['recursive']) {
 				if (!array_search($val["ID"], $_SESSION['glpiactiveentities'])) {
 					$_SESSION['glpiactiveentities'][$val['ID']] = $val['ID'];
+					$entity=array();
 					$entity[$val['ID']]['tree']=array();
 					
 					if ($val['ID']==0){
