@@ -686,11 +686,23 @@ class Rule extends CommonDBTM{
 				else
 				{
 					//If the value if, in fact, an array of values
-					$res = false;
-					foreach($input[$criteria->fields["criteria"]] as $tmp)
-						$res |= matchRules($tmp,$criteria->fields["condition"],$criteria->fields["pattern"]);
+					// Negative condition : Need to match all condition (never be)
+					if (in_array($criteria->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
+						$res = true;
+						foreach($input[$criteria->fields["criteria"]] as $tmp){
+							$res &= matchRules($tmp,$criteria->fields["condition"],$criteria->fields["pattern"]);
+						}
+	
+						$results[] = $res;	
 
-					$results[] = $res;	
+					// Positive condition : Need to match one
+					 } else {
+						$res = false;
+						foreach($input[$criteria->fields["criteria"]] as $tmp)
+							$res |= matchRules($tmp,$criteria->fields["condition"],$criteria->fields["pattern"]);
+	
+						$results[] = $res;	
+					}
 				}	
 			}
 			
