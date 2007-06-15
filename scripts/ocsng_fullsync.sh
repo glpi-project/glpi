@@ -111,7 +111,7 @@ cpt=0
 
 while [ $cpt -lt $thread_nbr ]; do 
   cpt=$(($cpt+1))
-  cmd="php -d -f $GLPI_SCRIPT_DIR/ocsng_fullsync.php --ocs_server_id=$server_id --thread_nbr=$thread_nbr --thread_id=$cpt >> $GLPI_LOG_DIR/$logfilename"
+  cmd="php -q -d -f $GLPI_SCRIPT_DIR/ocsng_fullsync.php --ocs_server_id=$server_id --thread_nbr=$thread_nbr --thread_id=$cpt >> $GLPI_LOG_DIR/$logfilename"
   sh -c "$cmd"&
   runningpid="$runningpid $!"
   sleep 1
