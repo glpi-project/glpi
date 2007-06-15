@@ -1317,7 +1317,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			if (isset($_GET["ID"])){
 				$parameters2.="&amp;ID=".$_GET["ID"];
 			}
-			
+
 			$parameters=$parameters2."&amp;sort=$sort&amp;order=$order";
 			if (ereg("user.form.php",$_SERVER['PHP_SELF'])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
@@ -1405,7 +1405,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				// End form for delete item
 				echo "</form>";
 			}
-
+			echo "<br>";
 
 			// Pager
 			if ($output_type==HTML_OUTPUT) // In case of HTML display
