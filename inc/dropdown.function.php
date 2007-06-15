@@ -121,13 +121,6 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
 
 	// Display comments
-	$comments_display="";
-	$comments_display2="";
-	if ($display_comments) {
-		$comments_display=" onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
-		$comments_display2="<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
-	}
-
 	$which="";
 
 	$dropdown_right=false;
@@ -145,10 +138,10 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 	}
 
 	if ($display_comments){
-		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display ";
+		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
 		if ($dropdown_right&&!empty($which)) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
 		echo ">";
-		echo $comments_display2;
+		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
 	}
 	// Display specific Links
 	if ($table=="glpi_enterprises"){
@@ -212,20 +205,13 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 
 	// Display comments 
 
-	$comments_display="";
-	$comments_display2="";
-	if ($display_comments) {
-		$comments_display=" onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
-		$comments_display2="<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
-	}
-
-	$which="";
-
 	if ($display_comments){
-		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' $comments_display ";
-		if (haveRight("entity_dropdown","w")) echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
+		if (haveRight("entity_dropdown","w")) {
+			echo " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=glpi_dropdown_netpoint"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+		}
 		echo ">";
-		echo $comments_display2;
+		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
 	}
 
 	return $rand;
@@ -364,16 +350,13 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	// Display comments
 
-	$comments_display="";
 
 	if ($display_comments) {
-		$comments_display="<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
-		$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
-		$comments_display.="</a>";
-		$comments_display.="<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
+		echo "<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
+		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
+		echo "</a>";
+		echo "<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
 	}
-
-	echo $comments_display;
 
 	return $rand;
 }
@@ -536,15 +519,12 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 
 	// Display comments 
 
-	$comments_display="";
 	if ($display_comments) {
-		$comments_display="<a href='".$user["link"]."'>";
-		$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
-		$comments_display.="</a>";
-		$comments_display.="<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
+		echo "<a href='".$user["link"]."'>";
+		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
+		echo "</a>";
+		echo "<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
 	}
-
-	echo $comments_display;	
 
 	return $rand;
 }
