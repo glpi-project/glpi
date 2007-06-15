@@ -425,7 +425,6 @@ $LANG["financial"][25]="Ajouter Fournisseur...";
 $LANG["financial"][26]="Fournisseur";
 $LANG["financial"][29]="Téléphone";
 $LANG["financial"][30]="Fax";
-$LANG["financial"][32]="Fournisseur";
 $LANG["financial"][33]="Ajouter un Contact";
 $LANG["financial"][36]="Ajouter un Contrat";
 $LANG["financial"][42]="Commercial"; 
