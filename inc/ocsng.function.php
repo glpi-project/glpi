@@ -299,7 +299,9 @@ function ocsManageDeleted($ocs_server_id) {
 														FROM hardware 
 														WHERE DEVICEID='$equiv'";
 						$result_ocs = $DBocs->query($query_ocs);
+						
 						if ($data = $DBocs->fetch_array($result_ocs)) {
+
 						    $query = "UPDATE glpi_ocs_link 
 														SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
 														WHERE ocs_deviceid='$del' AND ocs_server_id='$ocs_server_id'";
@@ -314,10 +316,22 @@ function ocsManageDeleted($ocs_server_id) {
 						$result_ocs = $DBocs->query($query_ocs);
 						if ($data = $DBocs->fetch_array($result_ocs))
 						{
+							//Update hardware checksum due to a bug in OCS 
+							//(when changing netbios name, software checksum is set instead of hardware checksum...)
+							if ($data["CHECKSUM"] & pow(2, HARDWARE_FL))
+								$checksum=$data["CHECKSUM"];
+							else
+								//Add update hardware needed to take in effect the new netbios name
+								$checksum=$data["CHECKSUM"] + 1;
+							
 						    $query = "UPDATE glpi_ocs_link 
 														SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
 														WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
 						    $DB->query($query);
+						    
+						    //Update OCS checksum
+						    $querychecksum = "UPDATE hardware set CHECKSUM=".$checksum." WHERE ID='".$equiv."'";
+						    $DBocs->query($querychecksum);
 						}
 
 					}
@@ -1178,12 +1192,12 @@ function replaceOcsArray($glpi_id, $newArray, $field) {
 	global $DB;
 	
 	$newArray = exportArrayToDB($newArray);
-
-	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
+	//print_r($newArray);
+	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id=".$glpi_id;
 	if ($result = $DB->query($query)) {
 		$query = "UPDATE glpi_ocs_link 
 							SET $field='" . $newArray . "' 
-							WHERE glpi_id='$glpi_id'";
+							WHERE glpi_id=".$glpi_id;
 		$DB->query($query);
 	}
 }
