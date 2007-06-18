@@ -296,42 +296,45 @@ function ocsManageDeleted($ocs_server_id) {
 					// Get hardware due to bug of duplicates management of OCS
 					if (ereg("-", $equiv)) {
 						$query_ocs = "SELECT * 
-														FROM hardware 
-														WHERE DEVICEID='$equiv'";
+								FROM hardware 
+								WHERE DEVICEID='$equiv'";
 						$result_ocs = $DBocs->query($query_ocs);
 						
 						if ($data = $DBocs->fetch_array($result_ocs)) {
+							$query = "UPDATE glpi_ocs_link 
+									SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
+									WHERE ocs_deviceid='$del' AND ocs_server_id='$ocs_server_id'";
+							$DB->query($query);
 
-						    $query = "UPDATE glpi_ocs_link 
-														SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
-														WHERE ocs_deviceid='$del' AND ocs_server_id='$ocs_server_id'";
-						    $DB->query($query);
+							//Update hardware checksum due to a bug in OCS 
+ 							//(when changing netbios name, software checksum is set instead of hardware checksum...)
+							$querychecksum = "UPDATE hardware 
+									SET CHECKSUM = (CHECKSUM | ".pow(2, HARDWARE_FL).") 
+									WHERE ID='".$data["ID"]."'";
+							$DBocs->query($querychecksum);
+
 						}
 
 					} else {
 						$query_ocs = "SELECT * 
-														FROM hardware 
-														WHERE ID='$equiv'";
+								FROM hardware 
+								WHERE ID='$equiv'";
 
 						$result_ocs = $DBocs->query($query_ocs);
 						if ($data = $DBocs->fetch_array($result_ocs))
 						{
-							//Update hardware checksum due to a bug in OCS 
-							//(when changing netbios name, software checksum is set instead of hardware checksum...)
-							if ($data["CHECKSUM"] & pow(2, HARDWARE_FL))
-								$checksum=$data["CHECKSUM"];
-							else
-								//Add update hardware needed to take in effect the new netbios name
-								$checksum=$data["CHECKSUM"] + 1;
 							
-						    $query = "UPDATE glpi_ocs_link 
-														SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
-														WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
-						    $DB->query($query);
+							$query = "UPDATE glpi_ocs_link 
+								SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
+								WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
+							$DB->query($query);
 						    
-						    //Update OCS checksum
-						    $querychecksum = "UPDATE hardware set CHECKSUM=".$checksum." WHERE ID='".$equiv."'";
-						    $DBocs->query($querychecksum);
+							//Update hardware checksum due to a bug in OCS 
+ 							//(when changing netbios name, software checksum is set instead of hardware checksum...)
+							$querychecksum = "UPDATE hardware 
+									SET CHECKSUM = (CHECKSUM | ".pow(2, HARDWARE_FL).") 
+									WHERE ID='".$data["ID"]."'";
+							$DBocs->query($querychecksum);
 						}
 
 					}
