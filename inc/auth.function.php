@@ -699,23 +699,21 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
 
 function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 
-	//$login_search = ereg_replace("[^-@._[:space:][:alnum:]]", "", $login); // securite
-
 	// Tenter une recherche pour essayer de retrouver le DN
-	//$filter = "($login_attr=$login_search)";
 	$filter = "($login_attr=$login)";
 	
 	if (!empty ($condition))
 		$filter = "(& $filter $condition)";
 	
 	$result = @ldap_search($ds, $basedn, $filter, array (
-		"dn",
+		"dn", $login_attr
 	),0,0);
 	$info = @ldap_get_entries($ds, $result);
 	if (is_array($info) AND $info['count'] == 1) {
 		return $info[0]['dn'];
 	} else { // Si echec, essayer de deviner le DN / Flat LDAP
 		$dn = "$login_attr=$login, " . $basedn;
+		return $dn;
 	}
 }
 
