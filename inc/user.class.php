@@ -285,6 +285,25 @@ class User extends CommonDBTM {
 	
 			foreach($entities as $entity)
 			{
+
+				if (empty($right))
+				{
+					//If no profile is provided : get the profil by default
+					$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
+					$result = $DB->query($sql_default_profile);
+					if ($DB->numrows($result))
+					{
+						$data = $DB->fetch_array($result);
+						$affectation["FK_profiles"] = $data["ID"];
+						$affectation["FK_entities"] = $entity[0];
+						$affectation["FK_users"] = $input["ID"];
+						$affectation["recursive"] = $entity[1];
+						$affectation["dynamic"] = 1;
+						addUserProfileEntity($affectation);
+					}
+				}
+				else
+				{
 					foreach($rights as $right)
 					{
 						$affectation["FK_entities"] = $entity[0];
@@ -293,7 +312,8 @@ class User extends CommonDBTM {
 						$affectation["recursive"] = $entity[1];
 						$affectation["dynamic"] = 1;
 						addUserProfileEntity($affectation);
-					}
+					}					}
+					
 			}
 			
 			//Unset all the temporary tables

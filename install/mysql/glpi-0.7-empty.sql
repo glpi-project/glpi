@@ -2091,6 +2091,7 @@ CREATE TABLE `glpi_rules_actions` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_rules_actions VALUES ('1','1','assign','FK_entities','0');
+INSERT INTO glpi_rules_actions VALUES ('2','2','assign','FK_entities','0');
 
 ### Dump table glpi_rules_criterias
 
@@ -2106,6 +2107,9 @@ CREATE TABLE `glpi_rules_criterias` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_rules_criterias VALUES ('1','1','TAG','0','*');
+INSERT INTO glpi_rules_criterias VALUES ('2','2','uid','0','*');
+INSERT INTO glpi_rules_criterias VALUES ('3','2','samaccountname','0','*');
+INSERT INTO glpi_rules_criterias VALUES ('4','2','MAIL_EMAIL','0','*');
 
 ### Dump table glpi_rules_descriptions
 
@@ -2122,6 +2126,7 @@ CREATE TABLE `glpi_rules_descriptions` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_rules_descriptions VALUES ('1','-1','0','0','Root','','AND');
+INSERT INTO glpi_rules_descriptions VALUES ('2','-1','1','1','Root','','OR');
 
 ### Dump table glpi_rules_ldap_parameters
 
