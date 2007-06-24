@@ -821,10 +821,11 @@ function update0681to07() {
 		$result = $DB->query($query);
 		if ($DB->numrows($result) ==0)
 		{
+			//Insert rule to affect machines in the Root entity
 			$query ="INSERT INTO `glpi_rules_descriptions` (`FK_entities`, `rule_type`, `ranking`, `name`, `description`, `match`) VALUES (-1, 0, 0, 'Root', '', 'AND');";
 			$DB->query($query) or die("0.7 add default ocs affectation rule" . $LANG["update"][90] . $DB->error());
 		
-			$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root'";
+			$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root' AND rule_type=".RULE_OCS_AFFECT_COMPUTER;
 			$result = $DB->query($query);
 			//Get the defaut rule's ID
 			$datas = $DB->fetch_array($result);
@@ -832,9 +833,32 @@ function update0681to07() {
 			$query="INSERT INTO `glpi_rules_criterias` (`FK_rules`, `criteria`, `condition`, `pattern`) VALUES (".$datas["ID"].", 'TAG', 0, '*');";
 			$DB->query($query) or die("0.7 add default ocs criterias" . $LANG["update"][90] . $DB->error());
 	
-	
 			$query="INSERT INTO `glpi_rules_actions` (`FK_rules`, `action_type`, `field`, `value`) VALUES (".$datas["ID"].", 'assign', 'FK_entities', '0');";
 			$DB->query($query) or die("0.7 add default ocs actions" . $LANG["update"][90] . $DB->error());
+
+			//Insert rule to affect users from LDAP to the root entity
+			$query ="INSERT INTO `glpi_rules_descriptions` (`FK_entities`, `rule_type`, `ranking`, `name`, `description`, `match`) VALUES (-1, ".RULE_AFFECT_RIGHTS.", 1, 'Root', '', 'OR');";
+			$DB->query($query) or die("0.7 add default right affectation rule" . $LANG["update"][90] . $DB->error());
+
+			$query = "SELECT ID from glpi_rules_descriptions WHERE name='Root' AND rule_type=".RULE_AFFECT_RIGHTS;
+			$result = $DB->query($query);
+			//Get the defaut rule's ID
+			$datas = $DB->fetch_array($result);
+	
+			//Criterias
+			$query="INSERT INTO `glpi_rules_criterias` (`FK_rules`, `criteria`, `condition`, `pattern`) VALUES (".$datas["ID"].", 'uid', 0, '*');";
+			$DB->query($query) or die("0.7 add default right criterias" . $LANG["update"][90] . $DB->error());
+
+			$query="INSERT INTO `glpi_rules_criterias` (`FK_rules`, `criteria`, `condition`, `pattern`) VALUES (".$datas["ID"].", 'samaccountname', 0, '*');";
+			$DB->query($query) or die("0.7 add default right criterias" . $LANG["update"][90] . $DB->error());
+
+			$query="INSERT INTO `glpi_rules_criterias` (`FK_rules`, `criteria`, `condition`, `pattern`) VALUES (".$datas["ID"].", 'MAIL_EMAIL', 0, '*');";
+			$DB->query($query) or die("0.7 add default right criterias" . $LANG["update"][90] . $DB->error());
+	
+			//Action
+			$query="INSERT INTO `glpi_rules_actions` (`FK_rules`, `action_type`, `field`, `value`) VALUES (".$datas["ID"].", 'assign', 'FK_entities', '0');";
+			$DB->query($query) or die("0.7 add default right actions" . $LANG["update"][90] . $DB->error());
+
 		}
 	}
 	
