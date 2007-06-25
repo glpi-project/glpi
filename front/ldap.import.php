@@ -79,7 +79,13 @@ elseif (!isset($_POST["import_ok"])){
 	if (!isset($_GET['start'])) $_GET['start']=0;
 	
 	if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
-	if (!isset($_SESSION["ldap_server"])) $_SESSION["ldap_server"]=$_POST["ldap_server"];
+	if (!isset($_SESSION["ldap_server"])) {
+		if (isset($_POST["ldap_server"])){
+			$_SESSION["ldap_server"]=$_POST["ldap_server"];
+		} else {
+			glpi_header($CFG_GLPI["root_doc"]."/front/ldap.php");
+		}
+	}
 	
 	if (!testLDAPConnection($_SESSION["ldap_server"]))
 	{
