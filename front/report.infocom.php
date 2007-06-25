@@ -81,7 +81,7 @@ function display_infocoms_report($device_type,$begin,$end){
 	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
 	$query="SELECT * FROM glpi_infocoms 
-		INNER JOIN ".$LINK_ID_TABLE[$device_type]." ON (".$LINK_ID_TABLE[$device_type].".ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$device_type."')
+		INNER JOIN ".$LINK_ID_TABLE[$device_type]." ON (".$LINK_ID_TABLE[$device_type].".ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$device_type."' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$device_type]).")
 		WHERE ".$LINK_ID_TABLE[$device_type].".is_template='0' ";
 
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
