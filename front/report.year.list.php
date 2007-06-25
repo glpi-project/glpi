@@ -52,7 +52,7 @@ $items=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_
 echo "<div align='center'><big><strong>".$LANG["reports"][57]."</strong></big><br><br>";
 
 # Request All
-if(isset($_POST["item_type"][0])&&$_POST["item_type"][0] == '0'){
+if((isset($_POST["item_type"][0])&&$_POST["item_type"][0] == '0')||!isset($_POST["item_type"])){
 	$_POST["item_type"]=$items;
 }
 
@@ -91,7 +91,6 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 
 $ci=new CommonItem();
 if (isset($query)&&count($query)){
-	
 	foreach ($query as $key => $val){
 		$result = $DB->query($val);
 		if ($result&&$DB->numrows($result)){
