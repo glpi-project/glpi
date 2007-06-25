@@ -263,7 +263,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				echo displaySearchNewLine($output_type,$i%2);
 
 				if ($output_type==HTML_OUTPUT){
-					echo displaySearchItem($output_type,"<a ".($data['faq']==1?" class='pubfaq' ":"")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a><div style='font-size: 9px;	line-height: 10px; 	clear: both;	padding: 5px 0 0 45px;'>".resume_text(textBrut(unclean_cross_side_scripting_deep($data["answer"])),600)."</div>",$item_num,$row_num);
+					echo displaySearchItem($output_type,"<a ".($data['faq']?" class='pubfaq' ":"")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a><div style='font-size: 9px;	line-height: 10px; 	clear: both;	padding: 5px 0 0 45px;'>".resume_text(textBrut(unclean_cross_side_scripting_deep($data["answer"])),600)."</div>",$item_num,$row_num);
 				} else {
 					echo displaySearchItem($output_type,$data["question"],$item_num,$row_num);
 					echo displaySearchItem($output_type,textBrut(unclean_cross_side_scripting_deep($data["answer"])),$item_num,$row_num);
@@ -353,7 +353,7 @@ function showKbRecentPopular($target,$order,$faq=0){
 		echo "<tr><th>".$title."</th></tr>";
 	
 		while ($data=$DB->fetch_array($result)) {
-			echo "<tr class='tab_bg_2'><td><a ".($data['faq']==1?" class='pubfaq' ":"")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td><a ".($data['faq']?" class='pubfaq' ":"")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></td></tr>";
 		}
 		echo "</table>";
 	}
