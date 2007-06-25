@@ -90,72 +90,74 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 }
 
 $ci=new CommonItem();
-
-foreach ($query as $key => $val){
-	$result = $DB->query($val);
-	if ($result&&$DB->numrows($result)){
-		$ci->setType($key);
-		echo " <div align='center'><strong>".$ci->getType()."</strong>";
-		echo "<table class='tab_cadre_report'>";
-		echo "<tr> ";
-		echo "<th>".$LANG["common"][16]."</th>";
-		echo "<th>".$LANG["common"][28]."</th>";
-		echo "<th>".$LANG["common"][15]."</th>";
-		echo "<th>".$LANG["financial"][14]."</th>";
-		echo "<th>".$LANG["financial"][80]."</th>";
-		echo "<th>".$LANG["financial"][6]."</th>";
-		echo "<th>".$LANG["search"][8]."</th>";
-		echo "<th>".$LANG["search"][9]."</th>";
-		echo "</tr>";
-		while( $data = $DB->fetch_array($result)){
-			echo "<tr>";	
-			if($data['itemname']) {
-				echo "<td> ".$data['itemname']." </td>"; 
-			} else { 
-				echo "<td> N/A </td>";
-			}
-			if($data['itemdeleted']) {
-				echo "<td> ".$data['itemdeleted']." </td>"; 
-			} else { 
-				echo "<td> N/A </td>";
-			}
+if (isset($query)&&count($query)){
 	
-			if($data['location']) {
-				echo "<td> ".$data['location']." </td>"; 
-			} else { 
-				echo "<td> N/A </td>";
-			}
-	
-			if($data['buy_date']) {
-				echo "<td> ".convDate($data['buy_date'])." </td>"; 
-				if($data["warranty_duration"]) {
-					echo "<td> ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])." </td>"; 
-				} else {
+	foreach ($query as $key => $val){
+		$result = $DB->query($val);
+		if ($result&&$DB->numrows($result)){
+			$ci->setType($key);
+			echo " <div align='center'><strong>".$ci->getType()."</strong>";
+			echo "<table class='tab_cadre_report'>";
+			echo "<tr> ";
+			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th>".$LANG["common"][28]."</th>";
+			echo "<th>".$LANG["common"][15]."</th>";
+			echo "<th>".$LANG["financial"][14]."</th>";
+			echo "<th>".$LANG["financial"][80]."</th>";
+			echo "<th>".$LANG["financial"][6]."</th>";
+			echo "<th>".$LANG["search"][8]."</th>";
+			echo "<th>".$LANG["search"][9]."</th>";
+			echo "</tr>";
+			while( $data = $DB->fetch_array($result)){
+				echo "<tr>";	
+				if($data['itemname']) {
+					echo "<td> ".$data['itemname']." </td>"; 
+				} else { 
 					echo "<td> N/A </td>";
 				}
-			} else {
-				echo "<td> N/A </td><td> N/A </td>";
-			}
-			if($data['type']) {
-				echo "<td> ".$data['type']." </td>"; 
-			} else { 
-				echo "<td> N/A </td>";
-			}
-	
-			if($data['begin_date']) {
-				echo "<td> ".convDate($data['begin_date'])." </td>"; 
-				if($data["duration"]) {
-					echo "<td> ".getWarrantyExpir($data["begin_date"],$data["duration"])." </td>"; 
-				} else {
+				if($data['itemdeleted']) {
+					echo "<td> ".$data['itemdeleted']." </td>"; 
+				} else { 
 					echo "<td> N/A </td>";
 				}
-			} else {
-				echo "<td> N/A </td><td> N/A </td>";
-			}
-	
-			echo "</tr>\n";
-		}	
-		echo "</table></div><br><hr><br>";
+		
+				if($data['location']) {
+					echo "<td> ".$data['location']." </td>"; 
+				} else { 
+					echo "<td> N/A </td>";
+				}
+		
+				if($data['buy_date']) {
+					echo "<td> ".convDate($data['buy_date'])." </td>"; 
+					if($data["warranty_duration"]) {
+						echo "<td> ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])." </td>"; 
+					} else {
+						echo "<td> N/A </td>";
+					}
+				} else {
+					echo "<td> N/A </td><td> N/A </td>";
+				}
+				if($data['type']) {
+					echo "<td> ".$data['type']." </td>"; 
+				} else { 
+					echo "<td> N/A </td>";
+				}
+		
+				if($data['begin_date']) {
+					echo "<td> ".convDate($data['begin_date'])." </td>"; 
+					if($data["duration"]) {
+						echo "<td> ".getWarrantyExpir($data["begin_date"],$data["duration"])." </td>"; 
+					} else {
+						echo "<td> N/A </td>";
+					}
+				} else {
+					echo "<td> N/A </td><td> N/A </td>";
+				}
+		
+				echo "</tr>\n";
+			}	
+			echo "</table></div><br><hr><br>";
+		}
 	}
 }
 
