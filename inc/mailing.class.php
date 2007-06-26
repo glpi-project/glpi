@@ -53,7 +53,7 @@ class glpi_phpmailer extends phpmailer {
 		global $CFG_GLPI;
 
 		// Comes from config
-
+		$this->SetLanguage("en", GLPI_ROOT . "/lib/phpmailer/language/");
 		if($CFG_GLPI['smtp_mode'] == '1') {
 			$this->Host = $CFG_GLPI['smtp_host'];
 			$this->Port = $CFG_GLPI['smtp_port'];
@@ -163,6 +163,21 @@ class Mailing
 							case ASSIGN_MAILING :
 								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
 									$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["assign"]."')";
+									if ($result2 = $DB->query($query2)) {
+										if ($DB->numrows($result2)==1){
+											$row = $DB->fetch_array($result2);
+											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+												$emails[]=$row['EMAIL'];
+											}
+										}
+									}
+								}
+								break;
+								// ASSIGN SEND
+							case ASSIGN_ENT_MAILING :
+								
+								if (!$sendprivate&&isset($this->job->fields["assign_ent"])&&$this->job->fields["assign_ent"]>0){
+									$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_enterprises WHERE (ID = '".$this->job->fields["assign_ent"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -421,6 +436,7 @@ class Mailing
 		{	
 			if (!is_null($this->job)&&!is_null($this->user)&&in_array($this->type,array("new","update","followup","finish")))
 			{
+				$senderror=false;
 				// get users to send mail
 				$users=array();
 				// All users
@@ -457,14 +473,16 @@ class Mailing
 							$mmail->isHTML(true);
 							$mmail->AltBody=$textbody;
 							if(!$mmail->Send()){
-								$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailing"][47]."<br>".$mmail->ErrorInfo;
-								return false;
-							}
+								$senderror=true;
+								$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailing"][47]."<br>".$mmail->ErrorInfo."<br>";
+							} 
 							$mmail->ClearAddresses(); 
 						}
 					}
 				}
-				
+				if ($senderror){
+					return false;
+				}
 			} else {
 				$_SESSION['MESSAGE_AFTER_REDIRECT'].="Invalid mail type";
 			}

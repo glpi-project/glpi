@@ -101,7 +101,12 @@ function testMail(){
 					case RECIPIENT_MAILING :
 						$name = $LANG["job"][3];
 						break;
-
+					case ASSIGN_ENT_MAILING :
+						$name = $LANG["financial"][26];
+						break;
+					default :
+						$name="&nbsp;";
+						break;
 				}
 				$options.= "<option value='" . $data["ID"] . "'>" . $name . "</option>";
 			}

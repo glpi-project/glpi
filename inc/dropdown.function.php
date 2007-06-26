@@ -445,9 +445,19 @@ function getDropdownName($table,$id,$withcomments=0) {
 							if (!empty($data["email"])){
 								$comments.="<br><strong>".$LANG["setup"][14].":</strong> ".$data["email"];
 							}
-	
-							
 							break;
+						case "glpi_enterprises" :
+							if (!empty($data["phone"])){
+								$comments.="<br><strong>".$LANG["financial"][29].":</strong> ".$data["phone"];
+							}
+							if (!empty($data["fax"])){
+								$comments.="<br><strong>".$LANG["financial"][30].":</strong> ".$data["fax"];
+							}
+							if (!empty($data["email"])){
+								$comments.="<br><strong>".$LANG["setup"][14].":</strong> ".$data["email"];
+							}
+							break;
+
 						case "glpi_dropdown_netpoint":
 							$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
 							break;
