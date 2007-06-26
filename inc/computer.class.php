@@ -162,8 +162,9 @@ class Computer extends CommonDBTM {
 				}
 
 				if ($update_done) {
-					if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["computers"][49];
+					if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$LANG["computers"][49])===false){
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["computers"][49]."<br>";
+					}
 				}
 
 			}
@@ -205,8 +206,9 @@ class Computer extends CommonDBTM {
 					}
 				}
 				if ($update_done) {
-					if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["computers"][50];
+					if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$LANG["computers"][50])===false){
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["computers"][50]."<br>";
+					}
 				}
 
 			}
@@ -243,8 +245,9 @@ class Computer extends CommonDBTM {
 					}
 				}
 				if ($update_done) {
-					if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["computers"][48];
+					if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$LANG["computers"][48])===false){
+						$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["computers"][48]."<br>";
+					}
 				}
 
 			}
