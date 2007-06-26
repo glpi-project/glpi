@@ -179,7 +179,7 @@ function getEnterpriseLinks($value,$withname=0){
 		if ($withname==1) $ret.=$ent->fields["name"];
 
 		if (!empty($ent->fields['website'])){
-			if (!ereg("https*://",$ent->fields['website']))	$website="http://".$ent->fields['website'];
+			if (!ereg("^https?",$ent->fields['website']))	$website="http://".$ent->fields['website'];
 			else $website=$ent->fields['website'];
 			$ret.= "&nbsp;&nbsp;";
 			$ret.= "<a href='$website' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' style='vertical-align:middle;' alt='".$LANG["common"][4]."' title='".$LANG["common"][4]."' ></a>";
