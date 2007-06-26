@@ -529,6 +529,7 @@ class Config extends CommonDBTM {
 				$profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG["common"][34] . " " . $LANG["common"][1];
 				$profiles[USER_MAILING_TYPE . "_" . AUTHOR_MAILING] = $LANG["job"][4];
 				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING] = $LANG["setup"][239];
+				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING] = $LANG["financial"][26];
 				$profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG["job"][3];
 	
 				$query = "SELECT ID, name FROM glpi_profiles order by name";
@@ -571,6 +572,7 @@ class Config extends CommonDBTM {
 				echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG["setup"][225] . "</th></tr>";
 				echo "<tr class='tab_bg_2'>";
 				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING]);
+				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING]);
 				unset ($profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING]);
 				showFormMailingType("resa", $profiles);
 				echo "</tr>";
