@@ -162,7 +162,7 @@ class Mailing
 								// ASSIGN SEND
 							case ASSIGN_MAILING :
 								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
-									$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["assign"]."')";
+									$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$this->job->fields["assign"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -177,7 +177,7 @@ class Mailing
 							case ASSIGN_ENT_MAILING :
 								
 								if (!$sendprivate&&isset($this->job->fields["assign_ent"])&&$this->job->fields["assign_ent"]>0){
-									$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_enterprises WHERE (ID = '".$this->job->fields["assign_ent"]."')";
+									$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_enterprises WHERE (glpi_users.ID = '".$this->job->fields["assign_ent"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -191,7 +191,7 @@ class Mailing
 								// RECIPIENT SEND
 							case RECIPIENT_MAILING :
 								if (isset($this->job->fields["recipient"])&&$this->job->fields["recipient"]>0){
-									$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["recipient"]."')";
+									$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$this->job->fields["recipient"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -214,7 +214,7 @@ class Mailing
 										$authorsend=true;
 									} else {
 										// Is the user have the same mail that uemail ?
-										$query2 = "SELECT DISTINCT email AS EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["author"]."')";
+										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$this->job->fields["author"]."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
@@ -233,7 +233,7 @@ class Mailing
 								// OLD ASSIGN SEND
 							case OLD_ASSIGN_MAILING :
 								if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
-									$query2 = "SELECT DISTINCT email AS EMAIL FROM glpi_users $join WHERE (ID = '".$this->job->fields["_old_assign"]."')";
+									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$this->job->fields["_old_assign"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -250,7 +250,7 @@ class Mailing
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									if ($tmp=$ci->getField('tech_num')){
-										$query2 = "SELECT DISTINCT email as EMAIL FROM glpi_users $join WHERE (ID = '".$tmp."')";
+										$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
@@ -268,7 +268,7 @@ class Mailing
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									if ($tmp=$ci->getField('FK_users')){
-										$query2 = "SELECT DISTINCT email AS EMAIL FROM glpi_users $join WHERE (ID = '".$tmp."')";
+										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
@@ -560,7 +560,7 @@ class MailingResa{
 									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
 									if ($tmp=$ci->getField('tech_num')){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$tmp."')";
+										$query2 = "SELECT glpi_users.email FROM glpi_users WHERE (glpi_users.ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -580,7 +580,7 @@ class MailingResa{
 									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
 									if ($tmp=$ci->getField('FK_users')){
-										$query2 = "SELECT email FROM glpi_users WHERE (ID = '".$tmp."')";
+										$query2 = "SELECT glpi_users.email FROM glpi_users WHERE (glpi_users.ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
