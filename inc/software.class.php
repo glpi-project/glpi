@@ -304,7 +304,7 @@ class Software extends CommonDBTM {
 
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][46] . ":</td><td>";
 				if (haveRight("software", "w")){
-					echo "<select name='helpdesk_visible'><option value='1' " . ($this->fields['helpdesk_visible'] == 1 ? "selected" : "") . ">" . $LANG["choice"][1] . "</option><option value='0' " . ($this->fields['helpdesk_visible'] == 0 ? "selected" : "") . ">" . $LANG["choice"][0] . "</option></select>";
+					dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
 				} else {
 					if ($this->fields['helpdesk_visible'] == 1)
 						echo $LANG["choice"][1];

@@ -62,21 +62,20 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildca
 	$FWHERE="";
 	if ($_POST['table']!="glpi_software"){
 		$WWHERE=" OR serial ".makeTextSearch($_POST['searchText'])." OR otherserial ".makeTextSearch($_POST['searchText']);
-	} else {
-		//If software : filter to display only the softwares that are allowed to be visible in Helpdesk
-	 	$FWHERE=" AND helpdesk_visible=1";
-	}
+	} 
 	 	
-	$where.=$FWHERE." AND (name ".makeTextSearch($_POST['searchText'])." OR ID = '".$_POST['searchText']."' $WWHERE)";
+	$where.=" AND (name ".makeTextSearch($_POST['searchText'])." OR ID = '".$_POST['searchText']."' $WWHERE)";
 }
-
-
+//If software : filter to display only the softwares that are allowed to be visible in Helpdesk
+if ($_POST['table']=="glpi_software"){
+	$where.= " AND helpdesk_visible=1 ";
+}
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 $query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
-
+echo $query;
 $result = $DB->query($query);
 
 echo "<select name=\"".$_POST['myname']."\" size='1'>";

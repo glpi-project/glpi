@@ -321,8 +321,7 @@ function ocsManageDeleted($ocs_server_id) {
 								WHERE ID='$equiv'";
 
 						$result_ocs = $DBocs->query($query_ocs);
-						if ($data = $DBocs->fetch_array($result_ocs))
-						{
+						if ($data = $DBocs->fetch_array($result_ocs)){
 							
 							$query = "UPDATE glpi_ocs_link 
 								SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
