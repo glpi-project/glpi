@@ -55,7 +55,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)!=0) { 
 			$colspan=9;
-			if (empty($withtemplate)){
+			if ($withtemplate!=2){
 				echo "<form id='networking_ports' name='networking_ports' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php\">";
 				if ($canedit)
 					$colspan++;
@@ -120,7 +120,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo "</table>";
 			echo "</div>\n\n";
 
-			if ($canedit){
+			if ($canedit&&$withtemplate!=2){
 				echo "<div align='center'>";
 				echo "<table width='80%'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
@@ -133,8 +133,10 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "</table>";
 
 				echo "</div>";
-			} 
-			if (empty($withtemplate)){
+			} else {
+				echo "<br>";
+			}
+			if ($withtemplate!=2){
 				echo "</form>";
 			}
 		}
