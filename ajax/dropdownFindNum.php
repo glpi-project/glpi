@@ -75,7 +75,7 @@ $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 $query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
-echo $query;
+
 $result = $DB->query($query);
 
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
