@@ -409,9 +409,6 @@ class Job extends CommonDBTM{
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
-		// Process Business Rules
-		$rules=new TrackingBusinessRuleCollection();
-		$input=$rules->processAllRules($input,$input);
 
 		if (isset($_SESSION["glpiID"])) $input["recipient"]=$_SESSION["glpiID"];
 		else if ($input["author"]) $input["recipient"]=$input["author"];
@@ -425,8 +422,9 @@ class Job extends CommonDBTM{
 				$input["author"]=$_SESSION["glpiID"];
 			else $input["author"]=1; // Helpdesk injector
 		}
-		if ($input["assign"]>0&&$input["status"]=="new"){
-			$input["status"] = "assign";
+
+		if (!isset($input["date"])){
+			$input["date"] = $_SESSION["glpi_currenttime"];
 		}
 
 		if (isset($input["computer"])&&$input["computer"]==0){
@@ -437,16 +435,9 @@ class Job extends CommonDBTM{
 			$input["computer"]=0;
 		}
 
-		if (!isset($input["date"])){
-			$input["date"] = $_SESSION["glpi_currenttime"];
-		}
 
-		if (strstr($input["status"],"old_")){
-			$input["closedate"] = $input["date"];
-		}
-
-
-		if ($input["computer"]&&$input["device_type"]){
+		// Auto group define
+		if (isset($input["computer"])&&$input["computer"]&&$input["device_type"]){
 			$ci=new CommonItem;
 			$ci->getFromDB($input["device_type"],$input["computer"]);
 			if ($tmp=$ci->getField('FK_groups')){
@@ -454,21 +445,39 @@ class Job extends CommonDBTM{
 			}
 		}
 
+		if ($CFG_GLPI["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
+			$ci=new CommonItem;
+			$ci->getFromDB($input["device_type"],$input["computer"]);
+			if ($tmp=$ci->getField('tech_num')){
+				$input["assign"] = $tmp;
+				if ($input["assign"]>0){
+					$input["status"] = "assign";
+				}
+			}
+		}
+
+		// Process Business Rules
+		$rules=new TrackingBusinessRuleCollection();
+		$input=$rules->processAllRules($input,$input);
+
 		if (isset($input["emailupdates"])&&$input["emailupdates"]&&empty($input["uemail"])){
 			$user=new User();
 			$user->getFromDB($input["author"]);
 			$input["uemail"]=$user->fields["email"];
 		}
 
-		if ($CFG_GLPI["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
-			$ci=new CommonItem;
-			$ci->getFromDB($input["device_type"],$input["computer"]);
-			if ($tmp=$ci->getField('tech_num')){
-				$input["assign"] = $tmp;
-				if ($input["assign"]>0)
-					$input["status"] = "assign";
-			}
+		if ($input["assign"]>0&&$input["status"]=="new"){
+			$input["status"] = "assign";
 		}
+
+		if (strstr($input["status"],"old_")){
+			$input["closedate"] = $input["date"];
+		}
+
+
+
+
+
 
 		if (isset($input["hour"])&&isset($input["minute"])){
 			$input["realtime"]=$input["hour"]+$input["minute"]/60;
