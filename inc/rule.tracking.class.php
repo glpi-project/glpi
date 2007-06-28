@@ -58,6 +58,7 @@ class TrackingBusinessRule extends Rule {
 		$this->type = -1;
 		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
 		$this->right="rule_tracking";
+		$this->can_sort=true;		
 
 	}
 
