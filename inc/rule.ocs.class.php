@@ -218,7 +218,7 @@ class OcsAffectEntityRule extends Rule {
 		$this->type = -1;
 		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
 		$this->right="rule_ocs";
-		$this->stop_on_first_match=true;
+		$this->can_sort=true;
 	}
 
 	function getTitle() {

@@ -281,7 +281,7 @@ class Rule extends CommonDBTM{
 	// Rule type
 	var $rule_type;
 	var $right="config";
-	var $stop_on_first_match;
+	var $can_sort;
 
 	/**
 	* Constructor
@@ -291,7 +291,7 @@ class Rule extends CommonDBTM{
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type=$rule_type;
-		$this->stop_on_first_match=false;
+		$this->can_sort=false;
 	}
 
 	function getTitleRule($target)
@@ -350,7 +350,7 @@ class Rule extends CommonDBTM{
 			echo "</td>";
 			
 			
-			if ($this->stop_on_first_match)
+			if ($this->can_sort)
 			{
 				echo "<td class='tab_bg_2'>" . $LANG["rulesengine"][10] . "</td>";
 				echo "<td class='tab_bg_2'>"; 
@@ -877,12 +877,12 @@ class Rule extends CommonDBTM{
 		echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a></td>";
 					
 		echo "<td>".$this->fields["description"]."</td>";
-		if ($this->stop_on_first_match && !$first && $canedit){
+		if ($this->can_sort && !$first && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
-		if ($this->stop_on_first_match && !$last && $canedit){
+		if ($this->can_sort && !$last && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=down&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
