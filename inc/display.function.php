@@ -536,7 +536,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 
 		}
 		if (haveRight("link","r")){
-			$menu['config']['content']['link']['title']=$LANG["setup"][87];
+			$menu['config']['content']['link']['title']=$LANG["title"][33];
 			$menu['config']['content']['link']['page']='/front/link.php';
 			$menu['config']['content']['link']['hide']=true;
 			$menu['config']['content']['link']['links']['search']='/front/link.php';
