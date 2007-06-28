@@ -867,7 +867,7 @@ class User extends CommonDBTM {
 				echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-			if (haveRight("show_ticket","w"))
+			if (haveRight("show_ticket", "1"))
 			{
 				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][40] . "</td><td>";
 				dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
