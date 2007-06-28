@@ -964,7 +964,7 @@ $LANG["ocsng"][14]="Date dernière mise à jour OCS";
 $LANG["ocsng"][15]="Aucun champ verrouillé";
 $LANG["ocsng"][16]="Champs verrouillés";
 $LANG["ocsng"][18]="Connexion à la base de données OCS réussie";
-$LANG["ocsng"][19]="Version OCS NG valide";
+$LANG["ocsng"][19]="Version et Configuration OCS NG valide";
 $LANG["ocsng"][20]="Version d'OCS NG non valide : nécessite RC3";
 $LANG["ocsng"][21]="Echec de connexion à la base de données OCS NG";
 $LANG["ocsng"][22]="Attention ! Les données importées (voir votre configuration) écraseront les données existantes";
@@ -985,6 +985,9 @@ $LANG["ocsng"][37]="Activer la prévisualisation";
 $LANG["ocsng"][38]="Désactiver la prévisualisation";
 $LANG["ocsng"][40]="Match règle ?";
 $LANG["ocsng"][41]="Mode d'import manuel";
+$LANG["ocsng"][42]="Configuration OCS NG invalide (TRACE_DELETED doit être activé)"; 
+$LANG["ocsng"][43]="Accès refusé sur la base OCS (Droit d'écriture sur hardware.CHECKSUM nécessaire)"; 
+$LANG["ocsng"][44]="Accès refusé sur la base OCS (Droit de suppression sur deleted_equiv nécessaire)"; 
 
 
 $LANG["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
@@ -1240,7 +1243,11 @@ $LANG["rulesengine"][28]="Règles métier pour le suivi";
 $LANG["rulesengine"][29]="Liste des règles";
 $LANG["rulesengine"][30]="Action"; 
 $LANG["rulesengine"][31]="Récupérer la valeur";
-
+$LANG["rulesengine"][32]="Après";
+$LANG["rulesengine"][33]="Premier";
+$LANG["rulesengine"][34]="Dernier";
+$LANG["rulesengine"][35]="Position actuelle";
+$LANG["rulesengine"][36]="Actuellement";
 
 $LANG["ruleldap"][1]="des critères LDAP";
 $LANG["ruleldap"][2]="Aucun critère défini";
