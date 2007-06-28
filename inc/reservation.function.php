@@ -458,7 +458,7 @@ function printReservationItem($target,$ID,$date){
 				}
 				$comment="<div class='over_link' id='content_".$ID.$rand."'>".nl2br($row["comment"])."</div>";
 
-				echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><strong>".$user->fields["name"]."</strong></span>";
+				echo "<td   align='center' class='tab_resa'>". $modif."<span>".$display."<br><strong>".formatUserName($user->fields["ID"],$user->fields["name"],$user->fields["realname"],$user->fields["firstname"])."</strong></span>";
 
 				echo $modif_end.$comment."</td></tr>";
 
