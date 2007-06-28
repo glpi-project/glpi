@@ -175,12 +175,16 @@ class Document extends CommonDBTM {
 			if (!$ID) {
 				echo "<tr><th colspan='3'>";
 				echo $LANG["document"][16];
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				if (count($_SESSION['glpiactiveentities'])>1){
+					echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				}
 				echo "</th></tr>";
 			} else {
 				echo "<tr><th colspan='1'>";
 				echo $LANG["common"][2]." $ID";
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				if (count($_SESSION['glpiactiveentities'])>1){
+					echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				}
 				echo "</th><th colspan='2'>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th></tr>";
 			}		
 			

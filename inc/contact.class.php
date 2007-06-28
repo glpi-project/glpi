@@ -139,7 +139,9 @@ class Contact extends CommonDBTM{
 				echo $LANG["common"][2]." $ID";
 				echo "&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
 			}		
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			if (count($_SESSION['glpiactiveentities'])>1){
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			}
 
 			echo "</th></tr>";
 

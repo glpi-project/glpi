@@ -1516,8 +1516,10 @@ function showJobDetails ($target,$ID){
 			echo $recipient->getName();
 		}
 
-		
-		echo "&nbsp;(".getDropdownName("glpi_entities",$job->fields["FK_entities"]).")";
+		if (count($_SESSION['glpiactiveentities'])>1){
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+		}
+
 		echo "</th>";
 		echo "<th style='font-size:10px'>".$LANG["joblist"][12].":\n";
 		if (!ereg("old_",$job->fields["status"])){
