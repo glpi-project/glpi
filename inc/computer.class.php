@@ -467,7 +467,9 @@ class Computer extends CommonDBTM {
 				echo $LANG["common"][6]."&nbsp;: ";
 				autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],20,$this->fields["FK_entities"]);	
 			}
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			if (count($_SESSION['glpiactiveentities'])>1){
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			}
 
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 

@@ -127,7 +127,9 @@ class Enterprise extends CommonDBTM {
 			} else {
 				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}		
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			if (count($_SESSION['glpiactiveentities'])>1){
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			}
 
 			echo "</th></tr>";
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {

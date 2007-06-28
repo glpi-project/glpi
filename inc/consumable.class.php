@@ -127,7 +127,9 @@ class ConsumableType extends CommonDBTM {
 				} else {
 					echo $LANG["common"][2]." $ID";
 				}		
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				if (count($_SESSION['glpiactiveentities'])>1){
+					echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				}
 
 				echo "</th></tr>\n";
 	
