@@ -449,24 +449,29 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		echo "<div align='center'>";
 
 		if ($ID != -1) {
-			checkOCSconnection($ID);
-			
-			if (!$DBocs->error) {
-				echo $LANG["ocsng"][18] . "<br>";
-				$result = $DBocs->query("SELECT TVALUE FROM config WHERE NAME='GUI_VERSION'");
-				if ($DBocs->numrows($result) == 1 && $DBocs->result($result, 0, 0) >= 4020) {
-					$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
-					$DBocs->query($query);
-
-					echo $LANG["ocsng"][19];
-					if ($withtemplate == 2)
-						$this->ocsFormConfig($target,$ID,$withtemplate,$templateid);
-					else
-						$this->ocsFormConfig($target, $ID,$withtemplate);
-				} else
-					echo $LANG["ocsng"][20];
-			} else {
+			if (!checkOCSconnection($ID)){
 				echo $LANG["ocsng"][21];
+			}
+			else if (!ocsCheckConfig(1)) {
+				echo $LANG["ocsng"][20];
+			}
+			else if (!ocsCheckConfig(2)) {
+				echo $LANG["ocsng"][42];
+			}
+			else if (!ocsCheckConfig(4)) {
+				echo $LANG["ocsng"][43];
+			}
+			else if (!ocsCheckConfig(8)) {
+				echo $LANG["ocsng"][44];
+			}
+			else {
+				echo $LANG["ocsng"][18] . "<br>";
+				echo $LANG["ocsng"][19];
+
+				if ($withtemplate == 2)
+					$this->ocsFormConfig($target,$ID,$withtemplate,$templateid);
+				else
+					$this->ocsFormConfig($target, $ID,$withtemplate);
 			}
 
 		}

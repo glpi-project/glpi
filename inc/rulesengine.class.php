@@ -143,18 +143,20 @@ class RuleCollection {
 	{
 		global $DB;
 		$rules = array();
-		$sql ="SELECT ID FROM glpi_rules_descriptions WHERE rule_type =".$this->rule_type." ORDER BY ranking ASC";
-		$result = $DB->query($sql);
 		$i=0;
+		$sql ="SELECT ID FROM glpi_rules_descriptions WHERE rule_type =".$this->rule_type." ORDER BY ranking ASC";
+		
+		$result = $DB->query($sql);
+
 		//Reorder rules : we reaffect ranking for each rule of type $type
 		for ($i=0;$rule = $DB->fetch_array($result);$i++){
-				//If action is up and if the rule is not the fist of the list
-				if ($action == "up" && $i > 0 && $rule["ID"] == $ID){
+			//If action is up and if the rule is not the fist of the list
+			if ($action == "up" && $i > 0 && $rule["ID"] == $ID){
 					$rules[$i] = $rules[$i-1];
 					$rules[$i-1] = $ID;
 					$action ="";
 				} elseif ($action == "down" && $i < $DB->numrows($result) && $ID == $rules[$i-1]){
-				//If action is down and if not the last 
+					//If action is down and if not the last 
 					$rules[$i] = $ID;
 					$rules[$i-1] = $rule["ID"];
 					$action = "";
@@ -162,12 +164,66 @@ class RuleCollection {
 					$rules[$i]=$rule["ID"];
 				}
 		}
-		
+
 		for ($i=0; $i < sizeof($rules);$i++){
 			$sql = "UPDATE glpi_rules_descriptions SET ranking='".$i."' WHERE ID='".$rules[$i]."'";
 			$DB->query($sql);				
 		}
 	}
+	
+	function deleteRuleOrder($ID)
+	{
+		global $DB;
+		$rules = array();
+		$i=0;
+		$sql ="SELECT ID FROM glpi_rules_descriptions WHERE rule_type =".$this->rule_type." ORDER BY ranking ASC";
+		
+		$result = $DB->query($sql);
+		for ($i=0;$rule = $DB->fetch_array($result);$i++)
+		{
+			if ($rule["ID"] < $ID) 
+				$sql = "UPDATE glpi_rules_descriptions SET ranking='".$i."' WHERE ID='".$rules[$i]."'";
+			elseif ($rule["ID"] == $ID)
+				$i--;
+					
+			$DB->query($sql);				
+		}		
+	}
+	
+	function moveRule($ID,$newrank)
+	{
+		global $DB;
+		$ruleDescription = new Rule;
+		$ruleDescription->getFromDB($ID);
+				
+		//If ranking has changed
+		if ($ruleDescription->fields["ranking"] != $newrank)
+		{
+			$oldrank = $ruleDescription->fields["ranking"];
+			$diff = $newrank - $oldrank; 
+			if ( $diff > 0)
+			{
+				$where_sql =" AND ranking > ".$oldrank." AND ranking <= ".$newrank;
+				$update = "SET ranking=ranking-1";
+			}
+			else
+			{
+				$where_sql =" AND ranking >= ".$newrank. " AND ranking < ".$oldrank;
+				$update = "SET ranking=ranking+1";				
+			}
+			$sql ="SELECT name,ID FROM glpi_rules_descriptions WHERE rule_type =".$this->rule_type." ".$where_sql." ORDER BY ranking ASC";
+			$result = $DB->query($sql);
+
+			$sql_update = "UPDATE glpi_rules_descriptions SET ranking=".$newrank." WHERE ID=".$ID;
+			$DB->query($sql_update);
+			
+			while ($rule = $DB->fetch_array($result))
+			{
+				$sql_update = "UPDATE glpi_rules_descriptions ".$update." WHERE ID=".$rule["ID"];
+				$DB->query($sql_update);
+			}
+		}		
+}
 	/**
 	* Process all the rules collection
 	* @param $input the input data used to check criterias
@@ -225,6 +281,7 @@ class Rule extends CommonDBTM{
 	// Rule type
 	var $rule_type;
 	var $right="config";
+	var $stop_on_first_match;
 
 	/**
 	* Constructor
@@ -234,6 +291,7 @@ class Rule extends CommonDBTM{
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type=$rule_type;
+		$this->stop_on_first_match=false;
 	}
 
 	function getTitleRule($target)
@@ -291,9 +349,16 @@ class Rule extends CommonDBTM{
 			$this->dropdownRulesMatch("match",$this->fields["match"]);
 			echo "</td>";
 			
-
-			echo "<td class='tab_bg_2'>" . $LANG["rulesengine"][10] . "</td>";
-			echo "<td class='tab_bg_2'>" . (isset($this->fields["ranking"])?$this->fields["ranking"]:"") . "</td>";
+			
+			if ($this->stop_on_first_match)
+			{
+				echo "<td class='tab_bg_2'>" . $LANG["rulesengine"][10] . "</td>";
+				echo "<td class='tab_bg_2'>"; 
+				dropdownRuleRanking($this->rule_type,(isset($this->fields["ranking"])&&$this->fields["ranking"]!=''?$this->fields["ranking"]:-1));
+				echo "</td>";
+			}
+			else
+				echo "<td class='tab_bg_2' colspan='2'></td>";
 
 			echo "</tr>";
 			
@@ -809,21 +874,15 @@ class Rule extends CommonDBTM{
 		else
 			echo "<td></td>";
 				
-		//if ($canedit){
-			echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a></td>";
-	/*
-		} else{
-			echo "<td>".$this->fields["name"] . "</td>";
-		}
-		*/
+		echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a></td>";
 					
 		echo "<td>".$this->fields["description"]."</td>";
-		if (!$first && $canedit){
+		if ($this->stop_on_first_match && !$first && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
-		if (!$last && $canedit){
+		if ($this->stop_on_first_match && !$last && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=down&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";

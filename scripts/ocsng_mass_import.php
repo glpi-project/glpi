@@ -60,9 +60,7 @@ if (isset($_GET["limit"])) $limit=$_GET["limit"];
 $DBocs = new DBocs($ocs_server_id);
 $cfg_ocs=getOcsConf($ocs_server_id);
 
-// PREREQUISITE : activate trace_deleted
-$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
-$DBocs->query($query);
+// PREREQUISITE : activate trace_deleted (check done in ocsManageDeleted)
 // Clean links
 ocsManageDeleted($ocs_server_id);
 ocsCleanLinks($ocs_server_id);

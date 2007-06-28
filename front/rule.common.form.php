@@ -47,6 +47,7 @@ if (isset($_GET['onglet'])) {
 
 $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
+$rulecollection = new RuleCollection($rule->rule_type);
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rules");
 if (isset($_POST["delete_criteria"]))
@@ -88,6 +89,8 @@ elseif (isset($_POST["add_action"]))
 elseif (isset($_POST["update_rule"]))
 {
 	checkRight($rule->right,"w");
+	$rulecollection->moveRule($_POST["ID"],$_POST["ranking"]);	
+	unset($_POST["ranking"]);
 	$rule->update($_POST);
 	logEvent($_POST['ID'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -100,6 +103,7 @@ elseif (isset($_POST["update_rule"]))
 } elseif (isset($_POST["delete_rule"]))
 {
 	checkRight($rule->right,"w");
+	$rulecollection->deleteRuleOrder($_POST["ID"]);
 	$rule->delete($_POST);
 	logEvent($_POST["ID"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");

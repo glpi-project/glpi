@@ -270,14 +270,46 @@ function ocsLink($ocs_id, $ocs_server_id, $glpi_computer_id) {
 	}
 }
 
+function ocsCheckConfig($what=1) {
+	global $DBocs;
+
+	# Check OCS version
+	if ($what & 1) {
+		$result = $DBocs->query("SELECT TVALUE FROM config WHERE NAME='GUI_VERSION'");
+		if ($DBocs->numrows($result) != 1 || $DBocs->result($result, 0, 0) < 4020) {
+			return false;
+		}
+	}
+	# Check TRACE_DELETED in CONFIG
+	if ($what & 2) {
+		$result = $DBocs->query("SELECT IVALUE FROM config WHERE NAME='TRACE_DELETED'");
+		if ($DBocs->numrows($result) != 1 || $DBocs->result($result, 0, 0) != 1) {
+			$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
+
+			if (!$DBocs->query($query)) return false;			
+		}
+	}
+	# Check write access on hardware.CHECKSUM
+	if ($what & 4) {
+		if (!$DBocs->query("UPDATE hardware SET CHECKSUM = CHECKSUM LIMIT 1")) {
+			return false;			
+		}
+	}
+	# Check delete access on deleted_equiv
+	if ($what & 8) {
+		if (!$DBocs->query("DELETE FROM deleted_equiv LIMIT 0")) {
+			return false;			
+		}
+	}
+
+	return true;
+}
 function ocsManageDeleted($ocs_server_id) {
 	global $DB, $DBocs;
 
-	checkOCSconnection($ocs_server_id);
-
-	// Activate TRACE_DELETED : ALSO DONE IN THE CONFIG
-	$query = "UPDATE config SET IVALUE='1' WHERE NAME='TRACE_DELETED'";
-	$DBocs->query($query);
+	if (!(checkOCSconnection($ocs_server_id) && ocsCheckConfig(1))) {
+		return false;
+	}
 
 	$query = "SELECT * FROM deleted_equiv";
 	$result = $DBocs->query($query);
