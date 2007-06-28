@@ -1898,7 +1898,7 @@ function showProfileSelecter($target){
 	} //else echo "only one entity -> no select to print";
 */	
 
-	if (isMultiEntitiesMode){
+	if (isMultiEntitiesMode()){
 		echo "<li>";
 		echo "<a href='#' onClick=\"completecleandisplay('show_entities');\">".$_SESSION["glpiactive_entity_name"]."</a>";
 	
