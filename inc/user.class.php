@@ -285,35 +285,24 @@ class User extends CommonDBTM {
 	
 			foreach($entities as $entity)
 			{
-
-				if (empty($right))
-				{
+				if (count($rights)==0){
 					//If no profile is provided : get the profil by default
 					$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
 					$result = $DB->query($sql_default_profile);
 					if ($DB->numrows($result))
 					{
-						$data = $DB->fetch_array($result);
-						$affectation["FK_profiles"] = $data["ID"];
-						$affectation["FK_entities"] = $entity[0];
-						$affectation["FK_users"] = $input["ID"];
-						$affectation["recursive"] = $entity[1];
-						$affectation["dynamic"] = 1;
-						addUserProfileEntity($affectation);
+						$rights[]=$data["ID"];
 					}
 				}
-				else
-				{
-					foreach($rights as $right)
-					{
-						$affectation["FK_entities"] = $entity[0];
-						$affectation["FK_profiles"] = $right;
-						$affectation["FK_users"] = $input["ID"];
-						$affectation["recursive"] = $entity[1];
-						$affectation["dynamic"] = 1;
-						addUserProfileEntity($affectation);
-					}					}
-					
+				
+				foreach($rights as $right){
+					$affectation["FK_entities"] = $entity[0];
+					$affectation["FK_profiles"] = $right;
+					$affectation["FK_users"] = $input["ID"];
+					$affectation["recursive"] = $entity[1];
+					$affectation["dynamic"] = 1;
+					addUserProfileEntity($affectation);
+				}
 			}
 			
 			//Unset all the temporary tables
