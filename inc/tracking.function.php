@@ -1517,7 +1517,7 @@ function showJobDetails ($target,$ID){
 		}
 
 		if (count($_SESSION['glpiactiveentities'])>1){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			echo "&nbsp;(".getDropdownName("glpi_entities",$job->fields["FK_entities"]).")";
 		}
 
 		echo "</th>";
