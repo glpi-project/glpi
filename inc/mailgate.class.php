@@ -90,7 +90,11 @@ class Mailgate  extends CommonDBTM {
 			}
 
 			echo "</th></tr>";
-
+			if (!function_exists('mb_list_encodings')||!function_exists('mb_convert_encoding')){
+				echo "<tr class='tab_bg_1'><td align='center' colspan='2'>";
+				echo $LANG["mailgate"][4];
+				echo "</td></tr>";
+			}
 			echo "<tr class='tab_bg_2'><td>".$LANG["common"][16].":	</td><td>";
 			autocompletionTextField("name","glpi_mailgate","name",$this->fields["name"],20);
 			echo "</td></tr>";
