@@ -243,15 +243,18 @@ class MailCollect  extends receiveMail {
 		$tkt['FK_entities']=$this->entity;
 	
 		//$tkt['Subject']= $head['subject'];   // not use for the moment
-		$tkt['name']=$this->textCleaner($head['subject']);
+		$tkt['name']=$this->textCleaner($this->decodeMimeString($head['subject']));
+		// Medium
 		$tkt['priority']= "3";
+		// No hardware associated
 		$tkt['device_type']="0";
+		// Mail request type
 		$tkt['request_type']="2";
-			if (!seems_utf8($this->getBody($i))){
+		if (!seems_utf8($this->getBody($i))){
 			$tkt['contents']= textBrut(utf8_encode($this->getBody($i)));	
-			}else{
+		}else{
 			$tkt['contents']= textBrut($this->getBody($i));
-			}
+		}
 		
 		$tkt=addslashes_deep($tkt);
 		
@@ -268,6 +271,48 @@ class MailCollect  extends receiveMail {
 	}
 
 
+	//return supported encodings in lowercase.
+	function mb_list_lowerencodings() { 
+		$r=mb_list_encodings();
+		for ($n=sizeOf($r); $n--; ) { 
+			$r[$n]=strtolower($r[$n]); 
+		} 
+		return $r;
+	}
+	
+	//  Receive a string with a mail header and returns it
+	// decoded to a specified charset.
+	// If the charset specified into a piece of text from header
+	// isn't supported by "mb", the "fallbackCharset" will be
+	// used to try to decode it.
+	function decodeMimeString($mimeStr, $inputCharset='utf-8', $targetCharset='utf-8', $fallbackCharset='iso-8859-1') {
+		if (function_exists('mb_list_encodings')&&function_exists('mb_convert_encoding')){
+			$encodings=$this->mb_list_lowerencodings();
+			$inputCharset=strtolower($inputCharset);
+			$targetCharset=strtolower($targetCharset);
+			$fallbackCharset=strtolower($fallbackCharset);
+			
+			$decodedStr='';
+			$mimeStrs=imap_mime_header_decode($mimeStr);
+			for ($n=sizeOf($mimeStrs), $i=0; $i<$n; $i++) {
+				$mimeStr=$mimeStrs[$i];
+				$mimeStr->charset=strtolower($mimeStr->charset);
+				if (($mimeStr == 'default' && $inputCharset == $targetCharset)
+				|| $mimStr->charset == $targetCharset) {
+					$decodedStr.=$mimStr->text;
+				} else {
+					$decodedStr.=mb_convert_encoding(
+						$mimeStr->text, $targetCharset,
+						(in_array($mimeStr->charset, $encodings) ?
+						$mimeStr->charset : $fallbackCharset)
+						);
+				}
+			} return $decodedStr;
+		} else {
+			return $mimeStr;
+		}
+		
+	}
 
 
 
