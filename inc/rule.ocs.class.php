@@ -246,7 +246,7 @@ class OcsAffectEntityRule extends Rule {
 
 			echo "<div align='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='5'>" .  $LANG["rulesengine"][18] . "</tr><tr><td class='tab_bg_2' align='center'>";
+			echo "<tr class='tab_bg_1'><th colspan='4'>" .  $LANG["rulesengine"][18] . "</tr><tr><td class='tab_bg_2' align='center'>";
 			echo $LANG["common"][16] . ":";
 			echo "</td><td align='center' class='tab_bg_2'>";
 			autocompletionTextField("name", "glpi_rules_descriptions", "name", "", 30);

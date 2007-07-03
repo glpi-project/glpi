@@ -157,7 +157,7 @@ class Profile extends CommonDBTM{
 		dropdownYesNo("is_default",$this->fields["is_default"]);
 		echo "</th></tr>";
 
-		echo "<tr class='tab_bg_1'><td colspan='6' align='center'><strong>".$LANG["profiles"][25]."</strong></td></tr>";
+		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>".$LANG["profiles"][25]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][24].":</td><td>";

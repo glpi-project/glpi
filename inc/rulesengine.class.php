@@ -97,7 +97,7 @@ class RuleCollection {
 		echo "<div align='center'>"; 
 		echo "<table class='tab_cadrehov'>";
 
-		echo "<tr><th colspan='6'><div style='position: relative'><span><strong>" . $this->getTitle() . "</strong></span>";
+		echo "<tr><th colspan='5'><div style='position: relative'><span><strong>" . $this->getTitle() . "</strong></span>";
 		if ($canedit){
 			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".ereg_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 		}
@@ -492,7 +492,7 @@ class Rule extends CommonDBTM{
 		global $LANG,$CFG_GLPI;
 		echo "<div align='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
-		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][7] . ":</tr>";
+		echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG["rulesengine"][7] . ":</tr>";
 		echo "<tr  class='tab_bg_2' align='center'><td>";
 		echo $LANG["rulesengine"][30] . ":";
 		echo "</td><td>";
@@ -520,7 +520,7 @@ class Rule extends CommonDBTM{
 		global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
 		echo "<div align='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
-		echo "<tr class='tab_bg_1'><th colspan='5'>" . $LANG["rulesengine"][16] . ":</tr>";
+		echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG["rulesengine"][16] . ":</tr>";
 		echo "<tr class='tab_bg_2' align='center'><td>";
 		echo $LANG["rulesengine"][16] . ":";
 		echo "</td><td>";
