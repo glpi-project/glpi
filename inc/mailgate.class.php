@@ -119,7 +119,7 @@ class Mailgate  extends CommonDBTM {
 				echo "<tr class='tab_bg_1'>";
 				if(empty($ID)){
 
-					echo "<td valign='top' colspan='3'>";
+					echo "<td valign='top' colspan='2'>";
 					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
