@@ -3002,14 +3002,13 @@ function ocsResetDropdown($glpi_computer_id, $field, $table) {
 function ocsChooseServer($target) {
 	global $DB, $LANG;
 
-	echo "<form action=\"$target\" method=\"get\">";
-	echo "<div align='center'>";
-	echo "<p >" . $LANG["ocsng"][26] . "</p>";
-	echo "<table class='tab_cadre'>";
-	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
 	$query = "SELECT * FROM glpi_ocs_config WHERE is_template='0' ORDER BY name ASC";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 1) {
+		echo "<form action=\"$target\" method=\"get\">";
+		echo "<div align='center'>";
+		echo "<table class='tab_cadre'>";
+		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
 		echo "<select name='ocs_server_id'>";
 		while ($ocs = $DB->fetch_array($result))
@@ -3017,15 +3016,20 @@ function ocsChooseServer($target) {
 
 		echo "</select></td></tr>";
 		echo "<tr class='tab_bg_2'><td align='center' colspan=2><input class='submit' type='submit' name='ocs_showservers' value='" . $LANG["buttons"][2] . "'></td></tr>";
+		echo "</table></div></form>";
 
 	}
 	elseif ($DB->numrows($result) == 1) {
 		$ocs = $DB->fetch_array($result);
 		glpi_header($_SERVER['PHP_SELF'] . "?ocs_server_id=" . $ocs["ID"]);
-	} else
+	} else{
+		echo "<form action=\"$target\" method=\"get\">";
+		echo "<div align='center'>";
+		echo "<table class='tab_cadre'>";
+		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG["ocsng"][27] . "</td></tr>";
-
-	echo "</table></div></form>";
+		echo "</table></div></form>";
+	}
 }
 
 /**
