@@ -290,8 +290,8 @@ class User extends CommonDBTM {
 					$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
 					$result = $DB->query($sql_default_profile);
 					if ($DB->numrows($result))
-					{
-						$rights[]=$data["ID"];
+                                        {
+						$rights[]=$DB->result($result,0,0);
 					}
 				}
 				
