@@ -54,7 +54,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)!=0) { 
-			$colspan=9;
+			$colspan=8;
 			if ($withtemplate!=2){
 				echo "<form id='networking_ports' name='networking_ports' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php\">";
 				if ($canedit)

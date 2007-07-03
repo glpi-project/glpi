@@ -381,7 +381,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 		if ($item)
 		{
 
-			echo "<tr><td align='center' class='tab_bg_2' colspan='8'>";
+			echo "<tr><td align='center' class='tab_bg_2'>";
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
 			echo $LANG["joblist"][7];
 			echo "</strong></a>";
