@@ -69,7 +69,7 @@ if ($_POST['sID']>0){
 	if ($number) {
 		while ($data = $DB->fetch_assoc($result)) {
 
-			$output = $data['serial']." - ";
+			$output = $data['version']." ".$data['serial']." - ";
 
 			$expirer=0;
 			if ($data['expire']!=NULL&&$today>$data['expire']) $expirer=1; 
