@@ -183,48 +183,34 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][48] . " </td><td>";
 		getListState($ID);
 		echo "</td></tr>";
-
+		
+		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][10],"2"=>$LANG["ocsconfig"][12]);
 		$periph = $this->fields["import_periph"];
 		$monitor = $this->fields["import_monitor"];
 		$printer = $this->fields["import_printer"];
 		$software = $this->fields["import_software"];
 		$license = $this->fields["import_software_licensetype"];
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][8] . " </td><td>";
-		echo "<select name='import_periph'>";
-		echo "<option value='0' " . ($periph == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
-		echo "<option value='1' " . ($periph == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][10] . "</option>";
-		echo "<option value='2' " . ($periph == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
-		echo "</select>";
+		dropdownArrayValues("import_periph",$import_array,$periph);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][7] . " </td><td>";
-		echo "<select name='import_monitor'>";
-		echo "<option value='0' " . ($monitor == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
-		echo "<option value='1' " . ($monitor == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][10] . "</option>";
-		echo "<option value='2' " . ($monitor == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
-		echo "</select>";
+		dropdownArrayValues("import_monitor",$import_array,
+			$monitor);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][9] . " </td><td>";
-		echo "<select name='import_printer'>";
-		echo "<option value='0' " . ($printer == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
-		echo "<option value='1' " . ($printer == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][10] . "</option>";
-		echo "<option value='2' " . ($printer == 2 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
-		echo "</select>";
+		dropdownArrayValues("import_printer",$import_array,$printer);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][6] . " </td><td>";
-		echo "<select name='import_software'>";
-		echo "<option value='0' " . ($software == 0 ? " selected " : "") . ">" . $LANG["ocsconfig"][11] . "</option>";
-		echo "<option value='1' " . ($software == 1 ? " selected " : "") . ">" . $LANG["ocsconfig"][12] . "</option>";
-		echo "</select>";
+		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][12]);
+		dropdownArrayValues("import_software",$import_array,$software);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][44] . " </td><td>";
-		echo "<select name='import_software_licensetype'>";
-		echo "<option value='global' " . ($license == 'global' ? " selected " : "") . ">" . $LANG["ocsconfig"][45] . "</option>";
-		echo "<option value='free' " . ($license == 'free' ? " selected " : "") . ">" . $LANG["ocsconfig"][46] . "</option>";
-		echo "</select>";
+		$import_array=array("global"=>$LANG["ocsconfig"][45],"free"=>$LANG["ocsconfig"][46]);
+		dropdownArrayValues("import_software_licensetype",$import_array,$license);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["ocsconfig"][47] . " </td><td>";
@@ -377,6 +363,32 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "</table></td></tr>";
 		echo "</table></div>";
 
+		echo "<br><div align='center'><table class='tab_cadre'>";
+		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][52] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][53] . " </td><td>";
+		dropdownYesNo("glpi_link_enabled", $this->fields["glpi_link_enabled"]);
+		echo "</td><td colspan='2'></td></tr>";
+		
+		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][54] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td>" . $LANG["networking"][14] . " </td><td>";
+		dropdownYesNo("link_ip", $this->fields["link_ip"]);
+		echo "</td>";
+		echo "<td>" . $LANG["device_iface"][2] . " </td><td>";
+		dropdownYesNo("link_mac_address", $this->fields["link_mac_address"]);
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_2'><td>" . $LANG["rulesengine"][25] . " </td><td>";
+		$link_array=array("0"=>$LANG["choice"][0],"1"=>$LANG["choice"][1]." : ".$LANG["ocsconfig"][57],"2"=>$LANG["choice"][1]." : ".$LANG["ocsconfig"][56]);
+		dropdownArrayValues("link_name", $link_array,$this->fields["link_name"]);
+		echo "</td>";
+		echo "<td>" . $LANG["common"][19] . " </td><td>";
+		dropdownYesNo("link_serial", $this->fields["link_serial"]);
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][55] . " </td><td>";
+		dropdownValue("glpi_dropdown_state", "link_if_status", $this->fields["link_if_status"]);
+		echo "</td><td colspan='2'></tr>";
+		echo "</table><br>".$LANG["ocsconfig"][58]."</div>";
+		
+
 		switch($action)
 		{
 			case  "update_server_with_template" :
@@ -392,6 +404,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
 				break;
 		}
+
 	echo "</form>";
 	}
 

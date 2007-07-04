@@ -137,11 +137,11 @@ else if (isset($_GET["form"]))
 	showLicenseForm($_SERVER['PHP_SELF'],$_GET['form'],$_GET["sID"],$_GET["lID"]);
 	commonFooter();
 }
-else if (isset($_POST["delete"]))
+else if (isset($_GET["delete"]))
 {
 	checkRight("software","w");
 
-	$lic->delete(array("ID"=>$_POST["ID"]));
+	$lic->delete(array("ID"=>$_GET["ID"]));
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }

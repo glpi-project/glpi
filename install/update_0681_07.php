@@ -1152,6 +1152,16 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add timezone in glpi_auth_ldap" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_ocs_config","glpi_link_enabled"))
+	{
+		$query="ALTER TABLE `glpi_ocs_config` ADD COLUMN `glpi_link_enabled` int(1) NOT NULL,
+		ADD COLUMN `link_ip` int(1) NOT NULL,
+		ADD COLUMN `link_name` int(1) NOT NULL,
+		ADD COLUMN `link_mac_address` int(1) NOT NULL,
+  		ADD COLUMN `link_serial` int(1) NOT NULL,
+  		ADD COLUMN `link_if_status` int(11) NOT NULL default '0'";
+  		$DB->query($query) or die("0.7 add glpi_link fields in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
 	$intnull=array("glpi_alerts" => array("device_type","FK_device","type"),
 		"glpi_cartridges_type"=>array("tech_num"),
 		"glpi_computers"=>array("FK_users","FK_groups"),

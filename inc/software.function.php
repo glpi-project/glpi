@@ -133,7 +133,7 @@ function showLicenses ($sID,$show_computers=0) {
 			else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '$expire'";
 
 			if ($version=="")
-				$SEARCH_LICENCE.=" AND glpi_licenses.version IS NULL)";
+				$SEARCH_LICENCE.=" AND glpi_licenses.version='')";
 			else $SEARCH_LICENCE.=" AND glpi_licenses.version = '$version')";
 
 
