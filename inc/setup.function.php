@@ -619,10 +619,7 @@ function listTemplates($type, $target, $add = 0) {
 				echo "<a href=\"$target?ID=" . $data["ID"] . "&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 
 				echo "<td align='center' class='tab_bg_2'>";
-				if ($data["tplname"] != "Blank Template")
-					echo "<strong><a href=\"$target?ID=" . $data["ID"] . "&amp;purge=purge&amp;withtemplate=1\">" . $LANG["buttons"][6] . "</a></strong>";
-				else
-					echo "&nbsp;";
+				echo "<strong><a href=\"$target?ID=" . $data["ID"] . "&amp;purge=purge&amp;withtemplate=1\">" . $LANG["buttons"][6] . "</a></strong>";
 				echo "</td>";
 			} else {
 				echo "<a href=\"$target?ID=" . $data["ID"] . "&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
