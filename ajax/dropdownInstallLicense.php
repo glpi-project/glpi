@@ -52,7 +52,7 @@ if ($_POST['sID']>0){
 	$query = "SELECT DISTINCT glpi_licenses.* from glpi_licenses ";
 	$query.= " LEFT JOIN glpi_inst_software on (glpi_licenses.ID=glpi_inst_software.license)";
 	$query.= " WHERE glpi_licenses.sID='".$_POST['sID']."' AND ($where glpi_licenses.serial='free' OR glpi_licenses.serial='global' ) ";
-	$query.= " order by serial ASC";
+	$query.= " GROUP BY version order by serial ASC";
 
 
 	$result = $DB->query($query);
