@@ -1027,6 +1027,14 @@ $LANG["ocsconfig"][48]="Comportement lors de la déconnexion";
 $LANG["ocsconfig"][49]="Corbeille";
 $LANG["ocsconfig"][50]="Suppression";
 $LANG["ocsconfig"][51]="Déconnexion avec état";
+$LANG["ocsconfig"][52]="Liaison automatique de machines";
+$LANG["ocsconfig"][53]="Activer Liaison automatique";
+$LANG["ocsconfig"][54]="Critères d'existence d'une machine";
+$LANG["ocsconfig"][55]="Chercher les machines GLPI ayant le statut";
+$LANG["ocsconfig"][56]="vide";
+$LANG["ocsconfig"][57]="égal";
+$LANG["ocsconfig"][58]="La liaison fusionne automatiquement une machine GLPI avec une d'OCS.<br>Cette option n'est prise en compte que par les scripts de synchronisation (pas manuellement).";
+
 
 $LANG["pager"][1]="à";
 $LANG["pager"][2]="de";

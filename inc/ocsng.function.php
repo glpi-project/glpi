@@ -399,19 +399,6 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 
 	checkOCSconnection($ocs_server_id);
 
-	/*
-
-	$query = "SELECT ID,glpi_id,ocs_id FROM glpi_ocs_link WHERE ocs_id = '$ocs_id' AND ocs_server_id='" . $ocs_server_id . "';";
-	$result_glpi_ocs_link = $DB->query($query);
-	if ($DB->numrows($result_glpi_ocs_link)) {
-		$datas = $DB->fetch_array($result_glpi_ocs_link);
-		ocsUpdateComputer($datas["ID"], $ocs_server_id, 1, 0);
-
-		//Return code to indicates that the machine was synchronized
-		return 0;
-	} else {
-	*/
-
 		$comp = new Computer;
 
 		// Set OCS checksum to max value
@@ -474,9 +461,8 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 	//}
 }
 
-function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
+function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
 	global $DB, $DBocs, $LANG;
-
 	checkOCSconnection($ocs_server_id);
 
 	$query = "SELECT *  
@@ -502,8 +488,10 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 		}
 	}
 
-	if (!$ocs_exists || $numrows == 0) {
+	if ($glpi_link || (!$ocs_exists || $numrows == 0)) {
 
+		$ocsConfig = getOcsConf($ocs_server_id);
+		
 		// Set OCS checksum to max value
 		$query = "UPDATE hardware 
 							SET CHECKSUM='" . MAX_OCS_CHECKSUM . "' 
@@ -511,13 +499,18 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 		$DBocs->query($query);
 
 		if ($idlink = ocsLink($ocs_id, $ocs_server_id, $glpi_id)) {
-
+		
 			$comp = new Computer;
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
 			$input["_from_ocs"] = 1;
+			
+			if ($glpi_link)
+				//Change the state
+				$input["state"] = $ocsConfig["default_state"];
+			
 			$comp->update($input);
-
+		
 			// Reset using GLPI Config
 			$cfg_ocs = getOcsConf($ocs_server_id);
 			$query = "SELECT * 
@@ -564,13 +557,14 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 }
 
 
-function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = -1) {
+function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = -1,$canlink=0) {
 	global $DBocs, $DB;
 
 	checkOCSconnection($ocs_server_id);
 
 	$comp = new Computer;
-
+	
+	//Check it machine is already present AND was imported by OCS
 	$query = "SELECT ID,glpi_id,ocs_id FROM glpi_ocs_link WHERE ocs_id = '$ocs_id' AND ocs_server_id='" . $ocs_server_id . "';";
 	$result_glpi_ocs_link = $DB->query($query);
 	if ($DB->numrows($result_glpi_ocs_link)) {
@@ -580,10 +574,148 @@ function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity =
 		//Return code to indicates that the machine was synchronized
 		return 0;
 	} else {
-		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity);
+		if ($canlink)
+		{
+			//Check if the machine is present in GLPI AND was entered by hand
+			$glpi_id = getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id);
+			if ($glpi_id != -1)
+			{
+				ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id,1);
+				return 3;
+			}
+			else	
+				return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity);
+		}
+		else
+				return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity);
 	}
 }
 
+function getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id)
+{
+	global $DB,$DBocs;
+	$conf = getOcsConf($ocs_server_id);
+	$sql_and = "";
+	$sql_fields = "";
+	$sql_from ="hardware";
+	$first = true;
+	$ocsParams = array();
+	
+	if ($conf["glpi_link_enabled"])
+	{
+		//Build the request against OCS database to get the machine's informations
+		if ( $conf["link_ip"] || $conf["link_mac_address"])
+		{
+			$sql_from.=" ,networks";
+			$sql_and.=" hardware.ID=networks.HARDWARE_ID";
+		}	
+		if ($conf["link_ip"])
+		{
+			$sql_fields.=(!$first?",":'')."networks.IPADDRESS";
+			$first=false;
+			$ocsParams["IPADDRESS"] = array();
+		}
+		if ($conf["link_mac_address"])
+		{
+			$sql_fields.=(!$first?",":'')."networks.MACADDR";
+			$first=false;
+			$ocsParams["MACADDR"] = array();
+		}
+		if ($conf["link_serial"])
+		{
+			$sql_from.=",bios";
+			$sql_and .= " AND bios.HARDWARE_ID=hardware.ID";
+			$sql_fields.=(!$first?",":'')."bios.SSN";
+			$ocsParams["SSN"] = array();
+			$first=false;
+		}
+		if ($conf["link_name"] > 0)
+		{
+			$sql_fields.=(!$first?",":'')."hardware.NAME";
+			$first=false;
+			$ocsParams["NAME"] = array();
+		}
+		
+		//Execute request
+		$sql = "SELECT ".$sql_fields." from ".$sql_from." WHERE hardware.ID=".$ocs_id." ".$sql_and;
+		$result = $DBocs->query($sql);
+		
+		//Get the list of parameters
+		
+		while ($dataOcs = $DB->fetch_array($result))
+		{
+			if ($conf["link_ip"])
+				if (!in_array($dataOcs["IPADDRESS"],$ocsParams["IPADDRESS"]))
+					$ocsParams["IPADDRESS"][]= $dataOcs["IPADDRESS"];
+			if ($conf["link_mac_address"])
+				if (!in_array($dataOcs["MACADDR"],$ocsParams["MACADDR"]))
+					$ocsParams["MACADDR"][]= $dataOcs["MACADDR"];
+			if ($conf["link_name"] > 0)
+				if (!in_array($dataOcs["NAME"],$ocsParams["NAME"]))
+					$ocsParams["NAME"][]= $dataOcs["NAME"];
+			if ($conf["link_serial"])
+				if (!in_array($dataOcs["SSN"],$ocsParams["SSN"]))
+					$ocsParams["SSN"][]= $dataOcs["SSN"];
+		}
+
+		//Build the request to check if the machine exists in GLPI
+		$sql_and = "";
+		$sql_from = "";
+		$first=true;
+		if ( $conf["link_ip"] || $conf["link_mac_address"])
+		{
+			$sql_from.=" ,glpi_networking_ports";
+			$sql_and.=" glpi_computers.ID=glpi_networking_ports.on_device AND glpi_networking_ports.device_type=".COMPUTER_TYPE;
+			$first=false;
+		}	
+		if ($conf["link_ip"] && !empty($ocsParams["IPADDRESS"]))
+		{
+			$sql_and.=(!$first?" AND ":' ')."(";
+			for ($i=0; $i < count($ocsParams["IPADDRESS"]);$i++)
+				$sql_and .= ($i>0?"OR":"")." glpi_networking_ports.ifaddr=\"".$ocsParams["IPADDRESS"][$i]."\"";
+			$sql_and.=")";
+			$first=false;			
+		}
+		if ($conf["link_mac_address"] && !empty($ocsParams["MACADDR"]))
+		{
+			$sql_and.=(!$first?" AND ":' ')."(";
+			for ($i=0; $i < count($ocsParams["MACADDR"]);$i++)
+				$sql_and .= ($i>0?"OR":"")." glpi_networking_ports.ifmac=\"".$ocsParams["MACADDR"][$i]."\"";
+			$sql_and.=")";
+			$first=false;
+		}
+		if ($conf["link_name"] > 0 && !empty($ocsParams["NAME"]))
+		{
+			//Search only computers with blank name
+			if ($conf["link_name"] == 2)
+				$sql_and .= (!$first?" AND ":' ')."glpi_computers.name=\"\"";
+			else	
+				$sql_and .= (!$first?" AND ":' ')."glpi_computers.name=\"".$ocsParams["NAME"][0]."\"";
+			$first=false;
+		}
+		if ($conf["link_serial"] && !empty($ocsParams["SSN"]))
+		{
+			$sql_and .= (!$first?" AND ":' ')."glpi_computers.serial=\"".$ocsParams["SSN"][0]."\"";
+			$first=false;
+		}
+		if ($conf["link_if_status"] > 0)
+		{
+			$sql_and .= (!$first?" AND ":' ')."glpi_computers.state=".$conf["link_if_status"];
+			$first=false;
+		}
+		
+		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE ".$sql_and;
+		$result_glpi = $DB->query($sql_glpi);
+		if ($DB->numrows($result_glpi) > 0)
+			return $DB->result($result_glpi,0,"ID");
+		else
+			return -1;	
+	}
+	else
+		return -1;
+	
+		
+}
 function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 	global $DB, $DBocs, $CFG_GLPI;
 
@@ -1667,7 +1799,8 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 
 				$result2 = $DBocs->query($query2);
 				$i = 0;
-
+				$manually_link = false;
+				
 				//Count old ip in GLPI
 				$count_ip = count($import_ip);
 				// Add network device
@@ -1678,6 +1811,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							$do_clean = true;
 							$network["designation"] = $line2["DESCRIPTION"];
 							if (!in_array(NETWORK_DEVICE . '$$$$$' . $network["designation"], $import_device)) {
+								
 								if (!empty ($line2["SPEED"]))
 									$network["bandwidth"] = $line2["SPEED"];
 								$net_id = ocsAddDevice(NETWORK_DEVICE, $network);

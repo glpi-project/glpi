@@ -124,7 +124,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 			foreach ($hardware as $ID => $tab){
 				echo ".";
 				if ($limit&&$i>=$limit) exit();
-				ocsImportComputer($ID,$ocs_server_id);
+				ocsProcessComputer($ID,$ocs_server_id,0,-1,1);
 				$i++;
 			}
 		}
