@@ -391,6 +391,7 @@ $LANG["entity"][2]="Entité Racine";
 $LANG["entity"][3]="Associer à une entité"; 
 $LANG["entity"][5]="Affectation automatique des machines"; 
 $LANG["entity"][6]="Affectation automatique des utilisateurs"; 
+$LANG["entity"][7]="arborescence"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Service";

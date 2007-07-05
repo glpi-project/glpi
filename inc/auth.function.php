@@ -540,6 +540,7 @@ function changeProfile($ID) {
  * @return Nothing 
  */
 function changeActiveEntities($ID="all",$recursive=false) {
+	global $LANG;
 	$newentities=array();
 	if ($ID=="all"){
 		foreach ($_SESSION['glpi_entities_tree'] as $key => $tree){
@@ -576,6 +577,9 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		$active=key($_SESSION['glpiactiveentities']);
 		$_SESSION["glpiactive_entity"] = $active;
 		$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
+		if ($recursive){
+			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["entity"][7].")";
+		}
 		loadGroups();
 		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 	}
