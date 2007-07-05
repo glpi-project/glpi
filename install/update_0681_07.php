@@ -1225,6 +1225,12 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_config` ADD COLUMN `flat_dropdowntree` smallint(6) NOT NULL default '0'";
 		$DB->query($query) or die("0.7 add flat_dropdowntree in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
+	if (FieldExists("glpi_config", "mailing_signature")) {
+		$query = "ALTER TABLE `glpi_config` CHANGE `mailing_signature` `mailing_signature` TEXT NULL ";
+		$DB->query($query) or die("0.7 alter mailing signature in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
+
+
 
 
 } // fin 0.7 #####################################################################################
