@@ -1255,14 +1255,34 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		if ($field2=="ID"){
 			$where= " WHERE (glpi_tracking.ID = '".$contains2."')";
 		}
+		$TMPWHERE="";
+		$first=true;
 		if (strpos($field2,"followup")!== false){
-			$where.= " AND (glpi_followups.contents $SEARCH2)";
+			if ($first){
+				$first=false;
+			} else {
+				$TMPWHERE.= " OR ";
+			}
+			$TMPWHERE.= "glpi_followups.contents $SEARCH2 ";
 		}
 		if (strpos($field2,"name")!== false){
-			$where.= " AND (glpi_tracking.name $SEARCH2)";
+			if ($first){
+				$first=false;
+			} else {
+				$TMPWHERE.= " OR ";
+			}
+			$TMPWHERE.= "glpi_tracking.name $SEARCH2 ";
 		}
 		if (strpos($field2,"contents")!== false){
-			$where.= " AND (glpi_tracking.contents $SEARCH2)";
+			if ($first){
+				$first=false;
+			} else {
+				$TMPWHERE.= " OR ";
+			}
+			$TMPWHERE.= "glpi_tracking.contents $SEARCH2 ";
+		}
+		if (!empty($TMPWHERE)){
+			$where.=" AND ($TMPWHERE) ";
 		}
 	}
 	$where.=getEntitiesRestrictRequest("AND","glpi_tracking");
