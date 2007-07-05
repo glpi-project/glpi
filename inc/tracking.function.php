@@ -763,7 +763,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</td></tr>";
 
 
-	if (haveRight("update_ticket","1")||haveRight("assign_ticket","1")){
+	if (haveRight("assign_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
 		echo "<td colspan='3'>";
 		dropdownUsers("assign",$assign,"own_ticket",0,1,$_SESSION["glpiactive_entity"]);
@@ -1482,7 +1482,6 @@ function showJobDetails ($target,$ID){
 
 	$canupdate=haveRight("update_ticket","1");
 
-
 	if ($job->getfromDB($ID)) {
 
 		if (!haveRight("show_ticket","1")
@@ -1602,7 +1601,7 @@ function showJobDetails ($target,$ID){
 		echo "<tr><td align='right'>";
 		echo $LANG["job"][5].":</td><td>&nbsp;</td></tr>";
 
-		if ($canupdate||haveRight("assign_ticket","1")){
+		if (haveRight("assign_ticket","1")){
 			echo "<tr><td align='right'>";
 			echo $LANG["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"own_ticket",0,1,$job->fields["FK_entities"]);
@@ -1618,7 +1617,7 @@ function showJobDetails ($target,$ID){
 			echo getUserName($job->fields["assign"]);
 			echo "</td></tr>";
 		}
-		if ($canupdate||haveRight("assign_ticket","1")){
+		if (haveRight("assign_ticket","1")){
 			echo "<tr><td align='right'>";
 			echo $LANG["job"][28].":</td><td>";
 			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
