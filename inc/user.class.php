@@ -119,6 +119,7 @@ class User extends CommonDBTM {
 		global $CFG_GLPI;
 		//We add the user, we set the last modification date
 		$input["date_mod"]=$_SESSION["glpi_currenttime"];
+
 		// Preferences
 		if (!isset($input["language"])){
 			$input["language"]=$CFG_GLPI["default_language"];
@@ -147,12 +148,27 @@ class User extends CommonDBTM {
 	}
 
 	function post_addItem($newID, $input) {
-		$prof = new Profile();
+		global $DB;
 
 		$input["ID"]=$newID;
 
 		$this->syncLdapGroups($input);
 		$this->applyRightRules($input);
+
+		// Add default profile
+		if ($input['auth_method']==AUTH_DB_GLPI){
+			$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
+			$result = $DB->query($sql_default_profile);
+			if ($DB->numrows($result)){
+				$right=$DB->result($result,0,0);
+				$affectation["FK_entities"] = $_SESSION["glpiactive_entity"];
+				$affectation["FK_profiles"] = $DB->result($result,0,0);
+				$affectation["FK_users"] = $input["ID"];
+				$affectation["recursive"] = 0;
+				$affectation["dynamic"] = 0;
+				addUserProfileEntity($affectation);
+			}
+		}
 	}
 
 	function pre_deleteItem($ID) {
