@@ -244,6 +244,7 @@ class Identification {
 			$_SESSION["glpirealname"] = $this->user->fields['realname'];
 			$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
 			$_SESSION["glpilanguage"] = $this->user->fields['language'];
+			loadLanguage();
 			$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
 			$_SESSION["glpiauthorisation"] = true;
 			$_SESSION["glpiextauth"] = $this->extauth;

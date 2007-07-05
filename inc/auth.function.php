@@ -580,6 +580,9 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		if ($recursive){
 			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["entity"][7].")";
 		}
+		if ($ID=="all"){
+			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["buttons"][40].")";
+		}
 		loadGroups();
 		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 	}
