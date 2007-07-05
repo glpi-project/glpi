@@ -94,28 +94,39 @@ class Job extends CommonDBTM{
 
 	function prepareInputForUpdate($input) {
 		global $LANG,$CFG_GLPI;
+
+
 		// Security checks
-		if (!haveRight("update_ticket","1")){
-			if (haveRight("assign_ticket","1")){
-				$ret["ID"]=$input["ID"];
-				$ret["assign"]=$input["assign"];
-				$ret["assign_ent"]=$input["assign_ent"];
-				$input=$ret;
-			} else if (haveRight("steal_ticket","1")&&$input["assign"]==$_SESSION["glpiID"]){
-				$ret["ID"]=$input["ID"];
-				$ret["assign"]=$input["assign"];
-				$input=$ret;
-			} else { // Default case can only update contents if no followups already added
-				$ret["ID"]=$input["ID"];
-				if (isset($input["contents"])){
-					$ret["contents"]=$input["contents"];
-				}
-				if (isset($input["name"])){
-					$ret["name"]=$input["name"];
-				}
-				$input=$ret;
+		if (!haveRight("assign_ticket","1")){
+			if (isset($input["assign"])){
+				// Can not steal or can steal and not assign to me
+				if (!haveRight("steal_ticket","1")||$input["assign"]!=$_SESSION["glpiID"]){
+					unset($input["assign"]);
+				} 
+			}
+			if (isset($input["assign_ent"])){
+				unset($input["assign_ent"]);
 			}
 
+		}
+
+		if (!haveRight("update_ticket","1")){
+			// Manage assign and steal right
+			if (isset($input["assign"])){
+				$ret["assign"]=$input["assign"];
+			}
+			if (isset($input["assign_ent"])){
+				$ret["assign_ent"]=$input["assign_ent"];
+			}
+			// Can only update contents if no followups already added
+			$ret["ID"]=$input["ID"];
+			if (isset($input["contents"])){
+				$ret["contents"]=$input["contents"];
+			}
+			if (isset($input["name"])){
+				$ret["name"]=$input["name"];
+			}
+			$input=$ret;
 		}
 
 		if (isset($input["item"])&& $input["item"]!=0&&isset($input["type"])&& $input["type"]!=0){
@@ -202,18 +213,6 @@ class Job extends CommonDBTM{
 			if (!empty($user->fields["email"])){
 				$updates[]="uemail";
 				$this->fields["uemail"]=$user->fields["email"];
-			}
-		}
-
-		if (!haveRight("update_ticket","1")){
-			if (haveRight("assign_ticket","1"))
-				$updates=array_intersect($updates,array("assign","assign_ent"));
-			else if (haveRight("steal_ticket","1")){
-				if ($input["assign"]==$_SESSION["glpiID"])
-					$updates=array_intersect($updates,array("assign"));
-				else $updates=array();
-			} else if ($this->fields["author"]==$_SESSION["glpiID"]&&$this->numberOfFollowups()==0){ // Helpdesk case
-				$updates=array_intersect($updates,array("contents","name"));
 			}
 		}
 
@@ -370,6 +369,7 @@ class Job extends CommonDBTM{
 				$newinput["hour"]=$newinput["minute"]=0;
 				$newinput["tracking"]=$this->fields["ID"];
 				$newinput["type"]="update";
+				$newinput["_changes_to_log"]=true;
 				// pass _old_assign if assig changed
 				if (isset($input["_old_assign"])){
 					$newinput["_old_assign"]=$input["_old_assign"];
@@ -853,7 +853,7 @@ class Followup  extends CommonDBTM {
 		$input["_job"]->getFromDB($input["tracking"]);
 
 		// Security to add unauthorized followups
-		if (!$input["_isadmin"]&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]) return false;
+		if (!isset($input['_changes_to_log'])&&!$input["_isadmin"]&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]) return false;
 
 		// Pass old assign From Job in case of assign change
 		if (isset($input["_old_assign"])){
