@@ -158,6 +158,7 @@ class Mailgate  extends CommonDBTM {
 
 class MailCollect  extends receiveMail {
 	var $entity;
+	var $charset="";
 	/**
 	* Constructor
 	*/
@@ -254,10 +255,15 @@ class MailCollect  extends receiveMail {
 		$tkt['device_type']="0";
 		// Mail request type
 		$tkt['request_type']="2";
-		if (!seems_utf8($this->getBody($i))){
-			$tkt['contents']= textBrut(utf8_encode($this->getBody($i)));	
+		$body=$this->getBody($i);
+		
+		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
+			$body.=mb_convert_encoding($body, 'utf-8',$this->charset);
+		}
+		if (!seems_utf8($body)){
+			$tkt['contents']= textBrut(utf8_encode($body));	
 		}else{
-			$tkt['contents']= textBrut($this->getBody($i));
+			$tkt['contents']= textBrut($body);
 		}
 		
 		$tkt=addslashes_deep($tkt);
@@ -305,6 +311,10 @@ class MailCollect  extends receiveMail {
 				|| $mimStr->charset == $targetCharset) {
 					$decodedStr.=$mimStr->text;
 				} else {
+					if (in_array($mimeStr->charset, $encodings)){
+						$this->charset=	$mimeStr->charset;
+					}
+				
 					$decodedStr.=mb_convert_encoding(
 						$mimeStr->text, $targetCharset,
 						(in_array($mimeStr->charset, $encodings) ?
