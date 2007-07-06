@@ -46,7 +46,7 @@ class PlanningTracking extends CommonDBTM {
 		$this->table="glpi_tracking_planning";
 	}
 
-	function update($input,$target,$item){
+	function update($input,$history=1){
 		global $LANG,$CFG_GLPI;
 		// Update a Planning Tracking
 
@@ -60,16 +60,6 @@ class PlanningTracking extends CommonDBTM {
 		$input["begin"]=date("Y-m-d H:i:00",mktime($begin_hour,$begin_min,0,$begin_month,$begin_day,$begin_year));
 		$input["end"]=date("Y-m-d H:i:00",mktime($end_hour,$end_min,0,$end_month,$end_day,$end_year));
 
-
-		// Get all flags and fill with 0 if unchecked in form
-		foreach ($this->fields as $key => $val) {
-			if (eregi("\.*flag\.*",$key)) {
-				if (!isset($input[$key])) {
-					$input[$key]=0;
-				}
-			}
-		}	
-
 		// Fill the update-array with changes
 		$x=0;
 		foreach ($input as $key => $val) {
@@ -81,12 +71,12 @@ class PlanningTracking extends CommonDBTM {
 		}
 
 		if (!$this->test_valid_date()){
-			$this->displayError("date",$item,$target);
+			$this->displayError("date");
 			return false;
 		}
 
 		if ($this->is_alreadyplanned()){
-			$this->displayError("is_res",$item,$target);
+			$this->displayError("is_res");
 			return false;
 		}
 
@@ -119,7 +109,7 @@ class PlanningTracking extends CommonDBTM {
 			$this->updateInDB($updates);
 		}
 
-		if (count($updates)>0&&$CFG_GLPI["mailing"]){
+		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&count($updates)>0&&$CFG_GLPI["mailing"]){
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
@@ -129,7 +119,7 @@ class PlanningTracking extends CommonDBTM {
 		return true;
 	}
 
-	function add($input,$target,$nomail=0){
+	function add($input){
 		global $LANG,$CFG_GLPI;
 
 		// set new date.
@@ -140,19 +130,15 @@ class PlanningTracking extends CommonDBTM {
 
 		//	if (!empty($target)){
 		if (!$this->test_valid_date()){
-			$this->displayError("date",$input["id_followup"],$target);
+			$this->displayError("date");
 			return false;
 		}
 
 		if ($this->is_alreadyplanned()){
-			$this->displayError("is_res",$input["id_followup"],$target);
+			$this->displayError("is_res");
 			return false;
 		}
-		/*	} else if ($this->is_alreadyplanned()||!$this->test_valid_date()) {
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["job"][36];
-			return false;
-			}
-		 */
+		
 		// Auto update Status
 		$job=new Job();
 		$job->getFromDB($input["id_tracking"]);
@@ -185,7 +171,7 @@ class PlanningTracking extends CommonDBTM {
 			$return=$this->addToDB();
 		else $return = true;
 
-		if ($nomail==0&&$CFG_GLPI["mailing"])
+		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&$CFG_GLPI["mailing"])
 		{
 			$user=new User;
 			$user->getfromDBbyName($_SESSION["glpiname"]);
@@ -240,7 +226,7 @@ class PlanningTracking extends CommonDBTM {
 		return (strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
 	}
 
-	function displayError($type,$ID,$target){
+	function displayError($type){
 		global $LANG;
 
 		switch ($type){

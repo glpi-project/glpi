@@ -38,7 +38,12 @@ if (!defined('GLPI_ROOT')){
 	}
 // Notice problem  for date function :
 if (function_exists('date_default_timezone_set')){
-	date_default_timezone_set(date_default_timezone_get());
+	$tz=ini_get('date.timezone');
+	if (!empty($tz)){
+		date_default_timezone_set($tz);
+	} else {
+		date_default_timezone_set(@date_default_timezone_get());
+	}
 }
 include_once (GLPI_ROOT . "/inc/timer.class.php");
 

@@ -83,9 +83,18 @@ class ReservationResa extends CommonDBTM {
 	}
 
 
-	function update($input,$target,$item){
+	function update($input,$history=1){
 		global $LANG,$CFG_GLPI;
 		// Update a printer in the database
+
+		$target="";
+		if (isset($input['_target'])){
+			$target=$input['_target'];
+		}
+		$item=0;
+		if (isset($input['_item'])){
+			$item=$_POST['_item'];
+		}
 
 		$this->getFromDB($input["ID"]);
 
@@ -97,15 +106,6 @@ class ReservationResa extends CommonDBTM {
 		$input["begin"]=date("Y-m-d H:i:00",mktime($begin_hour,$begin_min,0,$begin_month,$begin_day,$begin_year));
 		$input["end"]=date("Y-m-d H:i:00",mktime($end_hour,$end_min,0,$end_month,$end_day,$end_year));
 
-
-		// Get all flags and fill with 0 if unchecked in form
-		foreach ($this->fields as $key => $val) {
-			if (eregi("\.*flag\.*",$key)) {
-				if (!isset($input[$key])) {
-					$input[$key]=0;
-				}
-			}
-		}	
 
 		// Fill the update-array with changes
 		$x=0;
@@ -139,11 +139,15 @@ class ReservationResa extends CommonDBTM {
 		return true;
 	}
 
-	function add($input,$target,$ok=true){
+	function add($input){
 		global $CFG_GLPI;
+	       	
 		// Add a Reservation
-		if ($ok){
-
+		if (!isset($input['_ok'])||$input['_ok']){
+			$target="";
+			if (isset($input['_target'])){
+				$target=$input['_target'];
+			}
 			// set new date.
 			$this->fields["id_item"] = $input["id_item"];
 			$this->fields["comment"] = $input["comment"];
@@ -169,7 +173,9 @@ class ReservationResa extends CommonDBTM {
 						$mail->send();
 					}
 					return true;
-				} else return false;
+				} else {
+					return false;
+				}
 		}
 	}
 

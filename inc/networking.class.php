@@ -443,7 +443,7 @@ class Netport extends CommonDBTM {
 		$this->type=-1;
 	}
 
-	function post_updateItem($input,$updates,$history){
+	function post_updateItem($input,$updates,$history=1){
 		$tomatch=array("netpoint","ifaddr","ifmac");
 		$updates=array_intersect($updates,$tomatch);
 		if (count($updates)){
