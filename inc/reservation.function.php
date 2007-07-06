@@ -392,7 +392,7 @@ function printReservation($target,$ID,$date){
 
 		$query = "SELECT DISTINCT glpi_reservation_item.ID FROM glpi_reservation_item INNER JOIN glpi_reservation_resa ON (glpi_reservation_item.ID = glpi_reservation_resa.id_item )".
 			" WHERE active='1' AND (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) ORDER BY begin";
-		//echo $query;
+//		echo $query;
 		$result=$DB->query($query);
 
 		if ($DB->numrows($result)>0){
@@ -403,7 +403,8 @@ function printReservation($target,$ID,$date){
 				$m->getfromDB($data['ID']);
 				$ci=new CommonItem();
 				$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
-				if ($ci->obj->fields["FK_entities"]==$_SESSION["glpiactive_entity"]){
+				
+				if (in_array($ci->obj->fields["FK_entities"],$_SESSION["glpiactiveentities"])){
 					list($annee,$mois,$jour)=split("-",$date);
 					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
 					echo "<tr><td>";

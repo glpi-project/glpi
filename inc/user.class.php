@@ -255,7 +255,7 @@ class User extends CommonDBTM {
 
 	
 
-	function post_updateItem($input, $updates, $history) {
+	function post_updateItem($input, $updates, $history=1) {
 		// Clean header cache for the user
 		if (in_array("language", $updates) && isset ($input["ID"])) {
 			cleanCache("GLPI_HEADER_".$input["ID"]);

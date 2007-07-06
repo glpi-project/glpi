@@ -799,34 +799,16 @@ class Followup  extends CommonDBTM {
 		$input["realtime"]=$input["hour"]+$input["minute"]/60;
 		$input["author"]=$_SESSION["glpiID"];
 		if (isset($input["plan"])){
-			// Update case
-			if (isset($input["plan"]["ID"])){
-				$input["plan"]['id_followup']=$input["ID"];
-				$input["plan"]['id_tracking']=$input['tracking'];
-				$pt=new PlanningTracking();
-
-				if (!$pt->update($input["plan"],"",1)){
-					return false;
-				}
-				unset($input["plan"]);
-			// Add case
-			} else {
-				$input["plan"]['id_followup']=$input["ID"];
-				$input["plan"]['id_tracking']=$input['tracking'];
-				$pt=new PlanningTracking();
-
-				if (!$pt->add($input["plan"],"",1)){
-					return false;
-				}
-				unset($input["plan"]);
-				$input['_need_send_mail']=true;
-			}
+			$input["_plan"]=$input["plan"];
+			unset($input["plan"]);
 		}
 		return $input;
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $CFG_GLPI;
+		
+		$mailsend=false;
 		if (count($updates)){
 			$job=new Job;
 			$job->getFromDBwithData($input["tracking"],1);
@@ -837,10 +819,36 @@ class Followup  extends CommonDBTM {
 				$user->getfromDBbyName($_SESSION["glpiname"]);
 				$mail = new Mailing("followup",$job,$user,(isset($input["private"]) && $input["private"]));
 				$mail->send();
+				$mailsend=true;
 			}
 	
 			if (in_array("realtime",$updates)) {
 				$job->updateRealTime();
+			}
+		}
+		if (isset($input["_plan"])){
+			$pt=new PlanningTracking();
+			// Update case
+			if (isset($input["plan"]["ID"])){
+				$input["plan"]['id_followup']=$input["ID"];
+				$input["plan"]['id_tracking']=$input['tracking'];
+				$input["plan"]['_nomail']=$mailsend;
+
+				if (!$pt->update($input["plan"])){
+					return false;
+				}
+				unset($input["plan"]);
+			// Add case
+			} else {
+				$input["plan"]['id_followup']=$input["ID"];
+				$input["plan"]['id_tracking']=$input['tracking'];
+				$input["plan"]['_nomail']=1;
+
+				if (!$pt->add($input["plan"])){
+					return false;
+				}
+				unset($input["plan"]);
+				$input['_need_send_mail']=true;
 			}
 		}
 	}
@@ -905,9 +913,10 @@ class Followup  extends CommonDBTM {
 			if (isset($input["_plan"])){
 				$input["_plan"]['id_followup']=$newID;
 				$input["_plan"]['id_tracking']=$input['tracking'];
+				$input["_plan"]['_nomail']=1;
 				$pt=new PlanningTracking();
 
-				if (!$pt->add($input["_plan"],"",1)){
+				if (!$pt->add($input["_plan"])){
 					return false;
 				}
 			}
