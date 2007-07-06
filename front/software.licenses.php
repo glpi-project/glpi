@@ -53,7 +53,7 @@ if (isset($_POST["add"]))
 {
 	checkRight("software","w");
 
-	if ($_POST["serial"]=="free")$number=1;
+	if ($_POST["serial"]=="free"||$_POST["serial"]=="global") $number=1;
 	else $number=$_POST["number"];
 	unset($_POST["number"]);
 
