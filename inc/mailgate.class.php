@@ -258,7 +258,7 @@ class MailCollect  extends receiveMail {
 		$body=$this->getBody($i);
 		
 		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
-			$body.=mb_convert_encoding($body, 'utf-8',$this->charset);
+			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
 		}
 		if (!seems_utf8($body)){
 			$tkt['contents']= textBrut(utf8_encode($body));	
