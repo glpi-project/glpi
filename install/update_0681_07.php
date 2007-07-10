@@ -1189,10 +1189,16 @@ function update0681to07() {
 
 	foreach ($intnull as $table => $fields){
 		foreach ($fields as $field){
-			$query = "UPDATE `$table` SET `$field`=0 WHERE $field IS NULL;";
-			$DB->query($query) or die("0.7 update datas in $table for NULL values " . $DB->error());
-			$query = "ALTER TABLE `$table` CHANGE `$field` `$field` INT NOT NULL DEFAULT '0'";
-			$DB->query($query) or die("0.7 alter $field in $table" . $DB->error());
+			if (FieldExists($table, $field)) {
+				$query = "UPDATE `$table` SET `$field`=0 WHERE $field IS NULL;";
+				$DB->query($query) or die("0.7 update datas in $table for NULL values " . $DB->error());
+				$query = "ALTER TABLE `$table` CHANGE `$field` `$field` INT NOT NULL DEFAULT '0'";
+				$DB->query($query) or die("0.7 alter $field in $table" . $DB->error());
+			} else {
+				// Error field does not exists : correct it
+				$query = "ALTER TABLE `$table` ADD COLUMN `$field` INT NOT NULL DEFAULT '0'";
+				$DB->query($query) or die("0.7 add $field in $table" . $DB->error());
+			}
 		}
 	}
 	// Clean history
