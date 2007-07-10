@@ -83,9 +83,6 @@ class Link extends CommonDBTM {
 
 		if ($spotted){
 			echo "<form method='post' name=form action=\"$target\"><div align='center'>";
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-			}
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 			echo "<tr><th colspan='2'>";
@@ -104,12 +101,12 @@ class Link extends CommonDBTM {
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td>";
 			echo "<td>";
-			autocompletionTextField("name","glpi_links","name",$this->fields["name"],80,$this->fields["FK_entities"]);		
+			autocompletionTextField("name","glpi_links","name",$this->fields["name"],80);		
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["links"][1].":	</td>";
 			echo "<td>";
-			autocompletionTextField("link","glpi_links","link",$this->fields["link"],80,$this->fields["FK_entities"]);		
+			autocompletionTextField("link","glpi_links","link",$this->fields["link"],80);		
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["links"][9].":	</td>";
