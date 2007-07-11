@@ -691,48 +691,57 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		//Build the request to check if the machine exists in GLPI
 		$sql_and = "";
 		$sql_from = "";
-		$first=true;
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
 		{
 			$sql_from.=" ,glpi_networking_ports";
 			$sql_and.=" glpi_computers.ID=glpi_networking_ports.on_device AND glpi_networking_ports.device_type=".COMPUTER_TYPE;
-			$first=false;
 		}	
-		if ($conf["link_ip"] && !empty($ocsParams["IPADDRESS"]))
+		if ($conf["link_ip"])
 		{
-			$sql_and.=(!$first?" AND ":' ')."(";
-			for ($i=0; $i < count($ocsParams["IPADDRESS"]);$i++)
-				$sql_and .= ($i>0?"OR":"")." glpi_networking_ports.ifaddr=\"".$ocsParams["IPADDRESS"][$i]."\"";
-			$sql_and.=")";
-			$first=false;			
+			if (empty($ocsParams["IPADDRESS"]))
+				return -1;
+			else
+			{	
+				$sql_and.=" AND (";
+				for ($i=0; $i < count($ocsParams["IPADDRESS"]);$i++)
+					$sql_and .= ($i>0?"OR":"")." glpi_networking_ports.ifaddr=\"".$ocsParams["IPADDRESS"][$i]."\"";
+				$sql_and.=")";
+			}			
 		}
-		if ($conf["link_mac_address"] && !empty($ocsParams["MACADDR"]))
+		if ($conf["link_mac_address"])
 		{
-			$sql_and.=(!$first?" AND ":' ')."(";
-			for ($i=0; $i < count($ocsParams["MACADDR"]);$i++)
-				$sql_and .= ($i>0?"OR":"")." glpi_networking_ports.ifmac=\"".$ocsParams["MACADDR"][$i]."\"";
-			$sql_and.=")";
-			$first=false;
+			if (empty($ocsParams["MACADDR"]))
+				return -1;
+			else
+			{	
+				$sql_and.=" AND (";
+				for ($i=0; $i < count($ocsParams["MACADDR"]);$i++)
+					$sql_and .= ($i>0?"OR":"")." glpi_networking_ports.ifmac=\"".$ocsParams["MACADDR"][$i]."\"";
+				$sql_and.=")";
+			}
 		}
-		if ($conf["link_name"] > 0 && !empty($ocsParams["NAME"]))
+		if ($conf["link_name"] > 0)
 		{
 			//Search only computers with blank name
 			if ($conf["link_name"] == 2)
-				$sql_and .= (!$first?" AND ":' ')."glpi_computers.name=\"\"";
-			else	
-				$sql_and .= (!$first?" AND ":' ')."glpi_computers.name=\"".$ocsParams["NAME"][0]."\"";
-			$first=false;
+				$sql_and .= " AND glpi_computers.name=\"\"";
+			else
+			{	
+				if (empty($ocsParams["NAME"]))
+					return -1;
+				else
+					$sql_and .= " AND glpi_computers.name=\"".$ocsParams["NAME"][0]."\"";
+			}
 		}
-		if ($conf["link_serial"] && !empty($ocsParams["SSN"]))
+		if ($conf["link_serial"])
 		{
-			$sql_and .= (!$first?" AND ":' ')."glpi_computers.serial=\"".$ocsParams["SSN"][0]."\"";
-			$first=false;
+			if (empty($ocsParams["SSN"]))
+				return -1;
+			else
+				$sql_and .= (!$first?" AND ":' ')."glpi_computers.serial=\"".$ocsParams["SSN"][0]."\"";
 		}
 		if ($conf["link_if_status"] > 0)
-		{
-			$sql_and .= (!$first?" AND ":' ')."glpi_computers.state=".$conf["link_if_status"];
-			$first=false;
-		}
+			$sql_and .= " AND glpi_computers.state=".$conf["link_if_status"];
 		
 		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE FK_entities=".$entity." AND ".$sql_and;
 		$result_glpi = $DB->query($sql_glpi);
