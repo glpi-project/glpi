@@ -394,7 +394,7 @@ function ocsManageDeleted($ocs_server_id) {
 	}
 }
 
-function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = -1) {
+function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = -1,$canlink=0) {
 	global $DBocs, $DB;
 
 	checkOCSconnection($ocs_server_id);
@@ -423,13 +423,27 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 					sleep(2);
 			}
 
+			//Check if machine could be linked with another one already in DB
+			if ($canlink)
+			{
+				$glpi_id = getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id,$data['FK_entities']);
+				
+				//One machine was found -> link
+				if ($glpi_id != -1)
+				{
+					ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id,1);
+					return 3;
+				}
+			}
+			
+			//New machine to import
 			$query = "SELECT * FROM hardware WHERE ID='$ocs_id'";
 			$result = $DBocs->query($query);
 			if ($result && $DBocs->numrows($result) == 1) {
-
+	
 				$line = $DBocs->fetch_array($result);
 				$line = clean_cross_side_scripting_deep(addslashes_deep($line));
-
+	
 				$cfg_ocs = getOcsConf($ocs_server_id);
 				$input = array ();
 				$input["FK_entities"] = $data['FK_entities'];
@@ -438,27 +452,24 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 				$input["state"] = $cfg_ocs["default_state"];
 				$input["_from_ocs"] = 1;
 				$glpi_id = $comp->add($input);
-
+	
 				$ocs_id = $line['ID'];
-
+	
 				if ($idlink = ocsLink($line['ID'], $ocs_server_id, $glpi_id)) {
 					ocsUpdateComputer($idlink, $ocs_server_id, 0);
 				}
-
+	
 			}
-
+	
 			if ($lock)
 				removeEntityLock($data['FK_entities'], $fp);
-
+	
 			//Return code to indicates that the machine was imported
 			return 1;	
 		}
 		else
 			//Return code to indicates that the machine was not imported because it doesn't matched rules
 			return 2;
-
-//		return 1;
-	//}
 }
 
 function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
@@ -573,25 +584,11 @@ function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity =
 
 		//Return code to indicates that the machine was synchronized
 		return 0;
-	} else {
-		if ($canlink)
-		{
-			//Check if the machine is present in GLPI AND was entered by hand
-			$glpi_id = getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id);
-			if ($glpi_id != -1)
-			{
-				ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id,1);
-				return 3;
-			}
-			else	
-				return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity);
-		}
-		else
-				return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity);
-	}
+	} else
+		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity,$canlink);
 }
 
-function getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id)
+function getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id,$entity)
 {
 	global $DB,$DBocs;
 	$conf = getOcsConf($ocs_server_id);
@@ -704,7 +701,7 @@ function getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id)
 			$first=false;
 		}
 		
-		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE ".$sql_and;
+		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE FK_entities=".$entity." AND ".$sql_and;
 		$result_glpi = $DB->query($sql_glpi);
 		if ($DB->numrows($result_glpi) > 0)
 			return $DB->result($result_glpi,0,"ID");
