@@ -150,12 +150,11 @@ function showHistory($device_type,$id_device){
 
 	// Output events
 
-
-
 	echo "<div align='center'><br><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$LANG["title"][38]."</th></tr>";
 	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][27]."</th><th>".$LANG["event"][17]."</th><th>".$LANG["event"][18]."</th><th>".$LANG["event"][19]."</th></tr>";
 	while ($data =$DB->fetch_array($result)){ 
+		$display_history = true;
 		$ID = $data["ID"];
 		$date_mod = $date_mod=convDateTime($data["date_mod"]);
 		$user_name = $data["user_name"];
@@ -200,10 +199,55 @@ function showHistory($device_type,$id_device){
 					$field=$ci->getType();
 					$change = $LANG["log"][55]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;	
+				case HISTORY_OCS_IMPORT:
+					if (haveRight("view_ocsng","r"))
+					{
+						$ci=new CommonItem();
+						$ci->setType($data["device_internal_type"]);
+						$field=$ci->getType();
+						$change = $LANG["ocsng"][7]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					}
+					else
+						$display_history = false;
+						
+					break;	
+				case HISTORY_OCS_DELETE:
+					if (haveRight("view_ocsng","r"))
+					{
+						$ci=new CommonItem();
+						$ci->setType($data["device_internal_type"]);
+						$field=$ci->getType();
+						$change = $LANG["ocsng"][46]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					}
+					else
+						$display_history = false;
 
+					break;	
+				case HISTORY_OCS_LINK:
+					if (haveRight("view_ocsng","r"))
+					{
+						$ci=new CommonItem();
+						$ci->setType($data["device_internal_type"]);
+						$field=$ci->getType();
+						$change = $LANG["ocsng"][47]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					}
+					else
+						$display_history = false;
+
+					break;	
+				case HISTORY_OCS_IDCHANGED:
+					if (haveRight("view_ocsng","r"))
+					{
+						$ci=new CommonItem();
+						$ci->setType($data["device_internal_type"]);
+						$field=$ci->getType();
+						$change = $LANG["ocsng"][48]." "."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\" --> &nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					}
+					else
+						$display_history = false;
+
+					break;	
 			}
-
-
 		}else{
 			$fieldname="";
 			// It's not an internal device
@@ -221,12 +265,14 @@ function showHistory($device_type,$id_device){
 			}
 		}// fin du else
 
-		// show line 
-		echo "<tr class='tab_bg_2'>";
-
-		echo "<td>$ID</td><td>$date_mod</td><td>$user_name</td><td>$field</td><td width='60%'>$change</td>"; 
-		echo "</tr>";
-
+		if ($display_history)
+		{
+			// show line 
+			echo "<tr class='tab_bg_2'>";
+	
+			echo "<td>$ID</td><td>$date_mod</td><td>$user_name</td><td>$field</td><td width='60%'>$change</td>"; 
+			echo "</tr>";
+		}
 	}
 
 	echo "</table></div>";

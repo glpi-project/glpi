@@ -324,7 +324,11 @@ function ocsManageDeleted($ocs_server_id) {
 
 		if (count($deleted))
 			foreach ($deleted as $del => $equiv) {
+
+
 				if (!empty ($equiv)) { // New name
+
+
 					// Get hardware due to bug of duplicates management of OCS
 					if (ereg("-", $equiv)) {
 						$query_ocs = "SELECT * 
@@ -333,6 +337,7 @@ function ocsManageDeleted($ocs_server_id) {
 						$result_ocs = $DBocs->query($query_ocs);
 						
 						if ($data = $DBocs->fetch_array($result_ocs)) {
+
 							$query = "UPDATE glpi_ocs_link 
 									SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
 									WHERE ocs_deviceid='$del' AND ocs_server_id='$ocs_server_id'";
@@ -359,7 +364,7 @@ function ocsManageDeleted($ocs_server_id) {
 								SET ocs_id='" . $data["ID"] . "', ocs_deviceid='" . $data["DEVICEID"] . "' 
 								WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
 							$DB->query($query);
-						    
+
 							//Update hardware checksum due to a bug in OCS 
  							//(when changing netbios name, software checksum is set instead of hardware checksum...)
 							$querychecksum = "UPDATE hardware 
@@ -369,6 +374,18 @@ function ocsManageDeleted($ocs_server_id) {
 						}
 
 					}
+
+					$sql_id = "SELECT glpi_id FROM glpi_ocs_link WHERE ocs_id=".$data["ID"]." AND ocs_server_id=$ocs_server_id";
+					$res_id = $DB->query($sql_id);
+
+					//Add history to indicates that the ocs_id changed
+					$changes[0]='0';
+					//Old ocs_id
+					$changes[1]=$del;
+					//New ocs_id
+					$changes[2]=$data["ID"];
+					historyLog ($DB->result($res_id,0,"glpi_id"),COMPUTER_TYPE,$changes,null,HISTORY_OCS_IDCHANGED);
+					
 				} else { // Deleted
 					if (ereg("-", $del))
 						$query = "SELECT * 
@@ -386,6 +403,13 @@ function ocsManageDeleted($ocs_server_id) {
 							"ID" => $data["glpi_id"],
 							"_from_ocs" => 1
 						), 0);
+
+						//Add history to indicates that the machine was deleted from OCS
+						$changes[0]='0';
+						$changes[1]=$data["ocs_id"];
+						$changes[2]="";
+						historyLog ($data["glpi_id"],COMPUTER_TYPE,$changes,null,HISTORY_OCS_DELETE);
+
 						$query = "DELETE FROM glpi_ocs_link WHERE ID ='" . $data["ID"] . "'";
 						$DB->query($query);
 					}
@@ -426,8 +450,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 			//Check if machine could be linked with another one already in DB
 			if ($canlink)
 			{
-				$glpi_id = getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id,$data['FK_entities']);
-				
+				$glpi_id = getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$data['FK_entities']);
 				//One machine was found -> link
 				if ($glpi_id != -1)
 				{
@@ -455,6 +478,11 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 	
 				$ocs_id = $line['ID'];
 	
+				$changes[0]='0';
+				$changes[1]="";
+				$changes[2]=$ocs_id;
+				historyLog ($glpi_id,COMPUTER_TYPE,$changes,null,HISTORY_OCS_IMPORT);
+				
 				if ($idlink = ocsLink($line['ID'], $ocs_server_id, $glpi_id)) {
 					ocsUpdateComputer($idlink, $ocs_server_id, 0);
 				}
@@ -559,6 +587,11 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
 			if ($cfg_ocs["import_registry"])
 				ocsResetRegistry($glpi_id);
 
+			$changes[0]='0';
+			$changes[1]="";
+			$changes[2]=$ocs_id;
+			historyLog ($glpi_id,COMPUTER_TYPE,$changes,null,HISTORY_OCS_LINK);
+			
 			ocsUpdateComputer($idlink, $ocs_server_id, 0);
 		}
 	} else {
@@ -588,7 +621,7 @@ function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity =
 		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity,$canlink);
 }
 
-function getMachinesAlreadyInGLPIConfiguration($ocs_id,$ocs_server_id,$entity)
+function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 {
 	global $DB,$DBocs;
 	$conf = getOcsConf($ocs_server_id);
