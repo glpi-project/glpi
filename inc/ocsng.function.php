@@ -637,7 +637,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
 		{
 			$sql_from.=" ,networks";
-			$sql_and.=" hardware.ID=networks.HARDWARE_ID";
+			$sql_and.=" AND hardware.ID=networks.HARDWARE_ID";
 		}	
 		if ($conf["link_ip"])
 		{
@@ -675,16 +675,16 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		while ($dataOcs = $DB->fetch_array($result))
 		{
 			if ($conf["link_ip"])
-				if (!in_array($dataOcs["IPADDRESS"],$ocsParams["IPADDRESS"]))
+				if (!empty($dataOcs["IPADDRESS"]) && !in_array($dataOcs["IPADDRESS"],$ocsParams["IPADDRESS"]))
 					$ocsParams["IPADDRESS"][]= $dataOcs["IPADDRESS"];
 			if ($conf["link_mac_address"])
-				if (!in_array($dataOcs["MACADDR"],$ocsParams["MACADDR"]))
+				if (!empty($dataOcs["MACADDR"]) && !in_array($dataOcs["MACADDR"],$ocsParams["MACADDR"]))
 					$ocsParams["MACADDR"][]= $dataOcs["MACADDR"];
 			if ($conf["link_name"] > 0)
-				if (!in_array($dataOcs["NAME"],$ocsParams["NAME"]))
+				if (!empty($dataOcs["NAME"]) && !in_array($dataOcs["NAME"],$ocsParams["NAME"]))
 					$ocsParams["NAME"][]= $dataOcs["NAME"];
 			if ($conf["link_serial"])
-				if (!in_array($dataOcs["SSN"],$ocsParams["SSN"]))
+				if (!empty($dataOcs["SSN"]) && !in_array($dataOcs["SSN"],$ocsParams["SSN"]))
 					$ocsParams["SSN"][]= $dataOcs["SSN"];
 		}
 
@@ -694,7 +694,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
 		{
 			$sql_from.=" ,glpi_networking_ports";
-			$sql_and.=" glpi_computers.ID=glpi_networking_ports.on_device AND glpi_networking_ports.device_type=".COMPUTER_TYPE;
+			$sql_and.=" AND glpi_computers.ID=glpi_networking_ports.on_device AND glpi_networking_ports.device_type=".COMPUTER_TYPE;
 		}	
 		if ($conf["link_ip"])
 		{
@@ -702,9 +702,9 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 				return -1;
 			else
 			{	
-				$sql_and.=" AND (";
+				$sql_and.=" AND glpi_networking_ports.ifaddr IN ";
 				for ($i=0; $i < count($ocsParams["IPADDRESS"]);$i++)
-					$sql_and .= ($i>0?"OR":"")." glpi_networking_ports.ifaddr=\"".$ocsParams["IPADDRESS"][$i]."\"";
+					$sql_and .= ($i>0 ? ',"' : '("').$ocsParams["IPADDRESS"][$i].'"';
 				$sql_and.=")";
 			}			
 		}
@@ -714,9 +714,9 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 				return -1;
 			else
 			{	
-				$sql_and.=" AND (";
+				$sql_and.=" AND glpi_networking_ports.ifmac IN ";
 				for ($i=0; $i < count($ocsParams["MACADDR"]);$i++)
-					$sql_and .= ($i>0?"OR":"")." glpi_networking_ports.ifmac=\"".$ocsParams["MACADDR"][$i]."\"";
+					$sql_and .= ($i>0 ? ',"' : '("').$ocsParams["MACADDR"][$i].'"';
 				$sql_and.=")";
 			}
 		}
@@ -743,7 +743,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		if ($conf["link_if_status"] > 0)
 			$sql_and .= " AND glpi_computers.state=".$conf["link_if_status"];
 		
-		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE FK_entities=".$entity." AND ".$sql_and;
+		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE FK_entities=".$entity.$sql_and;
 		$result_glpi = $DB->query($sql_glpi);
 		if ($DB->numrows($result_glpi) > 0)
 			return $DB->result($result_glpi,0,"ID");
