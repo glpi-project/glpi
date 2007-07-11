@@ -990,6 +990,10 @@ $LANG["ocsng"][41]="Mode d'import manuel";
 $LANG["ocsng"][42]="Configuration OCS NG invalide (TRACE_DELETED doit être activé)"; 
 $LANG["ocsng"][43]="Accès refusé sur la base OCS (Droit d'écriture sur hardware.CHECKSUM nécessaire)"; 
 $LANG["ocsng"][44]="Accès refusé sur la base OCS (Droit de suppression sur deleted_equiv nécessaire)"; 
+$LANG["ocsng"][45]="ID OCS"; 
+$LANG["ocsng"][46]="Supprimé d'OCS"; 
+$LANG["ocsng"][47]="Lié avec une machine d'OCS";
+$LANG["ocsng"][48]="La machine a changé d'identifiant OCS";
 
 
 $LANG["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
