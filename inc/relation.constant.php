@@ -154,6 +154,8 @@ $RELATION=array(
 	"glpi_dropdown_ram_type" =>array("glpi_device_ram"=>"type"),
 	
 	"glpi_dropdown_rubdocs" =>array("glpi_docs"=>"rubrique"),
+
+	"glpi_dropdown_software_category" =>array("glpi_software"=>"category"),
 	
 	"glpi_dropdown_state" =>array("glpi_computers"=>"state",
 					"glpi_monitors"=>"state",

@@ -87,7 +87,6 @@ class SoftwareCategoriesRule extends Rule {
 	}
 
 	function maxActionsCount(){
-		// Unlimited
 		return 1;
 	}
 	/**
