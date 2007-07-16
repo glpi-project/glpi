@@ -182,7 +182,7 @@ switch($_GET["type"]){
 
 
 	echo "<div align='center'>";
-	echo "<table class='icon_nav'>";
+	echo "<table class='tab_cadre_navigation'>";
 	echo "<tr>";
 	echo "<td>";
 	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
