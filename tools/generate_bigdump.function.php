@@ -438,6 +438,12 @@ function generateGlobalDropdowns(){
 		$query="INSERT INTO glpi_dropdown_rubdocs VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
+
+	for ($i=0;$i<$MAX['softwarecategory'];$i++){
+		$val="categorie $i";
+		$query="INSERT INTO glpi_dropdown_software_category VALUES (NULL,'$val','comment $val')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+	}
 	
 	$items=array("Reparation","En stock","En fonction","Retour SAV","En attente");
 	for ($i=0;$i<$MAX['state'];$i++){
@@ -1240,7 +1246,7 @@ function generate_entity($ID_entity){
 		$loc=mt_rand(1,$MAX['locations']);
 		$techID=mt_rand(1,$MAX['users_sadmin']+$MAX['users_admin']);
 		$os=mt_rand(1,$MAX['os']);
-		$query="INSERT INTO glpi_software VALUES (NULL,'$ID_entity','$name','comments $i','$loc','$techID','$os','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0','1')";
+		$query="INSERT INTO glpi_software VALUES (NULL,'$ID_entity','$name','comments $i','$loc','$techID','$os','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0','1','".mt_rand(1,$MAX['softwarecategory'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$softID=$DB->insert_id();
 		addDocuments(SOFTWARE_TYPE,$softID);

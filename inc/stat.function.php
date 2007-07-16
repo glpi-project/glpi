@@ -184,7 +184,12 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			if ($nb_solved>0)
 				$nb=array_sum($data)/$nb_solved;
 			else $nb=0;
-			echo displaySearchItem($output_type,toTimeStr($nb*HOUR_TIMESTAMP,0),$item_num,$row_num);
+
+			$timedisplay=$nb*HOUR_TIMESTAMP;
+			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
+				$timedisplay=toTimeStr($timedisplay,0);
+			}
+			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
 			//Le temps moyen de l'intervention r�lle
 			//The average realtime to resolv
 			$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
@@ -195,10 +200,19 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			if ($nb_solved>0)
 				$nb=$total_realtime/$nb_solved;
 			else $nb=0;
-			echo displaySearchItem($output_type,toTimeStr($nb*MINUTE_TIMESTAMP,0),$item_num,$row_num);
+
+			$timedisplay=$nb*MINUTE_TIMESTAMP;
+			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
+				$timedisplay=toTimeStr($timedisplay,0);
+			}
+			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
 			//Le temps total de l'intervention r�lle
 			//The total realtime to resolv
-			echo displaySearchItem($output_type,toTimeStr($total_realtime*MINUTE_TIMESTAMP,0),$item_num,$row_num);				
+			$timedisplay=$total_realtime*MINUTE_TIMESTAMP;
+			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
+				$timedisplay=toTimeStr($timedisplay,0);
+			}
+			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);				
 			//Le temps moyen de prise en compte du ticket
 			//The average time to take a ticket into account
 			$data=constructEntryValues("inter_avgtakeaccount",$date1,$date2,$type,$value[$i]["ID"],$value2);
@@ -209,7 +223,12 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			if ($nb_solved>0)
 				$nb=array_sum($data)/$nb_solved;
 			else $nb=0;
-			echo displaySearchItem($output_type,toTimeStr($nb*HOUR_TIMESTAMP,0),$item_num,$row_num);
+
+			$timedisplay=$nb*HOUR_TIMESTAMP;
+			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
+				$timedisplay=toTimeStr($timedisplay,0);
+			}
+			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
 
 			echo displaySearchEndLine($output_type);
 		}
