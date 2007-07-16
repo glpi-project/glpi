@@ -275,8 +275,14 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		echo "<option value='$i' ".($quantity==$i?"selected":"").">".$i."x</option>";
 	echo "</select>";
 	echo "</td>";
-	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->devtype."'>$type</a></td>";
-	echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->devtype."'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
+
+	if (haveRight("device","w")) {
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->devtype."'>$type</a></td>";
+		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->devtype."'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
+	}  else {
+		echo "<td align='center'>$type</td>";
+		echo "<td align='center'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</td>";
+	}
 
 	if (count($entry)>0){
 		$more=0;
