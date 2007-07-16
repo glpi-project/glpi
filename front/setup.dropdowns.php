@@ -182,6 +182,11 @@ else {
 					"glpi_dropdown_network"=>$LANG["setup"][88],
 					"glpi_dropdown_vlan"=>$LANG["setup"][90],	
 					),
+			
+			$LANG["reports"][55]=>array(
+			"glpi_dropdown_software_category"=>$LANG["rulesoftwarecategories"][5],
+			)
+			
 			); //end $opt
 
 	$plugdrop=getPluginsDropdowns();

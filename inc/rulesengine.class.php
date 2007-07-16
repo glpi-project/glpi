@@ -248,7 +248,6 @@ class RuleCollection {
 				}
 			}
 		}
-		
 		return $output;
 	}
 

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: rule.right.form.php 4985 2007-05-15 16:04:38Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
@@ -34,30 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("rulesengine","affectentity");
+$NEEDED_ITEMS=array("entity","rulesengine","rule.softwarecategories");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulesengine"][17]);
+$rule = new SoftwareCategoriesRule();
 
-	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-	echo "<tr><th>" . $LANG["rulesengine"][24] . "</th></tr>";
-	if ($CFG_GLPI["ocs_mode"]&&haveRight("rule_ocs","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.ocs.php\"><strong>" . $LANG["rulesengine"][18] .
- "</strong></a></td></tr>";
-	}
-	if (haveRight("rule_ldap","r")){
-		echo "<tr class='tab_bg_1'><td align='center'><a href=\"rule.right.php\"><strong>" .$LANG["rulesengine"][19] . "</strong></a></td> </tr>";
-	}
-	if (haveRight("rule_tracking","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.tracking.php\"><strong>" . $LANG["rulesengine"][28] . "</strong></a></td></tr>";
-	}
-	if (haveRight("rule_softwarecategories","r")){
-		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.softwarecategories.php\"><strong>" . $LANG["rulesengine"][37] . "</strong></a></td></tr>";
-	}
-
-	echo "</table></div>";
-
-commonFooter();
+include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

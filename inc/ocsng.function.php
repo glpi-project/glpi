@@ -2763,7 +2763,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						}
 						
 						//Import license for this software
-						$licenseID = ocsImportLicense($isNewSoft, $version);
+						$licenseID = ocsImportLicense($isNewSoft, $version,$import_software_licensetype,$import_software_buy);
 	
 						//Install license for this machine
 						$instID = installSoftware($glpi_id, $licenseID, '', $dohistory);

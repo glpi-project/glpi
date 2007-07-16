@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup","admininfo","registry","setup");
+$NEEDED_ITEMS=array("user","rulesengine","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup","admininfo","registry","setup","rule.softwarecategories");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -283,6 +283,31 @@ if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])
 				}
 			}
 		break;
+
+		case "compute_software_category":
+			$softcatrule = new SoftwareCategoriesRuleCollection;
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					$params = array();
+					//Get software name and manufacturer
+					$soft = new Software;
+					$soft->getFromDB($key);
+					$params["name"]=$soft->fields["name"];
+					$params["FK_glpi_enterprise"]=$soft->fields["FK_glpi_enterprise"];
+					
+					//Process rules
+					$result = $softcatrule->processAllRules(null,null,$params);
+					
+					if (!empty($result) && isset($result["category"]))
+					{
+						$result["ID"] = $soft->fields["ID"];
+						//Update software category
+						$soft->update($result);
+					}
+				}
+			}
+		break;
+		
 		default :
 			// Plugin specific actions
 			if ($_POST["device_type"]>1000){

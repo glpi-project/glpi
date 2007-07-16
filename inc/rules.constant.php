@@ -174,4 +174,18 @@ $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['FK_group']['table']='glpi_groups';
 
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['name']=$LANG["joblist"][2];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['type']='dropdown_priority';
+
+//Software categories
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['field']='name';
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['name']=$LANG["software"][10];
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['table']='glpi_software';
+
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['field']='manufacturer';
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['name']=$LANG["common"][5];
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['table']='glpi_dropdown_manufacturer';
+
+$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['name']=$LANG["common"][36];
+$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['type']='dropdown';
+$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['table']='glpi_dropdown_software_category';
+
 ?>
