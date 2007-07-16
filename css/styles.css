@@ -26,13 +26,19 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
 */
+/* ################--------------- GLPI CSS style   ---------------#################### */
+/*  									Summary 										*/
+/* 	1)	Defautl style																	*/
+/* 	2)	Form Style																		*/
+/*  3)	Table style																		*/
+/*  4)																					*/
+/*  5)																					*/
+/*  6)																					*/
 
-/* ########################    Fichier CSS   ############################# */
-/* #######################     general       ############################# */
-/* ####################################################################### */ 
 
 
-/* Feuille de style Header GLPI Project - Version 1 nov. 2006 */
+/* ################--------------- Default style  ---------------#################### */
+
 body{
 	font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
 	font-size: 12px;
@@ -58,6 +64,739 @@ div.sep{
 	clear: both;
 }
 
+img{
+	border: 0;
+}
+
+small{  
+	font-family: verdana;
+	font-size: 10px;
+	text-decoration: underline;
+} 
+
+
+b{	font-weight: bold;
+}
+
+.center {
+	text-align:center;
+}
+
+.red { color:red;}
+.blue {color:blue;}
+.green {color:green;}
+
+.separ {
+	clear: both;
+	visibility: hidden;
+}
+
+a, a:link {
+	font-weight: bold;
+	text-decoration: none;
+	color : #659900;
+	font-size : 11px;
+}
+
+a:hover{
+	color: black;
+}
+
+
+hr{
+	border: 1px solid #cccccc;
+}
+
+
+/* Over link div */
+.over_link {
+	display: none;
+	position: absolute;
+	border: 1px solid  #CC9900;
+	background: url("../pics/fd_hoverlink.png") 0 0 repeat;
+	-moz-border-radius: 5px;
+	padding: 5px;
+	font-size: 11px;
+	text-align: left;
+	z-index:1000;
+}
+
+
+
+/* ################--------------- form ---------------#################### */
+
+#page form  {font-size: 12px;
+	margin:0;
+	margin-bottom:5px;
+	padding:0; 
+
+}
+
+#page {
+	margin-top:25px;
+	}
+
+option {border:1px solid #ccc;
+	background-color:#ffffff;}
+
+.submit { text-align:center;}
+
+select { 
+	font-size: 11px;
+	border: 1px solid #888888;
+}
+
+.tree {
+
+	border:0;
+	border-bottom:1px solid #C0CAD4;
+}
+
+.treeroot {
+	
+	background: url("../pics/treeroot.png") 0 2px no-repeat;
+	background-color:#eeeeee;
+	border:0;
+	margin-top:5px;
+	font-weight:bold;
+}
+
+
+
+textarea, input {
+background-color:#FAFAFA;
+border: 1px solid #888888;
+font-size: 11px;
+}
+
+input.submit {
+	font-size: 11px;
+	border: 1px solid #888888;
+	background-color:#eeeeee;
+	cursor:pointer;
+	background:  url("../pics/fond_form.png") repeat-x; 
+	}
+	
+input.submit:hover {
+	border: 1px inset #888888;
+	background-color:#ffffff;
+	background:  url("../pics/fond_form_on.png") repeat-x; 
+	}
+
+.button {
+	border: 1px solid #888888;
+	background-color:#eeeeee;
+	cursor:pointer;
+	background:  url("../pics/fond_form.png") repeat-x; 
+	}
+
+.button:hover{
+	border: 1px inset #888888;
+	background-color:#ffffff;
+	background:  url("../pics/fond_form_on.png") repeat-x; 
+	}
+
+
+
+
+
+
+/* ################--------------- Table  ---------------#################### */
+table {   
+	font-size: 11px;
+}
+
+th {  }
+
+
+td { }
+
+.tab_cadre{
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
+	background-color: #ffffff;
+}
+
+.tab_cadre_central{
+-moz-border-radius: 4px;
+	border: 1px solid #bbbbbb;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
+	width:950px;
+	/* background-color: #FFF4DF; */
+	background : url("../pics/fond-central.png") repeat-x top right ;
+}
+
+
+.tab_cadre_navigation {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #ffffff;
+	-moz-border-radius: 5px;
+	font-size : 12px;
+	font-weight: bold;
+	
+}
+
+.tab_cadre_fixe, .tab_cadre_fixehov{
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
+	width:950px;
+}
+
+.tab_cadrehov, .tab_cadrehov_pointer{
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	text-align: left;
+	font-size: 11px;
+	width: 80%;
+	background-color: #ffffff;
+}
+
+.tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th  {
+	font-size: 11px;
+	font-weight: bold;
+	background-color: #fccc6f;
+	text-align: center;
+	background:  url("../pics/fond_th.png") repeat-x; 
+	border-bottom:1px solid #cccccc;
+}
+
+
+
+.tab_cadrehov tr:hover, .tab_cadre_fixehov tr:hover {
+
+	background-color: #FFF4DF;
+}
+
+.tab_cadrehov_pointer tr:hover {
+	cursor: pointer;
+	background-color: #FFF4DF;
+}
+
+/* Ajout pour IE */
+.tab_cadrehov_pointer tr {
+	cursor: pointer;
+}
+
+.tab_cadre_report {
+
+-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
+	text-align: center;
+	width:80%;
+}
+
+
+.tab_bg_1 {
+	background-color: #d3d3ce;
+
+}
+.tab_bg_1_2 {
+	background-color: #cf9b9b;
+
+}
+
+.tab_bg_2 {
+	background-color: #e6e6e6;
+
+}
+
+.tab_bg_2_2 {
+	background-color: #cf9b9b;
+
+}
+
+.tab_bg_3 {
+/*background-color: #eeeeee;*/
+	background-color: #e7e7e2;
+
+}  
+
+.tab_find {
+	background-color: #ccccc7;
+
+}
+
+
+.tab_find:hover {
+	background-color:#FFF2C2;
+	cursor:pointer;
+}
+
+.tab_resa {
+	border:1px dashed #cccccc;
+	background-color: #d7d7d2;
+	font-size:10px
+}
+
+.tab_resa:hover {
+
+	background-color: #ffffff;
+	border:1px dotted #000000;
+
+
+}
+
+/* ################--------------- Bouton navigation   ---------------#################### */
+/* 								(obsolète mais encore utilisés)								*/
+
+.icon_consol_hov, .icon_consol{
+	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
+	font-size : 12px;
+	font-weight: bold;
+	padding: 4px;
+	padding-right: 8px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #e4e4e4;
+	background:  url("../pics/fond_ico_cons.png") repeat-x; 
+	-moz-border-radius: 5px;
+
+}
+
+
+.icon_consol_hov img{
+	padding-bottom: 10px;
+}
+
+.icon_consol_hov:hover {
+	padding: 4px;
+	padding-right: 8px;
+	margin: 1px;
+	border: 1px inset #888888;
+	background-color: white;
+	background:  url("../pics/fond_ico_cons_on.png") repeat-x; 
+	-moz-border-radius: 5px;
+}
+
+/* ################--------------- Autocompletion  ---------------#################### */
+
+ul.autocomp  {
+	list-style-type: none;
+	margin:0;
+	margin-left:3px;
+	padding:3px;
+}
+
+ul.autocomp   li.selected { background-color: #FFF6CF; }
+
+	li.auto_comp  {
+	list-style-type: none;
+	display:block;
+	margin:0;
+	padding:2px;
+	height:16px;
+}
+
+
+/* ################--------------- Pager  ---------------#################### */
+
+.tab_cadre_pager{
+	text-align:center;
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	font-size:10px;
+	width:950px;
+}
+
+
+.tab_cadre_pager select, .tab_cadre_pager span, .tab_cadre_pager form {
+	font-size:10px;
+	margin:0;
+}
+
+.tab_cadre_pager input {
+	vertical-align:middle;
+}
+
+
+.tab_cadre_pager th {
+	font-size: 10px;
+	font-weight: bold;
+	background-color: #fccc6f;
+	text-align: center;
+	background:  url("../pics/fond_th.png") repeat-x; 
+}
+
+
+
+/* ################--------------- Tracking  ---------------#################### */
+.tracking {
+	width:100%;
+	height:100%;
+	cursor:pointer;
+}
+
+.tracking:hover {
+	background-color: #FFF4DF; 
+
+}
+
+.showplan {
+font-weight: bold;
+text-decoration: none; 
+color : #659900; 
+cursor:pointer;
+}
+
+/* ################--------------- Calendrier  ---------------#################### */
+
+.calendrier{
+	border: 1px solid #888888;
+	background-color:#eeeeee;
+	vertical-align:middle;
+	background:  url("../pics/fond_ico_cons.png") repeat-x; 
+	}
+	
+.calendrier:hover{
+	border: 1px inset #888888;
+	background-color:#ffffff;
+	cursor:pointer;
+	}
+
+.calendrier_mois { font-family: Verdana, Arial, Sans, sans-serif; font-size: 10px; }
+
+/* ################--------------- Knowledge FAQ  ---------------#################### */
+#contenukb {
+	height: 100%;
+	width: 600px;
+	}
+
+#contenukb legend {
+	font-weight: bold;
+}
+
+#contenukb fieldset {
+	background-color: #eeeeee;
+	border: 1px solid #FFC65D;
+	-moz-border-radius: 8px;
+	padding-bottom:10px;
+	width: 600px;
+}	
+
+#contenukb textarea {
+	width:550px;
+}
+
+
+.code {	
+	width: 95%;
+	border: dotted 2px #ccc;
+	}
+
+a.pubfaq {
+	color: #c9993C;
+}
+a.pubfaq:hover {
+	color: black;
+}
+
+a.icon_nav_move img {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #aaaaaa;
+	background-color: #ffffff;
+	-moz-border-radius: 5px;
+}
+
+a.icon_nav_move:hover img {
+	padding: 4px;
+	margin: 1px;
+	border: 1px solid #999999;
+	background-color:#e4e4e4;
+	-moz-border-radius: 5px;
+}
+
+
+/* ################--------------- planning  ---------------#################### */
+
+.planning {
+	text-align:center;
+	border:1px dashed #cccccc;
+	background-color: #d7d7d2;
+	font-size:9px;
+
+}
+
+.planing:hover {
+	border: 1px solid #999999;
+	background-color: white;
+		
+}
+
+
+/* ################--------------- Onglet  ---------------#################### */
+
+#barre_onglets {
+
+	width:950px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom:0;
+	padding-bottom:0;
+}
+
+
+ul#onglet {
+	list-style-type: none;
+	padding-bottom: 24px;
+	border-bottom: 1px solid #ffffff;
+	margin: 0;
+	padding-left:0;
+}
+
+ul#onglet li {
+
+	float: left;
+	height: 21px;
+	background-color: #eeeeee;
+	margin: 2px 2px 0 2px;
+	border: 1px solid #CC9900;
+	border-bottom: 1px solid #fff;
+	-moz-border-radius: 4px;
+	background:  url("../pics/fond_onglet.png") repeat-x; 	
+}
+
+ul#onglet li.actif {
+	border-bottom: 1px ridge #659900;
+	background-color: #fff;
+}
+
+ul#onglet li.invisible {
+	border-bottom: 1px solid #fff;
+	border: 1px solid #fff;
+	background-color: #ffffff;
+	width: 15px;
+	background:  transparent; 
+}
+
+ul#onglet li.actif a {
+	color: #000;
+}
+
+#onglet a {
+	float: left;
+	display: block;
+	color: #666;
+	text-decoration: none;
+	padding: 3px;
+	font-size: 10px;
+	font-family:  Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bold;
+}
+
+#onglet a:hover {
+		color : #659900;
+
+}
+
+/* Over onglet div */
+#onglet_plugins{
+	display: none; 
+	position: absolute;
+	top:21px;
+	left:-20px;
+	padding: 5px;
+	font-size: 8px;
+	width:100px;
+	background: transparent url("../pics/fondTR.png") repeat; 
+	border: 1px solid gray;	
+	-moz-border-radius: 5px;
+}
+
+ #onglet_plugins dl{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;	
+	border:0;
+
+}
+
+#onglet_plugins dt {
+	text-align: center;
+	padding: 2px;
+	background:none;
+	border:0;
+	width:100%;
+	height:18px;
+
+}
+#onglet_plugins dt a {
+	font-size:10px;	
+	color: #000;
+	text-decoration: none;
+	display: block;
+	border: 0 none;
+}
+#onglet_plugins dt a:hover {
+	color: #000;
+	background: #fccc6f;
+
+}
+
+
+#onglet_plugins dt:hover {
+	color: #000;
+	background: #fccc6f;
+
+}
+
+
+
+
+/* ################--------------- Login Null Header  ---------------#################### */
+
+#contenulogin {
+	height: 266px;
+	width: 600px;
+	margin-top:100px;
+	margin-left: auto;
+	margin-right: auto;
+	background:url("../pics/login_glpi.png")  no-repeat;
+	font-family : Verdana,Arial,Helvetica,sans-serif;
+	font-size : 12px;
+	color :#659900;
+	font-weight: bold;
+}
+
+#contenu-nullHeader {
+	height: 424px;
+	width: 739px;
+	margin-top:50px;
+	margin-left: auto;
+	margin-right: auto;
+	background:url("../pics/null-header.png")  no-repeat;
+	
+}
+
+
+#text-nullHeader {
+	float:left;
+	height: 300px;
+	width: 739px;
+	margin-right:auto;
+	margin-left: auto;
+	margin-top:100px;
+}
+
+
+
+#boxlogin {
+	position:relative;
+	background-color: transparent;
+	padding-left: 15px;
+	padding-top: 76px;
+	text-align: left;  /* Bug IE Grrr */
+	height: 190px;
+	width: 300px;
+
+
+}
+
+#boxlogin p {
+
+	text-align:center;
+}
+
+.row {
+	clear: both;
+	padding-top: 5px;
+}
+
+.label {
+	float: left;
+	margin-left:10px;
+	text-align: left;
+}
+
+.formw {
+	float: right;
+	margin-right:10px;
+	text-align: right;
+}
+
+
+
+#boxlogin fieldset {
+	background-color: transparent;
+	border: 2px solid #FFC65D;
+	padding-bottom:22px;
+}
+
+#boxlogin legend {
+	font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 16px;
+	font-weight: 700;
+	background-color: transparent;
+	color :#659900;
+}
+
+
+#boxlogin input {
+
+	border: 1px solid #659900;
+}
+
+#logo-login {
+
+	float:right;
+	height: 160px;
+	width: 230px;
+	margin-right:10px;
+	margin-left:0px;
+	margin-top:80px;
+	color :#000000;
+}
+
+#logo-login a:hover {
+	color :#659900;
+	text-decoration: underline;
+}
+
+
+.sous_logo {
+	font-family: arial;
+	font-size: 9px;
+	color: #eeeeee;
+	text-decoration: none;
+	}
+
+#footer-login
+{
+	text-align:right;
+	position: fixed !important;
+	left: 0px;
+	right: 10px;
+	bottom: 0px !important;
+	height: 40px;
+	font-size : 10px;
+	color :#757575;
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bold;
+	margin-top:10px;
+	margin:auto;
+	 /*css hack for IE*/
+	position: absolute;
+	bottom: auto;
+	top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
+	width: expression(parseInt(document.documentElement.clientWidth)+'px');
+	
+}
+
+
+/* ################--------------- Header / menu  ---------------#################### */
 div#header{
 	background: url("../pics/fd_nav1.png") 0 0 repeat-x;
 	margin-bottom:10px;
@@ -131,7 +870,6 @@ div#c_recherche form div#boutonRecherche input{
 	width: 15px;
 	height: 15px;
 	border: none;
-	/*background: #D8BE56;*/
 	position: relative;
 	right: 2px;
 }
@@ -345,7 +1083,6 @@ div#show_entities{
 	top:20px;
 	left:1px;
 	border: 1px solid  #CC9900;
-	/*background: transparent url("../pics/fondTR2.png") repeat; */
 	background: url("../pics/fd_hoverlink.png") 0 0 repeat;
 	-moz-border-radius: 5px;
 	padding: 5px;
@@ -360,7 +1097,6 @@ div#show_all_menu{
         top:20px; 
         left:5px;
         border: 1px solid  #CC9900;
-		/*background: transparent url("../pics/fondTR2.png") repeat; */
 		background: url("../pics/fd_hoverlink.png") 0 0 repeat;
         -moz-border-radius: 5px;
         padding: 5px;
@@ -370,674 +1106,9 @@ div#show_all_menu{
          
 }
 
-
-
-/* ########################################################################### */
-
-img{
-	border: 0;
-}
-
-small{  
-	font-family: verdana;
-	font-size: 10px;
-	text-decoration: underline;
-} 
-
-
-b{
-	font-weight: bold;
-}
-
-.center {
-	text-align:center;
-}
-
-.red { color:red;}
-.blue {color:blue;}
-.green {color:green;}
-
-.separ {
-	clear: both;
-	visibility: hidden;
-}
-
-
-/* #################################### */
-/* ###### liens ###### */
-/* #################################### */
-
-
-a, a:link
-{
-	font-weight: bold;
-	text-decoration: none;
-	color : #659900;
-	font-size : 11px;
-}
-
-/*
-a:visited   {
-font-weight: bold;
-text-decoration: none;
-color : #659900;
-}
-*/
-
-a:hover
-{
-	color: black;
-}
-
-
-/* Lien pour Show plan */
-
-.showplan {
-font-weight: bold;
-text-decoration: none; 
-color : #659900; 
-cursor:pointer;
-}
-
-
-hr{
-	border: 1px solid #cccccc;
-}
-
-/* Over link div */
-.over_link {
-	display: none;
-	position: absolute;
-	border: 1px solid  #CC9900;
-	/*background: transparent url("../pics/fondTR2.png") repeat; */
-	background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-	/*background-color : #f1f4e3;*/
-	-moz-border-radius: 5px;
-	padding: 5px;
-	font-size: 11px;
-	text-align: left;
-	z-index:1000;
-/*	width:200px;*/
-}
-
-
-/* #################################### */
-/* ###### form ###### */
-/* #################################### */
-
-#page form  {font-size: 12px;
-	margin:0;
-	margin-bottom:5px;
-	padding:0; 
-
-}
-
-#page {
-	margin-top:25px;
-	}
-
-option {border:1px solid #ccc;
-	background-color:#ffffff;}
-
-.submit { text-align:center;}
-
-select { 
-	font-size: 11px;
-	border: 1px solid #888888;
-}
-
-.tree {
-
-	border:0;
-	border-bottom:1px solid #C0CAD4;
-}
-
-.treeroot {
-	
-	background: url("../pics/treeroot.png") 0 2px no-repeat;
-	background-color:#eeeeee;
-	border:0;
-	margin-top:5px;
-	font-weight:bold;
-}
-
-
-
-textarea, input {
-background-color:#FAFAFA;
-border: 1px solid #888888;
-font-size: 11px;
-}
-
-input.submit {
-	font-size: 11px;
-	border: 1px solid #888888;
-	background-color:#eeeeee;
-	cursor:pointer;
-	background:  url("../pics/fond_form.png") repeat-x; 
-	}
-	
-input.submit:hover {
-	border: 1px inset #888888;
-	background-color:#ffffff;
-	background:  url("../pics/fond_form_on.png") repeat-x; 
-	}
-
-.button {
-	border: 1px solid #888888;
-	background-color:#eeeeee;
-	cursor:pointer;
-	background:  url("../pics/fond_form.png") repeat-x; 
-	}
-
-.button:hover{
-	border: 1px inset #888888;
-	background-color:#ffffff;
-	background:  url("../pics/fond_form_on.png") repeat-x; 
-	}
-
-
-.calendrier{
-	border: 1px solid #888888;
-	background-color:#eeeeee;
-	vertical-align:middle;
-	background:  url("../pics/fond_ico_cons.png") repeat-x; 
-	}
-	
-.calendrier:hover{
-	border: 1px inset #888888;
-	background-color:#ffffff;
-	cursor:pointer;
-	}
-
-
-
-/* #################################### */
-/* ###### table ###### */
-/* #################################### */
-table {   
-	font-size: 11px;
-}
-
-th {  }
-
-
-td { }
-
-.tab_cadre{
-	-moz-border-radius: 4px;
-	border: 1px solid #cccccc;
-	z-index:1;
-	text-align: left;
-	font-size: 11px;
-	background-color: #ffffff;
-}
-
-.tab_cadre_central{
--moz-border-radius: 4px;
-	border: 1px solid #bbbbbb;
-	z-index:1;
-	text-align: left;
-	font-size: 11px;
-	width:950px;
-	/* background-color: #FFF4DF; */
-	background : url("../pics/fond-central.png") repeat-x top right ;
-}
-
-
-
-.tab_cadre_fixe, .tab_cadre_fixehov{
-	-moz-border-radius: 4px;
-	border: 1px solid #cccccc;
-	z-index:1;
-	text-align: left;
-	font-size: 11px;
-	width:950px;
-}
-
-.tab_cadrehov, .tab_cadrehov_pointer{
-	-moz-border-radius: 4px;
-	border: 1px solid #cccccc;
-	text-align: left;
-	font-size: 11px;
-	width: 80%;
-	background-color: #ffffff;
-}
-
-.tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th  {
-	font-size: 11px;
-	font-weight: bold;
-	background-color: #fccc6f;
-	text-align: center;
-	background:  url("../pics/fond_th.png") repeat-x; 
-	border-bottom:1px solid #cccccc;
-}
-
-
-
-.tab_cadrehov tr:hover, .tab_cadre_fixehov tr:hover {
-
-	background-color: #FFF4DF;
-}
-
-.tab_cadrehov_pointer tr:hover {
-	cursor: pointer;
-	background-color: #FFF4DF;
-}
-
-/* Ajout pour IE */
-.tab_cadrehov_pointer tr {
-	cursor: pointer;
-}
-
-.tab_cadre_report {
-
--moz-border-radius: 4px;
-	border: 1px solid #cccccc;
-	z-index:1;
-	text-align: left;
-	font-size: 11px;
-	text-align: center;
-	width:80%;
-}
-
-
-/* ******************** Pager ***************** */
-
-.tab_cadre_pager{
-	text-align:center;
-	-moz-border-radius: 4px;
-	border: 1px solid #cccccc;
-	font-size:10px;
-	width:950px;
-}
-
-
-.tab_cadre_pager select, .tab_cadre_pager span, .tab_cadre_pager form {
-	font-size:10px;
-	margin:0;
-}
-
-.tab_cadre_pager input {
-	vertical-align:middle;
-}
-
-
-.tab_cadre_pager th {
-	font-size: 10px;
-	font-weight: bold;
-	background-color: #fccc6f;
-	text-align: center;
-	background:  url("../pics/fond_th.png") repeat-x; 
-}
-
-
-
-.tab_bg_1 {
-	background-color: #d3d3ce;
-
-}
-.tab_bg_1_2 {
-	background-color: #cf9b9b;
-
-}
-
-.tab_bg_2 {
-	background-color: #e6e6e6;
-
-}
-
-.tab_bg_2_2 {
-	background-color: #cf9b9b;
-
-}
-
-.tab_bg_3 {
-/*background-color: #eeeeee;*/
-	background-color: #e7e7e2;
-
-}  
-
-.tab_find {
-	background-color: #ccccc7;
-
-}
-
-
-.tab_find:hover {
-	background-color:#FFF2C2;
-	cursor:pointer;
-}
-
-.tab_resa {
-	border:1px dashed #cccccc;
-	background-color: #d7d7d2;
-	font-size:10px
-}
-
-.tab_resa:hover {
-
-	background-color: #ffffff;
-	border:1px dotted #000000;
-
-
-}
-
-
-.div_tracking {
-	width:100%;
-	height:100%;
-	cursor:pointer;
-}
-
-.div_tracking:hover {
-	background-color: #FFF4DF; 
-
-}
-
-/* #################################### */
-/* ###### login  et null header 							###### */
-/* #################################### */
-
-#contenulogin {
-	height: 266px;
-	width: 600px;
-	margin-top:100px;
-	margin-left: auto;
-	margin-right: auto;
-	background:url("../pics/login_glpi.png")  no-repeat;
-	font-family : Verdana,Arial,Helvetica,sans-serif;
-	font-size : 12px;
-	color :#659900;
-	font-weight: bold;
-}
-
-#contenu-nullHeader {
-	height: 424px;
-	width: 739px;
-	margin-top:50px;
-	margin-left: auto;
-	margin-right: auto;
-	background:url("../pics/null-header.png")  no-repeat;
-	
-}
-
-
-#text-nullHeader {
-	float:left;
-	height: 300px;
-	width: 739px;
-	margin-right:auto;
-	margin-left: auto;
-	margin-top:100px;
-}
-
-
-
-#boxlogin {
-	position:relative;
-	background-color: transparent;
-	padding-left: 15px;
-	padding-top: 76px;
-	text-align: left;  /* Bug IE Grrr */
-	height: 190px;
-	width: 300px;
-
-
-}
-
-#boxlogin p {
-
-	text-align:center;
-}
-
-.row {
-	clear: both;
-	padding-top: 5px;
-}
-
-.label {
-	float: left;
-	margin-left:10px;
-	text-align: left;
-}
-
-.formw {
-	float: right;
-	margin-right:10px;
-	text-align: right;
-}
-
-
-
-#boxlogin fieldset {
-	background-color: transparent;
-	border: 2px solid #FFC65D;
-	padding-bottom:22px;
-}
-
-#boxlogin legend {
-	font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size: 16px;
-	font-weight: 700;
-	background-color: transparent;
-	color :#659900;
-}
-
-
-#boxlogin input {
-
-	border: 1px solid #659900;
-}
-
-#logo-login {
-
-	float:right;
-	height: 160px;
-	width: 230px;
-	margin-right:10px;
-	margin-left:0px;
-	margin-top:80px;
-	color :#000000;
-}
-
-#logo-login a:hover {
-	color :#659900;
-	text-decoration: underline;
-}
-
-
-.sous_logo {
-	font-family: arial;
-	font-size: 9px;
-	color: #eeeeee;
-	text-decoration: none;
-	}
-
-#footer-login
-{
-	text-align:right;
-	position: fixed !important;
-	left: 0px;
-	right: 10px;
-	bottom: 0px !important;
-	
-	height: 40px;
-	font-size : 10px;
-	color :#757575;
-	font-family: Verdana,Arial,Helvetica,sans-serif;
-	font-weight: bold;
-	margin-top:10px;
-	margin:auto;
-	 /*css hack for IE*/
-	position: absolute;
-	bottom: auto;
-	top: expression((parseInt(document.documentElement.clientHeight)+parseInt(document.documentElement.scrollTop)-42)+'px');
-	width: expression(parseInt(document.documentElement.clientWidth)+'px');
-	
-}
-
-
-
-
-
-/* #################################### */
-/* ###### entete  et navigation ###### */
-/* #################################### */
-#navigation{
-	/* ## background-color: #C5DAC8;*/
-	background-color: #efefe7;
-	-moz-border-radius: 8px;
-	/*border: 2px outset #659900;*/
-	height:80px;	
-	border: 2px outset #FFC65D;
-	background : url("../pics/fond.png") repeat-x top right ;
-	margin-bottom: 10px;
-	padding: 5px;
-	
-	}
-
-#navigation-helpdesk{
-	/* ## background-color: #C5DAC8;*/
-	background-color: #efefe7;
-	-moz-border-radius: 8px;
-	/*border: 2px outset #659900;*/
-	height:90px;	
-	border: 2px outset #FFC65D;
-	
-	margin-bottom: 10px;
-	padding: 5px;
-	
-	}
-
-
-a.icon_logo img{
-	padding: 7px;
-	margin: 1px;
-	border: 1px solid #aaaaaa;
-	background-color: #ffffff;
-	-moz-border-radius: 5px;
-	font-size : 12px;
-	font-weight: bold;
-}
-
-a.icon_logo:hover img {
-	padding: 7px;
-	margin: 1px;
-	border: 1px solid #999999;
-	background-color: #e4e4e4;
-	-moz-border-radius: 5px;
-}
-
-.icon_nav {
-	padding: 4px;
-	margin: 1px;
-	border: 1px solid #aaaaaa;
-	background-color: #ffffff;
-	-moz-border-radius: 5px;
-	font-size : 12px;
-	font-weight: bold;
-	
-}
-
-a.icon_nav_move img {
-	padding: 4px;
-	margin: 1px;
-	border: 1px solid #aaaaaa;
-	background-color: #ffffff;
-	-moz-border-radius: 5px;
-}
-
-a.icon_nav_move:hover img {
-	padding: 4px;
-	margin: 1px;
-	border: 1px solid #999999;
-	background-color:#e4e4e4;
-	-moz-border-radius: 5px;
-}
-
-
-.nav_horl {
-	padding: 4px;
-	margin:8px;
-	border: 1px solid #aaaaaa;
-	text-align:center;
-	
-	-moz-border-radius: 5px;
-	font-size : 9px;
-	
-}
-
-
-
-ul.autocomp  {
-	list-style-type: none;
-	margin:0;
-	margin-left:3px;
-	padding:3px;
-}
-
-ul.autocomp   li.selected { background-color: #FFF6CF; }
-
-	li.auto_comp  {
-	list-style-type: none;
-	display:block;
-	margin:0;
-	padding:2px;
-	height:16px;
-}
-
-
-
-
-	
-
-/* #################################### */
-/* ###### navig-console ###### */
-/* #################################### */
-
-
-.icon_consol_hov, .icon_consol{
-	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
-	font-size : 12px;
-	font-weight: bold;
-	padding: 4px;
-	padding-right: 8px;
-	margin: 1px;
-	border: 1px solid #aaaaaa;
-	background-color: #e4e4e4;
-	background:  url("../pics/fond_ico_cons.png") repeat-x; 
-	-moz-border-radius: 5px;
-
-}
-
-
-.icon_consol_hov img{
-	padding-bottom: 10px;
-}
-
-.icon_consol_hov:hover {
-	padding: 4px;
-	padding-right: 8px;
-	margin: 1px;
-	border: 1px inset #888888;
-	background-color: white;
-	background:  url("../pics/fond_ico_cons_on.png") repeat-x; 
-	-moz-border-radius: 5px;
-}
-
-
-/* #################################### */
-/* Footer */
-/* #################################### */
+/* ################--------------- Footer  ---------------#################### */
 #footer{
-	
-	/* ## background-color: #C5DAC8;*/
-	/*background-color: #efefe7;*/
-	/*-moz-border-radius: 8px;*/
-	/*border: 2px outset #659900;*/
 	background: url("../pics/fd_footer.png") 0 0 repeat-x;
-	/*border: 2px outset #FFC65D;*/
 	font-size: 9px;	
 	color :#757575;
 	padding: 3px;
@@ -1049,275 +1120,12 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	
 	
 .copyright {
-	/*font-size: 0.9em;*/	
 	font-size: 9px;	
 	color :#757575;
-	/*font-family: Verdana,Arial,Helvetica,sans-serif;*/
-	/*font-weight: bold;*/
+	}	
 	
 
-
-
-}	
-	
-	
-/* #################################### */
-/* style onglet */
-/* #################################### */
-
-#barre_onglets {
-
-	width:950px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom:0;
-	padding-bottom:0;
-
-
-}
-
-
-ul#onglet {
-	list-style-type: none;
-	padding-bottom: 24px;
-	border-bottom: 1px solid #ffffff;
-	margin: 0;
-	padding-left:0;
-	
-}
-
-ul#onglet li {
-
-	float: left;
-	height: 21px;
-	background-color: #eeeeee;
-	margin: 2px 2px 0 2px;
-	border: 1px solid #CC9900;
-	border-bottom: 1px solid #fff;
-	-moz-border-radius: 4px;
-	background:  url("../pics/fond_onglet.png") repeat-x; 	
-}
-
-ul#onglet li.actif {
-	border-bottom: 1px ridge #659900;
-	background-color: #fff;
-}
-
-ul#onglet li.invisible {
-	border-bottom: 1px solid #fff;
-	border: 1px solid #fff;
-	background-color: #ffffff;
-	width: 15px;
-	background:  transparent; 
-}
-
-ul#onglet li.actif a {
-	color: #000;
-}
-
-#onglet a {
-	float: left;
-	display: block;
-	color: #666;
-	text-decoration: none;
-	padding: 3px;
-	font-size: 10px;
-	font-family:  Verdana,Arial,Helvetica,sans-serif;
-	font-weight: bold;
-}
-
-#onglet a:hover {
-		color : #659900;
-
-}
-
-/* Over onglet div */
-#onglet_plugins{
-	display: none; 
-	position: absolute;
-	top:21px;
-	left:-20px;
-	padding: 5px;
-	font-size: 8px;
-	width:100px;
-	background: transparent url("../pics/fondTR.png") repeat; 
-	border: 1px solid gray;	
-	-moz-border-radius: 5px;
-}
-
- #onglet_plugins dl{
-	margin: 0;
-	padding: 0;
-	list-style-type: none;	
-	border:0;
-
-}
-
-#onglet_plugins dt {
-	text-align: center;
-	padding: 2px;
-	background:none;
-	border:0;
-	width:100%;
-	height:18px;
-
-}
-#onglet_plugins dt a {
-	font-size:10px;	
-	color: #000;
-	text-decoration: none;
-	display: block;
-	border: 0 none;
-}
-#onglet_plugins dt a:hover {
-	color: #000;
-	background: #fccc6f;
-
-}
-
-
-#onglet_plugins dt:hover {
-	color: #000;
-	background: #fccc6f;
-
-}
-
-/* #################################### */
-/* Raccourcis typo */
-/* #################################### */
-.verdana1 { font-family: Verdana, Arial, Sans, sans-serif; font-size: 10px; }
-
-/* #################################### */
-/* ###### knowledge base / FAQ  ###### */
-/* #################################### */
-
-
-
-
-#contenukb {
-	/* a voir je suis pas bien sr  */
-	height: 100%;
-	/*position: relative; ou absolute */
-	/*left: 35%; */
-	width: 600px;
-	/*margin-left: -150px; */
-}
-
-#contenukb legend {
-
-	font-weight: bold;
-
-}
-
-#contenukb fieldset {
-	background-color: #eeeeee;
-	border: 1px solid #FFC65D;
-	-moz-border-radius: 8px;
-	padding-bottom:10px;
-	width: 600px;
-
-}	
-
-#contenukb textarea {
-
-	width:550px;
-
-}
-
-
-.code {	
-	width: 95%;
-	border: dotted 2px #ccc;
-
-	}
-
-a.pubfaq {
-	color: #c9993C;
-}
-a.pubfaq:hover {
-	color: black;
-}
-
-/* #################################### */
-/* Toolbar */
-
-/* #################################### */
-p.toolbar
-{
-	
-
-	padding: 4px;
-	margin-bottom: 0px;
-}
-
-p.toolbar a
-{
-	
-	font-size: 12px;
-	font-family: Verdana, Arial, sans-serif;
-	padding: 5px;
-	margin: 2px;
-	color: #000;
-
-
-}
-
-p.toolbar a, p.toolbar a:link, p.toolbar a:visited
-{
-	border: 1px solid #999;
-	-moz-border-radius: 5px;
-	text-decoration: none;
-	
-
-}
-
-p.toolbar a:hover
-{
-	border: 1px solid #666;
-	-moz-border-radius: 5px;
-	background-color: #ffffff;
-	text-decoration: none;
-}
-
-
-/* #################################### */
-/* style Toolbar-> code knowbase */
-/* #################################### */
-.souligne {text-decoration : underline;}
-
-.barre { text-decoration : line-through; }
-
-
-/* #################################### */
-/* planning */
-/* #################################### */
-
-
-.planning {
-	text-align:center;
-	border:1px dashed #cccccc;
-	background-color: #d7d7d2;
-	font-size:9px;
-
-}
-
-.planing:hover {
-	border: 1px solid #999999;
-	background-color: white;
-		
-}
-
-
-
-
-
-
-
-
-/* #################################### */
-/* DEBUG */
-/* #################################### */
-
+/* ################--------------- Debug  ---------------#################### */
 #debug-float {
 	top: 0px;
 	left: 80px;
@@ -1356,9 +1164,6 @@ p.toolbar a:hover
 
 #debug h1{
 	font-size:14px; text-align:center; background-color:#efefe7;
-	/*-moz-border-radius: 8px;*/
-	/*border: 2px outset #659900;*/
-	/*border: 2px outset #FFC65D;*/
 	padding: 5px;
 
 }

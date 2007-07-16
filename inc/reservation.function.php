@@ -168,7 +168,7 @@ function printCalendrier($target,$ID=""){
 	$annee_apres = $annee_courante + 1;
 
 
-	echo "<div class='verdana1'>";
+	echo "<div class='calendrier_mois'>";
 	echo "<div style='text-align:center'><strong>$annee_avant</strong></div>";
 	for ($i=$mois_courant; $i < 13; $i++) {
 		echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_avant\">".

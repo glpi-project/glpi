@@ -1713,7 +1713,7 @@ function showJobDetails ($target,$ID){
 				ajaxUpdateItemJsCode("viewname$rand",$CFG_GLPI["root_doc"]."/ajax/inputtext.php",$params,false);
 			echo "}";
 			echo "</script>\n";
-			echo "<div id='name$rand' class='div_tracking' onClick='showName$rand()'>\n";
+			echo "<div id='name$rand' class='tracking' onClick='showName$rand()'>\n";
 			if (empty($job->fields["name"])){
 				echo $LANG["reminder"][15];
 			} else {
@@ -1750,7 +1750,7 @@ function showJobDetails ($target,$ID){
 
 			echo "}";
 			echo "</script>\n";
-			echo "<div id='desc$rand' class='div_tracking' onClick='showDesc$rand()'>\n";
+			echo "<div id='desc$rand' class='tracking' onClick='showDesc$rand()'>\n";
 			if (!empty($job->fields["contents"]))
 				echo nl2br($job->fields["contents"]);
 			else echo $LANG["job"][33];
