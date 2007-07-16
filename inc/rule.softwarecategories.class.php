@@ -56,7 +56,6 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 	 * @return an array of attributes
 	 */
 	function prepareInputDataForProcess($input,$software){
-		print_r($software);
 		$params["name"]=$software["name"];
 		if (isset($software["FK_glpi_enterprise"]))
 			$params["manufacturer"]=getDropdownName("glpi_dropdown_manufacturer",$software["FK_glpi_enterprise"]);

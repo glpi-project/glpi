@@ -1273,7 +1273,7 @@ $LANG["ruleldap"][3]="Ajout d'un critère LDAP";
 $LANG["rulesoftwarecategories"][1]="des catégories";
 $LANG["rulesoftwarecategories"][2]="Aucune catégorie définie";
 $LANG["rulesoftwarecategories"][3]="Ajout d'une catégorie";
-$LANG["rulesoftwarecategories"][4]="Autres logiciels";
+$LANG["rulesoftwarecategories"][4]="Logiciels sans catégories";
 $LANG["rulesoftwarecategories"][5]="Catégorie de logiciels";
 
 

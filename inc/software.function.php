@@ -659,69 +659,99 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$LANG["software"][17].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th><th>&nbsp;</th></tr>";
+	
+	$cat = -1;
+	
 	if ($DB->numrows($result))
-		while ($data=$DB->fetch_array($result)) {
-			$lID = $data["license"];
-			$ID = $data["ID"];
+	{
+			while ($data=$DB->fetch_array($result)) {
+				$lID = $data["license"];
+				$ID = $data["ID"];
+	
+				$today=date("Y-m-d"); 
+				$expirer=0;
+				$expirecss="";
+				if ($data['expire']!=NULL&&$today>$data['expire']) {$expirer=1; $expirecss="_2";}
+	
+				$sw = new Software;
+				$sw->getFromDB($data['sID']);
+	
+				if ($data['deleted']) {$expirer=1; $expirecss="_2";}
+	
+				if($sw->fields["category"] != $cat)
+				{
+					echo "<tr class='tab_bg_1$expirecss'>";
 
-			$today=date("Y-m-d"); 
-			$expirer=0;
-			$expirecss="";
-			if ($data['expire']!=NULL&&$today>$data['expire']) {$expirer=1; $expirecss="_2";}
-
-			$sw = new Software;
-			$sw->getFromDB($data['sID']);
-
-			if ($data['deleted']) {$expirer=1; $expirecss="_2";}
-
-			echo "<tr class='tab_bg_1$expirecss'>";
-
-			echo "<td align='center'><strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
-			echo $sw->fields["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data['ID'].")":"")."</a>";
-			echo "</strong>";
-			echo " - ".$data['serial']."</td>";
-			echo "<td align='center'><strong>";
-			if ($data['expire']==NULL)
-				echo $LANG["software"][26];
-			else {
-				if ($expirer) echo $LANG["software"][27];
-				else echo $LANG["software"][25]."&nbsp;".$data['expire'];
-			}
-
-			echo "</strong></td>";
-			if ($data['serial']!="free"&&$data['serial']!="global"){
-				// OEM
-				if ($data["oem"]) {
-					$comp=new Computer();
-					$comp->getFromDB($data["oem_computer"]);
+					if (!$sw->fields["category"])
+						$catname = $LANG["rulesoftwarecategories"][4];
+					else	
+						$catname = getDropdownName("glpi_dropdown_software_category",$sw->fields["category"]);
+	
+					$cat = $sw->fields["category"];
+	
+					echo "<td align='center'>"; 
+					echo "<strong>".$catname."</strong>"; 
+					echo "&nbsp;<a href=\"javascript:hidediv('softcat$cat');\">";
+					echo "<img src=".GLPI_ROOT."/pics/left.png border=0>"; 
+					echo"</a></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "<td></td>";
+					echo "</tr>";
+					echo "<tr class='tab_bg_1$expirecss'>";
 				}
-				echo "<td align='center' class='tab_bg_1".($expirer||($data["oem"]&&$comp->fields['ID']!=$instID)?"_2":"")."'>".($data["oem"]?$LANG["choice"][1]:$LANG["choice"][0]);
-				if ($data["oem"]) {
-					echo "<br><strong>";
-					if (isset($comp->fields['ID']))
-						echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
-					else echo "N/A";
-					echo "<strong>";
-				} 
-				echo "</td>";
-
-				// BUY
-				echo "<td align='center'>".($data["buy"]?$LANG["choice"][1]:$LANG["choice"][0]);
-				echo "</td>";								
+				else
+					echo "<tr class='tab_bg_1$expirecss'>";
+				
+				echo "<td align='center'><strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
+				echo $sw->fields["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data['ID'].")":"")."</a>";
+				echo "</strong>";
+				echo " - ".$data['serial']."</td>";
+				echo "<td align='center'><strong>";
+				if ($data['expire']==NULL)
+					echo $LANG["software"][26];
+				else {
+					if ($expirer) echo $LANG["software"][27];
+					else echo $LANG["software"][25]."&nbsp;".$data['expire'];
+				}
+	
+				echo "</strong></td>";
+				if ($data['serial']!="free"&&$data['serial']!="global"){
+					// OEM
+					if ($data["oem"]) {
+						$comp=new Computer();
+						$comp->getFromDB($data["oem_computer"]);
+					}
+					echo "<td align='center' class='tab_bg_1".($expirer||($data["oem"]&&$comp->fields['ID']!=$instID)?"_2":"")."'>".($data["oem"]?$LANG["choice"][1]:$LANG["choice"][0]);
+					if ($data["oem"]) {
+						echo "<br><strong>";
+						if (isset($comp->fields['ID']))
+							echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
+						else echo "N/A";
+						echo "<strong>";
+					} 
+					echo "</td>";
+	
+					// BUY
+					echo "<td align='center'>".($data["buy"]?$LANG["choice"][1]:$LANG["choice"][0]);
+					echo "</td>";								
+				}
+				else echo "<td>&nbsp;</td><td>&nbsp;</td>";
+				echo "<td align='center' class='tab_bg_2'>";
+				if(!empty($withtemplate) && $withtemplate == 2) {
+					//do nothing
+					echo "&nbsp;";
+				} else {
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
+					echo "<strong>".$LANG["buttons"][5]."</strong></a>";
+				}
+				echo "</td></tr>";
+	
+				$i++;		
 			}
-			else echo "<td>&nbsp;</td><td>&nbsp;</td>";
-			echo "<td align='center' class='tab_bg_2'>";
-			if(!empty($withtemplate) && $withtemplate == 2) {
-				//do nothing
-				echo "&nbsp;";
-			} else {
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
-				echo "<strong>".$LANG["buttons"][5]."</strong></a>";
-			}
-			echo "</td></tr>";
-
-			$i++;		
-		}
+	}
 	$q="SELECT count(*) FROM glpi_software WHERE deleted='0' AND is_template='0'";
 	$result = $DB->query($q);
 	$nb = $DB->result($result,0,0);
