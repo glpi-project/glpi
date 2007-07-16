@@ -1275,9 +1275,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		}
 		switch ($device_type){
 			case SOFTWARE_TYPE :
-				if (haveRight("rule_softwarecategories","w")){
-					echo "<option value=\"compute_software_category\">".$LANG["rulesengine"][38]."</option>";
-				}
+				echo "<option value=\"compute_software_category\">".$LANG["rulesengine"][38]."</option>";
 				break;
 			case COMPUTER_TYPE :
 				echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
