@@ -650,8 +650,18 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	if (!haveRight("software","r")) return false;
 	$comp=new Computer();
 	$comp->getFromDB($instID);
-	$query = "SELECT glpi_software.category as category, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_licenses.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial, glpi_licenses.buy FROM glpi_inst_software, glpi_software,glpi_licenses ";
-	$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND (glpi_inst_software.cID = '$instID') order by glpi_software.category, glpi_software.name, glpi_licenses.version";
+	$FK_entities=$comp->fields["FK_entities"];
+
+	$query = "SELECT glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_licenses.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial, glpi_licenses.buy 
+	FROM glpi_inst_software LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID )
+	LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
+	LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
+
+	$query_cat= $query." WHERE glpi_inst_software.cID = '$instID' AND glpi_software.category > 0 ORDER BY glpi_dropdown_software_category.name ASC , glpi_software.name, glpi_licenses.version";
+
+	$query_nocat= $query." WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL ) ORDER BY glpi_dropdown_software_category.name ASC , glpi_software.name, glpi_licenses.version";
+
+	$query="( $query_cat ) UNION ($query_nocat)";
 
 	$result = $DB->query($query);
 	$i = 0;
@@ -662,8 +672,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	
 	$cat = -1;
 	
-	if ($DB->numrows($result))
-	{
+	if ($DB->numrows($result)){
 			while ($data=$DB->fetch_array($result)) {
 				$lID = $data["license"];
 				$ID = $data["ID"];
@@ -673,40 +682,33 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 				$expirecss="";
 				if ($data['expire']!=NULL&&$today>$data['expire']) {$expirer=1; $expirecss="_2";}
 	
-				$sw = new Software;
-				$sw->getFromDB($data['sID']);
-	
 				if ($data['deleted']) {$expirer=1; $expirecss="_2";}
 	
-				if($sw->fields["category"] != $cat)
+				if($data["category_id"] != $cat)
 				{
-					echo "<tr class='tab_bg_1$expirecss'>";
+					echo "<tr class='tab_bg_2$expirecss'>";
+					
+					$cat = $data["category_id"];
+					$catname=$data["category"];
+					if (!$cat){
+						$catname=$LANG["rulesoftwarecategories"][4];
+					} 
 
-					if (!$sw->fields["category"])
-						$catname = $LANG["rulesoftwarecategories"][4];
-					else	
-						$catname = getDropdownName("glpi_dropdown_software_category",$sw->fields["category"]);
-	
-					$cat = $sw->fields["category"];
-	
-					echo "<td align='center'>"; 
+					echo "<td align='center' colspan='5'>"; 
 					echo "<strong>".$catname."</strong>"; 
-					echo "&nbsp;<a href=\"javascript:hidediv('softcat$cat');\">";
-					echo "<img src=".GLPI_ROOT."/pics/left.png border=0>"; 
-					echo"</a></td>";
-					echo "<td></td>";
-					echo "<td></td>";
-					echo "<td></td>";
-					echo "<td></td>";
-					echo "<td></td>";
+					//echo "&nbsp;<a href=\"javascript:hidediv('softcat$cat');\">";
+					//echo "<img src=".GLPI_ROOT."/pics/left.png border=0>"; 
+					//echo "</a>";
+					echo "</td>";
 					echo "</tr>";
 					echo "<tr class='tab_bg_1$expirecss'>";
 				}
-				else
+				else {
 					echo "<tr class='tab_bg_1$expirecss'>";
+				}
 				
 				echo "<td align='center'><strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
-				echo $sw->fields["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data['ID'].")":"")."</a>";
+				echo $data["softname"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data['ID'].")":"")."</a>";
 				echo "</strong>";
 				echo " - ".$data['serial']."</td>";
 				echo "<td align='center'><strong>";
@@ -748,8 +750,6 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 					echo "<strong>".$LANG["buttons"][5]."</strong></a>";
 				}
 				echo "</td></tr>";
-	
-				$i++;		
 			}
 	}
 	$q="SELECT count(*) FROM glpi_software WHERE deleted='0' AND is_template='0'";
@@ -764,7 +764,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 		echo "<div class='software-instal'>";
 		echo "<input type='hidden' name='cID' value='$instID'>";
-		dropdownSoftwareToInstall("licenseID",$withtemplate,$comp->fields["FK_entities"]);
+		dropdownSoftwareToInstall("licenseID",$withtemplate,$FK_entities);
 		echo "<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
 		echo "</div>";
 		echo "</form>";

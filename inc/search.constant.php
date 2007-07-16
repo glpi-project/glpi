@@ -1544,6 +1544,13 @@ $SEARCH_OPTION[SOFTWARE_TYPE][7]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['name']=$LANG["software"][11];
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['meta']=1;
 
+
+$SEARCH_OPTION[SOFTWARE_TYPE][62]['table']='glpi_dropdown_software_category';
+$SEARCH_OPTION[SOFTWARE_TYPE][62]['field']='name';
+$SEARCH_OPTION[SOFTWARE_TYPE][62]['linkfield']='category';
+$SEARCH_OPTION[SOFTWARE_TYPE][62]['name']=$LANG["common"][36];
+$SEARCH_OPTION[SOFTWARE_TYPE][62]['meta']=0;
+
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['table']='glpi_software';
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['field']='date_mod';
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['linkfield']='';

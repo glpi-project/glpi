@@ -108,7 +108,7 @@ class Software extends CommonDBTM {
 		unset($input['withtemplate']);
 
 		//If category was not set by user (when manually adding a user)
-		if (!$input["category"])
+		if (!isset($input["category"])||!$input["category"])
 		{
 			$softcatrule = new SoftwareCategoriesRuleCollection;
 			$result = $softcatrule->processAllRules(null,null,$input);
