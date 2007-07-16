@@ -68,6 +68,7 @@ $MAX['os_version']=5;
 $MAX['os_sp']=5;
 $MAX['ram_type']=5;
 $MAX['rubdocs']=5;
+$MAX['softwarecategory']=5;
 $MAX['state']=5;
 $MAX['vlan']=5;
 $MAX['type_computers']=3;

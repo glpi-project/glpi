@@ -1,4 +1,4 @@
-#GLPI Dump database on 2007-07-16 11:20
+#GLPI Dump database on 2007-07-17 00:29
 
 ### Dump table glpi_alerts
 
@@ -137,7 +137,6 @@ CREATE TABLE `glpi_computer_device` (
   KEY `FK_device` (`FK_device`),
   KEY `specificity` (`specificity`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 
 ### Dump table glpi_computers
@@ -288,6 +287,7 @@ CREATE TABLE `glpi_config` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15',' 0.7','GLPI powered by indepnet','5','0','admsys@xxxxx.fr','SIGNATURE','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','name','0','50','0','0','1','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0');
 
 ### Dump table glpi_connect_wire
 
@@ -303,6 +303,7 @@ CREATE TABLE `glpi_connect_wire` (
   KEY `end2` (`end2`),
   KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_consumables
 
@@ -511,6 +512,7 @@ CREATE TABLE `glpi_device_drive` (
   KEY `interface` (`interface`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_device_gfxcard
 
 DROP TABLE IF EXISTS `glpi_device_gfxcard`;
@@ -526,6 +528,7 @@ CREATE TABLE `glpi_device_gfxcard` (
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `designation` (`designation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_device_hdd
 
@@ -545,6 +548,7 @@ CREATE TABLE `glpi_device_hdd` (
   KEY `interface` (`interface`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_device_iface
 
 DROP TABLE IF EXISTS `glpi_device_iface`;
@@ -559,6 +563,7 @@ CREATE TABLE `glpi_device_iface` (
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `designation` (`designation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_device_moboard
 
@@ -589,6 +594,7 @@ CREATE TABLE `glpi_device_pci` (
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `designation` (`designation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_device_power
 
@@ -640,6 +646,7 @@ CREATE TABLE `glpi_device_ram` (
   KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_device_sndcard
 
 DROP TABLE IF EXISTS `glpi_device_sndcard`;
@@ -654,6 +661,7 @@ CREATE TABLE `glpi_device_sndcard` (
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `designation` (`designation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_display
 
@@ -947,6 +955,7 @@ CREATE TABLE `glpi_dropdown_iface` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_dropdown_interface
 
 DROP TABLE IF EXISTS `glpi_dropdown_interface`;
@@ -1121,6 +1130,7 @@ CREATE TABLE `glpi_dropdown_os` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_dropdown_os_sp
 
 DROP TABLE IF EXISTS `glpi_dropdown_os_sp`;
@@ -1132,6 +1142,7 @@ CREATE TABLE `glpi_dropdown_os_sp` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_dropdown_os_version
 
 DROP TABLE IF EXISTS `glpi_dropdown_os_version`;
@@ -1142,6 +1153,7 @@ CREATE TABLE `glpi_dropdown_os_version` (
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_dropdown_phone_power
 
@@ -1261,6 +1273,7 @@ CREATE TABLE `glpi_enterprises` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_entities
 
 DROP TABLE IF EXISTS `glpi_entities`;
@@ -1313,7 +1326,9 @@ CREATE TABLE `glpi_event_log` (
   KEY `comp` (`item`),
   KEY `date` (`date`),
   KEY `itemtype` (`itemtype`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-07-17 00:29:51','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1580,6 +1595,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_networking
 
 DROP TABLE IF EXISTS `glpi_networking`;
@@ -1629,6 +1645,7 @@ CREATE TABLE `glpi_networking` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_networking_ports
 
 DROP TABLE IF EXISTS `glpi_networking_ports`;
@@ -1652,6 +1669,7 @@ CREATE TABLE `glpi_networking_ports` (
   KEY `device_type` (`device_type`),
   KEY `iface` (`iface`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_networking_vlan
 
@@ -1778,6 +1796,7 @@ CREATE TABLE `glpi_ocs_link` (
   KEY `ocs_deviceid` (`ocs_deviceid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
 ### Dump table glpi_peripherals
 
 DROP TABLE IF EXISTS `glpi_peripherals`;
@@ -1819,7 +1838,8 @@ CREATE TABLE `glpi_peripherals` (
   KEY `is_template` (`is_template`),
   KEY `is_global` (`is_global`),
   KEY `deleted` (`deleted`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_phones
 
@@ -1869,6 +1889,7 @@ CREATE TABLE `glpi_phones` (
   KEY `is_global` (`is_global`),
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_printers
 
@@ -1921,6 +1942,7 @@ CREATE TABLE `glpi_printers` (
   KEY `is_global` (`is_global`),
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_profiles
 
@@ -2263,7 +2285,7 @@ CREATE TABLE `glpi_type_computers` (
   `comments` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_type_computers VALUES ('1','Serveur',NULL);
 
@@ -2445,10 +2467,10 @@ CREATE TABLE `glpi_users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_users VALUES ('1','Helpdesk','','','',NULL,'','','Helpdesk Injector',NULL,NULL,'0','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR',NULL,'-1','1','2007-07-16 11:20:24','2007-07-16 11:20:24','0');
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR',NULL,'-1','1','2007-07-17 00:29:51','2007-07-17 00:29:51','0');
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','fr_FR',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
 
 ### Dump table glpi_users_groups
 
