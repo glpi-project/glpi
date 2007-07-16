@@ -75,6 +75,10 @@ class Software extends CommonDBTM {
 		if (count($updates)) {
 			$this->fields["date_mod"] = $_SESSION["glpi_currenttime"];
 			$updates[] = "date_mod";
+			
+			//If software category have been modified by hand
+			if (isset($input["category"]))
+				$input["category_ruleid"] = -1;
 		}
 		return array (
 			$input,
@@ -103,6 +107,17 @@ class Software extends CommonDBTM {
 		unset($input['ID']);
 		unset($input['withtemplate']);
 
+		//If category was not set by user (when manually adding a user)
+		if (!$input["category"])
+		{
+			$softcatrule = new SoftwareCategoriesRuleCollection;
+			$result = $softcatrule->processAllRules(null,null,$input);
+			if (!empty($result) && isset($result["category"]))
+				$input["category"]=$result["category"];
+			else
+				$input["category"]=0;
+		}
+				
 		return $input;
 	}
 	function post_addItem($newID, $input) {
@@ -264,8 +279,14 @@ class Software extends CommonDBTM {
 				echo "<td>";
 				autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 25,$this->fields["FK_entities"]);
 				echo "</td>";
-
-				echo "<td colspan='2'>&nbsp;</td>";
+				
+				
+				echo "<td>" . $LANG["common"][36] . ":		</td><td>";
+				if (haveRight("rule_softwarecategories","w"))
+					dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
+				else
+					echo getDropdownName("glpi_dropdown_software_category",$this->fields["category"]);
+				echo "</td>";
 
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][3] . ": 	</td><td>";
 				dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);

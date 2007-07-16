@@ -1236,8 +1236,27 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 alter mailing signature in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
 
-
-
+//Software categories
+	if (!TableExists("glpi_dropdown_software_category"))
+	{
+		$query="CREATE TABLE `glpi_dropdown_software_category` (
+  			`ID` int(11) NOT NULL auto_increment,
+			`name` varchar(255) default NULL,
+  			`comments` text,
+  			PRIMARY KEY  (`ID`)
+			) ENGINE=MyISAM ";
+		$DB->query($query) or die("0.7 add table glpi_dropdown_software_category" . $LANG["update"][90] . $DB->error());	
+	}
+	if (!FieldExists("glpi_config", "rule_softwarecategories")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `rule_softwarecategories` char(1) default NULL AFTER `rule_ldap`";
+		$DB->query($query) or die("0.7 add rule_softwarecategories in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `rule_softwarecategories` = config";
+		$DB->query($query) or die("0.7 update rule_softwarecategories values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_software", "category")) {
+		$query = "ALTER TABLE `glpi_software` ADD `category` INT( 11 ) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 alter category in glpi_software" . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.7 #####################################################################################
 ?>

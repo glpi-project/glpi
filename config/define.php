@@ -272,6 +272,7 @@
 	define("RULE_OCS_AFFECT_COMPUTER",0);
 	define("RULE_AFFECT_RIGHTS",1);
 	define("RULE_TRACKING_AUTO_ACTION",2);
+	define("RULE_SOFTWARE_CATEGORY",3);
 
 		//DEVICE ARRAY.
 	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");

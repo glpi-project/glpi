@@ -490,7 +490,13 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("rule_tracking",$this->fields["rule_tracking"],1,1,1);
 		echo "</td>";
 		echo "</tr>";
-
+		echo "<tr class='tab_bg_1'>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][37].":</td><td>";
+		dropdownNoneReadWrite("rule_softwarecategories",$this->fields["rule_softwarecategories"],1,1,1);
+		echo "</td>";
+		echo "<td class='tab_bg_1' colspan='2'></td>";
+		echo "<td class='tab_bg_1' colspan='2'></td>";
+		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='tab_bg_1'>".$LANG["Menu"][35].":</td><td>";
