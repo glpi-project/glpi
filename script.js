@@ -321,26 +321,45 @@ function getTop(MyObject){
         return (MyObject.offsetTop);
 }
 
-function showHideDiv(id) {
+function showHideDiv(id,img_name,img_src_close,img_src_open) {
 	//safe function to hide an element with a specified id
 	if (document.getElementById) { // DOM3 = IE5, NS6
 		if (document.getElementById(id).style.display == 'none')
+		{
 			document.getElementById(id).style.display = 'block';
+			document[img_name].src=img_src_open;
+		}
 		else
+		{
 			document.getElementById(id).style.display = 'none';
+			document[img_name].src=img_src_close;
+		}
+			
 	}
 	else {
 		if (document.layers) { // Netscape 4
 			if (document.id.display == 'none')
+			{
 				document.id.display = 'block';
+				document[img_name].src=img_src_open;
+			}
 			else	
+			{
 				document.id.display = 'none';
+				document[img_name].src=img_src_close;
+			}
 		}
 		else { // IE 4
 			if (document.all.id.style.display == 'none')
-				document.all.id.style.display = 'none';
+			{
+				document.all.id.style.display = 'block';
+				document[img_name].src=img_src_close;
+			}
 			else
-				document.all.id.style.display = 'block';	
+			{
+				document.all.id.style.display = 'none';	
+				document[img_name].src=img_src_close;
+			}
 		}
 	}
 }
