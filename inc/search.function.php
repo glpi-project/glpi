@@ -1867,9 +1867,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_mailgate.name" :
 			if (!empty($linkfield)&&$linkfield!="name"){
 				$out= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
-					$out.= " (".$data["ID"].")";
-				}
 			} else {
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
