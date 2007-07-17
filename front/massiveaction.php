@@ -51,6 +51,15 @@ if ($_POST["device_type"]==TRACKING_TYPE){
 commonHeader($LANG["title"][42],$_SERVER['PHP_SELF']);
 if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
 
+// Save selection
+$_SESSION['glpimassiveactionselected']=array();
+foreach ($_POST["item"] as $key => $val){
+	if ($val==1) {
+		$_SESSION['glpimassiveactionselected'][$key]=$key;
+	}
+}
+
+
 	switch($_POST["action"]){
 		case "connect":
 			$ci=new CommonItem();
