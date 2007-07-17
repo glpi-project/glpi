@@ -1051,6 +1051,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						if (isset($_GET["select"])&&$_GET["select"]=="all") {
 							$sel="checked";
 						}
+						if (isset($_SESSION['glpimassiveactionselected'][$data["ID"]])){
+							$sel="checked";
+						}
 						$tmpcheck="<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
 					}
 					echo displaySearchItem($output_type,$tmpcheck,$item_num,$row_num,0,"width='10'");
@@ -1191,7 +1194,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 	}
 	else echo $DB->error();
-
+	// Clean selection 
+	$_SESSION['glpimassiveactionselected']=array();
 }
 
 
