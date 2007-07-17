@@ -652,16 +652,19 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$comp->getFromDB($instID);
 	$FK_entities=$comp->fields["FK_entities"];
 
-	$query = "SELECT glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_licenses.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial, glpi_licenses.buy 
+	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_licenses.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial, glpi_licenses.buy 
 	FROM glpi_inst_software LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID )
 	LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
 	LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
+	$query_cat.=" WHERE glpi_inst_software.cID = '$instID' AND glpi_software.category > 0 ";
 
-	$query_cat= $query." WHERE glpi_inst_software.cID = '$instID' AND glpi_software.category > 0 ORDER BY glpi_dropdown_software_category.name ASC , glpi_software.name, glpi_licenses.version";
+	$query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_licenses.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial, glpi_licenses.buy 
+	FROM glpi_inst_software LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID )
+	LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
+	LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
+	$query_nocat.= " WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL ) ";
 
-	$query_nocat= $query." WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL ) ORDER BY glpi_dropdown_software_category.name ASC , glpi_software.name, glpi_licenses.version";
-
-	$query="( $query_cat ) UNION ($query_nocat)";
+	$query="( $query_cat ) UNION ($query_nocat) ORDER BY TYPE, category, softname, version";
 
 	$result = $DB->query($query);
 	$i = 0;
