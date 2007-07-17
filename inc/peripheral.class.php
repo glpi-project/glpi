@@ -202,10 +202,12 @@ class Peripheral  extends CommonDBTM  {
 		if($mon_spotted) {
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			if(!empty($withtemplate) && $withtemplate == 2) {
+				$use_cache=false;
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14].": ";
 				$date = convDateTime($_SESSION["glpi_currenttime"]);
 			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+				$use_cache=false;
 				$template = "newtemplate";
 				$datestring = $LANG["computers"][14].": ";
 				$date = convDateTime($_SESSION["glpi_currenttime"]);
