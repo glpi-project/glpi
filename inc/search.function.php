@@ -455,29 +455,27 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	// Construct the request 
 	//// 1 - SELECT
-	$SELECT ="SELECT ";
+	$SELECT ="SELECT ".addDefaultSelect($type);
 
 	// Add select for all toview item
 	for ($i=0;$i<$toview_count;$i++){
 		$SELECT.=addSelect($type,$toview[$i],$i,0);
 	}
 
-	// Get specific item for extra column
-	if ($itemtable=="glpi_cartridges_type"||$itemtable=="glpi_consumables_type"){
-		$SELECT.=$itemtable.".alarm as ALARM, ";
-	}
-	if ($type==RESERVATION_TYPE){
-		$SELECT.="glpi_reservation_item.active as ACTIVE, ";
-	}
-
 	//// 2 - FROM AND LEFT JOIN
 	// Set reference table
 	
 	$FROM = " FROM ".$itemtable;
+
+
 	// Init already linked tables array in order not to link a table several times
 	$already_link_tables=array();
 	// Put reference table
 	array_push($already_link_tables,$itemtable);
+
+	// Add default join
+	$FROM.=addDefaultJoin($type,$itemtable,$already_link_tables);
+
 
 	// Add all table for toview items
 	for ($i=1;$i<$toview_count;$i++){
@@ -497,9 +495,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	//// 3 - WHERE
 
-	$first=true;
 	// default string
-	$WHERE = "";
+	$WHERE = addDefaultWhere($type);
+	$first=empty($WHERE);
+	
 
 	// Add deleted if item have it
 	if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
@@ -1376,6 +1375,35 @@ function addOrderBy($type,$ID,$order,$key=0){
 
 }
 
+
+/**
+ * Generic Function to add default select to a request
+ *
+ *
+ *@param $type device type
+ *
+ *
+ *@return select string
+ *
+ **/
+function addDefaultSelect ($type){
+	switch ($type){
+		case RESERVATION_TYPE:
+			return "glpi_reservation_item.active as ACTIVE, ";
+		break;
+		case CARTRIDGE_TYPE:
+			return "glpi_cartridges_type.alarm as ALARM, ";
+		break;
+		case CONSUMABLE_TYPE:
+			return "glpi_consumables_type.alarm as ALARM, ";
+		break;
+		default :
+			return "";
+		break;
+	}
+
+}
+
 /**
  * Generic Function to add select to a request
  *
@@ -1528,6 +1556,28 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			break;
 	}
 
+}
+
+
+/**
+ * Generic Function to add default where to a request
+ *
+ *
+ *@param $type device type
+ *
+ *@return select string
+ *
+ **/
+function addDefaultWhere ($type){
+	switch ($type){
+		// No link
+		case USER_TYPE:
+			return getEntitiesRestrictRequest("","glpi_users_profiles");
+		break;
+		default :
+			return "";
+		break;
+	}
 }
 
 /**
@@ -2366,6 +2416,33 @@ function translate_table($table,$device_type=0,$meta_type=0){
 	}
 
 }
+
+
+/**
+ * Generic Function to add Default left join to a request
+ *
+ *
+ *@param $type reference ID
+ *@param $ref_table reference table
+ *@param $already_link_tables array of tables already joined
+ *
+ *@return Left join string
+ *
+ **/
+function addDefaultJoin ($type,$ref_table,&$already_link_tables){
+
+	switch ($type){
+		// No link
+		case USER_TYPE:
+			return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_users_profiles","");
+		break;
+		default :
+			return "";
+		break;
+	}
+}
+
+
 
 /**
  * Generic Function to add left join to a request
