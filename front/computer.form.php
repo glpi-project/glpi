@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("computer","device","networking","monitor","printer","tracking","software","peripheral","reservation","infocom","contract","document","user","link","ocsng","phone","enterprise","search","registry","group","setup","ocsng");
+$NEEDED_ITEMS=array("computer","rulesengine","device","networking","monitor","printer","tracking","software","peripheral","reservation","infocom","contract","document","user","link","ocsng","phone","enterprise","search","registry","group","setup","ocsng","rule.softwarecategories");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
