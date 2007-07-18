@@ -57,7 +57,7 @@ if(!isset($_GET["device_type"])||!isset($_GET["device_id"])||!$ci->getFromDB($_G
 echo "<div align='center'><br><br>".$LANG["financial"][85]."</div>";
 else {
 
-	echo "<div align='center'><br><br><strong>".$ci->getType()." - ".$ci->getLink()."</strong></div>";
+	echo "<div align='center'><br><br><strong>".$ci->getType()." - ".$ci->getName()."</strong></div>";
 	if (isset($_GET["update"])&&$_GET["update"]==1) $withtemplate=0;
 	else $withtemplate=2;
 	showInfocomForm ($CFG_GLPI["root_doc"]."/front/infocom.form.php",$_GET["device_type"],$_GET["device_id"],1,$withtemplate);
