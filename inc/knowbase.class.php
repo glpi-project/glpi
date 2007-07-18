@@ -125,13 +125,13 @@ class kbitem extends CommonDBTM {
 		
 			echo "<fieldset>";
 			echo "<legend>".$LANG["knowbase"][13]."</legend>";
-			echo "<p class='center'>".$LANG["knowbase"][6];
+			echo "<div class='center'>".$LANG["knowbase"][6];
 			dropdownValue("glpi_dropdown_kbcategories","categoryID",$this->fields["categoryID"]);
-			echo "</fieldset>";
+			echo "<div></fieldset>";
 		
 			echo "<fieldset>";
 			echo "<legend>".$LANG["knowbase"][14]."</legend>";
-			echo "<div align='center'><textarea cols='80' rows='2'  name='question' >".$this->fields["question"]."</textarea></div>"; 
+			echo "<div class='center'><textarea cols='80' rows='2'  name='question' >".$this->fields["question"]."</textarea></div>"; 
 			echo "</fieldset>";
 		
 		
@@ -146,24 +146,24 @@ class kbitem extends CommonDBTM {
 		
 			if (!empty($ID)) {
 				echo "<fieldset>";
-				echo "<div style='position: relative; text-align:left;'><span style='font-size:10px; color:#aaaaaa;'>";
+				echo "<div class='baskb'>";
 				if ($this->fields["author"]){
 					echo $LANG["common"][37]." : ".getUserName($this->fields["author"],"1")."      ";
 				}
 				
-				echo "</span>";
+				
 		
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
+				echo "<span class='baskb_right'  >";
 				if ($this->fields["date_mod"]){
 					echo $LANG["common"][26]." : ".convDateTime($this->fields["date_mod"])."     ";
 				}
 				echo "</span><br />";
-				echo "<span style='font-size:10px; color:#aaaaaa;'>";
+				
 				if ($this->fields["date"]){
 					echo $LANG["common"][27]." : ". convDateTime($this->fields["date"]);
 				}
-				echo "</span>";
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px; color:#aaaaaa;  '>";
+				
+				echo "<span class='baskb_right'>";
 				echo $LANG["knowbase"][26]." : ".$this->fields["view"]."</span></div>";
 				
 		
