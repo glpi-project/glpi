@@ -89,7 +89,7 @@ function showTrackingOnglets($target){
 		}elseif (haveRight("comment_ticket","1")){
 
 			// Postonly could post followup in helpdesk area	
-			echo "<li class='actif'><span style='float: left;display: block;color: #666;text-decoration: none;padding: 3px;'><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$LANG["job"][38]." $ID</span></a></li>";
+			echo "<li class='actif'><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$LANG["job"][38]." $ID</a></li>";
 
 			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
 				echo "<li class='invisible'>&nbsp;</li>";
@@ -239,7 +239,7 @@ function showCentralJobCount(){
 			$status[$data["status"]]=$data["COUNT"];
 		}
 
-	echo "<div align='center'><table class='tab_cadrehov' style='text-align:center'>";
+	echo "<table class='tab_cadrehov' >";
 
 	echo "<tr><th colspan='2'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".$LANG["tracking"][0]."</a></th></tr>";
 	echo "<tr><th>".$LANG["tracking"][28]."</th><th>".$LANG["tracking"][29]."</th></tr>";
@@ -257,7 +257,7 @@ function showCentralJobCount(){
 	echo "<td>".$status["waiting"]."</td></tr>";
 
 
-	echo "</table></div><br>";
+	echo "</table><br>";
 
 
 }
@@ -822,7 +822,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	$max_size=round($max_size,1);
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." ".$LANG["common"][45]."):	";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=500')\">";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\"class='pointer;' alt=\"aide\"onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=500')\">";
 	echo "</td>";
 	echo "<td colspan='3'><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
@@ -940,16 +940,16 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<form method='get' name=\"form\" action=\"".$target."\">";
 
 
-	echo "<div align='center' >";
+	
 
 	echo "<table class='tab_cadre_fixe'>";
 
 
-	echo "<tr><th colspan='6' style='vertical-align:middle' ><div style='position: relative'><span>".$LANG["search"][0]."</span>";
+	echo "<tr><th colspan='6' class='middle' ><div class='relative'><span>".$LANG["search"][0]."</span>";
 	if ($extended){
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=0'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''>".$LANG["buttons"][36]."</a></span>";
+		echo "<span class='tracking_right'><a href='$target?extended=0'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''>".$LANG["buttons"][36]."</a></span>";
 	} else {
-		echo "<span  style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href='$target?extended=1'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''>".$LANG["buttons"][35]."</a></span>";
+		echo "<span   class='tracking_right'><a href='$target?extended=1'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''>".$LANG["buttons"][35]."</a></span>";
 	}
 	echo "</div></th></tr>";
 
@@ -969,26 +969,26 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG["joblist"][25]."</option>";	
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["joblist"][20]."</option>";
 	echo "</select></td>";
-	echo "<td  colspan='1' align='center'>".$LANG["job"][4].":<br>";
+	echo "<td  colspan='1' class='center'>".$LANG["job"][4].":<br>";
 	dropdownUsersTracking("author",$author,"author");
 	echo "</td>";
 
-	echo "<td  colspan='1' align='center'>".$LANG["common"][35].":<br>";
+	echo "<td  colspan='1' class='center'>".$LANG["common"][35].":<br>";
 	dropdownValue("glpi_groups","group",$group);
 	echo "</td>";
 
-	echo "<td colspan='1' align='center'>".$LANG["joblist"][2].":<br>";
+	echo "<td colspan='1' class='center'>".$LANG["joblist"][2].":<br>";
 	dropdownPriority("priority",$priority,1);
 	echo "</td>";
 
-	echo "<td colspan='2' align='center'>".$LANG["common"][36].":<br>";
+	echo "<td colspan='2' class='center'>".$LANG["common"][36].":<br>";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
 
-	echo "<td align='center' colspan='2'>";
+	echo "<td class='center' colspan='2'>";
 	echo "<table border='0'><tr><td>".$LANG["common"][1].":</td><td>";
 	dropdownAllItems("item",$type,$item);
 	echo "</td></tr></table>";
@@ -1002,14 +1002,14 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 
 	echo "</td>";
-	echo "<td align='center'>".$LANG["job"][44].":<br>";
+	echo "<td class='center'>".$LANG["job"][44].":<br>";
 	dropdownRequestType("request_type",$request_type);
 	echo "</td>";
 	echo "</tr>";
 
 	if ($extended){
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center' colspan='6'>";
+		echo "<td class='center' colspan='6'>";
 		$selected="";
 		if ($computers_search) $selected="checked";
 		echo "<input type='checkbox' name='only_computers' value='1' $selected>".$LANG["reports"][24].":&nbsp;";
@@ -1033,23 +1033,23 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		echo "</td></tr>";
 	}
 	if($extended)	{
-		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$LANG["reports"][60].":</td><td align='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
+		echo "<tr class='tab_bg_1'><td colspan='2' class='right'>".$LANG["reports"][60].":</td><td class='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
 		showCalendarForm("form","date1",$date1);
-		echo "</td><td align='center' colspan='2'>";
+		echo "</td><td class='center' colspan='2'>";
 		echo $LANG["search"][9].":&nbsp;";
 		showCalendarForm("form","date2",$date2);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td colspan='2' align='right'>".$LANG["reports"][61].":</td><td align='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
+		echo "<tr class='tab_bg_1'><td colspan='2' class='right'>".$LANG["reports"][61].":</td><td class='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
 		showCalendarForm("form","enddate1",$enddate1);
-		echo "</td><td align='center' colspan='2'>";
+		echo "</td><td class='center' colspan='2'>";
 		echo $LANG["search"][9].":&nbsp;";
 		showCalendarForm("form","enddate2",$enddate2);
 		echo "</td></tr>";
 	}
 	echo "<tr  class='tab_bg_1'>";
 
-	echo "<td align='center' colspan='2'>";
+	echo "<td class='center' colspan='2'>";
 	$elts=array("name"=>$LANG["common"][57],
 		    "contents"=>$LANG["joblist"][6],
 		    "followup"=>$LANG["job"][7],
@@ -1070,18 +1070,18 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<input type='text' size='15' name=\"contains2\" value=\"".stripslashes($contains2)."\">";
 	echo "</td>";
 
-	echo "<td align='center' colspan='2'>".$LANG["reports"][59].":<select name='showfollowups'>";
+	echo "<td class='center' colspan='2'>".$LANG["reports"][59].":<select name='showfollowups'>";
 	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$LANG["choice"][1]."</option>";
 	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$LANG["choice"][0]."</option>";	
 	echo "</select></td>";
 
 
-	echo "<td align='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
-	echo "<td align='center'  colspan='1'><input type='submit' name='reset' value=\"".$LANG["buttons"][16]."\" class='submit'></td>";
+	echo "<td class='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
+	echo "<td class='center'  colspan='1'><input type='submit' name='reset' value=\"".$LANG["buttons"][16]."\" class='submit'></td>";
 
 	echo "</tr>";
 
-	echo "</table></div>";
+	echo "</table>";
 	echo "<input type='hidden' name='start' value='0'>";
 	echo "</form>";
 
@@ -1534,7 +1534,7 @@ function showJobDetails ($target,$ID){
 		echo "<form method='post' action='$target'  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// First line
-		echo "<tr ><th colspan='2' style='font-size:10px'>";
+		echo "<tr ><th colspan='2' class='tracking_small'>";
 		echo $LANG["joblist"][11].": ".convDateTime($job->fields["date"])." ".$LANG["job"][2]." ";
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
@@ -1547,7 +1547,7 @@ function showJobDetails ($target,$ID){
 		}
 
 		echo "</th>";
-		echo "<th style='font-size:10px'>".$LANG["joblist"][12].":\n";
+		echo "<th class='tracking_small'>".$LANG["joblist"][12].":\n";
 		if (!ereg("old_",$job->fields["status"])){
 			echo "<i>".$LANG["job"][1]."</i>\n";
 		}
@@ -1557,9 +1557,9 @@ function showJobDetails ($target,$ID){
 		echo "</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		// Premier Colonne
-		echo "<td valign='top' width='27%'>";
+		echo "<td class='top' width='27%'>";
 		echo "<table cellpadding='3'>";
-		echo "<tr class='tab_bg_2'><td align='right'>";
+		echo "<tr class='tab_bg_2'><td class='right'>";
 		echo $LANG["joblist"][0].":</td><td>";
 		if ($canupdate){
 			dropdownStatus("status",$job->fields["status"]);
@@ -1568,7 +1568,7 @@ function showJobDetails ($target,$ID){
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td align='right'>";
+		echo "<tr><td class='right'>";
 		echo $LANG["job"][4].":</td><td>";
 		if ($canupdate){
 			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
@@ -1577,7 +1577,7 @@ function showJobDetails ($target,$ID){
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td align='right'>";
+		echo "<tr><td class='right'>";
 		echo $LANG["common"][35].":</td><td>";
 		if ($canupdate){
 			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"],1,$job->fields["FK_entities"]);
@@ -1586,7 +1586,7 @@ function showJobDetails ($target,$ID){
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td align='right'>";
+		echo "<tr><td class='right'>";
 		echo $LANG["joblist"][2].":</td><td>";
 		if ($canupdate)
 			dropdownPriority("priority",$job->fields["priority"]);
@@ -1603,18 +1603,18 @@ function showJobDetails ($target,$ID){
 		echo "</table></td>";
 
 		// Deuxieme colonne
-		echo "<td valign='top' width='33%'>";
+		echo "<td class='top' width='33%'>";
 
 		echo "<table border='0'>";
 
-		echo "<tr><td align='right'>";
+		echo "<tr><td class='right'>";
 		echo $LANG["job"][44].":</td><td>";
 		if ($canupdate)
 			dropdownRequestType("request_type",$job->fields["request_type"]);
 		else echo getRequestTypeName($job->fields["request_type"]);
 		echo "</td></tr>";
 
-		echo "<tr><td align='right'>";
+		echo "<tr><td class='right'>";
 		echo $LANG["common"][1].":</td><td>";
 		if ($canupdate){
 			echo $item->getType()." - ".$item->getLink(1)."<br>";
@@ -1625,32 +1625,32 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 
 
-		echo "<tr><td align='right'>";
+		echo "<tr><td class='right'>";
 		echo $LANG["job"][5].":</td><td>&nbsp;</td></tr>";
 
 		if (haveRight("assign_ticket","1")){
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 			echo $LANG["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"own_ticket",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else if (haveRight("steal_ticket","1")) {
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 			echo $LANG["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"ID",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		}else {
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 			echo $LANG["job"][27].":</td><td>";
 			echo getUserName($job->fields["assign"]);
 			echo "</td></tr>";
 		}
 		if (haveRight("assign_ticket","1")){
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 			echo $LANG["job"][28].":</td><td>";
 			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else {
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 			echo $LANG["job"][28].":</td><td>";
 			echo getDropdownName("glpi_enterprises",$job->fields["assign_ent"]);
 			echo "</td></tr>";
@@ -1662,36 +1662,36 @@ function showJobDetails ($target,$ID){
 		echo "</td>";
 
 		// Troisieme Colonne
-		echo "<td valign='top' width='20%'>";
+		echo "<td class='top' width='20%'>";
 
 		if(haveRight("contract_infocom","r")){  // admin = oui on affiche les couts liés à l'interventions
 			echo "<table border='0'>";
 			if ($job->fields["realtime"]>0){
-				echo "<tr><td align='right'>";
+				echo "<tr><td class='right'>";
 				echo $LANG["job"][20].":</td><td>";
 				echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
 				echo "</td></tr>";
 			}
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 			// cout
 			echo $LANG["job"][40].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".number_format($job->fields["cost_time"],$CFG_GLPI["decimal_number"],'.','')."\"></td></tr>";
 
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 
 			echo $LANG["job"][41].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".number_format($job->fields["cost_fixed"],$CFG_GLPI["decimal_number"],'.','')."\">";
 
 			echo "</td></tr>\n";
 
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 
 			echo $LANG["job"][42].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".number_format($job->fields["cost_material"],$CFG_GLPI["decimal_number"],'.','')."\">";
 
 			echo "</td></tr>\n";
 
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 
 			echo $LANG["job"][43].": ";
 			echo "</td><td><strong>";
@@ -1740,7 +1740,7 @@ function showJobDetails ($target,$ID){
 		}
 		echo "</th></tr>";
 		echo "<tr  class='tab_bg_2'><td width='15%'>".$LANG["joblist"][6]."</td>";
-		echo "<td  width='85%' align='left'>";
+		echo "<td  width='85%' class='left'>";
 
 		if ($canupdate_descr){ // Admin =oui on autorise la modification de la description
 			$rand=mt_rand();
@@ -1774,12 +1774,12 @@ function showJobDetails ($target,$ID){
 		echo "</td>";
 		// Colonne 3
 
-		echo "<td valign='top'>";
+		echo "<td class='top'>";
 
 		// Mailing ? Y or no ?
 
 		if ($CFG_GLPI["mailing"]==1){
-			echo "<table><tr><td align='right'>";
+			echo "<table><tr><td class='right'>";
 			echo $LANG["job"][19].":</td><td>";
 			if ($canupdate){
 				dropdownYesNo('emailupdates',$job->fields["emailupdates"]);
@@ -1789,7 +1789,7 @@ function showJobDetails ($target,$ID){
 			}
 			echo "</td></tr>";
 
-			echo "<tr><td align='right'>";
+			echo "<tr><td class='right'>";
 			echo $LANG["joblist"][27].":";
 			echo "</td><td>";
 			if ($canupdate){
@@ -1849,7 +1849,7 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 		// Troisi�e Ligne
 		if ($canupdate||$canupdate_descr||haveRight("comment_all_ticket","1")||haveRight("comment_ticket","1")||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
-			echo "<tr class='tab_bg_1'><td colspan='3' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='3' class='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$LANG["buttons"][14]."'></td></tr>";
 		}
 

@@ -82,6 +82,9 @@ b{	font-weight: bold;}
 .right{ text-align:right;}
 .middle {vertical-align:middle;}
 .bottom {vertical-align:bottom;}
+.top {vertical-align:top;}
+.relative {position: relative;}
+
 
 .red { color:red;}
 .blue {color:blue;}
@@ -470,9 +473,11 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 font-weight: bold;
 }
 
-.tracking_closed{
-	
-}
+.tracking_right{
+ position:absolute; 
+right:0;
+ margin-right:5px;
+font-size:10px;}
 
 .showplan {
 font-weight: bold;
@@ -480,6 +485,11 @@ text-decoration: none;
 color : #659900; 
 cursor:pointer;
 }
+
+.tracking_small{
+	font-size:10px;
+}
+
 
 /* ################--------------- Calendrier  ---------------#################### */
 
