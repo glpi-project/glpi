@@ -90,7 +90,7 @@ function choose_language()
 {
 
 	echo "<form action=\"install.php\" method=\"post\">";
-	echo "<p style='text-align:center;'><label>Select your language </label>";
+	echo "<p class='center'><label>Select your language </label>";
 /*
 	echo "<select name=\"language\">";
 	echo "<option value=\"fr_FR\">Fran&ccedil;ais (fr_FR)</option>";
