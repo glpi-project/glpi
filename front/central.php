@@ -81,7 +81,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 	// Greet the user
 
-	echo "<br><div align='center' ><b><span class='icon_consol'>".$LANG["central"][0]." ";
+	echo "<br><span class='icon_consol'>".$LANG["central"][0]." ";
 	if (empty($_SESSION["glpirealname"]))
 	echo $_SESSION["glpiname"];
 	else {
@@ -89,7 +89,7 @@ include (GLPI_ROOT."/inc/includes.php");
 		if (!empty($_SESSION["glpifirstname"]))
 			echo " ".$_SESSION["glpifirstname"];	
 	}
-	echo ", ".$LANG["central"][1]."</span></b></div>";
+	echo ", ".$LANG["central"][1]."</span>";
 
 	echo "<br><br>";
 	showCentralOnglets($_SERVER['PHP_SELF'],$_SESSION['glpi_viewcentral']);
@@ -99,14 +99,14 @@ include (GLPI_ROOT."/inc/includes.php");
 			showCentralGlobalView();
 			break;
 		case "plugins" :
-			echo "<div align='center'>";
+			
 			echo "<table class='tab_cadre_central' ><tr><td>";
 		
 			doHook("central_action");
 			echo "</td></tr>";
 		
 			echo "</table>";
-			echo "</div>";
+			
 			break;
 		case "all":
 			showCentralMyView();
@@ -115,14 +115,14 @@ include (GLPI_ROOT."/inc/includes.php");
 			showCentralGlobalView();
 			echo "<br>";
 			if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
-				echo "<div align='center'>";
+				
 				echo "<table class='tab_cadre_central' ><tr><td>";
 			
 				doHook("central_action");
 				echo "</td></tr>";
 			
 				echo "</table>";
-				echo "</div>";
+				
 			}
 
 			break;
