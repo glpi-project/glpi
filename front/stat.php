@@ -46,7 +46,7 @@ commonHeader($LANG["title"][11],$_SERVER['PHP_SELF'],"maintain","stat");
 checkRight("statistic","1");
 
 //Affichage du tableau de pr�entation des stats
-echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
+echo "<table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$LANG["stats"][0].":</th></tr>";
 
 
@@ -58,7 +58,7 @@ echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.location.php\"><b>
 echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.item.php\"><b>".$LANG["stats"][45]."</b></a></td></tr>";
 
 
-echo "</table></div>";
+echo "</table>";
 
 commonFooter();
 ?>

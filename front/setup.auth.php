@@ -117,9 +117,9 @@ elseif (isset ($_POST["test_mail"])) {
 		$msg =$LANG["login"][23];	
 	
 	//Display a message and a back link
-	echo "<div align='center'><strong>".$msg."<br>";
+	echo "<div class='message'>".$msg."<br>";
 	displayBackLink();
-	echo "</strong></div>";	
+	echo "</div>";	
 }
 
 commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth");
