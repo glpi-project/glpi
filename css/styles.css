@@ -85,6 +85,7 @@ b{	font-weight: bold;}
 
 .middle {vertical-align:middle;}
 
+
 .red { color:red;}
 .blue {color:blue;}
 .green {color:green;}
@@ -124,6 +125,14 @@ hr{
 	text-align: left;
 	z-index:1000;
 }
+
+/* message div */
+.message  {
+	margin: 0 auto; 
+	text-align:center;
+	font-weight:bold;}
+
+.pointer {cursor:pointer;}
 
 /* ################--------------- Page ---------------#################### */
 
@@ -1093,6 +1102,11 @@ div#c_ssmenu2 ul li a{
 	color: #000;
 }
 
+div#c_ssmenu2  a.here{
+	font-size:14px;
+}
+
+
 div#show_entities{
 	display: none;
 	position: absolute;
@@ -1191,3 +1205,6 @@ div#show_all_menu{
 	border-bottom: 2px solid #FFC65D;
 }
 
+#debug table{
+margin:0;
+}
