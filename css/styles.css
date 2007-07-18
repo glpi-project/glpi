@@ -84,7 +84,7 @@ b{	font-weight: bold;}
 .right{ text-align:right;}
 
 .middle {vertical-align:middle;}
-
+.bottom {vertical-align:bottom;}
 
 .red { color:red;}
 .blue {color:blue;}
@@ -491,6 +491,7 @@ cursor:pointer;
 #contenukb {
 	height: 100%;
 	width: 600px;
+	margin: 0 auto;
 	}
 
 #contenukb legend {
@@ -508,6 +509,39 @@ cursor:pointer;
 #contenukb textarea {
 	width:550px;
 }
+
+.tdkb_result{
+	vertical-align:top;
+	text-align:left;
+	width: 33%; 
+	padding: 3px 20px 3px 25px;
+}
+
+.kb_resume{
+	font-size: 9px;	
+	line-height: 10px; 
+	clear: both;	
+	padding: 5px 0 0 25px;
+
+}
+
+
+.tdkb{
+text-align:left;
+font-size:10px; 
+color:#aaaaaa;
+
+}
+
+.baskb {
+position: relative;
+ text-align:left;
+font-size:10px;
+ color:#aaaaaa;
+}
+
+.baskb_right{
+ position:absolute; right:0; margin-right:5px;}
 
 
 .code {	
