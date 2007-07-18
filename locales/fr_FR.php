@@ -636,7 +636,6 @@ $LANG["job"][32]="Aucune";
 $LANG["job"][33]="Description vide";
 $LANG["job"][34]="Planifier ce suivi";
 $LANG["job"][35]="Planification";
-$LANG["job"][36]="Planification impossible. Erreur de dates ou technicien non disponible à cet horaire";
 $LANG["job"][37]="Résumé";
 $LANG["job"][38]="Ticket";
 $LANG["job"][39]="Modifier un suivi";
@@ -1269,12 +1268,8 @@ $LANG["ruleldap"][1]="des critères LDAP";
 $LANG["ruleldap"][2]="Aucun critère défini";
 $LANG["ruleldap"][3]="Ajout d'un critère LDAP";
 
-$LANG["rulesoftwarecategories"][1]="des catégories";
-$LANG["rulesoftwarecategories"][2]="Aucune catégorie définie";
-$LANG["rulesoftwarecategories"][3]="Ajout d'une catégorie";
 $LANG["rulesoftwarecategories"][4]="Logiciels sans catégories";
 $LANG["rulesoftwarecategories"][5]="Catégorie de logiciels";
-$LANG["rulesoftwarecategories"][6]="Non affecté à une catégorie";
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";
