@@ -282,15 +282,7 @@ class Software extends CommonDBTM {
 				
 				
 				echo "<td>" . $LANG["common"][36] . ":		</td><td>";
-				if (haveRight("software","w") && softwareCategoriesCount() > 0)
-					dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
-				else
-				{
-					if (softwareCategoriesCount() > 0)
-						echo getDropdownName("glpi_dropdown_software_category",$this->fields["category"]);
-					else
-						echo $LANG["rulesoftwarecategories"][6];	
-				}
+				dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
 				echo "</td>";
 
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][3] . ": 	</td><td>";
@@ -331,14 +323,7 @@ class Software extends CommonDBTM {
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][46] . ":</td><td>";
-				if (haveRight("software", "w")){
-					dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
-				} else {
-					if ($this->fields['helpdesk_visible'] == 1)
-						echo $LANG["choice"][1];
-					else
-						echo $LANG["choice"][0];
-				}
+				dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
 				echo "</td>";
 				echo "<td colspan='2'></td></tr>";
 

@@ -41,18 +41,21 @@ if (!defined('GLPI_ROOT')){
  * Count the number of elements in a table.
  *
  * @param $table table name
+ * @param $condition condition to use
  *
  * return int nb of elements in table
  */
-function countElementsInTable($table){
+function countElementsInTable($table,$condition=""){
 	global $DB;
 	$query="SELECT count(*) AS cpt 
 		FROM $table";
+	if (!empty($condition)){
+		$query.=" WHERE $condition ";
+	}
 	$result=$DB->query($query);
 	$ligne = $DB->fetch_array($result);
 	return $ligne['cpt'];
 }
-
 
 /**
  * Count the number of elements in a table for a specific entity
@@ -62,12 +65,7 @@ function countElementsInTable($table){
  * return int nb of elements in table
  */
 function countElementsInTableForMyEntities($table){
-	global $DB;
-	$query="SELECT count(*) AS cpt 
-		FROM $table ".getEntitiesRestrictRequest("WHERE",$table,"FK_entities");
-	$result=$DB->query($query);
-	$ligne = $DB->fetch_array($result);
-	return $ligne['cpt'];
+	return countElementsInTable($table,getEntitiesRestrictRequest("",$table,"FK_entities"));
 }
 /**
  * Count the number of elements in a table for a specific entity
@@ -78,12 +76,7 @@ function countElementsInTableForMyEntities($table){
  * return int nb of elements in table
  */
 function countElementsInTableForEntity($table,$entity){
-	global $DB;
-	$query="SELECT count(*) AS cpt 
-		FROM $table WHERE FK_entities='$entity'";
-	$result=$DB->query($query);
-	$ligne = $DB->fetch_array($result);
-	return $ligne['cpt'];
+	return countElementsInTable($table,"FK_entities='$entity'");
 }
 
 /**

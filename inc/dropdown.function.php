@@ -1275,7 +1275,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		}
 		switch ($device_type){
 			case SOFTWARE_TYPE :
-				if (softwareCategoriesCount() > 0)
+				if (countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_SOFTWARE_CATEGORY."'") > 0)
 					echo "<option value=\"compute_software_category\">".$LANG["rulesengine"][38]." ".$LANG["rulesengine"][40]."</option>";
 				break;
 			case COMPUTER_TYPE :
