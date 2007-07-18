@@ -32,6 +32,15 @@ img {
 	behavior: url("../css/win_png.htc");
 }
 
+
+
+div#c_ssmenu1 ul li{
+margin-top:4px;	
+
+}
+
+
+
 #contenu-nullHeader {
     background-image:none;
 	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod='crop', src='../pics/null-header.png');

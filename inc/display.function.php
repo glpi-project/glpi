@@ -663,19 +663,19 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<ul>";
 
 		// Display item
-		echo "	<li><a  style='font-size:12px' href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." ></a></li>";
+		echo "	<li><a   href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." </a> ></li>";
 
 		if (isset($menu[$sector])){
 			$link="/front/central.php";
 			if (isset($menu[$sector]['default'])){
 				$link=$menu[$sector]['default'];
 			}
-			echo "	<li><a href='".$CFG_GLPI["root_doc"].$link."' title='".$menu[$sector]['title']."' ><span style='font-size:12px'>".$menu[$sector]['title']." ></span></a></li>";
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$link."' title='".$menu[$sector]['title']."' >".$menu[$sector]['title']." </a> > </li>";
 		}
 
 		if (isset($menu[$sector]['content'][$item])){
 			// Title
-			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' title='".$menu[$sector]['content'][$item]['title']."' ><span style='font-size:14px'>".$menu[$sector]['content'][$item]['title']." </span></a></li>";
+			echo "	<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['page']."' class='here' title='".$menu[$sector]['content'][$item]['title']."' >".$menu[$sector]['content'][$item]['title']." </a></li>";
 			echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
 			// Add item
@@ -1285,7 +1285,7 @@ function commonFooter() {
 				echo "took  ".array_sum($DEBUG_SQL['times'])."s  </h2>";
 			}
 
-			echo "<table class='tab_cadre' style='width:100%'><tr><th>N&#176; </th><th>Queries</th><th>Time</th><th>Errors</th></tr>";
+			echo "<table class='tab_cadre' ><tr><th>N&#176; </th><th>Queries</th><th>Time</th><th>Errors</th></tr>";
 
 			foreach ($DEBUG_SQL['queries'] as $num => $query){
 				echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
@@ -1475,7 +1475,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$max_size=round($max_size,1);
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." Mb max):	";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" style='cursor:pointer;' alt=\"aide\"onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"aide\"onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
 	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
@@ -1534,7 +1534,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 
 	// Print it
 
-	echo "<div align='center' style='font-size:6px;'><table class='tab_cadre_pager'>\n";
+	echo "<table class='tab_cadre_pager'>\n";
 	echo "<tr>\n";
 
 	// Back and fast backward button
@@ -1552,7 +1552,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 	}
 
 	// Print the "where am I?" 
-	echo "<td width='50%' align='center' class='tab_bg_2'>";
+	echo "<td width='50%'  class='tab_bg_2'>";
 	echo "<form method='POST' action=\"$target?$parameters&amp;start=$start\">\n";
 	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
 	echo "<select name='list_limit' onChange='submit()'>";
@@ -1588,18 +1588,18 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 		echo "</td>" ;
 	}
 
-	echo "<td  width='50%' align='center' class='tab_bg_2'><strong>";
+	echo "<td  width='50%'  class='tab_bg_2'><strong>";
 
 	echo $LANG["pager"][2]."&nbsp;".$current_start."&nbsp;".$LANG["pager"][1]."&nbsp;".$current_end."&nbsp;".$LANG["pager"][3]."&nbsp;".$numrows."&nbsp;";
 	echo "</strong></td>\n";
 
 	// Forward and fast forward button
 	if ($forward<$numrows) {
-		echo "<th align='right'>";
+		echo "<th class='right'>";
 		echo "<a href=\"$target?$parameters&amp;start=$forward\">";
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'>";
 		echo "</a></th>\n";
-		echo "<th align='right'>";
+		echo "<th class='right'>";
 		echo "<a href=\"$target?$parameters&amp;start=$end\">";
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG["buttons"][32]."' title='".$LANG["buttons"][32]."'>";
 		echo "</a></th>\n";
@@ -1607,7 +1607,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 
 	// End pager
 	echo "</tr>\n";
-	echo "</table><br></div>\n";
+	echo "</table><br>\n";
 
 }
 
@@ -1916,7 +1916,7 @@ function showProfileSelecter($target){
 	
 		echo "<div id='show_entities' onMouseOver=\"completecleandisplay('show_entities');\" onMouseOut=\"completecleanhide('show_entities');\">";
 		displayActiveEntities($target,$_SESSION['glpi_entities_tree'],"activeentity");
-		//echo "<div style='clear:both'></div>";
+		
 		echo "</div>";
 		echo "</li>";
 	}
