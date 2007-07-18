@@ -1264,7 +1264,6 @@ $LANG["rulesengine"][35]="Position actuelle";
 $LANG["rulesengine"][36]="Actuellement";
 $LANG["rulesengine"][37]="Règles d'affectation des logiciels à une catégorie";
 $LANG["rulesengine"][38]="Recalculer";
-$LANG["rulesengine"][39]="Affecter la catégorie";
 $LANG["rulesengine"][40]="la catégorie";
 $LANG["ruleldap"][1]="des critères LDAP";
 $LANG["ruleldap"][2]="Aucun critère défini";
@@ -1275,7 +1274,7 @@ $LANG["rulesoftwarecategories"][2]="Aucune catégorie définie";
 $LANG["rulesoftwarecategories"][3]="Ajout d'une catégorie";
 $LANG["rulesoftwarecategories"][4]="Logiciels sans catégories";
 $LANG["rulesoftwarecategories"][5]="Catégorie de logiciels";
-
+$LANG["rulesoftwarecategories"][6]="Non affecté à une catégorie";
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";

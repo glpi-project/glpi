@@ -53,10 +53,10 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	echo "<input type='hidden' name='device_type' value='".$_POST["type"]."'>";
 	switch($_POST["action"]){
 
+		case "compute_software_category":
+		case "force_ocsng_update":
 		case "delete":
 		case "purge":
-		case "force_ocsng_update":
-		case "compute_software_category":
 		case "restore":
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
@@ -137,11 +137,6 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 
 		break;
-		case "affect_software_category":
-			dropdownValue("glpi_dropdown_software_category","software_category",0);
-		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
-		break;
-		
 		default :
 			// Plugin specific actions
 			if ($_POST["type"]>1000){
