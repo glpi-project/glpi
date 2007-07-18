@@ -91,30 +91,7 @@ function choose_language()
 
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<p class='center'><label>Select your language </label>";
-/*
-	echo "<select name=\"language\">";
-	echo "<option value=\"fr_FR\">Fran&ccedil;ais (fr_FR)</option>";
-	echo "<option value=\"en_GB\">English (en_GB)</option>";
-	echo "<option value=\"es_AR\">Argentino (es_AR)</option>";
-	echo "<option value=\"bg_BG\">Bulgarian (bg_BG)</option>";
-	echo "<option value=\"ca_CA\">Catalan (ca_CA)</option>";
-	echo "<option value=\"cs_CZ\">Czech (cs_CZ)</option>";
-	echo "<option value=\"dk_DK\">Danish (dk_DK)</option>";
-	echo "<option value=\"de_DE\">Deutch (de_DE)</option>";
-	echo "<option value=\"nl_NL\">Dutch (nl_NL)</option>";
-	echo "<option value=\"nl_BE\">Dutch (Belgium)(nl_BE)</option>";
-	echo "<option value=\"es_ES\">Espanol (es_ES)</option>";
-	echo "<option value=\"hu_HU\">Hungarian (hu_HU)</option>";
-	echo "<option value=\"it_IT\">Italiano (it_IT)</option>";
-	echo "<option value=\"ja_JP\">Japanese (ja_JP)</option>";
-	echo "<option value=\"pt_PT\">Portuguese (pt_PT)</option>";
-	echo "<option value=\"pl_PL\">Polish (pl_PL)</option>";
-	echo "<option value=\"ro_RO\">Romanian (ro_RO)</option>";
-	echo "<option value=\"ru_RU\">Russian (ru_RU)</option>";
-	echo "<option value=\"zh_CN\">Simplified Chinese (zh_CN)</option>";
-	echo "<option value=\"sv_SE\">Swedish (sv_SE)</option>";
-	echo "</select>";
-*/
+
 	dropdownLanguages("language", "en_GB");
 	echo "</p>"; 
 	echo "";
