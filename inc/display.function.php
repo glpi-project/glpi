@@ -111,8 +111,12 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		}
 		//  CSS link
 		echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
-		//Surcharge de la feuille de style principale
-		//echo "<link rel=\"stylesheet\" href=\"".$CFG_GLPI["root_doc"]."/css/header_style.css\" type=\"text/css\" media=\"screen\" />\n";
+		// surcharge CSS hack for IE
+		echo "<!--[if lte IE 6]>" ;
+ 		echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
+ 		echo "<![endif]-->";
+
+
 		echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >\n";
 		echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 		// AJAX library
@@ -866,6 +870,10 @@ function helpHeader($title,$url) {
 	// Appel CSS
 
 	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+	// surcharge CSS hack for IE
+	echo "<!--[if lte IE 6]>" ;
+ 	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
+ 	echo "<![endif]-->";
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
 
 
@@ -1103,6 +1111,10 @@ function nullHeader($title,$url) {
 	// Appel CSS
 
 	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+	// surcharge CSS hack for IE
+	echo "<!--[if lte IE 6]>" ;
+ 	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
+ 	echo "<![endif]-->";
 
 	// Calendar scripts 
 	if (isset($_SESSION["glpilanguage"])){
