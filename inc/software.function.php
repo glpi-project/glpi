@@ -979,15 +979,4 @@ function getInstallionsForLicense($ID){
 
 }
 
-/*
- * Return the number of software categories 
- */
-function softwareCategoriesCount()
-{
-	global $DB;
-	$sql = "SELECT count(*) as cpt FROM glpi_dropdown_software_category";
-	$res = $DB->query($sql);
-	return $DB->result($res,0,"cpt");
-}
-
 ?>
