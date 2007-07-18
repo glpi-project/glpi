@@ -127,7 +127,7 @@ else
 
 	echo "</div>";  // fin box login
 
-	echo "<div style='color: red; margin-top:20px; text-align:center;'>";
+	echo '<div class="error">';
 	echo "<noscript>";
 	echo $LANG["login"][26];
 	echo "</noscript>";

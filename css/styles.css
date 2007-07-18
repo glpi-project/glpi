@@ -75,12 +75,13 @@ small{
 } 
 
 
-b{	font-weight: bold;
-}
+b{	font-weight: bold;}
 
-.center {
-	text-align:center;
-}
+.center{	text-align:center;}
+
+.left{ text-align:left;}
+
+.right{ text-align:right;}
 
 .red { color:red;}
 .blue {color:blue;}
@@ -121,9 +122,9 @@ hr{
 	z-index:1000;
 }
 
+/* ################--------------- Page ---------------#################### */
 
-
-/* ################--------------- form ---------------#################### */
+#page {margin: 0 auto; text-align:center;}
 
 #page form  {font-size: 12px;
 	margin:0;
@@ -136,6 +137,10 @@ hr{
 	margin-top:25px;
 	}
 
+
+/* ################--------------- form ---------------#################### */
+
+
 option {border:1px solid #ccc;
 	background-color:#ffffff;}
 
@@ -145,22 +150,6 @@ select {
 	font-size: 11px;
 	border: 1px solid #888888;
 }
-
-.tree {
-
-	border:0;
-	border-bottom:1px solid #C0CAD4;
-}
-
-.treeroot {
-	
-	background: url("../pics/treeroot.png") 0 2px no-repeat;
-	background-color:#eeeeee;
-	border:0;
-	margin-top:5px;
-	font-weight:bold;
-}
-
 
 
 textarea, input {
@@ -182,6 +171,23 @@ input.submit:hover {
 	background-color:#ffffff;
 	background:  url("../pics/fond_form_on.png") repeat-x; 
 	}
+
+
+.tree {
+
+	border:0;
+	border-bottom:1px solid #C0CAD4;
+}
+
+.treeroot {
+	
+	background: url("../pics/treeroot.png") 0 2px no-repeat;
+	background-color:#eeeeee;
+	border:0;
+	margin-top:5px;
+	font-weight:bold;
+}
+
 
 .button {
 	border: 1px solid #888888;
@@ -772,6 +778,12 @@ ul#onglet li.actif a {
 	color: #eeeeee;
 	text-decoration: none;
 	}
+
+.error {
+	color: red; 
+	margin-top:20px;
+ 	text-align:center;
+}
 
 #footer-login
 {
