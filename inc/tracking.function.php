@@ -444,24 +444,24 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$second_col="";	
 		if (!ereg("old_",$data["status"]))
 		{
-			$second_col.="<small>".$LANG["joblist"][11].":";
+			$second_col.="<span class='tracking_open'>".$LANG["joblist"][11].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
-			$second_col.= "&nbsp;".convDateTime($data["date"])."</small>";
+			$second_col.= "&nbsp;".convDateTime($data["date"])."</span>";
 		}
 		else
-		{
-			$second_col.="<small>".$LANG["joblist"][11].":";
+		{	$second_col.="<div class='tracking_hour'>";
+			$second_col.="".$LANG["joblist"][11].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
-			$second_col.="&nbsp;".convDateTime($data["date"]);
-			$second_col.="<br>";
-			$second_col.="<i>".$LANG["joblist"][12].":";
+			$second_col.="&nbsp;<span class='tracking_bold'>".convDateTime($data["date"]);
+			$second_col.="</span><br>";
+			$second_col.="".$LANG["joblist"][12].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
-			$second_col.="&nbsp;".convDateTime($data["closedate"])."</i>";
+			$second_col.="&nbsp;<span class='tracking_bold'>".convDateTime($data["closedate"])."</span>";
 			$second_col.="<br>";
 			if ($data["realtime"]>0) $second_col.=$LANG["job"][20].": ";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
 			$second_col.="&nbsp;".getRealtime($data["realtime"]);
-			$second_col.="</small>";
+			$second_col.="</div>";
 		}
 
 		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,0,$align." width=130");

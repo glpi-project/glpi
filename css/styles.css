@@ -71,18 +71,15 @@ img{
 small{  
 	font-family: verdana;
 	font-size: 10px;
-	text-decoration: underline;
+
 } 
 
 
 b{	font-weight: bold;}
 
 .center{	text-align:center;}
-
 .left{ text-align:left;}
-
 .right{ text-align:right;}
-
 .middle {vertical-align:middle;}
 .bottom {vertical-align:bottom;}
 
@@ -461,6 +458,20 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 .tracking:hover {
 	background-color: #FFF4DF; 
 
+}
+
+
+.tracking_hour{
+	font-family: verdana;
+	font-size: 10px;
+}
+
+.tracking_bold {
+font-weight: bold;
+}
+
+.tracking_closed{
+	
 }
 
 .showplan {
