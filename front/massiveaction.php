@@ -305,26 +305,8 @@ foreach ($_POST["item"] as $key => $val){
 					$params["FK_glpi_enterprise"]=$soft->fields["FK_glpi_enterprise"];
 					
 					//Process rules
-					$result = $softcatrule->processAllRules(null,null,$params);
-					
-					if (!empty($result) && isset($result["category"]))
-					{
-						$result["ID"] = $soft->fields["ID"];
-						//Update software category
-						$soft->update($result);
-					}
+					$soft->update($softcatrule->processAllRules(null,$soft->fields,$params));
 				}
-			}
-		break;
-		
-		case "affect_software_category":
-			$soft = new Software;
-			foreach ($_POST["item"] as $key => $val){
-				if ($val==1) {
-					$tmp["ID"]=$key;
-					$tmp["category"] = $_POST["software_category"];
-					$soft->update($tmp);
-					}
 			}
 		break;
 		default :

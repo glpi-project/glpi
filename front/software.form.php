@@ -102,27 +102,6 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
-else if (isset($_POST["compute_software_category"]))
-{
-	checkRight("software","w");
-
-	$softcatrule = new SoftwareCategoriesRuleCollection;
-	$params["name"] = $_POST["name"];
-	$params["FK_glpi_enterprise"] = $_POST["FK_glpi_enterprise"];
-	$result = $softcatrule->processAllRules(null,null,$params);
-	
-	print_r($result);
-	if (!empty($result) && isset($result["category"]))
-	{
-		$result["ID"] = $_POST["ID"];
-		//Update software category
-		$soft = new Software;
-		$soft->update($result);
-	}
-	
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-} 
 else
 {
 	checkRight("software","r");
