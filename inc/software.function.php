@@ -70,10 +70,11 @@ function showLicenses ($sID,$show_computers=0) {
 			$nb_updates=$DB->result($result_update, 0, "COUNT");;
 			$installed = getInstalledLicence($sID);
 			$tobuy=getLicenceToBuy($sID);
+			$isfreeorglobal=isFreeSoftware($sID)||isGlobalSoftware($sID);
 			// As t'on utilis�trop de licences en prenant en compte les mises a jours (double install original + mise �jour)
 			// Rien si free software
 			$pb="";
-			if (($nb_licences-$nb_updates-$installed)<0&&!isFreeSoftware($sID)&&!isGlobalSoftware($sID)) $pb="class='tab_bg_1_2'";
+			if (($nb_licences-$nb_updates-$installed)<0&&!$isfreeorglobal) $pb="class='tab_bg_1_2'";
 
 			echo "<form name='lic_form' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 
@@ -940,7 +941,7 @@ function getInstalledLicence($sID){
 
 function getLicenceToBuy($sID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID' AND buy ='0')";
+	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID' AND buy ='0'  AND serial <> 'free' AND serial <> 'global')";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
