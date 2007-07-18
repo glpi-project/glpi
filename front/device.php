@@ -48,7 +48,7 @@ if(!empty($_GET["device_type"])) {
 	titleDevices($_GET["device_type"]);
 }
 
-echo "<div align='center'><form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
+echo "<form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
 echo "<table class='tab_cadre' cellpadding='3'><tr><th colspan='2'>";
 echo $LANG["devices"][17].": </th></tr><tr class='tab_bg_1'><td><select name='device_type'>";
 
@@ -61,7 +61,7 @@ foreach ($dp as $key=>$val) {
 }
 echo "</select></td>";
 echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
-echo "</table></form></div>";
+echo "</table></form>";
 
 if(!empty($_GET["device_type"])) {
 	showDevicesList($_GET["device_type"],$_SERVER['PHP_SELF']);

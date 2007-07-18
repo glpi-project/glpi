@@ -62,7 +62,7 @@ echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVE
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $LANG["search"][8]." :</td><td>";
 showCalendarForm("form","date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
+echo "</td><td rowspan='2' class='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
 echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
 showCalendarForm("form","date2",$_POST["date2"]);
 echo "</td></tr>";
@@ -133,7 +133,7 @@ function display_infocoms_report($device_type,$begin,$end){
 
 			$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
 
-			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td><td style='text-align:right'>".number_format($line["value"],$CFG_GLPI["decimal_number"],"."," ")."</td><td style='text-align:right'>".number_format($valeurnette,$CFG_GLPI["decimal_number"],"."," ")."</td><td style='text-align:right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td><td class='right'>".number_format($line["value"],$CFG_GLPI["decimal_number"],"."," ")."</td><td class='right'>".number_format($valeurnette,$CFG_GLPI["decimal_number"],"."," ")."</td><td class='right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 
 
 		}	
@@ -141,12 +141,12 @@ function display_infocoms_report($device_type,$begin,$end){
 		$valeurtot+=$valeursoustot;
 		$valeurnettetot+=$valeurnettesoustot;
 
-		echo "<tr><td colspan='6' align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=$valeursoustot - ".$LANG["financial"][81]."=$valeurnettesoustot</h3></td></tr>";
+		echo "<tr><td colspan='6' class='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=$valeursoustot - ".$LANG["financial"][81]."=$valeurnettesoustot</h3></td></tr>";
 
 
 		if (count($valeurnettegraph)>0){
 
-			echo "<tr><td colspan='5'  align='center'>";
+			echo "<tr><td colspan='5'  class='center'>";
 			ksort($valeurnettegraph); 
 
 			$valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
@@ -162,7 +162,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		}
 
 		if (count($valeurgraph)>0){
-			echo "<tr><td colspan='5' align='center'>";
+			echo "<tr><td colspan='5' class='center'>";
 
 			ksort($valeurgraph); 
 
