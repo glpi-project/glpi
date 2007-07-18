@@ -74,9 +74,11 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][26].":		</td>";
 		echo "<td align='center'>";
-		if ($withtemplate==2) 
+		if ($withtemplate==2) {
 			echo getDropdownName("glpi_enterprises",$ic->fields["FK_enterprise"]);
-		else dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('FK_entities'));
+		} else {
+			dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('FK_entities'));
+		}
 
 		echo "</td>";
 		echo "<td>".$LANG["financial"][82].":		</td>";
