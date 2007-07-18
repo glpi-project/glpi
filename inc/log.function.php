@@ -581,7 +581,7 @@ function showEvents($target,$order,$sort,$start=0) {
 	}
 	echo "<a href=\"$target?sort=level&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][3]."</a></th>";
 
-	echo "<th width='60%'>";
+	echo "<th width='50%'>";
 	if ($sort=="message") {
 		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
 		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
