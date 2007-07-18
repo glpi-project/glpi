@@ -930,7 +930,7 @@ $LANG["networking"][19]="Ajouter un port...";
 $LANG["networking"][20]="Gestionnaire de Port";
 $LANG["networking"][21]="Logical Number";
 $LANG["networking"][25]="sur";
-$LANG["networking"][37]="Port trouvé";
+$LANG["networking"][37]="Port réseau trouvé";
 $LANG["networking"][44]="Le port";
 $LANG["networking"][45]="est maintenant connecté sur le port";
 $LANG["networking"][46]="Ajouter plusieurs ports...";
@@ -1263,9 +1263,9 @@ $LANG["rulesengine"][34]="Dernier";
 $LANG["rulesengine"][35]="Position actuelle";
 $LANG["rulesengine"][36]="Actuellement";
 $LANG["rulesengine"][37]="Règles d'affectation des logiciels à une catégorie";
-$LANG["rulesengine"][38]="Recalculer la catégorie";
-
-
+$LANG["rulesengine"][38]="Recalculer";
+$LANG["rulesengine"][39]="Affecter la catégorie";
+$LANG["rulesengine"][40]="la catégorie";
 $LANG["ruleldap"][1]="des critères LDAP";
 $LANG["ruleldap"][2]="Aucun critère défini";
 $LANG["ruleldap"][3]="Ajout d'un critère LDAP";

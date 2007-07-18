@@ -317,6 +317,16 @@ foreach ($_POST["item"] as $key => $val){
 			}
 		break;
 		
+		case "affect_software_category":
+			$soft = new Software;
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					$tmp["ID"]=$key;
+					$tmp["category"] = $_POST["software_category"];
+					$soft->update($tmp);
+					}
+			}
+		break;
 		default :
 			// Plugin specific actions
 			if ($_POST["device_type"]>1000){
