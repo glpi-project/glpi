@@ -295,17 +295,28 @@ foreach ($_POST["item"] as $key => $val){
 
 		case "compute_software_category":
 			$softcatrule = new SoftwareCategoriesRuleCollection;
+			$soft = new Software;
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					$params = array();
 					//Get software name and manufacturer
-					$soft = new Software;
 					$soft->getFromDB($key);
 					$params["name"]=$soft->fields["name"];
 					$params["FK_glpi_enterprise"]=$soft->fields["FK_glpi_enterprise"];
 					
 					//Process rules
 					$soft->update($softcatrule->processAllRules(null,$soft->fields,$params));
+				}
+			}
+		break;
+
+		case "add_followup":
+			$fup=new Followup();
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					$_POST['tracking']=$key;
+					unset($fup->fields);
+					$fup->add($_POST);
 				}
 			}
 		break;

@@ -35,7 +35,7 @@
 
 
 define('GLPI_ROOT','..');
-$NEEDED_ITEMS=array("search","enterprise");
+$NEEDED_ITEMS=array("search","enterprise","tracking");
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -52,7 +52,10 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
 	echo "<input type='hidden' name='device_type' value='".$_POST["type"]."'>";
 	switch($_POST["action"]){
-
+		case "add_followup":
+			showAddFollowupForm(-1);
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		break;
 		case "compute_software_category":
 		case "force_ocsng_update":
 		case "delete":
