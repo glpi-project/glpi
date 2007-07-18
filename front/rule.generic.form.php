@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("entity","rulesengine","rule.right","rule.ocs","rule.tracking");
+$NEEDED_ITEMS=array("entity","rulesengine","rule.right","rule.ocs","rule.tracking","rule.softwarecategories");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -55,6 +55,9 @@ if (isset($_GET["ID"]))
 		break;
 		case RULE_TRACKING_AUTO_ACTION:
 			$rule = new TrackingBusinessRule();
+		break;
+		case RULE_SOFTWARE_CATEGORY:
+			$rule = new SoftwareCategoriesRule();
 		break;
 	}
 	
