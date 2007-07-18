@@ -1089,30 +1089,12 @@ function ocsImportDropdown($dpdTable, $value, $FK_entities = -1) {
 	if (empty ($value))
 		return 0;
 
-	$entity_restrict = "";
-	$addfield = "";
-	$addvalue = "";
-	if (in_array($dpdTable, $CFG_GLPI["specif_entities_tables"])) {
-		$entity_restrict = " AND FK_entities='$FK_entities'";
-		$addfield = ",FK_entities";
-		$addvalue = ",'$FK_entities'";
-	}
-	$query2 = "SELECT * 
-				FROM " . $dpdTable . " 
-				WHERE name='" . $value . "' $entity_restrict";
-	$result2 = $DB->query($query2);
-	if ($DB->numrows($result2) == 0) {
-		$input["tablename"] = $dpdTable;
-		$input["value"] = $value;
-		$input['type'] = "first";
-		$input["comments"] = "";
-		$input["FK_entities"] = $FK_entities;
-		return addDropdown($input);
-	} else {
-		$line2 = $DB->fetch_array($result2);
-		return $line2["ID"];
-	}
-
+	$input["tablename"] = $dpdTable;
+	$input["value"] = $value;
+	$input['type'] = "first";
+	$input["comments"] = "";
+	$input["FK_entities"] = $FK_entities;
+	return addDropdown($input);
 }
 
 /**
