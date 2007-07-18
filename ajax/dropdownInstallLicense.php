@@ -99,7 +99,7 @@ if ($_POST['sID']>0){
 			echo "<option value=\"$ID\" title=\"$output\">".$output."</option>";
 		}
 	} 
-	echo "</select>";
+	echo "</select>&nbsp;";
 
 	if ($_POST["massiveaction"]) echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][4]."\" >";
 }
