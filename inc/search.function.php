@@ -134,15 +134,15 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 		    );
 
 	echo "<form method='get' action=\"$target\">";
-	echo "<div align='center'><table border='0'  class='tab_cadre_fixe'>";
+	echo "<table class='tab_cadre_fixe'>";
 //	echo "<tr><th colspan='5'>".$LANG["search"][0].":</th></tr>";
-	echo "<tr class='tab_bg_1' align='center'>";
+	echo "<tr class='tab_bg_1' class='center'>";
 	echo "<td>";
 	echo "<table>";
 
 	// Display normal search parameters
 	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++){
-		echo "<tr><td align='right'>";
+		echo "<tr><td class='right'>";
 		// First line display add / delete images for normal and meta search items
 		if ($i==0){
 			echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -246,7 +246,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 
 	if (is_array($linked)&&count($linked)>0)
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++){
-			echo "<tr><td align='left'>";
+			echo "<tr><td class='left'>";
 			$rand=mt_rand();
 
 			// Display link item (not for the first item)
@@ -344,9 +344,9 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 	echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 	echo "</td>";
 	// Display submit button
-	echo "<td width='80' align='center' class='tab_bg_2'>";
+	echo "<td width='80' class='center' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit' >";
-	echo "</td></tr></table></div>";
+	echo "</td></tr></table>";
 	// Reset to start when submit new search
 	echo "<input type='hidden' name='start' value='0'>";
 	echo "</form>";
@@ -976,10 +976,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if (haveRight("search_config","w")||haveRight("search_config_global","w")){
 					$tmp= " style='cursor:pointer;'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;type=$type' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
 
-					$search_config= "<img alt='".$LANG["buttons"][8]."' title='".$LANG["buttons"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/plus.png' ";
+					$search_config= "<img alt='".$LANG["buttons"][8]."' title='".$LANG["buttons"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
 					$search_config.=$tmp.">";
-					$search_config.= "<img alt='".$LANG["buttons"][6]."' title='".$LANG["buttons"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/moins.png' ";
-					$search_config.=$tmp.">";
+					//$search_config.= "<img alt='".$LANG["buttons"][6]."' title='".$LANG["buttons"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/moins.png' ";
+					//$search_config.=$tmp.">";
 				}
 
 				echo displaySearchHeaderItem($output_type,$search_config,$header_num,"",0,$order);
@@ -1110,15 +1110,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if ($type==RESERVATION_TYPE&&$output_type==HTML_OUTPUT){
 					if (haveRight("reservation_central","w")){
 						if ($data["ACTIVE"]){
-							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=0\"  title='".$LANG["buttons"][42]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
+							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=0\"  title='".$LANG["buttons"][42]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",$item_num,$row_num,0,"class='center'");
 						} else {
-							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=1\"  title='".$LANG["buttons"][41]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
+							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=1\"  title='".$LANG["buttons"][41]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",$item_num,$row_num,0,"class='center'");
 						}
 
-						echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
+						echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$item_num,$row_num,0,"class='center'");
 					}
 					if ($data["ACTIVE"]){
-						echo displaySearchItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$item_num,$row_num,0,"align='center'");
+						echo displaySearchItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$item_num,$row_num,0,"class='center'");
 					} else {
 						echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
 					}
@@ -1167,17 +1167,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Delete selected item
 			if ($output_type==HTML_OUTPUT){
 				if ($isadmin){
-					echo "<div align='center'>";
+					
 					echo "<table width='80%'>";
-					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all' >".$LANG["buttons"][18]."</a></td>";
+					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all' >".$LANG["buttons"][18]."</a></td>";
 	
-					echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
-					echo "</td><td align='left' width='80%'>";
+					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+					echo "</td><td class='left' width='80%'>";
 					dropdownMassiveAction($type,$deleted);
 					echo "</td>";
 					echo "</table>";
 	
-					echo "</div>";
+					
 					// End form for delete item
 					echo "</form>";
 				} else {
@@ -2147,7 +2147,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		break;
 		case "glpi_type_docs.icon" :
 			if (!empty($data["ITEM_$num"])){
-				return "<img style='vertical-align:middle;' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
+				return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
 			}
 			else {
 				return "&nbsp;";
