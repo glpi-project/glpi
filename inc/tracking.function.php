@@ -428,7 +428,12 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		else $first_col.=" - ".getStatusName($data["status"]);
 		if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
 			$sel="";
-			if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+			if (isset($_GET["select"])&&$_GET["select"]=="all") {
+				$sel="checked";
+			}
+			if (isset($_SESSION['glpimassiveactionselected'][$data["ID"]])){
+				$sel="checked";
+			}
 			$first_col.="&nbsp;<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
 		}
 
@@ -1436,6 +1441,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 		}
 	}
+	// Clean selection 
+	$_SESSION['glpimassiveactionselected']=array();
 }
 
 function showFollowupsShort($ID) {
@@ -1997,7 +2004,11 @@ function showAddFollowupForm($tID){
 	global $DB,$LANG,$CFG_GLPI;
 
 	$job=new Job;
-	$job->getFromDB($tID);
+	if ($tID>0){
+		$job->getFromDB($tID);
+	} else {
+		$job->getEmpty();
+	}
 
 	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")&&$job->fields["assign"]!=$_SESSION["glpiID"]) return false;
 
@@ -2055,7 +2066,7 @@ function showAddFollowupForm($tID){
 		echo $LANG["job"][22];
 		echo "</tr>";
 
-		if (haveRight("show_planning","1")){
+		if (haveRight("show_planning","1")&&$tID>0){
 			echo "<tr>";
 			echo "<td>".$LANG["job"][35]."</td>";
 

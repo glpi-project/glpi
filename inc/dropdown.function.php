@@ -1293,6 +1293,11 @@ function dropdownMassiveAction($device_type,$deleted=0){
 			case USER_TYPE :
 				echo "<option value=\"add_group\">".$LANG["setup"][604]."</option>";
 				break;
+			case TRACKING_TYPE :
+				if (haveRight("comment_all_ticket","1")){
+					echo "<option value=\"add_followup\">".$LANG["job"][29]."</option>";
+				}
+				break;
 			default :
 				// Plugin Specific actions
 				if ($device_type>1000){

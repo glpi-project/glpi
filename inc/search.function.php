@@ -1192,8 +1192,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			echo displaySearchError($output_type);
 
 		}
+	} else {
+		echo $DB->error();
 	}
-	else echo $DB->error();
 	// Clean selection 
 	$_SESSION['glpimassiveactionselected']=array();
 }
