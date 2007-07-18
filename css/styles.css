@@ -109,6 +109,7 @@ hr{
 }
 
 
+
 /* Over link div */
 .over_link {
 	display: none;
@@ -210,6 +211,7 @@ input.submit:hover {
 /* ################--------------- Table  ---------------#################### */
 table {   
 	font-size: 11px;
+	margin: 0 auto;
 }
 
 th {  }
