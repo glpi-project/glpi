@@ -46,7 +46,7 @@ commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
 
 
 
-echo "<div align='center'>";
+
 echo "<table class='tab_cadre' >";
 echo "<tr><th align='center' colspan='3' >".$LANG["reports"][33]."</th></tr>";
 echo "</table><br>";
@@ -88,7 +88,7 @@ if (countElementsInTableForMyEntities("glpi_dropdown_netpoint")>0){
 	echo "</table>";
 	echo "</form>";
 }
-echo "</div>";
+
 
 
 
