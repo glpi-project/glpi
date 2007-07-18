@@ -109,7 +109,7 @@ class kbitem extends CommonDBTM {
 		}	
 
 		if($spotted) {
-			echo "<div align='center'>";
+			
 			echo "<div id='contenukb'>";
 			echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce_gzip.php\"></script>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">";
@@ -125,7 +125,7 @@ class kbitem extends CommonDBTM {
 		
 			echo "<fieldset>";
 			echo "<legend>".$LANG["knowbase"][13]."</legend>";
-			echo "<p style='text-align:center'>".$LANG["knowbase"][6];
+			echo "<p class='center'>".$LANG["knowbase"][6];
 			dropdownValue("glpi_dropdown_kbcategories","categoryID",$this->fields["categoryID"]);
 			echo "</fieldset>";
 		
@@ -169,7 +169,7 @@ class kbitem extends CommonDBTM {
 		
 				echo "</fieldset>";
 			}
-			echo "<p align='center'>";
+			echo "<p class='center'>";
 		
 			if (haveRight("faq","w")&&haveRight("knowbase","w")){
 				
@@ -188,7 +188,7 @@ class kbitem extends CommonDBTM {
 			echo "</p>";
 			echo "</form>";
 		
-			echo "</div></div>";
+			echo "</div>";
 			return true;
 		} else return false;
 	} 
