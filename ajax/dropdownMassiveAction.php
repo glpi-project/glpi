@@ -137,6 +137,11 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 
 		break;
+		case "affect_software_category":
+			dropdownValue("glpi_dropdown_software_category","software_category",0);
+		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		break;
+		
 		default :
 			// Plugin specific actions
 			if ($_POST["type"]>1000){

@@ -283,9 +283,13 @@ class Software extends CommonDBTM {
 				
 				echo "<td>" . $LANG["common"][36] . ":		</td><td>";
 				if (haveRight("software","w"))
+				{
 					dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
+					echo "&nbsp;<input type='submit' name='compute_software_category' value=\"" . $LANG["rulesengine"][38] . "\" class='submit'>";
+				}	
 				else
 					echo getDropdownName("glpi_dropdown_software_category",$this->fields["category"]);
+
 				echo "</td>";
 
 				echo "<tr class='tab_bg_1'><td>" . $LANG["software"][3] . ": 	</td><td>";
