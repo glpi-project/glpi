@@ -433,18 +433,18 @@ function showAddEvents($target,$order,$sort,$user="") {
 
 	// No Events in database
 	if ($number < 1) {
-		echo "<br><div align='center'>";
+		echo "<br>";
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th>".$LANG["central"][4]."</th></tr>";
 		echo "</table>";
-		echo "</div><br>";
+		echo "<br>";
 		return;
 	}
 
 	// Output events
 	$i = 0;
 
-	echo "<div align='center'><br><table  class='tab_cadrehov'>";
+	echo "<br><table  class='tab_cadrehov'>";
 	echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG["central"][2]." ".$CFG_GLPI["num_of_events"]." ".$LANG["central"][8]."</a></th></tr>";
 	echo "<tr>";
 
@@ -486,16 +486,16 @@ function showAddEvents($target,$order,$sort,$user="") {
 		$message = $DB->result($result, $i, "message");
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$logItemtype[$itemtype].":</td><td align='center'><strong>";
+		echo "<td>".$logItemtype[$itemtype].":</td><td class='center'>";
 
 		displayItemLogID($itemtype,$item);
-		echo "</strong></td><td><span style='font-size:9px;'>".convDateTime($date)."</span></td><td align='center'>".$logService[$service]."</td><td>$message</td>";
+		echo "</td><td  class='center'>".convDateTime($date)."</td><td class='center'>".$logService[$service]."</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
 	}
 
-	echo "</table></div><br>";
+	echo "</table><br>";
 }
 
 /**
@@ -598,9 +598,9 @@ function showEvents($target,$order,$sort,$start=0) {
 		$message = $DB->result($result, $i, "message");
 		
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td align='center'><strong>"; 
+		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td class='center'><strong>"; 
 		displayItemLogID($itemtype,$item);	
-		echo "</strong></td><td>".convDateTime($date)."</td><td align='center'>".$logService[$service]."</td><td align='center'>$level</td><td>$message</td>";
+		echo "</strong></td><td>".convDateTime($date)."</td><td class='center'>".$logService[$service]."</td><td class='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
