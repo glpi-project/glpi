@@ -1075,10 +1075,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 									||(!ereg("NOT",$link2[$j]) || $contains2[$j]=="NULL"))){
 
 							// General case
-							if (!strpos($data["META_$j"],"$$$$"))
+							if (!strpos($data["META_$j"],"$$$$")){
 								echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
 							// Case of GROUP_CONCAT item : split item and multilline display
-							else {
+							} else {
 								$split=explode("$$$$",$data["META_$j"]);
 								$count_display=0;
 								$out="";
@@ -1405,6 +1405,26 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	}
 
 	switch ($table.".".$field){
+		case "glpi_computers.name" :
+		case "glpi_printers.name" :
+		case "glpi_networking.name" :
+		case "glpi_phones.name" :
+		case "glpi_monitors.name" :
+		case "glpi_software.name" :
+		case "glpi_peripherals.name" :
+		case "glpi_cartridges_type.name" :
+		case "glpi_consumables_type.name" :
+		case "glpi_contacts.name" :
+		case "glpi_type_docs.name" :
+		case "glpi_links.name" :
+		case "glpi_docs.name" :
+		case "glpi_ocs_config.name" :
+		case "glpi_entities.name" :
+		case "glpi_mailgate.name" :
+			return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
+		break;
+
+
 		case "glpi_enterprises.name" :
 		case "glpi_enterprises_infocoms.name" :
 			if ($type==CONTACT_TYPE){
@@ -1502,7 +1522,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 
 			}
 			else {
-				return $table.$addtable.".".$field." AS ITEM_$num, ";
+				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
 			break;
 	}
@@ -1763,6 +1783,151 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 
 
 	switch ($field){
+		case "glpi_computers.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[COMPUTER_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_printers.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PRINTER_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_networking.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[NETWORKING_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_phones.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PHONE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_monitors.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[MONITOR_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_software.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_peripherals.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PERIPHERAL_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_cartridges_type.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[CARTRIDGE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_consumables_type.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[CONSUMABLE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_contacts.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[CONTACT_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_type_docs.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[TYPEDOC_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_links.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[LINK_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_docs.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[DOCUMENT_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_ocs_config.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[OCSNG_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_entities.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[ENTITY_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
+		case "glpi_mailgate.name" :
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[MAILGATE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= "</a>";
+			return $out;
+		break;
+
 		case "glpi_licenses.version" :
 		case "glpi_licenses.serial" :
 		case "glpi_networking_ports.ifaddr" :
@@ -1847,35 +2012,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_docs.comment" :
 		case "glpi_cartridges_type.comments" :
 			return nl2br($data["ITEM_$num"]);
-		break;
-
-		case "glpi_computers.name" :
-		case "glpi_printers.name" :
-		case "glpi_networking.name" :
-		case "glpi_phones.name" :
-		case "glpi_monitors.name" :
-		case "glpi_software.name" :
-		case "glpi_peripherals.name" :
-		case "glpi_cartridges_type.name" :
-		case "glpi_consumables_type.name" :
-		case "glpi_contacts.name" :
-		case "glpi_type_docs.name" :
-		case "glpi_links.name" :
-		case "glpi_docs.name" :
-		case "glpi_ocs_config.name" :
-		case "glpi_entities.name" :
-		case "glpi_mailgate.name" :
-			if (!empty($linkfield)&&$linkfield!="name"){
-				$out= $data["ITEM_$num"];
-			} else {
-				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
-					$out.= " (".$data["ID"].")";
-				}
-				$out.= "</a>";
-			}
-			return $out;
 		break;
 		case "glpi_profiles.name" :
 		if ($type==PROFILE_TYPE){
@@ -2180,7 +2316,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data['refID']."' title='".$LANG["reservation"][22]."'>". resume_text($data["ITEM_$num"])."</a>";
 			}
 			break;
-
 		default:
 			// Plugin case
 			if ($type>1000){
