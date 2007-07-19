@@ -451,7 +451,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 
 
 
-/* ################--------------- Tracking  ---------------#################### */
+/* ################--------------- Tracking  / Reminder ---------------#################### */
 .tracking {
 	width:100%;
 	height:100%;
@@ -473,7 +473,7 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 font-weight: bold;
 }
 
-.tracking_right{
+.tracking_right, .reminder_right{
  position:absolute; 
 right:0;
  margin-right:5px;
@@ -490,6 +490,8 @@ cursor:pointer;
 	font-size:10px;
 }
 
+.reminder_list{
+margin-left:8px;}
 
 /* ################--------------- Calendrier  ---------------#################### */
 

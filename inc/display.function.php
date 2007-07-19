@@ -1847,42 +1847,42 @@ function showCentralMyView(){
 
 		$showticket=haveRight("show_ticket","1");
 
-		echo "<div align='center'>";
+		
 		echo "<table class='tab_cadre_central' >";
-		echo "<tr><td valign='top'>";
+		echo "<tr><td class='top'>";
 		echo "<table border='0'>";
 	
 		if ($showticket){
-			echo "<tr><td align='center' valign='top'  width='450px'>";
+			echo "<tr><td class='top'  width='450px'><br>";
 			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start']);
 			echo "</td></tr>";
-			echo "<tr><td  align='center' valign='top' width='450px'>";
+			echo "<tr><td   class='top' width='450px'>";
 			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"waiting");
 			echo "</td></tr>";
 		}
 	
-		echo "</table></td><td valign='top'><table border='0'><tr>";
+		echo "</table></td><td class='top'><table border='0'><tr>";
 	
-		echo "<td align='center' valign='top'  width='450px'><br>";
+		echo "<td class='top'  width='450px'><br>";
 		ShowPlanningCentral($_SESSION["glpiID"]);
 		echo "</td></tr>";
 		echo "<tr>";
 	
 	
-		echo "<td  align='center' valign='top' width='450'>";
+		echo "<td  class='top' width='450'>";
 		showCentralReminder();
 		echo "</td>";
 		echo "</tr>";
 	
 		if (haveRight("reminder_public","r")){
-			echo "<tr><td align='center' valign='top'  width='450px'>";
+			echo "<tr><td class='top'  width='450px'>";
 			showCentralReminder("public");
 			echo "</td></tr>";
 		}
 	
 	
 		echo "</table></td></tr></table>";
-		echo "</div>";
+		
 
 
 }
