@@ -137,7 +137,7 @@ class Reminder extends CommonDBTM {
 			}
 
 			echo "<div align='center'><table class='tab_cadre' width='450'>";
-			echo "<tr><th><a href='".$CFG_GLPI['root_doc']."/front/reminder.php'>".$LANG["common"][53]."</a></th><th>";
+			echo "<tr><th></th><th>";
 			if (!$ID) {
 				echo $LANG["reminder"][6].":";
 			} else {
@@ -208,12 +208,12 @@ class Reminder extends CommonDBTM {
 			if(!$ID||$this->fields["rv"]==0){
 				if($remind_edit) { 
 					echo "<div id='plan'  onClick='showPlan()'>\n";
-					echo "<span style='font-weight: bold;text-decoration: none; color : #659900; cursor:pointer;'>".$LANG["reminder"][12]."</span>";
+					echo "<span class='showplan'>".$LANG["reminder"][12]."</span>";
 				}
 			}else{
 				if($remind_edit) {
 					echo "<div id='plan'  onClick='showPlan()'>\n";
-					echo "<span style='font-weight: bold;text-decoration: none; color : #659900;cursor:pointer;'>";
+					echo "<span class='showplan'>";
 				}
 				echo getPlanningState($this->fields["state"]).": ".convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"]);
 				if($remind_edit){
