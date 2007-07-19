@@ -605,7 +605,7 @@ function showJobVeryShort($ID) {
 		
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["ID"]."</td>";
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 
 		if ($viewusers){
 				$userdata=getUserName($job->fields['author'],2);
@@ -708,7 +708,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	
 	if ($device_type==0&&$_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align='center'>".$LANG["help"][24].": </td>";
+		echo "<td class='center'>".$LANG["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
 		dropdownMyDevices($_SESSION["glpiID"]);
 		dropdownTrackingAllDevices("device_type",$device_type,0,$_SESSION["glpiactive_entity"]);
@@ -717,13 +717,13 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 
 
 	if (haveRight("update_ticket","1")){
-		echo "<tr class='tab_bg_2'><td align='center'>".$LANG["common"][27].":</td>";
+		echo "<tr class='tab_bg_2'><td class='center'>".$LANG["common"][27].":</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		showCalendarForm("form_ticket","date",date("Y-m-d H:i"),0,1);	
 		echo "</td>";
 
-		echo "<td align='center'>".$LANG["job"][44].":</td>";
-		echo "<td align='center'>";
+		echo "<td class='center'>".$LANG["job"][44].":</td>";
+		echo "<td class='center'>";
 		$request_type=1;
 		if (isset($_POST["request_type"])) $request_type=$_POST["request_type"];
 		dropdownRequestType("request_type",$request_type);
@@ -734,7 +734,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	// Need comment right to add a followup with the realtime
 	if (haveRight("comment_all_ticket","1")){
 		echo "<tr  class='tab_bg_2'>";
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		echo $LANG["job"][20].":</td>";
 		echo "<td align='center' colspan='3'>";
 		$hour=0;
@@ -761,7 +761,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	echo "</td>";
 
 	echo "<td>".$LANG["common"][36].":</td>";
-	echo "<td align='center'>";
+	echo "<td class='center'>";
 	$category=0;
 	if (isset($_POST["category"])) $category=$_POST["category"];
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
@@ -793,11 +793,11 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 			$email=$DB->result($result,0,"email");
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'>".$LANG["help"][8].":</td>";
-		echo "<td align='center'>";
+		echo "<td class='center'>".$LANG["help"][8].":</td>";
+		echo "<td class='center'>";
 		dropdownYesNo('emailupdates',1);
 		echo "</td>";
-		echo "<td align='center'>".$LANG["help"][11].":</td>";
+		echo "<td class='center'>".$LANG["help"][11].":</td>";
 		echo "<td><span id='uemail_result'>";
 		echo "<input type='text' size='30' name='uemail' value='$email'>";
 		echo "</span>";
@@ -878,7 +878,7 @@ global $CFG_GLPI,  $LANG;
 	echo "</select></td>";
 
 	if (haveRight("show_group_ticket",1)){
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		echo "<select name='group'>";
 		echo "<option value='-1' ".($group==-1?" selected ":"").">".$LANG["search"][7]."</option>";
 		echo "<option value='0' ".($group==0?" selected ":"").">".$LANG["joblist"][1]."</option>";
@@ -1421,9 +1421,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
 				echo "<div align='center'>";
 				echo "<table width='80%'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td align='center'><a onclick=\"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
+				echo "<td>/</td><td class='center'><a onclick=\"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td width='80%'>";
 				dropdownMassiveAction(TRACKING_TYPE);
 				echo "</td></table></div>";
@@ -1463,8 +1463,8 @@ function showFollowupsShort($ID) {
 		while ($data=$DB->fetch_array($result)) {
 
 			$out.="<tr class='tab_bg_3'>";
-			$out.="<td align='center'>".convDateTime($data["date"])."</td>";
-			$out.="<td align='center'>".getUserName($data["author"],1)."</td>";
+			$out.="<td class='center'>".convDateTime($data["date"])."</td>";
+			$out.="<td class='center'>".getUserName($data["author"],1)."</td>";
 			$out.="<td width='70%'><strong>".resume_text($data["contents"],$CFG_GLPI["cut"])."</strong></td>";
 			$out.="</tr>";
 		}		
@@ -2087,11 +2087,11 @@ function showAddFollowupForm($tID){
 		}
 	}
 	echo "<tr class='tab_bg_2'>";
-	echo "<td align='center'>";
+	echo "<td class='center'>";
 	echo "<input type='submit' name='add' value='".$LANG["buttons"][8]."' class='submit'>";
 	echo "</td>";
 	if ($commentall){
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
 		echo "</td>";
 	}
@@ -2222,9 +2222,9 @@ function showUpdateFollowupForm($ID){
 		if ($commentall){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td align='center' colspan='2'>";
-			echo "<table width='100%'><tr><td align='center'>";
+			echo "<table width='100%'><tr><td class='center'>";
 			echo "<input type='submit' name='update_followup' value='".$LANG["buttons"][14]."' class='submit'>";
-			echo "</td><td align='center'>";
+			echo "</td><td class='center'>";
 			echo "<input type='submit' name='delete_followup' value='".$LANG["buttons"][6]."' class='submit'>";
 			echo "</td></tr></table>";
 			echo "</td>";

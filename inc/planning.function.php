@@ -575,7 +575,7 @@ function ShowPlanningCentral($who){
 
 	ksort($interv);
 
-	echo "<table class='tab_cadre' width='80%'><tr><th colspan='3'><a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG["planning"][15]."</a></th></tr><tr><th>".$LANG["buttons"][33]."</th><th>".$LANG["buttons"][32]."</th><th>".$LANG["joblist"][6]."</th></tr>";
+	echo "<table class='tab_cadrehov'><tr><th colspan='3'><a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG["planning"][15]."</a></th></tr><tr><th>".$LANG["buttons"][33]."</th><th>".$LANG["buttons"][32]."</th><th>".$LANG["joblist"][6]."</th></tr>";
 	if (count($interv)>0){
 		foreach ($interv as $key => $val){
 

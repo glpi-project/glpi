@@ -1444,7 +1444,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][24].": </td>";
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		dropdownMyDevices($_SESSION["glpiID"]);
 		
 		dropdownTrackingAllDevices("device_type",$device_type,0,$_SESSION["glpiactive_entity"]);
@@ -1462,8 +1462,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<td colspan='2' align='center'>".$LANG["help"][13].":</td>";
 	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td align='center'>".$LANG["common"][57].":</td>";
-	echo "<td align='center'><input type='text' maxlength='250' size='80' name='name' value=\"$title\"></td>";
+	echo "<td class='center'>".$LANG["common"][57].":</td>";
+	echo "<td class='center'><input type='text' maxlength='250' size='80' name='name' value=\"$title\"></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
@@ -1481,7 +1481,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' align='center'> <input type='submit' value=\"".$LANG["help"][14]."\" class='submit'>";
+	echo "<td colspan='2' class='center'> <input type='submit' value=\"".$LANG["help"][14]."\" class='submit'>";
 	echo "</td></tr>";
 
 	echo "</table>";
@@ -1539,13 +1539,13 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 
 	// Back and fast backward button
 	if (!$start==0) {
-		echo "<th align='left'>";
+		echo "<th class='left'>";
 		echo "<a href=\"$target?$parameters&amp;start=0\">";
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG["buttons"][33]."' title='".$LANG["buttons"][33]."'>";
 
 
 		echo "</a></th>\n";
-		echo "<th align='left'>";
+		echo "<th class='left'>";
 		echo "<a href=\"$target?$parameters&amp;start=$back\">";
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'>";
 		echo "</a></th>\n";
@@ -1789,19 +1789,19 @@ function showCentralGlobalView(){
 
 	$showticket=haveRight("show_ticket","1");
 
-	echo "<div align='center'>";
+	
 	echo "<table  class='tab_cadre_central' ><tr>";
 
-	echo "<td valign='top'>";
-	echo "<table border='0'>";
+	echo "<td class='top'>";
+	echo "<table >";
 	if ($showticket){
-		echo "<tr><td align='center' valign='top'  width='450px'>";
+		echo "<tr><td class='top'  width='450px'>";
 		showCentralJobCount();
 		echo "</td></tr>";
 	}
 	if (haveRight("contract_infocom","r")){
 		echo "<tr>";
-		echo "<td align='center' valign='top'  width='450px'>";
+		echo "<td class='top'  width='450px'>";
 		showCentralContract();
 		echo "</td>";	
 		echo "</tr>";
@@ -1810,9 +1810,9 @@ function showCentralGlobalView(){
 	echo "</td>";
 
 	if (haveRight("logs","r")){
-		echo "<td align='left' valign='top'>";
-		echo "<table border='0' width='450px'><tr>";
-		echo "<td align='center'>";
+		echo "<td class='top'>";
+		echo "<table><tr>";
+		echo "<td aclass='center'>";
 		if ($CFG_GLPI["num_of_events"]>0){
 
 			//Show last add events
@@ -1850,7 +1850,7 @@ function showCentralMyView(){
 		
 		echo "<table class='tab_cadre_central' >";
 		echo "<tr><td class='top'>";
-		echo "<table border='0'>";
+		echo "<table>";
 	
 		if ($showticket){
 			echo "<tr><td class='top'  width='450px'><br>";
@@ -1861,7 +1861,7 @@ function showCentralMyView(){
 			echo "</td></tr>";
 		}
 	
-		echo "</table></td><td class='top'><table border='0'><tr>";
+		echo "</table></td><td class='top'><table><tr>";
 	
 		echo "<td class='top'  width='450px'><br>";
 		ShowPlanningCentral($_SESSION["glpiID"]);
@@ -1869,7 +1869,7 @@ function showCentralMyView(){
 		echo "<tr>";
 	
 	
-		echo "<td  class='top' width='450'>";
+		echo "<td  class='top' width='450px'>";
 		showCentralReminder();
 		echo "</td>";
 		echo "</tr>";

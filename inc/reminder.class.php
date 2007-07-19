@@ -187,7 +187,7 @@ class Reminder extends CommonDBTM {
 
 
 
-			echo "<td align='center'>";
+			echo "<td class='center'>";
 
 			if($remind_edit) { 
 				echo "<script type='text/javascript' >\n";
