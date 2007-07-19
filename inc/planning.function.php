@@ -588,10 +588,10 @@ function ShowPlanningCentral($who){
 			echo "</td>";
 			if(isset($val["id_tracking"])){
 				echo "<td>".$val["device"]."<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
-				echo ": ".resume_text($val["content"],125)."</a>";
+				echo " ".resume_text($val["content"],65)."</a>";
 			}else{
 				echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
-				echo "</a>: ".resume_text($val["text"],125);
+				echo "</a>: ".resume_text($val["text"],65);
 			}
 
 			echo "</td></tr>";
