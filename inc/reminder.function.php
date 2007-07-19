@@ -56,25 +56,25 @@ function showCentralReminder($type="private"){
 
 
 
-	echo "<div align='center'><br><table class='tab_cadrehov'>";
+	echo "<br><table class='tab_cadrehov'>";
 
-	echo "<tr><th><div style='position: relative'><span>"."$titre"."</span>";
+	echo "<tr><th><div class='relative'><span>"."$titre"."</span>";
 	if ($type!="public"||haveRight("reminder_public","w")){
-		echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+		echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 	}
 	echo "</div>";
 	echo "</th></tr>";
 	if($DB->numrows($result)>0){
 		while ($data =$DB->fetch_array($result)){ 
 
-			echo "<tr class='tab_bg_2'><td><div style='position: relative'><span><a style='margin-left:8px' href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a></span>";
+			echo "<tr class='tab_bg_2'><td><div class='relative'><span class='reminder_list'><a  href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a></span>";
 
 			if($data["rv"]=="1"){
 
 				$tab=split(" ",$data["begin"]);
 				$date_url=$tab[0];
 
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
+				echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
 
 
 
@@ -87,7 +87,7 @@ function showCentralReminder($type="private"){
 	}
 
 
-	echo "</table></div>";
+	echo "</table>";
 }
 
 
@@ -147,7 +147,7 @@ function showListReminder($type="private"){
 		foreach ($tabremind as $key => $val){
 
 			echo "<tr class='tab_bg_2'><td width='70%'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a><div class='kb_resume'>".resume_text($val["text"],125)."</div>";
 			echo "</td>";
 
 			if($val["end"]!=""){	
