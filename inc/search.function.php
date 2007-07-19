@@ -1580,7 +1580,12 @@ function addDefaultWhere ($type){
 	switch ($type){
 		// No link
 		case USER_TYPE:
-			return getEntitiesRestrictRequest("","glpi_users_profiles");
+			// View all entities
+			if ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"])){
+				return "";
+			} else {
+				return getEntitiesRestrictRequest("","glpi_users_profiles");
+			}
 		break;
 		default :
 			return "";

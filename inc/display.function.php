@@ -1912,8 +1912,10 @@ function showProfileSelecter($target){
 
 	if (isMultiEntitiesMode()){
 		echo "<li>";
-		echo "<a href='#' onClick=\"completecleandisplay('show_entities');\">".$_SESSION["glpiactive_entity_name"]."</a>";
-	
+		echo "<a href='#' onClick=\"completecleandisplay('show_entities');\">";
+		echo $_SESSION["glpiactive_entity_name"];
+		echo "</a>";
+		
 		echo "<div id='show_entities' onMouseOver=\"completecleandisplay('show_entities');\" onMouseOut=\"completecleanhide('show_entities');\">";
 		displayActiveEntities($target,$_SESSION['glpi_entities_tree'],"activeentity");
 		

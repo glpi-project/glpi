@@ -1493,15 +1493,14 @@ function dropdownLanguages($myname,$value){
 
 function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
-	if (is_array($_SESSION['glpi_entities_tree'])&&count($_SESSION['glpi_entities_tree'])){
-		echo "<table>";
-		echo "<tr><td style='text-align:center;'><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></td></tr>";
+	
+	echo "<table>";
+	echo "<tr><td style='text-align:center;'><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></td></tr>";
 
-		foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
-			displayEntityTree($target,$myname,$tree);
-		}
-		echo "</table>";
-	} 
+	foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
+		displayEntityTree($target,$myname,$tree);
+	}
+	echo "</table>";
 }
 
 function displayEntityTree($target,$myname,$tree,$level=0){
