@@ -156,12 +156,12 @@ class User extends CommonDBTM {
 		$this->applyRightRules($input);
 
 		// Add default profile
-		if ($input['auth_method']==AUTH_DB_GLPI){
+		if ($input['auth_method']==AUTH_DB_GLPI||$input['auth_method']==AUTH_CAS){
 			$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){
 				$right=$DB->result($result,0,0);
-				$affectation["FK_entities"] = $_SESSION["glpiactive_entity"];
+				$affectation["FK_entities"] = 0;
 				$affectation["FK_profiles"] = $DB->result($result,0,0);
 				$affectation["FK_users"] = $input["ID"];
 				$affectation["recursive"] = 0;
@@ -265,6 +265,7 @@ class User extends CommonDBTM {
 	// SPECIFIC FUNCTIONS
 	function applyRightRules($input){
 		global $DB;
+		print_r($input);
 		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL))
 		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 

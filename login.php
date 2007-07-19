@@ -57,8 +57,10 @@ $_POST = array_map('stripslashes', $_POST);
 
 //Do login and checks
 //$user_present = 1;
-if (!isset ($_POST['login_name']))
+if (!isset ($_POST['login_name'])){
 	$_POST['login_name'] = "";
+}
+
 $identificat = new Identification();
 $identificat->getAuthMethods();
 $identificat->user_present=1;
@@ -70,18 +72,20 @@ if (isset ($_POST['login_password'])) {
 
 if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-	phpCAS :: client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]), $CFG_GLPI["cas_uri"]);
+	$cas = new phpCas();
+	$cas->client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]), $CFG_GLPI["cas_uri"]);
 
 	// force CAS authentication
-	phpCAS :: forceAuthentication();
-	$user = phpCAS :: getUser();
+	$cas->forceAuthentication();
+	$user = $cas->getUser();
 	$identificat->auth_succeded = true;
 	$identificat->extauth = 1;
 	$identificat->user_present = $identificat->user->getFromDBbyName($user);
+	$identificat->user->fields['auth_method'] = AUTH_CAS;
 
 	// if LDAP enabled too, get user's infos from LDAP
 	//If the user is already in database, let's check if he there's a dictory reported in id_auth, to get his personal informations  
-	if ($user_present && !empty($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
+/*	if ($user_present && !empty($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
 		$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
 		$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
 		if ($ds) {
@@ -91,12 +95,14 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 			}
 		}
 	}
+*/
 	$identificat->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 	$identificat->user->fields["name"] = $user;
 
 }
-if (isset ($_POST["noCAS"]))
+if (isset ($_POST["noCAS"])){
 	$_SESSION["noCAS"] = 1;
+}
 
 	if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 	if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
@@ -162,8 +168,6 @@ if (isset ($_POST["noCAS"]))
 	// if not, we update it.
 
 	if ($identificat->auth_succeded) {
-		//Purge all dynamic profiles
-		$identificat->user->purgeDynamicProfiles();
 		
 		// Prepare data
 		$identificat->user->fields["last_login"]=$_SESSION["glpi_currenttime"];

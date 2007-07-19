@@ -41,8 +41,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (!isset($_SESSION["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-	phpCAS::client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),$CFG_GLPI["cas_uri"]);
-	phpCAS::logout($CFG_GLPI["cas_logout"]);
+	$cas=new phpCAS();
+	$cas->client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),$CFG_GLPI["cas_uri"]);
+	$cas->logout($CFG_GLPI["cas_logout"]);
 }
 
 $noCAS="";

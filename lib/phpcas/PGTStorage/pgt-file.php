@@ -170,8 +170,9 @@ class PGTStorageFile extends PGTStorage
   function getPGTIouFilename($pgt_iou)
     {
       phpCAS::traceBegin();
-      return $this->getPath().$pgt_iou.'.'.$this->getFormat();
-      phpCAS::traceEnd();      
+      $filename = $this->getPath().$pgt_iou.'.'.$this->getFormat();
+      phpCAS::traceEnd($filename);
+      return $filename;
     }
   
   /**

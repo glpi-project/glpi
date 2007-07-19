@@ -151,7 +151,7 @@ class PGTStorageDB extends PGTStorage
       if ( empty($table) ) $table = CAS_PGT_STORAGE_DB_DEFAULT_TABLE;
 
       // build and store the PEAR DB URL
-      $this->_url = $database_type.':'.'//'.$user.':'.$password.'@'.$server.':'.$port.'/'.$database;
+      $this->_url = $database_type.':'.'//'.$user.':'.$password.'@'.$hostname.':'.$port.'/'.$database;
 
       // XXX should use setURL and setTable
       phpCAS::traceEnd();
