@@ -496,21 +496,22 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 3 - WHERE
 
 	// default string
-	$WHERE = addDefaultWhere($type);
-	$first=empty($WHERE);
+	$WHERE="";
+	$COMMONWHERE = addDefaultWhere($type);
+	$first=empty($COMMONWHERE);
 	
 
 	// Add deleted if item have it
 	if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
-		$WHERE.= $LINK.$itemtable.".deleted='$deleted' ";
+		$COMMONWHERE.= $LINK.$itemtable.".deleted='$deleted' ";
 	}
 	// Remove template items
 	if (in_array($itemtable,$CFG_GLPI["template_tables"])){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
-		$WHERE.= $LINK.$itemtable.".is_template='0' ";
+		$COMMONWHERE.= $LINK.$itemtable.".is_template='0' ";
 	}
 
 	// Add Restrict to current entities
@@ -518,9 +519,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 
-		$WHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
+		$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
 	}
-
+	$first=true;
 	// Add search conditions
 	// If there is search items
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
@@ -660,8 +661,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 	}
 
-	if (!empty($WHERE)){
-		$WHERE=' WHERE  '.$WHERE.' ';
+	if (!empty($WHERE)||!empty($COMMONWHERE)){
+		if (!empty($COMMONWHERE)){
+			$WHERE=' WHERE '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
+		} else {
+			$WHERE=' WHERE  '.$WHERE.' ';
+		}
 		$first=false;
 	} else {
 		$WHERE=" WHERE ";
@@ -752,8 +757,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					foreach ($toview as $key2 => $val2){
 
 						if (($val2==$field[$key])&&in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
-							if (!isset($link[$key])) $link[$key]="AND";
-
+							if (!isset($link[$key])) {
+								$link[$key]="AND";
+							}
+							
 							$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],strtolower($contains[$key]),$key2,0,$link[$key]);
 						}
 					}
@@ -762,13 +769,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	} 
 
 	// Specific search for others item linked  (META search)
-	if (is_array($type2))
-		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++)
+	if (is_array($type2)){
+		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++){
 			if (isset($type2[$key])&&$type2[$key]>0&&isset($contains2[$key])&&strlen($contains2[$key]))
 			{
 				$LINK="";
 				if (isset($link2[$key])) $LINK=$link2[$key];
-
 				if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1){		
 					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
 				} else { // Meta Where Search
@@ -788,6 +794,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					$WHERE.= addWhere($LINK,$NOT,$type2[$key],$field2[$key],$contains2[$key],1);
 				}
 			}
+		}
+	}
 
 	// If no research limit research to display item and compute number of item using simple request
 	$nosearch=true;
