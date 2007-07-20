@@ -134,7 +134,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				echo "<table class='tab_cadre'>";
 				echo "<tr><th>" . $LANG["ocsng"][41] . "</th></tr>";
 				echo "<tr class='tab_bg_1'>";
-				echo "<td align='center'>";
+				echo "<td class='center'>";
 
 				if ($advanced)
 					$status = "false";
@@ -182,10 +182,10 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 				if ($advanced && !$tolinked) {
 					if (!isset ($data['FK_entities'])) {
-						echo "<td align='center'><img src=\"" . GLPI_ROOT . "/pics/redbutton.png\"></td>";
+						echo "<td class='center'><img src=\"" . GLPI_ROOT . "/pics/redbutton.png\"></td>";
 						$data['FK_entities'] = -1;
 					} else
-						echo "<td align='center'><img src=\"" . GLPI_ROOT . "/pics/export.png\"></td>";
+						echo "<td class='center'><img src=\"" . GLPI_ROOT . "/pics/export.png\"></td>";
 
 					echo "<td>";
 					dropdownValue("glpi_entities", "toimport_entities[" . $tab["ID"] . "]=" . $data['FK_entities'], $data['FK_entities'], 0);
@@ -3164,7 +3164,7 @@ function ocsChooseServer($target) {
 		echo "<div align='center'>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>";
 		echo "<select name='ocs_server_id'>";
 		while ($ocs = $DB->fetch_array($result))
 			echo "<option value=" . $ocs["ID"] . ">" . $ocs["name"] . "</option>";

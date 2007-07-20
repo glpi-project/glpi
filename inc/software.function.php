@@ -159,9 +159,9 @@ function showLicenses ($sID,$show_computers=0) {
 			$num_inst=$DB->numrows($result_inst);
 
 			echo "<tr class='tab_bg_1' valign='top'>";
-			echo "<td align='center'><strong>".$version."</strong></td>";
-			echo "<td align='center'><strong>".$serial."</strong></td>";
-			echo "<td align='center'><strong>";
+			echo "<td class='center'><strong>".$version."</strong></td>";
+			echo "<td class='center'><strong>".$serial."</strong></td>";
+			echo "<td class='center'><strong>";
 			echo $num_tot;
 			echo "</strong></td>";
 
@@ -191,12 +191,12 @@ function showLicenses ($sID,$show_computers=0) {
 
 			if ($serial!="free"){
 				// BUY
-				echo "<td align='center'>".($data["BUY"]?$LANG["choice"][1]:$LANG["choice"][0]);
+				echo "<td class='center'>".($data["BUY"]?$LANG["choice"][1]:$LANG["choice"][0]);
 				echo "</td>";
 			} else 
 				echo "<td>&nbsp;</td>";
 
-			echo "<td align='center'>";
+			echo "<td class='center'>";
 
 
 			// Logiciels install� :
@@ -204,7 +204,7 @@ function showLicenses ($sID,$show_computers=0) {
 
 			// Restant	
 
-			echo "<tr><td align='center'>";
+			echo "<tr><td class='center'>";
 
 			if (!$show_computers){
 				echo $LANG["software"][19].": $num_inst&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -251,7 +251,7 @@ function showLicenses ($sID,$show_computers=0) {
 							}
 					}
 					if (!empty($ID)){
-						echo "</td><td align='center'>";
+						echo "</td><td class='center'>";
 						if ($canedit){
 							if (($serial=="free"||$serial=="global")){
 								echo "<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?delete=delete&amp;ID=$ID\">";
@@ -298,7 +298,7 @@ function showLicenses ($sID,$show_computers=0) {
 			// Logiciels install�
 			if ($show_computers)
 				while ($data_inst=$DB->fetch_array($result_inst)){
-					echo "<tr class='tab_bg_1".(($data["OEM"]&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]?"_2":"")."'><td align='center'>";
+					echo "<tr class='tab_bg_1".(($data["OEM"]&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]?"_2":"")."'><td class='center'>";
 
 					if ($serial!="free"&&$serial!="global"&&$canedit) 
 						echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
@@ -306,7 +306,7 @@ function showLicenses ($sID,$show_computers=0) {
 					
 					echo "&nbsp;<strong>";
 					echo $ci->getLink($canshowcomputer);
-					echo "</strong></td><td align='center'>";
+					echo "</strong></td><td class='center'>";
 
 					// Comment
 					if (!empty($data_inst["COMMENT"])) {
@@ -755,11 +755,11 @@ function displaySoftsByCategory($data,$instID,$withtemplate)
 	if ($data['deleted']) {$expirer=1; $expirecss="_2";}
 
 	echo "<tr class='tab_bg_1$expirecss'>";
-	echo "<td align='center'><strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
+	echo "<td class='center'><strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
 	echo $data["softname"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data['ID'].")":"")."</a>";
 	echo "</strong>";
 	echo " - ".$data['serial']."</td>";
-	echo "<td align='center'><strong>";
+	echo "<td class='center'><strong>";
 	if ($data['expire']==NULL)
 		echo $LANG["software"][26];
 	else {
@@ -785,7 +785,7 @@ function displaySoftsByCategory($data,$instID,$withtemplate)
 		echo "</td>";
 	
 		// BUY
-		echo "<td align='center'>".($data["buy"]?$LANG["choice"][1]:$LANG["choice"][0]);
+		echo "<td class='center'>".($data["buy"]?$LANG["choice"][1]:$LANG["choice"][0]);
 		echo "</td>";								
 	}
 	else echo "<td>&nbsp;</td><td>&nbsp;</td>";

@@ -54,7 +54,7 @@ function testMail(){
 	function showFormMailingType($type, $profiles) {
 		global $LANG, $DB;
 	
-		echo "<td align='right'>";
+		echo "<td class='right'>";
 	
 		echo "<select name='mailing_to_add_" . $type . "[]' multiple size='5'>";
 	
@@ -64,7 +64,7 @@ function testMail(){
 		}
 		echo "</select>";
 		echo "</td>";
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		echo "<input type='submit'  class=\"submit\" name='mailing_add_$type' value='" . $LANG["buttons"][8] . " >>'><br><br>";
 		echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< " . $LANG["buttons"][6] . "'>";
 		echo "</td>";

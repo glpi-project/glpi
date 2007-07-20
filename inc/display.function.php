@@ -1239,7 +1239,7 @@ function commonFooter() {
 	echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 	
 	echo "<div id='footer' >";
-	echo "<table width='100%'><tr><td align='left'><span class='copyright'>";
+	echo "<table width='100%'><tr><td class='left'><span class='copyright'>";
 	echo $TIMER_DEBUG->Get_Time()."s - ";
 	if (function_exists("memory_get_usage")){
 		echo memory_get_usage();
@@ -1249,7 +1249,7 @@ function commonFooter() {
 	if (!empty($CFG_GLPI["founded_new_version"]))
 		echo "<td align='center' class='copyright'>".$LANG["setup"][301]." ".$CFG_GLPI["founded_new_version"]."<br>".$LANG["setup"][302]."</td>";
 
-	echo "<td align='right'>";
+	echo "<td class='right'>";
 	echo "<a href=\"http://glpi-project.org/\">";
 	echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a>";
@@ -1338,7 +1338,7 @@ function helpFooter() {
 
 	echo "<div id='footer'>";
 	echo "<table width='100%'><tr>";
-	echo "<td align='right'>";
+	echo "<td class='right'>";
 	echo "<a href=\"http://glpi-project.org/\">";
 	echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a></tr></table>";

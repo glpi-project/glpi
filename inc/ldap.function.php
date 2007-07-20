@@ -128,7 +128,7 @@ function ldapChooseDirectory($target) {
 	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
 	//If more than one ldap server
 	if ($DB->numrows($result) > 1) {
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>";
 		echo "<select name='ldap_server'>";
 		while ($ldap = $DB->fetch_array($result))
 			echo "<option value=" . $ldap["ID"] . ">" . $ldap["name"] . "</option>";

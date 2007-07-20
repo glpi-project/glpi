@@ -72,12 +72,12 @@ function showLinkDevice($instID) {
 		$ID=$DB->result($result, $i, "ID");
 		$device_type=$DB->result($result, $i, "device_type");
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'>".getDeviceTypeName($device_type)."</td>";
+		echo "<td class='center'>".getDeviceTypeName($device_type)."</td>";
 		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
 		$i++;
 	}
 	if ($canedit){
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='lID' value='$instID'>";
 		dropdownDeviceType("device_type",0);
 	

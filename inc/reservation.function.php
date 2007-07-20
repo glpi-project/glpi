@@ -230,7 +230,7 @@ function printCalendrier($target,$ID=""){
 		echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
 
 		if (!empty($ID)){
-			echo "<tr><td align='center'><a href=\"".$target."?show=resa&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
+			echo "<tr><td class='center'><a href=\"".$target."?show=resa&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
 		}
 		//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 		echo "<tr><td>";
@@ -598,11 +598,11 @@ function showDeviceReservations($target,$type,$ID){
 			echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
-				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
-				echo "<td align='center'>".convDateTime($data["end"])."</td>";
-				echo "<td align='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
-				echo "<td align='center'>".nl2br($data["comment"])."</td>";
-				echo "<td align='center'>";
+				echo "<td class='center'>".convDateTime($data["begin"])."</td>";
+				echo "<td class='center'>".convDateTime($data["end"])."</td>";
+				echo "<td class='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
+				echo "<td class='center'>".nl2br($data["comment"])."</td>";
+				echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=split("-",$data["begin"]);
 				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
@@ -634,11 +634,11 @@ function showDeviceReservations($target,$type,$ID){
 			echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
-				echo "<td align='center'>".convDateTime($data["begin"])."</td>";
-				echo "<td align='center'>".convDateTime($data["end"])."</td>";
-				echo "<td align='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
-				echo "<td align='center'>".nl2br($data["comment"])."</td>";
-				echo "<td align='center'>";
+				echo "<td class='center'>".convDateTime($data["begin"])."</td>";
+				echo "<td class='center'>".convDateTime($data["end"])."</td>";
+				echo "<td class='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
+				echo "<td class='center'>".nl2br($data["comment"])."</td>";
+				echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=split("-",$data["begin"]);
 				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
@@ -678,14 +678,14 @@ function showUserReservations($target,$ID){
 
 		while ($data=$DB->fetch_assoc($result)){
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center'>".convDateTime($data["begin"])."</td>";
-			echo "<td align='center'>".convDateTime($data["end"])."</td>";
+			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
+			echo "<td class='center'>".convDateTime($data["end"])."</td>";
 			if ($ri->getFromDB($data["id_item"]))
-				echo "<td align='center'>".$ri->getLink()."</td>";
-			else echo "<td align='center'>&nbsp;</td>";
-			echo "<td align='center'>".getUserName($data["id_user"])."</td>";
-			echo "<td align='center'>".nl2br($data["comment"])."</td>";
-			echo "<td align='center'>";
+				echo "<td class='center'>".$ri->getLink()."</td>";
+			else echo "<td class='center'>&nbsp;</td>";
+			echo "<td class='center'>".getUserName($data["id_user"])."</td>";
+			echo "<td class='center'>".nl2br($data["comment"])."</td>";
+			echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=split("-",$data["begin"]);
 				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
@@ -708,14 +708,14 @@ function showUserReservations($target,$ID){
 		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
 		while ($data=$DB->fetch_assoc($result)){
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center'>".convDateTime($data["begin"])."</td>";
-			echo "<td align='center'>".convDateTime($data["end"])."</td>";
+			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
+			echo "<td class='center'>".convDateTime($data["end"])."</td>";
 			if ($ri->getFromDB($data["id_item"]))
-				echo "<td align='center'>".$ri->getLink()."</td>";
-			else echo "<td align='center'>&nbsp;</td>";
-			echo "<td align='center'>".getUserName($data["id_user"])."</td>";
-			echo "<td align='center'>".nl2br($data["comment"])."</td>";
-			echo "<td align='center'>";
+				echo "<td class='center'>".$ri->getLink()."</td>";
+			else echo "<td class='center'>&nbsp;</td>";
+			echo "<td class='center'>".getUserName($data["id_user"])."</td>";
+			echo "<td class='center'>".nl2br($data["comment"])."</td>";
+			echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=split("-",$data["begin"]);
 				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";

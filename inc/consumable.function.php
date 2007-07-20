@@ -164,18 +164,18 @@ function showConsumables ($tID,$show_old=0) {
 				$date_in=convDate($data["date_in"]);
 				$date_out=convDate($data["date_out"]);
 	
-				echo "<tr  class='tab_bg_1'><td align='center'>";
+				echo "<tr  class='tab_bg_1'><td class='center'>";
 				echo $data["ID"]; 
-				echo "</td><td align='center'>";
+				echo "</td><td class='center'>";
 				echo getConsumableStatus($data["ID"]);
-				echo "</td><td align='center'>";
+				echo "</td><td class='center'>";
 				echo $date_in;
-				echo "</td><td align='center'>";
+				echo "</td><td class='center'>";
 				echo $date_out;		
 				echo "</td>";
 	
 				if ($show_old){
-					echo "<td align='center'>";
+					echo "<td class='center'>";
 					if (!empty($data["REALNAME"])) {
 						echo $data["REALNAME"];
 						if (!empty($data["FIRSTNAME"]))
@@ -185,24 +185,24 @@ function showConsumables ($tID,$show_old=0) {
 					echo "</td>";
 				}
 	
-				echo "<td align='center'>";
+				echo "<td class='center'>";
 				showDisplayInfocomLink(CONSUMABLE_ITEM_TYPE,$data["ID"],1);
 				echo "</td>";
 	
 	
 				if ($show_old==0&&$canedit){
-					echo "<td align='center'>";
+					echo "<td class='center'>";
 					echo "<input type='checkbox' name='out[".$data["ID"]."]'>";
 					echo "</td>";
 				}
 	
 				if ($show_old!=0&&$canedit){
-					echo "<td align='center'>";
+					echo "<td class='center'>";
 					echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";
 					echo "</td>";
 				}						
 	
-				echo "<td align='center'>";
+				echo "<td class='center'>";
 	
 				echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["buttons"][6]."</a>";
 				echo "</td></tr>";
@@ -415,11 +415,11 @@ function showConsumableSummary($target){
 		$tot=0;
 		foreach ($types as $id_type => $type){
 			if (!isset($new[$id_type])) $new[$id_type]=0;
-			echo "<td align='center'>".$new[$id_type]."</td>";
+			echo "<td class='center'>".$new[$id_type]."</td>";
 			$total[$id_type]+=$new[$id_type];
 			$tot+=$new[$id_type];
 		}
-		echo "<td align='center'>".$tot."</td>";
+		echo "<td class='center'>".$tot."</td>";
 		echo "</tr>";
 
 		foreach ($used as $id_user => $val){
@@ -427,20 +427,20 @@ function showConsumableSummary($target){
 			$tot=0;
 			foreach ($types as $id_type => $type){
 				if (!isset($val[$id_type])) $val[$id_type]=0;
-				echo "<td align='center'>".$val[$id_type]."</td>";
+				echo "<td class='center'>".$val[$id_type]."</td>";
 				$total[$id_type]+=$val[$id_type];
 				$tot+=$val[$id_type];
 			}
-			echo "<td align='center'>".$tot."</td>";
+			echo "<td class='center'>".$tot."</td>";
 			echo "</tr>";
 		}
 		echo "<tr class='tab_bg_1'><td><strong>".$LANG["common"][33]."</strong></td>";
 		$tot=0;
 		foreach ($types as $id_type => $type){
 			$tot+=$total[$id_type];
-			echo "<td align='center'>".$total[$id_type]."</td>";
+			echo "<td class='center'>".$total[$id_type]."</td>";
 		}
-		echo "<td align='center'>".$tot."</td>";
+		echo "<td class='center'>".$tot."</td>";
 		echo "</tr>";
 		echo "</table></div>";
 

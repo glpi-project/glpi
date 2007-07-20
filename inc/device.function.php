@@ -269,7 +269,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	}
 
 	echo "<tr class='tab_bg_2'>";
-	echo "<td align='center'>";
+	echo "<td class='center'>";
 	echo "<select name='quantity_$compDevID'>";
 	for ($i=0;$i<100;$i++)
 		echo "<option value='$i' ".($quantity==$i?"selected":"").">".$i."x</option>";
@@ -277,11 +277,11 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	echo "</td>";
 
 	if (haveRight("device","w")) {
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->devtype."'>$type</a></td>";
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->devtype."'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->devtype."'>$type</a></td>";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->devtype."'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
 	}  else {
-		echo "<td align='center'>$type</td>";
-		echo "<td align='center'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</td>";
+		echo "<td class='center'>$type</td>";
+		echo "<td class='center'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</td>";
 	}
 
 	if (count($entry)>0){
@@ -700,7 +700,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		// table commentaires
 		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 		echo $LANG["common"][25].":	</td>";
-		echo "<td align='center'><textarea cols='35' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
+		echo "<td class='center'><textarea cols='35' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
 		echo "</td></tr></table>";
 	
 		echo "</td>";

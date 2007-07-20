@@ -73,7 +73,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		echo "<tr><th colspan='4'>".$LANG["financial"][3]."</th></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][26].":		</td>";
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		if ($withtemplate==2) {
 			echo getDropdownName("glpi_enterprises",$ic->fields["FK_enterprise"]);
 		} else {

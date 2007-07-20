@@ -67,7 +67,7 @@ function showCentralReminder($type="private"){
 	if($DB->numrows($result)>0){
 		while ($data =$DB->fetch_array($result)){ 
 
-			echo "<tr class='tab_bg_2'><td><div class='relative'><span class='reminder_list'><a  href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a></span>";
+			echo "<tr class='tab_bg_2'><td><div class='relative'><div class='reminder_list'><a  href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a></div>";
 
 			if($data["rv"]=="1"){
 
@@ -140,18 +140,18 @@ function showListReminder($type="private"){
 	ksort($tabremind);
 
 
-	echo "<div align='center' ><br><table class='tab_cadrehov' style='width:600px'>";
+	echo "<br><table class='tab_cadrehov' style='width:700px'>";
 	echo "<tr><th>"."$titre"."</th><th colspan='2'>".$LANG["common"][27]."</th></tr>";
 
 	if (count($tabremind)>0){
 		foreach ($tabremind as $key => $val){
 
-			echo "<tr class='tab_bg_2'><td width='70%'>";
+			echo "<tr class='tab_bg_2'><td width='70%' class='left'>";
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a><div class='kb_resume'>".resume_text($val["text"],125)."</div>";
 			echo "</td>";
 
 			if($val["end"]!=""){	
-				echo "<td style='text-align:center;'>";
+				echo "<td class='center'>";
 
 				$tab=split(" ",$val["begin"]);
 				$date_url=$tab[0];
@@ -163,13 +163,13 @@ function showListReminder($type="private"){
 					echo "</a>";
 				}
 				echo "</td>";
-				echo "<td style='text-align:center;' ><strong>".convDateTime($val["begin"]);
-				echo "<br>".convDateTime($val["end"])."</strong>";
+				echo "<td class='center' >".convDateTime($val["begin"]);
+				echo "<br>".convDateTime($val["end"])."";
 
 			}else{
 				echo "<td>&nbsp;";
 				echo "</td>";
-				echo "<td  style='text-align:center;'><span style='color:#aaaaaa;'>".convDateTime($val["begin"])."</span>";
+				echo "<td  class='center'><span style='color:#aaaaaa;'>".convDateTime($val["begin"])."</span>";
 
 			}
 			echo "</td></tr>";
@@ -177,7 +177,7 @@ function showListReminder($type="private"){
 
 	}
 
-	echo "</table></div>";
+	echo "</table>";
 }
 
 

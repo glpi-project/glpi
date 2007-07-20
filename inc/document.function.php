@@ -224,7 +224,7 @@ function showDeviceDocument($instID,$search='') {
 	
 	
 							echo "<tr class='tab_bg_1'>";
-							echo "<td align='center'>".$ci->getType()."</td>";
+							echo "<td class='center'>".$ci->getType()."</td>";
 	
 							echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 							echo "<td align='center' class='tab_bg_2'>";
@@ -239,7 +239,7 @@ function showDeviceDocument($instID,$search='') {
 		}
 	
 		if (haveRight("document","w"))	{
-			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
 			$types=$CFG_GLPI["state_types"];
@@ -315,24 +315,24 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		if ($withtemplate!=3&&$canread){
-			echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
+			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
 			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
 			echo "</strong></a></td>";
 		} else {
-			echo "<td align='center'><strong>".$data["name"];
+			echo "<td class='center'><strong>".$data["name"];
 			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
 			echo "</strong></td>";
 		}
 
 		echo "<td align='center'  width='100px'>".getDocumentLink($data["filename"])."</td>";
 
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		if (!empty($data["link"]))
 			echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
 		else echo "&nbsp;";
 		echo "</td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_rubdocs",$data["rubrique"])."</td>";
-		echo "<td align='center'>".$data["mime"]."</td>";
+		echo "<td class='center'>".getDropdownName("glpi_dropdown_rubdocs",$data["rubrique"])."</td>";
+		echo "<td class='center'>".$data["mime"]."</td>";
 
 		if ($withtemplate<2) {
 			echo "<td align='center' class='tab_bg_2'>";
@@ -375,7 +375,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 			dropdownDocument("conID",$entity);
 			//dropdown("glpi_docs","conID",1,$entity);
-			echo "</div></td><td align='center'>";
+			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 	
