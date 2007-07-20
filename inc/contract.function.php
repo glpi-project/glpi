@@ -163,7 +163,7 @@ function showDeviceContract($instID) {
 					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
-					echo "<td align='center'>".$ci->getType()."</td>";
+					echo "<td class='center'>".$ci->getType()."</td>";
 					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td align='center' class='tab_bg_2'>";
 					if ($canedit){
@@ -271,12 +271,12 @@ function showEnterpriseContract($instID) {
 		$entID=$DB->result($result, $i, "entID");
 		$entname=getDropdownName("glpi_enterprises",$entID);
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
 		if ($CFG_GLPI["view_ID"]||empty($entname)) echo " ($entID)";
 		echo "</a></td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$DB->result($result, $i, "type"))."</td>";
-		echo "<td align='center'>".$DB->result($result, $i, "phone")."</td>";
-		echo "<td align='center'>".$website."</td>";
+		echo "<td class='center'>".getDropdownName("glpi_dropdown_enttype",$DB->result($result, $i, "type"))."</td>";
+		echo "<td class='center'>".$DB->result($result, $i, "phone")."</td>";
+		echo "<td class='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
 			echo "<a href='".$_SERVER['PHP_SELF']."?deleteenterprise=deleteenterprise&amp;ID=$ID'><strong>".$LANG["buttons"][6]."</strong></a>";
@@ -288,7 +288,7 @@ function showEnterpriseContract($instID) {
 		echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID",1,$contract->fields["FK_entities"]);
-		echo "</div></td><td align='center'>";
+		echo "</div></td><td class='center'>";
 		echo "<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
 		echo "</tr>";
@@ -494,14 +494,14 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]?"_2":"")."'>";
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
 		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</strong></a></td>";
-		echo "<td align='center'>".$con->fields["num"]."</td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
-		echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
-		echo "<td align='center'>".convDate($con->fields["begin_date"])."</td>";
-		echo "<td align='center'>".$con->fields["duration"]." ".$LANG["financial"][57];
+		echo "<td class='center'>".$con->fields["num"]."</td>";
+		echo "<td class='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
+		echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
+		echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
+		echo "<td class='center'>".$con->fields["duration"]." ".$LANG["financial"][57];
 		if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 		echo "</td>";
 
@@ -524,7 +524,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 			dropdownContracts("conID",$ci->obj->fields["FK_entities"]);
-			echo "</div></td><td align='center'>";
+			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 
@@ -579,14 +579,14 @@ function showContractAssociatedEnterprise($ID){
 		$con=new Contract;
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]?"_2":"")."'>";
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
 		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</strong></a></td>";
-		echo "<td align='center'>".$con->fields["num"]."</td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
-		echo "<td align='center'>".getContractEnterprises($cID)."</td>";	
-		echo "<td align='center'>".convDate($con->fields["begin_date"])."</td>";
-		echo "<td align='center'>".$con->fields["duration"]." ".$LANG["financial"][57];
+		echo "<td class='center'>".$con->fields["num"]."</td>";
+		echo "<td class='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
+		echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
+		echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
+		echo "<td class='center'>".$con->fields["duration"]." ".$LANG["financial"][57];
 		if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 		echo "</td>";
 
@@ -603,10 +603,10 @@ function showContractAssociatedEnterprise($ID){
 		$nb = $DB->numrows($result);
 
 		if ($nb>0){
-			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
 			dropdownContracts("conID",$ent->fields['FK_entities']);
-			echo "</div></td><td align='center'>";
+			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 

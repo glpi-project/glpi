@@ -641,7 +641,7 @@ class User extends CommonDBTM {
 			echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/user.vcard.php?ID=$ID'>" . $LANG["common"][46] . "</a>";
 			echo "</th></tr>";
 			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center'>" . $LANG["setup"][18] . "</td>";
+			echo "<td class='center'>" . $LANG["setup"][18] . "</td>";
 			// si on est dans le cas d'un ajout , cet input ne doit plus �re hiden
 			if ($this->fields["name"] == "") {
 				echo "<td><input  name='name' value=\"" . $this->fields["name"] . "\">";
@@ -652,7 +652,7 @@ class User extends CommonDBTM {
 					echo "<td>";
 					autocompletionTextField("name", "glpi_users", "name", $this->fields["name"], 20);
 				} else {
-					echo "<td align='center'><strong>" . $this->fields["name"] . "</strong>";
+					echo "<td class='center'><strong>" . $this->fields["name"] . "</strong>";
 					echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
 				}
 
@@ -664,35 +664,35 @@ class User extends CommonDBTM {
 			//do some rights verification
 			if (haveRight("user", "w")) {
 				if ($this->fields["auth_method"]==AUTH_DB_GLPI||!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"]) || $this->fields["name"] == "") {
-					echo "<td align='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+					echo "<td class='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 				} else
 					echo "<td colspan='2'>&nbsp;</td></tr>";
 			} else
 				echo "<td colspan='2'>&nbsp;</td></tr>";
 
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][48] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][48] . ":</td><td>";
 				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 20);
 				echo "</td>";
-				echo "<td align='center'>" . $LANG["common"][43] . ":</td><td>";
+				echo "<td class='center'>" . $LANG["common"][43] . ":</td><td>";
 				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 20);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][42] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][42] . ":</td><td>";
 				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 20);
 				echo "</td>";
-				echo "<td align='center'>" . $LANG["setup"][14] . ":</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][14] . ":</td><td>";
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["financial"][29] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . ":</td><td>";
 				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 20);
 				echo "</td>";
-				echo "<td align='center'>" . $LANG["financial"][29] . " 2:</td><td>";
+				echo "<td class='center'>" . $LANG["financial"][29] . " 2:</td><td>";
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 20);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][15] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][15] . ":</td><td>";
 				if (!empty($ID)){
 					$entities=getUserEntities($ID);
 					if (count($entities)>0){
@@ -702,7 +702,7 @@ class User extends CommonDBTM {
 					}
 				}
 				echo "</td>";
-				echo "<td align='center'>&nbsp;</td><td>&nbsp;";
+				echo "<td class='center'>&nbsp;</td><td>&nbsp;";
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
@@ -711,7 +711,7 @@ class User extends CommonDBTM {
 				//Authentications informations : auth method used and server used
 				//don't display is creation of a new user'
 				if (!empty ($ID)) {
-					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][10] . ":</td><td align='center'>";
+					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][10] . ":</td><td class='center'>";
 					switch ($this->fields["auth_method"]) {
 						case AUTH_LDAP :
 							echo $LANG["login"][2];
@@ -750,7 +750,7 @@ class User extends CommonDBTM {
 					echo "</td>";
 
 					echo "</tr>";
-					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td align='center'>";
+					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td class='center'>";
 					if ($this->fields["date_mod"] != "0000-00-00 00:00:00"){
 						echo convDateTime($this->fields["date_mod"]);
 					}
@@ -814,59 +814,59 @@ class User extends CommonDBTM {
 			echo "<tr><th colspan='2'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "</th></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center'>" . $LANG["setup"][18] . "</td>";
-			echo "<td align='center'><strong>" . $this->fields["name"] . "</strong>";
+			echo "<td class='center'>" . $LANG["setup"][18] . "</td>";
+			echo "<td class='center'><strong>" . $this->fields["name"] . "</strong>";
 			echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
 			echo "<input type='hidden' name='ID' value=\"" . $this->fields["ID"] . "\">";
 			echo "</td></tr>";
 
 			//do some rights verification
 			if (!$extauth && haveRight("password_update", "1")) {
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][19] . "</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][19] . "</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
 			}
 
 			if ($CFG_GLPI["debug"] != DEMO_MODE || haveRight("config", 1)) {
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][41] . "</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][41] . "</td><td>";
 				dropdownLanguages("language", $_SESSION["glpilanguage"]);
 				echo "</td></tr>";
 			}
 
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][48] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][48] . "</td><td>";
 			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["realname"]))) {
 				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 30);
 			} else
 				echo $this->fields["realname"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][43] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][43] . "</td><td>";
 			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["firstname"]))) {
 				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 30);
 			} else
 				echo $this->fields["firstname"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][14] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][14] . "</td><td>";
 			if (!$extauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["email"]))) {
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
 			} else
 				echo $this->fields["email"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["financial"][29] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . "</td><td>";
 			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["phone"]))) {
 				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 30);
 			} else
 				echo $this->fields["phone"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["financial"][29] . " 2</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . " 2</td><td>";
 			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["phone2"]))) {
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 30);
 			} else
 				echo $this->fields["phone2"];
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][42] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][42] . "</td><td>";
 			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["mobile"]))) {
 				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 30);
 			} else
@@ -875,7 +875,7 @@ class User extends CommonDBTM {
 
 			if (haveRight("show_ticket", "1"))
 			{
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["setup"][40] . "</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][40] . "</td><td>";
 				dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
 				echo "</td></tr>";
 			}

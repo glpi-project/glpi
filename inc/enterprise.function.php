@@ -80,7 +80,7 @@ function showInfocomEnterprise($instID) {
 					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
-					echo "<td align='center'>".$ci->getType()."</td>";
+					echo "<td class='center'>".$ci->getType()."</td>";
 					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "</tr>";
 					$num++;
@@ -120,13 +120,13 @@ function showAssociatedContact($instID) {
 	while ($data=$DB->fetch_array($result)) {
 		$ID=$data["ID_ent"];
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
 		echo "<td align='center'  width='100'>".$data["mobile"]."</td>";
 		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
-		echo "<td align='center'><a href='mailto:".$data["email"]."'>".$DB->result($result, $i, "glpi_contacts.email")."</a></td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
+		echo "<td class='center'><a href='mailto:".$data["email"]."'>".$DB->result($result, $i, "glpi_contacts.email")."</a></td>";
+		echo "<td class='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
 			echo "<a href='".$_SERVER['PHP_SELF']."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";

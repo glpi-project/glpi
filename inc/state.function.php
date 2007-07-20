@@ -83,10 +83,10 @@ function showStateSummary($target){
 		
 		while ($data=$DB->fetch_array($result)){
 			$tot=0;
-			echo "<tr class='tab_bg_2'><td align='center'><strong>".$data["name"]."</strong></td>";
+			echo "<tr class='tab_bg_2'><td class='center'><strong>".$data["name"]."</strong></td>";
 	
 			foreach ($state_type as $type){
-				echo "<td align='center'>";
+				echo "<td class='center'>";
 	
 				if (isset($states[$data["ID"]][$type])) {
 					echo $states[$data["ID"]][$type];
@@ -96,16 +96,16 @@ function showStateSummary($target){
 				else echo "&nbsp;";
 				echo "</td>";
 			}
-			echo "<td align='center'><strong>$tot</strong></td>";
+			echo "<td class='center'><strong>$tot</strong></td>";
 			echo "</tr>";
 		}
-		echo "<tr class='tab_bg_2'><td align='center'><strong>".$LANG["common"][33]."</strong></td>";
+		echo "<tr class='tab_bg_2'><td class='center'><strong>".$LANG["common"][33]."</strong></td>";
 		$tot=0;
 		foreach ($state_type as $type){
-			echo "<td align='center'><strong>".$total[$type]."</strong></td>";
+			echo "<td class='center'><strong>".$total[$type]."</strong></td>";
 			$tot+=$total[$type];
 		}
-		echo "<td align='center'><strong>".$tot."</strong></td>";
+		echo "<td class='center'><strong>".$tot."</strong></td>";
 		echo "</tr>";
 		echo "</table></div>";
 

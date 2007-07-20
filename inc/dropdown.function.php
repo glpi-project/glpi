@@ -1773,7 +1773,7 @@ function dropdownArrayValues($name,$elements,$value='')
 function adminManagementDropdown($name,$label,$restrict,$software=0)
 {
 	global $LANG;
-	echo "<td align='center'> " . $label . " </td><td><select name=\"".$name."\">";
+	echo "<td class='center'> " . $label . " </td><td><select name=\"".$name."\">";
 
 	if (!$software)
 	{

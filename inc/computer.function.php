@@ -183,7 +183,7 @@ function showConnections($target,$ID,$withtemplate='') {
 			foreach ($items as $type=>$title){
 				$canedit=haveTypeRight($type,"w");
 	
-				echo "<td align='center'>";
+				echo "<td class='center'>";
 				$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
 				if ($result=$DB->query($query)) {
 					$resultnum = $DB->numrows($result);
@@ -195,14 +195,14 @@ function showConnections($target,$ID,$withtemplate='') {
 							$ci->getFromDB($type,$tID);
 	
 							echo "<tr ".($ci->getField('deleted')?"class='tab_bg_2_2'":"").">";
-							echo "<td align='center'><strong>";
+							echo "<td class='center'><strong>";
 							echo $ci->getLink();
 							echo "</strong>";
 							echo " - ".getDropdownName("glpi_dropdown_state",$ci->getField('state'));
 	
 							echo "</td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
-								echo "<td align='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
+								echo "<td class='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
 								echo $LANG["buttons"][10];
 								echo "</strong></a></td>";
 							}

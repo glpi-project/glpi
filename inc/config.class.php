@@ -99,17 +99,17 @@ class Config extends CommonDBTM {
 				echo "<tr><th colspan='4'>" . $LANG["setup"][70] . "</th></tr>";
 			
 				$default_language = $CFG_GLPI["default_language"];
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][113] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][113] . " </td><td>";
 				dropdownLanguages("default_language", $CFG_GLPI["default_language"]);
 			
 				echo "</td>"; 
 				
-				echo "<td align='center'> " . $LANG["setup"][183] . " </td><td>";
+				echo "<td class='center'> " . $LANG["setup"][183] . " </td><td>";
 				dropdownYesNo("use_cache", $CFG_GLPI["use_cache"]);
 				echo "</td>";
 				
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][102] . " </td><td><select name=\"event_loglevel\">";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][102] . " </td><td><select name=\"event_loglevel\">";
 				$level = $CFG_GLPI["event_loglevel"];
 				echo "<option value=\"1\"";
 				if ($level == 1) {
@@ -138,61 +138,61 @@ class Config extends CommonDBTM {
 				echo ">" . $LANG["setup"][107] . "</option>";
 				echo "</select></td>";
 			
-				echo "<td align='center'>" . $LANG["setup"][109] . " </td><td><input type=\"text\" name=\"expire_events\" value=\"" . $CFG_GLPI["expire_events"] . "\"></td></tr>";
+				echo "<td class='center'>" . $LANG["setup"][109] . " </td><td><input type=\"text\" name=\"expire_events\" value=\"" . $CFG_GLPI["expire_events"] . "\"></td></tr>";
 			
 				echo "<tr class='tab_bg_2'>";
 			
-				echo "<td align='center'>" . $LANG["setup"][138] . " </td><td><select name=\"debug\">";
+				echo "<td class='center'>" . $LANG["setup"][138] . " </td><td><select name=\"debug\">";
 				echo "<option value=\"" . NORMAL_MODE . "\" " . ($CFG_GLPI["debug"] == NORMAL_MODE ? " selected " : "") . " >" . $LANG["setup"][135] . " </option>";
 				echo "<option value=\"" . TRANSLATION_MODE . "\" " . ($CFG_GLPI["debug"] == TRANSLATION_MODE ? " selected " : "") . " >" . $LANG["setup"][136] . " </option>";
 				echo "<option value=\"" . DEBUG_MODE . "\" " . ($CFG_GLPI["debug"] == DEBUG_MODE ? " selected " : "") . " >" . $LANG["setup"][137] . " </option>";
 				echo "<option value=\"" . DEMO_MODE . "\" " . ($CFG_GLPI["debug"] == DEMO_MODE ? " selected " : "") . " >" . $LANG["setup"][141] . " </option>";
 				echo "</select></td>";
 	
-				echo "<td align='center'> " . $LANG["setup"][185] . " </td><td>";
+				echo "<td class='center'> " . $LANG["setup"][185] . " </td><td>";
 				dropdownYesNo("use_errorlog", $CFG_GLPI["use_errorlog"]);
 				echo "</td></tr>";								
 	
 				echo "<tr class='tab_bg_2'>";
-				echo "<td align='center'> " . $LANG["setup"][186] . " </td><td>";
+				echo "<td class='center'> " . $LANG["setup"][186] . " </td><td>";
 				dropdownGMT("glpi_timezone", $CFG_GLPI["glpi_timezone"]);
 				echo "</td><td colspan='2'></td></tr>";								
 									
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][10] . "</strong></td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][115] . "</td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][115] . "</td><td>";
 				dropdownInteger('cartridges_alarm', $CFG_GLPI["cartridges_alarm"], -1, 100);
 				echo "</td>";
 			
-				echo "<td align='center'>" . $LANG["setup"][221] . "</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][221] . "</td><td>";
 				showCalendarForm("form", "date_fiscale", $CFG_GLPI["date_fiscale"], 0);
 				echo "</td></tr>";
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["title"][24] . "</strong></td></tr>";
 						
-				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][116] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][116] . " </td><td>";
 				dropdownYesNo("auto_assign", $CFG_GLPI["auto_assign"]);
 				echo "</td>";
 
-				echo "<td align='center'>" . $LANG["setup"][405] . "</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][405] . "</td><td>";
 				dropdownYesNo("followup_on_update_ticket", $CFG_GLPI["followup_on_update_ticket"]);
 				echo "</td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["tracking"][37] . "</td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["tracking"][37] . "</td><td>";
 				dropdownYesNo("keep_tracking_on_delete", $CFG_GLPI["keep_tracking_on_delete"]);
 				echo "</td>";
-				echo "<td align='center'>" . $LANG["setup"][409] . "</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][409] . "</td><td>";
 				dropdownValue("glpi_dropdown_rubdocs","default_rubdoc_tracking",$CFG_GLPI["default_rubdoc_tracking"]);
 				echo "</td></tr>";
 
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["common"][41] . "</strong></td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][246] . " (" . $LANG["common"][44] . ")</td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][246] . " (" . $LANG["common"][44] . ")</td><td>";
 				dropdownContractAlerting("contract_alerts", $CFG_GLPI["contract_alerts"]);
 				echo "</td>";
 			
-				echo "<td align='center'>" . $LANG["setup"][247] . " (" . $LANG["common"][44] . ")</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][247] . " (" . $LANG["common"][44] . ")</td><td>";
 				echo "<select name=\"infocom_alerts\">";
 				echo "<option value=\"0\" " . ($CFG_GLPI["infocom_alerts"] == 0 ? " selected " : "") . " >-----</option>";
 				echo "<option value=\"" . pow(2, ALERT_END) . "\" " . ($CFG_GLPI["infocom_alerts"] == pow(2, ALERT_END) ? " selected " : "") . " >" . $LANG["financial"][80] . " </option>";
@@ -201,18 +201,18 @@ class Config extends CommonDBTM {
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][306] . "</strong></td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][306] . " </td><td><select name=\"auto_update_check\">";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][306] . " </td><td><select name=\"auto_update_check\">";
 				$check = $CFG_GLPI["auto_update_check"];
 				echo "<option value=\"0\" " . ($check == 0 ? " selected" : "") . ">" . $LANG["setup"][307] . " </option>";
 				echo "<option value=\"7\" " . ($check == 7 ? " selected" : "") . ">" . $LANG["setup"][308] . " </option>";
 				echo "<option value=\"30\" " . ($check == 30 ? " selected" : "") . ">" . $LANG["setup"][309] . " </option>";
 				echo "</select></td><td colspan='2'>&nbsp;</td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][401] . " </td><td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\"></td>";
-				echo "<td align='center'>" . $LANG["setup"][402] . " </td><td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\"></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][401] . " </td><td><input type=\"text\" name=\"proxy_name\" value=\"" . $CFG_GLPI["proxy_name"] . "\"></td>";
+				echo "<td class='center'>" . $LANG["setup"][402] . " </td><td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\"></td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][403] . " </td><td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\"></td>";
-				echo "<td align='center'>" . $LANG["setup"][404] . " </td><td><input type=\"text\" name=\"proxy_password\" value=\"" . $CFG_GLPI["proxy_password"] . "\"></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][403] . " </td><td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\"></td>";
+				echo "<td class='center'>" . $LANG["setup"][404] . " </td><td><input type=\"text\" name=\"proxy_password\" value=\"" . $CFG_GLPI["proxy_password"] . "\"></td></tr>";
 			
 				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 			
@@ -227,10 +227,10 @@ class Config extends CommonDBTM {
 				echo "<div align='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='4'>" . $LANG["setup"][119] . "</th></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][108] . "</td><td> <input size='10' type=\"text\" name=\"num_of_events\" value=\"" . $CFG_GLPI["num_of_events"] . "\"></td>";
-				echo "<td align='center'>" . $LANG["setup"][111] . "</td><td> <input size='10' type=\"text\" name=\"list_limit\" value=\"" . $cfg->fields["list_limit"] . "\"></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][108] . "</td><td> <input size='10' type=\"text\" name=\"num_of_events\" value=\"" . $CFG_GLPI["num_of_events"] . "\"></td>";
+				echo "<td class='center'>" . $LANG["setup"][111] . "</td><td> <input size='10' type=\"text\" name=\"list_limit\" value=\"" . $cfg->fields["list_limit"] . "\"></td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][128] . " </td><td><select name=\"dateformat\">";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][128] . " </td><td><select name=\"dateformat\">";
 				echo "<option value=\"0\"";
 				if ($CFG_GLPI["dateformat"] == 0) {
 					echo " selected";
@@ -243,7 +243,7 @@ class Config extends CommonDBTM {
 				echo ">DD-MM-YYYY</option>";
 				echo "</select></td>";
 				
-				echo "<td align='center'>" . $LANG["setup"][130] . " </td><td><select name=\"nextprev_item\">";
+				echo "<td class='center'>" . $LANG["setup"][130] . " </td><td><select name=\"nextprev_item\">";
 				$nextprev_item = $CFG_GLPI["nextprev_item"];
 				echo "<option value=\"ID\"";
 				if ($nextprev_item == "ID") {
@@ -257,11 +257,11 @@ class Config extends CommonDBTM {
 				echo ">" . $LANG["common"][16] . "</option>";
 				echo "</select></td></tr>";
 				
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][149] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][149] . " </td><td>";
 				dropdownInteger("decimal_number",$CFG_GLPI["decimal_number"],1,4);
 				echo "</td>";
 				
-				echo "<td align='center'>" . $LANG["setup"][148] . "</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][148] . "</td><td>";
 				echo "<select name='time_step'>";
 				$steps = array (
 					5,
@@ -277,38 +277,38 @@ class Config extends CommonDBTM {
 				echo "</select>&nbsp;" . $LANG["job"][22];
 				echo "</td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][129] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][129] . " </td><td>";
 				dropdownYesNo("view_ID", $CFG_GLPI["view_ID"]);
 				echo "</td>";
 				
 				$plan_begin = split(":", $CFG_GLPI["planning_begin"]);
 				$plan_end = split(":", $CFG_GLPI["planning_end"]);
-				echo "<td align='center'>" . $LANG["setup"][223] . "</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][223] . "</td><td>";
 				dropdownInteger('planning_begin', $plan_begin[0], 0, 24);
 				echo "&nbsp;->&nbsp;";
 				dropdownInteger('planning_end', $plan_end[0], 0, 24);
 				echo " </td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][112] . "</td><td><input size='10' type=\"text\" name=\"cut\" value=\"" . $CFG_GLPI["cut"] . "\"></td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][112] . "</td><td><input size='10' type=\"text\" name=\"cut\" value=\"" . $CFG_GLPI["cut"] . "\"></td>";
 			
-				echo "<td align='center'>" . $LANG["setup"][131] . "</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][131] . "</td><td>";
 				dropdownInteger('dropdown_limit', $CFG_GLPI["dropdown_limit"], 20, 100);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][132] . "</td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][132] . "</td><td>";
 				dropdownYesNo('flat_dropdowntree', $CFG_GLPI["flat_dropdowntree"]);
 				echo "</td>";
 			
-				echo "<td align='center'>&nbsp;</td><td>&nbsp;";
+				echo "<td class='center'>&nbsp;</td><td>&nbsp;";
 				echo "</td></tr>";
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["title"][24] . "</strong></td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][110] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][110] . " </td><td>";
 				dropdownYesNo("jobs_at_login", $CFG_GLPI["jobs_at_login"]);
 				echo " </td><td colspan='2'>&nbsp;</td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][114] . "</td><td colspan='3'>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][114] . "</td><td colspan='3'>";
 				echo "<table><tr>";
 				echo "<td bgcolor='" . $CFG_GLPI["priority_1"] . "'>1:<input type=\"text\" name=\"priority_1\" size='7' value=\"" . $CFG_GLPI["priority_1"] . "\"></td>";
 				echo "<td bgcolor='" . $CFG_GLPI["priority_2"] . "'>2:<input type=\"text\" name=\"priority_2\" size='7' value=\"" . $CFG_GLPI["priority_2"] . "\"></td>";
@@ -320,34 +320,34 @@ class Config extends CommonDBTM {
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][147] . "</strong></td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][120] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][120] . " </td><td>";
 				dropdownYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
 				echo "</td>";
 			
-				echo "<td align='center'>" . $LANG["setup"][127] . " </td><td>";
+				echo "<td class='center'>" . $LANG["setup"][127] . " </td><td>";
 				dropdownYesNo("ajax_autocompletion", $CFG_GLPI["ajax_autocompletion"]);
 				echo "</td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][121] . "</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" . $CFG_GLPI["ajax_wildcard"] . "\"></td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][121] . "</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" . $CFG_GLPI["ajax_wildcard"] . "\"></td>";
 			
-				echo "<td align='center'>" . $LANG["setup"][122] . "</td><td>";
+				echo "<td class='center'>" . $LANG["setup"][122] . "</td><td>";
 				dropdownInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
 				echo "</td></tr>";
 			
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][123] . "</td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][123] . "</td><td>";
 				dropdownInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 0, 200);
 				echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][406] . "</strong></td></tr>";
 
-				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][118] . " </td><td colspan='3' align='center'>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][118] . " </td><td colspan='3' align='center'>";
 				echo "<textarea cols='70' rows='4' name='text_login' >";
 				echo $CFG_GLPI["text_login"];
 				echo "</textarea>";
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][407] . "</td><td> <input size='30' type=\"text\" name=\"helpdeskhelp_url\" value=\"" . $CFG_GLPI["helpdeskhelp_url"] . "\"></td>";
-				echo "<td align='center'>" . $LANG["setup"][408] . "</td><td> <input size='30' type=\"text\" name=\"centralhelp_url\" value=\"" . $CFG_GLPI["centralhelp_url"] . "\"></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][407] . "</td><td> <input size='30' type=\"text\" name=\"helpdeskhelp_url\" value=\"" . $CFG_GLPI["helpdeskhelp_url"] . "\"></td>";
+				echo "<td class='center'>" . $LANG["setup"][408] . "</td><td> <input size='30' type=\"text\" name=\"centralhelp_url\" value=\"" . $CFG_GLPI["centralhelp_url"] . "\"></td></tr>";
 
 				
 				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
@@ -379,36 +379,36 @@ class Config extends CommonDBTM {
 
 				echo "<tr><th colspan='2'>" . $LANG["setup"][134]. "</th><th colspan='2'>" . $LANG["Menu"][31] . "</th></tr>";
 
-				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][133] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][133] . " </td><td>";
 				dropdownYesNo("ocs_mode", $CFG_GLPI["ocs_mode"]);
-				echo "</td><td align='center'>" . $LANG["setup"][219] . "</td><td>";
+				echo "</td><td class='center'>" . $LANG["setup"][219] . "</td><td>";
 				dropdownYesNo("permit_helpdesk", $CFG_GLPI["permit_helpdesk"]);
 				echo "</td></tr>";
 
 				echo "<tr><th colspan='2'>" . $LANG["login"][10] . "</th><th colspan='2'>".$LANG["Menu"][20]."</th></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["setup"][124] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][124] . " </td><td>";
 				dropdownYesNo("auto_add_users", $CFG_GLPI["auto_add_users"]);
 				echo "</td>";
 				
-				echo "<td align='center'> " . $LANG["setup"][117] . " </td><td>";
+				echo "<td class='center'> " . $LANG["setup"][117] . " </td><td>";
 				dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
 				echo " </td></tr>";
 
 				echo "<tr><th colspan='4'>" . $LANG["setup"][280]. "</th></tr>";
 
-				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["common"][18] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][18] . " </td><td>";
 				dropdownYesNo("autoupdate_link_contact", $CFG_GLPI["autoupdate_link_contact"]);
 				echo "</td>";
 				
-				echo "<td align='center'> " . $LANG["common"][34] . " </td><td>";
+				echo "<td class='center'> " . $LANG["common"][34] . " </td><td>";
 				dropdownYesNo("autoupdate_link_user", $CFG_GLPI["autoupdate_link_user"]);
 				echo " </td></tr>";
 
-				echo "<tr class='tab_bg_2'><td align='center'> " . $LANG["common"][35] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][35] . " </td><td>";
 				dropdownYesNo("autoupdate_link_group", $CFG_GLPI["autoupdate_link_group"]);
 				echo "</td>";
 				
-				echo "<td align='center'> " . $LANG["common"][15] . " </td><td>";
+				echo "<td class='center'> " . $LANG["common"][15] . " </td><td>";
 				dropdownYesNo("autoupdate_link_location", $CFG_GLPI["autoupdate_link_location"]);
 				echo " </td></tr>";
 
@@ -517,7 +517,7 @@ class Config extends CommonDBTM {
 			echo "<form action=\"$target\" method=\"post\">";
 			echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG["setup"][229] . "</th></tr>";
 			echo "<tr class='tab_bg_2'>";
-			echo "<td align='center'>";
+			echo "<td class='center'>";
 			echo "<input class=\"submit\" type=\"submit\" name=\"test_smtp_send\" value=\"" . $LANG["buttons"][2] . "\">";
 			echo " </td></tr></table></div>";
 	

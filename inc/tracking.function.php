@@ -1530,12 +1530,12 @@ function showJobDetails ($target,$ID){
 
 		showTrackingOnglets($_SERVER['PHP_SELF']."?ID=".$ID);
 
-		echo "<div align='center'>";
+		//echo "<div align='center'>";
 		echo "<form method='post' action='$target'  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// First line
-		echo "<tr ><th colspan='2' class='tracking_small'>";
-		echo $LANG["joblist"][11].": ".convDateTime($job->fields["date"])." ".$LANG["job"][2]." ";
+		echo "<tr ><th colspan='2' ><span class='tracking_small'>";
+		echo $LANG["joblist"][11].": ".convDateTime($job->fields["date"])."&nbsp;&nbsp; ".$LANG["job"][2]." &nbsp; ";
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
 		} else {
@@ -1546,20 +1546,20 @@ function showJobDetails ($target,$ID){
 			echo "&nbsp;(".getDropdownName("glpi_entities",$job->fields["FK_entities"]).")";
 		}
 
-		echo "</th>";
-		echo "<th class='tracking_small'>".$LANG["joblist"][12].":\n";
+		echo "</span></th>";
+		echo "<th><span class='tracking_small'>".$LANG["joblist"][12].":\n";
 		if (!ereg("old_",$job->fields["status"])){
 			echo "<i>".$LANG["job"][1]."</i>\n";
 		}
 		else{
 			echo "<strong>".convDateTime($job->fields["closedate"])."</strong>\n";
 		}
-		echo "</th></tr>";
+		echo "</span></th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		// Premier Colonne
 		echo "<td class='top' width='27%'>";
 		echo "<table cellpadding='3'>";
-		echo "<tr class='tab_bg_2'><td class='right'>";
+		echo "<tr class='tab_bg_2'><td class='left'>";
 		echo $LANG["joblist"][0].":</td><td>";
 		if ($canupdate){
 			dropdownStatus("status",$job->fields["status"]);
@@ -1568,7 +1568,7 @@ function showJobDetails ($target,$ID){
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td class='right'>";
+		echo "<tr><td class='left'>";
 		echo $LANG["job"][4].":</td><td>";
 		if ($canupdate){
 			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
@@ -1577,7 +1577,7 @@ function showJobDetails ($target,$ID){
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td class='right'>";
+		echo "<tr><td class='left'>";
 		echo $LANG["common"][35].":</td><td>";
 		if ($canupdate){
 			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"],1,$job->fields["FK_entities"]);
@@ -1586,15 +1586,15 @@ function showJobDetails ($target,$ID){
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td class='right'>";
+		echo "<tr><td class='left'>";
 		echo $LANG["joblist"][2].":</td><td>";
 		if ($canupdate)
 			dropdownPriority("priority",$job->fields["priority"]);
 		else echo getPriorityName($job->fields["priority"]);
 		echo "</td></tr>";
 
-		echo "<tr><td>";
-		echo $LANG["common"][36].":</td><td>";
+		echo "<tr><td class='left'>";
+		echo $LANG["common"][36].":</td><td >";
 		if ($canupdate)
 			dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
 		else echo getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
@@ -1605,16 +1605,16 @@ function showJobDetails ($target,$ID){
 		// Deuxieme colonne
 		echo "<td class='top' width='33%'>";
 
-		echo "<table border='0'>";
+		echo "<table>";
 
-		echo "<tr><td class='right'>";
+		echo "<tr><td class='left'>";
 		echo $LANG["job"][44].":</td><td>";
 		if ($canupdate)
 			dropdownRequestType("request_type",$job->fields["request_type"]);
 		else echo getRequestTypeName($job->fields["request_type"]);
 		echo "</td></tr>";
 
-		echo "<tr><td class='right'>";
+		echo "<tr><td class='left'>";
 		echo $LANG["common"][1].":</td><td>";
 		if ($canupdate){
 			echo $item->getType()." - ".$item->getLink(1)."<br>";
@@ -1625,11 +1625,11 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 
 
-		echo "<tr><td class='right'>";
+		echo "<tr><td class='left'>";
 		echo $LANG["job"][5].":</td><td>&nbsp;</td></tr>";
 
 		if (haveRight("assign_ticket","1")){
-			echo "<tr><td class='right'>";
+			echo "<tr><td class='left'>";
 			echo $LANG["job"][27].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"own_ticket",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
@@ -1639,18 +1639,18 @@ function showJobDetails ($target,$ID){
 			dropdownUsers("assign",$job->fields["assign"],"ID",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		}else {
-			echo "<tr><td class='right'>";
+			echo "<tr><td class='left'>";
 			echo $LANG["job"][27].":</td><td>";
 			echo getUserName($job->fields["assign"]);
 			echo "</td></tr>";
 		}
 		if (haveRight("assign_ticket","1")){
-			echo "<tr><td class='right'>";
+			echo "<tr><td class='left'>";
 			echo $LANG["job"][28].":</td><td>";
 			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else {
-			echo "<tr><td class='right'>";
+			echo "<tr><td class='left'>";
 			echo $LANG["job"][28].":</td><td>";
 			echo getDropdownName("glpi_enterprises",$job->fields["assign_ent"]);
 			echo "</td></tr>";
@@ -1667,31 +1667,31 @@ function showJobDetails ($target,$ID){
 		if(haveRight("contract_infocom","r")){  // admin = oui on affiche les couts liés à l'interventions
 			echo "<table border='0'>";
 			if ($job->fields["realtime"]>0){
-				echo "<tr><td class='right'>";
+				echo "<tr><td class='left'>";
 				echo $LANG["job"][20].":</td><td>";
 				echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
 				echo "</td></tr>";
 			}
-			echo "<tr><td class='right'>";
+			echo "<tr><td class='left'>";
 			// cout
 			echo $LANG["job"][40].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".number_format($job->fields["cost_time"],$CFG_GLPI["decimal_number"],'.','')."\"></td></tr>";
 
-			echo "<tr><td class='right'>";
+			echo "<tr><td class='left'>";
 
 			echo $LANG["job"][41].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".number_format($job->fields["cost_fixed"],$CFG_GLPI["decimal_number"],'.','')."\">";
 
 			echo "</td></tr>\n";
 
-			echo "<tr><td class='right'>";
+			echo "<tr><td class='left'>";
 
 			echo $LANG["job"][42].": ";
 			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".number_format($job->fields["cost_material"],$CFG_GLPI["decimal_number"],'.','')."\">";
 
 			echo "</td></tr>\n";
 
-			echo "<tr><td class='right'>";
+			echo "<tr><td class='left'>";
 
 			echo $LANG["job"][43].": ";
 			echo "</td><td><strong>";
@@ -1947,7 +1947,7 @@ function showFollowupsSummary($tID){
 
 
 			echo convDateTime($data["date"])."</td>";
-			echo "<td align='left'>".nl2br($data["contents"])."</td>";
+			echo "<td class='left'>".nl2br($data["contents"])."</td>";
 
 			$hour=floor($data["realtime"]);
 			$minute=round(($data["realtime"]-$hour)*60,0);

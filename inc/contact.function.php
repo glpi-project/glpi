@@ -81,11 +81,11 @@ function showEnterpriseContact($instID) {
 			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 		}
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-		echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
-		echo "<td align='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
+		echo "<td class='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
-		echo "<td align='center'>".$website."</td>";
+		echo "<td class='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
 			echo "<a href='".$_SERVER['PHP_SELF']."?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
@@ -93,7 +93,7 @@ function showEnterpriseContact($instID) {
 		echo "</td></tr>";
 	}
 	if ($canedit){
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td align='center'>";
+		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdown("glpi_enterprises","entID");
 

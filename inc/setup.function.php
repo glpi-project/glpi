@@ -701,15 +701,15 @@ function showFormExtAuthList($target) {
 				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$target."?next=extauth_mail\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 
 				echo "</div></th></tr>";
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
 				$sql = "SELECT * from glpi_auth_mail";
 				$result = $DB->query($sql);
 				if ($DB->numrows($result)) {
 					
 		
 					while ($mail_method = $DB->fetch_array($result)){
-						echo "<tr class='tab_bg_2'><td align='center'><a href='$target?next=extauth_mail&amp;ID=" . $mail_method["ID"] . "' >" . $mail_method["name"] . "</a>" .
-						"</td><td align='center'>" . $mail_method["imap_host"] . "</td></tr>";
+						echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_mail&amp;ID=" . $mail_method["ID"] . "' >" . $mail_method["name"] . "</a>" .
+						"</td><td class='center'>" . $mail_method["imap_host"] . "</td></tr>";
 					}
 				}
 				echo "</table>";
@@ -718,7 +718,7 @@ function showFormExtAuthList($target) {
 		
 				echo "<table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='2'>" . $LANG["setup"][162] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table>";
+				echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table>";
 			}
 		break;
 		case 1 :
@@ -730,14 +730,14 @@ function showFormExtAuthList($target) {
 				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$target."?next=extauth_ldap\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 
 				echo "</div></th></tr>";
-				echo "<tr class='tab_bg_1'><td align='center'>" . $LANG["common"][16] . "</td><td align='center'>" . $LANG["common"][52] . "</td></tr>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
 		
 				$sql = "SELECT * from glpi_auth_ldap";
 				$result = $DB->query($sql);
 				if ($DB->numrows($result)) {
 					while ($ldap_method = $DB->fetch_array($result)){
-						echo "<tr class='tab_bg_2'><td align='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
-						"</td><td align='center'>" . $ldap_method["ldap_host"] . "</td></tr>";
+						echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
+						"</td><td class='center'>" . $ldap_method["ldap_host"] . "</td></tr>";
 					}
 				}
 				echo "</table>";
@@ -745,7 +745,7 @@ function showFormExtAuthList($target) {
 				echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
 				echo "<table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table>";
+				echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table>";
 			}
 		break;
 
@@ -753,10 +753,10 @@ function showFormExtAuthList($target) {
 			if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {		
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
 				echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update_conf_cas\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></td></tr>";
 		
 				echo "</table>";
@@ -765,7 +765,7 @@ function showFormExtAuthList($target) {
 				echo "<input type=\"hidden\" name=\"CAS_Test\" value=\"1\" >";
 				echo "<div align='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr></table></div>";
+				echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr></table></div>";
 			}
 		}
 
@@ -793,8 +793,8 @@ function showFormExtAuthList($target) {
 		}
 		$mailbox = preg_replace("/.*}/", "", $value);
 
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][52] . "</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][168] . "</td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][52] . "</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][168] . "</td><td>";
 		echo "<select name='server_type'>";
 		echo "<option value=''>&nbsp;</option>";
 		echo "<option value='/imap' " . (ereg("/imap", $value) ? " selected " : "") . ">IMAP</option>";
@@ -817,11 +817,11 @@ function showFormExtAuthList($target) {
 		echo "<input type=hidden name=imap_string value='".$value."'>";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
 		if (empty ($value))
 			$value = "&nbsp;";
-		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["setup"][170] . "</td><td><strong>$value</strong></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][170] . "</td><td><strong>$value</strong></td></tr>";
 
 	}
 	function constructMailServerConfig($input) {

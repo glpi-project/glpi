@@ -95,7 +95,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				if ($withtemplate!=2&&$canedit){
 					echo "<td align='center' width='20'><input type='checkbox' name='del_port[".$netport->fields["ID"]."]' value='1'></td>";
 				}
-				echo "<td align='center'><strong>";
+				echo "<td class='center'><strong>";
 				if ($withtemplate!=2) echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."\">";
 				echo $netport->fields["logical_number"];
 				if ($withtemplate!=2) echo "</a>";
@@ -123,9 +123,9 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			if ($canedit&&$withtemplate!=2){
 				echo "<div align='center'>";
 				echo "<table width='80%'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=none'>".$LANG["buttons"][19]."</a>";
+				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=none'>".$LANG["buttons"][19]."</a>";
 				echo "</td>";
 				echo "<td width='80%' align='left'>";
 				dropdownMassiveActionPorts();
@@ -322,12 +322,12 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	}
 	if ($ID) {
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		echo "<input type='hidden' name='ID' value=".$netport->fields["ID"].">";
 		echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 		echo "</td>";
 
-		echo "<td align='center'>";
+		echo "<td class='center'>";
 		echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 		echo "</td></tr>";
 	} else 
@@ -428,7 +428,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		echo "</a>";
 		echo "</strong></td>";
 		if ($canedit){
-			echo "<td align='right'><strong>";
+			echo "<td class='right'><strong>";
 			if ($withtemplate!=2)
 				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?disconnect=disconnect&amp;ID=$ID\">".$LANG["buttons"][10]."</a>";
 			else "&nbsp;";
@@ -439,7 +439,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 	} else {
 		echo "<table border='0' cellspacing='0' width='100%'><tr>";
 		if ($canedit){
-			echo "<td align='left'>";
+			echo "<td class='left'>";
 			if ($withtemplate!=2&&$withtemplate!=1){
 				$netport->getfromDB($ID);
 
