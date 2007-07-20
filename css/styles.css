@@ -235,7 +235,7 @@ td { }
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
 	z-index:1;
-	text-align: left;
+	text-align: center;
 	font-size: 11px;
 	background-color: #ffffff;
 }
@@ -267,7 +267,7 @@ td { }
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
 	z-index:1;
-	text-align: left;
+	text-align: center;
 	font-size: 11px;
 	width:950px;
 }
@@ -275,7 +275,7 @@ td { }
 .tab_cadrehov, .tab_cadrehov_pointer{
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
-	text-align: left;
+	text-align: center;
 	font-size: 11px;
 	width: 80%;
 	background-color: #ffffff;
@@ -492,6 +492,7 @@ cursor:pointer;
 }
 
 .reminder_list{
+text-align:left;
 margin-left:8px;}
 
 /* ################--------------- Calendrier  ---------------#################### */
@@ -542,6 +543,7 @@ margin-left:8px;}
 }
 
 .kb_resume{
+	text-align:left;
 	font-size: 9px;	
 	line-height: 10px; 
 	clear: both;	
@@ -573,9 +575,14 @@ font-size:10px;
 	border: dotted 2px #ccc;
 	}
 
+a.knowbase {
+	margin-left:8px;
+	}
+
 a.pubfaq {
+	margin-left:8px;
 	color: #c9993C;
-}
+	}
 a.pubfaq:hover {
 	color: black;
 }
