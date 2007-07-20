@@ -984,12 +984,11 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 			$data_computer = $DB->fetch_array($res_computer);
 			$computerOS = $data_computer["os_name"];
 			$computerOSSP = $data_computer["os_sp"];
-			
+
+			//Do not log software history in case of OS or Service Pack change
+			if (!$dohistory || $computerOS != $line["OSNAME"] || $computerOSSP != $line["OSCOMMENTS"])
+				$logHistory = 0;
 		}
-		
-		//Do not log software history in case of OS or Service Pack change
-		if (!$dohistory || $computerOS != $line["OSNAME"] || $computerOSSP != $line["OSCOMMENTS"])
-			$logHistory = 0;
 			
 		if ($cfg_ocs["import_general_os"]) {
 			if (!in_array("os", $computer_updates)) {
