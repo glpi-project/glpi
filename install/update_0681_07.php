@@ -1248,6 +1248,7 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add table glpi_dropdown_software_category" . $LANG["update"][90] . $DB->error());	
 	}
 	if (!FieldExists("glpi_config", "rule_softwarecategories")) {
+		
 		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `rule_softwarecategories` char(1) default NULL AFTER `rule_ldap`";
 		$DB->query($query) or die("0.7 add rule_softwarecategories in glpi_profiles" . $LANG["update"][90] . $DB->error());
 		$query = "UPDATE `glpi_profiles` SET `rule_softwarecategories` = config";
@@ -1258,5 +1259,14 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 alter category in glpi_software" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_ocs_config", "import_monitor_comments")) {
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_monitor_comments` INT( 2 ) NOT NULL DEFAULT '0' AFTER `import_ip`";
+		$DB->query($query) or die("0.7 alter import_monitor_comments in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+	
+	if (!FieldExists("glpi_ocs_config", "import_software_comments")) {
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_software_comments` INT NOT NULL DEFAULT '0' AFTER `import_monitor_comments`";
+		$DB->query($query) or die("0.7 alter import_software_comments in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
 } // fin 0.7 #####################################################################################
 ?>
