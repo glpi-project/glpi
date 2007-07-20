@@ -1013,7 +1013,7 @@ $LANG["ocsconfig"][15]="Pas d'import : GLPI n'importera pas ces éléments";
 $LANG["ocsconfig"][16]="Statut par défaut";
 $LANG["ocsconfig"][17]="Limiter l'importation aux tags suivants (séparateur $, rien pour tous)";
 $LANG["ocsconfig"][18]="Assurez vous au préalable d'avoir géré correctement les doublons dans OCSNG";
-$LANG["ocsconfig"][27]="Informations générales Ordinateurs";
+$LANG["ocsconfig"][27]="Informations générales";
 $LANG["ocsconfig"][28]="Composants";
 $LANG["ocsconfig"][36]="Modems";
 $LANG["ocsconfig"][37]="Ports";
@@ -1037,6 +1037,8 @@ $LANG["ocsconfig"][55]="Chercher les machines GLPI ayant le statut";
 $LANG["ocsconfig"][56]="vide";
 $LANG["ocsconfig"][57]="égal";
 $LANG["ocsconfig"][58]="La liaison fusionne automatiquement une machine GLPI avec une d'OCS.<br>Cette option n'est prise en compte que par les scripts de synchronisation (pas manuellement).";
+$LANG["ocsconfig"][59]="égal";
+
 
 
 $LANG["pager"][1]="à";

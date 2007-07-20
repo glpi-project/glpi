@@ -238,7 +238,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<br />";
 
 		echo "<div class='center'><table class='tab_cadre'>";
-		echo "<tr><th>" . $LANG["ocsconfig"][27] . "</th><th>" . $LANG["ocsconfig"][28] . "</th><th>" . $LANG["ocsconfig"][43] . "</th></tr>";
+		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][0]. "</th><th>" . $LANG["ocsconfig"][28] . "</th><th>" . $LANG["ocsconfig"][43] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . " </td><td>";
@@ -359,6 +359,19 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "</select>";
 		echo "</td></tr>";
 
+		echo "</table></div>";
+
+		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][3]. "</th><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][4] . "</th><th>&nbsp;</th></tr>";
+		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . " </td><td>";
+		dropdownYesNo("import_monitor_comments", $this->fields["import_monitor_comments"]);
+		echo "</td></tr>";
+		echo "</table></td>";
+		echo "<td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
+		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . " </td><td>";
+		dropdownYesNo("import_software_comments", $this->fields["import_software_comments"]);
+		echo "</td></tr>";
+		echo "</table><td class='tab_bg_2' valign='top'></td></tr>";
 
 		echo "</table></td></tr>";
 		echo "</table></div>";

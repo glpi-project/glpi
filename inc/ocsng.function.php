@@ -808,6 +808,10 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 						  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 						  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
 			 */
+			
+			//By default log history
+			$loghistory["history"] = 1;
+			
 			// Is an update to do ?
 			if ($mixed_checksum) {
 				// Get updates on computers :
@@ -817,7 +821,7 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 				ocsUpdateAdministrativeInfo($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $comp->fields['FK_entities'], $dohistory);
 
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
-					ocsUpdateHardware($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
+					$loghistory = ocsUpdateHardware($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
 				if ($mixed_checksum & pow(2, BIOS_FL))
 					ocsUpdateBios($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
 				// Get import devices
@@ -863,7 +867,7 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 				if ($mixed_checksum & pow(2, SOFTWARES_FL)) {
 					// Get import monitors
 					$import_software = importArrayFromDB($line["import_software"]);
-					ocsUpdateSoftware($line['glpi_id'], $comp->fields["FK_entities"], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_software, $dohistory);
+					ocsUpdateSoftware($line['glpi_id'], $comp->fields["FK_entities"], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_software, (!$loghistory["history"]?0:$dohistory));
 				}
 				if ($mixed_checksum & pow(2, REGISTRY_FL)) {
 					//import registry entries not needed
@@ -954,6 +958,9 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 				FROM hardware 
 				WHERE ID='" . $ocs_id . "'";
 	$result = $DBocs->query($query);
+	
+	$logHistory = 1;
+	
 	if ($DBocs->numrows($result) == 1) {
 
 		$line = $DBocs->fetch_assoc($result);
@@ -967,6 +974,23 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 				$compupdate["os_license_id"] = $line["WINPRODID"];
 		}
 
+		$sql_computer = "SELECT glpi_dropdown_os.name as os_name, glpi_dropdown_os_sp.name as os_sp" .
+			" FROM glpi_computers, glpi_ocs_link, glpi_dropdown_os, glpi_dropdown_os_sp" .
+			" WHERE glpi_ocs_link.glpi_id = glpi_computers.ID AND glpi_dropdown_os.ID = glpi_computers.os AND glpi_dropdown_os_sp.ID = glpi_computers.os_sp" .
+			" AND glpi_ocs_link.ocs_id=".$ocs_id." AND glpi_ocs_link.ocs_server_id=".$ocs_server_id;
+		$res_computer = $DB->query($sql_computer);
+		if ($DB->numrows($res_computer) ==  1)
+		{
+			$data_computer = $DB->fetch_array($res_computer);
+			$computerOS = $data_computer["os_name"];
+			$computerOSSP = $data_computer["os_sp"];
+			
+		}
+		
+		//Do not log software history in case of OS or Service Pack change
+		if (!$dohistory || $computerOS != $line["OSNAME"] || $computerOSSP != $line["OSCOMMENTS"])
+			$logHistory = 0;
+			
 		if ($cfg_ocs["import_general_os"]) {
 			if (!in_array("os", $computer_updates)) {
 				$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os', $line["OSNAME"]);
@@ -1012,6 +1036,7 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 		}
 
 	}
+	return array("history"=>$logHistory);
 }
 
 /**
@@ -2147,7 +2172,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 								$m->reset();
 
 								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $line["MANUFACTURER"]);
-								$mon["comments"] = $line["DESCRIPTION"];
+								
+								if ($cfg_ocs["import_monitor_comments"])
+									$mon["comments"] = $line["DESCRIPTION"];
 								$id_monitor = 0;
 								$found_already_monitor = false;
 								if ($cfg_ocs["import_monitor"] == 1) {
@@ -2733,7 +2760,10 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						if (!$isNewSoft) {
 							$input = array ();
 							$input["name"] = $name;
-							$input["comments"] = $data2["COMMENTS"];
+							
+							if ($cfg_ocs["import_software_comments"])
+								$input["comments"] = $data2["COMMENTS"];
+								
 							$input["FK_entities"] = $entity;
 	
 							if (!empty ($data2["PUBLISHER"])) {
