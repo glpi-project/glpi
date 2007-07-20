@@ -48,7 +48,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
 		return false;
 
-	echo "<div align='center'>&nbsp;\n";
+	echo "<div class='center'>&nbsp;\n";
 	echo "<form method='post' action=\"$target\">";
 
 
@@ -163,7 +163,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 
 	
 
-	echo "<div align='center'>&nbsp;";
+	echo "<div class='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
@@ -466,7 +466,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 		$query = "SELECT COUNT(*) AS cpt FROM `$table` WHERE `parentID` = '" . $ID . "'";
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "cpt") > 0) {
-			echo "<div align='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
+			echo "<div class='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
 			return;
 		}
 
@@ -474,7 +474,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 			$query = "SELECT COUNT(*) AS cpt FROM `glpi_kbitems` WHERE `categoryID` = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0) {
-				echo "<div align='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
+				echo "<div class='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
 				return;
 			}
 		}
@@ -482,7 +482,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 
 
 
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<p style='color:red'>" . $LANG["setup"][63] . "</p>";
 
 	if ($table!="glpi_entities"){
@@ -611,7 +611,7 @@ function listTemplates($type, $target, $add = 0) {
 	}
 	if ($result = $DB->query($query)) {
 
-		echo "<div align='center'><table class='tab_cadre' width='50%'>";
+		echo "<div class='center'><table class='tab_cadre' width='50%'>";
 		if ($add) {
 			echo "<tr><th>" . $LANG["common"][7] . " - $title:</th></tr>";
 		} else {
@@ -668,7 +668,7 @@ function showFormExtAuthList($target) {
 
 	if (!haveRight("config", "w"))
 		return false;
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<form name=cas action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
@@ -763,7 +763,7 @@ function showFormExtAuthList($target) {
 				echo "<p> " . $LANG["setup"][173] . "</p>";
 			} else {
 				echo "<input type=\"hidden\" name=\"CAS_Test\" value=\"1\" >";
-				echo "<div align='center'><table class='tab_cadre_fixe'>";
+				echo "<div class='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
 				echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr></table></div>";
 			}

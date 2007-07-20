@@ -615,7 +615,7 @@ class User extends CommonDBTM {
 
 		// Helpdesk case
 		if ($ID == 1) {
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo $LANG["setup"][220];
 			echo "</div>";
 			return false;
@@ -630,7 +630,7 @@ class User extends CommonDBTM {
 		}
 		if ($spotted) {
 			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_onglet']);
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
 			if (empty ($ID)) {
 				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
@@ -809,7 +809,7 @@ class User extends CommonDBTM {
 			$extauth = empty ($this->fields["password"]) && empty ($this->fields["password_md5"]);
 			$imapauth = !empty ($auth_method["imap_host"]);
 
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
 			echo "<tr><th colspan='2'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "</th></tr>";
 

@@ -244,7 +244,7 @@ class OcsAffectEntityRule extends Rule {
 
 		if ($canedit) {
 
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
 			echo "<tr class='tab_bg_1'><th colspan='4'>" .  $LANG["rulesengine"][18] . "</tr><tr><td class='tab_bg_2' align='center'>";
 			echo $LANG["common"][16] . ":";
@@ -266,7 +266,7 @@ class OcsAffectEntityRule extends Rule {
 
 		}
 
-		echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["entity"][5] . "</th></tr>";
+		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["entity"][5] . "</th></tr>";
 
 		//Get all rules and actions
 		$rules = $this->getRulesByID( $ID, 0, 1);
@@ -297,7 +297,7 @@ class OcsAffectEntityRule extends Rule {
 		echo "</table></div>";
 
 		if ($canedit) {
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table width='80%'>";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 

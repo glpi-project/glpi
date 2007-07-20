@@ -724,7 +724,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 	echo "<p align='center'>";
 	echo "<font face='verdana,arial,helvetica,sans-serif' size='2'><strong>$titre - $total $unit</strong></font>";
 
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 
 	if (count($entrees)>0){
 
@@ -896,7 +896,7 @@ function showItemStats($target,$date1,$date2,$start){
 	if ($numrows>0){
 		if ($output_type==HTML_OUTPUT){
 			printPager($start,$numrows,$target,"date1=".$date1."&amp;date2=".$date2."&amp;type=hardwares&amp;start=$start",STAT_TYPE);
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 		}
 
 		$i=$start;

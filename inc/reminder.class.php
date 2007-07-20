@@ -136,7 +136,7 @@ class Reminder extends CommonDBTM {
 				}
 			}
 
-			echo "<div align='center'><table class='tab_cadre' width='450'>";
+			echo "<div class='center'><table class='tab_cadre' width='450'>";
 			echo "<tr><th></th><th>";
 			if (!$ID) {
 				echo $LANG["reminder"][6].":";
@@ -244,7 +244,7 @@ class Reminder extends CommonDBTM {
 				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 				echo "<input type='hidden' name='author' value=\"$author\">\n";
-				echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
 
@@ -257,7 +257,7 @@ class Reminder extends CommonDBTM {
 
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 				echo "<input type='hidden' name='author' value=\"$author\">\n";
@@ -275,7 +275,7 @@ class Reminder extends CommonDBTM {
 			echo "</table></div>";
 			if($remind_edit){echo "</form>";}
 		} else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 
 		}
 

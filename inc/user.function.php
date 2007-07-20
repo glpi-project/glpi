@@ -44,7 +44,7 @@ function showAddExtAuthUserForm($target){
 	if (!haveRight("user","w")) return false;
 
 
-	echo "<div align='center'>\n";
+	echo "<div class='center'>\n";
 	echo "<form method='get' action=\"$target\">\n";
 
 	echo "<table class='tab_cadre' cellpadding='5'>\n";
@@ -145,7 +145,7 @@ function showDeviceUser($ID){
 
 
 	$ci=new CommonItem();
-	echo "<div align='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
+	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
 
 	foreach ($CFG_GLPI["linkuser_type"] as $type){
 		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
@@ -169,7 +169,7 @@ function showDeviceUser($ID){
 	echo "</table></div><br>";
 
 	if (!empty($group_where)){
-		echo "<div align='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
+		echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
 	
 		foreach ($CFG_GLPI["linkuser_type"] as $type){
 			$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where";
@@ -208,7 +208,7 @@ function showGroupAssociated($target,$ID){
 	echo "<form name='groupuser_form' id='groupuser_form' method='post' action=\"$target\">";
 
 	if ($canedit){
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
 
 		echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][604]."</tr><tr><td class='tab_bg_2' align='center'>";
@@ -233,7 +233,7 @@ function showGroupAssociated($target,$ID){
 		echo "</table></div><br>";
 	}
 
-	echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][36]."</th></tr>";
+	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][36]."</th></tr>";
 	$query="SELECT glpi_groups.*, glpi_users_groups.ID AS IDD,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID' ORDER BY glpi_groups.name";
 
 	$result=$DB->query($query);
@@ -270,7 +270,7 @@ function showGroupAssociated($target,$ID){
 	echo "</table></div>";
 
 	if ($canedit){
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table width='80%'>";
 		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
@@ -302,7 +302,7 @@ function showUserRights($target,$ID){
 	echo "<form name='entityuser_form' id='entityuser_form' method='post' action=\"$target\">";
 
 	if ($canedit){
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
 
 		echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG["entity"][3]."</tr><tr class='tab_bg_2'><td class='center'>";
@@ -322,7 +322,7 @@ function showUserRights($target,$ID){
 		echo "</table></div><br>";
 	}
 
-	echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][37]."</th><th>".$LANG["profiles"][22]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
+	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][37]."</th><th>".$LANG["profiles"][22]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
 
 	$query="SELECT DISTINCT glpi_users_profiles.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_users_profiles.recursive,
 			glpi_users_profiles.dynamic, glpi_entities.completename, glpi_users_profiles.FK_entities
@@ -374,7 +374,7 @@ function showUserRights($target,$ID){
 	echo "</table></div>";
 
 	if ($canedit){
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table width='80%'>";
 		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('entityuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 

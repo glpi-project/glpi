@@ -44,7 +44,7 @@ function showLicensesAdd($ID) {
 
 	if (!haveRight("software","w")) return false;
 
-	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
+	echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?form=add&amp;sID=$ID\">";
 	echo $LANG["software"][12];
@@ -78,7 +78,7 @@ function showLicenses ($sID,$show_computers=0) {
 
 			echo "<form name='lic_form' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
+			echo "<br><div class='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='6' $pb >";
 			echo $nb_licences;
 			echo "&nbsp;".$LANG["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$LANG["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$LANG["software"][19]."&nbsp;-&nbsp;$tobuy&nbsp;".$LANG["software"][37]."</th>";
@@ -110,7 +110,7 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "</th></tr>";
 		} else {
 
-			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
+			echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
 			echo "<tr><th>".$LANG["software"][14]."</th></tr>";
 			echo "</table></div>";
 		}
@@ -400,7 +400,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 	if (empty($values['expire'])) $values['expire']="0000-00-00";
 
 
-	echo "<div align='center'><strong>";
+	echo "<div class='center'><strong>";
 	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/software.form.php?ID=$sID\">";
 	echo $LANG["buttons"][13]."</strong>";
 	echo "</a><br>";
@@ -668,7 +668,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$result = $DB->query($query);
 	$i = 0;
 
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$LANG["software"][17].":</th></tr>";
 	//echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th><th>&nbsp;</th></tr>";
 	
@@ -920,7 +920,7 @@ function countInstallations($sID,$nohtml=0) {
 		} 
 	} else {
 		if (!$nohtml)
-			$out.= "<div align='center'><i>".$LANG["software"][40]."</i></div>";
+			$out.= "<div class='center'><i>".$LANG["software"][40]."</i></div>";
 		else $out.= $LANG["software"][40];
 	}
 	return $out;

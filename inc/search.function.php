@@ -919,7 +919,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		if ($output_type==GLOBAL_SEARCH){
 			$ci = new CommonItem();	
 			$ci->setType($type);
-			echo "<div align='center'><h2>".$ci->getType($type);
+			echo "<div class='center'><h2>".$ci->getType($type);
 			// More items
 			if ($numrows>$start+GLOBAL_SEARCH_DISPLAY_COUNT){
 				echo " <a href='$target?$parameters'>".$LANG["search"][7]."</a>";

@@ -68,7 +68,7 @@ function showPlanning($who,$who_group,$when,$type){
 
 
 	// Print Headers
-	echo "<div align='center'><table class='tab_cadre_fixe'>";
+	echo "<div class='center'><table class='tab_cadre_fixe'>";
 	// Print Headers
 	echo "<tr>";
 	switch ($type){

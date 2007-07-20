@@ -436,7 +436,7 @@ class Printer  extends CommonDBTM {
 					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-					echo "<div align='center'>";
+					echo "<div class='center'>";
 					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
@@ -455,7 +455,7 @@ class Printer  extends CommonDBTM {
 			return true;	
 		}
 		else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 
